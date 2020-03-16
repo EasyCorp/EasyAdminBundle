@@ -19,7 +19,7 @@ final class GenericMenuItem
         $this->icon = $icon;
     }
 
-    public function getAsDto()
+    public function getAsDto(): MenuItemDto
     {
         return new MenuItemDto($this->type, $this->label, $this->icon, $this->permission, $this->cssClass, null, null, null, $this->linkRel, $this->linkTarget, $this->translationDomain, $this->translationParameters, null);
     }

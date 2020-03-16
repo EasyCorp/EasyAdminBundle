@@ -211,7 +211,7 @@ final class EntityDto
         return $clone;
     }
 
-    public function getDefaultProperties(string $action)
+    public function getDefaultProperties(string $action): array
     {
         $defaultPropertyNames = [];
         $maxNumProperties = Action::INDEX === $action ? 7 : \PHP_INT_MAX;

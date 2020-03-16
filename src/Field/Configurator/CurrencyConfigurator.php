@@ -2,8 +2,8 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Field\Configurator;
 
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CurrencyField;
 use Symfony\Component\Intl\Currencies;
@@ -44,7 +44,7 @@ final class CurrencyConfigurator implements FieldConfiguratorInterface
     {
         // Compatibility with Symfony versions before 4.3
         if (!class_exists(Currencies::class)) {
-            return Intl::getCurrencyBundle()->getCurrencyName($currencyCode) ?? null;
+            return Intl::getCurrencyBundle()->getCurrencyName($currencyCode);
         }
 
         try {
@@ -58,7 +58,7 @@ final class CurrencyConfigurator implements FieldConfiguratorInterface
     {
         // Compatibility with Symfony versions before 4.3
         if (!class_exists(Currencies::class)) {
-            return Intl::getCurrencyBundle()->getCurrencySymbol($currencyCode) ?? null;
+            return Intl::getCurrencyBundle()->getCurrencySymbol($currencyCode);
         }
 
         try {

@@ -188,6 +188,7 @@ class FileUploadType extends AbstractType implements DataMapperInterface
                     '[month]' => date('m'),
                     '[name]' => pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME),
                     '[randomhash]' => bin2hex(random_bytes(20)),
+                    // TODO: remove this by the Symfony String slugger
                     '[slug]' => transliterator_transliterate('Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()', pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)),
                     '[timestamp]' => time(),
                     '[uuid]' => $generateUuid4(),

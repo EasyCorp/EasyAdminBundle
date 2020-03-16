@@ -2,8 +2,8 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Field\Configurator;
 
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CountryField;
 use Symfony\Component\Intl\Countries;
@@ -40,7 +40,7 @@ final class CountryConfigurator implements FieldConfiguratorInterface
 
         // Compatibility with Symfony versions before 4.3
         if (!class_exists(Countries::class)) {
-            return Intl::getRegionBundle()->getCountryName($countryCode) ?? null;
+            return Intl::getRegionBundle()->getCountryName($countryCode);
         }
 
         try {

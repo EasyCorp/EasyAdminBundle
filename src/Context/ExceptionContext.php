@@ -39,7 +39,7 @@ final class ExceptionContext
 
     public function getTranslationParameters(): array
     {
-        return array_map(function ($parameter) {
+        return array_map(static function ($parameter) {
             return u($parameter)->ensureStart('%')->ensureEnd('%')->toString();
         }, $this->parameters);
     }

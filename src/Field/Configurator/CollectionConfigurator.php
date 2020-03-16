@@ -4,8 +4,8 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Field\Configurator;
 
 use Doctrine\ORM\PersistentCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use Symfony\Component\Form\Extension\Core\Type\CountryType;
@@ -28,7 +28,7 @@ final class CollectionConfigurator implements FieldConfiguratorInterface
             $field->setFormTypeOption('entry_type', $entryTypeFqcn);
         }
 
-        if (in_array($entryTypeFqcn, [CountryType::class, CurrencyType::class, LanguageType::class, LocaleType::class, TimezoneType::class])) {
+        if (\in_array($entryTypeFqcn, [CountryType::class, CurrencyType::class, LanguageType::class, LocaleType::class, TimezoneType::class])) {
             $field->setFormTypeOption('entry_options.attr.data-widget', 'select2');
         }
 

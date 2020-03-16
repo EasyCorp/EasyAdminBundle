@@ -2,8 +2,8 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Field\Configurator;
 
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\LanguageField;
 use Symfony\Component\Intl\Exception\MissingResourceException;
@@ -36,7 +36,7 @@ final class LanguageConfigurator implements FieldConfiguratorInterface
     {
         // Compatibility with Symfony versions before 4.3
         if (!class_exists(Languages::class)) {
-            return Intl::getLanguageBundle()->getLanguageName($languageCode) ?? null;
+            return Intl::getLanguageBundle()->getLanguageName($languageCode);
         }
 
         try {

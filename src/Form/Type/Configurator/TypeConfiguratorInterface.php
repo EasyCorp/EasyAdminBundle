@@ -32,7 +32,7 @@ interface TypeConfiguratorInterface
      *
      * @param string $formTypeFqcn     The FQCN of the form type
      * @param array  $formFieldOptions The configured field options provided by Symfony Form component
-     * @param array  $fieldDto      The PropertyDto object related to this field
+     * @param array  $fieldDto         The PropertyDto object related to this field
      */
     public function supports(string $formTypeFqcn, array $formFieldOptions, FieldDto $fieldDto): bool;
 }

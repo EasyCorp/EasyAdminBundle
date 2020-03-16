@@ -6,7 +6,7 @@ use Twig\Error\RuntimeError;
 
 /**
  * Copied from https://github.com/twigphp/intl-extra/blob/2.x/src/IntlExtension.php
- * (c) Fabien Potencier - MIT License
+ * (c) Fabien Potencier - MIT License.
  */
 final class IntlFormatter
 {

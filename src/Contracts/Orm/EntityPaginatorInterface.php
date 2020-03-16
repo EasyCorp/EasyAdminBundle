@@ -3,7 +3,6 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Contracts\Orm;
 
 use Doctrine\ORM\QueryBuilder;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\PaginatorDto;
 
 interface EntityPaginatorInterface

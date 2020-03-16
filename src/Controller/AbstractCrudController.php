@@ -28,12 +28,10 @@ use EasyCorp\Bundle\EasyAdminBundle\Factory\ActionFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\PaginatorFactory;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudBatchActionFormType;
+use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType;
-use EasyCorp\Bundle\EasyAdminBundle\Formatter\EntityPaginatorJsonFormatter;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityUpdater;
-use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -211,7 +209,9 @@ abstract class AbstractCrudController extends AbstractController implements Crud
                     ->generateUrl();
 
                 return $this->redirect($url);
-            } elseif (Action::SAVE_AND_RETURN === $submitButtonName) {
+            }
+
+            if (Action::SAVE_AND_RETURN === $submitButtonName) {
                 $url = $this->getContext()->getRequest()->request->get('referrer')
                     ?? $this->get(CrudUrlGenerator::class)->build()->setAction(Action::INDEX)->generateUrl();
 
@@ -278,12 +278,16 @@ abstract class AbstractCrudController extends AbstractController implements Crud
                     ->generateUrl();
 
                 return $this->redirect($url);
-            } elseif (Action::SAVE_AND_RETURN === $submitButtonName) {
+            }
+
+            if (Action::SAVE_AND_RETURN === $submitButtonName) {
                 $url = $this->getContext()->getRequest()->request->get('referrer')
                     ?? $this->get(CrudUrlGenerator::class)->build()->setAction(Action::INDEX)->generateUrl();
 
                 return $this->redirect($url);
-            } elseif (Action::SAVE_AND_ADD_ANOTHER === $submitButtonName) {
+            }
+
+            if (Action::SAVE_AND_ADD_ANOTHER === $submitButtonName) {
                 $url = $this->get(CrudUrlGenerator::class)->build()->setAction(Action::NEW)->generateUrl();
 
                 return $this->redirect($url);
@@ -393,7 +397,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         return new $entityFqcn();
     }
 
-    public function updateEntity(EntityManagerInterface $entityManager, $entityInstance)
+    public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
         // there's no need to persist the entity explicitly again because it's already
         // managed by Doctrine. The instance is passed to the method in case the
@@ -401,13 +405,13 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $entityManager->flush();
     }
 
-    public function persistEntity(EntityManagerInterface $entityManager, $entityInstance)
+    public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
         $entityManager->persist($entityInstance);
         $entityManager->flush();
     }
 
-    public function deleteEntity(EntityManagerInterface $entityManager, $entityInstance)
+    public function deleteEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
         $entityManager->remove($entityInstance);
         $entityManager->flush();

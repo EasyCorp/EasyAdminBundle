@@ -143,7 +143,7 @@ final class Actions
     {
         $batchActionsDto = [];
 
-        /** @var Action $actions */
+        /* @var Action $actions */
         foreach ($this->actions[$pageName] ?? [] as $batchAction) {
             $actionName = (string) $batchAction;
             // apply the callables that update certain config options of the action

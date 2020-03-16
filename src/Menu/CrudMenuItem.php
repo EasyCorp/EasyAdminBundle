@@ -46,7 +46,7 @@ final class CrudMenuItem
         return $this;
     }
 
-    public function getAsDto()
+    public function getAsDto(): MenuItemDto
     {
         $routeParameters = [
             'crudAction' => $this->crudAction,

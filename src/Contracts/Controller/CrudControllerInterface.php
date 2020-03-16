@@ -46,8 +46,7 @@ interface CrudControllerInterface
     /** @return Response|ResponseParameters */
     public function delete();
 
-    /** @return JsonResponse */
-    public function autocomplete();
+    public function autocomplete(): JsonResponse;
 
     public function configureResponseParameters(ResponseParameters $responseParameters): ResponseParameters;
 
@@ -55,11 +54,11 @@ interface CrudControllerInterface
 
     public function createEntity(string $entityFqcn);
 
-    public function updateEntity(EntityManagerInterface $entityManager, $entityInstance);
+    public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void;
 
-    public function persistEntity(EntityManagerInterface $entityManager, $entityInstance);
+    public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void;
 
-    public function deleteEntity(EntityManagerInterface $entityManager, $entityInstance);
+    public function deleteEntity(EntityManagerInterface $entityManager, $entityInstance): void;
 
     public function createEditForm(EntityDto $entityDto): FormInterface;
 

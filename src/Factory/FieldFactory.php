@@ -7,8 +7,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldDtoCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
-use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
+use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
@@ -47,13 +47,13 @@ final class FieldFactory
 
     private $adminContextProvider;
     private $authorizationChecker;
-    private $fieldurators;
+    private $fieldConfigurators;
 
     public function __construct(AdminContextProvider $adminContextProvider, AuthorizationCheckerInterface $authorizationChecker, iterable $fieldurators)
     {
         $this->adminContextProvider = $adminContextProvider;
         $this->authorizationChecker = $authorizationChecker;
-        $this->fieldurators = $fieldurators;
+        $this->fieldConfigurators = $fieldurators;
     }
 
     /**
@@ -71,12 +71,12 @@ final class FieldFactory
                 continue;
             }
 
-            foreach ($this->fieldurators as $configurator) {
+            foreach ($this->fieldConfigurators as $configurator) {
                 if (!$configurator->supports($field, $entityDto)) {
                     continue;
                 }
 
-                $configurator->configure($action, $field, $entityDto);
+                $configurator->configure($field, $entityDto, $action);
             }
 
             $builtProperties[] = $field->getAsDto();
@@ -117,7 +117,7 @@ final class FieldFactory
 
             $guessedType = self::DOCTRINE_TYPE_TO_PROPERTY_TYPE_MAP[$doctrineMetadata['type']] ?? null;
             if (null !== $guessedType) {
-                $guessedClassName = isset(self::PROPERTY_TYPE_TO_PROPERTY_CLASSNAME_MAP[$guessedType]) ? self::PROPERTY_TYPE_TO_PROPERTY_CLASSNAME_MAP[$guessedType] : ucfirst($guessedType);
+                $guessedClassName = self::PROPERTY_TYPE_TO_PROPERTY_CLASSNAME_MAP[$guessedType] ?? ucfirst($guessedType);
                 $guessedPropertyClass = sprintf('EasyCorp\\Bundle\\EasyAdminBundle\\Property\\%sProperty', $guessedClassName);
                 $fields[$i] = $field->transformInto($guessedPropertyClass);
             }

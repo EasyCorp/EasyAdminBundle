@@ -6,9 +6,9 @@ use ArrayObject;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetsDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
+use EasyCorp\Bundle\EasyAdminBundle\Field\FormPanelField;
 use EasyCorp\Bundle\EasyAdminBundle\Form\EventListener\EasyAdminTabSubscriber;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\TypeConfiguratorInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Field\FormPanelField;
 use Symfony\Bridge\Doctrine\Form\DoctrineOrmTypeGuesser;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -149,7 +149,7 @@ class CrudFormType extends AbstractType
         $resolver
             ->setDefaults([
                 'allow_extra_fields' => true,
-                'data_class' => function (Options $options, $dataClass) {
+                'data_class' => static function (Options $options, $dataClass) {
                     return $dataClass ?? $options['entityDto']->getFqcn();
                 },
             ])

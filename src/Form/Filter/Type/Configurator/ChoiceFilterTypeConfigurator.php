@@ -18,16 +18,16 @@ class ChoiceFilterTypeConfigurator implements TypeConfiguratorInterface
     public function configure(string $name, array $formFieldOptions, FieldDto $fieldDto, FormConfigInterface $parentConfig): array
     {
         if ($fieldDto->getCustomOptions()->has('expanded')) {
-            $formFieldOtions['value_type_options']['expanded'] = $fieldDto['expanded'];
+            $formFieldOptions['value_type_options']['expanded'] = $fieldDto['expanded'];
         }
         if ($fieldDto->getCustomOptions()->has('multiple')) {
-            $formFieldOtions['value_type_options']['multiple'] = $fieldDto->getCustomOptions()->has('multiple');
+            $formFieldOptions['value_type_options']['multiple'] = $fieldDto->getCustomOptions()->has('multiple');
         }
         if ($fieldDto->getCustomOptions()->has('choices')) {
-            $formFieldOtions['value_type_options']['choices'] = $fieldDto->getCustomOptions()->has('choices');
+            $formFieldOptions['value_type_options']['choices'] = $fieldDto->getCustomOptions()->has('choices');
         }
 
-        return $formFieldOtions;
+        return $formFieldOptions;
     }
 
     /**

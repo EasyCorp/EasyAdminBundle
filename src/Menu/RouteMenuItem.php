@@ -23,7 +23,7 @@ final class RouteMenuItem
         $this->routeParameters = $routeParameters;
     }
 
-    public function getAsDto()
+    public function getAsDto(): MenuItemDto
     {
         return new MenuItemDto(MenuFactory::ITEM_TYPE_ROUTE, $this->label, $this->icon, $this->permission, $this->cssClass, $this->routeName, $this->routeParameters, null, $this->linkRel, $this->linkTarget, $this->translationDomain, $this->translationParameters, null);
     }

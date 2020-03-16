@@ -61,10 +61,10 @@ class DataCollector extends BaseDataCollector
     private function collectData(AdminContext $context): array
     {
         return [
-            'CRUD Controller' => $context->getRequest()->get('crudController') ?? null,
-            'CRUD Action' => $context->getRequest()->get('crudAction') ?? null,
-            'Entity Id' => $context->getRequest()->get('entityId') ?? null,
-            'Sort' => $context->getRequest()->get('sort') ?? null,
+            'CRUD Controller' => $context->getRequest()->get('crudController'),
+            'CRUD Action' => $context->getRequest()->get('crudAction'),
+            'Entity Id' => $context->getRequest()->get('entityId'),
+            'Sort' => $context->getRequest()->get('sort'),
         ];
     }
 

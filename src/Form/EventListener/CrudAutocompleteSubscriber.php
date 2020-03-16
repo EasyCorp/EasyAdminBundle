@@ -30,7 +30,7 @@ class CrudAutocompleteSubscriber implements EventSubscriberInterface
 
         $options = $form->getConfig()->getOptions();
         $options['compound'] = false;
-        $options['choices'] = \is_array($data) || $data instanceof \Traversable ? $data : [$data];
+        $options['choices'] = is_iterable($data) ? $data : [$data];
 
         $form->add('autocomplete', EntityType::class, $options);
     }

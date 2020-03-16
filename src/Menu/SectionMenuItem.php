@@ -19,7 +19,7 @@ final class SectionMenuItem
         $this->icon = $icon;
     }
 
-    public function getAsDto()
+    public function getAsDto(): MenuItemDto
     {
         return new MenuItemDto(MenuFactory::ITEM_TYPE_SECTION, $this->label, $this->icon, $this->permission, $this->cssClass, null, null, null, '', '_self', $this->translationDomain, $this->translationParameters, null);
     }

@@ -43,7 +43,7 @@ final class EntityRepository implements EntityRepositoryInterface
         }
 
         if (!empty($searchDto->getFilters())) {
-            $this->addFilterClause($queryBuilder, $searchDto, $entityDto);
+            $this->addFilterClause($queryBuilder, $searchDto);
         }
 
         $this->addOrderClause($queryBuilder, $searchDto, $entityDto);

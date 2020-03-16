@@ -21,7 +21,7 @@ final class UrlMenuItem
         $this->linkUrl = $url;
     }
 
-    public function getAsDto()
+    public function getAsDto(): MenuItemDto
     {
         return new MenuItemDto(MenuFactory::ITEM_TYPE_URL, $this->label, $this->icon, $this->permission, $this->cssClass, null, null, $this->linkUrl, $this->linkRel, $this->linkTarget, $this->translationDomain, $this->translationParameters, null);
     }

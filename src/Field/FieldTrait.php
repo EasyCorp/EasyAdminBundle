@@ -219,7 +219,7 @@ trait FieldTrait
         return $this;
     }
 
-    public function formatValue(callable $callable): self
+    public function formatValue(callable $callable): FieldInterface
     {
         $this->formatValueCallable = $callable;
 
@@ -263,7 +263,7 @@ trait FieldTrait
         // (c) Riku Särkinen <riku@adbar.io> - MIT License
         $formTypeOptions = &$this->formTypeOptions;
         foreach (explode('.', $optionName) as $key) {
-            if (!isset($formTypeOptions[$key]) || !is_array($formTypeOptions[$key])) {
+            if (!isset($formTypeOptions[$key]) || !\is_array($formTypeOptions[$key])) {
                 $formTypeOptions[$key] = [];
             }
 
@@ -404,12 +404,12 @@ trait FieldTrait
 
     private function arrayNestedKeyExists(array $array, $key): bool
     {
-        if (array_key_exists($key, $array)) {
+        if (\array_key_exists($key, $array)) {
             return true;
         }
 
         foreach ($array as $element) {
-            if (is_array($element) && $this->arrayNestedKeyExists($element, $key)) {
+            if (\is_array($element) && $this->arrayNestedKeyExists($element, $key)) {
                 return true;
             }
         }

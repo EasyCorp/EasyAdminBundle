@@ -19,10 +19,7 @@ class BaseException extends HttpException
         parent::__construct($this->context->getStatusCode(), $this->context->getDebugMessage());
     }
 
-    /**
-     * @return ExceptionContext
-     */
-    public function getContext()
+    public function getContext(): ExceptionContext
     {
         return $this->context;
     }
@@ -30,7 +27,7 @@ class BaseException extends HttpException
     /**
      * @return string The message that can safely be displayed to end-users because it doesn't contain sensitive data
      */
-    public function getPublicMessage()
+    public function getPublicMessage(): string
     {
         return $this->context->getPublicMessage();
     }
@@ -38,23 +35,17 @@ class BaseException extends HttpException
     /**
      * @return string The full exception message that is logged and it can contain sensitive data
      */
-    public function getDebugMessage()
+    public function getDebugMessage(): string
     {
         return $this->context->getDebugMessage();
     }
 
-    /**
-     * @return array
-     */
-    public function getParameters()
+    public function getParameters(): array
     {
         return $this->context->getParameters();
     }
 
-    /**
-     * @return int
-     */
-    public function getStatusCode()
+    public function getStatusCode(): int
     {
         return $this->context->getStatusCode();
     }

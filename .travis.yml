@@ -3,18 +3,27 @@ language: php
 jobs:
     include:
         -
+            name: 'PHP 7.2 with lowest dependencies'
+            php: 7.2
+            before_install:
+                - echo 'date.timezone = "Europe/Madrid"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+                - phpenv config-rm xdebug.ini
+                - phpenv global 7.2; composer global require --prefer-dist --no-progress --no-scripts --no-plugins symfony/flex dev-master
+            install:
+                - composer update --prefer-stable --prefer-lowest --no-interaction
+                - phpenv global 7.2; ./vendor/bin/simple-phpunit install
+            script:
+                - ./vendor/bin/simple-phpunit -v
+
+        -
             name: 'PHP 7.4'
             php: 7.4
-            install: composer install
-            before_script:
+            before_install:
                 - echo 'date.timezone = "Europe/Madrid"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
                 - phpenv config-rm xdebug.ini
-            script: ./vendor/bin/simple-phpunit
-        -
-            name: 'PHP 8.0'
-            php: nightly
-            install: composer install
-            before_script:
-                - echo 'date.timezone = "Europe/Madrid"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
-                - phpenv config-rm xdebug.ini
-            script: ./vendor/bin/simple-phpunit
+                - phpenv global 7.4; composer global require --prefer-dist --no-progress --no-scripts --no-plugins symfony/flex dev-master
+            install:
+                - composer update --no-interaction
+                - phpenv global 7.4; ./vendor/bin/simple-phpunit install
+            script:
+                - ./vendor/bin/simple-phpunit -v

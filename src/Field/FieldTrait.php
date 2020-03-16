@@ -404,16 +404,20 @@ trait FieldTrait
 
     private function arrayNestedKeyExists(array $array, $key): bool
     {
-        if (\array_key_exists($key, $array)) {
+        // Code copied from https://github.com/adbario/php-dot-notation/blob/dc4053b44d71a5cf782e6c59dcbf09c78f036ceb/src/Dot.php#L222
+        // (c) Riku Särkinen <riku@adbar.io> - MIT License
+        if (array_key_exists($key, $array)) {
             return true;
         }
 
-        foreach ($array as $element) {
-            if (\is_array($element) && $this->arrayNestedKeyExists($element, $key)) {
-                return true;
+        foreach (explode('.', $key) as $segment) {
+            if (!is_array($array) || !array_key_exists($segment, $array)) {
+                return false;
             }
+
+            $array = $array[$segment];
         }
 
-        return false;
+        return true;
     }
 }

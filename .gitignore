@@ -1,6 +1,7 @@
 .php_cs.cache
 composer.lock
-phpunit.xml
+phpunit.xml.dist
+.phpunit.result.cache
 vendor/*
 build/
 

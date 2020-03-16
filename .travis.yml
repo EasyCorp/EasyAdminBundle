@@ -1,0 +1,20 @@
+language: php
+
+jobs:
+    include:
+        -
+            name: 'PHP 7.4'
+            php: 7.4
+            install: composer install
+            before_script:
+                - echo 'date.timezone = "Europe/Madrid"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+                - phpenv config-rm xdebug.ini
+            script: ./vendor/bin/simple-phpunit
+        -
+            name: 'PHP 8.0'
+            php: nightly
+            install: composer install
+            before_script:
+                - echo 'date.timezone = "Europe/Madrid"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+                - phpenv config-rm xdebug.ini
+            script: ./vendor/bin/simple-phpunit

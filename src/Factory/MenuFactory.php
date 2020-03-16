@@ -5,7 +5,6 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenu;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContextProvider;
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\Configuration\MenuItemInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MainMenuDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\UserMenuDto;
@@ -45,7 +44,7 @@ final class MenuFactory
     }
 
     /**
-     * @param MenuItemInterface[] $menuItems
+     * @param MenuItem[] $menuItems
      */
     public function createMainMenu(array $menuItems, int $selectedIndex, int $selectedSubIndex): MainMenuDto
     {
@@ -63,9 +62,9 @@ final class MenuFactory
     }
 
     /**
-     * @param MenuItemInterface[] $menuItems
+     * @param MenuItem[] $menuItems
      *
-     * @return MenuItemInterface[]
+     * @return MenuItemDto[]
      */
     private function buildMenuItems(array $menuItems): array
     {

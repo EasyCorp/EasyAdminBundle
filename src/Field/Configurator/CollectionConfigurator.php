@@ -28,7 +28,8 @@ final class CollectionConfigurator implements FieldConfiguratorInterface
             $field->setFormTypeOption('entry_type', $entryTypeFqcn);
         }
 
-        if (\in_array($entryTypeFqcn, [CountryType::class, CurrencyType::class, LanguageType::class, LocaleType::class, TimezoneType::class])) {
+        $autocompletableFormTypes = [CountryType::class, CurrencyType::class, LanguageType::class, LocaleType::class, TimezoneType::class];
+        if (\in_array($entryTypeFqcn, $autocompletableFormTypes, true)) {
             $field->setFormTypeOption('entry_options.attr.data-widget', 'select2');
         }
 

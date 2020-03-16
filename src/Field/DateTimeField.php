@@ -34,7 +34,7 @@ class DateTimeField implements FieldInterface
      */
     public function setTimezone(string $timezoneId): self
     {
-        if (!\in_array($timezoneId, timezone_identifiers_list())) {
+        if (!\in_array($timezoneId, timezone_identifiers_list(), true)) {
             throw new \InvalidArgumentException(sprintf('The "%s" timezone is not a valid PHP timezone ID. Use any of the values listed at https://www.php.net/manual/en/timezones.php', $timezoneId));
         }
 

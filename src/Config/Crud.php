@@ -175,7 +175,7 @@ class Crud
 
     public function setTimezone(string $timezoneId): self
     {
-        if (!\in_array($timezoneId, timezone_identifiers_list())) {
+        if (!\in_array($timezoneId, timezone_identifiers_list(), true)) {
             throw new \InvalidArgumentException(sprintf('The "%s" timezone is not a valid PHP timezone ID. Use any of the values listed at https://www.php.net/manual/en/timezones.php', $timezoneId));
         }
 
@@ -261,7 +261,7 @@ class Crud
     public function overrideTemplate(string $templateName, string $templatePath): self
     {
         $validTemplateNames = TemplateRegistry::getTemplateNames();
-        if (!\in_array($templateName, $validTemplateNames)) {
+        if (!\in_array($templateName, $validTemplateNames, true)) {
             throw new \InvalidArgumentException(sprintf('The "%s" template is not defined in EasyAdmin. Use one of these allowed template names: %s', $templateName, implode(', ', $validTemplateNames)));
         }
 

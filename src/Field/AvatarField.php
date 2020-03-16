@@ -26,7 +26,7 @@ class AvatarField implements FieldInterface
     {
         $semanticHeights = ['sm' => 18, 'md' => 24, 'lg' => 48, 'xl' => 96];
 
-        if (!\is_int($heightInPixels) && !\in_array($heightInPixels, $semanticHeights)) {
+        if (!\is_int($heightInPixels) && !\in_array($heightInPixels, $semanticHeights, true)) {
             throw new \InvalidArgumentException(sprintf('The argument of the "%s()" method must be either an integer (the height in pixels) or one of these string values: %s (%d given).', __METHOD__, implode(', ', $semanticHeights), $heightInPixels));
         }
 

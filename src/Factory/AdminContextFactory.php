@@ -35,7 +35,7 @@ final class AdminContextFactory
     {
         $crudAction = $request->query->get('crudAction');
         $validPageNames = [Crud::PAGE_INDEX, Crud::PAGE_DETAIL, Crud::PAGE_EDIT, Crud::PAGE_NEW];
-        $pageName = \in_array($crudAction, $validPageNames) ? $crudAction : null;
+        $pageName = \in_array($crudAction, $validPageNames, true) ? $crudAction : null;
 
         $dashboardDto = $this->getDashboardDto($request, $dashboardController);
         $assetDto = $this->getAssetDto($dashboardController, $crudController);

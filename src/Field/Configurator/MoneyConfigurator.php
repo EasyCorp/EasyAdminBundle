@@ -2,7 +2,6 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Field\Configurator;
 
-use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -13,12 +12,11 @@ use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
 final class MoneyConfigurator implements FieldConfiguratorInterface
 {
-    private $adminContextProvider;
     private $intlFormatter;
+    private $propertyAccessor;
 
-    public function __construct(AdminContextProvider $adminContextProvider, IntlFormatter $intlFormatter, PropertyAccessorInterface $propertyAccessor)
+    public function __construct(IntlFormatter $intlFormatter, PropertyAccessorInterface $propertyAccessor)
     {
-        $this->adminContextProvider = $adminContextProvider;
         $this->intlFormatter = $intlFormatter;
         $this->propertyAccessor = $propertyAccessor;
     }

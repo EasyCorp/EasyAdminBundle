@@ -42,6 +42,7 @@ final class DateTimeConfigurator implements FieldConfiguratorInterface
         $dateTimePattern = $field->getCustomOption(DateTimeField::OPTION_DATETIME_PATTERN) ?? $defaultDateTimePattern;
         $timezone = $field->getCustomOption(DateTimeField::OPTION_TIMEZONE) ?? $defaultTimezone;
 
+        $formattedValue = $field->getValue();
         if ($field instanceof DateTimeField) {
             $formattedValue = $this->intlFormatter->formatDateTime($field->getValue(), $dateFormat, $timeFormat, $dateTimePattern, $timezone);
         } elseif ($field instanceof DateField) {

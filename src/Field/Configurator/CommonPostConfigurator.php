@@ -26,6 +26,6 @@ final class CommonPostConfigurator implements FieldConfiguratorInterface
             return $value;
         }
 
-        return \call_user_func($callable, $value, $entityDto->getInstance());
+        return $callable($value, $entityDto->getInstance());
     }
 }

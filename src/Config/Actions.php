@@ -141,17 +141,17 @@ final class Actions
 
     public function getAsDto(string $pageName): ActionsDto
     {
-        $batchActionsDto = [];
+        $actionsDto = [];
 
         /* @var Action $actions */
-        foreach ($this->actions[$pageName] ?? [] as $batchAction) {
-            $actionName = (string) $batchAction;
+        foreach ($this->actions[$pageName] ?? [] as $action) {
+            $actionName = (string) $action;
             // apply the callables that update certain config options of the action
             if (\array_key_exists($actionName, $this->actionUpdateCallables[$pageName]) && null !== $callable = $this->actionUpdateCallables[$pageName][$actionName]) {
-                $batchAction = \call_user_func($callable, $batchAction);
+                $action = $callable($action);
             }
 
-            $actionsDto[] = $batchAction->getAsDto();
+            $actionsDto[] = $action->getAsDto();
         }
 
         return ActionsDto::new($actionsDto, $this->disabledActions, $this->actionPermissions);

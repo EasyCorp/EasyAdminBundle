@@ -155,7 +155,7 @@ final class ActionFactory
         $referrerCrudAction = $referrerQueryStringVariables['crudAction'] ?? null;
 
         if (Action::EDIT === $currentAction) {
-            if (\in_array($referrerCrudAction, [Action::INDEX, Action::DETAIL])) {
+            if (\in_array($referrerCrudAction, [Action::INDEX, Action::DETAIL], true)) {
                 return $referrer;
             }
         }

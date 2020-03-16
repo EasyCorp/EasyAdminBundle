@@ -81,9 +81,9 @@ final class MenuFactory
             }
 
             $subItems = [];
-            /** @var MenuItem $menuSubItemConfig */
-            foreach ($menuItemDto->getSubItems() as $j => $menuSubItemConfig) {
-                $menuSubItemDto = $menuSubItemConfig->getAsDto();
+            /** @var MenuItem $menuSubItem */
+            foreach ($menuItemDto->getSubItems() as $j => $menuSubItem) {
+                $menuSubItemDto = $menuSubItem->getAsDto();
                 if (false === $this->authChecker->isGranted(Permission::EA_VIEW_MENU_ITEM, $menuSubItemDto)) {
                     continue;
                 }

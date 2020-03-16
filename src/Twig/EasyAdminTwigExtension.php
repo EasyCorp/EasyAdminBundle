@@ -19,21 +19,14 @@ use Twig\TwigFunction;
  */
 class EasyAdminTwigExtension extends AbstractExtension
 {
-    private $configManager;
-    private $propertyAccessor;
     private $crudUrlGenerator;
-    private $debug;
     /** @var TranslatorInterface|null */
     private $translator;
-    private $authorizationChecker;
 
-    public function __construct(CrudUrlGenerator $crudUrlGenerator, AuthorizationCheckerInterface $authorizationChecker, PropertyAccessorInterface $propertyAccessor, ?TranslatorInterface $translator, bool $debug = false)
+    public function __construct(CrudUrlGenerator $crudUrlGenerator, ?TranslatorInterface $translator)
     {
-        $this->propertyAccessor = $propertyAccessor;
         $this->crudUrlGenerator = $crudUrlGenerator;
-        $this->debug = $debug;
         $this->translator = $translator;
-        $this->authorizationChecker = $authorizationChecker;
     }
 
     /**

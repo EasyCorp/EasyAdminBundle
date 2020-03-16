@@ -307,7 +307,7 @@ trait FieldTrait
     public function setTextAlign(string $textAlign): FieldInterface
     {
         $validOptions = ['left', 'center', 'right'];
-        if (!\in_array($textAlign, $validOptions)) {
+        if (!\in_array($textAlign, $validOptions, true)) {
             throw new \InvalidArgumentException(sprintf('The value of the "textAlign" option can only be one of these: "%s" ("%s" was given).', implode(',', $validOptions), $textAlign));
         }
 

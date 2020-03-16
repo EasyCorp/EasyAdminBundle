@@ -82,10 +82,7 @@ return static function (ContainerConfigurator $container) {
 
         ->set(EasyAdminTwigExtension::class)
             ->arg(0, ref(CrudUrlGenerator::class))
-            ->arg(1, ref(AuthorizationChecker::class))
-            ->arg(2, ref(PropertyAccessorInterface::class))
-            ->arg(3, ref(TranslatorInterface::class)->nullOnInvalid())
-            ->arg(4, '%kernel.debug%')
+            ->arg(1, ref(TranslatorInterface::class)->nullOnInvalid())
             ->tag('twig.extension')
 
         ->set(EaCrudFormTypeExtension::class)
@@ -234,9 +231,8 @@ return static function (ContainerConfigurator $container) {
             ->tag('ea.field_configurator')
 
         ->set(MoneyConfigurator::class)
-            ->arg(0, ref(AdminContextProvider::class))
-            ->arg(1, ref(IntlFormatter::class))
-            ->arg(2, ref('property_accessor'))
+            ->arg(0, ref(IntlFormatter::class))
+            ->arg(1, ref('property_accessor'))
             ->tag('ea.field_configurator')
 
         ->set(CurrencyConfigurator::class)

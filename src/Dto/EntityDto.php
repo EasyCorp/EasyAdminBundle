@@ -165,14 +165,14 @@ final class EntityDto
     {
         $associationType = $this->getPropertyMetadata($propertyName)['type'];
 
-        return \in_array($associationType, [ClassMetadataInfo::ONE_TO_ONE, ClassMetadataInfo::MANY_TO_ONE]);
+        return \in_array($associationType, [ClassMetadataInfo::ONE_TO_ONE, ClassMetadataInfo::MANY_TO_ONE], true);
     }
 
     public function isToManyAssociation(string $propertyName): bool
     {
         $associationType = $this->getPropertyMetadata($propertyName)['type'];
 
-        return \in_array($associationType, [ClassMetadataInfo::ONE_TO_MANY, ClassMetadataInfo::MANY_TO_MANY]);
+        return \in_array($associationType, [ClassMetadataInfo::ONE_TO_MANY, ClassMetadataInfo::MANY_TO_MANY], true);
     }
 
     public function isEmbeddedClassProperty(string $propertyName): bool

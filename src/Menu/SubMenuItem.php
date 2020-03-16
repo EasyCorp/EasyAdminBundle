@@ -28,6 +28,6 @@ final class SubMenuItem
 
     public function getAsDto(): MenuItemDto
     {
-        return new MenuItemDto(MenuFactory::ITEM_TYPE_SUBMENU, $this->label, $this->icon, $this->permission, $this->cssClass, null, null, null, $this->linkRel, $this->linkTarget, $this->translationDomain, $this->translationParameters, $this->subItems);
+        return new MenuItemDto(MenuFactory::ITEM_TYPE_SUBMENU, $this->label, $this->icon, $this->permission, $this->cssClass, null, null, null, null, null, $this->translationDomain, $this->translationParameters, $this->subItems);
     }
 }

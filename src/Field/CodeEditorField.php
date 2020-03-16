@@ -39,7 +39,7 @@ class CodeEditorField implements FieldInterface
 
     public function setLanguage(string $language): self
     {
-        if (!\in_array($language, self::ALLOWED_LANGUAGES)) {
+        if (!\in_array($language, self::ALLOWED_LANGUAGES, true)) {
             throw new \InvalidArgumentException(sprintf('The "%s" language is not available for code highlighting (allowed languages: %s).', __METHOD__, implode(', ', self::ALLOWED_LANGUAGES)));
         }
 

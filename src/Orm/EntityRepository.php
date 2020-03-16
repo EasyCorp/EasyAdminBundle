@@ -82,7 +82,7 @@ final class EntityRepository implements EntityRepositoryInterface
                     $associatedEntityName = $associatedProperties[$i];
                     $associatedPropertyName = $associatedProperties[$i + 1];
 
-                    if (!\in_array($associatedEntityName, $entitiesAlreadyJoined)) {
+                    if (!\in_array($associatedEntityName, $entitiesAlreadyJoined, true)) {
                         $parentEntityName = 0 === $i ? 'entity' : $associatedProperties[$i - 1];
                         $queryBuilder->leftJoin($parentEntityName.'.'.$associatedEntityName, $associatedEntityName);
                         $entitiesAlreadyJoined[] = $associatedEntityName;
@@ -149,7 +149,7 @@ final class EntityRepository implements EntityRepositoryInterface
 
         foreach ($filtersForm as $filterForm) {
             $name = $filterForm->getName();
-            if (!\in_array($name, $searchDto->getFilters())) {
+            if (!\in_array($name, $searchDto->getFilters(), true)) {
                 // this filter is not applied
                 continue;
             }

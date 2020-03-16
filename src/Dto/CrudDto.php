@@ -31,7 +31,7 @@ final class CrudDto
     private $dateIntervalFormat;
     private $timezone;
     private $numberFormat;
-    private $defaultSort = [];
+    private $defaultSort;
     private $searchFields;
     private $showEntityActionsAsDropdown;
     private $filters;

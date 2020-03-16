@@ -16,7 +16,7 @@ final class Field implements FieldInterface
     public function transformInto(string $fieldFqcn): FieldInterface
     {
         /**
-         * @var FieldInterface
+         * @var $newField FieldInterface
          */
         $newField = $fieldFqcn::new($this->getProperty());
 

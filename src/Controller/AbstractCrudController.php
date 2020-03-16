@@ -388,12 +388,12 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         );
     }
 
-    protected function createEntity(string $entityFqcn)
+    public function createEntity(string $entityFqcn)
     {
         return new $entityFqcn();
     }
 
-    protected function updateEntity(EntityManagerInterface $entityManager, $entityInstance)
+    public function updateEntity(EntityManagerInterface $entityManager, $entityInstance)
     {
         // there's no need to persist the entity explicitly again because it's already
         // managed by Doctrine. The instance is passed to the method in case the
@@ -401,24 +401,24 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $entityManager->flush();
     }
 
-    protected function persistEntity(EntityManagerInterface $entityManager, $entityInstance)
+    public function persistEntity(EntityManagerInterface $entityManager, $entityInstance)
     {
         $entityManager->persist($entityInstance);
         $entityManager->flush();
     }
 
-    protected function deleteEntity(EntityManagerInterface $entityManager, $entityInstance)
+    public function deleteEntity(EntityManagerInterface $entityManager, $entityInstance)
     {
         $entityManager->remove($entityInstance);
         $entityManager->flush();
     }
 
-    protected function createEditForm(EntityDto $entityDto): FormInterface
+    public function createEditForm(EntityDto $entityDto): FormInterface
     {
         return $this->get(FormFactory::class)->createEditForm($entityDto);
     }
 
-    protected function createNewForm(EntityDto $entityDto): FormInterface
+    public function createNewForm(EntityDto $entityDto): FormInterface
     {
         return $this->get(FormFactory::class)->createNewForm($entityDto);
     }
@@ -431,7 +431,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         return $responseParameters;
     }
 
-    protected function getContext(): ?AdminContext
+    private function getContext(): ?AdminContext
     {
         return $this->get(AdminContextProvider::class)->getContext();
     }

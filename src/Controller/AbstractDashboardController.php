@@ -27,6 +27,16 @@ abstract class AbstractDashboardController extends AbstractController implements
         return Dashboard::new();
     }
 
+    public function configureAssets(): Assets
+    {
+        return Assets::new();
+    }
+
+    public function configureMenuItems(): iterable
+    {
+        yield MenuItem::linktoDashboard('Dashboard', 'fa-home');
+    }
+
     public function configureUserMenu(UserInterface $user): UserMenu
     {
         $userMenuItems = [MenuItem::linkToLogout('user.sign_out', 'fa-sign-out')->setTranslationDomain('EasyAdminBundle')];
@@ -40,11 +50,6 @@ abstract class AbstractDashboardController extends AbstractController implements
             ->setName(method_exists($user, '__toString') ? (string) $user : $user->getUsername())
             ->setAvatarUrl(null)
             ->setMenuItems($userMenuItems);
-    }
-
-    public function configureAssets(): Assets
-    {
-        return Assets::new();
     }
 
     public function configureCrud(): Crud
@@ -69,11 +74,6 @@ abstract class AbstractDashboardController extends AbstractController implements
             ->add(Crud::PAGE_NEW, Action::SAVE_AND_RETURN)
             ->add(Crud::PAGE_NEW, Action::SAVE_AND_ADD_ANOTHER)
         ;
-    }
-
-    public function configureMenuItems(): iterable
-    {
-        yield MenuItem::linktoDashboard('Dashboard', 'fa-home');
     }
 
     /**

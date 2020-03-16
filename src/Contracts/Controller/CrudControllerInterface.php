@@ -2,11 +2,17 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller;
 
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\ResponseParameters;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -25,8 +31,6 @@ interface CrudControllerInterface
      */
     public function configureFields(string $pageName): iterable;
 
-    public function configureResponseParameters(ResponseParameters $responseParameters): ResponseParameters;
-
     /** @return Response|ResponseParameters */
     public function index();
 
@@ -38,4 +42,26 @@ interface CrudControllerInterface
 
     /** @return Response|ResponseParameters */
     public function new();
+
+    /** @return Response|ResponseParameters */
+    public function delete();
+
+    /** @return JsonResponse */
+    public function autocomplete();
+
+    public function configureResponseParameters(ResponseParameters $responseParameters): ResponseParameters;
+
+    public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto): QueryBuilder;
+
+    public function createEntity(string $entityFqcn);
+
+    public function updateEntity(EntityManagerInterface $entityManager, $entityInstance);
+
+    public function persistEntity(EntityManagerInterface $entityManager, $entityInstance);
+
+    public function deleteEntity(EntityManagerInterface $entityManager, $entityInstance);
+
+    public function createEditForm(EntityDto $entityDto): FormInterface;
+
+    public function createNewForm(EntityDto $entityDto): FormInterface;
 }

@@ -8,6 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenu;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
@@ -19,16 +20,18 @@ interface DashboardControllerInterface
 {
     public function configureDashboard(): Dashboard;
 
-    public function configureCrud(): Crud;
-
-    public function configureActions(): Actions;
-
     public function configureAssets(): Assets;
-
-    public function configureUserMenu(UserInterface $user): UserMenu;
 
     /**
      * @return MenuItem[]
      */
     public function configureMenuItems(): iterable;
+
+    public function configureUserMenu(UserInterface $user): UserMenu;
+
+    public function configureCrud(): Crud;
+
+    public function configureActions(): Actions;
+
+    public function index(): Response;
 }

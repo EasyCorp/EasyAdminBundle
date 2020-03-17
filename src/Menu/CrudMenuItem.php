@@ -2,7 +2,6 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Menu;
 
-use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\MenuFactory;
 
 /**
@@ -10,51 +9,39 @@ use EasyCorp\Bundle\EasyAdminBundle\Factory\MenuFactory;
  */
 final class CrudMenuItem
 {
-    use CommonMenuItemOptionsTrait;
-    use LinkMenuItemOptionsTrait;
-    private $entityFqcn;
-    private $crudControllerFqcn;
-    private $crudAction;
-    private $entityId;
+    use MenuItemTrait;
 
     public function __construct(string $label, ?string $icon, string $entityFqcn)
     {
+        $this->type = MenuFactory::ITEM_TYPE_CRUD;
         $this->label = $label;
         $this->icon = $icon;
-        $this->entityFqcn = $entityFqcn;
-        $this->crudAction = 'index';
+        $this->routeParameters = [
+            'crudAction' => 'index',
+            'crudController' => null,
+            'entityFqcn' => $entityFqcn,
+            'entityId' => null,
+        ];
     }
 
     public function setCrudController(string $controllerFqcn): self
     {
-        $this->crudControllerFqcn = $controllerFqcn;
+        $this->routeParameters['crudController'] = $controllerFqcn;
 
         return $this;
     }
 
     public function setCrudAction(string $actionName): self
     {
-        $this->crudAction = $actionName;
+        $this->routeParameters['crudAction'] = $actionName;
 
         return $this;
     }
 
     public function setEntityId($entityId): self
     {
-        $this->entityId = $entityId;
+        $this->routeParameters['entityId'] = $entityId;
 
         return $this;
-    }
-
-    public function getAsDto(): MenuItemDto
-    {
-        $routeParameters = [
-            'crudAction' => $this->crudAction,
-            'crudController' => $this->crudControllerFqcn,
-            'entityFqcn' => $this->entityFqcn,
-            'entityId' => $this->entityId,
-        ];
-
-        return new MenuItemDto(MenuFactory::ITEM_TYPE_CRUD, $this->label, $this->icon, $this->permission, $this->cssClass, null, $routeParameters, null, $this->linkRel, $this->linkTarget, $this->translationDomain, $this->translationParameters, null);
     }
 }

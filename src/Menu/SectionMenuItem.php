@@ -2,7 +2,6 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Menu;
 
-use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\MenuFactory;
 
 /**
@@ -10,17 +9,15 @@ use EasyCorp\Bundle\EasyAdminBundle\Factory\MenuFactory;
  */
 final class SectionMenuItem
 {
-    use CommonMenuItemOptionsTrait;
+    use MenuItemTrait {
+        setLinkRel as private;
+        setLinkTarget as private;
+    }
 
     public function __construct(string $label, ?string $icon)
     {
         $this->type = MenuFactory::ITEM_TYPE_SECTION;
         $this->label = $label;
         $this->icon = $icon;
-    }
-
-    public function getAsDto(): MenuItemDto
-    {
-        return new MenuItemDto(MenuFactory::ITEM_TYPE_SECTION, $this->label, $this->icon, $this->permission, $this->cssClass, null, null, null, '', '_self', $this->translationDomain, $this->translationParameters, null);
     }
 }

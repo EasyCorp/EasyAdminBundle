@@ -2,14 +2,19 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Config;
 
-use EasyCorp\Bundle\EasyAdminBundle\Factory\MenuFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
 use EasyCorp\Bundle\EasyAdminBundle\Menu\CrudMenuItem;
-use EasyCorp\Bundle\EasyAdminBundle\Menu\GenericMenuItem;
+use EasyCorp\Bundle\EasyAdminBundle\Menu\DashboardMenuItem;
+use EasyCorp\Bundle\EasyAdminBundle\Menu\ExitImpersonationMenuItem;
+use EasyCorp\Bundle\EasyAdminBundle\Menu\LogoutMenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Menu\RouteMenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Menu\SectionMenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Menu\SubMenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Menu\UrlMenuItem;
 
+/**
+ * @method MenuItemDto getAsDto()
+ */
 final class MenuItem
 {
     /**
@@ -24,19 +29,19 @@ final class MenuItem
         return new CrudMenuItem($label, $icon, $entityFqcn);
     }
 
-    public static function linktoDashboard(string $label, ?string $icon = null): GenericMenuItem
+    public static function linktoDashboard(string $label, ?string $icon = null): DashboardMenuItem
     {
-        return new GenericMenuItem(MenuFactory::ITEM_TYPE_DASHBOARD, $label, $icon);
+        return new DashboardMenuItem($label, $icon);
     }
 
-    public static function linkToExitImpersonation(string $label, ?string $icon = null): GenericMenuItem
+    public static function linkToExitImpersonation(string $label, ?string $icon = null): ExitImpersonationMenuItem
     {
-        return new GenericMenuItem(MenuFactory::ITEM_TYPE_EXIT_IMPERSONATION, $label, $icon);
+        return new ExitImpersonationMenuItem($label, $icon);
     }
 
-    public static function linkToLogout(string $label, ?string $icon = null): GenericMenuItem
+    public static function linkToLogout(string $label, ?string $icon = null): LogoutMenuItem
     {
-        return new GenericMenuItem(MenuFactory::ITEM_TYPE_LOGOUT, $label, $icon);
+        return new LogoutMenuItem($label, $icon);
     }
 
     public static function linktoRoute(string $label, ?string $icon = null, string $routeName, array $routeParameters = []): RouteMenuItem

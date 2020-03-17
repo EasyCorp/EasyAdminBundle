@@ -2,7 +2,6 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Menu;
 
-use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\MenuFactory;
 
 /**
@@ -10,11 +9,14 @@ use EasyCorp\Bundle\EasyAdminBundle\Factory\MenuFactory;
  */
 final class SubMenuItem
 {
-    use CommonMenuItemOptionsTrait;
-    private $subItems;
+    use MenuItemTrait {
+        setLinkRel as private;
+        setLinkTarget as private;
+    }
 
     public function __construct(string $label, ?string $icon)
     {
+        $this->type = MenuFactory::ITEM_TYPE_SUBMENU;
         $this->label = $label;
         $this->icon = $icon;
     }
@@ -24,10 +26,5 @@ final class SubMenuItem
         $this->subItems = $subItems;
 
         return $this;
-    }
-
-    public function getAsDto(): MenuItemDto
-    {
-        return new MenuItemDto(MenuFactory::ITEM_TYPE_SUBMENU, $this->label, $this->icon, $this->permission, $this->cssClass, null, null, null, null, null, $this->translationDomain, $this->translationParameters, $this->subItems);
     }
 }

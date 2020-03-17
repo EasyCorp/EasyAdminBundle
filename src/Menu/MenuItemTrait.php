@@ -2,7 +2,9 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Menu;
 
-trait CommonMenuItemOptionsTrait
+use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
+
+trait MenuItemTrait
 {
     private $type;
     private $label;
@@ -11,6 +13,12 @@ trait CommonMenuItemOptionsTrait
     private $permission;
     private $translationDomain;
     private $translationParameters = [];
+    private $routeName;
+    private $routeParameters;
+    private $linkUrl;
+    private $linkRel = '';
+    private $linkTarget = '_self';
+    private $subItems;
 
     public function setCssClass(string $cssClass): self
     {
@@ -41,5 +49,24 @@ trait CommonMenuItemOptionsTrait
         $this->translationParameters = $parameters;
 
         return $this;
+    }
+
+    public function setLinkRel(string $rel): self
+    {
+        $this->linkRel = $rel;
+
+        return $this;
+    }
+
+    public function setLinkTarget(string $target): self
+    {
+        $this->linkTarget = $target;
+
+        return $this;
+    }
+
+    public function getAsDto(): MenuItemDto
+    {
+        return new MenuItemDto($this->type, $this->label, $this->icon, $this->permission, $this->cssClass, $this->routeName, $this->routeParameters, $this->linkUrl, $this->linkRel, $this->linkTarget, $this->translationDomain, $this->translationParameters, $this->subItems);
     }
 }

@@ -2,7 +2,6 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Menu;
 
-use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\MenuFactory;
 
 /**
@@ -10,21 +9,14 @@ use EasyCorp\Bundle\EasyAdminBundle\Factory\MenuFactory;
  */
 final class RouteMenuItem
 {
-    use CommonMenuItemOptionsTrait;
-    use LinkMenuItemOptionsTrait;
-    private $routeName;
-    private $routeParameters;
+    use MenuItemTrait;
 
     public function __construct(string $label, ?string $icon, string $routeName, array $routeParameters)
     {
+        $this->type = MenuFactory::ITEM_TYPE_ROUTE;
         $this->label = $label;
         $this->icon = $icon;
         $this->routeName = $routeName;
         $this->routeParameters = $routeParameters;
-    }
-
-    public function getAsDto(): MenuItemDto
-    {
-        return new MenuItemDto(MenuFactory::ITEM_TYPE_ROUTE, $this->label, $this->icon, $this->permission, $this->cssClass, $this->routeName, $this->routeParameters, null, $this->linkRel, $this->linkTarget, $this->translationDomain, $this->translationParameters, null);
     }
 }

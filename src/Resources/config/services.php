@@ -37,6 +37,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\TelephoneConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\TextConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\TimezoneConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\UrlConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Extension\EaCollectionTypeExtension;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Extension\EaCrudFormTypeExtension;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\FilterRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudFormType;
@@ -87,7 +88,10 @@ return static function (ContainerConfigurator $container) {
 
         ->set(EaCrudFormTypeExtension::class)
             ->arg(0, ref(AdminContextProvider::class))
-            ->tag('form.type_extension', ['alias' => 'form', 'extended-type' => FormType::class])
+            ->tag('form.type_extension')
+
+        ->set(EaCollectionTypeExtension::class)
+            ->tag('form.type_extension')
 
         ->set(AuthorizationChecker::class)
             ->arg(0, ref('security.authorization_checker')->nullOnInvalid())

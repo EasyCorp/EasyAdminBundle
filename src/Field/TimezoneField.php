@@ -5,7 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use Symfony\Component\Form\Extension\Core\Type\TimezoneType;
 
-class TimezoneField implements FieldInterface
+final class TimezoneField implements FieldInterface
 {
     use FieldTrait;
 

@@ -5,7 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use Symfony\Component\Form\Extension\Core\Type\ColorType;
 
-class ColorField implements FieldInterface
+final class ColorField implements FieldInterface
 {
     use FieldTrait;
 

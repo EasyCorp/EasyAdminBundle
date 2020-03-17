@@ -5,7 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 
-class CollectionField implements FieldInterface
+final class CollectionField implements FieldInterface
 {
     use FieldTrait;
 

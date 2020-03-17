@@ -5,7 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
-class AssociationField implements FieldInterface
+final class AssociationField implements FieldInterface
 {
     use FieldTrait;
 

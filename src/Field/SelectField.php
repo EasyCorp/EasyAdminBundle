@@ -5,7 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
-class SelectField implements FieldInterface
+final class SelectField implements FieldInterface
 {
     use FieldTrait;
 

@@ -9,7 +9,7 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
  * TODO: create a BooleanConfigurator to check if user can edit the entity.
  * If they can't, then disable the 'renderAsSwitch' option and make it false.
  */
-class BooleanField implements FieldInterface
+final class BooleanField implements FieldInterface
 {
     use FieldTrait;
 

@@ -6,7 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Intl\Currencies;
 
-class MoneyField implements FieldInterface
+final class MoneyField implements FieldInterface
 {
     use FieldTrait;
 

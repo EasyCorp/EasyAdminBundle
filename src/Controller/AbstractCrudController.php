@@ -381,14 +381,14 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $queryString = $formActionParts['query'] ?? [];
         parse_str($queryString, $queryStringAsArray);
 
-        $templateParameters = [
+        $responseParameters = ResponseParameters::new([
             'filters_form' => $filtersForm,
             'form_action_query_string_as_array' => $queryStringAsArray,
-        ];
+        ]);
 
         return $this->render(
             $this->getContext()->getTemplatePath('crud/filters'),
-            $this->getResponseParameters('showFilters', $templateParameters)
+            $this->configureResponseParameters($responseParameters)
         );
     }
 

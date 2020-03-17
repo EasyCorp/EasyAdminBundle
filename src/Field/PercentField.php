@@ -5,7 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use Symfony\Component\Form\Extension\Core\Type\PercentType;
 
-class PercentField implements FieldInterface
+final class PercentField implements FieldInterface
 {
     use FieldTrait;
 

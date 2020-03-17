@@ -5,7 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use Symfony\Component\Form\Extension\Core\Type\LanguageType;
 
-class LanguageField implements FieldInterface
+final class LanguageField implements FieldInterface
 {
     use FieldTrait;
 

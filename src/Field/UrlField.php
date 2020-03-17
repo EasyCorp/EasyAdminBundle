@@ -5,7 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
 
-class UrlField implements FieldInterface
+final class UrlField implements FieldInterface
 {
     use FieldTrait;
 

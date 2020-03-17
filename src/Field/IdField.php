@@ -5,7 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
-class IdField implements FieldInterface
+final class IdField implements FieldInterface
 {
     use FieldTrait;
 

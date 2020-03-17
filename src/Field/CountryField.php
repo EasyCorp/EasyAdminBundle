@@ -5,7 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use Symfony\Component\Form\Extension\Core\Type\CountryType;
 
-class CountryField implements FieldInterface
+final class CountryField implements FieldInterface
 {
     use FieldTrait;
 

@@ -5,7 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\TextEditorType;
 
-class TextEditorField implements FieldInterface
+final class TextEditorField implements FieldInterface
 {
     use FieldTrait;
 

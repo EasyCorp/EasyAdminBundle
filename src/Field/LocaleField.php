@@ -5,7 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use Symfony\Component\Form\Extension\Core\Type\LocaleType;
 
-class LocaleField implements FieldInterface
+final class LocaleField implements FieldInterface
 {
     use FieldTrait;
 

@@ -20,5 +20,7 @@ class MakeAdminMigrationCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
         $io->error('This command is not implemented.');
+
+        return 0;
     }
 }

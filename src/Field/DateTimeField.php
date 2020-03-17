@@ -5,7 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 
-class DateTimeField implements FieldInterface
+final class DateTimeField implements FieldInterface
 {
     use FieldTrait;
 

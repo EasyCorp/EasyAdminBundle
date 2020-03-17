@@ -5,7 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
 
-class TelephoneField implements FieldInterface
+final class TelephoneField implements FieldInterface
 {
     use FieldTrait;
 

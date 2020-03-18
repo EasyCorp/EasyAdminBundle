@@ -572,8 +572,7 @@ trait AdminControllerTrait
             $uploadNew = $config->getOption('upload_new');
 
             foreach ($state->getUploadedFiles() as $index => $file) {
-                $fileName = mb_substr($filePaths[$index], mb_strlen($uploadDir));
-                $uploadNew($file, $uploadDir, $fileName);
+                $uploadNew($file, $uploadDir, $filePaths[$index]);
             }
         }
     }

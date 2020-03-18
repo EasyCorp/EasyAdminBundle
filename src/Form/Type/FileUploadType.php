@@ -34,18 +34,30 @@ class FileUploadType extends AbstractType implements DataMapperInterface
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $uploadDir = $options['upload_dir'];
-        $uploadFilename = $options['upload_filename'];
-        $uploadValidate = $options['upload_validate'];
-        $allowAdd = $options['allow_add'];
-        unset($options['upload_dir'], $options['upload_new'], $options['upload_delete'], $options['upload_filename'], $options['upload_validate'], $options['download_path'], $options['allow_add'], $options['allow_delete'], $options['compound']);
+        $builder->addModelTransformer(
+            new StringToFileTransformer(
+                $options['upload_dir'],
+                $options['upload_filename'],
+                $options['upload_validate'],
+                $options['multiple']
+            )
+        );
+        $builder->setAttribute('state', new FileUploadState($options['allow_add']));
+
+        unset($options['upload_dir'],
+        $options['download_path'],
+        $options['upload_new'],
+        $options['upload_delete'],
+        $options['upload_filename'],
+        $options['upload_validate'],
+        $options['allow_add'],
+        $options['allow_delete'],
+        $options['compound']);
 
         $builder->add('file', FileType::class, $options);
         $builder->add('delete', CheckboxType::class, ['required' => false]);
 
         $builder->setDataMapper($this);
-        $builder->setAttribute('state', new FileUploadState($allowAdd));
-        $builder->addModelTransformer(new StringToFileTransformer($uploadDir, $uploadFilename, $uploadValidate, $options['multiple']));
     }
 
     /**
@@ -83,12 +95,7 @@ class FileUploadType extends AbstractType implements DataMapperInterface
     public function configureOptions(OptionsResolver $resolver): void
     {
         $uploadNew = static function (UploadedFile $file, string $uploadDir, string $fileName) {
-            $name = str_replace('\\', '/', $fileName);
-            $pos = strrpos($name, '/');
-            $subDir = false === $pos ? '' : substr($name, 0, $pos);
-            $name = false === $pos ? $name : substr($name, $pos + 1);
-
-            $file->move(rtrim($uploadDir, '/\\').\DIRECTORY_SEPARATOR.$subDir, $name);
+            $file->move(rtrim($uploadDir, '/\\').\DIRECTORY_SEPARATOR, $fileName);
         };
 
         $uploadDelete = static function (File $file) {
@@ -106,7 +113,14 @@ class FileUploadType extends AbstractType implements DataMapperInterface
 
             $index = 1;
             $pathInfo = pathinfo($filename);
-            while (file_exists($filename = sprintf('%s/%s_%d.%s', $pathInfo['dirname'], $pathInfo['filename'], $index, $pathInfo['extension']))) {
+            while (file_exists($filename = sprintf(
+                '%s%s%s_%d.%s',
+                $pathInfo['dirname'],
+                \DIRECTORY_SEPARATOR,
+                $pathInfo['filename'],
+                $index,
+                $pathInfo['extension']
+            ))) {
                 ++$index;
             }
 
@@ -114,7 +128,22 @@ class FileUploadType extends AbstractType implements DataMapperInterface
         };
 
         $downloadPath = function (Options $options) {
-            return mb_substr($options['upload_dir'], mb_strlen($this->projectDir.'/public/'));
+            $composer = json_decode(file_get_contents(
+                $this->projectDir.\DIRECTORY_SEPARATOR.'composer.json'
+            ), true);
+
+            $public_path = \array_key_exists('public-dir', $composer['extra'])
+                ? $composer['extra']['public-dir']
+                : 'public';
+
+            return mb_substr(
+                $options['upload_dir'],
+                mb_strlen(
+                    $this->projectDir
+                        .\DIRECTORY_SEPARATOR
+                        .$public_path
+                )
+            );
         };
 
         $allowAdd = static function (Options $options) {
@@ -156,11 +185,15 @@ class FileUploadType extends AbstractType implements DataMapperInterface
         $resolver->setAllowedTypes('allow_delete', 'bool');
 
         $resolver->setNormalizer('upload_dir', function (Options $options, string $value): string {
-            if (\DIRECTORY_SEPARATOR !== mb_substr($value, -1)) {
-                $value .= \DIRECTORY_SEPARATOR;
+            if ('\\' === \DIRECTORY_SEPARATOR) {
+                $value = str_replace('\\', '/', $value);
             }
 
-            if (0 !== mb_strpos($value, \DIRECTORY_SEPARATOR)) {
+            if ('/' !== mb_substr($value, -1)) {
+                $value .= '/';
+            }
+
+            if (0 !== mb_strpos($value, '/')) {
                 $value = $this->projectDir.'/'.$value;
             }
 

@@ -18,10 +18,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class URLFileUploadType extends FileUploadType
 {
-    public function __construct()
+    private $projectDir;
+
+    public function __construct(string $projectDir)
     {
-        // TODO: dirty hack - cant use autowire, requiere zero arguments
-        parent::__construct(realpath(__DIR__.'/../../../../../../'));
+        $this->projectDir = $projectDir;
     }
 
     /**

@@ -22,7 +22,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class FileUploadType extends AbstractType implements DataMapperInterface
 {
-    private $projectDir;
+    protected $projectDir;
 
     public function __construct(string $projectDir)
     {

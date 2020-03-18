@@ -10,6 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminGroupType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminSectionType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FileUploadType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\TextEditorType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\URLFileUploadType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 use Symfony\Component\Form\Extension\Core\Type\ButtonType;
@@ -80,6 +81,8 @@ final class FormTypeHelper
         // allow using underscore and dashes to improve DX
         'file-upload' => FileUploadType::class,
         'file_upload' => FileUploadType::class,
+        'url-file-upload' => URLFileUploadType::class,
+        'url_file_upload' => URLFileUploadType::class,
         'form' => FormType::class,
         'hidden' => HiddenType::class,
         'integer' => IntegerType::class,

@@ -2,6 +2,7 @@
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
+use EasyCorp\Bundle\EasyAdminBundle\ArgumentResolver\CrudRequestResolver;
 use EasyCorp\Bundle\EasyAdminBundle\Command\MakeAdminDashboardCommand;
 use EasyCorp\Bundle\EasyAdminBundle\Command\MakeAdminMigrationCommand;
 use EasyCorp\Bundle\EasyAdminBundle\Command\MakeAdminResourceCommand;
@@ -13,6 +14,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Factory\ActionFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\AdminContextFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FieldFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\FilterFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\MenuFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\PaginatorFactory;
@@ -51,11 +53,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Security\AuthorizationChecker;
 use EasyCorp\Bundle\EasyAdminBundle\Security\SecurityVoter;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\EasyAdminTwigExtension;
-use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\DependencyInjection\DependencyInjectionExtension;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
-use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 return static function (ContainerConfigurator $container) {
@@ -100,6 +100,10 @@ return static function (ContainerConfigurator $container) {
 
         ->set(AdminContextProvider::class)
             ->arg(0, ref('request_stack'))
+
+        ->set(CrudRequestResolver::class)
+            ->arg(0, ref(AdminContextProvider::class))
+            ->tag('controller.argument_value_resolver')
 
         ->set(AdminContextListener::class)
             ->arg(0, ref(AdminContextFactory::class))
@@ -148,12 +152,11 @@ return static function (ContainerConfigurator $container) {
             ->arg(3, ref(FilterRegistry::class))
 
         ->set(EntityFactory::class)
-            ->arg(0, ref(AdminContextProvider::class))
-            ->arg(1, ref(FieldFactory::class))
-            ->arg(2, ref(ActionFactory::class))
-            ->arg(3, ref(AuthorizationChecker::class))
-            ->arg(4, ref('doctrine'))
-            ->arg(5, ref('event_dispatcher'))
+            ->arg(0, ref(FieldFactory::class))
+            ->arg(1, ref(ActionFactory::class))
+            ->arg(2, ref(AuthorizationChecker::class))
+            ->arg(3, ref('doctrine'))
+            ->arg(4, ref('event_dispatcher'))
 
         ->set(EntityPaginator::class)
             ->arg(0, ref(CrudUrlGenerator::class))
@@ -170,11 +173,14 @@ return static function (ContainerConfigurator $container) {
             ->arg(0, ref(AdminContextProvider::class))
             ->arg(1, ref('form.factory'))
             ->arg(2, ref(CrudUrlGenerator::class))
+            ->arg(3, ref(FilterFactory::class))
 
         ->set(FieldFactory::class)
             ->arg(0, ref(AdminContextProvider::class))
             ->arg(1, ref(AuthorizationChecker::class))
             ->arg(2, \function_exists('tagged') ? tagged('ea.field_configurator') : tagged_iterator('ea.field_configurator'))
+
+        ->set(FilterFactory::class)
 
         ->set(ActionFactory::class)
             ->arg(0, ref(AdminContextProvider::class))

@@ -6,6 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenu;
 use Symfony\Component\HttpFoundation\Response;
@@ -32,6 +33,8 @@ interface DashboardControllerInterface
     public function configureCrud(): Crud;
 
     public function configureActions(): Actions;
+
+    public function configureFilters(): Filters;
 
     public function index(): Response;
 }

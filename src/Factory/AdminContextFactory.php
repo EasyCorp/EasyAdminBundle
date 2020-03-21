@@ -10,6 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionsDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetsDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\DashboardDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FiltersDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\I18nDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\CrudControllerRegistry;
@@ -39,9 +40,10 @@ final class AdminContextFactory
 
         $dashboardDto = $this->getDashboardDto($request, $dashboardController);
         $assetDto = $this->getAssetDto($dashboardController, $crudController);
-        $actionDtoCollection = $this->getActions($dashboardController, $crudController, $pageName);
+        $actionsDto = $this->getActions($dashboardController, $crudController, $pageName);
+        $filtersDto = $this->getFilters($dashboardController, $crudController);
 
-        $crudDto = $this->getCrudDto($this->crudControllers, $dashboardController, $crudController, $actionDtoCollection, $crudAction, $pageName);
+        $crudDto = $this->getCrudDto($this->crudControllers, $dashboardController, $crudController, $actionsDto, $filtersDto, $crudAction, $pageName);
         $searchDto = $this->getSearchDto($request, $crudDto);
         $i18nDto = $this->getI18nDto($request, $dashboardDto, $crudDto);
         $templateRegistry = $this->getTemplateRegistry($dashboardController, $crudDto);
@@ -71,7 +73,7 @@ final class AdminContextFactory
         return $crudController->configureAssets($defaultAssets)->getAsDto();
     }
 
-    private function getCrudDto(CrudControllerRegistry $crudControllerRegistry, DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController, ActionsDto $actionDtoCollection, ?string $crudAction, ?string $pageName): ?CrudDto
+    private function getCrudDto(CrudControllerRegistry $crudControllerRegistry, DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController, ActionsDto $actionsDto, FiltersDto $filtersDto, ?string $crudAction, ?string $pageName): ?CrudDto
     {
         if (null === $crudController) {
             return null;
@@ -85,7 +87,8 @@ final class AdminContextFactory
         $entityName = empty($entityClassName) ? 'Undefined' : $entityClassName;
 
         return $crudDto->with([
-            'actions' => $actionDtoCollection,
+            'actions' => $actionsDto,
+            'filters' => $filtersDto,
             'actionName' => $crudAction,
             'entityFqcn' => $entityFqcn,
             'labelInSingular' => $crudDto->getLabelInSingular() ?? $entityName,
@@ -103,6 +106,17 @@ final class AdminContextFactory
         $defaultActions = $dashboardController->configureActions();
 
         return $crudController->configureActions($defaultActions)->getAsDto($pageName);
+    }
+
+    private function getFilters(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController): FiltersDto
+    {
+        if (null === $crudController) {
+            return new FiltersDto([]);
+        }
+
+        $defaultFilters = $dashboardController->configureFilters();
+
+        return $crudController->configureFilters($defaultFilters)->getAsDto();
     }
 
     private function getTemplateRegistry(DashboardControllerInterface $dashboardController, ?CrudDto $crudDto): TemplateRegistry
@@ -151,9 +165,10 @@ final class AdminContextFactory
         $query = $request->query->get('query');
         $defaultSort = $crudDto->getDefaultSort();
         $customSort = $request->query->get('sort', []);
-        $filters = $crudDto->getFilters();
+        $configuredFilters = $crudDto->getFilters()->getConfiguredFilters();
+        $appliedFilters = $request->query->get('filters', []);
 
-        return new SearchDto($request, $searchableProperties, $query, $defaultSort, $customSort, $filters);
+        return new SearchDto($request, $searchableProperties, $query, $defaultSort, $customSort, $configuredFilters, $appliedFilters);
     }
 
     // Copied from https://github.com/symfony/twig-bridge/blob/master/AppVariable.php

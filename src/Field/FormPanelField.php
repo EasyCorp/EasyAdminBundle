@@ -11,6 +11,15 @@ final class FormPanelField implements FieldInterface
 
     public const OPTION_ICON = 'icon';
 
+    public static function new(?string $label = null)
+    {
+        $field = new self();
+        $field->property = '__unknown__';
+        $field->label = $label ?? false;
+
+        return $field;
+    }
+
     public function __construct()
     {
         $this

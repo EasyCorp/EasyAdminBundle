@@ -7,6 +7,7 @@ use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Orm\EntityRepositoryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDataDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\FilterRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType;
@@ -42,7 +43,7 @@ final class EntityRepository implements EntityRepositoryInterface
             $this->addSearchClause($queryBuilder, $searchDto, $entityDto);
         }
 
-        if (!empty($searchDto->getFilters())) {
+        if (!empty($searchDto->getAppliedFilters())) {
             $this->addFilterClause($queryBuilder, $searchDto);
         }
 
@@ -137,10 +138,29 @@ final class EntityRepository implements EntityRepositoryInterface
 
     private function addFilterClause(QueryBuilder $queryBuilder, SearchDto $searchDto): void
     {
+        $configuredFilters = $searchDto->getConfiguredFilters();
+        $appliedFilters = $searchDto->getAppliedFilters();
+
+        $i = 0;
+        foreach ($appliedFilters as $propertyName => $filterData) {
+            if (!array_key_exists($propertyName, $configuredFilters)) {
+                continue;
+            }
+
+            $filter = $configuredFilters[$propertyName];
+            $filter->apply($queryBuilder, FilterDataDto::new($i, $propertyName, current($queryBuilder->getRootAliases()), $filterData));
+
+            $i++;
+        }
+
+        return;
+
+
         /** @var FormInterface $filtersForm */
         $filtersForm = $this->formFactory->createNamed('filters', FiltersFormType::class, null, [
             'method' => 'GET',
             'action' => $this->adminContextProvider->getContext()->getRequest()->query->get('referrer'),
+            'ea_filters' => $searchDto->getConfiguredFilters(),
         ]);
         $filtersForm->handleRequest($searchDto->getRequest());
         if (!$filtersForm->isSubmitted()) {
@@ -149,7 +169,7 @@ final class EntityRepository implements EntityRepositoryInterface
 
         foreach ($filtersForm as $filterForm) {
             $name = $filterForm->getName();
-            if (!\in_array($name, $searchDto->getFilters(), true)) {
+            if (!array_key_exists($name, $searchDto->getConfiguredFilters())) {
                 // this filter is not applied
                 continue;
             }

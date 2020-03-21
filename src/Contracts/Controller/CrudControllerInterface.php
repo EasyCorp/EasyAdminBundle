@@ -7,7 +7,9 @@ use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Controller\CrudRequest;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\ResponseParameters;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
@@ -26,27 +28,29 @@ interface CrudControllerInterface
 
     public function configureActions(Actions $actions): Actions;
 
+    public function configureFilters(Filters $filters): Filters;
+
     /**
      * @return FieldInterface[]
      */
     public function configureFields(string $pageName): iterable;
 
     /** @return Response|ResponseParameters */
-    public function index();
+    public function index(CrudRequest $request);
 
     /** @return Response|ResponseParameters */
-    public function detail();
+    public function detail(CrudRequest $request);
 
     /** @return Response|ResponseParameters */
-    public function edit();
+    public function edit(CrudRequest $request);
 
     /** @return Response|ResponseParameters */
-    public function new();
+    public function new(CrudRequest $request);
 
     /** @return Response|ResponseParameters */
-    public function delete();
+    public function delete(CrudRequest $request);
 
-    public function autocomplete(): JsonResponse;
+    public function autocomplete(CrudRequest $request): JsonResponse;
 
     public function configureResponseParameters(ResponseParameters $responseParameters): ResponseParameters;
 

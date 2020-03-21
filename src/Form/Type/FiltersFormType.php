@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type;
 
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDto;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\BooleanFilterType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\NumericFilterType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\TextFilterType;
@@ -31,13 +32,15 @@ class FiltersFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         // TODO: get the real configured filters
-        $configuredFilters = [
+        /*$configuredFilters = [
             'enabled' => ['type' => BooleanFilterType::class, 'type_options' => []],
             'price' => ['type' => NumericFilterType::class, 'type_options' => []],
             'name' => ['type' => TextFilterType::class, 'type_options' => []],
-        ];
-        foreach ($configuredFilters as $propertyName => $filterConfig) {
-            $formFieldOptions = $filterConfig['type_options'];
+        ];*/
+
+        /** @var FilterDto $filter */
+        foreach ($options['ea_filters'] as $filter) {
+            //$formFieldOptions = $filterConfig['type_options'];
 
             /*
              * TODO: enable this:
@@ -49,8 +52,8 @@ class FiltersFormType extends AbstractType
                 }
             }
             */
-
-            $builder->add($propertyName, $filterConfig['type'], $formFieldOptions);
+            $formFieldOptions = [];
+            $builder->add($filter->getProperty(), $filter->getFormType(), $formFieldOptions);
         }
     }
 
@@ -59,9 +62,12 @@ class FiltersFormType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
+        $resolver->setDefined('ea_filters');
+
         $resolver->setDefaults([
             'allow_extra_fields' => true,
             'csrf_protection' => false,
+            'ea_filters' => [],
         ]);
     }
 

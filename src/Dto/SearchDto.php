@@ -14,17 +14,20 @@ final class SearchDto
     private $query;
     /** @var string[]|null */
     private $searchableProperties;
+    /** @var FilterInterface[] */
+    private $configuredFilters;
     /** @var string[]|null */
-    private $filters;
+    private $appliedFilters;
 
-    public function __construct(Request $request, ?array $searchableProperties, ?string $query, array $defaultSort, array $customSort, ?array $filters)
+    public function __construct(Request $request, ?array $searchableProperties, ?string $query, array $defaultSort, array $customSort, array $configuredFilters, ?array $appliedFilters)
     {
         $this->request = $request;
         $this->searchableProperties = $searchableProperties;
         $this->query = $query;
         $this->defaultSort = $defaultSort;
         $this->customSort = $customSort;
-        $this->filters = $filters;
+        $this->configuredFilters = $configuredFilters;
+        $this->appliedFilters = $appliedFilters;
     }
 
     public function getRequest(): Request
@@ -64,8 +67,13 @@ final class SearchDto
         return $this->searchableProperties;
     }
 
-    public function getFilters(): ?array
+    public function getConfiguredFilters(): array
     {
-        return $this->filters;
+        return $this->configuredFilters;
+    }
+
+    public function getAppliedFilters(): ?array
+    {
+        return $this->appliedFilters;
     }
 }

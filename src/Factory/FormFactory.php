@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Controller\CrudRequest;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudBatchActionFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudFormType;
@@ -16,12 +17,14 @@ final class FormFactory
     private $adminContextProvider;
     private $symfonyFormFactory;
     private $crudUrlGenerator;
+    private $filterFactory;
 
-    public function __construct(AdminContextProvider $adminContextProvider, FormFactoryInterface $symfonyFormFactory, CrudUrlGenerator $crudUrlGenerator)
+    public function __construct(AdminContextProvider $adminContextProvider, FormFactoryInterface $symfonyFormFactory, CrudUrlGenerator $crudUrlGenerator, FilterFactory $filterFactory)
     {
         $this->adminContextProvider = $adminContextProvider;
         $this->symfonyFormFactory = $symfonyFormFactory;
         $this->crudUrlGenerator = $crudUrlGenerator;
+        $this->filterFactory = $filterFactory;
     }
 
     public function createEditForm(EntityDto $entityDto): FormInterface
@@ -51,14 +54,16 @@ final class FormFactory
         ])->getForm();
     }
 
-    public function createFilterForm(): FormInterface
+    public function createFiltersForm(CrudRequest $request, array $fields): FormInterface
     {
-        $adminContext = $this->adminContextProvider->getContext();
+        $filters = $this->filterFactory->create($request->getContext()->getCrud()->getFilters(), $fields);
+
         $filtersForm = $this->symfonyFormFactory->createNamed('filters', FiltersFormType::class, null, [
             'method' => 'GET',
-            'action' => $adminContext->getRequest()->query->get('referrer'),
+            'action' => $request->getReferrer(),
+            'ea_filters' => $filters->getConfiguredFilters(),
         ]);
 
-        return $filtersForm->handleRequest($adminContext->getRequest());
+        return $filtersForm->handleRequest($request->getContext()->getRequest());
     }
 }

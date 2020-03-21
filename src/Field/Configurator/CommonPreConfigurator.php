@@ -34,10 +34,6 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
     public function configure(FieldInterface $field, EntityDto $entityDto, string $action): void
     {
         if ($field instanceof FormPanelField) {
-            if (null === $field->getLabel()) {
-                $field->setLabel($field->getProperty());
-            }
-
             $field->setProperty('ea_form_panel_'.self::$numOfSpecialFormProperties++);
         }
 

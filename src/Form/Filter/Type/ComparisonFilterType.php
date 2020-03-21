@@ -35,7 +35,7 @@ class ComparisonFilterType extends FilterType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('comparison', $options['comparison_type'], $options['comparison_type_options']);
-        $builder->add('value', FormTypeHelper::getTypeClass($options['value_type']), $options['value_type_options'] + [
+        $builder->add('value', $options['value_type'], $options['value_type_options'] + [
             'label' => false,
         ]);
     }

@@ -46,12 +46,10 @@
     {% endblock search %}
 
     {% block filters %}
-        {% if ea.crud.isFilterEnabled %}
-            {{ include('@EasyAdmin/crud/includes/_filters_modal.html.twig') }}
-
+        {% if ea.crud.filters|length > 0 %}
             {% set applied_filters = ea.request.query.get('filters')|default([])|keys %}
             <div class="btn-group action-filters">
-                <a href="{{ ea_path({ crudAction: 'showFilters', include_referrer: true }) }}" class="btn btn-secondary btn-labeled btn-labeled-right action-filters-button {{ applied_filters ? 'action-filters-applied' }}" data-modal="#modal-filters">
+                <a href="{{ ea_path({ crudAction: 'renderFilters', include_referrer: true }) }}" class="btn btn-secondary btn-labeled btn-labeled-right action-filters-button {{ applied_filters ? 'action-filters-applied' }}" data-modal="#modal-filters">
                     <i class="fa fa-filter fa-fw"></i> {{ 'filter.title'|trans(ea.i18n.translationParameters, 'EasyAdminBundle') }}{% if applied_filters %} <span class="text-primary">({{ applied_filters|length }})</span>{% endif %}
                 </a>
                 {% if applied_filters %}
@@ -198,6 +196,10 @@
     {% block delete_form %}
         {{ include('@EasyAdmin/crud/includes/_delete_form.html.twig', with_context = false) }}
     {% endblock delete_form %}
+
+    {% if ea.crud.filters|length > 0 %}
+        {{ include('@EasyAdmin/crud/includes/_filters_modal.html.twig') }}
+    {% endif %}
 {% endblock main %}
 
 {% block body_javascript %}
@@ -244,7 +246,7 @@
                     });
             });
 
-            {% if ea.crud.isFilterEnabled %}
+            {% if ea.crud.filters|length > 0 %}
             // HTML5 specifies that a <script> tag inserted with innerHTML should not execute
             // https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML#Security_considerations
             // That's why we can't use just 'innerHTML'. See https://stackoverflow.com/a/47614491/2804294

@@ -11,6 +11,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * @author Yonel Ceruto <yonelceruto@gmail.com>
+ *
+ * @internal Don't use this to define a text filter. Use Filter\TextFilter instead.
  */
 class TextFilterType extends AbstractType
 {

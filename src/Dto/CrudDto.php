@@ -12,8 +12,10 @@ final class CrudDto
 
     private $pageName;
     private $actionName;
-    /** @var ActionsDto */
+    /** @var $actions ActionsDto */
     private $actions;
+    /** @var $filters FiltersDto */
+    private $filters;
     private $entityFqcn;
     private $labelInSingular;
     private $labelInPlural;
@@ -34,7 +36,6 @@ final class CrudDto
     private $defaultSort;
     private $searchFields;
     private $showEntityActionsAsDropdown;
-    private $filters;
     /** @var PaginatorDto */
     private $paginatorDto;
     private $overriddenTemplates;
@@ -150,16 +151,6 @@ final class CrudDto
         return $this->showEntityActionsAsDropdown;
     }
 
-    public function getFilters(): ?array
-    {
-        return $this->filters;
-    }
-
-    public function isFilterEnabled(): bool
-    {
-        return null !== $this->filters;
-    }
-
     public function getPaginator(): PaginatorDto
     {
         return $this->paginatorDto;
@@ -188,5 +179,10 @@ final class CrudDto
     public function getActions(): ActionsDto
     {
         return $this->actions;
+    }
+
+    public function getFilters(): FiltersDto
+    {
+        return $this->filters;
     }
 }

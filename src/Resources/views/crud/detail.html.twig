@@ -39,7 +39,11 @@
                 {% endif %}
 
                 {% set row_number = 0 %}
-                {{ _self.open_content_panel_with_header(field.label, field.help) }}
+                {% if field.label is empty and field.help is empty %}
+                    {{ _self.open_empty_content_panel() }}
+                {% else %}
+                    {{ _self.open_content_panel_with_header(field.label, field.help) }}
+                {% endif %}
             {% endif %}
 
             {% block detail_field %}

@@ -82,7 +82,7 @@ final class FieldFactory
             $builtProperties[] = $field->getAsDto();
         }
 
-        return $entityDto->updateProperties(FieldDtoCollection::new($builtProperties));
+        return $entityDto->updateFields(FieldDtoCollection::new($builtProperties));
     }
 
     private function preProcessFields(EntityDto $entityDto, array $fields): array

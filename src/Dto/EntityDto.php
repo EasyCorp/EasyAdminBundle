@@ -17,8 +17,8 @@ final class EntityDto
     private $primaryKeyValue;
     private $requiredPermission;
     private $userHasPermission;
-    /** @var ?PropertyDtoCollection */
-    private $properties;
+    /** @var ?FieldDtoCollection */
+    private $fields;
     /** @var ?ActionDto[] */
     private $actions;
 
@@ -105,13 +105,13 @@ final class EntityDto
     public function markAsInaccessible(): void
     {
         $this->instance = null;
-        $this->properties = FieldDtoCollection::new([]);
+        $this->fields = FieldDtoCollection::new([]);
         $this->userHasPermission = false;
     }
 
-    public function getProperties(): ?FieldDtoCollection
+    public function getFields(): ?FieldDtoCollection
     {
-        return $this->properties;
+        return $this->fields;
     }
 
     /**
@@ -195,10 +195,10 @@ final class EntityDto
         return $clone;
     }
 
-    public function updateProperties(FieldDtoCollection $properties): self
+    public function updateFields(FieldDtoCollection $fields): self
     {
         $clone = clone $this;
-        $clone->properties = $properties;
+        $clone->fields = $fields;
 
         return $clone;
     }

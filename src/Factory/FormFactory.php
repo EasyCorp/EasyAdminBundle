@@ -2,6 +2,8 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Fields;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\CrudRequest;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -54,16 +56,15 @@ final class FormFactory
         ])->getForm();
     }
 
-    public function createFiltersForm(CrudRequest $request, array $fields): FormInterface
+    public function createFiltersForm(AdminContext $adminContext, Fields $fields, EntityDto $entityDto): FormInterface
     {
-        $filters = $this->filterFactory->create($request->getContext()->getCrud()->getFilters(), $fields);
-
+        $filters = $this->filterFactory->create($adminContext->getCrud()->getFilters(), $fields, $entityDto);
         $filtersForm = $this->symfonyFormFactory->createNamed('filters', FiltersFormType::class, null, [
             'method' => 'GET',
-            'action' => $request->getReferrer(),
+            'action' => $adminContext->getRequest()->query->get('referrer'),
             'ea_filters' => $filters->getConfiguredFilters(),
         ]);
 
-        return $filtersForm->handleRequest($request->getContext()->getRequest());
+        return $filtersForm->handleRequest($adminContext->getRequest());
     }
 }

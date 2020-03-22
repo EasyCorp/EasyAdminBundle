@@ -4,12 +4,19 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Orm;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\QueryBuilder;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Fields;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Orm\EntityRepositoryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDataDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FiltersDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\TextFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\FilterRegistry;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\FilterInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
@@ -18,18 +25,20 @@ final class EntityRepository implements EntityRepositoryInterface
 {
     private $adminContextProvider;
     private $doctrine;
-    private $formFactory;
+    private $symfonyFormFactory;
     private $filterRegistry;
+    private $formFactory;
 
-    public function __construct(AdminContextProvider $adminContextProvider, ManagerRegistry $doctrine, FormFactoryInterface $formFactory, FilterRegistry $filterRegistry)
+    public function __construct(AdminContextProvider $adminContextProvider, ManagerRegistry $doctrine, FormFactoryInterface $symfonyFormFactory, FilterRegistry $filterRegistry, FormFactory $formFactory)
     {
         $this->adminContextProvider = $adminContextProvider;
         $this->doctrine = $doctrine;
-        $this->formFactory = $formFactory;
+        $this->symfonyFormFactory = $symfonyFormFactory;
         $this->filterRegistry = $filterRegistry;
+        $this->formFactory = $formFactory;
     }
 
-    public function createQueryBuilder(SearchDto $searchDto, EntityDto $entityDto): QueryBuilder
+    public function createQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, Fields $fields, FiltersDto $filtersDto): QueryBuilder
     {
         $entityManager = $this->doctrine->getManagerForClass($entityDto->getFqcn());
 
@@ -44,7 +53,7 @@ final class EntityRepository implements EntityRepositoryInterface
         }
 
         if (!empty($searchDto->getAppliedFilters())) {
-            $this->addFilterClause($queryBuilder, $searchDto);
+            $this->addFilterClause($queryBuilder, $searchDto, $entityDto, $filtersDto, $fields);
         }
 
         $this->addOrderClause($queryBuilder, $searchDto, $entityDto);
@@ -136,55 +145,41 @@ final class EntityRepository implements EntityRepositoryInterface
         }
     }
 
-    private function addFilterClause(QueryBuilder $queryBuilder, SearchDto $searchDto): void
+    private function addFilterClause(QueryBuilder $queryBuilder, SearchDto $searchDto, EntityDto $entityDto, FiltersDto $configuredFilters, Fields $fields): void
     {
-        $configuredFilters = $searchDto->getConfiguredFilters();
-        $appliedFilters = $searchDto->getAppliedFilters();
-
-        $i = 0;
-        foreach ($appliedFilters as $propertyName => $filterData) {
-            if (!array_key_exists($propertyName, $configuredFilters)) {
-                continue;
-            }
-
-            $filter = $configuredFilters[$propertyName];
-            $filter->apply($queryBuilder, FilterDataDto::new($i, $propertyName, current($queryBuilder->getRootAliases()), $filterData));
-
-            $i++;
-        }
-
-        return;
-
-
-        /** @var FormInterface $filtersForm */
-        $filtersForm = $this->formFactory->createNamed('filters', FiltersFormType::class, null, [
-            'method' => 'GET',
-            'action' => $this->adminContextProvider->getContext()->getRequest()->query->get('referrer'),
-            'ea_filters' => $searchDto->getConfiguredFilters(),
-        ]);
-        $filtersForm->handleRequest($searchDto->getRequest());
+        $filtersForm = $this->formFactory->createFiltersForm($this->adminContextProvider->getContext(), $fields, $entityDto);
         if (!$filtersForm->isSubmitted()) {
             return;
         }
 
+        $appliedFilters = $searchDto->getAppliedFilters();
+        $i = 0;
         foreach ($filtersForm as $filterForm) {
-            $name = $filterForm->getName();
-            if (!array_key_exists($name, $searchDto->getConfiguredFilters())) {
-                // this filter is not applied
+            $propertyName = $filterForm->getName();
+
+            /** @var TextFilter $filter */
+            $filter = $configuredFilters->get($propertyName);
+            // this filter is not defined or not applied
+            if (null === $filter || !isset($appliedFilters[$propertyName])) {
                 continue;
             }
 
-            // if the form filter is not valid, don't apply the filter
+            // if the form filter is not valid then we should not apply the filter
             if (!$filterForm->isValid()) {
                 continue;
             }
 
-            // resolve the filter type related to this form field
-            $filterType = $this->filterRegistry->resolveType($filterForm);
+            $submittedData = $filterForm->getData();
+            if (!is_array($submittedData)) {
+                $submittedData = [
+                    'comparison' => ComparisonType::EQ,
+                    'value' => $submittedData,
+                ];
+            }
+            // TODO: pass the field being filtered too
+            $filter->apply($queryBuilder, FilterDataDto::new($i, $propertyName, current($queryBuilder->getRootAliases()), $submittedData));
 
-            // TODO: fix this
-            $metadata = ['field' => 'enabled']; //$this->entity['list']['filters'][$name] ?? [];
-            $filterType->filter($queryBuilder, $filterForm, $metadata);
+            $i++;
         }
     }
 }

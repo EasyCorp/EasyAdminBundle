@@ -17,6 +17,11 @@ final class FiltersDto
         return $this->configuredFilters;
     }
 
+    public function get(string $propertyName)
+    {
+        return $this->configuredFilters[$propertyName] ?? null;
+    }
+
     /**
      * @param FilterInterface[] $updatedFilters
      */

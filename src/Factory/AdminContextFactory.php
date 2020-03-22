@@ -165,10 +165,9 @@ final class AdminContextFactory
         $query = $request->query->get('query');
         $defaultSort = $crudDto->getDefaultSort();
         $customSort = $request->query->get('sort', []);
-        $configuredFilters = $crudDto->getFilters()->getConfiguredFilters();
         $appliedFilters = $request->query->get('filters', []);
 
-        return new SearchDto($request, $searchableProperties, $query, $defaultSort, $customSort, $configuredFilters, $appliedFilters);
+        return new SearchDto($request, $searchableProperties, $query, $defaultSort, $customSort, $appliedFilters);
     }
 
     // Copied from https://github.com/symfony/twig-bridge/blob/master/AppVariable.php

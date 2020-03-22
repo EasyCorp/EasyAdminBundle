@@ -4,12 +4,10 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Filter;
 
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDataDto;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDto;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\TextFilterType;
-use Symfony\Component\Form\FormInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\BooleanFilterType;
 use function Symfony\Component\String\u;
 
-final class TextFilter
+final class BooleanFilter
 {
     private $formType;
     private $formTypeOptions;
@@ -28,7 +26,7 @@ final class TextFilter
     public static function new(string $propertyName, $label = null): self
     {
         $filter = new self();
-        $filter->formType = TextFilterType::class;
+        $filter->formType = BooleanFilterType::class;
         $filter->property = $propertyName;
         $filter->label = $label ?? u($propertyName)->title(true)->toString();
 
@@ -69,13 +67,8 @@ final class TextFilter
      */
     public function apply(QueryBuilder $queryBuilder, FilterDataDto $filterDataDto)
     {
-        $alias = $filterDataDto->getEntityAlias();
-        $property = $filterDataDto->getProperty();
-        $comparison = $filterDataDto->getComparison();
-        $parameterName = $filterDataDto->getParameterName();
-        $value = $filterDataDto->getValue();
-
-        $queryBuilder->andWhere(sprintf('%s.%s %s :%s', $alias, $property, $comparison, $parameterName))
-            ->setParameter($parameterName, $value);
+        $queryBuilder
+            ->andWhere(sprintf('%s.%s %s :%s', $filterDataDto->getEntityAlias(), $filterDataDto->getProperty(), $filterDataDto->getComparison(), $filterDataDto->getParameterName()))
+            ->setParameter($filterDataDto->getParameterName(), $filterDataDto->getValue());
     }
 }

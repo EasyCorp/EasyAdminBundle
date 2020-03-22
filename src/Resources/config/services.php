@@ -39,6 +39,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\TelephoneConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\TextConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\TimezoneConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\UrlConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\FilterTypeGuesser;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Extension\EaCollectionTypeExtension;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Extension\EaCrudFormTypeExtension;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\FilterRegistry;
@@ -150,6 +151,7 @@ return static function (ContainerConfigurator $container) {
             ->arg(1, ref('doctrine'))
             ->arg(2, ref('form.factory'))
             ->arg(3, ref(FilterRegistry::class))
+            ->arg(4, ref(FormFactory::class))
 
         ->set(EntityFactory::class)
             ->arg(0, ref(FieldFactory::class))
@@ -180,7 +182,11 @@ return static function (ContainerConfigurator $container) {
             ->arg(1, ref(AuthorizationChecker::class))
             ->arg(2, \function_exists('tagged') ? tagged('ea.field_configurator') : tagged_iterator('ea.field_configurator'))
 
+        ->set(FilterTypeGuesser::class)
+            ->arg(0, ref('doctrine'))
+
         ->set(FilterFactory::class)
+            ->arg(0, ref(FilterTypeGuesser::class))
 
         ->set(ActionFactory::class)
             ->arg(0, ref(AdminContextProvider::class))

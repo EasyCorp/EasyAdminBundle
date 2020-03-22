@@ -60,18 +60,4 @@ class ComparisonFilterType extends FilterType
         $resolver->setAllowedTypes('value_type', 'string');
         $resolver->setAllowedTypes('value_type_options', 'array');
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function filter(QueryBuilder $queryBuilder, FormInterface $form, array $metadata)
-    {
-        $alias = current($queryBuilder->getRootAliases());
-        $property = $metadata['field'];
-        $paramName = static::createAlias($property);
-        $data = $form->getData();
-
-        $queryBuilder->andWhere(sprintf('%s.%s %s :%s', $alias, $property, $data['comparison'], $paramName))
-            ->setParameter($paramName, $data['value']);
-    }
 }

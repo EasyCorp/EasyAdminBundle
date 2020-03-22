@@ -35,43 +35,4 @@ class EntityFilterType extends FilterType
     {
         return ChoiceFilterType::class;
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function filter(QueryBuilder $queryBuilder, FormInterface $form, array $metadata)
-    {
-        $alias = current($queryBuilder->getRootAliases());
-        $property = $metadata['field'];
-        $paramName = static::createAlias($property);
-        $multiple = $form->get('value')->getConfig()->getOption('multiple');
-        $data = $form->getData();
-
-        if ('association' === $metadata['dataType'] && $metadata['associationType'] & ClassMetadata::TO_MANY) {
-            $assocAlias = static::createAlias($property);
-            $queryBuilder->leftJoin(sprintf('%s.%s', $alias, $property), $assocAlias);
-
-            if (0 === \count($data['value'])) {
-                $queryBuilder->andWhere(sprintf('%s %s', $assocAlias, $data['comparison']));
-            } else {
-                $orX = new Expr\Orx();
-                $orX->add(sprintf('%s %s (:%s)', $assocAlias, $data['comparison'], $paramName));
-                if ('NOT IN' === $data['comparison']) {
-                    $orX->add(sprintf('%s IS NULL', $assocAlias));
-                }
-                $queryBuilder->andWhere($orX)
-                    ->setParameter($paramName, $data['value']);
-            }
-        } elseif (null === $data['value'] || ($multiple && 0 === \count($data['value']))) {
-            $queryBuilder->andWhere(sprintf('%s.%s %s', $alias, $property, $data['comparison']));
-        } else {
-            $orX = new Expr\Orx();
-            $orX->add(sprintf('%s.%s %s (:%s)', $alias, $property, $data['comparison'], $paramName));
-            if (ComparisonType::NEQ === $data['comparison']) {
-                $orX->add(sprintf('%s.%s IS NULL', $alias, $property));
-            }
-            $queryBuilder->andWhere($orX)
-                ->setParameter($paramName, $data['value']);
-        }
-    }
 }

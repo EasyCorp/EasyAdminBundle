@@ -96,7 +96,7 @@
                             <th width="1px"><span><input type="checkbox" class="form-batch-checkbox-all"></span></th>
                         {% endif %}
 
-                        {% for field in entities|first.properties ?? [] %}
+                        {% for field in entities|first.fields ?? [] %}
                             {% set isSortingField = (field.name == sort_field_name) or ('association' == field.type and sort_field_name starts with field.name ~ '.') %}
                             {% set nextSortDirection = isSortingField ? (sort_order == 'DESC' ? 'ASC' : 'DESC') : 'DESC' %}
                             {% set column_icon = isSortingField ? (nextSortDirection == 'DESC' ? 'fa-arrow-up' : 'fa-arrow-down') : 'fa-sort' %}
@@ -132,7 +132,7 @@
                                     <td><input type="checkbox" class="form-batch-checkbox" value="{{ entity.primaryKeyValue }}"></td>
                                 {% endif %}
 
-                                {% for field in entity.properties %}
+                                {% for field in entity.fields %}
                                     <td class="{{ field.name == sort_field_name ? 'sorted' }} field-{{ field.type|lower }} text-{{ field.textAlign }} {{ field.cssClass }}" dir="{{ ea.i18n.textDirection }}">
                                         {{ include(field.templatePath, { field: field }, with_context = false) }}
                                     </td>
@@ -174,7 +174,7 @@
 
                     {% if some_results_are_hidden %}
                         <tr class="datagrid-row-empty">
-                            <td class="text-center" colspan="{{ entities|first.properties|length + 1 }}">
+                            <td class="text-center" colspan="{{ entities|first.fields|length + 1 }}">
                                 <span class="datagrid-row-empty-message"><i class="fa fa-lock mr-1"></i> {{ 'datagrid.hidden_results'|trans({}, 'EasyAdminBundle') }}</span>
                             </td>
                         </tr>

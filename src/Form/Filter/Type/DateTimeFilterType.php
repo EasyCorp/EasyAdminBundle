@@ -2,7 +2,6 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type;
 
-use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Util\FormTypeHelper;
 use Symfony\Component\Form\CallbackTransformer;
@@ -11,7 +10,6 @@ use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -33,7 +31,7 @@ class DateTimeFilterType extends FilterType
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->add('value2', FormTypeHelper::getTypeClass($options['value_type']), $options['value_type_options'] + [
+        $builder->add('value2', $options['value_type'], $options['value_type_options'] + [
             'label' => false,
         ]);
 
@@ -100,27 +98,5 @@ class DateTimeFilterType extends FilterType
     public function getParent(): string
     {
         return ComparisonFilterType::class;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function filter(QueryBuilder $queryBuilder, FormInterface $form, array $metadata)
-    {
-        $alias = current($queryBuilder->getRootAliases());
-        $property = $metadata['field'];
-        $data = $form->getData();
-
-        if (ComparisonType::BETWEEN === $data['comparison']) {
-            $paramName1 = static::createAlias($property);
-            $paramName2 = static::createAlias($property);
-            $queryBuilder->andWhere(sprintf('%s.%s BETWEEN :%s and :%s', $alias, $property, $paramName1, $paramName2))
-                ->setParameter($paramName1, $data['value'])
-                ->setParameter($paramName2, $data['value2']);
-        } else {
-            $paramName = static::createAlias($property);
-            $queryBuilder->andWhere(sprintf('%s.%s %s :%s', $alias, $property, $data['comparison'], $paramName))
-                ->setParameter($paramName, $data['value']);
-        }
     }
 }

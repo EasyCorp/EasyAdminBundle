@@ -9,11 +9,13 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Fields;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FiltersDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterCrudActionEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityDeletedEvent;
@@ -108,9 +110,9 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         }
 
         $entityDto = $this->get(EntityFactory::class)->create($request->getEntity());
-        $fields = $this->configureFields(Crud::PAGE_INDEX);
-        $fields = \is_array($fields) ? $fields : iterator_to_array($fields);
-        $queryBuilder = $this->createIndexQueryBuilder($request->getContext()->getSearch(), $entityDto);
+        $fields = Fields::new($this->configureFields(Crud::PAGE_INDEX));
+        $filters = $this->get(FilterFactory::class)->create($request->getContext()->getCrud()->getFilters(), $fields, $entityDto);
+        $queryBuilder = $this->createIndexQueryBuilder($request->getContext()->getSearch(), $entityDto, $fields, $filters);
         $paginator = $this->get(PaginatorFactory::class)->create($queryBuilder);
 
         $entityInstances = $paginator->getResults();
@@ -376,18 +378,19 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         return JsonResponse::fromJsonString($paginator->getJsonResults());
     }
 
-    public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto): QueryBuilder
+    public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, Fields $fields, FiltersDto $filtersDto): QueryBuilder
     {
-        return $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto);
+        return $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filtersDto);
     }
 
     public function renderFilters(CrudRequest $request): ResponseParameters
     {
         $fields = $this->configureFields(Crud::PAGE_INDEX);
         $fields = \is_array($fields) ? $fields : iterator_to_array($fields);
+        $entityDto = $this->get(EntityFactory::class)->create($request->getEntity());
 
         /** @var FiltersFormType $filtersForm */
-        $filtersForm = $this->get(FormFactory::class)->createFiltersForm($request, $fields);
+        $filtersForm = $this->get(FormFactory::class)->createFiltersForm($request->getContext(), Fields::new($fields), $entityDto);
         $formActionParts = parse_url($filtersForm->getConfig()->getAction());
         $queryString = $formActionParts['query'] ?? [];
         parse_str($queryString, $queryStringAsArray);

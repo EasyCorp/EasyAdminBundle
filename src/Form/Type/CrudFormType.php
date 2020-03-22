@@ -50,7 +50,7 @@ class CrudFormType extends AbstractType
         $formPanels = [];
         $currentFormPanel = 0;
 
-        foreach ($entityDto->getProperties() as $fieldDto) {
+        foreach ($entityDto->getFields() as $fieldDto) {
             $formFieldOptions = $fieldDto->getFormTypeOptions();
 
             // the names of embedded Doctrine entities contain dots, which are not allowed

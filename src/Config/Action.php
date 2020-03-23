@@ -3,7 +3,6 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Config;
 
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyModifierTrait;
 
 final class Action
 {
@@ -24,114 +23,113 @@ final class Action
     // these are actions that can be applied to one or more entities at the same time
     public const TYPE_BATCH = 'batch';
 
-    use PropertyModifierTrait;
+    /** @var ActionDto */
+    private $dto;
 
-    private $type;
-    private $name;
-    private $label;
-    private $icon;
-    private $cssClass;
-    private $htmlElement = 'a';
-    private $htmlAttributes = [];
-    private $templatePath;
-    private $crudActionName;
-    private $routeName;
-    private $routeParameters;
-    private $translationDomain;
-    private $translationParameters = [];
-    private $displayCallable;
-
-    private function __construct()
+    private function __construct(ActionDto $actionDto)
     {
+        $this->dto = $actionDto;
     }
 
     public function __toString()
     {
-        return $this->name;
+        return $this->dto->getName();
     }
 
-    public static function new(string $name, ?string $label = null, ?string $icon = null): self
+    /**
+     * @param string|false|null $label Use FALSE to hide the label; use NULL to autogenerate it
+     */
+    public static function new(string $name, $label = null, ?string $icon = null): self
     {
-        $action = new self();
-        $action->name = $name;
-        $action->label = $label ?? ucfirst($name);
-        $action->icon = $icon;
-        $action->type = self::TYPE_ENTITY;
+        $dto = new ActionDto();
+        $dto->setType(self::TYPE_ENTITY);
+        $dto->setName($name);
+        $dto->setLabel($label ?? ucfirst($name));
+        $dto->setIcon($icon);
+        $dto->setHtmlElement('a');
+        $dto->setHtmlAttributes([]);
+        $dto->setTranslationParameters([]);
 
-        return $action;
+        return new self($dto);
     }
 
     public function createAsGlobalAction(): self
     {
-        $this->type = self::TYPE_GLOBAL;
+        $this->dto->setType(self::TYPE_GLOBAL);
 
         return $this;
     }
 
     public function createAsBatchAction(): self
     {
-        $this->type = self::TYPE_BATCH;
+        $this->dto->setType(self::TYPE_BATCH);
 
         return $this;
     }
 
-    public function setLabel(?string $label): self
+    /**
+     * @param string|false|null $label Use FALSE to hide the label; use NULL to autogenerate it
+     */
+    public function setLabel($label): self
     {
-        $this->label = $label;
+        $this->dto->setLabel($label);
 
         return $this;
     }
 
     public function setIcon(?string $icon): self
     {
-        $this->icon = $icon;
+        $this->dto->setIcon($icon);
 
         return $this;
     }
 
     public function setCssClass(string $cssClass): self
     {
-        $this->cssClass = $cssClass;
+        $this->dto->setCssClass($cssClass);
 
         return $this;
     }
 
-    public function setHtmlElement(string $element): self
+    public function displayAsLink(): self
     {
-        if (!\in_array($element, ['a', 'button'])) {
-            throw new \InvalidArgumentException(sprintf('The HTML element used to display an action can only be "a" for links or "button" for buttons ("%s" was given).', $element));
-        }
+        $this->dto->setHtmlElement('a');
 
-        $this->htmlElement = $element;
+        return $this;
+    }
+
+    public function displayAsButton(): self
+    {
+        $this->dto->setHtmlElement('button');
 
         return $this;
     }
 
     public function setHtmlAttributes(array $attributes): self
     {
-        $this->htmlAttributes = $attributes;
+        $this->dto->setHtmlAttributes($attributes);
 
         return $this;
     }
 
     public function setTemplate(string $templatePath): self
     {
-        $this->templatePath = $templatePath;
+        $this->dto->setTemplatePath($templatePath);
 
         return $this;
     }
 
     public function linkToCrudAction(string $crudActionName): self
     {
-        $this->crudActionName = $crudActionName;
+        $this->dto->setCrudActionName($crudActionName);
 
         return $this;
     }
 
     public function linkToRoute(string $routeName, array $routeParameters = []): self
     {
-        $this->routeName = $routeName;
-        $this->routeParameters = $routeParameters;
+        $this->dto->setRouteName($routeName);
+        $this->dto->setRouteParameters($routeParameters);
 
         return $this;
     }
@@ -141,39 +139,29 @@ final class Action
      */
     public function setTranslationDomain(string $domain): self
     {
-        $this->translationDomain = $domain;
+        $this->dto->setTranslationDomain($domain);
 
         return $this;
     }
 
     public function setTranslationParameters(array $parameters): self
     {
-        $this->translationParameters = $parameters;
+        $this->dto->setTranslationParameters($parameters);
 
         return $this;
     }
 
     public function displayIf(callable $callable): self
     {
-        $this->displayCallable = $callable;
+        $this->dto->setDisplayCallable($callable);
 
         return $this;
     }
 
     public function getAsDto(): ActionDto
     {
-        if (null === $this->label && null === $this->icon) {
-            throw new \InvalidArgumentException(sprintf('The label and icon of an action cannot be null at the same time. Either set the label, the icon or both.'));
-        }
+        $this->dto->validate();
 
-        if (null === $this->crudActionName && null === $this->routeName) {
-            throw new \InvalidArgumentException(sprintf('Actions must link to either a route or a CRUD action. Set the "linkToCrudAction()" or "linkToRoute()" method for the "%s" action.', $this->name));
-        }
-
-        if (null === $this->label) {
-            $this->htmlAttributes = array_merge(['title' => $this->name], $this->htmlAttributes);
-        }
-
-        return new ActionDto($this->type, $this->name, $this->label, $this->icon, $this->cssClass, $this->htmlElement, $this->htmlAttributes, $this->templatePath, $this->crudActionName, $this->routeName, $this->routeParameters, $this->translationDomain, $this->translationParameters, $this->displayCallable ?? static function () { return true; });
+        return $this->dto;
     }
 }

@@ -16,16 +16,16 @@
 
 {% block page_actions %}
     {% for action in entity.actions %}
-        {{ include(action.template, { action: action }, with_context = false) }}
+        {{ include(action.templatePath, { action: action }, with_context = false) }}
     {% endfor %}
 {% endblock %}
 
 {% block content_footer_wrapper '' %}
 
 {% block main %}
-    {% block detail_properties %}
+    {% block detail_fields %}
         {% set row_number = 0 %}
-        {% for field in entity.properties %}
+        {% for field in entity.fields %}
             {% set is_decoration_field = field.type == 'form_panel' %}
 
             {% if loop.first and not is_decoration_field %}

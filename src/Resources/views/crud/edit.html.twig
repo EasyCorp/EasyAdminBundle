@@ -45,7 +45,7 @@
 
 {% block page_actions %}
     {% for action in entity.actions %}
-        {{ include(action.template, { action: action }, with_context = false) }}
+        {{ include(action.templatePath, { action: action }, with_context = false) }}
     {% endfor %}
 {% endblock %}
 

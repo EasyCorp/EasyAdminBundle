@@ -54,18 +54,25 @@ final class ActionFactory
                 throw new \RuntimeException(sprintf('Batch actions can be added only to the "index" page, but the "%s" batch action is defined in the "%s" page.', $actionDto->getName(), $currentPage));
             }
 
-            $translationParameters = array_merge($defaultTranslationParameters, $actionDto->getTranslationParameters());
-            $translatedActionLabel = $this->translator->trans($actionDto->getLabel(), $translationParameters, $actionDto->getTranslationDomain() ?? $defaultTranslationDomain);
-            $defaultTemplatePath = $adminContext->getTemplatePath('crud/action');
+            if (false === $actionDto->getLabel()) {
+                $actionDto->setHtmlAttributes(array_merge(['title' => $actionDto->getName()], $actionDto->getHtmlAttributes()));
+            } else {
+                $translationParameters = array_merge($defaultTranslationParameters, $actionDto->getTranslationParameters());
+                $translatedActionLabel = $this->translator->trans($actionDto->getLabel(), $translationParameters, $actionDto->getTranslationDomain() ?? $defaultTranslationDomain);
+                $actionDto->setLabel($translatedActionLabel);
+            }
 
-            $builtActions[] = $actionDto->with([
-                'label' => $translatedActionLabel,
-                'templatePath' => $actionDto->get('templatePath') ?? $defaultTemplatePath,
-                'linkUrl' => $this->generateActionUrl($currentPage, $adminContext->getRequest(), $actionDto),
-            ]);
+            $defaultTemplatePath = $adminContext->getTemplatePath('crud/action');
+            $actionDto->setTemplatePath($actionDto->getTemplatePath() ?? $defaultTemplatePath);
+
+            $actionDto->setLinkUrl($this->generateActionUrl($currentPage, $adminContext->getRequest(), $actionDto));
+
+            $builtActions[] = $actionDto;
         }
 
-        return $actionsDto->updateActions($builtActions);
+        $actionsDto->setActions($currentPage, $builtActions);
+
+        return $actionsDto;
     }
 
     public function createForEntity(ActionsDto $actionsDto, EntityDto $entityDto): EntityDto
@@ -86,22 +93,18 @@ final class ActionFactory
             if (Crud::PAGE_EDIT === $currentPage) {
                 // this is needed because buttons are rendered outside of the <form> element
                 $formId = sprintf('edit-%s-form', $entityDto->getName());
-                $actionDto = $actionDto->with([
-                    'htmlAttributes' => array_merge(['form' => $formId], $actionDto->getHtmlAttributes()),
-                ]);
+                $actionDto->setHtmlAttributes(array_merge(['form' => $formId], $actionDto->getHtmlAttributes()));
             }
 
             if (Crud::PAGE_NEW === $currentPage) {
                 // this is needed because buttons are rendered outside of the <form> element
                 $formId = sprintf('new-%s-form', $entityDto->getName());
-                $actionDto = $actionDto->with([
-                    'htmlAttributes' => array_merge(['form' => $formId], $actionDto->getHtmlAttributes()),
-                ]);
+                $actionDto->setHtmlAttributes(array_merge(['form' => $formId], $actionDto->getHtmlAttributes()));
             }
 
-            $builtActions[] = $actionDto->with([
-                'linkUrl' => $this->generateActionUrl($currentPage, $adminContext->getRequest(), $actionDto, $entityDto),
-            ]);
+            $actionDto->setLinkUrl($this->generateActionUrl($currentPage, $adminContext->getRequest(), $actionDto, $entityDto));
+
+            $builtActions[] = $actionDto;
         }
 
         return $entityDto->updateActions($builtActions);

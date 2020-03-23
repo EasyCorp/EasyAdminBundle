@@ -129,7 +129,7 @@ class CrudFormType extends AbstractType
         // get all field assets and pass them as a form variable
         $allFormFieldAssets = new AssetsDto();
         /** @var FieldDto $fieldDto */
-        foreach ($options['entityDto']->getProperties() as $fieldDto) {
+        foreach ($options['entityDto']->getFields() as $fieldDto) {
             $allFormFieldAssets = $allFormFieldAssets->mergeWith($fieldDto->getAssets());
         }
 

@@ -6,28 +6,19 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionsDto;
 
 final class Actions
 {
-    /** @var array<Action[]> */
-    private $actions = [
-        Crud::PAGE_DETAIL => [],
-        Crud::PAGE_EDIT => [],
-        Crud::PAGE_INDEX => [],
-        Crud::PAGE_NEW => [],
-    ];
-    /** @var array<callable[]> */
-    private $actionUpdateCallables = [
-        Crud::PAGE_DETAIL => [],
-        Crud::PAGE_EDIT => [],
-        Crud::PAGE_INDEX => [],
-        Crud::PAGE_NEW => [],
-    ];
-    /** @var string[] */
-    private $actionPermissions = [];
-    /** @var string[] */
-    private $disabledActions = [];
+    /** @var ActionsDto */
+    private $dto;
+
+    private function __construct(ActionsDto $actionsDto)
+    {
+        $this->dto = $actionsDto;
+    }
 
     public static function new(): self
     {
-        return new self();
+        $dto = new ActionsDto();
+
+        return new self($dto);
     }
 
     /**
@@ -42,14 +33,14 @@ final class Actions
         $actionName = \is_string($actionNameOrObject) ? $actionNameOrObject : (string) $actionNameOrObject;
         $action = \is_string($actionNameOrObject) ? $this->createBuiltInAction($pageName, $actionNameOrObject) : $actionNameOrObject;
 
-        if (\array_key_exists($actionName, $this->actions[$pageName])) {
+        if (null !== $this->dto->getAction($pageName, $actionName)) {
             throw new \InvalidArgumentException(sprintf('The "%s" action already exists, so you can\'t add it again. Instead, you can use the "updateAction()" method to update any field of an existing action.', $actionName));
         }
 
         if (Crud::PAGE_INDEX === $pageName && Action::DELETE === $actionName) {
-            $this->actions[$pageName][$actionName] = $action;
+            $this->dto->prependAction($pageName, $action->getAsDto());
         } else {
-            $this->actions[$pageName] = array_merge([$actionName => $action], $this->actions[$pageName]);
+            $this->dto->appendAction($pageName, $action->getAsDto());
         }
 
         return $this;
@@ -67,94 +58,90 @@ final class Actions
         $actionName = \is_string($actionNameOrObject) ? $actionNameOrObject : (string) $actionNameOrObject;
         $action = \is_string($actionNameOrObject) ? $this->createBuiltInAction($pageName, $actionNameOrObject) : $actionNameOrObject;
 
-        $this->actions[$pageName][$actionName] = $action;
+        $this->dto->appendAction($pageName, $action->getAsDto());
 
         return $this;
     }
 
     public function update(string $pageName, string $actionName, callable $updateCallable): self
     {
-        $this->actionUpdateCallables[$pageName][$actionName] = $updateCallable;
+        if (null === $actionDto = $this->dto->getAction($pageName, $actionName)) {
+            throw new \InvalidArgumentException(sprintf('The "%s" action does not exist in the "%s" page, so you cannot update it. Instead, add the action with the "add()" method.', $actionName, $pageName));
+        }
+
+        $actionDto = $callable($actionDto);
+
+        $this->dto->setAction($pageName, $actionDto);
 
         return $this;
     }
 
     public function remove(string $pageName, string $actionName): self
     {
-        if (!\array_key_exists($actionName, $this->actions[$pageName])) {
+        if (null === $this->dto->getAction($pageName, $actionName)) {
             throw new \InvalidArgumentException(sprintf('The "%s" action does not exist in the "%s" page, so you cannot remove it.', $actionName, $pageName));
         }
 
-        unset($this->actions[$pageName][$actionName]);
+        $this->dto->removeAction($pageName, $actionName);
 
         return $this;
     }
 
     public function setActionOrder(string $pageName, string ...$orderedActionNames): self
     {
-        $orderedActions = [];
+        $newActionOrder = [];
+        $currentActions = $this->dto->getActions();
         foreach ($orderedActionNames as $actionName) {
-            if (!\array_key_exists($actionName, $this->actions[$pageName])) {
-                throw new \InvalidArgumentException(sprintf('The "%s" action does not exist in the "%s" page, so you cannot set its order in the list of actions.', $actionName, $pageName));
+            if (!\array_key_exists($actionName, $currentActions)) {
+                throw new \InvalidArgumentException(sprintf('The "%s" action does not exist in the "%s" page, so you cannot set its order.', $actionName, $pageName));
             }
 
-            $orderedActions[$actionName] = $this->actions[$pageName][$actionName];
+            $newActionOrder[] = $actionName;
         }
 
         // add the remaining actions that weren't ordered explicitly. This allows
         // user to only configure the actions they want to see first and rely on the
         // existing order for the rest of actions
-        foreach ($this->actions[$pageName] as $actionName => $actions) {
-            if (!\array_key_exists($actionName, $orderedActions)) {
-                $orderedActions[$actionName] = $actions;
+        foreach ($currentActions as $actionName => $action) {
+            if (!in_array($actionName, $newActionOrder, true)) {
+                $newActionOrder[] = $actionName;
             }
         }
 
-        $this->actions[$pageName] = $orderedActions;
+        $this->dto->reorderActions($pageName, $newActionOrder);
 
         return $this;
     }
 
     public function setPermission(string $actionName, string $permission): self
     {
-        $this->actionPermissions[$actionName] = $permission;
+        $this->dto->setActionPermission($actionName, $permission);
 
         return $this;
     }
 
     /**
-     * @param array $actionNameAndPermissions Syntax: ['actionName' => 'actionPermission', ...]
+     * @param array $permissions Syntax: ['actionName' => 'actionPermission', ...]
      */
-    public function setPermissions(array $actionPermissions): self
+    public function setPermissions(array $permissions): self
     {
-        $this->actionPermissions = $actionPermissions;
+        $this->dto->setActionPermissions($permissions);
 
         return $this;
     }
 
     public function disableActions(string ...$disabledActionNames): self
     {
-        $this->disabledActions = $disabledActionNames;
+        $this->dto->disableActions($disabledActionNames);
 
         return $this;
     }
 
     public function getAsDto(string $pageName): ActionsDto
     {
-        $actionsDto = [];
+        $this->dto->setPageName($pageName);
 
-        /* @var Action $actions */
-        foreach ($this->actions[$pageName] ?? [] as $action) {
-            $actionName = (string) $action;
-            // apply the callables that update certain config options of the action
-            if (\array_key_exists($actionName, $this->actionUpdateCallables[$pageName]) && null !== $callable = $this->actionUpdateCallables[$pageName][$actionName]) {
-                $action = $callable($action);
-            }
-
-            $actionsDto[] = $action->getAsDto();
-        }
-
-        return ActionsDto::new($actionsDto, $this->disabledActions, $this->actionPermissions);
+        return $this->dto;
     }
 
     /**
@@ -203,7 +190,7 @@ final class Actions
         if (Action::SAVE_AND_RETURN === $actionName) {
             return Action::new(Action::SAVE_AND_RETURN, Crud::PAGE_EDIT === $pageName ? 'action.save' : 'action.create')
                 ->setCssClass('btn btn-primary action-save')
-                ->setHtmlElement('button')
+                ->displayAsButton()
                 ->setHtmlAttributes(['type' => 'submit', 'name' => 'ea[newForm][btn]', 'value' => $actionName])
                 ->linkToCrudAction(Crud::PAGE_EDIT === $pageName ? Action::EDIT : Action::NEW)
                 ->setTranslationDomain('EasyAdminBundle');
@@ -212,7 +199,7 @@ final class Actions
         if (Action::SAVE_AND_CONTINUE === $actionName) {
             return Action::new(Action::SAVE_AND_CONTINUE, Crud::PAGE_EDIT === $pageName ? 'action.save_and_continue' : 'action.create_and_continue', 'far fa-edit')
                 ->setCssClass('btn btn-secondary action-save')
-                ->setHtmlElement('button')
+                ->displayAsButton()
                 ->setHtmlAttributes(['type' => 'submit', 'name' => 'ea[newForm][btn]', 'value' => $actionName])
                 ->linkToCrudAction(Crud::PAGE_EDIT === $pageName ? Action::EDIT : Action::NEW)
                 ->setTranslationDomain('EasyAdminBundle');
@@ -221,7 +208,7 @@ final class Actions
         if (Action::SAVE_AND_ADD_ANOTHER === $actionName) {
             return Action::new(Action::SAVE_AND_ADD_ANOTHER, 'action.create_and_add_another')
                 ->setCssClass('btn btn-secondary action-save')
-                ->setHtmlElement('button')
+                ->displayAsButton()
                 ->setHtmlAttributes(['type' => 'submit', 'name' => 'ea[newForm][btn]', 'value' => $actionName])
                 ->linkToCrudAction(Action::NEW)
                 ->setTranslationDomain('EasyAdminBundle');

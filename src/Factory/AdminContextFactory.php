@@ -100,7 +100,7 @@ final class AdminContextFactory
     private function getActions(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController, ?string $pageName): ActionsDto
     {
         if (null === $crudController || null === $pageName) {
-            return ActionsDto::new();
+            return (new ActionsDto())->setPageName($pageName ?? Crud::PAGE_INDEX);
         }
 
         $defaultActions = $dashboardController->configureActions();

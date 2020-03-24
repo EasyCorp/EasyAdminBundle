@@ -10,7 +10,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionsDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetsDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\DashboardDto;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\FiltersDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\I18nDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\CrudControllerRegistry;
@@ -41,9 +40,9 @@ final class AdminContextFactory
         $dashboardDto = $this->getDashboardDto($request, $dashboardController);
         $assetDto = $this->getAssetDto($dashboardController, $crudController);
         $actionsDto = $this->getActions($dashboardController, $crudController, $pageName);
-        $filtersDto = $this->getFilters($dashboardController, $crudController);
+        $filters = $this->getFilters($dashboardController, $crudController);
 
-        $crudDto = $this->getCrudDto($this->crudControllers, $dashboardController, $crudController, $actionsDto, $filtersDto, $crudAction, $pageName);
+        $crudDto = $this->getCrudDto($this->crudControllers, $dashboardController, $crudController, $actionsDto, $filters, $crudAction, $pageName);
         $searchDto = $this->getSearchDto($request, $crudDto);
         $i18nDto = $this->getI18nDto($request, $dashboardDto, $crudDto);
         $templateRegistry = $this->getTemplateRegistry($dashboardController, $crudDto);
@@ -56,10 +55,11 @@ final class AdminContextFactory
     {
         $currentRouteName = $request->attributes->get('_route');
 
-        return $dashboardControllerInstance
-            ->configureDashboard()
-            ->getAsDto()
-            ->with(['routeName' => $currentRouteName]);
+        /** @var DashboardDto $dashboardDto */
+        $dashboardDto = $dashboardControllerInstance->configureDashboard()->getAsDto();
+        $dashboardDto->setRouteName($currentRouteName);
+
+        return $dashboardDto;
     }
 
     private function getAssetDto(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController): AssetsDto
@@ -73,7 +73,7 @@ final class AdminContextFactory
         return $crudController->configureAssets($defaultAssets)->getAsDto();
     }
 
-    private function getCrudDto(CrudControllerRegistry $crudControllerRegistry, DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController, ActionsDto $actionsDto, FiltersDto $filtersDto, ?string $crudAction, ?string $pageName): ?CrudDto
+    private function getCrudDto(CrudControllerRegistry $crudControllerRegistry, DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController, ActionsDto $actionsDto, array $filters, ?string $crudAction, ?string $pageName): ?CrudDto
     {
         if (null === $crudController) {
             return null;
@@ -86,21 +86,22 @@ final class AdminContextFactory
         $entityClassName = basename(str_replace('\\', '/', $entityFqcn));
         $entityName = empty($entityClassName) ? 'Undefined' : $entityClassName;
 
-        return $crudDto->with([
-            'actions' => $actionsDto,
-            'filters' => $filtersDto,
-            'actionName' => $crudAction,
-            'entityFqcn' => $entityFqcn,
-            'labelInSingular' => $crudDto->getLabelInSingular() ?? $entityName,
-            'labelInPlural' => $crudDto->getLabelInPlural() ?? $entityName,
-            'pageName' => $pageName,
-        ]);
+        $crudDto->setActions($actionsDto);
+        $crudDto->setFilters($filters);
+        $crudDto->setCurrentAction($crudAction);
+        $crudDto->setEntityFqcn($entityFqcn);
+        $crudDto->setEntityLabelInSingular($crudDto->getEntityLabelInSingular() ?? $entityName);
+        $crudDto->setEntityLabelInPlural($crudDto->getEntityLabelInPlural() ?? $entityName);
+        $crudDto->setPageName($pageName);
+
+        return $crudDto;
     }
 
     private function getActions(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController, ?string $pageName): ActionsDto
     {
         if (null === $crudController || null === $pageName) {
-            return (new ActionsDto())->setPageName($pageName ?? Crud::PAGE_INDEX);
+            return new ActionsDto();
+            return new ActionsDto();
         }
 
         $defaultActions = $dashboardController->configureActions();
@@ -108,15 +109,15 @@ final class AdminContextFactory
         return $crudController->configureActions($defaultActions)->getAsDto($pageName);
     }
 
-    private function getFilters(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController): FiltersDto
+    private function getFilters(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController): array
     {
         if (null === $crudController) {
-            return new FiltersDto([]);
+            return [];
         }
 
         $defaultFilters = $dashboardController->configureFilters();
 
-        return $crudController->configureFilters($defaultFilters)->getAsDto();
+        return $crudController->configureFilters($defaultFilters)->all();
     }
 
     private function getTemplateRegistry(DashboardControllerInterface $dashboardController, ?CrudDto $crudDto): TemplateRegistry
@@ -124,10 +125,10 @@ final class AdminContextFactory
         $templateRegistry = TemplateRegistry::new();
 
         $defaultCrudDto = $dashboardController->configureCrud()->getAsDto();
-        $templateRegistry->addTemplates($defaultCrudDto->get('overriddenTemplates'));
+        $templateRegistry->setTemplates($defaultCrudDto->getOverriddenTemplates());
 
         if (null !== $crudDto) {
-            $templateRegistry->addTemplates($crudDto->get('overriddenTemplates'));
+            $templateRegistry->setTemplates($crudDto->getOverriddenTemplates());
         }
 
         return $templateRegistry;
@@ -146,8 +147,8 @@ final class AdminContextFactory
 
         $translationParameters = [];
         if (null !== $crudDto) {
-            $translationParameters['%entity_label_singular%'] = $crudDto->getLabelInSingular();
-            $translationParameters['%entity_label_plural%'] = $crudDto->getLabelInPlural();
+            $translationParameters['%entity_label_singular%'] = $crudDto->getEntityLabelInSingular();
+            $translationParameters['%entity_label_plural%'] = $crudDto->getEntityLabelInPlural();
             $translationParameters['%entity_name%'] = basename(str_replace('\\', '/', $crudDto->getEntityFqcn()));
             $translationParameters['%entity_id%'] = $request->query->get('entityId');
         }

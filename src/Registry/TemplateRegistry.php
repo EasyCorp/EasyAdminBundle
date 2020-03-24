@@ -2,13 +2,9 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Registry;
 
-use EasyCorp\Bundle\EasyAdminBundle\Collection\TemplateDtoCollection;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\TemplateDto;
-
 final class TemplateRegistry
 {
-    private static $templates;
-    private static $templateNamesAndPaths = [
+    private $templates = [
         'layout' => '@EasyAdmin/layout.html.twig',
         'main_menu' => '@EasyAdmin/menu.html.twig',
         'exception' => '@EasyAdmin/exception.html.twig',
@@ -68,46 +64,41 @@ final class TemplateRegistry
 
     public static function new(): self
     {
-        $registry = new self();
-        $registry::initialize();
-
-        return $registry;
+        return new self();
     }
 
-    public static function getTemplateNames(): array
+    public function has(string $templateName): bool
     {
-        self::initialize();
-
-        return array_keys(self::$templates);
+        return array_key_exists($templateName, $this->templates);
     }
 
-    public function addTemplates(TemplateDtoCollection $templates): self
+    public function get(string $templateName): string
     {
-        self::$templates = array_merge(self::$templates, iterator_to_array($templates));
-
-        return $this;
-    }
-
-    public function get(string $templateName): TemplateDto
-    {
-        if (!\array_key_exists($templateName, self::$templates)) {
-            throw new \InvalidArgumentException(sprintf('The "%s" template is not defined in EasyAdmin. Use one of these allowed template names: %s', $templateName, implode(', ', array_keys(self::$templates))));
+        if (!$this->has($templateName)) {
+            throw new \InvalidArgumentException(sprintf('The "%s" template is not defined in EasyAdmin. Use one of these allowed template names: %s', $templateName, implode(', ', array_keys($this->getTemplateNames()))));
         }
 
-        return self::$templates[$templateName];
+        return $this->templates[$templateName];
     }
 
-    private static function initialize(): void
+    public function setTemplate(string $templateName, string $templatePath): void
     {
-        if (null !== self::$templates) {
-            return;
+        if (!$this->has($templateName)) {
+            throw new \InvalidArgumentException(sprintf('The "%s" template is not defined in EasyAdmin. Use one of these allowed template names: %s', $templateName, implode(', ', array_keys($this->getTemplateNames()))));
         }
 
-        $templatesDto = [];
-        foreach (self::$templateNamesAndPaths as $name => $path) {
-            $templatesDto[$name] = new TemplateDto($name, $path);
-        }
+        $this->templates[$templateName] = $templatePath;
+    }
 
-        self::$templates = $templatesDto;
+    public function setTemplates(array $templateNamesAndPaths): void
+    {
+        foreach ($templateNamesAndPaths as $templateName => $templatePath) {
+            $this->setTemplate($templateName, $templatePath);
+        }
+    }
+
+    private function getTemplateNames(): array
+    {
+        return array_keys($this->templates);
     }
 }

@@ -9,33 +9,38 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\DashboardDto;
  */
 final class Dashboard
 {
-    private $faviconPath = 'favicon.ico';
-    private $title = 'EasyAdmin';
-    private $translationDomain = 'messages';
-    private $textDirection;
+    /** @var DashboardDto */
+    private $dto;
+
+    private function __construct(DashboardDto $dashboardDto)
+    {
+        $this->dto = $dashboardDto;
+    }
 
     public static function new(): self
     {
-        return new self();
+        $dto = new DashboardDto();
+
+        return new self($dto);
     }
 
     public function setFaviconPath(string $path): self
     {
-        $this->faviconPath = $path;
+        $this->dto->setFaviconPath($path);
 
         return $this;
     }
 
     public function setTitle(string $title): self
     {
-        $this->title = $title;
+        $this->dto->setTitle($title);
 
         return $this;
     }
 
     public function setTranslationDomain(string $translationDomain): self
     {
-        $this->translationDomain = $translationDomain;
+        $this->dto->setTranslationDomain($translationDomain);
 
         return $this;
     }
@@ -46,13 +51,13 @@ final class Dashboard
             throw new \InvalidArgumentException(sprintf('The "%s" value given to the textDirection option is not valid. It can only be "ltr" or "rtl"', $direction));
         }
 
-        $this->textDirection = $direction;
+        $this->dto->setTextDirection($direction);
 
         return $this;
     }
 
     public function getAsDto(): DashboardDto
     {
-        return new DashboardDto($this->faviconPath, $this->title, $this->translationDomain, $this->textDirection);
+        return $this->dto;
     }
 }

@@ -3,11 +3,13 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Filter;
 
 use Doctrine\ORM\QueryBuilder;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu\FilterInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDataDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDto;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\BooleanFilterType;
 use function Symfony\Component\String\u;
 
-final class BooleanFilter
+final class BooleanFilter implements FilterInterface
 {
     private $formType;
     private $formTypeOptions;
@@ -60,7 +62,11 @@ final class BooleanFilter
         return $this->label;
     }
 
-
+    public function getAsDto(): FilterDto
+    {
+        // TODO: fix this
+        return new FilterDto();
+    }
 
     /**
      * {@inheritdoc}

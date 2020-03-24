@@ -2,12 +2,16 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
-use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
-use EasyCorp\Bundle\EasyAdminBundle\Factory\MenuFactory;
-
 final class MenuItemDto
 {
-    use PropertyModifierTrait;
+    public const TYPE_CRUD = 'crud';
+    public const TYPE_URL = 'url';
+    public const TYPE_SECTION = 'section';
+    public const TYPE_EXIT_IMPERSONATION = 'exit_impersonation';
+    public const TYPE_DASHBOARD = 'dashboard';
+    public const TYPE_LOGOUT = 'logout';
+    public const TYPE_SUBMENU = 'submenu';
+    public const TYPE_ROUTE = 'route';
 
     private $type;
     private $index;
@@ -23,24 +27,16 @@ final class MenuItemDto
     private $linkTarget;
     private $translationDomain;
     private $translationParameters;
-    /** @var MenuItem[]|MenuItemDto[] */
+    /** @var MenuItemDto[] */
     private $subItems;
 
-    public function __construct(string $type, string $label, ?string $icon, ?string $permission, ?string $cssClass, ?string $routeName, ?array $routeParameters, ?string $linkUrl, string $linkRel, string $linkTarget, ?string $translationDomain, array $translationParameters, ?array $subItems)
+    public function __construct()
     {
-        $this->type = $type;
-        $this->label = $label;
-        $this->icon = $icon;
-        $this->permission = $permission;
-        $this->cssClass = $cssClass;
-        $this->routeName = $routeName;
-        $this->routeParameters = $routeParameters;
-        $this->linkUrl = $linkUrl;
-        $this->linkRel = $linkRel;
-        $this->linkTarget = $linkTarget;
-        $this->translationDomain = $translationDomain;
-        $this->translationParameters = $translationParameters;
-        $this->subItems = $subItems ?? [];
+        $this->cssClass = '';
+        $this->translationParameters = [];
+        $this->linkRel = '';
+        $this->linkTarget = '_self';
+        $this->subItems = [];
     }
 
     public function getType(): string
@@ -48,9 +44,19 @@ final class MenuItemDto
         return $this->type;
     }
 
+    public function setType(string $type): void
+    {
+        $this->type = $type;
+    }
+
     public function getIndex(): int
     {
         return $this->index;
+    }
+
+    public function setIndex(int $index): void
+    {
+        $this->index = $index;
     }
 
     public function getSubIndex(): int
@@ -58,9 +64,19 @@ final class MenuItemDto
         return $this->subIndex;
     }
 
+    public function setSubIndex(int $subIndex): void
+    {
+        $this->subIndex = $subIndex;
+    }
+
     public function getLabel(): string
     {
         return $this->label;
+    }
+
+    public function setLabel(string $label): void
+    {
+        $this->label = $label;
     }
 
     public function getIcon(): ?string
@@ -68,9 +84,19 @@ final class MenuItemDto
         return $this->icon;
     }
 
+    public function setIcon(?string $icon): void
+    {
+        $this->icon = $icon;
+    }
+
     public function getLinkUrl(): string
     {
         return $this->linkUrl;
+    }
+
+    public function setLinkUrl(?string $linkUrl): void
+    {
+        $this->linkUrl = $linkUrl;
     }
 
     public function getRouteName(): ?string
@@ -78,9 +104,19 @@ final class MenuItemDto
         return $this->routeName;
     }
 
+    public function setRouteName(?string $routeName): void
+    {
+        $this->routeName = $routeName;
+    }
+
     public function getRouteParameters(): ?array
     {
         return $this->routeParameters;
+    }
+
+    public function setRouteParameters(?array $routeParameters): void
+    {
+        $this->routeParameters = $routeParameters;
     }
 
     public function getPermission(): ?string
@@ -88,9 +124,19 @@ final class MenuItemDto
         return $this->permission;
     }
 
-    public function getCssClass(): string
+    public function setPermission(?string $permission): void
+    {
+        $this->permission = $permission;
+    }
+
+    public function getCssClass(): ?string
     {
         return $this->cssClass;
+    }
+
+    public function setCssClass(string $cssClass): void
+    {
+        $this->cssClass = $cssClass;
     }
 
     public function getLinkRel(): string
@@ -98,9 +144,19 @@ final class MenuItemDto
         return $this->linkRel;
     }
 
+    public function setLinkRel(string $linkRel): void
+    {
+        $this->linkRel = $linkRel;
+    }
+
     public function getLinkTarget(): string
     {
         return $this->linkTarget;
+    }
+
+    public function setLinkTarget(string $linkTarget): void
+    {
+        $this->linkTarget = $linkTarget;
     }
 
     public function getTranslationDomain(): ?string
@@ -108,23 +164,44 @@ final class MenuItemDto
         return $this->translationDomain;
     }
 
+    public function setTranslationDomain(?string $translationDomain): void
+    {
+        $this->translationDomain = $translationDomain;
+    }
+
     public function getTranslationParameters(): array
     {
         return $this->translationParameters;
     }
 
+    public function setTranslationParameters(array $translationParameters): void
+    {
+        $this->translationParameters = $translationParameters;
+    }
+
+    /**
+     * @return MenuItemDto[]
+     */
     public function getSubItems(): array
     {
         return $this->subItems;
     }
 
+    /**
+     * @param MenuItemDto[] $subItems
+     */
+    public function setSubItems(array $subItems): void
+    {
+        $this->subItems = $subItems;
+    }
+
     public function hasSubItems(): bool
     {
-        return MenuFactory::ITEM_TYPE_SUBMENU === $this->type && \count($this->subItems) > 0;
+        return self::TYPE_SUBMENU === $this->type && \count($this->subItems) > 0;
     }
 
     public function isMenuSection(): bool
     {
-        return MenuFactory::ITEM_TYPE_SECTION === $this->type;
+        return self::TYPE_SECTION === $this->type;
     }
 }

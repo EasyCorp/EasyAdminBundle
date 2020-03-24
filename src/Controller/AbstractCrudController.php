@@ -15,7 +15,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\FiltersDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterCrudActionEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityDeletedEvent;
@@ -378,7 +377,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         return JsonResponse::fromJsonString($paginator->getJsonResults());
     }
 
-    public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, Fields $fields, FiltersDto $filtersDto): QueryBuilder
+    public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, Fields $fields, array $filtersDto): QueryBuilder
     {
         return $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filtersDto);
     }

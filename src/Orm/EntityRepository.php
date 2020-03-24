@@ -9,17 +9,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Orm\EntityRepositoryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDataDto;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\FiltersDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
-use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\TextFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\FilterRegistry;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\FilterInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType;
 use Symfony\Component\Form\FormFactoryInterface;
-use Symfony\Component\Form\FormInterface;
 
 final class EntityRepository implements EntityRepositoryInterface
 {
@@ -38,7 +33,7 @@ final class EntityRepository implements EntityRepositoryInterface
         $this->formFactory = $formFactory;
     }
 
-    public function createQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, Fields $fields, FiltersDto $filtersDto): QueryBuilder
+    public function createQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, Fields $fields, array $filtersDto): QueryBuilder
     {
         $entityManager = $this->doctrine->getManagerForClass($entityDto->getFqcn());
 
@@ -145,7 +140,7 @@ final class EntityRepository implements EntityRepositoryInterface
         }
     }
 
-    private function addFilterClause(QueryBuilder $queryBuilder, SearchDto $searchDto, EntityDto $entityDto, FiltersDto $configuredFilters, Fields $fields): void
+    private function addFilterClause(QueryBuilder $queryBuilder, SearchDto $searchDto, EntityDto $entityDto, array $configuredFilters, Fields $fields): void
     {
         $filtersForm = $this->formFactory->createFiltersForm($this->adminContextProvider->getContext(), $fields, $entityDto);
         if (!$filtersForm->isSubmitted()) {
@@ -158,7 +153,7 @@ final class EntityRepository implements EntityRepositoryInterface
             $propertyName = $filterForm->getName();
 
             /** @var TextFilter $filter */
-            $filter = $configuredFilters->get($propertyName);
+            $filter = $configuredFilters[$propertyName];
             // this filter is not defined or not applied
             if (null === $filter || !isset($appliedFilters[$propertyName])) {
                 continue;

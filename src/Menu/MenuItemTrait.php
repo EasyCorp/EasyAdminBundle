@@ -6,30 +6,19 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
 
 trait MenuItemTrait
 {
-    private $type;
-    private $label;
-    private $icon;
-    private $cssClass = '';
-    private $permission;
-    private $translationDomain;
-    private $translationParameters = [];
-    private $routeName;
-    private $routeParameters;
-    private $linkUrl;
-    private $linkRel = '';
-    private $linkTarget = '_self';
-    private $subItems;
+    /** @var MenuItemDto */
+    private $dto;
 
     public function setCssClass(string $cssClass): self
     {
-        $this->cssClass = $cssClass;
+        $this->dto->setCssClass($cssClass);
 
         return $this;
     }
 
-    public function setPermission(string $role): self
+    public function setPermission(string $permission): self
     {
-        $this->permission = $role;
+        $this->dto->setPermission($permission);
 
         return $this;
     }
@@ -39,34 +28,34 @@ trait MenuItemTrait
      */
     public function setTranslationDomain(string $domain): self
     {
-        $this->translationDomain = $domain;
+        $this->dto->setTranslationDomain($domain);
 
         return $this;
     }
 
-    public function setTranslationParameters(string $parameters): self
+    public function setTranslationParameters(array $parameters): self
     {
-        $this->translationParameters = $parameters;
+        $this->dto->setTranslationParameters($parameters);
 
         return $this;
     }
 
     public function setLinkRel(string $rel): self
     {
-        $this->linkRel = $rel;
+        $this->dto->setLinkRel($rel);
 
         return $this;
     }
 
     public function setLinkTarget(string $target): self
     {
-        $this->linkTarget = $target;
+        $this->dto->setLinkTarget($target);
 
         return $this;
     }
 
     public function getAsDto(): MenuItemDto
     {
-        return new MenuItemDto($this->type, $this->label, $this->icon, $this->permission, $this->cssClass, $this->routeName, $this->routeParameters, $this->linkUrl, $this->linkRel, $this->linkTarget, $this->translationDomain, $this->translationParameters, $this->subItems);
+        return $this->dto;
     }
 }

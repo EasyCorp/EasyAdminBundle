@@ -20,9 +20,8 @@ final class PaginatorFactory
     public function create(QueryBuilder $queryBuilder): EntityPaginator
     {
         $adminContext = $this->adminContextProvider->getContext();
-        $paginatorDto = $adminContext->getCrud()->getPaginator()->with([
-            'pageNumber' => $adminContext->getRequest()->query->get('page', 1),
-        ]);
+        $paginatorDto = $adminContext->getCrud()->getPaginator();
+        $paginatorDto->setPageNumber($adminContext->getRequest()->query->get('page', 1));
 
         return $this->entityPaginator->paginate($paginatorDto, $queryBuilder);
     }

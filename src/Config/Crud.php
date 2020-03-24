@@ -2,11 +2,9 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Config;
 
-use EasyCorp\Bundle\EasyAdminBundle\Collection\TemplateDtoCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\PaginatorDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
-use EasyCorp\Bundle\EasyAdminBundle\Registry\TemplateRegistry;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -18,73 +16,57 @@ class Crud
     public const PAGE_INDEX = 'index';
     public const PAGE_NEW = 'new';
 
-    private $entityLabelInSingular;
-    private $entityLabelInPlural;
-    private $pageTitles = [Action::DETAIL => null, Action::EDIT => null, Action::INDEX => null, Action::NEW => null];
-    private $helpMessages = [Action::DETAIL => null, Action::EDIT => null, Action::INDEX => null, Action::NEW => null];
-    private $dateFormat = 'medium';
-    private $timeFormat = 'medium';
-    private $dateTimePattern = '';
-    private $timezone;
-    private $dateIntervalFormat = '%%y Year(s) %%m Month(s) %%d Day(s)';
-    private $numberFormat;
-    private $defaultSort = [];
-    private $searchFields = [];
-    private $showEntityActionsAsDropdown = false;
-    private $filters;
+    /** @var CrudDto */
+    private $dto;
+
     private $paginatorPageSize = 15;
     private $paginatorFetchJoinCollection = true;
     private $paginatorUseOutputWalkers;
-    private $formThemes = ['@EasyAdmin/crud/form_theme.html.twig'];
-    private $formOptions = [];
-    private $entityPermission;
-    /**
-     * @internal
-     *
-     * @var TemplateDtoCollection
-     */
-    private $overriddenTemplates;
+
+    private function __construct(CrudDto $crudDto)
+    {
+        $this->dto = $crudDto;
+    }
 
     public static function new(): self
     {
-        $config = new self();
-        $config->overriddenTemplates = TemplateDtoCollection::new();
+        $dto = new CrudDto();
 
-        return $config;
+        return new self($dto);
     }
 
     public function setEntityLabelInSingular(string $label): self
     {
-        $this->entityLabelInSingular = $label;
+        $this->dto->setEntityLabelInSingular($label);
 
         return $this;
     }
 
     public function setEntityLabelInPlural(string $label): self
     {
-        $this->entityLabelInPlural = $label;
+        $this->dto->setEntityLabelInPlural($label);
 
         return $this;
     }
 
     public function setPageTitle(string $pageName, string $title): self
     {
-        if (!\array_key_exists($pageName, $this->pageTitles)) {
-            throw new \InvalidArgumentException(sprintf('The first argument of the "%s()" method must be one of these valid page names: %s ("%s" given).', __METHOD__, implode(', ', array_keys($this->pageTitles)), $pageName));
+        if (!\array_key_exists($pageName, $this->getValidPageNames())) {
+            throw new \InvalidArgumentException(sprintf('The first argument of the "%s()" method must be one of these valid page names: %s ("%s" given).', __METHOD__, implode(', ', $this->getValidPageNames()), $pageName));
         }
 
-        $this->pageTitles[$pageName] = $title;
+        $this->dto->setCustomPageTitle($pageName, $title);
 
         return $this;
     }
 
     public function setHelpMessage(string $pageName, string $helpMessage): self
     {
-        if (!\array_key_exists($pageName, $this->helpMessages)) {
-            throw new \InvalidArgumentException(sprintf('The first argument of the "%s()" method must be one of these valid page names: %s ("%s" given).', __METHOD__, implode(', ', array_keys($this->helpMessages)), $pageName));
+        if (!\in_array($pageName, $this->getValidPageNames(), true)) {
+            throw new \InvalidArgumentException(sprintf('The first argument of the "%s()" method must be one of these valid page names: %s ("%s" given).', __METHOD__, implode(', ', $this->getValidPageNames()), $pageName));
         }
 
-        $this->helpMessages[$pageName] = $helpMessage;
+        $this->dto->setHelpMessage($pageName, $helpMessage);
 
         return $this;
     }
@@ -99,11 +81,11 @@ class Crud
         }
 
         if (!\in_array($formatOrPattern, DateTimeField::VALID_DATE_FORMATS, true)) {
-            $this->dateTimePattern = $formatOrPattern;
-            $this->dateFormat = null;
+            $this->dto->setDateTimePattern($formatOrPattern);
+            $this->dto->setDateFormat(null);
         } else {
-            $this->dateTimePattern = '';
-            $this->dateFormat = $formatOrPattern;
+            $this->dto->setDateTimePattern('');
+            $this->dto->setDateFormat($formatOrPattern);
         }
 
         return $this;
@@ -119,11 +101,11 @@ class Crud
         }
 
         if (!\in_array($formatOrPattern, DateTimeField::VALID_DATE_FORMATS, true)) {
-            $this->dateTimePattern = $formatOrPattern;
-            $this->timeFormat = null;
+            $this->dto->setDateTimePattern($formatOrPattern);
+            $this->dto->setTimeFormat(null);
         } else {
-            $this->dateTimePattern = '';
-            $this->timeFormat = $formatOrPattern;
+            $this->dto->setDateTimePattern('');
+            $this->dto->setTimeFormat($formatOrPattern);
         }
 
         return $this;
@@ -154,13 +136,13 @@ class Crud
         }
 
         if ($isDatePattern) {
-            $this->dateTimePattern = $dateFormatOrPattern;
-            $this->dateFormat = null;
-            $this->timeFormat = null;
+            $this->dto->setDateTimePattern($dateFormatOrPattern);
+            $this->dto->setDateFormat(null);
+            $this->dto->setTimeFormat(null);
         } else {
-            $this->dateTimePattern = '';
-            $this->dateFormat = $dateFormatOrPattern;
-            $this->timeFormat = $timeFormat;
+            $this->dto->setDateTimePattern('');
+            $this->dto->setDateFormat($dateFormatOrPattern);
+            $this->dto->setTimeFormat($timeFormat);
         }
 
         return $this;
@@ -168,7 +150,7 @@ class Crud
 
     public function setDateIntervalFormat(string $format): self
     {
-        $this->dateIntervalFormat = $format;
+        $this->dto->setDateIntervalFormat($format);
 
         return $this;
     }
@@ -179,25 +161,25 @@ class Crud
             throw new \InvalidArgumentException(sprintf('The "%s" timezone is not a valid PHP timezone ID. Use any of the values listed at https://www.php.net/manual/en/timezones.php', $timezoneId));
         }
 
-        $this->timezone = $timezoneId;
+        $this->dto->setTimezone($timezoneId);
 
         return $this;
     }
 
     public function setNumberFormat(string $format): self
     {
-        $this->numberFormat = $format;
+        $this->dto->setNumberFormat($format);
 
         return $this;
     }
 
     /**
-     * @param array $sortAndOrder ['fieldName' => 'ASC|DESC', ...]
+     * @param array $sortFieldsAndOrder ['fieldName' => 'ASC|DESC', ...]
      */
-    public function setDefaultSort(array $sortAndOrder): self
+    public function setDefaultSort(array $sortFieldsAndOrder): self
     {
-        $sortAndOrder = array_map('strtoupper', $sortAndOrder);
-        foreach ($sortAndOrder as $sortField => $sortOrder) {
+        $sortFieldsAndOrder = array_map('strtoupper', $sortFieldsAndOrder);
+        foreach ($sortFieldsAndOrder as $sortField => $sortOrder) {
             if (!\in_array($sortOrder, ['ASC', 'DESC'])) {
                 throw new \InvalidArgumentException(sprintf('The sort order can be only "ASC" or "DESC", "%s" given.', $sortOrder));
             }
@@ -207,28 +189,28 @@ class Crud
             }
         }
 
-        $this->defaultSort = $sortAndOrder;
+        $this->dto->setDefaultSort($sortFieldsAndOrder);
 
         return $this;
     }
 
     public function setSearchFields(?array $fieldNames): self
     {
-        $this->searchFields = $fieldNames;
+        $this->dto->setSearchFields($fieldNames);
 
         return $this;
     }
 
     public function showEntityActionsAsDropdown(bool $showAsDropdown = true): self
     {
-        $this->showEntityActionsAsDropdown = $showAsDropdown;
+        $this->dto->setShowEntityActionsAsDropdown($showAsDropdown);
 
         return $this;
     }
 
     public function setFilters(?array $filters): self
     {
-        $this->filters = $filters;
+        $this->dto->setFilters($filters);
 
         return $this;
     }
@@ -260,12 +242,7 @@ class Crud
 
     public function overrideTemplate(string $templateName, string $templatePath): self
     {
-        $validTemplateNames = TemplateRegistry::getTemplateNames();
-        if (!\in_array($templateName, $validTemplateNames, true)) {
-            throw new \InvalidArgumentException(sprintf('The "%s" template is not defined in EasyAdmin. Use one of these allowed template names: %s', $templateName, implode(', ', $validTemplateNames)));
-        }
-
-        $this->overriddenTemplates->setTemplate($templateName, $templatePath);
+        $this->dto->overrideTemplate($templateName, $templatePath);
 
         return $this;
     }
@@ -285,7 +262,9 @@ class Crud
     public function addFormTheme(string $themePath): self
     {
         // custom form themes are added first to give them more priority
-        array_unshift($this->formThemes, $themePath);
+        $formThemes = $this->dto->getFormThemes();
+        array_unshift($formThemes, $themePath);
+        $this->dto->setFormThemes($formThemes);
 
         return $this;
     }
@@ -294,31 +273,38 @@ class Crud
     {
         foreach ($themePaths as $path) {
             if (!\is_string($path)) {
-                throw new \InvalidArgumentException(sprintf('All form theme paths must be strings, but "%s" was provided in "%s"', \gettype($path), (string) $path));
+                throw new \InvalidArgumentException(sprintf('All form theme paths passed to the "%s" method must be strings, but at least one of those values is of type "%s".', __METHOD__, \gettype($path)));
             }
         }
 
-        $this->formThemes = $themePaths;
+        $this->dto->setFormThemes($themePaths);
 
         return $this;
     }
 
     public function setFormOptions(array $formOptions): self
     {
-        $this->formOptions = $formOptions;
+        $this->dto->setFormOptions($formOptions);
 
         return $this;
     }
 
     public function setEntityPermission(string $permission): self
     {
-        $this->entityPermission = $permission;
+        $this->dto->setEntityPermission($permission);
 
         return $this;
     }
 
     public function getAsDto(): CrudDto
     {
-        return new CrudDto($this->entityLabelInSingular, $this->entityLabelInPlural, $this->pageTitles, $this->helpMessages, $this->dateFormat, $this->timeFormat, $this->dateTimePattern, $this->dateIntervalFormat, $this->timezone, $this->numberFormat, $this->defaultSort, $this->searchFields, $this->showEntityActionsAsDropdown, $this->filters, new PaginatorDto($this->paginatorPageSize, $this->paginatorFetchJoinCollection, $this->paginatorUseOutputWalkers), $this->overriddenTemplates, $this->formThemes, $this->formOptions, $this->entityPermission);
+        $this->dto->setPaginator(new PaginatorDto($this->paginatorPageSize, $this->paginatorFetchJoinCollection, $this->paginatorUseOutputWalkers));
+
+        return $this->dto;
+    }
+
+    private function getValidPageNames(): array
+    {
+        return [self::PAGE_DETAIL, self::PAGE_EDIT, self::PAGE_INDEX, self::PAGE_NEW];
     }
 }

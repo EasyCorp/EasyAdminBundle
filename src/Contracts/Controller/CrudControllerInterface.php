@@ -13,7 +13,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\CrudRequest;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\ResponseParameters;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\FiltersDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -56,7 +55,7 @@ interface CrudControllerInterface
 
     public function configureResponseParameters(ResponseParameters $responseParameters): ResponseParameters;
 
-    public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, Fields $fields, FiltersDto $filtersDto): QueryBuilder;
+    public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, Fields $fields, array $filtersDto): QueryBuilder;
 
     public function createEntity(string $entityFqcn);
 

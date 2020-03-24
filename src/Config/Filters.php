@@ -2,11 +2,11 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Config;
 
-use EasyCorp\Bundle\EasyAdminBundle\Dto\FiltersDto;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu\FilterInterface;
 
 final class Filters
 {
-    /** @var Filter[] */
+    /** @var string[]|FilterInterface[] */
     private $filters;
 
     private function __construct()
@@ -21,11 +21,9 @@ final class Filters
 
     public function add($propertyNameOrFilter): self
     {
-        /*
-        if (!\is_string($propertyNameOrFilter) && !$propertyNameOrFilter instanceof Filter) {
-            throw new \InvalidArgumentException(sprintf('The argument of "%s" can only be either a string with the filter property name or a "%s" object with the filter config.', __METHOD__, Filter::class));
+        if (!\is_string($propertyNameOrFilter) && !$propertyNameOrFilter instanceof FilterInterface) {
+            throw new \InvalidArgumentException(sprintf('The argument of "%s" can only be either a string with the filter property name or an object implementing "%s".', __METHOD__, FilterInterface::class));
         }
-        */
 
         $filterPropertyName = \is_string($propertyNameOrFilter) ? $propertyNameOrFilter : (string) $propertyNameOrFilter;
         if (\array_key_exists($filterPropertyName, $this->filters)) {
@@ -37,8 +35,8 @@ final class Filters
         return $this;
     }
 
-    public function getAsDto(): FiltersDto
+    public function all(): array
     {
-        return new FiltersDto($this->filters);
+        return $this->filters;
     }
 }

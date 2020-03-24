@@ -2,23 +2,22 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
+
 final class UserMenuDto
 {
-    use PropertyModifierTrait;
-
     private $displayName;
     private $displayAvatar;
     private $name;
     private $avatarUrl;
+    /** @var MenuItem[] $items */
     private $items;
 
-    public function __construct(bool $displayName, bool $displayAvatar, ?string $name, ?string $avatarUrl, array $items)
+    public function __construct()
     {
-        $this->displayName = $displayName;
-        $this->displayAvatar = $displayAvatar;
-        $this->name = $name;
-        $this->avatarUrl = $avatarUrl;
-        $this->items = $items;
+        $this->displayAvatar = true;
+        $this->displayName = true;
+        $this->items = [];
     }
 
     public function isNameDisplayed(): bool
@@ -26,9 +25,19 @@ final class UserMenuDto
         return $this->displayName;
     }
 
+    public function setDisplayName(bool $isDisplayed): void
+    {
+        $this->displayName = $isDisplayed;
+    }
+
     public function isAvatarDisplayed(): bool
     {
         return $this->displayAvatar;
+    }
+
+    public function setDisplayAvatar(bool $isDisplayed): void
+    {
+        $this->displayAvatar = $isDisplayed;
     }
 
     public function getName(): ?string
@@ -36,13 +45,34 @@ final class UserMenuDto
         return $this->name;
     }
 
+    public function setName(?string $name): void
+    {
+        $this->name = $name;
+    }
+
     public function getAvatarUrl(): ?string
     {
         return $this->avatarUrl;
     }
 
+    public function setAvatarUrl(?string $url): void
+    {
+        $this->avatarUrl = $url;
+    }
+
+    /**
+     * @return MenuItem[]
+     */
     public function getItems(): array
     {
         return $this->items;
+    }
+
+    /**
+     * @param MenuItem[] $items
+     */
+    public function setItems(array $items): void
+    {
+        $this->items = $items;
     }
 }

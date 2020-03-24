@@ -4,15 +4,14 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Filter;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\QueryBuilder;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu\FilterInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDataDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDto;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\EntityFilterType;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\TextFilterType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
-use Symfony\Component\Form\FormInterface;
 use function Symfony\Component\String\u;
 
-final class EntityFilter
+final class EntityFilter implements FilterInterface
 {
     private $formType;
     private $formTypeOptions;
@@ -65,7 +64,11 @@ final class EntityFilter
         return $this->label;
     }
 
-
+    public function getAsDto(): FilterDto
+    {
+        // TODO: fix this
+        return new FilterDto();
+    }
 
     /**
      * {@inheritdoc}

@@ -4,8 +4,6 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 final class PaginatorDto
 {
-    use PropertyModifierTrait;
-
     private $pageNumber;
     private $pageSize;
     private $fetchJoinCollection;
@@ -21,6 +19,11 @@ final class PaginatorDto
     public function getPageNumber(): ?int
     {
         return $this->pageNumber;
+    }
+
+    public function setPageNumber(int $pageNumber): void
+    {
+        $this->pageNumber = $pageNumber;
     }
 
     public function getPageSize(): int

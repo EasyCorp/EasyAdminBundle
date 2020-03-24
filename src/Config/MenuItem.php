@@ -2,7 +2,6 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Config;
 
-use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
 use EasyCorp\Bundle\EasyAdminBundle\Menu\CrudMenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Menu\DashboardMenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Menu\ExitImpersonationMenuItem;
@@ -12,14 +11,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Menu\SectionMenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Menu\SubMenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Menu\UrlMenuItem;
 
-/**
- * @method MenuItemDto getAsDto()
- */
 final class MenuItem
 {
-    /**
-     * @internal Don't use this constructor; use the named constructors
-     */
     private function __construct()
     {
     }
@@ -59,7 +52,7 @@ final class MenuItem
         return new SectionMenuItem($label, $icon);
     }
 
-    public static function subMenu(string $label, ?string $icon): SubMenuItem
+    public static function subMenu(string $label, ?string $icon = null): SubMenuItem
     {
         return new SubMenuItem($label, $icon);
     }

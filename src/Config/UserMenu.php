@@ -6,42 +6,45 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\UserMenuDto;
 
 final class UserMenu
 {
-    private $displayName = true;
-    private $displayAvatar = true;
-    private $name;
-    private $avatarUrl;
-    /** @var MenuItem[] */
-    private $menuItems = [];
+    /** @var UserMenuDto */
+    private $dto;
+
+    private function __construct(UserMenuDto $userMenuDto)
+    {
+        $this->dto = $userMenuDto;
+    }
 
     public static function new(): self
     {
-        return new self();
+        $dto = new UserMenuDto();
+
+        return new self($dto);
     }
 
     public function displayUserName(bool $isDisplayed = true): self
     {
-        $this->displayName = $isDisplayed;
+        $this->dto->setDisplayName($isDisplayed);
 
         return $this;
     }
 
     public function displayUserAvatar(bool $isDisplayed = true): self
     {
-        $this->displayAvatar = $isDisplayed;
+        $this->dto->setDisplayAvatar($isDisplayed);
 
         return $this;
     }
 
     public function setName(?string $name): self
     {
-        $this->name = $name;
+        $this->dto->setName($name);
 
         return $this;
     }
 
     public function setAvatarUrl(?string $url): self
     {
-        $this->avatarUrl = $url;
+        $this->dto->setAvatarUrl($url);
 
         return $this;
     }
@@ -49,7 +52,7 @@ final class UserMenu
     public function setGravatarEmail(string $emailAddress): self
     {
         $hash = md5(strtolower(trim($emailAddress)));
-        $this->avatarUrl = sprintf('https://www.gravatar.com/avatar/%s', $hash);
+        $this->dto->setAvatarUrl(sprintf('https://www.gravatar.com/avatar/%s', $hash));
 
         return $this;
     }
@@ -59,7 +62,7 @@ final class UserMenu
      */
     public function addMenuItems(array $items): self
     {
-        $this->menuItems = array_merge($items, $this->menuItems);
+        $this->dto->setItems(array_merge($items, $this->dto->getItems()));
 
         return $this;
     }
@@ -69,13 +72,13 @@ final class UserMenu
      */
     public function setMenuItems(array $items): self
     {
-        $this->menuItems = $items;
+        $this->dto->setItems($items);
 
         return $this;
     }
 
     public function getAsDto(): UserMenuDto
     {
-        return new UserMenuDto($this->displayName, $this->displayAvatar, $this->name, $this->avatarUrl, $this->menuItems);
+        return $this->dto;
     }
 }

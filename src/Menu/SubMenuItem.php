@@ -2,29 +2,50 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Menu;
 
-use EasyCorp\Bundle\EasyAdminBundle\Factory\MenuFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu\MenuItemInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
 
 /**
  * @internal Instead of this, use EasyCorp\Bundle\EasyAdminBundle\Configuration\MenuItem::submenu()
  */
-final class SubMenuItem
+final class SubMenuItem implements MenuItemInterface
 {
     use MenuItemTrait {
         setLinkRel as private;
         setLinkTarget as private;
     }
 
-    public function __construct(string $label, ?string $icon)
+    /** @var MenuItemInterface[] */
+    private $subMenuItems = [];
+
+    public function __construct(string $label, ?string $icon = null)
     {
-        $this->type = MenuFactory::ITEM_TYPE_SUBMENU;
-        $this->label = $label;
-        $this->icon = $icon;
+        $this->dto = new MenuItemDto();
+
+        $this->dto->setType(MenuItemDto::TYPE_SUBMENU);
+        $this->dto->setLabel($label);
+        $this->dto->setIcon($icon);
     }
 
+    /**
+     * @param MenuItemInterface[] $subItems
+     */
     public function setSubItems(array $subItems): self
     {
-        $this->subItems = $subItems;
+        $this->subMenuItems = $subItems;
 
         return $this;
+    }
+
+    public function getAsDto(): MenuItemDto
+    {
+        $subItemDtos = [];
+        foreach ($this->subMenuItems as $subItem) {
+            $subItemDtos[] = $subItem->getAsDto();
+        }
+
+        $this->dto->setSubItems($subItemDtos);
+
+        return $this->dto;
     }
 }

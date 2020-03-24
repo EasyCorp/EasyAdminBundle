@@ -4,7 +4,6 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Fields;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\FiltersDto;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\FilterTypeGuesser;
 
 final class FilterFactory
@@ -16,10 +15,10 @@ final class FilterFactory
         $this->filterTypeGuesser = $filterTypeGuesser;
     }
 
-    public function create(FiltersDto $filters, Fields $fields, EntityDto $entityDto): FiltersDto
+    public function create(array $filters, Fields $fields, EntityDto $entityDto): array
     {
         $builtFilters = [];
-        foreach ($filters->getConfiguredFilters() as $property => $propertyNameOrFilter) {
+        foreach ($filters as $property => $propertyNameOrFilter) {
             if (is_string($propertyNameOrFilter)) {
                 $guessedFilter = $this->filterTypeGuesser->guessType($entityDto->getFqcn(), $propertyNameOrFilter);
                 $filterFqcn = $guessedFilter->getType();
@@ -32,6 +31,6 @@ final class FilterFactory
             $builtFilters[$property] = $filter;
         }
 
-        return $filters->updateConfiguredFilters($builtFilters);
+        return $builtFilters;
     }
 }

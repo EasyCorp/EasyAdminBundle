@@ -133,6 +133,6 @@ final class AdminContext
 
     public function getTemplatePath(string $templateName): string
     {
-        return $this->templateRegistry->get($templateName)->getPath();
+        return $this->templateRegistry->get($templateName);
     }
 }

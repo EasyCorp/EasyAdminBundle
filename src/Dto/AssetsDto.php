@@ -4,17 +4,49 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 final class AssetsDto
 {
-    private $cssFiles;
-    private $jsFiles;
-    private $headContents;
-    private $bodyContents;
+    private $cssFiles = [];
+    private $jsFiles = [];
+    private $headContents = [];
+    private $bodyContents = [];
 
-    public function __construct(array $cssFiles = [], array $jsFiles = [], array $headContents = [], array $bodyContents = [])
+    public function __construct()
     {
-        $this->cssFiles = array_unique($cssFiles);
-        $this->jsFiles = array_unique($jsFiles);
-        $this->headContents = array_unique($headContents);
-        $this->bodyContents = array_unique($bodyContents);
+    }
+
+    public function addCssFile(string $path): void
+    {
+        if (in_array($path, $this->cssFiles, true)) {
+            return;
+        }
+
+        $this->cssFiles[] = $path;
+    }
+
+    public function addJsFile(string $path): void
+    {
+        if (in_array($path, $this->jsFiles, true)) {
+            return;
+        }
+
+        $this->jsFiles[] = $path;
+    }
+
+    public function addHtmlContentToHead(string $htmlContent): void
+    {
+        if (in_array($htmlContent, $this->headContents, true)) {
+            return;
+        }
+
+        $this->headContents[] = $htmlContent;
+    }
+
+    public function addHtmlContentToBody(string $htmlContent): void
+    {
+        if (in_array($htmlContent, $this->bodyContents, true)) {
+            return;
+        }
+
+        $this->bodyContents[] = $htmlContent;
     }
 
     public function getCssFiles(): array

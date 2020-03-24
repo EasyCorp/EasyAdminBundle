@@ -2,23 +2,18 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
-use EasyCorp\Bundle\EasyAdminBundle\Collection\TemplateDtoCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 
 final class CrudDto
 {
-    use PropertyAccessorTrait;
-    use PropertyModifierTrait;
-
     private $pageName;
     private $actionName;
     /** @var $actions ActionsDto */
     private $actions;
-    /** @var $filters FiltersDto */
     private $filters;
     private $entityFqcn;
-    private $labelInSingular;
-    private $labelInPlural;
+    private $entityLabelInSingular;
+    private $entityLabelInPlural;
     private $defaultPageTitles = [
         Crud::PAGE_DETAIL => 'page_title.detail',
         Crud::PAGE_EDIT => 'page_title.edit',
@@ -43,27 +38,20 @@ final class CrudDto
     private $formOptions;
     private $entityPermission;
 
-    public function __construct(?string $labelInSingular, ?string $labelInPlural, array $pageTitles, array $helpMessages, ?string $dateFormat, ?string $timeFormat, string $dateTimePattern, string $dateIntervalFormat, ?string $timezone, ?string $numberFormat, array $defaultSort, ?array $searchFields, bool $showEntityActionsAsDropdown, ?array $filters, PaginatorDto $paginatorDto, TemplateDtoCollection $overriddenTemplates, $formThemes, array $formOptions, ?string $entityPermission)
+    public function __construct()
     {
-        $this->labelInSingular = $labelInSingular;
-        $this->labelInPlural = $labelInPlural;
-        $this->customPageTitles = $pageTitles;
-        $this->helpMessages = $helpMessages;
-        $this->dateFormat = $dateFormat;
-        $this->timeFormat = $timeFormat;
-        $this->dateTimePattern = $dateTimePattern;
-        $this->dateIntervalFormat = $dateIntervalFormat;
-        $this->timezone = $timezone;
-        $this->numberFormat = $numberFormat;
-        $this->defaultSort = $defaultSort;
-        $this->searchFields = $searchFields;
-        $this->showEntityActionsAsDropdown = $showEntityActionsAsDropdown;
-        $this->filters = $filters;
-        $this->paginatorDto = $paginatorDto;
-        $this->overriddenTemplates = $overriddenTemplates;
-        $this->formThemes = $formThemes;
-        $this->formOptions = $formOptions;
-        $this->entityPermission = $entityPermission;
+        $this->customPageTitles = [Crud::PAGE_DETAIL => null, Crud::PAGE_EDIT => null, Crud::PAGE_INDEX => null, Crud::PAGE_NEW => null];
+        $this->helpMessages = [Crud::PAGE_DETAIL => null, Crud::PAGE_EDIT => null, Crud::PAGE_INDEX => null, Crud::PAGE_NEW => null];
+        $this->dateFormat = 'medium';
+        $this->timeFormat = 'medium';
+        $this->dateTimePattern = '';
+        $this->dateIntervalFormat = '%%y Year(s) %%m Month(s) %%d Day(s)';
+        $this->defaultSort = [];
+        $this->searchFields = [];
+        $this->showEntityActionsAsDropdown = false;
+        $this->formThemes = ['@EasyAdmin/crud/form_theme.html.twig'];
+        $this->formOptions = [];
+        $this->overriddenTemplates = [];
     }
 
     public function getCurrentPage(): ?string
@@ -71,24 +59,49 @@ final class CrudDto
         return $this->pageName;
     }
 
+    public function setPageName(string $pageName): void
+    {
+        $this->pageName = $pageName;
+    }
+
     public function getEntityFqcn(): string
     {
         return $this->entityFqcn;
     }
 
-    public function getLabelInSingular(): ?string
+    public function setEntityFqcn(string $entityFqcn): void
     {
-        return $this->labelInSingular;
+        $this->entityFqcn = $entityFqcn;
     }
 
-    public function getLabelInPlural(): ?string
+    public function getEntityLabelInSingular(): ?string
     {
-        return $this->labelInPlural;
+        return $this->entityLabelInSingular;
+    }
+
+    public function setEntityLabelInSingular(string $label): void
+    {
+        $this->entityLabelInSingular = $label;
+    }
+
+    public function getEntityLabelInPlural(): ?string
+    {
+        return $this->entityLabelInPlural;
+    }
+
+    public function setEntityLabelInPlural(string $label): void
+    {
+        $this->entityLabelInPlural = $label;
     }
 
     public function getCustomPageTitle(string $pageName = null): ?string
     {
         return $this->customPageTitles[$pageName ?? $this->pageName] ?? null;
+    }
+
+    public function setCustomPageTitle(string $pageName, string $pageTitle): void
+    {
+        $this->customPageTitles[$pageName] = $pageTitle;
     }
 
     public function getDefaultPageTitle(string $pageName = null): ?string
@@ -101,9 +114,24 @@ final class CrudDto
         return $this->helpMessages[$pageName ?? $this->pageName] ?? '';
     }
 
+    public function getHelpMessages(): array
+    {
+        return $this->helpMessages;
+    }
+
+    public function setHelpMessage(string $pageName, string $helpMessage): void
+    {
+        $this->helpMessages[$pageName] = $helpMessage;
+    }
+
     public function getDateFormat(): ?string
     {
         return $this->dateFormat;
+    }
+
+    public function setDateFormat(?string $format): void
+    {
+        $this->dateFormat = $format;
     }
 
     public function getTimeFormat(): ?string
@@ -111,9 +139,19 @@ final class CrudDto
         return $this->timeFormat;
     }
 
+    public function setTimeFormat(?string $format): void
+    {
+        $this->timeFormat = $format;
+    }
+
     public function getDateTimePattern(): string
     {
         return $this->dateTimePattern;
+    }
+
+    public function setDateTimePattern(string $pattern): void
+    {
+        $this->dateTimePattern = $pattern;
     }
 
     public function getDateIntervalFormat(): string
@@ -121,9 +159,19 @@ final class CrudDto
         return $this->dateIntervalFormat;
     }
 
+    public function setDateIntervalFormat(string $format): void
+    {
+        $this->dateIntervalFormat = $format;
+    }
+
     public function getTimezone(): ?string
     {
         return $this->timezone;
+    }
+
+    public function setTimezone(string $timezoneId): void
+    {
+        $this->timezone = $timezoneId;
     }
 
     public function getNumberFormat(): ?string
@@ -131,14 +179,29 @@ final class CrudDto
         return $this->numberFormat;
     }
 
+    public function setNumberFormat(string $numberFormat): void
+    {
+        $this->numberFormat = $numberFormat;
+    }
+
     public function getDefaultSort(): array
     {
         return $this->defaultSort;
     }
 
+    public function setDefaultSort(array $defaultSort): void
+    {
+        $this->defaultSort = $defaultSort;
+    }
+
     public function getSearchFields(): ?array
     {
         return $this->searchFields;
+    }
+
+    public function setSearchFields(?array $searchFields): void
+    {
+        $this->searchFields = $searchFields;
     }
 
     public function isSearchEnabled(): bool
@@ -151,9 +214,29 @@ final class CrudDto
         return $this->showEntityActionsAsDropdown;
     }
 
+    public function setShowEntityActionsAsDropdown(bool $showAsDropdown): void
+    {
+        $this->showEntityActionsAsDropdown = $showAsDropdown;
+    }
+
     public function getPaginator(): PaginatorDto
     {
         return $this->paginatorDto;
+    }
+
+    public function setPaginator(PaginatorDto $paginatorDto): void
+    {
+        $this->paginatorDto = $paginatorDto;
+    }
+
+    public function getOverriddenTemplates(): array
+    {
+        return $this->overriddenTemplates;
+    }
+
+    public function overrideTemplate(string $templateName, string $templatePath): void
+    {
+        $this->overriddenTemplates[$templateName] = $templatePath;
     }
 
     public function getFormThemes(): array
@@ -161,9 +244,19 @@ final class CrudDto
         return $this->formThemes;
     }
 
+    public function setFormThemes(array $formThemes): void
+    {
+        $this->formThemes = $formThemes;
+    }
+
     public function getFormOptions(): ?array
     {
         return $this->formOptions;
+    }
+
+    public function setFormOptions(array $formOptions): void
+    {
+        $this->formOptions = $formOptions;
     }
 
     public function getEntityPermission(): ?string
@@ -171,9 +264,19 @@ final class CrudDto
         return $this->entityPermission;
     }
 
+    public function setEntityPermission(string $entityPermission): void
+    {
+        $this->entityPermission = $entityPermission;
+    }
+
     public function getCurrentAction(): string
     {
         return $this->actionName;
+    }
+
+    public function setCurrentAction(string $actionName): void
+    {
+        $this->actionName = $actionName;
     }
 
     public function getActions(): ActionsDto
@@ -181,8 +284,18 @@ final class CrudDto
         return $this->actions;
     }
 
-    public function getFilters(): FiltersDto
+    public function setActions(ActionsDto $actions): void
+    {
+        $this->actions = $actions;
+    }
+
+    public function getFilters(): array
     {
         return $this->filters;
+    }
+
+    public function setFilters(array $filters): void
+    {
+        $this->filters = $filters;
     }
 }

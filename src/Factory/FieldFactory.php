@@ -6,43 +6,48 @@ use Doctrine\DBAL\Types\Type;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldDtoCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextAreaField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 final class FieldFactory
 {
-    private const DOCTRINE_TYPE_TO_PROPERTY_TYPE_MAP = [
-        Type::TARRAY => 'array',
-        Type::BIGINT => 'bigint',
-        Type::BINARY => 'text',
-        Type::BLOB => 'text',
-        Type::BOOLEAN => 'boolean',
-        Type::DATE => 'date',
-        Type::DATE_IMMUTABLE => 'date',
-        Type::DATEINTERVAL => 'text',
-        Type::DATETIME => 'datetime',
-        Type::DATETIME_IMMUTABLE => 'datetime',
+    // TODO: update this map when ArrayField is implemented
+    private const DOCTRINE_TYPE_TO_FIELD_FQCN_MAP = [
+        //Type::TARRAY => 'array',
+        Type::BIGINT => TextField::class,
+        Type::BINARY => TextAreaField::class,
+        Type::BLOB => TextAreaField::class,
+        Type::BOOLEAN => BooleanField::class,
+        Type::DATE => DateField::class,
+        Type::DATE_IMMUTABLE => DateField::class,
+        Type::DATEINTERVAL => TextField::class,
+        Type::DATETIME => DateTimeField::class,
+        Type::DATETIME_IMMUTABLE => DateTimeField::class,
         Type::DATETIMETZ => 'datetimetz',
         Type::DATETIMETZ_IMMUTABLE => 'datetimetz',
-        Type::DECIMAL => 'decimal',
-        Type::FLOAT => 'float',
-        Type::GUID => 'string',
-        Type::INTEGER => 'integer',
-        Type::JSON => 'text',
-        Type::OBJECT => 'text',
-        Type::SIMPLE_ARRAY => 'array',
-        Type::SMALLINT => 'integer',
-        Type::STRING => 'text',
-        Type::TEXT => 'textarea',
-        Type::TIME => 'time',
-        Type::TIME_IMMUTABLE => 'time',
-    ];
-
-    private const PROPERTY_TYPE_TO_PROPERTY_CLASSNAME_MAP = [
-        'datetime' => 'DateTime',
+        Type::DECIMAL => NumberField::class,
+        Type::FLOAT => NumberField::class,
+        Type::GUID => TextField::class,
+        Type::INTEGER => IntegerField::class,
+        Type::JSON => TextField::class,
+        Type::OBJECT => TextField::class,
+        //Type::SIMPLE_ARRAY => 'array',
+        Type::SMALLINT => IntegerField::class,
+        Type::STRING => TextField::class,
+        Type::TEXT => TextAreaField::class,
+        Type::TIME => TimeField::class,
+        Type::TIME_IMMUTABLE => TimeField::class,
     ];
 
     private $adminContextProvider;
@@ -115,10 +120,8 @@ final class FieldFactory
                 continue;
             }
 
-            $guessedType = self::DOCTRINE_TYPE_TO_PROPERTY_TYPE_MAP[$doctrineMetadata['type']] ?? null;
-            if (null !== $guessedType) {
-                $guessedClassName = self::PROPERTY_TYPE_TO_PROPERTY_CLASSNAME_MAP[$guessedType] ?? ucfirst($guessedType);
-                $guessedFieldFqcn = sprintf('EasyCorp\\Bundle\\EasyAdminBundle\\Field\\%sField', $guessedClassName);
+            $guessedFieldFqcn = self::DOCTRINE_TYPE_TO_FIELD_FQCN_MAP[$doctrineMetadata['type']] ?? null;
+            if (null !== $guessedFieldFqcn) {
                 $fields[$i] = $field->transformInto($guessedFieldFqcn);
             }
         }

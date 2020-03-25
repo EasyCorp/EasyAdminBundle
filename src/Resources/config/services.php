@@ -50,6 +50,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityPaginator;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityUpdater;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Provider\FieldProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Security\AuthorizationChecker;
 use EasyCorp\Bundle\EasyAdminBundle\Security\SecurityVoter;
@@ -181,6 +182,8 @@ return static function (ContainerConfigurator $container) {
             ->arg(0, ref(AdminContextProvider::class))
             ->arg(1, ref(AuthorizationChecker::class))
             ->arg(2, \function_exists('tagged') ? tagged('ea.field_configurator') : tagged_iterator('ea.field_configurator'))
+
+        ->set(FieldProvider::class)
 
         ->set(FilterTypeGuesser::class)
             ->arg(0, ref('doctrine'))

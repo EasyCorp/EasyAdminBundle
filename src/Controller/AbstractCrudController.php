@@ -9,6 +9,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Entity;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Fields;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
@@ -35,6 +36,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityUpdater;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Provider\FieldProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -73,11 +75,14 @@ abstract class AbstractCrudController extends AbstractController implements Crud
      */
     public function configureFields(string $pageName): iterable
     {
-        $defaultFields = $this->get(EntityFactory::class)->create()->getDefaultProperties($pageName);
+        $entityFqcn = $this->getContext()->getCrud()->getEntityFqcn();
+        $entityId = $this->getContext()->getRequest()->query->get('entityId');
+        $entityPermission = $this->getContext()->getCrud()->getEntityPermission();
 
-        return array_map(static function (string $fieldName) {
-            return Field::new($fieldName);
-        }, $defaultFields);
+        $entity = new Entity($entityFqcn, $entityId, $entityPermission);
+        $entityDto = $this->get(EntityFactory::class)->create($entity);
+
+        return $this->get(FieldProvider::class)->getDefaultFields($pageName, $entityDto);
     }
 
     public static function getSubscribedServices()
@@ -90,6 +95,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             EntityFactory::class => '?'.EntityFactory::class,
             EntityRepository::class => '?'.EntityRepository::class,
             EntityUpdater::class => '?'.EntityUpdater::class,
+            FieldProvider::class => '?'.FieldProvider::class,
             FilterFactory::class => '?'.FilterFactory::class,
             FormFactory::class => '?'.FormFactory::class,
             PaginatorFactory::class => '?'.PaginatorFactory::class,
@@ -108,7 +114,13 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             throw new ForbiddenActionException($context);
         }
 
-        $entityDto = $this->get(EntityFactory::class)->create($request->getEntity());
+        $entityFqcn = $context->getCrud()->getEntityFqcn();
+        $entityId = $context->getRequest()->query->get('entityId');
+        $entityPermission = $context->getCrud()->getEntityPermission();
+
+        $entity = new Entity($entityFqcn, $entityId, $entityPermission);
+
+        $entityDto = $this->get(EntityFactory::class)->create($entity);
         $fields = Fields::new($this->configureFields(Crud::PAGE_INDEX));
         $filters = $this->get(FilterFactory::class)->create($context->getCrud()->getFilters(), $fields, $entityDto);
         $queryBuilder = $this->createIndexQueryBuilder($context->getSearch(), $entityDto, $fields, $filters);

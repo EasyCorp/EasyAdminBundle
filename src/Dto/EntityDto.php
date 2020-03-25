@@ -133,6 +133,10 @@ final class EntityDto
 
     public function getPropertyMetadata(string $propertyName): array
     {
+        if (null === $this->metadata) {
+            return [];
+        }
+
         if (\array_key_exists($propertyName, $this->metadata->fieldMappings)) {
             return $this->metadata->fieldMappings[$propertyName];
         }
@@ -209,38 +213,5 @@ final class EntityDto
         $clone->actions = $actions;
 
         return $clone;
-    }
-
-    public function getDefaultProperties(string $action): array
-    {
-        $defaultPropertyNames = [];
-        $maxNumProperties = Action::INDEX === $action ? 7 : \PHP_INT_MAX;
-
-        $excludedPropertyTypes = [
-            Action::EDIT => ['binary', 'blob', 'json_array', 'json', 'object'],
-            Action::INDEX => ['array', 'binary', 'blob', 'guid', 'json_array', 'json', 'object', 'simple_array', 'text'],
-            Action::NEW => ['binary', 'blob', 'json_array', 'json', 'object'],
-            Action::DETAIL => [],
-        ];
-
-        $excludedPropertyNames = [
-            Action::EDIT => [$this->getPrimaryKeyName()],
-            Action::INDEX => ['password', 'salt', 'slug', 'updatedAt', 'uuid'],
-            Action::NEW => [$this->getPrimaryKeyName()],
-            Action::DETAIL => [],
-        ];
-
-        foreach ($this->getAllPropertyNames() as $propertyName) {
-            $metadata = $this->getPropertyMetadata($propertyName);
-            if (!\in_array($propertyName, $excludedPropertyNames[$action], true) && !\in_array($metadata['type'], $excludedPropertyTypes[$action], true)) {
-                $defaultPropertyNames[] = $propertyName;
-            }
-        }
-
-        if (\count($defaultPropertyNames) > $maxNumProperties) {
-            $defaultPropertyNames = \array_slice($defaultPropertyNames, 0, $maxNumProperties, true);
-        }
-
-        return $defaultPropertyNames;
     }
 }

@@ -118,8 +118,8 @@ final class FieldFactory
             $guessedType = self::DOCTRINE_TYPE_TO_PROPERTY_TYPE_MAP[$doctrineMetadata['type']] ?? null;
             if (null !== $guessedType) {
                 $guessedClassName = self::PROPERTY_TYPE_TO_PROPERTY_CLASSNAME_MAP[$guessedType] ?? ucfirst($guessedType);
-                $guessedPropertyClass = sprintf('EasyCorp\\Bundle\\EasyAdminBundle\\Property\\%sProperty', $guessedClassName);
-                $fields[$i] = $field->transformInto($guessedPropertyClass);
+                $guessedFieldFqcn = sprintf('EasyCorp\\Bundle\\EasyAdminBundle\\Field\\%sField', $guessedClassName);
+                $fields[$i] = $field->transformInto($guessedFieldFqcn);
             }
         }
 

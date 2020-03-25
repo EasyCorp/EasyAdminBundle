@@ -4,7 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
 use Doctrine\DBAL\Types\Type;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldDtoCollection;
-use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;

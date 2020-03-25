@@ -1,7 +1,7 @@
 <?php
 
 namespace PHPSTORM_META {
-    use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContextProvider;
+    use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
     use EasyCorp\Bundle\EasyAdminBundle\Factory\ActionFactory;
     use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
     use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;

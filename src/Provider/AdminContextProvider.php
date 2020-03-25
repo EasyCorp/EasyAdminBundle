@@ -1,7 +1,8 @@
 <?php
 
-namespace EasyCorp\Bundle\EasyAdminBundle\Context;
+namespace EasyCorp\Bundle\EasyAdminBundle\Provider;
 
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\EasyAdminBundle;
 use Symfony\Component\HttpFoundation\RequestStack;
 

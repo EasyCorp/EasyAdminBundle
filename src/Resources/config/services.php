@@ -2,11 +2,12 @@
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
+use EasyCorp\Bundle\EasyAdminBundle\ArgumentResolver\AdminContextResolver;
 use EasyCorp\Bundle\EasyAdminBundle\ArgumentResolver\CrudRequestResolver;
 use EasyCorp\Bundle\EasyAdminBundle\Command\MakeAdminDashboardCommand;
 use EasyCorp\Bundle\EasyAdminBundle\Command\MakeAdminMigrationCommand;
 use EasyCorp\Bundle\EasyAdminBundle\Command\MakeAdminResourceCommand;
-use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\EventListener\AdminContextListener;
 use EasyCorp\Bundle\EasyAdminBundle\EventListener\CrudResponseListener;
 use EasyCorp\Bundle\EasyAdminBundle\EventListener\ExceptionListener;
@@ -102,7 +103,7 @@ return static function (ContainerConfigurator $container) {
         ->set(AdminContextProvider::class)
             ->arg(0, ref('request_stack'))
 
-        ->set(CrudRequestResolver::class)
+        ->set(AdminContextResolver::class)
             ->arg(0, ref(AdminContextProvider::class))
             ->tag('controller.argument_value_resolver')
 

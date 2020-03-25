@@ -58,6 +58,11 @@ final class AdminContext
         return $this->request;
     }
 
+    public function getReferrer(): ?string
+    {
+        return $this->request->query->get('referrer');
+    }
+
     public function getI18n(): I18nDto
     {
         return $this->i18nDto;

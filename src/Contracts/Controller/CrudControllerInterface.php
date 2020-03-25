@@ -9,8 +9,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Fields;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Controller\CrudRequest;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\ResponseParameters;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
@@ -37,21 +37,21 @@ interface CrudControllerInterface
     public function configureFields(string $pageName): iterable;
 
     /** @return Response|ResponseParameters */
-    public function index(CrudRequest $request);
+    public function index(AdminContext $context);
 
     /** @return Response|ResponseParameters */
-    public function detail(CrudRequest $request);
+    public function detail(AdminContext $context);
 
     /** @return Response|ResponseParameters */
-    public function edit(CrudRequest $request);
+    public function edit(AdminContext $context);
 
     /** @return Response|ResponseParameters */
-    public function new(CrudRequest $request);
+    public function new(AdminContext $context);
 
     /** @return Response|ResponseParameters */
-    public function delete(CrudRequest $request);
+    public function delete(AdminContext $context);
 
-    public function autocomplete(CrudRequest $request): JsonResponse;
+    public function autocomplete(AdminContext $context): JsonResponse;
 
     public function configureResponseParameters(ResponseParameters $responseParameters): ResponseParameters;
 

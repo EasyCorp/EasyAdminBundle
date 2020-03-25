@@ -189,7 +189,7 @@ final class ActionDto
         return null === $this->displayCallable || \call_user_func($this->displayCallable, $entityDto->getInstance());
     }
 
-    public function setDisplayCallable(Callable $displayCallable): void
+    public function setDisplayCallable(callable $displayCallable): void
     {
         $this->displayCallable = $displayCallable;
     }

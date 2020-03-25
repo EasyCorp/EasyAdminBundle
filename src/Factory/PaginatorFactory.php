@@ -3,8 +3,8 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
 use Doctrine\ORM\QueryBuilder;
-use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityPaginator;
+use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 
 final class PaginatorFactory
 {

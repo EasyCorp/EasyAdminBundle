@@ -7,9 +7,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu\FilterInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDataDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDto;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\NumericFilterType;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\TextFilterType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
-use Symfony\Component\Form\FormInterface;
 use function Symfony\Component\String\u;
 
 final class NumericFilter implements FilterInterface

@@ -103,7 +103,7 @@ final class Actions
         // user to only configure the actions they want to see first and rely on the
         // existing order for the rest of actions
         foreach ($currentActions as $actionName => $action) {
-            if (!in_array($actionName, $newActionOrder, true)) {
+            if (!\in_array($actionName, $newActionOrder, true)) {
                 $newActionOrder[] = $actionName;
             }
         }

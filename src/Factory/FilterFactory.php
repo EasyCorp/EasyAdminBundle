@@ -19,7 +19,7 @@ final class FilterFactory
     {
         $builtFilters = [];
         foreach ($filters as $property => $propertyNameOrFilter) {
-            if (is_string($propertyNameOrFilter)) {
+            if (\is_string($propertyNameOrFilter)) {
                 $guessedFilter = $this->filterTypeGuesser->guessType($entityDto->getFqcn(), $propertyNameOrFilter);
                 $filterFqcn = $guessedFilter->getType();
                 $filterFormTypeOptions = $guessedFilter->getOptions();

@@ -6,8 +6,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 /**
- * @method FieldInterface get(string $propertyName)
- * @method bool has(string $propertyName)
+ * @method FieldInterface   get(string $propertyName)
+ * @method bool             has(string $propertyName)
  * @method FieldInterface[] all()
  */
 final class Fields extends ParameterBag

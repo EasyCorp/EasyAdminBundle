@@ -15,7 +15,7 @@ final class AssetsDto
 
     public function addCssFile(string $path): void
     {
-        if (in_array($path, $this->cssFiles, true)) {
+        if (\in_array($path, $this->cssFiles, true)) {
             return;
         }
 
@@ -24,7 +24,7 @@ final class AssetsDto
 
     public function addJsFile(string $path): void
     {
-        if (in_array($path, $this->jsFiles, true)) {
+        if (\in_array($path, $this->jsFiles, true)) {
             return;
         }
 
@@ -33,7 +33,7 @@ final class AssetsDto
 
     public function addHtmlContentToHead(string $htmlContent): void
     {
-        if (in_array($htmlContent, $this->headContents, true)) {
+        if (\in_array($htmlContent, $this->headContents, true)) {
             return;
         }
 
@@ -42,7 +42,7 @@ final class AssetsDto
 
     public function addHtmlContentToBody(string $htmlContent): void
     {
-        if (in_array($htmlContent, $this->bodyContents, true)) {
+        if (\in_array($htmlContent, $this->bodyContents, true)) {
             return;
         }
 

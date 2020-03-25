@@ -5,7 +5,6 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Orm;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Fields;
-use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Orm\EntityRepositoryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDataDto;
@@ -14,6 +13,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\TextFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\FilterRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
+use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use Symfony\Component\Form\FormFactoryInterface;
 
 final class EntityRepository implements EntityRepositoryInterface
@@ -165,7 +165,7 @@ final class EntityRepository implements EntityRepositoryInterface
             }
 
             $submittedData = $filterForm->getData();
-            if (!is_array($submittedData)) {
+            if (!\is_array($submittedData)) {
                 $submittedData = [
                     'comparison' => ComparisonType::EQ,
                     'value' => $submittedData,
@@ -174,7 +174,7 @@ final class EntityRepository implements EntityRepositoryInterface
             // TODO: pass the field being filtered too
             $filter->apply($queryBuilder, FilterDataDto::new($i, $propertyName, current($queryBuilder->getRootAliases()), $submittedData));
 
-            $i++;
+            ++$i;
         }
     }
 }

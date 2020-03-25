@@ -69,7 +69,7 @@ final class TemplateRegistry
 
     public function has(string $templateName): bool
     {
-        return array_key_exists($templateName, $this->templates);
+        return \array_key_exists($templateName, $this->templates);
     }
 
     public function get(string $templateName): string

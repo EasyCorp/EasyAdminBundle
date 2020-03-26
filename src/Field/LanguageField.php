@@ -12,12 +12,15 @@ final class LanguageField implements FieldInterface
     public const OPTION_SHOW_CODE = 'showCode';
     public const OPTION_SHOW_NAME = 'showName';
 
-    public function __construct()
+    public static function new(string $propertyName, ?string $label = null): self
     {
-        $this
-            ->setType('language')
-            ->setFormType(LanguageType::class)
+        return (new self())
+            ->setFieldFqcn(__CLASS__)
+            ->setProperty($propertyName)
+            ->setLabel($label)
             ->setTemplateName('crud/field/language')
+            ->setFormType(LanguageType::class)
+            ->addCssClass('field-language')
             ->setCustomOption(self::OPTION_SHOW_CODE, false)
             ->setCustomOption(self::OPTION_SHOW_NAME, true);
     }

@@ -3,9 +3,10 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
 use Doctrine\DBAL\Types\Type;
-use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldDtoCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
@@ -18,6 +19,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
+use EasyCorp\Bundle\EasyAdminBundle\Transformer\FieldTransformer;
+use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 final class FieldFactory
@@ -54,16 +57,40 @@ final class FieldFactory
     private $authorizationChecker;
     private $fieldConfigurators;
 
-    public function __construct(AdminContextProvider $adminContextProvider, AuthorizationCheckerInterface $authorizationChecker, iterable $fieldurators)
+    public function __construct(AdminContextProvider $adminContextProvider, AuthorizationCheckerInterface $authorizationChecker, iterable $fieldConfigurators)
     {
         $this->adminContextProvider = $adminContextProvider;
         $this->authorizationChecker = $authorizationChecker;
-        $this->fieldConfigurators = $fieldurators;
+        $this->fieldConfigurators = $fieldConfigurators;
+    }
+
+    public function processFields(EntityDto &$entityDto, FieldCollection $fields): void
+    {
+        $this->preProcessFields($fields, $entityDto);
+
+        foreach ($fields as $fieldName => $fieldDto) {
+            if (false === $this->authorizationChecker->isGranted(Permission::EA_VIEW_FIELD, $fieldDto)) {
+                continue;
+            }
+
+            foreach ($this->fieldConfigurators as $configurator) {
+                if (!$configurator->supports($fieldDto, $entityDto)) {
+                    continue;
+                }
+
+                $configurator->configure($fieldDto, $entityDto, $this->adminContextProvider->getContext());
+            }
+
+            $fields->set($fieldName, $fieldDto);
+        }
+
+        $entityDto->setFields($fields);
     }
 
     /**
      * @param FieldInterface[] $fields
      */
+/*
     public function create(EntityDto $entityDto, iterable $fields): EntityDto
     {
         $action = $this->adminContextProvider->getContext()->getCrud()->getCurrentAction();
@@ -89,43 +116,90 @@ final class FieldFactory
 
         return $entityDto->updateFields(FieldDtoCollection::new($builtProperties));
     }
+*/
 
-    private function preProcessFields(EntityDto $entityDto, array $fields): array
+    private function preProcessFields(FieldCollection $fields, EntityDto $entityDto): void
     {
-        // fox DX reasons, field config can be just a string with the field name
-        foreach ($fields as $i => $field) {
-            if (\is_string($field)) {
-                $fields[$i] = Field::new($field);
-            }
-        }
-
-        /*
-         * @var FieldInterface $field
-         */
-        foreach ($fields as $i => $field) {
-            // if it's not a generic Property, don't autoconfigure it
-            if (!$field instanceof Field) {
+        foreach ($fields as $fieldName => $fieldDto) {
+            if (Field::class !== $fieldDto->getFieldFqcn()) {
                 continue;
             }
 
             // this is a virtual field, so we can't autoconfigure it
-            if (!$entityDto->hasProperty($field->getProperty())) {
+            if (!$entityDto->hasProperty($fieldDto->getName())) {
                 continue;
             }
 
-            $doctrineMetadata = $entityDto->getPropertyMetadata($field->getProperty());
-            if (isset($doctrineMetadata['id']) && true === $doctrineMetadata['id']) {
-                $fields[$i] = $field->transformInto(IdField::class);
-
-                continue;
+            if ($fieldName === $entityDto->getPrimaryKeyName()) {
+                $guessedFieldFqcn = IdField::class;
+            } else {
+                $doctrinePropertyType = $entityDto->getPropertyMetadata($fieldName)['type'];
+                $guessedFieldFqcn = self::DOCTRINE_TYPE_TO_FIELD_FQCN_MAP[$doctrinePropertyType] ?? null;
             }
 
-            $guessedFieldFqcn = self::DOCTRINE_TYPE_TO_FIELD_FQCN_MAP[$doctrineMetadata['type']] ?? null;
-            if (null !== $guessedFieldFqcn) {
-                $fields[$i] = $field->transformInto($guessedFieldFqcn);
-            }
+            $fields->set($fieldName, $this->transformField($fieldDto, $guessedFieldFqcn));
+        }
+    }
+
+    private function transformField(FieldDto $fieldDto, string $newFieldFqcn): FieldDto
+    {
+        /** @var FieldDto $newField */
+        $newField = $newFieldFqcn::new($fieldDto->getName())->getAsDto();
+
+        $newField->setValue($fieldDto->getValue());
+        $newField->setFormattedValue($fieldDto->getFormattedValue());
+        $newField->setTranslationParameters($fieldDto->getTranslationParameters());
+        $newField->setAssets($newField->getAssets()->mergeWith($fieldDto->getAssets()));
+
+        $customFormTypeOptions = $fieldDto->getFormTypeOptions();
+        $defaultFormTypeOptions = $newField->getFormTypeOptions();
+        $newField->setFormTypeOptions(array_merge($defaultFormTypeOptions, $customFormTypeOptions));
+
+        $customFieldOptions = $fieldDto->getCustomOptions()->all();
+        $defaultFieldOptions = $newField->getCustomOptions()->all();
+        $mergedFieldOptions = array_merge($defaultFieldOptions, $customFieldOptions);
+        $newField->setCustomOptions(new ParameterBag($mergedFieldOptions));
+
+        if (null !== $fieldDto->getLabel()) {
+            $newField->setLabel($fieldDto->getLabel());
         }
 
-        return $fields;
+        if (null !== $fieldDto->isVirtual()) {
+            $newField->setVirtual($fieldDto->isVirtual());
+        }
+
+        if (null !== $fieldDto->getTextAlign()) {
+            $newField->setTextAlign($fieldDto->getTextAlign());
+        }
+
+        if (null !== $fieldDto->isSortable()) {
+            $newField->setSortable($fieldDto->isSortable());
+        }
+
+        if (null !== $fieldDto->getPermission()) {
+            $newField->setPermission($fieldDto->getPermission());
+        }
+
+        if (null !== $fieldDto->getHelp()) {
+            $newField->setHelp($fieldDto->getHelp());
+        }
+
+        if (null !== $fieldDto->getCssClass()) {
+            $newField->setCssClass($fieldDto->getCssClass());
+        }
+
+        if (null !== $fieldDto->getFormType()) {
+            $newField->setFormType($fieldDto->getFormType());
+        }
+
+        if (null !== $fieldDto->getTemplateName()) {
+            $newField->setTemplateName($fieldDto->getTemplateName());
+        }
+
+        if (null !== $fieldDto->getTemplatePath()) {
+            $newField->setTemplatePath($fieldDto->getTemplatePath());
+        }
+
+        return $newField;
     }
 }

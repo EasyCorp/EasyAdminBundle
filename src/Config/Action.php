@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Config;
 
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 
 final class Action
 {
@@ -23,7 +24,7 @@ final class Action
     // these are actions that can be applied to one or more entities at the same time
     public const TYPE_BATCH = 'batch';
 
-    /** @var ActionDto */
+    /** @var FieldDto */
     private $dto;
 
     private function __construct(ActionDto $actionDto)

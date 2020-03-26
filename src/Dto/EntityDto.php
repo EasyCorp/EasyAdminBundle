@@ -5,6 +5,8 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use EasyCorp\Bundle\EasyAdminBundle\Collection\ActionCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldDtoCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 
@@ -19,7 +21,7 @@ final class EntityDto
     private $userHasPermission;
     /** @var ?FieldDtoCollection */
     private $fields;
-    /** @var ?ActionDto[] */
+    /** @var ActionCollection */
     private $actions;
 
     public function __construct(string $entityFqcn, ClassMetadata $entityMetadata, ?string $entityPermission = null, $entityInstance = null)
@@ -105,19 +107,26 @@ final class EntityDto
     public function markAsInaccessible(): void
     {
         $this->instance = null;
-        $this->fields = FieldDtoCollection::new([]);
+        $this->fields = FieldCollection::new([]);
         $this->userHasPermission = false;
     }
 
-    public function getFields(): ?FieldDtoCollection
+    public function getFields(): ?FieldCollection
     {
         return $this->fields;
     }
 
-    /**
-     * @return ActionDto[]
-     */
-    public function getActions(): array
+    public function setFields(FieldCollection $fields): void
+    {
+        $this->fields = $fields;
+    }
+
+    public function setActions(ActionCollection $actions): void
+    {
+        $this->actions = $actions;
+    }
+
+    public function getActions(): ActionCollection
     {
         return $this->actions;
     }

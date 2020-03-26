@@ -11,13 +11,16 @@ final class ImageField implements FieldInterface
 
     public const OPTION_BASE_PATH = 'basePath';
 
-    public function __construct()
+    public static function new(string $propertyName, ?string $label = null): self
     {
-        $this
-            ->setType('image')
-            ->setFormType(FileUploadType::class)
-            ->setTextAlign('center')
+        return (new self())
+            ->setFieldFqcn(__CLASS__)
+            ->setProperty($propertyName)
+            ->setLabel($label)
             ->setTemplateName('crud/field/image')
+            ->setFormType(FileUploadType::class)
+            ->addCssClass('field-image')
+            ->setTextAlign('center')
             ->setCustomOption(self::OPTION_BASE_PATH, null);
     }
 

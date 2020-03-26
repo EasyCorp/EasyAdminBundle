@@ -2,8 +2,8 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Security;
 
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
@@ -71,7 +71,7 @@ final class SecurityVoter extends Voter
         return $this->authorizationChecker->isGranted($actionPermission) && !\in_array($actionName, $disabledActionNames, true);
     }
 
-    private function voteOnViewPropertyPermission(FieldInterface $field): bool
+    private function voteOnViewPropertyPermission(FieldDto $field): bool
     {
         // users can see the field if they have the permission required by the field
         return $this->authorizationChecker->isGranted($field->getPermission());

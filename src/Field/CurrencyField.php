@@ -13,12 +13,15 @@ final class CurrencyField implements FieldInterface
     public const OPTION_SHOW_NAME = 'showName';
     public const OPTION_SHOW_SYMBOL = 'showSymbol';
 
-    public function __construct()
+    public static function new(string $propertyName, ?string $label = null): self
     {
-        $this
-            ->setType('currency')
-            ->setFormType(CurrencyType::class)
+        return (new self())
+            ->setFieldFqcn(__CLASS__)
+            ->setProperty($propertyName)
+            ->setLabel($label)
             ->setTemplateName('crud/field/currency')
+            ->setFormType(CurrencyType::class)
+            ->addCssClass('field-currency')
             ->setCustomOption(self::OPTION_SHOW_CODE, false)
             ->setCustomOption(self::OPTION_SHOW_NAME, true)
             ->setCustomOption(self::OPTION_SHOW_SYMBOL, true);

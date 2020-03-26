@@ -6,57 +6,55 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
-use EasyCorp\Bundle\EasyAdminBundle\Field\FormPanelField;
-use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class CommonPreConfigurator implements FieldConfiguratorInterface
 {
-    private $adminContextProvider;
     private $translator;
     private $propertyAccessor;
-    private static $numOfSpecialFormProperties = 0;
 
-    public function __construct(AdminContextProvider $adminContextProvider, TranslatorInterface $translator, PropertyAccessorInterface $propertyAccessor)
+    public function __construct(TranslatorInterface $translator, PropertyAccessorInterface $propertyAccessor)
     {
-        $this->adminContextProvider = $adminContextProvider;
         $this->translator = $translator;
         $this->propertyAccessor = $propertyAccessor;
     }
 
-    public function supports(FieldInterface $field, EntityDto $entityDto): bool
+    public function supports(FieldDto $field, EntityDto $entityDto): bool
     {
         // this configurator applies to all kinds of properties
         return true;
     }
 
-    public function configure(FieldInterface $field, EntityDto $entityDto, string $action): void
+    public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
     {
-        if ($field instanceof FormPanelField) {
-            $field->setProperty('ea_form_panel_'.self::$numOfSpecialFormProperties++);
-        }
-
-        $adminContext = $this->adminContextProvider->getContext();
-        $translationDomain = $adminContext->getI18n()->getTranslationDomain();
+        $translationDomain = $context->getI18n()->getTranslationDomain();
 
         $value = $this->buildValueOption($field, $entityDto);
-        $label = $this->buildLabelOption($field, $translationDomain);
-        $isRequired = $this->buildRequiredOption($field, $entityDto);
-        $isSortable = $this->buildSortableOption($field, $entityDto);
-        $isVirtual = $this->buildVirtualOption($field, $entityDto);
-        $templatePath = $this->buildTemplatePathOption($adminContext, $field, $entityDto, $value);
-        $doctrineMetadata = $entityDto->hasProperty($field->getProperty()) ? $entityDto->getPropertyMetadata($field->getProperty()) : [];
+        $field->setValue($value);
+        $field->setFormattedValue($value);
 
-        $field
-            ->setValue($value)
-            ->setFormattedValue($value)
-            ->setLabel($label)
-            ->setRequired($isRequired)
-            ->setSortable($isSortable)
-            ->setVirtual($isVirtual)
-            ->setTemplatePath($templatePath)
-            ->setDoctrineMetadata($doctrineMetadata);
+        $label = $this->buildLabelOption($field, $translationDomain);
+        $field->setLabel($label);
+
+        $isRequired = $this->buildRequiredOption($field, $entityDto);
+        $field->setFormTypeOption('required', $isRequired);
+
+        $isSortable = $this->buildSortableOption($field, $entityDto);
+        $field->setSortable($isSortable);
+
+        $isVirtual = $this->buildVirtualOption($field, $entityDto);
+        $field->setVirtual($isVirtual);
+
+        $templatePath = $this->buildTemplatePathOption($context, $field, $entityDto, $value);
+        $field->setTemplatePath($templatePath);
+
+        $doctrineMetadata = $entityDto->hasProperty($field->getName()) ? $entityDto->getPropertyMetadata($field->getName()) : [];
+        $field->setDoctrineMetadata($doctrineMetadata);
 
         if (null !== $field->getHelp()) {
             $helpMessage = $this->buildHelpOption($field, $translationDomain);
@@ -79,10 +77,10 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
         $field->setFormTypeOptionIfNotSet('label_translation_parameters', $field->getTranslationParameters());
     }
 
-    private function buildValueOption(FieldInterface $field, EntityDto $entityDto)
+    private function buildValueOption(FieldDto $field, EntityDto $entityDto)
     {
         $entityInstance = $entityDto->getInstance();
-        $propertyName = $field->getProperty();
+        $propertyName = $field->getName();
 
         if (!$this->propertyAccessor->isReadable($entityInstance, $propertyName)) {
             return null;
@@ -91,7 +89,7 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
         return $this->propertyAccessor->getValue($entityInstance, $propertyName);
     }
 
-    private function buildHelpOption(FieldInterface $field, string $translationDomain): ?string
+    private function buildHelpOption(FieldDto $field, string $translationDomain): ?string
     {
         if ((null === $help = $field->getHelp()) || empty($help)) {
             return $help;
@@ -100,12 +98,17 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
         return $this->translator->trans($help, $field->getTranslationParameters(), $translationDomain);
     }
 
-    private function buildLabelOption(FieldInterface $field, string $translationDomain): string
+    private function buildLabelOption(FieldDto $field, string $translationDomain): ?string
     {
+        // don't autogenerate a label for these special fields (there's a dedicated configurator for them)
+        if (FormField::class === $field->getFieldFqcn()) {
+            return $field->getLabel();
+        }
+
         // it field doesn't define its label explicitly, generate an automatic
         // label based on the field's field name
         if (null === $label = $field->getLabel()) {
-            $label = $this->humanizeString($field->getProperty());
+            $label = $this->humanizeString($field->getName());
         }
 
         if (empty($label)) {
@@ -115,64 +118,65 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
         return $this->translator->trans($label, $field->getTranslationParameters(), $translationDomain);
     }
 
-    private function buildSortableOption(FieldInterface $field, EntityDto $entityDto): bool
+    private function buildSortableOption(FieldDto $field, EntityDto $entityDto): bool
     {
         if (null !== $isSortable = $field->isSortable()) {
             return $isSortable;
         }
 
-        return $entityDto->hasProperty($field->getProperty());
+        return $entityDto->hasProperty($field->getName());
     }
 
-    private function buildVirtualOption(FieldInterface $field, EntityDto $entityDto): bool
+    private function buildVirtualOption(FieldDto $field, EntityDto $entityDto): bool
     {
-        return !$entityDto->hasProperty($field->getProperty());
+        return !$entityDto->hasProperty($field->getName());
     }
 
-    private function buildTemplatePathOption(AdminContext $adminContext, FieldInterface $field, EntityDto $entityDto, $fieldValue): string
+    private function buildTemplatePathOption(AdminContext $adminContext, FieldDto $field, EntityDto $entityDto, $fieldValue): string
     {
         if (null !== $templatePath = $field->getTemplatePath()) {
             return $templatePath;
         }
 
-        $isPropertyReadable = $this->propertyAccessor->isReadable($entityDto->getInstance(), $field->getProperty());
+        $isPropertyReadable = $this->propertyAccessor->isReadable($entityDto->getInstance(), $field->getName());
         if (!$isPropertyReadable) {
             return $adminContext->getTemplatePath('label/inaccessible');
         }
 
-        if (null === $fieldValue && 'boolean' !== $field->getType()) {
+        if (null === $fieldValue && BooleanField::class !== $field->getFieldFqcn()) {
             return $adminContext->getTemplatePath('label/null');
         }
 
         // TODO: move this condition to each field class
-        if (empty($fieldValue) && \in_array($field->getType(), ['image', 'file', 'array', 'simple_array'])) {
+        if (empty($fieldValue) && \in_array($field->getFieldFqcn(), [ImageField::class, /*'file',*/ /*'array',*/ /*'simple_array' */])) {
             return $adminContext->getTemplatePath('label/empty');
         }
 
         if (null === $templateName = $field->getTemplateName()) {
-            throw new \RuntimeException(sprintf('Fields must define either their templateName or their templatePath. None give for "%s" field.', $field->getProperty()));
+            dd($field);
+            throw new \RuntimeException(sprintf('Fields must define either their templateName or their templatePath. None given for "%s" field.', $field->getName()));
         }
 
         return $adminContext->getTemplatePath($templateName);
     }
 
-    private function buildRequiredOption(FieldInterface $field, EntityDto $entityDto): bool
+    private function buildRequiredOption(FieldDto $field, EntityDto $entityDto): bool
     {
-        if (null !== $isRequired = $field->isRequired()) {
+        if (null !== $isRequired = $field->getFormTypeOption('required')) {
             return $isRequired;
         }
 
         // consider that virtual properties are not required
-        if (!$entityDto->hasProperty($field->getProperty())) {
+        if (!$entityDto->hasProperty($field->getName())) {
             return false;
         }
 
         // TODO: fix this and see if there's any way to check if an association is nullable
-        if ($entityDto->isAssociation($field->getProperty())) {
+        if ($entityDto->isAssociation($field->getName())) {
             return false;
         }
 
-        $doctrinePropertyMetadata = $entityDto->getPropertyMetadata($field->getProperty());
+        $doctrinePropertyMetadata = $entityDto->getPropertyMetadata($field->getName());
 
         // TODO: check if it's correct to never make a boolean value required
         // I guess it's correct because Symfony Forms treat NULL as FALSE by default (i.e. in the database the value won't be NULL)

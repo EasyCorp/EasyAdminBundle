@@ -4,49 +4,48 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Field\Configurator;
 
 use Doctrine\ORM\PersistentCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudAutocompleteType;
-use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class AssociationConfigurator implements FieldConfiguratorInterface
 {
-    private $adminContextProvider;
     private $entityFactory;
     private $crudUrlGenerator;
     private $translator;
 
-    public function __construct(AdminContextProvider $adminContextProvider, EntityFactory $entityFactory, CrudUrlGenerator $crudUrlGenerator, TranslatorInterface $translator)
+    public function __construct(EntityFactory $entityFactory, CrudUrlGenerator $crudUrlGenerator, TranslatorInterface $translator)
     {
-        $this->adminContextProvider = $adminContextProvider;
         $this->entityFactory = $entityFactory;
         $this->crudUrlGenerator = $crudUrlGenerator;
         $this->translator = $translator;
     }
 
-    public function supports(FieldInterface $field, EntityDto $entityDto): bool
+    public function supports(FieldDto $field, EntityDto $entityDto): bool
     {
-        return $field instanceof AssociationField;
+        return AssociationField::class === $field->getFieldFqcn();
     }
 
-    public function configure(FieldInterface $field, EntityDto $entityDto, string $action): void
+    public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
     {
-        $propertyName = $field->getProperty();
+        $propertyName = $field->getName();
         if (!$entityDto->isAssociation($propertyName)) {
             throw new \RuntimeException(sprintf('The "%s" field is not a Doctrine association, so it cannot be used as an association field.', $propertyName));
         }
 
         $targetEntityFqcn = $field->getDoctrineMetadata()->get('targetEntity');
         $targetCrudControllerFqcn = $field->getCustomOption(AssociationField::OPTION_CRUD_CONTROLLER)
-            ?? $this->adminContextProvider->getContext()->getCrudControllers()->getControllerFqcnByEntityFqcn($targetEntityFqcn);
+            ?? $context->getCrudControllers()->getControllerFqcnByEntityFqcn($targetEntityFqcn);
 
         if (null === $targetCrudControllerFqcn) {
-            throw new \RuntimeException(sprintf('It\'s not possible to find the CRUD controller associated to the "%s" field of the "%s" entity. Define the associated CRUD controller explicitly with the setCrudController() method on this field.', $field->getProperty(), $targetEntityFqcn));
+            throw new \RuntimeException(sprintf('It\'s not possible to find the CRUD controller associated to the "%s" field of the "%s" entity. Define the associated CRUD controller explicitly with the setCrudController() method on this field.', $field->getName(), $targetEntityFqcn));
         }
 
         $field->setCustomOption(AssociationField::OPTION_CRUD_CONTROLLER, $targetCrudControllerFqcn);
@@ -74,11 +73,11 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         }
     }
 
-    private function configureToOneAssociation(FieldInterface $field): void
+    private function configureToOneAssociation(FieldDto $field): void
     {
         $field->setCustomOption(AssociationField::OPTION_DOCTRINE_ASSOCIATION_TYPE, 'toOne');
 
-        if (false === $field->isRequired()) {
+        if (false === $field->getFormTypeOption('required')) {
             $field->setFormTypeOptionIfNotSet('placeholder', $this->translator->trans('label.form.empty_value', [], 'EasyAdminBundle'));
         }
 
@@ -95,7 +94,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         $field->setFormattedValue($this->formatAsString($field->getValue(), $targetEntityDto));
     }
 
-    private function configureToManyAssociation(FieldInterface $field): void
+    private function configureToManyAssociation(FieldDto $field): void
     {
         $field->setCustomOption(AssociationField::OPTION_DOCTRINE_ASSOCIATION_TYPE, 'toMany');
 

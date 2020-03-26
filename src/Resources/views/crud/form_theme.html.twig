@@ -61,9 +61,8 @@
 {# Rows #}
 
 {% block form_row %}
-    {% set field_type = form.vars.ea_crud_form.ea_field.type ?? block_prefixes|slice(-2)|first %}
     {% set row_attr = row_attr|merge({
-        class: row_attr.class|default('') ~ ' form-group ' ~ ' field-' ~ field_type
+        class: row_attr.class|default('') ~ ' form-group'
     }) %}
 
     <div {% with { attr: row_attr } %}{{ block('attributes') }}{% endwith %}>
@@ -89,7 +88,12 @@
                 {% endif %}
                 {% if has_input_groups %}</div>{% endif %}
 
-            {% if field_type in ['datetime', 'datetime_immutable', 'date', 'date_immutable', 'dateinterval', 'time', 'time_immutable', 'birthday'] and ea.field.nullable|default(false) %}
+            {% set nullable_fields_fqcn = [
+                'EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField',
+                'EasyCorp\Bundle\EasyAdminBundle\Field\DateField',
+                'EasyCorp\Bundle\EasyAdminBundle\Field\TimeField',
+            ] %}
+            {% if form.vars.ea_crud_form.ea_field.fieldFqcn|default(false) in nullable_fields_fqcn and ea.field.nullable|default(false) %}
                 <div class="nullable-control">
                     <label>
                         <input type="checkbox" {% if data is null %}checked="checked"{% endif %}>

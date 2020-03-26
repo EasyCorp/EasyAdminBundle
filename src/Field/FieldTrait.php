@@ -2,254 +2,90 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetsDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 trait FieldTrait
 {
-    private $type;
-    private $property;
-    private $value;
-    private $formattedValue;
-    private $formatValueCallable;
-    private $label;
-    private $required;
-    private $formType;
-    private $formTypeOptions = [];
-    private $sortable;
-    private $virtual;
-    private $permission;
-    private $textAlign;
-    private $help;
-    private $cssClass;
-    private $translationParameters = [];
-    private $templateName;
-    private $templatePath;
+    /** @var FieldDto */
+    private $dto;
     private $cssFiles = [];
     private $jsFiles = [];
     private $headContents = [];
     private $bodyContents = [];
-    private $customOptions;
-    private $doctrineMetadata;
 
     private function __construct()
     {
+        $this->dto = new FieldDto();
     }
 
-    public static function new(string $propertyName, ?string $label = null): self
+    public function setFieldFqcn(string $fieldFqcn): self
     {
-        $field = new static();
-        $field->property = $propertyName;
-        $field->label = $label;
-
-        return $field;
-    }
-
-    public function getProperty(): string
-    {
-        return $this->property;
-    }
-
-    public function getType(): string
-    {
-        return $this->type;
-    }
-
-    /**
-     * Returns the original unmodified value stored in the entity field.
-     */
-    public function getValue()
-    {
-        return $this->value;
-    }
-
-    /**
-     * Returns the value to be displayed for the field (it could be the
-     * same as the value stored in the field or not).
-     */
-    public function getFormattedValue()
-    {
-        return $this->formattedValue;
-    }
-
-    public function getFormatValueCallable(): ?callable
-    {
-        return $this->formatValueCallable;
-    }
-
-    public function getLabel(): ?string
-    {
-        return $this->label;
-    }
-
-    public function isRequired(): ?bool
-    {
-        return $this->formTypeOptions['required'] ?? null;
-    }
-
-    public function getFormType(): ?string
-    {
-        return $this->formType;
-    }
-
-    public function getFormTypeOptions(): array
-    {
-        return $this->formTypeOptions;
-    }
-
-    public function isSortable(): ?bool
-    {
-        return $this->sortable;
-    }
-
-    public function isVirtual(): bool
-    {
-        return true === $this->virtual;
-    }
-
-    public function getTextAlign(): ?string
-    {
-        return $this->textAlign;
-    }
-
-    public function getPermission(): ?string
-    {
-        return $this->permission;
-    }
-
-    public function getHelp(): ?string
-    {
-        return $this->help;
-    }
-
-    public function getCssClass(): ?string
-    {
-        return $this->cssClass;
-    }
-
-    public function getTranslationParameters(): array
-    {
-        return $this->translationParameters ?? [];
-    }
-
-    public function getTemplateName(): ?string
-    {
-        return $this->templateName;
-    }
-
-    public function getTemplatePath(): ?string
-    {
-        return $this->templatePath;
-    }
-
-    public function getCssFiles(): array
-    {
-        return $this->cssFiles ?? [];
-    }
-
-    public function getJsFiles(): array
-    {
-        return $this->jsFiles ?? [];
-    }
-
-    public function getHeadContents(): array
-    {
-        return $this->headContents ?? [];
-    }
-
-    public function getBodyContents(): array
-    {
-        return $this->bodyContents ?? [];
-    }
-
-    public function getCustomOptions(): ParameterBag
-    {
-        return new ParameterBag($this->customOptions ?? []);
-    }
-
-    public function getCustomOption(string $optionName)
-    {
-        return $this->getCustomOptions()->get($optionName);
-    }
-
-    public function getDoctrineMetadata(): ParameterBag
-    {
-        return new ParameterBag($this->doctrineMetadata ?? []);
-    }
-
-    public function getAsDto(): FieldDto
-    {
-        return new FieldDto($this->getType(), $this->getProperty(), $this->getValue(), $this->getFormattedValue(), $this->getFormType(), $this->getFormTypeOptions(), $this->isSortable(), $this->isVirtual(), $this->getLabel(), $this->getPermission(), $this->getTextAlign(), $this->getHelp(), $this->getCssClass(), $this->getTranslationParameters(), $this->getTemplateName(), $this->getTemplatePath(), new AssetsDto($this->getCssFiles(), $this->getJsFiles(), $this->getHeadContents(), $this->getBodyContents()), $this->getCustomOptions(), $this->getDoctrineMetadata());
-    }
-
-    public function setType(string $type): FieldInterface
-    {
-        $this->type = str_replace(' ', '-', $type);
+        $this->dto->setFieldFqcn($fieldFqcn);
 
         return $this;
     }
 
-    public function setProperty(string $propertyName): FieldInterface
+    public function setProperty(string $propertyName): self
     {
-        $this->property = $propertyName;
+        $this->dto->setName($propertyName);
 
         return $this;
     }
 
-    public function setLabel(?string $label): FieldInterface
+    public function setLabel(?string $label): self
     {
-        $this->label = $label;
+        $this->dto->setLabel($label);
 
         return $this;
     }
 
-    public function setValue($value): FieldInterface
+    public function setValue($value): self
     {
-        $this->value = $value;
+        $this->dto->setValue($value);
 
         return $this;
     }
 
-    public function setFormattedValue($value): FieldInterface
+    public function setFormattedValue($value): self
     {
-        $this->formattedValue = $value;
+        $this->dto->setFormattedValue($value);
 
         return $this;
     }
 
-    public function formatValue(callable $callable): FieldInterface
+    public function formatValue(callable $callable): self
     {
-        $this->formatValueCallable = $callable;
+        $this->dto->setFormatValueCallable($callable);
 
         return $this;
     }
 
-    public function setVirtual(bool $isVirtual): FieldInterface
+    public function setVirtual(bool $isVirtual): self
     {
-        $this->virtual = $isVirtual;
+        $this->dto->setVirtual($isVirtual);
 
         return $this;
     }
 
-    public function setRequired(bool $isRequired): FieldInterface
+    public function setRequired(bool $isRequired): self
     {
-        $this->formTypeOptions['required'] = $isRequired;
+        $this->dto->setFormTypeOption('required', $isRequired);
 
         return $this;
     }
 
-    public function setFormType(string $formType): FieldInterface
+    public function setFormType(string $formTypeFqcn): self
     {
-        $this->formType = $formType;
+        $this->dto->setFormType($formTypeFqcn);
 
         return $this;
     }
 
-    public function setFormTypeOptions(array $options): FieldInterface
+    public function setFormTypeOptions(array $options): self
     {
-        $this->formTypeOptions = $options;
+        $this->dto->setFormTypeOptions($options);
 
         return $this;
     }
@@ -257,20 +93,9 @@ trait FieldTrait
     /**
      * @param string $optionName You can use "dot" notation to set nested options (e.g. 'attr.class')
      */
-    public function setFormTypeOption(string $optionName, $optionValue): FieldInterface
+    public function setFormTypeOption(string $optionName, $optionValue): self
     {
-        // Code copied from https://github.com/adbario/php-dot-notation/blob/dc4053b44d71a5cf782e6c59dcbf09c78f036ceb/src/Dot.php#L437
-        // (c) Riku Särkinen <riku@adbar.io> - MIT License
-        $formTypeOptions = &$this->formTypeOptions;
-        foreach (explode('.', $optionName) as $key) {
-            if (!isset($formTypeOptions[$key]) || !\is_array($formTypeOptions[$key])) {
-                $formTypeOptions[$key] = [];
-            }
-
-            $formTypeOptions = &$formTypeOptions[$key];
-        }
-
-        $formTypeOptions = $optionValue;
+        $this->dto->setFormTypeOption($optionName, $optionValue);
 
         return $this;
     }
@@ -278,25 +103,23 @@ trait FieldTrait
     /**
      * @param string $optionName You can use "dot" notation to set nested options (e.g. 'attr.class')
      */
-    public function setFormTypeOptionIfNotSet(string $optionName, $optionValue): FieldInterface
+    public function setFormTypeOptionIfNotSet(string $optionName, $optionValue): self
     {
-        if (!$this->arrayNestedKeyExists($this->formTypeOptions, $optionName)) {
-            $this->setFormTypeOption($optionName, $optionValue);
-        }
+        $this->dto->setFormTypeOptionIfNotSet($optionName, $optionValue);
 
         return $this;
     }
 
-    public function setSortable(bool $isSortable): FieldInterface
+    public function setSortable(bool $isSortable): self
     {
-        $this->sortable = $isSortable;
+        $this->dto->setSortable($isSortable);
 
         return $this;
     }
 
-    public function setPermission(string $role): FieldInterface
+    public function setPermission(string $permission): self
     {
-        $this->permission = $role;
+        $this->dto->setPermission($permission);
 
         return $this;
     }
@@ -304,120 +127,108 @@ trait FieldTrait
     /**
      * @param string $textAlign It can be 'left', 'center' or 'right'
      */
-    public function setTextAlign(string $textAlign): FieldInterface
+    public function setTextAlign(string $textAlign): self
     {
         $validOptions = ['left', 'center', 'right'];
         if (!\in_array($textAlign, $validOptions, true)) {
             throw new \InvalidArgumentException(sprintf('The value of the "textAlign" option can only be one of these: "%s" ("%s" was given).', implode(',', $validOptions), $textAlign));
         }
 
-        $this->textAlign = $textAlign;
+        $this->dto->setTextAlign($textAlign);
 
         return $this;
     }
 
-    public function setHelp(string $help): FieldInterface
+    public function setHelp(string $help): self
     {
-        $this->help = $help;
+        $this->dto->setHelp($help);
 
         return $this;
     }
 
-    public function setCssClass(string $cssClass): FieldInterface
+    public function addCssClass(string $cssClass): self
     {
-        $this->cssClass = $cssClass;
+        $this->dto->setCssClass(trim($this->dto->getCssClass().' '.$cssClass));
 
         return $this;
     }
 
-    public function setTranslationParameters(array $parameters): FieldInterface
+    public function setCssClass(string $cssClass): self
     {
-        $this->translationParameters = $parameters;
+        $this->dto->setCssClass($cssClass);
 
         return $this;
     }
 
-    public function setTemplateName(string $name): FieldInterface
+    public function setTranslationParameters(array $parameters): self
     {
-        $this->templateName = $name;
-        $this->templatePath = null;
+        $this->dto->setTranslationParameters($parameters);
 
         return $this;
     }
 
-    public function setTemplatePath(string $path): FieldInterface
+    public function setTemplateName(string $name): self
     {
-        $this->templatePath = $path;
-        $this->templateName = null;
+        $this->dto->setTemplateName($name);
+        $this->dto->setTemplatePath(null);
 
         return $this;
     }
 
-    public function addCssFiles(string ...$assetPaths): FieldInterface
+    public function setTemplatePath(string $path): self
+    {
+        $this->dto->setTemplateName(null);
+        $this->dto->setTemplatePath($path);
+
+        return $this;
+    }
+
+    public function addCssFiles(string ...$assetPaths): self
     {
         $this->cssFiles = array_merge($this->cssFiles, $assetPaths);
 
         return $this;
     }
 
-    public function addJsFiles(string ...$assetPaths): FieldInterface
+    public function addJsFiles(string ...$assetPaths): self
     {
         $this->jsFiles = array_merge($this->jsFiles, $assetPaths);
 
         return $this;
     }
 
-    public function addHtmlContentsToHead(string ...$contents): FieldInterface
+    public function addHtmlContentsToHead(string ...$contents): self
     {
         $this->headContents = array_merge($this->headContents, $contents);
 
         return $this;
     }
 
-    public function addHtmlContentsToBody(string ...$contents): FieldInterface
+    public function addHtmlContentsToBody(string ...$contents): self
     {
         $this->bodyContents = array_merge($this->bodyContents, $contents);
 
         return $this;
     }
 
-    public function setCustomOption(string $optionName, $optionValue): FieldInterface
+    public function setCustomOption(string $optionName, $optionValue): self
     {
-        $this->customOptions[$optionName] = $optionValue;
+        $this->dto->setCustomOption($optionName, $optionValue);
 
         return $this;
     }
 
-    public function setCustomOptions(array $options): FieldInterface
+    public function setCustomOptions(array $options): self
     {
-        $this->customOptions = $options;
+        $this->dto->setCustomOptions(new ParameterBag($options));
 
         return $this;
     }
 
-    public function setDoctrineMetadata(array $metadata): FieldInterface
+    public function getAsDto(): FieldDto
     {
-        $this->doctrineMetadata = $metadata;
+        $this->dto->setAssets(new AssetsDto($this->cssFiles, $this->jsFiles, $this->headContents, $this->bodyContents));
 
-        return $this;
-    }
-
-    private function arrayNestedKeyExists(array $array, $key): bool
-    {
-        // Code copied from https://github.com/adbario/php-dot-notation/blob/dc4053b44d71a5cf782e6c59dcbf09c78f036ceb/src/Dot.php#L222
-        // (c) Riku Särkinen <riku@adbar.io> - MIT License
-        if (\array_key_exists($key, $array)) {
-            return true;
-        }
-
-        foreach (explode('.', $key) as $segment) {
-            if (!\is_array($array) || !\array_key_exists($segment, $array)) {
-                return false;
-            }
-
-            $array = $array[$segment];
-        }
-
-        return true;
+        return $this->dto;
     }
 }

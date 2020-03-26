@@ -12,12 +12,15 @@ final class CountryField implements FieldInterface
     public const OPTION_SHOW_FLAG = 'showFlag';
     public const OPTION_SHOW_NAME = 'showName';
 
-    public function __construct()
+    public static function new(string $propertyName, ?string $label = null): self
     {
-        $this
-            ->setType('country')
-            ->setFormType(CountryType::class)
+        return (new self())
+            ->setFieldFqcn(__CLASS__)
+            ->setProperty($propertyName)
+            ->setLabel($label)
             ->setTemplateName('crud/field/country')
+            ->setFormType(CountryType::class)
+            ->addCssClass('field-country')
             ->setCustomOption(self::OPTION_SHOW_FLAG, true)
             ->setCustomOption(self::OPTION_SHOW_NAME, true);
     }

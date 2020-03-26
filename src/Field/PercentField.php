@@ -13,12 +13,15 @@ final class PercentField implements FieldInterface
     public const OPTION_STORED_AS_FRACTIONAL = 'storedAsFractional';
     public const OPTION_SYMBOL = 'symbol';
 
-    public function __construct()
+    public static function new(string $propertyName, ?string $label = null): self
     {
-        $this
-            ->setType('percent')
-            ->setFormType(PercentType::class)
+        return (new self())
+            ->setFieldFqcn(__CLASS__)
+            ->setProperty($propertyName)
+            ->setLabel($label)
             ->setTemplateName('crud/field/percent')
+            ->setFormType(PercentType::class)
+            ->addCssClass('field-percent')
             ->setTextAlign('right')
             ->setCustomOption(self::OPTION_NUM_DECIMALS, 0)
             ->setCustomOption(self::OPTION_STORED_AS_FRACTIONAL, true)

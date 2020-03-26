@@ -7,6 +7,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInte
 use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetsDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\DashboardDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\I18nDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MainMenuDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
@@ -28,6 +29,7 @@ final class AdminContext
     private $user;
     private $i18nDto;
     private $crudControllerRegistry;
+    private $entityDto;
     private $dashboardDto;
     private $dashboardControllerInstance;
     private $assetDto;
@@ -38,7 +40,7 @@ final class AdminContext
     private $mainMenuDto;
     private $userMenuDto;
 
-    public function __construct(Request $request, ?UserInterface $user, I18nDto $i18nDto, CrudControllerRegistry $crudControllerRegistry, DashboardDto $dashboardDto, DashboardControllerInterface $dashboardController, AssetsDto $assetDto, ?CrudDto $crudDto, ?SearchDto $searchDto, MenuFactory $menuFactory, TemplateRegistry $templateRegistry)
+    public function __construct(Request $request, ?UserInterface $user, I18nDto $i18nDto, CrudControllerRegistry $crudControllerRegistry, DashboardDto $dashboardDto, DashboardControllerInterface $dashboardController, AssetsDto $assetDto, ?CrudDto $crudDto, ?EntityDto $entityDto, ?SearchDto $searchDto, MenuFactory $menuFactory, TemplateRegistry $templateRegistry)
     {
         $this->request = $request;
         $this->user = $user;
@@ -46,8 +48,9 @@ final class AdminContext
         $this->crudControllerRegistry = $crudControllerRegistry;
         $this->dashboardDto = $dashboardDto;
         $this->dashboardControllerInstance = $dashboardController;
-        $this->assetDto = $assetDto;
         $this->crudDto = $crudDto;
+        $this->assetDto = $assetDto;
+        $this->entityDto = $entityDto;
         $this->searchDto = $searchDto;
         $this->menuFactory = $menuFactory;
         $this->templateRegistry = $templateRegistry;
@@ -71,6 +74,11 @@ final class AdminContext
     public function getCrudControllers(): CrudControllerRegistry
     {
         return $this->crudControllerRegistry;
+    }
+
+    public function getEntity(): EntityDto
+    {
+        return $this->entityDto;
     }
 
     public function getUser(): ?UserInterface

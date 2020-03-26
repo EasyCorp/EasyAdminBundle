@@ -9,11 +9,14 @@ final class UrlField implements FieldInterface
 {
     use FieldTrait;
 
-    public function __construct()
+    public static function new(string $propertyName, ?string $label = null): self
     {
-        $this
-            ->setType('url')
+        return (new self())
+            ->setFieldFqcn(__CLASS__)
+            ->setProperty($propertyName)
+            ->setLabel($label)
+            ->setTemplateName('crud/field/url')
             ->setFormType(UrlType::class)
-            ->setTemplateName('crud/field/url');
+            ->addCssClass('field-url');
     }
 }

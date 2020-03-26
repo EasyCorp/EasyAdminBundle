@@ -18,7 +18,7 @@ final class FieldProvider
             Crud::PAGE_EDIT => [Type::BINARY, Type::BLOB, Type::JSON_ARRAY, Type::JSON, Type::OBJECT],
             Crud::PAGE_INDEX => [Type::TARRAY , Type::BINARY, Type::BLOB, Type::GUID, Type::JSON_ARRAY, Type::JSON, Type::OBJECT, Type::SIMPLE_ARRAY, Type::TEXT],
             Crud::PAGE_NEW => [Type::BINARY, Type::BLOB, Type::JSON_ARRAY, Type::JSON, Type::OBJECT],
-            Crud::PAGE_DETAIL => [],
+            Crud::PAGE_DETAIL => [Type::TARRAY , Type::BINARY, Type::JSON_ARRAY, Type::JSON, Type::OBJECT, Type::SIMPLE_ARRAY],
         ];
 
         $excludedPropertyNames = [

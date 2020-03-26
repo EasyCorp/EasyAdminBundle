@@ -3,17 +3,21 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 final class IdField implements FieldInterface
 {
     use FieldTrait;
 
-    public function __construct()
+    public static function new(string $propertyName, ?string $label = null): self
     {
-        $this
-            ->setType('id')
+        return (new self())
+            ->setFieldFqcn(__CLASS__)
+            ->setProperty($propertyName)
+            ->setLabel($label)
+            ->setTemplateName('crud/field/id')
             ->setFormType(TextType::class)
-            ->setTemplateName('crud/field/id');
+            ->addCssClass('field-id');
     }
 }

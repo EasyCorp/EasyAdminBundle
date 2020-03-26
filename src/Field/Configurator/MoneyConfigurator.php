@@ -2,9 +2,11 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Field\Configurator;
 
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
 use EasyCorp\Bundle\EasyAdminBundle\Intl\IntlFormatter;
 use Symfony\Component\Intl\Currencies;
@@ -21,12 +23,12 @@ final class MoneyConfigurator implements FieldConfiguratorInterface
         $this->propertyAccessor = $propertyAccessor;
     }
 
-    public function supports(FieldInterface $field, EntityDto $entityDto): bool
+    public function supports(FieldDto $field, EntityDto $entityDto): bool
     {
-        return $field instanceof MoneyField;
+        return MoneyField::class === $field->getFieldFqcn();
     }
 
-    public function configure(FieldInterface $field, EntityDto $entityDto, string $action): void
+    public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
     {
         if (null === $field->getValue()) {
             return;
@@ -34,7 +36,7 @@ final class MoneyConfigurator implements FieldConfiguratorInterface
 
         $currencyCode = $this->getCurrency($field, $entityDto);
         if (!$this->isValidCurrencyCode($currencyCode)) {
-            throw new \InvalidArgumentException(sprintf('The "%s" value used as the currency of the "%s" money field is not a valid ICU currency code.', $currencyCode, $field->getProperty()));
+            throw new \InvalidArgumentException(sprintf('The "%s" value used as the currency of the "%s" money field is not a valid ICU currency code.', $currencyCode, $field->getName()));
         }
 
         $numDecimals = $field->getCustomOption(MoneyField::OPTION_NUM_DECIMALS);
@@ -47,23 +49,23 @@ final class MoneyConfigurator implements FieldConfiguratorInterface
         $field->setFormTypeOptionIfNotSet('divisor', $storedAsCents ? 100 : 1);
     }
 
-    private function getCurrency(FieldInterface $field, EntityDto $entityDto): string
+    private function getCurrency(FieldDto $field, EntityDto $entityDto): string
     {
         if (null !== $currencyCode = $field->getCustomOption(MoneyField::OPTION_CURRENCY)) {
             return $currencyCode;
         }
 
         if (null === $currencyPropertyPath = $field->getCustomOption(MoneyField::OPTION_CURRENCY_PROPERTY_PATH)) {
-            throw new \InvalidArgumentException(sprintf('You must define the currency for the "%s" money field.', $field->getProperty()));
+            throw new \InvalidArgumentException(sprintf('You must define the currency for the "%s" money field.', $field->getName()));
         }
 
         $isPropertyReadable = $this->propertyAccessor->isReadable($entityDto->getInstance(), $currencyPropertyPath);
         if (!$isPropertyReadable) {
-            throw new \InvalidArgumentException(sprintf('The "%s" field path used by the "%s" field to get the currency value from the "%s" entity is not readable.', $currencyPropertyPath, $field->getProperty(), $entityDto->getName()));
+            throw new \InvalidArgumentException(sprintf('The "%s" field path used by the "%s" field to get the currency value from the "%s" entity is not readable.', $currencyPropertyPath, $field->getName(), $entityDto->getName()));
         }
 
         if (null === $currencyCode = $this->propertyAccessor->getValue($entityDto->getInstance(), $currencyPropertyPath)) {
-            throw new \InvalidArgumentException(sprintf('The currency value for the "%s" field cannot be null, but that\'s the value returned by the "%s" field path applied on the "%s" entity.', $field->getProperty(), $currencyPropertyPath, $entityDto->getName()));
+            throw new \InvalidArgumentException(sprintf('The currency value for the "%s" field cannot be null, but that\'s the value returned by the "%s" field path applied on the "%s" entity.', $field->getName(), $currencyPropertyPath, $entityDto->getName()));
         }
 
         return $currencyCode;

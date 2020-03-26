@@ -9,11 +9,14 @@ final class TimezoneField implements FieldInterface
 {
     use FieldTrait;
 
-    public function __construct()
+    public static function new(string $propertyName, ?string $label = null): self
     {
-        $this
-            ->setType('timezone')
+        return (new self())
+            ->setFieldFqcn(__CLASS__)
+            ->setProperty($propertyName)
+            ->setLabel($label)
+            ->setTemplateName('crud/field/timezone')
             ->setFormType(TimezoneType::class)
-            ->setTemplateName('crud/field/timezone');
+            ->addCssClass('field-timezone');
     }
 }

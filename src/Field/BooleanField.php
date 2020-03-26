@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 /*
  * TODO: create a BooleanConfigurator to check if user can edit the entity.
@@ -15,13 +16,16 @@ final class BooleanField implements FieldInterface
 
     public const OPTION_RENDER_AS_SWITCH = 'renderAsSwitch';
 
-    public function __construct()
+    public static function new(string $propertyName, ?string $label = null): self
     {
-        $this
-            ->setType('boolean')
-            ->setFormType(CheckboxType::class)
-            ->setTextAlign('center')
+        return (new self())
+            ->setFieldFqcn(__CLASS__)
+            ->setProperty($propertyName)
+            ->setLabel($label)
             ->setTemplateName('crud/field/boolean')
+            ->setFormType(CheckboxType::class)
+            ->addCssClass('field-boolean')
+            ->setTextAlign('center')
             ->setCustomOption(self::OPTION_RENDER_AS_SWITCH, true);
     }
 

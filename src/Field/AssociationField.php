@@ -16,12 +16,15 @@ final class AssociationField implements FieldInterface
     /** @internal this option is intended for internal use only */
     public const OPTION_DOCTRINE_ASSOCIATION_TYPE = 'associationType';
 
-    public function __construct()
+    public static function new(string $propertyName, ?string $label = null): self
     {
-        $this
-            ->setType('association')
-            ->setFormType(EntityType::class)
+        return (new self())
+            ->setFieldFqcn(__CLASS__)
+            ->setProperty($propertyName)
+            ->setLabel($label)
             ->setTemplateName('crud/field/association')
+            ->setFormType(EntityType::class)
+            ->addCssClass('field-association')
             ->setCustomOption(self::OPTION_AUTOCOMPLETE, false)
             ->setCustomOption(self::OPTION_CRUD_CONTROLLER, null)
             ->setCustomOption(self::OPTION_RELATED_URL, null)

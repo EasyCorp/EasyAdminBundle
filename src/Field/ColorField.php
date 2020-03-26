@@ -12,12 +12,15 @@ final class ColorField implements FieldInterface
     public const OPTION_SHOW_SAMPLE = 'showSample';
     public const OPTION_SHOW_VALUE = 'showValue';
 
-    public function __construct()
+    public static function new(string $propertyName, ?string $label = null): self
     {
-        $this
-            ->setType('color')
-            ->setFormType(ColorType::class)
+        return (new self())
+            ->setFieldFqcn(__CLASS__)
+            ->setProperty($propertyName)
+            ->setLabel($label)
             ->setTemplateName('crud/field/color')
+            ->setFormType(ColorType::class)
+            ->addCssClass('field-color')
             ->setCustomOption(self::OPTION_SHOW_SAMPLE, true)
             ->setCustomOption(self::OPTION_SHOW_VALUE, false);
     }

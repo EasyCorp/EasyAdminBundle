@@ -2,9 +2,11 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
+use EasyCorp\Bundle\EasyAdminBundle\Collection\ActionCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionsDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
@@ -30,6 +32,47 @@ final class ActionFactory
         $this->translator = $translator;
         $this->urlGenerator = $urlGenerator;
         $this->crudUrlGenerator = $crudUrlGenerator;
+    }
+
+    public function processActions(EntityDto &$entityDto, ActionsDto $actionsDto): void
+    {
+        $adminContext = $this->adminContextProvider->getContext();
+        $defaultTranslationDomain = $adminContext->getI18n()->getTranslationDomain();
+        $defaultTranslationParameters = $adminContext->getI18n()->getTranslationParameters();
+        $currentPage = $adminContext->getCrud()->getCurrentPage();
+
+        $builtActions = [];
+        foreach ($actionsDto->getActions() as $actionDto) {
+            // TODO: remove this when we reenable "batch actions"
+            if ($actionDto->isBatchAction()) {
+                throw new \RuntimeException(sprintf('Batch actions are not supported yet, but we\'ll add support for them very soon. Meanwhile, remove the "%s" batch action from the "%s" page.', $actionDto->getName(), $currentPage));
+            }
+
+            if (false === $this->authChecker->isGranted(Permission::EA_EXECUTE_ACTION, $actionDto)) {
+                continue;
+            }
+
+            if (Crud::PAGE_INDEX !== $currentPage && $actionDto->isBatchAction()) {
+                throw new \RuntimeException(sprintf('Batch actions can be added only to the "index" page, but the "%s" batch action is defined in the "%s" page.', $actionDto->getName(), $currentPage));
+            }
+
+            if (false === $actionDto->getLabel()) {
+                $actionDto->setHtmlAttributes(array_merge(['title' => $actionDto->getName()], $actionDto->getHtmlAttributes()));
+            } else {
+                $translationParameters = array_merge($defaultTranslationParameters, $actionDto->getTranslationParameters());
+                $translatedActionLabel = $this->translator->trans($actionDto->getLabel(), $translationParameters, $actionDto->getTranslationDomain() ?? $defaultTranslationDomain);
+                $actionDto->setLabel($translatedActionLabel);
+            }
+
+            $defaultTemplatePath = $adminContext->getTemplatePath('crud/action');
+            $actionDto->setTemplatePath($actionDto->getTemplatePath() ?? $defaultTemplatePath);
+
+            $actionDto->setLinkUrl($this->generateActionUrl($currentPage, $adminContext->getRequest(), $actionDto));
+
+            $builtActions[] = $actionDto;
+        }
+
+        $entityDto->setActions(ActionCollection::new($builtActions));
     }
 
     public function create(ActionsDto $actionsDto): ActionsDto

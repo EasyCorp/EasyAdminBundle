@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 final class AvatarField implements FieldInterface
@@ -12,12 +13,15 @@ final class AvatarField implements FieldInterface
     public const OPTION_IS_GRAVATAR_EMAIL = 'isGravatarEmail';
     public const OPTION_HEIGHT = 'height';
 
-    public function __construct()
+    public static function new(string $propertyName, ?string $label = null): self
     {
-        $this
-            ->setType('avatar')
-            ->setFormType(TextType::class)
+        return (new self())
+            ->setFieldFqcn(__CLASS__)
+            ->setProperty($propertyName)
+            ->setLabel($label)
             ->setTemplateName('crud/field/avatar')
+            ->setFormType(TextType::class)
+            ->addCssClass('field-avatar')
             ->setCustomOption(self::OPTION_IS_GRAVATAR_EMAIL, false)
             ->setCustomOption(self::OPTION_HEIGHT, null);
     }

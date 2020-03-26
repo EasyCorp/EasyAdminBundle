@@ -9,11 +9,14 @@ final class EmailField implements FieldInterface
 {
     use FieldTrait;
 
-    public function __construct()
+    public static function new(string $propertyName, ?string $label = null): self
     {
-        $this
-            ->setType('email')
+        return (new self())
+            ->setFieldFqcn(__CLASS__)
+            ->setProperty($propertyName)
+            ->setLabel($label)
+            ->setTemplateName('crud/field/email')
             ->setFormType(EmailType::class)
-            ->setTemplateName('crud/field/email');
+            ->addCssClass('field-email');
     }
 }

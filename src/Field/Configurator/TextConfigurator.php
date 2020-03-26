@@ -3,21 +3,23 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Field\Configurator;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextAreaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use function Symfony\Component\String\u;
 
 final class TextConfigurator implements FieldConfiguratorInterface
 {
-    public function supports(FieldInterface $field, EntityDto $entityDto): bool
+    public function supports(FieldDto $field, EntityDto $entityDto): bool
     {
-        return $field instanceof TextField || $field instanceof TextAreaField;
+        return in_array($field->getFieldFqcn(), [TextField::class, TextAreaField::class], true);
     }
 
-    public function configure(FieldInterface $field, EntityDto $entityDto, string $action): void
+    public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
     {
         if ($field instanceof TextAreaField) {
             $field->setFormTypeOptionIfNotSet('attr.rows', $field->getCustomOption(TextAreaField::OPTION_NUM_OF_ROWS));
@@ -28,7 +30,8 @@ final class TextConfigurator implements FieldConfiguratorInterface
         }
 
         $configuredMaxLength = $field->getCustomOption(TextAreaField::OPTION_MAX_LENGTH);
-        $defaultMaxLength = Action::DETAIL === $action ? PHP_INT_MAX : 64;
+        $isDetailAction = Action::DETAIL === $context->getCrud()->getCurrentAction();
+        $defaultMaxLength = $isDetailAction ? PHP_INT_MAX : 64;
         $formattedValue = u($field->getValue())->truncate($configuredMaxLength ?? $defaultMaxLength, '…');
 
         $field->setFormattedValue($formattedValue);

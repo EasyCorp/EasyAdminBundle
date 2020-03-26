@@ -9,12 +9,15 @@ final class DateField implements FieldInterface
 {
     use FieldTrait;
 
-    public function __construct()
+    public static function new(string $propertyName, ?string $label = null): self
     {
-        $this
-            ->setType('date')
-            ->setFormType(DateType::class)
+        return (new self())
+            ->setFieldFqcn(__CLASS__)
+            ->setProperty($propertyName)
+            ->setLabel($label)
             ->setTemplateName('crud/field/date')
+            ->setFormType(DateType::class)
+            ->addCssClass('field-date')
             // the proper default values of these options are set on the Crud class
             ->setCustomOption(DateTimeField::OPTION_DATE_FORMAT, null)
             ->setCustomOption(DateTimeField::OPTION_DATETIME_PATTERN, null)

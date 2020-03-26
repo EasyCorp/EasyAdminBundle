@@ -3,26 +3,29 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Field\Configurator;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AvatarField;
 
 final class AvatarConfigurator implements FieldConfiguratorInterface
 {
-    public function supports(FieldInterface $field, EntityDto $entityDto): bool
+    public function supports(FieldDto $field, EntityDto $entityDto): bool
     {
-        return $field instanceof AvatarField;
+        return AvatarField::class === $field->getFieldFqcn();
     }
 
-    public function configure(FieldInterface $field, EntityDto $entityDto, string $action): void
+    public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
     {
-        if (Action::INDEX === $action) {
+        if (Action::INDEX === $context->getCrud()->getCurrentAction()) {
             $field->setLabel(null);
         }
 
         if (null === $field->getCustomOption(AvatarField::OPTION_HEIGHT)) {
-            $field->setCustomOption(AvatarField::OPTION_HEIGHT, Action::DETAIL === $action ? 48 : 28);
+            $isDetailAction = Action::DETAIL === $context->getCrud()->getCurrentAction();
+            $field->setCustomOption(AvatarField::OPTION_HEIGHT, $isDetailAction ? 48 : 28);
         }
 
         if ($field->getCustomOption(AvatarField::OPTION_IS_GRAVATAR_EMAIL)) {

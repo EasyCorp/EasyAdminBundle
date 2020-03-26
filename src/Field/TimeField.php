@@ -9,12 +9,15 @@ final class TimeField implements FieldInterface
 {
     use FieldTrait;
 
-    public function __construct()
+    public static function new(string $propertyName, ?string $label = null): self
     {
-        $this
-            ->setType('time')
-            ->setFormType(DateTimeType::class)
+        return (new self())
+            ->setFieldFqcn(__CLASS__)
+            ->setProperty($propertyName)
+            ->setLabel($label)
             ->setTemplateName('crud/field/time')
+            ->setFormType(DateTimeType::class)
+            ->addCssClass('field-time')
             // the proper default values of these options are set on the Crud class
             ->setCustomOption(DateTimeField::OPTION_TIME_FORMAT, null)
             ->setCustomOption(DateTimeField::OPTION_DATETIME_PATTERN, null)

@@ -12,12 +12,15 @@ final class SelectField implements FieldInterface
     public const OPTION_AUTOCOMPLETE = 'autocomplete';
     public const OPTION_CHOICES = 'choices';
 
-    public function __construct()
+    public static function new(string $propertyName, ?string $label = null): self
     {
-        $this
-            ->setType('select')
-            ->setFormType(ChoiceType::class)
+        return (new self())
+            ->setFieldFqcn(__CLASS__)
+            ->setProperty($propertyName)
+            ->setLabel($label)
             ->setTemplateName('crud/field/select')
+            ->setFormType(ChoiceType::class)
+            ->addCssClass('field-select')
             ->setCustomOption(self::OPTION_CHOICES, null);
     }
 

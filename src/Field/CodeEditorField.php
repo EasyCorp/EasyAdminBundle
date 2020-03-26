@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CodeEditorType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 final class CodeEditorField implements FieldInterface
 {
@@ -16,12 +17,15 @@ final class CodeEditorField implements FieldInterface
 
     private const ALLOWED_LANGUAGES = ['css', 'dockerfile', 'js', 'markdown', 'nginx', 'php', 'shell', 'sql', 'twig', 'xml', 'yaml-frontmatter', 'yaml'];
 
-    public function __construct()
+    public static function new(string $propertyName, ?string $label = null): self
     {
-        $this
-            ->setType('code_editor')
-            ->setFormType(CodeEditorType::class)
+        return (new self())
+            ->setFieldFqcn(__CLASS__)
+            ->setProperty($propertyName)
+            ->setLabel($label)
             ->setTemplateName('crud/field/code_editor')
+            ->setFormType(CodeEditorType::class)
+            ->addCssClass('field-code_editor')
             ->addCssFiles('bundles/easyadmin/form-type-code-editor.css')
             ->addJsFiles('bundles/easyadmin/form-type-code-editor.js')
             ->setCustomOption(self::OPTION_INDENT_WITH_TABS, false)

@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 final class DateTimeField implements FieldInterface
 {
@@ -16,12 +17,15 @@ final class DateTimeField implements FieldInterface
     public const OPTION_TIME_FORMAT = 'timeFormat';
     public const OPTION_TIMEZONE = 'timezone';
 
-    public function __construct()
+    public static function new(string $propertyName, ?string $label = null): self
     {
-        $this
-            ->setType('datetime')
-            ->setFormType(DateTimeType::class)
+        return (new self())
+            ->setFieldFqcn(__CLASS__)
+            ->setProperty($propertyName)
+            ->setLabel($label)
             ->setTemplateName('crud/field/datetime')
+            ->setFormType(DateTimeType::class)
+            ->addCssClass('field-datetime')
             // the proper default values of these options are set on the Crud class
             ->setCustomOption(self::OPTION_DATE_FORMAT, null)
             ->setCustomOption(self::OPTION_TIME_FORMAT, null)

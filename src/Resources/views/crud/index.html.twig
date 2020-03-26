@@ -97,7 +97,7 @@
                         {% endif %}
 
                         {% for field in entities|first.fields ?? [] %}
-                            {% set isSortingField = (field.name == sort_field_name) or ('association' == field.type and sort_field_name starts with field.name ~ '.') %}
+                            {% set isSortingField = (field.name == sort_field_name) or ('field-association' in field.cssClass and sort_field_name starts with field.name ~ '.') %}
                             {% set nextSortDirection = isSortingField ? (sort_order == 'DESC' ? 'ASC' : 'DESC') : 'DESC' %}
                             {% set column_icon = isSortingField ? (nextSortDirection == 'DESC' ? 'fa-arrow-up' : 'fa-arrow-down') : 'fa-sort' %}
 

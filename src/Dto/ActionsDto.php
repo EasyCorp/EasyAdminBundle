@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
+use EasyCorp\Bundle\EasyAdminBundle\Collection\ActionCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 
 final class ActionsDto
@@ -79,11 +80,11 @@ final class ActionsDto
     }
 
     /**
-     * @return ActionDto[]
+     * @return array|ActionCollection
      */
-    public function getActions(): array
+    public function getActions()
     {
-        return null === $this->pageName ? $this->actions : $this->actions[$this->pageName];
+        return null === $this->pageName ? $this->actions : ActionCollection::new($this->actions[$this->pageName]);
     }
 
     /**
@@ -109,9 +110,11 @@ final class ActionsDto
      */
     public function getGlobalActions(): array
     {
-        return array_filter($this->actions[$this->pageName], static function (ActionDto $action) {
+        $globalActions = array_filter($this->actions[$this->pageName], static function (ActionDto $action) {
             return $action->isGlobalAction();
         });
+
+        return ActionCollection::new($globalActions);
     }
 
     /**
@@ -119,9 +122,11 @@ final class ActionsDto
      */
     public function getBatchActions(): array
     {
-        return array_filter($this->actions[$this->pageName], static function (ActionDto $action) {
+        $batchActions = array_filter($this->actions[$this->pageName], static function (ActionDto $action) {
             return $action->isBatchAction();
         });
+
+        return ActionCollection::new($batchActions);
     }
 
     /**
@@ -129,8 +134,10 @@ final class ActionsDto
      */
     public function getEntityActions(): array
     {
-        return array_filter($this->actions[$this->pageName], static function (ActionDto $action) {
+        $entityActions = array_filter($this->actions[$this->pageName], static function (ActionDto $action) {
             return $action->isEntityAction();
         });
+
+        return ActionCollection::new($entityActions);
     }
 }

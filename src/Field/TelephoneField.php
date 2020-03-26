@@ -9,11 +9,14 @@ final class TelephoneField implements FieldInterface
 {
     use FieldTrait;
 
-    public function __construct()
+    public static function new(string $propertyName, ?string $label = null): self
     {
-        $this
-            ->setType('telephone')
+        return (new self())
+            ->setFieldFqcn(__CLASS__)
+            ->setProperty($propertyName)
+            ->setLabel($label)
+            ->setTemplateName('crud/field/telephone')
             ->setFormType(TelType::class)
-            ->setTemplateName('crud/field/telephone');
+            ->addCssClass('field-telephone');
     }
 }

@@ -4,9 +4,11 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Field\Configurator;
 
 use Doctrine\ORM\PersistentCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use Symfony\Component\Form\Extension\Core\Type\CountryType;
 use Symfony\Component\Form\Extension\Core\Type\CurrencyType;
@@ -17,12 +19,12 @@ use function Symfony\Component\String\u;
 
 final class CollectionConfigurator implements FieldConfiguratorInterface
 {
-    public function supports(FieldInterface $field, EntityDto $entityDto): bool
+    public function supports(FieldDto $field, EntityDto $entityDto): bool
     {
-        return $field instanceof CollectionField;
+        return CollectionField::class === $field->getFieldFqcn();
     }
 
-    public function configure(FieldInterface $field, EntityDto $entityDto, string $action): void
+    public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
     {
         if (null !== $entryTypeFqcn = $field->getCustomOptions()->get(CollectionField::OPTION_ENTRY_TYPE)) {
             $field->setFormTypeOption('entry_type', $entryTypeFqcn);
@@ -53,10 +55,10 @@ final class CollectionConfigurator implements FieldConfiguratorInterface
             $field->setCustomOption(CollectionField::OPTION_ENTRY_IS_COMPLEX, $isComplexEntry);
         }
 
-        $field->setFormattedValue($this->formatCollection($field, $action));
+        $field->setFormattedValue($this->formatCollection($field, $context));
     }
 
-    private function formatCollection(FieldInterface $field, string $action)
+    private function formatCollection(FieldDto $field, AdminContext $context)
     {
         $doctrineMetadata = $field->getDoctrineMetadata();
         if ('array' !== $doctrineMetadata->get('type') && !$field->getValue() instanceof PersistentCollection) {
@@ -64,7 +66,7 @@ final class CollectionConfigurator implements FieldConfiguratorInterface
         }
 
         $collectionItemsAsText = [];
-        foreach ($field->getValue() as $item) {
+        foreach ($field->getValue() ?? [] as $item) {
             if (!\is_string($item) && !method_exists($item, '__toString')) {
                 return $this->countNumElements($field->getValue());
             }
@@ -72,7 +74,9 @@ final class CollectionConfigurator implements FieldConfiguratorInterface
             $collectionItemsAsText[] = (string) $item;
         }
 
-        return u(', ')->join($collectionItemsAsText)->truncate(Action::DETAIL === $action ? 512 : 32, '…');
+        $isDetailAction = Action::DETAIL === $context->getCrud()->getCurrentAction();
+
+        return u(', ')->join($collectionItemsAsText)->truncate($isDetailAction ? 512 : 32, '…');
     }
 
     private function countNumElements($collection): int

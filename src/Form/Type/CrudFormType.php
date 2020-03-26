@@ -6,7 +6,7 @@ use ArrayObject;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetsDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
-use EasyCorp\Bundle\EasyAdminBundle\Field\FormPanelField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Form\EventListener\EasyAdminTabSubscriber;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\TypeConfiguratorInterface;
 use Symfony\Bridge\Doctrine\Form\DoctrineOrmTypeGuesser;
@@ -79,7 +79,7 @@ class CrudFormType extends AbstractType
                 $formPanels[$currentFormPanel] = [
                     'form_tab' => $currentFormTab ?? null,
                     'label' => $fieldDto->getLabel(),
-                    'icon' => $fieldDto->getCustomOptions()->get(FormPanelField::OPTION_ICON),
+                    'icon' => $fieldDto->getCustomOptions()->get(FormField::OPTION_ICON),
                     'help' => $fieldDto->getHelp(),
                 ];
 

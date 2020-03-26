@@ -2,36 +2,32 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Field\Configurator;
 
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Intl\IntlFormatter;
-use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 
 final class DateTimeConfigurator implements FieldConfiguratorInterface
 {
-    private $adminContextProvider;
     private $intlFormatter;
 
-    public function __construct(AdminContextProvider $adminContextProvider, IntlFormatter $intlFormatter)
+    public function __construct(IntlFormatter $intlFormatter)
     {
-        $this->adminContextProvider = $adminContextProvider;
         $this->intlFormatter = $intlFormatter;
     }
 
-    public function supports(FieldInterface $field, EntityDto $entityDto): bool
+    public function supports(FieldDto $field, EntityDto $entityDto): bool
     {
-        return $field instanceof DateTimeField
-            || $field instanceof DateField
-            || $field instanceof TimeField;
+        return in_array($field->getFieldFqcn(), [DateTimeField::class, DateField::class, TimeField::class], true);
     }
 
-    public function configure(FieldInterface $field, EntityDto $entityDto, string $action): void
+    public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
     {
-        $crud = $this->adminContextProvider->getContext()->getCrud();
+        $crud = $context->getCrud();
         $defaultDateFormat = $crud->getDateFormat();
         $defaultTimeFormat = $crud->getTimeFormat();
         $defaultDateTimePattern = $crud->getDateTimePattern();
@@ -43,11 +39,11 @@ final class DateTimeConfigurator implements FieldConfiguratorInterface
         $timezone = $field->getCustomOption(DateTimeField::OPTION_TIMEZONE) ?? $defaultTimezone;
 
         $formattedValue = $field->getValue();
-        if ($field instanceof DateTimeField) {
+        if (DateTimeField::class === $field->getFieldFqcn()) {
             $formattedValue = $this->intlFormatter->formatDateTime($field->getValue(), $dateFormat, $timeFormat, $dateTimePattern, $timezone);
-        } elseif ($field instanceof DateField) {
+        } elseif (DateField::class === $field->getFieldFqcn()) {
             $formattedValue = $this->intlFormatter->formatDate($field->getValue(), $dateFormat, $dateTimePattern, $timezone);
-        } elseif ($field instanceof TimeField) {
+        } elseif (TimeField::class === $field->getFieldFqcn()) {
             $formattedValue = $this->intlFormatter->formatTime($field->getValue(), $timeFormat, $dateTimePattern, $timezone);
         }
 

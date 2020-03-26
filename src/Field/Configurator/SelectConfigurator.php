@@ -2,38 +2,36 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Field\Configurator;
 
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\SelectField;
-use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class SelectConfigurator implements FieldConfiguratorInterface
 {
-    private $adminContextProvider;
     private $translator;
 
-    public function __construct(AdminContextProvider $adminContextProvider, TranslatorInterface $translator)
+    public function __construct(TranslatorInterface $translator)
     {
-        $this->adminContextProvider = $adminContextProvider;
         $this->translator = $translator;
     }
 
-    public function supports(FieldInterface $field, EntityDto $entityDto): bool
+    public function supports(FieldDto $field, EntityDto $entityDto): bool
     {
-        return $field instanceof SelectField;
+        return SelectField::class === $field->getFieldFqcn();
     }
 
-    public function configure(FieldInterface $field, EntityDto $entityDto, string $action): void
+    public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
     {
         $choices = $field->getCustomOption(SelectField::OPTION_CHOICES);
         if (empty($choices)) {
-            throw new \InvalidArgumentException(sprintf('The "%s" select field must define its possible choices using the setChoices() method.', $field->getProperty()));
+            throw new \InvalidArgumentException(sprintf('The "%s" select field must define its possible choices using the setChoices() method.', $field->getName()));
         }
 
         $translatedChoices = [];
-        $translationParameters = $this->adminContextProvider->getContext()->getI18n()->getTranslationParameters();
+        $translationParameters = $context->getI18n()->getTranslationParameters();
         foreach ($choices as $key => $value) {
             $translatedKey = $this->translator->trans($key, $translationParameters);
             $translatedChoices[$translatedKey] = $value;

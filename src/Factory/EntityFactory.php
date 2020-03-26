@@ -8,9 +8,10 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\Persistence\Proxy;
 use Doctrine\Common\Util\ClassUtils;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\EntityDtoCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Entity;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionsDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityBuiltEvent;
@@ -36,6 +37,16 @@ final class EntityFactory
         $this->eventDispatcher = $eventDispatcher;
     }
 
+    public function processFields(EntityDto $entityDto, FieldCollection $fields): void
+    {
+        $this->fieldFactory->processFields($entityDto, $fields);
+    }
+
+    public function processActions(EntityDto $entityDto, ActionsDto $actionsDto): void
+    {
+        $this->actionFactory->processActions($entityDto, $actionsDto);
+    }
+
     /**
      * @param FieldInterface[] $fields
      */
@@ -55,7 +66,7 @@ final class EntityFactory
     }
 
     /**
-     * @param ActionDto[] $actionsDto
+     * @param FieldDto[] $actionsDto
      */
     public function createAll(EntityDto $entityDto, iterable $entityInstances, iterable $configuredProperties, ActionsDto $actionsDto): EntityDtoCollection
     {

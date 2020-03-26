@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 final class TextAreaField implements FieldInterface
@@ -13,12 +14,15 @@ final class TextAreaField implements FieldInterface
     public const OPTION_NUM_OF_ROWS = 'numOfRows';
     public const OPTION_RENDER_AS_HTML = 'renderAsHtml';
 
-    public function __construct()
+    public static function new(string $propertyName, ?string $label = null): self
     {
-        $this
-            ->setType('textarea')
-            ->setFormType(TextareaType::class)
+        return (new self())
+            ->setFieldFqcn(__CLASS__)
+            ->setProperty($propertyName)
+            ->setLabel($label)
             ->setTemplateName('crud/field/textarea')
+            ->setFormType(TextareaType::class)
+            ->addCssClass('field-textarea')
             ->setCustomOption(self::OPTION_MAX_LENGTH, null)
             ->setCustomOption(self::OPTION_NUM_OF_ROWS, 5)
             ->setCustomOption(self::OPTION_RENDER_AS_HTML, false);

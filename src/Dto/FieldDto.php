@@ -6,10 +6,11 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 
 final class FieldDto
 {
-    private $type;
+    private $fieldFqcn;
     private $name;
     private $value;
     private $formattedValue;
+    private $formatValueCallable;
     private $label;
     private $formType;
     private $formTypeOptions;
@@ -26,27 +27,11 @@ final class FieldDto
     private $customOptions;
     private $doctrineMetadata;
 
-    public function __construct(string $type, string $name, $value, $formattedValue, ?string $formType, array $formTypeOptions, ?bool $sortable, ?bool $virtual, ?string $label, ?string $permission, ?string $textAlign, ?string $help, ?string $cssClass, array $translationParameters, ?string $templateName, ?string $templatePath, AssetsDto $assetDto, ParameterBag $customOptions, ParameterBag $doctrineMetadata)
+    public function __construct()
     {
-        $this->type = $type;
-        $this->name = $name;
-        $this->value = $value;
-        $this->formattedValue = $formattedValue;
-        $this->formType = $formType;
-        $this->formTypeOptions = $formTypeOptions;
-        $this->sortable = $sortable;
-        $this->virtual = $virtual;
-        $this->label = $label;
-        $this->permission = $permission;
-        $this->textAlign = $textAlign;
-        $this->help = $help;
-        $this->cssClass = $cssClass;
-        $this->translationParameters = $translationParameters;
-        $this->templateName = $templateName;
-        $this->templatePath = $templatePath;
-        $this->assets = $assetDto;
-        $this->customOptions = $customOptions;
-        $this->doctrineMetadata = $doctrineMetadata;
+        $this->formTypeOptions = [];
+        $this->translationParameters = [];
+        $this->customOptions = new ParameterBag();
     }
 
     public function getUniqueId(): string
@@ -54,14 +39,24 @@ final class FieldDto
         return spl_object_hash($this);
     }
 
+    public function getFieldFqcn(): string
+    {
+        return $this->fieldFqcn;
+    }
+
+    public function setFieldFqcn(string $fieldFqcn): void
+    {
+        $this->fieldFqcn = $fieldFqcn;
+    }
+
     public function getName(): string
     {
         return $this->name;
     }
 
-    public function getType(): string
+    public function setName(string $name): void
     {
-        return $this->type;
+        $this->name = $name;
     }
 
     /**
@@ -70,6 +65,11 @@ final class FieldDto
     public function getValue()
     {
         return $this->value;
+    }
+
+    public function setValue($value): void
+    {
+        $this->value = $value;
     }
 
     /**
@@ -81,9 +81,29 @@ final class FieldDto
         return $this->formattedValue;
     }
 
+    public function setFormattedValue($formattedValue): void
+    {
+        $this->formattedValue = $formattedValue;
+    }
+
+    public function getFormatValueCallable(): ?callable
+    {
+        return $this->formatValueCallable;
+    }
+
+    public function setFormatValueCallable(callable $callable): void
+    {
+        $this->formatValueCallable = $callable;
+    }
+
     public function getLabel(): ?string
     {
         return $this->label;
+    }
+
+    public function setLabel(?string $label): void
+    {
+        $this->label = $label;
     }
 
     public function getFormType(): ?string
@@ -91,9 +111,57 @@ final class FieldDto
         return $this->formType;
     }
 
+    public function setFormType(string $formTypeFqcn): void
+    {
+        $this->formType = $formTypeFqcn;
+    }
+
     public function getFormTypeOptions(): array
     {
         return $this->formTypeOptions;
+    }
+
+    public function getFormTypeOption($optionName)
+    {
+        return $this->formTypeOptions[$optionName] ?? null;
+    }
+
+    public function setFormTypeOptions(array $formTypeOptions): void
+    {
+        $this->formTypeOptions = $formTypeOptions;
+    }
+
+    /**
+     * @param string $optionName You can use "dot" notation to set nested options (e.g. 'attr.class')
+     */
+    public function setFormTypeOption(string $optionName, $optionValue): self
+    {
+        // Code copied from https://github.com/adbario/php-dot-notation/blob/dc4053b44d71a5cf782e6c59dcbf09c78f036ceb/src/Dot.php#L437
+        // (c) Riku Särkinen <riku@adbar.io> - MIT License
+        $formTypeOptions = &$this->formTypeOptions;
+        foreach (explode('.', $optionName) as $key) {
+            if (!isset($formTypeOptions[$key]) || !\is_array($formTypeOptions[$key])) {
+                $formTypeOptions[$key] = [];
+            }
+
+            $formTypeOptions = &$formTypeOptions[$key];
+        }
+
+        $formTypeOptions = $optionValue;
+
+        return $this;
+    }
+
+    /**
+     * @param string $optionName You can use "dot" notation to set nested options (e.g. 'attr.class')
+     */
+    public function setFormTypeOptionIfNotSet(string $optionName, $optionValue): self
+    {
+        if (!$this->arrayNestedKeyExists($this->formTypeOptions, $optionName)) {
+            $this->setFormTypeOption($optionName, $optionValue);
+        }
+
+        return $this;
     }
 
     public function isSortable(): ?bool
@@ -101,9 +169,19 @@ final class FieldDto
         return $this->sortable;
     }
 
-    public function isVirtual(): bool
+    public function setSortable(bool $isSortable): void
+    {
+        $this->sortable = $isSortable;
+    }
+
+    public function isVirtual(): ?bool
     {
         return $this->virtual;
+    }
+
+    public function setVirtual(bool $isVirtual): void
+    {
+        $this->virtual = $isVirtual;
     }
 
     public function getTextAlign(): ?string
@@ -111,9 +189,19 @@ final class FieldDto
         return $this->textAlign;
     }
 
+    public function setTextAlign(string $textAlign): void
+    {
+        $this->textAlign = $textAlign;
+    }
+
     public function getPermission(): ?string
     {
         return $this->permission;
+    }
+
+    public function setPermission(string $permission): void
+    {
+        $this->permission = $permission;
     }
 
     public function getHelp(): ?string
@@ -121,9 +209,19 @@ final class FieldDto
         return $this->help;
     }
 
+    public function setHelp(string $help): void
+    {
+        $this->help = $help;
+    }
+
     public function getCssClass(): ?string
     {
         return $this->cssClass;
+    }
+
+    public function setCssClass(string $cssClass): void
+    {
+        $this->cssClass = $cssClass;
     }
 
     public function getTranslationParameters(): array
@@ -131,9 +229,29 @@ final class FieldDto
         return $this->translationParameters;
     }
 
-    public function getTemplatePath(): string
+    public function setTranslationParameters(array $translationParameters): void
+    {
+        $this->translationParameters = $translationParameters;
+    }
+
+    public function getTemplateName(): ?string
+    {
+        return $this->templateName;
+    }
+
+    public function setTemplateName(?string $templateName): void
+    {
+        $this->templateName = $templateName;
+    }
+
+    public function getTemplatePath(): ?string
     {
         return $this->templatePath;
+    }
+
+    public function setTemplatePath(?string $templatePath): void
+    {
+        $this->templatePath = $templatePath;
     }
 
     public function getAssets(): AssetsDto
@@ -141,13 +259,57 @@ final class FieldDto
         return $this->assets;
     }
 
+    public function setAssets(AssetsDto $assets): void
+    {
+        $this->assets = $assets;
+    }
+
     public function getCustomOptions(): ParameterBag
     {
         return $this->customOptions;
     }
 
+    public function getCustomOption(string $optionName)
+    {
+        return $this->customOptions->get($optionName);
+    }
+
+    public function setCustomOptions(ParameterBag $customOptions): void
+    {
+        $this->customOptions = $customOptions;
+    }
+
+    public function setCustomOption(string $optionName, $optionValue): void
+    {
+        $this->customOptions->set($optionName, $optionValue);
+    }
+
     public function getDoctrineMetadata(): ParameterBag
     {
         return $this->doctrineMetadata;
+    }
+
+    public function setDoctrineMetadata(array $metadata): void
+    {
+        $this->doctrineMetadata = new ParameterBag($metadata);
+    }
+
+    private function arrayNestedKeyExists(array $array, $key): bool
+    {
+        // Code copied from https://github.com/adbario/php-dot-notation/blob/dc4053b44d71a5cf782e6c59dcbf09c78f036ceb/src/Dot.php#L222
+        // (c) Riku Särkinen <riku@adbar.io> - MIT License
+        if (\array_key_exists($key, $array)) {
+            return true;
+        }
+
+        foreach (explode('.', $key) as $segment) {
+            if (!\is_array($array) || !\array_key_exists($segment, $array)) {
+                return false;
+            }
+
+            $array = $array[$segment];
+        }
+
+        return true;
     }
 }

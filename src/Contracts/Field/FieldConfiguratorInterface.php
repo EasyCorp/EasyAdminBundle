@@ -2,11 +2,13 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Contracts\Field;
 
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 
 interface FieldConfiguratorInterface
 {
-    public function supports(FieldInterface $field, EntityDto $entityDto): bool;
+    public function supports(FieldDto $field, EntityDto $entityDto): bool;
 
-    public function configure(FieldInterface $field, EntityDto $entityDto, string $action): void;
+    public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void;
 }

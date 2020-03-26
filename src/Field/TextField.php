@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 final class TextField implements FieldInterface
@@ -12,12 +13,15 @@ final class TextField implements FieldInterface
     public const OPTION_MAX_LENGTH = 'maxLength';
     public const OPTION_RENDER_AS_HTML = 'renderAsHtml';
 
-    public function __construct()
+    public static function new(string $propertyName, ?string $label = null): self
     {
-        $this
-            ->setType('text')
-            ->setFormType(TextType::class)
+        return (new self())
+            ->setFieldFqcn(__CLASS__)
+            ->setProperty($propertyName)
+            ->setLabel($label)
             ->setTemplateName('crud/field/text')
+            ->setFormType(TextType::class)
+            ->addCssClass('field-text')
             ->setCustomOption(self::OPTION_MAX_LENGTH, null)
             ->setCustomOption(self::OPTION_RENDER_AS_HTML, false);
     }

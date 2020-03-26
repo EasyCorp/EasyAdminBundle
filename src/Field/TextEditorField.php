@@ -11,12 +11,15 @@ final class TextEditorField implements FieldInterface
 
     public const OPTION_NUM_OF_ROWS = 'numOfRows';
 
-    public function __construct()
+    public static function new(string $propertyName, ?string $label = null): self
     {
-        $this
-            ->setType('text_editor')
-            ->setFormType(TextEditorType::class)
+        return (new self())
+            ->setFieldFqcn(__CLASS__)
+            ->setProperty($propertyName)
+            ->setLabel($label)
             ->setTemplateName('crud/field/text_editor')
+            ->setFormType(TextEditorType::class)
+            ->addCssClass('field-text_editor')
             ->addCssFiles('bundles/easyadmin/form-type-text-editor.css')
             ->addJsFiles('bundles/easyadmin/form-type-text-editor.js')
             ->setCustomOption(self::OPTION_NUM_OF_ROWS, null);

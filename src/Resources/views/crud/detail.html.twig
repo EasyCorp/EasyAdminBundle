@@ -26,7 +26,7 @@
     {% block detail_fields %}
         {% set row_number = 0 %}
         {% for field in entity.fields %}
-            {% set is_decoration_field = field.type == 'form_panel' %}
+            {% set is_decoration_field = 'field-form_panel' in field.cssClass %}
 
             {% if loop.first and not is_decoration_field %}
                 {% set row_number = 0 %}
@@ -108,7 +108,7 @@
 {% endmacro %}
 
 {% macro render_field(field, row_number) %}
-    <div class="data-row {{ row_number is even ? 'with-background' }} field-{{ field.type }} {{ field.cssClass ?? '' }}">
+    <div class="data-row {{ row_number is even ? 'with-background' }} {{ field.cssClass ?? '' }}">
         <dd>
             {{ field.label|raw }}
 

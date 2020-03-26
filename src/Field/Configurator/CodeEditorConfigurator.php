@@ -2,29 +2,22 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Field\Configurator;
 
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CodeEditorField;
-use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 
 final class CodeEditorConfigurator implements FieldConfiguratorInterface
 {
-    private $adminContextProvider;
-
-    public function __construct(AdminContextProvider $adminContextProvider)
+    public function supports(FieldDto $field, EntityDto $entityDto): bool
     {
-        $this->adminContextProvider = $adminContextProvider;
+        return CodeEditorField::class === $field->getFieldFqcn();
     }
 
-    public function supports(FieldInterface $field, EntityDto $entityDto): bool
+    public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
     {
-        return $field instanceof CodeEditorField;
-    }
-
-    public function configure(FieldInterface $field, EntityDto $entityDto, string $action): void
-    {
-        if ('rtl' === $this->adminContextProvider->getContext()->getI18n()->getTextDirection()) {
+        if ('rtl' === $context->getI18n()->getTextDirection()) {
             $field->addCssFiles('bundles/easyadmin/form-type-code-editor.rtl.css');
         }
     }

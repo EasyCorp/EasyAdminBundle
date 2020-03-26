@@ -8,6 +8,14 @@ final class Field implements FieldInterface
 {
     use FieldTrait;
 
+    public static function new(string $propertyName, ?string $label = null): self
+    {
+        return (new self())
+            ->setFieldFqcn(__CLASS__)
+            ->setProperty($propertyName)
+            ->setLabel($label);
+    }
+
     /**
      * This method transforms the current object into any other object that implements
      * FieldInterface. It's needed when using autoconfigurable properties, where

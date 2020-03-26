@@ -15,12 +15,15 @@ final class MoneyField implements FieldInterface
     public const OPTION_NUM_DECIMALS = 'numDecimals';
     public const OPTION_STORED_AS_CENTS = 'storedAsCents';
 
-    public function __construct()
+    public static function new(string $propertyName, ?string $label = null): self
     {
-        $this
-            ->setType('money')
-            ->setFormType(MoneyType::class)
+        return (new self())
+            ->setFieldFqcn(__CLASS__)
+            ->setProperty($propertyName)
+            ->setLabel($label)
             ->setTemplateName('crud/field/money')
+            ->setFormType(MoneyType::class)
+            ->addCssClass('field-money')
             ->setTextAlign('right')
             ->setCustomOption(self::OPTION_CURRENCY, null)
             ->setCustomOption(self::OPTION_CURRENCY_PROPERTY_PATH, null)

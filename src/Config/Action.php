@@ -3,7 +3,6 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Config;
 
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 
 final class Action
 {

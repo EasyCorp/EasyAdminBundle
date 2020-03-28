@@ -84,7 +84,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         $targetCrudControllerFqcn = $field->getCustomOption(AssociationField::OPTION_CRUD_CONTROLLER);
 
         $targetEntityDto = null === $field->getValue()
-            ? $this->entityFactory->createForEntityFqcn($targetEntityFqcn)
+            ? $this->entityFactory->create($targetEntityFqcn)
             : $this->entityFactory->createForEntityInstance($field->getValue());
         $field->setFormTypeOptionIfNotSet('class', $targetEntityDto->getFqcn());
 

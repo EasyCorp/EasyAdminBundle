@@ -2,9 +2,6 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
-use Doctrine\Common\Persistence\ManagerRegistry;
-use Doctrine\Common\Persistence\Mapping\ClassMetadata;
-use Doctrine\Common\Persistence\ObjectManager;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
@@ -16,7 +13,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\DashboardDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\I18nDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
-use EasyCorp\Bundle\EasyAdminBundle\Exception\EntityNotFoundException;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\CrudControllerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\TemplateRegistry;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,16 +22,16 @@ use Symfony\Component\Security\Core\User\UserInterface;
 final class AdminContextFactory
 {
     private $tokenStorage;
-    private $doctrine;
     private $menuFactory;
     private $crudControllers;
+    private $entityFactory;
 
-    public function __construct(?TokenStorageInterface $tokenStorage, ManagerRegistry $doctrine, MenuFactory $menuFactory, iterable $crudControllers)
+    public function __construct(?TokenStorageInterface $tokenStorage, MenuFactory $menuFactory, iterable $crudControllers, EntityFactory $entityFactory)
     {
         $this->tokenStorage = $tokenStorage;
-        $this->doctrine = $doctrine;
         $this->menuFactory = $menuFactory;
         $this->crudControllers = CrudControllerRegistry::new($crudControllers);
+        $this->entityFactory = $entityFactory;
     }
 
     public function create(Request $request, DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController): AdminContext
@@ -197,45 +193,6 @@ final class AdminContextFactory
             return null;
         }
 
-        $entityFqcn = $crudDto->getEntityFqcn();
-        $entityPermission = $crudDto->getEntityPermission();
-        $entityId = $request->query->get('entityId');
-        $entityInstance = null === $entityId ? null : $this->getEntityInstance($entityFqcn, $entityId);
-        $entityMetadata = $this->getEntityMetadata($entityFqcn);
-
-        return new EntityDto($entityFqcn, $entityMetadata, $entityPermission, $entityInstance);
-    }
-
-    private function getEntityMetadata(string $entityFqcn): ClassMetadata
-    {
-        $entityManager = $this->getEntityManager($entityFqcn);
-        $entityMetadata = $entityManager->getClassMetadata($entityFqcn);
-
-        if (1 !== \count($entityMetadata->getIdentifierFieldNames())) {
-            throw new \RuntimeException(sprintf('EasyAdmin does not support Doctrine entities with composite primary keys (such as the ones used in the "%s" entity).', $entityFqcn));
-        }
-
-        return $entityMetadata;
-    }
-
-    private function getEntityInstance($entityFqcn, $entityIdValue)
-    {
-        $entityManager = $this->getEntityManager($entityFqcn);
-        if (null === $entityInstance = $entityManager->getRepository($entityFqcn)->find($entityIdValue)) {
-            $entityIdName = $entityManager->getClassMetadata($entityFqcn)->getIdentifierFieldNames()[0];
-
-            throw new EntityNotFoundException(['entity_name' => $entityFqcn, 'entity_id_name' => $entityIdName, 'entity_id_value' => $entityIdValue]);
-        }
-
-        return $entityInstance;
-    }
-
-    private function getEntityManager(string $entityFqcn): ObjectManager
-    {
-        if (null === $entityManager = $this->doctrine->getManagerForClass($entityFqcn)) {
-            throw new \RuntimeException(sprintf('There is no Doctrine Entity Manager defined for the "%s" class', $entityFqcn));
-        }
-
-        return $entityManager;
+        return $this->entityFactory->create($crudDto->getEntityFqcn(), $request->query->get('entityId'), $crudDto->getEntityPermission());
     }
 }

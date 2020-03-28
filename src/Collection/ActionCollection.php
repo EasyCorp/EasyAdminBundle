@@ -3,9 +3,10 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Collection;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Collection\CollectionInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
 
-final class ActionCollection implements \ArrayAccess, \Countable, \IteratorAggregate
+final class ActionCollection implements CollectionInterface
 {
     /** @var ActionDto[] */
     private $actions;

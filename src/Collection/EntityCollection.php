@@ -2,9 +2,10 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Collection;
 
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Collection\CollectionInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 
-final class EntityCollection implements \ArrayAccess, \Countable, \IteratorAggregate
+final class EntityCollection implements CollectionInterface
 {
     /** @var EntityDto[] */
     private $entities;

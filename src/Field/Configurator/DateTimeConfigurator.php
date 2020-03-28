@@ -22,7 +22,7 @@ final class DateTimeConfigurator implements FieldConfiguratorInterface
 
     public function supports(FieldDto $field, EntityDto $entityDto): bool
     {
-        return in_array($field->getFieldFqcn(), [DateTimeField::class, DateField::class, TimeField::class], true);
+        return \in_array($field->getFieldFqcn(), [DateTimeField::class, DateField::class, TimeField::class], true);
     }
 
     public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void

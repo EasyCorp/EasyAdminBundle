@@ -46,7 +46,7 @@ final class FieldCollection implements \ArrayAccess, \Countable, \IteratorAggreg
 
     public function offsetExists($offset)
     {
-        return array_key_exists($offset, $this->fields);
+        return \array_key_exists($offset, $this->fields);
     }
 
     public function offsetGet($offset)
@@ -66,7 +66,7 @@ final class FieldCollection implements \ArrayAccess, \Countable, \IteratorAggreg
 
     public function count()
     {
-        return count($this->fields);
+        return \count($this->fields);
     }
 
     /**
@@ -79,6 +79,7 @@ final class FieldCollection implements \ArrayAccess, \Countable, \IteratorAggreg
 
     /**
      * @param FieldInterface[]|string[] $fields
+     *
      * @return FieldDto[]
      */
     private function processFields(iterable $fields): array

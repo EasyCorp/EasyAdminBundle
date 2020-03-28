@@ -31,7 +31,7 @@ final class EntityCollection implements \ArrayAccess, \Countable, \IteratorAggre
 
     public function offsetExists($offset)
     {
-        return array_key_exists($offset, $this->entities);
+        return \array_key_exists($offset, $this->entities);
     }
 
     public function offsetGet($offset)
@@ -51,7 +51,7 @@ final class EntityCollection implements \ArrayAccess, \Countable, \IteratorAggre
 
     public function count()
     {
-        return count($this->entities);
+        return \count($this->entities);
     }
 
     /**

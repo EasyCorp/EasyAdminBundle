@@ -4,7 +4,6 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CodeEditorType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 final class CodeEditorField implements FieldInterface
 {

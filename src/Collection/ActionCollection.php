@@ -33,31 +33,31 @@ final class ActionCollection implements \ArrayAccess, \Countable, \IteratorAggre
         return new self($actions);
     }
 
-    public function getGlobalActions(): ActionCollection
+    public function getGlobalActions(): self
     {
         $globalActions = array_filter($this->actions, static function (ActionDto $action) {
             return $action->isGlobalAction();
         });
 
-        return ActionCollection::new($globalActions);
+        return self::new($globalActions);
     }
 
-    public function getBatchActions(): ActionCollection
+    public function getBatchActions(): self
     {
         $batchActions = array_filter($this->actions, static function (ActionDto $action) {
             return $action->isBatchAction();
         });
 
-        return ActionCollection::new($batchActions);
+        return self::new($batchActions);
     }
 
-    public function getEntityActions(): ActionCollection
+    public function getEntityActions(): self
     {
         $entityActions = array_filter($this->actions, static function (ActionDto $action) {
             return $action->isEntityAction();
         });
 
-        return ActionCollection::new($entityActions);
+        return self::new($entityActions);
     }
 
     public function get(string $actionName): ?ActionDto
@@ -67,7 +67,7 @@ final class ActionCollection implements \ArrayAccess, \Countable, \IteratorAggre
 
     public function offsetExists($offset)
     {
-        return array_key_exists($offset, $this->actions);
+        return \array_key_exists($offset, $this->actions);
     }
 
     public function offsetGet($offset)
@@ -87,7 +87,7 @@ final class ActionCollection implements \ArrayAccess, \Countable, \IteratorAggre
 
     public function count()
     {
-        return count($this->actions);
+        return \count($this->actions);
     }
 
     /**

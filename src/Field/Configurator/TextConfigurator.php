@@ -5,7 +5,6 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Field\Configurator;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextAreaField;
@@ -16,7 +15,7 @@ final class TextConfigurator implements FieldConfiguratorInterface
 {
     public function supports(FieldDto $field, EntityDto $entityDto): bool
     {
-        return in_array($field->getFieldFqcn(), [TextField::class, TextAreaField::class], true);
+        return \in_array($field->getFieldFqcn(), [TextField::class, TextAreaField::class], true);
     }
 
     public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void

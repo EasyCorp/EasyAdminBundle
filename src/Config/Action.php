@@ -45,6 +45,7 @@ final class Action
         $dto = new ActionDto();
         $dto->setType(self::TYPE_ENTITY);
         $dto->setName($name);
+        $dto->setCssClass('action-'.$name);
         $dto->setLabel($label ?? ucfirst($name));
         $dto->setIcon($icon);
         $dto->setHtmlElement('a');
@@ -88,6 +89,13 @@ final class Action
     public function setCssClass(string $cssClass): self
     {
         $this->dto->setCssClass($cssClass);
+
+        return $this;
+    }
+
+    public function addCssClass(string $cssClass): self
+    {
+        $this->dto->setCssClass(trim($this->dto->getCssClass().' '.$cssClass));
 
         return $this;
     }

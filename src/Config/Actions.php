@@ -154,14 +154,14 @@ final class Actions
             return Action::new(Action::NEW, 'action.new', null)
                 ->createAsGlobalAction()
                 ->linkToCrudAction(Action::NEW)
-                ->setCssClass('btn btn-primary')
+                ->addCssClass('btn btn-primary')
                 ->setTranslationDomain('EasyAdminBundle');
         }
 
         if (Action::EDIT === $actionName) {
             return Action::new(Action::EDIT, 'action.edit', null)
                 ->linkToCrudAction(Action::EDIT)
-                ->setCssClass(Crud::PAGE_DETAIL === $pageName ? 'btn btn-primary' : '')
+                ->addCssClass(Crud::PAGE_DETAIL === $pageName ? 'btn btn-primary' : '')
                 ->setTranslationDomain('EasyAdminBundle');
         }
 
@@ -174,7 +174,7 @@ final class Actions
         if (Action::INDEX === $actionName) {
             return Action::new(Action::INDEX, 'action.index')
                 ->linkToCrudAction(Action::INDEX)
-                ->setCssClass(Crud::PAGE_DETAIL === $pageName ? 'btn btn-secondary' : '')
+                ->addCssClass(Crud::PAGE_DETAIL === $pageName ? 'btn btn-secondary' : '')
                 ->setTranslationDomain('EasyAdminBundle');
         }
 
@@ -183,13 +183,13 @@ final class Actions
 
             return Action::new(Action::DELETE, 'action.delete', Crud::PAGE_INDEX === $pageName ? null : 'fa fa-fw fa-trash-o')
                 ->linkToCrudAction(Action::DELETE)
-                ->setCssClass($cssClass)
+                ->addCssClass($cssClass)
                 ->setTranslationDomain('EasyAdminBundle');
         }
 
         if (Action::SAVE_AND_RETURN === $actionName) {
             return Action::new(Action::SAVE_AND_RETURN, Crud::PAGE_EDIT === $pageName ? 'action.save' : 'action.create')
-                ->setCssClass('btn btn-primary action-save')
+                ->addCssClass('btn btn-primary action-save')
                 ->displayAsButton()
                 ->setHtmlAttributes(['type' => 'submit', 'name' => 'ea[newForm][btn]', 'value' => $actionName])
                 ->linkToCrudAction(Crud::PAGE_EDIT === $pageName ? Action::EDIT : Action::NEW)
@@ -198,7 +198,7 @@ final class Actions
 
         if (Action::SAVE_AND_CONTINUE === $actionName) {
             return Action::new(Action::SAVE_AND_CONTINUE, Crud::PAGE_EDIT === $pageName ? 'action.save_and_continue' : 'action.create_and_continue', 'far fa-edit')
-                ->setCssClass('btn btn-secondary action-save')
+                ->addCssClass('btn btn-secondary action-save')
                 ->displayAsButton()
                 ->setHtmlAttributes(['type' => 'submit', 'name' => 'ea[newForm][btn]', 'value' => $actionName])
                 ->linkToCrudAction(Crud::PAGE_EDIT === $pageName ? Action::EDIT : Action::NEW)
@@ -207,7 +207,7 @@ final class Actions
 
         if (Action::SAVE_AND_ADD_ANOTHER === $actionName) {
             return Action::new(Action::SAVE_AND_ADD_ANOTHER, 'action.create_and_add_another')
-                ->setCssClass('btn btn-secondary action-save')
+                ->addCssClass('btn btn-secondary action-save')
                 ->displayAsButton()
                 ->setHtmlAttributes(['type' => 'submit', 'name' => 'ea[newForm][btn]', 'value' => $actionName])
                 ->linkToCrudAction(Action::NEW)

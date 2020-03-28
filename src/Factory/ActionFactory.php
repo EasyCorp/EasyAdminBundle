@@ -41,7 +41,7 @@ final class ActionFactory
         $currentPage = $adminContext->getCrud()->getCurrentPage();
 
         $builtActions = [];
-        foreach ($actionsDto->getActions() as $actionDto) {
+        foreach ($actionsDto->getActions()->all() as $actionDto) {
             // TODO: remove this when we reenable "batch actions"
             if ($actionDto->isBatchAction()) {
                 throw new \RuntimeException(sprintf('Batch actions are not supported yet, but we\'ll add support for them very soon. Meanwhile, remove the "%s" batch action from the "%s" page.', $actionDto->getName(), $currentPage));

@@ -34,6 +34,14 @@ final class ActionCollection implements CollectionInterface
         return new self($actions);
     }
 
+    /**
+     * @return ActionDto[]
+     */
+    public function all(): array
+    {
+        return $this->actions;
+    }
+
     public function getGlobalActions(): self
     {
         $globalActions = array_filter($this->actions, static function (ActionDto $action) {

@@ -1,5 +1,5 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
-{# @var field \EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto #}
+{# @var field \EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto #}
 {% if 'toMany' == field.customOptions.get('associationType') %}
     <span class="badge badge-secondary">{{ field.formattedValue }}</span>
 {% else %}

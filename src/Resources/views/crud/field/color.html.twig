@@ -1,5 +1,5 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
-{# @var field \EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto #}
+{# @var field \EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto #}
 {% if field.customOptions.get('showSample') %}
     <span class="color-sample" style="background: {{ field.value }}; {{ field.customOptions.get('showValue') ? 'margin-right: 5px;' }}" title="{{ field.formattedValue }}">&nbsp;</span>
 {% endif %}

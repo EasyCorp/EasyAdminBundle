@@ -108,7 +108,7 @@ final class ActionsDto
     /**
      * @return ActionDto[]
      */
-    public function getGlobalActions(): array
+    public function getGlobalActions(): ActionCollection
     {
         $globalActions = array_filter($this->actions[$this->pageName], static function (ActionDto $action) {
             return $action->isGlobalAction();
@@ -120,7 +120,7 @@ final class ActionsDto
     /**
      * @return ActionDto[]
      */
-    public function getBatchActions(): array
+    public function getBatchActions(): ActionCollection
     {
         $batchActions = array_filter($this->actions[$this->pageName], static function (ActionDto $action) {
             return $action->isBatchAction();
@@ -132,7 +132,7 @@ final class ActionsDto
     /**
      * @return ActionDto[]
      */
-    public function getEntityActions(): array
+    public function getEntityActions(): ActionCollection
     {
         $entityActions = array_filter($this->actions[$this->pageName], static function (ActionDto $action) {
             return $action->isEntityAction();

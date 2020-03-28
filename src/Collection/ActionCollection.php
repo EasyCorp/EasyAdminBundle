@@ -18,12 +18,46 @@ final class ActionCollection implements \ArrayAccess, \Countable, \IteratorAggre
         $this->actions = $actions;
     }
 
+    public function __clone()
+    {
+        foreach ($this->actions as $actionName => $actionDto) {
+            $this->actions[$actionName] = clone $actionDto;
+        }
+    }
+
     /**
      * @param ActionDto[] $actions
      */
     public static function new(array $actions)
     {
         return new self($actions);
+    }
+
+    public function getGlobalActions(): ActionCollection
+    {
+        $globalActions = array_filter($this->actions, static function (ActionDto $action) {
+            return $action->isGlobalAction();
+        });
+
+        return ActionCollection::new($globalActions);
+    }
+
+    public function getBatchActions(): ActionCollection
+    {
+        $batchActions = array_filter($this->actions, static function (ActionDto $action) {
+            return $action->isBatchAction();
+        });
+
+        return ActionCollection::new($batchActions);
+    }
+
+    public function getEntityActions(): ActionCollection
+    {
+        $entityActions = array_filter($this->actions, static function (ActionDto $action) {
+            return $action->isEntityAction();
+        });
+
+        return ActionCollection::new($entityActions);
     }
 
     public function get(string $actionName): ?ActionDto

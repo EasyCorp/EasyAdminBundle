@@ -23,6 +23,7 @@ final class FieldDto
     private $translationParameters;
     private $templateName;
     private $templatePath;
+    /** @var AssetsDto */
     private $assets;
     private $customOptions;
     private $doctrineMetadata;
@@ -31,6 +32,7 @@ final class FieldDto
     {
         $this->formTypeOptions = [];
         $this->translationParameters = [];
+        $this->assets = new AssetsDto();
         $this->customOptions = new ParameterBag();
     }
 
@@ -262,6 +264,26 @@ final class FieldDto
     public function setAssets(AssetsDto $assets): void
     {
         $this->assets = $assets;
+    }
+
+    public function addCssFile(string $cssFilePath): void
+    {
+        $this->assets->addCssFile($cssFilePath);
+    }
+
+    public function addJsFile(string $jsFilePath): void
+    {
+        $this->assets->addJsFile($jsFilePath);
+    }
+
+    public function addHtmlContentToHead(string $htmlContent): void
+    {
+        $this->assets->addHtmlContentToHead($htmlContent);
+    }
+
+    public function addHtmlContentToBody(string $htmlContent): void
+    {
+        $this->assets->addHtmlContentToBody($htmlContent);
     }
 
     public function getCustomOptions(): ParameterBag

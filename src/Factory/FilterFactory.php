@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
-use EasyCorp\Bundle\EasyAdminBundle\Config\Fields;
+use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\FilterTypeGuesser;
 
@@ -15,7 +15,7 @@ final class FilterFactory
         $this->filterTypeGuesser = $filterTypeGuesser;
     }
 
-    public function create(array $filters, Fields $fields, EntityDto $entityDto): array
+    public function create(array $filters, FieldCollection $fields, EntityDto $entityDto): array
     {
         $builtFilters = [];
         foreach ($filters as $property => $propertyNameOrFilter) {

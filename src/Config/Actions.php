@@ -63,7 +63,7 @@ final class Actions
         return $this;
     }
 
-    public function update(string $pageName, string $actionName, callable $updateCallable): self
+    public function update(string $pageName, string $actionName, callable $callable): self
     {
         if (null === $actionDto = $this->dto->getAction($pageName, $actionName)) {
             throw new \InvalidArgumentException(sprintf('The "%s" action does not exist in the "%s" page, so you cannot update it. Instead, add the action with the "add()" method.', $actionName, $pageName));

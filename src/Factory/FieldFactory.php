@@ -64,7 +64,7 @@ final class FieldFactory
         $this->fieldConfigurators = $fieldConfigurators;
     }
 
-    public function processFields(EntityDto &$entityDto, FieldCollection $fields): void
+    public function processFields(EntityDto $entityDto, FieldCollection $fields): void
     {
         $this->preProcessFields($fields, $entityDto);
 
@@ -73,50 +73,20 @@ final class FieldFactory
                 continue;
             }
 
+            $context = $this->adminContextProvider->getContext();
             foreach ($this->fieldConfigurators as $configurator) {
                 if (!$configurator->supports($fieldDto, $entityDto)) {
                     continue;
                 }
 
-                $configurator->configure($fieldDto, $entityDto, $this->adminContextProvider->getContext());
+                $configurator->configure($fieldDto, $entityDto, $context);
             }
 
-            $fields->set($fieldName, $fieldDto);
+            $fields->set($fieldDto);
         }
 
         $entityDto->setFields($fields);
     }
-
-    /**
-     * @param FieldInterface[] $fields
-     */
-/*
-    public function create(EntityDto $entityDto, iterable $fields): EntityDto
-    {
-        $action = $this->adminContextProvider->getContext()->getCrud()->getCurrentAction();
-        $configuredProperties = \is_array($fields) ? $fields : iterator_to_array($fields);
-        $configuredProperties = $this->preProcessFields($entityDto, $configuredProperties);
-
-        $builtProperties = [];
-        foreach ($configuredProperties as $field) {
-            if (false === $this->authorizationChecker->isGranted(Permission::EA_VIEW_FIELD, $field)) {
-                continue;
-            }
-
-            foreach ($this->fieldConfigurators as $configurator) {
-                if (!$configurator->supports($field, $entityDto)) {
-                    continue;
-                }
-
-                $configurator->configure($field, $entityDto, $action);
-            }
-
-            $builtProperties[] = $field->getAsDto();
-        }
-
-        return $entityDto->updateFields(FieldDtoCollection::new($builtProperties));
-    }
-*/
 
     private function preProcessFields(FieldCollection $fields, EntityDto $entityDto): void
     {
@@ -137,7 +107,7 @@ final class FieldFactory
                 $guessedFieldFqcn = self::DOCTRINE_TYPE_TO_FIELD_FQCN_MAP[$doctrinePropertyType] ?? null;
             }
 
-            $fields->set($fieldName, $this->transformField($fieldDto, $guessedFieldFqcn));
+            $fields->set($this->transformField($fieldDto, $guessedFieldFqcn));
         }
     }
 

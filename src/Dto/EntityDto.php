@@ -17,7 +17,7 @@ final class EntityDto
     private $instance;
     private $primaryKeyName;
     private $primaryKeyValue;
-    private $requiredPermission;
+    private $permission;
     private $userHasPermission;
     /** @var ?FieldDtoCollection */
     private $fields;
@@ -30,7 +30,7 @@ final class EntityDto
         $this->metadata = $entityMetadata;
         $this->instance = $entityInstance;
         $this->primaryKeyName = $this->metadata->getIdentifierFieldNames()[0];
-        $this->requiredPermission = $entityPermission;
+        $this->permission = $entityPermission;
         $this->userHasPermission = true;
     }
 
@@ -96,7 +96,7 @@ final class EntityDto
 
     public function getPermission(): ?string
     {
-        return $this->requiredPermission;
+        return $this->permission;
     }
 
     public function isAccessible(): bool
@@ -107,7 +107,7 @@ final class EntityDto
     public function markAsInaccessible(): void
     {
         $this->instance = null;
-        $this->fields = FieldCollection::new([]);
+        $this->fields = null;
         $this->userHasPermission = false;
     }
 
@@ -195,32 +195,12 @@ final class EntityDto
         return \array_key_exists($propertyNameParts[0], $this->metadata->embeddedClasses);
     }
 
-    public function updateInstance($newEntityInstance): self
+    public function newWithInstance($newEntityInstance): self
     {
         if (null !== $this->instance && !$newEntityInstance instanceof $this->fqcn) {
             throw new \InvalidArgumentException(sprintf('The new entity instance must be of the same type as the previous instance (original instance: "%s", new instance: "%s").', $this->fqcn, \get_class($newEntityInstance)));
         }
 
-        $clone = clone $this;
-        $clone->instance = $newEntityInstance;
-        $clone->primaryKeyValue = null;
-
-        return $clone;
-    }
-
-    public function updateFields(FieldDtoCollection $fields): self
-    {
-        $clone = clone $this;
-        $clone->fields = $fields;
-
-        return $clone;
-    }
-
-    public function updateActions(array $actions): self
-    {
-        $clone = clone $this;
-        $clone->actions = $actions;
-
-        return $clone;
+        return new self($this->fqcn, $this->metadata, $this->permission, $newEntityInstance);
     }
 }

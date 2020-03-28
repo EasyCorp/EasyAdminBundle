@@ -7,6 +7,7 @@ use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\Persistence\Proxy;
 use Doctrine\Common\Util\ClassUtils;
+use EasyCorp\Bundle\EasyAdminBundle\Collection\EntityCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\EntityDtoCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Entity;
@@ -42,9 +43,24 @@ final class EntityFactory
         $this->fieldFactory->processFields($entityDto, $fields);
     }
 
+    public function processFieldsForAll(EntityCollection $entities, FieldCollection $fields): void
+    {
+        foreach ($entities as $entity) {
+            $this->processFields($entity, clone $fields);
+            $entities->set($entity);
+        }
+    }
+
     public function processActions(EntityDto $entityDto, ActionsDto $actionsDto): void
     {
         $this->actionFactory->processActions($entityDto, $actionsDto);
+    }
+
+    public function processActionsForAll(EntityCollection $entities, ActionsDto $actionsDto): void
+    {
+        foreach ($entities as $entity) {
+            $this->processActions($entity, $actionsDto);
+        }
     }
 
     /**

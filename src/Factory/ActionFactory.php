@@ -34,7 +34,7 @@ final class ActionFactory
         $this->crudUrlGenerator = $crudUrlGenerator;
     }
 
-    public function processActions(EntityDto &$entityDto, ActionsDto $actionsDto): void
+    public function processActions(EntityDto $entityDto, ActionsDto $actionsDto): void
     {
         $adminContext = $this->adminContextProvider->getContext();
         $defaultTranslationDomain = $adminContext->getI18n()->getTranslationDomain();
@@ -67,7 +67,7 @@ final class ActionFactory
             $defaultTemplatePath = $adminContext->getTemplatePath('crud/action');
             $actionDto->setTemplatePath($actionDto->getTemplatePath() ?? $defaultTemplatePath);
 
-            $actionDto->setLinkUrl($this->generateActionUrl($currentPage, $adminContext->getRequest(), $actionDto));
+            $actionDto->setLinkUrl($this->generateActionUrl($currentPage, $adminContext->getRequest(), $actionDto, $entityDto));
 
             $builtActions[] = $actionDto;
         }

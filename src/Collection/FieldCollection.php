@@ -19,6 +19,13 @@ final class FieldCollection implements \ArrayAccess, \Countable, \IteratorAggreg
         $this->fields = $this->processFields($fields);
     }
 
+    public function __clone()
+    {
+        foreach ($this->fields as $fieldName => $fieldDto) {
+            $this->fields[$fieldName] = clone $fieldDto;
+        }
+    }
+
     /**
      * @param FieldInterface[]|string[] $fields
      */
@@ -32,9 +39,9 @@ final class FieldCollection implements \ArrayAccess, \Countable, \IteratorAggreg
         return $this->fields[$fieldName] ?? null;
     }
 
-    public function set(string $fieldName, FieldDto $field): void
+    public function set(FieldDto $newOrUpdatedField): void
     {
-        $this->fields[$fieldName] = $field;
+        $this->fields[$newOrUpdatedField->getName()] = $newOrUpdatedField;
     }
 
     public function offsetExists($offset)
@@ -71,7 +78,7 @@ final class FieldCollection implements \ArrayAccess, \Countable, \IteratorAggreg
     }
 
     /**
-     * @param FieldInterface[] $fields
+     * @param FieldInterface[]|string[] $fields
      * @return FieldDto[]
      */
     private function processFields(iterable $fields): array

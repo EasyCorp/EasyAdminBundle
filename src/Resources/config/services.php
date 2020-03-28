@@ -155,9 +155,8 @@ return static function (ContainerConfigurator $container) {
         ->set(EntityRepository::class)
             ->arg(0, ref(AdminContextProvider::class))
             ->arg(1, ref('doctrine'))
-            ->arg(2, ref('form.factory'))
-            ->arg(3, ref(FilterRegistry::class))
-            ->arg(4, ref(FormFactory::class))
+            ->arg(2, ref(FilterRegistry::class))
+            ->arg(3, ref(FormFactory::class))
 
         ->set(EntityFactory::class)
             ->arg(0, ref(FieldFactory::class))
@@ -178,10 +177,9 @@ return static function (ContainerConfigurator $container) {
             ->arg(1, ref(EntityPaginator::class))
 
         ->set(FormFactory::class)
-            ->arg(0, ref(AdminContextProvider::class))
-            ->arg(1, ref('form.factory'))
-            ->arg(2, ref(CrudUrlGenerator::class))
-            ->arg(3, ref(FilterFactory::class))
+            ->arg(0, ref('form.factory'))
+            ->arg(1, ref(CrudUrlGenerator::class))
+            ->arg(2, ref(FilterFactory::class))
 
         ->set(FieldFactory::class)
             ->arg(0, ref(AdminContextProvider::class))
@@ -189,6 +187,7 @@ return static function (ContainerConfigurator $container) {
             ->arg(2, \function_exists('tagged') ? tagged('ea.field_configurator') : tagged_iterator('ea.field_configurator'))
 
         ->set(FieldProvider::class)
+            ->arg(0, ref(AdminContextProvider::class))
 
         ->set(FilterTypeGuesser::class)
             ->arg(0, ref('doctrine'))

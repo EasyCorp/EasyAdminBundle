@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Collection;
 
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 
 final class FieldDtoCollection implements \IteratorAggregate
@@ -22,7 +23,7 @@ final class FieldDtoCollection implements \IteratorAggregate
     }
 
     /**
-     * @param \EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface[] $fields
+     * @param FieldInterface[] $fields
      */
     public static function fromFields(array $fields): self
     {

@@ -9,10 +9,18 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 
 final class FieldProvider
 {
-    public function getDefaultFields(string $pageName, EntityDto $entityDto): array
+    private $adminContextProvider;
+
+    public function __construct(AdminContextProvider $adminContextProvider)
+    {
+        $this->adminContextProvider = $adminContextProvider;
+    }
+
+    public function getDefaultFields(string $pageName): array
     {
         $defaultPropertyNames = [];
         $maxNumProperties = Crud::PAGE_INDEX === $pageName ? 7 : \PHP_INT_MAX;
+        $entityDto = $this->adminContextProvider->getContext()->getEntity();
 
         $excludedPropertyTypes = [
             Crud::PAGE_EDIT => [Type::BINARY, Type::BLOB, Type::JSON_ARRAY, Type::JSON, Type::OBJECT],

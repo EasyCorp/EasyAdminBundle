@@ -5,14 +5,13 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Controller;
 use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
-use EasyCorp\Bundle\EasyAdminBundle\Collection\ActionCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Collection\EntityCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Entity;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Fields;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
@@ -30,11 +29,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Exception\EntityRemoveException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\ForbiddenActionException;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\ActionFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
-use EasyCorp\Bundle\EasyAdminBundle\Factory\FieldFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FilterFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\PaginatorFactory;
-use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityUpdater;
@@ -78,14 +75,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
      */
     public function configureFields(string $pageName): iterable
     {
-        $entityFqcn = $this->getContext()->getCrud()->getEntityFqcn();
-        $entityId = $this->getContext()->getRequest()->query->get('entityId');
-        $entityPermission = $this->getContext()->getCrud()->getEntityPermission();
-
-        $entity = new Entity($entityFqcn, $entityId, $entityPermission);
-        $entityDto = $this->get(EntityFactory::class)->create($entity);
-
-        return $this->get(FieldProvider::class)->getDefaultFields($pageName, $entityDto);
+        return $this->get(FieldProvider::class)->getDefaultFields($pageName);
     }
 
     public static function getSubscribedServices()
@@ -117,21 +107,14 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             throw new ForbiddenActionException($context);
         }
 
-        $entityFqcn = $context->getCrud()->getEntityFqcn();
-        $entityId = $context->getRequest()->query->get('entityId');
-        $entityPermission = $context->getCrud()->getEntityPermission();
-
-        $entity = new Entity($entityFqcn, $entityId, $entityPermission);
-
-        $entityDto = $this->get(EntityFactory::class)->create($entity);
-        $fields = Fields::new($this->configureFields(Crud::PAGE_INDEX));
-        $filters = $this->get(FilterFactory::class)->create($context->getCrud()->getFilters(), $fields, $entityDto);
-        $queryBuilder = $this->createIndexQueryBuilder($context->getSearch(), $entityDto, $fields, $filters);
+        $fields = FieldCollection::new($this->configureFields(Crud::PAGE_INDEX));
+        $filters = $this->get(FilterFactory::class)->create($context->getCrud()->getFilters(), $fields, $context->getEntity());
+        $queryBuilder = $this->createIndexQueryBuilder($context->getSearch(), $context->getEntity(), $fields, $filters);
         $paginator = $this->get(PaginatorFactory::class)->create($queryBuilder);
 
-        $entityInstances = $paginator->getResults();
-        $actions = $this->get(ActionFactory::class)->create($context->getCrud()->getActions());
-        $entities = $this->get(EntityFactory::class)->createAll($entityDto, $entityInstances, $fields, $actions);
+        $entities = EntityCollection::new($context->getEntity(), $paginator->getResults());
+        $this->get(EntityFactory::class)->processFieldsForAll($entities, $fields);
+        $this->get(EntityFactory::class)->processActionsForAll($entities, $context->getCrud()->getActions());
 
         $responseParameters = $this->configureResponseParameters(ResponseParameters::new([
             'pageName' => Crud::PAGE_INDEX,
@@ -271,10 +254,9 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             throw new ForbiddenActionException($context);
         }
 
-        $entityInstance = $this->createEntity($context->getEntity()->getFqcn());
-        $context->getEntity()->updateInstance($entityInstance);
-        $this->get(EntityFactory::class)->processFields($context->getEntity(), $this->configureFields(Crud::PAGE_NEW));
+        $this->get(EntityFactory::class)->processFields($context->getEntity(), FieldCollection::new($this->configureFields(Crud::PAGE_EDIT)));
         $this->get(EntityFactory::class)->processActions($context->getEntity(), $context->getCrud()->getActions());
+        $entityInstance = $context->getEntity()->getInstance();
 
         $newForm = $this->createNewForm($context->getEntity());
         $newForm->handleRequest($context->getRequest());
@@ -387,17 +369,18 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         return JsonResponse::fromJsonString($paginator->getJsonResults());
     }
 
-    public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, Fields $fields, array $filtersDto): QueryBuilder
+    public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, array $filtersDto): QueryBuilder
     {
         return $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filtersDto);
     }
 
     public function renderFilters(AdminContext $context): ResponseParameters
     {
-        $this->get(EntityFactory::class)->processFields($context->getEntity(), $this->configureFields(Crud::PAGE_INDEX));
+        $fields = FieldCollection::new($this->configureFields(Crud::PAGE_INDEX));
+        $this->get(EntityFactory::class)->processFields($context->getEntity(), $fields);
 
         /** @var FiltersFormType $filtersForm */
-        $filtersForm = $this->get(FormFactory::class)->createFiltersForm($context, Fields::new($fields), $context->getEntity());
+        $filtersForm = $this->get(FormFactory::class)->createFiltersForm($context, $fields, $context->getEntity());
         $formActionParts = parse_url($filtersForm->getConfig()->getAction());
         $queryString = $formActionParts['query'] ?? [];
         parse_str($queryString, $queryStringAsArray);

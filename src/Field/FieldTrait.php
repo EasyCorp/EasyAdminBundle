@@ -10,10 +10,6 @@ trait FieldTrait
 {
     /** @var FieldDto */
     private $dto;
-    private $cssFiles = [];
-    private $jsFiles = [];
-    private $headContents = [];
-    private $bodyContents = [];
 
     private function __construct()
     {
@@ -185,28 +181,36 @@ trait FieldTrait
 
     public function addCssFiles(string ...$assetPaths): self
     {
-        $this->cssFiles = array_merge($this->cssFiles, $assetPaths);
+        foreach ($assetPaths as $path) {
+            $this->dto->addCssFile($path);
+        }
 
         return $this;
     }
 
     public function addJsFiles(string ...$assetPaths): self
     {
-        $this->jsFiles = array_merge($this->jsFiles, $assetPaths);
+        foreach ($assetPaths as $path) {
+            $this->dto->addJsFile($path);
+        }
 
         return $this;
     }
 
     public function addHtmlContentsToHead(string ...$contents): self
     {
-        $this->headContents = array_merge($this->headContents, $contents);
+        foreach ($contents as $content) {
+            $this->dto->addHtmlContentToHead($content);
+        }
 
         return $this;
     }
 
     public function addHtmlContentsToBody(string ...$contents): self
     {
-        $this->bodyContents = array_merge($this->bodyContents, $contents);
+        foreach ($contents as $content) {
+            $this->dto->addHtmlContentToBody($content);
+        }
 
         return $this;
     }
@@ -227,8 +231,6 @@ trait FieldTrait
 
     public function getAsDto(): FieldDto
     {
-        $this->dto->setAssets(new AssetsDto($this->cssFiles, $this->jsFiles, $this->headContents, $this->bodyContents));
-
         return $this->dto;
     }
 }

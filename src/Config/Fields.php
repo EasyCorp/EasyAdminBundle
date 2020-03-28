@@ -17,7 +17,7 @@ final class Fields extends ParameterBag
         $fieldsByProperty = [];
         /** @var FieldInterface $field */
         foreach ($fieldDtos as $field) {
-            $fieldsByProperty[$field->getProperty()] = $field;
+            $fieldsByProperty[$field->getName()] = $field;
         }
 
         parent::__construct($fieldsByProperty);

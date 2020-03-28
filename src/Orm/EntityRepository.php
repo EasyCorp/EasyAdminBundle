@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Orm;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\QueryBuilder;
+use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Fields;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Orm\EntityRepositoryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -20,20 +21,18 @@ final class EntityRepository implements EntityRepositoryInterface
 {
     private $adminContextProvider;
     private $doctrine;
-    private $symfonyFormFactory;
     private $filterRegistry;
     private $formFactory;
 
-    public function __construct(AdminContextProvider $adminContextProvider, ManagerRegistry $doctrine, FormFactoryInterface $symfonyFormFactory, FilterRegistry $filterRegistry, FormFactory $formFactory)
+    public function __construct(AdminContextProvider $adminContextProvider, ManagerRegistry $doctrine, FilterRegistry $filterRegistry, FormFactory $formFactory)
     {
         $this->adminContextProvider = $adminContextProvider;
         $this->doctrine = $doctrine;
-        $this->symfonyFormFactory = $symfonyFormFactory;
         $this->filterRegistry = $filterRegistry;
         $this->formFactory = $formFactory;
     }
 
-    public function createQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, Fields $fields, array $filtersDto): QueryBuilder
+    public function createQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, array $filtersDto): QueryBuilder
     {
         $entityManager = $this->doctrine->getManagerForClass($entityDto->getFqcn());
 
@@ -140,7 +139,7 @@ final class EntityRepository implements EntityRepositoryInterface
         }
     }
 
-    private function addFilterClause(QueryBuilder $queryBuilder, SearchDto $searchDto, EntityDto $entityDto, array $configuredFilters, Fields $fields): void
+    private function addFilterClause(QueryBuilder $queryBuilder, SearchDto $searchDto, EntityDto $entityDto, array $configuredFilters, FieldCollection $fields): void
     {
         $filtersForm = $this->formFactory->createFiltersForm($this->adminContextProvider->getContext(), $fields, $entityDto);
         if (!$filtersForm->isSubmitted()) {

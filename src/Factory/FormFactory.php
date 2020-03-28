@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
+use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Fields;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -15,14 +16,12 @@ use Symfony\Component\Form\FormInterface;
 
 final class FormFactory
 {
-    private $adminContextProvider;
     private $symfonyFormFactory;
     private $crudUrlGenerator;
     private $filterFactory;
 
-    public function __construct(AdminContextProvider $adminContextProvider, FormFactoryInterface $symfonyFormFactory, CrudUrlGenerator $crudUrlGenerator, FilterFactory $filterFactory)
+    public function __construct(FormFactoryInterface $symfonyFormFactory, CrudUrlGenerator $crudUrlGenerator, FilterFactory $filterFactory)
     {
-        $this->adminContextProvider = $adminContextProvider;
         $this->symfonyFormFactory = $symfonyFormFactory;
         $this->crudUrlGenerator = $crudUrlGenerator;
         $this->filterFactory = $filterFactory;
@@ -55,7 +54,7 @@ final class FormFactory
         ])->getForm();
     }
 
-    public function createFiltersForm(AdminContext $adminContext, Fields $fields, EntityDto $entityDto): FormInterface
+    public function createFiltersForm(AdminContext $adminContext, FieldCollection $fields, EntityDto $entityDto): FormInterface
     {
         $filters = $this->filterFactory->create($adminContext->getCrud()->getFilters(), $fields, $entityDto);
         $filtersForm = $this->symfonyFormFactory->createNamed('filters', FiltersFormType::class, null, [

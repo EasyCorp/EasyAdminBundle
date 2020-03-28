@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
+use EasyCorp\Bundle\EasyAdminBundle\Provider\UlidProvider;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 final class FieldDto
@@ -38,7 +39,7 @@ final class FieldDto
 
     public function getUniqueId(): string
     {
-        return spl_object_hash($this);
+        return UlidProvider::new();
     }
 
     public function getFieldFqcn(): string

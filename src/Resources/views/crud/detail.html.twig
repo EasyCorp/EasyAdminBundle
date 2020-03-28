@@ -108,7 +108,7 @@
 {% endmacro %}
 
 {% macro render_field(field, row_number) %}
-    <div class="data-row {{ row_number is even ? 'with-background' }} {{ field.cssClass ?? '' }}">
+    <div class="data-row {{ row_number is even ? 'with-background' }} {{ field.cssClass }}">
         <dd>
             {{ field.label|raw }}
 

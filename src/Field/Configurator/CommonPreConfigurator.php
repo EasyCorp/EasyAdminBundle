@@ -64,7 +64,7 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
             $field->setFormTypeOptionIfNotSet('help_translation_parameters', $field->getTranslationParameters());
         }
 
-        if (null !== $field->getCssClass()) {
+        if (!empty($field->getCssClass())) {
             $field->setFormTypeOptionIfNotSet('row_attr.class', $field->getCssClass());
         }
 

@@ -116,6 +116,7 @@ final class FieldFactory
 
         $newField->setValue($fieldDto->getValue());
         $newField->setFormattedValue($fieldDto->getFormattedValue());
+        $newField->setCssClass($fieldDto->getCssClass());
         $newField->setTranslationParameters($fieldDto->getTranslationParameters());
         $newField->setAssets($newField->getAssets()->mergeWith($fieldDto->getAssets()));
 
@@ -150,10 +151,6 @@ final class FieldFactory
 
         if (null !== $fieldDto->getHelp()) {
             $newField->setHelp($fieldDto->getHelp());
-        }
-
-        if (null !== $fieldDto->getCssClass()) {
-            $newField->setCssClass($fieldDto->getCssClass());
         }
 
         if (null !== $fieldDto->getFormType()) {

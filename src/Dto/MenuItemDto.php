@@ -129,7 +129,7 @@ final class MenuItemDto
         $this->permission = $permission;
     }
 
-    public function getCssClass(): ?string
+    public function getCssClass(): string
     {
         return $this->cssClass;
     }

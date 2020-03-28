@@ -24,6 +24,10 @@ final class ActionDto
 
     public function __construct()
     {
+        $this->cssClass = '';
+        $this->htmlAttributes = [];
+        $this->routeParameters = [];
+        $this->translationParameters = [];
     }
 
     public function getType(): string
@@ -84,7 +88,7 @@ final class ActionDto
         $this->icon = $icon;
     }
 
-    public function getCssClass(): ?string
+    public function getCssClass(): string
     {
         return $this->cssClass;
     }

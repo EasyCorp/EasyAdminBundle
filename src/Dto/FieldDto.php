@@ -31,6 +31,7 @@ final class FieldDto
 
     public function __construct()
     {
+        $this->cssClass = '';
         $this->formTypeOptions = [];
         $this->translationParameters = [];
         $this->assets = new AssetsDto();
@@ -217,7 +218,7 @@ final class FieldDto
         $this->help = $help;
     }
 
-    public function getCssClass(): ?string
+    public function getCssClass(): string
     {
         return $this->cssClass;
     }

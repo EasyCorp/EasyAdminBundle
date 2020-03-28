@@ -147,12 +147,11 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
         }
 
         // TODO: move this condition to each field class
-        if (empty($fieldValue) && \in_array($field->getFieldFqcn(), [ImageField::class/*'file',*/ /*'array',*/ /*'simple_array' */])) {
+        if (empty($fieldValue) && \in_array($field->getFieldFqcn(), [ImageField::class/*'file',*/ /*'array',*/ /*'simple_array' */], true)) {
             return $adminContext->getTemplatePath('label/empty');
         }
 
         if (null === $templateName = $field->getTemplateName()) {
-            dd($field);
             throw new \RuntimeException(sprintf('Fields must define either their templateName or their templatePath. None given for "%s" field.', $field->getName()));
         }
 

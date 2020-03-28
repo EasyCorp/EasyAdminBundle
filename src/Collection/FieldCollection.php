@@ -30,7 +30,7 @@ final class FieldCollection implements CollectionInterface
     /**
      * @param FieldInterface[]|string[] $fields
      */
-    public static function new(iterable $fields)
+    public static function new(iterable $fields): FieldCollection
     {
         return new self($fields);
     }
@@ -45,7 +45,7 @@ final class FieldCollection implements CollectionInterface
         $this->fields[$newOrUpdatedField->getName()] = $newOrUpdatedField;
     }
 
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return \array_key_exists($offset, $this->fields);
     }
@@ -55,17 +55,17 @@ final class FieldCollection implements CollectionInterface
         return $this->fields[$offset];
     }
 
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         $this->fields[$offset] = $value;
     }
 
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->fields[$offset]);
     }
 
-    public function count()
+    public function count(): int
     {
         return \count($this->fields);
     }

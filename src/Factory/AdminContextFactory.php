@@ -109,8 +109,6 @@ final class AdminContextFactory
     {
         if (null === $crudController || null === $pageName) {
             return new ActionsDto();
-
-            return new ActionsDto();
         }
 
         $defaultActions = $dashboardController->configureActions();

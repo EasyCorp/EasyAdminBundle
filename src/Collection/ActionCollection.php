@@ -29,7 +29,7 @@ final class ActionCollection implements CollectionInterface
     /**
      * @param ActionDto[] $actions
      */
-    public static function new(array $actions)
+    public static function new(array $actions): ActionCollection
     {
         return new self($actions);
     }
@@ -74,7 +74,7 @@ final class ActionCollection implements CollectionInterface
         return $this->actions[$actionName] ?? null;
     }
 
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return \array_key_exists($offset, $this->actions);
     }
@@ -84,17 +84,17 @@ final class ActionCollection implements CollectionInterface
         return $this->actions[$offset];
     }
 
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         $this->actions[$offset] = $value;
     }
 
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->actions[$offset]);
     }
 
-    public function count()
+    public function count(): int
     {
         return \count($this->actions);
     }

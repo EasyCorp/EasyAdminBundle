@@ -3,9 +3,6 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type;
 
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDto;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\BooleanFilterType;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\NumericFilterType;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\TextFilterType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\TypeConfiguratorInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;

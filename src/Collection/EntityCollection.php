@@ -15,7 +15,7 @@ final class EntityCollection implements CollectionInterface
         $this->entities = $this->processEntities($entityDto, $entityInstances);
     }
 
-    public static function new(EntityDto $entityDto, iterable $entityInstances)
+    public static function new(EntityDto $entityDto, iterable $entityInstances): EntityCollection
     {
         return new self($entityDto, $entityInstances);
     }
@@ -30,7 +30,7 @@ final class EntityCollection implements CollectionInterface
         $this->entities[$newOrUpdatedEntity->getPrimaryKeyValue()] = $newOrUpdatedEntity;
     }
 
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return \array_key_exists($offset, $this->entities);
     }
@@ -40,17 +40,17 @@ final class EntityCollection implements CollectionInterface
         return $this->entities[$offset];
     }
 
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         $this->entities[$offset] = $value;
     }
 
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->entities[$offset]);
     }
 
-    public function count()
+    public function count(): int
     {
         return \count($this->entities);
     }

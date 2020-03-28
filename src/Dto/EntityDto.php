@@ -7,7 +7,6 @@ use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\ActionCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
-use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldDtoCollection;
 
 final class EntityDto
 {

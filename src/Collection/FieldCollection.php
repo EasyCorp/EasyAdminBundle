@@ -30,7 +30,7 @@ final class FieldCollection implements CollectionInterface
     /**
      * @param FieldInterface[]|string[] $fields
      */
-    public static function new(iterable $fields): FieldCollection
+    public static function new(iterable $fields): self
     {
         return new self($fields);
     }

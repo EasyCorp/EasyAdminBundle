@@ -29,7 +29,7 @@ final class ActionCollection implements CollectionInterface
     /**
      * @param ActionDto[] $actions
      */
-    public static function new(array $actions): ActionCollection
+    public static function new(array $actions): self
     {
         return new self($actions);
     }

@@ -15,7 +15,7 @@ final class EntityCollection implements CollectionInterface
         $this->entities = $this->processEntities($entityDto, $entityInstances);
     }
 
-    public static function new(EntityDto $entityDto, iterable $entityInstances): EntityCollection
+    public static function new(EntityDto $entityDto, iterable $entityInstances): self
     {
         return new self($entityDto, $entityInstances);
     }

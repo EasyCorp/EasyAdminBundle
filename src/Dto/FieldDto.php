@@ -28,6 +28,8 @@ final class FieldDto
     private $assets;
     private $customOptions;
     private $doctrineMetadata;
+    /** @internal */
+    private $uniqueId;
 
     public function __construct()
     {
@@ -40,7 +42,11 @@ final class FieldDto
 
     public function getUniqueId(): string
     {
-        return UlidProvider::new();
+        if (null !== $this->uniqueId) {
+            return $this->uniqueId;
+        }
+
+        return $this->uniqueId = UlidProvider::new();
     }
 
     public function getFieldFqcn(): string

@@ -7,7 +7,7 @@
         {{ (field.value == true ? 'label.true' : 'label.false')|trans }}
     </span>
 {% else %}
-    <div class="custom-control custom-switch custom-switch-lg" data-fieldname="{{ field.name }}">
+    <div class="custom-control custom-switch custom-switch-lg" data-fieldname="{{ field.property }}">
         <input type="checkbox" class="custom-control-input" id="{{ field.uniqueId }}" {{ field.value == true ? 'checked' }}>
         <label class="custom-control-label" for="{{ field.uniqueId }}"></label>
     </div>

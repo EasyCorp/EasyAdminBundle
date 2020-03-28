@@ -24,7 +24,7 @@ final class Action
     // these are actions that can be applied to one or more entities at the same time
     public const TYPE_BATCH = 'batch';
 
-    /** @var FieldDto */
+    /** @var ActionDto */
     private $dto;
 
     private function __construct(ActionDto $actionDto)
@@ -170,11 +170,11 @@ final class Action
     public function getAsDto(): ActionDto
     {
         if (null === $this->dto->getLabel() && null === $this->dto->getIcon()) {
-            throw new \InvalidArgumentException(sprintf('The label and icon of an action cannot be null at the same time. Either set the label, the icon or both for the "%s" action.', $this->dto->getName()));
+            throw new \InvalidArgumentException(sprintf('The label and icon of an action cannot be null at the same time. Either set the label, the icon or both for the "%s" action.', $this->dto->getProperty()));
         }
 
         if (null === $this->dto->getCrudActionName() && null === $this->dto->getRouteName()) {
-            throw new \InvalidArgumentException(sprintf('Actions must link to either a route or a CRUD action. Set the "linkToCrudAction()" or "linkToRoute()" method for the "%s" action.', $this->dto->getName()));
+            throw new \InvalidArgumentException(sprintf('Actions must link to either a route or a CRUD action. Set the "linkToCrudAction()" or "linkToRoute()" method for the "%s" action.', $this->dto->getProperty()));
         }
 
         return $this->dto;

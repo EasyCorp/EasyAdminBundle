@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 final class FieldDto
 {
     private $fieldFqcn;
-    private $name;
+    private $propertyName;
     private $value;
     private $formattedValue;
     private $formatValueCallable;
@@ -53,14 +53,14 @@ final class FieldDto
         $this->fieldFqcn = $fieldFqcn;
     }
 
-    public function getName(): string
+    public function getProperty(): string
     {
-        return $this->name;
+        return $this->propertyName;
     }
 
-    public function setName(string $name): void
+    public function setProperty(string $propertyName): void
     {
-        $this->name = $name;
+        $this->propertyName = $propertyName;
     }
 
     /**

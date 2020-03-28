@@ -27,7 +27,7 @@ final class LanguageConfigurator implements FieldConfiguratorInterface
 
         $languageName = $this->getLanguageName($languageCode);
         if (null === $languageName) {
-            throw new \InvalidArgumentException(sprintf('The "%s" value used as the language code of the "%s" field is not a valid ICU language code.', $languageCode, $field->getName()));
+            throw new \InvalidArgumentException(sprintf('The "%s" value used as the language code of the "%s" field is not a valid ICU language code.', $languageCode, $field->getProperty()));
         }
 
         $field->setFormattedValue($languageName);

@@ -24,7 +24,7 @@ trait FieldTrait
 
     public function setProperty(string $propertyName): self
     {
-        $this->dto->setName($propertyName);
+        $this->dto->setProperty($propertyName);
 
         return $this;
     }

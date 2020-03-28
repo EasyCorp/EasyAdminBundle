@@ -34,7 +34,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
 
     public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
     {
-        $propertyName = $field->getName();
+        $propertyName = $field->getProperty();
         if (!$entityDto->isAssociation($propertyName)) {
             throw new \RuntimeException(sprintf('The "%s" field is not a Doctrine association, so it cannot be used as an association field.', $propertyName));
         }
@@ -44,7 +44,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
             ?? $context->getCrudControllers()->getControllerFqcnByEntityFqcn($targetEntityFqcn);
 
         if (null === $targetCrudControllerFqcn) {
-            throw new \RuntimeException(sprintf('It\'s not possible to find the CRUD controller associated to the "%s" field of the "%s" entity. Define the associated CRUD controller explicitly with the setCrudController() method on this field.', $field->getName(), $targetEntityFqcn));
+            throw new \RuntimeException(sprintf('It\'s not possible to find the CRUD controller associated to the "%s" field of the "%s" entity. Define the associated CRUD controller explicitly with the setCrudController() method on this field.', $field->getProperty(), $targetEntityFqcn));
         }
 
         $field->setCustomOption(AssociationField::OPTION_CRUD_CONTROLLER, $targetCrudControllerFqcn);

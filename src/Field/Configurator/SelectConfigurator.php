@@ -27,7 +27,7 @@ final class SelectConfigurator implements FieldConfiguratorInterface
     {
         $choices = $field->getCustomOption(SelectField::OPTION_CHOICES);
         if (empty($choices)) {
-            throw new \InvalidArgumentException(sprintf('The "%s" select field must define its possible choices using the setChoices() method.', $field->getName()));
+            throw new \InvalidArgumentException(sprintf('The "%s" select field must define its possible choices using the setChoices() method.', $field->getProperty()));
         }
 
         $translatedChoices = [];

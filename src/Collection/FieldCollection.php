@@ -42,7 +42,7 @@ final class FieldCollection implements CollectionInterface
 
     public function set(FieldDto $newOrUpdatedField): void
     {
-        $this->fields[$newOrUpdatedField->getName()] = $newOrUpdatedField;
+        $this->fields[$newOrUpdatedField->getProperty()] = $newOrUpdatedField;
     }
 
     public function offsetExists($offset): bool
@@ -93,7 +93,7 @@ final class FieldCollection implements CollectionInterface
             if ($fieldObjectOrPropertyName instanceof FieldInterface) {
                 $field = $fieldObjectOrPropertyName;
                 $dto = $field->getAsDto();
-                $dtos[$dto->getName()] = $dto;
+                $dtos[$dto->getProperty()] = $dto;
             } else {
                 $propertyName = $fieldObjectOrPropertyName;
                 $dtos[$propertyName] = Field::new($propertyName)->getAsDto();

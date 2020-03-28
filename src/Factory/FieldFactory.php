@@ -94,7 +94,7 @@ final class FieldFactory
             }
 
             // this is a virtual field, so we can't autoconfigure it
-            if (!$entityDto->hasProperty($fieldDto->getName())) {
+            if (!$entityDto->hasProperty($fieldDto->getProperty())) {
                 continue;
             }
 
@@ -112,7 +112,7 @@ final class FieldFactory
     private function transformField(FieldDto $fieldDto, string $newFieldFqcn): FieldDto
     {
         /** @var FieldDto $newField */
-        $newField = $newFieldFqcn::new($fieldDto->getName())->getAsDto();
+        $newField = $newFieldFqcn::new($fieldDto->getProperty())->getAsDto();
 
         $newField->setValue($fieldDto->getValue());
         $newField->setFormattedValue($fieldDto->getFormattedValue());

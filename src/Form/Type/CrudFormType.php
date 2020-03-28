@@ -56,15 +56,15 @@ class CrudFormType extends AbstractType
             // the names of embedded Doctrine entities contain dots, which are not allowed
             // in HTML element names. In those cases, fix the name but also update the
             // 'property_path' option to keep the original field name
-            if (false !== strpos($fieldDto->getName(), '.')) {
-                $formFieldOptions['property_path'] = $fieldDto->getName();
-                $name = str_replace('.', '_', $fieldDto->getName());
+            if (false !== strpos($fieldDto->getProperty(), '.')) {
+                $formFieldOptions['property_path'] = $fieldDto->getProperty();
+                $name = str_replace('.', '_', $fieldDto->getProperty());
             } else {
-                $name = $fieldDto->getName();
+                $name = $fieldDto->getProperty();
             }
 
             if (null === $formFieldType = $fieldDto->getFormType()) {
-                $formFieldType = $this->doctrineOrmTypeGuesser->guessType($entityDto->getFqcn(), $fieldDto->getName())->getType();
+                $formFieldType = $this->doctrineOrmTypeGuesser->guessType($entityDto->getFqcn(), $fieldDto->getProperty())->getType();
             }
 
             // Configure options using the list of registered type configurators:

@@ -52,7 +52,7 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
         $templatePath = $this->buildTemplatePathOption($context, $field, $entityDto, $value);
         $field->setTemplatePath($templatePath);
 
-        $doctrineMetadata = $entityDto->hasProperty($field->getName()) ? $entityDto->getPropertyMetadata($field->getName()) : [];
+        $doctrineMetadata = $entityDto->hasProperty($field->getProperty()) ? $entityDto->getPropertyMetadata($field->getProperty()) : [];
         $field->setDoctrineMetadata($doctrineMetadata);
 
         if (null !== $field->getHelp()) {
@@ -79,7 +79,7 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
     private function buildValueOption(FieldDto $field, EntityDto $entityDto)
     {
         $entityInstance = $entityDto->getInstance();
-        $propertyName = $field->getName();
+        $propertyName = $field->getProperty();
 
         if (!$this->propertyAccessor->isReadable($entityInstance, $propertyName)) {
             return null;
@@ -107,7 +107,7 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
         // it field doesn't define its label explicitly, generate an automatic
         // label based on the field's field name
         if (null === $label = $field->getLabel()) {
-            $label = $this->humanizeString($field->getName());
+            $label = $this->humanizeString($field->getProperty());
         }
 
         if (empty($label)) {
@@ -123,12 +123,12 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
             return $isSortable;
         }
 
-        return $entityDto->hasProperty($field->getName());
+        return $entityDto->hasProperty($field->getProperty());
     }
 
     private function buildVirtualOption(FieldDto $field, EntityDto $entityDto): bool
     {
-        return !$entityDto->hasProperty($field->getName());
+        return !$entityDto->hasProperty($field->getProperty());
     }
 
     private function buildTemplatePathOption(AdminContext $adminContext, FieldDto $field, EntityDto $entityDto, $fieldValue): string
@@ -137,7 +137,7 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
             return $templatePath;
         }
 
-        $isPropertyReadable = $this->propertyAccessor->isReadable($entityDto->getInstance(), $field->getName());
+        $isPropertyReadable = $this->propertyAccessor->isReadable($entityDto->getInstance(), $field->getProperty());
         if (!$isPropertyReadable) {
             return $adminContext->getTemplatePath('label/inaccessible');
         }
@@ -152,7 +152,7 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
         }
 
         if (null === $templateName = $field->getTemplateName()) {
-            throw new \RuntimeException(sprintf('Fields must define either their templateName or their templatePath. None given for "%s" field.', $field->getName()));
+            throw new \RuntimeException(sprintf('Fields must define either their templateName or their templatePath. None given for "%s" field.', $field->getProperty()));
         }
 
         return $adminContext->getTemplatePath($templateName);
@@ -165,16 +165,16 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
         }
 
         // consider that virtual properties are not required
-        if (!$entityDto->hasProperty($field->getName())) {
+        if (!$entityDto->hasProperty($field->getProperty())) {
             return false;
         }
 
         // TODO: fix this and see if there's any way to check if an association is nullable
-        if ($entityDto->isAssociation($field->getName())) {
+        if ($entityDto->isAssociation($field->getProperty())) {
             return false;
         }
 
-        $doctrinePropertyMetadata = $entityDto->getPropertyMetadata($field->getName());
+        $doctrinePropertyMetadata = $entityDto->getPropertyMetadata($field->getProperty());
 
         // TODO: check if it's correct to never make a boolean value required
         // I guess it's correct because Symfony Forms treat NULL as FALSE by default (i.e. in the database the value won't be NULL)

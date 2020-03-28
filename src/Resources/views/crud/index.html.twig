@@ -97,13 +97,13 @@
                         {% endif %}
 
                         {% for field in entities|first.fields ?? [] %}
-                            {% set isSortingField = (field.name == sort_field_name) or ('field-association' in field.cssClass and sort_field_name starts with field.name ~ '.') %}
+                            {% set isSortingField = (field.property == sort_field_name) or ('field-association' in field.cssClass and sort_field_name starts with field.name ~ '.') %}
                             {% set nextSortDirection = isSortingField ? (sort_order == 'DESC' ? 'ASC' : 'DESC') : 'DESC' %}
                             {% set column_icon = isSortingField ? (nextSortDirection == 'DESC' ? 'fa-arrow-up' : 'fa-arrow-down') : 'fa-sort' %}
 
                             <th class="{{ isSortingField ? 'sorted' }} {{ field.isVirtual ? 'field-virtual' }} text-{{ field.textAlign }} {{ field.cssClass }}" dir="{{ ea.i18n.textDirection }}">
                                 {% if field.isSortable %}
-                                    <a href="{{ ea_path({ page: 1, sort: { (field.name): nextSortDirection }}, remove_referrer = true) }}">
+                                    <a href="{{ ea_path({ page: 1, sort: { (field.property): nextSortDirection }}, remove_referrer = true) }}">
                                         {{ field.label|raw }} <i class="fa fa-fw {{ column_icon }}"></i>
                                     </a>
                                 {% else %}
@@ -133,7 +133,7 @@
                                 {% endif %}
 
                                 {% for field in entity.fields %}
-                                    <td class="{{ field.name == sort_field_name ? 'sorted' }} text-{{ field.textAlign }} {{ field.cssClass }}" dir="{{ ea.i18n.textDirection }}">
+                                    <td class="{{ field.property == sort_field_name ? 'sorted' }} text-{{ field.textAlign }} {{ field.cssClass }}" dir="{{ ea.i18n.textDirection }}">
                                         {{ include(field.templatePath, { field: field }, with_context = false) }}
                                     </td>
                                 {% endfor %}

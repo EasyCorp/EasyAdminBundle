@@ -61,7 +61,7 @@
         {% endif %}
 
         {% block global_actions %}
-            {% for action in ea.crud.actions.globalActions %}
+            {% for action in global_actions %}
                 {{ include(action.templatePath, { action: action }, with_context = false) }}
             {% endfor %}
         {% endblock global_actions %}
@@ -71,6 +71,7 @@
 {% block content_header %}
     {{ parent() }}
 
+    {# TODO:
     {% block batch_actions %}
         {% for batchAction in ea.crud.actions.batchActions %}
             {{ include(batchAction.templatePath, { action: batchAction }, with_context = false) }}
@@ -78,6 +79,7 @@
 
         {{ include('@EasyAdmin/crud/includes/_batch_action_modal.html.twig', {}, with_context = false) }}
     {% endblock %}
+    #}
 {% endblock content_header %}
 
 {% block main %}
@@ -142,7 +144,7 @@
                                     {% if entity.actions is not empty %}
                                         <td class="actions">
                                             {% if not ea.crud.showEntityActionsAsDropdown %}
-                                                {% for action in entity.actions.entityActions %}
+                                                {% for action in entity.actions %}
                                                     {{ include(action.templatePath, { action: action, isIncludedInDropdown: ea.crud.showEntityActionsAsDropdown }, with_context = false) }}
                                                 {% endfor %}
                                             {% else %}

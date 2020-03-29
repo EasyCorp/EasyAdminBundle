@@ -5,7 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\ActionCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 
-final class ActionsDto
+final class ActionConfigDto
 {
     private $pageName;
     /** @var ActionDto[] */
@@ -103,41 +103,5 @@ final class ActionsDto
     public function getActionPermissions(): array
     {
         return $this->actionPermissions;
-    }
-
-    /**
-     * @return ActionDto[]
-     */
-    public function getGlobalActions(): ActionCollection
-    {
-        $globalActions = array_filter($this->actions[$this->pageName], static function (ActionDto $action) {
-            return $action->isGlobalAction();
-        });
-
-        return ActionCollection::new($globalActions);
-    }
-
-    /**
-     * @return ActionDto[]
-     */
-    public function getBatchActions(): ActionCollection
-    {
-        $batchActions = array_filter($this->actions[$this->pageName], static function (ActionDto $action) {
-            return $action->isBatchAction();
-        });
-
-        return ActionCollection::new($batchActions);
-    }
-
-    /**
-     * @return ActionDto[]
-     */
-    public function getEntityActions(): ActionCollection
-    {
-        $entityActions = array_filter($this->actions[$this->pageName], static function (ActionDto $action) {
-            return $action->isEntityAction();
-        });
-
-        return ActionCollection::new($entityActions);
     }
 }

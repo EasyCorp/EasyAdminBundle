@@ -7,9 +7,10 @@ use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\Persistence\Proxy;
 use Doctrine\Common\Util\ClassUtils;
+use EasyCorp\Bundle\EasyAdminBundle\Collection\ActionCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\EntityCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionsDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionConfigDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityBuiltEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\EntityNotFoundException;
@@ -47,16 +48,18 @@ final class EntityFactory
         }
     }
 
-    public function processActions(EntityDto $entityDto, ActionsDto $actionsDto): void
+    public function processActions(EntityDto $entityDto, ActionConfigDto $actionsDto): void
     {
-        $this->actionFactory->processActions($entityDto, $actionsDto);
+        $this->actionFactory->processEntityActions($entityDto, $actionsDto);
     }
 
-    public function processActionsForAll(EntityCollection $entities, ActionsDto $actionsDto): void
+    public function processActionsForAll(EntityCollection $entities, ActionConfigDto $actionsDto): ActionCollection
     {
         foreach ($entities as $entity) {
             $this->processActions($entity, $actionsDto);
         }
+
+        return $this->actionFactory->processGlobalActions($actionsDto);
     }
 
     public function create(string $entityFqcn, $entityId = null, ?string $entityPermission = null): EntityDto

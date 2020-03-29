@@ -2,21 +2,21 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Config;
 
-use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionsDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionConfigDto;
 
 final class Actions
 {
-    /** @var ActionsDto */
+    /** @var ActionConfigDto */
     private $dto;
 
-    private function __construct(ActionsDto $actionsDto)
+    private function __construct(ActionConfigDto $actionsDto)
     {
         $this->dto = $actionsDto;
     }
 
     public static function new(): self
     {
-        $dto = new ActionsDto();
+        $dto = new ActionConfigDto();
 
         return new self($dto);
     }
@@ -136,7 +136,7 @@ final class Actions
         return $this;
     }
 
-    public function getAsDto(string $pageName): ActionsDto
+    public function getAsDto(string $pageName): ActionConfigDto
     {
         $this->dto->setPageName($pageName);
 

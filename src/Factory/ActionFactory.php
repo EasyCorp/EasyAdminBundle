@@ -5,8 +5,8 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\ActionCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionConfigDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionsDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
@@ -33,15 +33,37 @@ final class ActionFactory
         $this->crudUrlGenerator = $crudUrlGenerator;
     }
 
-    public function processActions(EntityDto $entityDto, ActionsDto $actionsDto): void
+    public function processEntityActions(EntityDto $entityDto, ActionConfigDto $actionsDto): void
     {
-        $adminContext = $this->adminContextProvider->getContext();
-        $defaultTranslationDomain = $adminContext->getI18n()->getTranslationDomain();
-        $defaultTranslationParameters = $adminContext->getI18n()->getTranslationParameters();
-        $currentPage = $adminContext->getCrud()->getCurrentPage();
-
-        $builtActions = [];
+        $entityActions = [];
         foreach ($actionsDto->getActions()->all() as $actionDto) {
+            if (!$actionDto->isEntityAction()) {
+                continue;
+            }
+
+            if (false === $this->authChecker->isGranted(Permission::EA_EXECUTE_ACTION, $actionDto)) {
+                continue;
+            }
+
+            if (false === $actionDto->shouldBeDisplayedFor($entityDto)) {
+                continue;
+            }
+
+            $entityActions[] = $this->processAction($actionDto, $entityDto);
+        }
+
+        $entityDto->setActions(ActionCollection::new($entityActions));
+    }
+
+    public function processGlobalActions(ActionConfigDto $actionsDto): ActionCollection
+    {
+        $currentPage = $this->adminContextProvider->getContext()->getCrud()->getCurrentAction();
+        $globalActions = [];
+        foreach ($actionsDto->getActions()->all() as $actionDto) {
+            if (!$actionDto->isGlobalAction()) {
+                continue;
+            }
+
             // TODO: remove this when we reenable "batch actions"
             if ($actionDto->isBatchAction()) {
                 throw new \RuntimeException(sprintf('Batch actions are not supported yet, but we\'ll add support for them very soon. Meanwhile, remove the "%s" batch action from the "%s" page.', $actionDto->getName(), $currentPage));
@@ -55,33 +77,43 @@ final class ActionFactory
                 throw new \RuntimeException(sprintf('Batch actions can be added only to the "index" page, but the "%s" batch action is defined in the "%s" page.', $actionDto->getName(), $currentPage));
             }
 
-            if (false === $actionDto->getLabel()) {
-                $actionDto->setHtmlAttributes(array_merge(['title' => $actionDto->getName()], $actionDto->getHtmlAttributes()));
-            } else {
-                $translationParameters = array_merge($defaultTranslationParameters, $actionDto->getTranslationParameters());
-                $translatedActionLabel = $this->translator->trans($actionDto->getLabel(), $translationParameters, $actionDto->getTranslationDomain() ?? $defaultTranslationDomain);
-                $actionDto->setLabel($translatedActionLabel);
-            }
-
-            $defaultTemplatePath = $adminContext->getTemplatePath('crud/action');
-            $actionDto->setTemplatePath($actionDto->getTemplatePath() ?? $defaultTemplatePath);
-
-            $actionDto->setLinkUrl($this->generateActionUrl($currentPage, $adminContext->getRequest(), $actionDto, $entityDto));
-
-            $builtActions[] = $actionDto;
+            $globalActions[] = $this->processAction($actionDto);
         }
 
-        $entityDto->setActions(ActionCollection::new($builtActions));
+        return ActionCollection::new($globalActions);
     }
 
-    private function generateActionUrl(string $currentAction, Request $request, ActionDto $actionDto, EntityDto $entityDto = null): string
+    private function processAction(ActionDto $actionDto, ?EntityDto $entityDto = null): ActionDto
+    {
+        $adminContext = $this->adminContextProvider->getContext();
+        $defaultTranslationDomain = $adminContext->getI18n()->getTranslationDomain();
+        $defaultTranslationParameters = $adminContext->getI18n()->getTranslationParameters();
+        $currentPage = $adminContext->getCrud()->getCurrentPage();
+
+        if (false === $actionDto->getLabel()) {
+            $actionDto->setHtmlAttributes(array_merge(['title' => $actionDto->getName()], $actionDto->getHtmlAttributes()));
+        } else {
+            $translationParameters = array_merge($defaultTranslationParameters, $actionDto->getTranslationParameters());
+            $translatedActionLabel = $this->translator->trans($actionDto->getLabel(), $translationParameters, $actionDto->getTranslationDomain() ?? $defaultTranslationDomain);
+            $actionDto->setLabel($translatedActionLabel);
+        }
+
+        $defaultTemplatePath = $adminContext->getTemplatePath('crud/action');
+        $actionDto->setTemplatePath($actionDto->getTemplatePath() ?? $defaultTemplatePath);
+
+        $actionDto->setLinkUrl($this->generateActionUrl($currentPage, $adminContext->getRequest(), $actionDto, $entityDto));
+
+        return $actionDto;
+    }
+
+    private function generateActionUrl(string $currentAction, Request $request, ActionDto $actionDto, ?EntityDto $entityDto = null): string
     {
         $requestParameters = [
             'crudController' => $request->query->get('crudController'),
             'referrer' => $this->generateReferrerUrl($request, $actionDto, $currentAction),
         ];
 
-        if (!in_array($actionDto->getName(), [Action::INDEX, Action::NEW], true) && null !== $entityDto) {
+        if (!\in_array($actionDto->getName(), [Action::INDEX, Action::NEW], true) && null !== $entityDto) {
             $requestParameters['entityId'] = $entityDto->getPrimaryKeyValueAsString();
         }
 

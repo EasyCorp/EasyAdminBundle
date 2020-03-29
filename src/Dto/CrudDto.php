@@ -8,8 +8,8 @@ final class CrudDto
 {
     private $pageName;
     private $actionName;
-    /** @var $actions ActionsDto */
-    private $actions;
+    /** @var $actions ActionConfigDto */
+    private $actionConfigDto;
     private $filters;
     private $entityFqcn;
     private $entityLabelInSingular;
@@ -279,14 +279,14 @@ final class CrudDto
         $this->actionName = $actionName;
     }
 
-    public function getActions(): ActionsDto
+    public function getActionConfig(): ActionConfigDto
     {
-        return $this->actions;
+        return $this->actionConfigDto;
     }
 
-    public function setActions(ActionsDto $actions): void
+    public function setActionConfig(ActionConfigDto $actionConfig): void
     {
-        $this->actions = $actions;
+        $this->actionConfigDto = $actionConfig;
     }
 
     public function getFilters(): array

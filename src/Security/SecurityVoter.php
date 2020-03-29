@@ -65,8 +65,8 @@ final class SecurityVoter extends Voter
         // * they have the required permission to execute the action
         // * the action is not disabled
         $actionName = null !== $actionDto ? $actionDto->getName() : $crudDto->getCurrentAction();
-        $actionPermission = $crudDto->getActions()->getActionPermissions()[$actionName] ?? null;
-        $disabledActionNames = $crudDto->getActions()->getDisabledActions();
+        $actionPermission = $crudDto->getActionConfig()->getActionPermissions()[$actionName] ?? null;
+        $disabledActionNames = $crudDto->getActionConfig()->getDisabledActions();
 
         return $this->authorizationChecker->isGranted($actionPermission) && !\in_array($actionName, $disabledActionNames, true);
     }

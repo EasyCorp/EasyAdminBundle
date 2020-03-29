@@ -6,7 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionsDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionConfigDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetsDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\DashboardDto;
@@ -42,10 +42,10 @@ final class AdminContextFactory
 
         $dashboardDto = $this->getDashboardDto($request, $dashboardController);
         $assetDto = $this->getAssetDto($dashboardController, $crudController);
-        $actionsDto = $this->getActions($dashboardController, $crudController, $pageName);
+        $actionConfigDto = $this->getActionConfig($dashboardController, $crudController, $pageName);
         $filters = $this->getFilters($dashboardController, $crudController);
 
-        $crudDto = $this->getCrudDto($this->crudControllers, $dashboardController, $crudController, $actionsDto, $filters, $crudAction, $pageName);
+        $crudDto = $this->getCrudDto($this->crudControllers, $dashboardController, $crudController, $actionConfigDto, $filters, $crudAction, $pageName);
         $entityDto = $this->getEntityDto($request, $crudDto);
         $searchDto = $this->getSearchDto($request, $crudDto);
         $i18nDto = $this->getI18nDto($request, $dashboardDto, $crudDto);
@@ -77,7 +77,7 @@ final class AdminContextFactory
         return $crudController->configureAssets($defaultAssets)->getAsDto();
     }
 
-    private function getCrudDto(CrudControllerRegistry $crudControllerRegistry, DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController, ActionsDto $actionsDto, array $filters, ?string $crudAction, ?string $pageName): ?CrudDto
+    private function getCrudDto(CrudControllerRegistry $crudControllerRegistry, DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController, ActionConfigDto $actionConfigDto, array $filters, ?string $crudAction, ?string $pageName): ?CrudDto
     {
         if (null === $crudController) {
             return null;
@@ -90,7 +90,7 @@ final class AdminContextFactory
         $entityClassName = basename(str_replace('\\', '/', $entityFqcn));
         $entityName = empty($entityClassName) ? 'Undefined' : $entityClassName;
 
-        $crudDto->setActions($actionsDto);
+        $crudDto->setActionConfig($actionConfigDto);
         $crudDto->setFilters($filters);
         $crudDto->setCurrentAction($crudAction);
         $crudDto->setEntityFqcn($entityFqcn);
@@ -101,15 +101,15 @@ final class AdminContextFactory
         return $crudDto;
     }
 
-    private function getActions(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController, ?string $pageName): ActionsDto
+    private function getActionConfig(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController, ?string $pageName): ActionConfigDto
     {
         if (null === $crudController || null === $pageName) {
-            return new ActionsDto();
+            return new ActionConfigDto();
         }
 
-        $defaultActions = $dashboardController->configureActions();
+        $defaultActionConfig = $dashboardController->configureActions();
 
-        return $crudController->configureActions($defaultActions)->getAsDto($pageName);
+        return $crudController->configureActions($defaultActionConfig)->getAsDto($pageName);
     }
 
     private function getFilters(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController): array

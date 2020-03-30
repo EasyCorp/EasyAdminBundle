@@ -5,9 +5,11 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Orm;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Orm\EntityRepositoryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDataDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\TextFilter;
@@ -30,7 +32,7 @@ final class EntityRepository implements EntityRepositoryInterface
         $this->formFactory = $formFactory;
     }
 
-    public function createQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, array $filtersDto): QueryBuilder
+    public function createQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
     {
         $entityManager = $this->doctrine->getManagerForClass($entityDto->getFqcn());
 
@@ -45,7 +47,7 @@ final class EntityRepository implements EntityRepositoryInterface
         }
 
         if (!empty($searchDto->getAppliedFilters())) {
-            $this->addFilterClause($queryBuilder, $searchDto, $entityDto, $filtersDto, $fields);
+            $this->addFilterClause($queryBuilder, $searchDto, $entityDto, $filters, $fields);
         }
 
         $this->addOrderClause($queryBuilder, $searchDto, $entityDto);
@@ -137,7 +139,7 @@ final class EntityRepository implements EntityRepositoryInterface
         }
     }
 
-    private function addFilterClause(QueryBuilder $queryBuilder, SearchDto $searchDto, EntityDto $entityDto, array $configuredFilters, FieldCollection $fields): void
+    private function addFilterClause(QueryBuilder $queryBuilder, SearchDto $searchDto, EntityDto $entityDto, FilterCollection $configuredFilters, FieldCollection $fields): void
     {
         $filtersForm = $this->formFactory->createFiltersForm($this->adminContextProvider->getContext(), $fields, $entityDto);
         if (!$filtersForm->isSubmitted()) {
@@ -149,8 +151,7 @@ final class EntityRepository implements EntityRepositoryInterface
         foreach ($filtersForm as $filterForm) {
             $propertyName = $filterForm->getName();
 
-            /** @var TextFilter $filter */
-            $filter = $configuredFilters[$propertyName];
+            $filter = $configuredFilters->get($propertyName);
             // this filter is not defined or not applied
             if (null === $filter || !isset($appliedFilters[$propertyName])) {
                 continue;

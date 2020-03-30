@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type;
 
+use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDto;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\TypeConfiguratorInterface;
 use Symfony\Component\Form\AbstractType;
@@ -60,6 +61,7 @@ class FiltersFormType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefined('ea_filters');
+        $resolver->setAllowedTypes('ea_filters', FilterCollection::class);
 
         $resolver->setDefaults([
             'allow_extra_fields' => true,

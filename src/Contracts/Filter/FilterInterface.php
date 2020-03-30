@@ -1,6 +1,6 @@
 <?php
 
-namespace EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu;
+namespace EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter;
 
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDataDto;

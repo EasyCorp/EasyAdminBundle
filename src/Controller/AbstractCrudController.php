@@ -7,6 +7,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\EntityCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
@@ -107,13 +108,13 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         }
 
         $fields = FieldCollection::new($this->configureFields(Crud::PAGE_INDEX));
-        $filters = $this->get(FilterFactory::class)->create($context->getCrud()->getFilters(), $fields, $context->getEntity());
+        $filters = $this->get(FilterFactory::class)->create($context->getCrud()->getFiltersConfig(), $fields, $context->getEntity());
         $queryBuilder = $this->createIndexQueryBuilder($context->getSearch(), $context->getEntity(), $fields, $filters);
         $paginator = $this->get(PaginatorFactory::class)->create($queryBuilder);
 
         $entities = EntityCollection::new($context->getEntity(), $paginator->getResults());
         $this->get(EntityFactory::class)->processFieldsForAll($entities, $fields);
-        $globalActions = $this->get(EntityFactory::class)->processActionsForAll($entities, $context->getCrud()->getActionConfig());
+        $globalActions = $this->get(EntityFactory::class)->processActionsForAll($entities, $context->getCrud()->getActionsConfig());
 
         $responseParameters = $this->configureResponseParameters(ResponseParameters::new([
             'pageName' => Crud::PAGE_INDEX,
@@ -121,6 +122,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             'entities' => $entities,
             'paginator' => $paginator,
             'global_actions' => $globalActions,
+            'filters' => $filters,
             // 'batch_form' => $this->createBatchActionsForm(),
         ]));
 
@@ -146,7 +148,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         }
 
         $this->get(EntityFactory::class)->processFields($context->getEntity(), FieldCollection::new($this->configureFields(Crud::PAGE_DETAIL)));
-        $this->get(EntityFactory::class)->processActions($context->getEntity(), $context->getCrud()->getActionConfig());
+        $this->get(EntityFactory::class)->processActions($context->getEntity(), $context->getCrud()->getActionsConfig());
 
         $responseParameters = $this->configureResponseParameters(ResponseParameters::new([
             'pageName' => Crud::PAGE_DETAIL,
@@ -176,7 +178,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         }
 
         $this->get(EntityFactory::class)->processFields($context->getEntity(), FieldCollection::new($this->configureFields(Crud::PAGE_EDIT)));
-        $this->get(EntityFactory::class)->processActions($context->getEntity(), $context->getCrud()->getActionConfig());
+        $this->get(EntityFactory::class)->processActions($context->getEntity(), $context->getCrud()->getActionsConfig());
         $entityInstance = $context->getEntity()->getInstance();
 
         if ($context->getRequest()->isXmlHttpRequest()) {
@@ -255,7 +257,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         }
 
         $this->get(EntityFactory::class)->processFields($context->getEntity(), FieldCollection::new($this->configureFields(Crud::PAGE_EDIT)));
-        $this->get(EntityFactory::class)->processActions($context->getEntity(), $context->getCrud()->getActionConfig());
+        $this->get(EntityFactory::class)->processActions($context->getEntity(), $context->getCrud()->getActionsConfig());
         $entityInstance = $context->getEntity()->getInstance();
 
         $newForm = $this->createNewForm($context->getEntity());
@@ -369,18 +371,19 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         return JsonResponse::fromJsonString($paginator->getJsonResults());
     }
 
-    public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, array $filtersDto): QueryBuilder
+    public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
     {
-        return $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filtersDto);
+        return $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters);
     }
 
     public function renderFilters(AdminContext $context): ResponseParameters
     {
         $fields = FieldCollection::new($this->configureFields(Crud::PAGE_INDEX));
         $this->get(EntityFactory::class)->processFields($context->getEntity(), $fields);
+        $filters = $this->get(FilterFactory::class)->create($context->getCrud()->getFiltersConfig(), $context->getEntity()->getFields(), $context->getEntity());
 
         /** @var FiltersFormType $filtersForm */
-        $filtersForm = $this->get(FormFactory::class)->createFiltersForm($context, $fields, $context->getEntity());
+        $filtersForm = $this->get(FormFactory::class)->createFiltersForm($filters, $context->getRequest());
         $formActionParts = parse_url($filtersForm->getConfig()->getAction());
         $queryString = $formActionParts['query'] ?? [];
         parse_str($queryString, $queryStringAsArray);

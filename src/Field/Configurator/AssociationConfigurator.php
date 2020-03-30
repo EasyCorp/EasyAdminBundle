@@ -103,14 +103,13 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         $field->setFormTypeOptionIfNotSet('multiple', true);
 
         /** @var PersistentCollection $collection */
-        $collection = $field->getValue();
-        $field->setFormTypeOptionIfNotSet('class', $collection->getTypeClass()->getName());
+        $field->setFormTypeOptionIfNotSet('class', $field->getDoctrineMetadata()->get('targetEntity'));
 
         if (null === $field->getTextAlign()) {
             $field->setTextAlign('right');
         }
 
-        $field->setFormattedValue($this->countNumElements($collection));
+        $field->setFormattedValue($this->countNumElements($field->getValue()));
     }
 
     private function formatAsString($entityInstance, EntityDto $entityDto): ?string

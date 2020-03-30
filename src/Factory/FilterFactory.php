@@ -3,7 +3,9 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterConfigDto;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\FilterTypeGuesser;
 
 final class FilterFactory
@@ -15,15 +17,16 @@ final class FilterFactory
         $this->filterTypeGuesser = $filterTypeGuesser;
     }
 
-    public function create(array $filters, FieldCollection $fields, EntityDto $entityDto): array
+    public function create(FilterConfigDto $filterConfig, FieldCollection $fields, EntityDto $entityDto): FilterCollection
     {
         $builtFilters = [];
-        foreach ($filters as $property => $propertyNameOrFilter) {
+        foreach ($filterConfig->all() as $property => $propertyNameOrFilter) {
             if (\is_string($propertyNameOrFilter)) {
-                $guessedFilter = $this->filterTypeGuesser->guessType($entityDto->getFqcn(), $propertyNameOrFilter);
+                $propertyName = $propertyNameOrFilter;
+                $guessedFilter = $this->filterTypeGuesser->guessType($entityDto->getFqcn(), $propertyName);
                 $filterFqcn = $guessedFilter->getType();
                 $filterFormTypeOptions = $guessedFilter->getOptions();
-                $filter = $filterFqcn::new($propertyNameOrFilter)->setFormTypeOptions($filterFormTypeOptions);
+                $filter = $filterFqcn::new($propertyName)->setFormTypeOptions($filterFormTypeOptions);
             } else {
                 $filter = $propertyNameOrFilter;
             }
@@ -31,6 +34,6 @@ final class FilterFactory
             $builtFilters[$property] = $filter;
         }
 
-        return $builtFilters;
+        return FilterCollection::new($builtFilters);
     }
 }

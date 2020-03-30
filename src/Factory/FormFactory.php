@@ -2,8 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
-use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
-use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
+use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudBatchActionFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudFormType;
@@ -11,18 +10,17 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 final class FormFactory
 {
     private $symfonyFormFactory;
     private $crudUrlGenerator;
-    private $filterFactory;
 
-    public function __construct(FormFactoryInterface $symfonyFormFactory, CrudUrlGenerator $crudUrlGenerator, FilterFactory $filterFactory)
+    public function __construct(FormFactoryInterface $symfonyFormFactory, CrudUrlGenerator $crudUrlGenerator)
     {
         $this->symfonyFormFactory = $symfonyFormFactory;
         $this->crudUrlGenerator = $crudUrlGenerator;
-        $this->filterFactory = $filterFactory;
     }
 
     public function createEditForm(EntityDto $entityDto): FormInterface
@@ -52,15 +50,14 @@ final class FormFactory
         ])->getForm();
     }
 
-    public function createFiltersForm(AdminContext $adminContext, FieldCollection $fields, EntityDto $entityDto): FormInterface
+    public function createFiltersForm(FilterCollection $filters, Request $request): FormInterface
     {
-        $filters = $this->filterFactory->create($adminContext->getCrud()->getFilters(), $fields, $entityDto);
         $filtersForm = $this->symfonyFormFactory->createNamed('filters', FiltersFormType::class, null, [
             'method' => 'GET',
-            'action' => $adminContext->getRequest()->query->get('referrer'),
-            'ea_filters' => $filters->getConfiguredFilters(),
+            'action' => $request->query->get('referrer'),
+            'ea_filters' => $filters,
         ]);
 
-        return $filtersForm->handleRequest($adminContext->getRequest());
+        return $filtersForm->handleRequest($request);
     }
 }

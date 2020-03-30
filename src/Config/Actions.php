@@ -9,9 +9,9 @@ final class Actions
     /** @var ActionConfigDto */
     private $dto;
 
-    private function __construct(ActionConfigDto $actionsDto)
+    private function __construct(ActionConfigDto $actionConfigDto)
     {
-        $this->dto = $actionsDto;
+        $this->dto = $actionConfigDto;
     }
 
     public static function new(): self

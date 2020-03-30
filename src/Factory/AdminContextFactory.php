@@ -11,6 +11,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetsDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\DashboardDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterConfigDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\I18nDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\CrudControllerRegistry;
@@ -77,7 +78,7 @@ final class AdminContextFactory
         return $crudController->configureAssets($defaultAssets)->getAsDto();
     }
 
-    private function getCrudDto(CrudControllerRegistry $crudControllerRegistry, DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController, ActionConfigDto $actionConfigDto, array $filters, ?string $crudAction, ?string $pageName): ?CrudDto
+    private function getCrudDto(CrudControllerRegistry $crudControllerRegistry, DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController, ActionConfigDto $actionConfigDto, FilterConfigDto $filters, ?string $crudAction, ?string $pageName): ?CrudDto
     {
         if (null === $crudController) {
             return null;
@@ -90,8 +91,8 @@ final class AdminContextFactory
         $entityClassName = basename(str_replace('\\', '/', $entityFqcn));
         $entityName = empty($entityClassName) ? 'Undefined' : $entityClassName;
 
-        $crudDto->setActionConfig($actionConfigDto);
-        $crudDto->setFilters($filters);
+        $crudDto->setActionsConfig($actionConfigDto);
+        $crudDto->setFiltersConfig($filters);
         $crudDto->setCurrentAction($crudAction);
         $crudDto->setEntityFqcn($entityFqcn);
         $crudDto->setEntityLabelInSingular($crudDto->getEntityLabelInSingular() ?? $entityName);
@@ -112,15 +113,15 @@ final class AdminContextFactory
         return $crudController->configureActions($defaultActionConfig)->getAsDto($pageName);
     }
 
-    private function getFilters(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController): array
+    private function getFilters(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController): FilterConfigDto
     {
         if (null === $crudController) {
             return [];
         }
 
-        $defaultFilters = $dashboardController->configureFilters();
+        $defaultFilterConfig = $dashboardController->configureFilters();
 
-        return $crudController->configureFilters($defaultFilters)->all();
+        return $crudController->configureFilters($defaultFilterConfig)->getAsDto();
     }
 
     private function getTemplateRegistry(DashboardControllerInterface $dashboardController, ?CrudDto $crudDto): TemplateRegistry

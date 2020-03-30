@@ -2,23 +2,29 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Config;
 
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu\FilterInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterConfigDto;
 
 final class Filters
 {
-    /** @var string[]|FilterInterface[] */
-    private $filters;
+    /** @var FilterConfigDto */
+    private $dto;
 
-    private function __construct()
+    private function __construct(FilterConfigDto $filterConfigDto)
     {
-        $this->filters = [];
+        $this->dto = $filterConfigDto;
     }
 
     public static function new(): self
     {
-        return new self();
+        $dto = new FilterConfigDto();
+
+        return new self($dto);
     }
 
+    /**
+     * @param FilterInterface|string $propertyNameOrFilter
+     */
     public function add($propertyNameOrFilter): self
     {
         if (!\is_string($propertyNameOrFilter) && !$propertyNameOrFilter instanceof FilterInterface) {
@@ -26,17 +32,17 @@ final class Filters
         }
 
         $filterPropertyName = \is_string($propertyNameOrFilter) ? $propertyNameOrFilter : (string) $propertyNameOrFilter;
-        if (\array_key_exists($filterPropertyName, $this->filters)) {
+        if (null !== $this->dto->getFilter($filterPropertyName)) {
             throw new \InvalidArgumentException(sprintf('There are two or more different filters defined for the "%s" property, but you can only define a single filter per property.', $filterPropertyName));
         }
 
-        $this->filters[$filterPropertyName] = $propertyNameOrFilter;
+        $this->dto->addFilter($propertyNameOrFilter);
 
         return $this;
     }
 
-    public function all(): array
+    public function getAsDto(): FilterConfigDto
     {
-        return $this->filters;
+        return $this->dto;
     }
 }

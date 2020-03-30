@@ -178,7 +178,6 @@ return static function (ContainerConfigurator $container) {
         ->set(FormFactory::class)
             ->arg(0, ref('form.factory'))
             ->arg(1, ref(CrudUrlGenerator::class))
-            ->arg(2, ref(FilterFactory::class))
 
         ->set(FieldFactory::class)
             ->arg(0, ref(AdminContextProvider::class))

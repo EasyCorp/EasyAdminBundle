@@ -210,7 +210,7 @@ class Crud
 
     public function setFilters(?array $filters): self
     {
-        $this->dto->setFilters($filters);
+        $this->dto->setFiltersConfig($filters);
 
         return $this;
     }

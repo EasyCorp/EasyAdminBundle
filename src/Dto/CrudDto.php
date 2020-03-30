@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterInterface;
 
 final class CrudDto
 {
@@ -59,7 +60,7 @@ final class CrudDto
         return $this->pageName;
     }
 
-    public function setPageName(string $pageName): void
+    public function setPageName(?string $pageName): void
     {
         $this->pageName = $pageName;
     }
@@ -279,23 +280,23 @@ final class CrudDto
         $this->actionName = $actionName;
     }
 
-    public function getActionConfig(): ActionConfigDto
+    public function getActionsConfig(): ActionConfigDto
     {
         return $this->actionConfigDto;
     }
 
-    public function setActionConfig(ActionConfigDto $actionConfig): void
+    public function setActionsConfig(ActionConfigDto $actionConfig): void
     {
         $this->actionConfigDto = $actionConfig;
     }
 
-    public function getFilters(): array
+    public function getFiltersConfig(): FilterConfigDto
     {
         return $this->filters;
     }
 
-    public function setFilters(array $filters): void
+    public function setFiltersConfig(FilterConfigDto $filterConfig): void
     {
-        $this->filters = $filters;
+        $this->filters = $filterConfig;
     }
 }

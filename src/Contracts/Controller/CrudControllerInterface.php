@@ -5,6 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
@@ -55,7 +56,7 @@ interface CrudControllerInterface
 
     public function configureResponseParameters(ResponseParameters $responseParameters): ResponseParameters;
 
-    public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, array $filtersDto): QueryBuilder;
+    public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder;
 
     public function createEntity(string $entityFqcn);
 

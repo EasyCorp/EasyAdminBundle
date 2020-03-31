@@ -1,10 +1,17 @@
 <?php
 
-namespace EasyCorp\Bundle\EasyAdminBundle\Filter;
+namespace EasyCorp\Bundle\EasyAdminBundle\Form\Guesser;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\ArrayFilter;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\BooleanFilter;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\DateTimeFilter;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\NumericFilter;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\TextFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\ComparisonFilterType;
 use Symfony\Component\Form\Extension\Core\Type\DateIntervalType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -30,10 +37,12 @@ class FilterTypeGuesser
         $this->doctrine = $doctrine;
     }
 
-    public function guessType(string $entityFqcn, string $propertyName): ?TypeGuess
+    public function guessType(EntityDto $entityDto, string $propertyName): ?Filter
     {
-        if (null === $doctrineEntityMetadata = $this->getMetadata($entityFqcn)) {
-            return null;
+        $metadata = $entityDto->getPropertyMetadata($propertyName);
+
+        if (empty($metadata)) {
+            return new TypeGuess(TextFilter::class, [], Guess::MEDIUM_CONFIDENCE);
         }
 
         /** @var ClassMetadataInfo $metadata */

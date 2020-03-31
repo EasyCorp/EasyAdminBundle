@@ -24,7 +24,7 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 final class FieldFactory
 {
     // TODO: update this map when ArrayField is implemented
-    private const DOCTRINE_TYPE_TO_FIELD_FQCN_MAP = [
+    private static $doctrineTypeToFieldFqcn = [
         //Type::TARRAY => 'array',
         Type::BIGINT => TextField::class,
         Type::BINARY => TextAreaField::class,
@@ -102,7 +102,7 @@ final class FieldFactory
                 $guessedFieldFqcn = IdField::class;
             } else {
                 $doctrinePropertyType = $entityDto->getPropertyMetadata($fieldName)['type'];
-                $guessedFieldFqcn = self::DOCTRINE_TYPE_TO_FIELD_FQCN_MAP[$doctrinePropertyType] ?? null;
+                $guessedFieldFqcn = self::$doctrineTypeToFieldFqcn[$doctrinePropertyType] ?? null;
             }
 
             $fields->set($this->transformField($fieldDto, $guessedFieldFqcn));

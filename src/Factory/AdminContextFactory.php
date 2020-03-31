@@ -116,7 +116,7 @@ final class AdminContextFactory
     private function getFilters(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController): FilterConfigDto
     {
         if (null === $crudController) {
-            return [];
+            return new FilterConfigDto();
         }
 
         $defaultFilterConfig = $dashboardController->configureFilters();

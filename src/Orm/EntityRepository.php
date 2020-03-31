@@ -141,7 +141,7 @@ final class EntityRepository implements EntityRepositoryInterface
 
     private function addFilterClause(QueryBuilder $queryBuilder, SearchDto $searchDto, EntityDto $entityDto, FilterCollection $configuredFilters, FieldCollection $fields): void
     {
-        $filtersForm = $this->formFactory->createFiltersForm($this->adminContextProvider->getContext(), $fields, $entityDto);
+        $filtersForm = $this->formFactory->createFiltersForm($configuredFilters, $this->adminContextProvider->getContext()->getRequest());
         if (!$filtersForm->isSubmitted()) {
             return;
         }

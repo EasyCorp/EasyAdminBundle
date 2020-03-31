@@ -41,7 +41,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\TextConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\TextEditorConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\TimezoneConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\UrlConfigurator;
-use EasyCorp\Bundle\EasyAdminBundle\Filter\FilterTypeGuesser;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\Configurator\NumericConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\NumericFilter;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Guesser\FilterTypeGuesser;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Extension\EaCollectionTypeExtension;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Extension\EaCrudFormTypeExtension;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\FilterRegistry;
@@ -187,11 +189,15 @@ return static function (ContainerConfigurator $container) {
         ->set(FieldProvider::class)
             ->arg(0, ref(AdminContextProvider::class))
 
-        ->set(FilterTypeGuesser::class)
-            ->arg(0, ref('doctrine'))
-
         ->set(FilterFactory::class)
-            ->arg(0, ref(FilterTypeGuesser::class))
+            ->arg(0, ref(AdminContextProvider::class))
+            ->arg(1, \function_exists('tagged') ? tagged('ea.filter_configurator') : tagged_iterator('ea.filter_configurator'))
+
+        ->set(\EasyCorp\Bundle\EasyAdminBundle\Filter\Configurator\TextConfigurator::class)
+            ->tag('ea.filter_configurator')
+
+        ->set(NumericConfigurator::class)
+        ->tag('ea.filter_configurator')
 
         ->set(ActionFactory::class)
             ->arg(0, ref(AdminContextProvider::class))

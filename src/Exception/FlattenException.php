@@ -8,11 +8,21 @@ use Symfony\Component\ErrorHandler\Exception\FlattenException as BaseFlattenExce
 if (class_exists(BaseFlattenException::class)) {
     class FlattenException extends BaseFlattenException
     {
-        use FlattenExceptionTrait;
+        use FlattenExceptionTrait { FlattenExceptionTrait::create as createException; }
+
+        public static function create(\Exception $exception, $statusCode = null, array $headers = []): BaseFlattenException
+        {
+            return self::createException($exception, $statusCode, $headers);
+        }
     }
 } else {
     class FlattenException extends LegacyBaseFlattenException
     {
-        use FlattenExceptionTrait;
+        use FlattenExceptionTrait { FlattenExceptionTrait::create as createException; }
+
+        public static function create(\Exception $exception, $statusCode = null, array $headers = []): LegacyBaseFlattenException
+        {
+            return self::createException($exception, $statusCode, $headers);
+        }
     }
 }

@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type;
 
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
@@ -12,10 +13,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * @author Yonel Ceruto <yonelceruto@gmail.com>
  */
-class NumericFilterType extends FilterType
+class NumericFilterType extends AbstractType
 {
-    use FilterTypeTrait;
-
     private $valueType;
     private $valueTypeOptions;
 

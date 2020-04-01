@@ -41,9 +41,13 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\TextConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\TextEditorConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\TimezoneConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\UrlConfigurator;
-use EasyCorp\Bundle\EasyAdminBundle\Filter\Configurator\NumericConfigurator;
-use EasyCorp\Bundle\EasyAdminBundle\Filter\NumericFilter;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Guesser\FilterTypeGuesser;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\Configurator\ChoiceConfigurator as ChoiceFilterConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\Configurator\CommonConfigurator as CommonFilterConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\Configurator\ComparisonConfigurator as ComparisonFilterConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\Configurator\DateTimeConfigurator as DateTimeFilterConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\Configurator\EntityConfigurator as EntityFilterConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\Configurator\NumericConfigurator as NumericFilterConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\Configurator\TextConfigurator as TextFilterConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Extension\EaCollectionTypeExtension;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Extension\EaCrudFormTypeExtension;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\FilterRegistry;
@@ -193,11 +197,29 @@ return static function (ContainerConfigurator $container) {
             ->arg(0, ref(AdminContextProvider::class))
             ->arg(1, \function_exists('tagged') ? tagged('ea.filter_configurator') : tagged_iterator('ea.filter_configurator'))
 
-        ->set(\EasyCorp\Bundle\EasyAdminBundle\Filter\Configurator\TextConfigurator::class)
+        ->set(FiltersFormType::class)
+            ->tag('form.type', ['alias' => 'ea_filters'])
+
+        ->set(ChoiceFilterConfigurator::class)
             ->tag('ea.filter_configurator')
 
-        ->set(NumericConfigurator::class)
-        ->tag('ea.filter_configurator')
+        ->set(CommonFilterConfigurator::class)
+            ->tag('ea.filter_configurator', ['priority' => 9999])
+
+        ->set(ComparisonFilterConfigurator::class)
+            ->tag('ea.filter_configurator')
+
+        ->set(DateTimeFilterConfigurator::class)
+            ->tag('ea.filter_configurator')
+
+        ->set(EntityFilterConfigurator::class)
+            ->tag('ea.filter_configurator')
+
+        ->set(NumericFilterConfigurator::class)
+            ->tag('ea.filter_configurator')
+
+        ->set(TextFilterConfigurator::class)
+            ->tag('ea.filter_configurator')
 
         ->set(ActionFactory::class)
             ->arg(0, ref(AdminContextProvider::class))
@@ -297,9 +319,5 @@ return static function (ContainerConfigurator $container) {
 
         ->set(UrlConfigurator::class)
             ->tag('ea.field_configurator')
-
-        ->set(FiltersFormType::class)
-            ->arg(0, \function_exists('tagged') ? tagged('ea.form_type_configurator') : tagged_iterator('ea.form_type_configurator'))
-            ->tag('form.type', ['alias' => 'ea_filters'])
     ;
 };

@@ -6,6 +6,7 @@ use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\Form\FormInterface;
 
 /**
+ * TODO: remove this interface
  * The filter interface that all filters must to implement.
  *
  * @author Yonel Ceruto <yonelceruto@gmail.com>

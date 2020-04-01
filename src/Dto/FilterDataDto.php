@@ -6,7 +6,8 @@ final class FilterDataDto
 {
     private $index;
     private $entityAlias;
-    private $property;
+    /** @var FilterDto */
+    private $filterDto;
     private $comparison;
     private $value;
     private $value2;
@@ -15,12 +16,12 @@ final class FilterDataDto
     {
     }
 
-    public static function new(int $index, string $property, string $entityAlias, array $formData): self
+    public static function new(int $index, FilterDto $filterDto, string $entityAlias, array $formData): self
     {
         $filterData = new self();
         $filterData->index = $index;
+        $filterData->filterDto = $filterDto;
         $filterData->entityAlias = $entityAlias;
-        $filterData->property = $property;
         $filterData->comparison = $formData['comparison'];
         $filterData->value = $formData['value'];
         $filterData->value2 = $formData['value2'] ?? null;
@@ -35,7 +36,12 @@ final class FilterDataDto
 
     public function getProperty(): string
     {
-        return $this->property;
+        return $this->filterDto->getProperty();
+    }
+
+    public function getFormTypeOption(string $optionName)
+    {
+        return $this->filterDto->getFormTypeOption($optionName);
     }
 
     public function getComparison(): string
@@ -55,11 +61,11 @@ final class FilterDataDto
 
     public function getParameterName(): string
     {
-        return sprintf('%s_%d', str_replace('.', '_', $this->property), $this->index);
+        return sprintf('%s_%d', str_replace('.', '_', $this->getProperty()), $this->index);
     }
 
     public function getParameter2Name(): string
     {
-        return sprintf('%s_%d', str_replace('.', '_', $this->property), $this->index + 1);
+        return sprintf('%s_%d', str_replace('.', '_', $this->getProperty()), $this->index + 1);
     }
 }

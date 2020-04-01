@@ -12,9 +12,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Filter\ArrayFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\BooleanFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\ComparisonFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\DateTimeFilter;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\NumericFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\TextFilter;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Guesser\FilterTypeGuesser;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 
 /**
@@ -74,21 +74,25 @@ final class FilterFactory
 
             $context = $this->adminContextProvider->getContext();
             foreach ($this->filterConfigurators as $configurator) {
-                if (!$configurator->supports($filterDto, $entityDto)) {
+                if (!$configurator->supports($filterDto, $fields->get($property), $entityDto, $context)) {
                     continue;
                 }
 
-                $configurator->configure($filterDto, $entityDto, $context);
+                $configurator->configure($filterDto, $fields->get($property), $entityDto, $context);
             }
 
             $builtFilters[$property] = $filterDto;
         }
-dd($builtFilters);
+
         return FilterCollection::new($builtFilters);
     }
 
     private function guessFilterClass(EntityDto $entityDto, string $propertyName): string
     {
+        if ($entityDto->isAssociation($propertyName)) {
+            return EntityFilter::class;
+        }
+
         $metadata = $entityDto->getPropertyMetadata($propertyName);
 
         if (empty($metadata)) {

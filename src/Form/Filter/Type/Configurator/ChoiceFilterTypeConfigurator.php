@@ -8,6 +8,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\TypeConfiguratorInter
 use Symfony\Component\Form\FormConfigInterface;
 
 /**
+ * TODO: delete this class.
+ *
  * @author Yonel Ceruto <yonelceruto@gmail.com>
  */
 class ChoiceFilterTypeConfigurator implements TypeConfiguratorInterface

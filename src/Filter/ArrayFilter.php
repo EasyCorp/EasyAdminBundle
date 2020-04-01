@@ -2,14 +2,20 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Filter;
 
+use Doctrine\DBAL\Types\Type;
+use Doctrine\ORM\Query\Expr\Orx;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDataDto;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDto;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\ArrayFilterType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
-use function Symfony\Component\String\u;
 
+/**
+ * @author Yonel Ceruto <yonelceruto@gmail.com>
+ * @author Javier Eguiluz <javier.eguiluz@gmail.com>
+ */
 final class ArrayFilter implements FilterInterface
 {
     use FilterTrait;
@@ -24,7 +30,7 @@ final class ArrayFilter implements FilterInterface
             ->setFormTypeOption('translation_domain', 'EasyAdminBundle');
     }
 
-    public function apply(QueryBuilder $queryBuilder, FilterDataDto $filterDataDto)
+    public function apply(QueryBuilder $queryBuilder, FilterDataDto $filterDataDto, ?FieldDto $fieldDto, EntityDto $entityDto): void
     {
         $alias = $filterDataDto->getEntityAlias();
         $property = $filterDataDto->getProperty();
@@ -32,15 +38,12 @@ final class ArrayFilter implements FilterInterface
         $parameterName = $filterDataDto->getParameterName();
         $value = $filterDataDto->getValue();
 
-        // TODO: allow to do this:
-        //$property = $metadata['field'];
-        //$useQuotes = 'simple_array' !== $metadata['dataType'];
-        $useQuotes = true;
+        $useQuotes = Type::SIMPLE_ARRAY === $fieldDto->getDoctrineMetadata()->get('type');
 
         if (null === $value || [] === $value) {
             $queryBuilder->andWhere(sprintf('%s.%s %s', $alias, $property, $comparison));
         } else {
-            $orX = new Expr\Orx();
+            $orX = new Orx();
             foreach ($value as $item) {
                 $orX->add(sprintf('%s.%s %s :%s', $alias, $property, $comparison, $parameterName));
                 $queryBuilder->setParameter($parameterName, $useQuotes ? '%"'.$item.'"%' : '%'.$item.'%');

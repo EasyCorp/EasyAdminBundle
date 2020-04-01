@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 use EasyCorp\Bundle\EasyAdminBundle\Provider\UlidProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Util\DotArray;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 final class FieldDto
@@ -144,34 +145,19 @@ final class FieldDto
     /**
      * @param string $optionName You can use "dot" notation to set nested options (e.g. 'attr.class')
      */
-    public function setFormTypeOption(string $optionName, $optionValue): self
+    public function setFormTypeOption(string $optionName, $optionValue): void
     {
-        // Code copied from https://github.com/adbario/php-dot-notation/blob/dc4053b44d71a5cf782e6c59dcbf09c78f036ceb/src/Dot.php#L437
-        // (c) Riku Särkinen <riku@adbar.io> - MIT License
-        $formTypeOptions = &$this->formTypeOptions;
-        foreach (explode('.', $optionName) as $key) {
-            if (!isset($formTypeOptions[$key]) || !\is_array($formTypeOptions[$key])) {
-                $formTypeOptions[$key] = [];
-            }
-
-            $formTypeOptions = &$formTypeOptions[$key];
-        }
-
-        $formTypeOptions = $optionValue;
-
-        return $this;
+        DotArray::set($this->formTypeOptions, $optionName, $optionValue);
     }
 
     /**
      * @param string $optionName You can use "dot" notation to set nested options (e.g. 'attr.class')
      */
-    public function setFormTypeOptionIfNotSet(string $optionName, $optionValue): self
+    public function setFormTypeOptionIfNotSet(string $optionName, $optionValue): void
     {
-        if (!$this->arrayNestedKeyExists($this->formTypeOptions, $optionName)) {
-            $this->setFormTypeOption($optionName, $optionValue);
+        if (!DotArray::has($this->formTypeOptions, $optionName)) {
+            DotArray::set($this->formTypeOptions, $optionName, $optionValue);
         }
-
-        return $this;
     }
 
     public function isSortable(): ?bool
@@ -322,24 +308,5 @@ final class FieldDto
     public function setDoctrineMetadata(array $metadata): void
     {
         $this->doctrineMetadata = new ParameterBag($metadata);
-    }
-
-    private function arrayNestedKeyExists(array $array, $key): bool
-    {
-        // Code copied from https://github.com/adbario/php-dot-notation/blob/dc4053b44d71a5cf782e6c59dcbf09c78f036ceb/src/Dot.php#L222
-        // (c) Riku Särkinen <riku@adbar.io> - MIT License
-        if (\array_key_exists($key, $array)) {
-            return true;
-        }
-
-        foreach (explode('.', $key) as $segment) {
-            if (!\is_array($array) || !\array_key_exists($segment, $array)) {
-                return false;
-            }
-
-            $array = $array[$segment];
-        }
-
-        return true;
     }
 }

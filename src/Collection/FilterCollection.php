@@ -21,7 +21,7 @@ final class FilterCollection implements CollectionInterface
     /**
      * @param FilterDto[] $filters
      */
-    public static function new(array $filters): self
+    public static function new(array $filters = []): self
     {
         return new self($filters);
     }

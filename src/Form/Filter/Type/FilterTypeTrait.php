@@ -6,6 +6,8 @@ use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\Form\FormInterface;
 
 /**
+ * TODO: remove this trait.
+ *
  * @author Yonel Ceruto <yonelceruto@gmail.com>
  */
 trait FilterTypeTrait

@@ -1,8 +1,7 @@
 <?php
+
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
-use EasyCorp\Bundle\EasyAdminBundle\Collection\ActionCollection;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterInterface;
 
 final class FilterConfigDto

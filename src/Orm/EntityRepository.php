@@ -9,10 +9,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Orm\EntityRepositoryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDataDto;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
-use EasyCorp\Bundle\EasyAdminBundle\Filter\TextFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\FilterRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
@@ -169,8 +167,9 @@ final class EntityRepository implements EntityRepositoryInterface
                     'value' => $submittedData,
                 ];
             }
-            // TODO: pass the field being filtered too
-            $filter->apply($queryBuilder, FilterDataDto::new($i, $propertyName, current($queryBuilder->getRootAliases()), $submittedData));
+
+            $filterDataDto = FilterDataDto::new($i, $filter, current($queryBuilder->getRootAliases()), $submittedData);
+            $filter->apply($queryBuilder, $filterDataDto, $fields->get($propertyName), $entityDto);
 
             ++$i;
         }

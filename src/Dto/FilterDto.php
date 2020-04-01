@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 use Doctrine\ORM\QueryBuilder;
+use EasyCorp\Bundle\EasyAdminBundle\Util\DotArray;
 
 final class FilterDto
 {
@@ -38,6 +39,11 @@ final class FilterDto
         return $this->formTypeOptions;
     }
 
+    public function getFormTypeOption(string $optionName)
+    {
+        return DotArray::get($this->formTypeOptions, $optionName);
+    }
+
     public function setFormTypeOptions(array $formTypeOptions): void
     {
         $this->formTypeOptions = $formTypeOptions;
@@ -45,7 +51,14 @@ final class FilterDto
 
     public function setFormTypeOption(string $optionName, $optionValue): void
     {
-        $this->formTypeOptions[$optionName] = $optionValue;
+        DotArray::set($this->formTypeOptions, $optionName, $optionValue);
+    }
+
+    public function setFormTypeOptionIfNotSet(string $optionName, $optionValue): void
+    {
+        if (!DotArray::has($this->formTypeOptions, $optionName)) {
+            DotArray::set($this->formTypeOptions, $optionName, $optionValue);
+        }
     }
 
     public function setFormType(string $formType): void
@@ -64,7 +77,7 @@ final class FilterDto
     }
 
     /**
-     * @return string|null|false
+     * @return string|false|null
      */
     public function getLabel()
     {
@@ -72,7 +85,7 @@ final class FilterDto
     }
 
     /**
-     * @param string|null|false $label
+     * @param string|false|null $label
      */
     public function setLabel($label): void
     {
@@ -84,8 +97,8 @@ final class FilterDto
         $this->applyCallable = $callable;
     }
 
-    public function apply(QueryBuilder $queryBuilder, FilterDataDto $filterDataDto): void
+    public function apply(QueryBuilder $queryBuilder, FilterDataDto $filterDataDto, ?FieldDto $fieldDto, EntityDto $entityDto): void
     {
-        call_user_func($this->applyCallable, $queryBuilder, $filterDataDto);
+        \call_user_func($this->applyCallable, $queryBuilder, $filterDataDto, $fieldDto, $entityDto);
     }
 }

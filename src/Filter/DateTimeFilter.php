@@ -4,13 +4,16 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Filter;
 
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDataDto;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDto;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\ComparisonFilterType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\DateTimeFilterType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
-use function Symfony\Component\String\u;
 
+/**
+ * @author Yonel Ceruto <yonelceruto@gmail.com>
+ * @author Javier Eguiluz <javier.eguiluz@gmail.com>
+ */
 final class DateTimeFilter implements FilterInterface
 {
     use FilterTrait;
@@ -25,7 +28,7 @@ final class DateTimeFilter implements FilterInterface
             ->setFormTypeOption('translation_domain', 'EasyAdminBundle');
     }
 
-    public function apply(QueryBuilder $queryBuilder, FilterDataDto $filterDataDto)
+    public function apply(QueryBuilder $queryBuilder, FilterDataDto $filterDataDto, ?FieldDto $fieldDto, EntityDto $entityDto): void
     {
         $alias = $filterDataDto->getEntityAlias();
         $property = $filterDataDto->getProperty();

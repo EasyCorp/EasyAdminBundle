@@ -8,14 +8,14 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDataDto;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\EntityFilterType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\ChoiceFilterType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
 
 /**
  * @author Yonel Ceruto <yonelceruto@gmail.com>
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class EntityFilter implements FilterInterface
+final class ChoiceFilter implements FilterInterface
 {
     use FilterTrait;
 
@@ -25,8 +25,29 @@ final class EntityFilter implements FilterInterface
             ->setFilterFqcn(__CLASS__)
             ->setProperty($propertyName)
             ->setLabel($label)
-            ->setFormType(EntityFilterType::class)
+            ->setFormType(ChoiceFilterType::class)
             ->setFormTypeOption('translation_domain', 'EasyAdminBundle');
+    }
+
+    public function setChoices(array $choices): self
+    {
+        $this->dto->setFormTypeOption('value_type_options.choices', $choices);
+
+        return $this;
+    }
+
+    public function renderExpanded(bool $isExpanded = true): self
+    {
+        $this->dto->setFormTypeOption('value_type_options.expanded', $isExpanded);
+
+        return $this;
+    }
+
+    public function canSelectMultiple(bool $selectMultiple = true): self
+    {
+        $this->dto->setFormTypeOption('value_type_options.multiple', $selectMultiple);
+
+        return $this;
     }
 
     public function apply(QueryBuilder $queryBuilder, FilterDataDto $filterDataDto, ?FieldDto $fieldDto, EntityDto $entityDto): void
@@ -38,22 +59,7 @@ final class EntityFilter implements FilterInterface
         $value = $filterDataDto->getValue();
         $isMultiple = $filterDataDto->getFormTypeOption('value_type_options.multiple');
 
-        if ($entityDto->isToManyAssociation($property)) {
-            $assocAlias = static::createAlias($property);
-            $queryBuilder->leftJoin(sprintf('%s.%s', $alias, $property), $assocAlias);
-
-            if (0 === \count($value)) {
-                $queryBuilder->andWhere(sprintf('%s %s', $assocAlias, $comparison));
-            } else {
-                $orX = new Orx();
-                $orX->add(sprintf('%s %s (:%s)', $assocAlias, $comparison, $parameterName));
-                if ('NOT IN' === $comparison) {
-                    $orX->add(sprintf('%s IS NULL', $assocAlias));
-                }
-                $queryBuilder->andWhere($orX)
-                    ->setParameter($parameterName, $value);
-            }
-        } elseif (null === $value || ($isMultiple && 0 === \count($value))) {
+        if (null === $value || ($isMultiple && 0 === \count($value))) {
             $queryBuilder->andWhere(sprintf('%s.%s %s', $alias, $property, $comparison));
         } else {
             $orX = new Orx();

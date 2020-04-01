@@ -8,30 +8,27 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterConfiguratorInterface
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDto;
-use EasyCorp\Bundle\EasyAdminBundle\Filter\NumericFilter;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\ComparisonFilter;
+use Symfony\Component\Form\Extension\Core\Type\DateIntervalType;
 
 /**
  * @author Yonel Ceruto <yonelceruto@gmail.com>
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class NumericConfigurator implements FilterConfiguratorInterface
+final class ComparisonConfigurator implements FilterConfiguratorInterface
 {
     public function supports(FilterDto $filterDto, ?FieldDto $fieldDto, EntityDto $entityDto, AdminContext $context): bool
     {
-        return NumericFilter::class === $filterDto->getFqcn();
+        return ComparisonFilter::class === $filterDto->getFqcn();
     }
 
     public function configure(FilterDto $filterDto, ?FieldDto $fieldDto, EntityDto $entityDto, AdminContext $context): void
     {
         $propertyType = $entityDto->getPropertyMetadata($filterDto->getProperty())['type'];
 
-        if (Type::DECIMAL === $propertyType) {
-            $filterDto->setFormTypeOptionIfNotSet('value_type_options.input', 'string');
-        }
-
-        if (\in_array($propertyType, [Type::BIGINT, Type::INTEGER, Type::SMALLINT], true)) {
-            $filterDto->setFormTypeOptionIfNotSet('value_type', IntegerType::class);
+        if (Type::DATEINTERVAL === $propertyType) {
+            $filterDto->setFormTypeOption('value_type', DateIntervalType::class);
+            $filterDto->setFormTypeOption('comparison_type_options.type', 'datetime');
         }
     }
 }

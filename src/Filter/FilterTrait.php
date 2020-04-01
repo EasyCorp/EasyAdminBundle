@@ -3,6 +3,8 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Filter;
 
 use Doctrine\ORM\QueryBuilder;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDataDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDto;
 
@@ -14,8 +16,8 @@ trait FilterTrait
     private function __construct()
     {
         $dto = new FilterDto();
-        $dto->setApplyCallable(function (QueryBuilder $queryBuilder, FilterDataDto $filterDataDto) {
-            return $this->apply($queryBuilder, $filterDataDto);
+        $dto->setApplyCallable(function (QueryBuilder $queryBuilder, FilterDataDto $filterDataDto, ?FieldDto $fieldDto, EntityDto $entityDto) {
+            return $this->apply($queryBuilder, $filterDataDto, $fieldDto, $entityDto);
         });
 
         $this->dto = $dto;

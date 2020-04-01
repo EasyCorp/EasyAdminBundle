@@ -5,6 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type;
 use Symfony\Component\Form\AbstractType;
 
 /**
+ * TODO: remove this class
  * Abstract class for easy filter implementation.
  *
  * @author Yonel Ceruto <yonelceruto@gmail.com>

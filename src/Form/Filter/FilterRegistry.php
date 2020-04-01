@@ -10,6 +10,7 @@ use Symfony\Component\Form\FormTypeGuesserChain;
 use Symfony\Component\Form\FormTypeGuesserInterface;
 
 /**
+ * TODO: remove this class
  * The central registry of the filter system.
  *
  * @author Yonel Ceruto <yonelceruto@gmail.com>

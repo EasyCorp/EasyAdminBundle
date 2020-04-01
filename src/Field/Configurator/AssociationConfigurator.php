@@ -102,7 +102,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
 
         $field->setFormTypeOptionIfNotSet('multiple', true);
 
-        /** @var PersistentCollection $collection */
+        /* @var PersistentCollection $collection */
         $field->setFormTypeOptionIfNotSet('class', $field->getDoctrineMetadata()->get('targetEntity'));
 
         if (null === $field->getTextAlign()) {

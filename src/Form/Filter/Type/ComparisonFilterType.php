@@ -3,16 +3,15 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type;
 
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * @author Yonel Ceruto <yonelceruto@gmail.com>
  */
-class ComparisonFilterType extends FilterType
+class ComparisonFilterType extends AbstractType
 {
-    use FilterTypeTrait;
-
     private $valueType;
     private $valueTypeOptions;
     private $comparisonType;

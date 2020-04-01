@@ -324,6 +324,7 @@ class EasyAdminTwigExtension extends AbstractExtension
 
     /**
      * Checks whether the given 'action' is enabled for the given 'entity'.
+     * Also checks if the current user is granted access to this 'action'.
      *
      * @param string $view
      * @param string $action
@@ -333,7 +334,15 @@ class EasyAdminTwigExtension extends AbstractExtension
      */
     public function isActionEnabled($view, $action, $entityName)
     {
-        return $this->configManager->isActionEnabled($entityName, $view, $action);
+        try {
+            $entityConfig = $this->configManager->getEntityConfig($entityName);
+        } catch (\Exception $e) {
+            return false;
+        }
+
+        $isGranted = (!isset($entityConfig[$action]) || !isset($entityConfig[$action]['item_permission']) || $this->isGranted($entityConfig[$action]['item_permission']));
+
+        return $this->configManager->isActionEnabled($entityName, $view, $action) && $isGranted;
     }
 
     /**
@@ -354,6 +363,8 @@ class EasyAdminTwigExtension extends AbstractExtension
      * Returns the actions configured for each item displayed in the given view.
      * This method is needed because some actions are displayed globally for the
      * entire view (e.g. 'new' action in 'list' view).
+     * Checks if the current user is granted access to each 'action'.
+     * Forbidden actions will not be returned.
      *
      * @param string $view
      * @param string $entityName
@@ -379,8 +390,10 @@ class EasyAdminTwigExtension extends AbstractExtension
         ];
         $excludedActions = $actionsExcludedForItems[$view];
 
-        return array_filter($viewActions, function ($action) use ($excludedActions, $disabledActions) {
-            return !\in_array($action['name'], $excludedActions) && !\in_array($action['name'], $disabledActions);
+        return array_filter($viewActions, function ($action) use ($excludedActions, $disabledActions, $entityConfig) {
+            return !\in_array($action['name'], $excludedActions)
+                && !\in_array($action['name'], $disabledActions)
+                && (!isset($entityConfig[$action['name']]) || !isset($entityConfig[$action['name']]['item_permission']) || $this->isGranted($entityConfig[$action['name']]['item_permission']));
         });
     }
 

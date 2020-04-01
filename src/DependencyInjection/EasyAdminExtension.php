@@ -7,7 +7,6 @@ use EasyCorp\Bundle\EasyAdminBundle\EventListener\ExceptionListener;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
-use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 /**
@@ -26,10 +25,6 @@ class EasyAdminExtension extends Extension
 
         // this parameter is created for BC reasons but it can be deleted in future releases
         $container->setParameter('easyadmin.config', []);
-
-        // TODO: remove the loading of legacy services
-        $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-        $loader->load('form.xml');
 
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.php');

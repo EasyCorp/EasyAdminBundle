@@ -50,7 +50,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Filter\Configurator\NumericConfigurator as N
 use EasyCorp\Bundle\EasyAdminBundle\Filter\Configurator\TextConfigurator as TextFilterConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Extension\EaCollectionTypeExtension;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Extension\EaCrudFormTypeExtension;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\FilterRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Inspector\DataCollector;
@@ -64,7 +63,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Security\AuthorizationChecker;
 use EasyCorp\Bundle\EasyAdminBundle\Security\SecurityVoter;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\EasyAdminTwigExtension;
-use Symfony\Component\Form\Extension\DependencyInjection\DependencyInjectionExtension;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -145,23 +143,10 @@ return static function (ContainerConfigurator $container) {
             ->arg(4, ref('security.logout_url_generator'))
             ->arg(5, ref(CrudUrlGenerator::class))
 
-        ->set(FilterRegistry::class)
-            // arguments are injected using the FilterTypePass compiler pass
-            ->arg(0, null) // $filterTypeMap collection
-            ->arg(1, null) // $filterTypeGuesser iterator
-
-        // TODO: ask Yonel about this because I don't understand anything about this service :|
-        ->set('ea.filter.extension', DependencyInjectionExtension::class)
-            // arguments are injected using the FilterTypePass compiler pass
-            ->arg(0, null) // service locator with all services tagged with 'ea.filter.type'
-            ->arg(1, [])
-            ->arg(2, [])
-
         ->set(EntityRepository::class)
             ->arg(0, ref(AdminContextProvider::class))
             ->arg(1, ref('doctrine'))
-            ->arg(2, ref(FilterRegistry::class))
-            ->arg(3, ref(FormFactory::class))
+            ->arg(2, ref(FormFactory::class))
 
         ->set(EntityFactory::class)
             ->arg(0, ref(FieldFactory::class))

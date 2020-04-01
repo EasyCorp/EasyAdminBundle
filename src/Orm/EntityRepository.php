@@ -11,7 +11,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDataDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\FilterRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 
@@ -19,14 +18,12 @@ final class EntityRepository implements EntityRepositoryInterface
 {
     private $adminContextProvider;
     private $doctrine;
-    private $filterRegistry;
     private $formFactory;
 
-    public function __construct(AdminContextProvider $adminContextProvider, ManagerRegistry $doctrine, FilterRegistry $filterRegistry, FormFactory $formFactory)
+    public function __construct(AdminContextProvider $adminContextProvider, ManagerRegistry $doctrine, FormFactory $formFactory)
     {
         $this->adminContextProvider = $adminContextProvider;
         $this->doctrine = $doctrine;
-        $this->filterRegistry = $filterRegistry;
         $this->formFactory = $formFactory;
     }
 

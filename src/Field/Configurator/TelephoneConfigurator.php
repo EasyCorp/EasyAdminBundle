@@ -17,9 +17,6 @@ final class TelephoneConfigurator implements FieldConfiguratorInterface
 
     public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
     {
-        $formTypeOptions = $field->getFormTypeOptions();
-        $formTypeOptions['attr']['inputmode'] = $formTypeOptions['attr']['inputmode'] ?? 'tel';
-
-        $field->setFormTypeOptions($formTypeOptions);
+        $field->setFormTypeOptionIfNotSet('attr.inputmode', 'tel');
     }
 }

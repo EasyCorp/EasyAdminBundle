@@ -30,18 +30,18 @@ final class EntityConfigurator implements FilterConfiguratorInterface
 
         $doctrineMetadata = $entityDto->getPropertyMetadata($propertyName);
         // TODO: add the 'em' form type option too?
-        $filterDto->setFormTypeOptionIfNotSet('value_type_options.class', $doctrineMetadata['targetEntity']);
+        $filterDto->setFormTypeOptionIfNotSet('value_type_options.class', $doctrineMetadata->get('targetEntity'));
         $filterDto->setFormTypeOptionIfNotSet('value_type_options.multiple', $entityDto->isToManyAssociation($propertyName));
         $filterDto->setFormTypeOptionIfNotSet('value_type_options.attr.data-widget', 'select2');
 
         if ($entityDto->isToOneAssociation($propertyName)) {
             // don't show the 'empty value' placeholder when all join columns are required,
             // because an empty filter value would always returns no result
-            $numberOfRequiredJoinColumns = \count(array_filter($doctrineMetadata['joinColumns'], function (array $joinColumnMapping): bool {
+            $numberOfRequiredJoinColumns = \count(array_filter($doctrineMetadata->get('joinColumns'), function (array $joinColumnMapping): bool {
                 return false === ($joinColumnMapping['nullable'] ?? false);
             }));
 
-            $someJoinColumnsAreNullable = \count($doctrineMetadata['joinColumns']) !== $numberOfRequiredJoinColumns;
+            $someJoinColumnsAreNullable = \count($doctrineMetadata->get('joinColumns')) !== $numberOfRequiredJoinColumns;
 
             if ($someJoinColumnsAreNullable) {
                 $filterDto->setFormTypeOptionIfNotSet('value_type_options.placeholder', 'label.form.empty_value');

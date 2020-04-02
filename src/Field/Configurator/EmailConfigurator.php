@@ -17,9 +17,6 @@ final class EmailConfigurator implements FieldConfiguratorInterface
 
     public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
     {
-        $formTypeOptions = $field->getFormTypeOptions();
-        $formTypeOptions['attr']['inputmode'] = $formTypeOptions['attr']['inputmode'] ?? 'email';
-
-        $field->setFormTypeOptions($formTypeOptions);
+        $field->setFormTypeOptionIfNotSet('attr.inputmode', 'email');
     }
 }

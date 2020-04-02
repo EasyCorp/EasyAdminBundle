@@ -3,7 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 use Doctrine\ORM\QueryBuilder;
-use EasyCorp\Bundle\EasyAdminBundle\Util\DotArray;
+use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 
 final class FilterDto
 {
@@ -16,7 +16,7 @@ final class FilterDto
 
     public function __construct()
     {
-        $this->formTypeOptions = [];
+        $this->formTypeOptions = KeyValueStore::new();
     }
 
     public function getFqcn(): ?string
@@ -36,29 +36,27 @@ final class FilterDto
 
     public function getFormTypeOptions(): array
     {
-        return $this->formTypeOptions;
+        return $this->formTypeOptions->all();
     }
 
     public function getFormTypeOption(string $optionName)
     {
-        return DotArray::get($this->formTypeOptions, $optionName);
+        return $this->formTypeOptions->get($optionName);
     }
 
     public function setFormTypeOptions(array $formTypeOptions): void
     {
-        $this->formTypeOptions = $formTypeOptions;
+        $this->formTypeOptions->setAll($formTypeOptions);
     }
 
     public function setFormTypeOption(string $optionName, $optionValue): void
     {
-        DotArray::set($this->formTypeOptions, $optionName, $optionValue);
+        $this->formTypeOptions->set($optionName, $optionValue);
     }
 
     public function setFormTypeOptionIfNotSet(string $optionName, $optionValue): void
     {
-        if (!DotArray::has($this->formTypeOptions, $optionName)) {
-            DotArray::set($this->formTypeOptions, $optionName, $optionValue);
-        }
+        $this->formTypeOptions->setIfNotSet($optionName, $optionValue);
     }
 
     public function setFormType(string $formType): void

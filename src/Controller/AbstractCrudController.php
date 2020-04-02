@@ -13,6 +13,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
+use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -116,7 +117,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $this->get(EntityFactory::class)->processFieldsForAll($entities, $fields);
         $globalActions = $this->get(EntityFactory::class)->processActionsForAll($entities, $context->getCrud()->getActionsConfig());
 
-        $responseParameters = $this->configureResponseParameters(ResponseParameters::new([
+        $responseParameters = $this->configureResponseParameters(KeyValueStore::new([
             'pageName' => Crud::PAGE_INDEX,
             'templateName' => 'crud/index',
             'entities' => $entities,
@@ -150,7 +151,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $this->get(EntityFactory::class)->processFields($context->getEntity(), FieldCollection::new($this->configureFields(Crud::PAGE_DETAIL)));
         $this->get(EntityFactory::class)->processActions($context->getEntity(), $context->getCrud()->getActionsConfig());
 
-        $responseParameters = $this->configureResponseParameters(ResponseParameters::new([
+        $responseParameters = $this->configureResponseParameters(KeyValueStore::new([
             'pageName' => Crud::PAGE_DETAIL,
             'templateName' => 'crud/detail',
             'entity' => $context->getEntity(),
@@ -228,7 +229,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             return $this->redirectToRoute($context->getDashboardRouteName());
         }
 
-        $responseParameters = $this->configureResponseParameters(ResponseParameters::new([
+        $responseParameters = $this->configureResponseParameters(KeyValueStore::new([
             'pageName' => Crud::PAGE_EDIT,
             'templateName' => 'crud/edit',
             'edit_form' => $editForm,
@@ -301,7 +302,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             return $this->redirectToRoute($context->getDashboardRouteName());
         }
 
-        $responseParameters = $this->configureResponseParameters(ResponseParameters::new([
+        $responseParameters = $this->configureResponseParameters(KeyValueStore::new([
             'pageName' => Crud::PAGE_NEW,
             'templateName' => 'crud/new',
             'entity' => $context->getEntity(),
@@ -348,7 +349,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
         $this->get('event_dispatcher')->dispatch(new AfterEntityDeletedEvent($entityInstance));
 
-        $responseParameters = $this->configureResponseParameters(ResponseParameters::new([
+        $responseParameters = $this->configureResponseParameters(KeyValueStore::new([
             'entity' => $context->getEntity(),
         ]));
 
@@ -376,7 +377,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         return $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters);
     }
 
-    public function renderFilters(AdminContext $context): ResponseParameters
+    public function renderFilters(AdminContext $context): KeyValueStore
     {
         $fields = FieldCollection::new($this->configureFields(Crud::PAGE_INDEX));
         $this->get(EntityFactory::class)->processFields($context->getEntity(), $fields);
@@ -388,7 +389,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $queryString = $formActionParts['query'] ?? [];
         parse_str($queryString, $queryStringAsArray);
 
-        $responseParameters = ResponseParameters::new([
+        $responseParameters = KeyValueStore::new([
             'templateName' => 'crud/filters',
             'filters_form' => $filtersForm,
             'form_action_query_string_as_array' => $queryStringAsArray,
@@ -435,7 +436,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
     /**
      * Used to add/modify/remove parameters before passing them to the Twig template.
      */
-    public function configureResponseParameters(ResponseParameters $responseParameters): ResponseParameters
+    public function configureResponseParameters(KeyValueStore $responseParameters): KeyValueStore
     {
         return $responseParameters;
     }
@@ -461,7 +462,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
         $this->get('event_dispatcher')->dispatch(new AfterEntityUpdatedEvent($entityInstance));
 
-        $parameters = ResponseParameters::new([
+        $parameters = KeyValueStore::new([
             'action' => Action::EDIT,
             'entity' => $entityDto->updateInstance($entityInstance),
         ]);

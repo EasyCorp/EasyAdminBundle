@@ -2,9 +2,6 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle;
 
-use EasyCorp\Bundle\EasyAdminBundle\DependencyInjection\Compiler\FilterTypePass;
-use Symfony\Component\DependencyInjection\Compiler\PassConfig;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**

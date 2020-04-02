@@ -3,7 +3,6 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
-use Symfony\Component\HttpFoundation\ParameterBag;
 
 trait FieldTrait
 {
@@ -223,7 +222,7 @@ trait FieldTrait
 
     public function setCustomOptions(array $options): self
     {
-        $this->dto->setCustomOptions(new ParameterBag($options));
+        $this->dto->setCustomOptions($options);
 
         return $this;
     }

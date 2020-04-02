@@ -2,8 +2,8 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Event;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
-use EasyCorp\Bundle\EasyAdminBundle\Controller\ResponseParameters;
 
 final class AfterCrudActionEvent
 {
@@ -12,7 +12,7 @@ final class AfterCrudActionEvent
     private $adminContext;
     private $responseParameters;
 
-    public function __construct(?AdminContext $adminContext, ResponseParameters $responseParameters)
+    public function __construct(?AdminContext $adminContext, KeyValueStore $responseParameters)
     {
         $this->adminContext = $adminContext;
         $this->responseParameters = $responseParameters;
@@ -29,10 +29,10 @@ final class AfterCrudActionEvent
      */
     public function addResponseParameters(array $parameters): void
     {
-        $this->responseParameters = array_merge($this->responseParameters, $parameters);
+        $this->responseParameters->setAll($parameters);
     }
 
-    public function getResponseParameters(): ResponseParameters
+    public function getResponseParameters(): KeyValueStore
     {
         return $this->responseParameters;
     }

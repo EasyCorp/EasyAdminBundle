@@ -2,9 +2,8 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\UlidProvider;
-use EasyCorp\Bundle\EasyAdminBundle\Util\DotArray;
-use Symfony\Component\HttpFoundation\ParameterBag;
 
 final class FieldDto
 {
@@ -35,10 +34,11 @@ final class FieldDto
     public function __construct()
     {
         $this->cssClass = '';
-        $this->formTypeOptions = [];
-        $this->translationParameters = [];
         $this->assets = new AssetsDto();
-        $this->customOptions = new ParameterBag();
+        $this->translationParameters = [];
+        $this->formTypeOptions = KeyValueStore::new();
+        $this->customOptions = KeyValueStore::new();
+        $this->doctrineMetadata = KeyValueStore::new();
     }
 
     public function getUniqueId(): string
@@ -129,17 +129,17 @@ final class FieldDto
 
     public function getFormTypeOptions(): array
     {
-        return $this->formTypeOptions;
+        return $this->formTypeOptions->all();
     }
 
-    public function getFormTypeOption($optionName)
+    public function getFormTypeOption(string $optionName)
     {
-        return $this->formTypeOptions[$optionName] ?? null;
+        return $this->formTypeOptions->get($optionName);
     }
 
     public function setFormTypeOptions(array $formTypeOptions): void
     {
-        $this->formTypeOptions = $formTypeOptions;
+        $this->formTypeOptions = KeyValueStore::new($formTypeOptions);
     }
 
     /**
@@ -147,7 +147,7 @@ final class FieldDto
      */
     public function setFormTypeOption(string $optionName, $optionValue): void
     {
-        DotArray::set($this->formTypeOptions, $optionName, $optionValue);
+        $this->formTypeOptions->set($optionName, $optionValue);
     }
 
     /**
@@ -155,9 +155,7 @@ final class FieldDto
      */
     public function setFormTypeOptionIfNotSet(string $optionName, $optionValue): void
     {
-        if (!DotArray::has($this->formTypeOptions, $optionName)) {
-            DotArray::set($this->formTypeOptions, $optionName, $optionValue);
-        }
+        $this->formTypeOptions->setIfNotSet($optionName, $optionValue);
     }
 
     public function isSortable(): ?bool
@@ -280,7 +278,7 @@ final class FieldDto
         $this->assets->addHtmlContentToBody($htmlContent);
     }
 
-    public function getCustomOptions(): ParameterBag
+    public function getCustomOptions(): KeyValueStore
     {
         return $this->customOptions;
     }
@@ -290,9 +288,9 @@ final class FieldDto
         return $this->customOptions->get($optionName);
     }
 
-    public function setCustomOptions(ParameterBag $customOptions): void
+    public function setCustomOptions(array $customOptions): void
     {
-        $this->customOptions = $customOptions;
+        $this->customOptions = KeyValueStore::new($customOptions);
     }
 
     public function setCustomOption(string $optionName, $optionValue): void
@@ -300,13 +298,13 @@ final class FieldDto
         $this->customOptions->set($optionName, $optionValue);
     }
 
-    public function getDoctrineMetadata(): ParameterBag
+    public function getDoctrineMetadata(): KeyValueStore
     {
         return $this->doctrineMetadata;
     }
 
     public function setDoctrineMetadata(array $metadata): void
     {
-        $this->doctrineMetadata = new ParameterBag($metadata);
+        $this->doctrineMetadata = KeyValueStore::new($metadata);
     }
 }

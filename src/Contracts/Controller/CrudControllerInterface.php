@@ -10,9 +10,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
+use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Controller\ResponseParameters;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use Symfony\Component\Form\FormInterface;
@@ -37,24 +37,24 @@ interface CrudControllerInterface
      */
     public function configureFields(string $pageName): iterable;
 
-    /** @return Response|ResponseParameters */
+    /** @return KeyValueStore|Response */
     public function index(AdminContext $context);
 
-    /** @return Response|ResponseParameters */
+    /** @return KeyValueStore|Response */
     public function detail(AdminContext $context);
 
-    /** @return Response|ResponseParameters */
+    /** @return KeyValueStore|Response */
     public function edit(AdminContext $context);
 
-    /** @return Response|ResponseParameters */
+    /** @return KeyValueStore|Response */
     public function new(AdminContext $context);
 
-    /** @return Response|ResponseParameters */
+    /** @return KeyValueStore|Response */
     public function delete(AdminContext $context);
 
     public function autocomplete(AdminContext $context): JsonResponse;
 
-    public function configureResponseParameters(ResponseParameters $responseParameters): ResponseParameters;
+    public function configureResponseParameters(KeyValueStore $responseParameters): KeyValueStore;
 
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder;
 

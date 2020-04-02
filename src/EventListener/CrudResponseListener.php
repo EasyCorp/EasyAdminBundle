@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\EventListener;
 
-use EasyCorp\Bundle\EasyAdminBundle\Controller\ResponseParameters;
+use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,12 +23,12 @@ final class CrudResponseListener
     public function onKernelView(ViewEvent $event)
     {
         $responseParameters = $event->getControllerResult();
-        if (null === $responseParameters || !$responseParameters instanceof ResponseParameters) {
+        if (null === $responseParameters || !$responseParameters instanceof KeyValueStore) {
             return;
         }
 
         if (!$responseParameters->has('templateName') && !$responseParameters->has('templatePath')) {
-            throw new \RuntimeException(sprintf('The ResponseParameters object returned by CrudController actions must include either a "templateName" or a "templatePath" parameter to define the template used to render the action result.'));
+            throw new \RuntimeException(sprintf('The KeyValueStore object returned by CrudController actions must include either a "templateName" or a "templatePath" parameter to define the template used to render the action result.'));
         }
 
         $templateParameters = $responseParameters->all();

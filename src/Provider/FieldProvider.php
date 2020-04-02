@@ -37,7 +37,7 @@ final class FieldProvider
 
         foreach ($entityDto->getAllPropertyNames() as $propertyName) {
             $metadata = $entityDto->getPropertyMetadata($propertyName);
-            if (!\in_array($propertyName, $excludedPropertyNames[$pageName], true) && !\in_array($metadata['type'], $excludedPropertyTypes[$pageName], true)) {
+            if (!\in_array($propertyName, $excludedPropertyNames[$pageName], true) && !\in_array($metadata->get('type'), $excludedPropertyTypes[$pageName], true)) {
                 $defaultPropertyNames[] = $propertyName;
             }
         }

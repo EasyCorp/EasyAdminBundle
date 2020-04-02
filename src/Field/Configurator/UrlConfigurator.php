@@ -19,9 +19,7 @@ final class UrlConfigurator implements FieldConfiguratorInterface
 
     public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
     {
-        $formTypeOptions = $field->getFormTypeOptions();
-        $formTypeOptions['attr']['inputmode'] = $formTypeOptions['attr']['inputmode'] ?? 'url';
-        $field->setFormTypeOptions($formTypeOptions);
+        $field->setFormTypeOptionIfNotSet('attr.inputmode', 'url');
 
         $prettyUrl = str_replace(['http://www.', 'https://www.', 'http://', 'https://'], '', $field->getValue());
         $prettyUrl = rtrim($prettyUrl, '/');

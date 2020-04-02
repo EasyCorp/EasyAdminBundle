@@ -7,6 +7,7 @@ use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\ActionCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 
 final class EntityDto
 {
@@ -138,18 +139,18 @@ final class EntityDto
         return $this->metadata->getFieldNames();
     }
 
-    public function getPropertyMetadata(string $propertyName): array
+    public function getPropertyMetadata(string $propertyName): KeyValueStore
     {
         if (null === $this->metadata) {
-            return [];
+            return KeyValueStore::new();
         }
 
         if (\array_key_exists($propertyName, $this->metadata->fieldMappings)) {
-            return $this->metadata->fieldMappings[$propertyName];
+            return KeyValueStore::new($this->metadata->fieldMappings[$propertyName]);
         }
 
         if (\array_key_exists($propertyName, $this->metadata->associationMappings)) {
-            return $this->metadata->associationMappings[$propertyName];
+            return KeyValueStore::new($this->metadata->associationMappings[$propertyName]);
         }
 
         throw new \InvalidArgumentException(sprintf('The "%s" field does not exist in the "%s" entity.', $propertyName, $this->getFqcn()));
@@ -157,7 +158,7 @@ final class EntityDto
 
     public function getPropertyDataType(string $propertyName)
     {
-        return $this->getPropertyMetadata($propertyName)['type'];
+        return $this->getPropertyMetadata($propertyName)->get('type');
     }
 
     public function hasProperty(string $propertyName): bool
@@ -174,14 +175,14 @@ final class EntityDto
 
     public function isToOneAssociation(string $propertyName): bool
     {
-        $associationType = $this->getPropertyMetadata($propertyName)['type'];
+        $associationType = $this->getPropertyMetadata($propertyName)->get('type');
 
         return \in_array($associationType, [ClassMetadataInfo::ONE_TO_ONE, ClassMetadataInfo::MANY_TO_ONE], true);
     }
 
     public function isToManyAssociation(string $propertyName): bool
     {
-        $associationType = $this->getPropertyMetadata($propertyName)['type'];
+        $associationType = $this->getPropertyMetadata($propertyName)->get('type');
 
         return \in_array($associationType, [ClassMetadataInfo::ONE_TO_MANY, ClassMetadataInfo::MANY_TO_MANY], true);
     }

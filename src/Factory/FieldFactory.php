@@ -18,7 +18,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
-use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 final class FieldFactory
@@ -101,7 +100,7 @@ final class FieldFactory
             if ($fieldName === $entityDto->getPrimaryKeyName()) {
                 $guessedFieldFqcn = IdField::class;
             } else {
-                $doctrinePropertyType = $entityDto->getPropertyMetadata($fieldName)['type'];
+                $doctrinePropertyType = $entityDto->getPropertyMetadata($fieldName)->get('type');
                 $guessedFieldFqcn = self::$doctrineTypeToFieldFqcn[$doctrinePropertyType] ?? null;
             }
 
@@ -127,7 +126,7 @@ final class FieldFactory
         $customFieldOptions = $fieldDto->getCustomOptions()->all();
         $defaultFieldOptions = $newField->getCustomOptions()->all();
         $mergedFieldOptions = array_merge($defaultFieldOptions, $customFieldOptions);
-        $newField->setCustomOptions(new ParameterBag($mergedFieldOptions));
+        $newField->setCustomOptions($mergedFieldOptions);
 
         if (null !== $fieldDto->getLabel()) {
             $newField->setLabel($fieldDto->getLabel());

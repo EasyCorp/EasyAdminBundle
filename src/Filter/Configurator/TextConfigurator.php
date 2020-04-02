@@ -24,7 +24,7 @@ final class TextConfigurator implements FilterConfiguratorInterface
 
     public function configure(FilterDto $filterDto, ?FieldDto $fieldDto, EntityDto $entityDto, AdminContext $context): void
     {
-        $propertyType = $entityDto->getPropertyMetadata($filterDto->getProperty())['type'];
+        $propertyType = $entityDto->getPropertyMetadata($filterDto->getProperty())->get('type');
 
         if (Type::JSON === $propertyType) {
             $filterDto->setFormTypeOption('value_type', TextareaType::class);

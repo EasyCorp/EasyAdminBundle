@@ -22,7 +22,7 @@ final class KeyValueStore
 
     public function isEmpty(): bool
     {
-        return empty($this->map);
+        return 0 === \count($this->map);
     }
 
     public function has($key): bool

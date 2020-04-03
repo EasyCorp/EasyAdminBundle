@@ -24,6 +24,15 @@ final class ActionConfigDto
     {
     }
 
+    public function __clone()
+    {
+        foreach ($this->actions as $pageName => $actions) {
+            foreach ($actions as $actionName => $actionDto) {
+                $this->actions[$pageName][$actionName] = clone $actionDto;
+            }
+        }
+    }
+
     public function setPageName(string $pageName): void
     {
         $this->pageName = $pageName;

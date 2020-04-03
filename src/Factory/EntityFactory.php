@@ -48,18 +48,18 @@ final class EntityFactory
         }
     }
 
-    public function processActions(EntityDto $entityDto, ActionConfigDto $actionsDto): void
+    public function processActions(EntityDto $entityDto, ActionConfigDto $actionConfigDto): void
     {
-        $this->actionFactory->processEntityActions($entityDto, $actionsDto);
+        $this->actionFactory->processEntityActions($entityDto, $actionConfigDto);
     }
 
-    public function processActionsForAll(EntityCollection $entities, ActionConfigDto $actionsDto): ActionCollection
+    public function processActionsForAll(EntityCollection $entities, ActionConfigDto $actionConfigDto): ActionCollection
     {
         foreach ($entities as $entity) {
-            $this->processActions($entity, $actionsDto);
+            $this->processActions($entity, clone $actionConfigDto);
         }
 
-        return $this->actionFactory->processGlobalActions($actionsDto);
+        return $this->actionFactory->processGlobalActions($actionConfigDto);
     }
 
     public function create(string $entityFqcn, $entityId = null, ?string $entityPermission = null): EntityDto

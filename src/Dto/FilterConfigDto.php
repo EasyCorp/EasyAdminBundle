@@ -2,15 +2,17 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterInterface;
 
 final class FilterConfigDto
 {
-    /** @var FilterDto[]|string[] */
+    /** @var KeyValueStore */
     private $filters;
 
     public function __construct()
     {
+        $this->filters = KeyValueStore::new();
     }
 
     /**
@@ -18,7 +20,7 @@ final class FilterConfigDto
      */
     public function addFilter($filterNameOrConfig): void
     {
-        $this->filters[(string) $filterNameOrConfig] = $filterNameOrConfig;
+        $this->filters->set((string) $filterNameOrConfig, $filterNameOrConfig);
     }
 
     /**
@@ -26,11 +28,11 @@ final class FilterConfigDto
      */
     public function getFilter(string $propertyName)
     {
-        return $this->filters[$propertyName] ?? null;
+        return $this->filters->get($propertyName);
     }
 
     public function all(): array
     {
-        return $this->filters;
+        return $this->filters->all();
     }
 }

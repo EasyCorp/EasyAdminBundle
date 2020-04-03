@@ -3,7 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Config;
 
 /**
- * Most of the code of this class is copied from https://github.com/adbario/php-dot-notation/blob/2.x/src/Dot.php
+ * Code adapted from https://github.com/adbario/php-dot-notation/blob/2.x/src/Dot.php
  * Copyright (c) Riku Särkinen <riku@adbar.io> - MIT License.
  */
 final class KeyValueStore
@@ -25,28 +25,23 @@ final class KeyValueStore
         return 0 === \count($this->map);
     }
 
-    public function has($key): bool
+    public function has(string $key): bool
     {
-        $keys = (array) $key;
-
-        if (!$this->map || $keys === []) {
+        if (empty($this->map)) {
             return false;
         }
 
-        foreach ($keys as $key) {
-            $items = $this->map;
+        $items = $this->map;
+        if (\array_key_exists($key, $items)) {
+            return true;
+        }
 
-            if ($this->exists($items, $key)) {
-                continue;
+        foreach (explode('.', $key) as $segment) {
+            if (!\is_array($items) || !\array_key_exists($segment, $items)) {
+                return false;
             }
 
-            foreach (explode('.', $key) as $segment) {
-                if (!\is_array($items) || !$this->exists($items, $segment)) {
-                    return false;
-                }
-
-                $items = $items[$segment];
-            }
+            $items = $items[$segment];
         }
 
         return true;
@@ -54,11 +49,7 @@ final class KeyValueStore
 
     public function get(string $key, $default = null)
     {
-        if (null === $key) {
-            return $this->map;
-        }
-
-        if ($this->exists($this->map, $key)) {
+        if (\array_key_exists($key, $this->map)) {
             return $this->map[$key];
         }
 
@@ -67,9 +58,8 @@ final class KeyValueStore
         }
 
         $items = $this->map;
-
         foreach (explode('.', $key) as $segment) {
-            if (!\is_array($items) || !$this->exists($items, $segment)) {
+            if (!\is_array($items) || !\array_key_exists($segment, $items)) {
                 return $default;
             }
 
@@ -79,24 +69,15 @@ final class KeyValueStore
         return $items;
     }
 
-    public function set(string $keys, $value): void
+    public function set(string $key, $value): void
     {
-        if (\is_array($keys)) {
-            foreach ($keys as $key => $value) {
-                $this->set($key, $value);
-            }
-
-            return;
-        }
-
         $items = &$this->map;
-
-        foreach (explode('.', $keys) as $key) {
-            if (!isset($items[$key]) || !\is_array($items[$key])) {
-                $items[$key] = [];
+        foreach (explode('.', $key) as $segment) {
+            if (!isset($items[$segment]) || !\is_array($items[$segment])) {
+                $items[$segment] = [];
             }
 
-            $items = &$items[$key];
+            $items = &$items[$segment];
         }
 
         $items = $value;
@@ -116,40 +97,31 @@ final class KeyValueStore
         }
     }
 
-    public function delete(string $keys): void
+    public function delete(string $key): void
     {
-        $keys = (array) $keys;
+        if (\array_key_exists($key, $this->map)) {
+            unset($this->map[$key]);
 
-        foreach ($keys as $key) {
-            if ($this->exists($this->map, $key)) {
-                unset($this->map[$key]);
-
-                continue;
-            }
-
-            $items = &$this->map;
-            $segments = explode('.', $key);
-            $lastSegment = array_pop($segments);
-
-            foreach ($segments as $segment) {
-                if (!isset($items[$segment]) || !\is_array($items[$segment])) {
-                    continue 2;
-                }
-
-                $items = &$items[$segment];
-            }
-
-            unset($items[$lastSegment]);
+            return;
         }
+
+        $items = &$this->map;
+        $segments = explode('.', $key);
+        $lastSegment = array_pop($segments);
+
+        foreach ($segments as $key) {
+            if (!isset($items[$key]) || !\is_array($items[$key])) {
+                return;
+            }
+
+            $items = &$items[$key];
+        }
+
+        unset($items[$lastSegment]);
     }
 
     public function all(): array
     {
         return $this->map;
-    }
-
-    private function exists($array, $key)
-    {
-        return \array_key_exists($key, $array);
     }
 }

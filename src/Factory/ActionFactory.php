@@ -35,6 +35,7 @@ final class ActionFactory
 
     public function processEntityActions(EntityDto $entityDto, ActionConfigDto $actionsDto): void
     {
+        $currentPage = $this->adminContextProvider->getContext()->getCrud()->getCurrentPage();
         $entityActions = [];
         foreach ($actionsDto->getActions()->all() as $actionDto) {
             if (!$actionDto->isEntityAction()) {
@@ -49,7 +50,7 @@ final class ActionFactory
                 continue;
             }
 
-            $entityActions[] = $this->processAction($actionDto, $entityDto);
+            $entityActions[] = $this->processAction($currentPage, $actionDto, $entityDto);
         }
 
         $entityDto->setActions(ActionCollection::new($entityActions));
@@ -57,7 +58,7 @@ final class ActionFactory
 
     public function processGlobalActions(ActionConfigDto $actionsDto): ActionCollection
     {
-        $currentPage = $this->adminContextProvider->getContext()->getCrud()->getCurrentAction();
+        $currentPage = $this->adminContextProvider->getContext()->getCrud()->getCurrentPage();
         $globalActions = [];
         foreach ($actionsDto->getActions()->all() as $actionDto) {
             if (!$actionDto->isGlobalAction()) {
@@ -77,13 +78,13 @@ final class ActionFactory
                 throw new \RuntimeException(sprintf('Batch actions can be added only to the "index" page, but the "%s" batch action is defined in the "%s" page.', $actionDto->getName(), $currentPage));
             }
 
-            $globalActions[] = $this->processAction($actionDto);
+            $globalActions[] = $this->processAction($currentPage, $actionDto);
         }
 
         return ActionCollection::new($globalActions);
     }
 
-    private function processAction(ActionDto $actionDto, ?EntityDto $entityDto = null): ActionDto
+    private function processAction(string $pageName, ActionDto $actionDto, ?EntityDto $entityDto = null): ActionDto
     {
         $adminContext = $this->adminContextProvider->getContext();
         $defaultTranslationDomain = $adminContext->getI18n()->getTranslationDomain();
@@ -102,6 +103,10 @@ final class ActionFactory
         $actionDto->setTemplatePath($actionDto->getTemplatePath() ?? $defaultTemplatePath);
 
         $actionDto->setLinkUrl($this->generateActionUrl($currentPage, $adminContext->getRequest(), $actionDto, $entityDto));
+
+        if (!$actionDto->isGlobalAction() && in_array($pageName, [Crud::PAGE_EDIT, Crud::PAGE_NEW], true)) {
+            $actionDto->setHtmlAttribute('form', sprintf('%s-%s-form', $pageName, $entityDto->getName()));
+        }
 
         return $actionDto;
     }

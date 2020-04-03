@@ -118,6 +118,11 @@ final class ActionDto
         $this->htmlAttributes = $htmlAttributes;
     }
 
+    public function setHtmlAttribute(string $attributeName, string $attributeValue): void
+    {
+        $this->htmlAttributes[$attributeName] = $attributeValue;
+    }
+
     public function getTemplatePath(): ?string
     {
         return $this->templatePath;

@@ -65,8 +65,8 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
             $field->setFormTypeOptionIfNotSet('attr.data-widget', 'select2');
 
             $field->setFormType(CrudAutocompleteType::class);
-            $autocompleteEndpointUrl = $this->crudUrlGenerator
-                ->buildForController($field->getCustomOption(AssociationField::OPTION_CRUD_CONTROLLER))
+            $autocompleteEndpointUrl = $this->crudUrlGenerator->build()
+                ->setController($field->getCustomOption(AssociationField::OPTION_CRUD_CONTROLLER))
                 ->setAction('autocomplete')
                 ->setEntityId(null)
                 ->generateUrl();
@@ -135,7 +135,8 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
     private function generateLinkToAssociatedEntity(string $crudController, EntityDto $entityDto): ?string
     {
         // TODO: check if user has permission to see the related entity
-        return $this->crudUrlGenerator->buildForController($crudController)
+        return $this->crudUrlGenerator->build()
+            ->setController($crudController)
             ->setAction(Action::DETAIL)
             ->setEntityId($entityDto->getPrimaryKeyValue())
             ->includeReferrer()

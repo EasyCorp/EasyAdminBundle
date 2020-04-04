@@ -33,7 +33,6 @@ class EasyAdminTwigExtension extends AbstractExtension
     public function getFunctions()
     {
         return [
-            new TwigFunction('ea_path', [$this, 'generateCrudRoute']),
             new TwigFunction('ea_build_url', [$this, 'buildCrudUrl']),
         ];
     }
@@ -84,33 +83,9 @@ class EasyAdminTwigExtension extends AbstractExtension
         return (int) ($bytes / (1024 ** $factor)).@$size[$factor];
     }
 
-    /**
-     * @param object|string $entity
-     * @param string        $action
-     *
-     * @return string
-     */
-    public function getEntityPath($entity, $action, array $parameters = [])
+    public function buildCrudUrl(array $queryParameters = []): UrlBuilder
     {
-        return $this->crudUrlGenerator->generate($entity, $action, $parameters);
-    }
-
-    public function generateCrudRoute(array $queryParameters = [], bool $include_referrer = true, bool $remove_referrer = false): string
-    {
-        if ($remove_referrer) {
-            return $this->crudUrlGenerator->build($queryParameters)->removeReferrer()->generateUrl();
-        }
-
-        if ($include_referrer) {
-            return $this->crudUrlGenerator->build($queryParameters)->includeReferrer()->generateUrl();
-        }
-
-        return $this->crudUrlGenerator->build($queryParameters)->generateUrl();
-    }
-
-    public function buildCrudUrl(string $controllerFqcn): UrlBuilder
-    {
-        return $this->crudUrlGenerator->buildForController($controllerFqcn);
+        return $this->crudUrlGenerator->build($queryParameters);
     }
 
     /**

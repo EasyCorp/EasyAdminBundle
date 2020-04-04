@@ -23,12 +23,4 @@ final class CrudUrlGenerator
     {
         return new UrlBuilder($this->adminContextProvider->getContext(), $this->urlGenerator, $newQueryParameters);
     }
-
-    public function buildForController(string $controllerFqcn): UrlBuilder
-    {
-        $adminContext = $this->adminContextProvider->getContext();
-        $newQueryParameters = ['crudController' => $controllerFqcn];
-
-        return (new UrlBuilder($adminContext, $this->urlGenerator, $newQueryParameters))->removeReferrer();
-    }
 }

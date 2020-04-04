@@ -29,6 +29,13 @@ class UrlBuilder
         $this->queryParameters = array_merge($previousQueryParameters, $newQueryParameters);
     }
 
+    public function setController(string $controllerFqcn): self
+    {
+        $this->queryParameters['crudController'] = $controllerFqcn;
+
+        return $this;
+    }
+
     public function setAction(string $action): self
     {
         $this->queryParameters['crudAction'] = $action;
@@ -81,8 +88,10 @@ class UrlBuilder
             unset($this->queryParameters['referrer']);
         }
 
-        ksort($this->queryParameters);
+        // this removes any parameter with a NULL value
+        $queryParameters = array_filter($this->queryParameters);
+        ksort($queryParameters);
 
-        return $this->urlGenerator->generate($this->dashboardRoute, $this->queryParameters);
+        return $this->urlGenerator->generate($this->dashboardRoute, $queryParameters);
     }
 }

@@ -49,11 +49,11 @@
         {% if filters|length > 0 %}
             {% set applied_filters = ea.request.query.get('filters')|default([])|keys %}
             <div class="btn-group action-filters">
-                <a href="{{ ea_path({ crudAction: 'renderFilters', include_referrer: true }) }}" class="btn btn-secondary btn-labeled btn-labeled-right action-filters-button {{ applied_filters ? 'action-filters-applied' }}" data-modal="#modal-filters">
+                <a href="{{ ea_build_url().setAction('renderFilters').includeReferrer().generateUrl() }}" class="btn btn-secondary btn-labeled btn-labeled-right action-filters-button {{ applied_filters ? 'action-filters-applied' }}" data-modal="#modal-filters">
                     <i class="fa fa-filter fa-fw"></i> {{ 'filter.title'|trans(ea.i18n.translationParameters, 'EasyAdminBundle') }}{% if applied_filters %} <span class="text-primary">({{ applied_filters|length }})</span>{% endif %}
                 </a>
                 {% if applied_filters %}
-                    <a href="{{ ea_path({ filters: null }) }}" class="btn btn-secondary action-filters-reset">
+                    <a href="{{ ea_build_url({ filters: null }).generateUrl() }}" class="btn btn-secondary action-filters-reset">
                         <i class="fa fa-close"></i>
                     </a>
                 {% endif %}
@@ -99,13 +99,13 @@
                         {% endif %}
 
                         {% for field in entities|first.fields ?? [] %}
-                            {% set isSortingField = (field.property == sort_field_name) or ('field-association' in field.cssClass and sort_field_name starts with field.name ~ '.') %}
+                            {% set isSortingField = (field.property == sort_field_name) or ('field-association' in field.cssClass and sort_field_name starts with field.property ~ '.') %}
                             {% set nextSortDirection = isSortingField ? (sort_order == 'DESC' ? 'ASC' : 'DESC') : 'DESC' %}
                             {% set column_icon = isSortingField ? (nextSortDirection == 'DESC' ? 'fa-arrow-up' : 'fa-arrow-down') : 'fa-sort' %}
 
                             <th class="{{ isSortingField ? 'sorted' }} {{ field.isVirtual ? 'field-virtual' }} text-{{ field.textAlign }} {{ field.cssClass }}" dir="{{ ea.i18n.textDirection }}">
                                 {% if field.isSortable %}
-                                    <a href="{{ ea_path({ page: 1, sort: { (field.property): nextSortDirection }}, remove_referrer = true) }}">
+                                    <a href="{{ ea_build_url({ page: 1, sort: { (field.property): nextSortDirection } }).includeReferrer().generateUrl() }}">
                                         {{ field.label|raw }} <i class="fa fa-fw {{ column_icon }}"></i>
                                     </a>
                                 {% else %}
@@ -217,7 +217,7 @@
                     const oldValue = !newValue;
                     const fieldName = this.closest('.custom-switch').dataset.fieldname;
 
-                    const toggleUrl = "{{ ea_path({ crudAction: 'edit' })|raw }}"
+                    const toggleUrl = "{{ ea_build_url().setAction('edit').generateUrl()|raw }}"
                         + "&entityId=" + this.closest('tr').dataset.id
                         + "&fieldName=" + fieldName
                         + "&newValue=" + newValue.toString();

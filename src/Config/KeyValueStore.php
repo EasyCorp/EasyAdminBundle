@@ -109,12 +109,12 @@ final class KeyValueStore
         $segments = explode('.', $key);
         $lastSegment = array_pop($segments);
 
-        foreach ($segments as $key) {
-            if (!isset($items[$key]) || !\is_array($items[$key])) {
+        foreach ($segments as $segment) {
+            if (!isset($items[$segment]) || !\is_array($items[$segment])) {
                 return;
             }
 
-            $items = &$items[$key];
+            $items = &$items[$segment];
         }
 
         unset($items[$lastSegment]);

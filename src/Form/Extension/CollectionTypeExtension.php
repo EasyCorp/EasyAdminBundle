@@ -14,7 +14,7 @@ use Symfony\Component\Form\FormView;
  *
  * @author Jules Pietri <heah@heahprod.com>
  */
-class EaCollectionTypeExtension extends AbstractTypeExtension
+class CollectionTypeExtension extends AbstractTypeExtension
 {
     public function finishView(FormView $view, FormInterface $form, array $options)
     {

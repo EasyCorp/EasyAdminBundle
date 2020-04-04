@@ -8,7 +8,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Form\EventListener\EasyAdminTabSubscriber;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\TypeConfiguratorInterface;
 use Symfony\Bridge\Doctrine\Form\DoctrineOrmTypeGuesser;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -25,16 +24,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class CrudFormType extends AbstractType
 {
-    /** @var TypeConfiguratorInterface[] */
-    private $typeConfigurators;
     private $doctrineOrmTypeGuesser;
 
-    /**
-     * @param TypeConfiguratorInterface[] $typeConfigurators
-     */
-    public function __construct(iterable $typeConfigurators, DoctrineOrmTypeGuesser $doctrineOrmTypeGuesser)
+    public function __construct(DoctrineOrmTypeGuesser $doctrineOrmTypeGuesser)
     {
-        $this->typeConfigurators = $typeConfigurators;
         $this->doctrineOrmTypeGuesser = $doctrineOrmTypeGuesser;
     }
 
@@ -65,13 +58,6 @@ class CrudFormType extends AbstractType
 
             if (null === $formFieldType = $fieldDto->getFormType()) {
                 $formFieldType = $this->doctrineOrmTypeGuesser->guessType($entityDto->getFqcn(), $fieldDto->getProperty())->getType();
-            }
-
-            // Configure options using the list of registered type configurators:
-            foreach ($this->typeConfigurators as $configurator) {
-                if ($configurator->supports($formFieldType, $formFieldOptions, $fieldDto)) {
-                    $formFieldOptions = $configurator->configure($name, $formFieldOptions, $fieldDto, $builder);
-                }
             }
 
             if (EaFormPanelType::class === $formFieldType) {

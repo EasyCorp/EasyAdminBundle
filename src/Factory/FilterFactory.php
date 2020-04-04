@@ -42,15 +42,14 @@ final class FilterFactory
         Type::DATEINTERVAL => ComparisonFilter::class,
         Type::DECIMAL => NumericFilter::class,
         Type::FLOAT => NumericFilter::class,
-        Type::FLOAT => NumericFilter::class,
-         Type::BIGINT => NumericFilter::class,
-         Type::INTEGER => NumericFilter::class,
-         Type::SMALLINT => NumericFilter::class,
-         Type::GUID => TextFilter::class,
-         Type::STRING => TextFilter::class,
-         Type::BLOB => TextFilter::class,
-         Type::OBJECT => TextFilter::class,
-         Type::TEXT => TextFilter::class,
+        Type::BIGINT => NumericFilter::class,
+        Type::INTEGER => NumericFilter::class,
+        Type::SMALLINT => NumericFilter::class,
+        Type::GUID => TextFilter::class,
+        Type::STRING => TextFilter::class,
+        Type::BLOB => TextFilter::class,
+        Type::OBJECT => TextFilter::class,
+        Type::TEXT => TextFilter::class,
     ];
 
     public function __construct(AdminContextProvider $adminContextProvider, iterable $filterConfigurators)

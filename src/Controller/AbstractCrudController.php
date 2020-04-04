@@ -274,7 +274,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             $this->persistEntity($this->get('doctrine')->getManagerForClass($context->getEntity()->getFqcn()), $entityInstance);
 
             $this->get('event_dispatcher')->dispatch(new AfterEntityPersistedEvent($entityInstance));
-            $context->getEntity()->updateInstance($entityInstance);
+            $context->getEntity()->setInstance($entityInstance);
 
             $submitButtonName = $context->getRequest()->request->get('ea')['newForm']['btn'];
             if (Action::SAVE_AND_CONTINUE === $submitButtonName) {
@@ -369,7 +369,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $queryBuilder = $this->createIndexQueryBuilder($context->getSearch(), $context->getEntity());
         $paginator = $this->get(PaginatorFactory::class)->create($queryBuilder);
 
-        return JsonResponse::fromJsonString($paginator->getJsonResults());
+        return JsonResponse::fromJsonString($paginator->getResultsAsJson());
     }
 
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
@@ -462,9 +462,11 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
         $this->get('event_dispatcher')->dispatch(new AfterEntityUpdatedEvent($entityInstance));
 
+        $entityDto->setInstance($entityInstance);
+
         $parameters = KeyValueStore::new([
             'action' => Action::EDIT,
-            'entity' => $entityDto->setInstance($entityInstance),
+            'entity' => $entityDto,
         ]);
 
         $event = new AfterCrudActionEvent($this->getContext(), $parameters);

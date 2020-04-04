@@ -47,36 +47,6 @@ class EaCrudFormTypeExtension extends AbstractTypeExtension
             'ea_field' => $form->getConfig()->getAttribute('ea_field'),
             'ea_entity' => $form->getConfig()->getAttribute('ea_entity'),
         ];
-
-        //$formField->setAttribute('ea_form_panel', $currentFormPanel);
-        //$formField->setAttribute('ea_form_tab', $currentFormTab);
-
-        return;
-
-        // TODO: check the following code
-        /*
-        $easyadmin = $request->attributes->get('easyadmin');
-        $entity = $easyadmin['entity'];
-        $action = $easyadmin['view'];
-        $fields = $entity[$action]['fields'] ?? [];
-        $filters = $easyadmin['filters'] ?? [];
-        $view->vars['easyadmin'] = [
-            'field' => null,
-            'form_group' => $form->getConfig()->getAttribute('easyadmin_form_group'),
-            'form_tab' => $form->getConfig()->getAttribute('easyadmin_form_tab'),
-            'filters' => $filters,
-        ];
-        */
-
-        /*
-         * Checks if current form view is direct child on the topmost form
-         * (ie. this form view`s field exists in easyadmin configuration)
-         */
-        /*
-        if (null !== $view->parent && null === $view->parent->parent) {
-            $view->vars['easyadmin']['field'] = $fields[$view->vars['name']] ?? null;
-        }
-        */
     }
 
     /**

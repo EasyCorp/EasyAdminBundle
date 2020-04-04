@@ -48,7 +48,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Filter\Configurator\DateTimeConfigurator as 
 use EasyCorp\Bundle\EasyAdminBundle\Filter\Configurator\EntityConfigurator as EntityFilterConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\Configurator\NumericConfigurator as NumericFilterConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\Configurator\TextConfigurator as TextFilterConfigurator;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Extension\EaCollectionTypeExtension;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Extension\CollectionTypeExtension;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Extension\EaCrudFormTypeExtension;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType;
@@ -99,7 +99,7 @@ return static function (ContainerConfigurator $container) {
             ->arg(0, ref(AdminContextProvider::class))
             ->tag('form.type_extension')
 
-        ->set(EaCollectionTypeExtension::class)
+        ->set(CollectionTypeExtension::class)
             ->tag('form.type_extension')
 
         ->set(AuthorizationChecker::class)
@@ -219,8 +219,7 @@ return static function (ContainerConfigurator $container) {
             ->tag('security.voter')
 
         ->set(CrudFormType::class)
-            ->arg(0, \function_exists('tagged') ? tagged('ea.form_type_configurator') : tagged_iterator('ea.form_type_configurator'))
-            ->arg(1, ref('form.type_guesser.doctrine'))
+            ->arg(0, ref('form.type_guesser.doctrine'))
             ->tag('form.type', ['alias' => 'ea_crud'])
 
         ->set(AssociationConfigurator::class)

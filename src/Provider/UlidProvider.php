@@ -33,7 +33,7 @@ final class UlidProvider
         } elseif ([0xFFFFF, 0xFFFFF, 0xFFFFF, 0xFFFFF] === self::$rand) {
             usleep(100);
 
-            return self::generate();
+            return self::new();
         } else {
             for ($i = 3; $i >= 0 && 0xFFFFF === self::$rand[$i]; --$i) {
                 self::$rand[$i] = 0;

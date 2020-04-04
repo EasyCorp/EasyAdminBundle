@@ -18,7 +18,7 @@ final class TextEditorConfigurator implements FieldConfiguratorInterface
     public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
     {
         if ('rtl' === $context->getI18n()->getTextDirection()) {
-            $field->addCssFiles('bundles/easyadmin/form-type-text-editor.rtl.css');
+            $field->addCssFile('bundles/easyadmin/form-type-text-editor.rtl.css');
         }
     }
 }

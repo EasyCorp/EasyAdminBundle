@@ -2,7 +2,6 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Filter\Configurator;
 
-use Doctrine\DBAL\Types\Type;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -37,7 +36,7 @@ final class EntityConfigurator implements FilterConfiguratorInterface
         if ($entityDto->isToOneAssociation($propertyName)) {
             // don't show the 'empty value' placeholder when all join columns are required,
             // because an empty filter value would always returns no result
-            $numberOfRequiredJoinColumns = \count(array_filter($doctrineMetadata->get('joinColumns'), function (array $joinColumnMapping): bool {
+            $numberOfRequiredJoinColumns = \count(array_filter($doctrineMetadata->get('joinColumns'), static function (array $joinColumnMapping): bool {
                 return false === ($joinColumnMapping['nullable'] ?? false);
             }));
 

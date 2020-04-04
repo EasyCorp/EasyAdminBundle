@@ -1,12 +1,12 @@
 <?php
 
-namespace EasyCorp\Bundle\EasyAdminBundle\Menu;
+namespace EasyCorp\Bundle\EasyAdminBundle\Config\Menu;
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu\MenuItemInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
 
 /**
- * @internal Instead of this, use EasyCorp\Bundle\EasyAdminBundle\Configuration\MenuItem::linkToRoute()
+ * @see EasyCorp\Bundle\EasyAdminBundle\Configuration\MenuItem::linkToRoute()
  */
 final class RouteMenuItem implements MenuItemInterface
 {

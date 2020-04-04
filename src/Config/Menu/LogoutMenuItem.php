@@ -1,14 +1,14 @@
 <?php
 
-namespace EasyCorp\Bundle\EasyAdminBundle\Menu;
+namespace EasyCorp\Bundle\EasyAdminBundle\Config\Menu;
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu\MenuItemInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
 
 /**
- * @internal Instead of this, use EasyCorp\Bundle\EasyAdminBundle\Configuration\MenuItem::linkToDashboard()
+ * @see EasyCorp\Bundle\EasyAdminBundle\Configuration\MenuItem::linkToLogout()
  */
-final class DashboardMenuItem implements MenuItemInterface
+final class LogoutMenuItem implements MenuItemInterface
 {
     use MenuItemTrait;
 
@@ -16,7 +16,7 @@ final class DashboardMenuItem implements MenuItemInterface
     {
         $this->dto = new MenuItemDto();
 
-        $this->dto->setType(MenuItemDto::TYPE_DASHBOARD);
+        $this->dto->setType(MenuItemDto::TYPE_LOGOUT);
         $this->dto->setLabel($label);
         $this->dto->setIcon($icon);
     }

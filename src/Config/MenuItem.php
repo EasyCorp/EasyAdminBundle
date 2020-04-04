@@ -2,14 +2,14 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Config;
 
-use EasyCorp\Bundle\EasyAdminBundle\Menu\CrudMenuItem;
-use EasyCorp\Bundle\EasyAdminBundle\Menu\DashboardMenuItem;
-use EasyCorp\Bundle\EasyAdminBundle\Menu\ExitImpersonationMenuItem;
-use EasyCorp\Bundle\EasyAdminBundle\Menu\LogoutMenuItem;
-use EasyCorp\Bundle\EasyAdminBundle\Menu\RouteMenuItem;
-use EasyCorp\Bundle\EasyAdminBundle\Menu\SectionMenuItem;
-use EasyCorp\Bundle\EasyAdminBundle\Menu\SubMenuItem;
-use EasyCorp\Bundle\EasyAdminBundle\Menu\UrlMenuItem;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\CrudMenuItem;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\DashboardMenuItem;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\ExitImpersonationMenuItem;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\LogoutMenuItem;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\RouteMenuItem;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\SectionMenuItem;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\SubMenuItem;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\UrlMenuItem;
 
 final class MenuItem
 {

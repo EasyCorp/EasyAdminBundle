@@ -11,6 +11,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Intl\IntlFormatter;
 use Symfony\Component\Intl\Currencies;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
+/**
+ * @author Javier Eguiluz <javier.eguiluz@gmail.com>
+ */
 final class MoneyConfigurator implements FieldConfiguratorInterface
 {
     private $intlFormatter;

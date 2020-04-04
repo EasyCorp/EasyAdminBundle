@@ -7,6 +7,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
 
 /**
  * @see EasyCorp\Bundle\EasyAdminBundle\Configuration\MenuItem::linkToUrl()
+ * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
 final class UrlMenuItem implements MenuItemInterface
 {

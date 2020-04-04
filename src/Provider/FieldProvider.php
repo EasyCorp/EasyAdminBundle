@@ -6,6 +6,9 @@ use Doctrine\DBAL\Types\Type;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 
+/**
+ * @author Javier Eguiluz <javier.eguiluz@gmail.com>
+ */
 final class FieldProvider
 {
     private $adminContextProvider;

@@ -8,6 +8,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDataDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDto;
 
+/**
+ * @author Javier Eguiluz <javier.eguiluz@gmail.com>
+ */
 trait FilterTrait
 {
     /** @var FilterDto */

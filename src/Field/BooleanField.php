@@ -5,9 +5,8 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 
-/*
- * TODO: create a BooleanConfigurator to check if user can edit the entity.
- * If they can't, then disable the 'renderAsSwitch' option and make it false.
+/**
+ * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
 final class BooleanField implements FieldInterface
 {

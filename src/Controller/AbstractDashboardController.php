@@ -20,6 +20,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 /**
  * This class is useful to extend your dashboard from it instead of implementing
  * the interface.
+ *
+ * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
 abstract class AbstractDashboardController extends AbstractController implements DashboardControllerInterface
 {

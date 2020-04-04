@@ -7,6 +7,8 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * These methods allow to stop the event propagation and return the given
  * response immediately.
+ *
+ * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
 trait StoppableEventTrait
 {

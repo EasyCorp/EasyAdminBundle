@@ -4,6 +4,9 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Registry;
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
 
+/**
+ * @author Javier Eguiluz <javier.eguiluz@gmail.com>
+ */
 final class CrudControllerRegistry
 {
     /** @var CrudControllerInterface[] */

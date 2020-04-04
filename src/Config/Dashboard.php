@@ -5,7 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Config;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\DashboardDto;
 
 /**
- * Holds the configuration options of the dashboard.
+ * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
 final class Dashboard
 {

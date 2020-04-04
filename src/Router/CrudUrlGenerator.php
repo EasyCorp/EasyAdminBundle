@@ -5,6 +5,9 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Router;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
+/**
+ * @author Javier Eguiluz <javier.eguiluz@gmail.com>
+ */
 final class CrudUrlGenerator
 {
     private $adminContextProvider;

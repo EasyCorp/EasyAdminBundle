@@ -4,6 +4,9 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * @author Javier Eguiluz <javier.eguiluz@gmail.com>
+ */
 final class SearchDto
 {
     private $request;

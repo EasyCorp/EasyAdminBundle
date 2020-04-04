@@ -2,6 +2,9 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Security;
 
+/**
+ * @author Javier Eguiluz <javier.eguiluz@gmail.com>
+ */
 final class Permission
 {
     public const EA_EXECUTE_ACTION = 'EA_EXECUTE_ACTION';

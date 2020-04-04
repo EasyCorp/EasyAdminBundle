@@ -5,6 +5,9 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Router;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
+/**
+ * @author Javier Eguiluz <javier.eguiluz@gmail.com>
+ */
 class UrlBuilder
 {
     private $dashboardRoute;

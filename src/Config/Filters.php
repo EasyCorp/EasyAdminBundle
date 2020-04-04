@@ -5,6 +5,9 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Config;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterConfigDto;
 
+/**
+ * @author Javier Eguiluz <javier.eguiluz@gmail.com>
+ */
 final class Filters
 {
     /** @var FilterConfigDto */

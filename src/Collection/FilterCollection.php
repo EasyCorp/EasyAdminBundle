@@ -5,6 +5,9 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Collection;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Collection\CollectionInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDto;
 
+/**
+ * @author Javier Eguiluz <javier.eguiluz@gmail.com>
+ */
 final class FilterCollection implements CollectionInterface
 {
     /** @var FilterDto[] */

@@ -9,6 +9,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\SelectField;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
+/**
+ * @author Javier Eguiluz <javier.eguiluz@gmail.com>
+ */
 final class SelectConfigurator implements FieldConfiguratorInterface
 {
     private $translator;

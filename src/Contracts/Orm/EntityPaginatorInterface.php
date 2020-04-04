@@ -5,6 +5,9 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Contracts\Orm;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\PaginatorDto;
 
+/**
+ * @author Javier Eguiluz <javier.eguiluz@gmail.com>
+ */
 interface EntityPaginatorInterface
 {
     public function paginate(PaginatorDto $paginatorDto, QueryBuilder $queryBuilder): self;

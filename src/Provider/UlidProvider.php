@@ -6,6 +6,8 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Provider;
  * Code copied from https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Uid/Ulid.php
  * (c) Nicolas Grekas <p@tchwork.com> - MIT License
  * TODO: replace this class by the Symfony Uid component when it's released as stable.
+ *
+ * @author Nicolas Grekas <p@tchwork.com>
  */
 final class UlidProvider
 {

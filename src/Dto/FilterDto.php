@@ -5,6 +5,9 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 
+/**
+ * @author Javier Eguiluz <javier.eguiluz@gmail.com>
+ */
 final class FilterDto
 {
     private $fqcn;

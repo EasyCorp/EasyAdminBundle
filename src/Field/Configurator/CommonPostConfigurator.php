@@ -10,6 +10,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use function Symfony\Component\String\u;
 
+/**
+ * @author Javier Eguiluz <javier.eguiluz@gmail.com>
+ */
 final class CommonPostConfigurator implements FieldConfiguratorInterface
 {
     private $adminContextProvider;

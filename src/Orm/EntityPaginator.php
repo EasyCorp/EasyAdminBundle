@@ -11,6 +11,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\PaginatorDto;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
 
+/**
+ * @author Javier Eguiluz <javier.eguiluz@gmail.com>
+ */
 final class EntityPaginator implements EntityPaginatorInterface
 {
     private $crudUrlGenerator;

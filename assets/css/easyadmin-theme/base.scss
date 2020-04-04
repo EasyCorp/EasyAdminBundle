@@ -270,6 +270,10 @@ body.ea-mobile-sidebar-visible .main-sidebar {
     .btn {
         margin-left: 10px;
     }
+
+    .btn-group .btn + .btn {
+        margin-left: 0;
+    }
 }
 
 .batch-actions form {

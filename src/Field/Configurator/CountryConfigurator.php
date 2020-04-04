@@ -27,10 +27,6 @@ final class CountryConfigurator implements FieldConfiguratorInterface
         if (null === $field->getTextAlign() && false === $field->getCustomOption(CountryField::OPTION_SHOW_NAME)) {
             $field->setTextAlign('center');
         }
-
-        if (null === $formattedValue) {
-            $field->setTemplateName('label/null');
-        }
     }
 
     private function getCountryName(?string $countryCode): ?string

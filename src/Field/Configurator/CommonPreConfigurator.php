@@ -2,13 +2,13 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Field\Configurator;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
-use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AvatarField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -37,7 +37,7 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
         $field->setValue($value);
         $field->setFormattedValue($value);
 
-        $label = $this->buildLabelOption($field, $translationDomain);
+        $label = $this->buildLabelOption($field, $translationDomain, $context->getCrud()->getCurrentPage());
         $field->setLabel($label);
 
         $isRequired = $this->buildRequiredOption($field, $entityDto);
@@ -49,7 +49,7 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
         $isVirtual = $this->buildVirtualOption($field, $entityDto);
         $field->setVirtual($isVirtual);
 
-        $templatePath = $this->buildTemplatePathOption($context, $field, $entityDto, $value);
+        $templatePath = $this->buildTemplatePathOption($context, $field, $entityDto);
         $field->setTemplatePath($templatePath);
 
         $doctrineMetadata = $entityDto->hasProperty($field->getProperty()) ? $entityDto->getPropertyMetadata($field->getProperty())->all() : [];
@@ -97,11 +97,17 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
         return $this->translator->trans($help, $field->getTranslationParameters(), $translationDomain);
     }
 
-    private function buildLabelOption(FieldDto $field, string $translationDomain): ?string
+    private function buildLabelOption(FieldDto $field, string $translationDomain, string $currentPage): ?string
     {
         // don't autogenerate a label for these special fields (there's a dedicated configurator for them)
         if (FormField::class === $field->getFieldFqcn()) {
             return $field->getLabel();
+        }
+
+        // if an Avatar field doesn't define its label, don't autogenerate it for the 'index' page
+        // (because the table of the 'index' page looks better without a header in the avatar column)
+        if (Action::INDEX === $currentPage && null === $field->getLabel() && AvatarField::class === $field->getFieldFqcn()) {
+            $field->setLabel(false);
         }
 
         // it field doesn't define its label explicitly, generate an automatic
@@ -131,7 +137,7 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
         return !$entityDto->hasProperty($field->getProperty());
     }
 
-    private function buildTemplatePathOption(AdminContext $adminContext, FieldDto $field, EntityDto $entityDto, $fieldValue): string
+    private function buildTemplatePathOption(AdminContext $adminContext, FieldDto $field, EntityDto $entityDto): string
     {
         if (null !== $templatePath = $field->getTemplatePath()) {
             return $templatePath;
@@ -140,15 +146,6 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
         $isPropertyReadable = $this->propertyAccessor->isReadable($entityDto->getInstance(), $field->getProperty());
         if (!$isPropertyReadable) {
             return $adminContext->getTemplatePath('label/inaccessible');
-        }
-
-        if (null === $fieldValue && BooleanField::class !== $field->getFieldFqcn()) {
-            return $adminContext->getTemplatePath('label/null');
-        }
-
-        // TODO: move this condition to each field class
-        if (empty($fieldValue) && \in_array($field->getFieldFqcn(), [ImageField::class/*'file',*/ /*'array',*/ /*'simple_array' */], true)) {
-            return $adminContext->getTemplatePath('label/empty');
         }
 
         if (null === $templateName = $field->getTemplateName()) {

@@ -23,6 +23,6 @@ final class EntityUpdater implements EntityUpdaterInterface
 
         $entityInstance = $entityDto->getInstance();
         $this->propertyAccesor->setValue($entityInstance, $propertyName, $value);
-        $entityDto->updateInstance($entityInstance);
+        $entityDto->setInstance($entityInstance);
     }
 }

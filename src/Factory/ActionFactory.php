@@ -104,7 +104,7 @@ final class ActionFactory
 
         $actionDto->setLinkUrl($this->generateActionUrl($currentPage, $adminContext->getRequest(), $actionDto, $entityDto));
 
-        if (!$actionDto->isGlobalAction() && in_array($pageName, [Crud::PAGE_EDIT, Crud::PAGE_NEW], true)) {
+        if (!$actionDto->isGlobalAction() && \in_array($pageName, [Crud::PAGE_EDIT, Crud::PAGE_NEW], true)) {
             $actionDto->setHtmlAttribute('form', sprintf('%s-%s-form', $pageName, $entityDto->getName()));
         }
 

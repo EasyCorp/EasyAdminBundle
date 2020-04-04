@@ -1,17 +1,11 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
 {# @var field \EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto #}
-
-{# TODO: remove this condition when we centralize the handling of NULL values in CommonConfigurator #}
-{% if field.value is null %}
-    {{ include(ea.templatePath('label/null')) }}
-{% else %}
-    {% if field.customOptions.get('showCode') %}
-        <span class="badge badge-currency" title="{{ field.formattedValue.name }}">{{ field.value }}</span>
-    {% endif %}
-    {% if field.customOptions.get('showSymbol') %}
-        <span class="badge badge-currency" title="{{ field.formattedValue.name }}">{{ field.formattedValue.symbol }}</span>
-    {% endif %}
-    {% if field.customOptions.get('showName') %}
-        {{ field.formattedValue.name }}
-    {% endif %}
+{% if field.customOptions.get('showCode') %}
+    <span class="badge badge-currency" title="{{ field.formattedValue.name }}">{{ field.value }}</span>
+{% endif %}
+{% if field.customOptions.get('showSymbol') %}
+    <span class="badge badge-currency" title="{{ field.formattedValue.name }}">{{ field.formattedValue.symbol }}</span>
+{% endif %}
+{% if field.customOptions.get('showName') %}
+    {{ field.formattedValue.name }}
 {% endif %}

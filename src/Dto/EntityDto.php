@@ -194,6 +194,16 @@ final class EntityDto
         return \array_key_exists($propertyNameParts[0], $this->metadata->embeddedClasses);
     }
 
+    public function setInstance($newEntityInstance): void
+    {
+        if (null !== $this->instance && !$newEntityInstance instanceof $this->fqcn) {
+            throw new \InvalidArgumentException(sprintf('The new entity instance must be of the same type as the previous instance (original instance: "%s", new instance: "%s").', $this->fqcn, \get_class($newEntityInstance)));
+        }
+
+        $this->instance = $newEntityInstance;
+        $this->primaryKeyValue = null;
+    }
+
     public function newWithInstance($newEntityInstance): self
     {
         if (null !== $this->instance && !$newEntityInstance instanceof $this->fqcn) {

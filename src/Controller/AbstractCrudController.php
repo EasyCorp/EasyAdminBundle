@@ -464,7 +464,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
         $parameters = KeyValueStore::new([
             'action' => Action::EDIT,
-            'entity' => $entityDto->updateInstance($entityInstance),
+            'entity' => $entityDto->setInstance($entityInstance),
         ]);
 
         $event = new AfterCrudActionEvent($this->getContext(), $parameters);

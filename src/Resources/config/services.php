@@ -242,6 +242,7 @@ return static function (ContainerConfigurator $container) {
             ->tag('ea.field_configurator')
 
         ->set(CommonPostConfigurator::class)
+            ->arg(0, ref(AdminContextProvider::class))
             ->tag('ea.field_configurator', ['priority' => -9999])
 
         ->set(CommonPreConfigurator::class)

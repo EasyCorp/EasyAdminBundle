@@ -14,9 +14,10 @@ use Symfony\Component\DomCrawler\Crawler;
 abstract class AbstractTestCase extends WebTestCase
 {
     /** @var Client */
-    protected $client;
+    protected static $client;
+    protected static $options = [];
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->initClient();
         $this->initDatabase();
@@ -24,7 +25,7 @@ abstract class AbstractTestCase extends WebTestCase
 
     protected function initClient(array $options = [])
     {
-        $this->client = static::createClient($options);
+        static::$client = static::createClient($options + static::$options);
     }
 
     /**
@@ -38,11 +39,11 @@ abstract class AbstractTestCase extends WebTestCase
         $originalDbPath = $buildDir.'/original_test.db';
         $targetDbPath = $buildDir.'/test.db';
 
-        if (!\file_exists($originalDbPath)) {
-            throw new \RuntimeException(\sprintf("The fixtures file used for the tests (%s) doesn't exist. This means that the execution of the bootstrap.php script that generates that file failed. Open %s/bootstrap.php and replace `NullOutput as ConsoleOutput` by `ConsoleOutput` to see the actual errors in the console.", $originalDbPath, \realpath(__DIR__.'/..')));
+        if (!file_exists($originalDbPath)) {
+            throw new \RuntimeException(sprintf("The fixtures file used for the tests (%s) doesn't exist. This means that the execution of the bootstrap.php script that generates that file failed. Open %s/bootstrap.php and replace `NullOutput as ConsoleOutput` by `ConsoleOutput` to see the actual errors in the console.", $originalDbPath, realpath(__DIR__.'/..')));
         }
 
-        \copy($originalDbPath, $targetDbPath);
+        copy($originalDbPath, $targetDbPath);
     }
 
     /**
@@ -50,9 +51,9 @@ abstract class AbstractTestCase extends WebTestCase
      *
      * @return Crawler
      */
-    protected function getBackendPage(array $queryParameters)
+    protected function getBackendPage(array $queryParameters, array $serverParameters = [])
     {
-        return $this->client->request('GET', '/admin/?'.\http_build_query($queryParameters, '', '&'));
+        return static::$client->request('GET', '/admin/?'.http_build_query($queryParameters, '', '&'), [], [], $serverParameters);
     }
 
     /**
@@ -119,6 +120,80 @@ abstract class AbstractTestCase extends WebTestCase
             'action' => 'edit',
             'entity' => $entityName,
             'id' => $entityId,
+        ]);
+    }
+
+    /**
+     * @return Crawler
+     */
+    protected function requestListViewAsLoggedUser($entityName = 'Category', string $username = 'admin', string $password = 'pa$$word')
+    {
+        return $this->getBackendPage([
+            'action' => 'list',
+            'entity' => $entityName,
+            'view' => 'list',
+        ], [
+            'PHP_AUTH_USER' => $username,
+            'PHP_AUTH_PW' => $password,
+        ]);
+    }
+
+    /**
+     * @return Crawler
+     */
+    protected function requestShowViewAsLoggedUser($entityName = 'Category', $entityId = 200, string $username = 'admin', string $password = 'pa$$word')
+    {
+        return $this->getBackendPage([
+            'action' => 'show',
+            'entity' => $entityName,
+            'id' => $entityId,
+        ], [
+            'PHP_AUTH_USER' => $username,
+            'PHP_AUTH_PW' => $password,
+        ]);
+    }
+
+    /**
+     * @return Crawler
+     */
+    protected function requestSearchViewAsLoggedUser($searchQuery = 'cat', $entityName = 'Category', string $username = 'admin', string $password = 'pa$$word')
+    {
+        return $this->getBackendPage([
+            'action' => 'search',
+            'entity' => $entityName,
+            'query' => $searchQuery,
+        ], [
+            'PHP_AUTH_USER' => $username,
+            'PHP_AUTH_PW' => $password,
+        ]);
+    }
+
+    /**
+     * @return Crawler
+     */
+    protected function requestNewViewAsLoggedUser($entityName = 'Category', string $username = 'admin', string $password = 'pa$$word')
+    {
+        return $this->getBackendPage([
+            'action' => 'new',
+            'entity' => $entityName,
+        ], [
+            'PHP_AUTH_USER' => $username,
+            'PHP_AUTH_PW' => $password,
+        ]);
+    }
+
+    /**
+     * @return Crawler
+     */
+    protected function requestEditViewAsLoggedUser($entityName = 'Category', $entityId = '200', string $username = 'admin', string $password = 'pa$$word')
+    {
+        return $this->getBackendPage([
+            'action' => 'edit',
+            'entity' => $entityName,
+            'id' => $entityId,
+        ], [
+            'PHP_AUTH_USER' => $username,
+            'PHP_AUTH_PW' => $password,
         ]);
     }
 }

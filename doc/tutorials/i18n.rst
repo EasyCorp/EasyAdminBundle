@@ -57,13 +57,13 @@ configuration would show two menu items called ``Customers`` and ``Orders``:
             Orders:
                 class: App\Entity\Purchase
 
-The ``messages.xx.yml`` (or ``messages.xx.xlf``) file for the previous example
+The ``messages.xx.yaml`` (or ``messages.xx.xlf``) file for the previous example
 would need to use ``Customers`` and ``Orders`` as the keys of the translations.
 Example:
 
 .. code-block:: yaml
 
-    # translations/messages.es.yml
+    # translations/messages.es.yaml
     Customers: Clientes
     Orders: Ventas
     # ...
@@ -89,12 +89,12 @@ original language used by the translation keys):
 
 .. code-block:: yaml
 
-    # translations/messages.en.yml
+    # translations/messages.en.yaml
     menu.customers: Customers
     menu.orders: Orders
     # ...
 
-    # translations/messages.es.yml
+    # translations/messages.es.yaml
     menu.customers: Clientes
     menu.orders: Ventas
     # ...
@@ -132,7 +132,7 @@ properties, so those are the translation keys that must be used:
 
 .. code-block:: yaml
 
-    # translations/messages.es.yml
+    # translations/messages.es.yaml
     First name: Nombre
     Last name: Apellidos
     # ...
@@ -160,12 +160,12 @@ original language used by the translation keys):
 
 .. code-block:: yaml
 
-    # translations/messages.en.yml
+    # translations/messages.en.yaml
     users.firstName: First name
     users.lastName: Last name
     # ...
 
-    # translations/messages.es.yml
+    # translations/messages.es.yaml
     users.firstName: Nombre
     users.lastName: Apellidos
     # ...
@@ -180,12 +180,12 @@ translation file:
 
 .. code-block:: yaml
 
-    # translations/messages.en.yml
+    # translations/messages.en.yaml
     action.save: Save Now
     action.new: Create
     # ...
 
-    # translations/messages.es.yml
+    # translations/messages.es.yaml
     action.save: Guardar Ahora
     action.new: Crear
     # ...

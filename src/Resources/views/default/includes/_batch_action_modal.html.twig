@@ -1,0 +1,18 @@
+<div id="modal-batch-action" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <h4 id="batch-action-confirmation-title">{{ 'batch_action_modal.title'|trans(_trans_parameters, 'EasyAdminBundle') }}</h4>
+                <p>{{ 'batch_action_modal.content'|trans(_trans_parameters, 'EasyAdminBundle') }}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn btn-secondary">
+                    <span class="btn-label">{{ 'action.cancel'|trans(_trans_parameters, _translation_domain) }}</span>
+                </button>
+                <button type="button" data-dismiss="modal" class="btn btn-primary" id="modal-batch-action-button">
+                    <span class="btn-label">{{ 'action.continue'|trans(_trans_parameters, _translation_domain) }}</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

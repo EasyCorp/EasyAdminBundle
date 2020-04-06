@@ -1,0 +1,5 @@
+{% if image_url is null %}
+    {{ include(entity_config.templates.label_null) }}
+{% else %}
+    <img class="image-avatar" height="{{ image_height }}" src="{{ image_url }}">
+{% endif %}

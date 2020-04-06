@@ -1,0 +1,11 @@
+# TEST
+# it's possible to configure the properties of custom batch actions defined at global level
+
+# CONFIGURATION
+easy_admin:
+    list:
+        batch_actions:
+            - { name: 'custom_batch_action', icon: 'custom-list-icon', css_class: 'custom-list-class', label: 'custom-list-label' }
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category

@@ -3,13 +3,7 @@ require('../css/app.scss');
 
 global.$ = global.jQuery = require('jquery');
 
-// Imports only the Bootstrap JS components used by default in the backend.
-// If you develop features that need other Bootstrap components, check out the
-// bootstrap-all.js file that provides the rest of the Bootstrap JS plugins
-import 'bootstrap/js/src/modal.js';
-import 'bootstrap/js/src/tab.js';
-import 'bootstrap/js/src/tooltip.js';
-import 'bootstrap/js/src/popover.js';
+import 'bootstrap';
 
 import './adminlte.js';
 import 'jquery.are-you-sure';
@@ -24,6 +18,9 @@ window.addEventListener('load', function() {
     $(document).on('easyadmin.collection.item-added', createAutoCompleteFields);
     createContentResizer();
     createNavigationToggler();
+    createCodeEditorFields();
+    createTextEditorFields();
+    createFileUploadFields();
 });
 
 function createNullableControls() {
@@ -81,42 +78,156 @@ function createAutoCompleteFields() {
 
 function createContentResizer() {
     const sidebarResizerHandler = document.getElementById('sidebar-resizer-handler');
-    sidebarResizerHandler.addEventListener('click', function() {
-        const oldValue = localStorage.getItem('easyadmin/sidebar/width') || 'normal';
-        const newValue = 'normal' == oldValue ? 'compact' : 'normal';
-
-        document.querySelector('body').classList.remove('easyadmin-sidebar-width-' + oldValue);
-        document.querySelector('body').classList.add('easyadmin-sidebar-width-' + newValue);
-        localStorage.setItem('easyadmin/sidebar/width', newValue);
-    });
-
     const contentResizerHandler = document.getElementById('content-resizer-handler');
-    contentResizerHandler.addEventListener('click', function() {
-        const oldValue = localStorage.getItem('easyadmin/content/width') || 'normal';
-        const newValue = 'normal' == oldValue ? 'full' : 'normal';
 
-        document.querySelector('body').classList.remove('easyadmin-content-width-' + oldValue);
-        document.querySelector('body').classList.add('easyadmin-content-width-' + newValue);
-        localStorage.setItem('easyadmin/content/width', newValue);
-    });
+    if (null !== sidebarResizerHandler) {
+        sidebarResizerHandler.addEventListener('click', function() {
+            const oldValue = localStorage.getItem('easyadmin/sidebar/width') || 'normal';
+            const newValue = 'normal' == oldValue ? 'compact' : 'normal';
+
+            document.querySelector('body').classList.remove('easyadmin-sidebar-width-' + oldValue);
+            document.querySelector('body').classList.add('easyadmin-sidebar-width-' + newValue);
+            localStorage.setItem('easyadmin/sidebar/width', newValue);
+        });
+    }
+
+    if (null !== contentResizerHandler) {
+        contentResizerHandler.addEventListener('click', function() {
+            const oldValue = localStorage.getItem('easyadmin/content/width') || 'normal';
+            const newValue = 'normal' == oldValue ? 'full' : 'normal';
+
+            document.querySelector('body').classList.remove('easyadmin-content-width-' + oldValue);
+            document.querySelector('body').classList.add('easyadmin-content-width-' + newValue);
+            localStorage.setItem('easyadmin/content/width', newValue);
+        });
+    }
 }
 
 function createNavigationToggler() {
     const toggler = document.getElementById('navigation-toggler');
     const cssClassName = 'easyadmin-mobile-sidebar-visible';
+    let modalBackdrop;
+
+    if (null === toggler) {
+        return;
+    }
 
     toggler.addEventListener('click', function() {
         document.querySelector('body').classList.toggle(cssClassName);
 
         if (document.querySelector('body').classList.contains(cssClassName)) {
-            var modalBackdrop = document.createElement('div');
+            modalBackdrop = document.createElement('div');
             modalBackdrop.classList.add('modal-backdrop', 'fade', 'show');
             modalBackdrop.onclick = function() {
-                modalBackdrop.style.height = 0;
-                document.querySelector('body').classList.remove(cssClassName)
+                document.querySelector('body').classList.remove(cssClassName);
+                document.body.removeChild(modalBackdrop);
+                modalBackdrop = null;
             };
 
             document.body.appendChild(modalBackdrop);
+        } else if (modalBackdrop) {
+            document.body.removeChild(modalBackdrop);
+            modalBackdrop = null;
         }
+    });
+}
+
+// Code editor fields require extra JavaScript dependencies, which are loaded
+// dynamically only when there are code editor fields in the page
+function createCodeEditorFields()
+{
+    const codeEditorElements = document.querySelectorAll('[data-easyadmin-code-editor]');
+    if (codeEditorElements.length === 0) {
+        return;
+    }
+
+    const codeEditorJs = document.createElement('script');
+    codeEditorJs.setAttribute('src', codeEditorElements[0].dataset.jsUrl);
+
+    document.querySelector('body').appendChild(codeEditorJs);
+
+    const codeEditorCss = document.createElement('link');
+    codeEditorCss.setAttribute('rel', 'stylesheet');
+    codeEditorCss.setAttribute('href', codeEditorElements[0].dataset.cssUrl);
+
+    document.querySelector('head').appendChild(codeEditorCss);
+
+    if ('rtl' == document.dir) {
+        const codeEditorRtlCss = document.createElement('link');
+        codeEditorRtlCss.setAttribute('rel', 'stylesheet');
+        codeEditorRtlCss.setAttribute('href', codeEditorElements[0].dataset.cssUrl.replace('.css', '.rtl.css'));
+
+        document.querySelector('head').appendChild(codeEditorRtlCss);
+    }
+}
+
+// Text editor fields require extra JavaScript dependencies, which are loaded
+// dynamically only when there are code editor fields in the page
+function createTextEditorFields()
+{
+    const textEditorElements = document.querySelectorAll('trix-editor');
+    if (textEditorElements.length === 0) {
+        return;
+    }
+
+    const textEditorJs = document.createElement('script');
+    textEditorJs.setAttribute('src', textEditorElements[0].dataset.jsUrl);
+
+    document.querySelector('body').appendChild(textEditorJs);
+
+    const textEditorCss = document.createElement('link');
+    textEditorCss.setAttribute('rel', 'stylesheet');
+    textEditorCss.setAttribute('href', textEditorElements[0].dataset.cssUrl);
+
+    document.querySelector('head').appendChild(textEditorCss);
+
+    if ('rtl' == document.dir) {
+        const textEditorRtlCss = document.createElement('link');
+        textEditorRtlCss.setAttribute('rel', 'stylesheet');
+        textEditorRtlCss.setAttribute('href', textEditorElements[0].dataset.cssUrl.replace('.css', '.rtl.css'));
+
+        document.querySelector('head').appendChild(textEditorRtlCss);
+    }
+}
+
+function createFileUploadFields()
+{
+    function fileSize(bytes) {
+        const size = ['B', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'];
+        const factor = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+
+        return parseInt(bytes / (1024 ** factor)) + size[factor];
+    }
+
+    $(document).on('change', '.easyadmin-fileupload input[type=file].custom-file-input', function () {
+        if (this.files.length === 0) {
+            return;
+        }
+
+
+        let filename = '';
+        if (this.files.length === 1) {
+            filename = this.files[0].name;
+        } else {
+            filename = this.files.length + ' ' + $(this).data('files-label');
+        }
+        let bytes = 0;
+        for (let i = 0; i < this.files.length; i++) {
+            bytes += this.files[i].size;
+        }
+
+        const container = $(this).closest('.easyadmin-fileupload');
+        container.find('.custom-file-label').text(filename);
+        container.find('.input-group-text').text(fileSize(bytes)).show();
+        container.find('.easyadmin-fileupload-delete-btn').show();
+    });
+
+    $(document).on('click', '.easyadmin-fileupload .easyadmin-fileupload-delete-btn', function () {
+        const container = $(this).closest('.easyadmin-fileupload');
+        container.find('input').val('').removeAttr('title');
+        container.find('.custom-file-label').text('');
+        container.find('.input-group-text').text('').hide();
+        container.find('.fileupload-list').hide();
+        $(this).hide();
     });
 }

@@ -18,7 +18,6 @@ use Symfony\Component\Yaml\Yaml;
  */
 class EasyAdminDataCollector extends DataCollector
 {
-    /** @var ConfigManager */
     private $configManager;
 
     public function __construct(ConfigManager $configManager)
@@ -43,7 +42,7 @@ class EasyAdminDataCollector extends DataCollector
     /**
      * {@inheritdoc}
      */
-    public function collect(Request $request, Response $response, \Exception $exception = null)
+    public function collect(Request $request, Response $response, \Throwable $exception = null)
     {
         if ('easyadmin' !== $request->attributes->get('_route')) {
             return;
@@ -61,12 +60,7 @@ class EasyAdminDataCollector extends DataCollector
         ];
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return array|null
-     */
-    private function getEasyAdminParameters(Request $request)
+    private function getEasyAdminParameters(Request $request): ?array
     {
         return [
             'action' => $request->query->get('action'),
@@ -128,21 +122,21 @@ class EasyAdminDataCollector extends DataCollector
      */
     public function dump($variable)
     {
-        if (\class_exists(HtmlDumper::class)) {
+        if (class_exists(HtmlDumper::class)) {
             $cloner = new VarCloner();
             $dumper = new HtmlDumper();
 
-            $dumper->dump($cloner->cloneVar($variable), $output = \fopen('php://memory', 'r+b'));
-            if (false !== $dumpedData = \stream_get_contents($output, -1, 0)) {
+            $dumper->dump($cloner->cloneVar($variable), $output = fopen('php://memory', 'r+b'));
+            if (false !== $dumpedData = stream_get_contents($output, -1, 0)) {
                 return $dumpedData;
             }
         }
 
-        if (\class_exists(Yaml::class)) {
-            return \sprintf('<pre class="sf-dump">%s</pre>', Yaml::dump((array) $variable, 1024));
+        if (class_exists(Yaml::class)) {
+            return sprintf('<pre class="sf-dump">%s</pre>', Yaml::dump((array) $variable, 1024));
         }
 
-        return \sprintf('<pre class="sf-dump">%s</pre>', \var_export($variable, true));
+        return sprintf('<pre class="sf-dump">%s</pre>', var_export($variable, true));
     }
 
     /**

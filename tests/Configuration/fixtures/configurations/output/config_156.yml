@@ -1,0 +1,10 @@
+easy_admin:
+    entities:
+        Category:
+            list:
+                batch_actions:
+                    my_batch_action:
+                        name: my_batch_action
+                        label: 'BATCH ACTION'
+                    another_batch_action:
+                        name: another_batch_action

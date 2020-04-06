@@ -5,19 +5,19 @@
             <!-- page titles -->
             <trans-unit id="new.page_title">
                 <source>new.page_title</source>
-                <target>Oluştur : %entity_name%</target>
+                <target>Oluştur : %entity_label%</target>
             </trans-unit>
             <trans-unit id="show.page_title">
                 <source>show.page_title</source>
-                <target>%entity_name% (#%entity_id%)</target>
+                <target>%entity_label% (#%entity_id%)</target>
             </trans-unit>
             <trans-unit id="edit.page_title">
                 <source>edit.page_title</source>
-                <target>%entity_name% (#%entity_id%) Düzenle</target>
+                <target>%entity_label% (#%entity_id%) Düzenle</target>
             </trans-unit>
             <trans-unit id="list.page_title">
                 <source>list.page_title</source>
-                <target>%entity_name%</target>
+                <target>%entity_label%</target>
             </trans-unit>
             <trans-unit id="search.page_title">
                 <source>search.page_title</source>
@@ -57,6 +57,10 @@
                 <source>paginator.counter</source>
                 <target><![CDATA[<strong>%results%</strong> öğeden <strong>%start%</strong> - <strong>%end%</strong> arası]]></target>
             </trans-unit>
+            <trans-unit id="paginator.results">
+                <source>paginator.results</source>
+                <target><![CDATA[{0} Sonuç yok|{1} <strong>1</strong> sonuç|]1,Inf] <strong>%count%</strong> sonuç]]></target>
+            </trans-unit>
 
             <!-- labels -->
             <trans-unit id="label.true">
@@ -91,6 +95,10 @@
                 <source>label.inaccessible.explanation</source>
                 <target>Özelliğin getter methodu tanımlanmamış veya özellik public değil</target>
             </trans-unit>
+            <trans-unit id="label.form.empty_value">
+                <source>label.form.empty_value</source>
+                <target>Boş</target>
+            </trans-unit>
 
             <!-- user -->
             <trans-unit id="user.logged_in_as">
@@ -109,6 +117,10 @@
                 <source>user.signout</source>
                 <target>Çıkış</target>
             </trans-unit>
+            <trans-unit id="user.exit_impersonation">
+                <source>user.exit_impersonation</source>
+                <target>Canlandırma modundan çık</target>
+            </trans-unit>
 
             <!-- misc. elements -->
             <trans-unit id="delete_modal.title">
@@ -123,13 +135,21 @@
                 <source>delete_modal.action</source>
                 <target>Sil</target>
             </trans-unit>
+            <trans-unit id="batch_action_modal.title">
+                <source>batch_action_modal.title</source>
+                <target>Seçili öğeleri değiştirmek istediğinize emin misiniz?</target>
+            </trans-unit>
+            <trans-unit id="batch_action_modal.content">
+                <source>batch_action_modal.content</source>
+                <target>Bu işlem geri alınamaz.</target>
+            </trans-unit>
+            <trans-unit id="batch_action_modal.action">
+                <source>batch_action_modal.action</source>
+                <target>İlerle</target>
+            </trans-unit>
             <trans-unit id="action.add_new_item">
                 <source>action.add_new_item</source>
                 <target>Yeni öğe ekle</target>
-            </trans-unit>
-            <trans-unit id="action.add_another_item">
-                <source>action.add_another_item</source>
-                <target>Başka bir öğe ekle</target>
             </trans-unit>
             <trans-unit id="action.remove_item">
                 <source>action.remove_item</source>
@@ -146,6 +166,10 @@
             <trans-unit id="form.are_you_sure">
                 <source>form.are_you_sure</source>
                 <target>Formdaki değişiklikleri kaydetmediniz.</target>
+            </trans-unit>
+            <trans-unit id="form.tab.error_badge_title">
+                <source>form.tab.error_badge_title</source>
+                <target>Bir geçersiz girdi|%count% geçersiz girdi</target>
             </trans-unit>
             <trans-unit id="show.remaining_items">
                 <source>show.remaining_items</source>
@@ -172,6 +196,106 @@
             <trans-unit id="exception.undefined_entity">
                 <source>exception.undefined_entity</source>
                 <target>Uygulama bu tür öğeler için doğru şekilde yapılandırılmamış.</target>
+            </trans-unit>
+
+            <!-- Login page -->
+            <trans-unit id="login.username">
+                <source>login.username</source>
+                <target>Kullanıcı adı</target>
+            </trans-unit>
+            <trans-unit id="login.password">
+                <source>login.password</source>
+                <target>Şifre</target>
+            </trans-unit>
+            <trans-unit id="login.sign_in">
+                <source>login.sign_in</source>
+                <target>Giriş yap</target>
+            </trans-unit>
+
+            <!-- filters -->
+            <trans-unit id="filter.title">
+                <source>filter.title</source>
+                <target>Filtreler</target>
+            </trans-unit>
+            <trans-unit id="filter.button.clear">
+                <source>filter.button.clear</source>
+                <target>Temizle</target>
+            </trans-unit>
+            <trans-unit id="filter.button.apply">
+                <source>filter.button.apply</source>
+                <target>Uygula</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_equal_to">
+                <source>filter.label.is_equal_to</source>
+                <target>Eşittir</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_not_equal_to">
+                <source>filter.label.is_not_equal_to</source>
+                <target>Eşit değildir</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_greater_than">
+                <source>filter.label.is_greater_than</source>
+                <target>Büyüktür</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_greater_than_or_equal_to">
+                <source>filter.label.is_greater_than_or_equal_to</source>
+                <target>Büyüktür veya eşittir</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_less_than">
+                <source>filter.label.is_less_than</source>
+                <target>Küçüktür</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_less_than_or_equal_to">
+                <source>filter.label.is_less_than_or_equal_to</source>
+                <target>Küçüktür veya eşittir</target>
+            </trans-unit>
+            <trans-unit id="filter.label.contains">
+                <source>filter.label.contains</source>
+                <target>Metin şunları içeriyor</target>
+            </trans-unit>
+            <trans-unit id="filter.label.not_contains">
+                <source>filter.label.not_contains</source>
+                <target>Metin şunları içermiyor</target>
+            </trans-unit>
+            <trans-unit id="filter.label.starts_with">
+                <source>filter.label.starts_with</source>
+                <target>Metin şununla başlıyor</target>
+            </trans-unit>
+            <trans-unit id="filter.label.ends_with">
+                <source>filter.label.ends_with</source>
+                <target>Metin şununla bitiyor</target>
+            </trans-unit>
+            <trans-unit id="filter.label.exactly">
+                <source>filter.label.exactly</source>
+                <target>Metin aynı</target>
+            </trans-unit>
+            <trans-unit id="filter.label.not_exactly">
+                <source>filter.label.not_exactly</source>
+                <target>Metin aynı değil</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_same">
+                <source>filter.label.is_same</source>
+                <target>Aynı</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_not_same">
+                <source>filter.label.is_not_same</source>
+                <target>Aynı değil</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_after">
+                <source>filter.label.is_after</source>
+                <target>Tarihinden sonra</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_after_or_same">
+                <source>filter.label.is_after_or_same</source>
+                <target>Tarihi ve sonrası</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_before">
+                <source>filter.label.is_before</source>
+                <target>Tarihinden önce</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_before_or_same">
+                <source>filter.label.is_before_or_same</source>
+                <target>Tarihi ve öncesi</target>
             </trans-unit>
         </body>
     </file>

@@ -13,6 +13,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
  * Custom form type that deals with some of the logic used to render the
@@ -24,18 +25,20 @@ class EasyAdminFormType extends AbstractType
 {
     /** @var ConfigManager */
     private $configManager;
-
     /** @var TypeConfiguratorInterface[] */
     private $configurators;
+    /** @var AuthorizationCheckerInterface */
+    private $authorizationChecker;
 
     /**
      * @param ConfigManager               $configManager
      * @param TypeConfiguratorInterface[] $configurators
      */
-    public function __construct(ConfigManager $configManager, array $configurators = [])
+    public function __construct(ConfigManager $configManager, array $configurators = [], AuthorizationCheckerInterface $authorizationChecker = null)
     {
         $this->configManager = $configManager;
         $this->configurators = $configurators;
+        $this->authorizationChecker = $authorizationChecker;
     }
 
     /**
@@ -54,6 +57,14 @@ class EasyAdminFormType extends AbstractType
 
         foreach ($entityProperties as $name => $metadata) {
             $formFieldOptions = $metadata['type_options'];
+
+            // the names of embedded Doctrine entities contain dots, which are not allowed
+            // in HTML element names. In those cases, fix the name but also update the
+            // 'property_path' option to keep the original field name
+            if (false !== strpos($name, '.')) {
+                $formFieldOptions['property_path'] = $name;
+                $name = str_replace('.', '_', $name);
+            }
 
             // Configure options using the list of registered type configurators:
             foreach ($this->configurators as $configurator) {
@@ -95,7 +106,7 @@ class EasyAdminFormType extends AbstractType
 
             // 'section' is a 'fake' form field used to create the design elements of the
             // complex form layouts: define it as unmapped and non-required
-            if (0 === \strpos($metadata['property'], '_easyadmin_form_design_element_')) {
+            if (0 === strpos($metadata['property'], '_easyadmin_form_design_element_')) {
                 $formFieldOptions['mapped'] = false;
                 $formFieldOptions['required'] = false;
             }
@@ -104,7 +115,9 @@ class EasyAdminFormType extends AbstractType
             $formField->setAttribute('easyadmin_form_tab', $currentFormTab);
             $formField->setAttribute('easyadmin_form_group', $currentFormGroup);
 
-            $builder->add($formField);
+            if ($this->authorizationChecker->isGranted($metadata['permission'], $entity)) {
+                $builder->add($formField);
+            }
         }
 
         $builder->setAttribute('easyadmin_form_tabs', $formTabs);
@@ -129,14 +142,15 @@ class EasyAdminFormType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $configManager = $this->configManager;
-
         $resolver
             ->setDefaults([
                 'allow_extra_fields' => true,
-                'data_class' => function (Options $options) use ($configManager) {
-                    $entity = $options['entity'];
-                    $entityConfig = $configManager->getEntityConfig($entity);
+                'data_class' => function (Options $options, $dataClass) {
+                    if (null !== $dataClass) {
+                        return $dataClass;
+                    }
+
+                    $entityConfig = $this->configManager->getEntityConfig($options['entity']);
 
                     return $entityConfig['class'];
                 },
@@ -161,8 +175,8 @@ class EasyAdminFormType extends AbstractType
     private function getAttributesNormalizer()
     {
         return function (Options $options, $value) {
-            return \array_replace([
-                'id' => \sprintf('%s-%s-form', $options['view'], \mb_strtolower($options['entity'])),
+            return array_replace([
+                'id' => sprintf('%s-%s-form', $options['view'], mb_strtolower($options['entity'])),
             ], $value);
         };
     }

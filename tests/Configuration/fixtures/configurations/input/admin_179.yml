@@ -1,0 +1,12 @@
+# TEST
+# the items of 'filters' config can use shortcuts instead of FQCN to define their types
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
+            list:
+                filters:
+                    - property: 'id'
+                      type: 'integer'

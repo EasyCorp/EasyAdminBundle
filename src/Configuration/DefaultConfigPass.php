@@ -28,7 +28,7 @@ class DefaultConfigPass implements ConfigPassInterface
      */
     private function processDefaultEntity(array $backendConfig)
     {
-        $entityNames = \array_keys($backendConfig['entities']);
+        $entityNames = array_keys($backendConfig['entities']);
         $firstEntityName = $entityNames[0] ?? null;
         $backendConfig['default_entity_name'] = $firstEntityName;
 
@@ -46,8 +46,8 @@ class DefaultConfigPass implements ConfigPassInterface
     {
         $defaultMenuItem = $this->findDefaultMenuItem($backendConfig['design']['menu']);
 
-        if ('empty' === $defaultMenuItem['type']) {
-            throw new \RuntimeException(\sprintf('The "menu" configuration sets "%s" as the default item, which is not possible because its type is "empty" and it cannot redirect to a valid URL.', $defaultMenuItem['label']));
+        if (null !== $defaultMenuItem && \is_array($defaultMenuItem) && 'empty' === $defaultMenuItem['type']) {
+            throw new \RuntimeException(sprintf('The "menu" configuration sets "%s" as the default item, which is not possible because its type is "empty" and it cannot redirect to a valid URL.', $defaultMenuItem['label']));
         }
 
         $backendConfig['default_menu_item'] = $defaultMenuItem;
@@ -101,9 +101,9 @@ class DefaultConfigPass implements ConfigPassInterface
             $backendHomepage['params'] = ['action' => 'list', 'entity' => $defaultEntityName];
 
             // if the default entity defines a custom sorting, use it
-            $defaultEntityConfig = isset($backendConfig['entities'][$defaultEntityName]) ? $backendConfig['entities'][$defaultEntityName] : [];
+            $defaultEntityConfig = $backendConfig['entities'][$defaultEntityName] ?? [];
             if (isset($defaultEntityConfig['list']['sort'])) {
-                $backendHomepage['params'] = \array_merge($backendHomepage['params'], [
+                $backendHomepage['params'] = array_merge($backendHomepage['params'], [
                     'sortField' => $defaultEntityConfig['list']['sort']['field'],
                     'sortDirection' => $defaultEntityConfig['list']['sort']['direction'],
                 ]);
@@ -113,10 +113,10 @@ class DefaultConfigPass implements ConfigPassInterface
 
             if ('entity' === $menuItemConfig['type']) {
                 $backendHomepage['route'] = 'easyadmin';
-                $backendHomepage['params'] = \array_merge(['action' => 'list', 'entity' => $menuItemConfig['entity']], $routeParams, $menuItemConfig['params']);
+                $backendHomepage['params'] = array_merge(['action' => 'list', 'entity' => $menuItemConfig['entity']], $routeParams, $menuItemConfig['params']);
             } elseif ('route' === $menuItemConfig['type']) {
                 $backendHomepage['route'] = $menuItemConfig['route'];
-                $backendHomepage['params'] = \array_merge($routeParams, $menuItemConfig['params']);
+                $backendHomepage['params'] = array_merge($routeParams, $menuItemConfig['params']);
             } elseif ('link' === $menuItemConfig['type']) {
                 $backendHomepage['url'] = $menuItemConfig['url'];
             }

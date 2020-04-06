@@ -290,9 +290,9 @@ By default, the forms built to create and edit entities only define the
 
 .. code-block:: php
 
-    $form = $this->createFormBuilder($entity, array(
+    $form = $this->createFormBuilder($entity, [
         'data_class' => 'App\Entity\Customer',
-    ))
+    ])
     -> ...
 
 If you need to pass custom options to the forms, define the ``form_options``
@@ -313,10 +313,10 @@ The above example makes the backend use the following PHP code to build the form
 
 .. code-block:: php
 
-    $form = $this->createFormBuilder($entity, array(
+    $form = $this->createFormBuilder($entity, [
         'data_class' => 'App\Entity\Customer',
-        'validation_groups' => array('Default', 'my_validation_group'),
-    ))
+        'validation_groups' => ['Default', 'my_validation_group'],
+    ])
     -> ...
 
 Customize the Form Fields
@@ -372,11 +372,15 @@ These are the options that you can define for each field:
   label of the collection items is hidden by default. If you want to display it,
   set the ``entry_options.label`` option to ``true``:
   ``- { property: '...', type: 'collection', type_options: { entry_options: { label: true } }``
-* ``help`` (optional): the help message displayed below the form field.
+* ``help`` (optional): the help message displayed below the form field. You can
+  also define this value via the ``type_options: { help: '...' }`` option.
 * ``css_class`` (optional): the CSS class applied to the parent HTML element
   that contains the entire form field. For example, when using the default
   Bootstrap form theme, this value is applied to the ``<div>`` element which
   wraps the label, the widget and the error messages of the field.
+* ``permission`` (optional): a string or array defining the role or roles the
+  current user must have to see this form field. It's explained later in the
+  :ref:`Security permissions <edit-new-security>` section.
 * ``type`` (optional): the Symfony Form type used to render this field. In
   addition to its fully qualified class name (e.g.
   ``Symfony\Component\Form\Extension\Core\Type\EmailType``), you can also use
@@ -384,8 +388,9 @@ These are the options that you can define for each field:
   done internally by the bundle). The allowed values are:
 
   * Any of the `Symfony Form types`_.
-  * Any of the custom EasyAdmin form types: ``easyadmin_autocomplete`` (they are
-    explained later in this chapter).
+  * Any of the custom EasyAdmin form types: ``code_editor``, ``file_upload``,
+    ``text_editor``, ``easyadmin_autocomplete`` (they are explained later in
+    this chapter).
 * ``type_options`` (optional), a hash with the options passed to the Symfony
   Form type used to render the field.
 
@@ -408,6 +413,13 @@ tens of options suited for each form type:
 
 Read the `Symfony Form types`_  reference to learn about all the available
 options, their usage and allowed values.
+
+.. tip::
+
+    Symfony makes Doctrine relations nullable by default. Instead of adding the
+    ``type_options: { required: true }`` option to all those fields, it's simpler
+    to add ``@ORM\JoinColumn(nullable=false)`` to the property that defines the
+    relation in the entity class.
 
 Formatting Dates and Numbers
 ----------------------------
@@ -548,6 +560,158 @@ change this value (globally or per entity):
                     max_results: 5
         # ...
 
+Code Editor
+~~~~~~~~~~~
+
+It displays a JavaScript-based editor for source code. It provides advanced
+features such as code highlighting and smart indenting.
+
+.. code-block:: yaml
+
+    # config/packages/easy_admin.yaml
+    easy_admin:
+        entities:
+            Server:
+                class: App\Entity\Server
+                form:
+                    fields:
+                        - { property: 'config', type: 'code_editor', language: 'nginx' }
+                        # ...
+        # ...
+
+This type defines the following configuration options:
+
+* ``height``: the initial height of code blocks is the same as their contents
+  and it grows automatically as you add more contents. This option, which must
+  be an integer, sets the height of the code block element in pixels. If
+  contents don't fit, a scrollbar is displayed.
+* ``language``: sets the programming language used for the syntax highlighting
+  of the code (the language can't be autodetected from the contents). The available
+  languages are: ``css``, ``dockerfile``, ``js`` (equivalent to ``javascript``),
+  ``markdown``, ``nginx``, ``php``, ``shell``, ``sql``, ``twig``, ``xml``,
+  ``yaml-frontmatter`` (used in some blogs, CMS systems and static site
+  generators), ``yaml``.
+* ``tab_size``: an integer (default: ``4``) that defines the indention size (no
+  matter if the code uses white spaces or tabs).
+* ``indent_with_tabs``: if this boolean option is set to ``true``, code is
+   indented with real tabs instead of white spaces (default: ``false``).
+
+.. code-block:: yaml
+
+    # config/packages/easy_admin.yaml
+    easy_admin:
+        entities:
+            ExamQuestion:
+                class: App\Entity\ExamQuestion
+                form:
+                    fields:
+                        - { property: 'question', type: 'code_editor', language: 'yaml', height: 150, tab_size: 4 }
+                        - { property: 'codeSample', type: 'code_editor', language: 'php', height: 600, tab_size: 2 }
+                        # ...
+        # ...
+
+File Upload
+~~~~~~~~~~~
+
+It displays an advanced file upload widget which supports single and multiple
+uploads, deleting files, etc.
+
+.. code-block:: yaml
+
+    # config/packages/easy_admin.yaml
+    easy_admin:
+        entities:
+            User:
+                class: App\Entity\User
+                form:
+                    fields:
+                        - { property: 'photo', type: 'file_upload' }
+                        # ...
+        # ...
+
+This type defines the following configuration options:
+
+* ``upload_dir``: (optional; default ``public/uploads/files/``) a string with
+  the path to the directory where the files are uploaded. If the value doesn't
+  start with a directory separator (e.g. ``/var/sites/uploads``), it's considered
+  relative to the ``kernel.project_dir`` value;
+* ``download_path``: (optional) a PHP callable that returns the relative path
+  where assets can be downloaded. For example, if ``upload_dir`` is ``public/contracts/``,
+  this option would be ``contracts/`` and the public asset URL would be
+  ``https://example.com/contracts/filename.extension``. Overriding this option is
+  useful in complex scenarios such as when uploading files to a cloud service which
+  creates special URLs to access to assets;
+* ``upload_filename``: (optional; by default the original name is used) if defined,
+  this string is the pattern used to rename the uploaded file. You can also pass a
+  PHP callable to use some logic to generate the new file name. Example of a
+  file name pattern: ``[year]/[month]/[day]/[slug]-[contenthash].[extension]``.
+  The available placeholders in the pattern are:
+
+  * ``[contenthash]``, the SHA1 hash of the entire file contents;
+  * ``[day]``, the current day of the month with leading zeros (e.g. ``07``);
+  * ``[extension]``, the guessed extension for the uploaded file (it can be
+    different from the original file extension);
+  * ``[month]``, the current month number with leading zeros (e.g. March = ``03``);
+  * ``[name]``, the original file name without the extension;
+  * ``[randomhash]``, an alphanumeric random string;
+  * ``[slug]``, the slug of the original file name (i.e. the name is lower cased
+    and any non-ASCII letter or number is removed);
+  * ``[timestamp]``, the current timestamp;
+  * ``[uuid]``, a random UUID v4 value;
+  * ``[year]``, the current year with 4 digits (e.g. ``2020``).
+
+* ``allow_add``: (optional, default = ``true``) a boolean value which is only
+  used when the ``multiple`` option is ``true``. If set to ``false``, when you
+  upload new files, all the previous files are deleted. If set to ``true``, the
+  new files are added to the list of previously uploded files;
+* ``allow_delete``: (optional, default ``true``) a boolean value indicating if
+  uploaded files can be deleted directly in the edit/new form;
+* ``multiple``: (optional, default ``false``) a boolean value indicating if
+  it's allowed to upload more than one file;
+* ``upload_new``: (optional) a PHP callable used to move the uploaded file/s to
+  its final destination. By default it's just ``$file->move($uploadDir, $fileName)``.
+  It's useful in complex scenarios such as moving the files to some cloud service;
+* ``upload_delete``: (optional) a PHP callable to delete the uploaded file/s.
+  By default it's just ``unlink($file->getPathname())``. It's useful in complex
+  scenarios such as performing some tasks before/after deleting files or when you
+  also need to delete the file from other locations (e.g. cloud services).
+* ``upload_validate``: (optional) a PHP callable used to validate the uploaded files
+  before moving them to their final destination. By default it checks duplicated
+  files and renames them. It's useful in complex scenarios such as validating
+  files that will be moved to some cloud service.
+
+This form type uses a `form data transformer`_ to manage the file resource to
+file path conversion. This means that only the file path/s is/are stored in the
+entity property and not the entire file/s contents. In other words, your file
+upload property should be a varchar/string/text property and not a binary blob.
+
+.. _form-type-text-editor:
+
+Text Editor
+~~~~~~~~~~~
+
+It displays a JavaScript-based WYSIWYG text editor based on the popular
+`Trix editor`_. You don't need to install any external dependencies because
+EasyAdmin includes them dynamically when needed. The result of editing the
+contents is stored as HTML in the given property:
+
+.. code-block:: yaml
+
+    # config/packages/easy_admin.yaml
+    easy_admin:
+        entities:
+            ExamQuestion:
+                class: App\Entity\BlogPost
+                form:
+                    fields:
+                        - { property: 'content', type: 'text_editor' }
+                        # ...
+        # ...
+
+This field does not define any configuration option. It has been designed to
+provide the most commonly needed formatted options. If this doesn't fit your
+needs, you can :doc:`integrate the popular CKEditor text editor with EasyAdmin </integration/ivoryckeditorbundle>`.
+
 .. _edit-new-advanced-form-design:
 
 Advanced Form Design
@@ -611,7 +775,7 @@ additional information. If the field is called ``title`` and belongs to a
 The next step is to define the template fragment used by that field, which
 requires to know the `form fragment naming rules`_ defined by Symfony:
 
-.. code-block:: twig
+.. code-block:: html+twig
 
     {# templates/admin/form.html.twig #}
     {% block _product_custom_title_widget %}
@@ -824,7 +988,7 @@ of the default EasyAdmin templates, create a new template inside
 ``templates/bundles/EasyAdminBundle/default/`` with the same path as the
 template to override. Example:
 
-::
+.. code-block:: text
 
     your-project/
     ├─ ...
@@ -858,10 +1022,8 @@ must use a special syntax inside ``extends`` to avoid an infinite loop:
         {# ... #}
     {% endblock %}
 
-.. _overriding-the-default-templates-by-configuration:
-
-Using your Own Templates to Display the list/search/show Views
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Using your Own Templates to Display the edit/new Views
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Add the ``templates`` option (globally or only to some entities) to define the
 path of the Twig template used to render each part of the interface:
@@ -907,12 +1069,78 @@ and override only the ``content_title`` Twig block:
         {# ... customize the content title ... #}
     {% endblock %}
 
+.. _edit-new-security:
+
+Security and Permissions
+------------------------
+
+The ``permission`` option of each property allows to hide the associated form
+field depending on the current user roles:
+
+.. code-block:: yaml
+
+    # config/packages/easy_admin.yaml
+    easy_admin:
+        entities:
+            Product:
+                edit:
+                    fields:
+                        # all users will see the first three form fields
+                        - name
+                        - price
+                        - stock
+
+                        # only users with this role will see this form field
+                        - { property: 'taxRate', permission: 'ROLE_ADMIN' }
+
+                        # this form field will only be displayed for users with one of these roles
+                        # (or all of them, depending on your Symfony app configuration)
+                        # (see https://symfony.com/doc/current/security/access_control.html#access-enforcement)
+                        - { property: 'comission', permission: ['ROLE_SALES', 'ROLE_ADMIN'] }
+        # ...
+
+You can also restrict which items can users create and/or edit with the
+``item_permission`` option. The role or roles defined in that option are passed
+to the ``is_granted($roles, $item)`` function to decide if the current user can
+create/edit the given item:
+
+.. code-block:: yaml
+
+    # config/packages/easy_admin.yaml
+    easy_admin:
+        edit:
+            # optionally you can define a global permission applied to all entities
+            # each entity can later override this by defining their own item_permission option
+            item_permission: 'ROLE_ADMIN'
+
+        entities:
+            Product:
+                edit:
+                    # set this option to an empty string or array to unset the global permission for this entity
+                    item_permission: ''
+            Employees:
+                edit:
+                    # this completely overrides the global option (both options are not merged)
+                    item_permission: ['ROLE_SUPER_ADMIN', 'ROLE_HUMAN_RESOURCES']
+        # ...
+
+If the user doesn't have permission they will see an appropriate error message
+(and you'll see a detailed error message in the application logs).
+
+.. tip::
+
+    Combine the ``item_permission`` option with custom `Symfony security voters`_
+    to better decide if the current user can see any given item.
+
 .. _`How to Create a Custom Form Field Type`: https://symfony.com/doc/current/cookbook/form/create_custom_field_type.html
 .. _`Symfony Form types`: https://symfony.com/doc/current/reference/forms/types.html
 .. _`PropertyAccess component`: https://symfony.com/doc/current/components/property_access.html
 .. _`customize individual form fields`: https://symfony.com/doc/current/form/form_customization.html#how-to-customize-an-individual-field
 .. _`form fragment naming rules`: https://symfony.com/doc/current/form/form_themes.html#form-template-blocks
 .. _`override any part of third-party bundles`: https://symfony.com/doc/current/bundles/override.html
+.. _`Trix editor`: https://trix-editor.org/
+.. _`Symfony security voters`: https://symfony.com/doc/current/security/voters.html
+.. _`form data transformer`: https://symfony.com/doc/current/form/data_transformers.html
 
 -----
 

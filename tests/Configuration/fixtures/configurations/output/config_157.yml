@@ -1,0 +1,11 @@
+easy_admin:
+    list:
+        batch_actions:
+            delete:
+                label: 'action.delete'
+    entities:
+        Category:
+            list:
+                batch_actions:
+                    delete:
+                        label: 'This label should not be action.delete'

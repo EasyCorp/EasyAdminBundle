@@ -6,39 +6,34 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
 
 class CustomMenuTest extends AbstractTestCase
 {
-    public function setUp()
-    {
-        parent::setUp();
-
-        $this->initClient(['environment' => 'custom_menu']);
-    }
+    protected static $options = ['environment' => 'custom_menu'];
 
     public function testCustomBackendHomepage()
     {
-        $this->client->request('GET', '/admin/');
+        static::$client->request('GET', '/admin/');
 
         $this->assertSame(
             '/admin/?action=list&entity=Category&menuIndex=0&submenuIndex=3',
-            $this->client->getResponse()->headers->get('location')
+            static::$client->getResponse()->headers->get('location')
         );
 
-        $crawler = $this->client->followRedirect();
+        $crawler = static::$client->followRedirect();
 
         $this->assertSame(
             'Products',
-            \trim($crawler->filter('.sidebar-menu li.active.submenu-active a')->text())
+            trim($crawler->filter('.sidebar-menu li.active.submenu-active a')->text())
         );
 
         $this->assertSame(
             'Categories',
-            \trim($crawler->filter('.sidebar-menu .treeview-menu li.active a')->text())
+            trim($crawler->filter('.sidebar-menu .treeview-menu li.active a')->text())
         );
     }
 
     public function testBackendHomepageConfig()
     {
         $this->getBackendHomepage();
-        $backendConfig = $this->client->getContainer()->get('easyadmin.config.manager')->getBackendConfig();
+        $backendConfig = static::$client->getContainer()->get('easyadmin.config.manager')->getBackendConfig();
 
         $this->assertArraySubset([
             'route' => 'easyadmin',
@@ -49,7 +44,7 @@ class CustomMenuTest extends AbstractTestCase
     public function testDefaultMenuItem()
     {
         $this->getBackendHomepage();
-        $backendConfig = $this->client->getContainer()->get('easyadmin.config.manager')->getBackendConfig();
+        $backendConfig = static::$client->getContainer()->get('easyadmin.config.manager')->getBackendConfig();
 
         $this->assertArraySubset([
             'label' => 'Categories',
@@ -78,13 +73,13 @@ class CustomMenuTest extends AbstractTestCase
         $crawler = $this->getBackendHomepage();
 
         $this->assertSame(
-            'fa fa-shopping-basket',
+            'fa fa-fw fa-shopping-basket',
             $crawler->filter('.sidebar-menu li:contains("Products") i')->attr('class'),
             'First level menu item with custom icon'
         );
 
         $this->assertSame(
-            'fa fa-folder-open',
+            'fa fa-fw fa-folder-open',
             $crawler->filter('.sidebar-menu li:contains("Images") i')->attr('class'),
             'First level menu item with default icon'
         );
@@ -96,7 +91,7 @@ class CustomMenuTest extends AbstractTestCase
         );
 
         $this->assertSame(
-            'fa fa-th-list',
+            'fa fa-fw fa-th-list',
             $crawler->filter('.sidebar-menu .treeview-menu li:contains("List Products") i')->attr('class'),
             'Second level menu item with custom icon'
         );
@@ -202,8 +197,7 @@ class CustomMenuTest extends AbstractTestCase
     {
         $crawler = $this->getBackendHomepage();
 
-        $this->assertSame(
-            null,
+        $this->assertNull(
             $crawler->filter('.sidebar-menu li:contains("Categories") a')->attr('rel'),
             'The "rel" attribute is not added by default to menu items.'
         );
@@ -233,7 +227,7 @@ class CustomMenuTest extends AbstractTestCase
         $expectedTypesSubMenu = ['entity', 'entity', 'divider', 'entity', 'link'];
 
         $this->getBackendHomepage();
-        $backendConfig = $this->client->getContainer()->get('easyadmin.config.manager')->getBackendConfig();
+        $backendConfig = static::$client->getContainer()->get('easyadmin.config.manager')->getBackendConfig();
         $menuConfig = $backendConfig['design']['menu'];
 
         foreach ($menuConfig as $i => $itemConfig) {
@@ -265,16 +259,16 @@ class CustomMenuTest extends AbstractTestCase
         // 1. visit the homepage and click on the menu entry with custom parameters
         $crawler = $this->getBackendHomepage();
         $link = $crawler->filter('.sidebar-menu li:contains("Purchases") a')->eq(0)->link();
-        $crawler = $this->client->click($link);
+        $crawler = static::$client->click($link);
 
         // 2. click on the 'Edit' link of the first item
         $link = $crawler->filter('td.actions a:contains("Edit")')->eq(0)->link();
-        $crawler = $this->client->click($link);
+        $crawler = static::$client->click($link);
 
         // 3. the 'referer' parameter should contain the custom query string param
         $refererUrl = $crawler->filter('.form-actions a:contains("Back to listing")')->attr('href');
-        $queryString = \parse_url($refererUrl, PHP_URL_QUERY);
-        \parse_str($queryString, $refererParameters);
+        $queryString = parse_url($refererUrl, PHP_URL_QUERY);
+        parse_str($queryString, $refererParameters);
 
         $this->assertSame('customValue', $refererParameters['customParameter']);
     }

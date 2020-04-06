@@ -277,6 +277,78 @@ This is configurable thanks to the ``icon``, ``label`` and ``title`` options:
                 # the 'title' content is displayed when the cursor is over the icon
                 - { name: 'edit', icon: 'pencil', label: false, title: 'Search' }
 
+Displaying Item Actions in a Dropdown Menu
+------------------------------------------
+
+In complex backends it's common to display lots of fields on each list row. In
+those cases it's recommended to display the actions in a dropdown menu instead
+of the expanded design used by default.
+
+To do so, set the ``collapse_actions`` to ``true`` in the global ``list`` option
+or the local ``list`` option of each entity (the local option overrides the
+global option):
+
+.. code-block:: yaml
+
+    # config/packages/easy_admin.yaml
+    easy_admin:
+        list:
+            # hide actions by default in a dropdown menu...
+            collapse_actions: true
+            # ...
+        entities:
+            Category:
+                list:
+                    # ...except for this entity, where actions are displayed expanded
+                    collapse_actions: false
+                # ...
+
+.. _batch-actions:
+
+Batch Actions
+-------------
+
+Batch actions are the actions which are applied to multiple items at the same
+time. They are only available in the views that display more than one item:
+``list`` and ``search``.
+
+These actions are configured in the ``batch_actions`` option, which can be
+defined globally and/or per entity (entity config overrides the global config).
+The only built-in batch action is ``delete``:
+
+.. code-block:: yaml
+
+    # config/packages/easy_admin.yaml
+    easy_admin:
+        list:
+            # allow deleting multiple items at once ...
+            batch_actions: ['delete']
+            # ...
+        entities:
+            User:
+                # ... except for this 'User' entity
+                batch_actions: ['-delete']
+
+Batch actions are configured the same as regular actions, so you can change
+their label, icon and title as explained in the previous sections. The merging
+of global and local config is also done in the same way and the config of
+``disabled_actions`` is applied to these batch actions too.
+
+By default, the ``delete`` batch action asks for confirmation before deleting
+the selected items. You can change this behavior with the ``ask_confirm`` option
+(which can also be applied to your own :ref:`custom batch actions <custom-batch-actions>`):
+
+.. code-block:: yaml
+
+    # config/packages/easy_admin.yaml
+    easy_admin:
+        list:
+            # this will delete selected items immediately, without asking for confirmation
+            batch_actions: [{ name: 'delete', ask_confirm: false }]
+
+Read how to :ref:`create your own batch actions <custom-batch-actions>` to get
+the most out of this feature.
+
 -----
 
 Next chapter: :doc:`menu-configuration`

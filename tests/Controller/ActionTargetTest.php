@@ -6,12 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
 
 class ActionTargetTest extends AbstractTestCase
 {
-    public function setUp()
-    {
-        parent::setUp();
-
-        $this->initClient(['environment' => 'action_target']);
-    }
+    protected static $options = ['environment' => 'action_target'];
 
     public function testListViewActions()
     {

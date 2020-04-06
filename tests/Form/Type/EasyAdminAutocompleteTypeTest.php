@@ -6,7 +6,6 @@ use AppTestBundle\Entity\UnitTests\Category;
 use Doctrine\Common\Collections\ArrayCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminAutocompleteType;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Util\FormTypeHelper;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 use Symfony\Component\Form\PreloadedExtension;
@@ -23,13 +22,13 @@ class EasyAdminAutocompleteTypeTest extends TypeTestCase
     private $repository;
     private $configManager;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->repository = $this->getMockBuilder('Doctrine\ORM\EntityRepository')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->classMetadata = $this->getMockBuilder('Doctrine\Common\Persistence\Mapping\ClassMetadata')
+        $this->classMetadata = $this->getMockBuilder('Doctrine\Persistence\Mapping\ClassMetadata')
             ->disableOriginalConstructor()
             ->getMock();
         $this->classMetadata
@@ -114,11 +113,11 @@ class EasyAdminAutocompleteTypeTest extends TypeTestCase
 
         $view = $form->createView();
         $children = $view->children;
-        foreach (\array_keys($formData) as $key) {
+        foreach (array_keys($formData) as $key) {
             $this->assertArrayHasKey($key, $children);
         }
 
-        if (\class_exists('Symfony\Component\Form\ChoiceList\View\ChoiceView', false)) {
+        if (class_exists('Symfony\Component\Form\ChoiceList\View\ChoiceView', false)) {
             $choiceView = new \Symfony\Component\Form\ChoiceList\View\ChoiceView($category, 1, '1');
         } else {
             $choiceView = new \Symfony\Component\Form\Extension\Core\View\ChoiceView($category, 1, '1');

@@ -5,7 +5,7 @@
             <!-- generic actions displayed on buttons and links -->
             <trans-unit id="action.new">
                 <source>action.new</source>
-                <target>Nieuw(e) %entity_name%</target>
+                <target>Nieuw(e) %entity_label%</target>
             </trans-unit>
             <trans-unit id="action.show">
                 <source>action.show</source>
@@ -27,6 +27,10 @@
                 <source>action.save</source>
                 <target>Opslaan</target>
             </trans-unit>
+            <trans-unit id="action.continue">
+                <source>action.continue</source>
+                <target>Doorgaan</target>
+            </trans-unit>
             <trans-unit id="action.cancel">
                 <source>action.cancel</source>
                 <target>Annuleren</target>
@@ -34,6 +38,10 @@
             <trans-unit id="action.list">
                 <source>action.list</source>
                 <target>Terug naar overzicht</target>
+            </trans-unit>
+            <trans-unit id="action.deselect">
+                <source>action.deselect</source>
+                <target>Deselecteer</target>
             </trans-unit>
             <trans-unit id="label.form.empty_value">
                 <source>label.form.empty_value</source>

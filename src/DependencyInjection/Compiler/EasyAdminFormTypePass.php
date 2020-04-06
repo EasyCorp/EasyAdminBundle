@@ -17,17 +17,7 @@ class EasyAdminFormTypePass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        $this->configureTypeGuesserChain($container);
         $this->registerTypeConfigurators($container);
-    }
-
-    private function configureTypeGuesserChain(ContainerBuilder $container)
-    {
-        $definition = $container->getDefinition('easyadmin.form.type_guesser_chain');
-        $guesserIds = \array_keys($container->findTaggedServiceIds('form.type_guesser'));
-        $guessers = \array_map(function ($id) { return new Reference($id); }, $guesserIds);
-
-        $definition->replaceArgument(0, $guessers);
     }
 
     private function registerTypeConfigurators(ContainerBuilder $container)
@@ -36,7 +26,7 @@ class EasyAdminFormTypePass implements CompilerPassInterface
         foreach ($container->findTaggedServiceIds('easyadmin.form.type.configurator') as $id => $tags) {
             $configuratorClass = new \ReflectionClass($container->getDefinition($id)->getClass());
             if (!$configuratorClass->implementsInterface(TypeConfiguratorInterface::class)) {
-                throw new \InvalidArgumentException(\sprintf('Service "%s" must implement interface "%s".', $id, TypeConfiguratorInterface::class));
+                throw new \InvalidArgumentException(sprintf('Service "%s" must implement interface "%s".', $id, TypeConfiguratorInterface::class));
             }
 
             if ('easyadmin.form.type.configurator.ivory_ckeditor' === $id && $this->ivoryCkEditorHasDefaultConfiguration($container)) {
@@ -55,7 +45,9 @@ class EasyAdminFormTypePass implements CompilerPassInterface
             }
         }
 
-        $container->getDefinition('easyadmin.form.type')->replaceArgument(1, \iterator_to_array($configurators));
+        $configurators = iterator_to_array($configurators);
+        $container->getDefinition('easyadmin.form.type')->replaceArgument(1, $configurators);
+        $container->getDefinition('easyadmin.form.type.filters')->replaceArgument(1, $configurators);
     }
 
     private function ivoryCkEditorHasDefaultConfiguration(ContainerBuilder $container): bool

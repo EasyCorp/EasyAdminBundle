@@ -1,6 +1,14 @@
 Integrating FOSCKEditorBundle to Create a WYSIWYG Editor
 ========================================================
 
+.. note::
+
+    Starting from 2.2.1 version, EasyAdmin provides a built-in and ready to use
+    text editor based on the `Trix editor`_. It doesn't require installing or
+    configuring anything and it covers the needs of most applications.
+    :ref:`Learn more about the built-in text editor <form-type-text-editor>`
+    and if it doesn't fit your needs, keep reading this article.
+
 EasyAdmin uses a ``<textarea>`` form field to render long text properties:
 
 .. image:: ../images/wysiwyg/default-textarea.png
@@ -33,6 +41,19 @@ thanks to the `FOSCKEditorBundle`_:
 .. code-block:: terminal
 
     $ php bin/console assets:install --symlink
+
+Finally, add the ``ckeditor_widget.html.twig`` form theme to your Twig
+configuration so the ``<textarea>`` elements used by the editor are properly
+designed:
+
+.. code-block:: yaml
+
+    # config/packages/easy_admin.yaml
+    easy_admin:
+        design:
+            form_theme:
+                - '@EasyAdmin/form/bootstrap_4.html.twig'
+                - '@FOSCKEditor/Form/ckeditor_widget.html.twig'
 
 Using the Rich Text Editor
 --------------------------
@@ -174,3 +195,4 @@ page loaded by EasyAdmin:
 .. _`its full list of configuration options`: http://docs.cksource.com/ckeditor_api/symbols/CKEDITOR.config.html
 .. _`CKFinder`: https://cksource.com/ckfinder
 .. _`CKEditor integration docs`: https://docs.ckeditor.com/ckeditor4/docs/#!/guide/dev_ckfinder_integration
+.. _`Trix editor`: https://trix-editor.org/

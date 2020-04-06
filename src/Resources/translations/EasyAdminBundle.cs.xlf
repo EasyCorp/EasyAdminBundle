@@ -5,19 +5,19 @@
             <!-- page titles -->
             <trans-unit id="new.page_title">
                 <source>new.page_title</source>
-                <target>Vytvořit %entity_name%</target>
+                <target>Vytvořit %entity_label%</target>
             </trans-unit>
             <trans-unit id="show.page_title">
                 <source>show.page_title</source>
-                <target>%entity_name% (#%entity_id%)</target>
+                <target>%entity_label% (#%entity_id%)</target>
             </trans-unit>
             <trans-unit id="edit.page_title">
                 <source>edit.page_title</source>
-                <target>Edit %entity_name% (#%entity_id%)</target>
+                <target>Upravit %entity_label% (#%entity_id%)</target>
             </trans-unit>
             <trans-unit id="list.page_title">
                 <source>list.page_title</source>
-                <target>%entity_name%</target>
+                <target>%entity_label%</target>
             </trans-unit>
             <trans-unit id="search.page_title">
                 <source>search.page_title</source>
@@ -95,6 +95,10 @@
                 <source>label.inaccessible.explanation</source>
                 <target>Getter metoda pro toto pole neexistuje nebo není veřejná (public)</target>
             </trans-unit>
+            <trans-unit id="label.form.empty_value">
+                <source>label.form.empty_value</source>
+                <target>Prázdné</target>
+            </trans-unit>
 
             <!-- user -->
             <trans-unit id="user.logged_in_as">
@@ -103,7 +107,7 @@
             </trans-unit>
             <trans-unit id="user.unnamed">
                 <source>user.unnamed</source>
-                <target>Nepojmenovný uživatel</target>
+                <target>Nepojmenovaný uživatel</target>
             </trans-unit>
             <trans-unit id="user.anonymous">
                 <source>user.anonymous</source>
@@ -112,6 +116,10 @@
             <trans-unit id="user.signout">
                 <source>user.signout</source>
                 <target>Odhlásit se</target>
+            </trans-unit>
+            <trans-unit id="user.exit_impersonation">
+                <source>user.exit_impersonation</source>
+                <target>Ukončit impersonaci</target>
             </trans-unit>
 
             <!-- misc. elements -->
@@ -131,10 +139,6 @@
                 <source>action.add_new_item</source>
                 <target>Vložit položku</target>
             </trans-unit>
-            <trans-unit id="action.add_another_item">
-                <source>action.add_another_item</source>
-                <target>Vložit další položku</target>
-            </trans-unit>
             <trans-unit id="action.remove_item">
                 <source>action.remove_item</source>
                 <target>Odstranit položku</target>
@@ -146,6 +150,154 @@
             <trans-unit id="errors">
                 <source>errors</source>
                 <target>Chyba|Chyby</target>
+            </trans-unit>
+            <trans-unit id="form.are_you_sure">
+                <source>form.are_you_sure</source>
+                <target>Neuložili jste změny provedené v tomto formuláři.</target>
+            </trans-unit>
+            <trans-unit id="form.tab.error_badge_title">
+                <source>form.tab.error_badge_title</source>
+                <target><![CDATA[{1} Jeden neplatný vstup|{2,3,4} %count% neplatné vstupy|]5,Inf] %count% neplatných vstupů]]></target>
+            </trans-unit>
+            <trans-unit id="show.remaining_items">
+                <source>show.remaining_items</source>
+                <target><![CDATA[{1} existuje další položka nezobrazená v tomto seznamu|{2,3,4} %count% další položky nejsou zobrazeny v tomto seznamu|]5,Inf] %count% dalších položek není zobrazených v tomto seznamu]]></target>
+            </trans-unit>
+
+            <!-- Exceptions -->
+            <trans-unit id="exception.entity_not_found">
+                <source>exception.entity_not_found</source>
+                <target>Tato položka již není dostupná.</target>
+            </trans-unit>
+            <trans-unit id="exception.entity_remove">
+                <source>exception.entity_remove</source>
+                <target>Tato položka nemůže být smazána, neboť na ní závisí ostatní položky.</target>
+            </trans-unit>
+            <trans-unit id="exception.forbidden_action">
+                <source>exception.forbidden_action</source>
+                <target>Požadovaná akce nemůže být provedena na této položce.</target>
+            </trans-unit>
+            <trans-unit id="exception.no_entities_configured">
+                <source>exception.no_entities_configured</source>
+                <target>Aplikace není korektně nakonfigurovaná.</target>
+            </trans-unit>
+            <trans-unit id="exception.undefined_entity">
+                <source>exception.undefined_entity</source>
+                <target>Aplikace není korektně nakonfigurovaná pro tento typ položek.</target>
+            </trans-unit>
+            <trans-unit id="exception.no_permission">
+                <source>exception.no_permission</source>
+                <target>Nemáte oprávnění k provedení této akce.</target>
+            </trans-unit>
+
+            <!-- Login page -->
+            <trans-unit id="login.username">
+                <source>login.username</source>
+                <target>Login</target>
+            </trans-unit>
+            <trans-unit id="login.password">
+                <source>login.password</source>
+                <target>Heslo</target>
+            </trans-unit>
+            <trans-unit id="login.sign_in">
+                <source>login.sign_in</source>
+                <target>Přihlásit</target>
+            </trans-unit>
+
+            <!-- filters -->
+            <trans-unit id="filter.title">
+                <source>filter.title</source>
+                <target>Filtry</target>
+            </trans-unit>
+            <trans-unit id="filter.button.clear">
+                <source>filter.button.clear</source>
+                <target>Zrušit</target>
+            </trans-unit>
+            <trans-unit id="filter.button.apply">
+                <source>filter.button.apply</source>
+                <target>Aplikovat</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_equal_to">
+                <source>filter.label.is_equal_to</source>
+                <target>rovná se</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_not_equal_to">
+                <source>filter.label.is_not_equal_to</source>
+                <target>nerovná se</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_greater_than">
+                <source>filter.label.is_greater_than</source>
+                <target>je větší než</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_greater_than_or_equal_to">
+                <source>filter.label.is_greater_than_or_equal_to</source>
+                <target>je větší než nebo rovno</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_less_than">
+                <source>filter.label.is_less_than</source>
+                <target>je menší než</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_less_than_or_equal_to">
+                <source>filter.label.is_less_than_or_equal_to</source>
+                <target>je menší než nebo rovno</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_between">
+                <source>filter.label.is_between</source>
+                <target>je mezi</target>
+            </trans-unit>
+            <trans-unit id="filter.label.contains">
+                <source>filter.label.contains</source>
+                <target>obsahuje</target>
+            </trans-unit>
+            <trans-unit id="filter.label.not_contains">
+                <source>filter.label.not_contains</source>
+                <target>neobsahuje</target>
+            </trans-unit>
+            <trans-unit id="filter.label.starts_with">
+                <source>filter.label.starts_with</source>
+                <target>začíná na</target>
+            </trans-unit>
+            <trans-unit id="filter.label.ends_with">
+                <source>filter.label.ends_with</source>
+                <target>končí na</target>
+            </trans-unit>
+            <trans-unit id="filter.label.exactly">
+                <source>filter.label.exactly</source>
+                <target>je přesně</target>
+            </trans-unit>
+            <trans-unit id="filter.label.not_exactly">
+                <source>filter.label.not_exactly</source>
+                <target>není přesně</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_same">
+                <source>filter.label.is_same</source>
+                <target>je stejný</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_not_same">
+                <source>filter.label.is_not_same</source>
+                <target>není stejný</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_after">
+                <source>filter.label.is_after</source>
+                <target>je po</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_after_or_same">
+                <source>filter.label.is_after_or_same</source>
+                <target>je po nebo stejně</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_before">
+                <source>filter.label.is_before</source>
+                <target>je před</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_before_or_same">
+                <source>filter.label.is_before_or_same</source>
+                <target>je před nebo stejně</target>
+            </trans-unit>
+
+            <!-- security -->
+            <trans-unit id="security.list.hidden_results">
+                <source>security.list.hidden_results</source>
+                <target>Některé výsledky nebohly být zobrazeny neboď nemáte patřičná oprávnění</target>
             </trans-unit>
         </body>
     </file>

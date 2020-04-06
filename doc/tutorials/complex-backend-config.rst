@@ -33,10 +33,10 @@ Consider an application which defines the following configuration:
 
 This configuration is going to be divided into four different files:
 
-* ``design.yml`` for design related configuration;
-* ``product.yml`` for the configuration related to ``Product`` entity;
-* ``user.yml`` for the configuration related to ``User`` entity;
-* ``basic.yml`` for the rest of the configuration, including any entity
+* ``design.yaml`` for design related configuration;
+* ``product.yaml`` for the configuration related to ``Product`` entity;
+* ``user.yaml`` for the configuration related to ``User`` entity;
+* ``basic.yaml`` for the rest of the configuration, including any entity
   different from ``Product`` and ``User``.
 
 First, create a new ``config/packages/easy_admin/`` directory to store the new
@@ -45,23 +45,23 @@ create the four files with these contents:
 
 .. code-block:: yaml
 
-    # config/packages/easy_admin/basic.yml
+    # config/packages/easy_admin/basic.yaml
     easy_admin:
         site_name: '...'
         # ...
 
-    # config/packages/easy_admin/design.yml
+    # config/packages/easy_admin/design.yaml
     easy_admin:
         design:
             # ...
 
-    # config/packages/easy_admin/product.yml
+    # config/packages/easy_admin/product.yaml
     easy_admin:
         entities:
             Product:
                 # ...
 
-    # config/packages/easy_admin/user.yml
+    # config/packages/easy_admin/user.yaml
     easy_admin:
         entities:
             User:

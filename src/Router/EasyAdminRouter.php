@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Router;
 
-use Doctrine\Common\Persistence\Proxy;
+use Doctrine\Persistence\Proxy;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\UndefinedEntityException;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -14,13 +14,9 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 final class EasyAdminRouter
 {
-    /** @var ConfigManager */
     private $configManager;
-    /** @var UrlGeneratorInterface */
     private $urlGenerator;
-    /** @var PropertyAccessorInterface */
     private $propertyAccessor;
-    /** @var RequestStack|null */
     private $requestStack;
 
     public function __construct(ConfigManager $configManager, UrlGeneratorInterface $urlGenerator, PropertyAccessorInterface $propertyAccessor, RequestStack $requestStack = null)
@@ -48,7 +44,7 @@ final class EasyAdminRouter
             // casting to string is needed because entities can use objects as primary keys
             $parameters['id'] = (string) $this->propertyAccessor->getValue($entity, 'id');
         } else {
-            $config = \class_exists($entity)
+            $config = class_exists($entity)
                 ? $this->getEntityConfigByClass($entity)
                 : $this->configManager->getEntityConfig($entity);
         }
@@ -70,7 +66,7 @@ final class EasyAdminRouter
             && !\is_string($referer)
             && (true === $referer || \in_array($action, ['new', 'edit', 'delete'], true))
         ) {
-            $parameters['referer'] = \urlencode($request->getUri());
+            $parameters['referer'] = urlencode($request->getUri());
         }
 
         return $this->urlGenerator->generate('easyadmin', $parameters);
@@ -99,10 +95,10 @@ final class EasyAdminRouter
      */
     private function getRealClass($class)
     {
-        if (false === $pos = \strrpos($class, '\\'.Proxy::MARKER.'\\')) {
+        if (false === $pos = strrpos($class, '\\'.Proxy::MARKER.'\\')) {
             return $class;
         }
 
-        return \substr($class, $pos + Proxy::MARKER_LENGTH + 2);
+        return substr($class, $pos + Proxy::MARKER_LENGTH + 2);
     }
 }

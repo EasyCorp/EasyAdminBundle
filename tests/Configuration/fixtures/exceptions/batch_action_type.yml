@@ -1,0 +1,15 @@
+# TEST
+# the type of batch actions is always 'method' ('route' is not allowed)
+
+# EXCEPTION
+expected_exception:
+    class: \InvalidArgumentException
+    message_string: 'Batch actions only support "method" type, "route" given.'
+
+# CONFIGURATION
+easy_admin:
+    list:
+        batch_actions:
+            - { name: 'delete', type: 'route' }
+    entities:
+        TestEntity: AppTestBundle\Entity\UnitTests\Category

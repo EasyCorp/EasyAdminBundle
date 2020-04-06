@@ -1,0 +1,15 @@
+# TEST
+# the "ask_confirm" option of batch actions can only be null or a boolean value
+
+# EXCEPTION
+expected_exception:
+    class: InvalidArgumentException
+    message_string: 'The value of the "ask_confirm" option in the "delete" batch action of the "TestEntity" entity can only be null or a boolean, "string" given.'
+
+# CONFIGURATION
+easy_admin:
+    list:
+        batch_actions:
+            - { name: 'delete', ask_confirm: 'true' }
+    entities:
+        TestEntity: AppTestBundle\Entity\UnitTests\Category

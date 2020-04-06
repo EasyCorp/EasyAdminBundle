@@ -6,21 +6,16 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
 
 class OverrideTemplatesTest extends AbstractTestCase
 {
-    public function setUp()
-    {
-        parent::setUp();
-
-        $this->initClient(['environment' => 'override_templates']);
-    }
+    protected static $options = ['environment' => 'override_templates'];
 
     public function testConfigurationOfOverriddenTemplates()
     {
-        $backendConfig = $this->client->getContainer()->get('easyadmin.config.manager')->getBackendConfig();
+        $backendConfig = static::$client->getContainer()->get('easyadmin.config.manager')->getBackendConfig();
 
         $this->assertSame('@EasyAdmin/default/new.html.twig', $backendConfig['design']['templates']['new']);
         $this->assertSame('override_templates/show.html.twig', $backendConfig['design']['templates']['show']);
 
-        $entityConfig = $this->client->getContainer()->get('easyadmin.config.manager')->getEntityConfig('Category');
+        $entityConfig = static::$client->getContainer()->get('easyadmin.config.manager')->getEntityConfig('Category');
 
         $this->assertSame('@EasyAdmin/default/new.html.twig', $entityConfig['templates']['new']);
         $this->assertSame('override_templates/show.html.twig', $entityConfig['templates']['show']);
@@ -33,7 +28,7 @@ class OverrideTemplatesTest extends AbstractTestCase
 
         $this->assertContains(
             'Simple template used to override the default show.html.twig template.',
-            $this->client->getResponse()->getContent()
+            static::$client->getResponse()->getContent()
         );
     }
 
@@ -43,7 +38,7 @@ class OverrideTemplatesTest extends AbstractTestCase
 
         $this->assertContains(
             'Simple template used to override the default list.html.twig template.',
-            $this->client->getResponse()->getContent()
+            static::$client->getResponse()->getContent()
         );
     }
 
@@ -53,7 +48,7 @@ class OverrideTemplatesTest extends AbstractTestCase
 
         $this->assertContains(
             'Overridden using Symfony\'s template overriding mechanism',
-            $this->client->getResponse()->getContent()
+            static::$client->getResponse()->getContent()
         );
     }
 }

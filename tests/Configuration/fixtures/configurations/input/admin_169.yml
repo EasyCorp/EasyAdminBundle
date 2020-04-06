@@ -1,0 +1,14 @@
+# TEST
+# when the user defines a batch action with the same name of a default action, they
+# are actually overriding the default options of that action. Therefore, if the
+# custom configuration doesn't provide a value for some option (e.g. the icon or
+# the label) the default value should be applied to avoid template issues
+# this test checks that the above is correct when using entity actions
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
+            list:
+                batch_actions: ['delete']

@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\EventListener;
 
-use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\Persistence\ManagerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\EntityNotFoundException;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -15,17 +15,10 @@ use Symfony\Component\HttpFoundation\RequestStack;
  */
 class RequestPostInitializeListener
 {
-    /** @var RequestStack|null */
+    private $doctrine;
     private $requestStack;
 
-    /** @var Registry */
-    private $doctrine;
-
-    /**
-     * @param Registry          $doctrine
-     * @param RequestStack|null $requestStack
-     */
-    public function __construct(Registry $doctrine, RequestStack $requestStack = null)
+    public function __construct(ManagerRegistry $doctrine, RequestStack $requestStack = null)
     {
         $this->doctrine = $doctrine;
         $this->requestStack = $requestStack;
@@ -51,7 +44,7 @@ class RequestPostInitializeListener
         $request->attributes->set('easyadmin', [
             'entity' => $entity = $event->getArgument('entity'),
             'view' => $request->query->get('action', 'list'),
-            'item' => ($id = $request->query->get('id')) ? $this->findCurrentItem($entity, $id) : null,
+            'item' => (null !== $id = $request->query->get('id')) ? $this->findCurrentItem($entity, $id) : null,
         ]);
     }
 
@@ -69,7 +62,7 @@ class RequestPostInitializeListener
     private function findCurrentItem(array $entityConfig, $itemId)
     {
         if (null === $manager = $this->doctrine->getManagerForClass($entityConfig['class'])) {
-            throw new \RuntimeException(\sprintf('There is no Doctrine Entity Manager defined for the "%s" class', $entityConfig['class']));
+            throw new \RuntimeException(sprintf('There is no Doctrine Entity Manager defined for the "%s" class', $entityConfig['class']));
         }
 
         if (null === $entity = $manager->getRepository($entityConfig['class'])->find($itemId)) {

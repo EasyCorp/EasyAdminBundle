@@ -5,19 +5,19 @@
             <!-- page titles -->
             <trans-unit id="new.page_title">
                 <source>new.page_title</source>
-                <target>Új %entity_name% létrehozása</target>
+                <target>Új %entity_label% létrehozása</target>
             </trans-unit>
             <trans-unit id="show.page_title">
                 <source>show.page_title</source>
-                <target>%entity_name% megtekintése - (#%entity_id%)</target>
+                <target>%entity_label% megtekintése - (#%entity_id%)</target>
             </trans-unit>
             <trans-unit id="edit.page_title">
                 <source>edit.page_title</source>
-                <target>%entity_name% szerkesztése - (#%entity_id%)</target>
+                <target>%entity_label% szerkesztése - (#%entity_id%)</target>
             </trans-unit>
             <trans-unit id="list.page_title">
                 <source>list.page_title</source>
-                <target>%entity_name%</target>
+                <target>%entity_label%</target>
             </trans-unit>
             <trans-unit id="search.page_title">
                 <source>search.page_title</source>
@@ -91,6 +91,10 @@
                 <source>label.inaccessible.explanation</source>
                 <target>A getter metódus nem létezik ehhez a mezőhöz vagy a tulajdonság nem publikus.</target>
             </trans-unit>
+            <trans-unit id="label.form.empty_value">
+                <source>label.form.empty_value</source>
+                <target>Nincs</target>
+            </trans-unit>
 
             <!-- user -->
             <trans-unit id="user.logged_in_as">
@@ -126,10 +130,6 @@
             <trans-unit id="action.add_new_item">
                 <source>action.add_new_item</source>
                 <target>Új elem létrehozása</target>
-            </trans-unit>
-            <trans-unit id="action.add_another_item">
-                <source>action.add_another_item</source>
-                <target>Újabb elem hozzáadása</target>
             </trans-unit>
             <trans-unit id="action.remove_item">
                 <source>action.remove_item</source>
@@ -173,7 +173,20 @@
                 <source>exception.undefined_entity</source>
                 <target>Az alkalmazás konfigurációja nem megfelelő az ilyen típusú elemekhez.</target>
             </trans-unit>
+
+            <!-- Login page -->
+            <trans-unit id="login.username">
+                <source>login.username</source>
+                <target>Username</target>
+            </trans-unit>
+            <trans-unit id="login.password">
+                <source>login.password</source>
+                <target>Password</target>
+            </trans-unit>
+            <trans-unit id="login.sign_in">
+                <source>login.sign_in</source>
+                <target>Sign in</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
-

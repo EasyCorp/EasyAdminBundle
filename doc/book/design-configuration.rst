@@ -42,6 +42,13 @@ backend interface:
             # if the color includes a '%', you must double it to escape it in the YAML file
             brand_color: 'hsl(0, 100%%, 50%%);'
 
+.. seealso::
+
+    This option is useful when the only design change you want to make is to
+    update the main color of the interface. However, if you start changing more
+    design elements, it's better to unset this option and use CSS variables as
+    explained :ref:`in this section <customizing-the-backend-design>`.
+
 Adding Custom Web Assets
 ------------------------
 
@@ -149,25 +156,17 @@ locale of the application is ``ar`` (Arabic), ``fa`` (Persian) or ``he``
 Loading the Entire Bootstrap Framework
 --------------------------------------
 
-In order to improve performance, the backend doesn't load the entire CSS and
-JavaScript code from Bootstrap but only the parts that uses it. If you create
-custom backends, you may need to load the missing Bootstrap parts.
+In EasyAdmin versions prior to 2.2.2, the backend didn't load the entire CSS and
+JavaScript code from Bootstrap but only the parts that used it. This was made to
+improve performance and required loading some separate files called
+``bootstrap-all.css`` and ``bootstrap-all.js`` when you needed to use some
+Bootstrap feature not included by default.
 
-Instead of downloading and including the entire Bootstrap yourself, you can use
-the ``bootstrap-all.css`` and ``bootstrap-all.js`` files provided by EasyAdmin
-which contains all the Bootstrap parts not included by default by the backend:
+Given that the performance gain was minimal, this idea was abandoned and,
+starting from EasyAdmin 2.2.2 the entire Boostrap CSS and JavaScript code is
+loaded by default in all pages.
 
-.. code-block:: yaml
-
-    easy_admin:
-        # ...
-        design:
-            assets:
-                css:
-                    # ...
-                    - 'bundles/easyadmin/bootstrap-all.css'
-                js:
-                    - 'bundles/easyadmin/bootstrap-all.js'
+.. _customizing-the-backend-design:
 
 Customizing the Backend Design
 ------------------------------
@@ -245,7 +244,6 @@ section to learn more about it.
 
 .. _`AdminLTE template`: https://github.com/almasaeed2010/AdminLTE
 .. _`Bootstrap 4`: https://github.com/twbs/bootstrap
-.. _`Sass`: https://sass-lang.com/
 .. _`jQuery`: https://github.com/jquery/jquery
 .. _`Font Awesome icons`: https://github.com/FortAwesome/Font-Awesome
 .. _`Webpack`: https://webpack.js.org/

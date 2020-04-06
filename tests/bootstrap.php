@@ -10,7 +10,7 @@ use Symfony\Component\Console\Output\ConsoleOutput as ConsoleOutput;
  * (c) Alexandre Rock Ancelet <alex@orbitale.io>
  */
 $file = __DIR__.'/../vendor/autoload.php';
-if (!\file_exists($file)) {
+if (!file_exists($file)) {
     throw new RuntimeException('Install dependencies using Composer to run the test suite.');
 }
 $autoload = require $file;
@@ -18,19 +18,19 @@ $autoload = require $file;
 AnnotationRegistry::registerLoader(function ($class) use ($autoload) {
     $autoload->loadClass($class);
 
-    return \class_exists($class, false);
+    return class_exists($class, false);
 });
 
 // Test Setup: remove all the contents in the build/ directory
 // (PHP doesn't allow to delete directories unless they are empty)
-if (\is_dir($buildDir = __DIR__.'/../build')) {
+if (is_dir($buildDir = __DIR__.'/../build')) {
     $files = new RecursiveIteratorIterator(
         new RecursiveDirectoryIterator($buildDir, RecursiveDirectoryIterator::SKIP_DOTS),
         RecursiveIteratorIterator::CHILD_FIRST
     );
 
     foreach ($files as $fileinfo) {
-        $fileinfo->isDir() ? \rmdir($fileinfo->getRealPath()) : \unlink($fileinfo->getRealPath());
+        $fileinfo->isDir() ? rmdir($fileinfo->getRealPath()) : unlink($fileinfo->getRealPath());
     }
 }
 
@@ -52,6 +52,6 @@ $input = new ArrayInput(['command' => 'doctrine:fixtures:load', '--no-interactio
 $application->run($input, new ConsoleOutput());
 
 // Make a copy of the original SQLite database to use the same unmodified database in every test
-\copy($buildDir.'/test.db', $buildDir.'/original_test.db');
+copy($buildDir.'/test.db', $buildDir.'/original_test.db');
 
 unset($input, $application);

@@ -1,0 +1,51 @@
+rules:
+    no_inheritdoc: ~
+    avoid_repetetive_words: ~
+    blank_line_after_directive: ~
+    short_array_syntax: ~
+    no_app_console: ~
+    typo: ~
+    replacement: ~
+    composer_dev_option_not_at_the_end: ~
+    yarn_dev_option_at_the_end: ~
+    versionadded_directive_should_have_version: ~
+    deprecated_directive_should_have_version: ~
+    no_composer_req: ~
+    no_php_open_tag_in_code_block_php_directive: ~
+    no_blank_line_after_filepath_in_php_code_block: ~
+    no_blank_line_after_filepath_in_yaml_code_block: ~
+    no_blank_line_after_filepath_in_xml_code_block: ~
+    no_blank_line_after_filepath_in_twig_code_block: ~
+    php_prefix_before_bin_console: ~
+    use_deprecated_directive_instead_of_versionadded: ~
+    no_space_before_self_xml_closing_tag: ~
+    ensure_order_of_code_blocks_in_configuration_block: ~
+    american_english: ~
+    valid_use_statements: ~
+    lowercase_as_in_use_statements: ~
+    ordered_use_statements: ~
+    no_namespace_after_use_statements: ~
+    # correct_code_block_directive_based_on_the_content: ~
+    max_blank_lines:
+        max: 2
+    replace_code_block_types: ~
+    use_https_xsd_urls: ~
+    blank_line_before_directive: ~
+    extension_xlf_instead_of_xliff: ~
+    valid_inline_highlighted_namespaces: ~
+    indention: ~
+    unused_links: ~
+    yaml_instead_of_yml_suffix: ~
+    no_app_bundle: ~
+
+    versionadded_directive_major_version:
+        major_version: 2
+
+    versionadded_directive_min_version:
+        min_version: '2.0'
+
+    deprecated_directive_major_version:
+        major_version: 2
+
+    deprecated_directive_min_version:
+        min_version: '2.0'

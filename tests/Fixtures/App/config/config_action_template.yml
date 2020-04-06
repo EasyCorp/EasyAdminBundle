@@ -1,0 +1,17 @@
+imports:
+    - { resource: config.yml }
+
+easy_admin:
+    entities:
+        Category:
+            class: AppTestBundle\Entity\FunctionalTests\Category
+            list:
+                sort: ['id', DESC]
+                actions:
+                    - { name: 'show_parent', template: 'custom_templates/custom_action.html.twig', label: 'Parent' }
+            show:
+                actions:
+                    - { name: 'show_parent', template: 'custom_templates/custom_action.html.twig', label: 'Show Parent' }
+            edit:
+                actions:
+                    - { name: 'show_parent', template: 'custom_templates/custom_action.html.twig', label: 'Go to Parent' }

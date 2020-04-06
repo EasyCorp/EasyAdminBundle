@@ -53,10 +53,10 @@ Now you can define the ``restockAction()`` method in your own controller:
     // src/Controller/AdminController.php
     namespace App\Controller;
 
-    use EasyCorp\Bundle\EasyAdminBundle\Controller\AdminController as BaseAdminController;
+    use EasyCorp\Bundle\EasyAdminBundle\Controller\EasyAdminController;
     // ...
 
-    class AdminController extends BaseAdminController
+    class AdminController extends EasyAdminController
     {
         // ...
 
@@ -69,22 +69,22 @@ Now you can define the ``restockAction()`` method in your own controller:
 
             // change the properties of the given entity and save the changes
             $id = $this->request->query->get('id');
-            $entity = $this->em->getRepository('Product::class')->find($id);
+            $entity = $this->em->getRepository(Product::class)->find($id);
             $entity->setStock(100 + $entity->getStock());
             $this->em->flush();
 
             // redirect to the 'list' view of the given entity ...
-            return $this->redirectToRoute('easyadmin', array(
+            return $this->redirectToRoute('easyadmin', [
                 'action' => 'list',
                 'entity' => $this->request->query->get('entity'),
-            ));
+            ]);
 
             // ... or redirect to the 'edit' view of the given entity item
-            return $this->redirectToRoute('easyadmin', array(
+            return $this->redirectToRoute('easyadmin', [
                 'action' => 'edit',
                 'id' => $id,
                 'entity' => $this->request->query->get('entity'),
-            ));
+            ]);
         }
     }
 
@@ -169,7 +169,7 @@ would look as follows:
         {
             // change the properties of the given entity and save the changes
             $em = $this->getDoctrine()->getManager();
-            $repository = $this->getDoctrine()->getRepository('Product::class');
+            $repository = $this->getDoctrine()->getRepository(Product::class);
 
             $id = $request->query->get('id');
             $entity = $repository->find($id);
@@ -177,20 +177,109 @@ would look as follows:
             $em->flush();
 
             // redirect to the 'list' view of the given entity ...
-            return $this->redirectToRoute('easyadmin', array(
+            return $this->redirectToRoute('easyadmin', [
                 'action' => 'list',
-                'entity' => $this->request->query->get('entity'),
-            ));
+                'entity' => $request->query->get('entity'),
+            ]);
 
             // ... or redirect to the 'edit' view of the given entity item
-            return $this->redirectToRoute('easyadmin', array(
+            return $this->redirectToRoute('easyadmin', [
                 'action' => 'edit',
                 'id' => $id,
-                'entity' => $this->request->query->get('entity'),
-            ));
+                'entity' => $request->query->get('entity'),
+            ]);
         }
     }
 
 Similarly to method based actions, you can configure any option for these
 actions (icons, labels, etc.) and you can also leverage the action inheritance
 mechanism.
+
+Custom Templates for Actions
+----------------------------
+
+The link to the action is rendered using a default template
+(``@EasyAdmin/default/action.html.twig``) which displays the icon and label of
+the action according to its configuration.
+
+If you prefer to use your own template to render that link, define the
+``template`` option in the action configuration:
+
+.. code-block:: yaml
+
+    # config/packages/easy_admin.yaml
+    easy_admin:
+        entities:
+            Product:
+                show:
+                    actions:
+                        - { name: 'restock', template: 'admin/restock_action.html.twig' }
+            # ...
+
+This option is not only useful to customize the action link, but to display it
+or hide it depending on some conditions. For example, if you only want to
+display the ``Restock`` action when the stock of the item is less than ``10``,
+create this template for the action:
+
+.. code-block:: twig
+
+    {# templates/admin/restock_action.html.twig #}
+
+    {# if the stock is low, include the default action template to render the
+       action link. Otherwise, don't include the template so the link is not displayed #}
+    {% if item.stock < 10 %}
+        {{ include('@EasyAdmin/default/action.html.twig') }}
+    {% endif %}
+
+.. _custom-batch-actions:
+
+Batch Actions
+-------------
+
+Batch actions are the actions which are applied to multiple items at the same
+time. They are only available in the views that display more than one item:
+``list`` and ``search``. The only built-in batch action is ``delete``, but you
+can create your own batch actions.
+
+Imagine that you manage users with a ``User`` entity and a common administration
+task is to approve their sign ups. Instead of creating a normal ``approve``
+action as explained in the previous section, create a batch action to be more
+productive and approve multiple users at once.
+
+The first step is to :ref:`create a custom AdminController <overriding-the-default-controller>`.
+Then, create a new method to handle the batch action. The method name must
+follow the pattern ``action_name`` + ``BatchAction()`` and they receive an array
+argument with the IDs of the entities the action should be applied to. In this
+example, create an ``approveBatchAction()`` method:
+
+.. code-block:: php
+
+    // src/Controller/AdminController.php
+    namespace App\Controller;
+
+    use EasyCorp\Bundle\EasyAdminBundle\Controller\EasyAdminController;
+    // ...
+
+    class AdminController extends EasyAdminController
+    {
+        // ...
+
+        public function approveBatchAction(array $ids)
+        {
+            $class = $this->entity['class'];
+            $em = $this->getDoctrine()->getManagerForClass($class);
+
+            foreach ($ids as $id) {
+                $user = $em->find($id);
+                $user->approve();
+            }
+
+            $this->em->flush();
+
+            // don't return anything or redirect to any URL because it will be ignored
+            // when a batch action finishes, user is redirected to the original page
+        }
+    }
+
+Now that the action logic is ready, :ref:`configure the batch action <batch-actions>`
+to add it to the backend and define its icon, label, etc.

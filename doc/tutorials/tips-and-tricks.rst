@@ -23,7 +23,7 @@ In addition to ``apc``, Doctrine metadata cache supports ``memcache``,
 ``memcached``, ``xcache`` and ``service`` (for using a custom cache service).
 Read the documentation about `Doctrine caching drivers`_.
 
-Note that the previous example configures metadata caching in ``config_prod.yml``
+Note that the previous example configures metadata caching in ``config_prod.yaml``
 file, which is the configuration used for the production environment. It's not
 recommended to enable this cache in the development environment to avoid having
 to clear APC cache or restart the web server whenever you make any change to
@@ -63,26 +63,9 @@ EasyAdmin uses the same locale as the underlying Symfony application, so the
 backend would be displayed in French too. How could you define a different
 language for the backend?
 
-You just need to get the ``translator`` service and execute the ``setLocale()``
-method befor executing the code of EasyAdmin. The easiest way to do that is to
-create a custom admin controller and override the ``initialize()`` method
-(as explained in :doc:`../book/complex-dynamic-backends`):
-
-.. code-block:: php
-
-    // src/Controller/AdminController.php
-    namespace App\Controller;
-
-    use EasyCorp\Bundle\EasyAdminBundle\Controller\AdminController as BaseAdminController;
-
-    class AdminController extends BaseAdminController
-    {
-        protected function initialize(Request $request)
-        {
-            $this->get('translator')->setLocale('en');
-            parent::initialize($request);
-        }
-    }
+You must create an event listener or subscriber that sets the request locale
+before the translation service retrieves it, as explained in the following
+Symfony Docs article: `How to Work with the User's Locale`_.
 
 Don't Apply Global Doctrine Filters in the Backend
 --------------------------------------------------
@@ -129,40 +112,34 @@ Defining Dynamic Actions per Item
 ---------------------------------
 
 By default, in the ``list`` view all items display the same actions. If you need
-to show/hide actions dynamically per item, you can do that in a custom template.
+to show/hide actions dynamically per item, you can do that in a custom template
+configured in the ``template`` option of the action.
+
 Consider a backend that displays the ``Delete`` action only for items that haven't
-been published yet (their ``status`` property is ``PUBLISHED``):
+been published yet (their ``status`` property is not ``PUBLISHED``):
+
+.. code-block:: yaml
+
+    # config/packages/easy_admin.yaml
+    easy_admin:
+        # ...
+        entities:
+            Product:
+                list:
+                    actions:
+                        - { name: 'delete', template: 'admin/product/action_delete.html.twig' }
+
+You can give any name to this action template and store it anywhere in your
+application. Then, add the needed code to display actions dynamically according
+to your needs:
 
 .. code-block:: twig
 
-    {# templates/bundles/EasyAdminBundle/default/list.html.twig #}
-    {% extends '@!EasyAdmin/default/list.html.twig' %}
-
-    {% block item_actions %}
-        {% set filtered_actions = {} %}
-        {% for action_name, action_config in _list_item_actions %}
-            {% if action_name == 'delete' and item.status|default(false) == 'PUBLISHED' %}
-                {# remove the 'delete' action from published items #}
-            {% else %}
-                {% set filtered_actions = filtered_actions|merge([action_config]) %}
-            {% endif %}
-        {% endfor %}
-
-        {% set _list_item_actions = filtered_actions %}
-
-        {{ parent() }}
-    {% endblock item_actions %}
-
-The solution work as follows:
-
-1. The backend defines a new ``list.html.twig`` template to override the
-   ``item_actions`` block, which is the one that displays the actions for each item.
-2. The default template defines the ``_list_item_actions`` variable to store the
-   actions to display for any given item. The custom template just needs to filter
-   these actions according to some rules.
-3. Finally, override the original ``_list_item_actions`` variable with the filtered
-   list of actions and execute the original code for this Twig block in the
-   parent template (``{{ parent() }}``).
+    {# templates/admin/product/action_delete.html.twig #}
+    {% if item.status != 'PUBLISHED' %}
+        {{ include('@EasyAdmin/default/action.html.twig') }}
+    {% endif %}
 
 .. _`Doctrine caching drivers`: https://symfony.com/doc/current/reference/configuration/doctrine.html#caching-drivers
+.. _`How to Work with the User's Locale`: https://symfony.com/doc/current/translation/locale.html
 .. _`Doctrine filters`: https://www.doctrine-project.org/projects/doctrine-orm/en/current/reference/filters.html

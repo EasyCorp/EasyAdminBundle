@@ -7,12 +7,19 @@ config key:
 
 * `site_name`_
 * `formats`_
+* `translation_domain`_
 
 * `date`_
 * `time`_
 * `datetime`_
 * `number`_
 * `disabled_actions`_
+* `user`_
+
+  * `avatar_property_path`_
+  * `display_avatar`_
+  * `display_name`_
+  * `name_property_path`_
 * `design`_
 
   * `brand_color`_
@@ -26,6 +33,8 @@ config key:
 
   * :ref:`title <reference-list-title>`
   * :ref:`actions <reference-list-actions>`
+  * :ref:`batch_actions <reference-list-batch-actions>`
+  * :ref:`collapse_actions <reference-list-collapse-actions>`
   * :ref:`max_results <reference-list-max-results>`
 * `edit`_
 * `new`_
@@ -128,6 +137,43 @@ in http://php.net/sprintf. Example:
             number: '%0.2f'
         # ...
 
+translation_domain
+------------------
+
+(**default value**: ``'messages'``, **type**: string)
+
+By default, all the interface elements are translated using the ``messages``
+translation domain (which is also the default Symfony behavior). If you use a
+another `Symfony translation domain`_, set its name using this option:
+
+.. code-block:: yaml
+
+    easy_admin:
+        # The backend will now use the translations defined under the 'admin' domain
+        # (e.g. <your-project>/translations/admin.en.xlf)
+        translation_domain: 'admin'
+        # ...
+
+This option can also be set per entity, which overrides the value of the global
+option:
+
+.. code-block:: yaml
+
+    easy_admin:
+        # all entities will use 'admin' as the domain ...
+        translation_domain: 'admin'
+        entities:
+            Product:
+                # ... except this entity, which uses a different domain
+                translation_domain: 'marketing_product'
+        # ...
+
+The drawback of defining custom translation domains per entity is that some
+elements (such as the main menu) will be untranslated unless you duplicate the
+translations in all the different domains used by the backend. That's why you
+are strongly encouraged to either keep using the default ``messages`` domain or
+define just one custom domain for the entire backend.
+
 disabled_actions
 ----------------
 
@@ -143,6 +189,48 @@ and then re-enable some of them for some entities. Example:
         disabled_actions: ['new', 'edit']
         # ...
 
+user
+----
+
+avatar_property_path
+~~~~~~~~~~~~~~~~~~~~
+
+(**default value**: ``null``, **type**: ``string`` | ``null``)
+
+The value of this option is any valid `PropertyAccess component`_ expression.
+It is applied to the ``app.user`` object of the Twig template to get the value
+of the user avatar. This value is used in the ``src`` attribute of the ``<img>``
+element used to display the avatar.
+
+display_avatar
+~~~~~~~~~~~~~~
+
+(**default value**: ``true``, **type**: bool)
+
+If ``true``, the avatar of the logged in user is displayed on all pages. Set it
+to ``false`` to hide it. By default, the avatar is a generic user icon. Use the
+``avatar_property_path`` to change this.
+
+display_name
+~~~~~~~~~~~~
+
+(**default value**: ``true``, **type**: bool)
+
+If ``true``, the name of the logged in user is displayed on all pages. Set it
+to ``false`` to hide it. By default, the user name is the string conversion of
+the user object returned by ``app.user`` in the Twig template. Use the
+``name_property_path`` to change this.
+
+name_property_path
+~~~~~~~~~~~~~~~~~~
+
+(**default value**: ``__toString``, **type**: ``string`` | ``null``)
+
+The value of this option is any valid `PropertyAccess component`_ expression.
+It is applied to the ``app.user`` object of the Twig template to get the value
+of the user name. The special ``__toString`` value is used to perform a string
+conversion of the user object.
+
 design
 ------
 
@@ -152,7 +240,7 @@ visual design of the backend.
 brand_color
 ~~~~~~~~~~~
 
-(**default value**: ``'#E67E22'``, **type**: string, **values**: any valid CSS
+(**default value**: ``'hsl(230, 55%, 60%)'``, **type**: string, **values**: any valid CSS
 expression to define a color)
 
 This is the color used to highlight important elements of the backend, such as
@@ -168,24 +256,34 @@ to create a backend that matches your branding perfectly. Example:
             # brand_color: 'rgba(59, 89, 152, 0.5)'
         # ...
 
+.. seealso::
+
+    This option is useful when the only design change you want to make is to
+    update the main color of the interface. However, if you start changing more
+    design elements, it's better to unset this option and use CSS variables as
+    explained :ref:`in this section <customizing-the-backend-design>`.
+
 form_theme
 ~~~~~~~~~~
 
 (**default value**: ``'@EasyAdmin/form/bootstrap_4.html.twig'``, **type**: string or array of strings,
 **values**: any valid form theme template path)
 
-The form theme used to render the form fields in the ``edit`` and ``new`` views.
-By default forms use the design created by EasyAdmin, buy you can use your own
-form themes and the default Symfony form theme for Bootstrap 4 too:
+The ``edit`` and ``new`` forms use a custom form theme that matches the backend
+design. EasyAdmin also uses a Symfony feature to `disable the global form themes`_
+in those forms so they don't mess with the rest of your application form themes.
+
+You can add your own themes to the backend forms and you can even replace the
+custom theme entirely:
 
 .. code-block:: yaml
 
     easy_admin:
         design:
-            # using your own custom form theme
+            # using only your own custom form theme (disables the default theme)
             form_theme: '@App/custom_form_theme.html.twig'
 
-            # using multiple custom form themes
+            # using only multiple custom form themes (disables the default theme)
             form_theme: ['@App/custom_form_theme.html.twig', '@Acme/form/global_theme.html.twig']
 
             # using EasyAdmin theme and your own custom theme
@@ -398,6 +496,46 @@ To remove an action, add it to this list prepending its name with a dash (``-``)
         list:
             actions: ['-new', '-show', 'myAction', 'myOtherAction']
 
+.. _reference-list-batch-actions:
+
+batch_actions
+~~~~~~~~~~~~~
+
+(**default value**: empty array, **type**: array)
+
+Defines the "batch actions" available in the ``list`` view, which are those
+actions applied to multiple items at the same time. The only built-in batch
+action is ``delete``, but you can create your own
+:ref:`custom batch actions <custom-batch-actions>`.
+
+This option can be defined globally and/or per entity (entity config overrides
+the global config). To remove an action, add it to this list prefixing its name
+with a dash (``-``):
+
+.. code-block:: yaml
+
+    easy_admin:
+        list:
+            batch_actions: ['delete', 'myAction']
+        # ...
+        entities:
+            Product:
+                # ...
+                list:
+                    batch_actions: ['-delete', 'myOtherAction']
+
+.. _reference-list-collapse-actions:
+
+collapse_actions
+~~~~~~~~~~~~~~~~
+
+(**default value**: ``false``, **type**: boolean)
+
+If set to ``true``, the actions of each listing item are displayed inside a
+dropdown menu that is revealed when moving the mouse over it. It's useful for
+complex backends that display lots of information on each list row and don't
+have enough space to display the actions expanded.
+
 .. _reference-list-max-results:
 
 max_results
@@ -468,3 +606,7 @@ entities
 (**default value**: empty array, **type**: array)
 
 Defines the list of entities managed by the bundle.
+
+.. _`PropertyAccess component`: https://symfony.com/components/PropertyAccess
+.. _`Symfony translation domain`: https://symfony.com/doc/current/components/translation.html#using-message-domains
+.. _`disable the global form themes`: https://symfony.com/doc/current/form/form_themes.html#disabling-global-themes-for-single-forms

@@ -47,7 +47,7 @@
     padding-left: 5px;
 }
 
-.form-widget .help-block {
+.form-widget .form-help {
     color: var(--text-muted);
     display: inline-block;
     font-size: var(--font-size-sm);
@@ -70,7 +70,8 @@
 
 .form-widget input.form-control:focus,
 .form-widget textarea.form-control:focus,
-.form-widget select.form-control:focus {
+.form-widget select.form-control:focus,
+.form-widget .custom-file-input:focus ~ .custom-file-label {
     box-shadow: 0 0 0 1px rgba(43, 45, 80, 0), 0 0 0 1px rgba(6, 122, 184, .2), 0 0 0 2px rgba(6, 122, 184, .25), 0 1px 1px rgba(0, 0, 0, .08);
     outline: 0;
 }
@@ -114,6 +115,30 @@
 .field-checkbox .form-check-input {
     margin: 0;
     position: static;
+}
+
+// in Bootstrap custom file widgets, the label is used to simulate the file input
+.field-file .custom-file, .field-file .custom-file-input {
+    height: 30px;
+}
+.field-file .custom-file label.custom-file-label {
+    height: 30px;
+    margin: 0;
+    max-width: 350px;
+    overflow: hidden;
+    padding: 3px 7px 5px;
+    text-align: left;
+}
+.field-file .custom-file label.custom-file-label:after {
+    color: var(--text-color);
+    content: "\f07c";
+    display: inline-block;
+    font-family: "Font Awesome 5 Free";
+    font-size: 17px;
+    height: 28px;
+    line-height: 28px;
+    padding: 0 8px;
+    vertical-align: middle;
 }
 
 // Date-time widgets
@@ -198,28 +223,21 @@ fieldset .form-group .nullable-control label {
     padding-left: 0;
 }
 
-.field-collection-item-row {
-    display: flex;
-    flex-direction: row;
+.field-collection-item-row .form-control {
+    display: inline-flex;
 }
-
-.field-collection-item-row .field-collection-item-action {
-    flex: 0 0 35px;
+.form-group.field-collection-action {
+    padding-top: 0;
 }
-
-.field-collection-item-row .field-collection-item-widget {
-    flex: 1;
-}
-
-.field-collection-item-action .fa {
+.field-collection-item-action {
     font-size: 21px;
+    font-weight: bold;
     margin-left: 4px;
-    margin-top: 4px;
+    position: relative;
+    top: 2px;
 }
-
-.field-collection-action .btn {
-    margin-left: -5px;
-    padding: 4px 10px;
+.form-widget-compound > div > .form-group:last-child {
+    padding-bottom: 5px;
 }
 
 // Form tabs
@@ -229,22 +247,22 @@ fieldset .form-group .nullable-control label {
     padding-left: 20px;
 }
 
-.form-tabs a, .form-tabs a:hover {
+.form-tabs .nav-tabs a, .form-tabs .nav-tabs a:hover {
     color: var(--gray-800);
     font-size: var(--font-size-sm);
 }
 
-.form-tabs .fa {
+.form-tabs .nav-tabs .fa {
     color: var(--text-muted);
     font-size: var(--font-size-lg);
     margin-right: 4px;
 }
 
-.form-tabs .nav-link.active {
+.form-tabs .nav-tabs .nav-link.active {
     transform: translateY(1px);
 }
 
-.form-tabs .nav-item .badge {
+.form-tabs .nav-tabs .nav-item .badge {
     margin-left: 4px;
     padding: 3px 6px;
 }
@@ -379,7 +397,7 @@ fieldset .legend-help {
 }
 
 // Form errors
-.has-error .help-block, .has-error .control-label, .has-error .radio,
+.has-error .form-help, .has-error .control-label, .has-error .radio,
 .has-error .checkbox, .has-error .radio-inline, .has-error .checkbox-inline,
 .has-error.radio label, .has-error.checkbox label, .has-error.radio-inline label,
 .has-error.checkbox-inline label {
@@ -388,8 +406,16 @@ fieldset .legend-help {
 
 .has-error .form-widget input.form-control,
 .has-error .form-widget textarea.form-control,
-.has-error .form-widget select.form-control {
+.has-error .form-widget select.form-control,
+.has-error .easyadmin-fileupload .input-group,
+.has-error .btn.input-file-container,
+.has-error .CodeMirror,
+.has-error .easyadmin-text-editor-wrapper {
     box-shadow: 0 0 0 1px rgba(43, 45, 80, 0), 0 0 0 1px rgba(183, 6, 32, .2), 0 0 0 2px rgba(183, 6, 32, .25), 0 1px 1px rgba(0, 0, 0, .08);
+}
+
+.has-error .easyadmin-fileupload .input-group {
+    border-radius: var(--border-radius);
 }
 
 form .invalid-feedback {
@@ -406,7 +432,81 @@ form .invalid-feedback > .d-block + .d-block {
     margin-top: 5px;
 }
 
-// Image/file uploads
+//fileupload widgets
+.easyadmin-fileupload {
+    max-width: 350px;
+
+    .custom-file {
+        height: 30px;
+    }
+    .input-group-append .btn {
+        color: var(--text-color);
+        font-size: 17px;
+        height: 28px;
+        line-height: 28px;
+        margin: 1px 0 0 1px;
+        padding: 0 8px;
+        vertical-align: middle;
+    }
+
+    .custom-file-input {
+        cursor: pointer;
+    }
+
+    .custom-file-label {
+        height: 30px;
+        margin: 0 !important;
+        text-align: left !important;
+        padding: 3px 40px 3px 7px;
+        border-right: none;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .custom-file-label::after {
+        display: none;
+    }
+
+    .input-group-text {
+        background-color: white;
+        border: none;
+        color: var(--text-muted);
+        height: 28px;
+        margin-top: 1px;
+        padding: 7px;
+        position: absolute;
+        right: 70px;
+        z-index: 3;
+    }
+
+    .fileupload-list {
+        height: auto;
+        margin-top: 7px;
+        padding: 0;
+
+        .fileupload-table {
+            width: 100%;
+        }
+        .fileupload-table td {
+            padding: 3px 7px;
+            border-radius: 3px;
+        }
+        .fileupload-table td:first-child {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 300px;
+        }
+        .fileupload-table tr:nth-child(odd) td {
+            background-color: #f5f7ff;
+        }
+        .fileupload-table td.file-size {
+            color: #4e566d;
+        }
+    }
+}
+
+// Image/file vich uploads
 .easyadmin-vich-image img {
     box-shadow: 0 0 0 4px var(--white), 0px 0px 4px 3px var(--gray-600);
     margin: 6px 4px 12px;
@@ -425,15 +525,18 @@ form .invalid-feedback > .d-block + .d-block {
 
 // this element should use 'display: flex', but that doesn't work with
 // the CSS trick used to customize the <input type="file" /> fields.
-.easyadmin-vich-image-actions,
-.easyadmin-vich-file-actions {
-    overflow: hidden;
-}
 
 .easyadmin-vich-image-actions > div,
 .easyadmin-vich-file-actions > div {
     float: left;
     margin-right: 4px;
+}
+
+.easyadmin-vich-image-actions:after,
+.easyadmin-vich-file-actions:after {
+    clear: left;
+    content: "";
+    display: block;
 }
 
 .easyadmin-vich-image-actions .field-checkbox,
@@ -464,4 +567,9 @@ form .invalid-feedback > .d-block + .d-block {
     right: 0;
     text-align: right;
     top: 0;
+}
+
+// EasyAdminCodeType
+.field-easyadmin_code_editor .form-widget {
+    flex-basis: 65%;
 }

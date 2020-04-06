@@ -1,0 +1,24 @@
+@import '~codemirror/lib/codemirror.css';
+
+.CodeMirror {
+  font: 13px/1.5 SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Ubuntu Mono", "Courier New", monospace;
+  height: auto;
+  min-height: 45px;
+}
+
+.CodeMirror-wrap {
+  box-shadow: 0 0 0 1px rgba(43, 45, 80, .16), 0 0 0 1px rgba(6, 122, 184, 0), 0 0 0 2px rgba(6, 122, 184, 0), 0 1px 1px rgba(0, 0, 0, .08);;
+  border-radius: var(--border-radius);
+}
+
+.CodeMirror-gutters {
+  background: var(--gray-100);
+}
+
+.CodeMirror-linenumber {
+  color: var(--text-muted);
+}
+
+.CodeMirror-lines {
+  padding-bottom: 5px;
+}

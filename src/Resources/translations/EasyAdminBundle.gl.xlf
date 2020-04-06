@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
-    <file source-language="en" target-language="es" datatype="plaintext" original="file.ext">
+    <file source-language="en" target-language="gl" datatype="plaintext" original="file.ext">
         <body>
             <!-- page titles -->
             <trans-unit id="new.page_title">
                 <source>new.page_title</source>
-                <target>Crear %entity_name%</target>
+                <target>Crear %entity_label%</target>
             </trans-unit>
             <trans-unit id="show.page_title">
                 <source>show.page_title</source>
-                <target>%entity_name% (#%entity_id%)</target>
+                <target>%entity_label% (#%entity_id%)</target>
             </trans-unit>
             <trans-unit id="edit.page_title">
                 <source>edit.page_title</source>
-                <target>Modificar %entity_name% (#%entity_id%)</target>
+                <target>Modificar %entity_label% (#%entity_id%)</target>
             </trans-unit>
             <trans-unit id="list.page_title">
                 <source>list.page_title</source>
-                <target>%entity_name%</target>
+                <target>%entity_label%</target>
             </trans-unit>
             <trans-unit id="search.page_title">
                 <source>search.page_title</source>
@@ -91,6 +91,10 @@
                 <source>label.inaccessible.explanation</source>
                 <target>Este campo non ten ningún método getter ou a propiedade asociada non é publica</target>
             </trans-unit>
+            <trans-unit id="label.form.empty_value">
+                <source>label.form.empty_value</source>
+                <target>Ningún</target>
+            </trans-unit>
 
             <!-- user -->
             <trans-unit id="user.logged_in_as">
@@ -131,13 +135,13 @@
                 <source>action.add_new_item</source>
                 <target>Engadir un elemento</target>
             </trans-unit>
-            <trans-unit id="action.add_another_item">
-                <source>action.add_another_item</source>
-                <target>Engadir outro elemento</target>
-            </trans-unit>
             <trans-unit id="action.remove_item">
                 <source>action.remove_item</source>
                 <target>Eliminar este elemento</target>
+            </trans-unit>
+            <trans-unit id="action.choose_file">
+                <source>action.choose_file</source>
+                <target>Seleccionar arquivo</target>
             </trans-unit>
             <trans-unit id="errors">
                 <source>errors</source>
@@ -151,7 +155,7 @@
                 <source>show.remaining_items</source>
                 <target><![CDATA[{1} existe outro elemento que non se mostra neste listado|]1,Inf] existen outros %count% elementos que non se mostran neste listado]]></target>
             </trans-unit>
-            
+
             <!-- exceptions -->
             <trans-unit id="exception.entity_not_found">
                 <source>exception.entity_not_found</source>
@@ -172,6 +176,20 @@
             <trans-unit id="exception.undefined_entity">
                 <source>exception.undefined_entity</source>
                 <target>A aplicación non está configurada correctamente para este tipo de elementos.</target>
+            </trans-unit>
+
+            <!-- Login page -->
+            <trans-unit id="login.username">
+                <source>login.username</source>
+                <target>Nome de usuario</target>
+            </trans-unit>
+            <trans-unit id="login.password">
+                <source>login.password</source>
+                <target>Contrasinal</target>
+            </trans-unit>
+            <trans-unit id="login.sign_in">
+                <source>login.sign_in</source>
+                <target>Iniciar sesión</target>
             </trans-unit>
         </body>
     </file>

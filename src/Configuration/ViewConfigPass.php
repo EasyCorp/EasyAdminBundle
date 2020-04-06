@@ -24,15 +24,17 @@ class ViewConfigPass implements ConfigPassInterface
 
     private function processViewConfig(array $backendConfig)
     {
-        // process the 'help' message that each view can define to display it under the page title
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             foreach (['edit', 'list', 'new', 'search', 'show'] as $view) {
+                // process the 'help' message that each view can define to display it under the page title
                 // isset() cannot be used because the value can be 'null' (used to remove the inherited help message)
-                if (\array_key_exists('help', $backendConfig['entities'][$entityName][$view])) {
-                    continue;
+                if (!\array_key_exists('help', $backendConfig['entities'][$entityName][$view])) {
+                    $backendConfig['entities'][$entityName][$view]['help'] = $entityConfig['help'] ?? null;
                 }
 
-                $backendConfig['entities'][$entityName][$view]['help'] = $entityConfig['help'] ?? null;
+                // process the 'item_permission' option
+                $itemPermission = $entityConfig[$view]['item_permission'] ?? $backendConfig[$view]['item_permission'] ?? null;
+                $backendConfig['entities'][$entityName][$view]['item_permission'] = empty($itemPermission) ? null : $itemPermission;
             }
         }
 
@@ -87,7 +89,7 @@ class ViewConfigPass implements ConfigPassInterface
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             foreach (['edit', 'list', 'new', 'search', 'show'] as $view) {
                 foreach ($entityConfig[$view]['fields'] as $fieldName => $fieldConfig) {
-                    if (!isset($fieldConfig['label']) && 'id' === $fieldConfig['property']) {
+                    if (!isset($fieldConfig['label']) && isset($fieldConfig['property']) && 'id' === $fieldConfig['property']) {
                         // if the field is called 'id' and doesn't define a custom label, use 'ID' as label to
                         // improve the readability of the label, which is usually related to a primary key
                         $fieldConfig['label'] = 'ID';
@@ -95,7 +97,7 @@ class ViewConfigPass implements ConfigPassInterface
                         // if the label is the special value 'false', label must be hidden (use an empty string as the label)
                         $fieldConfig['label'] = '';
                         $fieldConfig['sortable'] = false;
-                    } elseif (null === $fieldConfig['label'] && 0 !== strpos($fieldConfig['property'], '_easyadmin_form_design_element_')) {
+                    } elseif (null === $fieldConfig['label'] && isset($fieldConfig['property']) && 0 !== strpos($fieldConfig['property'], '_easyadmin_form_design_element_')) {
                         // else, generate the label automatically from its name (except if it's a
                         // special element created to render complex forms)
                         $fieldConfig['label'] = $this->humanize($fieldConfig['property']);
@@ -174,35 +176,35 @@ class ViewConfigPass implements ConfigPassInterface
 
                 $sortConfig = $entityConfig[$view]['sort'];
                 if (!\is_string($sortConfig) && !\is_array($sortConfig)) {
-                    throw new \InvalidArgumentException(\sprintf('The "sort" option of the "%s" view of the "%s" entity contains an invalid value (it can only be a string or an array).', $view, $entityName));
+                    throw new \InvalidArgumentException(sprintf('The "sort" option of the "%s" view of the "%s" entity contains an invalid value (it can only be a string or an array).', $view, $entityName));
                 }
 
                 if (\is_string($sortConfig)) {
                     $sortConfig = ['field' => $sortConfig, 'direction' => 'DESC'];
                 } else {
-                    $sortConfig = ['field' => $sortConfig[0], 'direction' => \strtoupper($sortConfig[1])];
+                    $sortConfig = ['field' => $sortConfig[0], 'direction' => strtoupper($sortConfig[1])];
                 }
 
                 if (!\in_array($sortConfig['direction'], ['ASC', 'DESC'])) {
-                    throw new \InvalidArgumentException(\sprintf('If defined, the second value of the "sort" option of the "%s" view of the "%s" entity can only be "ASC" or "DESC".', $view, $entityName));
+                    throw new \InvalidArgumentException(sprintf('If defined, the second value of the "sort" option of the "%s" view of the "%s" entity can only be "ASC" or "DESC".', $view, $entityName));
                 }
 
-                $isSortedByDoctrineAssociation = false !== \strpos($sortConfig['field'], '.');
+                $isSortedByDoctrineAssociation = false !== strpos($sortConfig['field'], '.');
                 if (!$isSortedByDoctrineAssociation && (isset($entityConfig[$view]['fields'][$sortConfig['field']]) && true === $entityConfig[$view]['fields'][$sortConfig['field']]['virtual'])) {
-                    throw new \InvalidArgumentException(\sprintf('The "%s" field cannot be used in the "sort" option of the "%s" view of the "%s" entity because it\'s a virtual property that is not persisted in the database.', $sortConfig['field'], $view, $entityName));
+                    throw new \InvalidArgumentException(sprintf('The "%s" field cannot be used in the "sort" option of the "%s" view of the "%s" entity because it\'s a virtual property that is not persisted in the database.', $sortConfig['field'], $view, $entityName));
                 }
 
                 // sort can be defined using simple properties (sort: author) or association properties (sort: author.name)
-                if (\substr_count($sortConfig['field'], '.') > 1) {
-                    throw new \InvalidArgumentException(\sprintf('The "%s" value cannot be used as the "sort" option in the "%s" view of the "%s" entity because it defines multiple sorting levels (e.g. "aaa.bbb.ccc") but only up to one level is supported (e.g. "aaa.bbb").', $sortConfig['field'], $view, $entityName));
+                if (substr_count($sortConfig['field'], '.') > 1) {
+                    throw new \InvalidArgumentException(sprintf('The "%s" value cannot be used as the "sort" option in the "%s" view of the "%s" entity because it defines multiple sorting levels (e.g. "aaa.bbb.ccc") but only up to one level is supported (e.g. "aaa.bbb").', $sortConfig['field'], $view, $entityName));
                 }
 
                 // sort field can be a Doctrine association (sort: author.name) instead of a simple property
-                $sortFieldParts = \explode('.', $sortConfig['field']);
+                $sortFieldParts = explode('.', $sortConfig['field']);
                 $sortFieldProperty = $sortFieldParts[0];
 
                 if (!\array_key_exists($sortFieldProperty, $entityConfig['properties']) && !isset($entityConfig[$view]['fields'][$sortFieldProperty])) {
-                    throw new \InvalidArgumentException(\sprintf('The "%s" field used in the "sort" option of the "%s" view of the "%s" entity does not exist neither as a property of that entity nor as a virtual field of that view.', $sortFieldProperty, $view, $entityName));
+                    throw new \InvalidArgumentException(sprintf('The "%s" field used in the "sort" option of the "%s" view of the "%s" entity does not exist neither as a property of that entity nor as a virtual field of that view.', $sortFieldProperty, $view, $entityName));
                 }
 
                 $backendConfig['entities'][$entityName][$view]['sort'] = $sortConfig;
@@ -223,16 +225,16 @@ class ViewConfigPass implements ConfigPassInterface
      */
     private function getFieldFormat($fieldType, array $backendConfig)
     {
-        if (\in_array($fieldType, ['date', 'date_immutable', 'dateinterval', 'time', 'time_immutable', 'datetime', 'datetime_immutable', 'datetimetz'])) {
+        if (\in_array($fieldType, ['date', 'date_immutable', 'dateinterval', 'time', 'time_immutable', 'datetime', 'datetime_immutable', 'datetimetz', 'datetimetz_immutable'])) {
+            $fieldType = ('_immutable' === mb_substr($fieldType, -10)) ? mb_substr($fieldType, 0, -10) : $fieldType;
             // make 'datetimetz' use the same format as 'datetime'
             $fieldType = ('datetimetz' === $fieldType) ? 'datetime' : $fieldType;
-            $fieldType = ('_immutable' === \mb_substr($fieldType, -10)) ? \mb_substr($fieldType, 0, -10) : $fieldType;
 
             return $backendConfig['formats'][$fieldType];
         }
 
         if (\in_array($fieldType, ['bigint', 'integer', 'smallint', 'decimal', 'float'])) {
-            return isset($backendConfig['formats']['number']) ? $backendConfig['formats']['number'] : null;
+            return $backendConfig['formats']['number'] ?? null;
         }
     }
 
@@ -254,7 +256,7 @@ class ViewConfigPass implements ConfigPassInterface
             'show' => [],
         ];
 
-        return isset($excludedFieldNames[$view]) ? $excludedFieldNames[$view] : [];
+        return $excludedFieldNames[$view] ?? [];
     }
 
     /**
@@ -274,7 +276,7 @@ class ViewConfigPass implements ConfigPassInterface
             'show' => [],
         ];
 
-        return isset($excludedFieldTypes[$view]) ? $excludedFieldTypes[$view] : [];
+        return $excludedFieldTypes[$view] ?? [];
     }
 
     /**
@@ -291,7 +293,7 @@ class ViewConfigPass implements ConfigPassInterface
             'list' => 7,
         ];
 
-        return isset($maxNumberFields[$view]) ? $maxNumberFields[$view] : PHP_INT_MAX;
+        return $maxNumberFields[$view] ?? PHP_INT_MAX;
     }
 
     /**
@@ -309,7 +311,7 @@ class ViewConfigPass implements ConfigPassInterface
         $filteredFields = [];
 
         foreach ($fields as $name => $metadata) {
-            if (!\in_array($name, $excludedFieldNames) && !\in_array($metadata['type'], $excludedFieldTypes)) {
+            if (!\in_array($name, $excludedFieldNames, true) && !\in_array($metadata['type'], $excludedFieldTypes, true)) {
                 $filteredFields[$name] = $fields[$name];
             }
         }
@@ -325,6 +327,6 @@ class ViewConfigPass implements ConfigPassInterface
     // @author Bernhard Schussek <bschussek@gmail.com>
     private function humanize(string $value): string
     {
-        return ucfirst(strtolower(trim(preg_replace(array('/([A-Z])/', '/[_\s]+/'), array('_$1', ' '), $value))));
+        return ucfirst(strtolower(trim(preg_replace(['/([A-Z])/', '/[_\s]+/'], ['_$1', ' '], $value))));
     }
 }

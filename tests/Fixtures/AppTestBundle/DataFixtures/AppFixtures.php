@@ -8,7 +8,7 @@ use AppTestBundle\Entity\FunctionalTests\Purchase;
 use AppTestBundle\Entity\FunctionalTests\PurchaseItem;
 use AppTestBundle\Entity\FunctionalTests\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 
 class AppFixtures extends Fixture
 {
@@ -66,7 +66,7 @@ class AppFixtures extends Fixture
     {
         $users = [];
 
-        foreach (\range(1, 20) as $i) {
+        foreach (range(1, 20) as $i) {
             $user = new User();
             $user->setUsername('user'.$i);
             $user->setEmail('user'.$i.'@example.com');
@@ -92,14 +92,14 @@ class AppFixtures extends Fixture
         $parentCategories = [];
         $subCategories = [];
 
-        foreach (\range(1, 100) as $i) {
+        foreach (range(1, 100) as $i) {
             $category = new Category();
             $category->setName('Parent Category #'.$i);
 
             $parentCategories[] = $category;
         }
 
-        foreach (\range(1, 100) as $i) {
+        foreach (range(1, 100) as $i) {
             $category = new Category();
             $category->setName('Category #'.$i);
             $category->setParent($parentCategories[$i - 1]);
@@ -107,14 +107,14 @@ class AppFixtures extends Fixture
             $subCategories[] = $category;
         }
 
-        return \array_merge($parentCategories, $subCategories);
+        return array_merge($parentCategories, $subCategories);
     }
 
     private function createProducts(array $categories): array
     {
         $products = [];
 
-        foreach (\range(1, 100) as $i) {
+        foreach (range(1, 100) as $i) {
             $product = new Product();
             $product->setEnabled($i <= 90 ? true : false);
             $product->setName($this->getRandomName());
@@ -135,7 +135,7 @@ class AppFixtures extends Fixture
     {
         $purchases = [];
 
-        foreach (\range(1, 30) as $i) {
+        foreach (range(1, 30) as $i) {
             $purchase = new Purchase();
             $purchase->setGuid($this->generateGuid());
             $purchase->setDeliveryDate(new \DateTime("+$i days"));
@@ -143,7 +143,7 @@ class AppFixtures extends Fixture
             $purchase->setShipping(new \StdClass());
             $purchase->setDeliveryHour($this->getHour($i));
             $purchase->setBillingAddress(
-                \json_encode(
+                json_encode(
                     [
                         'line1' => '1234 Main Street',
                         'line2' => 'Big City, XX 23456',
@@ -162,12 +162,12 @@ class AppFixtures extends Fixture
     {
         $purchaseItems = [];
 
-        foreach (\range(1, 30) as $i) {
-            $numItemsPurchased = \rand(1, 5);
-            foreach (\range(1, $numItemsPurchased) as $j) {
+        foreach (range(1, 30) as $i) {
+            $numItemsPurchased = rand(1, 5);
+            foreach (range(1, $numItemsPurchased) as $j) {
                 $item = new PurchaseItem();
-                $item->setQuantity(\rand(1, 3));
-                $item->setProduct($products[\array_rand($products)]);
+                $item->setQuantity(rand(1, 3));
+                $item->setProduct($products[array_rand($products)]);
                 $item->setTaxRate(0.21);
                 $item->setPurchase($purchases[$i - 1]);
 
@@ -198,23 +198,23 @@ class AppFixtures extends Fixture
             'wearables',
         ];
 
-        $numTags = \mt_rand(2, 4);
-        \shuffle($tags);
+        $numTags = mt_rand(2, 4);
+        shuffle($tags);
 
         return \array_slice($tags, 0, $numTags - 1);
     }
 
     public function getRandomEan()
     {
-        $chars = \str_split('0123456789');
+        $chars = str_split('0123456789');
         $count = \count($chars) - 1;
         $ean13 = '';
         do {
-            $ean13 .= $chars[\mt_rand(0, $count)];
+            $ean13 .= $chars[mt_rand(0, $count)];
         } while (\strlen($ean13) < 13);
 
         $checksum = 0;
-        foreach (\str_split(\strrev($ean13)) as $pos => $val) {
+        foreach (str_split(strrev($ean13)) as $pos => $val) {
             $checksum += $val * (3 - 2 * ($pos % 2));
         }
         $checksum = ((10 - ($checksum % 10)) % 10);
@@ -232,25 +232,25 @@ class AppFixtures extends Fixture
         ];
 
         $numWords = 2;
-        \shuffle($words);
+        shuffle($words);
 
-        return 'Product '.\implode(' ', \array_slice($words, 0, $numWords));
+        return 'Product '.implode(' ', \array_slice($words, 0, $numWords));
     }
 
     public function getRandomPrice()
     {
         $cents = ['00', '29', '39', '49', '99'];
 
-        return (float) \mt_rand(2, 79).'.'.$cents[\array_rand($cents)];
+        return (float) mt_rand(2, 79).'.'.$cents[array_rand($cents)];
     }
 
     private function getRandomCategories(array $allCategories)
     {
         $categories = [];
-        $numCategories = \rand(1, 4);
+        $numCategories = rand(1, 4);
 
         for ($i = 0; $i < $numCategories; ++$i) {
-            $categories[] = $allCategories[\array_rand($allCategories)];
+            $categories[] = $allCategories[array_rand($allCategories)];
         }
 
         return $categories;
@@ -258,28 +258,28 @@ class AppFixtures extends Fixture
 
     public function getRandomDescription()
     {
-        $numPhrases = \mt_rand(5, 10);
-        \shuffle($this->phrases);
+        $numPhrases = mt_rand(5, 10);
+        shuffle($this->phrases);
 
-        return \implode(' ', \array_slice($this->phrases, 0, $numPhrases - 1));
+        return implode(' ', \array_slice($this->phrases, 0, $numPhrases - 1));
     }
 
     public function getRandomHtmlFeatures()
     {
         $numFeatures = 2;
-        \shuffle($this->phrases);
+        shuffle($this->phrases);
 
-        return '<ul><li>'.\implode('</li><li>', \array_slice($this->phrases, 0, $numFeatures)).'</li></ul>';
+        return '<ul><li>'.implode('</li><li>', \array_slice($this->phrases, 0, $numFeatures)).'</li></ul>';
     }
 
     private function generateGuid()
     {
-        return \sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-            \mt_rand(0, 0xffff), \mt_rand(0, 0xffff),
-            \mt_rand(0, 0xffff),
-            \mt_rand(0, 0x0fff) | 0x4000,
-            \mt_rand(0, 0x3fff) | 0x8000,
-            \mt_rand(0, 0xffff), \mt_rand(0, 0xffff), \mt_rand(0, 0xffff)
+        return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+            mt_rand(0, 0xffff), mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0x0fff) | 0x4000,
+            mt_rand(0, 0x3fff) | 0x8000,
+            mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
         );
     }
 

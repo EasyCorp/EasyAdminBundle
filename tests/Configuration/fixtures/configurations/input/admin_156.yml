@@ -1,0 +1,10 @@
+# TEST
+# it's possible to mix different configuration formats for global batch actions
+
+# CONFIGURATION
+easy_admin:
+    list:
+        batch_actions: ['-delete', { name: 'my_batch_action', label: 'BATCH ACTION' }, 'another_batch_action']
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category

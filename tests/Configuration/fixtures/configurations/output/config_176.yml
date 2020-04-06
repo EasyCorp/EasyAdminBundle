@@ -1,0 +1,9 @@
+easy_admin:
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
+            list:
+                actions:
+                    edit: { name: 'edit', template: '@EasyAdmin/default/action.html.twig' }
+                    delete: { name: 'delete', template: '@EasyAdmin/default/action.html.twig' }
+                    custom: { name: 'custom', template: 'admin/custom.html.twig' }

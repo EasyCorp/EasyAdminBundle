@@ -1,0 +1,12 @@
+imports:
+    - { resource: config.yml }
+
+easy_admin:
+    entities:
+        Product:
+            class: AppTestBundle\Entity\FunctionalTests\Product
+            controller: EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Admin\ProductController
+            new:
+                fields: ['name', 'description', { property: 'price', type: 'number' }, 'ean']
+            edit:
+                fields: ['name']

@@ -1,0 +1,59 @@
+// Page templates available or custom backends
+// ----------------------------------------------------------------------------
+
+body.page-login {
+    align-items: center;
+    display: flex;
+    height: 100vh;
+    justify-content: center;
+    overflow: hidden;
+    position: absolute;
+    width: 100vw;
+}
+
+.login-wrapper {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    width: 330px;
+}
+.login-wrapper .main-header {
+    display: block;
+    padding-right: 0;
+}
+.login-wrapper .main-header #header-logo {
+    font-size: 24px;
+    line-height: 1.2;
+}
+.login-wrapper .content {
+    padding: 30px 20px;
+    width: 100%;
+}
+.login-wrapper .form-widget {
+    flex: 100%;
+    padding-left: 0;
+}
+.login-wrapper .form-widget-with-icon {
+    align-items: baseline;
+    display: flex;
+    flex-direction: row;
+}
+.login-wrapper .form-widget-with-icon i {
+    color: var(--gray-500);
+    font-size: 18px;
+    margin-right: 10px;
+}
+.login-wrapper .form-widget input {
+    font-size: var(--font-size-lg);
+    height: 38px;
+    line-height: 38px;
+}
+
+.page-blank .content-wrapper {
+    display: block;
+}
+
+.page-content-with-padding .content-body {
+    padding: 18px 20px;
+}

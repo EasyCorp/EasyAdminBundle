@@ -29,10 +29,6 @@ $theme-colors: (
     'danger':  $danger
 );
 
-$grid-breakpoints: (
-    xs: 0
-);
-
 $font-size-base: 0.875rem; // 14px;
 $font-size-lg: 1rem; // 16px;
 $font-size-sm: 0.8125rem; // 13px;
@@ -112,6 +108,10 @@ $badge-border-radius: var(--border-radius);
 $dropdown-link-hover-color: var(--gray-900);
 $navbar-inverse-color: var(--gray-400);
 $navbar-inverse-link-color: var(--gray-400);
+$dropdown-border-color: var(--border-color);
+$dropdown-border-width: var(--border-width);
+$dropdown-box-shadow: var(--box-shadow-lg);
+$zindex-dropdown: 1000;
 
 $nav-tabs-border-color: var(--border-color);
 $nav-tabs-border-width: var(--border-width);
@@ -134,6 +134,22 @@ $modal-lg: 900px;
 $modal-md: 500px;
 $modal-sm: 300px;
 $zindex-modal-backdrop: 1040;
+
+$pagination-padding-y: 4px;
+$pagination-padding-x: 10px;
+$pagination-color: var(--color-text);
+$pagination-line-height: 1.6;
+$pagination-bg: var(--white);
+$pagination-border-width: var(--border-width);
+$pagination-border-color: var(--gray-400);
+$pagination-focus-box-shadow: none;
+$pagination-focus-outline: 0;
+$pagination-hover-color: var(--color-text);
+$pagination-hover-bg: var(--white);
+$pagination-hover-border-color: var(--gray-500);
+$pagination-disabled-color: var(--text-muted);
+$pagination-disabled-bg: var(--white);
+$pagination-disabled-border-color: transparent;
 
 $btn-transition: all .08s ease-in;
 $btn-font-weight: 400;

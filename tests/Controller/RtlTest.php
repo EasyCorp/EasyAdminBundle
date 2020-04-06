@@ -6,18 +6,13 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
 
 class RtlTest extends AbstractTestCase
 {
-    public function setUp()
-    {
-        parent::setUp();
-
-        $this->initClient(['environment' => 'rtl']);
-    }
+    protected static $options = ['environment' => 'rtl'];
 
     public function testRtlAutodetection()
     {
         $this->getBackendHomepage();
 
-        $backendConfig = $this->client->getContainer()->get('easyadmin.config.manager')->getBackendConfig();
+        $backendConfig = static::$client->getContainer()->get('easyadmin.config.manager')->getBackendConfig();
         $this->assertTrue($backendConfig['design']['rtl'], 'RTL is enabled automatically for the "ar" locale.');
     }
 
@@ -31,8 +26,13 @@ class RtlTest extends AbstractTestCase
         );
 
         $this->assertSame(
-            '/bundles/easyadmin/app-rtl.css',
+            '/bundles/easyadmin/app.rtl.css',
             $crawler->filter('link[rel="stylesheet"]')->eq(1)->attr('href')
+        );
+
+        $this->assertSame(
+            '/bundles/easyadmin/app-custom-rtl.css',
+            $crawler->filter('link[rel="stylesheet"]')->eq(2)->attr('href')
         );
     }
 }

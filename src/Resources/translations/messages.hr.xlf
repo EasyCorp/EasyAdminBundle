@@ -5,7 +5,7 @@
             <!-- generic actions displayed on buttons and links -->
             <trans-unit id="action.new">
                 <source>action.new</source>
-                <target>Dodaj %entity_name%</target>
+                <target>Dodaj %entity_label%</target>
             </trans-unit>
             <trans-unit id="action.show">
                 <source>action.show</source>
@@ -34,6 +34,10 @@
             <trans-unit id="action.list">
                 <source>action.list</source>
                 <target>Natrag na popis</target>
+            </trans-unit>
+            <trans-unit id="action.deselect">
+                <source>action.deselect</source>
+                <target>*** Deselect ***</target>
             </trans-unit>
             <trans-unit id="label.form.empty_value">
                 <source>label.form.empty_value</source>

@@ -186,13 +186,13 @@ The rest of the available methods are specific for each action:
     {
         // Creates the Doctrine query builder used to look for items according to the
         // user's query. Override it to filter the elements displayed in the search listing
-        protected function createSearchQueryBuilder($entityClass, $searchQuery, array $searchableFields, $sortField = null, $sortDirection = null);
+        protected function createSearchQueryBuilder($entityClass, $searchQuery, array $searchableFields, $sortField = null, $sortDirection = null, $dqlFilter = null);
 
         // Performs the actual database query to look for the items according to the
         // user's query (using the query builder created with the previous method).
         // You can override this method to filter the results before sending them to
         // the template
-        protected function findBy($entityClass, $searchQuery, array $searchableFields, $page = 1, $maxPerPage = 15, $sortField = null, $sortDirection = null);
+        protected function findBy($entityClass, $searchQuery, array $searchableFields, $page = 1, $maxPerPage = 15, $sortField = null, $sortDirection = null, $dqlFilter = null);
     }
 
 **Delete** action:
@@ -381,9 +381,11 @@ Instead of overriding the ``createNewEntity()`` method and check for the
         // Customizes the instantiation of entities only for the 'User' entity
         public function createNewUserEntity()
         {
-            return new User(array('ROLE_USER'));
+            return new User(['ROLE_USER']);
         }
     }
+
+.. _overriding-the-entity-controller:
 
 Customization Based on Entity Controllers
 -----------------------------------------
@@ -513,9 +515,9 @@ property of the ``BlogPost`` entity before persisting it:
     # src/EventSubscriber/EasyAdminSubscriber.php
     namespace App\EventSubscriber;
 
+    use App\Entity\BlogPost;
     use Symfony\Component\EventDispatcher\EventSubscriberInterface;
     use Symfony\Component\EventDispatcher\GenericEvent;
-    use App\Entity\BlogPost;
 
     class EasyAdminSubscriber implements EventSubscriberInterface
     {
@@ -528,9 +530,9 @@ property of the ``BlogPost`` entity before persisting it:
 
         public static function getSubscribedEvents()
         {
-            return array(
-                'easy_admin.pre_persist' => array('setBlogPostSlug'),
-            );
+            return [
+                'easy_admin.pre_persist' => ['setBlogPostSlug'],
+            ];
         }
 
         public function setBlogPostSlug(GenericEvent $event)
@@ -547,6 +549,85 @@ property of the ``BlogPost`` entity before persisting it:
             $event['entity'] = $entity;
         }
     }
+
+Page Templates for Custom Backends
+----------------------------------
+
+EasyAdmin provides several page templates which are useful when you are
+customizing your backends.
+
+Login Form Template
+~~~~~~~~~~~~~~~~~~~
+
+Twig Template Path: ``@EasyAdmin/page/login.html.twig``
+
+It displays a simple username + password login form that matches the style of
+the rest of the backend. The template defines lots of config options, but most
+applications can rely on its default values:
+
+.. code-block:: php
+
+    namespace App\Controller;
+
+    use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+    use Symfony\Component\HttpFoundation\Response;
+    use Symfony\Component\Routing\Annotation\Route;
+    use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+
+    class SecurityController extends AbstractController
+    {
+        /**
+         * @Route("/login", name="login")
+         */
+        public function login(AuthenticationUtils $authenticationUtils): Response
+        {
+            $error = $authenticationUtils->getLastAuthenticationError();
+            $lastUsername = $authenticationUtils->getLastUsername();
+
+            return $this->render('@EasyAdmin/page/login.html.twig', [
+                // parameters usually defined in Symfony login forms
+                'error' => $error,
+                'last_username' => $lastUsername,
+
+                // OPTIONAL parameters to customize the login form:
+
+                // the string used to generate the CSRF token. If you don't define
+                // this parameter, the login form won't include a CSRF token
+                'csrf_token_intention' => 'authenticate',
+                // the URL users are redirected to after the login (default: path('easyadmin'))
+                'target_path' => $this->generateUrl('admin_dashboard'),
+                // the label displayed for the username form field (the |trans filter is applied to it)
+                'username_label' => 'Your username',
+                // the label displayed for the password form field (the |trans filter is applied to it)
+                'password_label' => 'Your password',
+                // the label displayed for the Sign In form button (the |trans filter is applied to it)
+                'sign_in_label' => 'Log in',
+                // the 'name' HTML attribute of the <input> used for the username field (default: '_username')
+                'username_parameter' => 'my_custom_username_field',
+                // the 'name' HTML attribute of the <input> used for the password field (default: '_password')
+                'password_parameter' => 'my_custom_password_field',
+            ]);
+        }
+    }
+
+Content Page Template
+~~~~~~~~~~~~~~~~~~~~~
+
+Twig Template Path: ``@EasyAdmin/page/content.html.twig``
+
+It displays a simple page similar to the list/show/edit/new pages, with the
+main header, the sidebar menu and the central content section. The only
+difference is that the content section is completely empty, so it's useful to
+display your own text contents, custom forms, etc.
+
+Blank Page Template
+~~~~~~~~~~~~~~~~~~~
+
+Twig Template Path: ``@EasyAdmin/page/blank.html.twig``
+
+It displays a page with the same header and sidebar menu as the
+list/show/edit/new pages, but without the central content section. It's useful
+to define completely custom page, such as a complex dashboard.
 
 .. _`the base Symfony controller`: https://symfony.com/doc/current/book/controller.html#the-base-controller-class
 .. _`GenericEvent class`: https://symfony.com/doc/current/components/event_dispatcher/generic_event.html

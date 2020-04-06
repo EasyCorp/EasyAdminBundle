@@ -10,10 +10,10 @@
 {% block body_class 'show show-' ~ _entity_config.name|lower %}
 
 {% block content_title %}
-{% spaceless %}
-    {% set _default_title = 'show.page_title'|trans(_trans_parameters, 'EasyAdminBundle') %}
-    {{ _entity_config.show.title is defined ? _entity_config.show.title|trans(_trans_parameters) : _default_title }}
-{% endspaceless %}
+    {% apply spaceless %}
+        {% set _default_title = 'show.page_title'|trans(_trans_parameters, 'EasyAdminBundle') %}
+        {{ _entity_config.show.title is defined ? _entity_config.show.title|trans(_trans_parameters) : _default_title }}
+    {% endapply %}
 {% endblock %}
 
 {% block content_footer_wrapper '' %}
@@ -21,7 +21,8 @@
 {% block main %}
     <div class="form-horizontal">
         {% block show_fields %}
-            {% for field, metadata in fields %}
+            {% set _fields_visible_by_user = fields|filter((metadata, field) => easyadmin_is_granted(metadata.permission)) %}
+            {% for field, metadata in _fields_visible_by_user %}
                 {% block show_field %}
                     <div class="form-group field-{{ metadata.type|default('default')|lower }} {{ metadata.css_class|default('') }}">
                         <label class="control-label">
@@ -33,7 +34,7 @@
                             </div>
 
                             {% if metadata.help|default('') != '' %}
-                                <span class="help-block"><i class="fa fa-info-circle"></i> {{ metadata.help|trans|raw }}</span>
+                                <small class="form-help"><i class="fa fa-fw fa-info-circle"></i> {{ metadata.help|trans|raw }}</small>
                             {% endif %}
                         </div>
                     </div>
@@ -50,10 +51,12 @@
 
                 {{ include('@EasyAdmin/default/includes/_actions.html.twig', {
                     actions: _show_actions,
+                    entity_config: _entity_config,
                     request_parameters: _request_parameters,
                     translation_domain: _entity_config.translation_domain,
                     trans_parameters: _trans_parameters,
-                    item_id: _entity_id
+                    item_id: _entity_id,
+                    item: entity
                 }, with_context = false) }}
             {% endblock item_actions %}
         </div>

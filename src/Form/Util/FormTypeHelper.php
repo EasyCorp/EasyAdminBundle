@@ -2,11 +2,14 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\Util;
 
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CodeEditorType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminAutocompleteType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminDividerType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminGroupType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminSectionType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FileUploadType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\TextEditorType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 use Symfony\Component\Form\Extension\Core\Type\ButtonType;
@@ -43,7 +46,7 @@ use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\Extension\Core\Type\TimezoneType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
 
-/*
+/**
  * Utility class to map shortcut form types (e.g. `text` or `submit`) to its
  * associated FQCN type.
  *
@@ -59,6 +62,9 @@ final class FormTypeHelper
         'button' => ButtonType::class,
         'checkbox' => CheckboxType::class,
         'choice' => ChoiceType::class,
+        // allow using underscore and dashes to improve DX
+        'code-editor' => CodeEditorType::class,
+        'code_editor' => CodeEditorType::class,
         'collection' => CollectionType::class,
         'color' => ColorType::class,
         'country' => CountryType::class,
@@ -71,6 +77,9 @@ final class FormTypeHelper
         'email' => EmailType::class,
         'entity' => EntityType::class,
         'file' => FileType::class,
+        // allow using underscore and dashes to improve DX
+        'file-upload' => FileUploadType::class,
+        'file_upload' => FileUploadType::class,
         'form' => FormType::class,
         'hidden' => HiddenType::class,
         'integer' => IntegerType::class,
@@ -88,6 +97,9 @@ final class FormTypeHelper
         'submit' => SubmitType::class,
         'tel' => TelType::class,
         'textarea' => TextareaType::class,
+        // allow using underscore and dashes to improve DX
+        'text-editor' => TextEditorType::class,
+        'text_editor' => TextEditorType::class,
         'text' => TextType::class,
         'time' => TimeType::class,
         'time_immutable' => TimeType::class,
@@ -131,10 +143,10 @@ final class FormTypeHelper
     {
         // needed to avoid collisions between immutable and non-immutable date types,
         // which are mapped to the same Symfony Form type classes
-        $filteredNameToClassMap = \array_filter(self::$nameToClassMap, function ($typeName) {
+        $filteredNameToClassMap = array_filter(self::$nameToClassMap, function ($typeName) {
             return !\in_array($typeName, ['datetime_immutable', 'date_immutable', 'time_immutable']);
         }, ARRAY_FILTER_USE_KEY);
-        $classToNameMap = \array_flip($filteredNameToClassMap);
+        $classToNameMap = array_flip($filteredNameToClassMap);
 
         return $classToNameMap[$typeFqcn] ?? $typeFqcn;
     }

@@ -1,0 +1,8 @@
+# TEST
+# when defining batch actions in the global "actions" configuration, their order must
+# be preserved to display them in the same order in the backend interface
+
+# CONFIGURATION
+easy_admin:
+    list:
+        batch_actions: ['zzz_first_action', 'aaa_second_action']

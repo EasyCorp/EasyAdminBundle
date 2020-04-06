@@ -1,0 +1,14 @@
+on: [push, pull_request]
+name: Lint
+jobs:
+    doctor-rst:
+        name: DOCtor-RST
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@master
+            - name: DOCtor-RST
+              uses: docker://oskarstark/doctor-rst
+              with:
+                  args: --short
+              env:
+                  DOCS_DIR: 'doc/'

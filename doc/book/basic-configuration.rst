@@ -16,7 +16,7 @@ routes of the bundle. Change its value to meet your own requirements:
 
     # config/routes/easy_admin.yaml
     easy_admin_bundle:
-        resource: '@EasyAdminBundle/Controller/AdminController.php'
+        resource: '@EasyAdminBundle/Controller/EasyAdminController.php'
         prefix: /_secret_backend  # <-- change this value
         type: annotation
 
@@ -56,7 +56,7 @@ logo instead of a text-based logo:
 
     # config/packages/easy_admin.yaml
     easy_admin:
-        site_name: '<img src="https://symfony.com/logos/symfony_white_01.png" />'
+        site_name: '<img src="https://symfony.com/logos/symfony_white_01.png"/>'
         # ...
 
 Changing the Homepage of the Backend
@@ -73,10 +73,50 @@ access to your backend. Read the `Symfony Security documentation`_ to learn
 how to protect the backend URLs.
 
 When accessing a protected backend, EasyAdmin displays the name of user who is
-logged in the application. Otherwise it displays *"Anonymous User"*.
+logged in the application. Otherwise it displays *"Anonymous User"*. In
+addition, if you enable the `logout feature`_ in your firewall, EasyAdmin
+displays a link to logout from the backend.
 
-.. _`Symfony Security documentation`: https://symfony.com/doc/current/book/security.html
+Configuring the Logged In User Information
+------------------------------------------
+
+By default, all pages display the details of the logged in user. The user name
+is the result of calling to the ``__toString()`` method on the current user
+object. The user avatar is a generic avatar icon. If you want to hide any of
+this information, use these config options:
+
+.. code-block:: yaml
+
+    # config/packages/easy_admin.yaml
+    easy_admin:
+        user:
+            display_name: true
+            display_avatar: false
+        # ...
+
+If you store the user name and their avatar URL in other properties/methods of
+the user object, define the ``name_property_path`` and ``avatar_property_path``
+options. Their values are any valid `PropertyAccess component`_ expression,
+which is applied to the user object:
+
+.. code-block:: yaml
+
+    # config/packages/easy_admin.yaml
+    easy_admin:
+        user:
+            # this method/property must return the string representation of the user
+            # (Symfony will look for getFullName(), isFullName(), ..., and 'fullName' property)
+            name_property_path: 'fullName'
+
+            # this method/property must return the absolute URL of the user avatar image
+            # (Symfony will look for getGravatar(), isGravatar(), ..., and 'gravatar' property)
+            avatar_property_path: 'gravatar'
+        # ...
 
 -----
 
 Next chapter: :doc:`design-configuration`
+
+.. _`Symfony Security documentation`: https://symfony.com/doc/current/book/security.html
+.. _`logout feature`: https://symfony.com/doc/current/security.html#logging-out
+.. _`PropertyAccess component`: https://symfony.com/components/PropertyAccess

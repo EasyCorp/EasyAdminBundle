@@ -6,23 +6,18 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
 
 class DefaultMenuTest extends AbstractTestCase
 {
-    public function setUp()
-    {
-        parent::setUp();
-
-        $this->initClient(['environment' => 'default_menu']);
-    }
+    protected static $options = ['environment' => 'default_menu'];
 
     public function testCustomBackendHomepage()
     {
-        $this->client->request('GET', '/admin/');
+        static::$client->request('GET', '/admin/');
 
         $this->assertSame(
             '/admin/?action=list&entity=Category',
-            $this->client->getResponse()->headers->get('location')
+            static::$client->getResponse()->headers->get('location')
         );
 
-        $crawler = $this->client->followRedirect();
+        $crawler = static::$client->followRedirect();
         $this->assertCount(0, $crawler->filter('.sidebar-menu li.active'));
     }
 

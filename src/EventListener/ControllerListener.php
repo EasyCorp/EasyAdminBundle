@@ -4,9 +4,8 @@ namespace EasyCorp\Bundle\EasyAdminBundle\EventListener;
 
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
 use Symfony\Component\HttpKernel\Controller\ControllerResolverInterface;
-use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
+use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\HttpKernel\Kernel;
 
 /**
  * Sets the right controller to be executed when entities define custom
@@ -16,9 +15,7 @@ use Symfony\Component\HttpKernel\Kernel;
  */
 class ControllerListener
 {
-    /** @var ConfigManager */
     private $configManager;
-    /** @var ControllerResolverInterface */
     private $resolver;
 
     public function __construct(ConfigManager $configManager, ControllerResolverInterface $resolver)
@@ -30,11 +27,11 @@ class ControllerListener
     /**
      * Exchange default admin controller by custom entity admin controller.
      *
-     * @param FilterControllerEvent $event
+     * @param ControllerEvent $event
      *
      * @throws NotFoundHttpException
      */
-    public function onKernelController(FilterControllerEvent $event)
+    public function onKernelController($event)
     {
         $request = $event->getRequest();
         if ('easyadmin' !== $request->attributes->get('_route')) {
@@ -69,7 +66,7 @@ class ControllerListener
         $newController = $this->resolver->getController($request);
 
         if (false === $newController) {
-            throw new NotFoundHttpException(\sprintf('Unable to find the controller for path "%s". Check the "controller" configuration of the "%s" entity in your EasyAdmin backend.', $request->getPathInfo(), $entityName));
+            throw new NotFoundHttpException(sprintf('Unable to find the controller for path "%s". Check the "controller" configuration of the "%s" entity in your EasyAdmin backend.', $request->getPathInfo(), $entityName));
         }
 
         $event->setController($newController);

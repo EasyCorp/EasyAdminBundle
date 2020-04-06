@@ -1,0 +1,15 @@
+# TEST
+# items in the 'filters' option must refer to a valid property of the related entity
+
+# EXCEPTION
+expected_exception:
+    class: \InvalidArgumentException
+    message_string: 'The "this-property-does-not-exist" filter configured in the "list" view of the "Category" entity refers to a property called "this-property-does-not-exist" which is not defined in that entity. Set the "mapped" option to false if you are defining a filter that is not related to a property of that entity (this is needed for example when filtering by a property of a different entity which is related via a Doctrine association).'
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
+            list:
+                filters: ['this-property-does-not-exist']

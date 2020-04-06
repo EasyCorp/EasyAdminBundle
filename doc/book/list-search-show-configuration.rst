@@ -265,6 +265,9 @@ These are the options that you can define for each field:
   encloses the field contents. In the ``list`` and ``search`` views, this class
   is also applied to the ``<th>`` header of the column associated with this field.
   For example, to align the contents of some column to the right, use ``css_class: text-right``
+* ``permission`` (optional): a string or array defining the role or roles the
+  current user must have to see this field. It's explained later in the
+  :ref:`Security permissions <list-search-show-security>` section.
 * ``template`` (optional): the name of the custom template used to render the
   contents of the field. This option is fully explained later in this chapter.
 * ``type`` (optional): the type of data stored in the property, which affects
@@ -274,8 +277,9 @@ These are the options that you can define for each field:
     ``boolean``, ``date``, ``datetime``, ``datetimetz``, ``decimal``, ``float``,
     ``guid``, ``integer``, ``json_array``, ``object``, ``simple_array``,
     ``smallint``, ``string``, ``text``, ``time``.
-  * Any of the custom EasyAdmin types: ``email``, ``file``, ``image``, ``raw``,
-    ``tel``, ``toggle``, ``url`` (they are explained later in this chapter).
+  * Any of the custom EasyAdmin types: ``avatar``, ``country``` ``email``,
+    ``file``, ``image``, ``raw``, ``tel``, ``toggle``, ``url`` (they are
+    explained later in this chapter).
 
 The fields of the ``list`` and ``search`` views define another option:
 
@@ -495,20 +499,28 @@ parameters, their values override this ``sort`` option. This happens for example
 when defining a different sorting in a custom menu and when clicking on the
 listings columns to reorder the displayed contents.
 
-Filtering Entities
-------------------
+Filtering Results
+-----------------
 
-A common need for backends is to filter the entities included in listings (for
-example: don't display expired offers, display only clients that spend more than
-a given amount, etc.) You can achieve this with the features explained later in
-this chapter to modify the behavior of the ``list``, ``search`` and ``show`` views.
+There are two ways of filtering the results displayed in the ``list`` and
+``search`` views:
 
-However, for simple filters it's more convenient to use the ``dql_filter`` option,
-which defines the conditions passed to the ``WHERE`` clause of the Doctrine query
-used to get the entities displayed in the ``list`` and ``search`` views.
+* **Static filters**: the results are filtered before displaying them. The user
+  can't control (and it's not aware of) the filtering. They are defined with the
+  ``dql_filter``.
+* **Dynamic filters**: they are rendered as a list of form controls in the
+  list/search pages and the user can use them to refine the results displayed.
+  They are defined with the ``filters`` option.
 
-The following example manages the same ``User`` entity in two different ways using
-a basic filter to differentiate each type of user:
+Static Filters (``dql_filter`` Option)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The ``dql_filter`` option lets you define the conditions passed to the ``WHERE``
+clause of the Doctrine query used to get the entities displayed in the ``list``
+and ``search`` views.
+
+The following example manages the same ``User`` entity in two different ways
+using a static filter to differentiate each type of user:
 
 .. code-block:: yaml
 
@@ -523,24 +535,11 @@ a basic filter to differentiate each type of user:
                 class: App\Entity\User
                 list:
                     dql_filter: 'entity.budget <= 100000'
+                    # you can also use container parameters inside the filters
+                    # dql_filter: 'entity.budget <= %customers.budget_threshold%'
 
 The Doctrine DQL expression defined in the ``dql_filter`` option must always use
 ``entity`` as the name of the entity, regardless of your actual entity name.
-
-Since this is a regular YAML configuration file, you can also include container
-parameters inside the filter to use different values depending on the environment
-or even dynamic values:
-
-.. code-block:: yaml
-
-    # config/packages/easy_admin.yaml
-    easy_admin:
-        entities:
-            VipCustomers:
-                class: App\Entity\User
-                list:
-                    dql_filter: 'entity.budget > %customers.budget_threshold%'
-            # ...
 
 The value of the ``dql_filter`` can combine several conditions (in fact, you can
 put anything that is considered valid as a ``WHERE`` clause in a Doctrine query):
@@ -563,8 +562,8 @@ put anything that is considered valid as a ``WHERE`` clause in a Doctrine query)
 
 .. note::
 
-    By default the ``dql_filter`` option from the ``list`` view is also used in the
-    ``search`` view. If you prefer to apply different filters, define the
+    By default the ``dql_filter`` option from the ``list`` view is also used in
+    the ``search`` view. If you prefer to apply different filters, define the
     ``dql_filter`` option explicitly for the ``search`` view:
 
     .. code-block:: yaml
@@ -588,11 +587,278 @@ put anything that is considered valid as a ``WHERE`` clause in a Doctrine query)
     Combine the ``dql_filter`` option with a custom menu (as explained in the next
     chapters) to improve the navigation of the backend.
 
+Dynamic Filters (``filters`` Option)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The ``filters`` option defines the list of fields the user can use to refine the
+list/search results. EasyAdmin can guess the appropriate filter depending on the
+field data type, so in most applications, you only need to list the fields:
+
+.. code-block:: yaml
+
+    # config/packages/easy_admin.yaml
+    easy_admin:
+        entities:
+            Users:
+                class: App\Entity\User
+                list:
+                    filters: ['country', 'status', 'signupDate', 'numPurchases']
+
+Built-in Dynamic Filters
+........................
+
+EasyAdmin provides ready-to-use filters for the most common needs (dates,
+numeric values, collections, etc.). The type of filter is automatically selected
+based on the data type of the property, but you can also define the filter type
+explicitly:
+
+.. code-block:: yaml
+
+    # config/packages/easy_admin.yaml
+    easy_admin:
+        entities:
+            Users:
+                class: App\Entity\User
+                list:
+                    # there is no need to define the 'type' because EasyAdmin can guess it
+                    filters: [{ property: 'numPurchases', type: 'integer' }]
+
+These are the built-in types:
+
+* ``array``: applied by default to array fields. It's rendered as a ``<select>`` list
+  with the condition (equal/not equal) and another ``<select>`` tags input to introduce
+  the comparison value.
+* ``boolean``: applied by default to boolean fields. It's rendered as two
+  radio buttons labeled "Yes" and "No".
+* ``dateinterval``: applied by default to date interval fields. It's rendered as a ``<select>``
+  list with the condition (before/after/etc.) and another ``<select>`` list to choose
+  the comparison value.
+* ``datetime``, ``date`` or ``time``: applied by default to datetime, date or time
+  fields respectively. It's rendered as a ``<select>`` list with the condition
+  (before/after/etc.) and a browser native datepicker to pick the date/time.
+* ``entity``: applied to fields with Doctrine associations (all kinds
+  supported). It's rendered as a ``<select>`` list with the condition (equal/not
+  equal/etc.) and another ``<select>`` list to choose the comparison value.
+* ``integer``, ``decimal`` or ``float``: applied by default to numeric fields.
+  It's rendered as a ``<select>`` list with the condition (higher/lower/equal/etc.) and a
+  ``<input>`` to define the comparison value.
+* ``text`` or ``textarea``: applied by default to string/text fields. It's rendered as a
+  ``<select>`` list with the condition (contains/not contains/etc.) and an ``<input>`` or
+  ``<textarea>`` to define the comparison value.
+
+Custom Dynamic Filters
+......................
+
+If your needs are more specific, you can create your own dynamic filters. A
+filter is a `Symfony Form Type`_ that implements
+``EasyCorp\Bundle\EasyAdminBundle\Form\Filter\FilterInterface``. This interface
+defines only one method:
+
+.. code-block:: php
+
+    /**
+     * $queryBuilder The query builder used in the list action. It's passed to all applied filters
+     * $form         The form related to this filter. Use $form->getParent() to access to all filters and their values
+     * $metadata     The filter configuration and some extra info related to the entity field if it matches. It's empty
+     *               if the filter was created directly in a custom controller (overriding createFiltersForm() method).
+     *
+     * @return void|false Returns false if the filter wasn't applied
+     */
+    public function filter(QueryBuilder $queryBuilder, FormInterface $form, array $metadata);
+
+To make things simpler, you can extend from the abstract
+``EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Filter`` class. Consider this
+example which creates a custom date filter with some special values::
+
+    // src/Form/Filter/DateCalendarFilterType.php
+    class DateCalendarFilterType extends FilterType
+    {
+        public function configureOptions(OptionsResolver $resolver)
+        {
+            $resolver->setDefaults([
+                'choices' => [
+                    'Today' => 'today',
+                    'This month' => 'this_month',
+                    // ...
+                ],
+            ]);
+        }
+
+        public function getParent()
+        {
+            return ChoiceType::class;
+        }
+
+        public function filter(QueryBuilder $queryBuilder, FormInterface $form, array $metadata)
+        {
+            if ('today' === $form->getData()) {
+                // use $metadata['property'] to make this query generic
+                $queryBuilder->andWhere('entity.date = :today')
+                    ->setParameter('today', (new \DateTime('today'))->format('Y-m-d'));
+            }
+
+            // ...
+        }
+    }
+
+After creating the filter PHP class, update the backend config to associate the
+new filter to the field which will use it:
+
+.. code-block:: yaml
+
+    # config/packages/easy_admin.yaml
+    easy_admin:
+        entities:
+            Users:
+                class: App\Entity\User
+                list:
+                    filters:
+                        - property: 'signupDate'
+                          type: 'App\Form\Filter\DateCalendarFilterType'
+                          # optionally you can pass options to the filter class
+                          # type_options: {}
+
+If the options passed to the filter are dynamic, you can't define them in the
+YAML config file. Instead, :ref:`create a custom controller <overriding-the-entity-controller>`
+for your entity and override the ``createFiltersForm()`` method::
+
+    class ProductController extends EasyAdminController
+    {
+        // ...
+
+        protected function createFiltersForm(string $entityName): FormInterface
+        {
+            $form = parent::createFiltersForm($entityName);
+            $form->add('date', DateCalendarFilterType::class, [
+                // here you can pass the dynamic options to the filter
+            ]);
+
+            return $form;
+        }
+    }
+
+By default, each filter must be associated with a property of the entity.
+However, sometimes you need to filter by the property of a related entity
+(e.g. to filter orders by the country of the order customer). In those cases,
+set the ``mapped`` option to ``false`` in the filter or you'll see an exception:
+
+.. code-block:: yaml
+
+    # config/packages/easy_admin.yaml
+    easy_admin:
+        entities:
+            Users:
+                class: App\Entity\Order
+                list:
+                    filters:
+                        # 'country' doesn't exist as a property of 'Order' so it's
+                        # defined as 'not mapped' to avoid errors
+                        - property: 'country'
+                          type: 'App\Form\Filter\CustomerCountryFilterType'
+                          mapped: false
+
+In the custom filter class, you can now add the query related to the associated
+entity::
+
+    // App\Form\Filter\CustomerCountryFilterType
+    // ...
+
+    public function filter(QueryBuilder $queryBuilder, FormInterface $form, array $metadata)
+    {
+        if (null !== $form->getData()) {
+            $queryBuilder
+                ->leftJoin('entity.customer', 'customer')
+                ->andWhere('customer.country = :country')
+                ->setParameter('country', $form->getData());
+        }
+    }
+
+.. TODO: explain and show an example of compound filter forms
+
 Property Types Defined by EasyAdmin
 -----------------------------------
 
 In addition to the Doctrine data types, properties can use any of the following
 data types defined by EasyAdmin.
+
+Avatar Data Type
+~~~~~~~~~~~~~~~~
+
+It displays user avatars as rounded images without borders or shadows. By
+default it considers the given value as the email passed to the Gravatar.com
+service to get the avatar image URL:
+
+.. code-block:: yaml
+
+    # config/packages/easy_admin.yaml
+    easy_admin:
+        entities:
+            Product:
+                class: App\Entity\User
+                list:
+                    fields:
+                        - { property: 'email', type: 'avatar' }
+                        # ...
+
+If your avatar property stores the absolute image URL (or if it's a *getter*
+method which generates it dynamically) set the ``is_image_url`` option to
+``true`` to use that image URL directly:
+
+.. code-block:: yaml
+
+    # config/packages/easy_admin.yaml
+    easy_admin:
+        entities:
+            Product:
+                class: App\Entity\User
+                list:
+                    fields:
+                        - { property: 'twitterAvatarUrl', type: 'avatar', is_image_url: 'true' }
+
+The default size of the avatar image should be correct for most applications,
+but you can control it with the ``height`` option:
+
+.. code-block:: yaml
+
+    # config/packages/easy_admin.yaml
+    easy_admin:
+        entities:
+            Product:
+                class: App\Entity\User
+                list:
+                    fields:
+                        # you can use any numeric value (which is considered the image height in pixels)
+                        - { property: 'email', type: 'avatar', height: 128 }
+
+                        # you can also use these special values: 'sm' (small), 'md' (medium), 'lg' (large), 'xl' (extra large)
+                        - { property: 'email', type: 'avatar', height: 'sm' }
+
+Country Data Type
+~~~~~~~~~~~~~~~~~
+
+It displays the full name and/or flag of the given country code. This code must
+be the two letter code defined in the `ISO 3166-1 alpha-2`_ standard, which is
+the same used by Symfony's `CountryType`_:
+
+.. code-block:: yaml
+
+    # config/packages/easy_admin.yaml
+    easy_admin:
+        entities:
+            Product:
+                class: App\Entity\User
+                list:
+                    fields:
+                        # by default it displays the country name and flag
+                        - { property: 'country', type: 'country' }
+
+                        # display only the country flag
+                        - { property: 'country', type: 'country', with_name: false }
+
+                        # display only the country name
+                        - { property: 'country', type: 'country', with_flag: false }
+                        # ...
+        # ...
 
 Email Data Type
 ~~~~~~~~~~~~~~~
@@ -942,8 +1208,6 @@ must use a special syntax inside ``extends`` to avoid an infinite loop:
         {# ... #}
     {% endblock %}
 
-.. _overriding-the-default-templates-by-configuration:
-
 Using your Own Templates to Display the list/search/show Views
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -1020,10 +1284,88 @@ template. The value of ``template`` can be any valid Twig template path.
     Add an empty ``{{ dump() }}`` call in your custom templates to know which
     variables are passed to them by EasyAdmin.
 
+.. _list-search-show-security:
+
+Security and Permissions
+------------------------
+
+There are several options to hide part of the information displayed in the
+list/search/show views depending on the current user roles. First, you can
+show/hide the entire column associated to a field with the ``permission``
+option:
+
+.. code-block:: yaml
+
+    # config/packages/easy_admin.yaml
+    easy_admin:
+        entities:
+            Product:
+                list:
+                    fields:
+                        # all users will see the first three columns
+                        - name
+                        - price
+                        - stock
+
+                        # only users with this role will see this column
+                        - { property: 'sales', permission: 'ROLE_ADMIN' }
+
+                        # this column will only be displayed for users with one of these roles
+                        # (or all of them, depending on your Symfony app configuration)
+                        # (see https://symfony.com/doc/current/security/access_control.html#access-enforcement)
+                        - { property: 'comission', permission: ['ROLE_SALES', 'ROLE_ADMIN'] }
+        # ...
+
+You can also restrict which items can users see in the "list/search" listings
+and the "show" view thanks to the ``item_permission`` option. The role or roles
+defined in that option are passed to the ``is_granted($roles, $item)`` function
+to decide if the current user can see the given item:
+
+.. code-block:: yaml
+
+    # config/packages/easy_admin.yaml
+    easy_admin:
+        list:
+            # optionally you can define a global permission applied to all entities
+            # each entity can later override this by defining their own item_permission option
+            item_permission: 'ROLE_ADMIN'
+
+        entities:
+            Product:
+                list:
+                    # set this option to an empty string or array to unset the global permission for this entity
+                    item_permission: ''
+            Employees:
+                list:
+                    # this completely overrides the global option (both options are not merged)
+                    item_permission: ['ROLE_SUPER_ADMIN', 'ROLE_HUMAN_RESOURCES']
+        # ...
+
+In the "show" view, if the user doesn't have permission they will see an
+appropriate error message (and you'll see a detailed error message in the
+application logs).
+
+In the "list/search" views, to avoid confusion and pagination errors, if the
+user doesn't have permission to see some items, an empty row will be displayed
+at the bottom of the list with a message explaining that they don't have enough
+permissions to see some items:
+
+.. image:: ../images/easyadmin-list-hidden-results.png
+   :alt: List view with some results hidden because user does not have enough permissions
+
+.. tip::
+
+    Combine the ``item_permission`` option with custom `Symfony security voters`_
+    to better decide if the current user can see any given item.
+
 .. _`date configuration options`: http://php.net/manual/en/function.date.php
 .. _`PHP format specifiers`: http://php.net/manual/en/function.sprintf.php
 .. _`PropertyAccess component`: https://symfony.com/doc/current/components/property_access.html
 .. _`override any part of third-party bundles`: https://symfony.com/doc/current/bundles/override.html
+.. _`Symfony Form Type`: https://symfony.com/doc/current/forms.html
+.. _`ISO 3166-1 alpha-2`: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
+.. _`CountryType`: https://symfony.com/doc/current/reference/forms/types/country.html
+.. _`Symfony security voters`: https://symfony.com/doc/current/security/voters.html
 
 -----
 

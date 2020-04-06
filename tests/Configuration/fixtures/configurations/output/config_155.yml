@@ -1,0 +1,19 @@
+easy_admin:
+    list:
+        batch_actions:
+            custom_batch_action:
+                name: custom_batch_action
+                type: method
+                label: custom-list-label
+                css_class: 'custom-list-class'
+                icon: custom-list-icon
+    entities:
+        Category:
+            list:
+                batch_actions:
+                    custom_batch_action:
+                        name: custom_batch_action
+                        type: method
+                        label: custom-list-label
+                        css_class: 'custom-list-class'
+                        icon: custom-list-icon

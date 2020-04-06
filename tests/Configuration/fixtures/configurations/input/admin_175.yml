@@ -1,0 +1,14 @@
+# TEST
+# 'form' template is applied to 'new' and 'edit' templates unless they define
+# their own templates
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
+            form:
+                template: 'some/custom/template.html.twig'
+            new:
+                template: 'another/custom/template.html.twig'
+            # 'edit' template is not defined so it's inherited from 'form'

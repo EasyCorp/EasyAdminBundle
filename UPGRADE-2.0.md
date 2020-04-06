@@ -42,11 +42,11 @@ to all available services.
 EasyAdmin 1.x provided one base controller extending from Symfony's `Controller`.
 EasyAdmin 2.0 provides two base controllers:
 
-* The first one is the same as in EasyAdmin 1.x: `EasyCorp\Bundle\EasyAdminBundle\AdminController`
+* The first one is the same as in EasyAdmin 1.x: `EasyCorp\Bundle\EasyAdminBundle\Controller\AdminController`
   It extends from the deprecated `Controller` class, so you'll see deprecation
   messages in your logs. Using it will ensure that your app keeps working because
   you can still use `$this->get('service_id')` in the controller.
-* The second one is a new controller called `EasyCorp\Bundle\EasyAdminBundle\EasyAdminController`
+* The second one is a new controller in EasyAdmin 2.x called `EasyCorp\Bundle\EasyAdminBundle\Controller\EasyAdminController`
   It extends from `AbstractController` so you won't get any deprecation message.
   However, your apps may break if they use `$this->get('service_id')` in the
   controller.

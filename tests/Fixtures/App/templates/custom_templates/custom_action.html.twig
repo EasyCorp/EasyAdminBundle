@@ -1,0 +1,10 @@
+{% if item.parent -%}
+    {{ include('@EasyAdmin/default/action.html.twig', {
+        action_href: path('easyadmin', request_parameters|merge({
+            action: 'show',
+            id: item.parent.id
+        }))
+    }, with_context = true) }}
+{%- else -%}
+    <span class="sr-only">No Parent</span>
+{%- endif %}

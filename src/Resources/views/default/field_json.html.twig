@@ -1,10 +1,10 @@
 {% if view == 'show' %}
     {% if value|length > 0 %}
-        <ul>
-            {% for element in value %}
-                <li>{{ element }}</li>
-            {% endfor %}
-        </ul>
+        <div class="large code">
+            <textarea readonly class="form-control">
+                {{ value|json_encode(constant('JSON_PRETTY_PRINT'))|trim }}
+            </textarea>
+        </div>
     {% else %}
         <div class="empty collection-empty">
             {{ include(entity_config.templates.label_empty) }}

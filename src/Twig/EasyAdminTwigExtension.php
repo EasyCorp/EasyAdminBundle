@@ -5,10 +5,15 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Twig;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
 use EasyCorp\Bundle\EasyAdminBundle\Router\EasyAdminRouter;
+use EasyCorp\Bundle\EasyAdminBundle\Security\AuthorizationChecker;
 use Symfony\Component\HttpKernel\Kernel;
+use Symfony\Component\Intl\Countries;
+use Symfony\Component\Intl\Exception\MissingResourceException;
+use Symfony\Component\Intl\Intl;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Component\Security\Http\Logout\LogoutUrlGenerator;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Twig\Environment;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
@@ -27,8 +32,9 @@ class EasyAdminTwigExtension extends AbstractExtension
     private $logoutUrlGenerator;
     /** @var TranslatorInterface|null */
     private $translator;
+    private $authorizationChecker;
 
-    public function __construct(ConfigManager $configManager, PropertyAccessorInterface $propertyAccessor, EasyAdminRouter $easyAdminRouter, bool $debug = false, LogoutUrlGenerator $logoutUrlGenerator = null, $translator = null)
+    public function __construct(ConfigManager $configManager, PropertyAccessorInterface $propertyAccessor, EasyAdminRouter $easyAdminRouter, bool $debug, ?LogoutUrlGenerator $logoutUrlGenerator, $translator, AuthorizationChecker $authorizationChecker)
     {
         $this->configManager = $configManager;
         $this->propertyAccessor = $propertyAccessor;
@@ -36,6 +42,7 @@ class EasyAdminTwigExtension extends AbstractExtension
         $this->debug = $debug;
         $this->logoutUrlGenerator = $logoutUrlGenerator;
         $this->translator = $translator;
+        $this->authorizationChecker = $authorizationChecker;
     }
 
     /**
@@ -54,6 +61,8 @@ class EasyAdminTwigExtension extends AbstractExtension
             new TwigFunction('easyadmin_get_action_for_*_view', [$this, 'getActionConfiguration']),
             new TwigFunction('easyadmin_get_actions_for_*_item', [$this, 'getActionsForItem']),
             new TwigFunction('easyadmin_logout_path', [$this, 'getLogoutPath']),
+            new TwigFunction('easyadmin_read_property', [$this, 'readProperty']),
+            new TwigFunction('easyadmin_is_granted', [$this, 'isGranted']),
         ];
     }
 
@@ -65,6 +74,8 @@ class EasyAdminTwigExtension extends AbstractExtension
         $filters = [
             new TwigFilter('easyadmin_truncate', [$this, 'truncateText'], ['needs_environment' => true]),
             new TwigFilter('easyadmin_urldecode', 'urldecode'),
+            new TwigFilter('easyadmin_form_hidden_params', [$this, 'getFormHiddenParams']),
+            new TwigFilter('easyadmin_filesize', [$this, 'fileSize']),
         ];
 
         if (Kernel::VERSION_ID >= 40200) {
@@ -72,6 +83,14 @@ class EasyAdminTwigExtension extends AbstractExtension
         }
 
         return $filters;
+    }
+
+    public function fileSize(int $bytes): string
+    {
+        $size = ['B', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'];
+        $factor = (int) floor(log($bytes) / log(1024));
+
+        return (int) ($bytes / (1024 ** $factor)).@$size[$factor];
     }
 
     /**
@@ -120,20 +139,20 @@ class EasyAdminTwigExtension extends AbstractExtension
      * property doesn't exist or its value is not accessible. This ensures that
      * the function never generates a warning or error message when calling it.
      *
-     * @param \Twig_Environment $twig
-     * @param string            $view          The view in which the item is being rendered
-     * @param string            $entityName    The name of the entity associated with the item
-     * @param object            $item          The item which is being rendered
-     * @param array             $fieldMetadata The metadata of the actual field being rendered
+     * @param Environment $twig
+     * @param string      $view          The view in which the item is being rendered
+     * @param string      $entityName    The name of the entity associated with the item
+     * @param object      $item          The item which is being rendered
+     * @param array       $fieldMetadata The metadata of the actual field being rendered
      *
      * @return string
      *
      * @throws \Exception
      */
-    public function renderEntityField(\Twig_Environment $twig, $view, $entityName, $item, array $fieldMetadata)
+    public function renderEntityField(Environment $twig, $view, $entityName, $item, array $fieldMetadata)
     {
         $entityConfiguration = $this->configManager->getEntityConfig($entityName);
-        $hasCustomTemplate = 0 !== \strpos($fieldMetadata['template'], '@EasyAdmin/');
+        $hasCustomTemplate = 0 !== strpos($fieldMetadata['template'], '@EasyAdmin/');
         $templateParameters = [];
 
         try {
@@ -199,6 +218,21 @@ class EasyAdminTwigExtension extends AbstractExtension
             $parameters = $this->addAssociationFieldParameters($parameters);
         }
 
+        if ('country' === $fieldType) {
+            $parameters['value'] = null !== $parameters['value'] ? strtoupper($parameters['value']) : null;
+            $parameters['country_name'] = $this->getCountryName($parameters['value']);
+        }
+
+        if ('avatar' === $fieldType) {
+            $parameters['image_height'] = $fieldMetadata['height'];
+
+            if ($fieldMetadata['is_image_url'] ?? false) {
+                $parameters['image_url'] = $parameters['value'];
+            } else {
+                $parameters['image_url'] = null === $parameters['value'] ? null : sprintf('https://www.gravatar.com/avatar/%s?s=%d&d=mp', md5($parameters['value']), $parameters['image_height']);
+            }
+        }
+
         // when a virtual field doesn't define it's type, consider it a string
         if (true === $fieldMetadata['virtual'] && null === $parameters['field_options']['dataType']) {
             $parameters['value'] = (string) $parameters['value'];
@@ -210,13 +244,13 @@ class EasyAdminTwigExtension extends AbstractExtension
     private function addImageFieldParameters(array $templateParameters)
     {
         // add the base path only to images that are not absolute URLs (http or https) or protocol-relative URLs (//)
-        if (null !== $templateParameters['value'] && 0 === \preg_match('/^(http[s]?|\/\/)/i', $templateParameters['value'])) {
+        if (null !== $templateParameters['value'] && 0 === preg_match('/^(http[s]?|\/\/)/i', $templateParameters['value'])) {
             $templateParameters['value'] = isset($templateParameters['field_options']['base_path'])
-                ? \rtrim($templateParameters['field_options']['base_path'], '/').'/'.\ltrim($templateParameters['value'], '/')
-                : '/'.\ltrim($templateParameters['value'], '/');
+                ? rtrim($templateParameters['field_options']['base_path'], '/').'/'.ltrim($templateParameters['value'], '/')
+                : '/'.ltrim($templateParameters['value'], '/');
         }
 
-        $templateParameters['uuid'] = \md5($templateParameters['value']);
+        $templateParameters['uuid'] = md5($templateParameters['value']);
 
         return $templateParameters;
     }
@@ -224,13 +258,13 @@ class EasyAdminTwigExtension extends AbstractExtension
     private function addFileFieldParameters(array $templateParameters)
     {
         // add the base path only to files that are not absolute URLs (http or https) or protocol-relative URLs (//)
-        if (null !== $templateParameters['value'] && 0 === \preg_match('/^(http[s]?|\/\/)/i', $templateParameters['value'])) {
+        if (null !== $templateParameters['value'] && 0 === preg_match('/^(http[s]?|\/\/)/i', $templateParameters['value'])) {
             $templateParameters['value'] = isset($templateParameters['field_options']['base_path'])
-                ? \rtrim($templateParameters['field_options']['base_path'], '/').'/'.\ltrim($templateParameters['value'], '/')
-                : '/'.\ltrim($templateParameters['value'], '/');
+                ? rtrim($templateParameters['field_options']['base_path'], '/').'/'.ltrim($templateParameters['value'], '/')
+                : '/'.ltrim($templateParameters['value'], '/');
         }
 
-        $templateParameters['filename'] = $templateParameters['field_options']['filename'] ?? \basename($templateParameters['value']);
+        $templateParameters['filename'] = $templateParameters['field_options']['filename'] ?? basename($templateParameters['value']);
 
         return $templateParameters;
     }
@@ -253,10 +287,10 @@ class EasyAdminTwigExtension extends AbstractExtension
             }
 
             // get the string representation of the associated *-to-one entity
-            if (\method_exists($templateParameters['value'], '__toString')) {
+            if (method_exists($templateParameters['value'], '__toString')) {
                 $templateParameters['value'] = (string) $templateParameters['value'];
             } elseif (null !== $primaryKeyValue) {
-                $templateParameters['value'] = \sprintf('%s #%s', $targetEntityConfig['name'], $primaryKeyValue);
+                $templateParameters['value'] = sprintf('%s #%s', $targetEntityConfig['name'], $primaryKeyValue);
             } else {
                 $templateParameters['value'] = null;
             }
@@ -345,7 +379,7 @@ class EasyAdminTwigExtension extends AbstractExtension
         ];
         $excludedActions = $actionsExcludedForItems[$view];
 
-        return \array_filter($viewActions, function ($action) use ($excludedActions, $disabledActions) {
+        return array_filter($viewActions, function ($action) use ($excludedActions, $disabledActions) {
             return !\in_array($action['name'], $excludedActions) && !\in_array($action['name'], $disabledActions);
         });
     }
@@ -359,7 +393,7 @@ class EasyAdminTwigExtension extends AbstractExtension
      *
      * @return string
      */
-    public function truncateText(\Twig_Environment $env, $value, $length = 64, $preserve = false, $separator = '...')
+    public function truncateText(Environment $env, $value, $length = 64, $preserve = false, $separator = '...')
     {
         try {
             $value = (string) $value;
@@ -367,20 +401,33 @@ class EasyAdminTwigExtension extends AbstractExtension
             $value = '';
         }
 
-        if (\mb_strlen($value, $env->getCharset()) > $length) {
+        if (mb_strlen($value, $env->getCharset()) > $length) {
             if ($preserve) {
                 // If breakpoint is on the last word, return the value without separator.
-                if (false === ($breakpoint = \mb_strpos($value, ' ', $length, $env->getCharset()))) {
+                if (false === ($breakpoint = mb_strpos($value, ' ', $length, $env->getCharset()))) {
                     return $value;
                 }
 
                 $length = $breakpoint;
             }
 
-            return \rtrim(\mb_substr($value, 0, $length, $env->getCharset())).$separator;
+            return rtrim(mb_substr($value, 0, $length, $env->getCharset())).$separator;
         }
 
         return $value;
+    }
+
+    public function getFormHiddenParams(array $params, string $prefix): iterable
+    {
+        foreach ($params as $key => $value) {
+            $key = $prefix.'['.$key.']';
+
+            if (\is_array($value)) {
+                yield from $this->getFormHiddenParams($value, $key);
+            } else {
+                yield $key => $value;
+            }
+        }
     }
 
     /**
@@ -411,6 +458,50 @@ class EasyAdminTwigExtension extends AbstractExtension
             return $this->logoutUrlGenerator->getLogoutPath();
         } catch (\Exception $e) {
             return;
+        }
+    }
+
+    public function readProperty($objectOrArray, ?string $propertyPath)
+    {
+        if (null === $propertyPath) {
+            return null;
+        }
+
+        if ('__toString' === $propertyPath) {
+            try {
+                return (string) $objectOrArray;
+            } catch (\Exception $e) {
+                return null;
+            }
+        }
+
+        try {
+            return $this->propertyAccessor->getValue($objectOrArray, $propertyPath);
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
+
+    public function isGranted($permissions, $subject = null): bool
+    {
+        return $this->authorizationChecker->isGranted($permissions, $subject);
+    }
+
+    private function getCountryName(?string $countryCode): ?string
+    {
+        if (null === $countryCode) {
+            return null;
+        }
+
+        // Compatibility with Symfony versions before 4.3
+        if (!class_exists(Countries::class)) {
+            return Intl::getRegionBundle()->getCountryName($countryCode) ?? null;
+        }
+
+        try {
+            return Countries::getName($countryCode);
+        } catch (MissingResourceException $e) {
+            return null;
         }
     }
 }

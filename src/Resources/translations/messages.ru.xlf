@@ -5,7 +5,7 @@
             <!-- generic actions displayed on buttons and links -->
             <trans-unit id="action.new">
                 <source>action.new</source>
-                <target>Создать %entity_name%</target>
+                <target>Создать %entity_label%</target>
             </trans-unit>
             <trans-unit id="action.show">
                 <source>action.show</source>
@@ -34,6 +34,10 @@
             <trans-unit id="action.list">
                 <source>action.list</source>
                 <target>Вернуться к списку</target>
+            </trans-unit>
+            <trans-unit id="action.deselect">
+                <source>action.deselect</source>
+                <target>Снять выбор</target>
             </trans-unit>
             <trans-unit id="label.form.empty_value">
                 <source>label.form.empty_value</source>

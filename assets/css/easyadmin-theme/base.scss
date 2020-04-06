@@ -13,6 +13,21 @@ body {
     -moz-osx-font-smoothing: unset;
 }
 
+// Needed because we always add 'fa fa-' to the given icon name, so these
+// styles allow to override that with icon names such as 'symfony fab'
+i.fa, i.fas {
+    font-family: 'Font Awesome 5 Free' !important;
+}
+i.fab {
+    font-family: 'Font Awesome 5 Brands' !important;
+}
+i.far, i.fal {
+    font-family: 'Font Awesome 5 Pro' !important;
+}
+i.fad {
+    font-family: 'Font Awesome 5 Duotone' !important;
+}
+
 /* Layout
    ========================================================================= */
 .main-header { grid-area: header; }
@@ -63,6 +78,7 @@ body.easyadmin-sidebar-width-compact .wrapper {
 }
 .main-header .navbar {
     display: flex;
+    padding: 0;
 }
 
 .main-header #header-logo {
@@ -122,21 +138,27 @@ body.easyadmin-mobile-sidebar-visible .main-sidebar {
 
 // Content bar at the top of the page (e.g. user menu)
 .navbar-custom-menu .user {
-    align-items: baseline;
+    align-items: center;
     color: var(--text-color-light);
     cursor: pointer;
     display: flex;
 }
-.navbar-custom-menu .user-icon {
-    font-size: 16px;
-    line-height: 1;
-    margin-right: 4px;
+.navbar-custom-menu .user-avatar {
+    border-radius: 50%;
+    box-shadow: 0 2px 5px 0 hsla(231, 23%, 30%, .1), 0 1px 1px 0 hsla(0, 0, 0, .07);
+    font-size: 21px;
+    max-height: 21px;
+    max-width: 21px;
 }
+.navbar-custom-menu .user-name {
+    margin-left: 6px;
+}
+
 .navbar-custom-menu .user.user-is-impersonated {
     color: var(--color-danger);
 }
 
-.user-details .user-name {
+.user-details .user-details-name {
     font-size: var(--font-size-base);
     font-weight: 500;
     margin-bottom: 0;
@@ -206,17 +228,12 @@ body.easyadmin-mobile-sidebar-visible .main-sidebar {
 }
 
 .content-header {
-    align-items: center;
     border-bottom: var(--border-width) var(--border-style) var(--border-color);
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+    flex-direction: column;
     padding: 15px 17px 15px 20px;
 }
-// when contents define help, change vertical align to 'flex-start' because it looks better than 'center'
-.content-header.has-content-help {
-    align-items: flex-start;
-}
+
 // reduce the padding in 'list' pages to compensate for the height of '.global-actions'
 .list .content-header {
     padding-top: 12px;
@@ -224,7 +241,12 @@ body.easyadmin-mobile-sidebar-visible .main-sidebar {
 }
 
 .content-header-title {
+    align-self: center;
     flex: 1;
+}
+// when contents define help, change vertical align to 'flex-start' because it looks better than 'center'
+.content-header.has-content-help .content-header-title {
+    align-self: flex-end;
 }
 .content-header-title .title {
     font-size: var(--font-size-lg);
@@ -241,6 +263,13 @@ body.easyadmin-mobile-sidebar-visible .main-sidebar {
 }
 
 .global-actions .btn {
+    margin-left: 15px;
+}
+
+.batch-actions form {
+    display: flex;
+}
+.batch-actions .btn {
     margin-left: 15px;
 }
 
@@ -262,6 +291,7 @@ body.easyadmin-mobile-sidebar-visible .main-sidebar {
 .content-header-help {
     color: var(--text-muted);
     font-size: var(--font-size-sm);
+    margin-top: 12px;
 }
 
 .content-footer {
@@ -292,20 +322,25 @@ form .content-footer {
     justify-content: space-between;
 }
 
-.pager .btn {
-    display: inline-block;
+.pager ul {
+    margin-bottom: 0;
 }
-.pager .btn + .btn {
-    margin-left: -2px;
-}
-.pager .btn:first-child {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
+.pager .page-item:first-child {
     transform: translateX(1px);
 }
-.pager .btn:last-child {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
+.pager .page-item {
+    position: relative;
+    z-index: 1;
+}
+.pager .page-item:hover {
+    z-index: 2;
+}
+.pager .page-item.disabled {
+    cursor: not-allowed;
+    z-index: 0;
+}
+.pager .page-item i {
+    vertical-align: middle;
 }
 
 /* Modal for delete action */
@@ -375,6 +410,12 @@ body.show .field-text .form-widget .form-control {
     min-height: 60px;
 }
 
+body.show .field-avatar .image-avatar {
+    border-radius: 50%;
+    border: 0;
+    box-shadow: none;
+}
+
 // Flash messages
 #flash-messages {
     @media(min-width: 992px) {
@@ -386,4 +427,20 @@ body.show .field-text .form-widget .form-control {
 .alert {
     box-shadow: var(--box-shadow-lg);
     margin-bottom: 15px;
+    padding-right: 48px;
+    position: relative;
+}
+.alert .alert-close {
+    background: transparent;
+    border: 0;
+    color: inherit;
+    cursor: pointer;
+    font-size: 24px;
+    font-weight: bold;
+    line-height:1;
+    opacity: 0.5;
+    padding: 0 3px;
+    position: absolute;
+    right: 13px;
+    top: 9px;
 }

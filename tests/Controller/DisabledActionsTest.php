@@ -6,12 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
 
 class DisabledActionsTest extends AbstractTestCase
 {
-    public function setUp()
-    {
-        parent::setUp();
-
-        $this->initClient(['environment' => 'disabled_actions']);
-    }
+    protected static $options = ['environment' => 'disabled_actions'];
 
     public function testAssociationLinksInListView()
     {
@@ -19,7 +14,7 @@ class DisabledActionsTest extends AbstractTestCase
 
         $this->assertSame(
             'user1',
-            \trim($crawler->filter('td.association')->first()->html()),
+            trim($crawler->filter('td.association')->first()->html()),
             'The "buyer" field in the "list" view of the "Purchase" item does not contain a link because the "show" action is disabled for the "User" entity.'
         );
     }
@@ -30,12 +25,12 @@ class DisabledActionsTest extends AbstractTestCase
         // 'show' view of the first 'Purchase' entity, browse the 'list' view
         // and get the 'id' from the first row of the listing
         $crawler = $this->requestListView('Purchase');
-        $firstPurchaseId = \trim($crawler->filter('td')->first()->text());
+        $firstPurchaseId = trim($crawler->filter('td')->first()->text());
         $crawler = $this->requestShowView('Purchase', $firstPurchaseId);
 
         $this->assertSame(
             'user1',
-            \trim($crawler->filter('.field-association:contains("Buyer") .form-control')->first()->html()),
+            trim($crawler->filter('.field-association:contains("Buyer") .form-control')->first()->html()),
             'The "buyer" field in the "show" view of the "Purchase" item does not contain a link because the "show" action is disabled for the "User" entity.'
         );
     }
@@ -46,7 +41,7 @@ class DisabledActionsTest extends AbstractTestCase
 
         $this->assertContains(
             'The requested &quot;show&quot; action is not allowed for the &quot;User&quot; entity.',
-            $this->client->getResponse()->getContent()
+            static::$client->getResponse()->getContent()
         );
     }
 
@@ -65,11 +60,11 @@ class DisabledActionsTest extends AbstractTestCase
     {
         $crawler = 'edit' === $view ? $this->requestEditView($entityName) : $this->requestNewView($entityName);
         $form = $crawler->selectButton('Save changes')->form([
-            \strtolower($entityName).'[name]' => 'New Category Name',
+            strtolower($entityName).'[name]' => 'New Category Name',
         ]);
-        $this->client->submit($form);
+        static::$client->submit($form);
 
-        $this->assertContains($expectedRedirectionLocation, $this->client->getResponse()->headers->get('location'));
+        $this->assertContains($expectedRedirectionLocation, static::$client->getResponse()->headers->get('location'));
     }
 
     public function provideRedirections()

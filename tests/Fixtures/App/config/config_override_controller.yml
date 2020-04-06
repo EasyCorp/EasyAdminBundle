@@ -3,4 +3,4 @@ imports:
 
 framework:
     # This file overrides the EasyAdmin controller
-    router: { resource: "%kernel.root_dir%/config/routing_override_controller.yml" }
+    router: { resource: "%kernel.project_dir%/config/routing_override_controller.yml" }

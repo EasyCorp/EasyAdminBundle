@@ -6,10 +6,11 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
 
 class MultipleConfigSyntaxTest extends AbstractTestCase
 {
+    protected static $options = ['environment' => 'multiple_config_syntax'];
+
     public function testConfigurationInDifferentFiles()
     {
-        $this->initClient(['environment' => 'multiple_config_syntax']);
-        $backendConfig = $this->client->getContainer()->get('easyadmin.config.manager')->getBackendConfig();
+        $backendConfig = static::$client->getContainer()->get('easyadmin.config.manager')->getBackendConfig();
 
         $expectedEntityNames = [
             'Product', 'Product2', 'Product3', 'Product4', 'Inventory', 'Product22', 'Product5', 'Inventory2',

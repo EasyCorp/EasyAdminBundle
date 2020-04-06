@@ -1,0 +1,58 @@
+{% trans_default_domain easyadmin_config('translation_domain') %}
+{% extends easyadmin_config('design.templates.layout') %}
+
+{% block body_class 'page-login' %}
+
+{% block wrapper_wrapper %}
+    {% set _username_label = username_label is defined ? username_label|trans : 'login.username'|trans({}, 'EasyAdminBundle') %}
+    {% set _password_label = password_label is defined ? password_label|trans : 'login.password'|trans({}, 'EasyAdminBundle') %}
+    {% set _sign_in_label = sign_in_label is defined ? sign_in_label|trans : 'login.sign_in'|trans({}, 'EasyAdminBundle') %}
+
+    <div class="login-wrapper">
+        <header class="main-header mb-4">
+            <div id="header-logo">
+                {% block header_logo %}
+                    <a class="logo {{ easyadmin_config('site_name')|length > 14 ? 'logo-long' }}" title="{{ easyadmin_config('site_name')|striptags }}" href="{{ path('easyadmin') }}">
+                        {{ easyadmin_config('site_name')|raw }}
+                    </a>
+                {% endblock header_logo %}
+            </div>
+        </header>
+
+        {% if error|default(false) %}
+            <div class="w-100 alert alert-danger">
+                {{ error.messageKey|trans(error.messageData, 'security') }}
+            </div>
+        {% endif %}
+
+        <section class="content">
+            <form method="post" action="{{ action|default('') }}">
+                {% if csrf_token_intention|default(false) %}
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token(csrf_token_intention) }}">
+                {% endif %}
+
+                <input type="hidden" name="{{ target_path_parameter|default('_target_path') }}" value="{{ target_path|default(path('easyadmin')) }}" />
+
+                <div class="form-group field-text">
+                    <label for="username" class="sr-only form-control-label required">{{ _username_label }}</label>
+                    <div class="form-widget form-widget-with-icon">
+                        <i class="fa fa-fw fa-user"></i>
+                        <input type="text" id="username" name="{{ username_parameter|default('_username') }}" class="form-control" placeholder="{{ _username_label }}" value="{{ last_username|default('') }}" required autofocus>
+                    </div>
+                </div>
+
+                <div class="form-group field-password">
+                    <label for="password" class="sr-only form-control-label required">{{ _password_label }}</label>
+                    <div class="form-widget form-widget-with-icon">
+                        <i class="fa fa-fw fa-lock"></i>
+                        <input type="password" id="password" name="{{ password_parameter|default('_password') }}" class="form-control" placeholder="{{ _password_label }}" required>
+                    </div>
+                </div>
+
+                <div class="form-group field-button">
+                    <button type="submit" class="btn btn-primary btn-lg btn-block" onclick="this.form.submit(); this.disabled=true;">{{ _sign_in_label }}</button>
+                </div>
+            </form>
+        </section>
+    </div>
+{% endblock %}

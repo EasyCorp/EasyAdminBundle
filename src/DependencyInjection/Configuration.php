@@ -19,6 +19,7 @@ class Configuration implements ConfigurationInterface
         $rootNode = $this->getRootNode($treeBuilder, 'easy_admin');
 
         $this->addGlobalOptionsSection($rootNode);
+        $this->addUserSection($rootNode);
         $this->addDesignSection($rootNode);
         $this->addViewsSection($rootNode);
         $this->addEntitiesSection($rootNode);
@@ -84,7 +85,39 @@ class Configuration implements ConfigurationInterface
                         ->thenInvalid('The translation_domain option cannot be an empty string (use false to disable translations).')
                     ->end()
                     ->defaultValue('messages')
-                    ->info('The translation domain used to translate the labels, titles and help messages of all entities.')
+                    ->info('The translation domain used to translate the main menu and the labels, titles and help messages of all entities.')
+                ->end()
+            ->end()
+        ;
+    }
+
+    private function addUserSection(ArrayNodeDefinition $rootNode)
+    {
+        $rootNode
+            ->children()
+                ->arrayNode('user')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->booleanNode('display_name')
+                            ->defaultTrue()
+                            ->info('If true, the user name is displayed in the logged user section.')
+                        ->end()
+
+                        ->booleanNode('display_avatar')
+                            ->defaultTrue()
+                            ->info('If true, the user avatar image is displayed in the logged user section.')
+                        ->end()
+
+                        ->scalarNode('name_property_path')
+                            ->defaultValue('__toString')
+                            ->info('A valid PropertyPath expression used to get the value of the user name (by default, __toString() is used).')
+                        ->end()
+
+                        ->scalarNode('avatar_property_path')
+                            ->defaultNull()
+                            ->info('A valid PropertyPath expression used to get the value of the avatar image path which is used as the "src" attribute of the <img> element.')
+                        ->end()
+                    ->end()
                 ->end()
             ->end()
         ;
@@ -108,10 +141,10 @@ class Configuration implements ConfigurationInterface
                             ->validate()
                                 // if present, remove the trailing ';' to avoid CSS issues
                                 ->ifTrue(function ($v) {
-                                    return ';' === \trim($v)[-1];
+                                    return ';' === trim($v)[-1];
                                 })
                                 ->then(function ($v) {
-                                    return \trim(\mb_substr(\trim($v), 0, -1));
+                                    return trim(mb_substr(trim($v), 0, -1));
                                 })
                             ->end()
                         ->end()
@@ -153,7 +186,7 @@ class Configuration implements ConfigurationInterface
                                                 'jpg' => 'image/jpeg',
                                                 'jpeg' => 'image/jpeg',
                                             ];
-                                            if (!isset($v['mime_type']) && isset($mimeTypes[$ext = \pathinfo($v['path'], PATHINFO_EXTENSION)])) {
+                                            if (!isset($v['mime_type']) && isset($mimeTypes[$ext = pathinfo($v['path'], PATHINFO_EXTENSION)])) {
                                                 $v['mime_type'] = $mimeTypes[$ext];
                                             } elseif (!isset($v['mime_type'])) {
                                                 $v['mime_type'] = null;
@@ -181,13 +214,16 @@ class Configuration implements ConfigurationInterface
                                 ->scalarNode('list')->info('Used to render the listing page and the search results page')->end()
                                 ->scalarNode('new')->info('Used to render the page where new entities are created')->end()
                                 ->scalarNode('show')->info('Used to render the contents stored by a given entity')->end()
+                                ->scalarNode('action')->info('Used to render an action for a given entity')->end()
                                 ->scalarNode('exception')->info('Used to render the error page when some exception happens')->end()
                                 ->scalarNode('flash_messages')->info('Used to render the notification area were flash messages are displayed')->end()
                                 ->scalarNode('paginator')->info('Used to render the paginator in the list page')->end()
                                 ->scalarNode('field_array')->info('Used to render array field types')->end()
                                 ->scalarNode('field_association')->info('Used to render fields that store Doctrine associations')->end()
+                                ->scalarNode('field_avatar')->info('Used to render fields related to user avatar images')->end()
                                 ->scalarNode('field_bigint')->info('Used to render bigint field types')->end()
                                 ->scalarNode('field_boolean')->info('Used to render boolean field types')->end()
+                                ->scalarNode('field_country')->info('Used to render the country names and/or flags')->end()
                                 ->scalarNode('field_date')->info('Used to render date and date_immutable field types')->end()
                                 ->scalarNode('field_datetime')->info('Used to render datetime and datetime_immutable field types')->end()
                                 ->scalarNode('field_datetimetz')->info('Used to render datetimetz field types')->end()
@@ -239,9 +275,21 @@ class Configuration implements ConfigurationInterface
                             ->prototype('variable')->end()
                             ->info('The list of actions enabled in the "list" view.')
                         ->end()
+                        ->booleanNode('collapse_actions')
+                            ->defaultValue(false)
+                            ->info('If true, collapse the list of actions enabled in the "list" view.')
+                        ->end()
+                        ->arrayNode('batch_actions')
+                            ->prototype('variable')->end()
+                            ->info('The list of batch actions enabled in the "list" view.')
+                        ->end()
                         ->integerNode('max_results')
                             ->defaultValue(15)
                             ->info('The maximum number of items to show on listing and search pages.')
+                        ->end()
+                        ->scalarNode('item_permission')
+                            ->defaultNull()
+                            ->info('The permission or array of permissions that the user must have to see the list items')
                         ->end()
                     ->end()
                 ->end()
@@ -265,6 +313,10 @@ class Configuration implements ConfigurationInterface
                             ->prototype('variable')->end()
                             ->info('The list of actions enabled in the "edit" view.')
                         ->end()
+                        ->scalarNode('item_permission')
+                            ->defaultNull()
+                            ->info('The permission or array of permissions that the user must have to edit the item')
+                        ->end()
                     ->end()
                 ->end()
 
@@ -277,6 +329,10 @@ class Configuration implements ConfigurationInterface
                         ->arrayNode('actions')
                             ->prototype('variable')->end()
                             ->info('The list of actions enabled in the "new" view.')
+                        ->end()
+                        ->scalarNode('item_permission')
+                            ->defaultNull()
+                            ->info('The permission or array of permissions that the user must have to create new items')
                         ->end()
                     ->end()
                 ->end()
@@ -294,6 +350,10 @@ class Configuration implements ConfigurationInterface
                         ->integerNode('max_results')
                             ->defaultValue(10)
                             ->info('The maximum number of items displayed for related fields in the show page and for autocomplete fields in the new/edit pages.')
+                        ->end()
+                        ->scalarNode('item_permission')
+                            ->defaultNull()
+                            ->info('The permission or array of permissions that the user must have to see the item')
                         ->end()
                     ->end()
                 ->end()
@@ -319,7 +379,7 @@ class Configuration implements ConfigurationInterface
     private function getRootNode(TreeBuilder $treeBuilder, $name)
     {
         // BC layer for symfony/config 4.1 and older
-        if (!\method_exists($treeBuilder, 'getRootNode')) {
+        if (!method_exists($treeBuilder, 'getRootNode')) {
             return $treeBuilder->root($name);
         }
 

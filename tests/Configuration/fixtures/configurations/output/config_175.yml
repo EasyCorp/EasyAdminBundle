@@ -1,0 +1,8 @@
+easy_admin:
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
+            new:
+                template: 'another/custom/template.html.twig'
+            edit:
+                template: 'some/custom/template.html.twig'

@@ -6,12 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
 
 class AutocompleteTest extends AbstractTestCase
 {
-    public function setUp()
-    {
-        parent::setUp();
-
-        $this->initClient(['environment' => 'autocomplete']);
-    }
+    protected static $options = ['environment' => 'autocomplete'];
 
     /**
      * @dataProvider provideMissingParameters
@@ -22,7 +17,7 @@ class AutocompleteTest extends AbstractTestCase
 
         $this->assertSame(
             ['results' => []],
-            $this->client->getContainer()->get('easyadmin.autocomplete')->find($entity, $query),
+            static::$client->getContainer()->get('easyadmin.autocomplete')->find($entity, $query),
             'Some of the parameters required for autocomplete are missing.'
         );
     }
@@ -34,17 +29,17 @@ class AutocompleteTest extends AbstractTestCase
     public function testAutocompleteWrongEntity()
     {
         $this->getBackendHomepage();
-        $this->client->getContainer()->get('easyadmin.autocomplete')->find('ThisEntityDoesNotExist', 'John Doe');
+        static::$client->getContainer()->get('easyadmin.autocomplete')->find('ThisEntityDoesNotExist', 'John Doe');
     }
 
     public function testAutocompleteText()
     {
         $this->getBackendHomepage();
         // the query is 'Parent Categ' instead of 'Parent Category' to better test the autocomplete
-        $autocomplete = $this->client->getContainer()->get('easyadmin.autocomplete')->find('Category', 'Parent Categ');
+        $autocomplete = static::$client->getContainer()->get('easyadmin.autocomplete')->find('Category', 'Parent Categ');
 
         // the results are the first batch of 10 parent categories
-        foreach (\range(1, 10) as $i => $n) {
+        foreach (range(1, 10) as $i => $n) {
             $this->assertSame($n, $autocomplete['results'][$i]['id']);
             $this->assertSame('Parent Category #'.$n, $autocomplete['results'][$i]['text']);
         }
@@ -53,7 +48,7 @@ class AutocompleteTest extends AbstractTestCase
     public function testAutocompleteNumbers()
     {
         $this->getBackendHomepage();
-        $autocomplete = $this->client->getContainer()->get('easyadmin.autocomplete')->find('Category', 21);
+        $autocomplete = static::$client->getContainer()->get('easyadmin.autocomplete')->find('Category', 21);
 
         $this->assertSame(
             [
@@ -68,10 +63,10 @@ class AutocompleteTest extends AbstractTestCase
     {
         $this->getBackendHomepage();
         // testing page 2
-        $autocomplete = $this->client->getContainer()->get('easyadmin.autocomplete')->find('Category', 'Parent Categ', 2);
+        $autocomplete = static::$client->getContainer()->get('easyadmin.autocomplete')->find('Category', 'Parent Categ', 2);
 
         // the results are the second batch of 10 parent categories
-        foreach (\range(11, 20) as $i => $n) {
+        foreach (range(11, 20) as $i => $n) {
             $this->assertSame($n, $autocomplete['results'][$i]['id']);
             $this->assertSame('Parent Category #'.$n, $autocomplete['results'][$i]['text']);
         }

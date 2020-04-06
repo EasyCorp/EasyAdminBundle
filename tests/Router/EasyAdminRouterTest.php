@@ -11,18 +11,18 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
  */
 final class EasyAdminRouterTest extends AbstractTestCase
 {
+    protected static $options = ['environment' => 'default_backend'];
+
     /**
      * @var EasyAdminRouter
      */
     private $router;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
-        $this->initClient(['environment' => 'default_backend']);
-
-        $this->router = $this->client->getContainer()->get('easyadmin.router');
+        $this->router = static::$client->getContainer()->get('easyadmin.router');
     }
 
     /**
@@ -35,7 +35,7 @@ final class EasyAdminRouterTest extends AbstractTestCase
         $this->assertContains('entity='.$expectEntity, $url);
         $this->assertContains('action='.$action, $url);
 
-        foreach (\array_merge($parameters, $expectParameters) as $key => $value) {
+        foreach (array_merge($parameters, $expectParameters) as $key => $value) {
             $this->assertContains($key.'='.$value, $url);
         }
     }

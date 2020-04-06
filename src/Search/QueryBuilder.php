@@ -94,8 +94,10 @@ class QueryBuilder
 
         $customDataTypeMap = [];
 
-        foreach ($entityConfig['search']['types'] as $typeName => $typeDataTypes) {
-            $customDataTypeMap[$typeName] = $typeDataTypes;
+        if (isset($entityConfig['search']['types'])) {
+            foreach ($entityConfig['search']['types'] as $typeName => $typeDataTypes) {
+                $customDataTypeMap[$typeName] = $typeDataTypes;
+            }
         }
 
         foreach ($entityConfig['search']['fields'] as $fieldName => $metadata) {

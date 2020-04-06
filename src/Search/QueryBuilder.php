@@ -91,6 +91,13 @@ class QueryBuilder
 
         $queryParameters = [];
         $entitiesAlreadyJoined = [];
+
+        $customDataTypeMap = [];
+
+        foreach ($entityConfig['search']['types'] as $typeName => $typeDataTypes) {
+            $customDataTypeMap[$typeName] = $typeDataTypes;
+        }
+
         foreach ($entityConfig['search']['fields'] as $fieldName => $metadata) {
             $entityName = 'entity';
             if ($this->isDoctrineAssociation($classMetadata, $fieldName)) {
@@ -111,12 +118,12 @@ class QueryBuilder
                 }
             }
 
-            $isSmallIntegerField = 'smallint' === $metadata['dataType'];
-            $isIntegerField = 'integer' === $metadata['dataType'];
-            $isNumericField = \in_array($metadata['dataType'], ['number', 'bigint', 'decimal', 'float']);
+            $isSmallIntegerField = $this->isType('smallint', $metadata['dataType'], ['smallint'], $customDataTypeMap);
+            $isIntegerField = $this->isType('integer', $metadata['dataType'], ['integer'], $customDataTypeMap);
+            $isNumericField = $this->isType('numeric', $metadata['dataType'], ['number', 'bigint', 'decimal', 'float'], $customDataTypeMap);
             // 'citext' is a PostgreSQL extension (https://github.com/EasyCorp/EasyAdminBundle/issues/2556)
-            $isTextField = \in_array($metadata['dataType'], ['string', 'text', 'citext', 'array', 'simple_array']);
-            $isGuidField = \in_array($metadata['dataType'], ['guid', 'uuid']);
+            $isTextField = $this->isType('text', $metadata['dataType'], ['string', 'text', 'citext', 'array', 'simple_array'], $customDataTypeMap);
+            $isGuidField = $this->isType('guid', $metadata['dataType'], ['guid', 'uuid'], $customDataTypeMap);
 
             // this complex condition is needed to avoid issues on PostgreSQL databases
             if (
@@ -161,6 +168,15 @@ class QueryBuilder
         }
 
         return $queryBuilder;
+    }
+
+    private function isType(string $type, string $currentType, array $defaultTypes, array $customTypeMap): bool
+    {
+        $customTypes = [];
+        if (isset($customTypeMap[$type])) {
+            $customTypes = $customTypeMap[$type];
+        }
+        return \in_array($currentType, array_merge($defaultTypes, $customTypes));
     }
 
     /**

@@ -178,6 +178,7 @@ class QueryBuilder
         if (isset($customTypeMap[$type])) {
             $customTypes = $customTypeMap[$type];
         }
+
         return \in_array($currentType, array_merge($defaultTypes, $customTypes));
     }
 

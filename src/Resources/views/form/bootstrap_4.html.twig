@@ -45,7 +45,7 @@
         });
         {% endset %}
 
-        <div class="field-collection-item-row">
+        <div class="field-collection-item-row{% if compound %} field-collection-compound-item-row{% endif %}">
             {{ parent() }}
 
             <a class="field-collection-item-action" id="easyadmin-remove-collection-item-{{ form.vars.id }}" href="#" onclick="{{ remove_item_javascript|raw }}; return false;" title="{{ 'action.remove_item'|trans({}, 'EasyAdminBundle') }}">

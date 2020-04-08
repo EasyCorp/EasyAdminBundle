@@ -116,24 +116,24 @@ final class ActionFactory
 
     private function generateActionUrl(string $currentAction, Request $request, ActionDto $actionDto, ?EntityDto $entityDto = null): string
     {
+        if (null !== $routeName = $actionDto->getRouteName()) {
+            $routeParameters = $actionDto->getRouteParameters();
+            if (is_callable($routeParameters)) {
+                $routeParameters = $routeParameters($entityDto->getInstance());
+            }
+
+            return $this->urlGenerator->generate($routeName, $routeParameters);
+        }
+
         $requestParameters = [
             'crudController' => $request->query->get('crudController'),
+            'crudAction' => $actionDto->getCrudActionName(),
             'referrer' => $this->generateReferrerUrl($request, $actionDto, $currentAction),
         ];
 
         if (!\in_array($actionDto->getName(), [Action::INDEX, Action::NEW], true) && null !== $entityDto) {
             $requestParameters['entityId'] = $entityDto->getPrimaryKeyValueAsString();
         }
-
-        if (null !== $routeName = $actionDto->getRouteName()) {
-            $routeParameters = array_merge($request->query->all(), $requestParameters, $actionDto->getRouteParameters());
-
-            return $this->urlGenerator->generate($routeName, $routeParameters);
-        }
-
-        $requestParameters = array_merge($requestParameters, [
-            'crudAction' => $actionDto->getCrudActionName(),
-        ]);
 
         return $this->crudUrlGenerator->build()->setQueryParameters($requestParameters)->generateUrl();
     }

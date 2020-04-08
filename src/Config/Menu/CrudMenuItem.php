@@ -28,7 +28,7 @@ final class CrudMenuItem implements MenuItemInterface
         ]);
     }
 
-    public function setCrudController(string $controllerFqcn): self
+    public function setController(string $controllerFqcn): self
     {
         $this->dto->setRouteParameters(array_merge(
             $this->dto->getRouteParameters(),
@@ -38,7 +38,7 @@ final class CrudMenuItem implements MenuItemInterface
         return $this;
     }
 
-    public function setCrudAction(string $actionName): self
+    public function setAction(string $actionName): self
     {
         $this->dto->setRouteParameters(array_merge(
             $this->dto->getRouteParameters(),

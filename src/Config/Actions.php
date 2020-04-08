@@ -89,7 +89,7 @@ final class Actions
         return $this;
     }
 
-    public function setActionOrder(string $pageName, string ...$orderedActionNames): self
+    public function setActionOrder(string $pageName, array $orderedActionNames): self
     {
         $newActionOrder = [];
         $currentActions = $this->dto->getActions();

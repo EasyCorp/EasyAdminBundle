@@ -117,6 +117,11 @@ final class MenuItemDto
         return $this->routeParameters;
     }
 
+    public function setRouteParameter(string $parameterName, $parameterValue): void
+    {
+        $this->routeParameters[$parameterName] = $parameterValue;
+    }
+
     public function setRouteParameters(?array $routeParameters): void
     {
         $this->routeParameters = $routeParameters;

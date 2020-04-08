@@ -166,12 +166,18 @@ final class ActionDto
         $this->routeName = $routeName;
     }
 
-    public function getRouteParameters(): array
+    /**
+     * @return array|callable
+     */
+    public function getRouteParameters()
     {
         return $this->routeParameters;
     }
 
-    public function setRouteParameters(array $routeParameters): void
+    /**
+     * @param array|callable $routeParameters
+     */
+    public function setRouteParameters($routeParameters): void
     {
         $this->routeParameters = $routeParameters;
     }

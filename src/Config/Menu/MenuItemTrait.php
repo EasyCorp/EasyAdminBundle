@@ -19,6 +19,13 @@ trait MenuItemTrait
         return $this;
     }
 
+    public function setQueryParameter(string $parameterName, $parameterValue): self
+    {
+        $this->dto->setRouteParameter($parameterName, $parameterValue);
+
+        return $this;
+    }
+
     public function setPermission(string $permission): self
     {
         $this->dto->setPermission($permission);

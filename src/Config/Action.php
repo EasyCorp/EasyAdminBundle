@@ -123,7 +123,7 @@ final class Action
         return $this;
     }
 
-    public function setTemplate(string $templatePath): self
+    public function setTemplatePath(string $templatePath): self
     {
         $this->dto->setTemplatePath($templatePath);
 
@@ -137,8 +137,15 @@ final class Action
         return $this;
     }
 
-    public function linkToRoute(string $routeName, array $routeParameters = []): self
+    /**
+     * @param array|callable $routeParameters
+     */
+    public function linkToRoute(string $routeName, $routeParameters = []): self
     {
+        if (!\is_array($routeParameters) && !is_callable($routeParameters)) {
+            throw new \InvalidArgumentException(sprintf('The second argument of "%s" can only be either an array with the route parameters or a callable to generate those route parameters.', __METHOD__));
+        }
+
         $this->dto->setRouteName($routeName);
         $this->dto->setRouteParameters($routeParameters);
 

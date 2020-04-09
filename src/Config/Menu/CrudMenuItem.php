@@ -7,8 +7,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
 
 /**
  * @see EasyCorp\Bundle\EasyAdminBundle\Configuration\MenuItem::linkToCrud()
+ *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
-*/
+ */
 final class CrudMenuItem implements MenuItemInterface
 {
     use MenuItemTrait;

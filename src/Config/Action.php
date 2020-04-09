@@ -142,7 +142,7 @@ final class Action
      */
     public function linkToRoute(string $routeName, $routeParameters = []): self
     {
-        if (!\is_array($routeParameters) && !is_callable($routeParameters)) {
+        if (!\is_array($routeParameters) && !\is_callable($routeParameters)) {
             throw new \InvalidArgumentException(sprintf('The second argument of "%s" can only be either an array with the route parameters or a callable to generate those route parameters.', __METHOD__));
         }
 

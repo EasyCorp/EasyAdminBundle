@@ -118,7 +118,7 @@ final class ActionFactory
     {
         if (null !== $routeName = $actionDto->getRouteName()) {
             $routeParameters = $actionDto->getRouteParameters();
-            if (is_callable($routeParameters)) {
+            if (\is_callable($routeParameters)) {
                 $routeParameters = $routeParameters($entityDto->getInstance());
             }
 

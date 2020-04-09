@@ -7,6 +7,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
 
 /**
  * @see EasyCorp\Bundle\EasyAdminBundle\Configuration\MenuItem::linkToLogout()
+ *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
 final class LogoutMenuItem implements MenuItemInterface

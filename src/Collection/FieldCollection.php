@@ -94,12 +94,12 @@ final class FieldCollection implements CollectionInterface
         // as a simple string with the name of the Doctrine property
         /** @var FieldInterface|string $field */
         foreach ($fields as $field) {
-            if (is_string($field)) {
+            if (\is_string($field)) {
                 $field = Field::new($field);
             }
 
             $dto = $field->getAsDto();
-            $dto->setFieldFqcn(get_class($field));
+            $dto->setFieldFqcn(\get_class($field));
             $dtos[$dto->getProperty()] = $dto;
         }
 

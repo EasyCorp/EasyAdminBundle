@@ -92,15 +92,15 @@ final class FieldCollection implements CollectionInterface
 
         // for DX reasons, fields can be configured as a FieldInterface object and
         // as a simple string with the name of the Doctrine property
-        foreach ($fields as $fieldObjectOrPropertyName) {
-            if ($fieldObjectOrPropertyName instanceof FieldInterface) {
-                $field = $fieldObjectOrPropertyName;
-                $dto = $field->getAsDto();
-                $dtos[$dto->getProperty()] = $dto;
-            } else {
-                $propertyName = $fieldObjectOrPropertyName;
-                $dtos[$propertyName] = Field::new($propertyName)->getAsDto();
+        /** @var FieldInterface|string $field */
+        foreach ($fields as $field) {
+            if (is_string($field)) {
+                $field = Field::new($field);
             }
+
+            $dto = $field->getAsDto();
+            $dto->setFieldFqcn(get_class($field));
+            $dtos[$dto->getProperty()] = $dto;
         }
 
         return $dtos;

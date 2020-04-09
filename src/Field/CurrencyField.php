@@ -19,7 +19,6 @@ final class CurrencyField implements FieldInterface
     public static function new(string $propertyName, ?string $label = null): self
     {
         return (new self())
-            ->setFieldFqcn(__CLASS__)
             ->setProperty($propertyName)
             ->setLabel($label)
             ->setTemplateName('crud/field/currency')

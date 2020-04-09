@@ -58,6 +58,10 @@ final class FieldDto
         return $this->fieldFqcn;
     }
 
+    /**
+     * @internal Don't use this method yourself. EasyAdmin uses it internally
+     *           to set the field FQCN. It's OK to use getFieldFqcn() to get this value.
+     */
     public function setFieldFqcn(string $fieldFqcn): void
     {
         $this->fieldFqcn = $fieldFqcn;

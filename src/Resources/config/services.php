@@ -76,6 +76,7 @@ return static function (ContainerConfigurator $container) {
             ->tag('console.command', ['command' => 'make:admin:migration'])
 
         ->set(MakeAdminDashboardCommand::class)->public()
+            ->arg(0, '%kernel.project_dir%')
             ->tag('console.command', ['command' => 'make:admin:dashboard'])
 
         ->set(MakeAdminResourceCommand::class)->public()

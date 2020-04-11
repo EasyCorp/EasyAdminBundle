@@ -2,10 +2,11 @@
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
+use Doctrine\Bundle\DoctrineBundle\Registry;
 use EasyCorp\Bundle\EasyAdminBundle\ArgumentResolver\AdminContextResolver;
 use EasyCorp\Bundle\EasyAdminBundle\Command\MakeAdminDashboardCommand;
 use EasyCorp\Bundle\EasyAdminBundle\Command\MakeAdminMigrationCommand;
-use EasyCorp\Bundle\EasyAdminBundle\Command\MakeAdminResourceCommand;
+use EasyCorp\Bundle\EasyAdminBundle\Command\MakeCrudControllerCommand;
 use EasyCorp\Bundle\EasyAdminBundle\EventListener\AdminContextListener;
 use EasyCorp\Bundle\EasyAdminBundle\EventListener\CrudResponseListener;
 use EasyCorp\Bundle\EasyAdminBundle\EventListener\ExceptionListener;
@@ -73,14 +74,16 @@ return static function (ContainerConfigurator $container) {
 
     $services
         ->set(MakeAdminMigrationCommand::class)->public()
-            ->tag('console.command', ['command' => 'make:admin:migration'])
+            ->tag('console.command')
 
         ->set(MakeAdminDashboardCommand::class)->public()
             ->arg(0, '%kernel.project_dir%')
-            ->tag('console.command', ['command' => 'make:admin:dashboard'])
+            ->tag('console.command')
 
-        ->set(MakeAdminResourceCommand::class)->public()
-            ->tag('console.command', ['command' => 'make:admin:resource'])
+        ->set(MakeCrudControllerCommand::class)->public()
+            ->arg(0, '%kernel.project_dir%')
+            ->arg(1, ref('doctrine'))
+            ->tag('console.command')
 
         ->set(DataCollector::class)
             ->arg(0, ref(AdminContextProvider::class))

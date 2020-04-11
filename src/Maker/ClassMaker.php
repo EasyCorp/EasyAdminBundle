@@ -3,16 +3,19 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Maker;
 
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpKernel\KernelInterface;
 use function Symfony\Component\String\u;
 
 final class ClassMaker
 {
+    private $kernel;
     private $projectDir;
     /** @var Filesystem */
     private $fs;
 
-    public function __construct(string $projectDir)
+    public function __construct(KernelInterface $kernel, string $projectDir)
     {
+        $this->kernel = $kernel;
         $this->projectDir = $projectDir;
         $this->fs = new Filesystem();
     }
@@ -22,7 +25,7 @@ final class ClassMaker
      */
     public function make(string $generatedFilePathPattern, string $skeletonName, array $skeletonParameters): string
     {
-        $skeletonPath = sprintf('%s/Resources/skeleton/%s', __DIR__.'/../', $skeletonName);
+        $skeletonPath = sprintf('%s/%s', $this->kernel->locateResource('@EasyAdminBundle/Resources/skeleton'), $skeletonName);
         $generatedFileRelativeDir = u($generatedFilePathPattern)->beforeLast('/')->trimEnd('/');
         $generatedFileNamePattern = u($generatedFilePathPattern)->afterLast('/')->trimStart('/');
 

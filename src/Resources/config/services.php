@@ -66,6 +66,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Security\SecurityVoter;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\EasyAdminTwigExtension;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 return static function (ContainerConfigurator $container) {
@@ -87,7 +88,8 @@ return static function (ContainerConfigurator $container) {
             ->tag('console.command')
 
         ->set(ClassMaker::class)
-            ->arg(0, '%kernel.project_dir%')
+            ->arg(0, ref(KernelInterface::class))
+            ->arg(1, '%kernel.project_dir%')
 
         ->set(DataCollector::class)
             ->arg(0, ref(AdminContextProvider::class))

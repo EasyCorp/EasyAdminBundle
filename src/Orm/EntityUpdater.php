@@ -4,7 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Orm;
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Orm\EntityUpdaterInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
-use Symfony\Component\PropertyAccess\PropertyAccessor;
+use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -13,7 +13,7 @@ final class EntityUpdater implements EntityUpdaterInterface
 {
     private $propertyAccesor;
 
-    public function __construct(PropertyAccessor $propertyAccesor)
+    public function __construct(PropertyAccessorInterface $propertyAccesor)
     {
         $this->propertyAccesor = $propertyAccesor;
     }

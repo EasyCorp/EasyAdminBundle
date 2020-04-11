@@ -42,16 +42,18 @@ thanks to the `FOSCKEditorBundle`_:
 
     $ php bin/console assets:install --symlink
 
-Finally, add the ``ckeditor_widget.html.twig`` form theme to your Twig
+Finally, add the ``ckeditor_widget.html.twig`` form theme to your EasyAdmin
 configuration so the ``<textarea>`` elements used by the editor are properly
 designed:
 
 .. code-block:: yaml
 
-    # config/packages/twig.yaml
-    twig:
-        form_themes:
-            - '@FOSCKEditor/Form/ckeditor_widget.html.twig'
+    # config/packages/easy_admin.yaml
+    easy_amin:
+        design:
+            form_theme: # Both themes are for ckeditor integration
+                - "@EasyAdmin/form/bootstrap_4.html.twig"
+                - "@FOSCKEditor/Form/ckeditor_widget.html.twig"
 
 Using the Rich Text Editor
 --------------------------

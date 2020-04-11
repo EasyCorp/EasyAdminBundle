@@ -11,7 +11,7 @@ use Symfony\Component\String\Slugger\AsciiSlugger;
 use function Symfony\Component\String\u;
 
 /**
- * Generates the PHP class needed to define a backend dashboard.
+ * Generates the PHP class needed to define a Dashboard controller.
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
@@ -63,8 +63,8 @@ class MakeAdminDashboardCommand extends Command
         $relativePath = u($targetPath)->after($this->projectDir)->trim('/')->toString();
         $io->text('Next steps:');
         $io->listing([
-            sprintf('Configure your Dashboard (edit "%s").', $relativePath),
-            sprintf('Run "make:admin:crud" to generate a CRUD controller and link it from the Dashboard.'),
+            sprintf('Configure your Dashboard at "%s"', $relativePath),
+            sprintf('Run "make:admin:crud" to generate CRUD controllers and link them from the Dashboard.'),
         ]);
 
         return 0;

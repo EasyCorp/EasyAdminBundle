@@ -1,11 +1,11 @@
 <?= "<?php\n"; ?>
 
-namespace <?= $crud_controller_namespace; ?>;
+namespace <?= $namespace; ?>;
 
 use <?= $entity_fqcn; ?>;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 
-class <?= $crud_controller_class_name; ?> extends AbstractCrudController
+class <?= $class_name; ?> extends AbstractCrudController
 {
     public static $entityFqcn = <?= $entity_class_name; ?>::class;
 

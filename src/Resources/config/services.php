@@ -2,7 +2,6 @@
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Doctrine\Bundle\DoctrineBundle\Registry;
 use EasyCorp\Bundle\EasyAdminBundle\ArgumentResolver\AdminContextResolver;
 use EasyCorp\Bundle\EasyAdminBundle\Command\MakeAdminDashboardCommand;
 use EasyCorp\Bundle\EasyAdminBundle\Command\MakeAdminMigrationCommand;
@@ -55,6 +54,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Inspector\DataCollector;
 use EasyCorp\Bundle\EasyAdminBundle\Intl\IntlFormatter;
+use EasyCorp\Bundle\EasyAdminBundle\Maker\ClassMaker;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityPaginator;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityUpdater;
@@ -77,13 +77,17 @@ return static function (ContainerConfigurator $container) {
             ->tag('console.command')
 
         ->set(MakeAdminDashboardCommand::class)->public()
-            ->arg(0, '%kernel.project_dir%')
+            ->arg(0, ref(ClassMaker::class))
+            ->arg(1, '%kernel.project_dir%')
             ->tag('console.command')
 
         ->set(MakeCrudControllerCommand::class)->public()
-            ->arg(0, '%kernel.project_dir%')
+            ->arg(0, ref(ClassMaker::class))
             ->arg(1, ref('doctrine'))
             ->tag('console.command')
+
+        ->set(ClassMaker::class)
+            ->arg(0, '%kernel.project_dir%')
 
         ->set(DataCollector::class)
             ->arg(0, ref(AdminContextProvider::class))

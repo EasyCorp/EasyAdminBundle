@@ -55,6 +55,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Inspector\DataCollector;
 use EasyCorp\Bundle\EasyAdminBundle\Intl\IntlFormatter;
 use EasyCorp\Bundle\EasyAdminBundle\Maker\ClassMaker;
+use EasyCorp\Bundle\EasyAdminBundle\Maker\Migrator;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityPaginator;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityUpdater;
@@ -75,7 +76,8 @@ return static function (ContainerConfigurator $container) {
 
     $services
         ->set(MakeAdminMigrationCommand::class)->public()
-            ->arg(0, '%kernel.project_dir%')
+            ->arg(0, ref(Migrator::class))
+            ->arg(1, '%kernel.project_dir%')
             ->tag('console.command')
 
         ->set(MakeAdminDashboardCommand::class)->public()
@@ -91,6 +93,8 @@ return static function (ContainerConfigurator $container) {
         ->set(ClassMaker::class)
             ->arg(0, ref(KernelInterface::class))
             ->arg(1, '%kernel.project_dir%')
+
+        ->set(Migrator::class)
 
         ->set(DataCollector::class)
             ->arg(0, ref(AdminContextProvider::class))

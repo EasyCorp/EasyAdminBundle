@@ -75,6 +75,7 @@ return static function (ContainerConfigurator $container) {
 
     $services
         ->set(MakeAdminMigrationCommand::class)->public()
+            ->arg(0, '%kernel.project_dir%')
             ->tag('console.command')
 
         ->set(MakeAdminDashboardCommand::class)->public()

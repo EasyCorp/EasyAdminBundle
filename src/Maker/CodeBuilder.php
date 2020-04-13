@@ -2,6 +2,8 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Maker;
 
+use function Symfony\Component\String\u;
+
 /**
  * Building a full and complex class using BuilderFactory from PhpParser
  * was too difficult. That's why we use this basic code builder instead.
@@ -109,6 +111,13 @@ final class CodeBuilder
         return $this;
     }
 
+    public function _yield(): self
+    {
+        $this->code[] = 'yield ';
+
+        return $this;
+    }
+
     public function _method(string $name, array $arguments = [], string $returnType = null): self
     {
         $this->code[] = sprintf('%s(%s)', $name, implode(', ', $arguments));
@@ -170,22 +179,27 @@ final class CodeBuilder
     {
         $formattedArguments = [];
 
-        foreach ($arguments as $key => $argument) {
-            if (\is_string($argument)) {
+        foreach ($arguments as $argument) {
+            if (\is_array($argument)) {
+                $formattedArrayElements = [];
+                foreach ($argument as $key => $value) {
+                    $formattedArrayElement = \is_string($value) ? "'".str_replace("'", "\'", $value)."'" : $value;
+                    $formattedArrayElements[] = \is_int($key) ? $formattedArrayElement : sprintf("'%s' => %s", $key, $formattedArrayElement);
+                }
+
+                $formattedArgument = '['.implode(', ', $formattedArrayElements).']';
+            } elseif (u($argument)->endsWith('::class')) {
+                // this is needed to not format Foo::class as 'Foo::class'
+                $formattedArgument = $argument;
+            } elseif (\is_string($argument)) {
                 $formattedArgument = sprintf("'%s'", str_replace("'", "\'", $argument));
             } elseif (\is_bool($argument)) {
                 $formattedArgument = strtolower(var_export($argument, true));
-            } elseif (\is_array($argument)) {
-                $formattedArrayElements = array_map(function ($value) {
-                    return \is_string($value) ? "'".str_replace("'", "\'", $value)."'" : $value;
-                }, $argument);
-
-                $formattedArgument = '['.implode(', ', $formattedArrayElements).']';
             } else {
                 $formattedArgument = str_replace("\n", '', var_export($argument, true));
             }
 
-            $formattedArguments[] = \is_int($key) ? $formattedArgument : sprintf("'%s' => %s", $key, $formattedArgument);
+            $formattedArguments[] = $formattedArgument;
         }
 
         return implode(', ', $formattedArguments);

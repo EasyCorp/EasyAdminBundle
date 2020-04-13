@@ -2,38 +2,15 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Command;
 
-use Doctrine\DBAL\Types\Type;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
-use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\AvatarField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\CodeEditorField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\ColorField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\CountryField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
-use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TelephoneField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextAreaField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TimeField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\UrlField;
-use EasyCorp\Bundle\EasyAdminBundle\Maker\CodeBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Maker\Migrator;
-use PhpParser\ParserFactory;
-use PhpParser\PrettyPrinter\Standard;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\ConsoleSectionOutput;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Console\Terminal;
 use Symfony\Component\Filesystem\Filesystem;
-use function Symfony\Component\String\u;
 
 /**
  * A command to transform EasyAdmin 2 YAML configuration into the PHP files required by EasyAdmin 3.
@@ -43,8 +20,19 @@ use function Symfony\Component\String\u;
 class MakeAdminMigrationCommand extends Command
 {
     protected static $defaultName = 'make:admin:migration';
+
+    private const SUCCESS = 0;
+    private const FAILURE = 1;
+
     private $migrator;
     private $projectDir;
+    /** @var InputInterface */
+    private $input;
+    /** @var ConsoleSectionOutput $progressSection */
+    private $progressSection;
+    private $progressSectionLines = [];
+    /** @var ConsoleSectionOutput $temporarySection */
+    private $temporarySection;
 
     public function __construct(Migrator $migrator, string $projectDir, string $name = null)
     {
@@ -58,38 +46,89 @@ class MakeAdminMigrationCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $fs = new Filesystem();
 
+        $this->input = $input;
+        $this->progressSection = $output->section();
+        $this->temporarySection = $output->section();
+
+        $this->clearScreen($output);
         $io->title('Migration from EasyAdmin2 to EasyAdmin 3');
 
-        $io->text('<info>Step 1.</info> Find the file with the EasyAdmin 2 config backup.');
-        $ea2ConfigPath = $this->projectDir.'/easyadmin-config.backup';
-        if (file_exists($ea2ConfigPath)) {
-            $io->text(sprintf('<info>✅ OK</> The backup file was found at "%s".', $ea2ConfigPath));
-        } else {
-            $io->text('<error> ERROR </> The backup file was not found. To generate this file, run the <comment>make:admin:migration</comment> command in your application where EasyAdmin 2 is used.');
+        $this->addStep('<info>Step 1/3.</info> Find the file with the EasyAdmin 2 config backup.');
+        $ea2ConfigBackupPath = $this->projectDir.'/easyadmin-config.backup';
+        if (!$fs->exists($ea2ConfigBackupPath)) {
+            $this->temporarySection->write('<error> ERROR </> The config backup file was not found. To generate this file, run the <comment>make:admin:migration</comment> command in your application before upgrading your dependencies to EasyAdmin 3.');
+
+            return self::FAILURE;
         }
-        $ea2Config = unserialize(file_get_contents($ea2ConfigPath));
+        $this->temporarySection->write(sprintf('<bg=green;fg=black> OK </> The backup file was found at "%s"', $ea2ConfigBackupPath));
+        $ea2Config = unserialize(file_get_contents($ea2ConfigBackupPath), ['allowed_classes' => false]);
 
-        $io->newLine(2);
+        $this->askQuestion('Press <comment>\<Enter></comment> to continue...');
+        $this->addStep(sprintf('<bg=green;fg=black> OK </> The backup file was found at "%s"', $ea2ConfigBackupPath));
+        $this->temporarySection->clear();
 
-        $io->text('<info>Step 2.</info> Select the directory where the new PHP files will be generated.');
-        $io->text('(type the relative path from the project directory)');
-        $outputDir = $io->ask('Directory', 'src/Controller/Admin/');
-        $outputDir = $this->projectDir.'/'.ltrim($outputDir, '/');
+        $this->addStep('');
+        $this->addStep('<info>Step 2/3.</info> Select the directory where the new PHP files will be generated.');
+
+        $this->temporarySection->write(sprintf('Type the relative path from your project directory, which is: %s', $this->projectDir));
+        $relativeOutputDir = $this->askQuestion('Directory [<comment>src/Controller/Admin/</comment>]:', 'src/Controller/Admin/Migration');
+
+        $outputDir = $this->projectDir.'/'.ltrim($relativeOutputDir, '/');
         $fs->mkdir($outputDir);
         if (!$fs->exists($outputDir)) {
-            throw new \RuntimeException(sprintf('The "%s" directory does not exist and cannot be created, so the PHP files cannot be generated.', $outputDir));
+            $this->temporarySection->clear();
+            $this->temporarySection->write(sprintf('<error> ERROR </> The "%s" directory does not exist and cannot be created, so the PHP files cannot be generated.', $outputDir));
+
+            return self::FAILURE;
         }
+        $this->addStep(sprintf('<bg=green;fg=black> OK </> Output dir = "%s"', $outputDir));
+        $this->temporarySection->clear();
 
-        $io->newLine(1);
+        $this->addStep('');
+        $this->addStep('<info>Step 3/3.</info> Define the namespace of the new PHP files that will be generated.');
+        $namespace = $this->askQuestion('Namespace [<comment>App\\Controller\\Admin</comment>]:', 'App\\Controller\\Admin\\Migration');
 
-        $io->text('<info>Step 3.</info> Define the PHP namespace of the new PHP files that will be generated.');
-        $namespace = $io->ask('Namespace', 'App\\Controller\\Admin');
+        $namespace = str_replace('/', '\\', $namespace);
+        $this->addStep(sprintf('<bg=green;fg=black> OK </> Namespace = "%s"', $namespace));
+        $this->temporarySection->clear();
 
-        $this->migrator->migrate($ea2Config, $outputDir, $namespace, $io);
+        $this->migrator->migrate($ea2Config, $outputDir, $namespace, $this->temporarySection);
 
-        $relativeOutputDir = u($outputDir)->after($this->projectDir)->trimStart('/')->ensureEnd('/')->toString();
+        $this->temporarySection->write('');
         $io->success(sprintf('The migration completed successfully. You can find the generated files at "%s".', $relativeOutputDir));
 
-        return 0;
+        return self::SUCCESS;
+    }
+
+    private function clearScreen(OutputInterface $output): void
+    {
+        // clears the entire screen
+        $output->write("\x1b[2J");
+        // moves cursor to top left position
+        $output->write("\x1b[1;1H");
+    }
+
+    private function addStep(string $newLine): void
+    {
+        $this->progressSectionLines[] = $newLine;
+        $this->progressSection->clear();
+
+        $terminal = new Terminal();
+
+        foreach ($this->progressSectionLines as $line) {
+            $this->progressSection->write($line);
+        }
+
+        $this->progressSection->write('');
+        $this->progressSection->write(str_repeat('━', $terminal->getWidth()));
+        $this->progressSection->write('');
+    }
+
+    private function askQuestion(string $questionText, $defaultAnswer = null)
+    {
+        $helper = $this->getHelper('question');
+        $question = new Question($questionText, $defaultAnswer);
+
+        return $helper->ask($this->input, $this->temporarySection, $question);
     }
 }

@@ -5,7 +5,11 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Maker;
 use Doctrine\DBAL\Types\Type;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
+use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
+use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenu;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AvatarField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
@@ -26,52 +30,92 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\UrlField;
 use PhpParser\ParserFactory;
 use PhpParser\PrettyPrinter\Standard;
-use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Console\Output\ConsoleSectionOutput;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Security\Core\User\UserInterface;
 use function Symfony\Component\String\u;
 
 final class Migrator
 {
-    public function migrate(array $ea2Config, string $outputDir, string $namespace, SymfonyStyle $io): void
-    {
-        $fs = new Filesystem();
+    private $ea2Config;
+    private $outputDir;
+    private $namespace;
+    private $output;
+    private $fs;
+    private $parser;
+    private $codePrettyPrinter;
 
-        $parser = (new ParserFactory())->create(ParserFactory::PREFER_PHP7);
-        $codePrettyPrinter = new Standard();
-        foreach ($ea2Config['entities'] as $entityName => $entityConfig) {
+    public function migrate(array $ea2Config, string $outputDir, string $namespace, ConsoleSectionOutput $output): void
+    {
+        $this->ea2Config = $ea2Config;
+        $this->outputDir = $outputDir;
+        $this->namespace = $namespace;
+        $this->output = $output;
+        $this->fs = new Filesystem();
+        $this->parser = (new ParserFactory())->create(ParserFactory::PREFER_PHP7);
+        $this->codePrettyPrinter = new Standard();
+
+        $generatedFilesFqcn = $this->generateCrudControllers();
+        $this->generateDashboardController($generatedFilesFqcn);
+    }
+
+    private function generateCrudControllers(): array
+    {
+        $generatedEntitiesFqcn = [];
+
+        foreach ($this->ea2Config['entities'] as $entityName => $entityConfig) {
             $entityFqcn = $entityConfig['class'];
             $entityClassName = u($entityFqcn)->afterLast('\\')->toString();
 
             $code = CodeBuilder::new()
-                ->_namespace($namespace)
+                ->_namespace($this->namespace)
                 ->_use(AbstractCrudController::class)
                 ->_use($entityFqcn)
                 ->_class(sprintf('%sCrudController', $entityClassName))->_extends('AbstractCrudController')
                 ->openBrace()
-                ->_public()->_static()->_variableName('entityFqcn')->_variableValue($entityClassName.'::class')->semiColon()
-                ->newLine()
-            ;
+                    ->_public()->_static()->_variableName('entityFqcn')->_variableValue($entityClassName.'::class')->semiColon();
 
             $code = $this->addConfigureCrudMethod($code, $entityClassName, $entityConfig);
             $code = $this->addConfigureActionsMethod($code, $entityClassName, $entityConfig);
             $code = $this->addConfigureFieldsMethod($code, $entityClassName, $entityConfig);
 
             $code = $code->closeBrace(); // closing for 'class ... {'
-            //dump($code->getAsString());
-            try {
-                $rawSourceCode = $parser->parse($code->getAsString());
-                $formattedSourceCode = $codePrettyPrinter->prettyPrintFile($rawSourceCode);
-                $formattedSourceCode = $this->tweakFormattedSourceCode($formattedSourceCode);
-                // this is needed to ensure that our formatting tweaks don't generate PHP code with syntax errors
-                $parser->parse($formattedSourceCode);
 
-                $controllerClassName = $entityClassName.'CrudController.php';
-                $fs->dumpFile($outputDir.'/'.$controllerClassName, $formattedSourceCode);
-                $io->text(sprintf(' // Generated %s', $controllerClassName));
-            } catch (\Throwable $e) {
-                // there some error in the generated PHP code
-                echo 'Parse Error: ', $e->getMessage();
+            $controllerClassName = $entityClassName.'CrudController.php';
+            $outputFilePath = $this->outputDir.'/'.$controllerClassName;
+            $isDumped = $this->dumpCode($code, $outputFilePath);
+
+            if ($isDumped) {
+                $this->output->write(sprintf(' // Generated %s', $controllerClassName));
+                $generatedEntitiesFqcn[] = $entityFqcn;
             }
+        }
+
+        return $generatedEntitiesFqcn;
+    }
+
+    private function generateDashboardController(array $entitiesFqcn): void
+    {
+        $code = CodeBuilder::new()
+            ->_namespace($this->namespace)
+            ->_use(AbstractDashboardController::class)
+            ->_class('DashboardController')->_extends('AbstractDashboardController')
+            ->openBrace();
+        //->_raw('/** * @Route("/admin", name="admin") */ public function index(): Response { return parent::index(); }')
+
+        $code = $this->addConfigureDashboardMethodInDashboardController($code, $this->ea2Config);
+        $code = $this->addConfigureCrudMethodInDashboardController($code, $this->ea2Config);
+        $code = $this->addConfigureUserMenuMethodInDashboardController($code, $this->ea2Config);
+        $code = $this->addConfigureMenuItemsMethodInDashboardController($code, $this->ea2Config, $entitiesFqcn);
+
+        $code = $code->closeBrace();
+
+        $controllerClassName = 'DashboardController.php';
+        $outputFilePath = $this->outputDir.'/'.$controllerClassName;
+        $isDumped = $this->dumpCode($code, $outputFilePath);
+
+        if ($isDumped) {
+            $this->output->write(sprintf(' // Generated %s', $controllerClassName));
         }
     }
 
@@ -81,8 +125,8 @@ final class Migrator
         $definesCustomLabel = $entityClassName === $customLabel;
 
         $definesCustomTemplates = 0 !== array_sum(array_map(function ($templatePath) {
-                return $this->isCustomTemplate($templatePath) ? 0 : 1;
-            }, $entityConfig['templates']));
+            return $this->isCustomTemplate($templatePath) ? 0 : 1;
+        }, $entityConfig['templates']));
 
         $definesCustomHelp = null !== $entityConfig['list']['help']
             || null !== $entityConfig['edit']['help']
@@ -225,7 +269,6 @@ final class Migrator
         return $code;
     }
 
-
     private function getNewTemplateNameFromOldTemplateName(string $oldTemplateName): string
     {
         return [
@@ -335,6 +378,263 @@ final class Migrator
         return ucfirst(mb_strtolower(trim(preg_replace(['/([A-Z])/', '/[_\s]+/'], ['_$1', ' '], $string))));
     }
 
+    private function addConfigureDashboardMethodInDashboardController(CodeBuilder $code, array $ea2Config): CodeBuilder
+    {
+        $code = $code
+            ->_use(Dashboard::class)
+            ->_public()->_function()->_method('configureDashboard', [], 'Dashboard')
+            ->openBrace()
+                ->_return()->_staticCall('Dashboard', 'new')
+                    ->_methodCall('setTitle', [$ea2Config['site_name']]);
+
+        if ('messages' !== $ea2Config['translation_domain']) {
+            $code = $code->_methodCall('setTranslationDomain', [$ea2Config['translation_domain']]);
+        }
+
+        $code = $code
+            ->semiColon()
+            ->closeBrace();
+
+        return $code;
+    }
+
+    private function addConfigureCrudMethodInDashboardController(CodeBuilder $code, array $ea2Config): CodeBuilder
+    {
+        $customDateFormat = $ea2Config['formats']['date'];
+        $definesCustomDateFormat = 'Y-m-d' !== $customDateFormat;
+
+        $customDateTimeFormat = $ea2Config['formats']['datetime'];
+        $definesCustomDateTimeFormat = 'F j, Y H:i' !== $customDateTimeFormat;
+
+        $customDateIntervalFormat = $ea2Config['formats']['dateinterval'];
+        $definesCustomDateIntervalFormat = '%y Year(s) %m Month(s) %d Day(s)' !== $customDateIntervalFormat;
+
+        $customTimeFormat = $ea2Config['formats']['time'];
+        $definesCustomTimeFormat = 'H:i:s' !== $customTimeFormat;
+
+        $definesCustomTemplates = 0 !== array_sum(array_map(function ($templatePath) {
+            return $this->isCustomTemplate($templatePath) ? 0 : 1;
+        }, $ea2Config['design']['templates']));
+
+        if (!$definesCustomDateFormat && !$definesCustomDateTimeFormat && !$definesCustomDateIntervalFormat && !$definesCustomTimeFormat && !$definesCustomTemplates) {
+            return $code;
+        }
+
+        $code = $code
+            ->_use(Crud::class)
+            ->_public()->_function()->_method('configureCrud', [], 'Crud')
+            ->openBrace()
+                ->_return()->_staticCall('Crud', 'new');
+
+        if ($definesCustomDateFormat) {
+            $code = $code->_methodCall('setDateFormat', [$this->phpDateFormatToIcuDateFormat($customDateFormat)]);
+        }
+
+        if ($definesCustomDateTimeFormat) {
+            $code = $code->_methodCall('setDateTimeFormat', [$this->phpDateFormatToIcuDateFormat($customDateTimeFormat)]);
+        }
+
+        if ($definesCustomDateIntervalFormat) {
+            $code = $code->_methodCall('setDateIntervalFormat', [$customDateIntervalFormat]);
+        }
+
+        if ($definesCustomTimeFormat) {
+            $code = $code->_methodCall('setTimeFormat', [$this->phpDateFormatToIcuDateFormat($customTimeFormat)]);
+        }
+
+        if ($definesCustomTemplates) {
+            foreach ($ea2Config['design']['templates'] as $oldTemplateName => $templatePath) {
+                if (!$this->isCustomTemplate($templatePath)) {
+                    continue;
+                }
+
+                $newTemplateName = $this->getNewTemplateNameFromOldTemplateName($oldTemplateName);
+                $code = $code->_methodCall('overrideTemplate', [$newTemplateName, $templatePath]);
+            }
+        }
+
+        $code = $code
+            ->semiColon()
+            ->closeBrace();
+
+        return $code;
+    }
+
+    private function addConfigureUserMenuMethodInDashboardController(CodeBuilder $code, array $ea2Config): CodeBuilder
+    {
+        $displayName = $ea2Config['user']['display_name'];
+        $definesCustomDisplayName = true !== $displayName;
+
+        $displayAvatar = $ea2Config['user']['display_avatar'];
+        $definesCustomDisplayAvatar = true !== $displayAvatar;
+
+        if (!$definesCustomDisplayName && !$definesCustomDisplayAvatar) {
+            return $code;
+        }
+
+        $code = $code
+            ->_use(UserMenu::class)
+            ->_use(UserInterface::class)
+            ->_public()->_function()->_method('configureUserMenu', ['UserInterface $user'], 'UserMenu')
+            ->openBrace()
+                ->_return()->_staticCall('UserMenu', 'new');
+
+        if ($definesCustomDisplayName) {
+            $code = $code->_methodCall('displayUserName', [$displayName]);
+        }
+
+        if ($definesCustomDisplayAvatar) {
+            $code = $code->_methodCall('displayUserAvatar', [$displayAvatar]);
+        }
+
+        $code = $code
+            ->semiColon()
+            ->closeBrace();
+
+        return $code;
+    }
+
+    private function addConfigureMenuItemsMethodInDashboardController(CodeBuilder $code, array $ea2Config, array $entitiesFqcn): CodeBuilder
+    {
+        $mainMenuItems = $ea2Config['design']['menu'];
+        $definesMenuItems = !empty($mainMenuItems);
+
+        if (!$definesMenuItems) {
+            return $code;
+        }
+
+        $code = $code
+            ->_use(MenuItem::class)
+            ->_public()->_function()->_method('configureMenuItems', [], 'iterable')
+            ->openBrace();
+
+        foreach ($mainMenuItems as $menuItem) {
+            $type = $menuItem['type'];
+            $label = $menuItem['label'];
+            $icon = u($menuItem['icon'])->ensureStart('fa ')->toString();
+            $cssClass = $menuItem['css_class'];
+            $target = $menuItem['target'];
+            $rel = $menuItem['rel'];
+            $permission = $menuItem['permission'];
+
+            if ('entity' === $type) {
+                $entityNameInMenuItem = $menuItem['entity'];
+                $entityFqcnForMenuEntity = $ea2Config['entities'][$entityNameInMenuItem]['class'];
+                if (!\in_array($entityFqcnForMenuEntity, $entitiesFqcn)) {
+                    continue;
+                }
+
+                $entityClassName = u($entityFqcnForMenuEntity)->afterLast('\\')->toString();
+                $code = $code
+                    ->_use($entityFqcnForMenuEntity)
+                    ->_yield()->_staticCall('MenuItem', 'linkToCrud', [$label, $icon, $entityClassName.'::class']);
+
+                if (isset($menuItem['params']['sortField'])) {
+                    $sortField = $menuItem['params']['sortField'];
+                    $sortDirection = $menuItem['params']['sortDirection'] ?? 'DESC';
+                    $sortConfig = [$sortField => $sortDirection];
+                    $code = $code->_methodCall('setDefaultSort', [$sortConfig]);
+                }
+            } elseif ('route' === $type) {
+                $routeName = $menuItem['route'];
+                $routeParameters = $menuItem['params'];
+                $methodArguments = [$label, $icon, $routeName];
+                if (!empty($routeParameters)) {
+                    $methodArguments[] = $routeParameters;
+                }
+
+                $code = $code->_yield()->_staticCall('MenuItem', 'linktoRoute', $methodArguments);
+            } elseif ('divider' === $type) {
+                $methodArguments = [];
+                if ($label) {
+                    $methodArguments[] = $label;
+                }
+                if ($icon) {
+                    $methodArguments[] = $icon;
+                }
+
+                $code = $code->_yield()->_staticCall('MenuItem', 'section', $methodArguments);
+            } else {
+                // TODO: submenus
+                continue;
+            }
+
+            if ($target) {
+                $code = $code->_methodCall('setLinkTarget', $target);
+            }
+
+            if ($rel) {
+                $code = $code->_methodCall('setLinkRel', $target);
+            }
+
+            if ($permission) {
+                $code = $code->_methodCall('setPermission', $permission);
+            }
+
+            if ($cssClass) {
+                $code = $code->_methodCall('setCssClass', $cssClass);
+            }
+
+            $code = $code->semiColon();
+        }
+
+        $code = $code->closeBrace();
+
+        return $code;
+    }
+
+    private function phpDateFormatToIcuDateFormat(string $phpDateFormat): string
+    {
+        // remove all custom text included in the date format (e.g. 'd-m-Y \a\t H:i:s' -> 'd-m-Y H:i:s')
+        $phpDateFormat = preg_replace('/\\./', '', $phpDateFormat);
+
+        $icuDateFormat = u($phpDateFormat)
+            // PHP format -> ICU format
+            // source: https://nielsdefeyter.nl/archive/2015/cldr-php-dateformat-converter
+            ->replace('y', 'yy')
+            ->replace('Y', 'yyyy')
+            ->replace('M', 'MMM')
+            ->replace('F', 'MMMM')
+            ->replace('m', 'MM')
+            ->replace('d', 'dd')
+            ->replace('j', 'd')
+            ->replace('l', 'EEEE')
+            ->replace('D', 'EEE')
+            ->replace('a', 'a')
+            ->replace('H', 'HH')
+            ->replace('G', 'H')
+            ->replace('h', 'h')
+            ->replace('g', 'K')
+            ->replace('i', 'mm')
+            ->replace('s', 'ss')
+            ->replace('T', 'z')
+            ->replace('e', 'zzzz')
+        ;
+
+        return $icuDateFormat;
+    }
+
+    private function dumpCode(CodeBuilder $code, string $outputFilePath): bool
+    {
+        //dump($code->getAsString());
+        try {
+            $rawSourceCode = $this->parser->parse($code->getAsString());
+            $formattedSourceCode = $this->codePrettyPrinter->prettyPrintFile($rawSourceCode);
+            $formattedSourceCode = $this->tweakFormattedSourceCode($formattedSourceCode);
+
+            // this is needed to ensure that our formatting tweaks don't generate PHP code with syntax errors
+            $this->parser->parse($formattedSourceCode);
+
+            $this->fs->dumpFile($outputFilePath, $formattedSourceCode);
+
+            return true;
+        } catch (\Throwable $e) {
+            echo 'Parse Error: ', $e->getMessage();
+
+            return false;
+        }
+    }
+
     private function tweakFormattedSourceCode(string $sourceCode): string
     {
         // this adds a blank line between the 'use' imports and the 'class' declaration
@@ -346,9 +646,24 @@ final class Migrator
         // this replaces 'function foo() : Foo' by 'function foo(): Foo'
         $sourceCode = preg_replace('/^(.*) function (.*)\((.*)\) : (.*)$/m', '$1 function $2($3): $4', $sourceCode);
 
-        // this breaks a single line with chained methods into multiple lines with one method in each line
+        // this replaces '(yield ...);' by 'yield ...;'
+        $sourceCode = preg_replace('/\(yield (.*)\);$/m', 'yield $1;', $sourceCode);
+
+        // this adds a blank line before each section menu item
+        $sourceCode = str_replace('        yield MenuItem::section(', "\n        yield MenuItem::section(", $sourceCode);
+
+        // this breaks a single line with a variable and chained methods into multiple lines with one method in each line
+        // (return $foo->method1()->method2()->method3()->...)
         $sourceCode = preg_replace_callback('/        return (?<variable_name>\$.*[^\-\>])\-\>(?<chained_methods>.*);/U', function ($matches) {
             return '        return '.$matches['variable_name']
+                ."\n            ->"
+                .str_replace('->', "\n            ->", $matches['chained_methods']).';';
+        }, $sourceCode);
+
+        // this breaks a single line with a static call and chained methods into multiple lines with one method in each line
+        // (return Foo::new()->method1()->method2()->method3()->...)
+        $sourceCode = preg_replace_callback('/        return (?<class_name>.*)\:\:(?<method_name>.*)\(\)\-\>(?<chained_methods>.*);/U', function ($matches) {
+            return '        return '.$matches['class_name'].'::'.$matches['method_name'].'()'
                 ."\n            ->"
                 .str_replace('->', "\n            ->", $matches['chained_methods']).';';
         }, $sourceCode);

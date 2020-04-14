@@ -20,6 +20,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
+use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
@@ -27,11 +28,13 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TelephoneField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextAreaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TimeField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TimezoneField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\UrlField;
 use PhpParser\ParserFactory;
 use PhpParser\PrettyPrinter\Standard;
 use Symfony\Component\Console\Output\ConsoleSectionOutput;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Form\Form;
 use Symfony\Component\Security\Core\User\UserInterface;
 use function Symfony\Component\String\u;
 
@@ -217,14 +220,48 @@ final class Migrator
             ->_public()->_function()->_method('configureFields', ['string $pageName'], 'iterable')
             ->openBrace();
 
-        foreach ($entityConfig['list']['fields'] as $fieldName => $fieldConfig) {
+        $configuredFields = array_merge(
+            $entityConfig['new']['fields'],
+            $entityConfig['edit']['fields'],
+            $entityConfig['show']['fields'],
+            $entityConfig['list']['fields']
+        );
+
+        $numOfPanel = 0;
+        $renamedFieldNames = [];
+        foreach ($configuredFields as $fieldName => $fieldConfig) {
+            // only "groups" can be migrated to EA3 (which calls them "panels")
+            $isFormDesignElement = u($fieldName)->startsWith('_easyadmin_form_design_element');
+            $isFormPanel = 'easyadmin_group' === $fieldConfig['type'];
+
+            if ($isFormDesignElement) {
+                if (!$isFormPanel) {
+                    continue;
+                }
+
+                $newFieldName = sprintf('panel%d', ++$numOfPanel);
+                $renamedFieldNames[$fieldName] = $newFieldName;
+
+                $methodArguments = [];
+                if (null !== $fieldLabel = $fieldConfig['label']) {
+                    $methodArguments[] = $fieldLabel;
+                }
+
+                $code = $code
+                    ->_use(FormField::class)
+                    ->_variableName($newFieldName)->equals()->_staticCall('FormField', 'addPanel', $methodArguments)->semiColon();
+
+                continue;
+            }
+
+
             $fieldFqcn = $this->guessFieldFqcnForProperty($fieldConfig);
             $fieldClassName = u($fieldFqcn)->afterLast('\\')->toString();
 
             $methodArguments = [$fieldName];
             $fieldLabel = $fieldConfig['label'];
-            $humanizedLabel = $this->humanizeString($fieldLabel);
-            // in EA2, an empty label means no label (same as FALSE in EA3
+            $humanizedLabel = null === $fieldLabel ? null : $this->humanizeString($fieldLabel);
+            // in EA2, an empty label means no label (same as FALSE in EA3)
             if ('' === $fieldLabel) {
                 $methodArguments[] = false;
             } elseif ($fieldLabel !== $humanizedLabel) {
@@ -240,7 +277,7 @@ final class Migrator
                 $code = $code->_methodCall('setTemplatePath', [$fieldConfig['template']]);
             }
 
-            if (!empty($fieldConfig['css_class'])) {
+            if (!empty($this->processCssClass($fieldConfig['css_class']))) {
                 $code = $code->_methodCall('addCssClass', [trim($fieldConfig['css_class'])]);
             }
 
@@ -263,6 +300,26 @@ final class Migrator
 
             $code = $code->semiColon();
         }
+
+        $indexVariableNames = $this->processAndFilterFieldNames($entityConfig['list']['fields'], $renamedFieldNames);
+        $detailVariableNames = $this->processAndFilterFieldNames($entityConfig['show']['fields'], $renamedFieldNames);
+        $newVariableNames = $this->processAndFilterFieldNames($entityConfig['new']['fields'], $renamedFieldNames);
+        $editVariableNames = $this->processAndFilterFieldNames($entityConfig['edit']['fields'], $renamedFieldNames);
+
+        $code = $code
+            ->_use(Crud::class)
+            ->_if('Crud::PAGE_INDEX === $pageName')->openBrace()
+                ->_returnArrayOfVariables($indexVariableNames)->semiColon()
+            ->closeBrace()
+            ->_elseif('Crud::PAGE_DETAIL === $pageName')->openBrace()
+                ->_returnArrayOfVariables($detailVariableNames)->semiColon()
+            ->closeBrace()
+            ->_elseif('Crud::PAGE_NEW === $pageName')->openBrace()
+                ->_returnArrayOfVariables($newVariableNames)->semiColon()
+            ->closeBrace()
+            ->_elseif('Crud::PAGE_EDIT === $pageName')->openBrace()
+                ->_returnArrayOfVariables($editVariableNames)->semiColon()
+            ->closeBrace();
 
         $code = $code->closeBrace();
 
@@ -327,6 +384,7 @@ final class Migrator
         $doctrineDataType = $fieldConfig['dataType'];
 
         $fieldTypeToFqcn = [
+            'easyadmin_group' => FormField::class,
             'association' => AssociationField::class,
             'avatar' => AvatarField::class,
             'code_editor' => CodeEditorField::class,
@@ -349,8 +407,8 @@ final class Migrator
             Type::DATEINTERVAL => TextField::class,
             Type::DATETIME => DateTimeField::class,
             Type::DATETIME_IMMUTABLE => DateTimeField::class,
-            Type::DATETIMETZ => 'datetimetz',
-            Type::DATETIMETZ_IMMUTABLE => 'datetimetz',
+            Type::DATETIMETZ => DateTimeField::class,
+            Type::DATETIMETZ_IMMUTABLE => DateTimeField::class,
             Type::DECIMAL => NumberField::class,
             Type::FLOAT => NumberField::class,
             Type::GUID => TextField::class,
@@ -368,8 +426,12 @@ final class Migrator
         return $fieldTypeToFqcn[$fieldType] ?? $doctrineTypeToFqcn[$doctrineDataType] ?? Field::class;
     }
 
-    private function isCustomTemplate(string $templatePath): bool
+    private function isCustomTemplate(?string $templatePath): bool
     {
+        if (null === $templatePath) {
+            return false;
+        }
+
         return !u($templatePath)->startsWith('@EasyAdmin/');
     }
 
@@ -614,6 +676,45 @@ final class Migrator
         return $icuDateFormat;
     }
 
+    /**
+     * Removes all styles related to layout from the given CSS styles.
+     * This is needed because EA3 doesn't support them yet.
+     */
+    private function processCssClass(?string $cssClass): string
+    {
+        if (null === $cssClass) {
+            return '';
+        }
+
+        $cssParts = explode(' ', $cssClass);
+        $nonLayoutCssStyles = [];
+        foreach ($cssParts as $cssPart) {
+            if (u($cssPart)->match('/col\-(xs|sm|md|lg)\-\d+/')) {
+                continue;
+            }
+
+            $nonLayoutCssStyles[] = $cssPart;
+        }
+
+        return implode(' ', $nonLayoutCssStyles);
+    }
+
+    private function processAndFilterFieldNames(array $fieldsConfig, array $newFieldNames): array
+    {
+        $updatedFieldNames = [];
+        foreach ($fieldsConfig as $fieldName => $fieldConfig) {
+            $isFormDesignElement = u($fieldName)->startsWith('_easyadmin_form_design_element');
+            $isFormPanel = 'easyadmin_group' === $fieldConfig['type'];
+            if ($isFormDesignElement && !$isFormPanel) {
+                continue;
+            }
+
+            $updatedFieldNames[] = $newFieldNames[$fieldName] ?? $fieldName;
+        }
+
+        return $updatedFieldNames;
+    }
+
     private function dumpCode(CodeBuilder $code, string $outputFilePath): bool
     {
         //dump($code->getAsString());
@@ -648,6 +749,9 @@ final class Migrator
 
         // this replaces '(yield ...);' by 'yield ...;'
         $sourceCode = preg_replace('/\(yield (.*)\);$/m', 'yield $1;', $sourceCode);
+
+        // this adds a blank line before each if() statement
+        $sourceCode = str_replace('        if (', "\n        if (", $sourceCode);
 
         // this adds a blank line before each section menu item
         $sourceCode = str_replace('        yield MenuItem::section(', "\n        yield MenuItem::section(", $sourceCode);

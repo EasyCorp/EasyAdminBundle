@@ -118,6 +118,27 @@ final class CodeBuilder
         return $this;
     }
 
+    public function _if(string $condition): self
+    {
+        $this->code[] = sprintf('if (%s)', $condition);
+
+        return $this;
+    }
+
+    public function _elseif(string $condition): self
+    {
+        $this->code[] = sprintf('elseif (%s)', $condition);
+
+        return $this;
+    }
+
+    public function _else(): self
+    {
+        $this->code[] = 'else';
+
+        return $this;
+    }
+
     public function _method(string $name, array $arguments = [], string $returnType = null): self
     {
         $this->code[] = sprintf('%s(%s)', $name, implode(', ', $arguments));
@@ -163,6 +184,17 @@ final class CodeBuilder
         return $this;
     }
 
+    public function _returnArrayOfVariables(array $variableNames): self
+    {
+        $variableNames = array_map(function($variableName) {
+            return sprintf('$%s', $variableName);
+        }, $variableNames);
+
+        $this->code[] = sprintf('return [%s]', implode(', ', $variableNames));
+
+        return $this;
+    }
+
     public function getAsString(): string
     {
         $useStatements = array_unique($this->useStatements);
@@ -188,13 +220,15 @@ final class CodeBuilder
                 }
 
                 $formattedArgument = '['.implode(', ', $formattedArrayElements).']';
+            } elseif (\is_bool($argument)) {
+                $formattedArgument = strtolower(var_export($argument, true));
+            } elseif (\is_null($argument)) {
+                $formattedArgument = strtolower(var_export($argument, true));
             } elseif (u($argument)->endsWith('::class')) {
                 // this is needed to not format Foo::class as 'Foo::class'
                 $formattedArgument = $argument;
             } elseif (\is_string($argument)) {
                 $formattedArgument = sprintf("'%s'", str_replace("'", "\'", $argument));
-            } elseif (\is_bool($argument)) {
-                $formattedArgument = strtolower(var_export($argument, true));
             } else {
                 $formattedArgument = str_replace("\n", '', var_export($argument, true));
             }

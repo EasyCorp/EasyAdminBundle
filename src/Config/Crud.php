@@ -51,7 +51,7 @@ class Crud
 
     public function setPageTitle(string $pageName, string $title): self
     {
-        if (!\array_key_exists($pageName, $this->getValidPageNames())) {
+        if (!\in_array($pageName, $this->getValidPageNames(), true)) {
             throw new \InvalidArgumentException(sprintf('The first argument of the "%s()" method must be one of these valid page names: %s ("%s" given).', __METHOD__, implode(', ', $this->getValidPageNames()), $pageName));
         }
 

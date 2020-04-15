@@ -71,9 +71,9 @@ final class Actions
             throw new \InvalidArgumentException(sprintf('The "%s" action does not exist in the "%s" page, so you cannot update it. Instead, add the action with the "add()" method.', $actionName, $pageName));
         }
 
-        $actionDto = $callable($actionDto);
-
-        $this->dto->setAction($pageName, $actionDto);
+        $action = $actionDto->getAsConfigObject();
+        $action = $callable($action);
+        $this->dto->setAction($pageName, $action->getAsDto());
 
         return $this;
     }

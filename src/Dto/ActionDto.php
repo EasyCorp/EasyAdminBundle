@@ -211,4 +211,46 @@ final class ActionDto
     {
         $this->displayCallable = $displayCallable;
     }
+
+    /**
+     * @internal
+     */
+    public function getAsConfigObject(): Action
+    {
+        $action = Action::new($this->name, $this->label, $this->icon);
+        $action->setCssClass($this->cssClass);
+        $action->setHtmlAttributes($this->htmlAttributes);
+        $action->setTranslationDomain($this->translationDomain);
+        $action->setTranslationParameters($this->translationParameters);
+
+        if (null !== $this->templatePath) {
+            $action->setTemplatePath($this->templatePath);
+        }
+
+        if ($this->isGlobalAction()) {
+            $action->createAsGlobalAction();
+        } elseif ($this->isBatchAction()) {
+            $action->createAsBatchAction();
+        }
+
+        if ('a' === $this->htmlElement) {
+            $action->displayAsLink();
+        } else {
+            $action->displayAsButton();
+        }
+
+        if (null !== $this->crudActionName) {
+            $action->linkToCrudAction($this->crudActionName);
+        }
+
+        if (null !== $this->routeName) {
+            $action->linkToRoute($this->routeName, $this->routeParameters);
+        }
+
+        if (null !== $this->displayCallable) {
+            $action->displayIf($this->displayCallable);
+        }
+
+        return $action;
+    }
 }

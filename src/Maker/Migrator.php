@@ -207,7 +207,7 @@ final class Migrator
             ->_public()->_function()->_method('configureActions', ['Actions $actions'], 'Actions')
             ->openBrace()
             ->_return()->_variableName('actions')
-            ->_methodCall('disableActions', [$entityConfig['disabled_actions']])
+            ->_methodCall('disableActions', $entityConfig['disabled_actions'])
             ->semiColon()
             ->closeBrace();
 

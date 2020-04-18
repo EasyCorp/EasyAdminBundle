@@ -27,7 +27,11 @@ class DashboardController extends AbstractDashboardController
 
     public function configureMenuItems(): iterable
     {
-        $submenu1 = [MenuItem::linkToCrud('menu.product.list', 'fa fa-th-list', Product::class)->setDefaultSort(['createdAt' => 'DESC']), MenuItem::linkToCrud('menu.category', 'fa fa-tags', Category::class), MenuItem::linkToCrud('menu.product.add', 'fa fa-plus-circle', Product::class)];
+        $submenu1 = [
+            MenuItem::linkToCrud('menu.product.list', 'fa fa-th-list', Product::class)->setDefaultSort(['createdAt' => 'DESC']),
+            MenuItem::linkToCrud('menu.category', 'fa fa-tags', Category::class),
+            MenuItem::linkToCrud('menu.product.add', 'fa fa-plus-circle', Product::class)
+        ];
 
         yield MenuItem::subMenu('menu.product', 'fa fa-shopping-basket')->setSubItems($submenu1);
         yield MenuItem::linkToCrud('menu.customer', 'fa fa-users', User::class);

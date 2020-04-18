@@ -784,8 +784,15 @@ final class Migrator
         // this adds a blank line before each if() statement
         $sourceCode = str_replace('        if (', "\n        if (", $sourceCode);
 
-        // this adds a blank line after each array of submenu items
-        $sourceCode = preg_replace('/(\$submenu\d+ \= \[(.*)\]\;)$/m', "$1\n", $sourceCode);
+        // this formats submenu arrays in multiple lines
+        $sourceCode = preg_replace_callback('/(?<variable_name>\$submenu\d+) \= \[(?<items>.*)\]\;$/m', function ($matches) {
+            $formattedItems = str_replace('MenuItem::', "\n            MenuItem::", $matches['items']);
+            $formattedItems = str_replace(", \n", ",\n", $formattedItems);
+
+            return $matches['variable_name']." = ["
+                .$formattedItems
+                ."\n        ];\n\n";
+        }, $sourceCode);
 
         // this adds a blank line before each section menu item
         $sourceCode = str_replace('        yield MenuItem::section(', "\n        yield MenuItem::section(", $sourceCode);
@@ -805,6 +812,9 @@ final class Migrator
                 ."\n            ->"
                 .str_replace('->', "\n            ->", $matches['chained_methods']).';';
         }, $sourceCode);
+
+        // previous statements may add too many \n, make sure code doesn't contain more than two \n
+        $sourceCode = preg_replace("/\n{3,}/", "\n\n", $sourceCode);
 
         return $sourceCode;
     }

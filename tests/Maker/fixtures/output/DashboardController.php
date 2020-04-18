@@ -13,7 +13,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 
 class DashboardController extends AbstractDashboardController
 {
-
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
@@ -30,7 +29,7 @@ class DashboardController extends AbstractDashboardController
         $submenu1 = [
             MenuItem::linkToCrud('menu.product.list', 'fa fa-th-list', Product::class)->setDefaultSort(['createdAt' => 'DESC']),
             MenuItem::linkToCrud('menu.category', 'fa fa-tags', Category::class),
-            MenuItem::linkToCrud('menu.product.add', 'fa fa-plus-circle', Product::class)
+            MenuItem::linkToCrud('menu.product.add', 'fa fa-plus-circle', Product::class),
         ];
 
         yield MenuItem::subMenu('menu.product', 'fa fa-shopping-basket')->setSubItems($submenu1);

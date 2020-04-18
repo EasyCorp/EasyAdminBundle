@@ -28,7 +28,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TelephoneField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextAreaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TimeField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TimezoneField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\UrlField;
 use PhpParser\ParserFactory;
 use PhpParser\PrettyPrinter\Standard;
@@ -252,7 +251,6 @@ final class Migrator
 
                 continue;
             }
-
 
             $fieldFqcn = $this->guessFieldFqcnForProperty($fieldConfig);
             $fieldClassName = u($fieldFqcn)->afterLast('\\')->toString();
@@ -587,7 +585,7 @@ final class Migrator
         $numOfSubmenu = 0;
         foreach ($mainMenuItems as $menuItem) {
             if (!empty($menuItem['children'])) {
-                $numOfSubmenu++;
+                ++$numOfSubmenu;
             }
 
             $code = $this->generateMenuItem($code, $ea2Config, $entitiesFqcn, $menuItem, true, $numOfSubmenu)->semiColon();
@@ -776,8 +774,9 @@ final class Migrator
         // this adds a blank line between the 'use' imports and the 'class' declaration
         $sourceCode = preg_replace('/^class /m', "\nclass ", $sourceCode);
 
-        // this adds a blank line before each method
-        $sourceCode = str_replace('    public function', "\n    public function", $sourceCode);
+        // this adds a blank line before each method that follows another method or property
+        $sourceCode = str_replace("}\n    public function", "}\n\n    public function", $sourceCode);
+        $sourceCode = str_replace(";\n    public function", ";\n\n    public function", $sourceCode);
 
         // this replaces 'function foo() : Foo' by 'function foo(): Foo'
         $sourceCode = preg_replace('/^(.*) function (.*)\((.*)\) : (.*)$/m', '$1 function $2($3): $4', $sourceCode);
@@ -793,9 +792,9 @@ final class Migrator
             $formattedItems = str_replace('MenuItem::', "\n            MenuItem::", $matches['items']);
             $formattedItems = str_replace(", \n", ",\n", $formattedItems);
 
-            return $matches['variable_name']." = ["
+            return $matches['variable_name'].' = ['
                 .$formattedItems
-                ."\n        ];\n\n";
+                .",\n        ];\n\n";
         }, $sourceCode);
 
         // this adds a blank line before each section menu item

@@ -219,7 +219,7 @@ final class CodeBuilder
 
     public function _returnArrayOfVariables(array $variableNames): self
     {
-        $variableNames = array_map(function($variableName) {
+        $variableNames = array_map(function ($variableName) {
             return sprintf('$%s', $variableName);
         }, $variableNames);
 
@@ -255,7 +255,7 @@ final class CodeBuilder
                 $formattedArgument = '['.implode(', ', $formattedArrayElements).']';
             } elseif (\is_bool($argument)) {
                 $formattedArgument = strtolower(var_export($argument, true));
-            } elseif (\is_null($argument)) {
+            } elseif (null === $argument) {
                 $formattedArgument = strtolower(var_export($argument, true));
             } elseif (u($argument)->endsWith('::class')) {
                 // this is needed to not format Foo::class as 'Foo::class'

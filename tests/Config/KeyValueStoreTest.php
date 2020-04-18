@@ -62,17 +62,17 @@ class KeyValueStoreTest extends TestCase
 
         $this->assertSame('v1', $store->get('k1'));
         $this->assertSame('v1', $store->get('k1', 'default1'));
-        $this->assertSame(null, $store->get('k3'));
+        $this->assertNull($store->get('k3'));
         $this->assertSame('default1', $store->get('k3', 'default1'));
 
         $this->assertSame('v1', $store->get('k2.k1'));
         $this->assertSame('v1', $store->get('k2.k1', 'default1'));
-        $this->assertSame(null, $store->get('k2.k3'));
+        $this->assertNull($store->get('k2.k3'));
         $this->assertSame('default1', $store->get('k2.k3', 'default1'));
 
         $this->assertSame('v1', $store->get('k2.k2.k1'));
         $this->assertSame('v1', $store->get('k2.k2.k1', 'default1'));
-        $this->assertSame(null, $store->get('k2.k2.k3'));
+        $this->assertNull($store->get('k2.k2.k3'));
         $this->assertSame('default1', $store->get('k2.k2.k3', 'default1'));
     }
 
@@ -101,7 +101,7 @@ class KeyValueStoreTest extends TestCase
         $this->assertSame('v3', $store->get('k3'));
 
         $store->set('k1', null);
-        $this->assertSame(null, $store->get('k1'));
+        $this->assertNull($store->get('k1'));
     }
 
     public function testSetIfNotSet()
@@ -186,10 +186,10 @@ class KeyValueStoreTest extends TestCase
         $this->assertSame('v1', $store->get('k2.k1'));
 
         $store->delete('k1');
-        $this->assertSame(null, $store->get('k1'));
+        $this->assertNull($store->get('k1'));
 
         $store->delete('k2.k2.k1');
-        $this->assertSame(null, $store->get('k2.k2.k1'));
+        $this->assertNull($store->get('k2.k2.k1'));
         $this->assertSame([], $store->get('k2.k2'));
     }
 }

@@ -32,9 +32,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TimezoneField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\UrlField;
 use PhpParser\ParserFactory;
 use PhpParser\PrettyPrinter\Standard;
-use Symfony\Component\Console\Output\ConsoleSectionOutput;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Form\Form;
 use Symfony\Component\Security\Core\User\UserInterface;
 use function Symfony\Component\String\u;
 
@@ -48,7 +47,7 @@ final class Migrator
     private $parser;
     private $codePrettyPrinter;
 
-    public function migrate(array $ea2Config, string $outputDir, string $namespace, ConsoleSectionOutput $output): void
+    public function migrate(array $ea2Config, string $outputDir, string $namespace, OutputInterface $output): void
     {
         $this->ea2Config = $ea2Config;
         $this->outputDir = $outputDir;
@@ -726,7 +725,7 @@ final class Migrator
             // this is needed to ensure that our formatting tweaks don't generate PHP code with syntax errors
             $this->parser->parse($formattedSourceCode);
 
-            $this->fs->dumpFile($outputFilePath, $formattedSourceCode);
+            $this->fs->dumpFile($outputFilePath, $formattedSourceCode."\n");
 
             return true;
         } catch (\Throwable $e) {

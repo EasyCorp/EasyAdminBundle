@@ -41,9 +41,30 @@ final class CodeBuilder
         return $this;
     }
 
+    public function openBracket(): self
+    {
+        $this->code[] = '[';
+
+        return $this;
+    }
+
+    public function closeBracket(): self
+    {
+        $this->code[] = ']';
+
+        return $this;
+    }
+
     public function semiColon(): self
     {
         $this->code[] = ';';
+
+        return $this;
+    }
+
+    public function comma(): self
+    {
+        $this->code[] = ',';
 
         return $this;
     }
@@ -118,6 +139,11 @@ final class CodeBuilder
         return $this;
     }
 
+    public function noop(): self
+    {
+        return $this;
+    }
+
     public function _if(string $condition): self
     {
         $this->code[] = sprintf('if (%s)', $condition);
@@ -152,6 +178,13 @@ final class CodeBuilder
     public function _methodCall(string $name, array $arguments = []): self
     {
         $this->code[] = sprintf('->%s(%s)', $name, $this->formatArgumentsAsString($arguments));
+
+        return $this;
+    }
+
+    public function _methodCallWithRawArguments(string $name, array $arguments = []): self
+    {
+        $this->code[] = sprintf('->%s(%s)', $name, implode(', ', $arguments));
 
         return $this;
     }

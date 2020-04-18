@@ -569,77 +569,109 @@ final class Migrator
             ->_public()->_function()->_method('configureMenuItems', [], 'iterable')
             ->openBrace();
 
+        // first, generate the variables that hold the submenu items
+        $numOfSubmenu = 0;
         foreach ($mainMenuItems as $menuItem) {
-            $type = $menuItem['type'];
-            $label = $menuItem['label'];
-            $icon = u($menuItem['icon'])->ensureStart('fa ')->toString();
-            $cssClass = $menuItem['css_class'];
-            $target = $menuItem['target'];
-            $rel = $menuItem['rel'];
-            $permission = $menuItem['permission'];
-
-            if ('entity' === $type) {
-                $entityNameInMenuItem = $menuItem['entity'];
-                $entityFqcnForMenuEntity = $ea2Config['entities'][$entityNameInMenuItem]['class'];
-                if (!\in_array($entityFqcnForMenuEntity, $entitiesFqcn)) {
-                    continue;
-                }
-
-                $entityClassName = u($entityFqcnForMenuEntity)->afterLast('\\')->toString();
-                $code = $code
-                    ->_use($entityFqcnForMenuEntity)
-                    ->_yield()->_staticCall('MenuItem', 'linkToCrud', [$label, $icon, $entityClassName.'::class']);
-
-                if (isset($menuItem['params']['sortField'])) {
-                    $sortField = $menuItem['params']['sortField'];
-                    $sortDirection = $menuItem['params']['sortDirection'] ?? 'DESC';
-                    $sortConfig = [$sortField => $sortDirection];
-                    $code = $code->_methodCall('setDefaultSort', [$sortConfig]);
-                }
-            } elseif ('route' === $type) {
-                $routeName = $menuItem['route'];
-                $routeParameters = $menuItem['params'];
-                $methodArguments = [$label, $icon, $routeName];
-                if (!empty($routeParameters)) {
-                    $methodArguments[] = $routeParameters;
-                }
-
-                $code = $code->_yield()->_staticCall('MenuItem', 'linktoRoute', $methodArguments);
-            } elseif ('divider' === $type) {
-                $methodArguments = [];
-                if ($label) {
-                    $methodArguments[] = $label;
-                }
-                if ($icon) {
-                    $methodArguments[] = $icon;
-                }
-
-                $code = $code->_yield()->_staticCall('MenuItem', 'section', $methodArguments);
-            } else {
-                // TODO: submenus
+            if (empty($menuItem['children'])) {
                 continue;
             }
 
-            if ($target) {
-                $code = $code->_methodCall('setLinkTarget', $target);
+            $code = $code->_variableName(sprintf('submenu%d', ++$numOfSubmenu))->equals()->openBracket()->newLine();
+            foreach ($menuItem['children'] as $subMenuItem) {
+                $code = $this->generateMenuItem($code, $ea2Config, $entitiesFqcn, $subMenuItem, false)->comma()->newLine();
+            }
+            $code = $code->newLine()->closeBracket()->semiColon();
+        }
+
+        // second, generate menu items and (optionally) refer to the variables generated above
+        $numOfSubmenu = 0;
+        foreach ($mainMenuItems as $menuItem) {
+            if (!empty($menuItem['children'])) {
+                $numOfSubmenu++;
             }
 
-            if ($rel) {
-                $code = $code->_methodCall('setLinkRel', $target);
-            }
-
-            if ($permission) {
-                $code = $code->_methodCall('setPermission', $permission);
-            }
-
-            if ($cssClass) {
-                $code = $code->_methodCall('setCssClass', $cssClass);
-            }
-
-            $code = $code->semiColon();
+            $code = $this->generateMenuItem($code, $ea2Config, $entitiesFqcn, $menuItem, true, $numOfSubmenu)->semiColon();
         }
 
         $code = $code->closeBrace();
+
+        return $code;
+    }
+
+    private function generateMenuItem(CodeBuilder $code, array $ea2Config, array $entitiesFqcn, array $menuItem, bool $yieldResult, int $numOfSubmenu = 0)
+    {
+        $type = $menuItem['type'];
+        $label = $menuItem['label'];
+        $icon = u($menuItem['icon'])->ensureStart('fa ')->toString();
+        $cssClass = $menuItem['css_class'];
+        $target = $menuItem['target'];
+        $rel = $menuItem['rel'];
+        $permission = $menuItem['permission'];
+
+        if ('entity' === $type) {
+            $entityNameInMenuItem = $menuItem['entity'];
+            $entityFqcnForMenuEntity = $ea2Config['entities'][$entityNameInMenuItem]['class'];
+            if (!\in_array($entityFqcnForMenuEntity, $entitiesFqcn)) {
+                return $code;
+            }
+
+            $entityClassName = u($entityFqcnForMenuEntity)->afterLast('\\')->toString();
+            $code = $code
+                ->_use($entityFqcnForMenuEntity)
+                ->{ $yieldResult ? '_yield' : 'noop'}()->_staticCall('MenuItem', 'linkToCrud', [$label, $icon, $entityClassName.'::class']);
+
+            if (isset($menuItem['params']['sortField'])) {
+                $sortField = $menuItem['params']['sortField'];
+                $sortDirection = $menuItem['params']['sortDirection'] ?? 'DESC';
+                $sortConfig = [$sortField => $sortDirection];
+                $code = $code->_methodCall('setDefaultSort', [$sortConfig]);
+            }
+        } elseif ('route' === $type) {
+            $routeName = $menuItem['route'];
+            $routeParameters = $menuItem['params'];
+            $methodArguments = [$label, $icon, $routeName];
+            if (!empty($routeParameters)) {
+                $methodArguments[] = $routeParameters;
+            }
+
+            $code = $code->{ $yieldResult ? '_yield' : 'noop'}()->_staticCall('MenuItem', 'linktoRoute', $methodArguments);
+        } elseif ('divider' === $type) {
+            $methodArguments = [];
+            if ($label) {
+                $methodArguments[] = $label;
+            }
+            if ($icon) {
+                $methodArguments[] = $icon;
+            }
+
+            $code = $code->{ $yieldResult ? '_yield' : 'noop'}()->_staticCall('MenuItem', 'section', $methodArguments);
+        } elseif (!empty($menuItem['children'])) {
+            $methodArguments = [$label];
+            if ($icon) {
+                $methodArguments[] = $icon;
+            }
+
+            $code = $code->{ $yieldResult ? '_yield' : 'noop'}()->_staticCall('MenuItem', 'subMenu', $methodArguments);
+            $code = $code->_methodCallWithRawArguments('setSubItems', [sprintf('$submenu%d', $numOfSubmenu)]);
+        } else {
+            return $code;
+        }
+
+        if ($target) {
+            $code = $code->_methodCall('setLinkTarget', [$target]);
+        }
+
+        if ($rel) {
+            $code = $code->_methodCall('setLinkRel', [$target]);
+        }
+
+        if ($permission) {
+            $code = $code->_methodCall('setPermission', [$permission]);
+        }
+
+        if ($cssClass) {
+            $code = $code->_methodCall('setCssClass', [$cssClass]);
+        }
 
         return $code;
     }
@@ -751,6 +783,9 @@ final class Migrator
 
         // this adds a blank line before each if() statement
         $sourceCode = str_replace('        if (', "\n        if (", $sourceCode);
+
+        // this adds a blank line after each array of submenu items
+        $sourceCode = preg_replace('/(\$submenu\d+ \= \[(.*)\]\;)$/m', "$1\n", $sourceCode);
 
         // this adds a blank line before each section menu item
         $sourceCode = str_replace('        yield MenuItem::section(', "\n        yield MenuItem::section(", $sourceCode);

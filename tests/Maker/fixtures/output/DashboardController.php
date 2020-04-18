@@ -38,5 +38,8 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('menu.purchase', 'fa fa-credit-card', Purchase::class)->setDefaultSort(['deliveryDate' => 'DESC']);
 
         yield MenuItem::section('menu.about', 'fa fa-folder-open');
+        yield MenuItem::linkToUrl('menu.about.home', 'fa fa-home', 'https://github.com/EasyCorp/EasyAdminBundle')->setLinkTarget('_blank')->setLinkRel('noreferrer');
+        yield MenuItem::linkToUrl('menu.about.docs', 'fa fa-book', 'https://symfony.com/doc/current/bundles/EasyAdminBundle')->setLinkTarget('_blank')->setLinkRel('noreferrer');
+        yield MenuItem::linkToUrl('menu.about.issues', 'fa fa-github', 'https://github.com/EasyCorp/EasyAdminBundle/issues')->setLinkTarget('_blank')->setLinkRel('noreferrer');
     }
 }

@@ -653,6 +653,10 @@ final class Migrator
 
             $code = $code->{ $yieldResult ? '_yield' : 'noop'}()->_staticCall('MenuItem', 'subMenu', $methodArguments);
             $code = $code->_methodCallWithRawArguments('setSubItems', [sprintf('$submenu%d', $numOfSubmenu)]);
+        } elseif ('link' === $menuItem['type']) {
+            $methodArguments = [$label, $icon, $menuItem['url']];
+
+            $code = $code->{ $yieldResult ? '_yield' : 'noop'}()->_staticCall('MenuItem', 'linkToUrl', $methodArguments);
         } else {
             return $code;
         }
@@ -662,7 +666,7 @@ final class Migrator
         }
 
         if ($rel) {
-            $code = $code->_methodCall('setLinkRel', [$target]);
+            $code = $code->_methodCall('setLinkRel', [$rel]);
         }
 
         if ($permission) {

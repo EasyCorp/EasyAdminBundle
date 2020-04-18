@@ -95,7 +95,7 @@
                 <source>label.inaccessible.explanation</source>
                 <target>За това поле не съществува обектов метод за достъп (getter), нито пък съответната обектова променлива е публично достъпна (public).</target>
             </trans-unit>
-			<trans-unit id="label.form.empty_value">
+            <trans-unit id="label.form.empty_value">
                 <source>label.form.empty_value</source>
                 <target>None</target>
             </trans-unit>
@@ -134,7 +134,7 @@
                 <source>delete_modal.action</source>
                 <target>Изтриване</target>
             </trans-unit>
-			<trans-unit id="batch_action_modal.title">
+            <trans-unit id="batch_action_modal.title">
                 <source>batch_action_modal.title</source>
                 <target>Ще приложите действието "%action_name%" към %num_items% елемент(и).</target>
             </trans-unit>
@@ -192,7 +192,7 @@
                 <source>exception.undefined_entity</source>
                 <target>Приложението не е конфигурирано правилно за този вид елементи.</target>
             </trans-unit>
-			<trans-unit id="exception.no_permission">
+            <trans-unit id="exception.no_permission">
                 <source>exception.no_permission</source>
                 <target>Нямате необходимите права, за да приложите това действие.</target>
             </trans-unit>
@@ -211,7 +211,7 @@
                 <target>Вход</target>
             </trans-unit>
 
-			<!-- filters -->
+            <!-- filters -->
             <trans-unit id="filter.title">
                 <source>filter.title</source>
                 <target>Филтри</target>

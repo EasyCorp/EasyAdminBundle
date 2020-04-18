@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
-    <file source-language="en" target-language="bg" datatype="plaintext" original="EasyAdminBundle.en.xliff">
+    <file source-language="en" target-language="bg" datatype="plaintext" original="file.ext">
         <body>
             <!-- generic actions displayed on buttons and links -->
             <trans-unit id="action.new">
@@ -27,6 +27,10 @@
                 <source>action.save</source>
                 <target>Запис</target>
             </trans-unit>
+			<trans-unit id="action.continue">
+                <source>action.continue</source>
+                <target>Продължи</target>
+            </trans-unit>
             <trans-unit id="action.cancel">
                 <source>action.cancel</source>
                 <target>Отказ</target>
@@ -37,7 +41,11 @@
             </trans-unit>
             <trans-unit id="action.deselect">
                 <source>action.deselect</source>
-                <target>*** Deselect ***</target>
+                <target>Изчисти селекцията</target>
+            </trans-unit>
+			<trans-unit id="label.form.empty_value">
+                <source>label.form.empty_value</source>
+                <target>Без стойност</target>
             </trans-unit>
 
             <!-- forms -->

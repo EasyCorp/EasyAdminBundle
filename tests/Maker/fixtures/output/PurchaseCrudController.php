@@ -28,7 +28,7 @@ class PurchaseCrudController extends AbstractCrudController
     public function configureActions(Actions $actions): Actions
     {
         return $actions
-            ->disableActions(['delete']);
+            ->disableActions('delete');
     }
 
     public function configureFields(string $pageName): iterable

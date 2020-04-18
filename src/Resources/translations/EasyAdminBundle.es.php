@@ -108,7 +108,7 @@ return [
         'unnamed' => 'Usuario sin nombre',
         'anonymous' => 'Usuario anónimo',
         'sign_out' => 'Cerrar sesión',
-        // 'exit_impersonation' => '',
+        'exit_impersonation' => 'Terminar impersonación',
     ],
 
     'login_page' => [

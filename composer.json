@@ -19,7 +19,6 @@
         "doctrine/orm": "^2.6,>=2.6.3",
         "doctrine/persistence": "^1.0",
         "nikic/php-parser": "^4.3|^4.4",
-        "sensio/framework-extra-bundle": "^5.5",
         "symfony/asset": "^4.2|^5.0",
         "symfony/cache": "^4.2|^5.0",
         "symfony/config": "^4.2|^5.0",

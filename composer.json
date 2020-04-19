@@ -42,7 +42,6 @@
         "symfony/twig-bridge": "^4.2|^5.0",
         "symfony/twig-bundle": "^4.2|^5.0",
         "symfony/validator": "^4.2|^5.0",
-        "twig/extensions": "^1.5",
         "twig/twig": "^2.12|^3.0"
     },
     "require-dev": {

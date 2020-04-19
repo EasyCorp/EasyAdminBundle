@@ -71,7 +71,13 @@
                     {% set _user_name = easyadmin_read_property(app.user, easyadmin_config('user.name_property_path'))|default('user.unnamed'|trans(domain = 'EasyAdminBundle')) %}
                     {% set _logout_path = easyadmin_logout_path() %}
                     {% set _user_has_logout = _logout_path is not empty %}
-                    {% set _user_is_impersonated = is_granted('ROLE_PREVIOUS_ADMIN') %}
+
+                    {% if constant('Symfony\\Component\\Security\\Core\\Authorization\\Voter\\AuthenticatedVoter::IS_IMPERSONATOR') is defined %}
+                        {% set _user_is_impersonated = is_granted('IS_IMPERSONATOR') %}
+                    {% else %}
+                        {% set _user_is_impersonated = is_granted('ROLE_PREVIOUS_ADMIN') %}
+                    {% endif %}
+
                     {% set _user_menu_content %}
                         <div class="popover-content-section user-details {{ _user_has_logout or _user_is_impersonated ? 'user-has-actions' }}">
                             <p class="small text-muted mb-0">{{ 'user.logged_in_as'|trans(domain = 'EasyAdminBundle') }}</p>

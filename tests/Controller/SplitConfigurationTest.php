@@ -32,7 +32,7 @@ class SplitConfigurationTest extends AbstractTestCase
     public function testConfigurationErrorsInDifferentFiles()
     {
         $this->expectException('Symfony\Component\Config\Definition\Exception\InvalidConfigurationException');
-        $this->expectExceptionMessage('Invalid type for path "easy_admin.design.rtl". Expected boolean, but got integer.');
+        $this->expectExceptionMessageRegExp('/Invalid type for path "easy_admin.design.rtl". Expected ("bool"|boolean), but got ("int"|integer)./');
 
         $this->initClient(['environment' => 'split_configuration_error']);
     }

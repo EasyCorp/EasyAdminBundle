@@ -77,8 +77,8 @@ final class Migrator
                     ->_public()->_static()->_variableName('entityFqcn')->_variableValue($entityClassName.'::class')->semiColon();
 
             $code = $this->addConfigureCrudMethod($code, $entityClassName, $entityConfig);
-            $code = $this->addConfigureActionsMethod($code, $entityClassName, $entityConfig);
-            $code = $this->addConfigureFieldsMethod($code, $entityClassName, $entityConfig);
+            $code = $this->addConfigureActionsMethod($code, $entityConfig);
+            $code = $this->addConfigureFieldsMethod($code, $entityConfig);
 
             $code = $code->closeBrace(); // closing for 'class ... {'
 
@@ -194,7 +194,7 @@ final class Migrator
         return $code;
     }
 
-    private function addConfigureActionsMethod(CodeBuilder $code, string $entityClassName, array $entityConfig): CodeBuilder
+    private function addConfigureActionsMethod(CodeBuilder $code, array $entityConfig): CodeBuilder
     {
         if (empty($entityConfig['disabled_actions'])) {
             return $code;
@@ -212,7 +212,7 @@ final class Migrator
         return $code;
     }
 
-    private function addConfigureFieldsMethod(CodeBuilder $code, string $entityClassName, array $entityConfig): CodeBuilder
+    private function addConfigureFieldsMethod(CodeBuilder $code, array $entityConfig): CodeBuilder
     {
         $code = $code
             ->_public()->_function()->_method('configureFields', ['string $pageName'], 'iterable')

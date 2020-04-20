@@ -21,7 +21,7 @@ final class ClassMaker
     }
 
     /**
-     * @return The path of the created file (relative to the project dir)
+     * @return string The path of the created file (relative to the project dir)
      */
     public function make(string $generatedFilePathPattern, string $skeletonName, array $skeletonParameters): string
     {

@@ -6,7 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu\MenuItemInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
 
 /**
- * @see EasyCorp\Bundle\EasyAdminBundle\Configuration\MenuItem::linkToDashboard()
+ * @see EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem::linkToDashboard()
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */

@@ -56,7 +56,7 @@ class MakeAdminMigrationCommand extends Command
         $this->addStep('<info>Step 1/3.</info> Find the file with the EasyAdmin 2 config backup.');
         $ea2ConfigBackupPath = $this->projectDir.'/easyadmin-config.backup';
         if (!$fs->exists($ea2ConfigBackupPath)) {
-            $this->temporarySection->write('<error> ERROR </> The config backup file was not found. To generate this file, run the <comment>make:admin:migration</comment> command in your application before upgrading your dependencies to EasyAdmin 3.');
+            $this->temporarySection->write('<error> ERROR </error> The config backup file was not found. To generate this file, run the <comment>make:admin:migration</comment> command in your application before upgrading your dependencies to EasyAdmin 3.');
 
             return self::FAILURE;
         }
@@ -77,7 +77,7 @@ class MakeAdminMigrationCommand extends Command
         $fs->mkdir($outputDir);
         if (!$fs->exists($outputDir)) {
             $this->temporarySection->clear();
-            $this->temporarySection->write(sprintf('<error> ERROR </> The "%s" directory does not exist and cannot be created, so the PHP files cannot be generated.', $outputDir));
+            $this->temporarySection->write(sprintf('<error> ERROR </error> The "%s" directory does not exist and cannot be created, so the PHP files cannot be generated.', $outputDir));
 
             return self::FAILURE;
         }

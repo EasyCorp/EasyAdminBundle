@@ -6,7 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu\MenuItemInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
 
 /**
- * @see EasyCorp\Bundle\EasyAdminBundle\Configuration\MenuItem::linkToLogout()
+ * @see EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem::linkToLogout()
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */

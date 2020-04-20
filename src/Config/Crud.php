@@ -76,7 +76,7 @@ class Crud
      */
     public function setDateFormat(string $formatOrPattern): self
     {
-        if ('' === trim($formatOrPattern) || 'none' === $formatOrPattern) {
+        if ('none' === $formatOrPattern || '' === trim($formatOrPattern)) {
             throw new \InvalidArgumentException(sprintf('The first argument of the "%s()" method cannot be "none" or an empty string. Define either the date format or the datetime Intl pattern.', __METHOD__));
         }
 
@@ -96,7 +96,7 @@ class Crud
      */
     public function setTimeFormat(string $formatOrPattern): self
     {
-        if ('' === trim($formatOrPattern) || 'none' === $formatOrPattern) {
+        if ('none' === $formatOrPattern || '' === trim($formatOrPattern)) {
             throw new \InvalidArgumentException(sprintf('The first argument of the "%s()" method cannot be "none" or an empty string. Define either the time format or the datetime Intl pattern.', __METHOD__));
         }
 

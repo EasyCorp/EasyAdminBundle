@@ -45,7 +45,7 @@ final class TimeField implements FieldInterface
      */
     public function setFormat(string $timeFormatOrPattern): self
     {
-        if ('' === trim($timeFormatOrPattern) || 'none' === $timeFormatOrPattern) {
+        if ('none' === $timeFormatOrPattern || '' === trim($timeFormatOrPattern)) {
             throw new \InvalidArgumentException(sprintf('The first argument of the "%s()" method cannot be "none" or an empty string. Define either the time format or the datetime Intl pattern.', __METHOD__));
         }
 

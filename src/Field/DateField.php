@@ -45,7 +45,7 @@ final class DateField implements FieldInterface
      */
     public function setFormat(string $dateFormatOrPattern): self
     {
-        if ('' === trim($dateFormatOrPattern) || 'none' === $dateFormatOrPattern) {
+        if ('none' === $dateFormatOrPattern || '' === trim($dateFormatOrPattern)) {
             throw new \InvalidArgumentException(sprintf('The first argument of the "%s()" method cannot be "none" or an empty string. Define either the date format or the datetime Intl pattern.', __METHOD__));
         }
 

@@ -83,7 +83,7 @@ final class CodeBuilder
         return $this;
     }
 
-    public function _namespace(string $namespace)
+    public function _namespace(string $namespace): self
     {
         $this->beforeCode[] = sprintf('namespace %s;', $namespace);
 
@@ -219,7 +219,7 @@ final class CodeBuilder
 
     public function _returnArrayOfVariables(array $variableNames): self
     {
-        $variableNames = array_map(function ($variableName) {
+        $variableNames = array_map(static function ($variableName) {
             return sprintf('$%s', $variableName);
         }, $variableNames);
 

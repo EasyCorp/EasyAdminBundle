@@ -609,7 +609,7 @@ final class Migrator
         if ('entity' === $type) {
             $entityNameInMenuItem = $menuItem['entity'];
             $entityFqcnForMenuEntity = $ea2Config['entities'][$entityNameInMenuItem]['class'];
-            if (!\in_array($entityFqcnForMenuEntity, $entitiesFqcn)) {
+            if (!\in_array($entityFqcnForMenuEntity, $entitiesFqcn, true)) {
                 return $code;
             }
 
@@ -788,7 +788,7 @@ final class Migrator
         $sourceCode = str_replace('        if (', "\n        if (", $sourceCode);
 
         // this formats submenu arrays in multiple lines
-        $sourceCode = preg_replace_callback('/(?<variable_name>\$submenu\d+) \= \[(?<items>.*)\]\;$/m', function ($matches) {
+        $sourceCode = preg_replace_callback('/(?<variable_name>\$submenu\d+) \= \[(?<items>.*)\]\;$/m', static function ($matches) {
             $formattedItems = str_replace('MenuItem::', "\n            MenuItem::", $matches['items']);
             $formattedItems = str_replace(", \n", ",\n", $formattedItems);
 
@@ -802,7 +802,7 @@ final class Migrator
 
         // this breaks a single line with a variable and chained methods into multiple lines with one method in each line
         // (return $foo->method1()->method2()->method3()->...)
-        $sourceCode = preg_replace_callback('/        return (?<variable_name>\$.*[^\-\>])\-\>(?<chained_methods>.*);/U', function ($matches) {
+        $sourceCode = preg_replace_callback('/        return (?<variable_name>\$.*[^\-\>])\-\>(?<chained_methods>.*);/U', static function ($matches) {
             return '        return '.$matches['variable_name']
                 ."\n            ->"
                 .str_replace('->', "\n            ->", $matches['chained_methods']).';';
@@ -810,7 +810,7 @@ final class Migrator
 
         // this breaks a single line with a static call and chained methods into multiple lines with one method in each line
         // (return Foo::new()->method1()->method2()->method3()->...)
-        $sourceCode = preg_replace_callback('/        return (?<class_name>.*)\:\:(?<method_name>.*)\(\)\-\>(?<chained_methods>.*);/U', function ($matches) {
+        $sourceCode = preg_replace_callback('/        return (?<class_name>.*)\:\:(?<method_name>.*)\(\)\-\>(?<chained_methods>.*);/U', static function ($matches) {
             return '        return '.$matches['class_name'].'::'.$matches['method_name'].'()'
                 ."\n            ->"
                 .str_replace('->', "\n            ->", $matches['chained_methods']).';';

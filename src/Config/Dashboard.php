@@ -47,7 +47,7 @@ final class Dashboard
 
     public function setTextDirection(string $direction): self
     {
-        if (\in_array($direction, ['ltr', 'rtl'], true)) {
+        if (!\in_array($direction, ['ltr', 'rtl'], true)) {
             throw new \InvalidArgumentException(sprintf('The "%s" value given to the textDirection option is not valid. It can only be "ltr" or "rtl"', $direction));
         }
 

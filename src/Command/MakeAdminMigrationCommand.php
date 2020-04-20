@@ -21,8 +21,8 @@ class MakeAdminMigrationCommand extends Command
 {
     protected static $defaultName = 'make:admin:migration';
 
-    private const SUCCESS = 0;
-    private const FAILURE = 1;
+    public const SUCCESS = 0;
+    public const FAILURE = 1;
 
     private $migrator;
     private $projectDir;

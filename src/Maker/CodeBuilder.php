@@ -231,7 +231,8 @@ final class CodeBuilder
     public function getAsString(): string
     {
         $useStatements = array_unique($this->useStatements);
-        sort($useStatements);
+        // 'natcasesort()' is needed to sort 'TextareaField' before 'TextField'
+        natcasesort($useStatements);
 
         return implode('', $this->beforeCode)
             .' '

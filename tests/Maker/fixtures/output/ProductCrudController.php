@@ -12,7 +12,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextAreaField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 class ProductCrudController extends AbstractCrudController
@@ -28,7 +28,7 @@ class ProductCrudController extends AbstractCrudController
     {
         $panel1 = FormField::addPanel('Basic information');
         $name = TextField::new('name');
-        $description = TextAreaField::new('description');
+        $description = TextareaField::new('description');
         $categories = AssociationField::new('categories');
         $panel2 = FormField::addPanel('Product Details');
         $ean = TextField::new('ean');

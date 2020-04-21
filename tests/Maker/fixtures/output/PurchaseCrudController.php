@@ -10,7 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextAreaField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TimeField;
 
@@ -36,7 +36,7 @@ class PurchaseCrudController extends AbstractCrudController
         $panel1 = FormField::addPanel('Delivery Details');
         $deliveryDate = DateField::new('deliveryDate');
         $deliveryHour = TimeField::new('deliveryHour');
-        $billingAddress = TextAreaField::new('billingAddress');
+        $billingAddress = TextareaField::new('billingAddress');
         $panel2 = FormField::addPanel('Purchase Details');
         $guid = TextField::new('guid');
         $buyer = AssociationField::new('buyer');
@@ -44,7 +44,7 @@ class PurchaseCrudController extends AbstractCrudController
         $createdAt = DateTimeField::new('createdAt');
         $shipping = TextField::new('shipping');
         $purchasedItems = AssociationField::new('purchasedItems');
-        $total = TextAreaField::new('total');
+        $total = TextareaField::new('total');
 
         if (Crud::PAGE_INDEX === $pageName) {
             return [$guid, $buyer, $deliveryDate, $deliveryHour, $billingAddress, $purchasedItems, $total];

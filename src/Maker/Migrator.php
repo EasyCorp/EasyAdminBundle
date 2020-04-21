@@ -25,7 +25,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TelephoneField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextAreaField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\UrlField;
@@ -396,8 +396,8 @@ final class Migrator
         $doctrineTypeToFqcn = [
             //Type::TARRAY => 'array',
             Type::BIGINT => TextField::class,
-            Type::BINARY => TextAreaField::class,
-            Type::BLOB => TextAreaField::class,
+            Type::BINARY => TextareaField::class,
+            Type::BLOB => TextareaField::class,
             Type::BOOLEAN => BooleanField::class,
             Type::DATE => DateField::class,
             Type::DATE_IMMUTABLE => DateField::class,
@@ -415,7 +415,7 @@ final class Migrator
             //Type::SIMPLE_ARRAY => 'array',
             Type::SMALLINT => IntegerField::class,
             Type::STRING => TextField::class,
-            Type::TEXT => TextAreaField::class,
+            Type::TEXT => TextareaField::class,
             Type::TIME => TimeField::class,
             Type::TIME_IMMUTABLE => TimeField::class,
         ];

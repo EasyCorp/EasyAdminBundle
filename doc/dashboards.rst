@@ -44,64 +44,6 @@ generate a dashboard controller:
 
     $ php bin/console make:admin:dashboard
 
-.. _admin-context:
-
-Admin Context
--------------
-
-EasyAdmin initializes a variable of type ``EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext``
-automatically on each backend request. This object implements the `context object`_
-design pattern and stores all the information commonly needed in different parts
-of the backend.
-
-This context object is automatically injected in every template as a variable
-called ``ea`` (the initials of "EasyAdmin"):
-
-.. code-block:: twig
-
-    <h1>{{ ea.dashboardTitle }}</h1>
-
-    {% for menuItem in ea.mainMenu.items %}
-        {# ... #}
-    {% endif %}
-
-The ``AdminContext`` variable is created dynamically on each request, so you
-can't inject it directly in your services. Instead, use the ``AdminContextProvider``
-service to get the context variable::
-
-    use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
-
-    final class SomeService
-    {
-        private $adminContextProvider;
-
-        public function __construct(AdminContextProvider $adminContextProvider)
-        {
-            $this->adminContextProvider = $adminContextProvider;
-        }
-
-        public function someMethod()
-        {
-            $context = $this->adminContextProvider->getContext();
-        }
-
-        // ...
-    }
-
-In controllers, use the ``AdminContext`` type-hint in any argument where you
-want to inject the context object::
-
-    use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
-    use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-
-    class SomeController extends AbstractController
-    {
-        public function someMethod(AdminContext $context)
-        {
-            // ...
-        }
-    }
-
 Dashboard Configuration
 -----------------------
 
@@ -431,6 +373,64 @@ current user object. The user avatar is a generic avatar icon. Use the
                     MenuItem::section(),
                     MenuItem::linkToLogout('Logout', 'fa fa-sign-out'),
                 ]);
+        }
+    }
+
+.. _admin-context:
+
+Admin Context
+-------------
+
+EasyAdmin initializes a variable of type ``EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext``
+automatically on each backend request. This object implements the `context object`_
+design pattern and stores all the information commonly needed in different parts
+of the backend.
+
+This context object is automatically injected in every template as a variable
+called ``ea`` (the initials of "EasyAdmin"):
+
+.. code-block:: twig
+
+    <h1>{{ ea.dashboardTitle }}</h1>
+
+    {% for menuItem in ea.mainMenu.items %}
+        {# ... #}
+    {% endif %}
+
+The ``AdminContext`` variable is created dynamically on each request, so you
+can't inject it directly in your services. Instead, use the ``AdminContextProvider``
+service to get the context variable::
+
+    use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
+
+    final class SomeService
+    {
+        private $adminContextProvider;
+
+        public function __construct(AdminContextProvider $adminContextProvider)
+        {
+            $this->adminContextProvider = $adminContextProvider;
+        }
+
+        public function someMethod()
+        {
+            $context = $this->adminContextProvider->getContext();
+        }
+
+        // ...
+    }
+
+In controllers, use the ``AdminContext`` type-hint in any argument where you
+want to inject the context object::
+
+    use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
+    use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+
+    class SomeController extends AbstractController
+    {
+        public function someMethod(AdminContext $context)
+        {
+            // ...
         }
     }
 

@@ -7,7 +7,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextAreaField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use function Symfony\Component\String\u;
 
@@ -18,20 +18,20 @@ final class TextConfigurator implements FieldConfiguratorInterface
 {
     public function supports(FieldDto $field, EntityDto $entityDto): bool
     {
-        return \in_array($field->getFieldFqcn(), [TextField::class, TextAreaField::class], true);
+        return \in_array($field->getFieldFqcn(), [TextField::class, TextareaField::class], true);
     }
 
     public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
     {
-        if ($field instanceof TextAreaField) {
-            $field->setFormTypeOptionIfNotSet('attr.rows', $field->getCustomOption(TextAreaField::OPTION_NUM_OF_ROWS));
+        if ($field instanceof TextareaField) {
+            $field->setFormTypeOptionIfNotSet('attr.rows', $field->getCustomOption(TextareaField::OPTION_NUM_OF_ROWS));
         }
 
         if (null === $field->getValue()) {
             return;
         }
 
-        $configuredMaxLength = $field->getCustomOption(TextAreaField::OPTION_MAX_LENGTH);
+        $configuredMaxLength = $field->getCustomOption(TextareaField::OPTION_MAX_LENGTH);
         $isDetailAction = Action::DETAIL === $context->getCrud()->getCurrentAction();
         $defaultMaxLength = $isDetailAction ? PHP_INT_MAX : 64;
         $formattedValue = u($field->getValue())->truncate($configuredMaxLength ?? $defaultMaxLength, '…');

@@ -9,7 +9,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextAreaField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 class UserCrudController extends AbstractCrudController
@@ -27,7 +27,7 @@ class UserCrudController extends AbstractCrudController
     {
         $panel1 = FormField::addPanel('Account Information');
         $username = TextField::new('username');
-        $isActive = TextAreaField::new('isActive');
+        $isActive = TextareaField::new('isActive');
         $panel2 = FormField::addPanel('Contact Information');
         $email = TextField::new('email');
         $panel3 = FormField::addPanel('Legal Information');

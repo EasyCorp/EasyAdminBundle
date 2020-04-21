@@ -138,10 +138,10 @@ Now you can link the entity from your dashboard by adding the following menu ite
         public function configureMenuItems(): iterable
         {
             return [
-                MenuItem::linkToDashboard('Dashboard', 'fa fa-home'),
+                yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home'),
 
                 // change BlogPost::class by the class of your own Doctrine entity
-                MenuItem::linkToCrud('Blog Posts', 'fa-file', BlogPost::class),
+                yield MenuItem::linkToCrud('Blog Posts', 'fa-file', BlogPost::class),
             ];
         }
     }

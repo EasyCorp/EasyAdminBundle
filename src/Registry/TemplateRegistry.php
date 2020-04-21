@@ -40,6 +40,7 @@ final class TemplateRegistry
         'crud/field/image' => '@EasyAdmin/crud/field/image.html.twig',
         'crud/field/integer' => '@EasyAdmin/crud/field/integer.html.twig',
         'crud/field/language' => '@EasyAdmin/crud/field/language.html.twig',
+        'crud/field/locale' => '@EasyAdmin/crud/field/locale.html.twig',
         'crud/field/money' => '@EasyAdmin/crud/field/money.html.twig',
         'crud/field/number' => '@EasyAdmin/crud/field/number.html.twig',
         'crud/field/percent' => '@EasyAdmin/crud/field/percent.html.twig',

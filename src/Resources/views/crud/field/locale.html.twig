@@ -1,0 +1,8 @@
+{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
+{# @var field \EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto #}
+{% if field.customOptions.get('showCode') %}
+    <span class="badge badge-language" title="{{ field.formattedValue }}">{{ field.value }}</span>
+{% endif %}
+{% if field.customOptions.get('showName') %}
+    {{ field.formattedValue ?? '' }}
+{% endif %}

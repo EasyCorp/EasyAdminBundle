@@ -71,7 +71,7 @@ class MakeAdminMigrationCommand extends Command
         $this->addStep('<info>Step 2/3.</info> Select the directory where the new PHP files will be generated.');
 
         $this->temporarySection->write(sprintf('Type the relative path from your project directory, which is: %s', $this->projectDir));
-        $relativeOutputDir = $this->askQuestion('Directory [<comment>src/Controller/Admin/</comment>]:', 'src/Controller/Admin/Migration');
+        $relativeOutputDir = $this->askQuestion('Directory [<comment>src/Controller/Admin/</comment>]:', 'src/Controller/Admin');
 
         $outputDir = $this->projectDir.'/'.ltrim($relativeOutputDir, '/');
         $fs->mkdir($outputDir);
@@ -86,7 +86,7 @@ class MakeAdminMigrationCommand extends Command
 
         $this->addStep('');
         $this->addStep('<info>Step 3/3.</info> Define the namespace of the new PHP files that will be generated.');
-        $namespace = $this->askQuestion('Namespace [<comment>App\\Controller\\Admin</comment>]:', 'App\\Controller\\Admin\\Migration');
+        $namespace = $this->askQuestion('Namespace [<comment>App\\Controller\\Admin</comment>]:', 'App\\Controller\\Admin');
 
         $namespace = str_replace('/', '\\', $namespace);
         $this->addStep(sprintf('<bg=green;fg=black> OK </> Namespace = "%s"', $namespace));

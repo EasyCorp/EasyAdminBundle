@@ -44,6 +44,14 @@ final class FieldDto
         $this->doctrineMetadata = KeyValueStore::new();
     }
 
+    public function __clone()
+    {
+        $this->assets = clone $this->assets;
+        $this->formTypeOptions = clone $this->formTypeOptions;
+        $this->customOptions = clone $this->customOptions;
+        $this->doctrineMetadata = clone $this->doctrineMetadata;
+    }
+
     public function getUniqueId(): string
     {
         if (null !== $this->uniqueId) {

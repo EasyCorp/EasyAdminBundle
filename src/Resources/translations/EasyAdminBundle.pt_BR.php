@@ -107,7 +107,7 @@ return [
         'logged_in_as' => 'Logado como',
         'unnamed' => 'Usuário sem nome',
         'anonymous' => 'Usuário anônimo',
-        'signout' => 'Sair',
+        'sign_out' => 'Sair',
         'exit_impersonation' => 'Sair da personificação',
     ],
 

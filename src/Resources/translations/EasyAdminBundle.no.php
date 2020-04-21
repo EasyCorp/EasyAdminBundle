@@ -107,7 +107,7 @@ return [
         'logged_in_as' => 'Logget inn som',
         'unnamed' => 'Navnløs bruker',
         'anonymous' => 'Anonym bruker',
-        'signout' => 'Logg ut',
+        'sign_out' => 'Logg ut',
         'exit_impersonation' => 'Slutt å etterligne',
     ],
 

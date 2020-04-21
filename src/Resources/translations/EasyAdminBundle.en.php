@@ -107,7 +107,7 @@ return [
         'logged_in_as' => 'Logged in as',
         'unnamed' => 'Unnamed User',
         'anonymous' => 'Anonymous User',
-        'signout' => 'Sign out',
+        'sign_out' => 'Sign out',
         'exit_impersonation' => 'Exit impersonation',
     ],
 

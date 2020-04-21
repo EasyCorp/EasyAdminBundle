@@ -377,9 +377,9 @@ Creating Custom Fields
 
 A field is a class that implements
 ``EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface``. Although the
-interface is short, you may want to add the methods that configure all the common
-field options. You can use the ``EasyCorp\Bundle\EasyAdminBundle\Field\FieldTrait``
-for that.
+interface only requires to implement a few methods, you may want to add all the
+methods available in built-in fields to configure all the common field options.
+You can use the ``EasyCorp\Bundle\EasyAdminBundle\Field\FieldTrait`` for that.
 
 Imagine that you want to create a custom ``MapField`` that renders a full map
 for a given postal address. This is the class you could create for the field::

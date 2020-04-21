@@ -1,6 +1,7 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
 {% macro render_menu_item(item) %}
     {% if item.isMenuSection %}
+        {% if item.icon is not empty %}<i class="menu-icon fa-fw {{ item.icon }}"></i>{% endif %}
         <span class="{{ item.cssClass }}">{{ item.label }}</span>
     {% else %}
         <a href="{{ item.linkUrl }}" class="{{ item.cssClass }}" target="{{ item.linkTarget }}" rel="{{ item.linkRel }}" referrerpolicy="origin-when-cross-origin">

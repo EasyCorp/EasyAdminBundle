@@ -46,7 +46,7 @@ Page        Default Actions
 ==========  ===================================================
 
 Action Names and Constants
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+--------------------------
 
 Some methods require as argument the name of some action. You can use a string
 with the action name (``'index'``, ``'detail'``, ``'edit'``, etc.). If you prefer
@@ -276,7 +276,7 @@ for it and use ``linkToRoute()``::
 Batch Actions
 -------------
 
-..note::
+.. note::
 
     Batch actions are not ready yet, but we're working on adding support for them.
 

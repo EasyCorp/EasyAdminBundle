@@ -271,6 +271,7 @@ properties of your Doctrine entity.
 Read the :doc:`chapter about Fields </fields>` to learn how to configure which
 fields to display on each page, how to configure the way each field is rendered, etc.
 
+.. _`Symfony controllers`: https://symfony.com/doc/current/controller.html
 .. _`How to Create a Custom Form Field Type`: https://symfony.com/doc/current/cookbook/form/create_custom_field_type.html
 .. _`Symfony Form types`: https://symfony.com/doc/current/reference/forms/types.html
 .. _`customize individual form fields`: https://symfony.com/doc/current/form/form_customization.html#how-to-customize-an-individual-field

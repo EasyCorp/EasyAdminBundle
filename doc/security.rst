@@ -189,6 +189,7 @@ permissions to see some items:
     Combine the ``itemPermission()`` option with custom `Symfony security voters`_
     to better decide if the current user can see any given item.
 
+.. _`Symfony Security`: https://symfony.com/doc/current/security.html
 .. _`Create users`: https://symfony.com/doc/current/security.html#a-create-your-user-class
 .. _`Define a firewall`: https://symfony.com/doc/current/security.html#a-authentication-firewalls
 .. _`add security annotations`: https://symfony.com/doc/current/bundles/SensioFrameworkExtraBundle/annotations/security.html

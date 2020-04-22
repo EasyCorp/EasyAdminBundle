@@ -714,7 +714,7 @@ new filter to the field which will use it:
                 list:
                     filters:
                         - property: 'signupDate'
-                          type: 'App\Form\Filter\DateCalendarFilterType'
+                          class: 'App\Form\Filter\DateCalendarFilterType'
                           # optionally you can pass options to the filter class
                           # type_options: {}
 
@@ -754,7 +754,7 @@ set the ``mapped`` option to ``false`` in the filter or you'll see an exception:
                         # 'country' doesn't exist as a property of 'Order' so it's
                         # defined as 'not mapped' to avoid errors
                         - property: 'country'
-                          type: 'App\Form\Filter\CustomerCountryFilterType'
+                          class: 'App\Form\Filter\CustomerCountryFilterType'
                           mapped: false
 
 In the custom filter class, you can now add the query related to the associated

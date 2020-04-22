@@ -218,7 +218,7 @@ Field Layout
 ------------
 
 In pages where you display lots of fields, you can divide them in groups using
-the "panels" created with the special ``FormField`` object:
+the "panels" created with the special ``FormField`` object::
 
     use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 
@@ -250,6 +250,8 @@ Field Types
 -----------
 
 These are all the built-in fields provided by EasyAdmin:
+
+.. class:: list-config-options list-config-options--complex
 
 * ``AssociationField``
 * ``AvatarField``

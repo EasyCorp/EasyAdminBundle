@@ -155,7 +155,7 @@ specific field (or action)::
         // ...
         ->setTemplatePath('admin/actions/my_custom_action.html.twig');
 
-The ``->setTemplatePath()`` field option only applies to fields displayed on the
+The ``setTemplatePath()`` method only applies to fields displayed on the
 ``index`` and ``detail`` pages. Read the next section to learn how to customize
 fields in the ``new`` and ``edit`` pages, which use Symfony forms.
 
@@ -163,8 +163,8 @@ Form Field Templates
 ~~~~~~~~~~~~~~~~~~~~
 
 EasyAdmin provides a ready-to-use `form theme`_ based on Boostrap 4. Dashboards
-and CRUD controllers define an ``->addFormTheme(string $themePath)`` and
-``->setFormThemes(array $themePaths)`` methods so you can
+and CRUD controllers define ``addFormTheme(string $themePath)`` and
+``setFormThemes(array $themePaths)`` methods so you can
 `customize individual form fields`_ using your own form theme.
 
 Imagine a form field where you want to include a ``<a>`` element that links to
@@ -357,4 +357,5 @@ fixed in future versions.
 .. _`Webpack Encore`: https://symfony.com/doc/current/frontend.html
 .. _`override templates from bundles`: https://symfony.com/doc/current/bundles/override.html#templates
 .. _`customize individual form fields`: https://symfony.com/doc/current/form/form_customization.html
+.. _`form fragment naming rules`: https://symfony.com/doc/current/form/form_themes.html#form-fragment-naming
 .. _`form theme`: https://symfony.com/doc/current/form/form_themes.html

@@ -121,13 +121,13 @@ Menu Item Configuration Options
 
 All menu items define the following methods to configure some options:
 
-* ``->setCssClass(string $cssClass)``, sets the CSS class or classes applied to
+* ``setCssClass(string $cssClass)``, sets the CSS class or classes applied to
   the ``<li>`` parent element of the menu item;
-* ``->setLinkRel(string $rel)``, sets the ``rel`` HTML attribute of the menu item
+* ``setLinkRel(string $rel)``, sets the ``rel`` HTML attribute of the menu item
   link (check out the `allowed values for the "rel" attribute`_);
-* ``->setLinkTarget(string $target)``, sets the ``target`` HTML attribute of the
+* ``setLinkTarget(string $target)``, sets the ``target`` HTML attribute of the
   menu item link (``_self`` by default);
-* ``->setPermission(string $permission)``, sets the `Symfony security permission`_
+* ``setPermission(string $permission)``, sets the `Symfony security permission`_
   that the user must have to see this menu item. Read the :ref:`menu security reference <security-menu>`
   for more details.
 
@@ -572,10 +572,12 @@ It displays a page with the same header and sidebar menu as the
 index/detail/form pages, but without the central content section. It's useful to
 define completely custom page, such as a complex dashboard.
 
+.. _`Symfony controllers`: https://symfony.com/doc/current/controller.html
 .. _`context object`: https://wiki.c2.com/?ContextObject
 .. _`FontAwesome`: https://fontawesome.com/
 .. _`allowed values for the "rel" attribute`: https://developer.mozilla.org/en-US/docs/Web/HTML/Link_types
 .. _`Symfony security permission`: https://symfony.com/doc/current/security.html#roles
+.. _`logout feature`: https://symfony.com/doc/current/security.html#logging-out
 .. _`Symfony translation`: https://symfony.com/doc/current/components/translation.html
 .. _`translation domain`: https://symfony.com/doc/current/components/translation.html#using-message-domains
 .. _`translation domains`: https://symfony.com/doc/current/components/translation.html#using-message-domains

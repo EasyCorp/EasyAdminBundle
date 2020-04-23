@@ -5,6 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Command;
 use EasyCorp\Bundle\EasyAdminBundle\Maker\Migrator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Output\ConsoleSectionOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
@@ -41,6 +42,13 @@ class MakeAdminMigrationCommand extends Command
         $this->projectDir = $projectDir;
     }
 
+    public function configure()
+    {
+        $this
+            ->addArgument('ea2-backup-file', InputArgument::OPTIONAL, 'The path to the EasyAdmin 2 backup file you want to migrate from.')
+        ;
+    }
+
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $io = new SymfonyStyle($input, $output);
@@ -54,9 +62,12 @@ class MakeAdminMigrationCommand extends Command
         $io->title('Migration from EasyAdmin2 to EasyAdmin 3');
 
         $this->addStep('<info>Step 1/3.</info> Find the file with the EasyAdmin 2 config backup.');
-        $ea2ConfigBackupPath = $this->projectDir.'/easyadmin-config.backup';
+        $ea2ConfigBackupPath = $input->getArgument('ea2-backup-file') ?: $this->projectDir.'/easyadmin-config.backup';
         if (!$fs->exists($ea2ConfigBackupPath)) {
-            $this->temporarySection->write('<error> ERROR </error> The config backup file was not found. To generate this file, run the <comment>make:admin:migration</comment> command in your application before upgrading your dependencies to EasyAdmin 3.');
+            $this->temporarySection->write(sprintf(
+                '<error> ERROR </error> The config backup file was not found in %s. To generate this file, run the <comment>make:admin:migration</comment> command in your application before upgrading your dependencies to EasyAdmin 3.',
+                $ea2ConfigBackupPath
+            ));
 
             return self::FAILURE;
         }

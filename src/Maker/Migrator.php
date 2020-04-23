@@ -67,12 +67,13 @@ final class Migrator
         foreach ($this->ea2Config['entities'] as $entityName => $entityConfig) {
             $entityFqcn = $entityConfig['class'];
             $entityClassName = u($entityFqcn)->afterLast('\\')->toString();
+            $crudControllerClassName = sprintf('%sCrudController', u($entityName)->replace(' ', '')->camel()->title());
 
             $code = CodeBuilder::new()
                 ->_namespace($this->namespace)
                 ->_use(AbstractCrudController::class)
                 ->_use($entityFqcn)
-                ->_class(sprintf('%sCrudController', $entityClassName))->_extends('AbstractCrudController')
+                ->_class($crudControllerClassName)->_extends('AbstractCrudController')
                 ->openBrace()
                     ->_public()->_static()->_variableName('entityFqcn')->_variableValue($entityClassName.'::class')->semiColon();
 

@@ -3,7 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
-use EasyCorp\Bundle\EasyAdminBundle\Provider\UlidProvider;
+use Symfony\Component\Uid\Ulid;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -58,7 +58,7 @@ final class FieldDto
             return $this->uniqueId;
         }
 
-        return $this->uniqueId = UlidProvider::new();
+        return $this->uniqueId = new Ulid();
     }
 
     public function getFieldFqcn(): string

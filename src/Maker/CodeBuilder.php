@@ -198,6 +198,13 @@ final class CodeBuilder
 
     public function _variableValue(string $value): self
     {
+        $this->code[] = sprintf('%s', $value);
+
+        return $this;
+    }
+
+    public function _variableAssign(string $value): self
+    {
         $this->code[] = sprintf(' = %s', $value);
 
         return $this;

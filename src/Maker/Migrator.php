@@ -75,7 +75,10 @@ final class Migrator
                 ->_use($entityFqcn)
                 ->_class($crudControllerClassName)->_extends('AbstractCrudController')
                 ->openBrace()
-                    ->_public()->_static()->_variableName('entityFqcn')->_variableValue($entityClassName.'::class')->semiColon();
+                    ->_public()->_static()->_function()->_method('getEntityFqcn', [], 'string')
+                    ->openBrace()
+                        ->_return()->_variableValue($entityClassName.'::class')->semiColon()
+                    ->closeBrace();
 
             $code = $this->addConfigureCrudMethod($code, $entityClassName, $entityConfig);
             $code = $this->addConfigureActionsMethod($code, $entityConfig);

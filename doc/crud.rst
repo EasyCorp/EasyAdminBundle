@@ -65,7 +65,7 @@ CRUD Controller Configuration
 
 The only mandatory config option of a CRUD controller is the FQCN of the
 Doctrine entity being managed by the controller. This is defined as a public
-static property::
+static method::
 
     namespace App\Controller\Admin;
 
@@ -74,8 +74,11 @@ static property::
 
     class ProductCrudController extends AbstractCrudController
     {
-        // this value must be a FQCN (fully-qualified class name) of a Doctrine ORM entity
-        public static $entityFqcn = Product::class;
+        // it must return a FQCN (fully-qualified class name) of a Doctrine ORM entity
+        public static function getEntityFqcn(): string
+        {
+            return Product::class;
+        }
 
         // ...
     }

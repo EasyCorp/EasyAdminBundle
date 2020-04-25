@@ -34,7 +34,10 @@ the list of fields to display::
 
     class ProductCrudController extends AbstractCrudController
     {
-        public static $entityFqcn = Product::class;
+        public static function getEntityFqcn(): string
+        {
+            return Product::class;
+        }
 
         public function configureFields(string $pageName): iterable
         {

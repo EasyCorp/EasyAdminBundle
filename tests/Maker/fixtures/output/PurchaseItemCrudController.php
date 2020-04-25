@@ -11,7 +11,10 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 
 class PurchaseItemCrudController extends AbstractCrudController
 {
-    public static $entityFqcn = PurchaseItem::class;
+    public static function getEntityFqcn(): string
+    {
+        return PurchaseItem::class;
+    }
 
     public function configureCrud(Crud $crud): Crud
     {

@@ -24,6 +24,8 @@ use Symfony\Component\HttpFoundation\Response;
  */
 interface CrudControllerInterface
 {
+    public static function getEntityFqcn(): string;
+
     public function configureCrud(Crud $crud): Crud;
 
     public function configureAssets(Assets $assets): Assets;

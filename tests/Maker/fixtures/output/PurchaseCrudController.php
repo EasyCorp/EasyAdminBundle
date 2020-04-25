@@ -16,7 +16,10 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TimeField;
 
 class PurchaseCrudController extends AbstractCrudController
 {
-    public static $entityFqcn = Purchase::class;
+    public static function getEntityFqcn(): string
+    {
+        return Purchase::class;
+    }
 
     public function configureCrud(Crud $crud): Crud
     {

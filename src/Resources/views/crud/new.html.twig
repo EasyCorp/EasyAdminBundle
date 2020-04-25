@@ -53,16 +53,15 @@
 
     <script type="text/javascript">
         $(function() {
-            $('.new-form').areYouSure({ 'message': '{{ 'form.are_you_sure'|trans({}, 'EasyAdminBundle')|e('js') }}' });
+            $('.ea-new-form').areYouSure({ 'message': '{{ 'form.are_you_sure'|trans({}, 'EasyAdminBundle')|e('js') }}' });
 
-            const entityForm = document.querySelector('form.new-form');
-            const formSubmitButton = entityForm.querySelector('button[type="submit"]');
+            const entityForm = document.querySelector('form.ea-new-form');
             const inputFieldsSelector = 'input,select,textarea';
 
             // Adding visual feedback for invalid fields: any ".form-group" with invalid fields
             // receives "has-error" class. The class is removed on click on the ".form-group"
             // itself to support custom/complex fields.
-            formSubmitButton.addEventListener('click', function() {
+            entityForm.addEventListener('submit', function() {
                 entityForm.querySelectorAll(inputFieldsSelector).forEach(function (input) {
                     if (!input.validity.valid) {
                         const formGroup = input.closest('div.form-group');
@@ -83,7 +82,7 @@
             // So, the user clicks on Submit button, the form is not submitted and the error
             // is not displayed. This JavaScript code ensures that each tab shows a badge with
             // the number of errors in it.
-            formSubmitButton.addEventListener('click', function() {
+            entityForm.addEventListener('submit', function() {
                 const formTabPanes = entityForm.querySelectorAll('.tab-pane');
                 if (0 === formTabPanes.length) {
                     return;

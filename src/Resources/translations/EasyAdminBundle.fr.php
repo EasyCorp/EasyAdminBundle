@@ -2,8 +2,8 @@
 
 return [
     'page_title' => [
-        // 'dashboard' => '',
-        'detail' => '%entity_label_singular% (#%entity_id%)',
+        'dashboard' => 'Tableau de bord',
+        'detail' => '%entity_label_singular% <span class="text-small text-muted">(#%entity_id%)</span>',
         'edit' => 'Modifier %entity_label_singular% (#%entity_id%)',
         'index' => '%entity_label_plural%',
         'new' => 'Créer "%entity_label_singular%"',
@@ -37,8 +37,8 @@ return [
     ],
 
     'field' => [
-        // 'code_editor.view_code' => '',
-        // 'text_editor.view_content' => '',
+        'code_editor.view_code' => 'Voir le code',
+        'text_editor.view_content' => 'Voir le contenu',
     ],
 
     'action' => [
@@ -54,12 +54,12 @@ return [
         'add_new_item' => 'Ajouter un nouvel élément',
         'remove_item' => 'Supprimer l\'élément',
         'choose_file' => 'Choisir un fichier',
-        // 'close' => '',
-        // 'create' => '',
-        // 'create_and_add_another' => '',
-        // 'create_and_continue' => '',
-        // 'save' => '',
-        // 'save_and_continue' => '',
+        'close' => 'Fermer',
+        'create' => 'Créer',
+        'create_and_add_another' => 'Créer et ajouter un nouvel élément',
+        'create_and_continue' => 'Créer et continuer l\'édition',
+        'save' => 'Sauvegarder les modifications',
+        'save_and_continue' => 'Sauvegarder et continuer l\'édition',
     ],
 
     'batch_action_modal' => [

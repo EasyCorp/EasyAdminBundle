@@ -466,7 +466,7 @@ option as follows::
             return $this;
         }
 
-           public function useOpenStreetMap(): self
+        public function useOpenStreetMap(): self
         {
             $this->setCustomOption(self::OPTION_MAP_PROVIDER, 'google');
 

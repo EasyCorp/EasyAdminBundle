@@ -25,15 +25,7 @@ final class CrudControllerRegistry
 
         foreach ($registry->crudControllers as $controller) {
             $controllerFqcn = \get_class($controller);
-
-            try {
-                if (null === $entityFqcn = $controller::$entityFqcn) {
-                    throw new \RuntimeException();
-                }
-                $registry->controllerToEntityMap[$controllerFqcn] = $entityFqcn;
-            } catch (\Throwable $e) {
-                throw new \RuntimeException(sprintf('The "%s" CRUD controller must define a public static field called "entityFqcn" with the FQCN of the Doctrine entity managed by the controller.', \get_class($controller)));
-            }
+            $registry->controllerToEntityMap[$controllerFqcn] = $controller::getEntityFqcn();
         }
 
         // more than one controller can manage the same entity, so this map will

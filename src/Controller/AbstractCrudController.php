@@ -51,6 +51,8 @@ use Symfony\Component\HttpFoundation\Response;
  */
 abstract class AbstractCrudController extends AbstractController implements CrudControllerInterface
 {
+    abstract public static function getEntityFqcn(): string;
+
     public function configureCrud(Crud $crud): Crud
     {
         return $crud;

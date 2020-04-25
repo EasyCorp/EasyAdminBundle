@@ -17,7 +17,10 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 class ProductCrudController extends AbstractCrudController
 {
-    public static $entityFqcn = Product::class;
+    public static function getEntityFqcn(): string
+    {
+        return Product::class;
+    }
 
     public function configureCrud(Crud $crud): Crud
     {

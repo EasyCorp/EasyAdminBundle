@@ -85,7 +85,7 @@ abstract class AbstractDashboardController extends AbstractController implements
     }
 
     /**
-     * @Route("/admin", name="dashboard")
+     * @Route("/admin", name="easyadmin_dashboard")
      */
     public function index(): Response
     {

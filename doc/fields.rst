@@ -277,7 +277,7 @@ These are all the built-in fields provided by EasyAdmin:
 * ``PercentField``
 * ``SelectField``
 * ``TelephoneField``
-* ``TextAreaField``
+* ``TextareaField``
 * ``TextEditorField``
 * ``TextField``
 * ``TimeField``

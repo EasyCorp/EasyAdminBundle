@@ -3,8 +3,8 @@
 return [
     'page_title' => [
         // 'dashboard' => '',
-        'detail' => '%entity_label_singular% (#%entity_id%)',
-        'edit' => '%entity_label_singular% (#%entity_id%)',
+        'detail' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
+        'edit' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
         'index' => '%entity_label_plural%',
         'new' => 'Maak nieuw(e) %entity_label_singular%',
         'exception' => 'Fout|Fouten',

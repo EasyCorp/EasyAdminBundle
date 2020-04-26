@@ -3,8 +3,8 @@
 return [
     'page_title' => [
         // 'dashboard' => '',
-        'detail' => '%entity_label_singular% (#%entity_id%)',
-        'edit' => 'Redaguoti %entity_label_singular% (#%entity_id%)',
+        'detail' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
+        'edit' => 'Redaguoti %entity_label_singular% <small>(#%entity_short_id%)</small>',
         'index' => '%entity_label_plural%',
         'new' => 'Sukurti %entity_label_singular%',
         'exception' => 'Klaida|Klaidos',

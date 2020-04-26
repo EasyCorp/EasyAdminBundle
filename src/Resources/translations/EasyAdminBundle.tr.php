@@ -3,8 +3,8 @@
 return [
     'page_title' => [
         // 'dashboard' => '',
-        'detail' => '%entity_label_singular% (#%entity_id%)',
-        'edit' => '%entity_label_singular% (#%entity_id%) Düzenle',
+        'detail' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
+        'edit' => '%entity_label_singular% <small>(#%entity_short_id%)</small> Düzenle',
         'index' => '%entity_label_plural%',
         'new' => 'Oluştur : %entity_label_singular%',
         'exception' => 'Hata|Hatalar',

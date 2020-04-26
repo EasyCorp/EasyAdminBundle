@@ -259,6 +259,12 @@ body.ea-mobile-sidebar-visible .main-sidebar {
     line-height: 24px;
     margin: 0;
 }
+.content-header-title .title small {
+    color: var(--gray-600);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    line-height: var(--font-size-sm);
+}
 
 .content-header .page-actions {
     align-items: center;

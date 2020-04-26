@@ -3,8 +3,8 @@
 return [
     'page_title' => [
         // 'dashboard' => '',
-        'detail' => '%entity_label_singular% (#%entity_id%)',
-        'edit' => 'Uredi %entity_label_singular% (#%entity_id%)',
+        'detail' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
+        'edit' => 'Uredi %entity_label_singular% <small>(#%entity_short_id%)</small>',
         'index' => '%entity_label_plural%',
         'new' => 'Izradi %entity_label_singular%',
         'exception' => 'Greška|Greške',

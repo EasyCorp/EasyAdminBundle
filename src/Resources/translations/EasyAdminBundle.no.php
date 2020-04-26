@@ -3,8 +3,8 @@
 return [
     'page_title' => [
         // 'dashboard' => '',
-        'detail' => '%entity_label_singular% (#%entity_id%)',
-        'edit' => 'Rediger %entity_label_singular% (#%entity_id%)',
+        'detail' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
+        'edit' => 'Rediger %entity_label_singular% <small>(#%entity_short_id%)</small>',
         'index' => '%entity_label_plural%',
         'new' => 'Opprett %entity_label_singular%',
         'exception' => 'Feilmelding|Feilmeldinger',

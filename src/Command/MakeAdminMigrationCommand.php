@@ -4,8 +4,8 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Command;
 
 use EasyCorp\Bundle\EasyAdminBundle\Maker\Migrator;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleSectionOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;

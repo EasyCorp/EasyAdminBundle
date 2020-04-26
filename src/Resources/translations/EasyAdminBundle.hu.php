@@ -3,8 +3,8 @@
 return [
     'page_title' => [
         // 'dashboard' => '',
-        'detail' => '%entity_label_singular% megtekintése - (#%entity_id%)',
-        'edit' => '%entity_label_singular% szerkesztése - (#%entity_id%)',
+        'detail' => '%entity_label_singular% megtekintése - <small>(#%entity_short_id%)</small>',
+        'edit' => '%entity_label_singular% szerkesztése - <small>(#%entity_short_id%)</small>',
         'index' => '%entity_label_plural%',
         'new' => 'Új %entity_label_singular% létrehozása',
         'exception' => 'Hiba|Hibák',

@@ -3,8 +3,8 @@
 return [
     'page_title' => [
         // 'dashboard' => '',
-        'detail' => '%entity_label_singular% (#%entity_id%)',
-        'edit' => '%entity_label_singular% (#%entity_id%) aldatu',
+        'detail' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
+        'edit' => '%entity_label_singular% <small>(#%entity_short_id%)</small> aldatu',
         'index' => '%entity_label_plural%',
         'new' => '%entity_label_singular%-a sortu',
         'exception' => 'Errore|Erroreak',

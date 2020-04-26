@@ -3,8 +3,8 @@
 return [
     'page_title' => [
         'dashboard' => 'Tableau de bord',
-        'detail' => '%entity_label_singular% <span class="text-small text-muted">(#%entity_id%)</span>',
-        'edit' => 'Modifier %entity_label_singular% (#%entity_id%)',
+        'detail' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
+        'edit' => 'Modifier %entity_label_singular% <small>(#%entity_short_id%)</small>',
         'index' => '%entity_label_plural%',
         'new' => 'Créer "%entity_label_singular%"',
         'exception' => 'Erreur|Erreurs',

@@ -19,6 +19,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Registry\TemplateRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use function Symfony\Component\String\u;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -157,7 +158,8 @@ final class AdminContextFactory
             $translationParameters['%entity_label_singular%'] = $crudDto->getEntityLabelInSingular();
             $translationParameters['%entity_label_plural%'] = $crudDto->getEntityLabelInPlural();
             $translationParameters['%entity_name%'] = basename(str_replace('\\', '/', $crudDto->getEntityFqcn()));
-            $translationParameters['%entity_id%'] = $request->query->get('entityId');
+            $translationParameters['%entity_id%'] = $entityId = $request->query->get('entityId');
+            $translationParameters['%entity_short_id%'] = null === $entityId ? null : u((string) $entityId)->truncate(7);
         }
 
         return new I18nDto($locale, $textDirection, $translationDomain, $translationParameters);

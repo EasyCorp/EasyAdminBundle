@@ -274,6 +274,46 @@ properties of your Doctrine entity.
 Read the :doc:`chapter about Fields </fields>` to learn how to configure which
 fields to display on each page, how to configure the way each field is rendered, etc.
 
+Creating, Persisting and Deleting Entities
+------------------------------------------
+
+Most of the actions of a CRUD controller end up creating, persisting or deleting
+entities. If your CRUD controller extends from the ``AbstractCrudController``,
+these methods are already implemented, but you can customize them overriding
+methods and listening to events.
+
+First, you can override the ``createEntity()``, ``updateEntity()``, persistEntity()``
+and ``deleteEntity()`` methods. The ``createEntity()`` method for example only
+executes ``return new $entityFqcn()``, so you need to override it if your entity
+needs to pass constructor arguments or set some of its properties::
+
+    namespace App\Controller\Admin;
+
+    use App\Entity\Product;
+    use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+
+    class ProductCrudController extends AbstractCrudController
+    {
+        public static function getEntityFqcn(): string
+        {
+            return Product::class;
+        }
+
+        public function createEntity(string $entityFqcn)
+        {
+            $product = new Product();
+            $product->createdBy($this->getUser());
+
+            return $product;
+        }
+
+        // ...
+    }
+
+The other way of overriding this behavior is listening to the
+:doc:`events triggered by EasyAdmin </events>` when an entity is created, updated,
+persisted, deleted, etc.
+
 .. _`Symfony controllers`: https://symfony.com/doc/current/controller.html
 .. _`How to Create a Custom Form Field Type`: https://symfony.com/doc/current/cookbook/form/create_custom_field_type.html
 .. _`Symfony Form types`: https://symfony.com/doc/current/reference/forms/types.html

@@ -25,6 +25,14 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 abstract class AbstractDashboardController extends AbstractController implements DashboardControllerInterface
 {
+    /**
+     * @Route("/admin")
+     */
+    public function index(): Response
+    {
+        return $this->render('@EasyAdmin/layout.html.twig');
+    }
+
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new();
@@ -82,13 +90,5 @@ abstract class AbstractDashboardController extends AbstractController implements
     public function configureFilters(): Filters
     {
         return Filters::new();
-    }
-
-    /**
-     * @Route("/admin", name="dashboard")
-     */
-    public function index(): Response
-    {
-        return $this->render('@EasyAdmin/layout.html.twig');
     }
 }

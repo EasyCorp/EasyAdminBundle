@@ -44,12 +44,82 @@ generate a dashboard controller:
 
     $ php bin/console make:admin:dashboard
 
+.. _dashboard-route:
+
+Dashboard Route
+---------------
+
+Each dashboard uses a single Symfony route to serve all its URLs. The needed
+information is passed using query string parameters. If you generated the
+dashboard with the ``make:admin:dashboard`` command, the route is defined using
+`Symfony route annotations`_::
+
+    namespace App\Controller\Admin;
+
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
+    use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
+    use Symfony\Component\Routing\Annotation\Route;
+
+    class DashboardController extends AbstractDashboardController
+    {
+        /**
+         * @Route("/admin")
+         */
+        public function index(): Response
+        {
+            // ...
+        }
+
+        // ...
+    }
+
+The ``/admin`` URL is only a default value, so you can change it. If you do that,
+don't forget to also update this value in your Symfony security config to
+:ref:`restrict access to the entire backend <security-entire-backend>`.
+
+There's no need to define a explicit name for this route. Symfony autogenerates
+a route name and EasyAdmin gets that value at runtime to generate all URLs.
+However, if you generate URLs pointing to the dashboard, you may want to define
+an explicit name for the route to simplify your code::
+
+    /**
+     * @Route("/admin", name="some_route_name")
+     */
+    public function index(): Response
+    {
+        // ...
+    }
+
+If you don't want to use route annotations, you must configure the dashboard
+route using YAML, XML or PHP config in a separate file. For example, when using YAML:
+
+.. code-block:: yaml
+
+    # config/routes.yaml
+    dashboard:
+        path: /admin
+        controller: App\Controller\Admin\DashboardController::index
+
+    # ...
+
+In practice you won't have to deal with this route or the query string
+parameters in your application because EasyAdmin provides a service to
+`generate CRUD URLs <crud-generate-urls>`_.
+
+.. note::
+
+    Using a single route for all URLs means that generated URLs are a bit ugly.
+    In exchange, all the other features are much simpler, from generating URLs
+    to protecting the entire backend.
+
 Dashboard Configuration
 -----------------------
 
 The basic dashboard configuration is defined in the ``configureDashboard()``
 method (the main menu and the user menu are configured in their own methods, as
 explained later)::
+
+    namespace App\Controller\Admin;
 
     use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
     use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
@@ -573,6 +643,7 @@ index/detail/form pages, but without the central content section. It's useful to
 define completely custom page, such as a complex dashboard.
 
 .. _`Symfony controllers`: https://symfony.com/doc/current/controller.html
+.. _`Symfony route annotations`: https://symfony.com/doc/current/routing.html#creating-routes-as-annotations
 .. _`context object`: https://wiki.c2.com/?ContextObject
 .. _`FontAwesome`: https://fontawesome.com/
 .. _`allowed values for the "rel" attribute`: https://developer.mozilla.org/en-US/docs/Web/HTML/Link_types

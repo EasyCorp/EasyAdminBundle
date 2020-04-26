@@ -1,0 +1,5 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2020-04-26T15:58:47Z
+
+Yes, this kind of PR looks scary ... but it's OK. I don't know all this well enough, so I don't know if we're breaking things for some people when updating assets. I'll keep doing it (and merging PRs like this) but we'll need to be on alert for user feedback. Thanks!

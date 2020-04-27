@@ -274,6 +274,104 @@ properties of your Doctrine entity.
 Read the :doc:`chapter about Fields </fields>` to learn how to configure which
 fields to display on each page, how to configure the way each field is rendered, etc.
 
+Creating, Persisting and Deleting Entities
+------------------------------------------
+
+Most of the actions of a CRUD controller end up creating, persisting or deleting
+entities. If your CRUD controller extends from the ``AbstractCrudController``,
+these methods are already implemented, but you can customize them overriding
+methods and listening to events.
+
+First, you can override the ``createEntity()``, ``updateEntity()``, persistEntity()``
+and ``deleteEntity()`` methods. The ``createEntity()`` method for example only
+executes ``return new $entityFqcn()``, so you need to override it if your entity
+needs to pass constructor arguments or set some of its properties::
+
+    namespace App\Controller\Admin;
+
+    use App\Entity\Product;
+    use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+
+    class ProductCrudController extends AbstractCrudController
+    {
+        public static function getEntityFqcn(): string
+        {
+            return Product::class;
+        }
+
+        public function createEntity(string $entityFqcn)
+        {
+            $product = new Product();
+            $product->createdBy($this->getUser());
+
+            return $product;
+        }
+
+        // ...
+    }
+
+The other way of overriding this behavior is listening to the
+:doc:`events triggered by EasyAdmin </events>` when an entity is created, updated,
+persisted, deleted, etc.
+
+.. _crud-generate-urls:
+
+Generating CRUD URLs
+--------------------
+
+:ref:`As explained <dashboard-route>` in the article about Dashboards, all URLs
+of a given dashboard use the same route and they only differ in the query string
+parameters. Instead of having to deal with that, you can use the ``CrudUrlGenerator``
+service to generate URLs in your PHP code::
+
+    use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
+
+    class SomeClass
+    {
+        private $crudUrlGenerator;
+
+        public function __construct(CrudUrlGenerator $crudUrlGenerator)
+        {
+            $this->crudUrlGenerator = $crudUrlGenerator;
+        }
+
+        public function someMethod()
+        {
+            // the constructor argument is the new value of some query parameters
+            // the rest of existing query parameters are maintained, so you only
+            // have to pass the values you want to change.
+            // to remove some query parameter, set its value to NULL
+            $url = $this->crudUrlGenerator->build(['page' => 2])->generateUrl();
+
+            // this other syntax is also possible
+            $url = $this->crudUrlGenerator->build()
+                ->setQueryParameter('page', 2)->generateUrl();
+
+            // use the 'setAction()' method to link to a given action
+            $url = $this->crudUrlGenerator->build()
+                ->setAction('theActionName')->generateUrl();
+
+            // use the 'setController()' method to also change the controller
+            // of the URL (otherwise, the current controller is used)
+            $url = $this->crudUrlGenerator->build()
+                ->setController(SomeController::class)
+                ->setAction('theActionName')->generateUrl();
+
+            // ...
+        }
+    }
+
+The exact same features are available in templates thanks to the
+``ea_build_url()`` Twig function:
+
+.. code-block:: twig
+
+    {% set url = ea_build_url({ page: 2 }).generateUrl() %}
+    {% set url = ea_build_url().setQueryParameter('page', 2).generateUrl() %}
+    {% set url = ea_build_url().setAction('theActionName').generateUrl() %}
+    {% set url = ea_build_url()..setController('App\Controller\Admin\SomeController')
+        .setAction('theActionName').generateUrl() %}
+
 .. _`Symfony controllers`: https://symfony.com/doc/current/controller.html
 .. _`How to Create a Custom Form Field Type`: https://symfony.com/doc/current/cookbook/form/create_custom_field_type.html
 .. _`Symfony Form types`: https://symfony.com/doc/current/reference/forms/types.html

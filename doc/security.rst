@@ -27,13 +27,14 @@ When accessing a protected backend, EasyAdmin displays the details of the user
 who is logged in the application and a menu with some options like "logout".
 Read the :ref:`user menu reference <dashboards-user-menu>` for more details.
 
+.. _security-entire-backend:
+
 Restrict Access to the Entire Backend
 -------------------------------------
 
 Using the `access_control option`_, you can tell Symfony to require certain
 permissions to browse the URL associated to the backend. This is simple to do
-because each dashboard only uses a single URL (the query string parameters
-define the action to run and other config):
+because :ref:`each dashboard only uses a single URL <dashboard-route>`:
 
 .. code-block:: yaml
 
@@ -42,6 +43,7 @@ define the action to run and other config):
         # ...
 
         access_control:
+            # change '/admin' by the URL used by your Dashboard
             - { path: ^/admin, roles: ROLE_ADMIN }
             # ...
 

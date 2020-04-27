@@ -50,7 +50,7 @@ class UrlBuilder
         return $this;
     }
 
-    public function setQueryParam(string $paramName, $paramValue): self
+    public function setQueryParameter(string $paramName, $paramValue): self
     {
         $this->queryParameters[$paramName] = $paramValue;
 

@@ -2,7 +2,7 @@
 
 return [
     'page_title' => [
-        // 'dashboard' => '',
+        'dashboard' => 'Panel',
         'detail' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
         'edit' => 'Modificar %entity_label_singular% <small>(#%entity_short_id%)</small>',
         'index' => '%entity_label_plural%',
@@ -37,8 +37,8 @@ return [
     ],
 
     'field' => [
-        // 'code_editor.view_code' => '',
-        // 'text_editor.view_content' => '',
+        'code_editor.view_code' => 'Ver código',
+        'text_editor.view_content' => 'Ver contenido',
     ],
 
     'action' => [
@@ -54,18 +54,18 @@ return [
         'add_new_item' => 'Añadir un elemento',
         'remove_item' => 'Eliminar este elemento',
         'choose_file' => 'Seleccionar archivo',
-        // 'close' => '',
-        // 'create' => '',
-        // 'create_and_add_another' => '',
-        // 'create_and_continue' => '',
-        // 'save' => '',
-        // 'save_and_continue' => '',
+        'close' => 'Cerrar',
+        'create' => 'Guardar',
+        'create_and_add_another' => 'Crear y agregar nuevo',
+        'create_and_continue' => 'Crear y editar',
+        'save' => 'Guardar cambios',
+        'save_and_continue' => 'Guardar y continuar editando',
     ],
 
     'batch_action_modal' => [
-        // 'title' => '',
-        // 'content' => '',
-        // 'action' => '',
+        'title' => '¿Realmente quieres modificar los elementos seleccionados?',
+        'content' => 'Esta acción no se puede deshacer.',
+        'action' => 'Continuar',
     ],
 
     'delete_modal' => [
@@ -100,7 +100,7 @@ return [
 
     'form' => [
         'are_you_sure' => 'No has guardado los cambios realizados en este formulario.',
-        // 'tab.error_badge_title' => '',
+        'tab.error_badge_title' => 'Hay un campo inválido|Hay %count% campos inválidos',
     ],
 
     'user' => [

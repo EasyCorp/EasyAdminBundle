@@ -2,7 +2,7 @@
 
 return [
     'page_title' => [
-        'dashboard' => 'Panel',
+        'dashboard' => 'Inicio',
         'detail' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
         'edit' => 'Modificar %entity_label_singular% <small>(#%entity_short_id%)</small>',
         'index' => '%entity_label_plural%',
@@ -56,10 +56,10 @@ return [
         'choose_file' => 'Seleccionar archivo',
         'close' => 'Cerrar',
         'create' => 'Guardar',
-        'create_and_add_another' => 'Crear y agregar nuevo',
-        'create_and_continue' => 'Crear y editar',
+        'create_and_add_another' => 'Crear y añadir otro',
+        'create_and_continue' => 'Crear y seguir editando',
         'save' => 'Guardar cambios',
-        'save_and_continue' => 'Guardar y continuar editando',
+        'save_and_continue' => 'Guardar y seguir editando',
     ],
 
     'batch_action_modal' => [

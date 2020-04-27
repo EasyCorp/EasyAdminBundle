@@ -36,7 +36,7 @@
         "symfony/string": "^5.0",
         "symfony/translation": "^4.4|^5.0",
         "symfony/twig-bundle": "^4.4|^5.0",
-        "symfony/uid": "dev-master"
+        "symfony/uid": "5.1-dev"
     },
     "require-dev": {
         "psr/log": "~1.0",

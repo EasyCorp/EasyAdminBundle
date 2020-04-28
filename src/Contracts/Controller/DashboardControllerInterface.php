@@ -24,7 +24,7 @@ interface DashboardControllerInterface
     public function configureAssets(): Assets;
 
     /**
-     * @return MenuItem[]
+     * @return MenuItemInterface[]
      */
     public function configureMenuItems(): iterable;
 

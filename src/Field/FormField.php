@@ -4,7 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormPanelType;
-use Symfony\Component\Uid\Ulid;
+use EasyCorp\Bundle\EasyAdminBundle\Provider\UlidProvider;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -28,7 +28,7 @@ final class FormField implements FieldInterface
         $field = new self();
 
         return $field
-            ->setProperty('ea_form_panel_'.(new Ulid()))
+            ->setProperty('ea_form_panel_'.(UlidProvider::new()))
             ->setLabel($label)
             ->setTemplateName('crud/field/form_panel')
             ->setFormType(EaFormPanelType::class)

@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
-use Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\Types\Types;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterInterface;
@@ -26,30 +26,30 @@ final class FilterFactory
     private $adminContextProvider;
     private $filterConfigurators;
     private static $doctrineTypeToFilterClass = [
-        Type::JSON_ARRAY => ArrayFilter::class,
-        Type::SIMPLE_ARRAY => ArrayFilter::class,
-        Type::TARRAY => ArrayFilter::class,
-        Type::JSON => TextFilter::class,
-        Type::BOOLEAN => BooleanFilter::class,
-        Type::DATE => DateTimeFilter::class,
-        Type::DATE_IMMUTABLE => DateTimeFilter::class,
-        Type::TIME => DateTimeFilter::class,
-        Type::TIME_IMMUTABLE => DateTimeFilter::class,
-        Type::DATETIME => DateTimeFilter::class,
-        Type::DATETIMETZ => DateTimeFilter::class,
-        Type::DATETIME_IMMUTABLE => DateTimeFilter::class,
-        Type::DATETIMETZ_IMMUTABLE => DateTimeFilter::class,
-        Type::DATEINTERVAL => ComparisonFilter::class,
-        Type::DECIMAL => NumericFilter::class,
-        Type::FLOAT => NumericFilter::class,
-        Type::BIGINT => NumericFilter::class,
-        Type::INTEGER => NumericFilter::class,
-        Type::SMALLINT => NumericFilter::class,
-        Type::GUID => TextFilter::class,
-        Type::STRING => TextFilter::class,
-        Type::BLOB => TextFilter::class,
-        Type::OBJECT => TextFilter::class,
-        Type::TEXT => TextFilter::class,
+        'json_array' => ArrayFilter::class,
+        Types::SIMPLE_ARRAY => ArrayFilter::class,
+        Types::ARRAY => ArrayFilter::class,
+        Types::JSON => TextFilter::class,
+        Types::BOOLEAN => BooleanFilter::class,
+        Types::DATE_MUTABLE => DateTimeFilter::class,
+        Types::DATE_IMMUTABLE => DateTimeFilter::class,
+        Types::TIME_MUTABLE => DateTimeFilter::class,
+        Types::TIME_IMMUTABLE => DateTimeFilter::class,
+        Types::DATETIME_MUTABLE => DateTimeFilter::class,
+        Types::DATETIMETZ_MUTABLE => DateTimeFilter::class,
+        Types::DATETIME_IMMUTABLE => DateTimeFilter::class,
+        Types::DATETIMETZ_IMMUTABLE => DateTimeFilter::class,
+        Types::DATEINTERVAL => ComparisonFilter::class,
+        Types::DECIMAL => NumericFilter::class,
+        Types::FLOAT => NumericFilter::class,
+        Types::BIGINT => NumericFilter::class,
+        Types::INTEGER => NumericFilter::class,
+        Types::SMALLINT => NumericFilter::class,
+        Types::GUID => TextFilter::class,
+        Types::STRING => TextFilter::class,
+        Types::BLOB => TextFilter::class,
+        Types::OBJECT => TextFilter::class,
+        Types::TEXT => TextFilter::class,
     ];
 
     public function __construct(AdminContextProvider $adminContextProvider, iterable $filterConfigurators)

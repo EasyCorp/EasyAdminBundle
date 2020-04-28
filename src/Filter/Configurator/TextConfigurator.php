@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Filter\Configurator;
 
-use Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\Types\Types;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -26,11 +26,11 @@ final class TextConfigurator implements FilterConfiguratorInterface
     {
         $propertyType = $entityDto->getPropertyMetadata($filterDto->getProperty())->get('type');
 
-        if (Type::JSON === $propertyType) {
+        if (Types::JSON === $propertyType) {
             $filterDto->setFormTypeOption('value_type', TextareaType::class);
         }
 
-        if (\in_array($propertyType, [Type::BLOB, Type::OBJECT, Type::TEXT], true)) {
+        if (\in_array($propertyType, [Types::BLOB, Types::OBJECT, Types::TEXT], true)) {
             $filterDto->setFormTypeOptionIfNotSet('value_type', TextareaType::class);
         }
     }

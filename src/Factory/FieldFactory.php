@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
 use Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\Types\Types;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
@@ -28,29 +29,29 @@ final class FieldFactory
     // TODO: update this map when ArrayField is implemented
     private static $doctrineTypeToFieldFqcn = [
         //Type::TARRAY => 'array',
-        Type::BIGINT => TextField::class,
-        Type::BINARY => TextareaField::class,
-        Type::BLOB => TextareaField::class,
-        Type::BOOLEAN => BooleanField::class,
-        Type::DATE => DateField::class,
-        Type::DATE_IMMUTABLE => DateField::class,
-        Type::DATEINTERVAL => TextField::class,
-        Type::DATETIME => DateTimeField::class,
-        Type::DATETIME_IMMUTABLE => DateTimeField::class,
-        Type::DATETIMETZ => DateTimeField::class,
-        Type::DATETIMETZ_IMMUTABLE => DateTimeField::class,
-        Type::DECIMAL => NumberField::class,
-        Type::FLOAT => NumberField::class,
-        Type::GUID => TextField::class,
-        Type::INTEGER => IntegerField::class,
-        Type::JSON => TextField::class,
-        Type::OBJECT => TextField::class,
-        //Type::SIMPLE_ARRAY => 'array',
-        Type::SMALLINT => IntegerField::class,
-        Type::STRING => TextField::class,
-        Type::TEXT => TextareaField::class,
-        Type::TIME => TimeField::class,
-        Type::TIME_IMMUTABLE => TimeField::class,
+        Types::BIGINT => TextField::class,
+        Types::BINARY => TextareaField::class,
+        Types::BLOB => TextareaField::class,
+        Types::BOOLEAN => BooleanField::class,
+        Types::DATE_MUTABLE => DateField::class,
+        Types::DATE_IMMUTABLE => DateField::class,
+        Types::DATEINTERVAL => TextField::class,
+        Types::DATETIME_MUTABLE => DateTimeField::class,
+        Types::DATETIME_IMMUTABLE => DateTimeField::class,
+        Types::DATETIMETZ_MUTABLE => DateTimeField::class,
+        Types::DATETIMETZ_IMMUTABLE => DateTimeField::class,
+        Types::DECIMAL => NumberField::class,
+        Types::FLOAT => NumberField::class,
+        Types::GUID => TextField::class,
+        Types::INTEGER => IntegerField::class,
+        Types::JSON => TextField::class,
+        Types::OBJECT => TextField::class,
+        //Types::SIMPLE_ARRAY => 'array',
+        Types::SMALLINT => IntegerField::class,
+        Types::STRING => TextField::class,
+        Types::TEXT => TextareaField::class,
+        Types::TIME_MUTABLE => TimeField::class,
+        Types::TIME_IMMUTABLE => TimeField::class,
     ];
 
     private $adminContextProvider;

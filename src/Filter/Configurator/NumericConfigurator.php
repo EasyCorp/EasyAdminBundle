@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Filter\Configurator;
 
-use Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\Types\Types;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -26,11 +26,11 @@ final class NumericConfigurator implements FilterConfiguratorInterface
     {
         $propertyType = $entityDto->getPropertyMetadata($filterDto->getProperty())->get('type');
 
-        if (Type::DECIMAL === $propertyType) {
+        if (Types::DECIMAL === $propertyType) {
             $filterDto->setFormTypeOptionIfNotSet('value_type_options.input', 'string');
         }
 
-        if (\in_array($propertyType, [Type::BIGINT, Type::INTEGER, Type::SMALLINT], true)) {
+        if (\in_array($propertyType, [Types::BIGINT, Types::INTEGER, Types::SMALLINT], true)) {
             $filterDto->setFormTypeOptionIfNotSet('value_type', IntegerType::class);
         }
     }

@@ -101,6 +101,7 @@ return [
     'form' => [
         'are_you_sure' => 'Formularioen aldaketak ez dituzu gorde.',
         // 'tab.error_badge_title' => '',
+        // 'slug.confirm_text' => '',
     ],
 
     'user' => [

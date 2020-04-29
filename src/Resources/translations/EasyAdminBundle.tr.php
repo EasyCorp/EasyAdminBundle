@@ -101,6 +101,7 @@ return [
     'form' => [
         'are_you_sure' => 'Formdaki değişiklikleri kaydetmediniz.',
         'tab.error_badge_title' => 'Bir geçersiz girdi|%count% geçersiz girdi',
+        // 'slug.confirm_text' => '',
     ],
 
     'user' => [

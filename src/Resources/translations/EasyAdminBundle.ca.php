@@ -101,6 +101,7 @@ return [
     'form' => [
         // 'are_you_sure' => '',
         // 'tab.error_badge_title' => '',
+        // 'slug.confirm_text' => '',
     ],
 
     'user' => [

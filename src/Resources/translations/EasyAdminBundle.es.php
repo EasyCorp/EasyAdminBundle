@@ -101,6 +101,7 @@ return [
     'form' => [
         'are_you_sure' => 'No has guardado los cambios realizados en este formulario.',
         'tab.error_badge_title' => 'Hay un campo inválido|Hay %count% campos inválidos',
+        // 'slug.confirm_text' => '',
     ],
 
     'user' => [

@@ -6,6 +6,7 @@
   "bundles/easyadmin/form-type-code-editor.css": "./form-type-code-editor.rtl.css",
   "bundles/easyadmin/form-type-code-editor.js": "./form-type-code-editor.js",
   "bundles/easyadmin/form-type-collection.js": "./form-type-collection.js",
+  "bundles/easyadmin/form-type-slug.js": "./form-type-slug.js",
   "bundles/easyadmin/form-type-text-editor.css": "./form-type-text-editor.rtl.css",
   "bundles/easyadmin/form-type-text-editor.js": "./form-type-text-editor.js",
   "bundles/easyadmin/fonts/fa-brands-400.svg": "./fonts/fa-brands-400.0cb5a5c0d251c109458c85c6afeffbaa.svg",

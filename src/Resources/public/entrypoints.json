@@ -39,6 +39,11 @@
       "js": [
         "./form-type-collection.js"
       ]
+    },
+    "form-type-slug": {
+      "js": [
+        "./form-type-slug.js"
+      ]
     }
   }
 }

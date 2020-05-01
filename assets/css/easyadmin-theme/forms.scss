@@ -102,7 +102,11 @@ label.form-check-label {
 }
 
 .form-widget .form-control + .input-group-append {
+    color: var(--gray-600);
     height: 30px;
+}
+.form-widget .form-control + .input-group-append i {
+    color: var(--gray-600);
 }
 
 .form-widget input.form-control[align=right] {

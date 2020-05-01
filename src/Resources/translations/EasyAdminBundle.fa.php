@@ -101,7 +101,6 @@ return [
     'form' => [
         'are_you_sure' => 'شما تغییرات ایجاد شده در این فرم را ذخیره نکرده‌اید.',
         'tab.error_badge_title' => 'یک ورودی نامعتبر است|%count% ورودی نا معتبر است',
-        // 'slug.confirm_text' => '',
     ],
 
     'user' => [

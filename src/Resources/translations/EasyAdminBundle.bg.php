@@ -101,7 +101,6 @@ return [
     'form' => [
         'are_you_sure' => 'Не сте записали направените във формуляра промени.',
         'tab.error_badge_title' => 'Едно невалидно поле|%count% невалидни полета',
-        // 'slug.confirm_text' => '',
     ],
 
     'user' => [

@@ -101,7 +101,6 @@ return [
     'form' => [
         'are_you_sure' => 'Vorgenommene Änderungen wurden noch nicht gespeichert.',
         'tab.error_badge_title' => 'Eine ungültige Eingabe|%count% ungültige Eingaben',
-        // 'slug.confirm_text' => '',
     ],
 
     'user' => [

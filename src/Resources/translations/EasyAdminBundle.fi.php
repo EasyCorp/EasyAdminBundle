@@ -101,7 +101,6 @@ return [
     'form' => [
         'are_you_sure' => 'Et ole tallentanut muuttamiasi tietoja.',
         // 'tab.error_badge_title' => '',
-        // 'slug.confirm_text' => '',
     ],
 
     'user' => [

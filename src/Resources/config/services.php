@@ -36,6 +36,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\MoneyConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\NumberConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\PercentConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\SelectConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\SlugConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\TelephoneConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\TextConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\TextEditorConfigurator;
@@ -302,6 +303,10 @@ return static function (ContainerConfigurator $container) {
             ->tag('ea.field_configurator')
 
         ->set(SelectConfigurator::class)
+            ->arg(0, ref('translator'))
+            ->tag('ea.field_configurator')
+
+        ->set(SlugConfigurator::class)
             ->arg(0, ref('translator'))
             ->tag('ea.field_configurator')
 

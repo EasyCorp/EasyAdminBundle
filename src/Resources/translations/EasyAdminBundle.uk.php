@@ -101,7 +101,6 @@ return [
     'form' => [
         'are_you_sure' => 'Ви не зберегли зроблені зміни.',
         // 'tab.error_badge_title' => '',
-        // 'slug.confirm_text' => '',
     ],
 
     'user' => [

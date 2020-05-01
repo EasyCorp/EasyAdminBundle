@@ -101,7 +101,6 @@ return [
     'form' => [
         'are_you_sure' => '该表单的更改还未保存',
         // 'tab.error_badge_title' => '',
-        // 'slug.confirm_text' => '',
     ],
 
     'user' => [

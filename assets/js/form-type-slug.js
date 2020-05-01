@@ -75,7 +75,23 @@ class Slugger {
     }
 
     updateValue() {
-        this.field.value = slugify(this.target.value, {remove: /[*+~.()'"?!:@]/g}).toLowerCase();
+        // this is needed because the special char conversion is done first,
+        // so we cannot remove these symbols later with the 'remove' option of slugify()
+        slugify.extend({
+            '$': '',
+            '%': '',
+            '&': '',
+            '<': '',
+            '>': '',
+            '|': '',
+            '¢': '',
+            '£': '',
+            '¥': '',
+            '©': '',
+            '®': '',
+        });
+
+        this.field.value = slugify(this.target.value, { lower: true, strict: true });
     }
 
     /**

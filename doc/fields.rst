@@ -157,7 +157,6 @@ current page::
             IdField::new('id')->hideOnForm(),
             TextField::new('firstName'),
             TextField::new('lastName'),
-            PasswordField::new('password')->onlyWhenUpdating(),
             TextField::new('phone'),
             EmailType::new('email')->hideOnIndex(),
             DateTimeField::new('createdAt')->onlyOnDetail(),
@@ -185,7 +184,6 @@ If the fields to display are completely different on each page, use the given
         $id = IdField::new('id');
         $firstName = TextField::new('firstName');
         $lastName = TextField::new('lastName');
-        $password = PasswordField::new('password')->onlyWhenUpdating();
         $phone = TextField::new('phone');
         $email = EmailType::new('email');
         $createdAt = DateTimeField::new('createdAt');
@@ -211,7 +209,6 @@ the fields using `PHP generators`_::
             yield TextField::new('lastName');
         }
 
-        yield PasswordField::new('password')->onlyWhenUpdating();
         yield TextField::new('phone');
         yield EmailType::new('email')->hideOnIndex();
         yield DateTimeField::new('createdAt')->onlyOnDetail();
@@ -237,7 +234,6 @@ the "panels" created with the special ``FormField`` object::
 
             // panels without titles only display a separation between fields
             FormField::addPanel(),
-            PasswordField::new('password')->onlyWhenUpdating(),
             DateTimeField::new('createdAt')->onlyOnDetail(),
 
             // panels can also define their icon, CSS class and help message

@@ -101,6 +101,7 @@ return [
     'form' => [
         'are_you_sure' => 'Du har inte sparat ändringarna i formuläret.',
         'tab.error_badge_title' => 'Ett fält är fel|%count% fält är fel',
+        // 'slug.confirm_text' => '',
     ],
 
     'user' => [

@@ -101,6 +101,10 @@ label.form-check-label {
     transition: box-shadow .08s ease-in, color .08s ease-in;
 }
 
+.form-widget .form-control + .input-group-append {
+    height: 30px;
+}
+
 .form-widget input.form-control[align=right] {
     text-align: right;
 }

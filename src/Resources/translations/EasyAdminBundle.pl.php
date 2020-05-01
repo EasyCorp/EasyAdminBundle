@@ -101,6 +101,7 @@ return [
     'form' => [
         'are_you_sure' => 'Nie zapisano zmian wprowadzonych w tym formularzu.',
         'tab.error_badge_title' => 'Wystąpił jeden błąd|Ilość błędów: %count%',
+        // 'slug.confirm_text' => '',
     ],
 
     'user' => [

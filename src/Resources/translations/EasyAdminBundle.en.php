@@ -101,6 +101,7 @@ return [
     'form' => [
         'are_you_sure' => 'You haven\'t saved the changes made on this form.',
         'tab.error_badge_title' => 'One invalid input|%count% invalid inputs',
+        'slug.confirm_text' => 'If you change the slug, you can break links on other pages.',
     ],
 
     'user' => [

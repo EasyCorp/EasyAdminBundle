@@ -101,7 +101,6 @@ return [
     'form' => [
         'are_you_sure' => 'Non hai salvato le modifiche apportate su questo modulo.',
         'tab.error_badge_title' => 'Un campo non è valido|%count% campi non sono validi',
-        // 'slug.confirm_text' => '',
     ],
 
     'user' => [

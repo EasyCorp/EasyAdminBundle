@@ -101,7 +101,6 @@ return [
     'form' => [
         'are_you_sure' => 'Niste sačuvali izmene na ovoj formi.',
         'tab.error_badge_title' => 'Jedan pogrešan unos|%count% pogrešnih unosa',
-        // 'slug.confirm_text' => '',
     ],
 
     'user' => [

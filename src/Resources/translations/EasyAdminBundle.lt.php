@@ -101,7 +101,6 @@ return [
     'form' => [
         'are_you_sure' => 'Jūs neįrašėte šios formos pakeitimų.',
         // 'tab.error_badge_title' => '',
-        // 'slug.confirm_text' => '',
     ],
 
     'user' => [

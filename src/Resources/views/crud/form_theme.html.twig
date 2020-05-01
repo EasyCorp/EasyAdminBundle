@@ -599,12 +599,16 @@
 {% endblock %}
 
 {% block ea_slug_widget %}
-    {% set attr = attr|merge({ 'data-ea-slug-field': '', 'data-target': form.parent.children[target].vars.id, 'data-confirm-text': 'form.slug.confirm_text'|trans({}, 'EasyAdminBundle')|e('js') }) %}
+    {% set attr = attr|merge({
+        'data-ea-slug-field': '',
+        'data-target': form.parent.children[target].vars.id
+    }) %}
+
     <div class="input-group">
         {{ block('form_widget') }}
         <div class="input-group-append">
             <button class="btn btn-outline-secondary" type="button">
-                <i class="fas fa-pencil-alt fa-fw"></i>
+                <i class="fas fa-lock fa-fw"></i>
             </button>
         </div>
     </div>

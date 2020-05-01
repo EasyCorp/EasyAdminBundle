@@ -101,7 +101,6 @@ return [
     'form' => [
         'are_you_sure' => 'Je hebt de wijzigingen op dit formulier nog niet opgeslagen.',
         'tab.error_badge_title' => 'Een ongeldige input|%count% ongeldige inputs',
-        // 'slug.confirm_text' => '',
     ],
 
     'user' => [

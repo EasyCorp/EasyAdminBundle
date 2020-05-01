@@ -101,7 +101,6 @@ return [
     'form' => [
         'are_you_sure' => 'Du har ikke gemt ændringerne til denne form.',
         'tab.error_badge_title' => 'En ugyldig indtastning|%count% ugyldige indtastninger',
-        // 'slug.confirm_text' => '',
     ],
 
     'user' => [

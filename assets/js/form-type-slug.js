@@ -33,9 +33,14 @@ class Slugger {
         this.lockButtonIcon = this.lockButton.querySelector('i');
         this.lockButton.addEventListener('click', () => {
             if (this.locked) {
-                let confirmMessage = decodeURIComponent(JSON.parse('"' + this.field.dataset.confirmText.replace(/\"/g, '\\"') + '"'));
-                if (true === confirm(confirmMessage)) {
+                let confirmMessage = this.field.dataset.confirmText || null;
+                if (null === confirmMessage) {
                     this.unlock();
+                } else {
+                    let formattedConfirmMessage = decodeURIComponent(JSON.parse('"' + confirmMessage.replace(/\"/g, '\\"') + '"'));
+                    if (true === confirm(formattedConfirmMessage)) {
+                        this.unlock();
+                    }
                 }
             } else {
                 this.lock();
@@ -48,7 +53,7 @@ class Slugger {
      */
     unlock() {
         this.locked = false;
-        this.lockButtonIcon.classList.replace('fa-pencil-alt', 'fa-magnet');
+        this.lockButtonIcon.classList.replace('fa-lock', 'fa-lock-open');
         this.field.removeAttribute('readonly');
     }
 
@@ -57,7 +62,7 @@ class Slugger {
      */
     lock() {
         this.locked = true;
-        this.lockButtonIcon.classList.replace('fa-magnet', 'fa-pencil-alt');
+        this.lockButtonIcon.classList.replace('fa-lock-open', 'fa-lock');
 
         // Locking it back changes the value either to default value, or recomputes it
         if ('' !== this.currentSlug) {

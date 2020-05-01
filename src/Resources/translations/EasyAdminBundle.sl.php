@@ -101,7 +101,6 @@ return [
     'form' => [
         'are_you_sure' => 'Sprememb, ki ste jih naredili na tem obrazcu, niste shranili.',
         // 'tab.error_badge_title' => '',
-        // 'slug.confirm_text' => '',
     ],
 
     'user' => [

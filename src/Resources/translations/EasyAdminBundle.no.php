@@ -101,7 +101,6 @@ return [
     'form' => [
         'are_you_sure' => 'Du har ikke lagret endringene du har gjort i dette skjemaet.',
         'tab.error_badge_title' => 'En ugyldig verdi|%count% ugyldige verdier',
-        // 'slug.confirm_text' => '',
     ],
 
     'user' => [

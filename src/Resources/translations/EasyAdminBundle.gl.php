@@ -101,7 +101,6 @@ return [
     'form' => [
         'are_you_sure' => 'Non se gardaron os cambios feitos neste formulario.',
         // 'tab.error_badge_title' => '',
-        // 'slug.confirm_text' => '',
     ],
 
     'user' => [

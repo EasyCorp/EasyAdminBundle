@@ -1,0 +1,9 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2020-05-01T13:37:23Z
+
+I've made another change. Right now, when you unlock you see this:
+
+![image](https://user-images.githubusercontent.com/73419/80809196-753b7000-8bc1-11ea-82f0-5980952c358e.png)
+
+This is true most of the times ... but not always. Also, even when it's true ... it may be annoying to display it every time (you may use `setHelp()` on the field instead). So, let's keep this confirmation message ... but don't display it by default and let the user provide the exact message to display.

@@ -1,4 +1,49 @@
 const slugify = require('slugify');
+slugify.extend({
+    "$": "",
+    "%": "",
+    "&": "",
+    "<": "",
+    ">": "",
+    "|": "",
+    "¢": "",
+    "£": "",
+    "¤": "",
+    "¥": "",
+    "₠": "",
+    "₢": "",
+    "₣": "",
+    "₤": "",
+    "₥": "",
+    "₦": "",
+    "₧": "",
+    "₨": "",
+    "₩": "",
+    "₪": "",
+    "₫": "",
+    "€": "",
+    "₭": "",
+    "₮": "",
+    "₯": "",
+    "₰": "",
+    "₱": "",
+    "₲": "",
+    "₳": "",
+    "₴": "",
+    "₵": "",
+    "₸": "",
+    "₹": "",
+    "₽": "",
+    "₿": "",
+    "∂": "",
+    "∆": "",
+    "∑": "",
+    "∞": "",
+    "♥": "",
+    "元": "",
+    "円": "",
+    "﷼": "",
+});
 
 class Slugger {
     constructor(field) {
@@ -75,23 +120,11 @@ class Slugger {
     }
 
     updateValue() {
-        // this is needed because the special char conversion is done first,
-        // so we cannot remove these symbols later with the 'remove' option of slugify()
-        slugify.extend({
-            '$': '',
-            '%': '',
-            '&': '',
-            '<': '',
-            '>': '',
-            '|': '',
-            '¢': '',
-            '£': '',
-            '¥': '',
-            '©': '',
-            '®': '',
+        this.field.value = slugify(this.target.value, {
+            remove: /[^A-Za-z0-9\s-]/g,
+            lower: true,
+            strict: true,
         });
-
-        this.field.value = slugify(this.target.value, { lower: true, strict: true });
     }
 
     /**

@@ -106,6 +106,10 @@ final class FieldFactory
             } else {
                 $doctrinePropertyType = $entityDto->getPropertyMetadata($fieldName)->get('type');
                 $guessedFieldFqcn = self::$doctrineTypeToFieldFqcn[$doctrinePropertyType] ?? null;
+
+                if (null === $guessedFieldFqcn) {
+                    throw new \RuntimeException(sprintf('The Doctrine type of the "%s" field is "%s", which is not supported by EasyAdmin yet.', $fieldName, $doctrinePropertyType));
+                }
             }
 
             $fields->set($this->transformField($fieldDto, $guessedFieldFqcn));

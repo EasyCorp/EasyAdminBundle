@@ -1,6 +1,15 @@
 // Properties (the styles applied to properties in INDEX and DETAIL pages)
 // ----------------------------------------------------------------------------
 
+// Array field
+.field-array ul {
+  margin-bottom: 0;
+  padding-left: 1.2em;
+}
+.field-array li + li {
+  margin-top: 4px;
+}
+
 // Avatar field
 .field-avatar .image-avatar {
   border-radius: 50%;

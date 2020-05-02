@@ -17,6 +17,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Factory\FilterFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\MenuFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\PaginatorFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\ArrayConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\AssociationConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\AvatarConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\BooleanConfigurator;
@@ -237,6 +238,9 @@ return static function (ContainerConfigurator $container) {
         ->set(CrudFormType::class)
             ->arg(0, ref('form.type_guesser.doctrine'))
             ->tag('form.type', ['alias' => 'ea_crud'])
+
+        ->set(ArrayConfigurator::class)
+            ->tag('ea.field_configurator')
 
         ->set(AssociationConfigurator::class)
             ->arg(0, ref(EntityFactory::class))

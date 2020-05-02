@@ -25,10 +25,10 @@ final class FieldProvider
         $entityDto = $this->adminContextProvider->getContext()->getEntity();
 
         $excludedPropertyTypes = [
-            Crud::PAGE_EDIT => [Types::ARRAY, Types::BINARY, Types::BLOB, 'json_array', Types::JSON, Types::OBJECT, Types::SIMPLE_ARRAY],
-            Crud::PAGE_INDEX => [Types::ARRAY, Types::BINARY, Types::BLOB, Types::GUID, 'json_array', Types::JSON, Types::OBJECT, Types::SIMPLE_ARRAY, Types::TEXT],
-            Crud::PAGE_NEW => [Types::BINARY, Types::BLOB, 'json_array', Types::JSON, Types::OBJECT],
-            Crud::PAGE_DETAIL => [Types::ARRAY, Types::BINARY, 'json_array', Types::JSON, Types::OBJECT, Types::SIMPLE_ARRAY],
+            Crud::PAGE_EDIT => [Types::BINARY, Types::BLOB, Types::JSON, Types::OBJECT],
+            Crud::PAGE_INDEX => [Types::BINARY, Types::BLOB, Types::GUID, Types::JSON, Types::OBJECT, Types::TEXT],
+            Crud::PAGE_NEW => [Types::BINARY, Types::BLOB, Types::JSON, Types::OBJECT],
+            Crud::PAGE_DETAIL => [Types::BINARY, Types::JSON, Types::OBJECT],
         ];
 
         $excludedPropertyNames = [

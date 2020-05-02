@@ -87,7 +87,7 @@ final class CollectionConfigurator implements FieldConfiguratorInterface
             return 0;
         }
 
-        if (\is_array($collection) || $collection instanceof \Countable) {
+        if (is_countable($collection)) {
             return \count($collection);
         }
 

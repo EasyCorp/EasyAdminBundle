@@ -46,7 +46,6 @@ final class TemplateRegistry
         'crud/field/percent' => '@EasyAdmin/crud/field/percent.html.twig',
         'crud/field/select' => '@EasyAdmin/crud/field/select.html.twig',
         'crud/field/raw' => '@EasyAdmin/crud/field/raw.html.twig',
-        'crud/field/simple_array' => '@EasyAdmin/crud/field/simple_array.html.twig',
         'crud/field/smallint' => '@EasyAdmin/crud/field/smallint.html.twig',
         'crud/field/telephone' => '@EasyAdmin/crud/field/telephone.html.twig',
         'crud/field/text' => '@EasyAdmin/crud/field/text.html.twig',

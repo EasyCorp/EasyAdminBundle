@@ -36,7 +36,7 @@ final class ArrayConfigurator implements FieldConfiguratorInterface
             return;
         }
 
-        if (null === $value && Crud::PAGE_INDEX === $context->getCrud()->getCurrentPage()) {
+        if (null !== $value && Crud::PAGE_INDEX === $context->getCrud()->getCurrentPage()) {
             $field->setFormattedValue(u(', ')->join($field->getValue()));
         }
     }

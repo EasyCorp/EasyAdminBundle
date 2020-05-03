@@ -13,8 +13,11 @@ const EaCollectionProperty = {
             // Use a counter to avoid having the same index more than once
             let numItems = parseInt(collection.dataset.numItems);
 
-            // Remove the 'Empty Collection' content, if any
-            // TODO ...
+            // Remove the 'Empty Collection' badge, if present
+            const emptyCollectionBadge = this.parentElement.querySelector('.collection-empty');
+            if (null !== emptyCollectionBadge) {
+                emptyCollectionBadge.remove();
+            }
 
             const newItemNumber = numItems + 1;
             const formTypeNamePlaceholder = collection.dataset.formTypeNamePlaceholder;

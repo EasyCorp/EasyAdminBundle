@@ -122,7 +122,7 @@
         'data-allow-add': allow_add ? 'true' : 'false',
         'data-allow-delete': allow_delete ? 'true' : 'false',
         'data-num-items': form.children|length,
-        'data-form-type-name-placeholder': prototype.vars.name,
+        'data-form-type-name-placeholder': prototype is defined ? prototype.vars.name : '',
     }) %}
 
     {{ block('form_row') }}
@@ -194,7 +194,7 @@
     <div class="form-widget-compound">
         {# the "is iterable" check is needed because if an object implements __toString() and
            returns an empty string, "is empty" returns true even if it's not a collection #}
-        {% set isEmptyCollection = value is iterable and value is empty %}
+        {% set isEmptyCollection = value is null or (value is iterable and value is empty) %}
         {% if isEmptyCollection %}
             {{ block('empty_collection') }}
         {% endif %}

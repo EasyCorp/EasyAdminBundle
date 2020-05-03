@@ -3,7 +3,7 @@
     .setController(app.request.query.get('crudController'))
     .setAction('delete')
     .setEntityId(entity_id ?? '__entityId_placeholder__')
-    .includeReferrer()
+    .removeReferrer()
     .generateUrl() %}
 
 <form action="{{ delete_url }}" method="post" id="delete-form" style="display: none">

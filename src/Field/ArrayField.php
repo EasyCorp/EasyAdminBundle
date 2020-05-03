@@ -20,6 +20,7 @@ final class ArrayField implements FieldInterface
             ->setLabel($label)
             ->setTemplateName('crud/field/array')
             ->setFormType(CollectionType::class)
-            ->addCssClass('field-array');
+            ->addCssClass('field-array')
+            ->addJsFiles('bundles/easyadmin/form-type-collection.js');
     }
 }

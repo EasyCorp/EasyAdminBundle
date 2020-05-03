@@ -10,6 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenu;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AvatarField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
@@ -398,7 +399,7 @@ final class Migrator
         ];
 
         $doctrineTypeToFqcn = [
-            //Type::TARRAY => 'array',
+            Type::TARRAY => ArrayField::class,
             Type::BIGINT => TextField::class,
             Type::BINARY => TextareaField::class,
             Type::BLOB => TextareaField::class,
@@ -416,7 +417,7 @@ final class Migrator
             Type::INTEGER => IntegerField::class,
             Type::JSON => TextField::class,
             Type::OBJECT => TextField::class,
-            //Type::SIMPLE_ARRAY => 'array',
+            Type::SIMPLE_ARRAY => ArrayField::class,
             Type::SMALLINT => IntegerField::class,
             Type::STRING => TextField::class,
             Type::TEXT => TextareaField::class,

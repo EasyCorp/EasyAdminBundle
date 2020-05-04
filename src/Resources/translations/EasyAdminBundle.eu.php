@@ -112,9 +112,9 @@ return [
     ],
 
     'login_page' => [
-        'username' => 'Username',
-        'password' => 'Password',
-        'sign_in' => 'Sign in',
+        'username' => 'Erabiltzailea',
+        'password' => 'Pasahitza',
+        'sign_in' => 'Hasi saioa',
     ],
 
     'exception' => [

@@ -272,8 +272,12 @@ final class Migrator
                 $methodArguments[] = $fieldLabel;
             }
 
+            // needed to turn 'foo' into '$foo' and 'foo.bar.baz' into '$fooBarBaz'
+            $fieldVariableName = u($fieldName)->replace('.', ' ')->camel()->collapseWhitespace()->toString();
+            $renamedFieldNames[$fieldName] = $fieldVariableName;
+
             $code = $code->_use($fieldFqcn);
-            $code = $code->_variableName($fieldName)->equals()->_staticCall($fieldClassName, 'new', $methodArguments);
+            $code = $code->_variableName($fieldVariableName)->equals()->_staticCall($fieldClassName, 'new', $methodArguments);
 
             if ($this->isCustomTemplate($fieldConfig['template'])) {
                 $code = $code->_methodCall('setTemplatePath', [$fieldConfig['template']]);

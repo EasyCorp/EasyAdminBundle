@@ -11,10 +11,10 @@
 {% block body_class 'index' ~ (entities|length > 0 ? ' index-' ~ entities|first.name : '') %}
 
 {% block content_title %}
-    {% apply spaceless %}
+    {%- apply spaceless -%}
         {% set default_title = ea.crud.defaultPageTitle|trans(ea.i18n.translationParameters, 'EasyAdminBundle') %}
         {{ ea.crud.customPageTitle is null ? default_title|raw : ea.crud.customPageTitle|trans(ea.i18n.translationParameters)|raw }}
-    {% endapply %}
+    {%- endapply -%}
 {% endblock %}
 
 {% block page_actions %}

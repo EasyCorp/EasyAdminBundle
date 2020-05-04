@@ -126,11 +126,9 @@ the action link/button::
 Restrict Access to Fields
 -------------------------
 
-.. TODO: update this when updating the 'fields' chapter
-
 There are several options to restrict the information displayed in the page
 depending on the logged in user. First, you can show/hide the entire field with
-the ``permission()`` option::
+the ``setPermission()`` method::
 
     public function getFields(string $action): iterable
     {
@@ -138,39 +136,33 @@ the ``permission()`` option::
             IdField::new('id'),
             TextField::new('price'),
             IntegerField::new('stock'),
-            // users must have this role to see this field
-            IntegerField::new('sales')->permission('ROLE_ADMIN'),
-            FloatField::new('comission')->permission('ROLE_FINANCE'),
+            // users must have this permission/role to see this field
+            IntegerField::new('sales')->setPermission('ROLE_ADMIN'),
+            FloatField::new('comission')->setPermission('ROLE_FINANCE'),
             // ...
         ];
     }
 
 You can also restrict which items users can see in the ``index`` and ``detail``
-pages thanks to the ``itemPermission()`` option. The role defined in that option
-is passed to the ``is_granted($roles, $item)`` function to decide if the current
-user can see the given item::
+pages thanks to the ``setEntityPermission()`` method. This value is passed as
+the first argument of the call to ``is_granted($permissions, $item)`` function
+to decide if the current user can see the given item::
 
     namespace App\Controller\Admin;
 
-    use EasyCorp\Bundle\EasyAdminBundle\Config\DetailPageConfig;
-    use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractResourceAdminController;
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+    use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 
-    class ProductAdminController extends AbstractResourceAdminController
+    class ProductCrudController extends AbstractCrudController
     {
         // ...
 
-        public function getIndexPageConfig(): IndexPageConfig
+        public function configureCrud(Crud $crud): Crud
         {
-            return IndexPageConfig::new()
+            return $crud
+                ->setEntityPermission('ROLE_ADMIN')
                 // ...
-                ->itemPermission('ROLE_ADMIN');
-        }
-
-        public function getDetailPageConfig(): DetailPageConfig
-        {
-            return DetailPageConfig::new()
-                // ...
-                ->itemPermission('ROLE_ADMIN');
+            ;
         }
     }
 
@@ -188,7 +180,7 @@ permissions to see some items:
 
 .. tip::
 
-    Combine the ``itemPermission()`` option with custom `Symfony security voters`_
+    Combine the ``setEntityPermission()`` method with custom `Symfony security voters`_
     to better decide if the current user can see any given item.
 
 .. _`Symfony Security`: https://symfony.com/doc/current/security.html

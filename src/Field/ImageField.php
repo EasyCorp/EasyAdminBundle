@@ -3,7 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FileUploadType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -20,7 +20,7 @@ final class ImageField implements FieldInterface
             ->setProperty($propertyName)
             ->setLabel($label)
             ->setTemplateName('crud/field/image')
-            ->setFormType(FileUploadType::class)
+            ->setFormType(FileType::class)
             ->addCssClass('field-image')
             ->setTextAlign('center')
             ->setCustomOption(self::OPTION_BASE_PATH, null);

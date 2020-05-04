@@ -266,12 +266,17 @@ body.ea-mobile-sidebar-visible .main-sidebar {
     line-height: var(--font-size-sm);
 }
 
+.content-header-help {
+    color: var(--gray-600);
+}
+
 .content-header .page-actions {
     align-items: center;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     margin-left: 10px;
+    margin-right: 1px;
 
     .btn {
         margin-left: 10px;

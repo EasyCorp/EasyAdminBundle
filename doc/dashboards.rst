@@ -134,7 +134,7 @@ explained later)::
                 // the name visible to end users
                 ->setTitle('ACME Corp.')
                 // you can include HTML contents too (e.g. to link to an image)
-                ->setTitle('<img src="..."> ACME <span class="text-small>Corp.</span>')
+                ->setTitle('<img src="..."> ACME <span class="text-small">Corp.</span>')
                 // the domain used by default is 'messages'
                 ->setTranslationDomain('my-custom-domain')
                 // etc.

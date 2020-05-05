@@ -5,17 +5,6 @@
     .setEntityId(entity_id ?? '__entityId_placeholder__')
     .removeReferrer() %}
 
-{# Option 1. 'ea_build_url()' Twig function #}
-{% set delete_url = ea_build_url().setController('...').setAction('delete').setEntityId('...').removeReferrer() %}
-{# Option 2. 'ea_url_builder()' Twig function #}
-{% set delete_url = ea_url_builder().setController('...').setAction('delete').setEntityId('...').removeReferrer() %}
-{# Option 3. 'ea_url_builder' global Twig object #}
-{% set delete_url = ea_url_builder.setController('...').setAction('delete').setEntityId('...').removeReferrer() %}
-{# Option 4. 'ea_current_url' global Twig object #}
-{% set delete_url = ea_current_url.setController('...').setAction('delete').setEntityId('...').removeReferrer() %}
-
-
-
 <form action="{{ delete_url }}" method="post" id="delete-form" style="display: none">
     <input type="hidden" name="token" value="{{ csrf_token('ea-delete') }}" />
 </form>

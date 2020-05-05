@@ -30,6 +30,11 @@ class CollectionTypeExtension extends AbstractTypeExtension
         }
 
         foreach ($view as $entryView) {
+            // needed to avoid 'Unable to render the form because the block names array contains duplicates'
+            if (in_array('collection_entry', $entryView->vars['block_prefixes'], true)) {
+                continue;
+            }
+
             array_splice($entryView->vars['block_prefixes'], $prefixOffset, 0, 'collection_entry');
         }
 
@@ -43,7 +48,10 @@ class CollectionTypeExtension extends AbstractTypeExtension
                 --$prefixOffset;
             }
 
-            array_splice($view->vars['prototype']->vars['block_prefixes'], $prefixOffset, 0, 'collection_entry');
+            // needed to avoid 'Unable to render the form because the block names array contains duplicates'
+            if (!in_array('collection_entry', $view->vars['prototype']->vars['block_prefixes'], true)) {
+                array_splice($view->vars['prototype']->vars['block_prefixes'], $prefixOffset, 0, 'collection_entry');
+            }
         }
     }
 

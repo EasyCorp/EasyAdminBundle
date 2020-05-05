@@ -104,7 +104,9 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
     {
         // don't autogenerate a label for these special fields (there's a dedicated configurator for them)
         if (FormField::class === $field->getFieldFqcn()) {
-            return $field->getLabel();
+            $label = $field->getLabel();
+
+            return null === $label ? $label: $this->translator->trans($label, $field->getTranslationParameters(), $translationDomain);
         }
 
         // if an Avatar field doesn't define its label, don't autogenerate it for the 'index' page

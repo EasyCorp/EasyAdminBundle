@@ -43,13 +43,9 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         }
 
         $targetEntityFqcn = $field->getDoctrineMetadata()->get('targetEntity');
+        // the target CRUD controller can be NULL; in that case, field value doesn't link to the related entity
         $targetCrudControllerFqcn = $field->getCustomOption(AssociationField::OPTION_CRUD_CONTROLLER)
             ?? $context->getCrudControllers()->getControllerFqcnByEntityFqcn($targetEntityFqcn);
-
-        if (null === $targetCrudControllerFqcn) {
-            throw new \RuntimeException(sprintf('It\'s not possible to find the CRUD controller associated to the "%s" field of the "%s" entity. Define the associated CRUD controller explicitly with the setCrudController() method on this field.', $field->getProperty(), $targetEntityFqcn));
-        }
-
         $field->setCustomOption(AssociationField::OPTION_CRUD_CONTROLLER, $targetCrudControllerFqcn);
 
         if ($entityDto->isToOneAssociation($propertyName)) {
@@ -132,8 +128,12 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         return $entityDto->getName();
     }
 
-    private function generateLinkToAssociatedEntity(string $crudController, EntityDto $entityDto): ?string
+    private function generateLinkToAssociatedEntity(?string $crudController, EntityDto $entityDto): ?string
     {
+        if (null === $crudController) {
+            return null;
+        }
+
         // TODO: check if user has permission to see the related entity
         return $this->crudUrlGenerator->build()
             ->setController($crudController)

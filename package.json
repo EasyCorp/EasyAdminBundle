@@ -5,7 +5,7 @@
     "bootstrap": "^4.1.0",
     "codemirror": "^5.47.0",
     "featherlight": "^1.7.13",
-    "jquery": "^3.3.1",
+    "jquery": "^3.5.1",
     "jquery-highlight": "^3.4.0",
     "jquery.are-you-sure": "^1.9.0",
     "node-sass": "^4.9.4",

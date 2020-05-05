@@ -33,6 +33,10 @@ final class SelectField implements FieldInterface
         return $this;
     }
 
+    /**
+     * Given choices must follow the same format used in Symfony Forms:
+     * ['Label visible to users' => 'submitted_value', ...]
+     */
     public function setChoices(array $keyValueChoices): self
     {
         $this->setCustomOption(self::OPTION_CHOICES, $keyValueChoices);

@@ -122,7 +122,7 @@ final class MenuFactory
                 unset($routeParameters['entityFqcn']);
             }
 
-            return $this->crudRouter->build()->setQueryParameters($routeParameters)->generateUrl();
+            return $this->crudRouter->build($routeParameters)->generateUrl();
         }
 
         if (MenuItemDto::TYPE_DASHBOARD === $menuItemType) {

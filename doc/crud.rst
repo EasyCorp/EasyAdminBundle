@@ -337,40 +337,46 @@ service to generate URLs in your PHP code::
 
         public function someMethod()
         {
-            // the constructor argument is the new value of some query parameters
+            // new URLs are generated starting from the current URL, but you can add,
+            // change or remove parameters from the current URL with the given methods
+
+            // the constructor argument is the new value of the given query parameters
             // the rest of existing query parameters are maintained, so you only
             // have to pass the values you want to change.
-            // to remove some query parameter, set its value to NULL
             $url = $this->crudUrlGenerator->build(['page' => 2])->generateUrl();
 
             // this other syntax is also possible
-            $url = $this->crudUrlGenerator->build()
-                ->setQueryParameter('page', 2)->generateUrl();
+            $url = $this->crudUrlGenerator->build()->set('page', 2)->generateUrl();
 
-            // use the 'setAction()' method to link to a given action
-            $url = $this->crudUrlGenerator->build()
-                ->setAction('theActionName')->generateUrl();
+            // you can remove existing parameters
+            $url = $this->crudUrlGenerator->build()->unset('menuIndex')->generateUrl();
+            $url = $this->crudUrlGenerator->build()->unsetAll()->set('foo', 'someValue')->generateUrl();
 
-            // use the 'setController()' method to also change the controller
-            // of the URL (otherwise, the current controller is used)
+            // the URL builder provides shortcuts for the most common parameters
             $url = $this->crudUrlGenerator->build()
                 ->setController(SomeController::class)
-                ->setAction('theActionName')->generateUrl();
+                ->setAction('theActionName')
+                ->generateUrl();
 
             // ...
         }
     }
 
 The exact same features are available in templates thanks to the
-``ea_build_url()`` Twig function:
+``ea_build_url()`` Twig function. In templates you can omit the call to the
+``generateUrl()`` method (it will be called automatically for you):
 
 .. code-block:: twig
 
+    {# both are equivalent #}
     {% set url = ea_build_url({ page: 2 }).generateUrl() %}
-    {% set url = ea_build_url().setQueryParameter('page', 2).generateUrl() %}
-    {% set url = ea_build_url().setAction('theActionName').generateUrl() %}
-    {% set url = ea_build_url()..setController('App\Controller\Admin\SomeController')
-        .setAction('theActionName').generateUrl() %}
+    {% set url = ea_build_url({ page: 2 }) %}
+
+    {% set url = ea_build_url().set('page', 2) %}
+
+    {% set url = ea_build_url()
+        .setController('App\Controller\Admin\SomeController')
+        .setAction('theActionName') %}
 
 .. _`Symfony controllers`: https://symfony.com/doc/current/controller.html
 .. _`How to Create a Custom Form Field Type`: https://symfony.com/doc/current/cookbook/form/create_custom_field_type.html

@@ -139,6 +139,8 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
             ->setController($crudController)
             ->setAction(Action::DETAIL)
             ->setEntityId($entityDto->getPrimaryKeyValue())
+            ->unset('menuIndex')
+            ->unset('submenuIndex')
             ->includeReferrer()
             ->generateUrl();
     }

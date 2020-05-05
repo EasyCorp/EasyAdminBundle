@@ -135,7 +135,7 @@ final class ActionFactory
             $requestParameters['entityId'] = $entityDto->getPrimaryKeyValueAsString();
         }
 
-        return $this->crudUrlGenerator->build()->setQueryParameters($requestParameters)->generateUrl();
+        return $this->crudUrlGenerator->build($requestParameters)->generateUrl();
     }
 
     private function generateReferrerUrl(Request $request, ActionDto $actionDto, string $currentAction): ?string

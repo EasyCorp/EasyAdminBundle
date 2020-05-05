@@ -3,7 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Twig;
 
 use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
-use EasyCorp\Bundle\EasyAdminBundle\Router\UrlBuilder;
+use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlBuilder;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Extension\AbstractExtension;
@@ -83,7 +83,7 @@ class EasyAdminTwigExtension extends AbstractExtension
         return (int) ($bytes / (1024 ** $factor)).@$size[$factor];
     }
 
-    public function buildCrudUrl(array $queryParameters = []): UrlBuilder
+    public function buildCrudUrl(array $queryParameters = []): CrudUrlBuilder
     {
         return $this->crudUrlGenerator->build($queryParameters);
     }

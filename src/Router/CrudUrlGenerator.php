@@ -19,8 +19,8 @@ final class CrudUrlGenerator
         $this->urlGenerator = $urlGenerator;
     }
 
-    public function build(array $newQueryParameters = []): UrlBuilder
+    public function build(array $routeParameters = []): CrudUrlBuilder
     {
-        return new UrlBuilder($this->adminContextProvider->getContext(), $this->urlGenerator, $newQueryParameters);
+        return new CrudUrlBuilder($this->adminContextProvider->getContext(), $this->urlGenerator, $routeParameters);
     }
 }

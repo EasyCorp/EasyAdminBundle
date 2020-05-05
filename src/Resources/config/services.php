@@ -143,10 +143,11 @@ return static function (ContainerConfigurator $container) {
             ->tag('kernel.event_listener', ['event' => ViewEvent::class])
 
         ->set(AdminContextFactory::class)
-            ->arg(0, ref('security.token_storage')->nullOnInvalid())
-            ->arg(1, ref(MenuFactory::class))
-            ->arg(2, tagged_iterator('ea.crud_controller'))
-            ->arg(3, ref(EntityFactory::class))
+            ->arg(0, ref('translator'))
+            ->arg(1, ref('security.token_storage')->nullOnInvalid())
+            ->arg(2, ref(MenuFactory::class))
+            ->arg(3, tagged_iterator('ea.crud_controller'))
+            ->arg(4, ref(EntityFactory::class))
 
         ->set(CrudUrlGenerator::class)
             ->arg(0, ref(AdminContextProvider::class))

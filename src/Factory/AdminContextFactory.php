@@ -19,6 +19,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Registry\TemplateRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use function Symfony\Component\String\u;
 
 /**
@@ -26,13 +27,15 @@ use function Symfony\Component\String\u;
  */
 final class AdminContextFactory
 {
+    private $translator;
     private $tokenStorage;
     private $menuFactory;
     private $crudControllers;
     private $entityFactory;
 
-    public function __construct(?TokenStorageInterface $tokenStorage, MenuFactory $menuFactory, iterable $crudControllers, EntityFactory $entityFactory)
+    public function __construct(TranslatorInterface $translator, ?TokenStorageInterface $tokenStorage, MenuFactory $menuFactory, iterable $crudControllers, EntityFactory $entityFactory)
     {
+        $this->translator = $translator;
         $this->tokenStorage = $tokenStorage;
         $this->menuFactory = $menuFactory;
         $this->crudControllers = CrudControllerRegistry::new($crudControllers);
@@ -99,8 +102,8 @@ final class AdminContextFactory
         $crudDto->setFiltersConfig($filters);
         $crudDto->setCurrentAction($crudAction);
         $crudDto->setEntityFqcn($entityFqcn);
-        $crudDto->setEntityLabelInSingular($crudDto->getEntityLabelInSingular() ?? $entityName);
-        $crudDto->setEntityLabelInPlural($crudDto->getEntityLabelInPlural() ?? $entityName);
+        $crudDto->setEntityLabelInSingular($this->translator->trans($crudDto->getEntityLabelInSingular() ?? $entityName));
+        $crudDto->setEntityLabelInPlural($this->translator->trans($crudDto->getEntityLabelInPlural() ?? $entityName));
         $crudDto->setPageName($pageName);
 
         return $crudDto;

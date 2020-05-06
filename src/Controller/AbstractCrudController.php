@@ -366,7 +366,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             return $this->redirect($referrer);
         }
 
-        return $this->redirect($this->get(CrudUrlGenerator::class)->build()->setAction('index')->setQueryParameter('entityId', null)->generateUrl());
+        return $this->redirect($this->get(CrudUrlGenerator::class)->build()->setAction('index')->unset('entityId')->generateUrl());
     }
 
     public function autocomplete(AdminContext $context): JsonResponse

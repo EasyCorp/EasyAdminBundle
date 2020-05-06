@@ -132,7 +132,7 @@ final class MenuFactory
         }
 
         if (MenuItemDto::TYPE_DASHBOARD === $menuItemType) {
-            return $this->urlGenerator->generate($dashboardRouteName);
+            return $this->urlGenerator->generate($dashboardRouteName, ['menuIndex' => $index, 'submenuIndex' => $subIndex]);
         }
 
         if (MenuItemDto::TYPE_ROUTE === $menuItemType) {

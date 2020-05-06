@@ -50,6 +50,11 @@ class CrudUrlBuilder
         return $this;
     }
 
+    public function get(string $paramName)
+    {
+        return $this->routeParameters[$paramName] ?? null;
+    }
+
     public function set(string $paramName, $paramValue): self
     {
         $this->setRouteParameter($paramName, $paramValue);

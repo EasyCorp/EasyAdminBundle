@@ -26,7 +26,7 @@ final class MenuFactory
     private $translator;
     private $urlGenerator;
     private $logoutUrlGenerator;
-    private $crudRouter;
+    private $crudUrlGenerator;
 
     public function __construct(AdminContextProvider $adminContextProvider, AuthorizationCheckerInterface $authChecker, TranslatorInterface $translator, UrlGeneratorInterface $urlGenerator, LogoutUrlGenerator $logoutUrlGenerator, CrudUrlGenerator $crudRouter)
     {
@@ -35,7 +35,7 @@ final class MenuFactory
         $this->translator = $translator;
         $this->urlGenerator = $urlGenerator;
         $this->logoutUrlGenerator = $logoutUrlGenerator;
-        $this->crudRouter = $crudRouter;
+        $this->crudUrlGenerator = $crudRouter;
     }
 
     /**
@@ -108,21 +108,27 @@ final class MenuFactory
         $menuItemType = $menuItemDto->getType();
 
         if (MenuItemDto::TYPE_CRUD === $menuItemType) {
+            $routeParameters = $menuItemDto->getRouteParameters();
+
+            // remove all existing query params to avoid keeping search queries, filters and pagination
+            $urlBuilder = $this->crudUrlGenerator->build()->unsetAll();
+
             // add the index and subIndex query parameters to display the selected menu item
-            // remove the 'query' parameter to not perform a search query when clicking on menu items
-            $defaultRouteParameters = ['menuIndex' => $index, 'submenuIndex' => $subIndex, 'query' => null];
-            $routeParameters = array_merge($defaultRouteParameters, $menuItemDto->getRouteParameters());
+            $urlBuilder->set('menuIndex', $index)->set('submenuIndex', $subIndex);
 
-            if (null === $routeParameters['crudController'] && null !== $entityFqcn = $routeParameters['entityFqcn']) {
+            $urlBuilder->setAll($routeParameters);
+
+            $entityFqcn = $routeParameters['entityFqcn'] ?? null;
+            if (null !== $entityFqcn && null === $urlBuilder->get('crudController')) {
                 $controllerRegistry = $this->adminContextProvider->getContext()->getCrudControllers();
-                $routeParameters['crudController'] = $controllerRegistry->getControllerFqcnByEntityFqcn($entityFqcn);
+                $urlBuilder->setController($controllerRegistry->getControllerFqcnByEntityFqcn($entityFqcn));
             }
 
-            if (null !== $routeParameters['crudController']) {
-                unset($routeParameters['entityFqcn']);
+            if (null !== $urlBuilder->get('crudController')) {
+                $urlBuilder->unset('entityFqcn');
             }
 
-            return $this->crudRouter->build($routeParameters)->generateUrl();
+            return $urlBuilder->generateUrl();
         }
 
         if (MenuItemDto::TYPE_DASHBOARD === $menuItemType) {
@@ -130,12 +136,7 @@ final class MenuFactory
         }
 
         if (MenuItemDto::TYPE_ROUTE === $menuItemType) {
-            // add the index and subIndex query parameters to display the selected menu item
-            // remove the 'query' parameter to not perform a search query when clicking on menu items
-            $defaultRouteParameters = ['menuIndex' => $index, 'submenuIndex' => $subIndex, 'query' => null];
-            $routeParameters = array_merge($defaultRouteParameters, $menuItemDto->getRouteParameters());
-
-            return $this->urlGenerator->generate($menuItemDto->getRouteName(), $routeParameters);
+            return $this->urlGenerator->generate($menuItemDto->getRouteName(), $menuItemDto->getRouteParameters());
         }
 
         if (MenuItemDto::TYPE_SECTION === $menuItemType) {

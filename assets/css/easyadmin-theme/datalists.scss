@@ -19,10 +19,12 @@ dl.datalist .data-row.with-background {
 }
 
 dl.datalist dd {
-  color: var(--text-color);
+  color: var(--gray-600);
   flex: 100% 0 0;
   font-size: var(--font-size-base);
   font-weight: 400;
+  margin-bottom: 0;
+  padding-right: 10px;
 }
 @media(min-width: 992px) {
   dl.datalist dd {

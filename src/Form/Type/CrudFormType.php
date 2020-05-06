@@ -67,6 +67,7 @@ class CrudFormType extends AbstractType
                     'label' => $fieldDto->getLabel(),
                     'icon' => $fieldDto->getCustomOptions()->get(FormField::OPTION_ICON),
                     'help' => $fieldDto->getHelp(),
+                    'css_class' => $fieldDto->getCssClass(),
                 ];
 
                 continue;

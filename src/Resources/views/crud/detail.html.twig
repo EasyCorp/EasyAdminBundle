@@ -30,7 +30,7 @@
 
             {% if loop.first and not is_decoration_field %}
                 {% set row_number = 0 %}
-                {{ _self.open_empty_content_panel() }}
+                {{ _self.open_empty_content_panel(field) }}
             {% endif %}
 
             {% if is_decoration_field %}
@@ -40,9 +40,9 @@
 
                 {% set row_number = 0 %}
                 {% if field.label is empty and field.help is empty %}
-                    {{ _self.open_empty_content_panel() }}
+                    {{ _self.open_empty_content_panel(field) }}
                 {% else %}
-                    {{ _self.open_content_panel_with_header(field.label, field.help) }}
+                    {{ _self.open_content_panel_with_header(field) }}
                 {% endif %}
             {% endif %}
 
@@ -81,30 +81,34 @@
     </script>
 {% endblock %}
 
-{% macro open_empty_content_panel() %}
-<div class="content-panel">
-    <div class="content-panel-body without-header without-footer without-padding">
-        <dl class="datalist">
+{% macro open_empty_content_panel(field) %}
+
+<div class="{{ field.cssClass }}">
+    <div class="content-panel">
+        <div class="content-panel-body without-header without-footer without-padding">
+            <dl class="datalist">
 {% endmacro %}
 
 {% macro close_content_panel() %}
-        </dl>
+            </dl>
+        </div>
     </div>
 </div>
 {% endmacro %}
 
-{% macro open_content_panel_with_header(header_title, header_help = '') %}
-    <div class="content-panel">
-        <div class="content-panel-header">
-            {{ header_title|raw }}
+{% macro open_content_panel_with_header(field) %}
+    <div class="{{ field.cssClass }}">
+        <div class="content-panel">
+            <div class="content-panel-header">
+                {{ field.label|raw }}
 
-            {% if header_help is not empty %}
-                <div class="content-panel-header-help">{{ header_help|raw }}</div>
-            {% endif %}
-        </div>
+                {% if field.help is not empty %}
+                    <div class="content-panel-header-help">{{ field.help|raw }}</div>
+                {% endif %}
+            </div>
 
-        <div class="content-panel-body without-footer without-padding">
-            <dl class="datalist">
+            <div class="content-panel-body without-footer without-padding">
+                <dl class="datalist">
 {% endmacro %}
 
 {% macro render_field(field, row_number) %}

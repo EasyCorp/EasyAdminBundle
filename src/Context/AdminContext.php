@@ -112,7 +112,8 @@ final class AdminContext
             return $this->mainMenuDto;
         }
 
-        $mainMenuItems = iterator_to_array($this->dashboardControllerInstance->configureMenuItems());
+        $configuredMenuItems = $this->dashboardControllerInstance->configureMenuItems();
+        $mainMenuItems = is_array($configuredMenuItems) ? $configuredMenuItems : iterator_to_array($configuredMenuItems);
         $selectedMenuIndex = $this->request->query->getInt('menuIndex', -1);
         $selectedMenuSubIndex = $this->request->query->getInt('submenuIndex', -1);
 

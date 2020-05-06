@@ -57,6 +57,11 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         }
 
         if (true === $field->getCustomOption(AssociationField::OPTION_AUTOCOMPLETE)) {
+            $targetCrudControllerFqcn = $field->getCustomOption(AssociationField::OPTION_CRUD_CONTROLLER);
+            if (null === $targetCrudControllerFqcn) {
+                throw new \RuntimeException(sprintf('The "%s" field cannot be autocompleted because it doesn\'t define the related CRUD controller FQCN with the "setCrudController()" method.', $field->getProperty()));
+            }
+
             // this enables autocompletion for compatible associations
             $field->setFormTypeOptionIfNotSet('attr.data-widget', 'select2');
 

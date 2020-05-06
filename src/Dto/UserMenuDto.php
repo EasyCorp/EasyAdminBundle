@@ -72,7 +72,7 @@ final class UserMenuDto
     }
 
     /**
-     * @param MenuItem[] $items
+     * @param MenuItemDto[] $items
      */
     public function setItems(array $items): void
     {

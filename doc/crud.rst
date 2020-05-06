@@ -362,20 +362,20 @@ service to generate URLs in your PHP code::
         }
     }
 
-The exact same features are available in templates thanks to the
-``ea_build_url()`` Twig function. In templates you can omit the call to the
-``generateUrl()`` method (it will be called automatically for you):
+The exact same features are available in templates thanks to the ``ea_url()``
+Twig function. In templates you can omit the call to the ``generateUrl()``
+method (it will be called automatically for you):
 
 .. code-block:: twig
 
     {# both are equivalent #}
-    {% set url = ea_build_url({ page: 2 }).generateUrl() %}
-    {% set url = ea_build_url({ page: 2 }) %}
+    {% set url = ea_url({ page: 2 }).generateUrl() %}
+    {% set url = ea_url({ page: 2 }) %}
 
-    {% set url = ea_build_url().set('page', 2) %}
+    {% set url = ea_url().set('page', 2) %}
 
-    {% set url = ea_build_url()
-        .setController('App\Controller\Admin\SomeController')
+    {% set url = ea_url()
+        .setController('App\\Controller\\Admin\\SomeController')
         .setAction('theActionName') %}
 
 .. _`Symfony controllers`: https://symfony.com/doc/current/controller.html

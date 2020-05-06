@@ -33,7 +33,7 @@ class EasyAdminTwigExtension extends AbstractExtension
     public function getFunctions()
     {
         return [
-            new TwigFunction('ea_build_url', [$this, 'buildCrudUrl']),
+            new TwigFunction('ea_url', [$this, 'getCrudUrlBuilder']),
         ];
     }
 
@@ -83,7 +83,7 @@ class EasyAdminTwigExtension extends AbstractExtension
         return (int) ($bytes / (1024 ** $factor)).@$size[$factor];
     }
 
-    public function buildCrudUrl(array $queryParameters = []): CrudUrlBuilder
+    public function getCrudUrlBuilder(array $queryParameters = []): CrudUrlBuilder
     {
         return $this->crudUrlGenerator->build($queryParameters);
     }

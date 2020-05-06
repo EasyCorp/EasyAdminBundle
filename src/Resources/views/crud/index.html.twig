@@ -49,11 +49,11 @@
         {% if filters|length > 0 %}
             {% set applied_filters = ea.request.query.get('filters')|default([])|keys %}
             <div class="btn-group action-filters">
-                <a href="{{ ea_build_url().setAction('renderFilters').includeReferrer() }}" class="btn btn-secondary btn-labeled btn-labeled-right action-filters-button {{ applied_filters ? 'action-filters-applied' }}" data-modal="#modal-filters">
+                <a href="{{ ea_url().setAction('renderFilters').includeReferrer() }}" class="btn btn-secondary btn-labeled btn-labeled-right action-filters-button {{ applied_filters ? 'action-filters-applied' }}" data-modal="#modal-filters">
                     <i class="fa fa-filter fa-fw"></i> {{ 'filter.title'|trans(ea.i18n.translationParameters, 'EasyAdminBundle') }}{% if applied_filters %} <span class="text-primary">({{ applied_filters|length }})</span>{% endif %}
                 </a>
                 {% if applied_filters %}
-                    <a href="{{ ea_build_url().unset('filters') }}" class="btn btn-secondary action-filters-reset">
+                    <a href="{{ ea_url().unset('filters') }}" class="btn btn-secondary action-filters-reset">
                         <i class="fa fa-close"></i>
                     </a>
                 {% endif %}
@@ -105,7 +105,7 @@
 
                             <th class="{{ isSortingField ? 'sorted' }} {{ field.isVirtual ? 'field-virtual' }} text-{{ field.textAlign }} {{ field.cssClass }}" dir="{{ ea.i18n.textDirection }}">
                                 {% if field.isSortable %}
-                                    <a href="{{ ea_build_url({ page: 1, sort: { (field.property): nextSortDirection } }).includeReferrer() }}">
+                                    <a href="{{ ea_url({ page: 1, sort: { (field.property): nextSortDirection } }).includeReferrer() }}">
                                         {{ field.label|raw }} <i class="fa fa-fw {{ column_icon }}"></i>
                                     </a>
                                 {% else %}
@@ -217,7 +217,7 @@
                     const oldValue = !newValue;
                     const fieldName = this.closest('.custom-switch').dataset.fieldname;
 
-                    const toggleUrl = "{{ ea_build_url().setAction('edit')|raw }}"
+                    const toggleUrl = "{{ ea_url().setAction('edit')|raw }}"
                         + "&entityId=" + this.closest('tr').dataset.id
                         + "&fieldName=" + fieldName
                         + "&newValue=" + newValue.toString();

@@ -114,7 +114,7 @@ class CrudUrlBuilder
         $routeParameters = array_filter($this->routeParameters);
         ksort($routeParameters);
 
-        return $this->urlGenerator->generate($this->dashboardRoute, $routeParameters);
+        return $this->urlGenerator->generate($this->dashboardRoute, $routeParameters, UrlGeneratorInterface::ABSOLUTE_URL);
     }
 
     private function setRouteParameter(string $paramName, $paramValue): void

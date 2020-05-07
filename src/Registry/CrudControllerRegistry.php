@@ -23,7 +23,7 @@ final class CrudControllerRegistry
     {
         $registry = new self();
 
-        foreach (iterator_to_array($crudControllers) as $controller) {
+        foreach (iterator_to_array($crudControllers, false) as $controller) {
             $controllerFqcn = \get_class($controller);
             $registry->controllerFqcnToEntityFqcnMap[$controllerFqcn] = $controller::getEntityFqcn();
         }

@@ -120,7 +120,7 @@ final class EntityPaginator implements EntityPaginatorInterface
 
     public function getResultsAsJson(): string
     {
-        $results = null !== $this->getResults() ? iterator_to_array($this->getResults()) : [];
+        $results = null !== $this->getResults() ? iterator_to_array($this->getResults(), false) : [];
         foreach ($results as $entityInstance) {
             $entityDto = $this->entityFactory->createForEntityInstance($entityInstance);
 

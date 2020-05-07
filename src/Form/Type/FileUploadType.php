@@ -219,7 +219,7 @@ class FileUploadType extends AbstractType implements DataMapperInterface
     public function mapDataToForms($currentFiles, $forms): void
     {
         /** @var FormInterface $fileForm */
-        $fileForm = current(iterator_to_array($forms));
+        $fileForm = current(iterator_to_array($forms, false));
         $fileForm->setData($currentFiles);
     }
 
@@ -229,7 +229,7 @@ class FileUploadType extends AbstractType implements DataMapperInterface
     public function mapFormsToData($forms, &$currentFiles): void
     {
         /** @var FormInterface[] $children */
-        $children = iterator_to_array($forms);
+        $children = iterator_to_array($forms, false);
         $uploadedFiles = $children['file']->getData();
 
         /** @var FileUploadState $state */

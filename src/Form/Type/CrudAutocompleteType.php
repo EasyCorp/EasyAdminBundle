@@ -61,7 +61,7 @@ class CrudAutocompleteType extends AbstractType implements DataMapperInterface
      */
     public function mapDataToForms($data, $forms)
     {
-        $form = current(iterator_to_array($forms));
+        $form = current(iterator_to_array($forms, false));
         $form->setData($data);
     }
 
@@ -70,7 +70,7 @@ class CrudAutocompleteType extends AbstractType implements DataMapperInterface
      */
     public function mapFormsToData($forms, &$data)
     {
-        $form = current(iterator_to_array($forms));
+        $form = current(iterator_to_array($forms, false));
         $data = $form->getData();
     }
 }

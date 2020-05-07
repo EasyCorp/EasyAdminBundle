@@ -356,36 +356,34 @@
 
         <div class="{{ panel_config.css_class ?? '' }}">
             <div class="content-panel">
-            {% if panel_has_header %}
-                <div class="content-panel-header">
-                    {% if panel_config.icon|default(false) %}
-                        <i class="{{ panel_config.icon }}"></i>
-                    {% endif %}
-                    {{ panel_config.label|raw }}
+                {% if panel_has_header %}
+                    <div class="content-panel-header">
+                        {% if panel_config.icon|default(false) %}
+                            <i class="{{ panel_config.icon }}"></i>
+                        {% endif %}
+                        {{ panel_config.label|raw }}
 
-                    {% if panel_config.help|default(false) %}
-                        <div class="content-panel-header-help">{{ panel_config.help|raw }}</div>
-                    {% endif %}
-                </div>
-            {% endif %}
+                        {% if panel_config.help|default(false) %}
+                            <div class="content-panel-header-help">{{ panel_config.help|raw }}</div>
+                        {% endif %}
+                    </div>
+                {% endif %}
 
-            <div class="content-panel-body with-background {{ not panel_has_header ? 'without-header' }} without-footer">
-                {% for field in form|filter(field => 'hidden' not in field.vars.block_prefixes and field.vars.ea_crud_form.form_panel == panel_name) %}
-                    {% if not field.vars.ea_crud_form.form_tab or field.vars.ea_crud_form.form_tab == tab_name %}
-                        {{ form_row(field) }}
-                    {% endif %}
-                {% endfor %}
-            </div>
-        </div>
-        </div>
-    {% else %}
-        <div class="{{ panel_config.css_class ?? '' }}">
-            <div class="content-panel">
-                <div class="content-panel-body with-background without-header without-footer">
-                    {% for field in form|filter(field => 'hidden' not in field.vars.block_prefixes and (not field.vars.ea_crud_form.form_tab or field.vars.ea_crud_form.form_tab == tab_name)) %}
-                        {{ form_row(field) }}
+                <div class="content-panel-body with-background {{ not panel_has_header ? 'without-header' }} without-footer">
+                    {% for field in form|filter(field => 'hidden' not in field.vars.block_prefixes and field.vars.ea_crud_form.form_panel == panel_name) %}
+                        {% if not field.vars.ea_crud_form.form_tab or field.vars.ea_crud_form.form_tab == tab_name %}
+                            {{ form_row(field) }}
+                        {% endif %}
                     {% endfor %}
                 </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="content-panel">
+            <div class="content-panel-body with-background without-header without-footer">
+                {% for field in form|filter(field => 'hidden' not in field.vars.block_prefixes and (not field.vars.ea_crud_form.form_tab or field.vars.ea_crud_form.form_tab == tab_name)) %}
+                    {{ form_row(field) }}
+                {% endfor %}
             </div>
         </div>
     {% endfor %}

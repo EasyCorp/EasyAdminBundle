@@ -1,0 +1,38 @@
+---------------------------------------------------------------------------
+
+by Dallas62 at 2020-05-06T20:33:49Z
+
+Hi @javiereguiluz
+Can you provide me an exemple to install the fork with composer ?
+My attempts failed:
+```sh
+!!  2020-05-06T20:22:18+00:00 [critical] Uncaught Error: Class 'EasyCorp\Bundle\EasyAdminBundle\EasyAdminBundle' not found
+```
+But the vendor was there...
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2020-05-06T20:40:34Z
+
+In cases like this, what I do is to copy + paste the app.js contents of this PR into the same file inside the vendor/ folder of my app 🙈
+
+---------------------------------------------------------------------------
+
+by Dallas62 at 2020-05-06T20:51:19Z
+
+Thanks, I did the test with a log to be sure the right file is load.
+It's ok for me!
+If you have a link of an article to test PR with composer, I will have a look 😉 it could be help full 😅
+
+---------------------------------------------------------------------------
+
+by bozhidargyurov at 2020-05-07T08:45:45Z
+
+Hi @javiereguiluz
+I'll try it and I'll post an update here. Thanks!
+
+---------------------------------------------------------------------------
+
+by bozhidargyurov at 2020-05-07T16:17:56Z
+
+Hi @javiereguiluz Yes, this seems to be fixing the issues. Thanks! :)

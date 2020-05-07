@@ -342,6 +342,10 @@ rendering it in the template::
             return $entity->isPublished() ? $value : 'Coming soon...;
         })
 
+        // in PHP 7.4 and newer you can use arrow functions
+        // ->formatValue(fn ($value) => $value < 10 ? sprintf('%d **LOW STOCK**', $value) : $value)
+        // ->formatValue(fn ($value, $entity) => $entity->isPublished() ? $value : 'Coming soon...')
+
 Misc. Options
 ~~~~~~~~~~~~~
 

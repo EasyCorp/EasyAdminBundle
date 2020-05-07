@@ -109,6 +109,10 @@ and EasyAdmin passes the action to it automatically::
             ->update(Crud::PAGE_DETAIL, Action::NEW, function (Action $action) {
                 return $action->setIcon('fa fa-file-alt')->setLabel(false);
             })
+
+            // in PHP 7.4 and newer you can use arrow functions
+            // ->update(Crud::PAGE_DETAIL, Action::NEW,
+            //     fn (Action $action) => $action->setIcon('fa fa-file-alt')->setLabel(false))
         ;
     }
 
@@ -130,6 +134,9 @@ to users::
                 ->displayIf(static function ($entity) {
                     return $entity->isPublished();
                 });
+
+                // in PHP 7.4 and newer you can use arrow functions
+                // ->displayIf(fn ($entity) => $entity->isPublished())
 
             return $actions
                 // ...
@@ -236,6 +243,7 @@ for it and use ``linkToRoute()``::
 
     namespace App\Controller\Admin;
 
+    use App\Entity\Invoice;
     use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
     use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 
@@ -258,7 +266,8 @@ for it and use ``linkToRoute()``::
                 ])
 
                 // 2) using a callable (useful if parameters depend on the entity instance)
-                ->linkToRoute('invoice_send', function ($entity) {
+                // (the type-hint of the function argument is optional but useful)
+                ->linkToRoute('invoice_send', function (Invoice $entity) {
                     return [
                         'uuid' => $entity->getId(),
                         'method' => $entity->sendMethod(),

@@ -54,9 +54,17 @@ class AdminContextListener
         // this makes the AdminContext available in all templates as a short named variable
         $this->twig->addGlobal('ea', $adminContext);
 
+        // if the request is related to a CRUD controller, change the controller to execute
         if (null !== $crudControllerInstance) {
-            // Changes the controller associated to the current request to execute the
-            // CRUD controller and page requested via the dashboard menu and actions
+            $crudControllerClass = get_class($crudControllerInstance);
+            $crudControllerAction = $crudControllerCallable[1];
+            $newControllerAsString = sprintf('%s::%s', $crudControllerClass, $crudControllerAction);
+
+            // this makes Symfony believe that another controller is being executed
+            // (e.g. this is needed for the autowiring of controller action arguments)
+            $event->getRequest()->attributes->set('_controller', $newControllerAsString);
+
+            // this actually makes Symfony to execute the other controller
             $event->setController($crudControllerCallable);
         }
     }

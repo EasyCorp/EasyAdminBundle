@@ -107,7 +107,7 @@ and EasyAdmin passes the action to it automatically::
         return $actions
             // ...
             ->update(Crud::PAGE_DETAIL, Action::NEW, function (Action $action) {
-                $action->setIcon('fa fa-file-alt')->setLabel(false);
+                return $action->setIcon('fa fa-file-alt')->setLabel(false);
             })
         ;
     }

@@ -153,6 +153,16 @@ final class Action
     }
 
     /**
+     * @param string|callable $url
+     */
+    public function linkToUrl($url): self
+    {
+        $this->dto->setUrl($url);
+
+        return $this;
+    }
+
+    /**
      * If not defined, actions use the same domain as configured for the entire dashboard.
      */
     public function setTranslationDomain(string $domain): self
@@ -182,8 +192,8 @@ final class Action
             throw new \InvalidArgumentException(sprintf('The label and icon of an action cannot be null at the same time. Either set the label, the icon or both for the "%s" action.', $this->dto->getName()));
         }
 
-        if (null === $this->dto->getCrudActionName() && null === $this->dto->getRouteName()) {
-            throw new \InvalidArgumentException(sprintf('Actions must link to either a route or a CRUD action. Set the "linkToCrudAction()" or "linkToRoute()" method for the "%s" action.', $this->dto->getName()));
+        if (null === $this->dto->getCrudActionName() && null === $this->dto->getRouteName() && null === $this->dto->getUrl()) {
+            throw new \InvalidArgumentException(sprintf('Actions must link to either a route, a CRUD action, or a URL. Set the "linkToCrudAction()", "linkToRoute()", or "linkToUrl()" method for the "%s" action.', $this->dto->getName()));
         }
 
         return $this->dto;

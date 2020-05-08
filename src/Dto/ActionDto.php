@@ -21,6 +21,7 @@ final class ActionDto
     private $crudActionName;
     private $routeName;
     private $routeParameters;
+    private $url;
     private $translationDomain;
     private $translationParameters;
     private $displayCallable;
@@ -180,6 +181,22 @@ final class ActionDto
     public function setRouteParameters($routeParameters): void
     {
         $this->routeParameters = $routeParameters;
+    }
+
+    /**
+     * @return string|callable
+     */
+    public function getUrl()
+    {
+        return $this->url;
+    }
+
+    /**
+     * @param string|callable $url
+     */
+    public function setUrl($url): void
+    {
+        $this->url = $url;
     }
 
     public function getTranslationDomain(): ?string

@@ -1,0 +1,5 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2020-05-08T14:02:56Z
+
+I don't know Symfony Forms well ... so I don't know the reasons behind some decisions ... but yes, we use `...|raw` in many places because we allow using HTML tags almos everywhere for greater flexibility.

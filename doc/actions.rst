@@ -282,6 +282,33 @@ for it and use ``linkToRoute()``::
         }
     }
 
+To link to an external URL, use ``linkToUrl()``::
+
+    namespace App\Controller\Admin;
+
+    use App\Entity\Invoice;
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+    use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+
+    class ProductCrudController extends AbstractCrudController
+    {
+        // ...
+
+        public function configureActions(Actions $actions): Actions
+        {
+            // this action go to the invoice on Stripe
+            $viewStripeInvoice = Action::new('View invoice', 'fa fa-file-invoice')
+                ->linkToUrl(function (Invoice $entity) {
+                    return 'https://www.stripe.com/invoice/'.$entity->getStripeReference();
+                });
+
+            return $actions
+                // ...
+                ->add('viewInvoice', $viewStripeInvoice)
+            ;
+        }
+    }
+
 Batch Actions
 -------------
 

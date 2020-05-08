@@ -5,6 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenu;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu\MenuItemInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MainMenuDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\UserMenuDto;
@@ -121,7 +122,10 @@ final class MenuFactory
             $entityFqcn = $routeParameters['entityFqcn'] ?? null;
             if (null !== $entityFqcn && null === $urlBuilder->get('crudController')) {
                 $controllerRegistry = $this->adminContextProvider->getContext()->getCrudControllers();
-                $urlBuilder->setController($controllerRegistry->getControllerFqcnByEntityFqcn($entityFqcn));
+                if (null === $controllerFqcn = $controllerRegistry->getControllerFqcnByEntityFqcn($entityFqcn)) {
+                    throw new \RuntimeException(sprintf('Unable to find the controller related to the "%s" Entity; did you forget to extend "%s"?', $entityFqcn, AbstractCrudController::class));
+                }
+                $urlBuilder->setController($controllerFqcn);
             }
 
             if (null !== $urlBuilder->get('crudController')) {

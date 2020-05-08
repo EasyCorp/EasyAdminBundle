@@ -78,7 +78,7 @@ final class TemplateRegistry
     public function get(string $templateName): string
     {
         if (!$this->has($templateName)) {
-            throw new \InvalidArgumentException(sprintf('The "%s" template is not defined in EasyAdmin. Use one of these allowed template names: %s', $templateName, implode(', ', array_keys($this->getTemplateNames()))));
+            throw new \InvalidArgumentException(sprintf('The "%s" template is not defined in EasyAdmin. Use one of these allowed template names: %s', $templateName, implode(', ', array_keys($this->templates))));
         }
 
         return $this->templates[$templateName];
@@ -87,7 +87,7 @@ final class TemplateRegistry
     public function setTemplate(string $templateName, string $templatePath): void
     {
         if (!$this->has($templateName)) {
-            throw new \InvalidArgumentException(sprintf('The "%s" template is not defined in EasyAdmin. Use one of these allowed template names: %s', $templateName, implode(', ', array_keys($this->getTemplateNames()))));
+            throw new \InvalidArgumentException(sprintf('The "%s" template is not defined in EasyAdmin. Use one of these allowed template names: %s', $templateName, implode(', ', array_keys($this->templates))));
         }
 
         $this->templates[$templateName] = $templatePath;

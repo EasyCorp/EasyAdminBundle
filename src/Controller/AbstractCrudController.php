@@ -410,9 +410,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
     public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
-        // there's no need to persist the entity explicitly again because it's already
-        // managed by Doctrine. The instance is passed to the method in case the
-        // user application needs to make decisions
+        $entityManager->persist($entityInstance);
         $entityManager->flush();
     }
 

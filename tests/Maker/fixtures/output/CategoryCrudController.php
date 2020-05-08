@@ -20,6 +20,7 @@ class CategoryCrudController extends AbstractCrudController
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
+            ->setPageTitle(Crud::PAGE_INDEX, 'Product %entity_label_singular%')
             ->setSearchFields(['id', 'name']);
     }
 

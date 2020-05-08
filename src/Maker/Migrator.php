@@ -145,7 +145,13 @@ final class Migrator
 
         $definesCustomSearchFields = isset($entityConfig['search']['fields']);
 
-        if (!$definesCustomLabel && !$definesCustomTemplates && !$definesCustomHelp && !$definesCustomPagination && !$definesCustomEntityPermission && !$definesCustomActionDropdown && !$definesCustomSearchFields) {
+        $customTitles = [];
+        foreach (['list', 'edit', 'new', 'show'] as $oldPageName) {
+            $customTitles[$oldPageName] = trim($entityConfig[$oldPageName]['title'] ?? '');
+        }
+        $definesCustomPageTitles = 0 !== array_sum(array_map('strlen', $customTitles));
+
+        if (!$definesCustomLabel && !$definesCustomTemplates && !$definesCustomHelp && !$definesCustomPagination && !$definesCustomEntityPermission && !$definesCustomActionDropdown && !$definesCustomSearchFields && !$definesCustomPageTitles) {
             return $code;
         }
 
@@ -159,6 +165,21 @@ final class Migrator
             $code = $code
                 ->_methodCall('setEntityLabelInSingular', [$customLabel])
                 ->_methodCall('setEntityLabelInPlural', [$customLabel]);
+        }
+
+        if ($definesCustomPageTitles) {
+            foreach (['list' => 'PAGE_INDEX', 'edit' => 'PAGE_EDIT', 'show' => 'PAGE_DETAIL', 'new' => 'PAGE_NEW'] as $oldPageName => $newPageName) {
+                $pageTitle = $customTitles[$oldPageName];
+                if (!empty($pageTitle)) {
+                    $newPageTitle = str_replace(
+                        ['%entity_label%', '%entity_id%'],
+                        ['%entity_label_singular%', '%entity_short_id%'],
+                        $pageTitle
+                    );
+
+                    $code = $code->_methodCallWithRawArguments('setPageTitle', ['Crud::'.$newPageName, "'".$newPageTitle."'"]);
+                }
+            }
         }
 
         if ($definesCustomHelp) {

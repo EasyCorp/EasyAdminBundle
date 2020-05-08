@@ -1,0 +1,7 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2020-05-08T14:00:42Z
+
+Good catch!
+
+Note: during the development of this new version, I went from `setXxx()` to `xxx()` and back to `setXxxx()` multiple times ... I settled for `setXxx()` because, although it's a bit boring, creates more consistent naming (with `xxx()` names, sometimes you have verbs and sometimes names ... some are expressive and some are confusing ... `setXxx()` solves all those problems).

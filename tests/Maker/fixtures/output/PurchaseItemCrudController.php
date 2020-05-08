@@ -18,7 +18,8 @@ class PurchaseItemCrudController extends AbstractCrudController
 
     public function configureCrud(Crud $crud): Crud
     {
-        return $crud;
+        return $crud
+            ->searchFields(['id', 'quantity', 'taxRate']);
     }
 
     public function configureFields(string $pageName): iterable

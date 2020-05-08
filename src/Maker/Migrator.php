@@ -143,7 +143,9 @@ final class Migrator
         $definesCustomEntityPermission = null !== $entityConfig['list']['item_permission'];
         $definesCustomActionDropdown = true === $entityConfig['list']['collapse_actions'];
 
-        if (!$definesCustomLabel && !$definesCustomTemplates && !$definesCustomHelp && !$definesCustomPagination && !$definesCustomEntityPermission && !$definesCustomActionDropdown) {
+        $definesCustomSearchFields = isset($entityConfig['search']['fields']);
+
+        if (!$definesCustomLabel && !$definesCustomTemplates && !$definesCustomHelp && !$definesCustomPagination && !$definesCustomEntityPermission && !$definesCustomActionDropdown && !$definesCustomSearchFields) {
             return $code;
         }
 
@@ -165,6 +167,16 @@ final class Migrator
                     $code = $code->_methodCall('setHelp', [$newPageName, $helpMessage]);
                 }
             }
+        }
+
+        if ($definesCustomSearchFields) {
+            $searchFieldNames = array_keys($entityConfig['search']['fields']);
+            $searchFieldVariables = array_map(static function ($searchFieldName) {
+                return sprintf('\'%s\'', $searchFieldName);
+            }, $searchFieldNames);
+            $searchFieldNamesAsString = sprintf('[%s]', implode(', ', $searchFieldVariables));
+
+            $code = $code->_methodCallWithRawArguments('searchFields', [$searchFieldNamesAsString]);
         }
 
         if ($definesCustomPagination) {

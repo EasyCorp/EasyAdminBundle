@@ -19,7 +19,8 @@ class CategoryCrudController extends AbstractCrudController
 
     public function configureCrud(Crud $crud): Crud
     {
-        return $crud;
+        return $crud
+            ->searchFields(['id', 'name']);
     }
 
     public function configureFields(string $pageName): iterable

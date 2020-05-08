@@ -176,7 +176,7 @@ final class Migrator
             }, $searchFieldNames);
             $searchFieldNamesAsString = sprintf('[%s]', implode(', ', $searchFieldVariables));
 
-            $code = $code->_methodCallWithRawArguments('searchFields', [$searchFieldNamesAsString]);
+            $code = $code->_methodCallWithRawArguments('setSearchFields', [$searchFieldNamesAsString]);
         }
 
         if ($definesCustomPagination) {

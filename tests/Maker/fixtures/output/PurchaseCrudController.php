@@ -26,7 +26,7 @@ class PurchaseCrudController extends AbstractCrudController
         return $crud
             ->setEntityLabelInSingular('Purchase')
             ->setEntityLabelInPlural('Purchase')
-            ->searchFields(['id', 'guid', 'billingAddress']);
+            ->setSearchFields(['id', 'guid', 'billingAddress']);
     }
 
     public function configureActions(Actions $actions): Actions

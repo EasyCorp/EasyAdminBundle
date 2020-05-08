@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Field\Configurator;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -122,6 +123,12 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
         }
 
         if (empty($label)) {
+            return $label;
+        }
+
+        // don't translate labels in form-related pages because Smyfony Forms translates
+        // labels automatically and that causes false "translation is missing" errors
+        if (in_array($currentPage, [Crud::PAGE_EDIT, Crud::PAGE_NEW])) {
             return $label;
         }
 

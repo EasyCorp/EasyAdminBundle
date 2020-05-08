@@ -197,7 +197,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             return new Response((int) $newValue);
         }
 
-        $editForm = $this->createEditForm($context->getEntity());
+        $editForm = $this->createEditForm($context->getEntity(), $context->getCrud()->getEditFormOptions());
         $editForm->handleRequest($context->getRequest());
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             // TODO:
@@ -264,7 +264,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $this->get(EntityFactory::class)->processActions($context->getEntity(), $context->getCrud()->getActionsConfig());
         $entityInstance = $context->getEntity()->getInstance();
 
-        $newForm = $this->createNewForm($context->getEntity());
+        $newForm = $this->createNewForm($context->getEntity(), $context->getCrud()->getNewFormOptions());
         $newForm->handleRequest($context->getRequest());
         if ($newForm->isSubmitted() && $newForm->isValid()) {
             // TODO:
@@ -428,14 +428,14 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $entityManager->flush();
     }
 
-    public function createEditForm(EntityDto $entityDto): FormInterface
+    public function createEditForm(EntityDto $entityDto, KeyValueStore $formOptions): FormInterface
     {
-        return $this->get(FormFactory::class)->createEditForm($entityDto);
+        return $this->get(FormFactory::class)->createEditForm($entityDto, $formOptions);
     }
 
-    public function createNewForm(EntityDto $entityDto): FormInterface
+    public function createNewForm(EntityDto $entityDto, KeyValueStore $formOptions): FormInterface
     {
-        return $this->get(FormFactory::class)->createNewForm($entityDto);
+        return $this->get(FormFactory::class)->createNewForm($entityDto, $formOptions);
     }
 
     /**

@@ -282,9 +282,10 @@ class Crud
         return $this;
     }
 
-    public function setFormOptions(array $formOptions): self
+    public function setFormOptions(array $newFormOptions, array $editFormOptions = null): self
     {
-        $this->dto->setFormOptions($formOptions);
+        $this->dto->setNewFormOptions(KeyValueStore::new($newFormOptions));
+        $this->dto->setEditFormOptions(KeyValueStore::new($editFormOptions ?? $newFormOptions));
 
         return $this;
     }

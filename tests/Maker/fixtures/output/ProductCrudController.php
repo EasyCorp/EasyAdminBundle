@@ -26,7 +26,7 @@ class ProductCrudController extends AbstractCrudController
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
-            ->searchFields(['id', 'tags', 'ean', 'image', 'features', 'price', 'name', 'description']);
+            ->setSearchFields(['id', 'tags', 'ean', 'image', 'features', 'price', 'name', 'description']);
     }
 
     public function configureFields(string $pageName): iterable

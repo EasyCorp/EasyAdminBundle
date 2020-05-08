@@ -1,0 +1,13 @@
+---------------------------------------------------------------------------
+
+by Pierstoval at 2020-05-08T13:11:41Z
+
+I tested it, and even though the feature I'd like to implement doesn't work (differenciate the entity and its DTO), it works generally 😄
+
+Is there a way to customize the form options differently between `edit` and `new`?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2020-05-08T13:44:04Z
+
+@Pierstoval you are right ... so I've made some changes to allow defining different options per form (by default, the same options are used for both).

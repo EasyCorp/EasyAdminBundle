@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -38,7 +39,8 @@ final class CrudDto
     private $paginatorDto;
     private $overriddenTemplates;
     private $formThemes;
-    private $formOptions;
+    private $newFormOptions;
+    private $editFormOptions;
     private $entityPermission;
 
     public function __construct()
@@ -53,7 +55,8 @@ final class CrudDto
         $this->searchFields = [];
         $this->showEntityActionsAsDropdown = false;
         $this->formThemes = ['@EasyAdmin/crud/form_theme.html.twig'];
-        $this->formOptions = [];
+        $this->newFormOptions = KeyValueStore::new();
+        $this->editFormOptions = KeyValueStore::new();
         $this->overriddenTemplates = [];
     }
 
@@ -252,14 +255,24 @@ final class CrudDto
         $this->formThemes = $formThemes;
     }
 
-    public function getFormOptions(): ?array
+    public function getNewFormOptions(): ?KeyValueStore
     {
-        return $this->formOptions;
+        return $this->newFormOptions;
     }
 
-    public function setFormOptions(array $formOptions): void
+    public function getEditFormOptions(): ?KeyValueStore
     {
-        $this->formOptions = $formOptions;
+        return $this->editFormOptions;
+    }
+
+    public function setNewFormOptions(KeyValueStore $formOptions): void
+    {
+        $this->newFormOptions = $formOptions;
+    }
+
+    public function setEditFormOptions(KeyValueStore $formOptions): void
+    {
+        $this->editFormOptions = $formOptions;
     }
 
     public function getEntityPermission(): ?string

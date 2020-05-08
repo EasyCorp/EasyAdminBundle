@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudBatchActionFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudFormType;
@@ -26,24 +27,20 @@ final class FormFactory
         $this->crudUrlGenerator = $crudUrlGenerator;
     }
 
-    public function createEditForm(EntityDto $entityDto): FormInterface
+    public function createEditForm(EntityDto $entityDto, KeyValueStore $formOptions): FormInterface
     {
-        $formTypeOptions = [
-            'entityDto' => $entityDto,
-            'attr' => ['id' => sprintf('edit-%s-form', $entityDto->getName())],
-        ];
+        $formOptions->set('entityDto', $entityDto);
+        $formOptions->set('attr.id', sprintf('edit-%s-form', $entityDto->getName()));
 
-        return $this->symfonyFormFactory->createNamedBuilder($entityDto->getName(), CrudFormType::class, $entityDto->getInstance(), $formTypeOptions)->getForm();
+        return $this->symfonyFormFactory->createNamedBuilder($entityDto->getName(), CrudFormType::class, $entityDto->getInstance(), $formOptions->all())->getForm();
     }
 
-    public function createNewForm(EntityDto $entityDto): FormInterface
+    public function createNewForm(EntityDto $entityDto, KeyValueStore $formOptions): FormInterface
     {
-        $formTypeOptions = [
-            'entityDto' => $entityDto,
-            'attr' => ['id' => sprintf('new-%s-form', $entityDto->getName())],
-        ];
+        $formOptions->set('entityDto', $entityDto);
+        $formOptions->set('attr.id', sprintf('new-%s-form', $entityDto->getName()));
 
-        return $this->symfonyFormFactory->createNamedBuilder($entityDto->getName(), CrudFormType::class, $entityDto->getInstance(), $formTypeOptions)->getForm();
+        return $this->symfonyFormFactory->createNamedBuilder($entityDto->getName(), CrudFormType::class, $entityDto->getInstance(), $formOptions->all())->getForm();
     }
 
     public function createBatchActionsForm(): FormInterface

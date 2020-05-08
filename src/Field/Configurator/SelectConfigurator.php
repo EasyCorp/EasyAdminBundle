@@ -35,16 +35,28 @@ final class SelectConfigurator implements FieldConfiguratorInterface
 
         $translatedChoices = [];
         $translationParameters = $context->getI18n()->getTranslationParameters();
-        foreach ($choices as $key => $value) {
-            $translatedKey = $this->translator->trans($key, $translationParameters);
-            $translatedChoices[$translatedKey] = $value;
+        foreach ($choices as $choiceLabel => $choiceValue) {
+            $translatedChoiceLabel = $this->translator->trans((string) $choiceLabel, $translationParameters);
+            $translatedChoices[$translatedChoiceLabel] = $choiceValue;
         }
         $field->setFormTypeOptionIfNotSet('choices', $translatedChoices);
 
         if (null !== $value = $field->getValue()) {
-            $selectedChoice = array_flip($choices)[$value];
-            $field->setFormattedValue($this->translator->trans($selectedChoice, $translationParameters));
+            // needed to be compatible with fields that allow selecting multiple values
+            $selectedChoices = [];
+            $flippedChoices = array_flip($choices);
+            // $value is a scalar for single selections and an array for multiple selections
+            foreach (array_values((array) $value) as $selectedValue) {
+                if (null !== $selectedChoice = $flippedChoices[$selectedValue] ?? null) {
+                    $selectedChoices[] = $this->translator->trans($selectedChoice, $translationParameters);
+                }
+            }
+
+            $field->setFormattedValue(implode(', ', $selectedChoices));
         }
+
+        $field->setFormTypeOptionIfNotSet('multiple', $field->getCustomOption(SelectField::OPTION_ALLOW_MULTIPLE_SELECT));
+        $field->setFormTypeOptionIfNotSet('expanded', $field->getCustomOption(SelectField::OPTION_RENDER_EXPANDED));
 
         if (true === $field->getCustomOption(SelectField::OPTION_AUTOCOMPLETE)) {
             $field->setFormTypeOptionIfNotSet('attr.data-widget', 'select2');

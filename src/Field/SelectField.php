@@ -12,8 +12,10 @@ final class SelectField implements FieldInterface
 {
     use FieldTrait;
 
+    public const OPTION_ALLOW_MULTIPLE_SELECT = 'allowMultipleSelect';
     public const OPTION_AUTOCOMPLETE = 'autocomplete';
     public const OPTION_CHOICES = 'choices';
+    public const OPTION_RENDER_EXPANDED = 'renderExpanded';
 
     public static function new(string $propertyName, ?string $label = null): self
     {
@@ -23,7 +25,16 @@ final class SelectField implements FieldInterface
             ->setTemplateName('crud/field/select')
             ->setFormType(ChoiceType::class)
             ->addCssClass('field-select')
-            ->setCustomOption(self::OPTION_CHOICES, null);
+            ->setCustomOption(self::OPTION_ALLOW_MULTIPLE_SELECT, false)
+            ->setCustomOption(self::OPTION_CHOICES, null)
+            ->setCustomOption(self::OPTION_RENDER_EXPANDED, false);
+    }
+
+    public function allowMultipleSelect(bool $allow = true): self
+    {
+        $this->setCustomOption(self::OPTION_ALLOW_MULTIPLE_SELECT, $allow);
+
+        return $this;
     }
 
     public function autocomplete(): self
@@ -40,6 +51,13 @@ final class SelectField implements FieldInterface
     public function setChoices(array $keyValueChoices): self
     {
         $this->setCustomOption(self::OPTION_CHOICES, $keyValueChoices);
+
+        return $this;
+    }
+
+    public function renderExpanded(bool $expanded = true): self
+    {
+        $this->setCustomOption(self::OPTION_RENDER_EXPANDED, $expanded);
 
         return $this;
     }

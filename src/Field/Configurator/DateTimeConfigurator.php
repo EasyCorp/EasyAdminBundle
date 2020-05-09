@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Field\Configurator;
 
+use Doctrine\DBAL\Types\Types;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -51,5 +52,11 @@ final class DateTimeConfigurator implements FieldConfiguratorInterface
         }
 
         $field->setFormattedValue($formattedValue);
+
+        $doctrineDataType = $entityDto->getPropertyMetadata($field->getProperty())->get('type');
+        $isImmutableDateTime = in_array($doctrineDataType, [Types::DATETIME_MUTABLE, Types::DATE_MUTABLE, Types::TIME_MUTABLE], true);
+        if ($isImmutableDateTime) {
+            $field->setFormTypeOptionIfNotSet('input', 'datetime_immutable');
+        }
     }
 }

@@ -48,6 +48,11 @@ final class FieldCollection implements CollectionInterface
         $this->fields[$newOrUpdatedField->getProperty()] = $newOrUpdatedField;
     }
 
+    public function unset(FieldDto $removedField): void
+    {
+        unset($this->fields[$removedField->getProperty()]);
+    }
+
     public function offsetExists($offset): bool
     {
         return \array_key_exists($offset, $this->fields);

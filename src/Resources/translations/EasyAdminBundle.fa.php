@@ -121,5 +121,6 @@ return [
         'entity_not_found' => 'این آیتم دیگر در دسترس نیست',
         'entity_remove' => 'این آیتم نمی‌تواند حذف شود، زیرا آیتم های وابسته‌ای دارد.',
         'forbidden_action' => 'عملیات درخواستی در مورد این آیتم قابل انجام نیست.',
+        // 'insufficient_entity_permission' => 'You don't have permission to access this item.',
     ],
 ];

@@ -121,5 +121,6 @@ return [
         'entity_not_found' => 'Този елемент вече не е налице.',
         'entity_remove' => 'Този елемент не може да бъде изтрит, защото други елементи зависят от него.',
         'forbidden_action' => 'Заявеното действие не може да се изпълни за този елемент.',
+        // 'insufficient_entity_permission' => 'You don't have permission to access this item.',
     ],
 ];

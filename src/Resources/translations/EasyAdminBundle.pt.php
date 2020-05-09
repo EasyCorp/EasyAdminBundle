@@ -121,5 +121,6 @@ return [
         'entity_not_found' => 'Este item não está mais disponível.',
         'entity_remove' => 'Esse item não pode ser excluído porque outros itens dependem dele.',
         'forbidden_action' => 'A ação requisitada não pode ser executada nesse item.',
+        // 'insufficient_entity_permission' => 'You don't have permission to access this item.',
     ],
 ];

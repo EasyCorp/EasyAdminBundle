@@ -121,5 +121,6 @@ return [
         'entity_not_found' => 'Αυτό το αντικείμενο δεν είναι πλέον διαθέσιμο.',
         'entity_remove' => 'Το αντικείμενο δεν είναι δυνατόν να διαγραφεί διότη υπάρχουν αντικείμενο που βασίζονται σε αυτό.',
         'forbidden_action' => 'Η ενέργεια αυτή είναι αδύνατον να εφαρμοστεί σε αυτό το αντικείμενο.',
+        // 'insufficient_entity_permission' => 'You don't have permission to access this item.',
     ],
 ];

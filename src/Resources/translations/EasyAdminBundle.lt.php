@@ -121,5 +121,6 @@ return [
         'entity_not_found' => 'Šis elementas nebepasiekiamas.',
         'entity_remove' => 'Šis elementas negali būti ištrintas, nes nuo jo priklauso kiti elementai.',
         'forbidden_action' => 'Norimas atlikti veiksmas šiam elementui negalimas.',
+        // 'insufficient_entity_permission' => 'You don't have permission to access this item.',
     ],
 ];

@@ -13,14 +13,20 @@ final class EntityCollection implements CollectionInterface
     /** @var EntityDto[] */
     private $entities;
 
-    private function __construct(EntityDto $entityDto, iterable $entityInstances)
+    /**
+     * @param EntityDto[] $entities
+     */
+    private function __construct(array $entities)
     {
-        $this->entities = $this->processEntities($entityDto, $entityInstances);
+        $this->entities = $entities;
     }
 
-    public static function new(EntityDto $entityDto, iterable $entityInstances): self
+    /**
+     * @param EntityDto[] $entities
+     */
+    public static function new(array $entities): self
     {
-        return new self($entityDto, $entityInstances);
+        return new self($entities);
     }
 
     public function get(string $entityId): ?EntityDto
@@ -64,17 +70,5 @@ final class EntityCollection implements CollectionInterface
     public function getIterator()
     {
         return new \ArrayIterator($this->entities);
-    }
-
-    private function processEntities(EntityDto $entityDto, $entityInstances): array
-    {
-        $dtos = [];
-
-        foreach ($entityInstances as $entityInstance) {
-            $dto = $entityDto->newWithInstance($entityInstance);
-            $dtos[$dto->getPrimaryKeyValue()] = $dto;
-        }
-
-        return $dtos;
     }
 }

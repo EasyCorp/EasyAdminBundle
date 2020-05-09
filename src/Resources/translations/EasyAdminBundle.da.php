@@ -121,5 +121,6 @@ return [
         'entity_not_found' => 'Emnet er ikke længerer tilgængeligt.',
         'entity_remove' => 'Dette emne kan ikke slettes, da der er andre emner der er afhængige af det.',
         'forbidden_action' => 'Denne handling kan ikke udføres på dette emne.',
+        // 'insufficient_entity_permission' => 'You don't have permission to access this item.',
     ],
 ];

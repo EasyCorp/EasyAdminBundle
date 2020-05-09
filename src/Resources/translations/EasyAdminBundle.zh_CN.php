@@ -121,5 +121,6 @@ return [
         'entity_not_found' => '当前记录不可用',
         'entity_remove' => '该条记录不可删除，因为有其他记录依赖该条记录。',
         'forbidden_action' => '无权执行该操作',
+        // 'insufficient_entity_permission' => 'You don't have permission to access this item.',
     ],
 ];

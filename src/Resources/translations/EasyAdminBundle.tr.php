@@ -121,5 +121,6 @@ return [
         'entity_not_found' => 'Bu öğe artık mevcut değil.',
         'entity_remove' => 'Diğer öğeler buna bağlı olduğu için bu öğe silinemiyor.',
         'forbidden_action' => 'İstenen eylem bu öğe üzerinde gerçekleştirilemez.',
+        // 'insufficient_entity_permission' => 'You don't have permission to access this item.',
     ],
 ];

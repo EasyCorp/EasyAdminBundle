@@ -14,13 +14,13 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
  */
 final class EntityDto
 {
+    private $isAccessible;
     private $fqcn;
     private $metadata;
     private $instance;
     private $primaryKeyName;
     private $primaryKeyValue;
     private $permission;
-    private $userHasPermission;
     /** @var ?FieldDtoCollection */
     private $fields;
     /** @var ActionCollection */
@@ -28,12 +28,12 @@ final class EntityDto
 
     public function __construct(string $entityFqcn, ClassMetadata $entityMetadata, ?string $entityPermission = null, $entityInstance = null)
     {
+        $this->isAccessible = true;
         $this->fqcn = $entityFqcn;
         $this->metadata = $entityMetadata;
         $this->instance = $entityInstance;
         $this->primaryKeyName = $this->metadata->getIdentifierFieldNames()[0];
         $this->permission = $entityPermission;
-        $this->userHasPermission = true;
     }
 
     public function getFqcn(): string
@@ -103,14 +103,14 @@ final class EntityDto
 
     public function isAccessible(): bool
     {
-        return true === $this->userHasPermission;
+        return $this->isAccessible;
     }
 
     public function markAsInaccessible(): void
     {
+        $this->isAccessible = false;
         $this->instance = null;
         $this->fields = null;
-        $this->userHasPermission = false;
     }
 
     public function getFields(): ?FieldCollection

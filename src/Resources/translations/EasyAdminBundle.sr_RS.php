@@ -121,5 +121,6 @@ return [
         'entity_not_found' => 'Ovaj zapis više nije dostupan.',
         'entity_remove' => 'Ovaj zapis ne može biti izbrisan zato što drugi zapisi su vezani za njega.',
         'forbidden_action' => 'Data akcija ne može biti primenjena na ovaj zapis.',
+        // 'insufficient_entity_permission' => 'You don't have permission to access this item.',
     ],
 ];

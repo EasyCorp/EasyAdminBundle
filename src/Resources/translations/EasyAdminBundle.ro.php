@@ -121,5 +121,6 @@ return [
         // 'entity_not_found' => '',
         // 'entity_remove' => '',
         // 'forbidden_action' => '',
+        // 'insufficient_entity_permission' => 'You don't have permission to access this item.',
     ],
 ];

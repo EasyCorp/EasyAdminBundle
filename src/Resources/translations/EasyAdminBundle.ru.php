@@ -121,5 +121,6 @@ return [
         'entity_not_found' => 'Элемент больше не доступен.',
         'entity_remove' => 'Элемент не может быть удалён, потому что другой элемент зависит от него.',
         'forbidden_action' => 'Запрашиваемое действие запрещено для этого элемента.',
+        // 'insufficient_entity_permission' => 'You don't have permission to access this item.',
     ],
 ];

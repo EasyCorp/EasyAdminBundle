@@ -10,6 +10,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Form\EventListener\EasyAdminTabSubscriber;
 use Symfony\Bridge\Doctrine\Form\DoctrineOrmTypeGuesser;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
@@ -57,7 +60,11 @@ class CrudFormType extends AbstractType
             }
 
             if (null === $formFieldType = $fieldDto->getFormType()) {
-                $formFieldType = $this->doctrineOrmTypeGuesser->guessType($entityDto->getFqcn(), $fieldDto->getProperty())->getType();
+                $guessType = $this->doctrineOrmTypeGuesser->guessType($entityDto->getFqcn(), $fieldDto->getProperty());
+                $formFieldType = $guessType->getType();
+                $formFieldOptions = array_merge($guessType->getOptions(), $formFieldOptions);
+            } elseif (in_array($formFieldType, [DateTimeType::class, DateType::class, TimeType::class])) {
+                $formFieldOptions['input'] = 'datetime_immutable';
             }
 
             if (EaFormPanelType::class === $formFieldType) {

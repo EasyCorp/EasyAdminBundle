@@ -121,5 +121,6 @@ return [
         'entity_not_found' => 'Ez az elem már nem elérhető.',
         'entity_remove' => 'Ez az elem nem törölhető más kapcsolódó adatok miatt.',
         'forbidden_action' => 'A kért művelet nem hajtható végre ezen az elemen.',
+        // 'insufficient_entity_permission' => 'You don't have permission to access this item.',
     ],
 ];

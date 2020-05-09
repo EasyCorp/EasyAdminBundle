@@ -71,6 +71,8 @@ final class FieldFactory
 
         foreach ($fields as $fieldName => $fieldDto) {
             if (false === $this->authorizationChecker->isGranted(Permission::EA_VIEW_FIELD, $fieldDto)) {
+                $fields->unset($fieldDto);
+
                 continue;
             }
 

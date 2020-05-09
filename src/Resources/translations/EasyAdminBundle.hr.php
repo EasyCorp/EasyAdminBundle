@@ -121,5 +121,6 @@ return [
         'entity_not_found' => 'Ta stavka više nije dostupna.',
         'entity_remove' => 'Ta stavka ne može se izbrisati jer ovise o njoj ostale stavke.',
         'forbidden_action' => 'Zatražena radnja ne može se izvršiti na ovoj stavci.',
+        // 'insufficient_entity_permission' => 'You don't have permission to access this item.',
     ],
 ];

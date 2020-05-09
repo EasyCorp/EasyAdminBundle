@@ -122,5 +122,6 @@ return [
         'entity_not_found' => 'This item is no longer available.',
         'entity_remove' => 'This item can\'t be deleted because other items depend on it.',
         'forbidden_action' => 'The requested action can\'t be performed on this item.',
+        'insufficient_entity_permission' => 'You don\'t have permission to access this item.',
     ],
 ];

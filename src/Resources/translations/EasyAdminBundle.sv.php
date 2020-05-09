@@ -121,5 +121,6 @@ return [
         'entity_not_found' => 'Detta objekt är inte tillgängligt längre.',
         'entity_remove' => 'Detta object kan inte tas bort för att andra objekt har ett beroende på det.',
         'forbidden_action' => 'Den åtgärd du försökte göra kan inte utföras på detta objekt.',
+        // 'insufficient_entity_permission' => 'You don't have permission to access this item.',
     ],
 ];

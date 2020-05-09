@@ -75,6 +75,23 @@ final class EntityFactory
         return $this->doCreate(null, null, null, $entityInstance);
     }
 
+    public function createCollection(EntityDto $entityDto, ?iterable $entityInstances): EntityCollection
+    {
+        $entityDtos = [];
+
+        foreach ($entityInstances as $entityInstance) {
+            $newEntityDto = $entityDto->newWithInstance($entityInstance);
+            $newEntityId = $newEntityDto->getPrimaryKeyValue();
+            if (!$this->authorizationChecker->isGranted(Permission::EA_VIEW_ENTITY, $newEntityDto)) {
+                $newEntityDto->markAsInaccessible();
+            }
+
+            $entityDtos[$newEntityId] = $newEntityDto;
+        }
+
+        return EntityCollection::new($entityDtos);
+    }
+
     private function doCreate(?string $entityFqcn = null, $entityId = null, ?string $entityPermission = null, $entityInstance = null): EntityDto
     {
         if (null === $entityInstance && null !== $entityFqcn) {

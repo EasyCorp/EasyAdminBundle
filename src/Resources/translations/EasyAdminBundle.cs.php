@@ -121,5 +121,6 @@ return [
         'entity_not_found' => 'Tato položka již není dostupná.',
         'entity_remove' => 'Tato položka nemůže být smazána, neboť na ní závisí ostatní položky.',
         'forbidden_action' => 'Požadovaná akce nemůže být provedena na této položce.',
+        // 'insufficient_entity_permission' => 'You don't have permission to access this item.',
     ],
 ];

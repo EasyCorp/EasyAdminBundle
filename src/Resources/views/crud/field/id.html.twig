@@ -1,5 +1,5 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
 {# @var field \EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto #}
 {# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
-{# this template is for entity primary keys (don't format those values as numbers) #}
-{{ field.value }}
+{# this template is used to display Doctrine entity primary keys #}
+{{ field.formattedValue }}

@@ -30,6 +30,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\CurrencyConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\DateTimeConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\EmailConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\FormConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\IdConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\ImageConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\LanguageConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\LocaleConfigurator;
@@ -284,6 +285,9 @@ return static function (ContainerConfigurator $container) {
             ->tag('ea.field_configurator')
 
         ->set(FormConfigurator::class)
+            ->tag('ea.field_configurator')
+
+        ->set(IdConfigurator::class)
             ->tag('ea.field_configurator')
 
         ->set(ImageConfigurator::class)

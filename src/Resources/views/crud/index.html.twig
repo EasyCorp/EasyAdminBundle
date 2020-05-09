@@ -136,7 +136,7 @@
 
                                 {% for field in entity.fields %}
                                     <td class="{{ field.property == sort_field_name ? 'sorted' }} text-{{ field.textAlign }} {{ field.cssClass }}" dir="{{ ea.i18n.textDirection }}">
-                                        {{ include(field.templatePath, { field: field }, with_context = false) }}
+                                        {{ include(field.templatePath, { field: field, entity: entity }, with_context = false) }}
                                     </td>
                                 {% endfor %}
 

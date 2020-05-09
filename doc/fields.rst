@@ -410,12 +410,31 @@ for a given postal address. This is the class you could create for the field::
                 // you can use your own form types too
                 ->setFormType(TextareaType::class)
                 ->addCssClass('field-map')
-                // use these methods in case the field needs some assets to work
+                // these methods allow to define the web assets loaded when the
+                // field is displayed in any CRUD page (index/detail/edit/new)
                 ->addCssFile('js/admin/field-map.css')
                 ->addJsFile('js/admin/field-map.js')
             ;
         }
     }
+
+Next, create the template used to render the field in the ``index`` and ``detail``
+:ref:`CRUD pages <crud-pages>`. The template can use any `Twig templating features`_
+and the following variables:
+
+* ``ea``, an :class:`EasyCorp\\Bundle\\EasyAdminBundle\\Context\\AdminContext`
+  instance which stores the :ref:`admin context <admin-context>` and it's
+  available in all backend templates;
+* ``field``, a :class:`EasyCorp\\Bundle\\EasyAdminBundle\\Dto\\FieldDto`
+  instance which stores the config and value of the field being rendered;
+* ``entity``, an :class:`EasyCorp\\Bundle\\EasyAdminBundle\\Dto\\EntityDto`
+  instance which stores the instance of the entity which the field belongs to
+  and other useful data about that Doctrine entity.
+
+.. note::
+
+    This template is not used in the ``edit`` and ``new`` :ref:`CRUD pages <crud-pages>`,
+    which use `Symfony Form themes`_ to define how each form field is displayed.
 
 That's all. You can now use this field in any of your CRUD controllers::
 
@@ -480,6 +499,7 @@ field DTO. For example, in a Twig template:
 
 .. code-block:: twig
 
+    {# admin/field/map.html.twig #}
     {% if 'google' === field.customOptions.get('mapProvider') %}
         {# ... #}
     {% endif %}
@@ -510,3 +530,5 @@ attribute of the tag to run your configurator before or after the built-in ones.
 
 .. _`PropertyAccess component`: https://symfony.com/doc/current/components/property_access.html
 .. _`PHP generators`: https://www.php.net/manual/en/language.generators.overview.php
+.. _`Twig templating features`: https://twig.symfony.com/doc/3.x/
+.. _`Symfony Form themes`: https://symfony.com/doc/current/form/form_themes.html

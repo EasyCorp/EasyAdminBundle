@@ -140,6 +140,83 @@ to your needs:
         {{ include('@EasyAdmin/default/action.html.twig') }}
     {% endif %}
 
+
+Factorize configuration instead of repeating it
+-----------------------------------------------
+
+When filtering entities with ``dql_filter`` while displaying the same columns, you can end up with duplicated lines like:
+
+.. code-block:: yaml
+
+    # config/packages/easy_admin.yaml
+    easy_admin:
+        entities:
+            VipCustomers:
+                class: AppBundle\Entity\User
+                label: 'VIP customers'
+                list:
+                    dql_filter: 'entity.budget > 100000'
+                    fields:
+                        - 'id'
+                        - 'email'
+                        - 'createdAt'
+                form:
+                    fields:
+                        - 'email'
+                search:
+                    fields: ['email']
+            RegularCustomers:
+                class: AppBundle\Entity\User
+                label: 'Regular customers'
+                list:
+                    dql_filter: 'entity.budget <= 100000'
+                    fields:
+                        - 'id'
+                        - 'email'
+                        - 'createdAt'
+                form:
+                    fields:
+                        - 'email'
+                search:
+                    fields: ['email']
+
+To avoid repetition, you can define a reusable block like ``&customer_template`` then use it with ``<<: *cutomer_template``:
+
+.. code-block:: yaml
+
+    # config/packages/easy_admin.yaml
+    easy_admin:
+        entities:
+            VipCustomers: &customer_template
+                class: AppBundle\Entity\User
+                label: 'VIP customers'
+                list:  &customer_list_template
+                    dql_filter: 'entity.budget > 100000'
+                    fields:
+                        - 'id'
+                        - 'email'
+                        - 'createdAt'
+                form:
+                    fields:
+                        - 'email'
+                search:
+                    fields: ['email']
+            RegularCustomers:
+                <<: *customer_template
+                label: 'Regular customers' # Overwrite configuration above
+                list:
+                    <<: *customer_list_template
+                    dql_filter: 'entity.budget <= 100000'  # Overwrite configuration above
+
+The YAML parser will merge the configuration of ``VipCustomers`` in ``RegularCustomers``, so we have to
+define ``class``, ``label``, ``list``, ``form`` and ``search`` configuration only once.
+
+.. note::
+
+    ``customer_list_template`` is used to avoid repeating ``fields`` configuration several times,
+    the ``fields`` configuration from ``VipCustomers`` will be reused in ``RegularCustomers``,
+    and the second ``dql_filter`` configuration will overwrite the first one because of the merge strategy.
+
 .. _`Doctrine caching drivers`: https://symfony.com/doc/current/reference/configuration/doctrine.html#caching-drivers
 .. _`How to Work with the User's Locale`: https://symfony.com/doc/current/translation/locale.html
 .. _`Doctrine filters`: https://www.doctrine-project.org/projects/doctrine-orm/en/current/reference/filters.html

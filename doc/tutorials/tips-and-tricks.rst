@@ -153,7 +153,7 @@ columns, you can end up with duplicated lines like:
     easy_admin:
         entities:
             VipCustomers:
-                class: AppBundle\Entity\User
+                class: App\Entity\User
                 label: 'VIP customers'
                 list:
                     dql_filter: 'entity.budget > 100000'
@@ -168,7 +168,7 @@ columns, you can end up with duplicated lines like:
                     fields: ['email']
 
             RegularCustomers:
-                class: AppBundle\Entity\User
+                class: App\Entity\User
                 label: 'Regular customers'
                 list:
                     dql_filter: 'entity.budget <= 100000'
@@ -193,7 +193,7 @@ block (is like "echo" a variable):
     easy_admin:
         entities:
             VipCustomers: &customer_template
-                class: AppBundle\Entity\User
+                class: App\Entity\User
                 label: 'VIP customers'
                 list:  &customer_list_template
                     dql_filter: 'entity.budget > 100000'

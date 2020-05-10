@@ -140,11 +140,12 @@ to your needs:
         {{ include('@EasyAdmin/default/action.html.twig') }}
     {% endif %}
 
+Avoid Repeating Configuration using YAML Variables
+--------------------------------------------------
 
-Factorize configuration instead of repeating it
------------------------------------------------
-
-When filtering entities with ``dql_filter`` while displaying the same columns, you can end up with duplicated lines like:
+Sometimes, certain blocks of YAML config are repeated in different places. For
+example, when filtering entities with ``dql_filter`` while displaying the same
+columns, you can end up with duplicated lines like:
 
 .. code-block:: yaml
 
@@ -165,6 +166,7 @@ When filtering entities with ``dql_filter`` while displaying the same columns, y
                         - 'email'
                 search:
                     fields: ['email']
+
             RegularCustomers:
                 class: AppBundle\Entity\User
                 label: 'Regular customers'
@@ -180,7 +182,10 @@ When filtering entities with ``dql_filter`` while displaying the same columns, y
                 search:
                     fields: ['email']
 
-To avoid repetition, you can define a reusable block like ``&customer_template`` then use it with ``<<: *cutomer_template``:
+To avoid repetition, you can use "YAML variables", which are reusable blocks
+that use the following syntax: ``&foo`` creates a block named "foo" (this is
+like declaring a variable) and ``<<: *foo`` prints the content of the "foo"
+block (is like "echo" a variable):
 
 .. code-block:: yaml
 
@@ -201,6 +206,9 @@ To avoid repetition, you can define a reusable block like ``&customer_template``
                         - 'email'
                 search:
                     fields: ['email']
+
+            # this entity reuses the config variables defined in the other
+            # entity, avoiding most repeated config
             RegularCustomers:
                 <<: *customer_template
                 label: 'Regular customers' # Overwrite configuration above
@@ -208,14 +216,10 @@ To avoid repetition, you can define a reusable block like ``&customer_template``
                     <<: *customer_list_template
                     dql_filter: 'entity.budget <= 100000'  # Overwrite configuration above
 
-The YAML parser will merge the configuration of ``VipCustomers`` in ``RegularCustomers``, so we have to
-define ``class``, ``label``, ``list``, ``form`` and ``search`` configuration only once.
-
-.. note::
-
-    ``customer_list_template`` is used to avoid repeating ``fields`` configuration several times,
-    the ``fields`` configuration from ``VipCustomers`` will be reused in ``RegularCustomers``,
-    and the second ``dql_filter`` configuration will overwrite the first one because of the merge strategy.
+The ``customer_list_template`` is used to avoid repeating ``fields``
+configuration several times, the ``fields`` configuration from ``VipCustomers``
+will be reused in ``RegularCustomers``, and the second ``dql_filter``
+configuration will overwrite the first one because of the merge strategy.
 
 .. _`Doctrine caching drivers`: https://symfony.com/doc/current/reference/configuration/doctrine.html#caching-drivers
 .. _`How to Work with the User's Locale`: https://symfony.com/doc/current/translation/locale.html

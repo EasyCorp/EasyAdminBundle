@@ -89,7 +89,7 @@ final class Actions
         return $this;
     }
 
-    public function setActionOrder(string $pageName, array $orderedActionNames): self
+    public function reorder(string $pageName, array $orderedActionNames): self
     {
         $newActionOrder = [];
         $currentActions = $this->dto->getActions();
@@ -132,7 +132,7 @@ final class Actions
         return $this;
     }
 
-    public function disableActions(string ...$disabledActionNames): self
+    public function disable(string ...$disabledActionNames): self
     {
         $this->dto->disableActions($disabledActionNames);
 

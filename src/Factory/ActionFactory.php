@@ -126,8 +126,8 @@ final class ActionFactory
 
         if (null !== $routeName = $actionDto->getRouteName()) {
             $routeParameters = $actionDto->getRouteParameters();
-            if (\is_callable($routeParameters)) {
-                $routeParameters = $routeParameters($entityDto->getInstance());
+            if (\is_callable($routeParameters) && null !== $entityInstance = $entityDto->getInstance()) {
+                $routeParameters = $routeParameters($entityInstance);
             }
 
             return $this->urlGenerator->generate($routeName, $routeParameters);

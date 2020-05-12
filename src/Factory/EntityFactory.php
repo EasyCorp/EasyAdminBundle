@@ -81,12 +81,12 @@ final class EntityFactory
 
         foreach ($entityInstances as $entityInstance) {
             $newEntityDto = $entityDto->newWithInstance($entityInstance);
-            $newEntityId = $newEntityDto->getPrimaryKeyValue();
+            $newEntityId = $newEntityDto->getPrimaryKeyValueAsString();
             if (!$this->authorizationChecker->isGranted(Permission::EA_VIEW_ENTITY, $newEntityDto)) {
                 $newEntityDto->markAsInaccessible();
             }
 
-            $entityDtos[(string) $newEntityId] = $newEntityDto;
+            $entityDtos[$newEntityId] = $newEntityDto;
         }
 
         return EntityCollection::new($entityDtos);

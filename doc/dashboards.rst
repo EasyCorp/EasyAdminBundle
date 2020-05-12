@@ -236,7 +236,7 @@ entity associated to the CRUD controller::
             // if the same Doctrine entity is associated to more than one CRUD controller,
             // use the 'setController()' method to specify which controller to use
             MenuItem::linkToCrud('Categories', 'fa fa-tags', Category::class)
-                ->setController('LegacyCategoryCrudController::class'),
+                ->setController(LegacyCategoryCrudController::class),
 
             // uses custom sorting options for the listing
             MenuItem::linkToCrud('Categories', 'fa fa-tags', Category::class)

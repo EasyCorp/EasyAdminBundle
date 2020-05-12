@@ -86,7 +86,7 @@ final class EntityFactory
                 $newEntityDto->markAsInaccessible();
             }
 
-            $entityDtos[$newEntityId] = $newEntityDto;
+            $entityDtos[(string) $newEntityId] = $newEntityDto;
         }
 
         return EntityCollection::new($entityDtos);

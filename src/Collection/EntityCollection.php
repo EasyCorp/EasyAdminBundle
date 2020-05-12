@@ -36,7 +36,7 @@ final class EntityCollection implements CollectionInterface
 
     public function set(EntityDto $newOrUpdatedEntity): void
     {
-        $this->entities[$newOrUpdatedEntity->getPrimaryKeyValue()] = $newOrUpdatedEntity;
+        $this->entities[(string) $newOrUpdatedEntity->getPrimaryKeyValue()] = $newOrUpdatedEntity;
     }
 
     public function offsetExists($offset): bool

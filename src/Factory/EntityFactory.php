@@ -82,7 +82,7 @@ final class EntityFactory
         foreach ($entityInstances as $entityInstance) {
             $newEntityDto = $entityDto->newWithInstance($entityInstance);
             $newEntityId = $newEntityDto->getPrimaryKeyValueAsString();
-            if (!$this->authorizationChecker->isGranted(Permission::EA_VIEW_ENTITY, $newEntityDto)) {
+            if (!$this->authorizationChecker->isGranted(Permission::EA_ACCESS_ENTITY, $newEntityDto)) {
                 $newEntityDto->markAsInaccessible();
             }
 
@@ -109,7 +109,7 @@ final class EntityFactory
         $entityMetadata = $this->getEntityMetadata($entityFqcn);
         $entityDto = new EntityDto($entityFqcn, $entityMetadata, $entityPermission, $entityInstance);
 
-        if (!$this->authorizationChecker->isGranted(Permission::EA_VIEW_ENTITY, $entityDto)) {
+        if (!$this->authorizationChecker->isGranted(Permission::EA_ACCESS_ENTITY, $entityDto)) {
             $entityDto->markAsInaccessible();
         }
 

@@ -45,7 +45,7 @@ final class SecurityVoter extends Voter
             return $this->voteOnViewPropertyPermission($subject);
         }
 
-        if (Permission::EA_VIEW_ENTITY === $permissionName) {
+        if (Permission::EA_ACCESS_ENTITY === $permissionName) {
             return $this->voteOnViewEntityPermission($subject);
         }
 

@@ -6,13 +6,13 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
-use EasyCorp\Bundle\EasyAdminBundle\Field\SelectField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class SelectConfigurator implements FieldConfiguratorInterface
+final class ChoiceConfigurator implements FieldConfiguratorInterface
 {
     private $translator;
 
@@ -23,12 +23,12 @@ final class SelectConfigurator implements FieldConfiguratorInterface
 
     public function supports(FieldDto $field, EntityDto $entityDto): bool
     {
-        return SelectField::class === $field->getFieldFqcn();
+        return ChoiceField::class === $field->getFieldFqcn();
     }
 
     public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
     {
-        $choices = $field->getCustomOption(SelectField::OPTION_CHOICES);
+        $choices = $field->getCustomOption(ChoiceField::OPTION_CHOICES);
         if (empty($choices)) {
             throw new \InvalidArgumentException(sprintf('The "%s" select field must define its possible choices using the setChoices() method.', $field->getProperty()));
         }
@@ -55,10 +55,10 @@ final class SelectConfigurator implements FieldConfiguratorInterface
             $field->setFormattedValue(implode(', ', $selectedChoices));
         }
 
-        $field->setFormTypeOptionIfNotSet('multiple', $field->getCustomOption(SelectField::OPTION_ALLOW_MULTIPLE_SELECT));
-        $field->setFormTypeOptionIfNotSet('expanded', $field->getCustomOption(SelectField::OPTION_RENDER_EXPANDED));
+        $field->setFormTypeOptionIfNotSet('multiple', $field->getCustomOption(ChoiceField::OPTION_ALLOW_MULTIPLE_CHOICES));
+        $field->setFormTypeOptionIfNotSet('expanded', $field->getCustomOption(ChoiceField::OPTION_RENDER_EXPANDED));
 
-        if (true === $field->getCustomOption(SelectField::OPTION_AUTOCOMPLETE)) {
+        if (true === $field->getCustomOption(ChoiceField::OPTION_AUTOCOMPLETE)) {
             $field->setFormTypeOptionIfNotSet('attr.data-widget', 'select2');
         }
     }

@@ -8,11 +8,11 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class SelectField implements FieldInterface
+final class ChoiceField implements FieldInterface
 {
     use FieldTrait;
 
-    public const OPTION_ALLOW_MULTIPLE_SELECT = 'allowMultipleSelect';
+    public const OPTION_ALLOW_MULTIPLE_CHOICES = 'allowMultipleChoices';
     public const OPTION_AUTOCOMPLETE = 'autocomplete';
     public const OPTION_CHOICES = 'choices';
     public const OPTION_RENDER_EXPANDED = 'renderExpanded';
@@ -25,14 +25,14 @@ final class SelectField implements FieldInterface
             ->setTemplateName('crud/field/select')
             ->setFormType(ChoiceType::class)
             ->addCssClass('field-select')
-            ->setCustomOption(self::OPTION_ALLOW_MULTIPLE_SELECT, false)
+            ->setCustomOption(self::OPTION_ALLOW_MULTIPLE_CHOICES, false)
             ->setCustomOption(self::OPTION_CHOICES, null)
             ->setCustomOption(self::OPTION_RENDER_EXPANDED, false);
     }
 
-    public function allowMultipleSelect(bool $allow = true): self
+    public function allowMultipleChoices(bool $allow = true): self
     {
-        $this->setCustomOption(self::OPTION_ALLOW_MULTIPLE_SELECT, $allow);
+        $this->setCustomOption(self::OPTION_ALLOW_MULTIPLE_CHOICES, $allow);
 
         return $this;
     }

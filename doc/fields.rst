@@ -255,6 +255,7 @@ These are all the built-in fields provided by EasyAdmin:
 * ``AssociationField``
 * ``AvatarField``
 * ``BooleanField``
+* ``ChoiceField``
 * ``CodeEditorField``
 * ``CollectionField``
 * ``ColorField``
@@ -271,7 +272,6 @@ These are all the built-in fields provided by EasyAdmin:
 * ``MoneyField``
 * ``NumberField``
 * ``PercentField``
-* ``SelectField``
 * ``SlugField``
 * ``TelephoneField``
 * ``TextareaField``

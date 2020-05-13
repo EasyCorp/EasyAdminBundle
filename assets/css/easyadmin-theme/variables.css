@@ -16,6 +16,7 @@
     --font-size-base: 0.875rem; /* 14px */
     --font-size-lg: 1rem; /* 16px */
     --font-size-sm: 0.8125rem; /* 13px */
+    --font-size-xs: 0.75rem; /* 12px */
 
     --body-bg: hsl(220, 20%, 91%);
     --text-color: hsl(225, 15%, 35%);
@@ -44,6 +45,18 @@
     --gray-800: hsl(210, 10%, 23%);
     --gray-900: hsl(213, 12%, 15%);
     --black: hsl(0, 0%, 0%);
+
+    --blue-100: hsl(189, 82%, 86%);
+    --green-100: hsl(117, 66%, 86%);
+    --indigo-100: hsl(208, 100%, 91%);
+    --red-100: hsl(9, 89%, 92%);
+    --yellow-100: hsl(42, 82%, 84%);
+
+    --text-blue-600: hsl(206, 91%, 30%);
+    --text-green-600: hsl(159, 75%, 21%);
+    --text-indigo-600: hsl(231, 48%, 45%);
+    --text-red-600: hsl(338, 71%, 37%);
+    --text-yellow-600: hsl(20, 94%, 30%);
 
     --color-primary: hsl(230, 55%, 60%);
     --color-success: hsl(157, 69%, 38%);

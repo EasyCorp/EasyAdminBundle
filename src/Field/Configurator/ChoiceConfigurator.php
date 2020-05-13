@@ -2,12 +2,14 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Field\Configurator;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use function Symfony\Component\String\u;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -33,6 +35,13 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
             throw new \InvalidArgumentException(sprintf('The "%s" select field must define its possible choices using the setChoices() method.', $field->getProperty()));
         }
 
+        $field->setFormTypeOptionIfNotSet('multiple', $field->getCustomOption(ChoiceField::OPTION_ALLOW_MULTIPLE_CHOICES));
+        $field->setFormTypeOptionIfNotSet('expanded', $field->getCustomOption(ChoiceField::OPTION_RENDER_EXPANDED));
+
+        if (true === $field->getCustomOption(ChoiceField::OPTION_AUTOCOMPLETE)) {
+            $field->setFormTypeOptionIfNotSet('attr.data-widget', 'select2');
+        }
+
         $translatedChoices = [];
         $translationParameters = $context->getI18n()->getTranslationParameters();
         foreach ($choices as $choiceLabel => $choiceValue) {
@@ -41,25 +50,46 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
         }
         $field->setFormTypeOptionIfNotSet('choices', $translatedChoices);
 
-        if (null !== $value = $field->getValue()) {
-            // needed to be compatible with fields that allow selecting multiple values
-            $selectedChoices = [];
-            $flippedChoices = array_flip($choices);
-            // $value is a scalar for single selections and an array for multiple selections
-            foreach (array_values((array) $value) as $selectedValue) {
-                if (null !== $selectedChoice = $flippedChoices[$selectedValue] ?? null) {
-                    $selectedChoices[] = $this->translator->trans($selectedChoice, $translationParameters);
-                }
+        $fieldValue = $field->getValue();
+        $isIndexOrDetail = in_array($context->getCrud()->getCurrentPage(), [Crud::PAGE_INDEX, Crud::PAGE_DETAIL], true);
+        if (null === $fieldValue || !$isIndexOrDetail) {
+            return;
+        }
+
+        $badgeSelector = $field->getCustomOption(ChoiceField::OPTION_RENDER_AS_BADGES);
+        $isRenderedAsBadge = null !== $badgeSelector && false !== $badgeSelector;
+
+        $selectedChoices = [];
+        $flippedChoices = array_flip($choices);
+        // $value is a scalar for single selections and an array for multiple selections
+        foreach (array_values((array) $fieldValue) as $selectedValue) {
+            if (null !== $selectedChoice = $flippedChoices[$selectedValue] ?? null) {
+                $choiceValue = $this->translator->trans($selectedChoice, $translationParameters);
+                $selectedChoices[] = $isRenderedAsBadge
+                    ? sprintf('<span class="%s">%s</span>', $this->getBadgeCssClass($badgeSelector, $selectedValue, $field), $choiceValue)
+                    : $choiceValue;
             }
+        }
+        $field->setFormattedValue(implode($isRenderedAsBadge ? '' : ', ', $selectedChoices));
+    }
 
-            $field->setFormattedValue(implode(', ', $selectedChoices));
+    private function getBadgeCssClass($badgeSelector, $value, FieldDto $field): string
+    {
+        $commonBadgeCssClass = 'badge badge-pill';
+
+        if (true === $badgeSelector) {
+            $badgeType = 'badge-secondary';
+        } elseif (is_array($badgeSelector)) {
+            $badgeType = $badgeSelector[$value] ?? 'badge-secondary';
+        } elseif (is_callable($badgeSelector)) {
+            $badgeType = $badgeSelector($field);
+            if (!in_array($badgeType, ChoiceField::VALID_BADGE_TYPES, true)) {
+                throw new \RuntimeException(sprintf('The value returned by the callable passed to the "renderAsBadges()" method must be one of the following valid badge types: "%s" ("%s" given).', implode(', ', ChoiceField::VALID_BADGE_TYPES), $badgeType));
+            }
         }
 
-        $field->setFormTypeOptionIfNotSet('multiple', $field->getCustomOption(ChoiceField::OPTION_ALLOW_MULTIPLE_CHOICES));
-        $field->setFormTypeOptionIfNotSet('expanded', $field->getCustomOption(ChoiceField::OPTION_RENDER_EXPANDED));
+        $badgeTypeCssClass = empty($badgeType) ? '' : u($badgeType)->ensureStart('badge-');
 
-        if (true === $field->getCustomOption(ChoiceField::OPTION_AUTOCOMPLETE)) {
-            $field->setFormTypeOptionIfNotSet('attr.data-widget', 'select2');
-        }
+        return $commonBadgeCssClass.' '.$badgeTypeCssClass;
     }
 }

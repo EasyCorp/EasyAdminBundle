@@ -1,0 +1,46 @@
+// Badges
+// ----------------------------------------------------------------------------
+
+.badge + .badge {
+  margin-left: 8px;
+}
+
+.badge.badge-pill {
+  border-radius: 20px;
+  font-size: var(--font-size-xs);
+  line-height: 16px;
+  padding: 2px 8px;
+}
+
+.badge.badge-success {
+  background-color: var(--green-100);
+  color: var(--text-green-600);
+}
+.badge.badge-warning {
+  background-color: var(--yellow-100);
+  color: var(--text-yellow-600);
+}
+.badge.badge-danger {
+  background-color: var(--red-100);
+  color: var(--text-red-600);
+}
+.badge.badge-info {
+  background-color: var(--blue-100);
+  color: var(--text-blue-600);
+}
+.badge.badge-primary {
+  background-color: var(--indigo-100);
+  color: var(--text-indigo-600);
+}
+.badge.badge-secondary {
+  background-color: var(--gray-300);
+  color: var(--text-color);
+}
+.badge.badge-light {
+  background-color: var(--gray-50);
+  color: var(--text-color);
+}
+.badge.badge-dark {
+  background-color: var(--gray-900);
+  color: var(--gray-50);
+}

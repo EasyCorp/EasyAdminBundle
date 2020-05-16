@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\UlidProvider;
+use function Symfony\Component\String\u;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -59,6 +60,11 @@ final class FieldDto
         }
 
         return $this->uniqueId = UlidProvider::new();
+    }
+
+    public function isFormDecorationField(): bool
+    {
+        return null !== u($this->getCssClass())->indexOf('field-form_panel');
     }
 
     public function getFieldFqcn(): string

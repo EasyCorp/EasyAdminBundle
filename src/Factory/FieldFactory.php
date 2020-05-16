@@ -11,6 +11,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
+use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
@@ -20,6 +21,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use function Symfony\Component\String\u;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -92,6 +94,21 @@ final class FieldFactory
 
     private function preProcessFields(FieldCollection $fields, EntityDto $entityDto): void
     {
+        if ($fields->isEmpty()) {
+            return;
+        }
+
+        // this is needed to handle this edge-case: the list of fields include one or more form panels,
+        // but the first fields of the list don't belong to any panel. We must create an automatic empty
+        // form panel for those "orphaned fields" so they are displayed as expected
+        $firstFieldIsAFormPanel = $fields->first()->isFormDecorationField();
+        foreach ($fields as $fieldName => $fieldDto) {
+            if (!$firstFieldIsAFormPanel && $fieldDto->isFormDecorationField()) {
+                $fields->prepend(FormField::addPanel()->getAsDto());
+                break;
+            }
+        }
+
         foreach ($fields as $fieldName => $fieldDto) {
             if (Field::class !== $fieldDto->getFieldFqcn()) {
                 continue;

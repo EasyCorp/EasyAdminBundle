@@ -102,8 +102,6 @@ final class AdminContextFactory
         $crudDto->setFiltersConfig($filters);
         $crudDto->setCurrentAction($crudAction);
         $crudDto->setEntityFqcn($entityFqcn);
-        $crudDto->setEntityLabelInSingular($this->translator->trans($crudDto->getEntityLabelInSingular() ?? $entityName));
-        $crudDto->setEntityLabelInPlural($this->translator->trans($crudDto->getEntityLabelInPlural() ?? $entityName));
         $crudDto->setPageName($pageName);
 
         return $crudDto;
@@ -158,11 +156,17 @@ final class AdminContextFactory
 
         $translationParameters = [];
         if (null !== $crudDto) {
-            $translationParameters['%entity_label_singular%'] = $crudDto->getEntityLabelInSingular();
-            $translationParameters['%entity_label_plural%'] = $crudDto->getEntityLabelInPlural();
-            $translationParameters['%entity_name%'] = basename(str_replace('\\', '/', $crudDto->getEntityFqcn()));
+            $translationParameters['%entity_name%'] = $entityName = basename(str_replace('\\', '/', $crudDto->getEntityFqcn()));
             $translationParameters['%entity_id%'] = $entityId = $request->query->get('entityId');
             $translationParameters['%entity_short_id%'] = null === $entityId ? null : u((string) $entityId)->truncate(7);
+
+            $translatedSingularLabel = $this->translator->trans($crudDto->getEntityLabelInSingular() ?? $entityName, $translationParameters, $translationDomain);
+            $translatedPluralLabel = $this->translator->trans($crudDto->getEntityLabelInPlural() ?? $entityName, $translationParameters, $translationDomain);
+            $crudDto->setEntityLabelInSingular($translatedSingularLabel);
+            $crudDto->setEntityLabelInPlural($translatedPluralLabel);
+
+            $translationParameters['%entity_label_singular%'] = $translatedSingularLabel;
+            $translationParameters['%entity_label_plural%'] = $translatedPluralLabel;
         }
 
         return new I18nDto($locale, $textDirection, $translationDomain, $translationParameters);

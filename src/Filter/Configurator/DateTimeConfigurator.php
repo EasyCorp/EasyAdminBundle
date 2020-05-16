@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Filter\Configurator;
 
-use Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\Types\Types;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -27,25 +27,25 @@ final class DateTimeConfigurator implements FilterConfiguratorInterface
     {
         $propertyType = $entityDto->getPropertyMetadata($filterDto->getProperty())->get('type');
 
-        if (Type::DATE === $propertyType) {
+        if (Types::DATE_MUTABLE === $propertyType) {
             $filterDto->setFormTypeOptionIfNotSet('value_type', DateType::class);
         }
 
-        if (Type::DATE_IMMUTABLE === $propertyType) {
+        if (Types::DATE_IMMUTABLE === $propertyType) {
             $filterDto->setFormTypeOptionIfNotSet('value_type', DateType::class);
             $filterDto->setFormTypeOptionIfNotSet('value_type_options.input', 'datetime_immutable');
         }
 
-        if (Type::TIME === $propertyType) {
+        if (Types::TIME_MUTABLE === $propertyType) {
             $filterDto->setFormTypeOptionIfNotSet('value_type', TimeType::class);
         }
 
-        if (Type::TIME_IMMUTABLE === $propertyType) {
+        if (Types::TIME_IMMUTABLE === $propertyType) {
             $filterDto->setFormTypeOptionIfNotSet('value_type', TimeType::class);
             $filterDto->setFormTypeOptionIfNotSet('value_type_options.input', 'datetime_immutable');
         }
 
-        if (\in_array($propertyType, [Type::DATETIME_IMMUTABLE, Type::DATETIMETZ_IMMUTABLE], true)) {
+        if (\in_array($propertyType, [Types::DATETIME_IMMUTABLE, Types::DATETIMETZ_IMMUTABLE], true)) {
             $filterDto->setFormTypeOptionIfNotSet('value_type_options.input', 'datetime_immutable');
         }
     }

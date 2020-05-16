@@ -12,6 +12,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\AvatarField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use function Symfony\Component\String\u;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -194,10 +195,22 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
         return !$doctrinePropertyMetadata->get('nullable');
     }
 
-    // copied from Symfony\Component\Form\FormRenderer::humanize()
-    // (author: Bernhard Schussek <bschussek@gmail.com>).
     private function humanizeString(string $string): string
     {
-        return ucfirst(mb_strtolower(trim(preg_replace(['/([A-Z])/', '/[_\s]+/'], ['_$1', ' '], $string))));
+        $uString = u($string);
+        $upperString = $uString->upper()->toString();
+
+        // this prevents humanizing all-uppercase labels (e.g. 'UUID' -> 'U u i d')
+        // and other special labels which look better in uppercase
+        if ($uString->toString() === $upperString || in_array($upperString, ['ID', 'URL'], true)) {
+            return $upperString;
+        }
+
+        return $uString
+            ->replaceMatches('/([A-Z])/', '_$1')
+            ->replaceMatches('/[_\s]+/', ' ')
+            ->trim()
+            ->lower()
+            ->title(true);
     }
 }

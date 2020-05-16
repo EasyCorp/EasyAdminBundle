@@ -21,7 +21,7 @@ return [
         'next' => 'التالي',
         'last' => 'الأخير',
         'counter' => '<strong>%results%</strong> / <strong>%end%</strong> - <strong>%start%</strong>',
-        // 'results' => '',
+        'results' => '{0} لا توجد أيّ نتائج |{1} <strong>1</strong> نتيجة|]1,Inf] <strong>%count%</strong> نتائج',
     ],
 
     'label' => [
@@ -107,7 +107,7 @@ return [
         'logged_in_as' => 'تسجيل الدخول بإسم',
         'unnamed' => 'مستخدم بدون إسم',
         'anonymous' => 'مستخدم مجهول',
-        // 'sign_out' => '',
+        'sign_out' => 'تسجيل الخروج',
         // 'exit_impersonation' => '',
     ],
 

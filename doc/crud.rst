@@ -381,17 +381,17 @@ own controller to add/remove/change those template variables::
                 // keys support the "dot notation", so you can get/set nested
                 // values separating their parts with a dot:
                 $responseParameters->setIfNotSet('bar.foo', '...');
-                // this is equivalent to: 'bar' => ['foo' => '...']
+                // this is equivalent to: $parameters['bar']['foo'] = '...'
             }
 
             return $responseParameters;
         }
     }
 
-You can add as many or as few parameters to this ``KeyValueStore`` object. The
-only mandatory parameter is either ``templateName`` or ``templatePath`` to set
-respectively the name or path of the template to render as the result of the
-CRUD action.
+You can add as many or as few parameters to this ``KeyValueStore`` object as you
+need. The only mandatory parameter is either ``templateName`` or
+``templatePath`` to set respectively the name or path of the template to render
+as the result of the CRUD action.
 
 .. _crud-generate-urls:
 

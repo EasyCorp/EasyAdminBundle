@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Filter\Configurator;
 
-use Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\Types\Types;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -26,7 +26,7 @@ final class ComparisonConfigurator implements FilterConfiguratorInterface
     {
         $propertyType = $entityDto->getPropertyMetadata($filterDto->getProperty())->get('type');
 
-        if (Type::DATEINTERVAL === $propertyType) {
+        if (Types::DATEINTERVAL === $propertyType) {
             $filterDto->setFormTypeOption('value_type', DateIntervalType::class);
             $filterDto->setFormTypeOption('comparison_type_options.type', 'datetime');
         }

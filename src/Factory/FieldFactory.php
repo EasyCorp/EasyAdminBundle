@@ -2,11 +2,11 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
-use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Types\Types;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
@@ -26,9 +26,8 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  */
 final class FieldFactory
 {
-    // TODO: update this map when ArrayField is implemented
     private static $doctrineTypeToFieldFqcn = [
-        //Type::TARRAY => 'array',
+        Types::ARRAY => ArrayField::class,
         Types::BIGINT => TextField::class,
         Types::BINARY => TextareaField::class,
         Types::BLOB => TextareaField::class,
@@ -46,7 +45,7 @@ final class FieldFactory
         Types::INTEGER => IntegerField::class,
         Types::JSON => TextField::class,
         Types::OBJECT => TextField::class,
-        //Types::SIMPLE_ARRAY => 'array',
+        Types::SIMPLE_ARRAY => ArrayField::class,
         Types::SMALLINT => IntegerField::class,
         Types::STRING => TextField::class,
         Types::TEXT => TextareaField::class,

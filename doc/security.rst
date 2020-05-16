@@ -99,26 +99,30 @@ menu item definition to not have to deal with array merges::
 Restrict Access to Actions
 --------------------------
 
-.. TODO: update this when updating the 'actions' chapter
+Use the ``setPermission()`` method to define the security permission required to
+see the action link/button::
 
-Use the ``setPermission()`` method to define the security role required to see
-the action link/button::
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 
-    class ProductAdminController extends AbstractResourceAdminController
+    public function configureActions(Actions $actions): Actions
     {
-        // ...
+        // this action is only visible and can only be executed by
+        // users with the ROLE_FINANCE permission
+        $viewInvoice = Action::new('View invoice', 'fa fa-file-invoice')
+            ->linkToCrudAction('renderInvoice')
+            ->setPermission('ROLE_FINANCE');
 
-        public function getIndexPageConfig(): IndexPageConfig
-        {
-            // this action is only visible and can only be executed by
-            // users with the ROLE_FINANCE permission
-            $viewInvoiceAction = Action::new('See invoice', 'fa-file-invoice')
-                ->method('invoice')->permission('ROLE_FINANCE');
+        return $actions
+            // ...
+            ->add(viewInvoice)
 
-            return IndexPageConfig::new()
-                // ...
-                ->addAction('invoice', $viewInvoiceAction);
-        }
+            // use the 'update()' method to set the permission of built-in actions
+            ->update(Crud::PAGE_DETAIL, Action::NEW, function (Action $action) {
+                return $action->setPermission('ROLE_ADMIN');
+            })
+        ;
     }
 
 .. _security-fields:
@@ -178,10 +182,28 @@ permissions to see some items:
 .. image:: ../images/easyadmin-list-hidden-results.png
    :alt: Index page with some results hidden because user does not have enough permissions
 
-.. tip::
+Custom Security Voters
+----------------------
 
-    Combine the ``setEntityPermission()`` method with custom `Symfony security voters`_
-    to better decide if the current user can see any given item.
+EasyAdmin implements a Symfony `security voter`_ to check the permissions
+defined for actions, entities, menu items, etc. The actual security permissions
+are defined as constants in the :class:`EasyCorp\\Bundle\\EasyAdminBundle\\Security\\Permission`
+class (e.g. ``Permission::EA_EXECUTE_ACTION``, ``Permission::EA_VIEW_MENU_ITEM``, etc.)
+
+If you define a custom security voter for the backend, consider changing the
+`access decision strategy`_ used by your application. The default strategy,
+called ``affirmative``, grants access as soon as one voter grants access (if
+EasyAdmin voter grants access, your custom voter won't be able to deny it).
+
+That's why you should change the default strategy to ``unanimous``, which
+grants access only if there are no voters denying access:
+
+.. code-block:: yaml
+
+    # config/packages/security.yaml
+    security:
+        access_decision_manager:
+            strategy: unanimous
 
 .. _`Symfony Security`: https://symfony.com/doc/current/security.html
 .. _`Create users`: https://symfony.com/doc/current/security.html#a-create-your-user-class
@@ -189,4 +211,5 @@ permissions to see some items:
 .. _`add security annotations`: https://symfony.com/doc/current/bundles/SensioFrameworkExtraBundle/annotations/security.html
 .. _`access_control option`: https://symfony.com/doc/current/security/access_control.html
 .. _`logout feature`: https://symfony.com/doc/current/security.html#logging-out
-.. _`Symfony security voters`: https://symfony.com/doc/current/security/voters.html
+.. _`security voter`: https://symfony.com/doc/current/security/voters.html
+.. _`access decision strategy`: https://symfony.com/doc/current/security/voters.html#changing-the-access-decision-strategy

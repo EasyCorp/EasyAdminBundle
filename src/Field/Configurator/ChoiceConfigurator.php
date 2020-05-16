@@ -44,8 +44,9 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
 
         $translatedChoices = [];
         $translationParameters = $context->getI18n()->getTranslationParameters();
+        $translationDomain = $context->getI18n()->getTranslationDomain();
         foreach ($choices as $choiceLabel => $choiceValue) {
-            $translatedChoiceLabel = $this->translator->trans((string) $choiceLabel, $translationParameters);
+            $translatedChoiceLabel = $this->translator->trans((string) $choiceLabel, $translationParameters, $translationDomain);
             $translatedChoices[$translatedChoiceLabel] = $choiceValue;
         }
         $field->setFormTypeOptionIfNotSet('choices', $translatedChoices);
@@ -64,7 +65,7 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
         // $value is a scalar for single selections and an array for multiple selections
         foreach (array_values((array) $fieldValue) as $selectedValue) {
             if (null !== $selectedChoice = $flippedChoices[$selectedValue] ?? null) {
-                $choiceValue = $this->translator->trans($selectedChoice, $translationParameters);
+                $choiceValue = $this->translator->trans($selectedChoice, $translationParameters, $translationDomain);
                 $selectedChoices[] = $isRenderedAsBadge
                     ? sprintf('<span class="%s">%s</span>', $this->getBadgeCssClass($badgeSelector, $selectedValue, $field), $choiceValue)
                     : $choiceValue;

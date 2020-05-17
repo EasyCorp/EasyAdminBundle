@@ -53,6 +53,25 @@ final class FieldCollection implements CollectionInterface
         unset($this->fields[$removedField->getProperty()]);
     }
 
+    public function prepend(FieldDto $newField): void
+    {
+        $this->fields = array_merge([$newField->getProperty() => $newField], $this->fields);
+    }
+
+    public function first(): ?FieldDto
+    {
+        if (empty($this->fields)) {
+            return null;
+        }
+
+        return $this->fields[array_key_first($this->fields)];
+    }
+
+    public function isEmpty(): bool
+    {
+        return 0 === \count($this->fields);
+    }
+
     public function offsetExists($offset): bool
     {
         return \array_key_exists($offset, $this->fields);

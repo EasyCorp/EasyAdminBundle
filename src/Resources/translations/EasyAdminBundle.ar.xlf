@@ -171,6 +171,12 @@
                 <source>login.sign_in</source>
                 <target>تسجيل الدخول</target>
             </trans-unit>
+    
+            <!-- security -->
+            <trans-unit id="security.list.hidden_results">
+                <source>security.list.hidden_results</source>
+                <target>لا يمكنك عرض بعض النتائج لأنك لا تملك أذونات كافية</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

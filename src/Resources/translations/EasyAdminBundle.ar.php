@@ -11,7 +11,7 @@ return [
     ],
 
     'datagrid' => [
-        // 'hidden_results' => '',
+        'hidden_results' => 'لا يمكنك عرض بعض النتائج لأنك لا تملك أذونات كافية',
         'no_results' => 'لا توجد أيّ نتائج',
     ],
 

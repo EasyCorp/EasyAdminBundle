@@ -7,7 +7,10 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 
 class <?= $class_name; ?> extends AbstractCrudController
 {
-    public static $entityFqcn = <?= $entity_class_name; ?>::class;
+    public static function getEntityFqcn(): string
+    {
+        return <?= $entity_class_name; ?>::class;
+    }
 
     /*
     public function configureFields(string $pageName): iterable

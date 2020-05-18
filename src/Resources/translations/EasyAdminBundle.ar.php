@@ -50,7 +50,7 @@ return [
         'delete' => 'حذف',
         'cancel' => 'الغاء',
         'index' => 'رجوع إلى القائمة',
-        // 'deselect' => '',
+        'deselect' => 'الغاء تحديد',
         'add_new_item' => 'إضافة عنصر جديد',
         'remove_item' => 'حذف العنصر',
         'choose_file' => 'اختيار ملفّ',
@@ -63,8 +63,8 @@ return [
     ],
 
     'batch_action_modal' => [
-        // 'title' => '',
-        // 'content' => '',
+        'title' => 'سوف تقوم بتطبيق الأجراء "%action_name%" على %num_items% عنصر',
+        'content' => 'لا يمكنك التراجع عن هذا الإجراء.',
         // 'action' => '',
     ],
 
@@ -100,7 +100,7 @@ return [
 
     'form' => [
         'are_you_sure' => 'لم يتّم حفظ التغييرات.',
-        // 'tab.error_badge_title' => '',
+        'tab.error_badge_title' => 'حقل واحد غير صالح|%count% حقول غير صالحة',
     ],
 
     'user' => [
@@ -108,7 +108,7 @@ return [
         'unnamed' => 'مستخدم بدون إسم',
         'anonymous' => 'مستخدم مجهول',
         'sign_out' => 'تسجيل الخروج',
-        // 'exit_impersonation' => '',
+        'exit_impersonation' => 'خروج وهمي',
     ],
 
     'login_page' => [
@@ -118,9 +118,9 @@ return [
     ],
 
     'exception' => [
-        // 'entity_not_found' => '',
-        // 'entity_remove' => '',
-        // 'forbidden_action' => '',
+        'entity_not_found' => 'هذا العنصر لم يعد متوفر',
+        'entity_remove' => 'لا يمكنك حذف هذا العنصر لأن العناصر الأخرى تعتمد عليه.',
+        'forbidden_action' => 'لا يمكنك تنفيذ الإجراء المطلوب على هذا العنصر.',
         // 'insufficient_entity_permission' => 'You don't have permission to access this item.',
     ],
 ];

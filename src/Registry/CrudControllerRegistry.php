@@ -9,7 +9,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface
  */
 final class CrudControllerRegistry
 {
-    private $controllerFqcnToEntityFqcnMap;
+    private $controllerFqcnToEntityFqcnMap = [];
     private $entityFqcnToControllerFqcnMap;
 
     private function __construct()

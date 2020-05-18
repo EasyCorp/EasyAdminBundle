@@ -57,8 +57,7 @@
                 <source>paginator.counter</source>
                 <target><![CDATA[<strong>%results%</strong> / <strong>%end%</strong> - <strong>%start%</strong>]]></target>
             </trans-unit>
-            </trans-unit>
-                <trans-unit id="paginator.results">
+            <trans-unit id="paginator.results">
                 <source>paginator.results</source>
                 <target><![CDATA[{0} لا توجد أيّ نتائج |{1} <strong>1</strong> نتيجة|]1,Inf] <strong>%count%</strong> نتائج]]></target>
             </trans-unit>
@@ -114,8 +113,7 @@
                 <source>user.anonymous</source>
                 <target>مستخدم مجهول</target>
             </trans-unit>
-               </trans-unit>
-                <trans-unit id="user.signout">
+            <trans-unit id="user.signout">
                 <source>user.signout</source>
                 <target>تسجيل الخروج</target>
             </trans-unit>

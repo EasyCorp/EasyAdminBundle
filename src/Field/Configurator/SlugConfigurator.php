@@ -35,7 +35,7 @@ final class SlugConfigurator implements FieldConfiguratorInterface
         $field->setFormTypeOption('target', $targetFieldName);
 
         if (null !== $unlockConfirmationMessage = $field->getCustomOption(SlugField::OPTION_UNLOCK_CONFIRMATION_MESSAGE)) {
-            $field->setFormTypeOption('attr.data-confirm-text', $this->translator->trans($unlockConfirmationMessage));
+            $field->setFormTypeOption('attr.data-confirm-text', $this->translator->trans($unlockConfirmationMessage, [], $context->getI18n()->getTranslationDomain()));
         }
     }
 }

@@ -587,7 +587,7 @@ applications can rely on its default values:
     use Symfony\Component\Routing\Annotation\Route;
     use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
-    class SecurityController extends AbstractControllerController
+    class SecurityController extends AbstractController
     {
         /**
          * @Route("/login", name="login")

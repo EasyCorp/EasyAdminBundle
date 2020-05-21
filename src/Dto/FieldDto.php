@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\UlidProvider;
 use function Symfony\Component\String\u;
@@ -34,6 +35,7 @@ final class FieldDto
     private $doctrineMetadata;
     /** @internal */
     private $uniqueId;
+    private $displayedOn;
 
     public function __construct()
     {
@@ -43,6 +45,12 @@ final class FieldDto
         $this->formTypeOptions = KeyValueStore::new();
         $this->customOptions = KeyValueStore::new();
         $this->doctrineMetadata = KeyValueStore::new();
+        $this->displayedOn = KeyValueStore::new([
+            Crud::PAGE_INDEX => Crud::PAGE_INDEX,
+            Crud::PAGE_DETAIL => Crud::PAGE_DETAIL,
+            Crud::PAGE_EDIT => Crud::PAGE_EDIT,
+            Crud::PAGE_NEW => Crud::PAGE_NEW,
+        ]);
     }
 
     public function __clone()
@@ -51,6 +59,7 @@ final class FieldDto
         $this->formTypeOptions = clone $this->formTypeOptions;
         $this->customOptions = clone $this->customOptions;
         $this->doctrineMetadata = clone $this->doctrineMetadata;
+        $this->displayedOn = clone $this->displayedOn;
     }
 
     public function getUniqueId(): string
@@ -327,5 +336,20 @@ final class FieldDto
     public function setDoctrineMetadata(array $metadata): void
     {
         $this->doctrineMetadata = KeyValueStore::new($metadata);
+    }
+
+    public function getDisplayedOn(): KeyValueStore
+    {
+        return $this->displayedOn;
+    }
+
+    public function setDisplayedOn(KeyValueStore $displayedOn): void
+    {
+        $this->displayedOn = $displayedOn;
+    }
+
+    public function isDisplayedOn(string $pageName): bool
+    {
+        return $this->displayedOn->has($pageName);
     }
 }

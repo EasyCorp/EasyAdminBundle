@@ -70,14 +70,16 @@ final class FieldFactory
     {
         $this->preProcessFields($fields, $entityDto);
 
+        $context = $this->adminContextProvider->getContext();
+        $currentPage = $context->getCrud()->getCurrentPage();
         foreach ($fields as $fieldName => $fieldDto) {
-            if (false === $this->authorizationChecker->isGranted(Permission::EA_VIEW_FIELD, $fieldDto)) {
+            if (false === $fieldDto->isDisplayedOn($currentPage)
+                || false === $this->authorizationChecker->isGranted(Permission::EA_VIEW_FIELD, $fieldDto)) {
                 $fields->unset($fieldDto);
 
                 continue;
             }
 
-            $context = $this->adminContextProvider->getContext();
             foreach ($this->fieldConfigurators as $configurator) {
                 if (!$configurator->supports($fieldDto, $entityDto)) {
                     continue;

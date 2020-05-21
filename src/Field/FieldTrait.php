@@ -2,6 +2,8 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 
 /**
@@ -226,6 +228,75 @@ trait FieldTrait
     public function setCustomOptions(array $options): self
     {
         $this->dto->setCustomOptions($options);
+
+        return $this;
+    }
+
+    public function hideOnDetail(): self
+    {
+        $displayedOn = $this->dto->getDisplayedOn();
+        $displayedOn->delete(Crud::PAGE_DETAIL);
+
+        $this->dto->setDisplayedOn($displayedOn);
+
+        return $this;
+    }
+
+    public function hideOnForm(): self
+    {
+        $displayedOn = $this->dto->getDisplayedOn();
+        $displayedOn->delete(Crud::PAGE_NEW);
+        $displayedOn->delete(Crud::PAGE_EDIT);
+
+        $this->dto->setDisplayedOn($displayedOn);
+
+        return $this;
+    }
+
+    public function hideOnIndex(): self
+    {
+        $displayedOn = $this->dto->getDisplayedOn();
+        $displayedOn->delete(Crud::PAGE_INDEX);
+
+        $this->dto->setDisplayedOn($displayedOn);
+
+        return $this;
+    }
+
+    public function onlyOnDetail(): self
+    {
+        $this->dto->setDisplayedOn(KeyValueStore::new([Crud::PAGE_DETAIL => Crud::PAGE_DETAIL]));
+
+        return $this;
+    }
+
+    public function onlyOnForms(): self
+    {
+        $this->dto->setDisplayedOn(KeyValueStore::new([
+            Crud::PAGE_NEW => Crud::PAGE_NEW,
+            Crud::PAGE_EDIT => Crud::PAGE_EDIT,
+        ]));
+
+        return $this;
+    }
+
+    public function onlyOnIndex(): self
+    {
+        $this->dto->setDisplayedOn(KeyValueStore::new([Crud::PAGE_INDEX => Crud::PAGE_INDEX]));
+
+        return $this;
+    }
+
+    public function onlyWhenCreating(): self
+    {
+        $this->dto->setDisplayedOn(KeyValueStore::new([Crud::PAGE_NEW => Crud::PAGE_NEW]));
+
+        return $this;
+    }
+
+    public function onlyWhenUpdating(): self
+    {
+        $this->dto->setDisplayedOn(KeyValueStore::new([Crud::PAGE_EDIT => Crud::PAGE_EDIT]));
 
         return $this;
     }

@@ -29,7 +29,7 @@ const EaCollectionProperty = {
                 .replace(nameRegexp, newItemNumber);
 
             collection.dataset.numItems = ++numItems;
-            collection.querySelector('.form-widget .form-widget-compound > div').innerHTML += newItemHtml;
+            collection.querySelector('.form-widget .form-widget-compound > div').insertAdjacentHTML('beforeend', newItemHtml);
 
             document.dispatchEvent(new Event('ea.collection.item-added'));
         });

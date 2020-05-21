@@ -140,7 +140,10 @@ final class MenuFactory
         }
 
         if (MenuItemDto::TYPE_ROUTE === $menuItemType) {
-            return $this->urlGenerator->generate($menuItemDto->getRouteName(), $menuItemDto->getRouteParameters());
+            return $this->urlGenerator->generate($menuItemDto->getRouteName(), array_merge(
+                ['menuIndex' => $index, 'submenuIndex' => $subIndex],
+                $menuItemDto->getRouteParameters()
+            ));
         }
 
         if (MenuItemDto::TYPE_SECTION === $menuItemType) {

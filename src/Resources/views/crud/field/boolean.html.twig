@@ -9,7 +9,7 @@
     </span>
 {% else %}
     <div class="custom-control custom-switch custom-switch-lg" data-fieldname="{{ field.property }}">
-        <input type="checkbox" class="custom-control-input" id="{{ field.uniqueId }}" {{ field.value == true ? 'checked' }}>
+        <input type="checkbox" class="custom-control-input" id="{{ field.uniqueId }}" {{ field.value == true ? 'checked' }} autocomplete="off">
         <label class="custom-control-label" for="{{ field.uniqueId }}"></label>
     </div>
 {% endif %}

@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\DependencyInjection;
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\EventListener\ExceptionListener;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -19,6 +20,10 @@ class EasyAdminExtension extends Extension
      */
     public function load(array $configs, ContainerBuilder $container)
     {
+        $container->registerForAutoconfiguration(DashboardControllerInterface::class)
+            ->addTag('ea.dashboard_controller')
+        ;
+
         $container->registerForAutoconfiguration(CrudControllerInterface::class)
             ->addTag('ea.crud_controller')
         ;

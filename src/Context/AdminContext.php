@@ -101,6 +101,11 @@ final class AdminContext
         return $this->dashboardDto->getFaviconPath();
     }
 
+    public function getDashboardControllerFqcn(): string
+    {
+        return \get_class($this->dashboardControllerInstance);
+    }
+
     public function getDashboardRouteName(): string
     {
         return $this->dashboardDto->getRouteName();
@@ -113,7 +118,7 @@ final class AdminContext
         }
 
         $configuredMenuItems = $this->dashboardControllerInstance->configureMenuItems();
-        $mainMenuItems = is_array($configuredMenuItems) ? $configuredMenuItems : iterator_to_array($configuredMenuItems, false);
+        $mainMenuItems = \is_array($configuredMenuItems) ? $configuredMenuItems : iterator_to_array($configuredMenuItems, false);
         $selectedMenuIndex = $this->request->query->getInt('menuIndex', -1);
         $selectedMenuSubIndex = $this->request->query->getInt('submenuIndex', -1);
 

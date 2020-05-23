@@ -10,6 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\MainMenuDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\UserMenuDto;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Registry\DashboardControllerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -23,15 +24,17 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 final class MenuFactory
 {
     private $adminContextProvider;
+    private $dashboardRegistry;
     private $authChecker;
     private $translator;
     private $urlGenerator;
     private $logoutUrlGenerator;
     private $crudUrlGenerator;
 
-    public function __construct(AdminContextProvider $adminContextProvider, AuthorizationCheckerInterface $authChecker, TranslatorInterface $translator, UrlGeneratorInterface $urlGenerator, LogoutUrlGenerator $logoutUrlGenerator, CrudUrlGenerator $crudRouter)
+    public function __construct(AdminContextProvider $adminContextProvider, DashboardControllerRegistry $dashboardRegistry, AuthorizationCheckerInterface $authChecker, TranslatorInterface $translator, UrlGeneratorInterface $urlGenerator, LogoutUrlGenerator $logoutUrlGenerator, CrudUrlGenerator $crudRouter)
     {
         $this->adminContextProvider = $adminContextProvider;
+        $this->dashboardRegistry = $dashboardRegistry;
         $this->authChecker = $authChecker;
         $this->translator = $translator;
         $this->urlGenerator = $urlGenerator;
@@ -66,6 +69,8 @@ final class MenuFactory
         $adminContext = $this->adminContextProvider->getContext();
         $defaultTranslationDomain = $adminContext->getI18n()->getTranslationDomain();
         $dashboardRouteName = $adminContext->getDashboardRouteName();
+        $dashboardControllerFqcn = $adminContext->getDashboardControllerFqcn();
+        $adminContextId = $this->dashboardRegistry->getContextIdByControllerFqcn($dashboardControllerFqcn);
 
         $builtItems = [];
         /** @var MenuItemInterface $menuItem */
@@ -81,19 +86,19 @@ final class MenuFactory
                     continue;
                 }
 
-                $subItems[] = $this->buildMenuItem($menuSubItemDto, [], $i, $j, $defaultTranslationDomain, $dashboardRouteName);
+                $subItems[] = $this->buildMenuItem($menuSubItemDto, [], $i, $j, $defaultTranslationDomain, $dashboardRouteName, $adminContextId);
             }
 
-            $builtItems[] = $this->buildMenuItem($menuItemDto, $subItems, $i, -1, $defaultTranslationDomain, $dashboardRouteName);
+            $builtItems[] = $this->buildMenuItem($menuItemDto, $subItems, $i, -1, $defaultTranslationDomain, $dashboardRouteName, $adminContextId);
         }
 
         return $builtItems;
     }
 
-    private function buildMenuItem(MenuItemDto $menuItemDto, array $subItems, int $index, int $subIndex, string $defaultTranslationDomain, string $dashboardRouteName): MenuItemDto
+    private function buildMenuItem(MenuItemDto $menuItemDto, array $subItems, int $index, int $subIndex, string $defaultTranslationDomain, string $dashboardRouteName, string $adminContextId): MenuItemDto
     {
         $label = $this->translator->trans($menuItemDto->getLabel(), [], $menuItemDto->getTranslationDomain() ?? $defaultTranslationDomain);
-        $url = $this->generateMenuItemUrl($menuItemDto, $dashboardRouteName, $index, $subIndex);
+        $url = $this->generateMenuItemUrl($menuItemDto, $dashboardRouteName, $adminContextId, $index, $subIndex);
 
         $menuItemDto->setIndex($index);
         $menuItemDto->setSubIndex($subIndex);
@@ -104,7 +109,7 @@ final class MenuFactory
         return $menuItemDto;
     }
 
-    private function generateMenuItemUrl(MenuItemDto $menuItemDto, string $dashboardRouteName, int $index, int $subIndex): string
+    private function generateMenuItemUrl(MenuItemDto $menuItemDto, string $dashboardRouteName, string $adminContextId, int $index, int $subIndex): string
     {
         $menuItemType = $menuItemDto->getType();
 
@@ -141,7 +146,7 @@ final class MenuFactory
 
         if (MenuItemDto::TYPE_ROUTE === $menuItemType) {
             return $this->urlGenerator->generate($menuItemDto->getRouteName(), array_merge(
-                ['menuIndex' => $index, 'submenuIndex' => $subIndex],
+                ['menuIndex' => $index, 'submenuIndex' => $subIndex, 'eaContext' => $adminContextId],
                 $menuItemDto->getRouteParameters()
             ));
         }

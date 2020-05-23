@@ -278,6 +278,23 @@ It links to any of the Symfony application routes::
         ];
     }
 
+When using route menu items, EasyAdmin adds the following route parameters
+automatically (in addition to the optional route parameters defined by you):
+
+* ``menuIndex`` and ``submenuIndex``: they are needed to keep the selected menu
+  item when rendering the page of your action (in case you display the main menu);
+* ``eaContext``: an alphanumeric string that identifies the Dashboard controller
+  FQCN related to this action (and which cannot be guessed by malicious users).
+  This is needed to load the dashboard configuration used to render the backend
+  layout (in case your action uses it). If you don't add this parameter and try
+  to use EasyAdmin templates, you'll see errors such as
+  *"Variable "ea" does not exist."* (which is related to the :ref:`admin context <admin-context>`).
+
+.. note::
+
+    The path of your route probably doesn't include these parameters added by
+    EasyAdmin, but that's fine (you'll see them as query string parameters).
+
 URL Menu Item
 .............
 

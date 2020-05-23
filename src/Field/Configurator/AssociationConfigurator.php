@@ -45,7 +45,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         $targetEntityFqcn = $field->getDoctrineMetadata()->get('targetEntity');
         // the target CRUD controller can be NULL; in that case, field value doesn't link to the related entity
         $targetCrudControllerFqcn = $field->getCustomOption(AssociationField::OPTION_CRUD_CONTROLLER)
-            ?? $context->getCrudControllers()->getControllerFqcnByEntityFqcn($targetEntityFqcn);
+            ?? $context->getCrudControllers()->findCrudFqcnByEntityFqcn($targetEntityFqcn);
         $field->setCustomOption(AssociationField::OPTION_CRUD_CONTROLLER, $targetCrudControllerFqcn);
 
         if ($entityDto->isToOneAssociation($propertyName)) {
@@ -67,7 +67,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
 
             $field->setFormType(CrudAutocompleteType::class);
             $autocompleteEndpointUrl = $this->crudUrlGenerator->build()
-                ->setController($field->getCustomOption(AssociationField::OPTION_CRUD_CONTROLLER))
+                ->setCrudFqcn($field->getCustomOption(AssociationField::OPTION_CRUD_CONTROLLER))
                 ->setAction('autocomplete')
                 ->setEntityId(null)
                 ->generateUrl();
@@ -141,7 +141,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
 
         // TODO: check if user has permission to see the related entity
         return $this->crudUrlGenerator->build()
-            ->setController($crudController)
+            ->setCrudFqcn($crudController)
             ->setAction(Action::DETAIL)
             ->setEntityId($entityDto->getPrimaryKeyValue())
             ->unset('menuIndex')

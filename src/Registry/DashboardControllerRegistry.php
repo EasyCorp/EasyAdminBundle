@@ -8,7 +8,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Registry;
 final class DashboardControllerRegistry
 {
     private $controllerFqcnToContextIdMap = [];
-    private $contextIdToControllerFqcnMap;
+    private $contextIdToControllerFqcnMap = [];
 
     public function __construct(string $kernelSecret, iterable $dashboardControllers)
     {

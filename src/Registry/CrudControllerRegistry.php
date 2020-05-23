@@ -9,40 +9,46 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface
  */
 final class CrudControllerRegistry
 {
-    private $controllerFqcnToEntityFqcnMap = [];
-    private $entityFqcnToControllerFqcnMap;
-
-    private function __construct()
-    {
-    }
+    private $crudFqcnToEntityFqcnMap = [];
+    private $entityFqcnToCrudFqcnMap = [];
+    private $crudFqcnToCrudIdMap = [];
+    private $crudIdToCrudFqcnMap = [];
 
     /**
      * @param CrudControllerInterface[] $crudControllers
      */
-    public static function new(iterable $crudControllers): self
+    public function __construct(string $kernelSecret, iterable $crudControllers)
     {
-        $registry = new self();
-
         foreach (iterator_to_array($crudControllers, false) as $controller) {
             $controllerFqcn = \get_class($controller);
-            $registry->controllerFqcnToEntityFqcnMap[$controllerFqcn] = $controller::getEntityFqcn();
+            $this->crudFqcnToEntityFqcnMap[$controllerFqcn] = $controller::getEntityFqcn();
+            $this->crudFqcnToCrudIdMap[$controllerFqcn] = substr(sha1($kernelSecret.$controllerFqcn), 0, 7);
         }
 
         // more than one controller can manage the same entity, so this map will
         // only contain the last controller associated to that repeated entity. That's why
         // several methods in other classes allow to define the CRUD controller explicitly
-        $registry->entityFqcnToControllerFqcnMap = array_flip($registry->controllerFqcnToEntityFqcnMap);
-
-        return $registry;
+        $this->entityFqcnToCrudFqcnMap = array_flip($this->crudFqcnToEntityFqcnMap);
+        $this->crudIdToCrudFqcnMap = array_flip($this->crudFqcnToCrudIdMap);
     }
 
-    public function getControllerFqcnByEntityFqcn(string $entityFqcn): ?string
+    public function findCrudFqcnByEntityFqcn(string $entityFqcn): ?string
     {
-        return $this->entityFqcnToControllerFqcnMap[$entityFqcn] ?? null;
+        return $this->entityFqcnToCrudFqcnMap[$entityFqcn] ?? null;
     }
 
-    public function getEntityFqcnByControllerFqcn(string $controllerFqcn): ?string
+    public function findEntityFqcnByCrudFqcn(string $controllerFqcn): ?string
     {
-        return $this->controllerFqcnToEntityFqcnMap[$controllerFqcn] ?? null;
+        return $this->crudFqcnToEntityFqcnMap[$controllerFqcn] ?? null;
+    }
+
+    public function findCrudFqcnByCrudId(string $crudId): ?string
+    {
+        return $this->crudIdToCrudFqcnMap[$crudId] ?? null;
+    }
+
+    public function findCrudIdByCrudFqcn(string $controllerFqcn): ?string
+    {
+        return $this->crudFqcnToCrudIdMap[$controllerFqcn] ?? null;
     }
 }

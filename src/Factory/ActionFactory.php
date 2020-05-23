@@ -134,7 +134,7 @@ final class ActionFactory
         }
 
         $requestParameters = [
-            'crudController' => $request->query->get('crudController'),
+            'crudId' => $request->query->get('crudId'),
             'crudAction' => $actionDto->getCrudActionName(),
             'referrer' => $this->generateReferrerUrl($request, $actionDto, $currentAction),
         ];

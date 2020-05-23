@@ -28,7 +28,7 @@ final class AdminContext
     private $request;
     private $user;
     private $i18nDto;
-    private $crudControllerRegistry;
+    private $crudControllers;
     private $entityDto;
     private $dashboardDto;
     private $dashboardControllerInstance;
@@ -40,12 +40,12 @@ final class AdminContext
     private $mainMenuDto;
     private $userMenuDto;
 
-    public function __construct(Request $request, ?UserInterface $user, I18nDto $i18nDto, CrudControllerRegistry $crudControllerRegistry, DashboardDto $dashboardDto, DashboardControllerInterface $dashboardController, AssetsDto $assetDto, ?CrudDto $crudDto, ?EntityDto $entityDto, ?SearchDto $searchDto, MenuFactory $menuFactory, TemplateRegistry $templateRegistry)
+    public function __construct(Request $request, ?UserInterface $user, I18nDto $i18nDto, CrudControllerRegistry $crudControllers, DashboardDto $dashboardDto, DashboardControllerInterface $dashboardController, AssetsDto $assetDto, ?CrudDto $crudDto, ?EntityDto $entityDto, ?SearchDto $searchDto, MenuFactory $menuFactory, TemplateRegistry $templateRegistry)
     {
         $this->request = $request;
         $this->user = $user;
         $this->i18nDto = $i18nDto;
-        $this->crudControllerRegistry = $crudControllerRegistry;
+        $this->crudControllers = $crudControllers;
         $this->dashboardDto = $dashboardDto;
         $this->dashboardControllerInstance = $dashboardController;
         $this->crudDto = $crudDto;
@@ -73,7 +73,7 @@ final class AdminContext
 
     public function getCrudControllers(): CrudControllerRegistry
     {
-        return $this->crudControllerRegistry;
+        return $this->crudControllers;
     }
 
     public function getEntity(): EntityDto

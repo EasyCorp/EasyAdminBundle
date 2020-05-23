@@ -125,16 +125,23 @@ final class MenuFactory
             $urlBuilder->setAll($routeParameters);
 
             $entityFqcn = $routeParameters['entityFqcn'] ?? null;
-            if (null !== $entityFqcn && null === $urlBuilder->get('crudController')) {
-                $controllerRegistry = $this->adminContextProvider->getContext()->getCrudControllers();
-                if (null === $controllerFqcn = $controllerRegistry->getControllerFqcnByEntityFqcn($entityFqcn)) {
+            $crudControllerFqcn = $routeParameters['crudControllerFqcn'] ?? null;
+            // 1. if entityFqcn is defined, find the crudFqcn from it...
+            if (null !== $entityFqcn) {
+                $crudControllers = $this->adminContextProvider->getContext()->getCrudControllers();
+                if (null === $controllerFqcn = $crudControllers->findCrudFqcnByEntityFqcn($entityFqcn)) {
                     throw new \RuntimeException(sprintf('Unable to find the controller related to the "%s" Entity; did you forget to extend "%s"?', $entityFqcn, AbstractCrudController::class));
                 }
-                $urlBuilder->setController($controllerFqcn);
-            }
 
-            if (null !== $urlBuilder->get('crudController')) {
+                $urlBuilder->setCrudFqcn($controllerFqcn);
                 $urlBuilder->unset('entityFqcn');
+            // 2. ...otherwise, use the crudControllerFqcn
+            } else {
+                if (null === $crudControllerFqcn) {
+                    throw new \RuntimeException(sprintf('The CRUD menu item with label "%s" must define either the entity FQCN (using the third constructor argument) or the CRUD Controller FQCN (using the "setController()" method).', $menuItemDto->getLabel()));
+                }
+
+                $urlBuilder->setCrudFqcn($crudControllerFqcn);
             }
 
             return $urlBuilder->generateUrl();

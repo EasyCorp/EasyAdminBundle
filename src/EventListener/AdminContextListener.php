@@ -6,7 +6,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\EasyAdminBundle;
+use EasyCorp\Bundle\EasyAdminBundle\Exception\CrudNotFoundException;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\AdminContextFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Registry\CrudControllerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\DashboardControllerRegistry;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,31 +27,52 @@ use Twig\Environment;
 class AdminContextListener
 {
     private $adminContextFactory;
-    private $dashboardRegistry;
+    private $dashboardControllers;
+    private $crudControllers;
     private $controllerResolver;
     private $twig;
 
-    public function __construct(AdminContextFactory $adminContextFactory, DashboardControllerRegistry $dashboardRegistry, ControllerResolverInterface $controllerResolver, Environment $twig)
+    public function __construct(AdminContextFactory $adminContextFactory, DashboardControllerRegistry $dashboardControllers, CrudControllerRegistry $crudControllers, ControllerResolverInterface $controllerResolver, Environment $twig)
     {
         $this->adminContextFactory = $adminContextFactory;
-        $this->dashboardRegistry = $dashboardRegistry;
+        $this->dashboardControllers = $dashboardControllers;
+        $this->crudControllers = $crudControllers;
         $this->controllerResolver = $controllerResolver;
         $this->twig = $twig;
     }
 
     public function onKernelController(ControllerEvent $event): void
     {
-        if (!$this->isEasyAdminRequest($event)) {
+        $contextId = $event->getRequest()->query->get('eaContext');
+        $currentControllerInstance = $this->getCurrentControllerInstance($event);
+        if (!$this->isEasyAdminRequest($contextId, $currentControllerInstance)) {
             return;
         }
 
-        $crudControllerCallable = $this->getCrudController($event->getRequest());
-        $crudControllerInstance = null !== $crudControllerCallable ? $crudControllerCallable[0] : null;
+        $dashboardControllerInstance = $currentControllerInstance instanceof DashboardControllerInterface
+            ? $currentControllerInstance
+            : $this->getDashboardControllerInstanceFromContextId($contextId, $event->getRequest());
+        if (null === $dashboardControllerInstance) {
+            // this can only happen when a malicious user tries to hack the contextId value in the query string
+            // don't throw an exception to prevent hackers from causing lots of exceptions in applications using EasyAdmin
+            // and don't do anything else, to not leak that the application uses EasyAdmin
+            return;
+        }
+
+        $crudId = $event->getRequest()->query->get('crudId');
+        $crudAction = $event->getRequest()->query->get('crudAction');
+        $crudControllerInstance = $this->getCrudControllerInstance($crudId, $crudAction, $event->getRequest());
+
+        if (null !== $crudId && null === $dashboardControllerInstance) {
+            // this can only happen when a malicious user tries to hack the crudId value in the query string
+            // don't throw an exception to prevent hackers from causing lots of exceptions in applications using EasyAdmin
+            // and don't do anything else, to not leak that the application uses EasyAdmin
+            return;
+        }
 
         // creating the context is expensive, so it's created once and stored in the request
         // if the current request already has an AdminContext object, do nothing
         if (null === $adminContext = $this->getAdminContext($event)) {
-            $dashboardControllerInstance = $this->getDashboardControllerInstance($event);
             $adminContext = $this->createAdminContext($event->getRequest(), $dashboardControllerInstance, $crudControllerInstance);
         }
 
@@ -58,56 +81,84 @@ class AdminContextListener
         // this makes the AdminContext available in all templates as a short named variable
         $this->twig->addGlobal('ea', $adminContext);
 
-        // if the request is related to a CRUD controller, change the controller to execute
+        // if the request is related to a CRUD controller, change the controller to be executed
         if (null !== $crudControllerInstance) {
-            $crudControllerClass = \get_class($crudControllerInstance);
-            $crudControllerAction = $crudControllerCallable[1];
-            $newControllerAsString = sprintf('%s::%s', $crudControllerClass, $crudControllerAction);
+            $crudControllerCallable = [$crudControllerInstance, $crudAction];
 
             // this makes Symfony believe that another controller is being executed
             // (e.g. this is needed for the autowiring of controller action arguments)
-            $event->getRequest()->attributes->set('_controller', $newControllerAsString);
+            $event->getRequest()->attributes->set('_controller', $crudControllerCallable);
 
             // this actually makes Symfony to execute the other controller
             $event->setController($crudControllerCallable);
         }
     }
 
-    private function isEasyAdminRequest(ControllerEvent $event): bool
+    /**
+     * Request is associated to EasyAdmin if one of these conditions meet:
+     *  * current controller is an instance of DashboardControllerInterface (the single point of
+     *    entry for all requests directly served by EasyAdmin)
+     *  * the contextId passed via the query string parameter is not null
+     *    (that's used in menu items that link to Symfony routes not served by EasyAdmin, so
+     *    those routes can still be associated with some EasyAdmin dashboard to display the menu, etc.)
+     */
+    private function isEasyAdminRequest(?string $contextId, $currentControllerInstance): bool
     {
-        // this is what menu items that link to Symfony routes use to
-        // associate the route with some EasyAdmin dashboard
-        if ($event->getRequest()->query->has('eaContext')) {
+        if (null !== $contextId) {
             return true;
         }
 
-        // otherwise, check if the controller associated to the current request
-        // implements the DashboardControllerInterface from EasyAdmin
+        return $currentControllerInstance instanceof DashboardControllerInterface;
+    }
+
+    private function getCurrentControllerInstance(ControllerEvent $event)
+    {
         $controller = $event->getController();
 
         // if the controller is defined in a class, $controller is an array
         // otherwise do nothing because it's a Closure (rare but possible in Symfony)
         if (!\is_array($controller)) {
-            return false;
-        }
-
-        $controllerInstance = $controller[0];
-
-        return $controllerInstance instanceof DashboardControllerInterface;
-    }
-
-    private function getCrudController(Request $request): ?callable
-    {
-        $crudControllerFqcn = $request->query->get('crudController');
-        $crudAction = $request->query->get('crudAction');
-
-        if (null === $crudControllerFqcn || null === $crudAction) {
             return null;
         }
 
-        $crudRequest = $request->duplicate();
-        $crudRequest->attributes->set('_controller', [$crudControllerFqcn, $crudAction]);
-        $crudControllerCallable = $this->controllerResolver->getController($crudRequest);
+        return $controller[0];
+    }
+
+    private function getDashboardControllerInstanceFromContextId(string $contextId, Request $request): ?DashboardControllerInterface
+    {
+        $dashboardControllerFqcn = $this->dashboardControllers->getControllerFqcnByContextId($contextId);
+        if (null === $dashboardControllerFqcn) {
+            return null;
+        }
+
+        $newRequest = $request->duplicate(null, null, ['_controller' => [$dashboardControllerFqcn, 'index']]);
+        $dashboardControllerCallable = $this->controllerResolver->getController($newRequest);
+
+        if (false === $dashboardControllerCallable) {
+            throw new NotFoundHttpException(sprintf('Unable to find the controller "%s::%s".', $dashboardControllerFqcn, 'index'));
+        }
+
+        if (!\is_array($dashboardControllerCallable)) {
+            return null;
+        }
+
+        $dashboardControllerInstance = $dashboardControllerCallable[0];
+
+        return $dashboardControllerInstance instanceof DashboardControllerInterface ? $dashboardControllerInstance : null;
+    }
+
+    private function getCrudControllerInstance(?string $crudId, ?string $crudAction, Request $request): ?CrudControllerInterface
+    {
+        if (null === $crudId || null === $crudAction) {
+            return null;
+        }
+
+        if (null === $crudControllerFqcn = $this->crudControllers->findCrudFqcnByCrudId($crudId)) {
+            return null;
+        }
+
+        $newRequest = $request->duplicate(null, null, ['_controller' => [$crudControllerFqcn, $crudAction]]);
+        $crudControllerCallable = $this->controllerResolver->getController($newRequest);
 
         if (false === $crudControllerCallable) {
             throw new NotFoundHttpException(sprintf('Unable to find the controller "%s::%s".', $crudControllerFqcn, $crudAction));
@@ -117,24 +168,9 @@ class AdminContextListener
             return null;
         }
 
-        if (!$crudControllerCallable[0] instanceof CrudControllerInterface) {
-            return null;
-        }
+        $crudControllerInstance = $crudControllerCallable[0];
 
-        return $crudControllerCallable;
-    }
-
-    private function getDashboardControllerInstance(ControllerEvent $event): DashboardControllerInterface
-    {
-        if ($event->getRequest()->query->has('eaContext')) {
-            $contextId = $event->getRequest()->query->get('eaContext');
-            $dashboardControllerFqcn = $this->dashboardRegistry->getControllerFqcnByContextId($contextId);
-            $newRequest = $event->getRequest()->duplicate(null, null, ['_controller' => $dashboardControllerFqcn.'::index']);
-
-            return $this->controllerResolver->getController($newRequest)[0];
-        }
-
-        return $event->getController()[0];
+        return $crudControllerInstance instanceof CrudControllerInterface ? $crudControllerInstance : null;
     }
 
     private function createAdminContext(Request $request, DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController): AdminContext

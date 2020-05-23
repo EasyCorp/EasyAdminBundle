@@ -10,6 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
  */
 final class CrudDto
 {
+    private $controllerFqcn;
     private $pageName;
     private $actionName;
     /** @var $actions ActionConfigDto */
@@ -58,6 +59,16 @@ final class CrudDto
         $this->newFormOptions = KeyValueStore::new();
         $this->editFormOptions = KeyValueStore::new();
         $this->overriddenTemplates = [];
+    }
+
+    public function getControllerFqcn(): ?string
+    {
+        return $this->controllerFqcn;
+    }
+
+    public function setControllerFqcn(string $fqcn): void
+    {
+        $this->controllerFqcn = $fqcn;
     }
 
     public function getCurrentPage(): ?string

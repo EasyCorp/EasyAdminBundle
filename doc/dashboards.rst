@@ -283,8 +283,9 @@ automatically (in addition to the optional route parameters defined by you):
 
 * ``menuIndex`` and ``submenuIndex``: they are needed to keep the selected menu
   item when rendering the page of your action (in case you display the main menu);
-* ``eaContext``: an alphanumeric string that identifies the Dashboard controller
-  FQCN related to this action (and which cannot be guessed by malicious users).
+* ``eaContext``: an random-looking alphanumeric string that identifies the
+  Dashboard controller related to this action (this string is generated using
+  the application kernel secret, so it cannot be guessed by malicious users).
   This is needed to load the dashboard configuration used to render the backend
   layout (in case your action uses it). If you don't add this parameter and try
   to use EasyAdmin templates, you'll see errors such as

@@ -35,21 +35,13 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
             throw new \InvalidArgumentException(sprintf('The "%s" select field must define its possible choices using the setChoices() method.', $field->getProperty()));
         }
 
+        $field->setFormTypeOptionIfNotSet('choices', $choices);
         $field->setFormTypeOptionIfNotSet('multiple', $field->getCustomOption(ChoiceField::OPTION_ALLOW_MULTIPLE_CHOICES));
         $field->setFormTypeOptionIfNotSet('expanded', $field->getCustomOption(ChoiceField::OPTION_RENDER_EXPANDED));
 
         if (true === $field->getCustomOption(ChoiceField::OPTION_AUTOCOMPLETE)) {
             $field->setFormTypeOptionIfNotSet('attr.data-widget', 'select2');
         }
-
-        $translatedChoices = [];
-        $translationParameters = $context->getI18n()->getTranslationParameters();
-        $translationDomain = $context->getI18n()->getTranslationDomain();
-        foreach ($choices as $choiceLabel => $choiceValue) {
-            $translatedChoiceLabel = $this->translator->trans((string) $choiceLabel, $translationParameters, $translationDomain);
-            $translatedChoices[$translatedChoiceLabel] = $choiceValue;
-        }
-        $field->setFormTypeOptionIfNotSet('choices', $translatedChoices);
 
         $fieldValue = $field->getValue();
         $isIndexOrDetail = in_array($context->getCrud()->getCurrentPage(), [Crud::PAGE_INDEX, Crud::PAGE_DETAIL], true);
@@ -60,6 +52,8 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
         $badgeSelector = $field->getCustomOption(ChoiceField::OPTION_RENDER_AS_BADGES);
         $isRenderedAsBadge = null !== $badgeSelector && false !== $badgeSelector;
 
+        $translationParameters = $context->getI18n()->getTranslationParameters();
+        $translationDomain = $context->getI18n()->getTranslationDomain();
         $selectedChoices = [];
         $flippedChoices = array_flip($choices);
         // $value is a scalar for single selections and an array for multiple selections

@@ -117,7 +117,7 @@ Consider this example which creates a custom date filter with some special value
 
     class DateCalendarFilterType implements FilterInterface
     {
-        use FilterTait;
+        use FilterTrait;
 
         public static function new(string $propertyName, $label = null): self
         {

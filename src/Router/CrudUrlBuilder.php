@@ -116,7 +116,9 @@ class CrudUrlBuilder
         }
 
         // this removes any parameter with a NULL value
-        $routeParameters = array_filter($this->routeParameters);
+        $routeParameters = array_filter($this->routeParameters, function($parameterValue) {
+            return null !== $parameterValue;
+        });
         ksort($routeParameters);
 
         return $this->urlGenerator->generate($this->dashboardRoute, $routeParameters, UrlGeneratorInterface::ABSOLUTE_URL);

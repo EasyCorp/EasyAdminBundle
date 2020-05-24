@@ -23,7 +23,7 @@ final class CrudMenuItem implements MenuItemInterface
         $this->dto->setIcon($icon);
         $this->dto->setRouteParameters([
             'crudAction' => 'index',
-            'crudController' => null,
+            'crudId' => null,
             'entityFqcn' => $entityFqcn,
             'entityId' => null,
         ]);
@@ -33,7 +33,7 @@ final class CrudMenuItem implements MenuItemInterface
     {
         $this->dto->setRouteParameters(array_merge(
             $this->dto->getRouteParameters(),
-            ['crudController' => $controllerFqcn]
+            ['crudControllerFqcn' => $controllerFqcn]
         ));
 
         return $this;

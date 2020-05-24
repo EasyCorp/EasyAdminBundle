@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Router;
 
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
+use EasyCorp\Bundle\EasyAdminBundle\Registry\CrudControllerRegistry;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
@@ -13,12 +14,14 @@ class CrudUrlBuilder
     private $dashboardRoute;
     private $currentPageReferrer;
     private $includeReferrer;
-    private $routeParameters;
+    private $crudControllers;
     private $urlGenerator;
+    private $routeParameters;
 
-    public function __construct(AdminContext $adminContext, UrlGeneratorInterface $urlGenerator, array $newRouteParameters = [])
+    public function __construct(AdminContext $adminContext, CrudControllerRegistry $crudControllers, UrlGeneratorInterface $urlGenerator, array $newRouteParameters = [])
     {
         $this->dashboardRoute = $adminContext->getDashboardRouteName();
+        $this->crudControllers = $crudControllers;
         $this->urlGenerator = $urlGenerator;
 
         $currentRouteParameters = $currentRouteParametersCopy = $adminContext->getRequest()->query->all();
@@ -29,9 +32,16 @@ class CrudUrlBuilder
         $this->routeParameters = array_merge($currentRouteParameters, $newRouteParameters);
     }
 
-    public function setController(string $controllerFqcn): self
+    public function setCrudId(string $crudId): self
     {
-        $this->setRouteParameter('crudController', $controllerFqcn);
+        $this->setRouteParameter('crudId', $crudId);
+
+        return $this;
+    }
+
+    public function setCrudFqcn(string $crudControllerFqcn): self
+    {
+        $this->setRouteParameter('crudControllerFqcn', $crudControllerFqcn);
 
         return $this;
     }
@@ -113,6 +123,12 @@ class CrudUrlBuilder
 
         if (false === $this->includeReferrer) {
             $this->unset('referrer');
+        }
+
+        // transform 'crudControllerFqcn' into 'crudId'
+        if (null !== $crudControllerFqcn = $this->get('crudControllerFqcn')) {
+            $this->set('crudId', $this->crudControllers->findCrudIdByCrudFqcn($crudControllerFqcn));
+            $this->unset('crudControllerFqcn');
         }
 
         // this removes any parameter with a NULL value

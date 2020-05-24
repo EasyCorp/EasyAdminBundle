@@ -64,6 +64,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityUpdater;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\FieldProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Registry\CrudControllerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\DashboardControllerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Security\AuthorizationChecker;
@@ -136,8 +137,9 @@ return static function (ContainerConfigurator $container) {
         ->set(AdminContextListener::class)
             ->arg(0, ref(AdminContextFactory::class))
             ->arg(1, ref(DashboardControllerRegistry::class))
-            ->arg(2, ref('controller_resolver'))
-            ->arg(3, ref('twig'))
+            ->arg(2, ref(CrudControllerRegistry::class))
+            ->arg(3, ref('controller_resolver'))
+            ->arg(4, ref('twig'))
             ->tag('kernel.event_listener', ['event' => ControllerEvent::class])
 
         ->set(CrudResponseListener::class)
@@ -149,16 +151,21 @@ return static function (ContainerConfigurator $container) {
             ->arg(0, ref('translator'))
             ->arg(1, ref('security.token_storage')->nullOnInvalid())
             ->arg(2, ref(MenuFactory::class))
-            ->arg(3, tagged_iterator('ea.crud_controller'))
+            ->arg(3, ref(CrudControllerRegistry::class))
             ->arg(4, ref(EntityFactory::class))
 
         ->set(DashboardControllerRegistry::class)
             ->arg(0, '%kernel.secret%')
             ->arg(1, tagged_iterator('ea.dashboard_controller'))
 
+        ->set(CrudControllerRegistry::class)
+            ->arg(0, '%kernel.secret%')
+            ->arg(1, tagged_iterator('ea.crud_controller'))
+
         ->set(CrudUrlGenerator::class)
             ->arg(0, ref(AdminContextProvider::class))
-            ->arg(1, ref('router.default'))
+            ->arg(1, ref(CrudControllerRegistry::class))
+            ->arg(2, ref('router.default'))
 
         ->set(MenuFactory::class)
             ->arg(0, ref(AdminContextProvider::class))

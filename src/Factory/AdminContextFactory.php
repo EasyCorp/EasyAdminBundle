@@ -33,12 +33,12 @@ final class AdminContextFactory
     private $crudControllers;
     private $entityFactory;
 
-    public function __construct(TranslatorInterface $translator, ?TokenStorageInterface $tokenStorage, MenuFactory $menuFactory, iterable $crudControllers, EntityFactory $entityFactory)
+    public function __construct(TranslatorInterface $translator, ?TokenStorageInterface $tokenStorage, MenuFactory $menuFactory, CrudControllerRegistry $crudControllers, EntityFactory $entityFactory)
     {
         $this->translator = $translator;
         $this->tokenStorage = $tokenStorage;
         $this->menuFactory = $menuFactory;
-        $this->crudControllers = CrudControllerRegistry::new($crudControllers);
+        $this->crudControllers = $crudControllers;
         $this->entityFactory = $entityFactory;
     }
 
@@ -85,7 +85,7 @@ final class AdminContextFactory
         return $crudController->configureAssets($defaultAssets)->getAsDto();
     }
 
-    private function getCrudDto(CrudControllerRegistry $crudControllerRegistry, DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController, ActionConfigDto $actionConfigDto, FilterConfigDto $filters, ?string $crudAction, ?string $pageName): ?CrudDto
+    private function getCrudDto(CrudControllerRegistry $crudControllers, DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController, ActionConfigDto $actionConfigDto, FilterConfigDto $filters, ?string $crudAction, ?string $pageName): ?CrudDto
     {
         if (null === $crudController) {
             return null;
@@ -94,10 +94,10 @@ final class AdminContextFactory
         $defaultCrud = $dashboardController->configureCrud();
         $crudDto = $crudController->configureCrud($defaultCrud)->getAsDto();
 
-        $entityFqcn = $crudControllerRegistry->getEntityFqcnByControllerFqcn(\get_class($crudController));
+        $entityFqcn = $crudControllers->findEntityFqcnByCrudFqcn(\get_class($crudController));
         $entityClassName = basename(str_replace('\\', '/', $entityFqcn));
-        $entityName = empty($entityClassName) ? 'Undefined' : $entityClassName;
 
+        $crudDto->setControllerFqcn(\get_class($crudController));
         $crudDto->setActionsConfig($actionConfigDto);
         $crudDto->setFiltersConfig($filters);
         $crudDto->setCurrentAction($crudAction);

@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
+use EasyCorp\Bundle\EasyAdminBundle\Cache\CacheWarmer;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
@@ -19,22 +20,24 @@ use EasyCorp\Bundle\EasyAdminBundle\Registry\TemplateRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use function Symfony\Component\String\u;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
 final class AdminContextFactory
 {
+    private $cacheDir;
     private $translator;
     private $tokenStorage;
     private $menuFactory;
     private $crudControllers;
     private $entityFactory;
 
-    public function __construct(TranslatorInterface $translator, ?TokenStorageInterface $tokenStorage, MenuFactory $menuFactory, CrudControllerRegistry $crudControllers, EntityFactory $entityFactory)
+    public function __construct(string $cacheDir, TranslatorInterface $translator, ?TokenStorageInterface $tokenStorage, MenuFactory $menuFactory, CrudControllerRegistry $crudControllers, EntityFactory $entityFactory)
     {
+        $this->cacheDir = $cacheDir;
         $this->translator = $translator;
         $this->tokenStorage = $tokenStorage;
         $this->menuFactory = $menuFactory;
@@ -65,11 +68,22 @@ final class AdminContextFactory
 
     private function getDashboardDto(Request $request, DashboardControllerInterface $dashboardControllerInstance): DashboardDto
     {
-        $currentRouteName = $request->attributes->get('_route');
+        $dashboardControllerRoutes = require $this->cacheDir.'/'.CacheWarmer::DASHBOARD_ROUTES_CACHE;
+        $dashboardControllerFqcn = \get_class($dashboardControllerInstance);
+        $dashboardRouteName = null;
+        foreach ($dashboardControllerRoutes as $controllerFqcn => $routeName) {
+            if ($controllerFqcn === $dashboardControllerFqcn) {
+                $dashboardRouteName = $routeName;
+                break;
+            }
+        }
 
-        /** @var DashboardDto $dashboardDto */
+        if (null === $dashboardRouteName) {
+            throw new \RuntimeException(sprintf('The name of the route associated to "%s" cannot be determined. Clear the application cache to run the EasyAdmin cache warmer, which generates the needed data to find this route.', $dashboardControllerFqcn));
+        }
+
         $dashboardDto = $dashboardControllerInstance->configureDashboard()->getAsDto();
-        $dashboardDto->setRouteName($currentRouteName);
+        $dashboardDto->setRouteName($dashboardRouteName);
 
         return $dashboardDto;
     }

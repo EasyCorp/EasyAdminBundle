@@ -3,6 +3,7 @@
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use EasyCorp\Bundle\EasyAdminBundle\ArgumentResolver\AdminContextResolver;
+use EasyCorp\Bundle\EasyAdminBundle\Cache\CacheWarmer;
 use EasyCorp\Bundle\EasyAdminBundle\Command\MakeAdminDashboardCommand;
 use EasyCorp\Bundle\EasyAdminBundle\Command\MakeAdminMigrationCommand;
 use EasyCorp\Bundle\EasyAdminBundle\Command\MakeCrudControllerCommand;
@@ -101,6 +102,10 @@ return static function (ContainerConfigurator $container) {
 
         ->set(Migrator::class)
 
+        ->set(CacheWarmer::class)
+            ->arg(0, ref('router'))
+            ->tag('kernel.cache_warmer')
+
         ->set(DataCollector::class)
             ->arg(0, ref(AdminContextProvider::class))
             ->tag('data_collector', ['id' => 'easyadmin', 'template' => '@EasyAdmin/inspector/data_collector.html.twig'])
@@ -148,11 +153,12 @@ return static function (ContainerConfigurator $container) {
             ->tag('kernel.event_listener', ['event' => ViewEvent::class])
 
         ->set(AdminContextFactory::class)
-            ->arg(0, ref('translator'))
-            ->arg(1, ref('security.token_storage')->nullOnInvalid())
-            ->arg(2, ref(MenuFactory::class))
-            ->arg(3, ref(CrudControllerRegistry::class))
-            ->arg(4, ref(EntityFactory::class))
+            ->arg(0, '%kernel.cache_dir%')
+            ->arg(1, ref('translator'))
+            ->arg(2, ref('security.token_storage')->nullOnInvalid())
+            ->arg(3, ref(MenuFactory::class))
+            ->arg(4, ref(CrudControllerRegistry::class))
+            ->arg(5, ref(EntityFactory::class))
 
         ->set(DashboardControllerRegistry::class)
             ->arg(0, '%kernel.secret%')

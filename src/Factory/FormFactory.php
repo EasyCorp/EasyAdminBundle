@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudBatchActionFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudFormType;
@@ -27,18 +28,20 @@ final class FormFactory
         $this->crudUrlGenerator = $crudUrlGenerator;
     }
 
-    public function createEditForm(EntityDto $entityDto, KeyValueStore $formOptions): FormInterface
+    public function createEditForm(EntityDto $entityDto, KeyValueStore $formOptions, AdminContext $context): FormInterface
     {
-        $formOptions->set('entityDto', $entityDto);
         $formOptions->set('attr.id', sprintf('edit-%s-form', $entityDto->getName()));
+        $formOptions->set('entityDto', $entityDto);
+        $formOptions->setIfNotSet('translation_domain', $context->getI18n()->getTranslationDomain());
 
         return $this->symfonyFormFactory->createNamedBuilder($entityDto->getName(), CrudFormType::class, $entityDto->getInstance(), $formOptions->all())->getForm();
     }
 
-    public function createNewForm(EntityDto $entityDto, KeyValueStore $formOptions): FormInterface
+    public function createNewForm(EntityDto $entityDto, KeyValueStore $formOptions, AdminContext $context): FormInterface
     {
-        $formOptions->set('entityDto', $entityDto);
         $formOptions->set('attr.id', sprintf('new-%s-form', $entityDto->getName()));
+        $formOptions->set('entityDto', $entityDto);
+        $formOptions->setIfNotSet('translation_domain', $context->getI18n()->getTranslationDomain());
 
         return $this->symfonyFormFactory->createNamedBuilder($entityDto->getName(), CrudFormType::class, $entityDto->getInstance(), $formOptions->all())->getForm();
     }

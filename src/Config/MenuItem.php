@@ -50,7 +50,7 @@ final class MenuItem
         return new UrlMenuItem($label, $icon, $url);
     }
 
-    public static function section(string $label = null, ?string $icon = null): SectionMenuItem
+    public static function section(?string $label = null, ?string $icon = null): SectionMenuItem
     {
         return new SectionMenuItem($label, $icon);
     }

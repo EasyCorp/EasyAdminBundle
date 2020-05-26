@@ -28,7 +28,6 @@ final class MenuItemDto
     private $linkUrl;
     private $linkRel;
     private $linkTarget;
-    private $translationDomain;
     private $translationParameters;
     /** @var MenuItemDto[] */
     private $subItems;
@@ -165,16 +164,6 @@ final class MenuItemDto
     public function setLinkTarget(string $linkTarget): void
     {
         $this->linkTarget = $linkTarget;
-    }
-
-    public function getTranslationDomain(): ?string
-    {
-        return $this->translationDomain;
-    }
-
-    public function setTranslationDomain(?string $translationDomain): void
-    {
-        $this->translationDomain = $translationDomain;
     }
 
     public function getTranslationParameters(): array

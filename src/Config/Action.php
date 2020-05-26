@@ -78,14 +78,6 @@ final class Action
     {
         $this->dto->setLabel($label);
 
-        // built-in actions use 'EasyAdmin' translation domain by default;
-        // if user updates the label of a built-in action, set the translation
-        // domain to NULL to use instead the domain translation configured in the backend
-        $isBuiltInAction = in_array($this->dto->getName(), [Action::DELETE, Action::DETAIL, Action::EDIT, Action::INDEX, Action::NEW, Action::SAVE_AND_ADD_ANOTHER, Action::SAVE_AND_CONTINUE, Action::SAVE_AND_RETURN], true);
-        if($isBuiltInAction && 'EasyAdminBundle' ===  $this->dto->getTranslationDomain()) {
-            $this->dto->setTranslationDomain(null);
-        }
-
         return $this;
     }
 
@@ -166,16 +158,6 @@ final class Action
     public function linkToUrl($url): self
     {
         $this->dto->setUrl($url);
-
-        return $this;
-    }
-
-    /**
-     * If not defined or set to NULL, actions use the same domain as configured for the entire dashboard.
-     */
-    public function setTranslationDomain(?string $domain): self
-    {
-        $this->dto->setTranslationDomain($domain);
 
         return $this;
     }

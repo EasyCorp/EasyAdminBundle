@@ -22,7 +22,6 @@ final class ActionDto
     private $routeName;
     private $routeParameters;
     private $url;
-    private $translationDomain;
     private $translationParameters;
     private $displayCallable;
 
@@ -199,16 +198,6 @@ final class ActionDto
         $this->url = $url;
     }
 
-    public function getTranslationDomain(): ?string
-    {
-        return $this->translationDomain;
-    }
-
-    public function setTranslationDomain(?string $translationDomain): void
-    {
-        $this->translationDomain = $translationDomain;
-    }
-
     public function getTranslationParameters(): array
     {
         return $this->translationParameters;
@@ -237,7 +226,6 @@ final class ActionDto
         $action = Action::new($this->name, $this->label, $this->icon);
         $action->setCssClass($this->cssClass);
         $action->setHtmlAttributes($this->htmlAttributes);
-        $action->setTranslationDomain($this->translationDomain);
         $action->setTranslationParameters($this->translationParameters);
 
         if (null !== $this->templatePath) {

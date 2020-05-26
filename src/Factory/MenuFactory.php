@@ -17,6 +17,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Http\Logout\LogoutUrlGenerator;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use function Symfony\Component\String\u;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -67,7 +68,7 @@ final class MenuFactory
     private function buildMenuItems(array $menuItems): array
     {
         $adminContext = $this->adminContextProvider->getContext();
-        $defaultTranslationDomain = $adminContext->getI18n()->getTranslationDomain();
+        $translationDomain = $adminContext->getI18n()->getTranslationDomain();
         $dashboardRouteName = $adminContext->getDashboardRouteName();
         $dashboardControllerFqcn = $adminContext->getDashboardControllerFqcn();
         $adminContextId = $this->dashboardRegistry->getContextIdByControllerFqcn($dashboardControllerFqcn);
@@ -86,18 +87,26 @@ final class MenuFactory
                     continue;
                 }
 
-                $subItems[] = $this->buildMenuItem($menuSubItemDto, [], $i, $j, $defaultTranslationDomain, $dashboardRouteName, $adminContextId);
+                $subItems[] = $this->buildMenuItem($menuSubItemDto, [], $i, $j, $translationDomain, $dashboardRouteName, $adminContextId);
             }
 
-            $builtItems[] = $this->buildMenuItem($menuItemDto, $subItems, $i, -1, $defaultTranslationDomain, $dashboardRouteName, $adminContextId);
+            $builtItems[] = $this->buildMenuItem($menuItemDto, $subItems, $i, -1, $translationDomain, $dashboardRouteName, $adminContextId);
         }
 
         return $builtItems;
     }
 
-    private function buildMenuItem(MenuItemDto $menuItemDto, array $subItems, int $index, int $subIndex, string $defaultTranslationDomain, string $dashboardRouteName, string $adminContextId): MenuItemDto
+    private function buildMenuItem(MenuItemDto $menuItemDto, array $subItems, int $index, int $subIndex, string $translationDomain, string $dashboardRouteName, string $adminContextId): MenuItemDto
     {
-        $label = $this->translator->trans($menuItemDto->getLabel(), [], $menuItemDto->getTranslationDomain() ?? $defaultTranslationDomain);
+        $uLabel = u($menuItemDto->getLabel());
+        // labels with this prefix are considered internal and must be translated
+        // with 'EasyAdminBundle' translation domain, regardlesss of the backend domain
+        if ($uLabel->startsWith('__ea__')) {
+            $uLabel = $uLabel->after('__ea__');
+            $translationDomain = 'EasyAdminBundle';
+        }
+        $label = $this->translator->trans($uLabel->toString(), $menuItemDto->getTranslationParameters(), $translationDomain);
+
         $url = $this->generateMenuItemUrl($menuItemDto, $dashboardRouteName, $adminContextId, $index, $subIndex);
 
         $menuItemDto->setIndex($index);

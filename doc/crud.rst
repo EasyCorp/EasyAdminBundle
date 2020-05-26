@@ -180,7 +180,7 @@ Search and Pagination Options
             ->setSearchFields(null);
 
             // defines the initial sorting applied to the list of entities
-            // (user can later change this sorting by clciking on the table columns)
+            // (user can later change this sorting by clicking on the table columns)
             ->setDefaultSort(['id' => 'DESC'])
             ->setDefaultSort(['id' => 'DESC', 'title' => 'ASC', 'startsAt' => 'DESC'])
 

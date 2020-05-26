@@ -1,0 +1,38 @@
+---------------------------------------------------------------------------
+
+by wouterj at 2020-05-24T14:48:11Z
+
+> it looks like everything is cached so it's fast.
+
+The problem is that the router is dumped in Symfony as a class that purely matches or generates. So there is no route collection at runtime in an application. This method is only used during cache warmup.
+
+Any call in a runtime application requires to load all route configuration and generate the route collection. This leads to very bad performances when you have an app with many routes or routes scattered over many files (that's what I'm told anyways).
+
+See also the warning that Fabien added to the `RouterInterface` in https://github.com/symfony/symfony/pull/32915:
+
+```php
+interface RouterInterface extends UrlMatcherInterface, UrlGeneratorInterface
+{
+    /**
+     * Gets the RouteCollection instance associated with this Router.
+     *
+     * WARNING: This method should never be used at runtime as it is SLOW.
+     *          You might use it in a cache warmer though.
+     *
+     * @return RouteCollection A RouteCollection instance
+     */
+    public function getRouteCollection();
+}
+```
+
+---------------------------------------------------------------------------
+
+by wouterj at 2020-05-24T14:51:36Z
+
+Also related: https://github.com/symfony/symfony/issues/7368 I don't have any recent figures though
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2020-05-25T18:14:03Z
+
+@wouterj thanks for your comments! Now I understand the problem ... so I created a cache warmer class to deal with this. Thanks!

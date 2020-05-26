@@ -33,16 +33,6 @@ trait MenuItemTrait
         return $this;
     }
 
-    /**
-     * If not defined, menu items use the same domain as configured for the entire dashboard.
-     */
-    public function setTranslationDomain(string $domain): self
-    {
-        $this->dto->setTranslationDomain($domain);
-
-        return $this;
-    }
-
     public function setTranslationParameters(array $parameters): self
     {
         $this->dto->setTranslationParameters($parameters);

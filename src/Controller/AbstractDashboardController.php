@@ -45,14 +45,14 @@ abstract class AbstractDashboardController extends AbstractController implements
 
     public function configureMenuItems(): iterable
     {
-        yield MenuItem::linktoDashboard('Dashboard', 'fa fa-home');
+        yield MenuItem::linktoDashboard('__ea__page_title.dashboard', 'fa fa-home');
     }
 
     public function configureUserMenu(UserInterface $user): UserMenu
     {
-        $userMenuItems = [MenuItem::linkToLogout('user.sign_out', 'fa-sign-out')->setTranslationDomain('EasyAdminBundle')];
+        $userMenuItems = [MenuItem::linkToLogout('__ea__user.sign_out', 'fa-sign-out')];
         if ($this->isGranted(Permission::EA_EXIT_IMPERSONATION)) {
-            $userMenuItems[] = MenuItem::linkToExitImpersonation('user.exit_impersonation', 'fa-user-lock')->setTranslationDomain('EasyAdminBundle');
+            $userMenuItems[] = MenuItem::linkToExitImpersonation('__ea__user.exit_impersonation', 'fa-user-lock');
         }
 
         return UserMenu::new()

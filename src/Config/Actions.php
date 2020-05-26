@@ -154,67 +154,59 @@ final class Actions
     private function createBuiltInAction(string $pageName, string $actionName): Action
     {
         if (Action::NEW === $actionName) {
-            return Action::new(Action::NEW, 'action.new', null)
+            return Action::new(Action::NEW, '__ea__action.new', null)
                 ->createAsGlobalAction()
                 ->linkToCrudAction(Action::NEW)
-                ->addCssClass('btn btn-primary')
-                ->setTranslationDomain('EasyAdminBundle');
+                ->addCssClass('btn btn-primary');
         }
 
         if (Action::EDIT === $actionName) {
-            return Action::new(Action::EDIT, 'action.edit', null)
+            return Action::new(Action::EDIT, '__ea__action.edit', null)
                 ->linkToCrudAction(Action::EDIT)
-                ->addCssClass(Crud::PAGE_DETAIL === $pageName ? 'btn btn-primary' : '')
-                ->setTranslationDomain('EasyAdminBundle');
+                ->addCssClass(Crud::PAGE_DETAIL === $pageName ? 'btn btn-primary' : '');
         }
 
         if (Action::DETAIL === $actionName) {
-            return Action::new(Action::DETAIL, 'action.detail')
-                ->linkToCrudAction(Action::DETAIL)
-                ->setTranslationDomain('EasyAdminBundle');
+            return Action::new(Action::DETAIL, '__ea__action.detail')
+                ->linkToCrudAction(Action::DETAIL);
         }
 
         if (Action::INDEX === $actionName) {
-            return Action::new(Action::INDEX, 'action.index')
+            return Action::new(Action::INDEX, '__ea__action.index')
                 ->linkToCrudAction(Action::INDEX)
-                ->addCssClass(Crud::PAGE_DETAIL === $pageName ? 'btn btn-secondary' : '')
-                ->setTranslationDomain('EasyAdminBundle');
+                ->addCssClass(Crud::PAGE_DETAIL === $pageName ? 'btn btn-secondary' : '');
         }
 
         if (Action::DELETE === $actionName) {
             $cssClass = Crud::PAGE_DETAIL === $pageName ? 'btn btn-link pr-0 text-danger' : 'text-danger';
 
-            return Action::new(Action::DELETE, 'action.delete', Crud::PAGE_INDEX === $pageName ? null : 'fa fa-fw fa-trash-o')
+            return Action::new(Action::DELETE, '__ea__action.delete', Crud::PAGE_INDEX === $pageName ? null : 'fa fa-fw fa-trash-o')
                 ->linkToCrudAction(Action::DELETE)
-                ->addCssClass($cssClass)
-                ->setTranslationDomain('EasyAdminBundle');
+                ->addCssClass($cssClass);
         }
 
         if (Action::SAVE_AND_RETURN === $actionName) {
-            return Action::new(Action::SAVE_AND_RETURN, Crud::PAGE_EDIT === $pageName ? 'action.save' : 'action.create')
+            return Action::new(Action::SAVE_AND_RETURN, Crud::PAGE_EDIT === $pageName ? '__ea__action.save' : '__ea__action.create')
                 ->addCssClass('btn btn-primary action-save')
                 ->displayAsButton()
                 ->setHtmlAttributes(['type' => 'submit', 'name' => 'ea[newForm][btn]', 'value' => $actionName])
-                ->linkToCrudAction(Crud::PAGE_EDIT === $pageName ? Action::EDIT : Action::NEW)
-                ->setTranslationDomain('EasyAdminBundle');
+                ->linkToCrudAction(Crud::PAGE_EDIT === $pageName ? Action::EDIT : Action::NEW);
         }
 
         if (Action::SAVE_AND_CONTINUE === $actionName) {
-            return Action::new(Action::SAVE_AND_CONTINUE, Crud::PAGE_EDIT === $pageName ? 'action.save_and_continue' : 'action.create_and_continue', 'far fa-edit')
+            return Action::new(Action::SAVE_AND_CONTINUE, Crud::PAGE_EDIT === $pageName ? '__ea__action.save_and_continue' : '__ea__action.create_and_continue', 'far fa-edit')
                 ->addCssClass('btn btn-secondary action-save')
                 ->displayAsButton()
                 ->setHtmlAttributes(['type' => 'submit', 'name' => 'ea[newForm][btn]', 'value' => $actionName])
-                ->linkToCrudAction(Crud::PAGE_EDIT === $pageName ? Action::EDIT : Action::NEW)
-                ->setTranslationDomain('EasyAdminBundle');
+                ->linkToCrudAction(Crud::PAGE_EDIT === $pageName ? Action::EDIT : Action::NEW);
         }
 
         if (Action::SAVE_AND_ADD_ANOTHER === $actionName) {
-            return Action::new(Action::SAVE_AND_ADD_ANOTHER, 'action.create_and_add_another')
+            return Action::new(Action::SAVE_AND_ADD_ANOTHER, '__ea__action.create_and_add_another')
                 ->addCssClass('btn btn-secondary action-save')
                 ->displayAsButton()
                 ->setHtmlAttributes(['type' => 'submit', 'name' => 'ea[newForm][btn]', 'value' => $actionName])
-                ->linkToCrudAction(Action::NEW)
-                ->setTranslationDomain('EasyAdminBundle');
+                ->linkToCrudAction(Action::NEW);
         }
 
         throw new \InvalidArgumentException(sprintf('The "%s" action is not a built-in action, so you can\'t add or configure it via its name. Either refer to one of the built-in actions or create a custom action called "%s".', $actionName, $actionName));

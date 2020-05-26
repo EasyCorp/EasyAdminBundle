@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use function Symfony\Component\String\u;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -90,15 +91,23 @@ final class ActionFactory
     private function processAction(string $pageName, ActionDto $actionDto, ?EntityDto $entityDto = null): ActionDto
     {
         $adminContext = $this->adminContextProvider->getContext();
-        $defaultTranslationDomain = $adminContext->getI18n()->getTranslationDomain();
+        $translationDomain = $adminContext->getI18n()->getTranslationDomain();
         $defaultTranslationParameters = $adminContext->getI18n()->getTranslationParameters();
         $currentPage = $adminContext->getCrud()->getCurrentPage();
 
         if (false === $actionDto->getLabel()) {
             $actionDto->setHtmlAttributes(array_merge(['title' => $actionDto->getName()], $actionDto->getHtmlAttributes()));
         } else {
+            $uLabel = u($actionDto->getLabel());
+            // labels with this prefix are considered internal and must be translated
+            // with 'EasyAdminBundle' translation domain, regardlesss of the backend domain
+            if ($uLabel->startsWith('__ea__')) {
+                $uLabel = $uLabel->after('__ea__');
+                $translationDomain = 'EasyAdminBundle';
+            }
+
             $translationParameters = array_merge($defaultTranslationParameters, $actionDto->getTranslationParameters());
-            $translatedActionLabel = $this->translator->trans($actionDto->getLabel(), $translationParameters, $actionDto->getTranslationDomain() ?? $defaultTranslationDomain);
+            $translatedActionLabel = $this->translator->trans($uLabel->toString(), $translationParameters, $translationDomain);
             $actionDto->setLabel($translatedActionLabel);
         }
 

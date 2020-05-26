@@ -27,6 +27,10 @@
                 <source>action.save</source>
                 <target>حفظ</target>
             </trans-unit>
+            <trans-unit id="action.continue">
+                <source>action.continue</source>
+                <target>استمرار</target>
+            </trans-unit>
             <trans-unit id="action.cancel">
                 <source>action.cancel</source>
                 <target>الغاء</target>
@@ -37,7 +41,7 @@
             </trans-unit>
             <trans-unit id="action.deselect">
                 <source>action.deselect</source>
-                <target>*** Deselect ***</target>
+                <target>الغاء تحديد</target>
             </trans-unit>
             <trans-unit id="label.form.empty_value">
                 <source>label.form.empty_value</source>

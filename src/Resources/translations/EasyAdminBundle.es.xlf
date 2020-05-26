@@ -117,6 +117,10 @@
                 <source>user.signout</source>
                 <target>Cerrar sesión</target>
             </trans-unit>
+            <trans-unit id="user.exit_impersonation">
+                <source>user.exit_impersonation</source>
+                <target>Terminar impersonación</target>
+            </trans-unit>
 
             <!-- misc. elements -->
             <trans-unit id="delete_modal.title">

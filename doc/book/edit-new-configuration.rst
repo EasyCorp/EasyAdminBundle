@@ -909,7 +909,7 @@ Form Tabs
 .........
 
 This element groups one or more fields and displays them in a separate tab. You
-can combine it with the other elements (tabs can contain groups, but no the other
+can combine it with the other elements (tabs can contain groups, but not the other
 way around) to create clean interfaces when forms contains lots of fields. They
 are defined with elements of type ``tab``:
 

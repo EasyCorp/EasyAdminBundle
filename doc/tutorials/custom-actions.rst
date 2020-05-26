@@ -139,6 +139,9 @@ add a ``type`` option with the ``route`` value:
                 list:
                     actions:
                         - { name: 'product_restock', type: 'route' }
+
+                        # these actions can define route parameters too
+                        - { name: 'product_restock', type: 'route', route_parameters: { 'notify': true, 'amount': 30 } }
             # ...
 
 Route based actions are displayed as regular links or buttons, but they don't

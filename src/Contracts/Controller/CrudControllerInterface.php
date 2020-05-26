@@ -68,7 +68,7 @@ interface CrudControllerInterface
 
     public function deleteEntity(EntityManagerInterface $entityManager, $entityInstance): void;
 
-    public function createEditForm(EntityDto $entityDto, KeyValueStore $formOptions): FormInterface;
+    public function createEditForm(EntityDto $entityDto, KeyValueStore $formOptions, AdminContext $context): FormInterface;
 
-    public function createNewForm(EntityDto $entityDto, KeyValueStore $formOptions): FormInterface;
+    public function createNewForm(EntityDto $entityDto, KeyValueStore $formOptions, AdminContext $context): FormInterface;
 }

@@ -207,7 +207,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             return new Response((int) $newValue);
         }
 
-        $editForm = $this->createEditForm($context->getEntity(), $context->getCrud()->getEditFormOptions());
+        $editForm = $this->createEditForm($context->getEntity(), $context->getCrud()->getEditFormOptions(), $context);
         $editForm->handleRequest($context->getRequest());
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             // TODO:
@@ -278,7 +278,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $this->get(EntityFactory::class)->processActions($context->getEntity(), $context->getCrud()->getActionsConfig());
         $entityInstance = $context->getEntity()->getInstance();
 
-        $newForm = $this->createNewForm($context->getEntity(), $context->getCrud()->getNewFormOptions());
+        $newForm = $this->createNewForm($context->getEntity(), $context->getCrud()->getNewFormOptions(), $context);
         $newForm->handleRequest($context->getRequest());
         if ($newForm->isSubmitted() && $newForm->isValid()) {
             // TODO:
@@ -444,14 +444,14 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $entityManager->flush();
     }
 
-    public function createEditForm(EntityDto $entityDto, KeyValueStore $formOptions): FormInterface
+    public function createEditForm(EntityDto $entityDto, KeyValueStore $formOptions, AdminContext $context): FormInterface
     {
-        return $this->get(FormFactory::class)->createEditForm($entityDto, $formOptions);
+        return $this->get(FormFactory::class)->createEditForm($entityDto, $formOptions, $context);
     }
 
-    public function createNewForm(EntityDto $entityDto, KeyValueStore $formOptions): FormInterface
+    public function createNewForm(EntityDto $entityDto, KeyValueStore $formOptions, AdminContext $context): FormInterface
     {
-        return $this->get(FormFactory::class)->createNewForm($entityDto, $formOptions);
+        return $this->get(FormFactory::class)->createNewForm($entityDto, $formOptions, $context);
     }
 
     /**

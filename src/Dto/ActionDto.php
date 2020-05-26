@@ -204,7 +204,7 @@ final class ActionDto
         return $this->translationDomain;
     }
 
-    public function setTranslationDomain(string $translationDomain): void
+    public function setTranslationDomain(?string $translationDomain): void
     {
         $this->translationDomain = $translationDomain;
     }

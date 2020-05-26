@@ -17,12 +17,12 @@ final class SectionMenuItem implements MenuItemInterface
         setLinkTarget as private;
     }
 
-    public function __construct(string $label, ?string $icon)
+    public function __construct(?string $label, ?string $icon)
     {
         $this->dto = new MenuItemDto();
 
         $this->dto->setType(MenuItemDto::TYPE_SECTION);
-        $this->dto->setLabel($label);
+        $this->dto->setLabel($label ?? '');
         $this->dto->setIcon($icon);
     }
 }

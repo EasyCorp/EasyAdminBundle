@@ -7,6 +7,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Cache\CacheWarmer;
 use EasyCorp\Bundle\EasyAdminBundle\Command\MakeAdminDashboardCommand;
 use EasyCorp\Bundle\EasyAdminBundle\Command\MakeAdminMigrationCommand;
 use EasyCorp\Bundle\EasyAdminBundle\Command\MakeCrudControllerCommand;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterConfiguratorInterface;
+use EasyCorp\Bundle\EasyAdminBundle\DependencyInjection\EasyAdminExtension;
 use EasyCorp\Bundle\EasyAdminBundle\EventListener\AdminContextListener;
 use EasyCorp\Bundle\EasyAdminBundle\EventListener\CrudResponseListener;
 use EasyCorp\Bundle\EasyAdminBundle\EventListener\ExceptionListener;
@@ -78,7 +81,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 return static function (ContainerConfigurator $container) {
     $services = $container->services()
-        ->defaults()->private();
+        ->defaults()->private()
+        ->instanceof(FieldConfiguratorInterface::class)->tag(EasyAdminExtension::TAG_FIELD_CONFIGURATOR)
+        ->instanceof(FilterConfiguratorInterface::class)->tag(EasyAdminExtension::TAG_FILTER_CONFIGURATOR);
 
     $services
         ->set(MakeAdminMigrationCommand::class)->public()
@@ -162,11 +167,11 @@ return static function (ContainerConfigurator $container) {
 
         ->set(DashboardControllerRegistry::class)
             ->arg(0, '%kernel.secret%')
-            ->arg(1, tagged_iterator('ea.dashboard_controller'))
+            ->arg(1, tagged_iterator(EasyAdminExtension::TAG_DASHBOARD_CONTROLLER))
 
         ->set(CrudControllerRegistry::class)
             ->arg(0, '%kernel.secret%')
-            ->arg(1, tagged_iterator('ea.crud_controller'))
+            ->arg(1, tagged_iterator(EasyAdminExtension::TAG_CRUD_CONTROLLER))
 
         ->set(CrudUrlGenerator::class)
             ->arg(0, ref(AdminContextProvider::class))
@@ -211,7 +216,9 @@ return static function (ContainerConfigurator $container) {
         ->set(FieldFactory::class)
             ->arg(0, ref(AdminContextProvider::class))
             ->arg(1, ref(AuthorizationChecker::class))
-            ->arg(2, \function_exists('tagged') ? tagged('ea.field_configurator') : tagged_iterator('ea.field_configurator'))
+            ->arg(2, \function_exists('tagged')
+                ? tagged(EasyAdminExtension::TAG_FIELD_CONFIGURATOR)
+                : tagged_iterator(EasyAdminExtension::TAG_FIELD_CONFIGURATOR))
 
         ->set(FieldProvider::class)
             ->arg(0, ref(AdminContextProvider::class))
@@ -261,25 +268,19 @@ return static function (ContainerConfigurator $container) {
             ->tag('form.type', ['alias' => 'ea_crud'])
 
         ->set(ArrayConfigurator::class)
-            ->tag('ea.field_configurator')
 
         ->set(AssociationConfigurator::class)
             ->arg(0, ref(EntityFactory::class))
             ->arg(1, ref(CrudUrlGenerator::class))
             ->arg(2, ref(TranslatorInterface::class))
-            ->tag('ea.field_configurator')
 
         ->set(AvatarConfigurator::class)
-            ->tag('ea.field_configurator')
 
         ->set(BooleanConfigurator::class)
-            ->tag('ea.field_configurator')
 
         ->set(CodeEditorConfigurator::class)
-            ->tag('ea.field_configurator')
 
         ->set(CollectionConfigurator::class)
-            ->tag('ea.field_configurator')
 
         ->set(CommonPostConfigurator::class)
             ->arg(0, ref(AdminContextProvider::class))
@@ -291,66 +292,47 @@ return static function (ContainerConfigurator $container) {
             ->tag('ea.field_configurator', ['priority' => 9999])
 
         ->set(CountryConfigurator::class)
-            ->tag('ea.field_configurator')
 
         ->set(CurrencyConfigurator::class)
-            ->tag('ea.field_configurator')
 
         ->set(DateTimeConfigurator::class)
             ->arg(0, ref(IntlFormatter::class))
-            ->tag('ea.field_configurator')
 
         ->set(EmailConfigurator::class)
-            ->tag('ea.field_configurator')
 
         ->set(FormConfigurator::class)
-            ->tag('ea.field_configurator')
 
         ->set(IdConfigurator::class)
-            ->tag('ea.field_configurator')
 
         ->set(ImageConfigurator::class)
-            ->tag('ea.field_configurator')
 
         ->set(LanguageConfigurator::class)
-            ->tag('ea.field_configurator')
 
         ->set(LocaleConfigurator::class)
-            ->tag('ea.field_configurator')
 
         ->set(MoneyConfigurator::class)
             ->arg(0, ref(IntlFormatter::class))
             ->arg(1, ref('property_accessor'))
-            ->tag('ea.field_configurator')
 
         ->set(NumberConfigurator::class)
             ->arg(0, ref(IntlFormatter::class))
-            ->tag('ea.field_configurator')
 
         ->set(PercentConfigurator::class)
-            ->tag('ea.field_configurator')
 
         ->set(ChoiceConfigurator::class)
             ->arg(0, ref('translator'))
-            ->tag('ea.field_configurator')
 
         ->set(SlugConfigurator::class)
             ->arg(0, ref('translator'))
-            ->tag('ea.field_configurator')
 
         ->set(TelephoneConfigurator::class)
-            ->tag('ea.field_configurator')
 
         ->set(TextConfigurator::class)
-            ->tag('ea.field_configurator')
 
         ->set(TextEditorConfigurator::class)
-            ->tag('ea.field_configurator')
 
         ->set(TimezoneConfigurator::class)
-            ->tag('ea.field_configurator')
 
         ->set(UrlConfigurator::class)
-            ->tag('ea.field_configurator')
     ;
 };

@@ -18,10 +18,10 @@ class CrudUrlBuilder
     private $urlGenerator;
     private $routeParameters;
 
-    public function __construct(AdminContext $adminContext, CrudControllerRegistry $crudControllers, UrlGeneratorInterface $urlGenerator, array $newRouteParameters = [])
+    public function __construct(AdminContext $adminContext, UrlGeneratorInterface $urlGenerator, array $newRouteParameters = [])
     {
         $this->dashboardRoute = $adminContext->getDashboardRouteName();
-        $this->crudControllers = $crudControllers;
+        $this->crudControllers = $adminContext->getCrudControllers();
         $this->urlGenerator = $urlGenerator;
 
         $currentRouteParameters = $currentRouteParametersCopy = $adminContext->getRequest()->query->all();

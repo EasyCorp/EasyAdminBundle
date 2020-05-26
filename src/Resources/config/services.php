@@ -164,8 +164,7 @@ return static function (ContainerConfigurator $container) {
 
         ->set(CrudUrlGenerator::class)
             ->arg(0, ref(AdminContextProvider::class))
-            ->arg(1, ref(CrudControllerRegistry::class))
-            ->arg(2, ref('router.default'))
+            ->arg(1, ref('router.default'))
 
         ->set(MenuFactory::class)
             ->arg(0, ref(AdminContextProvider::class))

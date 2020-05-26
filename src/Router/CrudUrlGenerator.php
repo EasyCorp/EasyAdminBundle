@@ -12,18 +12,16 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 final class CrudUrlGenerator
 {
     private $adminContextProvider;
-    private $crudControllers;
     private $urlGenerator;
 
-    public function __construct(AdminContextProvider $adminContextProvider, CrudControllerRegistry $crudControllers, UrlGeneratorInterface $urlGenerator)
+    public function __construct(AdminContextProvider $adminContextProvider, UrlGeneratorInterface $urlGenerator)
     {
         $this->adminContextProvider = $adminContextProvider;
-        $this->crudControllers = $crudControllers;
         $this->urlGenerator = $urlGenerator;
     }
 
     public function build(array $routeParameters = []): CrudUrlBuilder
     {
-        return new CrudUrlBuilder($this->adminContextProvider->getContext(), $this->crudControllers, $this->urlGenerator, $routeParameters);
+        return new CrudUrlBuilder($this->adminContextProvider->getContext(), $this->urlGenerator, $routeParameters);
     }
 }

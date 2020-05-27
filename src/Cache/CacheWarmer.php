@@ -37,13 +37,8 @@ final class CacheWarmer implements CacheWarmerInterface
         foreach ($allRoutes as $routeName => $route) {
             $routeControllerFqcn = u($route->getDefault('_controller') ?? '')->beforeLast('::')->toString();
 
-            try {
-                if (\in_array(DashboardControllerInterface::class, class_implements($routeControllerFqcn))) {
-                    $dashboardRoutes[$routeControllerFqcn] = $routeName;
-                }
-            } catch (\Exception $e) {
-                // ignore these errors that occur for edge-cases like these:
-                // Warning: class_implements(): Class error_controller does not exist and could not be loaded
+            if (is_subclass_of($routeControllerFqcn, DashboardControllerInterface::class)) {
+                $dashboardRoutes[$routeControllerFqcn] = $routeName;
             }
         }
 

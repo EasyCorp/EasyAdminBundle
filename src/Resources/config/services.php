@@ -227,31 +227,27 @@ return static function (ContainerConfigurator $container) {
 
         ->set(FilterFactory::class)
             ->arg(0, new Reference(AdminContextProvider::class))
-            ->arg(1, \function_exists('tagged') ? tagged('ea.filter_configurator') : tagged_iterator('ea.filter_configurator'))
+            ->arg(1, \function_exists('tagged')
+                ? tagged(EasyAdminExtension::TAG_FILTER_CONFIGURATOR)
+                : tagged_iterator(EasyAdminExtension::TAG_FILTER_CONFIGURATOR))
 
         ->set(FiltersFormType::class)
             ->tag('form.type', ['alias' => 'ea_filters'])
 
         ->set(ChoiceFilterConfigurator::class)
-            ->tag('ea.filter_configurator')
 
         ->set(CommonFilterConfigurator::class)
-            ->tag('ea.filter_configurator', ['priority' => 9999])
+            ->tag(EasyAdminExtension::TAG_FILTER_CONFIGURATOR, ['priority' => 9999])
 
         ->set(ComparisonFilterConfigurator::class)
-            ->tag('ea.filter_configurator')
 
         ->set(DateTimeFilterConfigurator::class)
-            ->tag('ea.filter_configurator')
 
         ->set(EntityFilterConfigurator::class)
-            ->tag('ea.filter_configurator')
 
         ->set(NumericFilterConfigurator::class)
-            ->tag('ea.filter_configurator')
 
         ->set(TextFilterConfigurator::class)
-            ->tag('ea.filter_configurator')
 
         ->set(ActionFactory::class)
             ->arg(0, new Reference(AdminContextProvider::class))
@@ -286,12 +282,12 @@ return static function (ContainerConfigurator $container) {
 
         ->set(CommonPostConfigurator::class)
             ->arg(0, new Reference(AdminContextProvider::class))
-            ->tag('ea.field_configurator', ['priority' => -9999])
+            ->tag(EasyAdminExtension::TAG_FIELD_CONFIGURATOR, ['priority' => -9999])
 
         ->set(CommonPreConfigurator::class)
             ->arg(0, new Reference('translator'))
             ->arg(1, new Reference('property_accessor'))
-            ->tag('ea.field_configurator', ['priority' => 9999])
+            ->tag(EasyAdminExtension::TAG_FIELD_CONFIGURATOR, ['priority' => 9999])
 
         ->set(CountryConfigurator::class)
 

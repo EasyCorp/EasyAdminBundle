@@ -74,6 +74,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Security\AuthorizationChecker;
 use EasyCorp\Bundle\EasyAdminBundle\Security\SecurityVoter;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\EasyAdminTwigExtension;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
 use Symfony\Component\HttpKernel\KernelInterface;
@@ -87,83 +89,83 @@ return static function (ContainerConfigurator $container) {
 
     $services
         ->set(MakeAdminMigrationCommand::class)->public()
-            ->arg(0, ref(Migrator::class))
+            ->arg(0, new Reference(Migrator::class))
             ->arg(1, '%kernel.project_dir%')
             ->tag('console.command')
 
         ->set(MakeAdminDashboardCommand::class)->public()
-            ->arg(0, ref(ClassMaker::class))
+            ->arg(0, new Reference(ClassMaker::class))
             ->arg(1, '%kernel.project_dir%')
             ->tag('console.command')
 
         ->set(MakeCrudControllerCommand::class)->public()
-            ->arg(0, ref(ClassMaker::class))
-            ->arg(1, ref('doctrine'))
+            ->arg(0, new Reference(ClassMaker::class))
+            ->arg(1, new Reference('doctrine'))
             ->tag('console.command')
 
         ->set(ClassMaker::class)
-            ->arg(0, ref(KernelInterface::class))
+            ->arg(0, new Reference(KernelInterface::class))
             ->arg(1, '%kernel.project_dir%')
 
         ->set(Migrator::class)
 
         ->set(CacheWarmer::class)
-            ->arg(0, ref('router'))
+            ->arg(0, new Reference('router'))
             ->tag('kernel.cache_warmer')
 
         ->set(DataCollector::class)
-            ->arg(0, ref(AdminContextProvider::class))
+            ->arg(0, new Reference(AdminContextProvider::class))
             ->tag('data_collector', ['id' => 'easyadmin', 'template' => '@EasyAdmin/inspector/data_collector.html.twig'])
 
         ->set(ExceptionListener::class)
-            ->arg(0, ref(AdminContextProvider::class))
-            ->arg(1, ref('twig'))
+            ->arg(0, new Reference(AdminContextProvider::class))
+            ->arg(1, new Reference('twig'))
             ->tag('kernel.event_listener', ['event' => 'kernel.exception', 'priority' => -64])
 
         ->set(EasyAdminTwigExtension::class)
-            ->arg(0, ref(CrudUrlGenerator::class))
-            ->arg(1, ref(TranslatorInterface::class)->nullOnInvalid())
+            ->arg(0, new Reference(CrudUrlGenerator::class))
+            ->arg(1, new Reference(TranslatorInterface::class, ContainerInterface::NULL_ON_INVALID_REFERENCE))
             ->tag('twig.extension')
 
         ->set(EaCrudFormTypeExtension::class)
-            ->arg(0, ref(AdminContextProvider::class))
+            ->arg(0, new Reference(AdminContextProvider::class))
             ->tag('form.type_extension')
 
         ->set(CollectionTypeExtension::class)
             ->tag('form.type_extension')
 
         ->set(AuthorizationChecker::class)
-            ->arg(0, ref('security.authorization_checker')->nullOnInvalid())
+            ->arg(0, new Reference('security.authorization_checker', ContainerInterface::NULL_ON_INVALID_REFERENCE))
 
         ->set(IntlFormatter::class)
 
         ->set(AdminContextProvider::class)
-            ->arg(0, ref('request_stack'))
+            ->arg(0, new Reference('request_stack'))
 
         ->set(AdminContextResolver::class)
-            ->arg(0, ref(AdminContextProvider::class))
+            ->arg(0, new Reference(AdminContextProvider::class))
             ->tag('controller.argument_value_resolver')
 
         ->set(AdminContextListener::class)
-            ->arg(0, ref(AdminContextFactory::class))
-            ->arg(1, ref(DashboardControllerRegistry::class))
-            ->arg(2, ref(CrudControllerRegistry::class))
-            ->arg(3, ref('controller_resolver'))
-            ->arg(4, ref('twig'))
+            ->arg(0, new Reference(AdminContextFactory::class))
+            ->arg(1, new Reference(DashboardControllerRegistry::class))
+            ->arg(2, new Reference(CrudControllerRegistry::class))
+            ->arg(3, new Reference('controller_resolver'))
+            ->arg(4, new Reference('twig'))
             ->tag('kernel.event_listener', ['event' => ControllerEvent::class])
 
         ->set(CrudResponseListener::class)
-            ->arg(0, ref(AdminContextProvider::class))
-            ->arg(1, ref('twig'))
+            ->arg(0, new Reference(AdminContextProvider::class))
+            ->arg(1, new Reference('twig'))
             ->tag('kernel.event_listener', ['event' => ViewEvent::class])
 
         ->set(AdminContextFactory::class)
             ->arg(0, '%kernel.cache_dir%')
-            ->arg(1, ref('translator'))
-            ->arg(2, ref('security.token_storage')->nullOnInvalid())
-            ->arg(3, ref(MenuFactory::class))
-            ->arg(4, ref(CrudControllerRegistry::class))
-            ->arg(5, ref(EntityFactory::class))
+            ->arg(1, new Reference('translator'))
+            ->arg(2, new Reference('security.token_storage', ContainerInterface::NULL_ON_INVALID_REFERENCE))
+            ->arg(3, new Reference(MenuFactory::class))
+            ->arg(4, new Reference(CrudControllerRegistry::class))
+            ->arg(5, new Reference(EntityFactory::class))
 
         ->set(DashboardControllerRegistry::class)
             ->arg(0, '%kernel.secret%')
@@ -174,57 +176,57 @@ return static function (ContainerConfigurator $container) {
             ->arg(1, tagged_iterator(EasyAdminExtension::TAG_CRUD_CONTROLLER))
 
         ->set(CrudUrlGenerator::class)
-            ->arg(0, ref(AdminContextProvider::class))
-            ->arg(1, ref('router.default'))
+            ->arg(0, new Reference(AdminContextProvider::class))
+            ->arg(1, new Reference('router.default'))
 
         ->set(MenuFactory::class)
-            ->arg(0, ref(AdminContextProvider::class))
-            ->arg(1, ref(DashboardControllerRegistry::class))
-            ->arg(2, ref(AuthorizationChecker::class))
-            ->arg(3, ref('translator'))
-            ->arg(4, ref('router'))
-            ->arg(5, ref('security.logout_url_generator'))
-            ->arg(6, ref(CrudUrlGenerator::class))
+            ->arg(0, new Reference(AdminContextProvider::class))
+            ->arg(1, new Reference(DashboardControllerRegistry::class))
+            ->arg(2, new Reference(AuthorizationChecker::class))
+            ->arg(3, new Reference('translator'))
+            ->arg(4, new Reference('router'))
+            ->arg(5, new Reference('security.logout_url_generator'))
+            ->arg(6, new Reference(CrudUrlGenerator::class))
 
         ->set(EntityRepository::class)
-            ->arg(0, ref(AdminContextProvider::class))
-            ->arg(1, ref('doctrine'))
-            ->arg(2, ref(FormFactory::class))
+            ->arg(0, new Reference(AdminContextProvider::class))
+            ->arg(1, new Reference('doctrine'))
+            ->arg(2, new Reference(FormFactory::class))
 
         ->set(EntityFactory::class)
-            ->arg(0, ref(FieldFactory::class))
-            ->arg(1, ref(ActionFactory::class))
-            ->arg(2, ref(AuthorizationChecker::class))
-            ->arg(3, ref('doctrine'))
-            ->arg(4, ref('event_dispatcher'))
+            ->arg(0, new Reference(FieldFactory::class))
+            ->arg(1, new Reference(ActionFactory::class))
+            ->arg(2, new Reference(AuthorizationChecker::class))
+            ->arg(3, new Reference('doctrine'))
+            ->arg(4, new Reference('event_dispatcher'))
 
         ->set(EntityPaginator::class)
-            ->arg(0, ref(CrudUrlGenerator::class))
-            ->arg(1, ref(EntityFactory::class))
+            ->arg(0, new Reference(CrudUrlGenerator::class))
+            ->arg(1, new Reference(EntityFactory::class))
 
         ->set(EntityUpdater::class)
-            ->arg(0, ref('property_accessor'))
+            ->arg(0, new Reference('property_accessor'))
 
         ->set(PaginatorFactory::class)
-            ->arg(0, ref(AdminContextProvider::class))
-            ->arg(1, ref(EntityPaginator::class))
+            ->arg(0, new Reference(AdminContextProvider::class))
+            ->arg(1, new Reference(EntityPaginator::class))
 
         ->set(FormFactory::class)
-            ->arg(0, ref('form.factory'))
-            ->arg(1, ref(CrudUrlGenerator::class))
+            ->arg(0, new Reference('form.factory'))
+            ->arg(1, new Reference(CrudUrlGenerator::class))
 
         ->set(FieldFactory::class)
-            ->arg(0, ref(AdminContextProvider::class))
-            ->arg(1, ref(AuthorizationChecker::class))
+            ->arg(0, new Reference(AdminContextProvider::class))
+            ->arg(1, new Reference(AuthorizationChecker::class))
             ->arg(2, \function_exists('tagged')
                 ? tagged(EasyAdminExtension::TAG_FIELD_CONFIGURATOR)
                 : tagged_iterator(EasyAdminExtension::TAG_FIELD_CONFIGURATOR))
 
         ->set(FieldProvider::class)
-            ->arg(0, ref(AdminContextProvider::class))
+            ->arg(0, new Reference(AdminContextProvider::class))
 
         ->set(FilterFactory::class)
-            ->arg(0, ref(AdminContextProvider::class))
+            ->arg(0, new Reference(AdminContextProvider::class))
             ->arg(1, \function_exists('tagged') ? tagged('ea.filter_configurator') : tagged_iterator('ea.filter_configurator'))
 
         ->set(FiltersFormType::class)
@@ -252,27 +254,27 @@ return static function (ContainerConfigurator $container) {
             ->tag('ea.filter_configurator')
 
         ->set(ActionFactory::class)
-            ->arg(0, ref(AdminContextProvider::class))
-            ->arg(1, ref(AuthorizationChecker::class))
-            ->arg(2, ref('translator'))
-            ->arg(3, ref('router'))
-            ->arg(4, ref(CrudUrlGenerator::class))
+            ->arg(0, new Reference(AdminContextProvider::class))
+            ->arg(1, new Reference(AuthorizationChecker::class))
+            ->arg(2, new Reference('translator'))
+            ->arg(3, new Reference('router'))
+            ->arg(4, new Reference(CrudUrlGenerator::class))
 
         ->set(SecurityVoter::class)
-            ->arg(0, ref(AuthorizationChecker::class))
-            ->arg(1, ref(AdminContextProvider::class))
+            ->arg(0, new Reference(AuthorizationChecker::class))
+            ->arg(1, new Reference(AdminContextProvider::class))
             ->tag('security.voter')
 
         ->set(CrudFormType::class)
-            ->arg(0, ref('form.type_guesser.doctrine'))
+            ->arg(0, new Reference('form.type_guesser.doctrine'))
             ->tag('form.type', ['alias' => 'ea_crud'])
 
         ->set(ArrayConfigurator::class)
 
         ->set(AssociationConfigurator::class)
-            ->arg(0, ref(EntityFactory::class))
-            ->arg(1, ref(CrudUrlGenerator::class))
-            ->arg(2, ref(TranslatorInterface::class))
+            ->arg(0, new Reference(EntityFactory::class))
+            ->arg(1, new Reference(CrudUrlGenerator::class))
+            ->arg(2, new Reference(TranslatorInterface::class))
 
         ->set(AvatarConfigurator::class)
 
@@ -283,12 +285,12 @@ return static function (ContainerConfigurator $container) {
         ->set(CollectionConfigurator::class)
 
         ->set(CommonPostConfigurator::class)
-            ->arg(0, ref(AdminContextProvider::class))
+            ->arg(0, new Reference(AdminContextProvider::class))
             ->tag('ea.field_configurator', ['priority' => -9999])
 
         ->set(CommonPreConfigurator::class)
-            ->arg(0, ref('translator'))
-            ->arg(1, ref('property_accessor'))
+            ->arg(0, new Reference('translator'))
+            ->arg(1, new Reference('property_accessor'))
             ->tag('ea.field_configurator', ['priority' => 9999])
 
         ->set(CountryConfigurator::class)
@@ -296,7 +298,7 @@ return static function (ContainerConfigurator $container) {
         ->set(CurrencyConfigurator::class)
 
         ->set(DateTimeConfigurator::class)
-            ->arg(0, ref(IntlFormatter::class))
+            ->arg(0, new Reference(IntlFormatter::class))
 
         ->set(EmailConfigurator::class)
 
@@ -311,19 +313,19 @@ return static function (ContainerConfigurator $container) {
         ->set(LocaleConfigurator::class)
 
         ->set(MoneyConfigurator::class)
-            ->arg(0, ref(IntlFormatter::class))
-            ->arg(1, ref('property_accessor'))
+            ->arg(0, new Reference(IntlFormatter::class))
+            ->arg(1, new Reference('property_accessor'))
 
         ->set(NumberConfigurator::class)
-            ->arg(0, ref(IntlFormatter::class))
+            ->arg(0, new Reference(IntlFormatter::class))
 
         ->set(PercentConfigurator::class)
 
         ->set(ChoiceConfigurator::class)
-            ->arg(0, ref('translator'))
+            ->arg(0, new Reference('translator'))
 
         ->set(SlugConfigurator::class)
-            ->arg(0, ref('translator'))
+            ->arg(0, new Reference('translator'))
 
         ->set(TelephoneConfigurator::class)
 

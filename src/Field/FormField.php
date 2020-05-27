@@ -29,6 +29,7 @@ final class FormField implements FieldInterface
 
         return $field
             ->setFieldFqcn(__CLASS__)
+            ->hideOnIndex()
             ->setProperty('ea_form_panel_'.(UlidProvider::new()))
             ->setLabel($label)
             ->setTemplateName('crud/field/form_panel')

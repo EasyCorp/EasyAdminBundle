@@ -76,7 +76,7 @@ Removing Actions
 
 Removing actions makes them unavailable in the interface, so the user can't
 click on buttons/links to run those actions. However, users can *hack* the URL
-to run the action. To fully disable an action, use the ``disableActions()``
+to run the action. To fully disable an action, use the ``disable()``
 method explained later::
 
     use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
@@ -160,7 +160,7 @@ Actions are disabled globally, you cannot disable them per page::
         return $actions
             // ...
             // this will forbid to create or delete entities in the backend
-            ->disableActions(Action::NEW, Action::DELETE)
+            ->disable(Action::NEW, Action::DELETE)
         ;
     }
 
@@ -188,7 +188,7 @@ Permissions are defined globally; you cannot define different permissions per pa
 Reordering Actions
 ------------------
 
-Use the ``setActionOrder()`` to define the order in which actions are displayed
+Use the ``reorder()`` to define the order in which actions are displayed
 in some page::
 
     use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
@@ -199,7 +199,7 @@ in some page::
     {
         return $actions
             // ...
-            ->setActionOrder(Crud::PAGE_INDEX, [Action::DELETE, Action::DETAIL, Action::EDIT])
+            ->reorder(Crud::PAGE_INDEX, [Action::DELETE, Action::DETAIL, Action::EDIT])
         ;
     }
 

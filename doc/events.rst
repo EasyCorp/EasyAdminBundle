@@ -23,7 +23,7 @@ However, the events still remain in case you want to use them.
 
 All events are triggered using objects instead of event names defined as strings
 (as recommended since Symfony 4.3). They are defined under the
-``EasyCorp\Bundle\EasyAdminBundle\Events\`` namespace:
+``EasyCorp\Bundle\EasyAdminBundle\Event\`` namespace:
 
 * Events related to Doctrine entities:
 
@@ -56,7 +56,7 @@ property of the ``BlogPost`` entity before persisting it:
     namespace App\EventSubscriber;
 
     use App\Entity\BlogPost;
-    use EasyCorp\Bundle\EasyAdminBundle\Events\BeforeCreatingEntity;
+    use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityPersistedEvent;
     use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
     class EasyAdminSubscriber implements EventSubscriberInterface
@@ -70,14 +70,14 @@ property of the ``BlogPost`` entity before persisting it:
 
         public static function getSubscribedEvents()
         {
-            return array(
-                BeforeCreatingEntity::class => ['setBlogPostSlug'],
-            );
+            return [
+                BeforeEntityPersistedEvent::class => ['setBlogPostSlug'],
+            ];
         }
 
-        public function setBlogPostSlug(BeforeCreatingEntity $event)
+        public function setBlogPostSlug(BeforeEntityPersistedEvent $event)
         {
-            $entity = $event->getEntity();
+            $entity = $event->getEntityInstance();
 
             if (!($entity instanceof BlogPost)) {
                 return;
@@ -85,8 +85,6 @@ property of the ``BlogPost`` entity before persisting it:
 
             $slug = $this->slugger->slugify($entity->getTitle());
             $entity->setSlug($slug);
-
-            $event->setEntity($entity);
         }
     }
 

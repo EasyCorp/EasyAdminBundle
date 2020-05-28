@@ -636,15 +636,31 @@ These are the built-in types:
 * ``datetime``, ``date`` or ``time``: applied by default to datetime, date or time
   fields respectively. It's rendered as a ``<select>`` list with the condition
   (before/after/etc.) and a browser native datepicker to pick the date/time.
-* ``entity``: applied to fields with Doctrine associations (all kinds
-  supported). It's rendered as a ``<select>`` list with the condition (equal/not
-  equal/etc.) and another ``<select>`` list to choose the comparison value.
 * ``integer``, ``decimal`` or ``float``: applied by default to numeric fields.
   It's rendered as a ``<select>`` list with the condition (higher/lower/equal/etc.) and a
   ``<input>`` to define the comparison value.
 * ``text`` or ``textarea``: applied by default to string/text fields. It's rendered as a
   ``<select>`` list with the condition (contains/not contains/etc.) and an ``<input>`` or
   ``<textarea>`` to define the comparison value.
+* ``entity``: applied to fields with Doctrine associations (all kinds
+  supported). It's rendered as a ``<select>`` list with the condition (equal/not
+  equal/etc.) and another ``<select>`` list to choose the comparison value.
+
+The config of the ``entity`` filter requires using some nested options to define
+the ``class`` option of the entity you are using to filter:
+
+.. code-block:: yaml
+
+    filters:
+        # ...
+        - label: 'Email'
+          property: 'customer'
+          type: 'entity',
+          type_options:
+              value_type_options:
+                  class: 'App\Entity\Customer'
+                  choice_label: 'emailAddress'
+          mapped: false
 
 Custom Dynamic Filters
 ......................

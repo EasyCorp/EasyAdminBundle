@@ -67,7 +67,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
 
             $field->setFormType(CrudAutocompleteType::class);
             $autocompleteEndpointUrl = $this->crudUrlGenerator->build()
-                ->setControllerFqcn($field->getCustomOption(AssociationField::OPTION_CRUD_CONTROLLER))
+                ->setController($field->getCustomOption(AssociationField::OPTION_CRUD_CONTROLLER))
                 ->setAction('autocomplete')
                 ->setEntityId(null)
                 ->generateUrl();
@@ -141,7 +141,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
 
         // TODO: check if user has permission to see the related entity
         return $this->crudUrlGenerator->build()
-            ->setControllerFqcn($crudController)
+            ->setController($crudController)
             ->setAction(Action::DETAIL)
             ->setEntityId($entityDto->getPrimaryKeyValue())
             ->unset('menuIndex')

@@ -142,7 +142,7 @@ final class MenuFactory
                     throw new \RuntimeException(sprintf('Unable to find the controller related to the "%s" Entity; did you forget to extend "%s"?', $entityFqcn, AbstractCrudController::class));
                 }
 
-                $urlBuilder->setControllerFqcn($controllerFqcn);
+                $urlBuilder->setController($controllerFqcn);
                 $urlBuilder->unset('entityFqcn');
             // 2. ...otherwise, use the crudControllerFqcn
             } else {
@@ -150,7 +150,7 @@ final class MenuFactory
                     throw new \RuntimeException(sprintf('The CRUD menu item with label "%s" must define either the entity FQCN (using the third constructor argument) or the CRUD Controller FQCN (using the "setController()" method).', $menuItemDto->getLabel()));
                 }
 
-                $urlBuilder->setControllerFqcn($crudControllerFqcn);
+                $urlBuilder->setController($crudControllerFqcn);
             }
 
             return $urlBuilder->generateUrl();

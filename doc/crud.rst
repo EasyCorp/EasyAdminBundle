@@ -433,7 +433,7 @@ service to generate URLs in your PHP code::
 
             // the URL builder provides shortcuts for the most common parameters
             $url = $this->crudUrlGenerator->build()
-                ->setControllerFqcn(SomeController::class)
+                ->setController(SomeController::class)
                 ->setAction('theActionName')
                 ->generateUrl();
 
@@ -454,7 +454,7 @@ method (it will be called automatically for you):
     {% set url = ea_url().set('page', 2) %}
 
     {% set url = ea_url()
-        .setControllerFqcn('App\\Controller\\Admin\\SomeController')
+        .setController('App\\Controller\\Admin\\SomeController')
         .setAction('theActionName') %}
 
 .. _`Symfony controllers`: https://symfony.com/doc/current/controller.html

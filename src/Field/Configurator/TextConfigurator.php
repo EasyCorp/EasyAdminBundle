@@ -27,14 +27,18 @@ final class TextConfigurator implements FieldConfiguratorInterface
             $field->setFormTypeOptionIfNotSet('attr.rows', $field->getCustomOption(TextareaField::OPTION_NUM_OF_ROWS));
         }
 
-        if (null === $field->getValue()) {
+        if (null === $value = $field->getValue()) {
             return;
+        }
+
+        if (!is_string($value) && !method_exists($value, '__toString')) {
+            throw new \RuntimeException(sprintf('The value of the "%s" field of the entity with ID = "%s" can\'t be converted into a string, so it cannot be represented by a TextField.', $field->getProperty(), $entityDto->getPrimaryKeyValue()));
         }
 
         $configuredMaxLength = $field->getCustomOption(TextareaField::OPTION_MAX_LENGTH);
         $isDetailAction = Action::DETAIL === $context->getCrud()->getCurrentAction();
         $defaultMaxLength = $isDetailAction ? PHP_INT_MAX : 64;
-        $formattedValue = u($field->getValue())->truncate($configuredMaxLength ?? $defaultMaxLength, '…');
+        $formattedValue = u((string) $field->getValue())->truncate($configuredMaxLength ?? $defaultMaxLength, '…');
 
         $field->setFormattedValue($formattedValue);
     }

@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\TimeType;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -18,7 +19,7 @@ final class TimeField implements FieldInterface
             ->setProperty($propertyName)
             ->setLabel($label)
             ->setTemplateName('crud/field/time')
-            ->setFormType(DateTimeType::class)
+            ->setFormType(TimeType::class)
             ->addCssClass('field-time')
             // the proper default values of these options are set on the Crud class
             ->setCustomOption(DateTimeField::OPTION_TIME_FORMAT, null)

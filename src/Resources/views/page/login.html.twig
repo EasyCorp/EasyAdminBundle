@@ -1,5 +1,6 @@
-{% trans_default_domain easyadmin_config('translation_domain') %}
-{% extends easyadmin_config('design.templates.layout') %}
+{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
+{% extends ea.templatePath('layout') %}
+{% trans_default_domain ea.i18n.translationDomain %}
 
 {% block body_class 'page-login' %}
 
@@ -12,8 +13,8 @@
         <header class="main-header mb-4">
             <div id="header-logo">
                 {% block header_logo %}
-                    <a class="logo {{ easyadmin_config('site_name')|length > 14 ? 'logo-long' }}" title="{{ easyadmin_config('site_name')|striptags }}" href="{{ path('easyadmin') }}">
-                        {{ easyadmin_config('site_name')|raw }}
+                    <a class="logo {{ ea.dashboardTitle|length > 14 ? 'logo-long' }}" title="{{ ea.dashboardTitle|striptags }}" href="{{ path(ea.dashboardRouteName) }}">
+                        {{ ea.dashboardTitle|raw }}
                     </a>
                 {% endblock header_logo %}
             </div>
@@ -31,7 +32,7 @@
                     <input type="hidden" name="_csrf_token" value="{{ csrf_token(csrf_token_intention) }}">
                 {% endif %}
 
-                <input type="hidden" name="{{ target_path_parameter|default('_target_path') }}" value="{{ target_path|default(path('easyadmin')) }}" />
+                <input type="hidden" name="{{ target_path_parameter|default('_target_path') }}" value="{{ target_path|default(path(ea.dashboardRouteName)) }}" />
 
                 <div class="form-group field-text">
                     <label for="username" class="sr-only form-control-label required">{{ _username_label }}</label>

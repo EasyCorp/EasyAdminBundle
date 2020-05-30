@@ -3,7 +3,6 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Router;
 
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
-use EasyCorp\Bundle\EasyAdminBundle\Registry\CrudControllerRegistry;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
@@ -132,7 +131,7 @@ class CrudUrlBuilder
         }
 
         // this removes any parameter with a NULL value
-        $routeParameters = array_filter($this->routeParameters, function($parameterValue) {
+        $routeParameters = array_filter($this->routeParameters, function ($parameterValue) {
             return null !== $parameterValue;
         });
         ksort($routeParameters);
@@ -142,11 +141,11 @@ class CrudUrlBuilder
 
     private function setRouteParameter(string $paramName, $paramValue): void
     {
-        if (is_resource($paramValue)) {
+        if (\is_resource($paramValue)) {
             throw new \InvalidArgumentException(sprintf('The value of the "%s" parameter is a PHP resource, which is not supported as a route parameter.', $paramName));
         }
 
-        if (is_object($paramValue)) {
+        if (\is_object($paramValue)) {
             if (method_exists($paramValue, '__toString')) {
                 $paramValue = (string) $paramValue;
             } else {

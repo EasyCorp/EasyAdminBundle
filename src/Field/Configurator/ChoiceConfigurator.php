@@ -8,8 +8,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use function Symfony\Component\String\u;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -44,7 +44,7 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
         }
 
         $fieldValue = $field->getValue();
-        $isIndexOrDetail = in_array($context->getCrud()->getCurrentPage(), [Crud::PAGE_INDEX, Crud::PAGE_DETAIL], true);
+        $isIndexOrDetail = \in_array($context->getCrud()->getCurrentPage(), [Crud::PAGE_INDEX, Crud::PAGE_DETAIL], true);
         if (null === $fieldValue || !$isIndexOrDetail) {
             return;
         }
@@ -74,11 +74,11 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
 
         if (true === $badgeSelector) {
             $badgeType = 'badge-secondary';
-        } elseif (is_array($badgeSelector)) {
+        } elseif (\is_array($badgeSelector)) {
             $badgeType = $badgeSelector[$value] ?? 'badge-secondary';
-        } elseif (is_callable($badgeSelector)) {
+        } elseif (\is_callable($badgeSelector)) {
             $badgeType = $badgeSelector($field);
-            if (!in_array($badgeType, ChoiceField::VALID_BADGE_TYPES, true)) {
+            if (!\in_array($badgeType, ChoiceField::VALID_BADGE_TYPES, true)) {
                 throw new \RuntimeException(sprintf('The value returned by the callable passed to the "renderAsBadges()" method must be one of the following valid badge types: "%s" ("%s" given).', implode(', ', ChoiceField::VALID_BADGE_TYPES), $badgeType));
             }
         }

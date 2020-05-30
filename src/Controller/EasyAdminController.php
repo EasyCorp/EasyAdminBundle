@@ -31,7 +31,6 @@ this error message. Check out the following files:
 
 If you need more help, read the EasyAdmin 3 documentation at:
 https://symfony.com/doc/master/bundles/EasyAdminBundle/index.html
-HELP
-        );
+HELP);
     }
 }

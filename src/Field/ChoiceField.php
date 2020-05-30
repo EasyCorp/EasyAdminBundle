@@ -49,7 +49,7 @@ final class ChoiceField implements FieldInterface
 
     /**
      * Given choices must follow the same format used in Symfony Forms:
-     * ['Label visible to users' => 'submitted_value', ...]
+     * ['Label visible to users' => 'submitted_value', ...].
      */
     public function setChoices(array $keyValueChoices): self
     {
@@ -64,19 +64,19 @@ final class ChoiceField implements FieldInterface
      *   * false: no badges are displayed; values are displayed as regular text
      *   * array: [$fieldValue => $badgeType, ...] (e.g. ['foo' => 'primary', 7 => 'warning', 'cancelled' => 'danger'])
      *   * callable: function(FieldDto $field): string { return '...' }
-     *     (e.g. function(FieldDto $field) { return $field->getValue() < 10 ? 'warning' : 'primary'; })
+     *     (e.g. function(FieldDto $field) { return $field->getValue() < 10 ? 'warning' : 'primary'; }).
      *
      * Possible badge types: 'success', 'warning', 'danger', 'info', 'primary', 'secondary', 'light', 'dark'
      */
     public function renderAsBadges($badgeSelector = true): self
     {
-        if (!is_bool($badgeSelector) && !is_array($badgeSelector) && !is_callable($badgeSelector)) {
+        if (!\is_bool($badgeSelector) && !\is_array($badgeSelector) && !\is_callable($badgeSelector)) {
             throw new \InvalidArgumentException(sprintf('The argument of the "%s" method must be a boolean, an array or a closure ("%s" given).', __METHOD__, \gettype($badgeSelector)));
         }
 
-        if (is_array($badgeSelector)) {
+        if (\is_array($badgeSelector)) {
             foreach ($badgeSelector as $fieldValue => $badgeType) {
-                if (!in_array($badgeType, self::VALID_BADGE_TYPES, true)) {
+                if (!\in_array($badgeType, self::VALID_BADGE_TYPES, true)) {
                     throw new \InvalidArgumentException(sprintf('The values of the array passed to the "%s" method must be one of the following valid badge types: "%s" ("%s" given).', __METHOD__, implode(', ', self::VALID_BADGE_TYPES), $badgeType));
                 }
             }

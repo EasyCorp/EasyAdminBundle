@@ -11,8 +11,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AvatarField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use function Symfony\Component\String\u;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -108,7 +108,7 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
         if (FormField::class === $field->getFieldFqcn()) {
             $label = $field->getLabel();
 
-            return null === $label ? $label: $this->translator->trans($label, $field->getTranslationParameters(), $translationDomain);
+            return null === $label ? $label : $this->translator->trans($label, $field->getTranslationParameters(), $translationDomain);
         }
 
         // if an Avatar field doesn't define its label, don't autogenerate it for the 'index' page
@@ -129,7 +129,7 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
 
         // don't translate labels in form-related pages because Symfony Forms translates
         // labels automatically and that causes false "translation is missing" errors
-        if (in_array($currentPage, [Crud::PAGE_EDIT, Crud::PAGE_NEW])) {
+        if (\in_array($currentPage, [Crud::PAGE_EDIT, Crud::PAGE_NEW])) {
             return $label;
         }
 
@@ -202,7 +202,7 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
 
         // this prevents humanizing all-uppercase labels (e.g. 'UUID' -> 'U u i d')
         // and other special labels which look better in uppercase
-        if ($uString->toString() === $upperString || in_array($upperString, ['ID', 'URL'], true)) {
+        if ($uString->toString() === $upperString || \in_array($upperString, ['ID', 'URL'], true)) {
             return $upperString;
         }
 

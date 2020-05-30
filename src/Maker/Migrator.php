@@ -1345,7 +1345,7 @@ final class Migrator
             'fa-fw', 'fa-lg', 'fa-2x', 'fa-3x', 'fa-4x', 'fa-5x', 'fa-ul', 'fa-li',
             'fa-border', 'fa-pull-right', 'fa-pull-left', 'fa-pulse', 'fa-spin',
             'fa-rotate-90', 'fa-rotate-180', 'fa-rotate-270', 'fa-flip-horizontal',
-            'fa-flip-vertical', 'fa-stack', 'fa-stack-1x', 'fa-stack-2x', 'fa-inverse'
+            'fa-flip-vertical', 'fa-stack', 'fa-stack-1x', 'fa-stack-2x', 'fa-inverse',
         ];
 
         $iconCssClassParts = explode(' ', u($iconCssClass)->collapseWhitespace());
@@ -1356,8 +1356,8 @@ final class Migrator
                 continue;
             }
 
-            if (u($cssClass)->startsWith('fa-') && !in_array($cssClass, $specialCssClasses)) {
-                if (array_key_exists($cssClass, $iconClassMap)) {
+            if (u($cssClass)->startsWith('fa-') && !\in_array($cssClass, $specialCssClasses)) {
+                if (\array_key_exists($cssClass, $iconClassMap)) {
                     $cssClass = $iconClassMap[$cssClass];
                 } else {
                     $newIconCssClassParts[] = 'fas';

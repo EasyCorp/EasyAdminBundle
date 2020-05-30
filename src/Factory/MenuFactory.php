@@ -16,8 +16,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Http\Logout\LogoutUrlGenerator;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use function Symfony\Component\String\u;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>

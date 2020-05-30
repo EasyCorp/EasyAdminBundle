@@ -6,11 +6,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\EasyAdminBundle;
-use EasyCorp\Bundle\EasyAdminBundle\Exception\CrudNotFoundException;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\AdminContextFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\CrudControllerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\DashboardControllerRegistry;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ControllerResolverInterface;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
@@ -100,7 +98,7 @@ class AdminContextListener
      *    entry for all requests directly served by EasyAdmin)
      *  * the contextId passed via the query string parameter is not null
      *    (that's used in menu items that link to Symfony routes not served by EasyAdmin, so
-     *    those routes can still be associated with some EasyAdmin dashboard to display the menu, etc.)
+     *    those routes can still be associated with some EasyAdmin dashboard to display the menu, etc.).
      */
     private function isEasyAdminRequest(?string $contextId, $currentControllerInstance): bool
     {

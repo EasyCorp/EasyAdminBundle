@@ -26,7 +26,7 @@ final class IdField implements FieldInterface
     }
 
     /**
-     * Set maxLength to -1 to define an unlimited max length
+     * Set maxLength to -1 to define an unlimited max length.
      */
     public function setMaxLength(int $length): self
     {

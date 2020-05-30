@@ -31,7 +31,7 @@ final class TextConfigurator implements FieldConfiguratorInterface
             return;
         }
 
-        if (!is_string($value) && !method_exists($value, '__toString')) {
+        if (!\is_string($value) && !method_exists($value, '__toString')) {
             throw new \RuntimeException(sprintf('The value of the "%s" field of the entity with ID = "%s" can\'t be converted into a string, so it cannot be represented by a TextField.', $field->getProperty(), $entityDto->getPrimaryKeyValue()));
         }
 

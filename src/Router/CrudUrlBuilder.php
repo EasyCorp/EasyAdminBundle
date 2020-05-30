@@ -39,7 +39,7 @@ class CrudUrlBuilder
         return $this;
     }
 
-    public function setCrudFqcn(string $crudControllerFqcn): self
+    public function setControllerFqcn(string $crudControllerFqcn): self
     {
         $this->setRouteParameter('crudControllerFqcn', $crudControllerFqcn);
 

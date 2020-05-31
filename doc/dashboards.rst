@@ -651,15 +651,6 @@ header, the sidebar menu and the central content section. The only difference is
 that the content section is completely empty, so it's useful to display your own
 text contents, custom forms, etc.
 
-Blank Page Template
-~~~~~~~~~~~~~~~~~~~
-
-Twig Template Path: ``@EasyAdmin/page/blank.html.twig``
-
-It displays a page with the same header and sidebar menu as the
-index/detail/form pages, but without the central content section. It's useful to
-define completely custom page, such as a complex dashboard.
-
 .. _`Symfony controllers`: https://symfony.com/doc/current/controller.html
 .. _`Symfony route annotations`: https://symfony.com/doc/current/routing.html#creating-routes-as-annotations
 .. _`context object`: https://wiki.c2.com/?ContextObject

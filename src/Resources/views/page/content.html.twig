@@ -1,3 +1,49 @@
-{% extends '@EasyAdmin/layout.html.twig' %}
+{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
+{% extends ea.templatePath('layout') %}
+{% trans_default_domain ea.i18n.translationDomain %}
 
 {% block body_class 'page-content page-content-with-padding' %}
+
+{% block content %}
+    {% set has_content_title = block('content_title') is defined and block('content_title')|trim is not empty %}
+    {% set has_content_subtitle = block('content_subtitle') is defined and block('content_subtitle')|trim is not empty %}
+    {% set has_content_footer = block('content_footer') is defined and block('content_footer')|trim is not empty %}
+
+    <div class="content">
+        {% block content_header_wrapper %}
+            {% if has_content_title or has_content_subtitle %}
+                <section class="content-header">
+                    {% block content_header %}
+                        {% if has_content_title %}
+                            <div class="d-flex flex-row justify-content-between align-content-center w-100">
+                                <div class="content-header-title">
+                                    <h1 class="title">{% block content_title %}{% endblock %}</h1>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        {% if has_content_subtitle %}
+                            <div class="content-header-help">
+                                {{ block('content_subtitle') }}
+                            </div>
+                        {% endif %}
+                    {% endblock content_header %}
+                </section>
+            {% endif %}
+        {% endblock content_header_wrapper %}
+
+        <section id="main">
+            <div class="content-panel">
+                <div class="content-panel-body without-header {{ not has_content_footer ? 'without-footer' }}">
+                    {% block content_body %}{% endblock %}
+                </div>
+
+                {% if has_content_footer %}
+                    <section class="content-panel-footer without-padding">
+                        {{ block(content_footer) }}
+                    </section>
+                {% endif %}
+            </div>
+        </section>
+    </div>
+{% endblock content %}

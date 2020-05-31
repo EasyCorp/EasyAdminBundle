@@ -679,6 +679,21 @@ This type defines the following configuration options:
   before moving them to their final destination. By default it checks duplicated
   files and renames them. It's useful in complex scenarios such as validating
   files that will be moved to some cloud service.
+  
+You must declare configuration options within the ``type_options`` key:
+
+.. code-block:: yaml
+
+    # config/packages/easy_admin.yaml
+    easy_admin:
+        entities:
+            User:
+                class: App\Entity\User
+                form:
+                    fields:
+                        - { property: 'photo', type: 'file_upload', type_options: { upload_dir: 'public/uploads/photos/' } }
+                        # ...
+        # ...
 
 This form type uses a `form data transformer`_ to manage the file resource to
 file path conversion. This means that only the file path/s is/are stored in the

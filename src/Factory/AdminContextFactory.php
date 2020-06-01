@@ -192,11 +192,12 @@ final class AdminContextFactory
             return null;
         }
 
+        $queryParams = $request->query->all();
         $searchableProperties = $crudDto->getSearchFields();
-        $query = $request->query->get('query');
+        $query = $queryParams['query'] ?? null;
         $defaultSort = $crudDto->getDefaultSort();
-        $customSort = $request->query->get('sort', []);
-        $appliedFilters = $request->query->get('filters', []);
+        $customSort = $queryParams['sort'] ?? [];
+        $appliedFilters = $queryParams['filters'] ?? [];
 
         return new SearchDto($request, $searchableProperties, $query, $defaultSort, $customSort, $appliedFilters);
     }

@@ -1,0 +1,7 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2020-06-01T17:50:00Z
+
+@jmsche thanks for fixing this. Although I'm aware of this InputBag and its related deprecations ... I still don't fully understand it. I don't know if we're fixing an actual bug or problem ... but sadly I think we're worsening Symfony DX/UX a lot.
+
+Anyways, let's merge it.

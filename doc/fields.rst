@@ -329,7 +329,7 @@ Formatting Options
 ~~~~~~~~~~~~~~~~~~
 
 The ``formatValue()`` method allows to apply a PHP callable to the value before
-rendering it in the template::
+rendering it in the ``index`` and ``detail`` pages::
 
     TextField::new('firstName', 'Name')
         // callbacks usually take only the current value as argument...
@@ -339,7 +339,7 @@ rendering it in the template::
 
         // ...but callables also receives the entire entity instance as the second argument
         ->formatValue(function ($value, $entity) {
-            return $entity->isPublished() ? $value : 'Coming soon...;
+            return $entity->isPublished() ? $value : 'Coming soon...';
         })
 
         // in PHP 7.4 and newer you can use arrow functions

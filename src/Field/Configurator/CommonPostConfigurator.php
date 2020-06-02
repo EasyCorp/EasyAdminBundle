@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Field\Configurator;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -30,8 +31,10 @@ final class CommonPostConfigurator implements FieldConfiguratorInterface
 
     public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
     {
-        $formattedValue = $this->buildFormattedValueOption($field->getFormattedValue(), $field, $entityDto);
-        $field->setFormattedValue($formattedValue);
+        if (\in_array($context->getCrud()->getCurrentPage(), [Crud::PAGE_INDEX, Crud::PAGE_DETAIL], true)) {
+            $formattedValue = $this->buildFormattedValueOption($field->getFormattedValue(), $field, $entityDto);
+            $field->setFormattedValue($formattedValue);
+        }
 
         $this->updateFieldTemplate($field);
     }

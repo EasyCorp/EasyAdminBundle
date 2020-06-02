@@ -28,6 +28,15 @@ i.fad {
     font-family: 'Font Awesome 5 Duotone' !important;
 }
 
+code, pre {
+    color: #c44c34;
+    font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+    font-size: 13px;
+}
+pre {
+    line-height: 1.8;
+}
+
 /* Layout
    ========================================================================= */
 .main-header { grid-area: header; }

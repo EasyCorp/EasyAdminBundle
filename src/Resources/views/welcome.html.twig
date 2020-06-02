@@ -1,0 +1,57 @@
+{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title 'Welcome to EasyAdmin 3' %}
+
+{% block content_body %}
+    <style>
+        p { max-width: 600px; }
+    </style>
+
+    <p>
+        <strong>You have successfully installed EasyAdmin 3 in your application!</strong>
+    </p>
+
+    <p>
+        You are seeing this example page because you haven't configured the start page
+        of your Dashboard. To do that, open the following file in your editor:
+    </p>
+
+    <p>
+        <code>{{ dashboard_controller_filepath }}</code>
+    </p>
+
+    <p>
+        Then, add the following method to it to customize the Dashboard start page:
+    </p>
+
+    <pre>
+use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
+use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
+use Symfony\Component\Routing\Annotation\Route;
+// ...
+
+class {{ dashboard_controller_class }} extends AbstractDashboardController
+{
+    /**
+     * @Route("/admin")
+     */
+    public function index(CrudUrlGenerator $crudUrlGenerator): Response
+    {
+        // redirect to some CRUD controller
+        return $crudUrlGenerator->build()->setController(OneOfYourCrudController::class)->generateUrl();
+
+        // you can also redirect to different pages depending on the current user
+        if ('jane' === $this->getUser()->getUsername()) {
+            return '...';
+        }
+
+        // you can also render some template to display a proper Dashboard
+        // (tip: it's easier if your template extends from @EasyAdmin/page/content.html.twig)
+        return $this->render('some/path/my-dashboard.html.twig');
+    }
+
+    // ...
+}
+    </pre>
+{% endblock %}

@@ -63,13 +63,15 @@ class MakeAdminMigrationCommand extends Command
 
         $this->addStep('<info>Step 1/3.</info> Find the file with the EasyAdmin 2 config backup.');
         $ea2ConfigBackupPath = $input->getArgument('ea2-backup-file') ?: $this->projectDir.'/easyadmin-config.backup';
-        if (!$fs->exists($ea2ConfigBackupPath)) {
-            $this->temporarySection->write(sprintf(
-                '<error> ERROR </error> The config backup file was not found in %s. To generate this file, run the <comment>make:admin:migration</comment> command in your application before upgrading your dependencies to EasyAdmin 3.',
-                $ea2ConfigBackupPath
-            ));
 
-            return self::FAILURE;
+        if(!$fs->exists($ea2ConfigBackupPath)) {
+            $this->temporarySection->write(sprintf(
+            '<error> ERROR </error> The config backup file was not found in %s. To generate this file, run the <comment>make:admin:migration</comment> command in your application BEFORE upgrading to EasyAdmin 3 (the command must be run while still using EasyAdmin 2).',
+            $ea2ConfigBackupPath
+            ));
+        }
+        while (!$fs->exists($ea2ConfigBackupPath)) {
+            $ea2ConfigBackupPath = $this->askQuestion('Absolute path of <comment>easyadmin-config.backup</comment> file:');
         }
         $this->temporarySection->write(sprintf('<bg=green;fg=black> OK </> The backup file was found at "%s"', $ea2ConfigBackupPath));
         $ea2Config = unserialize(file_get_contents($ea2ConfigBackupPath), ['allowed_classes' => false]);

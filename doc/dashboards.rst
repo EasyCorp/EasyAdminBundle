@@ -12,7 +12,7 @@ Dashboards
         <a href="https://symfony.com/doc/2.x/bundles/EasyAdminBundle/index.html">EasyAdmin 2.x docs</a>.
     </div>
 
-**Dashboards** are the entry point of backends and they link to one ore more
+**Dashboards** are the entry point of backends and they link to one or more
 :doc:`resources </crud>`. Dashboards also display a main menu to navigate the
 resources and the information of the logged in user.
 
@@ -283,7 +283,7 @@ automatically (in addition to the optional route parameters defined by you):
 
 * ``menuIndex`` and ``submenuIndex``: they are needed to keep the selected menu
   item when rendering the page of your action (in case you display the main menu);
-* ``eaContext``: an random-looking alphanumeric string that identifies the
+* ``eaContext``: a random-looking alphanumeric string that identifies the
   Dashboard controller related to this action (this string is generated using
   the application kernel secret, so it cannot be guessed by malicious users).
   This is needed to load the dashboard configuration used to render the backend

@@ -19,6 +19,10 @@
                                 <div class="content-header-title">
                                     <h1 class="title">{% block content_title %}{% endblock %}</h1>
                                 </div>
+                                
+                                {% block page_actions_wrapper %}
+                                    <div class="page-actions">{% block page_actions %}{% endblock %}</div>
+                                {% endblock %}
                             </div>
                         {% endif %}
 

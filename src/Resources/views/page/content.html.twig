@@ -8,6 +8,7 @@
     {% set has_content_title = block('content_title') is defined and block('content_title')|trim is not empty %}
     {% set has_content_subtitle = block('content_subtitle') is defined and block('content_subtitle')|trim is not empty %}
     {% set has_content_footer = block('content_footer') is defined and block('content_footer')|trim is not empty %}
+    {% set with_background = with_background|default(false) %}
 
     <div class="content">
         {% block content_header_wrapper %}
@@ -34,7 +35,7 @@
 
         <section id="main">
             <div class="content-panel">
-                <div class="content-panel-body without-header {{ not has_content_footer ? 'without-footer' }}">
+                <div class="content-panel-body without-header {{ not has_content_footer ? 'without-footer' }} {{ with_background ? 'with-background' }}">
                     {% block content_body %}{% endblock %}
                 </div>
 

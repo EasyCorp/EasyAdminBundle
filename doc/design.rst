@@ -37,7 +37,7 @@ Overriding Templates
 
     Instead of using Symfony mechanism to override templates, you may consider
     using a similar but more powerful feature provided by EasyAdmin to replace
-    templates, as explained in ref:`the next section <replacing_templates>`.
+    templates, as explained in :ref:`the next section <replacing_templates>`.
 
 Following Symfony's mechanism to `override templates from bundles`_, you must
 create the ``templates/bundles/EasyAdminBundle/`` directory in your application

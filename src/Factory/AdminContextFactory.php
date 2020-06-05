@@ -69,17 +69,17 @@ final class AdminContextFactory
     private function getDashboardDto(Request $request, DashboardControllerInterface $dashboardControllerInstance): DashboardDto
     {
         $dashboardControllerRoutes = require $this->cacheDir.'/'.CacheWarmer::DASHBOARD_ROUTES_CACHE;
-        $dashboardControllerFqcn = \get_class($dashboardControllerInstance);
+        $dashboardController = \get_class($dashboardControllerInstance).'::index';
         $dashboardRouteName = null;
-        foreach ($dashboardControllerRoutes as $controllerFqcn => $routeName) {
-            if ($controllerFqcn === $dashboardControllerFqcn) {
+        foreach ($dashboardControllerRoutes as $controller => $routeName) {
+            if ($controller === $dashboardController) {
                 $dashboardRouteName = $routeName;
                 break;
             }
         }
 
         if (null === $dashboardRouteName) {
-            throw new \RuntimeException(sprintf('The name of the route associated to "%s" cannot be determined. Clear the application cache to run the EasyAdmin cache warmer, which generates the needed data to find this route.', $dashboardControllerFqcn));
+            throw new \RuntimeException(sprintf('The name of the route associated to "%s" cannot be determined. Clear the application cache to run the EasyAdmin cache warmer, which generates the needed data to find this route.', $dashboardController));
         }
 
         $dashboardDto = $dashboardControllerInstance->configureDashboard()->getAsDto();

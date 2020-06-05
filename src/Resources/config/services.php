@@ -191,7 +191,8 @@ return static function (ContainerConfigurator $container) {
         ->set(EntityRepository::class)
             ->arg(0, new Reference(AdminContextProvider::class))
             ->arg(1, new Reference('doctrine'))
-            ->arg(2, new Reference(FormFactory::class))
+            ->arg(2, new Reference(EntityFactory::class))
+            ->arg(3, new Reference(FormFactory::class))
 
         ->set(EntityFactory::class)
             ->arg(0, new Reference(FieldFactory::class))

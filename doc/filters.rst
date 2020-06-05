@@ -115,7 +115,7 @@ Consider this example which creates a custom date filter with some special value
     use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterInterface;
     use EasyCorp\Bundle\EasyAdminBundle\Filter\FilterTrait;
 
-    class DateCalendarFilterType implements FilterInterface
+    class DateCalendarFilter implements FilterInterface
     {
         use FilterTrait;
 

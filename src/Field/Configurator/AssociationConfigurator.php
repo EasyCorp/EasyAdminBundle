@@ -81,7 +81,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         $field->setCustomOption(AssociationField::OPTION_DOCTRINE_ASSOCIATION_TYPE, 'toOne');
 
         if (false === $field->getFormTypeOption('required')) {
-            $field->setFormTypeOptionIfNotSet('placeholder', $this->translator->trans('label.form.empty_value', [], 'EasyAdminBundle'));
+            $field->setFormTypeOptionIfNotSet('attr.placeholder', $this->translator->trans('label.form.empty_value', [], 'EasyAdminBundle'));
         }
 
         $targetEntityFqcn = $field->getDoctrineMetadata()->get('targetEntity');

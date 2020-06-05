@@ -10,6 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Orm\EntityRepositoryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDataDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
@@ -21,12 +22,14 @@ final class EntityRepository implements EntityRepositoryInterface
 {
     private $adminContextProvider;
     private $doctrine;
+    private $entityFactory;
     private $formFactory;
 
-    public function __construct(AdminContextProvider $adminContextProvider, ManagerRegistry $doctrine, FormFactory $formFactory)
+    public function __construct(AdminContextProvider $adminContextProvider, ManagerRegistry $doctrine, EntityFactory $entityFactory, FormFactory $formFactory)
     {
         $this->adminContextProvider = $adminContextProvider;
         $this->doctrine = $doctrine;
+        $this->entityFactory = $entityFactory;
         $this->formFactory = $formFactory;
     }
 
@@ -74,13 +77,16 @@ final class EntityRepository implements EntityRepositoryInterface
         $configuredSearchableProperties = $searchDto->getSearchableProperties();
         $searchableProperties = empty($configuredSearchableProperties) ? $entityDto->getAllPropertyNames() : $configuredSearchableProperties;
         foreach ($searchableProperties as $propertyName) {
-            $entityName = 'entity';
-            $propertyDataType = $entityDto->getPropertyDataType($propertyName);
-
             if ($entityDto->isAssociation($propertyName)) {
                 // support arbitrarily nested associations (e.g. foo.bar.baz.qux)
                 $associatedProperties = explode('.', $propertyName);
-                for ($i = 0; $i < \count($associatedProperties) - 1; ++$i) {
+                $numAssociatedProperties = \count($associatedProperties);
+
+                if ($numAssociatedProperties > 2) {
+                    throw new \RuntimeException(sprintf('Nested associations of more than two levels (e.g. "%s") are not supported yet. We\'ll add support for them in the future, but meanwhile you can only use two-level associations (e.g. "%s")', $propertyName, implode('.', array_slice($associatedProperties, 0, 2))));
+                }
+
+                for ($i = 0; $i < $numAssociatedProperties - 1; ++$i) {
                     $associatedEntityName = $associatedProperties[$i];
                     $associatedPropertyName = $associatedProperties[$i + 1];
 
@@ -89,10 +95,18 @@ final class EntityRepository implements EntityRepositoryInterface
                         $queryBuilder->leftJoin($parentEntityName.'.'.$associatedEntityName, $associatedEntityName);
                         $entitiesAlreadyJoined[] = $associatedEntityName;
                     }
-
-                    $entityName = $associatedEntityName;
-                    $propertyName = $associatedPropertyName;
                 }
+
+                $originalPropertyName = $associatedProperties[0];
+                $originalPropertyMetadata = $entityDto->getPropertyMetadata($originalPropertyName);
+                $associatedEntityDto = $this->entityFactory->create($originalPropertyMetadata->get('targetEntity'));
+
+                $entityName = $associatedEntityName;
+                $propertyName = $associatedPropertyName;
+                $propertyDataType = $associatedEntityDto->getPropertyDataType($propertyName);
+            } else {
+                $entityName = 'entity';
+                $propertyDataType = $entityDto->getPropertyDataType($propertyName);
             }
 
             $isSmallIntegerProperty = 'smallint' === $propertyDataType;

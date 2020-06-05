@@ -314,7 +314,7 @@ entities. If your CRUD controller extends from the ``AbstractCrudController``,
 these methods are already implemented, but you can customize them overriding
 methods and listening to events.
 
-First, you can override the ``createEntity()``, ``updateEntity()``, persistEntity()``
+First, you can override the ``createEntity()``, ``updateEntity()``, ``persistEntity()``
 and ``deleteEntity()`` methods. The ``createEntity()`` method for example only
 executes ``return new $entityFqcn()``, so you need to override it if your entity
 needs to pass constructor arguments or set some of its properties::

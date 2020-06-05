@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Field\Configurator;
 
+use Doctrine\ORM\PersistentCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
@@ -37,7 +38,12 @@ final class ArrayConfigurator implements FieldConfiguratorInterface
         }
 
         if (null !== $value && Crud::PAGE_INDEX === $context->getCrud()->getCurrentPage()) {
-            $field->setFormattedValue(u(', ')->join($field->getValue()));
+            $values = $field->getValue();
+            if ($values instanceof PersistentCollection) {
+                $values = array_map(function($item) { return (string) $item; }, $values->getValues());
+            }
+
+            $field->setFormattedValue(u(', ')->join($values));
         }
     }
 }

@@ -35,11 +35,17 @@ final class CacheWarmer implements CacheWarmerInterface
 
         /** @var Route $route */
         foreach ($allRoutes as $routeName => $route) {
-            $routeControllerFqcn = u($route->getDefault('_controller') ?? '')->beforeLast('::')->toString();
-
-            if (is_subclass_of($routeControllerFqcn, DashboardControllerInterface::class)) {
-                $dashboardRoutes[$routeControllerFqcn] = $routeName;
+            $controller = u($route->getDefault('_controller') ?? '');
+            if (!$controller->endsWith('::index')) {
+                continue;
             }
+
+            $controllerFqcn = $controller->beforeLast('::')->toString();
+            if (!is_subclass_of($controllerFqcn, DashboardControllerInterface::class)) {
+                continue;
+            }
+
+            $dashboardRoutes[$controller->toString()] = $routeName;
         }
 
         (new Filesystem())->dumpFile(

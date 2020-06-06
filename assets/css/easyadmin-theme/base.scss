@@ -259,13 +259,9 @@ body.ea-mobile-sidebar-visible .main-sidebar {
     align-self: flex-end;
     flex: 1;
 }
-// when contents define help, change vertical align to 'flex-start' because it looks better than 'center'
-.content-header.has-content-help .content-header-title {
-    align-self: flex-end;
-}
 .content-header-title .title {
-    font-size: var(--font-size-lg);
-    line-height: 24px;
+    font-size: var(--font-size-xl);
+    line-height: 1;
     margin: 0;
 }
 .content-header-title .title small {
@@ -303,7 +299,8 @@ body.ea-mobile-sidebar-visible .main-sidebar {
     margin-left: 15px;
 }
 
-.form-action-search .form-group {
+.form-action-search .form-group,
+.form-action-search .form-group .form-widget {
     margin: 0;
     padding: 0;
 }
@@ -315,7 +312,18 @@ body.ea-mobile-sidebar-visible .main-sidebar {
     background-size: 13px 13px;
     background-position: 10px 8px;
     padding-left: 32px;
-    width: 300px;
+    width: 360px;
+}
+
+.with-rounded-top {
+    border-top-left-radius: var(--border-radius);
+    border-top-right-radius: var(--border-radius);
+    overflow: hidden; // this is needed for the border-radius field
+}
+.with-rounded-bottom {
+    border-bottom-left-radius: var(--border-radius);
+    border-bottom-right-radius: var(--border-radius);
+    overflow: hidden; // this is needed for the border-radius field
 }
 
 .content-footer {
@@ -351,20 +359,8 @@ body.ea-mobile-sidebar-visible .main-sidebar {
     background: var(--white);
     padding: 18px 20px;
 
-    &.without-header table.datagrid,
-    &.without-header dl.datalist {
-        border-top-left-radius: var(--border-radius);
-        border-top-right-radius: var(--border-radius);
-        margin-bottom: 0;
-        overflow: hidden; // this is needed for the border-radius field
-    }
-
-    &.without-footer table.datagrid,
-    &.without-footer dl.datalist {
-        border-bottom-left-radius: var(--border-radius);
-        border-bottom-right-radius: var(--border-radius);
-        margin-bottom: 0;
-        overflow: hidden; // this is needed for the border-radius field
+    &.with-min-h-250 {
+        min-height: 250px;
     }
 }
 .content-panel-body.with-background {
@@ -388,6 +384,10 @@ body.ea-mobile-sidebar-visible .main-sidebar {
     border-bottom-right-radius: var(--border-radius);
     margin: 0;
     padding: 15px 17px 15px 20px;
+
+    &.without-border {
+        border-top: 0;
+    }
 }
 .content-panel-footer.without-padding {
     padding: 0;

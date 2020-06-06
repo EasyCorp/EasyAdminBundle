@@ -138,25 +138,27 @@
                         <div class="content">
                             {% block content_header_wrapper %}
                                 {% set has_help_message = (ea.crud.helpMessage ?? '') is not empty %}
-                                <section class="content-header {{ has_help_message ? 'has-content-help' }}">
+                                <section class="content-header">
                                     {% block content_header %}
                                         <div class="d-flex flex-row justify-content-between align-content-center w-100">
                                             <div class="content-header-title">
-                                                <h1 class="title">{% block content_title %}{% endblock %}</h1>
+                                                <h1 class="title">
+                                                    {% block content_title %}{% endblock %}
+
+                                                    {% block content_help %}
+                                                        {% if has_help_message %}
+                                                            <span class="content-header-help">
+                                                                <i class="far fa-question-circle" data-toggle="tooltip" title="{{ ea.crud.helpMessage|e('html_attr') }}"></i>
+                                                            </span>
+                                                        {% endif %}
+                                                    {% endblock %}
+                                                </h1>
                                             </div>
 
                                             {% block page_actions_wrapper %}
                                                 <div class="page-actions">{% block page_actions %}{% endblock %}</div>
                                             {% endblock %}
                                         </div>
-
-                                        {% block content_help %}
-                                            {% if has_help_message %}
-                                                <div class="content-header-help">
-                                                    {{ ea.crud.helpMessage|trans|raw }}
-                                                </div>
-                                            {% endif %}
-                                        {% endblock content_help %}
                                     {% endblock content_header %}
                                 </section>
                             {% endblock content_header_wrapper %}

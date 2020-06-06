@@ -18,54 +18,11 @@
 {% endblock %}
 
 {% block page_actions %}
-    {% block search %}
-        {% if ea.crud.isSearchEnabled %}
-            <div class="form-action form-action-search">
-                <form method="get">
-                    {% block search_form %}
-                        {# reset the referrer and page number whenever a new query is performed #}
-                        {% set query_parameters = ea.request.query.all|merge({
-                            referrer: null, page: 1,
-                        }) %}
-
-                        {# browsers remove the query string when submitting forms using GET;
-                           that's why all query string parameters are added as hidden form fields #}
-                        {% for paramName, paramValue in query_parameters|ea_flatten_array %}
-                            <input type="hidden" name="{{ paramName }}" value="{{ paramValue }}">
-                        {% endfor %}
-
-                        <div class="form-group">
-                            <div class="form-widget">
-                                <input class="form-control" type="search" name="query" value="{{ app.request.get('query') ?? '' }}" placeholder="{{ 'action.search'|trans(ea.i18n.translationParameters, 'EasyAdminBundle') }}">
-                            </div>
-                        </div>
-                    {% endblock %}
-                </form>
-            </div>
-        {% endif %}
-    {% endblock search %}
-
-    {% block filters %}
-        {% if filters|length > 0 %}
-            {% set applied_filters = ea.request.query.get('filters')|default([])|keys %}
-            <div class="btn-group action-filters">
-                <a href="{{ ea_url().setAction('renderFilters').includeReferrer() }}" class="btn btn-secondary btn-labeled btn-labeled-right action-filters-button {{ applied_filters ? 'action-filters-applied' }}" data-modal="#modal-filters">
-                    <i class="fa fa-filter fa-fw"></i> {{ 'filter.title'|trans(ea.i18n.translationParameters, 'EasyAdminBundle') }}{% if applied_filters %} <span class="text-primary">({{ applied_filters|length }})</span>{% endif %}
-                </a>
-                {% if applied_filters %}
-                    <a href="{{ ea_url().unset('filters') }}" class="btn btn-secondary action-filters-reset">
-                        <i class="fa fa-close"></i>
-                    </a>
-                {% endif %}
-            </div>
-        {% endif %}
-
-        {% block global_actions %}
-            {% for action in global_actions %}
-                {{ include(action.templatePath, { action: action }, with_context = false) }}
-            {% endfor %}
-        {% endblock global_actions %}
-    {% endblock filters %}
+    {% block global_actions %}
+        {% for action in global_actions %}
+            {{ include(action.templatePath, { action: action }, with_context = false) }}
+        {% endfor %}
+    {% endblock global_actions %}
 {% endblock page_actions %}
 
 {% block content_header %}
@@ -87,10 +44,66 @@
     {% set sort_field_name = app.request.get('sort')|keys|first %}
     {% set sort_order = app.request.get('sort')|first %}
     {% set some_results_are_hidden = false %}
+    {% set has_footer = entities|length != 0 %}
+    {% set has_search = ea.crud.isSearchEnabled %}
+    {% set has_filters = filters|length > 0 %}
+    {% set has_datagrid_tools = has_search or has_filters %}
 
     <div class="content-panel">
-        <div class="content-panel-body without-padding without-header {{ entities|length == 0 ? 'without-footer' }}">
-            <table class="table datagrid">
+        <div class="content-panel-body with-rounded-top with-min-h-250 without-padding {{ not has_footer ? 'without-footer' }}">
+
+            {% if has_datagrid_tools %}
+                <div class="datagrid-header-tools">
+                    <div class="datagrid-search">
+                        {% block search %}
+                            {% if has_search %}
+                                <div class="form-action form-action-search">
+                                    <form method="get">
+                                        {% block search_form %}
+                                            {# reset the referrer and page number whenever a new query is performed #}
+                                            {% set query_parameters = ea.request.query.all|merge({
+                                                referrer: null, page: 1,
+                                            }) %}
+
+                                            {# browsers remove the query string when submitting forms using GET;
+                                               that's why all query string parameters are added as hidden form fields #}
+                                            {% for paramName, paramValue in query_parameters|ea_flatten_array %}
+                                                <input type="hidden" name="{{ paramName }}" value="{{ paramValue }}">
+                                            {% endfor %}
+
+                                            <div class="form-group">
+                                                <div class="form-widget">
+                                                    <input class="form-control" type="search" name="query" value="{{ app.request.get('query') ?? '' }}" placeholder="{{ 'action.search'|trans(ea.i18n.translationParameters, 'EasyAdminBundle') }}">
+                                                </div>
+                                            </div>
+                                        {% endblock %}
+                                    </form>
+                                </div>
+                            {% endif %}
+                        {% endblock search %}
+                    </div>
+
+                    <div class="datagrid-filters">
+                        {% block filters %}
+                    {% if filters|length > 0 %}
+                        {% set applied_filters = ea.request.query.get('filters')|default([])|keys %}
+                        <div class="btn-group action-filters">
+                            <a href="{{ ea_url().setAction('renderFilters').includeReferrer() }}" class="btn btn-secondary btn-labeled btn-labeled-right action-filters-button {{ applied_filters ? 'action-filters-applied' }}" data-modal="#modal-filters">
+                                <i class="fa fa-filter fa-fw"></i> {{ 'filter.title'|trans(ea.i18n.translationParameters, 'EasyAdminBundle') }}{% if applied_filters %} <span class="text-primary">({{ applied_filters|length }})</span>{% endif %}
+                            </a>
+                            {% if applied_filters %}
+                                <a href="{{ ea_url().unset('filters') }}" class="btn btn-secondary action-filters-reset">
+                                    <i class="fa fa-close"></i>
+                                </a>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% endblock filters %}
+                    </div>
+                </div>
+            {% endif %}
+
+            <table class="table datagrid {{ not has_datagrid_tools ? 'with-rounded-top with-large-header' }} {{ not has_footer ? 'with-rounded-bottom' }}">
                 <thead>
                 {% block table_head %}
                     <tr>
@@ -187,7 +200,7 @@
         </div>
 
         {% if entities|length > 0 %}
-            <div class="content-panel-footer without-padding">
+            <div class="content-panel-footer without-padding without-border">
                 {% block paginator %}
                     {{ include(ea.templatePath('crud/paginator')) }}
                 {% endblock paginator %}

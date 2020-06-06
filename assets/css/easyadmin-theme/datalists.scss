@@ -1,6 +1,11 @@
 // Datalists (used in the DETAIL page)
 // ----------------------------------------------------------------------------
 
+dl.datalist {
+  border-radius: var(--border-radius);
+  margin-bottom: 0;
+  overflow: hidden; // this is needed for the border-radius field
+}
 dl.datalist .data-row {
   background: var(--white);
   display: flex;

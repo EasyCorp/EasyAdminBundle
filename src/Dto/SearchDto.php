@@ -60,9 +60,9 @@ final class SearchDto
     }
 
     /**
-     * @return string[]
+     * @return string[]|null
      */
-    public function getSearchableProperties(): array
+    public function getSearchableProperties(): ?array
     {
         return $this->searchableProperties;
     }

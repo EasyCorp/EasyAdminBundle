@@ -97,12 +97,12 @@
 body.ea-sidebar-width-compact .main-sidebar {
     overflow: visible;
 
-    @media(min-width: 992px) {
+    @media(min-width: 1024px) {
         width: 24px;
     }
 }
 
-@media(min-width: 992px) {
+@media(min-width: 1024px) {
     body.ea-sidebar-width-compact .sidebar-menu a {
         padding: 7px 5px 7px 0;
     }

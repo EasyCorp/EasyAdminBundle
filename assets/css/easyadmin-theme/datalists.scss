@@ -13,7 +13,7 @@ dl.datalist .data-row {
   align-items: flex-start;
   padding: 15px 20px;
 }
-@media(min-width: 992px) {
+@media(min-width: 1024px) {
   dl.datalist .data-row {
     flex-wrap: nowrap;
   }
@@ -31,7 +31,7 @@ dl.datalist dd {
   margin-bottom: 0;
   padding-right: 10px;
 }
-@media(min-width: 992px) {
+@media(min-width: 1024px) {
   dl.datalist dd {
     flex: 20% 0 0;
   }

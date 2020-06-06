@@ -26,7 +26,7 @@ html[dir="rtl"] .page-item:last-child .page-link {
     border-bottom-right-radius: 0;
 }
 
-@media (min-width: 992px) {
+@media (min-width: 1024px) {
     html[dir="rtl"].ea-sidebar-width-compact .sidebar-menu > li:hover > .treeview-menu,
     html[dir="rtl"].ea-sidebar-width-compact .sidebar-menu > li:hover > a > span {
         left: unset;

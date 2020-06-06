@@ -55,9 +55,9 @@ pre {
     ;
     margin: 20px 15px;
 
-    @media(min-width: 992px) {
-        grid-template-columns: fit-content(var(--sidebar-width)) auto;
-        grid-column-gap: 35px;
+    @media(min-width: 1024px) {
+        grid-template-columns: var(--sidebar-width) auto;
+        grid-column-gap: 15px;
         grid-template-areas:
             "header   header"
             "sidebar  content-wrapper"
@@ -66,13 +66,19 @@ pre {
         margin-right: auto;
         width: calc(100% - 2 * 20px);
     }
+
+    @media(min-width: 1280px) {
+        grid-column-gap: 35px;
+    }
 }
 
 body:not(.ea-content-width-full) .wrapper {
     max-width: var(--body-max-width);
 }
 body.ea-sidebar-width-compact .wrapper {
-    @media(min-width: 992px) {
+    grid-column-gap: 25px;
+
+    @media(min-width: 1024px) {
         grid-template-columns: 24px auto;
     }
 }
@@ -80,7 +86,7 @@ body.ea-sidebar-width-compact .wrapper {
 .main-header {
     display: flex;
     justify-content: space-between;
-    @media(min-width: 992px) {
+    @media(min-width: 1024px) {
         padding-right: 10px; // same as the width of #content-resizer-handler
     }
 }
@@ -114,7 +120,7 @@ body.ea-sidebar-width-compact .wrapper {
     padding: 0;
     width: 24px;
 
-    @media(min-width: 992px) {
+    @media(min-width: 1024px) {
         display: none;
     }
 }
@@ -132,7 +138,7 @@ body.ea-sidebar-width-compact .wrapper {
     z-index: $zindex-modal-backdrop + 1;
     width: calc(2 * 20px + var(--sidebar-width));
 
-    @media(min-width: 992px) {
+    @media(min-width: 1024px) {
         height: unset;
         padding: 0;
         position: static;
@@ -200,7 +206,7 @@ body.ea-mobile-sidebar-visible .main-sidebar {
     grid-template-columns: 0 auto 0;
     margin-top: -14px;
 
-    @media(min-width: 992px) {
+    @media(min-width: 1024px) {
         grid-template-columns: 10px auto 10px;
     }
 }
@@ -218,7 +224,7 @@ body.ea-mobile-sidebar-visible .main-sidebar {
         background: rgba(0, 0, 0, 0.1) center no-repeat url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="8" viewBox="0 0 320 512"><path fill="rgba(0, 0, 0, 0.7)" d="M96 32H32C14.33 32 0 46.33 0 64v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32V64c0-17.67-14.33-32-32-32zm0 160H32c-17.67 0-32 14.33-32 32v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32v-64c0-17.67-14.33-32-32-32zm0 160H32c-17.67 0-32 14.33-32 32v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32v-64c0-17.67-14.33-32-32-32zM288 32h-64c-17.67 0-32 14.33-32 32v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32V64c0-17.67-14.33-32-32-32zm0 160h-64c-17.67 0-32 14.33-32 32v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32v-64c0-17.67-14.33-32-32-32zm0 160h-64c-17.67 0-32 14.33-32 32v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32v-64c0-17.67-14.33-32-32-32z"></path></svg>');
     }
 
-    @media(min-width: 992px) {
+    @media(min-width: 1024px) {
         display: block;
     }
 }

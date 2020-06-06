@@ -27,7 +27,7 @@ input[disabled] {
     align-self: self-start;
 }
 
-@media(min-width: 992px) {
+@media(min-width: 1024px) {
     .form-group label,
     .form-group legend.col-form-label {
         flex: 30% 0 0;
@@ -73,7 +73,7 @@ label.form-check-label {
     flex-direction: column;
 }
 
-@media(min-width: 992px) {
+@media(min-width: 1024px) {
     .form-widget {
         flex: 0 0 55%;
         padding-left: 5px;
@@ -149,7 +149,7 @@ label.form-check-label {
     position: static;
 }
 
-@media(min-width: 992px) {
+@media(min-width: 1024px) {
     .field-boolean .form-widget {
         margin-left: calc(30% + 5px);
     }

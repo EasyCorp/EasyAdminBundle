@@ -17,9 +17,7 @@
         of your Dashboard. To do that, open the following file in your editor:
     </p>
 
-    <p>
-        <code>{{ dashboard_controller_filepath }}</code>
-    </p>
+    <pre>{{ dashboard_controller_filepath }}</pre>
 
     <p>
         Then, add the following method to it to customize the Dashboard start page:
@@ -36,14 +34,16 @@ class {{ dashboard_controller_class }} extends AbstractDashboardController
     /**
      * @Route("/admin")
      */
-    public function index(CrudUrlGenerator $crudUrlGenerator): Response
+    public function index(): Response
     {
         // redirect to some CRUD controller
-        return $crudUrlGenerator->build()->setController(OneOfYourCrudController::class)->generateUrl();
+        $routeBuilder = $this->get(CrudUrlGenerator::class)->build();
+
+        return $this->redirect($routeBuilder->setController(OneOfYourCrudController::class)->generateUrl());
 
         // you can also redirect to different pages depending on the current user
         if ('jane' === $this->getUser()->getUsername()) {
-            return '...';
+            return $this->redirect('...');
         }
 
         // you can also render some template to display a proper Dashboard

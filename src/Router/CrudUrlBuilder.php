@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Router;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -128,6 +129,11 @@ class CrudUrlBuilder
         if (null !== $crudControllerFqcn = $this->get('crudControllerFqcn')) {
             $this->set('crudId', $this->crudControllers->findCrudIdByCrudFqcn($crudControllerFqcn));
             $this->unset('crudControllerFqcn');
+        }
+
+        // this avoids forcing users to always be explicit about the action to execute
+        if (null !== $this->get('crudId') && null === $this->get('crudAction')) {
+            $this->set('crudAction', Action::INDEX);
         }
 
         // this removes any parameter with a NULL value

@@ -11,6 +11,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenu;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,6 +26,13 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 abstract class AbstractDashboardController extends AbstractController implements DashboardControllerInterface
 {
+    public static function getSubscribedServices()
+    {
+        return array_merge(parent::getSubscribedServices(), [
+            CrudUrlGenerator::class => '?'.CrudUrlGenerator::class,
+        ]);
+    }
+
     /**
      * @Route("/admin")
      */

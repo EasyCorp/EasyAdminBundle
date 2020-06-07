@@ -34,30 +34,40 @@ Actions are configured in the ``configureActions()`` method of your
         }
     }
 
-These are the actions included by default in each page:
-
-==========  ===================================================
-Page        Default Actions
-==========  ===================================================
-``detail``  ``delete``, ``new``, ``index``
-``edit``    ``index``, ``delete``
-``index``   ``delete``, ``detail``, ``new``
-``new``     ``index``
-==========  ===================================================
-
 Action Names and Constants
 --------------------------
 
-Some methods require as argument the name of some action. You can use a string
-with the action name (``'index'``, ``'detail'``, ``'edit'``, etc.). If you prefer
-to use constants for these values, use ``Action::INDEX``, ``Action::DETAIL``,
+Some methods require as argument the name of some action. In addition to plain
+strings with the action names (``'index'``, ``'detail'``, ``'edit'``, etc.) you
+can also use constants for these values: ``Action::INDEX``, ``Action::DETAIL``,
 ``Action::EDIT``, etc. (they are defined in the ``EasyCorp\Bundle\EasyAdminBundle\Config\Action`` class).
+
+Built-in Actions
+----------------
+
+These are the built-in actions included by default in each page:
+
+* Page ``Crud::PAGE_INDEX`` (``'index'``):
+  * Added by default: ``Action::EDIT``, ``Action::DELETE``, ``Action::NEW``
+  * Other available actions: ``Action::DETAIL``
+
+* Page ``Crud::PAGE_DETAIL`` (``'detail'``):
+  * Added by default: ``Action::EDIT``, ``Action::DELETE``, ``Action::INDEX``
+  * Other available actions: -
+
+* Page ``Crud::PAGE_EDIT`` (``'edit'``):
+  * Added by default: ``Action::SAVE_AND_RETURN``, ``Action::SAVE_AND_CONTINUE``
+  * Other available actions: ``Action::DELETE``, ``Action::INDEX``
+
+* Page ``Crud::PAGE_NEW`` (``'new'``):
+  * Added by default: ``Action::SAVE_AND_RETURN``, ``Action::SAVE_AND_ADD_ANOTHER``
+  * Other available actions: ``Action::SAVE_AND_CONTINUE``, ``Action::INDEX``
 
 Adding Actions
 --------------
 
-Use the ``add()`` method to add built-in actions (those defined as ``Action::*``
-constants) and your own custom actions (explained later in this article)::
+Use the ``add()`` method to add any built-in actions and your own custom actions
+(which are explained later in this article)::
 
     use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
     use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;

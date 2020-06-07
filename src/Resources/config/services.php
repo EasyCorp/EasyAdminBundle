@@ -118,8 +118,9 @@ return static function (ContainerConfigurator $container) {
             ->tag('data_collector', ['id' => 'easyadmin', 'template' => '@EasyAdmin/inspector/data_collector.html.twig'])
 
         ->set(ExceptionListener::class)
-            ->arg(0, new Reference(AdminContextProvider::class))
-            ->arg(1, new Reference('twig'))
+            ->arg(0, '%kernel.debug%')
+            ->arg(1, new Reference(AdminContextProvider::class))
+            ->arg(2, new Reference('twig'))
             ->tag('kernel.event_listener', ['event' => 'kernel.exception', 'priority' => -64])
 
         ->set(EasyAdminTwigExtension::class)

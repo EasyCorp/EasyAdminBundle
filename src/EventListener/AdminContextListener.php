@@ -96,7 +96,7 @@ class AdminContextListener
      * Request is associated to EasyAdmin if one of these conditions meet:
      *  * current controller is an instance of DashboardControllerInterface (the single point of
      *    entry for all requests directly served by EasyAdmin)
-     *  * the contextId passed via the query string parameter is not null
+     *  * the contextId passed via the 'eaContext' query string parameter is not null
      *    (that's used in menu items that link to Symfony routes not served by EasyAdmin, so
      *    those routes can still be associated with some EasyAdmin dashboard to display the menu, etc.).
      */

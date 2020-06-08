@@ -412,8 +412,8 @@ for a given postal address. This is the class you could create for the field::
                 ->addCssClass('field-map')
                 // these methods allow to define the web assets loaded when the
                 // field is displayed in any CRUD page (index/detail/edit/new)
-                ->addCssFile('js/admin/field-map.css')
-                ->addJsFile('js/admin/field-map.js')
+                ->addCssFiles('js/admin/field-map.css')
+                ->addJsFiles('js/admin/field-map.js')
             ;
         }
     }

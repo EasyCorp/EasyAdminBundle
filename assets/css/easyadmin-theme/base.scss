@@ -234,7 +234,7 @@ body.ea-mobile-sidebar-visible .main-sidebar {
     display: flex;
     flex-direction: column;
     margin-bottom: 2px;
-    padding: 10px 0 15px;
+    padding: 10px 0;
     position: sticky;
     top: 0;
     z-index: var(--zindex-800);
@@ -317,8 +317,9 @@ body.ea-mobile-sidebar-visible .main-sidebar {
     background-repeat: no-repeat;
     background-size: 13px 13px;
     background-position: 10px 8px;
+    max-width: none;
     padding-left: 32px;
-    width: 360px;
+    width: 480px;
 }
 
 .with-rounded-top {

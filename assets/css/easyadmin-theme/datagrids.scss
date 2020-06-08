@@ -17,14 +17,10 @@ table.datagrid {
 .datagrid thead a, .datagrid thead span {
   color: var(--text-color-dark);
   display: block;
-  font-size: var(--font-size-sm);
   font-weight: 500;
   line-height: 1.357;
-  padding: 6px 8px;
+  padding: 12px 8px;
   white-space: nowrap;
-}
-.datagrid.with-large-header thead a, .datagrid.with-large-header thead span {
-  padding: 10px;
 }
 .datagrid th:first-child a, .datagrid th:first-child span, .datagrid td:first-child {
   padding-left: 20px;
@@ -95,7 +91,7 @@ table.datagrid {
 
 .datagrid .no-results {
   border-bottom: 0;
-  padding: 60px 0;
+  padding: 96px 0;
   text-align: center;
 }
 .datagrid .no-results:hover {
@@ -117,10 +113,11 @@ table.datagrid {
 }
 
 .datagrid-header-tools {
-  background: var(--table-header-bg);
   display: flex;
-  justify-content: space-between;
-  padding: 10px 18px 4px;
+  padding: 0px 0px 10px;
+}
+.datagrid-header-tools .datagrid-search {
+  padding-right: 15px;
 }
 
 #modal-filters .modal-dialog {

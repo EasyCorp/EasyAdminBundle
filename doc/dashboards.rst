@@ -440,7 +440,10 @@ current user object. The user avatar is a generic avatar icon. Use the
 
         public function configureUserMenu(UserInterface $user): UserMenu
         {
-            return UserMenu::new()
+            // Usually it's better to call the parent method because that gives you a
+            // user menu with some menu items already created ("sign out", "exit impersonation", etc.)
+            // if you prefer to create the user menu from scratch, use: return UserMenu::new()->...
+            return parent::configureUserMenu($user)
                 // use the given $user object to get the user name
                 ->setName($user->getFullName())
                 // use this method if you don't want to display the name of the user

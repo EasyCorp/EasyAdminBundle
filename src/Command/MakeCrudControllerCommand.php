@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Command;
 
-use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Maker\ClassMaker;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -21,7 +21,7 @@ class MakeCrudControllerCommand extends Command
     private $classMaker;
     private $doctrine;
 
-    public function __construct(ClassMaker $classMaker, Registry $doctrine, string $name = null)
+    public function __construct(ClassMaker $classMaker, ManagerRegistry $doctrine, string $name = null)
     {
         parent::__construct($name);
         $this->classMaker = $classMaker;

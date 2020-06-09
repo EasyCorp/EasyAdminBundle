@@ -23,7 +23,7 @@ final class TextConfigurator implements FieldConfiguratorInterface
 
     public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
     {
-        if ($field instanceof TextareaField) {
+        if (TextareaField::class === $field->getFieldFqcn()) {
             $field->setFormTypeOptionIfNotSet('attr.rows', $field->getCustomOption(TextareaField::OPTION_NUM_OF_ROWS));
         }
 

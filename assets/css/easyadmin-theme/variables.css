@@ -7,7 +7,7 @@
  --------------------------------------------------------------------------- */
 :root {
     --body-max-width: 1440px;
-    --sidebar-width: 180px;
+    --sidebar-max-width: 190px;
 
     --font-family-sans-serif: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;

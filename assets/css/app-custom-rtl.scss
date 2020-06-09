@@ -31,6 +31,6 @@ html[dir="rtl"] .page-item:last-child .page-link {
     html[dir="rtl"].ea-sidebar-width-compact .sidebar-menu > li:hover > a > span {
         left: unset;
         right: 37px;
-        width: calc(var(--sidebar-width) - 37px);
+        width: calc(var(--sidebar-max-width) - 37px);
     }
 }

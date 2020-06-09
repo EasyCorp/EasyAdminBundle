@@ -30,9 +30,15 @@ input[disabled] {
 @media(min-width: 1024px) {
     .form-group label,
     .form-group legend.col-form-label {
-        flex: 30% 0 0;
+        flex: 15% 0 0;
         margin: 5px 5px 0 0;
         text-align: right;
+    }
+}
+@media(min-width: 1280px) {
+    .form-group label,
+    .form-group legend.col-form-label {
+        flex: 25% 0 0;
     }
 }
 
@@ -78,6 +84,11 @@ label.form-check-label {
         flex: 0 0 55%;
         padding-left: 5px;
     }
+
+    .full-width .form-widget {
+        flex: 1;
+        padding-right: 45px;
+    }
 }
 
 .form-widget .form-help {
@@ -99,6 +110,12 @@ label.form-check-label {
     white-space: nowrap;
     word-break: keep-all;
     transition: box-shadow .08s ease-in, color .08s ease-in;
+}
+
+.full-width .form-widget input.form-control,
+.full-width .form-widget textarea.form-control,
+.full-width .form-widget select.form-control {
+    max-width: none;
 }
 
 .form-widget .form-control + .input-group-append {
@@ -151,7 +168,12 @@ label.form-check-label {
 
 @media(min-width: 1024px) {
     .field-boolean .form-widget {
-        margin-left: calc(30% + 5px);
+        margin-left: calc(15% + 5px);
+    }
+}
+@media(min-width: 1280px) {
+    .field-boolean .form-widget {
+        margin-left: calc(25% + 5px);
     }
 }
 
@@ -596,12 +618,4 @@ form .invalid-feedback > .d-block + .d-block {
     right: 0;
     text-align: right;
     top: 0;
-}
-
-// EasyAdmin Code Editor
-.field-ea_code_editor .form-widget {
-    flex-basis: 65%;
-}
-.form-group.field-code_editor .form-control {
-    height: auto;
 }

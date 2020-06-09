@@ -35,6 +35,15 @@
   color: var(--white);
 }
 
+// CodeEditor field
+.field-code_editor .form-widget {
+  flex: 1;
+}
+.field-code_editor dt {
+   max-height: 480px;
+   overflow-y: auto;
+ }
+
 // Collection field
 .form-widget-compound .collection-empty {
   margin-bottom: 10px;

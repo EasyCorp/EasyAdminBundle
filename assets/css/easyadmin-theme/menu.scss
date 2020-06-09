@@ -117,7 +117,7 @@ body.ea-sidebar-width-compact .main-sidebar {
     body.ea-sidebar-width-compact .sidebar-menu li:hover {
         background: var(--body-bg);
         border-radius: var(--border-radius);
-        width: var(--sidebar-width);
+        width: var(--sidebar-max-width);
         z-index: $zindex-modal-backdrop;
     }
 
@@ -169,7 +169,7 @@ body.ea-sidebar-width-compact .main-sidebar {
         display: block !important;
         position: absolute;
         left: 32px;
-        width: calc(var(--sidebar-width) - 32px);
+        width: calc(var(--sidebar-max-width) - 32px);
     }
     .ea-sidebar-width-compact .sidebar-menu > li:hover > .treeview-menu {
         top: 32px;

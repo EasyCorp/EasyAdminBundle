@@ -56,7 +56,7 @@ pre {
     margin: 20px 15px;
 
     @media(min-width: 1024px) {
-        grid-template-columns: var(--sidebar-width) auto;
+        grid-template-columns: fit-content(var(--sidebar-max-width)) auto;
         grid-column-gap: 15px;
         grid-template-areas:
             "header   header"
@@ -128,7 +128,7 @@ body.ea-sidebar-width-compact .wrapper {
 .main-sidebar {
     background: var(--body-bg);
     height: 100vh;
-    left: calc(0px - 2 * 20px - var(--sidebar-width));
+    left: calc(0px - 2 * 20px - var(--sidebar-max-width));
     overflow-x: hidden;
     overflow-y: auto;
     padding: 15px 20px;
@@ -136,14 +136,14 @@ body.ea-sidebar-width-compact .wrapper {
     top: 0;
     transition: left 0.3s;
     z-index: $zindex-modal-backdrop + 1;
-    width: calc(2 * 20px + var(--sidebar-width));
+    width: calc(2 * 20px + var(--sidebar-max-width));
 
     @media(min-width: 1024px) {
         height: unset;
         padding: 0;
         position: static;
         z-index: $zindex-modal-backdrop - 1;
-        width: unset;
+        width: initial;
     }
 }
 body.ea-mobile-sidebar-visible .main-sidebar {
@@ -364,7 +364,11 @@ body.ea-mobile-sidebar-visible .main-sidebar {
 
 .content-panel-body {
     background: var(--white);
-    padding: 18px 20px;
+    padding: 15px 20px;
+
+    @media(min-width: 1024px) {
+        padding: 18px 25px;
+    }
 
     &.with-min-h-250 {
         min-height: 250px;

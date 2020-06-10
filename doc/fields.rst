@@ -252,6 +252,7 @@ These are all the built-in fields provided by EasyAdmin:
 
 .. class:: list-config-options list-config-options--complex
 
+* ``ArrayField``
 * ``AssociationField``
 * ``AvatarField``
 * ``BooleanField``

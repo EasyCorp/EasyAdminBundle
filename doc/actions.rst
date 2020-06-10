@@ -48,20 +48,20 @@ Built-in Actions
 These are the built-in actions included by default in each page:
 
 * Page ``Crud::PAGE_INDEX`` (``'index'``):
-  * Added by default: ``Action::EDIT``, ``Action::DELETE``, ``Action::NEW``
-  * Other available actions: ``Action::DETAIL``
+    * Added by default: ``Action::EDIT``, ``Action::DELETE``, ``Action::NEW``
+    * Other available actions: ``Action::DETAIL``
 
 * Page ``Crud::PAGE_DETAIL`` (``'detail'``):
-  * Added by default: ``Action::EDIT``, ``Action::DELETE``, ``Action::INDEX``
-  * Other available actions: -
+    * Added by default: ``Action::EDIT``, ``Action::DELETE``, ``Action::INDEX``
+    * Other available actions: -
 
 * Page ``Crud::PAGE_EDIT`` (``'edit'``):
-  * Added by default: ``Action::SAVE_AND_RETURN``, ``Action::SAVE_AND_CONTINUE``
-  * Other available actions: ``Action::DELETE``, ``Action::INDEX``
+    * Added by default: ``Action::SAVE_AND_RETURN``, ``Action::SAVE_AND_CONTINUE``
+    * Other available actions: ``Action::DELETE``, ``Action::INDEX``
 
 * Page ``Crud::PAGE_NEW`` (``'new'``):
-  * Added by default: ``Action::SAVE_AND_RETURN``, ``Action::SAVE_AND_ADD_ANOTHER``
-  * Other available actions: ``Action::SAVE_AND_CONTINUE``, ``Action::INDEX``
+    * Added by default: ``Action::SAVE_AND_RETURN``, ``Action::SAVE_AND_ADD_ANOTHER``
+    * Other available actions: ``Action::SAVE_AND_CONTINUE``, ``Action::INDEX``
 
 Adding Actions
 --------------

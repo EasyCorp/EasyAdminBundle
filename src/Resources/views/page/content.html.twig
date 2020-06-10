@@ -6,7 +6,7 @@
 
 {% block content %}
     {% set has_content_title = block('content_title') is defined and block('content_title')|trim is not empty %}
-    {% set has_content_subtitle = block('content_subtitle') is defined and block('content_subtitle')|trim is not empty %}
+    {% set has_content_actions = block('content_actions') is defined and block('content_actions')|trim is not empty %}
     {% set has_content_footer = block('content_footer') is defined and block('content_footer')|trim is not empty %}
 
     <div class="content">
@@ -14,17 +14,19 @@
             {% if has_content_title or has_content_subtitle %}
                 <section class="content-header">
                     {% block content_header %}
-                        {% if has_content_title %}
+                        {% if has_content_title or has_content_actions %}
                             <div class="d-flex flex-row justify-content-between align-content-center w-100">
                                 <div class="content-header-title">
-                                    <h1 class="title">{% block content_title %}{% endblock %}</h1>
+                                    {% if has_content_title %}
+                                        <h1 class="title">
+                                            {% block content_title %}{% endblock %}
+                                        </h1>
+                                    {% endif %}
                                 </div>
-                            </div>
-                        {% endif %}
 
-                        {% if has_content_subtitle %}
-                            <div class="content-header-help">
-                                {{ block('content_subtitle') }}
+                                {% block page_actions_wrapper %}
+                                    <div class="page-actions">{% block page_actions %}{% endblock %}</div>
+                                {% endblock %}
                             </div>
                         {% endif %}
                     {% endblock content_header %}

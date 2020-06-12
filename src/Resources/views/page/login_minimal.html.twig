@@ -1,0 +1,28 @@
+{# This is a template used internally by EasyAdmin. Don't use it
+   directly in your applications. Instead, use the 'login.html.twig' template #}
+{% trans_default_domain translation_domain ?? 'messages' %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noodp, noimageindex, notranslate, nocache" />
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <meta name="generator" content="EasyAdmin" />
+
+        <title>{{ block('page_title')|striptags|raw }}</title>
+
+        {% block head_stylesheets %}
+            <link rel="stylesheet" href="{{ asset('bundles/easyadmin/app.css') }}">
+        {% endblock %}
+
+        {% block head_javascript %}
+            <script src="{{ asset('bundles/easyadmin/app.js') }}"></script>
+        {% endblock head_javascript %}
+    </head>
+
+    <body id="{% block body_id %}{% endblock %}" class="ea {% block body_class %}{% endblock %}">
+        {% block wrapper_wrapper %}{% endblock wrapper_wrapper %}
+    </body>
+</html>
+

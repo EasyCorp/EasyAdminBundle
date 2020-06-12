@@ -391,7 +391,7 @@ You can use the ``EasyCorp\Bundle\EasyAdminBundle\Field\FieldTrait`` for that.
 Imagine that you want to create a custom ``MapField`` that renders a full map
 for a given postal address. This is the class you could create for the field::
 
-    namespace Add\Admin\Field;
+    namespace App\Admin\Field;
 
     use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
     use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -461,7 +461,7 @@ Imagine that the ``MapField`` defined in the previous section allows to use
 either Google Maps or OpenStreetMap to render the maps. You can add that
 option as follows::
 
-    namespace Add\Admin\Field;
+    namespace App\Admin\Field;
 
     use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
     use Symfony\Component\Form\Extension\Core\Type\TextareaType;

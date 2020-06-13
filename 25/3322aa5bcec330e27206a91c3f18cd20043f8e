@@ -1,0 +1,5 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2020-06-13T09:30:59Z
+
+At the end I created a "minimal login" page too because it was too difficult to make the normal login page work (because it extends the layout page, which uses the `ea` variable too). I tested inside/outside EasyAdmin and with/without config options and it worked for me in all cases, so hopefully this is now fixed.

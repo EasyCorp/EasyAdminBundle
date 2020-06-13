@@ -141,6 +141,7 @@ final class FieldFactory
         $newField = $newFieldFqcn::new($fieldDto->getProperty())->getAsDto();
 
         $newField->setFieldFqcn($newFieldFqcn);
+        $newField->setDisplayedOn($fieldDto->getDisplayedOn());
         $newField->setValue($fieldDto->getValue());
         $newField->setFormattedValue($fieldDto->getFormattedValue());
         $newField->setCssClass($fieldDto->getCssClass());

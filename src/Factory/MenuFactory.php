@@ -171,6 +171,10 @@ final class MenuFactory
             return '#';
         }
 
+        if (MenuItemDto::TYPE_URL === $menuItemType) {
+            return $menuItemDto->getLinkUrl();
+        }
+
         if (MenuItemDto::TYPE_LOGOUT === $menuItemType) {
             return $this->logoutUrlGenerator->getLogoutPath();
         }

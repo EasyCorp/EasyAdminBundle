@@ -5,30 +5,28 @@
 {% block body_class 'page-content page-content-with-padding' %}
 
 {% block content %}
-    {% set has_content_title = block('content_title') is defined and block('content_title')|trim is not empty %}
-    {% set has_content_actions = block('content_actions') is defined and block('content_actions')|trim is not empty %}
-    {% set has_content_footer = block('content_footer') is defined and block('content_footer')|trim is not empty %}
+    {% set has_page_title = block('page_title') is defined and block('page_title')|trim is not empty %}
+    {% set has_page_actions = block('page_actions') is defined and block('page_actions')|trim is not empty %}
+    {% set has_page_footer = block('page_footer') is defined and block('page_footer')|trim is not empty %}
 
     <div class="content">
         {% block content_header_wrapper %}
-            {% if has_content_title or has_content_subtitle %}
+            {% if has_page_title or has_page_actions %}
                 <section class="content-header">
                     {% block content_header %}
-                        {% if has_content_title or has_content_actions %}
-                            <div class="d-flex flex-row justify-content-between align-content-center w-100">
-                                <div class="content-header-title">
-                                    {% if has_content_title %}
-                                        <h1 class="title">
-                                            {% block content_title %}{% endblock %}
-                                        </h1>
-                                    {% endif %}
-                                </div>
-
-                                {% block page_actions_wrapper %}
-                                    <div class="page-actions">{% block page_actions %}{% endblock %}</div>
-                                {% endblock %}
+                        <div class="d-flex flex-row justify-content-between align-content-center w-100">
+                            <div class="content-header-title">
+                                {% if has_page_title %}
+                                    <h1 class="title">
+                                        {% block page_title %}{% endblock %}
+                                    </h1>
+                                {% endif %}
                             </div>
-                        {% endif %}
+
+                            {% block page_actions_wrapper %}
+                                <div class="page-actions">{% block page_actions %}{% endblock %}</div>
+                            {% endblock %}
+                        </div>
                     {% endblock content_header %}
                 </section>
             {% endif %}
@@ -36,13 +34,13 @@
 
         <section id="main">
             <div class="content-panel">
-                <div class="content-panel-body without-header {{ not has_content_footer ? 'without-footer' }}">
-                    {% block content_body %}{% endblock %}
+                <div class="content-panel-body without-header {{ not has_page_footer ? 'without-footer' }}">
+                    {% block page_content %}{% endblock %}
                 </div>
 
-                {% if has_content_footer %}
+                {% if has_page_footer %}
                     <section class="content-panel-footer without-padding">
-                        {{ block(content_footer) }}
+                        {{ block(page_footer) }}
                     </section>
                 {% endif %}
             </div>

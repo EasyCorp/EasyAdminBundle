@@ -2,7 +2,7 @@
 
 return [
     'page_title' => [
-        // 'dashboard' => '',
+        'dashboard' => 'Табло',
         'detail' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
         'edit' => 'Редактиране на %entity_label_singular% <small>(#%entity_short_id%)</small>',
         'index' => '%entity_label_plural%',
@@ -37,8 +37,8 @@ return [
     ],
 
     'field' => [
-        // 'code_editor.view_code' => '',
-        // 'text_editor.view_content' => '',
+        'code_editor.view_code' => 'Преглед на кода',
+        'text_editor.view_content' => 'Преглед на съдържание',
     ],
 
     'action' => [
@@ -50,22 +50,22 @@ return [
         'delete' => 'Изтриване',
         'cancel' => 'Отказ',
         'index' => 'Обратно към списъка',
-        // 'deselect' => '',
+        'deselect' => 'Премахване на избора',
         'add_new_item' => 'Добавяне на нов елемент',
         'remove_item' => 'Изтриване на елемента',
         'choose_file' => 'Избор на файл',
-        // 'close' => '',
-        // 'create' => '',
-        // 'create_and_add_another' => '',
-        // 'create_and_continue' => '',
-        // 'save' => '',
-        // 'save_and_continue' => '',
+        'close' => 'Затвори',
+        'create' => 'Създай',
+        'create_and_add_another' => 'Създай и добави нов',
+        'create_and_continue' => 'Създай и продължи',
+        'save' => 'Запиши',
+        'save_and_continue' => 'Запиши и продължи',
     ],
 
     'batch_action_modal' => [
         'title' => 'Ще приложите действието "%action_name%" към %num_items% елемент(и).',
         'content' => 'Не можете да отмените това действие.',
-        // 'action' => '',
+        'action' => 'Извърши',
     ],
 
     'delete_modal' => [
@@ -121,6 +121,6 @@ return [
         'entity_not_found' => 'Този елемент вече не е налице.',
         'entity_remove' => 'Този елемент не може да бъде изтрит, защото други елементи зависят от него.',
         'forbidden_action' => 'Заявеното действие не може да се изпълни за този елемент.',
-        // 'insufficient_entity_permission' => 'You don't have permission to access this item.',
+        'insufficient_entity_permission' => 'Нямате разрешение за достъп до този елемент.',
     ],
 ];

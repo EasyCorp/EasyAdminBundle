@@ -253,10 +253,11 @@ return static function (ContainerConfigurator $container) {
 
         ->set(ActionFactory::class)
             ->arg(0, new Reference(AdminContextProvider::class))
-            ->arg(1, new Reference(AuthorizationChecker::class))
-            ->arg(2, new Reference('translator'))
-            ->arg(3, new Reference('router'))
-            ->arg(4, new Reference(CrudUrlGenerator::class))
+            ->arg(1, new Reference(DashboardControllerRegistry::class))
+            ->arg(2, new Reference(AuthorizationChecker::class))
+            ->arg(3, new Reference('translator'))
+            ->arg(4, new Reference('router'))
+            ->arg(5, new Reference(CrudUrlGenerator::class))
 
         ->set(SecurityVoter::class)
             ->arg(0, new Reference(AuthorizationChecker::class))

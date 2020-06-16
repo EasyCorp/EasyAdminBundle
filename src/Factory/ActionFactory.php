@@ -9,6 +9,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionConfigDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Registry\DashboardControllerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,14 +24,16 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 final class ActionFactory
 {
     private $adminContextProvider;
+    private $dashboardRegistry;
     private $authChecker;
     private $translator;
     private $urlGenerator;
     private $crudUrlGenerator;
 
-    public function __construct(AdminContextProvider $adminContextProvider, AuthorizationCheckerInterface $authChecker, TranslatorInterface $translator, UrlGeneratorInterface $urlGenerator, CrudUrlGenerator $crudUrlGenerator)
+    public function __construct(AdminContextProvider $adminContextProvider, DashboardControllerRegistry $dashboardRegistry, AuthorizationCheckerInterface $authChecker, TranslatorInterface $translator, UrlGeneratorInterface $urlGenerator, CrudUrlGenerator $crudUrlGenerator)
     {
         $this->adminContextProvider = $adminContextProvider;
+        $this->dashboardRegistry = $dashboardRegistry;
         $this->authChecker = $authChecker;
         $this->translator = $translator;
         $this->urlGenerator = $urlGenerator;
@@ -91,6 +94,8 @@ final class ActionFactory
     private function processAction(string $pageName, ActionDto $actionDto, ?EntityDto $entityDto = null): ActionDto
     {
         $adminContext = $this->adminContextProvider->getContext();
+        $dashboardControllerFqcn = $adminContext->getDashboardControllerFqcn();
+        $adminContextId = $this->dashboardRegistry->getContextIdByControllerFqcn($dashboardControllerFqcn);
         $translationDomain = $adminContext->getI18n()->getTranslationDomain();
         $defaultTranslationParameters = $adminContext->getI18n()->getTranslationParameters();
         $currentPage = $adminContext->getCrud()->getCurrentPage();
@@ -114,7 +119,7 @@ final class ActionFactory
         $defaultTemplatePath = $adminContext->getTemplatePath('crud/action');
         $actionDto->setTemplatePath($actionDto->getTemplatePath() ?? $defaultTemplatePath);
 
-        $actionDto->setLinkUrl($this->generateActionUrl($currentPage, $adminContext->getRequest(), $actionDto, $entityDto));
+        $actionDto->setLinkUrl($this->generateActionUrl($adminContextId, $currentPage, $adminContext->getRequest(), $actionDto, $entityDto));
 
         if (!$actionDto->isGlobalAction() && \in_array($pageName, [Crud::PAGE_EDIT, Crud::PAGE_NEW], true)) {
             $actionDto->setHtmlAttribute('form', sprintf('%s-%s-form', $pageName, $entityDto->getName()));
@@ -123,7 +128,7 @@ final class ActionFactory
         return $actionDto;
     }
 
-    private function generateActionUrl(string $currentAction, Request $request, ActionDto $actionDto, ?EntityDto $entityDto = null): string
+    private function generateActionUrl(string $adminContextId, string $currentAction, Request $request, ActionDto $actionDto, ?EntityDto $entityDto = null): string
     {
         if (null !== $url = $actionDto->getUrl()) {
             if (\is_callable($url)) {
@@ -138,6 +143,8 @@ final class ActionFactory
             if (\is_callable($routeParameters) && null !== $entityInstance = $entityDto->getInstance()) {
                 $routeParameters = $routeParameters($entityInstance);
             }
+
+            $routeParameters = array_merge(['eaContext' => $adminContextId], $routeParameters);
 
             return $this->urlGenerator->generate($routeName, $routeParameters);
         }

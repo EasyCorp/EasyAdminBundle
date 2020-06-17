@@ -2,12 +2,6 @@
 {% use 'bootstrap_4_layout.html.twig' %}
 
 {% block form_start %}
-    {% if ea.crud is not null %}
-        {% set attr = attr|merge({
-            'class': [attr.class|default(''), 'ea-' ~ ea.crud.currentAction ~ '-form']|join(' '),
-        }) %}
-    {% endif %}
-
     {% if form.vars.errors|length > 0 %}
         {{ form_errors(form) }}
     {% endif %}

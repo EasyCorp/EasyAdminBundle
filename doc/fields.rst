@@ -67,7 +67,7 @@ creates fields automatically for them and applies the default config options::
 EasyAdmin transforms these generic ``Field`` objects into the specific objects
 used to display each type of property::
 
-    use EasyCorp\Bundle\EasyAdminBundle\Field;
+    use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 
     public function configureFields(string $pageName): iterable
     {
@@ -82,11 +82,11 @@ used to display each type of property::
 
 **Option 3.** Return the appropriate field objects to display each property::
 
-    use EasyCorp\Bundle\EasyAdminBundle\TextField;
-    use EasyCorp\Bundle\EasyAdminBundle\TextEditorField;
-    use EasyCorp\Bundle\EasyAdminBundle\MoneyField;
-    use EasyCorp\Bundle\EasyAdminBundle\IntegerField;
-    use EasyCorp\Bundle\EasyAdminBundle\DateTimeField;
+    use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+    use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
+    use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
+    use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
+    use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 
     public function configureFields(string $pageName): iterable
     {

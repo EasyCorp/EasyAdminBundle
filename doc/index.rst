@@ -22,14 +22,14 @@ there's a command to :doc:`upgrade from EasyAdmin 2 to EasyAdmin 3 automatically
 Table of Contents
 -----------------
 
-* :doc:`Creating Dashboards </dashboards>`
-* :doc:`CRUD controllers </crud>`
-* :doc:`Design Configuration </design>`
+* :doc:`Dashboards </dashboards>`
+* :doc:`CRUD Controllers </crud>`
+* :doc:`Design and Templates </design>`
 * :doc:`Fields </fields>`
 * :doc:`Filters </filters>`
 * :doc:`Actions </actions>`
-* :doc:`Protecting Backend Security </security>`
-* :doc:`Backend Customization Based on Events </events>`
+* :doc:`Security </security>`
+* :doc:`Events </events>`
 * :doc:`Upgrading from EasyAdmin 2 to 3 </upgrade>`
 
 Technical Requirements

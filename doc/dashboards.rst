@@ -7,9 +7,9 @@ Dashboards
         <strong class="title">WARNING:</strong>
 
         You are browsing the documentation for <strong>EasyAdmin 3.x</strong>,
-        which hasn't been released as a stable version yet. You are probably
-        using EasyAdmin 2.x in your application, so you can switch to
-        <a href="https://symfony.com/doc/2.x/bundles/EasyAdminBundle/index.html">EasyAdmin 2.x docs</a>.
+        which has just been released. Switch to
+        <a href="https://symfony.com/doc/2.x/bundles/EasyAdminBundle/index.html">EasyAdmin 2.x docs</a>
+        if your application has not been upgraded to EasyAdmin 3 yet.
     </div>
 
 **Dashboards** are the entry point of backends and they link to one or more
@@ -90,8 +90,8 @@ an explicit name for the route to simplify your code::
         // ...
     }
 
-If you don't want to use route annotations, you must configure the dashboard
-route using YAML, XML or PHP config in a separate file. For example, when using YAML:
+If you don't use annotations, you must configure the dashboard route using YAML,
+XML or PHP config in a separate file. For example, when using YAML:
 
 .. code-block:: yaml
 

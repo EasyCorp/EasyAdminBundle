@@ -7,9 +7,9 @@ Fields
         <strong class="title">WARNING:</strong>
 
         You are browsing the documentation for <strong>EasyAdmin 3.x</strong>,
-        which hasn't been released as a stable version yet. You are probably
-        using EasyAdmin 2.x in your application, so you can switch to
-        <a href="https://symfony.com/doc/2.x/bundles/EasyAdminBundle/index.html">EasyAdmin 2.x docs</a>.
+        which has just been released. Switch to
+        <a href="https://symfony.com/doc/2.x/bundles/EasyAdminBundle/index.html">EasyAdmin 2.x docs</a>
+        if your application has not been upgraded to EasyAdmin 3 yet.
     </div>
 
 Fields allow to display the contents of your Doctrine entities on each

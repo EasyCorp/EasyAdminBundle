@@ -300,7 +300,7 @@ method named ``createIndexQueryBuilder()`` to create the Doctrine query builder
 used to get the results dispalyed on the index listing. If you want to customize
 that listing, it's better to override the ``createIndexQueryBuilder()`` method
 instead of the entire ``index()`` method. There are many of these methods, so
-you should check the :class:`EasyCorp\\Bundle\\EasyAdminBundle\\Controller\\AbstractCrudController` class.
+you should check the ``EasyCorp\\Bundle\\EasyAdminBundle\\Controller\\AbstractCrudController`` class.
 
 The other alternative to customize CRUD actions is to use the
 :doc:`events triggered by EasyAdmin </events>`, such as ``BeforeCrudActionEvent``
@@ -353,7 +353,7 @@ The default CRUD actions implemented in ``AbstractCrudController`` don't end
 with the usual ``$this->render('...')`` instruction to render a Twig template
 and return its contents in a Symfony ``Response`` object.
 
-Instead, CRUD actions return a :class:`EasyCorp\\Bundle\\EasyAdminBundle\\Config\\KeyValueStore`
+Instead, CRUD actions return a ``EasyCorp\\Bundle\\EasyAdminBundle\\Config\\KeyValueStore``
 object with the variables passed to the template that renders the CRUD action
 contents. This ``KeyValueStore`` object is similar to Symfony's ``ParameterBag``
 object. It's like an object-oriented array with useful methods such as ``get()``,

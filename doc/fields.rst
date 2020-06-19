@@ -423,12 +423,12 @@ Next, create the template used to render the field in the ``index`` and ``detail
 :ref:`CRUD pages <crud-pages>`. The template can use any `Twig templating features`_
 and the following variables:
 
-* ``ea``, an :class:`EasyCorp\\Bundle\\EasyAdminBundle\\Context\\AdminContext`
+* ``ea``, a ``EasyCorp\\Bundle\\EasyAdminBundle\\Context\\AdminContext``
   instance which stores the :ref:`admin context <admin-context>` and it's
   available in all backend templates;
-* ``field``, a :class:`EasyCorp\\Bundle\\EasyAdminBundle\\Dto\\FieldDto`
+* ``field``, a ``EasyCorp\\Bundle\\EasyAdminBundle\\Dto\\FieldDto``
   instance which stores the config and value of the field being rendered;
-* ``entity``, an :class:`EasyCorp\\Bundle\\EasyAdminBundle\\Dto\\EntityDto`
+* ``entity``, a ``EasyCorp\\Bundle\\EasyAdminBundle\\Dto\\EntityDto``
   instance which stores the instance of the entity which the field belongs to
   and other useful data about that Doctrine entity.
 

@@ -187,7 +187,7 @@ Custom Security Voters
 
 EasyAdmin implements a Symfony `security voter`_ to check the permissions
 defined for actions, entities, menu items, etc. The actual security permissions
-are defined as constants in the `EasyCorp\\Bundle\\EasyAdminBundle\\Security\\Permission`
+are defined as constants in the ``EasyCorp\\Bundle\\EasyAdminBundle\\Security\\Permission``
 class (e.g. ``Permission::EA_EXECUTE_ACTION``, ``Permission::EA_VIEW_MENU_ITEM``, etc.)
 
 If you define a custom security voter for the backend, consider changing the

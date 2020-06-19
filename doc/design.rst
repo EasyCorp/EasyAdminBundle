@@ -206,7 +206,7 @@ Finally, add this custom theme to the list of themes used to render backend form
 
                 // don't forget to add EasyAdmin's form theme at the end of the list
                 // (otherwise you'll lose all the styles for the rest of form fields)
-                ->formThemes(['admin/form.html.twig', '@EasyAdmin/crud/form_theme.html.twig']);
+                ->setFormThemes(['admin/form.html.twig', '@EasyAdmin/crud/form_theme.html.twig'])
             ;
         }
     }
@@ -235,7 +235,7 @@ the :doc:`CRUD controllers </crud>` to add your own CSS and JavaScript files::
                 // and JS assets are added just before the closing </body> element
                 ->addCssFile('build/admin.css')
                 ->addCssFile('https://example.org/css/admin2.css')
-                ->addJsFile('build/admin.js');
+                ->addJsFile('build/admin.js')
                 ->addJsFile('https://example.org/js/admin2.js')
 
                 // use these generic methods to add any code before </head> or </body>

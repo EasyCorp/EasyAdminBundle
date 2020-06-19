@@ -82,6 +82,10 @@ use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 return static function (ContainerConfigurator $container) {
+    $container->parameters()
+        ->set('easyadmin.factory.field_factory.custom_doctrine_type_to_field_mapping', [])
+    ;
+
     $services = $container->services()
         ->defaults()->private()
         ->instanceof(FieldConfiguratorInterface::class)->tag(EasyAdminExtension::TAG_FIELD_CONFIGURATOR)
@@ -223,6 +227,7 @@ return static function (ContainerConfigurator $container) {
             ->arg(2, \function_exists('tagged')
                 ? tagged(EasyAdminExtension::TAG_FIELD_CONFIGURATOR)
                 : tagged_iterator(EasyAdminExtension::TAG_FIELD_CONFIGURATOR))
+            ->arg(3, '%easyadmin.factory.field_factory.custom_doctrine_type_to_field_mapping%')
 
         ->set(FieldProvider::class)
             ->arg(0, new Reference(AdminContextProvider::class))

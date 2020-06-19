@@ -57,12 +57,14 @@ final class FieldFactory
     private $adminContextProvider;
     private $authorizationChecker;
     private $fieldConfigurators;
+    private $customDoctrineTypeToFieldMapping;
 
-    public function __construct(AdminContextProvider $adminContextProvider, AuthorizationCheckerInterface $authorizationChecker, iterable $fieldConfigurators)
+    public function __construct(AdminContextProvider $adminContextProvider, AuthorizationCheckerInterface $authorizationChecker, iterable $fieldConfigurators, array $customDoctrineTypeToFieldMapping = [])
     {
         $this->adminContextProvider = $adminContextProvider;
         $this->authorizationChecker = $authorizationChecker;
         $this->fieldConfigurators = $fieldConfigurators;
+        $this->customDoctrineTypeToFieldMapping = $customDoctrineTypeToFieldMapping;
     }
 
     public function processFields(EntityDto $entityDto, FieldCollection $fields): void
@@ -124,7 +126,7 @@ final class FieldFactory
                 $guessedFieldFqcn = IdField::class;
             } else {
                 $doctrinePropertyType = $entityDto->getPropertyMetadata($fieldName)->get('type');
-                $guessedFieldFqcn = self::$doctrineTypeToFieldFqcn[$doctrinePropertyType] ?? null;
+                $guessedFieldFqcn = $this->customDoctrineTypeToFieldMapping[$doctrinePropertyType] ?? self::$doctrineTypeToFieldFqcn[$doctrinePropertyType] ?? null;
 
                 if (null === $guessedFieldFqcn) {
                     throw new \RuntimeException(sprintf('The Doctrine type of the "%s" field is "%s", which is not supported by EasyAdmin yet.', $fieldName, $doctrinePropertyType));

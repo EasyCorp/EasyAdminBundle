@@ -9,6 +9,6 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
  */
 class EasyAdminBundle extends Bundle
 {
-    public const VERSION = '3.0.0-dev';
+    public const VERSION = '3.0.0';
     public const CONTEXT_ATTRIBUTE_NAME = 'easyadmin_context';
 }

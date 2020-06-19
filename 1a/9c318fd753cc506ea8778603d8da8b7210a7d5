@@ -1,0 +1,5 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2020-06-19T17:48:52Z
+
+We use the `:class:` directive in Symfony Docs and I thought it would work here too. I was wrong. Thanks for fixing it. I'm going to fix all the other occurrences of `:class` after merging this. Thanks!

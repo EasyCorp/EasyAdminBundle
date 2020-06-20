@@ -118,10 +118,8 @@ see the action link/button::
             // ...
             ->add(viewInvoice)
 
-            // use the 'update()' method to set the permission of built-in actions
-            ->update(Crud::PAGE_DETAIL, Action::NEW, function (Action $action) {
-                return $action->setPermission('ROLE_ADMIN');
-            })
+            // use the 'setPermission()' method to set the permission of built-in actions
+            ->setPermission(Action::NEW, 'ROLE_ADMIN')
         ;
     }
 
@@ -142,7 +140,7 @@ the ``setPermission()`` method::
             IntegerField::new('stock'),
             // users must have this permission/role to see this field
             IntegerField::new('sales')->setPermission('ROLE_ADMIN'),
-            FloatField::new('comission')->setPermission('ROLE_FINANCE'),
+            FloatField::new('commission')->setPermission('ROLE_FINANCE'),
             // ...
         ];
     }

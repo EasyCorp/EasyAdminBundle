@@ -71,10 +71,20 @@ final class AdminContextFactory
         $dashboardControllerRoutes = require $this->cacheDir.'/'.CacheWarmer::DASHBOARD_ROUTES_CACHE;
         $dashboardController = \get_class($dashboardControllerInstance).'::index';
         $dashboardRouteName = null;
-        foreach ($dashboardControllerRoutes as $controller => $routeName) {
+
+        foreach ($dashboardControllerRoutes as $routeName => $controller) {
             if ($controller === $dashboardController) {
                 $dashboardRouteName = $routeName;
-                break;
+
+                //Try to get locale part of the route (e.g. en in 'admin_route.en')
+                $locale = explode('.', $dashboardRouteName)[1] ?? null;
+
+                //If no locale prefix are generated or we found our matching locale we can skip the other iterations
+                if ($locale === null || $locale === $request->getLocale()) {
+                    break;
+                } else { //Otherwise we have to check if we find a better match later
+                    continue;
+                }
             }
         }
 

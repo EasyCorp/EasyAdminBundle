@@ -45,7 +45,9 @@ final class CacheWarmer implements CacheWarmerInterface
                 continue;
             }
 
-            $dashboardRoutes[$controller->toString()] = $routeName;
+            /* Controller names are not unique when locale prefixes are defined, therefore use the unique routename
+             (which is suffixed with .locale) as key, to allow us later to choose the correct localized route */
+            $dashboardRoutes[$routeName] = $controller->toString();
         }
 
         (new Filesystem())->dumpFile(

@@ -17,7 +17,7 @@ window.addEventListener('load', function() {
     createNullableControls();
 
     createAutoCompleteFields();
-    document.addEventListener('ea.collection.item-added', function() { createAutoCompleteFields(); });
+    document.addEventListener('ea.collection.item-added', createAutoCompleteFields);
 
     createContentResizer();
     createNavigationToggler();
@@ -44,7 +44,7 @@ function createNullableControls() {
 }
 
 function createAutoCompleteFields() {
-    var autocompleteFields = $('[data-widget="select2"]');
+    var autocompleteFields = $('[data-widget="select2"]:not(.select2-hidden-accessible)');
 
     autocompleteFields.each(function () {
         var $this = $(this),

@@ -108,17 +108,17 @@ see the action link/button::
 
     public function configureActions(Actions $actions): Actions
     {
-        // this action is only visible and can only be executed by
-        // users with the ROLE_FINANCE permission
-        $viewInvoice = Action::new('View invoice', 'fa fa-file-invoice')
-            ->linkToCrudAction('renderInvoice')
-            ->setPermission('ROLE_FINANCE');
+        $viewInvoice = Action::new('invoice', 'View invoice', 'fa fa-file-invoice')
+            ->linkToCrudAction('renderInvoice');
 
         return $actions
             // ...
-            ->add(viewInvoice)
+            ->add(Crud::PAGE_DETAIL, $viewInvoice)
+            // use the 'setPermission()' method to set the permission of actions
+            // (the same permission is granted to the action on all pages)
+            ->setPermission('invoice', 'ROLE_FINANCE')
 
-            // use the 'setPermission()' method to set the permission of built-in actions
+            // you can set permissions for built-in actions in the same way
             ->setPermission(Action::NEW, 'ROLE_ADMIN')
         ;
     }

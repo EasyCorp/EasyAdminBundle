@@ -18,7 +18,7 @@ class CollectionTypeExtension extends AbstractTypeExtension
 {
     public function finishView(FormView $view, FormInterface $form, array $options)
     {
-        $prefixOffset = -1;
+        $prefixOffset = -2;
         // check if the entry type also defines a block prefix
         /** @var FormInterface $entry */
         foreach ($form as $entry) {
@@ -40,11 +40,7 @@ class CollectionTypeExtension extends AbstractTypeExtension
 
         /** @var FormInterface $prototype */
         if ($prototype = $form->getConfig()->getAttribute('prototype')) {
-            if ($view->vars['prototype']->vars['multipart']) {
-                $view->vars['multipart'] = true;
-            }
-
-            if ($prefixOffset > -2 && $prototype->getConfig()->getOption('block_prefix')) {
+            if ($prefixOffset > -3 && $prototype->getConfig()->getOption('block_prefix')) {
                 --$prefixOffset;
             }
 

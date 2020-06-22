@@ -410,7 +410,7 @@ generator to return the menu items::
         if ('... some complex expression ...') {
             yield MenuItem::section('Blog');
             yield MenuItem::linkToCrud('Categories', 'fa fa-tags', Category::class);
-            yield MenuItem::linkToCrud('Blog Posts', 'fa fa-file-text, BlogPost::class);
+            yield MenuItem::linkToCrud('Blog Posts', 'fa fa-file-text', BlogPost::class);
         }
 
         // ...

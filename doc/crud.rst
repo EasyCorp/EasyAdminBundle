@@ -230,13 +230,13 @@ Templates and Form Options
             // this sets the options of the entire form (later, you can set the options
             // of each form type via the methods of their associated fields)
             // pass a single array argument to apply the same options for the new and edit forms
-            ->formOptions([
+            ->setFormOptions([
                 'validation_groups' => ['Default', 'my_validation_group']
             ]);
 
             // pass two array arguments to apply different options for the new and edit forms
             // (pass an empty array argument if you want to apply no options to some form)
-            ->formOptions(
+            ->setFormOptions(
                 ['validation_groups' => ['my_validation_group']],
                 ['validation_groups' => ['Default'], '...' => '...'],
             );

@@ -13,7 +13,7 @@ final class UserMenuDto
     private $displayAvatar;
     private $name;
     private $avatarUrl;
-    /** @var MenuItem[] $items */
+    /** @var MenuItem[] */
     private $items;
 
     public function __construct()

@@ -83,7 +83,7 @@ final class EntityRepository implements EntityRepositoryInterface
                 $numAssociatedProperties = \count($associatedProperties);
 
                 if ($numAssociatedProperties > 2) {
-                    throw new \RuntimeException(sprintf('Nested associations of more than two levels (e.g. "%s") are not supported yet. We\'ll add support for them in the future, but meanwhile you can only use two-level associations (e.g. "%s")', $propertyName, implode('.', array_slice($associatedProperties, 0, 2))));
+                    throw new \RuntimeException(sprintf('Nested associations of more than two levels (e.g. "%s") are not supported yet. We\'ll add support for them in the future, but meanwhile you can only use two-level associations (e.g. "%s")', $propertyName, implode('.', \array_slice($associatedProperties, 0, 2))));
                 }
 
                 for ($i = 0; $i < $numAssociatedProperties - 1; ++$i) {

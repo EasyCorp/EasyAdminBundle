@@ -14,7 +14,7 @@ class EasyAdminController extends AbstractController
         throw new \RuntimeException(<<<HELP
 If you are seeing this error, you are probably upgrading your application
 from EasyAdmin 2 to EasyAdmin 3. The new version of this bundle is a complete
-refactorization and most of the previous classes have been moved or deleted.
+refactoring and most of the previous classes have been moved or deleted.
  
 One of those removed classes is "EasyAdminController", which was used in EasyAdmin 2
 as the base controller of the entire backend. In EasyAdmin 3 each Doctrine entity has
@@ -31,6 +31,7 @@ this error message. Check out the following files:
 
 If you need more help, read the EasyAdmin 3 documentation at:
 https://symfony.com/doc/master/bundles/EasyAdminBundle/index.html
-HELP);
+HELP
+        );
     }
 }

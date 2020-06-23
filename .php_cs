@@ -25,7 +25,6 @@ return PhpCsFixer\Config::create()
         'native_function_invocation' => ['include' => ['@compiler_optimized'], 'scope' => 'namespaced', 'strict' => true],
         // Part of future @Symfony ruleset in PHP-CS-Fixer To be removed from the config file once upgrading
         'phpdoc_types_order' => ['null_adjustment' => 'always_last', 'sort_algorithm' => 'none'],
-        // part of `PHPUnitXYMigration:risky` ruleset, to be enabled when PHPUnit 4.x support will be dropped, as we don't want to rewrite exceptions handling twice
-        'php_unit_no_expectation_annotation' => false,
+        'single_line_throw' => false,
     ))
 ;

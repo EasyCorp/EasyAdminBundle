@@ -4,7 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
-use EasyCorp\Bundle\EasyAdminBundle\Provider\UlidProvider;
+use Symfony\Component\Uid\Ulid;
 use function Symfony\Component\String\u;
 
 /**
@@ -68,7 +68,7 @@ final class FieldDto
             return $this->uniqueId;
         }
 
-        return $this->uniqueId = UlidProvider::new();
+        return $this->uniqueId = new Ulid();
     }
 
     public function isFormDecorationField(): bool

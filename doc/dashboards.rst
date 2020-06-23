@@ -355,6 +355,14 @@ URL for the current security firewall automatically::
         ];
     }
 
+.. note::
+
+    The logout menu item will not work under certain authentication schemes like HTTP Basic because they do not have a 
+    default logout path configured due to the nature of how those auth schemes work. If you encounter an error like 
+    ``Unable to find the current firewall LogoutListener, please provide the provider key manually.``, you'll need to 
+    remove the linkToLogout or add a logout provider to your authentication scheme.
+
+
 Exit Impersonation Menu Item
 ............................
 

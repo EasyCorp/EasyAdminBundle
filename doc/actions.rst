@@ -268,11 +268,11 @@ for it and use ``linkToRoute()``::
         public function configureActions(Actions $actions): Actions
         {
             // this action executes the 'invoice()' method of the current CRUD controller
-            $viewInvoice = Action::new('View invoice', 'fa fa-file-invoice')
+            $viewInvoice = Action::new('viewInvoice', 'Invoice', 'fa fa-file-invoice')
                 ->linkToCrudAction('renderInvoice');
 
             // if the method is not defined in a CRUD controller, link to its route
-            $sendInvoice = Action::new('Send invoice', 'fa fa-envelope')
+            $sendInvoice = Action::new('sendInvoice', 'Send invoice', 'fa fa-envelope')
                 // if the route needs parameters, you can define them:
                 // 1) using an array
                 ->linkToRoute('invoice_send', [
@@ -290,8 +290,8 @@ for it and use ``linkToRoute()``::
 
             return $actions
                 // ...
-                ->add('viewInvoice', $viewInvoice)
-                ->add('sendInvoice', $sendInvoice)
+                ->add(Crud::PAGE_DETAIL, $viewInvoice)
+                ->add(Crud::PAGE_DETAIL, $sendInvoice)
             ;
         }
     }
@@ -311,14 +311,14 @@ To link to an external URL, use ``linkToUrl()``::
         public function configureActions(Actions $actions): Actions
         {
             // this action go to the invoice on Stripe
-            $viewStripeInvoice = Action::new('View invoice', 'fa fa-file-invoice')
+            $viewStripeInvoice = Action::new('viewInvoice', 'Invoice', 'fa fa-file-invoice')
                 ->linkToUrl(function (Invoice $entity) {
                     return 'https://www.stripe.com/invoice/'.$entity->getStripeReference();
                 });
 
             return $actions
                 // ...
-                ->add('viewInvoice', $viewStripeInvoice)
+                ->add(Crud::PAGE_DETAIL, $viewStripeInvoice)
             ;
         }
     }

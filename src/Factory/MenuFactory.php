@@ -135,27 +135,29 @@ final class MenuFactory
 
             $entityFqcn = $routeParameters['entityFqcn'] ?? null;
             $crudControllerFqcn = $routeParameters['crudControllerFqcn'] ?? null;
-            // 1. if entityFqcn is defined, find the crudFqcn from it...
-            if (null !== $entityFqcn) {
-                $crudControllers = $this->adminContextProvider->getContext()->getCrudControllers();
-                if (null === $controllerFqcn = $crudControllers->findCrudFqcnByEntityFqcn($entityFqcn)) {
-                    throw new \RuntimeException(sprintf('Unable to find the controller related to the "%s" Entity; did you forget to extend "%s"?', $entityFqcn, AbstractCrudController::class));
-                }
-
-                $urlBuilder->setController($controllerFqcn);
-                $urlBuilder->unset('entityFqcn');
-            // 2. ...otherwise, use the crudControllerFqcn
-            } else {
+            // 1. if  crudControllerFqcn is defined, find the crudFqcn from it...
+           if (null !== $crudControllerFqcn) {
                 if (null === $crudControllerFqcn) {
                     throw new \RuntimeException(sprintf('The CRUD menu item with label "%s" must define either the entity FQCN (using the third constructor argument) or the CRUD Controller FQCN (using the "setController()" method).', $menuItemDto->getLabel()));
                 }
 
                 $urlBuilder->setController($crudControllerFqcn);
+            // 2. ...otherwise, use the entityFqcn
+            } else {
+
+                $crudControllers = $this->adminContextProvider->getContext()->getCrudControllers();
+                if (null === $controllerFqcn = $crudControllers->findCrudFqcnByEntityFqcn($entityFqcn)) {
+                    throw new \RuntimeException(sprintf('Unable to find the controller related to the "%s" Entity; did you forget to extend "%s"?', $entityFqcn, AbstractCrudController::class));
+                }
+
+
+                $urlBuilder->setController($controllerFqcn);
+                $urlBuilder->unset('entityFqcn');
             }
 
             return $urlBuilder->generateUrl();
         }
-
+        
         if (MenuItemDto::TYPE_DASHBOARD === $menuItemType) {
             return $this->urlGenerator->generate($dashboardRouteName, ['menuIndex' => $index, 'submenuIndex' => $subIndex]);
         }

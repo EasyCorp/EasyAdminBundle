@@ -13,7 +13,7 @@ final class CrudDto
     private $controllerFqcn;
     private $pageName;
     private $actionName;
-    /** @var $actions ActionConfigDto */
+    /** @var ActionConfigDto */
     private $actionConfigDto;
     private $filters;
     private $entityFqcn;

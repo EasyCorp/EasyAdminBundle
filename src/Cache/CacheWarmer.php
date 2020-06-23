@@ -45,8 +45,8 @@ final class CacheWarmer implements CacheWarmerInterface
                 continue;
             }
 
-            /* Controller names are not unique when locale prefixes are defined, therefore use the unique routename
-             (which is suffixed with .locale) as key, to allow us later to choose the correct localized route */
+            // when using i18n routes, the same controller can be associated to
+            // multiple routes (e.g. 'admin.en', 'admin.es', 'admin.fr', etc.)
             $dashboardRoutes[$routeName] = $controller->toString();
         }
 

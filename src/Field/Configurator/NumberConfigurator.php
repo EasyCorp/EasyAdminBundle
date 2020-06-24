@@ -41,10 +41,11 @@ final class NumberConfigurator implements FieldConfiguratorInterface
         $field->setFormTypeOptionIfNotSet('rounding_mode', $roundingMode);
         $field->setFormTypeOptionIfNotSet('scale', $scale);
 
-        $formatterAttributes = [
-            'fraction_digit' => $scale,
-            'rounding_mode' => $this->getRoundingModeAsString($roundingMode),
-        ];
+        $formatterAttributes = ['rounding_mode' => $this->getRoundingModeAsString($roundingMode)];
+        if (null !== $scale) {
+            $formatterAttributes['fraction_digit'] = $scale;
+        }
+
         $field->setFormattedValue($this->intlFormatter->formatNumber($value, $formatterAttributes));
     }
 

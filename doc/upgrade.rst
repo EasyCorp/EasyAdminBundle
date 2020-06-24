@@ -118,8 +118,12 @@ considered useful:
           public function configureAssets(Assets $assets): Assets
           {
               return Assets::new()
-                  // ...
-                  ->addHtmlContentToHead('<link rel="icon" type="image/png" href="/favicon-admin.png" />');
+                  // you can either add an HTML snippet
+                  ->addHtmlContentToHead('<link rel="icon" type="image/png" href="/favicon-admin.png" />')
+                  
+                  // or use
+                  ->setFaviconPath('/favicon-admin.png')
+              ;
           }
     }
 

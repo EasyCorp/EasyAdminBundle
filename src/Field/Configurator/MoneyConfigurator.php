@@ -48,6 +48,7 @@ final class MoneyConfigurator implements FieldConfiguratorInterface
         $formattedValue = $this->intlFormatter->formatCurrency($amount, $currencyCode, ['fraction_digit' => $numDecimals]);
         $field->setFormattedValue($formattedValue);
 
+        $field->setFormTypeOption('currency', $field->getCustomOption(MoneyField::OPTION_CURRENCY));
         $field->setFormTypeOptionIfNotSet('divisor', $storedAsCents ? 100 : 1);
     }
 

@@ -240,7 +240,7 @@ the :doc:`CRUD controllers </crud>` to add your own CSS and JavaScript files::
 
                 // use these generic methods to add any code before </head> or </body>
                 // the contents are included "as is" in the rendered page (without escaping them)
-                ->addHtmlContentToHead('<link rel="icon" type="image/png" href="/favicon-admin.png" />')
+                ->addHtmlContentToHead('<link rel="dns-prefetch" href="https://assets.example.com">')
                 ->addHtmlContentToBody('<script> ... </script>')
                 ->addHtmlContentToBody('<!-- generated at '.time().' -->')
             ;

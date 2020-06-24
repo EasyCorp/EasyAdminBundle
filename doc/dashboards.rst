@@ -135,9 +135,16 @@ explained later)::
                 ->setTitle('ACME Corp.')
                 // you can include HTML contents too (e.g. to link to an image)
                 ->setTitle('<img src="..."> ACME <span class="text-small">Corp.</span>')
+
+                // the path defined in this method is passed to the Twig asset() function
+                ->setFaviconPath('favicon.svg')
+
                 // the domain used by default is 'messages'
                 ->setTranslationDomain('my-custom-domain')
-                // etc.
+
+                // there's no need to define the "text direction" explicitly because
+                // its default value is inferred dynamically from the user locale
+                ->setTextDirection('ltr')
             ;
         }
     }

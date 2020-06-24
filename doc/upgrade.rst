@@ -109,24 +109,6 @@ considered useful:
           }
       }
 
-* The ``design.assets.favicon`` option has been removed. Instead you can use this code::
-
-    class DashboardController extends AbstractDashboardController
-    {
-        // ...
-
-          public function configureAssets(Assets $assets): Assets
-          {
-              return Assets::new()
-                  // you can either add an HTML snippet
-                  ->addHtmlContentToHead('<link rel="icon" type="image/png" href="/favicon-admin.png" />')
-                  
-                  // or use
-                  ->setFaviconPath('/favicon-admin.png')
-              ;
-          }
-    }
-
 * The ``default: true`` option to set the default backend page has been removed.
   Use the :doc:`dashboard </dashboards>` index as the default page or redirect
   to the desired page inside the dashboard controller action.

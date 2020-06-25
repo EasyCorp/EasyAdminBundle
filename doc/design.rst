@@ -20,6 +20,8 @@ Depending on your needs, there are several ways of customizing the design. Some
 of them require pure CSS/JavaScript code and others require overriding and/or
 creating new Twig templates.
 
+.. _template-customization:
+
 Modifying Backend Templates
 ---------------------------
 
@@ -250,7 +252,7 @@ the :doc:`CRUD controllers </crud>` to add your own CSS and JavaScript files::
 .. tip::
 
     :doc:`Fields </fields>` can also add CSS and JavaScript assets to the
-    rendered pages. :ref:`Read this section <fields-custom-field>` to learn how.
+    rendered pages. :ref:`Read this section <custom-fields>` to learn how.
 
 .. note::
 
@@ -266,7 +268,7 @@ easier to customize it to your own needs. You'll find all variables in the
 ``assets/css/easyadmin-theme/variables.scss`` file. To override any of them,
 create a CSS file and redefine the variable values:
 
-.. code-block:: css
+.. code-block:: text
 
     /* public/css/admin.css */
     :root {

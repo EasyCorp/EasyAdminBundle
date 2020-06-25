@@ -177,7 +177,7 @@ doesn't have permission to see some items, an empty row will be displayed at the
 bottom of the list with a message explaining that they don't have enough
 permissions to see some items:
 
-.. image:: ../images/easyadmin-list-hidden-results.png
+.. image:: images/easyadmin-list-hidden-results.png
    :alt: Index page with some results hidden because user does not have enough permissions
 
 Custom Security Voters

@@ -67,7 +67,7 @@ dashboard with the ``make:admin:dashboard`` command, the route is defined using
          */
         public function index(): Response
         {
-            // ...
+            return parent::index();
         }
 
         // ...
@@ -87,7 +87,7 @@ an explicit name for the route to simplify your code::
      */
     public function index(): Response
     {
-        // ...
+        return parent::index();
     }
 
 If you don't use annotations, you must configure the dashboard route using YAML,

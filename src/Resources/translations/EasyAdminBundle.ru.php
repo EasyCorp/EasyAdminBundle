@@ -11,7 +11,7 @@ return [
     ],
 
     'datagrid' => [
-        // 'hidden_results' => '',
+        'hidden_results' => 'Некоторые результаты не могут быть отображены, потому что вы не имеете достаточных привелегий',
         'no_results' => 'Ничего не найдено.',
     ],
 
@@ -37,8 +37,8 @@ return [
     ],
 
     'field' => [
-        // 'code_editor.view_code' => '',
-        // 'text_editor.view_content' => '',
+        'code_editor.view_code' => 'Просмотреть код',
+        'text_editor.view_content' => 'Просмотреть содержимое',
     ],
 
     'action' => [
@@ -54,18 +54,18 @@ return [
         'add_new_item' => 'Добавить новый элемент',
         'remove_item' => 'Удалить элемент',
         'choose_file' => 'Выберите файл',
-        // 'close' => '',
-        // 'create' => '',
-        // 'create_and_add_another' => '',
-        // 'create_and_continue' => '',
-        // 'save' => '',
-        // 'save_and_continue' => '',
+        'close' => 'Закрыть',
+        'create' => 'Создать',
+        'create_and_add_another' => 'Создать и добавить еще',
+        'create_and_continue' => 'Создать и продолжить',
+        'save' => 'Сохранить',
+        'save_and_continue' => 'Сохранить и продолжить',
     ],
 
     'batch_action_modal' => [
-        // 'title' => '',
-        // 'content' => '',
-        // 'action' => '',
+        'title' => 'Вы действительно хотите изменить выбранные элементы?',
+        'content' => 'Эту операцию нельзя отменить.',
+        'action' => 'Продолжить',
     ],
 
     'delete_modal' => [
@@ -80,22 +80,22 @@ return [
         'label.is_equal_to' => 'равно',
         'label.is_not_equal_to' => 'не равно',
         'label.is_greater_than' => 'больше чем',
-        'label.is_greater_than_or_equal_to' => 'больше чем или равно',
+        'label.is_greater_than_or_equal_to' => 'больше или равно',
         'label.is_less_than' => 'меньше чем',
-        'label.is_less_than_or_equal_to' => 'меньше чем или равно',
-        // 'label.is_between' => '',
+        'label.is_less_than_or_equal_to' => 'меньше или равно',
+        'label.is_between' => 'между',
         'label.contains' => 'содержит',
         'label.not_contains' => 'не содержит',
         'label.starts_with' => 'начинается с',
         'label.ends_with' => 'заканчивается на',
         'label.exactly' => 'точно',
         'label.not_exactly' => 'не точно',
-        'label.is_same' => 'так же',
-        'label.is_not_same' => 'не так же',
+        'label.is_same' => 'такой же',
+        'label.is_not_same' => 'не такой же',
         'label.is_after' => 'после',
-        'label.is_after_or_same' => 'после или же',
+        'label.is_after_or_same' => 'после или соответствует',
         'label.is_before' => 'до',
-        'label.is_before_or_same' => 'до или же',
+        'label.is_before_or_same' => 'до или соответствует',
     ],
 
     'form' => [
@@ -108,7 +108,7 @@ return [
         'unnamed' => 'Безымянный пользователь',
         'anonymous' => 'Анонимный пользователь',
         'sign_out' => 'Выход',
-        // 'exit_impersonation' => '',
+        'exit_impersonation' => 'Выйти из-под пользователя',
     ],
 
     'login_page' => [
@@ -121,6 +121,6 @@ return [
         'entity_not_found' => 'Элемент больше не доступен.',
         'entity_remove' => 'Элемент не может быть удалён, потому что другой элемент зависит от него.',
         'forbidden_action' => 'Запрашиваемое действие запрещено для этого элемента.',
-        // 'insufficient_entity_permission' => 'You don't have permission to access this item.',
+        'insufficient_entity_permission' => 'У вас недостаточно прав для доступа к этому элементу.',
     ],
 ];

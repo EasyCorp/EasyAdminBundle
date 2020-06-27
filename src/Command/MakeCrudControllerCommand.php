@@ -31,9 +31,16 @@ class MakeCrudControllerCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $io = new SymfonyStyle($input, $output);
+
+        $doctrineEntitiesFqcn = $this->getAllDoctrineEntitiesFqcn();
+        if (0 === \count($doctrineEntitiesFqcn)) {
+            $io->error('This command generates the CRUD controller of an existing Doctrine entity, but no entities were found in your application. Create some Doctrine entities first and then run this command again.');
+
+            return 1;
+        }
         $entityFqcn = $io->choice(
             'Which Doctrine entity are you going to manage with this CRUD controller?',
-            $this->getAllDoctrineEntitiesFqcn()
+            $doctrineEntitiesFqcn
         );
         $entityClassName = u($entityFqcn)->afterLast('\\')->toString();
 

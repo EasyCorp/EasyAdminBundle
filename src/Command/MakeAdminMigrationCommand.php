@@ -49,6 +49,12 @@ class MakeAdminMigrationCommand extends Command
         $backendConfig = $this->configManager->getBackendConfig();
 
         $backupDir = $this->getBackupDir($input, $output);
+        if (!is_dir($backupDir)) {
+            $io->error(sprintf('The given path ("%s") is not a directory or it doesn\'t exist. Create that directory or use another existing directory and then run this command again.', $backupDir));
+
+            return 1;
+        }
+
         $backupFile = sprintf('%s/easyadmin-config.backup', $backupDir);
         if (file_exists($backupFile)) {
             $overwriteBackupFile = $io->confirm(sprintf('The backup file already exists ("%s"). Do you want to overwrite it?', $backupFile));
@@ -69,7 +75,7 @@ class MakeAdminMigrationCommand extends Command
             "2) Run the <info>composer update easycorp/easyadmin-bundle</> command to update EasyAdmin (or run just <info>composer update</> to update all dependencies).\n",
             "3) Depending on your project config, you may see some errors after upgrading. They are caused by config files which still reference old EasyAdmin 2 files (such as 'EasyAdminController'). Comment that config or remove those files because you won\'t need them anymore.\n",
             "4) If you need help, read https://symfony.com/doc/master/bundles/EasyAdminBundle/upgrade.html or visit the #easyadminbundle channel on https://symfony.com/slack\n",
-            "5) Once all issues are fixed, run this exact command again in your project to generate the EasyAdmin 3 files using the EasyAdmin 2 config backup.",
+            '5) Once all issues are fixed, run this exact command again in your project to generate the EasyAdmin 3 files using the EasyAdmin 2 config backup.',
         ]);
 
         return 0;
@@ -77,23 +83,9 @@ class MakeAdminMigrationCommand extends Command
 
     private function getBackupDir(InputInterface $input, OutputInterface $output): string
     {
-        // code copied from https://symfony.com/blog/new-in-symfony-4-3-better-console-autocomplete
-        $callback = function (string $userInput): array {
-            // Strip any characters from the last slash to the end of the string
-            // to keep only the last directory and generate suggestions for it
-            $inputPath = preg_replace('%(/|^)[^/]*$%', '$1', $userInput);
-            $inputPath = '' === $inputPath ? '.' : $inputPath;
-            $foundFilesAndDirs = @scandir($inputPath, SCANDIR_SORT_ASCENDING) ?: [];
-
-            return array_map(function ($dirOrFile) use ($inputPath) {
-                return $inputPath.$dirOrFile;
-            }, $foundFilesAndDirs);
-        };
-
         $defaultBackupDir = realpath($this->projectDir);
         $helper = $this->getHelper('question');
         $question = new Question(sprintf(" <info>In which directory do you want to store the config backup?</>\n <comment>[default: %s]</>\n > ", $defaultBackupDir), $defaultBackupDir);
-        $question->setAutocompleterCallback($callback);
 
         $backupDir = $helper->ask($input, $output, $question);
         $output->writeln('');

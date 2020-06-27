@@ -1,0 +1,37 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2020-06-26T10:12:00Z
+
+Thanks for this ... the commented lines are all the messages that are missing in that translation.
+
+---------------------------------------------------------------------------
+
+by pyatnitsev at 2020-06-26T10:14:43Z
+
+Ok. I will add it next commit.
+
+---------------------------------------------------------------------------
+
+by pyatnitsev at 2020-06-26T10:50:03Z
+
+I added allmost all translations for Russian. Please, review.
+
+@javiereguiluz Is reqired a separate PR for 2.x? or this version is unsupported for now?
+
+---------------------------------------------------------------------------
+
+by pyatnitsev at 2020-06-26T12:21:12Z
+
+@bocharsky-bw, thanks. I edited translations.
+
+---------------------------------------------------------------------------
+
+by pyatnitsev at 2020-06-26T12:51:29Z
+
+ok, more suggestions?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2020-06-27T06:37:28Z
+
+@pyatnitsev thanks a lot for this great contribution and thanks @bocharsky-bw for your amazing review! *Большое спасибо*

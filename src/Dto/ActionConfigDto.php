@@ -80,7 +80,7 @@ final class ActionConfigDto
     {
         $orderedActions = [];
         foreach ($orderedActionNames as $actionName) {
-            $orderedActions[$actionName] = $this->actions[$actionName];
+            $orderedActions[$actionName] = $this->actions[$pageName][$actionName];
         }
 
         $this->actions[$pageName] = $orderedActions;

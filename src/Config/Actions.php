@@ -95,7 +95,7 @@ final class Actions
         $newActionOrder = [];
         $currentActions = $this->dto->getActions();
         foreach ($orderedActionNames as $actionName) {
-            if (!\array_key_exists($actionName, $currentActions)) {
+            if (!\array_key_exists($actionName, $currentActions[$pageName])) {
                 throw new \InvalidArgumentException(sprintf('The "%s" action does not exist in the "%s" page, so you cannot set its order.', $actionName, $pageName));
             }
 
@@ -105,7 +105,7 @@ final class Actions
         // add the remaining actions that weren't ordered explicitly. This allows
         // user to only configure the actions they want to see first and rely on the
         // existing order for the rest of actions
-        foreach ($currentActions as $actionName => $action) {
+        foreach ($currentActions[$pageName] as $actionName => $action) {
             if (!\in_array($actionName, $newActionOrder, true)) {
                 $newActionOrder[] = $actionName;
             }

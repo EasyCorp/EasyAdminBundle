@@ -25,15 +25,15 @@ Table of Contents
 .. toctree::
    :maxdepth: 1
 
-    dashboards
-    crud
-    design
-    fields
-    filters
-    actions
-    security
-    events
-    upgrade
+    /dashboards
+    /crud
+    /design
+    /fields
+    /filters
+    /actions
+    /security
+    /events
+    /upgrade
 
 Technical Requirements
 ----------------------

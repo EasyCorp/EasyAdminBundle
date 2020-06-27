@@ -69,7 +69,7 @@ table.datagrid {
   // hides the caret added automatically by Bootstrap
   .dropdown-toggle:after { display: none; }
   .dropdown-toggle:hover { cursor: pointer; }
-  .dropdown-menu { box-shadow: var(--box-shadow-lg); }
+  .dropdown-menu { box-shadow: var(--box-shadow-lg); z-index: var(--zindex-900); }
   .dropdown-item { color: var(--link-color); }
   .dropdown-item:hover { color: var(--link-hover-color); }
   .action-icon { margin-right: 4px; }

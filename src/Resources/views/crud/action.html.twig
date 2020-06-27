@@ -4,7 +4,7 @@
 {% if 'a' == action.htmlElement %}
     <a class="{{ isIncludedInDropdown|default(false) ? 'dropdown-item' }} {{ action.cssClass }}"
        href="{{ action.linkUrl }}"
-       {% for name, value in action.htmlAttributes %}{{ name }}="{{ value|e('html_attr') }}" {% endfor %}">
+       {% for name, value in action.htmlAttributes %}{{ name }}="{{ value|e('html_attr') }}" {% endfor %}>
         {%- if action.icon %}<i class="action-icon {{ action.icon }}"></i> {% endif -%}
         {%- if action.label is not empty -%}{{ action.label }}{%- endif -%}
     </a>

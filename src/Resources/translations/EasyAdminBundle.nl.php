@@ -2,7 +2,7 @@
 
 return [
     'page_title' => [
-        // 'dashboard' => '',
+        'dashboard' => 'Dashboard',
         'detail' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
         'edit' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
         'index' => '%entity_label_plural%',
@@ -11,7 +11,7 @@ return [
     ],
 
     'datagrid' => [
-        // 'hidden_results' => '',
+        'hidden_results' => 'Sommige resultaten konden niet worden weergegeven, toegang geweigerd.',
         'no_results' => 'Geen resultaten gevonden.',
     ],
 
@@ -37,8 +37,8 @@ return [
     ],
 
     'field' => [
-        // 'code_editor.view_code' => '',
-        // 'text_editor.view_content' => '',
+        'code_editor.view_code' => 'Bekijk code',
+        'text_editor.view_content' => 'Bekijk inhoud',
     ],
 
     'action' => [
@@ -50,22 +50,22 @@ return [
         'delete' => 'Verwijderen',
         'cancel' => 'Annuleren',
         'index' => 'Terug naar overzicht',
-        // 'deselect' => '',
+        'deselect' => 'Selectie ongedaan maken',
         'add_new_item' => 'Voeg een item toe',
         'remove_item' => 'Verwijder dit item',
         'choose_file' => 'Bestand kiezen',
-        // 'close' => '',
-        // 'create' => '',
-        // 'create_and_add_another' => '',
-        // 'create_and_continue' => '',
-        // 'save' => '',
-        // 'save_and_continue' => '',
+        'close' => 'Sluiten',
+        'create' => 'Aanmaken',
+        'create_and_add_another' => 'Aanmaken en nieuwe toevoegen',
+        'create_and_continue' => 'Aanmaken en verdergaan',
+        'save' => 'Opslaan',
+        'save_and_continue' => 'Opslaan en verdergaan',
     ],
 
     'batch_action_modal' => [
-        // 'title' => '',
-        // 'content' => '',
-        // 'action' => '',
+        'title' => 'Wil je alle geselecteerde items bewerken?',
+        'content' => 'Je kan deze actie niet ongedaan maken.',
+        'action' => 'Verdergaan',
     ],
 
     'delete_modal' => [
@@ -83,7 +83,7 @@ return [
         'label.is_greater_than_or_equal_to' => 'is groter dan of gelijk aan',
         'label.is_less_than' => 'is minder dan',
         'label.is_less_than_or_equal_to' => 'is minder dan of gelijk aan',
-        // 'label.is_between' => '',
+        'label.is_between' => 'ligt tussen',
         'label.contains' => 'bevat',
         'label.not_contains' => 'bevat niet',
         'label.starts_with' => 'start met',
@@ -121,6 +121,6 @@ return [
         'entity_not_found' => 'Het item is niet langer beschikbaar.',
         'entity_remove' => 'Dit item kan niet verwijderd worden omdat andere items ervan afhankelijk zijn.',
         'forbidden_action' => 'De gevraagde actie kan niet worden uitgevoerd op dit item.',
-        // 'insufficient_entity_permission' => 'You don't have permission to access this item.',
+        'insufficient_entity_permission' => 'Je hebt geen toegang tot dit item.',
     ],
 ];

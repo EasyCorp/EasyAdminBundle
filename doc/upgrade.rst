@@ -30,7 +30,7 @@ YAML configuration into the PHP files needed in EasyAdmin 3. In some complex
 projects this command won't be able to do all the needed work, but it will help
 you making most of the work.
 
-**Step 1.** In your existing Symfony 2 application, run this command:
+**Step 1.** In your existing Symfony application, run this command:
 
 .. code-block:: terminal
 

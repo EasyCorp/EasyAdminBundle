@@ -32,7 +32,7 @@ class DashboardController extends AbstractDashboardController
             MenuItem::linkToCrud('menu.product.add', 'fas fa-plus-circle', Product::class),
         ];
 
-        yield MenuItem::subMenu('menu.product', 'fas fa-shopping-basket')->setSubItems($submenu1);
+        yield MenuItem::subMenu('áéíóúäëïöüñ[]%@# menu.product', 'fas fa-shopping-basket')->setSubItems($submenu1);
         yield MenuItem::linkToCrud('menu.customer', 'fas fa-users', User::class);
         yield MenuItem::linkToCrud('menu.purchase', 'far fa-credit-card', Purchase::class)->setDefaultSort(['deliveryDate' => 'DESC']);
 

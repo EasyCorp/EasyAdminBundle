@@ -32,7 +32,7 @@ class ProductCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         $panel1 = FormField::addPanel('Basic information');
-        $name = TextField::new('name');
+        $name = TextField::new('name', 'áéíóúäëïöüñ[]%@# Name');
         $description = TextareaField::new('description');
         $categories = AssociationField::new('categories');
         $panel2 = FormField::addPanel('Product Details');

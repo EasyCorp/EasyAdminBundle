@@ -268,8 +268,8 @@ for it and use ``linkToRoute()``::
         public function configureActions(Actions $actions): Actions
         {
             // this action executes the 'invoice()' method of the current CRUD controller
-            $viewInvoice = Action::new('viewInvoice', 'Invoice', 'fa fa-file-invoice')
-                ->linkToCrudAction('renderInvoice');
+            $viewInvoice = Action::new('showInvoice', 'Show invoice', 'fa fa-file-invoice')
+                ->linkToCrudAction('invoice');
 
             // if the method is not defined in a CRUD controller, link to its route
             $sendInvoice = Action::new('sendInvoice', 'Send invoice', 'fa fa-envelope')

@@ -104,7 +104,7 @@ XML or PHP config in a separate file. For example, when using YAML:
 
 In practice you won't have to deal with this route or the query string
 parameters in your application because EasyAdmin provides a service to
-`generate CRUD URLs <crud-generate-urls>`_.
+:ref:`generate CRUD URLs <crud-generate-urls>`.
 
 .. note::
 

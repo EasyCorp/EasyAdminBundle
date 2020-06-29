@@ -83,6 +83,10 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
 
     private function buildValueOption(FieldDto $field, EntityDto $entityDto)
     {
+        if (!$field->getFormTypeOption('mapped')) {
+            return null;
+        }
+
         $entityInstance = $entityDto->getInstance();
         $propertyName = $field->getProperty();
 
@@ -156,8 +160,9 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
             return $templatePath;
         }
 
-        $isPropertyReadable = $this->propertyAccessor->isReadable($entityDto->getInstance(), $field->getProperty());
-        if (!$isPropertyReadable) {
+        $isMappedProperty = null === $field->getFormTypeOption('mapped') || true === $field->getFormTypeOption('mapped');
+        $isReadableProperty = $this->propertyAccessor->isReadable($entityDto->getInstance(), $field->getProperty());
+        if ($isMappedProperty && !$isReadableProperty) {
             return $adminContext->getTemplatePath('label/inaccessible');
         }
 

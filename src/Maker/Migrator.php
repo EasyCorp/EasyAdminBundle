@@ -87,7 +87,7 @@ final class Migrator
 
             $code = $code->closeBrace(); // closing for 'class ... {'
 
-            $controllerClassName = $entityClassName.'CrudController.php';
+            $controllerClassName = $crudControllerClassName.'.php';
             $outputFilePath = $this->outputDir.'/'.$controllerClassName;
             $isDumped = $this->dumpCode($code, $outputFilePath);
 

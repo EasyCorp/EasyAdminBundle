@@ -23,7 +23,7 @@ final class FormField implements FieldInterface
         throw new \RuntimeException('Instead of this method, use the "addPanel()" method.');
     }
 
-    public static function addPanel(?string $label = null, ?string $icon = null)
+    public static function addPanel(?string $label = null, ?string $icon = null): self
     {
         $field = new self();
 

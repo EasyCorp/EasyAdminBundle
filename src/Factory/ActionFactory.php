@@ -112,7 +112,8 @@ final class ActionFactory
             }
 
             $translationParameters = array_merge($defaultTranslationParameters, $actionDto->getTranslationParameters());
-            $translatedActionLabel = $this->translator->trans($uLabel->toString(), $translationParameters, $translationDomain);
+            $label = $uLabel->toString();
+            $translatedActionLabel = empty($label) ? $label : $this->translator->trans($label, $translationParameters, $translationDomain);
             $actionDto->setLabel($translatedActionLabel);
         }
 

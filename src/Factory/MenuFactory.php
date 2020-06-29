@@ -105,13 +105,14 @@ final class MenuFactory
             $uLabel = $uLabel->after('__ea__');
             $translationDomain = 'EasyAdminBundle';
         }
-        $label = $this->translator->trans($uLabel->toString(), $menuItemDto->getTranslationParameters(), $translationDomain);
+        $label = $uLabel->toString();
+        $translatedLabel = empty($label) ? $label : $this->translator->trans($label, $menuItemDto->getTranslationParameters(), $translationDomain);
 
         $url = $this->generateMenuItemUrl($menuItemDto, $dashboardRouteName, $adminContextId, $index, $subIndex);
 
         $menuItemDto->setIndex($index);
         $menuItemDto->setSubIndex($subIndex);
-        $menuItemDto->setLabel($label);
+        $menuItemDto->setLabel($translatedLabel);
         $menuItemDto->setLinkUrl($url);
         $menuItemDto->setSubItems($subItems);
 

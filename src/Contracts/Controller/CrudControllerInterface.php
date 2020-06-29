@@ -36,6 +36,7 @@ interface CrudControllerInterface
 
     /**
      * @return FieldInterface[]
+     * @psalm-return iterable<FieldInterface>
      */
     public function configureFields(string $pageName): iterable;
 

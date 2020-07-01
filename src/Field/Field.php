@@ -11,10 +11,15 @@ final class Field implements FieldInterface
 {
     use FieldTrait;
 
-    public static function new(string $propertyName, ?string $label = null): self
+    public static function new(string $propertyName, ?string $label = null, ?string $templateName = null): self
     {
+        if (null === $templateName) {
+            $templateName = 'crud/field/generic';
+        }
+        
         return (new self())
             ->setProperty($propertyName)
-            ->setLabel($label);
+            ->setLabel($label)
+            ->setTemplateName($templateName);
     }
 }

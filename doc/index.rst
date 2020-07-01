@@ -22,18 +22,15 @@ there's a command to :doc:`upgrade from EasyAdmin 2 to EasyAdmin 3 automatically
 Table of Contents
 -----------------
 
-.. toctree::
-   :maxdepth: 1
-
-    /dashboards
-    /crud
-    /design
-    /fields
-    /filters
-    /actions
-    /security
-    /events
-    /upgrade
+* :doc:`Dashboards </dashboards>`
+* :doc:`CRUD Controllers </crud>`
+* :doc:`Design and Templates </design>`
+* :doc:`Fields </fields>`
+* :doc:`Filters </filters>`
+* :doc:`Actions </actions>`
+* :doc:`Security </security>`
+* :doc:`Events </events>`
+* :doc:`Upgrading from EasyAdmin 2 to 3 </upgrade>`
 
 Technical Requirements
 ----------------------

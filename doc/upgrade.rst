@@ -115,7 +115,7 @@ considered useful:
 * The global options ``easy_admin.list.title``, ``easy_admin.show.title``, etc.
   have been removed in favor of the ``setPageTitle()`` method in the ``Crud`` class.
 * The global ``help`` option for entities has been removed in favor of the
-  ``setHelpMessage()`` method in the ``Crud`` class.
+  ``setHelp()`` method in the ``Crud`` class.
 * The global ``easy_admin.list.max_results`` option has been removed in favor of
   the ``setPaginatorPageSize()`` method in the ``Crud`` class.
 * The ``dql_filter`` option to quickly filter the entity listings has been removed.

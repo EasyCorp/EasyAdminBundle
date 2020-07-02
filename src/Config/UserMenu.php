@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Config;
 
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu\MenuItemInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\UserMenuDto;
 
 /**
@@ -61,7 +62,7 @@ final class UserMenu
     }
 
     /**
-     * @param MenuItem[] $items
+     * @param MenuItemInterface[] $items
      */
     public function addMenuItems(array $items): self
     {

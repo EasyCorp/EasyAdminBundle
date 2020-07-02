@@ -2,7 +2,7 @@
 {% trans_default_domain ea.i18n.translationDomain %}
 
 <!DOCTYPE html>
-<html lang="{{ ea.i18n.locale }}">
+<html lang="{{ ea.i18n.locale|replace({ '_': '-' }) }}">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">

@@ -6,22 +6,27 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AbstractFileField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\FileField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class ImageConfigurator implements FieldConfiguratorInterface
+final class FileConfigurator implements FieldConfiguratorInterface
 {
     public function supports(FieldDto $field, EntityDto $entityDto): bool
     {
-        return ImageField::class === $field->getFieldFqcn();
+        return \in_array($field->getFieldFqcn(), [
+            ImageField::class,
+            FileField::class,
+        ], true);
     }
 
     public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
     {
-        $configuredBasePath = $field->getCustomOption(ImageField::OPTION_BASE_PATH);
-        $formattedValue = $this->getImagePath($field->getValue(), $configuredBasePath);
+        $configuredBasePath = $field->getCustomOption(AbstractFileField::OPTION_BASE_PATH);
+        $formattedValue = $this->getFilePath($field->getValue(), $configuredBasePath);
 
         $field->setFormattedValue($formattedValue);
 
@@ -31,15 +36,15 @@ final class ImageConfigurator implements FieldConfiguratorInterface
         }
     }
 
-    private function getImagePath(?string $imagePath, ?string $basePath): ?string
+    private function getFilePath(?string $filePath, ?string $basePath): ?string
     {
         // add the base path only to images that are not absolute URLs (http or https) or protocol-relative URLs (//)
-        if (null === $imagePath || 0 !== preg_match('/^(http[s]?|\/\/)/i', $imagePath)) {
-            return $imagePath;
+        if (null === $filePath || 0 !== preg_match('/^(http[s]?|\/\/)/i', $filePath)) {
+            return $filePath;
         }
 
         return isset($basePath)
-            ? rtrim($basePath, '/').'/'.ltrim($imagePath, '/')
-            : '/'.ltrim($imagePath, '/');
+            ? rtrim($basePath, '/').'/'.ltrim($filePath, '/')
+            : '/'.ltrim($filePath, '/');
     }
 }

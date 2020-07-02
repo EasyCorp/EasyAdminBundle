@@ -1,8 +1,8 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
 {% set ea_select2_locales = ['af', 'ar', 'az', 'bg', 'bn', 'bs', 'ca', 'cs', 'da', 'de', 'dsb', 'el', 'en', 'es', 'et', 'eu', 'fa', 'fi', 'fr', 'gl', 'he', 'hi', 'hr', 'hsb', 'hu', 'hy', 'id', 'is', 'it', 'ja', 'ka', 'km', 'ko', 'lt', 'lv', 'mk', 'ms', 'nb', 'ne', 'nl', 'pl', 'ps', 'pt', 'pt-BR', 'ro', 'ru', 'sk', 'sl', 'sq', 'sr', 'sr-Cyrl', 'sv', 'th', 'tk', 'tr', 'uk', 'vi', 'zh-CN', 'zh-TW'] %}
-
-{% set ea_select2_locale = ea.i18n.locale in ea_select2_locales
-    ? ea.i18n.locale
+{% set normalized_ea_locale = ea.i18n.locale|replace({ '_': '-' }) %}
+{% set ea_select2_locale = normalized_ea_locale in ea_select2_locales
+    ? normalized_ea_locale
     : ea.i18n.language in ea_select2_locales ? ea.i18n.language : 'en'
 %}
 

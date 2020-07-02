@@ -16,6 +16,8 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\OptionsResolver\Exception\InvalidArgumentException;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\String\Slugger\AsciiSlugger;
+use Symfony\Component\Uid\Uuid;
 
 /**
  * @author Yonel Ceruto <yonelceruto@gmail.com>
@@ -83,7 +85,12 @@ class FileUploadType extends AbstractType implements DataMapperInterface
     public function configureOptions(OptionsResolver $resolver): void
     {
         $uploadNew = static function (UploadedFile $file, string $uploadDir, string $fileName) {
-            $file->move($uploadDir, $fileName);
+            $name = str_replace('\\', '/', $fileName);
+            $pos = strrpos($name, '/');
+            $subDir = false === $pos ? '' : substr($name, 0, $pos);
+            $name = false === $pos ? $name : substr($name, $pos + 1);
+
+            $file->move(rtrim($uploadDir, '/\\').\DIRECTORY_SEPARATOR.$subDir, $name);
         };
 
         $uploadDelete = static function (File $file) {
@@ -170,17 +177,7 @@ class FileUploadType extends AbstractType implements DataMapperInterface
                 return $value;
             }
 
-            $generateUuid4 = static function () {
-                return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-                    random_int(0, 0xffff), random_int(0, 0xffff),
-                    random_int(0, 0xffff),
-                    random_int(0, 0x0fff) | 0x4000,
-                    random_int(0, 0x3fff) | 0x8000,
-                    random_int(0, 0xffff), random_int(0, 0xffff), random_int(0, 0xffff)
-                );
-            };
-
-            return static function (UploadedFile $file) use ($value, $generateUuid4) {
+            return static function (UploadedFile $file) use ($value) {
                 return strtr($value, [
                     '[contenthash]' => sha1_file($file->getRealPath()),
                     '[day]' => date('d'),
@@ -188,10 +185,12 @@ class FileUploadType extends AbstractType implements DataMapperInterface
                     '[month]' => date('m'),
                     '[name]' => pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME),
                     '[randomhash]' => bin2hex(random_bytes(20)),
-                    // TODO: remove this by the Symfony String slugger
-                    '[slug]' => transliterator_transliterate('Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()', pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)),
+                    '[slug]' => (new AsciiSlugger())
+                        ->slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME))
+                        ->lower()
+                        ->toString(),
                     '[timestamp]' => time(),
-                    '[uuid]' => $generateUuid4(),
+                    '[uuid]' => Uuid::v4()->toRfc4122(),
                     '[year]' => date('Y'),
                 ]);
             };
@@ -210,7 +209,7 @@ class FileUploadType extends AbstractType implements DataMapperInterface
      */
     public function getBlockPrefix(): string
     {
-        return 'easyadmin_fileupload';
+        return 'ea_fileupload';
     }
 
     /**
@@ -219,7 +218,7 @@ class FileUploadType extends AbstractType implements DataMapperInterface
     public function mapDataToForms($currentFiles, $forms): void
     {
         /** @var FormInterface $fileForm */
-        $fileForm = current(iterator_to_array($forms, false));
+        $fileForm = current(iterator_to_array($forms));
         $fileForm->setData($currentFiles);
     }
 
@@ -229,7 +228,7 @@ class FileUploadType extends AbstractType implements DataMapperInterface
     public function mapFormsToData($forms, &$currentFiles): void
     {
         /** @var FormInterface[] $children */
-        $children = iterator_to_array($forms, false);
+        $children = iterator_to_array($forms);
         $uploadedFiles = $children['file']->getData();
 
         /** @var FileUploadState $state */

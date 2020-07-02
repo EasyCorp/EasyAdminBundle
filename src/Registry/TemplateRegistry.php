@@ -39,6 +39,7 @@ final class TemplateRegistry
         'crud/field/generic' => '@EasyAdmin/crud/field/generic.html.twig',
         'crud/field/hidden' => '@EasyAdmin/crud/field/hidden.html.twig',
         'crud/field/id' => '@EasyAdmin/crud/field/id.html.twig',
+        'crud/field/file' => '@EasyAdmin/crud/field/file.html.twig',
         'crud/field/image' => '@EasyAdmin/crud/field/image.html.twig',
         'crud/field/integer' => '@EasyAdmin/crud/field/integer.html.twig',
         'crud/field/language' => '@EasyAdmin/crud/field/language.html.twig',

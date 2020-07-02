@@ -515,14 +515,15 @@ form .invalid-feedback > .d-block + .d-block {
         white-space: nowrap;
     }
     .custom-file-label::after {
-        display: none;
+        display: none !important;
     }
 
     .input-group-text {
         background-color: white;
         border: none;
+        box-shadow: none;
         color: var(--text-muted);
-        height: 28px;
+        height: 27px;
         margin-top: 1px;
         padding: 7px;
         position: absolute;

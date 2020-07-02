@@ -104,7 +104,7 @@ XML or PHP config in a separate file. For example, when using YAML:
 
 In practice you won't have to deal with this route or the query string
 parameters in your application because EasyAdmin provides a service to
-:ref:`generate CRUD URLs <crud-generate-urls>`.
+`generate CRUD URLs`_.
 
 .. note::
 
@@ -699,3 +699,4 @@ text contents, custom forms, etc.
 .. _`translation domain`: https://symfony.com/doc/current/components/translation.html#using-message-domains
 .. _`translation domains`: https://symfony.com/doc/current/components/translation.html#using-message-domains
 .. _`work with the user locale`: https://symfony.com/doc/current/translation/locale.html
+.. _`generate CRUD URLs`: https://symfony.com/doc/master/bundles/EasyAdminBundle/crud.html#generating-crud-urls

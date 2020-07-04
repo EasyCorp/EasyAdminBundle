@@ -76,17 +76,16 @@ class Crud
      */
     public function setDateFormat(string $formatOrPattern): self
     {
-        if ('none' === $formatOrPattern || '' === trim($formatOrPattern)) {
-            throw new \InvalidArgumentException(sprintf('The first argument of the "%s()" method cannot be "none" or an empty string. Define either the date format or the datetime Intl pattern.', __METHOD__));
+        if (DateTimeField::FORMAT_NONE === $formatOrPattern || '' === trim($formatOrPattern)) {
+            $validDateFormatsWithoutNone = array_filter(DateTimeField::VALID_DATE_FORMATS, static function($format) {
+                return DateTimeField::FORMAT_NONE !== $format;
+            });
+
+            throw new \InvalidArgumentException(sprintf('The first argument of the "%s()" method cannot be "%s" or an empty string. Use either the special date formats (%s) or a datetime Intl pattern.',  __METHOD__, DateTimeField::FORMAT_NONE, implode(', ', $validDateFormatsWithoutNone)));
         }
 
-        if (!\in_array($formatOrPattern, DateTimeField::VALID_DATE_FORMATS, true)) {
-            $this->dto->setDateTimePattern($formatOrPattern);
-            $this->dto->setDateFormat(null);
-        } else {
-            $this->dto->setDateTimePattern('');
-            $this->dto->setDateFormat($formatOrPattern);
-        }
+        $datePattern = DateTimeField::INTL_DATE_PATTERNS[$formatOrPattern] ?? $formatOrPattern;
+        $this->dto->setDatePattern($datePattern);
 
         return $this;
     }
@@ -96,17 +95,16 @@ class Crud
      */
     public function setTimeFormat(string $formatOrPattern): self
     {
-        if ('none' === $formatOrPattern || '' === trim($formatOrPattern)) {
-            throw new \InvalidArgumentException(sprintf('The first argument of the "%s()" method cannot be "none" or an empty string. Define either the time format or the datetime Intl pattern.', __METHOD__));
+        if (DateTimeField::FORMAT_NONE === $formatOrPattern || '' === trim($formatOrPattern)) {
+            $validTimeFormatsWithoutNone = array_filter(DateTimeField::VALID_DATE_FORMATS, static function($format) {
+                return DateTimeField::FORMAT_NONE !== $format;
+            });
+
+            throw new \InvalidArgumentException(sprintf('The first argument of the "%s()" method cannot be "%s" or an empty string. Use either the special time formats (%s) or a datetime Intl pattern.',  __METHOD__, DateTimeField::FORMAT_NONE, implode(', ', $validTimeFormatsWithoutNone)));
         }
 
-        if (!\in_array($formatOrPattern, DateTimeField::VALID_DATE_FORMATS, true)) {
-            $this->dto->setDateTimePattern($formatOrPattern);
-            $this->dto->setTimeFormat(null);
-        } else {
-            $this->dto->setDateTimePattern('');
-            $this->dto->setTimeFormat($formatOrPattern);
-        }
+        $timePattern = DateTimeField::INTL_TIME_PATTERNS[$formatOrPattern] ?? $formatOrPattern;
+        $this->dto->setTimePattern($timePattern);
 
         return $this;
     }
@@ -115,35 +113,37 @@ class Crud
      * @param string $dateFormatOrPattern A format name ('none', 'short', 'medium', 'long', 'full') or a valid ICU Datetime Pattern (see http://userguide.icu-project.org/formatparse/datetime)
      * @param string $timeFormat          A format name ('none', 'short', 'medium', 'long', 'full')
      */
-    public function setDateTimeFormat(string $dateFormatOrPattern, string $timeFormat = 'none'): self
+    public function setDateTimeFormat(string $dateFormatOrPattern, string $timeFormat = DateTimeField::FORMAT_NONE): self
     {
         if ('' === trim($dateFormatOrPattern)) {
-            throw new \InvalidArgumentException(sprintf('The first argument of the "%s()" method cannot be an empty string. Define either the date format or the datetime Intl pattern.', __METHOD__));
+            throw new \InvalidArgumentException(sprintf('The first argument of the "%s()" method cannot be an empty string. Use either a date format (%s) or a datetime Intl pattern.', __METHOD__, implode(', ', DateTimeField::VALID_DATE_FORMATS)));
         }
 
-        if ('none' === $dateFormatOrPattern && 'none' === $timeFormat) {
-            throw new \InvalidArgumentException(sprintf('The values of the arguments of "%s()" cannot be "none" at the same time. Change any of them (or both).', __METHOD__));
+        $datePatternIsEmpty = DateTimeField::FORMAT_NONE === $dateFormatOrPattern || '' === trim($dateFormatOrPattern);
+        $timePatternIsEmpty = DateTimeField::FORMAT_NONE === $timeFormat || '' === trim($timeFormat);
+        if ($datePatternIsEmpty && $timePatternIsEmpty) {
+            throw new \InvalidArgumentException(sprintf('The values of the arguments of "%s()" cannot be "%s" or an empty string at the same time. Change any of them (or both).', __METHOD__, DateTimeField::FORMAT_NONE));
+        }
+
+        // when date format/pattern is none and time format is a pattern,
+        // silently turn them into a datetime pattern
+        if (DateTimeField::FORMAT_NONE === $dateFormatOrPattern && !\in_array($timeFormat, DateTimeField::VALID_DATE_FORMATS, true)) {
+            $dateFormatOrPattern = $timeFormat;
+            $timeFormat = DateTimeField::FORMAT_NONE;
         }
 
         $isDatePattern = !\in_array($dateFormatOrPattern, DateTimeField::VALID_DATE_FORMATS, true);
 
-        if ($isDatePattern && 'none' !== $timeFormat) {
-            throw new \InvalidArgumentException(sprintf('When the first argument of "%s()" is a datetime pattern, you cannot set the time format in the second argument (define the time format as part of the datetime pattern).', __METHOD__));
+        if ($isDatePattern && DateTimeField::FORMAT_NONE !== $timeFormat) {
+            throw new \InvalidArgumentException(sprintf('When the first argument of "%s()" is a datetime pattern, you cannot set the time format in the second argument (define the time format inside the datetime pattern).', __METHOD__));
         }
 
         if (!$isDatePattern && !\in_array($timeFormat, DateTimeField::VALID_DATE_FORMATS, true)) {
             throw new \InvalidArgumentException(sprintf('The value of the time format can only be one of the following: %s (but "%s" was given).', implode(', ', DateTimeField::VALID_DATE_FORMATS), $timeFormat));
         }
 
-        if ($isDatePattern) {
-            $this->dto->setDateTimePattern($dateFormatOrPattern);
-            $this->dto->setDateFormat(null);
-            $this->dto->setTimeFormat(null);
-        } else {
-            $this->dto->setDateTimePattern('');
-            $this->dto->setDateFormat($dateFormatOrPattern);
-            $this->dto->setTimeFormat($timeFormat);
-        }
+        $dateTimePattern = $isDatePattern ? $dateFormatOrPattern : trim(sprintf('%s %s', DateTimeField::INTL_DATE_PATTERNS[$dateFormatOrPattern], DateTimeField::INTL_TIME_PATTERNS[$timeFormat]));
+        $this->dto->setDateTimePattern($dateTimePattern);
 
         return $this;
     }

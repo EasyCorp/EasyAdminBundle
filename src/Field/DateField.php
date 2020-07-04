@@ -12,6 +12,8 @@ final class DateField implements FieldInterface
 {
     use FieldTrait;
 
+    public const OPTION_DATE_PATTERN = 'datePattern';
+
     public static function new(string $propertyName, ?string $label = null): self
     {
         return (new self())
@@ -21,8 +23,7 @@ final class DateField implements FieldInterface
             ->setFormType(DateType::class)
             ->addCssClass('field-date')
             // the proper default values of these options are set on the Crud class
-            ->setCustomOption(DateTimeField::OPTION_DATE_FORMAT, null)
-            ->setCustomOption(DateTimeField::OPTION_DATETIME_PATTERN, null)
+            ->setCustomOption(self::OPTION_DATE_PATTERN, null)
             ->setCustomOption(DateTimeField::OPTION_TIMEZONE, null);
     }
 
@@ -45,17 +46,16 @@ final class DateField implements FieldInterface
      */
     public function setFormat(string $dateFormatOrPattern): self
     {
-        if ('none' === $dateFormatOrPattern || '' === trim($dateFormatOrPattern)) {
-            throw new \InvalidArgumentException(sprintf('The first argument of the "%s()" method cannot be "none" or an empty string. Define either the date format or the datetime Intl pattern.', __METHOD__));
+        if (DateTimeField::FORMAT_NONE === $dateFormatOrPattern || '' === trim($dateFormatOrPattern)) {
+            $validDateFormatsWithoutNone = array_filter(DateTimeField::VALID_DATE_FORMATS, static function($format) {
+                return DateTimeField::FORMAT_NONE !== $format;
+            });
+
+            throw new \InvalidArgumentException(sprintf('The first argument of the "%s()" method cannot be "%s" or an empty string. Use either the special date formats (%s) or a datetime Intl pattern.',  __METHOD__, DateTimeField::FORMAT_NONE, implode(', ', $validDateFormatsWithoutNone)));
         }
 
-        if (!\in_array($dateFormatOrPattern, DateTimeField::VALID_DATE_FORMATS, true)) {
-            $this->setCustomOption(DateTimeField::OPTION_DATETIME_PATTERN, $dateFormatOrPattern);
-            $this->setCustomOption(DateTimeField::OPTION_DATE_FORMAT, null);
-        } else {
-            $this->setCustomOption(DateTimeField::OPTION_DATETIME_PATTERN, null);
-            $this->setCustomOption(DateTimeField::OPTION_DATE_FORMAT, $dateFormatOrPattern);
-        }
+        $datePattern = DateTimeField::INTL_DATE_PATTERNS[$dateFormatOrPattern] ?? $dateFormatOrPattern;
+        $this->setCustomOption(self::OPTION_DATE_PATTERN, $datePattern);
 
         return $this;
     }

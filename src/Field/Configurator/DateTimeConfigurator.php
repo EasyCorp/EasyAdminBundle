@@ -32,23 +32,23 @@ final class DateTimeConfigurator implements FieldConfiguratorInterface
     public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
     {
         $crud = $context->getCrud();
-        $defaultDateFormat = $crud->getDateFormat();
-        $defaultTimeFormat = $crud->getTimeFormat();
-        $defaultDateTimePattern = $crud->getDateTimePattern();
-        $defaultTimezone = $crud->getTimezone();
 
-        $dateFormat = $field->getCustomOption(DateTimeField::OPTION_DATE_FORMAT) ?? $defaultDateFormat;
-        $timeFormat = $field->getCustomOption(DateTimeField::OPTION_TIME_FORMAT) ?? $defaultTimeFormat;
-        $dateTimePattern = $field->getCustomOption(DateTimeField::OPTION_DATETIME_PATTERN) ?? $defaultDateTimePattern;
+        $defaultTimezone = $crud->getTimezone();
         $timezone = $field->getCustomOption(DateTimeField::OPTION_TIMEZONE) ?? $defaultTimezone;
 
         $formattedValue = $field->getValue();
         if (DateTimeField::class === $field->getFieldFqcn()) {
-            $formattedValue = $this->intlFormatter->formatDateTime($field->getValue(), $dateFormat, $timeFormat, $dateTimePattern, $timezone);
+            $defaultDateTimePattern = $crud->getDateTimePattern();
+            $dateTimePattern = $field->getCustomOption(DateTimeField::OPTION_DATETIME_PATTERN) ?? $defaultDateTimePattern;
+            $formattedValue = $this->intlFormatter->formatDateTime($field->getValue(), null, null, $dateTimePattern, $timezone);
         } elseif (DateField::class === $field->getFieldFqcn()) {
-            $formattedValue = $this->intlFormatter->formatDate($field->getValue(), $dateFormat, $dateTimePattern, $timezone);
+            $defaultDatePattern = $crud->getDatePattern();
+            $datePattern = $field->getCustomOption(DateField::OPTION_DATE_PATTERN) ?? $defaultDatePattern;
+            $formattedValue = $this->intlFormatter->formatDate($field->getValue(), null, $datePattern, $timezone);
         } elseif (TimeField::class === $field->getFieldFqcn()) {
-            $formattedValue = $this->intlFormatter->formatTime($field->getValue(), $timeFormat, $dateTimePattern, $timezone);
+            $defaultTimePattern = $crud->getTimePattern();
+            $timePattern = $field->getCustomOption(TimeField::OPTION_TIME_PATTERN) ?? $defaultTimePattern;
+            $formattedValue = $this->intlFormatter->formatTime($field->getValue(), null, $timePattern, $timezone);
         }
 
         $field->setFormattedValue($formattedValue);

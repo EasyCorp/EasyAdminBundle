@@ -56,7 +56,7 @@ return [
         'choose_file' => 'Datei auswählen',
         'close' => 'Schließen',
         'create' => 'Erstellen',
-        'create_and_add_another' => 'Erstellen und weiter hinzufügen',
+        'create_and_add_another' => 'Erstellen und weitere hinzufügen',
         'create_and_continue' => 'Erstellen und weiter bearbeiten',
         'save' => 'Speichern',
         'save_and_continue' => 'Speichern und weiter bearbeiten',

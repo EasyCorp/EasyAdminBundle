@@ -36,16 +36,15 @@ final class ClassMaker
         }
 
         // first, try to create a file name without any autoincrement index in it
-        $generatedFileName = $generatedFileNamePattern->replace('%d', '');
+        $generatedFileName = $generatedFileNamePattern->replace('{number}', '');
         $i = 1;
         while ($this->fs->exists(sprintf('%s/%s', $generatedFileDir, $generatedFileName))) {
-            $generatedFileName = $generatedFileNamePattern->replace('%d', ++$i);
+            $generatedFileName = $generatedFileNamePattern->replace('{number}', ++$i);
         }
         $generatedFilePath = sprintf('%s/%s', $generatedFileDir, $generatedFileName);
 
         $skeletonParameters = array_merge($skeletonParameters, [
             'class_name' => u($generatedFileName)->beforeLast('.php')->toString(),
-            'namespace' => 'App\\Controller\\Admin',
         ]);
 
         $this->fs->dumpFile($generatedFilePath, $this->renderSkeleton($skeletonPath, $skeletonParameters));

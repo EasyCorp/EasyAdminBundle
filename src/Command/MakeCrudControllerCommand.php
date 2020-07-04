@@ -8,6 +8,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Filesystem\Filesystem;
 use function Symfony\Component\String\u;
 
 /**
@@ -18,12 +19,14 @@ use function Symfony\Component\String\u;
 class MakeCrudControllerCommand extends Command
 {
     protected static $defaultName = 'make:admin:crud';
+    private $projectDir;
     private $classMaker;
     private $doctrine;
 
-    public function __construct(ClassMaker $classMaker, ManagerRegistry $doctrine, string $name = null)
+    public function __construct(string $projectDir, ClassMaker $classMaker, ManagerRegistry $doctrine, string $name = null)
     {
         parent::__construct($name);
+        $this->projectDir = $projectDir;
         $this->classMaker = $classMaker;
         $this->doctrine = $doctrine;
     }
@@ -31,6 +34,7 @@ class MakeCrudControllerCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $io = new SymfonyStyle($input, $output);
+        $fs = new Filesystem();
 
         $doctrineEntitiesFqcn = $this->getAllDoctrineEntitiesFqcn();
         if (0 === \count($doctrineEntitiesFqcn)) {
@@ -43,12 +47,29 @@ class MakeCrudControllerCommand extends Command
             $doctrineEntitiesFqcn
         );
         $entityClassName = u($entityFqcn)->afterLast('\\')->toString();
+        $controllerFileNamePattern = sprintf('%s{number}CrudController.php', $entityClassName);
+
+        $projectDir = $this->projectDir;
+        $controllerDir = $io->ask('Which directory do you want to generate the CRUD controller in?', 'src/Controller/Admin/', static function(string $selectedDir) use ($fs, $projectDir) {
+            $absoluteDir = u($selectedDir)->ensureStart($projectDir.DIRECTORY_SEPARATOR);
+            if (!$fs->exists($absoluteDir)) {
+                throw new \RuntimeException('The given directory does not exist. Type in the path of an existing directory relative to your project root (e.g. src/Controller/Admin/)');
+            }
+
+            return $absoluteDir->after($projectDir.DIRECTORY_SEPARATOR)->trimEnd(DIRECTORY_SEPARATOR)->toString();
+        });
+
+        $guessedNamespace = u($controllerDir)->equalsTo('src')
+            ? 'App'
+            : u($controllerDir)->replace('/', ' ')->replace('\\', ' ')->replace('src ', 'app ')->title(true)->replace(' ', '\\');
+        $namespace = $io->ask('Namespace of the generated CRUD controller', $guessedNamespace, static function(string $namespace) {
+            return u($namespace)->replace('/', '\\')->toString();
+        });
 
         $generatedFilePath = $this->classMaker->make(
-            // the double '%' in '%%d' is not a mistake
-            sprintf('src/Controller/Admin/%s%%dCrudController.php', $entityClassName),
+            sprintf('%s/%s', $controllerDir, $controllerFileNamePattern),
             'crud_controller.tpl',
-            ['entity_fqcn' => $entityFqcn, 'entity_class_name' => $entityClassName]
+            ['entity_fqcn' => $entityFqcn, 'entity_class_name' => $entityClassName, 'namespace' => $namespace]
         );
 
         $io->success('Your CRUD controller class has been successfully generated.');

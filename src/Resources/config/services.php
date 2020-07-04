@@ -99,8 +99,9 @@ return static function (ContainerConfigurator $container) {
             ->tag('console.command')
 
         ->set(MakeCrudControllerCommand::class)->public()
-            ->arg(0, new Reference(ClassMaker::class))
-            ->arg(1, new Reference('doctrine'))
+            ->arg(0, '%kernel.project_dir%')
+            ->arg(1, new Reference(ClassMaker::class))
+            ->arg(2, new Reference('doctrine'))
             ->tag('console.command')
 
         ->set(ClassMaker::class)

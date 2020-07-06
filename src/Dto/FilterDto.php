@@ -90,6 +90,8 @@ final class FilterDto
      */
     public function setLabel($label): void
     {
+        //We must also apply the label to the form types, or it will not be shown in form
+        $this->setFormTypeOption('label', $label);
         $this->label = $label;
     }
 

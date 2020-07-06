@@ -42,6 +42,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -444,12 +445,22 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
     public function createEditForm(EntityDto $entityDto, KeyValueStore $formOptions, AdminContext $context): FormInterface
     {
-        return $this->get(FormFactory::class)->createEditForm($entityDto, $formOptions, $context);
+        return $this->createEditFormBuilder($entityDto, $formOptions, $context)->getForm();
+    }
+
+    public function createEditFormBuilder(EntityDto $entityDto, KeyValueStore $formOptions, AdminContext $context): FormBuilderInterface
+    {
+        return $this->get(FormFactory::class)->createEditFormBuilder($entityDto, $formOptions, $context);
     }
 
     public function createNewForm(EntityDto $entityDto, KeyValueStore $formOptions, AdminContext $context): FormInterface
     {
-        return $this->get(FormFactory::class)->createNewForm($entityDto, $formOptions, $context);
+        return $this->createNewFormBuilder($entityDto, $formOptions, $context)->getForm();
+    }
+
+    public function createNewFormBuilder(EntityDto $entityDto, KeyValueStore $formOptions, AdminContext $context): FormBuilderInterface
+    {
+        return $this->get(FormFactory::class)->createNewFormBuilder($entityDto, $formOptions, $context);
     }
 
     /**

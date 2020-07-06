@@ -10,6 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudBatchActionFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,7 +29,7 @@ final class FormFactory
         $this->crudUrlGenerator = $crudUrlGenerator;
     }
 
-    public function createEditForm(EntityDto $entityDto, KeyValueStore $formOptions, AdminContext $context): FormInterface
+    public function createEditFormBuilder(EntityDto $entityDto, KeyValueStore $formOptions, AdminContext $context): FormBuilderInterface
     {
         $cssClass = sprintf('ea-%s-form', $context->getCrud()->getCurrentAction());
         $formOptions->set('attr.class', trim(($formOptions->get('attr.class') ?? '').' '.$cssClass));
@@ -36,10 +37,15 @@ final class FormFactory
         $formOptions->set('entityDto', $entityDto);
         $formOptions->setIfNotSet('translation_domain', $context->getI18n()->getTranslationDomain());
 
-        return $this->symfonyFormFactory->createNamedBuilder($entityDto->getName(), CrudFormType::class, $entityDto->getInstance(), $formOptions->all())->getForm();
+        return $this->symfonyFormFactory->createNamedBuilder($entityDto->getName(), CrudFormType::class, $entityDto->getInstance(), $formOptions->all());
     }
 
-    public function createNewForm(EntityDto $entityDto, KeyValueStore $formOptions, AdminContext $context): FormInterface
+    public function createEditForm(EntityDto $entityDto, KeyValueStore $formOptions, AdminContext $context): FormInterface
+    {
+        return $this->createEditFormBuilder($entityDto, $formOptions, $context)->getForm();
+    }
+
+    public function createNewFormBuilder(EntityDto $entityDto, KeyValueStore $formOptions, AdminContext $context): FormBuilderInterface
     {
         $cssClass = sprintf('ea-%s-form', $context->getCrud()->getCurrentAction());
         $formOptions->set('attr.class', trim(($formOptions->get('attr.class') ?? '').' '.$cssClass));
@@ -47,7 +53,12 @@ final class FormFactory
         $formOptions->set('entityDto', $entityDto);
         $formOptions->setIfNotSet('translation_domain', $context->getI18n()->getTranslationDomain());
 
-        return $this->symfonyFormFactory->createNamedBuilder($entityDto->getName(), CrudFormType::class, $entityDto->getInstance(), $formOptions->all())->getForm();
+        return $this->symfonyFormFactory->createNamedBuilder($entityDto->getName(), CrudFormType::class, $entityDto->getInstance(), $formOptions->all());
+    }
+
+    public function createNewForm(EntityDto $entityDto, KeyValueStore $formOptions, AdminContext $context): FormInterface
+    {
+        return $this->createNewFormBuilder($entityDto, $formOptions, $context)->getForm();
     }
 
     public function createBatchActionsForm(): FormInterface

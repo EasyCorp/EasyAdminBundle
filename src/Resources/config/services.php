@@ -66,6 +66,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Maker\Migrator;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityPaginator;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityUpdater;
+use EasyCorp\Bundle\EasyAdminBundle\PropertyInfo\NestedExtractor;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\FieldProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\CrudControllerRegistry;
@@ -336,5 +337,9 @@ return static function (ContainerConfigurator $container) {
         ->set(TimezoneConfigurator::class)
 
         ->set(UrlConfigurator::class)
+
+        ->set(NestedExtractor::class)
+            ->arg(0, new Reference(PropertyTypeExtractorInterface::class))
+            ->tag('property_info.type_extractor', ['priority' => -998])
     ;
 };

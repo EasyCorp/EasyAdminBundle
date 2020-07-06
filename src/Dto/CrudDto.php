@@ -27,8 +27,8 @@ final class CrudDto
     ];
     private $customPageTitles;
     private $helpMessages;
-    private $dateFormat;
-    private $timeFormat;
+    private $datePattern;
+    private $timePattern;
     private $dateTimePattern;
     private $dateIntervalFormat;
     private $timezone;
@@ -48,9 +48,9 @@ final class CrudDto
     {
         $this->customPageTitles = [Crud::PAGE_DETAIL => null, Crud::PAGE_EDIT => null, Crud::PAGE_INDEX => null, Crud::PAGE_NEW => null];
         $this->helpMessages = [Crud::PAGE_DETAIL => null, Crud::PAGE_EDIT => null, Crud::PAGE_INDEX => null, Crud::PAGE_NEW => null];
-        $this->dateFormat = 'medium';
-        $this->timeFormat = 'medium';
-        $this->dateTimePattern = '';
+        $this->datePattern = 'MMM d, y';
+        $this->timePattern = 'h:mm:ss a';
+        $this->dateTimePattern = 'MMM d, y h:mm:ss a';
         $this->dateIntervalFormat = '%%y Year(s) %%m Month(s) %%d Day(s)';
         $this->defaultSort = [];
         $this->searchFields = [];
@@ -141,24 +141,24 @@ final class CrudDto
         $this->helpMessages[$pageName] = $helpMessage;
     }
 
-    public function getDateFormat(): ?string
+    public function getDatePattern(): ?string
     {
-        return $this->dateFormat;
+        return $this->datePattern;
     }
 
-    public function setDateFormat(?string $format): void
+    public function setDatePattern(?string $format): void
     {
-        $this->dateFormat = $format;
+        $this->datePattern = $format;
     }
 
-    public function getTimeFormat(): ?string
+    public function getTimePattern(): ?string
     {
-        return $this->timeFormat;
+        return $this->timePattern;
     }
 
-    public function setTimeFormat(?string $format): void
+    public function setTimePattern(?string $format): void
     {
-        $this->timeFormat = $format;
+        $this->timePattern = $format;
     }
 
     public function getDateTimePattern(): string

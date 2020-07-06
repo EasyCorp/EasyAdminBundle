@@ -68,13 +68,13 @@ must use a special syntax inside ``extends`` to avoid an infinite loop:
 
 .. code-block:: twig
 
-    {# templates/bundles/EasyAdminBundle/page/layout.html.twig #}
+    {# templates/bundles/EasyAdminBundle/layout.html.twig #}
 
     {# DON'T DO THIS: it will cause an infinite loop #}
-    {% extends '@EasyAdmin/page/layout.html.twig' %}
+    {% extends '@EasyAdmin/layout.html.twig' %}
 
     {# DO THIS: the '!' symbol tells Symfony to extend from the original template #}
-    {% extends '@!EasyAdmin/page/layout.html.twig' %}
+    {% extends '@!EasyAdmin/layout.html.twig' %}
 
     {% block sidebar %}
         {# ... #}

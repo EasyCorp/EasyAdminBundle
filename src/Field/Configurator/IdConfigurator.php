@@ -27,7 +27,7 @@ final class IdConfigurator implements FieldConfiguratorInterface
             $maxLength = Crud::PAGE_INDEX === $context->getCrud()->getCurrentPage() ? 7 : -1;
         }
 
-        if (-1 !== $maxLength) {
+        if (-1 !== $maxLength && null !== $field->getValue()) {
             $field->setFormattedValue(u($field->getValue())->truncate($maxLength, '…'));
         }
     }

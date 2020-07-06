@@ -54,6 +54,22 @@ final class SearchDto
         return $this->mergedSort = $mergedSort;
     }
 
+    public function isSortingField(string $fieldProperty): bool
+    {
+        $firstSortField = \count($this->getSort()) > 0 ? array_keys($this->getSort())[0] : null;
+        if (null === $firstSortField) {
+            return false;
+        }
+
+        // TODO: check for association properties when they support search (e.g. 'user.name')
+        return $fieldProperty === $firstSortField;
+    }
+
+    public function getSortDirection(string $fieldProperty): string
+    {
+        return array_key_exists($fieldProperty, $this->getSort()) ? $this->getSort()[$fieldProperty] : 'DESC';
+    }
+
     public function getQuery(): ?string
     {
         return $this->query;

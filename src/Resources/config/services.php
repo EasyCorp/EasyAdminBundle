@@ -80,6 +80,7 @@ use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
 use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\PropertyInfo\PropertyTypeExtractorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 return static function (ContainerConfigurator $container) {
@@ -276,6 +277,7 @@ return static function (ContainerConfigurator $container) {
             ->arg(0, new Reference(EntityFactory::class))
             ->arg(1, new Reference(CrudUrlGenerator::class))
             ->arg(2, new Reference(TranslatorInterface::class))
+            ->arg(3, new Reference(PropertyTypeExtractorInterface::class))
 
         ->set(AvatarConfigurator::class)
 
@@ -300,6 +302,7 @@ return static function (ContainerConfigurator $container) {
 
         ->set(DateTimeConfigurator::class)
             ->arg(0, new Reference(IntlFormatter::class))
+            ->arg(1, new Reference(PropertyTypeExtractorInterface::class))
 
         ->set(EmailConfigurator::class)
 

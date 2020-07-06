@@ -12,6 +12,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudAutocompleteType;
 use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
+use Symfony\Component\PropertyInfo\PropertyTypeExtractorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -22,12 +23,14 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
     private $entityFactory;
     private $crudUrlGenerator;
     private $translator;
+    private $typeExtractor;
 
-    public function __construct(EntityFactory $entityFactory, CrudUrlGenerator $crudUrlGenerator, TranslatorInterface $translator)
+    public function __construct(EntityFactory $entityFactory, CrudUrlGenerator $crudUrlGenerator, TranslatorInterface $translator, PropertyTypeExtractorInterface $typeExtractor)
     {
         $this->entityFactory = $entityFactory;
         $this->crudUrlGenerator = $crudUrlGenerator;
         $this->translator = $translator;
+        $this->typeExtractor = $typeExtractor;
     }
 
     public function supports(FieldDto $field, EntityDto $entityDto): bool
@@ -42,18 +45,18 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
             throw new \RuntimeException(sprintf('The "%s" field is not a Doctrine association, so it cannot be used as an association field.', $propertyName));
         }
 
-        $targetEntityFqcn = $field->getDoctrineMetadata()->get('targetEntity');
+        $type = $this->typeExtractor->getTypes($entityDto->getFqcn(), $propertyName)[0];
+
+        $targetEntityFqcn = $type->getClassName();
         // the target CRUD controller can be NULL; in that case, field value doesn't link to the related entity
         $targetCrudControllerFqcn = $field->getCustomOption(AssociationField::OPTION_CRUD_CONTROLLER)
             ?? $context->getCrudControllers()->findCrudFqcnByEntityFqcn($targetEntityFqcn);
         $field->setCustomOption(AssociationField::OPTION_CRUD_CONTROLLER, $targetCrudControllerFqcn);
 
-        if ($entityDto->isToOneAssociation($propertyName)) {
-            $this->configureToOneAssociation($field);
-        }
-
-        if ($entityDto->isToManyAssociation($propertyName)) {
-            $this->configureToManyAssociation($field);
+        if ($type->isCollection()) {
+            $this->configureToManyAssociation($field, $targetEntityFqcn);
+        } else {
+            $this->configureToOneAssociation($field, $targetEntityFqcn);
         }
 
         if (true === $field->getCustomOption(AssociationField::OPTION_AUTOCOMPLETE)) {
@@ -76,7 +79,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         }
     }
 
-    private function configureToOneAssociation(FieldDto $field): void
+    private function configureToOneAssociation(FieldDto $field, string $targetEntityFqcn): void
     {
         $field->setCustomOption(AssociationField::OPTION_DOCTRINE_ASSOCIATION_TYPE, 'toOne');
 
@@ -84,7 +87,6 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
             $field->setFormTypeOptionIfNotSet('attr.placeholder', $this->translator->trans('label.form.empty_value', [], 'EasyAdminBundle'));
         }
 
-        $targetEntityFqcn = $field->getDoctrineMetadata()->get('targetEntity');
         $targetCrudControllerFqcn = $field->getCustomOption(AssociationField::OPTION_CRUD_CONTROLLER);
 
         $targetEntityDto = null === $field->getValue()
@@ -97,7 +99,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         $field->setFormattedValue($this->formatAsString($field->getValue(), $targetEntityDto));
     }
 
-    private function configureToManyAssociation(FieldDto $field): void
+    private function configureToManyAssociation(FieldDto $field, string $targetEntityFqcn): void
     {
         $field->setCustomOption(AssociationField::OPTION_DOCTRINE_ASSOCIATION_TYPE, 'toMany');
 
@@ -107,7 +109,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         $field->setFormTypeOptionIfNotSet('multiple', true);
 
         /* @var PersistentCollection $collection */
-        $field->setFormTypeOptionIfNotSet('class', $field->getDoctrineMetadata()->get('targetEntity'));
+        $field->setFormTypeOptionIfNotSet('class', $targetEntityFqcn);
 
         if (null === $field->getTextAlign()) {
             $field->setTextAlign('right');

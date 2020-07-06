@@ -171,7 +171,8 @@ return static function (ContainerConfigurator $container) {
 
         ->set(DashboardControllerRegistry::class)
             ->arg(0, '%kernel.secret%')
-            ->arg(1, tagged_iterator(EasyAdminExtension::TAG_DASHBOARD_CONTROLLER))
+            ->arg(1, '%kernel.cache_dir%')
+            ->arg(2, tagged_iterator(EasyAdminExtension::TAG_DASHBOARD_CONTROLLER))
 
         ->set(CrudControllerRegistry::class)
             ->arg(0, '%kernel.secret%')
@@ -180,6 +181,8 @@ return static function (ContainerConfigurator $container) {
         ->set(CrudUrlGenerator::class)
             ->arg(0, new Reference(AdminContextProvider::class))
             ->arg(1, new Reference('router.default'))
+            ->arg(2, new Reference(DashboardControllerRegistry::class))
+            ->arg(3, new Reference(CrudControllerRegistry::class))
 
         ->set(MenuFactory::class)
             ->arg(0, new Reference(AdminContextProvider::class))

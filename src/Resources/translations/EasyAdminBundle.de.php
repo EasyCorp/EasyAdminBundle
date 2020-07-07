@@ -56,7 +56,7 @@ return [
         'choose_file' => 'Datei auswählen',
         'close' => 'Schließen',
         'create' => 'Erstellen',
-        'create_and_add_another' => 'Erstellen und weitere hinzufügen',
+        'create_and_add_another' => 'Erstellen und weiteres Element hinzufügen',
         'create_and_continue' => 'Erstellen und weiter bearbeiten',
         'save' => 'Speichern',
         'save_and_continue' => 'Speichern und weiter bearbeiten',
@@ -121,7 +121,7 @@ return [
     'exception' => [
         'entity_not_found' => 'Dieses Element ist nicht mehr verfügbar.',
         'entity_remove' => 'Dieses Element kann nicht gelöscht werden, weil andere Elemente davon abhängen.',
-        'forbidden_action' => 'Die gewünschte Aktion kann kann mit diesem Element nicht ausgeführt werden.',
+        'forbidden_action' => 'Die gewünschte Aktion kann mit diesem Element nicht ausgeführt werden.',
         'insufficient_entity_permission' => 'Sie haben keine Berechtigung, auf dieses Element zuzugreifen.',
     ],
 ];

@@ -100,7 +100,7 @@ final class ActionFactory
         $defaultTranslationParameters = $adminContext->getI18n()->getTranslationParameters();
         $currentPage = $adminContext->getCrud()->getCurrentPage();
 
-        if (false === $actionDto->getLabel()) {
+        if (false === is_string($actionDto->getLabel()) || '' === $actionDto->getLabel()) {
             $actionDto->setHtmlAttributes(array_merge(['title' => $actionDto->getName()], $actionDto->getHtmlAttributes()));
         } else {
             $uLabel = u($actionDto->getLabel());
@@ -112,8 +112,7 @@ final class ActionFactory
             }
 
             $translationParameters = array_merge($defaultTranslationParameters, $actionDto->getTranslationParameters());
-            $label = $uLabel->toString();
-            $translatedActionLabel = empty($label) ? $label : $this->translator->trans($label, $translationParameters, $translationDomain);
+            $translatedActionLabel = $this->translator->trans($uLabel->toString(), $translationParameters, $translationDomain);
             $actionDto->setLabel($translatedActionLabel);
         }
 

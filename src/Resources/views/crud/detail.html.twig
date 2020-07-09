@@ -97,17 +97,25 @@
 {% endmacro %}
 
 {% macro open_content_panel_with_header(field) %}
+    {% set collapsible = field.customOption('collapsible') %}
+    {% set collapsed = field.customOption('collapsed') %}
     <div class="{{ field.cssClass }}">
         <div class="content-panel">
             <div class="content-panel-header">
                 {{ field.label|raw }}
+                {% if collapsible %}
+                    <a href="#content-{{ field.property }}" data-toggle="collapse" class="content-panel-collapse {{ collapsed ? 'collapsed' }}" aria-expanded="{{ collapsed ? 'false' : 'true' }}" aria-controls="content-{{ field.property }}">
+                        <i class="fa fa-plus-square expand-icon"></i>
+                        <i class="fa fa-minus-square collapse-icon"></i>
+                    </a>
+                {% endif %}
 
                 {% if field.help is not empty %}
                     <div class="content-panel-header-help">{{ field.help|raw }}</div>
                 {% endif %}
             </div>
 
-            <div class="content-panel-body without-footer without-padding">
+            <div id="content-{{ field.property }}" class="content-panel-body without-footer without-padding {{ collapsible ? 'collapse' }} {{ not collapsed ? 'show'}}">
                 <dl class="datalist">
 {% endmacro %}
 

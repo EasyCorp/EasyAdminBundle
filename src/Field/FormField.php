@@ -15,6 +15,9 @@ final class FormField implements FieldInterface
 
     public const OPTION_ICON = 'icon';
 
+    public const OPTION_COLLAPSIBLE = 'collapsible';
+    public const OPTION_COLLAPSED = 'collapsed';
+
     /**
      * @internal Use the other named constructors instead (addPanel(), etc.)
      */
@@ -36,12 +39,28 @@ final class FormField implements FieldInterface
             ->setFormType(EaFormPanelType::class)
             ->addCssClass('field-form_panel')
             ->setFormTypeOptions(['mapped' => false, 'required' => false])
-            ->setCustomOption(self::OPTION_ICON, null);
+            ->setCustomOption(self::OPTION_ICON, null)
+            ->setCustomOption(self::OPTION_COLLAPSIBLE, false)
+            ->setCustomOption(self::OPTION_COLLAPSED, false);
     }
 
     public function setIcon(string $iconCssClass): self
     {
         $this->setCustomOption(self::OPTION_ICON, $iconCssClass);
+
+        return $this;
+    }
+
+    public function collapsible(bool $collapsible = true): self
+    {
+        $this->setCustomOption(self::OPTION_COLLAPSIBLE, $collapsible);
+
+        return $this;
+    }
+
+    public function collapsed(bool $collapsed = true): self
+    {
+        $this->setCustomOption(self::OPTION_COLLAPSED, $collapsed);
 
         return $this;
     }

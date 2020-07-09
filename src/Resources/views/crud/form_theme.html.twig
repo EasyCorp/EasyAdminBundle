@@ -352,6 +352,9 @@
     {% for panel_name, panel_config in ea_crud_form.form_panels|filter(panel_config => not panel_config.form_tab or panel_config.form_tab == tab_name) %}
         {% set panel_has_header = panel_config.label|default(false) or panel_config.icon|default(false) %}
 
+        {% set collapsible = panel_config.collapsible %}
+        {% set collapsed = panel_config.collapsed %}
+
         <div class="{{ panel_config.css_class ?? '' }}">
             <div class="content-panel">
                 {% if panel_has_header %}
@@ -360,6 +363,12 @@
                             <i class="{{ panel_config.icon }}"></i>
                         {% endif %}
                         {{ panel_config.label|raw }}
+                        {% if collapsible %}
+                            <a href="#content-{{ panel_name }}" data-toggle="collapse" class="content-panel-collapse {{ collapsed ? 'collapsed' }}" aria-expanded="{{ collapsed ? 'false' : 'true' }}" aria-controls="content-{{ panel_name }}">
+                                <i class="fa fa-plus-square expand-icon"></i>
+                                <i class="fa fa-minus-square collapse-icon"></i>
+                            </a>
+                        {% endif %}
 
                         {% if panel_config.help|default(false) %}
                             <div class="content-panel-header-help">{{ panel_config.help|raw }}</div>
@@ -367,7 +376,7 @@
                     </div>
                 {% endif %}
 
-                <div class="content-panel-body with-background {{ not panel_has_header ? 'without-header' }} without-footer">
+                <div id="content-{{ panel_name }}" class="content-panel-body with-background {{ not panel_has_header ? 'without-header' }} without-footer {{ collapsible ? 'collapse' }} {{ not collapsed ? 'show'}}">
                     {% for field in form|filter(field => 'hidden' not in field.vars.block_prefixes and field.vars.ea_crud_form.form_panel == panel_name) %}
                         {% if not field.vars.ea_crud_form.form_tab or field.vars.ea_crud_form.form_tab == tab_name %}
                             {{ form_row(field) }}

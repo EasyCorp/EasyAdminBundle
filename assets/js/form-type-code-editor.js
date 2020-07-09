@@ -21,7 +21,7 @@ document.querySelectorAll('[data-ea-code-editor-field]').forEach(function(codeBl
         autocapitalize: false,
         autocorrect: false,
         indentWithTabs: codeBlock.dataset.indentWithTabs === 'true',
-        lineNumbers: codeBlock.dataset.lineNumbers === 'true',
+        lineNumbers: codeBlock.dataset.showLineNumbers === 'true',
         lineWrapping: true,
         mode: codeBlock.dataset.language,
         scrollbarStyle: 'native',

@@ -20,8 +20,8 @@ document.querySelectorAll('[data-ea-code-editor-field]').forEach(function(codeBl
     const editor = CodeMirror.fromTextArea(codeBlock, {
         autocapitalize: false,
         autocorrect: false,
-        indentWithTabs: codeBlock.dataset.indentWithTabs,
-        lineNumbers: true,
+        indentWithTabs: codeBlock.dataset.indentWithTabs === 'true',
+        lineNumbers: codeBlock.dataset.lineNumbers === 'true',
         lineWrapping: true,
         mode: codeBlock.dataset.language,
         scrollbarStyle: 'native',

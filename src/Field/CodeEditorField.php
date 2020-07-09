@@ -16,6 +16,7 @@ final class CodeEditorField implements FieldInterface
     public const OPTION_LANGUAGE = 'language';
     public const OPTION_NUM_OF_ROWS = 'numOfRows';
     public const OPTION_TAB_SIZE = 'tabSize';
+    public const OPTION_LINE_NUMBERS = 'lineNumbers';
 
     private const ALLOWED_LANGUAGES = ['css', 'dockerfile', 'js', 'markdown', 'nginx', 'php', 'shell', 'sql', 'twig', 'xml', 'yaml-frontmatter', 'yaml'];
 
@@ -32,7 +33,8 @@ final class CodeEditorField implements FieldInterface
             ->setCustomOption(self::OPTION_INDENT_WITH_TABS, false)
             ->setCustomOption(self::OPTION_LANGUAGE, 'markdown')
             ->setCustomOption(self::OPTION_NUM_OF_ROWS, null)
-            ->setCustomOption(self::OPTION_TAB_SIZE, 4);
+            ->setCustomOption(self::OPTION_TAB_SIZE, 4)
+            ->setCustomOption(self::OPTION_LINE_NUMBERS, true);
     }
 
     public function setIndentWithTabs(bool $useTabs): self
@@ -71,6 +73,13 @@ final class CodeEditorField implements FieldInterface
         }
 
         $this->setCustomOption(self::OPTION_TAB_SIZE, $tabSize);
+
+        return $this;
+    }
+
+    public function setLineNumbers(bool $lineNumbers): self
+    {
+        $this->setCustomOption(self::OPTION_LINE_NUMBERS, $lineNumbers);
 
         return $this;
     }

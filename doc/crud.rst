@@ -135,7 +135,7 @@ Title and Help Options
             ->setPageTitle('index', '%entity_label_plural% listing')
 
             // the help message displayed to end users (it can contain HTML tags)
-            ->setHelpMessage('edit', '...')
+            ->setHelp('edit', '...')
         ;
     }
 

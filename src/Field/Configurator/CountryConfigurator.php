@@ -23,16 +23,18 @@ final class CountryConfigurator implements FieldConfiguratorInterface
     public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
     {
         $field->setFormTypeOptionIfNotSet('attr.data-widget', 'select2');
+        $alpha3 = $field->getCustomOption(CountryField::OPTION_ALPHA3);
 
-        $formattedValue = $this->getCountryName($field->getValue());
+        $formattedValue = $this->getCountryName($field->getValue(), $alpha3);
         $field->setFormattedValue($formattedValue);
+        $field->setFormTypeOption('alpha3', $alpha3);
 
         if (null === $field->getTextAlign() && false === $field->getCustomOption(CountryField::OPTION_SHOW_NAME)) {
             $field->setTextAlign('center');
         }
     }
 
-    private function getCountryName(?string $countryCode): ?string
+    private function getCountryName(?string $countryCode, bool $alpha3): ?string
     {
         if (null === $countryCode) {
             return null;
@@ -44,6 +46,10 @@ final class CountryConfigurator implements FieldConfiguratorInterface
         }
 
         try {
+            if ($alpha3) {
+                return Countries::getAlpha3Name($countryCode);
+            }
+
             return Countries::getName($countryCode);
         } catch (MissingResourceException $e) {
             return null;

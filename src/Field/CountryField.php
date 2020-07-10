@@ -14,6 +14,7 @@ final class CountryField implements FieldInterface
 
     public const OPTION_SHOW_FLAG = 'showFlag';
     public const OPTION_SHOW_NAME = 'showName';
+    public const OPTION_ALPHA3 = 'alpha3';
 
     public static function new(string $propertyName, ?string $label = null): self
     {
@@ -24,7 +25,8 @@ final class CountryField implements FieldInterface
             ->setFormType(CountryType::class)
             ->addCssClass('field-country')
             ->setCustomOption(self::OPTION_SHOW_FLAG, true)
-            ->setCustomOption(self::OPTION_SHOW_NAME, true);
+            ->setCustomOption(self::OPTION_SHOW_NAME, true)
+            ->setCustomOption(self::OPTION_ALPHA3, false);
     }
 
     public function showFlag(bool $isShown = true): self
@@ -37,6 +39,13 @@ final class CountryField implements FieldInterface
     public function showName(bool $isShown = true): self
     {
         $this->setCustomOption(self::OPTION_SHOW_NAME, $isShown);
+
+        return $this;
+    }
+
+    public function alpha3(bool $enable = true): self
+    {
+        $this->setCustomOption(self::OPTION_ALPHA3, $enable);
 
         return $this;
     }

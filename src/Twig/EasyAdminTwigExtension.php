@@ -47,7 +47,6 @@ class EasyAdminTwigExtension extends AbstractExtension
         $filters = [
             new TwigFilter('ea_flatten_array', [$this, 'flattenArray']),
             new TwigFilter('ea_filesize', [$this, 'fileSize']),
-            new TwigFilter('ea_country_alpha2_code', [$this, 'countryAlpha2Code']),
         ];
 
         if (Kernel::VERSION_ID >= 40200) {
@@ -102,14 +101,5 @@ class EasyAdminTwigExtension extends AbstractExtension
         }
 
         return $this->translator->trans($message, array_merge(['%count%' => $count], $arguments), $domain, $locale);
-    }
-
-    public function countryAlpha2Code(string $alpha3Code): ?string
-    {
-        try {
-            return Countries::getAlpha2Code($alpha3Code);
-        } catch (MissingResourceException $e) {
-            return null;
-        }
     }
 }

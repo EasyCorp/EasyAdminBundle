@@ -2,8 +2,9 @@
 {# @var field \EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto #}
 {# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
 {% if field.customOptions.get('showFlag') %}
-    {% set country_code = field.customOption('alpha3') ? field.value|ea_country_alpha2_code : field.value %}
-    <img class="country-flag" alt="{{ field.formattedValue }}" src="{{ asset('bundles/easyadmin/images/flags/' ~ country_code ~ '.png') }}">
+    {% if field.customOption('flagCode') is not null %}
+        <img class="country-flag" alt="{{ field.formattedValue }}" src="{{ asset('bundles/easyadmin/images/flags/' ~ field.customOption('flagCode') ~ '.png') }}">
+    {% endif %}
 {% endif %}
 {% if field.customOptions.get('showName') %}
     {{ field.formattedValue ?? '' }}

@@ -122,6 +122,13 @@
   text-transform: uppercase;
 }
 
+// Date, Time and DateTime fields
+.field-datetime input[type="datetime-local"].form-control,
+.field-date input[type="date"].form-control,
+.field-time input[type="time"].form-control {
+  width: auto;
+}
+
 // Language field
 .field-language .badge-language {
   border: 2px solid var(--gray-300);

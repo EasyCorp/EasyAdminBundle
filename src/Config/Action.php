@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Config;
 
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
+use function Symfony\Component\String\u;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -48,7 +49,7 @@ final class Action
         $dto->setType(self::TYPE_ENTITY);
         $dto->setName($name);
         $dto->setCssClass('action-'.$name);
-        $dto->setLabel($label ?? ucfirst($name));
+        $dto->setLabel($label ?? self::humanizeString($name));
         $dto->setIcon($icon);
         $dto->setHtmlElement('a');
         $dto->setHtmlAttributes([]);
@@ -76,7 +77,7 @@ final class Action
      */
     public function setLabel($label): self
     {
-        $this->dto->setLabel($label);
+        $this->dto->setLabel($label ?? self::humanizeString($this->dto->getName()));
 
         return $this;
     }
@@ -187,5 +188,24 @@ final class Action
         }
 
         return $this->dto;
+    }
+
+    private static function humanizeString(string $string): string
+    {
+        $uString = u($string);
+        $upperString = $uString->upper()->toString();
+
+        // this prevents humanizing all-uppercase labels (e.g. 'UUID' -> 'U u i d')
+        // and other special labels which look better in uppercase
+        if ($uString->toString() === $upperString) {
+            return $upperString;
+        }
+
+        return $uString
+            ->replaceMatches('/([A-Z])/', '_$1')
+            ->replaceMatches('/[_\s]+/', ' ')
+            ->trim()
+            ->lower()
+            ->title(true);
     }
 }

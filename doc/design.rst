@@ -57,7 +57,7 @@ For example::
              │     └─ text.html.twig
              ├─ label/
              │  └─ null.html.twig
-             └─ page/
+             └─ crud/
                 ├─ index.html.twig
                 ├─ form.html.twig
                 └─ paginator.html.twig

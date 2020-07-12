@@ -142,7 +142,7 @@ class CrudUrlBuilder
         // transform 'crudControllerFqcn' into 'crudId'
         if (null !== $crudControllerFqcn = $this->get('crudControllerFqcn')) {
             if (null === $crudId = $this->crudControllers->findCrudIdByCrudFqcn($crudControllerFqcn)) {
-                sprintf('The given "%s" class is not a valid CRUD controller. Make sure it extends from "%s" or implements "%s".', $crudControllerFqcn, AbstractCrudController::class, CrudControllerInterface::class);
+                throw new \InvalidArgumentException(sprintf('The given "%s" class is not a valid CRUD controller. Make sure it extends from "%s" or implements "%s".', $crudControllerFqcn, AbstractCrudController::class, CrudControllerInterface::class));
             }
 
             $this->set('crudId', $crudId);

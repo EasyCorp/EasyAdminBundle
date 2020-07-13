@@ -51,16 +51,19 @@ For example::
     └─ templates/
        └─ bundles/
           └─ EasyAdminBundle/
+             ├─ layout.html.twig
+             ├─ menu.html.twig
              ├─ crud/
+             │  ├─ index.html.twig
+             │  ├─ detail.html.twig
              │  └─ field/
              │     ├─ country.html.twig
              │     └─ text.html.twig
              ├─ label/
              │  └─ null.html.twig
-             └─ crud/
-                ├─ index.html.twig
-                ├─ form.html.twig
-                └─ paginator.html.twig
+             └─ page/
+                ├─ content.html.twig
+                └─ login.html.twig
 
 Instead of creating the new templates from scratch, you can extend from the
 original templates and change only the parts you want to override. However, you

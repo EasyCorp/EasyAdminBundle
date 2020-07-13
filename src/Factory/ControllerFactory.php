@@ -47,7 +47,7 @@ final class ControllerFactory
         return $this->getController(DashboardControllerInterface::class, $dashboardControllerFqcn, 'index', $request);
     }
 
-    private function getCrudController(?string $crudControllerFqcn, ?string $crudAction, Request $request): ?CrudControllerInterface
+    public function getCrudController(?string $crudControllerFqcn, ?string $crudAction, Request $request): ?CrudControllerInterface
     {
         return $this->getController(CrudControllerInterface::class, $crudControllerFqcn, $crudAction, $request);
     }

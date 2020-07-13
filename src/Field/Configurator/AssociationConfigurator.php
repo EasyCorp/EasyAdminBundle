@@ -70,6 +70,10 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
                 ->setController($field->getCustomOption(AssociationField::OPTION_CRUD_CONTROLLER))
                 ->setAction('autocomplete')
                 ->setEntityId(null)
+                ->set(AssociationField::PARAM_AUTOCOMPLETE_CONTEXT, [
+                    'crudId' => $context->getRequest()->query->get('crudId'),
+                    'propertyName' => $propertyName
+                ])
                 ->generateUrl();
 
             $field->setFormTypeOption('attr.data-ea-autocomplete-endpoint-url', $autocompleteEndpointUrl);

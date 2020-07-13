@@ -19,6 +19,9 @@ final class AssociationField implements FieldInterface
     /** @internal this option is intended for internal use only */
     public const OPTION_DOCTRINE_ASSOCIATION_TYPE = 'associationType';
 
+    /** @internal this option is intended for internal use only */
+    public const PARAM_AUTOCOMPLETE_CONTEXT = 'autocompleteContext';
+
     public static function new(string $propertyName, ?string $label = null): self
     {
         return (new self())

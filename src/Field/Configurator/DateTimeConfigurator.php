@@ -11,6 +11,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Intl\IntlFormatter;
+use Symfony\Component\PropertyInfo\PropertyTypeExtractorInterface;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -18,10 +19,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Intl\IntlFormatter;
 final class DateTimeConfigurator implements FieldConfiguratorInterface
 {
     private $intlFormatter;
+    private $typeExtractor;
 
-    public function __construct(IntlFormatter $intlFormatter)
+    public function __construct(IntlFormatter $intlFormatter, PropertyTypeExtractorInterface $typeExtractor)
     {
         $this->intlFormatter = $intlFormatter;
+        $this->typeExtractor = $typeExtractor;
     }
 
     public function supports(FieldDto $field, EntityDto $entityDto): bool
@@ -65,8 +68,8 @@ final class DateTimeConfigurator implements FieldConfiguratorInterface
 
         $field->setFormattedValue($formattedValue);
 
-        $doctrineDataType = $entityDto->getPropertyMetadata($field->getProperty())->get('type');
-        $isImmutableDateTime = \in_array($doctrineDataType, [Types::DATETIME_IMMUTABLE, Types::DATE_IMMUTABLE, Types::TIME_IMMUTABLE], true);
+        $doctrineDataType = $this->typeExtractor->getTypes($entityDto->getFqcn(), $field->getProperty())[0]->getClassName();
+        $isImmutableDateTime = 'DateTimeImmutable' === $doctrineDataType;
         if ($isImmutableDateTime) {
             $field->setFormTypeOptionIfNotSet('input', 'datetime_immutable');
         }

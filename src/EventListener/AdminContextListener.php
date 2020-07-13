@@ -7,6 +7,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\EasyAdminBundle;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\AdminContextFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\ControllerFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\CrudControllerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\DashboardControllerRegistry;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,17 +26,13 @@ use Twig\Environment;
 class AdminContextListener
 {
     private $adminContextFactory;
-    private $dashboardControllers;
-    private $crudControllers;
-    private $controllerResolver;
+    private $controllerFactory;
     private $twig;
 
-    public function __construct(AdminContextFactory $adminContextFactory, DashboardControllerRegistry $dashboardControllers, CrudControllerRegistry $crudControllers, ControllerResolverInterface $controllerResolver, Environment $twig)
+    public function __construct(AdminContextFactory $adminContextFactory, ControllerFactory $controllerFactory, Environment $twig)
     {
         $this->adminContextFactory = $adminContextFactory;
-        $this->dashboardControllers = $dashboardControllers;
-        $this->crudControllers = $crudControllers;
-        $this->controllerResolver = $controllerResolver;
+        $this->controllerFactory = $controllerFactory;
         $this->twig = $twig;
     }
 
@@ -49,7 +46,7 @@ class AdminContextListener
 
         $dashboardControllerInstance = $currentControllerInstance instanceof DashboardControllerInterface
             ? $currentControllerInstance
-            : $this->getDashboardControllerInstanceFromContextId($contextId, $event->getRequest());
+            : $this->controllerFactory->getDashboardControllerInstanceFromContextId($contextId, $event->getRequest());
         if (null === $dashboardControllerInstance) {
             // this can only happen when a malicious user tries to hack the contextId value in the query string
             // don't throw an exception to prevent hackers from causing lots of exceptions in applications using EasyAdmin
@@ -59,7 +56,7 @@ class AdminContextListener
 
         $crudId = $event->getRequest()->query->get('crudId');
         $crudAction = $event->getRequest()->query->get('crudAction');
-        $crudControllerInstance = $this->getCrudControllerInstance($crudId, $crudAction, $event->getRequest());
+        $crudControllerInstance = $this->controllerFactory->getCrudControllerInstance($crudId, $crudAction, $event->getRequest());
 
         if (null !== $crudId && null === $dashboardControllerInstance) {
             // this can only happen when a malicious user tries to hack the crudId value in the query string
@@ -120,55 +117,6 @@ class AdminContextListener
         }
 
         return $controller[0];
-    }
-
-    private function getDashboardControllerInstanceFromContextId(string $contextId, Request $request): ?DashboardControllerInterface
-    {
-        $dashboardControllerFqcn = $this->dashboardControllers->getControllerFqcnByContextId($contextId);
-        if (null === $dashboardControllerFqcn) {
-            return null;
-        }
-
-        $newRequest = $request->duplicate(null, null, ['_controller' => [$dashboardControllerFqcn, 'index']]);
-        $dashboardControllerCallable = $this->controllerResolver->getController($newRequest);
-
-        if (false === $dashboardControllerCallable) {
-            throw new NotFoundHttpException(sprintf('Unable to find the controller "%s::%s".', $dashboardControllerFqcn, 'index'));
-        }
-
-        if (!\is_array($dashboardControllerCallable)) {
-            return null;
-        }
-
-        $dashboardControllerInstance = $dashboardControllerCallable[0];
-
-        return $dashboardControllerInstance instanceof DashboardControllerInterface ? $dashboardControllerInstance : null;
-    }
-
-    private function getCrudControllerInstance(?string $crudId, ?string $crudAction, Request $request): ?CrudControllerInterface
-    {
-        if (null === $crudId || null === $crudAction) {
-            return null;
-        }
-
-        if (null === $crudControllerFqcn = $this->crudControllers->findCrudFqcnByCrudId($crudId)) {
-            return null;
-        }
-
-        $newRequest = $request->duplicate(null, null, ['_controller' => [$crudControllerFqcn, $crudAction]]);
-        $crudControllerCallable = $this->controllerResolver->getController($newRequest);
-
-        if (false === $crudControllerCallable) {
-            throw new NotFoundHttpException(sprintf('Unable to find the controller "%s::%s".', $crudControllerFqcn, $crudAction));
-        }
-
-        if (!\is_array($crudControllerCallable)) {
-            return null;
-        }
-
-        $crudControllerInstance = $crudControllerCallable[0];
-
-        return $crudControllerInstance instanceof CrudControllerInterface ? $crudControllerInstance : null;
     }
 
     private function createAdminContext(Request $request, DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController): AdminContext

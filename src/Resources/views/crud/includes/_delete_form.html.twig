@@ -1,9 +1,18 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
 <form method="post" id="delete-form" style="display: none">
+{% set delete_url = ea_url()
+    .setCrudId(crud_id ?? app.request.query.get('crudId'))
+    .setAction('delete')
+    .setEntityId(entity_id ?? '__entityId_placeholder__')
+%}
+{% set delete_url = referrer is defined ? delete_url.set('referrer', referrer) : delete_url.removeReferrer() %}
+{% set id_suffix = id_suffix|default(null) %}
+
+<form action="{{ delete_url }}" method="post" id="delete-form{{ id_suffix }}" style="display: none">
     <input type="hidden" name="token" value="{{ csrf_token('ea-delete') }}" />
 </form>
 
-<div id="modal-delete" class="modal fade">
+<div id="modal-delete{{ id_suffix }}" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body">
@@ -15,7 +24,7 @@
                     <span class="btn-label">{{ 'action.cancel'|trans([], 'EasyAdminBundle') }}</span>
                 </button>
 
-                <button type="button" data-dismiss="modal" class="btn btn-danger" id="modal-delete-button" form="delete-form">
+                <button type="button" data-dismiss="modal" class="btn btn-danger" id="modal-delete-button{{ id_suffix }}" formtarget="delete-form{{ id_suffix }}">
                     <span class="btn-label">{{ 'action.delete'|trans([], 'EasyAdminBundle') }}</span>
                 </button>
             </div>

@@ -1,0 +1,119 @@
+{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
+{# @var field \EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto #}
+{# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
+{% set current_url = ea_url() %}
+
+{% set target_entity = field.doctrineMetadata.get('targetEntity') %}
+{% set crud_id = ea.crudControllers.findCrudIdByCrudFqcn(ea.crudControllers.findCrudFqcnByEntityFqcn(target_entity)) %}
+
+{% set url = ea_url().unset('entityId').setCrudId(crud_id).setAction('index').set('embedContext', {
+    mappedBy: field.doctrineMetadata.get('mappedBy'),
+    embeddedIn: entity.primaryKeyValue,
+    crud_id: ea.crudControllers.findCrudIdByCrudFqcn(ea.crud.controllerFqcn),
+    fieldName: field.property
+}) %}
+
+{% set id_suffix = '-'~field.property %}
+
+<div id="embed{{ id_suffix }}" class="position-relative embed-loading">
+    <div class="position-absolute text-center embed-spinner">
+        <div class="spinner-border text-primary spinner-border-lg mt-2"></div>
+    </div>
+    <div class="embed-content"></div>
+</div>
+
+{{ include('@EasyAdmin/crud/includes/_delete_form.html.twig', {crud_id: crud_id, referrer: current_url, id_suffix: id_suffix}, with_context = false) }}
+
+<style>
+    .embed-spinner {
+        display: none;
+        top: 50%;
+        left: 50%;
+        margin-top: -1rem;
+        margin-left: -1rem;
+        z-index: 10;
+    }
+
+    .embed-loading .embed-spinner {
+        display: block;
+    }
+
+    .embed-loading .embed-content {
+        opacity: 0.5;
+        pointer-events: none;
+    }
+</style>
+
+<script>
+    window.addEventListener('load', () => {
+        const referrer = '{{ current_url|raw }}#embed{{ id_suffix }}'
+        const initialUrl = '{{ url|raw }}'
+
+        const embed = document.querySelector('#embed{{ id_suffix }}');
+        const embedContent = embed.querySelector('.embed-content');
+
+        const load = (url) => {
+            embed.classList.add('embed-loading');
+            fetch(url)
+                .then(it => it.text())
+                .then(it => embedContent.innerHTML = it)
+                .then(() => {
+                    // override referrer of actions, so we get back to the "main" view afterwards, not the embed
+                    embedContent.querySelectorAll('.actions a').forEach(action => {
+                        const target = new URL(action.href)
+                        target.searchParams.set('referrer', referrer);
+                        action.href = target.toString();
+                    })
+
+                    // remove "index" delete form/modal
+                    embedContent.querySelectorAll('#modal-delete, #delete-form').forEach(it => it.remove());
+                    // initialize correct delete modal
+                    embedContent.querySelectorAll('.action-delete').forEach(action => {
+                        action.addEventListener('click', function (e) {
+                            e.preventDefault();
+                            const id = $(this).parents('tr').first().data('id');
+
+                            $('#modal-delete{{ id_suffix }}').modal({backdrop: true, keyboard: true})
+                                .off('click', '#modal-delete-button{{ id_suffix }}')
+                                .on('click', '#modal-delete-button{{ id_suffix }}', function () {
+                                    let deleteForm = $('#delete-form{{ id_suffix }}');
+                                    deleteForm.attr('action', deleteForm.attr('action').replace('__entityId_placeholder__', id));
+                                    deleteForm.trigger('submit');
+                                });
+                        });
+                    })
+
+                    // intercept sort and pagination
+                    embedContent.querySelectorAll('thead a, .pagination a').forEach(link => {
+                        link.addEventListener('click', evt => {
+                            evt.preventDefault();
+                            load(link.href)
+                        })
+                    })
+
+                    // intercept search
+                    embedContent.querySelector('.form-action-search form').addEventListener('submit', evt => {
+                        evt.preventDefault();
+                        const data = new FormData(evt.target);
+                        const params = new URLSearchParams(data).toString()
+                        const target = new URL(url);
+                        target.search = params.toString();
+                        load(target.toString())
+                    })
+
+                    // highlight results
+                    const searchQuery = new URL(url).searchParams.get('query');
+                    if(searchQuery) {
+                        $(embedContent).find('table tbody td:not(.actions)').highlight($.merge([searchQuery], searchQuery.split(' ')));
+                    }
+
+                    // can be used to re-initialize dynamic content
+                    document.dispatchEvent(new Event('ea.embed.content-loaded'))
+                })
+                .finally(() => embed.classList.remove('embed-loading'))
+            ;
+        }
+
+        load(initialUrl);
+    })
+</script>

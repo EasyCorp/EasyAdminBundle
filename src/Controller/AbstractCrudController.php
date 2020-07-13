@@ -124,6 +124,16 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $fields = FieldCollection::new($this->configureFields(Crud::PAGE_INDEX));
         $filters = $this->get(FilterFactory::class)->create($context->getCrud()->getFiltersConfig(), $fields, $context->getEntity());
         $queryBuilder = $this->createIndexQueryBuilder($context->getSearch(), $context->getEntity(), $fields, $filters);
+
+        if($embedContext = $context->getRequest()->query->get('embedContext'))
+        {
+            $filterProperty = $embedContext['mappedBy'];
+            $filterValue = $embedContext['embeddedIn'];
+            $queryBuilder->andWhere($queryBuilder->expr()->eq(sprintf('%s.%s', current($queryBuilder->getRootAliases()), $filterProperty), $filterValue));
+
+            $fields->unset($fields->get($filterProperty));
+        }
+
         $paginator = $this->get(PaginatorFactory::class)->create($queryBuilder);
 
         $entities = $this->get(EntityFactory::class)->createCollection($context->getEntity(), $paginator->getResults());
@@ -132,7 +142,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
         $responseParameters = $this->configureResponseParameters(KeyValueStore::new([
             'pageName' => Crud::PAGE_INDEX,
-            'templateName' => 'crud/index',
+            'templateName' => $embedContext ? 'crud/embedded' : 'crud/index',
             'entities' => $entities,
             'paginator' => $paginator,
             'global_actions' => $globalActions,

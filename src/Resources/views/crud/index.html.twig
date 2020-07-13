@@ -59,8 +59,8 @@
                                 {% block search_form %}
                                     {# reset the referrer and page number whenever a new query is performed #}
                                     {% set query_parameters = ea.request.query.all|merge({
-                                        referrer: null, page: 1,
-                                    }) %}
+                                        referrer: null, page: 1
+                                    })|filter((v, k) => k != 'query') %}
 
                                     {# browsers remove the query string when submitting forms using GET;
                                        that's why all query string parameters are added as hidden form fields #}

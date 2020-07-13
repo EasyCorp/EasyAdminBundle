@@ -7,7 +7,9 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\String\Slugger\AsciiSlugger;
+use function Symfony\Component\String\u;
 
 /**
  * Generates the PHP class needed to define a Dashboard controller.
@@ -29,7 +31,40 @@ class MakeAdminDashboardCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $generatedFilePath = $this->classMaker->make('src/Controller/Admin/Dashboard%dController.php', 'dashboard.tpl', ['site_title' => $this->getSiteTitle($this->projectDir)]);
+        $io = new SymfonyStyle($input, $output);
+        $fs = new Filesystem();
+
+        $controllerClassName = $io->ask('Which class name do you prefer for your Dashboard controller?', 'DashboardController', static function(string $className) {
+            return u($className)->ensureEnd('Controller')->toString();
+        });
+
+        $projectDir = $this->projectDir;
+        $controllerDir = $io->ask(
+            sprintf('Which directory do you want to generate "%s" in?', $controllerClassName),
+            'src/Controller/Admin/',
+            static function(string $selectedDir) use ($fs, $projectDir, $controllerClassName) {
+                $absoluteDir = u($selectedDir)->ensureStart($projectDir.DIRECTORY_SEPARATOR);
+                if (!$fs->exists($absoluteDir)) {
+                    throw new \RuntimeException('The given directory does not exist. Type in the path of an existing directory relative to your project root (e.g. src/Controller/Admin/)');
+                }
+
+                return $absoluteDir->after($projectDir.DIRECTORY_SEPARATOR)->trimEnd(DIRECTORY_SEPARATOR)->toString();
+            }
+        );
+
+        $controllerFilePath = sprintf('%s/%s.php', u($controllerDir)->ensureStart($projectDir.DIRECTORY_SEPARATOR), $controllerClassName);
+        if ($fs->exists($controllerFilePath)) {
+            throw new \RuntimeException(sprintf('The "%s.php" file already exists in the given "%s" directory. Use a different controller name or generate it in a different directory.', $controllerClassName, $controllerDir));
+        }
+
+        $guessedNamespace = u($controllerDir)->equalsTo('src')
+            ? 'App'
+            : u($controllerDir)->replace('/', ' ')->replace('\\', ' ')->replace('src ', 'app ')->title(true)->replace(' ', '\\');
+
+        $generatedFilePath = $this->classMaker->make(sprintf('%s/%s.php', $controllerDir, $controllerClassName), 'dashboard.tpl', [
+            'namespace' => $guessedNamespace,
+            'site_title' => $this->getSiteTitle($this->projectDir),
+        ]);
 
         $io = new SymfonyStyle($input, $output);
         $io->success('Your dashboard class has been successfully generated.');

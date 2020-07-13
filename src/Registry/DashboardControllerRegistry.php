@@ -15,10 +15,9 @@ final class DashboardControllerRegistry
     private $controllerFqcnToRouteMap = [];
     private $routeToControllerFqcnMap = [];
 
-    public function __construct(string $kernelSecret, string $cacheDir, iterable $dashboardControllers)
+    public function __construct(string $kernelSecret, string $cacheDir, array $dashboardControllersFqcn)
     {
-        foreach (iterator_to_array($dashboardControllers, false) as $controller) {
-            $controllerFqcn = \get_class($controller);
+        foreach ($dashboardControllersFqcn as $controllerFqcn) {
             $this->controllerFqcnToContextIdMap[$controllerFqcn] = substr(sha1($kernelSecret.$controllerFqcn), 0, 7);
         }
 

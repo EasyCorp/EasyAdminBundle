@@ -15,6 +15,7 @@ use EasyCorp\Bundle\EasyAdminBundle\EventListener\CrudResponseListener;
 use EasyCorp\Bundle\EasyAdminBundle\EventListener\ExceptionListener;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\ActionFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\AdminContextFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\ControllerFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FieldFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FilterFactory;
@@ -150,11 +151,14 @@ return static function (ContainerConfigurator $container) {
 
         ->set(AdminContextListener::class)
             ->arg(0, new Reference(AdminContextFactory::class))
-            ->arg(1, new Reference(DashboardControllerRegistry::class))
-            ->arg(2, new Reference(CrudControllerRegistry::class))
-            ->arg(3, new Reference('controller_resolver'))
-            ->arg(4, new Reference('twig'))
+            ->arg(1, new Reference(ControllerFactory::class))
+            ->arg(2, new Reference('twig'))
             ->tag('kernel.event_listener', ['event' => ControllerEvent::class])
+
+        ->set(ControllerFactory::class)
+            ->arg(0, new Reference(DashboardControllerRegistry::class))
+            ->arg(1, new Reference(CrudControllerRegistry::class))
+            ->arg(2, new Reference('controller_resolver'))
 
         ->set(CrudResponseListener::class)
             ->arg(0, new Reference(AdminContextProvider::class))

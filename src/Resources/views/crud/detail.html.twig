@@ -100,6 +100,9 @@
     <div class="{{ field.cssClass }}">
         <div class="content-panel">
             <div class="content-panel-header">
+                {% if field.customOption('icon') %}
+                    <i class="{{ field.customOption('icon') }}"></i>
+                {% endif %}
                 {{ field.label|raw }}
 
                 {% if field.help is not empty %}

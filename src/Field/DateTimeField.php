@@ -36,8 +36,13 @@ final class DateTimeField implements FieldInterface
         self::FORMAT_NONE => '',
     ];
 
+    public const WIDGET_NATIVE = 'native';
+    public const WIDGET_CHOICE = 'choice';
+    public const WIDGET_TEXT = 'text';
+
     public const OPTION_DATETIME_PATTERN = 'dateTimePattern';
     public const OPTION_TIMEZONE = 'timezone';
+    public const OPTION_WIDGET = 'widget';
 
     public static function new(string $propertyName, ?string $label = null): self
     {
@@ -49,7 +54,8 @@ final class DateTimeField implements FieldInterface
             ->addCssClass('field-datetime')
             // the proper default values of these options are set on the Crud class
             ->setCustomOption(self::OPTION_DATETIME_PATTERN, null)
-            ->setCustomOption(self::OPTION_TIMEZONE, null);
+            ->setCustomOption(self::OPTION_TIMEZONE, null)
+            ->setCustomOption(self::OPTION_WIDGET, self::WIDGET_NATIVE);
     }
 
     /**
@@ -101,6 +107,48 @@ final class DateTimeField implements FieldInterface
 
         $dateTimePattern = $isDatePattern ? $dateFormatOrPattern : trim(sprintf('%s %s', self::INTL_DATE_PATTERNS[$dateFormatOrPattern], self::INTL_TIME_PATTERNS[$timeFormat]));
         $this->setCustomOption(self::OPTION_DATETIME_PATTERN, $dateTimePattern);
+
+        return $this;
+    }
+
+    /**
+     * Uses native HTML5 widgets when rendering this field in forms
+     */
+    public function renderAsNativeWidget(bool $asNative = true): self
+    {
+        if (false === $asNative) {
+            $this->renderAsChoice();
+        } else {
+            $this->setCustomOption(self::OPTION_WIDGET, self::WIDGET_NATIVE);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Uses <select> lists when rendering this field in forms
+     */
+    public function renderAsChoice(bool $asChoice = true): self
+    {
+        if (false === $asChoice) {
+            $this->renderAsNativeWidget();
+        } else {
+            $this->setCustomOption(self::OPTION_WIDGET, self::WIDGET_CHOICE);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Uses <input type="text"> elements when rendering this field in forms
+     */
+    public function renderAsText(bool $asText = true): self
+    {
+        if (false === $asText) {
+            $this->renderAsNativeWidget();
+        } else {
+            $this->setCustomOption(self::OPTION_WIDGET, self::WIDGET_TEXT);
+        }
 
         return $this;
     }

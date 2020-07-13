@@ -51,6 +51,18 @@ final class DateTimeConfigurator implements FieldConfiguratorInterface
             $formattedValue = $this->intlFormatter->formatTime($field->getValue(), null, $timePattern, $timezone);
         }
 
+        $widgetOption = $field->getCustomOption(DateTimeField::OPTION_WIDGET);
+        if (DateTimeField::WIDGET_NATIVE === $widgetOption) {
+            $field->setFormTypeOption('widget', 'single_text');
+            $field->setFormTypeOption('html5', true);
+        } elseif(DateTimeField::WIDGET_CHOICE === $widgetOption) {
+            $field->setFormTypeOption('widget', 'choice');
+            $field->setFormTypeOption('html5', true);
+        } elseif(DateTimeField::WIDGET_TEXT === $widgetOption) {
+            $field->setFormTypeOption('widget', 'single_text');
+            $field->setFormTypeOption('html5', false);
+        }
+
         $field->setFormattedValue($formattedValue);
 
         $doctrineDataType = $entityDto->getPropertyMetadata($field->getProperty())->get('type');

@@ -13,6 +13,7 @@ final class DateField implements FieldInterface
     use FieldTrait;
 
     public const OPTION_DATE_PATTERN = 'datePattern';
+    public const OPTION_WIDGET = 'widget';
 
     public static function new(string $propertyName, ?string $label = null): self
     {
@@ -24,7 +25,8 @@ final class DateField implements FieldInterface
             ->addCssClass('field-date')
             // the proper default values of these options are set on the Crud class
             ->setCustomOption(self::OPTION_DATE_PATTERN, null)
-            ->setCustomOption(DateTimeField::OPTION_TIMEZONE, null);
+            ->setCustomOption(DateTimeField::OPTION_TIMEZONE, null)
+            ->setCustomOption(self::OPTION_WIDGET, DateTimeField::WIDGET_NATIVE);
     }
 
     /**
@@ -56,6 +58,48 @@ final class DateField implements FieldInterface
 
         $datePattern = DateTimeField::INTL_DATE_PATTERNS[$dateFormatOrPattern] ?? $dateFormatOrPattern;
         $this->setCustomOption(self::OPTION_DATE_PATTERN, $datePattern);
+
+        return $this;
+    }
+
+    /**
+     * Uses native HTML5 widgets when rendering this field in forms
+     */
+    public function renderAsNativeWidget(bool $asNative = true): self
+    {
+        if (false === $asNative) {
+            $this->renderAsChoice();
+        } else {
+            $this->setCustomOption(self::OPTION_WIDGET, DateTimeField::WIDGET_NATIVE);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Uses <select> lists when rendering this field in forms
+     */
+    public function renderAsChoice(bool $asChoice = true): self
+    {
+        if (false === $asChoice) {
+            $this->renderAsNativeWidget();
+        } else {
+            $this->setCustomOption(self::OPTION_WIDGET, DateTimeField::WIDGET_CHOICE);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Uses <input type="text"> elements when rendering this field in forms
+     */
+    public function renderAsText(bool $asText = true): self
+    {
+        if (false === $asText) {
+            $this->renderAsNativeWidget();
+        } else {
+            $this->setCustomOption(self::OPTION_WIDGET, DateTimeField::WIDGET_TEXT);
+        }
 
         return $this;
     }

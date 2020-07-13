@@ -17,11 +17,10 @@ final class CrudControllerRegistry
     /**
      * @param CrudControllerInterface[] $crudControllers
      */
-    public function __construct(string $kernelSecret, iterable $crudControllers)
+    public function __construct(string $kernelSecret, array $crudControllersFqcn)
     {
-        foreach (iterator_to_array($crudControllers, false) as $controller) {
-            $controllerFqcn = \get_class($controller);
-            $this->crudFqcnToEntityFqcnMap[$controllerFqcn] = $controller::getEntityFqcn();
+        foreach ($crudControllersFqcn as $controllerFqcn) {
+            $this->crudFqcnToEntityFqcnMap[$controllerFqcn] = $controllerFqcn::getEntityFqcn();
             $this->crudFqcnToCrudIdMap[$controllerFqcn] = substr(sha1($kernelSecret.$controllerFqcn), 0, 7);
         }
 

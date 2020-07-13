@@ -36,7 +36,7 @@ final class FormField implements FieldInterface
             ->setFormType(EaFormPanelType::class)
             ->addCssClass('field-form_panel')
             ->setFormTypeOptions(['mapped' => false, 'required' => false])
-            ->setCustomOption(self::OPTION_ICON, null);
+            ->setCustomOption(self::OPTION_ICON, $icon);
     }
 
     public function setIcon(string $iconCssClass): self

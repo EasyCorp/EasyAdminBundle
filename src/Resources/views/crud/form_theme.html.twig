@@ -368,6 +368,8 @@
         {% set collapsible = panel_config.collapsible %}
         {% set collapsed = panel_config.collapsed %}
 
+        {% set actions = panel_config.actions %}
+
         <div class="{{ panel_config.css_class ?? '' }}">
             <div class="content-panel">
                 {% if panel_has_header %}
@@ -384,6 +386,16 @@
 
                         {% if collapsible %}
                             </a>
+                        {% endif %}
+
+                        {% if actions %}
+                            <div class="d-inline-block float-right">
+                                <div class="page-actions">
+                                    {% for action in actions %}
+                                        {{ include(action.templatePath, { action: action }, with_context = false) }}
+                                    {% endfor %}
+                                </div>
+                            </div>
                         {% endif %}
 
                         {% if panel_config.help|default(false) %}

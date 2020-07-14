@@ -2,10 +2,12 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Field\Configurator;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\ActionFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 
 /**
@@ -13,6 +15,13 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
  */
 final class FormConfigurator implements FieldConfiguratorInterface
 {
+    private $actionFactory;
+
+    public function __construct(ActionFactory $actionFactory)
+    {
+        $this->actionFactory = $actionFactory;
+    }
+
     public function supports(FieldDto $field, EntityDto $entityDto): bool
     {
         return FormField::class === $field->getFieldFqcn();
@@ -25,6 +34,16 @@ final class FormConfigurator implements FieldConfiguratorInterface
         // make the label FALSE to not display it
         if (null === $field->getLabel()) {
             $field->setLabel(false);
+        }
+
+        if($configureActions = $field->getCustomOption(FormField::OPTION_CONFIGURE_ACTIONS))
+        {
+            /** @var Actions $actions */
+            $actions = $configureActions(Actions::new());
+            $actionConfig = $actions->getAsDto($context->getCrud()->getCurrentPage());
+            $cloneDto = clone $entityDto;
+            $this->actionFactory->processEntityActions($cloneDto, $actionConfig);
+            $field->setCustomOption(FormField::OPTION_ACTIONS, $cloneDto->getActions());
         }
     }
 }

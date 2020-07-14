@@ -70,6 +70,7 @@ class CrudFormType extends AbstractType
                     'icon' => $fieldDto->getCustomOptions()->get(FormField::OPTION_ICON),
                     'collapsible' => $fieldDto->getCustomOptions()->get(FormField::OPTION_COLLAPSIBLE),
                     'collapsed' => $fieldDto->getCustomOptions()->get(FormField::OPTION_COLLAPSED),
+                    'actions' => $fieldDto->getCustomOptions()->get(FormField::OPTION_ACTIONS),
                     'help' => $fieldDto->getHelp(),
                     'css_class' => $fieldDto->getCssClass(),
                 ];

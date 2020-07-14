@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Filter;
 
+use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Orx;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterInterface;
@@ -27,6 +28,19 @@ final class EntityFilter implements FilterInterface
             ->setLabel($label)
             ->setFormType(EntityFilterType::class)
             ->setFormTypeOption('translation_domain', 'EasyAdminBundle');
+    }
+
+    public function modifyQuery(Callable $modify): self
+    {
+        $this->setFormTypeOption('value_type_options.query_builder', static function(EntityRepository $repository) use($modify) {
+            // TODO: should this use `createIndexQueryBuilder` instead, so we get the default ordering etc.?
+            // it would then be identical to the one used in autocomplete action, but it is a bit complex getting it in here
+            $queryBuilder = $repository->createQueryBuilder('entity');
+            $modify($queryBuilder);
+            return $queryBuilder;
+        });
+
+        return $this;
     }
 
     public function apply(QueryBuilder $queryBuilder, FilterDataDto $filterDataDto, ?FieldDto $fieldDto, EntityDto $entityDto): void

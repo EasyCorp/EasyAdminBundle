@@ -28,7 +28,7 @@ final class ControllerFactory
         $this->controllerResolver = $controllerResolver;
     }
 
-    public function getDashboardControllerInstanceFromContextId(string $contextId, Request $request): ?DashboardControllerInterface
+    public function getDashboardControllerInstance(string $contextId, Request $request): ?DashboardControllerInterface
     {
         return $this->getDashboardController($this->dashboardControllers->getControllerFqcnByContextId($contextId), $request);
     }

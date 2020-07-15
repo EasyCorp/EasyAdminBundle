@@ -46,7 +46,7 @@ class AdminContextListener
 
         $dashboardControllerInstance = $currentControllerInstance instanceof DashboardControllerInterface
             ? $currentControllerInstance
-            : $this->controllerFactory->getDashboardControllerInstanceFromContextId($contextId, $event->getRequest());
+            : $this->controllerFactory->getDashboardControllerInstance($contextId, $event->getRequest());
         if (null === $dashboardControllerInstance) {
             // this can only happen when a malicious user tries to hack the contextId value in the query string
             // don't throw an exception to prevent hackers from causing lots of exceptions in applications using EasyAdmin

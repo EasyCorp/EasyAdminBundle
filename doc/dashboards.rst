@@ -177,7 +177,7 @@ the look and behavior of each menu item::
         public function configureMenuItems(): iterable
         {
             return [
-                MenuItem::linkToDashboard('Dashboard', 'fa-home'),
+                MenuItem::linkToDashboard('Dashboard', 'fa fa-home'),
 
                 MenuItem::section('Blog'),
                 MenuItem::linkToCrud('Categories', 'fa fa-tags', Category::class),

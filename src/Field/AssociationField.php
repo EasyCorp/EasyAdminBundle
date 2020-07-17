@@ -18,6 +18,7 @@ final class AssociationField implements FieldInterface
     public const OPTION_RELATED_URL = 'relatedUrl';
     /** @internal this option is intended for internal use only */
     public const OPTION_DOCTRINE_ASSOCIATION_TYPE = 'associationType';
+    public const OPTION_RENDER_AS_WIDGET = 'renderAsWidget';
 
     public static function new(string $propertyName, ?string $label = null): self
     {
@@ -30,7 +31,8 @@ final class AssociationField implements FieldInterface
             ->setCustomOption(self::OPTION_AUTOCOMPLETE, false)
             ->setCustomOption(self::OPTION_CRUD_CONTROLLER, null)
             ->setCustomOption(self::OPTION_RELATED_URL, null)
-            ->setCustomOption(self::OPTION_DOCTRINE_ASSOCIATION_TYPE, null);
+            ->setCustomOption(self::OPTION_DOCTRINE_ASSOCIATION_TYPE, null)
+            ->setCustomOption(self::OPTION_RENDER_AS_WIDGET, false);
     }
 
     public function autocomplete(): self
@@ -43,6 +45,13 @@ final class AssociationField implements FieldInterface
     public function setCrudController(string $crudControllerFqcn): self
     {
         $this->setCustomOption(self::OPTION_CRUD_CONTROLLER, $crudControllerFqcn);
+
+        return $this;
+    }
+
+    public function renderAsWidget(bool $asWidget = true): self
+    {
+        $this->setCustomOption(self::OPTION_RENDER_AS_WIDGET, $asWidget);
 
         return $this;
     }

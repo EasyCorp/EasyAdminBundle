@@ -39,7 +39,7 @@ final class EntityFilter implements FilterInterface
         $isMultiple = $filterDataDto->getFormTypeOption('value_type_options.multiple');
 
         if ($entityDto->isToManyAssociation($property)) {
-            $assocAlias = static::createAlias($property);
+            $assocAlias = $filterDataDto->getParameterName();
             $queryBuilder->leftJoin(sprintf('%s.%s', $alias, $property), $assocAlias);
 
             if (0 === \count($value)) {

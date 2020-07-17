@@ -34,7 +34,7 @@ class DashboardController extends AbstractDashboardController
 
         yield MenuItem::subMenu('áéíóúäëïöüñ[]%@# menu.product', 'fas fa-shopping-basket')->setSubItems($submenu1);
         yield MenuItem::linkToCrud('menu.customer', 'fas fa-users', User::class);
-        yield MenuItem::linkToCrud('menu.purchase', 'far fa-credit-card', Purchase::class)->setDefaultSort(['deliveryDate' => 'DESC']);
+        yield MenuItem::linkToCrud('menu.purchase', 'fas fa-credit-card', Purchase::class)->setDefaultSort(['deliveryDate' => 'DESC']);
 
         yield MenuItem::section('menu.about', 'fas fa-folder-open');
         yield MenuItem::linkToUrl('menu.about.home', 'fas fa-home', 'https://github.com/EasyCorp/EasyAdminBundle')->setLinkTarget('_blank')->setLinkRel('noreferrer');

@@ -43,6 +43,10 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
             $field->setFormTypeOptionIfNotSet('attr.data-widget', 'select2');
         }
 
+        if (true === $field->getCustomOption(ChoiceField::OPTION_RENDER_AS_WIDGET)) {
+            $field->setFormTypeOptionIfNotSet('attr.data-widget', 'select2');
+        }
+
         $fieldValue = $field->getValue();
         $isIndexOrDetail = \in_array($context->getCrud()->getCurrentPage(), [Crud::PAGE_INDEX, Crud::PAGE_DETAIL], true);
         if (null === $fieldValue || !$isIndexOrDetail) {

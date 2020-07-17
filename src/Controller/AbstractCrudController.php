@@ -388,10 +388,15 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
     public function autocomplete(AdminContext $context): JsonResponse
     {
-        $queryBuilder = $this->createIndexQueryBuilder($context->getSearch(), $context->getEntity(), FieldCollection::new([]), FilterCollection::new());
+        $queryBuilder = $this->createAutocompleteQueryBuilder($context->getSearch(), $context->getEntity());
         $paginator = $this->get(PaginatorFactory::class)->create($queryBuilder);
 
         return JsonResponse::fromJsonString($paginator->getResultsAsJson());
+    }
+
+    public function createAutocompleteQueryBuilder(SearchDto $searchDto, EntityDto $entityDto): QueryBuilder
+    {
+        return $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, FieldCollection::new([]), FilterCollection::new());
     }
 
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder

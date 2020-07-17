@@ -17,6 +17,7 @@ final class ChoiceField implements FieldInterface
     public const OPTION_CHOICES = 'choices';
     public const OPTION_RENDER_AS_BADGES = 'renderAsBadges';
     public const OPTION_RENDER_EXPANDED = 'renderExpanded';
+    public const OPTION_RENDER_AS_WIDGET = 'renderAsWidget';
 
     public const VALID_BADGE_TYPES = ['success', 'warning', 'danger', 'info', 'primary', 'secondary', 'light', 'dark'];
 
@@ -30,7 +31,8 @@ final class ChoiceField implements FieldInterface
             ->addCssClass('field-select')
             ->setCustomOption(self::OPTION_CHOICES, null)
             ->setCustomOption(self::OPTION_RENDER_AS_BADGES, null)
-            ->setCustomOption(self::OPTION_RENDER_EXPANDED, false);
+            ->setCustomOption(self::OPTION_RENDER_EXPANDED, false)
+            ->setCustomOption(self::OPTION_RENDER_AS_WIDGET, false);
     }
 
     public function allowMultipleChoices(bool $allow = true): self
@@ -90,6 +92,13 @@ final class ChoiceField implements FieldInterface
     public function renderExpanded(bool $expanded = true): self
     {
         $this->setCustomOption(self::OPTION_RENDER_EXPANDED, $expanded);
+
+        return $this;
+    }
+
+    public function renderAsWidget(bool $asWidget = true): self
+    {
+        $this->setCustomOption(self::OPTION_RENDER_AS_WIDGET, $asWidget);
 
         return $this;
     }

@@ -10,6 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudAutocompleteType;
 use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -73,6 +74,10 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
                 ->generateUrl();
 
             $field->setFormTypeOption('attr.data-ea-autocomplete-endpoint-url', $autocompleteEndpointUrl);
+        }
+
+        if (true === $field->getCustomOption(AssociationField::OPTION_RENDER_AS_WIDGET)) {
+            $field->setFormTypeOptionIfNotSet('attr.data-widget', 'select2');
         }
     }
 

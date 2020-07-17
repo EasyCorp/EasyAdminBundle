@@ -1,8 +1,8 @@
 // ----------------------------------------------------------------------------
-// This file defines Sass variables used to customize the Bootstrap 3 design.
+// This file defines Sass variables used to customize the Bootstrap 4 design.
 // Most of the times you don't need to customize any of these variables and it's
 // enough to override the CSS variables defined in variables.css. However,
-// Bootstrap 3 doesn't allow to customize all styles using CSS variables and
+// Bootstrap 4 doesn't allow to customize all styles using CSS variables and
 // that's when you'll need to override some of the variables of this file.
 // ----------------------------------------------------------------------------
 $enable-print-styles: false;
@@ -140,7 +140,7 @@ $zindex-modal-backdrop: 1040;
 $pagination-padding-y: 4px;
 $pagination-padding-x: 10px;
 $pagination-color: var(--color-text);
-$pagination-line-height: 1.6;
+$pagination-line-height: 1.5;
 $pagination-bg: var(--white);
 $pagination-border-width: var(--border-width);
 $pagination-border-color: var(--gray-400);
@@ -161,7 +161,6 @@ $btn-padding-y-lg: 7px;
 $btn-padding-x-lg: 12px;
 $btn-padding-y-sm: 3px;
 $btn-padding-x-sm: 5px;
-$btn-line-height: 1.6;
 $btn-border-width: 0;
 $btn-border-radius: var(--border-radius);
 $btn-border-radius-lg: var(--border-radius);

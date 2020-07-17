@@ -1,0 +1,9 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2020-07-17T18:30:02Z
+
+I can't reproduce the error. It looks the same with `1.5` and `1.6`:
+
+![image](https://user-images.githubusercontent.com/73419/87819291-3d60d200-c86c-11ea-9989-91b69e183a73.png)
+
+But given that it doesn't break anything and fixes the issue for you, let's merge it. Thanks.

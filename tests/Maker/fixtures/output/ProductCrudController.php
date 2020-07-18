@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Product;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
@@ -15,6 +16,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\BooleanFilter;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\NumericFilter;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\TextFilter;
 
 class ProductCrudController extends AbstractCrudController
 {
@@ -58,5 +62,16 @@ class ProductCrudController extends AbstractCrudController
         } elseif (Crud::PAGE_EDIT === $pageName) {
             return [$panel1, $name, $description, $categories, $panel2, $ean, $price, $enabled, $createdAt, $panel3, $features, $panel4, $tags, $panel5, $imageFile];
         }
+    }
+
+    public function configureFilters(Filters $filters): Filters
+    {
+        $enabled = BooleanFilter::new('enabled');
+        $filters->add($enabled);
+        $name = TextFilter::new('name');
+        $filters->add($name);
+        $price = NumericFilter::new('price');
+        $filters->add($price);
+        return $filters;
     }
 }

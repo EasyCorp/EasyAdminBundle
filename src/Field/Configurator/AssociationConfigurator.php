@@ -48,6 +48,10 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
             ?? $context->getCrudControllers()->findCrudFqcnByEntityFqcn($targetEntityFqcn);
         $field->setCustomOption(AssociationField::OPTION_CRUD_CONTROLLER, $targetCrudControllerFqcn);
 
+        if (AssociationField::WIDGET_AUTOCOMPLETE === $field->getCustomOption(AssociationField::OPTION_WIDGET)) {
+            $field->setFormTypeOption('attr.data-widget', 'select2');
+        }
+
         if ($entityDto->isToOneAssociation($propertyName)) {
             $this->configureToOneAssociation($field);
         }
@@ -61,9 +65,6 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
             if (null === $targetCrudControllerFqcn) {
                 throw new \RuntimeException(sprintf('The "%s" field cannot be autocompleted because it doesn\'t define the related CRUD controller FQCN with the "setCrudController()" method.', $field->getProperty()));
             }
-
-            // this enables autocompletion for compatible associations
-            $field->setFormTypeOptionIfNotSet('attr.data-widget', 'select2');
 
             $field->setFormType(CrudAutocompleteType::class);
             $autocompleteEndpointUrl = $this->crudUrlGenerator->build()

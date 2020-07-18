@@ -39,8 +39,8 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
         $field->setFormTypeOptionIfNotSet('multiple', $field->getCustomOption(ChoiceField::OPTION_ALLOW_MULTIPLE_CHOICES));
         $field->setFormTypeOptionIfNotSet('expanded', $field->getCustomOption(ChoiceField::OPTION_RENDER_EXPANDED));
 
-        if (true === $field->getCustomOption(ChoiceField::OPTION_AUTOCOMPLETE)) {
-            $field->setFormTypeOptionIfNotSet('attr.data-widget', 'select2');
+        if (ChoiceField::WIDGET_AUTOCOMPLETE === $field->getCustomOption(ChoiceField::OPTION_WIDGET)) {
+            $field->setFormTypeOption('attr.data-widget', 'select2');
         }
 
         $fieldValue = $field->getValue();

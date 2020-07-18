@@ -1453,7 +1453,7 @@ return [
             'css_class' => '',
             'format' => null,
             'help' => null,
-            'label' => null,
+            'label' => 'Foo Bar',
             'type' => 'EasyCorp\\Bundle\\EasyAdminBundle\\Form\\Filter\\Type\\BooleanFilterType',
             'fieldType' => 'checkbox',
             'dataType' => 'toggle',

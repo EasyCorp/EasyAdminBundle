@@ -17,8 +17,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\BooleanFilter;
-use EasyCorp\Bundle\EasyAdminBundle\Filter\NumericFilter;
-use EasyCorp\Bundle\EasyAdminBundle\Filter\TextFilter;
 
 class ProductCrudController extends AbstractCrudController
 {
@@ -31,6 +29,14 @@ class ProductCrudController extends AbstractCrudController
     {
         return $crud
             ->setSearchFields(['id', 'tags', 'ean', 'image', 'features', 'price', 'name', 'description']);
+    }
+
+    public function configureFilters(Filters $filters): Filters
+    {
+        return $filters
+            ->add(BooleanFilter::new('enabled', 'Foo Bar'))
+            ->add('name')
+            ->add('price');
     }
 
     public function configureFields(string $pageName): iterable
@@ -62,16 +68,5 @@ class ProductCrudController extends AbstractCrudController
         } elseif (Crud::PAGE_EDIT === $pageName) {
             return [$panel1, $name, $description, $categories, $panel2, $ean, $price, $enabled, $createdAt, $panel3, $features, $panel4, $tags, $panel5, $imageFile];
         }
-    }
-
-    public function configureFilters(Filters $filters): Filters
-    {
-        $enabled = BooleanFilter::new('enabled');
-        $filters->add($enabled);
-        $name = TextFilter::new('name');
-        $filters->add($name);
-        $price = NumericFilter::new('price');
-        $filters->add($price);
-        return $filters;
     }
 }

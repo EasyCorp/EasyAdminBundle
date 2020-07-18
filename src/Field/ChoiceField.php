@@ -17,8 +17,12 @@ final class ChoiceField implements FieldInterface
     public const OPTION_CHOICES = 'choices';
     public const OPTION_RENDER_AS_BADGES = 'renderAsBadges';
     public const OPTION_RENDER_EXPANDED = 'renderExpanded';
+    public const OPTION_WIDGET = 'widget';
 
     public const VALID_BADGE_TYPES = ['success', 'warning', 'danger', 'info', 'primary', 'secondary', 'light', 'dark'];
+
+    public const WIDGET_AUTOCOMPLETE = 'autocomplete';
+    public const WIDGET_NATIVE = 'native';
 
     public static function new(string $propertyName, ?string $label = null): self
     {
@@ -30,7 +34,8 @@ final class ChoiceField implements FieldInterface
             ->addCssClass('field-select')
             ->setCustomOption(self::OPTION_CHOICES, null)
             ->setCustomOption(self::OPTION_RENDER_AS_BADGES, null)
-            ->setCustomOption(self::OPTION_RENDER_EXPANDED, false);
+            ->setCustomOption(self::OPTION_RENDER_EXPANDED, false)
+            ->setCustomOption(self::OPTION_WIDGET, self::WIDGET_AUTOCOMPLETE);
     }
 
     public function allowMultipleChoices(bool $allow = true): self
@@ -83,6 +88,13 @@ final class ChoiceField implements FieldInterface
         }
 
         $this->setCustomOption(self::OPTION_RENDER_AS_BADGES, $badgeSelector);
+
+        return $this;
+    }
+
+    public function renderAsNativeWidget(bool $asNative = true): self
+    {
+        $this->setCustomOption(self::OPTION_WIDGET, $asNative ? self::WIDGET_NATIVE : self::WIDGET_AUTOCOMPLETE);
 
         return $this;
     }

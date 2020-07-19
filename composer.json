@@ -16,7 +16,7 @@
         "ext-json": "*",
         "doctrine/common": "^2.8",
         "doctrine/dbal": "^2.10",
-        "doctrine/doctrine-bundle": "^1.8|^2.0",
+        "doctrine/doctrine-bundle": "^1.12|^2.0",
         "doctrine/orm": "^2.6,>=2.6.3",
         "doctrine/persistence": "^1.0",
         "nikic/php-parser": "^4.3|^4.4",

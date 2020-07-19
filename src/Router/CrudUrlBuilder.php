@@ -156,7 +156,7 @@ class CrudUrlBuilder
 
         // when generating URLs from outside EasyAdmin, AdminContext is null and dashboard route is not defined;
         // find the dashboard route using the dashboardControllerFqcn parameter
-        if (null === $this->dashboardRoute) {
+        if (null === $this->dashboardRoute or !empty($this->routeParameters['dashboardControllerFqcn'])) {
             if (null !== $dashboardControllerFqcn = $this->get('dashboardControllerFqcn')) {
                 if (null === $dashboardRoute = $this->dashboardControllers->getRouteByControllerFqcn($dashboardControllerFqcn)) {
                     throw new \InvalidArgumentException(sprintf('The given "%s" class is not a valid Dashboard controller. Make sure it extends from "%s" or implements "%s".', $dashboardControllerFqcn, AbstractDashboardController::class, DashboardControllerInterface::class));

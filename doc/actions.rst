@@ -120,12 +120,12 @@ and EasyAdmin passes the action to it automatically::
     {
         return $actions
             // ...
-            ->update(Crud::PAGE_DETAIL, Action::NEW, function (Action $action) {
+            ->update(Crud::PAGE_INDEX, Action::NEW, function (Action $action) {
                 return $action->setIcon('fa fa-file-alt')->setLabel(false);
             })
 
             // in PHP 7.4 and newer you can use arrow functions
-            // ->update(Crud::PAGE_DETAIL, Action::NEW,
+            // ->update(Crud::PAGE_INDEX, Action::NEW,
             //     fn (Action $action) => $action->setIcon('fa fa-file-alt')->setLabel(false))
         ;
     }

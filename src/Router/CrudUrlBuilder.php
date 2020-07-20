@@ -154,21 +154,25 @@ class CrudUrlBuilder
             $this->set('crudAction', Action::INDEX);
         }
 
-        // when generating URLs from outside EasyAdmin, AdminContext is null and dashboard route is not defined;
-        // find the dashboard route using the dashboardControllerFqcn parameter
-        if (null === $this->dashboardRoute) {
-            if (null !== $dashboardControllerFqcn = $this->get('dashboardControllerFqcn')) {
-                if (null === $dashboardRoute = $this->dashboardControllers->getRouteByControllerFqcn($dashboardControllerFqcn)) {
-                    throw new \InvalidArgumentException(sprintf('The given "%s" class is not a valid Dashboard controller. Make sure it extends from "%s" or implements "%s".', $dashboardControllerFqcn, AbstractDashboardController::class, DashboardControllerInterface::class));
-                }
-
-                $this->dashboardRoute = $dashboardRoute;
-                $this->unset('dashboardControllerFqcn');
-            } elseif ($this->dashboardControllers->getNumberOfDashboards() > 1) {
-                throw new \RuntimeException('When generating CRUD URLs from outside EasyAdmin, if your application has more than one Dashboard, you must associate the URL to a specific Dashboard using the "setDashboard()" method.');
-            } else {
-                $this->dashboardRoute = $this->dashboardControllers->getFirstDashboardRoute();
+        // if the Dashboard FQCN is defined, find its route and use it to override
+        // the current route (this is needed to allow generating links to different dashboards)
+        if (null !== $dashboardControllerFqcn = $this->get('dashboardControllerFqcn')) {
+            if (null === $dashboardRoute = $this->dashboardControllers->getRouteByControllerFqcn($dashboardControllerFqcn)) {
+                throw new \InvalidArgumentException(sprintf('The given "%s" class is not a valid Dashboard controller. Make sure it extends from "%s" or implements "%s".', $dashboardControllerFqcn, AbstractDashboardController::class, DashboardControllerInterface::class));
             }
+
+            $this->dashboardRoute = $dashboardRoute;
+            $this->unset('dashboardControllerFqcn');
+        }
+
+        // this happens when generating URLs from outside EasyAdmin (AdminContext is null) and
+        // no Dashboard FQCn has been defined explicitly
+        if (null === $this->dashboardRoute) {
+            if ($this->dashboardControllers->getNumberOfDashboards() > 1) {
+                throw new \RuntimeException('When generating CRUD URLs from outside EasyAdmin, if your application has more than one Dashboard, you must associate the URL to a specific Dashboard using the "setDashboard()" method.');
+            }
+
+            $this->dashboardRoute = $this->dashboardControllers->getFirstDashboardRoute();
         }
 
         // this removes any parameter with a NULL value

@@ -32,10 +32,6 @@ final class MoneyConfigurator implements FieldConfiguratorInterface
 
     public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
     {
-        if (null === $field->getValue()) {
-            return;
-        }
-
         $currencyCode = $this->getCurrency($field, $entityDto);
         if (!$this->isValidCurrencyCode($currencyCode)) {
             throw new \InvalidArgumentException(sprintf('The "%s" value used as the currency of the "%s" money field is not a valid ICU currency code.', $currencyCode, $field->getProperty()));
@@ -43,13 +39,18 @@ final class MoneyConfigurator implements FieldConfiguratorInterface
 
         $numDecimals = $field->getCustomOption(MoneyField::OPTION_NUM_DECIMALS);
         $storedAsCents = $field->getCustomOption(MoneyField::OPTION_STORED_AS_CENTS);
+
+        $field->setFormTypeOption('currency', $field->getCustomOption(MoneyField::OPTION_CURRENCY));
+        $field->setFormTypeOptionIfNotSet('divisor', $storedAsCents ? 100 : 1);
+
+        if (null === $field->getValue()) {
+            return;
+        }
+
         $amount = $storedAsCents ? $field->getValue() / 100 : $field->getValue();
 
         $formattedValue = $this->intlFormatter->formatCurrency($amount, $currencyCode, ['fraction_digit' => $numDecimals]);
         $field->setFormattedValue($formattedValue);
-
-        $field->setFormTypeOption('currency', $field->getCustomOption(MoneyField::OPTION_CURRENCY));
-        $field->setFormTypeOptionIfNotSet('divisor', $storedAsCents ? 100 : 1);
     }
 
     private function getCurrency(FieldDto $field, EntityDto $entityDto): string

@@ -22,13 +22,13 @@ class IntlFormatterTest extends TestCase
     /**
      * @dataProvider provideFormatTime
      */
-    public function testFormatTime(?string $expectedResult, ?\DateTimeInterface $date, ?string $timeFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', string $locale = null)
+    public function testFormatTime(?string $expectedResult, ?\DateTimeInterface $date, ?string $timeFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', string $locale = null, string $assertMethod = 'assertSame')
     {
         $intlFormatter = new IntlFormatter();
         $formattedTime = $intlFormatter->formatTime($date, $timeFormat, $pattern, $timezone, $calendar, $locale);
         $formattedTimeWithNormalizedSpaces = null === $formattedTime ? $formattedTime : str_replace(' ', ' ', $formattedTime);
 
-        $this->assertSame($expectedResult, $formattedTimeWithNormalizedSpaces);
+        $this->{$assertMethod}($expectedResult, $formattedTimeWithNormalizedSpaces);
     }
 
     /**
@@ -74,8 +74,8 @@ class IntlFormatterTest extends TestCase
     {
         yield [null, null, 'medium', '', null, 'gregorian', null];
 
-        yield ['20201108 03:04 PM', new \DateTime('15:04:05'), 'none', '', null, 'gregorian', 'en'];
-        yield ['20201108 03:04 p. m.', new \DateTime('15:04:05'), 'none', '', null, 'gregorian', 'es'];
+        yield ['03:04 PM', new \DateTime('15:04:05'), 'none', '', null, 'gregorian', 'en', 'assertStringEndsWith'];
+        yield ['03:04 p. m.', new \DateTime('15:04:05'), 'none', '', null, 'gregorian', 'es', 'assertStringEndsWith'];
         yield ['3:04 PM', new \DateTime('15:04:05'), 'short', '', null, 'gregorian', 'en'];
         yield ['15:04', new \DateTime('15:04:05'), 'short', '', null, 'gregorian', 'es'];
         yield ['3:04:05 PM', new \DateTime('15:04:05'), 'medium', '', null, 'gregorian', 'en'];

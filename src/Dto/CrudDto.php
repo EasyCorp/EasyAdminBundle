@@ -92,38 +92,70 @@ final class CrudDto
         $this->entityFqcn = $entityFqcn;
     }
 
-    public function getEntityLabelInSingular(): ?string
+    public function getEntityLabelInSingular($entityInstance = null): ?string
     {
+        if (\is_callable($this->entityLabelInSingular)) {
+            return ($this->entityLabelInSingular)($entityInstance);
+        }
+
         return $this->entityLabelInSingular;
     }
 
-    public function setEntityLabelInSingular(string $label): void
+    /**
+     * @param string|callable $label
+     */
+    public function setEntityLabelInSingular($label): void
     {
         $this->entityLabelInSingular = $label;
     }
 
-    public function getEntityLabelInPlural(): ?string
+    public function getEntityLabelInPlural($entityInstance = null): ?string
     {
+        if (\is_callable($this->entityLabelInPlural)) {
+            return ($this->entityLabelInPlural)($entityInstance);
+        }
+
         return $this->entityLabelInPlural;
     }
 
-    public function setEntityLabelInPlural(string $label): void
+    /**
+     * @param string|callable $label
+     */
+    public function setEntityLabelInPlural($label): void
     {
         $this->entityLabelInPlural = $label;
     }
 
-    public function getCustomPageTitle(string $pageName = null): ?string
+    public function getCustomPageTitle(string $pageName = null, $entityInstance = null): ?string
     {
-        return $this->customPageTitles[$pageName ?? $this->pageName] ?? null;
+        $title = $this->customPageTitles[$pageName ?? $this->pageName];
+        if (\is_callable($title)) {
+            return null !== $entityInstance ? $title($entityInstance) : $title();
+        }
+
+        return $title;
     }
 
-    public function setCustomPageTitle(string $pageName, string $pageTitle): void
+    /**
+     * @param string|callable $pageTitle
+     */
+    public function setCustomPageTitle(string $pageName, $pageTitle): void
     {
         $this->customPageTitles[$pageName] = $pageTitle;
     }
 
-    public function getDefaultPageTitle(string $pageName = null): ?string
+    public function getDefaultPageTitle(string $pageName = null, $entityInstance = null): ?string
     {
+        if (null !== $entityInstance) {
+            if (method_exists($entityInstance, '__toString')) {
+                $entityAsString = (string) $entityInstance;
+
+                if (!empty($entityAsString)) {
+                    return $entityAsString;
+                }
+            }
+        }
+
         return $this->defaultPageTitles[$pageName ?? $this->pageName] ?? null;
     }
 

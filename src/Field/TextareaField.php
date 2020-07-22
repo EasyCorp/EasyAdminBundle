@@ -24,6 +24,7 @@ final class TextareaField implements FieldInterface
             ->setTemplateName('crud/field/textarea')
             ->setFormType(TextareaType::class)
             ->addCssClass('field-textarea')
+            ->addJsFiles('bundles/easyadmin/form-type-textarea.js')
             ->setCustomOption(self::OPTION_MAX_LENGTH, null)
             ->setCustomOption(self::OPTION_NUM_OF_ROWS, 5)
             ->setCustomOption(self::OPTION_RENDER_AS_HTML, false);

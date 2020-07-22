@@ -24,7 +24,8 @@ final class TextConfigurator implements FieldConfiguratorInterface
     public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
     {
         if (TextareaField::class === $field->getFieldFqcn()) {
-            $field->setFormTypeOptionIfNotSet('attr.rows', $field->getCustomOption(TextareaField::OPTION_NUM_OF_ROWS));
+            $field->setFormTypeOptionIfNotSet('attr.rows', $field->getCustomOption(TextareaField::OPTION_NUM_OF_ROWS));            
+            $field->setFormTypeOptionIfNotSet('attr.data-ea-textarea-field', true);
         }
 
         if (null === $value = $field->getValue()) {

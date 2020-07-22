@@ -49,6 +49,7 @@ Encore
     .addEntry('form-type-text-editor', './assets/js/form-type-text-editor.js')
     .addEntry('form-type-collection', './assets/js/form-type-collection.js')
     .addEntry('form-type-slug', './assets/js/form-type-slug.js')
+    .addEntry('form-type-textarea', './assets/js/form-type-textarea.js')
 ;
 
 module.exports = Encore.getWebpackConfig();

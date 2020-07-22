@@ -44,6 +44,11 @@
       "js": [
         "./form-type-slug.js"
       ]
+    },
+    "form-type-textarea": {
+      "js": [
+        "./form-type-textarea.js"
+      ]
     }
   }
 }

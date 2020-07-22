@@ -33,7 +33,7 @@ final class MoneyConfigurator implements FieldConfiguratorInterface
     public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
     {
         $currencyCode = $this->getCurrency($field, $entityDto);
-        if (!$this->isValidCurrencyCode($currencyCode)) {
+        if (null !== $currencyCode && !$this->isValidCurrencyCode($currencyCode)) {
             throw new \InvalidArgumentException(sprintf('The "%s" value used as the currency of the "%s" money field is not a valid ICU currency code.', $currencyCode, $field->getProperty()));
         }
 
@@ -53,8 +53,12 @@ final class MoneyConfigurator implements FieldConfiguratorInterface
         $field->setFormattedValue($formattedValue);
     }
 
-    private function getCurrency(FieldDto $field, EntityDto $entityDto): string
+    private function getCurrency(FieldDto $field, EntityDto $entityDto): ?string
     {
+        if (null === $entityDto->getInstance()) {
+            return null;
+        }
+
         if (null !== $currencyCode = $field->getCustomOption(MoneyField::OPTION_CURRENCY)) {
             return $currencyCode;
         }

@@ -72,7 +72,6 @@ final class FormFactory
     {
         $filtersForm = $this->symfonyFormFactory->createNamed('filters', FiltersFormType::class, null, [
             'method' => 'GET',
-            'action' => $request->query->get('referrer', ''),
             'ea_filters' => $filters,
         ]);
 

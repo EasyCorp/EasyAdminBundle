@@ -9,6 +9,7 @@
   "bundles/easyadmin/form-type-slug.js": "./form-type-slug.js",
   "bundles/easyadmin/form-type-text-editor.css": "./form-type-text-editor.rtl.css",
   "bundles/easyadmin/form-type-text-editor.js": "./form-type-text-editor.js",
+  "bundles/easyadmin/form-type-textarea.js": "./form-type-textarea.js",
   "bundles/easyadmin/fonts/fa-brands-400.ttf": "./fonts/fa-brands-400.085b1dd8427dbeff10bd55410915a3f6.ttf",
   "bundles/easyadmin/fonts/fa-brands-400.eot": "./fonts/fa-brands-400.0fabb6606be4c45acfeedd115d0caca4.eot",
   "bundles/easyadmin/fonts/fa-brands-400.woff2": "./fonts/fa-brands-400.cac68c831145804808381a7032fdc7c2.woff2",

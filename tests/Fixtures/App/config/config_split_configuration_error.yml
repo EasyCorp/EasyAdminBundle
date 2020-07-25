@@ -1,7 +1,0 @@
-imports:
-    - { resource: config.yml }
-    - { resource: admin/category_entity_error.yml }
-
-easy_admin:
-    entities:
-        Product: AppTestBundle\Entity\FunctionalTests\Product

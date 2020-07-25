@@ -1,4 +1,0 @@
-easy_admin_bundle:
-    resource: "@AppTestBundle/Controller/AdminController.php"
-    type:     annotation
-    prefix:   /admin

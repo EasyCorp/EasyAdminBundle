@@ -59,7 +59,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "AppTestBundle\\": "tests/Fixtures/AppTestBundle/",
+            "TestApp\\": "tests/Fixtures/TestApp/src/",
             "EasyCorp\\Bundle\\EasyAdminBundle\\Tests\\": "tests/"
         }
     },

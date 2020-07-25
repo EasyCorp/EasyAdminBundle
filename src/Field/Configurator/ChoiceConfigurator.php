@@ -86,7 +86,7 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
         } elseif (\is_array($badgeSelector)) {
             $badgeType = $badgeSelector[$value] ?? 'badge-secondary';
         } elseif (\is_callable($badgeSelector)) {
-            $badgeType = $badgeSelector($field);
+            $badgeType = $badgeSelector($value, $field);
             if (!\in_array($badgeType, ChoiceField::VALID_BADGE_TYPES, true)) {
                 throw new \RuntimeException(sprintf('The value returned by the callable passed to the "renderAsBadges()" method must be one of the following valid badge types: "%s" ("%s" given).', implode(', ', ChoiceField::VALID_BADGE_TYPES), $badgeType));
             }

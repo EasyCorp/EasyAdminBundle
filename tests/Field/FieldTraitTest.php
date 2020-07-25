@@ -1,6 +1,6 @@
 <?php
 
-namespace EasyCorp\Bundle\EasyAdminBundle\Tests;
+namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Field;
 
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use PHPUnit\Framework\TestCase;

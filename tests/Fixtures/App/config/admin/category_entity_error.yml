@@ -1,8 +1,0 @@
-easy_admin:
-    design:
-        # this value is wrong on purpose to trigger an exception (it should be a boolean value)
-        rtl: 1234
-    entities:
-        Category:
-            class: AppTestBundle\Entity\FunctionalTests\Category
-            label: 'Categories'

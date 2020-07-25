@@ -35,7 +35,7 @@ final class ChoiceField implements FieldInterface
             ->setCustomOption(self::OPTION_CHOICES, null)
             ->setCustomOption(self::OPTION_RENDER_AS_BADGES, null)
             ->setCustomOption(self::OPTION_RENDER_EXPANDED, false)
-            ->setCustomOption(self::OPTION_WIDGET, self::WIDGET_AUTOCOMPLETE);
+            ->setCustomOption(self::OPTION_WIDGET, null);
     }
 
     public function allowMultipleChoices(bool $allow = true): self

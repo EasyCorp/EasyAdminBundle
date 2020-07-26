@@ -36,12 +36,13 @@ final class MoneyConfigurator implements FieldConfiguratorInterface
         if (null !== $currencyCode && !$this->isValidCurrencyCode($currencyCode)) {
             throw new \InvalidArgumentException(sprintf('The "%s" value used as the currency of the "%s" money field is not a valid ICU currency code.', $currencyCode, $field->getProperty()));
         }
+        $field->setFormTypeOption('currency', $currencyCode);
 
         $numDecimals = $field->getCustomOption(MoneyField::OPTION_NUM_DECIMALS);
-        $storedAsCents = $field->getCustomOption(MoneyField::OPTION_STORED_AS_CENTS);
+        $field->setFormTypeOption('scale', $numDecimals);
 
-        $field->setFormTypeOption('currency', $field->getCustomOption(MoneyField::OPTION_CURRENCY));
-        $field->setFormTypeOptionIfNotSet('divisor', $storedAsCents ? 100 : 1);
+        $storedAsCents = $field->getCustomOption(MoneyField::OPTION_STORED_AS_CENTS);
+        $field->setFormTypeOption('divisor', $storedAsCents ? 100 : 1);
 
         if (null === $field->getValue()) {
             return;
@@ -55,7 +56,7 @@ final class MoneyConfigurator implements FieldConfiguratorInterface
 
     private function getCurrency(FieldDto $field, EntityDto $entityDto): ?string
     {
-        if (null === $entityDto->getInstance()) {
+        if (null === $field->getValue()) {
             return null;
         }
 

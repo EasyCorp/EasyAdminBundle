@@ -169,7 +169,7 @@
             </trans-unit>
             <trans-unit id="show.remaining_items">
                 <source>show.remaining_items</source>
-                <target><![CDATA[{1} %count% елемент не відображається у цьому списку|{2,3,4} %count% елемента не відображаються у цьому списку|]5,Inf] %count% елементів не відображаються у цьому списку]]></target>
+                <target><![CDATA[{1} %count% елемент не відображається у цьому списку|{2,3,4} %count% елемента не відображаються у цьому списку|[5,Inf] %count% елементів не відображаються у цьому списку]]></target>
             </trans-unit>
 
             <!-- Exceptions -->

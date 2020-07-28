@@ -40,6 +40,7 @@ final class FieldDto
     public function __construct()
     {
         $this->cssClass = '';
+        $this->templateName = 'crud/field/text';
         $this->assets = new AssetsDto();
         $this->translationParameters = [];
         $this->formTypeOptions = KeyValueStore::new();

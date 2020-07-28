@@ -40,8 +40,8 @@ $gray: var(--gray-700);
 $gray-light: var(--gray-600);
 $gray-lighter: var(--gray-200);
 
-$link-color: hsl(230, 60%, 60%);
-$link-hover-color: hsl(230, 60%, 75%);
+$link-color: var(--link-color);
+$link-hover-color: var(--link-hover-color);
 $link-hover-decoration: var(--link-hover-decoration);
 $text-muted: var(--text-muted);
 

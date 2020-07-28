@@ -394,6 +394,7 @@ for a given postal address. This is the class you could create for the field::
     namespace App\Admin\Field;
 
     use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
+    use EasyCorp\Bundle\EasyAdminBundle\Field\FieldTrait;
     use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
     final class MapField implements FieldInterface

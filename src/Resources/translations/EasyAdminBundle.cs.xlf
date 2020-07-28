@@ -21,7 +21,7 @@
             </trans-unit>
             <trans-unit id="search.page_title">
                 <source>search.page_title</source>
-                <target><![CDATA[{0} Žádné položky nebyly nalezeny|{1} <strong>1</strong> položka nalezena|]1,Inf] <strong>%count%</strong> položek nalezeno]]></target>
+                <target><![CDATA[{0} Žádné položky nebyly nalezeny|{1} <strong>1</strong> položka nalezena|{2,3,4} <strong>%count%</strong> položky nalezeny|[5,Inf] <strong>%count%</strong> položek nalezeno]]></target>
             </trans-unit>
 
             <!-- 'search' view -->
@@ -157,11 +157,11 @@
             </trans-unit>
             <trans-unit id="form.tab.error_badge_title">
                 <source>form.tab.error_badge_title</source>
-                <target><![CDATA[{1} Jeden neplatný vstup|{2,3,4} %count% neplatné vstupy|]5,Inf] %count% neplatných vstupů]]></target>
+                <target><![CDATA[{1} Jeden neplatný vstup|{2,3,4} %count% neplatné vstupy|[5,Inf] %count% neplatných vstupů]]></target>
             </trans-unit>
             <trans-unit id="show.remaining_items">
                 <source>show.remaining_items</source>
-                <target><![CDATA[{1} existuje další položka nezobrazená v tomto seznamu|{2,3,4} %count% další položky nejsou zobrazeny v tomto seznamu|]5,Inf] %count% dalších položek není zobrazených v tomto seznamu]]></target>
+                <target><![CDATA[{1} existuje další položka nezobrazená v tomto seznamu|{2,3,4} %count% další položky nejsou zobrazeny v tomto seznamu|[5,Inf] %count% dalších položek není zobrazených v tomto seznamu]]></target>
             </trans-unit>
 
             <!-- Exceptions -->

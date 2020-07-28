@@ -100,7 +100,7 @@ return [
 
     'form' => [
         'are_you_sure' => 'Neuložili jste změny provedené v tomto formuláři.',
-        'tab.error_badge_title' => '{1} Jeden neplatný vstup|{2,3,4} %count% neplatné vstupy|]5,Inf] %count% neplatných vstupů',
+        'tab.error_badge_title' => '{1} Jeden neplatný vstup|{2,3,4} %count% neplatné vstupy|[5,Inf] %count% neplatných vstupů',
     ],
 
     'user' => [

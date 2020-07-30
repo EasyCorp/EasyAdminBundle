@@ -39,16 +39,20 @@ final class DateTimeConfigurator implements FieldConfiguratorInterface
         $formattedValue = $field->getValue();
         if (DateTimeField::class === $field->getFieldFqcn()) {
             $defaultDateTimePattern = $crud->getDateTimePattern();
-            $dateTimePattern = $field->getCustomOption(DateTimeField::OPTION_DATETIME_PATTERN) ?? $defaultDateTimePattern;
-            $formattedValue = $this->intlFormatter->formatDateTime($field->getValue(), null, null, $dateTimePattern, $timezone);
+            $dateTimePattern = $field->getCustomOption(DateTimeField::OPTION_DATETIME_PATTERN) ?? '';
+            $dateFormat = $field->getCustomOption(DateTimeField::OPTION_DATE_FORMAT);
+            $timeFormat = $field->getCustomOption(DateTimeField::OPTION_TIME_FORMAT);
+            $formattedValue = $this->intlFormatter->formatDateTime($field->getValue(), $dateFormat, $timeFormat, $dateTimePattern, $timezone);
         } elseif (DateField::class === $field->getFieldFqcn()) {
             $defaultDatePattern = $crud->getDatePattern();
-            $datePattern = $field->getCustomOption(DateField::OPTION_DATE_PATTERN) ?? $defaultDatePattern;
-            $formattedValue = $this->intlFormatter->formatDate($field->getValue(), null, $datePattern, $timezone);
+            $datePattern = $field->getCustomOption(DateField::OPTION_DATE_PATTERN) ?? '';
+            $dateFormat = $field->getCustomOption(DateTimeField::OPTION_DATE_FORMAT);
+            $formattedValue = $this->intlFormatter->formatDate($field->getValue(), $dateFormat, $datePattern, $timezone);
         } elseif (TimeField::class === $field->getFieldFqcn()) {
             $defaultTimePattern = $crud->getTimePattern();
-            $timePattern = $field->getCustomOption(TimeField::OPTION_TIME_PATTERN) ?? $defaultTimePattern;
-            $formattedValue = $this->intlFormatter->formatTime($field->getValue(), null, $timePattern, $timezone);
+            $timePattern = $field->getCustomOption(TimeField::OPTION_TIME_PATTERN) ?? '';
+            $timeFormat = $field->getCustomOption(DateTimeField::OPTION_TIME_FORMAT);
+            $formattedValue = $this->intlFormatter->formatTime($field->getValue(), $timeFormat, $timePattern, $timezone);
         }
 
         $widgetOption = $field->getCustomOption(DateTimeField::OPTION_WIDGET);

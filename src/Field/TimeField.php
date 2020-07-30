@@ -13,6 +13,7 @@ final class TimeField implements FieldInterface
     use FieldTrait;
 
     public const OPTION_TIME_PATTERN = 'timePattern';
+    public const OPTION_TIME_FORMAT = 'timeFormat';
     public const OPTION_WIDGET = 'widget';
 
     public static function new(string $propertyName, ?string $label = null): self
@@ -56,8 +57,15 @@ final class TimeField implements FieldInterface
             throw new \InvalidArgumentException(sprintf('The first argument of the "%s()" method cannot be "%s" or an empty string. Use either the special time formats (%s) or a datetime Intl pattern.',  __METHOD__, DateTimeField::FORMAT_NONE, implode(', ', $validTimeFormatsWithoutNone)));
         }
 
+        $isTimePattern = !\in_array($timeFormatOrPattern, DateTimeField::VALID_DATE_FORMATS, true);
+
         $timePattern = DateTimeField::INTL_TIME_PATTERNS[$timeFormatOrPattern] ?? $timeFormatOrPattern;
-        $this->setCustomOption(self::OPTION_TIME_PATTERN, $timePattern);
+
+        if ($isTimePattern) {
+            $this->setCustomOption(self::OPTION_TIME_PATTERN, $timePattern);
+        } else {
+            $this->setCustomOption(self::OPTION_TIME_FORMAT, $timeFormatOrPattern);
+        }
 
         return $this;
     }

@@ -13,6 +13,7 @@ final class DateField implements FieldInterface
     use FieldTrait;
 
     public const OPTION_DATE_PATTERN = 'datePattern';
+    public const OPTION_DATE_FORMAT = 'dateFormat';
     public const OPTION_WIDGET = 'widget';
 
     public static function new(string $propertyName, ?string $label = null): self
@@ -56,8 +57,15 @@ final class DateField implements FieldInterface
             throw new \InvalidArgumentException(sprintf('The first argument of the "%s()" method cannot be "%s" or an empty string. Use either the special date formats (%s) or a datetime Intl pattern.',  __METHOD__, DateTimeField::FORMAT_NONE, implode(', ', $validDateFormatsWithoutNone)));
         }
 
+        $isDatePattern = !\in_array($dateFormatOrPattern, DateTimeField::VALID_DATE_FORMATS, true);
+
         $datePattern = DateTimeField::INTL_DATE_PATTERNS[$dateFormatOrPattern] ?? $dateFormatOrPattern;
-        $this->setCustomOption(self::OPTION_DATE_PATTERN, $datePattern);
+
+        if ($isDatePattern) {
+            $this->setCustomOption(self::OPTION_DATE_PATTERN, $datePattern);
+        } else {
+            $this->setCustomOption(self::OPTION_DATE_FORMAT, $dateFormatOrPattern);
+        }
 
         return $this;
     }

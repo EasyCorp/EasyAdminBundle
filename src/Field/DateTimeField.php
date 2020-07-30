@@ -41,6 +41,8 @@ final class DateTimeField implements FieldInterface
     public const WIDGET_TEXT = 'text';
 
     public const OPTION_DATETIME_PATTERN = 'dateTimePattern';
+    public const OPTION_DATE_FORMAT = 'dateFormat';
+    public const OPTION_TIME_FORMAT = 'timeFormat';
     public const OPTION_TIMEZONE = 'timezone';
     public const OPTION_WIDGET = 'widget';
 
@@ -106,7 +108,13 @@ final class DateTimeField implements FieldInterface
         }
 
         $dateTimePattern = $isDatePattern ? $dateFormatOrPattern : trim(sprintf('%s %s', self::INTL_DATE_PATTERNS[$dateFormatOrPattern], self::INTL_TIME_PATTERNS[$timeFormat]));
-        $this->setCustomOption(self::OPTION_DATETIME_PATTERN, $dateTimePattern);
+
+        if ($isDatePattern) {
+            $this->setCustomOption(self::OPTION_DATETIME_PATTERN, $dateTimePattern);
+        } else {
+            $this->setCustomOption(self::OPTION_DATE_FORMAT, $dateFormatOrPattern);
+            $this->setCustomOption(self::OPTION_TIME_FORMAT, $timeFormat);
+        }
 
         return $this;
     }

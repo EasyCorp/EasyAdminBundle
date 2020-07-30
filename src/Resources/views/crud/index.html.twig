@@ -126,11 +126,9 @@
                             </th>
                         {% endfor %}
 
-                        {% if entities|length > 0 and entities|first.actions is not empty %}
-                            <th {% if ea.crud.showEntityActionsAsDropdown %}width="10px"{% endif %} dir="{{ ea.i18n.textDirection }}">
-                                <span class="sr-only">{{ 'action.entity_actions'|trans(ea.i18n.translationParameters, 'EasyAdminBundle') }}</span>
-                            </th>
-                        {% endif %}
+                        <th {% if ea.crud.showEntityActionsAsDropdown %}width="10px"{% endif %} dir="{{ ea.i18n.textDirection }}">
+                            <span class="sr-only">{{ 'action.entity_actions'|trans(ea.i18n.translationParameters, 'EasyAdminBundle') }}</span>
+                        </th>
                     </tr>
                 {% endblock table_head %}
                 </thead>
@@ -153,27 +151,25 @@
                                 {% endfor %}
 
                                 {% block entity_actions %}
-                                    {% if entity.actions is not empty %}
-                                        <td class="actions">
-                                            {% if not ea.crud.showEntityActionsAsDropdown %}
-                                                {% for action in entity.actions %}
-                                                    {{ include(action.templatePath, { action: action, entity: entity, isIncludedInDropdown: ea.crud.showEntityActionsAsDropdown }, with_context = false) }}
-                                                {% endfor %}
-                                            {% else %}
-                                                <div class="dropdown dropdown-actions">
-                                                    <a class="dropdown-toggle btn btn-secondary btn-sm" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                        <i class="fa fa-fw fa-ellipsis-h"></i>
-                                                    </a>
+                                    <td class="actions">
+                                        {% if not ea.crud.showEntityActionsAsDropdown %}
+                                            {% for action in entity.actions %}
+                                                {{ include(action.templatePath, { action: action, entity: entity, isIncludedInDropdown: ea.crud.showEntityActionsAsDropdown }, with_context = false) }}
+                                            {% endfor %}
+                                        {% else %}
+                                            <div class="dropdown dropdown-actions">
+                                                <a class="dropdown-toggle btn btn-secondary btn-sm" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="fa fa-fw fa-ellipsis-h"></i>
+                                                </a>
 
-                                                    <div class="dropdown-menu dropdown-menu-right">
-                                                        {% for action in entity.actions %}
-                                                            {{ include(action.templatePath, { action: action, isIncludedInDropdown: ea.crud.showEntityActionsAsDropdown }, with_context = false) }}
-                                                        {% endfor %}
-                                                    </div>
+                                                <div class="dropdown-menu dropdown-menu-right">
+                                                    {% for action in entity.actions %}
+                                                        {{ include(action.templatePath, { action: action, isIncludedInDropdown: ea.crud.showEntityActionsAsDropdown }, with_context = false) }}
+                                                    {% endfor %}
                                                 </div>
-                                            {% endif %}
-                                        </td>
-                                    {% endif %}
+                                            </div>
+                                        {% endif %}
+                                    </td>
                                 {% endblock entity_actions %}
                             </tr>
 

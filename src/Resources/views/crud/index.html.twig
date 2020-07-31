@@ -103,6 +103,7 @@
     <div class="content-panel">
         <div class="content-panel-body with-rounded-top with-min-h-250 without-padding {{ not has_footer ? 'without-footer' }}">
             <table class="table datagrid with-rounded-top {{ not has_footer ? 'with-rounded-bottom' }}">
+                {% set has_actions_column = entities|reduce((carry, entity) => carry or entity.actions is not empty, false) %}
                 <thead>
                 {% block table_head %}
                     <tr>
@@ -126,7 +127,7 @@
                             </th>
                         {% endfor %}
 
-                        {% if entities|length > 0 and entities|first.actions is not empty %}
+                        {% if entities|length > 0 and has_actions_column %}
                             <th {% if ea.crud.showEntityActionsAsDropdown %}width="10px"{% endif %} dir="{{ ea.i18n.textDirection }}">
                                 <span class="sr-only">{{ 'action.entity_actions'|trans(ea.i18n.translationParameters, 'EasyAdminBundle') }}</span>
                             </th>
@@ -153,7 +154,7 @@
                                 {% endfor %}
 
                                 {% block entity_actions %}
-                                    {% if entity.actions is not empty %}
+                                    {% if has_actions_column %}
                                         <td class="actions">
                                             {% if not ea.crud.showEntityActionsAsDropdown %}
                                                 {% for action in entity.actions %}

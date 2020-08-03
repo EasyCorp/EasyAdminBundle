@@ -74,6 +74,11 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
                 ->generateUrl();
 
             $field->setFormTypeOption('attr.data-ea-autocomplete-endpoint-url', $autocompleteEndpointUrl);
+            
+            // If the field is not required we allow clearing out the selection
+            if (false === $field->getFormTypeOption('required')) {
+                $field->setFormTypeOption('attr.data-allow-clear', 'true');
+            }
         }
     }
 

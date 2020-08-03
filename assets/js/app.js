@@ -48,7 +48,8 @@ function createAutoCompleteFields() {
 
     autocompleteFields.each(function () {
         var $this = $(this),
-            autocompleteUrl = $this.data('ea-autocomplete-endpoint-url');
+            autocompleteUrl = $this.data('ea-autocomplete-endpoint-url'),
+            allowClear = $this.data('allow-clear');
 
         if (undefined === autocompleteUrl) {
             $this.select2({ theme: 'bootstrap', placeholder: '', allowClear: true });
@@ -76,7 +77,7 @@ function createAutoCompleteFields() {
                     cache: true
                 },
                 placeholder: '',
-                allowClear: false,
+                allowClear: allowClear,
                 minimumInputLength: 1
             });
         }

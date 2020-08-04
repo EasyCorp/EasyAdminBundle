@@ -1,0 +1,19 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2020-08-04T18:25:13Z
+
+Thanks for this improvement!
+
+About setting up things for testing ... I'd do it like this:
+
+* Clone this repo in some dir (e.g. `/foo/ea`)
+* Find one of your real Symfony apps which uses this bundle
+* Make a symbolic link from the `vendor/easycorp/easyadmin-bundle/` dir of your app to the `/foo/ea` dir
+* `rm -fr var/cache` and `php bin/console assets:install` in the app
+* Now you can install Webpack in the other directory to make changes and rebuild assets:
+  * Install `yarn`
+  * Run `yarn install`
+  * Run `yarn encore dev --watch`
+* Now you can make changes in `/foo/ea` and you'll see them in your app.
+
+This is usually easier than it may look at first. Cheers!

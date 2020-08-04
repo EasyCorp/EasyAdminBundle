@@ -61,7 +61,7 @@
             // Adding visual feedback for invalid fields: any ".form-group" with invalid fields
             // receives "has-error" class. The class is removed on click on the ".form-group"
             // itself to support custom/complex fields.
-            entityForm.addEventListener('submit', function() {
+            entityForm.addEventListener('submit', function(submitEvent) {
                 entityForm.querySelectorAll(inputFieldsSelector).forEach(function (input) {
                     if (!input.validity.valid) {
                         const formGroup = input.closest('div.form-group');
@@ -74,6 +74,16 @@
                         });
                     }
                 });
+
+                const eaEvent = new CustomEvent('ea.form.submit', {
+                    cancelable: true,
+                    detail: { page: 'new', form: entityForm }
+                });
+                const eaEventResult = document.dispatchEvent(eaEvent);
+                if (false === eaEventResult) {
+                    submitEvent.preventDefault();
+                    submitEvent.stopPropagation();
+                }
             });
 
             // forms with tabs require some special treatment for errors. The problem

@@ -40,7 +40,8 @@ final class DateTimeField implements FieldInterface
     public const WIDGET_CHOICE = 'choice';
     public const WIDGET_TEXT = 'text';
 
-    public const OPTION_DATETIME_PATTERN = 'dateTimePattern';
+    public const OPTION_DATE_PATTERN = 'datePattern';
+    public const OPTION_TIME_PATTERN = 'timePattern';
     public const OPTION_TIMEZONE = 'timezone';
     public const OPTION_WIDGET = 'widget';
 
@@ -53,7 +54,8 @@ final class DateTimeField implements FieldInterface
             ->setFormType(DateTimeType::class)
             ->addCssClass('field-datetime')
             // the proper default values of these options are set on the Crud class
-            ->setCustomOption(self::OPTION_DATETIME_PATTERN, null)
+            ->setCustomOption(self::OPTION_DATE_PATTERN, null)
+            ->setCustomOption(self::OPTION_TIME_PATTERN, null)
             ->setCustomOption(self::OPTION_TIMEZONE, null)
             ->setCustomOption(self::OPTION_WIDGET, self::WIDGET_NATIVE);
     }
@@ -105,8 +107,8 @@ final class DateTimeField implements FieldInterface
             throw new \InvalidArgumentException(sprintf('The value of the time format can only be one of the following: %s (but "%s" was given).', implode(', ', self::VALID_DATE_FORMATS), $timeFormat));
         }
 
-        $dateTimePattern = $isDatePattern ? $dateFormatOrPattern : trim(sprintf('%s %s', self::INTL_DATE_PATTERNS[$dateFormatOrPattern], self::INTL_TIME_PATTERNS[$timeFormat]));
-        $this->setCustomOption(self::OPTION_DATETIME_PATTERN, $dateTimePattern);
+        $this->setCustomOption(self::OPTION_DATE_PATTERN, $dateFormatOrPattern);
+        $this->setCustomOption(self::OPTION_TIME_PATTERN, $timeFormat);
 
         return $this;
     }

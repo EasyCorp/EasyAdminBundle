@@ -11,6 +11,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\I18nDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\ChoiceConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class AbstractFieldTest extends KernelTestCase
@@ -27,9 +28,12 @@ class AbstractFieldTest extends KernelTestCase
 
         $crudMock = $this->getMockBuilder(CrudDto::class)
             ->disableOriginalConstructor()
-            ->setMethods(['getCurrentPage'])
+            ->setMethods(['getCurrentPage', 'getDatePattern', 'getDateTimePattern', 'getTimePattern'])
             ->getMock();
         $crudMock->method('getCurrentPage')->willReturn(Crud::PAGE_INDEX);
+        $crudMock->method('getDatePattern')->willReturn(DateTimeField::FORMAT_MEDIUM);
+        $crudMock->method('getTimePattern')->willReturn(DateTimeField::FORMAT_MEDIUM);
+        $crudMock->method('getDateTimePattern')->willReturn([DateTimeField::FORMAT_MEDIUM, DateTimeField::FORMAT_MEDIUM]);
 
         $i18nMock = $this->getMockBuilder(I18nDto::class)
             ->disableOriginalConstructor()

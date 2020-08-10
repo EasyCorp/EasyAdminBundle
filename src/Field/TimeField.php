@@ -56,8 +56,7 @@ final class TimeField implements FieldInterface
             throw new \InvalidArgumentException(sprintf('The first argument of the "%s()" method cannot be "%s" or an empty string. Use either the special time formats (%s) or a datetime Intl pattern.',  __METHOD__, DateTimeField::FORMAT_NONE, implode(', ', $validTimeFormatsWithoutNone)));
         }
 
-        $timePattern = DateTimeField::INTL_TIME_PATTERNS[$timeFormatOrPattern] ?? $timeFormatOrPattern;
-        $this->setCustomOption(self::OPTION_TIME_PATTERN, $timePattern);
+        $this->setCustomOption(self::OPTION_TIME_PATTERN, $timeFormatOrPattern);
 
         return $this;
     }

@@ -147,7 +147,8 @@ Date, Time and Number Formatting Options
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
-            // the argument must be either one of these strings: 'short', 'medium', 'long', 'full'
+            // the argument must be either one of these strings: 'short', 'medium', 'long', 'full', 'none'
+            // (the strings are also available as \EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField::FORMAT_* constants)
             // or a valid ICU Datetime Pattern (see http://userguide.icu-project.org/formatparse/datetime)
             ->setDateFormat('...')
             ->setTimeFormat('...')

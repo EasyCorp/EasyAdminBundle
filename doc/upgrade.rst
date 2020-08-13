@@ -101,7 +101,7 @@ considered useful:
       {
           // ...
 
-          public function configureAssets(Assets $assets): Assets
+          public function configureAssets(): Assets
           {
               return Assets::new()
                   // ...

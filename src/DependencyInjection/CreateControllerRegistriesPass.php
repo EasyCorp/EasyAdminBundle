@@ -2,10 +2,12 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\DependencyInjection;
 
+use EasyCorp\Bundle\EasyAdminBundle\Cache\CacheWarmer;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\CrudControllerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\DashboardControllerRegistry;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Reference;
 
 /**
  * Creates the services of the Dashboard and CRUD controller registries. They can't
@@ -33,6 +35,7 @@ class CreateControllerRegistriesPass implements CompilerPassInterface
                 $container->getParameter('kernel.secret'),
                 $container->getParameter('kernel.cache_dir'),
                 $dashboardControllersFqcn,
+                New Reference(CacheWarmer::class)
             ]);
     }
 

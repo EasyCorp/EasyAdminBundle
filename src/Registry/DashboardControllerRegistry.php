@@ -15,7 +15,7 @@ final class DashboardControllerRegistry
     private $controllerFqcnToRouteMap = [];
     private $routeToControllerFqcnMap = [];
 
-    public function __construct(string $kernelSecret, string $cacheDir, array $dashboardControllersFqcn)
+    public function __construct(string $kernelSecret, string $cacheDir, array $dashboardControllersFqcn, CacheWarmer $cacheWarmer)
     {
         foreach ($dashboardControllersFqcn as $controllerFqcn) {
             $this->controllerFqcnToContextIdMap[$controllerFqcn] = substr(sha1($kernelSecret.$controllerFqcn), 0, 7);
@@ -23,7 +23,11 @@ final class DashboardControllerRegistry
 
         $this->contextIdToControllerFqcnMap = array_flip($this->controllerFqcnToContextIdMap);
 
-        $dashboardControllerRoutes = require $cacheDir.'/'.CacheWarmer::DASHBOARD_ROUTES_CACHE;
+        $dashboardRouteCacheFilename = $cacheDir.'/'.CacheWarmer::DASHBOARD_ROUTES_CACHE;
+        if (!file_exists($dashboardRouteCacheFilename)) {
+            $cacheWarmer->warmUp($cacheDir);
+        }
+        $dashboardControllerRoutes = require $dashboardRouteCacheFilename;
         foreach ($dashboardControllerRoutes as $routeName => $controller) {
             $this->controllerFqcnToRouteMap[u($controller)->before('::')->toString()] = $routeName;
         }

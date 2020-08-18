@@ -62,7 +62,7 @@ Now you can define the ``restockAction()`` method in your own controller:
 
         public function restockAction()
         {
-            // controllers extending the base AdminController get access to the
+            // controllers extending the EasyAdminController get access to the
             // following variables:
             //   $this->request, stores the current request
             //   $this->em, stores the Entity Manager for this Doctrine entity

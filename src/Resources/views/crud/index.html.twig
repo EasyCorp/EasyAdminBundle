@@ -111,13 +111,14 @@
                         {% endif %}
 
                         {% for field in entities|first.fields ?? [] %}
-                            {% set is_sorting_field = ea.search.isSortingField(field.property) %}
-                            {% set next_sort_direction = is_sorting_field ? (ea.search.sortDirection(field.property) == 'DESC' ? 'ASC' : 'DESC') : 'DESC' %}
+                            {% set field_property = (field.sortProperty ? field.property ~'.'~ field.sortProperty : field.property ) %}
+                            {% set is_sorting_field = ea.search.isSortingField(field_property) %}
+                            {% set next_sort_direction = is_sorting_field ? (ea.search.sortDirection(field_property) == 'DESC' ? 'ASC' : 'DESC') : 'DESC' %}
                             {% set column_icon = is_sorting_field ? (next_sort_direction == 'DESC' ? 'fa-arrow-up' : 'fa-arrow-down') : 'fa-sort' %}
 
                             <th class="{{ is_sorting_field ? 'sorted' }} {{ field.isVirtual ? 'field-virtual' }} text-{{ field.textAlign }}" dir="{{ ea.i18n.textDirection }}">
                                 {% if field.isSortable %}
-                                    <a href="{{ ea_url({ page: 1, sort: { (field.property): next_sort_direction } }).includeReferrer() }}">
+                                    <a href="{{ ea_url({ page: 1, sort: { (field_property): next_sort_direction } }).includeReferrer() }}">
                                         {{ field.label|raw }} <i class="fa fa-fw {{ column_icon }}"></i>
                                     </a>
                                 {% else %}

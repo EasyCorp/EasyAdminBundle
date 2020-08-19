@@ -43,6 +43,11 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         }
 
         $targetEntityFqcn = $field->getDoctrineMetadata()->get('targetEntity');
+        $sortProperty = $field->getSortProperty();
+
+        if ($sortProperty) {
+            $this->entityFactory->create($targetEntityFqcn)->getPropertyMetadata($sortProperty);
+        }
         // the target CRUD controller can be NULL; in that case, field value doesn't link to the related entity
         $targetCrudControllerFqcn = $field->getCustomOption(AssociationField::OPTION_CRUD_CONTROLLER)
             ?? $context->getCrudControllers()->findCrudFqcnByEntityFqcn($targetEntityFqcn);

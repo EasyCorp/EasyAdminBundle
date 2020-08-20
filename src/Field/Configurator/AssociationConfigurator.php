@@ -43,11 +43,20 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         }
 
         $targetEntityFqcn = $field->getDoctrineMetadata()->get('targetEntity');
+
+        // get the sort property name which is null by default
         $sortProperty = $field->getSortProperty();
 
+        // if the sort property is set we need to check its a valid property on the associated entity
         if ($sortProperty) {
-            $this->entityFactory->create($targetEntityFqcn)->getPropertyMetadata($sortProperty);
+
+            // create a FieldDto of the associated entity
+            $sortPropertyDto = $this->entityFactory->create($targetEntityFqcn);
+            // checks if the property exists on the associated entity if not it throws an exception
+            // The "$sortProperty" field does not exist in the "$targetEntityFqcn" entity
+            $sortPropertyDto->getPropertyMetadata($sortProperty);
         }
+
         // the target CRUD controller can be NULL; in that case, field value doesn't link to the related entity
         $targetCrudControllerFqcn = $field->getCustomOption(AssociationField::OPTION_CRUD_CONTROLLER)
             ?? $context->getCrudControllers()->findCrudFqcnByEntityFqcn($targetEntityFqcn);
@@ -79,7 +88,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
                 ->generateUrl();
 
             $field->setFormTypeOption('attr.data-ea-autocomplete-endpoint-url', $autocompleteEndpointUrl);
-            
+
             // If the field is not required we allow clearing out the selection
             if (false === $field->getFormTypeOption('required')) {
                 $field->setFormTypeOption('attr.data-allow-clear', 'true');
@@ -134,7 +143,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         }
 
         if (method_exists($entityInstance, '__toString')) {
-            return (string) $entityInstance;
+            return (string)$entityInstance;
         }
 
         if (null !== $primaryKeyValue = $entityDto->getPrimaryKeyValue()) {

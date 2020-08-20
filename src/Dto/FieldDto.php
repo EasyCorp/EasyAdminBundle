@@ -14,7 +14,7 @@ final class FieldDto
 {
     private $fieldFqcn;
     private $propertyName;
-    private $sortProperty;
+    private $sortPropertyName;
     private $value;
     private $formattedValue;
     private $formatValueCallable;
@@ -102,15 +102,15 @@ final class FieldDto
         $this->propertyName = $propertyName;
     }
 
-    public function setSortProperty($sortProperty): void
+    public function setSortProperty($sortPropertyName): void
     {
-        $this->sortProperty = $sortProperty;
+        $this->sortPropertyName = $sortPropertyName;
     }
 
 
     public function getSortProperty() :?string
     {
-        return $this->sortProperty;
+        return $this->sortPropertyName;
     }
 
     /**

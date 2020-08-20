@@ -25,9 +25,9 @@ trait FieldTrait
 
         return $this;
     }
-    public function setSortProperty(?string $sortProperty): self
+    public function setSortProperty(?string $sortPropertyName): self
     {
-        $this->dto->setSortProperty($sortProperty);
+        $this->dto->setSortProperty($sortPropertyName);
         return $this;
     }
     public function setProperty(string $propertyName): self

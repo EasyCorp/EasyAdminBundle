@@ -63,7 +63,7 @@ return [
     ],
 
     'batch_action_modal' => [
-        'title' => 'Voulez-vous vraiment modifier les éléments sélectionnés?',
+        'title' => 'Vous allez appliquer l\'action "%action_name%" à %num_items% élément(s).',
         'content' => 'Cette action est irréversible.',
         'action' => 'Procéder',
     ],

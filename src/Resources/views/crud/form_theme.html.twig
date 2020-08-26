@@ -476,20 +476,19 @@
 {% endblock ea_section_row %}
 
 {# EasyAdminBatch form type #}
-{% block ea_batch_widget %}
-    {% set _trans_parameters = { '%entity_name%':  ea.entity.name|trans(domain = ea.i18n.translationDomain), '%entity_label%': ea.entity.label|trans(domain = ea.i18n.translationDomain) } %}
-
-    {{ form_widget(form.ids) }}
-    <button type="button" class="btn btn-link deselect-batch-button">{{ 'action.deselect'|trans(_trans_parameters, ea.i18n.translationDomain) }}</button>
+{% block ea_batch_action_widget %}
+    {{ form_widget(form.entityIds) }}
+    <button type="button" class="btn btn-link deselect-batch-button">{{ 'action.deselect'|trans(domain = 'EasyAdminBundle') }}</button>
     {% for action in batch_actions %}
-        <button type="submit" class="btn {{ action.css_class|default('btn-secondary') }} {% if action.ask_confirm %}ask-confirm-batch-button{% endif -%}" title="{{ action.title|default('') is empty ? '' : action.title|trans(_trans_parameters) }}" name="{{ form.name.vars.full_name }}" value="{{ action.name }}">
-            {%- if action.icon %}<i class="fa fa-fw fa-{{ action.icon }}"></i> {% endif -%}
-            {%- if action.label is defined and not action.label is empty -%}
-                {{ action.label|trans(_trans_parameters, ea.i18n.translationDomain) }}
-            {%- endif -%}
+        <button name="{{ form.crudAction.vars.full_name }}" value="{{ action.name }}"
+                class="ask-confirm-batch-button {{ action.cssClass }}" {% for name, value in action.htmlAttributes %}{{ name }}="{{ value|e('html_attr') }}" {% endfor %}>
+            <span class="btn-label">
+                {%- if action.icon %}<i class="action-icon {{ action.icon }}"></i> {% endif -%}
+                {%- if action.label is not empty -%}{{ action.label }}{%- endif -%}
+            </span>
         </button>
     {% endfor %}
-{% endblock ea_batch_widget %}
+{% endblock ea_batch_action_widget %}
 
 {# EasyAdminFilters form type #}
 {% block ea_filters_widget %}

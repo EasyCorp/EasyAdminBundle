@@ -48,6 +48,9 @@ table.datagrid {
 .datagrid tbody tr:hover td, .datagrid tbody tr:hover th {
   background: var(--form-bg);
 }
+.datagrid tbody tr.selected-row td {
+  background: var(--indigo-100);
+}
 .datagrid td.actions {
   text-align: right;
 }

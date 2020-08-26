@@ -4,8 +4,7 @@
 {% extends ea.templatePath('layout') %}
 {% trans_default_domain ea.i18n.translationDomain %}
 
-{# TODO: change this when reenabling batch actions #}
-{% set has_batch_actions = false and batch_form is defined and ea.crud.actions.batchActions|length > 0 %}
+{% set has_batch_actions = batch_form is defined and batch_form.vars.batch_actions|length > 0 %}
 
 {% block body_id entities|length > 0 ? 'ea-index-' ~ entities|first.name : '' %}
 {% block body_class 'index' ~ (entities|length > 0 ? ' index-' ~ entities|first.name : '') %}
@@ -19,25 +18,23 @@
 
 {% block page_actions %}
     {% block global_actions %}
-        {% for action in global_actions %}
-            {{ include(action.templatePath, { action: action }, with_context = false) }}
-        {% endfor %}
+        <div class="global-actions">
+            {% for action in global_actions %}
+                {{ include(action.templatePath, { action: action }, with_context = false) }}
+            {% endfor %}
+        </div>
     {% endblock global_actions %}
+    {% block batch_actions %}
+        {% if has_batch_actions %}
+            <div class="batch-actions" style="display: none">
+                {% form_theme batch_form with ea.crud.formThemes only %}
+                {{ form(batch_form) }}
+
+            </div>
+        {% endif %}
+    {% endblock %}
 {% endblock page_actions %}
 
-{% block content_header %}
-    {{ parent() }}
-
-    {# TODO:
-    {% block batch_actions %}
-        {% for batchAction in ea.crud.actions.batchActions %}
-            {{ include(batchAction.templatePath, { action: batchAction }, with_context = false) }}
-        {% endfor %}
-
-        {{ include('@EasyAdmin/crud/includes/_batch_action_modal.html.twig', {}, with_context = false) }}
-    {% endblock %}
-    #}
-{% endblock content_header %}
 
 {% block main %}
     {# sort can be multiple; let's consider the sorting field the first one #}
@@ -218,6 +215,10 @@
     {% if filters|length > 0 %}
         {{ include('@EasyAdmin/crud/includes/_filters_modal.html.twig') }}
     {% endif %}
+
+    {% if has_batch_actions %}
+        {{ include('@EasyAdmin/crud/includes/_batch_action_modal.html.twig', {}, with_context = false) }}
+    {% endif %}
 {% endblock main %}
 
 {% block body_javascript %}
@@ -301,16 +302,19 @@
                 $(this).closest('.content').find(':checkbox.form-batch-checkbox').prop('checked', $(this).prop('checked')).trigger('change');
             });
             $(document).on('change', '.form-batch-checkbox', function () {
+
                 const $content = $(this).closest('.content');
-                let $input = $content.find(':hidden#batch_form_ids');
+                let $input = $content.find(':hidden#batch_form_entityIds');
                 let ids = $input.val() ? $input.val().split(',') : [];
                 const id = $(this).val();
 
                 if ($(this).prop('checked')) {
+                    $(this).closest('tr').addClass('selected-row');
                     if (-1 === ids.indexOf(id)) {
                         ids.push(id);
                     }
                 } else {
+                    $(this).closest('tr').removeClass('selected-row');
                     ids = ids.filter(function(value) { return value !== id });
                     $content.find(':checkbox.form-batch-checkbox-all').prop('checked', false);
                 }
@@ -329,16 +333,27 @@
                 $content.find('.content-header-title > .title').html(0 === ids.length ? titleContent : '');
             });
 
-            $('button[name="batch_form[name]"].ask-confirm-batch-button').on('click', function (event) {
+            let modalTitle = $('#batch-action-confirmation-title');
+            const titleContentWithPlaceholders = modalTitle.text();
+
+            $('button[name="batch_form[crudAction]"].ask-confirm-batch-button').on('click', function (event) {
                 event.preventDefault();
                 event.stopPropagation();
                 let $button = $(this);
+
+                const actionName = $button.text().trim() || $button.attr('title');
+                const numberOfSelectedItems = $('input[type="checkbox"].form-batch-checkbox:checked').length;
+                modalTitle.text(titleContentWithPlaceholders
+                    .replace('%action_name%', actionName)
+                    .replace('%num_items%', numberOfSelectedItems));
 
                 $('#modal-batch-action').modal({ backdrop : true, keyboard : true })
                     .off('click', '#modal-batch-action-button')
                     .on('click', '#modal-batch-action-button', function () {
                         $button.unbind('click');
                         $button.trigger('click');
+
+                        modalTitle.text(titleContentWithPlaceholders);
                     });
             });
             {% endif %}

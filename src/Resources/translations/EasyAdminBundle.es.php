@@ -63,7 +63,7 @@ return [
     ],
 
     'batch_action_modal' => [
-        'title' => '¿Realmente quieres modificar los elementos seleccionados?',
+        'title' => 'Se va a aplicar la acción "%action_name%" a %num_items% elemento(s).',
         'content' => 'Esta acción no se puede deshacer.',
         'action' => 'Continuar',
     ],

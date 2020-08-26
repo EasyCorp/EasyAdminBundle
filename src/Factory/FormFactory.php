@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
@@ -65,7 +66,7 @@ final class FormFactory
     public function createBatchActionsForm(): FormInterface
     {
         return $this->symfonyFormFactory->createNamedBuilder('batch_form', CrudBatchActionFormType::class, null, [
-            'action' => $this->adminUrlGenerator->setAction('batch')->generateUrl(),
+            'action' => $this->adminUrlGenerator->setAction(Action::BATCH)->includeReferrer()->generateUrl(),
         ])->getForm();
     }
 

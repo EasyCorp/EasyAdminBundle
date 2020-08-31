@@ -33,17 +33,19 @@
         {% endblock content_header_wrapper %}
 
         <section id="main">
-            <div class="content-panel">
-                <div class="content-panel-body without-header {{ not has_page_footer ? 'without-footer' }}">
-                    {% block page_content %}{% endblock %}
-                </div>
+            {% block main %}
+                <div class="content-panel">
+                    <div class="content-panel-body without-header {{ not has_page_footer ? 'without-footer' }}">
+                        {% block page_content %}{% endblock %}
+                    </div>
 
-                {% if has_page_footer %}
-                    <section class="content-panel-footer without-padding">
-                        {{ block('page_footer') }}
-                    </section>
-                {% endif %}
-            </div>
+                    {% if has_page_footer %}
+                        <section class="content-panel-footer without-padding">
+                            {{ block('page_footer') }}
+                        </section>
+                    {% endif %}
+                </div>
+            {% endblock %}            
         </section>
     </div>
 {% endblock content %}

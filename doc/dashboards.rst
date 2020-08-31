@@ -33,8 +33,8 @@ Technically, dashboards are regular `Symfony controllers`_ so you can do
 anything you usually do in a controller, such as injecting services and using
 shortcuts like ``$this->render()`` or ``$this->isGranted()``.
 
-Dashboard classes must implement the
-``EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardInterface``,
+Dashboard controller classes must implement the
+``EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface``,
 which ensures that certain methods are defined in the dashboard. Instead of
 implementing the interface, you can also extend from the
 ``AbstractDashboardController`` class. Run the following command to quickly

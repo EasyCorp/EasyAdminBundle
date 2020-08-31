@@ -28,7 +28,7 @@ class EasyAdminAutocompleteTypeTest extends TypeTestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->classMetadata = $this->getMockBuilder('Doctrine\Common\Persistence\Mapping\ClassMetadata')
+        $this->classMetadata = $this->getMockBuilder('Doctrine\Persistence\Mapping\ClassMetadata')
             ->disableOriginalConstructor()
             ->getMock();
         $this->classMetadata

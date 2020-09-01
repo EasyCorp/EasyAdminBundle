@@ -1,0 +1,5 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2020-09-01T18:22:11Z
+
+Update: I made a mistake and this PR now also fixes #2955. (I'm too lazy to revert changes and create another PR. Sorry!) The search input now has 480px as max-width, not as fixed width. This should make things a bit more responsive.

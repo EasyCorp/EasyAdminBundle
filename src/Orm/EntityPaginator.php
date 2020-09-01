@@ -56,7 +56,7 @@ final class EntityPaginator implements EntityPaginatorInterface
             }
         }
         $paginator->setUseOutputWalkers($useOutputWalkers);
-        
+
         $this->results = $paginator->getIterator();
         $this->numResults = $paginator->count();
 

@@ -265,8 +265,8 @@
         {% if image_uri|default('') is not empty %}
             {% if download_uri|default('') is empty %}
                 <div class="ea-lightbox-thumbnail">
-                    {% if imagine_pattern is defined and imagine_pattern is not empty %}
-                        <img style="cursor: initial" src="{{ asset(image_uri)|imagine_filter(imagine_pattern) }}">
+                    {% if ea_crud_form.ea_field.formTypeOptions.imagine_pattern is defined and ea_crud_form.ea_field.formTypeOptions.imagine_pattern is not empty %}
+                        <img style="cursor: initial" src="{{ asset(image_uri)|imagine_filter(ea_crud_form.ea_field.formTypeOptions.imagine_pattern) }}">
                     {% else %}
                         <img style="cursor: initial" src="{{ asset(image_uri) }}">
                     {% endif %}
@@ -275,16 +275,16 @@
                 {% set _lightbox_id = 'ea-lightbox-' ~ id %}
 
                 <a href="#" class="ea-lightbox-thumbnail" data-featherlight="#{{ _lightbox_id }}" data-featherlight-close-on-click="anywhere">
-                    {% if imagine_pattern is defined and imagine_pattern is not empty %}
-                        <img src="{{ asset(download_uri)|imagine_filter(imagine_pattern) }}">
+                    {% if ea_crud_form.ea_field.formTypeOptions.imagine_pattern is defined and ea_crud_form.ea_field.formTypeOptions.imagine_pattern is not empty %}
+                        <img src="{{ asset(download_uri)|imagine_filter(ea_crud_form.ea_field.formTypeOptions.imagine_pattern) }}">
                     {% else %}
                         <img src="{{ asset(download_uri) }}">
                     {% endif %}
                 </a>
 
                 <div id="{{ _lightbox_id }}" class="ea-lightbox">
-                    {% if imagine_pattern is defined and imagine_pattern is not empty %}
-                        <img src="{{ asset(download_uri)|imagine_filter(imagine_pattern) }}">
+                    {% if ea_crud_form.ea_field.formTypeOptions.imagine_pattern is defined and ea_crud_form.ea_field.formTypeOptions.imagine_pattern is not empty %}
+                        <img src="{{ asset(download_uri)|imagine_filter(ea_crud_form.ea_field.formTypeOptions.imagine_pattern) }}">
                     {% else %}
                         <img src="{{ asset(download_uri) }}">
                     {% endif %}

@@ -42,9 +42,9 @@ thanks to the `FOSCKEditorBundle`_:
 
     $ php bin/console assets:install --symlink
 
-Finally, add the ``ckeditor_widget.html.twig`` form theme to your Twig
-configuration so the ``<textarea>`` elements used by the editor are properly
-designed:
+Finally, add the ``ckeditor_widget.html.twig`` form theme to the list of form
+themes used by EasyAdmin so the ``<textarea>`` elements used by the editor are
+properly designed:
 
 .. code-block:: yaml
 

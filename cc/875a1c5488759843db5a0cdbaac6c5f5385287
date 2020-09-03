@@ -1,0 +1,5 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2020-09-03T18:24:54Z
+
+For now we don't have official support of Vich bundle in EasyAdmin 3.x. We'll try to add it in the future, but meanwhile, let's merge this in case it's useful for some. Thanks!

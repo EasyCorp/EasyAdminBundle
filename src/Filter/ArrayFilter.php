@@ -30,6 +30,20 @@ final class ArrayFilter implements FilterInterface
             ->setFormTypeOption('translation_domain', 'EasyAdminBundle');
     }
 
+    public function setChoices(array $choices): self
+    {
+        $this->dto->setFormTypeOption('value_type_options.choices', $choices);
+
+        return $this;
+    }
+
+    public function canSelectMultiple(bool $selectMultiple = true): self
+    {
+        $this->dto->setFormTypeOption('value_type_options.multiple', $selectMultiple);
+
+        return $this;
+    }
+
     public function apply(QueryBuilder $queryBuilder, FilterDataDto $filterDataDto, ?FieldDto $fieldDto, EntityDto $entityDto): void
     {
         $alias = $filterDataDto->getEntityAlias();
@@ -44,10 +58,11 @@ final class ArrayFilter implements FilterInterface
             $queryBuilder->andWhere(sprintf('%s.%s %s', $alias, $property, $comparison));
         } else {
             $orX = new Orx();
-            foreach ($value as $item) {
+            foreach ($value as $key => $item) {
                 // TODO: check this code because the loop variable is not used
-                $orX->add(sprintf('%s.%s %s :%s', $alias, $property, $comparison, $parameterName));
-                $queryBuilder->setParameter($parameterName, $useQuotes ? '%"'.$item.'"%' : '%'.$item.'%');
+                $itemParameterName = sprintf('%s_%s', $parameterName, $key);
+                $orX->add(sprintf('%s.%s %s :%s', $alias, $property, $comparison, $itemParameterName));
+                $queryBuilder->setParameter($itemParameterName, $useQuotes ? '%"'.$item.'"%' : '%'.$item.'%');
             }
             if (ComparisonType::NOT_CONTAINS === $comparison) {
                 $orX->add(sprintf('%s.%s IS NULL', $alias, $property));

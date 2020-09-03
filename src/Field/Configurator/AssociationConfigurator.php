@@ -67,7 +67,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
             }
 
             $field->setFormType(CrudAutocompleteType::class);
-            $autocompleteEndpointUrl = $this->crudUrlGenerator->build()
+            $autocompleteEndpointUrl = $this->crudUrlGenerator->build(['page' => 1]) // The autocomplete should always start on the first page
                 ->setController($field->getCustomOption(AssociationField::OPTION_CRUD_CONTROLLER))
                 ->setAction('autocomplete')
                 ->setEntityId(null)

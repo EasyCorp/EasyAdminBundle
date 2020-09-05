@@ -2,7 +2,7 @@
 
 return [
     'page_title' => [
-        // 'dashboard' => '',
+        'dashboard' => 'Painel de Controle',
         'detail' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
         'edit' => 'Editar %entity_label_singular% <small>(#%entity_short_id%)</small>',
         'index' => '%entity_label_plural%',
@@ -37,8 +37,8 @@ return [
     ],
 
     'field' => [
-        // 'code_editor.view_code' => '',
-        // 'text_editor.view_content' => '',
+        'code_editor.view_code' => 'Visualizar código',
+        'text_editor.view_content' => 'Visualizar conteúdo',
     ],
 
     'action' => [
@@ -54,18 +54,18 @@ return [
         'add_new_item' => 'Adicionar um novo item',
         'remove_item' => 'Remover o item',
         'choose_file' => 'Escolher arquivo',
-        // 'close' => '',
-        // 'create' => '',
-        // 'create_and_add_another' => '',
-        // 'create_and_continue' => '',
+        'close' => 'Fechar',
+        'create' => 'Criar',
+        'create_and_add_another' => 'Criar e adicionar outro',
+        'create_and_continue' => 'Criar e continuar editando',
         'save' => 'Salvar alterações',
-        // 'save_and_continue' => '',
+        'save_and_continue' => 'Salvar e continuar editando',
     ],
 
     'batch_action_modal' => [
-        // 'title' => '',
-        // 'content' => '',
-        // 'action' => '',
+        'title' => 'Você realmente deseja alterar os itens selecionados?',
+        'content' => 'Esta operação é irreversível.',
+        'action' => 'Continuar',
     ],
 
     'delete_modal' => [
@@ -101,6 +101,7 @@ return [
     'form' => [
         'are_you_sure' => 'Você não salvou as alterações feitas nesse formulário.',
         'tab.error_badge_title' => 'Uma entrada válida|%count% entradas inválidas',
+        'slug.confirm_text' => 'Ao alterar o slug, você poderá quebrar links em outras páginas.',
     ],
 
     'user' => [
@@ -121,6 +122,6 @@ return [
         'entity_not_found' => 'Este item não está mais disponível.',
         'entity_remove' => 'Esse item não pode ser excluído porque outros itens dependem dele.',
         'forbidden_action' => 'A ação requisitada não pode ser executada nesse item.',
-        // 'insufficient_entity_permission' => 'You don't have permission to access this item.',
+        'insufficient_entity_permission' => 'Você não possui permissão para acessar este item.',
     ],
 ];

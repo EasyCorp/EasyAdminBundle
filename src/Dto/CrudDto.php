@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
+use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -48,9 +49,9 @@ final class CrudDto
     {
         $this->customPageTitles = [Crud::PAGE_DETAIL => null, Crud::PAGE_EDIT => null, Crud::PAGE_INDEX => null, Crud::PAGE_NEW => null];
         $this->helpMessages = [Crud::PAGE_DETAIL => null, Crud::PAGE_EDIT => null, Crud::PAGE_INDEX => null, Crud::PAGE_NEW => null];
-        $this->datePattern = 'MMM d, y';
-        $this->timePattern = 'h:mm:ss a';
-        $this->dateTimePattern = 'MMM d, y h:mm:ss a';
+        $this->datePattern = 'medium';
+        $this->timePattern = 'medium';
+        $this->dateTimePattern = ['medium', 'medium'];
         $this->dateIntervalFormat = '%%y Year(s) %%m Month(s) %%d Day(s)';
         $this->defaultSort = [];
         $this->searchFields = [];
@@ -161,14 +162,14 @@ final class CrudDto
         $this->timePattern = $format;
     }
 
-    public function getDateTimePattern(): string
+    public function getDateTimePattern(): array
     {
         return $this->dateTimePattern;
     }
 
-    public function setDateTimePattern(string $pattern): void
+    public function setDateTimePattern(string $dateFormatOrPattern, string $timeFormat = DateTimeField::FORMAT_NONE): void
     {
-        $this->dateTimePattern = $pattern;
+        $this->dateTimePattern = [$dateFormatOrPattern, $timeFormat];
     }
 
     public function getDateIntervalFormat(): string

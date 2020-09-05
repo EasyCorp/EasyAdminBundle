@@ -53,11 +53,10 @@ final class DateField implements FieldInterface
                 return DateTimeField::FORMAT_NONE !== $format;
             });
 
-            throw new \InvalidArgumentException(sprintf('The first argument of the "%s()" method cannot be "%s" or an empty string. Use either the special date formats (%s) or a datetime Intl pattern.',  __METHOD__, DateTimeField::FORMAT_NONE, implode(', ', $validDateFormatsWithoutNone)));
+            throw new \InvalidArgumentException(sprintf('The argument of the "%s()" method cannot be "%s" or an empty string. Use either the special date formats (%s) or a datetime Intl pattern.',  __METHOD__, DateTimeField::FORMAT_NONE, implode(', ', $validDateFormatsWithoutNone)));
         }
 
-        $datePattern = DateTimeField::INTL_DATE_PATTERNS[$dateFormatOrPattern] ?? $dateFormatOrPattern;
-        $this->setCustomOption(self::OPTION_DATE_PATTERN, $datePattern);
+        $this->setCustomOption(self::OPTION_DATE_PATTERN, $dateFormatOrPattern);
 
         return $this;
     }

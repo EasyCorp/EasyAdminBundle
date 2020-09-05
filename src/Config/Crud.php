@@ -142,8 +142,7 @@ class Crud
             throw new \InvalidArgumentException(sprintf('The value of the time format can only be one of the following: %s (but "%s" was given).', implode(', ', DateTimeField::VALID_DATE_FORMATS), $timeFormat));
         }
 
-        $dateTimePattern = $isDatePattern ? $dateFormatOrPattern : trim(sprintf('%s %s', DateTimeField::INTL_DATE_PATTERNS[$dateFormatOrPattern], DateTimeField::INTL_TIME_PATTERNS[$timeFormat]));
-        $this->dto->setDateTimePattern($dateTimePattern);
+        $this->dto->setDateTimePattern($dateFormatOrPattern, $timeFormat);
 
         return $this;
     }

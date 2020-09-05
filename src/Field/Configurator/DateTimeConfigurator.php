@@ -36,19 +36,41 @@ final class DateTimeConfigurator implements FieldConfiguratorInterface
         $defaultTimezone = $crud->getTimezone();
         $timezone = $field->getCustomOption(DateTimeField::OPTION_TIMEZONE) ?? $defaultTimezone;
 
+        $dateFormat = null;
+        $timeFormat = null;
+        $icuDateTimePattern = '';
         $formattedValue = $field->getValue();
+
         if (DateTimeField::class === $field->getFieldFqcn()) {
-            $defaultDateTimePattern = $crud->getDateTimePattern();
-            $dateTimePattern = $field->getCustomOption(DateTimeField::OPTION_DATETIME_PATTERN) ?? $defaultDateTimePattern;
-            $formattedValue = $this->intlFormatter->formatDateTime($field->getValue(), null, null, $dateTimePattern, $timezone);
+            [$defaultDatePattern, $defaultTimePattern] = $crud->getDateTimePattern();
+            $datePattern = $field->getCustomOption(DateTimeField::OPTION_DATE_PATTERN) ?? $defaultDatePattern;
+            $timePattern = $field->getCustomOption(DateTimeField::OPTION_TIME_PATTERN) ?? $defaultTimePattern;
+            if (\in_array($datePattern, DateTimeField::VALID_DATE_FORMATS, true)) {
+                $dateFormat = $datePattern;
+                $timeFormat = $timePattern;
+            } else {
+                $icuDateTimePattern = $datePattern;
+            }
+
+            $formattedValue = $this->intlFormatter->formatDateTime($field->getValue(), $dateFormat, $timeFormat, $icuDateTimePattern, $timezone);
         } elseif (DateField::class === $field->getFieldFqcn()) {
-            $defaultDatePattern = $crud->getDatePattern();
-            $datePattern = $field->getCustomOption(DateField::OPTION_DATE_PATTERN) ?? $defaultDatePattern;
-            $formattedValue = $this->intlFormatter->formatDate($field->getValue(), null, $datePattern, $timezone);
+            $dateFormatOrPattern = $field->getCustomOption(DateField::OPTION_DATE_PATTERN) ?? $crud->getDatePattern();
+            if (\in_array($dateFormatOrPattern, DateTimeField::VALID_DATE_FORMATS, true)) {
+                $dateFormat = $dateFormatOrPattern;
+            } else {
+                $icuDateTimePattern = $dateFormatOrPattern;
+            }
+
+            $formattedValue = $this->intlFormatter->formatDate($field->getValue(), $dateFormat, $icuDateTimePattern, $timezone);
         } elseif (TimeField::class === $field->getFieldFqcn()) {
-            $defaultTimePattern = $crud->getTimePattern();
-            $timePattern = $field->getCustomOption(TimeField::OPTION_TIME_PATTERN) ?? $defaultTimePattern;
-            $formattedValue = $this->intlFormatter->formatTime($field->getValue(), null, $timePattern, $timezone);
+            $timeFormatOrPattern = $field->getCustomOption(TimeField::OPTION_TIME_PATTERN) ?? $crud->getTimePattern();
+            if (\in_array($timeFormatOrPattern, DateTimeField::VALID_DATE_FORMATS, true)) {
+                $timeFormat = $timeFormatOrPattern;
+            } else {
+                $icuDateTimePattern = $timeFormatOrPattern;
+            }
+
+            $formattedValue = $this->intlFormatter->formatTime($field->getValue(), $timeFormat, $icuDateTimePattern, $timezone);
         }
 
         $widgetOption = $field->getCustomOption(DateTimeField::OPTION_WIDGET);

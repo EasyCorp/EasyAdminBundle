@@ -500,6 +500,13 @@ associated to. If you have more than one dashboard, you must also set the Dashbo
                 ->setController(ProductCrudController::class)
                 ->setAction(Action::INDEX);
 
+            // some actions may require to pass additional parameters
+            $url = $this->crudUrlGenerator
+                ->build()
+                ->setController(ProductCrudController::class)
+                ->setAction(Action::EDIT)
+                ->setEntityId($product->getId());
+
             // ...
         }
     }
@@ -512,7 +519,8 @@ The same applies to URLs generated in Twig templates:
     {% set url = ea_url()
         .setController('App\\Controller\\Admin\\ProductCrudController')
         .setAction('index') %}
-    {# if you prefer PHP constants, use this: .setAction(constant('EasyCorp\\Bundle\\EasyAdminBundle\\Config\\Action::INDEX')) #}
+    {# if you prefer PHP constants, use this:
+       .setAction(constant('EasyCorp\\Bundle\\EasyAdminBundle\\Config\\Action::INDEX')) #}
 
     {# if your application defines multiple Dashboards #}
     {% set url = ea_url()
@@ -520,10 +528,11 @@ The same applies to URLs generated in Twig templates:
         .setController('App\\Controller\\Admin\\ProductCrudController')
         .setAction('index') %}
 
-If you want to create a link for the "edit" action, you need to pass the entity's ID:
-
-.. code-block:: twig
-    {{ ea_url().setController('App\\Controller\\Admin\\ProductCrudController').setAction(constant('EasyCorp\\Bundle\\EasyAdminBundle\\Config\\Action::EDIT')).setEntityId(product.id) }}
+    {# some actions may require to pass additional parameters #}
+    {% set url = ea_url()
+        .setController('App\\Controller\\Admin\\ProductCrudController')
+        .setAction('edit')
+        .setEntityId(product.id) %}
 
 .. _`Symfony controllers`: https://symfony.com/doc/current/controller.html
 .. _`How to Create a Custom Form Field Type`: https://symfony.com/doc/current/cookbook/form/create_custom_field_type.html

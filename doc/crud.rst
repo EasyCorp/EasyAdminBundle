@@ -520,6 +520,11 @@ The same applies to URLs generated in Twig templates:
         .setController('App\\Controller\\Admin\\ProductCrudController')
         .setAction('index') %}
 
+If you want to create a link for the "edit" action, you need to pass the entity's ID:
+
+.. code-block:: twig
+    {{ ea_url().setController('App\\Controller\\Admin\\ProductCrudController').setAction(constant('EasyCorp\\Bundle\\EasyAdminBundle\\Config\\Action::EDIT')).setEntityId(product.id) }}
+
 .. _`Symfony controllers`: https://symfony.com/doc/current/controller.html
 .. _`How to Create a Custom Form Field Type`: https://symfony.com/doc/current/cookbook/form/create_custom_field_type.html
 .. _`Symfony Form types`: https://symfony.com/doc/current/reference/forms/types.html

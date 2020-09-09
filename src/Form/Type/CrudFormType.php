@@ -44,6 +44,11 @@ class CrudFormType extends AbstractType
         $currentFormPanel = 0;
 
         foreach ($entityDto->getFields() as $fieldDto) {
+
+            if ($fieldDto->isVirtual() && !$fieldDto->isFormDecorationField()) {
+                continue;
+            }
+
             $formFieldOptions = $fieldDto->getFormTypeOptions();
 
             // the names of embedded Doctrine entities contain dots, which are not allowed

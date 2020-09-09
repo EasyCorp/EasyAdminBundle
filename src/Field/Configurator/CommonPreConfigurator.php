@@ -86,6 +86,11 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
         $entityInstance = $entityDto->getInstance();
         $propertyName = $field->getProperty();
 
+        if (is_callable($field->getValue())) {
+            $callable = $field->getValue();
+            return $callable($entityInstance);
+        }
+
         if (!$this->propertyAccessor->isReadable($entityInstance, $propertyName)) {
             return null;
         }
@@ -157,7 +162,8 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
         }
 
         $isPropertyReadable = $this->propertyAccessor->isReadable($entityDto->getInstance(), $field->getProperty());
-        if (!$isPropertyReadable) {
+        $isVirtual = $field->isVirtual();
+        if (!$isPropertyReadable && !$isVirtual) {
             return $adminContext->getTemplatePath('label/inaccessible');
         }
 

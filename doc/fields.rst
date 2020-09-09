@@ -152,6 +152,21 @@ conversion between field names and methods must comply with the rules of the
 The main limitation of unmapped fields is that they are not sortable because
 they cannot be included in the Doctrine query.
 
+Virtual Fields
+~~~~~~~~~~~~~~~
+
+You can define an virtual fields that's not exists in entity but which need to be calculated::
+
+    public function configureFields(string $pageName): iterable
+    {
+        yield MoneyField::new('balance'')
+            ->setVirtual(true)
+            ->setValue(fn(Customer $customer) => $this->clientService->getBalance($customer))
+            ->setCurrency('RUB')
+        ;
+
+    }
+
 Displaying Different Fields per Page
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

@@ -158,7 +158,7 @@ current page::
             TextField::new('firstName'),
             TextField::new('lastName'),
             TextField::new('phone'),
-            EmailType::new('email')->hideOnIndex(),
+            EmailField::new('email')->hideOnIndex(),
             DateTimeField::new('createdAt')->onlyOnDetail(),
         ];
     }
@@ -185,7 +185,7 @@ If the fields to display are completely different on each page, use the given
         $firstName = TextField::new('firstName');
         $lastName = TextField::new('lastName');
         $phone = TextField::new('phone');
-        $email = EmailType::new('email');
+        $email = EmailField::new('email');
         $createdAt = DateTimeField::new('createdAt');
 
         if (Crud::PAGE_INDEX === $pageName) {
@@ -210,7 +210,7 @@ the fields using `PHP generators`_::
         }
 
         yield TextField::new('phone');
-        yield EmailType::new('email')->hideOnIndex();
+        yield EmailField::new('email')->hideOnIndex();
         yield DateTimeField::new('createdAt')->onlyOnDetail();
     }
 

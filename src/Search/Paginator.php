@@ -5,7 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Search;
 use Doctrine\ORM\Query as DoctrineQuery;
 use Doctrine\ORM\QueryBuilder as DoctrineQueryBuilder;
 use Doctrine\ORM\Tools\Pagination\CountWalker;
-use Pagerfanta\Adapter\DoctrineORMAdapter;
+use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use Pagerfanta\Pagerfanta;
 
 /**
@@ -29,7 +29,7 @@ class Paginator
         $query = $this->getQuery($queryOrQueryBuilder);
 
         // don't change the following line (you did that twice in the past and broke everything)
-        $paginator = new Pagerfanta(new DoctrineORMAdapter($query, true, false));
+        $paginator = new Pagerfanta(new QueryAdapter($query, true, false));
         $paginator->setMaxPerPage($maxPerPage);
         $paginator->setCurrentPage($page);
 

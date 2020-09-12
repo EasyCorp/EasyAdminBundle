@@ -2,7 +2,7 @@
 
 return [
     'page_title' => [
-        // 'dashboard' => '',
+        'dashboard' => 'Úvod',
         'detail' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
         'edit' => 'Edit %entity_label_singular% <small>(#%entity_short_id%)</small>',
         'index' => '%entity_label_plural%',
@@ -37,8 +37,8 @@ return [
     ],
 
     'field' => [
-        // 'code_editor.view_code' => '',
-        // 'text_editor.view_content' => '',
+        'code_editor.view_code' => 'Zobrazit kód',
+        'text_editor.view_content' => 'Zobrazit obsah',
     ],
 
     'action' => [
@@ -50,22 +50,22 @@ return [
         'delete' => 'Smazat',
         'cancel' => 'Zrušit',
         'index' => 'Zpět na výpis',
-        // 'deselect' => '',
+        'deselect' => 'Zrušit označení',
         'add_new_item' => 'Vložit položku',
         'remove_item' => 'Odstranit položku',
         'choose_file' => 'Vybrat soubor',
-        // 'close' => '',
-        // 'create' => '',
-        // 'create_and_add_another' => '',
-        // 'create_and_continue' => '',
-        // 'save' => '',
-        // 'save_and_continue' => '',
+        'close' => 'Zavřít',
+        'create' => 'Vytvořit',
+        'create_and_add_another' => 'Vytvořit a přidat další',
+        'create_and_continue' => 'Vytvořit a pokračovat',
+        'save' => 'Uložit',
+        'save_and_continue' => 'Uložit a pokračovat',
     ],
 
     'batch_action_modal' => [
-        // 'title' => '',
-        // 'content' => '',
-        // 'action' => '',
+        'title' => 'Opravdu chcete změnit vybrané položky?',
+        'content' => 'Tuto akci není možné vrátit zpět.',
+        'action' => 'Pokračovat',
     ],
 
     'delete_modal' => [
@@ -121,6 +121,6 @@ return [
         'entity_not_found' => 'Tato položka již není dostupná.',
         'entity_remove' => 'Tato položka nemůže být smazána, neboť na ní závisí ostatní položky.',
         'forbidden_action' => 'Požadovaná akce nemůže být provedena na této položce.',
-        // 'insufficient_entity_permission' => 'You don't have permission to access this item.',
+        'insufficient_entity_permission' => 'Nemáte dostatečná oprávnění pro přístup k této položce.',
     ],
 ];

@@ -261,34 +261,21 @@
 {% endblock %}
 
 {% block vich_image_widget %}
-    {% set formTypeOptions = ea_crud_form.ea_field.formTypeOptions %}
     <div class="ea-vich-image">
         {% if image_uri|default('') is not empty %}
             {% if download_uri|default('') is empty %}
                 <div class="ea-lightbox-thumbnail">
-                    {% if formTypeOptions.imagine_pattern is defined and formTypeOptions.imagine_pattern is not empty %}
-                        <img style="cursor: initial" src="{{ asset(image_uri)|imagine_filter(formTypeOptions.imagine_pattern) }}">
-                    {% else %}
-                        <img style="cursor: initial" src="{{ asset(image_uri) }}">
-                    {% endif %}
+                    <img style="cursor: initial" src="{{ asset(image_uri) }}">
                 </div>
             {% else %}
                 {% set _lightbox_id = 'ea-lightbox-' ~ id %}
 
                 <a href="#" class="ea-lightbox-thumbnail" data-featherlight="#{{ _lightbox_id }}" data-featherlight-close-on-click="anywhere">
-                    {% if formTypeOptions.imagine_pattern is defined and formTypeOptions.imagine_pattern is not empty %}
-                        <img src="{{ asset(download_uri)|imagine_filter(formTypeOptions.imagine_pattern) }}">
-                    {% else %}
-                        <img src="{{ asset(download_uri) }}">
-                    {% endif %}
+                    <img src="{{ asset(download_uri) }}">
                 </a>
 
                 <div id="{{ _lightbox_id }}" class="ea-lightbox">
-                    {% if formTypeOptions.imagine_pattern is defined and formTypeOptions.imagine_pattern is not empty %}
-                        <img src="{{ asset(download_uri)|imagine_filter(formTypeOptions.imagine_pattern) }}">
-                    {% else %}
-                        <img src="{{ asset(download_uri) }}">
-                    {% endif %}
+                    <img src="{{ asset(download_uri) }}">
                 </div>
             {% endif %}
         {% endif %}

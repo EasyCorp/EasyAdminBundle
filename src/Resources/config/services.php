@@ -75,6 +75,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Security\AuthorizationChecker;
 use EasyCorp\Bundle\EasyAdminBundle\Security\SecurityVoter;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\EasyAdminTwigExtension;
+use EasyCorp\Bundle\EasyAdminBundle\Twig\ImagineTwigExtension;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
@@ -128,6 +129,9 @@ return static function (ContainerConfigurator $container) {
         ->set(EasyAdminTwigExtension::class)
             ->arg(0, new Reference(CrudUrlGenerator::class))
             ->arg(1, new Reference(TranslatorInterface::class, ContainerInterface::NULL_ON_INVALID_REFERENCE))
+            ->tag('twig.extension')
+        
+        ->set(ImagineTwigExtension::class)
             ->tag('twig.extension')
 
         ->set(EaCrudFormTypeExtension::class)

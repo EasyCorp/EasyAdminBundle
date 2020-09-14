@@ -267,7 +267,8 @@
             {% if download_uri|default('') is empty %}
                 <div class="ea-lightbox-thumbnail">
                     {% if formTypeOptions.imagine_pattern is defined and formTypeOptions.imagine_pattern is not empty %}
-                        <img style="cursor: initial" src="{{ asset(image_uri)|imagine_filter(formTypeOptions.imagine_pattern) }}">
+                        <img style="cursor: initial" src="{{ asset(image_uri)|imagine_filter_safe(formTypeOptions
+                            .imagine_pattern) }}">
                     {% else %}
                         <img style="cursor: initial" src="{{ asset(image_uri) }}">
                     {% endif %}
@@ -277,7 +278,7 @@
 
                 <a href="#" class="ea-lightbox-thumbnail" data-featherlight="#{{ _lightbox_id }}" data-featherlight-close-on-click="anywhere">
                     {% if formTypeOptions.imagine_pattern is defined and formTypeOptions.imagine_pattern is not empty %}
-                        <img src="{{ asset(download_uri)|imagine_filter(formTypeOptions.imagine_pattern) }}">
+                        <img src="{{ asset(download_uri)|imagine_filter_safe(formTypeOptions.imagine_pattern) }}">
                     {% else %}
                         <img src="{{ asset(download_uri) }}">
                     {% endif %}
@@ -285,7 +286,7 @@
 
                 <div id="{{ _lightbox_id }}" class="ea-lightbox">
                     {% if formTypeOptions.imagine_pattern is defined and formTypeOptions.imagine_pattern is not empty %}
-                        <img src="{{ asset(download_uri)|imagine_filter(formTypeOptions.imagine_pattern) }}">
+                        <img src="{{ asset(download_uri)|imagine_filter_safe(formTypeOptions.imagine_pattern) }}">
                     {% else %}
                         <img src="{{ asset(download_uri) }}">
                     {% endif %}

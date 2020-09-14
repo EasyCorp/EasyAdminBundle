@@ -15,12 +15,13 @@ class ImagineTwigExtension extends AbstractExtension
         ];
     }
     
-    public function applyImagineFilter(Environment $environment, string $resource, ...$args)
+    public function applyImagineFilter(Environment $environment, ...$args)
     {
-        $filter = $environment->getFilter('imagine_pattern');
+        $filter = $environment->getFilter('imagine_filter');
         if (!$filter) {
-            return $resource;
+            return $args[0];
         }
-        return $filter->getCallable()($resource, ...$args);
+        
+        return $filter->getCallable()(...$args);
     }
 }

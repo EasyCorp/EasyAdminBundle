@@ -71,6 +71,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
                 ->setController($field->getCustomOption(AssociationField::OPTION_CRUD_CONTROLLER))
                 ->setAction('autocomplete')
                 ->setEntityId(null)
+                ->unset('sort') // Avoid passing the 'sort' param from the current entity to the autocompleted one
                 ->generateUrl();
 
             $field->setFormTypeOption('attr.data-ea-autocomplete-endpoint-url', $autocompleteEndpointUrl);

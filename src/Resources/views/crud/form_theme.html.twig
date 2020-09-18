@@ -99,7 +99,7 @@
             {% endif %}
 
             {% if ea.field.help|default(form.vars.help) != '' %}
-                <small class="form-help">{{ ea.field.help|default(form.vars.help)|raw }}</small>
+                <small class="form-help">{{ ea.field.help|default(form.vars.help)|trans(domain = ea.i18n.translationDomain)|raw }}</small>
             {% endif %}
 
             {{- form_errors(form) -}}

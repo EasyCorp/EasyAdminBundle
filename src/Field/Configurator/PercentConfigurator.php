@@ -20,19 +20,19 @@ final class PercentConfigurator implements FieldConfiguratorInterface
 
     public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
     {
-        if (null === $field->getValue()) {
-            return;
-        }
-
         $scale = $field->getCustomOption(PercentField::OPTION_NUM_DECIMALS);
         $symbol = $field->getCustomOption(PercentField::OPTION_SYMBOL);
         $isStoredAsFractional = $field->getCustomOption(PercentField::OPTION_STORED_AS_FRACTIONAL);
-        $value = $field->getValue();
-
-        $field->setFormattedValue(sprintf('%s%s', $isStoredAsFractional ? 100 * $value : $value, $symbol));
 
         $field->setFormTypeOptionIfNotSet('scale', $scale);
         $field->setFormTypeOptionIfNotSet('symbol', $symbol);
         $field->setFormTypeOptionIfNotSet('type', $isStoredAsFractional ? 'fractional' : 'integer');
+
+        if (null === $field->getValue()) {
+            return;
+        }
+
+        $value = $field->getValue();
+        $field->setFormattedValue(sprintf('%s%s', $isStoredAsFractional ? 100 * $value : $value, $symbol));
     }
 }

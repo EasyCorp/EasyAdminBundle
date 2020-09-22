@@ -3,7 +3,7 @@
 $container->loadFromExtension('doctrine', [
     'dbal' => [
         'driver' => 'pdo_sqlite',
-        'path' => '%kernel.cache_dir%%/database.sqlite',
+        'path' => '%kernel.cache_dir%/database.sqlite',
     ],
 
     'orm' => [

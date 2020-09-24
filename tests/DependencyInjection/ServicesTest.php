@@ -1,19 +1,16 @@
 <?php
 
-namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional;
+namespace EasyCorp\Bundle\EasyAdminBundle\Tests\DependencyInjection;
 
-use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Console\Tester\CommandTester;
-use TestApp\Kernel;
 
-class ServicesTest extends TestCase
+class ServicesTest extends KernelTestCase
 {
     public function testMakerCommandServices()
     {
-        $kernel = new Kernel('test', true);
-        $kernel->boot();
-        $application = new Application($kernel);
+        $application = new Application(self::bootKernel());
 
         $command = $application->find('list');
         $commandTester = new CommandTester($command);

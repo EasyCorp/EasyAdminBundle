@@ -21,7 +21,7 @@ Actions are configured in the ``configureActions()`` method of your
 
     namespace App\Controller\Admin;
 
-    use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
     use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 
     class ProductCrudController extends AbstractCrudController
@@ -93,7 +93,7 @@ click on buttons/links to run those actions. However, users can *hack* the URL
 to run the action. To fully disable an action, use the ``disable()``
 method explained later::
 
-    use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
     use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 
     public function configureActions(Actions $actions): Actions
@@ -282,7 +282,7 @@ The following example shows all kinds of actions in practice::
     namespace App\Controller\Admin;
 
     use App\Entity\Invoice;
-    use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
     use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 
     class ProductCrudController extends AbstractCrudController

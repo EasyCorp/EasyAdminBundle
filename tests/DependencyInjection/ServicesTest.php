@@ -16,7 +16,7 @@ class ServicesTest extends TestCase
         $application = new Application($kernel);
 
         $command = $application->find('list');
-//        $commandTester = new CommandTester($command);
+        $commandTester = new CommandTester($command);
 //        $commandTester->execute([]);
 //        $output = $commandTester->getDisplay();
 

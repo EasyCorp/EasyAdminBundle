@@ -21,7 +21,7 @@ Actions are configured in the ``configureActions()`` method of your
 
     namespace App\Controller\Admin;
 
-    use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
     use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 
     class ProductCrudController extends AbstractCrudController
@@ -74,6 +74,7 @@ Use the ``add()`` method to add any built-in actions and your own custom actions
 (which are explained later in this article)::
 
     use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
     use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 
     public function configureActions(Actions $actions): Actions
@@ -94,6 +95,7 @@ to run the action. To fully disable an action, use the ``disable()``
 method explained later::
 
     use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
     use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 
     public function configureActions(Actions $actions): Actions
@@ -283,6 +285,7 @@ The following example shows all kinds of actions in practice::
 
     use App\Entity\Invoice;
     use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
     use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 
     class ProductCrudController extends AbstractCrudController

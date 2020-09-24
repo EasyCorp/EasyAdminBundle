@@ -490,7 +490,7 @@ option as follows::
 
         public function useOpenStreetMap(): self
         {
-            $this->setCustomOption(self::OPTION_MAP_PROVIDER, 'google');
+            $this->setCustomOption(self::OPTION_MAP_PROVIDER, 'openstreetmap');
 
             return $this;
         }

@@ -19,14 +19,13 @@ const EaCollectionProperty = {
                 emptyCollectionBadge.remove();
             }
 
-            const newItemNumber = numItems + 1;
             const formTypeNamePlaceholder = collection.dataset.formTypeNamePlaceholder;
             const labelRegexp = new RegExp(formTypeNamePlaceholder + 'label__', 'g');
             const nameRegexp = new RegExp(formTypeNamePlaceholder, 'g');
 
             let newItemHtml = collection.dataset.prototype
-                .replace(labelRegexp, newItemNumber)
-                .replace(nameRegexp, newItemNumber);
+                .replace(labelRegexp, numItems)
+                .replace(nameRegexp, numItems);
 
             collection.dataset.numItems = ++numItems;
             collection.querySelector('.form-widget .form-widget-compound > div').insertAdjacentHTML('beforeend', newItemHtml);
@@ -35,4 +34,3 @@ const EaCollectionProperty = {
         });
     }
 };
-

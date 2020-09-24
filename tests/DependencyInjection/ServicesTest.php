@@ -17,7 +17,7 @@ class ServicesTest extends TestCase
 
         $command = $application->find('list');
         $commandTester = new CommandTester($command);
-//        $commandTester->execute([]);
+        $commandTester->execute([]);
 //        $output = $commandTester->getDisplay();
 
 //        self::assertStringContainsString('make:admin:crud', $output);

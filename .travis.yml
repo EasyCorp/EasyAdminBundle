@@ -36,4 +36,4 @@ jobs:
                 - composer update --no-interaction
                 - ./vendor/bin/simple-phpunit install
             script:
-                - ./vendor/bin/simple-phpunit
+                - SYMFONY_DEPRECATIONS_HELPER="/Not passing a connection provider as the first constructor argument is deprecated/" ./vendor/bin/simple-phpunit

@@ -16,25 +16,22 @@ class ServicesTest extends TestCase
         $application = new Application($kernel);
 
         // test commands individually. If they don't exist, an error will be thrown
-        $command = $application->find('make:admin:crud --help');
+        $command = $application->find('make:admin:crud');
         $commandTester = new CommandTester($command);
-        $commandTester->execute([]);
+        $commandTester->execute(['--help' => '']);
         $output = $commandTester->getDisplay();
+        self::assertStringContainsString('Usage:', $output);
 
         $command = $application->find('make:admin:dashboard --help');
         $commandTester = new CommandTester($command);
         $commandTester->execute([]);
         $output = $commandTester->getDisplay();
-
+        self::assertStringContainsString('Usage:', $output);
 
         $command = $application->find('make:admin:migration --help');
         $commandTester = new CommandTester($command);
         $commandTester->execute([]);
         $output = $commandTester->getDisplay();
-
-
-//        self::assertStringContainsString('make:admin:crud', $output);
-//        self::assertStringContainsString('make:admin:dashboard', $output);
-//        self::assertStringContainsString('make:admin:migration', $output);
+        self::assertStringContainsString('Usage:', $output);
     }
 }

@@ -2,36 +2,26 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional;
 
-use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
-use Symfony\Component\Console\Tester\CommandTester;
-use TestApp\Kernel;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
-class ServicesTest extends TestCase
+class ServicesTest extends KernelTestCase
 {
-    public function testMakerCommandServices()
+    /**
+     * @dataProvider provideCommands
+     */
+    public function testMakerCommandServices(string $commandName)
     {
-        $kernel = new Kernel('test', true);
-        $kernel->boot();
-        $application = new Application($kernel);
+        $application = new Application(self::bootKernel());
 
-        // test commands individually. If they don't exist, an error will be thrown
-        $command = $application->find('--help make:admin:crud');
-        $commandTester = new CommandTester($command);
-        $commandTester->execute([]);
-        $output = $commandTester->getDisplay();
-        self::assertStringContainsString('Usage:', $output);
+        $command = $application->find($commandName);
+        $this->assertSame($commandName, $command->getName());
+    }
 
-        $command = $application->find('make:admin:dashboard');
-        $commandTester = new CommandTester($command);
-        $commandTester->execute([]);
-        $output = $commandTester->getDisplay();
-        self::assertStringContainsString('Usage:', $output);
-
-        $command = $application->find('make:admin:migration');
-        $commandTester = new CommandTester($command);
-        $commandTester->execute([]);
-        $output = $commandTester->getDisplay();
-        self::assertStringContainsString('Usage:', $output);
+    public function provideCommands()
+    {
+        yield ['make:admin:crud'];
+        yield ['make:admin:dashboard'];
+        yield ['make:admin:migration'];
     }
 }

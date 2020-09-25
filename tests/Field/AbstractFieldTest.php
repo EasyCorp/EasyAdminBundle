@@ -14,7 +14,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\ChoiceConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
-class AbstractFieldTest extends KernelTestCase
+abstract class AbstractFieldTest extends KernelTestCase
 {
     protected $entityDto;
     protected $adminContext;

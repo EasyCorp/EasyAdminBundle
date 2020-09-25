@@ -1,24 +1,27 @@
 <?php
 
-namespace EasyCorp\Bundle\EasyAdminBundle\Tests\DependencyInjection;
+namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional;
 
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Symfony\Component\Console\Tester\CommandTester;
 
 class ServicesTest extends KernelTestCase
 {
-    public function testMakerCommandServices()
+    /**
+     * @dataProvider provideCommands
+     */
+    public function testMakerCommandServices(string $commandName)
     {
         $application = new Application(self::bootKernel());
 
-        $command = $application->find('list');
-        $commandTester = new CommandTester($command);
-        $commandTester->execute([]);
-        $output = $commandTester->getDisplay();
+        $command = $application->find($commandName);
+        $this->assertSame($commandName, $command->getName());
+    }
 
-        self::assertStringContainsString('make:admin:crud', $output);
-        self::assertStringContainsString('make:admin:dashboard', $output);
-        self::assertStringContainsString('make:admin:migration', $output);
+    public function provideCommands()
+    {
+        yield ['make:admin:crud'];
+        yield ['make:admin:dashboard'];
+        yield ['make:admin:migration'];
     }
 }

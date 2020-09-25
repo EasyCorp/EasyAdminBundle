@@ -6,7 +6,7 @@
     {% else %}
         <a href="{{ item.linkUrl }}" class="{{ item.cssClass }}" target="{{ item.linkTarget }}" rel="{{ item.linkRel }}" referrerpolicy="origin-when-cross-origin">
             {% if item.icon is not empty %}<i class="menu-icon fa-fw {{ item.icon }}"></i>{% endif %}
-            <span>{{ item.label | raw }}</span>
+            <span>{{ item.label|raw }}</span>
             {% if item.hasSubItems %}<i class="fa fa-fw fa-angle-right treeview-icon"></i>{% endif %}
         </a>
     {% endif %}

@@ -16,18 +16,18 @@ class ServicesTest extends TestCase
         $application = new Application($kernel);
 
         // test commands individually. If they don't exist, an error will be thrown
-        $command = $application->find('list make:admin:crud');
+        $command = $application->find('make:admin:crud --help');
         $commandTester = new CommandTester($command);
         $commandTester->execute([]);
         $output = $commandTester->getDisplay();
 
-        $command = $application->find('list make:admin:dashboard');
+        $command = $application->find('make:admin:dashboard --help');
         $commandTester = new CommandTester($command);
         $commandTester->execute([]);
         $output = $commandTester->getDisplay();
 
 
-        $command = $application->find('list make:admin:migration');
+        $command = $application->find('make:admin:migration --help');
         $commandTester = new CommandTester($command);
         $commandTester->execute([]);
         $output = $commandTester->getDisplay();

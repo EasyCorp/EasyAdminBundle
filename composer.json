@@ -46,7 +46,7 @@
         "symfony/css-selector": "^4.4|^5.0",
         "symfony/dom-crawler": "^4.4|^5.0",
         "symfony/phpunit-bridge": "^4.4|^5.0",
-        "symfony/maker-bundle": "^1.21",
+        "symfony/maker-bundle": "^1.21"
     },
     "conflict": {
         "doctrine/dbal": "<2.10"

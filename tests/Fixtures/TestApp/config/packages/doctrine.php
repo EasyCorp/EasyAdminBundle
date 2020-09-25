@@ -4,6 +4,7 @@ $container->loadFromExtension('doctrine', [
     'dbal' => [
         'driver' => 'pdo_sqlite',
         'path' => '%kernel.cache_dir%/database.sqlite',
+        'server_version' => '1.0',
     ],
 
     'orm' => [

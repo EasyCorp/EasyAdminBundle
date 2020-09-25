@@ -1,0 +1,13 @@
+---------------------------------------------------------------------------
+
+by ChangePlaces at 2020-09-24T20:40:22Z
+
+ok, so the fail is in the `$commandTester->execute([]);` method for some reason. I can't actually understand why.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2020-09-25T18:18:24Z
+
+I couldn't make the `execute()` method work ... but your test changes gave me an idea, so I updated your test and the issue is now gone 😄   Also, we don't need the Maker bundle as a dependency. Our commands are called `make:...` but they are unrelated to the Maker bundle. We don't use it, we just name our commands the same for consistency.
+
+Thanks again for your effort here trying to debug the issue 🙇

@@ -15,7 +15,7 @@ class ServicesTest extends TestCase
         $kernel->boot();
         $application = new Application($kernel);
 
-        $command = $application->find('help make');
+        $command = $application->find('list make:admin');
         $commandTester = new CommandTester($command);
         $commandTester->execute([]);
 //        $output = $commandTester->getDisplay();

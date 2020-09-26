@@ -318,6 +318,7 @@ return static function (ContainerConfigurator $container) {
             ->arg(0, new Reference(IntlFormatter::class))
 
         ->set(PercentConfigurator::class)
+            ->arg(0, new Reference(IntlFormatter::class))
 
         ->set(ChoiceConfigurator::class)
             ->arg(0, new Reference('translator'))

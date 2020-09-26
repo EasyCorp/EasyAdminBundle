@@ -1,11 +1,19 @@
-window.addEventListener('DOMContentLoaded', function (event) {
-    document.querySelectorAll('[data-ea-collection-field]').forEach(function(collection) {
-        let addButton = collection.querySelector('button.field-collection-add-button');
-        if (null !== addButton) {
-            EaCollectionProperty.handleAddButton(addButton, collection);
+const eaCollectionHandler = function (event) {
+    document.querySelectorAll('button.field-collection-add-button').forEach(function(addButton) {
+
+        let collection = addButton.closest('[data-ea-collection-field]');
+
+        if (!collection || collection.classList.contains('processed')) {
+            return;
         }
+
+        EaCollectionProperty.handleAddButton(addButton, collection);
     });
-});
+}
+
+window.addEventListener('DOMContentLoaded', eaCollectionHandler);
+document.addEventListener('ea.collection.item-added', eaCollectionHandler);
+
 
 const EaCollectionProperty = {
     handleAddButton: function(addButton, collection) {
@@ -32,5 +40,7 @@ const EaCollectionProperty = {
 
             document.dispatchEvent(new Event('ea.collection.item-added'));
         });
+
+        collection.classList.add('processed');
     }
 };

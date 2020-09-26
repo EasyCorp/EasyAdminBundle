@@ -49,10 +49,6 @@ class EasyAdminTwigExtension extends AbstractExtension
             new TwigFilter('ea_apply_filter_if_exists', [$this, 'applyFilterIfExists'], ['needs_environment' => true]),
         ];
 
-        if (Kernel::VERSION_ID >= 40200) {
-            $filters[] = new TwigFilter('transchoice', [$this, 'transchoice']);
-        }
-
         return $filters;
     }
 
@@ -98,18 +94,5 @@ class EasyAdminTwigExtension extends AbstractExtension
     public function getCrudUrlBuilder(array $queryParameters = []): CrudUrlBuilder
     {
         return $this->crudUrlGenerator->build($queryParameters);
-    }
-
-    /**
-     * TODO: Remove this filter when the Symfony's requirement is equal or greater than 4.2
-     * and use the built-in trans filter instead with a %count% parameter.
-     */
-    public function transchoice($message, $count, array $arguments = [], $domain = null, $locale = null)
-    {
-        if (null === $this->translator) {
-            return strtr($message, $arguments);
-        }
-
-        return $this->translator->trans($message, array_merge(['%count%' => $count], $arguments), $domain, $locale);
     }
 }

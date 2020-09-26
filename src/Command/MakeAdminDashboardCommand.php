@@ -42,7 +42,7 @@ class MakeAdminDashboardCommand extends Command
         $controllerDir = $io->ask(
             sprintf('Which directory do you want to generate "%s" in?', $controllerClassName),
             'src/Controller/Admin/',
-            static function (string $selectedDir) use ($fs, $projectDir, $controllerClassName) {
+            static function (string $selectedDir) use ($fs, $projectDir) {
                 $absoluteDir = u($selectedDir)->ensureStart($projectDir.\DIRECTORY_SEPARATOR);
                 if (!$fs->exists($absoluteDir)) {
                     throw new \RuntimeException('The given directory does not exist. Type in the path of an existing directory relative to your project root (e.g. src/Controller/Admin/)');

@@ -100,9 +100,4 @@ final class TemplateRegistry
             $this->setTemplate($templateName, $templatePath);
         }
     }
-
-    private function getTemplateNames(): array
-    {
-        return array_keys($this->templates);
-    }
 }

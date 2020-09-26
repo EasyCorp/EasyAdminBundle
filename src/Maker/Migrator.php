@@ -905,7 +905,6 @@ final class Migrator
 
     private function dumpCode(CodeBuilder $code, string $outputFilePath): bool
     {
-        //dump($code->getAsString());
         try {
             $rawSourceCode = $this->parser->parse($code->getAsString());
             $formattedSourceCode = $this->codePrettyPrinter->prettyPrintFile($rawSourceCode);

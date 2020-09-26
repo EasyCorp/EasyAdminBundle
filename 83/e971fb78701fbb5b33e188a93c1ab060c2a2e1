@@ -1,0 +1,13 @@
+---------------------------------------------------------------------------
+
+by horlyk at 2020-09-25T11:44:04Z
+
+There is an issue on edit form. Will try to fix.
+
+---------------------------------------------------------------------------
+
+by horlyk at 2020-09-25T13:09:25Z
+
+> There is an issue on edit form. Will try to fix.
+
+Fixed in a quick way. Actually, to achieve better results, add button and a collection itself should have some relation. Current code is not flexible enough :(

@@ -116,7 +116,6 @@ final class AdminContextFactory
         $crudDto = $crudController->configureCrud($defaultCrud)->getAsDto();
 
         $entityFqcn = $crudControllers->findEntityFqcnByCrudFqcn(\get_class($crudController));
-        $entityClassName = basename(str_replace('\\', '/', $entityFqcn));
 
         $crudDto->setControllerFqcn(\get_class($crudController));
         $crudDto->setActionsConfig($actionConfigDto);

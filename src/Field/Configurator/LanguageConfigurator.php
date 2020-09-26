@@ -38,11 +38,6 @@ final class LanguageConfigurator implements FieldConfiguratorInterface
 
     private function getLanguageName(string $languageCode): ?string
     {
-        // Compatibility with Symfony versions before 4.3
-        if (!class_exists(Languages::class)) {
-            return Intl::getLanguageBundle()->getLanguageName($languageCode);
-        }
-
         try {
             return Languages::getName($languageCode);
         } catch (MissingResourceException $e) {

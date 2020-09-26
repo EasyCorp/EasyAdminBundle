@@ -38,11 +38,6 @@ final class LocaleConfigurator implements FieldConfiguratorInterface
 
     private function getLocaleName(string $localeCode): ?string
     {
-        // Compatibility with Symfony versions before 4.3
-        if (!class_exists(Locales::class)) {
-            return Intl::getLocaleBundle()->getLocaleName($localeCode);
-        }
-
         try {
             return Locales::getName($localeCode);
         } catch (MissingResourceException $e) {

@@ -67,7 +67,7 @@ final class SearchDto
 
     public function getSortDirection(string $fieldProperty): string
     {
-        return array_key_exists($fieldProperty, $this->getSort()) ? $this->getSort()[$fieldProperty] : 'DESC';
+        return \array_key_exists($fieldProperty, $this->getSort()) ? $this->getSort()[$fieldProperty] : 'DESC';
     }
 
     public function getQuery(): ?string

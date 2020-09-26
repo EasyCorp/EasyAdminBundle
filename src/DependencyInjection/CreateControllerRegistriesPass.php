@@ -10,7 +10,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 /**
  * Creates the services of the Dashboard and CRUD controller registries. They can't
  * be defined as normal services because they cause circular dependencies.
- * See https://github.com/EasyCorp/EasyAdminBundle/issues/3541
+ * See https://github.com/EasyCorp/EasyAdminBundle/issues/3541.
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */

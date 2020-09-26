@@ -50,19 +50,19 @@ class MakeCrudControllerCommand extends Command
         $controllerFileNamePattern = sprintf('%s{number}CrudController.php', $entityClassName);
 
         $projectDir = $this->projectDir;
-        $controllerDir = $io->ask('Which directory do you want to generate the CRUD controller in?', 'src/Controller/Admin/', static function(string $selectedDir) use ($fs, $projectDir) {
-            $absoluteDir = u($selectedDir)->ensureStart($projectDir.DIRECTORY_SEPARATOR);
+        $controllerDir = $io->ask('Which directory do you want to generate the CRUD controller in?', 'src/Controller/Admin/', static function (string $selectedDir) use ($fs, $projectDir) {
+            $absoluteDir = u($selectedDir)->ensureStart($projectDir.\DIRECTORY_SEPARATOR);
             if (!$fs->exists($absoluteDir)) {
                 throw new \RuntimeException('The given directory does not exist. Type in the path of an existing directory relative to your project root (e.g. src/Controller/Admin/)');
             }
 
-            return $absoluteDir->after($projectDir.DIRECTORY_SEPARATOR)->trimEnd(DIRECTORY_SEPARATOR)->toString();
+            return $absoluteDir->after($projectDir.\DIRECTORY_SEPARATOR)->trimEnd(\DIRECTORY_SEPARATOR)->toString();
         });
 
         $guessedNamespace = u($controllerDir)->equalsTo('src')
             ? 'App'
-            : u($controllerDir)->replace('/', ' ')->replace('\\', ' ')->replace('src ', 'app ')->title(true)->replace(' ', '\\')->trimEnd(DIRECTORY_SEPARATOR);
-        $namespace = $io->ask('Namespace of the generated CRUD controller', $guessedNamespace, static function(string $namespace) {
+            : u($controllerDir)->replace('/', ' ')->replace('\\', ' ')->replace('src ', 'app ')->title(true)->replace(' ', '\\')->trimEnd(\DIRECTORY_SEPARATOR);
+        $namespace = $io->ask('Namespace of the generated CRUD controller', $guessedNamespace, static function (string $namespace) {
             return u($namespace)->replace('/', '\\')->toString();
         });
 

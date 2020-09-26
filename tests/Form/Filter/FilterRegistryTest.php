@@ -42,11 +42,10 @@ class FilterRegistryTest extends TestCase
         $this->assertSame('easyadmin.filter.type.foo', $this->filterRegistry->getType('foo'));
     }
 
-    /**
-     * @expectedException \Symfony\Component\Form\Exception\InvalidArgumentException
-     */
     public function testGetInvalidType()
     {
+        $this->setExpectedException(\Symfony\Component\Form\Exception\InvalidArgumentException::class);
+
         $this->filterRegistry->getType('bar');
     }
 
@@ -74,12 +73,10 @@ class FilterRegistryTest extends TestCase
         $this->assertSame($fooFilterType, $this->filterRegistry->resolveType($form));
     }
 
-    /**
-     * @expectedException \Symfony\Component\Form\Exception\RuntimeException
-     * @expectedExceptionMessage Filter type "EasyCorp\Bundle\EasyAdminBundle\Tests\Form\Filter\Fixtures\InvalidFilterType" must implement "EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\FilterInterface".
-     */
     public function testInvalidFilterType()
     {
+        $this->setExpectedException(\Symfony\Component\Form\Exception\RuntimeException::class, 'Filter type "EasyCorp\\Bundle\\EasyAdminBundle\\Tests\\Form\\Filter\\Fixtures\\InvalidFilterType" must implement "EasyCorp\\Bundle\\EasyAdminBundle\\Form\\Filter\\Type\\FilterInterface".');
+
         $filterType = new InvalidFilterType();
         $form = $this->createFilterForm($filterType);
 

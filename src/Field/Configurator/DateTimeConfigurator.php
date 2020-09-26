@@ -77,10 +77,10 @@ final class DateTimeConfigurator implements FieldConfiguratorInterface
         if (DateTimeField::WIDGET_NATIVE === $widgetOption) {
             $field->setFormTypeOption('widget', 'single_text');
             $field->setFormTypeOption('html5', true);
-        } elseif(DateTimeField::WIDGET_CHOICE === $widgetOption) {
+        } elseif (DateTimeField::WIDGET_CHOICE === $widgetOption) {
             $field->setFormTypeOption('widget', 'choice');
             $field->setFormTypeOption('html5', true);
-        } elseif(DateTimeField::WIDGET_TEXT === $widgetOption) {
+        } elseif (DateTimeField::WIDGET_TEXT === $widgetOption) {
             $field->setFormTypeOption('widget', 'single_text');
             $field->setFormTypeOption('html5', false);
         }

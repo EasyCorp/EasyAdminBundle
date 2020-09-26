@@ -114,7 +114,7 @@ final class DateTimeField implements FieldInterface
     }
 
     /**
-     * Uses native HTML5 widgets when rendering this field in forms
+     * Uses native HTML5 widgets when rendering this field in forms.
      */
     public function renderAsNativeWidget(bool $asNative = true): self
     {
@@ -128,7 +128,7 @@ final class DateTimeField implements FieldInterface
     }
 
     /**
-     * Uses <select> lists when rendering this field in forms
+     * Uses <select> lists when rendering this field in forms.
      */
     public function renderAsChoice(bool $asChoice = true): self
     {
@@ -142,7 +142,7 @@ final class DateTimeField implements FieldInterface
     }
 
     /**
-     * Uses <input type="text"> elements when rendering this field in forms
+     * Uses <input type="text"> elements when rendering this field in forms.
      */
     public function renderAsText(bool $asText = true): self
     {

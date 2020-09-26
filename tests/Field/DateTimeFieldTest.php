@@ -110,7 +110,7 @@ class DateTimeFieldTest extends AbstractFieldTest
 
     public function testFieldDefaultWidget()
     {
-        $field = DateTimeField::new('foo')->setValue(new \DateTime('2015-01-16'));;
+        $field = DateTimeField::new('foo')->setValue(new \DateTime('2015-01-16'));
         $field->setFieldFqcn(DateTimeField::class);
         $fieldDto = $this->configure($field);
 
@@ -119,7 +119,7 @@ class DateTimeFieldTest extends AbstractFieldTest
 
     public function testFieldRenderAsNativeWidget()
     {
-        $field = DateTimeField::new('foo')->setValue(new \DateTime('2015-01-16'));;
+        $field = DateTimeField::new('foo')->setValue(new \DateTime('2015-01-16'));
         $field->setFieldFqcn(DateTimeField::class);
         $field->renderAsNativeWidget();
         $fieldDto = $this->configure($field);
@@ -131,7 +131,7 @@ class DateTimeFieldTest extends AbstractFieldTest
 
     public function testFieldRenderAsNotNativeWidget()
     {
-        $field = DateTimeField::new('foo')->setValue(new \DateTime('2015-01-16'));;
+        $field = DateTimeField::new('foo')->setValue(new \DateTime('2015-01-16'));
         $field->setFieldFqcn(DateTimeField::class);
         $field->renderAsNativeWidget(false);
         $fieldDto = $this->configure($field);
@@ -141,7 +141,7 @@ class DateTimeFieldTest extends AbstractFieldTest
 
     public function testFieldRenderAsChoice()
     {
-        $field = DateTimeField::new('foo')->setValue(new \DateTime('2015-01-16'));;
+        $field = DateTimeField::new('foo')->setValue(new \DateTime('2015-01-16'));
         $field->setFieldFqcn(DateTimeField::class);
         $field->renderAsChoice();
         $fieldDto = $this->configure($field);
@@ -153,7 +153,7 @@ class DateTimeFieldTest extends AbstractFieldTest
 
     public function testFieldRenderAsNotChoice()
     {
-        $field = DateTimeField::new('foo')->setValue(new \DateTime('2015-01-16'));;
+        $field = DateTimeField::new('foo')->setValue(new \DateTime('2015-01-16'));
         $field->setFieldFqcn(DateTimeField::class);
         $field->renderAsChoice(false);
         $fieldDto = $this->configure($field);
@@ -163,7 +163,7 @@ class DateTimeFieldTest extends AbstractFieldTest
 
     public function testFieldRenderAsText()
     {
-        $field = DateTimeField::new('foo')->setValue(new \DateTime('2015-01-16'));;
+        $field = DateTimeField::new('foo')->setValue(new \DateTime('2015-01-16'));
         $field->setFieldFqcn(DateTimeField::class);
         $field->renderAsText();
         $fieldDto = $this->configure($field);
@@ -175,7 +175,7 @@ class DateTimeFieldTest extends AbstractFieldTest
 
     public function testFieldRenderAsNotText()
     {
-        $field = DateTimeField::new('foo')->setValue(new \DateTime('2015-01-16'));;
+        $field = DateTimeField::new('foo')->setValue(new \DateTime('2015-01-16'));
         $field->setFieldFqcn(DateTimeField::class);
         $field->renderAsText(false);
         $fieldDto = $this->configure($field);

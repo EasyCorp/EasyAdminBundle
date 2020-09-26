@@ -5,8 +5,6 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Twig;
 use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
 use Symfony\Component\HttpKernel\Kernel;
-use Symfony\Component\Intl\Countries;
-use Symfony\Component\Intl\Exception\MissingResourceException;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 use Twig\Extension\AbstractExtension;

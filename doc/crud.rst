@@ -178,7 +178,7 @@ Search and Pagination Options
             // use dots (e.g. 'seller.email') to search in Doctrine associations
             ->setSearchFields(['name', 'description', 'seller.email', 'seller.phone'])
             // set it to null to disable and hide the search box
-            ->setSearchFields(null);
+            ->setSearchFields(null)
 
             // defines the initial sorting applied to the list of entities
             // (user can later change this sorting by clicking on the table columns)

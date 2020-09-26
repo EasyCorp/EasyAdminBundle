@@ -43,11 +43,6 @@ final class CountryConfigurator implements FieldConfiguratorInterface
             return null;
         }
 
-        // Compatibility with Symfony versions before 4.3
-        if (!class_exists(Countries::class)) {
-            return Intl::getRegionBundle()->getCountryName($countryCode);
-        }
-
         try {
             if (CountryField::FORMAT_ISO_3166_ALPHA3 === $countryCodeFormat) {
                 return Countries::getAlpha3Name($countryCode);

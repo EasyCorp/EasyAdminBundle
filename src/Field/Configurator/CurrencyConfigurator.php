@@ -46,11 +46,6 @@ final class CurrencyConfigurator implements FieldConfiguratorInterface
 
     private function getCurrencyName(string $currencyCode): ?string
     {
-        // Compatibility with Symfony versions before 4.3
-        if (!class_exists(Currencies::class)) {
-            return Intl::getCurrencyBundle()->getCurrencyName($currencyCode);
-        }
-
         try {
             return Currencies::getName($currencyCode);
         } catch (MissingResourceException $e) {
@@ -60,11 +55,6 @@ final class CurrencyConfigurator implements FieldConfiguratorInterface
 
     private function getCurrencySymbol(string $currencyCode): ?string
     {
-        // Compatibility with Symfony versions before 4.3
-        if (!class_exists(Currencies::class)) {
-            return Intl::getCurrencyBundle()->getCurrencySymbol($currencyCode);
-        }
-
         try {
             return Currencies::getSymbol($currencyCode);
         } catch (MissingResourceException $e) {

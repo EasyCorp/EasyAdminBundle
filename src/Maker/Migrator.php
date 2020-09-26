@@ -1466,7 +1466,7 @@ final class Migrator
                 continue;
             }
 
-            if (u($cssClass)->startsWith('fa-') && !\in_array($cssClass, $specialCssClasses)) {
+            if (u($cssClass)->startsWith('fa-') && !\in_array($cssClass, $specialCssClasses, true)) {
                 if (\array_key_exists($cssClass, $iconClassMap)) {
                     $cssClass = $iconClassMap[$cssClass];
                 } else {

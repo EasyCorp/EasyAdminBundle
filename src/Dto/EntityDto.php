@@ -21,7 +21,7 @@ final class EntityDto
     private $primaryKeyName;
     private $primaryKeyValue;
     private $permission;
-    /** @var ?FieldDtoCollection */
+    /** @var ?FieldCollection */
     private $fields;
     /** @var ActionCollection */
     private $actions;

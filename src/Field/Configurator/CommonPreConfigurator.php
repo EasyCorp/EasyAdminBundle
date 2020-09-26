@@ -129,7 +129,7 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
 
         // don't translate labels in form-related pages because Symfony Forms translates
         // labels automatically and that causes false "translation is missing" errors
-        if (\in_array($currentPage, [Crud::PAGE_EDIT, Crud::PAGE_NEW])) {
+        if (\in_array($currentPage, [Crud::PAGE_EDIT, Crud::PAGE_NEW], true)) {
             return $label;
         }
 

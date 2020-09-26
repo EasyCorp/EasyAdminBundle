@@ -4,8 +4,6 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Twig;
 
 use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
-use Symfony\Component\HttpKernel\Kernel;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
@@ -19,13 +17,10 @@ use Twig\TwigFunction;
 class EasyAdminTwigExtension extends AbstractExtension
 {
     private $crudUrlGenerator;
-    /** @var TranslatorInterface|null */
-    private $translator;
 
-    public function __construct(CrudUrlGenerator $crudUrlGenerator, ?TranslatorInterface $translator)
+    public function __construct(CrudUrlGenerator $crudUrlGenerator)
     {
         $this->crudUrlGenerator = $crudUrlGenerator;
-        $this->translator = $translator;
     }
 
     /**
@@ -43,13 +38,11 @@ class EasyAdminTwigExtension extends AbstractExtension
      */
     public function getFilters()
     {
-        $filters = [
+        return [
             new TwigFilter('ea_flatten_array', [$this, 'flattenArray']),
             new TwigFilter('ea_filesize', [$this, 'fileSize']),
             new TwigFilter('ea_apply_filter_if_exists', [$this, 'applyFilterIfExists'], ['needs_environment' => true]),
         ];
-
-        return $filters;
     }
 
     /**

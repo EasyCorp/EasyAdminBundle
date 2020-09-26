@@ -127,7 +127,6 @@ return static function (ContainerConfigurator $container) {
 
         ->set(EasyAdminTwigExtension::class)
             ->arg(0, new Reference(CrudUrlGenerator::class))
-            ->arg(1, new Reference(TranslatorInterface::class, ContainerInterface::NULL_ON_INVALID_REFERENCE))
             ->tag('twig.extension')
 
         ->set(EaCrudFormTypeExtension::class)

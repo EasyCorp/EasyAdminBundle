@@ -56,7 +56,7 @@ final class ExceptionListener
         $exceptionTemplatePath = null === $context ? '@EasyAdmin/exception.html.twig' : $context->getTemplatePath('exception');
         $layoutTemplatePath = null === $context ? '@EasyAdmin/layout.html.twig' : $context->getTemplatePath('layout');
 
-        return Response::create($this->twig->render($exceptionTemplatePath, [
+        return new Response($this->twig->render($exceptionTemplatePath, [
             'exception' => $exception,
             'layout_template_path' => $layoutTemplatePath,
         ]), $exception->getStatusCode());

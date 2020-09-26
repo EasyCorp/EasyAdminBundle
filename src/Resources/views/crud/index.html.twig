@@ -260,7 +260,7 @@
             // HTML5 specifies that a <script> tag inserted with innerHTML should not execute
             // https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML#Security_considerations
             // That's why we can't use just 'innerHTML'. See https://stackoverflow.com/a/47614491/2804294
-            var setInnerHTML = function(element, htmlContent) {
+            let setInnerHTML = function(element, htmlContent) {
                 element.innerHTML = htmlContent;
                 Array.from(element.querySelectorAll('script')).forEach(oldScript => {
                     const newScript = document.createElement('script');

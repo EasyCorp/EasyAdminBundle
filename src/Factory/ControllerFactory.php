@@ -1,8 +1,6 @@
 <?php
 
-
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
-
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;

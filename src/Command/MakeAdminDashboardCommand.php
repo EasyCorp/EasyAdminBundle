@@ -34,7 +34,7 @@ class MakeAdminDashboardCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $fs = new Filesystem();
 
-        $controllerClassName = $io->ask('Which class name do you prefer for your Dashboard controller?', 'DashboardController', static function(string $className) {
+        $controllerClassName = $io->ask('Which class name do you prefer for your Dashboard controller?', 'DashboardController', static function (string $className) {
             return u($className)->ensureEnd('Controller')->toString();
         });
 
@@ -42,17 +42,17 @@ class MakeAdminDashboardCommand extends Command
         $controllerDir = $io->ask(
             sprintf('Which directory do you want to generate "%s" in?', $controllerClassName),
             'src/Controller/Admin/',
-            static function(string $selectedDir) use ($fs, $projectDir, $controllerClassName) {
-                $absoluteDir = u($selectedDir)->ensureStart($projectDir.DIRECTORY_SEPARATOR);
+            static function (string $selectedDir) use ($fs, $projectDir, $controllerClassName) {
+                $absoluteDir = u($selectedDir)->ensureStart($projectDir.\DIRECTORY_SEPARATOR);
                 if (!$fs->exists($absoluteDir)) {
                     throw new \RuntimeException('The given directory does not exist. Type in the path of an existing directory relative to your project root (e.g. src/Controller/Admin/)');
                 }
 
-                return $absoluteDir->after($projectDir.DIRECTORY_SEPARATOR)->trimEnd(DIRECTORY_SEPARATOR)->toString();
+                return $absoluteDir->after($projectDir.\DIRECTORY_SEPARATOR)->trimEnd(\DIRECTORY_SEPARATOR)->toString();
             }
         );
 
-        $controllerFilePath = sprintf('%s/%s.php', u($controllerDir)->ensureStart($projectDir.DIRECTORY_SEPARATOR), $controllerClassName);
+        $controllerFilePath = sprintf('%s/%s.php', u($controllerDir)->ensureStart($projectDir.\DIRECTORY_SEPARATOR), $controllerClassName);
         if ($fs->exists($controllerFilePath)) {
             throw new \RuntimeException(sprintf('The "%s.php" file already exists in the given "%s" directory. Use a different controller name or generate it in a different directory.', $controllerClassName, $controllerDir));
         }

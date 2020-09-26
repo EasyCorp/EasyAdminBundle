@@ -49,11 +49,11 @@ final class TimeField implements FieldInterface
     public function setFormat(string $timeFormatOrPattern): self
     {
         if (DateTimeField::FORMAT_NONE === $timeFormatOrPattern || '' === trim($timeFormatOrPattern)) {
-            $validTimeFormatsWithoutNone = array_filter(DateTimeField::VALID_DATE_FORMATS, static function($format) {
+            $validTimeFormatsWithoutNone = array_filter(DateTimeField::VALID_DATE_FORMATS, static function ($format) {
                 return DateTimeField::FORMAT_NONE !== $format;
             });
 
-            throw new \InvalidArgumentException(sprintf('The first argument of the "%s()" method cannot be "%s" or an empty string. Use either the special time formats (%s) or a datetime Intl pattern.',  __METHOD__, DateTimeField::FORMAT_NONE, implode(', ', $validTimeFormatsWithoutNone)));
+            throw new \InvalidArgumentException(sprintf('The first argument of the "%s()" method cannot be "%s" or an empty string. Use either the special time formats (%s) or a datetime Intl pattern.', __METHOD__, DateTimeField::FORMAT_NONE, implode(', ', $validTimeFormatsWithoutNone)));
         }
 
         $this->setCustomOption(self::OPTION_TIME_PATTERN, $timeFormatOrPattern);
@@ -62,7 +62,7 @@ final class TimeField implements FieldInterface
     }
 
     /**
-     * Uses native HTML5 widgets when rendering this field in forms
+     * Uses native HTML5 widgets when rendering this field in forms.
      */
     public function renderAsNativeWidget(bool $asNative = true): self
     {
@@ -76,7 +76,7 @@ final class TimeField implements FieldInterface
     }
 
     /**
-     * Uses <select> lists when rendering this field in forms
+     * Uses <select> lists when rendering this field in forms.
      */
     public function renderAsChoice(bool $asChoice = true): self
     {
@@ -90,7 +90,7 @@ final class TimeField implements FieldInterface
     }
 
     /**
-     * Uses <input type="text"> elements when rendering this field in forms
+     * Uses <input type="text"> elements when rendering this field in forms.
      */
     public function renderAsText(bool $asText = true): self
     {

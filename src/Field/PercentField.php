@@ -3,8 +3,8 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
-use Symfony\Component\Form\Extension\Core\Type\PercentType;
 use Symfony\Component\Form\Extension\Core\DataTransformer\NumberToLocalizedStringTransformer;
+use Symfony\Component\Form\Extension\Core\Type\PercentType;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -17,7 +17,6 @@ final class PercentField implements FieldInterface
     public const OPTION_STORED_AS_FRACTIONAL = 'storedAsFractional';
     public const OPTION_SYMBOL = 'symbol';
     public const OPTION_ROUNDING_MODE = 'roundingMode';
-
 
     public static function new(string $propertyName, ?string $label = null): self
     {
@@ -66,7 +65,7 @@ final class PercentField implements FieldInterface
 
         return $this;
     }
-    
+
     public function setRoundingMode(int $mode): self
     {
         $validModes = [
@@ -87,5 +86,4 @@ final class PercentField implements FieldInterface
 
         return $this;
     }
-
 }

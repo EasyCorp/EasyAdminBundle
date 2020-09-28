@@ -261,7 +261,7 @@
 {% endblock %}
 
 {% block vich_image_widget %}
-    {% set formTypeOptions = ea_crud_form.ea_field.formTypeOptions|default %}
+    {% set formTypeOptions = ea_crud_form.ea_field.formTypeOptions|default('') %}
     <div class="ea-vich-image">
         {% if image_uri|default('') is not empty %}
             {% if download_uri|default('') is empty %}

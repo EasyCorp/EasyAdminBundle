@@ -87,6 +87,10 @@ final class DateTimeConfigurator implements FieldConfiguratorInterface
 
         $field->setFormattedValue($formattedValue);
 
+        // check if the property is immutable, but only if it's a real Doctrine entity property
+        if (!$entityDto->hasProperty($field->getProperty())) {
+            return;
+        }
         $doctrineDataType = $entityDto->getPropertyMetadata($field->getProperty())->get('type');
         $isImmutableDateTime = \in_array($doctrineDataType, [Types::DATETIME_IMMUTABLE, Types::DATE_IMMUTABLE, Types::TIME_IMMUTABLE], true);
         if ($isImmutableDateTime) {

@@ -19,6 +19,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterCrudActionEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityDeletedEvent;
+use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityFormHandledEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityPersistedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityUpdatedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeCrudActionEvent;
@@ -208,6 +209,10 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
         $editForm = $this->createEditForm($context->getEntity(), $context->getCrud()->getEditFormOptions(), $context);
         $editForm->handleRequest($context->getRequest());
+
+	    $event = new AfterEntityFormHandledEvent($entityInstance);
+	    $this->get('event_dispatcher')->dispatch($event);
+        
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             // TODO:
             // $this->processUploadedFiles($editForm);
@@ -279,6 +284,10 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
         $newForm = $this->createNewForm($context->getEntity(), $context->getCrud()->getNewFormOptions(), $context);
         $newForm->handleRequest($context->getRequest());
+        
+	    $event = new AfterEntityFormHandledEvent($entityInstance);
+	    $this->get('event_dispatcher')->dispatch($event);
+	    
         if ($newForm->isSubmitted() && $newForm->isValid()) {
             // TODO:
             // $this->processUploadedFiles($newForm);

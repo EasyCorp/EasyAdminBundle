@@ -38,6 +38,7 @@ All events are triggered using objects instead of event names defined as strings
 * Events related to resource admins:
 
   * ``BeforeCrudActionEvent``
+  * ``AfterEntityFormHandledEvent``
   * ``AfterCrudActionEvent``
 
 Event Subscriber Example

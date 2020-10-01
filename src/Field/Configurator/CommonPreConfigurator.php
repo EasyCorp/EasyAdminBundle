@@ -51,8 +51,10 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
         $isSortable = $this->buildSortableOption($field, $entityDto);
         $field->setSortable($isSortable);
 
-        $isVirtual = $this->buildVirtualOption($field, $entityDto);
-        $field->setVirtual($isVirtual);
+        if (null === $field->isVirtual()) {
+            $isVirtual = $this->buildVirtualOption($field, $entityDto);
+            $field->setVirtual($isVirtual);
+        }
 
         $templatePath = $this->buildTemplatePathOption($context, $field, $entityDto);
         $field->setTemplatePath($templatePath);

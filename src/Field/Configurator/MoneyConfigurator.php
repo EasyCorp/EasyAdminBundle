@@ -56,16 +56,16 @@ final class MoneyConfigurator implements FieldConfiguratorInterface
 
     private function getCurrency(FieldDto $field, EntityDto $entityDto): ?string
     {
-        if (null === $field->getValue()) {
-            return null;
-        }
-
         if (null !== $currencyCode = $field->getCustomOption(MoneyField::OPTION_CURRENCY)) {
             return $currencyCode;
         }
 
         if (null === $currencyPropertyPath = $field->getCustomOption(MoneyField::OPTION_CURRENCY_PROPERTY_PATH)) {
             throw new \InvalidArgumentException(sprintf('You must define the currency for the "%s" money field.', $field->getProperty()));
+        }
+
+        if (null === $field->getValue()) {
+            return null;
         }
 
         $isPropertyReadable = $this->propertyAccessor->isReadable($entityDto->getInstance(), $currencyPropertyPath);

@@ -70,7 +70,7 @@ final class CountryConfigurator implements FieldConfiguratorInterface
                 $flagCode = Countries::getAlpha2Code($flagCode);
             }
 
-            if (strpos(self::SUPPORTED_FLAGS, $flagCode) === false) {
+            if (empty($flagCode) || false === strpos(self::SUPPORTED_FLAGS, $flagCode)) {
                 $flagCode = 'GENERIC';
             }
 

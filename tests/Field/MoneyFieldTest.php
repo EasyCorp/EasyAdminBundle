@@ -39,12 +39,20 @@ class MoneyFieldTest extends AbstractFieldTest
         $this->configure($field);
     }
 
+    public function testNullFieldWithoutCurrency()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $field = MoneyField::new('foo')->setValue(null);
+        $this->configure($field);
+    }
+
     public function testFieldWithNullValues()
     {
-        $field = MoneyField::new('foo')->setValue(null);
+        $field = MoneyField::new('foo')->setValue(null)->setCurrency('EUR');
         $fieldDto = $this->configure($field);
 
-        self::assertNull($fieldDto->getCustomOption(MoneyField::OPTION_CURRENCY));
+        self::assertSame('EUR', $fieldDto->getCustomOption(MoneyField::OPTION_CURRENCY));
     }
 
     public function testFieldWithWrongCurrency()

@@ -48,6 +48,12 @@ document.addEventListener('DOMContentLoaded', () => {
         trixContentElement.removeAttribute('required');
     });
 
+    // Because of the way TrixEditor works, the jquery.are-you-sure plugin cannot detect changes to these fields automatically,
+    // so we manually trigger the plugin when the content changes.
+    document.addEventListener('trix-change', function (event) {
+        $(event.target).closest('form').trigger('checkform.areYouSure');
+    });
+
     document.addEventListener('ea.form.submit', (formEvent) => {
         const entityForm = formEvent.detail.form;
         entityForm.querySelectorAll('textarea.ea-text-editor-content').forEach(function (trixContentElement) {

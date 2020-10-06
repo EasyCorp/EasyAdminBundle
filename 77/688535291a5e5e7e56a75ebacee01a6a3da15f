@@ -1,0 +1,18 @@
+---------------------------------------------------------------------------
+
+by OskarStark at 2020-10-06T07:28:39Z
+
+Typo in headline
+
+```diff
+- Use PercetType option only if it's defined by Symfony
++ Use PercentType option only if it's defined by Symfony
+```
+
+---------------------------------------------------------------------------
+
+by OskarStark at 2020-10-06T11:38:47Z
+
+> Typo in headline
+
+Still in the commit message ;-)

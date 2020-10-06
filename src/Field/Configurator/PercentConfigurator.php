@@ -7,6 +7,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\PercentField;
+use Symfony\Component\Form\ChoiceList\ChoiceList;
+use Symfony\Component\HttpKernel\Kernel;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -26,9 +28,14 @@ final class PercentConfigurator implements FieldConfiguratorInterface
         $isStoredAsFractional = $field->getCustomOption(PercentField::OPTION_STORED_AS_FRACTIONAL);
 
         $field->setFormTypeOptionIfNotSet('scale', $scale);
-        $field->setFormTypeOptionIfNotSet('rounding_mode', $roundingMode);
         $field->setFormTypeOptionIfNotSet('symbol', $symbol);
         $field->setFormTypeOptionIfNotSet('type', $isStoredAsFractional ? 'fractional' : 'integer');
+
+        // PercentType added 'rounding_mode' option in Symfony Form 5.1 (this option
+        // can't be detected directly; instead, detect ChoiceList class, which was added in 5.1)
+        if (\class_exists(ChoiceList::class)) {
+            $field->setFormTypeOptionIfNotSet('rounding_mode', $roundingMode);
+        }
 
         if (null === $field->getValue()) {
             return;

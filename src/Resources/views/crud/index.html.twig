@@ -226,7 +226,7 @@
                     const fieldName = this.closest('.custom-switch').dataset.fieldname;
 
                     const toggleUrl = "{{ ea_url().setAction('edit')|raw }}"
-                        + "&entityId=" + this.closest('tr').dataset.id
+                        + "&entityId=" + this.closest('[data-id]').dataset.id
                         + "&fieldName=" + fieldName
                         + "&newValue=" + newValue.toString();
 
@@ -245,7 +245,7 @@
 
             $('.action-delete').on('click', function(e) {
                 e.preventDefault();
-                const id = $(this).parents('tr').first().data('id');
+                const id = $(this).parents('[data-id]').first().data('id');
 
                 $('#modal-delete').modal({ backdrop: true, keyboard: true })
                     .off('click', '#modal-delete-button')

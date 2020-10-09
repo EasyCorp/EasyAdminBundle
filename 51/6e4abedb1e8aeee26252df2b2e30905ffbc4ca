@@ -1,0 +1,5 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2020-10-09T17:33:54Z
+
+Thanks! Instead of a typo ... this is a "trick" I use while designing things. When I want to temporarily disable some styles, I copy and paste the first letter of the CSS property to disable it. But it's a mistake to leave it like this, so either we keep the style or we remove it. I tried this and keeping the style doesn't break anything, so let's merge this.

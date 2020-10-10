@@ -143,3 +143,12 @@
   max-height: 480px;
   overflow-y: auto;
 }
+
+// Collapsible panel
+.content-panel-collapse:not(.collapsed) .expand-icon {
+  display: none;
+}
+
+.content-panel-collapse.collapsed .collapse-icon {
+  display: none;
+}

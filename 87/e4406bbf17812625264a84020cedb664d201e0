@@ -1,0 +1,17 @@
+---------------------------------------------------------------------------
+
+by lukasluecke at 2020-07-13T12:12:06Z
+
+The position was chosen because of icons being left of the title, and possibly actions at the far right in #3519.
+
+---------------------------------------------------------------------------
+
+by lukasluecke at 2020-07-14T19:59:16Z
+
+One thing I'd like to add as well is to handle validation errors in forms that are inside of default-collapsed panels. Either show an indicator/count badge, like existed (and hopefully will again in the future) for tabs, or just uncollapse them by default if they contain errors.
+
+---------------------------------------------------------------------------
+
+by ChangePlaces at 2020-09-18T22:58:52Z
+
+I think the fold should be to the left of the text (and to the left of the icon) - it just makes more sense to me! Great work though

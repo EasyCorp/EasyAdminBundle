@@ -101,15 +101,18 @@
     {% set collapsed = field.customOption('collapsed') %}
     <div class="{{ field.cssClass }}">
         <div class="content-panel">
-            <div class="content-panel-header">
-                {% if field.customOption('icon') %}
-                    <i class="{{ field.customOption('icon') }}"></i>
-                {% endif %}
-                {{ field.label|raw }}
+            <div class="content-panel-header {{ collapsible ? 'collapsible' }} {{ field.help is not empty ? 'with-help' }}">
                 {% if collapsible %}
                     <a href="#content-{{ field.property }}" data-toggle="collapse" class="content-panel-collapse {{ collapsed ? 'collapsed' }}" aria-expanded="{{ collapsed ? 'false' : 'true' }}" aria-controls="content-{{ field.property }}">
-                        <i class="fa fa-plus-square expand-icon"></i>
-                        <i class="fa fa-minus-square collapse-icon"></i>
+                        <i class="fas fw fa-chevron-right collapse-icon"></i>
+                {% endif %}
+
+                        {% if field.customOption('icon') %}
+                            <i class="{{ field.customOption('icon') }}"></i>
+                        {% endif %}
+                        {{ field.label|raw }}
+
+                {% if collapsible %}
                     </a>
                 {% endif %}
 

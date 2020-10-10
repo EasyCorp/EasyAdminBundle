@@ -371,15 +371,18 @@
         <div class="{{ panel_config.css_class ?? '' }}">
             <div class="content-panel">
                 {% if panel_has_header %}
-                    <div class="content-panel-header">
-                        {% if panel_config.icon|default(false) %}
-                            <i class="{{ panel_config.icon }}"></i>
-                        {% endif %}
-                        {{ panel_config.label|raw }}
+                    <div class="content-panel-header {{ collapsible ? 'collapsible' }} {{ panel_config.help|default(false) is not empty ? 'with-help' }}">
                         {% if collapsible %}
                             <a href="#content-{{ panel_name }}" data-toggle="collapse" class="content-panel-collapse {{ collapsed ? 'collapsed' }}" aria-expanded="{{ collapsed ? 'false' : 'true' }}" aria-controls="content-{{ panel_name }}">
-                                <i class="fa fa-plus-square expand-icon"></i>
-                                <i class="fa fa-minus-square collapse-icon"></i>
+                                <i class="fas fw fa-chevron-right collapse-icon"></i>
+                        {% endif %}
+
+                            {% if panel_config.icon|default(false) %}
+                                <i class="{{ panel_config.icon }}"></i>
+                            {% endif %}
+                            {{ panel_config.label|raw }}
+
+                        {% if collapsible %}
                             </a>
                         {% endif %}
 

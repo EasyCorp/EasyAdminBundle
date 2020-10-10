@@ -344,6 +344,29 @@ body.ea-mobile-sidebar-visible .main-sidebar {
     margin: 0;
     padding: 15px 17px 15px 20px;
 }
+.content-panel-header.collapsible {
+    padding: 0;
+}
+.content-panel-header.collapsible > a {
+    color: inherit;
+    display: block;
+    padding: 15px 17px 15px 20px;
+}
+.content-panel-header.collapsible.with-help > a {
+    padding: 15px 17px 1px 20px;
+}
+.content-panel-header.collapsible .collapse-icon {
+    color: var(--color-primary);
+    margin-right: 5px;
+    transition: all .1s linear;
+}
+.content-panel-collapse:not(.collapsed) .collapse-icon {
+    transform: rotate(90deg);
+}
+.content-panel-header.collapsible.with-help .content-panel-header-help {
+    padding: 0 17px 15px 20px;
+}
+
 .content-panel-header-help {
     color: var(--gray-500);
     font-size: var(--font-size-base);

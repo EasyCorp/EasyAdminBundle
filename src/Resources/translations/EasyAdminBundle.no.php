@@ -2,7 +2,7 @@
 
 return [
     'page_title' => [
-        // 'dashboard' => '',
+        'dashboard' => 'Forsiden',
         'detail' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
         'edit' => 'Rediger %entity_label_singular% <small>(#%entity_short_id%)</small>',
         'index' => '%entity_label_plural%',
@@ -37,8 +37,8 @@ return [
     ],
 
     'field' => [
-        // 'code_editor.view_code' => '',
-        // 'text_editor.view_content' => '',
+        'code_editor.view_code' => 'Vis kode',
+        'text_editor.view_content' => 'Vis innhold',
     ],
 
     'action' => [
@@ -54,18 +54,18 @@ return [
         'add_new_item' => 'Legg til nytt element',
         'remove_item' => 'Fjern elementet',
         'choose_file' => 'Velg fil',
-        // 'close' => '',
-        // 'create' => '',
-        // 'create_and_add_another' => '',
-        // 'create_and_continue' => '',
+        'close' => 'Lukk',
+        'create' => 'Lag',
+        'create_and_add_another' => 'Lagre og lag en til',
+        'create_and_continue' => 'Lagre og fortsett redigering',
         // 'save' => 'Lagre endringer',
-        // 'save_and_continue' => '',
+        'save_and_continue' => 'Lagre og fortsett redigering',
     ],
 
     'batch_action_modal' => [
         'title' => 'Du vil utføre "%action_name%" handlingen for %num_items% element(er).',
         'content' => 'Du kan ikke angre denne handlingen.',
-        // 'action' => '',
+        'action' => 'Utfør handlinger',
     ],
 
     'delete_modal' => [
@@ -121,6 +121,6 @@ return [
         'entity_not_found' => 'Elementet er ikke lenger tilgjengelig.',
         'entity_remove' => 'Elementet kan ikke slettes fordi andre elementer er avhengig av det.',
         'forbidden_action' => 'Den angitte handlingen kan ikke utføres på dette elementet.',
-        // 'insufficient_entity_permission' => 'You don't have permission to access this item.',
+        'insufficient_entity_permission' => 'Du har ikke tilgang til dette elementet.',
     ],
 ];

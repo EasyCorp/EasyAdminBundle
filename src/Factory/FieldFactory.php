@@ -135,6 +135,7 @@ final class FieldFactory
         }
     }
 
+    // transforms a generic Field class into a specific <type>Field class (e.g. DateTimeField)
     private function transformField(FieldDto $fieldDto, string $newFieldFqcn): FieldDto
     {
         /** @var FieldDto $newField */
@@ -185,13 +186,9 @@ final class FieldFactory
             $newField->setFormType($fieldDto->getFormType());
         }
 
-        if (null !== $fieldDto->getTemplateName()) {
-            $newField->setTemplateName($fieldDto->getTemplateName());
-        }
-
-        if (null !== $fieldDto->getTemplatePath()) {
-            $newField->setTemplatePath($fieldDto->getTemplatePath());
-        }
+        // don't copy the template name and path from the original Field class
+        // (because they are just 'crud/field/text' and ' @EasyAdmin/crud/field/text.html.twig')
+        // and use the template name/path from the new specific field (e.g. 'crud/field/datetime')
 
         return $newField;
     }

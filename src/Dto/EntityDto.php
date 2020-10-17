@@ -79,14 +79,10 @@ final class EntityDto
             return $this->primaryKeyValue;
         }
 
-        try {
-            $r = ClassUtils::newReflectionObject($this->instance);
-            $primaryKeyProperty = $r->getProperty($this->primaryKeyName);
-            $primaryKeyProperty->setAccessible(true);
-            $primaryKeyValue = $primaryKeyProperty->getValue($this->instance);
-        } catch (\Exception $e) {
-            $primaryKeyValue = null;
-        }
+        $r = ClassUtils::newReflectionObject($this->instance);
+        $primaryKeyProperty = $r->getProperty($this->primaryKeyName);
+        $primaryKeyProperty->setAccessible(true);
+        $primaryKeyValue = $primaryKeyProperty->getValue($this->instance);
 
         return $this->primaryKeyValue = $primaryKeyValue;
     }

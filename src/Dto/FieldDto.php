@@ -4,7 +4,6 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
-use function Symfony\Component\String\u;
 use Symfony\Component\Uid\Ulid;
 
 /**
@@ -33,6 +32,9 @@ final class FieldDto
     private $assets;
     private $customOptions;
     private $doctrineMetadata;
+    private bool $isDecorator;
+    /** @var array Contains the 3 potential decorators (panel, tab and group) */
+    private array $decorators;
     /** @internal */
     private $uniqueId;
     private $displayedOn;
@@ -52,6 +54,8 @@ final class FieldDto
             Crud::PAGE_EDIT => Crud::PAGE_EDIT,
             Crud::PAGE_NEW => Crud::PAGE_NEW,
         ]);
+        $this->isDecorator = false;
+        $this->decorators = ['panel' => null, 'tab' => null, 'group' => null];
     }
 
     public function __clone()
@@ -70,11 +74,6 @@ final class FieldDto
         }
 
         return $this->uniqueId = new Ulid();
-    }
-
-    public function isFormDecorationField(): bool
-    {
-        return null !== u($this->getCssClass())->indexOf('field-form_panel');
     }
 
     public function getFieldFqcn(): string
@@ -352,5 +351,24 @@ final class FieldDto
     public function isDisplayedOn(string $pageName): bool
     {
         return $this->displayedOn->has($pageName);
+    }
+
+    public function isDecorator(?bool $isDecorator = null): bool
+    {
+        if (is_bool($isDecorator)) {
+            $this->isDecorator = $isDecorator;
+        }
+
+        return $this->isDecorator;
+    }
+
+    public function setDecorators(?self $panel, ?self $tab = null, ?self $group = null): void
+    {
+        $this->decorators = ['panel' => $panel, 'tab' => $tab, 'group' => $group];
+    }
+
+    public function getDecorator(string $type): ?self
+    {
+        return $this->decorators[$type] ?? null;
     }
 }

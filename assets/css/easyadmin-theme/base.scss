@@ -344,27 +344,16 @@ body.ea-mobile-sidebar-visible .main-sidebar {
     margin: 0;
     padding: 15px 17px 15px 20px;
 }
-.content-panel-header.collapsible {
-    padding: 0;
-}
-.content-panel-header.collapsible > a {
-    color: inherit;
-    display: block;
-    padding: 15px 17px 15px 20px;
-}
-.content-panel-header.collapsible.with-help > a {
-    padding: 15px 17px 1px 20px;
-}
-.content-panel-header.collapsible .collapse-icon {
+
+.content-panel-header .collapsible {
     color: var(--color-primary);
-    margin-right: 5px;
+    cursor: pointer;
+}
+.content-panel-header .collapsible .collapse-icon {
     transition: all .1s linear;
 }
-.content-panel-collapse:not(.collapsed) .collapse-icon {
+.content-panel-header .collapsible:not(.collapsed) .collapse-icon {
     transform: rotate(90deg);
-}
-.content-panel-header.collapsible.with-help .content-panel-header-help {
-    padding: 0 17px 15px 20px;
 }
 
 .content-panel-header-help {
@@ -414,6 +403,27 @@ body.ea-mobile-sidebar-visible .main-sidebar {
     padding: 0;
 }
 
+// Tabs design for the form panel header.
+.content-panel-header .tabs > .nav-item {
+    margin-right: 10px;
+    border: var(--border-width) solid var(--border-color);
+    border-radius: var(--border-radius);
+
+    > a.nav-link {
+        &.active {
+            color: var(--text-on-primary);
+            background-color: var(--color-primary);
+
+            &.hasErrors {
+                background-color: var(--color-danger);
+            }
+        }
+
+        &.hasErrors:not(.active) {
+            color: var(--color-danger);
+        }
+    }
+}
 
 .list-pagination {
     align-items: center;

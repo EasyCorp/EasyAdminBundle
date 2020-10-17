@@ -23,40 +23,11 @@
 {% block content_footer_wrapper '' %}
 
 {% block main %}
+    {% use '@EasyAdmin/crud/includes/_ea_crud.html.twig' %}
+
     {% block detail_fields %}
-        {% set row_number = 0 %}
-        {% for field in entity.fields %}
-            {% set is_decoration_field = 'field-form_panel' in field.cssClass %}
-
-            {% if loop.first and not is_decoration_field %}
-                {% set row_number = 0 %}
-                {{ _self.open_empty_content_panel(field) }}
-            {% endif %}
-
-            {% if is_decoration_field %}
-                {% if not loop.first %}
-                    {{ _self.close_content_panel() }}
-                {% endif %}
-
-                {% set row_number = 0 %}
-                {% if field.label is empty and field.help is empty %}
-                    {{ _self.open_empty_content_panel(field) }}
-                {% else %}
-                    {{ _self.open_content_panel_with_header(field) }}
-                {% endif %}
-            {% endif %}
-
-            {% block detail_field %}
-                {% if not is_decoration_field %}
-                    {{ _self.render_field(entity, field, row_number) }}
-                {% endif %}
-            {% endblock %}
-
-            {% set row_number = is_decoration_field ? row_number : row_number + 1 %}
-        {% endfor %}
-
-        {{ _self.close_content_panel() }}
-    {% endblock %}
+        {{ block('ea_crud_widget') }}
+    {% endblock detail_fields %}
 
     {% block delete_form %}
         {{ include('@EasyAdmin/crud/includes/_delete_form.html.twig', { entity_id: entity.primaryKeyValue }, with_context = false) }}
@@ -80,64 +51,3 @@
         });
     </script>
 {% endblock %}
-
-{% macro open_empty_content_panel(field) %}
-
-<div class="{{ field.cssClass }}">
-    <div class="content-panel">
-        <div class="content-panel-body without-header without-footer without-padding">
-            <dl class="datalist">
-{% endmacro %}
-
-{% macro close_content_panel() %}
-            </dl>
-        </div>
-    </div>
-</div>
-{% endmacro %}
-
-{% macro open_content_panel_with_header(field) %}
-    {% set collapsible = field.customOption('collapsible') %}
-    {% set collapsed = field.customOption('collapsed') %}
-    <div class="{{ field.cssClass }}">
-        <div class="content-panel">
-            <div class="content-panel-header {{ collapsible ? 'collapsible' }} {{ field.help is not empty ? 'with-help' }}">
-                {% if collapsible %}
-                    <a href="#content-{{ field.property }}" data-toggle="collapse" class="content-panel-collapse {{ collapsed ? 'collapsed' }}" aria-expanded="{{ collapsed ? 'false' : 'true' }}" aria-controls="content-{{ field.property }}">
-                        <i class="fas fw fa-chevron-right collapse-icon"></i>
-                {% endif %}
-
-                        {% if field.customOption('icon') %}
-                            <i class="{{ field.customOption('icon') }}"></i>
-                        {% endif %}
-                        {{ field.label|raw }}
-
-                {% if collapsible %}
-                    </a>
-                {% endif %}
-
-                {% if field.help is not empty %}
-                    <div class="content-panel-header-help">{{ field.help|raw }}</div>
-                {% endif %}
-            </div>
-
-            <div id="content-{{ field.property }}" class="content-panel-body without-footer without-padding {{ collapsible ? 'collapse' }} {{ not collapsed ? 'show'}}">
-                <dl class="datalist">
-{% endmacro %}
-
-{% macro render_field(entity, field, row_number) %}
-    <div class="data-row {{ row_number is even ? 'with-background' }} {{ field.cssClass }}">
-        <dd>
-            {{ field.label|raw }}
-
-            {% if field.help is not empty %}
-                <span class="data-help">
-                    <i class="far fa-question-circle" data-toggle="tooltip" title="{{ field.help|e('html_attr') }}"></i>
-                </span>
-            {% endif %}
-        </dd>
-        <dt>
-            {{ include(field.templatePath, { field: field, entity: entity }, with_context = false) }}
-        </dt>
-    </div>
-{% endmacro %}

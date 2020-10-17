@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
 use Doctrine\DBAL\Types\Types;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
@@ -11,13 +12,16 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
-use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TimeField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormPanelType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormTabType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormGroupType;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -65,32 +69,116 @@ final class FieldFactory
         $this->fieldConfigurators = $fieldConfigurators;
     }
 
+    /**
+     * Different steps of the fields processing:
+     * 1) Pre-process: for each generic Field, try to determine its specialized EasyAdmin Field.
+     * 2) Remove the unwanted fields (for display or security reasons).
+     *    The removal process is in cascade (eg: all child-fields of a removed tab are also removed).
+     * 3) In the cases of non-index page, do:
+     *    3.1) Create the missing decorators to complete the hierarchy of fields
+     *    3.2) Remove the decorators having no children (because these children were removed at step 2)
+     *    3.3) For each normal field, store its parent panel, tab and group
+     *  4) Configure each field with the supported configurators.
+     *  5) Store 'flat fields' and 'hierarchized fields' in the EntityDto
+     */
     public function processFields(EntityDto $entityDto, FieldCollection $fields): void
     {
-        $this->preProcessFields($fields, $entityDto);
-
         $context = $this->adminContextProvider->getContext();
         $currentPage = $context->getCrud()->getCurrentPage();
+        $isIndexPage = Crud::PAGE_INDEX === $currentPage;
+        $nextDecorator = null;
+        $panels = $tabs = $groups = $normalFields = [];
+
+        $this->preProcessFields($fields, $entityDto);
+
         foreach ($fields as $fieldName => $fieldDto) {
-            if ((null !== $currentPage && false === $fieldDto->isDisplayedOn($currentPage))
+            // On index page, decorators are removed
+            if ($isIndexPage && $fieldDto->isDecorator()) {
+                continue;
+            }
+
+            $formType = $fieldDto->getFormType();
+
+            // 3 cases to remove a field: 1) cascading removal, 2) display restriction, 3) security restriction
+            if (true === $this->isToRemoveField($fieldDto, $nextDecorator)
+                || (null !== $currentPage && false === $fieldDto->isDisplayedOn($currentPage))
                 || false === $this->authorizationChecker->isGranted(Permission::EA_VIEW_FIELD, $fieldDto)) {
-                $fields->unset($fieldDto);
+
+                if (!$nextDecorator && $fieldDto->isDecorator()) {
+                    $nextDecorator = $formType;
+                }
 
                 continue;
             }
 
-            foreach ($this->fieldConfigurators as $configurator) {
-                if (!$configurator->supports($fieldDto, $entityDto)) {
-                    continue;
-                }
-
-                $configurator->configure($fieldDto, $entityDto, $context);
+            if ($fieldDto->isDecorator()) {
+                $this->removePreviousDecoratorsIfNoChildren($formType, $panels, $tabs, $groups, $normalFields);
             }
 
-            $fields->set($fieldDto);
+            if (EaFormPanelType::class === $formType) {
+                unset($tabs); $tabs = [];
+                $panels[$fieldName] = ['field' => $fieldDto, 'tabs' => &$tabs];
+                continue;
+            }
+
+            if (EaFormTabType::class === $formType) {
+                unset($groups); $groups = [];
+                $tabs[$fieldName] = ['field' => $fieldDto, 'groups' => &$groups];
+                continue;
+            }
+
+            // At this point we should have a tab, so create one.
+            if (!$isIndexPage && [] === $tabs) {
+                unset($groups); $groups = [];
+                $new = FormField::addTab('General')->getAsDto();
+                $tabs[$new->getProperty()] = ['field' => $new, 'groups' => &$groups];
+            }
+
+            if (EaFormGroupType::class === $formType) {
+                unset($normalFields); $normalFields = [];
+                $groups[$fieldName] = ['field' => $fieldDto, 'fields' => &$normalFields];
+                continue;
+            }
+
+            // At this point we should have a group, so create one.
+            if (!$isIndexPage && [] === $groups) {
+                unset($normalFields); $normalFields = [];
+                $new = FormField::addGroup()->getAsDto();
+                $groups[$new->getProperty()] = ['field' => $new, 'fields' => &$normalFields];
+            }
+
+            if (!$isIndexPage) {
+                $fieldDto->setDecorators(end($panels)['field'], end($tabs)['field'], end($groups)['field']);
+            }
+
+            $normalFields[$fieldName] = $fieldDto;
         }
 
+        /**
+         * From $panels or $normalFields:
+         *  1) browse all fields in order
+         *  2) apply the configurators on each
+         *  3) then push each one in a flat FieldCollection
+         */
+        $fields = FieldCollection::new([]);
+
+        // Wow! Super anonymous recursive function! :-)
+        ($flatten = function ($e) use (&$flatten, $entityDto, $fields) {
+            if ($e instanceof FieldDto) {
+                $this->configureField($e, $entityDto);
+                $fields->set($e);
+            }
+            elseif (isset($e['field'])) {
+                $flatten($e['field']);
+                $flatten($e['tabs'] ?? $e['groups'] ?? $e['fields']);
+            }
+            else {
+                array_map($flatten, $e);
+            }
+        })($isIndexPage ? $normalFields : $panels);
+
         $entityDto->setFields($fields);
+        $entityDto->setHierarchizedFields($panels);
     }
 
     private function preProcessFields(FieldCollection $fields, EntityDto $entityDto): void
@@ -99,15 +187,9 @@ final class FieldFactory
             return;
         }
 
-        // this is needed to handle this edge-case: the list of fields include one or more form panels,
-        // but the first fields of the list don't belong to any panel. We must create an automatic empty
-        // form panel for those "orphaned fields" so they are displayed as expected
-        $firstFieldIsAFormPanel = $fields->first()->isFormDecorationField();
-        foreach ($fields as $fieldName => $fieldDto) {
-            if (!$firstFieldIsAFormPanel && $fieldDto->isFormDecorationField()) {
-                $fields->prepend(FormField::addPanel()->getAsDto());
-                break;
-            }
+        // The first field is necessarily a panel! If not the case, we create one.
+        if (EaFormPanelType::class !== $fields->first()->getFormType()) {
+            $fields->prepend(FormField::addPanel()->getAsDto());
         }
 
         foreach ($fields as $fieldName => $fieldDto) {
@@ -191,5 +273,89 @@ final class FieldFactory
         // and use the template name/path from the new specific field (e.g. 'crud/field/datetime')
 
         return $newField;
+    }
+
+    private function configureField(FieldDto $fieldDto, EntityDto $entityDto)
+    {
+        $context = $this->adminContextProvider->getContext();
+
+        foreach ($this->fieldConfigurators as $configurator) {
+            if (!$configurator->supports($fieldDto, $entityDto)) {
+                continue;
+            }
+
+            $configurator->configure($fieldDto, $entityDto, $context);
+        }
+    }
+
+    /**
+     * When a decorator is removed, we also have to remove all of its children (decorators and fields).
+     * This function determines if $field should also be removed.
+     * If so, we return true.
+     * Otherwise, we return false and set $nextDecorator to null (to stop cascading removal).
+     */
+    private function isToRemoveField(FieldDto $field, ?string & $nextDecorator): bool
+    {
+        if (! $nextDecorator) { return false; }
+
+        $formType = $field->getFormType();
+
+        if (EaFormPanelType::class === $nextDecorator) {
+            if (EaFormPanelType::class === $formType) {
+                $nextDecorator = null;
+                return false;
+            }
+            return true;
+        }
+        elseif (EaFormTabType::class === $nextDecorator) {
+            if (in_array($formType, [EaFormTabType::class, EaFormPanelType::class])) {
+                $nextDecorator = null;
+                return false;
+            }
+            return true;
+        }
+        elseif (EaFormGroupType::class === $nextDecorator) {
+            if (in_array($formType, [EaFormGroupType::class, EaFormTabType::class, EaFormPanelType::class])) {
+                $nextDecorator = null;
+                return false;
+            }
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * During the fields processing, some decorators have potentially no children
+     * (because their child-fields have been removed).
+     *
+     * So before to add a new decorator, we have to remove the previous empty decorators of same level and lower.
+     * When we add a group, we have to remove the previous group if empty.
+     * When we add a tab, we have to remove the previous group and tab if empty.
+     * And when we add a panel, we have to remove the previous group, tab and panel if empty.
+     */
+    private function removePreviousDecoratorsIfNoChildren(
+        string $newDecorator,
+        array & $panels,
+        array & $tabs,
+        array & $groups,
+        array $normalFields
+    ): void {
+        // Previous group has no children, so remove it
+        if ([] !== $groups && [] === $normalFields) {
+            array_pop($groups);
+        }
+
+        // Previous tab has no children, so remove it
+        if ((EaFormPanelType::class === $newDecorator || EaFormTabType::class === $newDecorator)
+            && [] !== $tabs && [] === $groups
+        ) {
+            array_pop($tabs);
+        }
+
+        // Previous panel has no children, so remove it
+        if (EaFormPanelType::class === $newDecorator && [] !== $panels && [] === $tabs) {
+            array_pop($panels);
+        }
     }
 }

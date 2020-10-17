@@ -8,6 +8,9 @@ use Doctrine\Persistence\Mapping\ClassMetadata;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\ActionCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormPanelType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormTabType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormGroupType;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -23,6 +26,8 @@ final class EntityDto
     private $permission;
     /** @var ?FieldCollection */
     private $fields;
+    /** @var array */
+    private $hierarchizedFields;
     /** @var ActionCollection */
     private $actions;
 
@@ -34,6 +39,7 @@ final class EntityDto
         $this->instance = $entityInstance;
         $this->primaryKeyName = $this->metadata->getIdentifierFieldNames()[0];
         $this->permission = $entityPermission;
+        $this->hierarchizedFields = [];
     }
 
     public function getFqcn(): string
@@ -107,6 +113,7 @@ final class EntityDto
         $this->isAccessible = false;
         $this->instance = null;
         $this->fields = null;
+        $this->hierarchizedFields = null;
     }
 
     public function getFields(): ?FieldCollection
@@ -117,6 +124,16 @@ final class EntityDto
     public function setFields(FieldCollection $fields): void
     {
         $this->fields = $fields;
+    }
+
+    public function getHierarchizedFields(): array
+    {
+        return $this->hierarchizedFields;
+    }
+
+    public function setHierarchizedFields(array $fields): void
+    {
+        $this->hierarchizedFields = $fields;
     }
 
     public function setActions(ActionCollection $actions): void

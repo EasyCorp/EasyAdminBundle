@@ -217,14 +217,21 @@ the fields using `PHP generators`_::
 Field Layout
 ------------
 
-In pages where you display lots of fields, you can divide them in groups using
-the "panels" created with the special ``FormField`` object::
+In pages where you display lots of fields, you can organize them in groups using
+the "panels", "tabs" or "groups" created with the special ``FormField`` object.
+Panels, tabs, groups and fields are hierarchized:
+
+* At the top, there are panels: at least one; if you omit it, it will be created for you.
+* A panel can contain tabs
+* A tab can contain groups
+* Finally, a group contains one or more fields::
 
     use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 
     public function configureFields(string $pageName): iterable
     {
         return [
+            // <-- Here a panel will be created (to decorate this orphan field)
             IdField::new('id')->hideOnForm(),
 
             // panels usually display only a title
@@ -242,8 +249,34 @@ the "panels" created with the special ``FormField`` object::
                 ->setHelp('Phone number is preferred'),
             TextField::new('phone'),
             TextField::new('email')->hideOnIndex(),
+
+            // panels having tabs
+            FormField::addPanel(),
+              FormField::addTab('Address', 'address-card')->setHelp('Fill your address information here'),
+                TextField::new('street'),
+                TextField::new('postcode'),
+                TextField::new('city'),
+              FormField:addTab('Map'),
+                TextField::new('gpsCoord'),
+                TextField::new('mapProvider'),
+
+            // panels having tabs and groups
+            FormField::addPanel('My last panel'),
+              // <-- The 'General' tab will be created here to contain these orphan fields
+              TextField('Field 1'),
+              TextField('Field 2'),
+              FormField::addTab('The last tab'),
+                FormField::addGroup(),
+                  TextField('Field 3'),
+                  TextField('Field 4'),
+                FormField::addGroup(),
+                  TextField('Field 5'),
+                  TextField('Field 6'),
         ];
     }
+
+If you apply a restriction function on panel, tab and group (hideOnForm, onlyOnDetail, setPermission, etc),
+then the restriction is applied on cascade on the decorator's children.
 
 Field Types
 -----------

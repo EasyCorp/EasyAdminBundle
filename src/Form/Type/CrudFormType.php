@@ -2,12 +2,10 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type;
 
-use ArrayObject;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetsDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
-use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
-use EasyCorp\Bundle\EasyAdminBundle\Form\EventListener\EasyAdminTabSubscriber;
+use EasyCorp\Bundle\EasyAdminBundle\Form\EventListener\EaFormTabSubscriber;
 use Symfony\Bridge\Doctrine\Form\DoctrineOrmTypeGuesser;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -38,12 +36,12 @@ class CrudFormType extends AbstractType
     {
         /** @var EntityDto $entityDto */
         $entityDto = $options['entityDto'];
-        $formTabs = [];
-        $currentFormTab = null;
-        $formPanels = [];
-        $currentFormPanel = 0;
 
         foreach ($entityDto->getFields() as $fieldDto) {
+            if ($fieldDto->isDecorator()) {
+                continue;
+            }
+
             $formFieldOptions = $fieldDto->getFormTypeOptions();
 
             // the names of embedded Doctrine entities contain dots, which are not allowed
@@ -62,53 +60,14 @@ class CrudFormType extends AbstractType
                 $formFieldOptions = array_merge($guessType->getOptions(), $formFieldOptions);
             }
 
-            if (EaFormPanelType::class === $formFieldType) {
-                ++$currentFormPanel;
-                $formPanels[$currentFormPanel] = [
-                    'form_tab' => $currentFormTab ?? null,
-                    'label' => $fieldDto->getLabel(),
-                    'icon' => $fieldDto->getCustomOptions()->get(FormField::OPTION_ICON),
-                    'collapsible' => $fieldDto->getCustomOptions()->get(FormField::OPTION_COLLAPSIBLE),
-                    'collapsed' => $fieldDto->getCustomOptions()->get(FormField::OPTION_COLLAPSED),
-                    'help' => $fieldDto->getHelp(),
-                    'css_class' => $fieldDto->getCssClass(),
-                ];
-
-                continue;
-            }
-
-            // if the form field is a special 'tab' design element, don't add it
-            // to the form. Instead, consider it the current form group (this is
-            // applied to the form fields defined after it) and store its details
-            // in a field to get them in form template
-            if (\in_array($formFieldType, ['ea_tab', EasyAdminTabType::class], true)) {
-                // The first tab should be marked as active by default
-                $metadata['active'] = 0 === \count($formTabs);
-                $metadata['errors'] = 0;
-                $currentFormTab = $metadata['fieldName'];
-
-                // plain arrays are not enough for tabs because they are modified in the
-                // lifecycle of a form (e.g. add info about form errors). Use an ArrayObject instead.
-                $formTabs[$currentFormTab] = new ArrayObject($metadata);
-
-                continue;
-            }
-
             $formField = $builder->getFormFactory()->createNamedBuilder($name, $formFieldType, null, $formFieldOptions);
             $formField->setAttribute('ea_entity', $entityDto);
-            $formField->setAttribute('ea_form_panel', $currentFormPanel);
-            $formField->setAttribute('ea_form_tab', $currentFormTab);
             $formField->setAttribute('ea_field', $fieldDto);
 
             $builder->add($formField);
         }
 
-        $builder->setAttribute('ea_form_tabs', $formTabs);
-        $builder->setAttribute('ea_form_panels', $formPanels);
-
-        if (\count($formTabs) > 0) {
-            $builder->addEventSubscriber(new EasyAdminTabSubscriber());
-        }
+        $builder->addEventSubscriber(new EaFormTabSubscriber());
     }
 
     /**
@@ -119,6 +78,7 @@ class CrudFormType extends AbstractType
         // some properties and field types require CSS/JS assets to work properly
         // get all field assets and pass them as a form variable
         $allFormFieldAssets = new AssetsDto();
+
         /** @var FieldDto $fieldDto */
         foreach ($options['entityDto']->getFields() as $fieldDto) {
             $allFormFieldAssets = $allFormFieldAssets->mergeWith($fieldDto->getAssets());
@@ -126,9 +86,6 @@ class CrudFormType extends AbstractType
 
         $view->vars['ea_crud_form'] = [
             'assets' => $allFormFieldAssets,
-            'entity' => $options['entityDto'],
-            'form_tabs' => $form->getConfig()->getAttribute('ea_form_tabs'),
-            'form_panels' => $form->getConfig()->getAttribute('ea_form_panels'),
         ];
     }
 

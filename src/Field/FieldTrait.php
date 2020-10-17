@@ -305,4 +305,11 @@ trait FieldTrait
     {
         return $this->dto;
     }
+
+    public function isDecorator(bool $isDecorator): self
+    {
+        $this->dto->isDecorator($isDecorator);
+
+        return $this;
+    }
 }

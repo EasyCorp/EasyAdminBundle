@@ -11,7 +11,7 @@ use Symfony\Component\Form\FormEvents;
  *
  * @author naitsirch <naitsirch@e.mail.de>
  */
-class EasyAdminTabSubscriber implements EventSubscriberInterface
+class EaFormTabSubscriber implements EventSubscriberInterface
 {
     /**
      * {@inheritdoc}
@@ -29,27 +29,20 @@ class EasyAdminTabSubscriber implements EventSubscriberInterface
      */
     public function handleViolations(FormEvent $event)
     {
-        $formTabs = $event->getForm()->getConfig()->getAttribute('easyadmin_form_tabs');
-
-        $firstTabWithErrors = null;
         foreach ($event->getForm() as $child) {
             $errors = $child->getErrors(true);
 
             if (\count($errors) > 0) {
-                $formTab = $child->getConfig()->getAttribute('easyadmin_form_tab');
-                $formTabs[$formTab]['errors'] += \count($errors);
+                $field = $child->getConfig()->getAttribute('ea_field');
+                $panel = $field->getDecorator('panel');
+                $tab   = $field->getDecorator('tab');
 
-                if (null === $firstTabWithErrors) {
-                    $firstTabWithErrors = $formTab;
+                $tab->setCustomOption('errors', (int) $tab->getCustomOption('errors') + \count($errors));
+
+                if (!$panel->getCustomOption('activeTab')) {
+                    $panel->setCustomOption('activeTab', $tab);
                 }
             }
-        }
-
-        // ensure that the first tab with errors is displayed
-        $firstTab = key($formTabs);
-        if ($firstTab !== $firstTabWithErrors) {
-            $formTabs[$firstTab]['active'] = false;
-            $formTabs[$firstTabWithErrors]['active'] = true;
         }
     }
 }

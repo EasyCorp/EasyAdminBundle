@@ -315,102 +315,12 @@
     </div>
 {% endblock %}
 
+{# EasyAdmin's Crud form #}
+{% use '@EasyAdmin/crud/includes/_ea_crud.html.twig' %}
+
 {% block ea_crud_rest %}
     {{ form_rest(form) }}
 {% endblock ea_crud_rest %}
-
-{# EasyAdmin form type #}
-{% block ea_crud_widget %}
-    {% if ea_crud_form.form_tabs|length > 0 %}
-        <div class="col-12">
-            <div class="nav-tabs-custom form-tabs">
-                <ul class="nav nav-tabs">
-                    {% for tab_name, tab_config in ea_form_tabs %}
-                        <li class="nav-item">
-                            <a class="nav-link {% if tab_config.active %}active{% endif %}" href="#{{ tab_config['id'] }}" id="{{ tab_config['id'] }}-tab" data-toggle="tab">
-                                {%- if tab_config.icon|default(false) -%}
-                                    <i class="fa fa-fw fa-{{ tab_config.icon }}"></i>
-                                {%- endif -%}
-                                {{ tab_config['label']|trans(domain = ea.i18n.translationDomain) }}
-                                {%- if tab_config.errors > 0 -%}
-                                    <span class="badge badge-danger" title="{{ 'form.tab.error_badge_title'|trans({'%count%': tab_config.errors}, 'EasyAdminBundle') }}">
-                                        {{- tab_config.errors -}}
-                                    </span>
-                                {%- endif -%}
-                            </a>
-                        </li>
-                    {% endfor %}
-                </ul>
-                <div class="tab-content">
-                    {% for tab_name, tab_config in ea_form_tabs %}
-                        <div id="{{ tab_config['id'] }}" class="tab-pane {% if tab_config.active %}active{% endif %} {{ tab_config['css_class']|default('') }}">
-                            {% if tab_config['help']|default(false) %}
-                                <div class="content-header-help tab-help">
-                                    {{ tab_config['help']|trans(domain = ea.i18n.translationDomain)|raw }}
-                                </div>
-                            {% endif %}
-
-                            {{ block('ea_crud_widget_panels') }}
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-    {% else %}
-        {{ block('ea_crud_widget_panels') }}
-    {% endif %}
-{% endblock ea_crud_widget %}
-
-{% block ea_crud_widget_panels %}
-    {% for panel_name, panel_config in ea_crud_form.form_panels|filter(panel_config => not panel_config.form_tab or panel_config.form_tab == tab_name) %}
-        {% set panel_has_header = panel_config.label|default(false) or panel_config.icon|default(false) %}
-
-        {% set collapsible = panel_config.collapsible %}
-        {% set collapsed = panel_config.collapsed %}
-
-        <div class="{{ panel_config.css_class ?? '' }}">
-            <div class="content-panel">
-                {% if panel_has_header %}
-                    <div class="content-panel-header {{ collapsible ? 'collapsible' }} {{ panel_config.help|default(false) is not empty ? 'with-help' }}">
-                        {% if collapsible %}
-                            <a href="#content-{{ panel_name }}" data-toggle="collapse" class="content-panel-collapse {{ collapsed ? 'collapsed' }}" aria-expanded="{{ collapsed ? 'false' : 'true' }}" aria-controls="content-{{ panel_name }}">
-                                <i class="fas fw fa-chevron-right collapse-icon"></i>
-                        {% endif %}
-
-                            {% if panel_config.icon|default(false) %}
-                                <i class="{{ panel_config.icon }}"></i>
-                            {% endif %}
-                            {{ panel_config.label|raw }}
-
-                        {% if collapsible %}
-                            </a>
-                        {% endif %}
-
-                        {% if panel_config.help|default(false) %}
-                            <div class="content-panel-header-help">{{ panel_config.help|raw }}</div>
-                        {% endif %}
-                    </div>
-                {% endif %}
-
-                <div id="content-{{ panel_name }}" class="content-panel-body with-background {{ not panel_has_header ? 'without-header' }} without-footer {{ collapsible ? 'collapse' }} {{ not collapsed ? 'show'}}">
-                    {% for field in form|filter(field => 'hidden' not in field.vars.block_prefixes and field.vars.ea_crud_form.form_panel == panel_name) %}
-                        {% if not field.vars.ea_crud_form.form_tab or field.vars.ea_crud_form.form_tab == tab_name %}
-                            {{ form_row(field) }}
-                        {% endif %}
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-    {% else %}
-        <div class="content-panel">
-            <div class="content-panel-body with-background without-header without-footer">
-                {% for field in form|filter(field => 'hidden' not in field.vars.block_prefixes and (not field.vars.ea_crud_form.form_tab or field.vars.ea_crud_form.form_tab == tab_name)) %}
-                    {{ form_row(field) }}
-                {% endfor %}
-            </div>
-        </div>
-    {% endfor %}
-{% endblock ea_crud_widget_panels %}
 
 {# EasyAdminAutocomplete form type #}
 {% block ea_autocomplete_widget %}

@@ -1,0 +1,175 @@
+{% block ea_crud_widget %}
+    {% if form is defined %}
+        {% set entity = ea.entity %}
+    {% endif %}
+
+    {% for id, panel in entity.hierarchizedFields %}
+        {{ block('ea_crud_panel') }}
+    {% endfor %}
+{% endblock ea_crud_widget %}
+
+
+{% block ea_crud_panel %}
+    {% set label          = panel.field.label %}
+    {% set help           = panel.field.help %}
+    {% set css_class      = panel.field.cssClass %}
+    {% set icon           = panel.field.customOption('icon') %}
+    {% set collapsible    = panel.field.customOption('collapsible') %}
+    {% set collapsed      = panel.field.customOption('collapsed') %}
+    {% set activeTab      = panel.field.customOption('activeTab') ?? (panel.tabs|first).field %}
+    {% set hasSeveralTabs = panel.tabs|length > 1 %}
+    {% set has_header     = label or icon or hasSeveralTabs %}
+
+    <div class="content-panel {{ css_class }}">
+        {% if has_header %}
+            {{ block('ea_crud_panel_header') }}
+        {% endif %}
+
+        <div id="{{- id -}}" class="tab-content content-panel-body with-background without-footer
+            {{ not has_header ? 'without-header' }}
+            {{ form is not defined ? 'without-padding' }}
+            {{ collapsible ? 'collapse' }} {{ not collapsed ? 'show'}}">
+
+            {% for id, tab in panel.tabs %}
+                {{ block('ea_crud_tab') }}
+            {% endfor %}
+        </div>
+    </div>
+{% endblock ea_crud_panel %}
+
+
+{% block ea_crud_panel_header %}
+    <nav class="navbar navbar-expand-lg content-panel-header">
+        {% if label or icon %}
+            {% if collapsible %}
+                <span class="navbar-brand collapsible {{ collapsed ? 'collapsed' }}"
+                    data-toggle="collapse" data-target="#{{- id -}}"
+                    aria-controls="{{- id -}}" aria-expanded="{{ collapsed ? 'false' : 'true' }}" aria-label="Toggle panel">
+            {% else %}
+                <span class="navbar-brand">
+            {% endif %}
+
+            {{ collapsible ? '<i class="fas fa-fw fa-chevron-right collapse-icon"></i>' }}
+
+            {% if icon %}
+                <i class="fa fa-fw fa-{{ icon }}"></i>
+            {% endif %}
+            {{ label|raw }}
+
+            </span>
+        {% endif %}
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#{{- id -}}-nav"
+            aria-controls="{{- id -}}-nav" aria-expanded="false" aria-label="Toggle panel navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="{{- id -}}-nav">
+            {% if hasSeveralTabs %}
+            <ul class="navbar-nav nav tabs mr-auto" role="tablist">
+                {% for id, tab in panel.tabs %}
+                    {{ block('ea_crud_tab_link') }}
+                {% endfor %}
+            </ul>
+            {% endif %}
+
+            {% if help %}
+                <span class="navbar-text content-panel-header-help">{{ help|raw }}</span>
+            {% endif %}
+        </div>
+    </nav>
+{% endblock ea_crud_panel_header %}
+
+
+{% block ea_crud_tab %}
+    {% set isActiveTab = tab.field is same as(activeTab) %}
+
+    {% if hasSeveralTabs %}
+        <div id="{{- id -}}" class="tab-pane {{ isActiveTab ? 'show active' }} {{ tab.field.cssClass }}"
+            role="tabepanel" aria-labelledby="{{- id -}}-link">
+    {% endif %}
+
+    {% if tab.field.help %}
+        <div class="content-header-help tab-help">
+            {{ tab.field.help | trans(domain = ea.i18n.translationDomain) | raw }}
+        </div>
+    {% endif %}
+
+    {% for id, group in tab.groups %}
+        {{ block('ea_crud_group') }}
+    {% endfor %}
+
+    {{ hasSeveralTabs ? '</div>' }}
+{% endblock ea_crud_tab %}
+
+
+{% block ea_crud_tab_link %}
+    {% set label  = tab.field.label %}
+    {% set icon   = tab.field.customOption('icon') %}
+    {% set errors = tab.field.customOption('errors') %}
+    {% set isActiveTab = tab.field is same as(activeTab) %}
+
+
+    <li class="nav-item">
+        <a class="nav-link {{ isActiveTab ? 'active' }} {{ errors > 0 ? 'hasErrors' }}"
+           id="{{- id -}}-link" href="#{{- id -}}" data-toggle="tab" role="tab"
+           aria-controls="{{- id -}}" aria-selected="{{ isActiveTab ? 'true' : 'false' }}">
+
+            {% if icon %}
+                <i class="fa fa-fw fa-{{ icon }}"></i>
+            {% endif %}
+
+            {{ label | trans(domain = ea.i18n.translationDomain) }}
+
+            {% if errors > 0 %}
+                <span class="badge badge-danger" title="{{ 'form.tab.error_badge_title'|trans({'%count%': errors}, 'EasyAdminBundle') }}">
+                    {{ errors }}
+                </span>
+            {% endif %}
+        </a>
+    </li>
+{% endblock ea_crud_tab_link %}
+
+
+{% block ea_crud_group %}
+    {% if loop.length > 1 %}
+        <div id="{{- id -}}" class="{{ group.field.cssClass }}">
+    {% endif %}
+
+    {% if form is defined %}
+        {% for id, field in group.fields %}
+            {{ form_row(form.children[id]) }}
+        {% endfor %}
+    {% else %}
+        {{ block('ea_crud_fields') }}
+    {% endif %}
+
+    {{ loop.length > 1 ? '</div>' }}
+{% endblock ea_crud_group %}
+
+
+{% block ea_crud_fields %}
+    <dl class="datalist">
+    {% for id, field in group.fields %}
+        {{ block('ea_crud_field') }}
+    {% endfor %}
+    </dl>
+{% endblock ea_crud_fields %}
+
+
+{% block ea_crud_field %}
+    <div class="data-row {{ loop.index0 is even ? 'with-background' }} {{ field.cssClass }}">
+        <dd>
+            {{ field.label|raw }}
+
+            {% if field.help is not empty %}
+                <span class="data-help">
+                    <i class="far fa-question-circle" data-toggle="tooltip" title="{{ field.help|e('html_attr') }}"></i>
+                </span>
+            {% endif %}
+        </dd>
+        <dt>
+            {{ include(field.templatePath, { field: field, entity: entity }, with_context = false) }}
+        </dt>
+    </div>
+{% endblock ea_crud_field %}

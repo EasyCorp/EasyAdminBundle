@@ -146,7 +146,12 @@ final class EntityRepository implements EntityRepositoryInterface
             if ($sortFieldIsDoctrineAssociation) {
                 $sortFieldParts = explode('.', $sortProperty, 2);
                 $queryBuilder->leftJoin('entity.'.$sortFieldParts[0], $sortFieldParts[0]);
-                $queryBuilder->addOrderBy('entity.'.$sortProperty, $sortOrder);
+
+                if (1 === \count($sortFieldParts)) {
+                    $queryBuilder->addOrderBy('entity.'.$sortProperty, $sortOrder);
+                } else {
+                    $queryBuilder->addOrderBy($sortProperty, $sortOrder);
+                }
             } else {
                 $queryBuilder->addOrderBy('entity.'.$sortProperty, $sortOrder);
             }

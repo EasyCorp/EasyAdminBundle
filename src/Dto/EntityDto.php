@@ -8,9 +8,6 @@ use Doctrine\Persistence\Mapping\ClassMetadata;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\ActionCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormPanelType;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormTabType;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormGroupType;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>

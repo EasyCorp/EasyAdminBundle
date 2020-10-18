@@ -32,9 +32,9 @@ final class FieldDto
     private $assets;
     private $customOptions;
     private $doctrineMetadata;
-    private bool $isDecorator;
+    private $isDecorator;
     /** @var array Contains the 3 potential decorators (panel, tab and group) */
-    private array $decorators;
+    private $decorators;
     /** @internal */
     private $uniqueId;
     private $displayedOn;

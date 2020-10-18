@@ -1,0 +1,104 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2020-10-17T14:00:13Z
+
+@liarco thanks a lot for this fix and your nice explanation!
+
+However, there's something I don't fully understand. Symfony does use `route_name.locale` format internally when using i18n routes. What the docs say is that it's better if your own code doesn't use that format (because you have to concatenate strings and it's easier to pass the locale as a route attribute). So, if this is correct, there's no need to further update your PR, right? I mean, it's not only perfectly correct but also completely finished.
+
+---------------------------------------------------------------------------
+
+by liarco at 2020-10-17T14:12:39Z
+
+Hi @javiereguiluz, let me try to explain my point better with an example:
+
+```yaml
+# admin_routes.yaml
+admin_controllers:
+    resource: ../../../src/Controller/Admin
+    type: annotation
+    prefix:
+        it: '/_admin'
+        en: '/_admin/en'
+```
+
+```php
+/*
+ * @var UrlGeneratorInterface $urlGenerator
+ */
+$urlGenerator->generate('admin', ['_locale' => 'it']);    // returns "/_admin/"
+$urlGenerator->generate('admin', ['_locale' => 'en']);    // returns "/_admin/en/"
+$urlGenerator->generate('admin.it', ['_locale' => 'it']); // returns "/_admin/"
+$urlGenerator->generate('admin.it', ['_locale' => 'en']); // returns "/_admin/"
+$urlGenerator->generate('admin.en', ['_locale' => 'it']); // returns "/_admin/en/"
+$urlGenerator->generate('admin.en', ['_locale' => 'en']); // returns "/_admin/en/"
+```
+
+Imagine your are implementing a "language chooser" widget to let the user switch to another language (and so you pass a custom `_locale` route parameter for each language you need), you won't be able to generate routes overriding the current locale if you use `admin.LOCALE`... am I wrong?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2020-10-17T14:15:21Z
+
+Thanks for the insights ... but I'm more confused now :)
+
+I think that using `route.locale` and the `_locale` attribute at the same time is wrong. But maybe I'm wrong and Symfony allows this? Also -> `admin.en` + `_locale = it` = "en" ... but `admin.it` + `_locale = en` = "en"  Shouldn't it be `it` to be consistent with the previous case?
+
+---------------------------------------------------------------------------
+
+by liarco at 2020-10-17T14:29:12Z
+
+I think that you are right about using both at the same time... it is (at least) "strange", and I think that Symfony is working in an reasonable way: you specify a localized route name -> the `_locale` param is ignored because the route name has an higher "priority".
+
+But in my use case (generating a localized route using EAB's `CrudUrlGenerator` with a `_locale` which is not the one from the current request) how would you achieve it? I think that it's impossible, but it's a pretty important feature for a multi-language project.
+
+> Also -> `admin.en` + `_locale = it` = "en" ... but `admin.it` + `_locale = en` = "en" Shouldn't it be it to be consistent with the previous case?
+
+I'm sorry but I don't understand this question since my example shows `admin.it` + `_locale = en` = "it" so Symfony seems consistent in that case (I updated my example code to match order and improve readability).
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2020-10-17T14:35:57Z
+
+It took me some time 😅  but I think I fully understand you now. Yes, my previous comment was wrong and now I see what you meant. If I'm right, you propose to use something like this:
+
+```php
+[$routeNameWithoutLocale, $routeLocale] = explode('.', $routeName, 2);
+```
+
+And if there's a match, use the `$routeNameWithoutLocale` instead of `$routeName`. If that's what you mean, yes I think that's correct so we can update this PR. Thanks!
+
+---------------------------------------------------------------------------
+
+by liarco at 2020-10-17T14:43:24Z
+
+Exactly! I'm sorry, I probably made it harder than it needed! 😅
+
+I'm gonna update the PR and do some checks to be sure not to break something or leave some unused code.
+
+---------------------------------------------------------------------------
+
+by liarco at 2020-10-17T17:27:14Z
+
+Here I am again, I made the change but I want to be sure that I'm not introducing a regression or fixing just partially.
+Changing [`AdminContextFactory::getDashboardDto(...)`](https://github.com/EasyCorp/EasyAdminBundle/blob/master/src/Factory/AdminContextFactory.php) works as expected when generating URLs from **inside EAB**, but:
+- [developers can generate URLs from outside EAB](https://github.com/EasyCorp/EasyAdminBundle/blob/bcb6be58226ce422e0db349f6787acf06323b111/src/Router/CrudUrlBuilder.php#L168) (since [`3.1.0`](https://github.com/EasyCorp/EasyAdminBundle/releases/tag/v3.1.0))
+- [developers can specify a custom DashboardController](https://github.com/EasyCorp/EasyAdminBundle/blob/bcb6be58226ce422e0db349f6787acf06323b111/src/Router/CrudUrlBuilder.php#L157)
+
+So I added the same logic inside [`CrudUrlBuilder::generateUrl()`](https://github.com/EasyCorp/EasyAdminBundle/blob/master/src/Router/CrudUrlBuilder.php)
+
+- - -
+
+I also decided to drop the current locale check since I think that it's useless and we can skip some loop cycles:
+```php
+if ($controller === $dashboardController) {
+    // needed for i18n routes, whose name follows the pattern "route_name.locale"
+    $dashboardRouteName = explode('.', $routeName, 2)[0]; // <-- Here I just get the route prefix directly since it should be the same for every localized version
+
+    break;
+}
+```
+
+- - -
+
+In the end I had a rapid look at the whole codebase (e.g. all occurrences of `routeName`) and I found [this code](https://github.com/EasyCorp/EasyAdminBundle/blob/bcb6be58226ce422e0db349f6787acf06323b111/src/Cache/CacheWarmer.php#L48), but I have no experience with it and I don't know if it needs to be updated.

@@ -9,7 +9,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type;
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  * @author Mathieu Poisbeau <contact@freepius.net>
  */
-class EaFormTabType extends EaFormPanelType
+class EaFormGroupType extends EaFormPanelType
 {
     protected const TYPE = 'group';
 }

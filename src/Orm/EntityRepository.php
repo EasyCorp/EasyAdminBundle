@@ -97,9 +97,17 @@ final class EntityRepository implements EntityRepositoryInterface
                     }
 
                     if ($i < $numAssociatedProperties - 2) {
-                        $propertyMetadata = $associatedEntityDto->getPropertyMetadata($associatedPropertyName);
-                        $targetEntity = $propertyMetadata->get('targetEntity');
-                        $associatedEntityDto = $this->entityFactory->create($targetEntity);
+                        try {
+                            $propertyMetadata = $associatedEntityDto->getPropertyMetadata($associatedPropertyName);
+                            $targetEntity = $propertyMetadata->get('targetEntity');
+                            $associatedEntityDto = $this->entityFactory->create($targetEntity);
+                        } catch (\InvalidArgumentException $exception) {
+                            if ($this->isNestedEmbbededProperty($associatedProperties)) {
+                                $associatedPropertyName = $this->createNestedEmbbededPropertyName($associatedProperties, $i);
+                                break; // ORM\Embedded property
+                            }
+                        }
+
                     }
                 }
 
@@ -194,5 +202,28 @@ final class EntityRepository implements EntityRepositoryInterface
 
             ++$i;
         }
+    }
+
+    /**
+     * @param string[] $associatedProperties
+     */
+    private function isNestedEmbbededProperty(array $associatedProperties): bool
+    {
+        if (count($associatedProperties) > 1) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param string[] $associatedProperties
+     */
+    private function createNestedEmbbededPropertyName(array $associatedProperties, int $i): string
+    {
+        return implode(
+            '.',
+            array_slice($associatedProperties, $i + 1)
+        );
     }
 }

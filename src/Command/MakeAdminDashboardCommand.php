@@ -59,7 +59,7 @@ class MakeAdminDashboardCommand extends Command
 
         $guessedNamespace = u($controllerDir)->equalsTo('src')
             ? 'App'
-            : u($controllerDir)->replace('/', ' ')->replace('\\', ' ')->replace('src ', 'app ')->title(true)->replace(' ', '\\');
+            : u($controllerDir)->replace('/', ' ')->replace('\\', ' ')->replace('src ', 'app ')->title(true)->replace(' ', '\\')->trimEnd('\\');
 
         $generatedFilePath = $this->classMaker->make(sprintf('%s/%s.php', $controllerDir, $controllerClassName), 'dashboard.tpl', [
             'namespace' => $guessedNamespace,

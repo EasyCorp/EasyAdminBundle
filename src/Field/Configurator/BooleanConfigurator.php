@@ -22,7 +22,7 @@ final class BooleanConfigurator implements FieldConfiguratorInterface
     {
         $isRenderedAsSwitch = true === $field->getCustomOption(BooleanField::OPTION_RENDER_AS_SWITCH);
         if ($isRenderedAsSwitch && false !== strpos($field->getProperty(), '.')) {
-            throw new \InvalidArgumentException('The "%s" property cannot be rendered as a switch because it belongs to an associated entity instead of to the entity itself. Render the property as a normal boolean field.', $field->getProperty());
+            throw new \InvalidArgumentException(sprintf('The "%s" property cannot be rendered as a switch because it belongs to an associated entity instead of to the entity itself. Render the property as a normal boolean field.', $field->getProperty()));
         }
 
         // TODO: ask someone who knows Symfony forms well how to make this work

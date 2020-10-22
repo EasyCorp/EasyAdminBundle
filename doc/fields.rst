@@ -106,6 +106,13 @@ can define their access as public properties (e.g. ``public $firstName``) or
 public methods (e.g. ``public function getFirstName()``, ``public function
 firstName()``).
 
+.. note::
+
+    EasyAdmin uses Symfony Forms to create and edit Doctrine entities. That's
+    why all entity properties must be nullable: their setters need to accept
+    ``null`` values and their getters must be allowed to return ``null``. In the
+    database, the associated fields don't have to be nullable.
+
 Unmapped Fields
 ~~~~~~~~~~~~~~~
 

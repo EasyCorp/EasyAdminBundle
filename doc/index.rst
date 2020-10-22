@@ -42,10 +42,7 @@ EasyAdmin requires the following:
 
 * PHP 7.2 or higher;
 * Symfony 4.4 or higher;
-* Doctrine ORM entities (Doctrine ODM is not supported);
-* Nullable fields. More precise: For any property managed by EasyAdmin, the setter needs to accept
-    `null`, and the getter must be allowed to return `null`. The field in the database doen't have
-    to be nullable.
+* Doctrine ORM entities (Doctrine ODM is not supported).
 
 Installation
 ------------

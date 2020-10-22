@@ -23,7 +23,8 @@ final class DashboardControllerRegistry
 
         $this->contextIdToControllerFqcnMap = array_flip($this->controllerFqcnToContextIdMap);
 
-        $dashboardControllerRoutes = require $cacheDir.'/'.CacheWarmer::DASHBOARD_ROUTES_CACHE;
+        $dashboardRoutesCachePath = $cacheDir.'/'.CacheWarmer::DASHBOARD_ROUTES_CACHE;
+        $dashboardControllerRoutes = !file_exists($dashboardRoutesCachePath) ? [] : require $cacheDir.'/'.CacheWarmer::DASHBOARD_ROUTES_CACHE;
         foreach ($dashboardControllerRoutes as $routeName => $controller) {
             $this->controllerFqcnToRouteMap[u($controller)->before('::')->toString()] = $routeName;
         }

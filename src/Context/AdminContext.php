@@ -111,6 +111,16 @@ final class AdminContext
         return $this->dashboardDto->getRouteName();
     }
 
+    public function getDashboardContentWidth(): string
+    {
+        return $this->dashboardDto->getContentWidth();
+    }
+
+    public function getDashboardSidebarWidth(): string
+    {
+        return $this->dashboardDto->getSidebarWidth();
+    }
+
     public function getMainMenu(): MainMenuDto
     {
         if (null !== $this->mainMenuDto) {

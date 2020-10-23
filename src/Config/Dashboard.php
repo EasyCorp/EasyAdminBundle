@@ -60,4 +60,18 @@ final class Dashboard
     {
         return $this->dto;
     }
+
+    public function setContentWidth(string $contentWidth): self
+    {
+        $this->dto->setContentWidth($contentWidth);
+
+        return $this;
+    }
+
+    public function setSidebarWidth(string $sidebarWidth)
+    {
+        $this->dto->setSidebarWidth($sidebarWidth);
+
+        return $this;
+    }
 }

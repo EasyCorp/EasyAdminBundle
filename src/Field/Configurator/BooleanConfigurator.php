@@ -21,7 +21,7 @@ final class BooleanConfigurator implements FieldConfiguratorInterface
     public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
     {
         $isRenderedAsSwitch = true === $field->getCustomOption(BooleanField::OPTION_RENDER_AS_SWITCH);
-        if ($isRenderedAsSwitch && false !== strpos($field->getProperty(), '.')) {
+        if ($isRenderedAsSwitch && $this->isNestedProperty($field) && false === $this->isBoolean($field)) {
             throw new \InvalidArgumentException(sprintf('The "%s" property cannot be rendered as a switch because it belongs to an associated entity instead of to the entity itself. Render the property as a normal boolean field.', $field->getProperty()));
         }
 
@@ -30,5 +30,24 @@ final class BooleanConfigurator implements FieldConfiguratorInterface
             // see https://symfony.com/blog/new-in-symfony-4-4-bootstrap-custom-switches
             // $field->setFormTypeOptionIfNotSet('label_attr.class', 'switch-custom');
         }
+    }
+
+    private function isNestedProperty(FieldDto $field): bool
+    {
+        return false !== strpos($field->getProperty(), '.');
+    }
+
+    private function isBoolean(FieldDto $field): bool
+    {
+        if (false === $field->getDoctrineMetadata()->has('type')) {
+            return false;
+        }
+
+        $doctrineType = $field->getDoctrineMetadata()->get('type');
+        if ('boolean' === $doctrineType) {
+            return true;
+        }
+
+        return false;
     }
 }

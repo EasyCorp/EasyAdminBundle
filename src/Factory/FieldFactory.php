@@ -155,6 +155,15 @@ final class FieldFactory
         }
 
         /**
+         * We have to check a last time the emptiness of the previous decorators.
+         * Because at this final point, if the last field was a decorator or a removed field,
+         * there are potentially empty decorators.
+         */
+        if (! $isIndexPage) {
+            $this->removePreviousDecoratorsIfNoChildren(EaFormPanelType::class, $panels, $tabs, $groups, $normalFields);
+        }
+
+        /**
          * From $panels or $normalFields:
          *  1) browse all fields in order
          *  2) apply the configurators on each

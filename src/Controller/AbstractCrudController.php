@@ -231,8 +231,9 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             }
 
             if (Action::SAVE_AND_RETURN === $submitButtonName) {
-                $url = $context->getReferrer()
-                    ?? $this->get(CrudUrlGenerator::class)->build()->setAction(Action::INDEX)->generateUrl();
+                $url = !$context->getReferrer()
+                    ? $this->get(CrudUrlGenerator::class)->build()->setAction(Action::INDEX)->generateUrl()
+                    : $context->getReferrer();
 
                 return $this->redirect($url);
             }

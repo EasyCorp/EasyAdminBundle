@@ -298,7 +298,7 @@ quite a lot of code, so overriding them is not that convenient.
 Instead, you can override other smaller methods that implement certain features
 needed by the CRUD actions. For example, the ``index()`` action calls to a
 method named ``createIndexQueryBuilder()`` to create the Doctrine query builder
-used to get the results dispalyed on the index listing. If you want to customize
+used to get the results displayed on the index listing. If you want to customize
 that listing, it's better to override the ``createIndexQueryBuilder()`` method
 instead of the entire ``index()`` method. There are many of these methods, so
 you should check the ``EasyCorp\\Bundle\\EasyAdminBundle\\Controller\\AbstractCrudController`` class.

@@ -503,7 +503,7 @@ called ``ea`` (the initials of "EasyAdmin"):
 
     {% for menuItem in ea.mainMenu.items %}
         {# ... #}
-    {% endif %}
+    {% endfor %}
 
 The ``AdminContext`` variable is created dynamically on each request, so you
 can't inject it directly in your services. Instead, use the ``AdminContextProvider``

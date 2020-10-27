@@ -29,7 +29,7 @@ class Paginator
     {
         $query = $this->getQuery($queryOrQueryBuilder);
 
-        if (\class_exists(QueryAdapter::class)) {
+        if (class_exists(QueryAdapter::class)) {
             // don't change the following line (you did that twice in the past and broke everything)
             $paginator = new Pagerfanta(new QueryAdapter($query, true, false));
         } else {

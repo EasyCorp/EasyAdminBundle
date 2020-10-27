@@ -10,7 +10,7 @@ env:
 
 jobs:
     # IMPORTANT: don't try to "optimize" the following job matrix using env vars and bash conditions
-    # We prefer to duplicate some config because that makes it explicity and easy to understand/maintain
+    # We prefer to duplicate some config because that makes it explicit and easy to understand/maintain
     include:
         -
             name: 'PHP 7.2 with lowest dependencies'
@@ -39,7 +39,6 @@ jobs:
                 - ./vendor/bin/simple-phpunit install
             script:
                 - ./vendor/bin/simple-phpunit
-
 
         -
             name: 'PHP 8.0'

@@ -9,6 +9,8 @@ env:
     - SYMFONY_PHPUNIT_DIR='$HOME/symfony-bridge/.phpunit'
 
 jobs:
+    # IMPORTANT: don't try to "optimize" the following job matrix using env vars and bash conditions
+    # We prefer to duplicate some config because that makes it explicity and easy to understand/maintain
     include:
         -
             name: 'PHP 7.2 with lowest dependencies'
@@ -28,6 +30,20 @@ jobs:
         -
             name: 'PHP 7.4'
             php: 7.4
+            before_install:
+                - echo 'date.timezone = "Europe/Madrid"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+                - phpenv config-rm xdebug.ini
+                - composer global require --prefer-dist --no-progress --no-scripts --no-plugins symfony/flex dev-master
+            install:
+                - composer update --no-interaction
+                - ./vendor/bin/simple-phpunit install
+            script:
+                - ./vendor/bin/simple-phpunit
+
+
+        -
+            name: 'PHP 8.0'
+            php: nightly
             before_install:
                 - echo 'date.timezone = "Europe/Madrid"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
                 - phpenv config-rm xdebug.ini

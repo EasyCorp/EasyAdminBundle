@@ -11,11 +11,6 @@ env:
     PHPUNIT_FLAGS: "-v"
     SYMFONY_PHPUNIT_DIR: "$HOME/symfony-bridge/.phpunit"
     SYMFONY_REQUIRE: ">=4.4"
-    # These only appear in PHP 8, but I don't know how to set this env var only for PHP 8
-    # 1x: Required parameter $timezone follows optional parameter $pattern
-    # 1x: Required parameter $calendar follows optional parameter $pattern
-    # both in EasyAdminExtensionTest::testLegacyParameterIsDefined from EasyCorp\Bundle\EasyAdminBundle\Tests\Functional
-    SYMFONY_DEPRECATIONS_HELPER: 2
 
 jobs:
     coding-standards:
@@ -66,14 +61,11 @@ jobs:
                 run: "vendor/bin/php-cs-fixer fix --dry-run --diff"
 
     test:
-        name: "PHP ${{ matrix.php-version }} + symfony/skeleton@${{ matrix.symfony-skeleton-stability }}"
+        name: "PHP ${{ matrix.php-version }}"
 
         runs-on: ubuntu-latest
 
         continue-on-error: ${{ matrix.allow-failures }}
-
-        env:
-            SYMFONY_SKELETON_STABILITY: ${{ matrix.symfony-skeleton-stability }}
 
         strategy:
             matrix:
@@ -81,16 +73,8 @@ jobs:
                     - '7.2.5'
                     - '7.3'
                     - '7.4'
-                symfony-skeleton-stability:
-                    - 'stable'
+                    - '8.0'
                 allow-failures: [false]
-                include:
-                    - php-version: '7.4'
-                      symfony-skeleton-stability: 'dev'
-                      allow-failures: true
-                    - php-version: '8.0'
-                      symfony-skeleton-stability: 'dev'
-                      allow-failures: true
 
         steps:
             - name: "Checkout code"
@@ -114,7 +98,7 @@ jobs:
               uses: actions/cache@v2.1.2
               with:
                   path: ${{ steps.composer-cache.outputs.dir }}
-                  key: ${{ runner.os }}-${{ matrix.php-version }}-composer-${{ hashFiles('composer.json') }}-symfony-skeleton-stability-${{ matrix.symfony-skeleton-stability }}-allow-failures-${{ matrix.allow-failures }}
+                  key: ${{ runner.os }}-${{ matrix.php-version }}-composer-${{ hashFiles('composer.json') }}-allow-failures-${{ matrix.allow-failures }}
                   restore-keys: ${{ runner.os }}-${{ matrix.php-version }}-composer-
 
             - name: "Require symfony/flex"
@@ -125,6 +109,15 @@ jobs:
 
             - if: matrix.php-version == '8.0'
               run: composer update --ignore-platform-reqs
+
+            # These only appear in PHP 8:
+            #     1x: Required parameter $timezone follows optional parameter $pattern
+            #     1x: Required parameter $calendar follows optional parameter $pattern
+            # both in EasyAdminExtensionTest::testLegacyParameterIsDefined from EasyCorp\Bundle\EasyAdminBundle\Tests\Functional
+            - if: matrix.php-version == '8.0'
+              name: Sets SYMFONY_DEPRECATIONS_HELPER environment variable for PHP 8.0
+              run: |
+                  echo 'SYMFONY_DEPRECATIONS_HELPER=2' >> $GITHUB_ENV
 
             - name: "Install PHPUnit"
               run: vendor/bin/simple-phpunit install

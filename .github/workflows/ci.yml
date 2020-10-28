@@ -1,0 +1,136 @@
+name: "CI"
+
+on:
+    pull_request:
+    push:
+        branches:
+            - 'master'
+
+env:
+    fail-fast: true
+    PHPUNIT_FLAGS: "-v"
+    SYMFONY_PHPUNIT_DIR: "$HOME/symfony-bridge/.phpunit"
+    SYMFONY_REQUIRE: ">=4.4"
+    # These only appear in PHP 8, but I don't know how to set this env var only for PHP 8
+    # 1x: Required parameter $timezone follows optional parameter $pattern
+    # 1x: Required parameter $calendar follows optional parameter $pattern
+    # both in EasyAdminExtensionTest::testLegacyParameterIsDefined from EasyCorp\Bundle\EasyAdminBundle\Tests\Functional
+    SYMFONY_DEPRECATIONS_HELPER: 2
+
+jobs:
+    coding-standards:
+        name: "Coding Standards (${{ matrix.php-version }})"
+
+        runs-on: "ubuntu-latest"
+
+        strategy:
+            matrix:
+                php-version:
+                    - '7.4'
+
+        steps:
+            -
+                name: "Checkout code"
+                uses: "actions/checkout@v2"
+
+            -
+                name: "Install PHP"
+                uses: "shivammathur/setup-php@v2"
+                with:
+                    coverage: "none"
+                    php-version: "${{ matrix.php-version }}"
+
+            -
+                name: "Validate composer.json"
+                run: "composer validate --strict --no-check-lock"
+
+            -
+                name: "Determine composer cache directory"
+                id: "determine-composer-cache-directory"
+                run: "echo \"::set-output name=directory::$(composer config cache-dir)\""
+
+            -
+                name: "Cache dependencies installed with composer"
+                uses: "actions/cache@v2"
+                with:
+                    path: "${{ steps.determine-composer-cache-directory.outputs.directory }}"
+                    key: "php-${{ matrix.php-version }}-composer-${{ hashFiles('composer.lock') }}"
+                    restore-keys: "php-${{ matrix.php-version }}-composer-"
+
+            -
+                name: "Install dependencies with composer"
+                run: "composer install --no-interaction --no-progress --no-suggest --no-scripts"
+
+            -
+                name: "Run friendsofphp/php-cs-fixer"
+                run: "vendor/bin/php-cs-fixer fix --dry-run --diff"
+
+    test:
+        name: "PHP ${{ matrix.php-version }} + symfony/skeleton@${{ matrix.symfony-skeleton-stability }}"
+
+        runs-on: ubuntu-latest
+
+        continue-on-error: ${{ matrix.allow-failures }}
+
+        env:
+            SYMFONY_SKELETON_STABILITY: ${{ matrix.symfony-skeleton-stability }}
+
+        strategy:
+            matrix:
+                php-version:
+                    - '7.2.5'
+                    - '7.3'
+                    - '7.4'
+                symfony-skeleton-stability:
+                    - 'stable'
+                allow-failures: [false]
+                include:
+                    - php-version: '7.4'
+                      symfony-skeleton-stability: 'dev'
+                      allow-failures: true
+                    - php-version: '8.0'
+                      symfony-skeleton-stability: 'dev'
+                      allow-failures: true
+
+        steps:
+            - name: "Checkout code"
+              uses: actions/checkout@v2.3.3
+
+            - name: "Install PHP with extensions"
+              uses: shivammathur/setup-php@2.7.0
+              with:
+                  coverage: "none"
+                  php-version: ${{ matrix.php-version }}
+                  tools: composer:v2
+
+            - name: "Add PHPUnit matcher"
+              run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
+
+            - name: "Set composer cache directory"
+              id: composer-cache
+              run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+            - name: "Cache composer"
+              uses: actions/cache@v2.1.2
+              with:
+                  path: ${{ steps.composer-cache.outputs.dir }}
+                  key: ${{ runner.os }}-${{ matrix.php-version }}-composer-${{ hashFiles('composer.json') }}-symfony-skeleton-stability-${{ matrix.symfony-skeleton-stability }}-allow-failures-${{ matrix.allow-failures }}
+                  restore-keys: ${{ runner.os }}-${{ matrix.php-version }}-composer-
+
+            - name: "Require symfony/flex"
+              run: composer global require --no-progress --no-scripts --no-plugins symfony/flex dev-main
+
+            - if: matrix.php-version != '8.0'
+              run: composer update
+
+            - if: matrix.php-version == '8.0'
+              run: composer update --ignore-platform-reqs
+
+            - name: "Install PHPUnit"
+              run: vendor/bin/simple-phpunit install
+
+            - name: "PHPUnit version"
+              run: vendor/bin/simple-phpunit --version
+
+            - name: "Run tests"
+              run: vendor/bin/simple-phpunit ${{ env.PHPUNIT_FLAGS }}

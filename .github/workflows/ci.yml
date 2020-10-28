@@ -54,7 +54,7 @@ jobs:
                 uses: "actions/cache@v2"
                 with:
                     path: "${{ steps.determine-composer-cache-directory.outputs.directory }}"
-                    key: "php-${{ matrix.php-version }}-composer-${{ hashFiles('composer.lock') }}"
+                    key: "php-${{ matrix.php-version }}-composer-${{ hashFiles('composer.json') }}"
                     restore-keys: "php-${{ matrix.php-version }}-composer-"
 
             -

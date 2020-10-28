@@ -1,0 +1,16 @@
+name: "Linter: Documentation"
+
+on: [push, pull_request]
+
+jobs:
+    doctor-rst:
+        name: DOCtor-RST
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@master
+            - name: DOCtor-RST
+              uses: docker://oskarstark/doctor-rst
+              with:
+                  args: --short
+              env:
+                  DOCS_DIR: 'doc/'

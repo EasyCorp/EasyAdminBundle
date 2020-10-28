@@ -1,0 +1,5 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2020-10-28T20:05:27Z
+
+@OskarStark do you have some clue about why this is failing in PHP 8 but not in the other PHP versions? See https://github.com/EasyCorp/EasyAdminBundle/runs/1322941755?check_suite_focus=true. Thanks!

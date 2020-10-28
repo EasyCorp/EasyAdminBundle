@@ -59,7 +59,7 @@ class ExceptionListener
             ?? $this->easyAdminConfig['design']['templates']['layout']
             ?? '@EasyAdmin/default/layout.html.twig';
 
-        return Response::create($this->twig->render($exceptionTemplatePath, [
+        return new Response($this->twig->render($exceptionTemplatePath, [
             'exception' => $exception,
             'layout_template_path' => $exceptionLayoutTemplatePath,
         ]), $exception->getStatusCode());

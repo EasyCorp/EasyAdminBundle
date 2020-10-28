@@ -21,12 +21,12 @@ class CustomMenuTest extends AbstractTestCase
 
         $this->assertSame(
             'Products',
-            trim($crawler->filter('.sidebar-menu li.active.submenu-active a')->text())
+            trim($crawler->filter('.sidebar-menu li.active.submenu-active a')->text(null, true))
         );
 
         $this->assertSame(
             'Categories',
-            trim($crawler->filter('.sidebar-menu .treeview-menu li.active a')->text())
+            trim($crawler->filter('.sidebar-menu .treeview-menu li.active a')->text(null, true))
         );
     }
 

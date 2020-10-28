@@ -23,7 +23,7 @@ class FiltersTest extends AbstractTestCase
 
         $this->assertCount(1, $crawler->filter('.global-actions .action-filters'));
         $this->assertCount(1, $crawler->filter('.global-actions .action-filters-button'));
-        $this->assertContains('Filters (1)', $crawler->filter('.global-actions .action-filters-button')->text());
+        $this->assertContains('Filters (1)', $crawler->filter('.global-actions .action-filters-button')->text(null, true));
         $this->assertCount(1, $crawler->filter('.global-actions .action-filters-reset'));
     }
 
@@ -55,13 +55,13 @@ class FiltersTest extends AbstractTestCase
 
         $this->assertSame('lorem', $crawler->filter('#filters input#filters_name_value')->attr('value'));
 
-        $this->assertSame('is greater than', $crawler->filter('#filters select#filters_price_comparison option[selected="selected"]')->text());
+        $this->assertSame('is greater than', $crawler->filter('#filters select#filters_price_comparison option[selected="selected"]')->text(null, true));
         $this->assertSame('3.14', $crawler->filter('#filters input#filters_price_value')->attr('value'));
 
-        $this->assertSame('is before or same', $crawler->filter('#filters select#filters_createdAt_comparison option[selected="selected"]')->text());
+        $this->assertSame('is before or same', $crawler->filter('#filters select#filters_createdAt_comparison option[selected="selected"]')->text(null, true));
         $this->assertSame('2019-06-10T10:30:00', $crawler->filter('#filters input#filters_createdAt_value')->attr('value'));
 
-        $this->assertSame('is not same', $crawler->filter('#filters select#filters_categories_comparison option[selected="selected"]')->text());
+        $this->assertSame('is not same', $crawler->filter('#filters select#filters_categories_comparison option[selected="selected"]')->text(null, true));
         $this->assertSame('1', $crawler->filter('#filters select#filters_categories_value option[selected="selected"]')->attr('value'));
     }
 }

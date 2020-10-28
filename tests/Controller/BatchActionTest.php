@@ -12,9 +12,9 @@ class BatchActionTest extends AbstractTestCase
     {
         $crawler = $this->requestListView();
 
-        $this->assertSame('Delete', $crawler->filter('form[name="batch_form"] button[value="delete"]')->text());
+        $this->assertSame('Delete', $crawler->filter('form[name="batch_form"] button[value="delete"]')->text(null, true));
 
-        $this->assertSame('Custom batch action', trim($crawler->filter('form[name="batch_form"] button[value="custom_batch_action"]')->text()));
+        $this->assertSame('Custom batch action', trim($crawler->filter('form[name="batch_form"] button[value="custom_batch_action"]')->text(null, true)));
         $this->assertSame('fa fa-fw fa-custom-icon', trim($crawler->filter('form[name="batch_form"] button[value="custom_batch_action"] i')->attr('class')));
     }
 

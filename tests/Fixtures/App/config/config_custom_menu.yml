@@ -2,7 +2,7 @@ imports:
     - { resource: config_default_backend.yml }
 
 framework:
-    router: { resource: "%kernel.project_dir%/config/routing_custom_menu.php" }
+    router: { resource: "%kernel.project_dir%/config/routing_custom_menu.php", utf8: true }
 
 easy_admin:
     design:

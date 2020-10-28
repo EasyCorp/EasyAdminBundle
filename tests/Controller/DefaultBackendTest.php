@@ -35,8 +35,8 @@ class DefaultBackendTest extends AbstractTestCase
         $backendConfig = static::$client->getContainer()->get('easyadmin.config.manager')->getBackendConfig();
         $this->assertFalse($backendConfig['design']['rtl'], 'RTL is disabled by default.');
 
-        $this->assertNotContains('bootstrap-rtl.min.css', $crawler->filter('head')->text());
-        $this->assertNotContains('adminlte-rtl.min.css', $crawler->filter('head')->text());
+        $this->assertNotContains('bootstrap-rtl.min.css', $crawler->filter('head')->text(null, true));
+        $this->assertNotContains('adminlte-rtl.min.css', $crawler->filter('head')->text(null, true));
     }
 
     public function testDefaultCssStylesAreLinked()
@@ -63,7 +63,7 @@ class DefaultBackendTest extends AbstractTestCase
     {
         $crawler = $this->getBackendHomepage();
 
-        $this->assertSame('EasyAdmin', trim($crawler->filter('#header-logo a')->text()));
+        $this->assertSame('EasyAdmin', trim($crawler->filter('#header-logo a')->text(null, true)));
         $this->assertSame('/admin/', $crawler->filter('#header-logo a')->attr('href'));
     }
 
@@ -81,7 +81,7 @@ class DefaultBackendTest extends AbstractTestCase
 
         $i = 0;
         foreach ($menuItems as $label => $url) {
-            $this->assertSame($label, trim($crawler->filter('.sidebar-menu li a')->eq($i)->text()));
+            $this->assertSame($label, trim($crawler->filter('.sidebar-menu li a')->eq($i)->text(null, true)));
             $this->assertSame($url, $crawler->filter('.sidebar-menu li a')->eq($i)->attr('href'));
 
             ++$i;
@@ -111,8 +111,8 @@ class DefaultBackendTest extends AbstractTestCase
     {
         $crawler = $this->requestListView();
 
-        $this->assertSame('Category', trim($crawler->filter('head title')->text()));
-        $this->assertSame('Category', trim($crawler->filter('h1.title')->text()));
+        $this->assertSame('Category', trim($crawler->filter('head title')->text(null, true)));
+        $this->assertSame('Category', trim($crawler->filter('h1.title')->text(null, true)));
     }
 
     public function testListViewSearchAction()
@@ -148,7 +148,7 @@ class DefaultBackendTest extends AbstractTestCase
     {
         $crawler = $this->requestListView();
 
-        $this->assertSame('Add Category', trim($crawler->filter('.global-actions a.btn')->text()));
+        $this->assertSame('Add Category', trim($crawler->filter('.global-actions a.btn')->text(null, true)));
         $this->assertContains('action-new', trim($crawler->filter('.global-actions a.btn')->attr('class')));
         $this->assertSame('_self', $crawler->filter('.global-actions a.btn')->attr('target'));
         $this->assertCount(0, $crawler->filter('.global-actions a.btn i'), 'The default "new" button shows no icon.');
@@ -159,17 +159,17 @@ class DefaultBackendTest extends AbstractTestCase
     {
         $crawler = $this->requestListView();
 
-        $this->assertSame('Edit', trim($crawler->filter('#main .table td.actions a')->eq(0)->text()));
+        $this->assertSame('Edit', trim($crawler->filter('#main .table td.actions a')->eq(0)->text(null, true)));
         $this->assertContains('action-edit', trim($crawler->filter('#main .table td.actions a')->eq(0)->attr('class')));
         $this->assertSame('_self', $crawler->filter('#main .table td.actions a')->eq(0)->attr('target'));
-        $this->assertSame('Delete', trim($crawler->filter('#main .table td.actions a')->eq(1)->text()));
+        $this->assertSame('Delete', trim($crawler->filter('#main .table td.actions a')->eq(1)->text(null, true)));
     }
 
     public function testListViewTableIdColumn()
     {
         $crawler = $this->requestListView();
 
-        $this->assertSame('ID', trim($crawler->filter('table th')->first()->text()),
+        $this->assertSame('ID', trim($crawler->filter('table th')->first()->text(null, true)),
             'The ID entity property is very special and we uppercase it automatically to improve its readability.'
         );
     }
@@ -180,7 +180,7 @@ class DefaultBackendTest extends AbstractTestCase
         $columnLabels = ['ID', 'Name', 'Products', 'Parent', 'Actions'];
 
         foreach ($columnLabels as $i => $label) {
-            $this->assertSame($label, trim($crawler->filter('.table thead th')->eq($i)->text()));
+            $this->assertSame($label, trim($crawler->filter('.table thead th')->eq($i)->text(null, true)));
         }
     }
 
@@ -189,7 +189,7 @@ class DefaultBackendTest extends AbstractTestCase
         $crawler = $this->requestListView();
 
         $this->assertCount(1, $crawler->filter('.table thead th[class*="sorted"]'), 'Table is sorted only by one column.');
-        $this->assertSame('ID', trim($crawler->filter('.table thead th[class*="sorted"]')->text()), 'By default, table is soreted by ID column.');
+        $this->assertSame('ID', trim($crawler->filter('.table thead th[class*="sorted"]')->text(null, true)), 'By default, table is soreted by ID column.');
         $this->assertSame('fa fa-fw fa-arrow-down', $crawler->filter('.table thead th[class*="sorted"] i')->attr('class'), 'The column used to sort results shows the right icon.');
     }
 
@@ -219,7 +219,7 @@ class DefaultBackendTest extends AbstractTestCase
     {
         $crawler = $this->requestListView();
 
-        $this->assertContains('200 results', $crawler->filter('.list-pagination')->text());
+        $this->assertContains('200 results', $crawler->filter('.list-pagination')->text(null, true));
 
         $this->assertSame('page-item disabled', $crawler->filter('.list-pagination li:contains("Previous")')->attr('class'));
         $this->assertSame('page-link', $crawler->filter('.list-pagination a:contains("Previous")')->attr('class'));
@@ -231,8 +231,8 @@ class DefaultBackendTest extends AbstractTestCase
     {
         $crawler = $this->requestListView('Purchase');
 
-        $this->assertRegExp('/\d{4}-\d{2}-\d{2}/', trim($crawler->filter('#main table tr')->eq(1)->filter('td.date')->text()));
-        $this->assertRegExp('/\d{2}:\d{2}/', trim($crawler->filter('#main table tr')->eq(1)->filter('td.time')->text()));
+        $this->assertRegExp('/\d{4}-\d{2}-\d{2}/', trim($crawler->filter('#main table tr')->eq(1)->filter('td.date')->text(null, true)));
+        $this->assertRegExp('/\d{2}:\d{2}/', trim($crawler->filter('#main table tr')->eq(1)->filter('td.time')->text(null, true)));
     }
 
     public function testListViewBooleanToggles()
@@ -247,7 +247,7 @@ class DefaultBackendTest extends AbstractTestCase
     {
         $crawler = $this->requestListView('Product');
 
-        $this->assertNotContains('&lt;ul&gt;', trim($crawler->filter('#main table td.string')->first()->text()), 'HTML tags are removed by default in the "list" view.');
+        $this->assertNotContains('&lt;ul&gt;', trim($crawler->filter('#main table td.string')->first()->text(null, true)), 'HTML tags are removed by default in the "list" view.');
     }
 
     public function testListViewHasNoFilters()
@@ -261,8 +261,8 @@ class DefaultBackendTest extends AbstractTestCase
     {
         $crawler = $this->requestShowView();
 
-        $this->assertSame('Category (#200)', trim($crawler->filter('head title')->text()));
-        $this->assertSame('Category (#200)', trim($crawler->filter('h1.title')->text()));
+        $this->assertSame('Category (#200)', trim($crawler->filter('head title')->text(null, true)));
+        $this->assertSame('Category (#200)', trim($crawler->filter('h1.title')->text(null, true)));
     }
 
     public function testShowViewFieldLabels()
@@ -271,7 +271,7 @@ class DefaultBackendTest extends AbstractTestCase
         $fieldLabels = ['ID', 'Name', 'Products', 'Parent'];
 
         foreach ($fieldLabels as $i => $label) {
-            $this->assertSame($label, trim($crawler->filter('#main .form-group label')->eq($i)->text()));
+            $this->assertSame($label, trim($crawler->filter('#main .form-group label')->eq($i)->text(null, true)));
         }
     }
 
@@ -333,15 +333,15 @@ class DefaultBackendTest extends AbstractTestCase
     {
         $crawler = $this->requestShowView('Product', 1);
 
-        $this->assertContains('<ul>', trim($crawler->filter('.form-group:contains("Html features")')->first()->text()), 'HTML tags are maintained by default in the "show" view.');
+        $this->assertContains('<ul>', trim($crawler->filter('.form-group:contains("Html features")')->first()->text(null, true)), 'HTML tags are maintained by default in the "show" view.');
     }
 
     public function testEditViewTitle()
     {
         $crawler = $this->requestEditView();
 
-        $this->assertSame('Edit Category (#200)', trim($crawler->filter('head title')->text()));
-        $this->assertSame('Edit Category (#200)', trim($crawler->filter('h1.title')->text()));
+        $this->assertSame('Edit Category (#200)', trim($crawler->filter('head title')->text(null, true)));
+        $this->assertSame('Edit Category (#200)', trim($crawler->filter('h1.title')->text(null, true)));
     }
 
     public function testEditViewFormAttributes()
@@ -360,7 +360,7 @@ class DefaultBackendTest extends AbstractTestCase
         $fieldLabels = ['Name', 'Products', 'Parent'];
 
         foreach ($fieldLabels as $i => $label) {
-            $this->assertSame($label, trim($crawler->filter('#main .form-group label')->eq($i)->text()));
+            $this->assertSame($label, trim($crawler->filter('#main .form-group label')->eq($i)->text(null, true)));
         }
     }
 
@@ -428,7 +428,7 @@ class DefaultBackendTest extends AbstractTestCase
 
         $this->assertContains(
             $categoryName,
-            $crawler->filter('#main table tr')->eq(1)->text(),
+            $crawler->filter('#main table tr')->eq(1)->text(null, true),
             'The modified category is displayed in the first data row of the "list" table.'
         );
     }
@@ -460,8 +460,8 @@ class DefaultBackendTest extends AbstractTestCase
     {
         $crawler = $this->requestNewView();
 
-        $this->assertSame('Create Category', trim($crawler->filter('head title')->text()));
-        $this->assertSame('Create Category', trim($crawler->filter('h1.title')->text()));
+        $this->assertSame('Create Category', trim($crawler->filter('head title')->text(null, true)));
+        $this->assertSame('Create Category', trim($crawler->filter('h1.title')->text(null, true)));
     }
 
     public function testNewViewFormAttributes()
@@ -480,7 +480,7 @@ class DefaultBackendTest extends AbstractTestCase
         $fieldLabels = ['Name', 'Products', 'Parent'];
 
         foreach ($fieldLabels as $i => $label) {
-            $this->assertSame($label, trim($crawler->filter('#main .form-group label')->eq($i)->text()));
+            $this->assertSame($label, trim($crawler->filter('#main .form-group label')->eq($i)->text(null, true)));
         }
     }
 
@@ -542,7 +542,7 @@ class DefaultBackendTest extends AbstractTestCase
         ]);
         $crawler = static::$client->submit($form);
 
-        $this->assertContains($categoryName, $crawler->filter('#main table tr')->eq(1)->text(), 'The newly created category is displayed in the first data row of the "list" table.');
+        $this->assertContains($categoryName, $crawler->filter('#main table tr')->eq(1)->text(null, true), 'The newly created category is displayed in the first data row of the "list" table.');
     }
 
     public function testSearchViewTitle()
@@ -573,7 +573,7 @@ class DefaultBackendTest extends AbstractTestCase
         $columnLabels = ['ID', 'Name', 'Products', 'Parent', 'Actions'];
 
         foreach ($columnLabels as $i => $label) {
-            $this->assertSame($label, trim($crawler->filter('.table thead th')->eq($i)->text()));
+            $this->assertSame($label, trim($crawler->filter('.table thead th')->eq($i)->text(null, true)));
         }
     }
 
@@ -582,7 +582,7 @@ class DefaultBackendTest extends AbstractTestCase
         $crawler = $this->requestSearchView();
 
         $this->assertCount(1, $crawler->filter('.table thead th[class*="sorted"]'), 'Table is sorted only by one column.');
-        $this->assertSame('ID', trim($crawler->filter('.table thead th[class*="sorted"]')->text()), 'By default, table is soreted by ID column.');
+        $this->assertSame('ID', trim($crawler->filter('.table thead th[class*="sorted"]')->text(null, true)), 'By default, table is soreted by ID column.');
         $this->assertSame('fa fa-fw fa-arrow-down', $crawler->filter('.table thead th[class*="sorted"] i')->attr('class'), 'The column used to sort results shows the right icon.');
     }
 
@@ -612,7 +612,7 @@ class DefaultBackendTest extends AbstractTestCase
     {
         $crawler = $this->requestSearchView();
 
-        $this->assertContains('200 results', $crawler->filter('.list-pagination')->text());
+        $this->assertContains('200 results', $crawler->filter('.list-pagination')->text(null, true));
 
         $this->assertSame('page-item disabled', $crawler->filter('.list-pagination li:contains("Previous")')->attr('class'));
         $this->assertSame('page-link', $crawler->filter('.list-pagination a:contains("Previous")')->attr('class'));
@@ -624,9 +624,9 @@ class DefaultBackendTest extends AbstractTestCase
     {
         $crawler = $this->requestSearchView();
 
-        $this->assertSame('Edit', trim($crawler->filter('#main .table td.actions a')->eq(0)->text()));
+        $this->assertSame('Edit', trim($crawler->filter('#main .table td.actions a')->eq(0)->text(null, true)));
         $this->assertSame('_self', $crawler->filter('#main .table td.actions a')->eq(0)->attr('target'));
-        $this->assertSame('Delete', trim($crawler->filter('#main .table td.actions a')->eq(1)->text()));
+        $this->assertSame('Delete', trim($crawler->filter('#main .table td.actions a')->eq(1)->text(null, true)));
     }
 
     public function testSearchViewShowActionReferer()

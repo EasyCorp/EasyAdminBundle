@@ -28,7 +28,7 @@ class DataTransferObjectTest extends AbstractTestCase
         $this->assertSame(302, static::$client->getResponse()->getStatusCode());
 
         $crawler = $this->requestListView('Product');
-        $this->assertContains('101 results', $crawler->filter('.list-pagination')->text());
+        $this->assertContains('101 results', $crawler->filter('.list-pagination')->text(null, true));
         $crawler = $this->requestSearchView('Product X', 'Product');
         $this->assertCount(1, $crawler->filter('.table tbody tr'));
     }

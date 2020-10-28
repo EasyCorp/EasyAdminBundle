@@ -25,7 +25,7 @@ class DisabledActionsTest extends AbstractTestCase
         // 'show' view of the first 'Purchase' entity, browse the 'list' view
         // and get the 'id' from the first row of the listing
         $crawler = $this->requestListView('Purchase');
-        $firstPurchaseId = trim($crawler->filter('td')->first()->text());
+        $firstPurchaseId = trim($crawler->filter('td')->first()->text(null, true));
         $crawler = $this->requestShowView('Purchase', $firstPurchaseId);
 
         $this->assertSame(

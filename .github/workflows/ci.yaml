@@ -1,0 +1,76 @@
+name: "CI"
+
+on:
+    pull_request:
+    push:
+        branches:
+            - '2.x'
+
+env:
+    fail-fast: true
+    PHPUNIT_FLAGS: "-v"
+    SYMFONY_REQUIRE: ">=4.2"
+    SYMFONY_PHPUNIT_DIR: "$HOME/symfony-bridge/.phpunit"
+    # Remaining indirect deprecation notices (3)
+    #  3x: Since symfony/form 5.2: Setting the "legacy_error_messages" option to "true" is deprecated. It will be disabled in Symfony 6.0.
+    #    1x in CustomizedBackendTest::testEditViewCheckboxLabel from EasyCorp\Bundle\EasyAdminBundle\Tests\Controller
+    #    1x in CustomizedBackendTest::testListViewAutocompleteField from EasyCorp\Bundle\EasyAdminBundle\Tests\Controller
+    #    1x in CustomizedBackendTest::testNewViewCheckboxLabel from EasyCorp\Bundle\EasyAdminBundle\Tests\Controller
+    SYMFONY_DEPRECATIONS_HELPER: 3
+    SYMFONY_PHPUNIT_VERSION: 7.5
+    # https://symfony.com/doc/current/components/phpunit_bridge.html#removing-the-void-return-type
+    SYMFONY_PHPUNIT_REMOVE_RETURN_TYPEHINT: 1
+
+jobs:
+    test:
+        name: "PHP ${{ matrix.php-version }}"
+
+        runs-on: ubuntu-latest
+
+        continue-on-error: ${{ matrix.allow-failures }}
+
+        strategy:
+            matrix:
+                php-version:
+                    - '7.1.3'
+                allow-failures: [false]
+
+        steps:
+            - name: "Checkout code"
+              uses: actions/checkout@v2.3.3
+
+            - name: "Install PHP with extensions"
+              uses: shivammathur/setup-php@2.7.0
+              with:
+                  coverage: "none"
+                  php-version: ${{ matrix.php-version }}
+                  tools: composer:v2
+
+            - name: "Add PHPUnit matcher"
+              run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
+
+            - name: "Set composer cache directory"
+              id: composer-cache
+              run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+            - name: "Cache composer"
+              uses: actions/cache@v2.1.2
+              with:
+                  path: ${{ steps.composer-cache.outputs.dir }}
+                  key: ${{ runner.os }}-${{ matrix.php-version }}-composer-${{ hashFiles('composer.json') }}-allow-failures-${{ matrix.allow-failures }}
+                  restore-keys: ${{ runner.os }}-${{ matrix.php-version }}-composer-
+
+            - name: "Require symfony/flex"
+              run: composer global require --no-progress --no-scripts --no-plugins symfony/flex dev-main
+
+            - name: "Install dependencies with Composer"
+              run: composer update
+
+            - name: "Install PHPUnit"
+              run: vendor/bin/simple-phpunit install
+
+            - name: "PHPUnit version"
+              run: vendor/bin/simple-phpunit --version
+
+            - name: "Run tests"
+              run: vendor/bin/simple-phpunit ${{ env.PHPUNIT_FLAGS }}

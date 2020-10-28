@@ -3,7 +3,7 @@ imports:
 
 framework:
     # This file overrides the EasyAdmin controller
-    router: { resource: "%kernel.project_dir%/config/routing_override.yml" }
+    router: { resource: "%kernel.project_dir%/config/routing_override.yml", utf8: true }
     translator:      ~
     default_locale:  'fr'
 

@@ -17,7 +17,7 @@ framework:
     translator:      ~
     default_locale:  '%locale%'
     test:            ~
-    router:          { resource: "%kernel.project_dir%/config/routing_override.yml" }
+    router:          { resource: "%kernel.project_dir%/config/routing_override.yml", utf8: true }
     form:            true
     validation:      { enable_annotations: true }
     profiler:

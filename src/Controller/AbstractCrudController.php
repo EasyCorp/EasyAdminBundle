@@ -276,10 +276,13 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $context->getEntity()->setInstance($this->createEntity($context->getEntity()->getFqcn()));
         $this->get(EntityFactory::class)->processFields($context->getEntity(), FieldCollection::new($this->configureFields(Crud::PAGE_NEW)));
         $this->get(EntityFactory::class)->processActions($context->getEntity(), $context->getCrud()->getActionsConfig());
-        $entityInstance = $context->getEntity()->getInstance();
 
         $newForm = $this->createNewForm($context->getEntity(), $context->getCrud()->getNewFormOptions(), $context);
         $newForm->handleRequest($context->getRequest());
+
+        $entityInstance = $newForm->getData();
+        $context->getEntity()->setInstance($entityInstance);
+
         if ($newForm->isSubmitted() && $newForm->isValid()) {
             // TODO:
             // $this->processUploadedFiles($newForm);

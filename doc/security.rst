@@ -185,7 +185,7 @@ Custom Security Voters
 
 EasyAdmin implements a Symfony `security voter`_ to check the permissions
 defined for actions, entities, menu items, etc. The actual security permissions
-are defined as constants in the ``EasyCorp\\Bundle\\EasyAdminBundle\\Security\\Permission``
+are defined as constants in the ``EasyCorp\Bundle\EasyAdminBundle\Security\Permission``
 class (e.g. ``Permission::EA_EXECUTE_ACTION``, ``Permission::EA_VIEW_MENU_ITEM``, etc.)
 
 If you define a custom security voter for the backend, consider changing the
@@ -208,6 +208,5 @@ grants access only if there are no voters denying access:
 .. _`Define a firewall`: https://symfony.com/doc/current/security.html#a-authentication-firewalls
 .. _`add security annotations`: https://symfony.com/doc/current/bundles/SensioFrameworkExtraBundle/annotations/security.html
 .. _`access_control option`: https://symfony.com/doc/current/security/access_control.html
-.. _`logout feature`: https://symfony.com/doc/current/security.html#logging-out
 .. _`security voter`: https://symfony.com/doc/current/security/voters.html
 .. _`access decision strategy`: https://symfony.com/doc/current/security/voters.html#changing-the-access-decision-strategy

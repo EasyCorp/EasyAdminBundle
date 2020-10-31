@@ -163,12 +163,12 @@ The main menu is a collection of objects implementing
 ``EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu\MenuInterface`` that configure
 the look and behavior of each menu item::
 
-    use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
-    use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
-    use App\Entity\Category;
     use App\Entity\BlogPost;
+    use App\Entity\Category;
     use App\Entity\Comment;
     use App\Entity\User;
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
+    use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 
     class DashboardController extends AbstractDashboardController
     {
@@ -547,7 +547,7 @@ Translation
 
 The backend interface is fully translated using the `Symfony translation`_
 features. EasyAdmin own messages and contents use the ``EasyAdminBundle``
-translation domain (thanks to our community for kindly providing translations
+`translation domain`_ (thanks to our community for kindly providing translations
 for tens of languages).
 
 The rest of the contents (e.g. the label of the menu items, entity and field
@@ -697,5 +697,4 @@ text contents, custom forms, etc.
 .. _`logout feature`: https://symfony.com/doc/current/security.html#logging-out
 .. _`Symfony translation`: https://symfony.com/doc/current/components/translation.html
 .. _`translation domain`: https://symfony.com/doc/current/components/translation.html#using-message-domains
-.. _`translation domains`: https://symfony.com/doc/current/components/translation.html#using-message-domains
 .. _`work with the user locale`: https://symfony.com/doc/current/translation/locale.html

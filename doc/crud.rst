@@ -301,7 +301,7 @@ method named ``createIndexQueryBuilder()`` to create the Doctrine query builder
 used to get the results displayed on the index listing. If you want to customize
 that listing, it's better to override the ``createIndexQueryBuilder()`` method
 instead of the entire ``index()`` method. There are many of these methods, so
-you should check the ``EasyCorp\\Bundle\\EasyAdminBundle\\Controller\\AbstractCrudController`` class.
+you should check the ``EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController`` class.
 
 The other alternative to customize CRUD actions is to use the
 :doc:`events triggered by EasyAdmin </events>`, such as ``BeforeCrudActionEvent``
@@ -354,7 +354,7 @@ The default CRUD actions implemented in ``AbstractCrudController`` don't end
 with the usual ``$this->render('...')`` instruction to render a Twig template
 and return its contents in a Symfony ``Response`` object.
 
-Instead, CRUD actions return a ``EasyCorp\\Bundle\\EasyAdminBundle\\Config\\KeyValueStore``
+Instead, CRUD actions return a ``EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore``
 object with the variables passed to the template that renders the CRUD action
 contents. This ``KeyValueStore`` object is similar to Symfony's ``ParameterBag``
 object. It's like an object-oriented array with useful methods such as ``get()``,
@@ -468,11 +468,10 @@ Symfony controller) the :ref:`admin context variable <admin-context>` is not
 available. That's why you must always set the CRUD controller the URL is
 associated to. If you have more than one dashboard, you must also set the Dashboard::
 
-    use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
-
     use App\Controller\Admin\DashboardController;
     use App\Controller\Admin\ProductCrudController;
     use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+    use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
     use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
     class SomeSymfonyController extends AbstractController
@@ -536,12 +535,4 @@ The same applies to URLs generated in Twig templates:
         .setEntityId(product.id) %}
 
 .. _`Symfony controllers`: https://symfony.com/doc/current/controller.html
-.. _`How to Create a Custom Form Field Type`: https://symfony.com/doc/current/cookbook/form/create_custom_field_type.html
-.. _`Symfony Form types`: https://symfony.com/doc/current/reference/forms/types.html
-.. _`customize individual form fields`: https://symfony.com/doc/current/form/form_customization.html#how-to-customize-an-individual-field
-.. _`form fragment naming rules`: https://symfony.com/doc/current/form/form_themes.html#form-template-blocks
-.. _`override any part of third-party bundles`: https://symfony.com/doc/current/bundles/override.html
-.. _`Trix editor`: https://trix-editor.org/
-.. _`Symfony security voters`: https://symfony.com/doc/current/security/voters.html
-.. _`form data transformer`: https://symfony.com/doc/current/form/data_transformers.html
 .. _`Doctrine filters`: https://www.doctrine-project.org/projects/doctrine-orm/en/current/reference/filters.html

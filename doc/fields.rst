@@ -82,11 +82,11 @@ used to display each type of property::
 
 **Option 3.** Return the appropriate field objects to display each property::
 
-    use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-    use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
-    use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
-    use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
     use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
+    use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
+    use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
+    use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
+    use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
     public function configureFields(string $pageName): iterable
     {
@@ -431,12 +431,12 @@ Next, create the template used to render the field in the ``index`` and ``detail
 :ref:`CRUD pages <crud-pages>`. The template can use any `Twig templating features`_
 and the following variables:
 
-* ``ea``, a ``EasyCorp\\Bundle\\EasyAdminBundle\\Context\\AdminContext``
+* ``ea``, a ``EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext``
   instance which stores the :ref:`admin context <admin-context>` and it's
   available in all backend templates;
-* ``field``, a ``EasyCorp\\Bundle\\EasyAdminBundle\\Dto\\FieldDto``
+* ``field``, a ``EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto``
   instance which stores the config and value of the field being rendered;
-* ``entity``, a ``EasyCorp\\Bundle\\EasyAdminBundle\\Dto\\EntityDto``
+* ``entity``, a ``EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto``
   instance which stores the instance of the entity which the field belongs to
   and other useful data about that Doctrine entity.
 

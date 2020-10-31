@@ -1,58 +1,18 @@
+# See https://github.com/OskarStark/php-cs-fixer-ga
 name: "Linter: Code Syntax"
 
-on:
-    pull_request:
-    push:
-        branches:
-            - 'master'
+on: [push, pull_request]
 
 env:
     fail-fast: true
 
 jobs:
-    coding-standards:
-        name: "Coding Standards (${{ matrix.php-version }})"
-
-        runs-on: "ubuntu-latest"
-
-        strategy:
-            matrix:
-                php-version:
-                    - '7.4'
-
+    php-cs-fixer:
+        name: PHP-CS-Fixer
+        runs-on: ubuntu-latest
         steps:
-            -
-                name: "Checkout code"
-                uses: "actions/checkout@v2"
-
-            -
-                name: "Install PHP"
-                uses: "shivammathur/setup-php@v2"
-                with:
-                    coverage: "none"
-                    php-version: "${{ matrix.php-version }}"
-
-            -
-                name: "Validate composer.json"
-                run: "composer validate --strict --no-check-lock"
-
-            -
-                name: "Determine composer cache directory"
-                id: "determine-composer-cache-directory"
-                run: "echo \"::set-output name=directory::$(composer config cache-dir)\""
-
-            -
-                name: "Cache dependencies installed with composer"
-                uses: "actions/cache@v2"
-                with:
-                    path: "${{ steps.determine-composer-cache-directory.outputs.directory }}"
-                    key: "php-${{ matrix.php-version }}-composer-${{ hashFiles('composer.json') }}"
-                    restore-keys: "php-${{ matrix.php-version }}-composer-"
-
-            -
-                name: "Install dependencies with composer"
-                run: "composer install --no-interaction --no-progress --no-suggest --no-scripts"
-
-            -
-                name: "Run friendsofphp/php-cs-fixer"
-                run: "vendor/bin/php-cs-fixer fix --dry-run --diff"
+            - uses: actions/checkout@v2
+            - name: PHP-CS-Fixer
+              uses: docker://oskarstark/php-cs-fixer-ga
+              with:
+                  args: --diff --dry-run

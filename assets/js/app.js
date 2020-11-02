@@ -52,7 +52,7 @@ function createAutoCompleteFields() {
             allowClear = $this.data('allow-clear');
 
         if (undefined === autocompleteUrl) {
-            $this.select2({ theme: 'bootstrap', placeholder: '', allowClear: true });
+            $this.select2({ theme: 'bootstrap', allowClear: true });
         } else {
             $this.select2({
                 theme: 'bootstrap',
@@ -76,7 +76,6 @@ function createAutoCompleteFields() {
                     },
                     cache: true
                 },
-                placeholder: '',
                 allowClear: allowClear,
                 minimumInputLength: 1
             });

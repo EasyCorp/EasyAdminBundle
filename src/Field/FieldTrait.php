@@ -35,7 +35,8 @@ trait FieldTrait
 
     /**
      * @see EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto::setLabel()
-     * @param string|null|bool
+     *
+     * @param string|bool|null
      */
     public function setLabel($label): self
     {

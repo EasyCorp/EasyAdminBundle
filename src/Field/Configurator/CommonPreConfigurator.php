@@ -103,7 +103,7 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
     }
 
     /**
-     * @return string|null|bool
+     * @return string|bool|null
      */
     private function buildLabelOption(FieldDto $field, string $translationDomain, ?string $currentPage)
     {

@@ -76,7 +76,7 @@ final class FormField implements FieldInterface
     private function hasLabelOrIcon(): bool
     {
         // don't use empty() because the label can contain only white spaces (it's a valid edge-case)
-        return (is_string($this->dto->getLabel()) && '' !== $this->dto->getLabel())
+        return (\is_string($this->dto->getLabel()) && '' !== $this->dto->getLabel())
             || null !== $this->dto->getCustomOption(self::OPTION_ICON);
     }
 }

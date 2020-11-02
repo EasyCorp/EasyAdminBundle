@@ -55,10 +55,20 @@ final class ChoiceField implements FieldInterface
     /**
      * Given choices must follow the same format used in Symfony Forms:
      * ['Label visible to users' => 'submitted_value', ...].
+     *
+     * In addition to an array, you can use a PHP callback, which is passed the instance
+     * of the current entity (it can be null) and the FieldDto as the second argument:
+     * ->setChoices(fn () => ['foo' => 1, 'bar' => 2])
+     * ->setChoices(fn (?MyEntity $foo) => $foo->someField()->getChoices())
+     * ->setChoices(fn (?MyEntity $foo, FieldDto $field) => ...)
      */
-    public function setChoices(array $keyValueChoices): self
+    public function setChoices($choiceGenerator): self
     {
-        $this->setCustomOption(self::OPTION_CHOICES, $keyValueChoices);
+        if (!\is_array($choiceGenerator) && !\is_callable($choiceGenerator)) {
+            throw new \InvalidArgumentException(sprintf('The argument of the "%s" method must be an array or a closure ("%s" given).', __METHOD__, \gettype($choiceGenerator)));
+        }
+
+        $this->setCustomOption(self::OPTION_CHOICES, $choiceGenerator);
 
         return $this;
     }

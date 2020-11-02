@@ -31,7 +31,8 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
     public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
     {
         $isExpanded = $field->getCustomOption(ChoiceField::OPTION_RENDER_EXPANDED);
-        $choices = $field->getCustomOption(ChoiceField::OPTION_CHOICES);
+
+        $choices = $this->getChoices($field->getCustomOption(ChoiceField::OPTION_CHOICES), $entityDto, $field);
         if (empty($choices)) {
             throw new \InvalidArgumentException(sprintf('The "%s" choice field must define its possible choices using the setChoices() method.', $field->getProperty()));
         }
@@ -77,6 +78,19 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
             }
         }
         $field->setFormattedValue(implode($isRenderedAsBadge ? '' : ', ', $selectedChoices));
+    }
+
+    private function getChoices($choiceGenerator, EntityDto $entity, FieldDto $field): array
+    {
+        if (null === $choiceGenerator) {
+            return [];
+        }
+
+        if (\is_array($choiceGenerator)) {
+            return $choiceGenerator;
+        }
+
+        return $choiceGenerator($entity->getInstance(), $field);
     }
 
     private function getBadgeCssClass($badgeSelector, $value, FieldDto $field): string

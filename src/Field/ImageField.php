@@ -14,7 +14,7 @@ final class ImageField implements FieldInterface
 
     public const OPTION_BASE_PATH = 'basePath';
 
-    public static function new(string $propertyName, ?string $label = null): self
+    public static function new(string $propertyName, $label = null): self
     {
         return (new self())
             ->setProperty($propertyName)

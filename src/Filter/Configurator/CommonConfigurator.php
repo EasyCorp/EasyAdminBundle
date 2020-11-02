@@ -23,7 +23,7 @@ final class CommonConfigurator implements FilterConfiguratorInterface
     {
         if (null === $filterDto->getLabel()) {
             $fieldLabel = null !== $fieldDto ? $fieldDto->getLabel() : null;
-            $label = $fieldLabel ?? u($filterDto->getProperty())->title()->toString();
+            $label = is_string($fieldLabel) ? $fieldLabel : u($filterDto->getProperty())->title()->toString();
             $filterDto->setLabel($label);
         }
     }

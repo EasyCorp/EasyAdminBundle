@@ -17,7 +17,7 @@ final class NumberField implements FieldInterface
     public const OPTION_ROUNDING_MODE = 'roundingMode';
     public const OPTION_STORED_AS_STRING = 'storedAsString';
 
-    public static function new(string $propertyName, ?string $label = null): self
+    public static function new(string $propertyName, $label = null): self
     {
         return (new self())
             ->setProperty($propertyName)

@@ -102,13 +102,18 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
         return $this->translator->trans($help, $field->getTranslationParameters(), $translationDomain);
     }
 
-    private function buildLabelOption(FieldDto $field, string $translationDomain, ?string $currentPage): ?string
+    /**
+     * @return string|null|bool
+     */
+    private function buildLabelOption(FieldDto $field, string $translationDomain, ?string $currentPage)
     {
         // don't autogenerate a label for these special fields (there's a dedicated configurator for them)
         if (FormField::class === $field->getFieldFqcn()) {
             $label = $field->getLabel();
 
-            return empty($label) ? $label : $this->translator->trans($label, $field->getTranslationParameters(), $translationDomain);
+            return (null === $label || false === $label || '' === $label)
+                ? $label
+                : $this->translator->trans($label, $field->getTranslationParameters(), $translationDomain);
         }
 
         // if an Avatar field doesn't define its label, don't autogenerate it for the 'index' page
@@ -123,7 +128,7 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
             $label = $this->humanizeString($field->getProperty());
         }
 
-        if (empty($label)) {
+        if (false === $label || '' === $label) {
             return $label;
         }
 

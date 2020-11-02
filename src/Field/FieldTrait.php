@@ -33,7 +33,11 @@ trait FieldTrait
         return $this;
     }
 
-    public function setLabel(?string $label): self
+    /**
+     * @see EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto::setLabel()
+     * @param string|null|bool
+     */
+    public function setLabel($label): self
     {
         $this->dto->setLabel($label);
 

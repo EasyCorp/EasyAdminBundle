@@ -138,13 +138,25 @@ final class FieldDto
         $this->formatValueCallable = $callable;
     }
 
-    public function getLabel(): ?string
+    public function getLabel()
     {
         return $this->label;
     }
 
-    public function setLabel(?string $label): void
+    /**
+     * Set the label to NULL or TRUE to autogenerate it (e.g. 'firstName' -> 'First Name').
+     * Set the label to FALSE to not display any label for this field.
+     * Otherwise (string case), set it explicitly.
+
+     * @param string|null|bool
+     */
+    public function setLabel($label): void
     {
+        // Cases equivalent to null
+        if (true === $label || false === (is_string($label) || is_null($label) || is_bool($label))) {
+            $label = null;
+        }
+
         $this->label = $label;
     }
 

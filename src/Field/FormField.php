@@ -20,7 +20,7 @@ final class FormField implements FieldInterface
     /**
      * @internal Use the other named constructors instead (addPanel(), etc.)
      */
-    public static function new(string $propertyName, ?string $label = null)
+    public static function new(string $propertyName, $label = null)
     {
         throw new \RuntimeException('Instead of this method, use the "addPanel()" method.');
     }
@@ -76,7 +76,7 @@ final class FormField implements FieldInterface
     private function hasLabelOrIcon(): bool
     {
         // don't use empty() because the label can contain only white spaces (it's a valid edge-case)
-        return (null !== $this->dto->getLabel() && '' !== $this->dto->getLabel())
+        return (is_string($this->dto->getLabel()) && '' !== $this->dto->getLabel())
             || null !== $this->dto->getCustomOption(self::OPTION_ICON);
     }
 }

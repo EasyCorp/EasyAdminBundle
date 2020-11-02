@@ -45,7 +45,7 @@ final class DateTimeField implements FieldInterface
     public const OPTION_TIMEZONE = 'timezone';
     public const OPTION_WIDGET = 'widget';
 
-    public static function new(string $propertyName, ?string $label = null): self
+    public static function new(string $propertyName, $label = null): self
     {
         return (new self())
             ->setProperty($propertyName)

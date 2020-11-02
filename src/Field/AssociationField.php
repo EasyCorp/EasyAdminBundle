@@ -23,7 +23,7 @@ final class AssociationField implements FieldInterface
     public const WIDGET_AUTOCOMPLETE = 'autocomplete';
     public const WIDGET_NATIVE = 'native';
 
-    public static function new(string $propertyName, ?string $label = null): self
+    public static function new(string $propertyName, $label = null): self
     {
         return (new self())
             ->setProperty($propertyName)

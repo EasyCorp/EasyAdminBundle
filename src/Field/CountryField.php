@@ -21,7 +21,7 @@ final class CountryField implements FieldInterface
     /** @internal used to store the code of the flag to use independently from the country code format used */
     public const OPTION_FLAG_CODE = 'flagCode';
 
-    public static function new(string $propertyName, ?string $label = null): self
+    public static function new(string $propertyName, $label = null): self
     {
         return (new self())
             ->setProperty($propertyName)

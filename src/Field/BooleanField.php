@@ -14,7 +14,7 @@ final class BooleanField implements FieldInterface
 
     public const OPTION_RENDER_AS_SWITCH = 'renderAsSwitch';
 
-    public static function new(string $propertyName, ?string $label = null): self
+    public static function new(string $propertyName, $label = null): self
     {
         return (new self())
             ->setProperty($propertyName)

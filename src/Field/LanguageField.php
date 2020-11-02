@@ -15,7 +15,7 @@ final class LanguageField implements FieldInterface
     public const OPTION_SHOW_CODE = 'showCode';
     public const OPTION_SHOW_NAME = 'showName';
 
-    public static function new(string $propertyName, ?string $label = null): self
+    public static function new(string $propertyName, $label = null): self
     {
         return (new self())
             ->setProperty($propertyName)

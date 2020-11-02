@@ -2,10 +2,12 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\EventListener;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\EasyAdminBundle;
+use EasyCorp\Bundle\EasyAdminBundle\Exception\ForbiddenActionException;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\AdminContextFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\ControllerFactory;
 use Symfony\Component\HttpFoundation\Request;
@@ -59,6 +61,13 @@ class AdminContextListener
             // don't throw an exception to prevent hackers from causing lots of exceptions in applications using EasyAdmin
             // and don't do anything else, to not leak that the application uses EasyAdmin
             return;
+        }
+
+        $allowedBuiltInActions = [Crud::PAGE_INDEX, Crud::PAGE_DETAIL, Crud::PAGE_NEW, Crud::PAGE_EDIT, 'autocomplete', 'delete', 'renderFilters'];
+        $allowedCustomActions = null === $crudControllerInstance ? [] : $crudControllerInstance->configureActions($dashboardControllerInstance->configureActions())->getAsDto($crudAction)->getActions();
+        $allowedCustomActions = \is_array($allowedCustomActions) ? $allowedCustomActions : array_keys($allowedCustomActions->all());
+        if (!\in_array($crudAction, $allowedBuiltInActions) && !\in_array($crudAction, $allowedCustomActions)) {
+            throw new ForbiddenActionException();
         }
 
         // creating the context is expensive, so it's created once and stored in the request

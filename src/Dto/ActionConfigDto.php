@@ -96,7 +96,11 @@ final class ActionConfigDto
      */
     public function getActions()
     {
-        return null === $this->pageName ? $this->actions : ActionCollection::new($this->actions[$this->pageName]);
+        if (null === $this->pageName) {
+            return $this->actions;
+        }
+
+        return !isset($this->actions[$this->pageName]) ? [] : ActionCollection::new($this->actions[$this->pageName]);
     }
 
     /**

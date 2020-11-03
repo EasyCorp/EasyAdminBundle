@@ -25,6 +25,16 @@ class ChoiceFieldTest extends AbstractFieldTest
         $this->configure($field);
     }
 
+    public function testFieldWithChoiceGeneratorCallback()
+    {
+        $field = ChoiceField::new('foo')->setChoices(static function () { return ['foo' => 1, 'bar' => 2]; });
+
+        self::assertSame(['foo' => 1, 'bar' => 2], $this->configure($field)->getFormTypeOption(ChoiceField::OPTION_CHOICES));
+
+        $field->setValue(1);
+        self::assertSame('foo', $this->configure($field)->getFormattedValue());
+    }
+
     public function testFieldWithWrongVisualOptions()
     {
         $this->expectException(\InvalidArgumentException::class);

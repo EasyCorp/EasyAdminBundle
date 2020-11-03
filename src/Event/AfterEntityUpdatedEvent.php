@@ -3,7 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Event;
 
 /**
- * This event is triggered after the updateEntity() call in the 
+ * This event is triggered after the updateEntity() call in the
  * new() or edit() flows.
  *
  * @see AbstractCrudController::edit

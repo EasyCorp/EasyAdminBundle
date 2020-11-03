@@ -63,10 +63,12 @@ class AdminContextListener
             return;
         }
 
+        // if a CRUD action is requested, check if it's one of the built-in actions or one of the custom actions
+        // defined as CRUD controller actions. Otherwise, a malicious user could execute any public method of the
+        // CRUD controller just by changing the 'crudAction' query parameter
         $allowedBuiltInActions = [Crud::PAGE_INDEX, Crud::PAGE_DETAIL, Crud::PAGE_NEW, Crud::PAGE_EDIT, 'autocomplete', 'delete', 'renderFilters'];
-        $allowedCustomActions = null === $crudControllerInstance ? [] : $crudControllerInstance->configureActions($dashboardControllerInstance->configureActions())->getAsDto($crudAction)->getActions();
-        $allowedCustomActions = \is_array($allowedCustomActions) ? $allowedCustomActions : array_keys($allowedCustomActions->all());
-        if (!\in_array($crudAction, $allowedBuiltInActions) && !\in_array($crudAction, $allowedCustomActions)) {
+        $allowedCustomActions = null === $crudControllerInstance ? [] : array_keys($crudControllerInstance->configureActions($dashboardControllerInstance->configureActions())->getAsDto($crudAction)->getCustomCrudActions());
+        if (null !== $crudAction && !\in_array($crudAction, $allowedBuiltInActions) && !\in_array($crudAction, $allowedCustomActions)) {
             throw new ForbiddenActionException();
         }
 

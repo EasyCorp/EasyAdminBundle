@@ -116,6 +116,21 @@ final class ActionConfigDto
         return $this->disabledActions;
     }
 
+    public function getCustomCrudActions(): array
+    {
+        $controllerActions = [];
+        /** @var ActionDto[] $actions */
+        foreach ($this->actions as $pageName => $actions) {
+            foreach ($actions as $action) {
+                if (null !== $action->getCrudActionName()) {
+                    $controllerActions[$action->getCrudActionName()] = $action;
+                }
+            }
+        }
+
+        return $controllerActions;
+    }
+
     public function getActionPermissions(): array
     {
         return $this->actionPermissions;

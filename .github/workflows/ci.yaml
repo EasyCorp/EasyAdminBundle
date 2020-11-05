@@ -9,25 +9,23 @@ on:
 env:
     fail-fast: true
     PHPUNIT_FLAGS: "-v"
-    SYMFONY_PHPUNIT_DIR: "$HOME/symfony-bridge/.phpunit"
     SYMFONY_REQUIRE: ">=4.4"
 
 jobs:
     test:
-        name: "PHP ${{ matrix.php-version }}"
-
-        runs-on: ubuntu-latest
-
+        name: "${{ matrix.operating-system }} / PHP ${{ matrix.php-version }}"
+        runs-on: ${{ matrix.operating-system }}
         continue-on-error: ${{ matrix.allow-failures }}
 
         strategy:
             matrix:
-                php-version:
-                    - '7.2.5'
-                    - '7.3'
-                    - '7.4'
-                    - '8.0'
                 allow-failures: [false]
+                operating-system: ['ubuntu-latest', 'windows-latest', 'macos-latest']
+                php-version: ['7.2.5', '7.3', '7.4', '8.0']
+                exclude:
+                    # FIXME: remove this exclusion when PHP 8 works properly on Windows
+                    -   operating-system: 'windows-latest'
+                        php-version: '8.0'
 
         steps:
             - name: "Checkout code"

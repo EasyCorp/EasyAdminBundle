@@ -11,6 +11,10 @@ class MigratorTest extends TestCase
 {
     public function testMigrate()
     {
+        if ('\\' === \DIRECTORY_SEPARATOR) {
+            $this->markTestSkipped('Skip this test on Windows because it\'s too cumbersome to deal with the line ending differences.');
+        }
+
         $ea2Config = include __DIR__.'/fixtures/input/easyadmin-demo-config-dump.php';
         $outputDir = sprintf('%s/%s', sys_get_temp_dir(), md5(random_bytes(16)));
         (new Filesystem())->mkdir($outputDir);

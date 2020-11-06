@@ -52,6 +52,11 @@ use Symfony\Component\HttpFoundation\Response;
  */
 abstract class AbstractCrudController extends AbstractController implements CrudControllerInterface
 {
+    public $indexTemplateName = 'crud/index';
+    public $newTemplateName = 'crud/new';
+    public $editTemplateName = 'crud/edit';
+    public $detailTemplateName = 'crud/detail';
+
     abstract public static function getEntityFqcn(): string;
 
     public function configureCrud(Crud $crud): Crud
@@ -123,7 +128,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
         $responseParameters = $this->configureResponseParameters(KeyValueStore::new([
             'pageName' => Crud::PAGE_INDEX,
-            'templateName' => 'crud/index',
+            'templateName' => $this->indexTemplateName,
             'entities' => $entities,
             'paginator' => $paginator,
             'global_actions' => $globalActions,
@@ -161,7 +166,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
         $responseParameters = $this->configureResponseParameters(KeyValueStore::new([
             'pageName' => Crud::PAGE_DETAIL,
-            'templateName' => 'crud/detail',
+            'templateName' => $this->detailTemplateName,
             'entity' => $context->getEntity(),
         ]));
 
@@ -244,7 +249,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
         $responseParameters = $this->configureResponseParameters(KeyValueStore::new([
             'pageName' => Crud::PAGE_EDIT,
-            'templateName' => 'crud/edit',
+            'templateName' => $this->editTemplateName,
             'edit_form' => $editForm,
             'entity' => $context->getEntity(),
         ]));
@@ -322,7 +327,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
         $responseParameters = $this->configureResponseParameters(KeyValueStore::new([
             'pageName' => Crud::PAGE_NEW,
-            'templateName' => 'crud/new',
+            'templateName' => $this->newTemplateName,
             'entity' => $context->getEntity(),
             'new_form' => $newForm,
         ]));

@@ -114,6 +114,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $fields = FieldCollection::new($this->configureFields(Crud::PAGE_INDEX));
         $filters = $this->get(FilterFactory::class)->create($context->getCrud()->getFiltersConfig(), $fields, $context->getEntity());
         $queryBuilder = $this->createIndexQueryBuilder($context->getSearch(), $context->getEntity(), $fields, $filters);
+        $this->configureIndexQueryBuilder($queryBuilder, $context);
         $paginator = $this->get(PaginatorFactory::class)->create($queryBuilder);
 
         $entities = $this->get(EntityFactory::class)->createCollection($context->getEntity(), $paginator->getResults());
@@ -462,6 +463,11 @@ abstract class AbstractCrudController extends AbstractController implements Crud
     public function createNewFormBuilder(EntityDto $entityDto, KeyValueStore $formOptions, AdminContext $context): FormBuilderInterface
     {
         return $this->get(FormFactory::class)->createNewFormBuilder($entityDto, $formOptions, $context);
+    }
+    
+    public function configureIndexQueryBuilder(QueryBuilder $queryBuilder, AdminContext $context)
+    {
+        return $this;
     }
 
     /**

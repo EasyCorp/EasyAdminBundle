@@ -20,7 +20,10 @@ jobs:
         strategy:
             matrix:
                 allow-failures: [false]
-                operating-system: ['ubuntu-latest', 'windows-latest', 'macos-latest']
+                # disable 'windows-latest' temporarily because of this error:
+                # Error: Could not scan for classes inside "D:\a\EasyAdminBundle\EasyAdminBundle\vendor/dg/bypass-finals/src/"
+                # which does not appear to be a file nor a folder
+                operating-system: ['ubuntu-latest', 'macos-latest']
                 php-version: ['7.2.5', '7.3', '7.4', '8.0']
                 exclude:
                     # FIXME: remove this exclusion when PHP 8 works properly on Windows

@@ -26,5 +26,7 @@ return PhpCsFixer\Config::create()
         // Part of future @Symfony ruleset in PHP-CS-Fixer To be removed from the config file once upgrading
         'phpdoc_types_order' => ['null_adjustment' => 'always_last', 'sort_algorithm' => 'none'],
         'single_line_throw' => false,
+        // this must be disabled because the output of some tests include NBSP characters
+        'non_printable_character' => false,
     ))
 ;

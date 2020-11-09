@@ -140,6 +140,9 @@ final class Action
 
     /**
      * @param array|callable $routeParameters The callable has the signature: function ($entity): array
+     *                                        e.g. ->linkToRoute('invoice_send', function (Invoice $entity) {
+     *                                                 return ['uuid' => $entity->getId()];
+     *                                             });
      */
     public function linkToRoute(string $routeName, $routeParameters = []): self
     {

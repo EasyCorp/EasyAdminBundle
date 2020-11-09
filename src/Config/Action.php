@@ -139,7 +139,7 @@ final class Action
     }
 
     /**
-     * @param array|callable $routeParameters
+     * @param array|callable $routeParameters The callable has the signature: function ($entity): array
      */
     public function linkToRoute(string $routeName, $routeParameters = []): self
     {

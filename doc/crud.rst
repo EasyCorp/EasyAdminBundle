@@ -104,6 +104,8 @@ The rest of CRUD options are configured using the ``configureCrud()`` method::
         }
     }
 
+.. _crud_entity_options:
+
 Entity Options
 ~~~~~~~~~~~~~~
 
@@ -116,6 +118,16 @@ Entity Options
             ->setEntityLabelInSingular('Product')
             ->setEntityLabelInPlural('Products')
 
+            // in addition to a string, the argument of the singular and plural label methods
+            // can be a closure that receives both the current entity instance (which will
+            // be null in 'index' and 'new' pages) and the page name
+            ->setEntityLabelInSingular(
+                fn (?Product $product, string $pageName) => $product ? $product->toString() : 'Product'
+            )
+            ->setEntityLabelInPlural(function (?Category $category, string $pageName) {
+                return 'edit' === $pageName ? $category->getLabel() : 'Categories';
+            })
+
             // the Symfony Security permission needed to manage the entity
             // (none by default, so you can manage all instances of the entity)
             ->setEntityPermission('ROLE_EDITOR')
@@ -125,7 +137,13 @@ Entity Options
 Title and Help Options
 ~~~~~~~~~~~~~~~~~~~~~~
 
-::
+By default, the page titles of the ``index`` and ``new`` pages are based on the
+:ref:`entity option <crud_entity_options>` values defined with the
+``setEntityLabelInSingular()`` and ``setEntityLabelInPlural()`` methods. In the
+``detail`` and ``edit`` pages, EasyAdmin tries first to convert the entity into
+a string representation and falls back to a generic title otherwise.
+
+You can override the default page titles with the following methods::
 
     public function configureCrud(Crud $crud): Crud
     {
@@ -133,6 +151,14 @@ Title and Help Options
             // the visible title at the top of the page and the content of the <title> element
             // it can include these placeholders: %entity_id%, %entity_label_singular%, %entity_label_plural%
             ->setPageTitle('index', '%entity_label_plural% listing')
+
+            // you can pass a PHP closure as the value of the title
+            ->setPageTitle('new', fn () => new \DateTime('now') > new \DateTime('today 13:00') ? 'New dinner' : 'New lunch')
+
+            // in DETAIL and EDIT pages, the closure receives the current entity
+            // as the first argument
+            ->setPageTitle('detail', function(Product $product) => (string) $product)
+            ->setPageTitle('edit', fn (Category $category) => sprintf('Editing <b>%s</b>', $category->getName()))
 
             // the help message displayed to end users (it can contain HTML tags)
             ->setHelp('edit', '...')

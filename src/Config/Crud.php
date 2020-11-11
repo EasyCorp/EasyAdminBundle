@@ -35,21 +35,30 @@ class Crud
         return new self($dto);
     }
 
-    public function setEntityLabelInSingular(string $label): self
+    /**
+     * @param string|callable $label The callable signature is: fn ($entityInstance, string $pageName): string
+     */
+    public function setEntityLabelInSingular($label): self
     {
         $this->dto->setEntityLabelInSingular($label);
 
         return $this;
     }
 
-    public function setEntityLabelInPlural(string $label): self
+    /**
+     * @param string|callable $label The callable signature is: fn ($entityInstance, string $pageName): string
+     */
+    public function setEntityLabelInPlural($label): self
     {
         $this->dto->setEntityLabelInPlural($label);
 
         return $this;
     }
 
-    public function setPageTitle(string $pageName, string $title): self
+    /**
+     * @param string|callable $title The callable signature is: fn ($entityInstance): string
+     */
+    public function setPageTitle(string $pageName, $title): self
     {
         if (!\in_array($pageName, $this->getValidPageNames(), true)) {
             throw new \InvalidArgumentException(sprintf('The first argument of the "%s()" method must be one of these valid page names: %s ("%s" given).', __METHOD__, implode(', ', $this->getValidPageNames()), $pageName));

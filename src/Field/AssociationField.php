@@ -15,7 +15,7 @@ final class AssociationField implements FieldInterface
     public const OPTION_AUTOCOMPLETE = 'autocomplete';
     public const OPTION_CRUD_CONTROLLER = 'crudControllerFqcn';
     public const OPTION_WIDGET = 'widget';
-    public const OPTION_MODIFY_QUERY = 'modifyQuery';
+    public const OPTION_QUERY_BUILDER_CALLABLE = 'queryBuilderCallable';
     /** @internal this option is intended for internal use only */
     public const OPTION_RELATED_URL = 'relatedUrl';
     /** @internal this option is intended for internal use only */
@@ -38,7 +38,7 @@ final class AssociationField implements FieldInterface
             ->setCustomOption(self::OPTION_AUTOCOMPLETE, false)
             ->setCustomOption(self::OPTION_CRUD_CONTROLLER, null)
             ->setCustomOption(self::OPTION_WIDGET, self::WIDGET_AUTOCOMPLETE)
-            ->setCustomOption(self::OPTION_MODIFY_QUERY, null)
+            ->setCustomOption(self::OPTION_QUERY_BUILDER_CALLABLE, null)
             ->setCustomOption(self::OPTION_RELATED_URL, null)
             ->setCustomOption(self::OPTION_DOCTRINE_ASSOCIATION_TYPE, null);
     }
@@ -64,9 +64,9 @@ final class AssociationField implements FieldInterface
         return $this;
     }
 
-    public function modifyQuery(\Closure $modify): self
+    public function setQueryBuilder(\Closure $queryBuilderCallable): self
     {
-        $this->setCustomOption(self::OPTION_MODIFY_QUERY, $modify);
+        $this->setCustomOption(self::OPTION_QUERY_BUILDER_CALLABLE, $queryBuilderCallable);
 
         return $this;
     }

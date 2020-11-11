@@ -404,12 +404,11 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $controller = $this->get(ControllerFactory::class)->getCrudControllerInstance($autocompleteContext['crudId'], Action::INDEX, $context->getRequest());
         /** @var FieldDto $field */
         $field = FieldCollection::new($controller->configureFields(Crud::PAGE_INDEX))->get($autocompleteContext['propertyName']);
-        /** @var \Closure|null $modify */
-        $modify = $field->getCustomOption(AssociationField::OPTION_MODIFY_QUERY);
+        /** @var \Closure|null $queryBuilderCallable */
+        $queryBuilderCallable = $field->getCustomOption(AssociationField::OPTION_QUERY_BUILDER_CALLABLE);
 
-        if(null !== $modify)
-        {
-            $modify($queryBuilder);
+        if (null !== $queryBuilderCallable) {
+            $queryBuilderCallable($queryBuilder);
         }
 
         $paginator = $this->get(PaginatorFactory::class)->create($queryBuilder);

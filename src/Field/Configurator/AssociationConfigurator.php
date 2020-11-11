@@ -85,9 +85,10 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
                 // TODO: should this use `createIndexQueryBuilder` instead, so we get the default ordering etc.?
                 // it would then be identical to the one used in autocomplete action, but it is a bit complex getting it in here
                 $queryBuilder = $repository->createQueryBuilder('entity');
-                if($modify = $field->getCustomOption(AssociationField::OPTION_MODIFY_QUERY)) {
-                    $modify($queryBuilder);
+                if ($queryBuilderCallable = $field->getCustomOption(AssociationField::OPTION_QUERY_BUILDER_CALLABLE)) {
+                    $queryBuilderCallable($queryBuilder);
                 }
+
                 return $queryBuilder;
             });
         }

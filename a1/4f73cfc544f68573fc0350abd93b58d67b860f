@@ -1,0 +1,10 @@
+---------------------------------------------------------------------------
+
+by ChangePlaces at 2020-10-07T12:34:49Z
+
+Maybe my tired eyes are deceiving me:
+
+- why are you forcing the path to be in the `src/controller` dir? there's no need for it, and that may be disagreeable to someone. somewhere.
+- doesn't the `u($dirname)->ensureStart(....)` check that the path starts in the project dir
+- shouldn't the mkdir be placed inside the `if dir doesn't exist` check otherwise it's always going to be making the directory? if mkdir fails, would it fail silently, or throw? if the latter, than an additional check is unnecessary
+- i have no idea what normalize path is for given that i think `ensureStart` already checks if it's in the project dir

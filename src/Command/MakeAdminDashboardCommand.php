@@ -40,21 +40,18 @@ class MakeAdminDashboardCommand extends Command
 
         $projectDir = $this->projectDir;
         $controllerDir = $io->ask(
-            sprintf('Which directory do you want to generate "%s" in?', $controllerClassName),
+            sprintf('In which directory of your project do you want to generate "%s"?', $controllerClassName),
             'src/Controller/Admin/',
             static function (string $selectedDir) use ($fs, $projectDir) {
                 $absoluteDir = u($selectedDir)->ensureStart($projectDir.\DIRECTORY_SEPARATOR);
-                $absoluteDirStringPath = $absoluteDir->after($projectDir.\DIRECTORY_SEPARATOR)->trimEnd(\DIRECTORY_SEPARATOR)->toString();
-                $absoluteDirStringPath = self::normalizePath($absoluteDirStringPath);
-
-                $controllerRootDir = 'src/Controller';
-                if (substr($absoluteDirStringPath, 0, strlen($controllerRootDir)) !== $controllerRootDir) {
-                    throw new \RuntimeException('The given directory must be in the "src/Controller" folder.');
+                if ($absoluteDir->containsAny('..')) {
+                    throw new \RuntimeException(sprintf('The given directory path can\'t contain ".." and must be relative to the project directory (which is "%s")', $projectDir));
                 }
 
                 $fs->mkdir($absoluteDir);
+
                 if (!$fs->exists($absoluteDir)) {
-                    throw new \RuntimeException('The given directory does not exist. Type in the path of an existing directory relative to your project root (e.g. src/Controller/Admin/)');
+                    throw new \RuntimeException('The given directory does not exist and couldn\'t be created. Type in the path of an existing directory relative to your project root (e.g. src/Controller/Admin/)');
                 }
 
                 return $absoluteDir->after($projectDir.\DIRECTORY_SEPARATOR)->trimEnd(\DIRECTORY_SEPARATOR)->toString();
@@ -95,23 +92,5 @@ class MakeAdminDashboardCommand extends Command
             ->toString();
 
         return empty($guessedTitle) ? 'EasyAdmin' : $guessedTitle;
-    }
-
-    private static function normalizePath($path)
-    {
-        $normalized = preg_replace('#\p{C}+|^\./#u', '', $path);
-        $normalized = preg_replace('#/\.(?=/)|^\./|\./$#', '', $normalized);
-
-        $regex = '#\/*[^/\.]+/\.\.#Uu';
-
-        while (preg_match($regex, $normalized)) {
-            $normalized = preg_replace($regex, '', $normalized);
-        }
-
-        if (preg_match('#/\.{2}|\.{2}/#', $normalized)) {
-            throw new \RuntimeException(sprintf('The "%s" directory is outside of the project root.', $path));
-        }
-
-        return trim($normalized, '\\/');
     }
 }

@@ -47,12 +47,23 @@ function createAutoCompleteFields() {
     var autocompleteFields = $('[data-widget="select2"]:not(.select2-hidden-accessible)');
 
     autocompleteFields.each(function () {
-        var $this = $(this),
-            autocompleteUrl = $this.data('ea-autocomplete-endpoint-url'),
-            allowClear = $this.data('allow-clear');
+        var $this = $(this);
+        var autocompleteUrl = $this.data('ea-autocomplete-endpoint-url');
+        var allowClear = $this.data('allow-clear');
+        var escapeMarkup = $this.data('ea-escape-markup');
 
         if (undefined === autocompleteUrl) {
-            $this.select2({ theme: 'bootstrap', allowClear: true });
+            var options = {
+                theme: 'bootstrap',
+                placeholder: '',
+                allowClear: true
+            };
+
+            if (undefined !== escapeMarkup) {
+                options.escapeMarkup = function(markup) { return markup; };
+            }
+
+            $this.select2(options);
         } else {
             $this.select2({
                 theme: 'bootstrap',

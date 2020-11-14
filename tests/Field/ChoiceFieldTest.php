@@ -67,7 +67,13 @@ class ChoiceFieldTest extends AbstractFieldTest
         $field->allowMultipleChoices();
 
         self::assertSame(
-            ['choices' => $this->choices, 'multiple' => true, 'expanded' => true, 'placeholder' => ''],
+            [
+                'choices' => $this->choices,
+                'multiple' => true,
+                'expanded' => true,
+                'placeholder' => '',
+                'attr' => ['data-ea-escape-markup' => 'false'],
+            ],
             $this->configure($field)->getFormTypeOptions()
         );
     }

@@ -1,0 +1,43 @@
+---------------------------------------------------------------------------
+
+by tcheymol at 2020-10-26T10:26:55Z
+
+Hi @malteschlueter,
+
+I have tried to reproduce what you are aiming to do
+
+- I was able to make the sidebar configuration to work
+- but not the main content part
+
+* Can you provide some documentation about how to make it work and what result we are supposed to see ?
+* I have created a reproducer sampe here to ease the testing  https://github.com/tcheymol/easy-admin-content-width-configure/tree/main
+
+---------------------------------------------------------------------------
+
+by malteschlueter at 2020-10-26T10:57:10Z
+
+Hii @tcheymol,
+
+thanks for your reply.
+
+Normally the layout looks like this and you can switch between the different width of the sidebar with a click between the sidebar and the content (you will see a different pointer at the correct position). To change the content width the action is positioned on the right side of the content.
+![Bildschirmfoto am 2020-10-26 um 11 30 30-fullpage](https://user-images.githubusercontent.com/13586874/97162151-15441180-177f-11eb-89c1-b80890fab6f0.png)
+
+---
+
+In a project were I'm actually working on it's a better user experience to use the full width for the content. This will work if you use `->setContentWidth(Crud::CONTENT_WIDTH_FULL)` on a dashboard or CRUD Controller. This will look like this.
+![Bildschirmfoto am 2020-10-26 um 11 30 56-fullpage](https://user-images.githubusercontent.com/13586874/97162544-a4e9c000-177f-11eb-875d-469306cbb808.png)
+
+---
+
+If you also add `->setSidebarWidth(Crud::SIDEBAR_WIDTH_COMPACT)` the default will look like this.
+![Bildschirmfoto am 2020-10-26 um 11 31 11-fullpage](https://user-images.githubusercontent.com/13586874/97163056-5be63b80-1780-11eb-8ed8-a322916cac9d.png)
+
+---
+
+The main idea for this PR is that it isn't directly visible that you can change the content width and in my case i want to provide the users direct a good usage experience. A colleague of me made me aware of it after I was a little bit annyoed about how difficult is to read the information on the index pages.^^
+I also think that the normal daily user (not developer) who is using easyadmin won't recognize that it's possible to change the layout for yourself.
+
+---
+
+I recognized now that I still need to update the documentation.

@@ -15,6 +15,10 @@ class Crud
     public const PAGE_EDIT = 'edit';
     public const PAGE_INDEX = 'index';
     public const PAGE_NEW = 'new';
+    public const CONTENT_WIDTH_NORMAL = 'normal';
+    public const CONTENT_WIDTH_FULL = 'full';
+    public const SIDEBAR_WIDTH_NORMAL = 'normal';
+    public const SIDEBAR_WIDTH_COMPACT = 'compact';
 
     /** @var CrudDto */
     private $dto;
@@ -315,5 +319,19 @@ class Crud
     private function getValidPageNames(): array
     {
         return [self::PAGE_DETAIL, self::PAGE_EDIT, self::PAGE_INDEX, self::PAGE_NEW];
+    }
+
+    public function setContentWidth(string $contentWidth): self
+    {
+        $this->dto->setContentWidth($contentWidth);
+
+        return $this;
+    }
+
+    public function setSidebarWidth(string $sidebarWidth)
+    {
+        $this->dto->setSidebarWidth($sidebarWidth);
+
+        return $this;
     }
 }

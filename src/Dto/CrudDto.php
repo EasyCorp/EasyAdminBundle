@@ -44,6 +44,8 @@ final class CrudDto
     private $newFormOptions;
     private $editFormOptions;
     private $entityPermission;
+    private $contentWidth;
+    private $sidebarWidth;
 
     public function __construct()
     {
@@ -357,5 +359,25 @@ final class CrudDto
     public function setFiltersConfig(FilterConfigDto $filterConfig): void
     {
         $this->filters = $filterConfig;
+    }
+
+    public function getContentWidth(): ?string
+    {
+        return $this->contentWidth;
+    }
+
+    public function setContentWidth(string $contentWidth): void
+    {
+        $this->contentWidth = $contentWidth;
+    }
+
+    public function getSidebarWidth(): ?string
+    {
+        return $this->sidebarWidth;
+    }
+
+    public function setSidebarWidth(string $sidebarWidth): void
+    {
+        $this->sidebarWidth = $sidebarWidth;
     }
 }

@@ -46,8 +46,8 @@
     <body id="{% block body_id %}{% endblock %}" class="ea {% block body_class %}{% endblock %}">
     <script>
         document.body.classList.add(
-            'ea-content-width-' + (localStorage.getItem('ea/content/width') || 'normal'),
-            'ea-sidebar-width-' + (localStorage.getItem('ea/sidebar/width') || 'normal')
+            'ea-content-width-' + (localStorage.getItem('ea/content/width') || '{{ ea.crud.contentWidth ?? ea.dashboardContentWidth }}'),
+            'ea-sidebar-width-' + (localStorage.getItem('ea/sidebar/width') || '{{ ea.crud.sidebarWidth ?? ea.dashboardSidebarWidth }}')
         );
     </script>
 

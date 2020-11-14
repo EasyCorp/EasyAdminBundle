@@ -44,12 +44,14 @@
 
 {% block body %}
     <body id="{% block body_id %}{% endblock %}" class="ea {% block body_class %}{% endblock %}">
-    <script>
-        document.body.classList.add(
-            'ea-content-width-' + (localStorage.getItem('ea/content/width') || '{{ ea.crud.contentWidth ?? ea.dashboardContentWidth ?? 'normal' }}'),
-            'ea-sidebar-width-' + (localStorage.getItem('ea/sidebar/width') || '{{ ea.crud.sidebarWidth ?? ea.dashboardSidebarWidth ?? 'normal' }}')
-        );
-    </script>
+    {% block javascript_page_layout %}
+        <script>
+            document.body.classList.add(
+                'ea-content-width-' + (localStorage.getItem('ea/content/width') || '{{ ea.crud.contentWidth ?? ea.dashboardContentWidth ?? 'normal' }}'),
+                'ea-sidebar-width-' + (localStorage.getItem('ea/sidebar/width') || '{{ ea.crud.sidebarWidth ?? ea.dashboardSidebarWidth ?? 'normal' }}')
+            );
+        </script>
+    {% endblock javascript_page_layout %}
 
     {% block wrapper_wrapper %}
         {% block flash_messages %}

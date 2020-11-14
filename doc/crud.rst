@@ -104,6 +104,24 @@ The rest of CRUD options are configured using the ``configureCrud()`` method::
         }
     }
 
+Design Options
+~~~~~~~~~~~~~~
+
+::
+
+    public function configureCrud(Crud $crud): Crud
+    {
+        return $crud
+            // set this option if you prefer the page content to span the entire
+            // browser width, instead of the default design which sets a max width
+            ->renderContentMaximized()
+
+            // set this option if you prefer the sidebar (which contains the main menu)
+            // to be displayed as a narrow column instead of the default expanded design
+            ->renderSidebarMinimized()
+        ;
+    }
+
 .. _crud_entity_options:
 
 Entity Options

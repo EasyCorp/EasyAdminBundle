@@ -56,22 +56,22 @@ final class Dashboard
         return $this;
     }
 
+    public function renderContentMaximized(bool $maximized = true): self
+    {
+        $this->dto->setContentWidth($maximized ? Crud::LAYOUT_CONTENT_FULL : Crud::LAYOUT_CONTENT_DEFAULT);
+
+        return $this;
+    }
+
+    public function renderSidebarMinimized(bool $minimized = true): self
+    {
+        $this->dto->setSidebarWidth($minimized ? Crud::LAYOUT_SIDEBAR_COMPACT : Crud::LAYOUT_SIDEBAR_DEFAULT);
+
+        return $this;
+    }
+
     public function getAsDto(): DashboardDto
     {
         return $this->dto;
-    }
-
-    public function setContentWidth(string $contentWidth): self
-    {
-        $this->dto->setContentWidth($contentWidth);
-
-        return $this;
-    }
-
-    public function setSidebarWidth(string $sidebarWidth)
-    {
-        $this->dto->setSidebarWidth($sidebarWidth);
-
-        return $this;
     }
 }

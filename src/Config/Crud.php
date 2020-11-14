@@ -15,10 +15,10 @@ class Crud
     public const PAGE_EDIT = 'edit';
     public const PAGE_INDEX = 'index';
     public const PAGE_NEW = 'new';
-    public const CONTENT_WIDTH_NORMAL = 'normal';
-    public const CONTENT_WIDTH_FULL = 'full';
-    public const SIDEBAR_WIDTH_NORMAL = 'normal';
-    public const SIDEBAR_WIDTH_COMPACT = 'compact';
+    public const LAYOUT_CONTENT_DEFAULT = 'normal';
+    public const LAYOUT_CONTENT_FULL = 'full';
+    public const LAYOUT_SIDEBAR_DEFAULT = 'normal';
+    public const LAYOUT_SIDEBAR_COMPACT = 'compact';
 
     /** @var CrudDto */
     private $dto;
@@ -309,6 +309,20 @@ class Crud
         return $this;
     }
 
+    public function renderContentMaximized(bool $maximized = true): self
+    {
+        $this->dto->setContentWidth($maximized ? self::LAYOUT_CONTENT_FULL : self::LAYOUT_CONTENT_DEFAULT);
+
+        return $this;
+    }
+
+    public function renderSidebarMinimized(bool $minimized = true): self
+    {
+        $this->dto->setSidebarWidth($minimized ? self::LAYOUT_SIDEBAR_COMPACT : self::LAYOUT_SIDEBAR_DEFAULT);
+
+        return $this;
+    }
+
     public function getAsDto(): CrudDto
     {
         $this->dto->setPaginator(new PaginatorDto($this->paginatorPageSize, $this->paginatorFetchJoinCollection, $this->paginatorUseOutputWalkers));
@@ -319,19 +333,5 @@ class Crud
     private function getValidPageNames(): array
     {
         return [self::PAGE_DETAIL, self::PAGE_EDIT, self::PAGE_INDEX, self::PAGE_NEW];
-    }
-
-    public function setContentWidth(string $contentWidth): self
-    {
-        $this->dto->setContentWidth($contentWidth);
-
-        return $this;
-    }
-
-    public function setSidebarWidth(string $sidebarWidth)
-    {
-        $this->dto->setSidebarWidth($sidebarWidth);
-
-        return $this;
     }
 }

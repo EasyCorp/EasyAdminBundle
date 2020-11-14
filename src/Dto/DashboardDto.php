@@ -22,8 +22,8 @@ final class DashboardDto
         $this->faviconPath = 'favicon.ico';
         $this->title = 'EasyAdmin';
         $this->translationDomain = 'messages';
-        $this->contentWidth = Crud::CONTENT_WIDTH_NORMAL;
-        $this->sidebarWidth = Crud::SIDEBAR_WIDTH_NORMAL;
+        $this->contentWidth = Crud::LAYOUT_CONTENT_DEFAULT;
+        $this->sidebarWidth = Crud::LAYOUT_SIDEBAR_DEFAULT;
     }
 
     public function getRouteName(): string

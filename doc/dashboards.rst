@@ -145,6 +145,14 @@ explained later)::
                 // there's no need to define the "text direction" explicitly because
                 // its default value is inferred dynamically from the user locale
                 ->setTextDirection('ltr')
+
+                // set this option if you prefer the page content to span the entire
+                // browser width, instead of the default design which sets a max width
+                ->renderContentMaximized()
+
+                // set this option if you prefer the sidebar (which contains the main menu)
+                // to be displayed as a narrow column instead of the default expanded design
+                ->renderSidebarMinimized()
             ;
         }
     }

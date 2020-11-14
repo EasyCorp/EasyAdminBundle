@@ -59,7 +59,7 @@ function createAutoCompleteFields() {
                 allowClear: true
             };
 
-            if (undefined !== escapeMarkup) {
+            if (false === escapeMarkup) {
                 options.escapeMarkup = function(markup) { return markup; };
             }
 

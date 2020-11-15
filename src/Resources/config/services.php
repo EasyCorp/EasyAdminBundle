@@ -291,6 +291,7 @@ return static function (ContainerConfigurator $container) {
             ->tag(EasyAdminExtension::TAG_FIELD_CONFIGURATOR, ['priority' => 9999])
 
         ->set(CountryConfigurator::class)
+            ->arg(0, new Reference('assets.packages'))
 
         ->set(CurrencyConfigurator::class)
 

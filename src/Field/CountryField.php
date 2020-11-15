@@ -3,7 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
-use Symfony\Component\Form\Extension\Core\Type\CountryType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -27,7 +27,7 @@ final class CountryField implements FieldInterface
             ->setProperty($propertyName)
             ->setLabel($label)
             ->setTemplateName('crud/field/country')
-            ->setFormType(CountryType::class)
+            ->setFormType(ChoiceType::class)
             ->addCssClass('field-country')
             ->setCustomOption(self::OPTION_SHOW_FLAG, true)
             ->setCustomOption(self::OPTION_SHOW_NAME, true)

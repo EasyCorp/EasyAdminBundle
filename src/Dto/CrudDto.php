@@ -62,8 +62,6 @@ final class CrudDto
         $this->newFormOptions = KeyValueStore::new();
         $this->editFormOptions = KeyValueStore::new();
         $this->overriddenTemplates = [];
-        $this->contentWidth = Crud::LAYOUT_CONTENT_DEFAULT;
-        $this->sidebarWidth = Crud::LAYOUT_SIDEBAR_DEFAULT;
     }
 
     public function getControllerFqcn(): ?string
@@ -363,7 +361,7 @@ final class CrudDto
         $this->filters = $filterConfig;
     }
 
-    public function getContentWidth(): string
+    public function getContentWidth(): ?string
     {
         return $this->contentWidth;
     }
@@ -373,7 +371,7 @@ final class CrudDto
         $this->contentWidth = $contentWidth;
     }
 
-    public function getSidebarWidth(): string
+    public function getSidebarWidth(): ?string
     {
         return $this->sidebarWidth;
     }

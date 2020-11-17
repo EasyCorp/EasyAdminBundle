@@ -10,7 +10,9 @@ class Autogrow {
         this.field.style.resize = 'none';
         this.field.style.boxSizing = 'border-box';
         this.field.style.height = 'auto';
-        this.field.style.height = this.field.scrollHeight + 'px';
+        if (this.field.scrollHeight > 0) {
+            this.field.style.height = this.field.scrollHeight + 'px';
+        }
     }
 }
 

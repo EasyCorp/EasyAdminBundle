@@ -47,7 +47,7 @@ final class CacheWarmer implements CacheWarmerInterface
             }
 
             $controller = u($controller);
-            if (!$controller->endsWith('::index')) {
+            if (!$controller->endsWith('::index') && !$controller->endsWith('::__invoke')) {
                 continue;
             }
 

@@ -403,7 +403,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         /** @var CrudControllerInterface $controller */
         $controller = $this->get(ControllerFactory::class)->getCrudControllerInstance($autocompleteContext['crudId'], Action::INDEX, $context->getRequest());
         /** @var FieldDto $field */
-        $field = FieldCollection::new($controller->configureFields(Crud::PAGE_INDEX))->get($autocompleteContext['propertyName']);
+        $field = FieldCollection::new($controller->configureFields($autocompleteContext['originatingPage']))->get($autocompleteContext['propertyName']);
         /** @var \Closure|null $queryBuilderCallable */
         $queryBuilderCallable = $field->getCustomOption(AssociationField::OPTION_QUERY_BUILDER_CALLABLE);
 

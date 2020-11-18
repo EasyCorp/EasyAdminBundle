@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Field\Configurator;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -28,11 +29,6 @@ final class ImageConfigurator implements FieldConfiguratorInterface
 
     public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
     {
-        $relativeUploadDir = $field->getCustomOption(ImageField::OPTION_UPLOAD_DIR) ?? 'public/uploads/images/';
-        $relativeUploadDir = u($relativeUploadDir)->trimStart(\DIRECTORY_SEPARATOR)->ensureEnd(\DIRECTORY_SEPARATOR)->toString();
-        $absoluteUploadDir = u($relativeUploadDir)->ensureStart($this->projectDir.\DIRECTORY_SEPARATOR)->toString();
-        $field->setFormTypeOption('upload_dir', $absoluteUploadDir);
-
         $configuredBasePath = $field->getCustomOption(ImageField::OPTION_BASE_PATH);
         $formattedValue = $this->getImagePath($field->getValue(), $configuredBasePath);
         $field->setFormattedValue($formattedValue);
@@ -43,6 +39,18 @@ final class ImageConfigurator implements FieldConfiguratorInterface
         if (empty($formattedValue) || $formattedValue === rtrim($configuredBasePath ?? '', '/')) {
             $field->setTemplateName('label/empty');
         }
+
+        if (!\in_array($context->getCrud()->getCurrentPage(), [Crud::PAGE_EDIT, Crud::PAGE_NEW])) {
+            return;
+        }
+
+        $relativeUploadDir = $field->getCustomOption(ImageField::OPTION_UPLOAD_DIR);
+        if (null === $relativeUploadDir) {
+            throw new \InvalidArgumentException(sprintf('The "%s" image field must define the directory where the images are uploaded using the setUploadDir() method.', $field->getProperty()));
+        }
+        $relativeUploadDir = u($relativeUploadDir)->trimStart(\DIRECTORY_SEPARATOR)->ensureEnd(\DIRECTORY_SEPARATOR)->toString();
+        $absoluteUploadDir = u($relativeUploadDir)->ensureStart($this->projectDir.\DIRECTORY_SEPARATOR)->toString();
+        $field->setFormTypeOption('upload_dir', $absoluteUploadDir);
     }
 
     private function getImagePath(?string $imagePath, ?string $basePath): ?string

@@ -1,0 +1,29 @@
+---------------------------------------------------------------------------
+
+by liarco at 2020-11-08T18:35:58Z
+
+@javiereguiluz I'm afraid that https://github.com/EasyCorp/EasyAdminBundle/pull/3925 introduced this regression. And now I think that my solution might not be enough since the bug also affects other `Select2` inputs like the `ChoiceField` (does it use the same `CrudAutocompleteType`?).
+
+If you have any preferred solution I can implement it and update this PR.
+
+Thank you!
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2020-11-15T11:09:00Z
+
+@liarco I saw this error a few days ago in one of my apps ... but now I cannot reproduce it anymore. Could you please update to the latest `dev-master` changes and see if the error is gone. I'm probably missing something, but let's double check. Thanks!
+
+---------------------------------------------------------------------------
+
+by liarco at 2020-11-15T17:28:25Z
+
+Hi @javiereguiluz, I tested using a1d8c1d and now association inputs with `->autocomplete()` don't set `data-allow-clear` correctly.
+
+I'm testing a brand new entity with a property which can be `null`, if I don't enable lazy-loading then the clear option works as intended (but I think it's because Select2 finds real options inside the `<select>` element), if I enable lazy-loading the `x` button disappears...
+
+![output2](https://user-images.githubusercontent.com/1532277/99189018-4d77b800-275f-11eb-936a-1b27ef483454.gif)
+
+Forcing the `data-allow-clear` setting the `attr` option fires the same error as before.
+
+Please let me know if there's anything else I can do to help you troubleshooting.

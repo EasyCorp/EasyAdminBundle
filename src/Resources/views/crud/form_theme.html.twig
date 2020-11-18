@@ -566,8 +566,8 @@
 {% block ea_fileupload_widget %}
     <div class="ea-fileupload">
         <div class="input-group">
-            {% set placeholder = null %}
-            {% set title = null %}
+            {% set placeholder = '' %}
+            {% set title = '' %}
             {% set filesLabel = 'files'|trans({}, 'EasyAdminBundle') %}
             {% if currentFiles %}
                 {% if multiple %}

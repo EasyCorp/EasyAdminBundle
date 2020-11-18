@@ -36,7 +36,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Factory\FilterFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\PaginatorFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FileUploadType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Model\FileUploadState;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityUpdater;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
@@ -49,6 +51,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use function Symfony\Component\String\u;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -213,8 +216,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $editForm = $this->createEditForm($context->getEntity(), $context->getCrud()->getEditFormOptions(), $context);
         $editForm->handleRequest($context->getRequest());
         if ($editForm->isSubmitted() && $editForm->isValid()) {
-            // TODO:
-            // $this->processUploadedFiles($editForm);
+            $this->processUploadedFiles($editForm);
 
             $event = new BeforeEntityUpdatedEvent($entityInstance);
             $this->get('event_dispatcher')->dispatch($event);
@@ -288,8 +290,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $context->getEntity()->setInstance($entityInstance);
 
         if ($newForm->isSubmitted() && $newForm->isValid()) {
-            // TODO:
-            // $this->processUploadedFiles($newForm);
+            $this->processUploadedFiles($newForm);
 
             $event = new BeforeEntityPersistedEvent($entityInstance);
             $this->get('event_dispatcher')->dispatch($event);
@@ -525,5 +526,46 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $this->get('event_dispatcher')->dispatch($event);
 
         return $event;
+    }
+
+    protected function processUploadedFiles(FormInterface $form): void
+    {
+        /** @var FormInterface $child */
+        foreach ($form as $child) {
+            $config = $child->getConfig();
+
+            if (!$config->getType()->getInnerType() instanceof FileUploadType) {
+                if ($config->getCompound()) {
+                    $this->processUploadedFiles($child);
+                }
+
+                continue;
+            }
+
+            /** @var FileUploadState $state */
+            $state = $config->getAttribute('state');
+
+            if (!$state->isModified()) {
+                continue;
+            }
+
+            $uploadDelete = $config->getOption('upload_delete');
+
+            if ($state->hasCurrentFiles() && ($state->isDelete() || (!$state->isAddAllowed() && $state->hasUploadedFiles()))) {
+                foreach ($state->getCurrentFiles() as $file) {
+                    $uploadDelete($file);
+                }
+                $state->setCurrentFiles([]);
+            }
+
+            $filePaths = (array) $child->getData();
+            $uploadDir = $config->getOption('upload_dir');
+            $uploadNew = $config->getOption('upload_new');
+
+            foreach ($state->getUploadedFiles() as $index => $file) {
+                $fileName = u($filePaths[$index])->after($uploadDir)->toString();
+                $uploadNew($file, $uploadDir, $fileName);
+            }
+        }
     }
 }

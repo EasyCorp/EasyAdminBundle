@@ -70,8 +70,9 @@
 
                                 <div id="header-logo">
                                     {% block header_logo %}
-                                        <a class="logo {{ ea.dashboardTitle|length > 14 ? 'logo-long' }}" title="{{ ea.dashboardTitle|striptags }}" href="{{ path(ea.dashboardRouteName) }}">
-                                            {{ ea.dashboardTitle|raw }}
+                                        {% set dashboardTitle = ea.dashboardTitle|trans %}
+                                        <a class="logo {{ dashboardTitle|length > 14 ? 'logo-long' }}" title="{{ dashboardTitle|striptags }}" href="{{ path(ea.dashboardRouteName) }}">
+                                            {{ dashboardTitle|raw }}
                                         </a>
                                     {% endblock header_logo %}
                                 </div>

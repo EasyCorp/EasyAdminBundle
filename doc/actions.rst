@@ -328,6 +328,13 @@ The following example shows all kinds of actions in practice::
                 ->add(Crud::PAGE_DETAIL, $viewStripeInvoice)
             ;
         }
+        
+        private function renderInvoice(AdminContext $context)
+        {
+            $product = $context->getEntity()->getInstance();
+            
+            // insert your logic
+        }
     }
 
 Batch Actions

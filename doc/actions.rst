@@ -215,7 +215,7 @@ in some page::
     {
         return $actions
             // ...
-            ->reorder(Crud::PAGE_INDEX, [Action::DELETE, Action::DETAIL, Action::EDIT])
+            ->reorder(Crud::PAGE_INDEX, [Action::DELETE, Action::DETAIL, Action::EDIT, 'viewInvoice'])
         ;
     }
 

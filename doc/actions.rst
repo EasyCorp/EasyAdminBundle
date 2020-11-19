@@ -215,7 +215,18 @@ in some page::
     {
         return $actions
             // ...
-            ->reorder(Crud::PAGE_INDEX, [Action::DELETE, Action::DETAIL, Action::EDIT, 'viewInvoice'])
+
+            // you can reorder built-in actions...
+            ->reorder(Crud::PAGE_INDEX, [Action::DETAIL, Action::DELETE, Action::EDIT])
+
+            // ...and your own custom actions too
+            ->reorder(Crud::PAGE_INDEX, [Action::DETAIL, 'viewInvoice', Action::DELETE, Action::EDIT])
+
+            // you can pass only a few actions to this method and the rest of actions
+            // will be appended in their original order. In the following example, the
+            // DELETE and EDIT actions are missing but they will be added automatically
+            // after DETAIL and 'viewInvoice' actions
+            ->reorder(Crud::PAGE_INDEX, [Action::DETAIL, 'viewInvoice'])
         ;
     }
 

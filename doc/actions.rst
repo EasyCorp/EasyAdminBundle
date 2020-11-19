@@ -146,17 +146,17 @@ to users::
 
     public function configureActions(Actions $actions): Actions
     {
-            $viewInvoice = Action::new('View Invoice', 'fas fa-file-invoice')
-                ->displayIf(static function ($entity) {
-                    return $entity->isPublished();
-                });
+        $viewInvoice = Action::new('View Invoice', 'fas fa-file-invoice')
+            ->displayIf(static function ($entity) {
+                return $entity->isPublished();
+            });
 
-                // in PHP 7.4 and newer you can use arrow functions
-                // ->displayIf(fn ($entity) => $entity->isPublished())
+            // in PHP 7.4 and newer you can use arrow functions
+            // ->displayIf(fn ($entity) => $entity->isPublished())
 
-            return $actions
-                // ...
-                ->add(Crud::PAGE_INDEX, $viewInvoice);
+        return $actions
+            // ...
+            ->add(Crud::PAGE_INDEX, $viewInvoice);
     }
 
 Disabling Actions
@@ -284,11 +284,12 @@ The following example shows all kinds of actions in practice::
     namespace App\Controller\Admin;
 
     use App\Entity\Invoice;
+    use App\Entity\Order;
     use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
     use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
     use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 
-    class ProductCrudController extends AbstractCrudController
+    class OrderCrudController extends AbstractCrudController
     {
         // ...
 
@@ -308,16 +309,16 @@ The following example shows all kinds of actions in practice::
 
                 // 2) using a callable (useful if parameters depend on the entity instance)
                 // (the type-hint of the function argument is optional but useful)
-                ->linkToRoute('invoice_send', function (Invoice $entity) {
+                ->linkToRoute('invoice_send', function (Order $entity) {
                     return [
-                        'uuid' => $entity->getId(),
-                        'method' => $entity->sendMethod(),
+                        'uuid' => $order->getId(),
+                        'method' => $order->getUser()->getPreferredSendingMethod(),
                     ];
                 });
 
             // this action points to the invoice on Stripe application
             $viewStripeInvoice = Action::new('viewInvoice', 'Invoice', 'fa fa-file-invoice')
-                ->linkToUrl(function (Invoice $entity) {
+                ->linkToUrl(function (Order $entity) {
                     return 'https://www.stripe.com/invoice/'.$entity->getStripeReference();
                 });
 
@@ -331,9 +332,9 @@ The following example shows all kinds of actions in practice::
         
         private function renderInvoice(AdminContext $context)
         {
-            $product = $context->getEntity()->getInstance();
+            $order = $context->getEntity()->getInstance();
             
-            // insert your logic
+            // add your logic here...
         }
     }
 

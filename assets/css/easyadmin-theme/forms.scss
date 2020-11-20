@@ -22,6 +22,9 @@ input[disabled] {
     margin: 5px 0 5px;
     text-align: left;
 }
+.form-group:focus-within label {
+    color: var(--text-color-dark);
+}
 
 .form-group legend.col-form-label {
     align-self: self-start;
@@ -97,6 +100,10 @@ label.form-check-label {
     font-size: var(--font-size-sm);
     margin-bottom: 0;
     margin-top: 4px;
+    transition: color 0.5s ease;
+}
+.form-widget:focus-within .form-help {
+    color: var(--gray-800);
 }
 
 .form-widget input.form-control,

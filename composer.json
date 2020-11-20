@@ -12,7 +12,7 @@
         }
     ],
     "require": {
-        "php": "^7.2.5",
+        "php": ">=7.2.5",
         "ext-json": "*",
         "doctrine/common": "^2.13 || ^3.0",
         "doctrine/dbal": "^2.10",

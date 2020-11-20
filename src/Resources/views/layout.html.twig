@@ -90,10 +90,14 @@
                                 {% if ea.userMenu.items|length > 0 %}
                                     <div class="popover-content-section user-menu">
                                         {% for item in ea.userMenu.items %}
-                                            <a href="{{ item.linkUrl }}" class="user-action {{ item.cssClass }}" target="{{ item.linkTarget }}" rel="{{ item.linkRel }}" referrerpolicy="origin-when-cross-origin">
-                                                {% if item.icon is not empty %}<i class="fa fa-fw {{ item.icon }}"></i>{% endif %}
-                                                <span>{{ item.label }}</span>
-                                            </a>
+                                            {% if item.isMenuSection %}
+                                                <hr class="m-0" />
+                                            {% else %}
+                                                <a href="{{ item.linkUrl }}" class="user-action {{ item.cssClass }}" target="{{ item.linkTarget }}" rel="{{ item.linkRel }}" referrerpolicy="origin-when-cross-origin">
+                                                    {% if item.icon is not empty %}<i class="fa fa-fw {{ item.icon }}"></i>{% endif %}
+                                                    <span>{{ item.label }}</span>
+                                                </a>
+                                            {% endif %}
                                         {% endfor %}
                                     </div>
                                 {% endif %}

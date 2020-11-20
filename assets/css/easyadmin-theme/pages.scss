@@ -15,19 +15,25 @@ body.page-login {
     align-items: center;
     display: flex;
     flex-direction: column;
-    text-align: center;
-    width: 330px;
+    max-width: 28rem;
+    width: 100%;
 }
 .login-wrapper .main-header {
     display: block;
     padding-right: 0;
 }
 .login-wrapper .main-header #header-logo {
-    font-size: 24px;
+    color: var(--text-color-dark);
+    font-size: 30px;
+    font-weight: 700;
     line-height: 1.2;
+    text-align: center;
 }
 .login-wrapper .content {
-    padding: 30px 20px;
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow-lg);
+    padding: 2rem 2.5rem;
     width: 100%;
 }
 .login-wrapper .form-widget {

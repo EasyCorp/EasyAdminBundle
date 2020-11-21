@@ -10,6 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use function Symfony\Component\String\u;
+use Twig\Markup;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -17,10 +18,12 @@ use function Symfony\Component\String\u;
 final class CommonPostConfigurator implements FieldConfiguratorInterface
 {
     private $adminContextProvider;
+    private $charset;
 
-    public function __construct(AdminContextProvider $adminContextProvider)
+    public function __construct(AdminContextProvider $adminContextProvider, string $charset)
     {
         $this->adminContextProvider = $adminContextProvider;
+        $this->charset = $charset;
     }
 
     public function supports(FieldDto $field, EntityDto $entityDto): bool
@@ -45,7 +48,7 @@ final class CommonPostConfigurator implements FieldConfiguratorInterface
             return $value;
         }
 
-        return $callable($value, $entityDto->getInstance());
+        return new Markup($callable($value, $entityDto->getInstance()), $this->charset);
     }
 
     private function updateFieldTemplate(FieldDto $field): void

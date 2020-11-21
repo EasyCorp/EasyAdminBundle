@@ -186,6 +186,20 @@ final class EntityDto
         return \in_array($associationType, [ClassMetadataInfo::ONE_TO_MANY, ClassMetadataInfo::MANY_TO_MANY], true);
     }
 
+    public function isOneToAssociation(string $propertyName): bool
+    {
+        $associationType = $this->getPropertyMetadata($propertyName)->get('type');
+
+        return \in_array($associationType, [ClassMetadataInfo::ONE_TO_ONE, ClassMetadataInfo::ONE_TO_MANY], true);
+    }
+
+    public function isManyToAssociation(string $propertyName): bool
+    {
+        $associationType = $this->getPropertyMetadata($propertyName)->get('type');
+
+        return \in_array($associationType, [ClassMetadataInfo::MANY_TO_ONE, ClassMetadataInfo::MANY_TO_MANY], true);
+    }
+
     public function isEmbeddedClassProperty(string $propertyName): bool
     {
         $propertyNameParts = explode('.', $propertyName, 2);

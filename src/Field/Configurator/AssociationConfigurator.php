@@ -58,7 +58,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         }
 
         if ($entityDto->isToManyAssociation($propertyName)) {
-            $this->configureToManyAssociation($field);
+            $this->configureToManyAssociation($field, $entityDto);
         }
 
         if (true === $field->getCustomOption(AssociationField::OPTION_AUTOCOMPLETE)) {
@@ -116,7 +116,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         $field->setFormattedValue($this->formatAsString($field->getValue(), $targetEntityDto));
     }
 
-    private function configureToManyAssociation(FieldDto $field): void
+    private function configureToManyAssociation(FieldDto $field, EntityDto $entityDto): void
     {
         $field->setCustomOption(AssociationField::OPTION_DOCTRINE_ASSOCIATION_TYPE, 'toMany');
 
@@ -131,6 +131,8 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         if (null === $field->getTextAlign()) {
             $field->setTextAlign('right');
         }
+
+        $field->setCustomOption(AssociationField::OPTION_RELATED_URL, $this->generateLinkToFilteredListPage($field, $entityDto));
 
         $field->setFormattedValue($this->countNumElements($field->getValue()));
     }
@@ -150,6 +152,35 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         }
 
         return $entityDto->getName();
+    }
+
+    private function generateLinkToFilteredListPage(FieldDto $field, EntityDto $filterEntity): ?string
+    {
+        $crudController = $field->getCustomOption(AssociationField::OPTION_CRUD_CONTROLLER);
+        $filterProperty = $field->getDoctrineMetadata()->get('mappedBy') ?? $field->getDoctrineMetadata()->get('inversedBy');
+        $filterValue = $filterEntity->getPrimaryKeyValue();
+
+        //TODO: don't generate the link if the target filter property doesn't exist
+        //But to check that, we need to create the target $crudController, then to retrieve the defined filters.
+
+        if (null === $crudController || null === $filterProperty) {
+            return null;
+        }
+
+        // TODO: check if user has permission to see the related entity
+        return $this->crudUrlGenerator->build()
+            ->setController($crudController)
+            ->setAction(Action::INDEX)
+            ->setEntityId(null)
+            ->unset('menuIndex')
+            ->unset('submenuIndex')
+            ->includeReferrer()
+            ->set('filters', [
+                $filterProperty => [
+                    'comparison' => '=',
+                    'value' => $filterEntity->isOneToAssociation($field->getProperty()) ? $filterValue : [$filterValue],
+                ],
+            ]);
     }
 
     private function generateLinkToAssociatedEntity(?string $crudController, EntityDto $entityDto): ?string

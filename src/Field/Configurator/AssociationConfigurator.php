@@ -43,6 +43,15 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
             throw new \RuntimeException(sprintf('The "%s" field is not a Doctrine association, so it cannot be used as an association field.', $propertyName));
         }
 
+        /**
+         * Default behavior if not defined:
+         * -> generate the link for a toOne association
+         * -> DO NOT generate the link for a toMany association
+         */
+        if (null === $this->getCustomOption(AssociationField::OPTION_ENABLE_RELATED_URL)) {
+            $this->setCustomOption(AssociationField::OPTION_ENABLE_RELATED_URL, $entityDto->isToOneAssociation($propertyName));
+        }
+
         $targetEntityFqcn = $field->getDoctrineMetadata()->get('targetEntity');
         // the target CRUD controller can be NULL; in that case, field value doesn't link to the related entity
         $targetCrudControllerFqcn = $field->getCustomOption(AssociationField::OPTION_CRUD_CONTROLLER)
@@ -111,7 +120,12 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
             : $this->entityFactory->createForEntityInstance($field->getValue());
         $field->setFormTypeOptionIfNotSet('class', $targetEntityDto->getFqcn());
 
-        $field->setCustomOption(AssociationField::OPTION_RELATED_URL, $this->generateLinkToAssociatedEntity($targetCrudControllerFqcn, $targetEntityDto));
+        if (true === $field->getCustomOption(AssociationField::OPTION_ENABLE_RELATED_URL)) {
+            $field->setCustomOption(
+                AssociationField::OPTION_RELATED_URL,
+                $this->generateLinkToAssociatedEntity($targetCrudControllerFqcn, $targetEntityDto)
+            );
+        }
 
         $field->setFormattedValue($this->formatAsString($field->getValue(), $targetEntityDto));
     }
@@ -132,9 +146,14 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
             $field->setTextAlign('right');
         }
 
-        $field->setCustomOption(AssociationField::OPTION_RELATED_URL, $this->generateLinkToFilteredListPage($field, $entityDto));
-
         $field->setFormattedValue($this->countNumElements($field->getValue()));
+
+        if (true === $field->getCustomOption(AssociationField::OPTION_ENABLE_RELATED_URL)) {
+            $field->setCustomOption(
+                AssociationField::OPTION_RELATED_URL,
+                $this->generateLinkToFilteredIndexPage($field, $entityDto)
+            );
+        }
     }
 
     private function formatAsString($entityInstance, EntityDto $entityDto): ?string
@@ -154,16 +173,21 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         return $entityDto->getName();
     }
 
-    private function generateLinkToFilteredListPage(FieldDto $field, EntityDto $filterEntity): ?string
+    /**
+     * Generate a link to the INDEX page of the target CRUD controller filtered by the $filterEntity EntityDto.
+     * Actually, if the target CRUD controller did not defined a filter related to the $filterEntity
+     * then the INDEX page is displayed without filtering.
+     */
+    private function generateLinkToFilteredIndexPage(FieldDto $field, EntityDto $filterEntity): ?string
     {
         $crudController = $field->getCustomOption(AssociationField::OPTION_CRUD_CONTROLLER);
         $filterProperty = $field->getDoctrineMetadata()->get('mappedBy') ?? $field->getDoctrineMetadata()->get('inversedBy');
         $filterValue = $filterEntity->getPrimaryKeyValue();
 
-        //TODO: don't generate the link if the target filter property doesn't exist
-        //But to check that, we need to create the target $crudController, then to retrieve the defined filters.
+        //TODO: don't generate the link if the target filter property doesn't exist in the $crudController's filters.
+        //But to check that, we need to create the target $crudController, then to retrieve the defined filters...
 
-        if (null === $crudController || null === $filterProperty) {
+        if (null === $crudController || null === $filterProperty || 0 === $field->getFormattedValue()) {
             return null;
         }
 
@@ -180,7 +204,8 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
                     'comparison' => '=',
                     'value' => $filterEntity->isOneToAssociation($field->getProperty()) ? $filterValue : [$filterValue],
                 ],
-            ]);
+            ])
+            ->generateUrl();
     }
 
     private function generateLinkToAssociatedEntity(?string $crudController, EntityDto $entityDto): ?string

@@ -16,6 +16,7 @@ final class AssociationField implements FieldInterface
     public const OPTION_CRUD_CONTROLLER = 'crudControllerFqcn';
     public const OPTION_WIDGET = 'widget';
     public const OPTION_QUERY_BUILDER_CALLABLE = 'queryBuilderCallable';
+    public const OPTION_ENABLE_RELATED_URL = 'enableRelatedUrl';
     /** @internal this option is intended for internal use only */
     public const OPTION_RELATED_URL = 'relatedUrl';
     /** @internal this option is intended for internal use only */
@@ -39,6 +40,7 @@ final class AssociationField implements FieldInterface
             ->setCustomOption(self::OPTION_CRUD_CONTROLLER, null)
             ->setCustomOption(self::OPTION_WIDGET, self::WIDGET_AUTOCOMPLETE)
             ->setCustomOption(self::OPTION_QUERY_BUILDER_CALLABLE, null)
+            ->setCustomOption(self::OPTION_ENABLE_RELATED_URL, null)
             ->setCustomOption(self::OPTION_RELATED_URL, null)
             ->setCustomOption(self::OPTION_DOCTRINE_ASSOCIATION_TYPE, null);
     }
@@ -69,5 +71,17 @@ final class AssociationField implements FieldInterface
         $this->setCustomOption(self::OPTION_QUERY_BUILDER_CALLABLE, $queryBuilderCallable);
 
         return $this;
+    }
+
+    public function enableRelatedUrl(bool $enable = true): self
+    {
+        $this->setCustomOption(self::OPTION_ENABLE_RELATED_URL, $enable);
+
+        return $this;
+    }
+
+    public function disableRelatedUrl(bool $disable = true): self
+    {
+        return $this->enableRelatedUrl(! $disable);
     }
 }

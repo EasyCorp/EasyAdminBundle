@@ -48,8 +48,8 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
          * -> generate the link for a toOne association
          * -> DO NOT generate the link for a toMany association
          */
-        if (null === $this->getCustomOption(AssociationField::OPTION_ENABLE_RELATED_URL)) {
-            $this->setCustomOption(AssociationField::OPTION_ENABLE_RELATED_URL, $entityDto->isToOneAssociation($propertyName));
+        if (null === $field->getCustomOption(AssociationField::OPTION_ENABLE_RELATED_URL)) {
+            $field->setCustomOption(AssociationField::OPTION_ENABLE_RELATED_URL, $entityDto->isToOneAssociation($propertyName));
         }
 
         $targetEntityFqcn = $field->getDoctrineMetadata()->get('targetEntity');

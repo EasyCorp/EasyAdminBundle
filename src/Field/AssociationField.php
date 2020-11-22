@@ -82,6 +82,6 @@ final class AssociationField implements FieldInterface
 
     public function disableRelatedUrl(bool $disable = true): self
     {
-        return $this->enableRelatedUrl(! $disable);
+        return $this->enableRelatedUrl(!$disable);
     }
 }

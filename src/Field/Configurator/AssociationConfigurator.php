@@ -43,7 +43,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
             throw new \RuntimeException(sprintf('The "%s" field is not a Doctrine association, so it cannot be used as an association field.', $propertyName));
         }
 
-        /**
+        /*
          * Default behavior if not defined:
          * -> generate the link for a toOne association
          * -> DO NOT generate the link for a toMany association

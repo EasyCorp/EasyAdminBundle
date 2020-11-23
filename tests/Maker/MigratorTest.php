@@ -1,6 +1,6 @@
 <?php
 
-namespace EasyCorp\Bundle\EasyAdminBundle\App\Tests;
+namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Maker;
 
 use EasyCorp\Bundle\EasyAdminBundle\Maker\Migrator;
 use PHPUnit\Framework\TestCase;

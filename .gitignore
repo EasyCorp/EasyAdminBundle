@@ -3,7 +3,6 @@ composer.lock
 .phpunit.result.cache
 /phpunit.xml
 vendor/*
-build/
 
 /node_modules/
 npm-debug.log

@@ -1,6 +1,6 @@
 <?php
 
-namespace EasyCorp\Bundle\EasyAdminBundle\App\Tests;
+namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Intl;
 
 use EasyCorp\Bundle\EasyAdminBundle\Intl\IntlFormatter;
 use PHPUnit\Framework\TestCase;

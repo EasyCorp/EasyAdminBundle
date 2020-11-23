@@ -40,7 +40,8 @@
         "symfony/uid": "^5.1"
     },
     "require-dev": {
-        "dg/bypass-finals": "^1.2",
+        "dama/doctrine-test-bundle": "^6.4",
+        "doctrine/doctrine-fixtures-bundle": "^3.4",
         "psr/log": "~1.0",
         "symfony/browser-kit": "^4.4|^5.0",
         "symfony/css-selector": "^4.4|^5.0",
@@ -60,7 +61,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "TestApp\\": "tests/Fixtures/TestApp/src/",
+            "EasyCorp\\Bundle\\EasyAdminBundle\\Tests\\TestApplication\\": "tests/TestApplication/src/",
             "EasyCorp\\Bundle\\EasyAdminBundle\\Tests\\": "tests/"
         }
     },

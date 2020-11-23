@@ -1,17 +1,14 @@
 <?php
 
-namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional;
+namespace EasyCorp\Bundle\EasyAdminBundle\Tests\DependencyInjection;
 
-use PHPUnit\Framework\TestCase;
-use TestApp\Kernel;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
-class EasyAdminExtensionTest extends TestCase
+class EasyAdminExtensionTest extends KernelTestCase
 {
     public function testLegacyParameterIsDefined()
     {
-        $kernel = new Kernel('test', true);
-        $kernel->boot();
-        $container = $kernel->getContainer();
+        $container = (self::bootKernel())->getContainer();
 
         self::assertSame([], $container->getParameter('easyadmin.config'), 'The legacy container parameter needed to avoid errors when upgrading from EasyAdmin 2 is defined and empty.');
     }

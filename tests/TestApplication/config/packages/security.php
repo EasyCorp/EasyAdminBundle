@@ -25,6 +25,7 @@ $container->loadFromExtension('security', [
             'pattern' => '^/',
             'provider' => 'test_users',
             'http_basic' => null,
+            'logout' => null,
         ],
     ],
 

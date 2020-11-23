@@ -288,6 +288,7 @@ return static function (ContainerConfigurator $container) {
 
         ->set(CommonPostConfigurator::class)
             ->arg(0, new Reference(AdminContextProvider::class))
+            ->arg(1, '%kernel.charset%')
             ->tag(EasyAdminExtension::TAG_FIELD_CONFIGURATOR, ['priority' => -9999])
 
         ->set(CommonPreConfigurator::class)

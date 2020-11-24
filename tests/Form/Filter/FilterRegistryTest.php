@@ -7,7 +7,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Guesser\DoctrineOrmFilterTypeGue
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Form\Filter\Fixtures\FoobarFilterType;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Form\Filter\Fixtures\FooFilterType;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Form\Filter\Fixtures\InvalidFilterType;
-use PHPUnit\Framework\TestCase;
 use Symfony\Component\Form\FormConfigInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormTypeGuesserChain;
@@ -75,7 +74,7 @@ class FilterRegistryTest extends TestCase
 
     public function testInvalidFilterType()
     {
-        $this->setExpectedException(\Symfony\Component\Form\Exception\RuntimeException::class, 'Filter type "EasyCorp\\Bundle\\EasyAdminBundle\\Tests\\Form\\Filter\\Fixtures\\InvalidFilterType" must implement "EasyCorp\\Bundle\\EasyAdminBundle\\Form\\Filter\\Type\\FilterInterface".');
+        $this->setExpectedException(\Symfony\Component\Form\Exception\RuntimeException::class, 'Filter type "EasyCorp\\TestBundle\\EasyAdminBundle\\Tests\\Form\\Filter\\Fixtures\\InvalidFilterType" must implement "EasyCorp\\TestBundle\\EasyAdminBundle\\Form\\Filter\\Type\\FilterInterface".');
 
         $filterType = new InvalidFilterType();
         $form = $this->createFilterForm($filterType);

@@ -10,11 +10,12 @@
         <ini name="error_reporting" value="-1" />
         <server name="APP_ENV" value="test" force="true" />
         <server name="SHELL_VERBOSITY" value="-1" />
-        <server name="KERNEL_CLASS" value="TestApp\Kernel" />
+        <server name="KERNEL_CLASS" value="EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Kernel" />
     </php>
 
     <extensions>
-        <extension class="EasyCorp\Bundle\EasyAdminBundle\Test\BypassFinalClasses"/>
+        <extension class="EasyCorp\Bundle\EasyAdminBundle\Test\PhpUnitExtension"/>
+        <extension class="DAMA\DoctrineTestBundle\PHPUnit\PHPUnitExtension"/>
     </extensions>
 
     <testsuites>

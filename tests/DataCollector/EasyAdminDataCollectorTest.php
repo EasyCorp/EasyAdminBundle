@@ -1,10 +1,10 @@
 <?php
 
-namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Controller;
+namespace EasyCorp\Bundle\EasyAdminBundle\Tests\DataCollector;
 
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class EasyAdminDataCollectorTest extends AbstractTestCase
+class EasyAdminDataCollectorTest extends WebTestCase
 {
     protected static $options = ['environment' => 'default_backend'];
 

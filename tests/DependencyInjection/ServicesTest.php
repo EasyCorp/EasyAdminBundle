@@ -1,6 +1,6 @@
 <?php
 
-namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional;
+namespace EasyCorp\Bundle\EasyAdminBundle\Tests\DependencyInjection;
 
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;

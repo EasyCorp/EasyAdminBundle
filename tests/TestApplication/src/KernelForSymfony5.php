@@ -1,6 +1,6 @@
 <?php
 
-namespace TestApp;
+namespace EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication;
 
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;

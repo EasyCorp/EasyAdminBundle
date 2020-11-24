@@ -10,6 +10,8 @@ env:
     fail-fast: true
     PHPUNIT_FLAGS: "-v"
     SYMFONY_REQUIRE: ">=4.4"
+    #  1x: The "DAMA\DoctrineTestBundle\Doctrine\DBAL\StaticDriver" class implements "Doctrine\DBAL\Driver\ExceptionConverterDriver" that is deprecated.
+    SYMFONY_DEPRECATIONS_HELPER: "max[indirect]=1"
 
 jobs:
     test:

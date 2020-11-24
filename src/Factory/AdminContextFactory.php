@@ -68,7 +68,8 @@ final class AdminContextFactory
 
     private function getDashboardDto(Request $request, DashboardControllerInterface $dashboardControllerInstance): DashboardDto
     {
-        $dashboardControllerRoutes = require $this->cacheDir.'/'.CacheWarmer::DASHBOARD_ROUTES_CACHE;
+        $dashboardRoutesCachePath = $this->cacheDir.'/'.CacheWarmer::DASHBOARD_ROUTES_CACHE;
+        $dashboardControllerRoutes = !file_exists($dashboardRoutesCachePath) ? [] : require $dashboardRoutesCachePath;
         $dashboardController = \get_class($dashboardControllerInstance).'::index';
         $dashboardRouteName = null;
 

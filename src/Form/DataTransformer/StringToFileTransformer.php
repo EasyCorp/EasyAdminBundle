@@ -99,7 +99,7 @@ class StringToFileTransformer implements DataTransformerInterface
         }
 
         if ($value instanceof File) {
-            return $value->getPathname();
+            return $value->getFilename();
         }
 
         throw new TransformationFailedException('Expected an instance of File or null.');

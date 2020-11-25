@@ -56,7 +56,7 @@ return [
         'choose_file' => 'Dosya seç',
         'close' => 'Kapat',
         'create' => 'Oluştur',
-        'create_and_add_another' => 'Oluşturulup, başka ekle',
+        'create_and_add_another' => 'Oluşturup, başka ekle',
         'create_and_continue' => 'Oluştur ve düzenlemeye devam et',
         'save' => 'Kaydet',
         'save_and_continue' => 'Kaydet ve düzenlemeye devam et',

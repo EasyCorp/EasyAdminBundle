@@ -341,7 +341,7 @@ The following example shows all kinds of actions in practice::
             ;
         }
         
-        private function renderInvoice(AdminContext $context)
+        public function renderInvoice(AdminContext $context)
         {
             $order = $context->getEntity()->getInstance();
             

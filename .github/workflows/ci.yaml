@@ -22,15 +22,8 @@ jobs:
         strategy:
             matrix:
                 allow-failures: [false]
-                # disable 'windows-latest' temporarily because of this error:
-                # Error: Could not scan for classes inside "D:\a\EasyAdminBundle\EasyAdminBundle\vendor/dg/bypass-finals/src/"
-                # which does not appear to be a file nor a folder
-                operating-system: ['ubuntu-latest', 'macos-latest']
+                operating-system: ['ubuntu-latest', 'macos-latest', 'windows-latest']
                 php-version: ['7.2.5', '7.3', '7.4', '8.0']
-                exclude:
-                    # FIXME: remove this exclusion when PHP 8 works properly on Windows
-                    -   operating-system: 'windows-latest'
-                        php-version: '8.0'
 
         steps:
             - name: "Checkout code"
@@ -42,6 +35,7 @@ jobs:
                   coverage: "none"
                   php-version: ${{ matrix.php-version }}
                   tools: composer:v2
+                  extensions: mbstring, intl, pdo, pdo_sqlite, sqlite3
 
             - name: "Add PHPUnit matcher"
               run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"

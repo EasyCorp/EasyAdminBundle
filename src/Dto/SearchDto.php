@@ -72,7 +72,7 @@ final class SearchDto
 
     public function getQuery(): ?string
     {
-        return $this->query;
+        return \trim($this->query);
     }
 
     /**

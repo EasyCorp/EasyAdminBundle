@@ -338,6 +338,10 @@ trait AdminControllerTrait
     {
         $this->dispatch(EasyAdminEvents::PRE_DELETE);
 
+        if (!Request::getHttpMethodParameterOverride() && 'POST' === $this->request->getMethod() && 'DELETE' === $this->request->request->get('_method')) {
+            $this->request->setMethod('DELETE');
+        }
+
         if ('DELETE' !== $this->request->getMethod()) {
             return $this->redirect($this->generateUrl('easyadmin', ['action' => 'list', 'entity' => $this->entity['name']]));
         }

@@ -1,5 +1,7 @@
+name: "Linter: Documentation"
+
 on: [push, pull_request]
-name: Lint
+
 jobs:
     doctor-rst:
         name: DOCtor-RST

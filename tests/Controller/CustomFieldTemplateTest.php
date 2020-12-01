@@ -15,9 +15,9 @@ class CustomFieldTemplateTest extends AbstractTestCase
     {
         $crawler = $this->requestListView();
 
-        $this->assertContains('Custom template for "name" field in the "list" view.', $crawler->filter('#main .datagrid td.string')->eq(0)->text());
-        $this->assertContains('The value of the custom option is "custom_list_value".', $crawler->filter('#main .datagrid td.string')->eq(0)->text());
-        $this->assertContains('The custom template knows that the "this_property_does_no_exist" field is not accessible.', $crawler->filter('#main .datagrid td.text')->eq(0)->text());
+        $this->assertContains('Custom template for "name" field in the "list" view.', $crawler->filter('#main .datagrid td.string')->eq(0)->text(null, true));
+        $this->assertContains('The value of the custom option is "custom_list_value".', $crawler->filter('#main .datagrid td.string')->eq(0)->text(null, true));
+        $this->assertContains('The custom template knows that the "this_property_does_no_exist" field is not accessible.', $crawler->filter('#main .datagrid td.text')->eq(0)->text(null, true));
     }
 
     /**
@@ -27,8 +27,8 @@ class CustomFieldTemplateTest extends AbstractTestCase
     {
         $crawler = $this->requestShowView();
 
-        $this->assertContains('Custom template for "name" field in the "show" view.', $crawler->filter('#main .form-control')->eq(0)->text());
-        $this->assertContains('The value of the custom option is "custom_show_value".', $crawler->filter('#main .form-control')->eq(0)->text());
-        $this->assertContains('The custom template knows that the "this_property_does_no_exist" field is not accessible.', $crawler->filter('#main .form-control')->eq(1)->text());
+        $this->assertContains('Custom template for "name" field in the "show" view.', $crawler->filter('#main .form-control')->eq(0)->text(null, true));
+        $this->assertContains('The value of the custom option is "custom_show_value".', $crawler->filter('#main .form-control')->eq(0)->text(null, true));
+        $this->assertContains('The custom template knows that the "this_property_does_no_exist" field is not accessible.', $crawler->filter('#main .form-control')->eq(1)->text(null, true));
     }
 }

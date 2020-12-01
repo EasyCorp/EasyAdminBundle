@@ -13,7 +13,7 @@ framework:
         default_path: '%kernel.project_dir%/translations'
     default_locale:  '%locale%'
     test:            ~
-    router:          { resource: '%kernel.project_dir%/config/routing_base.yml' }
+    router:          { resource: '%kernel.project_dir%/config/routing_base.yml', utf8: true }
     form:            true
     validation:      { enable_annotations: true }
     profiler:

@@ -447,4 +447,4 @@ Apply the same technique in case you want to use your own form theme instead
 of the one provided by VichUploaderBundle.
 
 .. _`VichUploaderBundle`: https://github.com/dustin10/VichUploaderBundle
-.. _`custom namers`: https://github.com/dustin10/VichUploaderBundle/blob/master/Resources/doc/namers.md
+.. _`custom namers`: https://github.com/dustin10/VichUploaderBundle/blob/master/docs/namers.md

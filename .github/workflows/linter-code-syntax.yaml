@@ -1,0 +1,18 @@
+# See https://github.com/OskarStark/php-cs-fixer-ga
+name: "Linter: Code Syntax"
+
+on: [push, pull_request]
+
+env:
+    fail-fast: true
+
+jobs:
+    php-cs-fixer:
+        name: PHP-CS-Fixer
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+            - name: PHP-CS-Fixer
+              uses: docker://oskarstark/php-cs-fixer-ga
+              with:
+                  args: --diff --dry-run

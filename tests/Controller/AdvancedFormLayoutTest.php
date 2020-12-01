@@ -27,7 +27,7 @@ class AdvancedFormLayoutTest extends AbstractTestCase
 
             $this->assertSame(
                 'Basic information',
-                trim($crawler->filter('ul.nav-tabs li')->eq(0)->text()),
+                trim($crawler->filter('ul.nav-tabs li')->eq(0)->text(null, true)),
                 'The first tab of the form is displayed correctly.'
             );
             $this->assertContains(
@@ -42,7 +42,7 @@ class AdvancedFormLayoutTest extends AbstractTestCase
             );
             $this->assertSame(
                 'Extra information',
-                trim($crawler->filter('ul.nav-tabs li')->eq(1)->text()),
+                trim($crawler->filter('ul.nav-tabs li')->eq(1)->text(null, true)),
                 'The second tab of the form is displayed correctly.'
             );
             $this->assertContains(
@@ -68,7 +68,7 @@ class AdvancedFormLayoutTest extends AbstractTestCase
             );
             $this->assertSame(
                 'Basic information',
-                trim($crawler->filter('form .field-group')->eq(1)->filter('fieldset legend')->text())
+                trim($crawler->filter('form .field-group')->eq(1)->filter('fieldset legend')->text(null, true))
             );
             $this->assertSame(
                 'fa fa-fw fa-pencil',
@@ -101,7 +101,7 @@ class AdvancedFormLayoutTest extends AbstractTestCase
             );
             $this->assertSame(
                 'Product Details',
-                trim($crawler->filter('form .field-group')->eq(2)->filter('fieldset legend')->text())
+                trim($crawler->filter('form .field-group')->eq(2)->filter('fieldset legend')->text(null, true))
             );
             $this->assertCount(
                 0,
@@ -121,7 +121,7 @@ class AdvancedFormLayoutTest extends AbstractTestCase
             );
             $this->assertSame(
                 'Advanced Settings',
-                trim($crawler->filter('form .field-group')->eq(2)->filter('fieldset .form-section h2')->text())
+                trim($crawler->filter('form .field-group')->eq(2)->filter('fieldset .form-section h2')->text(null, true))
             );
             $this->assertSame(
                 'fa fa-fw fa-warning',
@@ -129,7 +129,7 @@ class AdvancedFormLayoutTest extends AbstractTestCase
             );
             $this->assertSame(
                 'Reserved for administrators use',
-                trim($crawler->filter('form .field-group')->eq(2)->filter('fieldset .form-section-help')->text())
+                trim($crawler->filter('form .field-group')->eq(2)->filter('fieldset .form-section-help')->text(null, true))
             );
             $this->assertSame(
                 'product_enabled',
@@ -172,7 +172,7 @@ class AdvancedFormLayoutTest extends AbstractTestCase
             );
             $this->assertSame(
                 'Attachments',
-                trim($crawler->filter('form .field-group')->eq(5)->filter('fieldset legend')->text())
+                trim($crawler->filter('form .field-group')->eq(5)->filter('fieldset legend')->text(null, true))
             );
             $this->assertSame(
                 'fa fa-fw fa-paperclip',
@@ -180,7 +180,7 @@ class AdvancedFormLayoutTest extends AbstractTestCase
             );
             $this->assertSame(
                 'PNG format is preferred',
-                trim($crawler->filter('form .field-group')->eq(5)->filter('fieldset .legend-help')->text())
+                trim($crawler->filter('form .field-group')->eq(5)->filter('fieldset .legend-help')->text(null, true))
             );
             $this->assertSame(
                 'product_image',
@@ -189,16 +189,16 @@ class AdvancedFormLayoutTest extends AbstractTestCase
 
             $this->assertSame(
                 'Save changes',
-                trim($crawler->filter('.form-actions button')->eq(0)->text())
+                trim($crawler->filter('.form-actions button')->eq(0)->text(null, true))
             );
             $this->assertSame(
                 'Back to listing',
-                trim($crawler->filter('.form-actions a.action-list')->text())
+                trim($crawler->filter('.form-actions a.action-list')->text(null, true))
             );
             if ('edit' === $view) {
                 $this->assertSame(
                     'Delete',
-                    trim($crawler->filter('.form-actions a.action-delete')->text())
+                    trim($crawler->filter('.form-actions a.action-delete')->text(null, true))
                 );
             }
         }

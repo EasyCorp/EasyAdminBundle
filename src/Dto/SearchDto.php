@@ -24,7 +24,7 @@ final class SearchDto
     {
         $this->request = $request;
         $this->searchableProperties = $searchableProperties;
-        $this->query = $query;
+        $this->query = trim($query);
         $this->defaultSort = $defaultSort;
         $this->customSort = $customSort;
         $this->appliedFilters = $appliedFilters;
@@ -72,7 +72,7 @@ final class SearchDto
 
     public function getQuery(): ?string
     {
-        return \trim($this->query);
+        return $this->query;
     }
 
     /**

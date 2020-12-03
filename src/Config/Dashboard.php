@@ -45,6 +45,7 @@ final class Dashboard
         return $this;
     }
 
+    #[ExpectedValues(values: ['ltr', 'rtl'])]
     public function setTextDirection(string $direction): self
     {
         if (!\in_array($direction, ['ltr', 'rtl'], true)) {

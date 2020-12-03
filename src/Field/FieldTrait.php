@@ -126,6 +126,7 @@ trait FieldTrait
     /**
      * @param string $textAlign It can be 'left', 'center' or 'right'
      */
+    #[ExpectedValues(values: ['left', 'center', 'right'])]
     public function setTextAlign(string $textAlign): self
     {
         $validOptions = ['left', 'center', 'right'];

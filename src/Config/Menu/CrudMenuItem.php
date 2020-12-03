@@ -62,6 +62,7 @@ final class CrudMenuItem implements MenuItemInterface
     /**
      * @param array $sortFieldsAndOrder ['fieldName' => 'ASC|DESC', ...]
      */
+    #[ArrayShape([0 => 'string', 1 => ['ASC', 'DESC']])
     public function setDefaultSort(array $sortFieldsAndOrder): self
     {
         $sortFieldsAndOrder = array_map('strtoupper', $sortFieldsAndOrder);

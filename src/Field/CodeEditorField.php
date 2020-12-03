@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CodeEditorType;
+use JetBrains\PhpStorm\ExpectedValues;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -44,6 +45,7 @@ final class CodeEditorField implements FieldInterface
         return $this;
     }
 
+    #[ExpectedValues(values: self::ALLOWED_LANGUAGES)]
     public function setLanguage(string $language): self
     {
         if (!\in_array($language, self::ALLOWED_LANGUAGES, true)) {

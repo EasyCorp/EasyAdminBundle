@@ -246,7 +246,7 @@ final class FieldDto
 
     public function setCssClass(string $cssClass): void
     {
-        $this->cssClass = $cssClass;
+        $this->cssClass = trim($cssClass);
     }
 
     public function getTranslationParameters(): array

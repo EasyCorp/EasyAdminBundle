@@ -147,7 +147,7 @@ trait FieldTrait
 
     public function addCssClass(string $cssClass): self
     {
-        $this->dto->setCssClass(trim($this->dto->getCssClass().' '.$cssClass));
+        $this->dto->setCssClass($this->dto->getCssClass().' '.$cssClass);
 
         return $this;
     }

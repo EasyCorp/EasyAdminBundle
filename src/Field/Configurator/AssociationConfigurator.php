@@ -82,12 +82,12 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
 
             $field->setFormTypeOption('attr.data-ea-autocomplete-endpoint-url', $autocompleteEndpointUrl);
         } else {
-            $field->setFormTypeOptionIfNotSet('query_builder', static function (EntityRepository $repository) use ($field) {
+            $field->setFormTypeOptionIfNotSet('query_builder', static function (EntityRepository $repository) use ($context, $field) {
                 // TODO: should this use `createIndexQueryBuilder` instead, so we get the default ordering etc.?
                 // it would then be identical to the one used in autocomplete action, but it is a bit complex getting it in here
                 $queryBuilder = $repository->createQueryBuilder('entity');
                 if ($queryBuilderCallable = $field->getCustomOption(AssociationField::OPTION_QUERY_BUILDER_CALLABLE)) {
-                    $queryBuilderCallable($queryBuilder);
+                    $queryBuilderCallable($queryBuilder, $context);
                 }
 
                 return $queryBuilder;

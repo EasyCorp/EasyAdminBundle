@@ -409,7 +409,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $queryBuilderCallable = $field->getCustomOption(AssociationField::OPTION_QUERY_BUILDER_CALLABLE);
 
         if (null !== $queryBuilderCallable) {
-            $queryBuilderCallable($queryBuilder);
+            $queryBuilderCallable($queryBuilder, $context);
         }
 
         $paginator = $this->get(PaginatorFactory::class)->create($queryBuilder);

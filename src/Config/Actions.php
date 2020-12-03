@@ -126,7 +126,7 @@ final class Actions
     /**
      * @param array $permissions Syntax: ['actionName' => 'actionPermission', ...]
      */
-    #[ArrayShape([0 => 'string', 1 => 'string'])
+    #[ArrayShape([0 => 'string', 1 => 'string'])]
     public function setPermissions(array $permissions): self
     {
         $this->dto->setActionPermissions($permissions);

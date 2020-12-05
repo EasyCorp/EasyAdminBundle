@@ -4,6 +4,8 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
 use EasyCorp\Bundle\EasyAdminBundle\Cache\CacheWarmer;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\TextDirection;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
@@ -47,7 +49,7 @@ final class AdminContextFactory
 
     public function create(Request $request, DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController): AdminContext
     {
-        $crudAction = $request->query->get('crudAction');
+        $crudAction = $request->query->get(EA::CRUD_ACTION);
         $validPageNames = [Crud::PAGE_INDEX, Crud::PAGE_DETAIL, Crud::PAGE_EDIT, Crud::PAGE_NEW];
         $pageName = \in_array($crudAction, $validPageNames, true) ? $crudAction : null;
 
@@ -166,7 +168,7 @@ final class AdminContextFactory
 
         $configuredTextDirection = $dashboardDto->getTextDirection();
         $localePrefix = strtolower(substr($locale, 0, 2));
-        $defaultTextDirection = \in_array($localePrefix, ['ar', 'fa', 'he']) ? 'rtl' : 'ltr';
+        $defaultTextDirection = \in_array($localePrefix, ['ar', 'fa', 'he']) ? TextDirection::RTL : TextDirection::LTR;
         $textDirection = $configuredTextDirection ?? $defaultTextDirection;
 
         $translationDomain = $dashboardDto->getTranslationDomain();
@@ -174,7 +176,7 @@ final class AdminContextFactory
         $translationParameters = [];
         if (null !== $crudDto) {
             $translationParameters['%entity_name%'] = $entityName = basename(str_replace('\\', '/', $crudDto->getEntityFqcn()));
-            $translationParameters['%entity_id%'] = $entityId = $request->query->get('entityId');
+            $translationParameters['%entity_id%'] = $entityId = $request->query->get(EA::ENTITY_ID);
             $translationParameters['%entity_short_id%'] = null === $entityId ? null : u((string) $entityId)->truncate(7);
 
             $entityInstance = null === $entityDto ? null : $entityDto->getInstance();
@@ -198,10 +200,10 @@ final class AdminContextFactory
 
         $queryParams = $request->query->all();
         $searchableProperties = $crudDto->getSearchFields();
-        $query = $queryParams['query'] ?? null;
+        $query = $queryParams[EA::QUERY] ?? null;
         $defaultSort = $crudDto->getDefaultSort();
-        $customSort = $queryParams['sort'] ?? [];
-        $appliedFilters = $queryParams['filters'] ?? [];
+        $customSort = $queryParams[EA::SORT] ?? [];
+        $appliedFilters = $queryParams[EA::FILTERS] ?? [];
 
         return new SearchDto($request, $searchableProperties, $query, $defaultSort, $customSort, $appliedFilters);
     }
@@ -225,6 +227,6 @@ final class AdminContextFactory
             return null;
         }
 
-        return $this->entityFactory->create($crudDto->getEntityFqcn(), $request->query->get('entityId'), $crudDto->getEntityPermission());
+        return $this->entityFactory->create($crudDto->getEntityFqcn(), $request->query->get(EA::ENTITY_ID), $crudDto->getEntityPermission());
     }
 }

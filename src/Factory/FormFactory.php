@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudBatchActionFormType;
@@ -72,7 +73,7 @@ final class FormFactory
     {
         $filtersForm = $this->symfonyFormFactory->createNamed('filters', FiltersFormType::class, null, [
             'method' => 'GET',
-            'action' => $request->query->get('referrer', ''),
+            'action' => $request->query->get(EA::REFERRER, ''),
             'ea_filters' => $filters,
         ]);
 

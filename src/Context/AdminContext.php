@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Context;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenu;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetsDto;
@@ -63,7 +64,7 @@ final class AdminContext
 
     public function getReferrer(): ?string
     {
-        return $this->request->query->get('referrer');
+        return $this->request->query->get(EA::REFERRER);
     }
 
     public function getI18n(): I18nDto
@@ -129,8 +130,8 @@ final class AdminContext
 
         $configuredMenuItems = $this->dashboardControllerInstance->configureMenuItems();
         $mainMenuItems = \is_array($configuredMenuItems) ? $configuredMenuItems : iterator_to_array($configuredMenuItems, false);
-        $selectedMenuIndex = $this->request->query->getInt('menuIndex', -1);
-        $selectedMenuSubIndex = $this->request->query->getInt('submenuIndex', -1);
+        $selectedMenuIndex = $this->request->query->getInt(EA::MENU_INDEX, -1);
+        $selectedMenuSubIndex = $this->request->query->getInt(EA::SUBMENU_INDEX, -1);
 
         return $this->mainMenuDto = $this->menuFactory->createMainMenu($mainMenuItems, $selectedMenuIndex, $selectedMenuSubIndex);
     }

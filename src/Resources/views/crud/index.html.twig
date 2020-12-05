@@ -110,10 +110,12 @@
                             <th width="1px"><span><input type="checkbox" class="form-batch-checkbox-all"></span></th>
                         {% endif %}
 
+                        {% set ea_sort_asc = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Config\\Option\\SortOrder::ASC') %}
+                        {% set ea_sort_desc = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Config\\Option\\SortOrder::DESC') %}
                         {% for field in entities|first.fields ?? [] %}
                             {% set is_sorting_field = ea.search.isSortingField(field.property) %}
-                            {% set next_sort_direction = is_sorting_field ? (ea.search.sortDirection(field.property) == 'DESC' ? 'ASC' : 'DESC') : 'DESC' %}
-                            {% set column_icon = is_sorting_field ? (next_sort_direction == 'DESC' ? 'fa-arrow-up' : 'fa-arrow-down') : 'fa-sort' %}
+                            {% set next_sort_direction = is_sorting_field ? (ea.search.sortDirection(field.property) == ea_sort_desc ? ea_sort_asc : ea_sort_desc) : ea_sort_desc %}
+                            {% set column_icon = is_sorting_field ? (next_sort_direction == ea_sort_desc ? 'fa-arrow-up' : 'fa-arrow-down') : 'fa-sort' %}
 
                             <th class="{{ is_sorting_field ? 'sorted' }} {{ field.isVirtual ? 'field-virtual' }} text-{{ field.textAlign }}" dir="{{ ea.i18n.textDirection }}">
                                 {% if field.isSortable %}

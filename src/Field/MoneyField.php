@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\TextAlign;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Intl\Currencies;
@@ -26,7 +27,7 @@ final class MoneyField implements FieldInterface
             ->setTemplateName('crud/field/money')
             ->setFormType(MoneyType::class)
             ->addCssClass('field-money')
-            ->setTextAlign('right')
+            ->setTextAlign(TextAlign::RIGHT)
             ->setCustomOption(self::OPTION_CURRENCY, null)
             ->setCustomOption(self::OPTION_CURRENCY_PROPERTY_PATH, null)
             ->setCustomOption(self::OPTION_NUM_DECIMALS, 2)

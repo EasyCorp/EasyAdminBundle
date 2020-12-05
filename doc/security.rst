@@ -80,6 +80,13 @@ user must have in order to see the menu item::
         ];
     }
 
+.. note::
+
+    This permission only shows/hides menu items. The actions associated to those
+    menu items are still executable, even if the user can't see the menu items.
+    Use the :ref:`actions permissions <security-permissions-actions>` to also
+    restrict the access to those actions.
+
 If your needs are more advanced, remember that the dashboard class is a regular
 Symfony controller, so you can use any service related to security to evaluate
 complex expressions. In those cases, it's more convenient to use the alternative
@@ -95,6 +102,8 @@ menu item definition to not have to deal with array merges::
 
         // ...
     }
+
+.. _security-permissions-actions:
 
 Restrict Access to Actions
 --------------------------

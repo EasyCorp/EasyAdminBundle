@@ -55,7 +55,7 @@ trait FieldTrait
         return $this;
     }
 
-    public function formatValue(callable $callable): self
+    public function formatValue(?callable $callable): self
     {
         $this->dto->setFormatValueCallable($callable);
 

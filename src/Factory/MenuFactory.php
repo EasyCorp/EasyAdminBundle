@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenu;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu\MenuItemInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
@@ -130,12 +131,12 @@ final class MenuFactory
             $urlBuilder = $this->crudUrlGenerator->build()->unsetAll();
 
             // add the index and subIndex query parameters to display the selected menu item
-            $urlBuilder->set('menuIndex', $index)->set('submenuIndex', $subIndex);
+            $urlBuilder->set(EA::MENU_INDEX, $index)->set(EA::SUBMENU_INDEX, $subIndex);
 
             $urlBuilder->setAll($routeParameters);
 
-            $entityFqcn = $routeParameters['entityFqcn'] ?? null;
-            $crudControllerFqcn = $routeParameters['crudControllerFqcn'] ?? null;
+            $entityFqcn = $routeParameters[EA::ENTITY_FQCN] ?? null;
+            $crudControllerFqcn = $routeParameters[EA::CRUD_CONTROLLER_FQCN] ?? null;
             if (null === $entityFqcn && null === $crudControllerFqcn) {
                 throw new \RuntimeException(sprintf('The CRUD menu item with label "%s" must define either the entity FQCN (using the third constructor argument) or the CRUD Controller FQCN (using the "setController()" method).', $menuItemDto->getLabel()));
             }
@@ -151,19 +152,19 @@ final class MenuFactory
                 }
 
                 $urlBuilder->setController($controllerFqcn);
-                $urlBuilder->unset('entityFqcn');
+                $urlBuilder->unset(EA::ENTITY_FQCN);
             }
 
             return $urlBuilder->generateUrl();
         }
 
         if (MenuItemDto::TYPE_DASHBOARD === $menuItemType) {
-            return $this->urlGenerator->generate($dashboardRouteName, ['menuIndex' => $index, 'submenuIndex' => $subIndex]);
+            return $this->urlGenerator->generate($dashboardRouteName, [EA::MENU_INDEX => $index, EA::SUBMENU_INDEX => $subIndex]);
         }
 
         if (MenuItemDto::TYPE_ROUTE === $menuItemType) {
             return $this->urlGenerator->generate($menuItemDto->getRouteName(), array_merge(
-                ['menuIndex' => $index, 'submenuIndex' => $subIndex, 'eaContext' => $adminContextId],
+                [EA::MENU_INDEX => $index, EA::SUBMENU_INDEX => $subIndex, EA::CONTEXT_NAME => $adminContextId],
                 $menuItemDto->getRouteParameters()
             ));
         }

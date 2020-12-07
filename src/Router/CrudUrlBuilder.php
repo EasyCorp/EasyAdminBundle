@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Router;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
@@ -32,7 +33,7 @@ class CrudUrlBuilder
         $this->urlGenerator = $urlGenerator;
 
         $currentRouteParameters = $currentRouteParametersCopy = null === $adminContext ? [] : $adminContext->getRequest()->query->all();
-        unset($currentRouteParametersCopy['referrer']);
+        unset($currentRouteParametersCopy[EA::REFERRER]);
         $currentPageReferrer = null === $adminContext ? null : sprintf('%s?%s', $adminContext->getRequest()->getPathInfo(), http_build_query($currentRouteParametersCopy));
         $this->currentPageReferrer = $currentPageReferrer;
 
@@ -48,28 +49,28 @@ class CrudUrlBuilder
 
     public function setCrudId(string $crudId): self
     {
-        $this->setRouteParameter('crudId', $crudId);
+        $this->setRouteParameter(EA::CRUD_ID, $crudId);
 
         return $this;
     }
 
     public function setController(string $crudControllerFqcn): self
     {
-        $this->setRouteParameter('crudControllerFqcn', $crudControllerFqcn);
+        $this->setRouteParameter(EA::CRUD_CONTROLLER_FQCN, $crudControllerFqcn);
 
         return $this;
     }
 
     public function setAction(string $action): self
     {
-        $this->setRouteParameter('crudAction', $action);
+        $this->setRouteParameter(EA::CRUD_ACTION, $action);
 
         return $this;
     }
 
     public function setEntityId($entityId): self
     {
-        $this->setRouteParameter('entityId', $entityId);
+        $this->setRouteParameter(EA::ENTITY_ID, $entityId);
 
         return $this;
     }
@@ -132,37 +133,37 @@ class CrudUrlBuilder
     public function generateUrl(): string
     {
         if (true === $this->includeReferrer) {
-            $this->setRouteParameter('referrer', $this->currentPageReferrer);
+            $this->setRouteParameter(EA::REFERRER, $this->currentPageReferrer);
         }
 
         if (false === $this->includeReferrer) {
-            $this->unset('referrer');
+            $this->unset(EA::REFERRER);
         }
 
         // transform 'crudControllerFqcn' into 'crudId'
-        if (null !== $crudControllerFqcn = $this->get('crudControllerFqcn')) {
+        if (null !== $crudControllerFqcn = $this->get(EA::CRUD_CONTROLLER_FQCN)) {
             if (null === $crudId = $this->crudControllers->findCrudIdByCrudFqcn($crudControllerFqcn)) {
                 throw new \InvalidArgumentException(sprintf('The given "%s" class is not a valid CRUD controller. Make sure it extends from "%s" or implements "%s".', $crudControllerFqcn, AbstractCrudController::class, CrudControllerInterface::class));
             }
 
-            $this->set('crudId', $crudId);
-            $this->unset('crudControllerFqcn');
+            $this->set(EA::CRUD_ID, $crudId);
+            $this->unset(EA::CRUD_CONTROLLER_FQCN);
         }
 
         // this avoids forcing users to always be explicit about the action to execute
-        if (null !== $this->get('crudId') && null === $this->get('crudAction')) {
-            $this->set('crudAction', Action::INDEX);
+        if (null !== $this->get(EA::CRUD_ID) && null === $this->get(EA::CRUD_ACTION)) {
+            $this->set(EA::CRUD_ACTION, Action::INDEX);
         }
 
         // if the Dashboard FQCN is defined, find its route and use it to override
         // the current route (this is needed to allow generating links to different dashboards)
-        if (null !== $dashboardControllerFqcn = $this->get('dashboardControllerFqcn')) {
+        if (null !== $dashboardControllerFqcn = $this->get(EA::DASHBOARD_CONTROLLER_FQCN)) {
             if (null === $dashboardRoute = $this->dashboardControllers->getRouteByControllerFqcn($dashboardControllerFqcn)) {
                 throw new \InvalidArgumentException(sprintf('The given "%s" class is not a valid Dashboard controller. Make sure it extends from "%s" or implements "%s".', $dashboardControllerFqcn, AbstractDashboardController::class, DashboardControllerInterface::class));
             }
 
             $this->dashboardRoute = $dashboardRoute;
-            $this->unset('dashboardControllerFqcn');
+            $this->unset(EA::DASHBOARD_CONTROLLER_FQCN);
         }
 
         // this happens when generating URLs from outside EasyAdmin (AdminContext is null) and

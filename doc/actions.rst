@@ -60,7 +60,7 @@ These are the built-in actions included by default in each page:
 * Page ``Crud::PAGE_EDIT`` (``'edit'``):
 
   * Added by default: ``Action::SAVE_AND_RETURN``, ``Action::SAVE_AND_CONTINUE``
-  * Other available actions: ``Action::DELETE``, ``Action::INDEX``
+  * Other available actions: ``Action::DELETE``, ``Action::DETAIL``, ``Action::INDEX``
 
 * Page ``Crud::PAGE_NEW`` (``'new'``):
 

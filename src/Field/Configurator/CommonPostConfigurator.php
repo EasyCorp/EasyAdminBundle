@@ -34,7 +34,9 @@ final class CommonPostConfigurator implements FieldConfiguratorInterface
 
     public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
     {
-        if (\in_array($context->getCrud()->getCurrentPage(), [Crud::PAGE_INDEX, Crud::PAGE_DETAIL], true)) {
+        // The form pages use directly the "normal" value.
+        // So for these ones, it's useless to compute the formatted value.
+        if (false === \in_array($context->getCrud()->getCurrentPage(), [Crud::PAGE_NEW, Crud::PAGE_EDIT], true)) {
             $formattedValue = $this->buildFormattedValueOption($field->getFormattedValue(), $field, $entityDto);
             $field->setFormattedValue($formattedValue);
         }
@@ -42,13 +44,19 @@ final class CommonPostConfigurator implements FieldConfiguratorInterface
         $this->updateFieldTemplate($field);
     }
 
+    /**
+     * If the callable return a string (and only in that case), we encapsulate it in a Twig Markup.
+     * Like that, the potential html and js elements are directly rendered (without escaping).
+     */
     private function buildFormattedValueOption($value, FieldDto $field, EntityDto $entityDto)
     {
         if (null === $callable = $field->getFormatValueCallable()) {
             return $value;
         }
 
-        return new Markup($callable($value, $entityDto->getInstance()), $this->charset);
+        $formatted = $callable($value, $entityDto->getInstance());
+
+        return \is_string($formatted) ? new Markup($formatted, $this->charset) : $formatted;
     }
 
     private function updateFieldTemplate(FieldDto $field): void

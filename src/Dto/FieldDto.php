@@ -133,7 +133,7 @@ final class FieldDto
         return $this->formatValueCallable;
     }
 
-    public function setFormatValueCallable(callable $callable): void
+    public function setFormatValueCallable(?callable $callable): void
     {
         $this->formatValueCallable = $callable;
     }

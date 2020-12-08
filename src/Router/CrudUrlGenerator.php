@@ -27,6 +27,8 @@ final class CrudUrlGenerator
 
     public function build(array $routeParameters = []): CrudUrlBuilder
     {
+        trigger_deprecation('easycorp/easyadmin-bundle', '3.2.0', 'The "%s" class/service is deprecated, use "%s()" instead.', __CLASS__, AdminUrlGenerator::class);
+
         return new CrudUrlBuilder($this->adminContextProvider->getContext(), $this->urlGenerator, $this->dashboardControllerRegistry, $this->crudControllerRegistry, $routeParameters);
     }
 }

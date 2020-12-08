@@ -34,8 +34,7 @@ final class CommonPostConfigurator implements FieldConfiguratorInterface
 
     public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
     {
-        // form pages don't use he formatted value, so don't compute it
-        if (false === \in_array($context->getCrud()->getCurrentPage(), [Crud::PAGE_NEW, Crud::PAGE_EDIT], true)) {
+        if (\in_array($context->getCrud()->getCurrentPage(), [Crud::PAGE_INDEX, Crud::PAGE_DETAIL], true)) {
             $formattedValue = $this->buildFormattedValueOption($field->getFormattedValue(), $field, $entityDto);
             $field->setFormattedValue($formattedValue);
         }

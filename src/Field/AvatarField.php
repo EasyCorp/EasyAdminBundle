@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\Size;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
@@ -29,7 +30,7 @@ final class AvatarField implements FieldInterface
 
     public function setHeight($heightInPixels): self
     {
-        $semanticHeights = ['sm' => 18, 'md' => 24, 'lg' => 48, 'xl' => 96];
+        $semanticHeights = [Size::SM => 18, Size::MD => 24, Size::LG => 48, Size::XL => 96];
 
         if (!\is_int($heightInPixels) && !\array_key_exists($heightInPixels, $semanticHeights)) {
             throw new \InvalidArgumentException(sprintf('The argument of the "%s()" method must be either an integer (the height in pixels) or one of these string values: %s (%d given).', __METHOD__, implode(', ', $semanticHeights), $heightInPixels));

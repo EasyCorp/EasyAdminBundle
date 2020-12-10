@@ -2,6 +2,8 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Config\Menu;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\SortOrder;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu\MenuItemInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
 
@@ -22,10 +24,10 @@ final class CrudMenuItem implements MenuItemInterface
         $this->dto->setLabel($label);
         $this->dto->setIcon($icon);
         $this->dto->setRouteParameters([
-            'crudAction' => 'index',
-            'crudId' => null,
-            'entityFqcn' => $entityFqcn,
-            'entityId' => null,
+            EA::CRUD_ACTION => 'index',
+            EA::CRUD_ID => null,
+            EA::ENTITY_FQCN => $entityFqcn,
+            EA::ENTITY_ID => null,
         ]);
     }
 
@@ -33,7 +35,7 @@ final class CrudMenuItem implements MenuItemInterface
     {
         $this->dto->setRouteParameters(array_merge(
             $this->dto->getRouteParameters(),
-            ['crudControllerFqcn' => $controllerFqcn]
+            [EA::CRUD_CONTROLLER_FQCN => $controllerFqcn]
         ));
 
         return $this;
@@ -43,7 +45,7 @@ final class CrudMenuItem implements MenuItemInterface
     {
         $this->dto->setRouteParameters(array_merge(
             $this->dto->getRouteParameters(),
-            ['crudAction' => $actionName]
+            [EA::CRUD_ACTION => $actionName]
         ));
 
         return $this;
@@ -53,7 +55,7 @@ final class CrudMenuItem implements MenuItemInterface
     {
         $this->dto->setRouteParameters(array_merge(
             $this->dto->getRouteParameters(),
-            ['entityId' => $entityId]
+            [EA::ENTITY_ID => $entityId]
         ));
 
         return $this;
@@ -66,7 +68,7 @@ final class CrudMenuItem implements MenuItemInterface
     {
         $sortFieldsAndOrder = array_map('strtoupper', $sortFieldsAndOrder);
         foreach ($sortFieldsAndOrder as $sortField => $sortOrder) {
-            if (!\in_array($sortOrder, ['ASC', 'DESC'])) {
+            if (!\in_array($sortOrder, [SortOrder::ASC, SortOrder::DESC])) {
                 throw new \InvalidArgumentException(sprintf('The sort order can be only "ASC" or "DESC", "%s" given.', $sortOrder));
             }
 
@@ -77,7 +79,7 @@ final class CrudMenuItem implements MenuItemInterface
 
         $this->dto->setRouteParameters(array_merge(
             $this->dto->getRouteParameters(),
-            ['sort' => $sortFieldsAndOrder]
+            [EA::SORT => $sortFieldsAndOrder]
         ));
 
         return $this;

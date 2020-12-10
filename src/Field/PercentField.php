@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\TextAlign;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use Symfony\Component\Form\Extension\Core\DataTransformer\NumberToLocalizedStringTransformer;
 use Symfony\Component\Form\Extension\Core\Type\PercentType;
@@ -26,7 +27,7 @@ final class PercentField implements FieldInterface
             ->setTemplateName('crud/field/percent')
             ->setFormType(PercentType::class)
             ->addCssClass('field-percent')
-            ->setTextAlign('right')
+            ->setTextAlign(TextAlign::RIGHT)
             ->setCustomOption(self::OPTION_NUM_DECIMALS, 0)
             ->setCustomOption(self::OPTION_STORED_AS_FRACTIONAL, true)
             ->setCustomOption(self::OPTION_SYMBOL, '%')

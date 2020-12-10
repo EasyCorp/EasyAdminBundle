@@ -13,6 +13,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -392,7 +393,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             return $this->redirect($referrer);
         }
 
-        return $this->redirect($this->get(CrudUrlGenerator::class)->build()->setAction('index')->unset('entityId')->generateUrl());
+        return $this->redirect($this->get(CrudUrlGenerator::class)->build()->setAction(Action::INDEX)->unset(EA::ENTITY_ID)->generateUrl());
     }
 
     public function autocomplete(AdminContext $context): JsonResponse
@@ -402,7 +403,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $autocompleteContext = $context->getRequest()->get(AssociationField::PARAM_AUTOCOMPLETE_CONTEXT);
 
         /** @var CrudControllerInterface $controller */
-        $controller = $this->get(ControllerFactory::class)->getCrudControllerInstance($autocompleteContext['crudId'], Action::INDEX, $context->getRequest());
+        $controller = $this->get(ControllerFactory::class)->getCrudControllerInstance($autocompleteContext[EA::CRUD_ID], Action::INDEX, $context->getRequest());
         /** @var FieldDto $field */
         $field = FieldCollection::new($controller->configureFields($autocompleteContext['originatingPage']))->get($autocompleteContext['propertyName']);
         /** @var \Closure|null $queryBuilderCallable */
@@ -431,7 +432,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         /** @var FiltersFormType $filtersForm */
         $filtersForm = $this->get(FormFactory::class)->createFiltersForm($filters, $context->getRequest());
         $formActionParts = parse_url($filtersForm->getConfig()->getAction());
-        $queryString = $formActionParts['query'] ?? [];
+        $queryString = $formActionParts[EA::QUERY] ?? [];
         parse_str($queryString, $queryStringAsArray);
 
         $responseParameters = KeyValueStore::new([

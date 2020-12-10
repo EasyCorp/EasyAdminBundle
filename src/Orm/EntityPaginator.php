@@ -6,6 +6,7 @@ use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\CountWalker;
 use Doctrine\ORM\Tools\Pagination\Paginator;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Orm\EntityPaginatorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\PaginatorDto;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
@@ -124,7 +125,7 @@ final class EntityPaginator implements EntityPaginatorInterface
             $entityDto = $this->entityFactory->createForEntityInstance($entityInstance);
 
             $jsonResult['results'][] = [
-                'entityId' => $entityDto->getPrimaryKeyValueAsString(),
+                EA::ENTITY_ID => $entityDto->getPrimaryKeyValueAsString(),
                 'entityAsString' => $entityDto->toString(),
             ];
         }

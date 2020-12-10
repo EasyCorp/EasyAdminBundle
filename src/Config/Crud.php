@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Config;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\SortOrder;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\PaginatorDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
@@ -192,8 +193,8 @@ class Crud
     {
         $sortFieldsAndOrder = array_map('strtoupper', $sortFieldsAndOrder);
         foreach ($sortFieldsAndOrder as $sortField => $sortOrder) {
-            if (!\in_array($sortOrder, ['ASC', 'DESC'])) {
-                throw new \InvalidArgumentException(sprintf('The sort order can be only "ASC" or "DESC", "%s" given.', $sortOrder));
+            if (!\in_array($sortOrder, [SortOrder::ASC, SortOrder::DESC], true)) {
+                throw new \InvalidArgumentException(sprintf('The sort order can be only "%s" or "%s", "%s" given.', SortOrder::ASC, SortOrder::DESC, $sortOrder));
             }
 
             if (!\is_string($sortField)) {

@@ -5,6 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\ActionCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionConfigDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -145,21 +146,21 @@ final class ActionFactory
                 $routeParameters = $routeParameters($entityInstance);
             }
 
-            $routeParameters = array_merge(['eaContext' => $adminContextId], $routeParameters);
+            $routeParameters = array_merge([EA::CONTEXT_NAME => $adminContextId], $routeParameters);
 
             return $this->urlGenerator->generate($routeName, $routeParameters);
         }
 
         $requestParameters = [
-            'crudId' => $request->query->get('crudId'),
-            'crudAction' => $actionDto->getCrudActionName(),
-            'referrer' => $this->generateReferrerUrl($request, $actionDto, $currentAction),
+            EA::CRUD_ID => $request->query->get(EA::CRUD_ID),
+            EA::CRUD_ACTION => $actionDto->getCrudActionName(),
+            EA::REFERRER => $this->generateReferrerUrl($request, $actionDto, $currentAction),
         ];
 
         if (\in_array($actionDto->getName(), [Action::INDEX, Action::NEW], true)) {
-            $requestParameters['entityId'] = null;
+            $requestParameters[EA::ENTITY_ID] = null;
         } elseif (null !== $entityDto) {
-            $requestParameters['entityId'] = $entityDto->getPrimaryKeyValueAsString();
+            $requestParameters[EA::ENTITY_ID] = $entityDto->getPrimaryKeyValueAsString();
         }
 
         return $this->crudUrlGenerator->build($requestParameters)->generateUrl();
@@ -183,10 +184,10 @@ final class ActionFactory
             return null;
         }
 
-        $referrer = $request->get('referrer');
+        $referrer = $request->get(EA::REFERRER);
         $referrerParts = parse_url($referrer);
-        parse_str($referrerParts['query'] ?? '', $referrerQueryStringVariables);
-        $referrerCrudAction = $referrerQueryStringVariables['crudAction'] ?? null;
+        parse_str($referrerParts[EA::QUERY] ?? '', $referrerQueryStringVariables);
+        $referrerCrudAction = $referrerQueryStringVariables[EA::CRUD_ACTION] ?? null;
 
         if (Action::EDIT === $currentAction) {
             if (\in_array($referrerCrudAction, [Action::INDEX, Action::DETAIL], true)) {

@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\TextAlign;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 
 /**
@@ -54,7 +55,7 @@ trait FieldTrait
         return $this;
     }
 
-    public function formatValue(callable $callable): self
+    public function formatValue(?callable $callable): self
     {
         $this->dto->setFormatValueCallable($callable);
 
@@ -128,7 +129,7 @@ trait FieldTrait
      */
     public function setTextAlign(string $textAlign): self
     {
-        $validOptions = ['left', 'center', 'right'];
+        $validOptions = [TextAlign::LEFT, TextAlign::CENTER, TextAlign::RIGHT];
         if (!\in_array($textAlign, $validOptions, true)) {
             throw new \InvalidArgumentException(sprintf('The value of the "textAlign" option can only be one of these: "%s" ("%s" was given).', implode(',', $validOptions), $textAlign));
         }

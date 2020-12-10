@@ -5,6 +5,8 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Field\Configurator;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\PersistentCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\TextAlign;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -72,9 +74,9 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
                 ->setController($field->getCustomOption(AssociationField::OPTION_CRUD_CONTROLLER))
                 ->setAction('autocomplete')
                 ->setEntityId(null)
-                ->unset('sort') // Avoid passing the 'sort' param from the current entity to the autocompleted one
+                ->unset(EA::SORT) // Avoid passing the 'sort' param from the current entity to the autocompleted one
                 ->set(AssociationField::PARAM_AUTOCOMPLETE_CONTEXT, [
-                    'crudId' => $context->getRequest()->query->get('crudId'),
+                    EA::CRUD_ID => $context->getRequest()->query->get(EA::CRUD_ID),
                     'propertyName' => $propertyName,
                     'originatingPage' => $context->getCrud()->getCurrentPage(),
                 ])
@@ -129,7 +131,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         $field->setFormTypeOptionIfNotSet('class', $field->getDoctrineMetadata()->get('targetEntity'));
 
         if (null === $field->getTextAlign()) {
-            $field->setTextAlign('right');
+            $field->setTextAlign(TextAlign::RIGHT);
         }
 
         $field->setFormattedValue($this->countNumElements($field->getValue()));
@@ -163,8 +165,8 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
             ->setController($crudController)
             ->setAction(Action::DETAIL)
             ->setEntityId($entityDto->getPrimaryKeyValue())
-            ->unset('menuIndex')
-            ->unset('submenuIndex')
+            ->unset(EA::MENU_INDEX)
+            ->unset(EA::SUBMENU_INDEX)
             ->includeReferrer()
             ->generateUrl();
     }

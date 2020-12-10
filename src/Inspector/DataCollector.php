@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Inspector;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use Symfony\Component\HttpFoundation\Request;
@@ -61,11 +62,11 @@ class DataCollector extends BaseDataCollector
     private function collectData(AdminContext $context): array
     {
         return [
-            'CRUD ID' => $context->getRequest()->get('crudId'),
+            'CRUD ID' => $context->getRequest()->get(EA::CRUD_ID),
             'CRUD Controller FQCN' => null === $context->getCrud() ? null : $context->getCrud()->getControllerFqcn(),
-            'CRUD Action' => $context->getRequest()->get('crudAction'),
-            'Entity ID' => $context->getRequest()->get('entityId'),
-            'Sort' => $context->getRequest()->get('sort'),
+            'CRUD Action' => $context->getRequest()->get(EA::CRUD_ACTION),
+            'Entity ID' => $context->getRequest()->get(EA::ENTITY_ID),
+            'Sort' => $context->getRequest()->get(EA::SORT),
         ];
     }
 

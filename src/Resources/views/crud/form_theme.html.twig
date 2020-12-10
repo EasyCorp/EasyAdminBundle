@@ -2,10 +2,6 @@
 {% use 'bootstrap_4_layout.html.twig' %}
 
 {% block form_start %}
-    {% if form.vars.errors|length > 0 %}
-        {{ form_errors(form) }}
-    {% endif %}
-
     {{ parent() }}
 
     <input type="hidden" name="referrer" value="{{ ea.request.query.get('referrer') }}">

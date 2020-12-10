@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\EventListener;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
@@ -34,7 +35,7 @@ class AdminContextListener
 
     public function onKernelController(ControllerEvent $event): void
     {
-        $contextId = $event->getRequest()->query->get('eaContext');
+        $contextId = $event->getRequest()->query->get(EA::CONTEXT_NAME);
         $currentControllerInstance = $this->getCurrentControllerInstance($event);
         if (!$this->isEasyAdminRequest($contextId, $currentControllerInstance)) {
             return;
@@ -50,8 +51,8 @@ class AdminContextListener
             return;
         }
 
-        $crudId = $event->getRequest()->query->get('crudId');
-        $crudAction = $event->getRequest()->query->get('crudAction');
+        $crudId = $event->getRequest()->query->get(EA::CRUD_ID);
+        $crudAction = $event->getRequest()->query->get(EA::CRUD_ACTION);
         $crudControllerInstance = $this->controllerFactory->getCrudControllerInstance($crudId, $crudAction, $event->getRequest());
 
         if (null !== $crudId && null === $dashboardControllerInstance) {
@@ -89,7 +90,7 @@ class AdminContextListener
      * Request is associated to EasyAdmin if one of these conditions meet:
      *  * current controller is an instance of DashboardControllerInterface (the single point of
      *    entry for all requests directly served by EasyAdmin)
-     *  * the contextId passed via the 'eaContext' query string parameter is not null
+     *  * the contextId passed via the EA::CONTEXT_NAME query string parameter is not null
      *    (that's used in menu items that link to Symfony routes not served by EasyAdmin, so
      *    those routes can still be associated with some EasyAdmin dashboard to display the menu, etc.).
      */

@@ -77,7 +77,7 @@ class MakeAdminDashboardCommand extends Command
         $io->text('Next steps:');
         $io->listing([
             sprintf('Configure your Dashboard at "%s"', $generatedFilePath),
-            sprintf('Run "make:admin:crud" to generate CRUD controllers and link them from the Dashboard.'),
+            'Run "make:admin:crud" to generate CRUD controllers and link them from the Dashboard.',
         ]);
 
         return 0;

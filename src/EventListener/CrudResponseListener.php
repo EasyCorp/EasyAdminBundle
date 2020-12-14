@@ -31,7 +31,7 @@ final class CrudResponseListener
         }
 
         if (!$responseParameters->has('templateName') && !$responseParameters->has('templatePath')) {
-            throw new \RuntimeException(sprintf('The KeyValueStore object returned by CrudController actions must include either a "templateName" or a "templatePath" parameter to define the template used to render the action result.'));
+            throw new \RuntimeException('The KeyValueStore object returned by CrudController actions must include either a "templateName" or a "templatePath" parameter to define the template used to render the action result.');
         }
 
         $templateParameters = $responseParameters->all();

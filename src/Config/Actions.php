@@ -168,17 +168,18 @@ final class Actions
 
         if (Action::DETAIL === $actionName) {
             return Action::new(Action::DETAIL, '__ea__action.detail')
-                ->linkToCrudAction(Action::DETAIL);
+                ->linkToCrudAction(Action::DETAIL)
+                ->addCssClass(Crud::PAGE_EDIT === $pageName ? 'btn btn-secondary' : '');
         }
 
         if (Action::INDEX === $actionName) {
             return Action::new(Action::INDEX, '__ea__action.index')
                 ->linkToCrudAction(Action::INDEX)
-                ->addCssClass(Crud::PAGE_DETAIL === $pageName ? 'btn btn-secondary' : '');
+                ->addCssClass(\in_array($pageName, [Crud::PAGE_DETAIL, Crud::PAGE_EDIT, Crud::PAGE_NEW], true) ? 'btn btn-secondary' : '');
         }
 
         if (Action::DELETE === $actionName) {
-            $cssClass = Crud::PAGE_DETAIL === $pageName ? 'btn btn-link pr-0 text-danger' : 'text-danger';
+            $cssClass = \in_array($pageName, [Crud::PAGE_DETAIL, Crud::PAGE_EDIT], true) ? 'btn btn-link pr-0 text-danger' : 'text-danger';
 
             return Action::new(Action::DELETE, '__ea__action.delete', Crud::PAGE_INDEX === $pageName ? null : 'fa fa-fw fa-trash-o')
                 ->linkToCrudAction(Action::DELETE)

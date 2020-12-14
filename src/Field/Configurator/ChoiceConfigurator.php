@@ -53,8 +53,6 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
             $field->setFormTypeOption('attr.data-widget', 'select2');
         }
 
-        $field->setFormTypeOptionIfNotSet('placeholder', '');
-
         // the value of this form option must be a string to properly propagate it as an HTML attribute value
         $field->setFormTypeOption('attr.data-ea-escape-markup', $field->getCustomOption(ChoiceField::OPTION_ESCAPE_HTML_CONTENTS) ? 'true' : 'false');
 

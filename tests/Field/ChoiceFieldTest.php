@@ -71,7 +71,6 @@ class ChoiceFieldTest extends AbstractFieldTest
                 'choices' => $this->choices,
                 'multiple' => true,
                 'expanded' => true,
-                'placeholder' => '',
                 'attr' => ['data-ea-escape-markup' => 'false'],
             ],
             $this->configure($field)->getFormTypeOptions()

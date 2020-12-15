@@ -134,8 +134,13 @@ table.datagrid {
   background-repeat: no-repeat;
   background-size: 13px 13px;
   background-position: 10px 8px;
-  padding-left: 32px;
+  padding: 0 32px;
   min-width: 100%;
+}
+
+.datagrid-header-tools .datagrid-search a.action-search-reset {
+    margin-left: -20px;
+    margin-right: 10px;
 }
 
 #modal-filters .modal-dialog {

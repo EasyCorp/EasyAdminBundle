@@ -77,7 +77,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
                 ->setEntityId(null)
                 ->unset(EA::SORT) // Avoid passing the 'sort' param from the current entity to the autocompleted one
                 ->set(AssociationField::PARAM_AUTOCOMPLETE_CONTEXT, [
-                    EA::CRUD_ID => $context->getRequest()->query->get(EA::CRUD_ID),
+                    EA::CRUD_CONTROLLER_FQCN => $context->getRequest()->query->get(EA::CRUD_CONTROLLER_FQCN),
                     'propertyName' => $propertyName,
                     'originatingPage' => $context->getCrud()->getCurrentPage(),
                 ])

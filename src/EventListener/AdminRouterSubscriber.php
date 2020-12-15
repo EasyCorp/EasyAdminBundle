@@ -3,10 +3,8 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\EventListener;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
-use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
-use EasyCorp\Bundle\EasyAdminBundle\EasyAdminBundle;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\AdminContextFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\ControllerFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\DashboardControllerRegistry;
@@ -109,12 +107,12 @@ class AdminRouterSubscriber implements EventSubscriberInterface
 
         // creating the context is expensive, so it's created once and stored in the request
         // if the current request already has an AdminContext object, do nothing
-        if (null === $adminContext = $request->attributes->get(EasyAdminBundle::CONTEXT_ATTRIBUTE_NAME)) {
+        if (null === $adminContext = $request->attributes->get(EA::CONTEXT_REQUEST_ATTRIBUTE)) {
             $crudControllerInstance = $this->getCrudControllerInstance($request);
             $adminContext = $this->adminContextFactory->create($request, $dashboardControllerInstance, $crudControllerInstance);
         }
 
-        $request->attributes->set(EasyAdminBundle::CONTEXT_ATTRIBUTE_NAME, $adminContext);
+        $request->attributes->set(EA::CONTEXT_REQUEST_ATTRIBUTE, $adminContext);
 
         // this makes the AdminContext available in all templates as a short named variable
         $this->twig->addGlobal('ea', $adminContext);
@@ -129,7 +127,7 @@ class AdminRouterSubscriber implements EventSubscriberInterface
     public function onKernelController(ControllerEvent $event): void
     {
         $request = $event->getRequest();
-        if (null === $request->attributes->get(EasyAdminBundle::CONTEXT_ATTRIBUTE_NAME)) {
+        if (null === $request->attributes->get(EA::CONTEXT_REQUEST_ATTRIBUTE)) {
             return;
         }
 
@@ -150,8 +148,9 @@ class AdminRouterSubscriber implements EventSubscriberInterface
             $symfonyControllerAsString = $this->getSymfonyControllerFqcn($request);
             if (false !== $symfonyControllerCallable = $this->getSymfonyControllerInstance($symfonyControllerAsString, $request->query->all()[EA::ROUTE_PARAMS] ?? [])) {
                 // this makes Symfony believe that another controller is being executed
-                // (e.g. this is needed for the autowiring of controller action arguments)
-                $event->getRequest()->attributes->set('_controller', $symfonyControllerCallable);
+                // VERY IMPORTANT: here the Symfony controller must be passed as a string ('App\Controller\Foo::index')
+                // Otherwise, the param converter of the controller method doesn't work
+                $event->getRequest()->attributes->set('_controller', $symfonyControllerAsString);
                 // route params must be added as route attribute; otherwise, param converters don't work
                 $event->getRequest()->attributes->replace(array_merge(
                     $request->query->all()[EA::ROUTE_PARAMS] ?? [],
@@ -185,10 +184,10 @@ class AdminRouterSubscriber implements EventSubscriberInterface
 
     private function getCrudControllerInstance(Request $request): ?CrudControllerInterface
     {
-        $crudId = $request->query->get(EA::CRUD_ID);
+        $crudControllerFqcn = $request->query->get(EA::CRUD_CONTROLLER_FQCN);
         $crudAction = $request->query->get(EA::CRUD_ACTION);
 
-        return $this->controllerFactory->getCrudControllerInstance($crudId, $crudAction, $request);
+        return $this->controllerFactory->getCrudControllerInstance($crudControllerFqcn, $crudAction, $request);
     }
 
     private function getSymfonyControllerFqcn(Request $request): ?string

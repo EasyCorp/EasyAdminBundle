@@ -4,6 +4,70 @@ Upgrade between EasyAdmin 3.x versions
 EasyAdmin 3.2.0
 ---------------
 
+### Deprecated `crudId` query parameter
+
+The `crudId` query parameter has been deprecated. This parameter is a random
+looking alphanumeric code calculated based on the CRUD controller FQCN and the
+application `kernel.secret` parameter.
+
+Originally it was created to hide the CRUD controller FQCN in the admin URLs,
+but the inconvenience of having to retrieve the CRUD ID for a given CRUD FQCN
+complicates things too much.
+
+Starting from EasyAdmin 3.2.0, admin URLs no longer include the `crudId`
+parameter. This needed changes are done transparently for you, but if you
+want to fix deprecation messages, do the following changes.
+
+**In templates**:
+
+```twig
+{# BEFORE #}
+<a href="{{ ea_url().setCrudId('...') }}"> ... </a>
+
+{# AFTER #}
+<a href="{{ ea_url().setController('App\\Controller\\Admin\\SomeCrudController') }}"> ... </a>
+```
+
+**In services and controllers**:
+
+```php
+namespace App\Controller;
+
+use App\Controller\Admin\UserCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+
+class SomeController extends AbstractController
+{
+    private $adminUrlGenerator;
+
+    public function __construct(AdminUrlGenerator $adminUrlGenerator)
+    {
+        $this->adminUrlGenerator = $adminUrlGenerator;
+    }
+
+    public function someAction()
+    {
+        // BEFORE
+        $crudId = $this->crudControllerRegistry->findCrudIdByCrudFqcn(UserCrudController::class);
+        $url = $this->adminUrlGenerator()
+            ->setCrudId($crudId)
+            ->setAction('edit')
+            ->setEntityId($this->getUser()->getId())
+            ->generateUrl();
+
+        // AFTER
+        $url = $this->adminUrlGenerator()
+            ->setController(UserCrudController::class)
+            ->setAction('edit')
+            ->setEntityId($this->getUser()->getId())
+            ->generateUrl();
+    }
+}
+```
+
+### Deprecated `eaContext` query parameter
+
 The admin URL generation has been updated. The old way of generating URLs still
 works, but it's deprecated. This only affects you if:
 
@@ -12,7 +76,7 @@ works, but it's deprecated. This only affects you if:
   * Your backend defines custom actions (e.g. to integrate Symfony controllers
     inside an EasyAdmin backend);
 
-### Generating links to EasyAdmin pages
+#### Generating links to EasyAdmin pages
 
 If you generate URLs in Twig templates using the ``ea_url()`` function, you
 don't have to make any change. However, if you generate URLs in services or
@@ -79,7 +143,7 @@ class SomeController extends AbstractController
 }
 ```
 
-### Generating EasyAdmin links to Symfony routes
+#### Generating EasyAdmin links to Symfony routes
 
 EasyAdmin allows you to integrate normal Symfony controllers/actions in your
 backends. This allows to add a menu item pointing to a Symfony route and when

@@ -4,9 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Router;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\CrudControllerRegistry;
@@ -52,7 +50,10 @@ final class AdminUrlGenerator
 
     public function setCrudId(string $crudId): self
     {
-        $this->setRouteParameter(EA::CRUD_ID, $crudId);
+        $crudControllerFqcn = $this->crudControllerRegistry->findCrudFqcnByCrudId($crudId);
+        trigger_deprecation('easycorp/easyadmin-bundle', '3.2.0', 'The "setCrudId()" method of the "%s" service and the related "%s" query parameter are deprecated. Instead, use the CRUD Controller FQCN and the "setController()" method like this: ->setController(\'%s\').', __CLASS__, EA::CRUD_ID, str_replace('\\', '\\\\', $crudControllerFqcn));
+
+        $this->setRouteParameter(EA::CRUD_CONTROLLER_FQCN, $crudControllerFqcn);
 
         return $this;
     }
@@ -163,18 +164,18 @@ final class AdminUrlGenerator
             $this->unset(EA::REFERRER);
         }
 
-        // transform 'crudControllerFqcn' into 'crudId'
-        if (null !== $crudControllerFqcn = $this->get(EA::CRUD_CONTROLLER_FQCN)) {
-            if (null === $crudId = $this->crudControllerRegistry->findCrudIdByCrudFqcn($crudControllerFqcn)) {
-                throw new \InvalidArgumentException(sprintf('The given "%s" class is not a valid CRUD controller. Make sure it extends from "%s" or implements "%s".', $crudControllerFqcn, AbstractCrudController::class, CrudControllerInterface::class));
+        // transform 'crudId' into 'crudControllerFqcn'
+        if (null !== $crudId = $this->get(EA::CRUD_ID)) {
+            if (null === $crudControllerFqcn = $this->crudControllerRegistry->findCrudFqcnByCrudId($crudId)) {
+                throw new \InvalidArgumentException(sprintf('The given "%s" value is not a valid CRUD ID. Instead of dealing with CRUD controller IDs when generating admin URLs, use the "setController()" method to set the CRUD controller FQCN.', $crudId));
             }
 
-            $this->set(EA::CRUD_ID, $crudId);
-            $this->unset(EA::CRUD_CONTROLLER_FQCN);
+            $this->set(EA::CRUD_CONTROLLER_FQCN, $crudControllerFqcn);
+            $this->unset(EA::CRUD_ID);
         }
 
         // this avoids forcing users to always be explicit about the action to execute
-        if (null !== $this->get(EA::CRUD_ID) && null === $this->get(EA::CRUD_ACTION)) {
+        if (null !== $this->get(EA::CRUD_CONTROLLER_FQCN) && null === $this->get(EA::CRUD_ACTION)) {
             $this->set(EA::CRUD_ACTION, Action::INDEX);
         }
 
@@ -190,10 +191,10 @@ final class AdminUrlGenerator
         }
 
         // this happens when generating URLs from outside EasyAdmin (AdminContext is null) and
-        // no Dashboard FQCn has been defined explicitly
+        // no Dashboard FQCN has been defined explicitly
         if (null === $this->dashboardRoute) {
             if ($this->dashboardControllerRegistry->getNumberOfDashboards() > 1) {
-                throw new \RuntimeException('When generating CRUD URLs from outside EasyAdmin, if your application has more than one Dashboard, you must associate the URL to a specific Dashboard using the "setDashboard()" method.');
+                throw new \RuntimeException('When generating admin URLs from outside EasyAdmin, if your application has more than one Dashboard, you must associate the URL to a specific Dashboard using the "setDashboard()" method.');
             }
 
             $this->dashboardRoute = $this->dashboardControllerRegistry->getFirstDashboardRoute();

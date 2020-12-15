@@ -142,7 +142,7 @@ final class ActionFactory
         }
 
         $requestParameters = [
-            EA::CRUD_ID => $request->query->get(EA::CRUD_ID),
+            EA::CRUD_CONTROLLER_FQCN => $request->query->get(EA::CRUD_CONTROLLER_FQCN),
             EA::CRUD_ACTION => $actionDto->getCrudActionName(),
             EA::REFERRER => $this->generateReferrerUrl($request, $actionDto, $currentAction),
         ];

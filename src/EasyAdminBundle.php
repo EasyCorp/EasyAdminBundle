@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\DependencyInjection\CreateControllerRegistriesPass;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -13,7 +14,8 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 class EasyAdminBundle extends Bundle
 {
     public const VERSION = '3.1.11-DEV';
-    public const CONTEXT_ATTRIBUTE_NAME = 'easyadmin_context';
+    /** @deprecated use EA::CONTEXT_REQUEST_ATTRIBUTE */
+    public const CONTEXT_ATTRIBUTE_NAME = EA::CONTEXT_REQUEST_ATTRIBUTE;
 
     public function build(ContainerBuilder $container)
     {

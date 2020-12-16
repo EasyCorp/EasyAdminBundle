@@ -1,0 +1,19 @@
+---------------------------------------------------------------------------
+
+by mahono at 2020-12-16T10:58:20Z
+
+Does this mean that the FQCN of the controller is in URLs again?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2020-12-16T12:04:19Z
+
+Yes. I've been thinking a lot about this, and I think this is the right thing to do.
+
+---------------------------------------------------------------------------
+
+by mahono at 2020-12-16T13:18:31Z
+
+In my case I have some bundles with dashboards and cruds and these FQCNs tend to be a bit long and awkward to a curious user.
+
+I'd prefer an alias mapping. I don't need it to be provided by EasyAdminBundle. But it would be important to be able to override the default behavior. For example by decorating a service that does all the URL handling. Is that possible already?

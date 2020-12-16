@@ -119,6 +119,14 @@ final class ActionFactory
             $actionDto->setHtmlAttribute('form', sprintf('%s-%s-form', $pageName, $entityDto->getName()));
         }
 
+        if (Action::DELETE === $actionDto->getName()) {
+            $actionDto->setHtmlAttributes([
+                'formaction' => $this->adminUrlGenerator->setAction(Action::DELETE)->setEntityId($entityDto->getPrimaryKeyValue())->removeReferrer()->generateUrl(),
+                'data-toggle' => 'modal',
+                'data-target' => '#modal-delete',
+            ]);
+        }
+
         return $actionDto;
     }
 

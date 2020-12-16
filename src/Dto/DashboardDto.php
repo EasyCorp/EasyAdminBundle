@@ -16,6 +16,7 @@ final class DashboardDto
     private $textDirection;
     private $contentWidth;
     private $sidebarWidth;
+    private $signedUrls;
 
     public function __construct()
     {
@@ -24,6 +25,7 @@ final class DashboardDto
         $this->translationDomain = 'messages';
         $this->contentWidth = Crud::LAYOUT_CONTENT_DEFAULT;
         $this->sidebarWidth = Crud::LAYOUT_SIDEBAR_DEFAULT;
+        $this->signedUrls = true;
     }
 
     public function getRouteName(): string
@@ -94,5 +96,17 @@ final class DashboardDto
     public function setSidebarWidth(string $sidebarWidth): void
     {
         $this->sidebarWidth = $sidebarWidth;
+    }
+
+    public function getSignedUrls(): bool
+    {
+        return $this->signedUrls;
+    }
+
+    public function setSignedUrls(bool $signedUrls): self
+    {
+        $this->signedUrls = $signedUrls;
+
+        return $this;
     }
 }

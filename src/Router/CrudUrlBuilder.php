@@ -23,15 +23,19 @@ class CrudUrlBuilder
     private $dashboardControllers;
     private $crudControllers;
     private $urlGenerator;
+    private $urlSigner;
     private $routeParameters;
+    private $signUrls = false;
 
-    public function __construct(?AdminContext $adminContext, UrlGeneratorInterface $urlGenerator, DashboardControllerRegistry $dashboardControllers, CrudControllerRegistry $crudControllers, array $newRouteParameters = [])
+    public function __construct(?AdminContext $adminContext, UrlGeneratorInterface $urlGenerator, DashboardControllerRegistry $dashboardControllers, CrudControllerRegistry $crudControllers, UrlSigner $urlSigner, array $newRouteParameters = [])
     {
         $this->dashboardRoute = null === $adminContext ? null : $adminContext->getDashboardRouteName();
         $this->dashboardControllers = $dashboardControllers;
         $this->crudControllers = $crudControllers;
         $this->urlGenerator = $urlGenerator;
+        $this->urlSigner = $urlSigner;
 
+        $this->signUrls = null === $adminContext ? false : $adminContext->getSignedUrls();
         $currentRouteParameters = $currentRouteParametersCopy = null === $adminContext ? [] : $adminContext->getRequest()->query->all();
         unset($currentRouteParametersCopy[EA::REFERRER]);
         $currentPageReferrer = null === $adminContext ? null : sprintf('%s?%s', $adminContext->getRequest()->getPathInfo(), http_build_query($currentRouteParametersCopy));
@@ -185,9 +189,15 @@ class CrudUrlBuilder
         $routeParameters = array_filter($this->routeParameters, static function ($parameterValue) {
             return null !== $parameterValue;
         });
-        ksort($routeParameters);
+        ksort($routeParameters, SORT_STRING);
 
-        return $this->urlGenerator->generate($this->dashboardRoute, $routeParameters, UrlGeneratorInterface::ABSOLUTE_URL);
+        $url = $this->urlGenerator->generate($this->dashboardRoute, $routeParameters, UrlGeneratorInterface::ABSOLUTE_URL);
+
+        if ($this->signUrls) {
+            $url = $this->urlSigner->sign($url);
+        }
+
+        return $url;
     }
 
     private function setRouteParameter(string $paramName, $paramValue): void

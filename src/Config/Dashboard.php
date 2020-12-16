@@ -71,6 +71,13 @@ final class Dashboard
         return $this;
     }
 
+    public function disableUrlSignatures(bool $disableSignatures = true): self
+    {
+        $this->dto->setSignedUrls(!$disableSignatures);
+
+        return $this;
+    }
+
     public function getAsDto(): DashboardDto
     {
         return $this->dto;

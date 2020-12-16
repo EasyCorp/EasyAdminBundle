@@ -247,14 +247,14 @@
 
             $('.action-delete').on('click', function(e) {
                 e.preventDefault();
-                const id = $(this).parents('[data-id]').first().data('id');
+                const formAction = $(this).attr('formaction');
 
                 $('#modal-delete').modal({ backdrop: true, keyboard: true })
                     .off('click', '#modal-delete-button')
                     .on('click', '#modal-delete-button', function () {
                         let deleteForm = $('#delete-form');
-                        deleteForm.attr('action', deleteForm.attr('action').replace('__entityId_placeholder__', id));
-                        deleteForm.trigger('submit');
+                        deleteForm.attr('action', formAction);
+                        deleteForm.submit();
                     });
             });
 

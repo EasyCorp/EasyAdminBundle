@@ -30,6 +30,11 @@ final class ImageConfigurator implements FieldConfiguratorInterface
     public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
     {
         $configuredBasePath = $field->getCustomOption(ImageField::OPTION_BASE_PATH);
+
+        $formattedValue = \is_array($field->getValue())
+            ? $this->getImagesPath($field->getValue(), $configuredBasePath)
+            : $this->getImagePath($field->getValue(), $configuredBasePath);
+
         $formattedValue = $this->getImagePath($field->getValue(), $configuredBasePath);
         $field->setFormattedValue($formattedValue);
 
@@ -51,6 +56,16 @@ final class ImageConfigurator implements FieldConfiguratorInterface
         $relativeUploadDir = u($relativeUploadDir)->trimStart(\DIRECTORY_SEPARATOR)->ensureEnd(\DIRECTORY_SEPARATOR)->toString();
         $absoluteUploadDir = u($relativeUploadDir)->ensureStart($this->projectDir.\DIRECTORY_SEPARATOR)->toString();
         $field->setFormTypeOption('upload_dir', $absoluteUploadDir);
+    }
+
+    private function getImagesPath(?array $images, ?string $basePath): ?array
+    {
+        $collectionsImage = [];
+        foreach ($images as $image) {
+            $collectionsImage[] = $this->getImagePath($image, $basePath);
+        }
+
+        return $collectionsImage;
     }
 
     private function getImagePath(?string $imagePath, ?string $basePath): ?string

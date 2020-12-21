@@ -14,6 +14,8 @@ final class BooleanField implements FieldInterface
     use FieldTrait;
 
     public const OPTION_RENDER_AS_SWITCH = 'renderAsSwitch';
+    /** @internal */
+    public const OPTION_TOGGLE_URL = 'toggleUrl';
 
     public static function new(string $propertyName, ?string $label = null): self
     {

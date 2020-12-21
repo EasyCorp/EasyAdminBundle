@@ -61,6 +61,8 @@ class CrudUrlBuilder
     public function setController(string $crudControllerFqcn): self
     {
         $this->setRouteParameter(EA::CRUD_CONTROLLER_FQCN, $crudControllerFqcn);
+        $this->unset(EA::ROUTE_NAME);
+        $this->unset(EA::ROUTE_PARAMS);
 
         return $this;
     }

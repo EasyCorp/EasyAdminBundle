@@ -16,34 +16,30 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 final class AdminUrlGenerator
 {
+    private $isInitialized;
+    private $adminContextProvider;
     private $urlGenerator;
     private $dashboardControllerRegistry;
     private $crudControllerRegistry;
+    private $urlSigner;
     private $dashboardRoute;
     private $includeReferrer;
     private $routeParameters;
     private $currentPageReferrer;
 
-    public function __construct(AdminContextProvider $adminContextProvider, UrlGeneratorInterface $urlGenerator, DashboardControllerRegistry $dashboardControllerRegistry, CrudControllerRegistry $crudControllerRegistry)
+    public function __construct(AdminContextProvider $adminContextProvider, UrlGeneratorInterface $urlGenerator, DashboardControllerRegistry $dashboardControllerRegistry, CrudControllerRegistry $crudControllerRegistry, UrlSigner $urlSigner)
     {
+        $this->isInitialized = false;
+        $this->adminContextProvider = $adminContextProvider;
         $this->urlGenerator = $urlGenerator;
         $this->dashboardControllerRegistry = $dashboardControllerRegistry;
         $this->crudControllerRegistry = $crudControllerRegistry;
-
-        $adminContext = $adminContextProvider->getContext();
-
-        $this->dashboardRoute = null === $adminContext ? null : $adminContext->getDashboardRouteName();
-
-        $currentRouteParameters = $routeParametersForReferrer = null === $adminContext ? [] : $adminContext->getRequest()->query->all();
-        unset($routeParametersForReferrer[EA::REFERRER]);
-        $this->currentPageReferrer = null === $adminContext ? null : sprintf('%s?%s', $adminContext->getRequest()->getPathInfo(), http_build_query($routeParametersForReferrer));
-
-        $this->routeParameters = $currentRouteParameters;
+        $this->urlSigner = $urlSigner;
     }
 
     public function setDashboard(string $dashboardControllerFqcn): self
     {
-        $this->setRouteParameter('dashboardControllerFqcn', $dashboardControllerFqcn);
+        $this->setRouteParameter(EA::DASHBOARD_CONTROLLER_FQCN, $dashboardControllerFqcn);
 
         return $this;
     }
@@ -94,6 +90,10 @@ final class AdminUrlGenerator
 
     public function get(string $paramName)
     {
+        if (false === $this->isInitialized) {
+            $this->initialize();
+        }
+
         return $this->routeParameters[$paramName] ?? null;
     }
 
@@ -115,6 +115,10 @@ final class AdminUrlGenerator
 
     public function unset(string $paramName): self
     {
+        if (false === $this->isInitialized) {
+            $this->initialize();
+        }
+
         unset($this->routeParameters[$paramName]);
 
         return $this;
@@ -122,6 +126,10 @@ final class AdminUrlGenerator
 
     public function unsetAll(): self
     {
+        if (false === $this->isInitialized) {
+            $this->initialize();
+        }
+
         $this->routeParameters = [];
 
         return $this;
@@ -129,7 +137,11 @@ final class AdminUrlGenerator
 
     public function unsetAllExcept(string ...$namesOfParamsToKeep): self
     {
-        $this->routeParameters = array_intersect_key($this->routeParameters, $namesOfParamsToKeep);
+        if (false === $this->isInitialized) {
+            $this->initialize();
+        }
+
+        $this->routeParameters = array_intersect_key($this->routeParameters, array_flip($namesOfParamsToKeep));
 
         return $this;
     }
@@ -156,6 +168,10 @@ final class AdminUrlGenerator
 
     public function generateUrl(): string
     {
+        if (false === $this->isInitialized) {
+            $this->initialize();
+        }
+
         if (true === $this->includeReferrer) {
             $this->setRouteParameter(EA::REFERRER, $this->currentPageReferrer);
         }
@@ -207,13 +223,27 @@ final class AdminUrlGenerator
         $routeParameters = array_filter($this->routeParameters, static function ($parameterValue) {
             return null !== $parameterValue;
         });
-        ksort($routeParameters);
+        ksort($routeParameters, SORT_STRING);
 
-        return $this->urlGenerator->generate($this->dashboardRoute, $routeParameters, UrlGeneratorInterface::ABSOLUTE_URL);
+        $url = $this->urlGenerator->generate($this->dashboardRoute, $routeParameters, UrlGeneratorInterface::ABSOLUTE_URL);
+
+        if ($this->adminContextProvider->getContext()->getSignedUrls()) {
+            $url = $this->urlSigner->sign($url);
+        }
+
+        // this is important to start the generation a each URL from the same initial state
+        // otherwise, some parameters used when generating some URL could leak to other URLs
+        $this->isInitialized = false;
+
+        return $url;
     }
 
     private function setRouteParameter(string $paramName, $paramValue): void
     {
+        if (false === $this->isInitialized) {
+            $this->initialize();
+        }
+
         if (\is_resource($paramValue)) {
             throw new \InvalidArgumentException(sprintf('The value of the "%s" parameter is a PHP resource, which is not supported as a route parameter.', $paramName));
         }
@@ -227,5 +257,25 @@ final class AdminUrlGenerator
         }
 
         $this->routeParameters[$paramName] = $paramValue;
+    }
+
+    private function initialize(): void
+    {
+        $this->isInitialized = true;
+
+        $adminContext = $this->adminContextProvider->getContext();
+
+        if (null === $adminContext) {
+            $this->dashboardRoute = null;
+            $currentRouteParameters = $routeParametersForReferrer = [];
+            $this->currentPageReferrer = null;
+        } else {
+            $this->dashboardRoute = $adminContext->getDashboardRouteName();
+            $currentRouteParameters = $routeParametersForReferrer = $adminContext->getRequest()->query->all();
+            unset($routeParametersForReferrer[EA::REFERRER]);
+            $this->currentPageReferrer = sprintf('%s?%s', $adminContext->getRequest()->getPathInfo(), http_build_query($routeParametersForReferrer));
+        }
+
+        $this->routeParameters = $currentRouteParameters;
     }
 }

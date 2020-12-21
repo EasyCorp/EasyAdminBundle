@@ -74,11 +74,13 @@ use EasyCorp\Bundle\EasyAdminBundle\Registry\CrudControllerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\DashboardControllerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
+use EasyCorp\Bundle\EasyAdminBundle\Router\UrlSigner;
 use EasyCorp\Bundle\EasyAdminBundle\Security\AuthorizationChecker;
 use EasyCorp\Bundle\EasyAdminBundle\Security\SecurityVoter;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\EasyAdminTwigExtension;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -127,7 +129,10 @@ return static function (ContainerConfigurator $container) {
             ->tag('kernel.event_listener', ['event' => 'kernel.exception', 'priority' => -64])
 
         ->set(EasyAdminTwigExtension::class)
-            ->arg(0, new Reference(AdminUrlGenerator::class))
+            // I don't know if we truly need the locator to get a new instance of the
+            // service whenever we generate a new URL, Maybe it's enough with the route parameter
+            // initialization done after generating each URL
+            ->arg(0, new Reference('service_locator_'.AdminUrlGenerator::class))
             ->tag('twig.extension')
 
         ->set(EaCrudFormTypeExtension::class)
@@ -152,11 +157,13 @@ return static function (ContainerConfigurator $container) {
         ->set(AdminRouterSubscriber::class)
             ->arg(0, new Reference(AdminContextFactory::class))
             ->arg(1, new Reference(DashboardControllerRegistry::class))
-            ->arg(2, new Reference(ControllerFactory::class))
-            ->arg(3, new Reference('controller_resolver'))
-            ->arg(4, new Reference('router'))
+            ->arg(2, new Reference(CrudControllerRegistry::class))
+            ->arg(3, new Reference(ControllerFactory::class))
+            ->arg(4, new Reference('controller_resolver'))
             ->arg(5, new Reference('router'))
-            ->arg(6, new Reference('twig'))
+            ->arg(6, new Reference('router'))
+            ->arg(7, new Reference('twig'))
+            ->arg(8, new Reference(UrlSigner::class))
             ->tag('kernel.event_subscriber')
 
         ->set(ControllerFactory::class)
@@ -178,18 +185,30 @@ return static function (ContainerConfigurator $container) {
             ->arg(5, new Reference(EntityFactory::class))
 
         ->set(AdminUrlGenerator::class)
+            // I don't know if we truly need the share() method to get a new instance of the
+            // service whenever we generate a new URL. Maybe it's enough with the route parameter
+            // initialization done after generating each URL
             ->share(false)
             ->arg(0, new Reference(AdminContextProvider::class))
             ->arg(1, new Reference('router.default'))
             ->arg(2, new Reference(DashboardControllerRegistry::class))
             ->arg(3, new Reference(CrudControllerRegistry::class))
+            ->arg(4, new Reference(UrlSigner::class))
+
+        ->set('service_locator_'.AdminUrlGenerator::class, ServiceLocator::class)
+            ->args([[AdminUrlGenerator::class => new Reference(AdminUrlGenerator::class)]])
+            ->tag('container.service_locator')
+
+        ->set(UrlSigner::class)
+            ->arg(0, '%kernel.secret%')
 
         ->set(CrudUrlGenerator::class)
             ->deprecate('easycorp/easyadmin-bundle', '3.2.0', 'The "%service_id%" service is deprecated, use "%s" instead.', __CLASS__, AdminUrlGenerator::class)
             ->arg(0, new Reference(AdminContextProvider::class))
             ->arg(1, new Reference('router.default'))
-            ->arg(2, new Reference(DashboardControllerRegistry::class))
-            ->arg(3, new Reference(CrudControllerRegistry::class))
+            ->arg(2, new Reference(UrlSigner::class))
+            ->arg(3, new Reference(DashboardControllerRegistry::class))
+            ->arg(4, new Reference(CrudControllerRegistry::class))
 
         ->set(MenuFactory::class)
             ->arg(0, new Reference(AdminContextProvider::class))

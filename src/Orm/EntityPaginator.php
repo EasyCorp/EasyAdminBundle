@@ -66,7 +66,7 @@ final class EntityPaginator implements EntityPaginatorInterface
 
     public function generateUrlForPage(int $page): string
     {
-        return $this->adminUrlGenerator->set('page', $page)->includeReferrer()->generateUrl();
+        return $this->adminUrlGenerator->set(EA::PAGE, $page)->includeReferrer()->generateUrl();
     }
 
     public function getCurrentPage(): int

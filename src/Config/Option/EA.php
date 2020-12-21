@@ -17,10 +17,12 @@ final class EA
     public const ENTITY_ID = 'entityId';
     public const FILTERS = 'filters';
     public const MENU_INDEX = 'menuIndex';
+    public const PAGE = 'page';
     public const QUERY = 'query';
     public const REFERRER = 'referrer';
     public const ROUTE_NAME = 'routeName';
     public const ROUTE_PARAMS = 'routeParams';
     public const SORT = 'sort';
     public const SUBMENU_INDEX = 'submenuIndex';
+    public const URL_SIGNATURE = 'signature';
 }

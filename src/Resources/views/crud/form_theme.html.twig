@@ -2,6 +2,10 @@
 {% use 'bootstrap_4_layout.html.twig' %}
 
 {% block form_start %}
+    {% if form.vars.errors|length > 0 and 'ea_crud' in form.vars.block_prefixes|default([]) %}
+        {{ form_errors(form) }}
+    {% endif %}
+
     {{ parent() }}
 
     <input type="hidden" name="referrer" value="{{ ea.request.query.get('referrer') }}">

@@ -94,6 +94,12 @@ class AdminRouterSubscriber implements EventSubscriberInterface
         $request->query->set(EA::ROUTE_PARAMS, $request->attributes->all()['_route_params'] ?? []);
         $newUrl = $this->urlGenerator->generate($dashboardControllerRoute, $request->query->all());
 
+        $dashboardControllerInstance = $this->getDashboardControllerInstance($dashboardControllerFqcn, $request);
+        $adminContext = $this->adminContextFactory->create($request, $dashboardControllerInstance, null);
+        if ($adminContext->getSignedUrls()) {
+            $newUrl = $this->urlSigner->sign($newUrl);
+        }
+
         $event->setResponse(new RedirectResponse($newUrl));
     }
 

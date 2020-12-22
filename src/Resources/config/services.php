@@ -309,6 +309,7 @@ return static function (ContainerConfigurator $container) {
         ->set(AvatarConfigurator::class)
 
         ->set(BooleanConfigurator::class)
+            ->arg(0, new Reference(AdminUrlGenerator::class))
 
         ->set(CodeEditorConfigurator::class)
 

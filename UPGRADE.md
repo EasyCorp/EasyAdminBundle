@@ -4,7 +4,16 @@ Upgrade between EasyAdmin 3.x versions
 EasyAdmin 3.2.0
 ---------------
 
+This version introduced many changes related to routing and admin URLs generation.
+If you don't define custom actions, you don't have to make any changes in your
+application. If you define custom actions, EasyAdmin will make the needed changes
+transparently in most of the cases, but in some advanced use cases, you'll need
+to make some changes in your application.
+
 ### Deprecated `crudId` query parameter
+
+**Summary**: you don't have to make any changes related to this, but you'll see
+some deprecation messages if you don't update your application code.
 
 The `crudId` query parameter has been deprecated. This parameter is a random
 looking alphanumeric code calculated based on the CRUD controller FQCN and the
@@ -73,13 +82,13 @@ works, but it's deprecated. This only affects you if:
 
   * You generate URLs to EasyAdmin pages from outside EasyAdmin (e.g. in a normal
     Symfony controller, generate a link to "show the backend of Product entity = 3")
-  * Your backend defines custom actions (e.g. to integrate Symfony controllers
-    inside an EasyAdmin backend);
+  * Your backend integrates normal Symfony actions (e.g. to embed some Symfony
+    controller inside an EasyAdmin backend);
 
 #### Generating links to EasyAdmin pages
 
 If you generate URLs in Twig templates using the ``ea_url()`` function, you
-don't have to make any change. However, if you generate URLs in services or
+don't have to make any changes. However, if you generate URLs in services or
 controllers, you need to update your code.
 
 **BEFORE** you used the ``CrudUrlGenerator`` service and called the ``build()``
@@ -143,7 +152,7 @@ class SomeController extends AbstractController
 }
 ```
 
-#### Generating EasyAdmin links to Symfony routes
+#### Integrating Symfony routes/controllers in EasyAdmin backends
 
 EasyAdmin allows you to integrate normal Symfony controllers/actions in your
 backends. This allows to add a menu item pointing to a Symfony route and when

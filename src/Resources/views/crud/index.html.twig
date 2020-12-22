@@ -225,13 +225,8 @@
                     const customSwitch = this;
                     const newValue = this.checked;
                     const oldValue = !newValue;
-                    const fieldName = this.closest('.custom-switch').dataset.fieldname;
 
-                    const toggleUrl = "{{ ea_url().setAction('edit')|raw }}"
-                        + "&entityId=" + this.closest('[data-id]').dataset.id
-                        + "&fieldName=" + fieldName
-                        + "&newValue=" + newValue.toString();
-
+                    const toggleUrl = this.getAttribute('data-toggle-url') + "&newValue=" + newValue.toString();
                     let toggleRequest = $.ajax({ type: "GET", url: toggleUrl, data: {} });
 
                     toggleRequest.done(function(result) {});

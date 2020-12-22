@@ -2,7 +2,7 @@
 
 return [
     'page_title' => [
-        // 'dashboard' => '',
+        'dashboard' => 'Vezérlőpult',
         'detail' => '%entity_label_singular% megtekintése - <small>(#%entity_short_id%)</small>',
         'edit' => '%entity_label_singular% szerkesztése - <small>(#%entity_short_id%)</small>',
         'index' => '%entity_label_plural%',
@@ -11,7 +11,7 @@ return [
     ],
 
     'datagrid' => [
-        // 'hidden_results' => '',
+        'hidden_results' => 'Néhány találat nem megjeleníthető, mert nincs megfelelő jogosultsága',
         'no_results' => 'Nincs találat.',
     ],
 
@@ -21,14 +21,14 @@ return [
         'next' => 'Következő',
         'last' => 'Utolsó',
         'counter' => '<strong>%start%</strong> - <strong>%end%</strong> / <strong>%results%</strong>',
-        // 'results' => '',
+        'results' => '{0} Nincs találat|[1,Inf] <strong>%count%</strong> találat',
     ],
 
     'label' => [
         'true' => 'Igen',
         'false' => 'Nem',
         'empty' => 'Üresen hagy',
-        'null' => 'Semmi',
+        'null' => 'Nincs beállítva',
         'nullable_field' => 'Üresen hagy',
         'object' => 'PHP objektum',
         'inaccessible' => 'Elérhetetlen',
@@ -37,8 +37,8 @@ return [
     ],
 
     'field' => [
-        // 'code_editor.view_code' => '',
-        // 'text_editor.view_content' => '',
+        'code_editor.view_code' => 'Kód megtekintése',
+        'text_editor.view_content' => 'Tartalom megtekintése',
     ],
 
     'action' => [
@@ -50,22 +50,22 @@ return [
         'delete' => 'Törlés',
         'cancel' => 'Mégsem',
         'index' => 'Vissza a listához',
-        // 'deselect' => '',
+        'deselect' => 'Kiválasztás megszüntetése',
         'add_new_item' => 'Új elem létrehozása',
         'remove_item' => 'Elem eltávolítása',
         'choose_file' => 'Fájl kiválasztása',
-        // 'close' => '',
-        // 'create' => '',
-        // 'create_and_add_another' => '',
-        // 'create_and_continue' => '',
-        // 'save' => '',
-        // 'save_and_continue' => '',
+        'close' => 'Bezárás',
+        'create' => 'Létrehozás és új hozzáadása',
+        'create_and_add_another' => 'Létrehozás és új hozzáadása',
+        'create_and_continue' => 'Létrehozás és szerkesztés',
+        'save' => 'Mentés',
+        'save_and_continue' => 'Mentés és szerkesztés',
     ],
 
     'batch_action_modal' => [
-        // 'title' => '',
-        // 'content' => '',
-        // 'action' => '',
+        'title' => 'Valóban módosítja a kiválasztott elemeket?',
+        'content' => 'Nincs lehetőség a művelet visszavonására',
+        'action' => 'Folytatás',
     ],
 
     'delete_modal' => [
@@ -74,33 +74,34 @@ return [
     ],
 
     'filter' => [
-        // 'title' => '',
-        // 'button.clear' => '',
-        // 'button.apply' => '',
-        // 'label.is_equal_to' => '',
-        // 'label.is_not_equal_to' => '',
-        // 'label.is_greater_than' => '',
-        // 'label.is_greater_than_or_equal_to' => '',
-        // 'label.is_less_than' => '',
-        // 'label.is_less_than_or_equal_to' => '',
-        // 'label.is_between' => '',
-        // 'label.contains' => '',
-        // 'label.not_contains' => '',
-        // 'label.starts_with' => '',
-        // 'label.ends_with' => '',
-        // 'label.exactly' => '',
-        // 'label.not_exactly' => '',
-        // 'label.is_same' => '',
-        // 'label.is_not_same' => '',
-        // 'label.is_after' => '',
-        // 'label.is_after_or_same' => '',
-        // 'label.is_before' => '',
-        // 'label.is_before_or_same' => '',
+        'title' => 'Szűrők',
+        'button.clear' => 'Töröl',
+        'button.apply' => 'Alkalmaz',
+        'label.is_equal_to' => 'egyenlő',
+        'label.is_not_equal_to' => 'nem egyenlő',
+        'label.is_greater_than' => 'nagyobb',
+        'label.is_greater_than_or_equal_to' => 'nagyobb vagy egyenlő',
+        'label.is_less_than' => 'kisebb',
+        'label.is_less_than_or_equal_to' => 'kisebb vagy egyenlő',
+        'label.is_between' => 'kettő között',
+        'label.contains' => 'tartalmazza',
+        'label.not_contains' => 'nem tartalmazza',
+        'label.starts_with' => 'így kezdődik',
+        'label.ends_with' => 'így végződik',
+        'label.exactly' => 'pontosan',
+        'label.not_exactly' => 'nem pontosan',
+        'label.is_same' => 'megyegyezik',
+        'label.is_not_same' => 'nem egyezik meg',
+        'label.is_after' => 'korábbi',
+        'label.is_after_or_same' => 'korábbi vagy egyezik',
+        'label.is_before' => 'későbbi',
+        'label.is_before_or_same' => 'későbbi vagy egyezik',
     ],
 
     'form' => [
         'are_you_sure' => 'A formon végzett módosítások nem lettek elmentve.',
-        // 'tab.error_badge_title' => '',
+        'tab.error_badge_title' => 'Érvénytelen mező|%count% érvénytelen mező',
+        'slug.confirm_text' => 'Ha megváltoztatja, akkor elérhetetlenné válhatnak más oldalakon szereplő hivatkozások.',
     ],
 
     'user' => [
@@ -108,19 +109,19 @@ return [
         'unnamed' => 'Névtelen felhasználó',
         'anonymous' => 'Anonim felhasználó',
         'sign_out' => 'Kilépés',
-        // 'exit_impersonation' => '',
+        'exit_impersonation' => 'Megszemélyesítés vége',
     ],
 
     'login_page' => [
-        'username' => 'Username',
-        'password' => 'Password',
-        'sign_in' => 'Sign in',
+        'username' => 'Felhasználónév',
+        'password' => 'Jelszó',
+        'sign_in' => 'Belépés',
     ],
 
     'exception' => [
         'entity_not_found' => 'Ez az elem már nem elérhető.',
         'entity_remove' => 'Ez az elem nem törölhető más kapcsolódó adatok miatt.',
         'forbidden_action' => 'A kért művelet nem hajtható végre ezen az elemen.',
-        // 'insufficient_entity_permission' => 'You don't have permission to access this item.',
+        'insufficient_entity_permission' => 'Nincs megfelelő jogosultsága az elemhez.',
     ],
 ];

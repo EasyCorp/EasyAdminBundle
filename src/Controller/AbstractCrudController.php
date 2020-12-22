@@ -436,6 +436,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $formActionParts = parse_url($filtersForm->getConfig()->getAction());
         $queryString = $formActionParts[EA::QUERY] ?? [];
         parse_str($queryString, $queryStringAsArray);
+        unset($queryStringAsArray[EA::FILTERS], $queryStringAsArray[EA::PAGE]);
 
         $responseParameters = KeyValueStore::new([
             'templateName' => 'crud/filters',

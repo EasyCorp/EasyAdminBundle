@@ -59,14 +59,14 @@ class SomeController extends AbstractController
     {
         // BEFORE
         $crudId = $this->crudControllerRegistry->findCrudIdByCrudFqcn(UserCrudController::class);
-        $url = $this->adminUrlGenerator()
+        $url = $this->adminUrlGenerator
             ->setCrudId($crudId)
             ->setAction('edit')
             ->setEntityId($this->getUser()->getId())
             ->generateUrl();
 
         // AFTER
-        $url = $this->adminUrlGenerator()
+        $url = $this->adminUrlGenerator
             ->setController(UserCrudController::class)
             ->setAction('edit')
             ->setEntityId($this->getUser()->getId())
@@ -112,7 +112,7 @@ class SomeController extends AbstractController
 
     public function someAction()
     {
-        $url = $this->crudUrlGenerator()
+        $url = $this->crudUrlGenerator
             ->build()
             ->setController(UserCrudController::class)
             ->setAction('edit')
@@ -143,7 +143,7 @@ class SomeController extends AbstractController
 
     public function someAction()
     {
-        $url = $this->adminUrlGenerator()
+        $url = $this->adminUrlGenerator
             ->setController(UserCrudController::class)
             ->setAction('edit')
             ->setEntityId($this->getUser()->getId())

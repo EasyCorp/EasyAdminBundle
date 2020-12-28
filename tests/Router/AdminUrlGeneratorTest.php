@@ -250,10 +250,27 @@ class AdminUrlGeneratorTest extends WebTestCase
         $this->assertSame('http://localhost/admin?foo=bar', $this->adminUrlGenerator->generateUrl());
     }
 
-    public function testSignedUrls()
+    public function testUrlsWithSignatures()
     {
+        $this->adminUrlGenerator->set('foo1', 'bar1');
+        $this->adminUrlGenerator->setController('App\Controller\Admin\SomeCrudController');
+        $this->adminUrlGenerator->addSignature();
+        $this->assertSame('http://localhost/admin?crudAction=index&crudControllerFqcn=App%5CController%5CAdmin%5CSomeCrudController&foo=bar&foo1=bar1&signature=yGwN-pwX_xBtCMu87wfD0wyXQm-v4QO_IjCiB6cMvRw', $this->adminUrlGenerator->generateUrl());
+
         $this->adminUrlGeneratorWithSignedUrls->set('foo1', 'bar1');
         $this->adminUrlGeneratorWithSignedUrls->setController('App\Controller\Admin\SomeCrudController');
         $this->assertSame('http://localhost/admin?crudAction=index&crudControllerFqcn=App%5CController%5CAdmin%5CSomeCrudController&foo=bar&foo1=bar1&signature=yGwN-pwX_xBtCMu87wfD0wyXQm-v4QO_IjCiB6cMvRw', $this->adminUrlGeneratorWithSignedUrls->generateUrl());
+    }
+
+    public function testUrlsWithoutSignatures()
+    {
+        $this->adminUrlGenerator->set('foo1', 'bar1');
+        $this->adminUrlGenerator->setController('App\Controller\Admin\SomeCrudController');
+        $this->assertSame('http://localhost/admin?crudAction=index&crudControllerFqcn=App%5CController%5CAdmin%5CSomeCrudController&foo=bar&foo1=bar1', $this->adminUrlGenerator->generateUrl());
+
+        $this->adminUrlGeneratorWithSignedUrls->set('foo1', 'bar1');
+        $this->adminUrlGeneratorWithSignedUrls->setController('App\Controller\Admin\SomeCrudController');
+        $this->adminUrlGeneratorWithSignedUrls->addSignature(false);
+        $this->assertSame('http://localhost/admin?crudAction=index&crudControllerFqcn=App%5CController%5CAdmin%5CSomeCrudController&foo=bar&foo1=bar1', $this->adminUrlGeneratorWithSignedUrls->generateUrl());
     }
 }

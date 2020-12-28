@@ -78,6 +78,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Router\UrlSigner;
 use EasyCorp\Bundle\EasyAdminBundle\Security\AuthorizationChecker;
 use EasyCorp\Bundle\EasyAdminBundle\Security\SecurityVoter;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\EasyAdminTwigExtension;
+use Symfony\Component\DependencyInjection\Compiler\AliasDeprecatedPublicServicesPass;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\ServiceLocator;
@@ -201,14 +202,6 @@ return static function (ContainerConfigurator $container) {
 
         ->set(UrlSigner::class)
             ->arg(0, '%kernel.secret%')
-
-        ->set(CrudUrlGenerator::class)
-            ->deprecate('easycorp/easyadmin-bundle', '3.2.0', 'The "%service_id%" service is deprecated, use "%s" instead.', __CLASS__, AdminUrlGenerator::class)
-            ->arg(0, new Reference(AdminContextProvider::class))
-            ->arg(1, new Reference('router.default'))
-            ->arg(2, new Reference(UrlSigner::class))
-            ->arg(3, new Reference(DashboardControllerRegistry::class))
-            ->arg(4, new Reference(CrudControllerRegistry::class))
 
         ->set(MenuFactory::class)
             ->arg(0, new Reference(AdminContextProvider::class))
@@ -371,4 +364,18 @@ return static function (ContainerConfigurator $container) {
 
         ->set(UrlConfigurator::class)
     ;
+
+    $crudUrlGenerator = $services
+        ->set(CrudUrlGenerator::class)
+        ->arg(0, new Reference(AdminContextProvider::class))
+        ->arg(1, new Reference('router.default'))
+        ->arg(2, new Reference(UrlSigner::class))
+        ->arg(3, new Reference(DashboardControllerRegistry::class))
+        ->arg(4, new Reference(CrudControllerRegistry::class));
+
+    if (class_exists(AliasDeprecatedPublicServicesPass::class)) {
+        $crudUrlGenerator->deprecate('easycorp/easyadmin-bundle', '3.2.0', sprintf('The "%%service_id%%" service is deprecated, use "%s" instead.', AdminUrlGenerator::class));
+    } else {
+        $crudUrlGenerator->deprecate(sprintf('Since easycorp/easyadmin-bundle 3.2.0: The "%%service_id%% service is deprecated, use "%s" instead.', AdminUrlGenerator::class));
+    }
 };

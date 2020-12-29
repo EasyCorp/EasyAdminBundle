@@ -138,9 +138,19 @@ table.datagrid {
   min-width: 100%;
 }
 
+.datagrid-header-tools .datagrid-search .form-widget {
+  position: relative;
+}
 .datagrid-header-tools .datagrid-search a.action-search-reset {
-    margin-left: -20px;
-    margin-right: 10px;
+  color: var(--gray-500);
+  padding: 4px 7px;
+  position: absolute;
+  right: 1px;
+  top: 1px;
+  text-decoration: none;
+}
+.datagrid-header-tools .datagrid-search a.action-search-reset:hover {
+  color: var(--gray-700);
 }
 
 #modal-filters .modal-dialog {

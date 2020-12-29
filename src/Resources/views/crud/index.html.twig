@@ -71,12 +71,13 @@
                                     <div class="form-group">
                                         <div class="form-widget">
                                             <input class="form-control" type="search" name="query" value="{{ app.request.get('query') ?? '' }}" placeholder="{{ 'action.search'|trans(ea.i18n.translationParameters, 'EasyAdminBundle') }}">
+
+                                            {% if app.request.get('query') %}
+                                                <a href="{{ ea_url().unset('query') }}" class="action-search-reset">
+                                                    <i class="fas fa-times-circle"></i>
+                                                </a>
+                                            {% endif %}
                                         </div>
-                                        {% if app.request.get('query') %}
-                                            <a href="{{ ea_url().unset('query') }}" class="action-search-reset">
-                                                <i class="fa fa-close"></i>
-                                            </a>
-                                        {% endif %}
                                     </div>
                                 {% endblock %}
                             </form>

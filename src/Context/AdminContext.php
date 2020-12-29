@@ -92,6 +92,11 @@ final class AdminContext
         return $this->assetDto;
     }
 
+    public function getSignedUrls(): bool
+    {
+        return $this->dashboardDto->getSignedUrls();
+    }
+
     public function getDashboardTitle(): string
     {
         return $this->dashboardDto->getTitle();

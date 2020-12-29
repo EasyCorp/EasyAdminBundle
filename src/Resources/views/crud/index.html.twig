@@ -225,13 +225,8 @@
                     const customSwitch = this;
                     const newValue = this.checked;
                     const oldValue = !newValue;
-                    const fieldName = this.closest('.custom-switch').dataset.fieldname;
 
-                    const toggleUrl = "{{ ea_url().setAction('edit')|raw }}"
-                        + "&entityId=" + this.closest('[data-id]').dataset.id
-                        + "&fieldName=" + fieldName
-                        + "&newValue=" + newValue.toString();
-
+                    const toggleUrl = this.getAttribute('data-toggle-url') + "&newValue=" + newValue.toString();
                     let toggleRequest = $.ajax({ type: "GET", url: toggleUrl, data: {} });
 
                     toggleRequest.done(function(result) {});
@@ -247,14 +242,14 @@
 
             $('.action-delete').on('click', function(e) {
                 e.preventDefault();
-                const id = $(this).parents('[data-id]').first().data('id');
+                const formAction = $(this).attr('formaction');
 
                 $('#modal-delete').modal({ backdrop: true, keyboard: true })
                     .off('click', '#modal-delete-button')
                     .on('click', '#modal-delete-button', function () {
                         let deleteForm = $('#delete-form');
-                        deleteForm.attr('action', deleteForm.attr('action').replace('__entityId_placeholder__', id));
-                        deleteForm.trigger('submit');
+                        deleteForm.attr('action', formAction);
+                        deleteForm.submit();
                     });
             });
 

@@ -2,8 +2,8 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Twig;
 
-use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlBuilder;
-use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use Symfony\Component\DependencyInjection\ServiceLocator;
 use Twig\Environment;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
@@ -16,11 +16,11 @@ use Twig\TwigFunction;
  */
 class EasyAdminTwigExtension extends AbstractExtension
 {
-    private $crudUrlGenerator;
+    private $serviceLocator;
 
-    public function __construct(CrudUrlGenerator $crudUrlGenerator)
+    public function __construct(ServiceLocator $serviceLocator)
     {
-        $this->crudUrlGenerator = $crudUrlGenerator;
+        $this->serviceLocator = $serviceLocator;
     }
 
     /**
@@ -29,7 +29,7 @@ class EasyAdminTwigExtension extends AbstractExtension
     public function getFunctions()
     {
         return [
-            new TwigFunction('ea_url', [$this, 'getCrudUrlBuilder']),
+            new TwigFunction('ea_url', [$this, 'getAdminUrlGenerator']),
         ];
     }
 
@@ -84,8 +84,8 @@ class EasyAdminTwigExtension extends AbstractExtension
         return $filter->getCallable()($value, ...$filterArguments);
     }
 
-    public function getCrudUrlBuilder(array $queryParameters = []): CrudUrlBuilder
+    public function getAdminUrlGenerator(array $queryParameters = []): AdminUrlGenerator
     {
-        return $this->crudUrlGenerator->build($queryParameters);
+        return $this->serviceLocator->get(AdminUrlGenerator::class)->setAll($queryParameters);
     }
 }

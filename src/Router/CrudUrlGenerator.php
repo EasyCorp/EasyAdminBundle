@@ -14,19 +14,23 @@ final class CrudUrlGenerator
 {
     private $adminContextProvider;
     private $urlGenerator;
+    private $urlSigner;
     private $dashboardControllerRegistry;
     private $crudControllerRegistry;
 
-    public function __construct(AdminContextProvider $adminContextProvider, UrlGeneratorInterface $urlGenerator, DashboardControllerRegistry $dashboardControllerRegistry, CrudControllerRegistry $crudControllerRegistry)
+    public function __construct(AdminContextProvider $adminContextProvider, UrlGeneratorInterface $urlGenerator, UrlSigner $urlSigner, DashboardControllerRegistry $dashboardControllerRegistry, CrudControllerRegistry $crudControllerRegistry)
     {
         $this->adminContextProvider = $adminContextProvider;
         $this->urlGenerator = $urlGenerator;
+        $this->urlSigner = $urlSigner;
         $this->dashboardControllerRegistry = $dashboardControllerRegistry;
         $this->crudControllerRegistry = $crudControllerRegistry;
     }
 
     public function build(array $routeParameters = []): CrudUrlBuilder
     {
-        return new CrudUrlBuilder($this->adminContextProvider->getContext(), $this->urlGenerator, $this->dashboardControllerRegistry, $this->crudControllerRegistry, $routeParameters);
+        trigger_deprecation('easycorp/easyadmin-bundle', '3.2.0', 'The "%s" class/service is deprecated, use "%s()" instead.', __CLASS__, AdminUrlGenerator::class);
+
+        return new CrudUrlBuilder($this->adminContextProvider->getContext(), $this->urlGenerator, $this->dashboardControllerRegistry, $this->crudControllerRegistry, $this->urlSigner, $routeParameters);
     }
 }

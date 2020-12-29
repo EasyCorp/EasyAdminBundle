@@ -79,8 +79,8 @@ don't forget to also update this value in your Symfony security config to
 
 There's no need to define a explicit name for this route. Symfony autogenerates
 a route name and EasyAdmin gets that value at runtime to generate all URLs.
-However, if you generate URLs pointing to the dashboard, you may want to define
-an explicit name for the route to simplify your code::
+However, if you generate URLs pointing to the dashboard in other parts of your
+application, you can define an explicit route name to simplify your code::
 
     /**
      * @Route("/admin", name="some_route_name")
@@ -104,19 +104,19 @@ XML or PHP config in a separate file. For example, when using YAML:
 
 In practice you won't have to deal with this route or the query string
 parameters in your application because EasyAdmin provides a service to
-:ref:`generate CRUD URLs <crud-generate-urls>`.
+:ref:`generate admin URLs <generate-admin-urls>`.
 
 .. note::
 
-    Using a single route for all URLs means that generated URLs are a bit ugly.
-    In exchange, all the other features are much simpler, from generating URLs
-    to protecting the entire backend.
+    Using a single route to handle all backend URLs means that generated URLs
+    are a bit long and ugly. This is a reasonable trade-off because it makes
+    many other features, such as generating admin URLs, much simpler.
 
 Dashboard Configuration
 -----------------------
 
-The basic dashboard configuration is defined in the ``configureDashboard()``
-method (the main menu and the user menu are configured in their own methods, as
+The dashboard configuration is defined in the ``configureDashboard()`` method
+(the main menu and the user menu are configured in their own methods, as
 explained later)::
 
     namespace App\Controller\Admin;
@@ -153,6 +153,12 @@ explained later)::
                 // set this option if you prefer the sidebar (which contains the main menu)
                 // to be displayed as a narrow column instead of the default expanded design
                 ->renderSidebarMinimized()
+
+                // by default, all backend URLs include a signature hash. If a user changes any
+                // query parameter (to "hack" the backend) the signature won't match and EasyAdmin
+                // triggers an error. If this causes any issue in your backend, call this method
+                // to disable this feature and remove all URL signature checks
+                ->disableUrlSignatures()
             ;
         }
     }
@@ -255,8 +261,7 @@ entity associated to the CRUD controller::
 
             // uses custom sorting options for the listing
             MenuItem::linkToCrud('Categories', 'fa fa-tags', Category::class)
-                ->setQueryParameter('sortField', 'createdAt'),
-                ->setQueryParameter('sortDirection', 'DESC'),
+                ->setDefaultSort(['createdAt' => 'DESC']),
         ];
     }
 
@@ -293,24 +298,6 @@ It links to any of the Symfony application routes::
         ];
     }
 
-When using route menu items, EasyAdmin adds the following route parameters
-automatically (in addition to the optional route parameters defined by you):
-
-* ``menuIndex`` and ``submenuIndex``: they are needed to keep the selected menu
-  item when rendering the page of your action (in case you display the main menu);
-* ``eaContext``: a random-looking alphanumeric string that identifies the
-  Dashboard controller related to this action (this string is generated using
-  the application kernel secret, so it cannot be guessed by malicious users).
-  This is needed to load the dashboard configuration used to render the backend
-  layout (in case your action uses it). If you don't add this parameter and try
-  to use EasyAdmin templates, you'll see errors such as
-  *"Variable "ea" does not exist."* (which is related to the :ref:`admin context <admin-context>`).
-
-.. note::
-
-    The path of your route probably doesn't include these parameters added by
-    EasyAdmin, but that's fine (you'll see them as query string parameters).
-
 URL Menu Item
 .............
 
@@ -327,9 +314,9 @@ It links to a relative or absolute URL::
         ];
     }
 
-To avoid leaking internal backend information to external websites, if the menu
-item links to an external URL and doesn't define its ``rel`` option, the
-``rel="noreferrer"`` attribute is added automatically.
+To avoid leaking internal backend information to external websites, EasyAdmin
+adds the ``rel="noreferrer"`` attribute to all URL menu items, except if the
+menu item defines its own ``rel`` option.
 
 Section Menu Item
 .................
@@ -685,6 +672,8 @@ applications can rely on its default values:
             ]);
         }
     }
+
+.. _content_page_template:
 
 Content Page Template
 ~~~~~~~~~~~~~~~~~~~~~

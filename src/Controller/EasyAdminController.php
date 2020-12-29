@@ -15,7 +15,7 @@ class EasyAdminController extends AbstractController
 If you are seeing this error, you are probably upgrading your application
 from EasyAdmin 2 to EasyAdmin 3. The new version of this bundle is a complete
 refactoring and most of the previous classes have been moved or deleted.
- 
+
 One of those removed classes is "EasyAdminController", which was used in EasyAdmin 2
 as the base controller of the entire backend. In EasyAdmin 3 each Doctrine entity has
 its own controller, so you can no longer use that base controller.

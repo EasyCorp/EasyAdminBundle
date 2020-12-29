@@ -26,18 +26,18 @@ final class ControllerFactory
         $this->controllerResolver = $controllerResolver;
     }
 
-    public function getDashboardControllerInstance(string $contextId, Request $request): ?DashboardControllerInterface
+    public function getDashboardControllerInstance(string $controllerFqcn, Request $request): ?DashboardControllerInterface
     {
-        return $this->getDashboardController($this->dashboardControllers->getControllerFqcnByContextId($contextId), $request);
+        return $this->getDashboardController($controllerFqcn, $request);
     }
 
-    public function getCrudControllerInstance(?string $crudId, ?string $crudAction, Request $request): ?CrudControllerInterface
+    public function getCrudControllerInstance(?string $crudControllerFqcn, ?string $crudAction, Request $request): ?CrudControllerInterface
     {
-        if (null === $crudId) {
+        if (null === $crudControllerFqcn) {
             return null;
         }
 
-        return $this->getCrudController($this->crudControllers->findCrudFqcnByCrudId($crudId), $crudAction, $request);
+        return $this->getCrudController($crudControllerFqcn, $crudAction, $request);
     }
 
     private function getDashboardController(?string $dashboardControllerFqcn, Request $request): ?DashboardControllerInterface

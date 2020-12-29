@@ -8,11 +8,13 @@ namespace PHPSTORM_META {
     use EasyCorp\Bundle\EasyAdminBundle\Factory\PaginatorFactory;
     use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
     use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityUpdater;
+    use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
     use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
 
     override(\Symfony\Bundle\FrameworkBundle\Controller\ControllerTrait::get(), map([
         ActionFactory::class => ActionFactory::class,
         AdminContextProvider::class => AdminContextProvider::class,
+        AdminUrlGenerator::class => AdminUrlGenerator::class,
         CrudUrlGenerator::class => CrudUrlGenerator::class,
         EntityFactory::class => EntityFactory::class,
         EntityRepository::class => EntityRepository::class,

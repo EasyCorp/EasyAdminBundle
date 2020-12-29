@@ -76,7 +76,7 @@ class MakeCrudControllerCommand extends Command
         $io->text('Next steps:');
         $io->listing([
             sprintf('Configure your controller at "%s"', $generatedFilePath),
-            sprintf('Read EasyAdmin docs: https://symfony.com/doc/master/bundles/EasyAdminBundle/index.html'),
+            'Read EasyAdmin docs: https://symfony.com/doc/master/bundles/EasyAdminBundle/index.html',
         ]);
 
         return 0;

@@ -1,11 +1,5 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
-{% set delete_url = ea_url()
-    .setCrudId(app.request.query.get('crudId'))
-    .setAction('delete')
-    .setEntityId(entity_id ?? '__entityId_placeholder__')
-    .removeReferrer() %}
-
-<form action="{{ delete_url }}" method="post" id="delete-form" style="display: none">
+<form method="post" id="delete-form" style="display: none">
     <input type="hidden" name="token" value="{{ csrf_token('ea-delete') }}" />
 </form>
 
@@ -21,7 +15,7 @@
                     <span class="btn-label">{{ 'action.cancel'|trans([], 'EasyAdminBundle') }}</span>
                 </button>
 
-                <button type="button" data-dismiss="modal" class="btn btn-danger" id="modal-delete-button" formtarget="delete-form">
+                <button type="button" data-dismiss="modal" class="btn btn-danger" id="modal-delete-button" form="delete-form">
                     <span class="btn-label">{{ 'action.delete'|trans([], 'EasyAdminBundle') }}</span>
                 </button>
             </div>

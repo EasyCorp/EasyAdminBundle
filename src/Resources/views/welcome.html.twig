@@ -25,7 +25,7 @@
 
     <pre>
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
-use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 // ...
@@ -38,7 +38,7 @@ class {{ dashboard_controller_class }} extends AbstractDashboardController
     public function index(): Response
     {
         // redirect to some CRUD controller
-        $routeBuilder = $this->get(CrudUrlGenerator::class)->build();
+        $routeBuilder = $this->get(AdminUrlGenerator::class);
 
         return $this->redirect($routeBuilder->setController(OneOfYourCrudController::class)->generateUrl());
 

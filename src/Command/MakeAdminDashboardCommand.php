@@ -44,7 +44,7 @@ class MakeAdminDashboardCommand extends Command
             'src/Controller/Admin/',
             static function (string $selectedDir) use ($fs, $projectDir) {
                 $absoluteDir = u($selectedDir)->ensureStart($projectDir.\DIRECTORY_SEPARATOR);
-                if ($absoluteDir->containsAny('..')) {
+                if (null !== $absoluteDir->indexOf('..')) {
                     throw new \RuntimeException(sprintf('The given directory path can\'t contain ".." and must be relative to the project directory (which is "%s")', $projectDir));
                 }
 
@@ -77,7 +77,7 @@ class MakeAdminDashboardCommand extends Command
         $io->text('Next steps:');
         $io->listing([
             sprintf('Configure your Dashboard at "%s"', $generatedFilePath),
-            sprintf('Run "make:admin:crud" to generate CRUD controllers and link them from the Dashboard.'),
+            'Run "make:admin:crud" to generate CRUD controllers and link them from the Dashboard.',
         ]);
 
         return 0;

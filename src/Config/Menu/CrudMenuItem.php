@@ -25,7 +25,7 @@ final class CrudMenuItem implements MenuItemInterface
         $this->dto->setIcon($icon);
         $this->dto->setRouteParameters([
             EA::CRUD_ACTION => 'index',
-            EA::CRUD_ID => null,
+            EA::CRUD_CONTROLLER_FQCN => null,
             EA::ENTITY_FQCN => $entityFqcn,
             EA::ENTITY_ID => null,
         ]);

@@ -25,7 +25,7 @@ class CrudUrlBuilder
     private $urlGenerator;
     private $urlSigner;
     private $routeParameters;
-    private $signUrls = false;
+    private $signUrls;
 
     public function __construct(?AdminContext $adminContext, UrlGeneratorInterface $urlGenerator, DashboardControllerRegistry $dashboardControllers, CrudControllerRegistry $crudControllers, UrlSigner $urlSigner, array $newRouteParameters = [])
     {
@@ -126,6 +126,13 @@ class CrudUrlBuilder
     public function removeReferrer(): self
     {
         $this->includeReferrer = false;
+
+        return $this;
+    }
+
+    public function addSignature(bool $addSignature = true): self
+    {
+        $this->signUrls = $addSignature;
 
         return $this;
     }

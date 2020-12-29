@@ -24,6 +24,7 @@ final class AdminUrlGenerator
     private $urlSigner;
     private $dashboardRoute;
     private $includeReferrer;
+    private $addSignature;
     private $routeParameters;
     private $currentPageReferrer;
 
@@ -148,6 +149,10 @@ final class AdminUrlGenerator
 
     public function includeReferrer(): self
     {
+        if (false === $this->isInitialized) {
+            $this->initialize();
+        }
+
         $this->includeReferrer = true;
 
         return $this;
@@ -155,7 +160,22 @@ final class AdminUrlGenerator
 
     public function removeReferrer(): self
     {
+        if (false === $this->isInitialized) {
+            $this->initialize();
+        }
+
         $this->includeReferrer = false;
+
+        return $this;
+    }
+
+    public function addSignature(bool $addSignature = true): self
+    {
+        if (false === $this->isInitialized) {
+            $this->initialize();
+        }
+
+        $this->addSignature = $addSignature;
 
         return $this;
     }
@@ -210,7 +230,7 @@ final class AdminUrlGenerator
         // no Dashboard FQCN has been defined explicitly
         if (null === $this->dashboardRoute) {
             if ($this->dashboardControllerRegistry->getNumberOfDashboards() > 1) {
-                throw new \RuntimeException('When generating admin URLs from outside EasyAdmin, if your application has more than one Dashboard, you must associate the URL to a specific Dashboard using the "setDashboard()" method.');
+                throw new \RuntimeException('When generating admin URLs from outside EasyAdmin or without a related HTTP request (e.g. in tests, console commands, etc.), if your application has more than one Dashboard, you must associate the URL to a specific Dashboard using the "setDashboard()" method.');
             }
 
             $this->dashboardRoute = $this->dashboardControllerRegistry->getFirstDashboardRoute();
@@ -227,7 +247,7 @@ final class AdminUrlGenerator
 
         $url = $this->urlGenerator->generate($this->dashboardRoute, $routeParameters, UrlGeneratorInterface::ABSOLUTE_URL);
 
-        if ($this->adminContextProvider->getContext()->getSignedUrls()) {
+        if ($this->signUrls()) {
             $url = $this->urlSigner->sign($url);
         }
 
@@ -276,6 +296,22 @@ final class AdminUrlGenerator
             $this->currentPageReferrer = sprintf('%s?%s', $adminContext->getRequest()->getPathInfo(), http_build_query($routeParametersForReferrer));
         }
 
+        $this->includeReferrer = null;
+        $this->addSignature = null;
+
         $this->routeParameters = $currentRouteParameters;
+    }
+
+    private function signUrls(): bool
+    {
+        if (null !== $this->addSignature) {
+            return $this->addSignature;
+        }
+
+        if (null !== $adminContext = $this->adminContextProvider->getContext()) {
+            return $adminContext->getSignedUrls();
+        }
+
+        return true;
     }
 }

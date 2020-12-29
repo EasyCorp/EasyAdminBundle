@@ -1,0 +1,13 @@
+---------------------------------------------------------------------------
+
+by parijke at 2020-12-29T11:20:47Z
+
+@javiereguiluz can you split these into live files and dev files? I cannot apply the patch because I do not have the tests/Router/AdminUrlGeneratorTest.php file in my installation. Or maybe I don't  know how to ignore the error
+
+---------------------------------------------------------------------------
+
+by parijke at 2020-12-29T11:30:32Z
+
+> @javiereguiluz can you split these into live files and dev files? I cannot apply the patch because I do not have the tests/Router/AdminUrlGeneratorTest.php file in my installation. Or maybe I don't know how to ignore the error
+
+Needed to apply it with the --force flag on the patch command. Patch seems to work now

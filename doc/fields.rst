@@ -155,7 +155,7 @@ they cannot be included in the Doctrine query.
 Virtual Fields
 ~~~~~~~~~~~~~~~
 
-You can define an virtual fields that's not exists in entity but which need to be calculated::
+You can define an virtual field that doesn't exist in the entity but needs to be calculated::
 
     public function configureFields(string $pageName): iterable
     {

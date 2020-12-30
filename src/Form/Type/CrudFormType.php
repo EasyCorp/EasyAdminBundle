@@ -44,7 +44,6 @@ class CrudFormType extends AbstractType
         $currentFormPanel = 0;
 
         foreach ($entityDto->getFields() as $fieldDto) {
-
             if ($fieldDto->isVirtual() && !$fieldDto->isFormDecorationField()) {
                 continue;
             }

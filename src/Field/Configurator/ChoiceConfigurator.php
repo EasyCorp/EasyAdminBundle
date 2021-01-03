@@ -32,14 +32,17 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
     {
         $result = array();
 
-        if (!is_array($array)) {
+        if (!\is_array($array)) {
             $array = func_get_args();
         }
 
         foreach ($array as $key => $value) {
 
-            if (is_array($value)) $result = array_merge($result, $this->arrayFlatten($value));
-            else $result = array_merge($result, array($key => $value));
+            if (\is_array($value)) {
+                $result = array_merge($result, $this->arrayFlatten($value));
+            } else {
+                $result = array_merge($result, array($key => $value));
+            }
         }
 
         return $result;

@@ -27,6 +27,23 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
     {
         return ChoiceField::class === $field->getFieldFqcn();
     }
+    
+    public function arrayFlatten($array = null)
+    {
+        $result = array();
+
+        if (!is_array($array)) {
+            $array = func_get_args();
+        }
+
+        foreach ($array as $key => $value) {
+
+            if (is_array($value)) $result = array_merge($result, $this->arrayFlatten($value));
+            else $result = array_merge($result, array($key => $value));
+        }
+
+        return $result;
+    }
 
     public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
     {
@@ -70,7 +87,7 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
         $translationParameters = $context->getI18n()->getTranslationParameters();
         $translationDomain = $context->getI18n()->getTranslationDomain();
         $selectedChoices = [];
-        $flippedChoices = array_flip($choices);
+        $flippedChoices = array_flip($this->arrayFlatten($choices));
         // $value is a scalar for single selections and an array for multiple selections
         foreach (array_values((array) $fieldValue) as $selectedValue) {
             if (null !== $selectedChoice = $flippedChoices[$selectedValue] ?? null) {

@@ -35,6 +35,26 @@ class ChoiceFieldTest extends AbstractFieldTest
         self::assertSame('foo', $this->configure($field)->getFormattedValue());
     }
 
+    public function testFieldWithArrayFlattening()
+    {
+        $field = ChoiceField::new('foo')->setChoices([
+            "foo"  => ["A" => "a", "B" => "b"],
+            "bar"  => ["C" => "c", "D" => "d"],
+            "john" => "doe"
+        ]);
+
+        $field->setValue("a");
+        self::assertSame('A', $this->configure($field)->getFormattedValue());
+        $field->setValue("b");
+        self::assertSame('B', $this->configure($field)->getFormattedValue());
+        $field->setValue("c");
+        self::assertSame('C', $this->configure($field)->getFormattedValue());
+        $field->setValue("d");
+        self::assertSame('D', $this->configure($field)->getFormattedValue());
+        $field->setValue("doe");
+        self::assertSame('john', $this->configure($field)->getFormattedValue());
+    }
+
     public function testFieldWithWrongVisualOptions()
     {
         $this->expectException(\InvalidArgumentException::class);

@@ -2,6 +2,8 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Field\Configurator;
 
+use Symfony\Component\Config\Definition\Exception\Exception;
+
 use Doctrine\DBAL\Types\Types;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
@@ -40,6 +42,9 @@ final class DateTimeConfigurator implements FieldConfiguratorInterface
         $timeFormat = null;
         $icuDateTimePattern = '';
         $formattedValue = $field->getValue();
+
+        if($field->getValue() !== DateTimeInterface::class)
+                throw new Exception("Field \"".$field->getProperty()."\" is not an instance of DateTimeInterface (Wrong use of DateTimeField?)");
 
         if (DateTimeField::class === $field->getFieldFqcn()) {
             [$defaultDatePattern, $defaultTimePattern] = $crud->getDateTimePattern();

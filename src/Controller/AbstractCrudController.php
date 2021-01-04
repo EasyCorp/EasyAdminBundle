@@ -371,6 +371,9 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
         $event = new BeforeEntityDeletedEvent($entityInstance);
         $this->get('event_dispatcher')->dispatch($event);
+        if ($event->isPropagationStopped()) {
+            return $event->getResponse();
+        }
         $entityInstance = $event->getEntityInstance();
 
         try {

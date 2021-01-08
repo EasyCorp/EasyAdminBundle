@@ -186,7 +186,7 @@ final class AdminUrlGenerator
         return $this->generateUrl();
     }
 
-    public function generateUrl(): string
+    public function generateUrl(int $referenceType = UrlGeneratorInterface::ABSOLUTE_URL): string
     {
         if (false === $this->isInitialized) {
             $this->initialize();
@@ -245,7 +245,7 @@ final class AdminUrlGenerator
         });
         ksort($routeParameters, SORT_STRING);
 
-        $url = $this->urlGenerator->generate($this->dashboardRoute, $routeParameters, UrlGeneratorInterface::ABSOLUTE_URL);
+        $url = $this->urlGenerator->generate($this->dashboardRoute, $routeParameters, $referenceType);
 
         if ($this->signUrls()) {
             $url = $this->urlSigner->sign($url);

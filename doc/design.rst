@@ -16,6 +16,17 @@ The design of the backend is ready for any kind of application. It's been
 created with `Bootstrap 4`_, `Font Awesome icons`_ and some custom CSS and
 JavaScript code; all managed by `Webpack`_ via Symfony's `Webpack Encore`_.
 
+Like any other Symfony bundle, assets are copied to (or symlinked from) the
+``public/bundles/`` directory of your application when installing or updating
+the bundle. If this doesn't work for any reason, your backend won't display the
+proper CSS/JS styles. In those cases, run this command to install those assets
+manually:
+
+.. code-block:: terminal
+
+    # remove the --symlink option if your system doesn't support symbolic links
+    $ php bin/console assets:install --symlink
+
 Depending on your needs, there are several ways of customizing the design. Some
 of them require pure CSS/JavaScript code and others require overriding and/or
 creating new Twig templates.

@@ -299,6 +299,7 @@ create a CSS file and redefine the variable values:
 Then, load this CSS file in your dashboard and/or resource admin::
 
     use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
+    use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 
     class DashboardController extends AbstractDashboardController
     {

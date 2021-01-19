@@ -146,7 +146,7 @@ final class ActionFactory
                 $routeParameters = $routeParameters($entityInstance);
             }
 
-            return $this->adminUrlGenerator->unsetAll()->setRoute($routeName, $routeParameters)->generateUrl();
+            return $this->adminUrlGenerator->unsetAllExcept(EA::MENU_INDEX, EA::SUBMENU_INDEX)->setRoute($routeName, $routeParameters)->generateUrl();
         }
 
         $requestParameters = [
@@ -160,8 +160,8 @@ final class ActionFactory
         } elseif (null !== $entityDto) {
             $requestParameters[EA::ENTITY_ID] = $entityDto->getPrimaryKeyValueAsString();
         }
-
-        return $this->adminUrlGenerator->unsetAll()->setAll($requestParameters)->generateUrl();
+    
+        return $this->adminUrlGenerator->unsetAllExcept(EA::MENU_INDEX, EA::SUBMENU_INDEX)->setAll($requestParameters)->generateUrl();
     }
 
     private function generateReferrerUrl(Request $request, ActionDto $actionDto, string $currentAction): ?string

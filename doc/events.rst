@@ -37,8 +37,8 @@ All events are triggered using objects instead of event names defined as strings
 
 * Events related to resource admins:
 
-  * ``BeforeCrudActionEvent``
   * ``AfterCrudActionEvent``
+  * ``BeforeCrudActionEvent``
 
 Event Subscriber Example
 ------------------------

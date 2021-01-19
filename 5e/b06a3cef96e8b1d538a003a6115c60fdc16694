@@ -1,0 +1,14 @@
+---------------------------------------------------------------------------
+
+by parijke at 2021-01-19T09:55:08Z
+
+I would opt to remain the current logical order... the before events happen before the after events
+
+---------------------------------------------------------------------------
+
+by bocharsky-bw at 2021-01-19T15:05:32Z
+
+@parijke you probably do not see the full picture:
+<img width="1406" alt="Screenshot 2021-01-19 at 17 03 44" src="https://user-images.githubusercontent.com/3317635/105052280-5f841880-5a78-11eb-899e-246b554b0862.png">
+
+I just want to make them consistent. We should either merge this PR or change "Events related to Doctrine entities" section instead

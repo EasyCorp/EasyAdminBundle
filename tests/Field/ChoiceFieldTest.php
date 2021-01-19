@@ -38,20 +38,20 @@ class ChoiceFieldTest extends AbstractFieldTest
     public function testFieldWithArrayFlattening()
     {
         $field = ChoiceField::new('foo')->setChoices([
-            "foo"  => ["A" => "a", "B" => "b"],
-            "bar"  => ["C" => "c", "D" => "d"],
-            "john" => "doe"
+            'foo'  => ['A' => 'a', 'B' => 'b'],
+            'bar'  => ['C' => 'c', 'D' => 'd'],
+            'john' => 'doe'
         ]);
 
-        $field->setValue("a");
+        $field->setValue('a');
         self::assertSame('A', $this->configure($field)->getFormattedValue());
-        $field->setValue("b");
+        $field->setValue('b');
         self::assertSame('B', $this->configure($field)->getFormattedValue());
-        $field->setValue("c");
+        $field->setValue('c');
         self::assertSame('C', $this->configure($field)->getFormattedValue());
-        $field->setValue("d");
+        $field->setValue('d');
         self::assertSame('D', $this->configure($field)->getFormattedValue());
-        $field->setValue("doe");
+        $field->setValue('doe');
         self::assertSame('john', $this->configure($field)->getFormattedValue());
     }
 

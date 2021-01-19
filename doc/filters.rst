@@ -73,19 +73,18 @@ These are the built-in filters provided by EasyAdmin:
   the comparison value.
 * ``BooleanFilter``: applied by default to boolean fields. It's rendered as two
   radio buttons labeled "Yes" and "No".
-* ``DateIntervalFilter``: applied by default to date interval fields. It's rendered
-  as a ``<select>`` list with the condition (before/after/etc.) and another ``<select>``
-  list to choose the comparison value.
-* ``DatetimeFilter``, ``date`` or ``time``: applied by default to datetime, date
+* ``ChoiceFilter``: it's rendered as a ``<select>`` list with choices.
+* ``ComparisonFilter``: generic compound filter with two fields.
+* ``DatetimeFilter``: applied by default to datetime, date
   or time fields respectively. It's rendered as a ``<select>`` list with the condition
   (before/after/etc.) and a browser native datepicker to pick the date/time.
 * ``EntityFilter``: applied to fields with Doctrine associations (all kinds
   supported). It's rendered as a ``<select>`` list with the condition (equal/not
   equal/etc.) and another ``<select>`` list to choose the comparison value.
-* ``IntegerFilter``, ``DecimalFilter`` or ``FloatFilter``: applied by default to numeric fields.
+* ``NumericFilter``: applied by default to numeric fields.
   It's rendered as a ``<select>`` list with the condition (higher/lower/equal/etc.) and a
   ``<input>`` to define the comparison value.
-* ``TextFilter`` or ``TextareaFilter``: applied by default to string/text fields. It's rendered as a
+* ``TextFilter``: applied by default to string/text fields. It's rendered as a
   ``<select>`` list with the condition (contains/not contains/etc.) and an ``<input>`` or
   ``<textarea>`` to define the comparison value.
 

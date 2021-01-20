@@ -160,7 +160,7 @@ final class ActionFactory
         } elseif (null !== $entityDto) {
             $requestParameters[EA::ENTITY_ID] = $entityDto->getPrimaryKeyValueAsString();
         }
-    
+
         return $this->adminUrlGenerator->unsetAllExcept(EA::MENU_INDEX, EA::SUBMENU_INDEX)->setAll($requestParameters)->generateUrl();
     }
 

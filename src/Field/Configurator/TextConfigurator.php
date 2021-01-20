@@ -38,7 +38,7 @@ final class TextConfigurator implements FieldConfiguratorInterface
 
         $configuredMaxLength = $field->getCustomOption(TextareaField::OPTION_MAX_LENGTH);
         $isDetailAction = Action::DETAIL === $context->getCrud()->getCurrentAction();
-        $defaultMaxLength = $isDetailAction ? PHP_INT_MAX : 64;
+        $defaultMaxLength = $isDetailAction ? \PHP_INT_MAX : 64;
         $formattedValue = u((string) $field->getValue())->truncate($configuredMaxLength ?? $defaultMaxLength, '…');
 
         $field->setFormattedValue($formattedValue);

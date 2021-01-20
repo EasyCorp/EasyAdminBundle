@@ -179,10 +179,10 @@ class FileUploadType extends AbstractType implements DataMapperInterface
                     '[day]' => date('d'),
                     '[extension]' => $file->guessClientExtension(),
                     '[month]' => date('m'),
-                    '[name]' => pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME),
+                    '[name]' => pathinfo($file->getClientOriginalName(), \PATHINFO_FILENAME),
                     '[randomhash]' => bin2hex(random_bytes(20)),
                     '[slug]' => (new AsciiSlugger())
-                        ->slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME))
+                        ->slug(pathinfo($file->getClientOriginalName(), \PATHINFO_FILENAME))
                         ->lower()
                         ->toString(),
                     '[timestamp]' => time(),

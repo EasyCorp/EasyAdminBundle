@@ -100,14 +100,14 @@ final class UrlSigner
             EA::ROUTE_PARAMS => 4,
         ]);
 
-        ksort($signableQueryParams, SORT_STRING);
+        ksort($signableQueryParams, \SORT_STRING);
 
         return $signableQueryParams;
     }
 
     private function buildUrl(array $urlParts, array $queryParams = []): string
     {
-        ksort($queryParams, SORT_STRING);
+        ksort($queryParams, \SORT_STRING);
         $urlParts['query'] = http_build_query($queryParams, '', '&');
 
         $scheme = isset($urlParts['scheme']) ? $urlParts['scheme'].'://' : '';

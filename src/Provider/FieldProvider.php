@@ -21,7 +21,7 @@ final class FieldProvider
     public function getDefaultFields(string $pageName): array
     {
         $defaultPropertyNames = [];
-        $maxNumProperties = Crud::PAGE_INDEX === $pageName ? 7 : PHP_INT_MAX;
+        $maxNumProperties = Crud::PAGE_INDEX === $pageName ? 7 : \PHP_INT_MAX;
         $entityDto = $this->adminContextProvider->getContext()->getEntity();
 
         $excludedPropertyTypes = [

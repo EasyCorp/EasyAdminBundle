@@ -28,7 +28,7 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
         return ChoiceField::class === $field->getFieldFqcn();
     }
     
-    public function arrayFlatten($array = null)
+    private function arrayFlatten($array = null)
     {
         $result = array();
 

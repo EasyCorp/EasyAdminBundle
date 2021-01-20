@@ -6,7 +6,7 @@ use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
 // needed to avoid encoding issues when running tests on different platforms
-setlocale(LC_ALL, 'en_US.UTF-8');
+setlocale(\LC_ALL, 'en_US.UTF-8');
 
 // we want final classes in code but we need non-final classes in tests
 // after trying many solutions (see https://tomasvotruba.com/blog/2019/03/28/how-to-mock-final-classes-in-phpunit/)

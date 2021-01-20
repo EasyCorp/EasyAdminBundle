@@ -243,7 +243,7 @@ final class AdminUrlGenerator
         $routeParameters = array_filter($this->routeParameters, static function ($parameterValue) {
             return null !== $parameterValue;
         });
-        ksort($routeParameters, SORT_STRING);
+        ksort($routeParameters, \SORT_STRING);
 
         $url = $this->urlGenerator->generate($this->dashboardRoute, $routeParameters, UrlGeneratorInterface::ABSOLUTE_URL);
 

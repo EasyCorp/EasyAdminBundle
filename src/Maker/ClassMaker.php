@@ -55,7 +55,7 @@ final class ClassMaker
     private function renderSkeleton(string $filePath, array $parameters): string
     {
         ob_start();
-        extract($parameters, EXTR_SKIP);
+        extract($parameters, \EXTR_SKIP);
         include $filePath;
 
         return ob_get_clean();

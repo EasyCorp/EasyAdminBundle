@@ -192,7 +192,7 @@ class Configuration implements ConfigurationInterface
                                                 'jpg' => 'image/jpeg',
                                                 'jpeg' => 'image/jpeg',
                                             ];
-                                            if (!isset($v['mime_type']) && isset($mimeTypes[$ext = pathinfo($v['path'], PATHINFO_EXTENSION)])) {
+                                            if (!isset($v['mime_type']) && isset($mimeTypes[$ext = pathinfo($v['path'], \PATHINFO_EXTENSION)])) {
                                                 $v['mime_type'] = $mimeTypes[$ext];
                                             } elseif (!isset($v['mime_type'])) {
                                                 $v['mime_type'] = null;

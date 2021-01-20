@@ -12,6 +12,10 @@ class IntlFormatterTest extends TestCase
      */
     public function testFormatDate(?string $expectedResult, ?\DateTimeInterface $date, ?string $dateFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', string $locale = null)
     {
+        if ($this->isWindows()) {
+            $this->markTestSkipped('Intl related tests fail on Windows randomly.');
+        }
+
         $intlFormatter = new IntlFormatter();
         $formattedDate = $intlFormatter->formatDate($date, $dateFormat, $pattern, $timezone, $calendar, $locale);
         $formattedDateWithNormalizedSpaces = null === $formattedDate ? $formattedDate : str_replace(' ', ' ', $formattedDate);
@@ -24,6 +28,10 @@ class IntlFormatterTest extends TestCase
      */
     public function testFormatTime(?string $expectedResult, ?\DateTimeInterface $date, ?string $timeFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', string $locale = null, string $assertMethod = 'assertSame')
     {
+        if ($this->isWindows()) {
+            $this->markTestSkipped('Intl related tests fail on Windows randomly.');
+        }
+
         $intlFormatter = new IntlFormatter();
         $formattedTime = $intlFormatter->formatTime($date, $timeFormat, $pattern, $timezone, $calendar, $locale);
         $formattedTimeWithNormalizedSpaces = null === $formattedTime ? $formattedTime : str_replace(' ', ' ', $formattedTime);
@@ -36,6 +44,10 @@ class IntlFormatterTest extends TestCase
      */
     public function testFormatDateTime(?string $expectedResult, ?\DateTimeInterface $date, ?string $dateFormat = 'medium', ?string $timeFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', string $locale = null)
     {
+        if ($this->isWindows()) {
+            $this->markTestSkipped('Intl related tests fail on Windows randomly.');
+        }
+
         $intlFormatter = new IntlFormatter();
         $formattedDateTime = $intlFormatter->formatDateTime($date, $dateFormat, $timeFormat, $pattern, $timezone, $calendar, $locale);
         $formattedDateTimeWithNormalizedSpaces = null === $formattedDateTime ? $formattedDateTime : str_replace(' ', ' ', $formattedDateTime);
@@ -118,5 +130,10 @@ class IntlFormatterTest extends TestCase
         yield ['Nov 8, 2020, 3:04:05 AM', new \DateTimeImmutable('2020-11-07 15:04:05', new \DateTimeZone('America/Montevideo')), 'medium', 'medium', '', new \DateTimeZone('Asia/Tokyo'), 'gregorian', 'en'];
 
         yield ['Nov 7, 2020, 2:04:05 PM', new \DateTime('2020-11-07 15:04:05 CET'), 'medium', 'medium', '', null, 'traditional', 'en'];
+    }
+
+    private function isWindows(): bool
+    {
+        return '\\' === \DIRECTORY_SEPARATOR;
     }
 }

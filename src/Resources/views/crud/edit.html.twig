@@ -147,11 +147,12 @@
 
             $('.action-delete').on('click', function(e) {
                 e.preventDefault();
+                const formAction = $(this).attr('formaction');
 
                 $('#modal-delete').modal({ backdrop: true, keyboard: true })
                     .off('click', '#modal-delete-button')
                     .on('click', '#modal-delete-button', function () {
-                        $('#delete-form').trigger('submit');
+                        $('#delete-form').attr('action', formAction).trigger('submit');
                     });
             });
         });

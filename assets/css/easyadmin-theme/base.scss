@@ -56,7 +56,7 @@ pre {
     margin: 20px 15px;
 
     @media(min-width: 1024px) {
-        grid-template-columns: fit-content(var(--sidebar-max-width)) auto;
+        grid-template-columns: max-content auto;
         grid-column-gap: 15px;
         grid-template-areas:
             "header   header"
@@ -140,6 +140,7 @@ body.ea-sidebar-width-compact .wrapper {
 
     @media(min-width: 1024px) {
         height: unset;
+        max-width: var(--sidebar-max-width);
         padding: 0;
         position: static;
         z-index: $zindex-modal-backdrop - 1;

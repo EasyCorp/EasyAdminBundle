@@ -272,6 +272,7 @@ These are all the built-in fields provided by EasyAdmin:
 * ``DateField``
 * ``DateTimeField``
 * ``EmailField``
+* ``HiddenField``
 * ``IdField``
 * ``ImageField``
 * ``IntegerField``

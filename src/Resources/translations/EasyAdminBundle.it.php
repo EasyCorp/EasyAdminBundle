@@ -54,12 +54,12 @@ return [
         'add_new_item' => 'Aggiungi un nuovo elemento',
         'remove_item' => 'Rimuovi l\'elemento',
         'choose_file' => 'Scegli file',
-        // 'close' => '',
-        // 'create' => '',
-        // 'create_and_add_another' => '',
-        // 'create_and_continue' => '',
-        // 'save' => '',
-        // 'save_and_continue' => '',
+        'close' => 'Chiudi',
+        'create' => 'Crea',
+        'create_and_add_another' => 'Crea ed aggiungi',
+        'create_and_continue' => 'Crea e continua',
+        'save' => 'Salva',
+        'save_and_continue' => 'Salva e continua a modificare',
     ],
 
     'batch_action_modal' => [

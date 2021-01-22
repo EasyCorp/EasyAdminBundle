@@ -113,11 +113,12 @@ final class CountryConfigurator implements FieldConfiguratorInterface
 
     private function generateFormTypeChoices(string $countryCodeFormat): array
     {
+        $usesAlpha3Codes = CountryField::FORMAT_ISO_3166_ALPHA3 === $countryCodeFormat;
         $choices = [];
-        $countriesAlpha2 = Countries::getNames();
-        $countries = CountryField::FORMAT_ISO_3166_ALPHA3 === $countryCodeFormat ? Countries::getAlpha3Names() : $countriesAlpha2;
+
+        $countries = $usesAlpha3Codes ? Countries::getAlpha3Names() : Countries::getNames();
         foreach ($countries as $countryCode => $countryName) {
-            $countryCodeAlpha2 = array_search($countryName, $countriesAlpha2, true);
+            $countryCodeAlpha2 = $usesAlpha3Codes ? Countries::getAlpha2Code($countryCode) : $countryCode;
             $flagImageName = \in_array($countryCodeAlpha2, self::FLAGS_WITH_IMAGE_FILE, true) ? $countryCodeAlpha2 : 'UNKNOWN';
             $flagImagePath = $this->assetPackages->getUrl(sprintf('bundles/easyadmin/images/flags/%s.png', $flagImageName));
             $choiceKey = sprintf('<img src="%s" class="country-flag" loading="lazy" alt="%s"> %s', $flagImagePath, $countryName, $countryName);

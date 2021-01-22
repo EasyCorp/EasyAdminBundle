@@ -24,6 +24,7 @@
         "symfony/cache": "^4.4|^5.0",
         "symfony/config": "^4.4|^5.0",
         "symfony/dependency-injection": "^4.4|^5.0",
+        "symfony/deprecation-contracts": "^2.0",
         "symfony/event-dispatcher": "^4.4|^5.0",
         "symfony/filesystem": "^4.4|^5.0",
         "symfony/form": "^4.4|^5.0",
@@ -37,8 +38,7 @@
         "symfony/string": "^5.0",
         "symfony/translation": "^4.4|^5.0",
         "symfony/twig-bundle": "^4.4|^5.0",
-        "symfony/uid": "^5.1",
-        "symfony/deprecation-contracts": "^2.0"
+        "symfony/uid": "^5.1"
     },
     "require-dev": {
         "dama/doctrine-test-bundle": "^6.4",

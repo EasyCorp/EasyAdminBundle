@@ -115,7 +115,7 @@ final class CountryConfigurator implements FieldConfiguratorInterface
     {
         $choices = [];
         $countriesAlpha2 = Countries::getNames();
-        $countries = CountryField::FORMAT_ISO_3166_ALPHA3 === $countryCodeFormat ? Countries::getAlpha3Names() : Countries::getNames();
+        $countries = CountryField::FORMAT_ISO_3166_ALPHA3 === $countryCodeFormat ? Countries::getAlpha3Names() : $countriesAlpha2;
         foreach ($countries as $countryCode => $countryName) {
             $countryCodeAlpha2 = array_search($countryName, $countriesAlpha2, true);
             $flagImageName = \in_array($countryCodeAlpha2, self::FLAGS_WITH_IMAGE_FILE, true) ? $countryCodeAlpha2 : 'UNKNOWN';

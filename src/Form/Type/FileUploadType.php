@@ -158,7 +158,7 @@ class FileUploadType extends AbstractType implements DataMapperInterface
                 $value .= \DIRECTORY_SEPARATOR;
             }
 
-            if (0 !== mb_strpos($value, \DIRECTORY_SEPARATOR)) {
+            if (0 !== mb_strpos($value, $this->projectDir)) {
                 $value = $this->projectDir.'/'.$value;
             }
 

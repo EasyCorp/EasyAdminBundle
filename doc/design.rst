@@ -110,9 +110,9 @@ templates. First, you can replace some templates globally in the
     {
         // ...
 
-        public function configureCrud(): Crud
+        public function configureCrud(Crud $crud): Crud
         {
-            return Crud::new()
+            return $crud
                 // ...
 
                 // the first argument is the "template name", which is the same as the

@@ -101,6 +101,7 @@
 {% macro open_content_panel_with_header(field) %}
     {% set collapsible = field.customOption('collapsible') %}
     {% set collapsed = field.customOption('collapsed') %}
+    {% set actions = field.customOption('actions') %}
     <div class="{{ field.cssClass }}">
         <div class="content-panel">
             <div class="content-panel-header {{ collapsible ? 'collapsible' }} {{ field.help is not empty ? 'with-help' }}">
@@ -116,6 +117,16 @@
 
                 {% if collapsible %}
                     </a>
+                {% endif %}
+
+                {% if actions %}
+                    <div class="d-inline-block float-right">
+                        <div class="page-actions">
+                            {% for action in actions %}
+                                {{ include(action.templatePath, { action: action }, with_context = false) }}
+                            {% endfor %}
+                        </div>
+                    </div>
                 {% endif %}
 
                 {% if field.help is not empty %}

@@ -282,7 +282,8 @@ body.ea-mobile-sidebar-visible .main-sidebar {
     color: var(--gray-600);
 }
 
-.content-header .page-actions {
+.content-header .page-actions,
+.content-panel-header .page-actions {
     align-items: center;
     display: flex;
     flex-direction: row;

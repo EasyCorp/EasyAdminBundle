@@ -4,12 +4,14 @@
 {% set current_url = ea_url() %}
 
 {% set target_entity = field.doctrineMetadata.get('targetEntity') %}
+{% set target_entity_crud_fqcn = ea.crudControllers.findCrudFqcnByEntityFqcn(target_entity) %}
 {% set crud_id = ea.crudControllers.findCrudIdByCrudFqcn(ea.crudControllers.findCrudFqcnByEntityFqcn(target_entity)) %}
 
 {% set url = ea_url().unset('entityId').setCrudId(crud_id).setAction('index').set('embedContext', {
     mappedBy: field.doctrineMetadata.get('mappedBy'),
     embeddedIn: entity.primaryKeyValue,
     crud_id: ea.crudControllers.findCrudIdByCrudFqcn(ea.crud.controllerFqcn),
+    controllerFqcn: target_entity_crud_fqcn,
     fieldName: field.property
 }) %}
 

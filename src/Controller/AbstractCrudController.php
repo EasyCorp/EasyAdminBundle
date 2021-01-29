@@ -131,7 +131,9 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             $filterValue = $embedContext['embeddedIn'];
             $queryBuilder->andWhere($queryBuilder->expr()->eq(sprintf('%s.%s', current($queryBuilder->getRootAliases()), $filterProperty), $filterValue));
 
-            $fields->unset($fields->get($filterProperty));
+            if ($fields->get($filterProperty)) {
+                $fields->unset($fields->get($filterProperty));
+            }
         }
 
         $paginator = $this->get(PaginatorFactory::class)->create($queryBuilder);

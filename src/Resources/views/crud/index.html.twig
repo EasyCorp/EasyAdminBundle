@@ -214,14 +214,14 @@
     {% block delete_form %}
         {{ include('@EasyAdmin/crud/includes/_delete_form.html.twig', with_context = false) }}
     {% endblock delete_form %}
-
-    {% if filters|length > 0 %}
-        {{ include('@EasyAdmin/crud/includes/_filters_modal.html.twig') }}
-    {% endif %}
 {% endblock main %}
 
 {% block body_javascript %}
     {{ parent() }}
+
+    {% if filters|length > 0 %}
+        {{ include('@EasyAdmin/crud/includes/_filters_modal.html.twig') }}
+    {% endif %}
 
     <script type="text/javascript">
         $(function() {

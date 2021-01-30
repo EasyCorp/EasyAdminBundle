@@ -570,7 +570,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             $uploadNew = $config->getOption('upload_new');
 
             foreach ($state->getUploadedFiles() as $index => $file) {
-                $fileName = u($filePaths[$index])->after($uploadDir)->toString();
+                $fileName = u($filePaths[$index])->replace($uploadDir, '')->toString();
                 $uploadNew($file, $uploadDir, $fileName);
             }
         }

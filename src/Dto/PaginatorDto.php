@@ -9,12 +9,16 @@ final class PaginatorDto
 {
     private $pageNumber;
     private $pageSize;
+    private $rangeSize;
+    private $rangeEdgeSize;
     private $fetchJoinCollection;
     private $useOutputWalkers;
 
-    public function __construct(int $pageSize, bool $fetchJoinCollection, ?bool $useOutputWalkers)
+    public function __construct(int $pageSize, int $rangeSize, int $rangeEdgeSize, bool $fetchJoinCollection, ?bool $useOutputWalkers)
     {
         $this->pageSize = $pageSize;
+        $this->rangeSize = $rangeSize;
+        $this->rangeEdgeSize = $rangeEdgeSize;
         $this->fetchJoinCollection = $fetchJoinCollection;
         $this->useOutputWalkers = $useOutputWalkers;
     }
@@ -32,6 +36,16 @@ final class PaginatorDto
     public function getPageSize(): int
     {
         return $this->pageSize;
+    }
+
+    public function getRangeSize(): int
+    {
+        return $this->rangeSize;
+    }
+
+    public function getRangeEdgeSize(): int
+    {
+        return $this->rangeEdgeSize;
     }
 
     public function fetchJoinCollection(): bool

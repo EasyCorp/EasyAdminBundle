@@ -189,17 +189,23 @@ class AdminRouterSubscriber implements EventSubscriberInterface
      */
     private function getDashboardControllerFqcn(Request $request): ?string
     {
-        $controllerFqcn = $request->attributes->get('_controller');
-        if (\is_string($controllerFqcn)) {
-            [$controllerFqcn, ] = explode('::', $controllerFqcn);
+        $controller = $request->attributes->get('_controller');
+        $controllerFqcn = null;
+
+        if (\is_string($controller)) {
+            [$controllerFqcn, ] = explode('::', $controller);
         }
 
-        if (\is_array($controllerFqcn)) {
-            $controllerFqcn = $controllerFqcn[0];
+        if (\is_array($controller)) {
+            $controllerFqcn = $controller[0];
         }
 
-        if (\is_object($controllerFqcn)) {
-            $controllerFqcn = \get_class($controllerFqcn);
+        if (\is_object($controller)) {
+            $controllerFqcn = \get_class($controller);
+        }
+
+        if (null === $controllerFqcn) {
+            throw new \InvalidArgumentException('The type of the _controller request attribute is not supported (it must be a string, an array or an object).');
         }
 
         return is_subclass_of($controllerFqcn, DashboardControllerInterface::class) ? $controllerFqcn : null;

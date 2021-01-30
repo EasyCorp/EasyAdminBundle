@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\EventListener;
 
 use EasyCorp\Bundle\EasyAdminBundle\EventListener\AdminRouterSubscriber;
@@ -10,14 +8,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
-/**
- * Class AdminRouterSubscriberTest.
- */
-final class AdminRouterSubscriberTest extends TestCase
+class AdminRouterSubscriberTest extends TestCase
 {
-    /**
-     * @var AdminRouterSubscriber
-     */
+    /** @var AdminRouterSubscriber */
     private $subscriber;
 
     protected function setUp(): void
@@ -28,13 +21,8 @@ final class AdminRouterSubscriberTest extends TestCase
     }
 
     /**
-     * testFetchingControllerFromRequestAttributes.
-     *
-     * @param $controller
-     *
-     * @dataProvider controllerDataProvider
-     *
      * @doesNotPerformAssertions
+     * @dataProvider controllerDataProvider
      */
     public function testFetchingControllerFromRequestAttributes($controller): void
     {

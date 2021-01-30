@@ -268,7 +268,7 @@ Templates and Form Options
             // the theme/themes to use when rendering the forms of this entity
             // (in addition to EasyAdmin default theme)
             ->addFormTheme('foo.html.twig')
-            // this method overrides all existing the form themes (including the
+            // this method overrides all existing form themes (including the
             // default EasyAdmin form theme)
             ->setFormThemes(['my_theme.html.twig', 'admin.html.twig'])
 

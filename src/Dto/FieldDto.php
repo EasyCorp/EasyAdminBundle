@@ -356,12 +356,12 @@ final class FieldDto
         return $this->displayedOn->has($pageName);
     }
 
-    public function getFieldKey()
+    public function getFieldKey(): string
     {
         return $this->fieldKey;
     }
 
-    public function setFieldKey($fieldKey): void
+    public function setFieldKey(string $fieldKey): void
     {
         $this->fieldKey = $fieldKey;
     }

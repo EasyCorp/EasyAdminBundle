@@ -13,6 +13,7 @@ use Symfony\Component\Uid\Ulid;
 final class FieldDto
 {
     private $fieldFqcn;
+    private $fieldKey;
     private $propertyName;
     private $value;
     private $formattedValue;
@@ -98,6 +99,7 @@ final class FieldDto
 
     public function setProperty(string $propertyName): void
     {
+        $this->fieldKey = $propertyName;
         $this->propertyName = $propertyName;
     }
 
@@ -352,5 +354,15 @@ final class FieldDto
     public function isDisplayedOn(string $pageName): bool
     {
         return $this->displayedOn->has($pageName);
+    }
+
+    public function getFieldKey()
+    {
+        return $this->fieldKey;
+    }
+
+    public function setFieldKey($fieldKey): void
+    {
+        $this->fieldKey = $fieldKey;
     }
 }

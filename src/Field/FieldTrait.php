@@ -306,4 +306,11 @@ trait FieldTrait
     {
         return $this->dto;
     }
+
+    public function setFieldKey($fieldKey): self
+    {
+        $this->dto->setFieldKey($fieldKey);
+
+        return $this;
+    }
 }

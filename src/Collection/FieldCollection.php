@@ -45,17 +45,17 @@ final class FieldCollection implements CollectionInterface
 
     public function set(FieldDto $newOrUpdatedField): void
     {
-        $this->fields[$newOrUpdatedField->getProperty()] = $newOrUpdatedField;
+        $this->fields[$newOrUpdatedField->getFieldKey()] = $newOrUpdatedField;
     }
 
     public function unset(FieldDto $removedField): void
     {
-        unset($this->fields[$removedField->getProperty()]);
+        unset($this->fields[$removedField->getFieldKey()]);
     }
 
     public function prepend(FieldDto $newField): void
     {
-        $this->fields = array_merge([$newField->getProperty() => $newField], $this->fields);
+        $this->fields = array_merge([$newField->getFieldKey() => $newField], $this->fields);
     }
 
     public function first(): ?FieldDto
@@ -124,7 +124,7 @@ final class FieldCollection implements CollectionInterface
 
             $dto = $field->getAsDto();
             $dto->setFieldFqcn(\get_class($field));
-            $dtos[$dto->getProperty()] = $dto;
+            $dtos[$dto->getFieldKey()] = $dto;
         }
 
         return $dtos;

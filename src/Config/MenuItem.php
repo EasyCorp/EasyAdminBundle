@@ -25,7 +25,7 @@ final class MenuItem
         return new CrudMenuItem($label, $icon, $entityFqcn);
     }
 
-    public static function linktoDashboard(string $label, ?string $icon = null): DashboardMenuItem
+    public static function linkToDashboard(string $label, ?string $icon = null): DashboardMenuItem
     {
         return new DashboardMenuItem($label, $icon);
     }
@@ -40,7 +40,7 @@ final class MenuItem
         return new LogoutMenuItem($label, $icon);
     }
 
-    public static function linktoRoute(string $label, ?string $icon = null, string $routeName, array $routeParameters = []): RouteMenuItem
+    public static function linkToRoute(string $label, ?string $icon = null, string $routeName, array $routeParameters = []): RouteMenuItem
     {
         return new RouteMenuItem($label, $icon, $routeName, $routeParameters);
     }

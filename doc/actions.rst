@@ -320,7 +320,7 @@ The following example shows all kinds of actions in practice::
 
                 // 2) using a callable (useful if parameters depend on the entity instance)
                 // (the type-hint of the function argument is optional but useful)
-                ->linkToRoute('invoice_send', function (Order $order) {
+                ->linkToRoute('invoice_send', function (Order $order): array {
                     return [
                         'uuid' => $order->getId(),
                         'method' => $order->getUser()->getPreferredSendingMethod(),

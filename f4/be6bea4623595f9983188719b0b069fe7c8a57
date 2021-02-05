@@ -1,0 +1,26 @@
+---------------------------------------------------------------------------
+
+by bocharsky-bw at 2021-02-04T10:39:46Z
+
+Added screenshots to explain it better
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2021-02-04T18:58:56Z
+
+Good catch Victor! Thanks for the detailed explanation and screenshots.
+
+Your fix works ... but it will be overwritten next time we rebuild the assets. This bundle includes both the original CSS/JS files and the compiled assets built with Webpack Encore. That way advanced developers can pull EasyAdmin sources in their advanced setups ... while most developers can just use the compiled CSS/JS files without having to setup Webpack Encore, yarn, etc.
+
+So, the complete fix would be to:
+
+* Add this `background-color: var(--body-bg)` style here: https://github.com/EasyCorp/EasyAdminBundle/blob/2ecd71037c61f03a8e868dac76ab9a241a76dd50/assets/css/easyadmin-theme/base.scss#L10-L14
+* Run `yarn encore production` to update the `src/Resources/public/app.css` file
+
+Thanks!
+
+---------------------------------------------------------------------------
+
+by bocharsky-bw at 2021-02-05T14:05:59Z
+
+Thanks for the help, Javier! Done :)

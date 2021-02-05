@@ -39,6 +39,7 @@ final class FieldDto
 
     public function __construct()
     {
+        $this->uniqueId = new Ulid();
         $this->cssClass = '';
         $this->templateName = 'crud/field/text';
         $this->assets = new AssetsDto();
@@ -65,11 +66,7 @@ final class FieldDto
 
     public function getUniqueId(): string
     {
-        if (null !== $this->uniqueId) {
-            return $this->uniqueId;
-        }
-
-        return $this->uniqueId = new Ulid();
+        return $this->uniqueId;
     }
 
     public function isFormDecorationField(): bool

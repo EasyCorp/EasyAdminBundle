@@ -55,7 +55,7 @@ return [
         'remove_item' => 'Elem eltávolítása',
         'choose_file' => 'Fájl kiválasztása',
         'close' => 'Bezárás',
-        'create' => 'Létrehozás és új hozzáadása',
+        'create' => 'Létrehozás',
         'create_and_add_another' => 'Létrehozás és új hozzáadása',
         'create_and_continue' => 'Létrehozás és szerkesztés',
         'save' => 'Mentés',

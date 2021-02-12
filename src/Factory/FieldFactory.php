@@ -103,14 +103,14 @@ final class FieldFactory
         // but the first fields of the list don't belong to any panel. We must create an automatic empty
         // form panel for those "orphaned fields" so they are displayed as expected
         $firstFieldIsAFormPanel = $fields->first()->isFormDecorationField();
-        foreach ($fields as $fieldName => $fieldDto) {
+        foreach ($fields as $fieldDto) {
             if (!$firstFieldIsAFormPanel && $fieldDto->isFormDecorationField()) {
                 $fields->prepend(FormField::addPanel()->getAsDto());
                 break;
             }
         }
 
-        foreach ($fields as $fieldName => $fieldDto) {
+        foreach ($fields as $fieldDto) {
             if (Field::class !== $fieldDto->getFieldFqcn()) {
                 continue;
             }
@@ -120,14 +120,14 @@ final class FieldFactory
                 continue;
             }
 
-            if ($fieldName === $entityDto->getPrimaryKeyName()) {
+            if ($fieldDto->getProperty() === $entityDto->getPrimaryKeyName()) {
                 $guessedFieldFqcn = IdField::class;
             } else {
-                $doctrinePropertyType = $entityDto->getPropertyMetadata($fieldName)->get('type');
+                $doctrinePropertyType = $entityDto->getPropertyMetadata($fieldDto->getProperty())->get('type');
                 $guessedFieldFqcn = self::$doctrineTypeToFieldFqcn[$doctrinePropertyType] ?? null;
 
                 if (null === $guessedFieldFqcn) {
-                    throw new \RuntimeException(sprintf('The Doctrine type of the "%s" field is "%s", which is not supported by EasyAdmin yet.', $fieldName, $doctrinePropertyType));
+                    throw new \RuntimeException(sprintf('The Doctrine type of the "%s" field is "%s", which is not supported by EasyAdmin yet.', $fieldDto->getProperty(), $doctrinePropertyType));
                 }
             }
 

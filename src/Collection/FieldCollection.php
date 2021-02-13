@@ -44,14 +44,14 @@ final class FieldCollection implements CollectionInterface
     }
 
     /**
-     * It returns the first field with the given name or null if none found.
+     * It returns the first field associated to the given property or null if none found.
      * Some pages (index/detail) can render the same field more than once.
      * In those cases, this method always returns the first field occurrence.
      */
-    public function getByName(string $fieldName): ?FieldDto
+    public function getByProperty(string $propertyName): ?FieldDto
     {
         foreach ($this->fields as $field) {
-            if ($fieldName === $field->getProperty()) {
+            if ($propertyName === $field->getProperty()) {
                 return $field;
             }
         }

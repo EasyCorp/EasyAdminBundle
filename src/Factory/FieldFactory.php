@@ -140,6 +140,7 @@ final class FieldFactory
     {
         /** @var FieldDto $newField */
         $newField = $newFieldFqcn::new($fieldDto->getProperty())->getAsDto();
+        $newField->setUniqueId($fieldDto->getUniqueId());
 
         $newField->setFieldFqcn($newFieldFqcn);
         $newField->setDisplayedOn($fieldDto->getDisplayedOn());

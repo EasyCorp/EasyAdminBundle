@@ -69,6 +69,11 @@ final class FieldDto
         return $this->uniqueId;
     }
 
+    public function setUniqueId(string $uniqueId): void
+    {
+        $this->uniqueId = $uniqueId;
+    }
+
     public function isFormDecorationField(): bool
     {
         return null !== u($this->getCssClass())->indexOf('field-form_panel');

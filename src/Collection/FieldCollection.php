@@ -25,9 +25,13 @@ final class FieldCollection implements CollectionInterface
 
     public function __clone()
     {
-        foreach ($this->fields as $fieldName => $fieldDto) {
-            $this->fields[$fieldDto->getUniqueId()] = clone $fieldDto;
+        $clonedFields = [];
+        foreach ($this->fields as $fieldDto) {
+            $clonedFieldDto = clone $fieldDto;
+            $clonedFields[$clonedFieldDto->getUniqueId()] = $clonedFieldDto;
         }
+
+        $this->fields = $clonedFields;
     }
 
     /**

@@ -57,6 +57,7 @@ final class FieldDto
 
     public function __clone()
     {
+        $this->uniqueId = new Ulid();
         $this->assets = clone $this->assets;
         $this->formTypeOptions = clone $this->formTypeOptions;
         $this->customOptions = clone $this->customOptions;

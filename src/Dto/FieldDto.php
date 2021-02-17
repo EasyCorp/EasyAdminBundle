@@ -80,7 +80,7 @@ final class FieldDto
         return null !== u($this->getCssClass())->indexOf('field-form_panel');
     }
 
-    public function getFieldFqcn(): string
+    public function getFieldFqcn(): ?string
     {
         return $this->fieldFqcn;
     }

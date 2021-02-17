@@ -161,15 +161,7 @@ final class ActionFactory
             $requestParameters[EA::ENTITY_ID] = $entityDto->getPrimaryKeyValueAsString();
         }
 
-        if ($request->query->has(EA::FILTERS)) {
-            $requestParameters[EA::FILTERS] = $request->get(EA::FILTERS);
-        }
-
-        if ($request->query->has(EA::SUBMENU_INDEX)) {
-            $requestParameters[EA::SUBMENU_INDEX] = $request->get(EA::SUBMENU_INDEX);
-        }
-
-        return $this->adminUrlGenerator->unsetAllExcept(EA::MENU_INDEX, EA::SUBMENU_INDEX)->setAll($requestParameters)->generateUrl();
+        return $this->adminUrlGenerator->unsetAllExcept(EA::MENU_INDEX, EA::SUBMENU_INDEX, EA::FILTERS)->setAll($requestParameters)->generateUrl();
     }
 
     private function generateReferrerUrl(Request $request, ActionDto $actionDto, string $currentAction): ?string

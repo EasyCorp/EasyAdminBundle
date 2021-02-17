@@ -1,0 +1,27 @@
+---------------------------------------------------------------------------
+
+by vic-blt at 2021-02-09T19:09:05Z
+
+Filters are only used here:
+https://github.com/EasyCorp/EasyAdminBundle/blob/423c7f3b2dfd8fd3204bbe43a97390c4169d1d39/src/Orm/EntityRepository.php#L50-L52
+Which is only used by `createIndexQueryBuilder`.
+And `createIndexQueryBuilder` is only used by `index` and `autocomplete` actions in `AbstractCrudController`.
+So this PR seems to have no edge effect.
+
+@javiereguiluz what's your take on this ?
+
+---------------------------------------------------------------------------
+
+by Seb33300 at 2021-02-12T10:30:22Z
+
+Will this PR also fix this issue https://github.com/EasyCorp/EasyAdminBundle/issues/4117?
+
+---------------------------------------------------------------------------
+
+by vic-blt at 2021-02-12T10:35:54Z
+
+> Will this PR also fix this issue #4117?
+
+It's related to your issue but it won't fix it.
+This PR will only allow to keep the querystring "filters".
+We should discuss about how querystring should be handled, what's a good practice and what's not.

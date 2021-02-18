@@ -231,12 +231,6 @@ Search and Pagination Options
 
             // the max number of entities to display per page
             ->setPaginatorPageSize(30)
-            // the number of pages to display on each side of the current page
-            // e.g. if num pages = 35, current page = 7 and you set ->setPaginatorRangeSize(4)
-            // the paginator displays: [Previous]  1 ... 3  4  5  6  [7]  8  9  10  11 ... 35  [Next]
-            // set this number to 0 to display a simple "< Previous | Next >" pager
-            ->setPaginatorRangeSize(4)
-
             // these are advanced options related to Doctrine Pagination
             // (see https://www.doctrine-project.org/projects/doctrine-orm/en/2.7/tutorials/pagination.html)
             ->setPaginatorUseOutputWalkers(true)
@@ -274,7 +268,7 @@ Templates and Form Options
             // the theme/themes to use when rendering the forms of this entity
             // (in addition to EasyAdmin default theme)
             ->addFormTheme('foo.html.twig')
-            // this method overrides all existing form themes (including the
+            // this method overrides all existing the form themes (including the
             // default EasyAdmin form theme)
             ->setFormThemes(['my_theme.html.twig', 'admin.html.twig'])
 

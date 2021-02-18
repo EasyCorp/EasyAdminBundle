@@ -96,15 +96,11 @@ final class CrudDto
 
     public function getEntityLabelInSingular($entityInstance = null): ?string
     {
-        if (null === $this->entityLabelInSingular) {
-            return null;
+        if (\is_callable($this->entityLabelInSingular)) {
+            return ($this->entityLabelInSingular)($entityInstance);
         }
 
-        if (\is_string($this->entityLabelInSingular)) {
-            return $this->entityLabelInSingular;
-        }
-
-        return ($this->entityLabelInSingular)($entityInstance);
+        return $this->entityLabelInSingular;
     }
 
     /**
@@ -117,15 +113,11 @@ final class CrudDto
 
     public function getEntityLabelInPlural($entityInstance = null): ?string
     {
-        if (null === $this->entityLabelInPlural) {
-            return null;
+        if (\is_callable($this->entityLabelInPlural)) {
+            return ($this->entityLabelInPlural)($entityInstance);
         }
 
-        if (\is_string($this->entityLabelInPlural)) {
-            return $this->entityLabelInPlural;
-        }
-
-        return ($this->entityLabelInPlural)($entityInstance);
+        return $this->entityLabelInPlural;
     }
 
     /**

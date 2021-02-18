@@ -56,6 +56,8 @@ interface CrudControllerInterface
     /** @return KeyValueStore|Response */
     public function delete(AdminContext $context);
 
+    public function batch(AdminContext $context): Response;
+
     public function autocomplete(AdminContext $context): JsonResponse;
 
     public function configureResponseParameters(KeyValueStore $responseParameters): KeyValueStore;

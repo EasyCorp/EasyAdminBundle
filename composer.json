@@ -1,14 +1,14 @@
 {
-    "name": "easycorp/easyadmin-bundle",
+    "name": "inlor/easyadmin-bundle",
     "type": "symfony-bundle",
     "description": "Admin generator for Symfony applications",
     "keywords": ["backend", "admin", "generator"],
-    "homepage": "https://github.com/EasyCorp/EasyAdminBundle",
+    "homepage": "https://github.com/inlor/easyadmin-bundle",
     "license": "MIT",
     "authors": [
         {
             "name": "Project Contributors",
-            "homepage": "https://github.com/EasyCorp/EasyAdminBundle/graphs/contributors"
+            "homepage": "https://github.com/inlor/easyadmin-bundle/graphs/contributors"
         }
     ],
     "require": {

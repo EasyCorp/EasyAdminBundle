@@ -58,18 +58,17 @@ final class ActionFactory
         $entityDto->setActions(ActionCollection::new($entityActions));
     }
 
-    public function processGlobalActions(ActionConfigDto $actionsDto): ActionCollection
+    public function processGlobalActions(ActionConfigDto $actionsDto = null): ActionCollection
     {
+        if (null === $actionsDto) {
+            $actionsDto = $this->adminContextProvider->getContext()->getCrud()->getActionsConfig();
+        }
+
         $currentPage = $this->adminContextProvider->getContext()->getCrud()->getCurrentPage();
         $globalActions = [];
         foreach ($actionsDto->getActions()->all() as $actionDto) {
-            if (!$actionDto->isGlobalAction()) {
+            if (!$actionDto->isGlobalAction() && !$actionDto->isBatchAction()) {
                 continue;
-            }
-
-            // TODO: remove this when we reenable "batch actions"
-            if ($actionDto->isBatchAction()) {
-                throw new \RuntimeException(sprintf('Batch actions are not supported yet, but we\'ll add support for them very soon. Meanwhile, remove the "%s" batch action from the "%s" page.', $actionDto->getName(), $currentPage));
             }
 
             if (false === $this->authChecker->isGranted(Permission::EA_EXECUTE_ACTION, $actionDto)) {
@@ -161,7 +160,7 @@ final class ActionFactory
             $requestParameters[EA::ENTITY_ID] = $entityDto->getPrimaryKeyValueAsString();
         }
 
-        return $this->adminUrlGenerator->unsetAllExcept(EA::MENU_INDEX, EA::SUBMENU_INDEX, EA::FILTERS)->setAll($requestParameters)->generateUrl();
+        return $this->adminUrlGenerator->unsetAllExcept(EA::MENU_INDEX, EA::SUBMENU_INDEX)->setAll($requestParameters)->generateUrl();
     }
 
     private function generateReferrerUrl(Request $request, ActionDto $actionDto, string $currentAction): ?string

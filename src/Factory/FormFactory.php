@@ -14,6 +14,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -65,7 +66,7 @@ final class FormFactory
     public function createBatchActionsForm(): FormInterface
     {
         return $this->symfonyFormFactory->createNamedBuilder('batch_form', CrudBatchActionFormType::class, null, [
-            'action' => $this->adminUrlGenerator->setAction('batch')->generateUrl(),
+            'action' => $this->adminUrlGenerator->setAction(Action::TYPE_BATCH)->includeReferrer()->generateUrl(),
         ])->getForm();
     }
 

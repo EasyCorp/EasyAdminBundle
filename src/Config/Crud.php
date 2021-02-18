@@ -25,7 +25,6 @@ class Crud
     private $dto;
 
     private $paginatorPageSize = 15;
-    private $paginatorRangeSize = 3;
     private $paginatorFetchJoinCollection = true;
     private $paginatorUseOutputWalkers;
 
@@ -240,17 +239,6 @@ class Crud
         return $this;
     }
 
-    public function setPaginatorRangeSize(int $maxPagesOnEachSide): self
-    {
-        if ($maxPagesOnEachSide < 0) {
-            throw new \InvalidArgumentException('The minimum value of paginator range size is 0.');
-        }
-
-        $this->paginatorRangeSize = $maxPagesOnEachSide;
-
-        return $this;
-    }
-
     public function setPaginatorFetchJoinCollection(bool $fetchJoinCollection): self
     {
         $this->paginatorFetchJoinCollection = $fetchJoinCollection;
@@ -338,7 +326,7 @@ class Crud
 
     public function getAsDto(): CrudDto
     {
-        $this->dto->setPaginator(new PaginatorDto($this->paginatorPageSize, $this->paginatorRangeSize, 1, $this->paginatorFetchJoinCollection, $this->paginatorUseOutputWalkers));
+        $this->dto->setPaginator(new PaginatorDto($this->paginatorPageSize, $this->paginatorFetchJoinCollection, $this->paginatorUseOutputWalkers));
 
         return $this->dto;
     }

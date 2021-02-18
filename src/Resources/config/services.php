@@ -58,6 +58,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Filter\Configurator\NumericConfigurator as N
 use EasyCorp\Bundle\EasyAdminBundle\Filter\Configurator\TextConfigurator as TextFilterConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Extension\CollectionTypeExtension;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Extension\EaCrudFormTypeExtension;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudBatchActionFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FileUploadType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType;
@@ -291,6 +292,10 @@ return static function (ContainerConfigurator $container) {
         ->set(CrudFormType::class)
             ->arg(0, new Reference('form.type_guesser.doctrine'))
             ->tag('form.type', ['alias' => 'ea_crud'])
+
+        ->set(CrudBatchActionFormType::class)
+            ->arg(0, new Reference(ActionFactory::class))
+            ->tag('form.type', ['alias' => 'ea_batch_action'])
 
         ->set(ArrayConfigurator::class)
 

@@ -18,7 +18,7 @@
             {% for page in paginator.pageRange %}
                 <li class="page-item {{ page == paginator.currentPage ? 'active' }} {{ page is null ? 'disabled' }}">
                     {% if page is null %}
-                        <span class="page-link">&#x22EF;</span>
+                        <span class="page-link">&hellip;</span>
                     {% else %}
                         <a class="page-link" href="{{ paginator.generateUrlForPage(page) }}">{{ page }}</a>
                     {% endif %}

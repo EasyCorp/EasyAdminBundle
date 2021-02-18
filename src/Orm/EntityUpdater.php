@@ -33,7 +33,7 @@ final class EntityUpdater implements EntityUpdaterInterface
 
         $errors = $this->validator->validate($entityInstance);
         foreach ($errors as $violation) {
-            throw new \RuntimeException(sprintf($violation->getMessage()));
+            throw new \RuntimeException($violation->getMessage());
         }
     }
 }

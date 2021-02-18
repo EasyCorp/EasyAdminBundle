@@ -84,6 +84,7 @@ use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
 use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 return static function (ContainerConfigurator $container) {
@@ -230,6 +231,7 @@ return static function (ContainerConfigurator $container) {
 
         ->set(EntityUpdater::class)
             ->arg(0, new Reference('property_accessor'))
+            ->arg(1, new Reference('validator'))
 
         ->set(PaginatorFactory::class)
             ->arg(0, new Reference(AdminContextProvider::class))

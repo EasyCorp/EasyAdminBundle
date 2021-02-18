@@ -5,6 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Orm;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Orm\EntityUpdaterInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
+use Symfony\Component\Validator\Validator\TraceableValidator;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -12,10 +13,12 @@ use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 final class EntityUpdater implements EntityUpdaterInterface
 {
     private $propertyAccesor;
+    private $validator;
 
-    public function __construct(PropertyAccessorInterface $propertyAccesor)
+    public function __construct(PropertyAccessorInterface $propertyAccesor, TraceableValidator $validator)
     {
         $this->propertyAccesor = $propertyAccesor;
+        $this->validator = $validator;
     }
 
     public function updateProperty(EntityDto $entityDto, string $propertyName, $value): void
@@ -27,5 +30,10 @@ final class EntityUpdater implements EntityUpdaterInterface
         $entityInstance = $entityDto->getInstance();
         $this->propertyAccesor->setValue($entityInstance, $propertyName, $value);
         $entityDto->setInstance($entityInstance);
+
+        $errors = $this->validator->validate($entityInstance);
+        foreach ($errors as $violation) {
+            throw new \RuntimeException(sprintf($violation->getMessage()));
+        }
     }
 }

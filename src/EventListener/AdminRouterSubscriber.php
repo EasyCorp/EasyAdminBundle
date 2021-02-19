@@ -204,10 +204,6 @@ class AdminRouterSubscriber implements EventSubscriberInterface
             $controllerFqcn = \get_class($controller);
         }
 
-        if (null === $controllerFqcn) {
-            throw new \InvalidArgumentException('The type of the _controller request attribute is not supported (it must be a string, an array or an object).');
-        }
-
         return is_subclass_of($controllerFqcn, DashboardControllerInterface::class) ? $controllerFqcn : null;
     }
 

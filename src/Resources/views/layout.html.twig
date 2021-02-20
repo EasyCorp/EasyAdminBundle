@@ -22,6 +22,10 @@
         {% for css_asset in ea.assets.cssFiles ?? [] %}
             <link rel="stylesheet" href="{{ asset(css_asset) }}">
         {% endfor %}
+
+        {% for webpack_encore_entry in ea.assets.webpackEncoreEntries ?? [] %}
+            {{ ea_call_function_if_exists('encore_entry_link_tags', webpack_encore_entry) }}
+        {% endfor %}
     {% endblock %}
 
     {% block head_favicon %}
@@ -200,6 +204,10 @@
     {% block configured_javascripts %}
         {% for js_asset in ea.assets.jsFiles ?? [] %}
             <script src="{{ asset(js_asset) }}"></script>
+        {% endfor %}
+
+        {% for webpack_encore_entry in ea.assets.webpackEncoreEntries ?? [] %}
+            {{ ea_call_function_if_exists('encore_entry_script_tags', webpack_encore_entry) }}
         {% endfor %}
     {% endblock %}
 

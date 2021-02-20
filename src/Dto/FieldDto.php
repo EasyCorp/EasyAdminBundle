@@ -292,6 +292,11 @@ final class FieldDto
         $this->assets = $assets;
     }
 
+    public function addWebpackEncoreEntry(string $entryName): void
+    {
+        $this->assets->addWebpackEncoreEntry($entryName);
+    }
+
     public function addCssFile(string $cssFilePath): void
     {
         $this->assets->addCssFile($cssFilePath);

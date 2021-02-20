@@ -30,6 +30,7 @@ class EasyAdminTwigExtension extends AbstractExtension
     {
         return [
             new TwigFunction('ea_url', [$this, 'getAdminUrlGenerator']),
+            new TwigFunction('ea_call_function_if_exists', [$this, 'callFunctionIfExists'], ['needs_environment' => true, 'is_safe' => ['html' => true]]),
         ];
     }
 
@@ -82,6 +83,15 @@ class EasyAdminTwigExtension extends AbstractExtension
         }
 
         return $filter->getCallable()($value, ...$filterArguments);
+    }
+
+    public function callFunctionIfExists(Environment $environment, string $functionName, ...$functionArguments)
+    {
+        if (false === $function = $environment->getFunction($functionName)) {
+            return '';
+        }
+
+        return $function->getCallable()(...$functionArguments);
     }
 
     public function getAdminUrlGenerator(array $queryParameters = []): AdminUrlGenerator

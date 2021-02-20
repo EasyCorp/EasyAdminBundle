@@ -246,6 +246,10 @@ the :doc:`CRUD controllers </crud>` to add your own CSS and JavaScript files::
         public function configureAssets(Assets $assets): Assets
         {
             return $assets
+                // adds the CSS and JS assets associated to the given Webpack Encore entry
+                // it's equivalent to calling encore_entry_link_tags('...') and encore_entry_script_tags('...')
+                ->addWebpackEncoreEntry('admin-app')
+
                 // the argument of these methods is passed to the asset() Twig function
                 // CSS assets are added just before the closing </head> element
                 // and JS assets are added just before the closing </body> element

@@ -7,6 +7,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
  */
 final class AssetsDto
 {
+    private $webpackEncoreEntries = [];
     private $cssFiles = [];
     private $jsFiles = [];
     private $headContents = [];
@@ -14,6 +15,15 @@ final class AssetsDto
 
     public function __construct()
     {
+    }
+
+    public function addWebpackEncoreEntry(string $entryName): void
+    {
+        if (\in_array($entryName, $this->webpackEncoreEntries, true)) {
+            return;
+        }
+
+        $this->webpackEncoreEntries[] = $entryName;
     }
 
     public function addCssFile(string $path): void
@@ -52,6 +62,11 @@ final class AssetsDto
         $this->bodyContents[] = $htmlContent;
     }
 
+    public function getWebpackEncoreEntries(): array
+    {
+        return $this->webpackEncoreEntries;
+    }
+
     public function getCssFiles(): array
     {
         return $this->cssFiles;
@@ -74,6 +89,7 @@ final class AssetsDto
 
     public function mergeWith(self $assetDto): self
     {
+        $this->webpackEncoreEntries = array_unique(array_merge($this->webpackEncoreEntries, $assetDto->getWebpackEncoreEntries()));
         $this->cssFiles = array_unique(array_merge($this->cssFiles, $assetDto->getCssFiles()));
         $this->jsFiles = array_unique(array_merge($this->jsFiles, $assetDto->getJsFiles()));
         $this->headContents = array_unique(array_merge($this->headContents, $assetDto->getHeadContents()));

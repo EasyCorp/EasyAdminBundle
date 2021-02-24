@@ -116,7 +116,7 @@
     {% else %}
         {{- parent() -}}
 
-        <script>
+        <script{% if csp_script_nonce|default('') is not empty %} nonce="{{ csp_script_nonce }}" {% endif %}>
             document.querySelector('#{{ id }}').addEventListener('change', function() {
                 const fileName = this.value.replace('C:\\fakepath\\', '');
                 const customInputFileLabel = document.querySelector('#{{ id }} ~ .custom-file-label');
@@ -578,7 +578,7 @@
         </div>
     {% endfor %}
 
-    <script>
+    <script{% if csp_script_nonce|default('') is not empty %} nonce="{{ csp_script_nonce }}" {% endif %}>
         document.querySelectorAll('.filter-checkbox').forEach(filterCheckbox => {
             filterCheckbox.addEventListener('change', function () {
                 const filterToggleLink = filterCheckbox.nextElementSibling;
@@ -616,7 +616,7 @@
         <div id="wrapper_{{ form.value2.vars.id }}" {% if form.comparison.vars.value != 'between' %}style="display: none"{% endif %}>
             {{ form_row(form.value2) }}
         </div>
-        <script>
+        <script{% if csp_script_nonce|default('') is not empty %} nonce="{{ csp_script_nonce }}" {% endif %}>
             document.querySelector('#{{ form.comparison.vars.id }}').addEventListener('change', function(event) {
                 const input = document.querySelector('#wrapper_{{ form.value2.vars.id }}');
                 input.style.display = event.currentTarget.value === 'between' ? '' : 'none';

@@ -19,7 +19,7 @@
         </div>
     </div>
 </div>
-<script>
+<script{% if csp_script_nonce|default('') is not empty %} nonce="{{ csp_script_nonce }}" {% endif %}>
     const filterModal = document.querySelector('#modal-filters');
 
     document.querySelector('#modal-clear-button').addEventListener('click', function() {

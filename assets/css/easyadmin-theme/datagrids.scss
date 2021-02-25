@@ -49,7 +49,7 @@ table.datagrid {
   background: var(--form-bg);
 }
 .datagrid tbody tr.selected-row td {
-  background: var(--indigo-100);
+  background: var(--highlight-bg);
 }
 .datagrid td.actions {
   text-align: right;

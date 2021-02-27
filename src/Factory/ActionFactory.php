@@ -92,8 +92,10 @@ final class ActionFactory
         $defaultTranslationParameters = $adminContext->getI18n()->getTranslationParameters();
         $currentPage = $adminContext->getCrud()->getCurrentPage();
 
+        $actionDto->setHtmlAttribute('data-action-name', $actionDto->getName());
+
         if (false === $actionDto->getLabel()) {
-            $actionDto->setHtmlAttributes(array_merge(['title' => $actionDto->getName()], $actionDto->getHtmlAttributes()));
+            $actionDto->setHtmlAttribute('title', $actionDto->getName());
         } else {
             $uLabel = u($actionDto->getLabel());
             // labels with this prefix are considered internal and must be translated
@@ -119,10 +121,19 @@ final class ActionFactory
         }
 
         if (Action::DELETE === $actionDto->getName()) {
-            $actionDto->setHtmlAttributes([
+            $actionDto->addHtmlAttributes([
                 'formaction' => $this->adminUrlGenerator->setAction(Action::DELETE)->setEntityId($entityDto->getPrimaryKeyValue())->removeReferrer()->generateUrl(),
                 'data-toggle' => 'modal',
                 'data-target' => '#modal-delete',
+            ]);
+        }
+
+        if ($actionDto->isBatchAction()) {
+            $actionDto->addHtmlAttributes([
+                'data-action-batch' => 'true',
+                'data-toggle' => 'modal',
+                'data-target' => '#modal-batch-action',
+                'data-action-url' => $actionDto->getLinkUrl(),
             ]);
         }
 

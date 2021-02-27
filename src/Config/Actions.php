@@ -29,24 +29,15 @@ final class Actions
      */
     public function add(string $pageName, $actionNameOrObject): self
     {
-        if (!\is_string($actionNameOrObject) && !$actionNameOrObject instanceof Action) {
-            throw new \InvalidArgumentException(sprintf('The argument of "%s" can only be either a string with the action name or a "%s" object with the action config.', __METHOD__, Action::class));
-        }
+        return $this->doAddAction($pageName, $actionNameOrObject);
+    }
 
-        $actionName = \is_string($actionNameOrObject) ? $actionNameOrObject : (string) $actionNameOrObject;
-        $action = \is_string($actionNameOrObject) ? $this->createBuiltInAction($pageName, $actionNameOrObject) : $actionNameOrObject;
-
-        if (null !== $this->dto->getAction($pageName, $actionName)) {
-            throw new \InvalidArgumentException(sprintf('The "%s" action already exists in the "%s" page, so you can\'t add it again. Instead, you can use the "updateAction()" method to update any options of an existing action.', $actionName, $pageName));
-        }
-
-        if (Crud::PAGE_INDEX === $pageName && Action::DELETE === $actionName) {
-            $this->dto->prependAction($pageName, $action->getAsDto());
-        } else {
-            $this->dto->appendAction($pageName, $action->getAsDto());
-        }
-
-        return $this;
+    /**
+     * @param string|Action $actionNameOrObject
+     */
+    public function addBatchAction($actionNameOrObject): self
+    {
+        return $this->doAddAction(Crud::PAGE_INDEX, $actionNameOrObject, true);
     }
 
     /**
@@ -211,5 +202,32 @@ final class Actions
         }
 
         throw new \InvalidArgumentException(sprintf('The "%s" action is not a built-in action, so you can\'t add or configure it via its name. Either refer to one of the built-in actions or create a custom action called "%s".', $actionName, $actionName));
+    }
+
+    private function doAddAction(string $pageName, $actionNameOrObject, bool $isBatchAction = false): self
+    {
+        if (!\is_string($actionNameOrObject) && !$actionNameOrObject instanceof Action) {
+            throw new \InvalidArgumentException(sprintf('The argument of "%s" can only be either a string with the action name or a "%s" object with the action config.', __METHOD__, Action::class));
+        }
+
+        $actionName = \is_string($actionNameOrObject) ? $actionNameOrObject : (string) $actionNameOrObject;
+        $action = \is_string($actionNameOrObject) ? $this->createBuiltInAction($pageName, $actionNameOrObject) : $actionNameOrObject;
+
+        if (null !== $this->dto->getAction($pageName, $actionName)) {
+            throw new \InvalidArgumentException(sprintf('The "%s" action already exists in the "%s" page, so you can\'t add it again. Instead, you can use the "updateAction()" method to update any options of an existing action.', $actionName, $pageName));
+        }
+
+        $actionDto = $action->getAsDto();
+        if ($isBatchAction) {
+            $actionDto->setType(Action::TYPE_BATCH);
+        }
+
+        if (Crud::PAGE_INDEX === $pageName && Action::DELETE === $actionName) {
+            $this->dto->prependAction($pageName, $actionDto);
+        } else {
+            $this->dto->appendAction($pageName, $actionDto);
+        }
+
+        return $this;
     }
 }

@@ -109,28 +109,6 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         ]);
     }
 
-    public function batch(AdminContext $context): Response
-    {
-        $batchForm = $this->get(FormFactory::class)->createBatchActionsForm();
-        $batchForm->handleRequest($context->getRequest());
-
-        if ($batchForm->isSubmitted() && $batchForm->isValid()) {
-            $crudAction = $batchForm->get('crudAction')->getData();
-            $entityIds = $batchForm->get('entityIds')->getData();
-
-            return $this->forward($context->getCrud()->getControllerFqcn().'::'.$crudAction, [
-                'ids' => $entityIds,
-                'context' => $context,
-            ]);
-        }
-
-        if (null !== $referrer = $context->getReferrer()) {
-            return $this->redirect($referrer);
-        }
-
-        return $this->redirect($this->get(AdminUrlGenerator::class)->setAction(Action::INDEX)->generateUrl());
-    }
-
     public function index(AdminContext $context)
     {
         $event = new BeforeCrudActionEvent($context);
@@ -150,16 +128,16 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
         $entities = $this->get(EntityFactory::class)->createCollection($context->getEntity(), $paginator->getResults());
         $this->get(EntityFactory::class)->processFieldsForAll($entities, $fields);
-        $globalActions = $this->get(EntityFactory::class)->processActionsForAll($entities, $context->getCrud()->getActionsConfig())->getGlobalActions();
+        $actions = $this->get(EntityFactory::class)->processActionsForAll($entities, $context->getCrud()->getActionsConfig());
 
         $responseParameters = $this->configureResponseParameters(KeyValueStore::new([
             'pageName' => Crud::PAGE_INDEX,
             'templateName' => 'crud/index',
             'entities' => $entities,
             'paginator' => $paginator,
-            'global_actions' => $globalActions,
+            'global_actions' => $actions->getGlobalActions(),
+            'batch_actions' => $actions->getBatchActions(),
             'filters' => $filters,
-            'batch_form' => $this->get(FormFactory::class)->createBatchActionsForm()->createView(),
         ]));
 
         $event = new AfterCrudActionEvent($context, $responseParameters);

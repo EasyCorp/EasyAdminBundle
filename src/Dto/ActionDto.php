@@ -116,6 +116,11 @@ final class ActionDto
         return $this->htmlAttributes;
     }
 
+    public function addHtmlAttributes(array $htmlAttributes): void
+    {
+        $this->htmlAttributes = array_merge($this->htmlAttributes, $htmlAttributes);
+    }
+
     public function setHtmlAttributes(array $htmlAttributes): void
     {
         $this->htmlAttributes = $htmlAttributes;

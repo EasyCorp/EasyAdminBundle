@@ -84,6 +84,7 @@ abstract class AbstractDashboardController extends AbstractController implements
     public function configureActions(): Actions
     {
         return Actions::new()
+            ->addBatchAction(Action::BATCH_DELETE)
             ->add(Crud::PAGE_INDEX, Action::NEW)
             ->add(Crud::PAGE_INDEX, Action::EDIT)
             ->add(Crud::PAGE_INDEX, Action::DELETE)

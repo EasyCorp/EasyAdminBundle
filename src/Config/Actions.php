@@ -77,6 +77,12 @@ final class Actions
         }
 
         $this->dto->removeAction($pageName, $actionName);
+        // if 'delete' is removed, 'batch delete' is removed automatically (but the
+        // opposite doesn't happen). This is the most common case, but user can re-add
+        // the 'batch delete' action if needed manually
+        if (Action::DELETE === $actionName) {
+            $this->dto->removeAction($pageName, Action::BATCH_DELETE);
+        }
 
         return $this;
     }
@@ -126,6 +132,13 @@ final class Actions
 
     public function disable(string ...$disabledActionNames): self
     {
+        // if 'delete' is disabled, 'batch delete' is disabled automatically (but the
+        // opposite doesn't happen). This is the most common case, but user can re-enable
+        // the 'batch delete' action if needed manually
+        if (\in_array(Action::DELETE, $disabledActionNames)) {
+            $disabledActionNames[] = Action::BATCH_DELETE;
+        }
+
         $this->dto->disableActions($disabledActionNames);
 
         return $this;
@@ -144,6 +157,12 @@ final class Actions
      */
     private function createBuiltInAction(string $pageName, string $actionName): Action
     {
+        if (Action::BATCH_DELETE === $actionName) {
+            return Action::new(Action::BATCH_DELETE, '__ea__action.delete', null)
+                ->linkToCrudAction(Action::BATCH_DELETE)
+                ->addCssClass('btn btn-link pr-0 text-danger');
+        }
+
         if (Action::NEW === $actionName) {
             return Action::new(Action::NEW, '__ea__action.new', null)
                 ->createAsGlobalAction()

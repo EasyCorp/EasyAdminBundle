@@ -360,7 +360,7 @@
                         selectedItems.each((i, item) => {
                             $input = document.createElement('input');
                             $input.setAttribute('type', 'hidden');
-                            $input.setAttribute('name', `entityIds[${i}]`);
+                            $input.setAttribute('name', `batchEntityIds[${i}]`);
                             $input.setAttribute('value', item.value);
                             $form.appendChild($input);
                         });

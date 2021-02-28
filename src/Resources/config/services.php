@@ -3,6 +3,7 @@
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use EasyCorp\Bundle\EasyAdminBundle\ArgumentResolver\AdminContextResolver;
+use EasyCorp\Bundle\EasyAdminBundle\ArgumentResolver\BatchActionDtoResolver;
 use EasyCorp\Bundle\EasyAdminBundle\Cache\CacheWarmer;
 use EasyCorp\Bundle\EasyAdminBundle\Command\MakeAdminDashboardCommand;
 use EasyCorp\Bundle\EasyAdminBundle\Command\MakeAdminMigrationCommand;
@@ -153,6 +154,10 @@ return static function (ContainerConfigurator $container) {
             ->arg(0, new Reference('request_stack'))
 
         ->set(AdminContextResolver::class)
+            ->arg(0, new Reference(AdminContextProvider::class))
+            ->tag('controller.argument_value_resolver')
+
+        ->set(BatchActionDtoResolver::class)
             ->arg(0, new Reference(AdminContextProvider::class))
             ->tag('controller.argument_value_resolver')
 

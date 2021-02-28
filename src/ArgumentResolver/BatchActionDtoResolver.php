@@ -5,6 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\ArgumentResolver;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\BatchActionDto;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ArgumentValueResolverInterface;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
@@ -15,10 +16,12 @@ use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 final class BatchActionDtoResolver implements ArgumentValueResolverInterface
 {
     private $adminContextProvider;
+    private $adminUrlGenerator;
 
-    public function __construct(AdminContextProvider $adminContextProvider)
+    public function __construct(AdminContextProvider $adminContextProvider, AdminUrlGenerator $adminUrlGenerator)
     {
         $this->adminContextProvider = $adminContextProvider;
+        $this->adminUrlGenerator = $adminUrlGenerator;
     }
 
     public function supports(Request $request, ArgumentMetadata $argument)
@@ -32,11 +35,16 @@ final class BatchActionDtoResolver implements ArgumentValueResolverInterface
             throw new \RuntimeException(sprintf('Some of your controller actions have type-hinted an argument with the "%s" class but that\'s only available for actions run to serve EasyAdmin requests. Remove the type-hint or make sure the action is part of an EasyAdmin request.', BatchActionDto::class));
         }
 
+        $batchActionUrl = $context->getRequest()->request->get(EA::BATCH_ACTION_URL);
+        $batchActionUrlQueryString = parse_url($batchActionUrl, PHP_URL_QUERY);
+        parse_str($batchActionUrlQueryString, $batchActionUrlParts);
+        $referrerUrl = $batchActionUrlParts[EA::REFERRER] ?? $this->adminUrlGenerator->unsetAll()->generateUrl();
+
         yield new BatchActionDto(
-            $context->getCrud()->getCurrentAction(),
+            $context->getRequest()->request->get(EA::BATCH_ACTION_NAME),
             $context->getRequest()->request->get(EA::BATCH_ENTITY_IDS, []),
-            $context->getCrud()->getEntityFqcn(),
-            $context->getReferrer()
+            $context->getRequest()->request->get(EA::ENTITY_FQCN),
+            $referrerUrl
         );
     }
 }

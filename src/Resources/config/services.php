@@ -159,6 +159,7 @@ return static function (ContainerConfigurator $container) {
 
         ->set(BatchActionDtoResolver::class)
             ->arg(0, new Reference(AdminContextProvider::class))
+            ->arg(1, new Reference(AdminUrlGenerator::class))
             ->tag('controller.argument_value_resolver')
 
         ->set(AdminRouterSubscriber::class)

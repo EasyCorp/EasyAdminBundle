@@ -357,12 +357,30 @@
                         $form.setAttribute('action', $actionElement.attr('data-action-url'));
                         $form.setAttribute('method', 'POST');
 
+                        $actionNameInput = document.createElement('input');
+                        $actionNameInput.setAttribute('type', 'hidden');
+                        $actionNameInput.setAttribute('name', 'batchActionName');
+                        $actionNameInput.setAttribute('value', $actionElement.attr('data-action-name'));
+                        $form.appendChild($actionNameInput);
+
+                        $entityFqcnInput = document.createElement('input');
+                        $entityFqcnInput.setAttribute('type', 'hidden');
+                        $entityFqcnInput.setAttribute('name', 'entityFqcn');
+                        $entityFqcnInput.setAttribute('value', $actionElement.attr('data-entity-fqcn'));
+                        $form.appendChild($entityFqcnInput);
+
+                        $actionUrlInput = document.createElement('input');
+                        $actionUrlInput.setAttribute('type', 'hidden');
+                        $actionUrlInput.setAttribute('name', 'batchActionUrl');
+                        $actionUrlInput.setAttribute('value', $actionElement.attr('data-action-url'));
+                        $form.appendChild($actionUrlInput);
+
                         selectedItems.each((i, item) => {
-                            $input = document.createElement('input');
-                            $input.setAttribute('type', 'hidden');
-                            $input.setAttribute('name', `batchEntityIds[${i}]`);
-                            $input.setAttribute('value', item.value);
-                            $form.appendChild($input);
+                            $entityIdInput = document.createElement('input');
+                            $entityIdInput.setAttribute('type', 'hidden');
+                            $entityIdInput.setAttribute('name', `batchEntityIds[${i}]`);
+                            $entityIdInput.setAttribute('value', item.value);
+                            $form.appendChild($entityIdInput);
                         });
 
                         document.body.appendChild($form);

@@ -130,9 +130,10 @@ final class ActionFactory
 
         if ($actionDto->isBatchAction()) {
             $actionDto->addHtmlAttributes([
-                'data-action-batch' => 'true',
                 'data-toggle' => 'modal',
                 'data-target' => '#modal-batch-action',
+                'data-action-batch' => 'true',
+                'data-entity-fqcn' => $adminContext->getCrud()->getEntityFqcn(),
                 'data-action-url' => $actionDto->getLinkUrl(),
             ]);
         }
@@ -156,7 +157,7 @@ final class ActionFactory
                 $routeParameters = $routeParameters($entityInstance);
             }
 
-            return $this->adminUrlGenerator->unsetAllExcept(EA::MENU_INDEX, EA::SUBMENU_INDEX)->setRoute($routeName, $routeParameters)->generateUrl();
+            return $this->adminUrlGenerator->unsetAllExcept(EA::MENU_INDEX, EA::SUBMENU_INDEX)->includeReferrer()->setRoute($routeName, $routeParameters)->generateUrl();
         }
 
         $requestParameters = [

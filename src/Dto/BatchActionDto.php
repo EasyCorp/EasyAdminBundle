@@ -11,13 +11,15 @@ class BatchActionDto
     private $entityIds;
     private $entityFqcn;
     private $referrerUrl;
+    private $csrfToken;
 
-    public function __construct(string $name, array $entityIds, string $entityFqcn, string $referrerUrl)
+    public function __construct(string $name, array $entityIds, string $entityFqcn, string $referrerUrl, string $csrfToken)
     {
         $this->name = $name;
         $this->entityIds = $entityIds;
         $this->entityFqcn = $entityFqcn;
         $this->referrerUrl = $referrerUrl;
+        $this->csrfToken = $csrfToken;
     }
 
     public function getName(): string
@@ -38,5 +40,10 @@ class BatchActionDto
     public function getReferrerUrl(): string
     {
         return $this->referrerUrl;
+    }
+
+    public function getCsrfToken(): string
+    {
+        return $this->csrfToken;
     }
 }

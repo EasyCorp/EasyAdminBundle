@@ -375,10 +375,16 @@
                         $actionUrlInput.setAttribute('value', $actionElement.attr('data-action-url'));
                         $form.appendChild($actionUrlInput);
 
+                        $csrfTokenInput = document.createElement('input');
+                        $csrfTokenInput.setAttribute('type', 'hidden');
+                        $csrfTokenInput.setAttribute('name', 'batchActionCsrfToken');
+                        $csrfTokenInput.setAttribute('value', $actionElement.attr('data-action-csrf-token'));
+                        $form.appendChild($csrfTokenInput);
+
                         selectedItems.each((i, item) => {
                             $entityIdInput = document.createElement('input');
                             $entityIdInput.setAttribute('type', 'hidden');
-                            $entityIdInput.setAttribute('name', `batchEntityIds[${i}]`);
+                            $entityIdInput.setAttribute('name', `batchActionEntityIds[${i}]`);
                             $entityIdInput.setAttribute('value', item.value);
                             $form.appendChild($entityIdInput);
                         });

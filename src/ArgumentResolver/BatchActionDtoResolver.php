@@ -36,15 +36,16 @@ final class BatchActionDtoResolver implements ArgumentValueResolverInterface
         }
 
         $batchActionUrl = $context->getRequest()->request->get(EA::BATCH_ACTION_URL);
-        $batchActionUrlQueryString = parse_url($batchActionUrl, PHP_URL_QUERY);
+        $batchActionUrlQueryString = parse_url($batchActionUrl, \PHP_URL_QUERY);
         parse_str($batchActionUrlQueryString, $batchActionUrlParts);
         $referrerUrl = $batchActionUrlParts[EA::REFERRER] ?? $this->adminUrlGenerator->unsetAll()->generateUrl();
 
         yield new BatchActionDto(
             $context->getRequest()->request->get(EA::BATCH_ACTION_NAME),
-            $context->getRequest()->request->get(EA::BATCH_ENTITY_IDS, []),
+            $context->getRequest()->request->get(EA::BATCH_ACTION_ENTITY_IDS, []),
             $context->getRequest()->request->get(EA::ENTITY_FQCN),
-            $referrerUrl
+            $referrerUrl,
+            $context->getRequest()->request->get(EA::BATCH_ACTION_CSRF_TOKEN)
         );
     }
 }

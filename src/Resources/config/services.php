@@ -291,6 +291,7 @@ return static function (ContainerConfigurator $container) {
             ->arg(1, new Reference(AuthorizationChecker::class))
             ->arg(2, new Reference('translator'))
             ->arg(3, new Reference(AdminUrlGenerator::class))
+            ->arg(4, new Reference('security.csrf.token_manager'))
 
         ->set(SecurityVoter::class)
             ->arg(0, new Reference(AuthorizationChecker::class))

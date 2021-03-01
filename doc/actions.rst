@@ -381,7 +381,7 @@ If there's at least one batch action, the backend interface is updated to add so
 When the user clicks on the batch action link/button, a form is submitted using
 the ``POST`` method to the action or route configured in the action. The easiest
 way to get the submitted data is to type-hint some argument of your batch action
-method with the ``EasyCorp\\Bundle\\EasyAdminBundle\\Dto\\BatchActionDto`` class.
+method with the ``EasyCorp\Bundle\EasyAdminBundle\Dto\BatchActionDto`` class.
 If you do that, EasyAdmin will inject a DTO with all the batch action data::
 
     namespace App\Controller\Admin;
@@ -412,7 +412,7 @@ If you do that, EasyAdmin will inject a DTO with all the batch action data::
 
     As an alterantive, instead of injecting the ``BatchActionDto`` variable, you can
     also inject Symfony's ``Request`` object to get all the raw submitted batch data
-    (e.g. ``$request->request->get('batchActionIds')``).
+    (e.g. ``$request->request->get('batchActionEntityIds')``).
 
 .. _actions-integrating-symfony:
 

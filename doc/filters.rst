@@ -214,7 +214,7 @@ the ``country`` property of the ``customer``). In those cases, set the
             return $filters
                 // 'country' doesn't exist as a property of 'Order' so it's
                 // defined as 'not mapped' to avoid errors
-                ->add(CustomerCountryFilter::new('country')->mapped(false))
+                ->add(CustomerCountryFilter::new('country')->setFormTypeOptions('mapped', false))
             ;
         }
     }

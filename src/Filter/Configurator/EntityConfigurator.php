@@ -22,6 +22,7 @@ final class EntityConfigurator implements FilterConfiguratorInterface
 
     public function configure(FilterDto $filterDto, ?FieldDto $fieldDto, EntityDto $entityDto, AdminContext $context): void
     {
+        // TODO : if filter property is compound, traverse the main property to get to the good one
         $propertyName = $filterDto->getProperty();
         if (!$entityDto->isAssociation($propertyName)) {
             return;

@@ -16,6 +16,7 @@ final class FilterDto
     private $propertyName;
     private $label;
     private $applyCallable;
+    private $name;
 
     public function __construct()
     {
@@ -75,6 +76,10 @@ final class FilterDto
     public function setProperty(string $propertyName): void
     {
         $this->propertyName = $propertyName;
+        if (is_null($this->name)) {
+            $parts = explode('.', $propertyName);
+            $this->name = end($parts);
+        }
     }
 
     /**
@@ -84,6 +89,18 @@ final class FilterDto
     {
         return $this->label;
     }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name)
+    {
+        $this->name = $name;
+        return $this;
+    }
+
 
     /**
      * @param string|false|null $label

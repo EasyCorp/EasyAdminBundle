@@ -24,6 +24,7 @@ final class NumericConfigurator implements FilterConfiguratorInterface
 
     public function configure(FilterDto $filterDto, ?FieldDto $fieldDto, EntityDto $entityDto, AdminContext $context): void
     {
+        // TODO : if filter property is compound, traverse the main property to get to the good one
         $propertyType = $entityDto->getPropertyMetadata($filterDto->getProperty())->get('type');
 
         if (Types::DECIMAL === $propertyType) {

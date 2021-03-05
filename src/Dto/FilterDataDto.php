@@ -42,6 +42,11 @@ final class FilterDataDto
         return $this->filterDto->getProperty();
     }
 
+    public function getName(): string
+    {
+        return $this->filterDto->getName();
+    }
+
     public function getFormTypeOption(string $optionName)
     {
         return $this->filterDto->getFormTypeOption($optionName);

@@ -55,7 +55,6 @@ function createAutoCompleteFields() {
         if (undefined === autocompleteUrl) {
             var options = {
                 theme: 'bootstrap',
-                placeholder: '',
                 allowClear: true
             };
 

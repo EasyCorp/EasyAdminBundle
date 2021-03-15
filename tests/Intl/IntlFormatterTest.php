@@ -102,7 +102,7 @@ class IntlFormatterTest extends TestCase
         yield ['2:4:5', new \DateTime('15:04:05 CET'), null, 'h:m:s', null, 'gregorian', 'en'];
         yield ['50645000', new \DateTime('15:04:05 CET'), null, 'A', null, 'gregorian', 'en'];
         yield ['Coordinated Universal Time GMT +00:00', new \DateTime('15:04:05 CET'), null, 'zzzz vvvv xxxxx', null, 'gregorian', 'en'];
-        yield ['Pacific Standard Time Pacific Time -08:00', new \DateTime('15:04:05 CET'), null, 'zzzz vvvv xxxxx', new \DateTimeZone('PST'), 'gregorian', 'en'];
+        yield ['/Pacific (Standard|Daylight) Time Pacific Time -0(7|8):00/', new \DateTime('15:04:05 CET'), null, 'zzzz vvvv xxxxx', new \DateTimeZone('PST'), 'gregorian', 'en', 'assertMatchesRegularExpression'];
     }
 
     public function provideFormatDateTime()

@@ -2,7 +2,7 @@
 
 return [
     'page_title' => [
-        // 'dashboard' => '',
+        'dashboard' => 'Skydelis',
         'detail' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
         'edit' => 'Redaguoti %entity_label_singular% <small>(#%entity_short_id%)</small>',
         'index' => '%entity_label_plural%',
@@ -11,7 +11,7 @@ return [
     ],
 
     'datagrid' => [
-        // 'hidden_results' => '',
+        'hidden_results' => 'Kai kurie elementai negali būti parodyti nes jums trūkstą teisių.',
         'no_results' => 'Rezultatų nerasta.',
     ],
 
@@ -37,8 +37,8 @@ return [
     ],
 
     'field' => [
-        // 'code_editor.view_code' => '',
-        // 'text_editor.view_content' => '',
+        'code_editor.view_code' => 'Peržiūrėti kodą',
+        'text_editor.view_content' => 'Peržiūrėti turinį',
     ],
 
     'action' => [
@@ -50,22 +50,22 @@ return [
         'delete' => 'Pašalinti',
         'cancel' => 'Atšaukti',
         'index' => 'Grįžti į sąrašą',
-        // 'deselect' => '',
+        'deselect' => 'Nužymėti',
         'add_new_item' => 'Pridėti naują elementą',
         'remove_item' => 'Pašalinti elementą',
         'choose_file' => 'Pasirinkti failą',
-        // 'close' => '',
-        // 'create' => '',
-        // 'create_and_add_another' => '',
-        // 'create_and_continue' => '',
-        // 'save' => '',
-        // 'save_and_continue' => '',
+        'close' => 'Užverti',
+        'create' => 'Sukurti',
+        'create_and_add_another' => 'Sukurti ir pridėti kitą',
+        'create_and_continue' => 'Sukurti ir tęsti redagavimą',
+        'save' => 'Išsaugoti',
+        'save_and_continue' => 'Išsaugoti ir tęsti redagavimą',
     ],
 
     'batch_action_modal' => [
-        // 'title' => '',
-        // 'content' => '',
-        // 'action' => '',
+        'title' => 'Ar tikrai norite pakeisti pažymėtus elementus?',
+        'content' => 'Šios operacijos atkurti nebegalėsite.',
+        'action' => 'Tęsti',
     ],
 
     'delete_modal' => [
@@ -74,33 +74,33 @@ return [
     ],
 
     'filter' => [
-        // 'title' => '',
-        // 'button.clear' => '',
-        // 'button.apply' => '',
-        // 'label.is_equal_to' => '',
-        // 'label.is_not_equal_to' => '',
-        // 'label.is_greater_than' => '',
-        // 'label.is_greater_than_or_equal_to' => '',
-        // 'label.is_less_than' => '',
-        // 'label.is_less_than_or_equal_to' => '',
-        // 'label.is_between' => '',
-        // 'label.contains' => '',
-        // 'label.not_contains' => '',
-        // 'label.starts_with' => '',
-        // 'label.ends_with' => '',
-        // 'label.exactly' => '',
-        // 'label.not_exactly' => '',
-        // 'label.is_same' => '',
-        // 'label.is_not_same' => '',
-        // 'label.is_after' => '',
-        // 'label.is_after_or_same' => '',
-        // 'label.is_before' => '',
-        // 'label.is_before_or_same' => '',
+        'title' => 'Filtrai',
+        'button.clear' => 'Išvalyti',
+        'button.apply' => 'Taikyti',
+        'label.is_equal_to' => 'lygus',
+        'label.is_not_equal_to' => 'nelygus',
+        'label.is_greater_than' => 'didesnis',
+        'label.is_greater_than_or_equal_to' => 'didesnis arba lygus',
+        'label.is_less_than' => 'mažesnis',
+        'label.is_less_than_or_equal_to' => 'mažesnis arba lygus',
+        'label.is_between' => 'tarp',
+        'label.contains' => 'turi',
+        'label.not_contains' => 'neturi',
+        'label.starts_with' => 'prasideda',
+        'label.ends_with' => 'pasibaigia',
+        'label.exactly' => 'tikslai toks',
+        'label.not_exactly' => 'ne tiksliai',
+        'label.is_same' => 'toks pat',
+        'label.is_not_same' => 'ne toks pat',
+        'label.is_after' => 'po',
+        'label.is_after_or_same' => 'po arba toks pat',
+        'label.is_before' => 'prieš',
+        'label.is_before_or_same' => 'prieš arba toks pat',
     ],
 
     'form' => [
         'are_you_sure' => 'Jūs neįrašėte šios formos pakeitimų.',
-        // 'tab.error_badge_title' => '',
+        'tab.error_badge_title' => 'Viena neteisingą įvesti|%count% neteisingų įvesčių',
     ],
 
     'user' => [
@@ -108,7 +108,7 @@ return [
         'unnamed' => 'Neįvardintas vartotojas',
         'anonymous' => 'Anonimiškas vartotojas',
         'sign_out' => 'Atsijungti',
-        // 'exit_impersonation' => '',
+        'exit_impersonation' => 'Baigti apsimetimą',
     ],
 
     'login_page' => [
@@ -121,6 +121,6 @@ return [
         'entity_not_found' => 'Šis elementas nebepasiekiamas.',
         'entity_remove' => 'Šis elementas negali būti ištrintas, nes nuo jo priklauso kiti elementai.',
         'forbidden_action' => 'Norimas atlikti veiksmas šiam elementui negalimas.',
-        // 'insufficient_entity_permission' => 'You don't have permission to access this item.',
+        'insufficient_entity_permission' => 'Jums trūkstą teisių pasiekti šį elementą.',
     ],
 ];

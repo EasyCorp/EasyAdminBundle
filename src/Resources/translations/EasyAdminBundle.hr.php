@@ -18,7 +18,7 @@ return [
     'paginator' => [
         'first' => 'Prvi',
         'previous' => 'Prethodan',
-        'next' => 'Slijedeći',
+        'next' => 'Sljedeći',
         'last' => 'Posljednji',
         'counter' => '<strong>%start%</strong> - <strong>%end%</strong> od <strong>%results%</strong>',
         // 'results' => '',
@@ -69,7 +69,7 @@ return [
     ],
 
     'delete_modal' => [
-        'title' => 'Da li ste sigurni da želite izbrisati ovu stavku?',
+        'title' => 'Jeste li sigurni da želite izbrisati ovu stavku?',
         'content' => 'Izbrisana stavka se ne može povratiti',
     ],
 

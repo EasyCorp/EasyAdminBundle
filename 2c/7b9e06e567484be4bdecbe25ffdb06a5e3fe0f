@@ -1,0 +1,25 @@
+---------------------------------------------------------------------------
+
+by Plopix at 2021-03-09T20:58:25Z
+
+Can confirm the problem, fix is not complete though, it is, also, at least, the same crash in `EasyAdminTwigExtension`
+
+---------------------------------------------------------------------------
+
+by tambait at 2021-03-11T10:14:23Z
+
+> @Plopix  Can confirm the problem, fix is not complete though, it is, also, at least, the same crash in `EasyAdminTwigExtension`
+
+I'm not getting any error (and I don't see `method_exists()` being used in Twig Extensions), can you please write me how can I replicate the issue you're experiencing so I can work on it?
+
+---------------------------------------------------------------------------
+
+by Plopix at 2021-03-11T18:14:59Z
+
+hum @tambait, that's correct that's `2.x`, should I create another issue?
+
+---------------------------------------------------------------------------
+
+by tambait at 2021-03-14T10:39:16Z
+
+@Plopix Since the bug is related to 2.x version, I suppose, it should go into separate issue, that is, PR to merge with 2.x.

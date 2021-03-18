@@ -1,8 +1,0 @@
-{
-    "branches": ["1.x", "2.x", "master"],
-    "maintained_branches": ["2.x", "master"],
-    "doc_dir": "doc/",
-    "current_branch": "master",
-    "dev_branch": "master",
-    "dev_branch_alias": "3.x"
-}

@@ -12,7 +12,7 @@ class IntlFormatterTest extends TestCase
      */
     public function testFormatDate(?string $expectedResult, ?\DateTimeInterface $date, ?string $dateFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', string $locale = null)
     {
-        if ($this->isWindows()) {
+        if ($this->isWindows() || $this->isMacOS()) {
             $this->markTestSkipped('Intl related tests fail on Windows randomly.');
         }
 
@@ -28,7 +28,7 @@ class IntlFormatterTest extends TestCase
      */
     public function testFormatTime(?string $expectedResult, ?\DateTimeInterface $date, ?string $timeFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', string $locale = null, string $assertMethod = 'assertSame')
     {
-        if ($this->isWindows()) {
+        if ($this->isWindows() || $this->isMacOS()) {
             $this->markTestSkipped('Intl related tests fail on Windows randomly.');
         }
 
@@ -44,7 +44,7 @@ class IntlFormatterTest extends TestCase
      */
     public function testFormatDateTime(?string $expectedResult, ?\DateTimeInterface $date, ?string $dateFormat = 'medium', ?string $timeFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', string $locale = null)
     {
-        if ($this->isWindows()) {
+        if ($this->isWindows() || $this->isMacOS()) {
             $this->markTestSkipped('Intl related tests fail on Windows randomly.');
         }
 
@@ -134,6 +134,11 @@ class IntlFormatterTest extends TestCase
 
     private function isWindows(): bool
     {
-        return '\\' === \DIRECTORY_SEPARATOR;
+        return 'Windows' === \PHP_OS_FAMILY;
+    }
+
+    private function isMacOS(): bool
+    {
+        return 'Darwin' === \PHP_OS_FAMILY;
     }
 }

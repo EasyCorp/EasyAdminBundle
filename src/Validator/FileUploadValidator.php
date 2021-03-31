@@ -14,7 +14,7 @@ class FileUploadValidator extends FileValidator
 {
     public function validate($value, Constraint $constraint)
     {
-        if(!$value || !\is_object($value) || !$value instanceof File) {
+        if (!$value || !\is_object($value) || !$value instanceof File) {
             return;
         }
 

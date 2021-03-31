@@ -550,3 +550,23 @@ attribute of the tag to run your configurator before or after the built-in ones.
 .. _`PHP generators`: https://www.php.net/manual/en/language.generators.overview.php
 .. _`Twig templating features`: https://twig.symfony.com/doc/3.x/
 .. _`Symfony Form themes`: https://symfony.com/doc/current/form/form_themes.html
+
+
+Custom FileUpload Validator
+-------------------
+
+To validate an ImageField like a standard FileType you can use our custom FileUploadValidator.
+Simply configure constraint like this ::
+
+    ->setFormTypeOption('constraints', [
+        new FileUpload([
+            'maxSize' => '50k',
+            'mimeTypes' => [
+                'image/png',
+                'image/jpeg',
+                'image/gif',
+            ]
+        ])
+    ])
+
+Available options are the same of native FileValidator

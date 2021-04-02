@@ -229,7 +229,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
             $this->get('event_dispatcher')->dispatch(new AfterEntityUpdatedEvent($entityInstance));
 
-            $submitButtonName = $context->getRequest()->request->get('ea')['newForm']['btn'];
+            $submitButtonName = $context->getRequest()->request->all()['ea']['newForm']['btn'];
             if (Action::SAVE_AND_CONTINUE === $submitButtonName) {
                 $url = $this->get(AdminUrlGenerator::class)
                     ->setAction(Action::EDIT)
@@ -304,7 +304,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             $this->get('event_dispatcher')->dispatch(new AfterEntityPersistedEvent($entityInstance));
             $context->getEntity()->setInstance($entityInstance);
 
-            $submitButtonName = $context->getRequest()->request->get('ea')['newForm']['btn'];
+            $submitButtonName = $context->getRequest()->request->all()['ea']['newForm']['btn'];
             if (Action::SAVE_AND_CONTINUE === $submitButtonName) {
                 $url = $this->get(AdminUrlGenerator::class)
                     ->setAction(Action::EDIT)

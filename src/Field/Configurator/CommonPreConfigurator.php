@@ -88,7 +88,7 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
         $entityInstance = $entityDto->getInstance();
         $propertyName = $field->getProperty();
 
-        if (\is_callable($field->getValue())) {
+        if ($entityInstance && \is_callable($field->getValue())) {
             $callable = $field->getValue();
 
             return $callable($entityInstance);

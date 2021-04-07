@@ -111,7 +111,11 @@ Consider this example which creates a custom date filter with some special value
     namespace App\Admin\Filter;
 
     use App\Form\Type\Admin\DateCalendarFilterType;
+    use Doctrine\ORM\QueryBuilder;
     use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterInterface;
+    use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+    use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
+    use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDataDto;
     use EasyCorp\Bundle\EasyAdminBundle\Filter\FilterTrait;
 
     class DateCalendarFilter implements FilterInterface

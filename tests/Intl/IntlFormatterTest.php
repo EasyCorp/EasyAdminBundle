@@ -97,7 +97,8 @@ class IntlFormatterTest extends TestCase
 
         yield ['10:04:05 PM', new \DateTime('15:04:05', new \DateTimeZone('MST')), 'medium', '', null, 'gregorian', 'en'];
         yield ['10:04:05 PM', new \DateTime('15:04:05 MST'), 'medium', '', null, 'gregorian', 'en'];
-        yield ['11:04:05 PM', new \DateTime('15:04:05 MST'), 'medium', '', new \DateTimeZone('CET'), 'gregorian', 'en'];
+        // the regular expression is needed to account for DST time changes
+        yield ['/(11:04:05 PM|12:04:05 AM)/', new \DateTime('15:04:05 MST'), 'medium', '', new \DateTimeZone('CET'), 'gregorian', 'en', 'assertMatchesRegularExpression'];
 
         yield ['2:4:5', new \DateTime('15:04:05 CET'), null, 'h:m:s', null, 'gregorian', 'en'];
         yield ['50645000', new \DateTime('15:04:05 CET'), null, 'A', null, 'gregorian', 'en'];

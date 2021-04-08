@@ -49,6 +49,7 @@ jobs:
                   php-version: ${{ matrix.php-version }}
                   tools: composer:v2
                   extensions: mbstring, intl, pdo, pdo_sqlite, sqlite3
+                  ini-values: date.timezone=UTC
 
             - name: "Add PHPUnit matcher"
               run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"

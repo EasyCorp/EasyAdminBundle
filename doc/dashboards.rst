@@ -298,6 +298,10 @@ It links to any of the Symfony application routes::
         ];
     }
 
+The link is created using EasyAdmin's internal routing (not Symfony's routing), so it looks something like::
+
+    ...admin?menuIndex=13&routeName=route_name&signature=TpSDvWULire0bQla_J-gr4AjSxJrsF5YfxPZF06mKGM&submenuIndex=-1
+
 URL Menu Item
 .............
 

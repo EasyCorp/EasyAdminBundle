@@ -2,7 +2,7 @@
 
 return [
     'page_title' => [
-        // 'dashboard' => '',
+        'dashboard' => '控制台',
         'detail' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
         'edit' => '编辑 %entity_label_singular% <small>(#%entity_short_id%)</small>',
         'index' => '%entity_label_plural%',
@@ -11,7 +11,7 @@ return [
     ],
 
     'datagrid' => [
-        // 'hidden_results' => '',
+        'hidden_results' => '因为你没有足够的权限，隐藏了部分结果。',
         'no_results' => '没有找到结果.',
     ],
 
@@ -21,7 +21,7 @@ return [
         'next' => '下一页',
         'last' => '尾页',
         'counter' => '<strong>%start%</strong> - <strong>%end%</strong> of <strong>%results%</strong>',
-        // 'results' => '',
+        'results' => '{0} 无结果|{1} <strong>1</strong> 条结果|]1,Inf] <strong>%count%</strong> 条结果',
     ],
 
     'label' => [
@@ -37,8 +37,8 @@ return [
     ],
 
     'field' => [
-        // 'code_editor.view_code' => '',
-        // 'text_editor.view_content' => '',
+        'code_editor.view_code' => '查看代码',
+        'text_editor.view_content' => '查看内容',
     ],
 
     'action' => [
@@ -50,22 +50,22 @@ return [
         'delete' => '删除',
         'cancel' => '取消',
         'index' => '返回列表',
-        // 'deselect' => '',
+        'deselect' => '反选',
         'add_new_item' => '添加一项',
         'remove_item' => '删除一项',
         'choose_file' => '选择文件',
-        // 'close' => '',
-        // 'create' => '',
-        // 'create_and_add_another' => '',
-        // 'create_and_continue' => '',
-        // 'save' => '',
-        // 'save_and_continue' => '',
+        'close' => '关闭',
+        'create' => '添加',
+        'create_and_add_another' => '添加并创建另一个',
+        'create_and_continue' => '添加并继续',
+        'save' => '保存',
+        'save_and_continue' => '保存并继续',
     ],
 
     'batch_action_modal' => [
-        // 'title' => '',
-        // 'content' => '',
-        // 'action' => '',
+        'title' => '标题',
+        'content' => '内容',
+        'action' => '操作',
     ],
 
     'delete_modal' => [
@@ -74,33 +74,34 @@ return [
     ],
 
     'filter' => [
-        // 'title' => '',
-        // 'button.clear' => '',
-        // 'button.apply' => '',
-        // 'label.is_equal_to' => '',
-        // 'label.is_not_equal_to' => '',
-        // 'label.is_greater_than' => '',
-        // 'label.is_greater_than_or_equal_to' => '',
-        // 'label.is_less_than' => '',
-        // 'label.is_less_than_or_equal_to' => '',
-        // 'label.is_between' => '',
-        // 'label.contains' => '',
-        // 'label.not_contains' => '',
-        // 'label.starts_with' => '',
-        // 'label.ends_with' => '',
-        // 'label.exactly' => '',
-        // 'label.not_exactly' => '',
-        // 'label.is_same' => '',
-        // 'label.is_not_same' => '',
-        // 'label.is_after' => '',
-        // 'label.is_after_or_same' => '',
-        // 'label.is_before' => '',
-        // 'label.is_before_or_same' => '',
+        'title' => '过滤器',
+        'button.clear' => '清除',
+        'button.apply' => '应用',
+        'label.is_equal_to' => '相同于',
+        'label.is_not_equal_to' => '不同于',
+        'label.is_greater_than' => '大于',
+        'label.is_greater_than_or_equal_to' => '大于或等于',
+        'label.is_less_than' => '小于',
+        'label.is_less_than_or_equal_to' => '小于或等于',
+        'label.is_between' => '之间',
+        'label.contains' => '包含',
+        'label.not_contains' => '不包含',
+        'label.starts_with' => '起始于',
+        'label.ends_with' => '结束于',
+        'label.exactly' => '精确',
+        'label.not_exactly' => '不精确',
+        'label.is_same' => '相同',
+        'label.is_not_same' => '不相同',
+        'label.is_after' => '之后',
+        'label.is_after_or_same' => '相同或之后',
+        'label.is_before' => '之前',
+        'label.is_before_or_same' => '之前或相同',
     ],
 
     'form' => [
         'are_you_sure' => '该表单的更改还未保存',
-        // 'tab.error_badge_title' => '',
+        'tab.error_badge_title' => '有 1 条输入错误|有 %count% 条输入错误',
+        'slug.confirm_text' => '如果你修改了url别名，其他页面的引用链接会出现错误。',
     ],
 
     'user' => [
@@ -108,7 +109,7 @@ return [
         'unnamed' => '未命名用户',
         'anonymous' => '匿名用户',
         'sign_out' => '退出',
-        // 'exit_impersonation' => '',
+        'exit_impersonation' => '退出模拟用户',
     ],
 
     'login_page' => [
@@ -118,9 +119,9 @@ return [
     ],
 
     'exception' => [
-        'entity_not_found' => '当前记录不可用',
+        'entity_not_found' => '没有找到当前记录',
         'entity_remove' => '该条记录不可删除，因为有其他记录依赖该条记录。',
         'forbidden_action' => '无权执行该操作',
-        // 'insufficient_entity_permission' => 'You don't have permission to access this item.',
+        'insufficient_entity_permission' => '你没有权限访问该条记录',
     ],
 ];

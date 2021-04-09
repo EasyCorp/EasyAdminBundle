@@ -512,8 +512,10 @@ service to get the context variable::
         // ...
     }
 
-In controllers, use the ``AdminContext`` type-hint in any argument where you
-want to inject the context object::
+In EasyAdmin's :doc:`CRUD controllers </crud>` and in
+:ref:`Symfony controllers integrated into EasyAdmin <actions-integrating-symfony>`,
+use the ``AdminContext`` type-hint in any argument where you want to inject the
+context object::
 
     use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
     use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

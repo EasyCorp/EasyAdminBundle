@@ -1,17 +1,6 @@
 Design
 ======
 
-.. raw:: html
-
-    <div class="box box--small box--warning">
-        <strong class="title">WARNING:</strong>
-
-        You are browsing the documentation for <strong>EasyAdmin 3.x</strong>,
-        which has just been released. Switch to
-        <a href="https://symfony.com/doc/2.x/bundles/EasyAdminBundle/index.html">EasyAdmin 2.x docs</a>
-        if your application has not been upgraded to EasyAdmin 3 yet.
-    </div>
-
 The design of the backend is ready for any kind of application. It's been
 created with `Bootstrap 4`_, `Font Awesome icons`_ and some custom CSS and
 JavaScript code; all managed by `Webpack`_ via Symfony's `Webpack Encore`_.

@@ -1,17 +1,6 @@
 Actions
 =======
 
-.. raw:: html
-
-    <div class="box box--small box--warning">
-        <strong class="title">WARNING:</strong>
-
-        You are browsing the documentation for <strong>EasyAdmin 3.x</strong>,
-        which has just been released. Switch to
-        <a href="https://symfony.com/doc/2.x/bundles/EasyAdminBundle/index.html">EasyAdmin 2.x docs</a>
-        if your application has not been upgraded to EasyAdmin 3 yet.
-    </div>
-
 **Actions** are each of the tasks that you can perform on CRUD pages. In the
 ``index``  page for example, you have tasks to "edit" and "delete" each entity
 displayed in the listing and you have another task to "create" a new entity.

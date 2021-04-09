@@ -1,17 +1,6 @@
 Filters
 =======
 
-.. raw:: html
-
-    <div class="box box--small box--warning">
-        <strong class="title">WARNING:</strong>
-
-        You are browsing the documentation for <strong>EasyAdmin 3.x</strong>,
-        which has just been released. Switch to
-        <a href="https://symfony.com/doc/2.x/bundles/EasyAdminBundle/index.html">EasyAdmin 2.x docs</a>
-        if your application has not been upgraded to EasyAdmin 3 yet.
-    </div>
-
 The listings of the ``index`` page can be refined with **filters**, a series of
 form controls that add conditions to the query (e.g. ``price > 10``, ``enabled = true``).
 Define your filters with the ``configureFilters()`` method of your

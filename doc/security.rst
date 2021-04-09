@@ -1,17 +1,6 @@
 Security
 ========
 
-.. raw:: html
-
-    <div class="box box--small box--warning">
-        <strong class="title">WARNING:</strong>
-
-        You are browsing the documentation for <strong>EasyAdmin 3.x</strong>,
-        which has just been released. Switch to
-        <a href="https://symfony.com/doc/2.x/bundles/EasyAdminBundle/index.html">EasyAdmin 2.x docs</a>
-        if your application has not been upgraded to EasyAdmin 3 yet.
-    </div>
-
 EasyAdmin relies on `Symfony Security`_ for everything related to security.
 That's why before restricting access to some parts of the backend, you need
 to properly setup security in your Symfony application:

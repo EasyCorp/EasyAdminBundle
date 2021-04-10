@@ -66,7 +66,7 @@ The ``/admin`` URL is only a default value, so you can change it. If you do that
 don't forget to also update this value in your Symfony security config to
 :ref:`restrict access to the entire backend <security-entire-backend>`.
 
-There's no need to define a explicit name for this route. Symfony autogenerates
+There's no need to define an explicit name for this route. Symfony autogenerates
 a route name and EasyAdmin gets that value at runtime to generate all URLs.
 However, if you generate URLs pointing to the dashboard in other parts of your
 application, you can define an explicit route name to simplify your code::

@@ -70,6 +70,9 @@ These are the built-in filters provided by EasyAdmin:
 * ``EntityFilter``: applied to fields with Doctrine associations (all kinds
   supported). It's rendered as a ``<select>`` list with the condition (equal/not
   equal/etc.) and another ``<select>`` list to choose the comparison value.
+* ``NullFilter``: it's not applied by default to any field. It's useful to
+  filter results depending on the "null" or "not null" value of a property.
+  It's rendered as two radio buttons for the null and not null options.
 * ``NumericFilter``: applied by default to numeric fields.
   It's rendered as a ``<select>`` list with the condition (higher/lower/equal/etc.) and a
   ``<input>`` to define the comparison value.

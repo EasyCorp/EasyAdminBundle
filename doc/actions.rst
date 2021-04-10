@@ -427,11 +427,15 @@ main menu using the ``configureMenuItems()`` method::
 
 If you reload your backend and click on that new menu item, you'll see an error
 because the templates used by the BusinessStatsController are not created yet.
-However, you'll see the trick used by EasyAdmin to integrate Symfony actions.
-Check out the URL of the page. Instead of the expected ``/admin/business-stats``,
-the page URL is ``/admin?menuIndex=...&submenuIndex=-1&routeName=admin_business_stats``
-This is needed so EasyAdmin knows which Dashboard to use when processing the
-Symfony action.
+Check out the URL of the page and you'll see the trick used by EasyAdmin to
+integrate Symfony actions.
+
+Instead of the expected ``/admin/business-stats`` clean URL, the generated URL
+is ``/admin?menuIndex=...&submenuIndex=...&routeName=admin_business_stats``.
+This is an admin URL, so EasyAdmin can create the :ref:`admin context <admin-context>`,
+load the appropriate menu, etc. However, thanks to the ``routeName`` query string
+parameter, EasyAdmin knows that it must forward the request to the Symfony
+controller that serves that route, and does that transparently to you.
 
 Now, create the template used by the ``index()`` method, which lists a summary
 of the stats of all customers and includes a link to the detailed stats of each
@@ -493,6 +497,8 @@ by EasyAdmin::
 
     class SomeController extends AbstractController
     {
+        private $adminUrlGenerator;
+
         public function __construct(AdminUrlGenerator $adminUrlGenerator)
         {
             $this->adminUrlGenerator = $adminUrlGenerator;

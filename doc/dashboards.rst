@@ -41,26 +41,51 @@ Dashboard Route
 Each dashboard uses a single Symfony route to serve all its URLs. The needed
 information is passed using query string parameters. If you generated the
 dashboard with the ``make:admin:dashboard`` command, the route is defined using
-`Symfony route annotations`_::
+`Symfony route annotations`_ or PHP attributes (if the project requires PHP 8 or newer):
 
-    namespace App\Controller\Admin;
+.. configuration-block::
 
-    use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
-    use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
-    use Symfony\Component\Routing\Annotation\Route;
+    .. code-block:: php-annotations
 
-    class DashboardController extends AbstractDashboardController
-    {
-        /**
-         * @Route("/admin")
-         */
-        public function index(): Response
+        // src/Controller/Admin/DashboardController.php
+        namespace App\Controller\Admin;
+
+        use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
+        use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
+        use Symfony\Component\Routing\Annotation\Route;
+
+        class DashboardController extends AbstractDashboardController
         {
-            return parent::index();
+            /**
+             * @Route("/admin")
+             */
+            public function index(): Response
+            {
+                return parent::index();
+            }
+
+            // ...
         }
 
-        // ...
-    }
+    .. code-block:: php-attributes
+
+        // src/Controller/Admin/DashboardController.php
+        namespace App\Controller\Admin;
+
+        use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
+        use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
+        use Symfony\Component\Routing\Annotation\Route;
+
+        class DashboardController extends AbstractDashboardController
+        {
+            #[Route('/admin')]
+            public function index(): Response
+            {
+                return parent::index();
+            }
+
+            // ...
+        }
 
 The ``/admin`` URL is only a default value, so you can change it. If you do that,
 don't forget to also update this value in your Symfony security config to
@@ -69,27 +94,95 @@ don't forget to also update this value in your Symfony security config to
 There's no need to define an explicit name for this route. Symfony autogenerates
 a route name and EasyAdmin gets that value at runtime to generate all URLs.
 However, if you generate URLs pointing to the dashboard in other parts of your
-application, you can define an explicit route name to simplify your code::
+application, you can define an explicit route name to simplify your code:
 
-    /**
-     * @Route("/admin", name="some_route_name")
-     */
-    public function index(): Response
-    {
-        return parent::index();
-    }
+.. configuration-block::
+
+    .. code-block:: php-annotations
+
+        // src/Controller/Admin/DashboardController.php
+        namespace App\Controller\Admin;
+
+        use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
+        use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
+        use Symfony\Component\Routing\Annotation\Route;
+
+        class DashboardController extends AbstractDashboardController
+        {
+            /**
+             * @Route("/admin", name="some_route_name")
+             */
+            public function index(): Response
+            {
+                return parent::index();
+            }
+
+            // ...
+        }
+
+    .. code-block:: php-attributes
+
+        // src/Controller/Admin/DashboardController.php
+        namespace App\Controller\Admin;
+
+        use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
+        use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
+        use Symfony\Component\Routing\Annotation\Route;
+
+        class DashboardController extends AbstractDashboardController
+        {
+            #[Route('/admin', name: 'some_route_name')]
+            public function index(): Response
+            {
+                return parent::index();
+            }
+
+            // ...
+        }
 
 If you don't use annotations, you must configure the dashboard route using YAML,
-XML or PHP config in a separate file. For example, when using YAML:
+XML or PHP config in a separate file:
 
-.. code-block:: yaml
+.. configuration-block::
 
-    # config/routes.yaml
-    dashboard:
-        path: /admin
-        controller: App\Controller\Admin\DashboardController::index
+    .. code-block:: yaml
 
-    # ...
+        # config/routes.yaml
+        dashboard:
+            path: /admin
+            controller: App\Controller\Admin\DashboardController::index
+
+        # ...
+
+    .. code-block:: xml
+
+        <!-- config/routes.xml -->
+        <?xml version="1.0" encoding="UTF-8" ?>
+        <routes xmlns="http://symfony.com/schema/routing"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://symfony.com/schema/routing
+                https://symfony.com/schema/routing/routing-1.0.xsd">
+
+            <route id="dashboard" path="/admin"
+                   controller="App\Controller\Admin\DashboardController::index"/>
+
+            <!-- ... -->
+        </routes>
+
+    .. code-block:: php
+
+        // config/routes.php
+        use App\Controller\Admin\DashboardController;
+        use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
+
+        return function (RoutingConfigurator $routes) {
+            $routes->add('dashboard', '/admin')
+                ->controller([DashboardController::class, 'index'])
+            ;
+
+            // ...
+        };
+
 
 In practice you won't have to deal with this route or the query string
 parameters in your application because EasyAdmin provides a service to

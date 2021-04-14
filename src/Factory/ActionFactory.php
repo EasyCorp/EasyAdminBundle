@@ -14,6 +14,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use function Symfony\Component\String\u;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -26,13 +27,15 @@ final class ActionFactory
     private $authChecker;
     private $translator;
     private $adminUrlGenerator;
+    private $csrfTokenManager;
 
-    public function __construct(AdminContextProvider $adminContextProvider, AuthorizationCheckerInterface $authChecker, TranslatorInterface $translator, AdminUrlGenerator $adminUrlGenerator)
+    public function __construct(AdminContextProvider $adminContextProvider, AuthorizationCheckerInterface $authChecker, TranslatorInterface $translator, AdminUrlGenerator $adminUrlGenerator, CsrfTokenManagerInterface $csrfTokenManager)
     {
         $this->adminContextProvider = $adminContextProvider;
         $this->authChecker = $authChecker;
         $this->translator = $translator;
         $this->adminUrlGenerator = $adminUrlGenerator;
+        $this->csrfTokenManager = $csrfTokenManager;
     }
 
     public function processEntityActions(EntityDto $entityDto, ActionConfigDto $actionsDto): void
@@ -58,18 +61,17 @@ final class ActionFactory
         $entityDto->setActions(ActionCollection::new($entityActions));
     }
 
-    public function processGlobalActions(ActionConfigDto $actionsDto): ActionCollection
+    public function processGlobalActions(ActionConfigDto $actionsDto = null): ActionCollection
     {
+        if (null === $actionsDto) {
+            $actionsDto = $this->adminContextProvider->getContext()->getCrud()->getActionsConfig();
+        }
+
         $currentPage = $this->adminContextProvider->getContext()->getCrud()->getCurrentPage();
         $globalActions = [];
         foreach ($actionsDto->getActions()->all() as $actionDto) {
-            if (!$actionDto->isGlobalAction()) {
+            if (!$actionDto->isGlobalAction() && !$actionDto->isBatchAction()) {
                 continue;
-            }
-
-            // TODO: remove this when we reenable "batch actions"
-            if ($actionDto->isBatchAction()) {
-                throw new \RuntimeException(sprintf('Batch actions are not supported yet, but we\'ll add support for them very soon. Meanwhile, remove the "%s" batch action from the "%s" page.', $actionDto->getName(), $currentPage));
             }
 
             if (false === $this->authChecker->isGranted(Permission::EA_EXECUTE_ACTION, $actionDto)) {
@@ -93,8 +95,10 @@ final class ActionFactory
         $defaultTranslationParameters = $adminContext->getI18n()->getTranslationParameters();
         $currentPage = $adminContext->getCrud()->getCurrentPage();
 
+        $actionDto->setHtmlAttribute('data-action-name', $actionDto->getName());
+
         if (false === $actionDto->getLabel()) {
-            $actionDto->setHtmlAttributes(array_merge(['title' => $actionDto->getName()], $actionDto->getHtmlAttributes()));
+            $actionDto->setHtmlAttribute('title', $actionDto->getName());
         } else {
             $uLabel = u($actionDto->getLabel());
             // labels with this prefix are considered internal and must be translated
@@ -120,10 +124,21 @@ final class ActionFactory
         }
 
         if (Action::DELETE === $actionDto->getName()) {
-            $actionDto->setHtmlAttributes([
+            $actionDto->addHtmlAttributes([
                 'formaction' => $this->adminUrlGenerator->setAction(Action::DELETE)->setEntityId($entityDto->getPrimaryKeyValue())->removeReferrer()->generateUrl(),
                 'data-toggle' => 'modal',
                 'data-target' => '#modal-delete',
+            ]);
+        }
+
+        if ($actionDto->isBatchAction()) {
+            $actionDto->addHtmlAttributes([
+                'data-toggle' => 'modal',
+                'data-target' => '#modal-batch-action',
+                'data-action-csrf-token' => $this->csrfTokenManager->getToken('ea-batch-action-'.$actionDto->getName()),
+                'data-action-batch' => 'true',
+                'data-entity-fqcn' => $adminContext->getCrud()->getEntityFqcn(),
+                'data-action-url' => $actionDto->getLinkUrl(),
             ]);
         }
 
@@ -146,7 +161,7 @@ final class ActionFactory
                 $routeParameters = $routeParameters($entityInstance);
             }
 
-            return $this->adminUrlGenerator->unsetAllExcept(EA::MENU_INDEX, EA::SUBMENU_INDEX)->setRoute($routeName, $routeParameters)->generateUrl();
+            return $this->adminUrlGenerator->unsetAllExcept(EA::MENU_INDEX, EA::SUBMENU_INDEX)->includeReferrer()->setRoute($routeName, $routeParameters)->generateUrl();
         }
 
         $requestParameters = [

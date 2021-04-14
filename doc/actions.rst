@@ -329,11 +329,11 @@ The following example shows all kinds of actions in practice::
                 ->add(Crud::PAGE_DETAIL, $viewStripeInvoice)
             ;
         }
-        
+
         public function renderInvoice(AdminContext $context)
         {
             $order = $context->getEntity()->getInstance();
-            
+
             // add your logic here...
         }
     }
@@ -341,9 +341,78 @@ The following example shows all kinds of actions in practice::
 Batch Actions
 -------------
 
+Batch actions are a special kind of action which is applied to multiple items at
+the same time. They are only available in the ``index`` page.
+
+Imagine that you manage users with a ``User`` entity and a common task is to
+approve their sign ups. Instead of creating a normal ``approve`` action as
+explained in the previous sections, create a batch action to be more productive
+and approve multiple users at once.
+
+First, add it to your action configuration using the ``addBatchAction()`` method::
+
+    namespace App\Controller\Admin;
+
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+    use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+
+    class UserCrudController extends AbstractCrudController
+    {
+        // ...
+
+        public function configureActions(Actions $actions): Actions
+        {
+            return $actions
+                // ...
+                ->addBatchAction(Action::new('approve', 'Approve Users'))
+                    ->linkToCrudAction('approveUsers')
+                    ->addCssClass('btn btn-primary')
+                    ->setIcon('fa fa-user-check')
+            ;
+        }
+    }
+
+Batch actions support the same configuration options as the other actions and
+they can link to a CRUD controller method, to a Symfony route or to some URL.
+If there's at least one batch action, the backend interface is updated to add some
+"checkboxes" that allow selecting more than one row of the index listing.
+
+When the user clicks on the batch action link/button, a form is submitted using
+the ``POST`` method to the action or route configured in the action. The easiest
+way to get the submitted data is to type-hint some argument of your batch action
+method with the ``EasyCorp\Bundle\EasyAdminBundle\Dto\BatchActionDto`` class.
+If you do that, EasyAdmin will inject a DTO with all the batch action data::
+
+    namespace App\Controller\Admin;
+
+    use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
+    use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+    use EasyCorp\Bundle\EasyAdminBundle\Dto\BatchActionDto;
+
+    class UserCrudController extends AbstractCrudController
+    {
+        // ...
+
+        public function approveUsers(BatchActionDto $batchAction)
+        {
+            $entityManager = $this->getDoctrine()->getManagerForClass($batchActionDto->getEntityFqcn());
+            foreach ($batchActionDto->getEntityIds() as $id) {
+                $user = $entityManager->find($id);
+                $user->approve();
+            }
+
+            $entityManager->flush();
+
+            return $this->redirect($batchActionDto->getReferrerUrl());
+        }
+    }
+
 .. note::
 
-    Batch actions are not ready yet, but we're working on adding support for them.
+    As an alterantive, instead of injecting the ``BatchActionDto`` variable, you can
+    also inject Symfony's ``Request`` object to get all the raw submitted batch data
+    (e.g. ``$request->request->get('batchActionEntityIds')``).
 
 .. _actions-integrating-symfony:
 

@@ -7,6 +7,10 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Config\Option;
  */
 final class EA
 {
+    public const BATCH_ACTION_NAME = 'batchActionName';
+    public const BATCH_ACTION_URL = 'batchActionUrl';
+    public const BATCH_ACTION_CSRF_TOKEN = 'batchActionCsrfToken';
+    public const BATCH_ACTION_ENTITY_IDS = 'batchActionEntityIds';
     public const CONTEXT_NAME = 'eaContext';
     public const CONTEXT_REQUEST_ATTRIBUTE = 'easyadmin_context';
     public const CRUD_ACTION = 'crudAction';

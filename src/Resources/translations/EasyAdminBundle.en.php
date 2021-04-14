@@ -63,7 +63,7 @@ return [
     ],
 
     'batch_action_modal' => [
-        'title' => 'Do you really want to alter the selected items?',
+        'title' => 'You are going to apply the "%action_name%" action to %num_items% item(s).',
         'content' => 'There is no undo for this operation.',
         'action' => 'Proceed',
     ],

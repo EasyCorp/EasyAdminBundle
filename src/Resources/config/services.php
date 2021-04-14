@@ -3,6 +3,7 @@
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use EasyCorp\Bundle\EasyAdminBundle\ArgumentResolver\AdminContextResolver;
+use EasyCorp\Bundle\EasyAdminBundle\ArgumentResolver\BatchActionDtoResolver;
 use EasyCorp\Bundle\EasyAdminBundle\Cache\CacheWarmer;
 use EasyCorp\Bundle\EasyAdminBundle\Command\MakeAdminDashboardCommand;
 use EasyCorp\Bundle\EasyAdminBundle\Command\MakeAdminMigrationCommand;
@@ -156,6 +157,11 @@ return static function (ContainerConfigurator $container) {
             ->arg(0, new Reference(AdminContextProvider::class))
             ->tag('controller.argument_value_resolver')
 
+        ->set(BatchActionDtoResolver::class)
+            ->arg(0, new Reference(AdminContextProvider::class))
+            ->arg(1, new Reference(AdminUrlGenerator::class))
+            ->tag('controller.argument_value_resolver')
+
         ->set(AdminRouterSubscriber::class)
             ->arg(0, new Reference(AdminContextFactory::class))
             ->arg(1, new Reference(DashboardControllerRegistry::class))
@@ -285,6 +291,7 @@ return static function (ContainerConfigurator $container) {
             ->arg(1, new Reference(AuthorizationChecker::class))
             ->arg(2, new Reference('translator'))
             ->arg(3, new Reference(AdminUrlGenerator::class))
+            ->arg(4, new Reference('security.csrf.token_manager'))
 
         ->set(SecurityVoter::class)
             ->arg(0, new Reference(AuthorizationChecker::class))

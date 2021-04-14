@@ -1,0 +1,113 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2021-03-08T18:50:06Z
+
+It'd be great to read some reviews or comments from people who have tested this in their real apps. Thanks!
+
+---------------------------------------------------------------------------
+
+by leahpar at 2021-03-09T09:32:28Z
+
+I've used the @versh23 work on batch actions on a project, working great !
+
+A feature I need is the possibility to customize the modal so I can get additional inputs from the user (add a select for example).
+
+Someone already mentioned it on the previous PR ([here](https://github.com/EasyCorp/EasyAdminBundle/pull/3703#issuecomment-744455239))
+
+---------------------------------------------------------------------------
+
+by parijke at 2021-03-10T08:02:53Z
+
+How do I apply a PR locally? Want to test this today...
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2021-03-10T08:21:26Z
+
+@parijke using GitHub CLI (https://github.com/cli/cli) you can run this command: `gh pr checkout 4230` in your local clone of EasyAdmin (and then use `ln -s ...` to change `vendor/easycorp/easyadmin-bundle/` in your Symfony project to point to your local clone).
+
+---------------------------------------------------------------------------
+
+by parijke at 2021-03-10T08:44:31Z
+
+Sorry for my ignorence
+
+Got to the ln -s part.
+My symfony root is in /home/parijke/www/my-test
+So my current active EA is in /home/parijke/www/my-test/vendor/easycorp/easyadmin-bundle
+My EA clone with the pr checkout is in /home/parijke/www/EasyAdminBundle
+
+What should the ln -s command look like (and executed in which folder)?
+
+I renamed the original easyadmin-bundle directory to easyadmin-bundle and made a symlynk like:
+`ln -s  ~/www/EasyAdminBundle easyadmin-bundle`
+
+Although I can ls the /home/paul/www/BO3/vendor/easycorp/easyadmin-bundle/, after starting the browser it says
+```
+Attempted to load class "EasyAdminBundle" from namespace "EasyCorp\Bundle\EasyAdminBundle".
+Did you forget a "use" statement for another namespace?
+```
+So I am not doing this the right way
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2021-03-10T10:20:12Z
+
+This is what I do in my local apps, but adapted to your directories:
+
+```
+$ cd /home/parijke/www/my-test
+$ rm -fr vendor/easycorp/easyadmin-bundle
+$ ln -s /home/parijke/www/EasyAdminBundle /home/parijke/www/my-test/vendor/easycorp/easyadmin-bundle
+$ rm -fr var/cache/*
+```
+
+The last cache deletion is important because the classes have changed their location, so you'll get loading errors.
+
+---------------------------------------------------------------------------
+
+by parijke at 2021-03-10T11:38:33Z
+
+It works... it only has some quircks in the docs...
+
++ addBatchAction line 379 is missing a closing )
++ row 410 should be $em = (or use $entityManager firther down the road)
++ row 412 should be  $user = $em->find($batchActionDto->getEntityFqcn(), $id);
+
+after these changes it works. Gonna test a bit further though
+
+---------------------------------------------------------------------------
+
+by versh23 at 2021-03-10T13:30:03Z
+
+i can test it today.
+
+do you remember this feature #2922 ? what do you think about ?
+
+---------------------------------------------------------------------------
+
+by parijke at 2021-03-10T18:29:40Z
+
+@javiereguiluz also add to the actions.rst that there's a default `public const BATCH_DELETE = 'batchDelete';` action
+
+---------------------------------------------------------------------------
+
+by parijke at 2021-03-15T16:25:57Z
+
+I encountered one issue sofar....
+
+When multiselect a few records, the button for the action(s) appear. But unselecting one of them makes the button disappear again.
+
+See https://youtu.be/cCXSe4r1LDI
+
+---------------------------------------------------------------------------
+
+by hafkenscheid at 2021-03-16T20:05:12Z
+
+Wouldn't it be nice to be able to select multiple lines by keeping Ctrl pressed or selecting a range of lines using Shift
+
+---------------------------------------------------------------------------
+
+by Schyzophrenic at 2021-04-09T19:39:05Z
+
+I have been successfully using this in a project as well. Would be great to see it merged. @javiereguiluz even if there are some edge cases, don't you think it is ready to be merged? What would be missing?

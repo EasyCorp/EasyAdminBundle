@@ -365,7 +365,7 @@ First, add it to your action configuration using the ``addBatchAction()`` method
         {
             return $actions
                 // ...
-                ->addBatchAction(Action::new('approve', 'Approve Users')
+                ->addBatchAction(Action::new('approve', 'Approve Users'))
                     ->linkToCrudAction('approveUsers')
                     ->addCssClass('btn btn-primary')
                     ->setIcon('fa fa-user-check')
@@ -398,11 +398,11 @@ If you do that, EasyAdmin will inject a DTO with all the batch action data::
         {
             $entityManager = $this->getDoctrine()->getManagerForClass($batchActionDto->getEntityFqcn());
             foreach ($batchActionDto->getEntityIds() as $id) {
-                $user = $em->find($id);
+                $user = $entityManager->find($id);
                 $user->approve();
             }
 
-            $em->flush();
+            $entityManager->flush();
 
             return $this->redirect($batchActionDto->getReferrerUrl());
         }

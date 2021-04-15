@@ -44,6 +44,8 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         if (!$entityDto->isAssociation($propertyName)) {
             throw new \RuntimeException(sprintf('The "%s" field is not a Doctrine association, so it cannot be used as an association field.', $propertyName));
         }
+        
+        $this->setRequiredByJoinColumns($field);
 
         $targetEntityFqcn = $field->getDoctrineMetadata()->get('targetEntity');
         // the target CRUD controller can be NULL; in that case, field value doesn't link to the related entity
@@ -187,5 +189,24 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         }
 
         return 0;
+    }
+        
+    private function setRequiredByJoinColumns(FieldDto $field): void
+    {
+        $joinColumns = $field->getDoctrineMetadata()->get('joinColumns');
+
+        if (null !== $joinColumns) {
+            $required = true;
+
+            foreach ($joinColumns as $joinColumn) {
+                if ($joinColumn['nullable']) {
+                    $required = false;
+                }
+            }
+
+            if ($required) {
+                $field->setFormTypeOption('required', true);
+            }
+        }
     }
 }

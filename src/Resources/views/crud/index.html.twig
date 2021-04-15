@@ -46,9 +46,9 @@
 
     {% if has_datagrid_tools %}
         <div class="datagrid-header-tools">
-            <div class="datagrid-search">
-                {% block search %}
-                    {% if has_search %}
+            {% block search %}
+                {% if has_search %}
+                    <div class="datagrid-search">
                         <div class="form-action form-action-search">
                             <form method="get">
                                 {% block search_form %}
@@ -77,9 +77,9 @@
                                 {% endblock %}
                             </form>
                         </div>
-                    {% endif %}
-                {% endblock search %}
-            </div>
+                    </div>
+                {% endif %}
+            {% endblock search %}
 
             <div class="datagrid-filters">
                 {% block filters %}

@@ -105,17 +105,11 @@ final class FieldDto
         $this->propertyName = $propertyName;
     }
 
-    /**
-     * @param string $sortBy
-     */
     public function setSortBy(string $sortBy): void
     {
         $this->sortBy = $sortBy;
     }
 
-    /**
-     * @return string
-     */
     public function getSortBy()
     {
         return $this->sortBy;

@@ -116,6 +116,7 @@ trait FieldTrait
 
         return $this;
     }
+
     public function setSortBy(string $sortableBy): self
     {
         $this->dto->setSortBy($sortableBy);

@@ -21,6 +21,7 @@ final class FieldDto
     private $formType;
     private $formTypeOptions;
     private $sortable;
+    private $sortBy;
     private $virtual;
     private $permission;
     private $textAlign;
@@ -102,6 +103,22 @@ final class FieldDto
     public function setProperty(string $propertyName): void
     {
         $this->propertyName = $propertyName;
+    }
+
+    /**
+     * @param string $sortBy
+     */
+    public function setSortBy(string $sortBy): void
+    {
+        $this->sortBy = $sortBy;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSortBy()
+    {
+        return $this->sortBy;
     }
 
     /**

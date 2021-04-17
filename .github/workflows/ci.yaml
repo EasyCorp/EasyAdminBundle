@@ -24,6 +24,19 @@ jobs:
                 allow-failures: [false]
                 operating-system: ['ubuntu-latest', 'macos-latest', 'windows-latest']
                 php-version: ['7.2.5', '7.3', '7.4', '8.0']
+                exclude:
+                    - operating-system: 'macos-latest'
+                      php-version: '7.2.5'
+                    - operating-system: 'macos-latest'
+                      php-version: '7.3'
+                    - operating-system: 'macos-latest'
+                      php-version: '7.4'
+                    - operating-system: 'windows-latest'
+                      php-version: '7.2.5'
+                    - operating-system: 'windows-latest'
+                      php-version: '7.3'
+                    - operating-system: 'windows-latest'
+                      php-version: '7.4'
 
         steps:
             - name: "Checkout code"
@@ -36,6 +49,7 @@ jobs:
                   php-version: ${{ matrix.php-version }}
                   tools: composer:v2
                   extensions: mbstring, intl, pdo, pdo_sqlite, sqlite3
+                  ini-values: date.timezone=UTC
 
             - name: "Add PHPUnit matcher"
               run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"

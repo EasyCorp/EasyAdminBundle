@@ -8,6 +8,7 @@
 }
 
 body {
+    background-color: var(--body-bg);
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: auto;
     -moz-osx-font-smoothing: unset;
@@ -441,11 +442,25 @@ body.ea-mobile-sidebar-visible .main-sidebar {
     z-index: 2;
 }
 .pager .page-item.disabled {
-    cursor: not-allowed;
     z-index: 0;
 }
 .page-item.disabled .page-link {
     background: transparent;
+}
+.page-item .page-link,
+.page-item .page-link:hover {
+    background: transparent;
+    border: var(--border-width) var(--border-style) transparent;
+    border-radius: var(--border-radius);
+    margin: 0 1px;
+}
+.page-item .page-link:hover {
+    border-color: var(--gray-300);
+}
+.page-item.active .page-link:hover {
+    background: var(--color-primary);
+    border-color: transparent;
+    color: var(--white);
 }
 .pager .page-item i {
     vertical-align: middle;

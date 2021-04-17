@@ -1,17 +1,6 @@
 Fields
 ======
 
-.. raw:: html
-
-    <div class="box box--small box--warning">
-        <strong class="title">WARNING:</strong>
-
-        You are browsing the documentation for <strong>EasyAdmin 3.x</strong>,
-        which has just been released. Switch to
-        <a href="https://symfony.com/doc/2.x/bundles/EasyAdminBundle/index.html">EasyAdmin 2.x docs</a>
-        if your application has not been upgraded to EasyAdmin 3 yet.
-    </div>
-
 Fields allow to display the contents of your Doctrine entities on each
 :ref:`CRUD page <crud-pages>`. EasyAdmin provides built-in fields to display
 all the common data types, but you can also :ref:`create your own fields <custom-fields>`.
@@ -414,12 +403,20 @@ for a given postal address. This is the class you could create for the field::
             return (new self())
                 ->setProperty($propertyName)
                 ->setLabel($label)
+
                 // this template is used in 'index' and 'detail' pages
                 ->setTemplatePath('admin/field/map.html.twig')
+
                 // this is used in 'edit' and 'new' pages to edit the field contents
                 // you can use your own form types too
                 ->setFormType(TextareaType::class)
                 ->addCssClass('field-map')
+
+                // loads the CSS and JS assets associated to the given Webpack Encore entry
+                // in any CRUD page (index/detail/edit/new). It's equivalent to calling
+                // encore_entry_link_tags('...') and encore_entry_script_tags('...')
+                ->addWebpackEncoreEntry('admin-field-map')
+
                 // these methods allow to define the web assets loaded when the
                 // field is displayed in any CRUD page (index/detail/edit/new)
                 ->addCssFiles('js/admin/field-map.css')

@@ -475,21 +475,6 @@
     </div>
 {% endblock ea_section_row %}
 
-{# EasyAdminBatch form type #}
-{% block ea_batch_action_widget %}
-    {{ form_widget(form.entityIds) }}
-    <button type="button" class="btn btn-link deselect-batch-button">{{ 'action.deselect'|trans(domain = 'EasyAdminBundle') }}</button>
-    {% for action in batch_actions %}
-        <button name="{{ form.crudAction.vars.full_name }}" value="{{ action.name }}"
-                class="ask-confirm-batch-button {{ action.cssClass }}" {% for name, value in action.htmlAttributes %}{{ name }}="{{ value|e('html_attr') }}" {% endfor %}>
-            <span class="btn-label">
-                {%- if action.icon %}<i class="action-icon {{ action.icon }}"></i> {% endif -%}
-            {%- if action.label is not empty -%}{{ action.label }}{%- endif -%}
-            </span>
-        </button>
-    {% endfor %}
-{% endblock ea_batch_action_widget %}
-
 {# EasyAdminFilters form type #}
 {% block ea_filters_widget %}
     {% set applied_filters = ea.request.query.get('filters')|default([])|keys %}

@@ -2,7 +2,7 @@
 
 return [
     'page_title' => [
-        // 'dashboard' => '',
+        'dashboard' => 'Дашборд',
         'detail' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
         'edit' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
         'index' => '%entity_label_plural%',
@@ -63,7 +63,7 @@ return [
     ],
 
     'batch_action_modal' => [
-        'title' => 'Вы действительно хотите изменить выбранные элементы?',
+        'title' => 'Вы собираетесь выполнить действие "%action_name%" для выбранных строк (%num_items%)',
         'content' => 'Эту операцию нельзя отменить.',
         'action' => 'Продолжить',
     ],
@@ -100,7 +100,8 @@ return [
 
     'form' => [
         'are_you_sure' => 'Вы не сохранили сделанные изменения.',
-        // 'tab.error_badge_title' => '',
+        'tab.error_badge_title' => 'Один неверный ввод|%count% неверных ввода|%count% неверных вводов',
+        'slug.confirm_text' => 'Если вы измените текстовый идентификатор, вы можете сломать ссылки на других страницах.',
     ],
 
     'user' => [

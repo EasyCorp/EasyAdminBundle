@@ -105,7 +105,7 @@
         <div class="content-panel">
             <div class="content-panel-header {{ collapsible ? 'collapsible' }} {{ field.help is not empty ? 'with-help' }}">
                 {% if collapsible %}
-                    <a href="#content-{{ field.property }}" data-toggle="collapse" class="content-panel-collapse {{ collapsed ? 'collapsed' }}" aria-expanded="{{ collapsed ? 'false' : 'true' }}" aria-controls="content-{{ field.property }}">
+                    <a href="#content-{{ field.uniqueId }}" data-toggle="collapse" class="content-panel-collapse {{ collapsed ? 'collapsed' }}" aria-expanded="{{ collapsed ? 'false' : 'true' }}" aria-controls="content-{{ field.uniqueId }}">
                         <i class="fas fw fa-chevron-right collapse-icon"></i>
                 {% endif %}
 
@@ -123,7 +123,7 @@
                 {% endif %}
             </div>
 
-            <div id="content-{{ field.property }}" class="content-panel-body without-footer without-padding {{ collapsible ? 'collapse' }} {{ not collapsed ? 'show'}}">
+            <div id="content-{{ field.uniqueId }}" class="content-panel-body without-footer without-padding {{ collapsible ? 'collapse' }} {{ not collapsed ? 'show'}}">
                 <dl class="datalist">
 {% endmacro %}
 

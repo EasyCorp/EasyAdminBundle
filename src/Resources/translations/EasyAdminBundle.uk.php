@@ -2,7 +2,7 @@
 
 return [
     'page_title' => [
-        // 'dashboard' => '',
+        'dashboard' => 'Дешборд',
         'detail' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
         'edit' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
         'index' => '%entity_label_plural%',
@@ -11,7 +11,7 @@ return [
     ],
 
     'datagrid' => [
-        // 'hidden_results' => '',
+        'hidden_results' => 'Деякі результати можуть не відображатися, оскільки у вас недостатньо прав',
         'no_results' => 'Нічого не знайдено.',
     ],
 
@@ -37,8 +37,8 @@ return [
     ],
 
     'field' => [
-        // 'code_editor.view_code' => '',
-        // 'text_editor.view_content' => '',
+        'code_editor.view_code' => 'Переглянути код',
+        'text_editor.view_content' => 'Переглянути вміст',
     ],
 
     'action' => [
@@ -50,22 +50,22 @@ return [
         'delete' => 'Видалити',
         'cancel' => 'Відмінити',
         'index' => 'Повернутися до списку',
-        // 'deselect' => '',
+        'deselect' => 'Зняти вибір',
         'add_new_item' => 'Додати новий елемент',
         'remove_item' => 'Видалити елемент',
         'choose_file' => 'Вибрати файл',
-        // 'close' => '',
-        // 'create' => '',
-        // 'create_and_add_another' => '',
-        // 'create_and_continue' => '',
-        // 'save' => '',
-        // 'save_and_continue' => '',
+        'close' => 'Закрити',
+        'create' => 'Створити',
+        'create_and_add_another' => 'Створити і додати ще',
+        'create_and_continue' => 'Створити і продовжити',
+        'save' => 'Зберегти',
+        'save_and_continue' => 'Зберегти і продовжити',
     ],
 
     'batch_action_modal' => [
-        // 'title' => '',
-        // 'content' => '',
-        // 'action' => '',
+        'title' => 'Ви дійсно хочете змінити вибрані елементи?',
+        'content' => 'Цю операцію неможна відмінити.',
+        'action' => 'Продовжити',
     ],
 
     'delete_modal' => [
@@ -83,7 +83,7 @@ return [
         'label.is_greater_than_or_equal_to' => 'більше ніж або рівно',
         'label.is_less_than' => 'менше ніж',
         'label.is_less_than_or_equal_to' => 'менше ніж або рівно',
-        // 'label.is_between' => '',
+        'label.is_between' => 'між',
         'label.contains' => 'містить',
         'label.not_contains' => 'не містить',
         'label.starts_with' => 'починається з',
@@ -100,7 +100,8 @@ return [
 
     'form' => [
         'are_you_sure' => 'Ви не зберегли зроблені зміни.',
-        // 'tab.error_badge_title' => '',
+        'tab.error_badge_title' => 'Невалідне поле|Невалідних полів: %count%',
+        'slug.confirm_text' => 'Якщо ви змінете текстовий ідентифікатор, ви можете зламати посилання на інших сторінках.',
     ],
 
     'user' => [
@@ -108,19 +109,19 @@ return [
         'unnamed' => 'Безіменний користувач',
         'anonymous' => 'Анонімний користувач',
         'sign_out' => 'Вихід',
-        // 'exit_impersonation' => '',
+        'exit_impersonation' => 'Вийти з-під користувача',
     ],
 
     'login_page' => [
         'username' => 'Логін',
         'password' => 'Пароль',
-        'sign_in' => 'Ввійти',
+        'sign_in' => 'Увійти',
     ],
 
     'exception' => [
-        // 'entity_not_found' => '',
-        // 'entity_remove' => '',
-        // 'forbidden_action' => '',
-        // 'insufficient_entity_permission' => 'You don't have permission to access this item.',
+        'entity_not_found' => 'Елемент більше недоступний.',
+        'entity_remove' => 'Цей елемент не можна видалити, оскільки від нього залежать інші елементи.',
+        'forbidden_action' => 'Дія не може бути виконана над цим елементом.',
+        'insufficient_entity_permission' => 'У вас немає дозволу на доступ до цього елемента.',
     ],
 ];

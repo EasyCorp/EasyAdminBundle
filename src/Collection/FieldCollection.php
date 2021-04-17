@@ -25,9 +25,13 @@ final class FieldCollection implements CollectionInterface
 
     public function __clone()
     {
-        foreach ($this->fields as $fieldName => $fieldDto) {
-            $this->fields[$fieldName] = clone $fieldDto;
+        $clonedFields = [];
+        foreach ($this->fields as $fieldDto) {
+            $clonedFieldDto = clone $fieldDto;
+            $clonedFields[$clonedFieldDto->getUniqueId()] = $clonedFieldDto;
         }
+
+        $this->fields = $clonedFields;
     }
 
     /**
@@ -38,24 +42,40 @@ final class FieldCollection implements CollectionInterface
         return new self($fields);
     }
 
-    public function get(string $fieldName): ?FieldDto
+    public function get(string $fieldUniqueId): ?FieldDto
     {
-        return $this->fields[$fieldName] ?? null;
+        return $this->fields[$fieldUniqueId] ?? null;
+    }
+
+    /**
+     * It returns the first field associated to the given property or null if none found.
+     * Some pages (index/detail) can render the same field more than once.
+     * In those cases, this method always returns the first field occurrence.
+     */
+    public function getByProperty(string $propertyName): ?FieldDto
+    {
+        foreach ($this->fields as $field) {
+            if ($propertyName === $field->getProperty()) {
+                return $field;
+            }
+        }
+
+        return null;
     }
 
     public function set(FieldDto $newOrUpdatedField): void
     {
-        $this->fields[$newOrUpdatedField->getProperty()] = $newOrUpdatedField;
+        $this->fields[$newOrUpdatedField->getUniqueId()] = $newOrUpdatedField;
     }
 
     public function unset(FieldDto $removedField): void
     {
-        unset($this->fields[$removedField->getProperty()]);
+        unset($this->fields[$removedField->getUniqueId()]);
     }
 
     public function prepend(FieldDto $newField): void
     {
-        $this->fields = array_merge([$newField->getProperty() => $newField], $this->fields);
+        $this->fields = array_merge([$newField->getUniqueId() => $newField], $this->fields);
     }
 
     public function first(): ?FieldDto
@@ -123,8 +143,10 @@ final class FieldCollection implements CollectionInterface
             }
 
             $dto = $field->getAsDto();
-            $dto->setFieldFqcn(\get_class($field));
-            $dtos[$dto->getProperty()] = $dto;
+            if (null === $dto->getFieldFqcn()) {
+                $dto->setFieldFqcn(\get_class($field));
+            }
+            $dtos[$dto->getUniqueId()] = $dto;
         }
 
         return $dtos;

@@ -39,6 +39,7 @@ final class FieldDto
 
     public function __construct()
     {
+        $this->uniqueId = new Ulid();
         $this->cssClass = '';
         $this->templateName = 'crud/field/text';
         $this->assets = new AssetsDto();
@@ -56,6 +57,7 @@ final class FieldDto
 
     public function __clone()
     {
+        $this->uniqueId = new Ulid();
         $this->assets = clone $this->assets;
         $this->formTypeOptions = clone $this->formTypeOptions;
         $this->customOptions = clone $this->customOptions;
@@ -65,11 +67,12 @@ final class FieldDto
 
     public function getUniqueId(): string
     {
-        if (null !== $this->uniqueId) {
-            return $this->uniqueId;
-        }
+        return $this->uniqueId;
+    }
 
-        return $this->uniqueId = new Ulid();
+    public function setUniqueId(string $uniqueId): void
+    {
+        $this->uniqueId = $uniqueId;
     }
 
     public function isFormDecorationField(): bool
@@ -77,7 +80,7 @@ final class FieldDto
         return null !== u($this->getCssClass())->indexOf('field-form_panel');
     }
 
-    public function getFieldFqcn(): string
+    public function getFieldFqcn(): ?string
     {
         return $this->fieldFqcn;
     }
@@ -287,6 +290,11 @@ final class FieldDto
     public function setAssets(AssetsDto $assets): void
     {
         $this->assets = $assets;
+    }
+
+    public function addWebpackEncoreEntry(string $entryName): void
+    {
+        $this->assets->addWebpackEncoreEntry($entryName);
     }
 
     public function addCssFile(string $cssFilePath): void

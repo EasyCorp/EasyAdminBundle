@@ -10,6 +10,7 @@ use function Symfony\Component\String\u;
  */
 final class Action
 {
+    public const BATCH_DELETE = 'batchDelete';
     public const DELETE = 'delete';
     public const DETAIL = 'detail';
     public const EDIT = 'edit';

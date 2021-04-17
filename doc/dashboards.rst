@@ -1,17 +1,6 @@
 Dashboards
 ==========
 
-.. raw:: html
-
-    <div class="box box--small box--warning">
-        <strong class="title">WARNING:</strong>
-
-        You are browsing the documentation for <strong>EasyAdmin 3.x</strong>,
-        which has just been released. Switch to
-        <a href="https://symfony.com/doc/2.x/bundles/EasyAdminBundle/index.html">EasyAdmin 2.x docs</a>
-        if your application has not been upgraded to EasyAdmin 3 yet.
-    </div>
-
 **Dashboards** are the entry point of backends and they link to one or more
 :doc:`resources </crud>`. Dashboards also display a main menu to navigate the
 resources and the information of the logged in user.
@@ -52,55 +41,148 @@ Dashboard Route
 Each dashboard uses a single Symfony route to serve all its URLs. The needed
 information is passed using query string parameters. If you generated the
 dashboard with the ``make:admin:dashboard`` command, the route is defined using
-`Symfony route annotations`_::
+`Symfony route annotations`_ or PHP attributes (if the project requires PHP 8 or newer):
 
-    namespace App\Controller\Admin;
+.. configuration-block::
 
-    use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
-    use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
-    use Symfony\Component\Routing\Annotation\Route;
+    .. code-block:: php-annotations
 
-    class DashboardController extends AbstractDashboardController
-    {
-        /**
-         * @Route("/admin")
-         */
-        public function index(): Response
+        // src/Controller/Admin/DashboardController.php
+        namespace App\Controller\Admin;
+
+        use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
+        use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
+        use Symfony\Component\Routing\Annotation\Route;
+
+        class DashboardController extends AbstractDashboardController
         {
-            return parent::index();
+            /**
+             * @Route("/admin")
+             */
+            public function index(): Response
+            {
+                return parent::index();
+            }
+
+            // ...
         }
 
-        // ...
-    }
+    .. code-block:: php-attributes
+
+        // src/Controller/Admin/DashboardController.php
+        namespace App\Controller\Admin;
+
+        use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
+        use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
+        use Symfony\Component\Routing\Annotation\Route;
+
+        class DashboardController extends AbstractDashboardController
+        {
+            #[Route('/admin')]
+            public function index(): Response
+            {
+                return parent::index();
+            }
+
+            // ...
+        }
 
 The ``/admin`` URL is only a default value, so you can change it. If you do that,
 don't forget to also update this value in your Symfony security config to
 :ref:`restrict access to the entire backend <security-entire-backend>`.
 
-There's no need to define a explicit name for this route. Symfony autogenerates
+There's no need to define an explicit name for this route. Symfony autogenerates
 a route name and EasyAdmin gets that value at runtime to generate all URLs.
 However, if you generate URLs pointing to the dashboard in other parts of your
-application, you can define an explicit route name to simplify your code::
+application, you can define an explicit route name to simplify your code:
 
-    /**
-     * @Route("/admin", name="some_route_name")
-     */
-    public function index(): Response
-    {
-        return parent::index();
-    }
+.. configuration-block::
+
+    .. code-block:: php-annotations
+
+        // src/Controller/Admin/DashboardController.php
+        namespace App\Controller\Admin;
+
+        use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
+        use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
+        use Symfony\Component\Routing\Annotation\Route;
+
+        class DashboardController extends AbstractDashboardController
+        {
+            /**
+             * @Route("/admin", name="some_route_name")
+             */
+            public function index(): Response
+            {
+                return parent::index();
+            }
+
+            // ...
+        }
+
+    .. code-block:: php-attributes
+
+        // src/Controller/Admin/DashboardController.php
+        namespace App\Controller\Admin;
+
+        use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
+        use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
+        use Symfony\Component\Routing\Annotation\Route;
+
+        class DashboardController extends AbstractDashboardController
+        {
+            #[Route('/admin', name: 'some_route_name')]
+            public function index(): Response
+            {
+                return parent::index();
+            }
+
+            // ...
+        }
 
 If you don't use annotations, you must configure the dashboard route using YAML,
-XML or PHP config in a separate file. For example, when using YAML:
+XML or PHP config in a separate file:
 
-.. code-block:: yaml
+.. configuration-block::
 
-    # config/routes.yaml
-    dashboard:
-        path: /admin
-        controller: App\Controller\Admin\DashboardController::index
+    .. code-block:: yaml
 
-    # ...
+        # config/routes.yaml
+        dashboard:
+            path: /admin
+            controller: App\Controller\Admin\DashboardController::index
+
+        # ...
+
+    .. code-block:: xml
+
+        <!-- config/routes.xml -->
+        <?xml version="1.0" encoding="UTF-8" ?>
+        <routes xmlns="http://symfony.com/schema/routing"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://symfony.com/schema/routing
+                https://symfony.com/schema/routing/routing-1.0.xsd">
+
+            <route id="dashboard" path="/admin"
+                   controller="App\Controller\Admin\DashboardController::index"/>
+
+            <!-- ... -->
+        </routes>
+
+    .. code-block:: php
+
+        // config/routes.php
+        use App\Controller\Admin\DashboardController;
+        use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
+
+        return function (RoutingConfigurator $routes) {
+            $routes->add('dashboard', '/admin')
+                ->controller([DashboardController::class, 'index'])
+            ;
+
+            // ...
+        };
+
 
 In practice you won't have to deal with this route or the query string
 parameters in your application because EasyAdmin provides a service to
@@ -285,7 +367,7 @@ have to specify the route name (it's found automatically)::
 Route Menu Item
 ...............
 
-It links to any of the Symfony application routes::
+It links to any of the routes defined by your Symfony application::
 
     use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 
@@ -293,10 +375,16 @@ It links to any of the Symfony application routes::
     {
         return [
             MenuItem::linkToRoute('The Label', 'fa ...', 'route_name'),
-            MenuItem::linkToRoute('The Label', 'fa ...', 'route_name', [ ... route parameters ... ]),
+            MenuItem::linkToRoute('The Label', 'fa ...', 'route_name', ['routeParamName' => 'routeParamValue']),
             // ...
         ];
     }
+
+.. note::
+
+    Read the section about
+    :ref:`integrating Symfony controllers/actions in EasyAdmin <actions-integrating-symfony>`
+    to fully understand the URLs generated by ``linkToRoute()``.
 
 URL Menu Item
 .............
@@ -523,8 +611,10 @@ service to get the context variable::
         // ...
     }
 
-In controllers, use the ``AdminContext`` type-hint in any argument where you
-want to inject the context object::
+In EasyAdmin's :doc:`CRUD controllers </crud>` and in
+:ref:`Symfony controllers integrated into EasyAdmin <actions-integrating-symfony>`,
+use the ``AdminContext`` type-hint in any argument where you want to inject the
+context object::
 
     use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
     use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

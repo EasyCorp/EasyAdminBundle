@@ -1,17 +1,6 @@
 Filters
 =======
 
-.. raw:: html
-
-    <div class="box box--small box--warning">
-        <strong class="title">WARNING:</strong>
-
-        You are browsing the documentation for <strong>EasyAdmin 3.x</strong>,
-        which has just been released. Switch to
-        <a href="https://symfony.com/doc/2.x/bundles/EasyAdminBundle/index.html">EasyAdmin 2.x docs</a>
-        if your application has not been upgraded to EasyAdmin 3 yet.
-    </div>
-
 The listings of the ``index`` page can be refined with **filters**, a series of
 form controls that add conditions to the query (e.g. ``price > 10``, ``enabled = true``).
 Define your filters with the ``configureFilters()`` method of your
@@ -81,6 +70,9 @@ These are the built-in filters provided by EasyAdmin:
 * ``EntityFilter``: applied to fields with Doctrine associations (all kinds
   supported). It's rendered as a ``<select>`` list with the condition (equal/not
   equal/etc.) and another ``<select>`` list to choose the comparison value.
+* ``NullFilter``: it's not applied by default to any field. It's useful to
+  filter results depending on the "null" or "not null" value of a property.
+  It's rendered as two radio buttons for the null and not null options.
 * ``NumericFilter``: applied by default to numeric fields.
   It's rendered as a ``<select>`` list with the condition (higher/lower/equal/etc.) and a
   ``<input>`` to define the comparison value.
@@ -111,7 +103,11 @@ Consider this example which creates a custom date filter with some special value
     namespace App\Admin\Filter;
 
     use App\Form\Type\Admin\DateCalendarFilterType;
+    use Doctrine\ORM\QueryBuilder;
     use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterInterface;
+    use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+    use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
+    use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDataDto;
     use EasyCorp\Bundle\EasyAdminBundle\Filter\FilterTrait;
 
     class DateCalendarFilter implements FilterInterface

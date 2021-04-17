@@ -3,6 +3,7 @@
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use EasyCorp\Bundle\EasyAdminBundle\ArgumentResolver\AdminContextResolver;
+use EasyCorp\Bundle\EasyAdminBundle\ArgumentResolver\BatchActionDtoResolver;
 use EasyCorp\Bundle\EasyAdminBundle\Cache\CacheWarmer;
 use EasyCorp\Bundle\EasyAdminBundle\Command\MakeAdminDashboardCommand;
 use EasyCorp\Bundle\EasyAdminBundle\Command\MakeAdminMigrationCommand;
@@ -54,11 +55,11 @@ use EasyCorp\Bundle\EasyAdminBundle\Filter\Configurator\CommonConfigurator as Co
 use EasyCorp\Bundle\EasyAdminBundle\Filter\Configurator\ComparisonConfigurator as ComparisonFilterConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\Configurator\DateTimeConfigurator as DateTimeFilterConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\Configurator\EntityConfigurator as EntityFilterConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\Configurator\NullConfigurator as NullFilterConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\Configurator\NumericConfigurator as NumericFilterConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\Configurator\TextConfigurator as TextFilterConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Extension\CollectionTypeExtension;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Extension\EaCrudFormTypeExtension;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudBatchActionFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FileUploadType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType;
@@ -154,6 +155,11 @@ return static function (ContainerConfigurator $container) {
 
         ->set(AdminContextResolver::class)
             ->arg(0, new Reference(AdminContextProvider::class))
+            ->tag('controller.argument_value_resolver')
+
+        ->set(BatchActionDtoResolver::class)
+            ->arg(0, new Reference(AdminContextProvider::class))
+            ->arg(1, new Reference(AdminUrlGenerator::class))
             ->tag('controller.argument_value_resolver')
 
         ->set(AdminRouterSubscriber::class)
@@ -274,6 +280,8 @@ return static function (ContainerConfigurator $container) {
 
         ->set(EntityFilterConfigurator::class)
 
+        ->set(NullFilterConfigurator::class)
+
         ->set(NumericFilterConfigurator::class)
 
         ->set(TextFilterConfigurator::class)
@@ -283,6 +291,7 @@ return static function (ContainerConfigurator $container) {
             ->arg(1, new Reference(AuthorizationChecker::class))
             ->arg(2, new Reference('translator'))
             ->arg(3, new Reference(AdminUrlGenerator::class))
+            ->arg(4, new Reference('security.csrf.token_manager'))
 
         ->set(SecurityVoter::class)
             ->arg(0, new Reference(AuthorizationChecker::class))
@@ -292,10 +301,6 @@ return static function (ContainerConfigurator $container) {
         ->set(CrudFormType::class)
             ->arg(0, new Reference('form.type_guesser.doctrine'))
             ->tag('form.type', ['alias' => 'ea_crud'])
-
-        ->set(CrudBatchActionFormType::class)
-            ->arg(0, new Reference(ActionFactory::class))
-            ->tag('form.type', ['alias' => 'ea_batch_action'])
 
         ->set(ArrayConfigurator::class)
 

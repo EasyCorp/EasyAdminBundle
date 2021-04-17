@@ -15,6 +15,16 @@
                 </a>
             </li>
 
+            {% for page in paginator.pageRange %}
+                <li class="page-item {{ page == paginator.currentPage ? 'active' }} {{ page is null ? 'disabled' }}">
+                    {% if page is null %}
+                        <span class="page-link">&hellip;</span>
+                    {% else %}
+                        <a class="page-link" href="{{ paginator.generateUrlForPage(page) }}">{{ page }}</a>
+                    {% endif %}
+                </li>
+            {% endfor %}
+
             <li class="page-item {{ not paginator.hasNextPage ? 'disabled' }}">
                 <a class="page-link" href="{{ not paginator.hasNextPage ? '#' : paginator.generateUrlForPage(paginator.nextPage) }}">
                     <span class="btn-label">{{ 'paginator.next'|trans }}</span> <i class="fa fa-angle-right mx-1"></i>

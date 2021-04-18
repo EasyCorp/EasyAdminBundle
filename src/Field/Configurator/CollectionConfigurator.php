@@ -42,6 +42,8 @@ final class CollectionConfigurator implements FieldConfiguratorInterface
         $field->setFormTypeOptionIfNotSet('by_reference', false);
         $field->setFormTypeOptionIfNotSet('delete_empty', true);
 
+        $field->setCustomOption('sort_order_field_name', $field->getCustomOptions()->get(CollectionField::OPTION_SORT_ORDER_FIELD_NAME));
+
         // TODO: check why this label (hidden by default) is not working properly
         // (generated values are always the same for all elements)
         $field->setFormTypeOptionIfNotSet('entry_options.label', $field->getCustomOptions()->get(CollectionField::OPTION_SHOW_ENTRY_LABEL));

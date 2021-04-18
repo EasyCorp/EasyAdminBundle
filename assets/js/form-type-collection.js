@@ -1,3 +1,5 @@
+import Sortable from 'sortablejs';
+
 const eaCollectionHandler = function (event) {
     document.querySelectorAll('button.field-collection-add-button').forEach((addButton) => {
         let collection = addButton.closest('[data-ea-collection-field]');
@@ -10,8 +12,29 @@ const eaCollectionHandler = function (event) {
     });
 }
 
+const eaSortableHandler = function (event) {
+    document.querySelectorAll('.sortable').forEach(function(sortableList) {
+        var listObject = new Sortable(sortableList, {
+            onSort: function(event) {
+                EaCollectionProperty.handleSort(event.target);
+            }
+        });
+    })
+}
+
+const eaSortableCollectionBeforeSubmitHandler = function (event) {
+    const form = event.target;
+
+    form.querySelectorAll('.sortable').forEach(function (sortableList) {
+        EaCollectionProperty.handleSort(sortableList);
+    });
+}
+
 window.addEventListener('DOMContentLoaded', eaCollectionHandler);
 document.addEventListener('ea.collection.item-added', eaCollectionHandler);
+
+window.addEventListener('DOMContentLoaded', eaSortableHandler);
+document.addEventListener('submit', eaSortableCollectionBeforeSubmitHandler);
 
 const EaCollectionProperty = {
     handleAddButton: (addButton, collection) => {
@@ -40,5 +63,19 @@ const EaCollectionProperty = {
         });
 
         collection.classList.add('processed');
+    },
+    handleSort: function(list) {
+        const orderFieldName = list.getAttribute('data-sortable-order-field');
+
+        for (var i = 0; i < list.children.length; i++) {
+            const currentItem = list.children[i],
+                currentOrderElement = currentItem.querySelector('[id$="' + orderFieldName + '"]');
+
+            if(currentOrderElement) {
+                currentOrderElement.value = i;
+            } else {
+                console.log('Persisting the order of the collection to "' + orderFieldName + '" failed - such field could not be found')
+            }
+        }
     }
 };

@@ -123,6 +123,16 @@
 {% endblock collection_row %}
 
 {% block collection_widget %}
+    {% if form.vars.ea_crud_form.ea_field %}
+        {% set sort_order_field_name = form.vars.ea_crud_form.ea_field.customOptions.get('sortOrderFieldName') %}
+        {% if sort_order_field_name %}
+            {% set attr = attr|merge({
+                class: attr.class|default('') ~ ' sortable',
+                'data-sortable-order-field': sort_order_field_name
+            }) %}
+        {% endif %}
+    {% endif %}
+
     {{ block('form_widget') }}
 
     {% if allow_add|default(false) %}

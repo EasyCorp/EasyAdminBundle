@@ -14,6 +14,7 @@ final class CollectionField implements FieldInterface
 
     public const OPTION_ALLOW_ADD = 'allowAdd';
     public const OPTION_ALLOW_DELETE = 'allowDelete';
+    public const OPTION_SORT_ORDER_FIELD_NAME = 'sortOrderFieldName';
     public const OPTION_ENTRY_IS_COMPLEX = 'entryIsComplex';
     public const OPTION_ENTRY_TYPE = 'entryType';
     public const OPTION_SHOW_ENTRY_LABEL = 'showEntryLabel';
@@ -32,6 +33,7 @@ final class CollectionField implements FieldInterface
             ->addJsFiles('bundles/easyadmin/form-type-collection.js')
             ->setCustomOption(self::OPTION_ALLOW_ADD, true)
             ->setCustomOption(self::OPTION_ALLOW_DELETE, true)
+            ->setCustomOption(self::OPTION_SORT_ORDER_FIELD_NAME, null)
             ->setCustomOption(self::OPTION_ENTRY_IS_COMPLEX, null)
             ->setCustomOption(self::OPTION_ENTRY_TYPE, null)
             ->setCustomOption(self::OPTION_SHOW_ENTRY_LABEL, false);
@@ -47,6 +49,13 @@ final class CollectionField implements FieldInterface
     public function allowDelete(bool $allow = true): self
     {
         $this->setCustomOption(self::OPTION_ALLOW_DELETE, $allow);
+
+        return $this;
+    }
+
+    public function setSortOrderFieldName(string $fieldName): self
+    {
+        $this->setCustomOption(self::OPTION_SORT_ORDER_FIELD_NAME, $fieldName);
 
         return $this;
     }

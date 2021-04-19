@@ -148,9 +148,9 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
         return $entityDto->hasProperty($field->getProperty());
     }
 
-    private function buildSortBy(FieldDto $field): string
+    private function buildSortBy(FieldDto $field): ?string
     {
-        return null !== $field->getSortby() ? $field->getSortby() : 'id';
+        return $field->getSortby();
     }
 
     private function buildVirtualOption(FieldDto $field, EntityDto $entityDto): bool

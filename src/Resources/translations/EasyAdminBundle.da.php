@@ -118,7 +118,7 @@ return [
     ],
 
     'exception' => [
-        'entity_not_found' => 'Emnet er ikke længerer tilgængeligt.',
+        'entity_not_found' => 'Emnet er ikke længere tilgængeligt.',
         'entity_remove' => 'Dette emne kan ikke slettes, da der er andre emner der er afhængige af det.',
         'forbidden_action' => 'Denne handling kan ikke udføres på dette emne.',
         'insufficient_entity_permission' => 'Du har ikke tilladelse til at tilgå dette emne.',

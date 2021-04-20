@@ -63,13 +63,13 @@ return [
     ],
 
     'batch_action_modal' => [
-        'title' => 'Du vil anvende "%action_name%" handlingen på %num_items% emne(r).',
+        'title' => 'Du vil anvende "%action_name%" handlingen på %num_items% element(er).',
         'content' => 'Du kan ikke fortryde denne handling.',
         'action' => 'Udfør handling',
     ],
 
     'delete_modal' => [
-        'title' => 'Er du sikker på du vil slette dette emne?',
+        'title' => 'Er du sikker på du vil slette dette element?',
         'content' => 'Denne operation kan ikke fortrydes.',
     ],
 
@@ -118,9 +118,9 @@ return [
     ],
 
     'exception' => [
-        'entity_not_found' => 'Emnet er ikke længere tilgængeligt.',
-        'entity_remove' => 'Dette emne kan ikke slettes, da der er andre emner der er afhængige af det.',
-        'forbidden_action' => 'Denne handling kan ikke udføres på dette emne.',
-        'insufficient_entity_permission' => 'Du har ikke tilladelse til at tilgå dette emne.',
+        'entity_not_found' => 'Elementet er ikke længere tilgængeligt.',
+        'entity_remove' => 'Dette element kan ikke slettes, da der er andre elementer der er afhængige af det.',
+        'forbidden_action' => 'Denne handling kan ikke udføres på dette element.',
+        'insufficient_entity_permission' => 'Du har ikke tilladelse til at tilgå dette element.',
     ],
 ];

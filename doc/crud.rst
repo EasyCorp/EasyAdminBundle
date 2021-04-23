@@ -512,7 +512,7 @@ the ``unsetAll()`` method to remove all existing query parameters::
             $url = $this->adminUrlGenerator->unsetAll()->set('foo', 'someValue')->generateUrl();
 
             // the URL builder provides shortcuts for the most common parameters
-            $url = $this->adminUrlGenerator->build()
+            $url = $this->adminUrlGenerator
                 ->setController(SomeCrudController::class)
                 ->setAction('theActionName')
                 ->generateUrl();

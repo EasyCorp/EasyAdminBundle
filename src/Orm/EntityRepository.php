@@ -122,21 +122,23 @@ final class EntityRepository implements EntityRepositoryInterface
             $isTextProperty = \in_array($propertyDataType, ['string', 'text', 'citext', 'array', 'simple_array']);
             $isGuidProperty = \in_array($propertyDataType, ['guid', 'uuid']);
 
+            $identifier = $this->doctrine->getConnection()->quoteIdentifier(sprintf('%s.%s', $entityName, $propertyName));
+
             // this complex condition is needed to avoid issues on PostgreSQL databases
             if (
                 ($isSmallIntegerProperty && $isSmallIntegerQuery) ||
                 ($isIntegerProperty && $isIntegerQuery) ||
                 ($isNumericProperty && $isNumericQuery)
             ) {
-                $queryBuilder->orWhere(sprintf('%s.%s = :query_for_numbers', $entityName, $propertyName))
+                $queryBuilder->orWhere(sprintf('%s = :query_for_numbers', $identifier))
                     ->setParameter('query_for_numbers', $dqlParameters['numeric_query']);
             } elseif ($isGuidProperty && $isUuidQuery) {
-                $queryBuilder->orWhere(sprintf('%s.%s = :query_for_uuids', $entityName, $propertyName))
+                $queryBuilder->orWhere(sprintf('%s = :query_for_uuids', $identifier))
                     ->setParameter('query_for_uuids', $dqlParameters['uuid_query']);
             } elseif ($isTextProperty) {
-                $queryBuilder->orWhere(sprintf('LOWER(%s.%s) LIKE :query_for_text', $entityName, $propertyName))
+                $queryBuilder->orWhere(sprintf('LOWER(%s) LIKE :query_for_text', $identifier))
                     ->setParameter('query_for_text', $dqlParameters['text_query']);
-                $queryBuilder->orWhere(sprintf('LOWER(%s.%s) IN (:query_as_words)', $entityName, $propertyName))
+                $queryBuilder->orWhere(sprintf('LOWER(%s) IN (:query_as_words)', $identifier))
                     ->setParameter('query_as_words', $dqlParameters['words_query']);
             }
         }

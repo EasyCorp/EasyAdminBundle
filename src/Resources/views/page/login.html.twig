@@ -33,13 +33,15 @@
             </div>
         </header>
 
-        {% if error|default(false) %}
-            <div class="w-100 alert alert-danger">
-                {{ error.messageKey|trans(error.messageData, 'security') }}
-            </div>
-        {% endif %}
-
         <section class="content">
+
+            {% if error|default(false) %}
+                <div class="w-100 alert alert-danger rounded mb-3">
+                    <i class="fas fa-times-circle mr-1"></i>
+                    {{ error.messageKey|trans(error.messageData, 'security') }}
+                </div>
+            {% endif %}
+
             <form method="post" action="{{ action|default('') }}">
                 {% if csrf_token_intention|default(false) %}
                     <input type="hidden" name="_csrf_token" value="{{ csrf_token(csrf_token_intention) }}">
@@ -47,25 +49,17 @@
 
                 <input type="hidden" name="{{ target_path_parameter|default('_target_path') }}" value="{{ target_path|default(ea is defined ? path(ea.dashboardRouteName) : '/') }}" />
 
-                <div class="form-group field-text">
-                    <label for="username" class="sr-only form-control-label required">{{ _username_label }}</label>
-                    <div class="form-widget form-widget-with-icon">
-                        <i class="fa fa-fw fa-user"></i>
-                        <input type="text" id="username" name="{{ username_parameter|default('_username') }}" class="form-control" placeholder="{{ _username_label }}" value="{{ last_username|default('') }}" required autofocus autocomplete="username">
-                    </div>
+                <div class="mb-3">
+                    <label for="username">{{ _username_label }}</label>
+                    <input type="text" id="username" name="{{ username_parameter|default('_username') }}" class="form-control" value="{{ last_username|default('') }}" required autofocus autocomplete="username">
                 </div>
 
-                <div class="form-group field-password">
-                    <label for="password" class="sr-only form-control-label required">{{ _password_label }}</label>
-                    <div class="form-widget form-widget-with-icon">
-                        <i class="fa fa-fw fa-lock"></i>
-                        <input type="password" id="password" name="{{ password_parameter|default('_password') }}" class="form-control" placeholder="{{ _password_label }}" required autocomplete="current-password">
-                    </div>
+                <div class="mb-4">
+                    <label for="password">{{ _password_label }}</label>
+                    <input type="password" id="password" name="{{ password_parameter|default('_password') }}" class="form-control" required autocomplete="current-password">
                 </div>
 
-                <div class="form-group field-button">
-                    <button type="submit" class="btn btn-primary btn-lg btn-block">{{ _sign_in_label }}</button>
-                </div>
+                <button type="submit" class="btn btn-primary btn-lg btn-block" onclick="this.form.submit(); this.disabled=true;">{{ _sign_in_label }}</button>
             </form>
 
             <script type="text/javascript">

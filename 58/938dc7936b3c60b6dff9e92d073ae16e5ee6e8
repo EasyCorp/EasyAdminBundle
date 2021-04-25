@@ -1,0 +1,43 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2021-02-17T19:13:56Z
+
+I can't understand how this change can solve the problem. Can anyone please help me understanding it? Thanks!
+
+---------------------------------------------------------------------------
+
+by guillermofekete at 2021-02-17T21:53:56Z
+
+Sorry, I didn't explain it in detail.
+
+I have this entities:
+
+**Plan** _---ManyToOne--->_ **Carrera**
+
+So in PlanCrudController->configureFields() I have:
+```
+$carreraField = AssociationField::new('carrera')
+            ->setFormTypeOption(
+                'query_builder', function (CarreraRepository  $carreraRepository) {
+                return $carreraRepository->createQueryBuilder('c')
+                    ->orderBy('c.nombreAbr', 'ASC');
+                }
+            )
+...
+```
+
+In index page, when I click to order by carrera, I got this error:
+
+**[Semantical Error] line 0, col 105 near 'carrera ORDER': Error: 'carrera' is already defined.**
+
+And this is the DQL in QueryException:
+
+`SELECT entity FROM App\\Entity\\Plan\\Plan entity LEFT JOIN entity.carrera carrera LEFT JOIN entity.carrera carrera ORDER BY entity.carrera DESC, carrera.nombreAbr ASC, entity.resol ASC`
+
+Note the two "LEFT JOINs".
+The first one I guess is from "my" querybuilder in PlanCrudController; the second one I guess is added because of the sorting.
+So, I think the double join happens because $aliases is set only once before the "for" loop, and is not updated when an entity is join.
+
+Perhaps, the best is to update $aliases after de LEFT JOIN (insted of update it in each iteration, as I propoused)
+
+(Please, forgive me when my english is poor)

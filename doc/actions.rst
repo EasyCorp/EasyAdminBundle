@@ -365,10 +365,10 @@ First, add it to your action configuration using the ``addBatchAction()`` method
         {
             return $actions
                 // ...
-                ->addBatchAction(Action::new('approve', 'Approve Users'))
+                ->addBatchAction(Action::new('approve', 'Approve Users')
                     ->linkToCrudAction('approveUsers')
                     ->addCssClass('btn btn-primary')
-                    ->setIcon('fa fa-user-check')
+                    ->setIcon('fa fa-user-check'))
             ;
         }
     }

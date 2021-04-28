@@ -21,6 +21,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterCrudActionEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityDeletedEvent;
+use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityFormBuiltEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityPersistedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityUpdatedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeCrudActionEvent;
@@ -203,7 +204,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $this->get(EntityFactory::class)->processActions($context->getEntity(), $context->getCrud()->getActionsConfig());
         $entityInstance = $context->getEntity()->getInstance();
 
-        if ($context->getRequest()->isXmlHttpRequest()) {
+        if ($context->getRequest()->isXmlHttpRequest() && $context->getRequest()->query->has('fieldName')) {
             $fieldName = $context->getRequest()->query->get('fieldName');
             $newValue = 'true' === mb_strtolower($context->getRequest()->query->get('newValue'));
 
@@ -216,7 +217,9 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             return new Response((int) $newValue);
         }
 
-        $editForm = $this->createEditForm($context->getEntity(), $context->getCrud()->getEditFormOptions(), $context);
+        $editFormBuilder = $this->createEditFormBuilder($context->getEntity(), $context->getCrud()->getEditFormOptions(), $context);
+        $this->get('event_dispatcher')->dispatch(new AfterEntityFormBuiltEvent($editFormBuilder, $this->getContext()));
+        $editForm = $editFormBuilder->getForm();
         $editForm->handleRequest($context->getRequest());
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $this->processUploadedFiles($editForm);
@@ -227,7 +230,12 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
             $this->updateEntity($this->get('doctrine')->getManagerForClass($context->getEntity()->getFqcn()), $entityInstance);
 
-            $this->get('event_dispatcher')->dispatch(new AfterEntityUpdatedEvent($entityInstance));
+            $event = new AfterEntityUpdatedEvent($entityInstance);
+            $this->get('event_dispatcher')->dispatch($event);
+
+            if ($event->isPropagationStopped()) {
+                return $event->getResponse();
+            }
 
             $submitButtonName = $context->getRequest()->request->get('ea')['newForm']['btn'];
             if (Action::SAVE_AND_CONTINUE === $submitButtonName) {
@@ -286,7 +294,9 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $this->get(EntityFactory::class)->processFields($context->getEntity(), FieldCollection::new($this->configureFields(Crud::PAGE_NEW)));
         $this->get(EntityFactory::class)->processActions($context->getEntity(), $context->getCrud()->getActionsConfig());
 
-        $newForm = $this->createNewForm($context->getEntity(), $context->getCrud()->getNewFormOptions(), $context);
+        $newFormBuilder = $this->createNewFormBuilder($context->getEntity(), $context->getCrud()->getNewFormOptions(), $context);
+        $this->get('event_dispatcher')->dispatch(new AfterEntityFormBuiltEvent($newFormBuilder, $this->getContext()));
+        $newForm = $newFormBuilder->getForm();
         $newForm->handleRequest($context->getRequest());
 
         $entityInstance = $newForm->getData();
@@ -301,7 +311,13 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
             $this->persistEntity($this->get('doctrine')->getManagerForClass($context->getEntity()->getFqcn()), $entityInstance);
 
-            $this->get('event_dispatcher')->dispatch(new AfterEntityPersistedEvent($entityInstance));
+            $event = new AfterEntityPersistedEvent($entityInstance);
+            $this->get('event_dispatcher')->dispatch($event);
+
+            if ($event->isPropagationStopped()) {
+                return $event->getResponse();
+            }
+
             $context->getEntity()->setInstance($entityInstance);
 
             $submitButtonName = $context->getRequest()->request->get('ea')['newForm']['btn'];
@@ -382,7 +398,11 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             throw new EntityRemoveException(['entity_name' => $context->getEntity()->getName(), 'message' => $e->getMessage()]);
         }
 
-        $this->get('event_dispatcher')->dispatch(new AfterEntityDeletedEvent($entityInstance));
+        $event = new AfterEntityDeletedEvent($entityInstance);
+        $this->get('event_dispatcher')->dispatch($event);
+        if ($event->isPropagationStopped()) {
+            return $event->getResponse();
+        }
 
         $responseParameters = $this->configureResponseParameters(KeyValueStore::new([
             'entity' => $context->getEntity(),

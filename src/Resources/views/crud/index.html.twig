@@ -86,7 +86,7 @@
                     {% if filters|length > 0 %}
                         {% set applied_filters = ea.request.query.all['filters']|default([])|keys %}
                         <div class="btn-group action-filters">
-                            <a href="{{ ea_url().setAction('renderFilters').includeReferrer() }}" class="btn btn-secondary btn-labeled btn-labeled-right action-filters-button {{ applied_filters ? 'action-filters-applied' }}" data-modal="#modal-filters">
+                            <a href="#" data-href="{{ ea_url().setAction('renderFilters').includeReferrer() }}" class="btn btn-secondary btn-labeled btn-labeled-right action-filters-button disabled {{ applied_filters ? 'action-filters-applied' }}" data-modal="#modal-filters">
                                 <i class="fa fa-filter fa-fw"></i> {{ 'filter.title'|trans(ea.i18n.translationParameters, 'EasyAdminBundle') }}{% if applied_filters %} <span class="text-primary">({{ applied_filters|length }})</span>{% endif %}
                             </a>
                             {% if applied_filters %}
@@ -277,8 +277,8 @@
                 });
             };
 
-            document.querySelector('.action-filters-button').addEventListener('click', function(event) {
-                let filterButton = event.currentTarget;
+            let filterButton = document.querySelector('.action-filters-button');
+            filterButton.addEventListener('click', function(event) {
                 let filterModal = document.querySelector(filterButton.dataset.modal);
                 let filterModalBody = filterModal.querySelector('.modal-body');
 
@@ -292,6 +292,9 @@
                 event.preventDefault();
                 event.stopPropagation();
             });
+            filterButton.setAttribute('href', filterButton.getAttribute('data-href'));
+            filterButton.removeAttribute('data-href');
+            filterButton.classList.remove('disabled');
             {% endif %}
 
 

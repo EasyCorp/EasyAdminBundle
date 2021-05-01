@@ -410,7 +410,7 @@ If you do that, EasyAdmin will inject a DTO with all the batch action data::
 
 .. note::
 
-    As an alterantive, instead of injecting the ``BatchActionDto`` variable, you can
+    As an alternative, instead of injecting the ``BatchActionDto`` variable, you can
     also inject Symfony's ``Request`` object to get all the raw submitted batch data
     (e.g. ``$request->request->get('batchActionEntityIds')``).
 

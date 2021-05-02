@@ -46,7 +46,7 @@ final class EntityDto
         return basename(str_replace('\\', '/', $this->fqcn));
     }
 
-    public function toString(): string
+    public function __toString(): string
     {
         if (null === $this->instance) {
             return '';

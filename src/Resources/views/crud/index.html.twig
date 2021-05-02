@@ -309,21 +309,17 @@
             $(document).on('change', '.form-batch-checkbox', function () {
                 const $content = $(this).closest('.content');
                 let $input = $content.find(':hidden#batch_form_entityIds');
-                let ids = $input.val() ? $input.val().split(',') : [];
+                const numberOfSelectedItems = $('input[type="checkbox"].form-batch-checkbox:checked').length;
                 const id = $(this).val();
 
                 if ($(this).prop('checked')) {
                     $(this).closest('tr').addClass('selected-row');
-                    if (-1 === ids.indexOf(id)) {
-                        ids.push(id);
-                    }
                 } else {
                     $(this).closest('tr').removeClass('selected-row');
-                    ids = ids.filter(function(value) { return value !== id });
                     $content.find(':checkbox.form-batch-checkbox-all').prop('checked', false);
                 }
 
-                if (0 === ids.length) {
+                if (0 === numberOfSelectedItems) {
                     $content.find('.global-actions').show();
                     $content.find('.batch-actions').hide();
                     $content.find('table').removeClass('table-batch');
@@ -333,8 +329,7 @@
                     $content.find('table').addClass('table-batch');
                 }
 
-                $input.val(ids.join(','));
-                $content.find('.content-header-title > .title').html(0 === ids.length ? titleContent : '');
+                $content.find('.content-header-title > .title').html(0 === numberOfSelectedItems ? titleContent : '');
             });
 
             let modalTitle = $('#batch-action-confirmation-title');

@@ -171,7 +171,7 @@ final class EntityPaginator implements EntityPaginatorInterface
 
             $jsonResult['results'][] = [
                 EA::ENTITY_ID => $entityDto->getPrimaryKeyValueAsString(),
-                'entityAsString' => $entityDto->toString(),
+                'entityAsString' => $entityDto->__toString(),
             ];
         }
 

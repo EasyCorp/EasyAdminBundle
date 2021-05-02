@@ -220,3 +220,190 @@
         {{ include('@EasyAdmin/crud/includes/_batch_action_modal.html.twig', {}, with_context = false) }}
     {% endif %}
 {% endblock main %}
+
+{% block body_javascript %}
+    {{ parent() }}
+
+    {% if filters|length > 0 %}
+        {{ include('@EasyAdmin/crud/includes/_filters_modal.html.twig') }}
+    {% endif %}
+
+    <script type="text/javascript">
+        $(function() {
+            const customSwitches = document.querySelectorAll('td.field-boolean .custom-control.custom-switch input[type="checkbox"]');
+            for (i = 0; i < customSwitches.length; i++) {
+                customSwitches[i].addEventListener('change', function () {
+                    const customSwitch = this;
+                    const newValue = this.checked;
+                    const oldValue = !newValue;
+
+                    const toggleUrl = this.getAttribute('data-toggle-url') + "&newValue=" + newValue.toString();
+                    let toggleRequest = $.ajax({ type: "GET", url: toggleUrl, data: {} });
+
+                    toggleRequest.done(function(result) {});
+
+                    toggleRequest.fail(function() {
+                        // in case of error, restore the original value and disable the toggle
+                        customSwitch.checked = oldValue;
+                        customSwitch.disabled = true;
+                        customSwitch.closest('.custom-switch').classList.add('disabled');
+                    });
+                });
+            }
+
+            $('.action-delete').on('click', function(e) {
+                e.preventDefault();
+                const formAction = $(this).attr('formaction');
+
+                $('#modal-delete').modal({ backdrop: true, keyboard: true })
+                    .off('click', '#modal-delete-button')
+                    .on('click', '#modal-delete-button', function () {
+                        let deleteForm = $('#delete-form');
+                        deleteForm.attr('action', formAction);
+                        deleteForm.submit();
+                    });
+            });
+
+            {% if filters|length > 0 %}
+            // HTML5 specifies that a <script> tag inserted with innerHTML should not execute
+            // https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML#Security_considerations
+            // That's why we can't use just 'innerHTML'. See https://stackoverflow.com/a/47614491/2804294
+            let setInnerHTML = function(element, htmlContent) {
+                element.innerHTML = htmlContent;
+                Array.from(element.querySelectorAll('script')).forEach(oldScript => {
+                    const newScript = document.createElement('script');
+                    Array.from(oldScript.attributes)
+                        .forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                    newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+                    oldScript.parentNode.replaceChild(newScript, oldScript);
+                });
+            };
+
+            let filterButton = document.querySelector('.action-filters-button');
+            filterButton.addEventListener('click', function(event) {
+                let filterModal = document.querySelector(filterButton.dataset.modal);
+                let filterModalBody = filterModal.querySelector('.modal-body');
+
+                $(filterModal).modal({ backdrop: true, keyboard: true });
+                filterModalBody.innerHTML = '<div class="fa-3x px-3 py-3 text-muted text-center"><i class="fas fa-circle-notch fa-spin"></i></div>';
+
+                $.get(filterButton.getAttribute('href'), function (response) {
+                    setInnerHTML(filterModalBody, response);
+                });
+
+                event.preventDefault();
+                event.stopPropagation();
+            });
+            filterButton.setAttribute('href', filterButton.getAttribute('data-href'));
+            filterButton.removeAttribute('data-href');
+            filterButton.classList.remove('disabled');
+            {% endif %}
+
+
+            {% if has_batch_actions %}
+            const titleContent = $('.content-header-title > .title').html();
+            $(document).on('click', '.deselect-batch-button', function () {
+                $(this).closest('.content').find(':checkbox.form-batch-checkbox-all').prop('checked', false).trigger('change');
+            });
+            $(document).on('change', '.form-batch-checkbox-all', function () {
+                $(this).closest('.content').find(':checkbox.form-batch-checkbox').prop('checked', $(this).prop('checked')).trigger('change');
+            });
+            $(document).on('change', '.form-batch-checkbox', function () {
+                const $content = $(this).closest('.content');
+                let $input = $content.find(':hidden#batch_form_entityIds');
+                const numberOfSelectedItems = $('input[type="checkbox"].form-batch-checkbox:checked').length;
+                const id = $(this).val();
+
+                if ($(this).prop('checked')) {
+                    $(this).closest('tr').addClass('selected-row');
+                } else {
+                    $(this).closest('tr').removeClass('selected-row');
+                    $content.find(':checkbox.form-batch-checkbox-all').prop('checked', false);
+                }
+
+                if (0 === numberOfSelectedItems) {
+                    $content.find('.global-actions').show();
+                    $content.find('.batch-actions').hide();
+                    $content.find('table').removeClass('table-batch');
+                } else {
+                    $content.find('.batch-actions').show();
+                    $content.find('.global-actions').hide();
+                    $content.find('table').addClass('table-batch');
+                }
+
+                $content.find('.content-header-title > .title').html(0 === numberOfSelectedItems ? titleContent : '');
+            });
+
+            let modalTitle = $('#batch-action-confirmation-title');
+            const titleContentWithPlaceholders = modalTitle.text();
+
+            $('[data-action-batch]').on('click', function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+                let $actionElement = $(this);
+
+                const actionName = $actionElement.attr('data-action-name');
+                const selectedItems = $('input[type="checkbox"].form-batch-checkbox:checked');
+                modalTitle.text(titleContentWithPlaceholders
+                    .replace('%action_name%', actionName)
+                    .replace('%num_items%', selectedItems.length));
+
+                $('#modal-batch-action').modal({ backdrop : true, keyboard : true })
+                    .off('click', '#modal-batch-action-button')
+                    .on('click', '#modal-batch-action-button', function () {
+                        $actionElement.unbind('click');
+
+                        $form = document.createElement('form');
+                        $form.setAttribute('action', $actionElement.attr('data-action-url'));
+                        $form.setAttribute('method', 'POST');
+
+                        $actionNameInput = document.createElement('input');
+                        $actionNameInput.setAttribute('type', 'hidden');
+                        $actionNameInput.setAttribute('name', 'batchActionName');
+                        $actionNameInput.setAttribute('value', $actionElement.attr('data-action-name'));
+                        $form.appendChild($actionNameInput);
+
+                        $entityFqcnInput = document.createElement('input');
+                        $entityFqcnInput.setAttribute('type', 'hidden');
+                        $entityFqcnInput.setAttribute('name', 'entityFqcn');
+                        $entityFqcnInput.setAttribute('value', $actionElement.attr('data-entity-fqcn'));
+                        $form.appendChild($entityFqcnInput);
+
+                        $actionUrlInput = document.createElement('input');
+                        $actionUrlInput.setAttribute('type', 'hidden');
+                        $actionUrlInput.setAttribute('name', 'batchActionUrl');
+                        $actionUrlInput.setAttribute('value', $actionElement.attr('data-action-url'));
+                        $form.appendChild($actionUrlInput);
+
+                        $csrfTokenInput = document.createElement('input');
+                        $csrfTokenInput.setAttribute('type', 'hidden');
+                        $csrfTokenInput.setAttribute('name', 'batchActionCsrfToken');
+                        $csrfTokenInput.setAttribute('value', $actionElement.attr('data-action-csrf-token'));
+                        $form.appendChild($csrfTokenInput);
+
+                        selectedItems.each((i, item) => {
+                            $entityIdInput = document.createElement('input');
+                            $entityIdInput.setAttribute('type', 'hidden');
+                            $entityIdInput.setAttribute('name', `batchActionEntityIds[${i}]`);
+                            $entityIdInput.setAttribute('value', item.value);
+                            $form.appendChild($entityIdInput);
+                        });
+
+                        document.body.appendChild($form);
+
+                        //modalTitle.text(titleContentWithPlaceholders);
+                        $form.submit();
+                    });
+            });
+            {% endif %}
+        });
+    </script>
+
+    {% if app.request.get('query') is not empty %}
+        <script type="text/javascript">
+            const search_query = "{{ ea.search.query|default('')|e('js') }}";
+            // the original query is prepended to allow matching exact phrases in addition to single words
+            $('#main').find('table tbody td:not(.actions)').highlight($.merge([search_query], search_query.split(' ')));
+        </script>
+    {% endif %}
+{% endblock %}

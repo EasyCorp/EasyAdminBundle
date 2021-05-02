@@ -227,7 +227,7 @@
                 'png': 'fa-file-image-o',
                 'zip': 'fa-file-archive-o'
             } %}
-            <a class="ea-vich-file-name" href="{{ asset(download_uri) }}">
+            <a class="ea-vich-file-name" href="{{ asset_helper is same as(true) ? asset(download_uri) : download_uri }}">
                 <i class="fa fa-fw {{ extension_icons[file_extension] ?? 'fa-file-o' }}"></i>
                 {{ download_title }}
             </a>
@@ -267,9 +267,9 @@
             {% if download_uri|default('') is empty %}
                 <div class="ea-lightbox-thumbnail">
                     {% if formTypeOptions.imagine_pattern is defined and formTypeOptions.imagine_pattern is not empty %}
-                        <img style="cursor: initial" src="{{ asset(image_uri)|ea_apply_filter_if_exists('imagine_filter', formTypeOptions.imagine_pattern) }}">
+                        <img style="cursor: initial" src="{{ (asset_helper is same as(true) ? asset(image_uri) : image_uri)|ea_apply_filter_if_exists('imagine_filter', formTypeOptions.imagine_pattern) }}">
                     {% else %}
-                        <img style="cursor: initial" src="{{ asset(image_uri) }}">
+                        <img style="cursor: initial" src="{{ asset_helper is same as(true) ? asset(image_uri) : image_uri }}">
                     {% endif %}
                 </div>
             {% else %}
@@ -277,17 +277,17 @@
 
                 <a href="#" class="ea-lightbox-thumbnail" data-featherlight="#{{ _lightbox_id }}" data-featherlight-close-on-click="anywhere">
                     {% if formTypeOptions.imagine_pattern is defined and formTypeOptions.imagine_pattern is not empty %}
-                        <img src="{{ asset(download_uri)|ea_apply_filter_if_exists('imagine_filter', formTypeOptions.imagine_pattern) }}">
+                        <img src="{{ (asset_helper is same as(true) ? asset(download_uri) : download_uri)|ea_apply_filter_if_exists('imagine_filter', formTypeOptions.imagine_pattern) }}">
                     {% else %}
-                        <img src="{{ asset(download_uri) }}">
+                        <img src="{{ asset_helper is same as(true) ? asset(download_uri) : download_uri }}">
                     {% endif %}
                 </a>
 
                 <div id="{{ _lightbox_id }}" class="ea-lightbox">
                     {% if formTypeOptions.imagine_pattern is defined and formTypeOptions.imagine_pattern is not empty %}
-                        <img src="{{ asset(download_uri)|ea_apply_filter_if_exists('imagine_filter', formTypeOptions.imagine_pattern) }}">
+                        <img src="{{ (asset_helper is same as(true) ? asset(download_uri) : download_uri)|ea_apply_filter_if_exists('imagine_filter', formTypeOptions.imagine_pattern) }}">
                     {% else %}
-                        <img src="{{ asset(download_uri) }}">
+                        <img src="{{ asset_helper is same as(true) ? asset(download_uri) : download_uri }}">
                     {% endif %}
                 </div>
             {% endif %}

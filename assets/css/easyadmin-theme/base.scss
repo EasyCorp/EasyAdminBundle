@@ -182,19 +182,44 @@ body.ea-mobile-sidebar-visible .main-sidebar {
 .user-menu-wrapper .popover-body {
     padding: 0;
 }
-.user-menu-wrapper .popover-content-section {
-    padding: 12px;
-}
+
 .user-menu-wrapper .popover-content-section + .popover-content-section {
     border-top: var(--border-width) var(--border-style) var(--border-color);
-    padding-top: 12px;
 }
+
+.user-details {
+    padding: 0.75rem;
+}
+
+.user-menu {
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+}
+
+.user-menu {
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+}
+
 .user-menu .user-action {
     display: block;
     font-size: var(--font-size-sm);
-}
-.user-menu .user-action + .user-action {
-    margin-top: var(--font-size-sm);
+    color: var(--gray-700);
+    padding: .5rem .75rem;
+
+    i {
+        color: var(--gray-600);
+        margin-right: 0.25rem;
+    }
+
+    &:hover {
+        background-color: var(--gray-100);
+        color: var(--gray-900);
+
+        i {
+            color: var(--gray-700);
+        }
+    }
 }
 
 .content-wrapper {

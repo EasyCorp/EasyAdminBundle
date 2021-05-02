@@ -365,10 +365,10 @@ First, add it to your action configuration using the ``addBatchAction()`` method
         {
             return $actions
                 // ...
-                ->addBatchAction(Action::new('approve', 'Approve Users'))
+                ->addBatchAction(Action::new('approve', 'Approve Users')
                     ->linkToCrudAction('approveUsers')
                     ->addCssClass('btn btn-primary')
-                    ->setIcon('fa fa-user-check')
+                    ->setIcon('fa fa-user-check'))
             ;
         }
     }
@@ -394,7 +394,7 @@ If you do that, EasyAdmin will inject a DTO with all the batch action data::
     {
         // ...
 
-        public function approveUsers(BatchActionDto $batchAction)
+        public function approveUsers(BatchActionDto $batchActionDto)
         {
             $entityManager = $this->getDoctrine()->getManagerForClass($batchActionDto->getEntityFqcn());
             foreach ($batchActionDto->getEntityIds() as $id) {
@@ -410,7 +410,7 @@ If you do that, EasyAdmin will inject a DTO with all the batch action data::
 
 .. note::
 
-    As an alterantive, instead of injecting the ``BatchActionDto`` variable, you can
+    As an alternative, instead of injecting the ``BatchActionDto`` variable, you can
     also inject Symfony's ``Request`` object to get all the raw submitted batch data
     (e.g. ``$request->request->get('batchActionEntityIds')``).
 

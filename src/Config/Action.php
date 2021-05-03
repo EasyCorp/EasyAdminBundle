@@ -180,6 +180,13 @@ final class Action
         return $this;
     }
 
+    public function setDisabled(bool $disabled)
+    {
+        $this->dto->setDisabled($disabled);
+
+        return $this;
+    }
+
     public function getAsDto(): ActionDto
     {
         if (null === $this->dto->getLabel() && null === $this->dto->getIcon()) {

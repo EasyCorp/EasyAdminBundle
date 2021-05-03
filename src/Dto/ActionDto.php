@@ -24,6 +24,7 @@ final class ActionDto
     private $url;
     private $translationParameters;
     private $displayCallable;
+    private $disabled;
 
     public function __construct()
     {
@@ -31,6 +32,7 @@ final class ActionDto
         $this->htmlAttributes = [];
         $this->routeParameters = [];
         $this->translationParameters = [];
+        $this->disabled = false;
     }
 
     public function getType(): string
@@ -216,6 +218,16 @@ final class ActionDto
     public function setDisplayCallable(callable $displayCallable): void
     {
         $this->displayCallable = $displayCallable;
+    }
+
+    public function setDisabled(bool $disabled)
+    {
+        $this->disabled = $disabled;
+    }
+
+    public function getDisabled()
+    {
+        return $this->disabled;
     }
 
     /**

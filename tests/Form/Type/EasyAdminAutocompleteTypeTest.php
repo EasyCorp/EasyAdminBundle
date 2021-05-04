@@ -14,7 +14,7 @@ use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 class EasyAdminAutocompleteTypeTest extends TypeTestCase
 {
-    const ENTITY_CLASS = 'AppTestBundle\Entity\UnitTests\Category';
+    public const ENTITY_CLASS = 'AppTestBundle\Entity\UnitTests\Category';
 
     private $doctrine;
     private $entityManager;

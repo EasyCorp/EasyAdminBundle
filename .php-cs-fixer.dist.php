@@ -9,7 +9,9 @@ $finder = PhpCsFixer\Finder::create()
     ->name('*.php')
 ;
 
-return PhpCsFixer\Config::create()
+$config = new PhpCsFixer\Config();
+
+return $config
     ->setUsingCache(true)
     ->setRiskyAllowed(true)
     ->setFinder($finder)

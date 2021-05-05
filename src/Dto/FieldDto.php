@@ -141,12 +141,18 @@ final class FieldDto
         $this->formatValueCallable = $callable;
     }
 
-    public function getLabel(): ?string
+    /**
+     * @return string|false|null 
+     */
+    public function getLabel()
     {
         return $this->label;
     }
 
-    public function setLabel(?string $label): void
+    /**
+     * @param string|false|null $label
+     */
+    public function setLabel($label): void
     {
         $this->label = $label;
     }

@@ -34,7 +34,10 @@ trait FieldTrait
         return $this;
     }
 
-    public function setLabel(?string $label): self
+    /**
+     * @param string|false|null $label
+     */
+    public function setLabel($label): self
     {
         $this->dto->setLabel($label);
 

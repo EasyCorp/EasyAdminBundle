@@ -258,7 +258,7 @@
                     });
             });
 
-            {% if has_filters %}
+            {% if filters|length > 0 %}
             const filterModal = document.querySelector('#modal-filters');
 
             const removeFilter = function(field) {

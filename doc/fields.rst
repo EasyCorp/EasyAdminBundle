@@ -329,7 +329,7 @@ Formatting Options
 The ``formatValue()`` method allows to apply a PHP callable to the value before
 rendering it in the ``index`` and ``detail`` pages::
 
-    TextField::new('firstName', 'Name')
+    IntegerField::new('stock', 'Stock')
         // callbacks usually take only the current value as argument...
         ->formatValue(function ($value) {
             return $value < 10 ? sprintf('%d **LOW STOCK**', $value) : $value;

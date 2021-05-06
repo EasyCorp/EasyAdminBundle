@@ -36,6 +36,11 @@ final class EntityDto
         $this->permission = $entityPermission;
     }
 
+    public function __toString(): string
+    {
+        return $this->toString();
+    }
+
     public function getFqcn(): string
     {
         return $this->fqcn;

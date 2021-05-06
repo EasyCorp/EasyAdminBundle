@@ -83,7 +83,7 @@
 
             <div class="datagrid-filters">
                 {% block filters %}
-                    {% if filters|length > 0 %}
+                    {% if has_filters %}
                         {% set applied_filters = ea.request.query.all['filters']|default([])|keys %}
                         <div class="btn-group action-filters">
                             <a href="#" data-href="{{ ea_url().setAction('renderFilters').includeReferrer() }}" class="btn btn-secondary btn-labeled btn-labeled-right action-filters-button disabled {{ applied_filters ? 'action-filters-applied' }}" data-modal="#modal-filters">
@@ -210,7 +210,7 @@
         {{ include('@EasyAdmin/crud/includes/_delete_form.html.twig', with_context = false) }}
     {% endblock delete_form %}
 
-    {% if filters|length > 0 %}
+    {% if has_filters %}
         {{ include('@EasyAdmin/crud/includes/_filters_modal.html.twig') }}
     {% endif %}
 
@@ -221,10 +221,6 @@
 
 {% block body_javascript %}
     {{ parent() }}
-
-    {% if filters|length > 0 %}
-        {{ include('@EasyAdmin/crud/includes/_filters_modal.html.twig') }}
-    {% endif %}
 
     <script type="text/javascript">
         $(function() {
@@ -263,6 +259,29 @@
             });
 
             {% if filters|length > 0 %}
+            const filterModal = document.querySelector('#modal-filters');
+
+            const removeFilter = function(field) {
+                field.closest('form').querySelectorAll('input[name^="filters['+field.dataset.filterProperty+']"]').forEach(hidden => {
+                    hidden.remove();
+                });
+                field.remove();
+            }
+
+            document.querySelector('#modal-clear-button').addEventListener('click', function() {
+                filterModal.querySelectorAll('.filter-field').forEach(filterField => {
+                    removeFilter(filterField);
+                });
+                filterModal.querySelector('form').submit();
+            });
+
+            document.querySelector('#modal-apply-button').addEventListener('click', function() {
+                filterModal.querySelectorAll('.filter-checkbox:not(:checked)').forEach(notAppliedFilter => {
+                    removeFilter(notAppliedFilter.closest('.filter-field'));
+                });
+                filterModal.querySelector('form').submit();
+            });
+
             // HTML5 specifies that a <script> tag inserted with innerHTML should not execute
             // https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML#Security_considerations
             // That's why we can't use just 'innerHTML'. See https://stackoverflow.com/a/47614491/2804294

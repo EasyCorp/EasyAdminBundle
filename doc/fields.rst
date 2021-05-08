@@ -330,19 +330,20 @@ The ``formatValue()`` method allows to apply a PHP callable to the value before
 rendering it in the ``index`` and ``detail`` pages::
 
     IntegerField::new('stock', 'Stock')
-        // callbacks usually take only the current value as argument...
+        // callbacks usually take only the current value as argument
         ->formatValue(function ($value) {
             return $value < 10 ? sprintf('%d **LOW STOCK**', $value) : $value;
-        })
+        });
 
-        // ...but callables also receives the entire entity instance as the second argument
+    TextEditorField::new('description')
+        // callables also receives the entire entity instance as the second argument
         ->formatValue(function ($value, $entity) {
             return $entity->isPublished() ? $value : 'Coming soon...';
-        })
+        });
 
-        // in PHP 7.4 and newer you can use arrow functions
-        // ->formatValue(fn ($value) => $value < 10 ? sprintf('%d **LOW STOCK**', $value) : $value)
-        // ->formatValue(fn ($value, $entity) => $entity->isPublished() ? $value : 'Coming soon...')
+    // in PHP 7.4 and newer you can use arrow functions
+    // ->formatValue(fn ($value) => $value < 10 ? sprintf('%d **LOW STOCK**', $value) : $value);
+    // ->formatValue(fn ($value, $entity) => $entity->isPublished() ? $value : 'Coming soon...');
 
 Misc. Options
 ~~~~~~~~~~~~~

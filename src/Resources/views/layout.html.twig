@@ -36,6 +36,16 @@
         <script src="{{ asset('bundles/easyadmin/app.js') }}"></script>
     {% endblock head_javascript %}
 
+    {% block configured_javascripts %}
+        {% for js_asset in ea.assets.jsFiles ?? [] %}
+            <script src="{{ asset(js_asset) }}"></script>
+        {% endfor %}
+
+        {% for webpack_encore_entry in ea.assets.webpackEncoreEntries ?? [] %}
+            {{ ea_call_function_if_exists('encore_entry_script_tags', webpack_encore_entry) }}
+        {% endfor %}
+    {% endblock %}
+
     {% if 'rtl' == ea.i18n.textDirection %}
         <link rel="stylesheet" href="{{ asset('bundles/easyadmin/app.rtl.css') }}">
         <link rel="stylesheet" href="{{ asset('bundles/easyadmin/app-custom-rtl.css') }}">
@@ -200,16 +210,6 @@
     {% endblock wrapper_wrapper %}
 
     {% block body_javascript %}{% endblock body_javascript %}
-
-    {% block configured_javascripts %}
-        {% for js_asset in ea.assets.jsFiles ?? [] %}
-            <script src="{{ asset(js_asset) }}"></script>
-        {% endfor %}
-
-        {% for webpack_encore_entry in ea.assets.webpackEncoreEntries ?? [] %}
-            {{ ea_call_function_if_exists('encore_entry_script_tags', webpack_encore_entry) }}
-        {% endfor %}
-    {% endblock %}
 
     {% block configured_body_contents %}
         {% for htmlContent in ea.assets.bodyContents ?? [] %}

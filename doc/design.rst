@@ -237,11 +237,11 @@ the :doc:`CRUD controllers </crud>` to add your own CSS and JavaScript files::
             return $assets
                 // adds the CSS and JS assets associated to the given Webpack Encore entry
                 // it's equivalent to calling encore_entry_link_tags('...') and encore_entry_script_tags('...')
+                // both CSS and JS entries are added inside the <head> element
                 ->addWebpackEncoreEntry('admin-app')
 
                 // the argument of these methods is passed to the asset() Twig function
-                // CSS assets are added just before the closing </head> element
-                // and JS assets are added just before the closing </body> element
+                // both CSS and JS assets are added inside the <head> element
                 ->addCssFile('build/admin.css')
                 ->addCssFile('https://example.org/css/admin2.css')
                 ->addJsFile('build/admin.js')
@@ -255,6 +255,12 @@ the :doc:`CRUD controllers </crud>` to add your own CSS and JavaScript files::
             ;
         }
     }
+
+.. versionadded:: 3.3
+
+    JavaScript files and JavaScript Webpack Encore entries are included in the
+    ``<head>`` element of the page. In previous EasyAdmin versions they were
+    included at the bottom of the ``<body>`` element.
 
 .. tip::
 

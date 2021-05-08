@@ -154,6 +154,15 @@ final class EntityPaginator implements EntityPaginatorInterface
         return $this->numResults > $this->pageSize;
     }
 
+    public function isOutOfRange(): bool
+    {
+        if (1 === $this->currentPage) {
+            return false;
+        }
+
+        return $this->currentPage < 1 || $this->currentPage > $this->getLastPage();
+    }
+
     public function getNumResults(): int
     {
         return $this->numResults;

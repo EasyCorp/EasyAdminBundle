@@ -127,6 +127,14 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $queryBuilder = $this->createIndexQueryBuilder($context->getSearch(), $context->getEntity(), $fields, $filters);
         $paginator = $this->get(PaginatorFactory::class)->create($queryBuilder);
 
+        // this can happen after deleting some items and trying to return
+        // to a 'index' page that no longer exists. Redirect to the last page instead
+        if ($paginator->isOutOfRange()) {
+            return $this->redirect($this->get(AdminUrlGenerator::class)
+                ->set(EA::PAGE, $paginator->getLastPage())
+                ->generateUrl());
+        }
+
         $entities = $this->get(EntityFactory::class)->createCollection($context->getEntity(), $paginator->getResults());
         $this->get(EntityFactory::class)->processFieldsForAll($entities, $fields);
         $actions = $this->get(EntityFactory::class)->processActionsForAll($entities, $context->getCrud()->getActionsConfig());

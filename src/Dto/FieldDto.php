@@ -142,7 +142,7 @@ final class FieldDto
     }
 
     /**
-     * @return string|false|null 
+     * @return string|false|null
      */
     public function getLabel()
     {

@@ -11,7 +11,8 @@ class EasyAdminController extends AbstractController
 {
     public function __call($name, $arguments)
     {
-        throw new \RuntimeException(<<<HELP
+        throw new \RuntimeException(
+            <<<HELP
 If you are seeing this error, you are probably upgrading your application
 from EasyAdmin 2 to EasyAdmin 3. The new version of this bundle is a complete
 refactoring and most of the previous classes have been moved or deleted.

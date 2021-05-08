@@ -29,7 +29,9 @@ class TextFilterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->addModelTransformer(new CallbackTransformer(
-            static function ($data) { return $data; },
+            static function ($data) {
+                return $data;
+            },
             static function ($data) {
                 switch ($data['comparison']) {
                     case ComparisonType::STARTS_WITH:

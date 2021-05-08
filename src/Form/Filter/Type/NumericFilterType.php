@@ -34,7 +34,9 @@ class NumericFilterType extends AbstractType
         ]);
 
         $builder->addModelTransformer(new CallbackTransformer(
-            static function ($data) { return $data; },
+            static function ($data) {
+                return $data;
+            },
             static function ($data) {
                 if (ComparisonType::BETWEEN === $data['comparison']) {
                     if (null === $data['value'] || '' === $data['value'] || null === $data['value2'] || '' === $data['value2']) {

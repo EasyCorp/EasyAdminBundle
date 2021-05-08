@@ -364,7 +364,7 @@
                 event.stopPropagation();
                 let $actionElement = $(this);
 
-                const actionName = $actionElement.attr('data-action-name');
+                const actionName = $actionElement.text().trim() || $actionElement.attr('title');
                 const selectedItems = $('input[type="checkbox"].form-batch-checkbox:checked');
                 modalTitle.text(titleContentWithPlaceholders
                     .replace('%action_name%', actionName)

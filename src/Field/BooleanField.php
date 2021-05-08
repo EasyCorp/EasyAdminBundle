@@ -17,7 +17,10 @@ final class BooleanField implements FieldInterface
     /** @internal */
     public const OPTION_TOGGLE_URL = 'toggleUrl';
 
-    public static function new(string $propertyName, ?string $label = null): self
+    /**
+     * @param string|false|null $label
+     */
+    public static function new(string $propertyName, $label = null): self
     {
         return (new self())
             ->setProperty($propertyName)

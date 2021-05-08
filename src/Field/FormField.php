@@ -19,13 +19,18 @@ final class FormField implements FieldInterface
 
     /**
      * @internal Use the other named constructors instead (addPanel(), etc.)
+     *
+     * @param string|false|null $label
      */
-    public static function new(string $propertyName, ?string $label = null)
+    public static function new(string $propertyName, $label = null)
     {
         throw new \RuntimeException('Instead of this method, use the "addPanel()" method.');
     }
 
-    public static function addPanel(?string $label = null, ?string $icon = null): self
+    /**
+     * @param string|false|null $label
+     */
+    public static function addPanel($label = false, ?string $icon = null): self
     {
         $field = new self();
 

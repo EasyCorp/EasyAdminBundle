@@ -399,7 +399,10 @@ for a given postal address. This is the class you could create for the field::
     {
         use FieldTrait;
 
-        public static function new(string $propertyName, ?string $label = null): self
+        /**
+         * @param string|false|null $label
+         */
+        public static function new(string $propertyName, $label = null): self
         {
             return (new self())
                 ->setProperty($propertyName)

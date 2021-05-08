@@ -14,7 +14,10 @@ final class IdField implements FieldInterface
 
     public const OPTION_MAX_LENGTH = 'maxLength';
 
-    public static function new(string $propertyName, ?string $label = null): self
+    /**
+     * @param string|false|null $label
+     */
+    public static function new(string $propertyName, $label = null): self
     {
         return (new self())
             ->setProperty($propertyName)

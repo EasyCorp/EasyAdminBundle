@@ -80,7 +80,7 @@ final class EntityFactory
         $entityDtos = [];
 
         foreach ($entityInstances as $entityInstance) {
-            $newEntityDto = $entityDto->newWithInstance($entityInstance);
+            $newEntityDto = $this->createForEntityInstance($entityInstance);
             $newEntityId = $newEntityDto->getPrimaryKeyValueAsString();
             if (!$this->authorizationChecker->isGranted(Permission::EA_ACCESS_ENTITY, $newEntityDto)) {
                 $newEntityDto->markAsInaccessible();

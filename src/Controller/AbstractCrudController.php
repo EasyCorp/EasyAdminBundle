@@ -430,7 +430,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $repository = $entityManager->getRepository($batchActionDto->getEntityFqcn());
         foreach ($batchActionDto->getEntityIds() as $entityId) {
             $entityInstance = $repository->find($entityId);
-            $entityDto = $context->getEntity()->newWithInstance($entityInstance);
+            $entityDto = $this->get(EntityFactory::class)->createForEntityInstance($entityInstance);
 
             if (!$entityDto->isAccessible()) {
                 throw new InsufficientEntityPermissionException($context);

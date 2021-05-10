@@ -160,17 +160,19 @@
                                                 {{ include(action.templatePath, { action: action, entity: entity, isIncludedInDropdown: ea.crud.showEntityActionsAsDropdown }, with_context = false) }}
                                             {% endfor %}
                                         {% else %}
-                                            <div class="dropdown dropdown-actions">
-                                                <a class="dropdown-toggle btn btn-secondary btn-sm" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <i class="fa fa-fw fa-ellipsis-h"></i>
-                                                </a>
+                                            {% if entity.actions.count > 0 %}
+                                                <div class="dropdown dropdown-actions">
+                                                    <a class="dropdown-toggle btn btn-secondary btn-sm" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                        <i class="fa fa-fw fa-ellipsis-h"></i>
+                                                    </a>
 
-                                                <div class="dropdown-menu dropdown-menu-right">
-                                                    {% for action in entity.actions %}
-                                                        {{ include(action.templatePath, { action: action, isIncludedInDropdown: ea.crud.showEntityActionsAsDropdown }, with_context = false) }}
-                                                    {% endfor %}
+                                                    <div class="dropdown-menu dropdown-menu-right">
+                                                        {% for action in entity.actions %}
+                                                            {{ include(action.templatePath, { action: action, isIncludedInDropdown: ea.crud.showEntityActionsAsDropdown }, with_context = false) }}
+                                                        {% endfor %}
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            {% endif %}
                                         {% endif %}
                                     </td>
                                 {% endblock entity_actions %}

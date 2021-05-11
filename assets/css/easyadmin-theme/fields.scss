@@ -66,6 +66,10 @@
   text-align: left;
 }
 
+.form-group.field-collection label:empty {
+  display: none;
+}
+
 .field-collection[data-entry-is-complex="true"] .form-group .form-widget {
   flex: 0 0 100%;
   padding-left: 0;

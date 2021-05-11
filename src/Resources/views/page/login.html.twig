@@ -58,6 +58,9 @@
                     <label for="password">{{ _password_label }}</label>
                     <input type="password" id="password" name="{{ password_parameter|default('_password') }}" class="form-control" required autocomplete="current-password">
                 </div>
+                  
+                <input type="hidden" name="_csrf_token"
+                       value="{{ csrf_token('authenticate') }}">
 
                 <button type="submit" class="btn btn-primary btn-lg btn-block" onclick="this.form.submit(); this.disabled=true;">{{ _sign_in_label }}</button>
             </form>

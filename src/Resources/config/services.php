@@ -218,13 +218,13 @@ return static function (ContainerConfigurator $container) {
             ->arg(4, new Reference('security.logout_url_generator'))
             ->arg(5, new Reference(AdminUrlGenerator::class))
 
-        ->set(EntityRepository::class)
+        ->set(EntityRepository::class)->public()
             ->arg(0, new Reference(AdminContextProvider::class))
             ->arg(1, new Reference('doctrine'))
             ->arg(2, new Reference(EntityFactory::class))
             ->arg(3, new Reference(FormFactory::class))
 
-        ->set(EntityFactory::class)
+        ->set(EntityFactory::class)->public()
             ->arg(0, new Reference(FieldFactory::class))
             ->arg(1, new Reference(ActionFactory::class))
             ->arg(2, new Reference(AuthorizationChecker::class))
@@ -238,7 +238,7 @@ return static function (ContainerConfigurator $container) {
         ->set(EntityUpdater::class)
             ->arg(0, new Reference('property_accessor'))
 
-        ->set(PaginatorFactory::class)
+        ->set(PaginatorFactory::class)->public()
             ->arg(0, new Reference(AdminContextProvider::class))
             ->arg(1, new Reference(EntityPaginator::class))
 
@@ -256,7 +256,7 @@ return static function (ContainerConfigurator $container) {
         ->set(FieldProvider::class)
             ->arg(0, new Reference(AdminContextProvider::class))
 
-        ->set(FilterFactory::class)
+        ->set(FilterFactory::class)->public()
             ->arg(0, new Reference(AdminContextProvider::class))
             ->arg(1, \function_exists('tagged')
                 ? tagged(EasyAdminExtension::TAG_FILTER_CONFIGURATOR)

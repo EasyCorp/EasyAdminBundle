@@ -27,10 +27,21 @@
     width: 100%;
 }
 
-.featherlight .ea-lightbox {
-    display: block;
-}
+$basicLightbox__background: rgba(0, 0, 0, 0.8);
+$basicLightbox__zIndex: 10000;
+$basicLightbox__duration: .3s;
+$basicLightbox__timing: ease;
+@import "~basiclightbox/src/styles/main";
 
-.featherlight .ea-lightbox:hover {
+.basicLightbox__placeholder {
+    margin-left: 5%;
+    margin-right: 5%;
+    max-height: 95%;
+}
+.basicLightbox__placeholder img {
+    background: white;
+    padding: 25px;
+}
+.basicLightbox__placeholder img:hover {
     cursor: zoom-out;
 }

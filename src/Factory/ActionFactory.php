@@ -51,6 +51,10 @@ final class ActionFactory
                 continue;
             }
 
+            if (false === $this->authChecker->isGranted(Permission::EA_EXECUTE_ACTION_ENTITY, ['action' => $actionDto, 'entity' => $entityDto])) {
+                continue;
+            }
+
             if (false === $actionDto->shouldBeDisplayedFor($entityDto)) {
                 continue;
             }

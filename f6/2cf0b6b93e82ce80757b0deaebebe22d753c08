@@ -1,0 +1,15 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2021-05-16T07:37:11Z
+
+There are some extra commits in your pull request (I've seen the same happened in other pull requests from you). Don't worry, this can be probably be fixed quickly.
+
+There might be better ways of solving this, but something that helps me is the following:
+
+* Browse your local fork directory and make sure you are in the branch of this PR: `git checkout translations-ro`
+* Run this command: `git rebase -i HEAD~8`  An editor will open and you'll see the list of 8 commits of this PR
+* Delete the lines that belong to all unwanted commits and leave only the real commit of this PR: `e0e7e10`
+* Now I don't remember if you need to run `git commit -a` too 🤔
+* Finally, run `git push -f origin`  to submit your changes ... the `-f` is mandatory because you have rebased, so you need to "force" the changes
+
+Then, for future PRs ... you may need to run commands like `git fetch upstream && git merge upstream/master` or `git pull --rebase upstream` or something like that to update your local fork with the latest changes and avoid these unwanted commits.

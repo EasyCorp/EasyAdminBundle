@@ -1,6 +1,29 @@
 Upgrade between EasyAdmin 3.x versions
 ======================================
 
+EasyAdmin 3.3.0
+---------------
+
+### JavaScript files are included in the `<head>`
+
+JavaScript files, added via `addJsFile()` and/or `addWebpackEncoreEntry()`
+in CRUD's `configureAssets()` method, are now included in the HTML
+`<head>` element instead of at the bottom of the `<body>` element.
+
+You might need to change your JavaScript code a bit to wrap it inside the following:
+
+```js
+document.addEventListener('DOMContentLoaded', () => {
+
+    // put your JavaScript code here
+
+});
+```
+
+This ensures that your code is run once the page has been loaded. For Webpack
+Encore entries you can also set the `webpack_encore.script_attributes.defer`
+option to `true` to run those scripts after the entire page is loaded.
+
 EasyAdmin 3.2.0
 ---------------
 

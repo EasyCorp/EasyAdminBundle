@@ -102,7 +102,10 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
         return $this->translator->trans($help, $field->getTranslationParameters(), $translationDomain);
     }
 
-    private function buildLabelOption(FieldDto $field, string $translationDomain, ?string $currentPage): ?string
+    /**
+     * @return string|false|null
+     */
+    private function buildLabelOption(FieldDto $field, string $translationDomain, ?string $currentPage)
     {
         // don't autogenerate a label for these special fields (there's a dedicated configurator for them)
         if (FormField::class === $field->getFieldFqcn()) {

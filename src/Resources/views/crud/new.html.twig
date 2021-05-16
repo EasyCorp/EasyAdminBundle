@@ -20,12 +20,20 @@
     {% for css_asset in new_form.vars.ea_crud_form.assets.cssFiles %}
         <link rel="stylesheet" href="{{ asset(css_asset) }}">
     {% endfor %}
+
+    {% for webpack_encore_entry in new_form.vars.ea_crud_form.assets.webpackEncoreEntries %}
+        {{ ea_call_function_if_exists('encore_entry_link_tags', webpack_encore_entry) }}
+    {% endfor %}
 {% endblock %}
 
 {% block configured_javascripts %}
     {{ parent() }}
     {% for js_asset in new_form.vars.ea_crud_form.assets.jsFiles %}
         <script src="{{ asset(js_asset) }}"></script>
+    {% endfor %}
+
+    {% for webpack_encore_entry in new_form.vars.ea_crud_form.assets.webpackEncoreEntries %}
+        {{ ea_call_function_if_exists('encore_entry_script_tags', webpack_encore_entry) }}
     {% endfor %}
 {% endblock %}
 

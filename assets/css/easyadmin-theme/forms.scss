@@ -121,7 +121,8 @@ label.form-check-label {
 
 .full-width .form-widget input.form-control,
 .full-width .form-widget textarea.form-control,
-.full-width .form-widget select.form-control {
+.full-width .form-widget select.form-control,
+.full-width .form-widget .select2-container--bootstrap .select2-selection {
     max-width: none;
 }
 

@@ -80,7 +80,7 @@ final class FieldDto
         return null !== u($this->getCssClass())->indexOf('field-form_panel');
     }
 
-    public function getFieldFqcn(): string
+    public function getFieldFqcn(): ?string
     {
         return $this->fieldFqcn;
     }
@@ -141,12 +141,18 @@ final class FieldDto
         $this->formatValueCallable = $callable;
     }
 
-    public function getLabel(): ?string
+    /**
+     * @return string|false|null
+     */
+    public function getLabel()
     {
         return $this->label;
     }
 
-    public function setLabel(?string $label): void
+    /**
+     * @param string|false|null $label
+     */
+    public function setLabel($label): void
     {
         $this->label = $label;
     }
@@ -290,6 +296,11 @@ final class FieldDto
     public function setAssets(AssetsDto $assets): void
     {
         $this->assets = $assets;
+    }
+
+    public function addWebpackEncoreEntry(string $entryName): void
+    {
+        $this->assets->addWebpackEncoreEntry($entryName);
     }
 
     public function addCssFile(string $cssFilePath): void

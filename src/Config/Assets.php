@@ -24,6 +24,17 @@ final class Assets
         return new self($dto);
     }
 
+    public function addWebpackEncoreEntry(string $entryName): self
+    {
+        if (!class_exists('Symfony\\WebpackEncoreBundle\\Twig\\EntryFilesTwigExtension')) {
+            throw new \RuntimeException('You are trying to add Webpack Encore entries in the backend but Webpack Encore is not installed in your project. Try running "composer req symfony/webpack-encore-bundle"');
+        }
+
+        $this->dto->addWebpackEncoreEntry($entryName);
+
+        return $this;
+    }
+
     public function addCssFile(string $path): self
     {
         $this->dto->addCssFile($path);

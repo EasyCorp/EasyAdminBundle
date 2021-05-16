@@ -15,7 +15,10 @@ final class SlugField implements FieldInterface
     public const OPTION_TARGET_FIELD_NAME = 'targetFieldName';
     public const OPTION_UNLOCK_CONFIRMATION_MESSAGE = 'unlockConfirmationMessage';
 
-    public static function new(string $propertyName, ?string $label = null): self
+    /**
+     * @param string|false|null $label
+     */
+    public static function new(string $propertyName, $label = null): self
     {
         return (new self())
             ->setProperty($propertyName)

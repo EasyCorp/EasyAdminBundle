@@ -27,6 +27,10 @@
     {% for css_asset in edit_form.vars.ea_crud_form.assets.cssFiles %}
         <link rel="stylesheet" href="{{ asset(css_asset) }}">
     {% endfor %}
+
+    {% for webpack_encore_entry in edit_form.vars.ea_crud_form.assets.webpackEncoreEntries %}
+        {{ ea_call_function_if_exists('encore_entry_link_tags', webpack_encore_entry) }}
+    {% endfor %}
 {% endblock %}
 
 {% block configured_javascripts %}
@@ -34,13 +38,17 @@
     {% for js_asset in edit_form.vars.ea_crud_form.assets.jsFiles %}
         <script src="{{ asset(js_asset) }}"></script>
     {% endfor %}
+
+    {% for webpack_encore_entry in edit_form.vars.ea_crud_form.assets.webpackEncoreEntries %}
+        {{ ea_call_function_if_exists('encore_entry_script_tags', webpack_encore_entry) }}
+    {% endfor %}
 {% endblock %}
 
 {% block content_title %}
     {%- apply spaceless -%}
-        {% set default_title = ea.crud.defaultPageTitle('edit', entity.instance)|trans(ea.i18n.translationParameters, 'EasyAdminBundle') %}
-        {% set custom_title = ea.crud.customPageTitle('edit', entity.instance) %}
-        {{ custom_title is null ? default_title|raw : custom_title|trans(ea.i18n.translationParameters)|raw }}
+        {{ ea.crud.customPageTitle is null
+            ? (ea.crud.defaultPageTitle|trans(ea.i18n.translationParameters, 'EasyAdminBundle'))|raw
+            : ea.crud.customPageTitle|trans(ea.i18n.translationParameters)|raw }}
     {%- endapply -%}
 {% endblock %}
 

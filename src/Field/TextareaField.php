@@ -16,7 +16,10 @@ final class TextareaField implements FieldInterface
     public const OPTION_NUM_OF_ROWS = 'numOfRows';
     public const OPTION_RENDER_AS_HTML = 'renderAsHtml';
 
-    public static function new(string $propertyName, ?string $label = null): self
+    /**
+     * @param string|false|null $label
+     */
+    public static function new(string $propertyName, $label = null): self
     {
         return (new self())
             ->setProperty($propertyName)

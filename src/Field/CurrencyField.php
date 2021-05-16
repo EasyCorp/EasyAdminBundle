@@ -16,7 +16,10 @@ final class CurrencyField implements FieldInterface
     public const OPTION_SHOW_NAME = 'showName';
     public const OPTION_SHOW_SYMBOL = 'showSymbol';
 
-    public static function new(string $propertyName, ?string $label = null): self
+    /**
+     * @param string|false|null $label
+     */
+    public static function new(string $propertyName, $label = null): self
     {
         return (new self())
             ->setProperty($propertyName)

@@ -27,7 +27,10 @@ final class AssociationField implements FieldInterface
     /** @internal this option is intended for internal use only */
     public const PARAM_AUTOCOMPLETE_CONTEXT = 'autocompleteContext';
 
-    public static function new(string $propertyName, ?string $label = null): self
+    /**
+     * @param string|false|null $label
+     */
+    public static function new(string $propertyName, $label = null): self
     {
         return (new self())
             ->setProperty($propertyName)

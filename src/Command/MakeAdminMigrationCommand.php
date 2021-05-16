@@ -66,8 +66,8 @@ class MakeAdminMigrationCommand extends Command
 
         if (!$fs->exists($ea2ConfigBackupPath)) {
             $this->temporarySection->write(sprintf(
-            '<error> ERROR </error> The config backup file was not found in %s. To generate this file, run the <comment>make:admin:migration</comment> command in your application BEFORE upgrading to EasyAdmin 3 (the command must be run while still using EasyAdmin 2).',
-            $ea2ConfigBackupPath
+                '<error> ERROR </error> The config backup file was not found in %s. To generate this file, run the <comment>make:admin:migration</comment> command in your application BEFORE upgrading to EasyAdmin 3 (the command must be run while still using EasyAdmin 2).',
+                $ea2ConfigBackupPath
             ));
         }
         while (!$fs->exists($ea2ConfigBackupPath)) {

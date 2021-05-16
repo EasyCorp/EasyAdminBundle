@@ -144,8 +144,8 @@ final class EntityRepository implements EntityRepositoryInterface
 
     private function addOrderClause(QueryBuilder $queryBuilder, SearchDto $searchDto, EntityDto $entityDto): void
     {
-        $aliases = $queryBuilder->getAllAliases();
         foreach ($searchDto->getSort() as $sortProperty => $sortOrder) {
+            $aliases = $queryBuilder->getAllAliases();
             $sortFieldIsDoctrineAssociation = $entityDto->isAssociation($sortProperty);
 
             if ($sortFieldIsDoctrineAssociation) {
@@ -198,7 +198,7 @@ final class EntityRepository implements EntityRepositoryInterface
             }
 
             $filterDataDto = FilterDataDto::new($i, $filter, current($queryBuilder->getRootAliases()), $submittedData);
-            $filter->apply($queryBuilder, $filterDataDto, $fields->get($propertyName), $entityDto);
+            $filter->apply($queryBuilder, $filterDataDto, $fields->getByProperty($propertyName), $entityDto);
 
             ++$i;
         }

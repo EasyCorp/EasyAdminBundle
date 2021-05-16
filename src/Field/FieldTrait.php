@@ -34,7 +34,10 @@ trait FieldTrait
         return $this;
     }
 
-    public function setLabel(?string $label): self
+    /**
+     * @param string|false|null $label
+     */
+    public function setLabel($label): self
     {
         $this->dto->setLabel($label);
 
@@ -179,6 +182,19 @@ trait FieldTrait
     {
         $this->dto->setTemplateName(null);
         $this->dto->setTemplatePath($path);
+
+        return $this;
+    }
+
+    public function addWebpackEncoreEntries(string ...$entryNames): self
+    {
+        if (!class_exists('Symfony\\WebpackEncoreBundle\\Twig\\EntryFilesTwigExtension')) {
+            throw new \RuntimeException('You are trying to add Webpack Encore entries in a field but Webpack Encore is not installed in your project. Try running "composer req symfony/webpack-encore-bundle"');
+        }
+
+        foreach ($entryNames as $entryName) {
+            $this->dto->addWebpackEncoreEntry($entryName);
+        }
 
         return $this;
     }

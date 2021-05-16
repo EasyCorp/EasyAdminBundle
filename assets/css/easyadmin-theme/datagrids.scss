@@ -48,6 +48,10 @@ table.datagrid {
 .datagrid tbody tr:hover td, .datagrid tbody tr:hover th {
   background: var(--form-bg);
 }
+.datagrid tbody tr.selected-row td {
+  background: var(--indigo-100);
+  border-bottom-color: var(--indigo-100);
+}
 .datagrid td.actions {
   text-align: right;
 }
@@ -65,7 +69,7 @@ table.datagrid {
 }
 
 .datagrid .dropdown-actions {
-  .dropdown-toggle { color: var(--color-text); }
+  .dropdown-toggle { color: var(--text-color); }
   // hides the caret added automatically by Bootstrap
   .dropdown-toggle:after { display: none; }
   .dropdown-toggle:hover { cursor: pointer; }

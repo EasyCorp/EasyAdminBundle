@@ -1,17 +1,6 @@
 CRUD Controllers
 ================
 
-.. raw:: html
-
-    <div class="box box--small box--warning">
-        <strong class="title">WARNING:</strong>
-
-        You are browsing the documentation for <strong>EasyAdmin 3.x</strong>,
-        which has just been released. Switch to
-        <a href="https://symfony.com/doc/2.x/bundles/EasyAdminBundle/index.html">EasyAdmin 2.x docs</a>
-        if your application has not been upgraded to EasyAdmin 3 yet.
-    </div>
-
 **CRUD controllers** provide the CRUD operations (create, show, update, delete)
 for Doctrine ORM entities. Each CRUD controller can be associated to one or more
 dashboards.
@@ -480,7 +469,8 @@ Generating Admin URLs
 .. versionadded:: 3.2
 
     The ``AdminUrlGenerator`` class was introduced in EasyAdmin 3.2.0. In earlier
-    versions, you had to use the ``CrudUrlGenerator`` class.
+    versions, you had to use the ``CrudUrlGenerator`` class and call the
+    ``build()`` method to start building a URL.
 
 :ref:`As explained <dashboard-route>` in the article about Dashboards, all URLs
 of a given dashboard use the same route and they only differ in the query string
@@ -488,7 +478,7 @@ parameters. Instead of having to deal with that, you can use the ``AdminUrlGener
 service to generate URLs in your PHP code.
 
 When generating a URL, you don't start from scratch. EasyAdmin reuses all the
-query parameters existing in the current request. This allows generating because
+query parameters existing in the current request. This is done on purpose because
 generating new URLs based on the current URL is the most common scenario. Use
 the ``unsetAll()`` method to remove all existing query parameters::
 
@@ -499,24 +489,31 @@ the ``unsetAll()`` method to remove all existing query parameters::
 
     class SomeCrudController extends AbstractCrudController
     {
+        private $adminUrlGenerator;
+
+        public function __construct(AdminUrlGenerator $adminUrlGenerator)
+        {
+            $this->adminUrlGenerator = $adminUrlGenerator;
+        }
+
         // ...
 
         public function someMethod()
         {
-            // if you prefer, you can inject the AdminUrlGenerator service in the
-            // constructor and/or action of this controller
-            $adminUrlGenerator = $this->get(AdminUrlGenerator::class);
+            // instead of injecting the AdminUrlGenerator service in the constructor,
+            // you can also get it from inside a controller action as follows:
+            // $adminUrlGenerator = $this->get(AdminUrlGenerator::class);
 
             // the existing query parameters are maintained, so you only
             // have to pass the values you want to change.
-            $url = $adminUrlGenerator->set('page', 2)->generateUrl();
+            $url = $this->adminUrlGenerator->set('page', 2)->generateUrl();
 
             // you can remove existing parameters
-            $url = $adminUrlGenerator->unset('menuIndex')->generateUrl();
-            $url = $adminUrlGenerator->unsetAll()->set('foo', 'someValue')->generateUrl();
+            $url = $this->adminUrlGenerator->unset('menuIndex')->generateUrl();
+            $url = $this->adminUrlGenerator->unsetAll()->set('foo', 'someValue')->generateUrl();
 
             // the URL builder provides shortcuts for the most common parameters
-            $url = $adminUrlGenerator->build()
+            $url = $this->adminUrlGenerator
                 ->setController(SomeCrudController::class)
                 ->setAction('theActionName')
                 ->generateUrl();
@@ -524,6 +521,12 @@ the ``unsetAll()`` method to remove all existing query parameters::
             // ...
         }
     }
+
+.. tip::
+
+    If you need to deal with the admin URLs manually for any reason, the names
+    of the query string parameters are defined as constants in the
+    :class:`EasyCorp\\Bundle\\EasyAdminBundle\\Config\\Option\\EA` class.
 
 .. _ea-url-function:
 

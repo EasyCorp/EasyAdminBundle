@@ -19,7 +19,10 @@ final class PercentField implements FieldInterface
     public const OPTION_SYMBOL = 'symbol';
     public const OPTION_ROUNDING_MODE = 'roundingMode';
 
-    public static function new(string $propertyName, ?string $label = null): self
+    /**
+     * @param string|false|null $label
+     */
+    public static function new(string $propertyName, $label = null): self
     {
         return (new self())
             ->setProperty($propertyName)

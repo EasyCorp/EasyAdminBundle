@@ -44,8 +44,8 @@
         {{- parent() -}}
 
         <script>
-            document.querySelector('#{{ id }}').addEventListener('change', function() {
-                const fileName = this.value.replace('C:\\fakepath\\', '');
+            document.querySelector('#{{ id }}').addEventListener('change', (event) => {
+                const fileName = event.currentTarget.value.replace('C:\\fakepath\\', '');
                 const customInputFileLabel = document.querySelector('#{{ id }} ~ .custom-file-label');
                 customInputFileLabel.classList.add('selected');
                 customInputFileLabel.innerHTML = fileName;
@@ -498,8 +498,8 @@
     {% endfor %}
 
     <script>
-        document.querySelectorAll('.filter-checkbox').forEach(filterCheckbox => {
-            filterCheckbox.addEventListener('change', function () {
+        document.querySelectorAll('.filter-checkbox').forEach((filterCheckbox) => {
+            filterCheckbox.addEventListener('change', () => {
                 const filterToggleLink = filterCheckbox.nextElementSibling;
                 const filterExpandedAttribute = filterCheckbox.nextElementSibling.getAttribute('aria-expanded');
 
@@ -509,16 +509,14 @@
             });
         });
 
-        // we can't use -> "document.querySelector('form#filters').addEventListener('change', ...);"
-        // because it doesn't work with Select2 elements changes
         // TODO: when using the native datepicker, 'change' isn't fired (either in plain JavaScript
         // or jQuery) unless you input the entire date + time information
-        $(document).on('change', 'form#{{ form.vars.id }}', function (event) {
+        document.querySelector('form#{{ form.vars.id }}').addEventListener('change', (event) => {
             if (event.target.classList.contains('filter-checkbox')) {
                 return;
             }
 
-            let filterCheckbox = event.target.closest('.filter-field').querySelector('.filter-checkbox');
+            const filterCheckbox = event.target.closest('.filter-field').querySelector('.filter-checkbox');
             if (!filterCheckbox.checked) {
                 filterCheckbox.checked = true;
             }
@@ -536,7 +534,7 @@
             {{ form_row(form.value2) }}
         </div>
         <script>
-            document.querySelector('#{{ form.comparison.vars.id }}').addEventListener('change', function(event) {
+            document.querySelector('#{{ form.comparison.vars.id }}').addEventListener('change', (event) => {
                 const input = document.querySelector('#wrapper_{{ form.value2.vars.id }}');
                 input.style.display = event.currentTarget.value === 'between' ? '' : 'none';
             });

@@ -87,9 +87,10 @@ table.datagrid {
   max-width: 100px;
 }
 
-.datagrid .highlight {
+.datagrid mark {
   border-radius: var(--border-radius);
   background: var(--highlight-bg);
+  color: inherit;
   padding: 1px;
 }
 

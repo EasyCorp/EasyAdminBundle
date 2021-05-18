@@ -1437,6 +1437,11 @@ base@^0.11.1:
     mixin-deep "^1.2.0"
     pascalcase "^0.1.1"
 
+basiclightbox@^5.0.4:
+  version "5.0.4"
+  resolved "https://registry.yarnpkg.com/basiclightbox/-/basiclightbox-5.0.4.tgz#5367d6d468ae44406e51b8486cfb8751f36f1fb2"
+  integrity sha512-EsuNWmfcFXWZOe0txKXsllYOC7bDpoaVLc4HHHlYKB/roymlZs+FBdLUU6rx2yPpnJZhulwheKdPjqr2k0+NGQ==
+
 batch@0.6.1:
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/batch/-/batch-0.6.1.tgz#dc34314f4e679318093fc760272525f94bf25c16"
@@ -2524,6 +2529,11 @@ diffie-hellman@^5.0.0:
     miller-rabin "^4.0.0"
     randombytes "^2.0.0"
 
+dirty-form@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/dirty-form/-/dirty-form-0.4.0.tgz#59c10d94eed87061c7cc7a0bece70e28f7d31647"
+  integrity sha512-ErDRLq8Sf7zRY43jJ7aesdYFy1GLzpa+ITdVkiXaPnREmcaVMNbvc+k4ohJS2uS/6vh/j2cMhlUbBZmCcUMsfA==
+
 dns-equal@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/dns-equal/-/dns-equal-1.0.0.tgz#b39e7f1da6eb0a75ba9c17324b34753c47e0654d"
@@ -2987,11 +2997,6 @@ faye-websocket@^0.11.3:
   integrity sha512-D2y4bovYpzziGgbHYtGCMjlJM36vAl/y+xUyn1C+FVx8szd1E+86KwVw6XvYSzOP8iMpm1X0I4xJD+QtUb36OA==
   dependencies:
     websocket-driver ">=0.5.1"
-
-featherlight@^1.7.13:
-  version "1.7.14"
-  resolved "https://registry.yarnpkg.com/featherlight/-/featherlight-1.7.14.tgz#7896909d0d7ac4672c334ba018363e519d31e4db"
-  integrity sha512-4R0Vk0pTN5IPCuMABPtXJ6hgGgoK1qwbxGB4Nf06gXovw/i+r3s/f94ksZYjsW3c2oMEAS9A8exdlNaX9YSSRQ==
 
 figgy-pudding@^3.5.1:
   version "3.5.2"
@@ -4070,21 +4075,7 @@ isstream@~0.1.2:
   resolved "https://registry.yarnpkg.com/isstream/-/isstream-0.1.2.tgz#47e63f7af55afa6f92e1500e690eb8b8529c099a"
   integrity sha1-R+Y/evVa+m+S4VAOaQ64uFKcCZo=
 
-jquery-highlight@^3.4.0:
-  version "3.5.0"
-  resolved "https://registry.yarnpkg.com/jquery-highlight/-/jquery-highlight-3.5.0.tgz#354fb3a8b98c594525ec1ccc003fd3d1dc305815"
-  integrity sha512-5gzRomQyy3n/byb2G5zhbavdiXcPZ6rAWXtU5FgdEvguDEn90kMm9/QARY3zdKhH/+tfqqu9GNKocbMGf7ThNg==
-  dependencies:
-    jquery ">= 1.0.0"
-
-jquery.are-you-sure@^1.9.0:
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/jquery.are-you-sure/-/jquery.are-you-sure-1.9.0.tgz#16aaa2c6080fa214f64027239ae3a34ad6a6265e"
-  integrity sha512-2r0uFx8CyAopjeHGOdvvwpFP921TnW1+v1uJXcAWQYHYGB1tryTDhQY+5u6HsVeMwbWiRTKVZFWnLaFpDvIqZQ==
-  dependencies:
-    jquery ">=1.4.2"
-
-"jquery@>= 1.0.0", jquery@>=1.4.2, jquery@^3.5.1:
+jquery@^3.5.1:
   version "3.6.0"
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.6.0.tgz#c72a09f15c1bdce142f49dbf1170bdf8adac2470"
   integrity sha512-JVzAR/AjBvVt2BmYhxRCSYysDsPcssdmTFnzyLEts9qNwmjmu4JTAMYubEfwVOSwpQ1I1sKKFcxhZCI2buerfw==
@@ -4369,6 +4360,11 @@ map-visit@^1.0.0:
   integrity sha1-7Nyo8TFE5mDxtb1B8S80edmN+48=
   dependencies:
     object-visit "^1.0.0"
+
+mark.js@^8.11.1:
+  version "8.11.1"
+  resolved "https://registry.yarnpkg.com/mark.js/-/mark.js-8.11.1.tgz#180f1f9ebef8b0e638e4166ad52db879beb2ffc5"
+  integrity sha1-GA8fnr74sOY45BZq1S24eb6y/8U=
 
 md5.js@^1.3.4:
   version "1.3.5"

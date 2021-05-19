@@ -17,24 +17,14 @@
 
 {% block configured_stylesheets %}
     {{ parent() }}
-    {% for css_asset in new_form.vars.ea_crud_form.assets.cssFiles %}
-        <link rel="stylesheet" href="{{ asset(css_asset) }}">
-    {% endfor %}
-
-    {% for webpack_encore_entry in new_form.vars.ea_crud_form.assets.webpackEncoreEntries %}
-        {{ ea_call_function_if_exists('encore_entry_link_tags', webpack_encore_entry) }}
-    {% endfor %}
+    {{ include('@EasyAdmin/includes/_css_assets.html.twig', { assets: new_form.vars.ea_crud_form.assets.cssAssets }, with_context = false) }}
+    {{ include('@EasyAdmin/includes/_encore_link_tags.html.twig', { assets: new_form.vars.ea_crud_form.assets.webpackEncoreAssets }, with_context = false) }}
 {% endblock %}
 
 {% block configured_javascripts %}
     {{ parent() }}
-    {% for js_asset in new_form.vars.ea_crud_form.assets.jsFiles %}
-        <script src="{{ asset(js_asset) }}"></script>
-    {% endfor %}
-
-    {% for webpack_encore_entry in new_form.vars.ea_crud_form.assets.webpackEncoreEntries %}
-        {{ ea_call_function_if_exists('encore_entry_script_tags', webpack_encore_entry) }}
-    {% endfor %}
+    {{ include('@EasyAdmin/includes/_js_assets.html.twig', { assets: new_form.vars.ea_crud_form.assets.jsAssets }, with_context = false) }}
+    {{ include('@EasyAdmin/includes/_encore_script_tags.html.twig', { assets: new_form.vars.ea_crud_form.assets.webpackEncoreAssets }, with_context = false) }}
 {% endblock %}
 
 {% block content_title %}

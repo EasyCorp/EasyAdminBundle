@@ -236,14 +236,17 @@ the :doc:`CRUD controllers </crud>` to add your own CSS and JavaScript files::
         {
             return $assets
                 // adds the CSS and JS assets associated to the given Webpack Encore entry
-                // it's equivalent to calling encore_entry_link_tags('...') and encore_entry_script_tags('...')
-                // both CSS and JS entries are added inside the <head> element
+                // it's equivalent to adding these inside the <head> element:
+                // {{ encore_entry_link_tags('...') }} and {{ encore_entry_script_tags('...') }}
                 ->addWebpackEncoreEntry('admin-app')
 
-                // the argument of these methods is passed to the asset() Twig function
-                // both CSS and JS assets are added inside the <head> element
+                // it's equivalent to adding this inside the <head> element:
+                // <link rel="stylesheet" href="{{ asset('...') }}">
                 ->addCssFile('build/admin.css')
                 ->addCssFile('https://example.org/css/admin2.css')
+
+                // it's equivalent to adding this inside the <head> element:
+                // <script src="{{ asset('...'') }}"></script>
                 ->addJsFile('build/admin.js')
                 ->addJsFile('https://example.org/js/admin2.js')
 
@@ -261,6 +264,24 @@ the :doc:`CRUD controllers </crud>` to add your own CSS and JavaScript files::
     JavaScript files and JavaScript Webpack Encore entries are included in the
     ``<head>`` element of the page. In previous EasyAdmin versions they were
     included at the bottom of the ``<body>`` element.
+
+If you need to customize the HTML attributes or other features of the ``<link>``
+and ``<script>`` tags, pass an ``Asset`` object to the ``addCssFile()``,
+``addJsFile()`` and ``addWebpackEncoreEntry()`` methods::
+
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Asset;
+    // ...
+
+    return $assets
+        ->addCssFile(Asset::new('build/admin.css')->preload()->nopush())
+        ->addCssFile(Asset::new('build/admin-print.css')->htmlAttr('media', 'print'))
+
+        ->addJsFile(Asset::new('build/admin.js')->defer())
+        ->addJsFile(Asset::new('build/admin.js')->preload())
+        ->addJsFile(Asset::new('build/admin.js')->htmlAttr('referrerpolicy', 'strict-origin'))
+
+        ->addWebpackEncoreEntry(Asset::new('admin-app')->webpackEntrypointName('...'))
+    ;
 
 .. tip::
 

@@ -1,6 +1,36 @@
 Upgrade between EasyAdmin 3.x versions
 ======================================
 
+EasyAdmin 3.4.0
+---------------
+
+### CSS, JavaScript and Webpack Entries are passed as assets
+
+This is an internal change that only affects you if your application has
+customized the way EasyAdmin loads CSS/JS/Webpack entries in the templates.
+
+In previous EasyAdmin versions, assets were passed to templates as simple
+strings (e.g. `'/build/admin.css'` for a CSS asset). They were included as follows:
+
+    {% for js_asset in js_assets %}
+        <script src="{{ asset(js_asset) }}"></script>
+    {% endfor %}
+
+Starting from EasyAdmin 3.4.0, assets are passed as instances of
+`EasyCorp\Bundle\EasyAdminBundle\Dto\AssetDto`, which allows to configure all
+kinds of attributes and features for those assets. This is the same example as
+before using the new asset objects:
+
+    {% for js_asset in js_assets %}
+        {% if js_asset.preload %}
+            <link rel="preload" href="{{ ea_call_function_if_exists('preload', js_asset.value, { as: 'script', nopush: js_asset.nopush }) }}"
+            {% for attr, value in js_asset.htmlAttributes %}{{ attr }}="{{ value|e('html_attr') }}" {% endfor %}>
+        {% else %}
+            <script src="{{ asset(js_asset.value) }}" {{ js_asset.async ? 'async' }} {{ js_asset.defer ? 'defer' }}
+            {% for attr, value in js_asset.htmlAttributes %}{{ attr }}="{{ value|e('html_attr') }}" {% endfor %}></script>
+        {% endif %}
+    {% endfor %}
+
 EasyAdmin 3.3.0
 ---------------
 

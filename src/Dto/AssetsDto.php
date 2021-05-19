@@ -7,9 +7,9 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
  */
 final class AssetsDto
 {
-    private $webpackEncoreEntries = [];
-    private $cssFiles = [];
-    private $jsFiles = [];
+    private $webpackEncoreAssets = [];
+    private $cssAssets = [];
+    private $jsAssets = [];
     private $headContents = [];
     private $bodyContents = [];
 
@@ -17,31 +17,31 @@ final class AssetsDto
     {
     }
 
-    public function addWebpackEncoreEntry(string $entryName): void
+    public function addWebpackEncoreAsset(AssetDto $assetDto): void
     {
-        if (\in_array($entryName, $this->webpackEncoreEntries, true)) {
-            return;
+        if (\array_key_exists($entryName = $assetDto->getValue(), $this->webpackEncoreAssets)) {
+            throw new \InvalidArgumentException(sprintf('The "%s" Webpack Encore entry has been added more than once via the addWebpackEncoreEntry() method, but each entry can only be added once (to not overwrite its configuration).', $entryName));
         }
 
-        $this->webpackEncoreEntries[] = $entryName;
+        $this->webpackEncoreAssets[$entryName] = $assetDto;
     }
 
-    public function addCssFile(string $path): void
+    public function addCssAsset(AssetDto $assetDto): void
     {
-        if (\in_array($path, $this->cssFiles, true)) {
-            return;
+        if (\array_key_exists($cssPath = $assetDto->getValue(), $this->cssAssets)) {
+            throw new \InvalidArgumentException(sprintf('The "%s" CSS file has been added more than once via the addCssFile() method, but each asset can only be added once (to not overwrite its configuration).', $cssPath));
         }
 
-        $this->cssFiles[] = $path;
+        $this->cssAssets[$cssPath] = $assetDto;
     }
 
-    public function addJsFile(string $path): void
+    public function addJsAsset(AssetDto $assetDto): void
     {
-        if (\in_array($path, $this->jsFiles, true)) {
-            return;
+        if (\array_key_exists($jsPath = $assetDto->getValue(), $this->jsAssets)) {
+            throw new \InvalidArgumentException(sprintf('The "%s" JS file has been added more than once via the addJsFile() method, but each asset can only be added once (to not overwrite its configuration).', $jsPath));
         }
 
-        $this->jsFiles[] = $path;
+        $this->jsAssets[$jsPath] = $assetDto;
     }
 
     public function addHtmlContentToHead(string $htmlContent): void
@@ -62,19 +62,28 @@ final class AssetsDto
         $this->bodyContents[] = $htmlContent;
     }
 
-    public function getWebpackEncoreEntries(): array
+    /**
+     * @return AssetDto[]
+     */
+    public function getWebpackEncoreAssets(): array
     {
-        return $this->webpackEncoreEntries;
+        return $this->webpackEncoreAssets;
     }
 
-    public function getCssFiles(): array
+    /**
+     * @return AssetDto[]
+     */
+    public function getCssAssets(): array
     {
-        return $this->cssFiles;
+        return $this->cssAssets;
     }
 
-    public function getJsFiles(): array
+    /**
+     * @return AssetDto[]
+     */
+    public function getJsAssets(): array
     {
-        return $this->jsFiles;
+        return $this->jsAssets;
     }
 
     public function getHeadContents(): array
@@ -87,13 +96,13 @@ final class AssetsDto
         return $this->bodyContents;
     }
 
-    public function mergeWith(self $assetDto): self
+    public function mergeWith(self $assetsDto): self
     {
-        $this->webpackEncoreEntries = array_unique(array_merge($this->webpackEncoreEntries, $assetDto->getWebpackEncoreEntries()));
-        $this->cssFiles = array_unique(array_merge($this->cssFiles, $assetDto->getCssFiles()));
-        $this->jsFiles = array_unique(array_merge($this->jsFiles, $assetDto->getJsFiles()));
-        $this->headContents = array_unique(array_merge($this->headContents, $assetDto->getHeadContents()));
-        $this->bodyContents = array_unique(array_merge($this->bodyContents, $assetDto->getBodyContents()));
+        $this->webpackEncoreAssets = array_merge($this->webpackEncoreAssets, $assetsDto->getWebpackEncoreAssets());
+        $this->cssAssets = array_merge($this->cssAssets, $assetsDto->getCssAssets());
+        $this->jsAssets = array_merge($this->jsAssets, $assetsDto->getJsAssets());
+        $this->headContents = array_merge($this->headContents, $assetsDto->getHeadContents());
+        $this->bodyContents = array_merge($this->bodyContents, $assetsDto->getBodyContents());
 
         return $this;
     }

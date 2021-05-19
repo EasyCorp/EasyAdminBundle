@@ -298,19 +298,19 @@ final class FieldDto
         $this->assets = $assets;
     }
 
-    public function addWebpackEncoreEntry(string $entryName): void
+    public function addWebpackEncoreAsset(AssetDto $assetDto): void
     {
-        $this->assets->addWebpackEncoreEntry($entryName);
+        $this->assets->addWebpackEncoreAsset($assetDto);
     }
 
-    public function addCssFile(string $cssFilePath): void
+    public function addCssAsset(AssetDto $assetDto): void
     {
-        $this->assets->addCssFile($cssFilePath);
+        $this->assets->addCssAsset($assetDto);
     }
 
-    public function addJsFile(string $jsFilePath): void
+    public function addJsAsset(AssetDto $assetDto): void
     {
-        $this->assets->addJsFile($jsFilePath);
+        $this->assets->addJsAsset($assetDto);
     }
 
     public function addHtmlContentToHead(string $htmlContent): void

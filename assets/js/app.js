@@ -8,10 +8,10 @@ import 'bootstrap';
 import Mark from 'mark.js/src/vanilla';
 import DirtyForm from 'dirty-form';
 import * as basicLightbox from 'basiclightbox';
-import './adminlte.js';
 import 'select2';
 
 document.addEventListener('DOMContentLoaded', () => {
+    App.createMainMenu();
     App.createLayoutResizeControls();
     App.createNavigationToggler();
     App.createSearchHighlight();
@@ -37,6 +37,47 @@ window.addEventListener('load', () => {
 });
 
 const App = (() => {
+    const createMainMenu = () => {
+        // inspired by https://codepen.io/phileflanagan/pen/mwpQpY
+        const menuItemsWithSubmenus = document.querySelectorAll('#main-menu .menu-item.has-submenu');
+        menuItemsWithSubmenus.forEach((menuItem) => {
+            const menuItemSubmenu = menuItem.querySelector('.submenu');
+
+            // needed because the menu accordion is based on the max-height property.
+            // visible elements must be initialized with a explicit max-height; otherwise
+            // when you click on them the first time, the animation is not smooth
+            if (menuItem.classList.contains('expanded')) {
+                menuItemSubmenu.style.maxHeight = menuItemSubmenu.scrollHeight + 'px';
+            }
+
+            menuItem.querySelector('.submenu-toggle').addEventListener('click', (event) =>  {
+                event.preventDefault();
+
+                // hide other submenus
+                menuItemsWithSubmenus.forEach((otherMenuItem) => {
+                    if (menuItem === otherMenuItem) {
+                        return;
+                    }
+
+                    const otherMenuItemSubmenu = otherMenuItem.querySelector('.submenu');
+                    if (otherMenuItem.classList.contains('expanded')) {
+                        otherMenuItemSubmenu.style.maxHeight = '0px';
+                        otherMenuItem.classList.remove('expanded');
+                    }
+                });
+
+                // toggle the state of this submenu
+                if (menuItem.classList.contains('expanded')) {
+                    menuItemSubmenu.style.maxHeight = '0px';
+                    menuItem.classList.remove('expanded');
+                } else {
+                    menuItemSubmenu.style.maxHeight = menuItemSubmenu.scrollHeight + 'px';
+                    menuItem.classList.add('expanded');
+                }
+            });
+        });
+    };
+
     const createLayoutResizeControls = () => {
         const sidebarResizerHandler = document.getElementById('sidebar-resizer-handler');
         if (null !== sidebarResizerHandler) {
@@ -476,6 +517,7 @@ const App = (() => {
     };
 
     return {
+        createMainMenu: createMainMenu,
         createLayoutResizeControls: createLayoutResizeControls,
         createNavigationToggler: createNavigationToggler,
         createSearchHighlight: createSearchHighlight,

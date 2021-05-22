@@ -47,11 +47,7 @@ final class ActionFactory
                 continue;
             }
 
-            if (false === $this->authChecker->isGranted(Permission::EA_EXECUTE_ACTION, $actionDto)) {
-                continue;
-            }
-
-            if (false === $this->authChecker->isGranted(Permission::EA_EXECUTE_ACTION_ENTITY, ['action' => $actionDto, 'entity' => $entityDto])) {
+            if (false === $this->authChecker->isGranted(Permission::EA_EXECUTE_ACTION, ['action' => $actionDto, 'entity' => $entityDto])) {
                 continue;
             }
 
@@ -78,7 +74,7 @@ final class ActionFactory
                 continue;
             }
 
-            if (false === $this->authChecker->isGranted(Permission::EA_EXECUTE_ACTION, $actionDto)) {
+            if (false === $this->authChecker->isGranted(Permission::EA_EXECUTE_ACTION, ['action' => $actionDto, 'entity' => null])) {
                 continue;
             }
 

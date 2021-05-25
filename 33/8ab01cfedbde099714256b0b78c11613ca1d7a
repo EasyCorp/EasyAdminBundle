@@ -1,0 +1,5 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2021-05-22T10:47:19Z
+
+Hi Erwan, I like your proposal a lot ... but I prefer to do what you also suggested: to change the existing voter that checks for action permissions instead of creating a new permission. So, I've added some changes in this PR to do exactly that. Thanks!

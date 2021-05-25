@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Security;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -38,7 +39,7 @@ final class SecurityVoter extends Voter
         }
 
         if (Permission::EA_EXECUTE_ACTION === $permissionName) {
-            return $this->voteOnExecuteActionPermission($this->adminContextProvider->getContext()->getCrud(), $subject);
+            return $this->voteOnExecuteActionPermission($this->adminContextProvider->getContext()->getCrud(), $subject['action'] ?? null, $subject['entity'] ?? null);
         }
 
         if (Permission::EA_VIEW_FIELD === $permissionName) {
@@ -62,16 +63,26 @@ final class SecurityVoter extends Voter
         return $this->authorizationChecker->isGranted($menuItemDto->getPermission());
     }
 
-    private function voteOnExecuteActionPermission(CrudDto $crudDto, ?ActionDto $actionDto): bool
+    /**
+     * @param string|ActionDto $actionNameOrDto
+     */
+    private function voteOnExecuteActionPermission(CrudDto $crudDto, $actionNameOrDto, ?EntityDto $entityDto): bool
     {
         // users can run the Crud action if:
-        // * they have the required permission to execute the action
+        // * they have the required permission to execute the action on the given entity instance
         // * the action is not disabled
-        $actionName = null !== $actionDto ? $actionDto->getName() : $crudDto->getCurrentAction();
+
+        if (!\is_string($actionNameOrDto) && !($actionNameOrDto instanceof ActionDto)) {
+            throw new \RuntimeException(sprintf('When checking the "%s" permission with the isGranted() method, the value of the "action" parameter passed inside the voter $subject must be a string with the action name or a "%s" object.', Permission::EA_EXECUTE_ACTION, Asset::class));
+        }
+        $actionName = \is_string($actionNameOrDto) ? $actionNameOrDto : $actionNameOrDto->getName();
+
         $actionPermission = $crudDto->getActionsConfig()->getActionPermissions()[$actionName] ?? null;
         $disabledActionNames = $crudDto->getActionsConfig()->getDisabledActions();
 
-        return $this->authorizationChecker->isGranted($actionPermission) && !\in_array($actionName, $disabledActionNames, true);
+        $subject = null === $entityDto ? null : $entityDto->getInstance();
+
+        return $this->authorizationChecker->isGranted($actionPermission, $subject) && !\in_array($actionName, $disabledActionNames, true);
     }
 
     private function voteOnViewPropertyPermission(FieldDto $field): bool

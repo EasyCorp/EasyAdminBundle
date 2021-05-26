@@ -150,21 +150,26 @@ class AdminRouterSubscriber implements EventSubscriberInterface
 
         // if the request is related to a CRUD controller, change the controller to be executed
         if (null !== $crudControllerInstance = $this->getCrudControllerInstance($request)) {
-            $symfonyControllerCallable = [$crudControllerInstance, $request->query->get(EA::CRUD_ACTION)];
+            $symfonyControllerFqcnCallable = [$crudControllerInstance, $request->query->get(EA::CRUD_ACTION)];
+            $symfonyControllerStringCallable = [\get_class($crudControllerInstance), $request->query->get(EA::CRUD_ACTION)];
 
             // this makes Symfony believe that another controller is being executed
             // (e.g. this is needed for the autowiring of controller action arguments)
-            $event->getRequest()->attributes->set('_controller', $symfonyControllerCallable);
+            // VERY IMPORTANT: here the Symfony controller must be passed as a string (['App\Controller\Foo', 'index'])
+            // Otherwise, the param converter of the controller method doesn't work
+            $event->getRequest()->attributes->set('_controller', $symfonyControllerStringCallable);
 
             // this actually makes Symfony to execute the other controller
-            $event->setController($symfonyControllerCallable);
+            $event->setController($symfonyControllerFqcnCallable);
         }
 
         // if the request is related to a custom action, change the controller to be executed
         if (null !== $request->query->get(EA::ROUTE_NAME)) {
             $symfonyControllerAsString = $this->getSymfonyControllerFqcn($request);
-            if (false !== $symfonyControllerCallable = $this->getSymfonyControllerInstance($symfonyControllerAsString, $request->query->all()[EA::ROUTE_PARAMS] ?? [])) {
+            $symfonyControllerCallable = $this->getSymfonyControllerInstance($symfonyControllerAsString, $request->query->all()[EA::ROUTE_PARAMS] ?? []);
+            if (false !== $symfonyControllerCallable) {
                 // this makes Symfony believe that another controller is being executed
+                // (e.g. this is needed for the autowiring of controller action arguments)
                 // VERY IMPORTANT: here the Symfony controller must be passed as a string ('App\Controller\Foo::index')
                 // Otherwise, the param converter of the controller method doesn't work
                 $event->getRequest()->attributes->set('_controller', $symfonyControllerAsString);

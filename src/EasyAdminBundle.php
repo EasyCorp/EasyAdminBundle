@@ -13,7 +13,7 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
  */
 class EasyAdminBundle extends Bundle
 {
-    public const VERSION = '3.3.2-DEV';
+    public const VERSION = '3.3.2';
     /** @deprecated use EA::CONTEXT_REQUEST_ATTRIBUTE */
     public const CONTEXT_ATTRIBUTE_NAME = EA::CONTEXT_REQUEST_ATTRIBUTE;
 

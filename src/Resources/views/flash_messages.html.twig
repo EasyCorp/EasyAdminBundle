@@ -1,3 +1,4 @@
+{% trans_default_domain ea.i18n.translationDomain %}
 {% if app.session is not null and app.session.started %}
     {% set flash_messages = app.session.flashbag.all %}
 

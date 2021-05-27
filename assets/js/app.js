@@ -380,7 +380,7 @@ const App = (() => {
     const createImageFields = () => {
         document.querySelectorAll('.ea-lightbox-thumbnail').forEach((image) => {
             image.addEventListener('click', () => {
-                const lightboxContent = document.querySelector(image.getAttribute('data-lightbox-content-selector')).innerHTML;
+                const lightboxContent = document.querySelector(image.getAttribute('data-featherlight')).innerHTML;
                 const lightbox = basicLightbox.create(lightboxContent);
                 console.log(lightboxContent, lightbox);
 

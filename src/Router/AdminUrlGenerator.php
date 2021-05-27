@@ -75,7 +75,7 @@ final class AdminUrlGenerator
 
     public function setRoute(string $routeName, array $routeParameters = []): self
     {
-        $this->unsetAllExcept(EA::MENU_INDEX, EA::SUBMENU_INDEX);
+        $this->unsetAllExcept(EA::MENU_INDEX, EA::SUBMENU_INDEX, EA::DASHBOARD_CONTROLLER_FQCN);
         $this->setRouteParameter(EA::ROUTE_NAME, $routeName);
         $this->setRouteParameter(EA::ROUTE_PARAMS, $routeParameters);
 

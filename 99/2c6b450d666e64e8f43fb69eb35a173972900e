@@ -1,0 +1,6 @@
+---------------------------------------------------------------------------
+
+by GuillaumeRoques at 2021-05-27T09:26:14Z
+
+PS: I think we can remove the console.log(lightboxContent, lightbox);
+https://github.com/EasyCorp/EasyAdminBundle/blob/master/assets/js/app.js#L385

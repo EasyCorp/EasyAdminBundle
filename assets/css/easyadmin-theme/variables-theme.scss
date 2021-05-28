@@ -3,7 +3,7 @@
    Most of the times, overriding some of these variables is all you need to
    customize the design of your backends. However, because of how Bootstrap 3
    works, some styles can't be customized with CSS variables and you'll need
-   to also customize the Sass variables defined in variables.scss.
+   to also customize the Sass variables defined in bootstrap-variables.scss.
  --------------------------------------------------------------------------- */
 :root {
     --body-max-width: 1440px;

@@ -23,10 +23,10 @@ Encore
     // copy select2 i18n files
     .copyFiles({
         from: './node_modules/select2/dist/js/i18n/',
+        // only copy *.js files
+        pattern: /\.js$/,
         // relative to the output dir
-        to: 'select2/i18n/[name].[ext]',
-        // only copy files matching this pattern
-        pattern: /\.js$/
+        to: 'select2/i18n/[name].[ext]'
     })
 
     // copy flag images for country type

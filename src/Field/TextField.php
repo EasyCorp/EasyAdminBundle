@@ -14,6 +14,7 @@ final class TextField implements FieldInterface
 
     public const OPTION_MAX_LENGTH = 'maxLength';
     public const OPTION_RENDER_AS_HTML = 'renderAsHtml';
+    public const OPTION_STRIP_TAGS = 'stripTags';
 
     /**
      * @param string|false|null $label
@@ -27,9 +28,14 @@ final class TextField implements FieldInterface
             ->setFormType(TextType::class)
             ->addCssClass('field-text')
             ->setCustomOption(self::OPTION_MAX_LENGTH, null)
-            ->setCustomOption(self::OPTION_RENDER_AS_HTML, false);
+            ->setCustomOption(self::OPTION_RENDER_AS_HTML, false)
+            ->setCustomOption(self::OPTION_STRIP_TAGS, false);
     }
 
+    /**
+     * This option is ignored when using 'renderAsHtml()' to avoid
+     * truncating contents in the middle of an HTML tag.
+     */
     public function setMaxLength(int $length): self
     {
         if ($length < 1) {
@@ -44,6 +50,13 @@ final class TextField implements FieldInterface
     public function renderAsHtml(bool $asHtml = true): self
     {
         $this->setCustomOption(self::OPTION_RENDER_AS_HTML, $asHtml);
+
+        return $this;
+    }
+
+    public function stripTags(bool $stripTags = true): self
+    {
+        $this->setCustomOption(self::OPTION_STRIP_TAGS, $stripTags);
 
         return $this;
     }

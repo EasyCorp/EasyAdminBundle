@@ -12,9 +12,10 @@ final class TextareaField implements FieldInterface
 {
     use FieldTrait;
 
-    public const OPTION_MAX_LENGTH = 'maxLength';
+    public const OPTION_MAX_LENGTH = TextField::OPTION_MAX_LENGTH;
     public const OPTION_NUM_OF_ROWS = 'numOfRows';
-    public const OPTION_RENDER_AS_HTML = 'renderAsHtml';
+    public const OPTION_RENDER_AS_HTML = TextField::OPTION_RENDER_AS_HTML;
+    public const OPTION_STRIP_TAGS = TextField::OPTION_STRIP_TAGS;
 
     /**
      * @param string|false|null $label
@@ -30,9 +31,14 @@ final class TextareaField implements FieldInterface
             ->addJsFiles('bundles/easyadmin/form-type-textarea.js')
             ->setCustomOption(self::OPTION_MAX_LENGTH, null)
             ->setCustomOption(self::OPTION_NUM_OF_ROWS, 5)
-            ->setCustomOption(self::OPTION_RENDER_AS_HTML, false);
+            ->setCustomOption(self::OPTION_RENDER_AS_HTML, false)
+            ->setCustomOption(self::OPTION_STRIP_TAGS, false);
     }
 
+    /**
+     * This option is ignored when using 'renderAsHtml()' to avoid
+     * truncating contents in the middle of an HTML tag.
+     */
     public function setMaxLength(int $length): self
     {
         if ($length < 1) {
@@ -58,6 +64,13 @@ final class TextareaField implements FieldInterface
     public function renderAsHtml(bool $asHtml = true): self
     {
         $this->setCustomOption(self::OPTION_RENDER_AS_HTML, $asHtml);
+
+        return $this;
+    }
+
+    public function stripTags(bool $stripTags = true): self
+    {
+        $this->setCustomOption(self::OPTION_STRIP_TAGS, $stripTags);
 
         return $this;
     }

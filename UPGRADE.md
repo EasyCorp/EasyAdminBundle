@@ -4,6 +4,20 @@ Upgrade between EasyAdmin 3.x versions
 EasyAdmin 3.4.0
 ---------------
 
+Text fields and Textarea fields no longer strip tags in INDEX page.
+Use the new `stripTags()` method to keep the previous behavior:
+
+```php
+// before
+yield TextField::new('someField');
+
+// after
+yield TextField::new('someField')->stripTags();
+```
+
+EasyAdmin 3.3.2
+---------------
+
 ### CSS, JavaScript and Webpack Entries are passed as assets
 
 This is an internal change that only affects you if your application has

@@ -281,9 +281,8 @@ const App = (() => {
 
         const modalTitle = document.querySelector('#batch-action-confirmation-title');
         const titleContentWithPlaceholders = modalTitle.textContent;
-        const actionsAll = document.querySelectorAll('[data-action-batch]');
 
-        actionsAll.forEach((dataActionBatch) => {
+        document.querySelectorAll('[data-action-batch]').forEach((dataActionBatch) => {
             dataActionBatch.addEventListener('click', (event) => {
                 event.preventDefault();
                 event.stopPropagation();
@@ -297,7 +296,7 @@ const App = (() => {
 
                 $('#modal-batch-action').modal({ backdrop: true, keyboard: true })
                     .off('click', '#modal-batch-action-button')
-                    .on('click', '#modal-batch-action-button', function () {
+                    .on('click', '#modal-batch-action-button', () => {
                         // prevent double submission of the batch action form
                         actionElement.setAttribute('disabled', 'disabled');
 

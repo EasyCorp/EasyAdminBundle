@@ -30,7 +30,7 @@ Technical Requirements
 EasyAdmin requires the following:
 
 * PHP 7.2 or higher;
-* Symfony 4.4 or higher;
+* Symfony 4.4 or higher; with [CSRF protection](https://symfony.com/doc/current/security/csrf.html) enabled
 * Doctrine ORM entities (Doctrine ODM is not supported).
 
 Installation

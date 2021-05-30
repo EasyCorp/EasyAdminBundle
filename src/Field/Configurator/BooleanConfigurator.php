@@ -30,9 +30,6 @@ final class BooleanConfigurator implements FieldConfiguratorInterface
     public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
     {
         $isRenderedAsSwitch = true === $field->getCustomOption(BooleanField::OPTION_RENDER_AS_SWITCH);
-        if ($isRenderedAsSwitch && false !== strpos($field->getProperty(), '.')) {
-            throw new \InvalidArgumentException(sprintf('The "%s" property cannot be rendered as a switch because it belongs to an associated entity instead of to the entity itself. Render the property as a normal boolean field.', $field->getProperty()));
-        }
 
         if ($isRenderedAsSwitch) {
             $toggleUrl = $this->adminUrlGenerator->setAction(Action::EDIT)->setEntityId($entityDto->getPrimaryKeyValue())->set('fieldName', $field->getProperty())->generateUrl();

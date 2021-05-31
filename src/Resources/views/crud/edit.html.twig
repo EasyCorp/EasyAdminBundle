@@ -36,9 +36,11 @@
 
 {% block content_title %}
     {%- apply spaceless -%}
-        {{ ea.crud.customPageTitle is null
-            ? (ea.crud.defaultPageTitle|trans(ea.i18n.translationParameters, 'EasyAdminBundle'))|raw
-            : ea.crud.customPageTitle|trans(ea.i18n.translationParameters)|raw }}
+        {% set custom_page_title = ea.crud.customPageTitle(pageName, entity ? entity.instance : null) %}
+        {% set default_page_title = ea.crud.defaultPageTitle|trans(ea.i18n.translationParameters, 'EasyAdminBundle') %}
+        {{ custom_page_title is null
+            ? default_page_title|raw
+            : custom_page_title|trans(ea.i18n.translationParameters)|raw }}
     {%- endapply -%}
 {% endblock %}
 

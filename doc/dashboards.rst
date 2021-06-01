@@ -245,6 +245,10 @@ explained later)::
                 // triggers an error. If this causes any issue in your backend, call this method
                 // to disable this feature and remove all URL signature checks
                 ->disableUrlSignatures()
+
+                // by default, all backend URLs are generated as absolute URLs. If you
+                // need to generate relative URLs instead, call this method
+                ->generateRelativeUrls()
             ;
         }
     }

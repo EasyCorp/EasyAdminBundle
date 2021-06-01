@@ -9,8 +9,11 @@
 
 {% block content_title %}
     {%- apply spaceless -%}
-        {% set default_title = ea.crud.defaultPageTitle('index')|trans(ea.i18n.translationParameters, 'EasyAdminBundle') %}
-        {{ ea.crud.customPageTitle is null ? default_title|raw : ea.crud.customPageTitle('index')|trans(ea.i18n.translationParameters)|raw }}
+        {% set custom_page_title = ea.crud.customPageTitle('index') %}
+        {% set default_page_title = ea.crud.defaultPageTitle('index')|trans(ea.i18n.translationParameters, 'EasyAdminBundle') %}
+        {{ custom_page_title is null
+            ? default_page_title|raw
+            : custom_page_title|trans(ea.i18n.translationParameters)|raw }}
     {%- endapply -%}
 {% endblock %}
 

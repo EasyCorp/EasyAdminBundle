@@ -1,3 +1,4 @@
+# It checks the reStructuredText (RST) syntax of the docs
 name: "Linter: Documentation"
 
 on: [push, pull_request]

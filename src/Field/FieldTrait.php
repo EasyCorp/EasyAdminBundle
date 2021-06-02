@@ -208,6 +208,8 @@ trait FieldTrait
                 $this->dto->addWebpackEncoreAsset($entryNameOrAsset->getAsDto());
             }
         }
+
+        return $this;
     }
 
     /**

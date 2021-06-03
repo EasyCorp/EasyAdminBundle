@@ -52,7 +52,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         $field->setCustomOption(AssociationField::OPTION_CRUD_CONTROLLER, $targetCrudControllerFqcn);
 
         if (AssociationField::WIDGET_AUTOCOMPLETE === $field->getCustomOption(AssociationField::OPTION_WIDGET)) {
-            $field->setFormTypeOption('attr.data-widget', 'select2');
+            $field->setFormTypeOption('attr.data-ea-widget', 'ea-autocomplete');
         }
 
         if ($entityDto->isToOneAssociation($propertyName)) {
@@ -71,11 +71,10 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
 
             $field->setFormType(CrudAutocompleteType::class);
             $autocompleteEndpointUrl = $this->adminUrlGenerator
+                ->unsetAll()
                 ->set('page', 1) // The autocomplete should always start on the first page
                 ->setController($field->getCustomOption(AssociationField::OPTION_CRUD_CONTROLLER))
                 ->setAction('autocomplete')
-                ->setEntityId(null)
-                ->unset(EA::SORT) // Avoid passing the 'sort' param from the current entity to the autocompleted one
                 ->set(AssociationField::PARAM_AUTOCOMPLETE_CONTEXT, [
                     EA::CRUD_CONTROLLER_FQCN => $context->getRequest()->query->get(EA::CRUD_CONTROLLER_FQCN),
                     'propertyName' => $propertyName,

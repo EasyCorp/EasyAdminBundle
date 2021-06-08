@@ -34,7 +34,7 @@ final class CollectionConfigurator implements FieldConfiguratorInterface
 
         $autocompletableFormTypes = [CountryType::class, CurrencyType::class, LanguageType::class, LocaleType::class, TimezoneType::class];
         if (\in_array($entryTypeFqcn, $autocompletableFormTypes, true)) {
-            $field->setFormTypeOption('entry_options.attr.data-widget', 'select2');
+            $field->setFormTypeOption('entry_options.attr.data-ea-widget', 'ea-autocomplete');
         }
 
         $field->setFormTypeOption('allow_add', $field->getCustomOptions()->get(CollectionField::OPTION_ALLOW_ADD));

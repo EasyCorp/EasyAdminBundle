@@ -4,6 +4,8 @@ Upgrade between EasyAdmin 3.x versions
 EasyAdmin 3.4.0
 ---------------
 
+### Text Elements with HTML Contents
+
 Text fields and Textarea fields no longer strip tags in INDEX page.
 Use the new `stripTags()` method to keep the previous behavior:
 
@@ -13,6 +15,49 @@ yield TextField::new('someField');
 
 // after
 yield TextField::new('someField')->stripTags();
+```
+
+### Autocomplete Fields
+
+The `Select2` JavaScript library, which is based on jQuery, has been
+replaced bt `TomSelect`, a pure-JavaScript library. This change is
+transparent when using EasyAdmin features, but if you create custom
+form types and want to display autocomplete fields for your `<select>`
+lists, you must change the following:
+
+```
+// Before
+<select data-widget="select2">
+    <!-- ... -->
+</select>
+
+// After
+<select data-ea-widget="ea-autocomplete">
+    <!-- ... -->
+</select>
+```
+
+These are the configurable options of the new autocomplete
+fields and their previous equivalent options:
+
+```
+// Before
+<select
+    data-widget="select2"
+    data-ea-escape-markup="false"
+    data-select2-tags="true"
+>
+    <!-- ... -->
+</select>
+
+// After
+<select
+    data-ea-widget="ea-autocomplete"
+    data-ea-autocomplete-render-items-as-html="true"
+    data-ea-autocomplete-allow-item-create="true"
+>
+    <!-- ... -->
+</select>
 ```
 
 EasyAdmin 3.3.2

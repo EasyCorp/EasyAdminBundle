@@ -53,7 +53,7 @@ final class CountryConfigurator implements FieldConfiguratorInterface
 
     public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
     {
-        $field->setFormTypeOptionIfNotSet('attr.data-widget', 'select2');
+        $field->setFormTypeOption('attr.data-ea-widget', 'ea-autocomplete');
         $countryCodeFormat = $field->getCustomOption(CountryField::OPTION_COUNTRY_CODE_FORMAT);
 
         $field->setCustomOption(CountryField::OPTION_FLAG_CODE, $this->getFlagCode($field->getValue(), $countryCodeFormat));
@@ -67,7 +67,7 @@ final class CountryConfigurator implements FieldConfiguratorInterface
             $field->setFormTypeOption('choices', $this->generateFormTypeChoices($countryCodeFormat));
 
             // the value of this form option must be a string to properly propagate it as an HTML attribute value
-            $field->setFormTypeOption('attr.data-ea-escape-markup', 'false');
+            $field->setFormTypeOption('attr.data-ea-autocomplete-render-items-as-html', 'true');
         }
     }
 

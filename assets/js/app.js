@@ -8,7 +8,7 @@ import 'bootstrap';
 import Mark from 'mark.js/src/vanilla';
 import DirtyForm from 'dirty-form';
 import * as basicLightbox from 'basiclightbox';
-import 'select2';
+import Autocomplete from './autocomplete';
 
 document.addEventListener('DOMContentLoaded', () => {
     App.createMainMenu();
@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     App.createSearchHighlight();
     App.createFilters();
     App.createToggleFields();
+    App.createAutoCompleteFields();
     App.createBatchActions();
     App.createModalWindowsForDeleteActions();
     App.createUnsavedFormChangesWarning();
@@ -25,15 +26,14 @@ document.addEventListener('DOMContentLoaded', () => {
     App.createFileUploadFields();
     App.createFieldsWithErrors();
     App.preventMultipleFormSubmission();
+
+    document.addEventListener('ea.collection.item-added', () => App.createAutoCompleteFields());
 });
 
-// TODO: migrate this when upgrading to Bootstrap 5 and a different Select2 library
+// TODO: migrate this when upgrading to Bootstrap 5
 window.addEventListener('load', () => {
     $('[data-toggle="popover"]').popover();
     $('[data-toggle="tooltip"]').tooltip();
-
-    createAutoCompleteFields();
-    document.addEventListener('ea.collection.item-added', createAutoCompleteFields);
 });
 
 const App = (() => {
@@ -170,7 +170,7 @@ const App = (() => {
 
             fetch(filterButton.getAttribute('href'))
                 .then((response) => { return response.text(); })
-                .then((text) => { setInnerHTMLAndRunScripts(filterModalBody, text); })
+                .then((text) => { setInnerHTMLAndRunScripts(filterModalBody, text); App.createAutoCompleteFields(); })
                 .catch((error) => { console.error(error); });
 
             event.preventDefault();
@@ -325,6 +325,13 @@ const App = (() => {
                         batchForm.submit();
                     });
             });
+        });
+    };
+
+    const createAutoCompleteFields = () => {
+        const autocomplete = new Autocomplete();
+        document.querySelectorAll('[data-ea-widget="ea-autocomplete"]').forEach((autocompleteElement) => {
+            autocomplete.create(autocompleteElement);
         });
     };
 
@@ -526,6 +533,7 @@ const App = (() => {
         createFilters: createFilters,
         createToggleFields: createToggleFields,
         createBatchActions: createBatchActions,
+        createAutoCompleteFields: createAutoCompleteFields,
         createModalWindowsForDeleteActions: createModalWindowsForDeleteActions,
         createUnsavedFormChangesWarning: createUnsavedFormChangesWarning,
         createNullableFields: createNullableFields,
@@ -535,55 +543,3 @@ const App = (() => {
         preventMultipleFormSubmission: preventMultipleFormSubmission,
     };
 })();
-
-// TODO: leave this until we migrate away from Select2
-function createAutoCompleteFields() {
-    var autocompleteFields = $('[data-widget="select2"]:not(.select2-hidden-accessible)');
-
-    autocompleteFields.each(function () {
-        var $this = $(this);
-        var autocompleteUrl = $this.data('ea-autocomplete-endpoint-url');
-        var allowClear = $this.data('allow-clear');
-        var escapeMarkup = $this.data('ea-escape-markup');
-
-        if (undefined === autocompleteUrl) {
-            var options = {
-                theme: 'bootstrap',
-                placeholder: '',
-                allowClear: true
-            };
-
-            if (false === escapeMarkup) {
-                options.escapeMarkup = function(markup) { return markup; };
-            }
-
-            $this.select2(options);
-        } else {
-            $this.select2({
-                theme: 'bootstrap',
-                ajax: {
-                    url: autocompleteUrl,
-                    dataType: 'json',
-                    delay: 250,
-                    data: function (params) {
-                        return { 'query': params.term, 'page': params.page };
-                    },
-                    // to indicate that infinite scrolling can be used
-                    processResults: function (data, params) {
-                        return {
-                            results: $.map(data.results, function(result) {
-                                return { id: result.entityId, text: result.entityAsString };
-                            }),
-                            pagination: {
-                                more: data.has_next_page
-                            }
-                        };
-                    },
-                    cache: true
-                },
-                allowClear: allowClear,
-                minimumInputLength: 1
-            });
-        }
-    });
-}

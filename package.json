@@ -13,9 +13,8 @@
     "popper.js": "^1.14.5",
     "postcss": "^8.2.10",
     "sass-loader": "^11.0.0",
-    "select2": "4.0.13",
-    "select2-bootstrap-theme": "^0.1.0-beta.10",
     "slugify": "^1.4.0",
+    "tom-select": "^1.7.3",
     "trix": "^1.1.1",
     "webpack-rtl-plugin": "^2.0.0"
   },

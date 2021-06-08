@@ -47,9 +47,3 @@
         {{ form(new_form) }}
     {% endblock new_form %}
 {% endblock %}
-
-{% block body_javascript %}
-    {{ parent() }}
-
-    {{ include('@EasyAdmin/crud/includes/_select2_widget.html.twig') }}
-{% endblock %}

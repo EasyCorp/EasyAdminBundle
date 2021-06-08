@@ -87,7 +87,7 @@
         <div class="content-panel">
             <div class="content-panel-header {{ collapsible ? 'collapsible' }} {{ field.help is not empty ? 'with-help' }}">
                 {% if collapsible %}
-                    <a href="#content-{{ field.uniqueId }}" data-toggle="collapse" class="content-panel-collapse {{ collapsed ? 'collapsed' }}" aria-expanded="{{ collapsed ? 'false' : 'true' }}" aria-controls="content-{{ field.uniqueId }}">
+                    <a href="#content-{{ field.uniqueId }}" data-bs-toggle="collapse" class="content-panel-collapse {{ collapsed ? 'collapsed' }}" aria-expanded="{{ collapsed ? 'false' : 'true' }}" aria-controls="content-{{ field.uniqueId }}">
                         <i class="fas fw fa-chevron-right collapse-icon"></i>
                 {% endif %}
 
@@ -116,7 +116,7 @@
 
             {% if field.help is not empty %}
                 <span class="data-help">
-                    <i class="far fa-question-circle" data-toggle="tooltip" title="{{ field.help|e('html_attr') }}"></i>
+                    <i class="far fa-question-circle" data-bs-toggle="tooltip" title="{{ field.help|e('html_attr') }}"></i>
                 </span>
             {% endif %}
         </dd>

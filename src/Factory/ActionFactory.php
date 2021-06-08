@@ -126,15 +126,15 @@ final class ActionFactory
         if (Action::DELETE === $actionDto->getName()) {
             $actionDto->addHtmlAttributes([
                 'formaction' => $this->adminUrlGenerator->setAction(Action::DELETE)->setEntityId($entityDto->getPrimaryKeyValue())->removeReferrer()->generateUrl(),
-                'data-toggle' => 'modal',
-                'data-target' => '#modal-delete',
+                'data-bs-toggle' => 'modal',
+                'data-bs-target' => '#modal-delete',
             ]);
         }
 
         if ($actionDto->isBatchAction()) {
             $actionDto->addHtmlAttributes([
-                'data-toggle' => 'modal',
-                'data-target' => '#modal-batch-action',
+                'data-bs-toggle' => 'modal',
+                'data-bs-target' => '#modal-batch-action',
                 'data-action-csrf-token' => $this->csrfTokenManager->getToken('ea-batch-action-'.$actionDto->getName()),
                 'data-action-batch' => 'true',
                 'data-entity-fqcn' => $adminContext->getCrud()->getEntityFqcn(),

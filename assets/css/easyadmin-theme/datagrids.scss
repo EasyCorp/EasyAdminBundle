@@ -94,6 +94,11 @@ table.datagrid {
   padding: 1px;
 }
 
+.datagrid .field-boolean .form-switch {
+  display: inline-flex;
+  justify-content: center;
+}
+
 .datagrid .no-results {
   border-bottom: 0;
   padding: 96px 0;

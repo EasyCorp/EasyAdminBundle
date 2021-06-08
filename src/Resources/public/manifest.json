@@ -1,8 +1,6 @@
 {
   "bundles/easyadmin/app.css": "./app.css",
   "bundles/easyadmin/app.js": "./app.js",
-  "bundles/easyadmin/app-custom-rtl.css": "./app-custom-rtl.css",
-  "bundles/easyadmin/app-custom-rtl.js": "./app-custom-rtl.js",
   "bundles/easyadmin/form-type-code-editor.css": "./form-type-code-editor.css",
   "bundles/easyadmin/form-type-code-editor.js": "./form-type-code-editor.js",
   "bundles/easyadmin/form-type-text-editor.css": "./form-type-text-editor.css",

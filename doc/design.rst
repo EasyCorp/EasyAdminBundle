@@ -362,10 +362,10 @@ CSS classes at the same time:
 ==========  ============================================
 Page        ``<body>`` CSS class
 ==========  ============================================
-``detail``  ``ea detail detail-<entity_name>``
-``edit``    ``ea edit edit-<entity_name>``
-``index``   ``ea index index-<entity_name>``
-``new``     ``ea new new-<entity_name>``
+``detail``  ``ea-detail ea-detail-<entity_name>``
+``edit``    ``ea-edit ea-edit-<entity_name>``
+``index``   ``ea-index ea-index-<entity_name>``
+``new``     ``ea-new ea-new-<entity_name>``
 ==========  ============================================
 
 If you are displaying for example the listing of ``User`` entity elements, the

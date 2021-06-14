@@ -5,7 +5,7 @@
 {% trans_default_domain ea.i18n.translationDomain %}
 
 {% block body_id entities|length > 0 ? 'ea-index-' ~ entities|first.name : '' %}
-{% block body_class 'index' ~ (entities|length > 0 ? ' index-' ~ entities|first.name : '') %}
+{% block body_class 'ea-index' ~ (entities|length > 0 ? ' ea-index-' ~ entities|first.name : '') %}
 
 {% block content_title %}
     {%- apply spaceless -%}

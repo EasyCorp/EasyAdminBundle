@@ -170,7 +170,7 @@ final class ActionFactory
             EA::REFERRER => $this->generateReferrerUrl($request, $actionDto, $currentAction),
         ];
 
-        if (\in_array($actionDto->getName(), [Action::INDEX, Action::NEW], true)) {
+        if (\in_array($actionDto->getName(), [Action::INDEX, Action::NEW, Action::SAVE_AND_ADD_ANOTHER, Action::SAVE_AND_RETURN], true)) {
             $requestParameters[EA::ENTITY_ID] = null;
         } elseif (null !== $entityDto) {
             $requestParameters[EA::ENTITY_ID] = $entityDto->getPrimaryKeyValueAsString();

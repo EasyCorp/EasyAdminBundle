@@ -4,6 +4,33 @@ Upgrade between EasyAdmin 3.x versions
 EasyAdmin 3.4.0
 ---------------
 
+### Migrated to Bootstrap 5
+
+This version of EasyAdmin upgrades Bootstrap from version 4 to version 5.
+This only affects you if you have developed custom templates or changed the
+default templates with your own HTML/CSS/JavaScript code.
+
+Read the [Migrating to Bootstrap v5 guide](https://getbootstrap.com/docs/5.0/migration/)
+to learn about the main changes needed to upgrade to this version.
+
+### Removed jQuery
+
+**jQuery library is no longer used or included in EasyAdmin**. We did this
+because Bootstrap 5 moved to native JavaScript widgets, so jQuery usage is no
+longer mandatory when using Bootstrap.
+
+This only affects you if your backend has custom JavaScript code that uses
+jQuery and you don't include jQuery yourself (your code relies on the jQuery
+version included by EasyAdmin).
+
+The solution depends on how you manage your custom backend assets:
+
+* If you use Webpack Encore, add jQuery to your dependencies (`yarn add jquery --dev`)
+  and follow the [jQuery integration in Webpack Encore guide](https://symfony.com/doc/current/frontend/encore/legacy-applications.html).
+* If you don't use any JavaScript asset builder, download jQuery as a JavaScript
+  file and store it somewhere in your application (e.g. `<your project>/public/js/jquery.min.js`)
+  and then add that file in your backend with the [addJs() method](https://symfony.com/doc/current/bundles/EasyAdminBundle/design.html#adding-custom-web-assets).
+
 ### Text Elements with HTML Contents
 
 Text fields and Textarea fields no longer strip tags in INDEX page.

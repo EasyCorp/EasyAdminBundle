@@ -108,7 +108,7 @@ label.form-check-label {
 
 .form-widget input.form-control,
 .form-widget textarea.form-control,
-.form-widget select.form-control {
+.form-widget .form-select {
     border: 0;
     padding: 3px 7px 4px;
     box-shadow: 0 0 0 1px rgba(43, 45, 80, .16), 0 0 0 1px rgba(6, 122, 184, 0), 0 0 0 2px rgba(6, 122, 184, 0), 0 1px 1px rgba(0, 0, 0, .08);
@@ -119,9 +119,18 @@ label.form-check-label {
     transition: box-shadow .08s ease-in, color .08s ease-in;
 }
 
+.form-widget [type="number"].form-control,
+.form-widget [type="date"].form-control,
+.form-widget [type="time"].form-control {
+    max-width: 150px;
+}
+.form-widget [type="datetime-local"].form-control {
+  max-width: 250px;
+}
+
 .full-width .form-widget input.form-control,
 .full-width .form-widget textarea.form-control,
-.full-width .form-widget select.form-control {
+.full-width .form-widget .form-select {
     max-width: none;
 }
 
@@ -139,7 +148,7 @@ label.form-check-label {
 
 .form-widget input.form-control:focus,
 .form-widget textarea.form-control:focus,
-.form-widget select.form-control:focus,
+.form-widget .form-select:focus,
 .form-widget .custom-file-input:focus ~ .custom-file-label {
     box-shadow: 0 0 0 1px rgba(43, 45, 80, 0), 0 0 0 1px rgba(6, 122, 184, .2), 0 0 0 2px rgba(6, 122, 184, .25), 0 1px 1px rgba(0, 0, 0, .08);
     outline: 0;
@@ -148,16 +157,19 @@ label.form-check-label {
 .form-widget textarea.form-control {
     height: auto;
     line-height: 1.6;
+    max-width: unset;
     white-space: pre-wrap;
 }
+.form-widget-compound textarea.form-control {
+    max-width: 350px;
+}
 
-.form-widget select.form-control {
+.form-widget .form-select {
     box-shadow: 0 0 0 1px rgba(43, 45, 80, .1), 0 2px 5px 0 rgba(43, 45, 80, .08), 0 1px 1.5px 0 rgba(0, 0, 0, .07), 0 1px 2px 0 rgba(0, 0, 0, .08);
     padding-left: 4px;
     padding-right: 4px;
 }
-
-.form-widget select[multiple].form-control {
+.ts-dropdown.form-select {
     height: auto;
 }
 
@@ -440,7 +452,7 @@ fieldset .legend-help {
 
 .has-error .form-widget input.form-control,
 .has-error .form-widget textarea.form-control,
-.has-error .form-widget select.form-control,
+.has-error .form-widget .form-select,
 .has-error .ea-fileupload .input-group,
 .has-error .btn.input-file-container,
 .has-error .CodeMirror,

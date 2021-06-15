@@ -8,10 +8,10 @@
         {{ (field.value == true ? 'label.true' : 'label.false')|trans }}
     </span>
 {% else %}
-    <div class="custom-control custom-switch custom-switch-lg">
-        <input type="checkbox" class="custom-control-input" id="{{ field.uniqueId }}" {{ field.value == true ? 'checked' }}
+    <div class="form-check form-switch">
+        <input type="checkbox" class="form-check-input" id="{{ field.uniqueId }}" {{ field.value == true ? 'checked' }}
             data-toggle-url="{{ field.customOptions.get('toggleUrl') }}"
             {{ field.formTypeOption('disabled') == true ? 'disabled' }} autocomplete="off">
-        <label class="custom-control-label" for="{{ field.uniqueId }}"></label>
+        <label class="form-check-label" for="{{ field.uniqueId }}"></label>
     </div>
 {% endif %}

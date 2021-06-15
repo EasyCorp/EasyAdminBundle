@@ -88,7 +88,7 @@
                     {% if has_filters %}
                         {% set applied_filters = ea.request.query.all['filters']|default([])|keys %}
                         <div class="btn-group action-filters">
-                            <a href="#" data-href="{{ ea_url().setAction('renderFilters').includeReferrer() }}" class="btn btn-secondary btn-labeled btn-labeled-right action-filters-button disabled {{ applied_filters ? 'action-filters-applied' }}" data-modal="#modal-filters">
+                            <a href="#" data-href="{{ ea_url().setAction('renderFilters').includeReferrer() }}" class="btn btn-secondary btn-labeled btn-labeled-right action-filters-button disabled {{ applied_filters ? 'action-filters-applied' }}" data-bs-toggle="modal" data-bs-target="#modal-filters">
                                 <i class="fa fa-filter fa-fw"></i> {{ 'filter.title'|trans(ea.i18n.translationParameters, 'EasyAdminBundle') }}{% if applied_filters %} <span class="text-primary">({{ applied_filters|length }})</span>{% endif %}
                             </a>
                             {% if applied_filters %}
@@ -164,7 +164,7 @@
                                         {% else %}
                                             {% if entity.actions.count > 0 %}
                                                 <div class="dropdown dropdown-actions">
-                                                    <a class="dropdown-toggle btn btn-secondary btn-sm" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <a class="dropdown-toggle btn btn-secondary btn-sm" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                         <i class="fa fa-fw fa-ellipsis-h"></i>
                                                     </a>
 

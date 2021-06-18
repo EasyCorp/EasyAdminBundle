@@ -53,8 +53,8 @@ class ArrayFilterType extends AbstractType
             'value_type_options' => [
                 'multiple' => true,
                 'attr' => [
-                    'data-widget' => 'select2',
-                    'data-select2-tags' => 'true',
+                    'data-ea-widget' => 'ea-autocomplete',
+                    'data-ea-autocomplete-allow-item-create' => 'true',
                 ],
             ],
         ]);

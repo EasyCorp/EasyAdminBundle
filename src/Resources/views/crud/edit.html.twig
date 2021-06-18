@@ -36,9 +36,10 @@
 
 {% block content_title %}
     {%- apply spaceless -%}
-        {{ ea.crud.customPageTitle is null
+        {% set custom_page_title = ea.crud.customPageTitle(pageName, entity ? entity.instance : null) %}
+        {{ custom_page_title is null
             ? (ea.crud.defaultPageTitle|trans(ea.i18n.translationParameters, 'EasyAdminBundle'))|raw
-            : ea.crud.customPageTitle|trans(ea.i18n.translationParameters)|raw }}
+            : (custom_page_title|trans(ea.i18n.translationParameters))|raw }}
     {%- endapply -%}
 {% endblock %}
 
@@ -56,10 +57,4 @@
     {% block delete_form %}
         {{ include('@EasyAdmin/crud/includes/_delete_form.html.twig', { entity_id: entity.primaryKeyValue }, with_context = false) }}
     {% endblock delete_form %}
-{% endblock %}
-
-{% block body_javascript %}
-    {{ parent() }}
-
-    {{ include('@EasyAdmin/crud/includes/_select2_widget.html.twig') }}
 {% endblock %}

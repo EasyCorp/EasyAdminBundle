@@ -1,6 +1,5 @@
 const eaCollectionHandler = function (event) {
-    document.querySelectorAll('button.field-collection-add-button').forEach(function(addButton) {
-
+    document.querySelectorAll('button.field-collection-add-button').forEach((addButton) => {
         let collection = addButton.closest('[data-ea-collection-field]');
 
         if (!collection || collection.classList.contains('processed')) {
@@ -14,9 +13,8 @@ const eaCollectionHandler = function (event) {
 window.addEventListener('DOMContentLoaded', eaCollectionHandler);
 document.addEventListener('ea.collection.item-added', eaCollectionHandler);
 
-
 const EaCollectionProperty = {
-    handleAddButton: function(addButton, collection) {
+    handleAddButton: (addButton, collection) => {
         addButton.addEventListener('click', function() {
             // Use a counter to avoid having the same index more than once
             let numItems = parseInt(collection.dataset.numItems);

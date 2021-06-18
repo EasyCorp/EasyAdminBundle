@@ -78,6 +78,13 @@ final class Dashboard
         return $this;
     }
 
+    public function generateRelativeUrls(bool $relativeUrls = true): self
+    {
+        $this->dto->setAbsoluteUrls(!$relativeUrls);
+
+        return $this;
+    }
+
     public function getAsDto(): DashboardDto
     {
         return $this->dto;

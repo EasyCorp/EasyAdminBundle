@@ -9,7 +9,7 @@
     </div>
 {% else %}
     {% set html_id = 'ea-code-editor-' ~ field.uniqueId %}
-    <a href="#" data-toggle="modal" data-target="#{{ html_id }}">
+    <a href="#" data-bs-toggle="modal" data-bs-target="#{{ html_id }}">
         <i class="fa fa-code"></i> {{ 'field.code_editor.view_code'|trans([], domain = 'EasyAdminBundle') }}
     </a>
 
@@ -18,7 +18,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">{{ field.label }}</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="{{ 'action.close'|trans([], domain = 'EasyAdminBundle') }}">
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans([], domain = 'EasyAdminBundle') }}">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>

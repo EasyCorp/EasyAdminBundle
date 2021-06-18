@@ -12,6 +12,9 @@
   padding: 2px 8px;
 }
 
+.badge {
+  color: var(--text-color);
+}
 .badge.badge-success {
   background-color: var(--green-100);
   color: var(--text-green-600);

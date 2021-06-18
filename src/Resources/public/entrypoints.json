@@ -9,14 +9,6 @@
         "./app.js"
       ]
     },
-    "app-custom-rtl": {
-      "css": [
-        "./app-custom-rtl.css"
-      ],
-      "js": [
-        "./app-custom-rtl.js"
-      ]
-    },
     "form-type-code-editor": {
       "css": [
         "./form-type-code-editor.css",

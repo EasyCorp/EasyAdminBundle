@@ -1,5 +1,5 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
-{% use 'bootstrap_4_layout.html.twig' %}
+{% use '@EasyAdmin/bootstrap/bootstrap_5_layout.html.twig' %}
 
 {% block form_start %}
     {% if form.vars.errors|length > 0 and 'ea_crud' in form.vars.block_prefixes|default([]) %}
@@ -98,8 +98,10 @@
                 </div>
             {% endif %}
 
-            {% if ea.field.help|default(form.vars.help) != '' %}
-                <small class="form-help">{{ ea.field.help|default(form.vars.help)|raw }}</small>
+            {% if ea.field.help ?? false %}
+                <small class="form-help">{{ ea.field.help|raw }}</small>
+            {% elseif form.vars.help ?? false %}
+                <small class="form-help">{{ form.vars.help|trans(form.vars.help_translation_parameters, form.vars.translation_domain)|raw }}</small>
             {% endif %}
 
             {{- form_errors(form) -}}
@@ -329,7 +331,7 @@
                 <ul class="nav nav-tabs">
                     {% for tab_name, tab_config in ea_form_tabs %}
                         <li class="nav-item">
-                            <a class="nav-link {% if tab_config.active %}active{% endif %}" href="#{{ tab_config['id'] }}" id="{{ tab_config['id'] }}-tab" data-toggle="tab">
+                            <a class="nav-link {% if tab_config.active %}active{% endif %}" href="#{{ tab_config['id'] }}" id="{{ tab_config['id'] }}-tab" data-bs-toggle="tab">
                                 {%- if tab_config.icon|default(false) -%}
                                     <i class="fa fa-fw fa-{{ tab_config.icon }}"></i>
                                 {%- endif -%}
@@ -375,7 +377,7 @@
                 {% if panel_has_header %}
                     <div class="content-panel-header {{ collapsible ? 'collapsible' }} {{ panel_config.help|default(false) is not empty ? 'with-help' }}">
                         {% if collapsible %}
-                            <a href="#content-{{ panel_name }}" data-toggle="collapse" class="content-panel-collapse {{ collapsed ? 'collapsed' }}" aria-expanded="{{ collapsed ? 'false' : 'true' }}" aria-controls="content-{{ panel_name }}">
+                            <a href="#content-{{ panel_name }}" data-bs-toggle="collapse" class="content-panel-collapse {{ collapsed ? 'collapsed' }}" aria-expanded="{{ collapsed ? 'false' : 'true' }}" aria-controls="content-{{ panel_name }}">
                                 <i class="fas fw fa-chevron-right collapse-icon"></i>
                         {% endif %}
 
@@ -485,7 +487,7 @@
         <div class="filter-field {% if not loop.last %}border-bottom{% endif %} py-1 px-3 {% if loop.last %}pb-2{% endif %}" data-filter-property="{{ field.vars.name }}">
             <div class="filter-heading" id="filter-heading-{{ loop.index }}">
                 <input type="checkbox" class="filter-checkbox" {% if field.vars.name in applied_filters %}checked{% endif %}>
-                <a data-toggle="collapse" href="#filter-content-{{ loop.index }}" aria-expanded="{{ field.vars.name in applied_filters ? 'true' : 'false' }}" aria-controls="filter-content-{{ loop.index }}">
+                <a data-bs-toggle="collapse" href="#filter-content-{{ loop.index }}" aria-expanded="{{ field.vars.name in applied_filters ? 'true' : 'false' }}" aria-controls="filter-content-{{ loop.index }}">
                     {{ field.vars.label|default(field.vars.name|humanize)|trans(domain = ea.i18n.translationDomain) }}
                 </a>
             </div>
@@ -522,8 +524,6 @@
             }
         });
     </script>
-
-    {{ include('@EasyAdmin/crud/includes/_select2_widget.html.twig') }}
 {% endblock ea_filters_widget %}
 
 {% block ea_numeric_filter_widget %}

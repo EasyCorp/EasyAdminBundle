@@ -5,12 +5,14 @@
 {% trans_default_domain ea.i18n.translationDomain %}
 
 {% block body_id entities|length > 0 ? 'ea-index-' ~ entities|first.name : '' %}
-{% block body_class 'index' ~ (entities|length > 0 ? ' index-' ~ entities|first.name : '') %}
+{% block body_class 'ea-index' ~ (entities|length > 0 ? ' ea-index-' ~ entities|first.name : '') %}
 
 {% block content_title %}
     {%- apply spaceless -%}
-        {% set default_title = ea.crud.defaultPageTitle('index')|trans(ea.i18n.translationParameters, 'EasyAdminBundle') %}
-        {{ ea.crud.customPageTitle is null ? default_title|raw : ea.crud.customPageTitle('index')|trans(ea.i18n.translationParameters)|raw }}
+        {% set custom_page_title = ea.crud.customPageTitle('index') %}
+        {{ custom_page_title is null
+            ? (ea.crud.defaultPageTitle('index')|trans(ea.i18n.translationParameters, 'EasyAdminBundle'))|raw
+            : (custom_page_title|trans(ea.i18n.translationParameters))|raw }}
     {%- endapply -%}
 {% endblock %}
 
@@ -86,7 +88,7 @@
                     {% if has_filters %}
                         {% set applied_filters = ea.request.query.all['filters']|default([])|keys %}
                         <div class="btn-group action-filters">
-                            <a href="#" data-href="{{ ea_url().setAction('renderFilters').includeReferrer() }}" class="btn btn-secondary btn-labeled btn-labeled-right action-filters-button disabled {{ applied_filters ? 'action-filters-applied' }}" data-modal="#modal-filters">
+                            <a href="#" data-href="{{ ea_url().setAction('renderFilters').includeReferrer() }}" class="btn btn-secondary btn-labeled btn-labeled-right action-filters-button disabled {{ applied_filters ? 'action-filters-applied' }}" data-bs-toggle="modal" data-bs-target="#modal-filters">
                                 <i class="fa fa-filter fa-fw"></i> {{ 'filter.title'|trans(ea.i18n.translationParameters, 'EasyAdminBundle') }}{% if applied_filters %} <span class="text-primary">({{ applied_filters|length }})</span>{% endif %}
                             </a>
                             {% if applied_filters %}
@@ -162,7 +164,7 @@
                                         {% else %}
                                             {% if entity.actions.count > 0 %}
                                                 <div class="dropdown dropdown-actions">
-                                                    <a class="dropdown-toggle btn btn-secondary btn-sm" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <a class="dropdown-toggle btn btn-secondary btn-sm" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                         <i class="fa fa-fw fa-ellipsis-h"></i>
                                                     </a>
 

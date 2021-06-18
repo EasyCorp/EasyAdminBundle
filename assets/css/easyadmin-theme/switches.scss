@@ -1,9 +1,14 @@
 // Switches (toggles)
 // ----------------------------------------------------------------------------
 
-.custom-switch .custom-control-input ~ .custom-control-label {
+.form-switch .form-check-input {
   cursor: pointer;
+  height: 18px;
+  width: 32px;
 }
-.custom-switch .custom-control-input:disabled ~ .custom-control-label {
+.form-switch .form-check-input[disabled] {
   cursor: not-allowed;
+}
+.form-switch .form-check-input:focus {
+  box-shadow: none;
 }

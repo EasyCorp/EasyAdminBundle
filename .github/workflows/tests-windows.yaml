@@ -1,4 +1,3 @@
-# OS: Windows; Symfony: latest stable; PHP: latest stable
 name: "Tests - Windows"
 
 on:
@@ -35,5 +34,5 @@ jobs:
 
             - name: 'Run tests'
               env:
-                  SYMFONY_DEPRECATIONS_HELPER: 'max[indirect]=10&max[total]=27'
+                  SYMFONY_DEPRECATIONS_HELPER: 'max[indirect]=1'
               run: vendor/bin/simple-phpunit -v

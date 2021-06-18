@@ -97,11 +97,6 @@ final class AdminContext
         return $this->dashboardDto->getSignedUrls();
     }
 
-    public function getAbsoluteUrls(): bool
-    {
-        return $this->dashboardDto->getAbsoluteUrls();
-    }
-
     public function getDashboardTitle(): string
     {
         return $this->dashboardDto->getTitle();

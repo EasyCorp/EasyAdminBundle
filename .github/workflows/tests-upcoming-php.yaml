@@ -1,4 +1,3 @@
-# OS: Linux; Symfony: latest stable; PHP: upcoming (still unreleased) version
 name: "Tests - Upcoming PHP version"
 
 on:

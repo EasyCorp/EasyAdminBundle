@@ -2,7 +2,7 @@ Design
 ======
 
 The design of the backend is ready for any kind of application. It's been
-created with `Bootstrap 5`_, `Font Awesome icons`_ and some custom CSS and
+created with `Bootstrap 4`_, `Font Awesome icons`_ and some custom CSS and
 JavaScript code; all managed by `Webpack`_ via Symfony's `Webpack Encore`_.
 
 Like any other Symfony bundle, assets are copied to (or symlinked from) the
@@ -362,10 +362,10 @@ CSS classes at the same time:
 ==========  ============================================
 Page        ``<body>`` CSS class
 ==========  ============================================
-``detail``  ``ea-detail ea-detail-<entity_name>``
-``edit``    ``ea-edit ea-edit-<entity_name>``
-``index``   ``ea-index ea-index-<entity_name>``
-``new``     ``ea-new ea-new-<entity_name>``
+``detail``  ``ea detail detail-<entity_name>``
+``edit``    ``ea edit edit-<entity_name>``
+``index``   ``ea index index-<entity_name>``
+``new``     ``ea new new-<entity_name>``
 ==========  ============================================
 
 If you are displaying for example the listing of ``User`` entity elements, the
@@ -385,7 +385,7 @@ directory. The only caveat is that EasyAdmin doesn't use Webpack Encore yet when
 loading the assets, so you can't use features like versioning. This will be
 fixed in future versions.
 
-.. _`Bootstrap 5`: https://github.com/twbs/bootstrap
+.. _`Bootstrap 4`: https://github.com/twbs/bootstrap
 .. _`Sass`: https://sass-lang.com/
 .. _`Font Awesome icons`: https://github.com/FortAwesome/Font-Awesome
 .. _`Webpack`: https://webpack.js.org/

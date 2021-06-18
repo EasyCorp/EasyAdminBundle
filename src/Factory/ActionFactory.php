@@ -126,15 +126,15 @@ final class ActionFactory
         if (Action::DELETE === $actionDto->getName()) {
             $actionDto->addHtmlAttributes([
                 'formaction' => $this->adminUrlGenerator->setAction(Action::DELETE)->setEntityId($entityDto->getPrimaryKeyValue())->removeReferrer()->generateUrl(),
-                'data-bs-toggle' => 'modal',
-                'data-bs-target' => '#modal-delete',
+                'data-toggle' => 'modal',
+                'data-target' => '#modal-delete',
             ]);
         }
 
         if ($actionDto->isBatchAction()) {
             $actionDto->addHtmlAttributes([
-                'data-bs-toggle' => 'modal',
-                'data-bs-target' => '#modal-batch-action',
+                'data-toggle' => 'modal',
+                'data-target' => '#modal-batch-action',
                 'data-action-csrf-token' => $this->csrfTokenManager->getToken('ea-batch-action-'.$actionDto->getName()),
                 'data-action-batch' => 'true',
                 'data-entity-fqcn' => $adminContext->getCrud()->getEntityFqcn(),
@@ -170,7 +170,7 @@ final class ActionFactory
             EA::REFERRER => $this->generateReferrerUrl($request, $actionDto, $currentAction),
         ];
 
-        if (\in_array($actionDto->getName(), [Action::INDEX, Action::NEW, Action::SAVE_AND_ADD_ANOTHER, Action::SAVE_AND_RETURN], true)) {
+        if (\in_array($actionDto->getName(), [Action::INDEX, Action::NEW], true)) {
             $requestParameters[EA::ENTITY_ID] = null;
         } elseif (null !== $entityDto) {
             $requestParameters[EA::ENTITY_ID] = $entityDto->getPrimaryKeyValueAsString();

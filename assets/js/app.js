@@ -1,11 +1,14 @@
 // any CSS you require will output into a single css file (app.css in this case)
 require('../css/app.scss');
 
-import { Modal, Popover, Tooltip } from 'bootstrap';
+// TODO: remove this when we migrate away from all jQuery plugins
+global.$ = global.jQuery = require('jquery');
+
+import 'bootstrap';
 import Mark from 'mark.js/src/vanilla';
 import DirtyForm from 'dirty-form';
 import * as basicLightbox from 'basiclightbox';
-import Autocomplete from './autocomplete';
+import 'select2';
 
 document.addEventListener('DOMContentLoaded', () => {
     App.createMainMenu();
@@ -14,19 +17,23 @@ document.addEventListener('DOMContentLoaded', () => {
     App.createSearchHighlight();
     App.createFilters();
     App.createToggleFields();
-    App.createAutoCompleteFields();
     App.createBatchActions();
     App.createModalWindowsForDeleteActions();
-    App.createPopovers();
-    App.createTooltips();
     App.createUnsavedFormChangesWarning();
     App.createNullableFields();
     App.createImageFields();
     App.createFileUploadFields();
     App.createFieldsWithErrors();
     App.preventMultipleFormSubmission();
+});
 
-    document.addEventListener('ea.collection.item-added', () => App.createAutoCompleteFields());
+// TODO: migrate this when upgrading to Bootstrap 5 and a different Select2 library
+window.addEventListener('load', () => {
+    $('[data-toggle="popover"]').popover();
+    $('[data-toggle="tooltip"]').tooltip();
+
+    createAutoCompleteFields();
+    document.addEventListener('ea.collection.item-added', createAutoCompleteFields);
 });
 
 const App = (() => {
@@ -148,7 +155,7 @@ const App = (() => {
             return;
         }
 
-        const filterModal = document.querySelector(filterButton.getAttribute('data-bs-target'));
+        const filterModal = document.querySelector(filterButton.getAttribute('data-modal'));
 
         // this is needed to avoid errors when connection is slow
         filterButton.setAttribute('href', filterButton.getAttribute('data-href'));
@@ -157,17 +164,17 @@ const App = (() => {
 
         filterButton.addEventListener('click', (event) => {
             const filterModalBody = filterModal.querySelector('.modal-body');
+
+            $(filterModal).modal({ backdrop: true, keyboard: true });
             filterModalBody.innerHTML = '<div class="fa-3x px-3 py-3 text-muted text-center"><i class="fas fa-circle-notch fa-spin"></i></div>';
 
             fetch(filterButton.getAttribute('href'))
                 .then((response) => { return response.text(); })
-                .then((text) => {
-                    setInnerHTMLAndRunScripts(filterModalBody, text);
-                    App.createAutoCompleteFields();
-                })
+                .then((text) => { setInnerHTMLAndRunScripts(filterModalBody, text); })
                 .catch((error) => { console.error(error); });
 
             event.preventDefault();
+            event.stopPropagation();
         });
 
         const removeFilter = (filterField) => {
@@ -278,6 +285,7 @@ const App = (() => {
         document.querySelectorAll('[data-action-batch]').forEach((dataActionBatch) => {
             dataActionBatch.addEventListener('click', (event) => {
                 event.preventDefault();
+                event.stopPropagation();
 
                 const actionElement = event.target;
                 const actionName = actionElement.textContent.trim() || actionElement.getAttribute('title');
@@ -286,72 +294,56 @@ const App = (() => {
                     .replace('%action_name%', actionName)
                     .replace('%num_items%', selectedItems.length.toString());
 
-                new Modal(document.querySelector('#modal-batch-action'), { backdrop: true, keyboard: true });
-                document.querySelector('#modal-batch-action-button').addEventListener('click', () => {
-                    // prevent double submission of the batch action form
-                    actionElement.setAttribute('disabled', 'disabled');
+                $('#modal-batch-action').modal({ backdrop: true, keyboard: true })
+                    .off('click', '#modal-batch-action-button')
+                    .on('click', '#modal-batch-action-button', () => {
+                        // prevent double submission of the batch action form
+                        actionElement.setAttribute('disabled', 'disabled');
 
-                    const batchFormFields = {
-                        'batchActionName': actionElement.getAttribute('data-action-name'),
-                        'entityFqcn': actionElement.getAttribute('data-entity-fqcn'),
-                        'batchActionUrl': actionElement.getAttribute('data-action-url'),
-                        'batchActionCsrfToken': actionElement.getAttribute('data-action-csrf-token'),
-                    };
-                    selectedItems.forEach((item, i) => {
-                        batchFormFields[`batchActionEntityIds[${i}]`] = item.value;
+                        const batchFormFields = {
+                            'batchActionName': actionElement.getAttribute('data-action-name'),
+                            'entityFqcn': actionElement.getAttribute('data-entity-fqcn'),
+                            'batchActionUrl': actionElement.getAttribute('data-action-url'),
+                            'batchActionCsrfToken': actionElement.getAttribute('data-action-csrf-token'),
+                        };
+                        selectedItems.forEach((item, i) => {
+                            batchFormFields[`batchActionEntityIds[${i}]`] = item.value;
+                        });
+
+                        const batchForm = document.createElement('form');
+                        batchForm.setAttribute('method', 'POST');
+                        batchForm.setAttribute('action', actionElement.getAttribute('data-action-url'));
+                        for (let fieldName in batchFormFields) {
+                            const formField = document.createElement('input');
+                            formField.setAttribute('type', 'hidden');
+                            formField.setAttribute('name', fieldName);
+                            formField.setAttribute('value', batchFormFields[fieldName]);
+                            batchForm.appendChild(formField);
+                        }
+
+                        document.body.appendChild(batchForm);
+                        batchForm.submit();
                     });
-
-                    const batchForm = document.createElement('form');
-                    batchForm.setAttribute('method', 'POST');
-                    batchForm.setAttribute('action', actionElement.getAttribute('data-action-url'));
-                    for (let fieldName in batchFormFields) {
-                        const formField = document.createElement('input');
-                        formField.setAttribute('type', 'hidden');
-                        formField.setAttribute('name', fieldName);
-                        formField.setAttribute('value', batchFormFields[fieldName]);
-                        batchForm.appendChild(formField);
-                    }
-
-                    document.body.appendChild(batchForm);
-                    batchForm.submit();
-                });
             });
-        });
-    };
-
-    const createAutoCompleteFields = () => {
-        const autocomplete = new Autocomplete();
-        document.querySelectorAll('[data-ea-widget="ea-autocomplete"]').forEach((autocompleteElement) => {
-            autocomplete.create(autocompleteElement);
         });
     };
 
     const createModalWindowsForDeleteActions = () => {
-        document.querySelectorAll('.action-delete').forEach((actionElement) => {
-            actionElement.addEventListener('click', (event) => {
+        document.querySelectorAll('.action-delete').forEach((action) => {
+            action.addEventListener('click', (event) => {
                 event.preventDefault();
+                const deleteFormAction = action.getAttribute('formaction');
 
-                document.querySelector('#modal-delete-button').addEventListener('click', () => {
-                    const deleteFormAction = actionElement.getAttribute('formaction');
-                    const deleteForm = document.querySelector('#delete-form');
-                    deleteForm.setAttribute('action', deleteFormAction);
-                    deleteForm.submit();
-                });
+                $('#modal-delete').modal({ backdrop: true, keyboard: true })
+                    .off('click', '#modal-delete-button')
+                    .on('click', '#modal-delete-button', () => {
+                        const deleteForm = document.querySelector('#delete-form');
+                        deleteForm.setAttribute('action', deleteFormAction);
+                        deleteForm.submit();
+                    });
             });
         });
     }
-
-    const createPopovers = () => {
-        document.querySelectorAll('[data-bs-toggle="popover"]').forEach((popoverElement) => {
-            new Popover(popoverElement);
-        });
-    };
-
-    const createTooltips = () => {
-        document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach((tooltipElement) => {
-            new Tooltip(tooltipElement);
-        });
-    };
 
     const createUnsavedFormChangesWarning = () => {
         ['.ea-new-form', '.ea-edit-form'].forEach((formSelector) => {
@@ -534,10 +526,7 @@ const App = (() => {
         createFilters: createFilters,
         createToggleFields: createToggleFields,
         createBatchActions: createBatchActions,
-        createAutoCompleteFields: createAutoCompleteFields,
         createModalWindowsForDeleteActions: createModalWindowsForDeleteActions,
-        createPopovers: createPopovers,
-        createTooltips: createTooltips,
         createUnsavedFormChangesWarning: createUnsavedFormChangesWarning,
         createNullableFields: createNullableFields,
         createImageFields: createImageFields,
@@ -546,3 +535,55 @@ const App = (() => {
         preventMultipleFormSubmission: preventMultipleFormSubmission,
     };
 })();
+
+// TODO: leave this until we migrate away from Select2
+function createAutoCompleteFields() {
+    var autocompleteFields = $('[data-widget="select2"]:not(.select2-hidden-accessible)');
+
+    autocompleteFields.each(function () {
+        var $this = $(this);
+        var autocompleteUrl = $this.data('ea-autocomplete-endpoint-url');
+        var allowClear = $this.data('allow-clear');
+        var escapeMarkup = $this.data('ea-escape-markup');
+
+        if (undefined === autocompleteUrl) {
+            var options = {
+                theme: 'bootstrap',
+                placeholder: '',
+                allowClear: true
+            };
+
+            if (false === escapeMarkup) {
+                options.escapeMarkup = function(markup) { return markup; };
+            }
+
+            $this.select2(options);
+        } else {
+            $this.select2({
+                theme: 'bootstrap',
+                ajax: {
+                    url: autocompleteUrl,
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return { 'query': params.term, 'page': params.page };
+                    },
+                    // to indicate that infinite scrolling can be used
+                    processResults: function (data, params) {
+                        return {
+                            results: $.map(data.results, function(result) {
+                                return { id: result.entityId, text: result.entityAsString };
+                            }),
+                            pagination: {
+                                more: data.has_next_page
+                            }
+                        };
+                    },
+                    cache: true
+                },
+                allowClear: allowClear,
+                minimumInputLength: 1
+            });
+        }
+    });
+}

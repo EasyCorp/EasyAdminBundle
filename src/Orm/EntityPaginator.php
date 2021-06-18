@@ -184,8 +184,7 @@ final class EntityPaginator implements EntityPaginatorInterface
             ];
         }
 
-        $nextPageUrl = !$this->hasNextPage() ? null : $this->adminUrlGenerator->set(EA::PAGE, $this->getNextPage())->removeReferrer()->generateUrl();
-        $jsonResult['next_page'] = $nextPageUrl;
+        $jsonResult['has_next_page'] = $this->hasNextPage();
 
         return json_encode($jsonResult);
     }

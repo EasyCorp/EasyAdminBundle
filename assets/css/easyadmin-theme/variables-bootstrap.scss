@@ -20,6 +20,15 @@ $info: hsl(201, 94%, 37%);
 $warning: hsl(30, 81%, 47%);
 $danger: hsl(344, 59%, 52%);
 
+$theme-colors: (
+    'primary': $primary,
+    'secondary': $secondary,
+    'success': $success,
+    'info':    $info,
+    'warning': $warning,
+    'danger':  $danger
+);
+
 $font-size-base: 0.875rem; // 14px;
 $font-size-lg: 1rem; // 16px;
 $font-size-sm: 0.8125rem; // 13px;
@@ -31,7 +40,6 @@ $gray: var(--gray-700);
 $gray-light: var(--gray-600);
 $gray-lighter: var(--gray-200);
 
-$link-decoration: none;
 $link-color: var(--link-color);
 $link-hover-color: var(--link-hover-color);
 $link-hover-decoration: var(--link-hover-decoration);
@@ -57,7 +65,7 @@ $input-border-focus: hsla(201, 94, 37, 0.2);
 $input-color-placeholder: var(--gray-600);
 $input-height-base: 30px;
 $form-group-margin-bottom: 0;
-$input-group-addon-bg: hsl(210, 45%, 98%); // var(--form-bg);
+$input-group-addon-bg: var(--form-bg);
 $legend-color: var(--gray-800);
 $legend-border-color: #e5e5e5 !default;
 

@@ -1,5 +1,3 @@
-import DirtyForm from "dirty-form";
-
 require('../css/form-type-text-editor.css');
 
 import 'trix/dist/trix';
@@ -50,15 +48,10 @@ document.addEventListener('DOMContentLoaded', () => {
         trixContentElement.removeAttribute('required');
     });
 
-    // Because of the way TrixEditor works, browsers cannot detect changes to these fields automatically,
+    // Because of the way TrixEditor works, the jquery.are-you-sure plugin cannot detect changes to these fields automatically,
     // so we manually trigger the plugin when the content changes.
     document.addEventListener('trix-change', function (event) {
-        const form = event.target.closest('form');
-        if (null === form) {
-            return;
-        }
-
-        new DirtyForm(form);
+        $(event.target).closest('form').trigger('checkform.areYouSure');
     });
 
     document.addEventListener('ea.form.submit', (formEvent) => {

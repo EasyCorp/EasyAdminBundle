@@ -38,6 +38,7 @@
 
     {% if 'rtl' == ea.i18n.textDirection %}
         <link rel="stylesheet" href="{{ asset('bundles/easyadmin/app.rtl.css') }}">
+        <link rel="stylesheet" href="{{ asset('bundles/easyadmin/app-custom-rtl.css') }}">
     {% endif %}
 
     {% block configured_head_contents %}
@@ -117,7 +118,7 @@
                                     {% set impersonator_permission = 'ROLE_PREVIOUS_ADMIN' %}
                                 {% endif %}
 
-                                <div class="user user-menu-wrapper {{ is_granted(impersonator_permission) ? 'user-is-impersonated' }}" data-bs-toggle="popover" data-placement="bottom" data-container=".user-menu-wrapper" data-content="{{ _user_menu_content|e('html_attr') }}" data-html="true">
+                                <div class="user user-menu-wrapper {{ is_granted(impersonator_permission) ? 'user-is-impersonated' }}" data-toggle="popover" data-placement="bottom" data-container=".user-menu-wrapper" data-content="{{ _user_menu_content|e('html_attr') }}" data-html="true">
                                     {% if ea.userMenu.isAvatarDisplayed %}
                                         {% if null == ea.userMenu.avatarUrl %}
                                             <i class="fa fa-fw {{ ea.user is not null ? 'fa-user-circle' : 'fa-user-times' }} user-avatar"></i>
@@ -162,7 +163,7 @@
                                                     {% block content_help %}
                                                         {% if has_help_message %}
                                                             <span class="content-header-help">
-                                                                <i class="far fa-question-circle" data-bs-toggle="tooltip" title="{{ ea.crud.helpMessage|e('html_attr') }}"></i>
+                                                                <i class="far fa-question-circle" data-toggle="tooltip" title="{{ ea.crud.helpMessage|e('html_attr') }}"></i>
                                                             </span>
                                                         {% endif %}
                                                     {% endblock %}

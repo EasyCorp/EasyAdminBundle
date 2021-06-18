@@ -245,8 +245,7 @@ final class AdminUrlGenerator
         });
         ksort($routeParameters, \SORT_STRING);
 
-        $urlType = $this->adminContextProvider->getContext()->getAbsoluteUrls() ? UrlGeneratorInterface::ABSOLUTE_URL : UrlGeneratorInterface::RELATIVE_PATH;
-        $url = $this->urlGenerator->generate($this->dashboardRoute, $routeParameters, $urlType);
+        $url = $this->urlGenerator->generate($this->dashboardRoute, $routeParameters, UrlGeneratorInterface::ABSOLUTE_URL);
 
         if ($this->signUrls()) {
             $url = $this->urlSigner->sign($url);

@@ -57,7 +57,7 @@ class ChoiceFieldTest extends AbstractFieldTest
         $field->setCustomOption(ChoiceField::OPTION_WIDGET, null);
         $fieldDto = $this->configure($field);
         self::assertSame(ChoiceField::WIDGET_NATIVE, $fieldDto->getCustomOption(ChoiceField::OPTION_WIDGET));
-        self::assertSame('ea-autocomplete', $fieldDto->getFormTypeOption('attr.data-ea-widget'));
+        self::assertSame('select2', $fieldDto->getFormTypeOption('attr.data-widget'));
     }
 
     public function testFieldFormOptions()
@@ -72,7 +72,7 @@ class ChoiceFieldTest extends AbstractFieldTest
                 'multiple' => true,
                 'expanded' => true,
                 'placeholder' => '',
-                'attr' => ['data-ea-autocomplete-render-items-as-html' => 'false'],
+                'attr' => ['data-ea-escape-markup' => 'false'],
             ],
             $this->configure($field)->getFormTypeOptions()
         );

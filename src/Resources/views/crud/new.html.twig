@@ -5,7 +5,7 @@
 
 {% trans_default_domain ea.i18n.translationDomain %}
 
-{% block body_id 'ea-new-' ~ entity.name %}
+{% block body_id 'ea-new-' ~ entity.name ~ '-' ~ entity.primaryKeyValue %}
 {% block body_class 'ea-new ea-new-' ~ entity.name %}
 
 {% block configured_head_contents %}
@@ -29,10 +29,8 @@
 
 {% block content_title %}
     {%- apply spaceless -%}
-        {% set custom_page_title = ea.crud.customPageTitle('new') %}
-        {{ custom_page_title is null
-            ? (ea.crud.defaultPageTitle('new')|trans(ea.i18n.translationParameters, 'EasyAdminBundle'))|raw
-            : (custom_page_title|trans(ea.i18n.translationParameters))|raw }}
+        {% set default_title = ea.crud.defaultPageTitle('new')|trans(ea.i18n.translationParameters, 'EasyAdminBundle') %}
+        {{ ea.crud.customPageTitle is null ? default_title|raw : ea.crud.customPageTitle('new')|trans(ea.i18n.translationParameters)|raw }}
     {%- endapply -%}
 {% endblock %}
 
@@ -46,4 +44,10 @@
     {% block new_form %}
         {{ form(new_form) }}
     {% endblock new_form %}
+{% endblock %}
+
+{% block body_javascript %}
+    {{ parent() }}
+
+    {{ include('@EasyAdmin/crud/includes/_select2_widget.html.twig') }}
 {% endblock %}

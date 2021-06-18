@@ -60,13 +60,13 @@ class ChoiceFilterType extends AbstractType
             'value_type_options' => [
                 'multiple' => false,
                 'attr' => [
-                    'data-ea-widget' => 'ea-autocomplete',
+                    'data-widget' => 'select2',
                 ],
             ],
         ]);
         $resolver->setNormalizer('value_type_options', static function (Options $options, $value) {
             if (!isset($value['attr'])) {
-                $value['attr']['data-ea-widget'] = 'ea-autocomplete';
+                $value['attr']['data-widget'] = 'select2';
             }
 
             return $value;

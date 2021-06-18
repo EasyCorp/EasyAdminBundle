@@ -111,7 +111,8 @@
 }
 
 // Country field
-.field-country .country-flag {
+.field-country .country-flag,
+.select2-results__option .country-flag {
   margin-right: 2px;
   max-height: 18px;
   vertical-align: text-top;

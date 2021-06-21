@@ -24,6 +24,11 @@
     {{- parent() -}}
 {%- endblock form_widget_simple %}
 
+{% block datetime_widget %}
+    {% set attr = attr|merge({class: (attr.class|default('') ~ ' form-inline')|trim}) %}
+    {{ parent() }}
+{% endblock datetime_widget %}
+
 {% block date_widget -%}
     <div class="datetime-widget datetime-widget-date">
         {{- parent() -}}

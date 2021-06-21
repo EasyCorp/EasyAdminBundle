@@ -5,6 +5,12 @@ input[disabled] {
     cursor: not-allowed;
 }
 
+.form-inline {
+    align-items: center;
+    display: flex;
+    flex-flow: row wrap;
+}
+
 // Base form groups
 .form-group {
     display: flex;
@@ -165,9 +171,10 @@ label.form-check-label {
 }
 
 .form-widget .form-select {
+    background-position: right 5px center;
     box-shadow: 0 0 0 1px rgba(43, 45, 80, .1), 0 2px 5px 0 rgba(43, 45, 80, .08), 0 1px 1.5px 0 rgba(0, 0, 0, .07), 0 1px 2px 0 rgba(0, 0, 0, .08);
-    padding-left: 4px;
-    padding-right: 4px;
+    padding: 3px 30px 4px 7px;
+    width: auto;
 }
 .ts-dropdown.form-select {
     height: auto;
@@ -225,10 +232,6 @@ label.form-check-label {
 .field-time .form-widget,
 .field-datetime .form-widget {
     margin: 0;
-}
-
-.field-datetime .form-inline {
-    display: flex;
 }
 
 .datetime-widget + .datetime-widget {

@@ -117,7 +117,7 @@
                                     {% set impersonator_permission = 'ROLE_PREVIOUS_ADMIN' %}
                                 {% endif %}
 
-                                <div class="user user-menu-wrapper {{ is_granted(impersonator_permission) ? 'user-is-impersonated' }}" data-bs-toggle="popover" data-placement="bottom" data-container=".user-menu-wrapper" data-content="{{ _user_menu_content|e('html_attr') }}" data-html="true">
+                                <div class="user user-menu-wrapper {{ is_granted(impersonator_permission) ? 'user-is-impersonated' }}" data-bs-toggle="popover" data-bs-placement="bottom" data-bs-container=".user-menu-wrapper" data-bs-content="{{ _user_menu_content|e('html_attr') }}" data-bs-html="true">
                                     {% if ea.userMenu.isAvatarDisplayed %}
                                         {% if null == ea.userMenu.avatarUrl %}
                                             <i class="fa fa-fw {{ ea.user is not null ? 'fa-user-circle' : 'fa-user-times' }} user-avatar"></i>

@@ -126,12 +126,12 @@ label.form-check-label {
 }
 
 .form-widget [type="number"].form-control,
+.form-widget [type="time"].form-control,
 .form-widget [type="date"].form-control,
-.form-widget [type="time"].form-control {
-    max-width: 150px;
-}
-.form-widget [type="datetime-local"].form-control {
-  max-width: 250px;
+.form-widget [type="datetime-local"].form-control
+{
+    max-width: unset;
+    width: auto;
 }
 
 .full-width .form-widget input.form-control,

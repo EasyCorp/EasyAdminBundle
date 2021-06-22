@@ -201,7 +201,7 @@ const App = (() => {
             toggleField.closest('.custom-switch').classList.add('disabled');
         };
 
-        document.querySelectorAll('td.field-boolean .custom-control.custom-switch input[type="checkbox"]').forEach((toggleField) => {
+        document.querySelectorAll('td.field-boolean .form-switch input[type="checkbox"]').forEach((toggleField) => {
             toggleField.addEventListener('change', () => {
                 const newValue = toggleField.checked;
                 const oldValue = !newValue;

@@ -149,7 +149,7 @@ final class ActionFactory
     {
         if (null !== $url = $actionDto->getUrl()) {
             if (\is_callable($url)) {
-                return $url($entityDto->getInstance());
+                return null !== $entityDto ? $url($entityDto->getInstance()) : $url();
             }
 
             return $url;

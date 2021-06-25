@@ -38,9 +38,14 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
     {
         $translationDomain = $context->getI18n()->getTranslationDomain();
 
-        $value = $this->buildValueOption($field, $entityDto);
-        $field->setValue($value);
-        $field->setFormattedValue($value);
+        // do not attempt to read a field if it already has a set value
+        // this basically means that someone written something to it
+        // either as a virtual field or overwrite
+        if (null === $field->getValue()) {
+            $value = $this->buildValueOption($field, $entityDto);
+            $field->setValue($value);
+            $field->setFormattedValue($value);
+        }
 
         $label = $this->buildLabelOption($field, $translationDomain, $context->getCrud()->getCurrentPage());
         $field->setLabel($label);

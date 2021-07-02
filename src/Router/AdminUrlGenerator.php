@@ -294,7 +294,7 @@ final class AdminUrlGenerator
             $this->dashboardRoute = $adminContext->getDashboardRouteName();
             $currentRouteParameters = $routeParametersForReferrer = $adminContext->getRequest()->query->all();
             unset($routeParametersForReferrer[EA::REFERRER]);
-            $this->currentPageReferrer = sprintf('%s?%s', $adminContext->getRequest()->getPathInfo(), http_build_query($routeParametersForReferrer));
+            $this->currentPageReferrer = sprintf('%s%s?%s', $adminContext->getRequest()->getBaseUrl(), $adminContext->getRequest()->getPathInfo(), http_build_query($routeParametersForReferrer));
         }
 
         $this->includeReferrer = null;

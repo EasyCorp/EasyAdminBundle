@@ -38,9 +38,8 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
     {
         $translationDomain = $context->getI18n()->getTranslationDomain();
 
-        // do not attempt to read a field if it already has a set value
-        // this basically means that someone written something to it
-        // either as a virtual field or overwrite
+        // if a field already has set a value, someone has written something to
+        // it (as a virtual field or overwrite); don't modify the value in that case
         if (null === $field->getValue()) {
             $value = $this->buildValueOption($field, $entityDto);
             $field->setValue($value);

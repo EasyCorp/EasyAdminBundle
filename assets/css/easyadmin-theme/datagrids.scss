@@ -80,11 +80,15 @@ table.datagrid {
 }
 
 .datagrid .ea-lightbox-thumbnail img {
-  box-shadow: 0 0 0 2px var(--white), 0 0 4px 1px var(--gray-600);
-  margin-bottom: 2px;
-  margin-top: 2px;
+  background: var(--white);
+  border: 1px solid transparent;
+  border-radius: var(--border-radius);
   max-height: 50px;
   max-width: 100px;
+  padding: 2px 4px;
+}
+.datagrid tr:hover .ea-lightbox-thumbnail img {
+  border-color: var(--border-color);
 }
 
 .datagrid mark {

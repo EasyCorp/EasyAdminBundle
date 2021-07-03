@@ -512,29 +512,49 @@ form .invalid-feedback > .d-block + .d-block {
     .custom-file {
         height: 30px;
     }
-    .input-group-append .btn {
+    .input-group {
+        flex-wrap: nowrap;
+    }
+    .input-group .btn {
         color: var(--text-color);
         font-size: 17px;
-        height: 28px;
-        line-height: 28px;
-        margin: 1px 0 0 1px;
+        height: 30px;
+        line-height: 30px;
+        margin: 1px 0 0 4px;
         padding: 0 8px;
+        position: relative;
+        top: -8px;
         vertical-align: middle;
     }
 
     .custom-file-input {
         cursor: pointer;
+        height: calc(1.5em + .75rem + 2px);
+        margin: 0;
+        overflow: hidden;
+        opacity: 0;
+        position: relative;
+        width: 100%;
+        z-index: 2;
     }
 
     .custom-file-label {
+        background: var(--white);
+        border-radius: var(--border-radius);
+        border: 0;
+        box-shadow: 0 0 0 1px rgba(43, 45, 80, .16), 0 0 0 1px rgba(6, 122, 184, 0), 0 0 0 2px rgba(6, 122, 184, 0), 0 1px 1px rgba(0, 0, 0, .08);
+        color: var(--text-color-dark);
         height: 30px;
+        left: 0;
         margin: 0 !important;
-        text-align: left !important;
-        padding: 3px 40px 3px 7px;
-        border-right: none;
         overflow: hidden;
+        padding: 3px 40px 3px 7px;
+        position: absolute;
+        text-align: left !important;
         text-overflow: ellipsis;
+        top: 0;
         white-space: nowrap;
+        width: 100%;
     }
     .custom-file-label::after {
         display: none;
@@ -543,12 +563,12 @@ form .invalid-feedback > .d-block + .d-block {
     .input-group-text {
         background-color: white;
         border: none;
+        box-shadow: none;
         color: var(--text-muted);
-        height: 28px;
-        margin-top: 1px;
-        padding: 7px;
+        height: 30px;
+        padding: 7px 0 7px 8px;
         position: absolute;
-        right: 70px;
+        right: 0;
         z-index: 3;
     }
 

@@ -1,0 +1,10 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2021-07-03T14:33:52Z
+
+Thanks Romain! I've checked and this is also what Symfony itself does internally in many places. E.g:
+
+* https://github.com/symfony/symfony/blob/883766eabd142cf4c62a49ce379b7ee903ab9b01/src/Symfony/Component/Security/Http/EntryPoint/RetryAuthenticationEntryPoint.php#L55
+* https://github.com/symfony/symfony/blob/883766eabd142cf4c62a49ce379b7ee903ab9b01/src/Symfony/Component/HttpFoundation/Request.php#L1061
+
+So, let's merge it!

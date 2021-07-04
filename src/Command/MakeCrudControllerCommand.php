@@ -19,6 +19,7 @@ use function Symfony\Component\String\u;
 class MakeCrudControllerCommand extends Command
 {
     protected static $defaultName = 'make:admin:crud';
+    protected static $defaultDescription = 'Creates a new EasyAdmin CRUD controller class';
     private $projectDir;
     private $classMaker;
     private $doctrine;
@@ -29,6 +30,14 @@ class MakeCrudControllerCommand extends Command
         $this->projectDir = $projectDir;
         $this->classMaker = $classMaker;
         $this->doctrine = $doctrine;
+    }
+
+    protected function configure()
+    {
+        $this
+            ->setDescription(self::$defaultDescription)
+            ->setHelp($this->getCommandHelp())
+        ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -95,5 +104,20 @@ class MakeCrudControllerCommand extends Command
         sort($entitiesFqcn);
 
         return $entitiesFqcn;
+    }
+
+    private function getCommandHelp()
+    {
+        return <<<'HELP'
+The <info>%command.name%</info> command creates a new EasyAdmin CRUD controler
+class to manage some Doctrine entity in your application.
+
+Follow the steps shown by the command to select the Doctrine entity and the
+location and namespace of the generated class.
+
+This command never changes or overwrites an existing class, so you can run it
+safely as many times as needed to create multiple CRUD controllers.
+HELP
+        ;
     }
 }

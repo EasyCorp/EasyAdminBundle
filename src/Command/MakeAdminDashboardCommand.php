@@ -20,6 +20,7 @@ use function Symfony\Component\String\u;
 class MakeAdminDashboardCommand extends Command
 {
     protected static $defaultName = 'make:admin:dashboard';
+    protected static $defaultDescription = 'Creates a new EasyAdmin Dashboard class';
     private $classMaker;
     private $projectDir;
 
@@ -28,6 +29,14 @@ class MakeAdminDashboardCommand extends Command
         parent::__construct($name);
         $this->classMaker = $classMaker;
         $this->projectDir = $projectDir;
+    }
+
+    protected function configure()
+    {
+        $this
+            ->setDescription(self::$defaultDescription)
+            ->setHelp($this->getCommandHelp())
+        ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -120,5 +129,18 @@ class MakeAdminDashboardCommand extends Command
         $phpVersion = preg_replace('/[^0-9\.]/', '', $phpVersionRequirement);
 
         return $phpVersion;
+    }
+
+    private function getCommandHelp()
+    {
+        return <<<'HELP'
+The <info>%command.name%</info> command creates a new EasyAdmin Dashboard class
+in your application. Follow the steps shown by the command to configure the
+name and location of the new class.
+
+This command never changes or overwrites an existing class, so you can run it
+safely as many times as needed to create multiple dashboards.
+HELP
+        ;
     }
 }

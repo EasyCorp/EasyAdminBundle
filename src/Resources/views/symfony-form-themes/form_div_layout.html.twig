@@ -241,9 +241,9 @@
             {%- endif -%}
         {%- else -%}
             {%- if label_html is same as(false) -%}
-                {{- label|trans(label_translation_parameters, translation_domain) -}}
+                {{- label|trans(label_translation_parameters|default({}), translation_domain) -}}
             {%- else -%}
-                {{- label|trans(label_translation_parameters, translation_domain)|raw -}}
+                {{- label|trans(label_translation_parameters|default({}), translation_domain)|raw -}}
             {%- endif -%}
         {%- endif -%}
     </button>
@@ -309,9 +309,9 @@
             {%- endif -%}
         {%- else -%}
             {%- if label_html is same as(false) -%}
-                {{- label|trans(label_translation_parameters, translation_domain) -}}
+                {{- label|trans(label_translation_parameters|default({}), translation_domain) -}}
             {%- else -%}
-                {{- label|trans(label_translation_parameters, translation_domain)|raw -}}
+                {{- label|trans(label_translation_parameters|default({}), translation_domain)|raw -}}
             {%- endif -%}
         {%- endif -%}
         </{{ element|default('label') }}>

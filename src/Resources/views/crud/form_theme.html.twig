@@ -275,7 +275,7 @@
             {% else %}
                 {% set _lightbox_id = 'ea-lightbox-' ~ id %}
 
-                <a href="#" class="ea-lightbox-thumbnail" data-featherlight="#{{ _lightbox_id }}" data-featherlight-close-on-click="anywhere">
+                <a href="#" class="ea-lightbox-thumbnail" data-ea-lightbox-content-selector="#{{ _lightbox_id }}">
                     {% if formTypeOptions.imagine_pattern is defined and formTypeOptions.imagine_pattern is not empty %}
                         <img src="{{ (asset_helper is same as(true) ? asset(download_uri) : download_uri)|ea_apply_filter_if_exists('imagine_filter', formTypeOptions.imagine_pattern) }}">
                     {% else %}

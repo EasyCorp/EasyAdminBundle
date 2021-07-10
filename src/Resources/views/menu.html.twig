@@ -1,5 +1,5 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
-<div id="main-menu">
+<nav id="main-menu">
     {% block main_menu_before %}{% endblock %}
 
     <ul class="menu">
@@ -27,7 +27,7 @@
     </ul>
 
     {% block main_menu_after %}{% endblock %}
-</div>
+</nav>
 
 {% macro render_menu_item(item) %}
     {% if item.isMenuSection %}

@@ -22,6 +22,7 @@ final class TelephoneField implements FieldInterface
             ->setLabel($label)
             ->setTemplateName('crud/field/telephone')
             ->setFormType(TelType::class)
-            ->addCssClass('field-telephone');
+            ->addCssClass('field-telephone')
+            ->setDefaultColumns('col-md-4 col-xxl-3');
     }
 }

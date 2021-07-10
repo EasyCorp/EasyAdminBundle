@@ -27,6 +27,7 @@ final class TextEditorField implements FieldInterface
             ->addCssClass('field-text_editor')
             ->addCssFiles('bundles/easyadmin/form-type-text-editor.css')
             ->addJsFiles('bundles/easyadmin/form-type-text-editor.js')
+            ->setDefaultColumns('col-md-9 col-xxl-7')
             ->setCustomOption(self::OPTION_NUM_OF_ROWS, null);
     }
 

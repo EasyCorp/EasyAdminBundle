@@ -34,7 +34,20 @@ const EaCollectionProperty = {
                 .replace(nameRegexp, numItems);
 
             collection.dataset.numItems = ++numItems;
-            collection.querySelector('.form-widget .form-widget-compound > div').insertAdjacentHTML('beforeend', newItemHtml);
+            const isArrayCollection = collection.classList.contains('field-array');
+            const newItemInsertionSelector = isArrayCollection ? 'legend.col-form-label + .form-widget > div' : '.form-widget .accordion > div';
+            const collectionItemsWrapper = collection.querySelector(newItemInsertionSelector);
+
+            collectionItemsWrapper.insertAdjacentHTML('beforeend', newItemHtml);
+            // for complex collections of items, show the newly added item as not collapsed
+            if (!isArrayCollection) {
+                const collectionItems = collectionItemsWrapper.querySelectorAll('.accordion-item');
+                const lastElement = collectionItems[collectionItems.length - 1];
+                const lastElementCollapseButton = lastElement.querySelector('.accordion-button');
+                lastElementCollapseButton.classList.remove('collapsed');
+                const lastElementBody = lastElement.querySelector('.accordion-collapse');
+                lastElementBody.classList.add('show');
+            }
 
             document.dispatchEvent(new Event('ea.collection.item-added'));
         });

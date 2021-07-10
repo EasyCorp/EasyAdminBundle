@@ -4,9 +4,9 @@
 {% if ea.crud.currentAction == 'detail' %}
     {# TODO: improve this to highlight code #}
     {% set configuredHeight = field.customOptions.get('height') %}
-    <div style="{{ configuredHeight is null ? 'max-height: 350px;' : 'max-height: unset; height: ' ~ configuredHeight ~ 'px' }}">
-        {{ field.value|nl2br }}
-    </div>
+    <pre style="{{ configuredHeight is null ? 'max-height: 500px;' : 'max-height: unset; height: ' ~ configuredHeight ~ 'px' }}">
+        {{- field.value -}}
+    </pre>
 {% else %}
     {% set html_id = 'ea-code-editor-' ~ field.uniqueId %}
     <a href="#" data-bs-toggle="modal" data-bs-target="#{{ html_id }}">

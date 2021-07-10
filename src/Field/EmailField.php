@@ -22,6 +22,7 @@ final class EmailField implements FieldInterface
             ->setLabel($label)
             ->setTemplateName('crud/field/email')
             ->setFormType(EmailType::class)
-            ->addCssClass('field-email');
+            ->addCssClass('field-email')
+            ->setDefaultColumns('col-md-6 col-xxl-5');
     }
 }

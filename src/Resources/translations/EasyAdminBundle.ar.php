@@ -3,8 +3,8 @@
 return [
     'page_title' => [
         'dashboard' => 'لوحة التحكم',
-        'detail' => '<small>(#%entity_short_id%)</small> %entity_label_singular%',
-        'edit' => '<small>(#%entity_short_id%)</small> %entity_label_singular% تعديل',
+        'detail' => '%entity_as_string%',
+        'edit' => '%entity_label_singular% تعديل',
         'index' => '%entity_label_plural%',
         'new' => '"%entity_label_singular%" جديد',
         'exception' => '{1} خطأ|{2} خطأن|]2,Inf] أخطاء ',

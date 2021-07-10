@@ -353,6 +353,49 @@ trait FieldTrait
         return $this;
     }
 
+    /**
+     * @param int|string $cols An integer with the number of columns that this field takes (e.g. 6),
+     *                         or a string with responsive col CSS classes (e.g. 'col-6 col-sm-4 col-lg-3')
+     */
+    public function setColumns($cols): self
+    {
+        if (!\is_int($cols) && !\is_string($cols)) {
+            throw new \InvalidArgumentException(sprintf('The value passed to the "setColumns()" method of the "%s" field can only be an integer or a string ("%s" was given).', $this->dto->getProperty(), get_debug_type($cols)));
+        }
+
+        $this->dto->setColumns(\is_int($cols) ? 'col-md-'.$cols : $cols);
+
+        return $this;
+    }
+
+    /**
+     * Used to define the columns of fields when users don't define the
+     * columns explicitly using the setColumns() method.
+     * This should only be used if you create a custom EasyAdmin field,
+     * not when configuring fields in your backend.
+     *
+     * @param int|string $cols
+     *
+     * @internal
+     */
+    public function setDefaultColumns($cols): self
+    {
+        if (!\is_int($cols) && !\is_string($cols)) {
+            throw new \InvalidArgumentException(sprintf('The value passed to the "setDefaultColumns()" method of the "%s" field can only be an integer or a string ("%s" was given).', $this->dto->getProperty(), get_debug_type($cols)));
+        }
+
+        $this->dto->setDefaultColumns(\is_int($cols) ? 'col-md-'.$cols : $cols);
+
+        return $this;
+    }
+
+    public function fillRow(bool $fillRow = true): self
+    {
+        $this->dto->setFillRestOfFormRow($fillRow);
+
+        return $this;
+    }
+
     public function getAsDto(): FieldDto
     {
         return $this->dto;

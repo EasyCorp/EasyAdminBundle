@@ -781,7 +781,37 @@ Twig Template Path: ``@EasyAdmin/page/content.html.twig``
 It displays a simple page similar to the index/detail/form pages, with the main
 header, the sidebar menu and the central content section. The only difference is
 that the content section is completely empty, so it's useful to display your own
-text contents, custom forms, etc.
+contents and custom forms, to :ref:`integrate Symfony actions inside EasyAdmin <actions-integrating-symfony>`,
+etc. Example:
+
+.. code-block:: twig
+
+    {# templates/admin/my-custom-page.html.twig #}
+    {% extends '@EasyAdmin/page/content.html.twig' %}
+
+    {% block content_title %}The Title of the Page{% endblock %}
+    {% block page_actions %}
+        <a class="btn btn-primary" href="...">Some Action</a>
+    {% endblock %}
+
+    {% block main %}
+        <table class="datagrid">
+            <thead>
+                <tr>
+                    <td>Some Column</td>
+                    <td>Another Column</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in my_own_data %}
+                    <tr>
+                        <td>{{ data.someColumn }}</td>
+                        <td>{{ data.anotherColumn }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endblock %}
 
 .. _`Symfony controllers`: https://symfony.com/doc/current/controller.html
 .. _`Symfony route annotations`: https://symfony.com/doc/current/routing.html#creating-routes-as-annotations

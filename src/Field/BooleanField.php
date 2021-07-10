@@ -2,7 +2,6 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 
-use EasyCorp\Bundle\EasyAdminBundle\Config\Option\TextAlign;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 
@@ -28,7 +27,6 @@ final class BooleanField implements FieldInterface
             ->setTemplateName('crud/field/boolean')
             ->setFormType(CheckboxType::class)
             ->addCssClass('field-boolean')
-            ->setTextAlign(TextAlign::CENTER)
             ->setCustomOption(self::OPTION_RENDER_AS_SWITCH, true);
     }
 

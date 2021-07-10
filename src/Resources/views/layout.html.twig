@@ -63,98 +63,175 @@
             {{ include(ea.templatePath('flash_messages')) }}
         {% endblock flash_messages %}
 
+        {% set user_menu_avatar %}
+            {% if null == ea.userMenu.avatarUrl %}
+                <span class="user-avatar">
+                    <span class="fa-stack">
+                        <i class="user-avatar-icon-background fas fa-square fa-stack-2x"></i>
+                        <i class="user-avatar-icon-foreground {{ ea.user is not null ? 'fa fa-user' : 'fas fa-user-slash' }} fa-stack-1x fa-inverse"></i>
+                    </span>
+                </span>
+            {% else %}
+                <img class="user-avatar" src="{{ ea.userMenu.avatarUrl }}" />
+            {% endif %}
+        {% endset %}
+
+        {% set impersonator_permission = constant('Symfony\\Component\\Security\\Core\\Authorization\\Voter\\AuthenticatedVoter::IS_IMPERSONATOR') is defined ? 'IS_IMPERSONATOR' : 'ROLE_PREVIOUS_ADMIN' %}
+
+        {% set user_menu_dropdown %}
+            <ul class="dropdown-menu dropdown-menu-end">
+                <li class="dropdown-user-details">
+                    <div>{{ user_menu_avatar }}</div>
+                    <div>
+                        <span class="user-label">{{ 'user.logged_in_as'|trans(domain = 'EasyAdminBundle') }}</span>
+                        <span class="user-name">{{ ea.user is null ? 'user.anonymous'|trans(domain = 'EasyAdminBundle') : ea.userMenu.name }}</span>
+                    </div>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+
+                {% block user_menu %}
+                    {% if ea.userMenu.items|length > 0 %}
+                        {% for item in ea.userMenu.items %}
+                            <li>
+                                {% if item.isMenuSection and not loop.first %}
+                                    <hr class="dropdown-divider">
+                                {% elseif not item.isMenuSection %}
+                                    <a href="{{ item.linkUrl }}" class="dropdown-item user-action {{ item.cssClass }}"
+                                       target="{{ item.linkTarget }}" rel="{{ item.linkRel }}"
+                                       referrerpolicy="origin-when-cross-origin">
+                                        {% if item.icon is not empty %}<i class="fa fa-fw {{ item.icon }}"></i>{% endif %}
+                                        <span>{{ item.label }}</span>
+                                    </a>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    {% endif %}
+                {% endblock user_menu %}
+            </ul>
+        {% endset %}
+
         <div class="wrapper">
             {% block wrapper %}
-                <header class="main-header">
-                    {% block header %}
-                        <nav class="navbar" role="navigation">
-                            {% block header_navbar %}
-                                <button id="navigation-toggler" type="button" aria-label="Toggle navigation">
-                                    <i class="fa fa-fw fa-bars"></i>
-                                </button>
+                <div class="responsive-header">
+                    {% block responsive_header %}
+                        <button id="navigation-toggler" type="button" aria-label="Toggle navigation">
+                            <i class="fa fa-fw fa-bars"></i>
+                        </button>
 
-                                <div id="header-logo">
-                                    {% block header_logo %}
-                                        <a class="logo {{ ea.dashboardTitle|length > 14 ? 'logo-long' }}" title="{{ ea.dashboardTitle|striptags }}" href="{{ path(ea.dashboardRouteName) }}">
-                                            {{ ea.dashboardTitle|raw }}
-                                        </a>
-                                    {% endblock header_logo %}
-                                </div>
-                            {% endblock header_navbar %}
-                        </nav>
-
-                        {% set _user_menu_content %}
-                            <div class="popover-content-section user-details {{ ea.userMenu.items|length > 0 ? 'user-has-actions' }}">
-                                <p class="small text-muted mb-0">{{ 'user.logged_in_as'|trans(domain = 'EasyAdminBundle') }}</p>
-                                <p class="user-details-name">
-                                    {{ ea.user is null ? 'user.anonymous'|trans(domain = 'EasyAdminBundle') : ea.userMenu.name }}
-                                </p>
-                            </div>
-
-                            {% block user_menu %}
-                                {% if ea.userMenu.items|length > 0 %}
-                                    <div class="popover-content-section user-menu">
-                                        {% for item in ea.userMenu.items %}
-                                            {% if item.isMenuSection %}
-                                                <hr class="m-0" />
-                                            {% else %}
-                                                <a href="{{ item.linkUrl }}" class="user-action {{ item.cssClass }}" target="{{ item.linkTarget }}" rel="{{ item.linkRel }}" referrerpolicy="origin-when-cross-origin">
-                                                    {% if item.icon is not empty %}<i class="fa fa-fw {{ item.icon }}"></i>{% endif %}
-                                                    <span>{{ item.label }}</span>
-                                                </a>
-                                            {% endif %}
-                                        {% endfor %}
-                                    </div>
-                                {% endif %}
-                            {% endblock user_menu %}
-                        {% endset %}
-
-                        <div class="content-top navbar-custom-menu">
-                            {% block header_custom_menu %}
-                                {% if constant('Symfony\\Component\\Security\\Core\\Authorization\\Voter\\AuthenticatedVoter::IS_IMPERSONATOR') is defined %}
-                                    {% set impersonator_permission = 'IS_IMPERSONATOR' %}
-                                {% else %}
-                                    {% set impersonator_permission = 'ROLE_PREVIOUS_ADMIN' %}
-                                {% endif %}
-
-                                <div class="user user-menu-wrapper {{ is_granted(impersonator_permission) ? 'user-is-impersonated' }}" data-bs-toggle="popover" data-bs-placement="bottom" data-bs-container=".user-menu-wrapper" data-bs-content="{{ _user_menu_content|e('html_attr') }}" data-bs-html="true">
-                                    {% if ea.userMenu.isAvatarDisplayed %}
-                                        {% if null == ea.userMenu.avatarUrl %}
-                                            <i class="fa fa-fw {{ ea.user is not null ? 'fa-user-circle' : 'fa-user-times' }} user-avatar"></i>
-                                        {% else %}
-                                            <img class="user-avatar" src="{{ ea.userMenu.avatarUrl }}" />
-                                        {% endif %}
-                                    {% endif %}
-                                    {% if ea.userMenu.isNameDisplayed %}
-                                        <span class="user-name">{{ ea.userMenu.name }}</span>
-                                    {% endif %}
-                                </div>
-                            {% endblock header_custom_menu %}
+                        <div id="responsive-header-logo" class="text-truncate">
+                            {% block responsive_header_logo %}
+                                <a class="responsive-logo" title="{{ ea.dashboardTitle|striptags }}" href="{{ path(ea.dashboardRouteName) }}">
+                                    {{ ea.dashboardTitle|raw }}
+                                </a>
+                            {% endblock responsive_header_logo %}
                         </div>
-                    {% endblock header %}
-                </header>
 
-                <aside class="main-sidebar">
-                    {% block sidebar %}
-                        <section class="sidebar">
+                        <div class="dropdown user-menu-wrapper {{ is_granted(impersonator_permission) ? 'user-is-impersonated' }}">
+                            <a class="user-details" type="button" data-bs-toggle="dropdown" data-bs-offset="0,5" aria-expanded="false">
+                                {# to make the site design consistent, always display the user avatar in responsive header
+                                   and hide the user name (because there's no space left) regardless of the user config #}
+                                {% if ea.userMenu.avatarDisplayed %}
+                                    {{ user_menu_avatar }}
+                                {% else %}
+                                    <i class="user-avatar fa fa-fw {{ ea.user is not null ? 'fa-user' : 'fa-user-times' }}"></i>
+                                {% endif %}
+                            </a>
+
+                            {{ user_menu_dropdown }}
+                        </div>
+                    {% endblock responsive_header %}
+                </div>
+
+                <div class="sidebar-wrapper">
+                    <aside class="sidebar">
+                        {% block sidebar %}
+                            <header class="main-header">
+                                {% block header %}
+                                <nav class="navbar" role="navigation">
+                                    {% block header_navbar %}
+                                        <div id="header-logo">
+                                            {% block header_logo %}
+                                                <a class="logo" title="{{ ea.dashboardTitle|striptags }}" href="{{ path(ea.dashboardRouteName) }}">
+                                                    <span class="logo-custom">{{ ea.dashboardTitle|raw }}</span>
+                                                    <span class="logo-compact"><i class="fas fa-home"></i></span>
+                                                </a>
+                                            {% endblock header_logo %}
+                                        </div>
+                                    {% endblock header_navbar %}
+                                </nav>
+                                {% endblock header %}
+                            </header>
+
                             {% block main_menu_wrapper %}
                                 {{ include(ea.templatePath('main_menu')) }}
                             {% endblock main_menu_wrapper %}
-                        </section>
+                        {% endblock sidebar %}
 
-                    {% endblock sidebar %}
-                </aside>
+                        <div id="sidebar-resizer-handler" class="resizer-handler resizer-handler-left"></div>
+                    </aside>
+                </div>
 
-                <div class="content-wrapper">
-                    <div id="sidebar-resizer-handler" class="resizer-handler resizer-handler-left"></div>
+                <section class="main-content">
+                    <aside class="content-top">
+                        {% block content_top_header %}
+                            <div class="content-search">
+                                {% if ea.crud is not null and ea.crud.isSearchEnabled %}
+                                    {% block search %}
 
-                    {% block content %}
-                        <div class="content">
-                            {% block content_header_wrapper %}
-                                {% set has_help_message = (ea.crud.helpMessage ?? '') is not empty %}
-                                <section class="content-header">
-                                    {% block content_header %}
-                                        <div class="d-flex flex-row justify-content-between align-content-center w-100">
+                                        <form class="form-action-search" method="get">
+                                            {% block search_form %}
+                                                <input type="hidden" name="crudAction" value="index">
+                                                <input type="hidden" name="crudControllerFqcn" value="{{ ea.request.query.get('crudControllerFqcn') }}">
+                                                <input type="hidden" name="menuIndex" value="{{ ea.request.query.get('menuIndex') }}">
+                                                <input type="hidden" name="submenuIndex" value="{{ ea.request.query.get('submenuIndex') }}">
+                                                <input type="hidden" name="page" value="1">
+                                                <input type="hidden" name="signature" value="{{ ea_url().unsetAll().setAction('index').setController(ea.request.query.get('crudControllerFqcn')).getSignature() }}">
+
+                                                <div class="form-group">
+                                                    <div class="form-widget">
+                                                        <i class="fas fa-search content-search-icon"></i>
+
+                                                        <label class="content-search-label" data-value="{{ app.request.get('query') }}">
+                                                            <input class="form-control {{ app.request.get('query') is null ? 'is-blank' }}" type="search" name="query" value="{{ app.request.get('query') ?? '' }}" placeholder="{{ 'action.search'|trans(ea.i18n.translationParameters, 'EasyAdminBundle') }}" spellcheck="false" autocorrect="false" onInput="this.parentNode.dataset.value=this.value">
+                                                        </label>
+
+                                                        {% if app.request.get('query') %}
+                                                            <a href="{{ ea_url().unset('query') }}" class="content-search-reset">
+                                                                <i class="fas fa-fw fa-times"></i>
+                                                            </a>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            {% endblock %}
+                                        </form>
+                                    {% endblock search %}
+                                {% endif %}
+                            </div>
+
+                            <div class="navbar-custom-menu">
+                                {% block header_custom_menu %}
+                                    <div class="dropdown user-menu-wrapper {{ is_granted(impersonator_permission) ? 'user-is-impersonated' }}">
+                                        <a class="user-details" type="button" data-bs-toggle="dropdown" data-bs-offset="0,5" aria-expanded="false">
+                                            {{ user_menu_avatar }}
+                                            {% if ea.userMenu.isNameDisplayed %}
+                                                <span class="user-name">{{ ea.userMenu.name }}</span>
+                                            {% endif %}
+                                        </a>
+
+                                        {{ user_menu_dropdown }}
+                                    </div>
+                                {% endblock header_custom_menu %}
+                            </div>
+                        {% endblock content_top_header %}
+                    </aside>
+
+                    <div class="content-wrapper">
+                        {% block content %}
+                            <article class="content">
+                                {% block content_header_wrapper %}
+                                    {% set has_help_message = (ea.crud.helpMessage ?? '') is not empty %}
+                                    <section class="content-header">
+                                        {% block content_header %}
                                             <div class="content-header-title">
                                                 <h1 class="title">
                                                     {% block content_title %}{% endblock %}
@@ -162,8 +239,8 @@
                                                     {% block content_help %}
                                                         {% if has_help_message %}
                                                             <span class="content-header-help">
-                                                                <i class="far fa-question-circle" data-bs-toggle="tooltip" title="{{ ea.crud.helpMessage|e('html_attr') }}"></i>
-                                                            </span>
+                                                            <i class="far fa-question-circle" data-bs-toggle="tooltip" title="{{ ea.crud.helpMessage|e('html_attr') }}"></i>
+                                                        </span>
                                                         {% endif %}
                                                     {% endblock %}
                                                 </h1>
@@ -172,28 +249,28 @@
                                             {% block page_actions_wrapper %}
                                                 <div class="page-actions">{% block page_actions %}{% endblock %}</div>
                                             {% endblock %}
-                                        </div>
-                                    {% endblock content_header %}
-                                </section>
-                            {% endblock content_header_wrapper %}
-
-                            <section id="main" class="content-body">
-                                {% block main %}{% endblock %}
-                            </section>
-
-                            {% block content_footer_wrapper %}
-                                {% set content_footer = block('content_footer') is defined ? block('content_footer') : '' %}
-                                {% if content_footer is not empty %}
-                                    <section class="content-footer">
-                                        {{ content_footer }}
+                                        {% endblock content_header %}
                                     </section>
-                                {% endif %}
-                            {% endblock %}
-                        </div>
-                    {% endblock content %}
+                                {% endblock content_header_wrapper %}
 
-                    <div id="content-resizer-handler" class="resizer-handler resizer-handler-right"></div>
-                </div>
+                                <section id="main" class="content-body">
+                                    {% block main %}{% endblock %}
+                                </section>
+
+                                {% block content_footer_wrapper %}
+                                    {% set content_footer = block('content_footer') is defined ? block('content_footer') : '' %}
+                                    {% if content_footer is not empty %}
+                                        <section class="content-footer">
+                                            {{ content_footer }}
+                                        </section>
+                                    {% endif %}
+                                {% endblock %}
+                            </article>
+                        {% endblock content %}
+
+                        <div id="content-resizer-handler" class="resizer-handler resizer-handler-right"></div>
+                    </div>
+                </section>
             {% endblock wrapper %}
         </div>
     {% endblock wrapper_wrapper %}

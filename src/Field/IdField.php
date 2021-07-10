@@ -25,6 +25,7 @@ final class IdField implements FieldInterface
             ->setTemplateName('crud/field/id')
             ->setFormType(TextType::class)
             ->addCssClass('field-id')
+            ->setDefaultColumns('col-md-6 col-xxl-5')
             ->setCustomOption(self::OPTION_MAX_LENGTH, null);
     }
 

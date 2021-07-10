@@ -25,10 +25,11 @@ final class SlugField implements FieldInterface
             ->setLabel($label)
             ->setTemplateName('crud/field/text')
             ->setFormType(SlugType::class)
-            ->setCustomOption(self::OPTION_TARGET_FIELD_NAME, null)
-            ->setCustomOption(self::OPTION_UNLOCK_CONFIRMATION_MESSAGE, null)
             ->addCssClass('field-text')
             ->addJsFiles('bundles/easyadmin/form-type-slug.js')
+            ->setDefaultColumns('col-md-6 col-xxl-5')
+            ->setCustomOption(self::OPTION_TARGET_FIELD_NAME, null)
+            ->setCustomOption(self::OPTION_UNLOCK_CONFIRMATION_MESSAGE, null)
         ;
     }
 

@@ -3,8 +3,8 @@
 return [
     'page_title' => [
         'dashboard' => '控制台',
-        'detail' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
-        'edit' => '编辑 %entity_label_singular% <small>(#%entity_short_id%)</small>',
+        'detail' => '%entity_as_string%',
+        'edit' => '编辑 %entity_label_singular%',
         'index' => '%entity_label_plural%',
         'new' => '新增 %entity_label_singular%',
         'exception' => '错误|错误',

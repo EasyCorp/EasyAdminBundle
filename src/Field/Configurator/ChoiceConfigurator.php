@@ -31,6 +31,7 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
     public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
     {
         $isExpanded = $field->getCustomOption(ChoiceField::OPTION_RENDER_EXPANDED);
+        $isMultipleChoice = $field->getCustomOption(ChoiceField::OPTION_ALLOW_MULTIPLE_CHOICES);
 
         $choices = $this->getChoices($field->getCustomOption(ChoiceField::OPTION_CHOICES), $entityDto, $field);
         if (empty($choices)) {
@@ -38,7 +39,7 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
         }
 
         $field->setFormTypeOptionIfNotSet('choices', $choices);
-        $field->setFormTypeOptionIfNotSet('multiple', $field->getCustomOption(ChoiceField::OPTION_ALLOW_MULTIPLE_CHOICES));
+        $field->setFormTypeOptionIfNotSet('multiple', $isMultipleChoice);
         $field->setFormTypeOptionIfNotSet('expanded', $isExpanded);
 
         if ($isExpanded && ChoiceField::WIDGET_AUTOCOMPLETE === $field->getCustomOption(ChoiceField::OPTION_WIDGET)) {
@@ -51,6 +52,7 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
 
         if (ChoiceField::WIDGET_AUTOCOMPLETE === $field->getCustomOption(ChoiceField::OPTION_WIDGET)) {
             $field->setFormTypeOption('attr.data-ea-widget', 'ea-autocomplete');
+            $field->setDefaultColumns($isMultipleChoice ? 'col-md-8 col-xxl-6' : 'col-md-6 col-xxl-5');
         }
 
         $field->setFormTypeOptionIfNotSet('placeholder', '');

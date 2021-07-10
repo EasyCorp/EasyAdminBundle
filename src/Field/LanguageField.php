@@ -26,6 +26,7 @@ final class LanguageField implements FieldInterface
             ->setTemplateName('crud/field/language')
             ->setFormType(LanguageType::class)
             ->addCssClass('field-language')
+            ->setDefaultColumns('col-md-4 col-xxl-3')
             ->setCustomOption(self::OPTION_SHOW_CODE, false)
             ->setCustomOption(self::OPTION_SHOW_NAME, true);
     }

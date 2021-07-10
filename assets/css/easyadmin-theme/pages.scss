@@ -2,64 +2,57 @@
 // ----------------------------------------------------------------------------
 
 body.page-login {
-    align-items: center;
-    display: flex;
-    height: 100vh;
-    justify-content: center;
-    overflow: hidden;
-    position: absolute;
-    width: 100vw;
+    background: var(--page-login-bg);
+
+    @media(min-width: 992px) {
+        align-items: center;
+        display: flex;
+        height: 100vh;
+        justify-content: center;
+        overflow: hidden;
+        position: absolute;
+        width: 100vw;
+    }
 }
 
 .login-wrapper {
     align-items: center;
     display: flex;
     flex-direction: column;
+    margin: 0 auto;
     max-width: 28rem;
-    width: 100%;
+    width: 94%;
+
+    @media(min-width: 992px) {
+        margin-top: -225px;
+        width: 100%;
+    }
 }
 .login-wrapper .main-header {
     display: block;
     padding-right: 0;
 }
-.login-wrapper .main-header #header-logo {
-    color: var(--text-color-dark);
-    font-size: 30px;
-    font-weight: 700;
-    line-height: 1.2;
+.login-wrapper .main-header #header-logo a {
+    font-size: var(--font-size-lg);
     text-align: center;
+
+    @media(min-width: 992px) {
+        font-size: var(--font-size-xl);
+    }
 }
 .login-wrapper .content {
     background-color: var(--white);
     border-radius: var(--border-radius);
     box-shadow: var(--box-shadow-lg);
-    padding: 2rem 2.5rem;
+    padding: 15px 30px;
     width: 100%;
-}
-.login-wrapper .form-widget {
-    flex: 100%;
-    padding-left: 0;
-}
-.login-wrapper .form-widget-with-icon {
-    align-items: baseline;
-    display: flex;
-    flex-direction: row;
-}
-.login-wrapper .form-widget-with-icon i {
-    color: var(--gray-500);
-    font-size: 18px;
-    margin-right: 10px;
+
+    @media(min-width: 992px) {
+        padding: 2rem 2.5rem;
+    }
 }
 .login-wrapper .form-widget input {
     font-size: var(--font-size-lg);
     height: 38px;
     line-height: 38px;
-}
-
-.page-blank .content-wrapper {
-    display: block;
-}
-
-.page-content-with-padding .content-body {
-    padding: 18px 20px;
 }

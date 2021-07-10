@@ -30,6 +30,7 @@ final class CollectionField implements FieldInterface
             ->setFormType(CollectionType::class)
             ->addCssClass('field-collection')
             ->addJsFiles('bundles/easyadmin/form-type-collection.js')
+            ->setDefaultColumns('col-md-8 col-xxl-7')
             ->setCustomOption(self::OPTION_ALLOW_ADD, true)
             ->setCustomOption(self::OPTION_ALLOW_DELETE, true)
             ->setCustomOption(self::OPTION_ENTRY_IS_COMPLEX, null)

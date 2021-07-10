@@ -56,6 +56,7 @@ final class DateTimeField implements FieldInterface
             ->setTemplateName('crud/field/datetime')
             ->setFormType(DateTimeType::class)
             ->addCssClass('field-datetime')
+            ->setDefaultColumns('col-md-6 col-xxl-5')
             // the proper default values of these options are set on the Crud class
             ->setCustomOption(self::OPTION_DATE_PATTERN, null)
             ->setCustomOption(self::OPTION_TIME_PATTERN, null)

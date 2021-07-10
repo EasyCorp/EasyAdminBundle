@@ -38,6 +38,7 @@ final class AssociationField implements FieldInterface
             ->setTemplateName('crud/field/association')
             ->setFormType(EntityType::class)
             ->addCssClass('field-association')
+            ->setDefaultColumns('col-md-7 col-xxl-6')
             ->setCustomOption(self::OPTION_AUTOCOMPLETE, false)
             ->setCustomOption(self::OPTION_CRUD_CONTROLLER, null)
             ->setCustomOption(self::OPTION_WIDGET, self::WIDGET_AUTOCOMPLETE)

@@ -57,7 +57,7 @@ final class CrudDto
         $this->dateIntervalFormat = '%%y Year(s) %%m Month(s) %%d Day(s)';
         $this->defaultSort = [];
         $this->searchFields = [];
-        $this->showEntityActionsAsDropdown = false;
+        $this->showEntityActionsAsDropdown = true;
         $this->formThemes = ['@EasyAdmin/crud/form_theme.html.twig'];
         $this->newFormOptions = KeyValueStore::new();
         $this->editFormOptions = KeyValueStore::new();

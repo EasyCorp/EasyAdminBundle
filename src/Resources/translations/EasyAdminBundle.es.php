@@ -3,8 +3,8 @@
 return [
     'page_title' => [
         'dashboard' => 'Inicio',
-        'detail' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
-        'edit' => 'Modificar %entity_label_singular% <small>(#%entity_short_id%)</small>',
+        'detail' => '%entity_as_string%',
+        'edit' => 'Modificar %entity_label_singular%',
         'index' => '%entity_label_plural%',
         'new' => 'Crear %entity_label_singular%',
         'exception' => 'Error|Errores',

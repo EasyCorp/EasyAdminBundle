@@ -7,11 +7,16 @@
     padding: 0;
 }
 
-.detail .form-control .ea-lightbox-thumbnail img {
-    box-shadow: 0 0 0 4px var(--white), 0px 0px 8px 2px var(--gray-600);
-    margin: 10px 7px;
+.ea-detail .field-image img {
+    border: 1px solid transparent;
+    border-radius: var(--border-radius);
     max-height: 300px;
     max-width: 400px;
+    padding: 8px;
+
+    &:hover {
+        border-color: var(--datalist-border-color);
+    }
 }
 
 .ea-lightbox-thumbnail img:hover {

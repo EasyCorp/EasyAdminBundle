@@ -1,139 +1,165 @@
 // Sidebar navigation menu
 // ----------------------------------------------------------------------------
 
-#main-menu .menu {
-    padding-left: 0;
+#main-menu {
+    padding: 0 0 20px;
 
-    li { list-style: none; }
+    .menu {
+        padding-left: 0;
 
-    a {
-        color: var(--text-color-dark);
-        display: block;
-        line-height: 18px;
-        padding: 3px 5px 6px 0;
-    }
+        li { list-style: none; }
 
-    .menu-header {
-        color: var(--gray-600);
-        font-size: 12px;
-        font-weight: 500;
-        margin-top: 15px;
-        padding: 7px 5px 7px 0;
-        text-transform: uppercase;
-
-        &:first-child { margin-top: 0; }
-    }
-
-    .menu-item {
-        padding-right: 15px;
-        position: relative;
-
-        .submenu-toggle-icon {
-            color: var(--gray-700);
-            position: absolute;
-            top: 6px;
-            right: 1px;
-            transition: transform 0.25s ease;
-            width: auto;
+        a {
+            align-items: flex-start;
+            color: var(--sidebar-menu-color);
+            display: flex;
+            padding: 4px 4px 4px 0;
         }
 
-        &.active {
+        .menu-header {
+            color: var(--sidebar-menu-header-color);
+            font-size: 12px;
             font-weight: 500;
+            margin-top: 15px;
+            padding: 7px 5px 7px 0;
+            text-transform: uppercase;
+
+            &:first-child { margin-top: 0; }
         }
 
-        &.active:not(.expanded) a, &.active:not(.expanded) .menu-icon {
-            color: var(--color-primary);
+        .menu-item {
+            padding-right: 10px;
+            position: relative;
+
+            &.active a {
+                font-weight: 500;
+
+                span {
+                    text-decoration: underline;
+                    text-underline-offset: 1px;
+                    text-decoration-color: var(--sidebar-menu-active-item-border-color);
+                    text-decoration-thickness: 2px;
+                    text-decoration-skip-ink: auto;
+                }
+            }
+
+            &.active:not(.expanded) a, &.active:not(.expanded) .menu-icon {
+                color: var(--sidebar-menu-active-item-color);
+            }
+
+            &.has-submenu.expanded .submenu-toggle-icon {
+                transform: rotate(90deg);
+            }
+
+            &.has-submenu:not(.expanded) .submenu {
+                // don't use 'display: none' to hide submenus; it breaks the menu accordion
+                max-height: 0px;
+            }
+
+            .submenu-toggle {
+                span { flex: 1; }
+
+                .submenu-toggle-icon {
+                    color: var(--sidebar-menu-icon-color);
+                    position: relative;
+                    top: 5px;
+                    transition: transform 0.25s ease;
+                    width: auto; // this is needed to make it look better
+                }
+            }
         }
 
-        &.has-submenu.expanded .submenu-toggle-icon {
-            transform: rotate(90deg);
+        .menu-icon {
+            color: var(--sidebar-menu-icon-color);
+            font-size: var(--font-size-lg);
+            margin-right: 10px;
+            margin-top: 3px;
+            vertical-align: middle;
+            height: 16px;
+            width: 20px;
         }
-    }
 
-    .menu-icon {
-        color: var(--gray-600);
-        font-size: 16px;
-        margin-right: 4px;
-        vertical-align: middle;
-        width: 20px;
+        .submenu {
+            // padding must be 0 for the element that slides up/down;
+            // if some padding is needed, create another HTML element inside this one
+            padding: 0;
+            overflow: hidden;
+            transition: max-height 150ms linear;
+
+            a {
+                color: var(--sidebar-menu-submenu-color);
+                padding: 3px 5px 3px 26px;
+            }
+
+            .menu-header {
+                padding-left: 26px;
+            }
+        }
     }
 }
 
-#main-menu .submenu {
-    // padding must be 0 for the element that slides up/down;
-    // if some padding is needed, create another HTML element inside this one
-    padding: 0;
-    overflow: hidden;
-    transition: max-height 150ms linear;
-
-    a {
-        color: var(--text-color);
-        font-size: var(--font-size-sm);
-        padding: 3px 5px 3px 26px;
-    }
-
-    .menu-header {
-        padding-left: 26px;
-    }
-}
-
-#main-menu .menu .menu-item.has-submenu:not(.expanded) .submenu {
-    // don't use 'display: none' to hide submenus; it breaks the menu accordion
-    max-height: 0px;
-}
-
-body.ea-sidebar-width-compact .main-sidebar {
+body.ea-sidebar-width-compact .sidebar {
+    padding: 0 10px;
     overflow: visible;
-
-    @media(min-width: 1024px) {
-        width: 24px;
-    }
 }
 
-@media(min-width: 1024px) {
+@media(min-width: 992px) {
     body.ea-sidebar-width-compact #main-menu .menu {
         a {
             padding: 7px 5px 7px 0;
         }
 
         li {
+            display: flex;
             position: relative;
             padding-right: 0;
+
+            &:hover {
+                background: var(--body-bg);
+                border-radius: var(--border-radius);
+                padding-left: 5px;
+                margin-left: -5px;
+                width: max-content;
+                z-index: $zindex-modal-backdrop;
+
+                span, .submenu {
+                    background: var(--body-bg);
+                    display: block;
+                }
+
+                .submenu {
+                    position: absolute;
+                    top: 0;
+                    margin-left: 34px;
+                    padding-right: 10px;
+                    width: max-content;
+                }
+                .submenu a {
+                    padding: 3px 5px 3px 13px;
+                }
+            }
+            &.has-submenu:hover {
+                .submenu-toggle span { display: none; }
+                .submenu-toggle-icon {
+                    display: inline-block;
+                    font-size: 18px;
+                    left: -2px;
+                    transform: rotate(0);
+                    z-index: 9999;
+                }
+                .submenu .menu-icon { margin-right: 8px; }
+            }
 
             span, .submenu-toggle-icon, .submenu { display: none; }
             span { position: static; }
 
-            .menu-icon { font-size: 21px; width: 24px; }
+            .menu-icon { font-size: 18px; height: 21px; max-width: 21px; }
             .submenu .menu-icon { font-size: 16px; position: relative; left: -4px; width: 21px; }
 
             .submenu {
                 max-height: initial !important;
                 padding-top: 5px;
                 padding-bottom: 5px;
-            }
-
-            &:hover {
-                background: var(--body-bg);
-                border-radius: var(--border-radius);
-                width: var(--sidebar-max-width);
-                z-index: $zindex-modal-backdrop;
-
-                span, .submenu {
-                    background: var(--body-bg);
-                    display: block;
-                    left: 32px;
-                    position: absolute;
-                    top: 7px;
-                }
-
-                .submenu {
-                    top: 32px;
-                    margin-left: 0;
-                    width: calc(var(--sidebar-max-width) - 32px);
-                }
-                .submenu a {
-                    padding: 3px 5px 3px 11px;
-                }
             }
         }
 

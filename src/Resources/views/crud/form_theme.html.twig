@@ -3,13 +3,21 @@
 
 {% block form_start %}
     {% if form.vars.errors|length > 0 and 'ea_crud' in form.vars.block_prefixes|default([]) %}
-        {{ form_errors(form) }}
+        {{ form_errors(form, {attr: { class: 'global-invalid-feedback' }}) }}
     {% endif %}
 
     {{ parent() }}
 
     <input type="hidden" name="referrer" value="{{ ea.request.query.get('referrer') }}">
 {% endblock form_start %}
+
+{% block form_errors %}
+    {% if errors|length > 0 %}
+        {% for error in errors %}
+            <div class="{{ attr.class|default('') }} invalid-feedback d-block">{{ error.message }}</div>
+        {% endfor %}
+    {% endif %}
+{% endblock form_errors %}
 
 {# Widgets #}
 

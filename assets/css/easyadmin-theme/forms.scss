@@ -467,6 +467,14 @@ fieldset .legend-help {
     border-radius: var(--border-radius);
 }
 
+.global-invalid-feedback {
+    background: $red-100;
+    border-radius: var(--border-radius);
+    color: var(--color-danger);
+    font-size:  14px;
+    margin:  5px 0;
+    padding: 6px 12px;
+}
 form .invalid-feedback {
     color: var(--color-danger);
     font-weight: 500;

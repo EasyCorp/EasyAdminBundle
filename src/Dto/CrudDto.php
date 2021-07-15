@@ -27,6 +27,7 @@ final class CrudDto
         Crud::PAGE_NEW => 'page_title.new',
     ];
     private $customPageTitles;
+    private $customPageSubTitles;
     private $helpMessages;
     private $datePattern;
     private $timePattern;
@@ -50,6 +51,7 @@ final class CrudDto
     public function __construct()
     {
         $this->customPageTitles = [Crud::PAGE_DETAIL => null, Crud::PAGE_EDIT => null, Crud::PAGE_INDEX => null, Crud::PAGE_NEW => null];
+        $this->customPageSubTitles = [Crud::PAGE_DETAIL => null, Crud::PAGE_EDIT => null, Crud::PAGE_INDEX => null, Crud::PAGE_NEW => null];
         $this->helpMessages = [Crud::PAGE_DETAIL => null, Crud::PAGE_EDIT => null, Crud::PAGE_INDEX => null, Crud::PAGE_NEW => null];
         $this->datePattern = 'medium';
         $this->timePattern = 'medium';
@@ -152,6 +154,24 @@ final class CrudDto
     public function setCustomPageTitle(string $pageName, $pageTitle): void
     {
         $this->customPageTitles[$pageName] = $pageTitle;
+    }
+
+    public function getCustomPageSubTitle(string $pageName = null, $entityInstance = null): ?string
+    {
+        $subTitle = $this->customPageSubTitles[$pageName ?? $this->pageName];
+        if (\is_callable($subTitle)) {
+            return null !== $entityInstance ? $subTitle($entityInstance) : $subTitle();
+        }
+
+        return $subTitle;
+    }
+
+    /**
+     * @param string|callable $pageSubTitle
+     */
+    public function setCustomPageSubTitle(string $pageName, $pageSubTitle): void
+    {
+        $this->customPageSubTitles[$pageName] = $pageSubTitle;
     }
 
     public function getDefaultPageTitle(string $pageName = null, $entityInstance = null): ?string

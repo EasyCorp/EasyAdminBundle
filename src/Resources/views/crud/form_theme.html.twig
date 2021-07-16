@@ -451,7 +451,7 @@
 
 {# EasyAdmin's TextEditor form type #}
 {% block ea_text_editor_widget %}
-    {% set numOfRows = form.vars.ea_crud_form.ea_field.customOptions.get('numOfRows') %}
+    {% set numOfRows = form.vars.ea_crud_form.ea_field.customOptions.get('numOfRows')|default(5) %}
 
     {{ form_widget(form, { attr: attr|merge({ style: 'display: none', class: 'ea-text-editor-content' }) }) }}
 

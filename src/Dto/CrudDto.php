@@ -141,11 +141,16 @@ final class CrudDto
     public function getCustomPageTitle(string $pageName = null, $entityInstance = null): ?string
     {
         $title = $this->customPageTitles[$pageName ?? $this->pageName];
-        if (\is_callable($title)) {
-            return null !== $entityInstance ? $title($entityInstance) : $title();
+
+        if (null === $title) {
+            return null;
         }
 
-        return $title;
+        if (\is_string($title)) {
+            return $title;
+        }
+
+        return $title($entityInstance);
     }
 
     /**
@@ -159,11 +164,16 @@ final class CrudDto
     public function getCustomPageSubTitle(string $pageName = null, $entityInstance = null): ?string
     {
         $subTitle = $this->customPageSubTitles[$pageName ?? $this->pageName];
-        if (\is_callable($subTitle)) {
-            return null !== $entityInstance ? $subTitle($entityInstance) : $subTitle();
+
+        if (null === $subTitle) {
+            return null;
         }
 
-        return $subTitle;
+        if (\is_string($subTitle)) {
+            return $subTitle;
+        }
+
+        return $subTitle($entityInstance);
     }
 
     /**

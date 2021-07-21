@@ -163,9 +163,7 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
             return $templatePath;
         }
 
-        // if field has a value it must not be displayed as inaccessible
-        // this only happens if the field used still has a template name
-        // instead of a direct path to one
+        // if field has a value set, don't display it as inaccessible (needed e.g. for virtual fields)
         $isPropertyReadable = $this->propertyAccessor->isReadable($entityDto->getInstance(), $field->getProperty());
         if (!$isPropertyReadable && null === $field->getValue()) {
             return $adminContext->getTemplatePath('label/inaccessible');

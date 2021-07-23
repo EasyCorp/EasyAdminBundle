@@ -208,13 +208,4 @@ final class EntityDto
         $this->instance = $newEntityInstance;
         $this->primaryKeyValue = null;
     }
-
-    public function newWithInstance($newEntityInstance): self
-    {
-        if (null !== $this->instance && !$newEntityInstance instanceof $this->fqcn) {
-            throw new \InvalidArgumentException(sprintf('The new entity instance must be of the same type as the previous instance (original instance: "%s", new instance: "%s").', $this->fqcn, \get_class($newEntityInstance)));
-        }
-
-        return new self($this->fqcn, $this->metadata, $this->permission, $newEntityInstance);
-    }
 }

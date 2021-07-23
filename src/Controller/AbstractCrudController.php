@@ -426,7 +426,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $repository = $entityManager->getRepository($batchActionDto->getEntityFqcn());
         foreach ($batchActionDto->getEntityIds() as $entityId) {
             $entityInstance = $repository->find($entityId);
-            $entityDto = $context->getEntity()->newWithInstance($entityInstance);
+            $entityDto = $this->get(EntityFactory::class)->createForEntityInstance($entityInstance);
 
             if (!$this->isGranted(Permission::EA_EXECUTE_ACTION, ['action' => Action::DELETE, 'entity' => $entityDto])) {
                 throw new ForbiddenActionException($context);

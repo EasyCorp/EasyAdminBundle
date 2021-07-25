@@ -287,7 +287,7 @@ class EasyAdminTwigExtension extends AbstractExtension
             }
 
             // get the string representation of the associated *-to-one entity
-            if (method_exists($templateParameters['value'], '__toString')) {
+            if (null !== $templateParameters['value'] && method_exists($templateParameters['value'], '__toString')) {
                 $templateParameters['value'] = (string) $templateParameters['value'];
             } elseif (null !== $primaryKeyValue) {
                 $templateParameters['value'] = sprintf('%s #%s', $targetEntityConfig['name'], $primaryKeyValue);

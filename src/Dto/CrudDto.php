@@ -27,6 +27,7 @@ final class CrudDto
         Crud::PAGE_NEW => 'page_title.new',
     ];
     private $customPageTitles;
+    private $customPageSubTitles;
     private $helpMessages;
     private $datePattern;
     private $timePattern;
@@ -50,6 +51,7 @@ final class CrudDto
     public function __construct()
     {
         $this->customPageTitles = [Crud::PAGE_DETAIL => null, Crud::PAGE_EDIT => null, Crud::PAGE_INDEX => null, Crud::PAGE_NEW => null];
+        $this->customPageSubTitles = [Crud::PAGE_DETAIL => null, Crud::PAGE_EDIT => null, Crud::PAGE_INDEX => null, Crud::PAGE_NEW => null];
         $this->helpMessages = [Crud::PAGE_DETAIL => null, Crud::PAGE_EDIT => null, Crud::PAGE_INDEX => null, Crud::PAGE_NEW => null];
         $this->datePattern = 'medium';
         $this->timePattern = 'medium';
@@ -139,11 +141,16 @@ final class CrudDto
     public function getCustomPageTitle(string $pageName = null, $entityInstance = null): ?string
     {
         $title = $this->customPageTitles[$pageName ?? $this->pageName];
-        if (\is_callable($title)) {
-            return null !== $entityInstance ? $title($entityInstance) : $title();
+
+        if (null === $title) {
+            return null;
         }
 
-        return $title;
+        if (\is_string($title)) {
+            return $title;
+        }
+
+        return $title($entityInstance);
     }
 
     /**
@@ -152,6 +159,29 @@ final class CrudDto
     public function setCustomPageTitle(string $pageName, $pageTitle): void
     {
         $this->customPageTitles[$pageName] = $pageTitle;
+    }
+
+    public function getCustomPageSubTitle(string $pageName = null, $entityInstance = null): ?string
+    {
+        $subTitle = $this->customPageSubTitles[$pageName ?? $this->pageName];
+
+        if (null === $subTitle) {
+            return null;
+        }
+
+        if (\is_string($subTitle)) {
+            return $subTitle;
+        }
+
+        return $subTitle($entityInstance);
+    }
+
+    /**
+     * @param string|callable $pageSubTitle
+     */
+    public function setCustomPageSubTitle(string $pageName, $pageSubTitle): void
+    {
+        $this->customPageSubTitles[$pageName] = $pageSubTitle;
     }
 
     public function getDefaultPageTitle(string $pageName = null, $entityInstance = null): ?string

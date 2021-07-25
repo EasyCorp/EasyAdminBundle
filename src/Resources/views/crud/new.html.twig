@@ -29,10 +29,16 @@
 
 {% block content_title %}
     {%- apply spaceless -%}
-        {% set custom_page_title = ea.crud.customPageTitle('new') %}
+        {% set custom_page_title = ea.crud.customPageTitle(pageName) %}
         {{ custom_page_title is null
-            ? (ea.crud.defaultPageTitle('new')|trans(ea.i18n.translationParameters, 'EasyAdminBundle'))|raw
+            ? (ea.crud.defaultPageTitle(pageName)|trans(ea.i18n.translationParameters, 'EasyAdminBundle'))|raw
             : (custom_page_title|trans(ea.i18n.translationParameters))|raw }}
+    {%- endapply -%}
+{% endblock %}
+
+{% block content_subtitle_wrapper %}
+    {%- apply spaceless -%}
+        <h2 class="subtitle">{{ ea.crud.customPageSubTitle(pageName)|trans(ea.i18n.translationParameters)|raw }}</h2>
     {%- endapply -%}
 {% endblock %}
 

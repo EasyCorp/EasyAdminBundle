@@ -16,6 +16,12 @@
     {%- endapply -%}
 {% endblock %}
 
+{% block content_subtitle_wrapper %}
+    {%- apply spaceless -%}
+        <h2 class="subtitle">{{ ea.crud.customPageSubTitle(pageName)|trans(ea.i18n.translationParameters)|raw }}</h2>
+    {%- endapply -%}
+{% endblock %}
+
 {% block page_actions %}
     {% for action in entity.actions %}
         {{ include(action.templatePath, { action: action }, with_context = false) }}

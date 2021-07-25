@@ -75,6 +75,20 @@ class Crud
         return $this;
     }
 
+    /**
+     * @param string|callable $subTitle The callable signature is: fn ($entityInstance): string
+     */
+    public function setPageSubTitle(string $pageName, $subTitle): self
+    {
+        if (!\in_array($pageName, $this->getValidPageNames(), true)) {
+            throw new \InvalidArgumentException(sprintf('The first argument of the "%s()" method must be one of these valid page names: %s ("%s" given).', __METHOD__, implode(', ', $this->getValidPageNames()), $pageName));
+        }
+
+        $this->dto->setCustomPageSubTitle($pageName, $subTitle);
+
+        return $this;
+    }
+
     public function setHelp(string $pageName, string $helpMessage): self
     {
         if (!\in_array($pageName, $this->getValidPageNames(), true)) {

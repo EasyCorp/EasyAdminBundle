@@ -35,8 +35,8 @@ Versions
 Demo Application
 ----------------
 
-[easy-admin-demo](https://github.com/javiereguiluz/easy-admin-demo) is a complete
-Symfony application created to showcase EasyAdmin features.
+[easyadmin-demo](https://github.com/EasyCorp/easyadmin-demo) is a complete
+Official Symfony Demo fork to showcase EasyAdmin features.
 
 License
 -------

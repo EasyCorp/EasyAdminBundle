@@ -55,6 +55,9 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
         $isSortable = $this->buildSortableOption($field, $entityDto);
         $field->setSortable($isSortable);
 
+        $sortableBy = $this->buildSortBy($field);
+        $field->setSortBy($sortableBy);
+
         $isVirtual = $this->buildVirtualOption($field, $entityDto);
         $field->setVirtual($isVirtual);
 
@@ -150,6 +153,11 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
         }
 
         return $entityDto->hasProperty($field->getProperty());
+    }
+
+    private function buildSortBy(FieldDto $field): ?string
+    {
+        return $field->getSortby();
     }
 
     private function buildVirtualOption(FieldDto $field, EntityDto $entityDto): bool

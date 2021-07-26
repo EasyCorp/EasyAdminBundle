@@ -122,6 +122,13 @@ trait FieldTrait
         return $this;
     }
 
+    public function setSortBy(?string $sortableBy): self
+    {
+        $this->dto->setSortBy($sortableBy);
+
+        return $this;
+    }
+
     public function setPermission(string $permission): self
     {
         $this->dto->setPermission($permission);
@@ -176,6 +183,19 @@ trait FieldTrait
     {
         $this->dto->setTemplateName($name);
         $this->dto->setTemplatePath(null);
+
+        return $this;
+    }
+
+    public function addWebpackEncoreEntries(string ...$entryNames): self
+    {
+        if (!class_exists('Symfony\\WebpackEncoreBundle\\Twig\\EntryFilesTwigExtension')) {
+            throw new \RuntimeException('You are trying to add Webpack Encore entries in a field but Webpack Encore is not installed in your project. Try running "composer req symfony/webpack-encore-bundle"');
+        }
+
+        foreach ($entryNames as $entryName) {
+            $this->dto->addWebpackEncoreEntry($entryName);
+        }
 
         return $this;
     }

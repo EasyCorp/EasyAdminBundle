@@ -407,6 +407,7 @@ own controller to add/remove/change those template variables::
 
     use App\Entity\Product;
     use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+    use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
     use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 
     class ProductCrudController extends AbstractCrudController

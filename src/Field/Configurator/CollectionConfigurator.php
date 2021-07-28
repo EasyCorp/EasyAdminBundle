@@ -78,7 +78,7 @@ final class CollectionConfigurator implements FieldConfiguratorInterface
 
         $isDetailAction = Action::DETAIL === $context->getCrud()->getCurrentAction();
 
-        return u(', ')->join($collectionItemsAsText)->truncate($isDetailAction ? 512 : 32, '…');
+        return u(', ')->join($collectionItemsAsText)->truncate($isDetailAction ? 512 : 32, '…')->toString();
     }
 
     private function countNumElements($collection): int

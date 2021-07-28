@@ -45,7 +45,7 @@ final class ArrayConfigurator implements FieldConfiguratorInterface
                 }, $values->getValues());
             }
 
-            $field->setFormattedValue(u(', ')->join($values));
+            $field->setFormattedValue(u(', ')->join($values)->toString());
         }
     }
 }

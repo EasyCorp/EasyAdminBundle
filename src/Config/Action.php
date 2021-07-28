@@ -210,6 +210,7 @@ final class Action
             ->replaceMatches('/[_\s]+/', ' ')
             ->trim()
             ->lower()
-            ->title(true);
+            ->title(true)
+            ->toString();
     }
 }

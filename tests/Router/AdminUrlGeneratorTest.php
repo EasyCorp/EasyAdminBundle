@@ -5,7 +5,6 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Router;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
-use EasyCorp\Bundle\EasyAdminBundle\EasyAdminBundle;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\CrudControllerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\DashboardControllerRegistry;
@@ -286,7 +285,7 @@ class AdminUrlGeneratorTest extends WebTestCase
 
         $request = new Request();
         $request->query->set('foo', 'bar');
-        $request->attributes->set(EasyAdminBundle::CONTEXT_ATTRIBUTE_NAME, $adminContext);
+        $request->attributes->set(EA::CONTEXT_REQUEST_ATTRIBUTE, $adminContext);
 
         $requestStack = new RequestStack();
         $requestStack->push($request);

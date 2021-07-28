@@ -151,7 +151,7 @@ final class EntityRepository implements EntityRepositoryInterface
             if ($sortFieldIsDoctrineAssociation) {
                 $sortFieldParts = explode('.', $sortProperty, 2);
                 // check if join has been added once before.
-                if (!\in_array($sortFieldParts[0], $aliases)) {
+                if (!\in_array($sortFieldParts[0], $aliases, true)) {
                     $queryBuilder->leftJoin('entity.'.$sortFieldParts[0], $sortFieldParts[0]);
                 }
 

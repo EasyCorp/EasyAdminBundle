@@ -43,7 +43,7 @@ final class ImageConfigurator implements FieldConfiguratorInterface
             $field->setTemplateName('label/empty');
         }
 
-        if (!\in_array($context->getCrud()->getCurrentPage(), [Crud::PAGE_EDIT, Crud::PAGE_NEW])) {
+        if (!\in_array($context->getCrud()->getCurrentPage(), [Crud::PAGE_EDIT, Crud::PAGE_NEW], true)) {
             return;
         }
 

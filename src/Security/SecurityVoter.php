@@ -73,7 +73,7 @@ final class SecurityVoter extends Voter
         // * the action is not disabled
 
         if (!\is_string($actionNameOrDto) && !($actionNameOrDto instanceof ActionDto)) {
-            throw new \RuntimeException(sprintf('When checking the "%s" permission with the isGranted() method, the value of the "action" parameter passed inside the voter $subject must be a string with the action name or a "%s" object.', Permission::EA_EXECUTE_ACTION, Asset::class));
+            throw new \RuntimeException(sprintf('When checking the "%s" permission with the isGranted() method, the value of the "action" parameter passed inside the voter $subject must be a string with the action name or a "%s" object.', Permission::EA_EXECUTE_ACTION, ActionDto::class));
         }
         $actionName = \is_string($actionNameOrDto) ? $actionNameOrDto : $actionNameOrDto->getName();
 

@@ -18,6 +18,11 @@ final class Asset
         $this->dto = $assetDto;
     }
 
+    public function __toString()
+    {
+        return $this->dto->getValue();
+    }
+
     /**
      * @param string $value The 'path' when adding CSS or JS files and the 'entryName' when adding Webpack Encore entries
      */

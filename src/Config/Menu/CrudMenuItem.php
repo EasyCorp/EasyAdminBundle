@@ -68,7 +68,7 @@ final class CrudMenuItem implements MenuItemInterface
     {
         $sortFieldsAndOrder = array_map('strtoupper', $sortFieldsAndOrder);
         foreach ($sortFieldsAndOrder as $sortField => $sortOrder) {
-            if (!\in_array($sortOrder, [SortOrder::ASC, SortOrder::DESC])) {
+            if (!\in_array($sortOrder, [SortOrder::ASC, SortOrder::DESC], true)) {
                 throw new \InvalidArgumentException(sprintf('The sort order can be only "ASC" or "DESC", "%s" given.', $sortOrder));
             }
 

@@ -102,7 +102,7 @@ final class ActionFactory
         } else {
             $uLabel = u($actionDto->getLabel());
             // labels with this prefix are considered internal and must be translated
-            // with 'EasyAdminBundle' translation domain, regardlesss of the backend domain
+            // with 'EasyAdminBundle' translation domain, regardless of the backend domain
             if ($uLabel->startsWith('__ea__')) {
                 $uLabel = $uLabel->after('__ea__');
                 $translationDomain = 'EasyAdminBundle';

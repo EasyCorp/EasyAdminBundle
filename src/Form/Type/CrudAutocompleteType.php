@@ -34,7 +34,7 @@ class CrudAutocompleteType extends AbstractType implements DataMapperInterface
         array_splice($view['autocomplete']->vars['block_prefixes'], -1, 0, 'ea_autocomplete_inner');
 
         // allowClear option needs a placeholder value (it can be empty)
-        if ($view->vars['attr']['data-allow-clear'] ?? false && !isset($view->vars['attr']['data-placeholder'])) {
+        if (($view->vars['attr']['data-allow-clear'] ?? false) && (!isset($view->vars['attr']['data-placeholder']))) {
             $view->vars['attr']['data-placeholder'] = '';
         }
     }

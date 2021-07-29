@@ -305,6 +305,26 @@ trait FieldTrait
         return $this;
     }
 
+    public function hideWhenCreating(): self
+    {
+        $displayedOn = $this->dto->getDisplayedOn();
+        $displayedOn->delete(Crud::PAGE_NEW);
+
+        $this->dto->setDisplayedOn($displayedOn);
+
+        return $this;
+    }
+
+    public function hideWhenUpdating(): self
+    {
+        $displayedOn = $this->dto->getDisplayedOn();
+        $displayedOn->delete(Crud::PAGE_EDIT);
+
+        $this->dto->setDisplayedOn($displayedOn);
+
+        return $this;
+    }
+
     public function hideOnIndex(): self
     {
         $displayedOn = $this->dto->getDisplayedOn();

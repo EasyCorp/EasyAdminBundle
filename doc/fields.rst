@@ -161,12 +161,14 @@ current page::
 
 These are all the available methods:
 
-* ``hideOnDetail()``
-* ``hideOnForm()``
 * ``hideOnIndex()``
-* ``onlyOnDetail()``
-* ``onlyOnForms()``
+* ``hideOnDetail()``
+* ``hideOnForm()`` (hides the field both in ``edit`` and ``new`` pages)
+* ``hideWhenCreating()``
+* ``hideWhenUpdating()``
 * ``onlyOnIndex()``
+* ``onlyOnDetail()``
+* ``onlyOnForms()`` (hides the field in all pages except ``edit`` and ``new``)
 * ``onlyWhenCreating()``
 * ``onlyWhenUpdating()``
 

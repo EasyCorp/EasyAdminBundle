@@ -1,0 +1,37 @@
+---------------------------------------------------------------------------
+
+by seb-jean at 2021-07-28T20:11:58Z
+
+You're awesome @javiereguiluz !
+
+---------------------------------------------------------------------------
+
+by john-dufrene-dev at 2021-07-29T09:47:49Z
+
+Magic ! Thanks a lot @javiereguiluz
+
+---------------------------------------------------------------------------
+
+by Huluti at 2021-07-29T11:37:51Z
+
+Very nice, thank's for your work really :) Can't wait to have it on stable!
+
+---------------------------------------------------------------------------
+
+by john-dufrene-dev at 2021-07-29T17:14:31Z
+
+@javiereguiluz how can I test it ? May be with cherry pick ? I don't arrive to test it in some of my project with right command
+
+Or may be someone can help me :)
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2021-07-29T18:38:39Z
+
+I've just committed the last changes for some features that I don't normally use and weren't updated to the new design: pages (login, content) and submenus.
+
+This is how the submenus look now when the sidebar is compact. I think it improves the current design:
+
+![submenu-compact](https://user-images.githubusercontent.com/73419/127547531-e9be713c-9a5b-4295-8b03-59de3a79c8ef.gif)
+
+So, given that it's not easy to test this as a Pull Request, I'm going to merge it so you can quickly install it in your projects as `dev-master` version and report errors before we release the new stable version. Thanks!

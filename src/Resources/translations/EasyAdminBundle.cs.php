@@ -3,8 +3,8 @@
 return [
     'page_title' => [
         'dashboard' => 'Úvod',
-        'detail' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
-        'edit' => 'Edit %entity_label_singular% <small>(#%entity_short_id%)</small>',
+        'detail' => '%entity_as_string%',
+        'edit' => 'Edit %entity_label_singular%',
         'index' => '%entity_label_plural%',
         'new' => 'Vytvořit %entity_label_singular%',
         'exception' => 'Chyba|Chyby',

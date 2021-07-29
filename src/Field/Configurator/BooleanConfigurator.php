@@ -34,10 +34,8 @@ final class BooleanConfigurator implements FieldConfiguratorInterface
         if ($isRenderedAsSwitch) {
             $toggleUrl = $this->adminUrlGenerator->setAction(Action::EDIT)->setEntityId($entityDto->getPrimaryKeyValue())->set('fieldName', $field->getProperty())->generateUrl();
             $field->setCustomOption(BooleanField::OPTION_TOGGLE_URL, $toggleUrl);
-
-            // TODO: ask someone who knows Symfony forms well how to make this work
-            // see https://symfony.com/blog/new-in-symfony-4-4-bootstrap-custom-switches
-            // $field->setFormTypeOptionIfNotSet('label_attr.class', 'switch-custom');
+            $field->setFormTypeOptionIfNotSet('label_attr.class', 'checkbox-switch');
+            $field->setCssClass($field->getCssClass().' has-switch');
         }
     }
 }

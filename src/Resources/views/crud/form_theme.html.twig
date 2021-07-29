@@ -8,8 +8,17 @@
 
     {{ parent() }}
 
-    <input type="hidden" name="referrer" value="{{ ea.request.query.get('referrer') }}">
+    <div class="row"> {# this is closed in form_end #}
+        <input type="hidden" name="referrer" value="{{ ea.request.query.get('referrer') }}">
 {% endblock form_start %}
+
+{% block form_end %}
+            {% if not render_rest is defined or render_rest %}
+                {{ form_rest(form) }}
+            {% endif %}
+        </div> {# this closes the '<div class="row">' of form_start #}
+    </form>
+{% endblock %}
 
 {% block form_errors %}
     {% if errors|length > 0 %}
@@ -65,52 +74,57 @@
         class: row_attr.class|default('') ~ ' form-group'
     }) %}
 
-    <div {% with { attr: row_attr } %}{{ block('attributes') }}{% endwith %}>
-        {{- form_label(form) -}}
-        <div class="form-widget">
-            {% set has_prepend_html = ea.field.prepend_html|default(null) is not null %}
-            {% set has_append_html = ea.field.append_html|default(null) is not null %}
-            {% set has_input_groups = has_prepend_html or has_append_html %}
+    <div class="{{ form.vars.ea_crud_form.ea_field.columns ?? form.vars.ea_crud_form.ea_field.defaultColumns ?? '' }}">
+        <div {% with { attr: row_attr } %}{{ block('attributes') }}{% endwith %}>
+            {{- form_label(form) -}}
+            <div class="form-widget">
+                {% set has_prepend_html = ea.field.prepend_html|default(null) is not null %}
+                {% set has_append_html = ea.field.append_html|default(null) is not null %}
+                {% set has_input_groups = has_prepend_html or has_append_html %}
 
-            {% if has_input_groups %}<div class="input-group">{% endif %}
-                {% if has_prepend_html %}
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">{{ ea.field.prepend_html|raw }}</span>
-                    </div>
-                {% endif %}
+                {% if has_input_groups %}<div class="input-group">{% endif %}
+                    {% if has_prepend_html %}
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">{{ ea.field.prepend_html|raw }}</span>
+                        </div>
+                    {% endif %}
 
-                {{ form_widget(form) }}
+                    {{ form_widget(form) }}
 
-                {% if has_append_html %}
-                    <div class="input-group-append">
+                    {% if has_append_html %}
                         <span class="input-group-text">{{ ea.field.append_html|raw }}</span>
+                    {% endif %}
+                    {% if has_input_groups %}</div>{% endif %}
+
+                {% set nullable_fields_fqcn = [
+                    'EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField',
+                    'EasyCorp\Bundle\EasyAdminBundle\Field\DateField',
+                    'EasyCorp\Bundle\EasyAdminBundle\Field\TimeField',
+                ] %}
+                {% if form.vars.ea_crud_form.ea_field.fieldFqcn|default(false) in nullable_fields_fqcn and ea.field.nullable|default(false) %}
+                    <div class="nullable-control">
+                        <label>
+                            <input type="checkbox" {% if data is null %}checked="checked"{% endif %}>
+                            {{ 'label.nullable_field'|trans({}, 'EasyAdminBundle')}}
+                        </label>
                     </div>
                 {% endif %}
-                {% if has_input_groups %}</div>{% endif %}
 
-            {% set nullable_fields_fqcn = [
-                'EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField',
-                'EasyCorp\Bundle\EasyAdminBundle\Field\DateField',
-                'EasyCorp\Bundle\EasyAdminBundle\Field\TimeField',
-            ] %}
-            {% if form.vars.ea_crud_form.ea_field.fieldFqcn|default(false) in nullable_fields_fqcn and ea.field.nullable|default(false) %}
-                <div class="nullable-control">
-                    <label>
-                        <input type="checkbox" {% if data is null %}checked="checked"{% endif %}>
-                        {{ 'label.nullable_field'|trans({}, 'EasyAdminBundle')}}
-                    </label>
-                </div>
-            {% endif %}
+                {% if ea.field.help ?? false %}
+                    <small class="form-help">{{ ea.field.help|raw }}</small>
+                {% elseif form.vars.help ?? false %}
+                    <small class="form-help">{{ form.vars.help|trans(form.vars.help_translation_parameters, form.vars.translation_domain)|raw }}</small>
+                {% endif %}
 
-            {% if ea.field.help ?? false %}
-                <small class="form-help">{{ ea.field.help|raw }}</small>
-            {% elseif form.vars.help ?? false %}
-                <small class="form-help">{{ form.vars.help|trans(form.vars.help_translation_parameters, form.vars.translation_domain)|raw }}</small>
-            {% endif %}
-
-            {{- form_errors(form) -}}
+                {{- form_errors(form) -}}
+            </div>
         </div>
     </div>
+
+    {# if a field doesn't define its columns explicitly, insert a fill element to make the field take the entire row space #}
+    {% if form.vars.ea_crud_form.ea_field.columns|default(null) is null %}
+        <div class="flex-fill"></div>
+    {% endif %}
 {% endblock form_row %}
 
 {% block collection_row %}
@@ -131,7 +145,24 @@
 {% endblock collection_row %}
 
 {% block collection_widget %}
-    {{ block('form_widget') }}
+    {# the "is iterable" check is needed because if an object implements __toString() and
+               returns an empty string, "is empty" returns true even if it's not a collection #}
+    {% set isEmptyCollection = value is null or (value is iterable and value is empty) %}
+    {% set is_array_field = 'EasyCorp\\Bundle\\EasyAdminBundle\\Field\\ArrayField' == form.vars.ea_crud_form.ea_field.fieldFqcn %}
+
+    {% if isEmptyCollection %}
+        {{ block('empty_collection') }}
+    {% elseif is_array_field %}
+        {{ block('form_widget') }}
+    {% else %}
+        <div class="accordion">
+            {{ block('form_widget') }}
+        </div>
+    {% endif %}
+
+    {% if isEmptyCollection or form.vars.prototype is defined %}
+        {% set attr = attr|merge({'data-empty-collection': block('empty_collection') }) %}
+    {% endif %}
 
     {% if allow_add|default(false) %}
         <button type="button" class="btn btn-link field-collection-add-button">
@@ -142,20 +173,62 @@
 {% endblock collection_widget %}
 
 {% block collection_entry_widget %}
+    {% set is_array_field = 'EasyCorp\\Bundle\\EasyAdminBundle\\Field\\ArrayField' == form_parent(form).vars.ea_crud_form.ea_field.fieldFqcn %}
     {% set is_complex = form_parent(form).vars.ea_crud_form.ea_field.customOptions.get('entryIsComplex') ?? false %}
+    {% set allows_deleting_items = form_parent(form).vars.allow_delete|default(false) %}
+    {% set delete_item_button %}
+        <button type="button" class="btn btn-link btn-link-danger field-collection-delete-button"
+                title="{{ 'action.remove_item'|trans({}, 'EasyAdminBundle') }}"
+                onclick="this.closest('.form-group').remove(); return false;">
+            <i class="far fa-trash-alt"></i>
+        </button>
+    {% endset %}
 
     <div class="field-collection-item {{ is_complex ? 'field-collection-item-complex' }}">
-        {{ form_widget(form) }}
+        {% if is_array_field|default(false) %}
+            {{ form_widget(form) }}
+            {% if allows_deleting_items %}
+                {{ delete_item_button }}
+            {% endif %}
+        {% else %}
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#{{ id }}-contents">
+                        <i class="fas fw fa-chevron-right form-collection-item-collapse-marker"></i>
+                        {{ value|ea_as_string }}
+                    </button>
 
-        {% if form_parent(form).vars.allow_delete|default(false) %}
-            <button type="button" class="btn btn-link field-collection-delete-button"
-                    title="{{ 'action.remove_item'|trans({}, 'EasyAdminBundle') }}"
-                    onclick="this.closest('.form-group').remove(); return false;">
-                <i class="fas fa-times"></i>
-            </button>
+                    {% if allows_deleting_items %}
+                        {{ delete_item_button }}
+                    {% endif %}
+                </h2>
+                <div id="{{ id }}-contents" class="accordion-collapse collapse">
+                    <div class="accordion-body">
+                        {{ form_widget(form) }}
+                    </div>
+                </div>
+            </div>
         {% endif %}
     </div>
 {% endblock collection_entry_widget %}
+
+{% block form_widget_compound %}
+    <div class="form-widget-compound">
+        {% if 'collection' in block_prefixes %}
+            {# the "is iterable" check is needed because if an object implements __toString() and
+               returns an empty string, "is empty" returns true even if it's not a collection #}
+            {% set isEmptyCollection = value is null or (value is iterable and value is empty) %}
+            {% if isEmptyCollection %}
+                {{ block('empty_collection') }}
+            {% endif %}
+            {% if isEmptyCollection or form.vars.prototype is defined %}
+                {% set attr = attr|merge({'data-empty-collection': block('empty_collection') }) %}
+            {% endif %}
+        {% endif %}
+
+        {{ parent() }}
+    </div>
+{% endblock form_widget_compound %}
 
 {% block button_row -%}
     <div class="form-group field-{{ block_prefixes|slice(-2)|first }} {{ ea.field.css_class|default('') }}">
@@ -194,23 +267,42 @@
 
 {# Errors #}
 
-{% block form_widget_compound %}
-    <div class="form-widget-compound">
-        {% if 'collection' in block_prefixes %}
+{% block ffform_widget_compound %}
+    {% if 'collection' in block_prefixes %}
+        {% if value is iterable %}
             {# the "is iterable" check is needed because if an object implements __toString() and
                returns an empty string, "is empty" returns true even if it's not a collection #}
             {% set isEmptyCollection = value is null or (value is iterable and value is empty) %}
             {% if isEmptyCollection %}
                 {{ block('empty_collection') }}
+            {% else %}
+                <div class="accordion">
+                    {% for item in value %}
+                        {% set accordion_id = id ~ '-' ~ loop.index0 %}
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#{{ accordion_id }}">
+                                    {{ item }}
+                                </button>
+                            </h2>
+                            <div id="{{ accordion_id }}" class="accordion-collapse collapse">
+                                <div class="accordion-body">
+                                    {{ parent() }}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
             {% endif %}
+
             {% if isEmptyCollection or form.vars.prototype is defined %}
                 {% set attr = attr|merge({'data-empty-collection': block('empty_collection') }) %}
             {% endif %}
+        {% else %}
+            {{ parent() }}
         {% endif %}
-
-        {{ parent() }}
-    </div>
-{% endblock form_widget_compound %}
+    {% endif %}
+{% endblock ffform_widget_compound %}
 
 {% block empty_collection %}
     <div class="empty collection-empty">
@@ -371,36 +463,42 @@
 
 {% block ea_crud_widget_panels %}
     {% for panel_name, panel_config in ea_crud_form.form_panels|filter(panel_config => not panel_config.form_tab or panel_config.form_tab == tab_name) %}
-        {% set panel_has_header = panel_config.label|default(false) or panel_config.icon|default(false) %}
+        {% set panel_has_header = panel_config.label|default(false) or panel_config.icon|default(false) or panel_config.help|default(false) %}
 
         {% set collapsible = panel_config.collapsible %}
         {% set collapsed = panel_config.collapsed %}
 
         <div class="{{ panel_config.css_class ?? '' }}">
-            <div class="content-panel">
+            <div class="form-panel">
                 {% if panel_has_header %}
-                    <div class="content-panel-header {{ collapsible ? 'collapsible' }} {{ panel_config.help|default(false) is not empty ? 'with-help' }}">
-                        {% if collapsible %}
-                            <a href="#content-{{ panel_name }}" data-bs-toggle="collapse" class="content-panel-collapse {{ collapsed ? 'collapsed' }}" aria-expanded="{{ collapsed ? 'false' : 'true' }}" aria-controls="content-{{ panel_name }}">
-                                <i class="fas fw fa-chevron-right collapse-icon"></i>
-                        {% endif %}
+                    <div class="form-panel-header {{ collapsible ? 'collapsible' }} {{ panel_config.help|default(false) is not empty ? 'with-help' }}">
+                        <div class="form-panel-title">
+                            <a {% if not collapsible %}
+                                    href="#" class="not-collapsible"
+                               {% else %}
+                                    href="#content-{{ panel_name }}" data-bs-toggle="collapse"
+                                    class="form-panel-collapse {{ collapsed ? 'collapsed' }}"
+                                    aria-expanded="{{ collapsed ? 'false' : 'true' }}" aria-controls="content-{{ panel_name }}"
+                               {% endif %}
+                            >
+                                {% if collapsible %}
+                                    <i class="fas fw fa-chevron-right form-panel-collapse-marker"></i>
+                                {% endif %}
 
-                            {% if panel_config.icon|default(false) %}
-                                <i class="{{ panel_config.icon }}"></i>
-                            {% endif %}
-                            {{ panel_config.label|raw }}
-
-                        {% if collapsible %}
+                                {% if panel_config.icon|default(false) %}
+                                    <i class="form-panel-icon {{ panel_config.icon }}"></i>
+                                {% endif %}
+                                {{ panel_config.label|raw }}
                             </a>
-                        {% endif %}
 
-                        {% if panel_config.help|default(false) %}
-                            <div class="content-panel-header-help">{{ panel_config.help|raw }}</div>
-                        {% endif %}
+                            {% if panel_config.help|default(false) %}
+                                <div class="form-panel-help">{{ panel_config.help|raw }}</div>
+                            {% endif %}
+                        </div>
                     </div>
                 {% endif %}
 
-                <div id="content-{{ panel_name }}" class="content-panel-body with-background {{ not panel_has_header ? 'without-header' }} without-footer {{ collapsible ? 'collapse' }} {{ not collapsed ? 'show'}}">
+                <div id="content-{{ panel_name }}" class="form-panel-body {{ not panel_has_header ? 'without-header' }} {{ collapsible ? 'collapse' }} {{ not collapsed ? 'show'}}">
                     {% for field in form|filter(field => 'hidden' not in field.vars.block_prefixes and field.vars.ea_crud_form.form_panel == panel_name) %}
                         {% if not field.vars.ea_crud_form.form_tab or field.vars.ea_crud_form.form_tab == tab_name %}
                             {{ form_row(field) }}
@@ -410,13 +508,9 @@
             </div>
         </div>
     {% else %}
-        <div class="content-panel">
-            <div class="content-panel-body with-background without-header without-footer">
-                {% for field in form|filter(field => 'hidden' not in field.vars.block_prefixes and (not field.vars.ea_crud_form.form_tab or field.vars.ea_crud_form.form_tab == tab_name)) %}
-                    {{ form_row(field) }}
-                {% endfor %}
-            </div>
-        </div>
+        {% for field in form|filter(field => 'hidden' not in field.vars.block_prefixes and (not field.vars.ea_crud_form.form_tab or field.vars.ea_crud_form.form_tab == tab_name)) %}
+            {{ form_row(field) }}
+        {% endfor %}
     {% endfor %}
 {% endblock ea_crud_widget_panels %}
 
@@ -470,6 +564,10 @@
 {% endblock ea_text_editor_widget %}
 
 {# EasyAdminSection form type #}
+{% block ea_form_row_row %}
+    <div class="{{ form.vars.row_attr.class }}"></div>
+{% endblock %}
+
 {% block ea_section_row %}
     <div class="form-section {{ ea.field.icon|default(false) == false and ea.field.label|default(false) == false ? 'form-section-empty' }} {{ ea.field.css_class|default('') }}">
         <h2>
@@ -488,16 +586,18 @@
     {% set applied_filters = ea.request.query.get('filters')|default([])|keys %}
 
     {% for field in form %}
-        <div class="filter-field {% if not loop.last %}border-bottom{% endif %} py-1 px-3 {% if loop.last %}pb-2{% endif %}" data-filter-property="{{ field.vars.name }}">
-            <div class="filter-heading" id="filter-heading-{{ loop.index }}">
-                <input type="checkbox" class="filter-checkbox" {% if field.vars.name in applied_filters %}checked{% endif %}>
-                <a data-bs-toggle="collapse" href="#filter-content-{{ loop.index }}" aria-expanded="{{ field.vars.name in applied_filters ? 'true' : 'false' }}" aria-controls="filter-content-{{ loop.index }}">
-                    {{ field.vars.label|default(field.vars.name|humanize)|trans(domain = ea.i18n.translationDomain) }}
-                </a>
-            </div>
-            <div id="filter-content-{{ loop.index }}" class="filter-content collapse {% if field.vars.name in applied_filters %}show{% endif %}" aria-labelledby="filter-heading-{{ loop.index }}">
-                <div class="form-widget my-2">
-                    {{ form_widget(field) }}
+        <div class="col-12">
+            <div class="filter-field {% if not loop.last %}border-bottom{% endif %} py-1 px-3 {% if loop.last %}pb-2{% endif %}" data-filter-property="{{ field.vars.name }}">
+                <div class="filter-heading" id="filter-heading-{{ loop.index }}">
+                    <input type="checkbox" class="filter-checkbox" {% if field.vars.name in applied_filters %}checked{% endif %}>
+                    <a data-bs-toggle="collapse" href="#filter-content-{{ loop.index }}" aria-expanded="{{ field.vars.name in applied_filters ? 'true' : 'false' }}" aria-controls="filter-content-{{ loop.index }}">
+                        {{ field.vars.label|default(field.vars.name|humanize)|trans(domain = ea.i18n.translationDomain) }}
+                    </a>
+                </div>
+                <div id="filter-content-{{ loop.index }}" class="filter-content collapse {% if field.vars.name in applied_filters %}show{% endif %}" aria-labelledby="filter-heading-{{ loop.index }}">
+                    <div class="form-widget my-2">
+                        {{ form_widget(field) }}
+                    </div>
                 </div>
             </div>
         </div>
@@ -565,12 +665,10 @@
                     {% set title = (currentFiles|first).mTime|date %}
                 {% endif %}
             {% endif %}
-
             <div class="custom-file">
                 {{ form_widget(form.file, { attr: form.file.vars.attr|merge({ placeholder: placeholder, title: title, 'data-files-label': filesLabel, style: 'display: none' }) }) }}
                 {{ form_label(form.file, placeholder, { label_attr: { class: 'custom-file-label' }}) }}
             </div>
-
             <div class="input-group-text" {% if currentFiles is empty %}style="display: none"{% endif %}>
                 {%- if currentFiles -%}
                     {% if multiple %}
@@ -579,18 +677,83 @@
                         {{ (currentFiles|first).size|ea_filesize }}
                     {% endif %}
                 {%- endif -%}
-
                 {% if allow_delete %}
                     <label class="btn ea-fileupload-delete-btn" {% if currentFiles is empty %}style="display: none"{% endif %} for="{{ form.delete.vars.id }}">
                         <i class="fa fa-trash-o"></i>
                     </label>
                 {% endif %}
-
                 <label class="btn" for="{{ form.file.vars.id }}">
                     <i class="fa fa-folder-open-o"></i>
                 </label>
             </div>
         </div>
+        {% if multiple and currentFiles %}
+            <div class="form-control fileupload-list">
+                <table class="fileupload-table">
+                    <tbody>
+                    {% for file in currentFiles %}
+                        <tr>
+                            <td>
+                                {% if download_path %}<a href="{{ asset(download_path ~ file.filename) }}">{% endif %}
+                                    <span title="{{ file.mTime|date }}">
+                                        <i class="fa fa-file-o"></i> {{ file.filename }}
+                                    </span>
+                                    .ea-fileupload .input-group .btn {% if download_path %}</a>{% endif %}
+                            </td>
+                            <td class="text-right file-size">{{ file.size|ea_filesize }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+        {% if allow_delete %}
+            <div style="display: none">{{ form_widget(form.delete, { label: false }) }}</div>
+        {% endif %}
+    </div>
+    {{ form_errors(form.file) }}
+{% endblock %}
+
+{% block TODO_ea_fileupload_widget %}
+    {% set placeholder = '' %}
+    {% set title = '' %}
+    {% set filesLabel = 'files'|trans({}, 'EasyAdminBundle') %}
+    {% if currentFiles %}
+        {% if multiple %}
+            {% set placeholder = currentFiles|length ~ ' ' ~ filesLabel %}
+        {% else %}
+            {% set placeholder = (currentFiles|first).filename %}
+            {% set title = (currentFiles|first).mTime|date %}
+        {% endif %}
+    {% endif %}
+
+    <div class="ea-fileupload">
+        <div class="input-group">
+            {{ form_widget(form.file, { attr: form.file.vars.attr|merge({ placeholder: placeholder, title: title, 'data-files-label': filesLabel, class: 'form-control' }) }) }}
+
+            {% if currentFiles %}
+                <span class="input-group-text">
+                    {% if multiple %}
+                        {{ (currentFiles|reduce((carry, file) => carry + file.size))|ea_filesize }}
+                    {% else %}
+                        {{ (currentFiles|first).size|ea_filesize }}
+                    {% endif %}
+                </span>
+            {% endif %}
+
+            {% if currentFiles and allow_delete %}
+                <button class="btn ea-fileupload-delete-btn">
+                    <i class="fa fa-trash-o"></i>
+                </button>
+            {% endif %}
+
+            {% if currentFiles %}
+                <button class="btn">
+                    <i class="fa fa-folder-open-o"></i>
+                </button>
+            {% endif %}
+        </div>
+
         {% if multiple and currentFiles %}
             <div class="form-control fileupload-list">
                 <table class="fileupload-table">
@@ -615,6 +778,7 @@
             <div style="display: none">{{ form_widget(form.delete, { label: false }) }}</div>
         {% endif %}
     </div>
+
     {{ form_errors(form.file) }}
 {% endblock %}
 
@@ -626,10 +790,8 @@
 
     <div class="input-group">
         {{ block('form_widget') }}
-        <div class="input-group-append">
-            <button class="btn btn-outline-secondary" type="button">
-                <i class="fas fa-lock fa-fw"></i>
-            </button>
-        </div>
+        <button type="button" class="btn">
+            <i class="fas fa-lock fa-fw"></i>
+        </button>
     </div>
 {% endblock %}

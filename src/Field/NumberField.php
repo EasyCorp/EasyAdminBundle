@@ -28,6 +28,7 @@ final class NumberField implements FieldInterface
             ->setTemplateName('crud/field/number')
             ->setFormType(NumberType::class)
             ->addCssClass('field-number')
+            ->setDefaultColumns('col-md-4 col-xxl-3')
             ->setCustomOption(self::OPTION_NUM_DECIMALS, null)
             ->setCustomOption(self::OPTION_ROUNDING_MODE, NumberToLocalizedStringTransformer::ROUND_HALF_UP)
             ->setCustomOption(self::OPTION_STORED_AS_STRING, false);

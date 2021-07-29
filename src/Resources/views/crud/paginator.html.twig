@@ -4,7 +4,7 @@
 
 <div class="list-pagination">
     <div class="list-pagination-counter">
-        {{ 'paginator.results'|trans({'%count%': paginator.numResults})|raw }}
+        {{ 'paginator.results'|trans({'%count%': paginator.numResults|format})|raw }}
     </div>
 
     <nav class="pager list-pagination-paginator {{ not paginator.hasPreviousPage ? 'first-page' }} {{ not paginator.hasNextPage ? 'last-page' }}">

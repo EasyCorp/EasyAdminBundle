@@ -26,6 +26,7 @@ final class TimeField implements FieldInterface
             ->setTemplateName('crud/field/time')
             ->setFormType(TimeType::class)
             ->addCssClass('field-time')
+            ->setDefaultColumns('col-md-6 col-xxl-5')
             // the proper default values of these options are set on the Crud class
             ->setCustomOption(self::OPTION_TIME_PATTERN, null)
             ->setCustomOption(DateTimeField::OPTION_TIMEZONE, null)

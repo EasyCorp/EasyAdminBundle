@@ -26,6 +26,11 @@ final class FieldDto
     private $textAlign;
     private $help;
     private $cssClass;
+    // how many columns the field takes when rendering
+    // (defined as Bootstrap 5 grid classes; e.g. 'col-md-6 col-xx-3')
+    private $columns;
+    // same as $columns but used when the user doesn't define columns explicitly
+    private $defaultColumns;
     private $translationParameters;
     private $templateName;
     private $templatePath;
@@ -41,6 +46,8 @@ final class FieldDto
     {
         $this->uniqueId = new Ulid();
         $this->cssClass = '';
+        $this->columns = null;
+        $this->defaultColumns = '';
         $this->templateName = 'crud/field/text';
         $this->assets = new AssetsDto();
         $this->translationParameters = [];
@@ -256,6 +263,26 @@ final class FieldDto
     public function setCssClass(string $cssClass): void
     {
         $this->cssClass = trim($cssClass);
+    }
+
+    public function getColumns(): ?string
+    {
+        return $this->columns;
+    }
+
+    public function setColumns(string $columnCssClasses): void
+    {
+        $this->columns = $columnCssClasses;
+    }
+
+    public function getDefaultColumns(): string
+    {
+        return $this->defaultColumns;
+    }
+
+    public function setDefaultColumns(string $columnCssClasses): void
+    {
+        $this->defaultColumns = $columnCssClasses;
     }
 
     public function getTranslationParameters(): array

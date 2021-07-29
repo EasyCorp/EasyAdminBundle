@@ -27,6 +27,8 @@ final class AvatarField implements FieldInterface
             ->setTemplateName('crud/field/avatar')
             ->setFormType(TextType::class)
             ->addCssClass('field-avatar')
+            ->setDefaultColumns('col-md-10 col-xxl-8')
+            ->setSortable(false)
             ->setCustomOption(self::OPTION_IS_GRAVATAR_EMAIL, false)
             ->setCustomOption(self::OPTION_HEIGHT, null);
     }

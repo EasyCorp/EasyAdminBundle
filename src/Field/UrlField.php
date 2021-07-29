@@ -22,6 +22,7 @@ final class UrlField implements FieldInterface
             ->setLabel($label)
             ->setTemplateName('crud/field/url')
             ->setFormType(UrlType::class)
-            ->addCssClass('field-url');
+            ->addCssClass('field-url')
+            ->setDefaultColumns('col-md-10 col-xxl-8');
     }
 }

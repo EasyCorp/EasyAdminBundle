@@ -18,6 +18,24 @@
 
 {% set has_batch_actions = batch_actions|length > 0 %}
 {% block page_actions %}
+    {% if filters|length > 0 %}
+        <div class="datagrid-filters">
+            {% block filters %}
+                {% set applied_filters = ea.request.query.all['filters']|default([])|keys %}
+                <div class="btn-group action-filters">
+                    <a href="#" data-href="{{ ea_url().setAction('renderFilters').includeReferrer() }}" class="btn btn-secondary btn-labeled btn-labeled-right action-filters-button disabled {{ applied_filters ? 'action-filters-applied' }}" data-bs-toggle="modal" data-bs-target="#modal-filters">
+                        <i class="fa fa-filter fa-fw"></i> {{ 'filter.title'|trans(ea.i18n.translationParameters, 'EasyAdminBundle') }}{% if applied_filters %} <span class="text-primary">({{ applied_filters|length }})</span>{% endif %}
+                    </a>
+                    {% if applied_filters %}
+                        <a href="{{ ea_url().unset('filters') }}" class="btn btn-secondary action-filters-reset">
+                            <i class="fa fa-close"></i>
+                        </a>
+                    {% endif %}
+                </div>
+            {% endblock filters %}
+        </div>
+    {% endif %}
+
     {% block global_actions %}
         <div class="global-actions">
             {% for action in global_actions %}
@@ -44,171 +62,137 @@
     {% set has_footer = entities|length != 0 %}
     {% set has_search = ea.crud.isSearchEnabled %}
     {% set has_filters = filters|length > 0 %}
-    {% set has_datagrid_tools = has_search or has_filters %}
+    {% set num_results = entities|length %}
 
-    {% if has_datagrid_tools %}
-        <div class="datagrid-header-tools">
-            {% block search %}
-                {% if has_search %}
-                    <div class="datagrid-search">
-                        <div class="form-action form-action-search">
-                            <form method="get">
-                                {% block search_form %}
-                                    {# reset the referrer and page number whenever a new query is performed #}
-                                    {% set query_parameters = ea.request.query.all|merge({
-                                        referrer: null, page: 1,
-                                    }) %}
-
-                                    {# browsers remove the query string when submitting forms using GET;
-                                       that's why all query string parameters are added as hidden form fields #}
-                                    {% for paramName, paramValue in query_parameters|ea_flatten_array %}
-                                        <input type="hidden" name="{{ paramName }}" value="{{ paramValue }}">
-                                    {% endfor %}
-
-                                    <div class="form-group">
-                                        <div class="form-widget">
-                                            <input class="form-control" type="search" name="query" value="{{ app.request.get('query') ?? '' }}" placeholder="{{ 'action.search'|trans(ea.i18n.translationParameters, 'EasyAdminBundle') }}" spellcheck="false" autocorrect="false">
-
-                                            {% if app.request.get('query') %}
-                                                <a href="{{ ea_url().unset('query') }}" class="action-search-reset">
-                                                    <i class="fas fa-times-circle"></i>
-                                                </a>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                {% endblock %}
-                            </form>
+    <table class="table datagrid {{ entities is empty ? 'datagrid-empty' }}">
+        {% if num_results > 0 %}
+            <thead>
+        {% block table_head %}
+            <tr>
+                {% if has_batch_actions %}
+                    <th>
+                        <div class="form-check">
+                            <span><input type="checkbox" class="form-check-input form-batch-checkbox-all"></span>
                         </div>
-                    </div>
+                    </th>
                 {% endif %}
-            {% endblock search %}
 
-            <div class="datagrid-filters">
-                {% block filters %}
-                    {% if has_filters %}
-                        {% set applied_filters = ea.request.query.all['filters']|default([])|keys %}
-                        <div class="btn-group action-filters">
-                            <a href="#" data-href="{{ ea_url().setAction('renderFilters').includeReferrer() }}" class="btn btn-secondary btn-labeled btn-labeled-right action-filters-button disabled {{ applied_filters ? 'action-filters-applied' }}" data-bs-toggle="modal" data-bs-target="#modal-filters">
-                                <i class="fa fa-filter fa-fw"></i> {{ 'filter.title'|trans(ea.i18n.translationParameters, 'EasyAdminBundle') }}{% if applied_filters %} <span class="text-primary">({{ applied_filters|length }})</span>{% endif %}
+                {% set ea_sort_asc = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Config\\Option\\SortOrder::ASC') %}
+                {% set ea_sort_desc = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Config\\Option\\SortOrder::DESC') %}
+                {% for field in entities|first.fields ?? [] %}
+                    {% set is_sorting_field = ea.search.isSortingField(field.property) %}
+                    {% set next_sort_direction = is_sorting_field ? (ea.search.sortDirection(field.property) == ea_sort_desc ? ea_sort_asc : ea_sort_desc) : ea_sort_desc %}
+                    {% set column_icon = is_sorting_field ? (next_sort_direction == ea_sort_desc ? 'fa-arrow-up' : 'fa-arrow-down') : 'fa-sort' %}
+
+                    <th class="{{ is_sorting_field ? 'sorted' }} {{ field.isVirtual ? 'field-virtual' }} header-for-{{ field.cssClass|split(' ')|filter(class => class starts with 'field-')|join('') }} text-{{ field.textAlign }}" dir="{{ ea.i18n.textDirection }}">
+                        {% if field.isSortable %}
+                            <a href="{{ ea_url({ page: 1, sort: { (field.property): next_sort_direction } }).includeReferrer() }}">
+                                {{ field.label|raw }} <i class="fa fa-fw {{ column_icon }}"></i>
                             </a>
-                            {% if applied_filters %}
-                                <a href="{{ ea_url().unset('filters') }}" class="btn btn-secondary action-filters-reset">
-                                    <i class="fa fa-close"></i>
-                                </a>
-                            {% endif %}
-                        </div>
-                    {% endif %}
-                {% endblock filters %}
-            </div>
-        </div>
-    {% endif %}
+                        {% else %}
+                            <span>{{ field.label|raw }}</span>
+                        {% endif %}
+                    </th>
+                {% endfor %}
 
-    <div class="content-panel">
-        <div class="content-panel-body with-rounded-top with-min-h-250 without-padding {{ not has_footer ? 'without-footer' }}">
-            <table class="table datagrid with-rounded-top {{ not has_footer ? 'with-rounded-bottom' }}">
-                <thead>
-                {% block table_head %}
-                    <tr>
+                <th {% if ea.crud.showEntityActionsAsDropdown %}width="10px"{% endif %} dir="{{ ea.i18n.textDirection }}">
+                    <span class="sr-only">{{ 'action.entity_actions'|trans(ea.i18n.translationParameters, 'EasyAdminBundle') }}</span>
+                </th>
+            </tr>
+        {% endblock table_head %}
+        </thead>
+        {% endif %}
+
+        <tbody>
+        {% block table_body %}
+            {% for entity in entities %}
+                {% if not entity.isAccessible %}
+                    {% set some_results_are_hidden = true %}
+                {% else %}
+                    <tr data-id="{{ entity.primaryKeyValueAsString }}">
                         {% if has_batch_actions %}
-                            <th width="1px"><span><input type="checkbox" class="form-batch-checkbox-all"></span></th>
+                            <td class="batch-actions-selector">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input form-batch-checkbox" value="{{ entity.primaryKeyValue }}">
+                                </div>
+                            </td>
                         {% endif %}
 
-                        {% set ea_sort_asc = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Config\\Option\\SortOrder::ASC') %}
-                        {% set ea_sort_desc = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Config\\Option\\SortOrder::DESC') %}
-                        {% for field in entities|first.fields ?? [] %}
-                            {% set is_sorting_field = ea.search.isSortingField(field.property) %}
-                            {% set next_sort_direction = is_sorting_field ? (ea.search.sortDirection(field.property) == ea_sort_desc ? ea_sort_asc : ea_sort_desc) : ea_sort_desc %}
-                            {% set column_icon = is_sorting_field ? (next_sort_direction == ea_sort_desc ? 'fa-arrow-up' : 'fa-arrow-down') : 'fa-sort' %}
-
-                            <th class="{{ is_sorting_field ? 'sorted' }} {{ field.isVirtual ? 'field-virtual' }} text-{{ field.textAlign }}" dir="{{ ea.i18n.textDirection }}">
-                                {% if field.isSortable %}
-                                    <a href="{{ ea_url({ page: 1, sort: { (field.property): next_sort_direction } }).includeReferrer() }}">
-                                        {{ field.label|raw }} <i class="fa fa-fw {{ column_icon }}"></i>
-                                    </a>
-                                {% else %}
-                                    <span>{{ field.label|raw }}</span>
-                                {% endif %}
-                            </th>
+                        {% for field in entity.fields %}
+                            <td data-label="{{ field.label|e('html_attr') }}" class="{{ field.property == sort_field_name ? 'sorted' }} text-{{ field.textAlign }} {{ field.cssClass }}" dir="{{ ea.i18n.textDirection }}">
+                                {{ include(field.templatePath, { field: field, entity: entity }, with_context = false) }}
+                            </td>
                         {% endfor %}
 
-                        <th {% if ea.crud.showEntityActionsAsDropdown %}width="10px"{% endif %} dir="{{ ea.i18n.textDirection }}">
-                            <span class="sr-only">{{ 'action.entity_actions'|trans(ea.i18n.translationParameters, 'EasyAdminBundle') }}</span>
-                        </th>
-                    </tr>
-                {% endblock table_head %}
-                </thead>
+                        {% block entity_actions %}
+                            <td class="actions {{ ea.crud.showEntityActionsAsDropdown ? 'actions-as-dropdown' }}">
+                                {% if entity.actions.count > 0 %}
+                                    {% if ea.crud.showEntityActionsAsDropdown %}
+                                        <div class="dropdown dropdown-actions">
+                                            <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                {# don't use FontAwesome 'fa-ellipsis-h' icon here because it doesn't look good #}
+                                                {# this icon is 'dots-horizontal' icon from https://heroicons.com/ #}
+                                                <svg xmlns="http://www.w3.org/2000/svg" height="21" width="21" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
+                                                </svg>
+                                            </a>
 
-                <tbody>
-                {% block table_body %}
-                    {% for entity in entities %}
-                        {% if not entity.isAccessible %}
-                            {% set some_results_are_hidden = true %}
-                        {% else %}
-                            <tr data-id="{{ entity.primaryKeyValueAsString }}">
-                                {% if has_batch_actions %}
-                                    <td><input type="checkbox" class="form-batch-checkbox" value="{{ entity.primaryKeyValue }}"></td>
+                                            <div class="dropdown-menu dropdown-menu-right">
+                                                {% for action in entity.actions %}
+                                                    {{ include(action.templatePath, { action: action, isIncludedInDropdown: ea.crud.showEntityActionsAsDropdown }, with_context = false) }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        {% for action in entity.actions %}
+                                            {{ include(action.templatePath, { action: action, entity: entity, isIncludedInDropdown: ea.crud.showEntityActionsAsDropdown }, with_context = false) }}
+                                        {% endfor %}
+                                    {% endif %}
                                 {% endif %}
+                            </td>
+                        {% endblock entity_actions %}
+                    </tr>
 
-                                {% for field in entity.fields %}
-                                    <td class="{{ field.property == sort_field_name ? 'sorted' }} text-{{ field.textAlign }} {{ field.cssClass }}" dir="{{ ea.i18n.textDirection }}">
-                                        {{ include(field.templatePath, { field: field, entity: entity }, with_context = false) }}
-                                    </td>
-                                {% endfor %}
+                {% endif %}
+            {% else %}
+                {% for i in 1..14 %}
+                    <tr class="empty-row">
+                        <td><span></span></td>
+                        <td><span></span></td>
+                        <td><span></span></td>
+                        <td><span></span></td>
+                        <td><span></span></td>
+                        <td><span></span></td>
+                    </tr>
 
-                                {% block entity_actions %}
-                                    <td class="actions">
-                                        {% if not ea.crud.showEntityActionsAsDropdown %}
-                                            {% for action in entity.actions %}
-                                                {{ include(action.templatePath, { action: action, entity: entity, isIncludedInDropdown: ea.crud.showEntityActionsAsDropdown }, with_context = false) }}
-                                            {% endfor %}
-                                        {% else %}
-                                            {% if entity.actions.count > 0 %}
-                                                <div class="dropdown dropdown-actions">
-                                                    <a class="dropdown-toggle btn btn-secondary btn-sm" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                        <i class="fa fa-fw fa-ellipsis-h"></i>
-                                                    </a>
-
-                                                    <div class="dropdown-menu dropdown-menu-right">
-                                                        {% for action in entity.actions %}
-                                                            {{ include(action.templatePath, { action: action, isIncludedInDropdown: ea.crud.showEntityActionsAsDropdown }, with_context = false) }}
-                                                        {% endfor %}
-                                                    </div>
-                                                </div>
-                                            {% endif %}
-                                        {% endif %}
-                                    </td>
-                                {% endblock entity_actions %}
-                            </tr>
-
-                        {% endif %}
-                    {% else %}
-                        <tr>
-                            <td class="no-results" colspan="100">
+                    {% if 3 == loop.index %}
+                        <tr class="no-results">
+                            <td colspan="100">
                                 {{ 'datagrid.no_results'|trans(ea.i18n.translationParameters, 'EasyAdminBundle') }}
                             </td>
                         </tr>
-                    {% endfor %}
-
-                    {% if some_results_are_hidden %}
-                        <tr class="datagrid-row-empty">
-                            <td class="text-center" colspan="{{ entities|first.fields|length + 1 }}">
-                                <span class="datagrid-row-empty-message"><i class="fa fa-lock mr-1"></i> {{ 'datagrid.hidden_results'|trans({}, 'EasyAdminBundle') }}</span>
-                            </td>
-                        </tr>
                     {% endif %}
-                {% endblock table_body %}
-                </tbody>
-            </table>
-        </div>
+                {% endfor %}
+            {% endfor %}
 
-        {% if entities|length > 0 %}
-            <div class="content-panel-footer without-padding without-border">
-                {% block paginator %}
-                    {{ include(ea.templatePath('crud/paginator')) }}
-                {% endblock paginator %}
-            </div>
-        {% endif %}
-    </div>
+            {% if some_results_are_hidden %}
+                <tr class="datagrid-row-empty">
+                    <td class="text-center" colspan="{{ entities|first.fields|length + 1 }}">
+                        <span class="datagrid-row-empty-message"><i class="fa fa-lock mr-1"></i> {{ 'datagrid.hidden_results'|trans({}, 'EasyAdminBundle') }}</span>
+                    </td>
+                </tr>
+            {% endif %}
+        {% endblock table_body %}
+        </tbody>
+    </table>
+
+    {% if entities|length > 0 %}
+        <div class="content-panel-footer without-padding without-border">
+            {% block paginator %}
+                {{ include(ea.templatePath('crud/paginator')) }}
+            {% endblock paginator %}
+        </div>
+    {% endif %}
 
     {% block delete_form %}
         {{ include('@EasyAdmin/crud/includes/_delete_form.html.twig', with_context = false) }}

@@ -176,6 +176,7 @@ final class AdminContextFactory
         $translationParameters = [];
         if (null !== $crudDto) {
             $translationParameters['%entity_name%'] = $entityName = basename(str_replace('\\', '/', $crudDto->getEntityFqcn()));
+            $translationParameters['%entity_as_string%'] = null === $entityDto ? '' : $entityDto->toString();
             $translationParameters['%entity_id%'] = $entityId = $request->query->get(EA::ENTITY_ID);
             $translationParameters['%entity_short_id%'] = null === $entityId ? null : u((string) $entityId)->truncate(7);
 

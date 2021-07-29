@@ -26,6 +26,7 @@ final class LocaleField implements FieldInterface
             ->setTemplateName('crud/field/locale')
             ->setFormType(LocaleType::class)
             ->addCssClass('field-locale')
+            ->setDefaultColumns('col-md-5 col-xxl-4')
             ->setCustomOption(self::OPTION_SHOW_CODE, false)
             ->setCustomOption(self::OPTION_SHOW_NAME, true);
     }

@@ -1,44 +1,38 @@
 // Datalists (used in the DETAIL page)
 // ----------------------------------------------------------------------------
 
+.ea-detail .field-form_panel {
+  padding-bottom: 35px;
+}
+.ea-detail .form-panel-header {
+  box-shadow: none;
+}
+
 dl.datalist {
-  border-radius: var(--border-radius);
   margin-bottom: 0;
-  overflow: hidden; // this is needed for the border-radius field
 }
 dl.datalist .data-row {
-  background: var(--white);
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  padding: 15px 20px;
-}
-@media(min-width: 1024px) {
-  dl.datalist .data-row {
-    flex-wrap: nowrap;
-  }
-}
+  box-shadow: inset 0 -1px var(--datalist-border-color);
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  padding: 8px;
 
-dl.datalist .data-row.with-background {
-  background: var(--form-bg);
-}
-
-dl.datalist dd {
-  color: var(--gray-600);
-  flex: 100% 0 0;
-  font-size: var(--font-size-base);
-  font-weight: 400;
-  margin-bottom: 0;
-  padding-right: 10px;
-}
-@media(min-width: 1024px) {
-  dl.datalist dd {
-    flex: 20% 0 0;
+  &:first-child {
+    box-shadow: inset 0 -1px var(--datalist-border-color), inset 0 1px var(--datalist-border-color);
   }
 }
 
 dl.datalist dt {
-  font-weight: normal;
+  color: var(--datalist-label-color);
+  font-weight: 400;
+  margin-bottom: 0;
+  padding-right: 10px;
+}
+
+dl.datalist dd {
+  color: var(--datalist-value-color);
+  margin-bottom: 0;
+  overflow: auto;
 }
 
 dl.datalist .data-help {
@@ -47,5 +41,17 @@ dl.datalist .data-help {
   margin: 15px 0 0;
 }
 dl.datalist .data-help i {
-  color: var(--gray-600);
+  color: var(--datalist-label-color);
+}
+
+.field-code_editor pre {
+  color: inherit;
+  font-family: var(--font-family-monospace);
+  font-size: var(--font-size-sm);
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+.field-textarea dd,
+.field-text_editor dd {
+  max-width: 80ch;
 }

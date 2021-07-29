@@ -160,7 +160,7 @@ final class Actions
         if (Action::BATCH_DELETE === $actionName) {
             return Action::new(Action::BATCH_DELETE, '__ea__action.delete', null)
                 ->linkToCrudAction(Action::BATCH_DELETE)
-                ->addCssClass('btn btn-link pr-0 text-danger');
+                ->addCssClass('btn btn-secondary pr-0 text-danger');
         }
 
         if (Action::NEW === $actionName) {
@@ -189,7 +189,7 @@ final class Actions
         }
 
         if (Action::DELETE === $actionName) {
-            $cssClass = \in_array($pageName, [Crud::PAGE_DETAIL, Crud::PAGE_EDIT], true) ? 'btn btn-link pr-0 text-danger' : 'text-danger';
+            $cssClass = \in_array($pageName, [Crud::PAGE_DETAIL, Crud::PAGE_EDIT], true) ? 'btn btn-secondary pr-0 text-danger' : 'text-danger';
 
             return Action::new(Action::DELETE, '__ea__action.delete', Crud::PAGE_INDEX === $pageName ? null : 'fa fa-fw fa-trash-o')
                 ->linkToCrudAction(Action::DELETE)

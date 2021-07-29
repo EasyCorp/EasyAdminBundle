@@ -22,6 +22,7 @@ final class IntegerField implements FieldInterface
             ->setLabel($label)
             ->setTemplateName('crud/field/integer')
             ->setFormType(IntegerType::class)
-            ->addCssClass('field-integer');
+            ->addCssClass('field-integer')
+            ->setDefaultColumns('col-md-4 col-xxl-3');
     }
 }

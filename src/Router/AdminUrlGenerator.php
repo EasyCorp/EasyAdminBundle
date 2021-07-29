@@ -180,6 +180,21 @@ final class AdminUrlGenerator
         return $this;
     }
 
+    public function getSignature(): string
+    {
+        if (false === $this->isInitialized) {
+            $this->initialize();
+        }
+
+        $this->addSignature = true;
+        $url = $this->generateUrl();
+        $urlParts = parse_url($url);
+        $queryString = $urlParts['query'];
+        parse_str($queryString, $queryParts);
+
+        return $queryParts['signature'];
+    }
+
     // this method allows to omit the 'generateUrl()' call in templates, making code more concise
     public function __toString(): string
     {

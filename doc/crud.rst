@@ -156,7 +156,10 @@ You can override the default page titles with the following methods::
     {
         return $crud
             // the visible title at the top of the page and the content of the <title> element
-            // it can include these placeholders: %entity_id%, %entity_label_singular%, %entity_label_plural%
+            // it can include these placeholders:
+            //   %entity_name%, %entity_as_string%,
+            //   %entity_id%, %entity_short_id%
+            //   %entity_label_singular%, %entity_label_plural%
             ->setPageTitle('index', '%entity_label_plural% listing')
 
             // you can pass a PHP closure as the value of the title

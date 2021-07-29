@@ -257,18 +257,24 @@ const App = (() => {
                     selectAllCheckbox.checked = false;
                 }
 
-                if (0 === selectedRowCheckboxes.length) {
-                    content.querySelector('.global-actions').style.display = 'block';
-                    content.querySelector('.batch-actions').style.display = 'none';
-                    content.querySelector('table').classList.remove('table-batch');
-                } else {
-                    content.querySelector('.global-actions').style.display = 'none';
-                    content.querySelector('.batch-actions').style.display = 'block';
-                    content.querySelector('table').classList.add('table-batch');
-                }
+                const rowsAreSelected = 0 !== selectedRowCheckboxes.length;
+                const contentTitle = document.querySelector('.content-header-title > .title');
+                const filters = content.querySelector('.datagrid-filters');
+                const globalActions = content.querySelector('.global-actions');
+                const batchActions = content.querySelector('.batch-actions');
 
-                const titleContent = document.querySelector('.content-header-title > .title').innerHTML;
-                content.querySelector('.content-header-title > .title').innerHTML = 0 === selectedRowCheckboxes.length ? titleContent : '';
+                if (null !== contentTitle) {
+                    contentTitle.style.visibility = rowsAreSelected ? 'hidden' : 'visible';
+                }
+                if (null !== filters) {
+                    filters.style.display = rowsAreSelected ? 'none' : 'block';
+                }
+                if (null !== globalActions) {
+                    globalActions.style.display = rowsAreSelected ? 'none' : 'block';
+                }
+                if (null !== batchActions) {
+                    batchActions.style.display = rowsAreSelected ? 'block' : 'none';
+                }
             });
         });
 

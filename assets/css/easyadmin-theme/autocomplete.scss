@@ -1,12 +1,13 @@
 @import "~tom-select/dist/css/tom-select.bootstrap4.min.css";
 
 .form-control.ts-control {
+  border: 0;
   height: 30px;
-  max-width: 350px;
 }
 .form-widget .form-select[data-ea-widget="ea-autocomplete"],
 .ts-control.form-select,
 .plugin-dropdown_input .dropdown-input .ts-dropdown.form-select {
+  border: 0;
   box-shadow: none;
   padding: 0;
 }
@@ -14,12 +15,11 @@
   height: auto;
 }
 .ts-input {
-  border: 0;
+  border: 1px solid var(--gray-300);
+  box-shadow: 0 1px 2px 0 var(--gray-50);
   border-radius: var(--border-radius);
-  box-shadow: 0 0 0 1px rgba(43, 45, 80, .16), 0 0 0 1px rgba(6, 122, 184, 0), 0 0 0 2px rgba(6, 122, 184, 0), 0 1px 1px rgba(0, 0, 0, .08);
   color: var(--text-color-dark);
-  height: 30px;
-  min-height: unset;
+  min-height: 30px;
   padding: 3px 7px 4px;
   transition: box-shadow .08s ease-in, color .08s ease-in;
 }
@@ -29,8 +29,8 @@
 }
 .ts-input.focus,
 .plugin-dropdown_input .ts-input.focus {
-  border: 0;
-  box-shadow: 0 0 0 1px rgba(43, 45, 80, 0), 0 0 0 1px rgba(6, 122, 184, .2), 0 0 0 2px rgba(6, 122, 184, .25), 0 1px 1px rgba(0, 0, 0, .08);
+  border-color: var(--gray-400);
+  box-shadow: 0 0 0 4px var(--gray-100);
   outline: 0;
 }
 .ts-control.single .ts-input:after {
@@ -81,6 +81,13 @@
 .ts-dropdown [data-selectable] {
   min-height: 31px;
 }
+.ts-dropdown [data-selectable] .highlight {
+  border-radius: var(--border-radius);
+  background: var(--highlight-bg);
+  box-shadow: 0 1px 0 rgba(250, 204, 21, 0.4);
+  color: inherit;
+  padding: 0 1px;
+}
 .ts-dropdown {
   z-index: var(--zindex-1050);
 }
@@ -98,6 +105,18 @@
 .ts-control.multi .ts-input,
 .ts-control.multi .ts-input.has-items {
   padding: 3px 15px 3px 7px;
+}
+.ts-control.multi .ts-input > div {
+  background: var(--gray-100);
+  border-radius: var(--border-radius);
+  box-shadow: 0 0 0 1px var(--white);
+  margin: 0 3px 0 0;
+}
+.ts-control.plugin-remove_button .item .remove {
+  border-left: 1px solid var(--gray-200);
+}
+.ts-control.plugin-remove_button .item .remove:hover {
+  background: var(--gray-200);
 }
 
 .plugin-clear_button.ts-control .clear-button,

@@ -36,6 +36,7 @@ final class ChoiceField implements FieldInterface
             ->setTemplateName('crud/field/choice')
             ->setFormType(ChoiceType::class)
             ->addCssClass('field-select')
+            ->setDefaultColumns('') // this is set dynamically in the field configurator
             ->setCustomOption(self::OPTION_CHOICES, null)
             ->setCustomOption(self::OPTION_RENDER_AS_BADGES, null)
             ->setCustomOption(self::OPTION_RENDER_EXPANDED, false)

@@ -22,6 +22,7 @@ final class TimezoneField implements FieldInterface
             ->setLabel($label)
             ->setTemplateName('crud/field/timezone')
             ->setFormType(TimezoneType::class)
-            ->addCssClass('field-timezone');
+            ->addCssClass('field-timezone')
+            ->setDefaultColumns('col-md-6 col-xxl-5');
     }
 }

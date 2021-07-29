@@ -15,7 +15,7 @@
     {% set _sign_in_label = sign_in_label is defined ? sign_in_label|trans : 'login_page.sign_in'|trans({}, 'EasyAdminBundle') %}
 
     <div class="login-wrapper">
-        <header class="main-header mb-4">
+        <header class="main-header">
             <div id="header-logo">
                 {% block header_logo %}
                     {% if page_title %}
@@ -42,24 +42,30 @@
                 </div>
             {% endif %}
 
-            <form method="post" action="{{ action|default('') }}">
+            <div method="post" action="{{ action|default('') }}">
                 {% if csrf_token_intention|default(false) %}
                     <input type="hidden" name="_csrf_token" value="{{ csrf_token(csrf_token_intention) }}">
                 {% endif %}
 
                 <input type="hidden" name="{{ target_path_parameter|default('_target_path') }}" value="{{ target_path|default(ea is defined ? path(ea.dashboardRouteName) : '/') }}" />
 
-                <div class="mb-3">
-                    <label for="username">{{ _username_label }}</label>
-                    <input type="text" id="username" name="{{ username_parameter|default('_username') }}" class="form-control" value="{{ last_username|default('') }}" required autofocus autocomplete="username">
+                <div class="form-group">
+                    <label class="form-control-label required" for="username">{{ _username_label }}</label>
+                    <div class="form-widget">
+                        <input type="text" id="username" name="{{ username_parameter|default('_username') }}" class="form-control" value="{{ last_username|default('') }}" required autofocus autocomplete="username">
+                    </div>
                 </div>
 
-                <div class="mb-4">
-                    <label for="password">{{ _password_label }}</label>
-                    <input type="password" id="password" name="{{ password_parameter|default('_password') }}" class="form-control" required autocomplete="current-password">
+                <div class="form-group">
+                    <label class="form-control-label required" for="password">{{ _password_label }}</label>
+                    <div class="form-widget">
+                        <input type="password" id="password" name="{{ password_parameter|default('_password') }}" class="form-control" required autocomplete="current-password">
+                    </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary btn-lg btn-block" onclick="this.form.submit(); this.disabled=true;">{{ _sign_in_label }}</button>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary btn-lg" onclick="this.form.submit(); this.disabled=true;">{{ _sign_in_label }}</button>
+                </div>
             </form>
 
             <script type="text/javascript">

@@ -213,6 +213,97 @@ the fields using `PHP generators`_::
 Field Layout
 ------------
 
+Form Rows
+~~~~~~~~~
+
+By default, EasyAdmin displays one form field per row. Inside the row, each
+field type uses a different default width (e.g. integer fields are narrow and
+code editor fields are very wide). You can override this behavior with the
+``setColumns()`` method of each field.
+
+Before using this option, you must be familiar with the `Bootstrap grid system`_,
+which divides each row into 12 same-width columns, and the `Bootstrap breakpoints`_,
+which are ``xs`` (device width < 576px), ``sm`` (>= 576px), ``md`` (>= 768px),
+``lg`` (>= 992px), ``xl`` (>= 1,200px) and ``xxl`` (>= 1,400px).
+
+Imagine that you want to display two fields called  ``startsAt`` and ``endsAt``
+on the same row, each of them spanning 6 columns of the row. This is how you
+configure that layout::
+
+    use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
+
+    public function configureFields(string $pageName): iterable
+    {
+        return [
+            // ...,
+
+            DateTimeField::new('startsAt')->setColumns(6),
+            DateTimeField::new('endsAt')->setColumns(6),
+        ];
+    }
+
+This example renders both fields on the same row, except in ``xs`` and ``sm``
+breakpoints, where each field takes the entire row (because the device width is
+too small).
+
+If you need a better control of the design depending on the device width, you
+can pass a string with the responsive CSS classes that define the width of the
+field on different breakpoints::
+
+    use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
+
+    public function configureFields(string $pageName): iterable
+    {
+        return [
+            // ...,
+
+            DateTimeField::new('startsAt')->setColumns('col-sm-6 col-lg-5 col-xxl-3'),
+            DateTimeField::new('endsAt')->setColumns('col-sm-6 col-lg-5 col-xxl-3'),
+        ];
+    }
+
+This example adds ``col-sm-6`` to override the default EasyAdmin behavior and
+display the two fields on the same row also in the ``sm`` breakpoint. Besides,
+it reduces the number of columns in larger breakpoints (``lg`` and ``xxl``) to
+improve the rendering of those fields.
+
+Because of how Bootstrap grid works, when you configure field columns manually,
+each row will contain as many fields as possible. If one field takes 4 columns
+and the next one takes 3 columns, the row still has ``12 - 4 - 3 = 5`` columns
+to render other fields. If the next field takes more than 5 columns, it renders
+on the next row.
+
+Sometimes you need a better control of this automatic layout. For example, you
+might want to display two or more fields on the same row, and ensure that no
+other field is displayed on that row, even if there's enough space for it.
+To do so, use the ``addRow()`` method of the special ``FormField`` field to
+force the creation of a new line (the next field will forcibly render on a new row)::
+
+    use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+    use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
+    use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
+
+    public function configureFields(string $pageName): iterable
+    {
+        return [
+            // ...,
+
+            DateTimeField::new('startsAt')->setColumns('col-sm-6 col-lg-5 col-xxl-3'),
+            DateTimeField::new('endsAt')->setColumns('col-sm-6 col-lg-5 col-xxl-3'),
+            FormField::addRow(),
+
+            // you can pass the name of the breakpoint to add a row only on certain widths
+            // FormField::addRow('xl'),
+
+            // this field will always render on its own row, even if there's
+            // enough space for it in the previous row in `lg`, `xl` and `xxl` breakpoints
+            BooleanField::new('published')->setColumns(2),
+        ];
+    }
+
+Form Panels
+~~~~~~~~~~~
+
 In pages where you display lots of fields, you can divide them in groups using
 the "panels" created with the special ``FormField`` object::
 
@@ -543,3 +634,5 @@ attribute of the tag to run your configurator before or after the built-in ones.
 .. _`PHP generators`: https://www.php.net/manual/en/language.generators.overview.php
 .. _`Twig templating features`: https://twig.symfony.com/doc/3.x/
 .. _`Symfony Form themes`: https://symfony.com/doc/current/form/form_themes.html
+.. _`Bootstrap grid system`: https://getbootstrap.com/docs/5.0/layout/grid/
+.. _`Bootstrap breakpoints`: https://getbootstrap.com/docs/5.0/layout/breakpoints/

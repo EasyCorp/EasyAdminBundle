@@ -31,6 +31,7 @@ final class PercentField implements FieldInterface
             ->setFormType(PercentType::class)
             ->addCssClass('field-percent')
             ->setTextAlign(TextAlign::RIGHT)
+            ->setDefaultColumns('col-md-6 col-xxl-5')
             ->setCustomOption(self::OPTION_NUM_DECIMALS, 0)
             ->setCustomOption(self::OPTION_STORED_AS_FRACTIONAL, true)
             ->setCustomOption(self::OPTION_SYMBOL, '%')

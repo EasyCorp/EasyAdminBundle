@@ -27,6 +27,7 @@ final class CurrencyField implements FieldInterface
             ->setTemplateName('crud/field/currency')
             ->setFormType(CurrencyType::class)
             ->addCssClass('field-currency')
+            ->setDefaultColumns('col-md-4 col-xxl-3')
             ->setCustomOption(self::OPTION_SHOW_CODE, false)
             ->setCustomOption(self::OPTION_SHOW_NAME, true)
             ->setCustomOption(self::OPTION_SHOW_SYMBOL, true);

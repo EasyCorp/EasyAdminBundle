@@ -27,6 +27,7 @@ final class TextField implements FieldInterface
             ->setTemplateName('crud/field/text')
             ->setFormType(TextType::class)
             ->addCssClass('field-text')
+            ->setDefaultColumns('col-md-6 col-xxl-5')
             ->setCustomOption(self::OPTION_MAX_LENGTH, null)
             ->setCustomOption(self::OPTION_RENDER_AS_HTML, false)
             ->setCustomOption(self::OPTION_STRIP_TAGS, false);

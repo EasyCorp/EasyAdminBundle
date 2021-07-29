@@ -3,8 +3,8 @@
 return [
     'page_title' => [
         'dashboard' => 'Tablou de bord',
-        'detail' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
-        'edit' => 'Editează %entity_label_singular% <small>(#%entity_short_id%)</small>',
+        'detail' => '%entity_as_string%',
+        'edit' => 'Editează %entity_label_singular%',
         'index' => '%entity_label_plural%',
         'new' => 'Creează %entity_label_singular%',
         'exception' => 'Eroare|Erori',

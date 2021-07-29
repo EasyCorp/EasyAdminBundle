@@ -66,52 +66,57 @@
 {% endblock %}
 
 {% macro open_empty_content_panel(field) %}
-
 <div class="{{ field.cssClass }}">
-    <div class="content-panel">
-        <div class="content-panel-body without-header without-footer without-padding">
-            <dl class="datalist">
+    <div class="form-panel">
+        <dl class="datalist">
 {% endmacro %}
 
 {% macro close_content_panel() %}
-            </dl>
-        </div>
+        </dl>
     </div>
 </div>
 {% endmacro %}
 
 {% macro open_content_panel_with_header(field) %}
+    {% set panel_name = 'content-' ~ field.uniqueId %}
     {% set collapsible = field.customOption('collapsible') %}
     {% set collapsed = field.customOption('collapsed') %}
-    <div class="{{ field.cssClass }}">
-        <div class="content-panel">
-            <div class="content-panel-header {{ collapsible ? 'collapsible' }} {{ field.help is not empty ? 'with-help' }}">
-                {% if collapsible %}
-                    <a href="#content-{{ field.uniqueId }}" data-bs-toggle="collapse" class="content-panel-collapse {{ collapsed ? 'collapsed' }}" aria-expanded="{{ collapsed ? 'false' : 'true' }}" aria-controls="content-{{ field.uniqueId }}">
-                        <i class="fas fw fa-chevron-right collapse-icon"></i>
-                {% endif %}
 
-                        {% if field.customOption('icon') %}
-                            <i class="{{ field.customOption('icon') }}"></i>
+    <div class="{{ field.cssClass ?? '' }}">
+        <div class="form-panel">
+            <div class="form-panel-header {{ collapsible ? 'collapsible' }} {{ field.help|default(false) is not empty ? 'with-help' }}">
+                <div class="form-panel-title">
+                    <a {% if not collapsible %}
+                        href="#" class="not-collapsible"
+                    {% else %}
+                        href="#{{ panel_name }}" data-bs-toggle="collapse"
+                        class="form-panel-collapse {{ collapsed ? 'collapsed' }}"
+                        aria-expanded="{{ collapsed ? 'false' : 'true' }}" aria-controls="{{ panel_name }}"
+                    {% endif %}
+                    >
+                        {% if collapsible %}
+                            <i class="fas fw fa-chevron-right form-panel-collapse-marker"></i>
+                        {% endif %}
+
+                        {% if field.customOptions.get('icon')|default(false) %}
+                            <i class="form-panel-icon {{ field.customOptions.get('icon') }}"></i>
                         {% endif %}
                         {{ field.label|raw }}
-
-                {% if collapsible %}
                     </a>
-                {% endif %}
 
-                {% if field.help is not empty %}
-                    <div class="content-panel-header-help">{{ field.help|raw }}</div>
-                {% endif %}
+                    {% if field.help|default(false) %}
+                        <div class="form-panel-help">{{ field.help|raw }}</div>
+                    {% endif %}
+                </div>
             </div>
 
-            <div id="content-{{ field.uniqueId }}" class="content-panel-body without-footer without-padding {{ collapsible ? 'collapse' }} {{ not collapsed ? 'show'}}">
+            <div id="{{ panel_name }}" class="form-panel-body {{ collapsible ? 'collapse' }} {{ not collapsed ? 'show'}}">
                 <dl class="datalist">
 {% endmacro %}
 
 {% macro render_field(entity, field, row_number) %}
-    <div class="data-row {{ row_number is even ? 'with-background' }} {{ field.cssClass }}">
-        <dd>
+    <div class="data-row {{ field.cssClass }}">
+        <dt>
             {{ field.label|raw }}
 
             {% if field.help is not empty %}
@@ -119,9 +124,9 @@
                     <i class="far fa-question-circle" data-bs-toggle="tooltip" title="{{ field.help|e('html_attr') }}"></i>
                 </span>
             {% endif %}
-        </dd>
-        <dt>
-            {{ include(field.templatePath, { field: field, entity: entity }, with_context = false) }}
         </dt>
+        <dd>
+            {{ include(field.templatePath, { field: field, entity: entity }, with_context = false) }}
+        </dd>
     </div>
 {% endmacro %}

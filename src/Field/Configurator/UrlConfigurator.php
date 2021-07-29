@@ -28,7 +28,7 @@ final class UrlConfigurator implements FieldConfiguratorInterface
         $prettyUrl = rtrim($prettyUrl, '/');
 
         if (Action::INDEX === $context->getCrud()->getCurrentAction()) {
-            $prettyUrl = u($prettyUrl)->truncate(32, '…');
+            $prettyUrl = u($prettyUrl)->truncate(32, '…')->toString();
         }
 
         $field->setFormattedValue($prettyUrl);

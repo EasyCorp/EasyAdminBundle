@@ -219,6 +219,7 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
             ->replaceMatches('/[_\s]+/', ' ')
             ->trim()
             ->lower()
-            ->title(true);
+            ->title(true)
+            ->toString();
     }
 }

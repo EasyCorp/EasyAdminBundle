@@ -147,7 +147,7 @@ final class FieldFactory
         $newField->setValue($fieldDto->getValue());
         $newField->setFormattedValue($fieldDto->getFormattedValue());
         $newField->setCssClass(trim($newField->getCssClass().' '.$fieldDto->getCssClass()));
-        $newField->setRowCssClass(trim($newField->getRowCssClass().' '.$fieldDto->getRowCssClass()));
+        $newField->setColumns($fieldDto->getColumns());
         $newField->setTranslationParameters($fieldDto->getTranslationParameters());
         $newField->setAssets($newField->getAssets()->mergeWith($fieldDto->getAssets()));
 

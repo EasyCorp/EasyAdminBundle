@@ -110,10 +110,8 @@
                     </div>
                 {% endif %}
 
-                {% if ea.field.help ?? false %}
-                    <small class="form-help">{{ ea.field.help|raw }}</small>
-                {% elseif form.vars.help ?? false %}
-                    <small class="form-help">{{ form.vars.help|trans(form.vars.help_translation_parameters, form.vars.translation_domain)|raw }}</small>
+                {% if form.vars.help ?? false %}
+                    <small class="form-help">{{ form.vars.help|raw }}</small>
                 {% endif %}
 
                 {{- form_errors(form) -}}

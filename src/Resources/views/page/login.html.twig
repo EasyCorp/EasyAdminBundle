@@ -42,7 +42,7 @@
                 </div>
             {% endif %}
 
-            <div method="post" action="{{ action|default('') }}">
+            <form method="post" action="{{ action|default('') }}">
                 {% if csrf_token_intention|default(false) %}
                     <input type="hidden" name="_csrf_token" value="{{ csrf_token(csrf_token_intention) }}">
                 {% endif %}

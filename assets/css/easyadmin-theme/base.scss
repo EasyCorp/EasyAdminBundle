@@ -281,6 +281,7 @@ body.ea-mobile-sidebar-visible .sidebar {
 
     @media(min-width: 992px) {
         display: flex;
+        height: 56px;
         justify-content: space-between;
         padding: 11px calc(var(--lg-content-padding-right) + var(--resize-handler-width)) 11px var(--lg-content-padding-left);
     }

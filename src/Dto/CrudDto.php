@@ -94,7 +94,7 @@ final class CrudDto
         $this->entityFqcn = $entityFqcn;
     }
 
-    public function getEntityLabelInSingular($entityInstance = null): ?string
+    public function getEntityLabelInSingular($entityInstance = null, $pageName = null): ?string
     {
         if (null === $this->entityLabelInSingular) {
             return null;
@@ -104,7 +104,7 @@ final class CrudDto
             return $this->entityLabelInSingular;
         }
 
-        return ($this->entityLabelInSingular)($entityInstance);
+        return ($this->entityLabelInSingular)($entityInstance, $pageName);
     }
 
     /**
@@ -115,7 +115,7 @@ final class CrudDto
         $this->entityLabelInSingular = $label;
     }
 
-    public function getEntityLabelInPlural($entityInstance = null): ?string
+    public function getEntityLabelInPlural($entityInstance = null, $pageName = null): ?string
     {
         if (null === $this->entityLabelInPlural) {
             return null;
@@ -125,7 +125,7 @@ final class CrudDto
             return $this->entityLabelInPlural;
         }
 
-        return ($this->entityLabelInPlural)($entityInstance);
+        return ($this->entityLabelInPlural)($entityInstance, $pageName);
     }
 
     /**

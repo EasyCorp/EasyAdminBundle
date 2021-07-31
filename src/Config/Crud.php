@@ -42,7 +42,7 @@ class Crud
     }
 
     /**
-     * @param string|callable $label The callable signature is: fn ($entityInstance, string $pageName): string
+     * @param string|callable $label The callable signature is: fn ($entityInstance, $pageName): string
      */
     public function setEntityLabelInSingular($label): self
     {
@@ -52,7 +52,7 @@ class Crud
     }
 
     /**
-     * @param string|callable $label The callable signature is: fn ($entityInstance, string $pageName): string
+     * @param string|callable $label The callable signature is: fn ($entityInstance, $pageName): string
      */
     public function setEntityLabelInPlural($label): self
     {

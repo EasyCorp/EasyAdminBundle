@@ -16,13 +16,14 @@ document.addEventListener('ea.collection.item-added', eaCollectionHandler);
 const EaCollectionProperty = {
     handleAddButton: (addButton, collection) => {
         addButton.addEventListener('click', function() {
+            const isArrayCollection = collection.classList.contains('field-array');
             // Use a counter to avoid having the same index more than once
             let numItems = parseInt(collection.dataset.numItems);
 
             // Remove the 'Empty Collection' badge, if present
             const emptyCollectionBadge = this.parentElement.querySelector('.collection-empty');
             if (null !== emptyCollectionBadge) {
-                emptyCollectionBadge.remove();
+                emptyCollectionBadge.outerHTML = isArrayCollection ? '<div class="ea-form-collection-items"></div>' : '<div class="ea-form-collection-items"><div class="accordion"><div class="form-widget-compound"></div></div></div>';
             }
 
             const formTypeNamePlaceholder = collection.dataset.formTypeNamePlaceholder;
@@ -34,8 +35,7 @@ const EaCollectionProperty = {
                 .replace(nameRegexp, numItems);
 
             collection.dataset.numItems = ++numItems;
-            const isArrayCollection = collection.classList.contains('field-array');
-            const newItemInsertionSelector = isArrayCollection ? 'legend.col-form-label + .form-widget > div' : '.form-widget .accordion > div';
+            const newItemInsertionSelector = isArrayCollection ? '.ea-form-collection-items' : '.ea-form-collection-items .accordion > .form-widget-compound';
             const collectionItemsWrapper = collection.querySelector(newItemInsertionSelector);
 
             collectionItemsWrapper.insertAdjacentHTML('beforeend', newItemHtml);

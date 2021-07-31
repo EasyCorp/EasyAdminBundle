@@ -150,15 +150,17 @@
     {% set isEmptyCollection = value is null or (value is iterable and value is empty) %}
     {% set is_array_field = 'EasyCorp\\Bundle\\EasyAdminBundle\\Field\\ArrayField' == form.vars.ea_crud_form.ea_field.fieldFqcn %}
 
-    {% if isEmptyCollection %}
-        {{ block('empty_collection') }}
-    {% elseif is_array_field %}
-        {{ block('form_widget') }}
-    {% else %}
-        <div class="accordion">
+    <div class="ea-form-collection-items">
+        {% if isEmptyCollection %}
+            {{ block('empty_collection') }}
+        {% elseif is_array_field %}
             {{ block('form_widget') }}
-        </div>
-    {% endif %}
+        {% else %}
+            <div class="accordion">
+                {{ block('form_widget') }}
+            </div>
+        {% endif %}
+    </div>
 
     {% if isEmptyCollection or form.vars.prototype is defined %}
         {% set attr = attr|merge({'data-empty-collection': block('empty_collection') }) %}

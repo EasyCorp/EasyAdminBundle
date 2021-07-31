@@ -148,7 +148,9 @@ table.datagrid {
   tr:hover .dropdown-toggle:hover {
     border-color: var(--dropdown-toggle-hover-border-color);
   }
-  .dropdown-toggle:focus, .dropdown-toggle:active, .dropdown-toggle:active:focus {
+  tr:hover .dropdown-toggle:focus, tr:hover .dropdown-toggle:active, tr:hover .dropdown-toggle:active:focus,
+  .dropdown-toggle:focus, .dropdown-toggle:active, .dropdown-toggle:active:focus,
+  tr:hover .dropdown-toggle.show, tr .dropdown-toggle.show, .dropdown-toggle.show {
     border-color: var(--dropdown-toggle-hover-border-color);
     box-shadow: var(--button-active-shadow);
     outline: none;

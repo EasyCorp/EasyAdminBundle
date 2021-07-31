@@ -481,6 +481,64 @@ const App = (() => {
                     }
                 });
 
+                // handle autocomplete required fields
+                form.querySelectorAll('[data-ea-field-autocomplete-is-required="true"]').forEach(function (autocompleteElement) {
+                    const isFieldEmpty = 0 === autocompleteElement.querySelectorAll('option:not(:empty)[selected]').length;
+                    if (!isFieldEmpty) {
+                        return;
+                    }
+
+                    const formGroup = autocompleteElement.closest('div.form-group');
+                    formGroup.classList.add('has-error');
+                    formGroup.addEventListener('click', function onFormGroupClick() {
+                        formGroup.classList.remove('has-error');
+                        formGroup.removeEventListener('click', onFormGroupClick);
+                    });
+
+                    // copied from https://github.com/chromium/chromium/search?p=1&q=2507943997699731163
+                    const requiredFieldMessage = {
+                        'ar': 'يُرجى ملء هذا الحقل.',
+                        'bg': 'Моля, попълнете това поле',
+                        'ca': 'Empleneu aquest camp',
+                        'cs': 'Vyplňte prosím toto pole',
+                        'da': 'Udfyld dette felt',
+                        'de': 'Füllen Sie dieses Feld aus',
+                        'el': 'Συμπληρώστε αυτό το πεδίο',
+                        'en': 'Please fill in this field',
+                        'es': 'Completa este campo',
+                        'eu': 'Bete eremu hau',
+                        'fa': 'لطفاً این قسمت را تکمیل کنید.',
+                        'fi': 'Täytä tämä kenttä',
+                        'fr': 'Veuillez renseigner ce champ',
+                        'gl': 'Completa este campo',
+                        'hr': 'Ispunite ovo polje',
+                        'hu': 'Kérjük, töltse ki ezt a mezőt',
+                        'it': 'Compila questo campo',
+                        'lt': 'Užpildykite šį lauką',
+                        'nl': 'Vul dit veld in',
+                        'no': 'Vennligst fyll ut dette feltet',
+                        'pl': 'Wypełnij to pole',
+                        'pt': 'Preencha este campo',
+                        'pt_BR': 'Preencha este campo',
+                        'ro': 'Completează acest câmp',
+                        'ru': 'Заполните это поле',
+                        'sl': 'Izpolnite to polje',
+                        'sr_RS': 'Попуните ово поље',
+                        'sv': 'Fyll i det här fältet',
+                        'tr': 'Lütfen bu alanı doldurun',
+                        'uk': 'Заповніть це поле',
+                        'zh_CN': '请填写此字段',
+                    };
+
+                    const errorMessage = requiredFieldMessage[document.querySelector('html').getAttribute('lang')] || 'Please fill in this field';
+                    let errorElement = document.createElement('div');
+                    errorElement.classList.add('invalid-feedback', 'd-block');
+                    errorElement.innerHTML = `<span class="form-error-message">${ errorMessage }</span>`;
+                    autocompleteElement.closest('.form-widget').append(errorElement);
+
+                    submitEvent.preventDefault();
+                });
+
                 const eaEvent = new CustomEvent('ea.form.submit', {
                     cancelable: true,
                     detail: { page: pageName, form: form }

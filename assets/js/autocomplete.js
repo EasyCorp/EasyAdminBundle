@@ -1,4 +1,5 @@
 import TomSelect from "tom-select/dist/js/tom-select.complete.min";
+import DirtyForm from "dirty-form";
 
 export default class Autocomplete
 {
@@ -8,17 +9,45 @@ export default class Autocomplete
             return;
         }
 
+        this.#handleRequiredHtmlAttribute(element);
+
+        let tomSelect;
         const autocompleteEndpointUrl = element.getAttribute('data-ea-autocomplete-endpoint-url');
-        if (null !== autocompleteEndpointUrl) {
-            return this.#createAutocompleteWithRemoteData(element, autocompleteEndpointUrl);
-        }
-
         const renderOptionsAsHtml = 'true' === element.getAttribute('data-ea-autocomplete-render-items-as-html');
-        if (renderOptionsAsHtml) {
-            return this.#createAutocompleteWithHtmlContents(element);
+        if (null !== autocompleteEndpointUrl) {
+            tomSelect = this.#createAutocompleteWithRemoteData(element, autocompleteEndpointUrl);
+        } else if (renderOptionsAsHtml) {
+            tomSelect = this.#createAutocompleteWithHtmlContents(element);
+        } else {
+            tomSelect = this.#createAutocomplete(element);
         }
 
-        return this.#createAutocomplete(element);
+        // because of the way TomSelect works, browsers cannot detect changes to these fields automatically,
+        // so we manually trigger the plugin when the content changes.
+        tomSelect.on('change', (event) => {
+            const form = event.target.closest('form');
+            if (null === form) {
+                return;
+            }
+
+            new DirtyForm(form);
+        });
+
+        return tomSelect;
+    }
+
+    #handleRequiredHtmlAttribute(element) {
+        // TomSelect works by hidding the original <select> element and creating a new element
+        // When the original field is required and its content is empty, browsers try to add a validation error, but it
+        // fails because the element is hidden ("An invalid form control with name=”foo" is not focusable")
+        // That's why we remove the HTML required attribute and store it in a custom attribute that will be check later
+        const isFieldRequired = 'required' === element.getAttribute('required');
+        if (false === isFieldRequired) {
+            return;
+        }
+
+        element.setAttribute('data-ea-field-autocomplete-is-required', isFieldRequired ? 'true' : 'false');
+        element.removeAttribute('required');
     }
 
     #getCommonConfig(element) {

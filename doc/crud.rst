@@ -126,12 +126,12 @@ Entity Options
             ->setEntityLabelInPlural('Products')
 
             // in addition to a string, the argument of the singular and plural label methods
-            // can be a closure that receives both the current entity instance (which will
-            // be null in 'index' and 'new' pages) and the page name
+            // can be a closure that defines two nullable arguments: entityInstance (which will
+            // be null in 'index' and 'new' pages) and the current page name
             ->setEntityLabelInSingular(
-                fn (?Product $product, string $pageName) => $product ? $product->toString() : 'Product'
+                fn (?Product $product, ?string $pageName) => $product ? $product->toString() : 'Product'
             )
-            ->setEntityLabelInPlural(function (?Category $category, string $pageName) {
+            ->setEntityLabelInPlural(function (?Category $category, ?string $pageName) {
                 return 'edit' === $pageName ? $category->getLabel() : 'Categories';
             })
 

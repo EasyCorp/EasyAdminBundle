@@ -118,6 +118,8 @@ $nav-tabs-link-active-color: var(--gray-800);
 $nav-tabs-link-active-bg: var(--form-bg);
 $nav-tabs-link-active-border-color: var(--border-color) var(--border-color) transparent var(--border-color);
 
+$modal-header-padding-y: 15px;
+$modal-header-padding-x: 20px;
 $modal-inner-padding: 15px 20px;
 $modal-title-padding: 15px 20px;
 $modal-content-bg: var(--form-bg);
@@ -131,6 +133,9 @@ $modal-lg: 900px;
 $modal-md: 500px;
 $modal-sm: 300px;
 $zindex-modal-backdrop: 1040;
+
+$offcanvas-padding-y: 15px;
+$offcanvas-padding-x: 20px;
 
 $pagination-padding-y: 4px;
 $pagination-padding-x: 10px;

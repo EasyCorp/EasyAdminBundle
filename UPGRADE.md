@@ -1,6 +1,36 @@
 Upgrade between EasyAdmin 3.x versions
 ======================================
 
+EasyAdmin 3.5.0
+---------------
+
+EasyAdmin interface has been completely redesigned.
+Read [this blog post](https://easycorp.github.io/blog/posts/redesigning-easyadmin)
+for more details.
+
+If you have integrated Symfony actions into your backend, you probably defined
+some custom styles for them to match the rest of the backend design. In those
+cases, you'll need to update your custom styles to match the new design.
+
+Also, if you extended from `@EasyAdmin/page/content.html.twig`, the names of
+some Twig blocks have changed to match the names of the main `layout.html.twig`
+template. These are the main needed changes:
+
+```diff
+{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+-{% block page_title '...' %}
++{% block content_title '...' %}
+
+-{% block page_content %}
++{% block main %}
+
+    {# ... #}
+
+{% endblock %}
+```
+
 EasyAdmin 3.4.0
 ---------------
 

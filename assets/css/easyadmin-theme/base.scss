@@ -35,6 +35,11 @@ pre {
     line-height: 1.8;
 }
 
+// Needed to provide BC compatibility because
+// Bootstrap 5 replaced these clases by .text-start and .text-end
+.text-left { text-align: left !important; }
+.text-right { text-align: right !important; }
+
 /* Layout
    ========================================================================= */
 .wrapper {

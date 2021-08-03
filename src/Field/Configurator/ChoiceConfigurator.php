@@ -100,7 +100,7 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
 
     private function getBadgeCssClass($badgeSelector, $value, FieldDto $field): string
     {
-        $commonBadgeCssClass = 'badge badge-pill';
+        $commonBadgeCssClass = 'badge';
 
         if (true === $badgeSelector) {
             $badgeType = 'badge-secondary';

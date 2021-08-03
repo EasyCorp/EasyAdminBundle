@@ -89,21 +89,21 @@ class ChoiceFieldTest extends AbstractFieldTest
         self::assertSame('a, c', $this->configure($field)->getFormattedValue());
 
         $field->setValue(1)->renderAsBadges();
-        self::assertSame('<span class="badge badge-pill badge-secondary">a</span>', $this->configure($field)->getFormattedValue());
+        self::assertSame('<span class="badge badge-secondary">a</span>', $this->configure($field)->getFormattedValue());
 
         $field->setValue([1, 3])->renderAsBadges();
-        self::assertSame('<span class="badge badge-pill badge-secondary">a</span><span class="badge badge-pill badge-secondary">c</span>', $this->configure($field)->getFormattedValue());
+        self::assertSame('<span class="badge badge-secondary">a</span><span class="badge badge-secondary">c</span>', $this->configure($field)->getFormattedValue());
 
         $field->setValue(1)->renderAsBadges([1 => 'warning', '3' => 'danger']);
-        self::assertSame('<span class="badge badge-pill badge-warning">a</span>', $this->configure($field)->getFormattedValue());
+        self::assertSame('<span class="badge badge-warning">a</span>', $this->configure($field)->getFormattedValue());
 
         $field->setValue([1, 3])->renderAsBadges([1 => 'warning', '3' => 'danger']);
-        self::assertSame('<span class="badge badge-pill badge-warning">a</span><span class="badge badge-pill badge-danger">c</span>', $this->configure($field)->getFormattedValue());
+        self::assertSame('<span class="badge badge-warning">a</span><span class="badge badge-danger">c</span>', $this->configure($field)->getFormattedValue());
 
         $field->setValue(1)->renderAsBadges(function ($value) { return $value > 1 ? 'success' : 'primary'; });
-        self::assertSame('<span class="badge badge-pill badge-primary">a</span>', $this->configure($field)->getFormattedValue());
+        self::assertSame('<span class="badge badge-primary">a</span>', $this->configure($field)->getFormattedValue());
 
         $field->setValue([1, 3])->renderAsBadges(function ($value) { return $value > 1 ? 'success' : 'primary'; });
-        self::assertSame('<span class="badge badge-pill badge-primary">a</span><span class="badge badge-pill badge-success">c</span>', $this->configure($field)->getFormattedValue());
+        self::assertSame('<span class="badge badge-primary">a</span><span class="badge badge-success">c</span>', $this->configure($field)->getFormattedValue());
     }
 }

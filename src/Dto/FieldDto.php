@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\TextAlign;
 use function Symfony\Component\String\u;
 use Symfony\Component\Uid\Ulid;
 
@@ -45,6 +46,7 @@ final class FieldDto
     public function __construct()
     {
         $this->uniqueId = new Ulid();
+        $this->textAlign = TextAlign::LEFT;
         $this->cssClass = '';
         $this->columns = null;
         $this->defaultColumns = '';
@@ -225,7 +227,7 @@ final class FieldDto
         $this->virtual = $isVirtual;
     }
 
-    public function getTextAlign(): ?string
+    public function getTextAlign(): string
     {
         return $this->textAlign;
     }

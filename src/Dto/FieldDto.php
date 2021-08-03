@@ -27,7 +27,7 @@ final class FieldDto
     private $help;
     private $cssClass;
     // how many columns the field takes when rendering
-    // (defined as Bootstrap 5 grid classes; e.g. 'col-md-6 col-xx-3')
+    // (defined as Bootstrap 5 grid classes; e.g. 'col-md-6 col-xxl-3')
     private $columns;
     // same as $columns but used when the user doesn't define columns explicitly
     private $defaultColumns;
@@ -270,7 +270,7 @@ final class FieldDto
         return $this->columns;
     }
 
-    public function setColumns(string $columnCssClasses): void
+    public function setColumns(?string $columnCssClasses): void
     {
         $this->columns = $columnCssClasses;
     }

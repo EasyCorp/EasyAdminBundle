@@ -285,7 +285,7 @@ const App = (() => {
             dataActionBatch.addEventListener('click', (event) => {
                 event.preventDefault();
 
-                const actionElement = event.target;
+                const actionElement = event.target.tagName.toUpperCase() === 'A' ? event.target : event.target.parentNode;
                 const actionName = actionElement.textContent.trim() || actionElement.getAttribute('title');
                 const selectedItems = document.querySelectorAll('input[type="checkbox"].form-batch-checkbox:checked');
                 modalTitle.textContent = titleContentWithPlaceholders

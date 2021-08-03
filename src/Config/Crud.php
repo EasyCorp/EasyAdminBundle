@@ -217,7 +217,7 @@ class Crud
 
     public function showEntityActionsAsDropdown(bool $showAsDropdown = true): self
     {
-        trigger_deprecation('easycorp/easyadmin-bundle', '3.5.0', 'The "%s" method is deprecated because the default behavior changed to render entity actions as dropdown. Use "showEntityActionsExpanded()" method if you want to revert this change.', __METHOD__);
+        trigger_deprecation('easycorp/easyadmin-bundle', '3.5.0', 'The "%s" method is deprecated because the default behavior changed to render entity actions as dropdown. Use "showEntityActionsInlined()" method if you want to revert this change.', __METHOD__);
 
         $this->dto->setShowEntityActionsAsDropdown($showAsDropdown);
 

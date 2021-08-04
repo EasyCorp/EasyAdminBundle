@@ -50,7 +50,7 @@ First you must clone the repository, then create a feature branch and finally,
 submit a pull request via GitHub.
 
 Read the [Symfony contribution guide][sf-contribution] for more details and replace
-`symfony/symfony-docs` by `javiereguiluz/EasyAdminBundle` in every example.
+`symfony/symfony-docs` by `EasyCorp/EasyAdminBundle` in every example.
 
 Further information
 -------------------
@@ -61,8 +61,8 @@ Further information
 [mit-license]: https://opensource.org/licenses/MIT
 [gh-help]: https://help.github.com
 [gh-pr]: https://help.github.com/send-pull-requests
-[easyadmin-demo]: https://github.com/javiereguiluz/easy-admin-demo
-[easyadmin-issues]: https://github.com/javiereguiluz/EasyAdminBundle/issues?utf8=%E2%9C%93&q=is%3Aissue
-[create-issue]: https://github.com/javiereguiluz/EasyAdminBundle/issues/new
+[easyadmin-demo]: https://github.com/EasyCorp/easyadmin-demo
+[easyadmin-issues]: https://github.com/EasyCorp/EasyAdminBundle/issues?utf8=%E2%9C%93&q=is%3Aissue
+[create-issue]: https://github.com/EasyCorp/EasyAdminBundle/issues/new
 [symfony-standard]: https://github.com/symfony/symfony-standard
 [sf-contribution]: http://symfony.com/doc/current/contributing/documentation/overview.html#your-first-documentation-contribution

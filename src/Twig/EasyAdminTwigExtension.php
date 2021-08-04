@@ -117,7 +117,7 @@ class EasyAdminTwigExtension extends AbstractExtension
                 return sprintf('%s #%s', \get_class($value), $value->getId());
             }
 
-            return sprintf('%s #%s', \get_class($value), substr(md5(sspl_object_hash($value)), 0, 7));
+            return sprintf('%s #%s', \get_class($value), substr(md5(spl_object_hash($value)), 0, 7));
         }
 
         return '';

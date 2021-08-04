@@ -289,6 +289,8 @@ body.ea-mobile-sidebar-visible .sidebar {
         height: 56px;
         justify-content: space-between;
         padding: 11px calc(var(--lg-content-padding-right) + var(--resize-handler-width)) 11px var(--lg-content-padding-left);
+        position: relative;
+        z-index: 2000; // must be higher than .content-header z-index
     }
 }
 
@@ -386,10 +388,19 @@ body.ea-mobile-sidebar-visible .sidebar {
 
     @media(min-width: 992px) {
         align-items: flex-start;
+        background: var(--body-bg);
         display: flex;
         flex-direction: row;
         justify-content: space-between;
         padding: 36px 0 16px;
+    }
+}
+body.ea-new .content-header,
+body.ea-edit .content-header {
+    @media(min-width: 992px) {
+        position: sticky;
+        top: -20px;
+        z-index: 1000;
     }
 }
 

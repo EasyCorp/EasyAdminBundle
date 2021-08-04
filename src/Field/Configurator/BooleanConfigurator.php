@@ -32,8 +32,13 @@ final class BooleanConfigurator implements FieldConfiguratorInterface
         $isRenderedAsSwitch = true === $field->getCustomOption(BooleanField::OPTION_RENDER_AS_SWITCH);
 
         if ($isRenderedAsSwitch) {
-            $toggleUrl = $this->adminUrlGenerator->setAction(Action::EDIT)->setEntityId($entityDto->getPrimaryKeyValue())->set('fieldName', $field->getProperty())->generateUrl();
-            $field->setCustomOption(BooleanField::OPTION_TOGGLE_URL, $toggleUrl);
+            $crudDto = $context->getCrud();
+
+            if (null !== $crudDto && Action::NEW !== $crudDto->getCurrentAction()) {
+                $toggleUrl = $this->adminUrlGenerator->setAction(Action::EDIT)->setEntityId($entityDto->getPrimaryKeyValue())->set('fieldName', $field->getProperty())->generateUrl();
+                $field->setCustomOption(BooleanField::OPTION_TOGGLE_URL, $toggleUrl);
+            }
+
             $field->setFormTypeOptionIfNotSet('label_attr.class', 'checkbox-switch');
             $field->setCssClass($field->getCssClass().' has-switch');
         }

@@ -88,6 +88,9 @@
   color: inherit;
   padding: 0 1px;
 }
+.ts-dropdown [data-selectable].selected, .ts-dropdown [data-selectable]:hover {
+  background-color: var(--gray-100);
+}
 .ts-dropdown {
   z-index: var(--zindex-1050);
 }

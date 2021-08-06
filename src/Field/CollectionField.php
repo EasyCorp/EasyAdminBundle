@@ -17,6 +17,7 @@ final class CollectionField implements FieldInterface
     public const OPTION_ENTRY_IS_COMPLEX = 'entryIsComplex';
     public const OPTION_ENTRY_TYPE = 'entryType';
     public const OPTION_SHOW_ENTRY_LABEL = 'showEntryLabel';
+    public const OPTION_RENDER_EXPANDED = 'renderExpanded';
 
     /**
      * @param string|false|null $label
@@ -35,7 +36,8 @@ final class CollectionField implements FieldInterface
             ->setCustomOption(self::OPTION_ALLOW_DELETE, true)
             ->setCustomOption(self::OPTION_ENTRY_IS_COMPLEX, null)
             ->setCustomOption(self::OPTION_ENTRY_TYPE, null)
-            ->setCustomOption(self::OPTION_SHOW_ENTRY_LABEL, false);
+            ->setCustomOption(self::OPTION_SHOW_ENTRY_LABEL, false)
+            ->setCustomOption(self::OPTION_RENDER_EXPANDED, false);
     }
 
     public function allowAdd(bool $allow = true): self
@@ -73,6 +75,13 @@ final class CollectionField implements FieldInterface
     public function showEntryLabel(bool $showLabel = true): self
     {
         $this->setCustomOption(self::OPTION_SHOW_ENTRY_LABEL, $showLabel);
+
+        return $this;
+    }
+
+    public function renderExpanded(bool $renderExpanded = true): self
+    {
+        $this->setCustomOption(self::OPTION_RENDER_EXPANDED, $renderExpanded);
 
         return $this;
     }

@@ -1,0 +1,11 @@
+---------------------------------------------------------------------------
+
+by neeckeloo at 2021-08-06T16:35:44Z
+
+@tpatartmajeur Thanks for the fix. I also struggled with this issue today !
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2021-08-06T18:12:36Z
+
+@tpatartmajeur thanks for fixing this bug! We had reports about this ... but I wasn't sure about it because I'm using this in one of my own apps and it's working. I don't know why it's working, but it is 🤔  In any case, and even I could be wrong, your fix definitely looks like the right thing to do. Thanks!

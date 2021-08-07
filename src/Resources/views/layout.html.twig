@@ -172,10 +172,11 @@
                 </div>
 
                 <section class="main-content">
-                    <aside class="content-top">
+                    {% set has_search = ea.crud is not null and ea.crud.isSearchEnabled %}
+                    <aside class="content-top {{ has_search ? 'ea-search-enabled' : 'ea-search-disabled' }}">
                         {% block content_top_header %}
                             <div class="content-search">
-                                {% if ea.crud is not null and ea.crud.isSearchEnabled %}
+                                {% if has_search %}
                                     {% block search %}
 
                                         <form class="form-action-search" method="get">

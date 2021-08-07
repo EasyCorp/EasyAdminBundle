@@ -284,6 +284,10 @@ body.ea-mobile-sidebar-visible .sidebar {
     box-shadow: 0 1px 0 var(--content-top-border-color);
     padding: 5px 15px 5px var(--content-padding-left);
 
+    @media(max-width: 992px) {
+        &.ea-search-disabled { box-shadow: none; }
+    }
+
     @media(min-width: 992px) {
         display: flex;
         height: 56px;
@@ -436,6 +440,8 @@ body.ea-edit .content-header {
     display: flex;
     flex-direction: row;
     margin: 10px 0 15px;
+
+    &:empty { display: none; }
 
     @media(min-width: 992px) {
         justify-content: space-between;

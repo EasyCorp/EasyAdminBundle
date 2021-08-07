@@ -181,8 +181,7 @@
     {% set render_expanded = form_parent(form).vars.ea_crud_form.ea_field.customOptions.get('renderExpanded') ?? false %}
     {% set delete_item_button %}
         <button type="button" class="btn btn-link btn-link-danger field-collection-delete-button"
-                title="{{ 'action.remove_item'|trans({}, 'EasyAdminBundle') }}"
-                onclick="this.closest('.form-group').remove(); return false;">
+                title="{{ 'action.remove_item'|trans({}, 'EasyAdminBundle') }}">
             <i class="far fa-trash-alt"></i>
         </button>
     {% endset %}

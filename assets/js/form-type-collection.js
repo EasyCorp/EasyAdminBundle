@@ -1,12 +1,24 @@
 const eaCollectionHandler = function (event) {
     document.querySelectorAll('button.field-collection-add-button').forEach((addButton) => {
-        let collection = addButton.closest('[data-ea-collection-field]');
+        const collection = addButton.closest('[data-ea-collection-field]');
 
         if (!collection || collection.classList.contains('processed')) {
             return;
         }
 
         EaCollectionProperty.handleAddButton(addButton, collection);
+        EaCollectionProperty.updateCollectionItemCssClasses(collection);
+    });
+
+    document.querySelectorAll('button.field-collection-delete-button').forEach((deleteButton) => {
+        deleteButton.addEventListener('click', () => {
+            const collection = deleteButton.closest('[data-ea-collection-field]');
+
+            deleteButton.closest('.form-group').remove();
+            document.dispatchEvent(new Event('ea.collection.item-removed'));
+
+            EaCollectionProperty.updateCollectionItemCssClasses(collection);
+        });
     });
 }
 
@@ -41,7 +53,9 @@ const EaCollectionProperty = {
             collectionItemsWrapper.insertAdjacentHTML('beforeend', newItemHtml);
             // for complex collections of items, show the newly added item as not collapsed
             if (!isArrayCollection) {
-                const collectionItems = collectionItemsWrapper.querySelectorAll('.accordion-item');
+                EaCollectionProperty.updateCollectionItemCssClasses(collection);
+
+                const collectionItems = collectionItemsWrapper.querySelectorAll('.field-collection-item');
                 const lastElement = collectionItems[collectionItems.length - 1];
                 const lastElementCollapseButton = lastElement.querySelector('.accordion-button');
                 lastElementCollapseButton.classList.remove('collapsed');
@@ -53,5 +67,26 @@ const EaCollectionProperty = {
         });
 
         collection.classList.add('processed');
+    },
+
+    updateCollectionItemCssClasses: (collection) => {
+        if (null === collection) {
+            return;
+        }
+
+        const collectionItems = collection.querySelectorAll('.field-collection-item');
+        collectionItems.forEach((item) => item.classList.remove('field-collection-item-first', 'field-collection-item-last'));
+
+        const firstElement = collectionItems[0];
+        if (undefined === firstElement) {
+            return;
+        }
+        firstElement.classList.add('field-collection-item-first');
+
+        const lastElement = collectionItems[collectionItems.length - 1];
+        if (undefined === lastElement) {
+            return;
+        }
+        lastElement.classList.add('field-collection-item-last');
     }
 };

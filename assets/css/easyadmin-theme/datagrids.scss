@@ -55,8 +55,12 @@ table.datagrid {
         &::before {
           color: var(--table-cell-color);
           font-weight: 400;
-          left: calc(35% - 8px);
+          left: 0;
           text-align: left;
+          // needed to truncate text when the switch label is too long
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
         }
       }
     }

@@ -1,7 +1,7 @@
 // any CSS you require will output into a single css file (app.css in this case)
 require('../css/app.scss');
 
-import { Modal, Popover, Tooltip } from 'bootstrap';
+import 'bootstrap';
 import Mark from 'mark.js/src/vanilla';
 import DirtyForm from 'dirty-form';
 import * as basicLightbox from 'basiclightbox';

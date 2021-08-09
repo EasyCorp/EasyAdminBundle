@@ -14,6 +14,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
+use Symfony\Component\Uid\Ulid;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -64,6 +65,7 @@ final class EntityRepository implements EntityRepositoryInterface
         $isSmallIntegerQuery = ctype_digit($query) && $query >= -32768 && $query <= 32767;
         $isIntegerQuery = ctype_digit($query) && $query >= -2147483648 && $query <= 2147483647;
         $isUuidQuery = 1 === preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i', $query);
+        $isUlidQuery = Ulid::isValid($query);
 
         $dqlParameters = [
             // adding '0' turns the string into a numeric value
@@ -121,6 +123,7 @@ final class EntityRepository implements EntityRepositoryInterface
             // 'citext' is a PostgreSQL extension (https://github.com/EasyCorp/EasyAdminBundle/issues/2556)
             $isTextProperty = \in_array($propertyDataType, ['string', 'text', 'citext', 'array', 'simple_array']);
             $isGuidProperty = \in_array($propertyDataType, ['guid', 'uuid']);
+            $isUlidProperty = 'ulid' === $propertyDataType;
 
             // this complex condition is needed to avoid issues on PostgreSQL databases
             if (
@@ -133,6 +136,9 @@ final class EntityRepository implements EntityRepositoryInterface
             } elseif ($isGuidProperty && $isUuidQuery) {
                 $queryBuilder->orWhere(sprintf('%s.%s = :query_for_uuids', $entityName, $propertyName))
                     ->setParameter('query_for_uuids', $dqlParameters['uuid_query']);
+            } elseif ($isUlidProperty && $isUlidQuery) {
+                $queryBuilder->orWhere(sprintf('%s.%s = :query_for_uuids', $entityName, $propertyName))
+                    ->setParameter('query_for_uuids', $dqlParameters['uuid_query'], 'ulid');
             } elseif ($isTextProperty) {
                 $queryBuilder->orWhere(sprintf('LOWER(%s.%s) LIKE :query_for_text', $entityName, $propertyName))
                     ->setParameter('query_for_text', $dqlParameters['text_query']);

@@ -8,8 +8,10 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDataDto;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\EntityFilterType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
+use Symfony\Component\Uid\AbstractUid;
 
 /**
  * @author Yonel Ceruto <yonelceruto@gmail.com>
@@ -63,8 +65,19 @@ final class EntityFilter implements FilterInterface
             if (ComparisonType::NEQ === $comparison) {
                 $orX->add(sprintf('%s.%s IS NULL', $alias, $property));
             }
-            $queryBuilder->andWhere($orX)
-                ->setParameter($parameterName, $value);
+            if ($fieldDto && $fieldDto->getFieldFqcn() === AssociationField::class) {
+                $id = $value->getId();
+                if ($id instanceof AbstractUid) {
+                    $queryBuilder->andWhere($orX)
+                        ->setParameter($parameterName, $id->toRfc4122());
+                } else {
+                    $queryBuilder->andWhere($orX)
+                        ->setParameter($parameterName, $value);
+                }
+            } else {
+                $queryBuilder->andWhere($orX)
+                    ->setParameter($parameterName, $value);
+            }
         }
     }
 }

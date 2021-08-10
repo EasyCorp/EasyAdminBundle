@@ -16,7 +16,7 @@
 
     <div class="login-wrapper">
         <header class="main-header">
-            <h1 id="header-logo">
+            <div id="header-logo">
                 {% block header_logo %}
                     {% if page_title %}
                         {% if ea is defined %}
@@ -30,7 +30,7 @@
                         {% endif %}
                     {% endif %}
                 {% endblock header_logo %}
-            </h1>
+            </div>
         </header>
 
         <section class="content">

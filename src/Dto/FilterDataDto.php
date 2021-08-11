@@ -2,6 +2,9 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Symfony\Component\PropertyAccess\PropertyAccess;
+
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
@@ -14,12 +17,15 @@ final class FilterDataDto
     private $comparison;
     private $value;
     private $value2;
+    private $valueMetaData;
+    private $valuePrimaryKeyName;
+    private $valuePrimaryKeyValue;
 
     private function __construct()
     {
     }
 
-    public static function new(int $index, FilterDto $filterDto, string $entityAlias, array $formData): self
+    public static function new(int $index, FilterDto $filterDto, string $entityAlias, array $formData, ?ClassMetadata $valueMetaData = null): self
     {
         $filterData = new self();
         $filterData->index = $index;
@@ -28,6 +34,10 @@ final class FilterDataDto
         $filterData->comparison = $formData['comparison'];
         $filterData->value = $formData['value'];
         $filterData->value2 = $formData['value2'] ?? null;
+        $filterData->valueMetaData = $valueMetaData;
+        if ($valueMetaData) {
+            $filterData->valuePrimaryKeyName = $valueMetaData->getIdentifierFieldNames()[0];
+        }
 
         return $filterData;
     }
@@ -60,6 +70,31 @@ final class FilterDataDto
     public function getValue2()
     {
         return $this->value2;
+    }
+
+    public function getPrimaryKeyValue()
+    {
+        if (null !== $this->valuePrimaryKeyValue) {
+            return $this->valuePrimaryKeyValue;
+        }
+
+        $propertyAccessor = PropertyAccess::createPropertyAccessorBuilder()
+            ->enableExceptionOnInvalidIndex()
+            ->getPropertyAccessor();
+
+        $primaryKeyValue = $propertyAccessor->getValue($this->value, $this->valuePrimaryKeyName);
+
+        return $this->valuePrimaryKeyValue = $primaryKeyValue;
+    }
+
+    public function getPrimaryKeyValueAsString(): string
+    {
+        return (string) $this->getPrimaryKeyValue();
+    }
+
+    public function getValueMetaData()
+    {
+        return $this->valueMetaData;
     }
 
     public function getParameterName(): string

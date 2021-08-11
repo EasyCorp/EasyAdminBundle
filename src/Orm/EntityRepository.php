@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Orm;
 
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Persistence\Mapping\MappingException;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Orm\EntityRepositoryInterface;
@@ -202,8 +203,17 @@ final class EntityRepository implements EntityRepositoryInterface
                     'value' => $submittedData,
                 ];
             }
+            $valueMetaData = null;
 
-            $filterDataDto = FilterDataDto::new($i, $filter, current($queryBuilder->getRootAliases()), $submittedData);
+            try {
+                if (is_object($submittedData['value'])) {
+                    $valueMetaData = $this->doctrine->getManager()->getClassMetadata(get_class($submittedData['value']));
+                }
+            } catch (MappingException $exception) {
+                // Do nothing, it's not mapped.
+            }
+
+            $filterDataDto = FilterDataDto::new($i, $filter, current($queryBuilder->getRootAliases()), $submittedData, $valueMetaData);
             $filter->apply($queryBuilder, $filterDataDto, $fields->getByProperty($propertyName), $entityDto);
 
             ++$i;

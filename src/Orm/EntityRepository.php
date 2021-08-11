@@ -206,8 +206,8 @@ final class EntityRepository implements EntityRepositoryInterface
             $valueMetaData = null;
 
             try {
-                if (is_object($submittedData['value'])) {
-                    $valueMetaData = $this->doctrine->getManager()->getClassMetadata(get_class($submittedData['value']));
+                if (\is_object($submittedData['value'])) {
+                    $valueMetaData = $this->doctrine->getManager()->getClassMetadata(\get_class($submittedData['value']));
                 }
             } catch (MappingException $exception) {
                 // Do nothing, it's not mapped.

@@ -65,7 +65,7 @@ final class EntityFilter implements FilterInterface
             if (ComparisonType::NEQ === $comparison) {
                 $orX->add(sprintf('%s.%s IS NULL', $alias, $property));
             }
-            if ($fieldDto && $fieldDto->getFieldFqcn() === AssociationField::class) {
+            if ($fieldDto && AssociationField::class === $fieldDto->getFieldFqcn()) {
                 $id = $filterDataDto->getPrimaryKeyValue();
                 if ($id instanceof AbstractUid) {
                     $queryBuilder->andWhere($orX)

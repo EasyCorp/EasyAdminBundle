@@ -1,7 +1,7 @@
 // any CSS you require will output into a single css file (app.css in this case)
 require('../css/app.scss');
 
-import 'bootstrap';
+import bootstrap from 'bootstrap/dist/js/bootstrap.bundle';
 import Mark from 'mark.js/src/vanilla';
 import DirtyForm from 'dirty-form';
 import * as basicLightbox from 'basiclightbox';
@@ -349,13 +349,13 @@ const App = (() => {
 
     const createPopovers = () => {
         document.querySelectorAll('[data-bs-toggle="popover"]').forEach((popoverElement) => {
-            new Popover(popoverElement);
+            new bootstrap.Popover(popoverElement);
         });
     };
 
     const createTooltips = () => {
         document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach((tooltipElement) => {
-            new Tooltip(tooltipElement);
+            new bootstrap.Tooltip(tooltipElement);
         });
     };
 

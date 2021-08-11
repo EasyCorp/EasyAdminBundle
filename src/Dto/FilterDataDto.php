@@ -74,6 +74,10 @@ final class FilterDataDto
 
     public function getPrimaryKeyValue()
     {
+        if (null === $this->valuePrimaryKeyName) {
+            return null;
+        }
+
         if (null !== $this->valuePrimaryKeyValue) {
             return $this->valuePrimaryKeyValue;
         }
@@ -87,9 +91,13 @@ final class FilterDataDto
         return $this->valuePrimaryKeyValue = $primaryKeyValue;
     }
 
-    public function getPrimaryKeyValueAsString(): string
+    public function getPrimaryKeyValueAsString(): ?string
     {
-        return (string) $this->getPrimaryKeyValue();
+        if ($this->getPrimaryKeyValue()) {
+            return (string) $this->getPrimaryKeyValue();
+        }
+
+        return null;
     }
 
     public function getValueMetaData()

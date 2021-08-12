@@ -85,8 +85,6 @@ final class MenuFactory
 
     /**
      * @param MenuItemDto[] $menuItems
-     * @param int $parentIndex
-     * @param int|null $parentSubIndex
      *
      * @return MenuItemDto[]
      */

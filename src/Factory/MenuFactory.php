@@ -76,19 +76,35 @@ final class MenuFactory
                 continue;
             }
 
-            $subItems = [];
-            foreach ($menuItemDto->getSubItems() as $j => $menuSubItemDto) {
-                if (false === $this->authChecker->isGranted(Permission::EA_VIEW_MENU_ITEM, $menuSubItemDto)) {
-                    continue;
-                }
-
-                $subItems[] = $this->buildMenuItem($menuSubItemDto, [], $i, $j, $translationDomain);
-            }
-
+            $subItems = $this->buildSubItems($menuItemDto->getSubItems(), $i, null);
             $builtItems[] = $this->buildMenuItem($menuItemDto, $subItems, $i, -1, $translationDomain);
         }
 
         return $builtItems;
+    }
+
+    /**
+     * @param MenuItemDto[] $menuItems
+     * @param int $parentIndex
+     * @param int|null $parentSubIndex
+     *
+     * @return MenuItemDto[]
+     */
+    private function buildSubItems(array $menuItems, int $parentIndex, ?int $parentSubIndex): array
+    {
+        $adminContext = $this->adminContextProvider->getContext();
+        $translationDomain = $adminContext->getI18n()->getTranslationDomain();
+
+        $items = [];
+        foreach ($menuItems as $subIndex => $menuSubItemDto) {
+            if (false === $this->authChecker->isGranted(Permission::EA_VIEW_MENU_ITEM, $menuSubItemDto)) {
+                continue;
+            }
+
+            $items[] = $this->buildMenuItem($menuSubItemDto, $this->buildSubItems($menuSubItemDto->getSubItems(), $parentIndex, $subIndex), $parentIndex, $parentSubIndex ?? $subIndex, $translationDomain);
+        }
+
+        return $items;
     }
 
     private function buildMenuItem(MenuItemDto $menuItemDto, array $subItems, int $index, int $subIndex, string $translationDomain): MenuItemDto

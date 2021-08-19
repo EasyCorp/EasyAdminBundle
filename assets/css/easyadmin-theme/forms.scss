@@ -428,7 +428,7 @@ fieldset .legend-help {
 }
 
 .global-invalid-feedback {
-    background: $red-100;
+    background: var(--red-100);
     border-radius: var(--border-radius);
     color: var(--color-danger);
     font-size:  14px;

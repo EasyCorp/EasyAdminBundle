@@ -28,6 +28,7 @@ final class FieldDto
     private $help;
     private $cssClass;
     private $cssClassCallable;
+
     // how many columns the field takes when rendering
     // (defined as Bootstrap 5 grid classes; e.g. 'col-md-6 col-xxl-3')
     private $columns;

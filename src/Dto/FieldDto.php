@@ -266,12 +266,12 @@ final class FieldDto
     public function setCssClass(string $cssClass): void
     {
         $this->cssClass = trim($cssClass);
-    }    
+    }
 
     public function setCssClassCallable(?callable $callable): void
     {
         $this->cssClassCallable = $callable;
-    }   
+    }
 
     public function getCssClassCallable(): ?callable
     {

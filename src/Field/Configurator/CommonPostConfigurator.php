@@ -58,13 +58,14 @@ final class CommonPostConfigurator implements FieldConfiguratorInterface
         return \is_string($formatted) ? new Markup($formatted, $this->charset) : $formatted;
     }
 
-    private function buildDynamicCssClass($value, FieldDto $field, EntityDto $entityDto){
+    private function buildDynamicCssClass($value, FieldDto $field, EntityDto $entityDto)
+    {
         if (null === $cssCallable = $field->getCssClassCallable()) {
             return $value;
         }
-            
+
         $cssClass = (string)$cssCallable($value, $entityDto->getInstance());
-            
+
         return $cssClass;
     }
 

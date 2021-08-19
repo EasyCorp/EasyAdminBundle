@@ -37,7 +37,7 @@ final class FormConfigurator implements FieldConfiguratorInterface
                 $cssClasses = sprintf('d-none d-%s-flex flex-%s-fill', $breakpointName, $breakpointName);
             }
 
-            $field->setFormTypeOption('row_attr.class', $field->getFormTypeOption('row_attr.class').' '.$cssClasses);
+            //$field->setFormTypeOption('row_attr.class', $field->getFormTypeOption('row_attr.class').' '.$cssClasses);
         }
     }
 }

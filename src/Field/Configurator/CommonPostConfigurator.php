@@ -64,7 +64,7 @@ final class CommonPostConfigurator implements FieldConfiguratorInterface
             return $value;
         }
 
-        $cssClass = (string)$cssCallable($value, $entityDto->getInstance());
+        $cssClass = (string) $cssCallable($value, $entityDto->getInstance());
 
         return $cssClass;
     }

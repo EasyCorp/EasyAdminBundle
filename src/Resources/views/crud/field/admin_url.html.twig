@@ -1,0 +1,27 @@
+{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
+{# @var field \EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto #}
+{# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
+
+{% if ea.crud.currentAction == 'index' %}
+    {% set url = ea_url() %}
+    {% set url = url.setEntityId(entity.primaryKeyValue) %}
+    {% set dashboard = field.customOption('dasboard') %}
+    {% set controller = field.customOption('controller') %}
+    {% set action = field.customOption('action') %}
+
+    {% if dashboard is not null %}
+        {% set url = url.setDashboard(dashboard) %}
+    {% endif %}
+
+    {% if controller is not null %}
+        {% set url = url.setController(controller) %}
+    {% endif %}
+
+    {% if action is not null %}
+        {% set url = url.setAction(action) %}
+    {% endif %}
+
+    <a href="{{ url }}" title="{{ field.value }}">{{ field.formattedValue|raw }}</a>
+{% else %}
+    <span title="{{ field.value }}">{{ field.formattedValue|raw }}</span>
+{% endif %}

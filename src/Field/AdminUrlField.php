@@ -35,23 +35,28 @@ final class AdminUrlField implements FieldInterface
     public function setDashboard(string $dashboard): self
     {
         $this->setCustomOption(self::OPTION_DASHBOARD, $dashboard);
+
         return $this;
     }
 
     public function setController(string $controller): self
     {
         $this->setCustomOption(self::OPTION_CONTROLLER, $controller);
+
         return $this;
     }
 
     public function setAction(string $action): self
     {
         $this->setCustomOption(self::OPTION_ACTION, $action);
+
         return $this;
     }
 
-    public function renderAsLink($asLink = true): self {
+    public function renderAsLink($asLink = true): self
+    {
         $this->setCustomOption(self::OPTION_RENDER_AS_LINK, $asLink);
+
         return $this;
     }
 }

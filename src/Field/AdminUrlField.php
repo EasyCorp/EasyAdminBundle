@@ -24,7 +24,7 @@ final class AdminUrlField implements FieldInterface
         return (new self())
             ->setProperty($propertyName)
             ->setLabel($label)
-            ->setTemplatePath('crud/field/admin_url')
+            ->setTemplateName('crud/field/admin_url')
             ->setFormType(TextType::class)
             ->addCssClass('field-adminurl')
             ->setDefaultColumns('col-md-6 col-xxl-5');

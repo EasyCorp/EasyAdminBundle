@@ -15,6 +15,7 @@ final class AdminUrlField implements FieldInterface
     public const OPTION_ACTION = 'action';
     public const OPTION_CONTROLLER = 'controller';
     public const OPTION_DASHBOARD = 'dashboard';
+    public const OPTION_RENDER_AS_LINK = 'render_as_link';
 
     /**
      * @param string|false|null $label
@@ -27,24 +28,30 @@ final class AdminUrlField implements FieldInterface
             ->setTemplateName('crud/field/admin_url')
             ->setFormType(TextType::class)
             ->addCssClass('field-adminurl')
-            ->setDefaultColumns('col-md-6 col-xxl-5');
+            ->setDefaultColumns('col-md-6 col-xxl-5')
+            ->setCustomOption(self::OPTION_RENDER_AS_LINK, true);
     }
 
-    public function setDashboard(string $dashboard): AdminUrlField
+    public function setDashboard(string $dashboard): self
     {
         $this->setCustomOption(self::OPTION_DASHBOARD, $dashboard);
         return $this;
     }
 
-    public function setController(string $controller): AdminUrlField
+    public function setController(string $controller): self
     {
         $this->setCustomOption(self::OPTION_CONTROLLER, $controller);
         return $this;
     }
 
-    public function setAction(string $action): AdminUrlField
+    public function setAction(string $action): self
     {
         $this->setCustomOption(self::OPTION_ACTION, $action);
+        return $this;
+    }
+
+    public function renderAsLink($asLink = true): self {
+        $this->setCustomOption(self::OPTION_RENDER_AS_LINK, $asLink);
         return $this;
     }
 }

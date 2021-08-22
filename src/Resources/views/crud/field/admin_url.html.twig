@@ -2,7 +2,7 @@
 {# @var field \EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto #}
 {# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
 
-{% if ea.crud.currentAction == 'index' %}
+{% if field.customOption('render_as_link') == true %}
     {% set url = ea_url() %}
     {% set url = url.setEntityId(entity.primaryKeyValue) %}
     {% set dashboard = field.customOption('dasboard') %}

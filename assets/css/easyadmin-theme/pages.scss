@@ -13,6 +13,13 @@ body.page-login {
         position: absolute;
         width: 100vw;
     }
+
+    #flash-messages {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+    }
 }
 
 .login-wrapper {
@@ -55,4 +62,8 @@ body.page-login {
     font-size: var(--font-size-lg);
     height: 38px;
     line-height: 38px;
+}
+.login-wrapper .form-text {
+    font-size: inherit;
+    margin-top: 5px;
 }

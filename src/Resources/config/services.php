@@ -244,7 +244,6 @@ return static function (ContainerConfigurator $container) {
 
         ->set(FormFactory::class)
             ->arg(0, new Reference('form.factory'))
-            ->arg(1, new Reference(AdminUrlGenerator::class))
 
         ->set(FieldFactory::class)
             ->arg(0, new Reference(AdminContextProvider::class))

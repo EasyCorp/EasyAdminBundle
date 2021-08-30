@@ -116,7 +116,7 @@ return [
         'username' => 'Użytkownik',
         'password' => 'Hasło',
         'sign_in' => 'Zaloguj się',
-        // 'remember_me' => '',
+        'remember_me' => 'Zapamiętaj mnie',
     ],
 
     'exception' => [

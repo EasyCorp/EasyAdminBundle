@@ -115,7 +115,7 @@ return [
         'username' => 'Kullanıcı adı',
         'password' => 'Şifre',
         'sign_in' => 'Giriş yap',
-        // 'remember_me' => '',
+        'remember_me' => 'Beni hatırla',
     ],
 
     'exception' => [

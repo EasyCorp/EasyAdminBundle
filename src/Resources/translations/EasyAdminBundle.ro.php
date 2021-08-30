@@ -116,7 +116,7 @@ return [
         'username' => 'Utilizator',
         'password' => 'Parolă',
         'sign_in' => 'Autentifică-te',
-        // 'remember_me' => '',
+        'remember_me' => 'Tine-ma minte',
     ],
 
     'exception' => [

@@ -116,6 +116,7 @@ return [
         'username' => '用户名',
         'password' => '密码',
         'sign_in' => '登录',
+        // 'remember_me' => '',
     ],
 
     'exception' => [

@@ -767,6 +767,18 @@ applications can rely on its default values:
 
                 // the 'name' HTML attribute of the <input> used for the password field (default: '_password')
                 'password_parameter' => 'my_custom_password_field',
+
+                // whether to enable or not the "remember me" checkbox (default: false)
+                'remember_me_enabled' => true,
+
+                // remember me name form field (default: '_remember_me')
+                'remember_me_parameter' => 'custom_remember_me_param',
+
+                // whether to check by default the "remember me" checkbox (default: false)
+                'remember_me_checked' => true,
+
+                // the label displayed for the remember me checkbox (the |trans filter is applied to it)
+                'remember_me_label' => 'Remember me',
             ]);
         }
     }

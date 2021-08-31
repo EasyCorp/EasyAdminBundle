@@ -702,7 +702,7 @@
                                     <span title="{{ file.mTime|date }}">
                                         <i class="fa fa-file-o"></i> {{ file.filename }}
                                     </span>
-                                    .ea-fileupload .input-group .btn {% if download_path %}</a>{% endif %}
+                                {% if download_path %}</a>{% endif %}
                             </td>
                             <td class="text-right file-size">{{ file.size|ea_filesize }}</td>
                         </tr>

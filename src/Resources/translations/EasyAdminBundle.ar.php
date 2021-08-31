@@ -115,7 +115,7 @@ return [
         'username' => 'إسم المستخدم',
         'password' => 'كلمة السّر',
         'sign_in' => 'تسجيل الدخول',
-        // 'remember_me' => '',
+        'remember_me' => 'تذكرنى',
     ],
 
     'exception' => [

@@ -115,6 +115,7 @@ return [
         'username' => 'Korisničko ime',
         'password' => 'Lozinka',
         'sign_in' => 'Prijavi se',
+        // 'forgot_password' => '',
         'remember_me' => 'Zapamti me',
     ],
 

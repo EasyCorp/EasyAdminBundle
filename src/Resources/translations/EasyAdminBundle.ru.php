@@ -116,6 +116,7 @@ return [
         'username' => 'Логин',
         'password' => 'Пароль',
         'sign_in' => 'Войти',
+        // 'forgot_password' => '',
         'remember_me' => 'Запомнить меня',
     ],
 

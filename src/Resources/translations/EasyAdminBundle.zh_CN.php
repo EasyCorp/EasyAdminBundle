@@ -116,8 +116,8 @@ return [
         'username' => '用户名',
         'password' => '密码',
         'sign_in' => '登录',
-        // 'forgot_password' => '',
-        // 'remember_me' => '',
+        'forgot_password' => '忘记密码?',
+        'remember_me' => '记住我',
     ],
 
     'exception' => [

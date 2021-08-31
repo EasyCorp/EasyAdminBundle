@@ -115,7 +115,7 @@ return [
         'username' => 'Username',
         'password' => 'Password',
         'sign_in' => 'Sign in',
-        // 'forgot_password' => '',
+        'forgot_password' => 'Glömt ditt lösenord?',
         'remember_me' => 'Kom ihåg mig',
     ],
 

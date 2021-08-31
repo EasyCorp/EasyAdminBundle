@@ -116,8 +116,8 @@ return [
         'username' => 'Usuário',
         'password' => 'Senha',
         'sign_in' => 'Entrar',
-        // 'forgot_password' => '',
-        'remember_me' => 'Lembrar',
+        'forgot_password' => 'Esqueceu sua senha?',
+        'remember_me' => 'Manter conectado',
     ],
 
     'exception' => [

@@ -115,8 +115,8 @@ return [
         'username' => 'Username',
         'password' => 'Password',
         'sign_in' => 'Sign in',
-        // 'forgot_password' => '',
-        // 'remember_me' => '',
+        'forgot_password' => 'Unohditko salasanasi?',
+        'remember_me' => 'Muista minut',
     ],
 
     'exception' => [

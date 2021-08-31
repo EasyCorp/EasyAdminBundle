@@ -115,6 +115,7 @@ return [
         'username' => 'Login',
         'password' => 'Heslo',
         'sign_in' => 'Přihlásit',
+        // 'forgot_password' => '',
         // 'remember_me' => '',
     ],
 

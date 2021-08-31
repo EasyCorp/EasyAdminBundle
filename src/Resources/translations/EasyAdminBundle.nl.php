@@ -115,6 +115,7 @@ return [
         'username' => 'Gebruikersnaam',
         'password' => 'Wachtwoord',
         'sign_in' => 'Inloggen',
+        // 'forgot_password' => '',
         'remember_me' => 'Onthoud mij',
     ],
 

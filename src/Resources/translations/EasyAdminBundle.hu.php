@@ -116,6 +116,7 @@ return [
         'username' => 'Felhasználónév',
         'password' => 'Jelszó',
         'sign_in' => 'Belépés',
+        // 'forgot_password' => '',
         'remember_me' => 'Emlékezzen rám',
     ],
 

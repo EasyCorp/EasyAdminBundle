@@ -1,0 +1,22 @@
+---------------------------------------------------------------------------
+
+by Seb33300 at 2021-07-13T04:38:01Z
+
+Hello,
+
+You should also update [the documentation](https://symfony.com/doc/current/bundles/EasyAdminBundle/dashboards.html#login-form-template) to add the new parameters available:
+https://github.com/EasyCorp/EasyAdminBundle/blob/master/doc/dashboards.rst#login-form-template
+
+---------------------------------------------------------------------------
+
+by pkly at 2021-07-14T06:21:34Z
+
+Shouldn't this just be a template extend instead of a PR? The login page is already a custom route, so you can just use your own template n all.
+
+---------------------------------------------------------------------------
+
+by jmsche at 2021-07-29T19:25:37Z
+
+> Shouldn't this just be a template extend instead of a PR? The login page is already a custom route, so you can just use your own template n all.
+
+This, and maybe add a block that can be filled by extending the login template.

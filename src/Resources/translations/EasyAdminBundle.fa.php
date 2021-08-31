@@ -115,7 +115,7 @@ return [
         'username' => 'Username',
         'password' => 'Password',
         'sign_in' => 'Sign in',
-        // 'forgot_password' => '',
+        'forgot_password' => 'کلمه عبور خود را فراموش کرده اید؟',
         'remember_me' => 'مرا به خاطر بسپار',
     ],
 

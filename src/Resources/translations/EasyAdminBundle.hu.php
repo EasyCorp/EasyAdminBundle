@@ -116,7 +116,7 @@ return [
         'username' => 'Felhasználónév',
         'password' => 'Jelszó',
         'sign_in' => 'Belépés',
-        // 'forgot_password' => '',
+        'forgot_password' => 'Elfelejtette jelszavát?',
         'remember_me' => 'Emlékezzen rám',
     ],
 

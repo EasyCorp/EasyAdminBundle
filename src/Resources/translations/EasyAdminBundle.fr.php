@@ -116,7 +116,7 @@ return [
         'username' => 'Identifiant',
         'password' => 'Mot de passe',
         'sign_in' => 'Connectez-vous',
-        // 'forgot_password' => '',
+        'forgot_password' => 'Mot de passe oublié ?',
         'remember_me' => 'Rester connecté',
     ],
 

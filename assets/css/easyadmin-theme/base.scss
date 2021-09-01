@@ -279,6 +279,10 @@ body.ea-mobile-sidebar-visible .sidebar {
     min-height: 100vh;
 }
 
+#content-resizer-handler {
+    min-height: calc(100vh - 56px);
+}
+
 .content-top {
     align-items: center;
     box-shadow: 0 1px 0 var(--content-top-border-color);

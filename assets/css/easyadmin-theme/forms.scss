@@ -106,6 +106,9 @@ label.form-check-label {
 .form-widget input.form-control[align=right] {
     text-align: right;
 }
+.form-widget input.form-control.is-invalid[align=right] {
+    padding-right: 30px;
+}
 
 .form-widget textarea.form-control {
     height: auto;

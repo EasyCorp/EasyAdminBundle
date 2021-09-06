@@ -15,6 +15,7 @@
     {% set _sign_in_label = sign_in_label is defined ? sign_in_label|trans : 'login_page.sign_in'|trans({}, 'EasyAdminBundle') %}
 
     <div class="login-wrapper">
+        {% include '@EasyAdmin/flash_messages.html.twig' %}
         <header class="main-header mb-4">
             <div id="header-logo">
                 {% block header_logo %}

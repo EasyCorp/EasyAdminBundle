@@ -408,7 +408,7 @@ body.ea-edit .content-header {
     @media(min-width: 992px) {
         position: sticky;
         top: -20px;
-        z-index: 1000;
+        z-index: 999;
     }
 }
 

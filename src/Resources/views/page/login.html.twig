@@ -1,74 +1,34 @@
-{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
-{# This template checks for 'ea' variable existence because it can
-   be used in a EasyAdmin Dashboard controller, where 'ea' is defined
-   or from any other Symfony controller, where 'ea' is not defined #}
-{% extends ea is defined ? ea.templatePath('layout') : '@EasyAdmin/page/login_minimal.html.twig' %}
-{% trans_default_domain ea is defined ? ea.i18n.translationDomain : (translation_domain is defined ? translation_domain ?? 'messages') %}
+{% extends '@EasyAdmin/page/login_layout.html.twig' %}
 
-{% block body_class 'page-login' %}
-{% block page_title %}{{ page_title is defined ? page_title|raw : (ea is defined ? ea.dashboardTitle|raw : '') }}{% endblock %}
-
-{% block wrapper_wrapper %}
-    {% set page_title = block('page_title') %}
+{% block content %}
     {% set _username_label = username_label is defined ? username_label|trans : 'login_page.username'|trans({}, 'EasyAdminBundle') %}
     {% set _password_label = password_label is defined ? password_label|trans : 'login_page.password'|trans({}, 'EasyAdminBundle') %}
     {% set _sign_in_label = sign_in_label is defined ? sign_in_label|trans : 'login_page.sign_in'|trans({}, 'EasyAdminBundle') %}
 
-    <div class="login-wrapper">
-        {% include '@EasyAdmin/flash_messages.html.twig' %}
-        <header class="main-header mb-4">
-            <div id="header-logo">
-                {% block header_logo %}
-                    {% if page_title %}
-                        {% if ea is defined %}
-                            <a class="logo {{ page_title|length > 14 ? 'logo-long' }}" title="{{ page_title|striptags }}" href="{{ path(ea.dashboardRouteName) }}">
-                                {{ page_title|raw }}
-                            </a>
-                        {% else %}
-                            <div class="logo {{ page_title|length > 14 ? 'logo-long' }}">
-                                {{ page_title|raw }}
-                            </div>
-                        {% endif %}
-                    {% endif %}
-                {% endblock header_logo %}
-            </div>
-        </header>
+    {% if error|default(false) %}
+        <div class="w-100 alert alert-danger rounded mb-3">
+            <i class="fas fa-times-circle mr-1"></i>
+            {{ error.messageKey|trans(error.messageData, 'security') }}
+        </div>
+    {% endif %}
 
-        <section class="content">
+    <form method="post" action="{{ action|default('') }}">
+        {% if csrf_token_intention|default(false) %}
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token(csrf_token_intention) }}">
+        {% endif %}
 
-            {% if error|default(false) %}
-                <div class="w-100 alert alert-danger rounded mb-3">
-                    <i class="fas fa-times-circle mr-1"></i>
-                    {{ error.messageKey|trans(error.messageData, 'security') }}
-                </div>
-            {% endif %}
+        <input type="hidden" name="{{ target_path_parameter|default('_target_path') }}" value="{{ target_path|default(ea is defined ? path(ea.dashboardRouteName) : '/') }}" />
 
-            <form method="post" action="{{ action|default('') }}">
-                {% if csrf_token_intention|default(false) %}
-                    <input type="hidden" name="_csrf_token" value="{{ csrf_token(csrf_token_intention) }}">
-                {% endif %}
+        <div class="mb-3">
+            <label for="username">{{ _username_label }}</label>
+            <input type="text" id="username" name="{{ username_parameter|default('_username') }}" class="form-control" value="{{ last_username|default('') }}" required autofocus autocomplete="username">
+        </div>
 
-                <input type="hidden" name="{{ target_path_parameter|default('_target_path') }}" value="{{ target_path|default(ea is defined ? path(ea.dashboardRouteName) : '/') }}" />
+        <div class="mb-4">
+            <label for="password">{{ _password_label }}</label>
+            <input type="password" id="password" name="{{ password_parameter|default('_password') }}" class="form-control" required autocomplete="current-password">
+        </div>
 
-                <div class="mb-3">
-                    <label for="username">{{ _username_label }}</label>
-                    <input type="text" id="username" name="{{ username_parameter|default('_username') }}" class="form-control" value="{{ last_username|default('') }}" required autofocus autocomplete="username">
-                </div>
-
-                <div class="mb-4">
-                    <label for="password">{{ _password_label }}</label>
-                    <input type="password" id="password" name="{{ password_parameter|default('_password') }}" class="form-control" required autocomplete="current-password">
-                </div>
-
-                <button type="submit" class="btn btn-primary btn-lg btn-block" onclick="this.form.submit(); this.disabled=true;">{{ _sign_in_label }}</button>
-            </form>
-
-            <script type="text/javascript">
-                const loginForm = document.querySelector('form');
-                loginForm.addEventListener('submit', () => {
-                    loginForm.querySelector('button[type="submit"]').setAttribute('disabled', 'disabled');
-                }, false);
-            </script>
-        </section>
-    </div>
+        <button type="submit" class="btn btn-primary btn-lg btn-block" onclick="this.form.submit(); this.disabled=true;">{{ _sign_in_label }}</button>
+    </form>
 {% endblock %}

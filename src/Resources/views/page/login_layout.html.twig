@@ -1,0 +1,45 @@
+{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
+{# This template checks for 'ea' variable existence because it can
+   be used in a EasyAdmin Dashboard controller, where 'ea' is defined
+   or from any other Symfony controller, where 'ea' is not defined #}
+{% extends ea is defined ? ea.templatePath('layout') : '@EasyAdmin/page/login_minimal.html.twig' %}
+{% trans_default_domain ea is defined ? ea.i18n.translationDomain : (translation_domain is defined ? translation_domain ?? 'messages') %}
+
+{% block body_class 'page-login' %}
+{% block page_title %}{{ page_title is defined ? page_title|raw : (ea is defined ? ea.dashboardTitle|raw : '') }}{% endblock %}
+
+{% block wrapper_wrapper %}
+    {% set page_title = block('page_title') %}
+
+    <div class="login-wrapper">
+        {% include '@EasyAdmin/flash_messages.html.twig' %}
+        <header class="main-header mb-4">
+            <div id="header-logo">
+                {% block header_logo %}
+                    {% if page_title %}
+                        {% if ea is defined %}
+                            <a class="logo {{ page_title|length > 14 ? 'logo-long' }}" title="{{ page_title|striptags }}" href="{{ path(ea.dashboardRouteName) }}">
+                                {{ page_title|raw }}
+                            </a>
+                        {% else %}
+                            <div class="logo {{ page_title|length > 14 ? 'logo-long' }}">
+                                {{ page_title|raw }}
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                {% endblock header_logo %}
+            </div>
+        </header>
+
+        <section class="content">
+            {% block content %}{% endblock %}
+
+            <script type="text/javascript">
+                const loginForm = document.querySelector('form');
+                loginForm.addEventListener('submit', () => {
+                    loginForm.querySelector('button[type="submit"]').setAttribute('disabled', 'disabled');
+                }, false);
+            </script>
+        </section>
+    </div>
+{% endblock %}

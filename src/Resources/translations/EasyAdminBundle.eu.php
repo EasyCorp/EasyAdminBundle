@@ -116,6 +116,8 @@ return [
         'username' => 'Erabiltzailea',
         'password' => 'Pasahitza',
         'sign_in' => 'Hasi saioa',
+        'forgot_password' => 'Pasahitza ahaztuta?',
+        'remember_me' => 'Gogoratu',
     ],
 
     'exception' => [

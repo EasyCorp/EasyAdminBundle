@@ -115,6 +115,8 @@ return [
         'username' => 'Потребителско има',
         'password' => 'Парола',
         'sign_in' => 'Вход',
+        'forgot_password' => 'Забравена парола?',
+        'remember_me' => 'Запомни ме',
     ],
 
     'exception' => [

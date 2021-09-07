@@ -25,10 +25,12 @@ export default class Autocomplete
         const config = {
             plugins: {
                 dropdown_input: {},
-                // 'input_autogrow': {},
-                clear_button: { title: '' },
             }
         };
+
+        if ('required' !== element.getAttribute('required')) {
+            config.plugins.clear_button = { title: '' };
+        }
 
         if (null !== element.getAttribute('multiple')) {
             config.plugins.remove_button = { title: '' };

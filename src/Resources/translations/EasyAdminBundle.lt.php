@@ -115,6 +115,8 @@ return [
         'username' => 'Vartotojo vardas',
         'password' => 'Slaptažodis',
         'sign_in' => 'Prisijungti',
+        'forgot_password' => 'Pamiršote slaptažodį?',
+        'remember_me' => 'Prisiminti mane',
     ],
 
     'exception' => [

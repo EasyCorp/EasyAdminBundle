@@ -46,7 +46,6 @@ final class FieldDto
     public function __construct()
     {
         $this->uniqueId = new Ulid();
-        $this->textAlign = TextAlign::LEFT;
         $this->cssClass = '';
         $this->columns = null;
         $this->defaultColumns = '';
@@ -227,7 +226,7 @@ final class FieldDto
         $this->virtual = $isVirtual;
     }
 
-    public function getTextAlign(): string
+    public function getTextAlign(): ?string
     {
         return $this->textAlign;
     }

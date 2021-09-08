@@ -36,7 +36,8 @@ final class CountryConfigurator implements FieldConfiguratorInterface
         'SD', 'SE', 'SG', 'SI', 'SK', 'SL', 'SM', 'SN', 'SO', 'SR', 'SS', 'SC',
         'SV', 'SY', 'SZ', 'TD', 'TG', 'TH', 'TJ', 'TL', 'TM', 'TN', 'TO', 'ST',
         'TT', 'TV', 'TW', 'TZ', 'UA', 'UG', 'US', 'UY', 'UZ', 'VA', 'VC', 'TR',
-        'VN', 'VU', 'WS', 'XK', 'YE', 'ZA', 'ZM', 'ZW', 'VE',
+        'VN', 'VU', 'WS', 'XK', 'YE', 'ZA', 'ZM', 'ZW', 'VE', 'MF', 'PM', 'YT',
+        'GP', 'MQ', 'PF'
     ];
 
     private $assetPackages;

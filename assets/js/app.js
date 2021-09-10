@@ -448,7 +448,11 @@ const App = (() => {
                 const fileUploadCustomInput = fileUploadContainer.querySelector('.custom-file-label');
                 const fileUploadFileSizeLabel = fileUploadContainer.querySelector('.input-group-text');
                 const fileUploadListOfFiles = fileUploadContainer.querySelector('.fileupload-list');
+                const fileUploadDeleteCheckbox = fileUploadContainer.querySelector('input[type=checkbox].form-check-input');
 
+                if (fileUploadDeleteCheckbox) {
+                    fileUploadDeleteCheckbox.checked = true;
+                }
                 fileUploadInput.value = '';
                 fileUploadCustomInput.innerHTML = '';
                 fileUploadDeleteButton.style.display = 'none';

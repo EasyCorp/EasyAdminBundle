@@ -42,7 +42,7 @@ final class BatchActionDtoResolver implements ArgumentValueResolverInterface
 
         yield new BatchActionDto(
             $context->getRequest()->request->get(EA::BATCH_ACTION_NAME),
-            $context->getRequest()->request->get(EA::BATCH_ACTION_ENTITY_IDS, []),
+            $context->getRequest()->request->get(EA::BATCH_ACTION_ENTITY_IDS) ?: [],
             $context->getRequest()->request->get(EA::ENTITY_FQCN),
             $referrerUrl,
             $context->getRequest()->request->get(EA::BATCH_ACTION_CSRF_TOKEN)

@@ -115,6 +115,8 @@ return [
         'username' => 'Login',
         'password' => 'Heslo',
         'sign_in' => 'Přihlásit',
+        'forgot_password' => 'Zapomněli jste heslo?',
+        'remember_me' => 'Pamatuj si mě',
     ],
 
     'exception' => [

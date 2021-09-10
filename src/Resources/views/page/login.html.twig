@@ -12,7 +12,11 @@
     {% set page_title = block('page_title') %}
     {% set _username_label = username_label is defined ? username_label|trans : 'login_page.username'|trans({}, 'EasyAdminBundle') %}
     {% set _password_label = password_label is defined ? password_label|trans : 'login_page.password'|trans({}, 'EasyAdminBundle') %}
+    {% set _forgot_password_label = forgot_password_label is defined ? forgot_password_label|trans : 'login_page.forgot_password'|trans({}, 'EasyAdminBundle') %}
+    {% set _remember_me_label = remember_me_label is defined ? remember_me_label|trans : 'login_page.remember_me'|trans({}, 'EasyAdminBundle') %}
     {% set _sign_in_label = sign_in_label is defined ? sign_in_label|trans : 'login_page.sign_in'|trans({}, 'EasyAdminBundle') %}
+
+    {% include '@EasyAdmin/flash_messages.html.twig' %}
 
     <div class="login-wrapper">
         <header class="main-header">
@@ -61,10 +65,25 @@
                     <div class="form-widget">
                         <input type="password" id="password" name="{{ password_parameter|default('_password') }}" class="form-control" required autocomplete="current-password">
                     </div>
+
+                    {% if forgot_password_enabled|default(false) %}
+                        <div class="form-text">
+                            <a href="{{ forgot_password_path|default('#') }}">{{ _forgot_password_label }}</a>
+                        </div>
+                    {% endif %}
                 </div>
 
+                {% if remember_me_enabled|default(false) %}
+                    <div class="form-group">
+                        <input class="form-check-input" type="checkbox" id="remember_me" name="{{ remember_me_parameter|default('_remember_me') }}" {{ remember_me_checked|default(false) ? 'checked' }}>
+                        <label class="form-check-label" for="remember_me">
+                            {{ _remember_me_label }}
+                        </label>
+                    </div>
+                {% endif %}
+
                 <div class="form-group">
-                    <button type="submit" class="btn btn-primary btn-lg w-100">{{ _sign_in_label }}</button>
+                    <button type="submit" class="btn btn-primary btn-lg btn-block" onclick="this.form.submit(); this.disabled=true;">{{ _sign_in_label }}</button>
                 </div>
             </form>
 

@@ -115,6 +115,8 @@ return [
         'username' => 'Nom d\'usuari',
         'password' => 'Contrasenya',
         'sign_in' => 'Iniciar sessió',
+        'forgot_password' => 'Heu oblidat la vostra contrasenya?',
+        'remember_me' => 'Recorda\'m',
     ],
 
     'exception' => [

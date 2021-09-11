@@ -103,10 +103,10 @@ label.form-check-label {
     color: var(--gray-600);
 }
 
-.form-widget input.form-control[align=right] {
+.form-widget input.form-control[data-ea-align=right] {
     text-align: right;
 }
-.form-widget input.form-control.is-invalid[align=right] {
+.form-widget input.form-control.is-invalid[data-ea-align=right] {
     padding-right: 30px;
 }
 

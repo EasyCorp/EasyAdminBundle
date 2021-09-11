@@ -125,4 +125,10 @@ return [
         'forbidden_action' => 'Data akcija ne može biti primenjena na ovaj zapis.',
         // 'insufficient_entity_permission' => 'You don't have permission to access this item.',
     ],
+
+    'autocomplete' => [
+        // 'no-results-found' => 'No results found',
+        // 'no-more-results' => 'No more results',
+        // 'loading-more-results' => 'Loading more results…',
+    ],
 ];

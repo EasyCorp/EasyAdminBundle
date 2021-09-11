@@ -125,4 +125,10 @@ return [
         'forbidden_action' => 'عملیات درخواستی در مورد این آیتم قابل انجام نیست.',
         // 'insufficient_entity_permission' => 'You don't have permission to access this item.',
     ],
+
+    'autocomplete' => [
+        'no-results-found' => 'هیچ نتیجه‌ای یافت نشد',
+        // 'no-more-results' => 'No more results',
+        'loading-more-results' => 'در حال بارگذاری نتایج بیشتر…',
+    ],
 ];

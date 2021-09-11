@@ -125,4 +125,10 @@ return [
         'forbidden_action' => 'Den åtgärd du försökte göra kan inte utföras på detta objekt.',
         // 'insufficient_entity_permission' => 'You don't have permission to access this item.',
     ],
+
+    'autocomplete' => [
+        'no-results-found' => 'Inga träffar',
+        // 'no-more-results' => 'No more results',
+        'loading-more-results' => 'Laddar fler resultat…',
+    ],
 ];

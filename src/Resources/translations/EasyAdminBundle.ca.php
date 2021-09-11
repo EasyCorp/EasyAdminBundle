@@ -125,4 +125,10 @@ return [
         // 'forbidden_action' => '',
         // 'insufficient_entity_permission' => 'You don't have permission to access this item.',
     ],
+
+    'autocomplete' => [
+        'no-results-found' => 'No s\'han trobat resultats',
+        // 'no-more-results' => 'No more results',
+        'loading-more-results' => 'Carregant més resultats…',
+    ],
 ];

@@ -1,0 +1,5 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2021-09-11T11:12:45Z
+
+I've updated things according to https://tom-select.js.org/docs/migration/ and I think this is now ready. TomSelect 2 is already in RC3, so I think it's safe to use that right now instead of waiting for a stable release.

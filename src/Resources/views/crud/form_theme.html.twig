@@ -265,13 +265,13 @@
         {%- endif -%}
         <{{ element|default('label') }}{% if label_attr %}{% with { attr: label_attr } %}{{ block('attributes') }}{% endwith %}{% endif %}>
         {%- if translation_domain is same as(false) -%}
-            {%- if label_html is same as(false) -%}
+            {%- if label_html|default(false) is same as(false) -%}
                 {{- label -}}
             {%- else -%}
                 {{- label|raw -}}
             {%- endif -%}
         {%- else -%}
-            {%- if label_html is same as(false) -%}
+            {%- if label_html|default(false) is same as(false) -%}
                 {{- label|trans(label_translation_parameters, translation_domain) -}}
             {%- else -%}
                 {{- label|trans(label_translation_parameters, translation_domain)|raw -}}

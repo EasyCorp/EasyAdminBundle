@@ -78,7 +78,7 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
         }
 
         if (null !== $field->getTextAlign()) {
-            $field->setFormTypeOptionIfNotSet('attr.align', $field->getTextAlign());
+            $field->setFormTypeOptionIfNotSet('attr.data-ea-align', $field->getTextAlign());
         }
 
         $field->setFormTypeOptionIfNotSet('label', $field->getLabel());

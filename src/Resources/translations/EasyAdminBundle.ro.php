@@ -126,4 +126,10 @@ return [
         'forbidden_action' => 'Acțiunea solicitată nu poate fi efectuată asupra acestui item.',
         'insufficient_entity_permission' => 'Nu sunteți autorizat să accesați acest item.',
     ],
+
+    'autocomplete' => [
+        'no-results-found' => 'Nu au fost găsite rezultate',
+        // 'no-more-results' => 'No more results',
+        'loading-more-results' => 'Se încarcă mai multe rezultate…',
+    ],
 ];

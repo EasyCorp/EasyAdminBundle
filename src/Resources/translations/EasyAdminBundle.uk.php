@@ -126,4 +126,10 @@ return [
         'forbidden_action' => 'Дія не може бути виконана над цим елементом.',
         'insufficient_entity_permission' => 'У вас немає дозволу на доступ до цього елемента.',
     ],
+
+    'autocomplete' => [
+        'no-results-found' => 'Нічого не знайдено',
+        // 'no-more-results' => 'No more results',
+        'loading-more-results' => 'Завантаження інших результатів…',
+    ],
 ];

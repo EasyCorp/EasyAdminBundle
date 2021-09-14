@@ -126,4 +126,10 @@ return [
         'forbidden_action' => 'A kért művelet nem hajtható végre ezen az elemen.',
         'insufficient_entity_permission' => 'Nincs megfelelő jogosultsága az elemhez.',
     ],
+
+    'autocomplete' => [
+        'no-results-found' => 'Nincs találat',
+        // 'no-more-results' => 'No more results',
+        'loading-more-results' => 'Töltés…',
+    ],
 ];

@@ -125,4 +125,10 @@ return [
         'forbidden_action' => 'Požadovaná akce nemůže být provedena na této položce.',
         'insufficient_entity_permission' => 'Nemáte dostatečná oprávnění pro přístup k této položce.',
     ],
+
+    'autocomplete' => [
+        'no-results-found' => 'Nenalezeny žádné položky',
+        // 'no-more-results' => 'No more results',
+        'loading-more-results' => 'Načítají se další výsledky…',
+    ],
 ];

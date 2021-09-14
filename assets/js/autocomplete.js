@@ -23,6 +23,11 @@ export default class Autocomplete
 
     #getCommonConfig(element) {
         const config = {
+            render: {
+                no_results: function(data, escape) {
+                    return `<div class="no-results">${element.getAttribute('data-ea-i18n-no-results-found')}</div>`;
+                },
+            },
             plugins: {
                 dropdown_input: {},
             }
@@ -112,7 +117,16 @@ export default class Autocomplete
                 },
                 item: function(item, escape) {
                     return `<div>${item.entityAsString}</div>`;
-                }
+                },
+                loading_more: function(data, escape) {
+                    return `<div class="loading-more-results">${element.getAttribute('data-ea-i18n-loading-more-results')}</div>`;
+                },
+                no_more_results: function(data, escape) {
+                    return `<div class="no-more-results">${element.getAttribute('data-ea-i18n-no-more-results')}</div>`;
+                },
+                no_results: function(data, escape) {
+                    return `<div class="no-results">${element.getAttribute('data-ea-i18n-no-results-found')}</div>`;
+                },
             },
         });
 

@@ -125,4 +125,10 @@ return [
         'forbidden_action' => 'لا يمكنك تنفيذ الإجراء المطلوب على هذا العنصر.',
         'insufficient_entity_permission' => 'أنت لا تملك صلاحيات كافية للوصول الى هذا العنصر',
     ],
+
+    'autocomplete' => [
+        'no-results-found' => 'لم يتم العثور على أي نتائج',
+        // 'no-more-results' => 'No more results',
+        'loading-more-results' => 'جاري تحميل نتائج إضافية…',
+    ],
 ];

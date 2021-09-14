@@ -125,4 +125,10 @@ return [
         'forbidden_action' => 'Non se pode realizar a acción solicitada neste elemento.',
         // 'insufficient_entity_permission' => 'You don't have permission to access this item.',
     ],
+
+    'autocomplete' => [
+        'no-results-found' => 'Non se atoparon resultados',
+        // 'no-more-results' => 'No more results',
+        'loading-more-results' => 'Cargando máis resultados…',
+    ],
 ];

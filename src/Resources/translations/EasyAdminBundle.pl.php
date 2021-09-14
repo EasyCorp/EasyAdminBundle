@@ -126,4 +126,10 @@ return [
         'forbidden_action' => 'Na tej pozycji nie można wykonać wybranej akcji.',
         'insufficient_entity_permission' => 'Nie masz uprawnień do tego obiektu.',
     ],
+
+    'autocomplete' => [
+        'no-results-found' => 'Brak wyników',
+        // 'no-more-results' => 'No more results',
+        'loading-more-results' => 'Trwa ładowanie…',
+    ],
 ];

@@ -688,7 +688,7 @@
                 {{ form_widget(form.file, { attr: form.file.vars.attr|merge({ placeholder: placeholder, title: title, 'data-files-label': filesLabel, style: 'display: none' }) }) }}
                 {{ form_label(form.file, placeholder, { label_attr: { class: 'custom-file-label' }}) }}
             </div>
-            <div class="input-group-text" {% if currentFiles is empty %}style="display: none"{% endif %}>
+            <div class="input-group-text">
                 {%- if currentFiles -%}
                     {% if multiple %}
                         {{ (currentFiles|reduce((carry, file) => carry + file.size))|ea_filesize }}

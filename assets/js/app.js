@@ -435,6 +435,12 @@ const App = (() => {
                 const fileUploadFileSizeLabel = fileUploadContainer.querySelector('.input-group-text');
                 const fileUploadDeleteButton = fileUploadContainer.querySelector('.ea-fileupload-delete-btn');
 
+                fileUploadFileSizeLabel.childNodes.forEach((fileUploadFileSizeLabelChild) => {
+                    if (fileUploadFileSizeLabelChild.nodeType === Node.TEXT_NODE) {
+                        fileUploadFileSizeLabel.removeChild(fileUploadFileSizeLabelChild);
+                    }
+                });
+
                 fileUploadCustomInput.innerHTML = filename;
                 fileUploadFileSizeLabel.prepend(humanizeFileSize(bytes));
                 fileUploadDeleteButton.style.display = 'block';
@@ -458,7 +464,7 @@ const App = (() => {
                 fileUploadDeleteButton.style.display = 'none';
 
                 fileUploadFileSizeLabel.childNodes.forEach((fileUploadFileSizeLabelChild) => {
-                    if (fileUploadFileSizeLabelChild.nodeType === 3) {
+                    if (fileUploadFileSizeLabelChild.nodeType === Node.TEXT_NODE) {
                         fileUploadFileSizeLabel.removeChild(fileUploadFileSizeLabelChild);
                     }
                 });

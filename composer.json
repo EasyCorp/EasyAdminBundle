@@ -15,7 +15,7 @@
         "php": ">=7.2.5",
         "ext-json": "*",
         "doctrine/common": "^2.13 || ^3.0",
-        "doctrine/dbal": "^2.10",
+        "doctrine/dbal": "^2.10 || ^3.0",
         "doctrine/doctrine-bundle": "^1.12|^2.0",
         "doctrine/orm": "^2.6,>=2.6.3",
         "doctrine/persistence": "^1.3.3 || ^2.0",

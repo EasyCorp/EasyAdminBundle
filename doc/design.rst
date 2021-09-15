@@ -188,6 +188,9 @@ requires to know the `form fragment naming rules`_ defined by Symfony:
 .. code-block:: twig
 
     {# templates/admin/form.html.twig #}
+    {# note that the Twig block name starts with an uppercase letter
+       ('_Product_...' instead of '_product_...') because the first part
+       of the block name is the unmodified entity name #}
     {% block _Product_custom_title_widget %}
         {# ... #}
         <a href="...">More information</a>
@@ -218,8 +221,10 @@ Finally, add this custom theme to the list of themes used to render backend form
 
 .. note::
 
-    You can also override the form widget by using the original field name. In the example above it would look like this:
-    `{% block _Product_title_widget %}`. The full syntax is: `{% block _<Entity name>_<Field name>_widget %}`.
+    You can also override the form widget by using the original field name.
+    In the example above it would look like this:
+    ``{% block _Product_title_widget %}``. The full syntax is:
+    ``{% block _<Entity name>_<Field name>_widget %}``.
 
 Adding Custom Web Assets
 ------------------------

@@ -1,0 +1,20 @@
+---------------------------------------------------------------------------
+
+by AntonioCS at 2021-09-15T07:20:41Z
+
+I believe that the docs should mention that the start of the block (after the `_`) should just be the exact name of the entity.
+
+---------------------------------------------------------------------------
+
+by AntonioCS at 2021-09-15T07:21:59Z
+
+Also, as mentioned in our slack chat, the field template can be overridden by also doing something like:
+```
+{% block _<Entity name>_<Field name>_widget %}
+```
+
+---------------------------------------------------------------------------
+
+by jmsche at 2021-09-15T07:33:07Z
+
+Updated PR according to @AntonioCS's comments.

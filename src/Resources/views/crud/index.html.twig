@@ -184,6 +184,8 @@
             {% endif %}
         {% endblock table_body %}
         </tbody>
+        {% block table_footer %}
+        {% endblock table_footer %}
     </table>
 
     {% if entities|length > 0 %}

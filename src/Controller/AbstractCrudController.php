@@ -468,19 +468,24 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
     public function autocomplete(AdminContext $context): JsonResponse
     {
-        $queryBuilder = $this->createIndexQueryBuilder($context->getSearch(), $context->getEntity(), FieldCollection::new([]), FilterCollection::new());
+        $fields = FieldCollection::new([]);
+        $filters = $this->get(FilterFactory::class)->create($context->getCrud()->getFiltersConfig(), $fields, $context->getEntity());
+        $queryBuilder = $this->createIndexQueryBuilder($context->getSearch(), $context->getEntity(), $fields, $filters);
 
         $autocompleteContext = $context->getRequest()->get(AssociationField::PARAM_AUTOCOMPLETE_CONTEXT);
+        if($autocompleteContext) {
+            /** @var CrudControllerInterface $controller */
+            $controller = $this->get(ControllerFactory::class)->getCrudControllerInstance($autocompleteContext[EA::CRUD_CONTROLLER_FQCN], Action::INDEX, $context->getRequest());
+            $field = FieldCollection::new($controller->configureFields($autocompleteContext['originatingPage']))->getByProperty($autocompleteContext['propertyName']);
 
-        /** @var CrudControllerInterface $controller */
-        $controller = $this->get(ControllerFactory::class)->getCrudControllerInstance($autocompleteContext[EA::CRUD_CONTROLLER_FQCN], Action::INDEX, $context->getRequest());
-        /** @var FieldDto $field */
-        $field = FieldCollection::new($controller->configureFields($autocompleteContext['originatingPage']))->getByProperty($autocompleteContext['propertyName']);
-        /** @var \Closure|null $queryBuilderCallable */
-        $queryBuilderCallable = $field->getCustomOption(AssociationField::OPTION_QUERY_BUILDER_CALLABLE);
+            if($field) {
+                /** @var \Closure|null $queryBuilderCallable */
+                $queryBuilderCallable = $field->getCustomOption(AssociationField::OPTION_QUERY_BUILDER_CALLABLE);
 
-        if (null !== $queryBuilderCallable) {
-            $queryBuilderCallable($queryBuilder);
+                if (null !== $queryBuilderCallable) {
+                    $queryBuilderCallable($queryBuilder);
+                }
+            }
         }
 
         $this->autocompleteQueryBuilder($queryBuilder, $context);

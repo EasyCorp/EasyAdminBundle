@@ -483,9 +483,14 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             $queryBuilderCallable($queryBuilder);
         }
 
+        $this->autocompleteQueryBuilder($queryBuilder, $context);
         $paginator = $this->get(PaginatorFactory::class)->create($queryBuilder);
 
         return JsonResponse::fromJsonString($paginator->getResultsAsJson());
+    }
+
+    public function autocompleteQueryBuilder(QueryBuilder $queryBuilder, AdminContext $context): void
+    {
     }
 
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder

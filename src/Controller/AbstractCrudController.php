@@ -468,22 +468,24 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
     public function autocomplete(AdminContext $context): JsonResponse
     {
-        $autocompleteContext = $context->getRequest()->get(AssociationField::PARAM_AUTOCOMPLETE_CONTEXT);
-
-        /** @var CrudControllerInterface $controller */
-        $controller = $this->get(ControllerFactory::class)->getCrudControllerInstance($autocompleteContext[EA::CRUD_CONTROLLER_FQCN], Action::INDEX, $context->getRequest());
-
         $fields = FieldCollection::new([]);
         $filters = $this->get(FilterFactory::class)->create($context->getCrud()->getFiltersConfig(), $fields, $context->getEntity());
         $queryBuilder = $this->createIndexQueryBuilder($context->getSearch(), $context->getEntity(), $fields, $filters);
 
-        /** @var FieldDto $field */
-        $field = FieldCollection::new($controller->configureFields($autocompleteContext['originatingPage']))->getByProperty($autocompleteContext['propertyName']);
-        /** @var \Closure|null $queryBuilderCallable */
-        $queryBuilderCallable = $field->getCustomOption(AssociationField::OPTION_QUERY_BUILDER_CALLABLE);
+        $autocompleteContext = $context->getRequest()->get(AssociationField::PARAM_AUTOCOMPLETE_CONTEXT);
+        if($autocompleteContext) {
+            /** @var CrudControllerInterface $controller */
+            $controller = $this->get(ControllerFactory::class)->getCrudControllerInstance($autocompleteContext[EA::CRUD_CONTROLLER_FQCN], Action::INDEX, $context->getRequest());
+            $field = FieldCollection::new($controller->configureFields($autocompleteContext['originatingPage']))->getByProperty($autocompleteContext['propertyName']);
 
-        if (null !== $queryBuilderCallable) {
-            $queryBuilderCallable($queryBuilder);
+            if($field) {
+                /** @var \Closure|null $queryBuilderCallable */
+                $queryBuilderCallable = $field->getCustomOption(AssociationField::OPTION_QUERY_BUILDER_CALLABLE);
+
+                if (null !== $queryBuilderCallable) {
+                    $queryBuilderCallable($queryBuilder);
+                }
+            }
         }
 
         $paginator = $this->get(PaginatorFactory::class)->create($queryBuilder);

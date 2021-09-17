@@ -13,7 +13,7 @@ use Symfony\Component\Form\AbstractType;
  */
 class EaFormPanelType extends AbstractType
 {
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'ea_form_panel';
     }

@@ -139,7 +139,7 @@ class CrudFormType extends AbstractType
             ->setRequired(['entityDto']);
     }
 
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'ea_crud';
     }

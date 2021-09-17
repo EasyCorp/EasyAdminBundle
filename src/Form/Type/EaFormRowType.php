@@ -13,7 +13,7 @@ use Symfony\Component\Form\AbstractType;
  */
 class EaFormRowType extends AbstractType
 {
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'ea_form_row';
     }

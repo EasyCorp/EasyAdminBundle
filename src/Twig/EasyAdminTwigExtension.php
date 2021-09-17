@@ -23,7 +23,7 @@ class EasyAdminTwigExtension extends AbstractExtension
         $this->serviceLocator = $serviceLocator;
     }
 
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
             new TwigFunction('ea_url', [$this, 'getAdminUrlGenerator']),
@@ -31,7 +31,7 @@ class EasyAdminTwigExtension extends AbstractExtension
         ];
     }
 
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             new TwigFilter('ea_flatten_array', [$this, 'flattenArray']),

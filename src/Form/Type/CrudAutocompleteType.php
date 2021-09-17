@@ -44,7 +44,7 @@ class CrudAutocompleteType extends AbstractType implements DataMapperInterface
         $resolver->setRequired(['class']);
     }
 
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'ea_autocomplete';
     }

@@ -20,12 +20,12 @@ final class AdminContextResolver implements ArgumentValueResolverInterface
         $this->adminContextProvider = $adminContextProvider;
     }
 
-    public function supports(Request $request, ArgumentMetadata $argument)
+    public function supports(Request $request, ArgumentMetadata $argument): bool
     {
         return AdminContext::class === $argument->getType();
     }
 
-    public function resolve(Request $request, ArgumentMetadata $argument)
+    public function resolve(Request $request, ArgumentMetadata $argument): iterable
     {
         yield $this->adminContextProvider->getContext();
     }

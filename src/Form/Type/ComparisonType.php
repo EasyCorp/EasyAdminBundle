@@ -24,9 +24,6 @@ class ComparisonType extends AbstractType
     public const STARTS_WITH = 'like*';
     public const ENDS_WITH = '*like';
 
-    /**
-     * {@inheritdoc}
-     */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
@@ -90,9 +87,6 @@ class ComparisonType extends AbstractType
         $resolver->setAllowedValues('type', ['array', 'datetime', 'choice', 'entity', 'numeric', 'text']);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getParent()
     {
         return ChoiceType::class;

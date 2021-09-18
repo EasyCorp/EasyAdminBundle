@@ -32,9 +32,6 @@ class FileUploadType extends AbstractType implements DataMapperInterface
         $this->projectDir = $projectDir;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $uploadDir = $options['upload_dir'];
@@ -51,9 +48,6 @@ class FileUploadType extends AbstractType implements DataMapperInterface
         $builder->addModelTransformer(new StringToFileTransformer($uploadDir, $uploadFilename, $uploadValidate, $options['multiple']));
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         /** @var FileUploadState $state */
@@ -80,9 +74,6 @@ class FileUploadType extends AbstractType implements DataMapperInterface
         $view->vars['download_path'] = $options['download_path'];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $uploadNew = static function (UploadedFile $file, string $uploadDir, string $fileName) {
@@ -201,17 +192,11 @@ class FileUploadType extends AbstractType implements DataMapperInterface
         });
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getBlockPrefix(): string
     {
         return 'ea_fileupload';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function mapDataToForms($currentFiles, $forms): void
     {
         /** @var FormInterface $fileForm */
@@ -219,9 +204,6 @@ class FileUploadType extends AbstractType implements DataMapperInterface
         $fileForm->setData($currentFiles);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function mapFormsToData($forms, &$currentFiles): void
     {
         /** @var FormInterface[] $children */

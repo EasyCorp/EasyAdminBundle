@@ -13,9 +13,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class FiltersFormType extends AbstractType
 {
-    /**
-     * {@inheritdoc}
-     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         /** @var FilterDto $filter */
@@ -24,9 +21,6 @@ class FiltersFormType extends AbstractType
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefined('ea_filters');
@@ -39,9 +33,6 @@ class FiltersFormType extends AbstractType
         ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getBlockPrefix(): string
     {
         return 'ea_filters';

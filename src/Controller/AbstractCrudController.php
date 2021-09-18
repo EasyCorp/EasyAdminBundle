@@ -83,9 +83,6 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         return $filters;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function configureFields(string $pageName): iterable
     {
         return $this->get(FieldProvider::class)->getDefaultFields($pageName);

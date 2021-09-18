@@ -14,7 +14,7 @@
     "require": {
         "php": ">=7.2.5",
         "ext-json": "*",
-        "doctrine/doctrine-bundle": "^1.12|^2.0",
+        "doctrine/doctrine-bundle": "^1.12 || ^2.0",
         "doctrine/orm": "^2.6,>=2.6.3",
         "nikic/php-parser": "^4.3",
         "symfony/asset": "^4.4 || ^5.0 || ^6.0",
@@ -32,10 +32,10 @@
         "symfony/polyfill-php73": "^1.13",
         "symfony/property-access": "^4.4 || ^5.0 || ^6.0",
         "symfony/security-bundle": "^4.4 || ^5.0 || ^6.0",
-        "symfony/string": "^5.0",
+        "symfony/string": "^5.0 || ^6.0",
         "symfony/translation": "^4.4 || ^5.0 || ^6.0",
         "symfony/twig-bundle": "^4.4 || ^5.0 || ^6.0",
-        "symfony/uid": "^5.1"
+        "symfony/uid": "^5.1 || ^6.0"
     },
     "require-dev": {
         "dama/doctrine-test-bundle": "^6.4",

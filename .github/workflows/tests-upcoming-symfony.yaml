@@ -31,7 +31,6 @@ jobs:
               env:
                   SYMFONY_REQUIRE: '5.4.x@dev'
                   EA_TESTS_ENABLE_AUTHENTICATOR_MANAGER: 'true'
-                  EA_TESTS_USE_PASSWORD_HASHERS: 'true'
               run: |
                   composer global require --no-progress --no-scripts --no-plugins symfony/flex
                   composer config minimum-stability dev

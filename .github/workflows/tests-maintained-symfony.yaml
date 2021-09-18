@@ -43,5 +43,5 @@ jobs:
             - name: 'Run tests'
               env:
                   SYMFONY_DEPRECATIONS_HELPER: 'max[indirect]=1'
-                  EA_TESTS_USE_SESSION_FACTORIES: 'false'
+                  EA_TESTS_USE_SESSION_FACTORIES: 'no'
               run: vendor/bin/simple-phpunit -v

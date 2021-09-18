@@ -1,6 +1,5 @@
 <?php
 
-use Doctrine\Common\Annotations\AnnotationRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Kernel;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -33,12 +32,6 @@ if (!file_exists($file)) {
     throw new RuntimeException('Install dependencies using Composer to run the test suite.');
 }
 $autoload = require $file;
-
-AnnotationRegistry::registerLoader(function ($class) use ($autoload) {
-    $autoload->loadClass($class);
-
-    return class_exists($class, false);
-});
 
 $application = new Application(new Kernel('default_backend', true));
 $application->setAutoExit(false);

@@ -39,7 +39,7 @@
     },
     "require-dev": {
         "dama/doctrine-test-bundle": "^6.4",
-        "doctrine/doctrine-fixtures-bundle": "^3.4",
+        "doctrine/doctrine-fixtures-bundle": "^3.4 || ^3.5",
         "psr/log": "~1.0",
         "symfony/browser-kit": "^4.4 || ^5.0 || ^6.0",
         "symfony/css-selector": "^4.4 || ^5.0 || ^6.0",
@@ -67,6 +67,5 @@
         "branch-alias": {
             "dev-master": "3.0.x-dev"
         }
-    },
-    "minimum-stability": "dev"
+    }
 }

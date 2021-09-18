@@ -39,5 +39,4 @@ jobs:
             - name: 'Run tests'
               env:
                   SYMFONY_DEPRECATIONS_HELPER: 'max[indirect]=9999&max[direct]=0&max[self]=9999'
-                  EA_TESTS_ENABLE_AUTHENTICATOR_MANAGER: 'yes'
               run: vendor/bin/simple-phpunit -v || exit 0

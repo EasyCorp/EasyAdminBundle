@@ -14,7 +14,7 @@ return static function (ContainerConfigurator $container) {
     ;
 
     $services->load('EasyCorp\\Bundle\\EasyAdminBundle\\Tests\\TestApplication\\', '../src/*')
-        ->exclude('../{Entity,Tests,Kernel.php,KernelForSymfony4.php,KernelForSymfony5.php}');
+        ->exclude('../{Entity,Tests,Kernel.php}');
 
     $services->load('EasyCorp\\Bundle\\EasyAdminBundle\\Tests\\TestApplication\\Controller\\', '../src/Controller/')
         ->tag('controller.service_arguments');

@@ -15,9 +15,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class ChoiceFilterType extends AbstractType
 {
-    /**
-     * {@inheritdoc}
-     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $multiple = $builder->get('value')->getOption('multiple');
@@ -49,9 +46,6 @@ class ChoiceFilterType extends AbstractType
         ));
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
@@ -73,9 +67,6 @@ class ChoiceFilterType extends AbstractType
         });
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getParent(): string
     {
         return ComparisonFilterType::class;

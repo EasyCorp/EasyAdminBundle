@@ -12,9 +12,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class NullFilterType extends AbstractType
 {
-    /**
-     * {@inheritdoc}
-     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
@@ -22,9 +19,6 @@ class NullFilterType extends AbstractType
         ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getParent(): string
     {
         return ChoiceType::class;

@@ -25,9 +25,6 @@ class ComparisonFilterType extends AbstractType
         $this->comparisonTypeOptions = $comparisonTypeOptions;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('comparison', $options['comparison_type'], $options['comparison_type_options']);
@@ -36,9 +33,6 @@ class ComparisonFilterType extends AbstractType
         ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setRequired('value_type');

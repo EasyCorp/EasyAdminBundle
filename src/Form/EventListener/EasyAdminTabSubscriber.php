@@ -13,9 +13,6 @@ use Symfony\Component\Form\FormEvents;
  */
 class EasyAdminTabSubscriber implements EventSubscriberInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public static function getSubscribedEvents()
     {
         return [

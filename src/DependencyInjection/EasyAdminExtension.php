@@ -21,9 +21,6 @@ class EasyAdminExtension extends Extension
     public const TAG_FIELD_CONFIGURATOR = 'ea.field_configurator';
     public const TAG_FILTER_CONFIGURATOR = 'ea.filter_configurator';
 
-    /**
-     * {@inheritdoc}
-     */
     public function load(array $configs, ContainerBuilder $container)
     {
         $container->registerForAutoconfiguration(DashboardControllerInterface::class)

@@ -35,6 +35,7 @@ jobs:
             - name: 'Install project dependencies'
               env:
                   SYMFONY_REQUIRE: ${{ matrix.symfony-version }}
+                  EA_TESTS_USE_SESSION_FACTORIES: 'false'
               run: |
                   composer global require --no-progress --no-scripts --no-plugins symfony/flex
                   composer update --no-interaction --prefer-dist --optimize-autoloader

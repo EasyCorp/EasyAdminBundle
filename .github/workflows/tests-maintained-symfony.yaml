@@ -35,7 +35,6 @@ jobs:
             - name: 'Install project dependencies'
               env:
                   SYMFONY_REQUIRE: ${{ matrix.symfony-version }}
-                  EA_TESTS_USE_SESSION_FACTORIES: 'false'
               run: |
                   composer global require --no-progress --no-scripts --no-plugins symfony/flex
                   composer update --no-interaction --prefer-dist --optimize-autoloader
@@ -44,4 +43,5 @@ jobs:
             - name: 'Run tests'
               env:
                   SYMFONY_DEPRECATIONS_HELPER: 'max[indirect]=1'
+                  EA_TESTS_USE_SESSION_FACTORIES: 'false'
               run: vendor/bin/simple-phpunit -v

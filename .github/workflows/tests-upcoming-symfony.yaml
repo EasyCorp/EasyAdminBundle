@@ -30,7 +30,6 @@ jobs:
             - name: 'Install project dependencies'
               env:
                   SYMFONY_REQUIRE: '5.4.x@dev'
-                  EA_TESTS_ENABLE_AUTHENTICATOR_MANAGER: 'true'
               run: |
                   composer global require --no-progress --no-scripts --no-plugins symfony/flex
                   composer config minimum-stability dev
@@ -40,4 +39,5 @@ jobs:
             - name: 'Run tests'
               env:
                   SYMFONY_DEPRECATIONS_HELPER: 'max[indirect]=9999&max[direct]=0&max[self]=9999'
+                  EA_TESTS_ENABLE_AUTHENTICATOR_MANAGER: 'true'
               run: vendor/bin/simple-phpunit -v || exit 0

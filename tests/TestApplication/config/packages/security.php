@@ -44,4 +44,10 @@ if (class_exists(AuthenticatorManager::class)) {
     $configuration['firewalls']['main']['anonymous'] = true;
 }
 
+if ('yes' === getenv('EA_TESTS_USE_SECURITY_ENCODERS')) {
+    $configuration['encoders'] = [User::class => 'plaintext'];
+} else {
+    $configuration['password_hashers'] = [User::class => 'plaintext'];
+}
+
 $container->loadFromExtension('security', $configuration);

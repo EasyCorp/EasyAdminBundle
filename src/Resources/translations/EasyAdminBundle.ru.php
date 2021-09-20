@@ -126,4 +126,10 @@ return [
         'forbidden_action' => 'Запрашиваемое действие запрещено для этого элемента.',
         'insufficient_entity_permission' => 'У вас недостаточно прав для доступа к этому элементу.',
     ],
+
+    'autocomplete' => [
+        'no-results-found' => 'Совпадений не найдено',
+        // 'no-more-results' => 'No more results',
+        'loading-more-results' => 'Загрузка данных…',
+    ],
 ];

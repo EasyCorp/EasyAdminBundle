@@ -125,4 +125,10 @@ return [
         'forbidden_action' => 'İstenen eylem bu öğe üzerinde gerçekleştirilemez.',
         'insufficient_entity_permission' => 'Bu öğeye erişim izniniz yok.',
     ],
+
+    'autocomplete' => [
+        'no-results-found' => 'Sonuç bulunamadı',
+        // 'no-more-results' => 'No more results',
+        'loading-more-results' => 'Daha fazla…',
+    ],
 ];

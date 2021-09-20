@@ -125,4 +125,10 @@ return [
         'forbidden_action' => 'Η ενέργεια αυτή είναι αδύνατον να εφαρμοστεί σε αυτό το αντικείμενο.',
         // 'insufficient_entity_permission' => 'You don't have permission to access this item.',
     ],
+
+    'autocomplete' => [
+        'no-results-found' => 'Δεν βρέθηκαν αποτελέσματα',
+        // 'no-more-results' => 'No more results',
+        'loading-more-results' => 'Φόρτωση περισσότερων αποτελεσμάτων…',
+    ],
 ];

@@ -412,7 +412,7 @@ const App = (() => {
             return Math.trunc(bytes / (1024 ** factor)) + unit[factor];
         };
 
-        document.querySelectorAll('.ea-fileupload input[type="file"].custom-file-input').forEach((fileUploadElement) => {
+        document.querySelectorAll('.ea-fileupload input[type="file"]').forEach((fileUploadElement) => {
             fileUploadElement.addEventListener('change', () => {
                 if (0 === fileUploadElement.files.length) {
                     return;
@@ -435,9 +435,14 @@ const App = (() => {
                 const fileUploadFileSizeLabel = fileUploadContainer.querySelector('.input-group-text');
                 const fileUploadDeleteButton = fileUploadContainer.querySelector('.ea-fileupload-delete-btn');
 
-                fileUploadCustomInput.value = filename;
-                fileUploadFileSizeLabel.innerHTML = humanizeFileSize(bytes);
-                fileUploadFileSizeLabel.style.display = 'inherit';
+                fileUploadFileSizeLabel.childNodes.forEach((fileUploadFileSizeLabelChild) => {
+                    if (fileUploadFileSizeLabelChild.nodeType === Node.TEXT_NODE) {
+                        fileUploadFileSizeLabel.removeChild(fileUploadFileSizeLabelChild);
+                    }
+                });
+
+                fileUploadCustomInput.innerHTML = filename;
+                fileUploadFileSizeLabel.prepend(humanizeFileSize(bytes));
                 fileUploadDeleteButton.style.display = 'block';
             });
         });
@@ -449,12 +454,20 @@ const App = (() => {
                 const fileUploadCustomInput = fileUploadContainer.querySelector('.custom-file-label');
                 const fileUploadFileSizeLabel = fileUploadContainer.querySelector('.input-group-text');
                 const fileUploadListOfFiles = fileUploadContainer.querySelector('.fileupload-list');
+                const fileUploadDeleteCheckbox = fileUploadContainer.querySelector('input[type=checkbox].form-check-input');
 
+                if (fileUploadDeleteCheckbox) {
+                    fileUploadDeleteCheckbox.checked = true;
+                }
                 fileUploadInput.value = '';
                 fileUploadCustomInput.innerHTML = '';
-                fileUploadFileSizeLabel.innerHTML = '';
-                fileUploadFileSizeLabel.style.display = 'none';
                 fileUploadDeleteButton.style.display = 'none';
+
+                fileUploadFileSizeLabel.childNodes.forEach((fileUploadFileSizeLabelChild) => {
+                    if (fileUploadFileSizeLabelChild.nodeType === Node.TEXT_NODE) {
+                        fileUploadFileSizeLabel.removeChild(fileUploadFileSizeLabelChild);
+                    }
+                });
 
                 if (null !== fileUploadListOfFiles) {
                     fileUploadListOfFiles.style.display = 'none';

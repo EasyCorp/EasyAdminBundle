@@ -909,10 +909,10 @@
     error-stack-parser "^2.0.0"
     string-width "^2.0.0"
 
-"@orchidjs/sifter@^0.8.1":
-  version "0.8.2"
-  resolved "https://registry.yarnpkg.com/@orchidjs/sifter/-/sifter-0.8.2.tgz#50f0a4ba8783f2bfbde1bcec9ed97e632940555d"
-  integrity sha512-aDemVMJL2cGo82EVHXMM2y6WoWlk00V2aibvNAl2djtZG1OquirMvnOTlb2L4tjcH5cT2q1/dyHepZcxnFW5zQ==
+"@orchidjs/sifter@^0.9.0":
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/@orchidjs/sifter/-/sifter-0.9.0.tgz#07eab78de2ac1799d2c169bf1f2e3e746d86c32c"
+  integrity sha512-NDYPhjdydJNbwDRvMFyUFFeImj1a+CJAwpjh/goKmvTHi726DPAJ1nW0X05p/GsorQgXHwhgDPyu6WaYqd4cRA==
 
 "@popperjs/core@^2.9.2":
   version "2.10.1"
@@ -5291,12 +5291,12 @@ toidentifier@1.0.0:
   resolved "https://registry.yarnpkg.com/toidentifier/-/toidentifier-1.0.0.tgz#7e1be3470f1e77948bc43d94a3c8f4d7752ba553"
   integrity sha512-yaOH/Pk/VEhBWWTlhI+qXxDFXlejDGcQipMlyxda9nthulaxLZUNcUqFxokp0vcYnvteJln5FNQDRrxj3YcbVw==
 
-tom-select@^1.7.3:
-  version "1.7.8"
-  resolved "https://registry.yarnpkg.com/tom-select/-/tom-select-1.7.8.tgz#484a33b800d8574767a5803ccaad1cd6d996d17e"
-  integrity sha512-b9K+RYhbmcGiaqKssKf4N/fkn/Hle330OwOaAO786TtUNfGImR6J/IAuJP3lNOAl4rZyC4Q0uLuxE+1367rQtg==
+tom-select@^2.0.0-rc.2:
+  version "2.0.0-rc.3"
+  resolved "https://registry.yarnpkg.com/tom-select/-/tom-select-2.0.0-rc.3.tgz#382f15f67c2eb18ab1ca37820cc41c1e8d82251e"
+  integrity sha512-zOgIWaa7BgHNK/vzerBYvQpBNAwGkt3Z9ezQmwfVnqXDsdoh3ftK3iyJtSA15b8s1UWr4xaDYFst56vY2XgraA==
   dependencies:
-    "@orchidjs/sifter" "^0.8.1"
+    "@orchidjs/sifter" "^0.9.0"
 
 trix@^1.3.1:
   version "1.3.1"

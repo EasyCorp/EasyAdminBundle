@@ -125,4 +125,10 @@ return [
         'forbidden_action' => 'De gevraagde actie kan niet worden uitgevoerd op dit item.',
         'insufficient_entity_permission' => 'Je hebt geen toegang tot dit item.',
     ],
+
+    'autocomplete' => [
+        'no-results-found' => 'Geen resultaten gevonden…',
+        // 'no-more-results' => 'No more results',
+        'loading-more-results' => 'Meer resultaten laden…',
+    ],
 ];

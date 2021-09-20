@@ -125,4 +125,10 @@ return [
         'forbidden_action' => 'Denne handling kan ikke udføres på dette element.',
         'insufficient_entity_permission' => 'Du har ikke tilladelse til at tilgå dette element.',
     ],
+
+    'autocomplete' => [
+        'no-results-found' => 'Ingen resultater fundet',
+        // 'no-more-results' => 'No more results',
+        'loading-more-results' => 'Indlæser flere resultater…',
+    ],
 ];

@@ -31,6 +31,12 @@ final class DateTimeConfigurator implements FieldConfiguratorInterface
 
     public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
     {
+        // we don't require this PHP extension in composer.json because it's not mandatory to display
+        // date/time fields in backends, so this is not a hard dependency
+        if (!\extension_loaded('intl')) {
+            throw new \LogicException('When using date/time fields in EasyAdmin backends, you must install and enable the PHP Intl extension, which is used to format date/time values.');
+        }
+
         $crud = $context->getCrud();
 
         $defaultTimezone = $crud->getTimezone();

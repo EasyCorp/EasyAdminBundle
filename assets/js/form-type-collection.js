@@ -43,10 +43,10 @@ const EaCollectionProperty = {
             const nameRegexp = new RegExp(formTypeNamePlaceholder, 'g');
 
             let newItemHtml = collection.dataset.prototype
-                .replace(labelRegexp, numItems)
+                .replace(labelRegexp, ++numItems)
                 .replace(nameRegexp, numItems);
 
-            collection.dataset.numItems = ++numItems;
+            collection.dataset.numItems = numItems;
             const newItemInsertionSelector = isArrayCollection ? '.ea-form-collection-items' : '.ea-form-collection-items .accordion > .form-widget-compound';
             const collectionItemsWrapper = collection.querySelector(newItemInsertionSelector);
 

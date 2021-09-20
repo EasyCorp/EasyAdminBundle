@@ -126,4 +126,10 @@ return [
         'forbidden_action' => '无权执行该操作',
         'insufficient_entity_permission' => '你没有权限访问该条记录',
     ],
+
+    'autocomplete' => [
+        'no-results-found' => '未找到结果',
+        // 'no-more-results' => 'No more results',
+        'loading-more-results' => '载入更多结果…',
+    ],
 ];

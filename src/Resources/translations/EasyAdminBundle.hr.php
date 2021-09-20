@@ -125,4 +125,10 @@ return [
         'forbidden_action' => 'Zatražena radnja ne može se izvršiti na ovoj stavci.',
         // 'insufficient_entity_permission' => 'You don't have permission to access this item.',
     ],
+
+    'autocomplete' => [
+        'no-results-found' => 'Nema rezultata',
+        // 'no-more-results' => 'No more results',
+        'loading-more-results' => 'Učitavanje rezultata…',
+    ],
 ];

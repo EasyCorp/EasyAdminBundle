@@ -1,12 +1,10 @@
 <?php
 
+use Symfony\Component\PasswordHasher\Hasher\PlaintextPasswordHasher;
 use Symfony\Component\Security\Core\User\User;
+use Symfony\Component\Security\Http\Authentication\AuthenticatorManager;
 
-$container->loadFromExtension('security', [
-    'encoders' => [
-        User::class => 'plaintext',
-    ],
-
+$configuration = [
     'providers' => [
         'test_users' => [
             'memory' => [
@@ -32,4 +30,18 @@ $container->loadFromExtension('security', [
     'access_control' => [
         ['path' => '^/', 'roles' => ['ROLE_ADMIN']],
     ],
-]);
+];
+
+if (class_exists(PlaintextPasswordHasher::class)) {
+    $configuration['password_hashers'] = [User::class => 'plaintext'];
+} else {
+    $configuration['encoders'] = [User::class => 'plaintext'];
+}
+
+if (class_exists(AuthenticatorManager::class)) {
+    $configuration['enable_authenticator_manager'] = true;
+} else {
+    $configuration['firewalls']['main']['anonymous'] = true;
+}
+
+$container->loadFromExtension('security', $configuration);

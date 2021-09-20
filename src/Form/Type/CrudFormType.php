@@ -31,9 +31,6 @@ class CrudFormType extends AbstractType
         $this->doctrineOrmTypeGuesser = $doctrineOrmTypeGuesser;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         /** @var EntityDto $entityDto */
@@ -111,9 +108,6 @@ class CrudFormType extends AbstractType
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function finishView(FormView $view, FormInterface $form, array $options)
     {
         // some properties and field types require CSS/JS assets to work properly
@@ -132,9 +126,6 @@ class CrudFormType extends AbstractType
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
@@ -148,9 +139,6 @@ class CrudFormType extends AbstractType
             ->setRequired(['entityDto']);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getBlockPrefix()
     {
         return 'ea_crud';

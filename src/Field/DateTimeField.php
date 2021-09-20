@@ -79,7 +79,7 @@ final class DateTimeField implements FieldInterface
     }
 
     /**
-     * @param string $dateFormatOrPattern A format name ('none', 'short', 'medium', 'long', 'full') or a valid ICU Datetime Pattern (see http://userguide.icu-project.org/formatparse/datetime)
+     * @param string $dateFormatOrPattern A format name ('none', 'short', 'medium', 'long', 'full') or a valid ICU Datetime Pattern (see https://unicode-org.github.io/icu/userguide/format_parse/datetime/#formatting-dates)
      * @param string $timeFormat          A format name ('none', 'short', 'medium', 'long', 'full')
      */
     public function setFormat(string $dateFormatOrPattern, string $timeFormat = self::FORMAT_NONE): self

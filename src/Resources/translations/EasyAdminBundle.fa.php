@@ -115,6 +115,8 @@ return [
         'username' => 'Username',
         'password' => 'Password',
         'sign_in' => 'Sign in',
+        'forgot_password' => 'کلمه عبور خود را فراموش کرده اید؟',
+        'remember_me' => 'مرا به خاطر بسپار',
     ],
 
     'exception' => [
@@ -122,5 +124,11 @@ return [
         'entity_remove' => 'این آیتم نمی‌تواند حذف شود، زیرا آیتم های وابسته‌ای دارد.',
         'forbidden_action' => 'عملیات درخواستی در مورد این آیتم قابل انجام نیست.',
         // 'insufficient_entity_permission' => 'You don't have permission to access this item.',
+    ],
+
+    'autocomplete' => [
+        'no-results-found' => 'هیچ نتیجه‌ای یافت نشد',
+        // 'no-more-results' => 'No more results',
+        'loading-more-results' => 'در حال بارگذاری نتایج بیشتر…',
     ],
 ];

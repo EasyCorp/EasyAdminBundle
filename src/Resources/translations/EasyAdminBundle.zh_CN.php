@@ -116,6 +116,8 @@ return [
         'username' => '用户名',
         'password' => '密码',
         'sign_in' => '登录',
+        'forgot_password' => '忘记密码?',
+        'remember_me' => '记住我',
     ],
 
     'exception' => [
@@ -123,5 +125,11 @@ return [
         'entity_remove' => '该条记录不可删除，因为有其他记录依赖该条记录。',
         'forbidden_action' => '无权执行该操作',
         'insufficient_entity_permission' => '你没有权限访问该条记录',
+    ],
+
+    'autocomplete' => [
+        'no-results-found' => '未找到结果',
+        // 'no-more-results' => 'No more results',
+        'loading-more-results' => '载入更多结果…',
     ],
 ];

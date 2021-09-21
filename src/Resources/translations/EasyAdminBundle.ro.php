@@ -116,6 +116,8 @@ return [
         'username' => 'Utilizator',
         'password' => 'Parolă',
         'sign_in' => 'Autentifică-te',
+        'forgot_password' => 'V-ați uitat parola?',
+        'remember_me' => 'Tine-ma minte',
     ],
 
     'exception' => [
@@ -123,5 +125,11 @@ return [
         'entity_remove' => 'Acest item nu poate fi șters deoarece alte iteme depind de acesta.',
         'forbidden_action' => 'Acțiunea solicitată nu poate fi efectuată asupra acestui item.',
         'insufficient_entity_permission' => 'Nu sunteți autorizat să accesați acest item.',
+    ],
+
+    'autocomplete' => [
+        'no-results-found' => 'Nu au fost găsite rezultate',
+        // 'no-more-results' => 'No more results',
+        'loading-more-results' => 'Se încarcă mai multe rezultate…',
     ],
 ];

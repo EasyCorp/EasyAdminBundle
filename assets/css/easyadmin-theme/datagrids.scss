@@ -46,6 +46,9 @@ table.datagrid {
         width: 35%;
         font-weight: 500;
         padding: 8px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
       td.field-boolean {
         padding-left: 8px;

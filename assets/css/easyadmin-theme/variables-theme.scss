@@ -5,6 +5,8 @@
    works, some styles can't be customized with CSS variables and you'll need
    to also customize the Sass variables defined in bootstrap-variables.scss.
  --------------------------------------------------------------------------- */
+@import "./color-palette.scss";
+
 :root {
     --font-family-sans-serif: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
@@ -17,37 +19,6 @@
     --font-size-xl: 18px;
     --font-size-xxl: 24px;
     --font-size-xxxl: 28px;
-
-    --black: hsl(0, 0%, 0%);
-    --white: hsl(0, 0%, 100%);
-
-    // Color palette copied from Tailwind CSS (MIT License)
-    // see https://tailwindcss.com/docs/customizing-colors
-    --gray-50: hsl(210, 40%, 98%);
-    --gray-100: hsl(210, 40%, 96%);
-    --gray-200: hsl(214, 32%, 91%);
-    --gray-300: hsl(213, 27%, 84%);
-    --gray-400: hsl(215, 20%, 65%);
-    --gray-500: hsl(215, 16%, 47%);
-    --gray-600: hsl(215, 19%, 35%);
-    --gray-700: hsl(215, 25%, 27%);
-    --gray-800: hsl(217, 33%, 17%);
-    --gray-900: hsl(222, 47%, 11%);
-
-    --indigo-50: hsl(226, 100%, 97%);
-    --indigo-100: hsl(226, 100%, 94%);
-    --indigo-200: hsl(228, 96%, 89%);
-    --indigo-300: hsl(230, 94%, 82%);
-    --indigo-400: hsl(234, 89%, 74%);
-    --indigo-500: hsl(239, 84%, 67%);
-    --indigo-600: hsl(243, 75%, 59%);
-    --indigo-700: hsl(245, 58%, 51%);
-    --indigo-800: hsl(244, 55%, 41%);
-    --indigo-900: hsl(242, 47%, 34%);
-
-    --red-500: hsl(0, 72%, 51%);
-    --red-600: hsl(0, 84%, 60%);
-    --red-700: hsl(0, 74%, 42%);
 
     --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 
@@ -176,11 +147,6 @@
     --zindex-800: 888;
     --zindex-900: 999;
     --zindex-1050: 1050;
-
-    --blue-100: hsl(189, 82%, 86%);
-    --green-100: hsl(117, 66%, 86%);
-    --red-100: hsl(9, 89%, 92%);
-    --yellow-100: hsl(42, 82%, 84%);
 
     --text-blue-600: hsl(206, 91%, 30%);
     --text-green-600: hsl(159, 75%, 21%);

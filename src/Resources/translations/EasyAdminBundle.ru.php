@@ -116,6 +116,8 @@ return [
         'username' => 'Логин',
         'password' => 'Пароль',
         'sign_in' => 'Войти',
+        'forgot_password' => 'Забыли пароль?',
+        'remember_me' => 'Запомнить меня',
     ],
 
     'exception' => [
@@ -123,5 +125,11 @@ return [
         'entity_remove' => 'Элемент не может быть удалён, потому что другой элемент зависит от него.',
         'forbidden_action' => 'Запрашиваемое действие запрещено для этого элемента.',
         'insufficient_entity_permission' => 'У вас недостаточно прав для доступа к этому элементу.',
+    ],
+
+    'autocomplete' => [
+        'no-results-found' => 'Совпадений не найдено',
+        // 'no-more-results' => 'No more results',
+        'loading-more-results' => 'Загрузка данных…',
     ],
 ];

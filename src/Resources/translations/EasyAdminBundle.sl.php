@@ -115,6 +115,8 @@ return [
         'username' => 'uporabniško ime',
         'password' => 'Geslo',
         'sign_in' => 'Prijava',
+        'forgot_password' => 'Ste pozabili geslo?',
+        'remember_me' => 'Zapomni si me',
     ],
 
     'exception' => [
@@ -122,5 +124,11 @@ return [
         'entity_remove' => 'Tega elementac ni mogoče izbrisati, ker so ostali elementi odvisni od njega.',
         'forbidden_action' => 'Zahtevanega dejanja ni mogoče izvršiti na tem elementu.',
         // 'insufficient_entity_permission' => 'You don't have permission to access this item.',
+    ],
+
+    'autocomplete' => [
+        'no-results-found' => 'Ni zadetkov',
+        // 'no-more-results' => 'No more results',
+        'loading-more-results' => 'Nalagam več zadetkov…',
     ],
 ];

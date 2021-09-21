@@ -103,8 +103,11 @@ label.form-check-label {
     color: var(--gray-600);
 }
 
-.form-widget input.form-control[align=right] {
+.form-widget input.form-control[data-ea-align=right] {
     text-align: right;
+}
+.form-widget input.form-control.is-invalid[data-ea-align=right] {
+    padding-right: 30px;
 }
 
 .form-widget textarea.form-control {
@@ -428,7 +431,7 @@ fieldset .legend-help {
 }
 
 .global-invalid-feedback {
-    background: $red-100;
+    background: var(--red-100);
     border-radius: var(--border-radius);
     color: var(--color-danger);
     font-size:  14px;

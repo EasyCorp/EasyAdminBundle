@@ -11,9 +11,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class BooleanFilterType extends AbstractType
 {
-    /**
-     * {@inheritdoc}
-     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
@@ -27,9 +24,6 @@ class BooleanFilterType extends AbstractType
         ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getParent(): string
     {
         return ChoiceType::class;

@@ -45,7 +45,7 @@ return [
         'entity_actions' => 'Actions',
         'new' => 'Créer %entity_label_singular%',
         'search' => 'Rechercher',
-        'detail' => 'Voir',
+        'detail' => 'Consulter',
         'edit' => 'Éditer',
         'delete' => 'Supprimer',
         'cancel' => 'Annuler',
@@ -116,6 +116,8 @@ return [
         'username' => 'Identifiant',
         'password' => 'Mot de passe',
         'sign_in' => 'Connectez-vous',
+        'forgot_password' => 'Mot de passe oublié ?',
+        'remember_me' => 'Rester connecté',
     ],
 
     'exception' => [
@@ -123,5 +125,11 @@ return [
         'entity_remove' => 'Cet élément ne peut être supprimé car d\'autres éléments en dépendent.',
         'forbidden_action' => 'L\'action demandée ne peut être exécutée sur cet élément.',
         'insufficient_entity_permission' => 'Vous n\'êtes pas autorisé à accéder à cet élément.',
+    ],
+
+    'autocomplete' => [
+        'no-results-found' => 'Aucun résultat trouvé',
+        'no-more-results' => 'Aucun autre résultat trouvé',
+        'loading-more-results' => 'Chargement de résultats supplémentaires…',
     ],
 ];

@@ -127,6 +127,18 @@
     {% endif %}
 {% endblock form_row %}
 
+{% block choice_widget_collapsed %}
+    {% if 'ea-autocomplete' == attr['data-ea-widget']|default(false) %}
+        {% set attr = attr|merge({
+            'data-ea-i18n-no-results-found': 'autocomplete.no-results-found'|trans({}, 'EasyAdminBundle'),
+            'data-ea-i18n-no-more-results': 'autocomplete.no-more-results'|trans({}, 'EasyAdminBundle'),
+            'data-ea-i18n-loading-more-results': 'autocomplete.loading-more-results'|trans({}, 'EasyAdminBundle'),
+        }) %}
+    {% endif %}
+
+    {{ parent() }}
+{% endblock choice_widget_collapsed %}
+
 {% block collection_row %}
     {% if prototype is defined and not prototype.rendered %}
         {% set row_attr = row_attr|merge({ 'data-prototype': form_row(prototype) }) %}
@@ -137,7 +149,7 @@
         'data-entry-is-complex': form.vars.ea_crud_form.ea_field and form.vars.ea_crud_form.ea_field.customOptions.get('entryIsComplex') ? 'true' : 'false',
         'data-allow-add': allow_add ? 'true' : 'false',
         'data-allow-delete': allow_delete ? 'true' : 'false',
-        'data-num-items': form.children|length,
+        'data-num-items': form.children is empty ? 0 : max(form.children|keys),
         'data-form-type-name-placeholder': prototype is defined ? prototype.vars.name : '',
     }) %}
 
@@ -263,7 +275,21 @@
                 {% set label = name|humanize %}
             {%- endif -%}
         {%- endif -%}
-        <{{ element|default('label') }}{% if label_attr %}{% with { attr: label_attr } %}{{ block('attributes') }}{% endwith %}{% endif %}>{{ translation_domain is same as(false) ? label : label|trans({}, translation_domain) }}</{{ element|default('label') }}>
+        <{{ element|default('label') }}{% if label_attr %}{% with { attr: label_attr } %}{{ block('attributes') }}{% endwith %}{% endif %}>
+        {%- if translation_domain is same as(false) -%}
+            {%- if label_html|default(false) is same as(false) -%}
+                {{- label -}}
+            {%- else -%}
+                {{- label|raw -}}
+            {%- endif -%}
+        {%- else -%}
+            {%- if label_html|default(false) is same as(false) -%}
+                {{- label|trans(label_translation_parameters, translation_domain) -}}
+            {%- else -%}
+                {{- label|trans(label_translation_parameters, translation_domain)|raw -}}
+            {%- endif -%}
+        {%- endif -%}
+        </{{ element|default('label') }}>
     {%- endif -%}
 {%- endblock form_label %}
 
@@ -350,7 +376,7 @@
             </div>
 
             {% if form.delete is defined %}
-                {{ form_row(form.delete, { label: 'form.label.delete'|trans({}, 'VichUploaderBundle') }) }}
+                {{ form_row(form.delete, { label: 'vich_uploader.form_label.delete_confirm'|trans({}, 'VichUploaderBundle') }) }}
             {% endif %}
         </div>
         <div class="small" id="{{ form.file.vars.id }}_new_file_name"></div>
@@ -410,7 +436,7 @@
             </div>
 
             {% if form.delete is defined %}
-                {{ form_row(form.delete, { label: 'form.label.delete'|trans({}, 'VichUploaderBundle') }) }}
+                {{ form_row(form.delete, { label: 'vich_uploader.form_label.delete_confirm'|trans({}, 'VichUploaderBundle') }) }}
             {% endif %}
         </div>
         <div class="small" id="{{ form.file.vars.id }}_new_file_name"></div>
@@ -594,7 +620,8 @@
             <div class="filter-field {% if not loop.last %}border-bottom{% endif %} py-1 px-3 {% if loop.last %}pb-2{% endif %}" data-filter-property="{{ field.vars.name }}">
                 <div class="filter-heading" id="filter-heading-{{ loop.index }}">
                     <input type="checkbox" class="filter-checkbox" {% if field.vars.name in applied_filters %}checked{% endif %}>
-                    <a data-bs-toggle="collapse" href="#filter-content-{{ loop.index }}" aria-expanded="{{ field.vars.name in applied_filters ? 'true' : 'false' }}" aria-controls="filter-content-{{ loop.index }}">
+                    <a data-bs-toggle="collapse" href="#filter-content-{{ loop.index }}" aria-expanded="{{ field.vars.name in applied_filters ? 'true' : 'false' }}" aria-controls="filter-content-{{ loop.index }}"
+                        {% for name, value in field.vars.label_attr|default([]) %}{{ name }}="{{ value|e('html_attr') }}" {% endfor %}>
                         {{ field.vars.label|default(field.vars.name|humanize)|trans(domain = ea.i18n.translationDomain) }}
                     </a>
                 </div>
@@ -673,7 +700,7 @@
                 {{ form_widget(form.file, { attr: form.file.vars.attr|merge({ placeholder: placeholder, title: title, 'data-files-label': filesLabel, style: 'display: none' }) }) }}
                 {{ form_label(form.file, placeholder, { label_attr: { class: 'custom-file-label' }}) }}
             </div>
-            <div class="input-group-text" {% if currentFiles is empty %}style="display: none"{% endif %}>
+            <div class="input-group-text">
                 {%- if currentFiles -%}
                     {% if multiple %}
                         {{ (currentFiles|reduce((carry, file) => carry + file.size))|ea_filesize }}
@@ -702,7 +729,7 @@
                                     <span title="{{ file.mTime|date }}">
                                         <i class="fa fa-file-o"></i> {{ file.filename }}
                                     </span>
-                                    .ea-fileupload .input-group .btn {% if download_path %}</a>{% endif %}
+                                {% if download_path %}</a>{% endif %}
                             </td>
                             <td class="text-right file-size">{{ file.size|ea_filesize }}</td>
                         </tr>

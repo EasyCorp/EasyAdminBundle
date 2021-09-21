@@ -577,7 +577,7 @@ by EasyAdmin::
         {
             $url = $this->adminUrlGenerator->setRoute('admin_business_stats_customer', [
                 'id' => $this->getUser()->getId(),
-            ]->generateUrl());
+            ])->generateUrl();
 
             // ...
         }

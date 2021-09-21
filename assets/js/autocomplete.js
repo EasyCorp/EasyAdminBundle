@@ -23,12 +23,19 @@ export default class Autocomplete
 
     #getCommonConfig(element) {
         const config = {
+            render: {
+                no_results: function(data, escape) {
+                    return `<div class="no-results">${element.getAttribute('data-ea-i18n-no-results-found')}</div>`;
+                },
+            },
             plugins: {
                 dropdown_input: {},
-                // 'input_autogrow': {},
-                clear_button: { title: '' },
             }
         };
+
+        if ('required' !== element.getAttribute('required')) {
+            config.plugins.clear_button = { title: '' };
+        }
 
         if (null !== element.getAttribute('multiple')) {
             config.plugins.remove_button = { title: '' };
@@ -110,7 +117,16 @@ export default class Autocomplete
                 },
                 item: function(item, escape) {
                     return `<div>${item.entityAsString}</div>`;
-                }
+                },
+                loading_more: function(data, escape) {
+                    return `<div class="loading-more-results">${element.getAttribute('data-ea-i18n-loading-more-results')}</div>`;
+                },
+                no_more_results: function(data, escape) {
+                    return `<div class="no-more-results">${element.getAttribute('data-ea-i18n-no-more-results')}</div>`;
+                },
+                no_results: function(data, escape) {
+                    return `<div class="no-results">${element.getAttribute('data-ea-i18n-no-results-found')}</div>`;
+                },
             },
         });
 

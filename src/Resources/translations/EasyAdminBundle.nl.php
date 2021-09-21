@@ -115,6 +115,8 @@ return [
         'username' => 'Gebruikersnaam',
         'password' => 'Wachtwoord',
         'sign_in' => 'Inloggen',
+        'forgot_password' => 'Wachtwoord vergeten?',
+        'remember_me' => 'Onthoud mij',
     ],
 
     'exception' => [
@@ -122,5 +124,11 @@ return [
         'entity_remove' => 'Dit item kan niet verwijderd worden omdat andere items ervan afhankelijk zijn.',
         'forbidden_action' => 'De gevraagde actie kan niet worden uitgevoerd op dit item.',
         'insufficient_entity_permission' => 'Je hebt geen toegang tot dit item.',
+    ],
+
+    'autocomplete' => [
+        'no-results-found' => 'Geen resultaten gevonden…',
+        // 'no-more-results' => 'No more results',
+        'loading-more-results' => 'Meer resultaten laden…',
     ],
 ];

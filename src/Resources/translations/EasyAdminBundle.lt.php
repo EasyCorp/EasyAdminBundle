@@ -115,6 +115,8 @@ return [
         'username' => 'Vartotojo vardas',
         'password' => 'Slaptažodis',
         'sign_in' => 'Prisijungti',
+        'forgot_password' => 'Pamiršote slaptažodį?',
+        'remember_me' => 'Prisiminti mane',
     ],
 
     'exception' => [
@@ -122,5 +124,11 @@ return [
         'entity_remove' => 'Šis elementas negali būti ištrintas, nes nuo jo priklauso kiti elementai.',
         'forbidden_action' => 'Norimas atlikti veiksmas šiam elementui negalimas.',
         'insufficient_entity_permission' => 'Jums trūkstą teisių pasiekti šį elementą.',
+    ],
+
+    'autocomplete' => [
+        'no-results-found' => 'Atitikmenų nerasta',
+        // 'no-more-results' => 'No more results',
+        'loading-more-results' => 'Kraunama daugiau rezultatų…',
     ],
 ];

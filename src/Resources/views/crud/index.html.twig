@@ -67,40 +67,40 @@
     <table class="table datagrid {{ entities is empty ? 'datagrid-empty' }}">
         {% if num_results > 0 %}
             <thead>
-        {% block table_head %}
-            <tr>
-                {% if has_batch_actions %}
-                    <th>
-                        <div class="form-check">
-                            <span><input type="checkbox" class="form-check-input form-batch-checkbox-all"></span>
-                        </div>
+            {% block table_head %}
+                <tr>
+                    {% if has_batch_actions %}
+                        <th>
+                            <div class="form-check">
+                                <span><input type="checkbox" class="form-check-input form-batch-checkbox-all"></span>
+                            </div>
+                        </th>
+                    {% endif %}
+
+                    {% set ea_sort_asc = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Config\\Option\\SortOrder::ASC') %}
+                    {% set ea_sort_desc = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Config\\Option\\SortOrder::DESC') %}
+                    {% for field in entities|first.fields ?? [] %}
+                        {% set is_sorting_field = ea.search.isSortingField(field.property) %}
+                        {% set next_sort_direction = is_sorting_field ? (ea.search.sortDirection(field.property) == ea_sort_desc ? ea_sort_asc : ea_sort_desc) : ea_sort_desc %}
+                        {% set column_icon = is_sorting_field ? (next_sort_direction == ea_sort_desc ? 'fa-arrow-up' : 'fa-arrow-down') : 'fa-sort' %}
+
+                        <th class="{{ is_sorting_field ? 'sorted' }} {{ field.isVirtual ? 'field-virtual' }} header-for-{{ field.cssClass|split(' ')|filter(class => class starts with 'field-')|join('') }} text-{{ field.textAlign }}" dir="{{ ea.i18n.textDirection }}">
+                            {% if field.isSortable %}
+                                <a href="{{ ea_url({ page: 1, sort: { (field.property): next_sort_direction } }).includeReferrer() }}">
+                                    {{ field.label|raw }} <i class="fa fa-fw {{ column_icon }}"></i>
+                                </a>
+                            {% else %}
+                                <span>{{ field.label|raw }}</span>
+                            {% endif %}
+                        </th>
+                    {% endfor %}
+
+                    <th {% if ea.crud.showEntityActionsAsDropdown %}width="10px"{% endif %} dir="{{ ea.i18n.textDirection }}">
+                        <span class="sr-only">{{ 'action.entity_actions'|trans(ea.i18n.translationParameters, 'EasyAdminBundle') }}</span>
                     </th>
-                {% endif %}
-
-                {% set ea_sort_asc = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Config\\Option\\SortOrder::ASC') %}
-                {% set ea_sort_desc = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Config\\Option\\SortOrder::DESC') %}
-                {% for field in entities|first.fields ?? [] %}
-                    {% set is_sorting_field = ea.search.isSortingField(field.property) %}
-                    {% set next_sort_direction = is_sorting_field ? (ea.search.sortDirection(field.property) == ea_sort_desc ? ea_sort_asc : ea_sort_desc) : ea_sort_desc %}
-                    {% set column_icon = is_sorting_field ? (next_sort_direction == ea_sort_desc ? 'fa-arrow-up' : 'fa-arrow-down') : 'fa-sort' %}
-
-                    <th class="{{ is_sorting_field ? 'sorted' }} {{ field.isVirtual ? 'field-virtual' }} header-for-{{ field.cssClass|split(' ')|filter(class => class starts with 'field-')|join('') }} text-{{ field.textAlign }}" dir="{{ ea.i18n.textDirection }}">
-                        {% if field.isSortable %}
-                            <a href="{{ ea_url({ page: 1, sort: { (field.property): next_sort_direction } }).includeReferrer() }}">
-                                {{ field.label|raw }} <i class="fa fa-fw {{ column_icon }}"></i>
-                            </a>
-                        {% else %}
-                            <span>{{ field.label|raw }}</span>
-                        {% endif %}
-                    </th>
-                {% endfor %}
-
-                <th {% if ea.crud.showEntityActionsAsDropdown %}width="10px"{% endif %} dir="{{ ea.i18n.textDirection }}">
-                    <span class="sr-only">{{ 'action.entity_actions'|trans(ea.i18n.translationParameters, 'EasyAdminBundle') }}</span>
-                </th>
-            </tr>
-        {% endblock table_head %}
-        </thead>
+                </tr>
+            {% endblock table_head %}
+            </thead>
         {% endif %}
 
         <tbody>
@@ -184,6 +184,11 @@
             {% endif %}
         {% endblock table_body %}
         </tbody>
+
+        <tfoot>
+        {% block table_footer %}
+        {% endblock table_footer %}
+        </tfoot>
     </table>
 
     {% if entities|length > 0 %}

@@ -115,6 +115,8 @@ return [
         'username' => 'Brukernavn',
         'password' => 'Passord',
         'sign_in' => 'Logg inn',
+        // 'forgot_password' => '',
+        // 'remember_me' => '',
     ],
 
     'exception' => [
@@ -122,5 +124,11 @@ return [
         'entity_remove' => 'Elementet kan ikke slettes fordi andre elementer er avhengig av det.',
         'forbidden_action' => 'Den angitte handlingen kan ikke utføres på dette elementet.',
         'insufficient_entity_permission' => 'Du har ikke tilgang til dette elementet.',
+    ],
+
+    'autocomplete' => [
+        // 'no-results-found' => 'No results found',
+        // 'no-more-results' => 'No more results',
+        // 'loading-more-results' => 'Loading more results…',
     ],
 ];

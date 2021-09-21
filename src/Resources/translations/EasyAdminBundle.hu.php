@@ -116,6 +116,8 @@ return [
         'username' => 'Felhasználónév',
         'password' => 'Jelszó',
         'sign_in' => 'Belépés',
+        'forgot_password' => 'Elfelejtette jelszavát?',
+        'remember_me' => 'Emlékezzen rám',
     ],
 
     'exception' => [
@@ -123,5 +125,11 @@ return [
         'entity_remove' => 'Ez az elem nem törölhető más kapcsolódó adatok miatt.',
         'forbidden_action' => 'A kért művelet nem hajtható végre ezen az elemen.',
         'insufficient_entity_permission' => 'Nincs megfelelő jogosultsága az elemhez.',
+    ],
+
+    'autocomplete' => [
+        'no-results-found' => 'Nincs találat',
+        // 'no-more-results' => 'No more results',
+        'loading-more-results' => 'Töltés…',
     ],
 ];

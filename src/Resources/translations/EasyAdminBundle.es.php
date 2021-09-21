@@ -115,6 +115,8 @@ return [
         'username' => 'Nombre de usuario',
         'password' => 'Contraseña',
         'sign_in' => 'Iniciar sesión',
+        'forgot_password' => '¿Olvidaste tu contraseña?',
+        'remember_me' => 'Recuérdame',
     ],
 
     'exception' => [
@@ -122,5 +124,11 @@ return [
         'entity_remove' => 'Este elemento no se puede eliminar porque otros elementos dependen de él.',
         'forbidden_action' => 'No se puede realizar la acción solicitada en este elemento.',
         'insufficient_entity_permission' => 'No tienes permiso para acceder a este elemento.',
+    ],
+
+    'autocomplete' => [
+        'no-results-found' => 'No se han encontrado resultados',
+        'no-more-results' => 'No hay más resultados',
+        'loading-more-results' => 'Cargando más resultados…',
     ],
 ];

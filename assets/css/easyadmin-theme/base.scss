@@ -279,9 +279,14 @@ body.ea-mobile-sidebar-visible .sidebar {
     min-height: 100vh;
 }
 
+#content-resizer-handler {
+    min-height: calc(100vh - 56px);
+}
+
 .content-top {
     align-items: center;
     box-shadow: 0 1px 0 var(--content-top-border-color);
+    margin-bottom: 1px;
     padding: 5px 15px 5px var(--content-padding-left);
 
     @media(max-width: 992px) {
@@ -294,7 +299,6 @@ body.ea-mobile-sidebar-visible .sidebar {
         justify-content: space-between;
         padding: 11px calc(var(--lg-content-padding-right) + var(--resize-handler-width)) 11px var(--lg-content-padding-left);
         position: relative;
-        z-index: 2000; // must be higher than .content-header z-index
     }
 }
 
@@ -376,7 +380,7 @@ body.ea-mobile-sidebar-visible .sidebar {
         width: auto;
     }
     .content-search-label input.is-blank {
-        min-width: 350px;
+        min-width: 300px;
     }
     .content-search-label::after {
         /* the extra blank space is needed to make it look good */
@@ -404,7 +408,7 @@ body.ea-edit .content-header {
     @media(min-width: 992px) {
         position: sticky;
         top: -20px;
-        z-index: 1000;
+        z-index: 999;
     }
 }
 
@@ -593,7 +597,7 @@ body.ea-edit .content-header {
         width: 20px;
     }
 
-    .dropdown-item {
+    .dropdown-item, .dropdown-header {
         align-items: flex-start;
         display: flex;
         padding: 4px 5px;
@@ -730,27 +734,14 @@ body.show .field-avatar .image-avatar {
 // Flash messages
 #flash-messages {
     background: transparent;
-    box-shadow: var(--box-shadow-lg);
-    margin: 0 0 20px;
 }
 .alert {
     border-width: 0 0 var(--border-width);
     border-radius: 0;
     margin: 0;
-    padding-right: 55px;
-    position: relative;
-}
-.alert .alert-close {
-    background: transparent;
-    border: 0;
-    color: inherit;
-    cursor: pointer;
-    font-size: 24px;
-    font-weight: bold;
-    line-height:1;
-    opacity: 0.5;
-    padding: 0 0 0 3px;
-    position: absolute;
-    right: 30px;
-    top: 9px;
+
+    .btn-close, .btn-close:focus {
+        box-shadow: none;
+        outline: none;
+    }
 }

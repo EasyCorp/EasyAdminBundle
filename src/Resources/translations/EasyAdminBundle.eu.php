@@ -116,6 +116,8 @@ return [
         'username' => 'Erabiltzailea',
         'password' => 'Pasahitza',
         'sign_in' => 'Hasi saioa',
+        'forgot_password' => 'Pasahitza ahaztuta?',
+        'remember_me' => 'Gogoratu',
     ],
 
     'exception' => [
@@ -123,5 +125,11 @@ return [
         'entity_remove' => 'Artikulu hau ezin da ezabatu, beste elementu batzuk haren mende daudelako.',
         'forbidden_action' => 'Elementu honetan ezin da eskatutako ekintza burutu',
         'insufficient_entity_permission' => 'Artikulu hau eskuratzeko ez duzu baimenik.',
+    ],
+
+    'autocomplete' => [
+        'no-results-found' => 'Ez da bat datorrenik aurkitu',
+        // 'no-more-results' => 'No more results',
+        'loading-more-results' => 'Emaitza gehiago kargatzen…',
     ],
 ];

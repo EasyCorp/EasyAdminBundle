@@ -116,6 +116,8 @@ return [
         'username' => 'Username',
         'password' => 'Password',
         'sign_in' => 'Sign in',
+        'forgot_password' => 'Forgot Your Password?',
+        'remember_me' => 'Remember me',
     ],
 
     'exception' => [
@@ -123,5 +125,11 @@ return [
         'entity_remove' => 'This item can\'t be deleted because other items depend on it.',
         'forbidden_action' => 'The requested action can\'t be performed on this item.',
         'insufficient_entity_permission' => 'You don\'t have permission to access this item.',
+    ],
+
+    'autocomplete' => [
+        'no-results-found' => 'No results found',
+        'no-more-results' => 'No more results',
+        'loading-more-results' => 'Loading more results…',
     ],
 ];

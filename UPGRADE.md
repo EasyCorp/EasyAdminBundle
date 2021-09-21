@@ -4,6 +4,8 @@ Upgrade between EasyAdmin 3.x versions
 EasyAdmin 3.5.0
 ---------------
 
+### Redesigned Interface
+
 EasyAdmin interface has been completely redesigned.
 Read [this blog post](https://easycorp.github.io/blog/posts/redesigning-easyadmin)
 for more details.
@@ -11,6 +13,34 @@ for more details.
 If you have integrated Symfony actions into your backend, you probably defined
 some custom styles for them to match the rest of the backend design. In those
 cases, you'll need to update your custom styles to match the new design.
+
+### Updated some Page Titles
+
+The default titles of the `detail` and `edit` pages have changed:
+
+    // Before
+    'detail' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
+    'edit' => 'Edit %entity_label_singular% <small>(#%entity_short_id%)</small>',
+
+    // After
+    'detail' => '%entity_as_string%',
+    'edit' => 'Edit %entity_label_singular%',
+
+For example, a blog post with id `123` and `Lorem Ipsum Dolor Sit Amet` as its
+string representation, would see these changes:
+
+    // Before
+    detail = Blog Post <small>(#123)</small>
+    edit = Edit Blog Post <small>(#123)</small>
+
+    // After
+    detail = Lorem Ipsum Dolor Sit Amet
+    edit = Edit Blog Post
+
+If you want to revert those changes or use different page titles, read the docs
+about [EasyAdmin page title options](https://symfony.com/doc/current/bundles/EasyAdminBundle/crud.html#title-and-help-options).
+If you want to change the titles of all CRUD controllers, it's better to
+[configure CRUD options in the Dashboard class](https://symfony.com/doc/current/bundles/EasyAdminBundle/crud.html#same-configuration-in-different-crud-controllers).
 
 EasyAdmin 3.4.0
 ---------------

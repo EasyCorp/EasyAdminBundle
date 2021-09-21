@@ -167,7 +167,7 @@ fields in the ``new`` and ``edit`` pages, which use Symfony forms.
 Form Field Templates
 ~~~~~~~~~~~~~~~~~~~~
 
-EasyAdmin provides a ready-to-use `form theme`_ based on Boostrap 4. Dashboards
+EasyAdmin provides a ready-to-use `form theme`_ based on Bootstrap 5. Dashboards
 and CRUD controllers define ``addFormTheme(string $themePath)`` and
 ``setFormThemes(array $themePaths)`` methods so you can
 `customize individual form fields`_ using your own form theme.
@@ -188,7 +188,10 @@ requires to know the `form fragment naming rules`_ defined by Symfony:
 .. code-block:: twig
 
     {# templates/admin/form.html.twig #}
-    {% block _product_custom_title_widget %}
+    {# note that the Twig block name starts with an uppercase letter
+       ('_Product_...' instead of '_product_...') because the first part
+       of the block name is the unmodified entity name #}
+    {% block _Product_custom_title_widget %}
         {# ... #}
         <a href="...">More information</a>
     {% endblock %}
@@ -215,6 +218,13 @@ Finally, add this custom theme to the list of themes used to render backend form
             ;
         }
     }
+
+.. note::
+
+    You can also override the form widget by using the original field name.
+    In the example above it would look like this:
+    ``{% block _Product_title_widget %}``. The full syntax is:
+    ``{% block _<Entity name>_<Field name>_widget %}``.
 
 Adding Custom Web Assets
 ------------------------

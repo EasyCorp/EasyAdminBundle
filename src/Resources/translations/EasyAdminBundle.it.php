@@ -115,6 +115,8 @@ return [
         'username' => 'Nome utente',
         'password' => 'Password',
         'sign_in' => 'Accedi',
+        'forgot_password' => 'Password dimenticata?',
+        'remember_me' => 'Ricordami',
     ],
 
     'exception' => [
@@ -122,5 +124,11 @@ return [
         'entity_remove' => 'L\'elemento selezionato non può essere cancellato perché altri elementi dipendono da questo.',
         'forbidden_action' => 'L\'azione richiesta non può essere eseguita su questo elemento.',
         // 'insufficient_entity_permission' => 'You don't have permission to access this item.',
+    ],
+
+    'autocomplete' => [
+        'no-results-found' => 'Nessun risultato trovato',
+        'no-more-results' => 'Non ci sono altri risultati',
+        'loading-more-results' => 'Caricando più risultati…',
     ],
 ];

@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Orm;
 
+use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
@@ -25,6 +26,39 @@ final class EntityRepository implements EntityRepositoryInterface
     private $doctrine;
     private $entityFactory;
     private $formFactory;
+
+    private const NUMERIC_TYPES = [
+        'integer',
+        'int',
+        'smallint',
+        'tinyint',
+        'mediumint',
+        'bigint',
+        'decimal',
+        'numeric',
+        'float',
+        'double',
+    ];
+
+    private const DATE_TYPES = [
+        'date',
+        'datetime',
+        'timestamp',
+        'time',
+        'year',
+    ];
+
+    private const STRING_TYPES = [
+        'varchar',
+        'char',
+        'text',
+        'citext',
+    ];
+
+    private const GUID_TYPES = [
+        'uuid',
+        'guid',
+    ];
 
     public function __construct(AdminContextProvider $adminContextProvider, ManagerRegistry $doctrine, EntityFactory $entityFactory, FormFactory $formFactory)
     {
@@ -66,6 +100,12 @@ final class EntityRepository implements EntityRepositoryInterface
         $isIntegerQuery = ctype_digit($query) && $query >= -2147483648 && $query <= 2147483647;
         $isUuidQuery = 1 === preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i', $query);
         $isUlidQuery = Ulid::isValid($query);
+        try {
+            new \DateTime($query);
+            $isDateQuery = true;
+        } catch (\Exception $exception) {
+            $isDateQuery = false;
+        }
 
         $dqlParameters = [
             // adding '0' turns the string into a numeric value
@@ -73,6 +113,7 @@ final class EntityRepository implements EntityRepositoryInterface
             'uuid_query' => $query,
             'text_query' => '%'.$lowercaseQuery.'%',
             'words_query' => explode(' ', $lowercaseQuery),
+            'date_query' => $isDateQuery ? new \DateTime($query) : null,
         ];
 
         $entitiesAlreadyJoined = [];
@@ -117,33 +158,27 @@ final class EntityRepository implements EntityRepositoryInterface
                 $propertyDataType = $entityDto->getPropertyDataType($propertyName);
             }
 
-            $isSmallIntegerProperty = 'smallint' === $propertyDataType;
-            $isIntegerProperty = 'integer' === $propertyDataType;
-            $isNumericProperty = \in_array($propertyDataType, ['number', 'bigint', 'decimal', 'float']);
-            // 'citext' is a PostgreSQL extension (https://github.com/EasyCorp/EasyAdminBundle/issues/2556)
-            $isTextProperty = \in_array($propertyDataType, ['string', 'text', 'citext', 'array', 'simple_array']);
-            $isGuidProperty = \in_array($propertyDataType, ['guid', 'uuid']);
+            $databaseInternalType = Type::getType($propertyDataType)->getSQLDeclaration([], $this->doctrine->getConnection()->getDatabasePlatform());
             $isUlidProperty = 'ulid' === $propertyDataType;
 
             // this complex condition is needed to avoid issues on PostgreSQL databases
-            if (
-                ($isSmallIntegerProperty && $isSmallIntegerQuery) ||
-                ($isIntegerProperty && $isIntegerQuery) ||
-                ($isNumericProperty && $isNumericQuery)
-            ) {
+            if (($isIntegerQuery || $isSmallIntegerQuery || $isNumericQuery) && $this->isNumericType($databaseInternalType)) {
                 $queryBuilder->orWhere(sprintf('%s.%s = :query_for_numbers', $entityName, $propertyName))
                     ->setParameter('query_for_numbers', $dqlParameters['numeric_query']);
-            } elseif ($isGuidProperty && $isUuidQuery) {
+            } elseif ($this->isGuidType($databaseInternalType) && $isUuidQuery) {
                 $queryBuilder->orWhere(sprintf('%s.%s = :query_for_uuids', $entityName, $propertyName))
                     ->setParameter('query_for_uuids', $dqlParameters['uuid_query']);
             } elseif ($isUlidProperty && $isUlidQuery) {
                 $queryBuilder->orWhere(sprintf('%s.%s = :query_for_uuids', $entityName, $propertyName))
                     ->setParameter('query_for_uuids', $dqlParameters['uuid_query'], 'ulid');
-            } elseif ($isTextProperty) {
+            } elseif ($this->isTextType($databaseInternalType)) {
                 $queryBuilder->orWhere(sprintf('LOWER(%s.%s) LIKE :query_for_text', $entityName, $propertyName))
                     ->setParameter('query_for_text', $dqlParameters['text_query']);
                 $queryBuilder->orWhere(sprintf('LOWER(%s.%s) IN (:query_as_words)', $entityName, $propertyName))
                     ->setParameter('query_as_words', $dqlParameters['words_query']);
+            } elseif ($isDateQuery && $this->isDateType($databaseInternalType)) {
+                $queryBuilder->orWhere(sprintf('%s.%s = :query_for_uuids', $entityName, $propertyName))
+                    ->setParameter('query_for_uuids', $dqlParameters['date_query']);
             }
         }
     }
@@ -208,5 +243,32 @@ final class EntityRepository implements EntityRepositoryInterface
 
             ++$i;
         }
+    }
+
+    private function isNumericType(string $databaseType): bool
+    {
+        return \in_array($this->exctractType($databaseType), self::NUMERIC_TYPES, true);
+    }
+
+    private function isGuidType(string $databaseType): bool
+    {
+        return \in_array($this->exctractType($databaseType), self::GUID_TYPES, true);
+    }
+
+    private function isTextType(string $databaseType): bool
+    {
+        return \in_array($this->exctractType($databaseType), self::STRING_TYPES, true);
+    }
+
+    private function isDateType(string $databaseType): bool
+    {
+        return \in_array($this->exctractType($databaseType), self::DATE_TYPES, true);
+    }
+
+    private function exctractType(string $databaseType): string
+    {
+        return strtolower(
+            explode('(', $databaseType)[0]
+        );
     }
 }

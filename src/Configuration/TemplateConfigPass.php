@@ -281,5 +281,7 @@ class TemplateConfigPass implements ConfigPassInterface
                 return $templatePath;
             }
         }
+
+        return null;
     }
 }

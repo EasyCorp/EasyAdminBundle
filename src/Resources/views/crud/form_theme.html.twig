@@ -295,7 +295,7 @@
 
 {# Errors #}
 
-{% block ffform_widget_compound %}
+{% block form_widget_compound %}
     {% if 'collection' in block_prefixes %}
         {% if value is iterable %}
             {# the "is iterable" check is needed because if an object implements __toString() and
@@ -330,7 +330,7 @@
             {{ parent() }}
         {% endif %}
     {% endif %}
-{% endblock ffform_widget_compound %}
+{% endblock form_widget_compound %}
 
 {% block empty_collection %}
     <div class="empty collection-empty">

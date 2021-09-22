@@ -40,14 +40,6 @@ final class EntityRepository implements EntityRepositoryInterface
         'double',
     ];
 
-    private const DATE_TYPES = [
-        'date',
-        'datetime',
-        'timestamp',
-        'time',
-        'year',
-    ];
-
     private const STRING_TYPES = [
         'varchar',
         'char',
@@ -100,12 +92,6 @@ final class EntityRepository implements EntityRepositoryInterface
         $isIntegerQuery = ctype_digit($query) && $query >= -2147483648 && $query <= 2147483647;
         $isUuidQuery = 1 === preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i', $query);
         $isUlidQuery = Ulid::isValid($query);
-        try {
-            new \DateTime($query);
-            $isDateQuery = true;
-        } catch (\Exception $exception) {
-            $isDateQuery = false;
-        }
 
         $dqlParameters = [
             // adding '0' turns the string into a numeric value
@@ -113,7 +99,6 @@ final class EntityRepository implements EntityRepositoryInterface
             'uuid_query' => $query,
             'text_query' => '%'.$lowercaseQuery.'%',
             'words_query' => explode(' ', $lowercaseQuery),
-            'date_query' => $isDateQuery ? new \DateTime($query) : null,
         ];
 
         $entitiesAlreadyJoined = [];
@@ -176,9 +161,6 @@ final class EntityRepository implements EntityRepositoryInterface
                     ->setParameter('query_for_text', $dqlParameters['text_query']);
                 $queryBuilder->orWhere(sprintf('LOWER(%s.%s) IN (:query_as_words)', $entityName, $propertyName))
                     ->setParameter('query_as_words', $dqlParameters['words_query']);
-            } elseif ($isDateQuery && $this->isDateType($databaseInternalType)) {
-                $queryBuilder->orWhere(sprintf('%s.%s = :query_for_uuids', $entityName, $propertyName))
-                    ->setParameter('query_for_uuids', $dqlParameters['date_query']);
             }
         }
     }
@@ -260,10 +242,6 @@ final class EntityRepository implements EntityRepositoryInterface
         return \in_array($this->exctractType($databaseType), self::STRING_TYPES, true);
     }
 
-    private function isDateType(string $databaseType): bool
-    {
-        return \in_array($this->exctractType($databaseType), self::DATE_TYPES, true);
-    }
 
     private function exctractType(string $databaseType): string
     {

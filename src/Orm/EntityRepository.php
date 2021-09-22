@@ -38,6 +38,10 @@ final class EntityRepository implements EntityRepositoryInterface
         'numeric',
         'float',
         'double',
+        'money',
+        'smallmoney',
+        'bit',
+        'real',
     ];
 
     private const STRING_TYPES = [
@@ -45,6 +49,9 @@ final class EntityRepository implements EntityRepositoryInterface
         'char',
         'text',
         'citext',
+        'nchar',
+        'nvarchar',
+        'ntext',
     ];
 
     private const GUID_TYPES = [

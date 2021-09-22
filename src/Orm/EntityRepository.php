@@ -249,7 +249,6 @@ final class EntityRepository implements EntityRepositoryInterface
         return \in_array($this->exctractType($databaseType), self::STRING_TYPES, true);
     }
 
-
     private function exctractType(string $databaseType): string
     {
         return strtolower(

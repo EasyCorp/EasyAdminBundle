@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Orm;
 
+use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -111,6 +112,7 @@ final class EntityRepository implements EntityRepositoryInterface
         $entitiesAlreadyJoined = [];
         $configuredSearchableProperties = $searchDto->getSearchableProperties();
         $searchableProperties = empty($configuredSearchableProperties) ? $entityDto->getAllPropertyNames() : $configuredSearchableProperties;
+        $databasePlatform = $this->doctrine->getConnection()->getDatabasePlatform();
         foreach ($searchableProperties as $propertyName) {
             if ($entityDto->isAssociation($propertyName)) {
                 // support arbitrarily nested associations (e.g. foo.bar.baz.qux)
@@ -150,20 +152,33 @@ final class EntityRepository implements EntityRepositoryInterface
                 $propertyDataType = $entityDto->getPropertyDataType($propertyName);
             }
 
-            $databaseInternalType = Type::getType($propertyDataType)->getSQLDeclaration([], $this->doctrine->getConnection()->getDatabasePlatform());
+            // Keep the old checks around as fallback for now.
+            $isSmallIntegerProperty = 'smallint' === $propertyDataType;
+            $isIntegerProperty = 'integer' === $propertyDataType;
+            $isNumericProperty = \in_array($propertyDataType, ['number', 'bigint', 'decimal', 'float']);
+            // 'citext' is a PostgreSQL extension (https://github.com/EasyCorp/EasyAdminBundle/issues/2556)
+            $isTextProperty = \in_array($propertyDataType, ['string', 'text', 'citext', 'array', 'simple_array']);
+            $isGuidProperty = \in_array($propertyDataType, ['guid', 'uuid']);
+
+            try {
+                $databaseInternalType = Type::getType($propertyDataType)->getSQLDeclaration([], $databasePlatform);
+            } catch (Exception $e) {
+                $databaseInternalType = null;
+            }
             $isUlidProperty = 'ulid' === $propertyDataType;
 
             // this complex condition is needed to avoid issues on PostgreSQL databases
-            if (($isIntegerQuery || $isSmallIntegerQuery || $isNumericQuery) && $this->isNumericType($databaseInternalType)) {
+            if (($isIntegerQuery || $isSmallIntegerQuery || $isNumericQuery) &&
+                ($this->isNumericType($databaseInternalType) || $isSmallIntegerProperty || $isIntegerProperty || $isNumericProperty)) {
                 $queryBuilder->orWhere(sprintf('%s.%s = :query_for_numbers', $entityName, $propertyName))
                     ->setParameter('query_for_numbers', $dqlParameters['numeric_query']);
-            } elseif ($this->isGuidType($databaseInternalType) && $isUuidQuery) {
+            } elseif ($isUuidQuery && ($this->isGuidType($databaseInternalType) || $isGuidProperty)) {
                 $queryBuilder->orWhere(sprintf('%s.%s = :query_for_uuids', $entityName, $propertyName))
                     ->setParameter('query_for_uuids', $dqlParameters['uuid_query']);
             } elseif ($isUlidProperty && $isUlidQuery) {
                 $queryBuilder->orWhere(sprintf('%s.%s = :query_for_uuids', $entityName, $propertyName))
                     ->setParameter('query_for_uuids', $dqlParameters['uuid_query'], 'ulid');
-            } elseif ($this->isTextType($databaseInternalType)) {
+            } elseif ($isTextProperty || $this->isTextType($databaseInternalType)) {
                 $queryBuilder->orWhere(sprintf('LOWER(%s.%s) LIKE :query_for_text', $entityName, $propertyName))
                     ->setParameter('query_for_text', $dqlParameters['text_query']);
                 $queryBuilder->orWhere(sprintf('LOWER(%s.%s) IN (:query_as_words)', $entityName, $propertyName))
@@ -234,23 +249,27 @@ final class EntityRepository implements EntityRepositoryInterface
         }
     }
 
-    private function isNumericType(string $databaseType): bool
+    private function isNumericType(?string $databaseType): bool
     {
-        return \in_array($this->exctractType($databaseType), self::NUMERIC_TYPES, true);
+        return \in_array($this->extractType($databaseType), self::NUMERIC_TYPES, true);
     }
 
-    private function isGuidType(string $databaseType): bool
+    private function isGuidType(?string $databaseType): bool
     {
-        return \in_array($this->exctractType($databaseType), self::GUID_TYPES, true);
+        return \in_array($this->extractType($databaseType), self::GUID_TYPES, true);
     }
 
-    private function isTextType(string $databaseType): bool
+    private function isTextType(?string $databaseType): bool
     {
-        return \in_array($this->exctractType($databaseType), self::STRING_TYPES, true);
+        return \in_array($this->extractType($databaseType), self::STRING_TYPES, true);
     }
 
-    private function exctractType(string $databaseType): string
+    private function extractType(?string $databaseType): string
     {
+        if (!$databaseType) {
+            return '';
+        }
+
         return strtolower(
             explode('(', $databaseType)[0]
         );

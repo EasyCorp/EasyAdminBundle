@@ -28,7 +28,7 @@ final class Asset
      */
     public static function new(string $value): self
     {
-        $isWebpackEncoreEntry = !u($value)->endsWith('.css', '.js');
+        $isWebpackEncoreEntry = !u($value)->endsWith('.css') && !u($value)->endsWith('.js');
         if ($isWebpackEncoreEntry && !class_exists('Symfony\\WebpackEncoreBundle\\WebpackEncoreBundle')) {
             throw new \RuntimeException(sprintf('You are trying to add a Webpack Encore entry called "%s" but WebpackEncoreBundle is not installed in your project. Try running "composer require symfony/webpack-encore-bundle"', $value));
         }

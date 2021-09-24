@@ -271,6 +271,30 @@ the ``Action`` class constructor::
     // the third optional argument is the full CSS class of a FontAwesome icon
     $viewInvoice = Action::new('viewInvoice', 'Invoice', 'fa fa-file-invoice');
 
+Then you can configure the basic HTML/CSS attributes of the button/element
+that will represent the action::
+
+    $viewInvoice = Action::new('viewInvoice', 'Invoice', 'fa fa-file-invoice')
+        // renders the action as a <a> HTML element
+        ->displayAsLink()
+        // renders the action as a <button> HTML element
+        ->displayAsButton()
+        // a key-value array of attributes to add to the HTML element
+        ->setHtmlAttributes(['data-foo' => 'bar', 'target' => '_blank'])
+        // removes all existing CSS classes of the action and sets
+        // the given value as the CSS class of the HTML element
+        ->setCssClass('btn btn-primary action-foo')
+        // adds the given value to the existing CSS classes of the action (this is
+        // useful when customizing a built-in action, which already has CSS classes)
+        ->addCssClass('some-custom-css-class text-danger')
+
+.. note::
+
+    When using ``setCssClass()`` or ``addCssClass()`` methods, the action loses
+    the default CSS classes applied by EasyAdmin (``.btn`` and
+    ``.action-<the-action-name>``). You might want to add those CSS classes
+    manually to make your actions look as expected.
+
 Once you've configured the basics, use one of the following methods to define
 which method is executed when clicking on the action:
 

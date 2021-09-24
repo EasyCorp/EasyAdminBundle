@@ -55,6 +55,15 @@ final class ActionFactory
                 continue;
             }
 
+            if ('' === $actionDto->getCssClass()) {
+                $defaultCssClass = 'action-'.$actionDto->getName();
+                if (Crud::PAGE_INDEX !== $currentPage) {
+                    $defaultCssClass .= ' btn';
+                }
+
+                $actionDto->setCssClass($defaultCssClass);
+            }
+
             $entityActions[] = $this->processAction($currentPage, $actionDto, $entityDto);
         }
 
@@ -80,6 +89,10 @@ final class ActionFactory
 
             if (Crud::PAGE_INDEX !== $currentPage && $actionDto->isBatchAction()) {
                 throw new \RuntimeException(sprintf('Batch actions can be added only to the "index" page, but the "%s" batch action is defined in the "%s" page.', $actionDto->getName(), $currentPage));
+            }
+
+            if ('' === $actionDto->getCssClass()) {
+                $actionDto->setCssClass('btn action-'.$actionDto->getName());
             }
 
             $globalActions[] = $this->processAction($currentPage, $actionDto);

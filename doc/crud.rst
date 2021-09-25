@@ -286,11 +286,16 @@ Templates and Form Options
         ;
     }
 
-Redirection configuration after saving
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Custom Redirect After Creating or Editing Entities
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-If you want to change or improve redirection after saving an entity, you can override the
-``getRedirectResponseAfterSave()`` method. Eg. if you want to add a "save and view detail" action::
+By default, when clicking on "Save" button when creating or editing entities
+you are redirected to the previous page. If you want to change this behavior,
+override the ``getRedirectResponseAfterSave()`` method.
+
+For example, if you've added a :ref:`custom action <actions-custom>` called
+"Save and view detail", you may prefer to redirect to the detail page after
+saving the changes::
 
     protected function getRedirectResponseAfterSave(AdminContext $context, string $action): RedirectResponse
     {

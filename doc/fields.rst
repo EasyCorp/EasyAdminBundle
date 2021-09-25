@@ -331,6 +331,12 @@ the "panels" created with the special ``FormField`` object::
                 ->setHelp('Phone number is preferred'),
             TextField::new('phone'),
             TextField::new('email')->hideOnIndex(),
+
+            // panels can be collapsible too (useful if your forms are long)
+            // this makes the panel collapsible but renders it expanded by default
+            FormField::addPanel('Contact information')->collapsible(),
+            // this makes the panel collapsible and renders it collapsed by default
+            FormField::addPanel('Contact information')->renderCollapsed(),
         ];
     }
 

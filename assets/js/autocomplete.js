@@ -33,7 +33,7 @@ export default class Autocomplete
             }
         };
 
-        if ('required' !== element.getAttribute('required')) {
+        if (null === element.getAttribute('required') && null === element.getAttribute('disabled')) {
             config.plugins.clear_button = { title: '' };
         }
 

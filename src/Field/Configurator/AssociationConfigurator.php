@@ -56,7 +56,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         }
 
         if ($entityDto->isToOneAssociation($propertyName)) {
-            $this->configureToOneAssociation($field);
+            $this->configureToOneAssociation($field), $context->getI18n()->getTranslationDomain();
         }
 
         if ($entityDto->isToManyAssociation($propertyName)) {
@@ -97,12 +97,15 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         }
     }
 
-    private function configureToOneAssociation(FieldDto $field): void
+    private function configureToOneAssociation(FieldDto $field, string $translationDomain): void
     {
         $field->setCustomOption(AssociationField::OPTION_DOCTRINE_ASSOCIATION_TYPE, 'toOne');
 
         if (false === $field->getFormTypeOption('required')) {
-            $field->setFormTypeOptionIfNotSet('attr.placeholder', $this->translator->trans('label.form.empty_value', [], 'EasyAdminBundle'));
+            $placeholderText = ($translationDomain === 'messages')
+                ? $this->translator->trans('label.form.empty_value', [], 'EasyAdminBundle')
+                : 'label.form.empty_value';
+            $field->setFormTypeOptionIfNotSet('attr.placeholder', $placeholderText);
         }
 
         $targetEntityFqcn = $field->getDoctrineMetadata()->get('targetEntity');

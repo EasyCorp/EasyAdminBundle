@@ -419,7 +419,7 @@ Design Options
         // (this is not used in the 'edit'/'new' pages because they use Symfony Forms themes)
         ->setTemplatePath('admin/fields/my_template.html.twig')
 
-        // only applied to 'index' page. Useful for example to right-align numbers
+        // useful for example to right-align numbers/money values (this setting is ignored in 'detail' page)
         ->setTextAlign('right')
 
 Formatting Options

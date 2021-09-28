@@ -194,7 +194,7 @@
     {% if entities|length > 0 %}
         <div class="content-panel-footer without-padding without-border">
             {% block paginator %}
-                {{ include(ea.templatePath('crud/paginator')) }}
+                {{ include(ea.templatePath('crud/paginator'), { render_detailed_pagination: not some_results_are_hidden }) }}
             {% endblock paginator %}
         </div>
     {% endif %}

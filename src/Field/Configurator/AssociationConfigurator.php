@@ -56,7 +56,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         }
 
         if ($entityDto->isToOneAssociation($propertyName)) {
-            $this->configureToOneAssociation($field), $context->getI18n()->getTranslationDomain();
+            $this->configureToOneAssociation($field, $context->getI18n()->getTranslationDomain());
         }
 
         if ($entityDto->isToManyAssociation($propertyName)) {

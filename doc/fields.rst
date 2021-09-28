@@ -462,6 +462,8 @@ Misc. Options
         ->setFormType(TextType::class)
 
         // an array of parameters passed to the Symfony form type
+        // (this only overrides the values of the passed form type options;
+        // it leaves all the other existing type options unchanged)
         ->setFormTypeOptions(['option_name' => 'option_value'])
 
 .. _fields_reference:

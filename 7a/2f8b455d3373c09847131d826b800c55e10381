@@ -1,0 +1,27 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2021-09-28T17:43:22Z
+
+I thank you for this PR ... but I don't fully understand the problem behind this proposal. Do you think this could be a security or serious problem ... or is it just to avoid developers mistakes?
+
+---------------------------------------------------------------------------
+
+by pkly at 2021-09-29T06:13:33Z
+
+It'll basically make it so any html tags entered in the page_title block are always removed, regardless of if the developer remembered to or not
+
+---------------------------------------------------------------------------
+
+by quentint at 2021-09-29T06:31:36Z
+
+Yes, allowing things like that:
+
+![image](https://user-images.githubusercontent.com/349104/135214951-70fb8ecb-f106-4959-905f-d92f79414dee.png)
+
+Notice the `page_title` is an HTML snippet above the form, but is plain text in the `<title>`.
+
+---------------------------------------------------------------------------
+
+by pkly at 2021-09-29T06:56:25Z
+
+Personally I don't really see any harm in merging this

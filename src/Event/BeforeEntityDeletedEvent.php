@@ -20,4 +20,9 @@ final class BeforeEntityDeletedEvent
     {
         return $this->entityInstance;
     }
+
+    public function setEntityInstance($entityInstance): self
+    {
+        $this->entityInstance = $entityInstance;
+    }
 }

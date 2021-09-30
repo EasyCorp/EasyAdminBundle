@@ -24,4 +24,9 @@ final class AfterEntityUpdatedEvent
     {
         return $this->entityInstance;
     }
+
+    public function setEntityInstance($entityInstance): self
+    {
+        $this->entityInstance = $entityInstance;
+    }
 }

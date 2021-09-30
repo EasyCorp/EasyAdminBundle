@@ -57,14 +57,14 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         }
 
         // check for embedded associations
-        $parts = explode('.', $propertyName);
-        if (\count($parts) > 1) {
+        $propertyNameParts = explode('.', $propertyName);
+        if (\count($propertyNameParts) > 1) {
             // prepare starting class for association
-            $targetEntityFqcn = $entityDto->getPropertyMetadata($parts[0])->get('targetEntity');
-            array_shift($parts);
+            $targetEntityFqcn = $entityDto->getPropertyMetadata($propertyNameParts[0])->get('targetEntity');
+            array_shift($propertyNameParts);
             $metadata = $this->entityFactory->getEntityMetadata($targetEntityFqcn);
 
-            foreach ($parts as $association) {
+            foreach ($propertyNameParts as $association) {
                 if (!$metadata->hasAssociation($association)) {
                     throw new \RuntimeException(sprintf('There is no association for the class "%s" with name "%s"', $targetEntityFqcn, $association));
                 }

@@ -523,12 +523,12 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         return $responseParameters;
     }
 
-    private function getContext(): ?AdminContext
+    protected function getContext(): ?AdminContext
     {
         return $this->get(AdminContextProvider::class)->getContext();
     }
 
-    private function ajaxEdit(EntityDto $entityDto, ?string $propertyName, bool $newValue): AfterCrudActionEvent
+    protected function ajaxEdit(EntityDto $entityDto, ?string $propertyName, bool $newValue): AfterCrudActionEvent
     {
         $this->get(EntityUpdater::class)->updateProperty($entityDto, $propertyName, $newValue);
 

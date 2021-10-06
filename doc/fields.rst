@@ -354,7 +354,7 @@ the "tabs" created with the special ``FormField`` object::
             IdField::new('id')->hideOnForm(),
 
             // Add a tab
-            FormField::addTab('First Tab', 'user'),
+            FormField::addTab('First Tab'),
 
             // You can use a Form Panel inside a Form Tab
             FormField::addPanel('User Details'),

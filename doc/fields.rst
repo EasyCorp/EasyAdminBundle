@@ -365,10 +365,9 @@ the "tabs" created with the special ``FormField`` object::
 
             // Add a second Form Tab
             // Tabs can also define their icon, CSS class and help message
-            FormField::addPanel('Contact information')
+            FormField::addTab('Contact information Tab')
                 ->setIcon('phone')->addCssClass('optional')
                 ->setHelp('Phone number is preferred'),
-            FormField::addPanel('Second Tab'),
 
             TextField::new('phone'),
 

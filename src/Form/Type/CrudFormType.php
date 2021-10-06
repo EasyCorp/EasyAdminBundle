@@ -86,7 +86,7 @@ class CrudFormType extends AbstractType
                 $metadata['label'] = $fieldDto->getLabel();
                 $metadata['help'] = $fieldDto->getHelp();
                 $metadata[FormField::OPTION_ICON] = $fieldDto->getCustomOption(FormField::OPTION_ICON);
-                $currentFormTab =  $fieldDto->getLabel();
+                $currentFormTab = $fieldDto->getLabel();
 
                 // plain arrays are not enough for tabs because they are modified in the
                 // lifecycle of a form (e.g. add info about form errors). Use an ArrayObject instead.

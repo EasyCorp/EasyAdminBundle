@@ -76,11 +76,12 @@ final class FormField implements FieldInterface
     }
 
     /**
-     * @param string $label
+     * @param string  $label
      * @param ?string $icon
      * @return FormField
+     *
      */
-    public static function addTab($label, ?string $icon = null): self
+    public static function addTab(string $label, ?string $icon = null): self
     {
         $field = new self();
 

@@ -354,7 +354,7 @@ the "tabs" created with the special ``FormField`` object::
             IdField::new('id')->hideOnForm(),
 
             // Add a tab
-            FormField::addTab('First Tab'),
+            FormField::addTab('First Tab', 'user'),
 
             // You can use a Form Panel inside a Form Tab
             FormField::addPanel('User Details'),
@@ -364,10 +364,13 @@ the "tabs" created with the special ``FormField`` object::
             TextField::new('lastName'),
 
             // Add a second Form Tab
+            // Tabs can also define their icon, CSS class and help message
+            FormField::addPanel('Contact information')
+                ->setIcon('phone')->addCssClass('optional')
+                ->setHelp('Phone number is preferred'),
             FormField::addPanel('Second Tab'),
 
-            // Other fields
-            EmailField::new('email'),
+            TextField::new('phone'),
 
         ];
     }

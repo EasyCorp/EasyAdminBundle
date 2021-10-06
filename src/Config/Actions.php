@@ -160,6 +160,7 @@ final class Actions
         if (Action::BATCH_DELETE === $actionName) {
             return Action::new(Action::BATCH_DELETE, '__ea__action.delete', null)
                 ->linkToCrudAction(Action::BATCH_DELETE)
+                ->setCssClass('action-'.Action::BATCH_DELETE)
                 ->addCssClass('btn btn-secondary pr-0 text-danger');
         }
 
@@ -167,24 +168,28 @@ final class Actions
             return Action::new(Action::NEW, '__ea__action.new', null)
                 ->createAsGlobalAction()
                 ->linkToCrudAction(Action::NEW)
+                ->setCssClass('action-'.Action::NEW)
                 ->addCssClass('btn btn-primary');
         }
 
         if (Action::EDIT === $actionName) {
             return Action::new(Action::EDIT, '__ea__action.edit', null)
                 ->linkToCrudAction(Action::EDIT)
+                ->setCssClass('action-'.Action::EDIT)
                 ->addCssClass(Crud::PAGE_DETAIL === $pageName ? 'btn btn-primary' : '');
         }
 
         if (Action::DETAIL === $actionName) {
             return Action::new(Action::DETAIL, '__ea__action.detail')
                 ->linkToCrudAction(Action::DETAIL)
+                ->setCssClass('action-'.Action::DETAIL)
                 ->addCssClass(Crud::PAGE_EDIT === $pageName ? 'btn btn-secondary' : '');
         }
 
         if (Action::INDEX === $actionName) {
             return Action::new(Action::INDEX, '__ea__action.index')
                 ->linkToCrudAction(Action::INDEX)
+                ->setCssClass('action-'.Action::INDEX)
                 ->addCssClass(\in_array($pageName, [Crud::PAGE_DETAIL, Crud::PAGE_EDIT, Crud::PAGE_NEW], true) ? 'btn btn-secondary' : '');
         }
 
@@ -193,11 +198,13 @@ final class Actions
 
             return Action::new(Action::DELETE, '__ea__action.delete', Crud::PAGE_INDEX === $pageName ? null : 'fa fa-fw fa-trash-o')
                 ->linkToCrudAction(Action::DELETE)
+                ->setCssClass('action-'.Action::DELETE)
                 ->addCssClass($cssClass);
         }
 
         if (Action::SAVE_AND_RETURN === $actionName) {
             return Action::new(Action::SAVE_AND_RETURN, Crud::PAGE_EDIT === $pageName ? '__ea__action.save' : '__ea__action.create')
+                ->setCssClass('action-'.Action::SAVE_AND_RETURN)
                 ->addCssClass('btn btn-primary action-save')
                 ->displayAsButton()
                 ->setHtmlAttributes(['type' => 'submit', 'name' => 'ea[newForm][btn]', 'value' => $actionName])
@@ -206,6 +213,7 @@ final class Actions
 
         if (Action::SAVE_AND_CONTINUE === $actionName) {
             return Action::new(Action::SAVE_AND_CONTINUE, Crud::PAGE_EDIT === $pageName ? '__ea__action.save_and_continue' : '__ea__action.create_and_continue', 'far fa-edit')
+                ->setCssClass('action-'.Action::SAVE_AND_CONTINUE)
                 ->addCssClass('btn btn-secondary action-save')
                 ->displayAsButton()
                 ->setHtmlAttributes(['type' => 'submit', 'name' => 'ea[newForm][btn]', 'value' => $actionName])
@@ -214,6 +222,7 @@ final class Actions
 
         if (Action::SAVE_AND_ADD_ANOTHER === $actionName) {
             return Action::new(Action::SAVE_AND_ADD_ANOTHER, '__ea__action.create_and_add_another')
+                ->setCssClass('action-'.Action::SAVE_AND_ADD_ANOTHER)
                 ->addCssClass('btn btn-secondary action-save')
                 ->displayAsButton()
                 ->setHtmlAttributes(['type' => 'submit', 'name' => 'ea[newForm][btn]', 'value' => $actionName])

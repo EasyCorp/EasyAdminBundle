@@ -77,9 +77,10 @@ final class FormField implements FieldInterface
 
     /**
      * @param string $label
+     * @param ?string $icon
      * @return FormField
      */
-    public static function addTab($label): self
+    public static function addTab($label, ?string $icon = null): self
     {
         $field = new self();
 
@@ -91,7 +92,8 @@ final class FormField implements FieldInterface
             ->setTemplateName('crud/field/form_tab')
             ->setLabel($label)
             ->setFormType(EasyAdminTabType::class)
-            ->setFormTypeOptions(['mapped' => false, 'required' => false]);
+            ->setFormTypeOptions(['mapped' => false, 'required' => false])
+            ->setCustomOption(self::OPTION_ICON, $icon);
     }
 
     public function setIcon(string $iconCssClass): self

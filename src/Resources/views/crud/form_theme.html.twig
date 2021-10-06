@@ -416,7 +416,7 @@
         <div class="col-12">
             <div class="nav-tabs-custom form-tabs">
                 <ul class="nav nav-tabs">
-                    {% for tab_name, tab_config in ea_form_tabs %}
+                    {% for tab_name, tab_config in ea_crud_form.form_tabs %}
                         <li class="nav-item">
                             <a class="nav-link {% if tab_config.active %}active{% endif %}" href="#{{ tab_config['id'] }}" id="{{ tab_config['id'] }}-tab" data-bs-toggle="tab">
                                 {%- if tab_config.icon|default(false) -%}
@@ -433,7 +433,7 @@
                     {% endfor %}
                 </ul>
                 <div class="tab-content">
-                    {% for tab_name, tab_config in ea_form_tabs %}
+                    {% for tab_name, tab_config in ea_crud_form.form_tabs %}
                         <div id="{{ tab_config['id'] }}" class="tab-pane {% if tab_config.active %}active{% endif %} {{ tab_config['css_class']|default('') }}">
                             {% if tab_config['help']|default(false) %}
                                 <div class="content-header-help tab-help">
@@ -441,7 +441,14 @@
                                 </div>
                             {% endif %}
 
-                            {{ block('ea_crud_widget_panels') }}
+                            <div class="row">
+                                {% if tab_name is defined and tab_name %}
+                                    {% for field in form|filter(field => not ea_crud_form.form_panels|filter((panel_config, form_panel) => form_panel == field.vars.ea_crud_form.form_panel) and field.vars.ea_crud_form.form_tab == tab_name) %}
+                                        {{ form_row(field) }}
+                                    {% endfor %}
+                                {% endif %}
+                                {{ block('ea_crud_widget_panels') }}
+                            </div>
                         </div>
                     {% endfor %}
                 </div>
@@ -501,7 +508,7 @@
             </div>
         </div>
     {% else %}
-        {% for field in form|filter(field => 'hidden' not in field.vars.block_prefixes and (not field.vars.ea_crud_form.form_tab or field.vars.ea_crud_form.form_tab == tab_name)) %}
+        {% for field in form|filter(field => 'hidden' not in field.vars.block_prefixes and not field.vars.ea_crud_form.form_tab) %}
             {{ form_row(field) }}
         {% endfor %}
     {% endfor %}

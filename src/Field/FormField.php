@@ -5,6 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormPanelType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormRowType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminTabType;
 use Symfony\Component\Uid\Ulid;
 
 /**
@@ -72,6 +73,25 @@ final class FormField implements FieldInterface
             ->addCssClass('field-form_row')
             ->setFormTypeOptions(['mapped' => false, 'required' => false])
             ->setCustomOption(self::OPTION_ROW_BREAKPOINT, $breakpointName);
+    }
+
+    /**
+     * @return static
+     */
+    public static function addTab(string $label, ?string $icon = null): self
+    {
+        $field = new self();
+
+        return $field
+            ->setFieldFqcn(__CLASS__)
+            ->hideOnIndex()
+            ->hideOnDetail()
+            ->setProperty('ea_form_tab_'.(new Ulid()))
+            ->setTemplateName('crud/field/form_tab')
+            ->setLabel($label)
+            ->setFormType(EasyAdminTabType::class)
+            ->setFormTypeOptions(['mapped' => false, 'required' => false])
+            ->setCustomOption(self::OPTION_ICON, $icon);
     }
 
     public function setIcon(string $iconCssClass): self

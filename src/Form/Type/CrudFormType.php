@@ -82,7 +82,9 @@ class CrudFormType extends AbstractType
                 // The first tab should be marked as active by default
                 $metadata['active'] = 0 === \count($formTabs);
                 $metadata['errors'] = 0;
-                $currentFormTab = $metadata['fieldName'];
+                $metadata['id'] = $fieldDto->getProperty();
+                $metadata['label'] = $fieldDto->getLabel();
+                $currentFormTab =  $fieldDto->getLabel();
 
                 // plain arrays are not enough for tabs because they are modified in the
                 // lifecycle of a form (e.g. add info about form errors). Use an ArrayObject instead.

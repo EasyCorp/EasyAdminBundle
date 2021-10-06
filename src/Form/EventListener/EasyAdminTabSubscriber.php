@@ -26,14 +26,14 @@ class EasyAdminTabSubscriber implements EventSubscriberInterface
      */
     public function handleViolations(FormEvent $event)
     {
-        $formTabs = $event->getForm()->getConfig()->getAttribute('easyadmin_form_tabs');
+        $formTabs = $event->getForm()->getConfig()->getAttribute('ea_form_tabs');
 
         $firstTabWithErrors = null;
         foreach ($event->getForm() as $child) {
             $errors = $child->getErrors(true);
 
             if (\count($errors) > 0) {
-                $formTab = $child->getConfig()->getAttribute('easyadmin_form_tab');
+                $formTab = $child->getConfig()->getAttribute('ea_form_tab');
                 $formTabs[$formTab]['errors'] += \count($errors);
 
                 if (null === $firstTabWithErrors) {

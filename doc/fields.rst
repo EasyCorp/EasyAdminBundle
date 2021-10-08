@@ -331,6 +331,12 @@ the "panels" created with the special ``FormField`` object::
                 ->setHelp('Phone number is preferred'),
             TextField::new('phone'),
             TextField::new('email')->hideOnIndex(),
+
+            // panels can be collapsible too (useful if your forms are long)
+            // this makes the panel collapsible but renders it expanded by default
+            FormField::addPanel('Contact information')->collapsible(),
+            // this makes the panel collapsible and renders it collapsed by default
+            FormField::addPanel('Contact information')->renderCollapsed(),
         ];
     }
 
@@ -413,7 +419,7 @@ Design Options
         // (this is not used in the 'edit'/'new' pages because they use Symfony Forms themes)
         ->setTemplatePath('admin/fields/my_template.html.twig')
 
-        // only applied to 'index' page. Useful for example to right-align numbers
+        // useful for example to right-align numbers/money values (this setting is ignored in 'detail' page)
         ->setTextAlign('right')
 
 Formatting Options
@@ -456,6 +462,8 @@ Misc. Options
         ->setFormType(TextType::class)
 
         // an array of parameters passed to the Symfony form type
+        // (this only overrides the values of the passed form type options;
+        // it leaves all the other existing type options unchanged)
         ->setFormTypeOptions(['option_name' => 'option_value'])
 
 .. _fields_reference:

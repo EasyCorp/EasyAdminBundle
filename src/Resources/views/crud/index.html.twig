@@ -155,24 +155,26 @@
 
                 {% endif %}
             {% else %}
-                {% for i in 1..14 %}
-                    <tr class="empty-row">
-                        <td><span></span></td>
-                        <td><span></span></td>
-                        <td><span></span></td>
-                        <td><span></span></td>
-                        <td><span></span></td>
-                        <td><span></span></td>
-                    </tr>
-
-                    {% if 3 == loop.index %}
-                        <tr class="no-results">
-                            <td colspan="100">
-                                {{ 'datagrid.no_results'|trans(ea.i18n.translationParameters, 'EasyAdminBundle') }}
-                            </td>
+                {% block table_body_empty %}
+                    {% for i in 1..14 %}
+                        <tr class="empty-row">
+                            <td><span></span></td>
+                            <td><span></span></td>
+                            <td><span></span></td>
+                            <td><span></span></td>
+                            <td><span></span></td>
+                            <td><span></span></td>
                         </tr>
-                    {% endif %}
-                {% endfor %}
+
+                        {% if 3 == loop.index %}
+                            <tr class="no-results">
+                                <td colspan="100">
+                                    {{ 'datagrid.no_results'|trans(ea.i18n.translationParameters, 'EasyAdminBundle') }}
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                {% endblock table_body_empty %}
             {% endfor %}
 
             {% if some_results_are_hidden %}
@@ -194,7 +196,7 @@
     {% if entities|length > 0 %}
         <div class="content-panel-footer without-padding without-border">
             {% block paginator %}
-                {{ include(ea.templatePath('crud/paginator')) }}
+                {{ include(ea.templatePath('crud/paginator'), { render_detailed_pagination: not some_results_are_hidden }) }}
             {% endblock paginator %}
         </div>
     {% endif %}

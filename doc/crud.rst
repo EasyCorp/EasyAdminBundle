@@ -286,6 +286,33 @@ Templates and Form Options
         ;
     }
 
+Custom Redirect After Creating or Editing Entities
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+By default, when clicking on "Save" button when creating or editing entities
+you are redirected to the previous page. If you want to change this behavior,
+override the ``getRedirectResponseAfterSave()`` method.
+
+For example, if you've added a :ref:`custom action <actions-custom>` called
+"Save and view detail", you may prefer to redirect to the detail page after
+saving the changes::
+
+    protected function getRedirectResponseAfterSave(AdminContext $context, string $action): RedirectResponse
+    {
+        $submitButtonName = $context->getRequest()->request->all()['ea']['newForm']['btn'];
+
+        if ('saveAndViewDetail' === $submitButtonName) {
+            $url = $this->get(AdminUrlGenerator::class)
+                ->setAction(Action::DETAIL)
+                ->setEntityId($context->getEntity()->getPrimaryKeyValue())
+                ->generateUrl();
+
+            return $this->redirect($url);
+        }
+
+        return parent::getRedirectResponseAfterSave($context, $action);
+    }
+
 Same Configuration in Different CRUD Controllers
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

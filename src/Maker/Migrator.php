@@ -787,7 +787,7 @@ final class Migrator
                 $methodArguments[] = $routeParameters;
             }
 
-            $code = $code->{ $yieldResult ? '_yield' : 'noop'}()->_staticCall('MenuItem', 'linktoRoute', $methodArguments);
+            $code = $code->{ $yieldResult ? '_yield' : 'noop'}()->_staticCall('MenuItem', 'linkToRoute', $methodArguments);
         } elseif ('divider' === $type) {
             $methodArguments = [];
             if ($label) {

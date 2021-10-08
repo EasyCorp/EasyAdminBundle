@@ -309,8 +309,8 @@ Customizing the Backend Design
 
 The design of the backend is created with lots of CSS variables. This makes it
 easier to customize it to your own needs. You'll find all variables in the
-``assets/css/easyadmin-theme/variables.scss`` file. To override any of them,
-create a CSS file and redefine the variable values:
+``vendor/easycorp/easyadmin-bundle/assets/css/easyadmin-theme/variables.scss`` file.
+To override any of them, create a CSS file and redefine the variable values:
 
 .. code-block:: text
 

@@ -484,7 +484,7 @@ const App = (() => {
             // itself to support custom/complex fields.
             //
             // Adding visual error counter feedback for invalid fields inside form tabs (visible or not)
-            document.querySelector('.ea-edit-Page, .ea-new-Page').querySelectorAll('[type="submit"]').forEach((button) => {
+            document.querySelector('.ea-edit, .ea-new').querySelectorAll('[type="submit"]').forEach((button) => {
                 button.addEventListener('click', function onSubmitButtonsClick(clickEvent) {
 
                     let formHasErrors = false;
@@ -572,7 +572,7 @@ const App = (() => {
             form.addEventListener('submit', () => {
                 // this timeout is needed to include the disabled button into the submitted form
                 setTimeout(() => {
-                    const submitButtons = document.querySelector('.ea-edit-Page, .ea-new-Page').querySelectorAll('[type="submit"]');
+                    const submitButtons = document.querySelector('.ea-edit, .ea-new').querySelectorAll('[type="submit"]');
                     submitButtons.forEach((button) => {
                         button.setAttribute('disabled', 'disabled');
                     });

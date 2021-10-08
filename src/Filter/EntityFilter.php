@@ -12,6 +12,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\EntityFilterType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
 use Symfony\Component\Uid\AbstractUid;
+use Symfony\Component\Uid\Ulid;
 
 /**
  * @author Yonel Ceruto <yonelceruto@gmail.com>
@@ -68,8 +69,13 @@ final class EntityFilter implements FilterInterface
             if ($fieldDto && AssociationField::class === $fieldDto->getFieldFqcn()) {
                 $id = $filterDataDto->getPrimaryKeyValue();
                 if ($id instanceof AbstractUid) {
+                    if ($id instanceof Ulid) {
+                        $idType = 'ulid';
+                    } else {
+                        $idType = 'uuid';
+                    }
                     $queryBuilder->andWhere($orX)
-                        ->setParameter($parameterName, $id->toRfc4122());
+                        ->setParameter($parameterName, $id, $idType);
                 } else {
                     $queryBuilder->andWhere($orX)
                         ->setParameter($parameterName, $value);

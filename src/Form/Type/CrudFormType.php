@@ -79,6 +79,7 @@ class CrudFormType extends AbstractType
             // applied to the form fields defined after it) and store its details
             // in a field to get them in form template
             if (\in_array($formFieldType, ['ea_tab', EasyAdminTabType::class], true)) {
+                ++$currentFormPanel;
                 // The first tab should be marked as active by default
                 $metadata['active'] = 0 === \count($formTabs);
                 $metadata['errors'] = 0;

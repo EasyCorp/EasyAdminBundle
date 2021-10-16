@@ -74,23 +74,6 @@ class CrudFormType extends AbstractType
                 continue;
             }
 
-            // if the form field is a special 'tab' design element, don't add it
-            // to the form. Instead, consider it the current form group (this is
-            // applied to the form fields defined after it) and store its details
-            // in a field to get them in form template
-            if (\in_array($formFieldType, ['ea_tab', EasyAdminTabType::class], true)) {
-                // The first tab should be marked as active by default
-                $metadata['active'] = 0 === \count($formTabs);
-                $metadata['errors'] = 0;
-                $currentFormTab = $metadata['fieldName'];
-
-                // plain arrays are not enough for tabs because they are modified in the
-                // lifecycle of a form (e.g. add info about form errors). Use an ArrayObject instead.
-                $formTabs[$currentFormTab] = new ArrayObject($metadata);
-
-                continue;
-            }
-
             $formField = $builder->getFormFactory()->createNamedBuilder($name, $formFieldType, null, $formFieldOptions);
             $formField->setAttribute('ea_entity', $entityDto);
             $formField->setAttribute('ea_form_panel', $currentFormPanel);

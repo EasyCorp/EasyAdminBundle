@@ -193,7 +193,7 @@ final class Actions
 
             return Action::new(Action::DELETE, '__ea__action.delete', Crud::PAGE_INDEX === $pageName ? null : 'fa fa-fw fa-trash-o')
                 ->linkToCrudAction(Action::DELETE)
-                ->addCssClass('action-' . Action::DELETE)
+                ->addCssClass('action-'.Action::DELETE)
                 ->addCssClass($cssClass);
         }
 

@@ -113,8 +113,7 @@ final class ConfigManager
             return $this->backendConfig;
         }
 
-        // Cached response below is not working on live so always return true here
-        if (1==1 || true === $this->debug) {
+        if (true === $this->debug) {
             return $this->backendConfig = $this->doProcessConfig($this->originalBackendConfig);
         }
 

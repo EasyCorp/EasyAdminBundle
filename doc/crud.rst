@@ -185,7 +185,7 @@ Date, Time and Number Formatting Options
         return $crud
             // the argument must be either one of these strings: 'short', 'medium', 'long', 'full', 'none'
             // (the strings are also available as \EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField::FORMAT_* constants)
-            // or a valid ICU Datetime Pattern (see http://userguide.icu-project.org/formatparse/datetime)
+            // or a valid ICU Datetime Pattern (see https://unicode-org.github.io/icu/userguide/format_parse/datetime/)
             ->setDateFormat('...')
             ->setTimeFormat('...')
 

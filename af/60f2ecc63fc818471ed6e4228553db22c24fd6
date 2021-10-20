@@ -1,0 +1,23 @@
+---------------------------------------------------------------------------
+
+by paulalbertdev at 2021-10-17T23:04:17Z
+
+Hi @bohanyang !
+I have no problem using batch deletion personally...
+But it's "simple" deletion that doesn't work anymore.
+I'm gonna make a pull request to solve my problem, cause adding the right css class in that same file seems to work ;)
+
+---------------------------------------------------------------------------
+
+by bohanyang at 2021-10-18T11:18:17Z
+
+Although adding the CSS class for single deletion only fixes *this specific* problem,
+but *ALL* built-in actions should have their own CSS class added,
+just like what they were before that commit.
+
+---------------------------------------------------------------------------
+
+by paulalbertdev at 2021-10-18T14:05:07Z
+
+Ho you're right, I hadn't seen your entire changes, just the preview showing only changes for the BATCH_DELETE functionnality.
+Gonna cancel my PR, sorry !

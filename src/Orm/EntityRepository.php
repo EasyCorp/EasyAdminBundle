@@ -73,6 +73,7 @@ final class EntityRepository implements EntityRepositoryInterface
             'uuid_query' => $query,
             'text_query' => '%'.$lowercaseQuery.'%',
             'words_query' => explode(' ', $lowercaseQuery),
+            'strict_text_query' => $lowercaseQuery,
         ];
 
         $entitiesAlreadyJoined = [];
@@ -140,10 +141,15 @@ final class EntityRepository implements EntityRepositoryInterface
                 $queryBuilder->orWhere(sprintf('%s.%s = :query_for_uuids', $entityName, $propertyName))
                     ->setParameter('query_for_uuids', $dqlParameters['uuid_query'], 'ulid');
             } elseif ($isTextProperty) {
-                $queryBuilder->orWhere(sprintf('LOWER(%s.%s) LIKE :query_for_text', $entityName, $propertyName))
-                    ->setParameter('query_for_text', $dqlParameters['text_query']);
-                $queryBuilder->orWhere(sprintf('LOWER(%s.%s) IN (:query_as_words)', $entityName, $propertyName))
-                    ->setParameter('query_as_words', $dqlParameters['words_query']);
+                if (!in_array($propertyName, $searchDto->getStrictTextSearchFields(), true)) {
+                    $queryBuilder->orWhere(sprintf('LOWER(%s.%s) LIKE :query_for_text', $entityName, $propertyName))
+                        ->setParameter('query_for_text', $dqlParameters['text_query']);
+                    $queryBuilder->orWhere(sprintf('LOWER(%s.%s) IN (:query_as_words)', $entityName, $propertyName))
+                        ->setParameter('query_as_words', $dqlParameters['words_query']);
+                } else {
+                    $queryBuilder->orWhere(sprintf('LOWER(%s.%s) = :query_for_strict_text', $entityName, $propertyName))
+                        ->setParameter('query_for_strict_text', $dqlParameters['strict_text_query']);
+                }
             }
         }
     }

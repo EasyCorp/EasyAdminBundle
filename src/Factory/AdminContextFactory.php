@@ -207,7 +207,7 @@ final class AdminContextFactory
         $customSort = $queryParams[EA::SORT] ?? [];
         $appliedFilters = $queryParams[EA::FILTERS] ?? [];
 
-        return new SearchDto($request, $searchableProperties, $query, $defaultSort, $customSort, $appliedFilters);
+        return new SearchDto($request, $searchableProperties, $query, $defaultSort, $customSort, $appliedFilters, $crudDto->getStrictTextSearchFields());
     }
 
     // Copied from https://github.com/symfony/twig-bridge/blob/master/AppVariable.php

@@ -46,6 +46,7 @@ final class CrudDto
     private $entityPermission;
     private $contentWidth;
     private $sidebarWidth;
+    private $strictTextSearchFields;
 
     public function __construct()
     {
@@ -62,6 +63,7 @@ final class CrudDto
         $this->newFormOptions = KeyValueStore::new();
         $this->editFormOptions = KeyValueStore::new();
         $this->overriddenTemplates = [];
+        $this->strictTextSearchFields = [];
     }
 
     public function getControllerFqcn(): ?string
@@ -387,5 +389,15 @@ final class CrudDto
     public function setSidebarWidth(string $sidebarWidth): void
     {
         $this->sidebarWidth = $sidebarWidth;
+    }
+
+    public function getStrictTextSearchFields(): array
+    {
+        return $this->strictTextSearchFields;
+    }
+
+    public function setStrictTextSearchFields(array $strictTextSearchFields): void
+    {
+        $this->strictTextSearchFields = $strictTextSearchFields;
     }
 }

@@ -141,7 +141,7 @@ final class EntityRepository implements EntityRepositoryInterface
                 $queryBuilder->orWhere(sprintf('%s.%s = :query_for_uuids', $entityName, $propertyName))
                     ->setParameter('query_for_uuids', $dqlParameters['uuid_query'], 'ulid');
             } elseif ($isTextProperty) {
-                if (!in_array($propertyName, $searchDto->getStrictTextSearchFields(), true)) {
+                if (!\in_array($propertyName, $searchDto->getStrictTextSearchFields(), true)) {
                     $queryBuilder->orWhere(sprintf('LOWER(%s.%s) LIKE :query_for_text', $entityName, $propertyName))
                         ->setParameter('query_for_text', $dqlParameters['text_query']);
                     $queryBuilder->orWhere(sprintf('LOWER(%s.%s) IN (:query_as_words)', $entityName, $propertyName))

@@ -126,4 +126,10 @@ return [
         'forbidden_action' => 'A ação requisitada não pode ser executada nesse item.',
         'insufficient_entity_permission' => 'Você não possui permissão para acessar este item.',
     ],
+
+    'autocomplete' => [
+        'no-results-found' => 'Nenhum resultado encontrado',
+        // 'no-more-results' => 'No more results',
+        'loading-more-results' => 'Carregando mais resultados…',
+    ],
 ];

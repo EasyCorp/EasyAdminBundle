@@ -24,9 +24,6 @@ class NumericFilterType extends AbstractType
         $this->valueTypeOptions = $valueTypeOptions;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('value2', $options['value_type'], $options['value_type_options'] + [
@@ -54,9 +51,6 @@ class NumericFilterType extends AbstractType
         ));
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
@@ -65,17 +59,11 @@ class NumericFilterType extends AbstractType
         ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getBlockPrefix(): string
     {
         return 'ea_numeric_filter';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getParent(): string
     {
         return ComparisonFilterType::class;

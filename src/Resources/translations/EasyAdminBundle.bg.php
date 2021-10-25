@@ -125,4 +125,10 @@ return [
         'forbidden_action' => 'Заявеното действие не може да се изпълни за този елемент.',
         'insufficient_entity_permission' => 'Нямате разрешение за достъп до този елемент.',
     ],
+
+    'autocomplete' => [
+        'no-results-found' => 'Няма намерени съвпадения',
+        'no-more-results' => 'Няма повече резултати',
+        'loading-more-results' => 'Зареждат се още…',
+    ],
 ];

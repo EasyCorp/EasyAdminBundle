@@ -53,6 +53,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use function Symfony\Component\String\u;
 
@@ -83,9 +84,6 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         return $filters;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function configureFields(string $pageName): iterable
     {
         return $this->get(FieldProvider::class)->getDefaultFields($pageName);
@@ -238,25 +236,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
             $this->get('event_dispatcher')->dispatch(new AfterEntityUpdatedEvent($entityInstance));
 
-            $submitButtonName = $context->getRequest()->request->all()['ea']['newForm']['btn'];
-            if (Action::SAVE_AND_CONTINUE === $submitButtonName) {
-                $url = $this->get(AdminUrlGenerator::class)
-                    ->setAction(Action::EDIT)
-                    ->setEntityId($context->getEntity()->getPrimaryKeyValue())
-                    ->generateUrl();
-
-                return $this->redirect($url);
-            }
-
-            if (Action::SAVE_AND_RETURN === $submitButtonName) {
-                $url = empty($context->getReferrer())
-                    ? $this->get(AdminUrlGenerator::class)->setAction(Action::INDEX)->generateUrl()
-                    : $context->getReferrer();
-
-                return $this->redirect($url);
-            }
-
-            return $this->redirectToRoute($context->getDashboardRouteName());
+            return $this->getRedirectResponseAfterSave($context, Action::EDIT);
         }
 
         $responseParameters = $this->configureResponseParameters(KeyValueStore::new([
@@ -313,30 +293,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             $this->get('event_dispatcher')->dispatch(new AfterEntityPersistedEvent($entityInstance));
             $context->getEntity()->setInstance($entityInstance);
 
-            $submitButtonName = $context->getRequest()->request->all()['ea']['newForm']['btn'];
-            if (Action::SAVE_AND_CONTINUE === $submitButtonName) {
-                $url = $this->get(AdminUrlGenerator::class)
-                    ->setAction(Action::EDIT)
-                    ->setEntityId($context->getEntity()->getPrimaryKeyValue())
-                    ->generateUrl();
-
-                return $this->redirect($url);
-            }
-
-            if (Action::SAVE_AND_RETURN === $submitButtonName) {
-                $url = $context->getReferrer()
-                    ?? $this->get(AdminUrlGenerator::class)->setAction(Action::INDEX)->generateUrl();
-
-                return $this->redirect($url);
-            }
-
-            if (Action::SAVE_AND_ADD_ANOTHER === $submitButtonName) {
-                $url = $this->get(AdminUrlGenerator::class)->setAction(Action::NEW)->generateUrl();
-
-                return $this->redirect($url);
-            }
-
-            return $this->redirectToRoute($context->getDashboardRouteName());
+            return $this->getRedirectResponseAfterSave($context, Action::NEW);
         }
 
         $responseParameters = $this->configureResponseParameters(KeyValueStore::new([
@@ -566,12 +523,12 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         return $responseParameters;
     }
 
-    private function getContext(): ?AdminContext
+    protected function getContext(): ?AdminContext
     {
         return $this->get(AdminContextProvider::class)->getContext();
     }
 
-    private function ajaxEdit(EntityDto $entityDto, ?string $propertyName, bool $newValue): AfterCrudActionEvent
+    protected function ajaxEdit(EntityDto $entityDto, ?string $propertyName, bool $newValue): AfterCrudActionEvent
     {
         $this->get(EntityUpdater::class)->updateProperty($entityDto, $propertyName, $newValue);
 
@@ -635,5 +592,34 @@ abstract class AbstractCrudController extends AbstractController implements Crud
                 $uploadNew($file, $uploadDir, $fileName);
             }
         }
+    }
+
+    protected function getRedirectResponseAfterSave(AdminContext $context, string $action): RedirectResponse
+    {
+        $submitButtonName = $context->getRequest()->request->all()['ea']['newForm']['btn'];
+
+        if (Action::SAVE_AND_CONTINUE === $submitButtonName) {
+            $url = $this->get(AdminUrlGenerator::class)
+                ->setAction(Action::EDIT)
+                ->setEntityId($context->getEntity()->getPrimaryKeyValue())
+                ->generateUrl();
+
+            return $this->redirect($url);
+        }
+
+        if (Action::SAVE_AND_RETURN === $submitButtonName) {
+            $url = $context->getReferrer()
+                ?? $this->get(AdminUrlGenerator::class)->setAction(Action::INDEX)->generateUrl();
+
+            return $this->redirect($url);
+        }
+
+        if (Action::SAVE_AND_ADD_ANOTHER === $submitButtonName) {
+            $url = $this->get(AdminUrlGenerator::class)->setAction(Action::NEW)->generateUrl();
+
+            return $this->redirect($url);
+        }
+
+        return $this->redirectToRoute($context->getDashboardRouteName());
     }
 }

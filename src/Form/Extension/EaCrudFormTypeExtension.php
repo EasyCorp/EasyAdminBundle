@@ -24,17 +24,11 @@ class EaCrudFormTypeExtension extends AbstractTypeExtension
         $this->adminContextProvider = $adminContextProvider;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefined(['ea_crud_form']);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function finishView(FormView $view, FormInterface $form, array $options)
     {
         if (null === $this->adminContextProvider->getContext()) {
@@ -49,9 +43,6 @@ class EaCrudFormTypeExtension extends AbstractTypeExtension
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public static function getExtendedTypes(): iterable
     {
         return [FormType::class];

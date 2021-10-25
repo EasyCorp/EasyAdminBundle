@@ -25,9 +25,6 @@ class StringToFileTransformer implements DataTransformerInterface
         $this->multiple = $multiple;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function transform($value)
     {
         if (null === $value || [] === $value) {
@@ -45,9 +42,6 @@ class StringToFileTransformer implements DataTransformerInterface
         return array_map([$this, 'doTransform'], $value);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function reverseTransform($value)
     {
         if (null === $value || [] === $value) {

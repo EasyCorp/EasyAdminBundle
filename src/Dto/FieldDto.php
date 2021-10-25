@@ -190,7 +190,9 @@ final class FieldDto
 
     public function setFormTypeOptions(array $formTypeOptions): void
     {
-        $this->formTypeOptions = KeyValueStore::new($formTypeOptions);
+        foreach ($formTypeOptions as $optionName => $optionValue) {
+            $this->setFormTypeOption($optionName, $optionValue);
+        }
     }
 
     /**

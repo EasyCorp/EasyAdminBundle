@@ -49,7 +49,6 @@ final class Action
         $dto = new ActionDto();
         $dto->setType(self::TYPE_ENTITY);
         $dto->setName($name);
-        $dto->setCssClass('action-'.$name);
         $dto->setLabel($label ?? self::humanizeString($name));
         $dto->setIcon($icon);
         $dto->setHtmlElement('a');
@@ -90,6 +89,11 @@ final class Action
         return $this;
     }
 
+    /**
+     * If you set your own CSS classes, the default CSS classes are not applied.
+     * You may want to also add the 'btn' (and 'btn-primary', etc.) classes to make
+     * your action look like a button.
+     */
     public function setCssClass(string $cssClass): self
     {
         $this->dto->setCssClass($cssClass);
@@ -97,6 +101,11 @@ final class Action
         return $this;
     }
 
+    /**
+     * If you add a custom CSS class, the default CSS classes are not applied.
+     * You may want to also add the 'btn' (and 'btn-primary', etc.) classes to make
+     * your action look like a button.
+     */
     public function addCssClass(string $cssClass): self
     {
         $this->dto->setCssClass(trim($this->dto->getCssClass().' '.$cssClass));

@@ -15,9 +15,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class ArrayFilterType extends AbstractType
 {
-    /**
-     * {@inheritdoc}
-     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $defaultOptions = ['label' => false];
@@ -42,9 +39,6 @@ class ArrayFilterType extends AbstractType
         ));
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
@@ -60,9 +54,6 @@ class ArrayFilterType extends AbstractType
         ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getParent(): string
     {
         return ComparisonFilterType::class;

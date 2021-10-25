@@ -127,6 +127,18 @@
     {% endif %}
 {% endblock form_row %}
 
+{% block choice_widget_collapsed %}
+    {% if 'ea-autocomplete' == attr['data-ea-widget']|default(false) %}
+        {% set attr = attr|merge({
+            'data-ea-i18n-no-results-found': 'autocomplete.no-results-found'|trans({}, 'EasyAdminBundle'),
+            'data-ea-i18n-no-more-results': 'autocomplete.no-more-results'|trans({}, 'EasyAdminBundle'),
+            'data-ea-i18n-loading-more-results': 'autocomplete.loading-more-results'|trans({}, 'EasyAdminBundle'),
+        }) %}
+    {% endif %}
+
+    {{ parent() }}
+{% endblock choice_widget_collapsed %}
+
 {% block collection_row %}
     {% if prototype is defined and not prototype.rendered %}
         {% set row_attr = row_attr|merge({ 'data-prototype': form_row(prototype) }) %}
@@ -137,7 +149,7 @@
         'data-entry-is-complex': form.vars.ea_crud_form.ea_field and form.vars.ea_crud_form.ea_field.customOptions.get('entryIsComplex') ? 'true' : 'false',
         'data-allow-add': allow_add ? 'true' : 'false',
         'data-allow-delete': allow_delete ? 'true' : 'false',
-        'data-num-items': form.children|length,
+        'data-num-items': form.children is empty ? 0 : max(form.children|keys),
         'data-form-type-name-placeholder': prototype is defined ? prototype.vars.name : '',
     }) %}
 
@@ -283,43 +295,6 @@
 
 {# Errors #}
 
-{% block ffform_widget_compound %}
-    {% if 'collection' in block_prefixes %}
-        {% if value is iterable %}
-            {# the "is iterable" check is needed because if an object implements __toString() and
-               returns an empty string, "is empty" returns true even if it's not a collection #}
-            {% set isEmptyCollection = value is null or (value is iterable and value is empty) %}
-            {% if isEmptyCollection %}
-                {{ block('empty_collection') }}
-            {% else %}
-                <div class="accordion">
-                    {% for item in value %}
-                        {% set accordion_id = id ~ '-' ~ loop.index0 %}
-                        <div class="accordion-item">
-                            <h2 class="accordion-header">
-                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#{{ accordion_id }}">
-                                    {{ item }}
-                                </button>
-                            </h2>
-                            <div id="{{ accordion_id }}" class="accordion-collapse collapse">
-                                <div class="accordion-body">
-                                    {{ parent() }}
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-
-            {% if isEmptyCollection or form.vars.prototype is defined %}
-                {% set attr = attr|merge({'data-empty-collection': block('empty_collection') }) %}
-            {% endif %}
-        {% else %}
-            {{ parent() }}
-        {% endif %}
-    {% endif %}
-{% endblock ffform_widget_compound %}
-
 {% block empty_collection %}
     <div class="empty collection-empty">
         {{ include(ea.templatePath('label/empty')) }}
@@ -364,7 +339,7 @@
             </div>
 
             {% if form.delete is defined %}
-                {{ form_row(form.delete, { label: 'form.label.delete'|trans({}, 'VichUploaderBundle') }) }}
+                {{ form_row(form.delete, { label: 'vich_uploader.form_label.delete_confirm'|trans({}, 'VichUploaderBundle') }) }}
             {% endif %}
         </div>
         <div class="small" id="{{ form.file.vars.id }}_new_file_name"></div>
@@ -424,7 +399,7 @@
             </div>
 
             {% if form.delete is defined %}
-                {{ form_row(form.delete, { label: 'form.label.delete'|trans({}, 'VichUploaderBundle') }) }}
+                {{ form_row(form.delete, { label: 'vich_uploader.form_label.delete_confirm'|trans({}, 'VichUploaderBundle') }) }}
             {% endif %}
         </div>
         <div class="small" id="{{ form.file.vars.id }}_new_file_name"></div>
@@ -688,7 +663,7 @@
                 {{ form_widget(form.file, { attr: form.file.vars.attr|merge({ placeholder: placeholder, title: title, 'data-files-label': filesLabel, style: 'display: none' }) }) }}
                 {{ form_label(form.file, placeholder, { label_attr: { class: 'custom-file-label' }}) }}
             </div>
-            <div class="input-group-text" {% if currentFiles is empty %}style="display: none"{% endif %}>
+            <div class="input-group-text">
                 {%- if currentFiles -%}
                     {% if multiple %}
                         {{ (currentFiles|reduce((carry, file) => carry + file.size))|ea_filesize }}

@@ -11,9 +11,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class EntityFilterType extends AbstractType
 {
-    /**
-     * {@inheritdoc}
-     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
@@ -22,9 +19,6 @@ class EntityFilterType extends AbstractType
         ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getParent(): string
     {
         return ChoiceFilterType::class;

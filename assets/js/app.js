@@ -292,7 +292,6 @@ const App = (() => {
                     .replace('%action_name%', actionName)
                     .replace('%num_items%', selectedItems.length.toString());
 
-                new bootstrap.Modal(document.querySelector('#modal-batch-action'), { backdrop: true, keyboard: true });
                 document.querySelector('#modal-batch-action-button').addEventListener('click', () => {
                     // prevent double submission of the batch action form
                     actionElement.setAttribute('disabled', 'disabled');
@@ -435,6 +434,12 @@ const App = (() => {
                 const fileUploadFileSizeLabel = fileUploadContainer.querySelector('.input-group-text');
                 const fileUploadDeleteButton = fileUploadContainer.querySelector('.ea-fileupload-delete-btn');
 
+                fileUploadFileSizeLabel.childNodes.forEach((fileUploadFileSizeLabelChild) => {
+                    if (fileUploadFileSizeLabelChild.nodeType === Node.TEXT_NODE) {
+                        fileUploadFileSizeLabel.removeChild(fileUploadFileSizeLabelChild);
+                    }
+                });
+
                 fileUploadCustomInput.innerHTML = filename;
                 fileUploadFileSizeLabel.prepend(humanizeFileSize(bytes));
                 fileUploadDeleteButton.style.display = 'block';
@@ -458,7 +463,7 @@ const App = (() => {
                 fileUploadDeleteButton.style.display = 'none';
 
                 fileUploadFileSizeLabel.childNodes.forEach((fileUploadFileSizeLabelChild) => {
-                    if (fileUploadFileSizeLabelChild.nodeType === 3) {
+                    if (fileUploadFileSizeLabelChild.nodeType === Node.TEXT_NODE) {
                         fileUploadFileSizeLabel.removeChild(fileUploadFileSizeLabelChild);
                     }
                 });

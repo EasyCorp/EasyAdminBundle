@@ -126,4 +126,10 @@ return [
         'forbidden_action' => 'Elementu honetan ezin da eskatutako ekintza burutu',
         'insufficient_entity_permission' => 'Artikulu hau eskuratzeko ez duzu baimenik.',
     ],
+
+    'autocomplete' => [
+        'no-results-found' => 'Ez da bat datorrenik aurkitu',
+        // 'no-more-results' => 'No more results',
+        'loading-more-results' => 'Emaitza gehiago kargatzen…',
+    ],
 ];

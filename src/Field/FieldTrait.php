@@ -74,6 +74,13 @@ trait FieldTrait
         return $this;
     }
 
+    public function setDisabled(bool $disabled = true): self
+    {
+        $this->dto->setFormTypeOption('disabled', $disabled);
+
+        return $this;
+    }
+
     public function setRequired(bool $isRequired): self
     {
         $this->dto->setFormTypeOption('required', $isRequired);

@@ -87,7 +87,7 @@ class Crud
     }
 
     /**
-     * @param string $formatOrPattern A format name ('short', 'medium', 'long', 'full') or a valid ICU Datetime Pattern (see http://userguide.icu-project.org/formatparse/datetime)
+     * @param string $formatOrPattern A format name ('short', 'medium', 'long', 'full') or a valid ICU Datetime Pattern (see https://unicode-org.github.io/icu/userguide/format_parse/datetime/)
      */
     public function setDateFormat(string $formatOrPattern): self
     {
@@ -106,7 +106,7 @@ class Crud
     }
 
     /**
-     * @param string $formatOrPattern A format name ('short', 'medium', 'long', 'full') or a valid ICU Datetime Pattern (see http://userguide.icu-project.org/formatparse/datetime)
+     * @param string $formatOrPattern A format name ('short', 'medium', 'long', 'full') or a valid ICU Datetime Pattern (see https://unicode-org.github.io/icu/userguide/format_parse/datetime/)
      */
     public function setTimeFormat(string $formatOrPattern): self
     {
@@ -125,7 +125,7 @@ class Crud
     }
 
     /**
-     * @param string $dateFormatOrPattern A format name ('none', 'short', 'medium', 'long', 'full') or a valid ICU Datetime Pattern (see http://userguide.icu-project.org/formatparse/datetime)
+     * @param string $dateFormatOrPattern A format name ('none', 'short', 'medium', 'long', 'full') or a valid ICU Datetime Pattern (see https://unicode-org.github.io/icu/userguide/format_parse/datetime/)
      * @param string $timeFormat          A format name ('none', 'short', 'medium', 'long', 'full')
      */
     public function setDateTimeFormat(string $dateFormatOrPattern, string $timeFormat = DateTimeField::FORMAT_NONE): self

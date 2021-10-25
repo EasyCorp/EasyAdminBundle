@@ -4,7 +4,9 @@
 
 <div class="list-pagination">
     <div class="list-pagination-counter">
-        {{ 'paginator.results'|trans({'%count%': paginator.numResults|format})|raw }}
+        {% if render_detailed_pagination is defined ? render_detailed_pagination : true %}
+            {{ 'paginator.results'|trans({'%count%': paginator.numResults|format})|raw }}
+        {% endif %}
     </div>
 
     <nav class="pager list-pagination-paginator {{ not paginator.hasPreviousPage ? 'first-page' }} {{ not paginator.hasNextPage ? 'last-page' }}">
@@ -15,15 +17,21 @@
                 </a>
             </li>
 
-            {% for page in paginator.pageRange %}
-                <li class="page-item {{ page == paginator.currentPage ? 'active' }} {{ page is null ? 'disabled' }}">
-                    {% if page is null %}
-                        <span class="page-link">&hellip;</span>
-                    {% else %}
-                        <a class="page-link" href="{{ paginator.generateUrlForPage(page) }}">{{ page }}</a>
-                    {% endif %}
+            {% if render_detailed_pagination is defined ? render_detailed_pagination : true %}
+                {% for page in paginator.pageRange %}
+                    <li class="page-item {{ page == paginator.currentPage ? 'active' }} {{ page is null ? 'disabled' }}">
+                        {% if page is null %}
+                            <span class="page-link">&hellip;</span>
+                        {% else %}
+                            <a class="page-link" href="{{ paginator.generateUrlForPage(page) }}">{{ page }}</a>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            {% else %}
+                <li class="page-item active {{ paginator.currentPage is null ? 'disabled' }}">
+                    <a class="page-link" href="{{ paginator.generateUrlForPage(paginator.currentPage) }}">{{ paginator.currentPage }}</a>
                 </li>
-            {% endfor %}
+            {% endif %}
 
             <li class="page-item {{ not paginator.hasNextPage ? 'disabled' }}">
                 <a class="page-link" href="{{ not paginator.hasNextPage ? '#' : paginator.generateUrlForPage(paginator.nextPage) }}">

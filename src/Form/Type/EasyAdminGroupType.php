@@ -13,9 +13,6 @@ use Symfony\Component\Form\AbstractType;
  */
 class EasyAdminGroupType extends AbstractType
 {
-    /**
-     * {@inheritdoc}
-     */
     public function getBlockPrefix()
     {
         return 'easyadmin_group';

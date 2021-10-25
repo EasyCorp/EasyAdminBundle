@@ -19,10 +19,10 @@ final class SearchDto
     private $searchableProperties;
     /** @var string[]|null */
     private $appliedFilters;
-    /** @var string[]|null */
+    /** @var string[] */
     private $strictTextSearchFields;
 
-    public function __construct(Request $request, ?array $searchableProperties, ?string $query, array $defaultSort, array $customSort, ?array $appliedFilters, ?array $strictTextSearchFields)
+    public function __construct(Request $request, ?array $searchableProperties, ?string $query, array $defaultSort, array $customSort, ?array $appliedFilters, array $strictTextSearchFields)
     {
         $this->request = $request;
         $this->searchableProperties = $searchableProperties;
@@ -91,7 +91,7 @@ final class SearchDto
         return $this->appliedFilters;
     }
 
-    public function getStrictTextSearchFields(): ?array
+    public function getStrictTextSearchFields(): array
     {
         return $this->strictTextSearchFields;
     }

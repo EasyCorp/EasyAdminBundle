@@ -215,7 +215,7 @@ class Crud
         return $this;
     }
 
-    public function setStrictTextSearchFields(?array $fieldNames): self
+    public function setStrictTextSearchFields(array $fieldNames): self
     {
         $this->dto->setStrictTextSearchFields($fieldNames);
 

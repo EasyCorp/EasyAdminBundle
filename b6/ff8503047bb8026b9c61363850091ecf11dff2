@@ -1,0 +1,52 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2021-10-16T10:03:21Z
+
+Thanks Ben for this proposal.
+
+I think it's interesting and I'm going to merge it. My only question is about the name of the interface `EntityLifecycleEventInterface`. I don't think it's bad at all ... but I wonder if it could confuse users thinking that it's something from Doctrine. Should we use something super explicit like `EasyAdminEntityEvent`? Or maybe that's worse? Let's see what others think. Thank you!
+
+---------------------------------------------------------------------------
+
+by parijke at 2021-10-16T10:40:18Z
+
+Personally, if you use EasyAdmin in it's name, it should reflect on all EA events otherwise it is confusing as well, which cannot change without breaking compatibility. Not sure about the LifeCycle naming either...
+
+---------------------------------------------------------------------------
+
+by Warxcell at 2021-10-16T22:38:14Z
+
+Why not make it abstract and drop the Interface from name. That way you can also drop all the
+```
+    private $entityInstance;
+
+    public function __construct($entityInstance)
+    {
+        $this->entityInstance = $entityInstance;
+    }
+
+    public function getEntityInstance()
+    {
+        return $this->entityInstance;
+    }
+```
+
+and move it to abstract one.
+
+---------------------------------------------------------------------------
+
+by OskarStark at 2021-10-16T23:21:38Z
+
+In PHP 8 you can typehint your method with:
+
+updatePassowrd(BeforeEvent|AfterEvent $event)
+
+Imho no need for a new interface
+
+---------------------------------------------------------------------------
+
+by BenjaminLeibinger at 2021-10-18T08:48:36Z
+
+I think super explicit makes it worse. I also looked into the doctrine code. They use completely different namespace- and naming-structures for their Lifecycle Events.
+
+I also think and already prepared locally the abstract idea from @Warxcell. But i would still keep the Interface.

@@ -381,32 +381,37 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
         $entityManager = $this->getDoctrine()->getManagerForClass($batchActionDto->getEntityFqcn());
         $repository = $entityManager->getRepository($batchActionDto->getEntityFqcn());
-        foreach ($batchActionDto->getEntityIds() as $entityId) {
-            $entityInstance = $repository->find($entityId);
-            if (!$entityInstance) {
-                continue;
+                
+        $batchActionIds = $batchActionDto->getEntityIds();
+
+        if (isset($batchActionIds['batchActionEntityIds'])) {
+            foreach ($batchActionIds['batchActionEntityIds'] as $entityId) {
+                $entityInstance = $repository->find($entityId);
+                if (!$entityInstance) {
+                    continue;
+                }
+
+                $entityDto = $context->getEntity()->newWithInstance($entityInstance);
+                if (!$this->isGranted(Permission::EA_EXECUTE_ACTION, ['action' => Action::DELETE, 'entity' => $entityDto])) {
+                    throw new ForbiddenActionException($context);
+                }
+
+                if (!$entityDto->isAccessible()) {
+                    throw new InsufficientEntityPermissionException($context);
+                }
+
+                $event = new BeforeEntityDeletedEvent($entityInstance);
+                $this->get('event_dispatcher')->dispatch($event);
+                $entityInstance = $event->getEntityInstance();
+
+                try {
+                    $this->deleteEntity($entityManager, $entityInstance);
+                } catch (ForeignKeyConstraintViolationException $e) {
+                    throw new EntityRemoveException(['entity_name' => $entityDto->toString(), 'message' => $e->getMessage()]);
+                }
+
+                $this->get('event_dispatcher')->dispatch(new AfterEntityDeletedEvent($entityInstance));
             }
-
-            $entityDto = $context->getEntity()->newWithInstance($entityInstance);
-            if (!$this->isGranted(Permission::EA_EXECUTE_ACTION, ['action' => Action::DELETE, 'entity' => $entityDto])) {
-                throw new ForbiddenActionException($context);
-            }
-
-            if (!$entityDto->isAccessible()) {
-                throw new InsufficientEntityPermissionException($context);
-            }
-
-            $event = new BeforeEntityDeletedEvent($entityInstance);
-            $this->get('event_dispatcher')->dispatch($event);
-            $entityInstance = $event->getEntityInstance();
-
-            try {
-                $this->deleteEntity($entityManager, $entityInstance);
-            } catch (ForeignKeyConstraintViolationException $e) {
-                throw new EntityRemoveException(['entity_name' => $entityDto->toString(), 'message' => $e->getMessage()]);
-            }
-
-            $this->get('event_dispatcher')->dispatch(new AfterEntityDeletedEvent($entityInstance));
         }
 
         $responseParameters = $this->configureResponseParameters(KeyValueStore::new([

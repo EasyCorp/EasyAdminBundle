@@ -80,11 +80,11 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
             $accessor = new PropertyAccessor();
             $targetCrudControllerFqcn = $field->getCustomOption(AssociationField::OPTION_CRUD_CONTROLLER);
 
+            $field->setFormTypeOptionIfNotSet('class', $targetEntityFqcn);
+
             try {
                 $relatedEntityId = $accessor->getValue($entityDto->getInstance(), $propertyName.'.'.$metadata->getIdentifierFieldNames()[0]);
                 $relatedEntityDto = $this->entityFactory->create($targetEntityFqcn, $relatedEntityId);
-
-                $field->setFormTypeOptionIfNotSet('class', $relatedEntityDto->getFqcn());
 
                 $field->setCustomOption(AssociationField::OPTION_RELATED_URL, $this->generateLinkToAssociatedEntity($targetCrudControllerFqcn, $relatedEntityDto));
                 $field->setFormattedValue($this->formatAsString($relatedEntityDto->getInstance(), $relatedEntityDto));

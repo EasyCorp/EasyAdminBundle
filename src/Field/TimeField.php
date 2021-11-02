@@ -48,7 +48,7 @@ final class TimeField implements FieldInterface
     }
 
     /**
-     * @param string $timeFormatOrPattern A format name ('short', 'medium', 'long', 'full') or a valid ICU Datetime Pattern (see http://userguide.icu-project.org/formatparse/datetime)
+     * @param string $timeFormatOrPattern A format name ('short', 'medium', 'long', 'full') or a valid ICU Datetime Pattern (see https://unicode-org.github.io/icu/userguide/format_parse/datetime/)
      */
     public function setFormat(string $timeFormatOrPattern): self
     {

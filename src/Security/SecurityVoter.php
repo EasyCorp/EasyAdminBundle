@@ -60,7 +60,7 @@ final class SecurityVoter extends Voter
     private function voteOnViewMenuItemPermission(MenuItemDto $menuItemDto): bool
     {
         // users can see the menu item if they have the permission required by the menu item
-        return $this->authorizationChecker->isGranted($menuItemDto->getPermission());
+        return $this->authorizationChecker->isGranted($menuItemDto->getPermission(), $menuItemDto);
     }
 
     /**
@@ -88,7 +88,7 @@ final class SecurityVoter extends Voter
     private function voteOnViewPropertyPermission(FieldDto $field): bool
     {
         // users can see the field if they have the permission required by the field
-        return $this->authorizationChecker->isGranted($field->getPermission());
+        return $this->authorizationChecker->isGranted($field->getPermission(), $field);
     }
 
     private function voteOnViewEntityPermission(EntityDto $entityDto): bool

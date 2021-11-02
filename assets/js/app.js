@@ -292,7 +292,6 @@ const App = (() => {
                     .replace('%action_name%', actionName)
                     .replace('%num_items%', selectedItems.length.toString());
 
-                new bootstrap.Modal(document.querySelector('#modal-batch-action'), { backdrop: true, keyboard: true });
                 document.querySelector('#modal-batch-action-button').addEventListener('click', () => {
                     // prevent double submission of the batch action form
                     actionElement.setAttribute('disabled', 'disabled');

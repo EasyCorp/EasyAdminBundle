@@ -295,43 +295,6 @@
 
 {# Errors #}
 
-{% block ffform_widget_compound %}
-    {% if 'collection' in block_prefixes %}
-        {% if value is iterable %}
-            {# the "is iterable" check is needed because if an object implements __toString() and
-               returns an empty string, "is empty" returns true even if it's not a collection #}
-            {% set isEmptyCollection = value is null or (value is iterable and value is empty) %}
-            {% if isEmptyCollection %}
-                {{ block('empty_collection') }}
-            {% else %}
-                <div class="accordion">
-                    {% for item in value %}
-                        {% set accordion_id = id ~ '-' ~ loop.index0 %}
-                        <div class="accordion-item">
-                            <h2 class="accordion-header">
-                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#{{ accordion_id }}">
-                                    {{ item }}
-                                </button>
-                            </h2>
-                            <div id="{{ accordion_id }}" class="accordion-collapse collapse">
-                                <div class="accordion-body">
-                                    {{ parent() }}
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-
-            {% if isEmptyCollection or form.vars.prototype is defined %}
-                {% set attr = attr|merge({'data-empty-collection': block('empty_collection') }) %}
-            {% endif %}
-        {% else %}
-            {{ parent() }}
-        {% endif %}
-    {% endif %}
-{% endblock ffform_widget_compound %}
-
 {% block empty_collection %}
     <div class="empty collection-empty">
         {{ include(ea.templatePath('label/empty')) }}

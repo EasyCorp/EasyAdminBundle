@@ -185,7 +185,7 @@ Date, Time and Number Formatting Options
         return $crud
             // the argument must be either one of these strings: 'short', 'medium', 'long', 'full', 'none'
             // (the strings are also available as \EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField::FORMAT_* constants)
-            // or a valid ICU Datetime Pattern (see http://userguide.icu-project.org/formatparse/datetime)
+            // or a valid ICU Datetime Pattern (see https://unicode-org.github.io/icu/userguide/format_parse/datetime/)
             ->setDateFormat('...')
             ->setTimeFormat('...')
 
@@ -284,6 +284,33 @@ Templates and Form Options
                 ['validation_groups' => ['Default'], '...' => '...'],
             );
         ;
+    }
+
+Custom Redirect After Creating or Editing Entities
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+By default, when clicking on "Save" button when creating or editing entities
+you are redirected to the previous page. If you want to change this behavior,
+override the ``getRedirectResponseAfterSave()`` method.
+
+For example, if you've added a :ref:`custom action <actions-custom>` called
+"Save and view detail", you may prefer to redirect to the detail page after
+saving the changes::
+
+    protected function getRedirectResponseAfterSave(AdminContext $context, string $action): RedirectResponse
+    {
+        $submitButtonName = $context->getRequest()->request->all()['ea']['newForm']['btn'];
+
+        if ('saveAndViewDetail' === $submitButtonName) {
+            $url = $this->get(AdminUrlGenerator::class)
+                ->setAction(Action::DETAIL)
+                ->setEntityId($context->getEntity()->getPrimaryKeyValue())
+                ->generateUrl();
+
+            return $this->redirect($url);
+        }
+
+        return parent::getRedirectResponseAfterSave($context, $action);
     }
 
 Same Configuration in Different CRUD Controllers

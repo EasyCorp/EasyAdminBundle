@@ -12,7 +12,8 @@
         <meta name="generator" content="EasyAdmin" />
     {% endblock head_metas %}
 
-    <title>{% block page_title %}{{ block('content_title')|striptags|raw }}{% endblock %}</title>
+    {% set page_title_block_output %}{% block page_title %}{{ block('content_title') }}{% endblock %}{% endset %}
+    <title>{{ page_title_block_output|striptags|raw }}</title>
 
     {% block head_stylesheets %}
         <link rel="stylesheet" href="{{ asset('bundles/easyadmin/app.css') }}">

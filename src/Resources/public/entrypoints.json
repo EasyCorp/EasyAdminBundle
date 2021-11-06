@@ -2,44 +2,44 @@
   "entrypoints": {
     "app": {
       "css": [
-        "./app.css",
-        "./app.rtl.css"
+        "./app.0549744d.css",
+        "./app.0549744d.rtl.css"
       ],
       "js": [
-        "./app.js"
+        "./app.87c1bf41.js"
       ]
     },
     "form-type-code-editor": {
       "css": [
-        "./form-type-code-editor.css",
-        "./form-type-code-editor.rtl.css"
+        "./form-type-code-editor.dfc63a05.css",
+        "./form-type-code-editor.dfc63a05.rtl.css"
       ],
       "js": [
-        "./form-type-code-editor.js"
+        "./form-type-code-editor.54afb51d.js"
       ]
     },
     "form-type-text-editor": {
       "css": [
-        "./form-type-text-editor.css",
-        "./form-type-text-editor.rtl.css"
+        "./form-type-text-editor.40b68a3d.css",
+        "./form-type-text-editor.40b68a3d.rtl.css"
       ],
       "js": [
-        "./form-type-text-editor.js"
+        "./form-type-text-editor.3ebdf7b6.js"
       ]
     },
     "form-type-collection": {
       "js": [
-        "./form-type-collection.js"
+        "./form-type-collection.600cb76e.js"
       ]
     },
     "form-type-slug": {
       "js": [
-        "./form-type-slug.js"
+        "./form-type-slug.5b1774d2.js"
       ]
     },
     "form-type-textarea": {
       "js": [
-        "./form-type-textarea.js"
+        "./form-type-textarea.23d80a2f.js"
       ]
     }
   }

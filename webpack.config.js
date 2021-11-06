@@ -9,7 +9,7 @@ Encore
     .cleanupOutputBeforeBuild()
     .enableSassLoader()
     .enableSourceMaps(false)
-    .enableVersioning(false)
+    .enableVersioning(true)
     .disableSingleRuntimeChunk()
 
     // copy FontAwesome fonts

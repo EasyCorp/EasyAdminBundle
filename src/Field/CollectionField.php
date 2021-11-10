@@ -8,7 +8,7 @@ use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class CollectionField implements FieldInterface
+class CollectionField implements FieldInterface
 {
     use FieldTrait;
 

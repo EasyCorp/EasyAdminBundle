@@ -8,7 +8,7 @@ use Symfony\Component\Form\Extension\Core\Type\LanguageType;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class LanguageField implements FieldInterface
+class LanguageField implements FieldInterface
 {
     use FieldTrait;
 

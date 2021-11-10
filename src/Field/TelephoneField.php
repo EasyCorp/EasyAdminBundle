@@ -8,7 +8,7 @@ use Symfony\Component\Form\Extension\Core\Type\TelType;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class TelephoneField implements FieldInterface
+class TelephoneField implements FieldInterface
 {
     use FieldTrait;
 

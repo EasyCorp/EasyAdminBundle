@@ -8,7 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CodeEditorType;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class CodeEditorField implements FieldInterface
+class CodeEditorField implements FieldInterface
 {
     use FieldTrait;
 

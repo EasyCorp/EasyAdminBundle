@@ -8,7 +8,7 @@ use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class DateTimeField implements FieldInterface
+class DateTimeField implements FieldInterface
 {
     use FieldTrait;
 

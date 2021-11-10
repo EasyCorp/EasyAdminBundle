@@ -8,7 +8,7 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class EmailField implements FieldInterface
+class EmailField implements FieldInterface
 {
     use FieldTrait;
 

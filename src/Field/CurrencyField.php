@@ -8,7 +8,7 @@ use Symfony\Component\Form\Extension\Core\Type\CurrencyType;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class CurrencyField implements FieldInterface
+class CurrencyField implements FieldInterface
 {
     use FieldTrait;
 

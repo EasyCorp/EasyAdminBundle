@@ -8,7 +8,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class TextField implements FieldInterface
+class TextField implements FieldInterface
 {
     use FieldTrait;
 

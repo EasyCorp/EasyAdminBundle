@@ -10,7 +10,7 @@ use Symfony\Component\Uid\Ulid;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class FormField implements FieldInterface
+class FormField implements FieldInterface
 {
     use FieldTrait;
 

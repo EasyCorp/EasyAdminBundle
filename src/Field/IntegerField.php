@@ -8,7 +8,7 @@ use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class IntegerField implements FieldInterface
+class IntegerField implements FieldInterface
 {
     use FieldTrait;
 

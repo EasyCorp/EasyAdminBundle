@@ -8,7 +8,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class ChoiceField implements FieldInterface
+class ChoiceField implements FieldInterface
 {
     use FieldTrait;
 

@@ -8,7 +8,7 @@ use Symfony\Component\Form\Extension\Core\Type\NumberType;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class NumberField implements FieldInterface
+class NumberField implements FieldInterface
 {
     use FieldTrait;
 

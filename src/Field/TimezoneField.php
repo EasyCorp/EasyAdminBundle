@@ -8,7 +8,7 @@ use Symfony\Component\Form\Extension\Core\Type\TimezoneType;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class TimezoneField implements FieldInterface
+class TimezoneField implements FieldInterface
 {
     use FieldTrait;
 

@@ -9,7 +9,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class AvatarField implements FieldInterface
+class AvatarField implements FieldInterface
 {
     use FieldTrait;
 

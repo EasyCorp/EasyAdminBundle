@@ -8,7 +8,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class TextareaField implements FieldInterface
+class TextareaField implements FieldInterface
 {
     use FieldTrait;
 

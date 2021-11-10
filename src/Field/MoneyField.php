@@ -10,7 +10,7 @@ use Symfony\Component\Intl\Currencies;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class MoneyField implements FieldInterface
+class MoneyField implements FieldInterface
 {
     use FieldTrait;
 

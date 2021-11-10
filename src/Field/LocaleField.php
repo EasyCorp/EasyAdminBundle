@@ -8,7 +8,7 @@ use Symfony\Component\Form\Extension\Core\Type\LocaleType;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class LocaleField implements FieldInterface
+class LocaleField implements FieldInterface
 {
     use FieldTrait;
 

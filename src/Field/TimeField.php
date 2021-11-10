@@ -8,7 +8,7 @@ use Symfony\Component\Form\Extension\Core\Type\TimeType;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class TimeField implements FieldInterface
+class TimeField implements FieldInterface
 {
     use FieldTrait;
 

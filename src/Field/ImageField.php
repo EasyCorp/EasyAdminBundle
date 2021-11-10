@@ -9,7 +9,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FileUploadType;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class ImageField implements FieldInterface
+class ImageField implements FieldInterface
 {
     use FieldTrait;
 

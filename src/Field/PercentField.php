@@ -9,7 +9,7 @@ use Symfony\Component\Form\Extension\Core\Type\PercentType;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class PercentField implements FieldInterface
+class PercentField implements FieldInterface
 {
     use FieldTrait;
 

@@ -8,7 +8,7 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class BooleanField implements FieldInterface
+class BooleanField implements FieldInterface
 {
     use FieldTrait;
 

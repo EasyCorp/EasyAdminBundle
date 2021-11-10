@@ -8,7 +8,7 @@ use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class HiddenField implements FieldInterface
+class HiddenField implements FieldInterface
 {
     use FieldTrait;
 

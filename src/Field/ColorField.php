@@ -8,7 +8,7 @@ use Symfony\Component\Form\Extension\Core\Type\ColorType;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class ColorField implements FieldInterface
+class ColorField implements FieldInterface
 {
     use FieldTrait;
 

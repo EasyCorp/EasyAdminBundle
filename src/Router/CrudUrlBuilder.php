@@ -26,6 +26,7 @@ class CrudUrlBuilder
     private $urlSigner;
     private $routeParameters;
     private $signUrls;
+    private $currentPageReferrer;
 
     public function __construct(?AdminContext $adminContext, UrlGeneratorInterface $urlGenerator, DashboardControllerRegistry $dashboardControllers, CrudControllerRegistry $crudControllers, UrlSigner $urlSigner, array $newRouteParameters = [])
     {

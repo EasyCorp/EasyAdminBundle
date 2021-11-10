@@ -11,8 +11,8 @@
     {%- apply spaceless -%}
         {% set custom_page_title = ea.crud.customPageTitle(pageName, entity ? entity.instance : null) %}
         {{ custom_page_title is null
-            ? (ea.crud.defaultPageTitle|trans(ea.i18n.translationParameters, 'EasyAdminBundle'))|raw
-            : (custom_page_title|trans(ea.i18n.translationParameters))|raw }}
+            ? (ea.crud.defaultPageTitle|trans(ea.i18n.translationParameters, 'EasyAdminBundle'))|raw|e("html")
+            : (custom_page_title|trans(ea.i18n.translationParameters))|raw|e("html") }}
     {%- endapply -%}
 {% endblock %}
 

@@ -56,6 +56,33 @@ These are the built-in actions included by default in each page:
   * Added by default: ``Action::SAVE_AND_RETURN``, ``Action::SAVE_AND_ADD_ANOTHER``
   * Other available actions: ``Action::SAVE_AND_CONTINUE``, ``Action::INDEX``
 
+Global Actions
+--------------
+A global action can be defined by using `createAsGlobalAction` in configureActions
+Global Actions are shown above the dataTable inside the CrudController. 
+
+Use the ``createAsGlobalAction()`` method to add global actions to crud sites
+(which are explained later in this article)::
+
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+
+    public function configureActions(Actions $actions): Actions
+    {
+        $viewInvoice = Action::new('viewInvoice', 'viewInvoice', 'fa fa-file-invoice')
+        ->linkToRoute('viewInvoice', [
+             'customerId' => $this->currentControllerCustomerId,
+        ])->createAsGlobalAction();
+        
+        return $actions
+            // ...
+            ->add(Crud::PAGE_INDEX, Action::DETAIL)
+            ->add(Crud::PAGE_EDIT, Action::SAVE_AND_ADD_ANOTHER)
+        ;
+    }
+
+
 Adding Actions
 --------------
 

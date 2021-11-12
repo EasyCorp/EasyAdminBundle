@@ -15,6 +15,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use Symfony\Component\Uid\Ulid;
+use Symfony\Component\Uid\Uuid;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -64,7 +65,7 @@ final class EntityRepository implements EntityRepositoryInterface
         $isNumericQuery = is_numeric($query);
         $isSmallIntegerQuery = ctype_digit($query) && $query >= -32768 && $query <= 32767;
         $isIntegerQuery = ctype_digit($query) && $query >= -2147483648 && $query <= 2147483647;
-        $isUuidQuery = 1 === preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i', $query);
+        $isUuidQuery = Uuid::isValid($query);
         $isUlidQuery = Ulid::isValid($query);
 
         $dqlParameters = [

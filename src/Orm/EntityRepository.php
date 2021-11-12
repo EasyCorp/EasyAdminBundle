@@ -135,7 +135,7 @@ final class EntityRepository implements EntityRepositoryInterface
                     ->setParameter('query_for_numbers', $dqlParameters['numeric_query']);
             } elseif ($isGuidProperty && $isUuidQuery) {
                 $queryBuilder->orWhere(sprintf('%s.%s = :query_for_uuids', $entityName, $propertyName))
-                    ->setParameter('query_for_uuids', $dqlParameters['uuid_query']);
+                    ->setParameter('query_for_uuids', $dqlParameters['uuid_query'], 'uuid' === $propertyDataType ? 'uuid' : null);
             } elseif ($isUlidProperty && $isUlidQuery) {
                 $queryBuilder->orWhere(sprintf('%s.%s = :query_for_uuids', $entityName, $propertyName))
                     ->setParameter('query_for_uuids', $dqlParameters['uuid_query'], 'ulid');

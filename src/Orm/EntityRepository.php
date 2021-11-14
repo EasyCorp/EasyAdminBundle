@@ -94,11 +94,21 @@ final class EntityRepository implements EntityRepositoryInterface
 
                 for ($i = 0; $i < $numAssociatedProperties - 1; ++$i) {
                     $associatedEntityName = $associatedProperties[$i];
+                    // the DQL alias defaults to $associatedEntityName and is only prefixed with "ea_"
+                    // if $associatedEntityName is a reserved keyword or if there is no way to detect
+                    // reserved keywords
+                    try {
+                        $associatedEntityAlias = $queryBuilder->getEntityManager()->getConnection()->getDatabasePlatform()->getReservedKeywordsList()->isKeyword($associatedEntityName)
+                            ? 'ea_'.$associatedEntityName
+                            : $associatedEntityName;
+                    } catch (\Throwable $exception) {
+                        $associatedEntityAlias = $associatedEntityName;
+                    }
                     $associatedPropertyName = $associatedProperties[$i + 1];
 
                     if (!\in_array($associatedEntityName, $entitiesAlreadyJoined, true)) {
                         $parentEntityName = 0 === $i ? 'entity' : $associatedProperties[$i - 1];
-                        $queryBuilder->leftJoin($parentEntityName.'.'.$associatedEntityName, $associatedEntityName);
+                        $queryBuilder->leftJoin($parentEntityName.'.'.$associatedEntityName, $associatedEntityAlias);
                         $entitiesAlreadyJoined[] = $associatedEntityName;
                     }
 
@@ -109,7 +119,7 @@ final class EntityRepository implements EntityRepositoryInterface
                     }
                 }
 
-                $entityName = $associatedEntityName;
+                $entityName = $associatedEntityAlias;
                 $propertyName = $associatedPropertyName;
                 $propertyDataType = $associatedEntityDto->getPropertyDataType($propertyName);
             } else {

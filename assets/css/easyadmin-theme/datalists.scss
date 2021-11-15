@@ -1,10 +1,14 @@
 // Datalists (used in the DETAIL page)
 // ----------------------------------------------------------------------------
 
-.ea-detail .field-form_panel {
+.ea-detail .field-form_panel,
+.ea-new .field-form_panel,
+.ea-edit .field-form_panel {
   padding-bottom: 35px;
 }
-.ea-detail .form-panel-header {
+.ea-detail .form-panel-header,
+.ea-new .form-panel-header,
+.ea-edit .form-panel-header {
   box-shadow: none;
 }
 

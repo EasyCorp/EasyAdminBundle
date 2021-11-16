@@ -15,6 +15,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudAutocompleteType;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use Symfony\Component\PropertyAccess\Exception\UnexpectedTypeException;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -79,13 +80,17 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
             $accessor = new PropertyAccessor();
             $targetCrudControllerFqcn = $field->getCustomOption(AssociationField::OPTION_CRUD_CONTROLLER);
 
-            $relatedEntityId = $accessor->getValue($entityDto->getInstance(), $propertyName.'.'.$metadata->getIdentifierFieldNames()[0]);
-            $relatedEntityDto = $this->entityFactory->create($targetEntityFqcn, $relatedEntityId);
+            try {
+                $relatedEntityId = $accessor->getValue($entityDto->getInstance(), $propertyName.'.'.$metadata->getIdentifierFieldNames()[0]);
+                $relatedEntityDto = $this->entityFactory->create($targetEntityFqcn, $relatedEntityId);
 
-            $field->setFormTypeOptionIfNotSet('class', $relatedEntityDto->getFqcn());
+                $field->setFormTypeOptionIfNotSet('class', $relatedEntityDto->getFqcn());
 
-            $field->setCustomOption(AssociationField::OPTION_RELATED_URL, $this->generateLinkToAssociatedEntity($targetCrudControllerFqcn, $relatedEntityDto));
-            $field->setFormattedValue($this->formatAsString($relatedEntityDto->getInstance(), $relatedEntityDto));
+                $field->setCustomOption(AssociationField::OPTION_RELATED_URL, $this->generateLinkToAssociatedEntity($targetCrudControllerFqcn, $relatedEntityDto));
+                $field->setFormattedValue($this->formatAsString($relatedEntityDto->getInstance(), $relatedEntityDto));
+            } catch (UnexpectedTypeException $e) {
+                // this may crash if something in the tree is null, so just do nothing then
+            }
         } else {
             if ($entityDto->isToOneAssociation($propertyName)) {
                 $this->configureToOneAssociation($field);

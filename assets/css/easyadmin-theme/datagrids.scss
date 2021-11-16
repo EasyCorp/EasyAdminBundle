@@ -390,3 +390,7 @@ table.datagrid {
 .filter-content .field-choice .form-check-label {
   margin-top: 0;
 }
+
+.table.datagrid > :not(:first-child) {
+  border-top-style: none;
+}

@@ -8,6 +8,9 @@ use Symfony\Component\Console\Output\ConsoleOutput;
 // needed to avoid encoding issues when running tests on different platforms
 setlocale(\LC_ALL, 'en_US.UTF-8');
 
+// needed to avoid failed tests when other timezones than UTC are configured for PHP
+date_default_timezone_set('UTC');
+
 // we want final classes in code but we need non-final classes in tests
 // after trying many solutions (see https://tomasvotruba.com/blog/2019/03/28/how-to-mock-final-classes-in-phpunit/)
 // none ws reliable enough, so this custom solution removes the 'final' keyword

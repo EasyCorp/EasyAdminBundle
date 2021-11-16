@@ -187,12 +187,18 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
             return false;
         }
 
-        // TODO: fix this and see if there's any way to check if an association is nullable
+        $doctrinePropertyMetadata = $entityDto->getPropertyMetadata($field->getProperty());
+
+        // If at least one join column of an association field isn't nullable then the field is "required" by default, otherwise the field is optional
         if ($entityDto->isAssociation($field->getProperty())) {
+            foreach ($doctrinePropertyMetadata->get('joinColumns', []) as $joinColumn) {
+                if (\array_key_exists('nullable', $joinColumn) && false === $joinColumn['nullable']) {
+                    return true;
+                }
+            }
+
             return false;
         }
-
-        $doctrinePropertyMetadata = $entityDto->getPropertyMetadata($field->getProperty());
 
         // TODO: check if it's correct to never make a boolean value required
         // I guess it's correct because Symfony Forms treat NULL as FALSE by default (i.e. in the database the value won't be NULL)

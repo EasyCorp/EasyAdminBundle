@@ -32,15 +32,15 @@ class MissingDoctrineOrmTypeGuesser extends DoctrineOrmTypeGuesser
                     return new TypeGuess(DateType::class, [], Guess::HIGH_CONFIDENCE);
                 case 'time_immutable': // available since Doctrine 2.6
                     return new TypeGuess(TimeType::class, [], Guess::HIGH_CONFIDENCE);
-                case Type::SIMPLE_ARRAY:
-                case Type::JSON_ARRAY:
+                case 'simple_array':
+                case 'json_array':
                     return new TypeGuess(CollectionType::class, [], Guess::MEDIUM_CONFIDENCE);
                 case 'json': // available since Doctrine 2.6.2
                     return new TypeGuess(TextareaType::class, [], Guess::MEDIUM_CONFIDENCE);
-                case Type::OBJECT:
-                case Type::BLOB:
+                case 'object':
+                case 'blob':
                     return new TypeGuess(TextareaType::class, [], Guess::MEDIUM_CONFIDENCE);
-                case Type::GUID:
+                case 'guid':
                     return new TypeGuess(TextType::class, [], Guess::MEDIUM_CONFIDENCE);
             }
         }

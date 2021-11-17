@@ -75,7 +75,8 @@ class EasyAdminTwigExtension extends AbstractExtension
     // Code adapted from https://stackoverflow.com/a/48606773/2804294 (License: CC BY-SA 3.0)
     public function applyFilterIfExists(Environment $environment, $value, string $filterName, ...$filterArguments)
     {
-        if (false == $filter = $environment->getFilter($filterName)) {
+        $filter = $environment->getFilter($filterName);
+        if (false === $filter || null === $filter) {
             return $value;
         }
 

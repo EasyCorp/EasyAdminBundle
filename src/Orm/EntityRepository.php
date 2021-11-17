@@ -94,7 +94,7 @@ final class EntityRepository implements EntityRepositoryInterface
 
                 for ($i = 0; $i < $numAssociatedProperties - 1; ++$i) {
                     $associatedEntityName = $associatedProperties[$i];
-                    $associatedEntityAlias = DqlAliasCreator::create($associatedEntityName);
+                    $associatedEntityAlias = Escaper::escapeDqlAlias($associatedEntityName);
                     $associatedPropertyName = $associatedProperties[$i + 1];
 
                     if (!\in_array($associatedEntityName, $entitiesAlreadyJoined, true)) {

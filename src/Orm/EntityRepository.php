@@ -94,11 +94,12 @@ final class EntityRepository implements EntityRepositoryInterface
 
                 for ($i = 0; $i < $numAssociatedProperties - 1; ++$i) {
                     $associatedEntityName = $associatedProperties[$i];
+                    $associatedEntityAlias = Escaper::escapeDqlAlias($associatedEntityName);
                     $associatedPropertyName = $associatedProperties[$i + 1];
 
                     if (!\in_array($associatedEntityName, $entitiesAlreadyJoined, true)) {
                         $parentEntityName = 0 === $i ? 'entity' : $associatedProperties[$i - 1];
-                        $queryBuilder->leftJoin($parentEntityName.'.'.$associatedEntityName, $associatedEntityName);
+                        $queryBuilder->leftJoin($parentEntityName.'.'.$associatedEntityName, $associatedEntityAlias);
                         $entitiesAlreadyJoined[] = $associatedEntityName;
                     }
 
@@ -109,7 +110,7 @@ final class EntityRepository implements EntityRepositoryInterface
                     }
                 }
 
-                $entityName = $associatedEntityName;
+                $entityName = $associatedEntityAlias;
                 $propertyName = $associatedPropertyName;
                 $propertyDataType = $associatedEntityDto->getPropertyDataType($propertyName);
             } else {
@@ -135,7 +136,7 @@ final class EntityRepository implements EntityRepositoryInterface
                     ->setParameter('query_for_numbers', $dqlParameters['numeric_query']);
             } elseif ($isGuidProperty && $isUuidQuery) {
                 $queryBuilder->orWhere(sprintf('%s.%s = :query_for_uuids', $entityName, $propertyName))
-                    ->setParameter('query_for_uuids', $dqlParameters['uuid_query']);
+                    ->setParameter('query_for_uuids', $dqlParameters['uuid_query'], 'uuid' === $propertyDataType ? 'uuid' : null);
             } elseif ($isUlidProperty && $isUlidQuery) {
                 $queryBuilder->orWhere(sprintf('%s.%s = :query_for_uuids', $entityName, $propertyName))
                     ->setParameter('query_for_uuids', $dqlParameters['uuid_query'], 'ulid');

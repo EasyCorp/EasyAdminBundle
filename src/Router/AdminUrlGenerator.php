@@ -221,6 +221,15 @@ final class AdminUrlGenerator
         return null !== $this->overrideReferrer;
     }
 
+    public function getCurrentPageReferrer(): ?string
+    {
+        if (false === $this->isInitialized) {
+            $this->initialize();
+        }
+
+        return $this->currentPageReferrer;
+    }
+
     // this method allows to omit the 'generateUrl()' call in templates, making code more concise
     public function __toString(): string
     {

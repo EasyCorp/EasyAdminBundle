@@ -47,6 +47,9 @@ final class FilterCollection implements CollectionInterface
         return \array_key_exists($offset, $this->filters);
     }
 
+    /**
+     * @return ?FilterDto|mixed
+     */
     public function offsetGet($offset)
     {
         return $this->filters[$offset];

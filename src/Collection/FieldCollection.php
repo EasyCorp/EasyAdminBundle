@@ -97,6 +97,9 @@ final class FieldCollection implements CollectionInterface
         return \array_key_exists($offset, $this->fields);
     }
 
+    /**
+     * @return ?FieldDto|mixed
+     */
     public function offsetGet($offset)
     {
         return $this->fields[$offset];

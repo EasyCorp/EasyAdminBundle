@@ -129,7 +129,7 @@ return [
 
     'autocomplete' => [
         'no-results-found' => 'Nincs találat',
-        // 'no-more-results' => 'No more results',
+        'no-more-results' => 'Nincs több találat',
         'loading-more-results' => 'Töltés…',
     ],
 ];

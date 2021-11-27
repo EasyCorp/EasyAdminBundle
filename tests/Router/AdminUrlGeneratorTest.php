@@ -14,10 +14,13 @@ use Symfony\Bridge\PhpUnit\ExpectDeprecationTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpKernel\Kernel;
 
 class AdminUrlGeneratorTest extends WebTestCase
 {
     use ExpectDeprecationTrait;
+
+    protected static $container;
 
     public function testGenerateEmptyUrl()
     {
@@ -304,7 +307,8 @@ class AdminUrlGeneratorTest extends WebTestCase
             ['a1b2c3', 'App\Controller\Admin\SomeCrudController'],
         ]);
 
-        $router = self::$container->get('router');
+        $container = Kernel::MAJOR_VERSION >= 6 ? static::getContainer() : self::$container;
+        $router = $container->get('router');
         $uriSigner = new UrlSigner('abc123');
 
         return new AdminUrlGenerator($adminContextProvider, $router, $dashboardControllerRegistry, $crudControllerRegistry, $uriSigner);

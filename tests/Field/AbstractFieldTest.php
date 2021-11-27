@@ -22,7 +22,12 @@ abstract class AbstractFieldTest extends KernelTestCase
     {
         self::bootKernel();
 
-        $this->entityDto = $this->createMock(EntityDto::class);
+        $entityDtoMock = $this->createMock(EntityDto::class);
+        $entityDtoMock
+            ->expects($this->any())
+            ->method('getInstance')
+            ->willReturn(new class() {});
+        $this->entityDto = $entityDtoMock;
 
         $crudMock = $this->getMockBuilder(CrudDto::class)
             ->disableOriginalConstructor()

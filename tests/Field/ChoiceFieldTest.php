@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Field;
 
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\ChoiceConfigurator;
+use Symfony\Component\HttpKernel\Kernel;
 
 class ChoiceFieldTest extends AbstractFieldTest
 {
@@ -14,7 +15,9 @@ class ChoiceFieldTest extends AbstractFieldTest
         parent::setUp();
 
         $this->choices = ['a' => 1, 'b' => 2, 'c' => 3];
-        $this->configurator = new ChoiceConfigurator(self::$container->get('translator'));
+
+        $container = Kernel::MAJOR_VERSION >= 6 ? static::getContainer() : self::$container;
+        $this->configurator = new ChoiceConfigurator($container->get('translator'));
     }
 
     public function testFieldWithoutChoices()

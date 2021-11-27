@@ -38,7 +38,7 @@
         "symfony/uid": "^5.1"
     },
     "require-dev": {
-        "dama/doctrine-test-bundle": "^6.4",
+        "dama/doctrine-test-bundle": "^6.7",
         "doctrine/doctrine-fixtures-bundle": "^3.4",
         "psr/log": "~1.0",
         "symfony/browser-kit": "^4.4|^5.0|^6.0",

@@ -27,6 +27,9 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 abstract class AbstractDashboardController extends AbstractController implements DashboardControllerInterface
 {
+    /**
+     * @return array
+     */
     public static function getSubscribedServices()
     {
         return array_merge(parent::getSubscribedServices(), [

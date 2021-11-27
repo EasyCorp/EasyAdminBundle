@@ -27,11 +27,17 @@ final class SecurityVoter extends Voter
         $this->adminContextProvider = $adminContextProvider;
     }
 
+    /**
+     * @return bool
+     */
     protected function supports($permissionName, $subject)
     {
         return Permission::exists($permissionName);
     }
 
+    /**
+     * @return bool
+     */
     protected function voteOnAttribute($permissionName, $subject, TokenInterface $token)
     {
         if (Permission::EA_VIEW_MENU_ITEM === $permissionName) {

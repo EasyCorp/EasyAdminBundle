@@ -24,11 +24,17 @@ final class BatchActionDtoResolver implements ArgumentValueResolverInterface
         $this->adminUrlGenerator = $adminUrlGenerator;
     }
 
+    /**
+     * @return bool
+     */
     public function supports(Request $request, ArgumentMetadata $argument)
     {
         return BatchActionDto::class === $argument->getType();
     }
 
+    /**
+     * @return iterable
+     */
     public function resolve(Request $request, ArgumentMetadata $argument)
     {
         if (null === $context = $this->adminContextProvider->getContext()) {

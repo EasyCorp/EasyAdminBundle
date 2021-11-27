@@ -89,6 +89,9 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         return $this->get(FieldProvider::class)->getDefaultFields($pageName);
     }
 
+    /**
+     * @return array
+     */
     public static function getSubscribedServices()
     {
         return array_merge(parent::getSubscribedServices(), [

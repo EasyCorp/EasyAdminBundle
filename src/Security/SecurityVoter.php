@@ -30,7 +30,7 @@ final class SecurityVoter extends Voter
     /**
      * @return bool
      */
-    protected function supports($permissionName, $subject)
+    protected function supports(string $permissionName, $subject)
     {
         return Permission::exists($permissionName);
     }

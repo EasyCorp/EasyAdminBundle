@@ -1,5 +1,5 @@
-# OS: Linux; Symfony: latest stable; PHP: upcoming (still unreleased) version
-name: "Tests - Upcoming PHP version"
+# OS: Linux; Symfony: upcoming (still unreleased) version; PHP: latest stable
+name: "Tests - Upcoming Symfony version (6.0)"
 
 on:
     pull_request:
@@ -22,16 +22,21 @@ jobs:
               uses: shivammathur/setup-php@v2
               with:
                   coverage: none
-                  php-version: '8.2'
+                  php-version: '8.0'
                   tools: composer:v2
                   extensions: mbstring, intl, pdo, pdo_sqlite, sqlite3
                   ini-values: date.timezone=UTC
 
             - name: 'Install project dependencies'
+              env:
+                  SYMFONY_REQUIRE: '6.0.x@dev'
               run: |
                   composer global require --no-progress --no-scripts --no-plugins symfony/flex
-                  composer update --no-interaction --prefer-dist --optimize-autoloader --prefer-stable --ignore-platform-req=php
+                  composer config minimum-stability dev
+                  composer update --no-interaction --prefer-dist --optimize-autoloader
                   vendor/bin/simple-phpunit install
 
             - name: 'Run tests'
+              env:
+                  SYMFONY_DEPRECATIONS_HELPER: 'max[indirect]=9999&max[direct]=0&max[self]=9999'
               run: vendor/bin/simple-phpunit -v || exit 0

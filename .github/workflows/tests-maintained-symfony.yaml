@@ -17,7 +17,7 @@ jobs:
         continue-on-error: false
         strategy:
             matrix:
-                php-version: ['8.0']
+                php-version: ['8.1']
                 symfony-version: ['5.2']
         steps:
             - name: 'Checkout code'

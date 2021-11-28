@@ -72,17 +72,17 @@ final class FormFactory
     /**
      * @internal
      *
-     * This method is called to normalize embedded property filters.
+     * This method is called to normalize embedded property filters
      */
     private function normalizeFilters(FilterCollection $filters): FilterCollection
     {
         $normalizedFilters = FilterCollection::new();
 
-        foreach($filters as $filterDto) {
+        foreach ($filters as $filterDto) {
             $propertyName = $filterDto->getProperty();
 
             // If the target property does NOT contain dots (no embedded property)
-            if(false === strpos($propertyName, '.')) {
+            if (false === strpos($propertyName, '.')) {
                 // We change nothing.
                 $normalizedFilters[$propertyName] = $filterDto;
 
@@ -97,7 +97,7 @@ final class FormFactory
                 // The property accessor sets values on array.
                 // So we must replace object path to array path.
                 $paths = explode('.', $filterDto->getProperty());
-                foreach($paths as $key => $path) {
+                foreach ($paths as $key => $path) {
                     $paths[$key] = "[$path]";
                 }
 

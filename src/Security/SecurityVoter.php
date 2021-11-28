@@ -27,7 +27,10 @@ final class SecurityVoter extends Voter
         $this->adminContextProvider = $adminContextProvider;
     }
 
-    protected function supports(string $permissionName, $subject): bool
+    /**
+     * @return bool
+     */
+    protected function supports($permissionName, $subject)
     {
         return Permission::exists($permissionName);
     }

@@ -22,6 +22,14 @@ final class FilterDto
         $this->formTypeOptions = KeyValueStore::new();
     }
 
+    /**
+     * This method escapes dots from the property name.
+     */
+    public function __toString(): string
+    {
+        return str_replace('.', '_', $this->propertyName);
+    }
+
     public function getFqcn(): ?string
     {
         return $this->fqcn;

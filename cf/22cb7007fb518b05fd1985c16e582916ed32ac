@@ -1,0 +1,5 @@
+---------------------------------------------------------------------------
+
+by michaelKaefer at 2021-11-27T18:55:41Z
+
+Another note: I think `^4.4|^5.0|^6.0` is what we need. The new GitHub action installs `4.4.0` (see https://github.com/EasyCorp/EasyAdminBundle/runs/4342264328?check_suite_focus=true) and all tests pass so there is no need to add `^4.4.13|^5.0|^6.0` or something like that

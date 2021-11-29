@@ -58,7 +58,7 @@ abstract class AbstractDashboardController extends AbstractController implements
 
     public function configureMenuItems(): iterable
     {
-        yield MenuItem::linktoDashboard('__ea__page_title.dashboard', 'fa fa-home');
+        yield MenuItem::linkToDashboard('__ea__page_title.dashboard', 'fa fa-home');
     }
 
     public function configureUserMenu(UserInterface $user): UserMenu

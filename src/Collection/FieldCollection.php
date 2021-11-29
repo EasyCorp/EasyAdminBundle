@@ -98,9 +98,9 @@ final class FieldCollection implements CollectionInterface
     }
 
     /**
-     * @return ?FieldDto|mixed
+     * @return ?FieldDto
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return $this->fields[$offset];
     }
@@ -123,7 +123,7 @@ final class FieldCollection implements CollectionInterface
     /**
      * @return \ArrayIterator|\Traversable|FieldDto[]
      */
-    public function getIterator()
+    public function getIterator(): \Traversable
     {
         return new \ArrayIterator($this->fields);
     }

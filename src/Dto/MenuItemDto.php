@@ -22,7 +22,7 @@ final class MenuItemDto
     private $label;
     private $icon;
     private $cssClass;
-    private $permission;
+    private $permissions;
     private $routeName;
     private $routeParameters;
     private $linkUrl;
@@ -39,6 +39,7 @@ final class MenuItemDto
         $this->linkRel = '';
         $this->linkTarget = '_self';
         $this->subItems = [];
+        $this->permissions = [];
     }
 
     public function getType(): string
@@ -126,14 +127,19 @@ final class MenuItemDto
         $this->routeParameters = $routeParameters;
     }
 
-    public function getPermission(): ?string
+    public function getPermissions(): ?array
     {
-        return $this->permission;
+        return $this->permissions;
     }
 
     public function setPermission(?string $permission): void
     {
-        $this->permission = $permission;
+        $this->permissions = [$permission];
+    }
+	
+    public function setPermissions(?array $permissions): void
+    {
+        $this->permissions = $permissions;
     }
 
     public function getCssClass(): string

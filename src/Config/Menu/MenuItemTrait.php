@@ -33,6 +33,13 @@ trait MenuItemTrait
         return $this;
     }
 
+    public function setPermissions(array $permissions): self
+    {
+        $this->dto->setPermissions($permissions);
+
+        return $this;
+    }
+
     public function setTranslationParameters(array $parameters): self
     {
         $this->dto->setTranslationParameters($parameters);

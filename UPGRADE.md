@@ -438,7 +438,15 @@ class SomeController extends AbstractController
 ```
 
 ### Link actions to routes with custom route parameters
-When using `Action::new('someProperty')->linkToRoute('my_route', ['my_param' => 123])` the internal creation of the URL changed. Using route parameters like `my_param` doesn't work anymore like it did before. If you need to pass route parameters which do not belong to EasyAdmin (for example Symfony's `_switch_user` route parameter) you should use `linkToUrl()` instead of `linkToRoute()`.
+
+The handling of links to Symfony routes has changed. When using something like
+`Action::new('someProperty')->linkToRoute('my_route', ['my_param' => 123])`,
+the route parameter `my_param` no longer is used as a normal route parameter of
+a Symfony route.
+
+If you need to pass route parameters which do not belong to EasyAdmin (e.g.,
+Symfony's `_switch_user` route parameter) generate the URL yourself and use the
+`linkToUrl()` method instead of `linkToRoute()`.
 
 **BEFORE**
 
@@ -455,9 +463,8 @@ class SomeController extends AbstractCrudController
     public function configureActions(Actions $actions): Actions
     {
         $impersonate = Action::new('impersonate')
-            ->linkToRoute('admin', [
-                '_switch_user' => 'user@example.com',
-            ]);
+            ->linkToRoute('some_route', ['_switch_user' => 'user@example.com']);
+
         return parent::configureActions($actions)
             ->add(Crud::PAGE_INDEX, $impersonate);
     }
@@ -487,11 +494,34 @@ class SomeController extends AbstractCrudController
     public function configureActions(Actions $actions): Actions
     {
         $impersonate = Action::new('impersonate')
-            ->linkToUrl($this->urlGenerator->generate(
-                'admin',
-                ['_switch_user' => 'user@example.com'],
-                UrlGeneratorInterface::ABSOLUTE_URL
-            ));
+            ->linkToUrl($this->urlGenerator->generate('some_route', [
+                '_switch_user' => 'user@example.com'
+            ], UrlGeneratorInterface::ABSOLUTE_URL));
+
+        return parent::configureActions($actions)
+            ->add(Crud::PAGE_INDEX, $impersonate);
+    }
+}
+```
+
+If you only to add some query string arguments, you can use instead this:
+
+```php
+namespace App\Controller;
+
+use App\Entity\User;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+
+class SomeController extends AbstractCrudController
+{
+    public function configureActions(Actions $actions): Actions
+    {
+        $impersonate = Action::new('impersonate')
+            ->linkToRoute('some_route')
+            ->setQueryParameter('_switch_user', 'user@example.com');
+
         return parent::configureActions($actions)
             ->add(Crud::PAGE_INDEX, $impersonate);
     }

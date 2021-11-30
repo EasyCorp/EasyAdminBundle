@@ -437,6 +437,67 @@ class SomeController extends AbstractController
 }
 ```
 
+### Link actions to routes with custom route parameters
+When using `Action::new('someProperty')->linkToRoute('my_route', ['my_param' => 123])` the internal creation of the URL changed. Using route parameters like `my_param` doesn't work anymore like it did before. If you need to pass route parameters which do not belong to EasyAdmin (for example Symfony's `_switch_user` route parameter) you should use `linkToUrl()` instead of `linkToRoute()`.
+
+**BEFORE**
+
+```php
+namespace App\Controller;
+
+use App\Entity\User;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+
+class SomeController extends AbstractCrudController
+{
+    public function configureActions(Actions $actions): Actions
+    {
+        $impersonate = Action::new('impersonate')
+            ->linkToRoute('admin', [
+                '_switch_user' => 'user@example.com',
+            ]);
+        return parent::configureActions($actions)
+            ->add(Crud::PAGE_INDEX, $impersonate);
+    }
+}
+```
+
+**AFTER** Use Symfony's `UrlGeneratorInterface` to generate the URL on your own.
+
+```php
+namespace App\Controller;
+
+use App\Entity\User;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+
+class SomeController extends AbstractCrudController
+{
+    private UrlGeneratorInterface $urlGenerator;
+
+    public function __construct(UrlGeneratorInterface $urlGenerator)
+    {
+        $this->urlGenerator = $urlGenerator;
+    }
+    
+    public function configureActions(Actions $actions): Actions
+    {
+        $impersonate = Action::new('impersonate')
+            ->linkToUrl($this->urlGenerator->generate(
+                'admin',
+                ['_switch_user' => 'user@example.com'],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            ));
+        return parent::configureActions($actions)
+            ->add(Crud::PAGE_INDEX, $impersonate);
+    }
+}
+```
+
 EasyAdmin 3.1.0
 ---------------
 

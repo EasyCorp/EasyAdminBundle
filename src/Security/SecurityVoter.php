@@ -64,9 +64,9 @@ final class SecurityVoter extends Voter
     {
         // users can see the menu item if they have the permission required by the menu item
         $isGranted = empty($menuItemDto->getPermissions());
-        foreach($menuItemDto->getPermissions() as $permission){
+        foreach ($menuItemDto->getPermissions() as $permission) {
             $isGranted = $this->authorizationChecker->isGranted($permission);
-            if($isGranted){
+            if ($isGranted) {
                 break;
             }
         }

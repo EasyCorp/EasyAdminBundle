@@ -127,7 +127,7 @@ final class MenuItemDto
         $this->routeParameters = $routeParameters;
     }
 
-    public function getPermissions(): ?array
+    public function getPermissions(): array
     {
         return $this->permissions;
     }
@@ -136,8 +136,8 @@ final class MenuItemDto
     {
         $this->permissions = [$permission];
     }
-	
-    public function setPermissions(?array $permissions): void
+
+    public function setPermissions(array $permissions): void
     {
         $this->permissions = $permissions;
     }

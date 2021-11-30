@@ -62,6 +62,9 @@ use function Symfony\Component\String\u;
  */
 abstract class AbstractCrudController extends AbstractController implements CrudControllerInterface
 {
+    /** @var callable|null */
+    private $indexQueryFilter;
+
     abstract public static function getEntityFqcn(): string;
 
     public function configureCrud(Crud $crud): Crud
@@ -447,7 +450,15 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
     {
-        return $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters);
+        $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters);
+        $filter = $this->indexQueryFilter;
+
+        return null === $filter ? $qb : $filter($qb);
+    }
+
+    public function setIndexQueryFilter(callable $indexQueryFilter): void
+    {
+        $this->indexQueryFilter = $indexQueryFilter;
     }
 
     public function renderFilters(AdminContext $context): KeyValueStore

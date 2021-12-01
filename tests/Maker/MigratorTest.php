@@ -11,6 +11,8 @@ class MigratorTest extends TestCase
 {
     public function testMigrate()
     {
+        $this->markTestSkipped('Skipped because we\'re going to remove the migration commands soon from this EasyAdmin version.');
+
         if ('\\' === \DIRECTORY_SEPARATOR) {
             $this->markTestSkipped('Skip this test on Windows because it\'s too cumbersome to deal with the line ending differences.');
         }

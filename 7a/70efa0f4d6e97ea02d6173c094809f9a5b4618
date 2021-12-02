@@ -1,0 +1,5 @@
+---------------------------------------------------------------------------
+
+by michaelKaefer at 2021-11-26T10:10:17Z
+
+This would also solve a PR (https://github.com/EasyCorp/EasyAdminBundle/pull/4681) and a issue (https://github.com/EasyCorp/EasyAdminBundle/issues/3103) because it would allow to modify the search query in the app (adding custom mapping type searches) when appling a filter at the same time.

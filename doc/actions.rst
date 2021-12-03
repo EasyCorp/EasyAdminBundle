@@ -530,6 +530,23 @@ load the appropriate menu, etc. However, thanks to the ``routeName`` query strin
 parameter, EasyAdmin knows that it must forward the request to the Symfony
 controller that serves that route, and does that transparently to you.
 
+.. note::
+
+    Handling route parameters in this way is fine in most situations. However,
+    sometimes you need to handle route arguments as proper Symfony route arguments.
+    For example, if you want to pass the ``_switch_user`` query parameter for
+    Symfony's impersonation feature, you can do this::
+
+        // you can generate the full URL with Symfony's URL generator:
+        $impersonate = Action::new('impersonate')->linkToUrl(
+            $urlGenerator->generate('admin', ['_switch_user' => 'user@example.com'], UrlGeneratorInterface::ABSOLUTE_URL)
+        );
+
+        // or you can add the query string parameter directly:
+        $impersonate = Action::new('impersonate')
+            ->linkToRoute('some_route')
+            ->setQueryParameter('_switch_user', 'user@example.com');
+
 Now, create the template used by the ``index()`` method, which lists a summary
 of the stats of all customers and includes a link to the detailed stats of each
 of them:

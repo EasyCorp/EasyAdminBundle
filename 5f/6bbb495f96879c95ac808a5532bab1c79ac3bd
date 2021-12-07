@@ -1,0 +1,210 @@
+---------------------------------------------------------------------------
+
+by john-dufrene-dev at 2021-10-06T15:32:18Z
+
+@JeromeEngelnAdeliom do you have some visual for this feature ?
+Thanks
+
+---------------------------------------------------------------------------
+
+by JeromeEngelnAdeliom at 2021-10-06T16:05:08Z
+
+@john-dufrene-dev I used the existing bootstrap template :
+
+![visual-4727-2](https://user-images.githubusercontent.com/51697251/136241186-28500384-4c80-48a8-83e2-79f557082569.png)
+
+---------------------------------------------------------------------------
+
+by john-dufrene-dev at 2021-10-06T16:10:02Z
+
+@JeromeEngelnAdeliom excellent ! Hope to see this New feature
+
+---------------------------------------------------------------------------
+
+by JeromeEngelnAdeliom at 2021-10-06T18:26:04Z
+
+It was my way to pass the commit's checks. The problem is linked to doctrine/orm 2.10.0 + that allow doctrine/dbal 3 since 3 days.
+Maybe a temporarily solution is to exclude doctrine/dbal > 3.0.0 in composer file ?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2021-10-06T18:36:52Z
+
+@JeromeEngelnAdeliom thanks for working on this. I want this feature to be added as soon as possible, but I'm lacking the energy to work on this ... so your PR is what we need to move this forward.
+
+As you probably know, we already had this feature in 2.x branch, but we had to remove it in order to release the 3.x version without much delay.
+
+1) I have some clear ideas about the UI design of this feature and I'd like to make some changes in your PR ... but after this PR is finished and merged ... so, please don't wast much time on the design because I'll change some things.
+
+2) I like how this feature is used by end-users. It's exactly the declarative style that I was thinking. Nice!
+
+3) Sometimes fields inside some tab have validation errors. We need to display a badge with the number of errors of each tab ... and on page load, display the first tab with errors, if any. The 2.x code might help you as inspiration for this: https://github.com/EasyCorp/EasyAdminBundle/blob/83fecc1318b315e6f52da9849d2b1db72a0146b7/src/Resources/views/default/edit.html.twig#L68-L113
+
+Thanks!
+
+---------------------------------------------------------------------------
+
+by JeromeEngelnAdeliom at 2021-10-06T18:46:17Z
+
+Thanks for your comment.
+I tested the badge system rapidly this morning and displaying a badge with the number of errors of each tab ... and on page load, display the first tab with errors was already working.
+I just made 2 changes in the EasyAdminTabSubscriber.
+
+---------------------------------------------------------------------------
+
+by JeromeEngelnAdeliom at 2021-10-06T19:03:17Z
+
+Ok I see your point. My test has worked only when the submit action was triggered. I will try to add the old js code for front-end validation errors.
+
+---------------------------------------------------------------------------
+
+by JeromeEngelnAdeliom at 2021-10-06T22:37:55Z
+
+@javiereguiluz I made some changes to answer to your third point. Can you check ?
+
+---------------------------------------------------------------------------
+
+by parijke at 2021-10-07T07:00:27Z
+
+I've added this as a patch to my dev env but I don't see the tabs? No errors shown.
+
+---------------------------------------------------------------------------
+
+by JeromeEngelnAdeliom at 2021-10-07T08:58:04Z
+
+> I've added this as a patch to my dev env but I don't see the tabs? No errors shown.
+
+To verify, I've removed all my changes from my vendor test project directory and re added then pull PR 4727 directly in vendor/easycorp/easyadmin-bundle. Works fine for me after adding :
+```php
+        public function configureFields(string $pageName): iterable
+        {
+             yield FormField::addTab('Tab');
+```
+Can you tell me more ?
+
+---------------------------------------------------------------------------
+
+by parijke at 2021-10-07T09:05:41Z
+
+I have patched easyadmin using:
+```
+  },
+            "easycorp/easyadmin-bundle": {
+                "tabs feature": "https://patch-diff.githubusercontent.com/raw/EasyCorp/EasyAdminBundle/pull/4727.patch"
+            }
+```
+
+which added the addTab method (which I can add to my crudController without problems). It won't show in the front end though.
+I cannot see anything new rendered. Of course I cleared cache and removed var/cache/* to be sure
+
+---------------------------------------------------------------------------
+
+by JeromeEngelnAdeliom at 2021-10-07T09:34:04Z
+
+Very strange, I've tried your method with patches. Works fine in my project.
+```bash
+Gathering patches for dependencies. This might take a minute.
+  - Installing easycorp/easyadmin-bundle (v3.5.10): Extracting archive
+  - Applying patches for easycorp/easyadmin-bundle
+    https://patch-diff.githubusercontent.com/raw/EasyCorp/EasyAdminBundle/pull/4727.patch (tabs feature)
+
+```
+
+Can try a dump in _vendor/easycorp/easyadmin-bundle/src/Resources/views/crud/form_theme.html.twig_ :
+```html
+{# EasyAdmin form type #}
+{% block ea_crud_widget %}
+    {{ dump(ea_crud_form.form_tabs) }}
+    {% if ea_crud_form.form_tabs|length > 0 %}
+```
+Or share me your dev project to investigate more ? Or show me your configureFields() method ?
+
+---------------------------------------------------------------------------
+
+by parijke at 2021-10-07T09:40:14Z
+
+Damn me... sorry I've wasted your time... It appears ONLY to work on edit/new (Forms) and I was constantly checking the DETAIL page
+
+It works on the forms
+
+---------------------------------------------------------------------------
+
+by JeromeEngelnAdeliom at 2021-10-07T09:44:15Z
+
+Ok np, I  excluded the detail page as it needs some twig adjustments.
+
+---------------------------------------------------------------------------
+
+by JeromeEngelnAdeliom at 2021-10-08T10:24:57Z
+
+minor style udpate :
+
+- initial margin config :     margin: -20px -20px 20px;
+![Capture d’écran 2021-10-08 à 12 18 13](https://user-images.githubusercontent.com/51697251/136540456-661da7d4-5ff8-47e9-b660-fb6de327e523.png)
+
+- updated margin :    margin: 0px -20px 20px;
+![Capture d’écran 2021-10-08 à 12 18 22](https://user-images.githubusercontent.com/51697251/136540581-7bb99329-6e82-4c46-afc0-bf11cbb2d026.png)
+
+---------------------------------------------------------------------------
+
+by jmsche at 2021-10-11T17:16:33Z
+
+Hi, is there any way to "close" a tab so some other fields can be added after the tabs?
+
+---------------------------------------------------------------------------
+
+by JeromeEngelnAdeliom at 2021-10-12T07:29:37Z
+
+I have found a issue when you add some fields inside a tab and not wrapped in a panel :
+<img width="437" alt="Capture d’écran 2021-10-12 à 09 01 22" src="https://user-images.githubusercontent.com/51697251/136910628-6bdb69d9-7d34-4938-9225-f224abf8a2d2.png">
+
+The behavior was :
+![ea-tabs-nok](https://user-images.githubusercontent.com/51697251/136910735-733eeed8-61aa-4c1a-b85f-a7c9945e822d.gif)
+
+9bda3d5 fixed this wrong behavior :
+![ea-tabs-ok](https://user-images.githubusercontent.com/51697251/136911086-74cfe438-42cf-44d2-9591-e39668413806.gif)
+
+---------------------------------------------------------------------------
+
+by JeromeEngelnAdeliom at 2021-10-12T07:36:04Z
+
+> Hi, is there any way to "close" a tab so some other fields can be added after the tabs?
+
+Can you tell me more about your idea ? I think that if you want to use tabs it for to put all your fields inside.
+Or maybe you want to add some fields in a bottom section always visible and displayed the tabs fields on a top section ?
+
+---------------------------------------------------------------------------
+
+by jmsche at 2021-10-12T10:46:17Z
+
+> Or maybe you want to add some fields in a bottom section always visible and displayed the tabs fields on a top section ?
+
+That's just an example of what I'd do: put some fields on top and/or bottom of the tabs content.
+
+An other example would be translations: I'd have some tabs for each translation, but some fields wouldn't be translated (eg. price, weight...).
+
+---------------------------------------------------------------------------
+
+by JeromeEngelnAdeliom at 2021-10-12T11:24:13Z
+
+That kind of integration can be added after this PR ? But I agree, having many tabs section in one page (or a static bottom field list) can be useful.
+For translations maybe the best way is to use An A2lix custom TranslationField, it will use his own tab system to display fields. Then you can add fields anywhere.
+
+---------------------------------------------------------------------------
+
+by DylanKas at 2021-11-16T15:13:17Z
+
+Is there any task left or help needed ?
+
+---------------------------------------------------------------------------
+
+by JeromeEngelnAdeliom at 2021-11-16T16:25:18Z
+
+Maybe some advanced tests or some UI adaptations (maybe after this PR as javiereguiluz said above "_I have some clear ideas about the UI design of this feature and I'd like to make some changes in your PR_") ?
+
+---------------------------------------------------------------------------
+
+by JeromeEngelnAdeliom at 2021-12-02T09:55:18Z
+
+I use this PR as a patch in my dev project since 2 month without encountering any problems.
+Do I have anything more to do to see this pull request merged ?

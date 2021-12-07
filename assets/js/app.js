@@ -457,6 +457,7 @@ const App = (() => {
 
                 if (fileUploadDeleteCheckbox) {
                     fileUploadDeleteCheckbox.checked = true;
+                    fileUploadDeleteCheckbox.click();
                 }
                 fileUploadInput.value = '';
                 fileUploadCustomInput.innerHTML = '';

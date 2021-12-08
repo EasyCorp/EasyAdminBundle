@@ -1,0 +1,13 @@
+---------------------------------------------------------------------------
+
+by michaelKaefer at 2021-12-03T19:47:33Z
+
+Wanted to try this out, I think in `composer.json` you forgot:
+```
+        "symfony/string": "^5.0",
+```
+
+Which should be:
+```
+        "symfony/string": "^5.0|^6.0",
+```

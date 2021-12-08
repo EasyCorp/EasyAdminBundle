@@ -170,7 +170,7 @@ You can override the default page titles with the following methods::
             ->setPageTitle('detail', fn (Product $product) => (string) $product)
             ->setPageTitle('edit', fn (Category $category) => sprintf('Editing <b>%s</b>', $category->getName()))
 
-            // the help message displayed to end users (it can contain HTML tags)
+            // the help message displayed to end users
             ->setHelp('edit', '...')
         ;
     }

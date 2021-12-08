@@ -86,7 +86,7 @@ final class FieldDto
 
     public function isFormDecorationField(): bool
     {
-        return null !== u($this->getCssClass())->indexOf('field-form_panel');
+        return null !== u($this->getCssClass())->indexOf('field-form_panel') && null !== u($this->getCssClass())->indexOf('field-form_tab');
     }
 
     public function getFieldFqcn(): ?string

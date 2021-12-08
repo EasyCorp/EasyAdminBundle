@@ -189,7 +189,7 @@ final class ActionFactory
             $requestParameters[EA::ENTITY_ID] = $entityDto->getPrimaryKeyValueAsString();
         }
 
-        return $this->adminUrlGenerator->unsetAllExcept(EA::MENU_INDEX, EA::SUBMENU_INDEX, EA::FILTERS)->setAll($requestParameters)->generateUrl();
+        return $this->adminUrlGenerator->unsetAllExcept(EA::MENU_INDEX, EA::SUBMENU_INDEX, EA::FILTERS, EA::PAGE)->setAll($requestParameters)->generateUrl();
     }
 
     private function generateReferrerUrl(Request $request, ActionDto $actionDto, string $currentAction): ?string

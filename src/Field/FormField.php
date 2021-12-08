@@ -42,7 +42,6 @@ final class FormField implements FieldInterface
             ->hideOnIndex()
             ->setProperty('ea_form_panel_'.(new Ulid()))
             ->setLabel($label)
-            ->setTemplateName('crud/field/form_panel')
             ->setFormType(EaFormPanelType::class)
             ->addCssClass('field-form_panel')
             ->setFormTypeOptions(['mapped' => false, 'required' => false])
@@ -68,7 +67,6 @@ final class FormField implements FieldInterface
             ->setFieldFqcn(__CLASS__)
             ->hideOnIndex()
             ->setProperty('ea_form_row_'.(new Ulid()))
-            ->setTemplateName('crud/field/form_row')
             ->setFormType(EaFormRowType::class)
             ->addCssClass('field-form_row')
             ->setFormTypeOptions(['mapped' => false, 'required' => false])
@@ -87,9 +85,9 @@ final class FormField implements FieldInterface
             ->hideOnIndex()
             ->hideOnDetail()
             ->setProperty('ea_form_tab_'.(new Ulid()))
-            ->setTemplateName('crud/field/form_tab')
             ->setLabel($label)
             ->setFormType(EasyAdminTabType::class)
+            ->addCssClass('field-form_tab')
             ->setFormTypeOptions(['mapped' => false, 'required' => false])
             ->setCustomOption(self::OPTION_ICON, $icon);
     }

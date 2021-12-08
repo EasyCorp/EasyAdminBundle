@@ -200,8 +200,8 @@ Date, Time and Number Formatting Options
         ;
     }
 
-Search and Pagination Options
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Search, Order, and Pagination Options
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ::
 
@@ -220,6 +220,8 @@ Search and Pagination Options
             // (user can later change this sorting by clicking on the table columns)
             ->setDefaultSort(['id' => 'DESC'])
             ->setDefaultSort(['id' => 'DESC', 'title' => 'ASC', 'startsAt' => 'DESC'])
+            // for `AssociationField`s, the sorting depends on the entities `__toString()` method
+            ->setDefaultSort(['seller' => 'ASC'])
 
             // the max number of entities to display per page
             ->setPaginatorPageSize(30)

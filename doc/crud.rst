@@ -220,8 +220,8 @@ Search, Order, and Pagination Options
             // (user can later change this sorting by clicking on the table columns)
             ->setDefaultSort(['id' => 'DESC'])
             ->setDefaultSort(['id' => 'DESC', 'title' => 'ASC', 'startsAt' => 'DESC'])
-            // for `AssociationField`s, the sorting depends on the entities `__toString()` method
-            ->setDefaultSort(['seller' => 'ASC'])
+            // you can sort by Doctrine associations up to two levels
+            ->setDefaultSort(['seller.name' => 'ASC'])
 
             // the max number of entities to display per page
             ->setPaginatorPageSize(30)

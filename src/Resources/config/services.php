@@ -6,7 +6,6 @@ use EasyCorp\Bundle\EasyAdminBundle\ArgumentResolver\AdminContextResolver;
 use EasyCorp\Bundle\EasyAdminBundle\ArgumentResolver\BatchActionDtoResolver;
 use EasyCorp\Bundle\EasyAdminBundle\Cache\CacheWarmer;
 use EasyCorp\Bundle\EasyAdminBundle\Command\MakeAdminDashboardCommand;
-use EasyCorp\Bundle\EasyAdminBundle\Command\MakeAdminMigrationCommand;
 use EasyCorp\Bundle\EasyAdminBundle\Command\MakeCrudControllerCommand;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterConfiguratorInterface;
@@ -95,11 +94,6 @@ return static function (ContainerConfigurator $container) {
         ->instanceof(FilterConfiguratorInterface::class)->tag(EasyAdminExtension::TAG_FILTER_CONFIGURATOR);
 
     $services
-        ->set(MakeAdminMigrationCommand::class)->public()
-            ->arg(0, new Reference(Migrator::class))
-            ->arg(1, '%kernel.project_dir%')
-            ->tag('console.command')
-
         ->set(MakeAdminDashboardCommand::class)->public()
             ->arg(0, new Reference(ClassMaker::class))
             ->arg(1, '%kernel.project_dir%')

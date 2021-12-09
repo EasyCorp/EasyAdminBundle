@@ -33,22 +33,22 @@ final class FlattenException extends BaseFlattenException
         return $e;
     }
 
-    public function getPublicMessage()
+    public function getPublicMessage(): string
     {
         return $this->context->getPublicMessage();
     }
 
-    public function getDebugMessage()
+    public function getDebugMessage(): string
     {
         return $this->context->getDebugMessage();
     }
 
-    public function getParameters()
+    public function getParameters(): array
     {
         return $this->context->getParameters();
     }
 
-    public function getTranslationParameters()
+    public function getTranslationParameters(): array
     {
         return $this->context->getTranslationParameters();
     }

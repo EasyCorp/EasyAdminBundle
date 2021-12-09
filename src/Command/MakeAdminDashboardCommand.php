@@ -39,10 +39,7 @@ class MakeAdminDashboardCommand extends Command
         ;
     }
 
-    /**
-     * @return int
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
         $fs = new Filesystem();
@@ -94,7 +91,7 @@ class MakeAdminDashboardCommand extends Command
             'Run "make:admin:crud" to generate CRUD controllers and link them from the Dashboard.',
         ]);
 
-        return 0;
+        return Command::SUCCESS;
     }
 
     private function getSiteTitle(string $projectDir): string
@@ -134,7 +131,7 @@ class MakeAdminDashboardCommand extends Command
         return $phpVersion;
     }
 
-    private function getCommandHelp()
+    private function getCommandHelp(): string
     {
         return <<<'HELP'
 The <info>%command.name%</info> command creates a new EasyAdmin Dashboard class

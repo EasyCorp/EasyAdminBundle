@@ -21,7 +21,7 @@ class EasyAdminExtension extends Extension
     public const TAG_FIELD_CONFIGURATOR = 'ea.field_configurator';
     public const TAG_FILTER_CONFIGURATOR = 'ea.filter_configurator';
 
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $container->registerForAutoconfiguration(DashboardControllerInterface::class)
             ->addTag(self::TAG_DASHBOARD_CONTROLLER);
@@ -34,9 +34,6 @@ class EasyAdminExtension extends Extension
 
         $container->registerForAutoconfiguration(FilterConfiguratorInterface::class)
             ->addTag(self::TAG_FILTER_CONFIGURATOR);
-
-        // this parameter is created for BC reasons but it can be deleted in future releases
-        $container->setParameter('easyadmin.config', []);
 
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.php');

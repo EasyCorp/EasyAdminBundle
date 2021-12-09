@@ -63,10 +63,7 @@ class DataCollector extends BaseDataCollector
         ];
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return 'easyadmin';
     }

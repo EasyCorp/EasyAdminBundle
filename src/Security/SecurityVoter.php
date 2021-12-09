@@ -124,10 +124,7 @@ if (Kernel::MAJOR_VERSION >= 6) {
             $this->adminContextProvider = $adminContextProvider;
         }
 
-        /**
-         * @return bool
-         */
-        protected function supports($permissionName, $subject)
+        protected function supports($permissionName, $subject): bool
         {
             return Permission::exists($permissionName);
         }

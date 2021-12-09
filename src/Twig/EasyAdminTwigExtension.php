@@ -25,10 +25,7 @@ class EasyAdminTwigExtension extends AbstractExtension
         $this->serviceLocator = $serviceLocator;
     }
 
-    /**
-     * @return array
-     */
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
             new TwigFunction('ea_url', [$this, 'getAdminUrlGenerator']),
@@ -36,10 +33,7 @@ class EasyAdminTwigExtension extends AbstractExtension
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             new TwigFilter('ea_flatten_array', [$this, 'flattenArray']),
@@ -53,7 +47,7 @@ class EasyAdminTwigExtension extends AbstractExtension
      * Transforms ['a' => 'foo', 'b' => ['c' => ['d' => 7]]] into ['a' => 'foo', 'b[c][d]' => 7]
      * It's useful to submit nested arrays (e.g. query string parameters) as form fields.
      */
-    public function flattenArray($array, $parentKey = null)
+    public function flattenArray($array, $parentKey = null): array
     {
         $flattenedArray = [];
 

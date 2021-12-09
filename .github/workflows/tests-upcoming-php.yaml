@@ -19,15 +19,17 @@ jobs:
               uses: actions/checkout@v2.3.3
 
             - name: 'Install PHP with extensions'
-              uses: shivammathur/setup-php@2.7.0
+              uses: shivammathur/setup-php@v2
               with:
                   coverage: none
-                  php-version: '8.1'
+                  php-version: '8.2'
                   tools: composer:v2
                   extensions: mbstring, intl, pdo, pdo_sqlite, sqlite3
                   ini-values: date.timezone=UTC
 
             - name: 'Install project dependencies'
+              env:
+                  SYMFONY_REQUIRE: 5.4
               run: |
                   composer global require --no-progress --no-scripts --no-plugins symfony/flex
                   composer update --no-interaction --prefer-dist --optimize-autoloader --prefer-stable --ignore-platform-req=php

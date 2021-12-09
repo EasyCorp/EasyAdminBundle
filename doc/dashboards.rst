@@ -411,7 +411,7 @@ It links to a relative or absolute URL::
     }
 
 To avoid leaking internal backend information to external websites, EasyAdmin
-adds the ``rel="noreferrer"`` attribute to all URL menu items, except if the
+adds the ``rel="noopener"`` attribute to all URL menu items, except if the
 menu item defines its own ``rel`` option.
 
 Section Menu Item

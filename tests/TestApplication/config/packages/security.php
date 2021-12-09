@@ -1,6 +1,7 @@
 <?php
 
 use Symfony\Component\PasswordHasher\Hasher\PlaintextPasswordHasher;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\User;
 use Symfony\Component\Security\Http\Authentication\AuthenticatorManager;
 
@@ -33,7 +34,10 @@ $configuration = [
 ];
 
 if (class_exists(PlaintextPasswordHasher::class)) {
-    $configuration['password_hashers'] = [User::class => 'plaintext'];
+    $configuration['password_hashers'] = [
+        User::class => 'plaintext',
+        PasswordAuthenticatedUserInterface::class => 'plaintext',
+    ];
 } else {
     $configuration['encoders'] = [User::class => 'plaintext'];
 }

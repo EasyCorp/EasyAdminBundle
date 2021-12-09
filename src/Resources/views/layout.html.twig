@@ -182,6 +182,14 @@
 
                                         <form class="form-action-search" method="get">
                                             {% block search_form %}
+                                                {% block search_form_filters %}
+                                                    {% for field, array in ea.search.appliedFilters %}
+                                                        {% for key, value in array %}
+                                                            <input type="hidden" name="filters[{{ field }}][{{ key }}]" value="{{ value }}">
+                                                        {% endfor %}
+                                                    {% endfor %}
+                                                {% endblock %}
+
                                                 <input type="hidden" name="crudAction" value="index">
                                                 <input type="hidden" name="crudControllerFqcn" value="{{ ea.request.query.get('crudControllerFqcn') }}">
                                                 <input type="hidden" name="menuIndex" value="{{ ea.request.query.get('menuIndex') }}">

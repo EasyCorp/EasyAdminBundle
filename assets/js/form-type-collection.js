@@ -13,8 +13,9 @@ const eaCollectionHandler = function (event) {
     document.querySelectorAll('button.field-collection-delete-button').forEach((deleteButton) => {
         deleteButton.addEventListener('click', () => {
             const collection = deleteButton.closest('[data-ea-collection-field]');
+            const item = deleteButton.closest('.field-collection-item');
 
-            deleteButton.closest('.form-group').remove();
+            item.remove();
             document.dispatchEvent(new Event('ea.collection.item-removed'));
 
             EaCollectionProperty.updateCollectionItemCssClasses(collection);

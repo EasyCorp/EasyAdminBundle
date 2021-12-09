@@ -10,11 +10,14 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Orm\EntityRepositoryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDataDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
+use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntitySearchEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use Symfony\Component\Uid\Ulid;
+use Symfony\Component\Uid\Uuid;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -25,13 +28,15 @@ final class EntityRepository implements EntityRepositoryInterface
     private $doctrine;
     private $entityFactory;
     private $formFactory;
+    private $eventDispatcher;
 
-    public function __construct(AdminContextProvider $adminContextProvider, ManagerRegistry $doctrine, EntityFactory $entityFactory, FormFactory $formFactory)
+    public function __construct(AdminContextProvider $adminContextProvider, ManagerRegistry $doctrine, EntityFactory $entityFactory, FormFactory $formFactory, EventDispatcherInterface $eventDispatcher)
     {
         $this->adminContextProvider = $adminContextProvider;
         $this->doctrine = $doctrine;
         $this->entityFactory = $entityFactory;
         $this->formFactory = $formFactory;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     public function createQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
@@ -64,7 +69,7 @@ final class EntityRepository implements EntityRepositoryInterface
         $isNumericQuery = is_numeric($query);
         $isSmallIntegerQuery = ctype_digit($query) && $query >= -32768 && $query <= 32767;
         $isIntegerQuery = ctype_digit($query) && $query >= -2147483648 && $query <= 2147483647;
-        $isUuidQuery = 1 === preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i', $query);
+        $isUuidQuery = Uuid::isValid($query);
         $isUlidQuery = Ulid::isValid($query);
 
         $dqlParameters = [
@@ -147,6 +152,8 @@ final class EntityRepository implements EntityRepositoryInterface
                     ->setParameter('query_as_words', $dqlParameters['words_query']);
             }
         }
+
+        $this->eventDispatcher->dispatch(new AfterEntitySearchEvent($queryBuilder, $searchDto, $entityDto));
     }
 
     private function addOrderClause(QueryBuilder $queryBuilder, SearchDto $searchDto, EntityDto $entityDto): void

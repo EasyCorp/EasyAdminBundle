@@ -17,14 +17,14 @@ jobs:
         continue-on-error: false
         strategy:
             matrix:
-                php-version: ['8.0']
-                symfony-version: ['5.2']
+                php-version: ['8.1']
+                symfony-version: ['5.2', '5.3', '5.4']
         steps:
             - name: 'Checkout code'
               uses: actions/checkout@v2.3.3
 
             - name: 'Install PHP with extensions'
-              uses: shivammathur/setup-php@2.7.0
+              uses: shivammathur/setup-php@v2
               with:
                   coverage: none
                   php-version: ${{ matrix.php-version }}
@@ -42,5 +42,5 @@ jobs:
 
             - name: 'Run tests'
               env:
-                  SYMFONY_DEPRECATIONS_HELPER: 'max[indirect]=1'
+                  SYMFONY_DEPRECATIONS_HELPER: 'max[total]=999999'
               run: vendor/bin/simple-phpunit -v

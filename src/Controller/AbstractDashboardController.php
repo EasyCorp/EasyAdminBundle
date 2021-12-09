@@ -27,7 +27,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 abstract class AbstractDashboardController extends AbstractController implements DashboardControllerInterface
 {
-    public static function getSubscribedServices()
+    public static function getSubscribedServices(): array
     {
         return array_merge(parent::getSubscribedServices(), [
             AdminUrlGenerator::class => '?'.AdminUrlGenerator::class,
@@ -58,7 +58,7 @@ abstract class AbstractDashboardController extends AbstractController implements
 
     public function configureMenuItems(): iterable
     {
-        yield MenuItem::linktoDashboard('__ea__page_title.dashboard', 'fa fa-home');
+        yield MenuItem::linkToDashboard('__ea__page_title.dashboard', 'fa fa-home');
     }
 
     public function configureUserMenu(UserInterface $user): UserMenu

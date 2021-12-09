@@ -1,5 +1,5 @@
-# OS: Linux; Symfony: upcoming (still unreleased) version; PHP: latest stable
-name: "Tests - Upcoming Symfony version"
+# OS: Linux; Symfony: lowest supported by this bundle; PHP: lowest supported by this bundle
+name: "Tests - Lowest supported dependencies"
 
 on:
     pull_request:
@@ -13,30 +13,27 @@ env:
 jobs:
     tests:
         runs-on: 'ubuntu-latest'
-        continue-on-error: true
+        continue-on-error: false
         steps:
             - name: 'Checkout code'
               uses: actions/checkout@v2.3.3
 
             - name: 'Install PHP with extensions'
-              uses: shivammathur/setup-php@2.7.0
+              uses: shivammathur/setup-php@v2
               with:
                   coverage: none
-                  php-version: '8.0'
+                  php-version: '7.2.5'
                   tools: composer:v2
                   extensions: mbstring, intl, pdo, pdo_sqlite, sqlite3
                   ini-values: date.timezone=UTC
 
             - name: 'Install project dependencies'
-              env:
-                  SYMFONY_REQUIRE: '5.4.x@dev'
               run: |
                   composer global require --no-progress --no-scripts --no-plugins symfony/flex
-                  composer config minimum-stability dev
-                  composer update --no-interaction --prefer-dist --optimize-autoloader
+                  composer update --no-interaction --prefer-dist --optimize-autoloader --prefer-stable --prefer-lowest
                   vendor/bin/simple-phpunit install
 
             - name: 'Run tests'
               env:
-                  SYMFONY_DEPRECATIONS_HELPER: 'max[indirect]=9999&max[direct]=0&max[self]=9999'
-              run: vendor/bin/simple-phpunit -v || exit 0
+                  SYMFONY_DEPRECATIONS_HELPER: 'max[indirect]=10&max[total]=27'
+              run: vendor/bin/simple-phpunit -v

@@ -25,6 +25,9 @@ class EasyAdminTwigExtension extends AbstractExtension
         $this->serviceLocator = $serviceLocator;
     }
 
+    /**
+     * @return array
+     */
     public function getFunctions()
     {
         return [
@@ -33,6 +36,9 @@ class EasyAdminTwigExtension extends AbstractExtension
         ];
     }
 
+    /**
+     * @return array
+     */
     public function getFilters()
     {
         return [

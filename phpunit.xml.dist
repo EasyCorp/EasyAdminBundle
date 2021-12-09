@@ -15,7 +15,6 @@
 
     <extensions>
         <extension class="EasyCorp\Bundle\EasyAdminBundle\Test\PhpUnitExtension"/>
-        <extension class="DAMA\DoctrineTestBundle\PHPUnit\PHPUnitExtension"/>
     </extensions>
 
     <testsuites>

@@ -237,14 +237,20 @@ fieldset .form-group .nullable-control label {
 
 // Form tabs
 .form-tabs .nav-tabs {
-    background: var(--body-bg);
-    margin: -20px -20px 20px;
-    padding-left: 20px;
+    background: transparent;
+    border: 0;
+    box-shadow: 0 1px 0 var(--form-tabs-border-color);
+    margin: 0px 0px 20px;
+    padding-left: 0px;
 }
 
 .form-tabs .nav-tabs a, .form-tabs .nav-tabs a:hover {
-    color: var(--gray-800);
-    font-size: var(--font-size-sm);
+    border: 0;
+    color: var(--text-color);
+    font-size: var(--font-size-base);
+    font-weight: 500;
+    margin: 0 28px 0 0;
+    padding: 4px 0px 8px;
 }
 
 .form-tabs .nav-tabs .fa {
@@ -254,7 +260,10 @@ fieldset .form-group .nullable-control label {
 }
 
 .form-tabs .nav-tabs .nav-link.active {
-    transform: translateY(1px);
+    background: transparent;
+    box-shadow: inset 0px -2px 0 0px var(--link-color);
+    color: var(--link-color);
+    transition: box-shadow .3s ease-in-out;
 }
 
 .form-tabs .nav-tabs .nav-item .badge {

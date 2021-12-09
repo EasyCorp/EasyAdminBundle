@@ -1,0 +1,21 @@
+---------------------------------------------------------------------------
+
+by izhddm at 2021-12-09T12:08:26Z
+
+My projects are currently working with the this fix. There are no problems yet.
+
+---------------------------------------------------------------------------
+
+by pkly at 2021-12-09T12:20:59Z
+
+@izhddm so both single and multiple filters appear to be working as expected?
+
+---------------------------------------------------------------------------
+
+by izhddm at 2021-12-09T12:30:47Z
+
+> @izhddm so both single and multiple filters appear to be working as expected?
+
+Yes.
+
+Search with filters also works correctly. At least in my projects, the behavior is expected and predictable.

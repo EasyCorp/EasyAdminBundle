@@ -40,10 +40,7 @@ class MakeCrudControllerCommand extends Command
         ;
     }
 
-    /**
-     * @return int
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
         $fs = new Filesystem();
@@ -52,7 +49,7 @@ class MakeCrudControllerCommand extends Command
         if (0 === \count($doctrineEntitiesFqcn)) {
             $io->error('This command generates the CRUD controller of an existing Doctrine entity, but no entities were found in your application. Create some Doctrine entities first and then run this command again.');
 
-            return 1;
+            return Command::FAILURE;
         }
         $entityFqcn = $io->choice(
             'Which Doctrine entity are you going to manage with this CRUD controller?',
@@ -91,7 +88,7 @@ class MakeCrudControllerCommand extends Command
             'Read EasyAdmin docs: https://symfony.com/doc/master/bundles/EasyAdminBundle/index.html',
         ]);
 
-        return 0;
+        return Command::SUCCESS;
     }
 
     private function getAllDoctrineEntitiesFqcn(): array
@@ -109,7 +106,7 @@ class MakeCrudControllerCommand extends Command
         return $entitiesFqcn;
     }
 
-    private function getCommandHelp()
+    private function getCommandHelp(): string
     {
         return <<<'HELP'
 The <info>%command.name%</info> command creates a new EasyAdmin CRUD controler

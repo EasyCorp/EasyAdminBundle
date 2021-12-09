@@ -11,10 +11,7 @@ use Symfony\Component\Form\AbstractType;
  */
 class EasyAdminTabType extends AbstractType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'ea_form_tabs';
     }

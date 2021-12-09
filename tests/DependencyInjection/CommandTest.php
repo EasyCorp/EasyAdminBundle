@@ -27,6 +27,5 @@ class CommandTest extends KernelTestCase
     {
         yield ['make:admin:crud'];
         yield ['make:admin:dashboard'];
-        yield ['make:admin:migration'];
     }
 }

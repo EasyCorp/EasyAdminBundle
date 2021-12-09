@@ -23,18 +23,12 @@ final class CacheWarmer implements CacheWarmerInterface
         $this->router = $router;
     }
 
-    /**
-     * @return bool
-     */
-    public function isOptional()
+    public function isOptional(): bool
     {
         return false;
     }
 
-    /**
-     * @return array
-     */
-    public function warmUp($cacheDirectory)
+    public function warmUp($cacheDirectory): array
     {
         $allRoutes = $this->router->getRouteCollection();
         $dashboardRoutes = [];
@@ -71,5 +65,8 @@ final class CacheWarmer implements CacheWarmerInterface
             $cacheDirectory.'/'.self::DASHBOARD_ROUTES_CACHE,
             '<?php return '.var_export($dashboardRoutes, true).';'
         );
+
+        // we don't use this, but it's required by the interface to return the list of classes to preload
+        return [];
     }
 }

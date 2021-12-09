@@ -13,10 +13,7 @@ use Symfony\Component\Form\AbstractType;
  */
 class EasyAdminGroupType extends AbstractType
 {
-    /**
-     * @return string
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'easyadmin_group';
     }

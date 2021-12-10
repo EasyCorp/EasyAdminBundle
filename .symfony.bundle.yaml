@@ -1,6 +1,6 @@
-branches: ["1.x", "2.x", "master"]
-maintained_branches: ["2.x", "master"]
-current_branch: "master"
+branches: ["1.x", "2.x", "3.x", "master"]
+maintained_branches: ["3.x", "master"]
+current_branch: "3.x"
 dev_branch: "master"
-dev_branch_alias: "3.x"
+dev_branch_alias: "4.x"
 doc_dir: "doc/"

@@ -17,13 +17,13 @@ jobs:
         continue-on-error: false
         strategy:
             matrix:
-                php-version: ['7.2.5', '7.3', '7.4', '8.0']
+                php-version: ['7.2.5', '7.3', '7.4', '8.0', '8.1']
         steps:
             - name: 'Checkout code'
               uses: actions/checkout@v2.3.3
 
             - name: 'Install PHP with extensions'
-              uses: shivammathur/setup-php@2.7.0
+              uses: shivammathur/setup-php@v2
               with:
                   coverage: none
                   php-version: ${{ matrix.php-version }}

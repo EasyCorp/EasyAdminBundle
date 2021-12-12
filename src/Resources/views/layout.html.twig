@@ -182,6 +182,21 @@
 
                                         <form class="form-action-search" method="get">
                                             {% block search_form %}
+                                                {% block search_form_filters %}
+                                                    {% for field, array in ea.search.appliedFilters %}
+                                                        {% for key, value in array %}
+                                                            {# This code re-applies your filters on searches, an iterable check is needed in cases we have more than one object for a filter #}
+                                                            {% if value is iterable %}
+                                                                {% for index, iterValue in value %}
+                                                                    <input type="hidden" name="filters[{{ field }}][{{ key }}][{{ index }}]" value="{{ iterValue }}">
+                                                                {% endfor %}
+                                                            {% else %}
+                                                                <input type="hidden" name="filters[{{ field }}][{{ key }}]" value="{{ value }}">
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    {% endfor %}
+                                                {% endblock %}
+
                                                 <input type="hidden" name="crudAction" value="index">
                                                 <input type="hidden" name="crudControllerFqcn" value="{{ ea.request.query.get('crudControllerFqcn') }}">
                                                 <input type="hidden" name="menuIndex" value="{{ ea.request.query.get('menuIndex') }}">

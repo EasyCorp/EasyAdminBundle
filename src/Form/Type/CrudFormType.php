@@ -79,10 +79,15 @@ class CrudFormType extends AbstractType
             // applied to the form fields defined after it) and store its details
             // in a field to get them in form template
             if (\in_array($formFieldType, ['ea_tab', EasyAdminTabType::class], true)) {
+                ++$currentFormPanel;
                 // The first tab should be marked as active by default
                 $metadata['active'] = 0 === \count($formTabs);
                 $metadata['errors'] = 0;
-                $currentFormTab = $metadata['fieldName'];
+                $metadata['id'] = $fieldDto->getProperty();
+                $metadata['label'] = $fieldDto->getLabel();
+                $metadata['help'] = $fieldDto->getHelp();
+                $metadata[FormField::OPTION_ICON] = $fieldDto->getCustomOption(FormField::OPTION_ICON);
+                $currentFormTab = $fieldDto->getLabel();
 
                 // plain arrays are not enough for tabs because they are modified in the
                 // lifecycle of a form (e.g. add info about form errors). Use an ArrayObject instead.
@@ -139,6 +144,9 @@ class CrudFormType extends AbstractType
             ->setRequired(['entityDto']);
     }
 
+    /**
+     * @return string
+     */
     public function getBlockPrefix()
     {
         return 'ea_crud';

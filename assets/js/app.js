@@ -457,6 +457,7 @@ const App = (() => {
 
                 if (fileUploadDeleteCheckbox) {
                     fileUploadDeleteCheckbox.checked = true;
+                    fileUploadDeleteCheckbox.click();
                 }
                 fileUploadInput.value = '';
                 fileUploadCustomInput.innerHTML = '';
@@ -477,22 +478,71 @@ const App = (() => {
 
     const createFieldsWithErrors = () => {
         const handleFieldsWithErrors = (form, pageName) => {
+            // Intercept errors before submit to avoid browser error "An invalid form control with name='...' is not focusable."
+            //
             // Adding visual feedback for invalid fields: any ".form-group" with invalid fields
             // receives "has-error" class. The class is removed on click on the ".form-group"
             // itself to support custom/complex fields.
-            form.addEventListener('submit', (submitEvent) => {
-                form.querySelectorAll('input,select,textarea').forEach( (input) => {
-                    if (!input.validity.valid) {
-                        const formGroup = input.closest('div.form-group');
-                        formGroup.classList.add('has-error');
+            //
+            // Adding visual error counter feedback for invalid fields inside form tabs (visible or not)
+            document.querySelector('.ea-edit, .ea-new').querySelectorAll('[type="submit"]').forEach((button) => {
+                button.addEventListener('click', function onSubmitButtonsClick(clickEvent) {
 
-                        formGroup.addEventListener('click', function onFormGroupClick() {
-                            formGroup.classList.remove('has-error');
-                            formGroup.removeEventListener('click', onFormGroupClick);
-                        });
+                    let formHasErrors = false;
+
+                    // Remove all error counter badges
+                    document.querySelectorAll('.form-tabs .nav-item .badge-danger.badge').forEach( (badge) => {
+                        badge.parentElement.removeChild(badge);
+                    });
+
+                    form.querySelectorAll('input,select,textarea').forEach( (input) => {
+                        if (!input.validity.valid) {
+                            formHasErrors = true;
+
+                            // Visual feedback for tabz
+                            // Adding a badge with a error count next to the tab label
+                            const formTab = input.closest('div.tab-pane');
+                            if (formTab) {
+                                const navLinkTab = document.querySelector('#' + formTab.id + '-tab');
+                                const badge = navLinkTab.querySelector('.badge');
+                                if (badge) {
+                                    // Increment number of error
+                                    badge.textContent = parseInt(badge.textContent) + 1;
+                                } else {
+                                    // Create a new badge
+                                    let newErrorBadge = document.createElement('span');
+                                    newErrorBadge.classList.add('badge', 'badge-danger');
+                                    newErrorBadge.title = 'form.tab.error_badge_title';
+                                    newErrorBadge.textContent = 1;
+                                    navLinkTab.appendChild(newErrorBadge);
+                                }
+                                navLinkTab.addEventListener('click', function onFormNavLinkTabClick() {
+                                    navLinkTab.querySelectorAll('.badge-danger.badge').forEach( (badge) => {
+                                        badge.parentElement.removeChild(badge);
+                                    });
+                                    navLinkTab.removeEventListener('click', onFormNavLinkTabClick);
+                                });
+                            }
+
+                            // Visual feedback for group
+                            const formGroup = input.closest('div.form-group');
+                            formGroup.classList.add('has-error');
+
+                            formGroup.addEventListener('click', function onFormGroupClick() {
+                                formGroup.classList.remove('has-error');
+                                formGroup.removeEventListener('click', onFormGroupClick);
+                            });
+                        }
+                    });
+
+                    if (formHasErrors) {
+                        clickEvent.preventDefault();
+                        clickEvent.stopPropagation();
                     }
                 });
+            });
 
+            form.addEventListener('submit', (submitEvent) => {
                 const eaEvent = new CustomEvent('ea.form.submit', {
                     cancelable: true,
                     detail: { page: pageName, form: form }
@@ -523,7 +573,7 @@ const App = (() => {
             form.addEventListener('submit', () => {
                 // this timeout is needed to include the disabled button into the submitted form
                 setTimeout(() => {
-                    const submitButtons = form.querySelectorAll('[type="submit"]');
+                    const submitButtons = document.querySelector('.ea-edit, .ea-new').querySelectorAll('[type="submit"]');
                     submitButtons.forEach((button) => {
                         button.setAttribute('disabled', 'disabled');
                     });

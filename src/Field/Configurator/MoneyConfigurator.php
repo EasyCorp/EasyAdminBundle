@@ -68,12 +68,13 @@ final class MoneyConfigurator implements FieldConfiguratorInterface
             return null;
         }
 
-        $isPropertyReadable = $this->propertyAccessor->isReadable($entityDto->getInstance(), $currencyPropertyPath);
+        $entityInstance = $entityDto->getInstance();
+        $isPropertyReadable = (null !== $entityInstance) && $this->propertyAccessor->isReadable($entityInstance, $currencyPropertyPath);
         if (!$isPropertyReadable) {
             throw new \InvalidArgumentException(sprintf('The "%s" field path used by the "%s" field to get the currency value from the "%s" entity is not readable.', $currencyPropertyPath, $field->getProperty(), $entityDto->getName()));
         }
 
-        if (null === $currencyCode = $this->propertyAccessor->getValue($entityDto->getInstance(), $currencyPropertyPath)) {
+        if (null === $currencyCode = $this->propertyAccessor->getValue($entityInstance, $currencyPropertyPath)) {
             throw new \InvalidArgumentException(sprintf('The currency value for the "%s" field cannot be null, but that\'s the value returned by the "%s" field path applied on the "%s" entity.', $field->getProperty(), $currencyPropertyPath, $entityDto->getName()));
         }
 

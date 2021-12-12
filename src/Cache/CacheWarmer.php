@@ -23,11 +23,17 @@ final class CacheWarmer implements CacheWarmerInterface
         $this->router = $router;
     }
 
+    /**
+     * @return bool
+     */
     public function isOptional()
     {
         return false;
     }
 
+    /**
+     * @return array
+     */
     public function warmUp($cacheDirectory)
     {
         $allRoutes = $this->router->getRouteCollection();

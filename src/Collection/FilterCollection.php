@@ -47,7 +47,10 @@ final class FilterCollection implements CollectionInterface
         return \array_key_exists($offset, $this->filters);
     }
 
-    public function offsetGet($offset)
+    /**
+     * @return ?FilterDto
+     */
+    public function offsetGet($offset): mixed
     {
         return $this->filters[$offset];
     }
@@ -70,7 +73,7 @@ final class FilterCollection implements CollectionInterface
     /**
      * @return \ArrayIterator|\Traversable|FilterDto[]
      */
-    public function getIterator()
+    public function getIterator(): \Traversable
     {
         return new \ArrayIterator($this->filters);
     }

@@ -1,10 +1,9 @@
 EasyAdmin
 =========
 
-EasyAdmin creates administration backends for your Symfony applications with
-unprecedented simplicity.
+EasyAdmin is a fast, beautiful and modern admin generator for Symfony applications.
 
-![EasyAdmin Backend Screenshot](/doc/images/easyadmin-full-backend.png)
+![EasyAdmin, a fast, beautiful and modern admin generator for Symfony applications](/doc/images/easyadmin-promo.jpg)
 
 Installation
 ------------

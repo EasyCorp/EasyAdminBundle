@@ -60,6 +60,11 @@ final class FormFactory
 
     public function createFiltersForm(FilterCollection $filters, Request $request): FormInterface
     {
+        // To avoid errors on embedded class property fields
+        foreach ($filters as $filter) {
+            $filter->setProperty(str_replace('.', '_', $filter->getProperty()));
+        }
+
         $filtersForm = $this->symfonyFormFactory->createNamed('filters', FiltersFormType::class, null, [
             'method' => 'GET',
             'action' => $request->query->get(EA::REFERRER, ''),

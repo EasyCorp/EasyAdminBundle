@@ -8,6 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Collection\ActionCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use Symfony\Component\PropertyAccess\PropertyAccess;
+use function _PHPStan_76800bfb5\RingCentral\Psr7\str;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -194,13 +195,18 @@ final class EntityDto
 
     public function getEmbeddedTargetClassName(string $propertyName): bool
     {
+        return $this->getEmbeddedPropertyMetadata($propertyName)['class'];
+    }
+
+    public function getEmbeddedPropertyMetadata(string $propertyName): array
+    {
         if (!$this->isEmbeddedClassProperty($propertyName)) {
             throw new \LogicException(sprintf('The property "%s" is not an embedded class property of class "%s".', $propertyName, $this->getFqcn()));
         }
 
         $propertyNameParts = explode('.', $propertyName, 2);
 
-        return $this->metadata->embeddedClasses[$propertyNameParts[0]]['class'];
+        return $this->metadata->embeddedClasses[$propertyNameParts[0]];
     }
 
     public function isEmbeddedClassProperty(string $propertyName): bool

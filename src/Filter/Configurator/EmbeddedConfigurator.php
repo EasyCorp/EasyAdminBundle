@@ -17,7 +17,6 @@ class EmbeddedConfigurator implements FilterConfiguratorInterface
 
     public function configure(FilterDto $filterDto, ?FieldDto $fieldDto, EntityDto $entityDto, AdminContext $context): void
     {
-        $filterDto->setProperty(str_replace('.', '_', $filterDto->getProperty()));
         $propertyPath = $filterDto->getFormTypeOption('property_path');
 
         if (!$propertyPath) {

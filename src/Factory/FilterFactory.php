@@ -68,7 +68,7 @@ final class FilterFactory
 
         foreach ($filters as $key => $filter) {
             if (\is_array($filter)) {
-                $filters = array_merge($filters, $this->normalizeEmbeddedFilters($filter));
+                $filters = array_merge($filters, $this->normalizeEmbeddedFilters($key, $filter));
                 unset($filters[$key]);
             }
         }
@@ -126,21 +126,20 @@ final class FilterFactory
         return self::$doctrineTypeToFilterClass[$metadata->get('type')] ?? TextFilter::class;
     }
 
-    private function normalizeEmbeddedFilters(array $embeddedFilters = [], array $context = []): array
+    private function normalizeEmbeddedFilters(string $rootPropertyName, array $embeddedFilters = []): array
     {
         $filters = [];
-        $context['parent_properties'] = $context['parent_properties'] ?? [];
 
-        foreach ($embeddedFilters as $property => $embeddedFilter) {
-            if(\is_array($embeddedFilter)) {
-                $context['parent_properties'][] = $property;
-                $filters = array_merge($this->normalizeEmbeddedFilters($embeddedFilter, $context));
+        foreach ($embeddedFilters as $propertyName => $embeddedFilter) {
+            if (\is_array($embeddedFilter)) {
+                $filters = array_merge($filters, $this->normalizeEmbeddedFilters("$rootPropertyName.$propertyName", $embeddedFilter));
 
                 continue;
             }
 
-            $properties = array_merge($context['parent_properties'], [$property]);
-            $filters[implode('.', $properties)] = $embeddedFilter;
+            /** @var FilterInterface $embeddedFilter */
+            $embeddedFilter->getAsDto()->setProperty("$rootPropertyName.$propertyName");
+            $filters["$rootPropertyName.$propertyName"] = $embeddedFilter;
         }
 
         return $filters;

@@ -63,56 +63,9 @@ final class FormFactory
         $filtersForm = $this->symfonyFormFactory->createNamed('filters', FiltersFormType::class, null, [
             'method' => 'GET',
             'action' => $request->query->get(EA::REFERRER, ''),
-            'ea_filters' => $this->normalizeFilters($filters),
+            'ea_filters' => $filters,
         ]);
 
         return $filtersForm->handleRequest($request);
-    }
-
-    /**
-     * @internal
-     *
-     * This method is called to normalize embedded property filters
-     */
-    private function normalizeFilters(FilterCollection $filters): FilterCollection
-    {
-        $normalizedFilters = FilterCollection::new();
-
-        foreach ($filters as $filterDto) {
-            $propertyName = $filterDto->getProperty();
-
-            // If the target property does NOT contain dots (no embedded property)
-            if (false === strpos($propertyName, '.')) {
-                // We change nothing.
-                $normalizedFilters[$propertyName] = $filterDto;
-
-                continue;
-            }
-
-            // We clone the filter just for the form
-            $normalizedFilterDto = clone $filterDto;
-            $propertyPath = $filterDto->getFormTypeOption('property_path');
-
-            if (!$propertyPath) {
-                // The property accessor sets values on array.
-                // So we must replace object path to array path.
-                $paths = explode('.', $filterDto->getProperty());
-                foreach ($paths as $key => $path) {
-                    $paths[$key] = "[$path]";
-                }
-
-                // We set the property path as form option
-                $normalizedFilterDto->setFormTypeOption('property_path', implode('', $paths));
-            }
-
-            // For the property name, we must replace dots by underscore to be allowed from Symfony form
-            // AND match with normalized filter property name from the method FilterDto::__toString()
-            $propertyName = str_replace('.', '_', $filterDto->getProperty());
-            $normalizedFilterDto->setProperty($propertyName);
-
-            $normalizedFilters[$propertyName] = $normalizedFilterDto;
-        }
-
-        return $normalizedFilters;
     }
 }

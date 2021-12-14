@@ -28,7 +28,7 @@ trait FilterTrait
 
     public function __toString(): string
     {
-        return (string) $this->dto;
+        return $this->dto->getProperty();
     }
 
     public function setFilterFqcn(string $fqcn): self

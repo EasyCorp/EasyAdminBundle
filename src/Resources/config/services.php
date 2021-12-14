@@ -257,7 +257,8 @@ return static function (ContainerConfigurator $container) {
 
         ->set(FilterFactory::class)
             ->arg(0, new Reference(AdminContextProvider::class))
-            ->arg(1, \function_exists('tagged')
+            ->arg(1, new Reference(EntityFactory::class))
+            ->arg(2, \function_exists('tagged')
                 ? tagged(EasyAdminExtension::TAG_FILTER_CONFIGURATOR)
                 : tagged_iterator(EasyAdminExtension::TAG_FILTER_CONFIGURATOR))
 

@@ -64,8 +64,8 @@ final class FilterFactory
     {
         $builtFilters = [];
         $filters = $filterConfig->all();
-        /** @var FilterInterface|string $filter */
 
+        /** @var FilterInterface|string $filter */
         foreach ($filters as $key => $filter) {
             if (\is_array($filter)) {
                 $filters = array_merge($filters, $this->normalizeEmbeddedFilters($key, $filter));
@@ -73,6 +73,7 @@ final class FilterFactory
             }
         }
 
+        /** @var FilterInterface|string $filter */
         foreach ($filters as $property => $filter) {
             if (\is_string($filter)) {
                 $guessedFilterClass = $this->guessFilterClass($entityDto, $property);
@@ -137,7 +138,6 @@ final class FilterFactory
                 continue;
             }
 
-            /** @var FilterInterface $embeddedFilter */
             $embeddedFilter->getAsDto()->setProperty("$rootPropertyName.$propertyName");
             $filters["$rootPropertyName.$propertyName"] = $embeddedFilter;
         }

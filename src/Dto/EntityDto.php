@@ -8,7 +8,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Collection\ActionCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use Symfony\Component\PropertyAccess\PropertyAccess;
-use function _PHPStan_76800bfb5\RingCentral\Psr7\str;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>

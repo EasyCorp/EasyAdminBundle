@@ -24,6 +24,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 final class FilterFactory
 {
     private $adminContextProvider;
+    private $entityFactory;
     private $filterConfigurators;
     private static $doctrineTypeToFilterClass = [
         'json_array' => ArrayFilter::class,
@@ -52,9 +53,10 @@ final class FilterFactory
         Types::TEXT => TextFilter::class,
     ];
 
-    public function __construct(AdminContextProvider $adminContextProvider, iterable $filterConfigurators)
+    public function __construct(AdminContextProvider $adminContextProvider, EntityFactory $entityFactory, iterable $filterConfigurators)
     {
         $this->adminContextProvider = $adminContextProvider;
+        $this->entityFactory = $entityFactory;
         $this->filterConfigurators = $filterConfigurators;
     }
 
@@ -63,6 +65,10 @@ final class FilterFactory
         $builtFilters = [];
         /** @var FilterInterface|string $filter */
         foreach ($filterConfig->all() as $property => $filter) {
+            if (\is_array($filter)) {
+                $filter = implode('.', $filter);
+            }
+
             if (\is_string($filter)) {
                 $guessedFilterClass = $this->guessFilterClass($entityDto, $property);
                 /** @var FilterInterface $filter */
@@ -86,10 +92,24 @@ final class FilterFactory
         return FilterCollection::new($builtFilters);
     }
 
-    private function guessFilterClass(EntityDto $entityDto, string $propertyName): string
+    private function guessFilterClass(EntityDto $entityDto, string $propertyName, array $context = []): string
     {
         if ($entityDto->isAssociation($propertyName)) {
             return EntityFilter::class;
+        }
+
+        if ($entityDto->isEmbeddedClassProperty($propertyName)) {
+            $properties = explode('.', $propertyName, 2);
+            $context['root_entity'] = $context['root_entity'] ?? $entityDto;
+            $context['root_property'] = $context['root_property'] ?? $propertyName;
+            $embeddedEntity = $this->entityFactory->create($entityDto->getEmbeddedTargetClassName($propertyName));
+            $embeddedProperty = $properties[1] ?? null;
+
+            if (!$embeddedProperty) {
+                throw new \LogicException(sprintf('Missing embedded property name for the property "%s" in entity class "%s".', $context['root_property'], $context['root_entity']->getFqcn()));
+            }
+
+            return $this->guessFilterClass($embeddedEntity, $properties, $context);
         }
 
         $metadata = $entityDto->getPropertyMetadata($propertyName);

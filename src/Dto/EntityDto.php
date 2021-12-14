@@ -192,6 +192,17 @@ final class EntityDto
         return \in_array($associationType, [ClassMetadataInfo::ONE_TO_MANY, ClassMetadataInfo::MANY_TO_MANY], true);
     }
 
+    public function getEmbeddedTargetClassName(string $propertyName): bool
+    {
+        if (!$this->isEmbeddedClassProperty($propertyName)) {
+            throw new \LogicException(sprintf('The property "%s" is not an embedded class property of class "%s".', $propertyName, $this->getFqcn()));
+        }
+
+        $propertyNameParts = explode('.', $propertyName, 2);
+
+        return $this->metadata->embeddedClasses[$propertyNameParts[0]]['class'];
+    }
+
     public function isEmbeddedClassProperty(string $propertyName): bool
     {
         $propertyNameParts = explode('.', $propertyName, 2);

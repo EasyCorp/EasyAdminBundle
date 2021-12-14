@@ -8,7 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDto;
 
-class EmbeddedFilterConfigurator implements FilterConfiguratorInterface
+class EmbeddedConfigurator implements FilterConfiguratorInterface
 {
     public function supports(FilterDto $filterDto, ?FieldDto $fieldDto, EntityDto $entityDto, AdminContext $context): bool
     {

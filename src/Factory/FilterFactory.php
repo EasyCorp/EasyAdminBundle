@@ -63,12 +63,17 @@ final class FilterFactory
     public function create(FilterConfigDto $filterConfig, FieldCollection $fields, EntityDto $entityDto): FilterCollection
     {
         $builtFilters = [];
+        $filters = $filterConfig->all();
         /** @var FilterInterface|string $filter */
-        foreach ($filterConfig->all() as $property => $filter) {
-            if (\is_array($filter)) {
-                $filter = implode('.', $filter);
-            }
 
+        foreach ($filters as $key => $filter) {
+            if (\is_array($filter)) {
+                $filters = array_merge($filters, $this->normalizeEmbeddedFilters($filter));
+                unset($filters[$key]);
+            }
+        }
+
+        foreach ($filters as $property => $filter) {
             if (\is_string($filter)) {
                 $guessedFilterClass = $this->guessFilterClass($entityDto, $property);
                 /** @var FilterInterface $filter */
@@ -119,5 +124,25 @@ final class FilterFactory
         }
 
         return self::$doctrineTypeToFilterClass[$metadata->get('type')] ?? TextFilter::class;
+    }
+
+    private function normalizeEmbeddedFilters(array $embeddedFilters = [], array $context = []): array
+    {
+        $filters = [];
+        $context['parent_properties'] = $context['parent_properties'] ?? [];
+
+        foreach ($embeddedFilters as $property => $embeddedFilter) {
+            if(\is_array($embeddedFilter)) {
+                $context['parent_properties'][] = $property;
+                $filters = array_merge($this->normalizeEmbeddedFilters($embeddedFilter, $context));
+
+                continue;
+            }
+
+            $properties = array_merge($context['parent_properties'], [$property]);
+            $filters[implode('.', $properties)] = $embeddedFilter;
+        }
+
+        return $filters;
     }
 }

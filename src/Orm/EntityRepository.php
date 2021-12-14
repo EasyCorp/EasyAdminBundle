@@ -9,6 +9,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Orm\EntityRepositoryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDataDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
@@ -186,7 +187,7 @@ final class EntityRepository implements EntityRepositoryInterface
         foreach ($filtersForm as $filterForm) {
             $propertyName = $filterForm->getName();
 
-            $filter = $configuredFilters->get($propertyName);
+            $filter = $this->resolveFilterDto($configuredFilters, $propertyName);
             // this filter is not defined or not applied
             if (null === $filter || !isset($appliedFilters[$propertyName])) {
                 continue;
@@ -210,5 +211,22 @@ final class EntityRepository implements EntityRepositoryInterface
 
             ++$i;
         }
+    }
+
+    private function resolveFilterDto(FilterCollection $configuredFilters, string $propertyName): ?FilterDto
+    {
+        $filter = $configuredFilters->get($propertyName);
+
+        if (!$filter) {
+            foreach ($configuredFilters as $filteredPropertyName => $filter) {
+                if ($propertyName === $filter->getProperty()) {
+                    $filter->setProperty($filteredPropertyName);
+
+                    return $filter;
+                }
+            }
+        }
+
+        return null;
     }
 }

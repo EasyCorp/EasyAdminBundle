@@ -5,6 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Controller;
 use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
@@ -62,6 +63,13 @@ use function Symfony\Component\String\u;
  */
 abstract class AbstractCrudController extends AbstractController implements CrudControllerInterface
 {
+    protected ManagerRegistry $doctrine;
+
+    public function __construct(ManagerRegistry $doctrine)
+    {
+        $this->doctrine = $doctrine;
+    }
+
     abstract public static function getEntityFqcn(): string;
 
     public function configureCrud(Crud $crud): Crud
@@ -232,7 +240,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             $this->container->get('event_dispatcher')->dispatch($event);
             $entityInstance = $event->getEntityInstance();
 
-            $this->updateEntity($this->container->get('doctrine')->getManagerForClass($context->getEntity()->getFqcn()), $entityInstance);
+            $this->updateEntity($this->doctrine->getManagerForClass($context->getEntity()->getFqcn()), $entityInstance);
 
             $this->container->get('event_dispatcher')->dispatch(new AfterEntityUpdatedEvent($entityInstance));
 
@@ -288,7 +296,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             $this->container->get('event_dispatcher')->dispatch($event);
             $entityInstance = $event->getEntityInstance();
 
-            $this->persistEntity($this->container->get('doctrine')->getManagerForClass($context->getEntity()->getFqcn()), $entityInstance);
+            $this->persistEntity($this->doctrine->getManagerForClass($context->getEntity()->getFqcn()), $entityInstance);
 
             $this->container->get('event_dispatcher')->dispatch(new AfterEntityPersistedEvent($entityInstance));
             $context->getEntity()->setInstance($entityInstance);
@@ -343,7 +351,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $entityInstance = $event->getEntityInstance();
 
         try {
-            $this->deleteEntity($this->container->get('doctrine')->getManagerForClass($context->getEntity()->getFqcn()), $entityInstance);
+            $this->deleteEntity($this->doctrine->getManagerForClass($context->getEntity()->getFqcn()), $entityInstance);
         } catch (ForeignKeyConstraintViolationException $e) {
             throw new EntityRemoveException(['entity_name' => $context->getEntity()->getName(), 'message' => $e->getMessage()]);
         }
@@ -379,7 +387,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             return $this->redirectToRoute($context->getDashboardRouteName());
         }
 
-        $entityManager = $this->container->get('doctrine')->getManagerForClass($batchActionDto->getEntityFqcn());
+        $entityManager = $this->doctrine->getManagerForClass($batchActionDto->getEntityFqcn());
         $repository = $entityManager->getRepository($batchActionDto->getEntityFqcn());
         foreach ($batchActionDto->getEntityIds() as $entityId) {
             $entityInstance = $repository->find($entityId);
@@ -536,7 +544,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $this->container->get('event_dispatcher')->dispatch($event);
         $entityInstance = $event->getEntityInstance();
 
-        $this->updateEntity($this->container->get('doctrine')->getManagerForClass($entityDto->getFqcn()), $entityInstance);
+        $this->updateEntity($this->doctrine->getManagerForClass($entityDto->getFqcn()), $entityInstance);
 
         $this->container->get('event_dispatcher')->dispatch(new AfterEntityUpdatedEvent($entityInstance));
 

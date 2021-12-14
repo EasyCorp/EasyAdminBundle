@@ -65,7 +65,7 @@ final class FilterFactory
         $builtFilters = [];
         $filters = $filterConfig->all();
 
-        /** @var FilterInterface|string $filter */
+        /** @var FilterInterface|string|array $filter */
         foreach ($filters as $key => $filter) {
             if (\is_array($filter)) {
                 $filters = array_merge($filters, $this->normalizeEmbeddedFilters($key, $filter));

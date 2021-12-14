@@ -54,7 +54,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Filter\Configurator\ChoiceConfigurator as Ch
 use EasyCorp\Bundle\EasyAdminBundle\Filter\Configurator\CommonConfigurator as CommonFilterConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\Configurator\ComparisonConfigurator as ComparisonFilterConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\Configurator\DateTimeConfigurator as DateTimeFilterConfigurator;
-use EasyCorp\Bundle\EasyAdminBundle\Filter\Configurator\EmbeddedConfigurator as EmbeddedFilterConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\Configurator\EntityConfigurator as EntityFilterConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\Configurator\NullConfigurator as NullFilterConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\Configurator\NumericConfigurator as NumericFilterConfigurator;
@@ -278,8 +277,6 @@ return static function (ContainerConfigurator $container) {
         ->set(ComparisonFilterConfigurator::class)
 
         ->set(DateTimeFilterConfigurator::class)
-
-        ->set(EmbeddedFilterConfigurator::class)
 
         ->set(EntityFilterConfigurator::class)
 

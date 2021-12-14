@@ -63,6 +63,19 @@ final class FormFactory
         // To avoid errors on embedded class property fields
         foreach ($filters as $filter) {
             $filter->setProperty(str_replace('.', '_', $filter->getProperty()));
+            $propertyPath = $filter->getFormTypeOption('property_path');
+
+            if (!$propertyPath) {
+                // The property accessor sets values on array.
+                // So we must replace object path to array path.
+                $paths = explode('.', $filter->getProperty());
+                foreach ($paths as $key => $path) {
+                    $paths[$key] = "[$path]";
+                }
+
+                // We set the property path as form option
+                $filter->setFormTypeOption('property_path', implode('', $paths));
+            }
         }
 
         $filtersForm = $this->symfonyFormFactory->createNamed('filters', FiltersFormType::class, null, [

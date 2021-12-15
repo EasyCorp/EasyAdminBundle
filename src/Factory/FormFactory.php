@@ -76,8 +76,9 @@ final class FormFactory
 
                     // We set the property path as form option
                     $filter->setFormTypeOption('property_path', implode('', $paths));
-                    $filter->setProperty($normalizedFilterName);
                 }
+                
+                $filter->setProperty($normalizedFilterName);
             }
         }
 

@@ -210,8 +210,8 @@ final class ActionFactory
             return null;
         }
 
-        $referrer = $request->get(EA::REFERRER);
-        $referrerParts = parse_url($referrer);
+        $referrer = $request->query->get(EA::REFERRER);
+        $referrerParts = parse_url((string) $referrer);
         parse_str($referrerParts[EA::QUERY] ?? '', $referrerQueryStringVariables);
         $referrerCrudAction = $referrerQueryStringVariables[EA::CRUD_ACTION] ?? null;
 

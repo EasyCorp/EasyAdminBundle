@@ -2,7 +2,6 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Collection;
 
-use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Collection\CollectionInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
 
@@ -11,15 +10,11 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
  */
 final class ActionCollection implements CollectionInterface
 {
-    /** @var ActionDto[] */
-    private $actions;
-
     /**
-     * @param Action[] $actions
+     * @param ActionDto[] $actions
      */
-    private function __construct(array $actions)
+    private function __construct(private array $actions)
     {
-        $this->actions = $actions;
     }
 
     public function __clone()
@@ -50,22 +45,22 @@ final class ActionCollection implements CollectionInterface
         return $this->actions[$actionName] ?? null;
     }
 
-    public function offsetExists($offset): bool
+    public function offsetExists(mixed $offset): bool
     {
         return \array_key_exists($offset, $this->actions);
     }
 
-    public function offsetGet($offset)
+    public function offsetGet(mixed $offset): ActionDto
     {
         return $this->actions[$offset];
     }
 
-    public function offsetSet($offset, $value): void
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         $this->actions[$offset] = $value;
     }
 
-    public function offsetUnset($offset): void
+    public function offsetUnset(mixed $offset): void
     {
         unset($this->actions[$offset]);
     }
@@ -78,7 +73,7 @@ final class ActionCollection implements CollectionInterface
     /**
      * @return \ArrayIterator|\Traversable|ActionDto[]
      */
-    public function getIterator()
+    public function getIterator(): \ArrayIterator
     {
         return new \ArrayIterator($this->actions);
     }

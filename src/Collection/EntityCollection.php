@@ -10,15 +10,11 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
  */
 final class EntityCollection implements CollectionInterface
 {
-    /** @var EntityDto[] */
-    private $entities;
-
     /**
      * @param EntityDto[] $entities
      */
-    private function __construct(array $entities)
+    private function __construct(private array $entities)
     {
-        $this->entities = $entities;
     }
 
     /**
@@ -39,22 +35,22 @@ final class EntityCollection implements CollectionInterface
         $this->entities[$newOrUpdatedEntity->getPrimaryKeyValueAsString()] = $newOrUpdatedEntity;
     }
 
-    public function offsetExists($offset): bool
+    public function offsetExists(mixed $offset): bool
     {
         return \array_key_exists($offset, $this->entities);
     }
 
-    public function offsetGet($offset)
+    public function offsetGet(mixed $offset): EntityDto
     {
         return $this->entities[$offset];
     }
 
-    public function offsetSet($offset, $value): void
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         $this->entities[$offset] = $value;
     }
 
-    public function offsetUnset($offset): void
+    public function offsetUnset(mixed $offset): void
     {
         unset($this->entities[$offset]);
     }
@@ -67,7 +63,7 @@ final class EntityCollection implements CollectionInterface
     /**
      * @return \ArrayIterator|\Traversable|EntityDto[]
      */
-    public function getIterator()
+    public function getIterator(): \ArrayIterator
     {
         return new \ArrayIterator($this->entities);
     }

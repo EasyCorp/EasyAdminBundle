@@ -10,15 +10,11 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDto;
  */
 final class FilterCollection implements CollectionInterface
 {
-    /** @var FilterDto[] */
-    private $filters;
-
     /**
      * @param FilterDto[] $filters
      */
-    private function __construct(array $filters)
+    private function __construct(private array $filters)
     {
-        $this->filters = $filters;
     }
 
     /**
@@ -42,25 +38,22 @@ final class FilterCollection implements CollectionInterface
         return $this->filters[$filterName] ?? null;
     }
 
-    public function offsetExists($offset): bool
+    public function offsetExists(mixed $offset): bool
     {
         return \array_key_exists($offset, $this->filters);
     }
 
-    /**
-     * @return ?FilterDto
-     */
-    public function offsetGet($offset): mixed
+    public function offsetGet(mixed $offset): FilterDto
     {
         return $this->filters[$offset];
     }
 
-    public function offsetSet($offset, $value): void
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         $this->filters[$offset] = $value;
     }
 
-    public function offsetUnset($offset): void
+    public function offsetUnset(mixed $offset): void
     {
         unset($this->filters[$offset]);
     }

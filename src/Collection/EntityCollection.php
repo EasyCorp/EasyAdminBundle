@@ -44,6 +44,9 @@ final class EntityCollection implements CollectionInterface
         return \array_key_exists($offset, $this->entities);
     }
 
+    /**
+     * @return ?EntityDto
+     */
     public function offsetGet($offset)
     {
         return $this->entities[$offset];
@@ -67,7 +70,7 @@ final class EntityCollection implements CollectionInterface
     /**
      * @return \ArrayIterator|\Traversable|EntityDto[]
      */
-    public function getIterator()
+    public function getIterator(): \ArrayIterator
     {
         return new \ArrayIterator($this->entities);
     }

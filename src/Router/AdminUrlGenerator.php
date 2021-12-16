@@ -27,6 +27,7 @@ final class AdminUrlGenerator
     private $addSignature;
     private $routeParameters;
     private $currentPageReferrer;
+    private $overrideReferrer;
 
     public function __construct(AdminContextProvider $adminContextProvider, UrlGeneratorInterface $urlGenerator, DashboardControllerRegistry $dashboardControllerRegistry, CrudControllerRegistry $crudControllerRegistry, UrlSigner $urlSigner)
     {
@@ -195,6 +196,40 @@ final class AdminUrlGenerator
         return $queryParts['signature'];
     }
 
+    public function overrideReferrer(?string $referrer): self
+    {
+        if (false === $this->isInitialized) {
+            $this->initialize();
+        }
+
+        $this->overrideReferrer = $referrer;
+
+        return $this;
+    }
+
+    public function getOverrideReferrer(): ?string
+    {
+        if (false === $this->isInitialized) {
+            $this->initialize();
+        }
+
+        return $this->overrideReferrer;
+    }
+
+    public function isReferrerOverridden(): bool
+    {
+        return null !== $this->overrideReferrer;
+    }
+
+    public function getCurrentPageReferrer(): ?string
+    {
+        if (false === $this->isInitialized) {
+            $this->initialize();
+        }
+
+        return $this->currentPageReferrer;
+    }
+
     // this method allows to omit the 'generateUrl()' call in templates, making code more concise
     public function __toString(): string
     {
@@ -208,7 +243,7 @@ final class AdminUrlGenerator
         }
 
         if (true === $this->includeReferrer) {
-            $this->setRouteParameter(EA::REFERRER, $this->currentPageReferrer);
+            $this->setRouteParameter(EA::REFERRER, $this->overrideReferrer ?? $this->currentPageReferrer);
         }
 
         if (false === $this->includeReferrer) {

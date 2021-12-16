@@ -350,6 +350,7 @@ final class AdminUrlGenerator
 
         $this->includeReferrer = null;
         $this->addSignature = null;
+        $this->overrideReferrer = null;
 
         $this->routeParameters = $currentRouteParameters;
     }

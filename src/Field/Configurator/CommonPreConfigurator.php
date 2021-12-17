@@ -90,7 +90,7 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
         $entityInstance = $entityDto->getInstance();
         $propertyName = $field->getProperty();
 
-        if (!$this->propertyAccessor->isReadable($entityInstance, $propertyName)) {
+        if (null === $entityInstance || !$this->propertyAccessor->isReadable($entityInstance, $propertyName)) {
             return null;
         }
 
@@ -164,7 +164,7 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
         }
 
         // if field has a value set, don't display it as inaccessible (needed e.g. for virtual fields)
-        $isPropertyReadable = $this->propertyAccessor->isReadable($entityDto->getInstance(), $field->getProperty());
+        $isPropertyReadable = null !== $entityDto->getInstance() && $this->propertyAccessor->isReadable($entityDto->getInstance(), $field->getProperty());
         if (!$isPropertyReadable && null === $field->getValue()) {
             return $adminContext->getTemplatePath('label/inaccessible');
         }

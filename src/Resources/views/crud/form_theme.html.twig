@@ -583,7 +583,7 @@
 
 {# EasyAdminFilters form type #}
 {% block ea_filters_widget %}
-    {% set applied_filters = ea.request.query.get('filters')|default([])|keys %}
+    {% set applied_filters = ea.request.query.all()['filters']|default([])|keys %}
 
     {% for field in form %}
         <div class="col-12">

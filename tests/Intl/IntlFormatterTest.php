@@ -10,10 +10,10 @@ class IntlFormatterTest extends TestCase
     /**
      * @dataProvider provideFormatDate
      */
-    public function testFormatDate(?string $expectedResult, ?\DateTimeInterface $date, ?string $dateFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', string $locale = null)
+    public function testFormatDate(?string $expectedResult, ?\DateTimeInterface $date, ?string $dateFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', string $locale = null, bool $skipOnMacOs = false, bool $skipOnWindows = false)
     {
-        if ($this->isWindows() || $this->isMacOS()) {
-            $this->markTestSkipped('Intl related tests fail on Windows randomly.');
+        if (($this->isWindows() && $skipOnWindows) || ($this->isMacOS() && $skipOnMacOs)) {
+            $this->markTestSkipped('Some Intl related tests are skipped on macOS and/or Windows because of hard to fix issues.');
         }
 
         $intlFormatter = new IntlFormatter();
@@ -26,10 +26,10 @@ class IntlFormatterTest extends TestCase
     /**
      * @dataProvider provideFormatTime
      */
-    public function testFormatTime(?string $expectedResult, ?\DateTimeInterface $date, ?string $timeFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', string $locale = null, string $assertMethod = 'assertSame')
+    public function testFormatTime(?string $expectedResult, ?\DateTimeInterface $date, ?string $timeFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', string $locale = null, string $assertMethod = 'assertSame', bool $skipOnMacOs = false, bool $skipOnWindows = false)
     {
-        if ($this->isWindows() || $this->isMacOS()) {
-            $this->markTestSkipped('Intl related tests fail on Windows randomly.');
+        if (($this->isWindows() && $skipOnWindows) || ($this->isMacOS() && $skipOnMacOs)) {
+            $this->markTestSkipped('Some Intl related tests are skipped on macOS and/or Windows because of hard to fix issues.');
         }
 
         $intlFormatter = new IntlFormatter();
@@ -42,10 +42,10 @@ class IntlFormatterTest extends TestCase
     /**
      * @dataProvider provideFormatDateTime
      */
-    public function testFormatDateTime(?string $expectedResult, ?\DateTimeInterface $date, ?string $dateFormat = 'medium', ?string $timeFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', string $locale = null)
+    public function testFormatDateTime(?string $expectedResult, ?\DateTimeInterface $date, ?string $dateFormat = 'medium', ?string $timeFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', string $locale = null, bool $skipOnMacOs = false, bool $skipOnWindows = false)
     {
-        if ($this->isWindows() || $this->isMacOS()) {
-            $this->markTestSkipped('Intl related tests fail on Windows randomly.');
+        if (($this->isWindows() && $skipOnWindows) || ($this->isMacOS() && $skipOnMacOs)) {
+            $this->markTestSkipped('Some Intl related tests are skipped on macOS and/or Windows because of hard to fix issues.');
         }
 
         $intlFormatter = new IntlFormatter();
@@ -64,14 +64,14 @@ class IntlFormatterTest extends TestCase
         yield ['11/7/20', new \DateTime('2020-11-07'), 'short', '', null, 'gregorian', 'en'];
         yield ['7/11/20', new \DateTime('2020-11-07'), 'short', '', null, 'gregorian', 'es'];
         yield ['Nov 7, 2020', new \DateTime('2020-11-07'), 'medium', '', null, 'gregorian', 'en'];
-        yield ['7 nov. 2020', new \DateTime('2020-11-07'), 'medium', '', null, 'gregorian', 'es'];
+        yield ['7 nov. 2020', new \DateTime('2020-11-07'), 'medium', '', null, 'gregorian', 'es', true, true];
         yield ['November 7, 2020', new \DateTime('2020-11-07'), 'long', '', null, 'gregorian', 'en'];
         yield ['7 de noviembre de 2020', new \DateTime('2020-11-07'), 'long', '', null, 'gregorian', 'es'];
         yield ['Saturday, November 7, 2020', new \DateTime('2020-11-07'), 'full', '', null, 'gregorian', 'en'];
         yield ['sábado, 7 de noviembre de 2020', new \DateTime('2020-11-07'), 'full', '', null, 'gregorian', 'es'];
 
         yield ['Nov 7, 2020', new \DateTimeImmutable('2020-11-07'), 'medium', '', null, 'gregorian', 'en'];
-        yield ['7 nov. 2020', new \DateTimeImmutable('2020-11-07'), 'medium', '', null, 'gregorian', 'es'];
+        yield ['7 nov. 2020', new \DateTimeImmutable('2020-11-07'), 'medium', '', null, 'gregorian', 'es', true, true];
 
         yield ['2020 Q4 November Saturday 00:00:00', new \DateTime('2020-11-07'), null, 'yyyy QQQ MMMM eeee HH:mm:ss', null, 'gregorian', 'en'];
         yield ['2020 T4 noviembre sábado 00:00:00', new \DateTime('2020-11-07'), null, 'yyyy QQQ MMMM eeee HH:mm:ss', null, 'gregorian', 'es'];
@@ -113,16 +113,16 @@ class IntlFormatterTest extends TestCase
         yield ['20201107 02:04 PM', new \DateTime('2020-11-07 15:04:05 CET'), 'none', 'none', '', null, 'gregorian', 'en'];
         yield ['20201107 02:04 p. m.', new \DateTime('2020-11-07 15:04:05 CET'), 'none', 'none', '', null, 'gregorian', 'es'];
         yield ['11/7/20, 2:04 PM', new \DateTime('2020-11-07 15:04:05 CET'), 'short', 'short', '', null, 'gregorian', 'en'];
-        yield ['7/11/20 14:04', new \DateTime('2020-11-07 15:04:05 CET'), 'short', 'short', '', null, 'gregorian', 'es'];
+        yield ['7/11/20 14:04', new \DateTime('2020-11-07 15:04:05 CET'), 'short', 'short', '', null, 'gregorian', 'es', false, true];
         yield ['Nov 7, 2020, 2:04:05 PM', new \DateTime('2020-11-07 15:04:05 CET'), 'medium', 'medium', '', null, 'gregorian', 'en'];
-        yield ['7 nov. 2020 14:04:05', new \DateTime('2020-11-07 15:04:05 CET'), 'medium', 'medium', '', null, 'gregorian', 'es'];
+        yield ['7 nov. 2020 14:04:05', new \DateTime('2020-11-07 15:04:05 CET'), 'medium', 'medium', '', null, 'gregorian', 'es', true, true];
         yield ['November 7, 2020 at 2:04:05 PM UTC', new \DateTime('2020-11-07 15:04:05 CET'), 'long', 'long', '', null, 'gregorian', 'en'];
         yield ['7 de noviembre de 2020, 14:04:05 UTC', new \DateTime('2020-11-07 15:04:05 CET'), 'long', 'long', '', null, 'gregorian', 'es'];
         yield ['Saturday, November 7, 2020 at 2:04:05 PM Coordinated Universal Time', new \DateTime('2020-11-07 15:04:05 CET'), 'full', 'full', '', null, 'gregorian', 'en'];
         yield ['sábado, 7 de noviembre de 2020, 14:04:05 (tiempo universal coordinado)', new \DateTime('2020-11-07 15:04:05 CET'), 'full', 'full', '', null, 'gregorian', 'es'];
 
         yield ['Nov 7, 2020, 2:04:05 PM', new \DateTimeImmutable('2020-11-07 15:04:05 CET'), 'medium', 'medium', '', null, 'gregorian', 'en'];
-        yield ['7 nov. 2020 14:04:05', new \DateTimeImmutable('2020-11-07 15:04:05 CET'), 'medium', 'medium', '', null, 'gregorian', 'es'];
+        yield ['7 nov. 2020 14:04:05', new \DateTimeImmutable('2020-11-07 15:04:05 CET'), 'medium', 'medium', '', null, 'gregorian', 'es', true, true];
 
         yield ['2020 Q4 November Saturday 14:04:05', new \DateTime('2020-11-07 15:04:05 CET'), null, null, 'yyyy QQQ MMMM eeee HH:mm:ss', null, 'gregorian', 'en'];
         yield ['2020 T4 noviembre sábado 14:04:05', new \DateTime('2020-11-07 15:04:05 CET'), null, null, 'yyyy QQQ MMMM eeee HH:mm:ss', null, 'gregorian', 'es'];

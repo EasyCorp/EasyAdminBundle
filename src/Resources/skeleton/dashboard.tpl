@@ -10,13 +10,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class <?= $class_name; ?> extends AbstractDashboardController
 {
-<?php if ($use_php_attributes): ?>
     #[Route('/admin', name: 'admin')]
-<?php else: ?>
-    /**
-     * @Route("/admin", name="admin")
-     */
-<?php endif; ?>
     public function index(): Response
     {
         return parent::index();

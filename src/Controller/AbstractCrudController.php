@@ -47,7 +47,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityUpdater;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\FieldProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
-use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -99,7 +98,6 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             AdminContextProvider::class => '?'.AdminContextProvider::class,
             AdminUrlGenerator::class => '?'.AdminUrlGenerator::class,
             ControllerFactory::class => '?'.ControllerFactory::class,
-            CrudUrlGenerator::class => '?'.CrudUrlGenerator::class,
             EntityFactory::class => '?'.EntityFactory::class,
             EntityRepository::class => '?'.EntityRepository::class,
             EntityUpdater::class => '?'.EntityUpdater::class,

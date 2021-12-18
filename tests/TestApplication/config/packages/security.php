@@ -1,11 +1,14 @@
 <?php
 
-use Symfony\Component\PasswordHasher\Hasher\PlaintextPasswordHasher;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
-use Symfony\Component\Security\Core\User\User;
-use Symfony\Component\Security\Http\Authentication\AuthenticatorManager;
+use Symfony\Component\Security\Core\User\InMemoryUser;
 
 $configuration = [
+    'enable_authenticator_manager' => true,
+
+    'password_hashers' => [
+        InMemoryUser::class => 'plaintext',
+    ],
+
     'providers' => [
         'test_users' => [
             'memory' => [
@@ -20,8 +23,8 @@ $configuration = [
     ],
 
     'firewalls' => [
-        'main' => [
-            'pattern' => '^/',
+        'secure_admin' => [
+            'pattern' => '^/secure_admin',
             'provider' => 'test_users',
             'http_basic' => null,
             'logout' => null,
@@ -29,23 +32,8 @@ $configuration = [
     ],
 
     'access_control' => [
-        ['path' => '^/', 'roles' => ['ROLE_ADMIN']],
+        ['path' => '^/secure_admin', 'roles' => ['ROLE_ADMIN']],
     ],
 ];
-
-if (class_exists(PlaintextPasswordHasher::class)) {
-    $configuration['password_hashers'] = [
-        User::class => 'plaintext',
-        PasswordAuthenticatedUserInterface::class => 'plaintext',
-    ];
-} else {
-    $configuration['encoders'] = [User::class => 'plaintext'];
-}
-
-if (class_exists(AuthenticatorManager::class)) {
-    $configuration['enable_authenticator_manager'] = true;
-} else {
-    $configuration['firewalls']['main']['anonymous'] = true;
-}
 
 $container->loadFromExtension('security', $configuration);

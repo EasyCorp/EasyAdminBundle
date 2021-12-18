@@ -33,9 +33,7 @@ abstract class AbstractDashboardController extends AbstractController implements
         ]);
     }
 
-    /**
-     * @Route("/admin")
-     */
+    #[Route('/admin')]
     public function index(): Response
     {
         return $this->render('@EasyAdmin/welcome.html.twig', [

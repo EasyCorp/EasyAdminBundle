@@ -114,8 +114,8 @@ class AdminUrlGeneratorTest extends WebTestCase
     {
         $adminUrlGenerator = $this->getAdminUrlGenerator();
 
-        $adminUrlGenerator->setDashboard('App\Controller\Admin\SomeDashboardController');
-        $this->assertSame('http://localhost/another_admin?foo=bar', $adminUrlGenerator->generateUrl());
+        $adminUrlGenerator->setDashboard('App\Controller\Admin\SecureDashboardController');
+        $this->assertSame('http://localhost/secure_admin?foo=bar', $adminUrlGenerator->generateUrl());
     }
 
     public function testUnknownExplicitDashboardController()
@@ -297,7 +297,7 @@ class AdminUrlGeneratorTest extends WebTestCase
 
         $dashboardControllerRegistry = $this->getMockBuilder(DashboardControllerRegistry::class)->disableOriginalConstructor()->getMock();
         $dashboardControllerRegistry->method('getRouteByControllerFqcn')->willReturnMap([
-            ['App\Controller\Admin\SomeDashboardController', 'another_admin'],
+            ['App\Controller\Admin\SecureDashboardController', 'secure_admin'],
         ]);
         $dashboardControllerRegistry->method('getNumberOfDashboards')->willReturn(2);
         $dashboardControllerRegistry->method('getFirstDashboardRoute')->willReturn('admin');

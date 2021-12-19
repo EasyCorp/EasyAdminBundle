@@ -36,7 +36,7 @@ if (!file_exists($file)) {
 }
 $autoload = require $file;
 
-$application = new Application(new Kernel('default_backend', true));
+$application = new Application(new Kernel());
 $application->setAutoExit(false);
 
 $input = new ArrayInput(['command' => 'doctrine:database:drop', '--no-interaction' => true, '--force' => true]);

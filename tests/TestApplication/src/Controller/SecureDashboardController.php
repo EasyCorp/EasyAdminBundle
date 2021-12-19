@@ -9,11 +9,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Entity\Category;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class AnotherDashboardController extends AbstractDashboardController
+class SecureDashboardController extends AbstractDashboardController
 {
-    /**
-     * @Route("/another_admin", name="another_admin")
-     */
+    #[Route('/secure_admin', name: 'secure_admin')]
     public function index(): Response
     {
         return parent::index();

@@ -12,6 +12,7 @@ use Symfony\Bundle\TwigBundle\TwigBundle;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel as SymfonyKernel;
+use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
 
 final class Kernel extends SymfonyKernel
 {
@@ -49,12 +50,7 @@ final class Kernel extends SymfonyKernel
         return \dirname(__DIR__);
     }
 
-    /**
-     * TODO: Drop RouteCollectionBuilder when support for Symfony < 5.1 is dropped.
-     *
-     * @param RoutingConfigurator|RouteCollectionBuilder $routes
-     */
-    protected function configureRoutes($routes): void
+    protected function configureRoutes(RoutingConfigurator $routes): void
     {
         $routes->import($this->getProjectDir().'/config/routes.php');
     }

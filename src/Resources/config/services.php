@@ -341,6 +341,7 @@ return static function (ContainerConfigurator $container) {
         ->set(FormConfigurator::class)
 
         ->set(IdConfigurator::class)
+            ->arg(0, new Reference(AdminUrlGenerator::class))
 
         ->set(ImageConfigurator::class)
             ->arg(0, '%kernel.project_dir%')

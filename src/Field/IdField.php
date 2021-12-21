@@ -13,6 +13,9 @@ final class IdField implements FieldInterface
     use FieldTrait;
 
     public const OPTION_MAX_LENGTH = 'maxLength';
+    public const OPTION_AS_LINK = 'asLInk';
+    /** @internal this option is intended for internal use only */
+    public const OPTION_ENTITY_URL = 'entityUrl';
 
     /**
      * @param string|false|null $label
@@ -26,7 +29,8 @@ final class IdField implements FieldInterface
             ->setFormType(TextType::class)
             ->addCssClass('field-id')
             ->setDefaultColumns('col-md-6 col-xxl-5')
-            ->setCustomOption(self::OPTION_MAX_LENGTH, null);
+            ->setCustomOption(self::OPTION_MAX_LENGTH, null)
+            ->setCustomOption(self::OPTION_AS_LINK, false);
     }
 
     /**
@@ -39,6 +43,13 @@ final class IdField implements FieldInterface
         }
 
         $this->setCustomOption(self::OPTION_MAX_LENGTH, $length);
+
+        return $this;
+    }
+
+    public function setAsLink(bool $asLink = true): self
+    {
+        $this->setCustomOption(self::OPTION_AS_LINK, $asLink);
 
         return $this;
     }

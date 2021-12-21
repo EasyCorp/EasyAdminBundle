@@ -2,4 +2,8 @@
 {# @var field \EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto #}
 {# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
 {# this template is used to display Doctrine entity primary keys #}
-{{ field.formattedValue }}
+{% if field.customOptions.get('entityUrl') is not null %}
+    <a href="{{ field.customOptions.get('entityUrl') }}">{{ field.formattedValue }}</a>
+{% else %}
+    {{ field.formattedValue }}
+{% endif %}

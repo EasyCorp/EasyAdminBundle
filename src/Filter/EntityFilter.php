@@ -50,13 +50,12 @@ final class EntityFilter implements FilterInterface
             $assocAlias = 'ea_'.$filterDataDto->getParameterName();
             if ('NOT IN' === $comparison
                 && ClassMetadataInfo::MANY_TO_MANY === $entityDto->getPropertyMetadata($property)->get('type')) {
-                $subAssocAlias = 'sub_'.$assocAlias;
-                $subAlias = 'sub_'.$alias;
+                $subAssocAlias = uniqid('sub_'.$assocAlias);
+                $subAlias = uniqid('sub_'.$alias);
                 /** @var From[] $from */
                 $from = $queryBuilder->getDQLPart('from');
-                $subQueryBuilder = clone $queryBuilder;
+                $subQueryBuilder = new QueryBuilder($queryBuilder->getEntityManager());
                 $subQueryBuilder->select($subAlias)
-                    ->resetDQLPart('from')
                     ->from($from[0]->getFrom(), $subAlias)
                     ->leftJoin(sprintf('%s.%s', $subAlias, $property), $subAssocAlias);
                 if (0 === \count($value)) {

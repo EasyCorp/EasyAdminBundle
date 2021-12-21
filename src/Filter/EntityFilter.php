@@ -70,8 +70,7 @@ final class EntityFilter implements FilterInterface
                         sprintf('%s.%s NOT IN(%s)', $alias, $entityDto->getPrimaryKeyName(), $subQueryBuilder->getDQL())
                     )
                     ->setParameter($parameterName, $value);
-            }
-            else{
+            } else {
                 $queryBuilder->leftJoin(sprintf('%s.%s', $alias, $property), $assocAlias);
 
                 if (0 === \count($value)) {

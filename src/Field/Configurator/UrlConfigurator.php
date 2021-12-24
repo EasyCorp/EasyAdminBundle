@@ -24,7 +24,7 @@ final class UrlConfigurator implements FieldConfiguratorInterface
     {
         $field->setFormTypeOptionIfNotSet('attr.inputmode', 'url');
 
-        $prettyUrl = str_replace(['http://www.', 'https://www.', 'http://', 'https://'], '', $field->getValue());
+        $prettyUrl = str_replace(['http://www.', 'https://www.', 'http://', 'https://'], '', (string) $field->getValue());
         $prettyUrl = rtrim($prettyUrl, '/');
 
         if (Action::INDEX === $context->getCrud()->getCurrentAction()) {

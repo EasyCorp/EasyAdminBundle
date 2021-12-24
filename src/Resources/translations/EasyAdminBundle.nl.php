@@ -128,7 +128,7 @@ return [
 
     'autocomplete' => [
         'no-results-found' => 'Geen resultaten gevonden…',
-        // 'no-more-results' => 'No more results',
+        'no-more-results' => 'Niet meer resultaten gevonden…',
         'loading-more-results' => 'Meer resultaten laden…',
     ],
 ];

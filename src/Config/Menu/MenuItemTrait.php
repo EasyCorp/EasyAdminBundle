@@ -54,6 +54,13 @@ trait MenuItemTrait
         return $this;
     }
 
+    public function setBadgeCount(int $count): self
+    {
+        $this->dto->setBadgeCount($count);
+
+        return $this;
+    }
+
     public function getAsDto(): MenuItemDto
     {
         return $this->dto;

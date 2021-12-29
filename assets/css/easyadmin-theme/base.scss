@@ -36,7 +36,7 @@ pre {
 }
 
 // Needed to provide BC compatibility because
-// Bootstrap 5 replaced these clases by .text-start and .text-end
+// Bootstrap 5 replaced these classes by .text-start and .text-end
 .text-left { text-align: left !important; }
 .text-right { text-align: right !important; }
 
@@ -671,64 +671,6 @@ body.ea-edit .content-header {
 .modal-footer {
     background: var(--gray-50);
     padding: 8px 10px;
-}
-
-body.show .form-horizontal {
-    background: var(--form-bg);
-}
-
-body.show .form-horizontal .control-label {
-    padding-top: 0;
-}
-
-body.show .form-control {
-    border: var(--border-width) var(--border-style) var(--border-color);
-    box-shadow: none;
-    height: auto;
-    min-height: 30px;
-    padding: 4px 7px 5px;
-}
-
-body.show .field-integer .form-widget,
-body.show .field-float .form-widget,
-body.show .field-boolean .form-widget {
-    max-width: 100px;
-}
-
-body.show .field-date .form-widget,
-body.show .field-time .form-widget,
-body.show .field-datetime .form-widget {
-    max-width: 250px;
-}
-
-body.show .field-string .form-widget {
-    max-width: 450px;
-}
-
-body.show .field-text .form-widget,
-body.show .field-association .form-widget {
-    max-width: 550px;
-}
-
-body.show .field-simple_array ul,
-body.show .field-association ul {
-    margin: 5px;
-    padding-left: 15px;
-}
-
-body.show .field-text .form-widget {
-    max-height: 250px;
-    overflow-y: auto;
-}
-
-body.show .field-text .form-widget .form-control {
-    min-height: 60px;
-}
-
-body.show .field-avatar .image-avatar {
-    border-radius: 50%;
-    border: 0;
-    box-shadow: none;
 }
 
 // Flash messages

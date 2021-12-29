@@ -60,7 +60,7 @@ $form-check-input-checked-bg-color: $primary;
 $form-check-input-border-radius: var(--border-radius);
 $form-check-input-border: 1px solid var(--gray-400);
 $form-group-margin-bottom: 0;
-$input-group-addon-bg: hsl(210, 45%, 98%); // var(--form-bg);
+$input-group-addon-bg: hsl(210, 45%, 98%); // var(--form-input-group-bg);
 $legend-color: var(--gray-800);
 $legend-border-color: #e5e5e5 !default;
 
@@ -115,14 +115,14 @@ $nav-tabs-border-width: var(--border-width);
 $nav-tabs-border-radius: var(--border-radius);
 $nav-tabs-link-hover-border-color: transparent;
 $nav-tabs-link-active-color: var(--gray-800);
-$nav-tabs-link-active-bg: var(--form-bg);
+$nav-tabs-link-active-bg: transparent;
 $nav-tabs-link-active-border-color: var(--border-color) var(--border-color) transparent var(--border-color);
 
 $modal-header-padding-y: 15px;
 $modal-header-padding-x: 20px;
 $modal-inner-padding: 15px 20px;
 $modal-title-padding: 15px 20px;
-$modal-content-bg: var(--form-bg);
+$modal-content-bg: var(--modal-bg);
 $modal-content-border-color: var(--border-color);
 $modal-content-fallback-border-color: var(--border-color);
 $modal-backdrop-bg: var(--black);

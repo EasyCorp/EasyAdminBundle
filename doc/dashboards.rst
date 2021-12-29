@@ -311,6 +311,8 @@ All menu items define the following methods to configure some options:
 * ``setPermission(string $permission)``, sets the `Symfony security permission`_
   that the user must have to see this menu item. Read the :ref:`menu security reference <security-menu>`
   for more details.
+* ``setBadgeCount(int $count)``, makes it possible to render a notification badge
+  count next to the menu item / section.
 
 The rest of options depend on each menu item type, as explained in the next sections.
 

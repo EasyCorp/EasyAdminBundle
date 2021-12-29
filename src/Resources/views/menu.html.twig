@@ -32,12 +32,22 @@
 {% macro render_menu_item(item) %}
     {% if item.isMenuSection %}
         {% if item.icon is not empty %}<i class="menu-icon fa-fw {{ item.icon }}"></i>{% endif %}
-        <span class="{{ item.cssClass }}">{{ item.label|raw }}</span>
+        <span class="position-relative {{ item.cssClass }}">
+            {{ item.label|raw }}
+            {% if (item.badgeCount > 0) %}
+                <span class="position-absolute top-0 start-100 translate-middle badge bg-danger rounded-pill text-white">{{ item.badgeCount }}<span class="visually-hidden"> unread messages</span></span>
+            {% endif %}
+        </span>
     {% else %}
         <a href="{{ item.linkUrl }}" class="{{ item.hasSubItems ? 'submenu-toggle' }} {{ item.cssClass }}" target="{{ item.linkTarget }}" rel="{{ item.linkRel }}" referrerpolicy="origin-when-cross-origin">
             {% if item.icon is not empty %}<i class="menu-icon fa-fw {{ item.icon }}"></i>{% endif %}
-            <span>{{ item.label|raw }}</span>
-            {% if item.hasSubItems %}<i class="fa fa-fw fa-angle-right submenu-toggle-icon"></i>{% endif %}
+            <span class="position-relative">
+                {{ item.label|raw }}
+                {% if (item.badgeCount > 0) %}
+                    <span class="position-absolute top-0 start-100 translate-middle badge bg-danger rounded-pill text-white">{{ item.badgeCount }}<span class="visually-hidden"> unread messages</span></span>
+                {% endif %}
+            </span>
+            {% if item.hasSubItems %}<i class="fa fa-fw fa-angle-right submenu-toggle-icon {{ item.badgeCount > 0 ? 'ps-2' : '' }}"></i>{% endif %}
         </a>
     {% endif %}
 {% endmacro %}

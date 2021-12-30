@@ -1,6 +1,186 @@
 Upgrade between EasyAdmin 3.x versions
 ======================================
 
+EasyAdmin 3.5.0
+---------------
+
+### Redesigned Interface
+
+EasyAdmin interface has been completely redesigned.
+Read [this blog post](https://easycorp.github.io/blog/posts/redesigning-easyadmin)
+for more details.
+
+If you have integrated Symfony actions into your backend, you probably defined
+some custom styles for them to match the rest of the backend design. In those
+cases, you'll need to update your custom styles to match the new design.
+
+### Updated some Page Titles
+
+The default titles of the `detail` and `edit` pages have changed:
+
+    // Before
+    'detail' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
+    'edit' => 'Edit %entity_label_singular% <small>(#%entity_short_id%)</small>',
+
+    // After
+    'detail' => '%entity_as_string%',
+    'edit' => 'Edit %entity_label_singular%',
+
+For example, a blog post with id `123` and `Lorem Ipsum Dolor Sit Amet` as its
+string representation, would see these changes:
+
+    // Before
+    detail = Blog Post <small>(#123)</small>
+    edit = Edit Blog Post <small>(#123)</small>
+
+    // After
+    detail = Lorem Ipsum Dolor Sit Amet
+    edit = Edit Blog Post
+
+If you want to revert those changes or use different page titles, read the docs
+about [EasyAdmin page title options](https://symfony.com/doc/current/bundles/EasyAdminBundle/crud.html#title-and-help-options).
+If you want to change the titles of all CRUD controllers, it's better to
+[configure CRUD options in the Dashboard class](https://symfony.com/doc/current/bundles/EasyAdminBundle/crud.html#same-configuration-in-different-crud-controllers).
+
+EasyAdmin 3.4.0
+---------------
+
+### Migrated to Bootstrap 5
+
+This version of EasyAdmin upgrades Bootstrap from version 4 to version 5.
+This only affects you if you have developed custom templates or changed the
+default templates with your own HTML/CSS/JavaScript code.
+
+Read the [Migrating to Bootstrap v5 guide](https://getbootstrap.com/docs/5.0/migration/)
+to learn about the main changes needed to upgrade to this version.
+
+### Removed jQuery
+
+**jQuery library is no longer used or included in EasyAdmin**. We did this
+because Bootstrap 5 moved to native JavaScript widgets, so jQuery usage is no
+longer mandatory when using Bootstrap.
+
+This only affects you if your backend has custom JavaScript code that uses
+jQuery and you don't include jQuery yourself (your code relies on the jQuery
+version included by EasyAdmin).
+
+The solution depends on how you manage your custom backend assets:
+
+* If you use Webpack Encore, add jQuery to your dependencies (`yarn add jquery --dev`)
+  and follow the [jQuery integration in Webpack Encore guide](https://symfony.com/doc/current/frontend/encore/legacy-applications.html).
+* If you don't use any JavaScript asset builder, download jQuery as a JavaScript
+  file and store it somewhere in your application (e.g. `<your project>/public/js/jquery.min.js`)
+  and then add that file in your backend with the [addJs() method](https://symfony.com/doc/current/bundles/EasyAdminBundle/design.html#adding-custom-web-assets).
+
+### Text Elements with HTML Contents
+
+Text fields and Textarea fields no longer strip tags in INDEX page.
+Use the new `stripTags()` method to keep the previous behavior:
+
+```php
+// before
+yield TextField::new('someField');
+
+// after
+yield TextField::new('someField')->stripTags();
+```
+
+### Autocomplete Fields
+
+The `Select2` JavaScript library, which is based on jQuery, has been
+replaced bt `TomSelect`, a pure-JavaScript library. This change is
+transparent when using EasyAdmin features, but if you create custom
+form types and want to display autocomplete fields for your `<select>`
+lists, you must change the following:
+
+```
+// Before
+<select data-widget="select2">
+    <!-- ... -->
+</select>
+
+// After
+<select data-ea-widget="ea-autocomplete">
+    <!-- ... -->
+</select>
+```
+
+These are the configurable options of the new autocomplete
+fields and their previous equivalent options:
+
+```
+// Before
+<select
+    data-widget="select2"
+    data-ea-escape-markup="false"
+    data-select2-tags="true"
+>
+    <!-- ... -->
+</select>
+
+// After
+<select
+    data-ea-widget="ea-autocomplete"
+    data-ea-autocomplete-render-items-as-html="true"
+    data-ea-autocomplete-allow-item-create="true"
+>
+    <!-- ... -->
+</select>
+```
+
+EasyAdmin 3.3.2
+---------------
+
+### CSS, JavaScript and Webpack Entries are passed as assets
+
+This is an internal change that only affects you if your application has
+customized the way EasyAdmin loads CSS/JS/Webpack entries in the templates.
+
+In previous EasyAdmin versions, assets were passed to templates as simple
+strings (e.g. `'/build/admin.css'` for a CSS asset). They were included as follows:
+
+    {% for js_asset in js_assets %}
+        <script src="{{ asset(js_asset) }}"></script>
+    {% endfor %}
+
+Starting from EasyAdmin 3.4.0, assets are passed as instances of
+`EasyCorp\Bundle\EasyAdminBundle\Dto\AssetDto`, which allows to configure all
+kinds of attributes and features for those assets. This is the same example as
+before using the new asset objects:
+
+    {% for js_asset in js_assets %}
+        {% if js_asset.preload %}
+            <link rel="preload" href="{{ ea_call_function_if_exists('preload', js_asset.value, { as: 'script', nopush: js_asset.nopush }) }}"
+            {% for attr, value in js_asset.htmlAttributes %}{{ attr }}="{{ value|e('html_attr') }}" {% endfor %}>
+        {% else %}
+            <script src="{{ asset(js_asset.value) }}" {{ js_asset.async ? 'async' }} {{ js_asset.defer ? 'defer' }}
+            {% for attr, value in js_asset.htmlAttributes %}{{ attr }}="{{ value|e('html_attr') }}" {% endfor %}></script>
+        {% endif %}
+    {% endfor %}
+
+EasyAdmin 3.3.0
+---------------
+
+### JavaScript files are included in the `<head>`
+
+JavaScript files, added via `addJsFile()` and/or `addWebpackEncoreEntry()`
+in CRUD's `configureAssets()` method, are now included in the HTML
+`<head>` element instead of at the bottom of the `<body>` element.
+
+You might need to change your JavaScript code a bit to wrap it inside the following:
+
+```js
+document.addEventListener('DOMContentLoaded', () => {
+
+    // put your JavaScript code here
+
+});
+```
+
+This ensures that your code is run once the page has been loaded. For Webpack
+Encore entries you can also set the `webpack_encore.script_attributes.defer`
+option to `true` to run those scripts after the entire page is loaded.
+
 EasyAdmin 3.2.0
 ---------------
 
@@ -253,6 +433,97 @@ class SomeController extends AbstractController
         $this->render('some_template.html.twig', [
             '...' => '...',
         ]);
+    }
+}
+```
+
+### Link actions to routes with custom route parameters
+
+The handling of links to Symfony routes has changed. When using something like
+`Action::new('someProperty')->linkToRoute('my_route', ['my_param' => 123])`,
+the route parameter `my_param` no longer is used as a normal route parameter of
+a Symfony route.
+
+If you need to pass route parameters which do not belong to EasyAdmin (e.g.,
+Symfony's `_switch_user` route parameter) generate the URL yourself and use the
+`linkToUrl()` method instead of `linkToRoute()`.
+
+**BEFORE**
+
+```php
+namespace App\Controller;
+
+use App\Entity\User;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+
+class SomeController extends AbstractCrudController
+{
+    public function configureActions(Actions $actions): Actions
+    {
+        $impersonate = Action::new('impersonate')
+            ->linkToRoute('some_route', ['_switch_user' => 'user@example.com']);
+
+        return parent::configureActions($actions)
+            ->add(Crud::PAGE_INDEX, $impersonate);
+    }
+}
+```
+
+**AFTER** Use Symfony's `UrlGeneratorInterface` to generate the URL on your own.
+
+```php
+namespace App\Controller;
+
+use App\Entity\User;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+
+class SomeController extends AbstractCrudController
+{
+    private UrlGeneratorInterface $urlGenerator;
+
+    public function __construct(UrlGeneratorInterface $urlGenerator)
+    {
+        $this->urlGenerator = $urlGenerator;
+    }
+    
+    public function configureActions(Actions $actions): Actions
+    {
+        $impersonate = Action::new('impersonate')
+            ->linkToUrl($this->urlGenerator->generate('some_route', [
+                '_switch_user' => 'user@example.com'
+            ], UrlGeneratorInterface::ABSOLUTE_URL));
+
+        return parent::configureActions($actions)
+            ->add(Crud::PAGE_INDEX, $impersonate);
+    }
+}
+```
+
+If you only to add some query string arguments, you can use instead this:
+
+```php
+namespace App\Controller;
+
+use App\Entity\User;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+
+class SomeController extends AbstractCrudController
+{
+    public function configureActions(Actions $actions): Actions
+    {
+        $impersonate = Action::new('impersonate')
+            ->linkToRoute('some_route')
+            ->setQueryParameter('_switch_user', 'user@example.com');
+
+        return parent::configureActions($actions)
+            ->add(Crud::PAGE_INDEX, $impersonate);
     }
 }
 ```

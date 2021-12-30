@@ -6,7 +6,6 @@ use EasyCorp\Bundle\EasyAdminBundle\ArgumentResolver\AdminContextResolver;
 use EasyCorp\Bundle\EasyAdminBundle\ArgumentResolver\BatchActionDtoResolver;
 use EasyCorp\Bundle\EasyAdminBundle\Cache\CacheWarmer;
 use EasyCorp\Bundle\EasyAdminBundle\Command\MakeAdminDashboardCommand;
-use EasyCorp\Bundle\EasyAdminBundle\Command\MakeAdminMigrationCommand;
 use EasyCorp\Bundle\EasyAdminBundle\Command\MakeCrudControllerCommand;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterConfiguratorInterface;
@@ -66,7 +65,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Inspector\DataCollector;
 use EasyCorp\Bundle\EasyAdminBundle\Intl\IntlFormatter;
 use EasyCorp\Bundle\EasyAdminBundle\Maker\ClassMaker;
-use EasyCorp\Bundle\EasyAdminBundle\Maker\Migrator;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityPaginator;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityUpdater;
@@ -75,12 +73,10 @@ use EasyCorp\Bundle\EasyAdminBundle\Provider\FieldProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\CrudControllerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\DashboardControllerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
-use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Router\UrlSigner;
 use EasyCorp\Bundle\EasyAdminBundle\Security\AuthorizationChecker;
 use EasyCorp\Bundle\EasyAdminBundle\Security\SecurityVoter;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\EasyAdminTwigExtension;
-use Symfony\Component\DependencyInjection\Compiler\AliasDeprecatedPublicServicesPass;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\ServiceLocator;
@@ -95,11 +91,6 @@ return static function (ContainerConfigurator $container) {
         ->instanceof(FilterConfiguratorInterface::class)->tag(EasyAdminExtension::TAG_FILTER_CONFIGURATOR);
 
     $services
-        ->set(MakeAdminMigrationCommand::class)->public()
-            ->arg(0, new Reference(Migrator::class))
-            ->arg(1, '%kernel.project_dir%')
-            ->tag('console.command')
-
         ->set(MakeAdminDashboardCommand::class)->public()
             ->arg(0, new Reference(ClassMaker::class))
             ->arg(1, '%kernel.project_dir%')
@@ -114,8 +105,6 @@ return static function (ContainerConfigurator $container) {
         ->set(ClassMaker::class)
             ->arg(0, new Reference(KernelInterface::class))
             ->arg(1, '%kernel.project_dir%')
-
-        ->set(Migrator::class)
 
         ->set(CacheWarmer::class)
             ->arg(0, new Reference('router'))
@@ -223,6 +212,7 @@ return static function (ContainerConfigurator $container) {
             ->arg(1, new Reference('doctrine'))
             ->arg(2, new Reference(EntityFactory::class))
             ->arg(3, new Reference(FormFactory::class))
+            ->arg(4, new Reference('event_dispatcher'))
 
         ->set(EntityFactory::class)
             ->arg(0, new Reference(FieldFactory::class))
@@ -244,7 +234,6 @@ return static function (ContainerConfigurator $container) {
 
         ->set(FormFactory::class)
             ->arg(0, new Reference('form.factory'))
-            ->arg(1, new Reference(AdminUrlGenerator::class))
 
         ->set(FieldFactory::class)
             ->arg(0, new Reference(AdminContextProvider::class))
@@ -374,18 +363,4 @@ return static function (ContainerConfigurator $container) {
 
         ->set(UrlConfigurator::class)
     ;
-
-    $crudUrlGenerator = $services
-        ->set(CrudUrlGenerator::class)
-        ->arg(0, new Reference(AdminContextProvider::class))
-        ->arg(1, new Reference('router.default'))
-        ->arg(2, new Reference(UrlSigner::class))
-        ->arg(3, new Reference(DashboardControllerRegistry::class))
-        ->arg(4, new Reference(CrudControllerRegistry::class));
-
-    if (class_exists(AliasDeprecatedPublicServicesPass::class)) {
-        $crudUrlGenerator->deprecate('easycorp/easyadmin-bundle', '3.2.0', sprintf('The "%%service_id%%" service is deprecated, use "%s" instead.', AdminUrlGenerator::class));
-    } else {
-        $crudUrlGenerator->deprecate(sprintf('Since easycorp/easyadmin-bundle 3.2.0: The "%%service_id%% service is deprecated, use "%s" instead.', AdminUrlGenerator::class));
-    }
 };

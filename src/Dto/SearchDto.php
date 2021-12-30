@@ -24,7 +24,7 @@ final class SearchDto
     {
         $this->request = $request;
         $this->searchableProperties = $searchableProperties;
-        $this->query = trim($query);
+        $this->query = trim((string) $query);
         $this->defaultSort = $defaultSort;
         $this->customSort = $customSort;
         $this->appliedFilters = $appliedFilters;

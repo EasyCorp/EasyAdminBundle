@@ -13,7 +13,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 final class FieldCollection implements CollectionInterface
 {
     /** @var FieldDto[] */
-    private $fields;
+    private array $fields;
 
     /**
      * @param FieldInterface[]|string[] $fields
@@ -92,22 +92,22 @@ final class FieldCollection implements CollectionInterface
         return 0 === \count($this->fields);
     }
 
-    public function offsetExists($offset): bool
+    public function offsetExists(mixed $offset): bool
     {
         return \array_key_exists($offset, $this->fields);
     }
 
-    public function offsetGet($offset)
+    public function offsetGet(mixed $offset): FieldDto
     {
         return $this->fields[$offset];
     }
 
-    public function offsetSet($offset, $value): void
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         $this->fields[$offset] = $value;
     }
 
-    public function offsetUnset($offset): void
+    public function offsetUnset(mixed $offset): void
     {
         unset($this->fields[$offset]);
     }
@@ -120,7 +120,7 @@ final class FieldCollection implements CollectionInterface
     /**
      * @return \ArrayIterator|\Traversable|FieldDto[]
      */
-    public function getIterator()
+    public function getIterator(): \Traversable
     {
         return new \ArrayIterator($this->fields);
     }

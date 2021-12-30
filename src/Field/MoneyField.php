@@ -19,7 +19,10 @@ final class MoneyField implements FieldInterface
     public const OPTION_NUM_DECIMALS = 'numDecimals';
     public const OPTION_STORED_AS_CENTS = 'storedAsCents';
 
-    public static function new(string $propertyName, ?string $label = null): self
+    /**
+     * @param string|false|null $label
+     */
+    public static function new(string $propertyName, $label = null): self
     {
         return (new self())
             ->setProperty($propertyName)
@@ -28,6 +31,7 @@ final class MoneyField implements FieldInterface
             ->setFormType(MoneyType::class)
             ->addCssClass('field-money')
             ->setTextAlign(TextAlign::RIGHT)
+            ->setDefaultColumns('col-md-6 col-xxl-5')
             ->setCustomOption(self::OPTION_CURRENCY, null)
             ->setCustomOption(self::OPTION_CURRENCY_PROPERTY_PATH, null)
             ->setCustomOption(self::OPTION_NUM_DECIMALS, 2)

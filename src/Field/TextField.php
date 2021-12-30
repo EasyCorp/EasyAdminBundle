@@ -14,8 +14,12 @@ final class TextField implements FieldInterface
 
     public const OPTION_MAX_LENGTH = 'maxLength';
     public const OPTION_RENDER_AS_HTML = 'renderAsHtml';
+    public const OPTION_STRIP_TAGS = 'stripTags';
 
-    public static function new(string $propertyName, ?string $label = null): self
+    /**
+     * @param string|false|null $label
+     */
+    public static function new(string $propertyName, $label = null): self
     {
         return (new self())
             ->setProperty($propertyName)
@@ -23,10 +27,16 @@ final class TextField implements FieldInterface
             ->setTemplateName('crud/field/text')
             ->setFormType(TextType::class)
             ->addCssClass('field-text')
+            ->setDefaultColumns('col-md-6 col-xxl-5')
             ->setCustomOption(self::OPTION_MAX_LENGTH, null)
-            ->setCustomOption(self::OPTION_RENDER_AS_HTML, false);
+            ->setCustomOption(self::OPTION_RENDER_AS_HTML, false)
+            ->setCustomOption(self::OPTION_STRIP_TAGS, false);
     }
 
+    /**
+     * This option is ignored when using 'renderAsHtml()' to avoid
+     * truncating contents in the middle of an HTML tag.
+     */
     public function setMaxLength(int $length): self
     {
         if ($length < 1) {
@@ -41,6 +51,13 @@ final class TextField implements FieldInterface
     public function renderAsHtml(bool $asHtml = true): self
     {
         $this->setCustomOption(self::OPTION_RENDER_AS_HTML, $asHtml);
+
+        return $this;
+    }
+
+    public function stripTags(bool $stripTags = true): self
+    {
+        $this->setCustomOption(self::OPTION_STRIP_TAGS, $stripTags);
 
         return $this;
     }

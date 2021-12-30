@@ -22,7 +22,7 @@ final class CurrencyConfigurator implements FieldConfiguratorInterface
 
     public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
     {
-        $field->setFormTypeOptionIfNotSet('attr.data-widget', 'select2');
+        $field->setFormTypeOptionIfNotSet('attr.data-ea-widget', 'ea-autocomplete');
 
         if (null === $currencyCode = $field->getValue()) {
             return;

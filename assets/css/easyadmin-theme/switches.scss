@@ -1,9 +1,21 @@
 // Switches (toggles)
 // ----------------------------------------------------------------------------
 
-.custom-switch .custom-control-input ~ .custom-control-label {
+.form-switch .form-check-input {
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3E%3Ccircle r='3' fill='rgba(148, 163, 184, 0.8)'/%3E%3C/svg%3E");
+  border-color: var(--gray-400);
   cursor: pointer;
+  height: 18px;
+  width: 32px;
+  -webkit-appearance: none; // needed for Safari
+
+  &:checked {
+    border-color: var(--indigo-500);
+  }
 }
-.custom-switch .custom-control-input:disabled ~ .custom-control-label {
+.form-switch .form-check-input[disabled] {
   cursor: not-allowed;
+}
+.form-switch .form-check-input:focus {
+  box-shadow: none;
 }

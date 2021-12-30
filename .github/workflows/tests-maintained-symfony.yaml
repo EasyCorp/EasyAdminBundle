@@ -1,0 +1,46 @@
+# OS: Linux; Symfony: all the maintained Symfony versions (except 'current stable'); PHP: latest stable
+name: "Tests - Maintained Symfony versions"
+
+on:
+    pull_request:
+    push:
+        branches:
+            - 'master'
+
+env:
+    fail-fast: true
+
+jobs:
+    tests:
+        name: "Symfony ${{ matrix.symfony-version }} / PHP ${{ matrix.php-version }}"
+        runs-on: 'ubuntu-latest'
+        continue-on-error: false
+        strategy:
+            matrix:
+                php-version: ['8.1']
+                symfony-version: ['5.4']
+        steps:
+            - name: 'Checkout code'
+              uses: actions/checkout@v2.3.3
+
+            - name: 'Install PHP with extensions'
+              uses: shivammathur/setup-php@v2
+              with:
+                  coverage: none
+                  php-version: ${{ matrix.php-version }}
+                  tools: composer:v2
+                  extensions: mbstring, intl, pdo, pdo_sqlite, sqlite3
+                  ini-values: date.timezone=UTC
+
+            - name: 'Install project dependencies'
+              env:
+                  SYMFONY_REQUIRE: ${{ matrix.symfony-version }}
+              run: |
+                  composer global require --no-progress --no-scripts --no-plugins symfony/flex
+                  composer update --no-interaction --prefer-dist --optimize-autoloader
+                  vendor/bin/simple-phpunit install
+
+            - name: 'Run tests'
+              env:
+                  SYMFONY_DEPRECATIONS_HELPER: 'max[total]=999999'
+              run: vendor/bin/simple-phpunit -v

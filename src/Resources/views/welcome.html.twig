@@ -1,15 +1,15 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
 {% extends '@EasyAdmin/page/content.html.twig' %}
 
-{% block page_title 'Welcome to EasyAdmin 3' %}
+{% block content_title 'Welcome to EasyAdmin 4' %}
 
-{% block page_content %}
+{% block main %}
     <style>
         p { max-width: 600px; }
     </style>
 
     <p>
-        <strong>You have successfully installed EasyAdmin 3 in your application!</strong>
+        <strong>You have successfully installed EasyAdmin 4 in your application!</strong>
     </p>
 
     <p>
@@ -38,9 +38,9 @@ class {{ dashboard_controller_class }} extends AbstractDashboardController
     public function index(): Response
     {
         // redirect to some CRUD controller
-        $routeBuilder = $this->get(AdminUrlGenerator::class);
+        $adminUrlGenerator = $this->container->get(AdminUrlGenerator::class);
 
-        return $this->redirect($routeBuilder->setController(OneOfYourCrudController::class)->generateUrl());
+        return $this->redirect($adminUrlGenerator->setController(OneOfYourCrudController::class)->generateUrl());
 
         // you can also redirect to different pages depending on the current user
         if ('jane' === $this->getUser()->getUsername()) {

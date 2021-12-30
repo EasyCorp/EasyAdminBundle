@@ -31,7 +31,7 @@ final class EntityConfigurator implements FilterConfiguratorInterface
         // TODO: add the 'em' form type option too?
         $filterDto->setFormTypeOptionIfNotSet('value_type_options.class', $doctrineMetadata->get('targetEntity'));
         $filterDto->setFormTypeOptionIfNotSet('value_type_options.multiple', $entityDto->isToManyAssociation($propertyName));
-        $filterDto->setFormTypeOptionIfNotSet('value_type_options.attr.data-widget', 'select2');
+        $filterDto->setFormTypeOptionIfNotSet('value_type_options.attr.data-ea-widget', 'ea-autocomplete');
 
         if ($entityDto->isToOneAssociation($propertyName)) {
             // don't show the 'empty value' placeholder when all join columns are required,

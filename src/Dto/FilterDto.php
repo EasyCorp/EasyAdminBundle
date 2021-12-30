@@ -32,7 +32,7 @@ final class FilterDto
         $this->fqcn = $fqcn;
     }
 
-    public function getFormType(): string
+    public function getFormType(): ?string
     {
         return $this->formType;
     }

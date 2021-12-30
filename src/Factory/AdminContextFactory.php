@@ -176,12 +176,14 @@ final class AdminContextFactory
         $translationParameters = [];
         if (null !== $crudDto) {
             $translationParameters['%entity_name%'] = $entityName = basename(str_replace('\\', '/', $crudDto->getEntityFqcn()));
+            $translationParameters['%entity_as_string%'] = null === $entityDto ? '' : $entityDto->toString();
             $translationParameters['%entity_id%'] = $entityId = $request->query->get(EA::ENTITY_ID);
-            $translationParameters['%entity_short_id%'] = null === $entityId ? null : u((string) $entityId)->truncate(7);
+            $translationParameters['%entity_short_id%'] = null === $entityId ? null : u((string) $entityId)->truncate(7)->toString();
 
             $entityInstance = null === $entityDto ? null : $entityDto->getInstance();
-            $translatedSingularLabel = $this->translator->trans($crudDto->getEntityLabelInSingular($entityInstance) ?? $entityName, $translationParameters, $translationDomain);
-            $translatedPluralLabel = $this->translator->trans($crudDto->getEntityLabelInPlural($entityInstance) ?? $entityName, $translationParameters, $translationDomain);
+            $pageName = $crudDto->getCurrentPage();
+            $translatedSingularLabel = $this->translator->trans($crudDto->getEntityLabelInSingular($entityInstance, $pageName) ?? $entityName, $translationParameters, $translationDomain);
+            $translatedPluralLabel = $this->translator->trans($crudDto->getEntityLabelInPlural($entityInstance, $pageName) ?? $entityName, $translationParameters, $translationDomain);
             $crudDto->setEntityLabelInSingular($translatedSingularLabel);
             $crudDto->setEntityLabelInPlural($translatedPluralLabel);
 

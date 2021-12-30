@@ -33,13 +33,27 @@ final class TextConfigurator implements FieldConfiguratorInterface
         }
 
         if (!\is_string($value) && !(\is_object($value) && method_exists($value, '__toString'))) {
-            throw new \RuntimeException(sprintf('The value of the "%s" field of the entity with ID = "%s" can\'t be converted into a string, so it cannot be represented by a TextField.', $field->getProperty(), $entityDto->getPrimaryKeyValue()));
+            throw new \RuntimeException(sprintf('The value of the "%s" field of the entity with ID = "%s" can\'t be converted into a string, so it cannot be represented by a TextField or a TextareaField.', $field->getProperty(), $entityDto->getPrimaryKeyValue()));
         }
 
-        $configuredMaxLength = $field->getCustomOption(TextareaField::OPTION_MAX_LENGTH);
-        $isDetailAction = Action::DETAIL === $context->getCrud()->getCurrentAction();
-        $defaultMaxLength = $isDetailAction ? \PHP_INT_MAX : 64;
-        $formattedValue = u((string) $field->getValue())->truncate($configuredMaxLength ?? $defaultMaxLength, '…');
+        $renderAsHtml = $field->getCustomOption(TextField::OPTION_RENDER_AS_HTML);
+        $stripTags = $field->getCustomOption(TextField::OPTION_STRIP_TAGS);
+        if ($renderAsHtml) {
+            $formattedValue = (string) $field->getValue();
+        } elseif ($stripTags) {
+            $formattedValue = strip_tags((string) $field->getValue());
+        } else {
+            $formattedValue = htmlspecialchars((string) $field->getValue(), \ENT_NOQUOTES, null, false);
+        }
+
+        $configuredMaxLength = $field->getCustomOption(TextField::OPTION_MAX_LENGTH);
+        // when contents are rendered as HTML, "max length" option is ignored to prevent
+        // truncating contents in the middle of an HTML tag, which messes the entire backend
+        if (!$renderAsHtml && null !== $configuredMaxLength) {
+            $isDetailAction = Action::DETAIL === $context->getCrud()->getCurrentAction();
+            $defaultMaxLength = $isDetailAction ? \PHP_INT_MAX : 64;
+            $formattedValue = u($formattedValue)->truncate($configuredMaxLength ?? $defaultMaxLength, '…')->toString();
+        }
 
         $field->setFormattedValue($formattedValue);
     }

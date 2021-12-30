@@ -4,6 +4,8 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormPanelType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormRowType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminTabType;
 use Symfony\Component\Uid\Ulid;
 
 /**
@@ -16,16 +18,22 @@ final class FormField implements FieldInterface
     public const OPTION_ICON = 'icon';
     public const OPTION_COLLAPSIBLE = 'collapsible';
     public const OPTION_COLLAPSED = 'collapsed';
+    public const OPTION_ROW_BREAKPOINT = 'rowBreakPoint';
 
     /**
      * @internal Use the other named constructors instead (addPanel(), etc.)
+     *
+     * @param string|false|null $label
      */
-    public static function new(string $propertyName, ?string $label = null)
+    public static function new(string $propertyName, $label = null)
     {
         throw new \RuntimeException('Instead of this method, use the "addPanel()" method.');
     }
 
-    public static function addPanel(?string $label = null, ?string $icon = null): self
+    /**
+     * @param string|false|null $label
+     */
+    public static function addPanel($label = false, ?string $icon = null): self
     {
         $field = new self();
 
@@ -34,13 +42,54 @@ final class FormField implements FieldInterface
             ->hideOnIndex()
             ->setProperty('ea_form_panel_'.(new Ulid()))
             ->setLabel($label)
-            ->setTemplateName('crud/field/form_panel')
             ->setFormType(EaFormPanelType::class)
             ->addCssClass('field-form_panel')
             ->setFormTypeOptions(['mapped' => false, 'required' => false])
             ->setCustomOption(self::OPTION_ICON, $icon)
             ->setCustomOption(self::OPTION_COLLAPSIBLE, false)
             ->setCustomOption(self::OPTION_COLLAPSED, false);
+    }
+
+    /**
+     * @param string $breakpointName The name of the breakpoint where the new row is inserted
+     *                               It must be a valid Bootstrap 5 name ('', 'sm', 'md', 'lg', 'xl', 'xxl')
+     */
+    public static function addRow(string $breakpointName = ''): self
+    {
+        $field = new self();
+
+        $validBreakpointNames = ['', 'sm', 'md', 'lg', 'xl', 'xxl'];
+        if (!\in_array($breakpointName, $validBreakpointNames, true)) {
+            throw new \InvalidArgumentException(sprintf('The value passed to the "addRow()" method of "FormField" can only be one of these values: "%s" ("%s" was given).', implode(', ', $validBreakpointNames), $breakpointName));
+        }
+
+        return $field
+            ->setFieldFqcn(__CLASS__)
+            ->hideOnIndex()
+            ->setProperty('ea_form_row_'.(new Ulid()))
+            ->setFormType(EaFormRowType::class)
+            ->addCssClass('field-form_row')
+            ->setFormTypeOptions(['mapped' => false, 'required' => false])
+            ->setCustomOption(self::OPTION_ROW_BREAKPOINT, $breakpointName);
+    }
+
+    /**
+     * @return static
+     */
+    public static function addTab(string $label, ?string $icon = null): self
+    {
+        $field = new self();
+
+        return $field
+            ->setFieldFqcn(__CLASS__)
+            ->hideOnIndex()
+            ->hideOnDetail()
+            ->setProperty('ea_form_tab_'.(new Ulid()))
+            ->setLabel($label)
+            ->setFormType(EasyAdminTabType::class)
+            ->addCssClass('field-form_tab')
+            ->setFormTypeOptions(['mapped' => false, 'required' => false])
+            ->setCustomOption(self::OPTION_ICON, $icon);
     }
 
     public function setIcon(string $iconCssClass): self

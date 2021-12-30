@@ -2,8 +2,8 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Provider;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
-use EasyCorp\Bundle\EasyAdminBundle\EasyAdminBundle;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
@@ -24,6 +24,6 @@ final class AdminContextProvider
     {
         $currentRequest = $this->requestStack->getCurrentRequest();
 
-        return null !== $currentRequest ? $currentRequest->get(EasyAdminBundle::CONTEXT_ATTRIBUTE_NAME) : null;
+        return null !== $currentRequest ? $currentRequest->get(EA::CONTEXT_REQUEST_ATTRIBUTE) : null;
     }
 }

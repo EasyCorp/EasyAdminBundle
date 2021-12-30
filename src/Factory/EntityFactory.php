@@ -92,6 +92,18 @@ final class EntityFactory
         return EntityCollection::new($entityDtos);
     }
 
+    public function getEntityMetadata(string $entityFqcn): ClassMetadata
+    {
+        $entityManager = $this->getEntityManager($entityFqcn);
+        $entityMetadata = $entityManager->getClassMetadata($entityFqcn);
+
+        if (1 !== \count($entityMetadata->getIdentifierFieldNames())) {
+            throw new \RuntimeException(sprintf('EasyAdmin does not support Doctrine entities with composite primary keys (such as the ones used in the "%s" entity).', $entityFqcn));
+        }
+
+        return $entityMetadata;
+    }
+
     private function doCreate(?string $entityFqcn = null, $entityId = null, ?string $entityPermission = null, $entityInstance = null): EntityDto
     {
         if (null === $entityInstance && null !== $entityFqcn) {
@@ -125,18 +137,6 @@ final class EntityFactory
         }
 
         return $entityManager;
-    }
-
-    private function getEntityMetadata(string $entityFqcn): ClassMetadata
-    {
-        $entityManager = $this->getEntityManager($entityFqcn);
-        $entityMetadata = $entityManager->getClassMetadata($entityFqcn);
-
-        if (1 !== \count($entityMetadata->getIdentifierFieldNames())) {
-            throw new \RuntimeException(sprintf('EasyAdmin does not support Doctrine entities with composite primary keys (such as the ones used in the "%s" entity).', $entityFqcn));
-        }
-
-        return $entityMetadata;
     }
 
     /**

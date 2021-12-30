@@ -15,17 +15,21 @@ final class SlugField implements FieldInterface
     public const OPTION_TARGET_FIELD_NAME = 'targetFieldName';
     public const OPTION_UNLOCK_CONFIRMATION_MESSAGE = 'unlockConfirmationMessage';
 
-    public static function new(string $propertyName, ?string $label = null): self
+    /**
+     * @param string|false|null $label
+     */
+    public static function new(string $propertyName, $label = null): self
     {
         return (new self())
             ->setProperty($propertyName)
             ->setLabel($label)
             ->setTemplateName('crud/field/text')
             ->setFormType(SlugType::class)
-            ->setCustomOption(self::OPTION_TARGET_FIELD_NAME, null)
-            ->setCustomOption(self::OPTION_UNLOCK_CONFIRMATION_MESSAGE, null)
             ->addCssClass('field-text')
             ->addJsFiles('bundles/easyadmin/form-type-slug.js')
+            ->setDefaultColumns('col-md-6 col-xxl-5')
+            ->setCustomOption(self::OPTION_TARGET_FIELD_NAME, null)
+            ->setCustomOption(self::OPTION_UNLOCK_CONFIRMATION_MESSAGE, null)
         ;
     }
 

@@ -1,13 +1,9 @@
-@import "./easyadmin-theme/variables.css";
-@import "./easyadmin-theme/variables.scss";
+@import "./easyadmin-theme/variables-theme.scss";
+@import "./easyadmin-theme/variables-bootstrap.scss";
 
 @import "~bootstrap/scss/bootstrap";
 
 @import "~@fortawesome/fontawesome-free/css/all.css";
 @import "~@fortawesome/fontawesome-free/css/v4-shims.css";
-
-@import "~featherlight/src/featherlight.css";
-@import "~select2/dist/css/select2.css";
-@import "~select2-bootstrap-theme/dist/select2-bootstrap.css";
 
 @import "./easyadmin-theme/theme.scss";

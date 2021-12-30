@@ -13,14 +13,7 @@ final class FlattenException extends BaseFlattenException
     /** @var ExceptionContext */
     private $context;
 
-    /**
-     * @param int $statusCode
-     *
-     * @return FlattenException
-     *
-     * @throws \RuntimeException
-     */
-    public static function create(\Exception $exception, $statusCode = null, array $headers = []): BaseFlattenException
+    public static function create(\Exception $exception, ?int $statusCode = null, array $headers = []): static
     {
         if (!$exception instanceof BaseException) {
             throw new \RuntimeException(sprintf('You should only try to create an instance of "%s" with a "EasyCorp\Bundle\EasyAdminBundle\Exception\BaseException" instance, or subclass. "%s" given.', __CLASS__, \get_class($exception)));
@@ -33,22 +26,22 @@ final class FlattenException extends BaseFlattenException
         return $e;
     }
 
-    public function getPublicMessage()
+    public function getPublicMessage(): string
     {
         return $this->context->getPublicMessage();
     }
 
-    public function getDebugMessage()
+    public function getDebugMessage(): string
     {
         return $this->context->getDebugMessage();
     }
 
-    public function getParameters()
+    public function getParameters(): array
     {
         return $this->context->getParameters();
     }
 
-    public function getTranslationParameters()
+    public function getTranslationParameters(): array
     {
         return $this->context->getTranslationParameters();
     }

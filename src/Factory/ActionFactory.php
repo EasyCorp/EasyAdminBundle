@@ -47,12 +47,21 @@ final class ActionFactory
                 continue;
             }
 
-            if (false === $this->authChecker->isGranted(Permission::EA_EXECUTE_ACTION, $actionDto)) {
+            if (false === $this->authChecker->isGranted(Permission::EA_EXECUTE_ACTION, ['action' => $actionDto, 'entity' => $entityDto])) {
                 continue;
             }
 
             if (false === $actionDto->shouldBeDisplayedFor($entityDto)) {
                 continue;
+            }
+
+            if ('' === $actionDto->getCssClass()) {
+                $defaultCssClass = 'action-'.$actionDto->getName();
+                if (Crud::PAGE_INDEX !== $currentPage) {
+                    $defaultCssClass .= ' btn';
+                }
+
+                $actionDto->setCssClass($defaultCssClass);
             }
 
             $entityActions[] = $this->processAction($currentPage, $actionDto, $entityDto);
@@ -74,12 +83,16 @@ final class ActionFactory
                 continue;
             }
 
-            if (false === $this->authChecker->isGranted(Permission::EA_EXECUTE_ACTION, $actionDto)) {
+            if (false === $this->authChecker->isGranted(Permission::EA_EXECUTE_ACTION, ['action' => $actionDto, 'entity' => null])) {
                 continue;
             }
 
             if (Crud::PAGE_INDEX !== $currentPage && $actionDto->isBatchAction()) {
                 throw new \RuntimeException(sprintf('Batch actions can be added only to the "index" page, but the "%s" batch action is defined in the "%s" page.', $actionDto->getName(), $currentPage));
+            }
+
+            if ('' === $actionDto->getCssClass()) {
+                $actionDto->setCssClass('btn action-'.$actionDto->getName());
             }
 
             $globalActions[] = $this->processAction($currentPage, $actionDto);
@@ -102,7 +115,7 @@ final class ActionFactory
         } else {
             $uLabel = u($actionDto->getLabel());
             // labels with this prefix are considered internal and must be translated
-            // with 'EasyAdminBundle' translation domain, regardlesss of the backend domain
+            // with 'EasyAdminBundle' translation domain, regardless of the backend domain
             if ($uLabel->startsWith('__ea__')) {
                 $uLabel = $uLabel->after('__ea__');
                 $translationDomain = 'EasyAdminBundle';
@@ -126,15 +139,15 @@ final class ActionFactory
         if (Action::DELETE === $actionDto->getName()) {
             $actionDto->addHtmlAttributes([
                 'formaction' => $this->adminUrlGenerator->setAction(Action::DELETE)->setEntityId($entityDto->getPrimaryKeyValue())->removeReferrer()->generateUrl(),
-                'data-toggle' => 'modal',
-                'data-target' => '#modal-delete',
+                'data-bs-toggle' => 'modal',
+                'data-bs-target' => '#modal-delete',
             ]);
         }
 
         if ($actionDto->isBatchAction()) {
             $actionDto->addHtmlAttributes([
-                'data-toggle' => 'modal',
-                'data-target' => '#modal-batch-action',
+                'data-bs-toggle' => 'modal',
+                'data-bs-target' => '#modal-batch-action',
                 'data-action-csrf-token' => $this->csrfTokenManager->getToken('ea-batch-action-'.$actionDto->getName()),
                 'data-action-batch' => 'true',
                 'data-entity-fqcn' => $adminContext->getCrud()->getEntityFqcn(),
@@ -149,7 +162,7 @@ final class ActionFactory
     {
         if (null !== $url = $actionDto->getUrl()) {
             if (\is_callable($url)) {
-                return $url($entityDto->getInstance());
+                return null !== $entityDto ? $url($entityDto->getInstance()) : $url();
             }
 
             return $url;
@@ -170,7 +183,7 @@ final class ActionFactory
             EA::REFERRER => $this->generateReferrerUrl($request, $actionDto, $currentAction),
         ];
 
-        if (\in_array($actionDto->getName(), [Action::INDEX, Action::NEW], true)) {
+        if (\in_array($actionDto->getName(), [Action::INDEX, Action::NEW, Action::SAVE_AND_ADD_ANOTHER, Action::SAVE_AND_RETURN], true)) {
             $requestParameters[EA::ENTITY_ID] = null;
         } elseif (null !== $entityDto) {
             $requestParameters[EA::ENTITY_ID] = $entityDto->getPrimaryKeyValueAsString();
@@ -181,7 +194,7 @@ final class ActionFactory
             function ($k) { return !\in_array($k, (new \ReflectionClass(EA::class))->getConstants()); }
         );
 
-        return $this->adminUrlGenerator->unsetAllExcept(EA::MENU_INDEX, EA::SUBMENU_INDEX, EA::FILTERS, ...$customParameters)->setAll($requestParameters)->generateUrl();
+        return $this->adminUrlGenerator->unsetAllExcept(EA::MENU_INDEX, EA::SUBMENU_INDEX, EA::FILTERS, EA::PAGE, ...$customParameters)->setAll($requestParameters)->generateUrl();
     }
 
     private function generateReferrerUrl(Request $request, ActionDto $actionDto, string $currentAction): ?string
@@ -202,8 +215,8 @@ final class ActionFactory
             return null;
         }
 
-        $referrer = $request->get(EA::REFERRER);
-        $referrerParts = parse_url($referrer);
+        $referrer = $request->query->get(EA::REFERRER);
+        $referrerParts = parse_url((string) $referrer);
         parse_str($referrerParts[EA::QUERY] ?? '', $referrerQueryStringVariables);
         $referrerCrudAction = $referrerQueryStringVariables[EA::CRUD_ACTION] ?? null;
 

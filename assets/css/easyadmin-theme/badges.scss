@@ -9,9 +9,16 @@
   border-radius: 20px;
   font-size: var(--font-size-xs);
   line-height: 16px;
-  padding: 2px 8px;
+  padding: 1px 6px;
 }
 
+.badge {
+  border-radius: var(--border-radius);
+  color: var(--text-color);
+  font-size: var(--font-size-xs);
+  line-height: 16px;
+  padding: 1px 5px;
+}
 .badge.badge-success {
   background-color: var(--green-100);
   color: var(--text-green-600);
@@ -33,8 +40,8 @@
   color: var(--text-indigo-600);
 }
 .badge.badge-secondary {
-  background-color: var(--gray-300);
-  color: var(--text-color);
+  background-color: var(--gray-200);
+  color: var(--gray-600);
 }
 .badge.badge-light {
   background-color: var(--gray-50);

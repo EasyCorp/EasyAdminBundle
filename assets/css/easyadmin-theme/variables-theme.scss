@@ -1,0 +1,178 @@
+/* ----------------------------------------------------------------------------
+   This file defines the CSS variables used in the backend design.
+   Most of the times, overriding some of these variables is all you need to
+   customize the design of your backends. However, because of how Bootstrap 3
+   works, some styles can't be customized with CSS variables and you'll need
+   to also customize the Sass variables defined in bootstrap-variables.scss.
+ --------------------------------------------------------------------------- */
+@import "./color-palette.scss";
+
+:root {
+    --font-family-sans-serif: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    --font-family-base: var(--font-family-sans-serif);
+
+    --font-size-xs: 12px;
+    --font-size-sm: 13px;
+    --font-size-base: 14px;
+    --font-size-lg: 16px;
+    --font-size-xl: 18px;
+    --font-size-xxl: 24px;
+    --font-size-xxxl: 28px;
+
+    --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+    --width-sm: 576px;
+    --width-md: 768px;
+    --width-lg: 992px;
+    --width-xl: 1200px;
+    --width-xxl: 1400px;
+
+    --body-max-width: 1440px;
+    --body-bg: var(--white);
+    --responsive-header-bg: var(--gray-50);
+    --responsive-header-border-color: var(--gray-200);
+    --responsive-header-logo-color: var(--gray-800);
+    --responsive-table-label-color: var(--gray-500);
+    --responsive-table-row-border-color: var(--gray-300);
+    --sidebar-max-width: 230px;
+    --sidebar-bg: var(--gray-50);
+    --sidebar-border-color: var(--gray-200);
+    --sidebar-logo-color: var(--gray-800);
+    --sidebar-padding-left: 20px;
+    --sidebar-padding-right: 10px;
+    --sidebar-menu-color: var(--gray-700);
+    --sidebar-menu-submenu-color: var(--gray-600);
+    --sidebar-menu-header-color: var(--gray-400);
+    --sidebar-menu-icon-color: var(--gray-500);
+    --sidebar-menu-active-item-color: var(--color-primary);
+    --sidebar-menu-active-item-border-color: var(--indigo-200);
+    --resize-handler-width: 10px;
+    --resize-handler-hover-bg: var(--indigo-600);
+    --content-top-border-color: var(--gray-200);
+    --content-bg: var(--white);
+    --content-padding-left: 15px;
+    --content-padding-right: 15px;
+    --lg-content-padding-left: 35px;
+    --lg-content-padding-right: 25px;
+    --user-avatar-icon-bg: var(--gray-200);
+    --user-avatar-icon-color: var(--gray-500);
+    --user-name-color: var(--gray-500);
+    --user-menu-impersonated-link-color: var(--color-primary);
+    --dropdown-toggle-color: var(--gray-600);
+    --dropdown-toggle-border-color: var(--gray-300);
+    --dropdown-toggle-hover-border-color: var(--gray-400);
+    --dropdown-border-color: var(--gray-200);
+    --dropdown-link-color: var(--gray-700);
+    --dropdown-icon-color: var(--gray-500);
+    --table-thead-color: var(--gray-800);
+    --table-cell-color: var(--gray-600);
+    --table-thead-marker-color: var(--gray-400);
+    --table-cell-border-color: var(--gray-200);
+    --table-hover-cell-bg: var(--gray-50);
+    --table-selected-cell-bg: var(--indigo-50);
+    --table-thead-sorted-color: var(--gray-900);
+    --table-thead-sorted-marker-color: var(--color-primary);
+    --datalist-border-color: var(--gray-200);
+    --datalist-label-color: var(--gray-500);
+    --datalist-value-color: var(--gray-600);
+    --pagination-color: var(--gray-600);
+    --modal-bg: hsl(210, 45%, 98%);
+    --form-label-color: var(--gray-800);
+    --form-input-border-color: var(--gray-300);
+    --form-input-hover-border-color: var(--gray-400);
+    --form-input-shadow: 0 1px 2px 0 var(--gray-50);
+    --form-input-hover-shadow: 0 0 0 4px var(--gray-100);
+    --form-input-text-color: var(--gray-700);
+    --form-input-group-bg: hsl(210, 45%, 98%);
+    --form-help-color: var(--gray-600);
+    --form-help-active-color: var(--gray-800);
+    --form-tabs-border-color: var(--gray-200);
+    --form-panel-help-color: var(--gray-600);
+    --form-panel-header-border-color: var(--gray-400);
+    --form-panel-icon-color: var(--gray-500);
+    --form-panel-collapse-marker-color: var(--gray-400);
+    --form-collection-item-collapse-marker-color: var(--gray-400);
+    --button-color: var(--gray-700);
+    --button-hover-color: var(--gray-800);
+    --button-active-color: var(--gray-800);
+    --button-border-color: var(--gray-300);
+    --button-hover-border-color: var(--gray-300);
+    --button-shadow:
+        /* border */
+        0 0 0 1px var(--gray-300),
+        /* drop shadow md (--gray-900) */
+        0 1px 1px 0 hsla(222, 47%, 11%, 0.1),
+        /* drop shadow lg (--gray-700) */
+        0 2px 5px 0 hsla(215, 25%, 27%, 0.1);
+    --button-hover-shadow:
+        /* border */
+        0 0 0 1px var(--gray-300),
+        /* drop shadow md (--gray-900) */
+        0 1px 1px 0 hsla(222, 47%, 11%, 0.1),
+        /* drop shadow lg (--gray-700) */
+        0 2px 5px 0 hsla(215, 25%, 27%, 0.1),
+        /* drop shadow xl (--gray-700) */
+        0 3px 9px 0 hsla(215, 25%, 27%, 0.1);
+    --button-active-shadow:
+        /* border */
+        0 0 0 1px var(--gray-300),
+        /* ring */
+        0 0 0 4px var(--gray-200),
+        /* drop shadow md (--gray-900) */
+        0 1px 1px 0 hsla(222, 47%, 11%, 0.1),
+        /* drop shadow lg (--gray-700) */
+        0 2px 5px 0 hsla(215, 25%, 27%, 0.1),
+        /* drop shadow xl (--gray-700) */
+        0 3px 9px 0 hsla(215, 25%, 27%, 0.1);
+    --button-active-primary-shadow:
+        /* border */
+        0 0 0 1px var(--gray-300),
+        /* ring */
+        0 0 0 4px var(--indigo-200),
+        /* drop shadow md (--gray-900) */
+        0 1px 1px 0 hsla(222, 47%, 11%, 0.1),
+        /* drop shadow lg (--gray-700) */
+        0 2px 5px 0 hsla(215, 25%, 27%, 0.1),
+        /* drop shadow xl (--gray-700) */
+        0 3px 9px 0 hsla(215, 25%, 27%, 0.1);
+    --text-color: var(--gray-800);
+    --text-color-dark: hsl(229, 24%, 21%);
+    --text-color-light: hsl(215, 14%, 67%);
+    --box-shadow-lg: 0 10px 15px -3px hsla(222, 47%, 11%, 0.1), 0 4px 6px -2px hsla(222, 47%, 11%, 0.05); // it uses --gray-900
+    --content-panel-bg: hsl(210, 45%, 98%);
+    --fieldset-bg: hsl(210, 30%, 97%);
+
+    --page-login-bg: var(--gray-100);
+
+    --zindex-700: 777;
+    --zindex-800: 888;
+    --zindex-900: 999;
+    --zindex-1050: 1050;
+
+    --text-blue-600: hsl(206, 91%, 30%);
+    --text-green-600: hsl(159, 75%, 21%);
+    --text-indigo-600: hsl(231, 48%, 45%);
+    --text-red-600: hsl(338, 71%, 37%);
+    --text-yellow-600: hsl(20, 94%, 30%);
+
+    --color-primary: hsl(230, 61%, 58%); // custom shade between indigo-400 and indigo-500
+    --color-success: hsl(157, 69%, 38%);
+    --color-info: hsl(201, 94%, 37%);
+    --color-warning: hsl(30, 81%, 47%);
+    --color-danger: var(--red-600);
+
+    --highlight-bg: rgba(255, 237, 40, .4);
+
+    --text-on-primary: var(--white);
+    --text-muted: var(--gray-500);
+
+    --link-color: hsl(230, 60%, 60%);
+    --link-hover-color: hsl(230, 60%, 75%);
+    --link-hover-decoration: none;
+
+    --border-radius: 4px;
+    --border-width: 1px;
+    --border-style: solid;
+    --border-color: hsl(213, 24%, 91%);
+}

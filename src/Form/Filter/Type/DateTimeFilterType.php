@@ -24,9 +24,6 @@ class DateTimeFilterType extends AbstractType
         $this->valueType = $valueType ?: DateTimeType::class;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('value2', $options['value_type'], $options['value_type_options'] + [
@@ -34,7 +31,9 @@ class DateTimeFilterType extends AbstractType
         ]);
 
         $builder->addModelTransformer(new CallbackTransformer(
-            static function ($data) { return $data; },
+            static function ($data) {
+                return $data;
+            },
             static function ($data) use ($options) {
                 if (ComparisonType::BETWEEN === $data['comparison']) {
                     if (null === $data['value'] || '' === $data['value'] || null === $data['value2'] || '' === $data['value2']) {
@@ -68,9 +67,6 @@ class DateTimeFilterType extends AbstractType
         ));
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
@@ -82,17 +78,11 @@ class DateTimeFilterType extends AbstractType
         ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getBlockPrefix(): string
     {
         return 'ea_datetime_filter';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getParent(): string
     {
         return ComparisonFilterType::class;

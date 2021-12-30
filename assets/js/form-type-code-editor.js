@@ -16,22 +16,24 @@ import 'codemirror/mode/yaml-frontmatter/yaml-frontmatter';
 import 'codemirror/mode/yaml/yaml';
 import 'codemirror/addon/display/autorefresh';
 
-document.querySelectorAll('[data-ea-code-editor-field]').forEach(function(codeBlock) {
-    const editor = CodeMirror.fromTextArea(codeBlock, {
-        autocapitalize: false,
-        autocorrect: false,
-        indentWithTabs: codeBlock.dataset.indentWithTabs === 'true',
-        lineNumbers: codeBlock.dataset.showLineNumbers === 'true',
-        lineWrapping: true,
-        mode: codeBlock.dataset.language,
-        scrollbarStyle: 'native',
-        spellcheck: false,
-        tabSize: codeBlock.dataset.tabSize,
-        theme: 'default',
-        autoRefresh: true,
-    });
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('[data-ea-code-editor-field]').forEach((codeBlock) => {
+        const editor = CodeMirror.fromTextArea(codeBlock, {
+            autocapitalize: false,
+            autocorrect: false,
+            indentWithTabs: codeBlock.dataset.indentWithTabs === 'true',
+            lineNumbers: codeBlock.dataset.showLineNumbers === 'true',
+            lineWrapping: true,
+            mode: codeBlock.dataset.language,
+            scrollbarStyle: 'native',
+            spellcheck: false,
+            tabSize: codeBlock.dataset.tabSize,
+            theme: 'default',
+            autoRefresh: true,
+        });
 
-    if (codeBlock.required) {
-        editor.on('change', editor.save);
-    }
+        if (codeBlock.required) {
+            editor.on('change', editor.save);
+        }
+    });
 });

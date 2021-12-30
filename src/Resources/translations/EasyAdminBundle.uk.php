@@ -3,8 +3,8 @@
 return [
     'page_title' => [
         'dashboard' => 'Дешборд',
-        'detail' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
-        'edit' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
+        'detail' => '%entity_as_string%',
+        'edit' => '%entity_label_singular%',
         'index' => '%entity_label_plural%',
         'new' => 'Створити новий %entity_label_singular%',
         'exception' => 'Помилка|Помилки',
@@ -116,6 +116,8 @@ return [
         'username' => 'Логін',
         'password' => 'Пароль',
         'sign_in' => 'Увійти',
+        'forgot_password' => 'Забули Пароль?',
+        'remember_me' => 'Запам\'ятати Мене',
     ],
 
     'exception' => [
@@ -123,5 +125,11 @@ return [
         'entity_remove' => 'Цей елемент не можна видалити, оскільки від нього залежать інші елементи.',
         'forbidden_action' => 'Дія не може бути виконана над цим елементом.',
         'insufficient_entity_permission' => 'У вас немає дозволу на доступ до цього елемента.',
+    ],
+
+    'autocomplete' => [
+        'no-results-found' => 'Нічого не знайдено',
+        // 'no-more-results' => 'No more results',
+        'loading-more-results' => 'Завантаження інших результатів…',
     ],
 ];

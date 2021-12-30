@@ -3,8 +3,8 @@
 return [
     'page_title' => [
         'dashboard' => 'Úvod',
-        'detail' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
-        'edit' => 'Edit %entity_label_singular% <small>(#%entity_short_id%)</small>',
+        'detail' => '%entity_as_string%',
+        'edit' => 'Edit %entity_label_singular%',
         'index' => '%entity_label_plural%',
         'new' => 'Vytvořit %entity_label_singular%',
         'exception' => 'Chyba|Chyby',
@@ -115,6 +115,8 @@ return [
         'username' => 'Login',
         'password' => 'Heslo',
         'sign_in' => 'Přihlásit',
+        'forgot_password' => 'Zapomněli jste heslo?',
+        'remember_me' => 'Pamatuj si mě',
     ],
 
     'exception' => [
@@ -122,5 +124,11 @@ return [
         'entity_remove' => 'Tato položka nemůže být smazána, neboť na ní závisí ostatní položky.',
         'forbidden_action' => 'Požadovaná akce nemůže být provedena na této položce.',
         'insufficient_entity_permission' => 'Nemáte dostatečná oprávnění pro přístup k této položce.',
+    ],
+
+    'autocomplete' => [
+        'no-results-found' => 'Nenalezeny žádné položky',
+        // 'no-more-results' => 'No more results',
+        'loading-more-results' => 'Načítají se další výsledky…',
     ],
 ];

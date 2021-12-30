@@ -17,6 +17,7 @@ final class DashboardDto
     private $contentWidth;
     private $sidebarWidth;
     private $signedUrls;
+    private $absoluteUrls;
 
     public function __construct()
     {
@@ -26,6 +27,7 @@ final class DashboardDto
         $this->contentWidth = Crud::LAYOUT_CONTENT_DEFAULT;
         $this->sidebarWidth = Crud::LAYOUT_SIDEBAR_DEFAULT;
         $this->signedUrls = true;
+        $this->absoluteUrls = true;
     }
 
     public function getRouteName(): string
@@ -106,6 +108,18 @@ final class DashboardDto
     public function setSignedUrls(bool $signedUrls): self
     {
         $this->signedUrls = $signedUrls;
+
+        return $this;
+    }
+
+    public function getAbsoluteUrls(): bool
+    {
+        return $this->absoluteUrls;
+    }
+
+    public function setAbsoluteUrls(bool $absoluteUrls): self
+    {
+        $this->absoluteUrls = $absoluteUrls;
 
         return $this;
     }

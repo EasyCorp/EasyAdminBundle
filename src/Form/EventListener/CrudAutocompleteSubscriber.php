@@ -12,9 +12,6 @@ use Symfony\Component\Form\FormEvents;
  */
 class CrudAutocompleteSubscriber implements EventSubscriberInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public static function getSubscribedEvents()
     {
         return [

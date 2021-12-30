@@ -3,8 +3,8 @@
 return [
     'page_title' => [
         'dashboard' => 'لوحة التحكم',
-        'detail' => '<small>(#%entity_short_id%)</small> %entity_label_singular%',
-        'edit' => '<small>(#%entity_short_id%)</small> %entity_label_singular% تعديل',
+        'detail' => '%entity_as_string%',
+        'edit' => '%entity_label_singular% تعديل',
         'index' => '%entity_label_plural%',
         'new' => '"%entity_label_singular%" جديد',
         'exception' => '{1} خطأ|{2} خطأن|]2,Inf] أخطاء ',
@@ -115,6 +115,8 @@ return [
         'username' => 'إسم المستخدم',
         'password' => 'كلمة السّر',
         'sign_in' => 'تسجيل الدخول',
+        'forgot_password' => 'نسيت كلمة المرور الخاصة بك ؟ ',
+        'remember_me' => 'تذكرنى',
     ],
 
     'exception' => [
@@ -122,5 +124,11 @@ return [
         'entity_remove' => 'لا يمكنك حذف هذا العنصر لأن العناصر الأخرى تعتمد عليه.',
         'forbidden_action' => 'لا يمكنك تنفيذ الإجراء المطلوب على هذا العنصر.',
         'insufficient_entity_permission' => 'أنت لا تملك صلاحيات كافية للوصول الى هذا العنصر',
+    ],
+
+    'autocomplete' => [
+        'no-results-found' => 'لم يتم العثور على أي نتائج',
+        // 'no-more-results' => 'No more results',
+        'loading-more-results' => 'جاري تحميل نتائج إضافية…',
     ],
 ];

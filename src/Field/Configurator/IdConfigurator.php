@@ -28,7 +28,7 @@ final class IdConfigurator implements FieldConfiguratorInterface
         }
 
         if (-1 !== $maxLength && null !== $field->getValue()) {
-            $field->setFormattedValue(u($field->getValue())->truncate($maxLength, '…'));
+            $field->setFormattedValue(u($field->getValue())->truncate($maxLength, '…')->toString());
         }
     }
 }

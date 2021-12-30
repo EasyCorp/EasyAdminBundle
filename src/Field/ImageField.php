@@ -17,7 +17,10 @@ final class ImageField implements FieldInterface
     public const OPTION_UPLOAD_DIR = 'uploadDir';
     public const OPTION_UPLOADED_FILE_NAME_PATTERN = 'uploadedFileNamePattern';
 
-    public static function new(string $propertyName, ?string $label = null): self
+    /**
+     * @param string|false|null $label
+     */
+    public static function new(string $propertyName, $label = null): self
     {
         return (new self())
             ->setProperty($propertyName)
@@ -25,6 +28,7 @@ final class ImageField implements FieldInterface
             ->setTemplateName('crud/field/image')
             ->setFormType(FileUploadType::class)
             ->addCssClass('field-image')
+            ->setDefaultColumns('col-md-7 col-xxl-5')
             ->setTextAlign(TextAlign::CENTER)
             ->setCustomOption(self::OPTION_BASE_PATH, null)
             ->setCustomOption(self::OPTION_UPLOAD_DIR, null)

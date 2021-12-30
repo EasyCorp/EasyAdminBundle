@@ -24,7 +24,7 @@ class Crud
     /** @var CrudDto */
     private $dto;
 
-    private $paginatorPageSize = 15;
+    private $paginatorPageSize = 20;
     private $paginatorRangeSize = 3;
     private $paginatorFetchJoinCollection = true;
     private $paginatorUseOutputWalkers;
@@ -42,7 +42,7 @@ class Crud
     }
 
     /**
-     * @param string|callable $label The callable signature is: fn ($entityInstance, string $pageName): string
+     * @param string|callable $label The callable signature is: fn ($entityInstance, $pageName): string
      */
     public function setEntityLabelInSingular($label): self
     {
@@ -52,7 +52,7 @@ class Crud
     }
 
     /**
-     * @param string|callable $label The callable signature is: fn ($entityInstance, string $pageName): string
+     * @param string|callable $label The callable signature is: fn ($entityInstance, $pageName): string
      */
     public function setEntityLabelInPlural($label): self
     {
@@ -87,7 +87,7 @@ class Crud
     }
 
     /**
-     * @param string $formatOrPattern A format name ('short', 'medium', 'long', 'full') or a valid ICU Datetime Pattern (see http://userguide.icu-project.org/formatparse/datetime)
+     * @param string $formatOrPattern A format name ('short', 'medium', 'long', 'full') or a valid ICU Datetime Pattern (see https://unicode-org.github.io/icu/userguide/format_parse/datetime/)
      */
     public function setDateFormat(string $formatOrPattern): self
     {
@@ -106,7 +106,7 @@ class Crud
     }
 
     /**
-     * @param string $formatOrPattern A format name ('short', 'medium', 'long', 'full') or a valid ICU Datetime Pattern (see http://userguide.icu-project.org/formatparse/datetime)
+     * @param string $formatOrPattern A format name ('short', 'medium', 'long', 'full') or a valid ICU Datetime Pattern (see https://unicode-org.github.io/icu/userguide/format_parse/datetime/)
      */
     public function setTimeFormat(string $formatOrPattern): self
     {
@@ -125,7 +125,7 @@ class Crud
     }
 
     /**
-     * @param string $dateFormatOrPattern A format name ('none', 'short', 'medium', 'long', 'full') or a valid ICU Datetime Pattern (see http://userguide.icu-project.org/formatparse/datetime)
+     * @param string $dateFormatOrPattern A format name ('none', 'short', 'medium', 'long', 'full') or a valid ICU Datetime Pattern (see https://unicode-org.github.io/icu/userguide/format_parse/datetime/)
      * @param string $timeFormat          A format name ('none', 'short', 'medium', 'long', 'full')
      */
     public function setDateTimeFormat(string $dateFormatOrPattern, string $timeFormat = DateTimeField::FORMAT_NONE): self
@@ -217,7 +217,16 @@ class Crud
 
     public function showEntityActionsAsDropdown(bool $showAsDropdown = true): self
     {
+        trigger_deprecation('easycorp/easyadmin-bundle', '3.5.0', 'The "%s" method is deprecated because the default behavior changed to render entity actions as dropdown. Use "showEntityActionsInlined()" method if you want to revert this change.', __METHOD__);
+
         $this->dto->setShowEntityActionsAsDropdown($showAsDropdown);
+
+        return $this;
+    }
+
+    public function showEntityActionsInlined(bool $showInlined = true): self
+    {
+        $this->dto->setShowEntityActionsAsDropdown(!$showInlined);
 
         return $this;
     }
@@ -286,10 +295,8 @@ class Crud
 
     public function addFormTheme(string $themePath): self
     {
-        // custom form themes are added first to give them more priority
-        $formThemes = $this->dto->getFormThemes();
-        array_unshift($formThemes, $themePath);
-        $this->dto->setFormThemes($formThemes);
+        // custom form themes are added last to give them more priority
+        $this->dto->setFormThemes(array_merge($this->dto->getFormThemes(), [$themePath]));
 
         return $this;
     }

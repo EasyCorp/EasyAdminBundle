@@ -3,8 +3,8 @@
 return [
     'page_title' => [
         'dashboard' => 'Kontrol Paneli',
-        'detail' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
-        'edit' => '%entity_label_singular% <small>(#%entity_short_id%)</small> Düzenle',
+        'detail' => '%entity_as_string%',
+        'edit' => '%entity_label_singular% Düzenle',
         'index' => '%entity_label_plural%',
         'new' => 'Oluştur : %entity_label_singular%',
         'exception' => 'Hata|Hatalar',
@@ -115,6 +115,8 @@ return [
         'username' => 'Kullanıcı adı',
         'password' => 'Şifre',
         'sign_in' => 'Giriş yap',
+        'forgot_password' => 'Parolanızı mı unuttunuz?',
+        'remember_me' => 'Beni hatırla',
     ],
 
     'exception' => [
@@ -122,5 +124,11 @@ return [
         'entity_remove' => 'Diğer öğeler buna bağlı olduğu için bu öğe silinemiyor.',
         'forbidden_action' => 'İstenen eylem bu öğe üzerinde gerçekleştirilemez.',
         'insufficient_entity_permission' => 'Bu öğeye erişim izniniz yok.',
+    ],
+
+    'autocomplete' => [
+        'no-results-found' => 'Sonuç bulunamadı',
+        // 'no-more-results' => 'No more results',
+        'loading-more-results' => 'Daha fazla…',
     ],
 ];

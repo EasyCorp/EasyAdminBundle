@@ -3,7 +3,7 @@
     <input type="hidden" name="token" value="{{ csrf_token('ea-delete') }}" />
 </form>
 
-<div id="modal-delete" class="modal fade">
+<div id="modal-delete" class="modal fade" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body">
@@ -11,11 +11,11 @@
                 <p>{{ 'delete_modal.content'|trans([], 'EasyAdminBundle') }}</p>
             </div>
             <div class="modal-footer">
-                <button type="button" data-dismiss="modal" class="btn btn-secondary">
+                <button type="button" data-bs-dismiss="modal" class="btn btn-secondary">
                     <span class="btn-label">{{ 'action.cancel'|trans([], 'EasyAdminBundle') }}</span>
                 </button>
 
-                <button type="button" data-dismiss="modal" class="btn btn-danger" id="modal-delete-button" form="delete-form">
+                <button type="button" data-bs-dismiss="modal" class="btn btn-danger" id="modal-delete-button" form="delete-form">
                     <span class="btn-label">{{ 'action.delete'|trans([], 'EasyAdminBundle') }}</span>
                 </button>
             </div>

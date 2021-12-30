@@ -23,7 +23,7 @@ final class AvatarConfigurator implements FieldConfiguratorInterface
     {
         if (null === $field->getCustomOption(AvatarField::OPTION_HEIGHT)) {
             $isDetailAction = Action::DETAIL === $context->getCrud()->getCurrentAction();
-            $field->setCustomOption(AvatarField::OPTION_HEIGHT, $isDetailAction ? 48 : 28);
+            $field->setCustomOption(AvatarField::OPTION_HEIGHT, $isDetailAction ? 48 : 24);
         }
 
         if ($field->getCustomOption(AvatarField::OPTION_IS_GRAVATAR_EMAIL)) {

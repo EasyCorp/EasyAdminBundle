@@ -14,7 +14,10 @@ final class TextEditorField implements FieldInterface
 
     public const OPTION_NUM_OF_ROWS = 'numOfRows';
 
-    public static function new(string $propertyName, ?string $label = null): self
+    /**
+     * @param string|false|null $label
+     */
+    public static function new(string $propertyName, $label = null): self
     {
         return (new self())
             ->setProperty($propertyName)
@@ -24,6 +27,7 @@ final class TextEditorField implements FieldInterface
             ->addCssClass('field-text_editor')
             ->addCssFiles('bundles/easyadmin/form-type-text-editor.css')
             ->addJsFiles('bundles/easyadmin/form-type-text-editor.js')
+            ->setDefaultColumns('col-md-9 col-xxl-7')
             ->setCustomOption(self::OPTION_NUM_OF_ROWS, null);
     }
 

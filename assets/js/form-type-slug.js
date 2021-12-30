@@ -139,6 +139,8 @@ class Slugger {
     }
 }
 
-document.querySelectorAll('[data-ea-slug-field]').forEach(function(field) {
-    new Slugger(field);
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('[data-ea-slug-field]').forEach((field) => {
+        new Slugger(field);
+    });
 });

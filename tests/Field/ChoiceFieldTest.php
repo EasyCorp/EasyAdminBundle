@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Field;
 
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\ChoiceConfigurator;
+use Symfony\Component\HttpKernel\Kernel;
 
 class ChoiceFieldTest extends AbstractFieldTest
 {
@@ -14,7 +15,9 @@ class ChoiceFieldTest extends AbstractFieldTest
         parent::setUp();
 
         $this->choices = ['a' => 1, 'b' => 2, 'c' => 3];
-        $this->configurator = new ChoiceConfigurator(self::$container->get('translator'));
+
+        $container = Kernel::MAJOR_VERSION >= 6 ? static::getContainer() : self::$container;
+        $this->configurator = new ChoiceConfigurator($container->get('translator'));
     }
 
     public function testFieldWithoutChoices()
@@ -57,7 +60,7 @@ class ChoiceFieldTest extends AbstractFieldTest
         $field->setCustomOption(ChoiceField::OPTION_WIDGET, null);
         $fieldDto = $this->configure($field);
         self::assertSame(ChoiceField::WIDGET_NATIVE, $fieldDto->getCustomOption(ChoiceField::OPTION_WIDGET));
-        self::assertSame('select2', $fieldDto->getFormTypeOption('attr.data-widget'));
+        self::assertSame('ea-autocomplete', $fieldDto->getFormTypeOption('attr.data-ea-widget'));
     }
 
     public function testFieldFormOptions()
@@ -72,7 +75,7 @@ class ChoiceFieldTest extends AbstractFieldTest
                 'multiple' => true,
                 'expanded' => true,
                 'placeholder' => '',
-                'attr' => ['data-ea-escape-markup' => 'false'],
+                'attr' => ['data-ea-autocomplete-render-items-as-html' => 'false'],
             ],
             $this->configure($field)->getFormTypeOptions()
         );
@@ -89,21 +92,21 @@ class ChoiceFieldTest extends AbstractFieldTest
         self::assertSame('a, c', $this->configure($field)->getFormattedValue());
 
         $field->setValue(1)->renderAsBadges();
-        self::assertSame('<span class="badge badge-pill badge-secondary">a</span>', $this->configure($field)->getFormattedValue());
+        self::assertSame('<span class="badge badge-secondary">a</span>', $this->configure($field)->getFormattedValue());
 
         $field->setValue([1, 3])->renderAsBadges();
-        self::assertSame('<span class="badge badge-pill badge-secondary">a</span><span class="badge badge-pill badge-secondary">c</span>', $this->configure($field)->getFormattedValue());
+        self::assertSame('<span class="badge badge-secondary">a</span><span class="badge badge-secondary">c</span>', $this->configure($field)->getFormattedValue());
 
         $field->setValue(1)->renderAsBadges([1 => 'warning', '3' => 'danger']);
-        self::assertSame('<span class="badge badge-pill badge-warning">a</span>', $this->configure($field)->getFormattedValue());
+        self::assertSame('<span class="badge badge-warning">a</span>', $this->configure($field)->getFormattedValue());
 
         $field->setValue([1, 3])->renderAsBadges([1 => 'warning', '3' => 'danger']);
-        self::assertSame('<span class="badge badge-pill badge-warning">a</span><span class="badge badge-pill badge-danger">c</span>', $this->configure($field)->getFormattedValue());
+        self::assertSame('<span class="badge badge-warning">a</span><span class="badge badge-danger">c</span>', $this->configure($field)->getFormattedValue());
 
         $field->setValue(1)->renderAsBadges(function ($value) { return $value > 1 ? 'success' : 'primary'; });
-        self::assertSame('<span class="badge badge-pill badge-primary">a</span>', $this->configure($field)->getFormattedValue());
+        self::assertSame('<span class="badge badge-primary">a</span>', $this->configure($field)->getFormattedValue());
 
         $field->setValue([1, 3])->renderAsBadges(function ($value) { return $value > 1 ? 'success' : 'primary'; });
-        self::assertSame('<span class="badge badge-pill badge-primary">a</span><span class="badge badge-pill badge-success">c</span>', $this->configure($field)->getFormattedValue());
+        self::assertSame('<span class="badge badge-primary">a</span><span class="badge badge-success">c</span>', $this->configure($field)->getFormattedValue());
     }
 }

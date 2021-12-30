@@ -10,13 +10,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class <?= $class_name; ?> extends AbstractDashboardController
 {
-<?php if ($use_php_attributes): ?>
     #[Route('/admin', name: 'admin')]
-<?php else: ?>
-    /**
-     * @Route("/admin", name="admin")
-     */
-<?php endif; ?>
     public function index(): Response
     {
         return parent::index();
@@ -30,7 +24,7 @@ class <?= $class_name; ?> extends AbstractDashboardController
 
     public function configureMenuItems(): iterable
     {
-        yield MenuItem::linktoDashboard('Dashboard', 'fa fa-home');
+        yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
         // yield MenuItem::linkToCrud('The Label', 'fas fa-list', EntityClass::class);
     }
 }

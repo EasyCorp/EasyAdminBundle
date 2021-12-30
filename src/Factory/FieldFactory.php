@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
 use Doctrine\DBAL\Types\Types;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
@@ -18,6 +19,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TimeField;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormRowType;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -71,9 +73,17 @@ final class FieldFactory
 
         $context = $this->adminContextProvider->getContext();
         $currentPage = $context->getCrud()->getCurrentPage();
+        $isDetailOrIndex = \in_array($currentPage, [Crud::PAGE_INDEX, Crud::PAGE_DETAIL], true);
         foreach ($fields as $fieldDto) {
             if ((null !== $currentPage && false === $fieldDto->isDisplayedOn($currentPage))
                 || false === $this->authorizationChecker->isGranted(Permission::EA_VIEW_FIELD, $fieldDto)) {
+                $fields->unset($fieldDto);
+
+                continue;
+            }
+
+            // "form rows" only make sense in pages that contain forms
+            if ($isDetailOrIndex && EaFormRowType::class === $fieldDto->getFormType()) {
                 $fields->unset($fieldDto);
 
                 continue;
@@ -147,6 +157,7 @@ final class FieldFactory
         $newField->setValue($fieldDto->getValue());
         $newField->setFormattedValue($fieldDto->getFormattedValue());
         $newField->setCssClass(trim($newField->getCssClass().' '.$fieldDto->getCssClass()));
+        $newField->setColumns($fieldDto->getColumns());
         $newField->setTranslationParameters($fieldDto->getTranslationParameters());
         $newField->setAssets($newField->getAssets()->mergeWith($fieldDto->getAssets()));
 

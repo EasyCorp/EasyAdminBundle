@@ -11,7 +11,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Registry\CrudControllerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\DashboardControllerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Router\UrlSigner;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ControllerResolverInterface;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
@@ -63,44 +62,11 @@ class AdminRouterSubscriber implements EventSubscriberInterface
     {
         return [
             RequestEvent::class => [
-                ['handleLegacyEaContext', 10],
                 ['onKernelRequest', 0],
             ],
             // the priority must be higher than 0 to run it before ParamConverterListener
             ControllerEvent::class => ['onKernelController', 128],
         ];
-    }
-
-    /**
-     * It adds support to legacy EasyAdmin requests that include the EA::CONTEXT_NAME query
-     * parameter. It creates the new equivalent URL and redirects to it transparently.
-     */
-    public function handleLegacyEaContext(RequestEvent $event): void
-    {
-        $request = $event->getRequest();
-        if (null === $eaContext = $request->query->get(EA::CONTEXT_NAME)) {
-            return;
-        }
-
-        trigger_deprecation('easycorp/easyadmin-bundle', '3.2.0', 'The "%s" query parameter is deprecated and you no longer need to add it when using custom actions inside EasyAdmin. Read the UPGRADE guide at https://github.com/EasyCorp/EasyAdminBundle/blob/master/UPGRADE.md.', EA::CONTEXT_NAME);
-
-        if (null === $dashboardControllerFqcn = $this->dashboardControllerRegistry->getControllerFqcnByContextId($eaContext)) {
-            return;
-        }
-
-        $dashboardControllerRoute = $this->dashboardControllerRegistry->getRouteByControllerFqcn($dashboardControllerFqcn);
-        $request->query->remove(EA::CONTEXT_NAME);
-        $request->query->set(EA::ROUTE_NAME, $request->attributes->get('_route'));
-        $request->query->set(EA::ROUTE_PARAMS, $request->attributes->all()['_route_params'] ?? []);
-        $newUrl = $this->urlGenerator->generate($dashboardControllerRoute, $request->query->all());
-
-        $dashboardControllerInstance = $this->getDashboardControllerInstance($dashboardControllerFqcn, $request);
-        $adminContext = $this->adminContextFactory->create($request, $dashboardControllerInstance, null);
-        if ($adminContext->getSignedUrls()) {
-            $newUrl = $this->urlSigner->sign($newUrl);
-        }
-
-        $event->setResponse(new RedirectResponse($newUrl));
     }
 
     /**
@@ -150,21 +116,26 @@ class AdminRouterSubscriber implements EventSubscriberInterface
 
         // if the request is related to a CRUD controller, change the controller to be executed
         if (null !== $crudControllerInstance = $this->getCrudControllerInstance($request)) {
-            $symfonyControllerCallable = [$crudControllerInstance, $request->query->get(EA::CRUD_ACTION)];
+            $symfonyControllerFqcnCallable = [$crudControllerInstance, $request->query->get(EA::CRUD_ACTION)];
+            $symfonyControllerStringCallable = [\get_class($crudControllerInstance), $request->query->get(EA::CRUD_ACTION)];
 
             // this makes Symfony believe that another controller is being executed
             // (e.g. this is needed for the autowiring of controller action arguments)
-            $event->getRequest()->attributes->set('_controller', $symfonyControllerCallable);
+            // VERY IMPORTANT: here the Symfony controller must be passed as a string (['App\Controller\Foo', 'index'])
+            // Otherwise, the param converter of the controller method doesn't work
+            $event->getRequest()->attributes->set('_controller', $symfonyControllerStringCallable);
 
             // this actually makes Symfony to execute the other controller
-            $event->setController($symfonyControllerCallable);
+            $event->setController($symfonyControllerFqcnCallable);
         }
 
         // if the request is related to a custom action, change the controller to be executed
         if (null !== $request->query->get(EA::ROUTE_NAME)) {
             $symfonyControllerAsString = $this->getSymfonyControllerFqcn($request);
-            if (false !== $symfonyControllerCallable = $this->getSymfonyControllerInstance($symfonyControllerAsString, $request->query->all()[EA::ROUTE_PARAMS] ?? [])) {
+            $symfonyControllerCallable = $this->getSymfonyControllerInstance($symfonyControllerAsString, $request->query->all()[EA::ROUTE_PARAMS] ?? []);
+            if (false !== $symfonyControllerCallable) {
                 // this makes Symfony believe that another controller is being executed
+                // (e.g. this is needed for the autowiring of controller action arguments)
                 // VERY IMPORTANT: here the Symfony controller must be passed as a string ('App\Controller\Foo::index')
                 // Otherwise, the param converter of the controller method doesn't work
                 $event->getRequest()->attributes->set('_controller', $symfonyControllerAsString);

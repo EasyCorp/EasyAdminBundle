@@ -45,7 +45,10 @@ final class DateTimeField implements FieldInterface
     public const OPTION_TIMEZONE = 'timezone';
     public const OPTION_WIDGET = 'widget';
 
-    public static function new(string $propertyName, ?string $label = null): self
+    /**
+     * @param string|false|null $label
+     */
+    public static function new(string $propertyName, $label = null): self
     {
         return (new self())
             ->setProperty($propertyName)
@@ -53,6 +56,7 @@ final class DateTimeField implements FieldInterface
             ->setTemplateName('crud/field/datetime')
             ->setFormType(DateTimeType::class)
             ->addCssClass('field-datetime')
+            ->setDefaultColumns('col-md-6 col-xxl-5')
             // the proper default values of these options are set on the Crud class
             ->setCustomOption(self::OPTION_DATE_PATTERN, null)
             ->setCustomOption(self::OPTION_TIME_PATTERN, null)
@@ -75,7 +79,7 @@ final class DateTimeField implements FieldInterface
     }
 
     /**
-     * @param string $dateFormatOrPattern A format name ('none', 'short', 'medium', 'long', 'full') or a valid ICU Datetime Pattern (see http://userguide.icu-project.org/formatparse/datetime)
+     * @param string $dateFormatOrPattern A format name ('none', 'short', 'medium', 'long', 'full') or a valid ICU Datetime Pattern (see https://unicode-org.github.io/icu/userguide/format_parse/datetime/#formatting-dates)
      * @param string $timeFormat          A format name ('none', 'short', 'medium', 'long', 'full')
      */
     public function setFormat(string $dateFormatOrPattern, string $timeFormat = self::FORMAT_NONE): self

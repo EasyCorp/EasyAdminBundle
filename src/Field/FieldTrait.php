@@ -2,9 +2,11 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Asset;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\TextAlign;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 
 /**
@@ -34,7 +36,10 @@ trait FieldTrait
         return $this;
     }
 
-    public function setLabel(?string $label): self
+    /**
+     * @param string|false|null $label
+     */
+    public function setLabel($label): self
     {
         $this->dto->setLabel($label);
 
@@ -65,6 +70,13 @@ trait FieldTrait
     public function setVirtual(bool $isVirtual): self
     {
         $this->dto->setVirtual($isVirtual);
+
+        return $this;
+    }
+
+    public function setDisabled(bool $disabled = true): self
+    {
+        $this->dto->setFormTypeOption('disabled', $disabled);
 
         return $this;
     }
@@ -183,32 +195,65 @@ trait FieldTrait
         return $this;
     }
 
-    public function addWebpackEncoreEntries(string ...$entryNames): self
+    /**
+     * @param string|Asset $entryNamesOrAssets
+     */
+    public function addWebpackEncoreEntries(...$entryNamesOrAssets): self
     {
         if (!class_exists('Symfony\\WebpackEncoreBundle\\Twig\\EntryFilesTwigExtension')) {
-            throw new \RuntimeException('You are trying to add Webpack Encore entries in a field but Webpack Encore is not installed in your project. Try running "composer req symfony/webpack-encore-bundle"');
+            throw new \RuntimeException('You are trying to add Webpack Encore entries in a field but Webpack Encore is not installed in your project. Try running "composer require symfony/webpack-encore-bundle"');
         }
 
-        foreach ($entryNames as $entryName) {
-            $this->dto->addWebpackEncoreEntry($entryName);
+        foreach ($entryNamesOrAssets as $entryNameOrAsset) {
+            if (!\is_string($entryNameOrAsset) && !($entryNameOrAsset instanceof Asset)) {
+                throw new \RuntimeException(sprintf('The argument passed to %s() can only be a string or a object of type "%s".', __METHOD__, Asset::class));
+            }
+
+            if (\is_string($entryNameOrAsset)) {
+                $this->dto->addWebpackEncoreAsset(new AssetDto($entryNameOrAsset));
+            } else {
+                $this->dto->addWebpackEncoreAsset($entryNameOrAsset->getAsDto());
+            }
         }
 
         return $this;
     }
 
-    public function addCssFiles(string ...$assetPaths): self
+    /**
+     * @param string|Asset $pathsOrAssets
+     */
+    public function addCssFiles(...$pathsOrAssets): self
     {
-        foreach ($assetPaths as $path) {
-            $this->dto->addCssFile($path);
+        foreach ($pathsOrAssets as $pathOrAsset) {
+            if (!\is_string($pathOrAsset) && !($pathOrAsset instanceof Asset)) {
+                throw new \RuntimeException(sprintf('The argument passed to %s() can only be a string or a object of type "%s".', __METHOD__, Asset::class));
+            }
+
+            if (\is_string($pathOrAsset)) {
+                $this->dto->addCssAsset(new AssetDto($pathOrAsset));
+            } else {
+                $this->dto->addCssAsset($pathOrAsset->getAsDto());
+            }
         }
 
         return $this;
     }
 
-    public function addJsFiles(string ...$assetPaths): self
+    /**
+     * @param string|Asset $pathsOrAssets
+     */
+    public function addJsFiles(...$pathsOrAssets): self
     {
-        foreach ($assetPaths as $path) {
-            $this->dto->addJsFile($path);
+        foreach ($pathsOrAssets as $pathOrAsset) {
+            if (!\is_string($pathOrAsset) && !($pathOrAsset instanceof Asset)) {
+                throw new \RuntimeException(sprintf('The argument passed to %s() can only be a string or a object of type "%s".', __METHOD__, Asset::class));
+            }
+
+            if (\is_string($pathOrAsset)) {
+                $this->dto->addJsAsset(new AssetDto($pathOrAsset));
+            } else {
+                $this->dto->addJsAsset($pathOrAsset->getAsDto());
+            }
         }
 
         return $this;
@@ -267,6 +312,26 @@ trait FieldTrait
         return $this;
     }
 
+    public function hideWhenCreating(): self
+    {
+        $displayedOn = $this->dto->getDisplayedOn();
+        $displayedOn->delete(Crud::PAGE_NEW);
+
+        $this->dto->setDisplayedOn($displayedOn);
+
+        return $this;
+    }
+
+    public function hideWhenUpdating(): self
+    {
+        $displayedOn = $this->dto->getDisplayedOn();
+        $displayedOn->delete(Crud::PAGE_EDIT);
+
+        $this->dto->setDisplayedOn($displayedOn);
+
+        return $this;
+    }
+
     public function hideOnIndex(): self
     {
         $displayedOn = $this->dto->getDisplayedOn();
@@ -311,6 +376,49 @@ trait FieldTrait
     public function onlyWhenUpdating(): self
     {
         $this->dto->setDisplayedOn(KeyValueStore::new([Crud::PAGE_EDIT => Crud::PAGE_EDIT]));
+
+        return $this;
+    }
+
+    /**
+     * @param int|string $cols An integer with the number of columns that this field takes (e.g. 6),
+     *                         or a string with responsive col CSS classes (e.g. 'col-6 col-sm-4 col-lg-3')
+     */
+    public function setColumns($cols): self
+    {
+        if (!\is_int($cols) && !\is_string($cols)) {
+            throw new \InvalidArgumentException(sprintf('The value passed to the "setColumns()" method of the "%s" field can only be an integer or a string ("%s" was given).', $this->dto->getProperty(), get_debug_type($cols)));
+        }
+
+        $this->dto->setColumns(\is_int($cols) ? 'col-md-'.$cols : $cols);
+
+        return $this;
+    }
+
+    /**
+     * Used to define the columns of fields when users don't define the
+     * columns explicitly using the setColumns() method.
+     * This should only be used if you create a custom EasyAdmin field,
+     * not when configuring fields in your backend.
+     *
+     * @param int|string $cols
+     *
+     * @internal
+     */
+    public function setDefaultColumns($cols): self
+    {
+        if (!\is_int($cols) && !\is_string($cols)) {
+            throw new \InvalidArgumentException(sprintf('The value passed to the "setDefaultColumns()" method of the "%s" field can only be an integer or a string ("%s" was given).', $this->dto->getProperty(), get_debug_type($cols)));
+        }
+
+        $this->dto->setDefaultColumns(\is_int($cols) ? 'col-md-'.$cols : $cols);
+
+        return $this;
+    }
+
+    public function fillRow(bool $fillRow = true): self
+    {
+        $this->dto->setFillRestOfFormRow($fillRow);
 
         return $this;
     }

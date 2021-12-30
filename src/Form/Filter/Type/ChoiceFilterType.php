@@ -15,15 +15,14 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class ChoiceFilterType extends AbstractType
 {
-    /**
-     * {@inheritdoc}
-     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $multiple = $builder->get('value')->getOption('multiple');
 
         $builder->addModelTransformer(new CallbackTransformer(
-            static function ($data) { return $data; },
+            static function ($data) {
+                return $data;
+            },
             static function ($data) use ($multiple) {
                 switch ($data['comparison']) {
                     case ComparisonType::EQ:
@@ -47,9 +46,6 @@ class ChoiceFilterType extends AbstractType
         ));
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
@@ -58,22 +54,19 @@ class ChoiceFilterType extends AbstractType
             'value_type_options' => [
                 'multiple' => false,
                 'attr' => [
-                    'data-widget' => 'select2',
+                    'data-ea-widget' => 'ea-autocomplete',
                 ],
             ],
         ]);
         $resolver->setNormalizer('value_type_options', static function (Options $options, $value) {
             if (!isset($value['attr'])) {
-                $value['attr']['data-widget'] = 'select2';
+                $value['attr']['data-ea-widget'] = 'ea-autocomplete';
             }
 
             return $value;
         });
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getParent(): string
     {
         return ComparisonFilterType::class;

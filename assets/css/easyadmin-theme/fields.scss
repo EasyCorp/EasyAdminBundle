@@ -12,15 +12,13 @@
 
 // Avatar field
 .field-avatar .image-avatar {
-  border-radius: 50%;
+  border-radius: var(--border-radius);
   border: 0;
   box-shadow: none;
 }
 
 // Boolean field
 .field-boolean .badge {
-  display: inline-block;
-  font-size: 12px;
   min-width: 33px;
   text-transform: uppercase;
 }
@@ -49,52 +47,111 @@
   margin-bottom: 10px;
   padding-top: 5px;
 }
-
-.form-widget-compound .form-group {
-  display: flex;
-  padding: 0 20px 15px 0;
+.form-group.field-collection label:empty {
+  display: none;
 }
 
-.form-group .field-collection-item-complex label,
-.form-group .field-collection-item-complex legend.col-form-label {
-  align-self: self-start;
-  color: var(--text-color);
-  flex: 100% 0 0;
-  font-size: var(--font-size-base);
-  font-weight: 400;
-  margin: 5px 0 5px;
-  text-align: left;
-}
+.form-group.field-array {
+  // this is the label of each array elements (it's probably OK to always hide it)
+  .form-widget .form-group {
+    padding: 6px 0;
 
-.field-collection[data-entry-is-complex="true"] .form-group .form-widget {
-  flex: 0 0 100%;
-  padding-left: 0;
+    label { display: none; }
+  }
 }
-
-.field-collection-item {
+.form-group.field-array .field-collection-item {
   display: flex;
 }
-.field-collection-add-button {
-  padding-left: 5px;
-}
-.field-collection-delete-button {
-  align-self: flex-start;
-  font-size: 16px;
-  margin-left: 4px;
-  padding: 4px 6px 0;
-}
-.form-widget-compound > div > .form-group:last-child {
-  padding-bottom: 5px;
-}
 
-.field-collection-item-complex {
-  background: var(--fieldset-bg);
-  border: var(--border-width) var(--border-style) var(--border-color);
-  border-radius: var(--border-radius);
-  padding: 10px 20px 15px;
-}
-.field-collection-item-complex .field-collection-delete-button {
-  padding: 0;
+.form-group.field-collection {
+  .accordion {
+    border-radius: var(--border-radius);
+    box-shadow: inset 0 0 0 1px var(--form-input-border-color);
+
+    .form-group { padding: 0; }
+  }
+
+  .accordion-header {
+    padding-right: 28px;
+    position: relative;
+  }
+  .accordion-header:hover {
+    background: var(--gray-100);
+    box-shadow: inset 0 0 0 1px var(--form-input-border-color);
+  }
+
+  .accordion-item {
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    box-shadow: inset 0 -1px 0 var(--form-input-border-color);
+  }
+
+  .field-collection-item-first .accordion-item,
+  .field-collection-item-first .accordion-header {
+    border-top-left-radius: var(--border-radius);
+    border-top-right-radius: var(--border-radius);
+  }
+    .field-collection-item-last .accordion-item,
+    .field-collection-item-last .accordion-header {
+    border-bottom-left-radius: var(--border-radius);
+    border-bottom-right-radius: var(--border-radius);
+  }
+
+  .field-collection-item.field-collection-item-last .accordion-item {
+    box-shadow: none;
+  }
+
+  .accordion-item .form-group {
+    align-items: flex-start;
+    display: flex;
+    padding: 12px 0;
+
+    label,
+    legend.col-form-label {
+      font-weight: 500;
+      margin: 3px 10px 0 0;
+      padding: 0;
+      width: 20%;
+    }
+  }
+  .accordion-item .accordion-body .form-widget {
+    flex: 1;
+  }
+
+  .accordion-button,
+  .accordion-button:hover {
+    background: transparent;
+    border-radius: 0;
+    box-shadow: none;
+    color: var(--text-color);
+    flex: 1;
+    padding: 8px 7px;
+  }
+
+  .accordion-button:after {
+    // hides the default collapse marker
+    display: none;
+  }
+  .accordion-button i {
+    transition: transform .2s ease-in-out;
+  }
+  .accordion-button:not(.collapsed) i {
+    transform: rotate(90deg);
+  }
+  .accordion-button .form-collection-item-collapse-marker {
+    color: var(--form-collection-item-collapse-marker-color);
+    margin: 0 8px 0 4px;
+  }
+
+  .field-collection-add-button {
+    margin-top: 5px;
+  }
+  .field-collection-delete-button {
+    position: absolute;
+    top: 1px;
+    right: 5px;
+  }
 }
 
 // Color field
@@ -107,8 +164,7 @@
 }
 
 // Country field
-.field-country .country-flag,
-.select2-results__option .country-flag {
+.field-country .country-flag {
   margin-right: 2px;
   max-height: 18px;
   vertical-align: text-top;

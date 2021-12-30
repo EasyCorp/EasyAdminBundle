@@ -3,8 +3,8 @@
 return [
     'page_title' => [
         'dashboard' => 'Табло',
-        'detail' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
-        'edit' => 'Редактиране на %entity_label_singular% <small>(#%entity_short_id%)</small>',
+        'detail' => '%entity_as_string%',
+        'edit' => 'Редактиране на %entity_label_singular%',
         'index' => '%entity_label_plural%',
         'new' => 'Създаване на %entity_label_singular%',
         'exception' => 'Грешка|Грешки',
@@ -115,6 +115,8 @@ return [
         'username' => 'Потребителско има',
         'password' => 'Парола',
         'sign_in' => 'Вход',
+        'forgot_password' => 'Забравена парола?',
+        'remember_me' => 'Запомни ме',
     ],
 
     'exception' => [
@@ -122,5 +124,11 @@ return [
         'entity_remove' => 'Този елемент не може да бъде изтрит, защото други елементи зависят от него.',
         'forbidden_action' => 'Заявеното действие не може да се изпълни за този елемент.',
         'insufficient_entity_permission' => 'Нямате разрешение за достъп до този елемент.',
+    ],
+
+    'autocomplete' => [
+        'no-results-found' => 'Няма намерени съвпадения',
+        'no-more-results' => 'Няма повече резултати',
+        'loading-more-results' => 'Зареждат се още…',
     ],
 ];

@@ -7,11 +7,16 @@
     padding: 0;
 }
 
-.detail .form-control .ea-lightbox-thumbnail img {
-    box-shadow: 0 0 0 4px var(--white), 0px 0px 8px 2px var(--gray-600);
-    margin: 10px 7px;
+.ea-detail .field-image img {
+    border: 1px solid transparent;
+    border-radius: var(--border-radius);
     max-height: 300px;
     max-width: 400px;
+    padding: 8px;
+
+    &:hover {
+        border-color: var(--datalist-border-color);
+    }
 }
 
 .ea-lightbox-thumbnail img:hover {
@@ -27,10 +32,21 @@
     width: 100%;
 }
 
-.featherlight .ea-lightbox {
-    display: block;
-}
+$basicLightbox__background: rgba(0, 0, 0, 0.8);
+$basicLightbox__zIndex: 10000;
+$basicLightbox__duration: .3s;
+$basicLightbox__timing: ease;
+@import "~basiclightbox/src/styles/main";
 
-.featherlight .ea-lightbox:hover {
+.basicLightbox__placeholder {
+    margin-left: 5%;
+    margin-right: 5%;
+    max-height: 95%;
+}
+.basicLightbox__placeholder img {
+    background: white;
+    padding: 25px;
+}
+.basicLightbox__placeholder img:hover {
     cursor: zoom-out;
 }

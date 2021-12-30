@@ -2,9 +2,9 @@
 
 return [
     'page_title' => [
-        // 'dashboard' => '',
-        'detail' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
-        'edit' => 'Ret %entity_label_singular% <small>(#%entity_short_id%)</small>',
+        'dashboard' => 'Dashboard',
+        'detail' => '%entity_as_string%',
+        'edit' => 'Ret %entity_label_singular%',
         'index' => '%entity_label_plural%',
         'new' => 'Opret %entity_label_singular%',
         'exception' => 'Fejl|Fejl',
@@ -37,8 +37,8 @@ return [
     ],
 
     'field' => [
-        // 'code_editor.view_code' => '',
-        // 'text_editor.view_content' => '',
+        'code_editor.view_code' => 'Vis kode',
+        'text_editor.view_content' => 'Vis indhold',
     ],
 
     'action' => [
@@ -50,26 +50,26 @@ return [
         'delete' => 'Slet',
         'cancel' => 'Afbryd',
         'index' => 'Tilbage til listen',
-        // 'deselect' => '',
+        'deselect' => 'Fravælg',
         'add_new_item' => 'Tilføj nyt emne',
         'remove_item' => 'Slet emnet',
         'choose_file' => 'Vælg fil',
-        // 'close' => '',
-        // 'create' => '',
-        // 'create_and_add_another' => '',
-        // 'create_and_continue' => '',
-        // 'save' => '',
-        // 'save_and_continue' => '',
+        'close' => 'Luk',
+        'create' => 'Opret',
+        'create_and_add_another' => 'Opret og tilføj ny',
+        'create_and_continue' => 'Opret og fortsæt redigering',
+        'save' => 'Gem ændringer',
+        'save_and_continue' => 'Gem og fortsæt redigering',
     ],
 
     'batch_action_modal' => [
-        // 'title' => '',
-        // 'content' => '',
-        // 'action' => '',
+        'title' => 'Du vil anvende "%action_name%" handlingen på %num_items% element(er).',
+        'content' => 'Du kan ikke fortryde denne handling.',
+        'action' => 'Udfør handling',
     ],
 
     'delete_modal' => [
-        'title' => 'Er du sikker på du vil slette dette emne?',
+        'title' => 'Er du sikker på du vil slette dette element?',
         'content' => 'Denne operation kan ikke fortrydes.',
     ],
 
@@ -115,12 +115,20 @@ return [
         'username' => 'Username',
         'password' => 'Password',
         'sign_in' => 'Sign in',
+        'forgot_password' => 'Glemt din adgangskode?',
+        'remember_me' => 'Husk mig',
     ],
 
     'exception' => [
-        'entity_not_found' => 'Emnet er ikke længerer tilgængeligt.',
-        'entity_remove' => 'Dette emne kan ikke slettes, da der er andre emner der er afhængige af det.',
-        'forbidden_action' => 'Denne handling kan ikke udføres på dette emne.',
-        // 'insufficient_entity_permission' => 'You don't have permission to access this item.',
+        'entity_not_found' => 'Elementet er ikke længere tilgængeligt.',
+        'entity_remove' => 'Dette element kan ikke slettes, da der er andre elementer der er afhængige af det.',
+        'forbidden_action' => 'Denne handling kan ikke udføres på dette element.',
+        'insufficient_entity_permission' => 'Du har ikke tilladelse til at tilgå dette element.',
+    ],
+
+    'autocomplete' => [
+        'no-results-found' => 'Ingen resultater fundet',
+        // 'no-more-results' => 'No more results',
+        'loading-more-results' => 'Indlæser flere resultater…',
     ],
 ];

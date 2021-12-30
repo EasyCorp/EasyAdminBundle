@@ -99,8 +99,8 @@ query clauses needed by the filter.
 
 Consider this example which creates a custom date filter with some special values::
 
-    // src/Admin/Filter/DateCalendarFilter.php
-    namespace App\Admin\Filter;
+    // src/Controller/Admin/Filter/DateCalendarFilter.php
+    namespace App\Controller\Admin\Filter;
 
     use App\Form\Type\Admin\DateCalendarFilterType;
     use Doctrine\ORM\QueryBuilder;

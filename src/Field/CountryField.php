@@ -21,7 +21,10 @@ final class CountryField implements FieldInterface
     /** @internal used to store the code of the flag to use independently from the country code format used */
     public const OPTION_FLAG_CODE = 'flagCode';
 
-    public static function new(string $propertyName, ?string $label = null): self
+    /**
+     * @param string|false|null $label
+     */
+    public static function new(string $propertyName, $label = null): self
     {
         return (new self())
             ->setProperty($propertyName)
@@ -29,6 +32,7 @@ final class CountryField implements FieldInterface
             ->setTemplateName('crud/field/country')
             ->setFormType(ChoiceType::class)
             ->addCssClass('field-country')
+            ->setDefaultColumns('col-md-4 col-xxl-3')
             ->setCustomOption(self::OPTION_SHOW_FLAG, true)
             ->setCustomOption(self::OPTION_SHOW_NAME, true)
             ->setCustomOption(self::OPTION_COUNTRY_CODE_FORMAT, self::FORMAT_ISO_3166_ALPHA2);

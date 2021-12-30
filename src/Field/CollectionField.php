@@ -17,8 +17,12 @@ final class CollectionField implements FieldInterface
     public const OPTION_ENTRY_IS_COMPLEX = 'entryIsComplex';
     public const OPTION_ENTRY_TYPE = 'entryType';
     public const OPTION_SHOW_ENTRY_LABEL = 'showEntryLabel';
+    public const OPTION_RENDER_EXPANDED = 'renderExpanded';
 
-    public static function new(string $propertyName, ?string $label = null): self
+    /**
+     * @param string|false|null $label
+     */
+    public static function new(string $propertyName, $label = null): self
     {
         return (new self())
             ->setProperty($propertyName)
@@ -27,11 +31,13 @@ final class CollectionField implements FieldInterface
             ->setFormType(CollectionType::class)
             ->addCssClass('field-collection')
             ->addJsFiles('bundles/easyadmin/form-type-collection.js')
+            ->setDefaultColumns('col-md-8 col-xxl-7')
             ->setCustomOption(self::OPTION_ALLOW_ADD, true)
             ->setCustomOption(self::OPTION_ALLOW_DELETE, true)
             ->setCustomOption(self::OPTION_ENTRY_IS_COMPLEX, null)
             ->setCustomOption(self::OPTION_ENTRY_TYPE, null)
-            ->setCustomOption(self::OPTION_SHOW_ENTRY_LABEL, false);
+            ->setCustomOption(self::OPTION_SHOW_ENTRY_LABEL, false)
+            ->setCustomOption(self::OPTION_RENDER_EXPANDED, false);
     }
 
     public function allowAdd(bool $allow = true): self
@@ -69,6 +75,13 @@ final class CollectionField implements FieldInterface
     public function showEntryLabel(bool $showLabel = true): self
     {
         $this->setCustomOption(self::OPTION_SHOW_ENTRY_LABEL, $showLabel);
+
+        return $this;
+    }
+
+    public function renderExpanded(bool $renderExpanded = true): self
+    {
+        $this->setCustomOption(self::OPTION_RENDER_EXPANDED, $renderExpanded);
 
         return $this;
     }

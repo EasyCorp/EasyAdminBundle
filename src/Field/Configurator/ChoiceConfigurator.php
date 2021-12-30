@@ -31,6 +31,7 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
     public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
     {
         $isExpanded = $field->getCustomOption(ChoiceField::OPTION_RENDER_EXPANDED);
+        $isMultipleChoice = $field->getCustomOption(ChoiceField::OPTION_ALLOW_MULTIPLE_CHOICES);
 
         $choices = $this->getChoices($field->getCustomOption(ChoiceField::OPTION_CHOICES), $entityDto, $field);
         if (empty($choices)) {
@@ -38,7 +39,7 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
         }
 
         $field->setFormTypeOptionIfNotSet('choices', $choices);
-        $field->setFormTypeOptionIfNotSet('multiple', $field->getCustomOption(ChoiceField::OPTION_ALLOW_MULTIPLE_CHOICES));
+        $field->setFormTypeOptionIfNotSet('multiple', $isMultipleChoice);
         $field->setFormTypeOptionIfNotSet('expanded', $isExpanded);
 
         if ($isExpanded && ChoiceField::WIDGET_AUTOCOMPLETE === $field->getCustomOption(ChoiceField::OPTION_WIDGET)) {
@@ -50,13 +51,14 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
         }
 
         if (ChoiceField::WIDGET_AUTOCOMPLETE === $field->getCustomOption(ChoiceField::OPTION_WIDGET)) {
-            $field->setFormTypeOption('attr.data-widget', 'select2');
+            $field->setFormTypeOption('attr.data-ea-widget', 'ea-autocomplete');
+            $field->setDefaultColumns($isMultipleChoice ? 'col-md-8 col-xxl-6' : 'col-md-6 col-xxl-5');
         }
 
         $field->setFormTypeOptionIfNotSet('placeholder', '');
 
         // the value of this form option must be a string to properly propagate it as an HTML attribute value
-        $field->setFormTypeOption('attr.data-ea-escape-markup', $field->getCustomOption(ChoiceField::OPTION_ESCAPE_HTML_CONTENTS) ? 'true' : 'false');
+        $field->setFormTypeOption('attr.data-ea-autocomplete-render-items-as-html', $field->getCustomOption(ChoiceField::OPTION_ESCAPE_HTML_CONTENTS) ? 'false' : 'true');
 
         $fieldValue = $field->getValue();
         $isIndexOrDetail = \in_array($context->getCrud()->getCurrentPage(), [Crud::PAGE_INDEX, Crud::PAGE_DETAIL], true);
@@ -98,7 +100,7 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
 
     private function getBadgeCssClass($badgeSelector, $value, FieldDto $field): string
     {
-        $commonBadgeCssClass = 'badge badge-pill';
+        $commonBadgeCssClass = 'badge';
 
         if (true === $badgeSelector) {
             $badgeType = 'badge-secondary';
@@ -111,7 +113,7 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
             }
         }
 
-        $badgeTypeCssClass = empty($badgeType) ? '' : u($badgeType)->ensureStart('badge-');
+        $badgeTypeCssClass = empty($badgeType) ? '' : u($badgeType)->ensureStart('badge-')->toString();
 
         return $commonBadgeCssClass.' '.$badgeTypeCssClass;
     }

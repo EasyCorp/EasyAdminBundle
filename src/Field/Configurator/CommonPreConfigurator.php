@@ -38,9 +38,13 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
     {
         $translationDomain = $context->getI18n()->getTranslationDomain();
 
-        $value = $this->buildValueOption($field, $entityDto);
-        $field->setValue($value);
-        $field->setFormattedValue($value);
+        // if a field already has set a value, someone has written something to
+        // it (as a virtual field or overwrite); don't modify the value in that case
+        if (null === $field->getValue()) {
+            $value = $this->buildValueOption($field, $entityDto);
+            $field->setValue($value);
+            $field->setFormattedValue($value);
+        }
 
         $label = $this->buildLabelOption($field, $translationDomain, $context->getCrud()->getCurrentPage());
         $field->setLabel($label);
@@ -74,7 +78,7 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
         }
 
         if (null !== $field->getTextAlign()) {
-            $field->setFormTypeOptionIfNotSet('attr.align', $field->getTextAlign());
+            $field->setFormTypeOptionIfNotSet('attr.data-ea-align', $field->getTextAlign());
         }
 
         $field->setFormTypeOptionIfNotSet('label', $field->getLabel());
@@ -86,7 +90,7 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
         $entityInstance = $entityDto->getInstance();
         $propertyName = $field->getProperty();
 
-        if (!$this->propertyAccessor->isReadable($entityInstance, $propertyName)) {
+        if (null === $entityInstance || !$this->propertyAccessor->isReadable($entityInstance, $propertyName)) {
             return null;
         }
 
@@ -102,7 +106,10 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
         return $this->translator->trans($help, $field->getTranslationParameters(), $translationDomain);
     }
 
-    private function buildLabelOption(FieldDto $field, string $translationDomain, ?string $currentPage): ?string
+    /**
+     * @return string|false|null
+     */
+    private function buildLabelOption(FieldDto $field, string $translationDomain, ?string $currentPage)
     {
         // don't autogenerate a label for these special fields (there's a dedicated configurator for them)
         if (FormField::class === $field->getFieldFqcn()) {
@@ -156,8 +163,9 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
             return $templatePath;
         }
 
-        $isPropertyReadable = $this->propertyAccessor->isReadable($entityDto->getInstance(), $field->getProperty());
-        if (!$isPropertyReadable) {
+        // if field has a value set, don't display it as inaccessible (needed e.g. for virtual fields)
+        $isPropertyReadable = null !== $entityDto->getInstance() && $this->propertyAccessor->isReadable($entityDto->getInstance(), $field->getProperty());
+        if (!$isPropertyReadable && null === $field->getValue()) {
             return $adminContext->getTemplatePath('label/inaccessible');
         }
 
@@ -179,12 +187,18 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
             return false;
         }
 
-        // TODO: fix this and see if there's any way to check if an association is nullable
+        $doctrinePropertyMetadata = $entityDto->getPropertyMetadata($field->getProperty());
+
+        // If at least one join column of an association field isn't nullable then the field is "required" by default, otherwise the field is optional
         if ($entityDto->isAssociation($field->getProperty())) {
+            foreach ($doctrinePropertyMetadata->get('joinColumns', []) as $joinColumn) {
+                if (\array_key_exists('nullable', $joinColumn) && false === $joinColumn['nullable']) {
+                    return true;
+                }
+            }
+
             return false;
         }
-
-        $doctrinePropertyMetadata = $entityDto->getPropertyMetadata($field->getProperty());
 
         // TODO: check if it's correct to never make a boolean value required
         // I guess it's correct because Symfony Forms treat NULL as FALSE by default (i.e. in the database the value won't be NULL)
@@ -211,6 +225,7 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
             ->replaceMatches('/[_\s]+/', ' ')
             ->trim()
             ->lower()
-            ->title(true);
+            ->title(true)
+            ->toString();
     }
 }

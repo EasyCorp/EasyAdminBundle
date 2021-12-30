@@ -3,8 +3,8 @@
 return [
     'page_title' => [
         // 'dashboard' => '',
-        'detail' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
-        'edit' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
+        'detail' => '%entity_as_string%',
+        'edit' => '%entity_label_singular%',
         'index' => '%entity_label_plural%',
         'new' => 'Create new %entity_label_singular%',
         'exception' => 'Fel|Fel',
@@ -115,6 +115,8 @@ return [
         'username' => 'Username',
         'password' => 'Password',
         'sign_in' => 'Sign in',
+        'forgot_password' => 'Glömt ditt lösenord?',
+        'remember_me' => 'Kom ihåg mig',
     ],
 
     'exception' => [
@@ -122,5 +124,11 @@ return [
         'entity_remove' => 'Detta object kan inte tas bort för att andra objekt har ett beroende på det.',
         'forbidden_action' => 'Den åtgärd du försökte göra kan inte utföras på detta objekt.',
         // 'insufficient_entity_permission' => 'You don't have permission to access this item.',
+    ],
+
+    'autocomplete' => [
+        'no-results-found' => 'Inga träffar',
+        // 'no-more-results' => 'No more results',
+        'loading-more-results' => 'Laddar fler resultat…',
     ],
 ];

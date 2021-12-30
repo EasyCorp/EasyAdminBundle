@@ -3,8 +3,8 @@
 return [
     'page_title' => [
         'dashboard' => 'Vezérlőpult',
-        'detail' => '%entity_label_singular% megtekintése - <small>(#%entity_short_id%)</small>',
-        'edit' => '%entity_label_singular% szerkesztése - <small>(#%entity_short_id%)</small>',
+        'detail' => '%entity_as_string%',
+        'edit' => '%entity_label_singular% szerkesztése',
         'index' => '%entity_label_plural%',
         'new' => 'Új %entity_label_singular% létrehozása',
         'exception' => 'Hiba|Hibák',
@@ -116,6 +116,8 @@ return [
         'username' => 'Felhasználónév',
         'password' => 'Jelszó',
         'sign_in' => 'Belépés',
+        'forgot_password' => 'Elfelejtette jelszavát?',
+        'remember_me' => 'Emlékezzen rám',
     ],
 
     'exception' => [
@@ -123,5 +125,11 @@ return [
         'entity_remove' => 'Ez az elem nem törölhető más kapcsolódó adatok miatt.',
         'forbidden_action' => 'A kért művelet nem hajtható végre ezen az elemen.',
         'insufficient_entity_permission' => 'Nincs megfelelő jogosultsága az elemhez.',
+    ],
+
+    'autocomplete' => [
+        'no-results-found' => 'Nincs találat',
+        'no-more-results' => 'Nincs több találat',
+        'loading-more-results' => 'Töltés…',
     ],
 ];

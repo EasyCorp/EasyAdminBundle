@@ -1,14 +1,14 @@
-<div id="modal-filters" class="modal fade">
+<div id="modal-filters" class="modal fade" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" data-dismiss="modal" class="btn btn-sm btn-secondary" id="modal-clear-button" formtarget="_self">
+                <button type="button" data-bs-dismiss="modal" class="btn btn-sm btn-secondary" id="modal-clear-button" formtarget="_self">
                     <i class="fa fa-close"></i> {{ 'filter.button.clear'|trans(domain = 'EasyAdminBundle') }}
                 </button>
                 <h5 class="modal-title">
                     <i class="fa fa-filter fa-fw"></i> {{ 'filter.title'|trans(domain = 'EasyAdminBundle') }}
                 </h5>
-                <button type="button" data-dismiss="modal" class="btn btn-sm btn-primary" id="modal-apply-button" formtarget="_self">
+                <button type="button" data-bs-dismiss="modal" class="btn btn-sm btn-primary" id="modal-apply-button" formtarget="_self">
                     <i class="fa fa-check"></i> {{ 'filter.button.apply'|trans(domain = 'EasyAdminBundle') }}
                 </button>
             </div>
@@ -19,31 +19,3 @@
         </div>
     </div>
 </div>
-
-{% block javascript_filter_modal %}
-    <script>
-        const filterModal = document.querySelector('#modal-filters');
-
-        const removeFilter = function(field) {
-            field.closest('form').querySelectorAll('input[name^="filters['+field.dataset.filterProperty+']"]').forEach(hidden => {
-                hidden.remove();
-            });
-            field.remove();
-        }
-
-        document.querySelector('#modal-clear-button').addEventListener('click', function() {
-            filterModal.querySelectorAll('.filter-field').forEach(filterField => {
-                removeFilter(filterField);
-            });
-
-            filterModal.querySelector('form').submit();
-        });
-
-        document.querySelector('#modal-apply-button').addEventListener('click', function() {
-            filterModal.querySelectorAll('.filter-checkbox:not(:checked)').forEach(notAppliedFilter => {
-                removeFilter(notAppliedFilter.closest('.filter-field'));
-            });
-            filterModal.querySelector('form').submit();
-        });
-    </script>
-{% endblock javascript_filter_modal %}

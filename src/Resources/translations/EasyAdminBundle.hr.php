@@ -3,8 +3,8 @@
 return [
     'page_title' => [
         // 'dashboard' => '',
-        'detail' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
-        'edit' => 'Uredi %entity_label_singular% <small>(#%entity_short_id%)</small>',
+        'detail' => '%entity_as_string%',
+        'edit' => 'Uredi %entity_label_singular%',
         'index' => '%entity_label_plural%',
         'new' => 'Izradi %entity_label_singular%',
         'exception' => 'Greška|Greške',
@@ -115,6 +115,8 @@ return [
         'username' => 'Korisničko ime',
         'password' => 'Lozinka',
         'sign_in' => 'Prijavi se',
+        'forgot_password' => 'Zaboravili ste Vašu lozinku?',
+        'remember_me' => 'Zapamti me',
     ],
 
     'exception' => [
@@ -122,5 +124,11 @@ return [
         'entity_remove' => 'Ta stavka ne može se izbrisati jer ovise o njoj ostale stavke.',
         'forbidden_action' => 'Zatražena radnja ne može se izvršiti na ovoj stavci.',
         // 'insufficient_entity_permission' => 'You don't have permission to access this item.',
+    ],
+
+    'autocomplete' => [
+        'no-results-found' => 'Nema rezultata',
+        // 'no-more-results' => 'No more results',
+        'loading-more-results' => 'Učitavanje rezultata…',
     ],
 ];

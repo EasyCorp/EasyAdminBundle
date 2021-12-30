@@ -12,7 +12,10 @@ final class ArrayField implements FieldInterface
 {
     use FieldTrait;
 
-    public static function new(string $propertyName, ?string $label = null): self
+    /**
+     * @param string|false|null $label
+     */
+    public static function new(string $propertyName, $label = null): self
     {
         return (new self())
             ->setProperty($propertyName)
@@ -20,6 +23,7 @@ final class ArrayField implements FieldInterface
             ->setTemplateName('crud/field/array')
             ->setFormType(CollectionType::class)
             ->addCssClass('field-array')
-            ->addJsFiles('bundles/easyadmin/form-type-collection.js');
+            ->addJsFiles('bundles/easyadmin/form-type-collection.js')
+            ->setDefaultColumns('col-md-7 col-xxl-6');
     }
 }

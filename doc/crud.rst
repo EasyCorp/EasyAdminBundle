@@ -126,12 +126,12 @@ Entity Options
             ->setEntityLabelInPlural('Products')
 
             // in addition to a string, the argument of the singular and plural label methods
-            // can be a closure that receives both the current entity instance (which will
-            // be null in 'index' and 'new' pages) and the page name
+            // can be a closure that defines two nullable arguments: entityInstance (which will
+            // be null in 'index' and 'new' pages) and the current page name
             ->setEntityLabelInSingular(
-                fn (?Product $product, string $pageName) => $product ? $product->toString() : 'Product'
+                fn (?Product $product, ?string $pageName) => $product ? $product->toString() : 'Product'
             )
-            ->setEntityLabelInPlural(function (?Category $category, string $pageName) {
+            ->setEntityLabelInPlural(function (?Category $category, ?string $pageName) {
                 return 'edit' === $pageName ? $category->getLabel() : 'Categories';
             })
 
@@ -156,7 +156,10 @@ You can override the default page titles with the following methods::
     {
         return $crud
             // the visible title at the top of the page and the content of the <title> element
-            // it can include these placeholders: %entity_id%, %entity_label_singular%, %entity_label_plural%
+            // it can include these placeholders:
+            //   %entity_name%, %entity_as_string%,
+            //   %entity_id%, %entity_short_id%
+            //   %entity_label_singular%, %entity_label_plural%
             ->setPageTitle('index', '%entity_label_plural% listing')
 
             // you can pass a PHP closure as the value of the title
@@ -182,7 +185,7 @@ Date, Time and Number Formatting Options
         return $crud
             // the argument must be either one of these strings: 'short', 'medium', 'long', 'full', 'none'
             // (the strings are also available as \EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField::FORMAT_* constants)
-            // or a valid ICU Datetime Pattern (see http://userguide.icu-project.org/formatparse/datetime)
+            // or a valid ICU Datetime Pattern (see https://unicode-org.github.io/icu/userguide/format_parse/datetime/)
             ->setDateFormat('...')
             ->setTimeFormat('...')
 
@@ -197,8 +200,8 @@ Date, Time and Number Formatting Options
         ;
     }
 
-Search and Pagination Options
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Search, Order, and Pagination Options
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ::
 
@@ -217,6 +220,8 @@ Search and Pagination Options
             // (user can later change this sorting by clicking on the table columns)
             ->setDefaultSort(['id' => 'DESC'])
             ->setDefaultSort(['id' => 'DESC', 'title' => 'ASC', 'startsAt' => 'DESC'])
+            // you can sort by Doctrine associations up to two levels
+            ->setDefaultSort(['seller.name' => 'ASC'])
 
             // the max number of entities to display per page
             ->setPaginatorPageSize(30)
@@ -281,6 +286,33 @@ Templates and Form Options
                 ['validation_groups' => ['Default'], '...' => '...'],
             );
         ;
+    }
+
+Custom Redirect After Creating or Editing Entities
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+By default, when clicking on "Save" button when creating or editing entities
+you are redirected to the previous page. If you want to change this behavior,
+override the ``getRedirectResponseAfterSave()`` method.
+
+For example, if you've added a :ref:`custom action <actions-custom>` called
+"Save and view detail", you may prefer to redirect to the detail page after
+saving the changes::
+
+    protected function getRedirectResponseAfterSave(AdminContext $context, string $action): RedirectResponse
+    {
+        $submitButtonName = $context->getRequest()->request->all()['ea']['newForm']['btn'];
+
+        if ('saveAndViewDetail' === $submitButtonName) {
+            $url = $this->get(AdminUrlGenerator::class)
+                ->setAction(Action::DETAIL)
+                ->setEntityId($context->getEntity()->getPrimaryKeyValue())
+                ->generateUrl();
+
+            return $this->redirect($url);
+        }
+
+        return parent::getRedirectResponseAfterSave($context, $action);
     }
 
 Same Configuration in Different CRUD Controllers
@@ -407,6 +439,7 @@ own controller to add/remove/change those template variables::
 
     use App\Entity\Product;
     use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+    use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
     use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 
     class ProductCrudController extends AbstractCrudController
@@ -469,7 +502,8 @@ Generating Admin URLs
 .. versionadded:: 3.2
 
     The ``AdminUrlGenerator`` class was introduced in EasyAdmin 3.2.0. In earlier
-    versions, you had to use the ``CrudUrlGenerator`` class.
+    versions, you had to use the ``CrudUrlGenerator`` class and call the
+    ``build()`` method to start building a URL.
 
 :ref:`As explained <dashboard-route>` in the article about Dashboards, all URLs
 of a given dashboard use the same route and they only differ in the query string
@@ -512,7 +546,7 @@ the ``unsetAll()`` method to remove all existing query parameters::
             $url = $this->adminUrlGenerator->unsetAll()->set('foo', 'someValue')->generateUrl();
 
             // the URL builder provides shortcuts for the most common parameters
-            $url = $this->adminUrlGenerator->build()
+            $url = $this->adminUrlGenerator
                 ->setController(SomeCrudController::class)
                 ->setAction('theActionName')
                 ->generateUrl();

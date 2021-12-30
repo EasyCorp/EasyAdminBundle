@@ -3,8 +3,8 @@
 return [
     'page_title' => [
         // 'dashboard' => '',
-        'detail' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
-        'edit' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
+        'detail' => '%entity_as_string%',
+        'edit' => '%entity_label_singular%',
         'index' => '%entity_label_plural%',
         'new' => 'Dodaj nowy %entity_label_singular%',
         'exception' => 'Błąd|Błędy',
@@ -116,6 +116,8 @@ return [
         'username' => 'Użytkownik',
         'password' => 'Hasło',
         'sign_in' => 'Zaloguj się',
+        'forgot_password' => 'Nie pamiętasz hasła?',
+        'remember_me' => 'Zapamiętaj mnie',
     ],
 
     'exception' => [
@@ -123,5 +125,11 @@ return [
         'entity_remove' => 'Ten obiekt nie może być usunięty ponieważ istnieją inne, które są z nim powiązane.',
         'forbidden_action' => 'Na tej pozycji nie można wykonać wybranej akcji.',
         'insufficient_entity_permission' => 'Nie masz uprawnień do tego obiektu.',
+    ],
+
+    'autocomplete' => [
+        'no-results-found' => 'Brak wyników',
+        // 'no-more-results' => 'No more results',
+        'loading-more-results' => 'Trwa ładowanie…',
     ],
 ];

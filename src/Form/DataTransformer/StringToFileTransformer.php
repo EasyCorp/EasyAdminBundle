@@ -25,9 +25,6 @@ class StringToFileTransformer implements DataTransformerInterface
         $this->multiple = $multiple;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function transform($value)
     {
         if (null === $value || [] === $value) {
@@ -45,9 +42,6 @@ class StringToFileTransformer implements DataTransformerInterface
         return array_map([$this, 'doTransform'], $value);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function reverseTransform($value)
     {
         if (null === $value || [] === $value) {
@@ -75,11 +69,15 @@ class StringToFileTransformer implements DataTransformerInterface
             return $value;
         }
 
-        if (\is_string($value)) {
+        if (!\is_string($value)) {
+            throw new TransformationFailedException('Expected a string or null.');
+        }
+
+        if (is_file($this->uploadDir.$value)) {
             return new File($this->uploadDir.$value);
         }
 
-        throw new TransformationFailedException('Expected a string or null.');
+        return null;
     }
 
     private function doReverseTransform($value): ?string

@@ -3,8 +3,8 @@
 return [
     'page_title' => [
         // 'dashboard' => '',
-        'detail' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
-        'edit' => 'Επεξεργασία %entity_label_singular% <small>(#%entity_short_id%)</small>',
+        'detail' => '%entity_as_string%',
+        'edit' => 'Επεξεργασία %entity_label_singular%',
         'index' => '%entity_label_plural%',
         'new' => 'Δημιουργία %entity_label_singular%',
         'exception' => 'Λάθος|Λάθοι',
@@ -115,6 +115,8 @@ return [
         'username' => 'Username',
         'password' => 'Password',
         'sign_in' => 'Sign in',
+        // 'forgot_password' => '',
+        'remember_me' => 'Να με θυμάσαι',
     ],
 
     'exception' => [
@@ -122,5 +124,11 @@ return [
         'entity_remove' => 'Το αντικείμενο δεν είναι δυνατόν να διαγραφεί διότη υπάρχουν αντικείμενο που βασίζονται σε αυτό.',
         'forbidden_action' => 'Η ενέργεια αυτή είναι αδύνατον να εφαρμοστεί σε αυτό το αντικείμενο.',
         // 'insufficient_entity_permission' => 'You don't have permission to access this item.',
+    ],
+
+    'autocomplete' => [
+        'no-results-found' => 'Δεν βρέθηκαν αποτελέσματα',
+        // 'no-more-results' => 'No more results',
+        'loading-more-results' => 'Φόρτωση περισσότερων αποτελεσμάτων…',
     ],
 ];

@@ -20,7 +20,10 @@ final class CodeEditorField implements FieldInterface
 
     private const ALLOWED_LANGUAGES = ['css', 'dockerfile', 'js', 'markdown', 'nginx', 'php', 'shell', 'sql', 'twig', 'xml', 'yaml-frontmatter', 'yaml'];
 
-    public static function new(string $propertyName, ?string $label = null): self
+    /**
+     * @param string|false|null $label
+     */
+    public static function new(string $propertyName, $label = null): self
     {
         return (new self())
             ->setProperty($propertyName)
@@ -30,6 +33,7 @@ final class CodeEditorField implements FieldInterface
             ->addCssClass('field-code_editor')
             ->addCssFiles('bundles/easyadmin/form-type-code-editor.css')
             ->addJsFiles('bundles/easyadmin/form-type-code-editor.js')
+            ->setDefaultColumns('col-md-12 col-xxl-10')
             ->setCustomOption(self::OPTION_INDENT_WITH_TABS, false)
             ->setCustomOption(self::OPTION_LANGUAGE, 'markdown')
             ->setCustomOption(self::OPTION_NUM_OF_ROWS, null)

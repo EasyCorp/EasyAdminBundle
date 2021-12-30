@@ -1,0 +1,170 @@
+// ----------------------------------------------------------------------------
+// This file defines Sass variables used to customize the Bootstrap design.
+// Most of the times you don't need to customize any of these variables and it's
+// enough to override the CSS variables defined in bootstrap-variables.scss. However,
+// Bootstrap doesn't allow to customize all styles using CSS variables and
+// that's when you'll need to override some of the variables of this file.
+// ----------------------------------------------------------------------------
+$enable-print-styles: false;
+$enable-gradients: false;
+
+$body-bg: hsl(220, 20%, 91%);
+$body-color: hsl(225, 15%, 35%);
+$text-color: hsl(225, 15%, 35%);
+$headings-color: var(--text-color-dark);
+
+$primary: hsl(230, 55%, 60%);
+$secondary: $body-bg;
+$success: hsl(157, 69%, 38%);
+$info: hsl(201, 94%, 37%);
+$warning: hsl(30, 81%, 47%);
+$danger: hsl(344, 59%, 52%);
+
+$font-size-base: 0.875rem; // 14px;
+$font-size-lg: 1rem; // 16px;
+$font-size-sm: 0.8125rem; // 13px;
+
+$gray-base: var(--black);
+$gray-darker: var(--gray-900);
+$gray-dark: var(--gray-800);
+$gray: var(--gray-700);
+$gray-light: var(--gray-600);
+$gray-lighter: var(--gray-200);
+
+$link-decoration: none;
+$link-color: var(--link-color);
+$link-hover-color: var(--link-hover-color);
+$link-hover-decoration: var(--link-hover-decoration);
+$text-muted: var(--text-muted);
+
+$font-family-sans-serif: var(--font-family-sans-serif);
+$font-family-monospace: var(--font-family-monospace);
+$font-family-base: var(--font-family-base);
+
+$font-size-h1: calc(var(--font-size-base) * 2.6);
+$font-size-h2: calc(var(--font-size-base) * 2.15);
+$font-size-h3: calc(var(--font-size-base) * 1.7);
+$font-size-h4: calc(var(--font-size-base) * 1.25);
+$font-size-h5: var(--font-size-base);
+$font-size-h6: calc(var(--font-size-base) * 0.85);
+
+$input-bg: var(--white);
+$input-bg-disabled: var(--gray-100);
+$input-color: var(--text-color-dark);
+$input-border: var(--border-color);
+$input-border-radius: var(--border-radius);
+$input-border-focus: hsla(201, 94%, 37%, 0.2);
+$input-color-placeholder: var(--gray-600);
+$input-height-base: 30px;
+$form-check-input-checked-bg-color: $primary;
+$form-check-input-border-radius: var(--border-radius);
+$form-check-input-border: 1px solid var(--gray-400);
+$form-group-margin-bottom: 0;
+$input-group-addon-bg: hsl(210, 45%, 98%); // var(--form-input-group-bg);
+$legend-color: var(--gray-800);
+$legend-border-color: #e5e5e5 !default;
+
+$popover-border-color: hsl(213, 24%, 91%); // var(--border-color);
+
+$border-radius-base: var(--border-radius);
+$border-radius-large: var(--border-radius);
+$btn-border-radius-base: var(--border-radius);
+
+$state-success-text: hsl(159, 75%, 22%);
+$state-success-bg: hsl(117, 66%, 87%);
+$state-success-border: transparent;
+$state-info-text: hsl(238, 41%, 48%);
+$state-info-bg: hsl(208, 100%, 92%);
+$state-info-border: transparent;
+$state-warning-text: hsl(20, 94%, 31%);
+$state-warning-bg: hsl(42, 82%, 85%);
+$state-warning-border: transparent;
+$state-danger-text: hsl(338, 71%, 38%);
+$state-danger-bg: hsl(9, 89%, 93%);
+$state-danger-border: transparent;
+
+$label-default-bg: $body-bg;
+$label-primary-bg: $primary;
+$label-success-bg: $success;
+$label-info-bg: $info;
+$label-warning-bg: $warning;
+$label-danger-bg: $danger;
+$label-color: $text-color;
+$label-link-hover-color: $text-color;
+
+$alert-padding: 15px 20px;
+$alert-border-radius: var(--border-radius);
+$alert-link-font-weight: 500;
+
+$badge-font-size: var(--font-size-sm);
+$badge-font-weight: 500;
+$badge-border-radius: var(--border-radius);
+$badge-pill-padding-x: 8px;
+$badge-pill-border-radius: 20px;
+
+$dropdown-link-hover-color: var(--gray-900);
+$navbar-inverse-color: var(--gray-400);
+$navbar-inverse-link-color: var(--gray-400);
+$dropdown-border-color: var(--border-color);
+$dropdown-border-width: var(--border-width);
+$dropdown-box-shadow: var(--box-shadow-lg);
+$zindex-dropdown: 1000;
+
+$nav-tabs-border-color: var(--border-color);
+$nav-tabs-border-width: var(--border-width);
+$nav-tabs-border-radius: var(--border-radius);
+$nav-tabs-link-hover-border-color: transparent;
+$nav-tabs-link-active-color: var(--gray-800);
+$nav-tabs-link-active-bg: transparent;
+$nav-tabs-link-active-border-color: var(--border-color) var(--border-color) transparent var(--border-color);
+
+$modal-header-padding-y: 15px;
+$modal-header-padding-x: 20px;
+$modal-inner-padding: 15px 20px;
+$modal-title-padding: 15px 20px;
+$modal-content-bg: var(--modal-bg);
+$modal-content-border-color: var(--border-color);
+$modal-content-fallback-border-color: var(--border-color);
+$modal-backdrop-bg: var(--black);
+$modal-backdrop-opacity: .6;
+$modal-header-border-color: var(--border-color);
+$modal-footer-border-color: $modal-header-border-color;
+$modal-lg: 900px;
+$modal-md: 500px;
+$modal-sm: 300px;
+$zindex-modal-backdrop: 2020;
+$zindex-modal: 2040;
+
+$offcanvas-padding-y: 15px;
+$offcanvas-padding-x: 20px;
+
+$pagination-padding-y: 4px;
+$pagination-padding-x: 10px;
+$pagination-color: var(--pagination-color);
+$pagination-line-height: 1.5;
+$pagination-bg: var(--white);
+$pagination-border-width: var(--border-width);
+$pagination-border-color: var(--gray-400);
+$pagination-focus-box-shadow: none;
+$pagination-focus-outline: 0;
+$pagination-hover-color: var(--text-color);
+$pagination-hover-bg: var(--white);
+$pagination-hover-border-color: var(--gray-500);
+$pagination-disabled-color: var(--text-muted);
+$pagination-disabled-bg: var(--white);
+$pagination-disabled-border-color: transparent;
+
+$btn-transition: all .08s ease-in;
+$btn-font-weight: 400;
+$btn-padding-y: 4px;
+$btn-padding-x: 8px;
+$btn-padding-y-lg: 7px;
+$btn-padding-x-lg: 12px;
+$btn-padding-y-sm: 3px;
+$btn-padding-x-sm: 5px;
+$btn-border-width: 0;
+$btn-border-radius: var(--border-radius);
+$btn-border-radius-lg: var(--border-radius);
+$btn-border-radius-sm: var(--border-radius);
+
+$custom-control-indicator-border-color: var(--gray-600);

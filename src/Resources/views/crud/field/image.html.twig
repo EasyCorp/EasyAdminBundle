@@ -1,11 +1,18 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
 {# @var field \EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto #}
 {# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
-{% set html_id = 'ea-lightbox-' ~ field.uniqueId %}
-<a href="#" class="ea-lightbox-thumbnail" data-featherlight="#{{ html_id }}" data-featherlight-close-on-click="anywhere">
-    <img src="{{ asset(field.formattedValue) }}" class="img-fluid">
-</a>
+{% set images = field.formattedValue %}
+{% if images is not iterable %}
+    {% set images = [images] %}
+{% endif %}
 
-<div id="{{ html_id }}" class="ea-lightbox">
-    <img src="{{ asset(field.formattedValue) }}">
-</div>
+{% for image in images %}
+    {% set html_id = 'ea-lightbox-' ~ field.uniqueId ~ '-' ~ loop.index %}
+    <a href="#" class="ea-lightbox-thumbnail" data-ea-lightbox-content-selector="#{{ html_id }}">
+        <img src="{{ asset(image) }}" class="img-fluid">
+    </a>
+
+    <div id="{{ html_id }}" class="ea-lightbox">
+        <img src="{{ asset(image) }}">
+    </div>
+{% endfor %}

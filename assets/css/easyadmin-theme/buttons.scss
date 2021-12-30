@@ -3,32 +3,50 @@
 
 .btn {
     background-color: var(--white);
-    // needed because $btn-box-shadow doesn't work
-    box-shadow: 0 0 0 1px rgba(43, 45, 80, .1), 0 2px 5px 0 rgba(43, 45, 80, .08), 0 1px 1.5px 0 rgba(0, 0, 0, .07), 0 1px 2px 0 rgba(0, 0, 0, .08);
+    border: 0;
+    box-shadow: var(--button-shadow);
+    color: var(--button-color);
     cursor: pointer;
     text-decoration: none;
     white-space: nowrap;
+    transition: box-shadow .2s;
 }
-.btn:not(:disabled):not(.disabled):not(.btn-link):hover,
+.btn:not(:disabled):not(.disabled):not(.btn-link):hover {
+    border: 0;
+    // needed because $btn-focus-box-shadow and $btn-active-box-shadow are ignored for .btn-primary, .btn-info, etc.
+    box-shadow: var(--button-hover-shadow);
+    color: var(--button-hover-color);
+}
 .btn:not(:disabled):not(.disabled):not(.btn-link):active,
 .btn:not(:disabled):not(.disabled):not(.btn-link):focus,
 .btn:not(:disabled):not(.disabled):not(.btn-link):active:focus {
+    border: 0;
     // needed because $btn-focus-box-shadow and $btn-active-box-shadow are ignored for .btn-primary, .btn-info, etc.
-    box-shadow: 0 0 0 1px rgba(43, 45, 80, .1), 0 2px 5px 0 rgba(43, 45, 80, .1), 0 3px 9px 0 rgba(43, 45, 80, .08), 0 1px 1.5px 0 rgba(0, 0, 0, .08), 0 1px 2px 0 rgba(0, 0, 0, .08);
+    box-shadow: var(--button-active-shadow);
+    color: var(--button-active-color);
 }
 
-.btn-primary, .btn-primary:hover, .btn-primary:not(:disabled):not(.disabled):focus, .btn-primary:not(:disabled):not(.disabled):active, .btn-primary:not(:disabled):not(.disabled):active:focus {
+.btn-primary,
+.btn-primary:not(:disabled):not(.disabled):not(.btn-link):hover,
+.btn-primary:not(:disabled):not(.disabled):not(.btn-link):focus,
+.btn-primary:not(:disabled):not(.disabled):not(.btn-link):active,
+.btn-primary:not(:disabled):not(.disabled):not(.btn-link):active:focus {
     background-color: var(--color-primary);
     color: var(--text-on-primary);
+}
+.btn-primary:not(:disabled):not(.disabled):focus,
+.btn-primary:not(:disabled):not(.disabled):active,
+.btn-primary:not(:disabled):not(.disabled):active:focus {
+    box-shadow: var(--button-active-primary-shadow);
 }
 
 .btn-secondary, .btn-secondary[disabled], .btn-secondary.disabled {
     background-color: var(--white);
-    color: var(--color-text);
+    color: var(--button-color);
 }
 .btn-secondary:hover, .btn-secondary:not(:disabled):not(.disabled):focus, .btn-secondary:not(:disabled):not(.disabled):active, .btn-secondary:not(:disabled):not(.disabled):active:focus {
     background-color: var(--white);
-    color: var(--color-text-dark);
+    color: var(--button-hover-color);
 }
 
 .btn.btn-info, .btn-info, .btn-info:hover, .btn-info:not(:disabled):not(.disabled):focus, .btn-info:not(:disabled):not(.disabled):active, .btn-info:not(:disabled):not(.disabled):active:focus {
@@ -53,7 +71,18 @@
 
 .btn-link, .btn-link:hover, .btn-link:focus, .btn-link:active, .btn-link:active:focus {
     background: transparent;
+    border-color: transparent;
+    color: var(--link-color);
     box-shadow: none; // needed to make the button link look like a regular link
+}
+.btn-link:hover {
+    color: var(--link-hover-color)
+}
+.btn-link-danger, .btn-link-danger:hover, .btn-link-danger:focus, .btn-link-danger:active, .btn-link-danger:active:focus {
+    color: var(--red-600);
+}
+.btn-link-danger:hover {
+    color: var(--red-500);
 }
 
 .btn.disabled, .btn:disabled,

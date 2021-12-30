@@ -154,6 +154,15 @@ final class EntityPaginator implements EntityPaginatorInterface
         return $this->numResults > $this->pageSize;
     }
 
+    public function isOutOfRange(): bool
+    {
+        if (1 === $this->currentPage) {
+            return false;
+        }
+
+        return $this->currentPage < 1 || $this->currentPage > $this->getLastPage();
+    }
+
     public function getNumResults(): int
     {
         return $this->numResults;
@@ -175,7 +184,8 @@ final class EntityPaginator implements EntityPaginatorInterface
             ];
         }
 
-        $jsonResult['has_next_page'] = $this->hasNextPage();
+        $nextPageUrl = !$this->hasNextPage() ? null : $this->adminUrlGenerator->set(EA::PAGE, $this->getNextPage())->removeReferrer()->generateUrl();
+        $jsonResult['next_page'] = $nextPageUrl;
 
         return json_encode($jsonResult);
     }

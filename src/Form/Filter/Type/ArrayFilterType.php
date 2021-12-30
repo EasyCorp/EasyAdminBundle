@@ -15,9 +15,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class ArrayFilterType extends AbstractType
 {
-    /**
-     * {@inheritdoc}
-     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $defaultOptions = ['label' => false];
@@ -27,7 +24,9 @@ class ArrayFilterType extends AbstractType
         $builder->add('value', $options['value_type'], $options['value_type_options'] + $defaultOptions);
 
         $builder->addModelTransformer(new CallbackTransformer(
-            static function ($data) { return $data; },
+            static function ($data) {
+                return $data;
+            },
             static function ($data) {
                 if (null === $data['value'] || [] === $data['value']) {
                     $data['comparison'] = ComparisonType::CONTAINS === $data['comparison'] ? 'IS NULL' : 'IS NOT NULL';
@@ -40,9 +39,6 @@ class ArrayFilterType extends AbstractType
         ));
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
@@ -51,16 +47,13 @@ class ArrayFilterType extends AbstractType
             'value_type_options' => [
                 'multiple' => true,
                 'attr' => [
-                    'data-widget' => 'select2',
-                    'data-select2-tags' => 'true',
+                    'data-ea-widget' => 'ea-autocomplete',
+                    'data-ea-autocomplete-allow-item-create' => 'true',
                 ],
             ],
         ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getParent(): string
     {
         return ComparisonFilterType::class;

@@ -12,7 +12,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenu;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
-use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -27,17 +26,14 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 abstract class AbstractDashboardController extends AbstractController implements DashboardControllerInterface
 {
-    public static function getSubscribedServices()
+    public static function getSubscribedServices(): array
     {
         return array_merge(parent::getSubscribedServices(), [
             AdminUrlGenerator::class => '?'.AdminUrlGenerator::class,
-            CrudUrlGenerator::class => '?'.CrudUrlGenerator::class,
         ]);
     }
 
-    /**
-     * @Route("/admin")
-     */
+    #[Route('/admin')]
     public function index(): Response
     {
         return $this->render('@EasyAdmin/welcome.html.twig', [
@@ -58,7 +54,7 @@ abstract class AbstractDashboardController extends AbstractController implements
 
     public function configureMenuItems(): iterable
     {
-        yield MenuItem::linktoDashboard('__ea__page_title.dashboard', 'fa fa-home');
+        yield MenuItem::linkToDashboard('__ea__page_title.dashboard', 'fa fa-home');
     }
 
     public function configureUserMenu(UserInterface $user): UserMenu
@@ -68,10 +64,19 @@ abstract class AbstractDashboardController extends AbstractController implements
             $userMenuItems[] = MenuItem::linkToExitImpersonation('__ea__user.exit_impersonation', 'fa-user-lock');
         }
 
+        $userName = '';
+        if (method_exists($user, '__toString')) {
+            $userName = (string) $user;
+        } elseif (method_exists($user, 'getUserIdentifier')) {
+            $userName = $user->getUserIdentifier();
+        } elseif (method_exists($user, 'getUsername')) {
+            $userName = $user->getUsername();
+        }
+
         return UserMenu::new()
             ->displayUserName()
             ->displayUserAvatar()
-            ->setName(method_exists($user, '__toString') ? (string) $user : $user->getUsername())
+            ->setName($userName)
             ->setAvatarUrl(null)
             ->setMenuItems($userMenuItems);
     }

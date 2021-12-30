@@ -12,13 +12,17 @@ final class EmailField implements FieldInterface
 {
     use FieldTrait;
 
-    public static function new(string $propertyName, ?string $label = null): self
+    /**
+     * @param string|false|null $label
+     */
+    public static function new(string $propertyName, $label = null): self
     {
         return (new self())
             ->setProperty($propertyName)
             ->setLabel($label)
             ->setTemplateName('crud/field/email')
             ->setFormType(EmailType::class)
-            ->addCssClass('field-email');
+            ->addCssClass('field-email')
+            ->setDefaultColumns('col-md-6 col-xxl-5');
     }
 }

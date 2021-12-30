@@ -2,17 +2,17 @@
 
 return [
     'page_title' => [
-        // 'dashboard' => '',
-        'detail' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
-        'edit' => '%entity_label_singular% <small>(#%entity_short_id%)</small> aldatu',
+        'dashboard' => 'Hasiera',
+        'detail' => '%entity_as_string%',
+        'edit' => '%entity_label_singular% aldatu',
         'index' => '%entity_label_plural%',
         'new' => '%entity_label_singular%-a sortu',
         'exception' => 'Errore|Erroreak',
     ],
 
     'datagrid' => [
-        // 'hidden_results' => '',
-        'no_results' => 'Ez da emaitzarik topatu.',
+        'hidden_results' => 'Emaitza batzuk ezin dira erakutsi, ez baituzu behar den adina baimen',
+        'no_results' => 'Ez da emaitzarik aurkitu.',
     ],
 
     'paginator' => [
@@ -21,7 +21,7 @@ return [
         'next' => 'Hurrengoa',
         'last' => 'Azkena',
         'counter' => '<strong>%start%</strong>tik - <strong>%end%</strong>era <strong>%results%</strong>tik',
-        // 'results' => '',
+        'results' => '{0} ez dago emaitzarik|{1} emaitza <strong>1</strong> |]1,Inf] <strong>%count%</strong> emaitza',
     ],
 
     'label' => [
@@ -33,12 +33,12 @@ return [
         'object' => 'PHP Objektua',
         'inaccessible' => 'Helezina',
         'inaccessible.explanation' => 'Eremu honek ez du getter metodo bat edo honi loturiko propietatea ez da publikoa',
-        // 'form.empty_value' => '',
+        'form.empty_value' => 'Bat ere ez',
     ],
 
     'field' => [
-        // 'code_editor.view_code' => '',
-        // 'text_editor.view_content' => '',
+        'code_editor.view_code' => 'Kodea ikusi',
+        'text_editor.view_content' => 'Edukia ikusi',
     ],
 
     'action' => [
@@ -54,18 +54,18 @@ return [
         'add_new_item' => 'Elementu bat erantsi',
         'remove_item' => 'Elementu hau ezabatu',
         'choose_file' => 'Hautatu fitxategi bat',
-        // 'close' => '',
-        // 'create' => '',
-        // 'create_and_add_another' => '',
-        // 'create_and_continue' => '',
-        // 'save' => '',
-        // 'save_and_continue' => '',
+        'close' => 'Itxi',
+        'create' => 'Sortu',
+        'create_and_add_another' => 'Sortu eta beste bat gehitu',
+        'create_and_continue' => 'Sortu eta jarraitu',
+        'save' => 'Gorde',
+        'save_and_continue' => 'Gorde eta jarraitu',
     ],
 
     'batch_action_modal' => [
-        // 'title' => '',
-        // 'content' => '',
-        // 'action' => '',
+        'title' => '%num_items% elementuri "%action_name%" ekintza aplikatu behar diozu',
+        'content' => 'Ekintza hau ezin da desegin.',
+        'action' => 'Aurrera',
     ],
 
     'delete_modal' => [
@@ -74,33 +74,34 @@ return [
     ],
 
     'filter' => [
-        // 'title' => '',
-        // 'button.clear' => '',
-        // 'button.apply' => '',
-        // 'label.is_equal_to' => '',
-        // 'label.is_not_equal_to' => '',
-        // 'label.is_greater_than' => '',
-        // 'label.is_greater_than_or_equal_to' => '',
-        // 'label.is_less_than' => '',
-        // 'label.is_less_than_or_equal_to' => '',
-        // 'label.is_between' => '',
-        // 'label.contains' => '',
-        // 'label.not_contains' => '',
-        // 'label.starts_with' => '',
-        // 'label.ends_with' => '',
-        // 'label.exactly' => '',
-        // 'label.not_exactly' => '',
-        // 'label.is_same' => '',
-        // 'label.is_not_same' => '',
-        // 'label.is_after' => '',
-        // 'label.is_after_or_same' => '',
-        // 'label.is_before' => '',
-        // 'label.is_before_or_same' => '',
+        'title' => 'Iragazi',
+        'button.clear' => 'Ezabatu',
+        'button.apply' => 'Ezarri',
+        'label.is_equal_to' => 'berdina da',
+        'label.is_not_equal_to' => 'ez da berdina',
+        'label.is_greater_than' => 'baina handiagoa da',
+        'label.is_greater_than_or_equal_to' => 'handiagoa edo berdina da',
+        'label.is_less_than' => 'baino txikiagoa da',
+        'label.is_less_than_or_equal_to' => 'txikiagoa edo berdina da',
+        'label.is_between' => 'tartean dago',
+        'label.contains' => 'dauka',
+        'label.not_contains' => 'ez dauka',
+        'label.starts_with' => 'honela hasten da',
+        'label.ends_with' => 'honela amaitzen da',
+        'label.exactly' => 'zehazki',
+        'label.not_exactly' => 'ez da zehazki',
+        'label.is_same' => 'berdina da',
+        'label.is_not_same' => 'ez da berdina',
+        'label.is_after' => 'honen ondorengoa da',
+        'label.is_after_or_same' => 'honen ondorengoa edo berdina da',
+        'label.is_before' => 'aurrekoa da',
+        'label.is_before_or_same' => 'aurrekoa edo berdina da',
     ],
 
     'form' => [
         'are_you_sure' => 'Formularioen aldaketak ez dituzu gorde.',
-        // 'tab.error_badge_title' => '',
+        'tab.error_badge_title' => 'Sarrera baliogabea|%count% sarrera baliogabe',
+        'slug.confirm_text' => 'Esteka aldatzen baduzu, beste orri batzuetako erreferentziak hautsi ditzazkezu.',
     ],
 
     'user' => [
@@ -108,19 +109,27 @@ return [
         'unnamed' => 'Erabiltzaile izengabea',
         'anonymous' => 'Erabiltzaile anonimoa',
         'sign_out' => 'Amaitu saioa',
-        // 'exit_impersonation' => '',
+        'exit_impersonation' => 'Amaitu inpersonazioa',
     ],
 
     'login_page' => [
         'username' => 'Erabiltzailea',
         'password' => 'Pasahitza',
         'sign_in' => 'Hasi saioa',
+        'forgot_password' => 'Pasahitza ahaztuta?',
+        'remember_me' => 'Gogoratu',
     ],
 
     'exception' => [
-        // 'entity_not_found' => '',
-        // 'entity_remove' => '',
-        // 'forbidden_action' => '',
-        // 'insufficient_entity_permission' => 'You don't have permission to access this item.',
+        'entity_not_found' => 'Elementu hau ez dago erabilgarri',
+        'entity_remove' => 'Artikulu hau ezin da ezabatu, beste elementu batzuk haren mende daudelako.',
+        'forbidden_action' => 'Elementu honetan ezin da eskatutako ekintza burutu',
+        'insufficient_entity_permission' => 'Artikulu hau eskuratzeko ez duzu baimenik.',
+    ],
+
+    'autocomplete' => [
+        'no-results-found' => 'Ez da bat datorrenik aurkitu',
+        // 'no-more-results' => 'No more results',
+        'loading-more-results' => 'Emaitza gehiago kargatzen…',
     ],
 ];

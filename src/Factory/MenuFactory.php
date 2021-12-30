@@ -111,6 +111,13 @@ final class MenuFactory
         $menuItemDto->setLinkUrl($url);
         $menuItemDto->setSubItems($subItems);
 
+        // if menu item points to an absolute URL and no 'rel' attribute is defined,
+        // assign the 'rel="noopener"' attribute for performance and security reasons.
+        // see https://web.dev/external-anchors-use-rel-noopener/
+        if ('' === $menuItemDto->getLinkRel() && MenuItemDto::TYPE_URL === $menuItemDto->getType()) {
+            $menuItemDto->setLinkRel('noopener');
+        }
+
         return $menuItemDto;
     }
 

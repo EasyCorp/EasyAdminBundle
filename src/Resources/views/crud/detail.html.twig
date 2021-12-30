@@ -9,9 +9,10 @@
 
 {% block content_title %}
     {%- apply spaceless -%}
-        {% set default_title = ea.crud.defaultPageTitle('detail', entity.instance)|trans(ea.i18n.translationParameters, 'EasyAdminBundle') %}
-        {% set custom_title = ea.crud.customPageTitle('detail', entity.instance) %}
-        {{ custom_title is null ? default_title|raw : custom_title|trans(ea.i18n.translationParameters)|raw }}
+        {% set custom_page_title = ea.crud.customPageTitle(pageName, entity ? entity.instance : null) %}
+        {{ custom_page_title is null
+            ? (ea.crud.defaultPageTitle|trans(ea.i18n.translationParameters, 'EasyAdminBundle'))|raw
+            : (custom_page_title|trans(ea.i18n.translationParameters))|raw }}
     {%- endapply -%}
 {% endblock %}
 
@@ -25,38 +26,28 @@
 
 {% block main %}
     {% block detail_fields %}
-        {% set row_number = 0 %}
+        {% set form_panel_is_already_open = false %}
         {% for field in entity.fields %}
-            {% set is_decoration_field = 'field-form_panel' in field.cssClass %}
+            {% set is_form_field_panel = 'field-form_panel' in field.cssClass %}
 
-            {% if loop.first and not is_decoration_field %}
-                {% set row_number = 0 %}
-                {{ _self.open_empty_content_panel(field) }}
-            {% endif %}
-
-            {% if is_decoration_field %}
-                {% if not loop.first %}
-                    {{ _self.close_content_panel() }}
+            {% if is_form_field_panel or (loop.first and not is_form_field_panel) %}
+                {% if form_panel_is_already_open %}
+                    {{ _self.close_form_field_panel() }}
+                    {% set form_panel_is_already_open = false %}
                 {% endif %}
 
-                {% set row_number = 0 %}
-                {% if field.label is empty and field.help is empty %}
-                    {{ _self.open_empty_content_panel(field) }}
-                {% else %}
-                    {{ _self.open_content_panel_with_header(field) }}
-                {% endif %}
+                {{ _self.open_form_field_panel(is_form_field_panel ? field : null) }}
+                {% set form_panel_is_already_open = true %}
             {% endif %}
 
             {% block detail_field %}
-                {% if not is_decoration_field %}
-                    {{ _self.render_field(entity, field, row_number) }}
+                {% if not is_form_field_panel %}
+                    {{ _self.render_field(entity, field) }}
                 {% endif %}
             {% endblock %}
-
-            {% set row_number = is_decoration_field ? row_number : row_number + 1 %}
         {% endfor %}
 
-        {{ _self.close_content_panel() }}
+        {{ _self.close_form_field_panel() }}
     {% endblock %}
 
     {% block delete_form %}
@@ -64,82 +55,69 @@
     {% endblock delete_form %}
 {% endblock %}
 
-{% block body_javascript %}
-    {{ parent() }}
+{% macro open_form_field_panel(field = null) %}
+    {% set panel_name = field is null ? null : 'content-' ~ field.uniqueId %}
+    {% set collapsible = field is null ? false : field.customOption('collapsible') %}
+    {% set collapsed = field is null ? false : field.customOption('collapsed') %}
+    {% set panel_icon = field is null ? null : (field.customOptions.get('icon')|default(false)) %}
+    {% set panel_label = field is null ? null : field.label %}
+    {% set panel_help = field is null ? null : field.help|default(false)%}
+    {% set panel_has_header = collapsible or panel_icon or panel_label or panel_help %}
 
-    <script type="text/javascript">
-        $(function() {
-            $('.action-delete').on('click', function(e) {
-                e.preventDefault();
-                const formAction = $(this).attr('formaction');
+    <div class="{{ field.cssClass ?? '' }}">
+        <div class="form-panel">
+            {% if panel_has_header %}
+                <div class="form-panel-header {{ collapsible ? 'collapsible' }} {{ panel_help is not empty ? 'with-help' }}">
+                    <div class="form-panel-title">
+                        <a {% if not collapsible %}
+                            href="#" class="not-collapsible"
+                        {% else %}
+                            href="#{{ panel_name }}" data-bs-toggle="collapse"
+                            class="form-panel-collapse {{ collapsed ? 'collapsed' }}"
+                            aria-expanded="{{ collapsed ? 'false' : 'true' }}" aria-controls="{{ panel_name }}"
+                        {% endif %}
+                        >
+                            {% if collapsible %}
+                                <i class="fas fw fa-chevron-right form-panel-collapse-marker"></i>
+                            {% endif %}
 
-                $('#modal-delete').modal({ backdrop: true, keyboard: true })
-                    .off('click', '#modal-delete-button')
-                    .on('click', '#modal-delete-button', function () {
-                        $('#delete-form').attr('action', formAction).trigger('submit');
-                    });
-            });
-        });
-    </script>
-{% endblock %}
+                            {% if panel_icon %}
+                                <i class="form-panel-icon {{ panel_icon }}"></i>
+                            {% endif %}
+                            {{ panel_label|raw }}
+                        </a>
 
-{% macro open_empty_content_panel(field) %}
+                        {% if panel_help %}
+                            <div class="form-panel-help">{{ panel_help|raw }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
 
-<div class="{{ field.cssClass }}">
-    <div class="content-panel">
-        <div class="content-panel-body without-header without-footer without-padding">
-            <dl class="datalist">
+            <div {% if panel_name %}id="{{ panel_name }}"{% endif %} class="form-panel-body {{ collapsible ? 'collapse' }} {{ not collapsed ? 'show'}}">
+                <dl class="datalist">
 {% endmacro %}
 
-{% macro close_content_panel() %}
+{% macro close_form_field_panel() %}
             </dl>
         </div>
     </div>
 </div>
 {% endmacro %}
 
-{% macro open_content_panel_with_header(field) %}
-    {% set collapsible = field.customOption('collapsible') %}
-    {% set collapsed = field.customOption('collapsed') %}
-    <div class="{{ field.cssClass }}">
-        <div class="content-panel">
-            <div class="content-panel-header {{ collapsible ? 'collapsible' }} {{ field.help is not empty ? 'with-help' }}">
-                {% if collapsible %}
-                    <a href="#content-{{ field.uniqueId }}" data-toggle="collapse" class="content-panel-collapse {{ collapsed ? 'collapsed' }}" aria-expanded="{{ collapsed ? 'false' : 'true' }}" aria-controls="content-{{ field.uniqueId }}">
-                        <i class="fas fw fa-chevron-right collapse-icon"></i>
-                {% endif %}
-
-                        {% if field.customOption('icon') %}
-                            <i class="{{ field.customOption('icon') }}"></i>
-                        {% endif %}
-                        {{ field.label|raw }}
-
-                {% if collapsible %}
-                    </a>
-                {% endif %}
-
-                {% if field.help is not empty %}
-                    <div class="content-panel-header-help">{{ field.help|raw }}</div>
-                {% endif %}
-            </div>
-
-            <div id="content-{{ field.uniqueId }}" class="content-panel-body without-footer without-padding {{ collapsible ? 'collapse' }} {{ not collapsed ? 'show'}}">
-                <dl class="datalist">
-{% endmacro %}
-
-{% macro render_field(entity, field, row_number) %}
-    <div class="data-row {{ row_number is even ? 'with-background' }} {{ field.cssClass }}">
-        <dd>
+{% macro render_field(entity, field) %}
+    <div class="data-row {{ field.cssClass }}">
+        <dt>
             {{ field.label|raw }}
 
             {% if field.help is not empty %}
                 <span class="data-help">
-                    <i class="far fa-question-circle" data-toggle="tooltip" title="{{ field.help|e('html_attr') }}"></i>
+                    <i class="far fa-question-circle" data-bs-toggle="tooltip" title="{{ field.help|e('html_attr') }}"></i>
                 </span>
             {% endif %}
-        </dd>
-        <dt>
-            {{ include(field.templatePath, { field: field, entity: entity }, with_context = false) }}
         </dt>
+        <dd>
+            {{ include(field.templatePath, { field: field, entity: entity }, with_context = false) }}
+        </dd>
     </div>
 {% endmacro %}

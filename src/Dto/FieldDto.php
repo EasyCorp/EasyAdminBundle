@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\TextAlign;
 use function Symfony\Component\String\u;
 use Symfony\Component\Uid\Ulid;
 
@@ -26,6 +27,11 @@ final class FieldDto
     private $textAlign;
     private $help;
     private $cssClass;
+    // how many columns the field takes when rendering
+    // (defined as Bootstrap 5 grid classes; e.g. 'col-md-6 col-xxl-3')
+    private $columns;
+    // same as $columns but used when the user doesn't define columns explicitly
+    private $defaultColumns;
     private $translationParameters;
     private $templateName;
     private $templatePath;
@@ -40,7 +46,10 @@ final class FieldDto
     public function __construct()
     {
         $this->uniqueId = new Ulid();
+        $this->textAlign = TextAlign::LEFT;
         $this->cssClass = '';
+        $this->columns = null;
+        $this->defaultColumns = '';
         $this->templateName = 'crud/field/text';
         $this->assets = new AssetsDto();
         $this->translationParameters = [];
@@ -77,7 +86,7 @@ final class FieldDto
 
     public function isFormDecorationField(): bool
     {
-        return null !== u($this->getCssClass())->indexOf('field-form_panel');
+        return null !== u($this->getCssClass())->containsAny(['field-form_panel', 'field-form_tab']);
     }
 
     public function getFieldFqcn(): ?string
@@ -141,12 +150,18 @@ final class FieldDto
         $this->formatValueCallable = $callable;
     }
 
-    public function getLabel(): ?string
+    /**
+     * @return string|false|null
+     */
+    public function getLabel()
     {
         return $this->label;
     }
 
-    public function setLabel(?string $label): void
+    /**
+     * @param string|false|null $label
+     */
+    public function setLabel($label): void
     {
         $this->label = $label;
     }
@@ -173,7 +188,9 @@ final class FieldDto
 
     public function setFormTypeOptions(array $formTypeOptions): void
     {
-        $this->formTypeOptions = KeyValueStore::new($formTypeOptions);
+        foreach ($formTypeOptions as $optionName => $optionValue) {
+            $this->setFormTypeOption($optionName, $optionValue);
+        }
     }
 
     /**
@@ -212,7 +229,7 @@ final class FieldDto
         $this->virtual = $isVirtual;
     }
 
-    public function getTextAlign(): ?string
+    public function getTextAlign(): string
     {
         return $this->textAlign;
     }
@@ -250,6 +267,26 @@ final class FieldDto
     public function setCssClass(string $cssClass): void
     {
         $this->cssClass = trim($cssClass);
+    }
+
+    public function getColumns(): ?string
+    {
+        return $this->columns;
+    }
+
+    public function setColumns(?string $columnCssClasses): void
+    {
+        $this->columns = $columnCssClasses;
+    }
+
+    public function getDefaultColumns(): string
+    {
+        return $this->defaultColumns;
+    }
+
+    public function setDefaultColumns(string $columnCssClasses): void
+    {
+        $this->defaultColumns = $columnCssClasses;
     }
 
     public function getTranslationParameters(): array
@@ -292,19 +329,19 @@ final class FieldDto
         $this->assets = $assets;
     }
 
-    public function addWebpackEncoreEntry(string $entryName): void
+    public function addWebpackEncoreAsset(AssetDto $assetDto): void
     {
-        $this->assets->addWebpackEncoreEntry($entryName);
+        $this->assets->addWebpackEncoreAsset($assetDto);
     }
 
-    public function addCssFile(string $cssFilePath): void
+    public function addCssAsset(AssetDto $assetDto): void
     {
-        $this->assets->addCssFile($cssFilePath);
+        $this->assets->addCssAsset($assetDto);
     }
 
-    public function addJsFile(string $jsFilePath): void
+    public function addJsAsset(AssetDto $assetDto): void
     {
-        $this->assets->addJsFile($jsFilePath);
+        $this->assets->addJsAsset($assetDto);
     }
 
     public function addHtmlContentToHead(string $htmlContent): void

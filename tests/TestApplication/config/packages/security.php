@@ -1,10 +1,12 @@
 <?php
 
-use Symfony\Component\Security\Core\User\User;
+use Symfony\Component\Security\Core\User\InMemoryUser;
 
-$container->loadFromExtension('security', [
-    'encoders' => [
-        User::class => 'plaintext',
+$configuration = [
+    'enable_authenticator_manager' => true,
+
+    'password_hashers' => [
+        InMemoryUser::class => 'plaintext',
     ],
 
     'providers' => [
@@ -21,8 +23,8 @@ $container->loadFromExtension('security', [
     ],
 
     'firewalls' => [
-        'main' => [
-            'pattern' => '^/',
+        'secure_admin' => [
+            'pattern' => '^/secure_admin',
             'provider' => 'test_users',
             'http_basic' => null,
             'logout' => null,
@@ -30,6 +32,8 @@ $container->loadFromExtension('security', [
     ],
 
     'access_control' => [
-        ['path' => '^/', 'roles' => ['ROLE_ADMIN']],
+        ['path' => '^/secure_admin', 'roles' => ['ROLE_ADMIN']],
     ],
-]);
+];
+
+$container->loadFromExtension('security', $configuration);

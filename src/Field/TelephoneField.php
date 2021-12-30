@@ -12,13 +12,17 @@ final class TelephoneField implements FieldInterface
 {
     use FieldTrait;
 
-    public static function new(string $propertyName, ?string $label = null): self
+    /**
+     * @param string|false|null $label
+     */
+    public static function new(string $propertyName, $label = null): self
     {
         return (new self())
             ->setProperty($propertyName)
             ->setLabel($label)
             ->setTemplateName('crud/field/telephone')
             ->setFormType(TelType::class)
-            ->addCssClass('field-telephone');
+            ->addCssClass('field-telephone')
+            ->setDefaultColumns('col-md-4 col-xxl-3');
     }
 }

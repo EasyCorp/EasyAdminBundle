@@ -3,7 +3,6 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
-use Symfony\Component\Form\Extension\Core\DataTransformer\NumberToLocalizedStringTransformer;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 
 /**
@@ -17,7 +16,10 @@ final class NumberField implements FieldInterface
     public const OPTION_ROUNDING_MODE = 'roundingMode';
     public const OPTION_STORED_AS_STRING = 'storedAsString';
 
-    public static function new(string $propertyName, ?string $label = null): self
+    /**
+     * @param string|false|null $label
+     */
+    public static function new(string $propertyName, $label = null): self
     {
         return (new self())
             ->setProperty($propertyName)
@@ -25,8 +27,9 @@ final class NumberField implements FieldInterface
             ->setTemplateName('crud/field/number')
             ->setFormType(NumberType::class)
             ->addCssClass('field-number')
+            ->setDefaultColumns('col-md-4 col-xxl-3')
             ->setCustomOption(self::OPTION_NUM_DECIMALS, null)
-            ->setCustomOption(self::OPTION_ROUNDING_MODE, NumberToLocalizedStringTransformer::ROUND_HALF_UP)
+            ->setCustomOption(self::OPTION_ROUNDING_MODE, \NumberFormatter::ROUND_HALFUP)
             ->setCustomOption(self::OPTION_STORED_AS_STRING, false);
     }
 
@@ -44,17 +47,17 @@ final class NumberField implements FieldInterface
     public function setRoundingMode(int $mode): self
     {
         $validModes = [
-            'ROUND_DOWN' => NumberToLocalizedStringTransformer::ROUND_DOWN,
-            'ROUND_FLOOR' => NumberToLocalizedStringTransformer::ROUND_FLOOR,
-            'ROUND_UP' => NumberToLocalizedStringTransformer::ROUND_UP,
-            'ROUND_CEILING' => NumberToLocalizedStringTransformer::ROUND_CEILING,
-            'ROUND_HALF_DOWN' => NumberToLocalizedStringTransformer::ROUND_HALF_DOWN,
-            'ROUND_HALF_EVEN' => NumberToLocalizedStringTransformer::ROUND_HALF_EVEN,
-            'ROUND_HALF_UP' => NumberToLocalizedStringTransformer::ROUND_HALF_UP,
+            'ROUND_DOWN' => \NumberFormatter::ROUND_DOWN,
+            'ROUND_FLOOR' => \NumberFormatter::ROUND_FLOOR,
+            'ROUND_UP' => \NumberFormatter::ROUND_UP,
+            'ROUND_CEILING' => \NumberFormatter::ROUND_CEILING,
+            'ROUND_HALF_DOWN' => \NumberFormatter::ROUND_HALFDOWN,
+            'ROUND_HALF_EVEN' => \NumberFormatter::ROUND_HALFEVEN,
+            'ROUND_HALF_UP' => \NumberFormatter::ROUND_HALFUP,
         ];
 
         if (!\in_array($mode, $validModes, true)) {
-            throw new \InvalidArgumentException(sprintf('The argument of the "%s()" method must be the value of any of the following constants from the %s class: %s.', __METHOD__, NumberToLocalizedStringTransformer::class, implode(', ', array_keys($validModes))));
+            throw new \InvalidArgumentException(sprintf('The argument of the "%s()" method must be the value of any of the following constants from the %s class: %s.', __METHOD__, \NumberFormatter::class, implode(', ', array_keys($validModes))));
         }
 
         $this->setCustomOption(self::OPTION_ROUNDING_MODE, $mode);

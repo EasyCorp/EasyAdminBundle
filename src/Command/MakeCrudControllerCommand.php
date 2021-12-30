@@ -19,6 +19,7 @@ use function Symfony\Component\String\u;
 class MakeCrudControllerCommand extends Command
 {
     protected static $defaultName = 'make:admin:crud';
+    protected static $defaultDescription = 'Creates a new EasyAdmin CRUD controller class';
     private $projectDir;
     private $classMaker;
     private $doctrine;
@@ -31,7 +32,15 @@ class MakeCrudControllerCommand extends Command
         $this->doctrine = $doctrine;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function configure()
+    {
+        $this
+            ->setDescription(self::$defaultDescription)
+            ->setHelp($this->getCommandHelp())
+        ;
+    }
+
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
         $fs = new Filesystem();
@@ -40,7 +49,7 @@ class MakeCrudControllerCommand extends Command
         if (0 === \count($doctrineEntitiesFqcn)) {
             $io->error('This command generates the CRUD controller of an existing Doctrine entity, but no entities were found in your application. Create some Doctrine entities first and then run this command again.');
 
-            return 1;
+            return Command::FAILURE;
         }
         $entityFqcn = $io->choice(
             'Which Doctrine entity are you going to manage with this CRUD controller?',
@@ -79,7 +88,7 @@ class MakeCrudControllerCommand extends Command
             'Read EasyAdmin docs: https://symfony.com/doc/master/bundles/EasyAdminBundle/index.html',
         ]);
 
-        return 0;
+        return Command::SUCCESS;
     }
 
     private function getAllDoctrineEntitiesFqcn(): array
@@ -95,5 +104,20 @@ class MakeCrudControllerCommand extends Command
         sort($entitiesFqcn);
 
         return $entitiesFqcn;
+    }
+
+    private function getCommandHelp(): string
+    {
+        return <<<'HELP'
+The <info>%command.name%</info> command creates a new EasyAdmin CRUD controler
+class to manage some Doctrine entity in your application.
+
+Follow the steps shown by the command to select the Doctrine entity and the
+location and namespace of the generated class.
+
+This command never changes or overwrites an existing class, so you can run it
+safely as many times as needed to create multiple CRUD controllers.
+HELP
+        ;
     }
 }

@@ -18,9 +18,6 @@ class DynamicChoiceLoader implements ChoiceLoaderInterface
     private $cached = false;
     private $choiceList;
 
-    /**
-     * {@inheritdoc}
-     */
     public function loadChoiceList($value = null)
     {
         if (null === $this->choiceList || !$this->cached) {
@@ -31,9 +28,6 @@ class DynamicChoiceLoader implements ChoiceLoaderInterface
         return $this->choiceList;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function loadChoicesForValues(array $values, $value = null): array
     {
         if ($this->choices !== $values) {
@@ -43,9 +37,6 @@ class DynamicChoiceLoader implements ChoiceLoaderInterface
         return $this->choices = $values;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function loadValuesForChoices(array $choices, $value = null): array
     {
         return $choices;

@@ -52,6 +52,7 @@ dashboard with the ``make:admin:dashboard`` command, the route is defined using
 
         use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
         use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
+        use Symfony\Component\HttpFoundation\Response;
         use Symfony\Component\Routing\Annotation\Route;
 
         class DashboardController extends AbstractDashboardController
@@ -74,6 +75,7 @@ dashboard with the ``make:admin:dashboard`` command, the route is defined using
 
         use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
         use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
+        use Symfony\Component\HttpFoundation\Response;
         use Symfony\Component\Routing\Annotation\Route;
 
         class DashboardController extends AbstractDashboardController
@@ -105,6 +107,7 @@ application, you can define an explicit route name to simplify your code:
 
         use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
         use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
+        use Symfony\Component\HttpFoundation\Response;
         use Symfony\Component\Routing\Annotation\Route;
 
         class DashboardController extends AbstractDashboardController
@@ -127,6 +130,7 @@ application, you can define an explicit route name to simplify your code:
 
         use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
         use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
+        use Symfony\Component\HttpFoundation\Response;
         use Symfony\Component\Routing\Annotation\Route;
 
         class DashboardController extends AbstractDashboardController
@@ -241,6 +245,10 @@ explained later)::
                 // triggers an error. If this causes any issue in your backend, call this method
                 // to disable this feature and remove all URL signature checks
                 ->disableUrlSignatures()
+
+                // by default, all backend URLs are generated as absolute URLs. If you
+                // need to generate relative URLs instead, call this method
+                ->generateRelativeUrls()
             ;
         }
     }
@@ -403,7 +411,7 @@ It links to a relative or absolute URL::
     }
 
 To avoid leaking internal backend information to external websites, EasyAdmin
-adds the ``rel="noreferrer"`` attribute to all URL menu items, except if the
+adds the ``rel="noopener"`` attribute to all URL menu items, except if the
 menu item defines its own ``rel`` option.
 
 Section Menu Item
@@ -759,6 +767,27 @@ applications can rely on its default values:
 
                 // the 'name' HTML attribute of the <input> used for the password field (default: '_password')
                 'password_parameter' => 'my_custom_password_field',
+
+                // whether to enable or not the "forgot password?" link (default: false)
+                'forgot_password_enabled' => true,
+
+                // the path (i.e. a relative or absolute URL) to visit when clicking the "forgot password?" link (default: '#')
+                'forgot_password_path' => $this->generateUrl('...', ['...' => '...']),
+
+                // the label displayed for the "forgot password?" link (the |trans filter is applied to it)
+                'forgot_password_label' => 'Forgot your password?',
+
+                // whether to enable or not the "remember me" checkbox (default: false)
+                'remember_me_enabled' => true,
+
+                // remember me name form field (default: '_remember_me')
+                'remember_me_parameter' => 'custom_remember_me_param',
+
+                // whether to check by default the "remember me" checkbox (default: false)
+                'remember_me_checked' => true,
+
+                // the label displayed for the remember me checkbox (the |trans filter is applied to it)
+                'remember_me_label' => 'Remember me',
             ]);
         }
     }
@@ -773,7 +802,37 @@ Twig Template Path: ``@EasyAdmin/page/content.html.twig``
 It displays a simple page similar to the index/detail/form pages, with the main
 header, the sidebar menu and the central content section. The only difference is
 that the content section is completely empty, so it's useful to display your own
-text contents, custom forms, etc.
+contents and custom forms, to :ref:`integrate Symfony actions inside EasyAdmin <actions-integrating-symfony>`,
+etc. Example:
+
+.. code-block:: twig
+
+    {# templates/admin/my-custom-page.html.twig #}
+    {% extends '@EasyAdmin/page/content.html.twig' %}
+
+    {% block content_title %}The Title of the Page{% endblock %}
+    {% block page_actions %}
+        <a class="btn btn-primary" href="...">Some Action</a>
+    {% endblock %}
+
+    {% block main %}
+        <table class="datagrid">
+            <thead>
+                <tr>
+                    <td>Some Column</td>
+                    <td>Another Column</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in my_own_data %}
+                    <tr>
+                        <td>{{ data.someColumn }}</td>
+                        <td>{{ data.anotherColumn }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endblock %}
 
 .. _`Symfony controllers`: https://symfony.com/doc/current/controller.html
 .. _`Symfony route annotations`: https://symfony.com/doc/current/routing.html#creating-routes-as-annotations

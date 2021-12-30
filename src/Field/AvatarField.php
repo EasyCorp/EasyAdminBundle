@@ -16,7 +16,10 @@ final class AvatarField implements FieldInterface
     public const OPTION_IS_GRAVATAR_EMAIL = 'isGravatarEmail';
     public const OPTION_HEIGHT = 'height';
 
-    public static function new(string $propertyName, ?string $label = null): self
+    /**
+     * @param string|false|null $label
+     */
+    public static function new(string $propertyName, $label = null): self
     {
         return (new self())
             ->setProperty($propertyName)
@@ -24,6 +27,8 @@ final class AvatarField implements FieldInterface
             ->setTemplateName('crud/field/avatar')
             ->setFormType(TextType::class)
             ->addCssClass('field-avatar')
+            ->setDefaultColumns('col-md-10 col-xxl-8')
+            ->setSortable(false)
             ->setCustomOption(self::OPTION_IS_GRAVATAR_EMAIL, false)
             ->setCustomOption(self::OPTION_HEIGHT, null);
     }

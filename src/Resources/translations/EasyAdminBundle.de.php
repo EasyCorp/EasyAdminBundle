@@ -3,8 +3,8 @@
 return [
     'page_title' => [
         'dashboard' => 'Dashboard',
-        'detail' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
-        'edit' => '%entity_label_singular% <small>(#%entity_short_id%)</small> bearbeiten',
+        'detail' => '%entity_as_string%',
+        'edit' => '%entity_label_singular% bearbeiten',
         'index' => '%entity_label_plural%',
         'new' => '%entity_label_singular% erstellen',
         'exception' => 'Fehler',
@@ -116,6 +116,8 @@ return [
         'username' => 'Benutzername',
         'password' => 'Passwort',
         'sign_in' => 'Login',
+        'forgot_password' => 'Passwort vergessen?',
+        'remember_me' => 'Beim nächsten Mal automatisch anmelden',
     ],
 
     'exception' => [
@@ -123,5 +125,11 @@ return [
         'entity_remove' => 'Dieses Element kann nicht gelöscht werden, weil andere Elemente davon abhängen.',
         'forbidden_action' => 'Die gewünschte Aktion kann mit diesem Element nicht ausgeführt werden.',
         'insufficient_entity_permission' => 'Sie haben keine Berechtigung, auf dieses Element zuzugreifen.',
+    ],
+
+    'autocomplete' => [
+        'no-results-found' => 'Keine Übereinstimmungen gefunden',
+        'no-more-results' => 'Keine weiteren Ergebnisse',
+        'loading-more-results' => 'Lade mehr Ergebnisse…',
     ],
 ];

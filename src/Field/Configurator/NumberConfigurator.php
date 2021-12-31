@@ -45,7 +45,13 @@ final class NumberConfigurator implements FieldConfiguratorInterface
             $formatterAttributes['fraction_digit'] = $scale;
         }
 
-        $field->setFormattedValue($this->intlFormatter->formatNumber($value, $formatterAttributes));
+        if (null !== $numberFormat = $field->getCustomOption(NumberField::OPTION_NUMBER_FORMAT)) {
+            $field->setFormattedValue(sprintf($numberFormat, $value));
+        } elseif (null !== $numberFormat = $context->getCrud()->getNumberFormat()) {
+            $field->setFormattedValue(sprintf($numberFormat, $value));
+        } else {
+            $field->setFormattedValue($this->intlFormatter->formatNumber($value, $formatterAttributes));
+        }
     }
 
     private function getRoundingModeAsString(int $mode): string

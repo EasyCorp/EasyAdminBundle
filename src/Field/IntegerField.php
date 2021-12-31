@@ -12,6 +12,8 @@ final class IntegerField implements FieldInterface
 {
     use FieldTrait;
 
+    public const OPTION_NUMBER_FORMAT = 'numberFormat';
+
     /**
      * @param string|false|null $label
      */
@@ -23,6 +25,15 @@ final class IntegerField implements FieldInterface
             ->setTemplateName('crud/field/integer')
             ->setFormType(IntegerType::class)
             ->addCssClass('field-integer')
-            ->setDefaultColumns('col-md-4 col-xxl-3');
+            ->setDefaultColumns('col-md-4 col-xxl-3')
+            ->setCustomOption(self::OPTION_NUMBER_FORMAT, null);
+    }
+
+    // this format is passed directly to the first argument of `sprintf()` to format the integer before displaying it
+    public function setNumberFormat(string $sprintfFormat): self
+    {
+        $this->setCustomOption(self::OPTION_NUMBER_FORMAT, $sprintfFormat);
+
+        return $this;
     }
 }

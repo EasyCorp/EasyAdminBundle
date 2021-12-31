@@ -30,6 +30,10 @@
             &:first-child { margin-top: 0; }
 
             i { color: inherit; margin-top: 0; }
+
+            .badge {
+                margin-left: 16px;
+            }
         }
 
         .menu-item {
@@ -45,6 +49,10 @@
                     text-decoration-color: var(--sidebar-menu-active-item-border-color);
                     text-decoration-thickness: 2px;
                     text-decoration-skip-ink: auto;
+
+                    &.badge {
+                        text-decoration: none;
+                    }
                 }
             }
 
@@ -84,6 +92,10 @@
             width: 20px;
         }
 
+        .badge {
+            margin-left: 14px;
+        }
+
         .submenu {
             // padding must be 0 for the element that slides up/down;
             // if some padding is needed, create another HTML element inside this one
@@ -98,6 +110,14 @@
 
             .menu-header {
                 padding-left: 26px;
+            }
+
+            .menu-item {
+                margin: 5px 20px 5px 0; // to have the badge count visible
+
+                &:first-child .badge {
+                    margin-top: 2px;
+                }
             }
         }
     }

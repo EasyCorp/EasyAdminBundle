@@ -139,7 +139,7 @@
 
                                             <div class="dropdown-menu dropdown-menu-right">
                                                 {% for action in entity.actions %}
-                                                    {{ include(action.templatePath, { action: action, isIncludedInDropdown: ea.crud.showEntityActionsAsDropdown }, with_context = false) }}
+                                                    {{ include(action.templatePath, { action: action, entity: entity, isIncludedInDropdown: ea.crud.showEntityActionsAsDropdown }, with_context = false) }}
                                                 {% endfor %}
                                             </div>
                                         </div>

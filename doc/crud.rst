@@ -195,7 +195,12 @@ Date, Time and Number Formatting Options
             ->setDateIntervalFormat('%%y Year(s) %%m Month(s) %%d Day(s)')
             ->setTimezone('...')
 
-            // used to format numbers before rendering them on templates
+            // this option makes numeric values to be rendered with a sprintf()
+            // call using this value as the first argument.
+            // this option overrides any formatting option for all numeric values
+            // (e.g. setNumDecimals(), setRoundingMode(), etc. are ignored)
+            // NumberField and IntegerField can override this value with their
+            // own setNumberFormat() methods, which works in the same way
             ->setNumberFormat('%.2d');
         ;
     }

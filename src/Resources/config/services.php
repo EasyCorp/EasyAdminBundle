@@ -39,6 +39,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\EmailConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\FormConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\IdConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\ImageConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\IntegerConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\LanguageConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\LocaleConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\MoneyConfigurator;
@@ -344,6 +345,8 @@ return static function (ContainerConfigurator $container) {
 
         ->set(ImageConfigurator::class)
             ->arg(0, '%kernel.project_dir%')
+
+        ->set(IntegerConfigurator::class)
 
         ->set(LanguageConfigurator::class)
 

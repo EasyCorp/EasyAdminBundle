@@ -15,6 +15,7 @@ final class NumberField implements FieldInterface
     public const OPTION_NUM_DECIMALS = 'numDecimals';
     public const OPTION_ROUNDING_MODE = 'roundingMode';
     public const OPTION_STORED_AS_STRING = 'storedAsString';
+    public const OPTION_NUMBER_FORMAT = 'numberFormat';
 
     /**
      * @param string|false|null $label
@@ -30,7 +31,8 @@ final class NumberField implements FieldInterface
             ->setDefaultColumns('col-md-4 col-xxl-3')
             ->setCustomOption(self::OPTION_NUM_DECIMALS, null)
             ->setCustomOption(self::OPTION_ROUNDING_MODE, \NumberFormatter::ROUND_HALFUP)
-            ->setCustomOption(self::OPTION_STORED_AS_STRING, false);
+            ->setCustomOption(self::OPTION_STORED_AS_STRING, false)
+            ->setCustomOption(self::OPTION_NUMBER_FORMAT, null);
     }
 
     public function setNumDecimals(int $num): self
@@ -68,6 +70,15 @@ final class NumberField implements FieldInterface
     public function setStoredAsString(bool $asString = true): self
     {
         $this->setCustomOption(self::OPTION_STORED_AS_STRING, $asString);
+
+        return $this;
+    }
+
+    // If set, all the other formatting options are ignored. This format is passed
+    // directly to the first argument of `sprintf()` to format the number before displaying it
+    public function setNumberFormat(string $sprintfFormat): self
+    {
+        $this->setCustomOption(self::OPTION_NUMBER_FORMAT, $sprintfFormat);
 
         return $this;
     }

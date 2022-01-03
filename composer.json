@@ -20,7 +20,7 @@
         "symfony/cache": "^5.4|^6.0",
         "symfony/config": "^5.4|^6.0",
         "symfony/dependency-injection": "^5.4|^6.0",
-        "symfony/deprecation-contracts": "^3.0",
+        "symfony/deprecation-contracts": "^2.2|^3.0",
         "symfony/doctrine-bridge": "^5.4|^6.0",
         "symfony/event-dispatcher": "^5.4|^6.0",
         "symfony/filesystem": "^5.4|^6.0",

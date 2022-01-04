@@ -309,7 +309,7 @@ Customizing the Backend Design
 
 The design of the backend is created with lots of CSS variables. This makes it
 easier to customize it to your own needs. You'll find all variables in the
-``vendor/easycorp/easyadmin-bundle/assets/css/easyadmin-theme/variables.scss`` file.
+``vendor/easycorp/easyadmin-bundle/assets/css/easyadmin-theme/variables-theme.scss`` file.
 To override any of them, create a CSS file and redefine the variable values:
 
 .. code-block:: text
@@ -345,8 +345,8 @@ Then, load this CSS file in your dashboard and/or resource admin::
 
     Because of how Bootstrap styles are defined, it's not possible to use CSS
     variables to override every style. Sometimes you may need to also override
-    the value of some `Sass`_ variables (which are also defined in the same
-    ``assets/css/easyadmin-theme/variables.scss`` file).
+    the value of some `Sass`_ variables (which are defined in the 
+    ``assets/css/easyadmin-theme/variables-bootstrap.scss`` file).
 
 CSS Selectors
 ~~~~~~~~~~~~~

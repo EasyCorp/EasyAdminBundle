@@ -54,9 +54,14 @@ trait MenuItemTrait
         return $this;
     }
 
-    public function setBadgeCount(int $count): self
+    /**
+     * @param $content      This is rendered as the value of the badge; it can be anything that can be casted to a string (numbers, stringable objects, etc.)
+     * @param string $style Pass one of these values for predefined styles: 'primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'dark'
+     *                      Otherwise, the passed value is applied "as is" to the `style` attribute of the HTML element of the badge
+     */
+    public function setBadge($content, string $style = 'secondary'): self
     {
-        $this->dto->setBadgeCount($count);
+        $this->dto->setBadge($content, $style);
 
         return $this;
     }

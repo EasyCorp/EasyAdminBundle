@@ -29,7 +29,8 @@ final class MenuItemDto
     private $linkRel;
     private $linkTarget;
     private $translationParameters;
-    private $badgeCount;
+    /** @var MenuItemBadgeDto|null */
+    private $badge;
     /** @var MenuItemDto[] */
     private $subItems;
 
@@ -39,7 +40,7 @@ final class MenuItemDto
         $this->translationParameters = [];
         $this->linkRel = '';
         $this->linkTarget = '_self';
-        $this->badgeCount = 0;
+        $this->badge = null;
         $this->subItems = [];
     }
 
@@ -178,14 +179,14 @@ final class MenuItemDto
         $this->translationParameters = $translationParameters;
     }
 
-    public function getBadgeCount(): int
+    public function getBadge(): ?MenuItemBadgeDto
     {
-        return $this->badgeCount;
+        return $this->badge;
     }
 
-    public function setBadgeCount(int $badgeCount): void
+    public function setBadge($content, string $style): void
     {
-        $this->badgeCount = $badgeCount;
+        $this->badge = new MenuItemBadgeDto($content, trim($style));
     }
 
     /**

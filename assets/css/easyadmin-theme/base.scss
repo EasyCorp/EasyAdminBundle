@@ -96,7 +96,7 @@ body.ea-sidebar-width-compact .wrapper {
 
 .main-header .navbar {
     display: block;
-    padding: 0;
+    padding: 0 0 0 var(--sidebar-menu-items-padding-left);
 }
 
 .main-header #header-logo {

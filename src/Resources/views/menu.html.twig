@@ -31,13 +31,25 @@
 
 {% macro render_menu_item(item) %}
     {% if item.isMenuSection %}
-        {% if item.icon is not empty %}<i class="menu-icon fa-fw {{ item.icon }}"></i>{% endif %}
-        <span class="{{ item.cssClass }}">{{ item.label|raw }}</span>
-    {% else %}
-        <a href="{{ item.linkUrl }}" class="{{ item.hasSubItems ? 'submenu-toggle' }} {{ item.cssClass }}" target="{{ item.linkTarget }}" rel="{{ item.linkRel }}" referrerpolicy="origin-when-cross-origin">
+        <span class="menu-header-contents">
             {% if item.icon is not empty %}<i class="menu-icon fa-fw {{ item.icon }}"></i>{% endif %}
-            <span>{{ item.label|raw }}</span>
+            <span class="menu-item-label position-relative {{ item.cssClass }}">
+                {{ item.label|raw }}
+            </span>
+            {% if item.badge %}
+                <span class="menu-item-badge rounded-pill badge {{ item.badge.cssClass }}" style="{{ item.badge.htmlStyle }}">{{ item.badge.content }}</span>
+            {% endif %}
+        </span>
+    {% else %}
+        <a href="{{ item.linkUrl }}" class="menu-item-contents {{ item.hasSubItems ? 'submenu-toggle' }} {{ item.cssClass }}" target="{{ item.linkTarget }}" rel="{{ item.linkRel }}" referrerpolicy="origin-when-cross-origin">
+            {% if item.icon is not empty %}<i class="menu-icon fa-fw {{ item.icon }}"></i>{% endif %}
+            <span class="menu-item-label position-relative">
+                {{ item.label|raw }}
+            </span>
             {% if item.hasSubItems %}<i class="fa fa-fw fa-angle-right submenu-toggle-icon"></i>{% endif %}
+            {% if item.badge %}
+                <span class="menu-item-badge rounded-pill badge {{ item.badge.cssClass }}" style="{{ item.badge.htmlStyle }}">{{ item.badge.content }}</span>
+            {% endif %}
         </a>
     {% endif %}
 {% endmacro %}

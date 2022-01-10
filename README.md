@@ -42,4 +42,4 @@ License
 
 This software is published under the [MIT License](LICENSE.md)
 
-[1]: https://symfony.com/doc/master/bundles/EasyAdminBundle/index.html
+[1]: https://symfony.com/doc/4.x/bundles/EasyAdminBundle/index.html

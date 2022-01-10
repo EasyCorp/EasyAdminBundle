@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Controller;
 
+use ArrayObject;
 use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
@@ -215,7 +216,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             'pageName' => Crud::PAGE_DETAIL,
             'templateName' => 'crud/detail',
             'entity' => $context->getEntity(),
-            'tabs' => $tabs
+            'tabs' => $tabs,
         ]));
 
         $event = new AfterCrudActionEvent($context, $responseParameters);

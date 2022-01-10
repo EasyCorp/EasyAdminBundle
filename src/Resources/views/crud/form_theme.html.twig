@@ -309,7 +309,6 @@
 {% block vich_file_widget %}
     <div class="ea-vich-file">
         {% if download_uri|default('') is not empty %}
-            {% set download_title = download_uri|split('/')|last ?: 'download'|trans({}, 'VichUploaderBundle') %}
             {% set file_extension = download_uri|split('.')|last %}
             {% set extension_icons = {
                 'gif': 'fa-file-image-o',
@@ -320,7 +319,11 @@
             } %}
             <a class="ea-vich-file-name" href="{{ asset_helper is same as(true) ? asset(download_uri) : download_uri }}">
                 <i class="fa fa-fw {{ extension_icons[file_extension] ?? 'fa-file-o' }}"></i>
-                {{ download_title }}
+                {%- if download_label|default(false) -%}
+                    {{ download_label|trans({}, 'VichUploaderBundle') }}
+                {%- else -%}
+                    {{ download_uri|split('/')|last ?: 'download'|trans({}, 'VichUploaderBundle') }}
+                {%- endif -%}
             </a>
         {% endif %}
 

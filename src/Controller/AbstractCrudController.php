@@ -38,6 +38,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Factory\FilterFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\PaginatorFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FileUploadType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Model\FileUploadState;
@@ -175,10 +176,46 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $this->container->get(EntityFactory::class)->processFields($context->getEntity(), FieldCollection::new($this->configureFields(Crud::PAGE_DETAIL)));
         $this->container->get(EntityFactory::class)->processActions($context->getEntity(), $context->getCrud()->getActionsConfig());
 
+        // Get tabs fields
+        $tabs = [];
+        $currentTab = 'default';
+        $nbTabs = 0;
+        foreach ($context->getEntity()->getFields() as $fieldDto) {
+            if (u($fieldDto->getCssClass())->containsAny(['field-form_tab'])) {
+                ++$nbTabs;
+            }
+        }
+        if ($nbTabs > 0) {
+            foreach ($context->getEntity()->getFields() as $fieldDto) {
+                if (u($fieldDto->getCssClass())->containsAny(['field-form_tab'])) {
+                    $currentTab = $fieldDto->getLabel();
+                    $metadata = [];
+                    $metadata['active'] = 0 === \count($tabs);
+                    $metadata['errors'] = 0;
+                    $metadata['id'] = $fieldDto->getProperty();
+                    $metadata['label'] = $fieldDto->getLabel();
+                    $metadata['help'] = $fieldDto->getHelp();
+                    $metadata[FormField::OPTION_ICON] = $fieldDto->getCustomOption(FormField::OPTION_ICON);
+                    $tabs[$currentTab] = new ArrayObject($metadata);
+                    $context->getEntity()->getFields()->unset($fieldDto);
+                } else {
+                    if ('default' === $currentTab && !isset($tabs[$currentTab])) {
+                        $metadata['active'] = true;
+                        $metadata['errors'] = 0;
+                        $metadata['id'] = 'default';
+                        $metadata['label'] = 'action.detail';
+                        $tabs[$currentTab] = new ArrayObject($metadata);
+                    }
+                    $fieldDto->ea_detail_tab = $currentTab;
+                }
+            }
+        }
+
         $responseParameters = $this->configureResponseParameters(KeyValueStore::new([
             'pageName' => Crud::PAGE_DETAIL,
             'templateName' => 'crud/detail',
             'entity' => $context->getEntity(),
+            'tabs' => $tabs
         ]));
 
         $event = new AfterCrudActionEvent($context, $responseParameters);

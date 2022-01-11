@@ -1,5 +1,6 @@
-var Encore = require('@symfony/webpack-encore');
+const Encore = require('@symfony/webpack-encore');
 const WebpackRTLPlugin = require('webpack-rtl-plugin');
+const bootstrap = require('bootstrap/dist/js/bootstrap.min');
 
 Encore
     .setOutputPath('./src/Resources/public/')
@@ -34,6 +35,10 @@ Encore
     .addEntry('form-type-collection', './assets/js/form-type-collection.js')
     .addEntry('form-type-slug', './assets/js/form-type-slug.js')
     .addEntry('form-type-textarea', './assets/js/form-type-textarea.js')
+
+    .autoProvideVariables({
+        bootstrap: 'bootstrap',
+    });
 ;
 
 module.exports = Encore.getWebpackConfig();

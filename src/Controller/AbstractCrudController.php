@@ -200,7 +200,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
                     ]));
                     $context->getEntity()->getFields()->unset($fieldDto);
                 } else {
-                    if ('default' === $currentTab && !count($tabs)) {
+                    if ('default' === $currentTab && !\count($tabs)) {
                         $tabs[$currentTab] = new ArrayObject($defaultTabMetadata);
                     }
                     $fieldDto->ea_detail_tab = $currentTab;

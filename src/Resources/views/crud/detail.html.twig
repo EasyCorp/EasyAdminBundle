@@ -46,11 +46,6 @@
                                 <i class="fa fa-fw fa-{{ tab_config.icon }}"></i>
                             {%- endif -%}
                             {{ tab_config['label']|trans(domain = ea.i18n.translationDomain)|trans(domain = 'EasyAdminBundle') }}
-                            {%- if tab_config.errors > 0 -%}
-                                <span class="badge badge-danger" title="{{ 'form.tab.error_badge_title'|trans({'%count%': tab_config.errors}, 'EasyAdminBundle') }}">
-                                        {{- tab_config.errors -}}
-                                    </span>
-                            {%- endif -%}
                         </a>
                     </li>
                 {% endfor %}

@@ -177,9 +177,8 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $this->container->get(EntityFactory::class)->processFields($context->getEntity(), FieldCollection::new($this->configureFields(Crud::PAGE_DETAIL)));
         $this->container->get(EntityFactory::class)->processActions($context->getEntity(), $context->getCrud()->getActionsConfig());
 
-        // Get tabs fields
+        // Extract tabs fields and apply tab name for other fields
         $tabs = [];
-        $currentTab = 'default';
         $nbTabs = 0;
         foreach ($context->getEntity()->getFields() as $fieldDto) {
             if (u($fieldDto->getCssClass())->containsAny(['field-form_tab'])) {
@@ -187,25 +186,22 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             }
         }
         if ($nbTabs > 0) {
+            $currentTab = 'default';
+            $defaultTabMetadata = ['active' => true, 'id' => 'default', 'label' => 'action.detail'];
             foreach ($context->getEntity()->getFields() as $fieldDto) {
                 if (u($fieldDto->getCssClass())->containsAny(['field-form_tab'])) {
                     $currentTab = $fieldDto->getLabel();
-                    $metadata = [];
-                    $metadata['active'] = 0 === \count($tabs);
-                    $metadata['errors'] = 0;
-                    $metadata['id'] = $fieldDto->getProperty();
-                    $metadata['label'] = $fieldDto->getLabel();
-                    $metadata['help'] = $fieldDto->getHelp();
-                    $metadata[FormField::OPTION_ICON] = $fieldDto->getCustomOption(FormField::OPTION_ICON);
-                    $tabs[$currentTab] = new ArrayObject($metadata);
+                    $tabs[$currentTab] = new ArrayObject(array_merge($defaultTabMetadata, [
+                        'active' => 0 === \count($tabs),
+                        'id' => $fieldDto->getProperty(),
+                        'label' => $fieldDto->getLabel(),
+                        'help' => $fieldDto->getHelp(),
+                        FormField::OPTION_ICON => $fieldDto->getCustomOption(FormField::OPTION_ICON),
+                    ]));
                     $context->getEntity()->getFields()->unset($fieldDto);
                 } else {
-                    if ('default' === $currentTab && !isset($tabs[$currentTab])) {
-                        $metadata['active'] = true;
-                        $metadata['errors'] = 0;
-                        $metadata['id'] = 'default';
-                        $metadata['label'] = 'action.detail';
-                        $tabs[$currentTab] = new ArrayObject($metadata);
+                    if ('default' === $currentTab && !count($tabs)) {
+                        $tabs[$currentTab] = new ArrayObject($defaultTabMetadata);
                     }
                     $fieldDto->ea_detail_tab = $currentTab;
                 }

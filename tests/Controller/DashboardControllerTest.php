@@ -13,7 +13,7 @@ class DashboardControllerTest extends WebTestCase
         $client->request('GET', '/admin');
 
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorTextContains('h1.title', 'Welcome to EasyAdmin 4');
+        $this->assertSelectorTextContains('h1', 'Welcome to EasyAdmin 4');
     }
 
     public function testWelcomePageAsLoggedUser()
@@ -23,6 +23,6 @@ class DashboardControllerTest extends WebTestCase
         $client->request('GET', '/secure_admin', [], [], ['PHP_AUTH_USER' => 'admin', 'PHP_AUTH_PW' => '1234']);
 
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorTextContains('h1.title', 'Welcome to EasyAdmin 4');
+        $this->assertSelectorTextContains('h1', 'Welcome to EasyAdmin 4');
     }
 }

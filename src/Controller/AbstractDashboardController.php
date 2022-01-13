@@ -38,7 +38,6 @@ abstract class AbstractDashboardController extends AbstractController implements
     {
         return $this->render('@EasyAdmin/welcome.html.twig', [
             'dashboard_controller_filepath' => (new \ReflectionClass(static::class))->getFileName(),
-            'dashboard_controller_class' => (new \ReflectionClass(static::class))->getShortName(),
         ]);
     }
 

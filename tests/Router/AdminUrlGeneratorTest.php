@@ -279,6 +279,7 @@ class AdminUrlGeneratorTest extends WebTestCase
         $this->assertTrue($adminUrlGenerator->isReferrerOverridden());
         $this->assertSame('justoverridden', $adminUrlGenerator->getOverrideReferrer());
         $this->assertSame('http://localhost/admin?foo=bar&referrer=justoverridden', $adminUrlGenerator->generateUrl());
+        $adminUrlGenerator->includeReferrer();
         $this->assertSame('http://localhost/admin?foo=bar&referrer=justoverridden', $adminUrlGenerator->generateUrl());
 
         $this->assertSame('justoverridden', $adminUrlGenerator->getOverrideReferrer());

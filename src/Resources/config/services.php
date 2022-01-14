@@ -132,10 +132,7 @@ return static function (ContainerConfigurator $container) {
             ->tag('kernel.event_listener', ['event' => 'kernel.exception', 'priority' => -64])
 
         ->set(EasyAdminTwigExtension::class)
-            // I don't know if we truly need the locator to get a new instance of the
-            // service whenever we generate a new URL, Maybe it's enough with the route parameter
-            // initialization done after generating each URL
-            ->arg(0, new Reference('service_locator_'.AdminUrlGenerator::class))
+            ->arg(0, new Reference(AdminUrlGenerator::class))
             ->tag('twig.extension')
 
         ->set(EaCrudFormTypeExtension::class)
@@ -193,19 +190,11 @@ return static function (ContainerConfigurator $container) {
             ->arg(5, new Reference(EntityFactory::class))
 
         ->set(AdminUrlGenerator::class)
-            // I don't know if we truly need the share() method to get a new instance of the
-            // service whenever we generate a new URL. Maybe it's enough with the route parameter
-            // initialization done after generating each URL
-            ->share(false)
             ->arg(0, new Reference(AdminContextProvider::class))
             ->arg(1, new Reference('router.default'))
             ->arg(2, new Reference(DashboardControllerRegistry::class))
             ->arg(3, new Reference(CrudControllerRegistry::class))
             ->arg(4, new Reference(UrlSigner::class))
-
-        ->set('service_locator_'.AdminUrlGenerator::class, ServiceLocator::class)
-            ->args([[AdminUrlGenerator::class => new Reference(AdminUrlGenerator::class)]])
-            ->tag('container.service_locator')
 
         ->set(UrlSigner::class)
             ->arg(0, '%kernel.secret%')

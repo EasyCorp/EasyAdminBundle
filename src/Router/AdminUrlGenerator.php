@@ -27,7 +27,7 @@ final class AdminUrlGenerator
     private $addSignature;
     private $routeParameters;
     private $currentPageReferrer;
-    private $overrideReferrer;
+    private $overrideReferrer = null;
 
     public function __construct(AdminContextProvider $adminContextProvider, UrlGeneratorInterface $urlGenerator, DashboardControllerRegistry $dashboardControllerRegistry, CrudControllerRegistry $crudControllerRegistry, UrlSigner $urlSigner)
     {
@@ -350,7 +350,6 @@ final class AdminUrlGenerator
 
         $this->includeReferrer = null;
         $this->addSignature = null;
-        $this->overrideReferrer = null;
 
         $this->routeParameters = $currentRouteParameters;
     }

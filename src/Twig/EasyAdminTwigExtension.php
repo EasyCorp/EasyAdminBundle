@@ -3,7 +3,6 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Twig;
 
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
-use Symfony\Component\DependencyInjection\ServiceLocator;
 use Twig\Environment;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\ExtensionInterface;
@@ -18,11 +17,11 @@ use Twig\TwigFunction;
  */
 class EasyAdminTwigExtension extends AbstractExtension
 {
-    private $serviceLocator;
+    private $adminUrlGenerator;
 
-    public function __construct(ServiceLocator $serviceLocator)
+    public function __construct(AdminUrlGenerator $adminUrlGenerator)
     {
-        $this->serviceLocator = $serviceLocator;
+        $this->adminUrlGenerator = $adminUrlGenerator;
     }
 
     /**
@@ -147,6 +146,6 @@ class EasyAdminTwigExtension extends AbstractExtension
 
     public function getAdminUrlGenerator(array $queryParameters = []): AdminUrlGenerator
     {
-        return $this->serviceLocator->get(AdminUrlGenerator::class)->setAll($queryParameters);
+        return $this->adminUrlGenerator->setAll($queryParameters);
     }
 }

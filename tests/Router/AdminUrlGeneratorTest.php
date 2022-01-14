@@ -263,11 +263,25 @@ class AdminUrlGeneratorTest extends WebTestCase
         $this->assertSame('justoverridden', $adminUrlGenerator->getOverrideReferrer());
         $this->assertSame('http://localhost/admin?foo=bar&referrer=justoverridden', $adminUrlGenerator->generateUrl());
 
-        $this->assertNull($adminUrlGenerator->getOverrideReferrer());
         $adminUrlGenerator->removeReferrer();
         $adminUrlGenerator->overrideReferrer('somethingelse');
         $this->assertSame('somethingelse', $adminUrlGenerator->getOverrideReferrer());
         $this->assertSame('http://localhost/admin?foo=bar', $adminUrlGenerator->generateUrl());
+    }
+
+    public function testPersistentOverride()
+    {
+        $adminUrlGenerator = $this->getAdminUrlGenerator();
+
+        $this->assertNull($adminUrlGenerator->getOverrideReferrer());
+        $adminUrlGenerator->includeReferrer();
+        $adminUrlGenerator->overrideReferrer('justoverridden');
+        $this->assertTrue($adminUrlGenerator->isReferrerOverridden());
+        $this->assertSame('justoverridden', $adminUrlGenerator->getOverrideReferrer());
+        $this->assertSame('http://localhost/admin?foo=bar&referrer=justoverridden', $adminUrlGenerator->generateUrl());
+        $this->assertSame('http://localhost/admin?foo=bar&referrer=justoverridden', $adminUrlGenerator->generateUrl());
+
+        $this->assertSame('justoverridden', $adminUrlGenerator->getOverrideReferrer());
     }
 
     public function testSignedUrls()

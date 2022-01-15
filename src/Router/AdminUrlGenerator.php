@@ -27,6 +27,7 @@ final class AdminUrlGenerator
     private ?bool $addSignature = null;
     private array $routeParameters = [];
     private ?string $currentPageReferrer = null;
+    private ?string $customPageReferrer = null;
 
     public function __construct(AdminContextProvider $adminContextProvider, UrlGeneratorInterface $urlGenerator, DashboardControllerRegistry $dashboardControllerRegistry, CrudControllerRegistry $crudControllerRegistry, UrlSigner $urlSigner)
     {
@@ -168,6 +169,18 @@ final class AdminUrlGenerator
         return $this;
     }
 
+    public function setReferrer(string $referrer): self
+    {
+        if (false === $this->isInitialized) {
+            $this->initialize();
+        }
+
+        $this->includeReferrer = true;
+        $this->customPageReferrer = $referrer;
+
+        return $this;
+    }
+
     public function addSignature(bool $addSignature = true): self
     {
         if (false === $this->isInitialized) {
@@ -207,7 +220,7 @@ final class AdminUrlGenerator
         }
 
         if (true === $this->includeReferrer) {
-            $this->setRouteParameter(EA::REFERRER, $this->currentPageReferrer);
+            $this->setRouteParameter(EA::REFERRER, $this->customPageReferrer ?? $this->currentPageReferrer);
         }
 
         if (false === $this->includeReferrer) {
@@ -314,6 +327,7 @@ final class AdminUrlGenerator
         }
 
         $this->includeReferrer = null;
+        $this->customPageReferrer = null;
         $this->addSignature = null;
 
         $this->routeParameters = $currentRouteParameters;

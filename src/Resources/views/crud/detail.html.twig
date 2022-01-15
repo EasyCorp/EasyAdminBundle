@@ -7,6 +7,34 @@
 {% block body_id 'ea-detail-' ~ entity.name ~ '-' ~ entity.primaryKeyValue %}
 {% block body_class 'ea-detail ea-detail-' ~ entity.name %}
 
+{% set ea_field_assts = ea.crud.fieldAssets(constant('EasyCorp\\Bundle\\EasyAdminBundle\\Config\\Crud::PAGE_DETAIL')) %}
+
+{% block configured_head_contents %}
+    {{ parent() }}
+    {% for htmlContent in ea_field_assts.headContents %}
+        {{ htmlContent|raw }}
+    {% endfor %}
+{% endblock %}
+
+{% block configured_body_contents %}
+    {{ parent() }}
+    {% for htmlContent in ea_field_assts.bodyContents %}
+        {{ htmlContent|raw }}
+    {% endfor %}
+{% endblock %}
+
+{% block configured_stylesheets %}
+    {{ parent() }}
+    {{ include('@EasyAdmin/includes/_css_assets.html.twig', { assets: ea_field_assts.cssAssets }, with_context = false) }}
+    {{ include('@EasyAdmin/includes/_encore_link_tags.html.twig', { assets: ea_field_assts.webpackEncoreAssets }, with_context = false) }}
+{% endblock %}
+
+{% block configured_javascripts %}
+    {{ parent() }}
+    {{ include('@EasyAdmin/includes/_js_assets.html.twig', { assets: ea_field_assts.jsAssets }, with_context = false) }}
+    {{ include('@EasyAdmin/includes/_encore_script_tags.html.twig', { assets: ea_field_assts.webpackEncoreAssets }, with_context = false) }}
+{% endblock %}
+
 {% block content_title %}
     {%- apply spaceless -%}
         {% set custom_page_title = ea.crud.customPageTitle(pageName, entity ? entity.instance : null) %}

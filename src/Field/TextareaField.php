@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Asset;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
@@ -28,7 +29,7 @@ final class TextareaField implements FieldInterface
             ->setTemplateName('crud/field/textarea')
             ->setFormType(TextareaType::class)
             ->addCssClass('field-textarea')
-            ->addJsFiles('bundles/easyadmin/form-type-textarea.js')
+            ->addJsFiles(Asset::new('bundles/easyadmin/form-type-textarea.js')->onlyOnForms())
             ->setDefaultColumns('col-md-9 col-xxl-7')
             ->setCustomOption(self::OPTION_MAX_LENGTH, null)
             ->setCustomOption(self::OPTION_NUM_OF_ROWS, 5)

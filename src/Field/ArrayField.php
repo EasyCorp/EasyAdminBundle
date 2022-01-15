@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Asset;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 
@@ -23,7 +24,7 @@ final class ArrayField implements FieldInterface
             ->setTemplateName('crud/field/array')
             ->setFormType(CollectionType::class)
             ->addCssClass('field-array')
-            ->addJsFiles('bundles/easyadmin/form-type-collection.js')
+            ->addJsFiles(Asset::new('bundles/easyadmin/form-type-collection.js')->onlyOnForms())
             ->setDefaultColumns('col-md-7 col-xxl-6');
     }
 }

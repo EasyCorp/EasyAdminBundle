@@ -226,6 +226,8 @@ Finally, add this custom theme to the list of themes used to render backend form
     ``{% block _Product_title_widget %}``. The full syntax is:
     ``{% block _<Entity name>_<Field name>_widget %}``.
 
+.. _crud-design-custom-web-assets:
+
 Adding Custom Web Assets
 ------------------------
 
@@ -291,6 +293,10 @@ and ``<script>`` tags, pass an ``Asset`` object to the ``addCssFile()``,
         ->addJsFile(Asset::new('build/admin.js')->htmlAttr('referrerpolicy', 'strict-origin'))
 
         ->addWebpackEncoreEntry(Asset::new('admin-app')->webpackEntrypointName('...'))
+
+        ->addCssFile(Asset::new('build/admin-detail.css')->onlyOnDetail())
+        ->addJsFile(Asset::new('build/admin.js')->onlyWhenCreating())
+        ->addWebpackEncoreEntry(Asset::new('admin-app')->ignoreOnForms())
     ;
 
 .. tip::

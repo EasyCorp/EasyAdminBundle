@@ -8,30 +8,32 @@
 {% block body_id 'ea-edit-' ~ entity.name ~ '-' ~ entity.primaryKeyValue %}
 {% block body_class 'ea-edit ea-edit-' ~ entity.name %}
 
+{% set ea_field_assts = ea.crud.fieldAssets(constant('EasyCorp\\Bundle\\EasyAdminBundle\\Config\\Crud::PAGE_EDIT')) %}
+
 {% block configured_head_contents %}
     {{ parent() }}
-    {% for htmlContent in edit_form.vars.ea_crud_form.assets.headContents %}
+    {% for htmlContent in ea_field_assts.headContents %}
         {{ htmlContent|raw }}
     {% endfor %}
 {% endblock %}
 
 {% block configured_body_contents %}
     {{ parent() }}
-    {% for htmlContent in edit_form.vars.ea_crud_form.assets.bodyContents %}
+    {% for htmlContent in ea_field_assts.bodyContents %}
         {{ htmlContent|raw }}
     {% endfor %}
 {% endblock %}
 
 {% block configured_stylesheets %}
     {{ parent() }}
-    {{ include('@EasyAdmin/includes/_css_assets.html.twig', { assets: edit_form.vars.ea_crud_form.assets.cssAssets }, with_context = false) }}
-    {{ include('@EasyAdmin/includes/_encore_link_tags.html.twig', { assets: edit_form.vars.ea_crud_form.assets.webpackEncoreAssets }, with_context = false) }}
+    {{ include('@EasyAdmin/includes/_css_assets.html.twig', { assets: ea_field_assts.cssAssets }, with_context = false) }}
+    {{ include('@EasyAdmin/includes/_encore_link_tags.html.twig', { assets: ea_field_assts.webpackEncoreAssets }, with_context = false) }}
 {% endblock %}
 
 {% block configured_javascripts %}
     {{ parent() }}
-    {{ include('@EasyAdmin/includes/_js_assets.html.twig', { assets: edit_form.vars.ea_crud_form.assets.jsAssets }, with_context = false) }}
-    {{ include('@EasyAdmin/includes/_encore_script_tags.html.twig', { assets: edit_form.vars.ea_crud_form.assets.webpackEncoreAssets }, with_context = false) }}
+    {{ include('@EasyAdmin/includes/_js_assets.html.twig', { assets: ea_field_assts.jsAssets }, with_context = false) }}
+    {{ include('@EasyAdmin/includes/_encore_script_tags.html.twig', { assets: ea_field_assts.webpackEncoreAssets }, with_context = false) }}
 {% endblock %}
 
 {% block content_title %}

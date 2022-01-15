@@ -7,10 +7,15 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
  */
 final class AssetsDto
 {
+    /** @var AssetDto[] */
     private $webpackEncoreAssets = [];
+    /** @var AssetDto[] */
     private $cssAssets = [];
+    /** @var AssetDto[] */
     private $jsAssets = [];
+    /** @var AssetDto[] */
     private $headContents = [];
+    /** @var AssetDto[] */
     private $bodyContents = [];
 
     public function __construct()
@@ -94,6 +99,43 @@ final class AssetsDto
     public function getBodyContents(): array
     {
         return $this->bodyContents;
+    }
+
+    public function loadedOn(?string $pageName): self
+    {
+        if (null === $pageName) {
+            return $this;
+        }
+
+        $filteredAssets = new self();
+
+        foreach ($this->cssAssets as $cssAsset) {
+            if ($cssAsset->getLoadedOn()->has($pageName)) {
+                $filteredAssets->addCssAsset($cssAsset);
+            }
+        }
+        foreach ($this->jsAssets as $jsAsset) {
+            if ($jsAsset->getLoadedOn()->has($pageName)) {
+                $filteredAssets->addJsAsset($jsAsset);
+            }
+        }
+        foreach ($this->webpackEncoreAssets as $webpackEncoreAsset) {
+            if ($webpackEncoreAsset->getLoadedOn()->has($pageName)) {
+                $filteredAssets->addWebpackEncoreAsset($webpackEncoreAsset);
+            }
+        }
+        foreach ($this->headContents as $headContent) {
+            if ($headContent->getLoadedOn()->has($pageName)) {
+                $filteredAssets->addHtmlContentToHead($headContent);
+            }
+        }
+        foreach ($this->bodyContents as $bodyContent) {
+            if ($bodyContent->getLoadedOn()->has($pageName)) {
+                $filteredAssets->addHtmlContentToBody($bodyContent);
+            }
+        }
+
+        return $filteredAssets;
     }
 
     public function mergeWith(self $assetsDto): self

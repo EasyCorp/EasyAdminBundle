@@ -54,7 +54,7 @@ final class AdminContextFactory
         $pageName = \in_array($crudAction, $validPageNames, true) ? $crudAction : null;
 
         $dashboardDto = $this->getDashboardDto($request, $dashboardController);
-        $assetDto = $this->getAssetDto($dashboardController, $crudController);
+        $assetDto = $this->getAssetDto($dashboardController, $crudController, $pageName);
         $actionConfigDto = $this->getActionConfig($dashboardController, $crudController, $pageName);
         $filters = $this->getFilters($dashboardController, $crudController);
 
@@ -94,7 +94,7 @@ final class AdminContextFactory
         return $dashboardDto;
     }
 
-    private function getAssetDto(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController): AssetsDto
+    private function getAssetDto(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController, ?string $pageName): AssetsDto
     {
         $defaultAssets = $dashboardController->configureAssets();
 
@@ -102,7 +102,7 @@ final class AdminContextFactory
             return $defaultAssets->getAsDto();
         }
 
-        return $crudController->configureAssets($defaultAssets)->getAsDto();
+        return $crudController->configureAssets($defaultAssets)->getAsDto()->loadedOn($pageName);
     }
 
     private function getCrudDto(CrudControllerRegistry $crudControllers, DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController, ActionConfigDto $actionConfigDto, FilterConfigDto $filters, ?string $crudAction, ?string $pageName): ?CrudDto

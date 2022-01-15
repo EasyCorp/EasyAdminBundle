@@ -462,6 +462,31 @@ Design Options
 
         // useful for example to right-align numbers/money values (this setting is ignored in 'detail' page)
         ->setTextAlign('right')
+    ;
+
+Similar to the :ref:`CRUD design options <crud-design-custom-web-assets>`, fields
+can also load CSS files, Javascript files and Webpack Encore entries and add HTML
+contents to the ``<head>`` and/or ``<body>`` elements of the backend pages::
+
+    TextField::new('firstName', 'Name')
+        ->addCssFiles('bundle/some-bundle/foo.css', 'some-custom-styles.css')
+        ->addJsFiles('admin/some-custom-code.js')
+        ->addWebpackEncoreEntry('admin-maps')
+        ->addHtmlContentToHead('<link rel="dns-prefetch" href="https://assets.example.com">')
+        ->addHtmlContentToBody('<!-- generated at '.time().' -->')
+    ;
+
+By default, these web assets are loaded in all backend pages. If you need a more
+precise control, use the ``Asset`` class to define the assets::
+
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Asset;
+    // ...
+
+    TextField::new('firstName', 'Name')
+        ->addCssFiles(Asset::new'bundle/some-bundle/foo.css')->ignoreOnForms()->htmlAttr('media', 'print'))
+        ->addJsFiles(Asset::new('admin/some-custom-code.js')->onlyOnIndex()->defer())
+        ->addWebpackEncoreEntry(Asset::new('admin-maps')->onlyWhenCreating()->preload())
+    ;
 
 Formatting Options
 ~~~~~~~~~~~~~~~~~~

@@ -3,9 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type;
 
 use ArrayObject;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetsDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Form\EventListener\EasyAdminTabSubscriber;
 use Symfony\Bridge\Doctrine\Form\DoctrineOrmTypeGuesser;
@@ -115,16 +113,8 @@ class CrudFormType extends AbstractType
 
     public function finishView(FormView $view, FormInterface $form, array $options)
     {
-        // some properties and field types require CSS/JS assets to work properly
-        // get all field assets and pass them as a form variable
-        $allFormFieldAssets = new AssetsDto();
-        /** @var FieldDto $fieldDto */
-        foreach ($options['entityDto']->getFields() as $fieldDto) {
-            $allFormFieldAssets = $allFormFieldAssets->mergeWith($fieldDto->getAssets());
-        }
-
         $view->vars['ea_crud_form'] = [
-            'assets' => $allFormFieldAssets,
+            'assets' => '** This variable no longer stores field assets. Instead, use "ea.crud.fieldAssets()" in your Twig template.',
             'entity' => $options['entityDto'],
             'form_tabs' => $form->getConfig()->getAttribute('ea_form_tabs'),
             'form_panels' => $form->getConfig()->getAttribute('ea_form_panels'),

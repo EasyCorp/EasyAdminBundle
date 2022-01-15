@@ -12,6 +12,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 final class CrudDto
 {
     private $controllerFqcn;
+    /** @var AssetsDto */
+    private $fieldAssetsDto;
     private $pageName;
     private $actionName;
     /** @var ActionConfigDto */
@@ -51,6 +53,7 @@ final class CrudDto
     {
         $this->customPageTitles = [Crud::PAGE_DETAIL => null, Crud::PAGE_EDIT => null, Crud::PAGE_INDEX => null, Crud::PAGE_NEW => null];
         $this->helpMessages = [Crud::PAGE_DETAIL => null, Crud::PAGE_EDIT => null, Crud::PAGE_INDEX => null, Crud::PAGE_NEW => null];
+        $this->fieldAssetsDto = new AssetsDto();
         $this->datePattern = 'medium';
         $this->timePattern = 'medium';
         $this->dateTimePattern = ['medium', 'medium'];
@@ -82,6 +85,16 @@ final class CrudDto
     public function setPageName(?string $pageName): void
     {
         $this->pageName = $pageName;
+    }
+
+    public function getFieldAssets(string $pageName): AssetsDto
+    {
+        return $this->fieldAssetsDto;
+    }
+
+    public function setFieldAssets(AssetsDto $assets): void
+    {
+        $this->fieldAssetsDto = $assets;
     }
 
     public function getEntityFqcn(): string

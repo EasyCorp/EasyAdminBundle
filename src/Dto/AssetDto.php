@@ -2,6 +2,9 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
+
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
@@ -15,6 +18,7 @@ final class AssetDto
     private $webpackPackageName;
     private $webpackEntrypointName;
     private $htmlAttributes;
+    private $loadedOn;
 
     public function __construct(string $value)
     {
@@ -26,6 +30,12 @@ final class AssetDto
         $this->webpackPackageName = null;
         $this->webpackEntrypointName = '_default';
         $this->htmlAttributes = [];
+        $this->loadedOn = KeyValueStore::new([
+            Crud::PAGE_INDEX => Crud::PAGE_INDEX,
+            Crud::PAGE_DETAIL => Crud::PAGE_DETAIL,
+            Crud::PAGE_EDIT => Crud::PAGE_EDIT,
+            Crud::PAGE_NEW => Crud::PAGE_NEW,
+        ]);
     }
 
     public function __toString(): string
@@ -106,5 +116,15 @@ final class AssetDto
     public function getHtmlAttributes(): array
     {
         return $this->htmlAttributes;
+    }
+
+    public function getLoadedOn(): KeyValueStore
+    {
+        return $this->loadedOn;
+    }
+
+    public function setLoadedOn(KeyValueStore $loadedOn): void
+    {
+        $this->loadedOn = $loadedOn;
     }
 }

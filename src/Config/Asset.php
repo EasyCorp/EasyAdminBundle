@@ -104,6 +104,95 @@ final class Asset
         return $this;
     }
 
+    public function ignoreOnDetail(): self
+    {
+        $loadedOn = $this->dto->getLoadedOn();
+        $loadedOn->delete(Crud::PAGE_DETAIL);
+
+        $this->dto->setLoadedOn($loadedOn);
+
+        return $this;
+    }
+
+    public function ignoreOnForm(): self
+    {
+        $loadedOn = $this->dto->getLoadedOn();
+        $loadedOn->delete(Crud::PAGE_NEW);
+        $loadedOn->delete(Crud::PAGE_EDIT);
+
+        $this->dto->setLoadedOn($loadedOn);
+
+        return $this;
+    }
+
+    public function ignoreWhenCreating(): self
+    {
+        $loadedOn = $this->dto->getLoadedOn();
+        $loadedOn->delete(Crud::PAGE_NEW);
+
+        $this->dto->setLoadedOn($loadedOn);
+
+        return $this;
+    }
+
+    public function ignoreWhenUpdating(): self
+    {
+        $loadedOn = $this->dto->getLoadedOn();
+        $loadedOn->delete(Crud::PAGE_EDIT);
+
+        $this->dto->setLoadedOn($loadedOn);
+
+        return $this;
+    }
+
+    public function ignoreOnIndex(): self
+    {
+        $loadedOn = $this->dto->getLoadedOn();
+        $loadedOn->delete(Crud::PAGE_INDEX);
+
+        $this->dto->setLoadedOn($loadedOn);
+
+        return $this;
+    }
+
+    public function onlyOnDetail(): self
+    {
+        $this->dto->setLoadedOn(KeyValueStore::new([Crud::PAGE_DETAIL => Crud::PAGE_DETAIL]));
+
+        return $this;
+    }
+
+    public function onlyOnForms(): self
+    {
+        $this->dto->setLoadedOn(KeyValueStore::new([
+            Crud::PAGE_NEW => Crud::PAGE_NEW,
+            Crud::PAGE_EDIT => Crud::PAGE_EDIT,
+        ]));
+
+        return $this;
+    }
+
+    public function onlyOnIndex(): self
+    {
+        $this->dto->setLoadedOn(KeyValueStore::new([Crud::PAGE_INDEX => Crud::PAGE_INDEX]));
+
+        return $this;
+    }
+
+    public function onlyWhenCreating(): self
+    {
+        $this->dto->setLoadedOn(KeyValueStore::new([Crud::PAGE_NEW => Crud::PAGE_NEW]));
+
+        return $this;
+    }
+
+    public function onlyWhenUpdating(): self
+    {
+        $this->dto->setLoadedOn(KeyValueStore::new([Crud::PAGE_EDIT => Crud::PAGE_EDIT]));
+
+        return $this;
+    }
+
     public function getAsDto(): AssetDto
     {
         return $this->dto;

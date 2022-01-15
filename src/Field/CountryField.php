@@ -18,6 +18,8 @@ final class CountryField implements FieldInterface
     public const OPTION_SHOW_FLAG = 'showFlag';
     public const OPTION_SHOW_NAME = 'showName';
     public const OPTION_COUNTRY_CODE_FORMAT = 'countryCodeFormat';
+    public const OPTION_COUNTRY_CODES_TO_KEEP = 'countryCodesToKeep';
+    public const OPTION_COUNTRY_CODES_TO_REMOVE = 'countryCodesToRemove';
     /** @internal used to store the code of the flag to use independently from the country code format used */
     public const OPTION_FLAG_CODE = 'flagCode';
 
@@ -35,7 +37,9 @@ final class CountryField implements FieldInterface
             ->setDefaultColumns('col-md-4 col-xxl-3')
             ->setCustomOption(self::OPTION_SHOW_FLAG, true)
             ->setCustomOption(self::OPTION_SHOW_NAME, true)
-            ->setCustomOption(self::OPTION_COUNTRY_CODE_FORMAT, self::FORMAT_ISO_3166_ALPHA2);
+            ->setCustomOption(self::OPTION_COUNTRY_CODE_FORMAT, self::FORMAT_ISO_3166_ALPHA2)
+            ->setCustomOption(self::OPTION_COUNTRY_CODES_TO_KEEP, null)
+            ->setCustomOption(self::OPTION_COUNTRY_CODES_TO_REMOVE, null);
     }
 
     public function showFlag(bool $isShown = true): self
@@ -55,6 +59,28 @@ final class CountryField implements FieldInterface
     public function useAlpha3Codes(bool $useAlpha3 = true): self
     {
         $this->setCustomOption(self::OPTION_COUNTRY_CODE_FORMAT, $useAlpha3 ? self::FORMAT_ISO_3166_ALPHA3 : self::FORMAT_ISO_3166_ALPHA2);
+
+        return $this;
+    }
+
+    /**
+     * Restricts the list of countries shown by the field to the given list of country codes.
+     * e.g. ->includeOnly(['AR', 'BR', 'ES', 'PT']).
+     */
+    public function includeOnly(array $countryCodesToKeep): self
+    {
+        $this->setCustomOption(self::OPTION_COUNTRY_CODES_TO_KEEP, $countryCodesToKeep);
+
+        return $this;
+    }
+
+    /**
+     * Removes the given list of country codes from the countries displayed by the field.
+     * e.g. ->remove(['AF', 'KP']).
+     */
+    public function remove(array $countryCodesToRemove): self
+    {
+        $this->setCustomOption(self::OPTION_COUNTRY_CODES_TO_REMOVE, $countryCodesToRemove);
 
         return $this;
     }

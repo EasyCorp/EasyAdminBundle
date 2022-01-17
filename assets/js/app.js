@@ -210,8 +210,11 @@ const App = (() => {
                 const oldValue = !newValue;
 
                 const toggleUrl = toggleField.getAttribute('data-toggle-url') + "&newValue=" + newValue.toString();
-                // the XMLHttpRequest header is needed to keep compatibility with the previous code, which didn't use the Fetch API
-                fetch(toggleUrl, { headers: { 'X-Requested-With': 'XMLHttpRequest' }})
+                fetch(toggleUrl, {
+                    method: 'PATCH',
+                    // the XMLHttpRequest header is needed to keep compatibility with the previous code, which didn't use the Fetch API
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                })
                     .then((response) => {
                         if (!response.ok) {
                             disableToggleField(toggleField, oldValue);

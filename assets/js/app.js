@@ -7,6 +7,9 @@ import DirtyForm from 'dirty-form';
 import * as basicLightbox from 'basiclightbox';
 import Autocomplete from './autocomplete';
 
+// Provide Bootstrap variable globally to allow custom backend pages to use it
+window.bootstrap = bootstrap;
+
 document.addEventListener('DOMContentLoaded', () => {
     App.createMainMenu();
     App.createLayoutResizeControls();

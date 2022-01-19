@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Asset;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CodeEditorType;
 
@@ -31,8 +32,8 @@ final class CodeEditorField implements FieldInterface
             ->setTemplateName('crud/field/code_editor')
             ->setFormType(CodeEditorType::class)
             ->addCssClass('field-code_editor')
-            ->addCssFiles('bundles/easyadmin/form-type-code-editor.css')
-            ->addJsFiles('bundles/easyadmin/form-type-code-editor.js')
+            ->addCssFiles(Asset::new('bundles/easyadmin/form-type-code-editor.css')->onlyOnForms())
+            ->addJsFiles(Asset::new('bundles/easyadmin/form-type-code-editor.js')->onlyOnForms())
             ->setDefaultColumns('col-md-12 col-xxl-10')
             ->setCustomOption(self::OPTION_INDENT_WITH_TABS, false)
             ->setCustomOption(self::OPTION_LANGUAGE, 'markdown')

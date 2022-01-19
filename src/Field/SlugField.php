@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Asset;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\SlugType;
 
@@ -26,7 +27,7 @@ final class SlugField implements FieldInterface
             ->setTemplateName('crud/field/text')
             ->setFormType(SlugType::class)
             ->addCssClass('field-text')
-            ->addJsFiles('bundles/easyadmin/form-type-slug.js')
+            ->addJsFiles(Asset::new('bundles/easyadmin/form-type-slug.js')->onlyOnForms())
             ->setDefaultColumns('col-md-6 col-xxl-5')
             ->setCustomOption(self::OPTION_TARGET_FIELD_NAME, null)
             ->setCustomOption(self::OPTION_UNLOCK_CONFIRMATION_MESSAGE, null)

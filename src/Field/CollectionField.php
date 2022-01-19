@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Asset;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 
@@ -30,7 +31,7 @@ final class CollectionField implements FieldInterface
             ->setTemplateName('crud/field/collection')
             ->setFormType(CollectionType::class)
             ->addCssClass('field-collection')
-            ->addJsFiles('bundles/easyadmin/form-type-collection.js')
+            ->addJsFiles(Asset::new('bundles/easyadmin/form-type-collection.js')->onlyOnForms())
             ->setDefaultColumns('col-md-8 col-xxl-7')
             ->setCustomOption(self::OPTION_ALLOW_ADD, true)
             ->setCustomOption(self::OPTION_ALLOW_DELETE, true)

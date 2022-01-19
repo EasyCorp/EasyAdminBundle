@@ -1,0 +1,5 @@
+---------------------------------------------------------------------------
+
+by michaelKaefer at 2022-01-18T10:23:17Z
+
+@javiereguiluz I just did a rebase because of https://github.com/EasyCorp/EasyAdminBundle/pull/4979 - to rebuild the assets to contain both PRs.

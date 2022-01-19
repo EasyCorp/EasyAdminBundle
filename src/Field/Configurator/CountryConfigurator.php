@@ -64,7 +64,7 @@ final class CountryConfigurator implements FieldConfiguratorInterface
         }
 
         if (\in_array($context->getCrud()->getCurrentPage(), [Crud::PAGE_EDIT, Crud::PAGE_NEW], true)) {
-            $field->setFormTypeOption('choices', $this->generateFormTypeChoices($countryCodeFormat));
+            $field->setFormTypeOption('choices', $this->generateFormTypeChoices($countryCodeFormat, $field->getCustomOption(CountryField::OPTION_COUNTRY_CODES_TO_KEEP), $field->getCustomOption(CountryField::OPTION_COUNTRY_CODES_TO_REMOVE)));
 
             // the value of this form option must be a string to properly propagate it as an HTML attribute value
             $field->setFormTypeOption('attr.data-ea-autocomplete-render-items-as-html', 'true');
@@ -111,13 +111,21 @@ final class CountryConfigurator implements FieldConfiguratorInterface
         }
     }
 
-    private function generateFormTypeChoices(string $countryCodeFormat): array
+    private function generateFormTypeChoices(string $countryCodeFormat, ?array $countryCodesToKeep, ?array $countryCodesToRemove): array
     {
         $usesAlpha3Codes = CountryField::FORMAT_ISO_3166_ALPHA3 === $countryCodeFormat;
         $choices = [];
 
         $countries = $usesAlpha3Codes ? Countries::getAlpha3Names() : Countries::getNames();
         foreach ($countries as $countryCode => $countryName) {
+            if (null !== $countryCodesToKeep && !\in_array($countryCode, $countryCodesToKeep, true)) {
+                continue;
+            }
+
+            if (null !== $countryCodesToRemove && \in_array($countryCode, $countryCodesToRemove, true)) {
+                continue;
+            }
+
             $countryCodeAlpha2 = $usesAlpha3Codes ? Countries::getAlpha2Code($countryCode) : $countryCode;
             $flagImageName = \in_array($countryCodeAlpha2, self::FLAGS_WITH_IMAGE_FILE, true) ? $countryCodeAlpha2 : 'UNKNOWN';
             $flagImagePath = $this->assetPackages->getUrl(sprintf('bundles/easyadmin/images/flags/%s.png', $flagImageName));

@@ -25,11 +25,13 @@
 {% block content_footer_wrapper '' %}
 
 {% block main %}
-    {% if tabs is defined and tabs | length %}
-        {{ _self.render_detail_fields_with_tabs(entity, tabs) }}
-    {% else  %}
-        {{ _self.render_detail_fields(entity, null) }}
-    {% endif %}
+    {% block detail_fields %}
+        {% if tabs is defined and tabs | length %}
+            {{ _self.render_detail_fields_with_tabs(entity, tabs) }}
+        {% else  %}
+            {{ _self.render_detail_fields(entity, null) }}
+        {% endif %}
+    {% endblock detail_fields %}
     {% block delete_form %}
         {{ include('@EasyAdmin/crud/includes/_delete_form.html.twig', { entity_id: entity.primaryKeyValue }, with_context = false) }}
     {% endblock delete_form %}

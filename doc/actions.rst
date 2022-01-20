@@ -219,14 +219,13 @@ in some page::
         ;
     }
 
-Dropdown Actions
-----------------
+Dropdown and Inline Entity Actions
+----------------------------------
 
-If you display lots of fields on each row of the ``index`` page, there won't be
-enough room for the item actions. In those cases, you can display the actions in
-a dropdown menu instead of the expanded design used by default.
-
-To do so, use the ``showEntityActionsAsDropdown()`` method::
+In the ``index`` page, the entity actions (``edit``, ``delete``, etc.) are
+displayed by default in a dropdown. This is done to better display the field
+contents on each row. If you prefer to display all the actions *inlined*
+(that is, without a dropdown) use the ``showEntityActionsInlined()`` method::
 
     namespace App\Controller\Admin;
 
@@ -241,7 +240,7 @@ To do so, use the ``showEntityActionsAsDropdown()`` method::
         {
             return $crud
                 // ...
-                ->showEntityActionsAsDropdown()
+                ->showEntityActionsInlined()
             ;
         }
     }

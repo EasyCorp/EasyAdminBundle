@@ -219,15 +219,13 @@ in some page::
         ;
     }
 
-Dropdown vs Inlined Actions
-----------------
+Dropdown and Inline Entity Actions
+----------------------------------
 
-By default, actions are shown in a dropdown, under the assumption that you'll
-usually have lots of fields on each row. If, however, that is not the case and
-your rows are not too crowded, you can display all the actions *inlined*, that
-is, without a dropdown.
-
-To do so, use the ``showEntityActionsInlined()`` method::
+In the ``index`` page, the entity actions (``edit``, ``delete``, etc.) are
+displayed by default in a dropdown. This is done to better display the field
+contents on each row. If you prefer to display all the actions *inlined*
+(that is, without a dropdown) use the ``showEntityActionsInlined()`` method::
 
     namespace App\Controller\Admin;
 
@@ -246,20 +244,6 @@ To do so, use the ``showEntityActionsInlined()`` method::
             ;
         }
     }
-    
-There are actually two methods, ``showEntityActionsAsDropdown()`` and 
-``showEntityActionsInlined()``, which are opposite to each other. They 
-both accept a boolean which is ``true`` by default::
-
-    showEntityActionsAsDropDown()       // same as showEntityActionsAsDropDown(true)
-    showEntityActionsAsDropDown(true)   // show as dropdown. This is the default
-    showEntityActionsAsDropDown(false)  // show inlined
-    
-    showEntityActionsInlined()          // same as showEntityActionsInlined(true)
-    showEntityActionsInlined(true)      // show inlined
-    showEntityActionsInlined(false)     // show as dropdown (the default)
-    
-    
 
 .. _actions-custom:
 

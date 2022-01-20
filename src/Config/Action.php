@@ -43,6 +43,7 @@ final class Action
 
     /**
      * @param string|false|null $label Use FALSE to hide the label; use NULL to autogenerate it
+     * @param string|null       $icon  The full CSS classes of the FontAwesome icon to render (see https://fontawesome.com/v5.15/icons?d=gallery&p=2&m=free)
      */
     public static function new(string $name, $label = null, ?string $icon = null): self
     {

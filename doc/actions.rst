@@ -219,14 +219,15 @@ in some page::
         ;
     }
 
-Dropdown Actions
+Dropdown vs Inlined Actions
 ----------------
 
-If you display lots of fields on each row of the ``index`` page, there won't be
-enough room for the item actions. In those cases, you can display the actions in
-a dropdown menu instead of the expanded design used by default.
+By default, actions are shown in a dropdown, under the assumption that you'll
+usually have lots of fields on each row. If, however, that is not the case and
+your rows are not too crowded, you can display all the actions *inlined*, that
+is, without a dropdown.
 
-To do so, use the ``showEntityActionsAsDropdown()`` method::
+To do so, use the ``showEntityActionsInlined()`` method::
 
     namespace App\Controller\Admin;
 
@@ -241,10 +242,24 @@ To do so, use the ``showEntityActionsAsDropdown()`` method::
         {
             return $crud
                 // ...
-                ->showEntityActionsAsDropdown()
+                ->showEntityActionsInlined()
             ;
         }
     }
+    
+There are actually two methods, ``showEntityActionsAsDropdown()`` and 
+``showEntityActionsInlined()``, which are opposite to each other. They 
+both accept a boolean which is ``true`` by default::
+
+    showEntityActionsAsDropDown()       // same as showEntityActionsAsDropDown(true)
+    showEntityActionsAsDropDown(true)   // show as dropdown. This is the default
+    showEntityActionsAsDropDown(false)  // show inlined
+    
+    showEntityActionsInlined()          // same as showEntityActionsInlined(true)
+    showEntityActionsInlined(true)      // show inlined
+    showEntityActionsInlined(false)     // show as dropdown (the default)
+    
+    
 
 .. _actions-custom:
 

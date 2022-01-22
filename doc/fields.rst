@@ -347,7 +347,7 @@ the "panels" created with the special ``FormField`` object::
     }
 
 Form Tabs
-~~~~~~~~~~~
+~~~~~~~~~
 
 In pages where you display lots of fields, you can divide them in tabs using
 the "tabs" created with the special ``FormField`` object::
@@ -417,6 +417,55 @@ These are all the built-in fields provided by EasyAdmin:
 * :doc:`TimeField </fields/TimeField>`
 * :doc:`TimezoneField </fields/TimezoneField>`
 * :doc:`UrlField </fields/UrlField>`
+
+Mapping Between Doctrine Types and EasyAdmin Fields
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The following table shows the recommended EasyAdmin field(s) to use depending
+on the `Doctrine DBAL Type`_ of your entity properties:
+
+========================  ===========================================================
+Doctrine Type             Recommended EasyAdmin Fields
+========================  ===========================================================
+``array``                 ``ArrayField``
+``ascii_string``          ``TextField``
+``bigint``                ``TextField``
+``binary``                (not supported)
+``blob``                  (not supported)
+``boolean``               ``BooleanField``
+``date_immutable``        ``DateField``
+``date``                  ``DateField``
+``datetime_immutable``    ``DateTimeField``
+``datetime``              ``DateTimeField``
+``datetimetz_immutable``  ``DateTimeField``
+``datetimetz``            ``DateTimeField``
+``datetinterval``         ``TextField``
+``decimal``               ``NumberField``
+``float``                 ``NumberField``
+``guid``                  ``TextField``
+``integer``               ``IntegerField``
+``json_array``            ``ArrayField``
+``json``                  ``TextField``, ``TextareaField``, ``CodeEditorField``
+``object``                ``TextField``, ``TextareaField``, ``CodeEditorField``
+``simple_array``          ``ArrayField``
+``smallint``              ``IntegerField``
+``string``                ``TextField``
+``text``                  ``TextareaField``, ``TextEditorField``, ``CodeEditorField``
+``time_immutable``        ``TimeField``
+``time``                  ``TimeField``
+========================  ===========================================================
+
+In addition to these, EasyAdmin includes other field types for specific values:
+
+* ``AvatarField``, ``ColorField``, ``CountryField``, ``CurrencyField``, ``EmailField``,
+  ``IdField``, ``ImageField``, ``LanguageField``, ``LocaleField``, ``SlugField``,
+  ``TelephoneField``, ``TimezoneField`` and ``UrlField`` work well with Doctrine's
+  ``string`` type.
+* ``MoneyField`` and ``PercentField`` work well with Doctrine's ``decimal``, ``float``
+  and ``integer``, depending on how do you store the data.
+* ``AssociationField``, ``CollectionField`` and ``ChoiceField`` are special fields
+  that correspond to Symfony's ``EntityType``, ``CollectionType`` and ``ChoiceType``
+  respectively.
 
 Field Configuration
 -------------------
@@ -701,3 +750,4 @@ attribute of the tag to run your configurator before or after the built-in ones.
 .. _`Symfony Form themes`: https://symfony.com/doc/current/form/form_themes.html
 .. _`Bootstrap grid system`: https://getbootstrap.com/docs/5.0/layout/grid/
 .. _`Bootstrap breakpoints`: https://getbootstrap.com/docs/5.0/layout/breakpoints/
+.. _`Doctrine DBAL Type`: https://www.doctrine-project.org/projects/doctrine-dbal/en/latest/reference/types.html

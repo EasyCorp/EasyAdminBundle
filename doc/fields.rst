@@ -380,44 +380,43 @@ the "tabs" created with the special ``FormField`` object::
         ];
     }
 
+.. _fields_reference:
 
 Field Types
 -----------
 
 These are all the built-in fields provided by EasyAdmin:
 
-.. class:: list-config-options list-config-options--complex
-
-* ``ArrayField``
-* ``AssociationField``
-* ``AvatarField``
-* ``BooleanField``
-* ``ChoiceField``
-* ``CodeEditorField``
-* ``CollectionField``
-* ``ColorField``
-* ``CountryField``
-* ``CurrencyField``
-* ``DateField``
-* ``DateTimeField``
-* ``EmailField``
-* ``HiddenField``
-* ``IdField``
-* ``ImageField``
-* ``IntegerField``
-* ``LanguageField``
-* ``LocaleField``
-* ``MoneyField``
-* ``NumberField``
-* ``PercentField``
-* ``SlugField``
-* ``TelephoneField``
-* ``TextareaField``
-* ``TextEditorField``
-* ``TextField``
-* ``TimeField``
-* ``TimezoneField``
-* ``UrlField``
+* :doc:`ArrayField </fields/ArrayField>`
+* :doc:`AssociationField </fields/AssociationField>`
+* :doc:`AvatarField </fields/AvatarField>`
+* :doc:`BooleanField </fields/BooleanField>`
+* :doc:`ChoiceField </fields/ChoiceField>`
+* :doc:`CodeEditorField </fields/CodeEditorField>`
+* :doc:`CollectionField </fields/CollectionField>`
+* :doc:`ColorField </fields/ColorField>`
+* :doc:`CountryField </fields/CountryField>`
+* :doc:`CurrencyField </fields/CurrencyField>`
+* :doc:`DateField </fields/DateField>`
+* :doc:`DateTimeField </fields/DateTimeField>`
+* :doc:`EmailField </fields/EmailField>`
+* :doc:`HiddenField </fields/HiddenField>`
+* :doc:`IdField </fields/IdField>`
+* :doc:`ImageField </fields/ImageField>`
+* :doc:`IntegerField </fields/IntegerField>`
+* :doc:`LanguageField </fields/LanguageField>`
+* :doc:`LocaleField </fields/LocaleField>`
+* :doc:`MoneyField </fields/MoneyField>`
+* :doc:`NumberField </fields/NumberField>`
+* :doc:`PercentField </fields/PercentField>`
+* :doc:`SlugField </fields/SlugField>`
+* :doc:`TelephoneField </fields/TelephoneField>`
+* :doc:`TextareaField </fields/TextareaField>`
+* :doc:`TextEditorField </fields/TextEditorField>`
+* :doc:`TextField </fields/TextField>`
+* :doc:`TimeField </fields/TimeField>`
+* :doc:`TimezoneField </fields/TimezoneField>`
+* :doc:`UrlField </fields/UrlField>`
 
 Field Configuration
 -------------------
@@ -531,16 +530,6 @@ Misc. Options
         // (this only overrides the values of the passed form type options;
         // it leaves all the other existing type options unchanged)
         ->setFormTypeOptions(['option_name' => 'option_value'])
-
-.. _fields_reference:
-
-Fields Reference
-----------------
-
-.. note::
-
-    This section is not ready yet. We're working on it. Meanwhile, you can rely
-    on your IDE auto-completion to discover all the config options of each field.
 
 .. _custom-fields:
 

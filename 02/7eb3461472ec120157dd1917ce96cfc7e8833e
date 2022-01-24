@@ -1,0 +1,25 @@
+---------------------------------------------------------------------------
+
+by php4fan at 2022-01-22T14:45:36Z
+
+**With your style as is:**
+
+In green, an unaffected field (not boolean) where I successfully added a link next to the field content with no issues.
+
+In red, a boolean field where I attempted the same thing but got a broken layout because of the 65% right padding.
+
+![image](https://user-images.githubusercontent.com/13969584/150642965-0947a000-1f79-470a-9b38-00d2ea47f150.png)
+
+**Without the padding-right rule**
+Here I unchecked the style rule in Chrome's dev tools and the boolean field still looks fine and the stuff that I have added next to it looks as I wanted it (still highlighted in red):
+
+![image](https://user-images.githubusercontent.com/13969584/150643094-873fc47d-16e6-4c72-8eca-6a03b6eb88e8.png)
+
+This is the Index crud page. I also tested with the RenderAsSwitch option and got the same results.
+The View page doesn't seem to be affected, and in the Edit page my template with the added link doesn't even get used, I guess in that case you delegate the rendering to a Symfony form or something, I haven't figured that out yet.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2022-01-24T18:53:02Z
+
+@php4fan thanks for this fix. If this padding was defined, we probably needed it in the past ... but, I've also tested this change in my own apps and I couldn't see any difference, so let's merge it and see how it goes. Thanks!

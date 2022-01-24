@@ -53,7 +53,6 @@ table.datagrid {
       td.field-boolean {
         padding-left: 8px;
         text-align: left;
-        padding-right: calc(100% - 35%);
 
         &::before {
           color: var(--table-cell-color);

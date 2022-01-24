@@ -27,6 +27,8 @@ final class FieldDto
     private $textAlign;
     private $help;
     private $cssClass;
+    private $cssClassCallable;
+
     // how many columns the field takes when rendering
     // (defined as Bootstrap 5 grid classes; e.g. 'col-md-6 col-xxl-3')
     private $columns;
@@ -267,6 +269,16 @@ final class FieldDto
     public function setCssClass(string $cssClass): void
     {
         $this->cssClass = trim($cssClass);
+    }
+
+    public function setCssClassCallable(?callable $callable): void
+    {
+        $this->cssClassCallable = $callable;
+    }
+
+    public function getCssClassCallable(): ?callable
+    {
+        return $this->cssClassCallable;
     }
 
     public function getColumns(): ?string

@@ -37,6 +37,9 @@ final class CommonPostConfigurator implements FieldConfiguratorInterface
         if (\in_array($context->getCrud()->getCurrentPage(), [Crud::PAGE_INDEX, Crud::PAGE_DETAIL], true)) {
             $formattedValue = $this->buildFormattedValueOption($field->getFormattedValue(), $field, $entityDto);
             $field->setFormattedValue($formattedValue);
+
+            $dynamicCss = $this->buildDynamicCssClass($field->getCssClass(), $field, $entityDto);
+            $field->setCssClass($dynamicCss);
         }
 
         $this->updateFieldTemplate($field);
@@ -53,6 +56,17 @@ final class CommonPostConfigurator implements FieldConfiguratorInterface
         // if the callable returns a string, wrap it in a Twig Markup to render the
         // HTML and CSS/JS elements that it might contain
         return \is_string($formatted) ? new Markup($formatted, $this->charset) : $formatted;
+    }
+
+    private function buildDynamicCssClass($value, FieldDto $field, EntityDto $entityDto)
+    {
+        if (null === $cssCallable = $field->getCssClassCallable()) {
+            return $value;
+        }
+
+        $cssClass = (string) $cssCallable($value, $entityDto->getInstance());
+
+        return $cssClass;
     }
 
     private function updateFieldTemplate(FieldDto $field): void

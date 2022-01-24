@@ -172,6 +172,13 @@ trait FieldTrait
         return $this;
     }
 
+    public function dynamicCssClass(?callable $callable): self
+    {
+        $this->dto->setCssClassCallable($callable);
+
+        return $this;
+    }
+
     public function setTranslationParameters(array $parameters): self
     {
         $this->dto->setTranslationParameters($parameters);

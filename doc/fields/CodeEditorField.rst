@@ -6,7 +6,7 @@ on the `CodeMirror editor`_.
 
 In :ref:`form pages (edit and new) <crud-pages>` it looks like this:
 
-.. image:: images/fields/field-codeeditor.png
+.. image:: ../images/fields/field-codeeditor.png
    :alt: Default style of EasyAdmin code editor field
 
 Basic Information

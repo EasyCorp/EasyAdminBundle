@@ -5,7 +5,7 @@ This field is used to represent a text content that stores a single URL.
 
 In :ref:`form pages (edit and new) <crud-pages>` it looks like this:
 
-.. image:: images/fields/field-url.png
+.. image:: ../images/fields/field-url.png
    :alt: Default style of EasyAdmin URL field
 
 Basic Information

@@ -5,7 +5,7 @@ This field is used to represent a text content that stores a single email addres
 
 In :ref:`form pages (edit and new) <crud-pages>` it looks like this:
 
-.. image:: images/fields/field-email.png
+.. image:: ../images/fields/field-email.png
    :alt: Default style of EasyAdmin email field
 
 Basic Information

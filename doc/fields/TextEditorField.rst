@@ -6,7 +6,7 @@ to manage long texts.
 
 In :ref:`form pages (edit and new) <crud-pages>` it looks like this:
 
-.. image:: images/fields/field-texteditor.png
+.. image:: ../images/fields/field-texteditor.png
    :alt: Default style of EasyAdmin text editor field
 
 Basic Information

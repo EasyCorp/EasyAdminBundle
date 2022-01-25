@@ -6,7 +6,7 @@ a traditional auto-increment numeric value or a UID value.
 
 In :ref:`form pages (edit and new) <crud-pages>` it looks like this:
 
-.. image:: images/fields/field-id.png
+.. image:: ../images/fields/field-id.png
    :alt: Default style of EasyAdmin ID field
 
 Basic Information

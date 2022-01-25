@@ -7,7 +7,7 @@ color in lower case hexadecimal notation: ``#000000``).
 
 In :ref:`form pages (edit and new) <crud-pages>` it looks like this:
 
-.. image:: images/fields/field-color.png
+.. image:: ../images/fields/field-color.png
    :alt: Default style of EasyAdmin color field
 
 Basic Information

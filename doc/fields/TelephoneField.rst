@@ -5,7 +5,7 @@ This field is used to represent a text content that stores a single telephone nu
 
 In :ref:`form pages (edit and new) <crud-pages>` it looks like this:
 
-.. image:: images/fields/field-telephone.png
+.. image:: ../images/fields/field-telephone.png
    :alt: Default style of EasyAdmin telephone field
 
 Basic Information

@@ -6,7 +6,7 @@ contents, use :doc:`/fields/TextField <TextField>`.
 
 In :ref:`form pages (edit and new) <crud-pages>` it looks like this:
 
-.. image:: images/fields/field-textarea.png
+.. image:: ../images/fields/field-textarea.png
    :alt: Default style of EasyAdmin textarea field
 
 Basic Information

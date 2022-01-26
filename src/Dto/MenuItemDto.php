@@ -94,7 +94,7 @@ final class MenuItemDto
         $this->icon = $icon;
     }
 
-    public function getLinkUrl(): string
+    public function getLinkUrl(): ?string
     {
         return $this->linkUrl;
     }

@@ -1,5 +1,5 @@
-EasyAdmin TelephoneField
-========================
+EasyAdmin Telephone Field
+=========================
 
 This field is used to represent a text content that stores a single telephone number.
 

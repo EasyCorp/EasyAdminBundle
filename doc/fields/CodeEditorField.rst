@@ -1,5 +1,5 @@
-EasyAdmin CodeEditorField
-=========================
+EasyAdmin Code Editor Field
+===========================
 
 This field creates a JavaScript-based editor to read and write source code based
 on the `CodeMirror editor`_.

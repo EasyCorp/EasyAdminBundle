@@ -1,5 +1,5 @@
-EasyAdmin ColorField
-====================
+EasyAdmin Color Field
+=====================
 
 This field is used to represent a text content that stores a single color value
 following the `HTML 5 color format`_ (a 7-character string specifying an RGB

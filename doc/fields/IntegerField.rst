@@ -1,5 +1,5 @@
-EasyAdmin IntegerField
-======================
+EasyAdmin Integer Field
+=======================
 
 .. note::
 

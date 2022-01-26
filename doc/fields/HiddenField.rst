@@ -1,5 +1,5 @@
-EasyAdmin HiddenField
-=====================
+EasyAdmin Hidden Field
+======================
 
 .. note::
 

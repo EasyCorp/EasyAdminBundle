@@ -1,5 +1,5 @@
-EasyAdmin ChoiceField
-=====================
+EasyAdmin Choice Field
+======================
 
 .. note::
 

@@ -1,5 +1,5 @@
-EasyAdmin BooleanField
-======================
+EasyAdmin Boolean Field
+=======================
 
 .. note::
 

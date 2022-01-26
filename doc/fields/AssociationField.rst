@@ -1,5 +1,5 @@
-EasyAdmin AssociationField
-==========================
+EasyAdmin Association Field
+===========================
 
 .. note::
 

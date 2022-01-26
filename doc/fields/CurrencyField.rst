@@ -1,5 +1,5 @@
-EasyAdmin CurrencyField
-=======================
+EasyAdmin Currency Field
+========================
 
 This field is used to represent a value that stores the `3-letter ISO 4217`_ code
 of some currency.
@@ -54,4 +54,4 @@ code of the currency) set this option to ``false``::
     yield CurrencyField::new('...')->showSymbol(false);
 
 .. _`3-letter ISO 4217`: https://en.wikipedia.org/wiki/ISO_4217
-.. _`TextType`: https://symfony.com/doc/current/reference/forms/types/currency.html
+.. _`CurrencyType`: https://symfony.com/doc/current/reference/forms/types/currency.html

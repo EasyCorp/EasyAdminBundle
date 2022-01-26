@@ -1,5 +1,5 @@
-EasyAdmin NumberField
-=====================
+EasyAdmin Number Field
+======================
 
 .. note::
 

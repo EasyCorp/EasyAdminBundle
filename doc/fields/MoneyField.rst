@@ -1,5 +1,5 @@
-EasyAdmin MoneyField
-====================
+EasyAdmin Money Field
+=====================
 
 .. note::
 

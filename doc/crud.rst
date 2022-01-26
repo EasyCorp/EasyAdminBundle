@@ -175,6 +175,8 @@ You can override the default page titles with the following methods::
         ;
     }
 
+.. _crud-date-time-number-format-options:
+
 Date, Time and Number Formatting Options
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

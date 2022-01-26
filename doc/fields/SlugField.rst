@@ -1,5 +1,5 @@
-EasyAdmin SlugField
-===================
+EasyAdmin Slug Field
+====================
 
 .. note::
 

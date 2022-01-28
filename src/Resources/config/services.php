@@ -228,6 +228,7 @@ return static function (ContainerConfigurator $container) {
 
         ->set(EntityUpdater::class)
             ->arg(0, new Reference('property_accessor'))
+            ->arg(1, new Reference('validator'))
 
         ->set(PaginatorFactory::class)
             ->arg(0, new Reference(AdminContextProvider::class))

@@ -26,6 +26,8 @@
         strong { font-weight: 600; }
         article { background: var(--content-bg); padding: 32px 12px 0; }
         article h1 { font-size: 28px; margin: 0 0 4px; padding: 0 12px; }
+        article h2 { font-size: 18px; margin: 0 0 4px; padding: 0 12px; }
+        article h1, article h2 { line-height: 1.3; }
         article p.success { margin: 0 0 30px; padding: 0 12px; }
         .links { margin: 32px 0; }
         .link { align-items: center; border-radius: 6px; display: flex; padding: 12px; position: relative; }
@@ -39,13 +41,15 @@
         .link-text p.description { color: #64748b; font-size: 14px; margin: 0; }
         .link-blue .link-icon { background: #eff6ff; color: #3b82f6; }
         .link-blue:hover .link-icon { outline: 2px solid #3b82f6; outline-offset: -2px; }
+        .link-green .link-icon { background: #f0fdf4; color: #22c55e; }
+        .link-green:hover .link-icon { outline: 2px solid #22c55e; outline-offset: -2px; }
         .link-red .link-icon { background: #fef2f2; color: #ef4444; }
         .link-red:hover .link-icon { outline: 2px solid #ef4444; outline-offset: -2px; }
         .link-yellow .link-icon { background: #fffbeb; color: #f59e0b; }
         .link-yellow:hover .link-icon { outline: 2px solid #f59e0b; outline-offset: -2px; }
-        .customize-this-controller { align-items: center; border-top: 1px solid #e2e8f0; display: flex; margin-top: 32px; padding: 44px 12px 0; }
-        .customize-this-controller svg { color: #94a3b8; height: 24px; margin-right: 6px; width: 24px; }
-        pre {
+        .customization { border-top: 1px solid #e2e8f0; margin-top: 32px; padding: 44px 0 0; }
+        .customization p { padding: 0 12px; }
+        .customization pre {
             background: #f8fafc;
             border-radius: 6px;
             font-family: ui-monospace, "Roboto Mono", SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
@@ -62,14 +66,17 @@
             .d-md-inline-block { display: inline-block; }
             article { border-radius: 24px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1); margin: 45px auto; max-width: 700px; padding: 48px 88px; }
             article h1 { font-size: 36px; padding: 0; }
-            article p.success { font-size: 18px; }
+            article h2 { font-size: 24px; padding: 0; }
+            article p.success { font-size: 18px; padding: 0; }
             .link { padding: 12px 18px; }
             .link:hover { background: #f1f5f9; }
             .link-icon svg { height: 32px; width: 32px; }
             .link-text a { font-size: 17px; }
             .link-text p.description { font-size: 15px; }
             pre { margin: 10px 0; }
-            .customize-this-controller { padding: 48px 0 0; }
+            .customization { padding: 48px 0 0; }
+            .customization p { padding: 0; }
+            .customization pre { margin: 10px 0; }
         }
     </style>
 
@@ -118,7 +125,19 @@
             </div>
             <div class="link-text">
                 <a href="https://symfony.com/bundles/EasyAdminBundle/current/index.html" target="_blank">Read EasyAdmin Docs</a>
-                <p class="description">Learn how to customize EasyAdmin to fit your needs.</p>
+                <p class="description">Learn how to customize EasyAdmin to fit your needs</p>
+            </div>
+        </div>
+
+        <div class="link link-green">
+            <div class="link-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+            </div>
+            <div class="link-text">
+                <a href="https://symfonycasts.com/screencast/easyadminbundle" target="_blank">Watch EasyAdmin Course on SymfonyCasts</a>
+                <p class="description">More than 30 videos <span class="d-none d-md-inline-block">to learn how to build a powerful admin area</span></p>
             </div>
         </div>
 
@@ -130,7 +149,7 @@
             </div>
             <div class="link-text">
                 <a href="https://github.com/sponsors/javiereguiluz" target="_blank">Sponsor EasyAdmin</a>
-                <p class="description">Fund the development of new features. <span class="d-none d-md-inline-block">One-time or regular donations.</span></p>
+                <p class="description">Fund the development of new features. <span class="d-none d-md-inline-block">One-time or regular donations</span></p>
             </div>
         </div>
 
@@ -142,20 +161,24 @@
             </div>
             <div class="link-text">
                 <a href="https://github.com/EasyCorp/EasyAdminBundle/stargazers" target="_blank">Star EasyAdmin on GitHub</a>
-                <p class="description">Help us promote EasyAdmin to reach new developers.</p>
+                <p class="description">Help us promote EasyAdmin to reach new developers</p>
             </div>
         </div>
     </div>
 
-    <p class="customize-this-controller">
-        <svg xmlns="http://www.w3.org/2000/svg" class="icon d-none d-md-inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
+    <section class="customization">
+        <h2>Why am I seeing this page? Where's my backend menu?</h2>
+        <p>
+            This page is the default EasyAdmin dashboard page. You are seeing this page
+            because you never customized the dashboard of your backend.
+        </p>
+        <p>
+            Edit the following file and use any of the ways to
+            <a href="https://symfony.com/bundles/EasyAdminBundle/current/dashboards.html#customizing-the-dashboard-contents">customize your dashboard contents</a>:
+        </p>
 
-        This is the default EasyAdmin dashboard page. Customize it by editing this file:
-    </p>
-
-    <pre translate="no" class="notranslate">{{ dashboard_controller_filepath }}</pre>
+        <pre translate="no" class="notranslate">{{ dashboard_controller_filepath }}</pre>
+    </section>
 </article>
 </body>
 </html>

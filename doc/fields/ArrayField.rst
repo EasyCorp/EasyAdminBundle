@@ -1,5 +1,5 @@
-EasyAdmin ArrayField
-====================
+EasyAdmin Array Field
+=====================
 
 .. note::
 

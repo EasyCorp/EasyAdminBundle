@@ -1,5 +1,5 @@
-EasyAdmin ImageField
-====================
+EasyAdmin Image Field
+=====================
 
 .. note::
 

@@ -1,5 +1,5 @@
-EasyAdmin TextField
-===================
+EasyAdmin Text Field
+====================
 
 This field is used to represent any kind of short text content. For long text
 contents, use :doc:`TextareaField </fields/TextareaField>`,

@@ -1,5 +1,5 @@
-EasyAdmin EmailField
-====================
+EasyAdmin Email Field
+=====================
 
 This field is used to represent a text content that stores a single email address.
 

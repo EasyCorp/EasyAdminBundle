@@ -1,5 +1,5 @@
-EasyAdmin PercentField
-======================
+EasyAdmin Percent Field
+=======================
 
 .. note::
 

@@ -1,5 +1,5 @@
-EasyAdmin IdField
-=================
+EasyAdmin ID Field
+==================
 
 This field is used to represent the primary key of an integer, no matter if it's
 a traditional auto-increment numeric value or a UID value.

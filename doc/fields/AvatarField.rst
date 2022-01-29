@@ -1,5 +1,5 @@
-EasyAdmin AvatarField
-=====================
+EasyAdmin Avatar Field
+======================
 
 .. note::
 

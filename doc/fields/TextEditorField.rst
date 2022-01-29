@@ -1,5 +1,5 @@
-EasyAdmin TextEditorField
-=========================
+EasyAdmin Text Editor Field
+===========================
 
 This field creates a JavaScript-based WYSIWYG editor based on the `Trix editor`_
 to manage long texts.

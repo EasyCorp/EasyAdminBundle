@@ -1,5 +1,5 @@
-EasyAdmin CollectionField
-=========================
+EasyAdmin Collection Field
+==========================
 
 .. note::
 

@@ -33,6 +33,16 @@ generate a dashboard controller:
 
     $ php bin/console make:admin:dashboard
 
+If you now visit the ``/admin`` URL of your application, you'll see the default
+EasyAdmin Welcome Page:
+
+.. image:: images/easyadmin-welcome-page.jpg
+   :alt: EasyAdmin 4 Welcome Page
+
+Later in this article you'll learn how to customize that page. If you don't see
+the Welcome Page, you might need to configure the URL of your backend as
+explained in the next section.
+
 .. _dashboard-route:
 
 Dashboard Route
@@ -250,6 +260,65 @@ explained later)::
                 // need to generate relative URLs instead, call this method
                 ->generateRelativeUrls()
             ;
+        }
+    }
+
+Customizing the Dashboard Contents
+----------------------------------
+
+Generated dashboards display by default a "Welcome Page" with some useful links.
+In a real application you'll need to customize this page to display your own contents.
+
+Dashboards usually display widgets and charts with stats. EasyAdmin doesn't
+provide yet any way of creating those widgets. It's in our list of future features,
+but meanwhile you can use `Symfony UX Chart.js`_ bundle to create those charts
+and render them in your own Twig template::
+
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
+    use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
+    use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
+    use Symfony\UX\Chartjs\Model\Chart;
+
+    class DashboardController extends AbstractDashboardController
+    {
+        // ...
+
+        #[Route('/admin')]
+        public function index(ChartBuilderInterface $chartBuilder): Response
+        {
+            $chart = $chartBuilder->createChart(Chart::TYPE_LINE);
+            // ...set chart data and options somehow
+
+            return $this->render('admin/my-dashboard.html.twig', [
+                'chart' => $chart,
+            ]);
+        }
+    }
+
+Another popular option is to make the dashboard redirect to the most common task
+for people working on the backend. This requires :ref:`generating admin URLs <generate-admin-urls>`,
+and :doc:`CRUD controllers </crud>`, which is explained in detail later::
+
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
+    use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
+    use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+
+    class DashboardController extends AbstractDashboardController
+    {
+        // ...
+
+        #[Route('/admin')]
+        public function index(): Response
+        {
+            $adminUrlGenerator = $this->container->get(AdminUrlGenerator::class);
+
+            // Option 1. Make your dashboard redirect to the same page for all users
+            return $this->redirect($adminUrlGenerator->setController(OneOfYourCrudController::class)->generateUrl());
+
+            // Option 2. Make your dashboard redirect to different pages depending on the user
+            if ('jane' === $this->getUser()->getUsername()) {
+                return $this->redirect('...');
+            }
         }
     }
 
@@ -852,3 +921,4 @@ etc. Example:
 .. _`Symfony translation`: https://symfony.com/doc/current/components/translation.html
 .. _`translation domain`: https://symfony.com/doc/current/components/translation.html#using-message-domains
 .. _`work with the user locale`: https://symfony.com/doc/current/translation/locale.html
+.. _`Symfony UX Chart.js`: https://symfony.com/bundles/ux-chartjs/current/index.html

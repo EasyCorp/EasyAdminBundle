@@ -43,15 +43,15 @@ const markInvalidFormField = () => {
     ['.ea-new-form', '.ea-edit-form'].forEach((formSelector) => {
         const form = document.querySelector(formSelector);
         if (null !== form) {
-            form.querySelectorAll('input,select,textarea').forEach( (input) => {
+            form.querySelectorAll('input,select,textarea').forEach((input) => {
                 if (
                     input.hasAttribute('data-ea-trix-is-required') &&
-                    input.dataset.eaTrixIsRequired === 'true' &&
+                    input.getAttribute('data-ea-trix-is-required') === 'true' &&
                     input.value === ''
                 ) {
-                    input.setCustomValidity("invalid");
+                    input.setCustomValidity('invalid');
                 } else {
-                    input.setCustomValidity("");
+                    input.setCustomValidity('');
                 }
             });
         }

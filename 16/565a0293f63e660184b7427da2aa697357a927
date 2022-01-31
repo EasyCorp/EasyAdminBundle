@@ -1,0 +1,13 @@
+---------------------------------------------------------------------------
+
+by tuc0w at 2022-01-20T13:03:38Z
+
+I just found a bug which I still need to change, it's working fine for edit forms but not on the new form. Going to work on it and update the PR
+
+---------------------------------------------------------------------------
+
+by tuc0w at 2022-01-29T18:26:26Z
+
+It took me a while to push the changes but it's now working with all possible states the forms are able to encounter.
+
+At first I moved the method outside of the event listener, then I added an additional method call as soon as the DOM content has loaded to mark all empty and required trix filds as invalid in addition to the `trix-change` event listener.

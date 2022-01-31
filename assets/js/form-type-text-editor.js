@@ -39,6 +39,25 @@ const requiredFieldMessage = {
     'zh_CN': '请填写此字段',
 };
 
+const markInvalidFormField = () => {
+    ['.ea-new-form', '.ea-edit-form'].forEach((formSelector) => {
+        const form = document.querySelector(formSelector);
+        if (null !== form) {
+            form.querySelectorAll('input,select,textarea').forEach( (input) => {
+                if (
+                    input.hasAttribute('data-ea-trix-is-required') &&
+                    input.dataset.eaTrixIsRequired === 'true' &&
+                    input.value === ''
+                ) {
+                    input.setCustomValidity("invalid");
+                } else {
+                    input.setCustomValidity("");
+                }
+            });
+        }
+    });
+};
+
 document.addEventListener('DOMContentLoaded', () => {
     // TrixEditor works by storing the original content in a hidden <textarea> and creating a new <trix-editor> element
     // When the original field is required and its content is empty, browsers try to add a validation error, but it
@@ -48,6 +67,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const isTrixFieldRequired = 'required' === trixContentElement.getAttribute('required') ? 'true' : 'false';
         trixContentElement.setAttribute('data-ea-trix-is-required', isTrixFieldRequired);
         trixContentElement.removeAttribute('required');
+    });
+
+    // Since the above code is needed to remove the HTML required attribute, we need to add a custom validity message
+    // for the required fields because otherwise the validation method will not add an error badge to the related tabs
+    // and the submit button will be disabled and never be enabled again.
+    markInvalidFormField();
+    document.addEventListener('trix-change', () => {
+        markInvalidFormField();
     });
 
     // Because of the way TrixEditor works, browsers cannot detect changes to these fields automatically,

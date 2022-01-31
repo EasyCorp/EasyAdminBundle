@@ -1,0 +1,11 @@
+---------------------------------------------------------------------------
+
+by michaelKaefer at 2022-01-25T21:15:00Z
+
+I'll try to fix the checks of this PR the next weeks.
+
+---------------------------------------------------------------------------
+
+by michaelKaefer at 2022-01-28T14:32:34Z
+
+@javiereguiluz This is finished, thanks for the feedback! I added a second commit to fix the config validation during deployment.

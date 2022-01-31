@@ -218,7 +218,12 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             $fieldName = $context->getRequest()->query->get('fieldName');
             $newValue = 'true' === mb_strtolower($context->getRequest()->query->get('newValue'));
 
-            $event = $this->ajaxEdit($context->getEntity(), $fieldName, $newValue);
+            try {
+                $event = $this->ajaxEdit($context->getEntity(), $fieldName, $newValue);
+            } catch (\Exception $exception) {
+                return new Response(null, 400);
+            }
+
             if ($event->isPropagationStopped()) {
                 return $event->getResponse();
             }

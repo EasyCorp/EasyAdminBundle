@@ -125,14 +125,10 @@ final class AssetsDto
             }
         }
         foreach ($this->headContents as $headContent) {
-            if ($headContent->getLoadedOn()->has($pageName)) {
-                $filteredAssets->addHtmlContentToHead($headContent);
-            }
+            $filteredAssets->addHtmlContentToHead($headContent);
         }
         foreach ($this->bodyContents as $bodyContent) {
-            if ($bodyContent->getLoadedOn()->has($pageName)) {
-                $filteredAssets->addHtmlContentToBody($bodyContent);
-            }
+            $filteredAssets->addHtmlContentToBody($bodyContent);
         }
 
         return $filteredAssets;

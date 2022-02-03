@@ -23,11 +23,11 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 final class ActionFactory
 {
-    private $adminContextProvider;
-    private $authChecker;
-    private $translator;
-    private $adminUrlGenerator;
-    private $csrfTokenManager;
+    private AdminContextProvider $adminContextProvider;
+    private AuthorizationCheckerInterface $authChecker;
+    private TranslatorInterface $translator;
+    private AdminUrlGenerator $adminUrlGenerator;
+    private CsrfTokenManagerInterface $csrfTokenManager;
 
     public function __construct(AdminContextProvider $adminContextProvider, AuthorizationCheckerInterface $authChecker, TranslatorInterface $translator, AdminUrlGenerator $adminUrlGenerator, CsrfTokenManagerInterface $csrfTokenManager)
     {

@@ -9,8 +9,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
  */
 trait MenuItemTrait
 {
-    /** @var MenuItemDto */
-    private $dto;
+    private MenuItemDto $dto;
 
     public function setCssClass(string $cssClass): self
     {

@@ -7,10 +7,9 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
  */
 final class FilterDataDto
 {
-    private $index;
-    private $entityAlias;
-    /** @var FilterDto */
-    private $filterDto;
+    private int $index;
+    private string $entityAlias;
+    private FilterDto $filterDto;
     private $comparison;
     private $value;
     private $value2;

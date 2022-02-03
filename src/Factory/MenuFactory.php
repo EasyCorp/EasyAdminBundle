@@ -24,12 +24,12 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 final class MenuFactory
 {
-    private $adminContextProvider;
-    private $authChecker;
-    private $translator;
-    private $urlGenerator;
-    private $logoutUrlGenerator;
-    private $adminUrlGenerator;
+    private AdminContextProvider $adminContextProvider;
+    private AuthorizationCheckerInterface $authChecker;
+    private TranslatorInterface $translator;
+    private UrlGeneratorInterface $urlGenerator;
+    private LogoutUrlGenerator $logoutUrlGenerator;
+    private AdminUrlGenerator $adminUrlGenerator;
 
     public function __construct(AdminContextProvider $adminContextProvider, AuthorizationCheckerInterface $authChecker, TranslatorInterface $translator, UrlGeneratorInterface $urlGenerator, LogoutUrlGenerator $logoutUrlGenerator, AdminUrlGenerator $adminUrlGenerator)
     {

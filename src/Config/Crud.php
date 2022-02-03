@@ -21,13 +21,12 @@ class Crud
     public const LAYOUT_SIDEBAR_DEFAULT = 'normal';
     public const LAYOUT_SIDEBAR_COMPACT = 'compact';
 
-    /** @var CrudDto */
-    private $dto;
+    private CrudDto $dto;
 
-    private $paginatorPageSize = 20;
-    private $paginatorRangeSize = 3;
-    private $paginatorFetchJoinCollection = true;
-    private $paginatorUseOutputWalkers;
+    private int $paginatorPageSize = 20;
+    private int $paginatorRangeSize = 3;
+    private bool $paginatorFetchJoinCollection = true;
+    private ?bool $paginatorUseOutputWalkers = null;
 
     private function __construct(CrudDto $crudDto)
     {

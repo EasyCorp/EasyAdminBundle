@@ -9,10 +9,10 @@ use function Symfony\Component\String\u;
  */
 final class ExceptionContext
 {
-    private $publicMessage;
-    private $debugMessage;
-    private $parameters;
-    private $statusCode;
+    private string $publicMessage;
+    private string $debugMessage;
+    private array $parameters;
+    private int $statusCode;
 
     public function __construct(string $publicMessage, string $debugMessage = '', array $parameters = [], int $statusCode = 500)
     {

@@ -35,15 +35,15 @@ use Twig\Environment;
  */
 class AdminRouterSubscriber implements EventSubscriberInterface
 {
-    private $adminContextFactory;
-    private $dashboardControllerRegistry;
-    private $crudControllerRegistry;
-    private $controllerFactory;
-    private $controllerResolver;
-    private $urlGenerator;
-    private $requestMatcher;
-    private $twig;
-    private $urlSigner;
+    private AdminContextFactory $adminContextFactory;
+    private DashboardControllerRegistry $dashboardControllerRegistry;
+    private CrudControllerRegistry $crudControllerRegistry;
+    private ControllerFactory $controllerFactory;
+    private ControllerResolverInterface $controllerResolver;
+    private UrlGeneratorInterface $urlGenerator;
+    private RequestMatcherInterface $requestMatcher;
+    private Environment $twig;
+    private UrlSigner $urlSigner;
 
     public function __construct(AdminContextFactory $adminContextFactory, DashboardControllerRegistry $dashboardControllerRegistry, CrudControllerRegistry $crudControllerRegistry, ControllerFactory $controllerFactory, ControllerResolverInterface $controllerResolver, UrlGeneratorInterface $urlGenerator, RequestMatcherInterface $requestMatcher, Environment $twig, UrlSigner $urlSigner)
     {

@@ -10,7 +10,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Config;
  */
 final class KeyValueStore
 {
-    private $map;
+    private array $map;
 
     private function __construct(array $keyValueMap)
     {

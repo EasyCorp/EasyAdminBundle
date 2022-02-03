@@ -14,8 +14,8 @@ use Twig\Environment;
  */
 final class CrudResponseListener
 {
-    private $adminContextProvider;
-    private $twig;
+    private AdminContextProvider $adminContextProvider;
+    private Environment $twig;
 
     public function __construct(AdminContextProvider $adminContextProvider, Environment $twig)
     {

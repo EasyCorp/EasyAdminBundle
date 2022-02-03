@@ -18,7 +18,7 @@ final class SubMenuItem implements MenuItemInterface
     }
 
     /** @var MenuItemInterface[] */
-    private $subMenuItems = [];
+    private array $subMenuItems = [];
 
     public function __construct(string $label, ?string $icon = null)
     {

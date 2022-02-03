@@ -9,29 +9,21 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
  */
 final class ActionDto
 {
-    private $type;
-    private $name;
-    private $label;
-    private $icon;
-    private $cssClass;
-    private $htmlElement;
-    private $htmlAttributes;
-    private $linkUrl;
-    private $templatePath;
-    private $crudActionName;
-    private $routeName;
-    private $routeParameters;
+    private ?string $type = null;
+    private ?string $name = null;
+    private ?string $label = null;
+    private ?string $icon = null;
+    private string $cssClass = '';
+    private ?string $htmlElement = null;
+    private array $htmlAttributes = [];
+    private ?string $linkUrl = null;
+    private ?string $templatePath = null;
+    private ?string $crudActionName = null;
+    private ?string $routeName = null;
+    private array $routeParameters = [];
     private $url;
-    private $translationParameters;
+    private array $translationParameters = [];
     private $displayCallable;
-
-    public function __construct()
-    {
-        $this->cssClass = '';
-        $this->htmlAttributes = [];
-        $this->routeParameters = [];
-        $this->translationParameters = [];
-    }
 
     public function getType(): string
     {
@@ -68,10 +60,7 @@ final class ActionDto
         $this->name = $name;
     }
 
-    /**
-     * @return string|false|null
-     */
-    public function getLabel()
+    public function getLabel(): ?string
     {
         return $this->label;
     }

@@ -9,19 +9,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
  */
 final class UserMenuDto
 {
-    private $displayName;
-    private $displayAvatar;
-    private $name;
-    private $avatarUrl;
+    private bool $displayName = true;
+    private bool $displayAvatar = true;
+    private ?string $name = null;
+    private ?string $avatarUrl = null;
     /** @var MenuItem[] */
-    private $items;
-
-    public function __construct()
-    {
-        $this->displayAvatar = true;
-        $this->displayName = true;
-        $this->items = [];
-    }
+    private array $items = [];
 
     public function isNameDisplayed(): bool
     {

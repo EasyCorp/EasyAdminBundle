@@ -7,12 +7,12 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
  */
 final class PaginatorDto
 {
-    private $pageNumber;
-    private $pageSize;
-    private $rangeSize;
-    private $rangeEdgeSize;
-    private $fetchJoinCollection;
-    private $useOutputWalkers;
+    private ?int $pageNumber = null;
+    private int $pageSize;
+    private int $rangeSize;
+    private int $rangeEdgeSize;
+    private bool $fetchJoinCollection;
+    private ?bool $useOutputWalkers;
 
     public function __construct(int $pageSize, int $rangeSize, int $rangeEdgeSize, bool $fetchJoinCollection, ?bool $useOutputWalkers)
     {

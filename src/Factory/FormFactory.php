@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\Request;
  */
 final class FormFactory
 {
-    private $symfonyFormFactory;
+    private FormFactoryInterface $symfonyFormFactory;
 
     public function __construct(FormFactoryInterface $symfonyFormFactory)
     {

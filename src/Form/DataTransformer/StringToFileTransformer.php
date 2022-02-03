@@ -12,10 +12,10 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  */
 class StringToFileTransformer implements DataTransformerInterface
 {
-    private $uploadDir;
+    private string $uploadDir;
     private $uploadFilename;
     private $uploadValidate;
-    private $multiple;
+    private bool $multiple;
 
     public function __construct(string $uploadDir, callable $uploadFilename, callable $uploadValidate, bool $multiple)
     {

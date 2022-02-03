@@ -15,9 +15,9 @@ use Symfony\Component\Form\ChoiceList\Loader\ChoiceLoaderInterface;
  */
 class DynamicChoiceLoader implements ChoiceLoaderInterface
 {
-    private $choices = [];
-    private $cached = false;
-    private $choiceList;
+    private array $choices = [];
+    private bool $cached = false;
+    private ?ArrayChoiceList $choiceList = null;
 
     public function loadChoiceList(?callable $value = null): ChoiceListInterface
     {

@@ -11,7 +11,7 @@ final class BeforeCrudActionEvent
 {
     use StoppableEventTrait;
 
-    private $adminContext;
+    private ?AdminContext $adminContext;
 
     public function __construct(?AdminContext $adminContext)
     {

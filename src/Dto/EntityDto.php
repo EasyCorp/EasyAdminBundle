@@ -14,21 +14,18 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
  */
 final class EntityDto
 {
-    private $isAccessible;
-    private $fqcn;
-    private $metadata;
+    private bool $isAccessible = true;
+    private string $fqcn;
+    private ClassMetadata $metadata;
     private $instance;
     private $primaryKeyName;
     private $primaryKeyValue;
-    private $permission;
-    /** @var ?FieldCollection */
-    private $fields;
-    /** @var ActionCollection */
-    private $actions;
+    private ?string $permission;
+    private ?FieldCollection $fields = null;
+    private ?ActionCollection $actions = null;
 
     public function __construct(string $entityFqcn, ClassMetadata $entityMetadata, ?string $entityPermission = null, $entityInstance = null)
     {
-        $this->isAccessible = true;
         $this->fqcn = $entityFqcn;
         $this->metadata = $entityMetadata;
         $this->instance = $entityInstance;

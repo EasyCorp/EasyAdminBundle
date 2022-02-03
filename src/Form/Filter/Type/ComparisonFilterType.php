@@ -12,10 +12,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class ComparisonFilterType extends AbstractType
 {
-    private $valueType;
-    private $valueTypeOptions;
-    private $comparisonType;
-    private $comparisonTypeOptions;
+    private ?string $valueType;
+    private array $valueTypeOptions;
+    private string $comparisonType;
+    private array $comparisonTypeOptions;
 
     public function __construct(string $valueType = null, array $valueTypeOptions = [], string $comparisonType = null, array $comparisonTypeOptions = [])
     {

@@ -9,16 +9,16 @@ use Symfony\Component\HttpFoundation\Request;
  */
 final class SearchDto
 {
-    private $request;
-    private $defaultSort;
-    private $customSort;
+    private Request $request;
+    private array $defaultSort;
+    private array $customSort;
     /** @internal */
-    private $mergedSort;
-    private $query;
+    private ?array $mergedSort = null;
+    private string $query;
     /** @var string[]|null */
-    private $searchableProperties;
+    private ?array $searchableProperties;
     /** @var string[]|null */
-    private $appliedFilters;
+    private ?array $appliedFilters;
 
     public function __construct(Request $request, ?array $searchableProperties, ?string $query, array $defaultSort, array $customSort, ?array $appliedFilters)
     {
@@ -70,7 +70,7 @@ final class SearchDto
         return \array_key_exists($fieldProperty, $this->getSort()) ? $this->getSort()[$fieldProperty] : 'DESC';
     }
 
-    public function getQuery(): ?string
+    public function getQuery(): string
     {
         return $this->query;
     }

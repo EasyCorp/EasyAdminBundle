@@ -18,7 +18,7 @@ use Twig\TwigFunction;
  */
 class EasyAdminTwigExtension extends AbstractExtension
 {
-    private $serviceLocator;
+    private ServiceLocator $serviceLocator;
 
     public function __construct(ServiceLocator $serviceLocator)
     {

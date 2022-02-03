@@ -10,8 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\DashboardDto;
  */
 final class Dashboard
 {
-    /** @var DashboardDto */
-    private $dto;
+    private DashboardDto $dto;
 
     private function __construct(DashboardDto $dashboardDto)
     {

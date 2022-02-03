@@ -23,11 +23,11 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
  */
 final class EntityFactory
 {
-    private $fieldFactory;
-    private $actionFactory;
-    private $authorizationChecker;
-    private $doctrine;
-    private $eventDispatcher;
+    private FieldFactory $fieldFactory;
+    private ActionFactory $actionFactory;
+    private AuthorizationCheckerInterface $authorizationChecker;
+    private ManagerRegistry $doctrine;
+    private EventDispatcherInterface $eventDispatcher;
 
     public function __construct(FieldFactory $fieldFactory, ActionFactory $actionFactory, AuthorizationCheckerInterface $authorizationChecker, ManagerRegistry $doctrine, EventDispatcherInterface $eventDispatcher)
     {

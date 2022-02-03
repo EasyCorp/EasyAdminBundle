@@ -20,8 +20,8 @@ class MakeAdminDashboardCommand extends Command
 {
     protected static $defaultName = 'make:admin:dashboard';
     protected static $defaultDescription = 'Creates a new EasyAdmin Dashboard class';
-    private $classMaker;
-    private $projectDir;
+    private ClassMaker $classMaker;
+    private string $projectDir;
 
     public function __construct(ClassMaker $classMaker, string $projectDir, string $name = null)
     {

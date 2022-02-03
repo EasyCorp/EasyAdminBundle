@@ -39,7 +39,7 @@ final class CountryConfigurator implements FieldConfiguratorInterface
         'VC', 'VE', 'TR', 'VN', 'VU', 'WS', 'XK', 'YE', 'ZA', 'ZM', 'ZW',
     ];
 
-    private $assetPackages;
+    private Packages $assetPackages;
 
     public function __construct(Packages $assetPackages)
     {

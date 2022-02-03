@@ -21,9 +21,9 @@ use Twig\Error\RuntimeError;
  */
 final class ExceptionListener
 {
-    private $kernelDebug;
-    private $adminContextProvider;
-    private $twig;
+    private bool $kernelDebug;
+    private AdminContextProvider $adminContextProvider;
+    private Environment $twig;
 
     public function __construct(bool $kernelDebug, AdminContextProvider $adminContextProvider, Environment $twig)
     {

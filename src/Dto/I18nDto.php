@@ -7,11 +7,11 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
  */
 final class I18nDto
 {
-    private $locale;
+    private string $locale;
     private $language;
-    private $textDirection;
-    private $translationDomain;
-    private $translationParameters;
+    private string $textDirection;
+    private string $translationDomain;
+    private array $translationParameters;
 
     public function __construct(string $locale, string $textDirection, string $translationDomain, array $translationParameters)
     {

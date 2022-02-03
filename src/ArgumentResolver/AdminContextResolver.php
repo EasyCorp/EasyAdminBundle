@@ -13,7 +13,7 @@ use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
  */
 final class AdminContextResolver implements ArgumentValueResolverInterface
 {
-    private $adminContextProvider;
+    private AdminContextProvider $adminContextProvider;
 
     public function __construct(AdminContextProvider $adminContextProvider)
     {

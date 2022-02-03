@@ -20,9 +20,9 @@ class MakeCrudControllerCommand extends Command
 {
     protected static $defaultName = 'make:admin:crud';
     protected static $defaultDescription = 'Creates a new EasyAdmin CRUD controller class';
-    private $projectDir;
-    private $classMaker;
-    private $doctrine;
+    private string $projectDir;
+    private ClassMaker $classMaker;
+    private ManagerRegistry $doctrine;
 
     public function __construct(string $projectDir, ClassMaker $classMaker, ManagerRegistry $doctrine, string $name = null)
     {

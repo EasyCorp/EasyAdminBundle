@@ -10,8 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetsDto;
  */
 final class Assets
 {
-    /** @var AssetsDto */
-    private $dto;
+    private AssetsDto $dto;
 
     private function __construct(AssetsDto $assetsDto)
     {

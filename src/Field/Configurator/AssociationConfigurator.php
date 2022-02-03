@@ -24,9 +24,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 final class AssociationConfigurator implements FieldConfiguratorInterface
 {
-    private $entityFactory;
-    private $adminUrlGenerator;
-    private $translator;
+    private EntityFactory $entityFactory;
+    private AdminUrlGenerator $adminUrlGenerator;
+    private TranslatorInterface $translator;
 
     public function __construct(EntityFactory $entityFactory, AdminUrlGenerator $adminUrlGenerator, TranslatorInterface $translator)
     {

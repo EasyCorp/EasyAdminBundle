@@ -29,7 +29,7 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  */
 final class FieldFactory
 {
-    private static $doctrineTypeToFieldFqcn = [
+    private static array $doctrineTypeToFieldFqcn = [
         Types::ARRAY => ArrayField::class,
         Types::BIGINT => TextField::class,
         Types::BINARY => TextareaField::class,
@@ -56,9 +56,9 @@ final class FieldFactory
         Types::TIME_IMMUTABLE => TimeField::class,
     ];
 
-    private $adminContextProvider;
-    private $authorizationChecker;
-    private $fieldConfigurators;
+    private AdminContextProvider $adminContextProvider;
+    private AuthorizationCheckerInterface $authorizationChecker;
+    private iterable $fieldConfigurators;
 
     public function __construct(AdminContextProvider $adminContextProvider, AuthorizationCheckerInterface $authorizationChecker, iterable $fieldConfigurators)
     {

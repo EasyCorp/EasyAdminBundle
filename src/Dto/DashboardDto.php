@@ -10,25 +10,14 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 final class DashboardDto
 {
     private $routeName;
-    private $faviconPath;
-    private $title;
-    private $translationDomain;
+    private string $faviconPath = 'favicon.ico';
+    private string $title = 'EasyAdmin';
+    private string $translationDomain = 'messages';
     private $textDirection;
-    private $contentWidth;
-    private $sidebarWidth;
-    private $signedUrls;
-    private $absoluteUrls;
-
-    public function __construct()
-    {
-        $this->faviconPath = 'favicon.ico';
-        $this->title = 'EasyAdmin';
-        $this->translationDomain = 'messages';
-        $this->contentWidth = Crud::LAYOUT_CONTENT_DEFAULT;
-        $this->sidebarWidth = Crud::LAYOUT_SIDEBAR_DEFAULT;
-        $this->signedUrls = true;
-        $this->absoluteUrls = true;
-    }
+    private string $contentWidth = Crud::LAYOUT_CONTENT_DEFAULT;
+    private string $sidebarWidth = Crud::LAYOUT_SIDEBAR_DEFAULT;
+    private bool $signedUrls = true;
+    private bool $absoluteUrls = true;
 
     public function getRouteName(): string
     {

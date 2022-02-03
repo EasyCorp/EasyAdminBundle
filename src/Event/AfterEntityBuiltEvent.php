@@ -9,7 +9,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
  */
 final class AfterEntityBuiltEvent
 {
-    private $entityDto;
+    private EntityDto $entityDto;
 
     public function __construct(EntityDto $entityDto)
     {

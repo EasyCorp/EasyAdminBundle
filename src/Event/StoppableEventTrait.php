@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 trait StoppableEventTrait
 {
-    private $response;
+    private ?Response $response = null;
 
     public function isPropagationStopped(): bool
     {

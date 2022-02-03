@@ -16,8 +16,8 @@ use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
  */
 final class MoneyConfigurator implements FieldConfiguratorInterface
 {
-    private $intlFormatter;
-    private $propertyAccessor;
+    private IntlFormatter $intlFormatter;
+    private PropertyAccessorInterface $propertyAccessor;
 
     public function __construct(IntlFormatter $intlFormatter, PropertyAccessorInterface $propertyAccessor)
     {

@@ -10,18 +10,18 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
  */
 final class ActionConfigDto
 {
-    private $pageName;
+    private ?string $pageName = null;
     /** @var ActionDto[] */
-    private $actions = [
+    private array $actions = [
         Crud::PAGE_DETAIL => [],
         Crud::PAGE_EDIT => [],
         Crud::PAGE_INDEX => [],
         Crud::PAGE_NEW => [],
     ];
     /** @var string[] */
-    private $disabledActions = [];
+    private array $disabledActions = [];
     /** @var string[] */
-    private $actionPermissions = [];
+    private array $actionPermissions = [];
 
     public function __construct()
     {

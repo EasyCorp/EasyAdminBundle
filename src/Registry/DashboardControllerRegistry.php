@@ -10,10 +10,10 @@ use function Symfony\Component\String\u;
  */
 final class DashboardControllerRegistry
 {
-    private $controllerFqcnToContextIdMap = [];
-    private $contextIdToControllerFqcnMap = [];
-    private $controllerFqcnToRouteMap = [];
-    private $routeToControllerFqcnMap = [];
+    private array $controllerFqcnToContextIdMap = [];
+    private array $contextIdToControllerFqcnMap;
+    private array $controllerFqcnToRouteMap = [];
+    private array $routeToControllerFqcnMap;
 
     public function __construct(string $kernelSecret, string $cacheDir, array $dashboardControllersFqcn)
     {

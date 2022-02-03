@@ -11,57 +11,54 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
  */
 final class CrudDto
 {
-    private $controllerFqcn;
-    /** @var AssetsDto */
-    private $fieldAssetsDto;
-    private $pageName;
-    private $actionName;
-    /** @var ActionConfigDto */
-    private $actionConfigDto;
-    private $filters;
-    private $entityFqcn;
+    private ?string $controllerFqcn = null;
+    private AssetsDto $fieldAssetsDto;
+    private ?string $pageName = null;
+    private ?string $actionName = null;
+    private ?ActionConfigDto $actionConfigDto = null;
+    private ?FilterConfigDto $filters = null;
+    private ?string $entityFqcn = null;
     private $entityLabelInSingular;
     private $entityLabelInPlural;
-    private $defaultPageTitles = [
+    private array $defaultPageTitles = [
         Crud::PAGE_DETAIL => 'page_title.detail',
         Crud::PAGE_EDIT => 'page_title.edit',
         Crud::PAGE_INDEX => 'page_title.index',
         Crud::PAGE_NEW => 'page_title.new',
     ];
-    private $customPageTitles;
-    private $helpMessages;
-    private $datePattern;
-    private $timePattern;
-    private $dateTimePattern;
-    private $dateIntervalFormat;
-    private $timezone;
-    private $numberFormat;
-    private $defaultSort;
-    private $searchFields;
-    private $showEntityActionsAsDropdown;
-    /** @var PaginatorDto */
-    private $paginatorDto;
+    private array $customPageTitles = [
+        Crud::PAGE_DETAIL => null,
+        Crud::PAGE_EDIT => null,
+        Crud::PAGE_INDEX => null,
+        Crud::PAGE_NEW => null,
+    ];
+    private array $helpMessages = [
+        Crud::PAGE_DETAIL => null,
+        Crud::PAGE_EDIT => null,
+        Crud::PAGE_INDEX => null,
+        Crud::PAGE_NEW => null,
+    ];
+    private ?string $datePattern = 'medium';
+    private ?string $timePattern = 'medium';
+    private array $dateTimePattern = ['medium', 'medium'];
+    private string $dateIntervalFormat = '%%y Year(s) %%m Month(s) %%d Day(s)';
+    private ?string $timezone = null;
+    private ?string $numberFormat = null;
+    private array $defaultSort = [];
+    private ?array $searchFields = [];
+    private bool $showEntityActionsAsDropdown = true;
+    private ?PaginatorDto $paginatorDto = null;
     private $overriddenTemplates;
-    private $formThemes;
-    private $newFormOptions;
-    private $editFormOptions;
-    private $entityPermission;
-    private $contentWidth;
-    private $sidebarWidth;
+    private array $formThemes = ['@EasyAdmin/crud/form_theme.html.twig'];
+    private KeyValueStore $newFormOptions;
+    private KeyValueStore $editFormOptions;
+    private ?string $entityPermission = null;
+    private ?string $contentWidth = null;
+    private ?string $sidebarWidth = null;
 
     public function __construct()
     {
-        $this->customPageTitles = [Crud::PAGE_DETAIL => null, Crud::PAGE_EDIT => null, Crud::PAGE_INDEX => null, Crud::PAGE_NEW => null];
-        $this->helpMessages = [Crud::PAGE_DETAIL => null, Crud::PAGE_EDIT => null, Crud::PAGE_INDEX => null, Crud::PAGE_NEW => null];
         $this->fieldAssetsDto = new AssetsDto();
-        $this->datePattern = 'medium';
-        $this->timePattern = 'medium';
-        $this->dateTimePattern = ['medium', 'medium'];
-        $this->dateIntervalFormat = '%%y Year(s) %%m Month(s) %%d Day(s)';
-        $this->defaultSort = [];
-        $this->searchFields = [];
-        $this->showEntityActionsAsDropdown = true;
-        $this->formThemes = ['@EasyAdmin/crud/form_theme.html.twig'];
         $this->newFormOptions = KeyValueStore::new();
         $this->editFormOptions = KeyValueStore::new();
         $this->overriddenTemplates = [];
@@ -322,12 +319,12 @@ final class CrudDto
         $this->formThemes = $formThemes;
     }
 
-    public function getNewFormOptions(): ?KeyValueStore
+    public function getNewFormOptions(): KeyValueStore
     {
         return $this->newFormOptions;
     }
 
-    public function getEditFormOptions(): ?KeyValueStore
+    public function getEditFormOptions(): KeyValueStore
     {
         return $this->editFormOptions;
     }

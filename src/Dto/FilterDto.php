@@ -10,10 +10,10 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
  */
 final class FilterDto
 {
-    private $fqcn;
-    private $formType;
-    private $formTypeOptions;
-    private $propertyName;
+    private ?string $fqcn = null;
+    private ?string $formType = null;
+    private KeyValueStore $formTypeOptions;
+    private ?string $propertyName = null;
     private $label;
     private $applyCallable;
 

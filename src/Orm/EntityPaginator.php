@@ -17,12 +17,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
  */
 final class EntityPaginator implements EntityPaginatorInterface
 {
-    private $adminUrlGenerator;
-    private $entityFactory;
-    private $currentPage;
-    private $pageSize;
-    private $rangeSize;
-    private $rangeEdgeSize;
+    private AdminUrlGenerator $adminUrlGenerator;
+    private EntityFactory $entityFactory;
+    private ?int $currentPage = null;
+    private ?int $pageSize = null;
+    private ?int $rangeSize = null;
+    private ?int $rangeEdgeSize = null;
     private $results;
     private $numResults;
 

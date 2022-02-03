@@ -14,8 +14,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
  */
 trait FieldTrait
 {
-    /** @var FieldDto */
-    private $dto;
+    private FieldDto $dto;
 
     private function __construct()
     {

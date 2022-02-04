@@ -2,7 +2,7 @@ import DirtyForm from "dirty-form";
 
 require('../css/form-type-text-editor.css');
 
-import 'trix/dist/trix';
+import Trix from 'trix/dist/trix';
 
 // copied from https://github.com/chromium/chromium/search?p=1&q=2507943997699731163
 const requiredFieldMessage = {
@@ -115,3 +115,5 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+window.Trix = Trix;

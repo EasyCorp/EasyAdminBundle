@@ -11,7 +11,7 @@ final class MenuItemBadgeDto
     public const PREDEFINED_STYLES = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'dark'];
 
     private $content;
-    private $style;
+    private string $style;
 
     public function __construct($content, string $style)
     {

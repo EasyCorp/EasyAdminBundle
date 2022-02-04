@@ -26,20 +26,20 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 final class AdminContext
 {
-    private $request;
-    private $user;
-    private $i18nDto;
-    private $crudControllers;
-    private $entityDto;
-    private $dashboardDto;
-    private $dashboardControllerInstance;
-    private $assetDto;
-    private $crudDto;
-    private $searchDto;
-    private $menuFactory;
-    private $templateRegistry;
-    private $mainMenuDto;
-    private $userMenuDto;
+    private Request $request;
+    private ?UserInterface $user;
+    private I18nDto $i18nDto;
+    private CrudControllerRegistry $crudControllers;
+    private ?EntityDto $entityDto;
+    private DashboardDto $dashboardDto;
+    private DashboardControllerInterface $dashboardControllerInstance;
+    private AssetsDto $assetDto;
+    private ?CrudDto $crudDto;
+    private ?SearchDto $searchDto;
+    private MenuFactory $menuFactory;
+    private TemplateRegistry $templateRegistry;
+    private ?MainMenuDto $mainMenuDto = null;
+    private ?UserMenuDto $userMenuDto = null;
 
     public function __construct(Request $request, ?UserInterface $user, I18nDto $i18nDto, CrudControllerRegistry $crudControllers, DashboardDto $dashboardDto, DashboardControllerInterface $dashboardController, AssetsDto $assetDto, ?CrudDto $crudDto, ?EntityDto $entityDto, ?SearchDto $searchDto, MenuFactory $menuFactory, TemplateRegistry $templateRegistry)
     {

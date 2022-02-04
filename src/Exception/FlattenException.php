@@ -10,8 +10,7 @@ use Symfony\Component\ErrorHandler\Exception\FlattenException as BaseFlattenExce
  */
 final class FlattenException extends BaseFlattenException
 {
-    /** @var ExceptionContext */
-    private $context;
+    private ?ExceptionContext $context = null;
 
     public static function create(\Exception $exception, ?int $statusCode = null, array $headers = []): static
     {

@@ -14,7 +14,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Intl\IntlFormatter;
  */
 final class NumberConfigurator implements FieldConfiguratorInterface
 {
-    private $intlFormatter;
+    private IntlFormatter $intlFormatter;
 
     public function __construct(IntlFormatter $intlFormatter)
     {

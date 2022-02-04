@@ -25,7 +25,7 @@ use Symfony\Component\Uid\Uuid;
  */
 class FileUploadType extends AbstractType implements DataMapperInterface
 {
-    private $projectDir;
+    private string $projectDir;
 
     public function __construct(string $projectDir)
     {

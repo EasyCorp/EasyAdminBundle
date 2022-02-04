@@ -11,8 +11,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
  */
 final class PaginatorFactory
 {
-    private $adminContextProvider;
-    private $entityPaginator;
+    private AdminContextProvider $adminContextProvider;
+    private EntityPaginator $entityPaginator;
 
     public function __construct(AdminContextProvider $adminContextProvider, EntityPaginator $entityPaginator)
     {

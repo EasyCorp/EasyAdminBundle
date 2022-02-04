@@ -7,9 +7,9 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
  */
 final class MainMenuDto
 {
-    private $items;
-    private $selectedIndex;
-    private $selectedSubIndex;
+    private array $items;
+    private int $selectedIndex;
+    private int $selectedSubIndex;
 
     /**
      * @param MenuItemDto[] $items

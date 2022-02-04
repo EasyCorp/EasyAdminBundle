@@ -15,7 +15,7 @@ use function Symfony\Component\String\u;
  */
 final class ImageConfigurator implements FieldConfiguratorInterface
 {
-    private $projectDir;
+    private string $projectDir;
 
     public function __construct(string $projectDir)
     {

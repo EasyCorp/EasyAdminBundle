@@ -10,26 +10,19 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
  */
 final class AssetDto
 {
-    private $value;
-    private $async;
-    private $defer;
-    private $preload;
-    private $nopush;
-    private $webpackPackageName;
-    private $webpackEntrypointName;
-    private $htmlAttributes;
-    private $loadedOn;
+    private string $value;
+    private bool $async = false;
+    private bool $defer = false;
+    private bool $preload = false;
+    private bool $nopush = false;
+    private ?string $webpackPackageName = null;
+    private string $webpackEntrypointName = '_default';
+    private array $htmlAttributes = [];
+    private KeyValueStore $loadedOn;
 
     public function __construct(string $value)
     {
         $this->value = $value;
-        $this->async = false;
-        $this->defer = false;
-        $this->preload = false;
-        $this->nopush = false;
-        $this->webpackPackageName = null;
-        $this->webpackEntrypointName = '_default';
-        $this->htmlAttributes = [];
         $this->loadedOn = KeyValueStore::new([
             Crud::PAGE_INDEX => Crud::PAGE_INDEX,
             Crud::PAGE_DETAIL => Crud::PAGE_DETAIL,

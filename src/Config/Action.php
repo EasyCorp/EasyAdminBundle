@@ -28,8 +28,7 @@ final class Action
     // these are actions that can be applied to one or more entities at the same time
     public const TYPE_BATCH = 'batch';
 
-    /** @var ActionDto */
-    private $dto;
+    private ActionDto $dto;
 
     private function __construct(ActionDto $actionDto)
     {

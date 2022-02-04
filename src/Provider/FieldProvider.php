@@ -11,7 +11,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
  */
 final class FieldProvider
 {
-    private $adminContextProvider;
+    private AdminContextProvider $adminContextProvider;
 
     public function __construct(AdminContextProvider $adminContextProvider)
     {

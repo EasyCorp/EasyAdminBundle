@@ -12,7 +12,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
  */
 final class UrlSigner
 {
-    private $kernelSecret;
+    private string $kernelSecret;
 
     public function __construct(string $kernelSecret)
     {

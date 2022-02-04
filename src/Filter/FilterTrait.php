@@ -13,8 +13,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDto;
  */
 trait FilterTrait
 {
-    /** @var FilterDto */
-    private $dto;
+    private FilterDto $dto;
 
     private function __construct()
     {

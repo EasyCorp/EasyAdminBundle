@@ -7,7 +7,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Registry;
  */
 final class TemplateRegistry
 {
-    private $templates = [
+    private array $templates = [
         'layout' => '@EasyAdmin/layout.html.twig',
         'main_menu' => '@EasyAdmin/menu.html.twig',
         'exception' => '@EasyAdmin/exception.html.twig',

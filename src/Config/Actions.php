@@ -9,8 +9,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionConfigDto;
  */
 final class Actions
 {
-    /** @var ActionConfigDto */
-    private $dto;
+    private ActionConfigDto $dto;
 
     private function __construct(ActionConfigDto $actionConfigDto)
     {

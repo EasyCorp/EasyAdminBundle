@@ -9,10 +9,10 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface
  */
 final class CrudControllerRegistry
 {
-    private $crudFqcnToEntityFqcnMap = [];
-    private $entityFqcnToCrudFqcnMap = [];
-    private $crudFqcnToCrudIdMap = [];
-    private $crudIdToCrudFqcnMap = [];
+    private array $crudFqcnToEntityFqcnMap = [];
+    private array $entityFqcnToCrudFqcnMap;
+    private array $crudFqcnToCrudIdMap = [];
+    private array $crudIdToCrudFqcnMap;
 
     /**
      * @param CrudControllerInterface[] $crudControllers

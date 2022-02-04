@@ -15,8 +15,8 @@ use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
  */
 final class BatchActionDtoResolver implements ArgumentValueResolverInterface
 {
-    private $adminContextProvider;
-    private $adminUrlGenerator;
+    private AdminContextProvider $adminContextProvider;
+    private AdminUrlGenerator $adminUrlGenerator;
 
     public function __construct(AdminContextProvider $adminContextProvider, AdminUrlGenerator $adminUrlGenerator)
     {

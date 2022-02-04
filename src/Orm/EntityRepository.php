@@ -24,11 +24,11 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
  */
 final class EntityRepository implements EntityRepositoryInterface
 {
-    private $adminContextProvider;
-    private $doctrine;
-    private $entityFactory;
-    private $formFactory;
-    private $eventDispatcher;
+    private AdminContextProvider $adminContextProvider;
+    private ManagerRegistry $doctrine;
+    private EntityFactory $entityFactory;
+    private FormFactory $formFactory;
+    private EventDispatcherInterface $eventDispatcher;
 
     public function __construct(AdminContextProvider $adminContextProvider, ManagerRegistry $doctrine, EntityFactory $entityFactory, FormFactory $formFactory, EventDispatcherInterface $eventDispatcher)
     {

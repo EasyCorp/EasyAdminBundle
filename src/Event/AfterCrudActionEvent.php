@@ -12,8 +12,8 @@ final class AfterCrudActionEvent
 {
     use StoppableEventTrait;
 
-    private $adminContext;
-    private $responseParameters;
+    private ?AdminContext $adminContext;
+    private KeyValueStore $responseParameters;
 
     public function __construct(?AdminContext $adminContext, KeyValueStore $responseParameters)
     {

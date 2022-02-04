@@ -15,7 +15,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
  */
 final class BooleanConfigurator implements FieldConfiguratorInterface
 {
-    private $adminUrlGenerator;
+    private AdminUrlGenerator $adminUrlGenerator;
 
     public function __construct(AdminUrlGenerator $adminUrlGenerator)
     {

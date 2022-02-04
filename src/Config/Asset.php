@@ -10,8 +10,7 @@ use function Symfony\Component\String\u;
  */
 final class Asset
 {
-    /** @var AssetDto */
-    private $dto;
+    private AssetDto $dto;
 
     private function __construct(AssetDto $assetDto)
     {

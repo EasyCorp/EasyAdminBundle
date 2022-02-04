@@ -10,8 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\UserMenuDto;
  */
 final class UserMenu
 {
-    /** @var UserMenuDto */
-    private $dto;
+    private UserMenuDto $dto;
 
     private function __construct(UserMenuDto $userMenuDto)
     {

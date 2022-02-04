@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
  */
 final class AdminContextProvider
 {
-    private $requestStack;
+    private RequestStack $requestStack;
 
     public function __construct(RequestStack $requestStack)
     {

@@ -16,7 +16,7 @@ final class CacheWarmer implements CacheWarmerInterface
 {
     public const DASHBOARD_ROUTES_CACHE = 'easyadmin/routes-dashboard.php';
 
-    private $router;
+    private RouterInterface $router;
 
     public function __construct(RouterInterface $router)
     {

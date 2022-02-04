@@ -30,12 +30,12 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 final class AdminContextFactory
 {
-    private $cacheDir;
-    private $translator;
-    private $tokenStorage;
-    private $menuFactory;
-    private $crudControllers;
-    private $entityFactory;
+    private string $cacheDir;
+    private TranslatorInterface $translator;
+    private ?TokenStorageInterface $tokenStorage;
+    private MenuFactory $menuFactory;
+    private CrudControllerRegistry $crudControllers;
+    private EntityFactory $entityFactory;
 
     public function __construct(string $cacheDir, TranslatorInterface $translator, ?TokenStorageInterface $tokenStorage, MenuFactory $menuFactory, CrudControllerRegistry $crudControllers, EntityFactory $entityFactory)
     {

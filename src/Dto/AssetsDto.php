@@ -8,15 +8,15 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 final class AssetsDto
 {
     /** @var AssetDto[] */
-    private $webpackEncoreAssets = [];
+    private array $webpackEncoreAssets = [];
     /** @var AssetDto[] */
-    private $cssAssets = [];
+    private array $cssAssets = [];
     /** @var AssetDto[] */
-    private $jsAssets = [];
+    private array $jsAssets = [];
     /** @var AssetDto[] */
-    private $headContents = [];
+    private array $headContents = [];
     /** @var AssetDto[] */
-    private $bodyContents = [];
+    private array $bodyContents = [];
 
     public function __construct()
     {

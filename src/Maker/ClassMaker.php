@@ -8,10 +8,9 @@ use function Symfony\Component\String\u;
 
 final class ClassMaker
 {
-    private $kernel;
-    private $projectDir;
-    /** @var Filesystem */
-    private $fs;
+    private KernelInterface $kernel;
+    private string $projectDir;
+    private Filesystem $fs;
 
     public function __construct(KernelInterface $kernel, string $projectDir)
     {

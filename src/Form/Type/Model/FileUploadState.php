@@ -10,15 +10,15 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  */
 class FileUploadState
 {
-    private $allowAdd;
+    private bool $allowAdd;
 
     /** @var File[] */
-    private $currentFiles = [];
+    private array $currentFiles = [];
 
     /** @var UploadedFile[] */
-    private $uploadedFiles = [];
+    private array $uploadedFiles = [];
 
-    private $delete = false;
+    private bool $delete = false;
 
     public function __construct(bool $allowAdd = false)
     {

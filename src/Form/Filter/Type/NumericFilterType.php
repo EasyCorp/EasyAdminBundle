@@ -15,8 +15,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class NumericFilterType extends AbstractType
 {
-    private $valueType;
-    private $valueTypeOptions;
+    private string $valueType;
+    private array $valueTypeOptions;
 
     public function __construct(string $valueType = null, array $valueTypeOptions = [])
     {

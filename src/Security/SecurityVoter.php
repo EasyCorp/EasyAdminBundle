@@ -17,8 +17,8 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  */
 final class SecurityVoter extends Voter
 {
-    private $authorizationChecker;
-    private $adminContextProvider;
+    private AuthorizationCheckerInterface $authorizationChecker;
+    private AdminContextProvider $adminContextProvider;
 
     public function __construct(AuthorizationCheckerInterface $authorizationChecker, AdminContextProvider $adminContextProvider)
     {

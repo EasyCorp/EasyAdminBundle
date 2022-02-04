@@ -15,9 +15,9 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 final class ControllerFactory
 {
-    private $dashboardControllers;
-    private $crudControllers;
-    private $controllerResolver;
+    private DashboardControllerRegistry $dashboardControllers;
+    private CrudControllerRegistry $crudControllers;
+    private ControllerResolverInterface $controllerResolver;
 
     public function __construct(DashboardControllerRegistry $dashboardControllers, CrudControllerRegistry $crudControllers, ControllerResolverInterface $controllerResolver)
     {

@@ -13,46 +13,39 @@ use Symfony\Component\Uid\Ulid;
  */
 final class FieldDto
 {
-    private $fieldFqcn;
-    private $propertyName;
+    private ?string $fieldFqcn = null;
+    private ?string $propertyName = null;
     private $value;
     private $formattedValue;
     private $formatValueCallable;
     private $label;
-    private $formType;
-    private $formTypeOptions;
-    private $sortable;
-    private $virtual;
-    private $permission;
-    private $textAlign;
+    private ?string $formType = null;
+    private KeyValueStore $formTypeOptions;
+    private ?bool $sortable = null;
+    private ?bool $virtual = null;
+    private ?string $permission = null;
+    private string $textAlign = TextAlign::LEFT;
     private $help;
-    private $cssClass;
+    private string $cssClass = '';
     // how many columns the field takes when rendering
     // (defined as Bootstrap 5 grid classes; e.g. 'col-md-6 col-xxl-3')
-    private $columns;
+    private ?string $columns = null;
     // same as $columns but used when the user doesn't define columns explicitly
-    private $defaultColumns;
-    private $translationParameters;
-    private $templateName;
-    private $templatePath;
-    /** @var AssetsDto */
-    private $assets;
-    private $customOptions;
-    private $doctrineMetadata;
+    private string $defaultColumns = '';
+    private array $translationParameters = [];
+    private ?string $templateName = 'crud/field/text';
+    private ?string $templatePath = null;
+    private AssetsDto $assets;
+    private KeyValueStore $customOptions;
+    private KeyValueStore $doctrineMetadata;
     /** @internal */
     private $uniqueId;
-    private $displayedOn;
+    private KeyValueStore $displayedOn;
 
     public function __construct()
     {
         $this->uniqueId = new Ulid();
-        $this->textAlign = TextAlign::LEFT;
-        $this->cssClass = '';
-        $this->columns = null;
-        $this->defaultColumns = '';
-        $this->templateName = 'crud/field/text';
         $this->assets = new AssetsDto();
-        $this->translationParameters = [];
         $this->formTypeOptions = KeyValueStore::new();
         $this->customOptions = KeyValueStore::new();
         $this->doctrineMetadata = KeyValueStore::new();

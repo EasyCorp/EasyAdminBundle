@@ -22,7 +22,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class CrudFormType extends AbstractType
 {
-    private $doctrineOrmTypeGuesser;
+    private DoctrineOrmTypeGuesser $doctrineOrmTypeGuesser;
 
     public function __construct(DoctrineOrmTypeGuesser $doctrineOrmTypeGuesser)
     {

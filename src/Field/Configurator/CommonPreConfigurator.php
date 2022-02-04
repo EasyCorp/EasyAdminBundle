@@ -19,8 +19,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 final class CommonPreConfigurator implements FieldConfiguratorInterface
 {
-    private $translator;
-    private $propertyAccessor;
+    private TranslatorInterface $translator;
+    private PropertyAccessorInterface $propertyAccessor;
 
     public function __construct(TranslatorInterface $translator, PropertyAccessorInterface $propertyAccessor)
     {

@@ -7,11 +7,11 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
  */
 class BatchActionDto
 {
-    private $name;
-    private $entityIds;
-    private $entityFqcn;
-    private $referrerUrl;
-    private $csrfToken;
+    private string $name;
+    private array $entityIds;
+    private string $entityFqcn;
+    private string $referrerUrl;
+    private string $csrfToken;
 
     public function __construct(string $name, array $entityIds, string $entityFqcn, string $referrerUrl, string $csrfToken)
     {

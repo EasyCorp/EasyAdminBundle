@@ -42,6 +42,7 @@ trait FieldTrait
     public function setLabel($label): self
     {
         $this->dto->setLabel($label);
+        $this->setFormTypeOption('label', $label);
 
         return $this;
     }

@@ -20,7 +20,7 @@ final class ActionDto
     private ?string $templatePath = null;
     private ?string $crudActionName = null;
     private ?string $routeName = null;
-    private array $routeParameters = [];
+    private $routeParameters = [];
     private $url;
     private array $translationParameters = [];
     private $displayCallable;

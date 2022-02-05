@@ -84,9 +84,7 @@ final class EntityFilter implements FilterInterface
             return $this->processSingleParameterValue($queryBuilder, $parameterValue);
         }
 
-        return $parameterValue->map(function ($element) use ($queryBuilder) {
-            return $this->processSingleParameterValue($queryBuilder, $element);
-        });
+        return $parameterValue->map(fn ($element) => $this->processSingleParameterValue($queryBuilder, $element));
     }
 
     /**

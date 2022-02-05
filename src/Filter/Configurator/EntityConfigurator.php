@@ -35,10 +35,11 @@ final class EntityConfigurator implements FilterConfiguratorInterface
 
         if ($entityDto->isToOneAssociation($propertyName)) {
             // don't show the 'empty value' placeholder when all join columns are required,
-            // because an empty filter value would always returns no result
-            $numberOfRequiredJoinColumns = \count(array_filter($doctrineMetadata->get('joinColumns'), static function (array $joinColumnMapping): bool {
-                return false === ($joinColumnMapping['nullable'] ?? false);
-            }));
+            // because an empty filter value would always return no result
+            $numberOfRequiredJoinColumns = \count(array_filter(
+                $doctrineMetadata->get('joinColumns'),
+                static fn (array $joinColumn): bool => false === ($joinColumn['nullable'] ?? false))
+            );
 
             $someJoinColumnsAreNullable = \count($doctrineMetadata->get('joinColumns')) !== $numberOfRequiredJoinColumns;
 

@@ -80,22 +80,25 @@ final class ActionCollection implements CollectionInterface
 
     public function getEntityActions(): self
     {
-        return self::new(array_filter($this->actions, static function (ActionDto $action) {
-            return $action->isEntityAction();
-        }));
+        return self::new(array_filter(
+            $this->actions,
+            static fn (ActionDto $action): bool => $action->isEntityAction()
+        ));
     }
 
     public function getGlobalActions(): self
     {
-        return self::new(array_filter($this->actions, static function (ActionDto $action) {
-            return $action->isGlobalAction();
-        }));
+        return self::new(array_filter(
+            $this->actions,
+            static fn (ActionDto $action): bool => $action->isGlobalAction()
+        ));
     }
 
     public function getBatchActions(): self
     {
-        return self::new(array_filter($this->actions, static function (ActionDto $action) {
-            return $action->isBatchAction();
-        }));
+        return self::new(array_filter(
+            $this->actions,
+            static fn (ActionDto $action): bool => $action->isBatchAction()
+        ));
     }
 }

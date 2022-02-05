@@ -20,9 +20,7 @@ class ChoiceFilterType extends AbstractType
         $multiple = $builder->get('value')->getOption('multiple');
 
         $builder->addModelTransformer(new CallbackTransformer(
-            static function ($data) {
-                return $data;
-            },
+            static fn ($data) => $data,
             static function ($data) use ($multiple) {
                 switch ($data['comparison']) {
                     case ComparisonType::EQ:

@@ -84,9 +84,7 @@ class FileUploadType extends AbstractType implements DataMapperInterface
             unlink($file->getPathname());
         };
 
-        $uploadFilename = static function (UploadedFile $file): string {
-            return $file->getClientOriginalName();
-        };
+        $uploadFilename = static fn (UploadedFile $file): string => $file->getClientOriginalName();
 
         $uploadValidate = static function (string $filename): string {
             if (!file_exists($filename)) {
@@ -102,21 +100,13 @@ class FileUploadType extends AbstractType implements DataMapperInterface
             return $filename;
         };
 
-        $downloadPath = function (Options $options) {
-            return mb_substr($options['upload_dir'], mb_strlen($this->projectDir.'/public/'));
-        };
+        $downloadPath = fn (Options $options) => mb_substr($options['upload_dir'], mb_strlen($this->projectDir.'/public/'));
 
-        $allowAdd = static function (Options $options) {
-            return $options['multiple'];
-        };
+        $allowAdd = static fn (Options $options) => $options['multiple'];
 
-        $dataClass = static function (Options $options) {
-            return $options['multiple'] ? null : File::class;
-        };
+        $dataClass = static fn (Options $options) => $options['multiple'] ? null : File::class;
 
-        $emptyData = static function (Options $options) {
-            return $options['multiple'] ? [] : null;
-        };
+        $emptyData = static fn (Options $options) => $options['multiple'] ? [] : null;
 
         $resolver->setDefaults([
             'upload_dir' => $this->projectDir.'/public/uploads/files/',

@@ -14,7 +14,7 @@ Basic Information
 -----------------
 
 * **PHP Class**: ``EasyCorp\Bundle\EasyAdminBundle\Field\ColorField``
-* **Doctrine DBAL Type** used to store this value: `string`
+* **Doctrine DBAL Type** used to store this value: ``string``
 * **Symfony Form Type** used to render the field: `ColorType`_
 * **Rendered as**:
 

@@ -9,11 +9,18 @@ In :ref:`form pages (edit and new) <crud-pages>` it looks like this:
 .. image:: ../images/fields/field-texteditor.png
    :alt: Default style of EasyAdmin text editor field
 
+.. tip::
+
+    EasyAdmin provides other fields for long text contents:
+    :doc:`TextAreaField </fields/TextareaField>` is ideal for long contents that
+    don't need any formatting; :doc:`CodeEditorField </fields/CodeEditorField>`
+    is ideal to edit and store any kind of source code.
+
 Basic Information
 -----------------
 
 * **PHP Class**: ``EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField``
-* **Doctrine DBAL Type** used to store this value: `text`
+* **Doctrine DBAL Type** used to store this value: ``text``
 * **Symfony Form Type** used to render the field: `TextEditorType`_, which is
   based on Symfony's `TextareaType`_
 * **Rendered as**:
@@ -22,13 +29,6 @@ Basic Information
 
     <!-- when loading the page this is transformed into a WYSIWYG editor via JavaScript -->
     <textarea> ... </textarea>
-
-.. tip::
-
-    EasyAdmin provides other fields for long text contents:
-    :doc:`TextAreaField </fields/TextareaField>` is ideal for long contents that
-    don't need any formatting; :doc:`CodeEditorField </fields/CodeEditorField>`
-    is ideal to edit and store any kind of source code.
 
 Options
 -------

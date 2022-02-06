@@ -24,9 +24,7 @@ class ArrayFilterType extends AbstractType
         $builder->add('value', $options['value_type'], $options['value_type_options'] + $defaultOptions);
 
         $builder->addModelTransformer(new CallbackTransformer(
-            static function ($data) {
-                return $data;
-            },
+            static fn ($data) => $data,
             static function ($data) {
                 if (null === $data['value'] || [] === $data['value']) {
                     $data['comparison'] = ComparisonType::CONTAINS === $data['comparison'] ? 'IS NULL' : 'IS NOT NULL';

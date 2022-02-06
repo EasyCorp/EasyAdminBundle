@@ -53,9 +53,8 @@ final class TimeField implements FieldInterface
     public function setFormat(string $timeFormatOrPattern): self
     {
         if (DateTimeField::FORMAT_NONE === $timeFormatOrPattern || '' === trim($timeFormatOrPattern)) {
-            $validTimeFormatsWithoutNone = array_filter(DateTimeField::VALID_DATE_FORMATS, static function ($format) {
-                return DateTimeField::FORMAT_NONE !== $format;
-            });
+            $callable = static fn (string $format): bool => DateTimeField::FORMAT_NONE !== $format;
+            $validTimeFormatsWithoutNone = array_filter(DateTimeField::VALID_DATE_FORMATS, $callable);
 
             throw new \InvalidArgumentException(sprintf('The first argument of the "%s()" method cannot be "%s" or an empty string. Use either the special time formats (%s) or a datetime Intl pattern.', __METHOD__, DateTimeField::FORMAT_NONE, implode(', ', $validTimeFormatsWithoutNone)));
         }

@@ -254,9 +254,10 @@ final class AdminUrlGenerator
         $this->dashboardRoute = explode('.', $this->dashboardRoute, 2)[0];
 
         // this removes any parameter with a NULL value
-        $routeParameters = array_filter($this->routeParameters, static function ($parameterValue) {
-            return null !== $parameterValue;
-        });
+        $routeParameters = array_filter(
+            $this->routeParameters,
+            static fn ($parameterValue): bool => null !== $parameterValue
+        );
         ksort($routeParameters, \SORT_STRING);
 
         $context = $this->adminContextProvider->getContext();

@@ -40,9 +40,7 @@ final class ArrayConfigurator implements FieldConfiguratorInterface
         if (null !== $value && Crud::PAGE_INDEX === $context->getCrud()->getCurrentPage()) {
             $values = $field->getValue();
             if ($values instanceof PersistentCollection) {
-                $values = array_map(static function ($item) {
-                    return (string) $item;
-                }, $values->getValues());
+                $values = array_map(static fn ($item): string => (string) $item, $values->getValues());
             }
 
             $field->setFormattedValue(u(', ')->join($values)->toString());

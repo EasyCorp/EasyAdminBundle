@@ -91,9 +91,10 @@ class Crud
     public function setDateFormat(string $formatOrPattern): self
     {
         if (DateTimeField::FORMAT_NONE === $formatOrPattern || '' === trim($formatOrPattern)) {
-            $validDateFormatsWithoutNone = array_filter(DateTimeField::VALID_DATE_FORMATS, static function ($format) {
-                return DateTimeField::FORMAT_NONE !== $format;
-            });
+            $validDateFormatsWithoutNone = array_filter(
+                DateTimeField::VALID_DATE_FORMATS,
+                static fn (string $format): bool => DateTimeField::FORMAT_NONE !== $format
+            );
 
             throw new \InvalidArgumentException(sprintf('The first argument of the "%s()" method cannot be "%s" or an empty string. Use either the special date formats (%s) or a datetime Intl pattern.', __METHOD__, DateTimeField::FORMAT_NONE, implode(', ', $validDateFormatsWithoutNone)));
         }
@@ -110,9 +111,10 @@ class Crud
     public function setTimeFormat(string $formatOrPattern): self
     {
         if (DateTimeField::FORMAT_NONE === $formatOrPattern || '' === trim($formatOrPattern)) {
-            $validTimeFormatsWithoutNone = array_filter(DateTimeField::VALID_DATE_FORMATS, static function ($format) {
-                return DateTimeField::FORMAT_NONE !== $format;
-            });
+            $validTimeFormatsWithoutNone = array_filter(
+                DateTimeField::VALID_DATE_FORMATS,
+                static fn (string $format): bool => DateTimeField::FORMAT_NONE !== $format
+            );
 
             throw new \InvalidArgumentException(sprintf('The first argument of the "%s()" method cannot be "%s" or an empty string. Use either the special time formats (%s) or a datetime Intl pattern.', __METHOD__, DateTimeField::FORMAT_NONE, implode(', ', $validTimeFormatsWithoutNone)));
         }

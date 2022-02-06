@@ -126,9 +126,7 @@ class CrudFormType extends AbstractType
         $resolver
             ->setDefaults([
                 'allow_extra_fields' => true,
-                'data_class' => static function (Options $options, $dataClass) {
-                    return $dataClass ?? $options['entityDto']->getFqcn();
-                },
+                'data_class' => static fn (Options $options, $dataClass) => $dataClass ?? $options['entityDto']->getFqcn(),
             ])
             ->setDefined(['entityDto'])
             ->setRequired(['entityDto']);

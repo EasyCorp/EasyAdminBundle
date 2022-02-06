@@ -49,8 +49,6 @@ final class FieldProvider
             $defaultPropertyNames = \array_slice($defaultPropertyNames, 0, $maxNumProperties, true);
         }
 
-        return array_map(static function (string $fieldName) {
-            return Field::new($fieldName);
-        }, $defaultPropertyNames);
+        return array_map(static fn (string $fieldName) => Field::new($fieldName), $defaultPropertyNames);
     }
 }

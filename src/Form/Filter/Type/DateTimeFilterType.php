@@ -31,9 +31,7 @@ class DateTimeFilterType extends AbstractType
         ]);
 
         $builder->addModelTransformer(new CallbackTransformer(
-            static function ($data) {
-                return $data;
-            },
+            static fn ($data) => $data,
             static function ($data) use ($options) {
                 if (ComparisonType::BETWEEN === $data['comparison']) {
                     if (null === $data['value'] || '' === $data['value'] || null === $data['value2'] || '' === $data['value2']) {

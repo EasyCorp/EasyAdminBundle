@@ -88,10 +88,10 @@
                         <span class="user-name">{{ ea.user is null ? 'user.anonymous'|trans(domain = 'EasyAdminBundle') : ea.userMenu.name }}</span>
                     </div>
                 </li>
-                <li><hr class="dropdown-divider"></li>
 
                 {% block user_menu %}
                     {% if ea.userMenu.items|length > 0 %}
+                        <li><hr class="dropdown-divider"></li>
                         {% for item in ea.userMenu.items %}
                             <li>
                                 {% if item.isMenuSection and not loop.first %}

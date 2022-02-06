@@ -62,18 +62,12 @@ final class SecurityVoter extends Voter
         return $this->authorizationChecker->isGranted($menuItemDto->getPermission(), $menuItemDto);
     }
 
-    /**
-     * @param string|ActionDto $actionNameOrDto
-     */
-    private function voteOnExecuteActionPermission(CrudDto $crudDto, $actionNameOrDto, ?EntityDto $entityDto): bool
+    private function voteOnExecuteActionPermission(CrudDto $crudDto, ActionDto|string $actionNameOrDto, ?EntityDto $entityDto): bool
     {
         // users can run the Crud action if:
         // * they have the required permission to execute the action on the given entity instance
         // * the action is not disabled
 
-        if (!\is_string($actionNameOrDto) && !($actionNameOrDto instanceof ActionDto)) {
-            throw new \RuntimeException(sprintf('When checking the "%s" permission with the isGranted() method, the value of the "action" parameter passed inside the voter $subject must be a string with the action name or a "%s" object.', Permission::EA_EXECUTE_ACTION, ActionDto::class));
-        }
         $actionName = \is_string($actionNameOrDto) ? $actionNameOrDto : $actionNameOrDto->getName();
 
         $actionPermission = $crudDto->getActionsConfig()->getActionPermissions()[$actionName] ?? null;

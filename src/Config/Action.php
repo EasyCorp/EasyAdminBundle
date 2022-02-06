@@ -149,17 +149,13 @@ final class Action
     }
 
     /**
-     * @param array|callable $routeParameters The callable has the signature: function ($entity): array
+     * @param $routeParameters The callable has the signature: function ($entity): array
      *
      * Route parameters can be defined as a callable with the signature: function ($entityInstance): array
      * Example: ->linkToRoute('invoice_send', fn (Invoice $entity) => ['uuid' => $entity->getId()]);
      */
-    public function linkToRoute(string $routeName, $routeParameters = []): self
+    public function linkToRoute(string $routeName, array|callable $routeParameters = []): self
     {
-        if (!\is_array($routeParameters) && !\is_callable($routeParameters)) {
-            throw new \InvalidArgumentException(sprintf('The second argument of "%s" can only be either an array with the route parameters or a callable to generate those route parameters.', __METHOD__));
-        }
-
         $this->dto->setRouteName($routeName);
         $this->dto->setRouteParameters($routeParameters);
 

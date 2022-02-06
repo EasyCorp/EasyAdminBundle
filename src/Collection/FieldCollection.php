@@ -118,9 +118,9 @@ final class FieldCollection implements CollectionInterface
     }
 
     /**
-     * @return \ArrayIterator|\Traversable|FieldDto[]
+     * @return FieldDto[]
      */
-    public function getIterator(): \Traversable
+    public function getIterator(): \ArrayIterator
     {
         return new \ArrayIterator($this->fields);
     }

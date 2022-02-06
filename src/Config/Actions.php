@@ -23,31 +23,18 @@ final class Actions
         return new self($dto);
     }
 
-    /**
-     * @param string|Action $actionNameOrObject
-     */
-    public function add(string $pageName, $actionNameOrObject): self
+    public function add(string $pageName, Action|string $actionNameOrObject): self
     {
         return $this->doAddAction($pageName, $actionNameOrObject);
     }
 
-    /**
-     * @param string|Action $actionNameOrObject
-     */
-    public function addBatchAction($actionNameOrObject): self
+    public function addBatchAction(Action|string $actionNameOrObject): self
     {
         return $this->doAddAction(Crud::PAGE_INDEX, $actionNameOrObject, true);
     }
 
-    /**
-     * @param string|Action $actionNameOrObject
-     */
-    public function set(string $pageName, $actionNameOrObject): self
+    public function set(string $pageName, Action|string $actionNameOrObject): self
     {
-        if (!\is_string($actionNameOrObject) && !$actionNameOrObject instanceof Action) {
-            throw new \InvalidArgumentException(sprintf('The argument of "%s" can only be either a string with the action name or a "%s" object with the action config.', __METHOD__, Action::class));
-        }
-
         $action = \is_string($actionNameOrObject) ? $this->createBuiltInAction($pageName, $actionNameOrObject) : $actionNameOrObject;
 
         $this->dto->appendAction($pageName, $action->getAsDto());
@@ -231,12 +218,8 @@ final class Actions
         throw new \InvalidArgumentException(sprintf('The "%s" action is not a built-in action, so you can\'t add or configure it via its name. Either refer to one of the built-in actions or create a custom action called "%s".', $actionName, $actionName));
     }
 
-    private function doAddAction(string $pageName, $actionNameOrObject, bool $isBatchAction = false): self
+    private function doAddAction(string $pageName, Action|string $actionNameOrObject, bool $isBatchAction = false): self
     {
-        if (!\is_string($actionNameOrObject) && !$actionNameOrObject instanceof Action) {
-            throw new \InvalidArgumentException(sprintf('The argument of "%s" can only be either a string with the action name or a "%s" object with the action config.', __METHOD__, Action::class));
-        }
-
         $actionName = \is_string($actionNameOrObject) ? $actionNameOrObject : (string) $actionNameOrObject;
         $action = \is_string($actionNameOrObject) ? $this->createBuiltInAction($pageName, $actionNameOrObject) : $actionNameOrObject;
 

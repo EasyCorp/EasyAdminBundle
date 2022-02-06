@@ -64,9 +64,9 @@ final class FilterCollection implements CollectionInterface
     }
 
     /**
-     * @return \ArrayIterator|\Traversable|FilterDto[]
+     * @return FilterDto[]
      */
-    public function getIterator(): \Traversable
+    public function getIterator(): \ArrayIterator
     {
         return new \ArrayIterator($this->filters);
     }

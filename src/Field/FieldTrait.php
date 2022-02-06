@@ -194,10 +194,7 @@ trait FieldTrait
         return $this;
     }
 
-    /**
-     * @param string|Asset $entryNamesOrAssets
-     */
-    public function addWebpackEncoreEntries(...$entryNamesOrAssets): self
+    public function addWebpackEncoreEntries(Asset|string ...$entryNamesOrAssets): self
     {
         if (!class_exists('Symfony\\WebpackEncoreBundle\\Twig\\EntryFilesTwigExtension')) {
             throw new \RuntimeException('You are trying to add Webpack Encore entries in a field but Webpack Encore is not installed in your project. Try running "composer require symfony/webpack-encore-bundle"');
@@ -218,16 +215,9 @@ trait FieldTrait
         return $this;
     }
 
-    /**
-     * @param string|Asset $pathsOrAssets
-     */
-    public function addCssFiles(...$pathsOrAssets): self
+    public function addCssFiles(Asset|string ...$pathsOrAssets): self
     {
         foreach ($pathsOrAssets as $pathOrAsset) {
-            if (!\is_string($pathOrAsset) && !($pathOrAsset instanceof Asset)) {
-                throw new \RuntimeException(sprintf('The argument passed to %s() can only be a string or a object of type "%s".', __METHOD__, Asset::class));
-            }
-
             if (\is_string($pathOrAsset)) {
                 $this->dto->addCssAsset(new AssetDto($pathOrAsset));
             } else {
@@ -238,16 +228,9 @@ trait FieldTrait
         return $this;
     }
 
-    /**
-     * @param string|Asset $pathsOrAssets
-     */
-    public function addJsFiles(...$pathsOrAssets): self
+    public function addJsFiles(Asset|string ...$pathsOrAssets): self
     {
         foreach ($pathsOrAssets as $pathOrAsset) {
-            if (!\is_string($pathOrAsset) && !($pathOrAsset instanceof Asset)) {
-                throw new \RuntimeException(sprintf('The argument passed to %s() can only be a string or a object of type "%s".', __METHOD__, Asset::class));
-            }
-
             if (\is_string($pathOrAsset)) {
                 $this->dto->addJsAsset(new AssetDto($pathOrAsset));
             } else {
@@ -380,15 +363,11 @@ trait FieldTrait
     }
 
     /**
-     * @param int|string $cols An integer with the number of columns that this field takes (e.g. 6),
-     *                         or a string with responsive col CSS classes (e.g. 'col-6 col-sm-4 col-lg-3')
+     * @param $cols An integer with the number of columns that this field takes (e.g. 6),
+     *              or a string with responsive col CSS classes (e.g. 'col-6 col-sm-4 col-lg-3')
      */
-    public function setColumns($cols): self
+    public function setColumns(int|string $cols): self
     {
-        if (!\is_int($cols) && !\is_string($cols)) {
-            throw new \InvalidArgumentException(sprintf('The value passed to the "setColumns()" method of the "%s" field can only be an integer or a string ("%s" was given).', $this->dto->getProperty(), get_debug_type($cols)));
-        }
-
         $this->dto->setColumns(\is_int($cols) ? 'col-md-'.$cols : $cols);
 
         return $this;
@@ -400,16 +379,10 @@ trait FieldTrait
      * This should only be used if you create a custom EasyAdmin field,
      * not when configuring fields in your backend.
      *
-     * @param int|string $cols
-     *
      * @internal
      */
-    public function setDefaultColumns($cols): self
+    public function setDefaultColumns(int|string $cols): self
     {
-        if (!\is_int($cols) && !\is_string($cols)) {
-            throw new \InvalidArgumentException(sprintf('The value passed to the "setDefaultColumns()" method of the "%s" field can only be an integer or a string ("%s" was given).', $this->dto->getProperty(), get_debug_type($cols)));
-        }
-
         $this->dto->setDefaultColumns(\is_int($cols) ? 'col-md-'.$cols : $cols);
 
         return $this;

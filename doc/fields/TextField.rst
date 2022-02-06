@@ -26,7 +26,7 @@ Basic Information
 -----------------
 
 * **PHP Class**: ``EasyCorp\Bundle\EasyAdminBundle\Field\TextField``
-* **Doctrine DBAL Type** used to store this value: `string` or `ascii_string`
+* **Doctrine DBAL Type** used to store this value: ``string`` or ``ascii_string``
 * **Symfony Form Type** used to render the field: `TextType`_
 * **Rendered as**:
 

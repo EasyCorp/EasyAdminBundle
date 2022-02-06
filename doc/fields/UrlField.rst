@@ -12,7 +12,7 @@ Basic Information
 -----------------
 
 * **PHP Class**: ``EasyCorp\Bundle\EasyAdminBundle\Field\UrlField``
-* **Doctrine DBAL Type** used to store this value: `string`
+* **Doctrine DBAL Type** used to store this value: ``string``
 * **Symfony Form Type** used to render the field: `UrlType`_
 * **Rendered as**:
 

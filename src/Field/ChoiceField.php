@@ -38,6 +38,7 @@ final class ChoiceField implements FieldInterface
             ->addCssClass('field-select')
             ->setDefaultColumns('') // this is set dynamically in the field configurator
             ->setCustomOption(self::OPTION_CHOICES, null)
+            ->setCustomOption(self::OPTION_ALLOW_MULTIPLE_CHOICES, false)
             ->setCustomOption(self::OPTION_RENDER_AS_BADGES, null)
             ->setCustomOption(self::OPTION_RENDER_EXPANDED, false)
             ->setCustomOption(self::OPTION_WIDGET, null)

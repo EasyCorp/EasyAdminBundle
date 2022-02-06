@@ -9,24 +9,24 @@ In :ref:`form pages (edit and new) <crud-pages>` it looks like this:
 .. image:: ../images/fields/field-textarea.png
    :alt: Default style of EasyAdmin textarea field
 
-Basic Information
------------------
-
-* **PHP Class**: ``EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField``
-* **Doctrine DBAL Type** used to store this value: `text`
-* **Symfony Form Type** used to render the field: `TextareaType`_
-* **Rendered as**:
-
-  .. code-block:: html
-
-    <textarea> ... </textarea>
-
 .. tip::
 
     EasyAdmin provides other fields for long text contents:
     :doc:`TextEditorField </fields/TextEditorField>` is ideal for contents such
     as blog posts or doc pages; :doc:`CodeEditorField </fields/CodeEditorField>`
     is ideal to edit and store any kind of source code.
+
+Basic Information
+-----------------
+
+* **PHP Class**: ``EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField``
+* **Doctrine DBAL Type** used to store this value: ``text``
+* **Symfony Form Type** used to render the field: `TextareaType`_
+* **Rendered as**:
+
+  .. code-block:: html
+
+    <textarea> ... </textarea>
 
 Options
 -------

@@ -23,7 +23,7 @@ final class CrudResponseListener
         $this->twig = $twig;
     }
 
-    public function onKernelView(ViewEvent $event)
+    public function onKernelView(ViewEvent $event): void
     {
         $responseParameters = $event->getControllerResult();
         if (null === $responseParameters || !$responseParameters instanceof KeyValueStore) {

@@ -159,13 +159,39 @@ final class CrudDto
     /**
      * @param string|callable $pageTitle
      */
-    public function setCustomPageTitle(string $pageName, $pageTitle): void
+    public function setCustomPageTitle(string $pageName, /*string|callable*/ $pageTitle): void
     {
+        if (!\is_string($pageTitle)
+            && \is_callable($pageTitle)) {
+            trigger_deprecation(
+                'easycorp/easyadmin-bundle',
+                '4.0.5',
+                'Argument "%s" for "%s" must be one of these types: %s. Passing type "%s" will cause an error in 5.0.0.',
+                '$pageTitle',
+                __METHOD__,
+                '"string" or "callable"',
+                \gettype($pageTitle)
+            );
+        }
+
         $this->customPageTitles[$pageName] = $pageTitle;
     }
 
-    public function getDefaultPageTitle(string $pageName = null, $entityInstance = null): ?string
+    public function getDefaultPageTitle(string $pageName = null, /*?object*/ $entityInstance = null): ?string
     {
+        if (!\is_object($entityInstance)
+            && null !== $entityInstance) {
+            trigger_deprecation(
+                'easycorp/easyadmin-bundle',
+                '4.0.5',
+                'Argument "%s" for "%s" must be one of these types: %s. Passing type "%s" will cause an error in 5.0.0.',
+                '$entityInstance',
+                __METHOD__,
+                '"object" or "null"',
+                \gettype($entityInstance)
+            );
+        }
+
         if (null !== $entityInstance) {
             if (method_exists($entityInstance, '__toString')) {
                 $entityAsString = (string) $entityInstance;

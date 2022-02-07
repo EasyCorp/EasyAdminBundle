@@ -63,7 +63,7 @@ trait FilterTrait
         return $this;
     }
 
-    public function setFormTypeOption(string $optionName, $optionValue): self
+    public function setFormTypeOption(string $optionName, mixed $optionValue): self
     {
         $this->dto->setFormTypeOption($optionName, $optionValue);
 

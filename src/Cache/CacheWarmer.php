@@ -28,7 +28,7 @@ final class CacheWarmer implements CacheWarmerInterface
         return false;
     }
 
-    public function warmUp($cacheDirectory): array
+    public function warmUp(string $cacheDir): array
     {
         $allRoutes = $this->router->getRouteCollection();
         $dashboardRoutes = [];
@@ -62,7 +62,7 @@ final class CacheWarmer implements CacheWarmerInterface
         }
 
         (new Filesystem())->dumpFile(
-            $cacheDirectory.'/'.self::DASHBOARD_ROUTES_CACHE,
+            $cacheDir.'/'.self::DASHBOARD_ROUTES_CACHE,
             '<?php return '.var_export($dashboardRoutes, true).';'
         );
 

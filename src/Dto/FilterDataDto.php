@@ -11,8 +11,8 @@ final class FilterDataDto
     private string $entityAlias;
     private FilterDto $filterDto;
     private $comparison;
-    private $value;
-    private $value2;
+    private mixed $value;
+    private mixed $value2;
 
     private function __construct()
     {
@@ -51,12 +51,12 @@ final class FilterDataDto
         return $this->comparison;
     }
 
-    public function getValue()
+    public function getValue(): mixed
     {
         return $this->value;
     }
 
-    public function getValue2()
+    public function getValue2(): mixed
     {
         return $this->value2;
     }

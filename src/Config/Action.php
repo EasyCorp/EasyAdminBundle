@@ -44,8 +44,22 @@ final class Action
      * @param string|false|null $label Use FALSE to hide the label; use NULL to autogenerate it
      * @param string|null       $icon  The full CSS classes of the FontAwesome icon to render (see https://fontawesome.com/v5.15/icons?d=gallery&p=2&m=free)
      */
-    public static function new(string $name, $label = null, ?string $icon = null): self
+    public static function new(string $name, /*string|false|null*/ $label = null, ?string $icon = null): self
     {
+        if (!\is_string($label)
+            && false !== $label
+            && null !== $label) {
+            trigger_deprecation(
+                'easycorp/easyadmin-bundle',
+                '4.0.5',
+                'Argument "%s" for "%s" must be one of these types: %s. Passing type "%s" will cause an error in 5.0.0.',
+                '$label',
+                __METHOD__,
+                '"string", "false" or "null"',
+                \gettype($label)
+            );
+        }
+
         $dto = new ActionDto();
         $dto->setType(self::TYPE_ENTITY);
         $dto->setName($name);
@@ -75,8 +89,22 @@ final class Action
     /**
      * @param string|false|null $label Use FALSE to hide the label; use NULL to autogenerate it
      */
-    public function setLabel($label): self
+    public function setLabel(/*string|false|null*/ $label): self
     {
+        if (!\is_string($label)
+            && false !== $label
+            && null !== $label) {
+            trigger_deprecation(
+                'easycorp/easyadmin-bundle',
+                '4.0.5',
+                'Argument "%s" for "%s" must be one of these types: %s. Passing type "%s" will cause an error in 5.0.0.',
+                '$label',
+                __METHOD__,
+                '"string", "false" or "null"',
+                \gettype($label)
+            );
+        }
+
         $this->dto->setLabel($label ?? self::humanizeString($this->dto->getName()));
 
         return $this;
@@ -165,8 +193,21 @@ final class Action
     /**
      * @param string|callable $url
      */
-    public function linkToUrl($url): self
+    public function linkToUrl(/*string|callable*/ $url): self
     {
+        if (!\is_string($url)
+            && !\is_callable($url)) {
+            trigger_deprecation(
+                'easycorp/easyadmin-bundle',
+                '4.0.5',
+                'Argument "%s" for "%s" must be one of these types: %s. Passing type "%s" will cause an error in 5.0.0.',
+                '$url',
+                __METHOD__,
+                '"string" or "callable"',
+                \gettype($url)
+            );
+        }
+
         $this->dto->setUrl($url);
 
         return $this;

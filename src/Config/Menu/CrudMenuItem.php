@@ -6,6 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\SortOrder;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu\MenuItemInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
+use Symfony\Component\Uid\AbstractUid;
 
 /**
  * @see EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem::linkToCrud()
@@ -51,8 +52,20 @@ final class CrudMenuItem implements MenuItemInterface
         return $this;
     }
 
-    public function setEntityId($entityId): self
+    public function setEntityId(/*AbstractUid|int|string*/ $entityId): self
     {
+        if (!\is_int($entityId) && !\is_string($entityId) && !$entityId instanceof AbstractUid) {
+            trigger_deprecation(
+                'easycorp/easyadmin-bundle',
+                '4.0.5',
+                'Argument "%s" for "%s" must be one of these types: %s. Passing type "%s" will cause an error in 5.0.0.',
+                '$entityId',
+                __METHOD__,
+                sprintf('"int", "string" or "%s"', AbstractUid::class),
+                \gettype($entityId)
+            );
+        }
+
         $this->dto->setRouteParameters(array_merge(
             $this->dto->getRouteParameters(),
             [EA::ENTITY_ID => $entityId]

@@ -139,10 +139,7 @@ final class EntityFactory
         return $entityManager;
     }
 
-    /**
-     * @return object|null
-     */
-    private function getEntityInstance(string $entityFqcn, $entityIdValue)
+    private function getEntityInstance(string $entityFqcn, $entityIdValue): object
     {
         $entityManager = $this->getEntityManager($entityFqcn);
         if (null === $entityInstance = $entityManager->getRepository($entityFqcn)->find($entityIdValue)) {

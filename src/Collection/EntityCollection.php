@@ -61,7 +61,7 @@ final class EntityCollection implements CollectionInterface
     }
 
     /**
-     * @return \ArrayIterator|\Traversable|EntityDto[]
+     * @return EntityDto[]
      */
     public function getIterator(): \ArrayIterator
     {

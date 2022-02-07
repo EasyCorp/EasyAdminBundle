@@ -71,7 +71,7 @@ final class ActionCollection implements CollectionInterface
     }
 
     /**
-     * @return \ArrayIterator|\Traversable|ActionDto[]
+     * @return ActionDto[]
      */
     public function getIterator(): \ArrayIterator
     {

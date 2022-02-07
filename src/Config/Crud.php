@@ -189,7 +189,7 @@ class Crud
     }
 
     /**
-     * @param array $sortFieldsAndOrder ['fieldName' => 'ASC|DESC', ...]
+     * @param $sortFieldsAndOrder ['fieldName' => 'ASC|DESC', ...]
      */
     public function setDefaultSort(array $sortFieldsAndOrder): self
     {

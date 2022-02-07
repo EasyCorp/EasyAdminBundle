@@ -95,10 +95,7 @@ final class ActionConfigDto
         }
     }
 
-    /**
-     * @return array|ActionCollection
-     */
-    public function getActions()
+    public function getActions(): ActionCollection|array
     {
         return null === $this->pageName ? $this->actions : ActionCollection::new($this->actions[$this->pageName]);
     }

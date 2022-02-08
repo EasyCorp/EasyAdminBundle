@@ -229,6 +229,7 @@ const App = (() => {
     };
 
     const createBatchActions = () => {
+        let lastUpdatedRowCheckbox = null;
         const selectAllCheckbox = document.querySelector('.form-batch-checkbox-all');
         if (null === selectAllCheckbox) {
             return;
@@ -250,9 +251,30 @@ const App = (() => {
             });
         }
 
-        rowCheckboxes.forEach((rowCheckbox) => {
+        rowCheckboxes.forEach((rowCheckbox, rowCheckboxIndex) => {
+
+            rowCheckbox.dataset.rowIndex = rowCheckboxIndex;
+
+            rowCheckbox.addEventListener("click", (e) => {
+                if (lastUpdatedRowCheckbox && e.shiftKey) {
+                    const lastIndex = parseInt(lastUpdatedRowCheckbox.dataset.rowIndex);
+                    const currentIndex = parseInt(e.target.dataset.rowIndex);
+                    const valueToApply = e.target.checked;
+                    const lowest = (lastIndex > currentIndex) ? currentIndex : lastIndex;
+                    const highest = (lastIndex > currentIndex) ? lastIndex : currentIndex;
+
+                    rowCheckboxes.forEach((rowCheckbox2, rowCheckboxIndex2) => {
+                        if (lowest <= rowCheckboxIndex2 && rowCheckboxIndex2 <= highest) {
+                            rowCheckbox2.checked = valueToApply;
+                            rowCheckbox2.dispatchEvent(new Event('change'));
+                        }
+                    });
+                }
+                lastUpdatedRowCheckbox = e.target;
+            });
+
             rowCheckbox.addEventListener('change', () => {
-                const selectedRowCheckboxes =  document.querySelectorAll('input[type="checkbox"].form-batch-checkbox:checked');
+                const selectedRowCheckboxes = document.querySelectorAll('input[type="checkbox"].form-batch-checkbox:checked');
                 const row = rowCheckbox.closest('tr');
                 const content = rowCheckbox.closest('.content');
 

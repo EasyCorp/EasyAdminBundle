@@ -108,7 +108,7 @@ final class MenuItemDto
         return $this->routeParameters;
     }
 
-    public function setRouteParameter(string $parameterName, $parameterValue): void
+    public function setRouteParameter(string $parameterName, mixed $parameterValue): void
     {
         $this->routeParameters[$parameterName] = $parameterValue;
     }
@@ -173,7 +173,7 @@ final class MenuItemDto
         return $this->badge;
     }
 
-    public function setBadge($content, string $style): void
+    public function setBadge(mixed $content, string $style): void
     {
         $this->badge = new MenuItemBadgeDto($content, trim($style));
     }

@@ -49,7 +49,7 @@ final class KeyValueStore
         return true;
     }
 
-    public function get(string $key, $default = null)
+    public function get(string $key, mixed $default = null): mixed
     {
         if (\array_key_exists($key, $this->map)) {
             return $this->map[$key];
@@ -71,7 +71,7 @@ final class KeyValueStore
         return $items;
     }
 
-    public function set(string $key, $value): void
+    public function set(string $key, mixed $value): void
     {
         $items = &$this->map;
         foreach (explode('.', $key) as $segment) {
@@ -85,7 +85,7 @@ final class KeyValueStore
         $items = $value;
     }
 
-    public function setIfNotSet(string $key, $value): void
+    public function setIfNotSet(string $key, mixed $value): void
     {
         if (!$this->has($key)) {
             $this->set($key, $value);

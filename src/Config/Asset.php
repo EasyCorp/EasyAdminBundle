@@ -64,7 +64,7 @@ final class Asset
 
     public function nopush(bool $nopush = true): self
     {
-        if (!class_exists('Symfony\\Component\\WebLink\Link')) {
+        if (!class_exists('Symfony\\Component\\WebLink\\Link')) {
             throw new \RuntimeException(sprintf('You are trying to configure the "nopush" preload attribute of an asset called "%s" but WebLink component is not installed in your project. Try running "composer require symfony/web-link"', $this->dto->getValue()));
         }
 

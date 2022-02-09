@@ -24,8 +24,20 @@ final class DashboardDto
         return $this->routeName;
     }
 
-    public function setRouteName($routeName): void
+    public function setRouteName(/*string*/ $routeName): void
     {
+        if (!\is_string($routeName)) {
+            trigger_deprecation(
+                'easycorp/easyadmin-bundle',
+                '4.0.5',
+                'Argument "%s" for "%s" must be one of these types: %s. Passing type "%s" will cause an error in 5.0.0.',
+                '$routeName',
+                __METHOD__,
+                '"string"',
+                \gettype($routeName)
+            );
+        }
+
         $this->routeName = $routeName;
     }
 
@@ -64,8 +76,21 @@ final class DashboardDto
         return $this->textDirection;
     }
 
-    public function setTextDirection($textDirection): void
+    public function setTextDirection(/*?string*/ $textDirection): void
     {
+        if (!\is_string($textDirection)
+            && null !== $textDirection) {
+            trigger_deprecation(
+                'easycorp/easyadmin-bundle',
+                '4.0.5',
+                'Argument "%s" for "%s" must be one of these types: %s. Passing type "%s" will cause an error in 5.0.0.',
+                '$textDirection',
+                __METHOD__,
+                '"string" or "null"',
+                \gettype($textDirection)
+            );
+        }
+
         $this->textDirection = $textDirection;
     }
 

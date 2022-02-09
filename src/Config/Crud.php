@@ -43,8 +43,21 @@ class Crud
     /**
      * @param string|callable $label The callable signature is: fn ($entityInstance, $pageName): string
      */
-    public function setEntityLabelInSingular($label): self
+    public function setEntityLabelInSingular(/*string|callable*/ $label): self
     {
+        if (!\is_string($label)
+            && !\is_callable($label)) {
+            trigger_deprecation(
+                'easycorp/easyadmin-bundle',
+                '4.0.5',
+                'Argument "%s" for "%s" must be one of these types: %s. Passing type "%s" will cause an error in 5.0.0.',
+                '$label',
+                __METHOD__,
+                '"string" or "callable"',
+                \gettype($label)
+            );
+        }
+
         $this->dto->setEntityLabelInSingular($label);
 
         return $this;
@@ -53,8 +66,21 @@ class Crud
     /**
      * @param string|callable $label The callable signature is: fn ($entityInstance, $pageName): string
      */
-    public function setEntityLabelInPlural($label): self
+    public function setEntityLabelInPlural(/*string|callable*/ $label): self
     {
+        if (!\is_string($label)
+            && !\is_callable($label)) {
+            trigger_deprecation(
+                'easycorp/easyadmin-bundle',
+                '4.0.5',
+                'Argument "%s" for "%s" must be one of these types: %s. Passing type "%s" will cause an error in 5.0.0.',
+                '$label',
+                __METHOD__,
+                '"string" or "callable"',
+                \gettype($label)
+            );
+        }
+
         $this->dto->setEntityLabelInPlural($label);
 
         return $this;
@@ -63,8 +89,21 @@ class Crud
     /**
      * @param string|callable $title The callable signature is: fn ($entityInstance): string
      */
-    public function setPageTitle(string $pageName, $title): self
+    public function setPageTitle(string $pageName, /*string|callable*/ $title): self
     {
+        if (!\is_string($title)
+            && !\is_callable($title)) {
+            trigger_deprecation(
+                'easycorp/easyadmin-bundle',
+                '4.0.5',
+                'Argument "%s" for "%s" must be one of these types: %s. Passing type "%s" will cause an error in 5.0.0.',
+                '$title',
+                __METHOD__,
+                '"string" or "callable"',
+                \gettype($title)
+            );
+        }
+
         if (!\in_array($pageName, $this->getValidPageNames(), true)) {
             throw new \InvalidArgumentException(sprintf('The first argument of the "%s()" method must be one of these valid page names: %s ("%s" given).', __METHOD__, implode(', ', $this->getValidPageNames()), $pageName));
         }

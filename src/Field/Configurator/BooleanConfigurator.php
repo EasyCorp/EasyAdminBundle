@@ -9,6 +9,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -16,10 +17,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 final class BooleanConfigurator implements FieldConfiguratorInterface
 {
     private AdminUrlGenerator $adminUrlGenerator;
+    private CsrfTokenManagerInterface $csrfTokenManager;
 
-    public function __construct(AdminUrlGenerator $adminUrlGenerator)
+    public function __construct(AdminUrlGenerator $adminUrlGenerator, CsrfTokenManagerInterface $csrfTokenManager)
     {
         $this->adminUrlGenerator = $adminUrlGenerator;
+        $this->csrfTokenManager = $csrfTokenManager;
     }
 
     public function supports(FieldDto $field, EntityDto $entityDto): bool
@@ -35,7 +38,12 @@ final class BooleanConfigurator implements FieldConfiguratorInterface
             $crudDto = $context->getCrud();
 
             if (null !== $crudDto && Action::NEW !== $crudDto->getCurrentAction()) {
-                $toggleUrl = $this->adminUrlGenerator->setAction(Action::EDIT)->setEntityId($entityDto->getPrimaryKeyValue())->set('fieldName', $field->getProperty())->generateUrl();
+                $toggleUrl = $this->adminUrlGenerator
+                    ->setAction(Action::EDIT)
+                    ->setEntityId($entityDto->getPrimaryKeyValue())
+                    ->set('fieldName', $field->getProperty())
+                    ->set('csrfToken', $this->csrfTokenManager->getToken('ea-toggle'))
+                    ->generateUrl();
                 $field->setCustomOption(BooleanField::OPTION_TOGGLE_URL, $toggleUrl);
             }
 

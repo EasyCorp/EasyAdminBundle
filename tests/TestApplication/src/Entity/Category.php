@@ -33,6 +33,11 @@ class Category
      */
     private $blogPosts;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private bool $active = false;
+
     public function __construct()
     {
         $this->blogPosts = new ArrayCollection();
@@ -90,6 +95,18 @@ class Category
         if ($this->blogPosts->removeElement($blogPost)) {
             $blogPost->removeCategory($this);
         }
+
+        return $this;
+    }
+
+    public function isActive(): bool
+    {
+        return $this->active;
+    }
+
+    public function setActive(bool $active): self
+    {
+        $this->active = $active;
 
         return $this;
     }

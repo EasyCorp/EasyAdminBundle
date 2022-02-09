@@ -215,6 +215,14 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $entityInstance = $context->getEntity()->getInstance();
 
         if ($context->getRequest()->isXmlHttpRequest()) {
+            if ('PATCH' !== $context->getRequest()->getMethod()) {
+                return new Response(null, 400);
+            }
+
+            if (!$this->isCsrfTokenValid('ea-toggle', $context->getRequest()->query->get('csrfToken'))) {
+                return new Response(null, 400);
+            }
+
             $fieldName = $context->getRequest()->query->get('fieldName');
             $newValue = 'true' === mb_strtolower($context->getRequest()->query->get('newValue'));
 

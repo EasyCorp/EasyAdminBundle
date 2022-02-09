@@ -1,0 +1,7 @@
+---------------------------------------------------------------------------
+
+by michaelKaefer at 2022-02-07T21:37:19Z
+
+Fom my side this is finshed (but there is more to do; if this PR gets merged I hopefully will do the rest at a later time).
+
+Note: I also added more property types, some return types, etc. - just because I had the files open.. So these changes are not related to the commit message.

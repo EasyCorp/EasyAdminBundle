@@ -15,6 +15,8 @@ final class BooleanField implements FieldInterface
     public const OPTION_RENDER_AS_SWITCH = 'renderAsSwitch';
     /** @internal */
     public const OPTION_TOGGLE_URL = 'toggleUrl';
+    /** @internal */
+    public const CSRF_TOKEN_NAME = 'ea-toggle';
 
     /**
      * @param string|false|null $label

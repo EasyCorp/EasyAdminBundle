@@ -50,7 +50,8 @@ final class AdminContextFactory
     public function create(Request $request, DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController): AdminContext
     {
         $crudAction = $request->query->get(EA::CRUD_ACTION);
-        $validPageNames = [Crud::PAGE_INDEX, Crud::PAGE_DETAIL, Crud::PAGE_EDIT, Crud::PAGE_NEW];
+        // We must add the "delete" page to have a valid context action config during the action validation (issue #5039)
+        $validPageNames = [Crud::PAGE_INDEX, Crud::PAGE_DETAIL, Crud::PAGE_EDIT, Crud::PAGE_NEW, 'delete'];
         $pageName = \in_array($crudAction, $validPageNames, true) ? $crudAction : null;
 
         $dashboardDto = $this->getDashboardDto($request, $dashboardController);

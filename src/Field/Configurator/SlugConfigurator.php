@@ -7,20 +7,14 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\SlugField;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use function Symfony\Component\Translation\t;
+use Symfony\Contracts\Translation\TranslatableInterface;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
 final class SlugConfigurator implements FieldConfiguratorInterface
 {
-    private TranslatorInterface $translator;
-
-    public function __construct(TranslatorInterface $translator)
-    {
-        $this->translator = $translator;
-    }
-
     public function supports(FieldDto $field, EntityDto $entityDto): bool
     {
         return SlugField::class === $field->getFieldFqcn();
@@ -35,7 +29,11 @@ final class SlugConfigurator implements FieldConfiguratorInterface
         $field->setFormTypeOption('target', $targetFieldName);
 
         if (null !== $unlockConfirmationMessage = $field->getCustomOption(SlugField::OPTION_UNLOCK_CONFIRMATION_MESSAGE)) {
-            $field->setFormTypeOption('attr.data-confirm-text', $this->translator->trans($unlockConfirmationMessage, [], $context->getI18n()->getTranslationDomain()));
+            if (!$unlockConfirmationMessage instanceof TranslatableInterface) {
+                $unlockConfirmationMessage = t($unlockConfirmationMessage, [], $context->getI18n()->getTranslationDomain());
+            }
+
+            $field->setFormTypeOption('attr.data-confirm-text', $unlockConfirmationMessage);
         }
     }
 }

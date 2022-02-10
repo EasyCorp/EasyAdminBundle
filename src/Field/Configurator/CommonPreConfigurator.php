@@ -12,19 +12,18 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\AvatarField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use function Symfony\Component\String\u;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use function Symfony\Component\Translation\t;
+use Symfony\Contracts\Translation\TranslatableInterface;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
 final class CommonPreConfigurator implements FieldConfiguratorInterface
 {
-    private TranslatorInterface $translator;
     private PropertyAccessorInterface $propertyAccessor;
 
-    public function __construct(TranslatorInterface $translator, PropertyAccessorInterface $propertyAccessor)
+    public function __construct(PropertyAccessorInterface $propertyAccessor)
     {
-        $this->translator = $translator;
         $this->propertyAccessor = $propertyAccessor;
     }
 
@@ -70,7 +69,6 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
 
             $field->setFormTypeOptionIfNotSet('help', $helpMessage);
             $field->setFormTypeOptionIfNotSet('help_html', true);
-            $field->setFormTypeOptionIfNotSet('help_translation_parameters', $field->getTranslationParameters());
         }
 
         if (!empty($field->getCssClass())) {
@@ -82,7 +80,6 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
         }
 
         $field->setFormTypeOptionIfNotSet('label', $field->getLabel());
-        $field->setFormTypeOptionIfNotSet('label_translation_parameters', $field->getTranslationParameters());
     }
 
     private function buildValueOption(FieldDto $field, EntityDto $entityDto)
@@ -97,17 +94,21 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
         return $this->propertyAccessor->getValue($entityInstance, $propertyName);
     }
 
-    private function buildHelpOption(FieldDto $field, string $translationDomain): ?string
+    private function buildHelpOption(FieldDto $field, string $translationDomain): ?TranslatableInterface
     {
         if ((null === $help = $field->getHelp()) || empty($help)) {
             return $help;
         }
 
-        return $this->translator->trans($help, $field->getTranslationParameters(), $translationDomain);
+        if ($help instanceof TranslatableInterface) {
+            return $help;
+        }
+
+        return t($help, $field->getTranslationParameters(), $translationDomain);
     }
 
     /**
-     * @return string|false|null
+     * @return TranslatableInterface|string|false|null
      */
     private function buildLabelOption(FieldDto $field, string $translationDomain, ?string $currentPage)
     {
@@ -115,7 +116,11 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
         if (FormField::class === $field->getFieldFqcn()) {
             $label = $field->getLabel();
 
-            return empty($label) ? $label : $this->translator->trans($label, $field->getTranslationParameters(), $translationDomain);
+            if ($label instanceof TranslatableInterface) {
+                return $label;
+            }
+
+            return empty($label) ? $label : t($label, $field->getTranslationParameters(), $translationDomain);
         }
 
         // if an Avatar field doesn't define its label, don't autogenerate it for the 'index' page
@@ -140,7 +145,11 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
             return $label;
         }
 
-        return $this->translator->trans($label, $field->getTranslationParameters(), $translationDomain);
+        if ($label instanceof TranslatableInterface) {
+            return $label;
+        }
+
+        return t($label, $field->getTranslationParameters(), $translationDomain);
     }
 
     private function buildSortableOption(FieldDto $field, EntityDto $entityDto): bool

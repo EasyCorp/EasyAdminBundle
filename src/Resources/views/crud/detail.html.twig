@@ -2,8 +2,6 @@
 {# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
 {% extends ea.templatePath('layout') %}
 
-{% trans_default_domain ea.i18n.translationDomain %}
-
 {% block body_id 'ea-detail-' ~ entity.name ~ '-' ~ entity.primaryKeyValue %}
 {% block body_class 'ea-detail ea-detail-' ~ entity.name %}
 
@@ -37,10 +35,10 @@
 
 {% block content_title %}
     {%- apply spaceless -%}
-        {% set custom_page_title = ea.crud.customPageTitle(pageName, entity ? entity.instance : null) %}
+        {% set custom_page_title = ea.crud.customPageTitle(pageName, entity ? entity.instance : null, ea.i18n.translationParameters) %}
         {{ custom_page_title is null
-            ? ea.crud.defaultPageTitle|trans(ea.i18n.translationParameters, 'EasyAdminBundle')
-            : (custom_page_title|trans(ea.i18n.translationParameters))|raw }}
+            ? ea.crud.defaultPageTitle(null, null, ea.i18n.translationParameters)|trans|raw
+            : custom_page_title|trans|raw }}
     {%- endapply -%}
 {% endblock %}
 
@@ -112,7 +110,7 @@
                             {% if panel_icon %}
                                 <i class="form-panel-icon {{ panel_icon }}"></i>
                             {% endif %}
-                            {{ panel_label|raw }}
+                            {{ panel_label|trans|raw }}
                         </a>
 
                         {% if panel_help %}
@@ -136,7 +134,7 @@
 {% macro render_field(entity, field) %}
     <div class="data-row {{ field.cssClass }}">
         <dt>
-            {{ field.label|raw }}
+            {{ field.label|trans|raw }}
 
             {% if field.help is not empty %}
                 <a tabindex="0" class="data-help" data-bs-toggle="popover" data-bs-custom-class="ea-content-help-popover" data-bs-animation="true" data-bs-html="true" data-bs-placement="right" data-bs-trigger="focus" data-bs-content="{{ field.help|e('html_attr') }}">

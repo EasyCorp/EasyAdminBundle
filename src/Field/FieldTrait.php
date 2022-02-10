@@ -8,6 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\TextAlign;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
+use Symfony\Contracts\Translation\TranslatableInterface;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -36,7 +37,7 @@ trait FieldTrait
     }
 
     /**
-     * @param string|false|null $label
+     * @param TranslatableInterface|string|false|null $label
      */
     public function setLabel($label): self
     {
@@ -150,7 +151,7 @@ trait FieldTrait
         return $this;
     }
 
-    public function setHelp(string $help): self
+    public function setHelp(TranslatableInterface|string $help): self
     {
         $this->dto->setHelp($help);
 

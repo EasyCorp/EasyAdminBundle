@@ -17,7 +17,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudAutocompleteType;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Component\PropertyAccess\Exception\UnexpectedTypeException;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use function Symfony\Component\Translation\t;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -26,13 +26,11 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
 {
     private EntityFactory $entityFactory;
     private AdminUrlGenerator $adminUrlGenerator;
-    private TranslatorInterface $translator;
 
-    public function __construct(EntityFactory $entityFactory, AdminUrlGenerator $adminUrlGenerator, TranslatorInterface $translator)
+    public function __construct(EntityFactory $entityFactory, AdminUrlGenerator $adminUrlGenerator)
     {
         $this->entityFactory = $entityFactory;
         $this->adminUrlGenerator = $adminUrlGenerator;
-        $this->translator = $translator;
     }
 
     public function supports(FieldDto $field, EntityDto $entityDto): bool
@@ -140,7 +138,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         $field->setCustomOption(AssociationField::OPTION_DOCTRINE_ASSOCIATION_TYPE, 'toOne');
 
         if (false === $field->getFormTypeOption('required')) {
-            $field->setFormTypeOptionIfNotSet('attr.placeholder', $this->translator->trans('label.form.empty_value', [], 'EasyAdminBundle'));
+            $field->setFormTypeOptionIfNotSet('attr.placeholder', t('label.form.empty_value', [], 'EasyAdminBundle'));
         }
 
         $targetEntityFqcn = $field->getDoctrineMetadata()->get('targetEntity');

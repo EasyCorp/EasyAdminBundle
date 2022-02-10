@@ -5,6 +5,9 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
+use EasyCorp\Bundle\EasyAdminBundle\Translation\TranslatableUtils;
+use function Symfony\Component\Translation\t;
+use Symfony\Contracts\Translation\TranslatableInterface;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -105,13 +108,16 @@ final class CrudDto
         $this->entityFqcn = $entityFqcn;
     }
 
-    public function getEntityLabelInSingular($entityInstance = null, $pageName = null): ?string
+    public function getEntityLabelInSingular($entityInstance = null, $pageName = null): TranslatableInterface|string|null
     {
         if (null === $this->entityLabelInSingular) {
             return null;
         }
 
-        if (\is_string($this->entityLabelInSingular)) {
+        if (
+            \is_string($this->entityLabelInSingular)
+            || $this->entityLabelInSingular instanceof TranslatableInterface
+        ) {
             return $this->entityLabelInSingular;
         }
 
@@ -119,20 +125,23 @@ final class CrudDto
     }
 
     /**
-     * @param string|callable $label
+     * @param TranslatableInterface|string|callable $label
      */
     public function setEntityLabelInSingular($label): void
     {
         $this->entityLabelInSingular = $label;
     }
 
-    public function getEntityLabelInPlural($entityInstance = null, $pageName = null): ?string
+    public function getEntityLabelInPlural($entityInstance = null, $pageName = null): TranslatableInterface|string|null
     {
         if (null === $this->entityLabelInPlural) {
             return null;
         }
 
-        if (\is_string($this->entityLabelInPlural)) {
+        if (
+            \is_string($this->entityLabelInPlural)
+            || $this->entityLabelInPlural instanceof TranslatableInterface
+        ) {
             return $this->entityLabelInPlural;
         }
 
@@ -140,29 +149,38 @@ final class CrudDto
     }
 
     /**
-     * @param string|callable $label
+     * @param TranslatableInterface|string|callable $label
      */
     public function setEntityLabelInPlural($label): void
     {
         $this->entityLabelInPlural = $label;
     }
 
-    public function getCustomPageTitle(string $pageName = null, $entityInstance = null): ?string
+    public function getCustomPageTitle(string $pageName = null, $entityInstance = null, array $translationParameters = []): ?TranslatableInterface
     {
         $title = $this->customPageTitles[$pageName ?? $this->pageName];
         if (\is_callable($title)) {
-            return null !== $entityInstance ? $title($entityInstance) : $title();
+            $title = null !== $entityInstance ? $title($entityInstance) : $title();
         }
 
-        return $title;
+        if (empty($title)) {
+            return null;
+        }
+
+        if ($title instanceof TranslatableInterface) {
+            return TranslatableUtils::withParameters($title, $translationParameters);
+        }
+
+        return t($title, $translationParameters);
     }
 
     /**
-     * @param string|callable $pageTitle
+     * @param TranslatableInterface|string|callable $pageTitle
      */
-    public function setCustomPageTitle(string $pageName, /* string|callable */ $pageTitle): void
+    public function setCustomPageTitle(string $pageName, /* TranslatableInterface|string|callable */ $pageTitle): void
     {
         if (!\is_string($pageTitle)
+            && !$pageTitle instanceof TranslatableInterface
             && !\is_callable($pageTitle)) {
             trigger_deprecation(
                 'easycorp/easyadmin-bundle',
@@ -178,7 +196,7 @@ final class CrudDto
         $this->customPageTitles[$pageName] = $pageTitle;
     }
 
-    public function getDefaultPageTitle(string $pageName = null, /* ?object */ $entityInstance = null): ?string
+    public function getDefaultPageTitle(string $pageName = null, /* ?object */ $entityInstance = null, array $translationParameters = []): ?TranslatableInterface
     {
         if (!\is_object($entityInstance)
             && null !== $entityInstance) {
@@ -198,15 +216,19 @@ final class CrudDto
                 $entityAsString = (string) $entityInstance;
 
                 if (!empty($entityAsString)) {
-                    return $entityAsString;
+                    return t($entityAsString, $translationParameters, 'EasyAdminBundle');
                 }
             }
         }
 
-        return $this->defaultPageTitles[$pageName ?? $this->pageName] ?? null;
+        if (!$this->defaultPageTitles[$pageName ?? $this->pageName]) {
+            return null;
+        }
+
+        return t($this->defaultPageTitles[$pageName ?? $this->pageName], $translationParameters, 'EasyAdminBundle');
     }
 
-    public function getHelpMessage(string $pageName = null): string
+    public function getHelpMessage(string $pageName = null): TranslatableInterface|string
     {
         return $this->helpMessages[$pageName ?? $this->pageName] ?? '';
     }
@@ -216,7 +238,7 @@ final class CrudDto
         return $this->helpMessages;
     }
 
-    public function setHelpMessage(string $pageName, string $helpMessage): void
+    public function setHelpMessage(string $pageName, TranslatableInterface|string $helpMessage): void
     {
         $this->helpMessages[$pageName] = $helpMessage;
     }

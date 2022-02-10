@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Contracts\Translation\TranslatableInterface;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -15,6 +16,7 @@ final class ChoiceField implements FieldInterface
     public const OPTION_ALLOW_MULTIPLE_CHOICES = 'allowMultipleChoices';
     public const OPTION_AUTOCOMPLETE = 'autocomplete';
     public const OPTION_CHOICES = 'choices';
+    public const OPTION_CHOICES_TRANSLATABLE = 'choicesTranslatable';
     public const OPTION_RENDER_AS_BADGES = 'renderAsBadges';
     public const OPTION_RENDER_EXPANDED = 'renderExpanded';
     public const OPTION_WIDGET = 'widget';
@@ -26,7 +28,7 @@ final class ChoiceField implements FieldInterface
     public const WIDGET_NATIVE = 'native';
 
     /**
-     * @param string|false|null $label
+     * @param TranslatableInterface|string|false|null $label
      */
     public static function new(string $propertyName, $label = null): self
     {
@@ -38,6 +40,7 @@ final class ChoiceField implements FieldInterface
             ->addCssClass('field-select')
             ->setDefaultColumns('') // this is set dynamically in the field configurator
             ->setCustomOption(self::OPTION_CHOICES, null)
+            ->setCustomOption(self::OPTION_CHOICES_TRANSLATABLE, false)
             ->setCustomOption(self::OPTION_ALLOW_MULTIPLE_CHOICES, false)
             ->setCustomOption(self::OPTION_RENDER_AS_BADGES, null)
             ->setCustomOption(self::OPTION_RENDER_EXPANDED, false)
@@ -76,6 +79,19 @@ final class ChoiceField implements FieldInterface
         }
 
         $this->setCustomOption(self::OPTION_CHOICES, $choiceGenerator);
+
+        return $this;
+    }
+
+    /**
+     * When set choices must follow flipped format where values can be translatable objects:
+     * ['submitted_value' => t('field.label'), 'other_value' => 'Field Label', ...].
+     *
+     * You still can use callback, but it is assumed to return flipped values too.
+     */
+    public function setChoicesTranslatable(bool $choicesTranslatable = true): self
+    {
+        $this->setCustomOption(self::OPTION_CHOICES_TRANSLATABLE, $choicesTranslatable);
 
         return $this;
     }

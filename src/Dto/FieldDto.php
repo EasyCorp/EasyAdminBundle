@@ -7,6 +7,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\TextAlign;
 use function Symfony\Component\String\u;
 use Symfony\Component\Uid\Ulid;
+use Symfony\Contracts\Translation\TranslatableInterface;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -144,19 +145,20 @@ final class FieldDto
     }
 
     /**
-     * @return string|false|null
+     * @return TranslatableInterface|string|false|null
      */
-    public function getLabel()/* : string|false|null */
+    public function getLabel()/* : TranslatableInterface|string|false|null */
     {
         return $this->label;
     }
 
     /**
-     * @param string|false|null $label
+     * @param TranslatableInterface|string|false|null $label
      */
-    public function setLabel(/* string|false|null */ $label): void
+    public function setLabel(/* TranslatableInterface|string|false|null */ $label): void
     {
         if (!\is_string($label)
+            && !$label instanceof TranslatableInterface
             && false !== $label
             && null !== $label) {
             trigger_deprecation(
@@ -165,7 +167,7 @@ final class FieldDto
                 'Argument "%s" for "%s" must be one of these types: %s. Passing type "%s" will cause an error in 5.0.0.',
                 '$label',
                 __METHOD__,
-                '"string", "false" or "null"',
+                '"TranslatableInterface", "string", "false" or "null"',
                 \gettype($label)
             );
         }
@@ -256,12 +258,12 @@ final class FieldDto
         $this->permission = $permission;
     }
 
-    public function getHelp(): ?string
+    public function getHelp(): TranslatableInterface|string|null
     {
         return $this->help;
     }
 
-    public function setHelp(string $help): void
+    public function setHelp(TranslatableInterface|string $help): void
     {
         $this->help = $help;
     }

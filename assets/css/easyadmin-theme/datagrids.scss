@@ -372,6 +372,9 @@ table.datagrid {
 .filter-content .form-widget-compound label {
   display: none;
 }
+.filter-content .form-widget-compound label.form-check-label {
+  display: inline-block;
+}
 .filter-content .form-check-inline {
   align-items: flex-start;
   display: inline-flex;

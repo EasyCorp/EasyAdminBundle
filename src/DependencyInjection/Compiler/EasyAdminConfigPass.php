@@ -16,7 +16,7 @@ final class EasyAdminConfigPass implements CompilerPassInterface
     /**
      * {@inheritdoc}
      */
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         $configPasses = $this->findAndSortTaggedServices('easyadmin.config_pass', $container);
         $definition = $container->getDefinition('easyadmin.config.manager');

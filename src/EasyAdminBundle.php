@@ -16,7 +16,7 @@ class EasyAdminBundle extends Bundle
 {
     public const VERSION = '2.3.16-DEV';
 
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         $container->addCompilerPass(new EasyAdminFormTypePass(), PassConfig::TYPE_BEFORE_REMOVING);
         // this compiler pass must run earlier than FormPass to clear

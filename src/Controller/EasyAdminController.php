@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Controller;
 
+use Doctrine\Persistence\ManagerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\FilterRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Search\Autocomplete;
@@ -32,6 +33,7 @@ class EasyAdminController extends AbstractController
             'easyadmin.filter.registry' => FilterRegistry::class,
             'easyadmin.security.authorization_checker' => AuthorizationChecker::class,
             'event_dispatcher' => EventDispatcherInterface::class,
+            'doctrine' => ManagerRegistry::class,
         ]);
     }
 }

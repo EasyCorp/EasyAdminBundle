@@ -29,7 +29,7 @@ class MakeAdminMigrationCommand extends Command
         $this->projectDir = $projectDir;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setDescription('Exports EasyAdmin 2 config to later migrate it to EasyAdmin 3 config.')
@@ -39,7 +39,7 @@ class MakeAdminMigrationCommand extends Command
     /**
      * @return int
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
         $io->title('EasyAdmin 2 to EasyAdmin 3 Migration Assistant');

@@ -14,7 +14,7 @@ class EasyAdminTabType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'easyadmin_tab';
     }

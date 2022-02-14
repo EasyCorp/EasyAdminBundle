@@ -28,7 +28,7 @@ class EasyAdminAutocompleteType extends AbstractType implements DataMapperInterf
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->addEventSubscriber(new EasyAdminAutocompleteSubscriber())
@@ -38,7 +38,7 @@ class EasyAdminAutocompleteType extends AbstractType implements DataMapperInterf
     /**
      * {@inheritdoc}
      */
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         if (null === $config = $this->configManager->getEntityConfigByClass($options['class'])) {
             throw new \InvalidArgumentException(sprintf('The configuration of the "%s" entity is not available (this entity is used as the target of the "%s" autocomplete field).', $options['class'], $form->getName()));
@@ -50,7 +50,7 @@ class EasyAdminAutocompleteType extends AbstractType implements DataMapperInterf
     /**
      * {@inheritdoc}
      */
-    public function finishView(FormView $view, FormInterface $form, array $options)
+    public function finishView(FormView $view, FormInterface $form, array $options): void
     {
         // Add a custom block prefix to inner field to ease theming:
         array_splice($view['autocomplete']->vars['block_prefixes'], -1, 0, 'easyadmin_autocomplete_inner');
@@ -59,7 +59,7 @@ class EasyAdminAutocompleteType extends AbstractType implements DataMapperInterf
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'multiple' => false,
@@ -73,7 +73,7 @@ class EasyAdminAutocompleteType extends AbstractType implements DataMapperInterf
     /**
      * {@inheritdoc}
      */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'easyadmin_autocomplete';
     }
@@ -81,7 +81,7 @@ class EasyAdminAutocompleteType extends AbstractType implements DataMapperInterf
     /**
      * {@inheritdoc}
      */
-    public function mapDataToForms($data, $forms)
+    public function mapDataToForms($data, $forms): void
     {
         $form = current(iterator_to_array($forms));
         $form->setData($data);
@@ -90,7 +90,7 @@ class EasyAdminAutocompleteType extends AbstractType implements DataMapperInterf
     /**
      * {@inheritdoc}
      */
-    public function mapFormsToData($forms, &$data)
+    public function mapFormsToData($forms, &$data): void
     {
         $form = current(iterator_to_array($forms));
         $data = $form->getData();

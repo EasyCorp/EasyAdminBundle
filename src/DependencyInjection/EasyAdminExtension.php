@@ -19,7 +19,7 @@ class EasyAdminExtension extends Extension
     /**
      * {@inheritdoc}
      */
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         // process bundle's configuration parameters
         $configs = $this->processConfigFiles($configs);
@@ -51,7 +51,7 @@ class EasyAdminExtension extends Extension
      *
      * @return array
      */
-    private function processConfigFiles(array $configs)
+    private function processConfigFiles(array $configs): array
     {
         $existingEntityNames = [];
 
@@ -110,7 +110,7 @@ class EasyAdminExtension extends Extension
      *
      * @throws \RuntimeException
      */
-    private function normalizeEntityConfig($entityName, $entityConfig)
+    private function normalizeEntityConfig($entityName, $entityConfig): array
     {
         // normalize config formats #1 and #2 to use the 'class' option as config format #3
         if (!\is_array($entityConfig)) {
@@ -141,7 +141,7 @@ class EasyAdminExtension extends Extension
      *
      * @return string The entity name transformed to be unique
      */
-    private function getUniqueEntityName($entityName, array $entityConfig, array $existingEntityNames)
+    private function getUniqueEntityName($entityName, array $entityConfig, array $existingEntityNames): string
     {
         // the shortcut config syntax doesn't require to give entities a name
         if (is_numeric($entityName)) {

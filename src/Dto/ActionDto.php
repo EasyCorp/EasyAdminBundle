@@ -174,7 +174,7 @@ final class ActionDto
     public function setRouteParameters(/*array|callable*/ $routeParameters): void
     {
         if (!\is_array($routeParameters)
-            && \is_callable($routeParameters)) {
+            && !\is_callable($routeParameters)) {
             trigger_deprecation(
                 'easycorp/easyadmin-bundle',
                 '4.0.5',
@@ -203,7 +203,7 @@ final class ActionDto
     public function setUrl(/*string|callable*/ $url): void
     {
         if (!\is_string($url)
-            && \is_callable($url)) {
+            && !\is_callable($url)) {
             trigger_deprecation(
                 'easycorp/easyadmin-bundle',
                 '4.0.5',

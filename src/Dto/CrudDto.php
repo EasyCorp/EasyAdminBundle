@@ -162,7 +162,7 @@ final class CrudDto
     public function setCustomPageTitle(string $pageName, /*string|callable*/ $pageTitle): void
     {
         if (!\is_string($pageTitle)
-            && \is_callable($pageTitle)) {
+            && !\is_callable($pageTitle)) {
             trigger_deprecation(
                 'easycorp/easyadmin-bundle',
                 '4.0.5',

@@ -125,6 +125,10 @@ table.datagrid {
 .datagrid tbody tr.selected-row td {
   background: var(--table-selected-cell-bg);
 }
+// needed to avoid showing the text of selected rows with the background of selected text
+.datagrid tbody tr.selected-row td ::-moz-selection {
+  background: transparent;
+}
 .datagrid td.actions {
   text-align: right;
 }

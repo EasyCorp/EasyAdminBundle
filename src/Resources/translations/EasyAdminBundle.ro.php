@@ -112,6 +112,15 @@ return [
         'exit_impersonation' => 'Oprește impersonalizarea',
     ],
 
+    'settings' => [
+        'appearance' => [
+            'label' => 'Aspect',
+            'light' => 'Luminos',
+            'dark' => 'Întunecat',
+            'auto' => 'Automat',
+        ],
+    ],
+
     'login_page' => [
         'username' => 'Utilizator',
         'password' => 'Parolă',

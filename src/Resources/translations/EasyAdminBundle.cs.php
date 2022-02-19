@@ -111,6 +111,15 @@ return [
         'exit_impersonation' => 'Ukončit impersonaci',
     ],
 
+    'settings' => [
+        'appearance' => [
+            'label' => 'Vzhled',
+            'light' => 'Světlý',
+            'dark' => 'Tmavý',
+            'auto' => 'Automatický',
+        ],
+    ],
+
     'login_page' => [
         'username' => 'Login',
         'password' => 'Heslo',

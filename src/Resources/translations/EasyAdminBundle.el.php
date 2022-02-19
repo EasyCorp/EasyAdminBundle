@@ -111,6 +111,15 @@ return [
         'exit_impersonation' => 'Διακοπή προσωποποίησης',
     ],
 
+    'settings' => [
+        'appearance' => [
+            'label' => 'Εμφάνιση',
+            'light' => 'Ανοιχτόχρωμη',
+            'dark' => 'Σκούρα',
+            'auto' => 'Αυτόματα',
+        ],
+    ],
+
     'login_page' => [
         'username' => 'Username',
         'password' => 'Password',

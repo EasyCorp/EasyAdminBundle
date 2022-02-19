@@ -147,7 +147,7 @@ final class Actions
             return Action::new(Action::BATCH_DELETE, '__ea__action.delete', null)
                 ->linkToCrudAction(Action::BATCH_DELETE)
                 ->setCssClass('action-'.Action::BATCH_DELETE)
-                ->addCssClass('btn btn-secondary pr-0 text-danger');
+                ->addCssClass('btn btn-danger pr-0');
         }
 
         if (Action::NEW === $actionName) {

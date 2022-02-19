@@ -111,6 +111,15 @@ return [
         'exit_impersonation' => 'Stop brugerovertagelse',
     ],
 
+    'settings' => [
+        'appearance' => [
+            'label' => 'Udseende',
+            'light' => 'Lys',
+            'dark' => 'Mørk',
+            'auto' => 'Automatisk',
+        ],
+    ],
+
     'login_page' => [
         'username' => 'Username',
         'password' => 'Password',

@@ -111,6 +111,15 @@ return [
         'exit_impersonation' => 'خروج وهمي',
     ],
 
+    'settings' => [
+        'appearance' => [
+            'label' => 'المظهر',
+            'light' => 'الفاتح',
+            'dark' => 'الداكن',
+            'auto' => 'تلقائي',
+        ],
+    ],
+
     'login_page' => [
         'username' => 'إسم المستخدم',
         'password' => 'كلمة السّر',

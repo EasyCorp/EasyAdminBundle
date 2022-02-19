@@ -112,6 +112,15 @@ return [
         'exit_impersonation' => 'Exit impersonation',
     ],
 
+    'settings' => [
+        'appearance' => [
+            'label' => 'Appearance',
+            'light' => 'Light',
+            'dark' => 'Dark',
+            'auto' => 'Auto',
+        ],
+    ],
+
     'login_page' => [
         'username' => 'Username',
         'password' => 'Password',

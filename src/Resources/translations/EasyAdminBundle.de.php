@@ -112,6 +112,15 @@ return [
         'exit_impersonation' => 'Benutzerimitation verlassen',
     ],
 
+    'settings' => [
+        'appearance' => [
+            'label' => 'Erscheinungsbild',
+            'light' => 'Hell',
+            'dark' => 'Dunkel',
+            'auto' => 'Automatisch',
+        ],
+    ],
+
     'login_page' => [
         'username' => 'Benutzername',
         'password' => 'Passwort',

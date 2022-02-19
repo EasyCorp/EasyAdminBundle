@@ -152,7 +152,7 @@ table.datagrid {
     }
   }
   tr:not(.selected-row):hover .dropdown-toggle {
-    background: var(--white);
+    background: var(--dropdown-toggle-bg);
     border-color: var(--dropdown-toggle-border-color);
   }
   tr:hover .dropdown-toggle:hover {
@@ -257,7 +257,7 @@ table.datagrid {
 .datagrid .empty-row td:nth-child(5) { width: 10%; }
 .datagrid .empty-row td:nth-child(6) { width: 30%; }
 .datagrid .empty-row td span {
-  background: var(--gray-100);
+  background: var(--datagrid-noresults-placeholder-bg);
   border-radius: var(--border-radius);
   display: block;
   height: 10px;
@@ -324,18 +324,20 @@ table.datagrid {
   max-width: 400px;
 }
 #modal-filters .modal-content {
-  background: var(--white);
+  background: var(--modal-bg);
+  border: 1px solid var(--modal-border-color);
 }
 #modal-filters .modal-header {
-  background: var(--gray-50);
-  border-bottom-color: var(--gray-300);
+  background: var(--modal-header-bg);
+  border-bottom-color: transparent;
   padding: 10px 15px;
 }
 #modal-filters .modal-title {
-  color: var(--gray-700);
+  color: var(--modal-title-color);
   font-size: var(--font-size-base);
 }
 #modal-filters .modal-body {
+  background: var(--modal-bg);
   border-bottom: 0;
   padding: 15px;
 }
@@ -345,11 +347,15 @@ table.datagrid {
 .action-filters-button.action-filters-applied i {
   color: var(--color-primary);
 }
-.action-filters-button span {
+.action-filters-button .action-filters-button-count {
+  color: var(--color-primary);
   font-weight: 600;
 }
 .action-filters-reset i {
   color: var(--text-color-light);
+}
+.filter-field {
+  border-top: 1px solid var(--modal-border-color);
 }
 .filter-heading {
   align-items: center;

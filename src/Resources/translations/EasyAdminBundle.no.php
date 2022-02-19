@@ -111,6 +111,15 @@ return [
         'exit_impersonation' => 'Slutt å etterligne',
     ],
 
+    'settings' => [
+        'appearance' => [
+            'label' => 'Utseende',
+            'light' => 'Lyst',
+            'dark' => 'Mørkt',
+            'auto' => 'Automatisk',
+        ],
+    ],
+
     'login_page' => [
         'username' => 'Brukernavn',
         'password' => 'Passord',

@@ -111,6 +111,15 @@ return [
         'exit_impersonation' => 'Canlandırma modundan çık',
     ],
 
+    'settings' => [
+        'appearance' => [
+            'label' => 'Görünüş',
+            'light' => 'Açık',
+            'dark' => 'Koyu',
+            'auto' => 'Otomatik',
+        ],
+    ],
+
     'login_page' => [
         'username' => 'Kullanıcı adı',
         'password' => 'Şifre',

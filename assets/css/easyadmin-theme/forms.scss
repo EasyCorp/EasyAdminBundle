@@ -26,6 +26,8 @@ input[disabled] {
 }
 
 .form-check .form-check-input {
+    background: unset;
+    border-color: var(--form-type-check-input-border-color);
     height: 15px;
     width: 15px;
 }
@@ -35,7 +37,7 @@ label.form-check-label {
     font-weight: normal;
 }
 .form-group label.form-check-label.required:after {
-    content: '';
+    display: none;
 }
 .form-widget .form-check + .form-check {
     margin-top: 5px;
@@ -43,13 +45,17 @@ label.form-check-label {
 
 .form-group label.required:after,
 .form-group .col-form-label.required:after {
-    bottom: 4px;
-    color: var(--color-danger);
-    content: "\2022"; // \2022 = &bull; (bullet)
+    background: var(--color-danger);
+    border-radius: 50%;
+    content: '';
+    display: inline-block;
     filter: opacity(75%);
     position: relative;
     right: -2px;
+    top: -8px;
     z-index: var(--zindex-700);
+    height: 4px;
+    width: 4px;
 }
 
 // Form widgets (inputs, selects, etc.)
@@ -70,8 +76,10 @@ label.form-check-label {
 .form-widget input.form-control,
 .form-widget textarea.form-control,
 .form-widget .form-select {
+    background: var(--form-control-bg);
     border: 1px solid var(--form-input-border-color);
     box-shadow: var(--form-input-shadow);
+    color: var(--form-input-text-color);
     height: 30px;
     padding: 3px 7px 4px;
     white-space: nowrap;
@@ -79,8 +87,8 @@ label.form-check-label {
     transition: box-shadow .08s ease-in, color .08s ease-in;
 }
 .form-widget input.form-check-input {
-    border: 1px solid var(--gray-400);
-    box-shadow: 0 1px 2px 0 var(--gray-50);
+    border: 1px solid var(--form-type-check-input-border-color);
+    box-shadow: var(--form-type-check-input-box-shadow);
 }
 .form-widget input.form-control:focus,
 .form-widget textarea.form-control:focus,
@@ -90,6 +98,9 @@ label.form-check-label {
     border-color: var(--form-input-hover-border-color);
     box-shadow: var(--form-input-hover-shadow);
     outline: 0;
+}
+.form-check-input:checked {
+    background-color: var(--form-type-check-input-checked-bg);
 }
 .form-check-input:focus {
     box-shadow: var(--form-input-hover-shadow);
@@ -371,7 +382,7 @@ fieldset .legend-help {
         flex: 1;
 
         a {
-            color: var(--gray-800);
+            color: var(--form-panel-header-color);
             font-size: 20px;
             font-weight: bold;
 
@@ -463,9 +474,9 @@ form .invalid-feedback > .d-block + .d-block {
 
 // Form group inputs
 .input-group-text {
-    background-color: var(--gray-100);
-    border: 1px solid var(--gray-300);
-    box-shadow: 0 1px 2px 0 var(--gray-50);
+    background-color: var(--form-input-group-text-bg);
+    border: 1px solid var(--form-input-group-text-border-color);
+    box-shadow: var(--form-input-box-shadow);
     color: var(--form-input-text-color);
     height: 30px;
     padding: 3px 10px 5px;
@@ -531,7 +542,7 @@ form .invalid-feedback > .d-block + .d-block {
         border-radius: var(--border-radius);
         border: 0;
         box-shadow: 0 0 0 1px rgba(43, 45, 80, .16), 0 0 0 1px rgba(6, 122, 184, 0), 0 0 0 2px rgba(6, 122, 184, 0), 0 1px 1px rgba(0, 0, 0, .08);
-        color: var(--text-color-dark);
+        color: var(--form-input-text-color);
         height: 30px;
         left: 0;
         margin: 0 !important;

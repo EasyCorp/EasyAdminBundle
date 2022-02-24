@@ -26,10 +26,12 @@ input[disabled] {
 }
 
 .form-check .form-check-input {
-    background: unset;
     border-color: var(--form-type-check-input-border-color);
     height: 15px;
     width: 15px;
+}
+.form-check:not(.form-switch) .form-check-input:not(:checked) {
+    background-color: unset;
 }
 // Used in checkbox and radio buttons
 label.form-check-label {

@@ -300,9 +300,9 @@
 
     --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
     --body-bg: #222222; // custom value between --true-gray-900 and --true-gray-800
-    --responsive-header-bg: var(--true-gray-800);
-    --responsive-header-border-color: var(--true-gray-200);
-    --responsive-header-logo-color: var(--true-gray-800);
+    --responsive-header-bg: #303030;
+    --responsive-header-border-color: var(--true-gray-600);
+    --responsive-header-logo-color: var(--true-gray-300);
     --responsive-table-label-color: var(--true-gray-500);
     --responsive-table-row-border-color: var(--true-gray-700);
     --sidebar-bg: #303030; // custom value between --true-gray-800 and --true-gray-700

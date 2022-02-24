@@ -310,6 +310,7 @@ body.ea-mobile-sidebar-visible .sidebar {
 .content-top {
     align-items: center;
     box-shadow: 0 1px 0 var(--content-top-border-color);
+    display: flex;
     margin-bottom: 1px;
     padding: 5px 15px 5px var(--content-padding-left);
 

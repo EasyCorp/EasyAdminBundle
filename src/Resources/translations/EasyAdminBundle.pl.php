@@ -112,6 +112,15 @@ return [
         'exit_impersonation' => 'Opuść tryb maskowania',
     ],
 
+    'settings' => [
+        'appearance' => [
+            'label' => 'Wygląd',
+            'light' => 'Jasny',
+            'dark' => 'Ciemny',
+            'auto' => 'Automatyczny',
+        ],
+    ],
+
     'login_page' => [
         'username' => 'Użytkownik',
         'password' => 'Hasło',

@@ -112,6 +112,15 @@ return [
         'exit_impersonation' => 'Выйти из-под пользователя',
     ],
 
+    'settings' => [
+        'appearance' => [
+            'label' => 'Оформление',
+            'light' => 'Светлое',
+            'dark' => 'Темное',
+            'auto' => 'Автоматически',
+        ],
+    ],
+
     'login_page' => [
         'username' => 'Логин',
         'password' => 'Пароль',

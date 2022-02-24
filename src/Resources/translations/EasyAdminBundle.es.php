@@ -111,6 +111,15 @@ return [
         'exit_impersonation' => 'Terminar impersonación',
     ],
 
+    'settings' => [
+        'appearance' => [
+            'label' => 'Aspecto',
+            'light' => 'Claro',
+            'dark' => 'Oscuro',
+            'auto' => 'Automático',
+        ],
+    ],
+
     'login_page' => [
         'username' => 'Nombre de usuario',
         'password' => 'Contraseña',

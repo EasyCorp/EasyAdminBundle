@@ -111,6 +111,15 @@ return [
         // 'exit_impersonation' => '',
     ],
 
+    'settings' => [
+        'appearance' => [
+            'label' => 'Ulkoasu',
+            'light' => 'Vaalea',
+            'dark' => 'Tumma',
+            'auto' => 'Automaattinen',
+        ],
+    ],
+
     'login_page' => [
         'username' => 'Username',
         'password' => 'Password',

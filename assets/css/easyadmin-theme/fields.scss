@@ -76,7 +76,7 @@
     position: relative;
   }
   .accordion-header:hover {
-    background: var(--gray-100);
+    background: var(--form-type-collection-item-collapsed-hover-bg);
     box-shadow: inset 0 0 0 1px var(--form-input-border-color);
   }
 
@@ -188,7 +188,8 @@
 
 // Language field
 .field-language .badge-language {
-  border: 2px solid var(--gray-300);
+  border: 2px solid var(--field-language-badge-border-color);
+  box-shadow: none;
   display: inline-block;
   font-size: 12px;
   padding: 2px 4px;

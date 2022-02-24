@@ -112,6 +112,15 @@ return [
         'exit_impersonation' => 'Keluar dari peniruan identitas',
     ],
 
+    'settings' => [
+        'appearance' => [
+            'label' => 'Tampilan',
+            'light' => 'Terang',
+            'dark' => 'Gelap',
+            'auto' => 'Otomatis',
+        ],
+    ],
+
     'login_page' => [
         'username' => 'Nama pengguna',
         'password' => 'Kata sandi',

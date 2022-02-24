@@ -111,6 +111,15 @@ return [
         'exit_impersonation' => 'Verlaat verpersoonlijking',
     ],
 
+    'settings' => [
+        'appearance' => [
+            'label' => 'Weergave',
+            'light' => 'Licht',
+            'dark' => 'Donker',
+            'auto' => 'Automatisch',
+        ],
+    ],
+
     'login_page' => [
         'username' => 'Gebruikersnaam',
         'password' => 'Wachtwoord',

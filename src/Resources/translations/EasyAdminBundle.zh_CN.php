@@ -112,6 +112,15 @@ return [
         'exit_impersonation' => '退出模拟用户',
     ],
 
+    'settings' => [
+        'appearance' => [
+            'label' => '外观',
+            'light' => '浅色',
+            'dark' => '深色',
+            'auto' => '自动',
+        ],
+    ],
+
     'login_page' => [
         'username' => '用户名',
         'password' => '密码',

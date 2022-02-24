@@ -16,16 +16,17 @@
 }
 
 .dropdown-input-wrap {
-  background: var(--gray-100);
+  background: var(--form-type-autocomplete-dropdown-input-wrapper-bg);
+  border-bottom: 1px solid var(--form-input-border-color);
   padding: 7px 10px;
 }
 .dropdown-input,
 .plugin-dropdown_input.focus .dropdown-input {
-  background: white;
-  border: 0;
+  background: var(--form-control-bg);
+  border: 1px solid var(--form-type-autocomplete-dropdown-input-border-color);
   border-radius: var(--border-radius);
-  box-shadow: 0 0 0 1px rgba(43, 45, 80, .16), 0 0 0 1px rgba(6, 122, 184, 0), 0 0 0 2px rgba(6, 122, 184, 0), 0 1px 1px rgba(0, 0, 0, .08);
-  color: var(--text-color-dark);
+  box-shadow: var(--form-input-box-shadow);
+  color: var(--form-input-text-color);
   height: 30px;
   position: relative;
 }
@@ -35,12 +36,37 @@
   outline: 0;
 }
 
+.ts-dropdown, .ts-dropdown.form-control, .ts-dropdown.form-select {
+  background: var(--form-type-autocomplete-dropdown-bg);
+  border: 1px solid var(--form-input-border-color);
+  box-shadow: var(--form-input-shadow);
+  color: var(--form-input-text-color);
+}
+.ts-dropdown .active, .ts-dropdown .create:hover, .ts-dropdown .option:hover {
+  background-color: var(--form-type-autocomplete-dropdown-active-item-bg);
+  color: var(--form-input-text-color);
+}
+.ts-dropdown [data-selectable] .highlight {
+  background: var(--highlight-bg);
+}
+
+.ts-control, .ts-control input, .ts-dropdown {
+  color: var(--form-input-text-color);
+}
+
 .ts-dropdown-content {
   padding: 4px 5px;
 }
 .ts-dropdown [data-selectable].option {
   border-radius: var(--border-radius);
   margin: 2px 0;
+}
+
+.ts-dropdown .optgroup-header {
+  background: var(--form-type-autocomplete-optgroup-bg);
+  color: var(--form-type-autocomplete-optgroup-color);
+  font-size: 13px;
+  font-weight: bold;
 }
 
 .ts-wrapper.multi,
@@ -55,22 +81,24 @@
   padding-right: 55px;
 }
 .ts-wrapper.multi .ts-control > div {
-  background: var(--gray-100);
+  background: var(--form-type-autocomplete-multi-item-bg);
   border-radius: var(--border-radius);
-  box-shadow: 0 0 0 1px var(--white);
-  margin: 0 3px 0 0;
-  padding: 0 5px;
+  box-shadow: 0 0 0 1px var(--form-type-autocomplete-multi-item-border-color);
+  color: var(--form-input-text-color);
+  margin: 0 5px 0 0;
+  padding: 0 4px;
 }
 .ts-wrapper.plugin-remove_button .item .remove {
-  border-left: 1px solid var(--gray-200);
+  border-left: 1px solid var(--form-type-autocomplete-multi-item-border-color);
+  border-radius: 0 var(--border-radius) var(--border-radius) 0;
 }
 .ts-wrapper.plugin-remove_button .item .remove:hover {
-  background: var(--gray-200);
+  background: var(--form-type-autocomplete-multi-item-remove-button-hover-bg);
 }
 
 .plugin-clear_button.ts-wrapper .clear-button,
 .plugin-clear_button.ts-wrapper.multi .clear-button {
-  background: var(--gray-500) !important;
+  background: var(--form-type-autocomplete-close-button-bg) !important;
   border-radius: 50%;
   color: white;
   cursor: pointer;
@@ -93,5 +121,5 @@
 }
 .plugin-clear_button.ts-wrapper .clear-button:hover,
 .plugin-clear_button.ts-wrapper.multi .clear-button:hover {
-  background: var(--gray-700) !important;
+  background: var(--form-type-autocomplete-close-button-hover-bg) !important;
 }

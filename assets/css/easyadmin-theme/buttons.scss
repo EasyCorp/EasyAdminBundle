@@ -2,7 +2,7 @@
 // ----------------------------------------------------------------------------
 
 .btn {
-    background-color: var(--white);
+    background-color: var(--button-bg);
     border: 0;
     box-shadow: var(--button-shadow);
     color: var(--button-color);
@@ -11,7 +11,7 @@
     white-space: nowrap;
     transition: box-shadow .2s;
 }
-.btn:not(:disabled):not(.disabled):not(.btn-link):hover {
+.btn:not(:disabled):not(.disabled):not(.btn-link):not(.btn-danger):hover {
     border: 0;
     // needed because $btn-focus-box-shadow and $btn-active-box-shadow are ignored for .btn-primary, .btn-info, etc.
     box-shadow: var(--button-hover-shadow);
@@ -31,8 +31,8 @@
 .btn-primary:not(:disabled):not(.disabled):not(.btn-link):focus,
 .btn-primary:not(:disabled):not(.disabled):not(.btn-link):active,
 .btn-primary:not(:disabled):not(.disabled):not(.btn-link):active:focus {
-    background-color: var(--color-primary);
-    color: var(--text-on-primary);
+    background-color: var(--button-primary-bg);
+    color: var(--button-primary-color);
 }
 .btn-primary:not(:disabled):not(.disabled):focus,
 .btn-primary:not(:disabled):not(.disabled):active,
@@ -41,32 +41,32 @@
 }
 
 .btn-secondary, .btn-secondary[disabled], .btn-secondary.disabled {
-    background-color: var(--white);
-    color: var(--button-color);
+    background-color: var(--button-secondary-bg);
+    color: var(--button-secondary-color);
 }
 .btn-secondary:hover, .btn-secondary:not(:disabled):not(.disabled):focus, .btn-secondary:not(:disabled):not(.disabled):active, .btn-secondary:not(:disabled):not(.disabled):active:focus {
-    background-color: var(--white);
+    background-color: var(--button-secondary-bg);
     color: var(--button-hover-color);
 }
 
 .btn.btn-info, .btn-info, .btn-info:hover, .btn-info:not(:disabled):not(.disabled):focus, .btn-info:not(:disabled):not(.disabled):active, .btn-info:not(:disabled):not(.disabled):active:focus {
-    background-color: var(--color-info);
-    color: var(--white);
+    background-color: var(--button-info-bg);
+    color: var(--button-info-color);
 }
 
 .btn.btn-success, .btn-success, .btn-success:hover, .btn-success:not(:disabled):not(.disabled):focus, .btn-success:not(:disabled):not(.disabled):active, .btn-success:not(:disabled):not(.disabled):active:focus {
-    background-color: var(--color-success);
-    color: var(--white);
+    background-color: var(--button-success-bg);
+    color: var(--button-success-color);
 }
 
 .btn.btn-danger, .btn-danger, .btn-danger:hover, .btn-danger:not(:disabled):not(.disabled):focus, .btn-danger:not(:disabled):not(.disabled):active, .btn-danger:not(:disabled):not(.disabled):active:focus {
-    background-color: var(--color-danger);
-    color: var(--white);
+    background-color: var(--button-danger-bg);
+    color: var(--button-danger-color);
 }
 
 .btn.btn-warning, .btn-warning, .btn-warning:hover, .btn-warning:not(:disabled):not(.disabled):focus, .btn-warning:not(:disabled):not(.disabled):active, .btn-warning:not(:disabled):not(.disabled):active:focus {
-    background-color: var(--color-warning);
-    color: var(--white);
+    background-color: var(--button-warning-bg);
+    color: var(--button-warning-color);
 }
 
 .btn-link, .btn-link:hover, .btn-link:focus, .btn-link:active, .btn-link:active:focus {
@@ -79,10 +79,10 @@
     color: var(--link-hover-color)
 }
 .btn-link-danger, .btn-link-danger:hover, .btn-link-danger:focus, .btn-link-danger:active, .btn-link-danger:active:focus {
-    color: var(--red-600);
+    color: var(--link-danger-color);
 }
 .btn-link-danger:hover {
-    color: var(--red-500);
+    color: var(--link-danger-hover-color);
 }
 
 .btn.disabled, .btn:disabled,

@@ -111,6 +111,15 @@ return [
         // 'exit_impersonation' => '',
     ],
 
+    'settings' => [
+        'appearance' => [
+            'label' => 'Izgled',
+            'light' => 'Svijetli',
+            'dark' => 'Tamni',
+            'auto' => 'Automatski',
+        ],
+    ],
+
     'login_page' => [
         'username' => 'Korisničko ime',
         'password' => 'Lozinka',

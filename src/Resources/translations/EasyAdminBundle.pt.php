@@ -111,6 +111,15 @@ return [
         // 'exit_impersonation' => '',
     ],
 
+    'settings' => [
+        'appearance' => [
+            'label' => 'Apresentação',
+            'light' => 'Tons claros',
+            'dark' => 'Tons escuros',
+            'auto' => 'Automática',
+        ],
+    ],
+
     'login_page' => [
         'username' => 'Usuário',
         'password' => 'Senha',

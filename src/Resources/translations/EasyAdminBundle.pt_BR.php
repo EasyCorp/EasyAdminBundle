@@ -112,6 +112,15 @@ return [
         'exit_impersonation' => 'Sair da personificação',
     ],
 
+    'settings' => [
+        'appearance' => [
+            'label' => 'Aparência',
+            'light' => 'Clara',
+            'dark' => 'Escura',
+            'auto' => 'Automática',
+        ],
+    ],
+
     'login_page' => [
         'username' => 'Usuário',
         'password' => 'Senha',

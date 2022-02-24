@@ -112,6 +112,15 @@ return [
         'exit_impersonation' => 'Megszemélyesítés vége',
     ],
 
+    'settings' => [
+        'appearance' => [
+            'label' => 'Megjelenés',
+            'light' => 'Világos',
+            'dark' => 'Sötét',
+            'auto' => 'Automatikus',
+        ],
+    ],
+
     'login_page' => [
         'username' => 'Felhasználónév',
         'password' => 'Jelszó',

@@ -112,6 +112,15 @@ return [
         'exit_impersonation' => 'Arrêter l\'impersonnalisation',
     ],
 
+    'settings' => [
+        'appearance' => [
+            'label' => 'Mode d\'apparence',
+            'light' => 'Clair',
+            'dark' => 'Sombre',
+            'auto' => 'Automatique',
+        ],
+    ],
+
     'login_page' => [
         'username' => 'Identifiant',
         'password' => 'Mot de passe',

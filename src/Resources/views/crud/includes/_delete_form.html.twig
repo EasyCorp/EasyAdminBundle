@@ -1,6 +1,6 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
 <form method="post" id="delete-form" style="display: none">
-    <input type="hidden" name="token" value="{{ csrf_token('ea-delete') }}" />
+    <input type="hidden" name="token" value="{{  csrf_token_intention|default(false) ? csrf_token('ea-delete') : '' }}" />
 </form>
 
 <div id="modal-delete" class="modal fade" tabindex="-1">

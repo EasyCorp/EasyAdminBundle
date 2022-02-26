@@ -25,12 +25,16 @@
 // Boolean values don't use "true = green, false = red" on purpose because being FALSE
 // or TRUE can be good or bad depending on the context, so red/green doesn't always work
 .field-boolean .badge-boolean-false {
-  background: var(--gray-200);
-  border: 1px solid var(--gray-300);
+  background: var(--badge-boolean-false-bg);
+  border: 0;
+  box-shadow: var(--badge-boolean-false-box-shadow);
+  color: var(--badge-boolean-false-color);
 }
 .field-boolean .badge-boolean-true {
-  background: var(--color-primary);
-  color: var(--white);
+  background: var(--badge-boolean-true-bg);
+  border: 0;
+  box-shadow: var(--badge-boolean-true-box-shadow);
+  color: var(--badge-boolean-true-color);
 }
 
 // CodeEditor field

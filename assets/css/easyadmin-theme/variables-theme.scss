@@ -164,6 +164,12 @@
     --form-panel-collapse-marker-color: var(--gray-400);
     --form-collection-item-collapse-marker-color: var(--gray-400);
     --badge-border: 0;
+    --badge-boolean-false-bg: var(--gray-200);
+    --badge-boolean-false-box-shadow: inset 0 0 0 1px var(--gray-300);
+    --badge-boolean-false-color: var(--text-color);
+    --badge-boolean-true-bg: var(--color-primary);
+    --badge-boolean-true-box-shadow: none;
+    --badge-boolean-true-color: var(--white);
     --badge-success-bg: var(--green-100);
     --badge-success-box-shadow: none;
     --badge-success-color: var(--text-green-600);
@@ -414,6 +420,12 @@
     --form-panel-collapse-marker-color: var(--true-gray-400);
     --form-collection-item-collapse-marker-color: var(--true-gray-400);
     --badge-box-shadow: inset 0 0 0 1px rgba(245, 245, 245, 0.3);
+    --badge-boolean-false-bg: rgba(245, 245, 245, 0.1);
+    --badge-boolean-false-box-shadow: inset 0 0 0 1px rgba(245, 245, 245, 0.3);
+    --badge-boolean-false-color: var(--true-gray-200);
+    --badge-boolean-true-bg: rgba(3, 102, 214, 0.18);
+    --badge-boolean-true-box-shadow: inset 0 0 0 1px rgba(90, 168, 252, 0.3);
+    --badge-boolean-true-color: rgb(90, 168, 252);
     --badge-success-bg: rgba(22, 135, 0, 0.18);
     --badge-success-box-shadow: inset 0 0 0 1px rgba(39, 236, 0, 0.3);
     --badge-success-color: var(--green-300);

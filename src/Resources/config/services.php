@@ -282,7 +282,7 @@ return static function (ContainerConfigurator $container) {
             ->arg(1, new Reference(AuthorizationChecker::class))
             ->arg(2, new Reference('translator'))
             ->arg(3, new Reference(AdminUrlGenerator::class))
-            ->arg(4, new Reference('security.csrf.token_manager', ContainerInterface::NULL_ON_INVALID_REFERENCE))
+            ->arg(4, new Reference('security.csrf.token_manager'))
 
         ->set(SecurityVoter::class)
             ->arg(0, new Reference(AuthorizationChecker::class))
@@ -304,7 +304,7 @@ return static function (ContainerConfigurator $container) {
 
         ->set(BooleanConfigurator::class)
             ->arg(0, new Reference(AdminUrlGenerator::class))
-            ->arg(1, new Reference('security.csrf.token_manager', ContainerInterface::NULL_ON_INVALID_REFERENCE))
+            ->arg(1, new Reference('security.csrf.token_manager'))
 
         ->set(CodeEditorConfigurator::class)
 

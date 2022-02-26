@@ -27,9 +27,9 @@ final class ActionFactory
     private AuthorizationCheckerInterface $authChecker;
     private TranslatorInterface $translator;
     private AdminUrlGenerator $adminUrlGenerator;
-    private ?CsrfTokenManagerInterface $csrfTokenManager;
+    private CsrfTokenManagerInterface $csrfTokenManager;
 
-    public function __construct(AdminContextProvider $adminContextProvider, AuthorizationCheckerInterface $authChecker, TranslatorInterface $translator, AdminUrlGenerator $adminUrlGenerator, ?CsrfTokenManagerInterface $csrfTokenManager = null)
+    public function __construct(AdminContextProvider $adminContextProvider, AuthorizationCheckerInterface $authChecker, TranslatorInterface $translator, AdminUrlGenerator $adminUrlGenerator, CsrfTokenManagerInterface $csrfTokenManager)
     {
         $this->adminContextProvider = $adminContextProvider;
         $this->authChecker = $authChecker;
@@ -148,7 +148,7 @@ final class ActionFactory
             $actionDto->addHtmlAttributes([
                 'data-bs-toggle' => 'modal',
                 'data-bs-target' => '#modal-batch-action',
-                'data-action-csrf-token' => $this->csrfTokenManager ? $this->csrfTokenManager->getToken('ea-batch-action-'.$actionDto->getName()) : null,
+                'data-action-csrf-token' => $this->csrfTokenManager->getToken('ea-batch-action-'.$actionDto->getName()),
                 'data-action-batch' => 'true',
                 'data-entity-fqcn' => $adminContext->getCrud()->getEntityFqcn(),
                 'data-action-url' => $actionDto->getLinkUrl(),

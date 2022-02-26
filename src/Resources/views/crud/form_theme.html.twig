@@ -43,7 +43,9 @@
 
 {% block datetime_widget %}
     {% set attr = attr|merge({class: (attr.class|default('') ~ ' form-inline')|trim}) %}
-    {{ parent() }}
+    <div class="datetime-widget datetime-widget-datetime">
+        {{- parent() -}}
+    </div>
 {% endblock datetime_widget %}
 
 {% block date_widget -%}
@@ -94,17 +96,17 @@
                     {% if has_append_html %}
                         <span class="input-group-text">{{ ea.field.append_html|raw }}</span>
                     {% endif %}
-                    {% if has_input_groups %}</div>{% endif %}
+                {% if has_input_groups %}</div>{% endif %}
 
                 {% set nullable_fields_fqcn = [
-                    'EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField',
-                    'EasyCorp\Bundle\EasyAdminBundle\Field\DateField',
-                    'EasyCorp\Bundle\EasyAdminBundle\Field\TimeField',
+                    'EasyCorp\\Bundle\\EasyAdminBundle\\Field\\DateTimeField',
+                    'EasyCorp\\Bundle\\EasyAdminBundle\\Field\\DateField',
+                    'EasyCorp\\Bundle\\EasyAdminBundle\\Field\\TimeField',
                 ] %}
-                {% if form.vars.ea_crud_form.ea_field.fieldFqcn|default(false) in nullable_fields_fqcn and ea.field.nullable|default(false) %}
+                {% if form.vars.ea_crud_form.ea_field.fieldFqcn|default(false) in nullable_fields_fqcn and not form.vars.ea_crud_form.ea_field.formTypeOptions.required %}
                     <div class="nullable-control">
                         <label>
-                            <input type="checkbox" {% if data is null %}checked="checked"{% endif %}>
+                            <input type="checkbox" {% if ea.crud.currentAction == 'edit' and data is null %}checked="checked"{% endif %}>
                             {{ 'label.nullable_field'|trans({}, 'EasyAdminBundle')}}
                         </label>
                     </div>

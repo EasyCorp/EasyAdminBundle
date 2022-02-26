@@ -258,7 +258,7 @@ the :doc:`CRUD controllers </crud>` to add your own CSS and JavaScript files::
                 ->addCssFile('https://example.org/css/admin2.css')
 
                 // it's equivalent to adding this inside the <head> element:
-                // <script src="{{ asset('...'') }}"></script>
+                // <script src="{{ asset('...') }}"></script>
                 ->addJsFile('build/admin.js')
                 ->addJsFile('https://example.org/js/admin2.js')
 

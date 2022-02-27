@@ -123,6 +123,7 @@
     --form-input-border-color: var(--gray-300);
     --form-input-hover-border-color: var(--gray-400);
     --form-input-shadow: 0 1px 2px 0 var(--gray-50);
+    --form-input-error-shadow: 0 0 0 1px rgba(43, 45, 80, 0), 0 0 0 1px rgba(183, 6, 32, .2), 0 0 0 2px rgba(183, 6, 32, .25), 0 1px 1px rgba(0, 0, 0, .08);
     --form-input-hover-shadow: 0 0 0 4px var(--gray-100);
     --form-input-text-color: var(--gray-700);
     --form-input-group-text-bg: var(--form-control-bg);
@@ -155,6 +156,7 @@
     --form-type-autocomplete-multi-item-border-color: var(--white);
     --form-type-autocomplete-multi-item-remove-button-hover-bg: var(--gray-200);
     --form-help-color: var(--gray-600);
+    --form-help-error-color: var(--gray-800);
     --form-help-active-color: var(--gray-800);
     --form-tabs-border-color: var(--gray-200);
     --form-panel-header-color: var(--gray-800);
@@ -380,6 +382,7 @@
     --form-input-hover-border-color: var(--true-gray-400);
     --form-input-shadow: 0 1px 2px 0 var(--true-gray-800);
     --form-input-hover-shadow: 0 0 0 4px var(--true-gray-800);
+    --form-input-error-shadow: 0 0 0 1px rgba(43,45,80,0),0 0 0 1px var(--red-700),0 0 0 2px var(--red-900),0 1px 1px rgba(0,0,0,0.08);
     --form-input-text-color: var(--true-gray-200);
     --form-input-group-text-bg: var(--true-gray-800);
     --form-input-group-text-border-color: var(--true-gray-600);
@@ -411,6 +414,7 @@
     --form-type-autocomplete-multi-item-border-color: var(--true-gray-500);
     --form-type-autocomplete-multi-item-remove-button-hover-bg: var(--true-gray-800);
     --form-help-color: var(--true-gray-500);
+    --form-help-error-color: var(--true-gray-200);
     --form-help-active-color: var(--true-gray-300);
     --form-tabs-border-color: var(--true-gray-200);
     --form-panel-header-color: var(--true-gray-300);

@@ -1,0 +1,11 @@
+---------------------------------------------------------------------------
+
+by sir-kain at 2022-02-27T10:44:42Z
+
+@javiereguiluz do you understand the reason of the failed tests?
+
+---------------------------------------------------------------------------
+
+by michaelKaefer at 2022-02-27T11:46:06Z
+
+@sir-kain The reason is this bug: https://github.com/EasyCorp/EasyAdminBundle/issues/5070. So you can ignore it, the bug will be fixed soon I guess.

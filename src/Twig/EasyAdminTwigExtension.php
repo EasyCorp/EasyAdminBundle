@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Twig;
 
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Component\DependencyInjection\ServiceLocator;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Twig\Environment;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\ExtensionInterface;
@@ -19,16 +20,19 @@ use Twig\TwigFunction;
 class EasyAdminTwigExtension extends AbstractExtension
 {
     private ServiceLocator $serviceLocator;
+    private ?CsrfTokenManagerInterface $csrfTokenManager;
 
-    public function __construct(ServiceLocator $serviceLocator)
+    public function __construct(ServiceLocator $serviceLocator, ?CsrfTokenManagerInterface $csrfTokenManager)
     {
         $this->serviceLocator = $serviceLocator;
+        $this->csrfTokenManager = $csrfTokenManager;
     }
 
     public function getFunctions(): array
     {
         return [
             new TwigFunction('ea_url', [$this, 'getAdminUrlGenerator']),
+            new TwigFunction('ea_csrf_token', [$this, 'renderCsrfToken']),
             new TwigFunction('ea_call_function_if_exists', [$this, 'callFunctionIfExists'], ['needs_environment' => true, 'is_safe' => ['html' => true]]),
         ];
     }
@@ -142,5 +146,17 @@ class EasyAdminTwigExtension extends AbstractExtension
     public function getAdminUrlGenerator(array $queryParameters = []): AdminUrlGenerator
     {
         return $this->serviceLocator->get(AdminUrlGenerator::class)->setAll($queryParameters);
+    }
+
+    /**
+     * Needed to avoid errors when calling 'csrf_token()' in Twig templates of applications that disabled CSRF protection.
+     */
+    public function renderCsrfToken(string $tokenId): string
+    {
+        try {
+            return $this->csrfTokenManager?->getToken($tokenId)?->getValue() ?? '';
+        } catch (\Exception) {
+            return '';
+        }
     }
 }

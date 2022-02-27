@@ -128,11 +128,11 @@ This is the most important option, because it choice fields require to set their
 possible values before using them. These options are defined in the same way as
 Symfony Forms: ``['Label visible to users' => 'submitted_value', ...]``::
 
-    yield ChoiceField::new('...')->setChoices(
-        'paid' => 'Paid Invoice',
-        'pending' => 'Invoice Sent but Unpaid',
-        'refunded' => 'Refunded Invoice',
-    );
+    yield ChoiceField::new('...')->setChoices([
+        'Paid Invoice' => 'paid',
+        'Invoice Sent but Unpaid' => 'pending',
+        'Refunded Invoice' => 'refunded',
+    ]);
 
     // in addition to arrays, you can use PHP closures to return the list of values
     // (the closure is given as arguments the current entity instance and the FieldDto)

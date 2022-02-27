@@ -1,0 +1,11 @@
+---------------------------------------------------------------------------
+
+by michaelKaefer at 2022-02-27T11:52:27Z
+
+In my opinion I would prefer this PR over reverting the changes.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2022-02-27T12:40:59Z
+
+We're facing this problem more and more in this bundle, so maybe other bundles face it too. That's why I've opened https://github.com/twigphp/Twig/issues/3655 to see if we can improve things.

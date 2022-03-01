@@ -222,6 +222,8 @@ Search, Order, and Pagination Options
             ->setSearchFields(['name', 'description', 'seller.email', 'seller.address.zipCode'])
             // set it to null to disable and hide the search box
             ->setSearchFields(null)
+            // set it to true if you want to autofocus the search input on the index page
+            ->setAutofocusSearch(true)
 
             // defines the initial sorting applied to the list of entities
             // (user can later change this sorting by clicking on the table columns)

@@ -46,6 +46,7 @@ final class CrudDto
     private ?string $numberFormat = null;
     private array $defaultSort = [];
     private ?array $searchFields = [];
+    private bool $autofocusSearch = false;
     private bool $showEntityActionsAsDropdown = true;
     private ?PaginatorDto $paginatorDto = null;
     private $overriddenTemplates;
@@ -298,6 +299,16 @@ final class CrudDto
     public function setSearchFields(?array $searchFields): void
     {
         $this->searchFields = $searchFields;
+    }
+
+    public function autofocusSearch(): bool
+    {
+        return $this->autofocusSearch;
+    }
+
+    public function setAutofocusSearch(bool $autofocusSearch): void
+    {
+        $this->autofocusSearch = $autofocusSearch;
     }
 
     public function isSearchEnabled(): bool

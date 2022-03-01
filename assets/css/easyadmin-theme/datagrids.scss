@@ -268,13 +268,13 @@ table.datagrid {
 .datagrid-row-empty td,
 .datagrid tbody .datagrid-row-empty:hover td {
   background-color: transparent;
-  background-image: linear-gradient(135deg, var(--gray-50) 25%, transparent 25%, transparent 50%, var(--gray-50) 50%, var(--gray-50) 75%, transparent 75%, transparent 100%);
+  background-image: linear-gradient(135deg, var(--datagrid-hidden-results-gradient-bg) 25%, transparent 25%, transparent 50%, var(--datagrid-hidden-results-gradient-bg) 50%, var(--datagrid-hidden-results-gradient-bg) 75%, transparent 75%, transparent 100%);
   background-size: 40px 40px;
   padding-top: 15px;
   padding-bottom: 15px;
 }
 .datagrid-row-empty-message {
-  background: var(--white);
+  background: var(--body-bg);
   border-radius: var(--border-radius);
   padding: 2px 4px;
 }

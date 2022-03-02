@@ -96,6 +96,7 @@
     --dropdown-appearance-active-item-bg: var(--gray-200);
     --dropdown-appearance-active-item-color: var(--color-primary);
     --datagrid-noresults-placeholder-bg: var(--gray-100);
+    --datagrid-hidden-results-gradient-bg: var(--gray-50);
     --table-thead-color: var(--gray-800);
     --table-cell-color: var(--gray-600);
     --table-thead-marker-color: var(--gray-400);
@@ -258,6 +259,17 @@
     --box-shadow-lg: 0 10px 15px -3px hsla(222, 47%, 11%, 0.1), 0 4px 6px -2px hsla(222, 47%, 11%, 0.05); // it uses --gray-900
     --content-panel-bg: hsl(210, 45%, 98%);
     --fieldset-bg: hsl(210, 30%, 97%);
+    --code-editor-string-color: #032f62;
+    --code-editor-keyword-color: #d73a49;
+    --code-editor-comment-color: #22863a;
+    --code-editor-definition-color: #e36209;
+    --code-editor-variable-color: var(--form-input-text-color);
+    --code-editor-number-color: var(--form-input-text-color);
+    --code-editor-argument-color: #6f42c1;
+    --code-editor-key-color: #005cc5;
+    --code-editor-attribute-color: #22863a;
+    --code-editor-addition-bg: #e6ffed;
+    --code-editor-deletion-bg: #ffeef0;
 
     --page-login-bg: var(--gray-100);
 
@@ -354,6 +366,7 @@
     --dropdown-appearance-active-item-bg: var(--true-gray-700);
     --dropdown-appearance-active-item-color: var(--color-primary);
     --datagrid-noresults-placeholder-bg: var(--true-gray-700);
+    --datagrid-hidden-results-gradient-bg: var(--true-gray-700);
     --table-thead-color: var(--true-gray-200);
     --table-cell-color: var(--true-gray-300);
     --table-thead-marker-color: var(--true-gray-500);
@@ -516,6 +529,17 @@
     --box-shadow-lg: 0 10px 15px -3px hsla(222, 47%, 11%, 0.1), 0 4px 6px -2px hsla(222, 47%, 11%, 0.05); // it uses --true-gray-900
     --content-panel-bg: hsl(210, 45%, 98%);
     --fieldset-bg: hsl(210, 30%, 97%);
+    --code-editor-string-color: #a5d6ff;
+    --code-editor-keyword-color: #ff7b72;
+    --code-editor-comment-color: #7ee787;
+    --code-editor-definition-color: #e36209;
+    --code-editor-variable-color: var(--form-input-text-color);
+    --code-editor-number-color: var(--form-input-text-color);
+    --code-editor-argument-color: #d2a8ff;
+    --code-editor-key-color: #a5d6ff;
+    --code-editor-attribute-color: #7ee787;
+    --code-editor-addition-bg: rgba(46, 160, 67, 0.3);
+    --code-editor-deletion-bg: rgba(218, 54, 51, 0.3);
 
     --page-login-bg: var(--true-gray-100);
 

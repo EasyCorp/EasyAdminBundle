@@ -508,13 +508,13 @@ form .invalid-feedback > .d-block + .d-block {
     }
     .input-group .btn,
     .input-group .btn:hover {
-        border-color: transparent transparent transparent var(--button-border-color) !important;
+        background: var(--form-input-group-text-bg);
         box-shadow: none !important;
         border-radius: 0;
         color: var(--text-color);
         font-size: 17px;
-        height: 30px;
-        line-height: 30px;
+        height: 28px;
+        line-height: 28px;
         margin: 0;
         padding: 0 8px;
         vertical-align: middle;
@@ -540,10 +540,10 @@ form .invalid-feedback > .d-block + .d-block {
     }
 
     .custom-file-label {
-        background: var(--white);
+        background: var(--form-control-bg);
         border-radius: var(--border-radius);
-        border: 0;
-        box-shadow: 0 0 0 1px rgba(43, 45, 80, .16), 0 0 0 1px rgba(6, 122, 184, 0), 0 0 0 2px rgba(6, 122, 184, 0), 0 1px 1px rgba(0, 0, 0, .08);
+        border: 1px solid var(--form-input-border-color);
+        box-shadow: var(--form-input-shadow);
         color: var(--form-input-text-color);
         height: 30px;
         left: 0;
@@ -562,12 +562,12 @@ form .invalid-feedback > .d-block + .d-block {
     }
 
     .input-group-text {
-        background-color: white;
-        border: none;
+        background: var(--form-input-group-text-bg);
+        border: 1px solid var(--form-input-border-color);
         box-shadow: none;
         color: var(--text-muted);
         height: 30px;
-        padding: 7px 0 7px 8px;
+        padding: 7px 0 7px 7px;
         position: absolute;
         right: 0;
         z-index: 3;

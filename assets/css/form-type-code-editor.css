@@ -7,17 +7,20 @@
 }
 
 .CodeMirror-wrap {
-  border: 1px solid var(--gray-300);
-  box-shadow: 0 1px 2px 0 var(--gray-50);
+  background: var(--form-control-bg);
+  border: 1px solid var(--form-input-border-color);
+  box-shadow: var(--form-input-shadow);
   border-radius: var(--border-radius);
+  color: var(--form-input-text-color);
 }
 .CodeMirror-wrap:focus-within {
-  border-color: var(--gray-400);
-  box-shadow: 0 0 0 4px var(--gray-100);
+  border-color: var(--form-input-hover-border-color);
+  box-shadow: var(--form-input-hover-shadow);
   outline: 0;
 }
 .CodeMirror-gutters {
-  background: var(--gray-100);
+  background: var(--form-input-group-text-bg);
+  border-color: var(--form-input-border-color);
 }
 
 .CodeMirror-linenumber {
@@ -26,4 +29,83 @@
 
 .CodeMirror-lines {
   padding-bottom: 5px;
+}
+.CodeMirror-cursor {
+  border: 1px solid var(--code-editor-comment-color);
+}
+
+.cm-s-default .cm-header {
+  color: var(--code-editor-key-color);
+}
+.cm-s-default .cm-quote {
+  color: var(--code-editor-attribute-color);
+}
+.cm-negative {
+  background: var(--code-editor-deletion-bg);
+}
+.cm-positive {
+  background: var(--code-editor-addition-bg);
+}
+.cm-s-default .cm-keyword {
+  color: var(--code-editor-keyword-color);
+}
+.cm-s-default .cm-atom {
+  color: var(--code-editor-argument-color);
+}
+.cm-s-default .cm-number {
+  color: var(--code-editor-number-color);
+}
+.cm-s-default .cm-def {
+  color: var(--code-editor-definition-color);
+}
+.cm-s-default .cm-variable {
+  color: var(--code-editor-variable-color);
+}
+.cm-s-default .cm-variable-2 {
+  color: var(--code-editor-argument-color);
+}
+.cm-s-default .cm-type,.cm-s-default .cm-variable-3 {
+  color: var(--code-editor-attribute-color);
+}
+.cm-s-default .cm-comment {
+  color: var(--code-editor-comment-color);
+}
+.cm-s-default .cm-string {
+  color: var(--code-editor-string-color);
+}
+.cm-s-default .cm-string-2 {
+  color: var(--code-editor-definition-color);
+}
+.cm-s-default .cm-meta,.cm-s-default .cm-qualifier {
+  color: var(--code-editor-comment-color);
+}
+.cm-s-default .cm-builtin {
+  color: var(--code-editor-key-color);
+}
+.cm-s-default .cm-bracket {
+  color: var(--code-editor-comment-color);
+}
+.cm-s-default .cm-tag {
+  color: var(--code-editor-attribute-color);
+}
+.cm-s-default .cm-attribute {
+  color: var(--code-editor-key-color);
+}
+.cm-s-default .cm-hr {
+  color: var(--code-editor-comment-color);
+}
+.cm-s-default .cm-link {
+  color: var(--code-editor-key-color);
+}
+.cm-invalidchar,.cm-s-default .cm-error {
+  color: var(--code-editor-keyword-color)
+}
+div.CodeMirror span.CodeMirror-matchingbracket {
+  color: var(--code-editor-attribute-color);
+}
+div.CodeMirror span.CodeMirror-nonmatchingbracket {
+  color: var(--code-editor-keyword-color)
+}
+.CodeMirror-matchingtag {
+  background: rgba(255,150,0,.3)
 }

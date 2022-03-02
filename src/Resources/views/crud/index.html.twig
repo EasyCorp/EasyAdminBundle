@@ -205,7 +205,7 @@
 
             {% if some_results_are_hidden %}
                 <tr class="datagrid-row-empty">
-                    <td class="text-center" colspan="{{ entities|first.fields|length + 1 }}">
+                    <td class="text-center" colspan="100">
                         <span class="datagrid-row-empty-message"><i class="fa fa-lock mr-1"></i> {{ 'datagrid.hidden_results'|trans({}, 'EasyAdminBundle') }}</span>
                     </td>
                 </tr>

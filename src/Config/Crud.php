@@ -255,6 +255,13 @@ class Crud
         return $this;
     }
 
+    public function setAutofocusSearch(bool $autofocusSearch = true): self
+    {
+        $this->dto->setAutofocusSearch($autofocusSearch);
+
+        return $this;
+    }
+
     public function showEntityActionsInlined(bool $showInlined = true): self
     {
         $this->dto->setShowEntityActionsAsDropdown(!$showInlined);

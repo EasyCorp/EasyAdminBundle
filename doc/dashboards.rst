@@ -255,18 +255,17 @@ explained later)::
                 // mode for any reason (e.g. if your interface customizations are not ready for it)
                 ->disableDarkMode()
 
-                // by default, all backend URLs include a signature hash. If a user changes any
-                // query parameter (to "hack" the backend) the signature won't match and EasyAdmin
-                // triggers an error. If this causes any issue in your backend, call this method
-                // to disable this feature and remove all URL signature checks
-                ->disableUrlSignatures()
-
                 // by default, all backend URLs are generated as absolute URLs. If you
                 // need to generate relative URLs instead, call this method
                 ->generateRelativeUrls()
             ;
         }
     }
+
+.. deprecated:: 4.1.0
+
+    The ``disableUrlSignatures()`` dashboard method was deprecated in
+    EasyAdmin 4.1.0 because backend URLs no longer include signatures.
 
 Customizing the Dashboard Contents
 ----------------------------------

@@ -87,7 +87,7 @@ class ComparisonType extends AbstractType
         $resolver->setAllowedValues('type', ['array', 'datetime', 'choice', 'entity', 'numeric', 'text']);
     }
 
-    public function getParent()
+    public function getParent(): ?string
     {
         return ChoiceType::class;
     }

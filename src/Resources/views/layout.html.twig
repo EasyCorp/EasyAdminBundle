@@ -208,7 +208,14 @@
                                                             {# This code re-applies your filters on searches, an iterable check is needed in cases we have more than one object for a filter #}
                                                             {% if value is iterable %}
                                                                 {% for index, iterValue in value %}
-                                                                    <input type="hidden" name="filters[{{ field }}][{{ key }}][{{ index }}]" value="{{ iterValue }}">
+                                                                    {# This sub-level iterable check is needed in cases we have more complex filters like the DateTimeFilter cf. issue #5038 #}
+                                                                    {% if iterValue is iterable %}
+                                                                        {% for subIndex, subIterValue in iterValue %}
+                                                                            <input type="hidden" name="filters[{{ field }}][{{ key }}][{{ index }}][{{ subIndex }}]" value="{{ subIterValue }}">
+                                                                        {% endfor %}
+                                                                    {% else %}
+                                                                        <input type="hidden" name="filters[{{ field }}][{{ key }}][{{ index }}]" value="{{ iterValue }}">
+                                                                    {% endif %}
                                                                 {% endfor %}
                                                             {% else %}
                                                                 <input type="hidden" name="filters[{{ field }}][{{ key }}]" value="{{ value }}">

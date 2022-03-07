@@ -310,7 +310,7 @@
                                                     {% block content_help %}
                                                         {% if has_help_message %}
                                                             <span class="content-header-help">
-                                                            <i class="far fa-question-circle" data-bs-toggle="tooltip" title="{{ ea.crud.helpMessage|e('html_attr') }}"></i>
+                                                            <i class="far fa-question-circle" data-bs-toggle="popover" data-bs-custom-class="ea-content-help-popover" data-bs-content="{{ ea.crud.helpMessage|e('html_attr') }}"></i>
                                                         </span>
                                                         {% endif %}
                                                     {% endblock %}

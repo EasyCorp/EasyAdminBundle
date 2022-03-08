@@ -2,7 +2,10 @@
 {# @var filters_form \EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType #}
 {% form_theme filters_form with ea.crud.formThemes only %}
 
-{{ form_start(filters_form, { attr: { id: filters_form.vars.id } }) }}
+{{ form_start(filters_form, { attr: {
+    id: filters_form.vars.id,
+    'data-ea-filters-form-id': filters_form.vars.id
+} }) }}
     {# browsers remove the query string when submitting forms using GET;
        that's why all query string parameters are added as hidden form fields #}
     {% for paramName, paramValue in form_action_query_string_as_array|ea_flatten_array %}

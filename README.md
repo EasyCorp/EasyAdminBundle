@@ -18,7 +18,8 @@ $ composer require easycorp/easyadmin-bundle
 Documentation
 -------------
 
-Read [EasyAdmin Docs][1] at the official Symfony website.
+  * Read [EasyAdmin Docs][1] on the official Symfony website
+  * Check out the [EasyAdmin video tutorial][2] on SymfonyCasts
 
 Versions
 --------
@@ -43,3 +44,4 @@ License
 This software is published under the [MIT License](LICENSE.md)
 
 [1]: https://symfony.com/doc/4.x/bundles/EasyAdminBundle/index.html
+[2]: https://symfonycasts.com/screencast/easyadminbundle

@@ -196,8 +196,9 @@ const App = (() => {
             fetch(filterButton.getAttribute('href'))
                 .then((response) => { return response.text(); })
                 .then((text) => {
-                    setInnerHTMLAndRunScripts(filterModalBody, text);
+                    filterModalBody.innerHTML = text;
                     App.createAutoCompleteFields();
+                    createFilterToggles();
                 })
                 .catch((error) => { console.error(error); });
 
@@ -405,14 +406,32 @@ const App = (() => {
     }
 
     const createPopovers = () => {
+        let popovers = [];
         document.querySelectorAll('[data-bs-toggle="popover"]').forEach((popoverElement) => {
-            new bootstrap.Popover(popoverElement);
+            const popover = new bootstrap.Popover(popoverElement, {
+                animation: true,
+                delay: 150,
+                html: true,
+                placement: 'bottom',
+                trigger: 'click',
+            });
+
+            popovers.push(popover);
+        });
+
+        // by default, when a popover is triggered by 'click', you can only close it
+        // if you click again on the same element; improve UX by allowing to close them
+        // when clicking anywhere on the page
+        document.body.addEventListener('click', () => {
+            popovers.forEach((popover) => popover.hide());
         });
     };
 
     const createTooltips = () => {
         document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach((tooltipElement) => {
-            new bootstrap.Tooltip(tooltipElement);
+            new bootstrap.Tooltip(tooltipElement, {
+                html: true,
+            });
         });
     };
 
@@ -640,16 +659,49 @@ const App = (() => {
         });
     };
 
-    const setInnerHTMLAndRunScripts = (element, htmlContent) => {
-        // HTML5 specifies that a <script> tag inserted with innerHTML should not execute
-        // https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML#Security_considerations
-        // That's why we can't use just 'innerHTML'. See https://stackoverflow.com/a/47614491/2804294
-        element.innerHTML = htmlContent;
-        Array.from(element.querySelectorAll('script')).forEach(oldScript => {
-            const newScript = document.createElement('script');
-            Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
-            newScript.appendChild(document.createTextNode(oldScript.innerHTML));
-            oldScript.parentNode.replaceChild(newScript, oldScript);
+    const createFilterToggles = () => {
+        document.querySelectorAll('.filter-checkbox').forEach((filterCheckbox) => {
+            filterCheckbox.addEventListener('change', () => {
+                const filterToggleLink = filterCheckbox.nextElementSibling;
+                const filterExpandedAttribute = filterCheckbox.nextElementSibling.getAttribute('aria-expanded');
+
+                if ((filterCheckbox.checked && 'false' === filterExpandedAttribute) || (!filterCheckbox.checked && 'true' === filterExpandedAttribute)) {
+                    filterToggleLink.click();
+                }
+            });
+        });
+
+        document.querySelectorAll('form[data-ea-filters-form-id]').forEach((form) => {
+            // TODO: when using the native datepicker, 'change' isn't fired unless you input the entire date + time information
+            form.addEventListener('change', (event) => {
+                if (event.target.classList.contains('filter-checkbox')) {
+                    return;
+                }
+
+                const filterCheckbox = event.target.closest('.filter-field').querySelector('.filter-checkbox');
+                if (!filterCheckbox.checked) {
+                    filterCheckbox.checked = true;
+                }
+            });
+        });
+
+        document.querySelectorAll('[data-ea-comparison-id]').forEach((comparisonWidget) => {
+            comparisonWidget.addEventListener('change', (event) => {
+                const comparisonWidget = event.currentTarget;
+                const comparisonId = comparisonWidget.dataset.eaComparisonId;
+
+                if (comparisonId === undefined) {
+                    return;
+                }
+
+                const secondValue = document.querySelector(`[data-ea-value2-of-comparison-id="${comparisonId}"]`);
+
+                if (secondValue === null) {
+                    return;
+                }
+
+                secondValue.style.display = comparisonWidget.value === 'between' ? '' : 'none';
+            });
         });
     };
 

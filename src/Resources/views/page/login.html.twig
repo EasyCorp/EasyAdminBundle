@@ -83,16 +83,11 @@
                 {% endif %}
 
                 <div class="form-group">
-                    <button type="submit" class="btn btn-primary btn-lg btn-block" onclick="this.form.submit(); this.disabled=true;">{{ _sign_in_label }}</button>
+                    <button type="submit" class="btn btn-primary btn-lg btn-block">{{ _sign_in_label }}</button>
                 </div>
             </form>
 
-            <script type="text/javascript">
-                const loginForm = document.querySelector('form');
-                loginForm.addEventListener('submit', function () {
-                    loginForm.querySelector('button[type="submit"]').setAttribute('disabled', 'disabled');
-                }, false);
-            </script>
+            <script src="{{ asset('bundles/easyadmin/login.js') }}"></script>
         </section>
     </div>
 {% endblock %}

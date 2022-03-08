@@ -460,8 +460,40 @@ body.ea-edit .content-header {
 }
 
 .content-header-help {
-    color: var(--gray-600);
+    i {
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 21px;
+    }
 }
+// customizing Bootstrap's Saas variables for popovers doesn't work,
+// so we need to define these styles explicitly
+.popover.ea-content-help-popover {
+  border-color: var(--popover-border-color);
+  box-shadow: var(--popover-shadow);
+  max-width: var(--popover-max-width);
+}
+.popover.ea-content-help-popover .popover-body {
+  background: var(--popover-bg);
+  border-radius: var(--border-radius);
+  color: var(--popover-color);
+  font-size: var(--font-size-base);
+  padding: 15px;
+  text-align: left;
+}
+.popover.ea-content-help-popover .popover-arrow:before {
+  border-bottom-color: var(--popover-border-color);
+}
+.popover.ea-content-help-popover .popover-arrow:after {
+  border-bottom-color: var(--popover-bg);
+}
+.bs-popover-auto[data-popper-placement^=bottom] > .popover-arrow, .bs-popover-bottom > .popover-arrow {
+  top: -.5rem;
+}
+.ea-content-help-popover.tooltip.show {
+  opacity: 1;
+}
+
 .content-header .datagrid-filters {
     margin-right: 10px;
 }
@@ -601,7 +633,7 @@ body.ea-edit .content-header {
 .dropdown-menu {
     background-color: var(--dropdown-bg);
     border-color: var(--dropdown-border-color);
-    box-shadow: var(--shadow-lg);
+    box-shadow: var(--shadow-xl);
     color: var(--dropdown-color);
     padding: 5px;
 

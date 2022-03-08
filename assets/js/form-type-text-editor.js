@@ -67,6 +67,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const isTrixFieldRequired = 'required' === trixContentElement.getAttribute('required') ? 'true' : 'false';
         trixContentElement.setAttribute('data-ea-trix-is-required', isTrixFieldRequired);
         trixContentElement.removeAttribute('required');
+
+        // Change number of rows
+        if (trixContentElement.dataset.numberOfRows !== '') {
+            const editor = document.querySelector(`trix-editor[input=${trixContentElement.id}].trix-content`);
+
+            if (editor !== null) {
+                // Here we consider 21px as the average line height
+                editor.style.setProperty('min-height', `${21 * trixContentElement.dataset.numberOfRows}px`);
+            }
+        }
     });
 
     // Since the above code is needed to remove the HTML required attribute, we need to add a custom validity message

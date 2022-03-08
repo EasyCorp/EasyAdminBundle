@@ -405,14 +405,32 @@ const App = (() => {
     }
 
     const createPopovers = () => {
+        let popovers = [];
         document.querySelectorAll('[data-bs-toggle="popover"]').forEach((popoverElement) => {
-            new bootstrap.Popover(popoverElement);
+            const popover = new bootstrap.Popover(popoverElement, {
+                animation: true,
+                delay: 150,
+                html: true,
+                placement: 'bottom',
+                trigger: 'click',
+            });
+
+            popovers.push(popover);
+        });
+
+        // by default, when a popover is triggered by 'click', you can only close it
+        // if you click again on the same element; improve UX by allowing to close them
+        // when clicking anywhere on the page
+        document.body.addEventListener('click', () => {
+            popovers.forEach((popover) => popover.hide());
         });
     };
 
     const createTooltips = () => {
         document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach((tooltipElement) => {
-            new bootstrap.Tooltip(tooltipElement);
+            new bootstrap.Tooltip(tooltipElement, {
+                html: true,
+            });
         });
     };
 

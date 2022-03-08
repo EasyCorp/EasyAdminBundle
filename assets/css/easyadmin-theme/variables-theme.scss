@@ -20,7 +20,8 @@
     --font-size-xxl: 24px;
     --font-size-xxxl: 28px;
 
-    --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    --shadow-lg: 0 20px 25px -5px rgba(15, 23, 43, 0.1), 0 10px 10px -5px rgba(15, 23, 42, 0.04);
+    --shadow-xl: 0 20px 25px -5px rgba(15, 23, 42, 0.2), 0 8px 10px -6px rgba(15, 23, 42, 0.2);
 
     --width-sm: 576px;
     --width-md: 768px;
@@ -82,6 +83,11 @@
     --user-avatar-icon-color: var(--gray-500);
     --user-name-color: var(--gray-500);
     --user-menu-impersonated-link-color: var(--color-primary);
+    --popover-bg: var(--gray-100);
+    --popover-border-color: var(--gray-300);
+    --popover-color: var(--text-color);
+    --popover-shadow: var(--shadow-xl);
+    --popover-max-width: 480px;
     --dropdown-toggle-bg: var(--white);
     --dropdown-toggle-color: var(--gray-600);
     --dropdown-toggle-border-color: var(--gray-300);
@@ -319,6 +325,7 @@
     --tertiary-bg: var(--true-gray-900);
 
     --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.4), 0 8px 10px -6px rgb(0 0 0 / 0.4);
     --body-bg: #222222; // custom value between --true-gray-900 and --true-gray-800
     --responsive-header-bg: #303030;
     --responsive-header-border-color: var(--true-gray-600);
@@ -352,6 +359,11 @@
     --user-avatar-icon-color: var(--true-gray-500);
     --user-name-color: var(--true-gray-500);
     --user-menu-impersonated-link-color: var(--color-primary);
+    --popover-bg: #303030;
+    --popover-border-color: var(--true-gray-600);
+    --popover-color: var(--text-color);
+    --popover-shadow: var(--shadow-xl);
+    --popover-max-width: 480px;
     --dropdown-toggle-bg: var(--true-gray-600);
     --dropdown-toggle-color: var(--true-gray-200);
     --dropdown-toggle-border-color: var(--true-gray-600);

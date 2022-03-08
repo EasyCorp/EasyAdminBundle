@@ -8,6 +8,11 @@ If you already used previous EasyAdmin versions, beware that EasyAdmin 3 uses a
 brand new architecture and it's incompatible with previous versions. However,
 there's a command to :doc:`upgrade from EasyAdmin 2 to EasyAdmin 3 automatically </upgrade>`.
 
+.. admonition:: Screencast
+    :class: screencast
+
+    Like video tutorials? Check out the `EasyAdmin Screencast on SymfonyCasts`_.
+
 Table of Contents
 -----------------
 
@@ -45,3 +50,4 @@ Run the following command to install EasyAdmin in your application:
 Now you are ready to :doc:`create your first Dashboard </dashboards>`.
 
 .. _`EasyAdmin`: https://github.com/EasyCorp/EasyAdminBundle
+.. _`EasyAdmin Screencast on SymfonyCasts`: https://symfonycasts.com/screencast/easyadminbundle

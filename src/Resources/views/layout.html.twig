@@ -49,34 +49,12 @@
 </head>
 
 {% block body %}
-    <body id="{% block body_id %}{% endblock %}" class="ea {% block body_class %}{% endblock %}">
+    <body id="{% block body_id %}{% endblock %}" class="ea {% block body_class %}{% endblock %}" data-ea-content-width="{{ ea.crud.contentWidth ?? ea.dashboardContentWidth ?? 'normal' }}" data-ea-sidebar-width="{{ ea.crud.sidebarWidth ?? ea.dashboardSidebarWidth ?? 'normal' }}">
     {% block javascript_page_layout %}
-        <script>
-            document.body.classList.add(
-                'ea-content-width-' + (localStorage.getItem('ea/content/width') || '{{ ea.crud.contentWidth ?? ea.dashboardContentWidth ?? 'normal' }}'),
-                'ea-sidebar-width-' + (localStorage.getItem('ea/sidebar/width') || '{{ ea.crud.sidebarWidth ?? ea.dashboardSidebarWidth ?? 'normal' }}')
-            );
-        </script>
+        <script src="{{ asset('bundles/easyadmin/page-layout.js') }}"></script>
     {% endblock javascript_page_layout %}
     {% block javascript_page_color_scheme %}
-        <script>
-            function setEasyAdminColorScheme () {
-                const selectedColorScheme = localStorage.getItem('ea/colorScheme') || 'auto';
-                const resolvedColorScheme = 'auto' === selectedColorScheme
-                    ? matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
-                    : selectedColorScheme;
-
-                document.body.classList.remove('ea-light-scheme', 'ea-dark-scheme');
-                document.body.classList.add('light' === resolvedColorScheme ? 'ea-light-scheme' : 'ea-dark-scheme');
-                localStorage.setItem('ea/colorScheme', selectedColorScheme);
-                document.body.style.colorScheme = resolvedColorScheme;
-            }
-
-            setEasyAdminColorScheme();
-            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (e) {
-                setEasyAdminColorScheme();
-            });
-        </script>
+        <script src="{{ asset('bundles/easyadmin/page-color-scheme.js') }}"></script>
     {% endblock javascript_page_color_scheme %}
 
     {% block wrapper_wrapper %}

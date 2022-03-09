@@ -9,6 +9,16 @@
         "./app.js"
       ]
     },
+    "page-layout": {
+      "js": [
+        "./page-layout.js"
+      ]
+    },
+    "page-color-scheme": {
+      "js": [
+        "./page-color-scheme.js"
+      ]
+    },
     "form-type-code-editor": {
       "css": [
         "./form-type-code-editor.css",
@@ -40,6 +50,11 @@
     "form-type-textarea": {
       "js": [
         "./form-type-textarea.js"
+      ]
+    },
+    "login": {
+      "js": [
+        "./login.js"
       ]
     }
   }

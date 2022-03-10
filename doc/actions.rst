@@ -420,7 +420,7 @@ If you do that, EasyAdmin will inject a DTO with all the batch action data::
 
         public function approveUsers(BatchActionDto $batchActionDto)
         {
-            $entityManager = $this->getDoctrine()->getManagerForClass($batchActionDto->getEntityFqcn());
+            $entityManager = $this->container->get('doctrine')->getManagerForClass($batchActionDto->getEntityFqcn());
             foreach ($batchActionDto->getEntityIds() as $id) {
                 $user = $entityManager->find($id);
                 $user->approve();

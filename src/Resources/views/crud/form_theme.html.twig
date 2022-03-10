@@ -537,35 +537,21 @@
         'data-tab-size': form.vars.ea_crud_form.ea_field.customOptions.get('tabSize'),
         'data-indent-with-tabs': form.vars.ea_crud_form.ea_field.customOptions.get('indentWithTabs') ? 'true' : 'false',
         'data-show-line-numbers': form.vars.ea_crud_form.ea_field.customOptions.get('showLineNumbers') ? 'true' : 'false',
+        'data-number-of-rows': form.vars.ea_crud_form.ea_field.customOptions.get('numOfRows'),
     }) }) }}
-
-    {% set numOfRows = form.vars.ea_crud_form.ea_field.customOptions.get('numOfRows') %}
-    {% if numOfRows is not null %}
-        <style type="text/css">
-            {# here we consider 21px as the average line height #}
-            #{{ id }} + .CodeMirror { height: {{ (21 * numOfRows)|round }}px !important; max-height: none; }
-        </style>
-    {% endif %}
 {% endblock ea_code_editor_widget %}
 
 {# EasyAdmin's TextEditor form type #}
 {% block ea_text_editor_widget %}
-    {% set numOfRows = form.vars.ea_crud_form.ea_field.customOptions.get('numOfRows')|default(5) %}
-
-    {{ form_widget(form, { attr: attr|merge({ style: 'display: none', class: 'ea-text-editor-content' }) }) }}
+    {{ form_widget(form, { attr: attr|merge({
+        style: 'display: none',
+        class: 'ea-text-editor-content',
+        'data-number-of-rows': form.vars.ea_crud_form.ea_field.customOptions.get('numOfRows'),
+    }) }) }}
 
     <div class="ea-text-editor-wrapper">
         <trix-editor input="{{ id }}" class="trix-content"></trix-editor>
     </div>
-
-    {% if numOfRows %}
-        <style type="text/css">
-            trix-editor[input={{ id }}].trix-content {
-                {# here we consider 21px as the average line height #}
-                min-height: {{ (numOfRows * 21)|round }}px;
-            }
-        </style>
-    {% endif %}
 {% endblock ea_text_editor_widget %}
 
 {# EasyAdminSection form type #}
@@ -608,47 +594,19 @@
             </div>
         </div>
     {% endfor %}
-
-    <script>
-        document.querySelectorAll('.filter-checkbox').forEach((filterCheckbox) => {
-            filterCheckbox.addEventListener('change', () => {
-                const filterToggleLink = filterCheckbox.nextElementSibling;
-                const filterExpandedAttribute = filterCheckbox.nextElementSibling.getAttribute('aria-expanded');
-
-                if ((filterCheckbox.checked && 'false' === filterExpandedAttribute) || (!filterCheckbox.checked && 'true' === filterExpandedAttribute)) {
-                    filterToggleLink.click();
-                }
-            });
-        });
-
-        // TODO: when using the native datepicker, 'change' isn't fired (either in plain JavaScript
-        // or jQuery) unless you input the entire date + time information
-        document.querySelector('form#{{ form.vars.id }}').addEventListener('change', (event) => {
-            if (event.target.classList.contains('filter-checkbox')) {
-                return;
-            }
-
-            const filterCheckbox = event.target.closest('.filter-field').querySelector('.filter-checkbox');
-            if (!filterCheckbox.checked) {
-                filterCheckbox.checked = true;
-            }
-        });
-    </script>
 {% endblock ea_filters_widget %}
+
+{% block comparison_widget %}
+    {{ form_widget(form, { attr: form.vars.attr|merge({'data-ea-comparison-id': form.vars.id}) }) }}
+{% endblock comparison_widget %}
 
 {% block ea_numeric_filter_widget %}
     <div class="form-widget-compound">
         {{ form_row(form.comparison) }}
         {{ form_row(form.value) }}
-        <div id="wrapper_{{ form.value2.vars.id }}" {% if form.comparison.vars.value != 'between' %}style="display: none"{% endif %}>
+        <div data-ea-value2-of-comparison-id="{{ form.comparison.vars.id }}" {% if form.comparison.vars.value != 'between' %}style="display: none"{% endif %}>
             {{ form_row(form.value2) }}
         </div>
-        <script>
-            document.querySelector('#{{ form.comparison.vars.id }}').addEventListener('change', (event) => {
-                const input = document.querySelector('#wrapper_{{ form.value2.vars.id }}');
-                input.style.display = event.currentTarget.value === 'between' ? '' : 'none';
-            });
-        </script>
     </div>
     {{- form_errors(form) -}}
 {% endblock ea_numeric_filter_widget %}

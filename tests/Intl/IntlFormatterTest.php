@@ -113,7 +113,7 @@ class IntlFormatterTest extends TestCase
         yield ['20201107 02:04 PM', new \DateTime('2020-11-07 15:04:05 CET'), 'none', 'none', '', null, 'gregorian', 'en'];
         yield ['20201107 02:04 p. m.', new \DateTime('2020-11-07 15:04:05 CET'), 'none', 'none', '', null, 'gregorian', 'es'];
         yield ['11/7/20, 2:04 PM', new \DateTime('2020-11-07 15:04:05 CET'), 'short', 'short', '', null, 'gregorian', 'en'];
-        yield ['7/11/20 14:04', new \DateTime('2020-11-07 15:04:05 CET'), 'short', 'short', '', null, 'gregorian', 'es', false, true];
+        yield ['7/11/20 14:04', new \DateTime('2020-11-07 15:04:05 CET'), 'short', 'short', '', null, 'gregorian', 'es', true, true];
         yield ['Nov 7, 2020, 2:04:05 PM', new \DateTime('2020-11-07 15:04:05 CET'), 'medium', 'medium', '', null, 'gregorian', 'en'];
         yield ['7 nov. 2020 14:04:05', new \DateTime('2020-11-07 15:04:05 CET'), 'medium', 'medium', '', null, 'gregorian', 'es', true, true];
         yield ['November 7, 2020 at 2:04:05 PM UTC', new \DateTime('2020-11-07 15:04:05 CET'), 'long', 'long', '', null, 'gregorian', 'en'];

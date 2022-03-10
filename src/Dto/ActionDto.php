@@ -163,7 +163,7 @@ final class ActionDto
     /**
      * @return array|callable
      */
-    public function getRouteParameters()/*: array|callable*/
+    public function getRouteParameters()/* : array|callable */
     {
         return $this->routeParameters;
     }
@@ -171,7 +171,7 @@ final class ActionDto
     /**
      * @param array|callable $routeParameters
      */
-    public function setRouteParameters(/*array|callable*/ $routeParameters): void
+    public function setRouteParameters(/* array|callable */ $routeParameters): void
     {
         if (!\is_array($routeParameters)
             && !\is_callable($routeParameters)) {
@@ -192,7 +192,7 @@ final class ActionDto
     /**
      * @return string|callable
      */
-    public function getUrl()/*: string|callable*/
+    public function getUrl()/* : string|callable */
     {
         return $this->url;
     }
@@ -200,7 +200,7 @@ final class ActionDto
     /**
      * @param string|callable $url
      */
-    public function setUrl(/*string|callable*/ $url): void
+    public function setUrl(/* string|callable */ $url): void
     {
         if (!\is_string($url)
             && !\is_callable($url)) {

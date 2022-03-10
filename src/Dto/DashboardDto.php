@@ -24,7 +24,7 @@ final class DashboardDto
         return $this->routeName;
     }
 
-    public function setRouteName(/*string*/ $routeName): void
+    public function setRouteName(/* string */ $routeName): void
     {
         if (!\is_string($routeName)) {
             trigger_deprecation(
@@ -76,7 +76,7 @@ final class DashboardDto
         return $this->textDirection;
     }
 
-    public function setTextDirection(/*?string*/ $textDirection): void
+    public function setTextDirection(/* ?string */ $textDirection): void
     {
         if (!\is_string($textDirection)
             && null !== $textDirection) {

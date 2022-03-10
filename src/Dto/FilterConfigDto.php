@@ -20,7 +20,7 @@ final class FilterConfigDto
     /**
      * @param FilterInterface|string $filterNameOrConfig
      */
-    public function addFilter(/*FilterInterface|string*/ $filterNameOrConfig): void
+    public function addFilter(/* FilterInterface|string */ $filterNameOrConfig): void
     {
         if (!\is_string($filterNameOrConfig) && !$filterNameOrConfig instanceof FilterInterface) {
             trigger_deprecation(
@@ -40,7 +40,7 @@ final class FilterConfigDto
     /**
      * @return FilterInterface|string|null
      */
-    public function getFilter(string $propertyName)/*: FilterInterface|string|null*/
+    public function getFilter(string $propertyName)/* : FilterInterface|string|null */
     {
         return $this->filters->get($propertyName);
     }

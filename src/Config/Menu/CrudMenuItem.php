@@ -52,7 +52,7 @@ final class CrudMenuItem implements MenuItemInterface
         return $this;
     }
 
-    public function setEntityId(/*AbstractUid|int|string*/ $entityId): self
+    public function setEntityId(/* AbstractUid|int|string */ $entityId): self
     {
         if (!\is_int($entityId) && !\is_string($entityId) && !$entityId instanceof AbstractUid) {
             trigger_deprecation(

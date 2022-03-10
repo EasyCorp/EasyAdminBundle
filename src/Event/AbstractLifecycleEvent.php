@@ -11,7 +11,7 @@ abstract class AbstractLifecycleEvent implements EntityLifecycleEventInterface
 {
     protected $entityInstance;
 
-    public function __construct(/*?object*/ $entityInstance)
+    public function __construct(/* ?object */ $entityInstance)
     {
         if (!\is_object($entityInstance)
             && null !== $entityInstance) {
@@ -29,7 +29,7 @@ abstract class AbstractLifecycleEvent implements EntityLifecycleEventInterface
         $this->entityInstance = $entityInstance;
     }
 
-    public function getEntityInstance()/*: ?object*/
+    public function getEntityInstance()/* : ?object */
     {
         return $this->entityInstance;
     }

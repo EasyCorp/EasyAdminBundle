@@ -146,7 +146,7 @@ final class FieldDto
     /**
      * @return string|false|null
      */
-    public function getLabel()/*: string|false|null*/
+    public function getLabel()/* : string|false|null */
     {
         return $this->label;
     }
@@ -154,7 +154,7 @@ final class FieldDto
     /**
      * @param string|false|null $label
      */
-    public function setLabel(/*string|false|null*/ $label): void
+    public function setLabel(/* string|false|null */ $label): void
     {
         if (!\is_string($label)
             && false !== $label

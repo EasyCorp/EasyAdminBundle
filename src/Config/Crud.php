@@ -43,7 +43,7 @@ class Crud
     /**
      * @param string|callable $label The callable signature is: fn ($entityInstance, $pageName): string
      */
-    public function setEntityLabelInSingular(/*string|callable*/ $label): self
+    public function setEntityLabelInSingular(/* string|callable */ $label): self
     {
         if (!\is_string($label)
             && !\is_callable($label)) {
@@ -66,7 +66,7 @@ class Crud
     /**
      * @param string|callable $label The callable signature is: fn ($entityInstance, $pageName): string
      */
-    public function setEntityLabelInPlural(/*string|callable*/ $label): self
+    public function setEntityLabelInPlural(/* string|callable */ $label): self
     {
         if (!\is_string($label)
             && !\is_callable($label)) {
@@ -89,7 +89,7 @@ class Crud
     /**
      * @param string|callable $title The callable signature is: fn ($entityInstance): string
      */
-    public function setPageTitle(string $pageName, /*string|callable*/ $title): self
+    public function setPageTitle(string $pageName, /* string|callable */ $title): self
     {
         if (!\is_string($title)
             && !\is_callable($title)) {

@@ -160,7 +160,7 @@ final class CrudDto
     /**
      * @param string|callable $pageTitle
      */
-    public function setCustomPageTitle(string $pageName, /*string|callable*/ $pageTitle): void
+    public function setCustomPageTitle(string $pageName, /* string|callable */ $pageTitle): void
     {
         if (!\is_string($pageTitle)
             && !\is_callable($pageTitle)) {
@@ -178,7 +178,7 @@ final class CrudDto
         $this->customPageTitles[$pageName] = $pageTitle;
     }
 
-    public function getDefaultPageTitle(string $pageName = null, /*?object*/ $entityInstance = null): ?string
+    public function getDefaultPageTitle(string $pageName = null, /* ?object */ $entityInstance = null): ?string
     {
         if (!\is_object($entityInstance)
             && null !== $entityInstance) {

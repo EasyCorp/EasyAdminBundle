@@ -24,7 +24,7 @@ final class EntityDto
     private ?FieldCollection $fields = null;
     private ?ActionCollection $actions = null;
 
-    public function __construct(string $entityFqcn, ClassMetadata $entityMetadata, ?string $entityPermission = null, /*?object*/ $entityInstance = null)
+    public function __construct(string $entityFqcn, ClassMetadata $entityMetadata, ?string $entityPermission = null, /* ?object */ $entityInstance = null)
     {
         if (!\is_object($entityInstance)
             && null !== $entityInstance) {
@@ -74,7 +74,7 @@ final class EntityDto
         return sprintf('%s #%s', $this->getName(), substr($this->getPrimaryKeyValueAsString(), 0, 16));
     }
 
-    public function getInstance()/*: ?object*/
+    public function getInstance()/* : ?object */
     {
         return $this->instance;
     }
@@ -219,7 +219,7 @@ final class EntityDto
         $this->primaryKeyValue = null;
     }
 
-    public function newWithInstance(/*object*/ $newEntityInstance): self
+    public function newWithInstance(/* object */ $newEntityInstance): self
     {
         if (!\is_object($newEntityInstance)) {
             trigger_deprecation(

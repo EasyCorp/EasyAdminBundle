@@ -217,11 +217,11 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
         if ($context->getRequest()->isXmlHttpRequest()) {
             if ('PATCH' !== $context->getRequest()->getMethod()) {
-                return new Response(null, 400);
+                return new Response("Invalid method provided: ". $context->getRequest()->getMethod(), 400);
             }
 
             if (!$this->isCsrfTokenValid(BooleanField::CSRF_TOKEN_NAME, $context->getRequest()->query->get('csrfToken'))) {
-                return new Response(null, 400);
+                return new Response("Invalid CSRF token.", 400);
             }
 
             $fieldName = $context->getRequest()->query->get('fieldName');
@@ -230,7 +230,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             try {
                 $event = $this->ajaxEdit($context->getEntity(), $fieldName, $newValue);
             } catch (\Exception $exception) {
-                return new Response(null, 400);
+                return new Response("Invalid AJAX response.", 400);
             }
 
             if ($event->isPropagationStopped()) {

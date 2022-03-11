@@ -467,6 +467,14 @@ In addition to these, EasyAdmin includes other field types for specific values:
   that correspond to Symfony's ``EntityType``, ``CollectionType`` and ``ChoiceType``
   respectively.
 
+.. tip::
+
+    If you want to use one of Doctrine's `Custom Mapping Types`_ you should
+    create one of Symfony's `Custom Form Field Types`_ and one of
+    EasyAdmin's :ref:`Custom Fields <custom-fields>`. Note that for some
+    custom mapping types you will also need to customize EasyAdmin's
+    search and filter functionality if you need them.
+
 Field Configuration
 -------------------
 
@@ -751,3 +759,5 @@ attribute of the tag to run your configurator before or after the built-in ones.
 .. _`Bootstrap grid system`: https://getbootstrap.com/docs/5.0/layout/grid/
 .. _`Bootstrap breakpoints`: https://getbootstrap.com/docs/5.0/layout/breakpoints/
 .. _`Doctrine DBAL Type`: https://www.doctrine-project.org/projects/doctrine-dbal/en/latest/reference/types.html
+.. _`Custom Mapping Types`: https://www.doctrine-project.org/projects/doctrine-dbal/en/latest/reference/types.html#custom-mapping-types
+.. _`Custom Form Field Types`: https://symfony.com/doc/current/form/create_custom_field_type.html

@@ -137,7 +137,7 @@ final class FieldFactory
                 $guessedFieldFqcn = self::$doctrineTypeToFieldFqcn[$doctrinePropertyType] ?? null;
 
                 if (null === $guessedFieldFqcn) {
-                    throw new \RuntimeException(sprintf('The Doctrine type of the "%s" field is "%s", which is not supported by EasyAdmin yet.', $fieldDto->getProperty(), $doctrinePropertyType));
+                    throw new \RuntimeException(sprintf('The Doctrine type of the "%s" field is "%s", which is not supported by EasyAdmin. For Doctrine\'s Custom Mapping Types have a look at EasyAdmin\'s field docs.', $fieldDto->getProperty(), $doctrinePropertyType));
                 }
             }
 

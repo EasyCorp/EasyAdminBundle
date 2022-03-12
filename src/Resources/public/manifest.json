@@ -7,6 +7,7 @@
   "bundles/easyadmin/field-code-editor.css": "./field-code-editor.css",
   "bundles/easyadmin/field-code-editor.js": "./field-code-editor.js",
   "bundles/easyadmin/field-collection.js": "./field-collection.js",
+  "bundles/easyadmin/field-file-upload.js": "./field-file-upload.js",
   "bundles/easyadmin/field-image.js": "./field-image.js",
   "bundles/easyadmin/field-slug.js": "./field-slug.js",
   "bundles/easyadmin/field-textarea.js": "./field-textarea.js",

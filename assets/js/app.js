@@ -12,7 +12,6 @@ window.bootstrap = bootstrap;
 
 document.addEventListener('DOMContentLoaded', () => {
     App.createMainMenu();
-    App.createColorSchemeSelector();
     App.createLayoutResizeControls();
     App.createNavigationToggler();
     App.createSearchHighlight();
@@ -70,36 +69,6 @@ const App = (() => {
                     menuItemSubmenu.style.maxHeight = menuItemSubmenu.scrollHeight + 'px';
                     menuItem.classList.add('expanded');
                 }
-            });
-        });
-    };
-
-    const createColorSchemeSelector = () => {
-        if (null === document.querySelector('.dropdown-appearance')) {
-            return;
-        }
-
-        const currentScheme = localStorage.getItem('ea/colorScheme') || 'auto';
-        const colorSchemeSelectors = document.querySelectorAll('.dropdown-appearance a[data-ea-color-scheme]');
-        const activeColorSchemeSelector = document.querySelector(`.dropdown-appearance a[data-ea-color-scheme="${ currentScheme }"]`);
-
-        colorSchemeSelectors.forEach((selector) => { selector.classList.remove('active') });
-        activeColorSchemeSelector.classList.add('active');
-
-        colorSchemeSelectors.forEach((selector) => {
-            selector.addEventListener('click', () => {
-                const selectedColorScheme = selector.getAttribute('data-ea-color-scheme');
-                const resolvedColorScheme = 'auto' === selectedColorScheme
-                    ? matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
-                    : selectedColorScheme;
-
-                document.body.classList.remove('ea-light-scheme', 'ea-dark-scheme');
-                document.body.classList.add('light' === resolvedColorScheme ? 'ea-light-scheme' : 'ea-dark-scheme');
-                localStorage.setItem('ea/colorScheme', selectedColorScheme);
-                document.body.style.colorScheme = resolvedColorScheme;
-
-                colorSchemeSelectors.forEach((otherSelector) => { otherSelector.classList.remove('active') });
-                selector.classList.add('active');
             });
         });
     };
@@ -658,7 +627,6 @@ const App = (() => {
 
     return {
         createMainMenu: createMainMenu,
-        createColorSchemeSelector: createColorSchemeSelector,
         createLayoutResizeControls: createLayoutResizeControls,
         createNavigationToggler: createNavigationToggler,
         createSearchHighlight: createSearchHighlight,

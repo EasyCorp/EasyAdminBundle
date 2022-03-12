@@ -38,6 +38,11 @@
         "./form-type-collection.js"
       ]
     },
+    "form-type-image": {
+      "js": [
+        "./form-type-image.js"
+      ]
+    },
     "form-type-slug": {
       "js": [
         "./form-type-slug.js"

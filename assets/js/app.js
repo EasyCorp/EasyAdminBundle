@@ -17,7 +17,6 @@ document.addEventListener('DOMContentLoaded', () => {
     App.createNavigationToggler();
     App.createSearchHighlight();
     App.createFilters();
-    App.createToggleFields();
     App.createAutoCompleteFields();
     App.createBatchActions();
     App.createModalWindowsForDeleteActions();
@@ -225,38 +224,6 @@ const App = (() => {
                 removeFilter(notAppliedFilter.closest('.filter-field'));
             });
             filterModal.querySelector('form').submit();
-        });
-    };
-
-    const createToggleFields = () => {
-        const disableToggleField = (toggleField, isChecked) => {
-            // in case of error, restore the original toggle field value and disable it
-            toggleField.checked = isChecked;
-            toggleField.disabled = true;
-            toggleField.closest('.custom-switch').classList.add('disabled');
-        };
-
-        document.querySelectorAll('td.field-boolean .form-switch input[type="checkbox"]').forEach((toggleField) => {
-            toggleField.addEventListener('change', () => {
-                const newValue = toggleField.checked;
-                const oldValue = !newValue;
-
-                const toggleUrl = toggleField.getAttribute('data-toggle-url') + "&newValue=" + newValue.toString();
-                fetch(toggleUrl, {
-                    method: 'PATCH',
-                    // the XMLHttpRequest header is needed to keep compatibility with the previous code, which didn't use the Fetch API
-                    headers: { 'X-Requested-With': 'XMLHttpRequest' },
-                })
-                    .then((response) => {
-                        if (!response.ok) {
-                            disableToggleField(toggleField, oldValue);
-                        }
-
-                        return response.text();
-                    })
-                    .then(() => { /* do nothing else when the toggle request is successful */ })
-                    .catch(() => disableToggleField(toggleField, oldValue));
-            });
         });
     };
 
@@ -696,7 +663,6 @@ const App = (() => {
         createNavigationToggler: createNavigationToggler,
         createSearchHighlight: createSearchHighlight,
         createFilters: createFilters,
-        createToggleFields: createToggleFields,
         createBatchActions: createBatchActions,
         createAutoCompleteFields: createAutoCompleteFields,
         createModalWindowsForDeleteActions: createModalWindowsForDeleteActions,

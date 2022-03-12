@@ -19,6 +19,11 @@
         "./page-color-scheme.js"
       ]
     },
+    "form-type-boolean": {
+      "js": [
+        "./form-type-boolean.js"
+      ]
+    },
     "form-type-code-editor": {
       "css": [
         "./form-type-code-editor.css",
@@ -26,15 +31,6 @@
       ],
       "js": [
         "./form-type-code-editor.js"
-      ]
-    },
-    "form-type-text-editor": {
-      "css": [
-        "./form-type-text-editor.css",
-        "./form-type-text-editor.rtl.css"
-      ],
-      "js": [
-        "./form-type-text-editor.js"
       ]
     },
     "form-type-collection": {
@@ -50,6 +46,15 @@
     "form-type-textarea": {
       "js": [
         "./form-type-textarea.js"
+      ]
+    },
+    "form-type-text-editor": {
+      "css": [
+        "./form-type-text-editor.css",
+        "./form-type-text-editor.rtl.css"
+      ],
+      "js": [
+        "./form-type-text-editor.js"
       ]
     },
     "login": {

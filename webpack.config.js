@@ -31,11 +31,12 @@ Encore
     .addEntry('app', './assets/js/app.js')
     .addEntry('page-layout', './assets/js/page-layout.js')
     .addEntry('page-color-scheme', './assets/js/page-color-scheme.js')
+    .addEntry('form-type-boolean', './assets/js/form-type-boolean.js')
     .addEntry('form-type-code-editor', './assets/js/form-type-code-editor.js')
-    .addEntry('form-type-text-editor', './assets/js/form-type-text-editor.js')
     .addEntry('form-type-collection', './assets/js/form-type-collection.js')
     .addEntry('form-type-slug', './assets/js/form-type-slug.js')
     .addEntry('form-type-textarea', './assets/js/form-type-textarea.js')
+    .addEntry('form-type-text-editor', './assets/js/form-type-text-editor.js')
     .addEntry('login', './assets/js/login.js')
 ;
 

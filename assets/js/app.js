@@ -21,7 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
     App.createPopovers();
     App.createUnsavedFormChangesWarning();
     App.createNullableFields();
-    App.createFileUploadFields();
     App.createFieldsWithErrors();
     App.preventMultipleFormSubmission();
 
@@ -378,79 +377,6 @@ const App = (() => {
         });
     };
 
-    const createFileUploadFields = () => {
-        const humanizeFileSize = (bytes) => {
-            const unit = ['B', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'];
-            const factor = Math.trunc(Math.floor(Math.log(bytes) / Math.log(1024)));
-
-            return Math.trunc(bytes / (1024 ** factor)) + unit[factor];
-        };
-
-        document.querySelectorAll('.ea-fileupload input[type="file"]').forEach((fileUploadElement) => {
-            fileUploadElement.addEventListener('change', () => {
-                if (0 === fileUploadElement.files.length) {
-                    return;
-                }
-
-                let filename = '';
-                if (1 === fileUploadElement.files.length) {
-                    filename = fileUploadElement.files[0].name;
-                } else {
-                    filename = fileUploadElement.files.length + ' ' + fileUploadElement.getAttribute('data-files-label');
-                }
-
-                let bytes = 0;
-                for (let i = 0; i < fileUploadElement.files.length; i++) {
-                    bytes += fileUploadElement.files[i].size;
-                }
-
-                const fileUploadContainer = fileUploadElement.closest('.ea-fileupload');
-                const fileUploadCustomInput = fileUploadContainer.querySelector('.custom-file-label');
-                const fileUploadFileSizeLabel = fileUploadContainer.querySelector('.input-group-text');
-                const fileUploadDeleteButton = fileUploadContainer.querySelector('.ea-fileupload-delete-btn');
-
-                fileUploadFileSizeLabel.childNodes.forEach((fileUploadFileSizeLabelChild) => {
-                    if (fileUploadFileSizeLabelChild.nodeType === Node.TEXT_NODE) {
-                        fileUploadFileSizeLabel.removeChild(fileUploadFileSizeLabelChild);
-                    }
-                });
-
-                fileUploadCustomInput.innerHTML = filename;
-                fileUploadFileSizeLabel.prepend(humanizeFileSize(bytes));
-                fileUploadDeleteButton.style.display = 'block';
-            });
-        });
-
-        document.querySelectorAll('.ea-fileupload .ea-fileupload-delete-btn').forEach((fileUploadDeleteButton) => {
-            fileUploadDeleteButton.addEventListener('click', () => {
-                const fileUploadContainer = fileUploadDeleteButton.closest('.ea-fileupload');
-                const fileUploadInput = fileUploadContainer.querySelector('input');
-                const fileUploadCustomInput = fileUploadContainer.querySelector('.custom-file-label');
-                const fileUploadFileSizeLabel = fileUploadContainer.querySelector('.input-group-text');
-                const fileUploadListOfFiles = fileUploadContainer.querySelector('.fileupload-list');
-                const fileUploadDeleteCheckbox = fileUploadContainer.querySelector('input[type=checkbox].form-check-input');
-
-                if (fileUploadDeleteCheckbox) {
-                    fileUploadDeleteCheckbox.checked = true;
-                    fileUploadDeleteCheckbox.click();
-                }
-                fileUploadInput.value = '';
-                fileUploadCustomInput.innerHTML = '';
-                fileUploadDeleteButton.style.display = 'none';
-
-                fileUploadFileSizeLabel.childNodes.forEach((fileUploadFileSizeLabelChild) => {
-                    if (fileUploadFileSizeLabelChild.nodeType === Node.TEXT_NODE) {
-                        fileUploadFileSizeLabel.removeChild(fileUploadFileSizeLabelChild);
-                    }
-                });
-
-                if (null !== fileUploadListOfFiles) {
-                    fileUploadListOfFiles.style.display = 'none';
-                }
-            });
-        });
-    };
-
     const createFieldsWithErrors = () => {
         const handleFieldsWithErrors = (form, pageName) => {
             // Intercept errors before submit to avoid browser error "An invalid form control with name='...' is not focusable."
@@ -615,7 +541,6 @@ const App = (() => {
         createPopovers: createPopovers,
         createUnsavedFormChangesWarning: createUnsavedFormChangesWarning,
         createNullableFields: createNullableFields,
-        createFileUploadFields: createFileUploadFields,
         createFieldsWithErrors: createFieldsWithErrors,
         preventMultipleFormSubmission: preventMultipleFormSubmission,
     };

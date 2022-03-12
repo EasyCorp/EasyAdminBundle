@@ -38,6 +38,11 @@
         "./field-collection.js"
       ]
     },
+    "field-file-upload": {
+      "js": [
+        "./field-file-upload.js"
+      ]
+    },
     "field-image": {
       "js": [
         "./field-image.js"

@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Asset;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 
@@ -29,6 +30,7 @@ final class BooleanField implements FieldInterface
             ->setTemplateName('crud/field/boolean')
             ->setFormType(CheckboxType::class)
             ->addCssClass('field-boolean')
+            ->addJsFiles(Asset::new('bundles/easyadmin/form-type-boolean.js')->onlyOnIndex())
             ->setCustomOption(self::OPTION_RENDER_AS_SWITCH, true);
     }
 

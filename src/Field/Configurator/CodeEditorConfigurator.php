@@ -22,7 +22,7 @@ final class CodeEditorConfigurator implements FieldConfiguratorInterface
     public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
     {
         if ('rtl' === $context->getI18n()->getTextDirection()) {
-            $field->addCssAsset((new AssetDto('bundles/easyadmin/form-type-code-editor.rtl.css')));
+            $field->addCssAsset((new AssetDto('bundles/easyadmin/field-code-editor.rtl.css')));
         }
     }
 }

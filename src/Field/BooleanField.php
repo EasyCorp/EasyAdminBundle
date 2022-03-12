@@ -30,7 +30,7 @@ final class BooleanField implements FieldInterface
             ->setTemplateName('crud/field/boolean')
             ->setFormType(CheckboxType::class)
             ->addCssClass('field-boolean')
-            ->addJsFiles(Asset::new('bundles/easyadmin/form-type-boolean.js')->onlyOnIndex())
+            ->addJsFiles(Asset::new('bundles/easyadmin/field-boolean.js')->onlyOnIndex())
             ->setCustomOption(self::OPTION_RENDER_AS_SWITCH, true);
     }
 

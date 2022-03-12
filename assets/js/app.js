@@ -4,7 +4,6 @@ require('../css/app.scss');
 import bootstrap from 'bootstrap/dist/js/bootstrap.bundle';
 import Mark from 'mark.js/src/vanilla';
 import DirtyForm from 'dirty-form';
-import * as basicLightbox from 'basiclightbox';
 import Autocomplete from './autocomplete';
 
 // Provide Bootstrap variable globally to allow custom backend pages to use it
@@ -23,7 +22,6 @@ document.addEventListener('DOMContentLoaded', () => {
     App.createTooltips();
     App.createUnsavedFormChangesWarning();
     App.createNullableFields();
-    App.createImageFields();
     App.createFileUploadFields();
     App.createFieldsWithErrors();
     App.preventMultipleFormSubmission();
@@ -389,17 +387,6 @@ const App = (() => {
         });
     };
 
-    const createImageFields = () => {
-        document.querySelectorAll('.ea-lightbox-thumbnail').forEach((image) => {
-            image.addEventListener('click', (event) => {
-                event.preventDefault();
-                const lightboxContent = document.querySelector(image.getAttribute('data-ea-lightbox-content-selector')).innerHTML;
-                const lightbox = basicLightbox.create(lightboxContent);
-                lightbox.show();
-            });
-        });
-    };
-
     const createFileUploadFields = () => {
         const humanizeFileSize = (bytes) => {
             const unit = ['B', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'];
@@ -638,7 +625,6 @@ const App = (() => {
         createTooltips: createTooltips,
         createUnsavedFormChangesWarning: createUnsavedFormChangesWarning,
         createNullableFields: createNullableFields,
-        createImageFields: createImageFields,
         createFileUploadFields: createFileUploadFields,
         createFieldsWithErrors: createFieldsWithErrors,
         preventMultipleFormSubmission: preventMultipleFormSubmission,

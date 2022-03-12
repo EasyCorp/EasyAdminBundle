@@ -7,6 +7,7 @@
   "bundles/easyadmin/form-type-code-editor.css": "./form-type-code-editor.css",
   "bundles/easyadmin/form-type-code-editor.js": "./form-type-code-editor.js",
   "bundles/easyadmin/form-type-collection.js": "./form-type-collection.js",
+  "bundles/easyadmin/form-type-image.js": "./form-type-image.js",
   "bundles/easyadmin/form-type-slug.js": "./form-type-slug.js",
   "bundles/easyadmin/form-type-textarea.js": "./form-type-textarea.js",
   "bundles/easyadmin/form-type-text-editor.css": "./form-type-text-editor.css",

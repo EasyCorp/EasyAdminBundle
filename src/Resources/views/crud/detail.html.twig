@@ -139,9 +139,9 @@
             {{ field.label|raw }}
 
             {% if field.help is not empty %}
-                <span class="data-help">
-                    <i class="far fa-question-circle" data-bs-toggle="tooltip" title="{{ field.help|e('html_attr') }}"></i>
-                </span>
+                <a tabindex="0" class="data-help" data-bs-toggle="popover" data-bs-custom-class="ea-content-help-popover" data-bs-animation="true" data-bs-html="true" data-bs-placement="right" data-bs-trigger="focus" data-bs-content="{{ field.help|e('html_attr') }}">
+                    <i class="far fa-question-circle"></i>
+                </a>
             {% endif %}
         </dt>
         <dd>

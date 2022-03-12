@@ -19,7 +19,6 @@ document.addEventListener('DOMContentLoaded', () => {
     App.createBatchActions();
     App.createModalWindowsForDeleteActions();
     App.createPopovers();
-    App.createTooltips();
     App.createUnsavedFormChangesWarning();
     App.createNullableFields();
     App.createFileUploadFields();
@@ -345,14 +344,6 @@ const App = (() => {
         });
     };
 
-    const createTooltips = () => {
-        document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach((tooltipElement) => {
-            new bootstrap.Tooltip(tooltipElement, {
-                html: true,
-            });
-        });
-    };
-
     const createUnsavedFormChangesWarning = () => {
         ['.ea-new-form', '.ea-edit-form'].forEach((formSelector) => {
             const form = document.querySelector(formSelector);
@@ -622,7 +613,6 @@ const App = (() => {
         createAutoCompleteFields: createAutoCompleteFields,
         createModalWindowsForDeleteActions: createModalWindowsForDeleteActions,
         createPopovers: createPopovers,
-        createTooltips: createTooltips,
         createUnsavedFormChangesWarning: createUnsavedFormChangesWarning,
         createNullableFields: createNullableFields,
         createFileUploadFields: createFileUploadFields,

@@ -19,47 +19,47 @@
         "./page-color-scheme.js"
       ]
     },
-    "form-type-boolean": {
+    "field-boolean": {
       "js": [
-        "./form-type-boolean.js"
+        "./field-boolean.js"
       ]
     },
-    "form-type-code-editor": {
+    "field-code-editor": {
       "css": [
-        "./form-type-code-editor.css",
-        "./form-type-code-editor.rtl.css"
+        "./field-code-editor.css",
+        "./field-code-editor.rtl.css"
       ],
       "js": [
-        "./form-type-code-editor.js"
+        "./field-code-editor.js"
       ]
     },
-    "form-type-collection": {
+    "field-collection": {
       "js": [
-        "./form-type-collection.js"
+        "./field-collection.js"
       ]
     },
-    "form-type-image": {
+    "field-image": {
       "js": [
-        "./form-type-image.js"
+        "./field-image.js"
       ]
     },
-    "form-type-slug": {
+    "field-slug": {
       "js": [
-        "./form-type-slug.js"
+        "./field-slug.js"
       ]
     },
-    "form-type-textarea": {
+    "field-textarea": {
       "js": [
-        "./form-type-textarea.js"
+        "./field-textarea.js"
       ]
     },
-    "form-type-text-editor": {
+    "field-text-editor": {
       "css": [
-        "./form-type-text-editor.css",
-        "./form-type-text-editor.rtl.css"
+        "./field-text-editor.css",
+        "./field-text-editor.rtl.css"
       ],
       "js": [
-        "./form-type-text-editor.js"
+        "./field-text-editor.js"
       ]
     },
     "login": {

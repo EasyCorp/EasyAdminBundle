@@ -9,6 +9,11 @@
         "./app.js"
       ]
     },
+    "form": {
+      "js": [
+        "./form.js"
+      ]
+    },
     "page-layout": {
       "js": [
         "./page-layout.js"

@@ -29,6 +29,7 @@ Encore
     .addPlugin(new WebpackRTLPlugin())
 
     .addEntry('app', './assets/js/app.js')
+    .addEntry('form', './assets/js/form.js')
     .addEntry('page-layout', './assets/js/page-layout.js')
     .addEntry('page-color-scheme', './assets/js/page-color-scheme.js')
     .addEntry('field-boolean', './assets/js/field-boolean.js')

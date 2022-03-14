@@ -1,0 +1,11 @@
+---------------------------------------------------------------------------
+
+by pkly at 2022-01-16T15:11:08Z
+
+I would like to point out that this change is essentially pointless without making the service shared and removing the service locator, as each instance of AdminUrlGenerator injected as a service is a new instance, and thus manipulating it changes only the current object.
+
+In our testing we didn't really find any issues after I made the service shared via a compiler pass.
+
+While overriding the referrer per-request seems reasonable, I would like to point out that this logic was a part of walkaround for a feature which will likely generate multiple urls in a quick succession, via twig and other means, so assuming you'll be able to override the referrer each time is unreasonable.
+How about instead you make it into a boolean (default false), and if it's false then reset the override (allow setting of the boolean).
+This would allow for "safe" default behaviour while also allowing for the override to be semi-persistent.

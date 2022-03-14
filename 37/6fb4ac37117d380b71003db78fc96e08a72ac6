@@ -1,0 +1,25 @@
+---------------------------------------------------------------------------
+
+by michaelKaefer at 2022-03-10T09:13:25Z
+
+As there is no description: why do we need this messages? You should see the cause of the 400 in the debug bar, or?
+
+---------------------------------------------------------------------------
+
+by xKZL at 2022-03-10T11:02:52Z
+
+Sorry, the modification is minimal, but yes I forgot description.
+
+I added error messages to the default crud controller, because there is no explanation why the modification is not working, if we trigger the error 404. In case CSRF token is wrong for instance, there is no error message in profiler available during development.
+
+---------------------------------------------------------------------------
+
+by michaelKaefer at 2022-03-10T15:42:30Z
+
+Ok, I thought we can already see the exception in the debug bar but you are completely right, we can't.. I did a review. If you want to add my review you have to update the tests a little in `tests/Controller/CategoryCrudControllerTest.php`. The expected HTTP status code in L222 is then `405` instead of `400` and the one in L228 is `401` instead of `400`.
+
+---------------------------------------------------------------------------
+
+by michaelKaefer at 2022-03-14T10:52:48Z
+
+Hi @xKZL, do you plan to add anything here?

@@ -3,32 +3,37 @@ require('../css/app.scss');
 
 import bootstrap from 'bootstrap/dist/js/bootstrap.bundle';
 import Mark from 'mark.js/src/vanilla';
-import DirtyForm from 'dirty-form';
 import Autocomplete from './autocomplete';
 
 // Provide Bootstrap variable globally to allow custom backend pages to use it
 window.bootstrap = bootstrap;
 
 document.addEventListener('DOMContentLoaded', () => {
-    App.createMainMenu();
-    App.createLayoutResizeControls();
-    App.createNavigationToggler();
-    App.createSearchHighlight();
-    App.createFilters();
-    App.createAutoCompleteFields();
-    App.createBatchActions();
-    App.createModalWindowsForDeleteActions();
-    App.createPopovers();
-    App.createUnsavedFormChangesWarning();
-    App.createNullableFields();
-    App.createFieldsWithErrors();
-    App.preventMultipleFormSubmission();
-
-    document.addEventListener('ea.collection.item-added', () => App.createAutoCompleteFields());
+    new App();
 });
 
-const App = (() => {
-    const createMainMenu = () => {
+class App {
+    #sidebarWidthLocalStorageKey;
+    #contentWidthLocalStorageKey;
+
+    constructor() {
+        this.#sidebarWidthLocalStorageKey = 'ea/sidebar/width';
+        this.#contentWidthLocalStorageKey = 'ea/content/width';
+
+        this.#createMainMenu();
+        this.#createLayoutResizeControls();
+        this.#createNavigationToggler();
+        this.#createSearchHighlight();
+        this.#createFilters();
+        this.#createAutoCompleteFields();
+        this.#createBatchActions();
+        this.#createModalWindowsForDeleteActions();
+        this.#createPopovers();
+
+        document.addEventListener('ea.collection.item-added', () => this.#createAutoCompleteFields());
+    }
+
+    #createMainMenu() {
         // inspired by https://codepen.io/phileflanagan/pen/mwpQpY
         const menuItemsWithSubmenus = document.querySelectorAll('#main-menu .menu-item.has-submenu');
         menuItemsWithSubmenus.forEach((menuItem) => {
@@ -67,35 +72,35 @@ const App = (() => {
                 }
             });
         });
-    };
+    }
 
-    const createLayoutResizeControls = () => {
-        const sidebarResizerHandler = document.getElementById('sidebar-resizer-handler');
+    #createLayoutResizeControls() {
+        const sidebarResizerHandler = document.querySelector('#sidebar-resizer-handler');
         if (null !== sidebarResizerHandler) {
             sidebarResizerHandler.addEventListener('click', () => {
-                const oldValue = localStorage.getItem('ea/sidebar/width') || 'normal';
-                const newValue = 'normal' == oldValue ? 'compact' : 'normal';
+                const oldValue = localStorage.getItem(this.#sidebarWidthLocalStorageKey) || 'normal';
+                const newValue = 'normal' === oldValue ? 'compact' : 'normal';
 
-                document.querySelector('body').classList.remove('ea-sidebar-width-' + oldValue);
-                document.querySelector('body').classList.add('ea-sidebar-width-' + newValue);
-                localStorage.setItem('ea/sidebar/width', newValue);
+                document.querySelector('body').classList.remove(`ea-sidebar-width-${ oldValue }`);
+                document.querySelector('body').classList.add(`ea-sidebar-width-${ newValue }`);
+                localStorage.setItem(this.#sidebarWidthLocalStorageKey, newValue);
             });
         }
 
-        const contentResizerHandler = document.getElementById('content-resizer-handler');
+        const contentResizerHandler = document.querySelector('#content-resizer-handler');
         if (null !== contentResizerHandler) {
             contentResizerHandler.addEventListener('click', () => {
-                const oldValue = localStorage.getItem('ea/content/width') || 'normal';
-                const newValue = 'normal' == oldValue ? 'full' : 'normal';
+                const oldValue = localStorage.getItem(this.#contentWidthLocalStorageKey) || 'normal';
+                const newValue = 'normal' === oldValue ? 'full' : 'normal';
 
-                document.querySelector('body').classList.remove('ea-content-width-' + oldValue);
-                document.querySelector('body').classList.add('ea-content-width-' + newValue);
-                localStorage.setItem('ea/content/width', newValue);
+                document.querySelector('body').classList.remove(`ea-content-width-${ oldValue }`);
+                document.querySelector('body').classList.add(`ea-content-width-${ newValue }`);
+                localStorage.setItem(this.#contentWidthLocalStorageKey, newValue);
             });
         }
-    };
+    }
 
-    const createNavigationToggler = () => {
+    #createNavigationToggler() {
         const toggler = document.querySelector('#navigation-toggler');
         const cssClassName = 'ea-mobile-sidebar-visible';
         let modalBackdrop;
@@ -122,9 +127,9 @@ const App = (() => {
                 modalBackdrop = null;
             }
         });
-    };
+    }
 
-    const createSearchHighlight = () => {
+    #createSearchHighlight() {
         const searchElement = document.querySelector('.form-action-search [name="query"]');
         if (null === searchElement) {
             return;
@@ -138,9 +143,9 @@ const App = (() => {
         const elementsToHighlight = document.querySelectorAll('table tbody td:not(.actions)');
         const highlighter = new Mark(elementsToHighlight);
         highlighter.mark(searchQuery);
-    };
+    }
 
-    const createFilters = () => {
+    #createFilters() {
         const filterButton = document.querySelector('.datagrid-filters .action-filters-button');
         if (null === filterButton) {
             return;
@@ -161,8 +166,8 @@ const App = (() => {
                 .then((response) => { return response.text(); })
                 .then((text) => {
                     filterModalBody.innerHTML = text;
-                    App.createAutoCompleteFields();
-                    createFilterToggles();
+                    this.#createAutoCompleteFields();
+                    this.#createFilterToggles();
                 })
                 .catch((error) => { console.error(error); });
 
@@ -190,9 +195,9 @@ const App = (() => {
             });
             filterModal.querySelector('form').submit();
         });
-    };
+    }
 
-    const createBatchActions = () => {
+    #createBatchActions() {
         let lastUpdatedRowCheckbox = null;
         const selectAllCheckbox = document.querySelector('.form-batch-checkbox-all');
         if (null === selectAllCheckbox) {
@@ -313,16 +318,16 @@ const App = (() => {
                 });
             });
         });
-    };
+    }
 
-    const createAutoCompleteFields = () => {
+    #createAutoCompleteFields() {
         const autocomplete = new Autocomplete();
         document.querySelectorAll('[data-ea-widget="ea-autocomplete"]').forEach((autocompleteElement) => {
             autocomplete.create(autocompleteElement);
         });
-    };
+    }
 
-    const createModalWindowsForDeleteActions = () => {
+    #createModalWindowsForDeleteActions() {
         document.querySelectorAll('.action-delete').forEach((actionElement) => {
             actionElement.addEventListener('click', (event) => {
                 event.preventDefault();
@@ -337,153 +342,13 @@ const App = (() => {
         });
     }
 
-    const createPopovers = () => {
+    #createPopovers() {
         document.querySelectorAll('[data-bs-toggle="popover"]').forEach((popoverElement) => {
             new bootstrap.Popover(popoverElement);
         });
-    };
+    }
 
-    const createUnsavedFormChangesWarning = () => {
-        ['.ea-new-form', '.ea-edit-form'].forEach((formSelector) => {
-            const form = document.querySelector(formSelector);
-            if (null === form) {
-                return;
-            }
-
-            // although DirtyForm supports passing a custom message to display,
-            // modern browsers don't allow to display custom messages to protect users
-            new DirtyForm(form);
-        });
-    };
-
-    const createNullableFields = () => {
-        const updateNullableControlStatus = (checkbox) => {
-            const formFieldIsNull = checkbox.checked;
-            checkbox.closest('.form-group').querySelectorAll('select, input[type="date"], input[type="time"], input[type="datetime-local"]').forEach((dateTimeHtmlElement) => {
-                dateTimeHtmlElement.disabled = formFieldIsNull;
-                const dateTimeWidget = dateTimeHtmlElement.closest('.datetime-widget');
-                if (null !== dateTimeWidget) {
-                    dateTimeWidget.style.display = formFieldIsNull ? 'none' : 'block';
-                }
-            });
-        };
-
-        document.querySelectorAll('.nullable-control input[type="checkbox"]').forEach((checkbox) => {
-            updateNullableControlStatus(checkbox);
-
-            checkbox.addEventListener('change', () => {
-                updateNullableControlStatus(checkbox);
-            });
-        });
-    };
-
-    const createFieldsWithErrors = () => {
-        const handleFieldsWithErrors = (form, pageName) => {
-            // Intercept errors before submit to avoid browser error "An invalid form control with name='...' is not focusable."
-            //
-            // Adding visual feedback for invalid fields: any ".form-group" with invalid fields
-            // receives "has-error" class. The class is removed on click on the ".form-group"
-            // itself to support custom/complex fields.
-            //
-            // Adding visual error counter feedback for invalid fields inside form tabs (visible or not)
-            document.querySelector('.ea-edit, .ea-new').querySelectorAll('[type="submit"]').forEach((button) => {
-                button.addEventListener('click', function onSubmitButtonsClick(clickEvent) {
-
-                    let formHasErrors = false;
-
-                    // Remove all error counter badges
-                    document.querySelectorAll('.form-tabs .nav-item .badge-danger.badge').forEach( (badge) => {
-                        badge.parentElement.removeChild(badge);
-                    });
-
-                    form.querySelectorAll('input,select,textarea').forEach( (input) => {
-                        if (!input.validity.valid) {
-                            formHasErrors = true;
-
-                            // Visual feedback for tabz
-                            // Adding a badge with a error count next to the tab label
-                            const formTab = input.closest('div.tab-pane');
-                            if (formTab) {
-                                const navLinkTab = document.querySelector('#' + formTab.id + '-tab');
-                                const badge = navLinkTab.querySelector('.badge');
-                                if (badge) {
-                                    // Increment number of error
-                                    badge.textContent = parseInt(badge.textContent) + 1;
-                                } else {
-                                    // Create a new badge
-                                    let newErrorBadge = document.createElement('span');
-                                    newErrorBadge.classList.add('badge', 'badge-danger');
-                                    newErrorBadge.title = 'form.tab.error_badge_title';
-                                    newErrorBadge.textContent = 1;
-                                    navLinkTab.appendChild(newErrorBadge);
-                                }
-                                navLinkTab.addEventListener('click', function onFormNavLinkTabClick() {
-                                    navLinkTab.querySelectorAll('.badge-danger.badge').forEach( (badge) => {
-                                        badge.parentElement.removeChild(badge);
-                                    });
-                                    navLinkTab.removeEventListener('click', onFormNavLinkTabClick);
-                                });
-                            }
-
-                            // Visual feedback for group
-                            const formGroup = input.closest('div.form-group');
-                            formGroup.classList.add('has-error');
-
-                            formGroup.addEventListener('click', function onFormGroupClick() {
-                                formGroup.classList.remove('has-error');
-                                formGroup.removeEventListener('click', onFormGroupClick);
-                            });
-                        }
-                    });
-
-                    if (formHasErrors) {
-                        clickEvent.preventDefault();
-                        clickEvent.stopPropagation();
-                    }
-                });
-            });
-
-            form.addEventListener('submit', (submitEvent) => {
-                const eaEvent = new CustomEvent('ea.form.submit', {
-                    cancelable: true,
-                    detail: { page: pageName, form: form }
-                });
-                const eaEventResult = document.dispatchEvent(eaEvent);
-                if (false === eaEventResult) {
-                    submitEvent.preventDefault();
-                    submitEvent.stopPropagation();
-                }
-            });
-        };
-
-        ['.ea-new-form', '.ea-edit-form'].forEach((formSelector) => {
-            const form = document.querySelector(formSelector);
-            if (null !== form) {
-                handleFieldsWithErrors(form, formSelector.includes('-new-') ? 'new' : 'edit');
-            }
-        });
-    };
-
-    const preventMultipleFormSubmission = () => {
-        ['.ea-new-form', '.ea-edit-form'].forEach((formSelector) => {
-            const form = document.querySelector(formSelector);
-            if (null === form) {
-                return;
-            }
-
-            form.addEventListener('submit', () => {
-                // this timeout is needed to include the disabled button into the submitted form
-                setTimeout(() => {
-                    const submitButtons = document.querySelector('.ea-edit, .ea-new').querySelectorAll('[type="submit"]');
-                    submitButtons.forEach((button) => {
-                        button.setAttribute('disabled', 'disabled');
-                    });
-                }, 1);
-            }, false);
-        });
-    };
-
-    const createFilterToggles = () => {
+    #createFilterToggles() {
         document.querySelectorAll('.filter-checkbox').forEach((filterCheckbox) => {
             filterCheckbox.addEventListener('change', () => {
                 const filterToggleLink = filterCheckbox.nextElementSibling;
@@ -527,21 +392,5 @@ const App = (() => {
                 secondValue.style.display = comparisonWidget.value === 'between' ? '' : 'none';
             });
         });
-    };
-
-    return {
-        createMainMenu: createMainMenu,
-        createLayoutResizeControls: createLayoutResizeControls,
-        createNavigationToggler: createNavigationToggler,
-        createSearchHighlight: createSearchHighlight,
-        createFilters: createFilters,
-        createBatchActions: createBatchActions,
-        createAutoCompleteFields: createAutoCompleteFields,
-        createModalWindowsForDeleteActions: createModalWindowsForDeleteActions,
-        createPopovers: createPopovers,
-        createUnsavedFormChangesWarning: createUnsavedFormChangesWarning,
-        createNullableFields: createNullableFields,
-        createFieldsWithErrors: createFieldsWithErrors,
-        preventMultipleFormSubmission: preventMultipleFormSubmission,
-    };
-})();
+    }
+}

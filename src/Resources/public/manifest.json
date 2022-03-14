@@ -1,6 +1,7 @@
 {
   "bundles/easyadmin/app.css": "./app.css",
   "bundles/easyadmin/app.js": "./app.js",
+  "bundles/easyadmin/form.js": "./form.js",
   "bundles/easyadmin/page-layout.js": "./page-layout.js",
   "bundles/easyadmin/page-color-scheme.js": "./page-color-scheme.js",
   "bundles/easyadmin/field-boolean.js": "./field-boolean.js",

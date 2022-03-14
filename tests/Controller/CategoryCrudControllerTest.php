@@ -11,6 +11,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Controller\SecureDashb
 use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Entity\Category;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\HttpFoundation\Response;
 
 class CategoryCrudControllerTest extends WebTestCase
 {
@@ -219,19 +220,19 @@ class CategoryCrudControllerTest extends WebTestCase
         yield [
             'GET', // HTTP method
             null, // Do not manipulate the CSRF token
-            400, // Response status code, fails because of wrong method "GET"
+            Response::HTTP_METHOD_NOT_ALLOWED, // Response status code, fails because of wrong method "GET"
             false, // Should the toggle successfully change the toggled property?
         ];
         yield [
             'PATCH',
             '123abc', // Manipulate the CSRF token to this invalid value
-            400, // Response status code, fails because of wrong CSRF token
+            Response::HTTP_UNAUTHORIZED, // Response status code, fails because of wrong CSRF token
             false,
         ];
         yield [
             'PATCH',
             null, // Do not manipulate the CSRF token
-            200,
+            Response::HTTP_OK,
             true,
         ];
     }

@@ -57,6 +57,9 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
 use function Symfony\Component\String\u;
 
 /**
@@ -217,11 +220,15 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
         if ($context->getRequest()->isXmlHttpRequest()) {
             if ('PATCH' !== $context->getRequest()->getMethod()) {
-                return new Response("Invalid method provided: ". $context->getRequest()->getMethod(), 400);
+                throw new MethodNotAllowedHttpException(['PATCH']);
             }
 
             if (!$this->isCsrfTokenValid(BooleanField::CSRF_TOKEN_NAME, $context->getRequest()->query->get('csrfToken'))) {
-                return new Response("Invalid CSRF token.", 400);
+                if (class_exists(InvalidCsrfTokenException::class)) {
+                    throw new InvalidCsrfTokenException();
+                } else {
+                    return new Response("Invalid CSRF token.", 400);
+                }
             }
 
             $fieldName = $context->getRequest()->query->get('fieldName');
@@ -230,7 +237,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             try {
                 $event = $this->ajaxEdit($context->getEntity(), $fieldName, $newValue);
             } catch (\Exception $exception) {
-                return new Response("Invalid AJAX response.", 400);
+                throw new BadRequestHttpException();
             }
 
             if ($event->isPropagationStopped()) {

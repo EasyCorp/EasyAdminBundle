@@ -237,9 +237,36 @@ class AdminUrlGeneratorTest extends WebTestCase
         $adminUrlGenerator->removeReferrer();
         $this->assertSame('http://localhost/admin?foo=bar', $adminUrlGenerator->generateUrl());
 
-        $adminUrlGenerator->set(EA::REFERRER, 'https://example.com/foo');
+        $adminUrlGenerator->setReferrer('https://example.com/foo');
         $adminUrlGenerator->removeReferrer();
         $this->assertSame('http://localhost/admin?foo=bar', $adminUrlGenerator->generateUrl());
+    }
+
+    public function testDefaultReferrer()
+    {
+        $adminUrlGenerator = $this->getAdminUrlGenerator();
+
+        $adminUrlGenerator->includeReferrer();
+        $this->assertSame('http://localhost/admin?foo=bar&referrer=/?foo%3Dbar', $adminUrlGenerator->generateUrl());
+    }
+
+    public function testCustomReferrer()
+    {
+        $adminUrlGenerator = $this->getAdminUrlGenerator();
+
+        $adminUrlGenerator->setReferrer('any_custom_value');
+        $this->assertSame('http://localhost/admin?foo=bar&referrer=any_custom_value', $adminUrlGenerator->generateUrl());
+    }
+
+    public function testPersistentCustomReferrer()
+    {
+        $adminUrlGenerator = $this->getAdminUrlGenerator();
+        $adminUrlGenerator->setReferrer('any_custom_value');
+        $this->assertSame('http://localhost/admin?foo=bar&referrer=any_custom_value', $adminUrlGenerator->generateUrl());
+
+        // test that the custom referrer value does not persist after generating the URL
+        $adminUrlGenerator->includeReferrer();
+        $this->assertSame('http://localhost/admin?foo=bar&referrer=/?foo%3Dbar', $adminUrlGenerator->generateUrl());
     }
 
     public function testSignedUrls()

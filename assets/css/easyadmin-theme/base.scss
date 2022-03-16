@@ -551,11 +551,13 @@ body.ea-edit .content-header {
 }
 
 .content-footer {
-    background: var(--white);
-    border-top: var(--border-width) var(--border-style) var(--border-color);
+    background: var(--body-bg);
+    border-top: var(--border-width) var(--border-style) var(--content-section-border-color);
     border-bottom-left-radius: var(--border-radius);
     border-bottom-right-radius: var(--border-radius);
-    padding: 15px 20px;
+    color: var(--text-muted);
+    margin-top: 15px;
+    padding: 15px 0;
 }
 
 .content-panel {
@@ -563,7 +565,7 @@ body.ea-edit .content-header {
 }
 
 .content-panel-header {
-    border-bottom: var(--border-width) var(--border-style) var(--border-color);
+    border-bottom: var(--border-width) var(--border-style) var(--content-section-border-color);
     font-size: var(--font-size-lg);
     line-height: 24px;
     margin: 0;

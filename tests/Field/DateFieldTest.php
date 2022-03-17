@@ -173,11 +173,11 @@ class DateFieldTest extends AbstractFieldTest
         $field->nullable();
         $fieldDto = $this->configure($field);
 
-        $this->assertTrue( $fieldDto->getCustomOption(DateField::OPTION_NULLABLE));
+        $this->assertTrue($fieldDto->getCustomOption(DateField::OPTION_NULLABLE));
 
         $field->nullable(false);
         $fieldDto = $this->configure($field);
 
-        $this->assertFalse( $fieldDto->getCustomOption(DateField::OPTION_NULLABLE));
+        $this->assertFalse($fieldDto->getCustomOption(DateField::OPTION_NULLABLE));
     }
 }

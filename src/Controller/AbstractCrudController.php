@@ -227,7 +227,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
                 if (class_exists(InvalidCsrfTokenException::class)) {
                     throw new InvalidCsrfTokenException();
                 } else {
-                    return new Response("Invalid CSRF token.", 400);
+                    return new Response('Invalid CSRF token.', 400);
                 }
             }
 

@@ -107,7 +107,7 @@
                     <div class="nullable-control">
                         <label>
                             <input type="checkbox" {% if ea.crud.currentAction == 'edit' and data is null and valid %}checked="checked"{% endif %}>
-                            {{ 'label.nullable_field'|trans({}, 'EasyAdminBundle')}}
+                            <span class="nullable-control-text">{{ 'label.nullable_field'|trans({}, 'EasyAdminBundle')}}</span>
                         </label>
                     </div>
                 {% endif %}

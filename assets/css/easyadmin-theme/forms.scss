@@ -88,6 +88,11 @@ label.form-check-label {
     word-break: keep-all;
     transition: box-shadow .08s ease-in, color .08s ease-in;
 }
+.form-widget .form-select[multiple] {
+    height: auto;
+    background-image: none;
+    padding: 0;
+}
 .form-widget input.form-check-input {
     border: 1px solid var(--form-type-check-input-border-color);
     box-shadow: var(--form-type-check-input-box-shadow);

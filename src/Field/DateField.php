@@ -14,6 +14,7 @@ final class DateField implements FieldInterface
 
     public const OPTION_DATE_PATTERN = 'datePattern';
     public const OPTION_WIDGET = 'widget';
+    public const OPTION_NULLABLE = 'nullable';
 
     /**
      * @param string|false|null $label
@@ -30,7 +31,8 @@ final class DateField implements FieldInterface
             // the proper default values of these options are set on the Crud class
             ->setCustomOption(self::OPTION_DATE_PATTERN, null)
             ->setCustomOption(DateTimeField::OPTION_TIMEZONE, null)
-            ->setCustomOption(self::OPTION_WIDGET, DateTimeField::WIDGET_NATIVE);
+            ->setCustomOption(self::OPTION_WIDGET, DateTimeField::WIDGET_NATIVE)
+            ->setCustomOption(self::OPTION_NULLABLE, null);
     }
 
     /**
@@ -104,6 +106,16 @@ final class DateField implements FieldInterface
         } else {
             $this->setCustomOption(self::OPTION_WIDGET, DateTimeField::WIDGET_TEXT);
         }
+
+        return $this;
+    }
+
+    /**
+     * Sets if leave empty checkbox is present
+     */
+    public function nullable(bool $nullable = true): self
+    {
+        $this->setCustomOption(self::OPTION_NULLABLE, $nullable);
 
         return $this;
     }

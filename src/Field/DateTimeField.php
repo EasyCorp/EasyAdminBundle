@@ -45,6 +45,8 @@ final class DateTimeField implements FieldInterface
     public const OPTION_TIMEZONE = 'timezone';
     public const OPTION_WIDGET = 'widget';
 
+    public const OPTION_NULLABLE = 'nullable';
+
     /**
      * @param string|false|null $label
      */
@@ -61,7 +63,8 @@ final class DateTimeField implements FieldInterface
             ->setCustomOption(self::OPTION_DATE_PATTERN, null)
             ->setCustomOption(self::OPTION_TIME_PATTERN, null)
             ->setCustomOption(self::OPTION_TIMEZONE, null)
-            ->setCustomOption(self::OPTION_WIDGET, self::WIDGET_NATIVE);
+            ->setCustomOption(self::OPTION_WIDGET, self::WIDGET_NATIVE)
+            ->setCustomOption(self::OPTION_NULLABLE, null);
     }
 
     /**
@@ -155,6 +158,16 @@ final class DateTimeField implements FieldInterface
         } else {
             $this->setCustomOption(self::OPTION_WIDGET, self::WIDGET_TEXT);
         }
+
+        return $this;
+    }
+
+    /**
+     * Sets if leave empty checkbox is present
+     */
+    public function nullable(bool $nullable = true): self
+    {
+        $this->setCustomOption(self::OPTION_NULLABLE, $nullable);
 
         return $this;
     }

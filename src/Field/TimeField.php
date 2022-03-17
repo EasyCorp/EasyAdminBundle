@@ -14,6 +14,7 @@ final class TimeField implements FieldInterface
 
     public const OPTION_TIME_PATTERN = 'timePattern';
     public const OPTION_WIDGET = 'widget';
+    public const OPTION_NULLABLE = 'nullable';
 
     /**
      * @param string|false|null $label
@@ -102,6 +103,16 @@ final class TimeField implements FieldInterface
         } else {
             $this->setCustomOption(self::OPTION_WIDGET, DateTimeField::WIDGET_TEXT);
         }
+
+        return $this;
+    }
+
+    /**
+     * Sets if leave empty checkbox is present
+     */
+    public function nullable(bool $nullable = true): self
+    {
+        $this->setCustomOption(self::OPTION_NULLABLE, $nullable);
 
         return $this;
     }

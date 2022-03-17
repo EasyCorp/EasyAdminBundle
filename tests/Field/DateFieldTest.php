@@ -165,4 +165,19 @@ class DateFieldTest extends AbstractFieldTest
 
         $this->assertSame(DateTimeField::WIDGET_NATIVE, $fieldDto->getCustomOption(DateField::OPTION_WIDGET));
     }
+
+    public function testFieldNullable()
+    {
+        $field = DateField::new('foo');
+        $field->setFieldFqcn(DateField::class);
+        $field->nullable();
+        $fieldDto = $this->configure($field);
+
+        $this->assertSame(true, $fieldDto->getCustomOption(DateField::OPTION_NULLABLE));
+
+        $field->nullable(false);
+        $fieldDto = $this->configure($field);
+
+        $this->assertSame(false, $fieldDto->getCustomOption(DateField::OPTION_NULLABLE));
+    }
 }

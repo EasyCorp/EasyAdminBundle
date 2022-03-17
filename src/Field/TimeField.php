@@ -108,7 +108,7 @@ final class TimeField implements FieldInterface
     }
 
     /**
-     * Sets if leave empty checkbox is present
+     * Sets if leave empty checkbox is present.
      */
     public function nullable(bool $nullable = true): self
     {

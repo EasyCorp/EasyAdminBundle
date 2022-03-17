@@ -190,11 +190,11 @@ class DateTimeFieldTest extends AbstractFieldTest
         $field->nullable();
         $fieldDto = $this->configure($field);
 
-        $this->assertSame(true, $fieldDto->getCustomOption(DateTimeField::OPTION_NULLABLE));
+        $this->assertTrue($fieldDto->getCustomOption(DateTimeField::OPTION_NULLABLE));
 
         $field->nullable(false);
         $fieldDto = $this->configure($field);
 
-        $this->assertSame(false, $fieldDto->getCustomOption(DateTimeField::OPTION_NULLABLE));
+        $this->assertFalse($fieldDto->getCustomOption(DateTimeField::OPTION_NULLABLE));
     }
 }

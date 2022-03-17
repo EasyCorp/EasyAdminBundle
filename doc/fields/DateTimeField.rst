@@ -111,3 +111,12 @@ the valid `PHP timezone IDs`_)::
 .. _`DateTimeType`: https://symfony.com/doc/current/reference/forms/types/datetime.html
 .. _`ICU Datetime Pattern`: https://unicode-org.github.io/icu/userguide/format_parse/datetime/
 .. _`PHP timezone IDs`: https://www.php.net/manual/en/timezones.php
+
+nullable
+~~~~~~~~
+
+By default, in form pages (``edit`` and ``new``) the field with a null value is rendered hidden with a check box for leave empty.
+This option renders the field visible on null values and removes the leave empty checkbox::
+
+    yield DateTimeField::new('...')->nullable(true);
+

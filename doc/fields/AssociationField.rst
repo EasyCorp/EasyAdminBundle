@@ -85,11 +85,17 @@ reused everywhere else in the application::
 
 Using callables is more convenient when custom queries are complex and are
 already defined in the entity repository because they are reused in other parts
-of the application. When using a callable, the repository of the entity is
+of the application. When using a callable, the ``QueryBuilder`` is
 automatically injected by Symfony as the first argument::
 
     yield AssociationField::new('...')->setQueryBuilder(
-        fn (SomeRepository $repository) => $repository->findBySomeCriteria()
+        fn (QueryBuilder $queryBuilder) => $queryBuilder->addCriteria('...')
+    );
+
+Or if you prefer using the repository of the entity::
+
+    yield AssociationField::new('...')->setQueryBuilder(
+        fn (QueryBuilder $queryBuilder) => $queryBuilder->getEntityManager()->getRepository(Foo::class)->findBySomeCriteria();
     );
 
 .. _`TomSelect`: https://tom-select.js.org/

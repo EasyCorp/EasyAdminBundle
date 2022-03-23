@@ -28,12 +28,12 @@ return [
         'true' => 'Sí',
         'false' => 'No',
         'empty' => 'Buit',
-        'null' => 'Null',
+        'null' => 'Nul',
         'nullable_field' => 'Deixar buit',
         'object' => 'Objecte PHP',
         'inaccessible' => 'Inaccessible',
         'inaccessible.explanation' => 'Aquest camp no té un mètode "getter" o la propietat associada no és pública',
-        'form.empty_value' => 'Ningú',
+        'form.empty_value' => 'Cap',
     ],
 
     'field' => [
@@ -110,6 +110,15 @@ return [
         'anonymous' => 'Usuari anònim',
         'sign_out' => 'Tanca la sessió',
         'exit_impersonation' => 'Sortir de la suplantació',
+    ],
+
+    'settings' => [
+        'appearance' => [
+            'label' => 'Aspecte',
+            'light' => 'Clar',
+            'dark' => 'Fosc',
+            'auto' => 'Automàtic',
+        ],
     ],
 
     'login_page' => [

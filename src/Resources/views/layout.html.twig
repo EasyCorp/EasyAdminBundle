@@ -109,6 +109,29 @@
             </ul>
         {% endset %}
 
+        {% set appearance_menu_dropdown %}
+            <ul class="dropdown-menu dropdown-menu-end">
+                <li class="dropdown-appearance-label">
+                    <span>{{ 'settings.appearance.label'|trans(domain = 'EasyAdminBundle') }}</span>
+                </li>
+                <li>
+                    <a href="#" class="dropdown-item" data-ea-color-scheme="light">
+                        <i class="far fa-sun"></i> <span>{{ 'settings.appearance.light'|trans(domain = 'EasyAdminBundle') }}</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="dropdown-item" data-ea-color-scheme="dark">
+                        <i class="far fa-moon"></i> <span>{{ 'settings.appearance.dark'|trans(domain = 'EasyAdminBundle') }}</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="dropdown-item active" data-ea-color-scheme="auto">
+                        <i class="fas fa-desktop"></i> <span>{{ 'settings.appearance.auto'|trans(domain = 'EasyAdminBundle') }}</span>
+                    </a>
+                </li>
+            </ul>
+        {% endset %}
+
         <div class="wrapper">
             {% block wrapper %}
                 <div class="responsive-header">
@@ -117,7 +140,7 @@
                             <i class="fa fa-fw fa-bars"></i>
                         </button>
 
-                        <div id="responsive-header-logo" class="text-truncate">
+                        <div id="responsive-header-logo" class="text-truncate ms-auto">
                             {% block responsive_header_logo %}
                                 <a class="responsive-logo" title="{{ ea.dashboardTitle|striptags }}" href="{{ path(ea.dashboardRouteName) }}">
                                     {{ ea.dashboardTitle|raw }}
@@ -125,7 +148,7 @@
                             {% endblock responsive_header_logo %}
                         </div>
 
-                        <div class="dropdown user-menu-wrapper {{ is_granted(impersonator_permission) ? 'user-is-impersonated' }}">
+                        <div class="dropdown user-menu-wrapper {{ is_granted(impersonator_permission) ? 'user-is-impersonated' }} ms-auto">
                             <a class="user-details" type="button" data-bs-toggle="dropdown" data-bs-offset="0,5" aria-expanded="false">
                                 {# to make the site design consistent, always display the user avatar in responsive header
                                    and hide the user name (because there's no space left) regardless of the user config #}
@@ -137,6 +160,14 @@
                             </a>
 
                             {{ user_menu_dropdown }}
+                        </div>
+
+                        <div class="dropdown dropdown-appearance">
+                            <a class="dropdown-appearance-button" type="button" data-bs-toggle="dropdown" data-bs-offset="0,5" aria-expanded="false">
+                                <i class="fas fa-adjust"></i>
+                            </a>
+
+                            {{ appearance_menu_dropdown }}
                         </div>
                     {% endblock responsive_header %}
                 </div>
@@ -245,31 +276,14 @@
                                 {% endblock header_custom_menu %}
                             </div>
 
-                            <div class="dropdown dropdown-appearance">
-                                <a class="dropdown-appearance-button" type="button" data-bs-toggle="dropdown" data-bs-offset="0,5" aria-expanded="false">
-                                    <i class="fas fa-adjust"></i>
-                                </a>
+                            <div class="navbar-custom-menu">
+                                <div class="dropdown dropdown-appearance">
+                                    <a class="dropdown-appearance-button" type="button" data-bs-toggle="dropdown" data-bs-offset="0,5" aria-expanded="false">
+                                        <i class="fas fa-adjust"></i>
+                                    </a>
 
-                                <ul class="dropdown-menu dropdown-menu-end">
-                                    <li class="dropdown-appearance-label">
-                                        <span>{{ 'settings.appearance.label'|trans(domain = 'EasyAdminBundle') }}</span>
-                                    </li>
-                                    <li>
-                                        <a href="#" class="dropdown-item" data-ea-color-scheme="light">
-                                            <i class="far fa-sun"></i> <span>{{ 'settings.appearance.light'|trans(domain = 'EasyAdminBundle') }}</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#" class="dropdown-item" data-ea-color-scheme="dark">
-                                            <i class="far fa-moon"></i> <span>{{ 'settings.appearance.dark'|trans(domain = 'EasyAdminBundle') }}</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#" class="dropdown-item active" data-ea-color-scheme="auto">
-                                            <i class="fas fa-desktop"></i> <span>{{ 'settings.appearance.auto'|trans(domain = 'EasyAdminBundle') }}</span>
-                                        </a>
-                                    </li>
-                                </ul>
+                                    {{ appearance_menu_dropdown }}
+                                </div>
                             </div>
                         {% endblock content_top_header %}
                     </aside>

@@ -118,6 +118,7 @@ return [
             'dark' => 'Întunecat',
             'auto' => 'Automat',
         ],
+        'locale' => 'Limba',
     ],
 
     'login_page' => [

@@ -98,6 +98,13 @@ final class Dashboard
         return $this;
     }
 
+    public function setLocales(array $locales): self
+    {
+        $this->dto->setLocales($locales);
+
+        return $this;
+    }
+
     public function getAsDto(): DashboardDto
     {
         return $this->dto;

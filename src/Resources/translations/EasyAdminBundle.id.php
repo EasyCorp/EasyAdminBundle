@@ -118,6 +118,7 @@ return [
             'dark' => 'Gelap',
             'auto' => 'Otomatis',
         ],
+        'locale' => 'Bahasa',
     ],
 
     'login_page' => [

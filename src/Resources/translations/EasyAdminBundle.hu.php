@@ -118,6 +118,7 @@ return [
             'dark' => 'Sötét',
             'auto' => 'Automatikus',
         ],
+        'locale' => 'Nyelv',
     ],
 
     'login_page' => [

@@ -6,11 +6,11 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\CrudMenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\DashboardMenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\ExitImpersonationMenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\LogoutMenuItem;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\ModalMenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\RouteMenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\SectionMenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\SubMenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\UrlMenuItem;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\ModalMenuItem;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>

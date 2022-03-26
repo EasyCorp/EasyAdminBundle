@@ -95,12 +95,21 @@
                                 {% if item.isMenuSection and not loop.first %}
                                     <hr class="dropdown-divider">
                                 {% elseif not item.isMenuSection %}
-                                    <a href="{{ item.linkUrl }}" class="dropdown-item user-action {{ item.cssClass }}"
-                                       target="{{ item.linkTarget }}" rel="{{ item.linkRel }}"
-                                       referrerpolicy="origin-when-cross-origin">
-                                        {% if item.icon is not empty %}<i class="fa fa-fw {{ item.icon }}"></i>{% endif %}
-                                        <span>{{ item.label }}</span>
-                                    </a>
+                                    {% if item.type == constant('EasyCorp\\Bundle\\EasyAdminBundle\\Dto\\MenuItemDto::TYPE_MODAL') %}
+                                        <a data-bs-toggle="modal" data-bs-target="{{ item.linkModal }}" href="#" class="dropdown-item user-action {{ item.cssClass }}" 
+                                            target="{{ item.linkTarget }}" rel="{{ item.linkRel }}" 
+                                            referrerpolicy="origin-when-cross-origin">
+                                            {% if item.icon is not empty %}<i class="fa fa-fw {{ item.icon }}"></i>{% endif %}
+                                            <span>{{ item.label }}</span>
+                                        </a>
+                                    {% else %}
+                                        <a href="{{ item.linkUrl }}" class="dropdown-item user-action {{ item.cssClass }}"
+                                        target="{{ item.linkTarget }}" rel="{{ item.linkRel }}"
+                                        referrerpolicy="origin-when-cross-origin">
+                                            {% if item.icon is not empty %}<i class="fa fa-fw {{ item.icon }}"></i>{% endif %}
+                                            <span>{{ item.label }}</span>
+                                        </a>
+                                    {% endif %}
                                 {% endif %}
                             </li>
                         {% endfor %}

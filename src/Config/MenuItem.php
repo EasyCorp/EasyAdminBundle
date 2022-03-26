@@ -10,6 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\RouteMenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\SectionMenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\SubMenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\UrlMenuItem;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\ModalMenuItem;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -66,6 +67,14 @@ final class MenuItem
     public static function linkToUrl(string $label, ?string $icon, string $url): UrlMenuItem
     {
         return new UrlMenuItem($label, $icon, $url);
+    }
+
+    /**
+     * @param string|null $icon The full CSS classes of the FontAwesome icon to render (see https://fontawesome.com/v5.15/icons?d=gallery&p=2&m=free)
+     */
+    public static function linkToModal(string $label, ?string $icon, string $tag): ModalMenuItem
+    {
+        return new ModalMenuItem($label, $icon, $tag);
     }
 
     /**

@@ -250,6 +250,11 @@ explained later)::
                 // to be displayed as a narrow column instead of the default expanded design
                 ->renderSidebarMinimized()
 
+                // by default, users can select between a "light" and "dark" mode for the
+                // backend interface. Call this method if you prefer to disable the "dark"
+                // mode for any reason (e.g. if your interface customizations are not ready for it)
+                ->disableDarkMode()
+
                 // by default, all backend URLs include a signature hash. If a user changes any
                 // query parameter (to "hack" the backend) the signature won't match and EasyAdmin
                 // triggers an error. If this causes any issue in your backend, call this method

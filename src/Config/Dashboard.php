@@ -84,6 +84,13 @@ final class Dashboard
         return $this;
     }
 
+    public function disableDarkMode(bool $disableDarkMode = true): self
+    {
+        $this->dto->setEnableDarkMode(!$disableDarkMode);
+
+        return $this;
+    }
+
     public function getAsDto(): DashboardDto
     {
         return $this->dto;

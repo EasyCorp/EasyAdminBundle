@@ -49,7 +49,13 @@
 </head>
 
 {% block body %}
-    <body id="{% block body_id %}{% endblock %}" class="ea {% block body_class %}{% endblock %}" data-ea-content-width="{{ ea.crud.contentWidth ?? ea.dashboardContentWidth ?? 'normal' }}" data-ea-sidebar-width="{{ ea.crud.sidebarWidth ?? ea.dashboardSidebarWidth ?? 'normal' }}">
+    <body
+        id="{% block body_id %}{% endblock %}"
+        class="ea {% block body_class %}{% endblock %}"
+        data-ea-content-width="{{ ea.crud.contentWidth ?? ea.dashboardContentWidth ?? 'normal' }}"
+        data-ea-sidebar-width="{{ ea.crud.sidebarWidth ?? ea.dashboardSidebarWidth ?? 'normal' }}"
+        data-ea-dark-scheme-is-enabled="{{ ea.dashboardHasDarkModeEnabled ? 'true' : 'false' }}"
+    >
     {% block javascript_page_layout %}
         <script src="{{ asset('bundles/easyadmin/page-layout.js') }}"></script>
     {% endblock javascript_page_layout %}
@@ -245,32 +251,34 @@
                                 {% endblock header_custom_menu %}
                             </div>
 
-                            <div class="dropdown dropdown-appearance">
-                                <a class="dropdown-appearance-button" type="button" data-bs-toggle="dropdown" data-bs-offset="0,5" aria-expanded="false">
-                                    <i class="fas fa-adjust"></i>
-                                </a>
+                            {% if ea.dashboardHasDarkModeEnabled %}
+                                <div class="dropdown dropdown-appearance">
+                                    <a class="dropdown-appearance-button" type="button" data-bs-toggle="dropdown" data-bs-offset="0,5" aria-expanded="false">
+                                        <i class="fas fa-adjust"></i>
+                                    </a>
 
-                                <ul class="dropdown-menu dropdown-menu-end">
-                                    <li class="dropdown-appearance-label">
-                                        <span>{{ 'settings.appearance.label'|trans(domain = 'EasyAdminBundle') }}</span>
-                                    </li>
-                                    <li>
-                                        <a href="#" class="dropdown-item" data-ea-color-scheme="light">
-                                            <i class="far fa-sun"></i> <span>{{ 'settings.appearance.light'|trans(domain = 'EasyAdminBundle') }}</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#" class="dropdown-item" data-ea-color-scheme="dark">
-                                            <i class="far fa-moon"></i> <span>{{ 'settings.appearance.dark'|trans(domain = 'EasyAdminBundle') }}</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#" class="dropdown-item active" data-ea-color-scheme="auto">
-                                            <i class="fas fa-desktop"></i> <span>{{ 'settings.appearance.auto'|trans(domain = 'EasyAdminBundle') }}</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li class="dropdown-appearance-label">
+                                            <span>{{ 'settings.appearance.label'|trans(domain = 'EasyAdminBundle') }}</span>
+                                        </li>
+                                        <li>
+                                            <a href="#" class="dropdown-item" data-ea-color-scheme="light">
+                                                <i class="far fa-sun"></i> <span>{{ 'settings.appearance.light'|trans(domain = 'EasyAdminBundle') }}</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#" class="dropdown-item" data-ea-color-scheme="dark">
+                                                <i class="far fa-moon"></i> <span>{{ 'settings.appearance.dark'|trans(domain = 'EasyAdminBundle') }}</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#" class="dropdown-item active" data-ea-color-scheme="auto">
+                                                <i class="fas fa-desktop"></i> <span>{{ 'settings.appearance.auto'|trans(domain = 'EasyAdminBundle') }}</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            {% endif %}
                         {% endblock content_top_header %}
                     </aside>
 

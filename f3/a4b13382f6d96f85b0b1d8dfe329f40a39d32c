@@ -1,0 +1,33 @@
+---------------------------------------------------------------------------
+
+by parijke at 2022-03-25T10:08:45Z
+
+Altough I don't use turbo and stilumus (would love to see how this is benefittig you btw) I would opt for a solution to make it selectable.
+Something like a ea.yaml or so
+```
+easyadmin:
+     turbo: false
+```
+
+---------------------------------------------------------------------------
+
+by Lustmored at 2022-03-25T10:17:57Z
+
+> Altough I don't use turbo and stilumus (would love to see how this is benefittig you btw) I would opt for a solution to make it selectable. Something like a ea.yaml or so
+>
+> ```
+> easyadmin:
+>      turbo: false
+> ```
+
+Stimulus organizes my JS code in a very nice fashion and is simply my framework of choice :smiley: it has benefits, it has drawbacks - just a choice you can make. Symfony UX initiative is built around it (one of the benefits for me) therefore we can expect it's usage within Symfony consumers to grow.
+
+I don't think configuration option would be beneficial as it'd suggest that EasyAdmin is working well with Turbo enabled. It could lead to confusion as currently parts of EA are simply non-functional with Turbo enabled - parts of JavaScript code are not ran leading parts of front-end to be non-functional on any view caused by Turbo, not page load.
+
+But I could easily add this as a config option - probably to dashboard configuration - if desired. I just don't think it is a good idea :)
+
+---------------------------------------------------------------------------
+
+by parijke at 2022-03-25T10:23:21Z
+
+I see your point. It depends on what EA will do with it in the (near) future. We let Javier decide

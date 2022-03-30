@@ -18,6 +18,7 @@ use function Symfony\Component\String\u;
  */
 class MakeAdminDashboardCommand extends Command
 {
+    static string $defaultName = 'make:admin:dashboard';
     private ClassMaker $classMaker;
     private string $projectDir;
 
@@ -31,7 +32,7 @@ class MakeAdminDashboardCommand extends Command
     protected function configure()
     {
         $this
-            ->setDescription(Command::$defaultDescription)
+            ->setDescription('Creates a new EasyAdmin Dashboard class')
             ->setHelp($this->getCommandHelp())
         ;
     }

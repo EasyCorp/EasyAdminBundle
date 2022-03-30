@@ -18,7 +18,6 @@ use function Symfony\Component\String\u;
  */
 class MakeAdminDashboardCommand extends Command
 {
-    static string $defaultName = 'make:admin:dashboard';
     private ClassMaker $classMaker;
     private string $projectDir;
 

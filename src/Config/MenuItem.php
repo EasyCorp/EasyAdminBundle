@@ -72,9 +72,9 @@ final class MenuItem
     /**
      * @param string|null $icon The full CSS classes of the FontAwesome icon to render (see https://fontawesome.com/v5.15/icons?d=gallery&p=2&m=free)
      */
-    public static function linkToModal(string $label, ?string $icon, string $tag): ModalMenuItem
+    public static function linkToModal(string $label, ?string $icon, string $tag, string $templatePath): ModalMenuItem
     {
-        return new ModalMenuItem($label, $icon, $tag);
+        return new ModalMenuItem($label, $icon, $tag, $templatePath);
     }
 
     /**

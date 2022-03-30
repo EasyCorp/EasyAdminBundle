@@ -14,7 +14,7 @@ final class ModalMenuItem implements MenuItemInterface
 {
     use MenuItemTrait;
 
-    public function __construct(string $label, ?string $icon, string $tag)
+    public function __construct(string $label, ?string $icon, string $tag, string $templatePath)
     {
         $this->dto = new MenuItemDto();
 
@@ -22,5 +22,6 @@ final class ModalMenuItem implements MenuItemInterface
         $this->dto->setLabel($label);
         $this->dto->setIcon($icon);
         $this->dto->setLinkModal($tag);
+        $this->dto->setTemplatePathModal($templatePath);
     }
 }

@@ -28,6 +28,7 @@ final class MenuItemDto
     private ?array $routeParameters = null;
     private ?string $linkUrl = null;
     private ?string $linkModal = null;
+    private string $templatePathModal = '';
     private string $linkRel = '';
     private string $linkTarget = '_self';
     private array $translationParameters = [];
@@ -103,6 +104,16 @@ final class MenuItemDto
     public function setLinkModal(?string $linkModal): void
     {
         $this->linkModal = $linkModal;
+    }
+
+    public function getTemplatePathModal(): ?string
+    {
+        return $this->templatePathModal;
+    }
+
+    public function setTemplatePathModal(?string $templatePathModal): void
+    {
+        $this->templatePathModal = $templatePathModal;
     }
 
     public function getRouteName(): ?string

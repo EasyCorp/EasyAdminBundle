@@ -18,8 +18,6 @@ use function Symfony\Component\String\u;
  */
 class MakeCrudControllerCommand extends Command
 {
-    protected static $defaultName = 'make:admin:crud';
-    protected static $defaultDescription = 'Creates a new EasyAdmin CRUD controller class';
     private string $projectDir;
     private ClassMaker $classMaker;
     private ManagerRegistry $doctrine;
@@ -35,7 +33,7 @@ class MakeCrudControllerCommand extends Command
     protected function configure()
     {
         $this
-            ->setDescription(self::$defaultDescription)
+            ->setDescription(Command::$defaultDescription)
             ->setHelp($this->getCommandHelp())
         ;
     }

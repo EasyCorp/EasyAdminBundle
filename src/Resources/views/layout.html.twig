@@ -110,7 +110,7 @@
         {% endset %}
 
         {% set appearance_menu_dropdown %}
-            <ul class="dropdown-menu dropdown-menu-end">
+            <ul class="dropdown-menu dropdown-menu-end dropdown-appearance-menu">
                 <li class="dropdown-appearance-label">
                     <span>{{ 'settings.appearance.label'|trans(domain = 'EasyAdminBundle') }}</span>
                 </li>
@@ -347,4 +347,35 @@
     {% endblock %}
     </body>
 {% endblock body %}
+
+    <script>
+        function updateDropdownItems()
+        {
+            var dropdownItems = document.querySelectorAll('.dropdown-appearance-menu li a');
+            dropdownItems.forEach(dropdownItem => {    
+                // Get selected dropdown item
+                if (dropdownItem.className == "dropdown-item active")
+                {
+                    // Update
+                    var dropdownItemsToUpdate = document.querySelectorAll('[data-ea-color-scheme="' + dropdownItem.dataset.eaColorScheme + '"]');
+                    dropdownItemsToUpdate.forEach(dropdownItemToUpdate => {
+                        dropdownItemToUpdate.classList.add("active");
+                    });
+                }
+            })  
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Get all dropdown appearance menus
+            const appearanceDropdownMenus = document.querySelectorAll('.dropdown-appearance-button');
+            appearanceDropdownMenus.forEach(appareanceDropdownMenu => {
+                // Attach hide event on this dropdown menu
+                appareanceDropdownMenu.addEventListener('hide.bs.dropdown', function (event) {
+                    updateDropdownItems();  
+                })
+            });
+
+            updateDropdownItems();
+        });
+    </script>
 </html>

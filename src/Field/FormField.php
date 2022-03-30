@@ -32,7 +32,7 @@ final class FormField implements FieldInterface
 
     /**
      * @param string|false|null $label
-     * @param string|null       $icon  The full CSS classes of the FontAwesome icon to render (see https://fontawesome.com/v5.15/icons?d=gallery&p=2&m=free)
+     * @param string|null       $icon  The full CSS classes of the FontAwesome icon to render (see https://fontawesome.com/v6/search?m=free)
      */
     public static function addPanel($label = false, ?string $icon = null): self
     {

@@ -914,7 +914,7 @@ etc. Example:
 .. _`Symfony controllers`: https://symfony.com/doc/current/controller.html
 .. _`Symfony route annotations`: https://symfony.com/doc/current/routing.html#creating-routes-as-annotations
 .. _`context object`: https://wiki.c2.com/?ContextObject
-.. _`FontAwesome`: https://fontawesome.com/v5.15/icons?d=gallery&p=2&m=free
+.. _`FontAwesome`: https://fontawesome.com/v6/search?m=free
 .. _`allowed values for the "rel" attribute`: https://developer.mozilla.org/en-US/docs/Web/HTML/Link_types
 .. _`Symfony security permission`: https://symfony.com/doc/current/security.html#roles
 .. _`logout feature`: https://symfony.com/doc/current/security.html#logging-out

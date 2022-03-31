@@ -16,22 +16,31 @@ use function Symfony\Component\String\u;
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
+
+#[AsCommand(
+    name: 'app:make:admin:dashboard',
+    description: 'Creates a new EasyAdmin  Dashboard class',
+    hidden: false,
+    aliases: ['app:make:admin:dashboard']
+)]
 class MakeAdminDashboardCommand extends Command
 {
     private ClassMaker $classMaker;
     private string $projectDir;
+    private $description;
 
-    public function __construct(ClassMaker $classMaker, string $projectDir, string $name = null)
+    public function __construct(ClassMaker $classMaker, string $projectDir, string $name = null, string $description)
     {
         parent::__construct($name);
         $this->classMaker = $classMaker;
         $this->projectDir = $projectDir;
+        $this->description = parent::getDefaultDescription;
     }
 
     protected function configure()
     {
         $this
-            ->setDescription('Creates a new EasyAdmin Dashboard class')
+            ->setDescription($this->description)
             ->setHelp($this->getCommandHelp())
         ;
     }

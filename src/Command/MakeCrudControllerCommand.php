@@ -38,7 +38,7 @@ class MakeCrudControllerCommand extends Command
         $this->projectDir = $projectDir;
         $this->classMaker = $classMaker;
         $this->doctrine = $doctrine;
-        $this->description = parent::getDefaultDescription;
+        $this->description = Command::getDefaultDescription;
     }
 
     protected function configure()

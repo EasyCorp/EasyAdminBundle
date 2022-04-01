@@ -1,0 +1,13 @@
+---------------------------------------------------------------------------
+
+by jmsche at 2022-03-29T18:52:43Z
+
+Just wondering: would it make sense to also allow to disable light mode? (So forcing dark mode)
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2022-04-01T18:40:27Z
+
+@jmsche I'd prefer to not add that option (at least for now). The reason is that "light mode" is the only complete color scheme. Everything works in light mode and only dark mode can have issues with some elements.
+
+If a company wants to force dark mode today ... disable it using this option and then force it for all users by adding the `ea-dark-scheme` CSS class to the `<body>` of the layout template.

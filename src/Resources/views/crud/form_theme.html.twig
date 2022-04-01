@@ -109,7 +109,6 @@
                             <input type="checkbox" {% if ea.crud.currentAction == 'edit' and data is null and valid %}checked="checked"{% endif %}>
                             <span class="nullable-control-text">{{ 'label.nullable_field'|trans({}, 'EasyAdminBundle')}}</span>
                         </label>
-                        {{ dump(form.vars.ea_crud_form.ea_field) }}
                     </div>
                 {% endif %}
 

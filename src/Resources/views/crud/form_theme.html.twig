@@ -457,6 +457,34 @@
                         </div>
                     {% endfor %}
                 </div>
+                <script>
+                    // Enable tab by given anchor
+                    const anchor = window.location.hash;
+                    if (anchor) {
+                        const tabElement = document.querySelector(`a[href="${anchor}"]`);
+                        if (tabElement) {
+                            const tab = new bootstrap.Tab(tabElement)
+                            tab.show()
+                        }
+                    }
+
+                    // Register popstate event listener
+                    window.addEventListener('popstate', function(event) {
+                        location.reload();
+                    })
+
+                    // Update anchor on tab change
+                    const tabElements = document.querySelectorAll('a[data-bs-toggle="tab"]');
+                    for (let i in tabElements) {
+                        let tabElement = tabElements[i];
+                        if (typeof tabElement === 'object') {
+                            tabElement.addEventListener('shown.bs.tab', function (event) {
+                                let id = '#' + event.target.id.substring(0, event.target.id.length - 4);
+                                history.pushState({}, '', id);
+                            });
+                        }
+                    }
+                </script>
             </div>
         </div>
     {% else %}

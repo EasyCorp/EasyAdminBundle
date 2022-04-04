@@ -1,0 +1,96 @@
+---------------------------------------------------------------------------
+
+by fdiedler at 2022-03-18T11:34:32Z
+
+@michaelKaefer I was confronted now to this problem and your fix works as you can see on the screenshot :)
+
+![ea_screen](https://user-images.githubusercontent.com/42271872/158995982-4a515017-28dc-4456-903e-f69781dfb148.png)
+
+Hope it will be merged soon
+
+---------------------------------------------------------------------------
+
+by fdiedler at 2022-03-18T11:56:47Z
+
+@michaelKaefer However, if I need some Javascript, it does not work because the twig block is escaped (html + JS) in the "data-prototype" used when we click on "Add a new item"
+ ```
+&lt;script&gt;
+       document.addEventListener(&#039;DOMContentLoaded&#039;, function() {
+            console.log(&quot;ici&quot;);
+        });
+    &lt;/script&gt;
+```
+
+Have you an idea how to use Javascript ?
+
+---------------------------------------------------------------------------
+
+by michaelKaefer at 2022-03-18T20:54:29Z
+
+@fdiedler Where does the JS come from? Can you move it to your assets/ directory and load it like any other JS in a typical Symfony project?
+
+---------------------------------------------------------------------------
+
+by fdiedler at 2022-03-19T09:59:52Z
+
+@michaelKaefer The JS code comes from the overwriting twig view of the custom widget `{% block property_kitchen_widget  %}` that contains the 'data-prototype' of each newly added items in the collection.
+
+I put the JS code here because I would like to be able to display a select field only if a checkbox is checked. And this behaviour should be the same for each new item added by the button "Add new item".
+
+However it does not work because JS code (and HTML code) are escaped so the JS code never executed when I pressed the "Add new item" button. I tried `{% autoescape false %}` but with no success.
+
+After inspecting the html DOM with my browser, I found that the html + JS code are injected into the "data-prototype" html attribut...
+
+I can move the JS code elsewhere but I will need lots of hacks to find the name of fields because I am managing a collection and fields are dynamically added without refreshing the page. So I cannot use Ajax functions like `$('#mySelectField').change(...)`
+
+---------------------------------------------------------------------------
+
+by michaelKaefer at 2022-03-19T10:08:41Z
+
+I do it like this:
+
+```js
+...
+const addEntryButton = document.querySelector('.js-shopping-list-entries .field-collection-add-button');
+
+addEntryButton.addEventListener('click', () => { setTimeout(() => { initEntries(); }, 10);
+```
+
+But I think there are better ways also..
+
+---------------------------------------------------------------------------
+
+by fdiedler at 2022-03-19T10:33:31Z
+
+@michaelKaefer Yes great hack but I really don't like the `setTimeout` function. Note that you cannot put this code inside the twig block of the overwrite widget. You need to put it elsewhere in assets for example. Thanks for the tip
+
+---------------------------------------------------------------------------
+
+by michaelKaefer at 2022-03-19T12:14:07Z
+
+The implementation is bad with setTimeout, I agree. But there must be better ways, I am sure, I just didn't do it. - My point is that I would place all JS always in assets/ and never in a Twig template as inline style. And I'm quite sure that this is always possible.
+
+---------------------------------------------------------------------------
+
+by fdiedler at 2022-03-21T13:21:05Z
+
+@michaelKaefer Yes, I found a solution by putting all JS code outside the twig template. Thanks.
+Do you know if your commit will be merged soon ? Because I need it in order to have my collections working.
+
+---------------------------------------------------------------------------
+
+by michaelKaefer at 2022-03-22T18:21:36Z
+
+@fdiedler No, I'm sorry, I don't know when and if it gets merged.
+
+---------------------------------------------------------------------------
+
+by fdiedler at 2022-03-23T09:44:40Z
+
+@michaelKaefer Arf :( Is there a way to make a workaround ? Because I cannot edit vendor's files on my production server.
+
+---------------------------------------------------------------------------
+
+by michaelKaefer at 2022-03-23T16:59:41Z
+
+@fdiedler In the original issue @Ang3 described a workaround, maybe this works for you.

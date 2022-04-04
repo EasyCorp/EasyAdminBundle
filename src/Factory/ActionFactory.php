@@ -181,8 +181,11 @@ final class ActionFactory
             EA::CRUD_CONTROLLER_FQCN => $request->query->get(EA::CRUD_CONTROLLER_FQCN),
             EA::CRUD_ACTION => $actionDto->getCrudActionName(),
             EA::REFERRER => $this->generateReferrerUrl($request, $actionDto, $currentAction),
-            ...$routeParameters,
         ];
+
+        if (\is_array($routeParameters)) {
+            $requestParameters += $routeParameters;
+        }
 
         if (\in_array($actionDto->getName(), [Action::INDEX, Action::NEW, Action::SAVE_AND_ADD_ANOTHER, Action::SAVE_AND_RETURN], true)) {
             $requestParameters[EA::ENTITY_ID] = null;

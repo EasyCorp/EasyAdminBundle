@@ -188,7 +188,7 @@
     {% endif %}
 {% endblock collection_widget %}
 
-{% block collection_entry_widget %}
+{% block collection_entry_row %}
     {% set is_array_field = 'EasyCorp\\Bundle\\EasyAdminBundle\\Field\\ArrayField' == form_parent(form).vars.ea_crud_form.ea_field.fieldFqcn ?? false %}
     {% set is_complex = form_parent(form).vars.ea_crud_form.ea_field.customOptions.get('entryIsComplex') ?? false %}
     {% set allows_deleting_items = form_parent(form).vars.allow_delete|default(false) %}
@@ -226,7 +226,7 @@
             </div>
         {% endif %}
     </div>
-{% endblock collection_entry_widget %}
+{% endblock collection_entry_row %}
 
 {% block form_widget_compound %}
     <div class="form-widget-compound">

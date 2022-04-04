@@ -39,13 +39,13 @@ rules:
     no_app_bundle: ~
 
     versionadded_directive_major_version:
-        major_version: 3
+        major_version: 4
 
     versionadded_directive_min_version:
-        min_version: '3.0'
+        min_version: '4.0'
 
     deprecated_directive_major_version:
-        major_version: 3
+        major_version: 4
 
     deprecated_directive_min_version:
-        min_version: '3.0'
+        min_version: '4.0'

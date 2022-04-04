@@ -508,12 +508,6 @@ associated to the given template name:
 Generating Admin URLs
 ---------------------
 
-.. versionadded:: 3.2
-
-    The ``AdminUrlGenerator`` class was introduced in EasyAdmin 3.2.0. In earlier
-    versions, you had to use the ``CrudUrlGenerator`` class and call the
-    ``build()`` method to start building a URL.
-
 :ref:`As explained <dashboard-route>` in the article about Dashboards, all URLs
 of a given dashboard use the same route and they only differ in the query string
 parameters. Instead of having to deal with that, you can use the ``AdminUrlGenerator``

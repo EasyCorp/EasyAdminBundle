@@ -30,15 +30,13 @@ class MakeCrudControllerCommand extends Command
     private string $projectDir;
     private ClassMaker $classMaker;
     private ManagerRegistry $doctrine;
-    private $description;
 
-    public function __construct(string $projectDir, ClassMaker $classMaker, ManagerRegistry $doctrine, string $name = null, string $description)
+    public function __construct(string $projectDir, ClassMaker $classMaker, ManagerRegistry $doctrine, string $name = null)
     {
         parent::__construct($name);
         $this->projectDir = $projectDir;
         $this->classMaker = $classMaker;
         $this->doctrine = $doctrine;
-        $this->description = Command::getDefaultDescription;
     }
 
     protected function configure()

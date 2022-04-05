@@ -21,8 +21,6 @@ use function Symfony\Component\String\u;
 #[AsCommand(
     name: 'app:make:admin:crud',
     description: 'Creates a new EasyAdmin CRUD controller class',
-    hidden: false,
-    aliases: ['app:make:admin:crud']
 )]
 class MakeCrudControllerCommand extends Command
 {
@@ -42,7 +40,6 @@ class MakeCrudControllerCommand extends Command
     protected function configure()
     {
         $this
-            ->setDescription($this->description)
             ->setHelp($this->getCommandHelp())
         ;
     }

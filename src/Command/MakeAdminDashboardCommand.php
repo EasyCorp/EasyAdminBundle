@@ -21,9 +21,7 @@ use function Symfony\Component\String\u;
 
 #[AsCommand(
     name: 'app:make:admin:dashboard',
-    description: 'Creates a new EasyAdmin  Dashboard class',
-    hidden: false,
-    aliases: ['app:make:admin:dashboard']
+    description: 'Creates a new EasyAdmin Dashboard class',
 )]
 class MakeAdminDashboardCommand extends Command
 {
@@ -40,7 +38,6 @@ class MakeAdminDashboardCommand extends Command
     protected function configure()
     {
         $this
-            ->setDescription($this->description)
             ->setHelp($this->getCommandHelp())
         ;
     }

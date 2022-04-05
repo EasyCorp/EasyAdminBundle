@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Command;
 
 use EasyCorp\Bundle\EasyAdminBundle\Maker\ClassMaker;
 use Symfony\Component\Console\Command\Command;
+
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -35,7 +36,6 @@ class MakeAdminDashboardCommand extends Command
         parent::__construct($name);
         $this->classMaker = $classMaker;
         $this->projectDir = $projectDir;
-        $this->description = Command::getDefaultDescription;
     }
 
     protected function configure()

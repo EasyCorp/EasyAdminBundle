@@ -23,7 +23,6 @@ use function Symfony\Component\String\u;
 )]
 class MakeCrudControllerCommand extends Command
 {
-
     private string $projectDir;
     private ClassMaker $classMaker;
     private ManagerRegistry $doctrine;

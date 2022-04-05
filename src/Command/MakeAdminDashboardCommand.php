@@ -18,7 +18,7 @@ use function Symfony\Component\String\u;
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
 #[AsCommand(
-    name: 'app:make:admin:dashboard',
+    name: 'make:admin:dashboard',
     description: 'Creates a new EasyAdmin Dashboard class',
 )]
 class MakeAdminDashboardCommand extends Command

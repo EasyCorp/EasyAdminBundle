@@ -18,7 +18,7 @@ use function Symfony\Component\String\u;
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
 #[AsCommand(
-    name: 'app:make:admin:crud',
+    name: 'make:admin:crud',
     description: 'Creates a new EasyAdmin CRUD controller class',
 )]
 class MakeCrudControllerCommand extends Command

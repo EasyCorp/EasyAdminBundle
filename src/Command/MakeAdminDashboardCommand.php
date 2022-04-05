@@ -3,9 +3,8 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Command;
 
 use EasyCorp\Bundle\EasyAdminBundle\Maker\ClassMaker;
-use Symfony\Component\Console\Command\Command;
-
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -18,7 +17,6 @@ use function Symfony\Component\String\u;
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-
 #[AsCommand(
     name: 'app:make:admin:dashboard',
     description: 'Creates a new EasyAdmin Dashboard class',
@@ -28,8 +26,9 @@ class MakeAdminDashboardCommand extends Command
     private ClassMaker $classMaker;
     private string $projectDir;
 
-    public function __construct(ClassMaker $classMaker, string $projectDir)
+    public function __construct(ClassMaker $classMaker, string $projectDir, string $name = null)
     {
+        parent::__construct($name);
         $this->classMaker = $classMaker;
         $this->projectDir = $projectDir;
     }

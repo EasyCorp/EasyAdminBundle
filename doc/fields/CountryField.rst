@@ -47,7 +47,7 @@ showFlag
 
 By default, the country flag is displayed both in read-only pages (``index`` and
 ``detail``) and in the selector used in form pages. Use this option if you want
-to hide the flag:
+to hide the flag::
 
     yield CountryField::new('...')->showFlag(false);
 
@@ -56,7 +56,7 @@ showName
 
 By default, the country name is displayed both in read-only pages (``index`` and
 ``detail``) and in the selector used in form pages. Use this option if you want
-to hide the name:
+to hide the name::
 
     yield CountryField::new('...')->showName(false);
 

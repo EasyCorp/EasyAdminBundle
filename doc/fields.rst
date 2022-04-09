@@ -138,8 +138,43 @@ conversion between field names and methods must comply with the rules of the
         ];
     }
 
-The main limitation of unmapped fields is that they are not sortable because
-they cannot be included in the Doctrine query.
+Beware that unmapped fields are **not sortable** because they don't exist as a
+database table column, so they cannot be included in the Doctrine query. In some
+cases, you can overcome this limitation yourself by computing the unmapped field
+contents using SQL. To do so, override the ``createIndexQueryBuilder()`` method
+used in your :doc:`CRUD controller </crud>`::
+
+    namespace App\Controller\Admin;
+
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+    use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+
+    class UserCrudController extends AbstractCrudController
+    {
+        // ...
+
+        public function configureFields(string $pageName): iterable
+        {
+            return [
+                TextField::new('fullName'),
+                // ...
+            ];
+        }
+
+        public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
+        {
+            $queryBuilder = parent::createIndexQueryBuilder($searchDto, $entityDto, $fields, $filters);
+
+            // if user defined sort is not set
+            if (0 === count($searchDto->getSort())) {
+                $queryBuilder
+                    ->addSelect('CONCAT(entity.first_name, \' \', entity.last_name) AS HIDDEN full_name')
+                    ->addOrderBy('full_name', 'DESC');
+            }
+
+            return $queryBuilder;
+        }
+    }
 
 Displaying Different Fields per Page
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -3,7 +3,7 @@
 {# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
 {% if field.customOptions.get('showFlag') %}
     {% if field.customOption('flagCode') is not null %}
-        <img class="country-flag" alt="{{ field.formattedValue }}" src="{{ asset('bundles/easyadmin/images/flags/' ~ field.customOption('flagCode') ~ '.png') }}">
+        <img class="country-flag" alt="{{ field.formattedValue }}" src="{{ asset('bundles/easyadmin/images/flags/' ~ field.customOption('flagCode') ~ '.svg') }}">
     {% endif %}
 {% endif %}
 {% if field.customOptions.get('showName') %}

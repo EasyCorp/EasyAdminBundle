@@ -169,7 +169,9 @@
 
 // Country field
 .field-country .country-flag {
-  margin-right: 2px;
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px var(--field-country-flag-border-color);
+  margin-right: 6px;
   max-height: 18px;
   vertical-align: text-top;
 }

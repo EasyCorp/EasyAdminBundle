@@ -6,6 +6,7 @@
     "basiclightbox": "^5.0.4",
     "bootstrap": "^5.1.0",
     "codemirror": "^5.47.0",
+    "country-flag-icons": "^1.4.25",
     "dirty-form": "^0.4.0",
     "file-loader": "^6.0.0",
     "mark.js": "^8.11.1",

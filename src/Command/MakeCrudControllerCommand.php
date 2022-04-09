@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Command;
 
 use Doctrine\Persistence\ManagerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Maker\ClassMaker;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -16,10 +17,12 @@ use function Symfony\Component\String\u;
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
+#[AsCommand(
+    name: 'make:admin:crud',
+    description: 'Creates a new EasyAdmin CRUD controller class',
+)]
 class MakeCrudControllerCommand extends Command
 {
-    protected static $defaultName = 'make:admin:crud';
-    protected static $defaultDescription = 'Creates a new EasyAdmin CRUD controller class';
     private string $projectDir;
     private ClassMaker $classMaker;
     private ManagerRegistry $doctrine;
@@ -35,7 +38,6 @@ class MakeCrudControllerCommand extends Command
     protected function configure()
     {
         $this
-            ->setDescription(self::$defaultDescription)
             ->setHelp($this->getCommandHelp())
         ;
     }
@@ -120,6 +122,6 @@ location and namespace of the generated class.
 This command never changes or overwrites an existing class, so you can run it
 safely as many times as needed to create multiple CRUD controllers.
 HELP
-        ;
+            ;
     }
 }

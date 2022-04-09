@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Command;
 
 use EasyCorp\Bundle\EasyAdminBundle\Maker\ClassMaker;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -16,10 +17,12 @@ use function Symfony\Component\String\u;
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
+#[AsCommand(
+    name: 'make:admin:dashboard',
+    description: 'Creates a new EasyAdmin Dashboard class',
+)]
 class MakeAdminDashboardCommand extends Command
 {
-    protected static $defaultName = 'make:admin:dashboard';
-    protected static $defaultDescription = 'Creates a new EasyAdmin Dashboard class';
     private ClassMaker $classMaker;
     private string $projectDir;
 
@@ -33,7 +36,6 @@ class MakeAdminDashboardCommand extends Command
     protected function configure()
     {
         $this
-            ->setDescription(self::$defaultDescription)
             ->setHelp($this->getCommandHelp())
         ;
     }
@@ -115,6 +117,6 @@ name and location of the new class.
 This command never changes or overwrites an existing class, so you can run it
 safely as many times as needed to create multiple dashboards.
 HELP
-        ;
+            ;
     }
 }

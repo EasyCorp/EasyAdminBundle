@@ -122,6 +122,6 @@ location and namespace of the generated class.
 This command never changes or overwrites an existing class, so you can run it
 safely as many times as needed to create multiple CRUD controllers.
 HELP
-            ;
+        ;
     }
 }

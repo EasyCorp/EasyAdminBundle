@@ -113,15 +113,14 @@ class MakeCrudControllerCommand extends Command
     private function getCommandHelp(): string
     {
         return <<<'HELP'
-The <info>%command.name%</info> command creates a new EasyAdmin CRUD controler
-class to manage some Doctrine entity in your application.
+            The <info>%command.name%</info> command creates a new EasyAdmin CRUD controler
+            class to manage some Doctrine entity in your application.
 
-Follow the steps shown by the command to select the Doctrine entity and the
-location and namespace of the generated class.
+            Follow the steps shown by the command to select the Doctrine entity and the
+            location and namespace of the generated class.
 
-This command never changes or overwrites an existing class, so you can run it
-safely as many times as needed to create multiple CRUD controllers.
-HELP
-        ;
+            This command never changes or overwrites an existing class, so you can run it
+            safely as many times as needed to create multiple CRUD controllers.
+            HELP;
     }
 }

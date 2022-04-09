@@ -1,5 +1,5 @@
 var Encore = require('@symfony/webpack-encore');
-const WebpackRTLPlugin = require('webpack-rtl-plugin');
+const WebpackRTLPlugin = require('@automattic/webpack-rtl-plugin');
 
 Encore
     .setOutputPath('./src/Resources/public/')
@@ -32,6 +32,20 @@ Encore
     })
 
     .addPlugin(new WebpackRTLPlugin())
+
+    .configureCssMinimizerPlugin((options) => {
+        options.minimizerOptions = {
+            preset: [
+                'default',
+                {
+                    // disabled to fix these issues: https://github.com/EasyCorp/EasyAdminBundle/pull/5171
+                    // reenable when Symfony Webpack Encore updates its css-minimizer-webpack-plugin to ^3
+                    // (see https://github.com/symfony/webpack-encore/pull/1033)
+                    svgo: false,
+                },
+            ]
+        };
+    })
 
     .addEntry('app', './assets/js/app.js')
     .addEntry('form', './assets/js/form.js')

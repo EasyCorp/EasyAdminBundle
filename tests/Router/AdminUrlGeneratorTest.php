@@ -9,7 +9,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\CrudControllerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\DashboardControllerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
-use EasyCorp\Bundle\EasyAdminBundle\Router\UrlSigner;
 use Symfony\Bridge\PhpUnit\ExpectDeprecationTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Request;
@@ -269,25 +268,6 @@ class AdminUrlGeneratorTest extends WebTestCase
         $this->assertSame('http://localhost/admin?foo=bar&referrer=/?foo%3Dbar', $adminUrlGenerator->generateUrl());
     }
 
-    public function testSignedUrls()
-    {
-        $adminUrlGenerator = $this->getAdminUrlGenerator(true);
-
-        $adminUrlGenerator->set('foo1', 'bar1');
-        $adminUrlGenerator->setController('App\Controller\Admin\SomeCrudController');
-        $this->assertSame('http://localhost/admin?crudAction=index&crudControllerFqcn=App%5CController%5CAdmin%5CSomeCrudController&foo=bar&foo1=bar1&signature=yGwN-pwX_xBtCMu87wfD0wyXQm-v4QO_IjCiB6cMvRw', $adminUrlGenerator->generateUrl());
-    }
-
-    public function testUrlsWithoutSignatures()
-    {
-        $adminUrlGenerator = $this->getAdminUrlGenerator(true);
-
-        $adminUrlGenerator->set('foo1', 'bar1');
-        $adminUrlGenerator->addSignature(false);
-        $adminUrlGenerator->setController('App\Controller\Admin\SomeCrudController');
-        $this->assertSame('http://localhost/admin?crudAction=index&crudControllerFqcn=App%5CController%5CAdmin%5CSomeCrudController&foo=bar&foo1=bar1', $adminUrlGenerator->generateUrl());
-    }
-
     public function testRelativeUrls()
     {
         $adminUrlGenerator = $this->getAdminUrlGenerator(false, true);
@@ -300,7 +280,7 @@ class AdminUrlGeneratorTest extends WebTestCase
 
         $adminUrlGenerator->set('foo1', 'bar1');
         $adminUrlGenerator->setController('App\Controller\Admin\SomeCrudController');
-        $this->assertSame('http://localhost/admin?crudAction=index&crudControllerFqcn=App%5CController%5CAdmin%5CSomeCrudController&foo=bar&foo1=bar1&signature=yGwN-pwX_xBtCMu87wfD0wyXQm-v4QO_IjCiB6cMvRw', $adminUrlGenerator->generateUrl());
+        $this->assertSame('http://localhost/admin?crudAction=index&crudControllerFqcn=App%5CController%5CAdmin%5CSomeCrudController&foo=bar&foo1=bar1', $adminUrlGenerator->generateUrl());
     }
 
     private function getAdminUrlGenerator(bool $signedUrls = false, bool $absoluteUrls = true): AdminUrlGenerator
@@ -336,8 +316,7 @@ class AdminUrlGeneratorTest extends WebTestCase
 
         $container = Kernel::MAJOR_VERSION >= 6 ? static::getContainer() : self::$container;
         $router = $container->get('router');
-        $uriSigner = new UrlSigner('abc123');
 
-        return new AdminUrlGenerator($adminContextProvider, $router, $dashboardControllerRegistry, $crudControllerRegistry, $uriSigner);
+        return new AdminUrlGenerator($adminContextProvider, $router, $dashboardControllerRegistry, $crudControllerRegistry);
     }
 }

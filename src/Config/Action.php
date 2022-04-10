@@ -42,7 +42,7 @@ final class Action
 
     /**
      * @param string|false|null $label Use FALSE to hide the label; use NULL to autogenerate it
-     * @param string|null       $icon  The full CSS classes of the FontAwesome icon to render (see https://fontawesome.com/v5.15/icons?d=gallery&p=2&m=free)
+     * @param string|null       $icon  The full CSS classes of the FontAwesome icon to render (see https://fontawesome.com/v6/search?m=free)
      */
     public static function new(string $name, /* string|false|null */ $label = null, ?string $icon = null): self
     {
@@ -177,7 +177,7 @@ final class Action
     }
 
     /**
-     * @param $routeParameters The callable has the signature: function ($entity): array
+     * @param array|callable $routeParameters The callable has the signature: function ($entity): array
      *
      * Route parameters can be defined as a callable with the signature: function ($entityInstance): array
      * Example: ->linkToRoute('invoice_send', fn (Invoice $entity) => ['uuid' => $entity->getId()]);

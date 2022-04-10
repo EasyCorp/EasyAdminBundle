@@ -132,6 +132,11 @@ final class AdminContext
         return $this->dashboardDto->getSidebarWidth();
     }
 
+    public function getDashboardHasDarkModeEnabled(): bool
+    {
+        return $this->dashboardDto->isDarkModeEnabled();
+    }
+
     public function getMainMenu(): MainMenuDto
     {
         if (null !== $this->mainMenuDto) {

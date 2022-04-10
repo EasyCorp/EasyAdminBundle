@@ -667,3 +667,19 @@ form .invalid-feedback > .d-block + .d-block {
     text-align: right;
     top: 0;
 }
+
+// Fix "Browse" button for regular file inputs
+.form-control {
+    &::file-selector-button, &::-webkit-file-upload-button {
+        color: var(--button-secondary-color);
+        background-color: var(--button-secondary-bg);
+        box-shadow: var(--button-shadow);
+    }
+
+    &:hover:not(:disabled):not([readonly]) {
+        &::file-selector-button, &::-webkit-file-upload-button {
+            background-color: var(--button-secondary-bg);
+            box-shadow: var(--button-hover-shadow);
+        }
+    }
+}

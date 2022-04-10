@@ -21,7 +21,7 @@ final class MenuItem
     }
 
     /**
-     * @param $icon The full CSS classes of the FontAwesome icon to render (see https://fontawesome.com/v5.15/icons?d=gallery&p=2&m=free)
+     * @param string|null $icon The full CSS classes of the FontAwesome icon to render (see https://fontawesome.com/v6/search?m=free)
      */
     public static function linkToCrud(string $label, ?string $icon, string $entityFqcn): CrudMenuItem
     {
@@ -29,7 +29,7 @@ final class MenuItem
     }
 
     /**
-     * @param string|null $icon The full CSS classes of the FontAwesome icon to render (see https://fontawesome.com/v5.15/icons?d=gallery&p=2&m=free)
+     * @param string|null $icon The full CSS classes of the FontAwesome icon to render (see https://fontawesome.com/v6/search?m=free)
      */
     public static function linkToDashboard(string $label, ?string $icon = null): DashboardMenuItem
     {
@@ -37,7 +37,7 @@ final class MenuItem
     }
 
     /**
-     * @param $icon The full CSS classes of the FontAwesome icon to render (see https://fontawesome.com/v5.15/icons?d=gallery&p=2&m=free)
+     * @param string|null $icon The full CSS classes of the FontAwesome icon to render (see https://fontawesome.com/v6/search?m=free)
      */
     public static function linkToExitImpersonation(string $label, ?string $icon = null): ExitImpersonationMenuItem
     {
@@ -45,7 +45,7 @@ final class MenuItem
     }
 
     /**
-     * @param $icon The full CSS classes of the FontAwesome icon to render (see https://fontawesome.com/v5.15/icons?d=gallery&p=2&m=free)
+     * @param string|null $icon The full CSS classes of the FontAwesome icon to render (see https://fontawesome.com/v6/search?m=free)
      */
     public static function linkToLogout(string $label, ?string $icon = null): LogoutMenuItem
     {
@@ -53,7 +53,7 @@ final class MenuItem
     }
 
     /**
-     * @param $icon The full CSS classes of the FontAwesome icon to render (see https://fontawesome.com/v5.15/icons?d=gallery&p=2&m=free)
+     * @param string|null $icon The full CSS classes of the FontAwesome icon to render (see https://fontawesome.com/v6/search?m=free)
      */
     public static function linkToRoute(string $label, ?string $icon, string $routeName, array $routeParameters = []): RouteMenuItem
     {
@@ -61,7 +61,7 @@ final class MenuItem
     }
 
     /**
-     * @param string|null $icon The full CSS classes of the FontAwesome icon to render (see https://fontawesome.com/v5.15/icons?d=gallery&p=2&m=free)
+     * @param string|null $icon The full CSS classes of the FontAwesome icon to render (see https://fontawesome.com/v6/search?m=free)
      */
     public static function linkToUrl(string $label, ?string $icon, string $url): UrlMenuItem
     {
@@ -69,7 +69,7 @@ final class MenuItem
     }
 
     /**
-     * @param $icon The full CSS classes of the FontAwesome icon to render (see https://fontawesome.com/v5.15/icons?d=gallery&p=2&m=free)
+     * @param string|null $icon The full CSS classes of the FontAwesome icon to render (see https://fontawesome.com/v6/search?m=free)
      */
     public static function section(?string $label = null, ?string $icon = null): SectionMenuItem
     {
@@ -77,7 +77,7 @@ final class MenuItem
     }
 
     /**
-     * @param $icon The full CSS classes of the FontAwesome icon to render (see https://fontawesome.com/v5.15/icons?d=gallery&p=2&m=free)
+     * @param string|null $icon The full CSS classes of the FontAwesome icon to render (see https://fontawesome.com/v6/search?m=free)
      */
     public static function subMenu(string $label, ?string $icon = null): SubMenuItem
     {

@@ -2,7 +2,7 @@
 {% trans_default_domain ea.i18n.translationDomain %}
 
 <!DOCTYPE html>
-<html lang="{{ ea.i18n.htmlLocale }}" dir="{{ ea.i18n.textDirection }}">
+<html lang="{{ ea.i18n.htmlLocale }}" dir="{{ ea.i18n.textDirection }}" data-turbo="false">
 <head>
     {% block head_metas %}
         <meta charset="utf-8">
@@ -49,7 +49,13 @@
 </head>
 
 {% block body %}
-    <body id="{% block body_id %}{% endblock %}" class="ea {% block body_class %}{% endblock %}" data-ea-content-width="{{ ea.crud.contentWidth ?? ea.dashboardContentWidth ?? 'normal' }}" data-ea-sidebar-width="{{ ea.crud.sidebarWidth ?? ea.dashboardSidebarWidth ?? 'normal' }}">
+    <body
+        id="{% block body_id %}{% endblock %}"
+        class="ea {% block body_class %}{% endblock %}"
+        data-ea-content-width="{{ ea.crud.contentWidth ?? ea.dashboardContentWidth ?? 'normal' }}"
+        data-ea-sidebar-width="{{ ea.crud.sidebarWidth ?? ea.dashboardSidebarWidth ?? 'normal' }}"
+        data-ea-dark-scheme-is-enabled="{{ ea.dashboardHasDarkModeEnabled ? 'true' : 'false' }}"
+    >
     {% block javascript_page_layout %}
         <script src="{{ asset('bundles/easyadmin/page-layout.js') }}"></script>
     {% endblock javascript_page_layout %}
@@ -162,13 +168,15 @@
                             {{ user_menu_dropdown }}
                         </div>
 
-                        <div class="dropdown dropdown-appearance">
-                            <a class="dropdown-appearance-button" type="button" data-bs-toggle="dropdown" data-bs-offset="0,5" aria-expanded="false">
-                                <i class="fas fa-adjust"></i>
-                            </a>
+                        {% if ea.dashboardHasDarkModeEnabled %}
+                            <div class="dropdown dropdown-appearance">
+                                <a class="dropdown-appearance-button" type="button" data-bs-toggle="dropdown" data-bs-offset="0,5" aria-expanded="false">
+                                    <i class="fas fa-adjust"></i>
+                                </a>
 
-                            {{ appearance_menu_dropdown }}
-                        </div>
+                                {{ appearance_menu_dropdown }}
+                            </div>
+                        {% endif %}
                     {% endblock responsive_header %}
                 </div>
 
@@ -238,7 +246,6 @@
                                                 <input type="hidden" name="menuIndex" value="{{ ea.request.query.get('menuIndex') }}">
                                                 <input type="hidden" name="submenuIndex" value="{{ ea.request.query.get('submenuIndex') }}">
                                                 <input type="hidden" name="page" value="1">
-                                                <input type="hidden" name="signature" value="{{ ea_url().unsetAll().setAction('index').setController(ea.request.query.get('crudControllerFqcn')).getSignature() }}">
 
                                                 <div class="form-group">
                                                     <div class="form-widget">
@@ -276,15 +283,17 @@
                                 {% endblock header_custom_menu %}
                             </div>
 
-                            <div class="navbar-custom-menu">
-                                <div class="dropdown dropdown-appearance">
-                                    <a class="dropdown-appearance-button" type="button" data-bs-toggle="dropdown" data-bs-offset="0,5" aria-expanded="false">
-                                        <i class="fas fa-adjust"></i>
-                                    </a>
+                            {% if ea.dashboardHasDarkModeEnabled %}
+                                <div class="navbar-custom-menu">
+                                    <div class="dropdown dropdown-appearance">
+                                        <a class="dropdown-appearance-button" type="button" data-bs-toggle="dropdown" data-bs-offset="0,5" aria-expanded="false">
+                                            <i class="fas fa-adjust"></i>
+                                        </a>
 
-                                    {{ appearance_menu_dropdown }}
+                                        {{ appearance_menu_dropdown }}
+                                    </div>
                                 </div>
-                            </div>
+                            {% endif %}
                         {% endblock content_top_header %}
                     </aside>
 

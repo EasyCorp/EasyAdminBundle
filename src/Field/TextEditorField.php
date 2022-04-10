@@ -14,6 +14,7 @@ final class TextEditorField implements FieldInterface
     use FieldTrait;
 
     public const OPTION_NUM_OF_ROWS = 'numOfRows';
+    public const OPTION_RAW_HTML_OUTPUT = 'rawHtmlOutput';
 
     /**
      * @param string|false|null $label
@@ -30,6 +31,13 @@ final class TextEditorField implements FieldInterface
             ->addJsFiles(Asset::new('bundles/easyadmin/field-text-editor.js')->onlyOnForms())
             ->setDefaultColumns('col-md-9 col-xxl-7')
             ->setCustomOption(self::OPTION_NUM_OF_ROWS, null);
+    }
+
+    public function rawHtmlOutput($enable = true): self
+    {
+        $this->setCustomOption(self::OPTION_RAW_HTML_OUTPUT, $enable);
+
+        return $this;
     }
 
     public function setNumOfRows(int $rows): self

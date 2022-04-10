@@ -76,7 +76,7 @@ final class MenuItem
     {
         return new ModalMenuItem($label, $icon, $tag, $templatePath);
     }
-  
+
     /**
      * @param string|null $icon The full CSS classes of the FontAwesome icon to render (see https://fontawesome.com/v6/search?m=free)
      */

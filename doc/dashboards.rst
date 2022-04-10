@@ -250,11 +250,10 @@ explained later)::
                 // to be displayed as a narrow column instead of the default expanded design
                 ->renderSidebarMinimized()
 
-                // by default, all backend URLs include a signature hash. If a user changes any
-                // query parameter (to "hack" the backend) the signature won't match and EasyAdmin
-                // triggers an error. If this causes any issue in your backend, call this method
-                // to disable this feature and remove all URL signature checks
-                ->disableUrlSignatures()
+                // by default, users can select between a "light" and "dark" mode for the
+                // backend interface. Call this method if you prefer to disable the "dark"
+                // mode for any reason (e.g. if your interface customizations are not ready for it)
+                ->disableDarkMode()
 
                 // by default, all backend URLs are generated as absolute URLs. If you
                 // need to generate relative URLs instead, call this method
@@ -262,6 +261,11 @@ explained later)::
             ;
         }
     }
+
+.. deprecated:: 4.1.0
+
+    The ``disableUrlSignatures()`` dashboard method was deprecated in
+    EasyAdmin 4.1.0 because backend URLs no longer include signatures.
 
 Customizing the Dashboard Contents
 ----------------------------------
@@ -914,7 +918,7 @@ etc. Example:
 .. _`Symfony controllers`: https://symfony.com/doc/current/controller.html
 .. _`Symfony route annotations`: https://symfony.com/doc/current/routing.html#creating-routes-as-annotations
 .. _`context object`: https://wiki.c2.com/?ContextObject
-.. _`FontAwesome`: https://fontawesome.com/v5.15/icons?d=gallery&p=2&m=free
+.. _`FontAwesome`: https://fontawesome.com/v6/search?m=free
 .. _`allowed values for the "rel" attribute`: https://developer.mozilla.org/en-US/docs/Web/HTML/Link_types
 .. _`Symfony security permission`: https://symfony.com/doc/current/security.html#roles
 .. _`logout feature`: https://symfony.com/doc/current/security.html#logging-out

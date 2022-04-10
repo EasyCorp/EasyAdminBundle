@@ -271,12 +271,6 @@ the :doc:`CRUD controllers </crud>` to add your own CSS and JavaScript files::
         }
     }
 
-.. versionadded:: 3.3
-
-    JavaScript files and JavaScript Webpack Encore entries are included in the
-    ``<head>`` element of the page. In previous EasyAdmin versions they were
-    included at the bottom of the ``<body>`` element.
-
 If you need to customize the HTML attributes or other features of the ``<link>``
 and ``<script>`` tags, pass an ``Asset`` object to the ``addCssFile()``,
 ``addJsFile()`` and ``addWebpackEncoreEntry()`` methods::

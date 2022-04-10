@@ -16,8 +16,9 @@ final class DashboardDto
     private $textDirection;
     private string $contentWidth = Crud::LAYOUT_CONTENT_DEFAULT;
     private string $sidebarWidth = Crud::LAYOUT_SIDEBAR_DEFAULT;
-    private bool $signedUrls = true;
+    private bool $signedUrls = false;
     private bool $absoluteUrls = true;
+    private bool $enableDarkMode = true;
 
     public function getRouteName(): string
     {
@@ -136,5 +137,17 @@ final class DashboardDto
         $this->absoluteUrls = $absoluteUrls;
 
         return $this;
+    }
+
+    public function setEnableDarkMode(bool $enableDarkMode): self
+    {
+        $this->enableDarkMode = $enableDarkMode;
+
+        return $this;
+    }
+
+    public function isDarkModeEnabled(): bool
+    {
+        return $this->enableDarkMode;
     }
 }

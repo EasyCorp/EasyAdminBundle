@@ -39,7 +39,7 @@
 .ts-dropdown, .ts-dropdown.form-control, .ts-dropdown.form-select {
   background: var(--form-type-autocomplete-dropdown-bg);
   border: 1px solid var(--form-input-border-color);
-  box-shadow: var(--form-input-shadow);
+  box-shadow: var(--shadow-xl);
   color: var(--form-input-text-color);
 }
 .ts-dropdown .active, .ts-dropdown .create:hover, .ts-dropdown .option:hover {

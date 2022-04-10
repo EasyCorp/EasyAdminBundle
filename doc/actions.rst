@@ -268,7 +268,7 @@ the ``Action`` class constructor::
     $viewInvoice = Action::new('viewInvoice', false);
 
     // the third optional argument is the full CSS class of a FontAwesome icon
-    // see https://fontawesome.com/v5.15/icons?d=gallery&p=2&m=free
+    // see https://fontawesome.com/v6/search?m=free
     $viewInvoice = Action::new('viewInvoice', 'Invoice', 'fa fa-file-invoice');
 
 Then you can configure the basic HTML/CSS attributes of the button/element
@@ -623,3 +623,4 @@ by EasyAdmin::
             // ...
         }
     }
+

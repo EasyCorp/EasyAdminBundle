@@ -34,6 +34,10 @@ class ColorSchemeHandler {
     }
 
     #setColorScheme(colorScheme) {
+        if ('false' === document.body.getAttribute('data-ea-dark-scheme-is-enabled')) {
+            return;
+        }
+
         const resolvedColorScheme = 'auto' === colorScheme
             ? matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
             : colorScheme;

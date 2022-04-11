@@ -546,7 +546,7 @@
     {{ form_widget(form, { attr: attr|merge({
         style: 'display: none',
         class: 'ea-text-editor-content',
-        'data-number-of-rows': form.vars.ea_crud_form.ea_field.customOptions.get('numOfRows'),
+        'data-number-of-rows': form.vars.ea_crud_form.ea_field.customOptions.get('numOfRows')|default(5),
     }) }) }}
 
     <div class="ea-text-editor-wrapper">

@@ -547,6 +547,7 @@
         style: 'display: none',
         class: 'ea-text-editor-content',
         'data-number-of-rows': form.vars.ea_crud_form.ea_field.customOptions.get('numOfRows')|default(5),
+        'data-trix-editor-config': form.vars.ea_crud_form.ea_field.customOptions.get('trixEditorConfig')|default(null)|json_encode,
     }) }) }}
 
     <div class="ea-text-editor-wrapper">

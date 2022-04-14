@@ -14,6 +14,7 @@ final class TextEditorField implements FieldInterface
     use FieldTrait;
 
     public const OPTION_NUM_OF_ROWS = 'numOfRows';
+    public const OPTION_TRIX_EDITOR_CONFIG = 'trixEditorConfig';
 
     /**
      * @param string|false|null $label
@@ -29,7 +30,8 @@ final class TextEditorField implements FieldInterface
             ->addCssFiles(Asset::new('bundles/easyadmin/field-text-editor.css')->onlyOnForms())
             ->addJsFiles(Asset::new('bundles/easyadmin/field-text-editor.js')->onlyOnForms())
             ->setDefaultColumns('col-md-9 col-xxl-7')
-            ->setCustomOption(self::OPTION_NUM_OF_ROWS, null);
+            ->setCustomOption(self::OPTION_NUM_OF_ROWS, null)
+            ->setCustomOption(self::OPTION_TRIX_EDITOR_CONFIG, null);
     }
 
     public function setNumOfRows(int $rows): self
@@ -39,6 +41,13 @@ final class TextEditorField implements FieldInterface
         }
 
         $this->setCustomOption(self::OPTION_NUM_OF_ROWS, $rows);
+
+        return $this;
+    }
+
+    public function setTrixEditorConfig(array $config): self
+    {
+        $this->setCustomOption(self::OPTION_TRIX_EDITOR_CONFIG, $config);
 
         return $this;
     }

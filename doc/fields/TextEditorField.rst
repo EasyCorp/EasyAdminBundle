@@ -46,6 +46,26 @@ value when the expected content is much longer (e.g. a blog post)::
 
     yield TextEditorField::new('...')->setNumOfRows(30);
 
+``setTrixEditorConfig``
+~~~~~~~~~~~~~~~~~~~~~~~
+
+This option allows you to pass a PHP array of the configuration options to set
+or update in the JavaScript Trix editor used by this field::
+
+    yield TextEditorField::new('...')->setTrixEditorConfig([
+        'blockAttributes' => [
+            'default' => ['tagName' => 'p'],
+            'heading1' => ['tagName' => 'h2'],
+        ],
+        'css' => [
+            'attachment' => 'admin_file_field_attachment',
+        ],
+    ]);
+
+Check out the `src/trix/config/ folder`_ at Trix editor repository to learn
+about all the available configuration options.
+
 .. _`Trix editor`: https://github.com/basecamp/trix
 .. _`TextEditorType`: https://github.com/EasyCorp/EasyAdminBundle/blob/4.x/src/Form/Type/TextEditorType.php
 .. _`TextareaType`: https://symfony.com/doc/current/reference/forms/types/textarea.html
+.. _`src/trix/config/ folder`: https://github.com/basecamp/trix/tree/main/src/trix/config

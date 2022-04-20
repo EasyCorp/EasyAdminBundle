@@ -45,7 +45,7 @@
     {%- apply spaceless -%}
         {% set custom_page_title = ea.crud.customPageTitle('new') %}
         {{ custom_page_title is null
-            ? (ea.crud.defaultPageTitle('new')|trans(ea.i18n.translationParameters, 'EasyAdminBundle'))|raw
+            ? ea.crud.defaultPageTitle('new')|trans(ea.i18n.translationParameters, 'EasyAdminBundle')
             : (custom_page_title|trans(ea.i18n.translationParameters))|raw }}
     {%- endapply -%}
 {% endblock %}

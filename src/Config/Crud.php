@@ -379,6 +379,13 @@ class Crud
         return $this;
     }
 
+    public function setAutocompleteInstanceNormalizer(?callable $autocompleteInstanceNormalizer): self
+    {
+        $this->dto->setAutocompleteInstanceNormalizer($autocompleteInstanceNormalizer);
+
+        return $this;
+    }
+
     public function getAsDto(): CrudDto
     {
         $this->dto->setPaginator(new PaginatorDto($this->paginatorPageSize, $this->paginatorRangeSize, 1, $this->paginatorFetchJoinCollection, $this->paginatorUseOutputWalkers));

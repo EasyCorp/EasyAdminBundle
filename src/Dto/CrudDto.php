@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
+use Closure;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
@@ -59,6 +60,7 @@ final class CrudDto
     private ?string $entityPermission = null;
     private ?string $contentWidth = null;
     private ?string $sidebarWidth = null;
+    private ?\Closure $autocompleteInstanceNormalizer = null;
 
     public function __construct()
     {
@@ -457,5 +459,15 @@ final class CrudDto
     public function setSidebarWidth(string $sidebarWidth): void
     {
         $this->sidebarWidth = $sidebarWidth;
+    }
+
+    public function getAutocompleteInstanceNormalizer(): ?\Closure
+    {
+        return $this->autocompleteInstanceNormalizer;
+    }
+
+    public function setAutocompleteInstanceNormalizer(?callable $autocompleteInstanceNormalizer): void
+    {
+        $this->autocompleteInstanceNormalizer = $autocompleteInstanceNormalizer ? \Closure::fromCallable($autocompleteInstanceNormalizer) : null;
     }
 }

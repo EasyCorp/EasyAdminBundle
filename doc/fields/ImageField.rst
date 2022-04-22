@@ -43,7 +43,7 @@ By default, the contents of uploaded images are stored into files inside the
 ``<your-project-dir>/public/uploads/images/`` directory. Use this option to
 change that location. The argument is the directory relative to your project root::
 
-    yield ImageField::new('...')->setBasePath('assets/images/');
+    yield ImageField::new('...')->setUploadDir('assets/images/');
 
 setUploadedFileNamePattern
 ~~~~~~~~~~~~~~~~~~~~~~~~~~

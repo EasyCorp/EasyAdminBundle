@@ -461,7 +461,7 @@ final class CrudDto
         $this->sidebarWidth = $sidebarWidth;
     }
 
-    public function getAutocompleteInstanceNormalizer(): ?\Closure
+    public function getAutocompleteInstanceNormalizer(): ?Closure
     {
         return $this->autocompleteInstanceNormalizer;
     }

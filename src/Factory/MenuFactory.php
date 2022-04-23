@@ -13,7 +13,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\UserMenuDto;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Http\Logout\LogoutUrlGenerator;
 use function Symfony\Component\String\u;
@@ -27,16 +26,14 @@ final class MenuFactory
     private AdminContextProvider $adminContextProvider;
     private AuthorizationCheckerInterface $authChecker;
     private TranslatorInterface $translator;
-    private UrlGeneratorInterface $urlGenerator;
     private LogoutUrlGenerator $logoutUrlGenerator;
     private AdminUrlGenerator $adminUrlGenerator;
 
-    public function __construct(AdminContextProvider $adminContextProvider, AuthorizationCheckerInterface $authChecker, TranslatorInterface $translator, UrlGeneratorInterface $urlGenerator, LogoutUrlGenerator $logoutUrlGenerator, AdminUrlGenerator $adminUrlGenerator)
+    public function __construct(AdminContextProvider $adminContextProvider, AuthorizationCheckerInterface $authChecker, TranslatorInterface $translator, LogoutUrlGenerator $logoutUrlGenerator, AdminUrlGenerator $adminUrlGenerator)
     {
         $this->adminContextProvider = $adminContextProvider;
         $this->authChecker = $authChecker;
         $this->translator = $translator;
-        $this->urlGenerator = $urlGenerator;
         $this->logoutUrlGenerator = $logoutUrlGenerator;
         $this->adminUrlGenerator = $adminUrlGenerator;
     }

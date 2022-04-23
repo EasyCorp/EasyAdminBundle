@@ -48,7 +48,7 @@ final class CurrencyConfigurator implements FieldConfiguratorInterface
     {
         try {
             return Currencies::getName($currencyCode);
-        } catch (MissingResourceException $e) {
+        } catch (MissingResourceException) {
             return null;
         }
     }
@@ -57,7 +57,7 @@ final class CurrencyConfigurator implements FieldConfiguratorInterface
     {
         try {
             return Currencies::getSymbol($currencyCode);
-        } catch (MissingResourceException $e) {
+        } catch (MissingResourceException) {
             return null;
         }
     }

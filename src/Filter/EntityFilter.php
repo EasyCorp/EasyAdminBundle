@@ -114,7 +114,7 @@ final class EntityFilter implements FilterInterface
 
         try {
             $classMetadata = $entityManager->getClassMetadata(\get_class($parameterValue));
-        } catch (\Throwable $exception) {
+        } catch (\Throwable) {
             // only reached if $parameterValue does not contain an object of a managed
             // entity, return as we only need to process bound entities
             return $parameterValue;
@@ -122,7 +122,7 @@ final class EntityFilter implements FilterInterface
 
         try {
             $identifierType = $classMetadata->getTypeOfField($classMetadata->getSingleIdentifierFieldName());
-        } catch (MappingException $exception) {
+        } catch (MappingException) {
             throw new \RuntimeException(sprintf('The EntityFilter does not support entities with a composite primary key or entities without an identifier. Please check your entity "%s".', \get_class($parameterValue)));
         }
 
@@ -132,7 +132,7 @@ final class EntityFilter implements FilterInterface
             || ('ulid' === $identifierType && $identifierValue instanceof Ulid)) {
             try {
                 return Type::getType($identifierType)->convertToDatabaseValue($identifierValue, $entityManager->getConnection()->getDatabasePlatform());
-            } catch (\Throwable $exception) {
+            } catch (\Throwable) {
                 // if the conversion fails we cannot process the uid parameter value
                 return $parameterValue;
             }

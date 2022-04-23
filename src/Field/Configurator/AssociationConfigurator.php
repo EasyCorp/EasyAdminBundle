@@ -88,7 +88,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
 
                 $field->setCustomOption(AssociationField::OPTION_RELATED_URL, $this->generateLinkToAssociatedEntity($targetCrudControllerFqcn, $relatedEntityDto));
                 $field->setFormattedValue($this->formatAsString($relatedEntityDto->getInstance(), $relatedEntityDto));
-            } catch (UnexpectedTypeException $e) {
+            } catch (UnexpectedTypeException) {
                 // this may crash if something in the tree is null, so just do nothing then
             }
         } else {

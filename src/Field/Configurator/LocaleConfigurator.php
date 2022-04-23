@@ -46,7 +46,7 @@ final class LocaleConfigurator implements FieldConfiguratorInterface
     {
         try {
             return Locales::getName($localeCode);
-        } catch (MissingResourceException $e) {
+        } catch (MissingResourceException) {
             return null;
         }
     }

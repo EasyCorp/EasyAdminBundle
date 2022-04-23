@@ -3,7 +3,6 @@
 namespace EasyCorp\Bundle\EasyAdminBundle;
 
 use EasyCorp\Bundle\EasyAdminBundle\DependencyInjection\CreateControllerRegistriesPass;
-use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
@@ -16,6 +15,6 @@ class EasyAdminBundle extends Bundle
 
     public function build(ContainerBuilder $container): void
     {
-        $container->addCompilerPass(new CreateControllerRegistriesPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION);
+        $container->addCompilerPass(new CreateControllerRegistriesPass());
     }
 }

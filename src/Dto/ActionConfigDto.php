@@ -89,7 +89,7 @@ final class ActionConfigDto
     public function disableActions(array $actionNames): void
     {
         foreach ($actionNames as $actionName) {
-            if (!\in_array($actionName, $this->disabledActions)) {
+            if (!\in_array($actionName, $this->disabledActions, true)) {
                 $this->disabledActions[] = $actionName;
             }
         }

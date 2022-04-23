@@ -60,7 +60,7 @@ final class CommonPostConfigurator implements FieldConfiguratorInterface
         $usesEasyAdminTemplate = u($field->getTemplatePath())->startsWith('@EasyAdmin/');
         $isBooleanField = BooleanField::class === $field->getFieldFqcn();
         $isNullValue = null === $field->getFormattedValue();
-        $isEmpty = is_countable($field->getFormattedValue()) ? 0 === \count($field->getFormattedValue()) : false;
+        $isEmpty = is_countable($field->getFormattedValue()) && 0 === \count($field->getFormattedValue());
 
         $adminContext = $this->adminContextProvider->getContext();
         if ($usesEasyAdminTemplate && $isNullValue && !$isBooleanField) {

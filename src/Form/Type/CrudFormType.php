@@ -44,7 +44,7 @@ class CrudFormType extends AbstractType
             // the names of embedded Doctrine entities contain dots, which are not allowed
             // in HTML element names. In those cases, fix the name but also update the
             // 'property_path' option to keep the original field name
-            if (false !== strpos($fieldDto->getProperty(), '.')) {
+            if (str_contains($fieldDto->getProperty(), '.')) {
                 $formFieldOptions['property_path'] = $fieldDto->getProperty();
                 $name = str_replace(['.', '[', ']'], '_', $fieldDto->getProperty());
             } else {

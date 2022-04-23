@@ -8,7 +8,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInte
 use EasyCorp\Bundle\EasyAdminBundle\Factory\AdminContextFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\ControllerFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\CrudControllerRegistry;
-use EasyCorp\Bundle\EasyAdminBundle\Registry\DashboardControllerRegistry;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ControllerResolverInterface;
@@ -34,7 +33,6 @@ use Twig\Environment;
 class AdminRouterSubscriber implements EventSubscriberInterface
 {
     private AdminContextFactory $adminContextFactory;
-    private DashboardControllerRegistry $dashboardControllerRegistry;
     private CrudControllerRegistry $crudControllerRegistry;
     private ControllerFactory $controllerFactory;
     private ControllerResolverInterface $controllerResolver;
@@ -42,10 +40,9 @@ class AdminRouterSubscriber implements EventSubscriberInterface
     private RequestMatcherInterface $requestMatcher;
     private Environment $twig;
 
-    public function __construct(AdminContextFactory $adminContextFactory, DashboardControllerRegistry $dashboardControllerRegistry, CrudControllerRegistry $crudControllerRegistry, ControllerFactory $controllerFactory, ControllerResolverInterface $controllerResolver, UrlGeneratorInterface $urlGenerator, RequestMatcherInterface $requestMatcher, Environment $twig)
+    public function __construct(AdminContextFactory $adminContextFactory, CrudControllerRegistry $crudControllerRegistry, ControllerFactory $controllerFactory, ControllerResolverInterface $controllerResolver, UrlGeneratorInterface $urlGenerator, RequestMatcherInterface $requestMatcher, Environment $twig)
     {
         $this->adminContextFactory = $adminContextFactory;
-        $this->dashboardControllerRegistry = $dashboardControllerRegistry;
         $this->crudControllerRegistry = $crudControllerRegistry;
         $this->controllerFactory = $controllerFactory;
         $this->controllerResolver = $controllerResolver;

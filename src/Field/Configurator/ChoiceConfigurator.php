@@ -74,7 +74,7 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
         $selectedChoices = [];
         $flippedChoices = array_flip($choices);
         // $value is a scalar for single selections and an array for multiple selections
-        foreach (array_values((array) $fieldValue) as $selectedValue) {
+        foreach ((array) $fieldValue as $selectedValue) {
             if (null !== $selectedChoice = $flippedChoices[$selectedValue] ?? null) {
                 $choiceValue = $this->translator->trans($selectedChoice, $translationParameters, $translationDomain);
                 $selectedChoices[] = $isRenderedAsBadge

@@ -4,8 +4,6 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Registry\CrudControllerRegistry;
-use EasyCorp\Bundle\EasyAdminBundle\Registry\DashboardControllerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ControllerResolverInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -15,14 +13,10 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 final class ControllerFactory
 {
-    private DashboardControllerRegistry $dashboardControllers;
-    private CrudControllerRegistry $crudControllers;
     private ControllerResolverInterface $controllerResolver;
 
-    public function __construct(DashboardControllerRegistry $dashboardControllers, CrudControllerRegistry $crudControllers, ControllerResolverInterface $controllerResolver)
+    public function __construct(ControllerResolverInterface $controllerResolver)
     {
-        $this->dashboardControllers = $dashboardControllers;
-        $this->crudControllers = $crudControllers;
         $this->controllerResolver = $controllerResolver;
     }
 

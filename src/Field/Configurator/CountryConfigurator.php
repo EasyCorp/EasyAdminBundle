@@ -62,7 +62,7 @@ final class CountryConfigurator implements FieldConfiguratorInterface
             }
 
             return Countries::getName($countryCode);
-        } catch (MissingResourceException $e) {
+        } catch (MissingResourceException) {
             return null;
         }
     }
@@ -81,7 +81,7 @@ final class CountryConfigurator implements FieldConfiguratorInterface
             }
 
             return '' === $flagCode ? 'UNKNOWN' : $flagCode;
-        } catch (MissingResourceException $e) {
+        } catch (MissingResourceException) {
             return null;
         }
     }

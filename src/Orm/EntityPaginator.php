@@ -2,7 +2,6 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Orm;
 
-use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\CountWalker;
 use Doctrine\ORM\Tools\Pagination\Paginator;
@@ -40,7 +39,6 @@ final class EntityPaginator implements EntityPaginatorInterface
         $this->currentPage = max(1, $paginatorDto->getPageNumber());
         $firstResult = ($this->currentPage - 1) * $this->pageSize;
 
-        /** @var Query $query */
         $query = $queryBuilder
             ->setFirstResult($firstResult)
             ->setMaxResults($this->pageSize)
@@ -187,6 +185,6 @@ final class EntityPaginator implements EntityPaginatorInterface
         $nextPageUrl = !$this->hasNextPage() ? null : $this->adminUrlGenerator->set(EA::PAGE, $this->getNextPage())->removeReferrer()->generateUrl();
         $jsonResult['next_page'] = $nextPageUrl;
 
-        return json_encode($jsonResult);
+        return json_encode($jsonResult, \JSON_THROW_ON_ERROR);
     }
 }

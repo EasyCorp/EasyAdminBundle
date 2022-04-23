@@ -97,7 +97,7 @@ final class ChoiceField implements FieldInterface
         }
 
         if (\is_array($badgeSelector)) {
-            foreach ($badgeSelector as $fieldValue => $badgeType) {
+            foreach ($badgeSelector as $badgeType) {
                 if (!\in_array($badgeType, self::VALID_BADGE_TYPES, true)) {
                     throw new \InvalidArgumentException(sprintf('The values of the array passed to the "%s" method must be one of the following valid badge types: "%s" ("%s" given).', __METHOD__, implode(', ', self::VALID_BADGE_TYPES), $badgeType));
                 }

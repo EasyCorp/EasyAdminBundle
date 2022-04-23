@@ -53,7 +53,7 @@ final class LanguageConfigurator implements FieldConfiguratorInterface
     {
         try {
             return $usesAlpha3Codes ? Languages::getAlpha3Name($languageCode) : Languages::getName($languageCode);
-        } catch (MissingResourceException $e) {
+        } catch (MissingResourceException) {
             return null;
         }
     }

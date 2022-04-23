@@ -55,7 +55,7 @@ final class KeyValueStore
             return $this->map[$key];
         }
 
-        if (false === strpos($key, '.')) {
+        if (!str_contains($key, '.')) {
             return $default;
         }
 

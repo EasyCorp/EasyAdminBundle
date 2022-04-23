@@ -163,7 +163,7 @@ final class IntlFormatter
         return $this->formatDateTime($date, 'none', $timeFormat, $pattern, $timezone, $calendar, $locale);
     }
 
-    private function createDateFormatter(?string $locale, ?string $dateFormat, ?string $timeFormat, string $pattern = '', \DateTimeZone $timezone = null, string $calendar = 'gregorian'): \IntlDateFormatter
+    private function createDateFormatter(?string $locale, ?string $dateFormat, ?string $timeFormat, string $pattern = '', \DateTimeZone $timezone = null, string $calendarName = 'gregorian'): \IntlDateFormatter
     {
         if (null !== $dateFormat && !isset(self::DATE_FORMATS[$dateFormat])) {
             throw new RuntimeError(sprintf('The date format "%s" does not exist, known formats are: "%s".', $dateFormat, implode('", "', array_keys(self::DATE_FORMATS))));
@@ -177,7 +177,7 @@ final class IntlFormatter
             $locale = \Locale::getDefault();
         }
 
-        $calendar = 'gregorian' === $calendar ? \IntlDateFormatter::GREGORIAN : \IntlDateFormatter::TRADITIONAL;
+        $calendar = 'gregorian' === $calendarName ? \IntlDateFormatter::GREGORIAN : \IntlDateFormatter::TRADITIONAL;
 
         $dateFormatValue = self::DATE_FORMATS[$dateFormat] ?? self::DATE_FORMATS['full'];
         $timeFormatValue = self::DATE_FORMATS[$timeFormat] ?? self::DATE_FORMATS['full'];
@@ -228,7 +228,7 @@ final class IntlFormatter
         }
 
         ksort($attrs);
-        $hash = $locale.'|'.$style.'|'.json_encode($attrs).'|'.json_encode($textAttrs).'|'.json_encode($symbols);
+        $hash = sprintf('%s|%s|%s|%s|%s', $locale, $style, json_encode($attrs, \JSON_THROW_ON_ERROR), json_encode($textAttrs, \JSON_THROW_ON_ERROR), json_encode($symbols, \JSON_THROW_ON_ERROR));
 
         if (!isset($this->numberFormatters[$hash])) {
             $this->numberFormatters[$hash] = new \NumberFormatter($locale, self::NUMBER_STYLES[$style]);

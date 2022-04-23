@@ -12,9 +12,12 @@ final class LanguageField implements FieldInterface
 {
     use FieldTrait;
 
+    public const FORMAT_ISO_639_ALPHA2 = 'iso639Alpha2';
+    public const FORMAT_ISO_639_ALPHA3 = 'iso639Alpha3';
+
     public const OPTION_SHOW_CODE = 'showCode';
     public const OPTION_SHOW_NAME = 'showName';
-    public const OPTION_LANGUAGE_ALPHA3 = 'languageAlpha3';
+    public const OPTION_LANGUAGE_CODE_FORMAT = 'languageCodeFormat';
     public const OPTION_LANGUAGE_CODES_TO_KEEP = 'languageCodesToKeep';
     public const OPTION_LANGUAGE_CODES_TO_REMOVE = 'languageCodesToRemove';
 
@@ -32,7 +35,7 @@ final class LanguageField implements FieldInterface
             ->setDefaultColumns('col-md-4 col-xxl-3')
             ->setCustomOption(self::OPTION_SHOW_CODE, false)
             ->setCustomOption(self::OPTION_SHOW_NAME, true)
-            ->setCustomOption(self::OPTION_LANGUAGE_ALPHA3, false)
+            ->setCustomOption(self::OPTION_LANGUAGE_CODE_FORMAT, self::FORMAT_ISO_639_ALPHA2)
             ->setCustomOption(self::OPTION_LANGUAGE_CODES_TO_KEEP, null)
             ->setCustomOption(self::OPTION_LANGUAGE_CODES_TO_REMOVE, null);
     }
@@ -53,7 +56,7 @@ final class LanguageField implements FieldInterface
 
     public function useAlpha3Codes(bool $useAlpha3 = true): self
     {
-        $this->setCustomOption(self::OPTION_LANGUAGE_ALPHA3, $useAlpha3);
+        $this->setCustomOption(self::OPTION_LANGUAGE_CODE_FORMAT, $useAlpha3 ? self::FORMAT_ISO_639_ALPHA3 : self::FORMAT_ISO_639_ALPHA2);
 
         return $this;
     }

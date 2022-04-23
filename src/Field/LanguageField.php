@@ -14,6 +14,9 @@ final class LanguageField implements FieldInterface
 
     public const OPTION_SHOW_CODE = 'showCode';
     public const OPTION_SHOW_NAME = 'showName';
+    public const OPTION_LANGUAGE_ALPHA3 = 'languageAlpha3';
+    public const OPTION_LANGUAGE_CODES_TO_KEEP = 'languageCodesToKeep';
+    public const OPTION_LANGUAGE_CODES_TO_REMOVE = 'languageCodesToRemove';
 
     /**
      * @param string|false|null $label
@@ -28,7 +31,10 @@ final class LanguageField implements FieldInterface
             ->addCssClass('field-language')
             ->setDefaultColumns('col-md-4 col-xxl-3')
             ->setCustomOption(self::OPTION_SHOW_CODE, false)
-            ->setCustomOption(self::OPTION_SHOW_NAME, true);
+            ->setCustomOption(self::OPTION_SHOW_NAME, true)
+            ->setCustomOption(self::OPTION_LANGUAGE_ALPHA3, false)
+            ->setCustomOption(self::OPTION_LANGUAGE_CODES_TO_KEEP, null)
+            ->setCustomOption(self::OPTION_LANGUAGE_CODES_TO_REMOVE, null);
     }
 
     public function showCode(bool $isShown = true): self
@@ -41,6 +47,35 @@ final class LanguageField implements FieldInterface
     public function showName(bool $isShown = true): self
     {
         $this->setCustomOption(self::OPTION_SHOW_NAME, $isShown);
+
+        return $this;
+    }
+
+    public function useAlpha3Codes(bool $useAlpha3 = true): self
+    {
+        $this->setCustomOption(self::OPTION_LANGUAGE_ALPHA3, $useAlpha3);
+
+        return $this;
+    }
+
+    /**
+     * Restricts the list of languages shown by the field to the given list of languages codes.
+     * e.g. ->includeOnly(['de', 'en', 'fr']).
+     */
+    public function includeOnly(array $countryCodesToKeep): self
+    {
+        $this->setCustomOption(self::OPTION_LANGUAGE_CODES_TO_KEEP, $countryCodesToKeep);
+
+        return $this;
+    }
+
+    /**
+     * Removes the given list of languages codes from the languages displayed by the field.
+     * e.g. ->remove(['de', 'fr']).
+     */
+    public function remove(array $countryCodesToRemove): self
+    {
+        $this->setCustomOption(self::OPTION_LANGUAGE_CODES_TO_REMOVE, $countryCodesToRemove);
 
         return $this;
     }

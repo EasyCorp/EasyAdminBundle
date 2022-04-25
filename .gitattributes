@@ -4,7 +4,6 @@
 /.php-cs-fixer.dist.php export-ignore
 /.phpstorm.meta.php export-ignore
 /.symfony.bundle.yaml export-ignore
-/assets export-ignore
 /tests export-ignore
 /Makefile export-ignore
 /package.json export-ignore

@@ -60,37 +60,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         // check for embedded associations
         $propertyNameParts = explode('.', $propertyName);
         if (\count($propertyNameParts) > 1) {
-            // prepare starting class for association
-            $targetEntityFqcn = $entityDto->getPropertyMetadata($propertyNameParts[0])->get('targetEntity');
-            array_shift($propertyNameParts);
-            $metadata = $this->entityFactory->getEntityMetadata($targetEntityFqcn);
-
-            foreach ($propertyNameParts as $association) {
-                if (!$metadata->hasAssociation($association)) {
-                    throw new \RuntimeException(sprintf('There is no association for the class "%s" with name "%s"', $targetEntityFqcn, $association));
-                }
-
-                // overwrite next class from association
-                $targetEntityFqcn = $metadata->getAssociationTargetClass($association);
-
-                // read next association metadata
-                $metadata = $this->entityFactory->getEntityMetadata($targetEntityFqcn);
-            }
-
-            $accessor = new PropertyAccessor();
-            $targetCrudControllerFqcn = $field->getCustomOption(AssociationField::OPTION_CRUD_CONTROLLER);
-
-            $field->setFormTypeOptionIfNotSet('class', $targetEntityFqcn);
-
-            try {
-                $relatedEntityId = $accessor->getValue($entityDto->getInstance(), $propertyName.'.'.$metadata->getIdentifierFieldNames()[0]);
-                $relatedEntityDto = $this->entityFactory->create($targetEntityFqcn, $relatedEntityId);
-
-                $field->setCustomOption(AssociationField::OPTION_RELATED_URL, $this->generateLinkToAssociatedEntity($targetCrudControllerFqcn, $relatedEntityDto));
-                $field->setFormattedValue($this->formatAsString($relatedEntityDto->getInstance(), $relatedEntityDto));
-            } catch (UnexpectedTypeException $e) {
-                // this may crash if something in the tree is null, so just do nothing then
-            }
+            $this->configureEmbeddedRelation($field, $entityDto, $propertyName);
         } else {
             if ($entityDto->isToOneAssociation($propertyName)) {
                 $this->configureToOneAssociation($field);
@@ -132,6 +102,59 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
 
                 return $queryBuilder;
             });
+        }
+    }
+
+    /**
+     * @param array<string> $propertyNameParts
+     */
+    private function configureEmbeddedRelation(FieldDto $field, EntityDto $entityDto, string $propertyName): void
+    {
+        $propertyNameParts = explode('.', $propertyName);
+
+        // prepare starting class for association
+        $targetEntityFqcn = $entityDto->getPropertyMetadata($propertyNameParts[0])->get('targetEntity');
+        array_shift($propertyNameParts);
+        $metadata = $this->entityFactory->getEntityMetadata($targetEntityFqcn);
+        $parentMetadata = $this->entityFactory->getEntityMetadata($entityDto->getFqcn());
+
+        foreach ($propertyNameParts as $association) {
+            if (!$metadata->hasAssociation($association)) {
+                throw new \RuntimeException(sprintf('There is no association for the class "%s" with name "%s"', $targetEntityFqcn, $association));
+            }
+
+            // overwrite next class from association
+            $targetEntityFqcn = $metadata->getAssociationTargetClass($association);
+
+            if (null == $targetEntityFqcn) {
+                throw new \RuntimeException(sprintf('There is no association for the class "%s" with name "%s"', $targetEntityFqcn, $association));
+            }
+
+            $parentMetadata = $metadata;
+            // read next association metadata
+            $metadata = $this->entityFactory->getEntityMetadata($targetEntityFqcn);
+        }
+
+        $lastPropertyName = $propertyNameParts[\count($propertyNameParts) - 1];
+
+        if ($parentMetadata->isSingleValuedAssociation($lastPropertyName)) {
+            $field->setCustomOption(AssociationField::OPTION_DOCTRINE_ASSOCIATION_TYPE, 'toOne');
+            $accessor = new PropertyAccessor();
+            $targetCrudControllerFqcn = $field->getCustomOption(AssociationField::OPTION_CRUD_CONTROLLER);
+
+            $field->setFormTypeOptionIfNotSet('class', $targetEntityFqcn);
+
+            try {
+                $relatedEntityId = $accessor->getValue($entityDto->getInstance(), $propertyName.'.'.$metadata->getIdentifierFieldNames()[0]);
+                $relatedEntityDto = $this->entityFactory->create($targetEntityFqcn, $relatedEntityId);
+
+                $field->setCustomOption(AssociationField::OPTION_RELATED_URL, $this->generateLinkToAssociatedEntity($targetCrudControllerFqcn, $relatedEntityDto));
+                $field->setFormattedValue($this->formatAsString($relatedEntityDto->getInstance(), $relatedEntityDto));
+            } catch (UnexpectedTypeException $e) {
+                // this may crash if something in the tree is null, so just do nothing then
+            }
+        } else {
+            $this->configureToManyAssociation($field);
         }
     }
 

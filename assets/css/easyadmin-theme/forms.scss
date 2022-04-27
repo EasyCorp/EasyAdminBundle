@@ -78,7 +78,7 @@ label.form-check-label {
 .form-widget input.form-control,
 .form-widget textarea.form-control,
 .form-widget .form-select {
-    background: var(--form-control-bg);
+    background-color: var(--form-control-bg);
     border: 1px solid var(--form-input-border-color);
     box-shadow: var(--form-input-shadow);
     color: var(--form-input-text-color);

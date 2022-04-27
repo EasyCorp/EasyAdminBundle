@@ -79,6 +79,7 @@ label.form-check-label {
 .form-widget textarea.form-control,
 .form-widget .form-select {
     background-color: var(--form-control-bg);
+    background-repeat: no-repeat; // see https://github.com/EasyCorp/EasyAdminBundle/issues/5197
     border: 1px solid var(--form-input-border-color);
     box-shadow: var(--form-input-shadow);
     color: var(--form-input-text-color);

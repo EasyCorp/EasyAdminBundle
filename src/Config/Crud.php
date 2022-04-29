@@ -379,9 +379,9 @@ class Crud
         return $this;
     }
 
-    public function setAutocompleteInstanceNormalizer(?callable $autocompleteInstanceNormalizer): self
+    public function setAutocompleteEntityNormalizer(?callable $autocompleteEntityNormalizer): self
     {
-        $this->dto->setAutocompleteInstanceNormalizer($autocompleteInstanceNormalizer);
+        $this->dto->setAutocompleteEntityNormalizer($autocompleteEntityNormalizer);
 
         return $this;
     }

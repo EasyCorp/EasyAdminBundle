@@ -469,7 +469,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
         return JsonResponse::fromJsonString(
             $paginator->getResultsAsJson(
-                $context->getCrud()->getAutocompleteInstanceNormalizer()
+                $context->getCrud()->getAutocompleteEntityNormalizer()
             )
         );
     }

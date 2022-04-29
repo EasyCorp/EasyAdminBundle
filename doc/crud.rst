@@ -142,7 +142,7 @@ Entity Options
             // By default EasyAdmin normalizes entities by calling __toString()
             // on their object. If you need different normalization for
             // autocompletion, you can pass custom callback
-            ->setAutocompleteInstanceNormalizer(fn (Entity $entity) => $entity->getname())
+            ->setAutocompleteEntityNormalizer(fn (Entity $entity) => $entity->getname())
         ;
     }
 

@@ -146,3 +146,17 @@ Symfony Forms: ``['Label visible to users' => 'submitted_value', ...]``::
 
 .. _`TomSelect`: https://tom-select.js.org/
 .. _`ChoiceType`: https://symfony.com/doc/current/reference/forms/types/entity.html
+
+setChoicesTranslatable
+~~~~~~~~~~~~~~~~~~~~~~
+
+Setting this option allows usage of `Translatable` objects within choices.
+When set choices should be provided in a "flipped" way, where submitted values
+are the keys and labels are values that can be strings or translatable objects::
+
+    yield ChoiceField::new('...')->setChoicesTranslatable()->setChoices([
+        'paid' => t('Paid Invoice'),
+        'pending' => t('Invoice Sent but Unpaid'),
+        'refunded' => 'Refunded Invoice', // You can mix strings with Translatable objects
+    ]);
+

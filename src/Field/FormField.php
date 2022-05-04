@@ -7,6 +7,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormPanelType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormRowType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminTabType;
 use Symfony\Component\Uid\Ulid;
+use Symfony\Contracts\Translation\TranslatableInterface;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -31,8 +32,8 @@ final class FormField implements FieldInterface
     }
 
     /**
-     * @param string|false|null $label
-     * @param string|null       $icon  The full CSS classes of the FontAwesome icon to render (see https://fontawesome.com/v6/search?m=free)
+     * @param TranslatableInterface|string|false|null $label
+     * @param string|null                             $icon  The full CSS classes of the FontAwesome icon to render (see https://fontawesome.com/v6/search?m=free)
      */
     public static function addPanel($label = false, ?string $icon = null): self
     {
@@ -77,7 +78,7 @@ final class FormField implements FieldInterface
     /**
      * @return static
      */
-    public static function addTab(string $label, ?string $icon = null): self
+    public static function addTab(TranslatableInterface|string $label, ?string $icon = null): self
     {
         $field = new self();
 

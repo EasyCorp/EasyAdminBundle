@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use Symfony\Contracts\Translation\TranslatableInterface;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -11,7 +12,7 @@ final class ActionDto
 {
     private ?string $type = null;
     private ?string $name = null;
-    private ?string $label = null;
+    private TranslatableInterface|string|null $label = null;
     private ?string $icon = null;
     private string $cssClass = '';
     private ?string $htmlElement = null;
@@ -60,12 +61,12 @@ final class ActionDto
         $this->name = $name;
     }
 
-    public function getLabel(): ?string
+    public function getLabel(): TranslatableInterface|string|null
     {
         return $this->label;
     }
 
-    public function setLabel(?string $label): void
+    public function setLabel(TranslatableInterface|string|null $label): void
     {
         $this->label = $label;
     }

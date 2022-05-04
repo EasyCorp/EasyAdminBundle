@@ -6,6 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Option\TextAlign;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Intl\Currencies;
+use Symfony\Contracts\Translation\TranslatableInterface;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -20,7 +21,7 @@ final class MoneyField implements FieldInterface
     public const OPTION_STORED_AS_CENTS = 'storedAsCents';
 
     /**
-     * @param string|false|null $label
+     * @param TranslatableInterface|string|false|null $label
      */
     public static function new(string $propertyName, $label = null): self
     {

@@ -23,7 +23,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use function Symfony\Component\String\u;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use function Symfony\Component\Translation\t;
+use Symfony\Contracts\Translation\TranslatableInterface;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -31,16 +32,14 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 final class AdminContextFactory
 {
     private string $cacheDir;
-    private TranslatorInterface $translator;
     private ?TokenStorageInterface $tokenStorage;
     private MenuFactory $menuFactory;
     private CrudControllerRegistry $crudControllers;
     private EntityFactory $entityFactory;
 
-    public function __construct(string $cacheDir, TranslatorInterface $translator, ?TokenStorageInterface $tokenStorage, MenuFactory $menuFactory, CrudControllerRegistry $crudControllers, EntityFactory $entityFactory)
+    public function __construct(string $cacheDir, ?TokenStorageInterface $tokenStorage, MenuFactory $menuFactory, CrudControllerRegistry $crudControllers, EntityFactory $entityFactory)
     {
         $this->cacheDir = $cacheDir;
-        $this->translator = $translator;
         $this->tokenStorage = $tokenStorage;
         $this->menuFactory = $menuFactory;
         $this->crudControllers = $crudControllers;
@@ -182,13 +181,22 @@ final class AdminContextFactory
 
             $entityInstance = null === $entityDto ? null : $entityDto->getInstance();
             $pageName = $crudDto->getCurrentPage();
-            $translatedSingularLabel = $this->translator->trans($crudDto->getEntityLabelInSingular($entityInstance, $pageName) ?? $entityName, $translationParameters, $translationDomain);
-            $translatedPluralLabel = $this->translator->trans($crudDto->getEntityLabelInPlural($entityInstance, $pageName) ?? $entityName, $translationParameters, $translationDomain);
-            $crudDto->setEntityLabelInSingular($translatedSingularLabel);
-            $crudDto->setEntityLabelInPlural($translatedPluralLabel);
 
-            $translationParameters['%entity_label_singular%'] = $translatedSingularLabel;
-            $translationParameters['%entity_label_plural%'] = $translatedPluralLabel;
+            $singularLabel = $crudDto->getEntityLabelInSingular($entityInstance, $pageName);
+            if (!$singularLabel instanceof TranslatableInterface) {
+                $singularLabel = t($singularLabel ?? $entityName, $translationParameters, $translationDomain);
+            }
+
+            $pluralLabel = $crudDto->getEntityLabelInPlural($entityInstance, $pageName);
+            if (!$pluralLabel instanceof TranslatableInterface) {
+                $pluralLabel = t($pluralLabel ?? $entityName, $translationParameters, $translationDomain);
+            }
+
+            $crudDto->setEntityLabelInSingular($singularLabel);
+            $crudDto->setEntityLabelInPlural($pluralLabel);
+
+            $translationParameters['%entity_label_singular%'] = $singularLabel;
+            $translationParameters['%entity_label_plural%'] = $pluralLabel;
         }
 
         return new I18nDto($locale, $textDirection, $translationDomain, $translationParameters);

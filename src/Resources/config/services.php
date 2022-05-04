@@ -83,7 +83,6 @@ use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
 use Symfony\Component\HttpKernel\KernelInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 return static function (ContainerConfigurator $container) {
     $services = $container->services()
@@ -173,11 +172,10 @@ return static function (ContainerConfigurator $container) {
 
         ->set(AdminContextFactory::class)
             ->arg(0, '%kernel.cache_dir%')
-            ->arg(1, service('translator'))
-            ->arg(2, new Reference('security.token_storage', ContainerInterface::NULL_ON_INVALID_REFERENCE))
-            ->arg(3, service(MenuFactory::class))
-            ->arg(4, service(CrudControllerRegistry::class))
-            ->arg(5, service(EntityFactory::class))
+            ->arg(1, new Reference('security.token_storage', ContainerInterface::NULL_ON_INVALID_REFERENCE))
+            ->arg(2, new Reference(MenuFactory::class))
+            ->arg(3, new Reference(CrudControllerRegistry::class))
+            ->arg(4, new Reference(EntityFactory::class))
 
         ->set(AdminUrlGenerator::class)
             // I don't know if we truly need the share() method to get a new instance of the
@@ -197,11 +195,10 @@ return static function (ContainerConfigurator $container) {
             ->arg(0, '%kernel.secret%')
 
         ->set(MenuFactory::class)
-            ->arg(0, service(AdminContextProvider::class))
-            ->arg(1, service(AuthorizationChecker::class))
-            ->arg(2, service('translator'))
-            ->arg(3, service('security.logout_url_generator'))
-            ->arg(4, service(AdminUrlGenerator::class))
+            ->arg(0, new Reference(AdminContextProvider::class))
+            ->arg(1, new Reference(AuthorizationChecker::class))
+            ->arg(2, new Reference('security.logout_url_generator'))
+            ->arg(3, new Reference(AdminUrlGenerator::class))
 
         ->set(EntityRepository::class)
             ->arg(0, service(AdminContextProvider::class))
@@ -269,11 +266,10 @@ return static function (ContainerConfigurator $container) {
         ->set(TextFilterConfigurator::class)
 
         ->set(ActionFactory::class)
-            ->arg(0, service(AdminContextProvider::class))
-            ->arg(1, service(AuthorizationChecker::class))
-            ->arg(2, service('translator'))
-            ->arg(3, service(AdminUrlGenerator::class))
-            ->arg(4, new Reference('security.csrf.token_manager', ContainerInterface::NULL_ON_INVALID_REFERENCE))
+            ->arg(0, new Reference(AdminContextProvider::class))
+            ->arg(1, new Reference(AuthorizationChecker::class))
+            ->arg(2, new Reference(AdminUrlGenerator::class))
+            ->arg(3, new Reference('security.csrf.token_manager', ContainerInterface::NULL_ON_INVALID_REFERENCE))
 
         ->set(SecurityVoter::class)
             ->arg(0, service(AuthorizationChecker::class))
@@ -287,9 +283,8 @@ return static function (ContainerConfigurator $container) {
         ->set(ArrayConfigurator::class)
 
         ->set(AssociationConfigurator::class)
-            ->arg(0, service(EntityFactory::class))
-            ->arg(1, service(AdminUrlGenerator::class))
-            ->arg(2, service(TranslatorInterface::class))
+            ->arg(0, new Reference(EntityFactory::class))
+            ->arg(1, new Reference(AdminUrlGenerator::class))
 
         ->set(AvatarConfigurator::class)
 
@@ -307,8 +302,7 @@ return static function (ContainerConfigurator $container) {
             ->tag(EasyAdminExtension::TAG_FIELD_CONFIGURATOR, ['priority' => -9999])
 
         ->set(CommonPreConfigurator::class)
-            ->arg(0, service('translator'))
-            ->arg(1, service('property_accessor'))
+            ->arg(0, new Reference('property_accessor'))
             ->tag(EasyAdminExtension::TAG_FIELD_CONFIGURATOR, ['priority' => 9999])
 
         ->set(CountryConfigurator::class)
@@ -344,10 +338,8 @@ return static function (ContainerConfigurator $container) {
         ->set(PercentConfigurator::class)
 
         ->set(ChoiceConfigurator::class)
-            ->arg(0, service('translator'))
 
         ->set(SlugConfigurator::class)
-            ->arg(0, service('translator'))
 
         ->set(TelephoneConfigurator::class)
 

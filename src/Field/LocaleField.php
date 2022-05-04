@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use Symfony\Component\Form\Extension\Core\Type\LocaleType;
+use Symfony\Contracts\Translation\TranslatableInterface;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -18,7 +19,7 @@ final class LocaleField implements FieldInterface
     public const OPTION_LOCALE_CODES_TO_REMOVE = 'localeCodesToRemove';
 
     /**
-     * @param string|false|null $label
+     * @param TranslatableInterface|string|false|null $label
      */
     public static function new(string $propertyName, $label = null): self
     {

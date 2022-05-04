@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
+use Symfony\Contracts\Translation\TranslatableInterface;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -78,19 +79,20 @@ final class FilterDto
     }
 
     /**
-     * @return string|false|null
+     * @return TranslatableInterface|string|false|null
      */
-    public function getLabel()/* : string|false|null */
+    public function getLabel()/* : TranslatableInterface|string|false|null */
     {
         return $this->label;
     }
 
     /**
-     * @param string|false|null $label
+     * @param TranslatableInterface|string|false|null $label
      */
-    public function setLabel(/* string|false|null */ $label): void
+    public function setLabel(/* TranslatableInterface|string|false|null */ $label): void
     {
         if (!\is_string($label)
+            && !$label instanceof TranslatableInterface
             && false !== $label
             && null !== $label) {
             trigger_deprecation(

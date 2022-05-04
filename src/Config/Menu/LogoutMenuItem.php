@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Config\Menu;
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu\MenuItemInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
+use Symfony\Contracts\Translation\TranslatableInterface;
 
 /**
  * @see EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem::linkToLogout()
@@ -14,7 +15,7 @@ final class LogoutMenuItem implements MenuItemInterface
 {
     use MenuItemTrait;
 
-    public function __construct(string $label, ?string $icon)
+    public function __construct(TranslatableInterface|string $label, ?string $icon)
     {
         $this->dto = new MenuItemDto();
 

@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use Symfony\Component\Form\Extension\Core\Type\LanguageType;
+use Symfony\Contracts\Translation\TranslatableInterface;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -22,7 +23,7 @@ final class LanguageField implements FieldInterface
     public const OPTION_LANGUAGE_CODES_TO_REMOVE = 'languageCodesToRemove';
 
     /**
-     * @param string|false|null $label
+     * @param TranslatableInterface|string|false|null $label
      */
     public static function new(string $propertyName, $label = null): self
     {

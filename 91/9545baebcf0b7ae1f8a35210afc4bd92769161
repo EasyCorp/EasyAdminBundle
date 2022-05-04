@@ -1,0 +1,268 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2022-03-03T19:31:52Z
+
+@Lustmored thanks for this PR. I looked into it a bit. I think it's a nice first step, but we're missing another step.
+
+My original idea was to use `TranslatableInterface` ourselves too. Instead of the current logic (translate everything in PHP and just render the result in Twig) I was thinking about translating NOTHING in PHP (just create `TranslatableInterface` objects) and let Twig deal with those translatable objects. What do you think?
+
+---------------------------------------------------------------------------
+
+by Lustmored at 2022-03-04T10:48:06Z
+
+> @Lustmored thanks for this PR. I looked into it a bit. I think it's a nice first step, but we're missing another step.
+>
+> My original idea was to use `TranslatableInterface` ourselves too. Instead of the current logic (translate everything in PHP and just render the result in Twig) I was thinking about translating NOTHING in PHP (just create `TranslatableInterface` objects) and let Twig deal with those translatable objects. What do you think?
+
+I think this is great idea. I will investigate further and update PR, but since translation in fact occurs only in a few places this should be very easy to achieve.
+
+My first thought was to transform translatable values as soon as possible, but unfortunately catalogues are configurable on dashboard level, so that's unachievable. Instead I will go other way around and only transform translatable content into `Translatable` object as lazily as possible.
+
+---------------------------------------------------------------------------
+
+by Lustmored at 2022-03-04T13:16:00Z
+
+@javiereguiluz I have made a single step forward. It is by no means finished (for example - I had to do a major change in `ChoiceConfigurator` and ran out of time for today to fix tests).
+
+But this shows the direction I took and it would be great to gather more feedback in the meantime :)
+
+---------------------------------------------------------------------------
+
+by Lustmored at 2022-03-11T12:04:30Z
+
+I think I have achieved all I wanted here and am ready for criticism :smiley:
+
+I have added convenience option to `ChoiceField` to allow passing `Translatable` choice values (this requires passing choices in a flipped way as object cannot be keys) as it's something I use a lot in my projects and I think others can benefit from this shortcut.
+
+I didn't add many tests as I'm pretty unsure about what to add where, so if you see something that should have tests please point at it and give me a hint as to where such tests should go within EasyAdmin test suite and I'll do it :+1:
+
+---------------------------------------------------------------------------
+
+by michaelKaefer at 2022-03-14T11:40:58Z
+
+IMHO the next step is that @javiereguiluz decides if the PR is better for `4.x` or for `5.x`. IMHO it should be for `5.x` because of the BC breaks (but there's no branch `5.x` yet..).
+
+By the way: I will do my best to review parts of the PR but I'm absolutely not able to forecast what all the changes will result in, so you will have to wait for the maintainers.. But it's a huge PR and a clear improvement for sure!
+
+---------------------------------------------------------------------------
+
+by Lustmored at 2022-03-14T11:48:08Z
+
+> IMHO the next step is that @javiereguiluz decides if the PR is better for `4.x` or for `5.x`. IMHO it should be for `5.x` because of the BC breaks (but there's no branch `5.x` yet..).
+>
+> By the way: I will do my best to review parts of the PR but I'm absolutely not able to forecast what all the changes will result in, so you will have to wait for the maintainers.. But it's a huge PR and a clear improvement for sure!
+
+I am right with you on the `5.x` part - let's wait for maintainers.
+
+I wasn't aware you're not the maintainer (didn't check that, sorry). But every feedback is worth a lot, so I am definitely looking forward to some constructive criticism :+1:
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2022-03-14T18:45:25Z
+
+About BC breaks ... one thing to keep in mind is that we are not Symfony. We don't have resources to provide a "perfect BC policy", so we need to provide a "good BC policy".
+
+However, let's try to minimize annoying changes for our users. For example, about this change:
+
+```diff
+-    public function getCustomPageTitle(string $pageName = null, $entityInstance = null): ?string
++   public function getCustomPageTitle(array $translationParameters = [], string $pageName = null, $entityInstance = null): ?TranslatableInterface
+```
+
+I'd say that:
+
+(1) Replacing `?string` by `?TranslatableInterface` as return type is OK. 99.99% of the times this method is used in a Twig template, so nothing will change. If you call this in PHP (e.g. in a test) you only need to do minor changes (e.g. add a `(string)` cast to the result of this method).
+
+(2) Changing the arguments looks like a more problematic change. Could we at least add the new argument (`array $translationParameters = []`) at the end of the argument list?
+
+Thanks!
+
+---------------------------------------------------------------------------
+
+by Lustmored at 2022-03-14T19:14:21Z
+
+> (2) Changing the arguments looks like a more problematic change. Could we at least add the new argument (`array $translationParameters = []`) at the end of the argument list?
+
+Sure, I will try to find such places and update PR tomorrow :+1:
+
+---------------------------------------------------------------------------
+
+by michaelKaefer at 2022-03-14T19:21:40Z
+
+I found a more drastic BC break which will be simple to fix I hope. In an app I configure the translation domain in the `DashboardController`:
+
+```php
+    public function configureDashboard(): Dashboard
+    {
+        return Dashboard::new()
+            // the domain used by default is 'messages'
+            ->setTranslationDomain('admin');
+```
+
+This domain is ignored in your PR and the domain defaults to `messages`, so all my existing translations for the `admin` domain are not used and parts of the app are not translated:
+- menu labels
+- field labels (the heading columns in the index table)
+- form field labels which a not translated via Symfony forms (for example form panel labels)
+- maybe more?
+
+---------------------------------------------------------------------------
+
+by Lustmored at 2022-03-15T09:58:22Z
+
+> (2) Changing the arguments looks like a more problematic change. Could we at least add the new argument (`array $translationParameters = []`) at the end of the argument list?
+
+I have pushed changes that make signature changes somehow BC.
+
+> This domain is ignored in your PR and the domain defaults to `messages`, so all my existing translations for the `admin` domain are not used and parts of the app are not translated:
+
+Could you please share more? Are you using strings/nulls/`Translatable` there? My initial thought is that you use `Translatable` and didn't specify domain when constructing them. But I think there might be some code path that I missed, so please share a few lines where you specify labels that aren't correctly translated and I'll investigate :+1:
+
+---------------------------------------------------------------------------
+
+by michaelKaefer at 2022-03-15T10:11:06Z
+
+My dashboard controller:
+```php
+class DashboardController extends AbstractDashboardController
+{
+    public function configureDashboard(): Dashboard
+    {
+        return Dashboard::new()
+            // the domain used by default is 'messages'
+            ->setTranslationDomain('foobar'); // Note: we can cahnge the domain
+    }
+
+    public function configureMenuItems(): iterable
+    {
+        yield MenuItem::section('baz.baz');
+    }
+}
+```
+
+My `translations/foobar.de.yaml`:
+```ỳaml
+baz:
+  baz: 'This translation should be used for the menu item'
+```
+
+---------------------------------------------------------------------------
+
+by Lustmored at 2022-03-15T10:36:15Z
+
+Thank you @michaelKaefer - I will work on that this Friday, as I must've clearly missed some path :+1:
+
+---------------------------------------------------------------------------
+
+by Lustmored at 2022-03-17T13:15:10Z
+
+@michaelKaefer In fact I missed one property typedef (for all menu items) and a few places in templates where labels should be translated, but weren't. I have tested mentioned places locally and it seems to be enough.
+
+I would love to have all of that covered in tests, but honestly speaking I have no idea how to approach testing such a big scope without writing new unit tests for every class :disappointed:
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2022-03-17T13:54:32Z
+
+@Lustmored don't worry about the lack of tests. It's my fault and I should have added more tests. We'll do that when we can. Cheers.
+
+---------------------------------------------------------------------------
+
+by Lustmored at 2022-03-25T09:47:58Z
+
+@javiereguiluz is there anything more I should do in this matter? I believe my main objectives are already achieved so if there's anything more to be done to make this merge-able please let me know :)
+
+---------------------------------------------------------------------------
+
+by Lustmored at 2022-04-01T10:11:58Z
+
+@javiereguiluz I have migrated all '__ea__' prefixed messages to regular `Translatable` objects (per #4928). Please let me know if there is anything more I can do here :)
+
+---------------------------------------------------------------------------
+
+by Lustmored at 2022-04-15T10:53:36Z
+
+@javiereguiluz Friendly ping :smile_cat:
+
+---------------------------------------------------------------------------
+
+by Lustmored at 2022-04-19T10:39:55Z
+
+> @Lustmored thanks a lot for all the effort that you put on this feature. It's really great.
+>
+> While reviewing this, I only found one minor issue. In the `ActionFactory` we need to update the `translationParameters` of all labels, including `TranslatableInterface` objects. Otherwise, action labels don't have access to parameters like the entity name and that's why the "New" action button looks like this for all may CRUDs:
+>
+> <img alt="action_label_parameters" width="363" src="https://user-images.githubusercontent.com/73419/163802501-3f622506-f685-4323-8055-52b9e79a08ea.png">
+
+Thanks for the review. There are 2 topics I'd like to address to fully answer the problem here..
+
+Solving the problem in `ActionFactory`
+---------------------------------------------------
+
+Unfortunately what you're asking is not trivial and I'm not sure if even doable. `TranslatableInterface` defines only one method and that is `public function trans(TranslatorInterface $translator, string $locale = null): string;`. Therefore there is no contract for any kind of getters/setters/mutation.
+
+We cannot assume that all translatable objects will be of `TranslatableMessage` class (that has defined `getMessage` and `getParameters` which we need at the very least) as that'd limit consumer to just one implementation of `Translatable`.
+
+The only thing on the code side we could do here in my opinion is another `if` branch for objects of class `TranslatableMessage` (but not inherited from it as that could have constructor signature and functional changes, so probably `get_class($actionDto->getLabel()) === TranslatableMessage::class`) - that I can easily do.
+
+And the other thing is to warn people about that in the docs. I'm not the best in writing understandable manuals, but I can try to add some info about the topic here and there.
+
+Solving the problem elsewhere
+------------------------------------------
+
+As previous section outlined problems with changing translatable objects parameters in runtime we shall at least investigate what we can do in other places. The problem in fact has source in `Actions` class where those action labels are created. In this code path there is no access to the AdminContext (and it's probably too early to even call `getTranslationParameters()` but I might be mistaken here).
+
+One solution I see here is to introduce another `Translatable` class (`EasyAdminTranslatableMessage`? `MutableTranslatableMessage`? don't what what name would be best) with additional method (`setDefaultParameters(array $parameters)`). Then whenever we face it (action factory, configurators etc.) we can just pass default parameters from admin context and be good to go.
+
+Of course that will also need some documenting so that people will know that whenever they require additional context data they need to use this class. Or even better - make it an interface (I have no idea how to name it) so that people can pass their own implementation whenever needed.
+
+Conclusion
+--------------
+
+I would definitely go with the second option and create a new interface that'd extend `Translatable` and a default implementation of it (that will be rather trivial) and then track all usages again and handle it correctly wherever we use additional parameters. I believe it falls into right usage of the `TranslatableInterface` contract and gives users full control.
+
+What do you think?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2022-04-19T19:00:30Z
+
+@Lustmored thanks for your detailed comment. I'd prefer to try to solve this without creating a custom class wrapping the default Translatable class from Symfony. I'm still don't know if it's possible, but let's try to think a bit more about this 🙏
+ Thanks!
+
+---------------------------------------------------------------------------
+
+by Lustmored at 2022-04-20T11:42:08Z
+
+@javiereguiluz I already define 2 such classes in this PR to mimic choice field behavior with translation - but I can just mark them as `@internal` as those are convenience wrappers that shouldn't be used elsewhere.
+
+For now I think going forward with just `TranslatableMessage` class sound impossible, bu I will investigate further on Friday as it will take some time. Just to clarify one question:
+
+Would you like just internally created translatables to have default parameters appended or the ones provided by consumer code too?
+
+It makes a big difference when looking for a solution. Personally I don't think handling "external" translatable objects is required, because user-land code can just specify all parameters whenever creating object (that was impossible with strings therefore the need for those default parameters).
+
+---------------------------------------------------------------------------
+
+by Lustmored at 2022-04-22T10:05:14Z
+
+@javiereguiluz I have went ahead with more-less what I proposed in the first option. I have created `TranslatableUtils` helper class with just one static method - `withParameters` that checks object type and if it is of `TranslatableMessage` class (and not any child of it) it creates a new object with additional parameters appended to it.
+
+Due to the nature of `TranslatableInterface` I see no way to reliably transform any other implementation, therefore I've added note about it to the docs. I believe it is not a big problem, as when someone uses custom translatable implementation they are probably aware of its internals and can work with that.
+
+In addition I've marked custom `Translatable` interfaces (`ChoiceMessage` and `ChoicesMessage`) to be `@internal` and final. As stated before they are in my opinion simplest solution to displaying choice field and shouldn't be used elsewhere.
+
+I have also tracked parameters usage and found it to be significant only for page titles and action labels, so I've added using `TranslatableUtils` to corresponding paths. If they are required elsewhere it's as easy as adding one static method call right now :)
+
+I have checked on live project and this implementation fixes button labels and hopefully satisfies what you wanted to achieve here. How does that sound?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2022-04-27T18:37:09Z
+
+@Lustmored thanks a lot for your new updates to this feature. Yes, I've checked it locally in my own projects and I can no longer see any error. I intend to merge this before the end of this week, probably during the weekend. If you can rebase your PR one last time, it'd be great. Otherwise I'll try to do that myself while merging. Thanks!
+
+---------------------------------------------------------------------------
+
+by Lustmored at 2022-04-28T08:40:07Z
+
+@javiereguiluz I have rebased the branch. I see there are a few places where this branch adds/removes `|trans` or `|raw` in templates (in just a few spots) and I'm uncertain if during rebasing at some point I've missed some changes or those are required (don't remember tbh). Please take a quick look at that before/during merging just to be sure :+1:

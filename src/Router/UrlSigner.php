@@ -4,13 +4,6 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Router;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 
-trigger_deprecation(
-    'easycorp/easyadmin-bundle',
-    '4.1.0',
-    'EasyAdmin URLs no longer include signatures because they don\'t provide any additional security. The "%s" class will be removed in future EasyAdmin versions, so you should stop using it.',
-    __CLASS__
-);
-
 /**
  * This class is entirely based on Symfony\Component\HttpKernel\UriSigner.
  * (c) Fabien Potencier <fabien@symfony.com> - MIT License.
@@ -23,6 +16,13 @@ final class UrlSigner
 
     public function __construct(string $kernelSecret)
     {
+        trigger_deprecation(
+            'easycorp/easyadmin-bundle',
+            '4.1.0',
+            'EasyAdmin URLs no longer include signatures because they don\'t provide any additional security. The "%s" class will be removed in future EasyAdmin versions, so you should stop using it.',
+            __CLASS__
+        );
+
         $this->kernelSecret = $kernelSecret;
     }
 

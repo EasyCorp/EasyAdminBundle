@@ -619,7 +619,7 @@
 {% block ea_fileupload_widget %}
     <div class="ea-fileupload">
         <div class="input-group">
-            {% set placeholder = '' %}
+            {% set placeholder = t('action.choose_file', {}, 'EasyAdminBundle') %}
             {% set title = '' %}
             {% set filesLabel = 'files'|trans({}, 'EasyAdminBundle') %}
             {% if currentFiles %}

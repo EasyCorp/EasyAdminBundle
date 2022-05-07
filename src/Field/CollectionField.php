@@ -19,6 +19,10 @@ final class CollectionField implements FieldInterface
     public const OPTION_ENTRY_TYPE = 'entryType';
     public const OPTION_SHOW_ENTRY_LABEL = 'showEntryLabel';
     public const OPTION_RENDER_EXPANDED = 'renderExpanded';
+    public const OPTION_USE_CRUD_FORM = 'useCrudForm';
+    public const OPTION_CRUD_FORM_CONTROLLER_FQCN = 'crudFormControllerFqcn';
+    public const OPTION_CRUD_FORM_NEW_PAGE_NAME = 'crudFormNewPageName';
+    public const OPTION_CRUD_FORM_EDIT_PAGE_NAME = 'crudFormEditPageName';
 
     /**
      * @param string|false|null $label
@@ -38,7 +42,11 @@ final class CollectionField implements FieldInterface
             ->setCustomOption(self::OPTION_ENTRY_IS_COMPLEX, null)
             ->setCustomOption(self::OPTION_ENTRY_TYPE, null)
             ->setCustomOption(self::OPTION_SHOW_ENTRY_LABEL, false)
-            ->setCustomOption(self::OPTION_RENDER_EXPANDED, false);
+            ->setCustomOption(self::OPTION_RENDER_EXPANDED, false)
+            ->setCustomOption(self::OPTION_USE_CRUD_FORM, false)
+            ->setCustomOption(self::OPTION_CRUD_FORM_CONTROLLER_FQCN, null)
+            ->setCustomOption(self::OPTION_CRUD_FORM_NEW_PAGE_NAME, null)
+            ->setCustomOption(self::OPTION_CRUD_FORM_EDIT_PAGE_NAME, null);
     }
 
     public function allowAdd(bool $allow = true): self
@@ -83,6 +91,16 @@ final class CollectionField implements FieldInterface
     public function renderExpanded(bool $renderExpanded = true): self
     {
         $this->setCustomOption(self::OPTION_RENDER_EXPANDED, $renderExpanded);
+
+        return $this;
+    }
+
+    public function useCrudForm(bool $useCrudForm = true, ?string $controllerFqcn = null, ?string $newPageName = null, ?string $editPageName = null): self
+    {
+        $this->setCustomOption(self::OPTION_USE_CRUD_FORM, $useCrudForm);
+        $this->setCustomOption(self::OPTION_CRUD_FORM_CONTROLLER_FQCN, $controllerFqcn);
+        $this->setCustomOption(self::OPTION_CRUD_FORM_NEW_PAGE_NAME, $newPageName);
+        $this->setCustomOption(self::OPTION_CRUD_FORM_EDIT_PAGE_NAME, $editPageName);
 
         return $this;
     }

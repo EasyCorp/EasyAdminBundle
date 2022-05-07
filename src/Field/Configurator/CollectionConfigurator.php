@@ -3,17 +3,23 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Field\Configurator;
 
 use Doctrine\ORM\PersistentCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\ControllerFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudFormType;
 use Symfony\Component\Form\Extension\Core\Type\CountryType;
 use Symfony\Component\Form\Extension\Core\Type\CurrencyType;
 use Symfony\Component\Form\Extension\Core\Type\LanguageType;
 use Symfony\Component\Form\Extension\Core\Type\LocaleType;
 use Symfony\Component\Form\Extension\Core\Type\TimezoneType;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
 use function Symfony\Component\String\u;
 
 /**
@@ -21,6 +27,17 @@ use function Symfony\Component\String\u;
  */
 final class CollectionConfigurator implements FieldConfiguratorInterface
 {
+    private RequestStack $requestStack;
+    private EntityFactory $entityFactory;
+    private ControllerFactory $controllerFactory;
+
+    public function __construct(RequestStack $requestStack, EntityFactory $entityFactory, ControllerFactory $controllerFactory)
+    {
+        $this->requestStack = $requestStack;
+        $this->entityFactory = $entityFactory;
+        $this->controllerFactory = $controllerFactory;
+    }
+
     public function supports(FieldDto $field, EntityDto $entityDto): bool
     {
         return CollectionField::class === $field->getFieldFqcn();
@@ -58,6 +75,34 @@ final class CollectionConfigurator implements FieldConfiguratorInterface
         }
 
         $field->setFormattedValue($this->formatCollection($field, $context));
+
+        if (true === $field->getCustomOption(CollectionField::OPTION_USE_CRUD_FORM)) {
+            if (!$entityDto->isAssociation($field->getProperty())) {
+                throw new \RuntimeException(sprintf('The "%s" field is not a Doctrine association, so it cannot be used as a collection field when CRUD form usage is enabled.', $field->getProperty()));
+            }
+
+            if (null !== $field->getCustomOptions()->get(CollectionField::OPTION_ENTRY_TYPE)) {
+                throw new \RuntimeException(sprintf('When using "%s" as a collection field with CRUD form usage enabled the entry type must not be set.', $field->getProperty()));
+            }
+
+            $targetEntityFqcn = $field->getDoctrineMetadata()->get('targetEntity');
+            $targetCrudControllerFqcn = $field->getCustomOption(CollectionField::OPTION_CRUD_FORM_CONTROLLER_FQCN)
+                ?? $context->getCrudControllers()->findCrudFqcnByEntityFqcn($targetEntityFqcn);
+
+            $field->setFormTypeOption('entry_type', CrudFormType::class);
+
+            $editPageName = $field->getCustomOption(CollectionField::OPTION_CRUD_FORM_EDIT_PAGE_NAME) ?? 'edit';
+            $editEntityDto = $this->createEntityDto($targetEntityFqcn, $targetCrudControllerFqcn, 'edit', $editPageName);
+            $field->setFormTypeOption('entry_options.entityDto', $editEntityDto);
+
+            $newPageName = $field->getCustomOption(CollectionField::OPTION_CRUD_FORM_NEW_PAGE_NAME) ?? 'new';
+            $newEntityDto = $this->createEntityDto($targetEntityFqcn, $targetCrudControllerFqcn, 'new', $newPageName);
+            try {
+                $field->setFormTypeOption('prototype_options.entityDto', $newEntityDto);
+            } catch (UndefinedOptionsException $exception) {
+                throw new \RuntimeException('To enable CRUD form usage for collection fields Symfony 6.1 or higher is required.', 0, $exception);
+            }
+        }
     }
 
     private function formatCollection(FieldDto $field, AdminContext $context)
@@ -96,5 +141,22 @@ final class CollectionConfigurator implements FieldConfiguratorInterface
         }
 
         return 0;
+    }
+
+    private function createEntityDto(string $targetEntityFqcn, string $targetCrudControllerFqcn, string $crudAction, string $pageName): EntityDto
+    {
+        $entityDto = $this->entityFactory->create($targetEntityFqcn);
+
+        $crudController = $this->controllerFactory->getCrudControllerInstance(
+            $targetCrudControllerFqcn,
+            $crudAction,
+            $this->requestStack->getMainRequest()
+        );
+
+        $fields = $crudController->configureFields($pageName);
+
+        $this->entityFactory->processFields($entityDto, FieldCollection::new($fields));
+
+        return $entityDto;
     }
 }

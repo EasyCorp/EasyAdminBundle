@@ -41,6 +41,28 @@ prefer to now allow that::
 
     yield CollectionField::new('...')->allowAdd(false);
 
+useCrudForm
+~~~~~~~~~~~
+
+If you want to reuse the CRUD form of an associated entity you can use this option::
+
+    yield CollectionField::new('...')->useCrudForm();
+
+The CRUD controller can be passed as an argument as well as the page names that are
+used when the CRUD controller's method ``CrudController::configureFields($pageName)``
+is called::
+
+    yield CollectionField::new('...')->useCrudForm(
+        true,
+        CategoryCrudController::class,
+        'new_category_on_article_page',
+        'edit_category_on_article_page'
+    );
+
+.. note::
+
+    To use the CRUD form option Symfony 6.1 or higher is required.
+
 allowDelete
 ~~~~~~~~~~~
 

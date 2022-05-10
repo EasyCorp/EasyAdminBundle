@@ -39,7 +39,7 @@ class ChoiceFieldTest extends AbstractFieldTest
 
     public function testFieldWithTranslatableChoices()
     {
-        $field = ChoiceField::new('foo')->setChoices([1 => t('foo'), 2 => 'bar'])->setChoicesTranslatable();
+        $field = ChoiceField::new('foo')->setTranslatableChoices([1 => t('foo'), 2 => 'bar']);
 
         $field->setValue(1);
         self::assertSame('foo', (string) $this->configure($field)->getFormattedValue());

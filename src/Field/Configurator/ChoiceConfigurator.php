@@ -8,8 +8,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
-use EasyCorp\Bundle\EasyAdminBundle\Translation\ChoiceMessage;
-use EasyCorp\Bundle\EasyAdminBundle\Translation\ChoicesMessage;
+use EasyCorp\Bundle\EasyAdminBundle\Translation\TranslatableChoiceMessage;
+use EasyCorp\Bundle\EasyAdminBundle\Translation\TranslatableChoiceMessageCollection;
 use function Symfony\Component\String\u;
 use function Symfony\Component\Translation\t;
 use Symfony\Contracts\Translation\TranslatableInterface;
@@ -26,7 +26,7 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
 
     public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
     {
-        $areChoicesTranslatable = $field->getCustomOption(ChoiceField::OPTION_CHOICES_TRANSLATABLE);
+        $areChoicesTranslatable = $field->getCustomOption(ChoiceField::OPTION_USE_TRANSLATABLE_CHOICES);
         $isExpanded = $field->getCustomOption(ChoiceField::OPTION_RENDER_EXPANDED);
         $isMultipleChoice = $field->getCustomOption(ChoiceField::OPTION_ALLOW_MULTIPLE_CHOICES);
 
@@ -87,13 +87,13 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
                         $translationDomain
                     );
                 }
-                $selectedChoices[] = new ChoiceMessage(
+                $selectedChoices[] = new TranslatableChoiceMessage(
                     $choiceValue,
                     $isRenderedAsBadge ? $this->getBadgeCssClass($badgeSelector, $selectedValue, $field) : null
                 );
             }
         }
-        $field->setFormattedValue(new ChoicesMessage($selectedChoices, $isRenderedAsBadge));
+        $field->setFormattedValue(new TranslatableChoiceMessageCollection($selectedChoices, $isRenderedAsBadge));
     }
 
     private function getChoices($choiceGenerator, EntityDto $entity, FieldDto $field): array

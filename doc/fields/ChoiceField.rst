@@ -144,19 +144,25 @@ Symfony Forms: ``['Label visible to users' => 'submitted_value', ...]``::
         static fn (?MyEntity $foo, FieldDto $field): array => $field->getValue() < 10 ? $foo->getLowStockOptions() : $foo->getNormalStockOptions()
     );
 
-.. _`TomSelect`: https://tom-select.js.org/
-.. _`ChoiceType`: https://symfony.com/doc/current/reference/forms/types/entity.html
-
-setChoicesTranslatable
+setTranslatableChoices
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Setting this option allows usage of `Translatable` objects within choices.
-When set choices should be provided in a "flipped" way, where submitted values
-are the keys and labels are values that can be strings or translatable objects::
+PHP doesn't allow using objects as array keys. That's why you can't use the
+``setChoices()`` method when using ``TranslatableMessage`` objects to define
+the labels of the choices.
 
-    yield ChoiceField::new('...')->setChoicesTranslatable()->setChoices([
+Instead, use this method that works the same as ``setChoices()`` but flips the
+order to use ``value => label`` instead of ``label => value``::
+
+    use function Symfony\Component\Translation\t;
+    // ...
+
+    yield ChoiceField::new('...')->setTranslatableChoices([
         'paid' => t('Paid Invoice'),
         'pending' => t('Invoice Sent but Unpaid'),
-        'refunded' => 'Refunded Invoice', // You can mix strings with Translatable objects
+        // if you want, some choices can use strings instead of objects
+        'refunded' => 'Refunded Invoice',
     ]);
 
+.. _`TomSelect`: https://tom-select.js.org/
+.. _`ChoiceType`: https://symfony.com/doc/current/reference/forms/types/entity.html

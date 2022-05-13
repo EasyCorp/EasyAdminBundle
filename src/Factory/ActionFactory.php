@@ -12,7 +12,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
-use EasyCorp\Bundle\EasyAdminBundle\Translation\TranslatableUtils;
+use EasyCorp\Bundle\EasyAdminBundle\Translation\TranslatableMessageBuilder;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
@@ -120,12 +120,7 @@ final class ActionFactory
             $translatableActionLabel = empty($label) ? $label : t($label, $translationParameters, $translationDomain);
             $actionDto->setLabel($translatableActionLabel);
         } else {
-            $actionDto->setLabel(
-                TranslatableUtils::withParameters(
-                    $actionDto->getLabel(),
-                    $defaultTranslationParameters
-                )
-            );
+            $actionDto->setLabel(TranslatableMessageBuilder::withParameters($actionDto->getLabel(), $defaultTranslationParameters));
         }
 
         $defaultTemplatePath = $adminContext->getTemplatePath('crud/action');

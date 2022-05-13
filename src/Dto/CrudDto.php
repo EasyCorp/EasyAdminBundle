@@ -5,7 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
-use EasyCorp\Bundle\EasyAdminBundle\Translation\TranslatableUtils;
+use EasyCorp\Bundle\EasyAdminBundle\Translation\TranslatableMessageBuilder;
 use function Symfony\Component\Translation\t;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
@@ -168,7 +168,7 @@ final class CrudDto
         }
 
         if ($title instanceof TranslatableInterface) {
-            return TranslatableUtils::withParameters($title, $translationParameters);
+            return TranslatableMessageBuilder::withParameters($title, $translationParameters);
         }
 
         return t($title, $translationParameters);

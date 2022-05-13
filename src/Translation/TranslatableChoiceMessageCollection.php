@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace EasyCorp\Bundle\EasyAdminBundle\Translation;
 
 use Symfony\Contracts\Translation\TranslatableInterface;
@@ -12,10 +10,10 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  *
  * @internal
  */
-final class ChoicesMessage implements TranslatableInterface
+final class TranslatableChoiceMessageCollection implements TranslatableInterface
 {
     public function __construct(
-        /** @var ChoiceMessage[] */
+        /** @var TranslatableChoiceMessage[] */
         private array $choices,
         private bool $isRenderedAsBadge
     ) {
@@ -26,7 +24,7 @@ final class ChoicesMessage implements TranslatableInterface
         return implode(
             $this->isRenderedAsBadge ? '' : ', ',
             array_map(
-                static fn (ChoiceMessage $message) => $message->trans($translator, $locale),
+                static fn (TranslatableChoiceMessage $message) => $message->trans($translator, $locale),
                 $this->choices
             )
         );

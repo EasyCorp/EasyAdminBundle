@@ -16,7 +16,7 @@ final class ChoiceField implements FieldInterface
     public const OPTION_ALLOW_MULTIPLE_CHOICES = 'allowMultipleChoices';
     public const OPTION_AUTOCOMPLETE = 'autocomplete';
     public const OPTION_CHOICES = 'choices';
-    public const OPTION_CHOICES_TRANSLATABLE = 'choicesTranslatable';
+    public const OPTION_USE_TRANSLATABLE_CHOICES = 'useTranslatableChoices';
     public const OPTION_RENDER_AS_BADGES = 'renderAsBadges';
     public const OPTION_RENDER_EXPANDED = 'renderExpanded';
     public const OPTION_WIDGET = 'widget';
@@ -40,7 +40,7 @@ final class ChoiceField implements FieldInterface
             ->addCssClass('field-select')
             ->setDefaultColumns('') // this is set dynamically in the field configurator
             ->setCustomOption(self::OPTION_CHOICES, null)
-            ->setCustomOption(self::OPTION_CHOICES_TRANSLATABLE, false)
+            ->setCustomOption(self::OPTION_USE_TRANSLATABLE_CHOICES, false)
             ->setCustomOption(self::OPTION_ALLOW_MULTIPLE_CHOICES, false)
             ->setCustomOption(self::OPTION_RENDER_AS_BADGES, null)
             ->setCustomOption(self::OPTION_RENDER_EXPANDED, false)
@@ -66,6 +66,10 @@ final class ChoiceField implements FieldInterface
      * Given choices must follow the same format used in Symfony Forms:
      * ['Label visible to users' => 'submitted_value', ...].
      *
+     * If the contents of the choice values are translatable objects, use the
+     * setTranslatableChoices() method instead:
+     * ['submitted_value' => t('Label visible to users'), ...].
+     *
      * In addition to an array, you can use a PHP callback, which is passed the instance
      * of the current entity (it can be null) and the FieldDto as the second argument:
      * ->setChoices(fn () => ['foo' => 1, 'bar' => 2])
@@ -84,14 +88,16 @@ final class ChoiceField implements FieldInterface
     }
 
     /**
-     * When set choices must follow flipped format where values can be translatable objects:
-     * ['submitted_value' => t('field.label'), 'other_value' => 'Field Label', ...].
+     * When the contents of the choices use translatable objects, you can't use the
+     * setChoices() method because PHP doesn't allow using objects as array keys.
      *
-     * You still can use callback, but it is assumed to return flipped values too.
+     * Given choices must follow the opposite of the format used in Symfony Forms:
+     * ['submitted_value' => t('Label visible to users'), ...].
      */
-    public function setChoicesTranslatable(bool $choicesTranslatable = true): self
+    public function setTranslatableChoices($choiceGenerator): self
     {
-        $this->setCustomOption(self::OPTION_CHOICES_TRANSLATABLE, $choicesTranslatable);
+        $this->setChoices($choiceGenerator);
+        $this->setCustomOption(self::OPTION_USE_TRANSLATABLE_CHOICES, true);
 
         return $this;
     }

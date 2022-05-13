@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace EasyCorp\Bundle\EasyAdminBundle\Translation;
 
 use function Symfony\Component\Translation\t;
@@ -11,10 +9,11 @@ use Symfony\Contracts\Translation\TranslatableInterface;
 /**
  * @author Jakub Caban <kuba.iluvatar@gmail.com>
  */
-class TranslatableUtils
+class TranslatableMessageBuilder
 {
     /**
-     * This method will append provided parameters to translatable object if it is of TranslatableMessage class.
+     * This method creates a new TranslationMessage object with the same content and domain as the given object,
+     * but updates its translation parameters to merge them with the new given parameters.
      *
      * Due to the limited nature of TranslatableInterface we cannot guarantee correct behavior
      * of any other TranslatableInterface implementation, therefore they will be returned as provided.
@@ -27,10 +26,7 @@ class TranslatableUtils
 
         return t(
             $translatable->getMessage(),
-            array_merge(
-                $parameters,
-                $translatable->getParameters()
-            ),
+            array_merge($parameters, $translatable->getParameters()),
             $translatable->getDomain()
         );
     }

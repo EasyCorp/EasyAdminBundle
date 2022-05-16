@@ -63,10 +63,8 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
         $doctrineMetadata = $entityDto->hasProperty($field->getProperty()) ? $entityDto->getPropertyMetadata($field->getProperty())->all() : [];
         $field->setDoctrineMetadata($doctrineMetadata);
 
-        if (null !== $field->getHelp()) {
-            $helpMessage = $this->buildHelpOption($field, $translationDomain);
+        if (null !== $helpMessage = $this->buildHelpOption($field, $translationDomain)) {
             $field->setHelp($helpMessage);
-
             $field->setFormTypeOptionIfNotSet('help', $helpMessage);
             $field->setFormTypeOptionIfNotSet('help_html', true);
         }
@@ -96,15 +94,12 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
 
     private function buildHelpOption(FieldDto $field, string $translationDomain): ?TranslatableInterface
     {
-        if ((null === $help = $field->getHelp()) || empty($help)) {
+        $help = $field->getHelp();
+        if (null === $help || $help instanceof TranslatableInterface) {
             return $help;
         }
 
-        if ($help instanceof TranslatableInterface) {
-            return $help;
-        }
-
-        return t($help, $field->getTranslationParameters(), $translationDomain);
+        return '' === $help ? null : t($help, $field->getTranslationParameters(), $translationDomain);
     }
 
     /**

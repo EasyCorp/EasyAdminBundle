@@ -10,6 +10,8 @@
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <meta name="generator" content="EasyAdmin" />
 
+        {% block head_favicon %}{% endblock %}
+
         <title>{{ block('page_title')|striptags|raw }}</title>
 
         {% block head_stylesheets %}

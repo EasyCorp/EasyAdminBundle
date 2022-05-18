@@ -8,6 +8,14 @@
 {% block body_class 'page-login' %}
 {% block page_title %}{{ page_title is defined ? page_title|raw : (ea is defined ? ea.dashboardTitle|raw : '') }}{% endblock %}
 
+{% block head_favicon %}
+    {% if favicon_path|default(false) %}
+        <link rel="shortcut icon" href="{{ favicon_path }}">
+    {% else %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}
+
 {% block wrapper_wrapper %}
     {% set page_title = block('page_title') %}
     {% set _username_label = username_label is defined ? username_label|trans : 'login_page.username'|trans({}, 'EasyAdminBundle') %}

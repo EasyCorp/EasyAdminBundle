@@ -28,6 +28,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeCrudActionEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityDeletedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityPersistedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityUpdatedEvent;
+use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeFieldsProcessedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\EntityRemoveException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\ForbiddenActionException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\InsufficientEntityPermissionException;
@@ -172,7 +173,12 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             throw new InsufficientEntityPermissionException($context);
         }
 
-        $this->container->get(EntityFactory::class)->processFields($context->getEntity(), FieldCollection::new($this->configureFields(Crud::PAGE_DETAIL)));
+        $fields = FieldCollection::new($this->configureFields(Crud::PAGE_DETAIL));
+
+        $event = new BeforeFieldsProcessedEvent($context->getEntity(), $fields, Crud::PAGE_DETAIL);
+        $this->container->get('event_dispatcher')->dispatch($event);
+
+        $this->container->get(EntityFactory::class)->processFields($context->getEntity(), $fields);
         $this->container->get(EntityFactory::class)->processActions($context->getEntity(), $context->getCrud()->getActionsConfig());
 
         $responseParameters = $this->configureResponseParameters(KeyValueStore::new([
@@ -206,7 +212,12 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             throw new InsufficientEntityPermissionException($context);
         }
 
-        $this->container->get(EntityFactory::class)->processFields($context->getEntity(), FieldCollection::new($this->configureFields(Crud::PAGE_EDIT)));
+        $fields = FieldCollection::new($this->configureFields(Crud::PAGE_EDIT));
+
+        $event = new BeforeFieldsProcessedEvent($context->getEntity(), $fields, Crud::PAGE_EDIT);
+        $this->container->get('event_dispatcher')->dispatch($event);
+
+        $this->container->get(EntityFactory::class)->processFields($context->getEntity(), $fields);
         $this->container->get(EntityFactory::class)->processActions($context->getEntity(), $context->getCrud()->getActionsConfig());
         $entityInstance = $context->getEntity()->getInstance();
 
@@ -272,7 +283,12 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         }
 
         $context->getEntity()->setInstance($this->createEntity($context->getEntity()->getFqcn()));
-        $this->container->get(EntityFactory::class)->processFields($context->getEntity(), FieldCollection::new($this->configureFields(Crud::PAGE_NEW)));
+        $fields = FieldCollection::new($this->configureFields(Crud::PAGE_NEW));
+
+        $event = new BeforeFieldsProcessedEvent($context->getEntity(), $fields, Crud::PAGE_NEW);
+        $this->container->get('event_dispatcher')->dispatch($event);
+
+        $this->container->get(EntityFactory::class)->processFields($context->getEntity(), $fields);
         $this->container->get(EntityFactory::class)->processActions($context->getEntity(), $context->getCrud()->getActionsConfig());
 
         $newForm = $this->createNewForm($context->getEntity(), $context->getCrud()->getNewFormOptions(), $context);
@@ -453,6 +469,10 @@ abstract class AbstractCrudController extends AbstractController implements Crud
     public function renderFilters(AdminContext $context): KeyValueStore
     {
         $fields = FieldCollection::new($this->configureFields(Crud::PAGE_INDEX));
+
+        $event = new BeforeFieldsProcessedEvent($context->getEntity(), $fields, Crud::PAGE_INDEX);
+        $this->container->get('event_dispatcher')->dispatch($event);
+
         $this->container->get(EntityFactory::class)->processFields($context->getEntity(), $fields);
         $filters = $this->container->get(FilterFactory::class)->create($context->getCrud()->getFiltersConfig(), $context->getEntity()->getFields(), $context->getEntity());
 

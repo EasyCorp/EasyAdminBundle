@@ -853,6 +853,11 @@ applications can rely on its default values:
                 // the same domain as the rest of the Dashboard)
                 'translation_domain' => 'admin',
 
+                // the full path of the favicon to use in the login page;
+                // the given value is passed "as is" to the "href" attribute of
+                // the "<link rel="shortcut icon">" tag used to render the icon
+                'favicon_path' => '/favicon-admin.svg',
+
                 // the title visible above the login form (define this option only if you are
                 // rendering the login template in a regular Symfony controller; when rendering
                 // it from an EasyAdmin Dashboard this is automatically set as the Dashboard title)

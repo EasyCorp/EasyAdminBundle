@@ -84,7 +84,7 @@ class EasyAdminTwigExtension extends AbstractExtension
             return $value;
         }
 
-        list($class, $method) = $filter->getCallable();
+        [$class, $method] = $filter->getCallable();
         if ($class instanceof ExtensionInterface) {
             return $filter->getCallable()($value, ...$filterArguments);
         }

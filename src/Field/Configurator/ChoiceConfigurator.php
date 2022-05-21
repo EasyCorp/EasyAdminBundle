@@ -8,21 +8,17 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
+use EasyCorp\Bundle\EasyAdminBundle\Translation\TranslatableChoiceMessage;
+use EasyCorp\Bundle\EasyAdminBundle\Translation\TranslatableChoiceMessageCollection;
 use function Symfony\Component\String\u;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use function Symfony\Component\Translation\t;
+use Symfony\Contracts\Translation\TranslatableInterface;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
 final class ChoiceConfigurator implements FieldConfiguratorInterface
 {
-    private TranslatorInterface $translator;
-
-    public function __construct(TranslatorInterface $translator)
-    {
-        $this->translator = $translator;
-    }
-
     public function supports(FieldDto $field, EntityDto $entityDto): bool
     {
         return ChoiceField::class === $field->getFieldFqcn();
@@ -30,6 +26,7 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
 
     public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
     {
+        $areChoicesTranslatable = $field->getCustomOption(ChoiceField::OPTION_USE_TRANSLATABLE_CHOICES);
         $isExpanded = $field->getCustomOption(ChoiceField::OPTION_RENDER_EXPANDED);
         $isMultipleChoice = $field->getCustomOption(ChoiceField::OPTION_ALLOW_MULTIPLE_CHOICES);
 
@@ -38,7 +35,12 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
             throw new \InvalidArgumentException(sprintf('The "%s" choice field must define its possible choices using the setChoices() method.', $field->getProperty()));
         }
 
-        $field->setFormTypeOptionIfNotSet('choices', $choices);
+        if ($areChoicesTranslatable) {
+            $field->setFormTypeOptionIfNotSet('choices', array_keys($choices));
+            $field->setFormTypeOptionIfNotSet('choice_label', fn ($value) => $choices[$value]);
+        } else {
+            $field->setFormTypeOptionIfNotSet('choices', $choices);
+        }
         $field->setFormTypeOptionIfNotSet('multiple', $isMultipleChoice);
         $field->setFormTypeOptionIfNotSet('expanded', $isExpanded);
 
@@ -72,17 +74,26 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
         $translationParameters = $context->getI18n()->getTranslationParameters();
         $translationDomain = $context->getI18n()->getTranslationDomain();
         $selectedChoices = [];
-        $flippedChoices = array_flip($choices);
+        $flippedChoices = $areChoicesTranslatable ? $choices : array_flip($choices);
         // $value is a scalar for single selections and an array for multiple selections
-        foreach (array_values((array) $fieldValue) as $selectedValue) {
+        foreach ((array) $fieldValue as $selectedValue) {
             if (null !== $selectedChoice = $flippedChoices[$selectedValue] ?? null) {
-                $choiceValue = $this->translator->trans($selectedChoice, $translationParameters, $translationDomain);
-                $selectedChoices[] = $isRenderedAsBadge
-                    ? sprintf('<span class="%s">%s</span>', $this->getBadgeCssClass($badgeSelector, $selectedValue, $field), $choiceValue)
-                    : $choiceValue;
+                if ($selectedValue instanceof TranslatableInterface) {
+                    $choiceValue = $selectedValue;
+                } else {
+                    $choiceValue = t(
+                        $selectedChoice,
+                        $translationParameters,
+                        $translationDomain
+                    );
+                }
+                $selectedChoices[] = new TranslatableChoiceMessage(
+                    $choiceValue,
+                    $isRenderedAsBadge ? $this->getBadgeCssClass($badgeSelector, $selectedValue, $field) : null
+                );
             }
         }
-        $field->setFormattedValue(implode($isRenderedAsBadge ? '' : ', ', $selectedChoices));
+        $field->setFormattedValue(new TranslatableChoiceMessageCollection($selectedChoices, $isRenderedAsBadge));
     }
 
     private function getChoices($choiceGenerator, EntityDto $entity, FieldDto $field): array

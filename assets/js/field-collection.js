@@ -52,12 +52,15 @@ const EaCollectionProperty = {
             const collectionItemsWrapper = collection.querySelector(newItemInsertionSelector);
 
             collectionItemsWrapper.insertAdjacentHTML('beforeend', newItemHtml);
+
+            // Execute JS scripts embedded in prototype
+            const collectionItems = collectionItemsWrapper.querySelectorAll('.field-collection-item');
+            const lastElement = collectionItems[collectionItems.length - 1];
+            lastElement.querySelectorAll('script').forEach(script => eval(script.innerHTML));
+
             // for complex collections of items, show the newly added item as not collapsed
             if (!isArrayCollection) {
                 EaCollectionProperty.updateCollectionItemCssClasses(collection);
-
-                const collectionItems = collectionItemsWrapper.querySelectorAll('.field-collection-item');
-                const lastElement = collectionItems[collectionItems.length - 1];
                 const lastElementCollapseButton = lastElement.querySelector('.accordion-button');
                 lastElementCollapseButton.classList.remove('collapsed');
                 const lastElementBody = lastElement.querySelector('.accordion-collapse');

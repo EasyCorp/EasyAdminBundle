@@ -25,6 +25,24 @@ Basic Information
 Options
 -------
 
+``includeOnly``
+~~~~~~~~~~~~~~~
+
+By default, the locale selector displays all the languages defined by
+the `ICU project`_, the same which is used by Symfony and many other tech projects.
+Use this option to only display the given language codes::
+
+    yield LanguageField::new('...')->includeOnly(['en', 'fr', 'pl']);
+
+``remove``
+~~~~~~~~~~
+
+By default, the locale selector displays all the languages defined by
+the `ICU project`_, the same which is used by Symfony and many other tech projects.
+Use this option to remove the given language codes from that list::
+
+    yield LanguageField::new('...')->remove(['fr', 'pl']);
+
 ``showCode``
 ~~~~~~~~~~~~
 
@@ -47,5 +65,16 @@ code (e.g. ``ar``, ``my``, ``sl``, etc.)::
 
     yield LanguageField::new('...')->showName(false);
 
+``useAlpha3Codes``
+~~~~~~~~~~~~~~~~~~
+
+By default, the field expects that the given language code is a 2-letter value
+following the `ISO 639-1 alpha-2`_ format. Use this option if you store the
+language code using the 3-letter value of the `ISO 639-2 alpha-3`_ format::
+
+    yield LanguageField::new('...')->useAlpha3Codes();
+
 .. _`LanguageType`: https://symfony.com/doc/current/reference/forms/types/language.html
 .. _`ICU project`: https://icu.unicode.org/
+.. _`ISO 639-1 alpha-2`: https://en.wikipedia.org/wiki/ISO_639-1
+.. _`ISO 639-2 alpha-3`: https://en.wikipedia.org/wiki/ISO_639-2

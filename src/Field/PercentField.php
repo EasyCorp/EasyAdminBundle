@@ -5,6 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\TextAlign;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use Symfony\Component\Form\Extension\Core\Type\PercentType;
+use Symfony\Contracts\Translation\TranslatableInterface;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -19,7 +20,7 @@ final class PercentField implements FieldInterface
     public const OPTION_ROUNDING_MODE = 'roundingMode';
 
     /**
-     * @param string|false|null $label
+     * @param TranslatableInterface|string|false|null $label
      */
     public static function new(string $propertyName, $label = null): self
     {

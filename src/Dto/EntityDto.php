@@ -185,7 +185,7 @@ final class EntityDto
     public function isAssociation(string $propertyName): bool
     {
         return \array_key_exists($propertyName, $this->metadata->associationMappings)
-            || (false !== strpos($propertyName, '.') && !$this->isEmbeddedClassProperty($propertyName));
+            || (str_contains($propertyName, '.') && !$this->isEmbeddedClassProperty($propertyName));
     }
 
     public function isToOneAssociation(string $propertyName): bool

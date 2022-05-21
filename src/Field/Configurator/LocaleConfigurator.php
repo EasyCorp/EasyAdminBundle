@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Field\Configurator;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -24,6 +25,11 @@ final class LocaleConfigurator implements FieldConfiguratorInterface
     {
         $field->setFormTypeOptionIfNotSet('attr.data-ea-widget', 'ea-autocomplete');
 
+        if (\in_array($context->getCrud()->getCurrentPage(), [Crud::PAGE_EDIT, Crud::PAGE_NEW], true)) {
+            $field->setFormTypeOption('choices', $this->generateFormTypeChoices($field->getCustomOption(LocaleField::OPTION_LOCALE_CODES_TO_KEEP), $field->getCustomOption(LocaleField::OPTION_LOCALE_CODES_TO_REMOVE)));
+            $field->setFormTypeOption('choice_loader', null);
+        }
+
         if (null === $localeCode = $field->getValue()) {
             return;
         }
@@ -40,8 +46,28 @@ final class LocaleConfigurator implements FieldConfiguratorInterface
     {
         try {
             return Locales::getName($localeCode);
-        } catch (MissingResourceException $e) {
+        } catch (MissingResourceException) {
             return null;
         }
+    }
+
+    private function generateFormTypeChoices(?array $localeCodesToKeep, ?array $localeCodesToRemove): array
+    {
+        $choices = [];
+
+        $locales = Locales::getNames();
+        foreach ($locales as $localeCode => $localeName) {
+            if (null !== $localeCodesToKeep && !\in_array($localeCode, $localeCodesToKeep, true)) {
+                continue;
+            }
+
+            if (null !== $localeCodesToRemove && \in_array($localeCode, $localeCodesToRemove, true)) {
+                continue;
+            }
+
+            $choices[$localeName] = $localeCode;
+        }
+
+        return $choices;
     }
 }

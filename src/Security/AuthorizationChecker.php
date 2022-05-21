@@ -30,7 +30,7 @@ class AuthorizationChecker implements AuthorizationCheckerInterface
 
         try {
             return $this->authorizationChecker->isGranted($permission, $subject);
-        } catch (AuthenticationCredentialsNotFoundException $e) {
+        } catch (AuthenticationCredentialsNotFoundException) {
             // this exception happens when there's no security configured in the application
             // that's a valid scenario for EasyAdmin, where security is not required (although very common)
             return true;

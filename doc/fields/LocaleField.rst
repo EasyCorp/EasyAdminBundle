@@ -25,6 +25,24 @@ Basic Information
 Options
 -------
 
+``includeOnly``
+~~~~~~~~~~~~~~~
+
+By default, the locale selector displays all the locales defined by
+the `ICU project`_, the same which is used by Symfony and many other tech projects.
+Use this option to only display the given locale codes::
+
+    yield LocaleField::new('...')->includeOnly(['en', 'fr', 'pl']);
+
+``remove``
+~~~~~~~~~~
+
+By default, the locale selector displays all the locales defined by
+the `ICU project`_, the same which is used by Symfony and many other tech projects.
+Use this option to remove the given locale codes from that list::
+
+    yield LocaleField::new('...')->remove(['fr', 'pl']);
+
 ``showCode``
 ~~~~~~~~~~~~
 

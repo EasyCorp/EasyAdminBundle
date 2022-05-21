@@ -106,14 +106,14 @@
                                             target="{{ item.linkTarget }}" rel="{{ item.linkRel }}" 
                                             referrerpolicy="origin-when-cross-origin">
                                             {% if item.icon is not empty %}<i class="fa fa-fw {{ item.icon }}"></i>{% endif %}
-                                            <span>{{ item.label }}</span>
+                                            <span>{{ item.label|trans }}</span>
                                         </a>
                                     {% else %}
                                         <a href="{{ item.linkUrl }}" class="dropdown-item user-action {{ item.cssClass }}"
                                         target="{{ item.linkTarget }}" rel="{{ item.linkRel }}"
                                         referrerpolicy="origin-when-cross-origin">
                                             {% if item.icon is not empty %}<i class="fa fa-fw {{ item.icon }}"></i>{% endif %}
-                                            <span>{{ item.label }}</span>
+                                            <span>{{ item.label|trans }}</span>
                                         </a>
                                     {% endif %}
                                 {% endif %}
@@ -121,6 +121,29 @@
                         {% endfor %}
                     {% endif %}
                 {% endblock user_menu %}
+            </ul>
+        {% endset %}
+
+        {% set appearance_menu_dropdown %}
+            <ul class="dropdown-menu dropdown-menu-end dropdown-appearance-menu">
+                <li class="dropdown-appearance-label">
+                    <span>{{ 'settings.appearance.label'|trans(domain = 'EasyAdminBundle') }}</span>
+                </li>
+                <li>
+                    <a href="#" class="dropdown-item" data-ea-color-scheme="light">
+                        <i class="far fa-sun"></i> <span>{{ 'settings.appearance.light'|trans(domain = 'EasyAdminBundle') }}</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="dropdown-item" data-ea-color-scheme="dark">
+                        <i class="far fa-moon"></i> <span>{{ 'settings.appearance.dark'|trans(domain = 'EasyAdminBundle') }}</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="dropdown-item active" data-ea-color-scheme="auto">
+                        <i class="fas fa-desktop"></i> <span>{{ 'settings.appearance.auto'|trans(domain = 'EasyAdminBundle') }}</span>
+                    </a>
+                </li>
             </ul>
         {% endset %}
 
@@ -132,7 +155,7 @@
                             <i class="fa fa-fw fa-bars"></i>
                         </button>
 
-                        <div id="responsive-header-logo" class="text-truncate">
+                        <div id="responsive-header-logo" class="text-truncate ms-auto">
                             {% block responsive_header_logo %}
                                 <a class="responsive-logo" title="{{ ea.dashboardTitle|striptags }}" href="{{ path(ea.dashboardRouteName) }}">
                                     {{ ea.dashboardTitle|raw }}
@@ -140,7 +163,7 @@
                             {% endblock responsive_header_logo %}
                         </div>
 
-                        <div class="dropdown user-menu-wrapper {{ is_granted(impersonator_permission) ? 'user-is-impersonated' }}">
+                        <div class="dropdown user-menu-wrapper {{ is_granted(impersonator_permission) ? 'user-is-impersonated' }} ms-auto">
                             <a class="user-details" type="button" data-bs-toggle="dropdown" data-bs-offset="0,5" aria-expanded="false">
                                 {# to make the site design consistent, always display the user avatar in responsive header
                                    and hide the user name (because there's no space left) regardless of the user config #}
@@ -153,6 +176,16 @@
 
                             {{ user_menu_dropdown }}
                         </div>
+
+                        {% if ea.dashboardHasDarkModeEnabled %}
+                            <div class="dropdown dropdown-appearance">
+                                <a class="dropdown-appearance-button" type="button" data-bs-toggle="dropdown" data-bs-offset="0,5" aria-expanded="false">
+                                    <i class="fas fa-adjust"></i>
+                                </a>
+
+                                {{ appearance_menu_dropdown }}
+                            </div>
+                        {% endif %}
                     {% endblock responsive_header %}
                 </div>
 
@@ -228,7 +261,7 @@
                                                         <i class="fas fa-search content-search-icon"></i>
 
                                                         <label class="content-search-label" data-value="{{ app.request.get('query') }}">
-                                                            <input class="form-control {{ app.request.get('query') is null ? 'is-blank' }}" type="search" name="query" value="{{ app.request.get('query') ?? '' }}" placeholder="{{ 'action.search'|trans(ea.i18n.translationParameters, 'EasyAdminBundle') }}" spellcheck="false" autocorrect="false" onInput="this.parentNode.dataset.value=this.value"{% if ea.crud.currentAction == 'index' and ea.crud.autofocusSearch == true %} autofocus="autofocus"{% endif %}>
+                                                            <input class="form-control {{ app.request.get('query') is null ? 'is-blank' }}" type="search" name="query" value="{{ app.request.get('query') ?? '' }}" placeholder="{{ t('action.search', ea.i18n.translationParameters, 'EasyAdminBundle')|trans }}" spellcheck="false" autocorrect="off" onInput="this.parentNode.dataset.value=this.value"{% if ea.crud.currentAction == 'index' and ea.crud.autofocusSearch == true %} autofocus="autofocus"{% endif %}>
                                                         </label>
 
                                                         {% if app.request.get('query') %}
@@ -260,31 +293,14 @@
                             </div>
 
                             {% if ea.dashboardHasDarkModeEnabled %}
-                                <div class="dropdown dropdown-appearance">
-                                    <a class="dropdown-appearance-button" type="button" data-bs-toggle="dropdown" data-bs-offset="0,5" aria-expanded="false">
-                                        <i class="fas fa-adjust"></i>
-                                    </a>
+                                <div class="navbar-custom-menu">
+                                    <div class="dropdown dropdown-appearance">
+                                        <a class="dropdown-appearance-button" type="button" data-bs-toggle="dropdown" data-bs-offset="0,5" aria-expanded="false">
+                                            <i class="fas fa-adjust"></i>
+                                        </a>
 
-                                    <ul class="dropdown-menu dropdown-menu-end">
-                                        <li class="dropdown-appearance-label">
-                                            <span>{{ 'settings.appearance.label'|trans(domain = 'EasyAdminBundle') }}</span>
-                                        </li>
-                                        <li>
-                                            <a href="#" class="dropdown-item" data-ea-color-scheme="light">
-                                                <i class="far fa-sun"></i> <span>{{ 'settings.appearance.light'|trans(domain = 'EasyAdminBundle') }}</span>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#" class="dropdown-item" data-ea-color-scheme="dark">
-                                                <i class="far fa-moon"></i> <span>{{ 'settings.appearance.dark'|trans(domain = 'EasyAdminBundle') }}</span>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#" class="dropdown-item active" data-ea-color-scheme="auto">
-                                                <i class="fas fa-desktop"></i> <span>{{ 'settings.appearance.auto'|trans(domain = 'EasyAdminBundle') }}</span>
-                                            </a>
-                                        </li>
-                                    </ul>
+                                        {{ appearance_menu_dropdown }}
+                                    </div>
                                 </div>
                             {% endif %}
                         {% endblock content_top_header %}
@@ -373,4 +389,35 @@
 
     </body>
 {% endblock body %}
+
+<script>
+    function updateDropdownItems()
+    {
+        var dropdownItems = document.querySelectorAll('.dropdown-appearance-menu li a');
+        dropdownItems.forEach(dropdownItem => {
+            // Get selected dropdown item
+            if (dropdownItem.className == "dropdown-item active")
+            {
+                // Update
+                var dropdownItemsToUpdate = document.querySelectorAll('[data-ea-color-scheme="' + dropdownItem.dataset.eaColorScheme + '"]');
+                dropdownItemsToUpdate.forEach(dropdownItemToUpdate => {
+                    dropdownItemToUpdate.classList.add("active");
+                });
+            }
+        })
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // Get all dropdown appearance menus
+        const appearanceDropdownMenus = document.querySelectorAll('.dropdown-appearance-button');
+        appearanceDropdownMenus.forEach(appareanceDropdownMenu => {
+            // Attach hide event on this dropdown menu
+            appareanceDropdownMenu.addEventListener('hide.bs.dropdown', function (event) {
+                updateDropdownItems();
+            })
+        });
+
+        updateDropdownItems();
+    });
+</script>
 </html>

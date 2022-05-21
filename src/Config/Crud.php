@@ -6,6 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Option\SortOrder;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\PaginatorDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
+use Symfony\Contracts\Translation\TranslatableInterface;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -113,7 +114,7 @@ class Crud
         return $this;
     }
 
-    public function setHelp(string $pageName, string $helpMessage): self
+    public function setHelp(string $pageName, TranslatableInterface|string $helpMessage): self
     {
         if (!\in_array($pageName, $this->getValidPageNames(), true)) {
             throw new \InvalidArgumentException(sprintf('The first argument of the "%s()" method must be one of these valid page names: %s ("%s" given).', __METHOD__, implode(', ', $this->getValidPageNames()), $pageName));

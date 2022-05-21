@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Config;
 
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
 use function Symfony\Component\String\u;
+use Symfony\Contracts\Translation\TranslatableInterface;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -41,12 +42,13 @@ final class Action
     }
 
     /**
-     * @param string|false|null $label Use FALSE to hide the label; use NULL to autogenerate it
-     * @param string|null       $icon  The full CSS classes of the FontAwesome icon to render (see https://fontawesome.com/v6/search?m=free)
+     * @param TranslatableInterface|string|false|null $label Use FALSE to hide the label; use NULL to autogenerate it
+     * @param string|null                             $icon  The full CSS classes of the FontAwesome icon to render (see https://fontawesome.com/v6/search?m=free)
      */
-    public static function new(string $name, /* string|false|null */ $label = null, ?string $icon = null): self
+    public static function new(string $name, /* TranslatableInterface|string|false|null */ $label = null, ?string $icon = null): self
     {
         if (!\is_string($label)
+            && !$label instanceof TranslatableInterface
             && false !== $label
             && null !== $label) {
             trigger_deprecation(
@@ -87,11 +89,12 @@ final class Action
     }
 
     /**
-     * @param string|false|null $label Use FALSE to hide the label; use NULL to autogenerate it
+     * @param TranslatableInterface|string|false|null $label Use FALSE to hide the label; use NULL to autogenerate it
      */
-    public function setLabel(/* string|false|null */ $label): self
+    public function setLabel(/* TranslatableInterface|string|false|null */ $label): self
     {
         if (!\is_string($label)
+            && !$label instanceof TranslatableInterface
             && false !== $label
             && null !== $label) {
             trigger_deprecation(

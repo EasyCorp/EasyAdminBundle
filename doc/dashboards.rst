@@ -51,7 +51,10 @@ Dashboard Route
 Each dashboard uses a single Symfony route to serve all its URLs. The needed
 information is passed using query string parameters. If you generated the
 dashboard with the ``make:admin:dashboard`` command, the route is defined using
-`Symfony route annotations`_ or PHP attributes (if the project requires PHP 8 or newer):
+`Symfony route annotations`_ or PHP attributes (if the project requires PHP 8 or newer).
+
+**The only requirement** is to define the route in a controller method named
+``index()``, which is the one called by EasyAdmin to render the dashboard:
 
 .. configuration-block::
 
@@ -98,6 +101,12 @@ dashboard with the ``make:admin:dashboard`` command, the route is defined using
 
             // ...
         }
+
+.. note::
+
+    Since ``index()`` is part of the Dashboard interface, you cannot add arguments
+    to it to inject dependencies. Instead, inject those dependencies in the
+    constructor method of the controller.
 
 The ``/admin`` URL is only a default value, so you can change it. If you do that,
 don't forget to also update this value in your Symfony security config to
@@ -722,7 +731,7 @@ Translation
 The backend interface is fully translated using the `Symfony translation`_
 features. EasyAdmin own messages and contents use the ``EasyAdminBundle``
 `translation domain`_ (thanks to our community for kindly providing translations
-for tens of languages).
+in tens of languages).
 
 The rest of the contents (e.g. the label of the menu items, entity and field
 names, etc.) use the ``messages`` translation domain by default. You can change
@@ -741,6 +750,28 @@ this value with the ``translationDomain()`` method::
                 ->setTranslationDomain('admin');
         }
     }
+
+Internally, EasyAdmin manages translations via ``TranslatableMessage`` objects.
+These objects are passed to the templates, where they are translated into the
+user locale. You can also use ``TranslatableMessage`` objects to define any text
+content in your backends (e.g. the label of some field, the help contents of
+some page, etc.)::
+
+    use function Symfony\Component\Translation\t;
+    use Symfony\Component\Translation\TranslatableMessage;
+
+    // creating translatable messages using objects
+    TextField::new('firstName', new TranslatableMessage('Name'))
+    TextField::new('firstName', new TranslatableMessage('Name', ['parameter' => 'value'], 'admin'))
+
+    // creating translatable messages using the t() function shortcut
+    TextField::new('firstName', t('Name'))
+    TextField::new('firstName', t('Name', ['parameter' => 'value'], 'admin'))
+
+.. tip::
+
+    Using translatable objects is recommended for multilingual backends because
+    Symfony can extract all of them automatically to update your translation files.
 
 The backend uses the same language configured in the Symfony application.
 When the locale is Arabic (``ar``), Persian (``fa``) or Hebrew (``he``), the
@@ -821,6 +852,11 @@ applications can rely on its default values:
                 // rendering it from an EasyAdmin Dashboard this is automatically set to
                 // the same domain as the rest of the Dashboard)
                 'translation_domain' => 'admin',
+
+                // the full path of the favicon to use in the login page;
+                // the given value is passed "as is" to the "href" attribute of
+                // the "<link rel="shortcut icon">" tag used to render the icon
+                'favicon_path' => '/favicon-admin.svg',
 
                 // the title visible above the login form (define this option only if you are
                 // rendering the login template in a regular Symfony controller; when rendering

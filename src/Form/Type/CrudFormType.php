@@ -44,7 +44,7 @@ class CrudFormType extends AbstractType
             // the names of embedded Doctrine entities contain dots, which are not allowed
             // in HTML element names. In those cases, fix the name but also update the
             // 'property_path' option to keep the original field name
-            if (false !== strpos($fieldDto->getProperty(), '.')) {
+            if (str_contains($fieldDto->getProperty(), '.')) {
                 $formFieldOptions['property_path'] = $fieldDto->getProperty();
                 $name = str_replace(['.', '[', ']'], '_', $fieldDto->getProperty());
             } else {
@@ -85,7 +85,7 @@ class CrudFormType extends AbstractType
                 $metadata['label'] = $fieldDto->getLabel();
                 $metadata['help'] = $fieldDto->getHelp();
                 $metadata[FormField::OPTION_ICON] = $fieldDto->getCustomOption(FormField::OPTION_ICON);
-                $currentFormTab = $fieldDto->getLabel();
+                $currentFormTab = (string) $fieldDto->getLabel();
 
                 // plain arrays are not enough for tabs because they are modified in the
                 // lifecycle of a form (e.g. add info about form errors). Use an ArrayObject instead.

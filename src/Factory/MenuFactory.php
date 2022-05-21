@@ -13,11 +13,10 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\UserMenuDto;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Http\Logout\LogoutUrlGenerator;
-use function Symfony\Component\String\u;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use function Symfony\Component\Translation\t;
+use Symfony\Contracts\Translation\TranslatableInterface;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -26,17 +25,13 @@ final class MenuFactory
 {
     private AdminContextProvider $adminContextProvider;
     private AuthorizationCheckerInterface $authChecker;
-    private TranslatorInterface $translator;
-    private UrlGeneratorInterface $urlGenerator;
     private LogoutUrlGenerator $logoutUrlGenerator;
     private AdminUrlGenerator $adminUrlGenerator;
 
-    public function __construct(AdminContextProvider $adminContextProvider, AuthorizationCheckerInterface $authChecker, TranslatorInterface $translator, UrlGeneratorInterface $urlGenerator, LogoutUrlGenerator $logoutUrlGenerator, AdminUrlGenerator $adminUrlGenerator)
+    public function __construct(AdminContextProvider $adminContextProvider, AuthorizationCheckerInterface $authChecker, LogoutUrlGenerator $logoutUrlGenerator, AdminUrlGenerator $adminUrlGenerator)
     {
         $this->adminContextProvider = $adminContextProvider;
         $this->authChecker = $authChecker;
-        $this->translator = $translator;
-        $this->urlGenerator = $urlGenerator;
         $this->logoutUrlGenerator = $logoutUrlGenerator;
         $this->adminUrlGenerator = $adminUrlGenerator;
     }
@@ -93,21 +88,17 @@ final class MenuFactory
 
     private function buildMenuItem(MenuItemDto $menuItemDto, array $subItems, int $index, int $subIndex, string $translationDomain): MenuItemDto
     {
-        $uLabel = u($menuItemDto->getLabel());
-        // labels with this prefix are considered internal and must be translated
-        // with 'EasyAdminBundle' translation domain, regardlesss of the backend domain
-        if ($uLabel->startsWith('__ea__')) {
-            $uLabel = $uLabel->after('__ea__');
-            $translationDomain = 'EasyAdminBundle';
+        if (!$menuItemDto->getLabel() instanceof TranslatableInterface) {
+            $label = $menuItemDto->getLabel();
+            $menuItemDto->setLabel(
+                empty($label) ? $label : t($label, $menuItemDto->getTranslationParameters(), $translationDomain)
+            );
         }
-        $label = $uLabel->toString();
-        $translatedLabel = empty($label) ? $label : $this->translator->trans($label, $menuItemDto->getTranslationParameters(), $translationDomain);
 
         $url = $this->generateMenuItemUrl($menuItemDto, $index, $subIndex);
 
         $menuItemDto->setIndex($index);
         $menuItemDto->setSubIndex($subIndex);
-        $menuItemDto->setLabel($translatedLabel);
         $menuItemDto->setLinkUrl($url);
         $menuItemDto->setSubItems($subItems);
 

@@ -78,7 +78,8 @@ label.form-check-label {
 .form-widget input.form-control,
 .form-widget textarea.form-control,
 .form-widget .form-select {
-    background: var(--form-control-bg);
+    background-color: var(--form-control-bg);
+    background-repeat: no-repeat; // see https://github.com/EasyCorp/EasyAdminBundle/issues/5197
     border: 1px solid var(--form-input-border-color);
     box-shadow: var(--form-input-shadow);
     color: var(--form-input-text-color);
@@ -88,6 +89,10 @@ label.form-check-label {
     word-break: keep-all;
     transition: box-shadow .08s ease-in, color .08s ease-in;
 }
+body.ea-dark-scheme .form-widget .form-select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23adb5bd' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+}
+
 .form-widget .form-select[multiple] {
     height: auto;
     background-image: none;

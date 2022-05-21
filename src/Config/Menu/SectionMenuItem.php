@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Config\Menu;
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu\MenuItemInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
+use Symfony\Contracts\Translation\TranslatableInterface;
 
 /**
  * @see EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem::section()
@@ -17,7 +18,7 @@ final class SectionMenuItem implements MenuItemInterface
         setLinkTarget as private;
     }
 
-    public function __construct(?string $label, ?string $icon)
+    public function __construct(TranslatableInterface|string|null $label, ?string $icon)
     {
         $this->dto = new MenuItemDto();
 

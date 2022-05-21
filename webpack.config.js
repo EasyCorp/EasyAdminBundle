@@ -39,8 +39,6 @@ Encore
                 'default',
                 {
                     // disabled to fix these issues: https://github.com/EasyCorp/EasyAdminBundle/pull/5171
-                    // reenable when Symfony Webpack Encore updates its css-minimizer-webpack-plugin to ^3
-                    // (see https://github.com/symfony/webpack-encore/pull/1033)
                     svgo: false,
                 },
             ]

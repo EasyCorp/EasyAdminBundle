@@ -10,7 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 final class DashboardDto
 {
     private $routeName;
-    private string $faviconPath = 'favicon.ico';
+    private string $faviconPath = 'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⬛</text></svg>';
     private string $title = 'EasyAdmin';
     private string $translationDomain = 'messages';
     private $textDirection;

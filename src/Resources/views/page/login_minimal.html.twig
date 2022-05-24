@@ -10,7 +10,9 @@
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <meta name="generator" content="EasyAdmin" />
 
-        {% block head_favicon %}{% endblock %}
+        {% block head_favicon %}
+            <link rel="shortcut icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⬛</text></svg>">
+        {% endblock %}
 
         <title>{{ block('page_title')|striptags|raw }}</title>
 

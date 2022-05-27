@@ -1,8 +1,4 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
 {# @var field \EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto #}
 {# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
-{% if ea.crud.currentAction == 'detail' %}
-    <a href="mailto:{{ field.value }}">{{ field.formattedValue }}</a>
-{% else %}
-    <a href="mailto:{{ field.value }}">{{ field.formattedValue }}</a>
-{% endif %}
+<a href="mailto:{{ field.value }}">{{ field.formattedValue }}</a>

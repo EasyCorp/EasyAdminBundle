@@ -137,7 +137,7 @@
             {{ field.label|trans|raw }}
 
             {% if field.help is not empty %}
-                <a tabindex="0" class="data-help" data-bs-toggle="popover" data-bs-custom-class="ea-content-help-popover" data-bs-animation="true" data-bs-html="true" data-bs-placement="right" data-bs-trigger="focus" data-bs-content="{{ field.help|e('html_attr') }}">
+                <a tabindex="0" class="data-help" data-bs-toggle="popover" data-bs-custom-class="ea-content-help-popover" data-bs-animation="true" data-bs-html="true" data-bs-placement="right" data-bs-trigger="focus" data-bs-content="{{ field.help|trans|e('html_attr') }}">
                     <i class="far fa-question-circle"></i>
                 </a>
             {% endif %}

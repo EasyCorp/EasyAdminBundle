@@ -1,5 +1,8 @@
 @import "~tom-select/dist/css/tom-select.bootstrap5.min.css";
 
+.ts-wrapper {
+  min-height: unset;
+}
 .ts-wrapper .ts-control {
   height: 30px;
   min-height: unset;

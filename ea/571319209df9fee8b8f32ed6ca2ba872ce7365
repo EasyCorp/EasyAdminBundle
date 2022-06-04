@@ -1,0 +1,123 @@
+---------------------------------------------------------------------------
+
+by sxsws at 2022-05-12T11:00:27Z
+
+Thanks, this looks great and seems it will solve many headaches I have. Would it be possible to either specify a crud form class name, or the name of a function in the crud form, so that a separate form could be utilised? e.g. it could be school -> pupils, with only basic values wanted in a collection field of pupils (name, date of birth), but full fields with tabs etc when editing pupil directly.
+
+---------------------------------------------------------------------------
+
+by michaelKaefer at 2022-05-12T15:04:25Z
+
+@sxsws Sorry, I think it will not solve your headaches.. It seems that you want to maintain a collection of pupils in the form of another entity school. The problem is that your users cannot add existing pupils to the collection, even after this commit this is not possible. After this commit your users can only edit pupils which already are associated to the school, or they can add a new pupil. If this really is sufficient, then, ok, the headaches are solved :)
+
+What you are asking for is aleady possible in this PR:
+```php
+class SchoolCrudController extends AbstractCrudController
+{
+    public function configureFields(string $pageName): iterable
+    {
+        return [
+            CollectionField::new('pupils')->useCrudForm(
+                true,
+                PupilCrudController::class,
+                'new_pupil_on_school_page',
+                'edit_pupil_on_school_page'
+            );
+        ];
+    }
+}
+
+class PupilCrudController extends AbstractCrudController
+{
+    public function configureFields(string $pageName): iterable
+    {
+        switch ($pageName) {
+            case 'new':
+            case 'edit':
+                return [TextField::new('foo'), TextField::new('bar'), TextField::new('baz')];
+            case 'new_pupil_on_school_page':
+            case 'edit_pupil_on_school_page':
+                return [TextField::new('foo')];
+        }
+        throw new \InvalidArgumentException();
+    }
+}
+```
+
+---------------------------------------------------------------------------
+
+by vlangcoder at 2022-05-17T07:38:09Z
+
+This is gold 🏆 - please merge!
+
+---------------------------------------------------------------------------
+
+by parijke at 2022-05-17T07:57:07Z
+
+Since it needs SF6.1 this can be quite difficult to merge. @javiereguiluz want to preserve BC as much as possible.
+
+---------------------------------------------------------------------------
+
+by michaelKaefer at 2022-05-17T10:19:53Z
+
+@parijke It only needs SF6.1 to work, with SF6.0 there is no problem at all, you just will get an exception if you want to still use the new feature. See https://github.com/EasyCorp/EasyAdminBundle/pull/5210/files#diff-100aaf7a11a06c600ef2c48bb42aa90c85ed6253721bf953770dbed7bdda8224 :
+
+```php
+// ...
+throw new \RuntimeException('To enable CRUD form usage for collection fields Symfony 6.1 or higher is required.', 0, $exception);
+```
+
+So AFAICS there is no problem to merge it.
+
+---------------------------------------------------------------------------
+
+by parijke at 2022-05-17T10:24:58Z
+
+> @parijke It only needs SF6.1 to work, with SF6.0 there is no problem at all, you just will get an exception if you want to still use the new feature. See https://github.com/EasyCorp/EasyAdminBundle/pull/5210/files#diff-100aaf7a11a06c600ef2c48bb42aa90c85ed6253721bf953770dbed7bdda8224 :
+>
+> ```
+> // ...
+> throw new \RuntimeException('To enable CRUD form usage for collection fields Symfony 6.1 or higher is required.', 0, $exception);
+> ```
+>
+> So AFAICS there is no problem to merge it.
+
+Nice!
+
+---------------------------------------------------------------------------
+
+by michaelKaefer at 2022-05-26T15:48:54Z
+
+@javiereguiluz What do you think about this PR? If it doesn't get merged I would like to close it. Maybe it would help if I try to add tests?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2022-05-27T07:34:59Z
+
+Michael, I'm sorry I haven't found the time to review this PR 🙏  I'll try to find time for it soon. Thanks!
+
+---------------------------------------------------------------------------
+
+by michaelKaefer at 2022-05-27T08:51:12Z
+
+@javiereguiluz Ok, sorry, no need to hurry!
+
+---------------------------------------------------------------------------
+
+by devzenfr at 2022-05-30T06:45:54Z
+
+This is great! I just switched to EasyAdmin and needed exactly this feature. Used your commit inside my project until this gets merged and this is working perfectly. Thanks for your work.
+
+---------------------------------------------------------------------------
+
+by allok at 2022-05-30T17:14:17Z
+
+@Lustmored  @javiereguiluz Please look at this pull, we all need it.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2022-06-01T18:27:57Z
+
+Michael, thanks for this feature and for the reproducer. I could play with the sample app that you provided and I liked it.
+
+I need a bit more time to think about the design of the feature and the naming of some methods, but I hope to merge this soon. Thanks!

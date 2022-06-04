@@ -339,6 +339,11 @@ return static function (ContainerConfigurator $container) {
 
         ->set(ChoiceConfigurator::class)
 
+        ->set(CollectionConfigurator::class)
+            ->arg(0, service('request_stack'))
+            ->arg(1, service(EntityFactory::class))
+            ->arg(2, service(ControllerFactory::class))
+
         ->set(SlugConfigurator::class)
 
         ->set(TelephoneConfigurator::class)

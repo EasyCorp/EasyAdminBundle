@@ -20,10 +20,10 @@ final class CollectionField implements FieldInterface
     public const OPTION_ENTRY_TYPE = 'entryType';
     public const OPTION_SHOW_ENTRY_LABEL = 'showEntryLabel';
     public const OPTION_RENDER_EXPANDED = 'renderExpanded';
-    public const OPTION_USE_CRUD_FORM = 'useCrudForm';
-    public const OPTION_CRUD_FORM_CONTROLLER_FQCN = 'crudFormControllerFqcn';
-    public const OPTION_CRUD_FORM_NEW_PAGE_NAME = 'crudFormNewPageName';
-    public const OPTION_CRUD_FORM_EDIT_PAGE_NAME = 'crudFormEditPageName';
+    public const OPTION_ENTRY_USES_CRUD_FORM = 'entryUsesCrudController';
+    public const OPTION_ENTRY_CRUD_CONTROLLER_FQCN = 'entryCrudControllerFqcn';
+    public const OPTION_ENTRY_CRUD_NEW_PAGE_NAME = 'entryCrudNewPageName';
+    public const OPTION_ENTRY_CRUD_EDIT_PAGE_NAME = 'entryCrudEditPageName';
 
     /**
      * @param TranslatableInterface|string|false|null $label
@@ -44,10 +44,10 @@ final class CollectionField implements FieldInterface
             ->setCustomOption(self::OPTION_ENTRY_TYPE, null)
             ->setCustomOption(self::OPTION_SHOW_ENTRY_LABEL, false)
             ->setCustomOption(self::OPTION_RENDER_EXPANDED, false)
-            ->setCustomOption(self::OPTION_USE_CRUD_FORM, false)
-            ->setCustomOption(self::OPTION_CRUD_FORM_CONTROLLER_FQCN, null)
-            ->setCustomOption(self::OPTION_CRUD_FORM_NEW_PAGE_NAME, null)
-            ->setCustomOption(self::OPTION_CRUD_FORM_EDIT_PAGE_NAME, null);
+            ->setCustomOption(self::OPTION_ENTRY_USES_CRUD_FORM, false)
+            ->setCustomOption(self::OPTION_ENTRY_CRUD_CONTROLLER_FQCN, null)
+            ->setCustomOption(self::OPTION_ENTRY_CRUD_NEW_PAGE_NAME, null)
+            ->setCustomOption(self::OPTION_ENTRY_CRUD_EDIT_PAGE_NAME, null);
     }
 
     public function allowAdd(bool $allow = true): self
@@ -96,12 +96,12 @@ final class CollectionField implements FieldInterface
         return $this;
     }
 
-    public function useCrudForm(bool $useCrudForm = true, ?string $controllerFqcn = null, ?string $newPageName = null, ?string $editPageName = null): self
+    public function useEntryCrudForm(?string $crudControllerFqcn = null, ?string $crudNewPageName = null, ?string $crudEditPageName = null): self
     {
-        $this->setCustomOption(self::OPTION_USE_CRUD_FORM, $useCrudForm);
-        $this->setCustomOption(self::OPTION_CRUD_FORM_CONTROLLER_FQCN, $controllerFqcn);
-        $this->setCustomOption(self::OPTION_CRUD_FORM_NEW_PAGE_NAME, $newPageName);
-        $this->setCustomOption(self::OPTION_CRUD_FORM_EDIT_PAGE_NAME, $editPageName);
+        $this->setCustomOption(self::OPTION_ENTRY_USES_CRUD_FORM, true);
+        $this->setCustomOption(self::OPTION_ENTRY_CRUD_CONTROLLER_FQCN, $crudControllerFqcn);
+        $this->setCustomOption(self::OPTION_ENTRY_CRUD_NEW_PAGE_NAME, $crudNewPageName);
+        $this->setCustomOption(self::OPTION_ENTRY_CRUD_EDIT_PAGE_NAME, $crudEditPageName);
 
         return $this;
     }

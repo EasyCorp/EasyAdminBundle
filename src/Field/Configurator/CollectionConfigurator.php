@@ -5,6 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Field\Configurator;
 use Doctrine\ORM\PersistentCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -76,31 +77,32 @@ final class CollectionConfigurator implements FieldConfiguratorInterface
 
         $field->setFormattedValue($this->formatCollection($field, $context));
 
-        if (true === $field->getCustomOption(CollectionField::OPTION_USE_CRUD_FORM)) {
+        if (true === $field->getCustomOption(CollectionField::OPTION_ENTRY_USES_CRUD_FORM)) {
             if (!$entityDto->isAssociation($field->getProperty())) {
-                throw new \RuntimeException(sprintf('The "%s" field is not a Doctrine association, so it cannot be used as a collection field when CRUD form usage is enabled.', $field->getProperty()));
+                throw new \RuntimeException(sprintf('The "%s" collection field of "%s" cannot use the "useEntryCrudForm()" method because it is not a Doctrine association.', $field->getProperty(), $context->getCrud()?->getControllerFqcn()));
             }
 
             if (null !== $field->getCustomOptions()->get(CollectionField::OPTION_ENTRY_TYPE)) {
-                throw new \RuntimeException(sprintf('When using "%s" as a collection field with CRUD form usage enabled the entry type must not be set.', $field->getProperty()));
+                throw new \RuntimeException(sprintf('The "%s" collection field of "%s" can render its entries using a Symfony Form (via the "setEntryType()" method) or using an EasyAdmin CRUD Form (via the "useEntryCrudForm()" method) but you cannot use both methods at the same time. Remove one of those two methods.', $field->getProperty(), $context->getCrud()?->getControllerFqcn()));
             }
-
-            $targetEntityFqcn = $field->getDoctrineMetadata()->get('targetEntity');
-            $targetCrudControllerFqcn = $field->getCustomOption(CollectionField::OPTION_CRUD_FORM_CONTROLLER_FQCN)
-                ?? $context->getCrudControllers()->findCrudFqcnByEntityFqcn($targetEntityFqcn);
 
             $field->setFormTypeOption('entry_type', CrudFormType::class);
 
-            $editPageName = $field->getCustomOption(CollectionField::OPTION_CRUD_FORM_EDIT_PAGE_NAME) ?? 'edit';
-            $editEntityDto = $this->createEntityDto($targetEntityFqcn, $targetCrudControllerFqcn, 'edit', $editPageName);
+            $targetEntityFqcn = $field->getDoctrineMetadata()->get('targetEntity');
+            $targetCrudControllerFqcn = $field->getCustomOption(CollectionField::OPTION_ENTRY_CRUD_CONTROLLER_FQCN)
+                ?? $context->getCrudControllers()->findCrudFqcnByEntityFqcn($targetEntityFqcn);
+
+            $crudEditPageName = $field->getCustomOption(CollectionField::OPTION_ENTRY_CRUD_EDIT_PAGE_NAME) ?? Crud::PAGE_EDIT;
+            $editEntityDto = $this->createEntityDto($targetEntityFqcn, $targetCrudControllerFqcn, Action::EDIT, $crudEditPageName);
             $field->setFormTypeOption('entry_options.entityDto', $editEntityDto);
 
-            $newPageName = $field->getCustomOption(CollectionField::OPTION_CRUD_FORM_NEW_PAGE_NAME) ?? 'new';
-            $newEntityDto = $this->createEntityDto($targetEntityFqcn, $targetCrudControllerFqcn, 'new', $newPageName);
+            $crudNewPageName = $field->getCustomOption(CollectionField::OPTION_ENTRY_CRUD_NEW_PAGE_NAME) ?? Crud::PAGE_NEW;
+            $newEntityDto = $this->createEntityDto($targetEntityFqcn, $targetCrudControllerFqcn, Action::NEW, $crudNewPageName);
+
             try {
                 $field->setFormTypeOption('prototype_options.entityDto', $newEntityDto);
             } catch (UndefinedOptionsException $exception) {
-                throw new \RuntimeException('To enable CRUD form usage for collection fields Symfony 6.1 or higher is required.', 0, $exception);
+                throw new \RuntimeException(sprintf('The "%s" collection field of "%s" uses the "useEntryCrudForm()" method, which requires Symfony 6.1 or newer to work. Upgrade your Symfony version or use instead the "setEntryType()" method to render the collection entries using a Symfony form.', $field->getProperty(), $context->getCrud()?->getControllerFqcn()), 0, $exception);
             }
         }
     }

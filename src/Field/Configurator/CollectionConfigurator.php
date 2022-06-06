@@ -92,6 +92,10 @@ final class CollectionConfigurator implements FieldConfiguratorInterface
             $targetCrudControllerFqcn = $field->getCustomOption(CollectionField::OPTION_ENTRY_CRUD_CONTROLLER_FQCN)
                 ?? $context->getCrudControllers()->findCrudFqcnByEntityFqcn($targetEntityFqcn);
 
+            if (null === $targetCrudControllerFqcn) {
+                throw new \RuntimeException(sprintf('The "%s" collection field of "%s" cannot find a CRUD controller to render its entries. You can either create a CRUD controller for the entity "%s" or explicitly pass an existing CRUD controller to "useEntryCrudForm()".', $field->getProperty(), $context->getCrud()?->getControllerFqcn(), $targetEntityFqcn));
+            }
+
             $crudEditPageName = $field->getCustomOption(CollectionField::OPTION_ENTRY_CRUD_EDIT_PAGE_NAME) ?? Crud::PAGE_EDIT;
             $editEntityDto = $this->createEntityDto($targetEntityFqcn, $targetCrudControllerFqcn, Action::EDIT, $crudEditPageName);
             $field->setFormTypeOption('entry_options.entityDto', $editEntityDto);

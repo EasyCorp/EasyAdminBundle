@@ -9,7 +9,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CountryField;
-use Symfony\Component\Asset\Packages;
+use Symfony\Component\Asset\PackageInterface;
 use Symfony\Component\Intl\Countries;
 use Symfony\Component\Intl\Exception\MissingResourceException;
 
@@ -18,11 +18,11 @@ use Symfony\Component\Intl\Exception\MissingResourceException;
  */
 final class CountryConfigurator implements FieldConfiguratorInterface
 {
-    private Packages $assetPackages;
+    private PackageInterface $assetPackage;
 
-    public function __construct(Packages $assetPackages)
+    public function __construct(PackageInterface $assetPackage)
     {
-        $this->assetPackages = $assetPackages;
+        $this->assetPackage = $assetPackage;
     }
 
     public function supports(FieldDto $field, EntityDto $entityDto): bool
@@ -102,7 +102,7 @@ final class CountryConfigurator implements FieldConfiguratorInterface
             }
 
             $countryCodeAlpha2 = $usesAlpha3Codes ? Countries::getAlpha2Code($countryCode) : $countryCode;
-            $flagImagePath = $this->assetPackages->getUrl(sprintf('bundles/easyadmin/images/flags/%s.svg', $countryCodeAlpha2));
+            $flagImagePath = $this->assetPackage->getUrl(sprintf('images/flags/%s.svg', $countryCodeAlpha2));
             $choiceKey = sprintf('<img src="%s" class="country-flag" loading="lazy" alt="%s"> %s', $flagImagePath, $countryName, $countryName);
 
             $choices[$choiceKey] = $countryCode;

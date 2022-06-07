@@ -12,7 +12,7 @@
 
 {% block head_javascript %}
     {{ parent() }}
-    <script src="{{ asset('bundles/easyadmin/form.js') }}"></script>
+    <script src="{{ asset('form.js', ea.assets.defaultAssetPackageName) }}"></script>
 {% endblock head_javascript %}
 
 {% block configured_head_contents %}

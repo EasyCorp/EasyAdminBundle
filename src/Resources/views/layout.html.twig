@@ -16,7 +16,7 @@
     <title>{{ page_title_block_output|striptags|raw }}</title>
 
     {% block head_stylesheets %}
-        <link rel="stylesheet" href="{{ asset('bundles/easyadmin/app.css') }}">
+        <link rel="stylesheet" href="{{ asset('app.css', ea.assets.defaultAssetPackageName) }}">
     {% endblock %}
 
     {% block configured_stylesheets %}
@@ -29,7 +29,7 @@
     {% endblock %}
 
     {% block head_javascript %}
-        <script src="{{ asset('bundles/easyadmin/app.js') }}"></script>
+        <script src="{{ asset('app.js', ea.assets.defaultAssetPackageName) }}"></script>
     {% endblock head_javascript %}
 
     {% block configured_javascripts %}
@@ -38,7 +38,7 @@
     {% endblock %}
 
     {% if 'rtl' == ea.i18n.textDirection %}
-        <link rel="stylesheet" href="{{ asset('bundles/easyadmin/app.rtl.css') }}">
+        <link rel="stylesheet" href="{{ asset('app.rtl.css', ea.assets.defaultAssetPackageName) }}">
     {% endif %}
 
     {% block configured_head_contents %}
@@ -57,10 +57,10 @@
         data-ea-dark-scheme-is-enabled="{{ ea.dashboardHasDarkModeEnabled ? 'true' : 'false' }}"
     >
     {% block javascript_page_layout %}
-        <script src="{{ asset('bundles/easyadmin/page-layout.js') }}"></script>
+        <script src="{{ asset('page-layout.js', ea.assets.defaultAssetPackageName) }}"></script>
     {% endblock javascript_page_layout %}
     {% block javascript_page_color_scheme %}
-        <script src="{{ asset('bundles/easyadmin/page-color-scheme.js') }}"></script>
+        <script src="{{ asset('page-color-scheme.js', ea.assets.defaultAssetPackageName) }}"></script>
     {% endblock javascript_page_color_scheme %}
 
     {% block wrapper_wrapper %}

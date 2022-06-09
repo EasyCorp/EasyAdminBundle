@@ -68,7 +68,7 @@ final class CollectionField implements FieldInterface
      * Set this option to TRUE if the collection items are complex form types
      * composed of several form fields (EasyAdmin applies a special rendering to make them look better).
      */
-    public function setEntryIsComplex(bool $isComplex): self
+    public function setEntryIsComplex(bool $isComplex = true): self
     {
         $this->setCustomOption(self::OPTION_ENTRY_IS_COMPLEX, $isComplex);
 

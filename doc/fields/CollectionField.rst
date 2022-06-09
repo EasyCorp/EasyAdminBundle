@@ -97,17 +97,17 @@ The entries of the collection can be rendered either using a Symfony Form or an
 EasyAdmin CRUD Form. The ``useEntryCrudForm()`` method defines the EasyAdmin CRUD
 form used to render the form of each collection entry::
 
-    yield CollectionField::new('...')->useCrudForm();
+    yield CollectionField::new('...')->useEntryCrudForm();
 
 By default, EasyAdmin finds the CRUD controller associated to the property automatically.
 If you need better control about which CRUD controller to use, pass the fully-qualified
 class name of the controller as the first argument::
 
-    yield CollectionField::new('...')->useCrudForm(CategoryCrudController::class);
+    yield CollectionField::new('...')->useEntryCrudForm(CategoryCrudController::class);
 
     // the other optional arguments are the CRUD page names to pass to the configureFields()
     // method when creating and editing entries respectively
-    yield CollectionField::new('...')->useCrudForm(
+    yield CollectionField::new('...')->useEntryCrudForm(
         CategoryCrudController::class, 'new_category_on_article_page', 'edit_category_on_article_page'
     );
 

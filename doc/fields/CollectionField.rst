@@ -65,7 +65,7 @@ setEntryIsComplex
 Set this option if the embedded form of each collection item contains multiple
 fields::
 
-    yield CollectionField::new('...')->setEntryIsComplex();
+    yield CollectionField::new('...')->setEntryIsComplex(true);
 
 EasyAdmin will try to do its best to display those fields correctly::
 

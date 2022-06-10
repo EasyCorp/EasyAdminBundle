@@ -25,7 +25,7 @@ final class ArrayField implements FieldInterface
             ->setTemplateName('crud/field/array')
             ->setFormType(CollectionType::class)
             ->addCssClass('field-array')
-            ->addJsFiles(Asset::new('bundles/easyadmin/field-collection.js')->onlyOnForms())
+            ->addJsFiles(Asset::fromEasyAdminAssetPackage('field-collection.js')->onlyOnForms())
             ->setDefaultColumns('col-md-7 col-xxl-6');
     }
 }

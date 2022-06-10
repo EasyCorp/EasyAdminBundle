@@ -574,9 +574,11 @@ precise control, use the ``Asset`` class to define the assets::
     // ...
 
     TextField::new('firstName', 'Name')
-        ->addCssFiles(Asset::new'bundle/some-bundle/foo.css')->ignoreOnForms()->htmlAttr('media', 'print'))
+        ->addCssFiles(Asset::new('bundle/some-bundle/foo.css')->ignoreOnForms()->htmlAttr('media', 'print'))
         ->addJsFiles(Asset::new('admin/some-custom-code.js')->onlyOnIndex()->defer())
         ->addWebpackEncoreEntry(Asset::new('admin-maps')->onlyWhenCreating()->preload())
+        // you can even define the Symfony Asset package which the asset belongs to
+        ->addCssFiles(Asset::new('some-path/bar.css')->package('legacy_assets'))
     ;
 
 Formatting Options

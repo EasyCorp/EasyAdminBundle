@@ -36,7 +36,7 @@ final class CollectionField implements FieldInterface
             ->setTemplateName('crud/field/collection')
             ->setFormType(CollectionType::class)
             ->addCssClass('field-collection')
-            ->addJsFiles(Asset::new('bundles/easyadmin/field-collection.js')->onlyOnForms())
+            ->addJsFiles(Asset::fromEasyAdminAssetPackage('field-collection.js')->onlyOnForms())
             ->setDefaultColumns('col-md-8 col-xxl-7')
             ->setCustomOption(self::OPTION_ALLOW_ADD, true)
             ->setCustomOption(self::OPTION_ALLOW_DELETE, true)

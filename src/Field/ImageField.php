@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Asset;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\TextAlign;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FileUploadType;
@@ -29,7 +30,7 @@ final class ImageField implements FieldInterface
             ->setTemplateName('crud/field/image')
             ->setFormType(FileUploadType::class)
             ->addCssClass('field-image')
-            ->addJsFiles('bundles/easyadmin/field-image.js', 'bundles/easyadmin/field-file-upload.js')
+            ->addJsFiles(Asset::fromEasyAdminAssetPackage('field-image.js'), Asset::fromEasyAdminAssetPackage('field-file-upload.js'))
             ->setDefaultColumns('col-md-7 col-xxl-5')
             ->setTextAlign(TextAlign::CENTER)
             ->setCustomOption(self::OPTION_BASE_PATH, null)

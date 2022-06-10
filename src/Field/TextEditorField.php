@@ -28,8 +28,8 @@ final class TextEditorField implements FieldInterface
             ->setTemplateName('crud/field/text_editor')
             ->setFormType(TextEditorType::class)
             ->addCssClass('field-text_editor')
-            ->addCssFiles(Asset::new('bundles/easyadmin/field-text-editor.css')->onlyOnForms())
-            ->addJsFiles(Asset::new('bundles/easyadmin/field-text-editor.js')->onlyOnForms())
+            ->addCssFiles(Asset::fromEasyAdminAssetPackage('field-text-editor.css')->onlyOnForms())
+            ->addJsFiles(Asset::fromEasyAdminAssetPackage('field-text-editor.js')->onlyOnForms())
             ->setDefaultColumns('col-md-9 col-xxl-7')
             ->setCustomOption(self::OPTION_NUM_OF_ROWS, null)
             ->setCustomOption(self::OPTION_TRIX_EDITOR_CONFIG, null);

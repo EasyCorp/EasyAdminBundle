@@ -17,11 +17,11 @@
         <title>{{ block('page_title')|striptags|raw }}</title>
 
         {% block head_stylesheets %}
-            <link rel="stylesheet" href="{{ asset('bundles/easyadmin/app.css') }}">
+            <link rel="stylesheet" href="{{ asset('app.css', constant('EasyCorp\Bundle\EasyAdminBundle\Asset\AssetPackage::PACKAGE_NAME')) }}">
         {% endblock %}
 
         {% block head_javascript %}
-            <script src="{{ asset('bundles/easyadmin/app.js') }}"></script>
+            <script src="{{ asset('app.js', constant('EasyCorp\Bundle\EasyAdminBundle\Asset\AssetPackage::PACKAGE_NAME')) }}"></script>
         {% endblock head_javascript %}
     </head>
 

@@ -3,13 +3,13 @@ const WebpackRTLPlugin = require('@automattic/webpack-rtl-plugin');
 
 Encore
     .setOutputPath('./src/Resources/public/')
-    .setPublicPath('./')
-    .setManifestKeyPrefix('bundles/easyadmin')
+    .setPublicPath('/bundles/easyadmin/')
+    .setManifestKeyPrefix('')
 
     .cleanupOutputBeforeBuild()
     .enableSassLoader()
     .enableSourceMaps(false)
-    .enableVersioning(false)
+    .enableVersioning(true)
     .disableSingleRuntimeChunk()
 
     // copy FontAwesome fonts

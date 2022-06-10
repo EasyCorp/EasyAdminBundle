@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Config;
 
+use EasyCorp\Bundle\EasyAdminBundle\Asset\AssetPackage;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetDto;
 use function Symfony\Component\String\u;
 
@@ -35,6 +36,19 @@ final class Asset
         $dto = new AssetDto($value);
 
         return new self($dto);
+    }
+
+    /**
+     * Assets provided by EasyAdmin (e.g. 'bundles/easyadmin/app.js') are versioned
+     * and managed through a special Symfony Asset named package.
+     * Call this method instead of '::new()' when adding those EasyAdmin assets so
+     * they use the right package name (which is needed later when calling to 'asset()' Twig function).
+     *
+     * @param string $value The 'path' when adding CSS or JS files and the 'entryName' when adding Webpack Encore entries
+     */
+    public static function fromEasyAdminAssetPackage(string $value): self
+    {
+        return (self::new($value))->package(AssetPackage::PACKAGE_NAME);
     }
 
     public function async(bool $async = true): self
@@ -99,6 +113,16 @@ final class Asset
         foreach ($attrNamesAndValues as $attrName => $attrValue) {
             $this->dto->setHtmlAttribute($attrName, $attrValue);
         }
+
+        return $this;
+    }
+
+    /**
+     * @param string $packageName The name of the Symfony Asset package this asset belongs to
+     */
+    public function package(string $packageName): self
+    {
+        $this->dto->setPackageName($packageName);
 
         return $this;
     }

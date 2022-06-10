@@ -1,0 +1,35 @@
+---------------------------------------------------------------------------
+
+by Lustmored at 2022-06-08T15:22:04Z
+
+It looks great! I will definitely try it out on my projects and let you know if everything works.
+
+Although I think we can go one step further:
+
+- declare this package as a named package (just like we can define multiple asset packages in a project), like `EasyAdmin` (https://symfony.com/doc/current/components/asset.html#named-packages and https://symfony.com/doc/current/reference/configuration/framework.html#packages)
+- in `AssetDto` instead of collecting `bool $internalEasyAdminAsset` - collect `?string $packageName` (null by default)
+- `isEasyAdminAsset` method would simply set `$packageName` on Dto to `EasyAdmin`
+
+This would allow changes:
+- instead of `ea_asset_url()` -> `asset(file, dto.packageName)` in Twig
+- in PHP we could just inject `Packages` and pass packageName as a second argument where needed
+
+Why?
+
+First of all - it would reuse already existing mechanisms of allowing different packages within asset component. In addition - current implementation limits assets out of EasyAdmin to only default package. Allowing to configure packageName would effectively allow consumers to use all possible assets with EasyAdmin. I personally would benefit in most of my projects as they define at least 2 packages (one for local assets and other for files stored on S3).
+
+WDYT?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2022-06-08T18:48:45Z
+
+@Lustmored thanks a lot for your fantastic suggestion. The solution that you propose is beautiful and much more natural and Symfony-like.
+
+I did all the changes that you suggested and I love the result. Thanks!
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2022-06-09T17:58:54Z
+
+Good catch! I've fixed all the issues that you reported. This is ready for the final review. Thanks!

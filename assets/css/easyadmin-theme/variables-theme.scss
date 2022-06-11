@@ -129,6 +129,8 @@
     --modal-title-color: var(--gray-700);
     --form-label-color: var(--gray-800);
     --form-control-bg: var(--white);
+    --form-control-disabled-bg: var(--gray-200);
+    --form-control-disabled-color: var(--gray-600);
     --form-input-border-color: var(--gray-300);
     --form-input-hover-border-color: var(--gray-400);
     --form-input-shadow: 0 1px 2px 0 var(--gray-50);
@@ -407,6 +409,8 @@
     --pagination-disabled-color: var(--true-gray-600);
     --form-label-color: var(--true-gray-300);
     --form-control-bg: var(--true-gray-700);
+    --form-control-disabled-bg: var(--true-gray-700);
+    --form-control-disabled-color: #939393;
     --form-input-border-color: var(--true-gray-600);
     --form-input-hover-border-color: var(--true-gray-400);
     --form-input-shadow: 0 1px 2px 0 var(--true-gray-800);

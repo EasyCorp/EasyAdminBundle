@@ -2,8 +2,8 @@
   "entrypoints": {
     "app": {
       "css": [
-        "/bundles/easyadmin/app.710c4914.css",
-        "/bundles/easyadmin/app.710c4914.rtl.css"
+        "/bundles/easyadmin/app.db9f4e38.css",
+        "/bundles/easyadmin/app.db9f4e38.rtl.css"
       ],
       "js": [
         "/bundles/easyadmin/app.1e1ba55d.js"

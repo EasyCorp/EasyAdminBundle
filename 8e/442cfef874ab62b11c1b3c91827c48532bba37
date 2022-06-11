@@ -1,0 +1,35 @@
+---------------------------------------------------------------------------
+
+by michaelKaefer at 2022-02-02T15:27:34Z
+
+I will fix the check the next days.
+
+---------------------------------------------------------------------------
+
+by michaelKaefer at 2022-02-02T19:02:25Z
+
+From my side it's finished. I had to add a second commit which partly reverses https://github.com/EasyCorp/EasyAdminBundle/commit/9205a18163331f8a243305a416c3568647f2cc55 for compatibility with Symfony 5.4.
+
+---------------------------------------------------------------------------
+
+by michaelKaefer at 2022-02-02T19:09:25Z
+
+I can do another PR (without tests) for the branch `3.x` if wanted.
+
+---------------------------------------------------------------------------
+
+by michaelKaefer at 2022-02-23T16:53:13Z
+
+I would like to rework this a little (tests and also check again if everything makes sense). But before I want to wait if https://github.com/EasyCorp/EasyAdminBundle/pull/5054 gets merged because it refactors the tests a little.
+
+---------------------------------------------------------------------------
+
+by michaelKaefer at 2022-02-26T19:45:30Z
+
+Ok, from my side this is finished now :)
+
+---------------------------------------------------------------------------
+
+by michaelKaefer at 2022-03-14T10:35:59Z
+
+This PR also would replace https://github.com/EasyCorp/EasyAdminBundle/pull/5047.

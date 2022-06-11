@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Config\Action as AppAction;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Controller\CategoryCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Controller\SecureDashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Entity\Category;
@@ -333,6 +334,28 @@ class CategoryCrudControllerTest extends WebTestCase
         ];
     }
 
+    /**
+     * @dataProvider customPage
+     */
+    public function testCustomPage(string $username, int $expectedStatusCode)
+    {
+        $this->client->request('GET', $this->generateCustomActionUrl(), [], [], ['PHP_AUTH_USER' => $username, 'PHP_AUTH_PW' => '1234']);
+
+        $this->assertResponseStatusCodeSame($expectedStatusCode);
+    }
+
+    public function customPage(): \Generator
+    {
+        yield [
+            $this->generateUsername('ROLE_USER'),
+            403, // Expected status code of the response
+        ];
+        yield [
+            $this->generateUsername('ROLE_ADMIN'),
+            200,
+        ];
+    }
+
     private function assertResultCount(int $expectedResultCount): void
     {
         if (0 > $expectedResultCount) {
@@ -400,5 +423,26 @@ class CategoryCrudControllerTest extends WebTestCase
             ->setAction('renderFilters')
             ->set('referrer', $referrer)
             ->generateUrl();
+    }
+
+    private function generateCustomActionUrl(): string
+    {
+        return $this->adminUrlGenerator
+            ->setDashboard(SecureDashboardController::class)
+            ->setController(CategoryCrudController::class)
+            ->setAction(AppAction::CUSTOM_ACTION)
+            ->generateUrl();
+    }
+
+    private function generateUsername(string $role): string
+    {
+        switch ($role) {
+            case 'ROLE_USER':
+                return 'user';
+            case 'ROLE_ADMIN':
+                return 'admin';
+        }
+
+        throw new \InvalidArgumentException(sprintf('Unknown role, use one of: %s', implode(', ', ['ROLE_USER', 'ROLE_ADMIN'])));
     }
 }

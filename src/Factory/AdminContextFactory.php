@@ -127,7 +127,7 @@ final class AdminContextFactory
 
     private function getActionConfig(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController, ?string $pageName): ActionConfigDto
     {
-        if (null === $crudController || null === $pageName) {
+        if (null === $crudController) {
             return new ActionConfigDto();
         }
 

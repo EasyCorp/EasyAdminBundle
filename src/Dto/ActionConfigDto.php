@@ -36,7 +36,7 @@ final class ActionConfigDto
         }
     }
 
-    public function setPageName(string $pageName): void
+    public function setPageName(?string $pageName): void
     {
         $this->pageName = $pageName;
     }

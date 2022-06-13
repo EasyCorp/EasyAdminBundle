@@ -102,26 +102,29 @@
 {% macro render_detail_fields(entity, tab_name = null) %}
     {% set form_panel_is_already_open = false %}
     {% for field in entity.fields|filter(field => (tab_name and field.ea_detail_tab == tab_name or not tab_name) ) %}
-            {% set is_form_field_panel = 'field-form_panel' in field.cssClass %}
+        {% set is_form_field_panel = 'field-form_panel' in field.cssClass %}
 
-            {% if is_form_field_panel or (loop.first and not is_form_field_panel) %}
-                {% if form_panel_is_already_open %}
-                    {{ _self.close_form_field_panel() }}
-                    {% set form_panel_is_already_open = false %}
-                {% endif %}
-
-                {{ _self.open_form_field_panel(is_form_field_panel ? field : null) }}
-                {% set form_panel_is_already_open = true %}
+        {% if is_form_field_panel or (loop.first and not is_form_field_panel) %}
+            {% if form_panel_is_already_open %}
+                {{ _self.close_form_field_panel() }}
+                {% set form_panel_is_already_open = false %}
             {% endif %}
 
-            {% block detail_field %}
-                {% if not is_form_field_panel %}
-                    {{ _self.render_field(entity, field) }}
-                {% endif %}
-            {% endblock %}
-        {% endfor %}
+            {{ _self.open_form_field_panel(is_form_field_panel ? field : null) }}
+            {% set form_panel_is_already_open = true %}
+        {% endif %}
 
+        {% block detail_field %}
+            {% if not is_form_field_panel %}
+                {{ _self.render_field(entity, field) }}
+            {% endif %}
+        {% endblock %}
+    {% endfor %}
+
+    {% if form_panel_is_already_open %}
         {{ _self.close_form_field_panel() }}
+        {% set form_panel_is_already_open = false %}
+    {% endif %}
 {% endmacro %}
 
 {% macro open_form_field_panel(field = null) %}

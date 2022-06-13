@@ -85,7 +85,6 @@ final class FormField implements FieldInterface
         return $field
             ->setFieldFqcn(__CLASS__)
             ->hideOnIndex()
-            ->hideOnDetail()
             ->setProperty('ea_form_tab_'.(new Ulid()))
             ->setLabel($label)
             ->setFormType(EasyAdminTabType::class)

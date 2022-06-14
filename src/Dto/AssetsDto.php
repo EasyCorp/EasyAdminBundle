@@ -2,6 +2,8 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
+use EasyCorp\Bundle\EasyAdminBundle\Asset\AssetPackage;
+
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
@@ -65,6 +67,11 @@ final class AssetsDto
         }
 
         $this->bodyContents[] = $htmlContent;
+    }
+
+    public function getDefaultAssetPackageName(): string
+    {
+        return AssetPackage::PACKAGE_NAME;
     }
 
     /**

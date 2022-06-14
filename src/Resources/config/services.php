@@ -4,6 +4,7 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use EasyCorp\Bundle\EasyAdminBundle\ArgumentResolver\AdminContextResolver;
 use EasyCorp\Bundle\EasyAdminBundle\ArgumentResolver\BatchActionDtoResolver;
+use EasyCorp\Bundle\EasyAdminBundle\Asset\AssetPackage;
 use EasyCorp\Bundle\EasyAdminBundle\Cache\CacheWarmer;
 use EasyCorp\Bundle\EasyAdminBundle\Command\MakeAdminDashboardCommand;
 use EasyCorp\Bundle\EasyAdminBundle\Command\MakeCrudControllerCommand;
@@ -306,7 +307,7 @@ return static function (ContainerConfigurator $container) {
             ->tag(EasyAdminExtension::TAG_FIELD_CONFIGURATOR, ['priority' => 9999])
 
         ->set(CountryConfigurator::class)
-            ->arg(0, service('assets.packages'))
+            ->arg(0, service(AssetPackage::class))
 
         ->set(CurrencyConfigurator::class)
 
@@ -339,6 +340,11 @@ return static function (ContainerConfigurator $container) {
 
         ->set(ChoiceConfigurator::class)
 
+        ->set(CollectionConfigurator::class)
+            ->arg(0, service('request_stack'))
+            ->arg(1, service(EntityFactory::class))
+            ->arg(2, service(ControllerFactory::class))
+
         ->set(SlugConfigurator::class)
 
         ->set(TelephoneConfigurator::class)
@@ -350,5 +356,8 @@ return static function (ContainerConfigurator $container) {
         ->set(TimezoneConfigurator::class)
 
         ->set(UrlConfigurator::class)
+
+        ->set(AssetPackage::class)
+            ->tag('assets.package', ['package' => AssetPackage::PACKAGE_NAME])
     ;
 };

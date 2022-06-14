@@ -42,11 +42,12 @@ class Crud
     }
 
     /**
-     * @param string|callable $label The callable signature is: fn ($entityInstance, $pageName): string
+     * @param TranslatableInterface|string|callable $label The callable signature is: fn ($entityInstance, $pageName): string
      */
-    public function setEntityLabelInSingular(/* string|callable */ $label): self
+    public function setEntityLabelInSingular(/* TranslatableInterface|string|callable */ $label): self
     {
         if (!\is_string($label)
+            && !$label instanceof TranslatableInterface
             && !\is_callable($label)) {
             trigger_deprecation(
                 'easycorp/easyadmin-bundle',
@@ -65,11 +66,12 @@ class Crud
     }
 
     /**
-     * @param string|callable $label The callable signature is: fn ($entityInstance, $pageName): string
+     * @param TranslatableInterface|string|callable $label The callable signature is: fn ($entityInstance, $pageName): string
      */
-    public function setEntityLabelInPlural(/* string|callable */ $label): self
+    public function setEntityLabelInPlural(/* TranslatableInterface|string|callable */ $label): self
     {
         if (!\is_string($label)
+            && !$label instanceof TranslatableInterface
             && !\is_callable($label)) {
             trigger_deprecation(
                 'easycorp/easyadmin-bundle',

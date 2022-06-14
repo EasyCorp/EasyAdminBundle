@@ -73,11 +73,11 @@ final class FilterFactory
 
             $context = $this->adminContextProvider->getContext();
             foreach ($this->filterConfigurators as $configurator) {
-                if (!$configurator->supports($filterDto, $fields->get($property), $entityDto, $context)) {
+                if (!$configurator->supports($filterDto, $fields->getByProperty($property), $entityDto, $context)) {
                     continue;
                 }
 
-                $configurator->configure($filterDto, $fields->get($property), $entityDto, $context);
+                $configurator->configure($filterDto, $fields->getByProperty($property), $entityDto, $context);
             }
 
             $builtFilters[$property] = $filterDto;

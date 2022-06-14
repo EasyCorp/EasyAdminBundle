@@ -28,7 +28,7 @@ final class SlugField implements FieldInterface
             ->setTemplateName('crud/field/text')
             ->setFormType(SlugType::class)
             ->addCssClass('field-text')
-            ->addJsFiles(Asset::new('bundles/easyadmin/field-slug.js')->onlyOnForms())
+            ->addJsFiles(Asset::fromEasyAdminAssetPackage('field-slug.js')->onlyOnForms())
             ->setDefaultColumns('col-md-6 col-xxl-5')
             ->setCustomOption(self::OPTION_TARGET_FIELD_NAME, null)
             ->setCustomOption(self::OPTION_UNLOCK_CONFIRMATION_MESSAGE, null)

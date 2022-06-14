@@ -89,6 +89,10 @@ label.form-check-label {
     word-break: keep-all;
     transition: box-shadow .08s ease-in, color .08s ease-in;
 }
+.form-widget .form-control:disabled, .form-control[readonly] {
+    background-color: var(--form-control-disabled-bg);
+    color: var(--form-control-disabled-color);
+}
 body.ea-dark-scheme .form-widget .form-select {
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23adb5bd' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
 }
@@ -181,7 +185,7 @@ label.form-check-label {
     color: var(--text-color);
     content: "\f07c";
     display: inline-block;
-    font-family: "Font Awesome 5 Free";
+    font-family: "Font Awesome 6 Free";
     font-size: 17px;
     height: 28px;
     line-height: 28px;

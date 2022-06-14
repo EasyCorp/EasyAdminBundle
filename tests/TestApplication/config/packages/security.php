@@ -13,6 +13,10 @@ $configuration = [
         'test_users' => [
             'memory' => [
                 'users' => [
+                    'user' => [
+                        'password' => '1234',
+                        'roles' => ['ROLE_USER'],
+                    ],
                     'admin' => [
                         'password' => '1234',
                         'roles' => ['ROLE_ADMIN'],
@@ -31,8 +35,12 @@ $configuration = [
         ],
     ],
 
+    'role_hierarchy' => [
+        'ROLE_ADMIN' => ['ROLE_USER'],
+    ],
+
     'access_control' => [
-        ['path' => '^/secure_admin', 'roles' => ['ROLE_ADMIN']],
+        ['path' => '^/secure_admin', 'roles' => ['ROLE_USER']],
     ],
 ];
 

@@ -5,13 +5,16 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Controller;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Exception\ForbiddenActionException;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Config\Action as AppAction;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Controller\CategoryCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Controller\SecureDashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Entity\Category;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 
 class CategoryCrudControllerTest extends WebTestCase
 {
@@ -180,6 +183,13 @@ class CategoryCrudControllerTest extends WebTestCase
      */
     public function testToggle(string $method, ?string $invalidCsrfToken, int $expectedStatusCode, bool $toggleIsExpectedToSucceed)
     {
+        if (Response::HTTP_METHOD_NOT_ALLOWED === $expectedStatusCode) {
+            // needed to not display 'Uncaught PHP exception' messages in PHPUnit output
+            // see https://stackoverflow.com/questions/50456114/phpunit-dont-report-symfony-exceptions-rendered-to-http-errors/50465691
+            $this->expectException(MethodNotAllowedHttpException::class);
+            $this->client->catchExceptions(false);
+        }
+
         // Find the first toggle URL in the category list
         $crawler = $this->client->request('GET', $this->generateCategoryIndexUrl(), [], [], ['PHP_AUTH_USER' => 'admin', 'PHP_AUTH_PW' => '1234']);
         $firstFoundToggleUrl = $crawler->filter('td.field-boolean .form-switch input[type="checkbox"]')->first()->attr('data-toggle-url');
@@ -333,6 +343,29 @@ class CategoryCrudControllerTest extends WebTestCase
         ];
     }
 
+    /**
+     * @dataProvider customPage
+     */
+    public function testCustomPage(string $username, int $expectedStatusCode)
+    {
+        if (Response::HTTP_FORBIDDEN === $expectedStatusCode) {
+            // needed to not display 'Uncaught PHP exception' messages in PHPUnit output
+            // see https://stackoverflow.com/questions/50456114/phpunit-dont-report-symfony-exceptions-rendered-to-http-errors/50465691
+            $this->expectException(ForbiddenActionException::class);
+            $this->client->catchExceptions(false);
+        }
+
+        $this->client->request('GET', $this->generateCustomActionUrl(), [], [], ['PHP_AUTH_USER' => $username, 'PHP_AUTH_PW' => '1234']);
+
+        $this->assertResponseStatusCodeSame($expectedStatusCode);
+    }
+
+    public function customPage(): \Generator
+    {
+        yield [$this->generateUsername('ROLE_USER'), Response::HTTP_FORBIDDEN];
+        yield [$this->generateUsername('ROLE_ADMIN'), Response::HTTP_OK];
+    }
+
     private function assertResultCount(int $expectedResultCount): void
     {
         if (0 > $expectedResultCount) {
@@ -400,5 +433,26 @@ class CategoryCrudControllerTest extends WebTestCase
             ->setAction('renderFilters')
             ->set('referrer', $referrer)
             ->generateUrl();
+    }
+
+    private function generateCustomActionUrl(): string
+    {
+        return $this->adminUrlGenerator
+            ->setDashboard(SecureDashboardController::class)
+            ->setController(CategoryCrudController::class)
+            ->setAction(AppAction::CUSTOM_ACTION)
+            ->generateUrl();
+    }
+
+    private function generateUsername(string $role): string
+    {
+        switch ($role) {
+            case 'ROLE_USER':
+                return 'user';
+            case 'ROLE_ADMIN':
+                return 'admin';
+        }
+
+        throw new \InvalidArgumentException(sprintf('Unknown role, use one of: %s', implode(', ', ['ROLE_USER', 'ROLE_ADMIN'])));
     }
 }

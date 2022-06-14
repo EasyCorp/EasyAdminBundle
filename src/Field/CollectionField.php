@@ -20,6 +20,10 @@ final class CollectionField implements FieldInterface
     public const OPTION_ENTRY_TYPE = 'entryType';
     public const OPTION_SHOW_ENTRY_LABEL = 'showEntryLabel';
     public const OPTION_RENDER_EXPANDED = 'renderExpanded';
+    public const OPTION_ENTRY_USES_CRUD_FORM = 'entryUsesCrudController';
+    public const OPTION_ENTRY_CRUD_CONTROLLER_FQCN = 'entryCrudControllerFqcn';
+    public const OPTION_ENTRY_CRUD_NEW_PAGE_NAME = 'entryCrudNewPageName';
+    public const OPTION_ENTRY_CRUD_EDIT_PAGE_NAME = 'entryCrudEditPageName';
 
     /**
      * @param TranslatableInterface|string|false|null $label
@@ -32,14 +36,18 @@ final class CollectionField implements FieldInterface
             ->setTemplateName('crud/field/collection')
             ->setFormType(CollectionType::class)
             ->addCssClass('field-collection')
-            ->addJsFiles(Asset::new('bundles/easyadmin/field-collection.js')->onlyOnForms())
+            ->addJsFiles(Asset::fromEasyAdminAssetPackage('field-collection.js')->onlyOnForms())
             ->setDefaultColumns('col-md-8 col-xxl-7')
             ->setCustomOption(self::OPTION_ALLOW_ADD, true)
             ->setCustomOption(self::OPTION_ALLOW_DELETE, true)
             ->setCustomOption(self::OPTION_ENTRY_IS_COMPLEX, null)
             ->setCustomOption(self::OPTION_ENTRY_TYPE, null)
             ->setCustomOption(self::OPTION_SHOW_ENTRY_LABEL, false)
-            ->setCustomOption(self::OPTION_RENDER_EXPANDED, false);
+            ->setCustomOption(self::OPTION_RENDER_EXPANDED, false)
+            ->setCustomOption(self::OPTION_ENTRY_USES_CRUD_FORM, false)
+            ->setCustomOption(self::OPTION_ENTRY_CRUD_CONTROLLER_FQCN, null)
+            ->setCustomOption(self::OPTION_ENTRY_CRUD_NEW_PAGE_NAME, null)
+            ->setCustomOption(self::OPTION_ENTRY_CRUD_EDIT_PAGE_NAME, null);
     }
 
     public function allowAdd(bool $allow = true): self
@@ -60,7 +68,7 @@ final class CollectionField implements FieldInterface
      * Set this option to TRUE if the collection items are complex form types
      * composed of several form fields (EasyAdmin applies a special rendering to make them look better).
      */
-    public function setEntryIsComplex(bool $isComplex): self
+    public function setEntryIsComplex(bool $isComplex = true): self
     {
         $this->setCustomOption(self::OPTION_ENTRY_IS_COMPLEX, $isComplex);
 
@@ -84,6 +92,16 @@ final class CollectionField implements FieldInterface
     public function renderExpanded(bool $renderExpanded = true): self
     {
         $this->setCustomOption(self::OPTION_RENDER_EXPANDED, $renderExpanded);
+
+        return $this;
+    }
+
+    public function useEntryCrudForm(?string $crudControllerFqcn = null, ?string $crudNewPageName = null, ?string $crudEditPageName = null): self
+    {
+        $this->setCustomOption(self::OPTION_ENTRY_USES_CRUD_FORM, true);
+        $this->setCustomOption(self::OPTION_ENTRY_CRUD_CONTROLLER_FQCN, $crudControllerFqcn);
+        $this->setCustomOption(self::OPTION_ENTRY_CRUD_NEW_PAGE_NAME, $crudNewPageName);
+        $this->setCustomOption(self::OPTION_ENTRY_CRUD_EDIT_PAGE_NAME, $crudEditPageName);
 
         return $this;
     }

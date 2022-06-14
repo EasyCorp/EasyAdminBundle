@@ -11,6 +11,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 final class AssetDto
 {
     private string $value;
+    // the Symfony Asset package name which this asset belongs to
+    private ?string $packageName = null;
     private bool $async = false;
     private bool $defer = false;
     private bool $preload = false;
@@ -39,6 +41,16 @@ final class AssetDto
     public function getValue(): string
     {
         return $this->value;
+    }
+
+    public function getPackageName(): ?string
+    {
+        return $this->packageName;
+    }
+
+    public function setPackageName(string $packageName): void
+    {
+        $this->packageName = $packageName;
     }
 
     public function setAsync(bool $async): void

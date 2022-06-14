@@ -2,79 +2,79 @@
   "entrypoints": {
     "app": {
       "css": [
-        "./app.css",
-        "./app.rtl.css"
+        "/bundles/easyadmin/app.db9f4e38.css",
+        "/bundles/easyadmin/app.db9f4e38.rtl.css"
       ],
       "js": [
-        "./app.js"
+        "/bundles/easyadmin/app.1e1ba55d.js"
       ]
     },
     "form": {
       "js": [
-        "./form.js"
+        "/bundles/easyadmin/form.f254eea2.js"
       ]
     },
     "page-layout": {
       "js": [
-        "./page-layout.js"
+        "/bundles/easyadmin/page-layout.3347892e.js"
       ]
     },
     "page-color-scheme": {
       "js": [
-        "./page-color-scheme.js"
+        "/bundles/easyadmin/page-color-scheme.f676dfa6.js"
       ]
     },
     "field-boolean": {
       "js": [
-        "./field-boolean.js"
+        "/bundles/easyadmin/field-boolean.33d03224.js"
       ]
     },
     "field-code-editor": {
       "css": [
-        "./field-code-editor.css",
-        "./field-code-editor.rtl.css"
+        "/bundles/easyadmin/field-code-editor.09574d54.css",
+        "/bundles/easyadmin/field-code-editor.09574d54.rtl.css"
       ],
       "js": [
-        "./field-code-editor.js"
+        "/bundles/easyadmin/field-code-editor.0848a947.js"
       ]
     },
     "field-collection": {
       "js": [
-        "./field-collection.js"
+        "/bundles/easyadmin/field-collection.c6a8940b.js"
       ]
     },
     "field-file-upload": {
       "js": [
-        "./field-file-upload.js"
+        "/bundles/easyadmin/field-file-upload.3b5722a2.js"
       ]
     },
     "field-image": {
       "js": [
-        "./field-image.js"
+        "/bundles/easyadmin/field-image.c14f1295.js"
       ]
     },
     "field-slug": {
       "js": [
-        "./field-slug.js"
+        "/bundles/easyadmin/field-slug.1c789293.js"
       ]
     },
     "field-textarea": {
       "js": [
-        "./field-textarea.js"
+        "/bundles/easyadmin/field-textarea.f496dd73.js"
       ]
     },
     "field-text-editor": {
       "css": [
-        "./field-text-editor.css",
-        "./field-text-editor.rtl.css"
+        "/bundles/easyadmin/field-text-editor.7348fb97.css",
+        "/bundles/easyadmin/field-text-editor.7348fb97.rtl.css"
       ],
       "js": [
-        "./field-text-editor.js"
+        "/bundles/easyadmin/field-text-editor.5036ae44.js"
       ]
     },
     "login": {
       "js": [
-        "./login.js"
+        "/bundles/easyadmin/login.7259f5de.js"
       ]
     }
   }

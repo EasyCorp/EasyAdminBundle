@@ -75,8 +75,9 @@ EasyAdmin will try to do its best to display those fields correctly::
 setEntryType
 ~~~~~~~~~~~~
 
-Use this option to define the Symfony form type used to render the form of each
-collection item::
+The entries of the collection can be rendered either using a Symfony Form or an
+EasyAdmin CRUD Form. The ``setEntryType()`` method defines the Symfony form type
+used to render the form of each collection entry::
 
     yield CollectionField::new('...')->setEntryType(SomeType::class);
 
@@ -88,5 +89,30 @@ an auto-increment integer number which doesn't look good most of the times).
 Use this option if you prefer to display that label::
 
     yield CollectionField::new('...')->showEntryLabel();
+
+useEntryCrudForm
+~~~~~~~~~~~~~~~~
+
+The entries of the collection can be rendered either using a Symfony Form or an
+EasyAdmin CRUD Form. The ``useEntryCrudForm()`` method defines the EasyAdmin CRUD
+form used to render the form of each collection entry::
+
+    yield CollectionField::new('...')->useEntryCrudForm();
+
+By default, EasyAdmin finds the CRUD controller associated to the property automatically.
+If you need better control about which CRUD controller to use, pass the fully-qualified
+class name of the controller as the first argument::
+
+    yield CollectionField::new('...')->useEntryCrudForm(CategoryCrudController::class);
+
+    // the other optional arguments are the CRUD page names to pass to the configureFields()
+    // method when creating and editing entries respectively
+    yield CollectionField::new('...')->useEntryCrudForm(
+        CategoryCrudController::class, 'new_category_on_article_page', 'edit_category_on_article_page'
+    );
+
+.. note::
+
+    The ``useEntryCrudForm()`` method requires Symfony 6.1 or newer version.
 
 .. _`CollectionType`: https://symfony.com/doc/current/reference/forms/types/collection.html

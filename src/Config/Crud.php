@@ -55,7 +55,7 @@ class Crud
                 'Argument "%s" for "%s" must be one of these types: %s. Passing type "%s" will cause an error in 5.0.0.',
                 '$label',
                 __METHOD__,
-                '"string" or "callable"',
+                '"string" or "TranslatableInterface" or "callable"',
                 \gettype($label)
             );
         }
@@ -95,6 +95,7 @@ class Crud
     public function setPageTitle(string $pageName, /* TranslatableInterface|string|callable */ $title): self
     {
         if (!\is_string($title)
+            && !$title instanceof TranslatableInterface
             && !\is_callable($title)) {
             trigger_deprecation(
                 'easycorp/easyadmin-bundle',
@@ -102,7 +103,7 @@ class Crud
                 'Argument "%s" for "%s" must be one of these types: %s. Passing type "%s" will cause an error in 5.0.0.',
                 '$title',
                 __METHOD__,
-                '"string" or "callable"',
+                '"string" or "TranslatableInterface" or "callable"',
                 \gettype($title)
             );
         }

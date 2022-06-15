@@ -90,9 +90,9 @@ class Crud
     }
 
     /**
-     * @param string|callable $title The callable signature is: fn ($entityInstance): string
+     * @param TranslatableInterface|string|callable $title The callable signature is: fn ($entityInstance): string
      */
-    public function setPageTitle(string $pageName, /* string|callable */ $title): self
+    public function setPageTitle(string $pageName, /* TranslatableInterface|string|callable */ $title): self
     {
         if (!\is_string($title)
             && !\is_callable($title)) {

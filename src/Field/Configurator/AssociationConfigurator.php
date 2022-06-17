@@ -119,6 +119,15 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
                 ->generateUrl();
 
             $field->setFormTypeOption('attr.data-ea-autocomplete-endpoint-url', $autocompleteEndpointUrl);
+
+            if (true === $field->getCustomOption(AssociationField::OPTION_ALLOW_ADD_NEW_ENTITIES)) {
+                $field->setFormTypeOption('allow_add_new_entities', true);
+                $field->setFormTypeOption(
+                    'new_entities_handler',
+                    $field->getCustomOption(AssociationField::OPTION_NEW_ENTITIES_HANDLER)
+                );
+                $field->setFormTypeOption('attr.data-ea-autocomplete-allow-item-create', 'true');
+            }
         } else {
             $field->setFormTypeOptionIfNotSet('query_builder', static function (EntityRepository $repository) use ($field) {
                 // TODO: should this use `createIndexQueryBuilder` instead, so we get the default ordering etc.?

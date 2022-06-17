@@ -47,6 +47,11 @@ export default class Autocomplete
 
         if ('true' === element.getAttribute('data-ea-autocomplete-allow-item-create')) {
             config.create = true;
+            config.render.option_create = function (data, escape) {
+                const input = `<strong>${escape(data.input)}</strong>`;
+                const text = element.getAttribute('data-ea-i18n-item-create').replace(/%input%/g, input);
+                return `<div class="create" data-selectable="">${text}</div>`;
+            }
         }
 
         return config;
@@ -93,7 +98,8 @@ export default class Autocomplete
     }
 
     #createAutocompleteWithRemoteData(element, autocompleteEndpointUrl) {
-        const config = this.#mergeObjects(this.#getCommonConfig(element), {
+        const commonConfig = this.#getCommonConfig(element);
+        const config = this.#mergeObjects(commonConfig, {
             valueField: 'entityId',
             labelField: 'entityAsString',
             searchField: ['entityAsString'],
@@ -119,6 +125,7 @@ export default class Autocomplete
                 };
             },
             render: {
+                ...commonConfig.render,
                 option: function(item, escape) {
                     return `<div>${item.entityAsString}</div>`;
                 },
@@ -130,9 +137,6 @@ export default class Autocomplete
                 },
                 no_more_results: function(data, escape) {
                     return `<div class="no-more-results">${element.getAttribute('data-ea-i18n-no-more-results')}</div>`;
-                },
-                no_results: function(data, escape) {
-                    return `<div class="no-results">${element.getAttribute('data-ea-i18n-no-results-found')}</div>`;
                 },
             },
         });

@@ -39,6 +39,49 @@ Use this option to load values dynamically (via Ajax requests) based on user inp
 
     yield AssociationField::new('...')->autocomplete();
 
+By passing a callback you can enable your users to create new associations. The
+autocomplete dropdown will render a dynamic option based on the users input and
+if it is selected your callback can handle the new association and persist it to
+your database. The callback receives an array of user inputs and the instance of
+your entity::
+
+    use App\Entity\Category;
+    use App\Entity\Product;
+    use Doctrine\ORM\EntityManagerInterface;
+    use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+    use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+
+    class ProductCrudController extends AbstractCrudController
+    {
+        private EntityManagerInterface $entityManager;
+
+        public function __construct(EntityManagerInterface $entityManager)
+        {
+            $this->entityManager = $entityManager;
+        }
+
+        public static function getEntityFqcn(): string
+        {
+            return Product::class;
+        }
+
+        public function configureFields(string $pageName): iterable
+        {
+            return [
+                AssociationField::new('categories')
+                    ->autocomplete(function (array $datas, Product $product) {
+                        // $datas will be something like: ['T-Shirts', 'Sweaters']
+                        foreach ($datas as $data) {
+                            $category = (new Category())
+                                ->setTitle($data);
+                            $this->entityManager->persist($category);
+                            $product->addCategory($category);
+                        }
+                    }),
+            ];
+        }
+    }
+
 ``renderAsNativeWidget``
 ~~~~~~~~~~~~~~~~~~~~~~~~
 

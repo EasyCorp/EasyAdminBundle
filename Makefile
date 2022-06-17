@@ -28,4 +28,7 @@ build: ## Initially build the package before development
 build-assets: ## Rebuild assets after changes in JS or SCSS
 	yarn encore production
 
+watch: ## Watch assets
+	yarn encore dev --watch
+
 checks-before-pr: linter-code-syntax linter-docs tests ## Runs tests and linters which are also run on PRs

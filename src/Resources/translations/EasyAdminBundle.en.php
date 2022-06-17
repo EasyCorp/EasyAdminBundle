@@ -140,5 +140,6 @@ return [
         'no-results-found' => 'No results found',
         'no-more-results' => 'No more results',
         'loading-more-results' => 'Loading more results…',
+        'item-create' => 'Add %input%…',
     ],
 ];

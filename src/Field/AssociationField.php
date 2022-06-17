@@ -14,6 +14,8 @@ final class AssociationField implements FieldInterface
     use FieldTrait;
 
     public const OPTION_AUTOCOMPLETE = 'autocomplete';
+    public const OPTION_ALLOW_ADD_NEW_ENTITIES = 'allowAddNewEntities';
+    public const OPTION_NEW_ENTITIES_HANDLER = 'newEntitiesHandler';
     public const OPTION_CRUD_CONTROLLER = 'crudControllerFqcn';
     public const OPTION_WIDGET = 'widget';
     public const OPTION_QUERY_BUILDER_CALLABLE = 'queryBuilderCallable';
@@ -41,6 +43,8 @@ final class AssociationField implements FieldInterface
             ->addCssClass('field-association')
             ->setDefaultColumns('col-md-7 col-xxl-6')
             ->setCustomOption(self::OPTION_AUTOCOMPLETE, false)
+            ->setCustomOption(self::OPTION_ALLOW_ADD_NEW_ENTITIES, false)
+            ->setCustomOption(self::OPTION_NEW_ENTITIES_HANDLER, null)
             ->setCustomOption(self::OPTION_CRUD_CONTROLLER, null)
             ->setCustomOption(self::OPTION_WIDGET, self::WIDGET_AUTOCOMPLETE)
             ->setCustomOption(self::OPTION_QUERY_BUILDER_CALLABLE, null)
@@ -48,9 +52,13 @@ final class AssociationField implements FieldInterface
             ->setCustomOption(self::OPTION_DOCTRINE_ASSOCIATION_TYPE, null);
     }
 
-    public function autocomplete(): self
+    public function autocomplete(callable $newEntitiesHandler = null): self
     {
         $this->setCustomOption(self::OPTION_AUTOCOMPLETE, true);
+        if (null !== $newEntitiesHandler) {
+            $this->setCustomOption(self::OPTION_ALLOW_ADD_NEW_ENTITIES, true);
+            $this->setCustomOption(self::OPTION_NEW_ENTITIES_HANDLER, $newEntitiesHandler);
+        }
 
         return $this;
     }

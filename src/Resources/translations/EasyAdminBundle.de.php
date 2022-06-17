@@ -140,5 +140,6 @@ return [
         'no-results-found' => 'Keine Übereinstimmungen gefunden',
         'no-more-results' => 'Keine weiteren Ergebnisse',
         'loading-more-results' => 'Lade mehr Ergebnisse…',
+        'item-create' => 'Erstelle %input%…',
     ],
 ];

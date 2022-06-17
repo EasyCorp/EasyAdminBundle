@@ -1,0 +1,11 @@
+---------------------------------------------------------------------------
+
+by dragosprotung at 2022-06-17T08:33:42Z
+
+I tested on my scenario and can confirm this solves the issue
+
+---------------------------------------------------------------------------
+
+by Atko at 2022-06-17T09:05:53Z
+
+Same here: my app is under the /admin subpath and the commented solution in #5295 by @joerleigh worked as intended: assets URLs are fixed.

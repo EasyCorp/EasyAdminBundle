@@ -3,7 +3,7 @@ const WebpackRTLPlugin = require('@automattic/webpack-rtl-plugin');
 
 Encore
     .setOutputPath('./src/Resources/public/')
-    .setPublicPath('bundles/easyadmin/')
+    .setPublicPath('')
     .setManifestKeyPrefix('')
 
     .cleanupOutputBeforeBuild()

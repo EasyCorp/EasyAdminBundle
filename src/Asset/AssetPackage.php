@@ -2,9 +2,11 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Asset;
 
-use Symfony\Component\Asset\Package;
+use Symfony\Component\Asset\Context\RequestStackContext;
 use Symfony\Component\Asset\PackageInterface;
+use Symfony\Component\Asset\PathPackage;
 use Symfony\Component\Asset\VersionStrategy\JsonManifestVersionStrategy;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * This defines a Symfony Asset named package that groups all the assets provided
@@ -21,9 +23,13 @@ final class AssetPackage implements PackageInterface
 
     private PackageInterface $package;
 
-    public function __construct()
+    public function __construct(RequestStack $requestStack)
     {
-        $this->package = new Package(new JsonManifestVersionStrategy(__DIR__.'/../Resources/public/manifest.json'));
+        $this->package = new PathPackage(
+            '/bundles/easyadmin',
+            new JsonManifestVersionStrategy(__DIR__.'/../Resources/public/manifest.json'),
+            new RequestStackContext($requestStack)
+        );
     }
 
     public function getUrl(string $assetPath): string

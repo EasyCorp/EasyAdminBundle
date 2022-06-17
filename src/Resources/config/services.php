@@ -358,6 +358,7 @@ return static function (ContainerConfigurator $container) {
         ->set(UrlConfigurator::class)
 
         ->set(AssetPackage::class)
+            ->arg(0, service('request_stack'))
             ->tag('assets.package', ['package' => AssetPackage::PACKAGE_NAME])
     ;
 };

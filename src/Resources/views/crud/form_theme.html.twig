@@ -495,7 +495,7 @@
                             </a>
 
                             {% if panel_config.help|default(false) %}
-                                <div class="form-panel-help">{{ panel_config.help|raw }}</div>
+                                <div class="form-panel-help">{{ panel_config.help|trans|raw }}</div>
                             {% endif %}
                         </div>
                     </div>

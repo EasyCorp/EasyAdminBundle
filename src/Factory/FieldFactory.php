@@ -97,6 +97,10 @@ final class FieldFactory
                 $configurator->configure($fieldDto, $entityDto, $context);
             }
 
+            foreach ($fieldDto->getFormThemes() as $formThemePath) {
+                $context?->getCrud()?->addFormTheme($formThemePath);
+            }
+
             $fields->set($fieldDto);
         }
 
@@ -160,6 +164,9 @@ final class FieldFactory
         $newField->setColumns($fieldDto->getColumns());
         $newField->setTranslationParameters($fieldDto->getTranslationParameters());
         $newField->setAssets($newField->getAssets()->mergeWith($fieldDto->getAssets()));
+        foreach ($fieldDto->getFormThemes() as $formThemePath) {
+            $newField->addFormTheme($formThemePath);
+        }
 
         $customFormTypeOptions = $fieldDto->getFormTypeOptions();
         $defaultFormTypeOptions = $newField->getFormTypeOptions();

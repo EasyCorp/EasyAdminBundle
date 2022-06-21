@@ -539,6 +539,11 @@ Design Options
 ::
 
     TextField::new('firstName', 'Name')
+        // use this method if your field needs a specific form theme to render properly
+        ->addFormTheme('@FOSCKEditor/Form/ckeditor_widget.html.twig')
+        // you can add more than one form theme using the same method
+        ->addFormTheme('theme1.html.twig', 'theme2.html.twig', 'theme3.html.twig')
+
         // CSS class/classes are applied to the field contents (in the 'index' page)
         // or to the row that wraps the contents (in the 'detail', 'edit' and 'new' pages)
 

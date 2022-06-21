@@ -373,6 +373,12 @@ final class CrudDto
         return $this->formThemes;
     }
 
+    public function addFormTheme(string $formThemePath): void
+    {
+        // fields form themes are added last to give them more priority
+        $this->formThemes = array_merge($this->formThemes, [$formThemePath]);
+    }
+
     public function setFormThemes(array $formThemes): void
     {
         $this->formThemes = $formThemes;

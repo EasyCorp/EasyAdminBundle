@@ -48,9 +48,9 @@ body.page-login {
     }
 }
 .login-wrapper .content {
-    background-color: var(--white);
+    background-color: var(--page-login-form-bg);
     border-radius: var(--border-radius);
-    box-shadow: var(--box-shadow-lg);
+    box-shadow: var(--shadow-lg);
     padding: 15px 30px;
     width: 100%;
 
@@ -59,9 +59,14 @@ body.page-login {
     }
 }
 .login-wrapper .form-widget input {
+    background-color: var(--page-login-form-control-bg);
+    border-color: var(--page-login-form-control-border-color);
     font-size: var(--font-size-lg);
     height: 38px;
     line-height: 38px;
+}
+.login-wrapper .form-widget .btn-primary {
+    background-color: var(--page-login-form-control-button-bg);
 }
 .login-wrapper .form-text {
     font-size: inherit;

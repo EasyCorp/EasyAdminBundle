@@ -195,6 +195,15 @@ trait FieldTrait
         return $this;
     }
 
+    public function addFormTheme(string ...$formThemePaths): self
+    {
+        foreach ($formThemePaths as $formThemePath) {
+            $this->dto->addFormTheme($formThemePath);
+        }
+
+        return $this;
+    }
+
     public function addWebpackEncoreEntries(Asset|string ...$entryNamesOrAssets): self
     {
         if (!class_exists('Symfony\\WebpackEncoreBundle\\Twig\\EntryFilesTwigExtension')) {

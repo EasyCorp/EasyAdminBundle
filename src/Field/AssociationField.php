@@ -28,6 +28,8 @@ final class AssociationField implements FieldInterface
     /** @internal this option is intended for internal use only */
     public const PARAM_AUTOCOMPLETE_CONTEXT = 'autocompleteContext';
 
+	public const OPTION_AUTOCOMPLETE_CUSTOM_QUERY = 'autocompleteCustomQuery';
+
     /**
      * @param TranslatableInterface|string|false|null $label
      */
@@ -45,12 +47,14 @@ final class AssociationField implements FieldInterface
             ->setCustomOption(self::OPTION_WIDGET, self::WIDGET_AUTOCOMPLETE)
             ->setCustomOption(self::OPTION_QUERY_BUILDER_CALLABLE, null)
             ->setCustomOption(self::OPTION_RELATED_URL, null)
-            ->setCustomOption(self::OPTION_DOCTRINE_ASSOCIATION_TYPE, null);
+            ->setCustomOption(self::OPTION_DOCTRINE_ASSOCIATION_TYPE, null)
+	        ->setCustomOption(self::OPTION_AUTOCOMPLETE_CUSTOM_QUERY, null);
     }
 
-    public function autocomplete(): self
+    public function autocomplete(?array $customQueryParams = null): self
     {
         $this->setCustomOption(self::OPTION_AUTOCOMPLETE, true);
+	    $this->setCustomOption(self::OPTION_AUTOCOMPLETE_CUSTOM_QUERY, $customQueryParams);
 
         return $this;
     }

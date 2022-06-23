@@ -117,12 +117,12 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
                     'originatingPage' => $context->getCrud()->getCurrentPage(),
                 ]);
 
-	        $customQueryParams = $field->getCustomOption(AssociationField::OPTION_AUTOCOMPLETE_CUSTOM_QUERY);
-	        if (is_array($customQueryParams)) {
-		        foreach ($customQueryParams as $key => $value) {
-			        $autocompleteEndpointUrl->set($key, $value);
-		        }
-	        }
+            $customQueryParams = $field->getCustomOption(AssociationField::OPTION_AUTOCOMPLETE_CUSTOM_QUERY);
+            if (is_array($customQueryParams)) {
+                foreach ($customQueryParams as $key => $value) {
+                    $autocompleteEndpointUrl->set($key, $value);
+                }
+            }
 
             $field->setFormTypeOption('attr.data-ea-autocomplete-endpoint-url', $autocompleteEndpointUrl->generateUrl());
         } else {

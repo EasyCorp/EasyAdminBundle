@@ -118,7 +118,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
                 ]);
 
             $customQueryParams = $field->getCustomOption(AssociationField::OPTION_AUTOCOMPLETE_CUSTOM_QUERY);
-            if (is_array($customQueryParams)) {
+            if (\is_array($customQueryParams)) {
                 foreach ($customQueryParams as $key => $value) {
                     $autocompleteEndpointUrl->set($key, $value);
                 }

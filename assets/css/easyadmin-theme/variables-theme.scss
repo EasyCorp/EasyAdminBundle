@@ -20,7 +20,8 @@
     --font-size-xxl: 24px;
     --font-size-xxxl: 28px;
 
-    --shadow-lg: 0 20px 25px -5px rgba(15, 23, 43, 0.1), 0 10px 10px -5px rgba(15, 23, 42, 0.04);
+    --shadow-md: 0 4px 6px -1px rgb(15, 23, 43, 0.1), 0 2px 4px -2px rgb(15, 23, 42, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(15, 23, 43, 0.1), 0 4px 6px -4px rgb(15, 23, 42, 0.1);
     --shadow-xl: 0 20px 25px -5px rgba(15, 23, 42, 0.2), 0 8px 10px -6px rgba(15, 23, 42, 0.2);
 
     --width-sm: 576px;
@@ -282,6 +283,10 @@
     --code-editor-deletion-bg: #ffeef0;
 
     --page-login-bg: var(--gray-100);
+    --page-login-form-bg: var(--white);
+    --page-login-form-control-bg: var(--form-control-bg);
+    --page-login-form-control-border-color: var(--form-input-border-color);
+    --page-login-form-control-button-bg: var(--button-primary-bg);
 
     --zindex-700: 777;
     --zindex-800: 888;
@@ -328,8 +333,9 @@
     --secondary-bg: var(--true-gray-700);
     --tertiary-bg: var(--true-gray-900);
 
-    --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.4), 0 8px 10px -6px rgb(0 0 0 / 0.4);
+    --shadow-md: 0 4px 6px -1px rgb(0, 0, 0, 0.3), 0 2px 4px -2px rgb(0, 0, 0, 0.3);
+    --shadow-lg: 0 10px 15px -3px rgb(0, 0, 0, 0.3), 0 4px 6px -4px rgb(0, 0, 0, 0.3);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
     --body-bg: #222222; // custom value between --true-gray-900 and --true-gray-800
     --responsive-header-bg: #303030;
     --responsive-header-border-color: var(--true-gray-600);
@@ -561,7 +567,11 @@
     --code-editor-addition-bg: rgba(46, 160, 67, 0.3);
     --code-editor-deletion-bg: rgba(218, 54, 51, 0.3);
 
-    --page-login-bg: var(--true-gray-100);
+    --page-login-bg: var(--true-gray-800);
+    --page-login-form-bg: var(--true-gray-700);
+    --page-login-form-control-bg: var(--true-gray-800);
+    --page-login-form-control-border-color: var(--true-gray-600);
+    --page-login-form-control-button-bg: var(--blue-700);
 
     --text-blue-600: hsl(206, 91%, 30%);
     --text-green-600: hsl(159, 75%, 21%);

@@ -10,6 +10,9 @@ on:
 env:
     fail-fast: true
 
+permissions:
+  contents: read
+
 jobs:
     tests:
         runs-on: 'ubuntu-latest'

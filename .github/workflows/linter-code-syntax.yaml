@@ -6,6 +6,9 @@ on: [push, pull_request]
 env:
     fail-fast: true
 
+permissions:
+  contents: read
+
 jobs:
     php-cs-fixer:
         name: PHP-CS-Fixer

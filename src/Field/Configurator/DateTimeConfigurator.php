@@ -85,9 +85,7 @@ final class DateTimeConfigurator implements FieldConfiguratorInterface
             $field->setFormTypeOption('html5', true);
 
             if (('' !== trim($icuDateTimePattern) && str_contains($icuDateTimePattern, 's')) || (DateTimeField::FORMAT_SHORT !== $timeFormat && DateTimeField::FORMAT_NONE !== $timeFormat)) {
-                $attr = $field->getFormTypeOption('attr') ?? [];
-                $attr['step'] = '1';
-                $field->setFormTypeOption('attr', $attr);
+                $field->setFormTypeOption('with_seconds', true);
             }
         } elseif (DateTimeField::WIDGET_CHOICE === $widgetOption) {
             $field->setFormTypeOption('widget', 'choice');

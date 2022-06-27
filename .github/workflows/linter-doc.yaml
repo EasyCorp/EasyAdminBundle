@@ -3,6 +3,9 @@ name: "Linter: Documentation"
 
 on: [push, pull_request]
 
+permissions:
+  contents: read
+
 jobs:
     doctor-rst:
         name: DOCtor-RST

@@ -93,7 +93,7 @@ class StringToFileTransformer implements DataTransformerInterface
 
             $filename = $this->uploadDir.($this->uploadFilename)($value);
             $filename = ($this->uploadValidate)($filename);
-            return substr($filename, strlen($this->uploadDir));
+            return substr($filename, \strlen($this->uploadDir));
         }
 
         if ($value instanceof File) {

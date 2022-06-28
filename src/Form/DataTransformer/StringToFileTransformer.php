@@ -91,9 +91,9 @@ class StringToFileTransformer implements DataTransformerInterface
                 throw new TransformationFailedException($value->getErrorMessage());
             }
 
-            $filename = ($this->uploadFilename)($value);
-
-            return ($this->uploadValidate)($filename);
+            $filename = $this->uploadDir.($this->uploadFilename)($value);
+            $filename = ($this->uploadValidate)($filename);
+            return substr($filename, strlen($this->uploadDir));
         }
 
         if ($value instanceof File) {

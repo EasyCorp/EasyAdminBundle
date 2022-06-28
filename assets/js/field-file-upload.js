@@ -12,6 +12,9 @@ class FileUploadField {
         this.#fieldContainerElement = this.field.closest('.ea-fileupload');
         this.field.addEventListener('change', this.#updateField.bind(this));
         this.#getFieldDeleteButton().addEventListener('click', this.#resetField.bind(this));
+        this.#getRowDeleteButtons().forEach(button => {
+            button.addEventListener('click', this.#deleteSingleFieldRow.bind(this));
+        });
     }
 
     #updateField() {
@@ -74,7 +77,27 @@ class FileUploadField {
         return this.#fieldContainerElement.querySelector('.ea-fileupload-delete-btn');
     }
 
+    #getRowDeleteButtons() {
+        return this.#fieldContainerElement.querySelectorAll('.fileupload-list .file-delete a');
+    }
+
     #getFieldSizeLabel() {
         return this.#fieldContainerElement.querySelector('.input-group-text');
+    }
+
+    #deleteSingleFieldRow(event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        let row = event.target.closest('tr');
+        const filename = row.querySelector('span').innerText.trim();
+
+        const checkboxes = event.target.closest('.ea-fileupload').querySelectorAll('[data-filename]')
+        checkboxes.forEach(item => {
+            if (item.dataset.filename === filename) {
+                item.setAttribute('checked', 'checked')
+            }
+        });
+        row.remove();
     }
 }

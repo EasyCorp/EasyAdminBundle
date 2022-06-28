@@ -9,6 +9,8 @@ use Symfony\Component\Form\DataMapperInterface;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\HttpFoundation\File\File;
@@ -42,6 +44,23 @@ class FileUploadType extends AbstractType implements DataMapperInterface
 
         $builder->add('file', FileType::class, $options);
         $builder->add('delete', CheckboxType::class, ['required' => false]);
+
+        // Multiple delete buttons.
+        if ($options['multiple']) {
+            $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+                $data = $event->getData();
+                $form = $event->getForm();
+                if ($data) {
+                    foreach ($data as $key => $fileName) {
+                        $form->add('delete_file_'.$key, CheckboxType::class, [
+                          'mapped' => false,
+                          'label' => 'delete file '.$key + 1,
+                          'attr' => ['data-filename' => $fileName],
+                        ]);
+                    }
+                }
+            });
+        }
 
         $builder->setDataMapper($this);
         $builder->setAttribute('state', new FileUploadState($allowAdd));
@@ -199,6 +218,17 @@ class FileUploadType extends AbstractType implements DataMapperInterface
         /** @var FormInterface[] $children */
         $children = iterator_to_array($forms);
         $uploadedFiles = $children['file']->getData();
+
+        // Process multiple delete buttons.
+        foreach ($children as $key => $child) {
+            if (str_starts_with($key, 'delete_file_') && $child->getData()) {
+                $index = substr($key, 12);
+                $file = $currentFiles[$index];
+                // @todo process multiple file delete in AbstractCrudController::processUploadedFiles via FileUploadState
+                unlink($file->getPathname());
+                unset($currentFiles[$index]);
+            }
+        }
 
         /** @var FileUploadState $state */
         $state = $children['file']->getParent()->getConfig()->getAttribute('state');

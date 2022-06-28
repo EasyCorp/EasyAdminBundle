@@ -19,7 +19,7 @@ jobs:
         continue-on-error: false
         steps:
             - name: 'Checkout code'
-              uses: actions/checkout@v2.3.3
+              uses: actions/checkout@v3
 
             - name: 'Install PHP with extensions'
               uses: shivammathur/setup-php@v2

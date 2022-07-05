@@ -44,7 +44,7 @@ return [
     'action' => [
         'entity_actions' => 'Accions',
         'new' => 'Crear %entity_label_singular%',
-        'search' => 'Buscar',
+        'search' => 'Cercar',
         'detail' => 'Veure',
         'edit' => 'Modificar',
         'delete' => 'Esborrar',

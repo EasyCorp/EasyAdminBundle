@@ -184,42 +184,10 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $context->getCrud()->setFieldAssets($this->getFieldAssets($context->getEntity()->getFields()));
         $this->container->get(EntityFactory::class)->processActions($context->getEntity(), $context->getCrud()->getActionsConfig());
 
-        // Extract tabs fields and apply tab name for other fields
-        $tabs = [];
-        $nbTabs = 0;
-        foreach ($context->getEntity()->getFields() as $fieldDto) {
-            if (u($fieldDto->getCssClass())->containsAny(['field-form_tab'])) {
-                ++$nbTabs;
-            }
-        }
-        if ($nbTabs > 0) {
-            $currentTab = 'default';
-            $defaultTabMetadata = ['active' => true, 'id' => 'default', 'label' => 'action.detail'];
-            foreach ($context->getEntity()->getFields() as $fieldDto) {
-                if (u($fieldDto->getCssClass())->containsAny(['field-form_tab'])) {
-                    $currentTab = (string) $fieldDto->getLabel();
-                    $tabs[$currentTab] = new ArrayObject(array_merge($defaultTabMetadata, [
-                      'active' => 0 === \count($tabs),
-                      'id' => $fieldDto->getProperty(),
-                      'label' => $fieldDto->getLabel(),
-                      'help' => $fieldDto->getHelp(),
-                      FormField::OPTION_ICON => $fieldDto->getCustomOption(FormField::OPTION_ICON),
-                    ]));
-                    $context->getEntity()->getFields()->unset($fieldDto);
-                } else {
-                    if ('default' === $currentTab && !\count($tabs)) {
-                        $tabs[$currentTab] = new ArrayObject($defaultTabMetadata);
-                    }
-                    $fieldDto->ea_detail_tab = $currentTab;
-                }
-            }
-        }
-
         $responseParameters = $this->configureResponseParameters(KeyValueStore::new([
             'pageName' => Crud::PAGE_DETAIL,
             'templateName' => 'crud/detail',
             'entity' => $context->getEntity(),
-            'tabs' => $tabs,
         ]));
 
         $event = new AfterCrudActionEvent($context, $responseParameters);

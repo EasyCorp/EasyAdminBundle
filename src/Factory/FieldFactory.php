@@ -233,7 +233,6 @@ final class FieldFactory
             return;
         }
 
-
         $orphanFieldNames = [];
         foreach ($fields as $field) {
             if ($isTabField($field)) {

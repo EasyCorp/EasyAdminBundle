@@ -9,6 +9,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminTabType;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
+ *
  * @internal and @experimental don't use this in your own apps
  */
 final class FieldLayoutFactory

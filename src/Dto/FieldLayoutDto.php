@@ -6,6 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
+ *
  * @internal and @experimental don't use this in your own apps
  */
 final class FieldLayoutDto

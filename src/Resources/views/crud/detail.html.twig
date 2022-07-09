@@ -51,35 +51,80 @@
 {% block content_footer_wrapper '' %}
 
 {% block main %}
+    {% set field_layout = ea_create_field_layout(entity.fields) %}
     {% block detail_fields %}
-        {% set form_panel_is_already_open = false %}
-        {% for field in entity.fields %}
-            {% set is_form_field_panel = 'field-form_panel' in field.cssClass %}
-
-            {% if is_form_field_panel or (loop.first and not is_form_field_panel) %}
-                {% if form_panel_is_already_open %}
-                    {{ _self.close_form_field_panel() }}
-                    {% set form_panel_is_already_open = false %}
-                {% endif %}
-
-                {{ _self.open_form_field_panel(is_form_field_panel ? field : null) }}
-                {% set form_panel_is_already_open = true %}
-            {% endif %}
-
-            {% block detail_field %}
-                {% if not is_form_field_panel %}
-                    {{ _self.render_field(entity, field) }}
-                {% endif %}
-            {% endblock %}
-        {% endfor %}
-
-        {{ _self.close_form_field_panel() }}
-    {% endblock %}
+        {% if field_layout.hasTabs %}
+            {{ _self.render_detail_fields_with_tabs(entity, field_layout) }}
+        {% else %}
+            {{ _self.render_detail_fields(entity, field_layout.fields) }}
+        {% endif %}
+    {% endblock detail_fields %}
 
     {% block delete_form %}
         {{ include('@EasyAdmin/crud/includes/_delete_form.html.twig', { entity_id: entity.primaryKeyValue }, with_context = false) }}
     {% endblock delete_form %}
 {% endblock %}
+
+{% macro render_detail_fields_with_tabs(entity, field_layout) %}
+    <div class="col-12">
+        <div class="nav-tabs-custom form-tabs">
+            <ul class="nav nav-tabs">
+                {% for tab in field_layout.tabs %}
+                    <li class="nav-item">
+                        <a class="nav-link {% if loop.first %}active{% endif %}" href="#tab-pane-{{ tab.uniqueId }}" id="tab-{{ tab.uniqueId }}" data-bs-toggle="tab">
+                            {%- if tab.icon|default(false) -%}
+                                <i class="fa fa-fw fa-{{ tab.icon }}"></i>
+                            {%- endif -%}
+                            {{ tab.label|trans(domain = ea.i18n.translationDomain)|trans(domain = 'EasyAdminBundle') }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+            <div class="tab-content">
+                {% for tab in field_layout.tabs %}
+                    <div id="tab-pane-{{ tab.uniqueId }}" class="tab-pane {% if loop.first %}active{% endif %} {{ tab.cssClass|default('') }}">
+                        {% if tab.help|default(false) %}
+                            <div class="content-header-help tab-help">
+                                {{ tab.help|trans(domain = ea.i18n.translationDomain)|raw }}
+                            </div>
+                        {% endif %}
+                        <div class="row">
+                            {{ _self.render_detail_fields(entity, field_layout.fieldsInTab(tab.uniqueId)) }}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro render_detail_fields(entity, fields) %}
+    {% set form_panel_is_already_open = false %}
+    {% for field in fields %}
+        {% set is_form_field_panel = 'field-form_panel' in field.cssClass %}
+
+        {% if is_form_field_panel or (loop.first and not is_form_field_panel) %}
+            {% if form_panel_is_already_open %}
+                {{ _self.close_form_field_panel() }}
+                {% set form_panel_is_already_open = false %}
+            {% endif %}
+
+            {{ _self.open_form_field_panel(is_form_field_panel ? field : null) }}
+            {% set form_panel_is_already_open = true %}
+        {% endif %}
+
+        {% block detail_field %}
+            {% if not is_form_field_panel %}
+                {{ _self.render_field(entity, field) }}
+            {% endif %}
+        {% endblock %}
+    {% endfor %}
+
+    {% if form_panel_is_already_open %}
+        {{ _self.close_form_field_panel() }}
+        {% set form_panel_is_already_open = false %}
+    {% endif %}
+{% endmacro %}
 
 {% macro open_form_field_panel(field = null) %}
     {% set panel_name = field is null ? null : 'content-' ~ field.uniqueId %}

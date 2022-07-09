@@ -1,0 +1,19 @@
+---------------------------------------------------------------------------
+
+by Lustmored at 2022-06-14T13:03:14Z
+
+I'm not very familiar with how tabs work in EA, but it looks pretty solid to me :+1:
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2022-07-07T18:49:00Z
+
+@finnef thanks a lot for this contribution. I've been playing with it for some time. I liked it ... except for the added logic in the abstract controller. That's why I decided to extract the logic to some new dedicated classes that deal with "field layout". I've pushed my changes to this PR in case you want to test it yourself too. Thanks!
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2022-07-08T18:41:48Z
+
+The last commit is a "quality check" that makes sure that, when using tabs, all fields belong to some tab. Otherwise, you'll see this error:
+
+<img width="1078" alt="" src="https://user-images.githubusercontent.com/73419/178051630-2f300b4e-b0e9-47b0-927a-aad4836a6143.png">

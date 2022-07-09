@@ -36,6 +36,7 @@ jobs:
               env:
                   SYMFONY_REQUIRE: ${{ matrix.symfony-version }}
               run: |
+                  composer config --global --no-plugins allow-plugins.symfony/flex true
                   composer global require --no-progress --no-scripts --no-plugins symfony/flex
                   composer update --no-interaction --prefer-dist --optimize-autoloader || exit 0
                   vendor/bin/simple-phpunit install || exit 0

@@ -46,10 +46,7 @@
         "symfony/phpunit-bridge": "^5.4|^6.0"
     },
     "config": {
-        "sort-packages": true,
-        "allow-plugins": {
-            "symfony/flex": true
-        }
+        "sort-packages": true
     },
     "autoload": {
         "psr-4": {

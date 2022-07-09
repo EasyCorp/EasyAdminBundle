@@ -2,8 +2,6 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
-use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
-
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  *

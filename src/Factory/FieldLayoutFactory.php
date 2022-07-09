@@ -14,7 +14,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminTabType;
  */
 final class FieldLayoutFactory
 {
-
     private function __construct()
     {
     }

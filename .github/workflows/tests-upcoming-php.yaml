@@ -31,10 +31,9 @@ jobs:
                   ini-values: date.timezone=UTC
 
             - name: 'Install project dependencies'
-              env:
-                  SYMFONY_REQUIRE: 5.4
               run: |
                   composer require --no-progress --no-scripts --no-plugins symfony/flex
+                  composer config extra.symfony.require "5.4"
                   composer update --no-interaction --prefer-dist --optimize-autoloader --prefer-stable --ignore-platform-req=php
                   vendor/bin/simple-phpunit install
 

@@ -32,7 +32,7 @@ jobs:
 
             - name: 'Install project dependencies'
               run: |
-                  composer global require --no-progress --no-scripts --no-plugins symfony/flex
+                  composer require --no-progress --no-scripts --no-plugins symfony/flex
                   composer update --no-interaction --prefer-dist --optimize-autoloader --prefer-stable --prefer-lowest
                   vendor/bin/simple-phpunit install
 

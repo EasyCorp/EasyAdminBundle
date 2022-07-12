@@ -622,6 +622,7 @@
             {% set placeholder = t('action.choose_file', {}, 'EasyAdminBundle') %}
             {% set title = '' %}
             {% set filesLabel = 'files'|trans({}, 'EasyAdminBundle') %}
+            {% set currentFiles = currentFiles|filter((file) => file is not null) %}
             {% if currentFiles %}
                 {% if multiple %}
                     {% set placeholder = currentFiles|length ~ ' ' ~ filesLabel %}
@@ -643,7 +644,7 @@
                     {% endif %}
                 {%- endif -%}
                 {% if allow_delete %}
-                    <label class="btn ea-fileupload-delete-btn" {% if currentFiles is empty %}style="display: none"{% endif %} for="{{ form.delete.vars.id }}">
+                    <label class="btn ea-fileupload-delete-btn" {% if multiple or currentFiles is empty %}style="display: none"{% endif %} for="{{ form.delete.vars.id }}">
                         <i class="fa fa-trash-o"></i>
                     </label>
                 {% endif %}
@@ -660,12 +661,19 @@
                         <tr>
                             <td>
                                 {% if download_path %}<a href="{{ asset(download_path ~ file.filename) }}">{% endif %}
-                                    <span title="{{ file.mTime|date }}">
+                                    <span title="uploaded {{ file.mTime|date }}">
                                         <i class="fa fa-file-o"></i> {{ file.filename }}
                                     </span>
                                 {% if download_path %}</a>{% endif %}
                             </td>
                             <td class="text-right file-size">{{ file.size|ea_filesize }}</td>
+                            {% if allow_delete %}
+                                <td class="text-right file-delete">
+                                    <a href="" title="delete file">
+                                        <i class="fa fa-trash-o"></i>
+                                    </a>
+                                </td>
+                            {% endif %}
                         </tr>
                     {% endfor %}
                     </tbody>
@@ -673,7 +681,10 @@
             </div>
         {% endif %}
         {% if allow_delete %}
-            <div style="display: none">{{ form_widget(form.delete, { label: false }) }}</div>
+            <div style="display: none">
+                {{ form_widget(form.delete, { label: false }) }}
+                {{ form_rest(form) }}
+            </div>
         {% endif %}
     </div>
     {{ form_errors(form.file) }}

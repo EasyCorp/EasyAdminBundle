@@ -55,6 +55,9 @@ final class CollectionConfigurator implements FieldConfiguratorInterface
             $field->setFormTypeOption('entry_options.attr.data-ea-widget', 'ea-autocomplete');
         }
 
+        // the contents of this field are a collection of other fields, so it cannot be sorted
+        $field->setSortable(false);
+
         $field->setFormTypeOptionIfNotSet('allow_add', $field->getCustomOptions()->get(CollectionField::OPTION_ALLOW_ADD));
         $field->setFormTypeOptionIfNotSet('allow_delete', $field->getCustomOptions()->get(CollectionField::OPTION_ALLOW_DELETE));
         $field->setFormTypeOptionIfNotSet('by_reference', false);

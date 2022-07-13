@@ -31,9 +31,6 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
         $isMultipleChoice = $field->getCustomOption(ChoiceField::OPTION_ALLOW_MULTIPLE_CHOICES);
 
         $choices = $this->getChoices($field->getCustomOption(ChoiceField::OPTION_CHOICES), $entityDto, $field);
-        if (empty($choices)) {
-            throw new \InvalidArgumentException(sprintf('The "%s" choice field must define its possible choices using the setChoices() method.', $field->getProperty()));
-        }
 
         if ($areChoicesTranslatable) {
             $field->setFormTypeOptionIfNotSet('choices', array_keys($choices));

@@ -21,10 +21,8 @@ class ChoiceFieldTest extends AbstractFieldTest
 
     public function testFieldWithoutChoices()
     {
-        $this->expectException(\InvalidArgumentException::class);
-
         $field = ChoiceField::new('foo');
-        $this->configure($field);
+        self::assertSame([], $this->configure($field)->getFormTypeOption(ChoiceField::OPTION_CHOICES));
     }
 
     public function testFieldWithChoiceGeneratorCallback()

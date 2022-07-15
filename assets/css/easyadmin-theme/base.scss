@@ -420,7 +420,7 @@ body.ea-mobile-sidebar-visible .sidebar {
 .content-header {
     padding: 26px 0 16px;
 
-    @media(min-width: 992px) {
+    @media(min-width: 768px) {
         align-items: flex-start;
         background: var(--body-bg);
         display: flex;
@@ -514,7 +514,7 @@ body.ea-edit .content-header {
 
     &:empty { display: none; }
 
-    @media(min-width: 992px) {
+    @media(min-width: 768px) {
         justify-content: space-between;
         margin: 2px 1px 0 10px;
     }

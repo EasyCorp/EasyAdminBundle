@@ -9,7 +9,7 @@ table.datagrid {
   width: 100%;
 
   &:not(.datagrid-empty) {
-    @media (max-width: 992px) {
+    @media (max-width: 767px) {
       tbody, tr, td { display: block; }
       tbody, tr { border-radius: var(--border-radius); }
       thead { display: none; }
@@ -31,10 +31,14 @@ table.datagrid {
         &.actions,
         &.actions.actions-as-dropdown {
           padding: 8px;
-          text-align: left;
 
           &:before { display: none; }
         }
+      }
+      td {
+        // because of how the contents are rendered in small screens, table contents must be left-aligned
+        // the !important flag is needed to override the !important used by Bootstrap in .text-center, .text-right, etc.
+        text-align: left !important;
       }
       td::before {
         content: attr(data-label);
@@ -48,17 +52,16 @@ table.datagrid {
         padding: 8px;
         overflow: hidden;
         text-overflow: ellipsis;
+        text-align: left;
         white-space: nowrap;
       }
       td.field-boolean {
         padding-left: 8px;
-        text-align: left;
 
         &::before {
           color: var(--table-cell-color);
           font-weight: 400;
           left: 0;
-          text-align: left;
           // needed to truncate text when the switch label is too long
           overflow: hidden;
           text-overflow: ellipsis;

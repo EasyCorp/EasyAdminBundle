@@ -89,6 +89,21 @@ label.form-check-label {
     word-break: keep-all;
     transition: box-shadow .08s ease-in, color .08s ease-in;
 }
+.form-widget input.form-control.is-invalid,
+.form-widget textarea.form-control.is-invalid,
+.form-widget .form-select.is-invalid,
+.form-widget input.form-control.is-invalid:focus,
+.form-widget textarea.form-control.is-invalid:focus,
+.form-widget .form-select.is-invalid:focus {
+    background-image: none;
+    border: 1px solid var(--form-input-error-border-color);
+    box-shadow: var(--form-input-error-shadow);
+}
+.form-widget input.form-check-input.is-invalid {
+    border: 1px solid var(--form-input-error-border-color);
+    box-shadow: var(--form-input-error-shadow);
+}
+
 .form-widget .form-control:disabled, .form-control[readonly] {
     background-color: var(--form-control-disabled-bg);
     color: var(--form-control-disabled-color);
@@ -476,9 +491,15 @@ fieldset .legend-help {
 }
 form .invalid-feedback {
     color: var(--color-danger);
+    font-size: 1em;
     font-weight: 500;
     padding-top: 6px;
 }
+.form-check-input.is-invalid ~ .form-check-label,
+.was-validated .form-check-input:not([type="checkbox"]):invalid ~ .form-check-label {
+    color: inherit;
+}
+
 form .invalid-feedback .badge-danger {
     font-size: 0.6875rem;
     margin-right: 2px;

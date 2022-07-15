@@ -23,7 +23,6 @@ class TextEditorField {
             const trixEditorConfig = JSON.parse(trixContentElement.getAttribute('data-trix-editor-config'));
             if (null !== trixEditorConfig) {
                 Trix.config = this.#mergeObjects(trixEditorConfig, Trix.config);
-                console.log(Trix.config);
             }
 
             const isTrixFieldRequired = 'required' === trixContentElement.getAttribute('required') ? 'true' : 'false';

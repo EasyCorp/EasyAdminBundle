@@ -24,7 +24,7 @@ final class FieldDto
     private ?bool $sortable = null;
     private ?bool $virtual = null;
     private ?string $permission = null;
-    private string $textAlign = TextAlign::LEFT;
+    private ?string $textAlign = null;
     private $help;
     private string $cssClass = '';
     // how many columns the field takes when rendering

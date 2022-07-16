@@ -65,7 +65,7 @@ class Form {
                     });
 
                     form.querySelectorAll('input,select,textarea').forEach( (input) => {
-                        if (!input.validity.valid) {
+                        if (!input.disabled && !input.validity.valid) {
                             formHasErrors = true;
 
                             // Visual feedback for tabs

@@ -4,7 +4,6 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Option\TextAlign;
 use function Symfony\Component\String\u;
 use Symfony\Component\Uid\Ulid;
 use Symfony\Contracts\Translation\TranslatableInterface;
@@ -239,7 +238,7 @@ final class FieldDto
         $this->virtual = $isVirtual;
     }
 
-    public function getTextAlign(): string
+    public function getTextAlign(): ?string
     {
         return $this->textAlign;
     }

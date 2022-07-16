@@ -1,0 +1,109 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2021-09-08T17:50:50Z
+
+I don't understand how this breaks custom fields. We only set the value in the constructor, as a default value. And it's correct to use "left" as default because that's by far the most common value for fields, custom or built-in.
+
+Please, provide more info so we can investigate. Thanks!
+
+---------------------------------------------------------------------------
+
+by Schyzophrenic at 2021-09-08T18:29:55Z
+
+Hey @javiereguiluz. The custom field we are talking about here stemmed from the case #4642 . The Field is implemented as follow in one of my project:
+```php
+class IGDBGameFinderType extends AbstractType {
+
+    private $router;
+
+    public function __construct (RouterInterface $router) {
+
+        $this->router = $router;
+    }
+
+    public function getParent () {
+
+        return TextType::class;
+    }
+
+    public function configureOptions (OptionsResolver $resolver) {
+
+        $resolver->setDefaults([
+            'finder_callback' => function(string $query) {
+            },
+            'attr' => [
+                'class' => 'js-field-igdb-game-finder-autocomplete',
+                'data-autocomplete-url' => $this->router->generate('api_igdb_game_search'),
+            ]
+        ]);
+    }
+}
+```
+
+But the issue lives in
+```php
+$resolver->setDefaults([
+            'finder_callback' => function(string $query) {
+            },
+            'attr' => [
+                'class' => 'js-field-igdb-game-finder-autocomplete',
+                'data-autocomplete-url' => $this->router->generate('api_igdb_game_search'),
+            ]
+        ]);
+```
+
+As you can see, the field defines some default attributes to be added such as a custom css class and a data-autocomplete-url (for an ajax call). Defining attr.class = 'left' is overriding these default values, therefore breaking the custom field.
+
+I hope it clarifies. Please let me know should you need more details.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2021-09-09T17:56:56Z
+
+Thanks for the extra info! Now I understand the problem.
+
+However, I'm having some troubles trying to find where exactly do we override this CSS value. I found this:
+
+https://github.com/EasyCorp/EasyAdminBundle/blob/6e6b127ed24989c08dbd804efee9f825ff7a6313/src/Field/Configurator/CommonPreConfigurator.php#L80-L82
+
+As you can see, we don't modify the CSS value at all. By the way, I think this code is a mistake too, because the `align` attribute is not a valid HTML attr, so it should be `data-ea-align` or something like that to show that it's something custom.
+
+So, what am I'm missing? Thanks.
+
+---------------------------------------------------------------------------
+
+by Schyzophrenic at 2021-09-09T20:31:29Z
+
+> https://github.com/EasyCorp/EasyAdminBundle/blob/6e6b127ed24989c08dbd804efee9f825ff7a6313/src/Field/Configurator/CommonPreConfigurator.php#L80-L82
+>
+This is indeed where the value is overwritten. It seems the whole 'attr' value is taken into account and this is why some data- elements are also overwritten in the process.
+I am not expert enough in the Form system to understand the exact process at play (it took me long enough to understand what was going on with this field...). From my understanding the default values of the fields are only this, "default", so if you add an attr value they are not taken into account. There must be a way to handle this, but I honestly have no idea. Maybe by adding an event listener on all the fields but it seems overkill...
+
+The other reason why I removed these lines is because I could not identify a difference between with and without it, so I thought the easiest option was just to remove this.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2021-09-11T08:11:35Z
+
+In this test we can see that optionally setting a nested option doesn't reset the value of the parent of that option (so, setting `attr.align` shouldn't reset `attr`):
+
+https://github.com/EasyCorp/EasyAdminBundle/blob/8af0cc02becfc37519db3e69d49ea5ee0f08b045/tests/Field/FieldTraitTest.php#L19-L29
+
+I'm afraid we need to keep investigating why this error happens.
+
+---------------------------------------------------------------------------
+
+by Schyzophrenic at 2021-09-11T09:14:53Z
+
+@javiereguiluz I think there is a problem of sequence here. The way I understand it is:
+1. We create the field with default values
+2. Easy Admin works out its magic and consolidate the form with all the fields
+3. Because Easy Admin is setting up the attr option, the default values are no longer taken into account.
+
+I honestly could be wrong as the Form component is not my greatest strength but that's how I understand it. Any thoughts?
+
+---------------------------------------------------------------------------
+
+by Schyzophrenic at 2021-09-28T08:16:48Z
+
+@javiereguiluz do you have any news on this one? The fix #4653 fixes the HTML element but still overwrites the whole `attr` array.

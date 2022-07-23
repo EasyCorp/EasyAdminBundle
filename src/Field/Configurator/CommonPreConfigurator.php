@@ -8,6 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AvatarField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
@@ -21,10 +22,12 @@ use Symfony\Contracts\Translation\TranslatableInterface;
 final class CommonPreConfigurator implements FieldConfiguratorInterface
 {
     private PropertyAccessorInterface $propertyAccessor;
+    private EntityFactory $entityFactory;
 
-    public function __construct(PropertyAccessorInterface $propertyAccessor)
+    public function __construct(PropertyAccessorInterface $propertyAccessor, EntityFactory $entityFactory)
     {
         $this->propertyAccessor = $propertyAccessor;
+        $this->entityFactory = $entityFactory;
     }
 
     public function supports(FieldDto $field, EntityDto $entityDto): bool
@@ -151,6 +154,26 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
     {
         if (null !== $isSortable = $field->isSortable()) {
             return $isSortable;
+        }
+
+        // if it's an association, check recursively if the nested property exists
+        if ($entityDto->isAssociation($field->getProperty())) {
+            $associatedProperties = explode('.', $field->getProperty());
+            for ($i = 0; $i < \count($associatedProperties); $i++) {
+                $property = $associatedProperties[$i];
+                if (!$entityDto->hasProperty($property)) {
+                    return false;
+                }
+
+                // try to get the entity associated to the property, except for the last property
+                if (isset($associatedProperties[$i + 1])) {
+                    $propertyMetadata = $entityDto->getPropertyMetadata($property);
+                    $targetEntity = $propertyMetadata->get('targetEntity');
+                    $entityDto = $this->entityFactory->create($targetEntity);
+                }
+            }
+
+            return true;
         }
 
         return $entityDto->hasProperty($field->getProperty());

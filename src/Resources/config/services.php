@@ -304,6 +304,7 @@ return static function (ContainerConfigurator $container) {
 
         ->set(CommonPreConfigurator::class)
             ->arg(0, new Reference('property_accessor'))
+            ->arg(1, service(EntityFactory::class))
             ->tag(EasyAdminExtension::TAG_FIELD_CONFIGURATOR, ['priority' => 9999])
 
         ->set(CountryConfigurator::class)

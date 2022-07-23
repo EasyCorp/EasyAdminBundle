@@ -22,7 +22,7 @@ final class TextEditorConfigurator implements FieldConfiguratorInterface
     public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
     {
         if ('rtl' === $context->getI18n()->getTextDirection()) {
-            $field->addCssAsset((Asset::fromEasyAdminAssetPackage('field-text-editor.rtl.css'))->getAsDto());
+            $field->addCssAsset(Asset::fromEasyAdminAssetPackage('field-text-editor.rtl.css')->getAsDto());
         }
     }
 }

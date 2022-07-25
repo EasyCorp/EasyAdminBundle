@@ -37,7 +37,6 @@ jobs:
 
             - name: 'Install project dependencies'
               run: |
-                  composer require --no-progress --no-scripts --no-plugins symfony/flex
                   composer config extra.symfony.require "${{ matrix.symfony-version }}"
                   composer update --no-interaction --prefer-dist --optimize-autoloader || exit 0
                   vendor/bin/simple-phpunit install || exit 0

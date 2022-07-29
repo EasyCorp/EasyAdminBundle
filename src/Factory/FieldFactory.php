@@ -47,6 +47,7 @@ final class FieldFactory
         Types::DECIMAL => NumberField::class,
         Types::FLOAT => NumberField::class,
         Types::GUID => TextField::class,
+        'uuid' => TextField::class, // doctrine doesnt define such a type
         Types::INTEGER => IntegerField::class,
         Types::JSON => TextField::class,
         Types::OBJECT => TextField::class,

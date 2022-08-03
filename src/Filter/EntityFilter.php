@@ -128,8 +128,8 @@ final class EntityFilter implements FilterInterface
 
         $identifierValue = $entityManager->getUnitOfWork()->getSingleIdentifierValue($parameterValue);
 
-        if (('uuid' === $identifierType && $identifierValue instanceof Uuid)
-            || ('ulid' === $identifierType && $identifierValue instanceof Ulid)) {
+        if (('uuid' === $identifierType || $identifierValue instanceof Uuid)
+            || ('ulid' === $identifierType || $identifierValue instanceof Ulid)) {
             try {
                 return Type::getType($identifierType)->convertToDatabaseValue($identifierValue, $entityManager->getConnection()->getDatabasePlatform());
             } catch (\Throwable) {

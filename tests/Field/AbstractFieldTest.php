@@ -47,7 +47,7 @@ abstract class AbstractFieldTest extends KernelTestCase
 
         $adminContextMock = $this->getMockBuilder(AdminContext::class)
             ->disableOriginalConstructor()
-            ->setMethods(['getCrud', 'getI18n'])
+            ->setMethods(['getCrud', 'getI18n', 'getTemplatePath'])
             ->getMock();
         $adminContextMock
             ->expects($this->any())
@@ -57,6 +57,10 @@ abstract class AbstractFieldTest extends KernelTestCase
             ->expects($this->any())
             ->method('getI18n')
             ->willReturn($i18nMock);
+        $adminContextMock
+            ->expects($this->any())
+            ->method('getTemplatePath')
+            ->willReturn('@EasyAdmin/layout.html.twig'); // return any path to avoid injecting a TemplateRegistry
 
         $this->adminContext = $adminContextMock;
     }

@@ -42,7 +42,9 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
         if (null === $field->getValue()) {
             $value = $this->buildValueOption($field, $entityDto);
             $field->setValue($value);
-            $field->setFormattedValue($value);
+            if (null === $field->getFormattedValue()) {
+                $field->setFormattedValue($value);
+            }
         }
 
         $label = $this->buildLabelOption($field, $translationDomain, $context->getCrud()->getCurrentPage());

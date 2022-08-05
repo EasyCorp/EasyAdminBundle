@@ -43,7 +43,6 @@
         "symfony/browser-kit": "^5.4|^6.0",
         "symfony/css-selector": "^5.4|^6.0",
         "symfony/dom-crawler": "^5.4|^6.0",
-        "symfony/flex": "^2.2",
         "symfony/phpunit-bridge": "^5.4|^6.0"
     },
     "config": {

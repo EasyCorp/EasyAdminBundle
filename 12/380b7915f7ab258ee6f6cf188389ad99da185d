@@ -1,0 +1,23 @@
+---------------------------------------------------------------------------
+
+by michaelKaefer at 2022-08-05T14:24:02Z
+
+@alexislefebvre Isn't there a small difference?
+- code depending on a package -> use `required-dev` to be able to develop
+- CI depending on package -> use CI configuration to install it
+
+(What do you mean with #17031 ?)
+
+---------------------------------------------------------------------------
+
+by alexislefebvre at 2022-08-05T14:27:12Z
+
+@michaelKaefer this is right, I propose to require it so that it doesn't need to be written 7 times for the workflows.
+
+I fixed the link.
+
+---------------------------------------------------------------------------
+
+by michaelKaefer at 2022-08-05T15:15:52Z
+
+@alexislefebvre Thanks for the link, ok I see, this PR could be merged if it becomes best practice.

@@ -286,6 +286,8 @@ return static function (ContainerConfigurator $container) {
         ->set(AssociationConfigurator::class)
             ->arg(0, new Reference(EntityFactory::class))
             ->arg(1, new Reference(AdminUrlGenerator::class))
+            ->arg(2, service('request_stack'))
+            ->arg(3, service(ControllerFactory::class))
 
         ->set(AvatarConfigurator::class)
 

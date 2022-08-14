@@ -28,6 +28,12 @@ final class AssociationField implements FieldInterface
     /** @internal this option is intended for internal use only */
     public const PARAM_AUTOCOMPLETE_CONTEXT = 'autocompleteContext';
 
+    /** @internal this option is intended for internal use only */
+    public const OPTION_USES_CRUD_FORM = 'usesCrudController';
+
+    public const OPTION_CRUD_NEW_PAGE_NAME = 'crudNewPageName';
+    public const OPTION_CRUD_EDIT_PAGE_NAME = 'crudEditPageName';
+
     /**
      * @param TranslatableInterface|string|false|null $label
      */
@@ -45,7 +51,10 @@ final class AssociationField implements FieldInterface
             ->setCustomOption(self::OPTION_WIDGET, self::WIDGET_AUTOCOMPLETE)
             ->setCustomOption(self::OPTION_QUERY_BUILDER_CALLABLE, null)
             ->setCustomOption(self::OPTION_RELATED_URL, null)
-            ->setCustomOption(self::OPTION_DOCTRINE_ASSOCIATION_TYPE, null);
+            ->setCustomOption(self::OPTION_DOCTRINE_ASSOCIATION_TYPE, null)
+            ->setCustomOption(self::OPTION_USES_CRUD_FORM, false)
+            ->setCustomOption(self::OPTION_CRUD_NEW_PAGE_NAME, null)
+            ->setCustomOption(self::OPTION_CRUD_EDIT_PAGE_NAME, null);
     }
 
     public function autocomplete(): self
@@ -72,6 +81,16 @@ final class AssociationField implements FieldInterface
     public function setQueryBuilder(\Closure $queryBuilderCallable): self
     {
         $this->setCustomOption(self::OPTION_QUERY_BUILDER_CALLABLE, $queryBuilderCallable);
+
+        return $this;
+    }
+
+    public function useCrudForm(?string $crudControllerFqcn = null, ?string $crudNewPageName = null, ?string $crudEditPageName = null): self
+    {
+        $this->setCustomOption(self::OPTION_USES_CRUD_FORM, true);
+        $this->setCustomOption(self::OPTION_CRUD_CONTROLLER, $crudControllerFqcn);
+        $this->setCustomOption(self::OPTION_CRUD_NEW_PAGE_NAME, $crudNewPageName);
+        $this->setCustomOption(self::OPTION_CRUD_EDIT_PAGE_NAME, $crudEditPageName);
 
         return $this;
     }

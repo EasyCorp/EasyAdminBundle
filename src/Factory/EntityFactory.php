@@ -10,6 +10,7 @@ use Doctrine\Persistence\Proxy;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\ActionCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\EntityCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Context\FieldContext;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionConfigDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityBuiltEvent;
@@ -38,9 +39,9 @@ final class EntityFactory
         $this->eventDispatcher = $eventDispatcher;
     }
 
-    public function processFields(EntityDto $entityDto, FieldCollection $fields): void
+    public function processFields(EntityDto $entityDto, FieldCollection $fields, FieldContext $fieldContext = null): void
     {
-        $this->fieldFactory->processFields($entityDto, $fields);
+        $this->fieldFactory->processFields($entityDto, $fields, $fieldContext);
     }
 
     public function processFieldsForAll(EntityCollection $entities, FieldCollection $fields): void

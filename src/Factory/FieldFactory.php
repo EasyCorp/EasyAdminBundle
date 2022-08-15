@@ -6,6 +6,7 @@ use Doctrine\DBAL\Types\Types;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
+use EasyCorp\Bundle\EasyAdminBundle\Context\FieldContext;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
@@ -69,12 +70,12 @@ final class FieldFactory
         $this->fieldConfigurators = $fieldConfigurators;
     }
 
-    public function processFields(EntityDto $entityDto, FieldCollection $fields): void
+    public function processFields(EntityDto $entityDto, FieldCollection $fields, FieldContext $fieldContext = null): void
     {
         $this->preProcessFields($fields, $entityDto);
 
-        $context = $this->adminContextProvider->getContext();
-        $currentPage = $context->getCrud()->getCurrentPage();
+        $adminContext = $this->adminContextProvider->getContext();
+        $currentPage = $adminContext->getCrud()->getCurrentPage();
 
         $isDetailOrIndex = \in_array($currentPage, [Crud::PAGE_INDEX, Crud::PAGE_DETAIL], true);
         foreach ($fields as $fieldDto) {
@@ -97,11 +98,11 @@ final class FieldFactory
                     continue;
                 }
 
-                $configurator->configure($fieldDto, $entityDto, $context);
+                $configurator->configure($fieldDto, $entityDto, $adminContext, $fieldContext);
             }
 
             foreach ($fieldDto->getFormThemes() as $formThemePath) {
-                $context?->getCrud()?->addFormTheme($formThemePath);
+                $adminContext?->getCrud()?->addFormTheme($formThemePath);
             }
 
             $fields->set($fieldDto);
@@ -109,7 +110,7 @@ final class FieldFactory
 
         $isPageWhereTabsAreVisible = \in_array($currentPage, [Crud::PAGE_DETAIL, Crud::PAGE_EDIT, Crud::PAGE_NEW], true);
         if ($isPageWhereTabsAreVisible) {
-            $this->checkOrphanTabFields($fields, $context);
+            $this->checkOrphanTabFields($fields, $adminContext);
         }
 
         $entityDto->setFields($fields);

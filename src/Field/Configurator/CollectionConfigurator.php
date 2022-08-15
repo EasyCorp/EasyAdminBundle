@@ -7,6 +7,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
+use EasyCorp\Bundle\EasyAdminBundle\Context\FieldContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
@@ -152,19 +153,27 @@ final class CollectionConfigurator implements FieldConfiguratorInterface
         return 0;
     }
 
-    private function createEntityDto(string $targetEntityFqcn, string $targetCrudControllerFqcn, string $crudAction, string $pageName): EntityDto
-    {
-        $entityDto = $this->entityFactory->create($targetEntityFqcn);
+    private function createEntityDto(
+        string $entityFqcn,
+        string $crudControllerFqcn,
+        string $crudControllerAction,
+        string $crudControllerPageName,
+    ): EntityDto {
+        $entityDto = $this->entityFactory->create($entityFqcn);
 
         $crudController = $this->controllerFactory->getCrudControllerInstance(
-            $targetCrudControllerFqcn,
-            $crudAction,
+            $crudControllerFqcn,
+            $crudControllerAction,
             $this->requestStack->getMainRequest()
         );
 
-        $fields = $crudController->configureFields($pageName);
+        $fields = $crudController->configureFields($crudControllerPageName);
 
-        $this->entityFactory->processFields($entityDto, FieldCollection::new($fields));
+        $this->entityFactory->processFields(
+            $entityDto,
+            FieldCollection::new($fields),
+            new FieldContext($crudControllerFqcn, $crudControllerAction, $crudControllerPageName),
+        );
 
         return $entityDto;
     }

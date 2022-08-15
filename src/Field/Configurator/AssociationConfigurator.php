@@ -8,6 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\TextAlign;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
+use EasyCorp\Bundle\EasyAdminBundle\Context\FieldContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
@@ -38,7 +39,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         return AssociationField::class === $field->getFieldFqcn();
     }
 
-    public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
+    public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context, FieldContext $fieldContext = null): void
     {
         $propertyName = $field->getProperty();
         if (!$entityDto->isAssociation($propertyName)) {
@@ -112,9 +113,10 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
                 ->setController($field->getCustomOption(AssociationField::OPTION_CRUD_CONTROLLER))
                 ->setAction('autocomplete')
                 ->set(AssociationField::PARAM_AUTOCOMPLETE_CONTEXT, [
-                    EA::CRUD_CONTROLLER_FQCN => $context->getRequest()->query->get(EA::CRUD_CONTROLLER_FQCN),
+                    EA::CRUD_CONTROLLER_FQCN => $fieldContext?->getCrudControllerFqcn() ?? $context->getRequest()->query->get(EA::CRUD_CONTROLLER_FQCN),
                     'propertyName' => $propertyName,
-                    'originatingPage' => $context->getCrud()->getCurrentPage(),
+                    'originatingAction' => $fieldContext?->getCrudControllerAction(),
+                    'originatingPage' => $fieldContext?->getCrudControllerPageName() ?? $context->getCrud()->getCurrentPage(),
                 ])
                 ->generateUrl();
 

@@ -103,7 +103,7 @@
                     'EasyCorp\\Bundle\\EasyAdminBundle\\Field\\DateField',
                     'EasyCorp\\Bundle\\EasyAdminBundle\\Field\\TimeField',
                 ] %}
-                {% if form.vars.ea_crud_form.ea_field.fieldFqcn|default(false) in nullable_fields_fqcn and not form.vars.ea_crud_form.ea_field.formTypeOptions.required %}
+                {% if form.vars.ea_crud_form.ea_field.fieldFqcn|default(false) in nullable_fields_fqcn and not form.vars.ea_crud_form.ea_field.formTypeOptions.required and not form.vars.ea_crud_form.ea_field.formTypeOptions.disabled %}
                     <div class="nullable-control">
                         <label>
                             <input type="checkbox" {% if ea.crud.currentAction == 'edit' and data is null and valid %}checked="checked"{% endif %}>

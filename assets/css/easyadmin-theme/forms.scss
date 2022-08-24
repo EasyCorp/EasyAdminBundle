@@ -104,7 +104,8 @@ label.form-check-label {
     box-shadow: var(--form-input-error-shadow);
 }
 
-.form-widget .form-control:disabled, .form-control[readonly] {
+.form-widget .form-control:disabled,
+.form-widget .form-control[readonly] {
     background-color: var(--form-control-disabled-bg);
     color: var(--form-control-disabled-color);
 }

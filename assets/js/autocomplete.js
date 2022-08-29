@@ -54,7 +54,7 @@ export default class Autocomplete
 
     #createAutocomplete(element) {
         const config = this.#mergeObjects(this.#getCommonConfig(element), {
-            maxOptions: element.options.length,
+            maxOptions: null,
         });
 
         return new TomSelect(element, config);
@@ -78,7 +78,7 @@ export default class Autocomplete
             labelField: 'label_raw',
             searchField: ['label_text'],
             options: autoSelectOptions,
-            maxOptions: element.options.length,
+            maxOptions: null,
             render: {
                 item: function(item, escape) {
                     return `<div>${item.label_raw}</div>`;

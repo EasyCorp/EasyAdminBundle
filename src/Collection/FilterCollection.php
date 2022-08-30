@@ -50,6 +50,7 @@ final class FilterCollection implements CollectionInterface
     /**
      * @return ?FilterDto
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset): mixed
     {
         return $this->filters[$offset];

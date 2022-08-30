@@ -100,6 +100,7 @@ final class FieldCollection implements CollectionInterface
     /**
      * @return ?FieldDto
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset): mixed
     {
         return $this->fields[$offset];

@@ -29,7 +29,6 @@ return [
         'false' => 'Ні',
         'empty' => 'Порожньо',
         'null' => 'Null',
-        'nullable_field' => 'Залишити порожнім',
         'object' => 'PHP Об\'єкт',
         'inaccessible' => 'Недоступно',
         'inaccessible.explanation' => 'Немає геттера для цього поля або поле не публічне',

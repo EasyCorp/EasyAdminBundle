@@ -29,7 +29,6 @@ return [
         'false' => 'Ne',
         'empty' => 'Prázdné',
         'null' => 'Nulové',
-        'nullable_field' => 'Ponechat prázdné',
         'object' => 'PHP Objekt',
         'inaccessible' => 'Nepřístupné',
         'inaccessible.explanation' => 'Getter metoda pro toto pole neexistuje nebo není veřejná (public)',

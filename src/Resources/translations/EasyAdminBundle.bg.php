@@ -29,7 +29,6 @@ return [
         'false' => 'Не',
         'empty' => 'Празно',
         'null' => 'Null',
-        'nullable_field' => 'Да се остави празно',
         'object' => 'PHP обект',
         'inaccessible' => 'Недостъпно',
         'inaccessible.explanation' => 'Не съществува getter метод за това поле или то не е публично',

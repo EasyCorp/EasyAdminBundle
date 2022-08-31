@@ -29,7 +29,6 @@ return [
         'false' => 'Nej',
         'empty' => 'Tom',
         'null' => 'Null',
-        'nullable_field' => 'Lämna tom',
         'object' => 'PHP objekt',
         'inaccessible' => 'Otillgänglig',
         'inaccessible.explanation' => 'Det finns ingen Getter-funktion för detta fält eller så är inte egenskapen publik',

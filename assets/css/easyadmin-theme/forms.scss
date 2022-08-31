@@ -238,12 +238,6 @@ label.form-check-label {
     margin-right: 0;
 }
 
-.nullable-control label,
-fieldset .form-group .nullable-control label {
-    cursor: pointer;
-    margin-top: 5px;
-}
-
 // Utilities to create common form fields (long, short, etc.)
 .short .form-widget {
     flex: 0 0 20% !important;

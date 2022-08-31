@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
 class Form {
     constructor() {
         this.#createUnsavedFormChangesWarning();
-        this.#createNullableFields();
         this.#createFieldsWithErrors();
         this.#preventMultipleFormSubmission();
     }
@@ -22,27 +21,6 @@ class Form {
             // although DirtyForm supports passing a custom message to display,
             // modern browsers don't allow to display custom messages to protect users
             new DirtyForm(form);
-        });
-    }
-
-    #createNullableFields() {
-        const updateNullableControlStatus = (checkbox) => {
-            const formFieldIsNull = checkbox.checked;
-            checkbox.closest('.form-group').querySelectorAll('select, input[type="date"], input[type="time"], input[type="datetime-local"]').forEach((dateTimeHtmlElement) => {
-                dateTimeHtmlElement.disabled = formFieldIsNull;
-                const dateTimeWidget = dateTimeHtmlElement.closest('.datetime-widget');
-                if (null !== dateTimeWidget) {
-                    dateTimeWidget.style.display = formFieldIsNull ? 'none' : 'block';
-                }
-            });
-        };
-
-        document.querySelectorAll('.nullable-control input[type="checkbox"]').forEach((checkbox) => {
-            updateNullableControlStatus(checkbox);
-
-            checkbox.addEventListener('change', () => {
-                updateNullableControlStatus(checkbox);
-            });
         });
     }
 

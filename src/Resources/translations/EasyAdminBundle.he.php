@@ -29,7 +29,6 @@ return [
         'false' => 'לא',
         'empty' => 'ריק',
         'null' => 'Null',
-        'nullable_field' => 'השאר ריק',
         'object' => 'אובייקט PHP',
         'inaccessible' => 'לא נגיש',
         'inaccessible.explanation' => 'שיטת "גטר" לא קיימת לשדה זה, או שהשדה לא מוגדר כציבורי',

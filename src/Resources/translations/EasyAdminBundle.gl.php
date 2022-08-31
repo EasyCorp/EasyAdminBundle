@@ -29,7 +29,6 @@ return [
         'false' => 'Non',
         'empty' => 'Baleiro',
         'null' => 'Nulo',
-        'nullable_field' => 'Deixar baleiro',
         'object' => 'Obxecto PHP',
         'inaccessible' => 'Inaccesible',
         'inaccessible.explanation' => 'Este campo non ten ningún método getter ou a propiedade asociada non é publica',

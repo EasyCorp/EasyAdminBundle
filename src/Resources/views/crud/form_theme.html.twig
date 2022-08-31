@@ -98,20 +98,6 @@
                     {% endif %}
                 {% if has_input_groups %}</div>{% endif %}
 
-                {% set nullable_fields_fqcn = [
-                    'EasyCorp\\Bundle\\EasyAdminBundle\\Field\\DateTimeField',
-                    'EasyCorp\\Bundle\\EasyAdminBundle\\Field\\DateField',
-                    'EasyCorp\\Bundle\\EasyAdminBundle\\Field\\TimeField',
-                ] %}
-                {% if form.vars.ea_crud_form.ea_field.fieldFqcn|default(false) in nullable_fields_fqcn and not form.vars.ea_crud_form.ea_field.formTypeOptions.required %}
-                    <div class="nullable-control">
-                        <label>
-                            <input type="checkbox" {% if ea.crud.currentAction == 'edit' and data is null and valid %}checked="checked"{% endif %}>
-                            {{ 'label.nullable_field'|trans({}, 'EasyAdminBundle')}}
-                        </label>
-                    </div>
-                {% endif %}
-
                 {% if ea.field.help ?? false %}
                     <small class="form-help">{{ ea.field.help|raw }}</small>
                 {% elseif form.vars.help ?? false %}

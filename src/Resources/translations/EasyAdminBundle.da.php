@@ -29,7 +29,6 @@ return [
         'false' => 'Nej',
         'empty' => 'Tom',
         'null' => 'Null',
-        'nullable_field' => 'Efterlad tom',
         'object' => 'PHP Objekt',
         'inaccessible' => 'Utilgængelig',
         'inaccessible.explanation' => 'Der findes ingen getter metode for dette felt eller også er det ikke et tilgængeligt felt',

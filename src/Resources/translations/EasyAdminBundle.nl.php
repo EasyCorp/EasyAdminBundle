@@ -29,7 +29,6 @@ return [
         'false' => 'Nee',
         'empty' => 'Leeg',
         'null' => 'Niets',
-        'nullable_field' => 'Laat leeg',
         'object' => 'PHP Object',
         'inaccessible' => 'Niet toegankelijk',
         'inaccessible.explanation' => 'Getter bestaat niet voor dit veld of de eigenschap is niet public',

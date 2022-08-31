@@ -29,7 +29,6 @@ return [
         'false' => 'Nei',
         'empty' => 'Tom',
         'null' => 'Null',
-        'nullable_field' => 'La den være tom',
         'object' => 'PHP Objekt',
         'inaccessible' => 'Utilgjengelig',
         'inaccessible.explanation' => 'Getter metode finnes ikke for dette feltet eller attributten er ikke public',

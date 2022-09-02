@@ -100,7 +100,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         }
 
         if (true === $field->getCustomOption(AssociationField::OPTION_AUTOCOMPLETE)) {
-            if($field->getCustomOption(AssociationField::OPTION_AUTOCOMPLETE_ENDPOINT_URL)) {
+            if ($field->getCustomOption(AssociationField::OPTION_AUTOCOMPLETE_ENDPOINT_URL)) {
                 $autocompleteEndpointUrl = $field->getCustomOption(AssociationField::OPTION_AUTOCOMPLETE_ENDPOINT_URL);
             } else {
                 $targetCrudControllerFqcn = $field->getCustomOption(AssociationField::OPTION_CRUD_CONTROLLER);

@@ -54,6 +54,7 @@ final class ActionCollection implements CollectionInterface
         return \array_key_exists($offset, $this->actions);
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return $this->actions[$offset];

@@ -1,0 +1,5 @@
+---------------------------------------------------------------------------
+
+by michaelKaefer at 2022-08-13T13:37:00Z
+
+I'm not a maintainer but IMHO it would be ok to not add the tests of the original PR which got merged into `4.x` since `3.x` only receives bug fixes. Then it would be easier to review this PR.

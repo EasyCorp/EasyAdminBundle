@@ -108,7 +108,6 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
                     throw new \RuntimeException(sprintf('The "%s" field cannot be autocompleted because it doesn\'t define the related CRUD controller FQCN with the "setCrudController()" method.', $field->getProperty()));
                 }
 
-                $field->setFormType(CrudAutocompleteType::class);
                 $autocompleteEndpointUrl = $this->adminUrlGenerator
                     ->unsetAll()
                     ->set('page', 1) // The autocomplete should always start on the first page
@@ -121,6 +120,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
                     ])
                     ->generateUrl();
             }
+            $field->setFormType(CrudAutocompleteType::class);
             $field->setFormTypeOption('attr.data-ea-autocomplete-endpoint-url', $autocompleteEndpointUrl);
         } else {
             $field->setFormTypeOptionIfNotSet('query_builder', static function (EntityRepository $repository) use ($field) {

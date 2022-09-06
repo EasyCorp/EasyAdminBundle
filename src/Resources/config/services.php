@@ -128,7 +128,8 @@ return static function (ContainerConfigurator $container) {
             // service whenever we generate a new URL, Maybe it's enough with the route parameter
             // initialization done after generating each URL
             ->arg(0, service('service_locator_'.AdminUrlGenerator::class))
-            ->arg(1, new Reference('security.csrf.token_manager', ContainerInterface::NULL_ON_INVALID_REFERENCE))
+            ->arg(1, service(AdminContextProvider::class))
+            ->arg(2, new Reference('security.csrf.token_manager', ContainerInterface::NULL_ON_INVALID_REFERENCE))
             ->tag('twig.extension')
 
         ->set(EaCrudFormTypeExtension::class)
@@ -161,7 +162,6 @@ return static function (ContainerConfigurator $container) {
             ->arg(2, service('controller_resolver'))
             ->arg(3, service('router'))
             ->arg(4, service('router'))
-            ->arg(5, service('twig'))
             ->tag('kernel.event_subscriber')
 
         ->set(ControllerFactory::class)

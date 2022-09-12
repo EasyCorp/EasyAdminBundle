@@ -22,6 +22,7 @@ class AdminRouterSubscriberTest extends TestCase
 
     /**
      * @doesNotPerformAssertions
+     *
      * @dataProvider controllerDataProvider
      */
     public function testFetchingControllerFromRequestAttributes($controller): void

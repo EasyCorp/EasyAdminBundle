@@ -29,7 +29,6 @@ return [
         'false' => 'No',
         'empty' => 'Buit',
         'null' => 'Nul',
-        'nullable_field' => 'Deixar buit',
         'object' => 'Objecte PHP',
         'inaccessible' => 'Inaccessible',
         'inaccessible.explanation' => 'Aquest camp no té un mètode "getter" o la propietat associada no és pública',

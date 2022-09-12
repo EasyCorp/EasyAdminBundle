@@ -29,7 +29,6 @@ return [
         'false' => 'Όχι',
         'empty' => 'Άδειο',
         'null' => 'Κενό',
-        'nullable_field' => 'Χωρίς τιμή',
         'object' => 'Αντικείμενο PHP',
         'inaccessible' => 'Μη προσβάσιμο',
         'inaccessible.explanation' => 'Δεν υπάρχει μέθοδος ανάγνωσης (getter) για αυτό το πεδίο ή η ιδιότητα αυτή δεν είναι προσβάσιμη',

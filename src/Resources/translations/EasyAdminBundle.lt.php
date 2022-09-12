@@ -29,7 +29,6 @@ return [
         'false' => 'Ne',
         'empty' => 'Tuščia',
         'null' => 'Null',
-        'nullable_field' => 'Palikti tuščią',
         'object' => 'PHP Objektas',
         'inaccessible' => 'Nepasiekiama',
         'inaccessible.explanation' => 'Getter metodas neegzistuoja šiame lauke arba nuosavybė nėra vieša',

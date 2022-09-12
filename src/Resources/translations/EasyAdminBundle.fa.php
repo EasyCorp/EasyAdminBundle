@@ -29,7 +29,6 @@ return [
         'false' => 'خیر',
         'empty' => 'خالی',
         'null' => 'تهی',
-        'nullable_field' => 'خالی بگذارید',
         'object' => 'شی گرایی در PHP',
         'inaccessible' => 'غیرقابل دسترس',
         'inaccessible.explanation' => 'متد دریافت کننده برای این فیلد وجود ندارد یا فیلد عمومی نیست',

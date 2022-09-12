@@ -29,7 +29,6 @@ return [
         'false' => 'Nee',
         'empty' => 'Eidel',
         'null' => 'Null',
-        'nullable_field' => 'Feld eidel loossen',
         'object' => 'PHP-Objet',
         'inaccessible' => 'Net disponibel',
         'inaccessible.explanation' => 'Et gët keng Getter-Method fir dës Eegeschaft oder d\'Eegeschaft ass net ëffentlech',

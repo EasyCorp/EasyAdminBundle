@@ -398,13 +398,6 @@ trait FieldTrait
         return $this;
     }
 
-    public function fillRow(bool $fillRow = true): self
-    {
-        $this->dto->setFillRestOfFormRow($fillRow);
-
-        return $this;
-    }
-
     public function getAsDto(): FieldDto
     {
         return $this->dto;

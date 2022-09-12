@@ -37,7 +37,7 @@ allowAdd
 ~~~~~~~~
 
 By default, you can add new items to the collection. Use this option if you
-prefer to now allow that::
+prefer to not allow that::
 
     yield CollectionField::new('...')->allowAdd(false);
 
@@ -45,7 +45,7 @@ allowDelete
 ~~~~~~~~~~~
 
 By default, you can delete any of the items included in the collection. Use this
-option if you prefer to now allow that::
+option if you prefer to not allow that::
 
     yield CollectionField::new('...')->allowDelete(false);
 

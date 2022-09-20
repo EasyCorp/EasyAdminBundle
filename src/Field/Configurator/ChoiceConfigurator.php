@@ -70,27 +70,27 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
 
         $translationParameters = $context->getI18n()->getTranslationParameters();
         $translationDomain = $context->getI18n()->getTranslationDomain();
-        $selectedChoices = [];
-        $flippedChoices = $areChoicesTranslatable ? $choices : array_flip($choices);
-        // $value is a scalar for single selections and an array for multiple selections
+        $choiceMessages = [];
+        // Translatable choice don't need to get flipped
+        $flippedChoices = $areChoicesTranslatable ? $choices : array_flip($this->flatten($choices));
         foreach ((array) $fieldValue as $selectedValue) {
-            if (null !== $selectedChoice = $flippedChoices[$selectedValue] ?? null) {
+            if (null !== $selectedLabel = $flippedChoices[$selectedValue] ?? null) {
                 if ($selectedValue instanceof TranslatableInterface) {
-                    $choiceValue = $selectedValue;
+                    $choiceMessage = $selectedValue;
                 } else {
-                    $choiceValue = t(
-                        $selectedChoice,
+                    $choiceMessage = t(
+                        $selectedLabel,
                         $translationParameters,
                         $translationDomain
                     );
                 }
-                $selectedChoices[] = new TranslatableChoiceMessage(
-                    $choiceValue,
+                $choiceMessages[] = new TranslatableChoiceMessage(
+                    $choiceMessage,
                     $isRenderedAsBadge ? $this->getBadgeCssClass($badgeSelector, $selectedValue, $field) : null
                 );
             }
         }
-        $field->setFormattedValue(new TranslatableChoiceMessageCollection($selectedChoices, $isRenderedAsBadge));
+        $field->setFormattedValue(new TranslatableChoiceMessageCollection($choiceMessages, $isRenderedAsBadge));
     }
 
     private function getChoices($choiceGenerator, EntityDto $entity, FieldDto $field): array
@@ -124,5 +124,21 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
         $badgeTypeCssClass = empty($badgeType) ? '' : u($badgeType)->ensureStart('badge-')->toString();
 
         return $commonBadgeCssClass.' '.$badgeTypeCssClass;
+    }
+
+    private function flatten(array $choices): array
+    {
+        $flattened = [];
+
+        foreach ($choices as $label => $choice) {
+            // Flatten grouped choices
+            if (\is_array($choice)) {
+                $flattened = array_merge($flattened, $choice);
+            } else {
+                $flattened[$label] = $choice;
+            }
+        }
+
+        return $flattened;
     }
 }

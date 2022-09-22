@@ -72,8 +72,8 @@
                 {% for tab in field_layout.tabs %}
                     <li class="nav-item">
                         <a class="nav-link {% if loop.first %}active{% endif %}" href="#tab-pane-{{ tab.uniqueId }}" id="tab-{{ tab.uniqueId }}" data-bs-toggle="tab">
-                            {%- if tab.icon|default(false) -%}
-                                <i class="fa fa-fw fa-{{ tab.icon }}"></i>
+                            {%- if tab.customOption('icon') -%}
+                                <i class="fa-fw {{ tab.customOption('icon') }}"></i>
                             {%- endif -%}
                             {{ tab.label|trans(domain = ea.i18n.translationDomain)|trans(domain = 'EasyAdminBundle') }}
                         </a>

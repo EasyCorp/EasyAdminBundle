@@ -557,8 +557,8 @@ of them:
     {# templates/admin/business_stats/index.html.twig #}
     {% extends '@EasyAdmin/page/content.html.twig' %}
 
-    {% block page_title 'Business Stats' %}
-    {% block page_content %}
+    {% block content_title 'Business Stats' %}
+    {% block main %}
         <table>
             <thead> {# ... #} </thead>
             <tbody>

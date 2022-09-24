@@ -24,6 +24,8 @@ final class EntityPaginator implements EntityPaginatorInterface
     private ?int $rangeEdgeSize = null;
     private $results;
     private $numResults;
+    private ?int $startResults = null;
+    private ?int $endResults = null;
 
     public function __construct(AdminUrlGenerator $adminUrlGenerator, EntityFactory $entityFactory)
     {
@@ -38,6 +40,8 @@ final class EntityPaginator implements EntityPaginatorInterface
         $this->rangeEdgeSize = $paginatorDto->getRangeEdgeSize();
         $this->currentPage = max(1, $paginatorDto->getPageNumber());
         $firstResult = ($this->currentPage - 1) * $this->pageSize;
+        $this->startResults = $this->pageSize * ( $this->currentPage - 1) + 1;
+        $this->endResults = $this->startResults + $this->pageSize -1;
 
         $query = $queryBuilder
             ->setFirstResult($firstResult)
@@ -62,6 +66,9 @@ final class EntityPaginator implements EntityPaginatorInterface
 
         $this->results = $paginator->getIterator();
         $this->numResults = $paginator->count();
+        if ($this->endResults > $this->numResults) {
+            $this->endResults = $this->numResults;
+        }
 
         return $this;
     }
@@ -186,5 +193,15 @@ final class EntityPaginator implements EntityPaginatorInterface
         $jsonResult['next_page'] = $nextPageUrl;
 
         return json_encode($jsonResult, \JSON_THROW_ON_ERROR);
+    }
+
+    public function getStartResults(): int
+    {
+        return $this->startResults;
+    }
+
+    public function getEndResults(): int
+    {
+        return $this->endResults;
     }
 }

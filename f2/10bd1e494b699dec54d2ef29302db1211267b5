@@ -1,0 +1,120 @@
+---------------------------------------------------------------------------
+
+by Lustmored at 2022-04-15T11:22:44Z
+
+@javiereguiluz any chance you could take a look here? :smile_cat:
+
+---------------------------------------------------------------------------
+
+by jmsche at 2022-04-22T09:24:40Z
+
+Hello @javiereguiluz, I think this PR can be merged :)
+
+---------------------------------------------------------------------------
+
+by Lustmored at 2022-05-20T11:50:32Z
+
+@javiereguiluz any chance you could take a look at this? Along with translatables I think this enables even better multi-lingual dashboards out of the box :)
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2022-05-21T08:27:11Z
+
+I'm testing this feature but it doesn't work for me 😐
+
+I click on a language and I see the `_locale` attribute added to the URL ... but that doesn't translate contents for me. Also, none of the links of the page include the new `_locale`, so the language change doesn't persist and it's annoying to have to select it for each page.
+
+I think this would need many more changes to make it work as most users would expect: the locale change must translate the entire page contents and must be persistent between requests. See https://symfony.com/doc/current/translation/locale.html
+
+---------------------------------------------------------------------------
+
+by Lustmored at 2022-05-21T08:42:13Z
+
+@javiereguiluz did you change EasyAdmin routes import to `/{_locale}/admin` from `/admin` (or similar)? I believe without that change there is no way to make it work.
+
+I probably need to rework docs comment:
+```
+                // When using this option you should also add
+                // {_locale} placeholder in dashboard route path (e. g. '/admin/{_locale}').
+```
+To reflect this - probably "should" -> "need to"?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2022-05-21T10:55:33Z
+
+Yes, I've changed what you said and now it's working 🙌  It still surprises me that everything works without any other change on our side 🤔
+
+---------------------------------------------------------------------------
+
+by Lustmored at 2022-05-21T11:19:53Z
+
+The reason for that is whenever `_locale` is present in a route Symfony router context handles it for ourselves and it does that very well (mostly via `LocaleListener`) 👍
+
+I think there is a point in adding info about that route requirement to other parts of the doc, I will take a look again early next week. In the meantime could you please let me know how to proceed with translations of added string? Machine translate them or leave untranslated in this PR?
+
+---------------------------------------------------------------------------
+
+by john-dufrene-dev at 2022-05-21T11:24:01Z
+
+@Lustmored work for me too, may be add possibilty to remove functionnality in dashboard could be nice ?
+
+---------------------------------------------------------------------------
+
+by Lustmored at 2022-05-21T11:35:05Z
+
+> @Lustmored work for me too, may be add possibilty to remove functionnality in dashboard could be nice ?
+
+This feature is disabled by default and requires explicit configuration to work, so I don't think I understand what do you mean
+
+---------------------------------------------------------------------------
+
+by john-dufrene-dev at 2022-05-21T12:05:11Z
+
+@Lustmored okay I understand what you mean,
+
+Always need to use in url /{_locale} ? Session system or other system not possible ?
+
+In symfony 6.1 for example new system for locale is coming, we are not oblige to pass parameter in url with this system
+
+https://symfony.com/blog/new-in-symfony-6-1-locale-switcher
+
+---------------------------------------------------------------------------
+
+by Lustmored at 2022-05-21T12:14:52Z
+
+@john-dufrene-dev I believe locale switcher has other purpose (to ease running parts of the code with other locale than the rest) and you can use any other method of using `_locale` parameter if you have own logic for that.
+
+Generally speaking - adding `_locale` parameter to the route path is the default and recommended way (just like in Symfony), but you can handle it any other way that is Symfony compatible and it still will work (as EasyAdmin is fueled by Symfony) :)
+
+---------------------------------------------------------------------------
+
+by Lustmored at 2022-05-30T11:29:59Z
+
+@javiereguiluz Sorry it took a bit longer - I had really busy week. And so did you, so congratulations on 6.1 release :tada:
+
+Back to the point - I went through the docs and found 2 or 3 places where IMO it was worth to add a note about `_locale` handling. I have also created `UPGRADE.md` entry. I'm not great at writing docs (but doing my best!), so wording might be imperfect, but hopefully it will allow users to easily set up multilingual dashboards.
+
+---------------------------------------------------------------------------
+
+by Lustmored at 2022-05-30T11:31:37Z
+
+As a bonus I've made (machine) translations of word `Language` in all locales that seem up to date.
+
+---------------------------------------------------------------------------
+
+by Lustmored at 2022-05-30T11:37:55Z
+
+@jmsche Thank you :heart:
+
+---------------------------------------------------------------------------
+
+by Lustmored at 2022-06-24T08:50:15Z
+
+@javiereguiluz just a friendly ping :smile_cat:
+
+---------------------------------------------------------------------------
+
+by Lustmored at 2022-09-14T09:23:07Z
+
+@michaelKaefer @javiereguiluz I have rebased this work and migrated to new `LocaleDto` so that we can configure more than just a locale name and display name (for now just an icon, but it's still a step forward).

@@ -242,14 +242,14 @@ body.ea-mobile-sidebar-visible .sidebar {
     }
 }
 
-.dropdown-appearance {
-    .dropdown-appearance-button {
+.dropdown-appearance, .dropdown-locales {
+    .dropdown-appearance-button, .dropdown-locales-button {
         color: var(--dropdown-appearance-icon-color);
         font-size: 16px;
         padding: 0 0 0 15px;
     }
 
-    .dropdown-appearance-label {
+    .dropdown-appearance-label, .dropdown-locales-label {
         color: var(--text-muted);
         display: block;
         font-size: var(--font-size-sm);

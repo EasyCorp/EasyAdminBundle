@@ -108,6 +108,10 @@ dashboard with the ``make:admin:dashboard`` command, the route is defined using
     to it to inject dependencies. Instead, inject those dependencies in the
     constructor method of the controller.
 
+.. note::
+
+    If you intent to have multilingual dashboard you should add ``_locale`` parameter to the route (like ``/admin/{_locale}``) or handle locale switching by yourself.
+
 The ``/admin`` URL is only a default value, so you can change it. If you do that,
 don't forget to also update this value in your Symfony security config to
 :ref:`restrict access to the entire backend <security-entire-backend>`.
@@ -228,6 +232,7 @@ explained later)::
 
     use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
     use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
+    use EasyCorp\Bundle\EasyAdminBundle\Dto\LocaleDto;
 
     class DashboardController extends AbstractDashboardController
     {
@@ -270,6 +275,25 @@ explained later)::
                 // by default, all backend URLs are generated as absolute URLs. If you
                 // need to generate relative URLs instead, call this method
                 ->generateRelativeUrls()
+
+                // set this option if you want to enable locale switching in dashboard.
+                // Passed array should contain locale codes as keys and labels as values.
+                // Labels will *not* be translated - it is recommended to pass locale names
+                // translated into the same locale. When using this option you should also add
+                // {_locale} placeholder in dashboard route path (e. g. '/admin/{_locale}').
+                ->setLocales([
+                    'en' => 'English',
+                    'pl' => 'polski'
+                ])
+
+                // You can also just pass a list of locales to achieve the same effect
+                ->setLocales(['en', 'pl'])
+
+                // If you want to customize (or disable) locale icons, pass LocaleDto objects
+                ->setLocales([
+                    LocaleDto::new('en', 'English', null), // disables locale
+                    LocaleDto::new('pl', 'polski', 'far fa-language')
+                ])
             ;
         }
     }
@@ -801,7 +825,7 @@ value explicitly::
 
     If you want to make the backend use a different language than the public
     website, you'll need to `work with the user locale`_ to set the request
-    locale before the translation service retrieves it.
+    locale before the translation service retrieves it. You can achieve that by adding ``_locale`` parameter to your dashboard route.
 
 .. note::
 

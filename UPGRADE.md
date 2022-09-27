@@ -1,6 +1,19 @@
 Upgrade between EasyAdmin 4.x versions
 ======================================
 
+EasyAdmin 4.X.0
+---------------
+
+### Multilingual dashboards
+
+EasyAdmin now has built-in language change layout to make building multilingual
+dashboards a breeze. To make use of it you need to add `_locale` parameter
+to your dashboard route path (e.g. `/admin/{_locale}`) to use Symfony default
+locale listener, or handle request locale any way compatible with Symfony.
+
+After that you need to call `setLocales` in dashboard configuration, passing
+array of locales that should be exposed in the front-end.
+
 EasyAdmin 4.2.0
 ---------------
 

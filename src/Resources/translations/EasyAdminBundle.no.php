@@ -117,6 +117,7 @@ return [
             'dark' => 'Mørkt',
             'auto' => 'Automatisk',
         ],
+        'locale' => 'Språk',
     ],
 
     'login_page' => [

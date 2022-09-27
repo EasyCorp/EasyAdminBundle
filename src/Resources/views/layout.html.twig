@@ -283,6 +283,30 @@
                                 {% endblock header_custom_menu %}
                             </div>
 
+                            {% if ea.dashboardLocales %}
+                                <div class="dropdown dropdown-locales">
+                                    <a class="dropdown-locales-button" type="button" data-bs-toggle="dropdown" data-bs-offset="0,5" aria-expanded="false">
+                                        <i class="fas fa-language"></i>
+                                    </a>
+
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li class="dropdown-locales-label">
+                                            <span>{{ 'settings.locale'|trans(domain = 'EasyAdminBundle') }}</span>
+                                        </li>
+                                        {% for localeDto in ea.dashboardLocales %}
+                                            <li>
+                                                <a href="{{ ea_url().set('_locale', localeDto.locale) }}" class="dropdown-item{% if app.request.locale == localeDto.locale %} active{% endif %}">
+                                                    {% if localeDto.icon %}
+                                                        <i class="{{ localeDto.icon }}"></i>
+                                                    {% endif %}
+                                                    {{ localeDto.name }}
+                                                </a>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endif %}
+
                             {% if ea.dashboardHasDarkModeEnabled %}
                                 <div class="navbar-custom-menu">
                                     <div class="dropdown dropdown-appearance">

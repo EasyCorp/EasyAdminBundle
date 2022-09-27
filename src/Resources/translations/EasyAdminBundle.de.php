@@ -118,6 +118,7 @@ return [
             'dark' => 'Dunkel',
             'auto' => 'Automatisch',
         ],
+        'locale' => 'Sprache',
     ],
 
     'login_page' => [

@@ -117,6 +117,7 @@ return [
             'dark' => 'Tumma',
             'auto' => 'Automaattinen',
         ],
+        'locale' => 'Kieli',
     ],
 
     'login_page' => [

@@ -117,6 +117,7 @@ return [
             'dark' => 'Koyu',
             'auto' => 'Otomatik',
         ],
+        'locale' => 'Dil',
     ],
 
     'login_page' => [

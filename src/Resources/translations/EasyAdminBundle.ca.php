@@ -118,6 +118,7 @@ return [
             'dark' => 'Fosc',
             'auto' => 'Automàtic',
         ],
+        'locale' => 'Llenguatge',
     ],
 
     'login_page' => [

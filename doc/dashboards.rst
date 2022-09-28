@@ -110,7 +110,8 @@ dashboard with the ``make:admin:dashboard`` command, the route is defined using
 
 .. note::
 
-    If you intent to have multilingual dashboard you should add ``_locale`` parameter to the route (like ``/admin/{_locale}``) or handle locale switching by yourself.
+    If you are implementing a multilingual dashboard, add the ``_locale`` parameter
+    to the route (e.g. ``/admin/{_locale}``).
 
 The ``/admin`` URL is only a default value, so you can change it. If you do that,
 don't forget to also update this value in your Symfony security config to
@@ -277,22 +278,23 @@ explained later)::
                 ->generateRelativeUrls()
 
                 // set this option if you want to enable locale switching in dashboard.
-                // Passed array should contain locale codes as keys and labels as values.
-                // Labels will *not* be translated - it is recommended to pass locale names
-                // translated into the same locale. When using this option you should also add
-                // {_locale} placeholder in dashboard route path (e. g. '/admin/{_locale}').
-                ->setLocales([
-                    'en' => 'English',
-                    'pl' => 'polski'
-                ])
-
-                // You can also just pass a list of locales to achieve the same effect
+                // IMPORTANT: this feature won't work unless you add the {_locale}
+                // parameter in the admin dashboard URL (e.g. '/admin/{_locale}').
+                // the name of each locale will be rendered in that locale
+                // (in the following example you'll see: "English", "Polski")
                 ->setLocales(['en', 'pl'])
-
-                // If you want to customize (or disable) locale icons, pass LocaleDto objects
+                // to customize the labels of locales, pass a key => value array
+                // (e.g. to display flags; although it's not a recommended practice,
+                // because many languages/locales are not associated to a single country)
                 ->setLocales([
-                    LocaleDto::new('en', 'English', null), // disables locale
-                    LocaleDto::new('pl', 'polski', 'far fa-language')
+                    'en' => '🇬🇧 English',
+                    'pl' => '🇵🇱 Polski'
+                ])
+                // to further customize the locale option, pass an instance of
+                // EasyCorp\Bundle\EasyAdminBundle\Config\Locale
+                ->setLocales([
+                    'en', // locale without custom options
+                    Locale::new('pl', 'polski', 'far fa-language') // custom label and icon
                 ])
             ;
         }
@@ -824,8 +826,8 @@ value explicitly::
 .. tip::
 
     If you want to make the backend use a different language than the public
-    website, you'll need to `work with the user locale`_ to set the request
-    locale before the translation service retrieves it. You can achieve that by adding ``_locale`` parameter to your dashboard route.
+    website, add the ``{_locale}`` parameter to your dashboard route and use
+    the ``setLocales()`` method to configure the locales available in the backend.
 
 .. note::
 
@@ -988,5 +990,4 @@ etc. Example:
 .. _`logout feature`: https://symfony.com/doc/current/security.html#logging-out
 .. _`Symfony translation`: https://symfony.com/doc/current/components/translation.html
 .. _`translation domain`: https://symfony.com/doc/current/components/translation.html#using-message-domains
-.. _`work with the user locale`: https://symfony.com/doc/current/translation/locale.html
 .. _`Symfony UX Chart.js`: https://symfony.com/bundles/ux-chartjs/current/index.html

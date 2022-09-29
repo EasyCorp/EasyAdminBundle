@@ -1,0 +1,5 @@
+---------------------------------------------------------------------------
+
+by michaelKaefer at 2022-09-28T19:27:06Z
+
+Just to note: for me this PR also fixes a major bug introduced in the mentioned PR: `manifest.json` was changed (I don't know why) and all EA assets are'nt loaded anymore (because the path `/bundles/easyadmin` is missing), see: https://github.com/EasyCorp/EasyAdminBundle/commit/5d79d4909cedf881c095e5aa74d9bd11037c5203#diff-d4576e8eb7efad4b3ce13242f3919c9503d89d1ee3e1f30fa0b86c6e7559db33

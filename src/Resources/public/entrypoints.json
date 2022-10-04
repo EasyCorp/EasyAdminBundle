@@ -2,8 +2,8 @@
   "entrypoints": {
     "app": {
       "css": [
-        "/app.556df1de.css",
-        "/app.556df1de.rtl.css"
+        "/app.51227a68.css",
+        "/app.51227a68.rtl.css"
       ],
       "js": [
         "/app.2fd2f280.js"
@@ -21,7 +21,7 @@
     },
     "page-color-scheme": {
       "js": [
-        "/page-color-scheme.f676dfa6.js"
+        "/page-color-scheme.a1568167.js"
       ]
     },
     "field-boolean": {

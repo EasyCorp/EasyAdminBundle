@@ -11,18 +11,18 @@ class ColorSchemeHandler {
     }
 
     createColorSchemeSelector() {
-        if (null === document.querySelector('.dropdown-appearance')) {
+        if (null === document.querySelector('.dropdown-settings')) {
             return;
         }
 
-        // for·responsive design" reasons, pages contain two color scheme selectors instead
-        // of one and the selected scheme must be kept in sync in both
-        const colorSchemeSelectors = document.querySelectorAll('.dropdown-appearance');
+        // for·responsive design" reasons, pages contain two settings dropdowns (and inside them, one
+        // scheme selector each) instead of one and the selected scheme must be kept in sync in both
+        const colorSchemeSelectors = document.querySelectorAll('.dropdown-settings');
         const currentScheme = localStorage.getItem(this.#colorSchemeLocalStorageKey) || 'auto';
 
         colorSchemeSelectors.forEach((colorSchemeSelector) => {
-            const selectorOptions = colorSchemeSelector.querySelectorAll('.dropdown-appearance a[data-ea-color-scheme]');
-            const selectorActiveOption = colorSchemeSelector.querySelector(`.dropdown-appearance a[data-ea-color-scheme="${ currentScheme }"]`);
+            const selectorOptions = colorSchemeSelector.querySelectorAll('a.dropdown-appearance-item[data-ea-color-scheme]');
+            const selectorActiveOption = colorSchemeSelector.querySelector(`a.dropdown-appearance-item[data-ea-color-scheme="${ currentScheme }"]`);
 
             selectorOptions.forEach((selector) => { selector.classList.remove('active') });
             selectorActiveOption.classList.add('active');
@@ -32,8 +32,8 @@ class ColorSchemeHandler {
                     const selectedColorScheme = selector.getAttribute('data-ea-color-scheme');
                     this.#setColorScheme(selectedColorScheme);
 
-                    const allSelectorOptions = document.querySelectorAll('.dropdown-appearance a[data-ea-color-scheme]');
-                    const allSelectorActiveOptions = document.querySelectorAll(`.dropdown-appearance a[data-ea-color-scheme="${ selectedColorScheme }"]`);
+                    const allSelectorOptions = document.querySelectorAll('a.dropdown-appearance-item[data-ea-color-scheme]');
+                    const allSelectorActiveOptions = document.querySelectorAll(`a.dropdown-appearance-item[data-ea-color-scheme="${ selectedColorScheme }"]`);
                     allSelectorOptions.forEach((selectorOption) => { selectorOption.classList.remove('active') });
                     allSelectorActiveOptions.forEach((selectorOption) => { selectorOption.classList.add('active') });
                 });

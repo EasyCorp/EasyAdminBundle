@@ -115,27 +115,58 @@
             </ul>
         {% endset %}
 
-        {% set appearance_menu_dropdown %}
-            <ul class="dropdown-menu dropdown-menu-end dropdown-appearance-menu">
-                <li class="dropdown-appearance-label">
-                    <span>{{ 'settings.appearance.label'|trans(domain = 'EasyAdminBundle') }}</span>
-                </li>
-                <li>
-                    <a href="#" class="dropdown-item" data-ea-color-scheme="light">
-                        <i class="far fa-sun"></i> <span>{{ 'settings.appearance.light'|trans(domain = 'EasyAdminBundle') }}</span>
+        {% set settings_dropdown %}
+            {% if ea.dashboardLocales or ea.dashboardHasDarkModeEnabled %}
+                <div class="dropdown dropdown-settings">
+                    <a class="dropdown-settings-button" type="button" data-bs-toggle="dropdown" data-bs-offset="0,5" aria-expanded="false">
+                        <i class="fas fa-gear"></i>
                     </a>
-                </li>
-                <li>
-                    <a href="#" class="dropdown-item" data-ea-color-scheme="dark">
-                        <i class="far fa-moon"></i> <span>{{ 'settings.appearance.dark'|trans(domain = 'EasyAdminBundle') }}</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="dropdown-item active" data-ea-color-scheme="auto">
-                        <i class="fas fa-desktop"></i> <span>{{ 'settings.appearance.auto'|trans(domain = 'EasyAdminBundle') }}</span>
-                    </a>
-                </li>
-            </ul>
+
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        {% if ea.dashboardLocales %}
+                            <li>
+                                <span class="dropdown-header dropdown-locales-label">{{ 'settings.locale'|trans(domain = 'EasyAdminBundle') }}</span>
+                            </li>
+
+                            {% for localeDto in ea.dashboardLocales %}
+                                <li>
+                                    <a href="{{ ea_url().set('_locale', localeDto.locale) }}" class="dropdown-item{% if app.request.locale == localeDto.locale %} active{% endif %}">
+                                        {% if localeDto.icon %}
+                                            <i class="{{ localeDto.icon }}"></i>
+                                        {% endif %}
+                                        {{ localeDto.name }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        {% endif %}
+
+                        {% if ea.dashboardHasDarkModeEnabled %}
+                            {% if ea.dashboardLocales %}
+                                <div class="dropdown-divider"></div>
+                            {% endif %}
+
+                            <li>
+                                <span class="dropdown-header dropdown-appearance-label">{{ 'settings.appearance.label'|trans(domain = 'EasyAdminBundle') }}</span>
+                            </li>
+                            <li>
+                                <a href="#" class="dropdown-item dropdown-appearance-item" data-ea-color-scheme="light">
+                                    <i class="far fa-sun"></i> <span>{{ 'settings.appearance.light'|trans(domain = 'EasyAdminBundle') }}</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="dropdown-item dropdown-appearance-item" data-ea-color-scheme="dark">
+                                    <i class="far fa-moon"></i> <span>{{ 'settings.appearance.dark'|trans(domain = 'EasyAdminBundle') }}</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="dropdown-item dropdown-appearance-item active" data-ea-color-scheme="auto">
+                                    <i class="fas fa-desktop"></i> <span>{{ 'settings.appearance.auto'|trans(domain = 'EasyAdminBundle') }}</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            {% endif %}
         {% endset %}
 
         <div class="wrapper">
@@ -168,15 +199,7 @@
                             {{ user_menu_dropdown }}
                         </div>
 
-                        {% if ea.dashboardHasDarkModeEnabled %}
-                            <div class="dropdown dropdown-appearance">
-                                <a class="dropdown-appearance-button" type="button" data-bs-toggle="dropdown" data-bs-offset="0,5" aria-expanded="false">
-                                    <i class="fas fa-adjust"></i>
-                                </a>
-
-                                {{ appearance_menu_dropdown }}
-                            </div>
-                        {% endif %}
+                        {{ settings_dropdown }}
                     {% endblock responsive_header %}
                 </div>
 
@@ -283,41 +306,7 @@
                                 {% endblock header_custom_menu %}
                             </div>
 
-                            {% if ea.dashboardLocales %}
-                                <div class="dropdown dropdown-locales">
-                                    <a class="dropdown-locales-button" type="button" data-bs-toggle="dropdown" data-bs-offset="0,5" aria-expanded="false">
-                                        <i class="fas fa-language"></i>
-                                    </a>
-
-                                    <ul class="dropdown-menu dropdown-menu-end">
-                                        <li class="dropdown-locales-label">
-                                            <span>{{ 'settings.locale'|trans(domain = 'EasyAdminBundle') }}</span>
-                                        </li>
-                                        {% for localeDto in ea.dashboardLocales %}
-                                            <li>
-                                                <a href="{{ ea_url().set('_locale', localeDto.locale) }}" class="dropdown-item{% if app.request.locale == localeDto.locale %} active{% endif %}">
-                                                    {% if localeDto.icon %}
-                                                        <i class="{{ localeDto.icon }}"></i>
-                                                    {% endif %}
-                                                    {{ localeDto.name }}
-                                                </a>
-                                            </li>
-                                        {% endfor %}
-                                    </ul>
-                                </div>
-                            {% endif %}
-
-                            {% if ea.dashboardHasDarkModeEnabled %}
-                                <div class="navbar-custom-menu">
-                                    <div class="dropdown dropdown-appearance">
-                                        <a class="dropdown-appearance-button" type="button" data-bs-toggle="dropdown" data-bs-offset="0,5" aria-expanded="false">
-                                            <i class="fas fa-adjust"></i>
-                                        </a>
-
-                                        {{ appearance_menu_dropdown }}
-                                    </div>
-                                </div>
-                            {% endif %}
+                            {{ settings_dropdown }}
                         {% endblock content_top_header %}
                     </aside>
 

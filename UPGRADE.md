@@ -88,7 +88,7 @@ yield TextField::new('someField')->stripTags();
 ### Autocomplete Fields
 
 The `Select2` JavaScript library, which is based on jQuery, has been
-replaced bt `TomSelect`, a pure-JavaScript library. This change is
+replaced by `TomSelect`, a pure-JavaScript library. This change is
 transparent when using EasyAdmin features, but if you create custom
 form types and want to display autocomplete fields for your `<select>`
 lists, you must change the following:

@@ -1,7 +1,7 @@
 Upgrade between EasyAdmin 4.x versions
 ======================================
 
-EasyAdmin 4.X.0
+EasyAdmin 4.4.0
 ---------------
 
 ### Multilingual dashboards

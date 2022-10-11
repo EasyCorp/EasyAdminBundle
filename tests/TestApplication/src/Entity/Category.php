@@ -12,6 +12,8 @@ use Doctrine\ORM\Mapping as ORM;
 class Category
 {
     /**
+     * @var ?int
+     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -32,6 +34,13 @@ class Category
      * @ORM\ManyToMany(targetEntity=BlogPost::class, mappedBy="categories")
      */
     private $blogPosts;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(type="boolean")
+     */
+    private $active = false;
 
     public function __construct()
     {
@@ -90,6 +99,18 @@ class Category
         if ($this->blogPosts->removeElement($blogPost)) {
             $blogPost->removeCategory($this);
         }
+
+        return $this;
+    }
+
+    public function isActive(): bool
+    {
+        return $this->active;
+    }
+
+    public function setActive(bool $active): self
+    {
+        $this->active = $active;
 
         return $this;
     }

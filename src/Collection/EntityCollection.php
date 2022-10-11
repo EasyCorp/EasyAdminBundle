@@ -47,6 +47,7 @@ final class EntityCollection implements CollectionInterface
     /**
      * @return ?EntityDto
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return $this->entities[$offset];

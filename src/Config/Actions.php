@@ -144,7 +144,7 @@ final class Actions
         return $this;
     }
 
-    public function getAsDto(string $pageName): ActionConfigDto
+    public function getAsDto(?string $pageName): ActionConfigDto
     {
         $this->dto->setPageName($pageName);
 

@@ -29,7 +29,6 @@ return [
         'false' => 'Нет',
         'empty' => 'Пусто',
         'null' => 'Null',
-        'nullable_field' => 'Оставить пустым',
         'object' => 'PHP-объект',
         'inaccessible' => 'Недоступно',
         'inaccessible.explanation' => 'Нет геттера для этого поля или свойство не общедоступно',
@@ -119,6 +118,7 @@ return [
             'dark' => 'Темное',
             'auto' => 'Автоматически',
         ],
+        'locale' => 'Язык',
     ],
 
     'login_page' => [

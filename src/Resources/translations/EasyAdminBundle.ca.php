@@ -29,7 +29,6 @@ return [
         'false' => 'No',
         'empty' => 'Buit',
         'null' => 'Nul',
-        'nullable_field' => 'Deixar buit',
         'object' => 'Objecte PHP',
         'inaccessible' => 'Inaccessible',
         'inaccessible.explanation' => 'Aquest camp no té un mètode "getter" o la propietat associada no és pública',
@@ -44,7 +43,7 @@ return [
     'action' => [
         'entity_actions' => 'Accions',
         'new' => 'Crear %entity_label_singular%',
-        'search' => 'Buscar',
+        'search' => 'Cercar',
         'detail' => 'Veure',
         'edit' => 'Modificar',
         'delete' => 'Esborrar',
@@ -119,6 +118,7 @@ return [
             'dark' => 'Fosc',
             'auto' => 'Automàtic',
         ],
+        'locale' => 'Llenguatge',
     ],
 
     'login_page' => [

@@ -1,0 +1,8 @@
+# This keeps updated the GitHub actions used in .github/workflows/*.yaml
+# See https://docs.github.com/en/code-security/dependabot/working-with-dependabot/keeping-your-actions-up-to-date-with-dependabot
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"

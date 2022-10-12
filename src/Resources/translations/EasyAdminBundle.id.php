@@ -29,7 +29,6 @@ return [
         'false' => 'Tidak',
         'empty' => 'Kosong',
         'null' => 'Null',
-        'nullable_field' => 'Biarkan kosong',
         'object' => 'Objek PHP',
         'inaccessible' => 'Tidak dapat diakses',
         'inaccessible.explanation' => 'Metode getter tidak ada untuk bidang ini atau bidang tidak dibuat untuk publik',
@@ -119,6 +118,7 @@ return [
             'dark' => 'Gelap',
             'auto' => 'Otomatis',
         ],
+        'locale' => 'Bahasa',
     ],
 
     'login_page' => [

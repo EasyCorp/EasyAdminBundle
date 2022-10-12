@@ -19,6 +19,8 @@ final class DashboardDto
     private bool $signedUrls = false;
     private bool $absoluteUrls = true;
     private bool $enableDarkMode = true;
+    /** @var LocaleDto[] */
+    private array $locales = [];
 
     public function getRouteName(): string
     {
@@ -149,5 +151,18 @@ final class DashboardDto
     public function isDarkModeEnabled(): bool
     {
         return $this->enableDarkMode;
+    }
+
+    public function getLocales(): array
+    {
+        return $this->locales;
+    }
+
+    /**
+     * @param LocaleDto[] $locales
+     */
+    public function setLocales(array $locales): void
+    {
+        $this->locales = $locales;
     }
 }

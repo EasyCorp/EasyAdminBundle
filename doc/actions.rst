@@ -38,8 +38,9 @@ These are the built-in actions included by default in each page:
 
 * Page ``Crud::PAGE_INDEX`` (``'index'``):
 
-  * Added by default: ``Action::EDIT``, ``Action::DELETE``, ``Action::NEW``
-  * Other available actions: ``Action::DETAIL``
+  * Added by default globally: ``Action::NEW``
+  * Added by default per entry: ``Action::EDIT``, ``Action::DELETE``
+  * Other available actions per entry: ``Action::DETAIL``
 
 * Page ``Crud::PAGE_DETAIL`` (``'detail'``):
 
@@ -362,6 +363,23 @@ The following example shows all kinds of actions in practice::
         }
     }
 
+Global Actions
+--------------
+
+On pages that list entries (e.g. ``Crud::PAGE_INDEX``) you can configure actions
+per entry as well as global actions. Global actions are displayed above the
+listed entries.
+
+An example of creating a custom action and adding it globally to the ``index``
+page::
+
+    $goToStripe = Action::new('goToStripe')
+        ->linkToUrl('https://www.stripe.com/')
+        ->createAsGlobalAction()
+    ;
+
+    $actions->add(Crud::PAGE_INDEX, $goToStripe);
+
 Batch Actions
 -------------
 
@@ -420,9 +438,10 @@ If you do that, EasyAdmin will inject a DTO with all the batch action data::
 
         public function approveUsers(BatchActionDto $batchActionDto)
         {
-            $entityManager = $this->container->get('doctrine')->getManagerForClass($batchActionDto->getEntityFqcn());
+            $className = $batchActionDto->getEntityFqcn();
+            $entityManager = $this->container->get('doctrine')->getManagerForClass($className);
             foreach ($batchActionDto->getEntityIds() as $id) {
-                $user = $entityManager->find($id);
+                $user = $entityManager->find($className, $id);
                 $user->approve();
             }
 
@@ -556,8 +575,8 @@ of them:
     {# templates/admin/business_stats/index.html.twig #}
     {% extends '@EasyAdmin/page/content.html.twig' %}
 
-    {% block page_title 'Business Stats' %}
-    {% block page_content %}
+    {% block content_title 'Business Stats' %}
+    {% block main %}
         <table>
             <thead> {# ... #} </thead>
             <tbody>

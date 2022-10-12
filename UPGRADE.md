@@ -1,6 +1,20 @@
 Upgrade between EasyAdmin 4.x versions
 ======================================
 
+EasyAdmin 4.4.0
+---------------
+
+### Multilingual dashboards
+
+EasyAdmin now supports multilingual dashboards. First, add the `_locale` parameter
+in the URL of your dashboard (e.g. `/admin/{_locale}`) to enable the default
+Symfony locale listener that handles the locale switching. If you can't do this,
+you'll need to implement your own logic to handle the request locale in a way
+compatible with Symfony.
+
+After that, call the `setLocales()` method in the dashboard configuration class,
+passing an array of locales that should be exposed in the interface.
+
 EasyAdmin 4.2.0
 ---------------
 

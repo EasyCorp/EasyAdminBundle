@@ -4,7 +4,6 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Option\TextAlign;
 use function Symfony\Component\String\u;
 use Symfony\Component\Uid\Ulid;
 use Symfony\Contracts\Translation\TranslatableInterface;
@@ -25,7 +24,7 @@ final class FieldDto
     private ?bool $sortable = null;
     private ?bool $virtual = null;
     private ?string $permission = null;
-    private string $textAlign = TextAlign::LEFT;
+    private ?string $textAlign = null;
     private $help;
     private string $cssClass = '';
     // how many columns the field takes when rendering
@@ -36,6 +35,7 @@ final class FieldDto
     private array $translationParameters = [];
     private ?string $templateName = 'crud/field/text';
     private ?string $templatePath = null;
+    private array $formThemePaths = [];
     private AssetsDto $assets;
     private KeyValueStore $customOptions;
     private KeyValueStore $doctrineMetadata;
@@ -238,7 +238,7 @@ final class FieldDto
         $this->virtual = $isVirtual;
     }
 
-    public function getTextAlign(): string
+    public function getTextAlign(): ?string
     {
         return $this->textAlign;
     }
@@ -326,6 +326,21 @@ final class FieldDto
     public function setTemplatePath(?string $templatePath): void
     {
         $this->templatePath = $templatePath;
+    }
+
+    public function addFormTheme(string $formThemePath): void
+    {
+        $this->formThemePaths[] = $formThemePath;
+    }
+
+    public function getFormThemes(): array
+    {
+        return $this->formThemePaths;
+    }
+
+    public function setFormThemes(array $formThemePaths): void
+    {
+        $this->formThemePaths = $formThemePaths;
     }
 
     public function getAssets(): AssetsDto

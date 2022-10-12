@@ -20,7 +20,8 @@
     --font-size-xxl: 24px;
     --font-size-xxxl: 28px;
 
-    --shadow-lg: 0 20px 25px -5px rgba(15, 23, 43, 0.1), 0 10px 10px -5px rgba(15, 23, 42, 0.04);
+    --shadow-md: 0 4px 6px -1px rgb(15, 23, 43, 0.1), 0 2px 4px -2px rgb(15, 23, 42, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(15, 23, 43, 0.1), 0 4px 6px -4px rgb(15, 23, 42, 0.1);
     --shadow-xl: 0 20px 25px -5px rgba(15, 23, 42, 0.2), 0 8px 10px -6px rgba(15, 23, 42, 0.2);
 
     --width-sm: 576px;
@@ -99,9 +100,10 @@
     --dropdown-link-color: var(--gray-700);
     --dropdown-link-hover-bg: var(--gray-100);
     --dropdown-icon-color: var(--gray-500);
-    --dropdown-appearance-icon-color: var(--gray-400);
-    --dropdown-appearance-active-item-bg: var(--gray-200);
-    --dropdown-appearance-active-item-color: var(--color-primary);
+    --dropdown-settings-icon-color: var(--gray-400);
+    --dropdown-settings-active-item-bg: var(--gray-100);
+    --dropdown-settings-active-item-color: var(--color-primary);
+    --dropdown-settings-active-item-shadow: inset 0 0 0 1px #5368d580; // color is --color-primary with 50% alpha
     --datagrid-noresults-placeholder-bg: var(--gray-100);
     --datagrid-hidden-results-gradient-bg: var(--gray-50);
     --table-thead-color: var(--gray-800);
@@ -132,10 +134,11 @@
     --form-control-disabled-bg: var(--gray-200);
     --form-control-disabled-color: var(--gray-600);
     --form-input-border-color: var(--gray-300);
+    --form-input-error-border-color: var(--red-600);
     --form-input-hover-border-color: var(--gray-400);
     --form-input-shadow: 0 1px 2px 0 var(--gray-50);
-    --form-input-error-shadow: 0 0 0 1px rgba(43, 45, 80, 0), 0 0 0 1px rgba(183, 6, 32, .2), 0 0 0 2px rgba(183, 6, 32, .25), 0 1px 1px rgba(0, 0, 0, .08);
     --form-input-hover-shadow: 0 0 0 4px var(--gray-100);
+    --form-input-error-shadow: 0 0 0 3px var(--red-100);
     --form-input-text-color: var(--gray-700);
     --form-input-group-text-bg: var(--form-control-bg);
     --form-input-group-text-border-color: var(--form-input-border-color);
@@ -207,6 +210,30 @@
     --badge-dark-bg: var(--gray-900);
     --badge-light-box-shadow: none;
     --badge-dark-color: var(--gray-50);
+    --alert-primary-bg: var(--indigo-100);
+    --alert-primary-color: var(--indigo-800);
+    --alert-primary-border-color: var(--indigo-200);
+    --alert-secondary-bg: var(--gray-100);
+    --alert-secondary-color: var(--gray-800);
+    --alert-secondary-border-color: var(--gray-200);
+    --alert-success-bg: var(--emerald-100);
+    --alert-success-color: var(--emerald-900);
+    --alert-success-border-color: var(--emerald-200);
+    --alert-info-bg: var(--sky-100);
+    --alert-info-color: var(--sky-800);
+    --alert-info-border-color: var(--sky-200);
+    --alert-warning-bg: var(--orange-100);
+    --alert-warning-color: var(--orange-800);
+    --alert-warning-border-color: var(--orange-200);
+    --alert-danger-bg: var(--rose-100);
+    --alert-danger-color: var(--rose-800);
+    --alert-danger-border-color: var(--rose-200);
+    --alert-light-bg: var(--white);
+    --alert-light-color: var(--gray-800);
+    --alert-light-border-color: var(--gray-200);
+    --alert-dark-bg: var(--gray-800);
+    --alert-dark-color: var(--gray-50);
+    --alert-dark-border-color: var(--gray-500);
     --button-bg: var(--white);
     --button-color: var(--gray-700);
     --button-hover-color: var(--gray-800);
@@ -282,6 +309,10 @@
     --code-editor-deletion-bg: #ffeef0;
 
     --page-login-bg: var(--gray-100);
+    --page-login-form-bg: var(--white);
+    --page-login-form-control-bg: var(--form-control-bg);
+    --page-login-form-control-border-color: var(--form-input-border-color);
+    --page-login-form-control-button-bg: var(--button-primary-bg);
 
     --zindex-700: 777;
     --zindex-800: 888;
@@ -328,8 +359,9 @@
     --secondary-bg: var(--true-gray-700);
     --tertiary-bg: var(--true-gray-900);
 
-    --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.4), 0 8px 10px -6px rgb(0 0 0 / 0.4);
+    --shadow-md: 0 4px 6px -1px rgb(0, 0, 0, 0.3), 0 2px 4px -2px rgb(0, 0, 0, 0.3);
+    --shadow-lg: 0 10px 15px -3px rgb(0, 0, 0, 0.3), 0 4px 6px -4px rgb(0, 0, 0, 0.3);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
     --body-bg: #222222; // custom value between --true-gray-900 and --true-gray-800
     --responsive-header-bg: #303030;
     --responsive-header-border-color: var(--true-gray-600);
@@ -379,9 +411,10 @@
     --dropdown-link-color: var(--true-gray-300);
     --dropdown-link-hover-bg: var(--true-gray-700);
     --dropdown-icon-color: var(--true-gray-400);
-    --dropdown-appearance-icon-color: var(--true-gray-500);
-    --dropdown-appearance-active-item-bg: var(--true-gray-700);
-    --dropdown-appearance-active-item-color: var(--color-primary);
+    --dropdown-settings-icon-color: var(--true-gray-500);
+    --dropdown-settings-active-item-bg: var(--true-gray-800);
+    --dropdown-settings-active-item-color: var(--color-primary);
+    --dropdown-settings-active-item-shadow: inset 0 0 0 1px var(--true-gray-500);
     --datagrid-noresults-placeholder-bg: var(--true-gray-700);
     --datagrid-hidden-results-gradient-bg: var(--true-gray-700);
     --table-thead-color: var(--true-gray-200);
@@ -412,10 +445,11 @@
     --form-control-disabled-bg: var(--true-gray-700);
     --form-control-disabled-color: #939393;
     --form-input-border-color: var(--true-gray-600);
+    --form-input-error-border-color: var(--red-500);
     --form-input-hover-border-color: var(--true-gray-400);
     --form-input-shadow: 0 1px 2px 0 var(--true-gray-800);
     --form-input-hover-shadow: 0 0 0 4px var(--true-gray-800);
-    --form-input-error-shadow: 0 0 0 1px rgba(43,45,80,0),0 0 0 1px var(--red-700),0 0 0 2px var(--red-900),0 1px 1px rgba(0,0,0,0.08);
+    --form-input-error-shadow: 0 0 0 3px var(--red-900);
     --form-input-text-color: var(--true-gray-200);
     --form-input-group-text-bg: var(--true-gray-800);
     --form-input-group-text-border-color: var(--true-gray-600);
@@ -487,6 +521,30 @@
     --badge-dark-bg: rgba(0, 0, 0, 0.18);
     --badge-dark-box-shadow: inset 0 0 0 1px rgba(153, 153, 153, 0.3);
     --badge-dark-color: rgb(153, 153, 153);
+    --alert-primary-bg: var(--indigo-900);
+    --alert-primary-color: var(--indigo-100);
+    --alert-primary-border-color: var(--indigo-800);
+    --alert-secondary-bg: var(--true-gray-700);
+    --alert-secondary-color: var(--true-gray-300);
+    --alert-secondary-border-color: var(--true-gray-600);
+    --alert-success-bg: var(--emerald-800);
+    --alert-success-color: var(--emerald-100);
+    --alert-success-border-color: var(--emerald-700);
+    --alert-info-bg: var(--sky-800);
+    --alert-info-color: var(--sky-100);
+    --alert-info-border-color: var(--sky-700);
+    --alert-warning-bg: var(--orange-800);
+    --alert-warning-color: var(--orange-100);
+    --alert-warning-border-color: var(--orange-700);
+    --alert-danger-bg: var(--red-800);
+    --alert-danger-color: var(--red-100);
+    --alert-danger-border-color: var(--red-700);
+    --alert-light-bg: var(--true-gray-300);
+    --alert-light-color: var(--true-gray-800);
+    --alert-light-border-color: var(--true-gray-200);
+    --alert-dark-bg: var(--true-gray-900);
+    --alert-dark-color: var(--true-gray-200);
+    --alert-dark-border-color: var(--true-gray-700);
     --button-bg: var(--true-gray-600);
     --button-color: var(--true-gray-200);
     --button-hover-color: var(--true-gray-100);
@@ -561,7 +619,11 @@
     --code-editor-addition-bg: rgba(46, 160, 67, 0.3);
     --code-editor-deletion-bg: rgba(218, 54, 51, 0.3);
 
-    --page-login-bg: var(--true-gray-100);
+    --page-login-bg: var(--true-gray-800);
+    --page-login-form-bg: var(--true-gray-700);
+    --page-login-form-control-bg: var(--true-gray-800);
+    --page-login-form-control-border-color: var(--true-gray-600);
+    --page-login-form-control-button-bg: var(--blue-700);
 
     --text-blue-600: hsl(206, 91%, 30%);
     --text-green-600: hsl(159, 75%, 21%);

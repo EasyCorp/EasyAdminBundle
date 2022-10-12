@@ -29,7 +29,6 @@ return [
         'false' => 'Ei',
         'empty' => 'Tyhjä',
         'null' => 'Ei asetettu',
-        'nullable_field' => 'Jätä tyhjäksi',
         'object' => 'PHP-objekti',
         'inaccessible' => 'Ei saatavilla',
         'inaccessible.explanation' => 'Arvo ei ole julkinen, tai sille ei ole asetettu get-metodia',
@@ -118,6 +117,7 @@ return [
             'dark' => 'Tumma',
             'auto' => 'Automaattinen',
         ],
+        'locale' => 'Kieli',
     ],
 
     'login_page' => [

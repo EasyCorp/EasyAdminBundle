@@ -3,12 +3,15 @@ name: "Linter: Documentation"
 
 on: [push, pull_request]
 
+permissions:
+  contents: read
+
 jobs:
     doctor-rst:
         name: DOCtor-RST
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@master
+            - uses: actions/checkout@v3
             - name: DOCtor-RST
               uses: docker://oskarstark/doctor-rst
               with:

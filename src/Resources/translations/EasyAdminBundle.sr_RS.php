@@ -29,7 +29,6 @@ return [
         'false' => 'Ne',
         'empty' => 'Prazno',
         'null' => 'Ništa',
-        'nullable_field' => 'Ostavi prazno',
         'object' => 'PHP Objekat',
         'inaccessible' => 'Nedostupno',
         'inaccessible.explanation' => 'Getter metoda ne postoji za ovo polje ili je nedostupna',

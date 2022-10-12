@@ -5,6 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 use Doctrine\DBAL\Types\Types;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
@@ -20,6 +21,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormRowType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminTabType;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -73,6 +75,7 @@ final class FieldFactory
 
         $context = $this->adminContextProvider->getContext();
         $currentPage = $context->getCrud()->getCurrentPage();
+
         $isDetailOrIndex = \in_array($currentPage, [Crud::PAGE_INDEX, Crud::PAGE_DETAIL], true);
         foreach ($fields as $fieldDto) {
             if ((null !== $currentPage && false === $fieldDto->isDisplayedOn($currentPage))
@@ -97,7 +100,16 @@ final class FieldFactory
                 $configurator->configure($fieldDto, $entityDto, $context);
             }
 
+            foreach ($fieldDto->getFormThemes() as $formThemePath) {
+                $context?->getCrud()?->addFormTheme($formThemePath);
+            }
+
             $fields->set($fieldDto);
+        }
+
+        $isPageWhereTabsAreVisible = \in_array($currentPage, [Crud::PAGE_DETAIL, Crud::PAGE_EDIT, Crud::PAGE_NEW], true);
+        if ($isPageWhereTabsAreVisible) {
+            $this->checkOrphanTabFields($fields, $context);
         }
 
         $entityDto->setFields($fields);
@@ -160,6 +172,9 @@ final class FieldFactory
         $newField->setColumns($fieldDto->getColumns());
         $newField->setTranslationParameters($fieldDto->getTranslationParameters());
         $newField->setAssets($newField->getAssets()->mergeWith($fieldDto->getAssets()));
+        foreach ($fieldDto->getFormThemes() as $formThemePath) {
+            $newField->addFormTheme($formThemePath);
+        }
 
         $customFormTypeOptions = $fieldDto->getFormTypeOptions();
         $defaultFormTypeOptions = $newField->getFormTypeOptions();
@@ -203,5 +218,41 @@ final class FieldFactory
         // and use the template name/path from the new specific field (e.g. 'crud/field/datetime')
 
         return $newField;
+    }
+
+    /**
+     * When rendering fields using tabs, all fields must belong to some tab.
+     */
+    private function checkOrphanTabFields(FieldCollection $fields, AdminContext $context): void
+    {
+        $hasTabs = false;
+        $isTabField = static fn (FieldDto $fieldDto) => EasyAdminTabType::class === $fieldDto->getFormType();
+        $isFormField = static fn (FieldDto $fieldDto) => FormField::class === $fieldDto->getFieldFqcn();
+
+        foreach ($fields as $fieldDto) {
+            if ($isTabField($fieldDto)) {
+                $hasTabs = true;
+                break;
+            }
+        }
+
+        if (!$hasTabs || $isTabField($fields->first())) {
+            return;
+        }
+
+        $orphanFieldNames = [];
+        foreach ($fields as $field) {
+            if ($isTabField($field)) {
+                break;
+            }
+
+            if ($isFormField($field)) {
+                continue;
+            }
+
+            $orphanFieldNames[] = $field->getProperty();
+        }
+
+        throw new \RuntimeException(sprintf('The "%s" page of "%s" uses tabs to display its fields, but the following fields don\'t belong to any tab: %s. Use "FormField::addTab(\'...\')" to add a tab before those fields.', $context->getCrud()->getCurrentPage(), $context->getCrud()->getControllerFqcn(), implode(', ', $orphanFieldNames)));
     }
 }

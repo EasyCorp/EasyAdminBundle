@@ -98,6 +98,24 @@ final class Dashboard
         return $this;
     }
 
+    public function setLocales(array $locales): self
+    {
+        $localeDtos = [];
+        foreach ($locales as $key => $value) {
+            $locale = match (true) {
+                $value instanceof Locale => $value,
+                \is_string($key) => Locale::new($key, (string) $value),
+                default => Locale::new((string) $value),
+            };
+
+            $localeDtos[] = $locale->getAsDto();
+        }
+
+        $this->dto->setLocales($localeDtos);
+
+        return $this;
+    }
+
     public function getAsDto(): DashboardDto
     {
         return $this->dto;

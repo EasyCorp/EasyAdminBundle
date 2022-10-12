@@ -29,7 +29,6 @@ return [
         'false' => 'Nie',
         'empty' => 'Pusty',
         'null' => 'Brak',
-        'nullable_field' => 'Zostaw niewypełnione',
         'object' => 'Obiekt PHP',
         'inaccessible' => 'Niedostępny',
         'inaccessible.explanation' => 'Metoda pobierająca (<i>ang. getter</i>) nie istnieje  dla tego pola lub właściwość (<i>ang. field</i>) nie jest publiczna',
@@ -119,6 +118,7 @@ return [
             'dark' => 'Ciemny',
             'auto' => 'Automatyczny',
         ],
+        'locale' => 'Język',
     ],
 
     'login_page' => [

@@ -9,7 +9,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
  */
 interface FieldInterface
 {
-    public static function new(string $propertyName, ?string $label = null);
+    public static function new(string $propertyName, ?string /* TranslatableInterface|string|false|null */ $label = null);
 
     public function getAsDto(): FieldDto;
 }

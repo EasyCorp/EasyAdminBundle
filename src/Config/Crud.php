@@ -337,8 +337,7 @@ class Crud
 
     public function addFormTheme(string $themePath): self
     {
-        // custom form themes are added last to give them more priority
-        $this->dto->setFormThemes(array_merge($this->dto->getFormThemes(), [$themePath]));
+        $this->dto->addFormTheme($themePath);
 
         return $this;
     }

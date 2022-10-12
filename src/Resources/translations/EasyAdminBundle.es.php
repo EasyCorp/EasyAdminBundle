@@ -29,7 +29,6 @@ return [
         'false' => 'No',
         'empty' => 'Vacío',
         'null' => 'Nulo',
-        'nullable_field' => 'Dejar vacío',
         'object' => 'Objecto PHP',
         'inaccessible' => 'Inaccesible',
         'inaccessible.explanation' => 'Este campo no tiene un método getter o la propiedad asociada no es pública',
@@ -118,6 +117,7 @@ return [
             'dark' => 'Oscuro',
             'auto' => 'Automático',
         ],
+        'locale' => 'Idioma',
     ],
 
     'login_page' => [

@@ -88,6 +88,13 @@ trait FieldTrait
         return $this;
     }
 
+    public function setEmptyData($emptyData = null): self
+    {
+        $this->dto->setFormTypeOption('empty_data', $emptyData);
+
+        return $this;
+    }
+
     public function setFormType(string $formTypeFqcn): self
     {
         $this->dto->setFormType($formTypeFqcn);
@@ -191,6 +198,15 @@ trait FieldTrait
     {
         $this->dto->setTemplateName(null);
         $this->dto->setTemplatePath($path);
+
+        return $this;
+    }
+
+    public function addFormTheme(string ...$formThemePaths): self
+    {
+        foreach ($formThemePaths as $formThemePath) {
+            $this->dto->addFormTheme($formThemePath);
+        }
 
         return $this;
     }
@@ -385,13 +401,6 @@ trait FieldTrait
     public function setDefaultColumns(int|string $cols): self
     {
         $this->dto->setDefaultColumns(\is_int($cols) ? 'col-md-'.$cols : $cols);
-
-        return $this;
-    }
-
-    public function fillRow(bool $fillRow = true): self
-    {
-        $this->dto->setFillRestOfFormRow($fillRow);
 
         return $this;
     }

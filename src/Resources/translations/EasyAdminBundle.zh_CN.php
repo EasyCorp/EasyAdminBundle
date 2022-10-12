@@ -29,7 +29,6 @@ return [
         'false' => '不可用',
         'empty' => '空',
         'null' => '未赋值',
-        'nullable_field' => '置空',
         'object' => 'PHP对象',
         'inaccessible' => '无法获取',
         'inaccessible.explanation' => '该字段的Getter方法缺失或该字段不是公共属性',
@@ -119,6 +118,7 @@ return [
             'dark' => '深色',
             'auto' => '自动',
         ],
+        'locale' => '语',
     ],
 
     'login_page' => [

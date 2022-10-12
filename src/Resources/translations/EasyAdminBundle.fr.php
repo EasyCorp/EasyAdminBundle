@@ -29,7 +29,6 @@ return [
         'false' => 'Non',
         'empty' => 'Vide',
         'null' => 'Aucun(e)',
-        'nullable_field' => 'Laisser vide',
         'object' => 'Objet PHP',
         'inaccessible' => 'Inaccessible',
         'inaccessible.explanation' => 'Aucun accesseur n\'existe pour cette propriété ou celle-ci n\'est pas publique.',
@@ -119,6 +118,7 @@ return [
             'dark' => 'Sombre',
             'auto' => 'Automatique',
         ],
+        'locale' => 'Langue',
     ],
 
     'login_page' => [

@@ -29,7 +29,6 @@ return [
         'false' => 'No',
         'empty' => 'Empty',
         'null' => 'Null',
-        'nullable_field' => 'Leave empty',
         'object' => 'PHP Object',
         'inaccessible' => 'Inaccessible',
         'inaccessible.explanation' => 'Getter method does not exist for this field or the field is not public',
@@ -119,6 +118,7 @@ return [
             'dark' => 'Dark',
             'auto' => 'Auto',
         ],
+        'locale' => 'Language',
     ],
 
     'login_page' => [

@@ -1,3 +1,6 @@
+> **Warning**
+> Due to the overwhelming amount of pending issues and pull requests, users can no longer interact with this repository (add comments, open issues, or create pull requests) during the entire month of July 2022. Users who committed to this repository in the past can still interact with it. We're sorry but we had to do this to take care of the mental health our maintainers.
+
 EasyAdmin
 =========
 

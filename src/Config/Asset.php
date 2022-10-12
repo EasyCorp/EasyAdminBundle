@@ -48,7 +48,7 @@ final class Asset
      */
     public static function fromEasyAdminAssetPackage(string $value): self
     {
-        return (self::new($value))->package(AssetPackage::PACKAGE_NAME);
+        return self::new($value)->package(AssetPackage::PACKAGE_NAME);
     }
 
     public function async(bool $async = true): self

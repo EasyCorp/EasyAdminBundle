@@ -29,7 +29,6 @@ return [
         'false' => 'Nein',
         'empty' => 'Leer',
         'null' => 'Null',
-        'nullable_field' => 'Feld leer lassen',
         'object' => 'PHP-Objekt',
         'inaccessible' => 'Nicht zugreifbar',
         'inaccessible.explanation' => 'Es gibt keine Getter-Methode für diese Eigenschaft oder die Eigenschaft ist nicht public',
@@ -119,6 +118,7 @@ return [
             'dark' => 'Dunkel',
             'auto' => 'Automatisch',
         ],
+        'locale' => 'Sprache',
     ],
 
     'login_page' => [

@@ -11,7 +11,11 @@ class FileUploadField {
         this.field = field;
         this.#fieldContainerElement = this.field.closest('.ea-fileupload');
         this.field.addEventListener('change', this.#updateField.bind(this));
-        this.#getFieldDeleteButton().addEventListener('click', this.#resetField.bind(this));
+
+        let deleteButton = this.#getFieldDeleteButton();
+        if (deleteButton) {
+            deleteButton.addEventListener('click', this.#resetField.bind(this));
+        }
     }
 
     #updateField() {

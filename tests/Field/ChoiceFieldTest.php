@@ -8,7 +8,7 @@ use function Symfony\Component\Translation\t;
 
 class ChoiceFieldTest extends AbstractFieldTest
 {
-    private $choices;
+    private array $choices;
 
     protected function setUp(): void
     {
@@ -21,10 +21,23 @@ class ChoiceFieldTest extends AbstractFieldTest
 
     public function testFieldWithoutChoices()
     {
-        $this->expectException(\InvalidArgumentException::class);
-
         $field = ChoiceField::new('foo');
-        $this->configure($field);
+        self::assertSame([], $this->configure($field)->getFormTypeOption(ChoiceField::OPTION_CHOICES));
+    }
+
+    public function testFieldWithGroupedChoices(): void
+    {
+        $field = ChoiceField::new('foo')->setChoices([
+            'a' => 1,
+            'My group name' => [
+                'b' => 2,
+            ],
+        ]);
+
+        $field->setValue(1);
+        self::assertSame('a', (string) $this->configure($field)->getFormattedValue());
+        $field->setValue(2);
+        self::assertSame('b', (string) $this->configure($field)->getFormattedValue());
     }
 
     public function testFieldWithChoiceGeneratorCallback()

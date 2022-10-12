@@ -29,7 +29,6 @@ return [
         'false' => 'Ne',
         'empty' => 'Prazno',
         'null' => 'Null',
-        'nullable_field' => 'Ostavite prazno',
         'object' => 'PHP Object',
         'inaccessible' => 'Nepristupačan',
         'inaccessible.explanation' => 'Getter metoda ne postoji za ovo polje ili vrijednost svojstva nije javna',
@@ -118,6 +117,7 @@ return [
             'dark' => 'Tamni',
             'auto' => 'Automatski',
         ],
+        'locale' => 'Jezik',
     ],
 
     'login_page' => [

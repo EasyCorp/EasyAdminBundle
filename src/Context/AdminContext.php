@@ -10,6 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\DashboardDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\I18nDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\LocaleDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MainMenuDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\UserMenuDto;
@@ -135,6 +136,14 @@ final class AdminContext
     public function getDashboardHasDarkModeEnabled(): bool
     {
         return $this->dashboardDto->isDarkModeEnabled();
+    }
+
+    /**
+     * @return LocaleDto[]
+     */
+    public function getDashboardLocales(): array
+    {
+        return $this->dashboardDto->getLocales();
     }
 
     public function getMainMenu(): MainMenuDto

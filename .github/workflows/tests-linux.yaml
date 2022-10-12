@@ -10,6 +10,9 @@ on:
 env:
     fail-fast: true
 
+permissions:
+  contents: read
+
 jobs:
     tests:
         name: "PHP ${{ matrix.php-version }}"
@@ -20,7 +23,7 @@ jobs:
                 php-version: ['8.0', '8.1']
         steps:
             - name: 'Checkout code'
-              uses: actions/checkout@v2.3.3
+              uses: actions/checkout@v3
 
             - name: 'Install PHP with extensions'
               uses: shivammathur/setup-php@v2
@@ -33,7 +36,7 @@ jobs:
 
             - name: 'Install project dependencies'
               run: |
-                  composer global require --no-progress --no-scripts --no-plugins symfony/flex
+                  composer require --no-progress --no-scripts --no-plugins symfony/flex
                   composer update --no-interaction --prefer-dist --optimize-autoloader --prefer-stable
                   vendor/bin/simple-phpunit install
 

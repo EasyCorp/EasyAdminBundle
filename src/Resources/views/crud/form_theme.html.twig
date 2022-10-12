@@ -98,20 +98,6 @@
                     {% endif %}
                 {% if has_input_groups %}</div>{% endif %}
 
-                {% set nullable_fields_fqcn = [
-                    'EasyCorp\\Bundle\\EasyAdminBundle\\Field\\DateTimeField',
-                    'EasyCorp\\Bundle\\EasyAdminBundle\\Field\\DateField',
-                    'EasyCorp\\Bundle\\EasyAdminBundle\\Field\\TimeField',
-                ] %}
-                {% if form.vars.ea_crud_form.ea_field.fieldFqcn|default(false) in nullable_fields_fqcn and not form.vars.ea_crud_form.ea_field.formTypeOptions.required %}
-                    <div class="nullable-control">
-                        <label>
-                            <input type="checkbox" {% if ea.crud.currentAction == 'edit' and data is null and valid %}checked="checked"{% endif %}>
-                            {{ 'label.nullable_field'|trans({}, 'EasyAdminBundle')}}
-                        </label>
-                    </div>
-                {% endif %}
-
                 {% if ea.field.help ?? false %}
                     <small class="form-help">{{ ea.field.help|raw }}</small>
                 {% elseif form.vars.help ?? false %}
@@ -344,7 +330,7 @@
             </div>
 
             {% if form.delete is defined %}
-                {{ form_row(form.delete, { label: 'vich_uploader.form_label.delete_confirm'|trans({}, 'VichUploaderBundle') }) }}
+                {{ form_row(form.delete) }}
             {% endif %}
         </div>
         <div class="small" id="{{ form.file.vars.id }}_new_file_name"></div>
@@ -404,7 +390,7 @@
             </div>
 
             {% if form.delete is defined %}
-                {{ form_row(form.delete, { label: 'vich_uploader.form_label.delete_confirm'|trans({}, 'VichUploaderBundle') }) }}
+                {{ form_row(form.delete) }}
             {% endif %}
         </div>
         <div class="small" id="{{ form.file.vars.id }}_new_file_name"></div>
@@ -425,7 +411,7 @@
                         <li class="nav-item">
                             <a class="nav-link {% if tab_config.active %}active{% endif %}" href="#{{ tab_config['id'] }}" id="{{ tab_config['id'] }}-tab" data-bs-toggle="tab">
                                 {%- if tab_config.icon|default(false) -%}
-                                    <i class="fa fa-fw fa-{{ tab_config.icon }}"></i>
+                                    <i class="fa-fw {{ tab_config.icon }}"></i>
                                 {%- endif -%}
                                 {{ tab_config['label']|trans(domain = ea.i18n.translationDomain) }}
                                 {%- if tab_config.errors > 0 -%}

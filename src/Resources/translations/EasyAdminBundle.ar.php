@@ -29,7 +29,6 @@ return [
         'false' => 'لا',
         'empty' => 'فارغ',
         'null' => 'لا شيء',
-        'nullable_field' => 'اتركه فارغ',
         'object' => 'Objet PHP',
         'inaccessible' => 'لا يمكن الوصول إليها',
         'inaccessible.explanation' => 'لا يوجد وصف الوصول لهذه الخاصية أو أنها ليست عامة.',
@@ -118,6 +117,7 @@ return [
             'dark' => 'الداكن',
             'auto' => 'تلقائي',
         ],
+        'locale' => 'لغة',
     ],
 
     'login_page' => [

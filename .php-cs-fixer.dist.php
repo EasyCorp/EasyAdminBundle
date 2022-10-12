@@ -30,5 +30,7 @@ return $config
         'single_line_throw' => false,
         // this must be disabled because the output of some tests include NBSP characters
         'non_printable_character' => false,
+        'blank_line_between_import_groups' => false,
+        'no_trailing_comma_in_singleline' => false,
     ))
 ;

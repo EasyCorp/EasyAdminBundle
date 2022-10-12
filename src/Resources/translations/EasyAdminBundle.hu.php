@@ -29,7 +29,6 @@ return [
         'false' => 'Nem',
         'empty' => 'Üresen hagy',
         'null' => 'Nincs beállítva',
-        'nullable_field' => 'Üresen hagy',
         'object' => 'PHP objektum',
         'inaccessible' => 'Elérhetetlen',
         'inaccessible.explanation' => 'A getter metódus nem létezik ehhez a mezőhöz vagy a tulajdonság nem publikus.',
@@ -119,6 +118,7 @@ return [
             'dark' => 'Sötét',
             'auto' => 'Automatikus',
         ],
+        'locale' => 'Nyelv',
     ],
 
     'login_page' => [

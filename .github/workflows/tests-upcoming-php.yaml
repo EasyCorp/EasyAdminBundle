@@ -10,13 +10,16 @@ on:
 env:
     fail-fast: true
 
+permissions:
+  contents: read
+
 jobs:
     tests:
         runs-on: 'ubuntu-latest'
         continue-on-error: true
         steps:
             - name: 'Checkout code'
-              uses: actions/checkout@v2.3.3
+              uses: actions/checkout@v3
 
             - name: 'Install PHP with extensions'
               uses: shivammathur/setup-php@v2
@@ -28,10 +31,9 @@ jobs:
                   ini-values: date.timezone=UTC
 
             - name: 'Install project dependencies'
-              env:
-                  SYMFONY_REQUIRE: 5.4
               run: |
-                  composer global require --no-progress --no-scripts --no-plugins symfony/flex
+                  composer require --no-progress --no-scripts --no-plugins symfony/flex
+                  composer config extra.symfony.require "5.4"
                   composer update --no-interaction --prefer-dist --optimize-autoloader --prefer-stable --ignore-platform-req=php
                   vendor/bin/simple-phpunit install
 

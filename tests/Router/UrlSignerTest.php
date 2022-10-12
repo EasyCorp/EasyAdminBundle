@@ -11,6 +11,7 @@ class UrlSignerTest extends TestCase
 
     /**
      * @dataProvider provideSignData
+     *
      * @group legacy
      */
     public function testSign(string $url, string $expectedResult)
@@ -22,6 +23,7 @@ class UrlSignerTest extends TestCase
 
     /**
      * @dataProvider provideCheckData
+     *
      * @group legacy
      */
     public function testCheck(string $url, bool $expectedResult)

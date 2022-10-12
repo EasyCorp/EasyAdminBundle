@@ -29,7 +29,6 @@ return [
         'false' => 'Hayır',
         'empty' => 'Boş',
         'null' => 'Boş',
-        'nullable_field' => 'Boş bırakabilirsiniz',
         'object' => 'PHP Objesi',
         'inaccessible' => 'Erişilemez',
         'inaccessible.explanation' => 'Özelliğin getter methodu tanımlanmamış veya özellik açık değil',
@@ -118,6 +117,7 @@ return [
             'dark' => 'Koyu',
             'auto' => 'Otomatik',
         ],
+        'locale' => 'Dil',
     ],
 
     'login_page' => [

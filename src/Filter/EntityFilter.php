@@ -73,12 +73,7 @@ final class EntityFilter implements FilterInterface
         }
     }
 
-    /**
-     * @param mixed $parameterValue
-     *
-     * @return mixed
-     */
-    private function processParameterValue(QueryBuilder $queryBuilder, $parameterValue)
+    private function processParameterValue(QueryBuilder $queryBuilder, mixed $parameterValue): mixed
     {
         if (!$parameterValue instanceof ArrayCollection) {
             return $this->processSingleParameterValue($queryBuilder, $parameterValue);
@@ -89,9 +84,10 @@ final class EntityFilter implements FilterInterface
 
     /**
      * If the parameter value is a bound entity or a collection of bound entities
-     * and its primary key is either of type "uuid" or "ulid" defined in
-     * symfony/doctrine-bridge then the parameter value is converted from the
-     * entity to the database value of its primary key.
+     * and the PHP value of the entity's identifier is either of type
+     * "Symfony\Component\Uid\Uuid" or "Symfony\Component\Uid\Ulid" defined in
+     * symfony/uid then the parameter value is converted from the entity to the
+     * database value of its primary key.
      *
      * Otherwise, the parameter value is not processed.
      *
@@ -128,13 +124,14 @@ final class EntityFilter implements FilterInterface
 
         $identifierValue = $entityManager->getUnitOfWork()->getSingleIdentifierValue($parameterValue);
 
-        if (('uuid' === $identifierType && $identifierValue instanceof Uuid)
-            || ('ulid' === $identifierType && $identifierValue instanceof Ulid)) {
+        if ($identifierValue instanceof Uuid || $identifierValue instanceof Ulid) {
             try {
-                return Type::getType($identifierType)->convertToDatabaseValue($identifierValue, $entityManager->getConnection()->getDatabasePlatform());
+                return Type::getType($identifierType)->convertToDatabaseValue(
+                    $identifierValue,
+                    $entityManager->getConnection()->getDatabasePlatform()
+                );
             } catch (\Throwable) {
                 // if the conversion fails we cannot process the uid parameter value
-                return $parameterValue;
             }
         }
 

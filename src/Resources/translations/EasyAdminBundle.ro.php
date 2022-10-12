@@ -29,7 +29,6 @@ return [
         'false' => 'Nu',
         'empty' => 'Gol',
         'null' => 'Nul',
-        'nullable_field' => 'Pastreaza necompletat',
         'object' => 'Obiect PHP',
         'inaccessible' => 'Inaccesibil',
         'inaccessible.explanation' => 'Metoda de tip Get nu există pentru acest câmp sau proprietatea nu e publică',
@@ -119,6 +118,7 @@ return [
             'dark' => 'Întunecat',
             'auto' => 'Automat',
         ],
+        'locale' => 'Limba',
     ],
 
     'login_page' => [

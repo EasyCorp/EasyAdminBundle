@@ -100,9 +100,10 @@
     --dropdown-link-color: var(--gray-700);
     --dropdown-link-hover-bg: var(--gray-100);
     --dropdown-icon-color: var(--gray-500);
-    --dropdown-appearance-icon-color: var(--gray-400);
-    --dropdown-appearance-active-item-bg: var(--gray-200);
-    --dropdown-appearance-active-item-color: var(--color-primary);
+    --dropdown-settings-icon-color: var(--gray-400);
+    --dropdown-settings-active-item-bg: var(--gray-100);
+    --dropdown-settings-active-item-color: var(--color-primary);
+    --dropdown-settings-active-item-shadow: inset 0 0 0 1px #5368d580; // color is --color-primary with 50% alpha
     --datagrid-noresults-placeholder-bg: var(--gray-100);
     --datagrid-hidden-results-gradient-bg: var(--gray-50);
     --table-thead-color: var(--gray-800);
@@ -410,9 +411,10 @@
     --dropdown-link-color: var(--true-gray-300);
     --dropdown-link-hover-bg: var(--true-gray-700);
     --dropdown-icon-color: var(--true-gray-400);
-    --dropdown-appearance-icon-color: var(--true-gray-500);
-    --dropdown-appearance-active-item-bg: var(--true-gray-700);
-    --dropdown-appearance-active-item-color: var(--color-primary);
+    --dropdown-settings-icon-color: var(--true-gray-500);
+    --dropdown-settings-active-item-bg: var(--true-gray-800);
+    --dropdown-settings-active-item-color: var(--color-primary);
+    --dropdown-settings-active-item-shadow: inset 0 0 0 1px var(--true-gray-500);
     --datagrid-noresults-placeholder-bg: var(--true-gray-700);
     --datagrid-hidden-results-gradient-bg: var(--true-gray-700);
     --table-thead-color: var(--true-gray-200);

@@ -118,6 +118,7 @@ return [
             'dark' => '深色',
             'auto' => '自动',
         ],
+        'locale' => '语',
     ],
 
     'login_page' => [

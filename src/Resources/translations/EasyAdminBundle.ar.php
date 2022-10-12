@@ -117,6 +117,7 @@ return [
             'dark' => 'الداكن',
             'auto' => 'تلقائي',
         ],
+        'locale' => 'لغة',
     ],
 
     'login_page' => [

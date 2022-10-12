@@ -117,6 +117,7 @@ return [
             'dark' => 'Tons escuros',
             'auto' => 'Automática',
         ],
+        'locale' => 'Linguagem',
     ],
 
     'login_page' => [

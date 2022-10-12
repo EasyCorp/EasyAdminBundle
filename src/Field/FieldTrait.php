@@ -88,6 +88,13 @@ trait FieldTrait
         return $this;
     }
 
+    public function setEmptyData($emptyData = null): self
+    {
+        $this->dto->setFormTypeOption('empty_data', $emptyData);
+
+        return $this;
+    }
+
     public function setFormType(string $formTypeFqcn): self
     {
         $this->dto->setFormType($formTypeFqcn);

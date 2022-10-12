@@ -118,6 +118,7 @@ return [
             'dark' => 'Escura',
             'auto' => 'Automática',
         ],
+        'locale' => 'Linguagem',
     ],
 
     'login_page' => [

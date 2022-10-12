@@ -117,6 +117,7 @@ return [
             'dark' => 'Tmavý',
             'auto' => 'Automatický',
         ],
+        'locale' => 'Jazyk',
     ],
 
     'login_page' => [

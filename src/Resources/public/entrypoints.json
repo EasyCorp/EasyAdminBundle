@@ -2,11 +2,11 @@
   "entrypoints": {
     "app": {
       "css": [
-        "/app.51227a68.css",
-        "/app.51227a68.rtl.css"
+        "/app.790312a7.css",
+        "/app.790312a7.rtl.css"
       ],
       "js": [
-        "/app.2fd2f280.js"
+        "/app.1bae3230.js"
       ]
     },
     "form": {
@@ -35,7 +35,7 @@
         "/field-code-editor.09574d54.rtl.css"
       ],
       "js": [
-        "/field-code-editor.f483315e.js"
+        "/field-code-editor.f8cb5568.js"
       ]
     },
     "field-collection": {

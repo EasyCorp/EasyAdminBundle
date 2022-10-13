@@ -11,6 +11,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AvatarField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use Symfony\Component\PropertyAccess\Exception\AccessException;
+use Symfony\Component\PropertyAccess\Exception\UnexpectedTypeException;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use function Symfony\Component\String\u;
 use function Symfony\Component\Translation\t;
@@ -44,7 +45,7 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
         if (null === $value = $field->getValue()) {
             try {
                 $value = null === $entityDto->getInstance() ? null : $this->propertyAccessor->getValue($entityDto->getInstance(), $field->getProperty());
-            } catch (AccessException) {
+            } catch (AccessException|UnexpectedTypeException) {
                 $isReadable = false;
             }
 

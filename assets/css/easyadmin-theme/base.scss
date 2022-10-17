@@ -26,6 +26,15 @@ i.fad {
     font-family: 'Font Awesome 6 Duotone' !important;
 }
 
+a {
+    color: var(--link-color);
+    text-decoration: none;
+}
+a:hover {
+    color: var(--link-hover-color);
+    text-decoration: var(--link-hover-decoration);
+}
+
 code, pre {
     color: #c44c34;
     font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
@@ -746,6 +755,10 @@ body.ea-edit .content-header {
     border: var(--border-width) var(--border-style) transparent;
     border-radius: var(--border-radius);
     color: inherit;
+    margin: 0 1px;
+}
+// needed to override some Bootstrap styles
+.page-item:not(:first-child) .page-link {
     margin: 0 1px;
 }
 .page-item .page-link:focus,

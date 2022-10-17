@@ -30,6 +30,8 @@
     --width-xl: 1200px;
     --width-xxl: 1400px;
 
+    --form-tabs-gutter-x: 5px;
+
     --text-primary-color: var(--text-color);
     --text-secondary-color: var(--text-muted);
     --text-tertiary-color: var(--gray-400);
@@ -380,7 +382,7 @@
     --sidebar-menu-header-color: var(--true-gray-400);
     --sidebar-menu-icon-color: var(--true-gray-500);
     --sidebar-menu-active-item-bg: var(--true-gray-700);
-    --sidebar-menu-active-item-color: var(--color-primary);
+    --sidebar-menu-active-item-color: var(--blue-400);
     --sidebar-menu-compact-hover-box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
     --resize-handler-hover-bg: var(--indigo-400);
     --content-section-border-color: var(--true-gray-700);

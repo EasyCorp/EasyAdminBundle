@@ -34,6 +34,13 @@ final class EntityFilter implements FilterInterface
             ->setFormTypeOption('translation_domain', 'EasyAdminBundle');
     }
 
+    public function canSelectMultiple(bool $selectMultiple = true): self
+    {
+        $this->dto->setFormTypeOption('value_type_options.multiple', $selectMultiple);
+
+        return $this;
+    }
+
     public function apply(QueryBuilder $queryBuilder, FilterDataDto $filterDataDto, ?FieldDto $fieldDto, EntityDto $entityDto): void
     {
         $alias = $filterDataDto->getEntityAlias();

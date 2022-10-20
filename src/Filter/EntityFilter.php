@@ -5,6 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Filter;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Mapping\MappingException;
+use Doctrine\ORM\Query\Expr\From;
 use Doctrine\ORM\Query\Expr\Orx;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterInterface;
@@ -47,18 +48,41 @@ final class EntityFilter implements FilterInterface
             // the 'ea_' prefix is needed to avoid errors when using reserved words as assocAlias ('order', 'group', etc.)
             // see https://github.com/EasyCorp/EasyAdminBundle/pull/4344
             $assocAlias = 'ea_'.$filterDataDto->getParameterName();
-            $queryBuilder->leftJoin(sprintf('%s.%s', $alias, $property), $assocAlias);
-
-            if (0 === \count($value)) {
-                $queryBuilder->andWhere(sprintf('%s %s', $assocAlias, $comparison));
-            } else {
-                $orX = new Orx();
-                $orX->add(sprintf('%s %s (:%s)', $assocAlias, $comparison, $parameterName));
-                if ('NOT IN' === $comparison) {
-                    $orX->add(sprintf('%s IS NULL', $assocAlias));
+            if ('NOT IN' === $comparison
+                && ClassMetadataInfo::MANY_TO_MANY === $entityDto->getPropertyMetadata($property)->get('type')) {
+                $subAssocAlias = uniqid('sub_'.$assocAlias);
+                $subAlias = uniqid('sub_'.$alias);
+                /** @var From[] $from */
+                $from = $queryBuilder->getDQLPart('from');
+                $subQueryBuilder = new QueryBuilder($queryBuilder->getEntityManager());
+                $subQueryBuilder->select($subAlias)
+                    ->from($from[0]->getFrom(), $subAlias)
+                    ->leftJoin(sprintf('%s.%s', $subAlias, $property), $subAssocAlias);
+                if (0 === \count($value)) {
+                    $subQueryBuilder->andWhere(sprintf('%s IS NULL', $subAssocAlias));
+                } else {
+                    $subQueryBuilder->andWhere(sprintf('%s IN (:%s)', $subAssocAlias, $parameterName))
+                        ->setParameter($parameterName, $value);
                 }
-                $queryBuilder->andWhere($orX)
-                    ->setParameter($parameterName, $this->processParameterValue($queryBuilder, $value));
+                $queryBuilder
+                    ->andWhere(
+                        sprintf('%s.%s NOT IN(%s)', $alias, $entityDto->getPrimaryKeyName(), $subQueryBuilder->getDQL())
+                    )
+                    ->setParameter($parameterName, $value);
+            } else {
+                $queryBuilder->leftJoin(sprintf('%s.%s', $alias, $property), $assocAlias);
+
+                if (0 === \count($value)) {
+                    $queryBuilder->andWhere(sprintf('%s %s', $assocAlias, $comparison));
+                } else {
+                    $orX = new Orx();
+                    $orX->add(sprintf('%s %s (:%s)', $assocAlias, $comparison, $parameterName));
+                    if ('NOT IN' === $comparison) {
+                        $orX->add(sprintf('%s IS NULL', $assocAlias));
+                    }
+                    $queryBuilder->andWhere($orX)
+                        ->setParameter($parameterName, $this->processParameterValue($queryBuilder, $value));
+                }
             }
         } elseif (null === $value || ($isMultiple && 0 === \count($value))) {
             $queryBuilder->andWhere(sprintf('%s.%s %s', $alias, $property, $comparison));

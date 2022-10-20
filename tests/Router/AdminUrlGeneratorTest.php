@@ -128,42 +128,6 @@ class AdminUrlGeneratorTest extends WebTestCase
         $adminUrlGenerator->generateUrl();
     }
 
-    /**
-     * @group legacy
-     */
-    public function testCrudIdMethodIsTransformedIntoCrudFqcn()
-    {
-        // The following assert should work, but it fails for some unknown reason ("Failed asserting that string matches format description.")
-        // $this->expectDeprecation("Since easycorp/easyadmin-bundle 3.2.0: The \"setCrudId()\" method of the \"EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator\" service and the related \"crudId\" query parameter are deprecated. Instead, use the CRUD Controller FQCN and the \"setController()\" method like this: ->setController('App\Controller\Admin\SomeCrudController').");
-
-        $adminUrlGenerator = $this->getAdminUrlGenerator();
-
-        $adminUrlGenerator->setCrudId('a1b2c3');
-        $this->assertNull($adminUrlGenerator->get(EA::CRUD_ID));
-        $this->assertSame('App\Controller\Admin\SomeCrudController', $adminUrlGenerator->get(EA::CRUD_CONTROLLER_FQCN));
-    }
-
-    public function testCrudIdParameterIsTransformedIntoCrudFqcn()
-    {
-        $adminUrlGenerator = $this->getAdminUrlGenerator();
-
-        // don't use setCrudId() because it transforms the crudId into crudFqcn automatically
-        $adminUrlGenerator->set(EA::CRUD_ID, 'a1b2c3');
-        $this->assertSame('http://localhost/admin?crudAction=index&crudControllerFqcn=App%5CController%5CAdmin%5CSomeCrudController&foo=bar', $adminUrlGenerator->generateUrl());
-    }
-
-    public function testUnknowCrudId()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('The given "this_id_does_not_exist" value is not a valid CRUD ID. Instead of dealing with CRUD controller IDs when generating admin URLs, use the "setController()" method to set the CRUD controller FQCN.');
-
-        $adminUrlGenerator = $this->getAdminUrlGenerator();
-
-        // don't use setCrudId() because it transforms the crudId into crudFqcn automatically
-        $adminUrlGenerator->set(EA::CRUD_ID, 'this_id_does_not_exist');
-        $adminUrlGenerator->generateUrl();
-    }
-
     public function testDefaultCrudAction()
     {
         $adminUrlGenerator = $this->getAdminUrlGenerator();

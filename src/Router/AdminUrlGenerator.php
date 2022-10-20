@@ -42,16 +42,6 @@ final class AdminUrlGenerator
         return $this;
     }
 
-    public function setCrudId(string $crudId): self
-    {
-        $crudControllerFqcn = $this->crudControllerRegistry->findCrudFqcnByCrudId($crudId);
-        trigger_deprecation('easycorp/easyadmin-bundle', '3.2.0', 'The "setCrudId()" method of the "%s" service and the related "%s" query parameter are deprecated. Instead, use the CRUD Controller FQCN and the "setController()" method like this: ->setController(\'%s\').', __CLASS__, EA::CRUD_ID, str_replace('\\', '\\\\', $crudControllerFqcn));
-
-        $this->setRouteParameter(EA::CRUD_CONTROLLER_FQCN, $crudControllerFqcn);
-
-        return $this;
-    }
-
     public function setController(string $crudControllerFqcn): self
     {
         $this->setRouteParameter(EA::CRUD_CONTROLLER_FQCN, $crudControllerFqcn);
@@ -220,16 +210,6 @@ final class AdminUrlGenerator
 
         if (false === $this->includeReferrer) {
             $this->unset(EA::REFERRER);
-        }
-
-        // transform 'crudId' into 'crudControllerFqcn'
-        if (null !== $crudId = $this->get(EA::CRUD_ID)) {
-            if (null === $crudControllerFqcn = $this->crudControllerRegistry->findCrudFqcnByCrudId($crudId)) {
-                throw new \InvalidArgumentException(sprintf('The given "%s" value is not a valid CRUD ID. Instead of dealing with CRUD controller IDs when generating admin URLs, use the "setController()" method to set the CRUD controller FQCN.', $crudId));
-            }
-
-            $this->set(EA::CRUD_CONTROLLER_FQCN, $crudControllerFqcn);
-            $this->unset(EA::CRUD_ID);
         }
 
         // this avoids forcing users to always be explicit about the action to execute

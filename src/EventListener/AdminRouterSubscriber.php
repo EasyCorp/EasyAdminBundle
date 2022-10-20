@@ -174,11 +174,7 @@ class AdminRouterSubscriber implements EventSubscriberInterface
 
     private function getCrudControllerInstance(Request $request): ?CrudControllerInterface
     {
-        if (null !== $crudId = $request->query->get(EA::CRUD_ID)) {
-            $crudControllerFqcn = $this->crudControllerRegistry->findCrudFqcnByCrudId($crudId);
-        } else {
-            $crudControllerFqcn = $request->query->get(EA::CRUD_CONTROLLER_FQCN);
-        }
+        $crudControllerFqcn = $request->query->get(EA::CRUD_CONTROLLER_FQCN);
 
         $crudAction = $request->query->get(EA::CRUD_ACTION);
 

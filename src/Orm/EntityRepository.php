@@ -123,6 +123,7 @@ final class EntityRepository implements EntityRepositoryInterface
                 $propertyDataType = $entityDto->getPropertyDataType($propertyName);
             }
 
+            $isBoolean = 'boolean' === $propertyDataType;
             $isSmallIntegerProperty = 'smallint' === $propertyDataType;
             $isIntegerProperty = 'integer' === $propertyDataType;
             $isNumericProperty = \in_array($propertyDataType, ['number', 'bigint', 'decimal', 'float']);
@@ -130,6 +131,20 @@ final class EntityRepository implements EntityRepositoryInterface
             $isTextProperty = \in_array($propertyDataType, ['string', 'text', 'citext', 'array', 'simple_array']);
             $isGuidProperty = \in_array($propertyDataType, ['guid', 'uuid']);
             $isUlidProperty = 'ulid' === $propertyDataType;
+
+            if (!$isBoolean &&
+                !$isSmallIntegerProperty &&
+                !$isIntegerProperty &&
+                !$isNumericProperty &&
+                !$isTextProperty &&
+                !$isGuidProperty &&
+                !$isUlidProperty
+            ) {
+                $idClassName = (new \ReflectionProperty($entityDto->getFqcn(), $propertyName))->getType()->getName();
+
+                $isUlidProperty = (new \ReflectionClass($idClassName))->isSubclassOf(Ulid::class);
+                $isGuidProperty = (new \ReflectionClass($idClassName))->isSubclassOf(Uuid::class);
+            }
 
             // this complex condition is needed to avoid issues on PostgreSQL databases
             if (

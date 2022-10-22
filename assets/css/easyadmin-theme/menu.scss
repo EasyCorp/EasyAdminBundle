@@ -74,6 +74,8 @@
             color: var(--sidebar-menu-color);
             display: block;
             padding: 4px 0;
+            display: flex;
+            align-items: center; // To align icon and text in sidebar
         }
 
         .menu-icon {

@@ -1,0 +1,43 @@
+---------------------------------------------------------------------------
+
+by OskarStark at 2022-10-23T07:28:46Z
+
+Do you have a before and after screenshot? Thanks
+
+---------------------------------------------------------------------------
+
+by MrAnyx at 2022-10-23T14:16:35Z
+
+Before :
+![image](https://user-images.githubusercontent.com/44176707/197397006-517ea25e-a249-4685-8d47-f4e671c87b57.png)
+Icon and text are not vertically aligned
+
+After :
+![image](https://user-images.githubusercontent.com/44176707/197397093-97e0ed75-c7a1-4871-aabc-103d9ff32f06.png)
+Icon and text are vertically aligned
+
+It's not obvious but with my designer's eye, I see it 😄
+
+---------------------------------------------------------------------------
+
+by parijke at 2022-10-23T14:27:23Z
+
+👌
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2022-10-23T14:59:41Z
+
+Thanks @MrAnyx. I can't check it now because I'm on a mobile but we might need to use a flex-start + some top padding instead of flex-center ... because sadly it's not uncommon to have some menu items that span more than 1 line because they are very long
+
+---------------------------------------------------------------------------
+
+by MrAnyx at 2022-10-23T15:04:33Z
+
+Alright, no problems, thanks for your feedback. The solution I proposed is not the most optimal one, I'm still starting in the world of open-source contribution.
+
+---------------------------------------------------------------------------
+
+by OskarStark at 2022-10-23T15:47:21Z
+
+Thank you for the screenshots

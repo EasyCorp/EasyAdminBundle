@@ -71,18 +71,17 @@
         }
 
         .menu-item-contents {
+            align-items: flex-start;
             color: var(--sidebar-menu-color);
-            display: block;
-            padding: 4px 0;
             display: flex;
-            align-items: center; // To align icon and text in sidebar
+            padding: 4px 0;
         }
 
         .menu-icon {
             color: var(--sidebar-menu-icon-color);
             font-size: var(--font-size-lg);
             margin-right: 10px;
-            vertical-align: middle;
+            transform: translateY(3px);
             height: 16px;
             width: 20px;
         }

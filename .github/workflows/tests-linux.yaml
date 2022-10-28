@@ -5,7 +5,7 @@ on:
     pull_request:
     push:
         branches:
-            - 'master'
+            - '4.x'
 
 env:
     fail-fast: true
@@ -20,7 +20,8 @@ jobs:
         continue-on-error: false
         strategy:
             matrix:
-                php-version: ['8.0', '8.1']
+                php-version: ['8.1']
+                symfony-version: ['6.2.*']
         steps:
             - name: 'Checkout code'
               uses: actions/checkout@v3
@@ -37,6 +38,8 @@ jobs:
             - name: 'Install project dependencies'
               run: |
                   composer require --no-progress --no-scripts --no-plugins symfony/flex
+                  composer config extra.symfony.require "${{ matrix.symfony-version }}"
+                  composer config minimum-stability "dev"
                   composer update --no-interaction --prefer-dist --optimize-autoloader --prefer-stable
                   vendor/bin/simple-phpunit install
 

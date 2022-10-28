@@ -5,7 +5,7 @@ on:
     pull_request:
     push:
         branches:
-            - 'master'
+            - '4.x'
 
 env:
     fail-fast: true
@@ -21,7 +21,7 @@ jobs:
         strategy:
             matrix:
                 php-version: ['8.1']
-                symfony-version: ['5.4', '6.0']
+                symfony-version: ['5.4', '6.0', '6.1']
         steps:
             - name: 'Checkout code'
               uses: actions/checkout@v3

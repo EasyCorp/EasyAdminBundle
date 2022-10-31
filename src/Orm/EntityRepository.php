@@ -131,6 +131,7 @@ final class EntityRepository implements EntityRepositoryInterface
             $isTextProperty = \in_array($propertyDataType, ['string', 'text', 'citext', 'array', 'simple_array']);
             $isGuidProperty = \in_array($propertyDataType, ['guid', 'uuid']);
             $isUlidProperty = 'ulid' === $propertyDataType;
+            $isJsonProperty = 'json' === $propertyDataType;
 
             if (!$isBoolean &&
                 !$isSmallIntegerProperty &&
@@ -138,12 +139,16 @@ final class EntityRepository implements EntityRepositoryInterface
                 !$isNumericProperty &&
                 !$isTextProperty &&
                 !$isGuidProperty &&
-                !$isUlidProperty
+                !$isUlidProperty &&
+                !$isJsonProperty
             ) {
-                $idClassName = (new \ReflectionProperty($entityDto->getFqcn(), $propertyName))->getType()->getName();
+                $idClassType = (new \ReflectionProperty($entityDto->getFqcn(), $propertyName))->getType();
 
-                $isUlidProperty = (new \ReflectionClass($idClassName))->isSubclassOf(Ulid::class);
-                $isGuidProperty = (new \ReflectionClass($idClassName))->isSubclassOf(Uuid::class);
+                if (null !== $idClassType) {
+                    $idClassName = $idClassType->getName();
+                    $isUlidProperty = (new \ReflectionClass($idClassName))->isSubclassOf(Ulid::class);
+                    $isGuidProperty = (new \ReflectionClass($idClassName))->isSubclassOf(Uuid::class);
+                }
             }
 
             // this complex condition is needed to avoid issues on PostgreSQL databases

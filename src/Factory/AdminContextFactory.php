@@ -77,7 +77,7 @@ final class AdminContextFactory
         foreach ($dashboardControllerRoutes as $routeName => $controller) {
             if ($controller === $dashboardController) {
                 // needed for i18n routes, whose name follows the pattern "route_name.locale"
-                $dashboardRouteName = explode('.', $routeName, 2)[0];
+                $dashboardRouteName = preg_replace('~\.\w{2}$~', '', $routeName);
 
                 break;
             }

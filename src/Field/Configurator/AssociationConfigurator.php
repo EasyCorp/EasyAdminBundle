@@ -100,24 +100,27 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         }
 
         if (true === $field->getCustomOption(AssociationField::OPTION_AUTOCOMPLETE)) {
-            $targetCrudControllerFqcn = $field->getCustomOption(AssociationField::OPTION_CRUD_CONTROLLER);
-            if (null === $targetCrudControllerFqcn) {
-                throw new \RuntimeException(sprintf('The "%s" field cannot be autocompleted because it doesn\'t define the related CRUD controller FQCN with the "setCrudController()" method.', $field->getProperty()));
+            if ($field->getCustomOption(AssociationField::OPTION_AUTOCOMPLETE_ENDPOINT_URL)) {
+                $autocompleteEndpointUrl = $field->getCustomOption(AssociationField::OPTION_AUTOCOMPLETE_ENDPOINT_URL);
+            } else {
+                $targetCrudControllerFqcn = $field->getCustomOption(AssociationField::OPTION_CRUD_CONTROLLER);
+                if (null === $targetCrudControllerFqcn) {
+                    throw new \RuntimeException(sprintf('The "%s" field cannot be autocompleted because it doesn\'t define the related CRUD controller FQCN with the "setCrudController()" method.', $field->getProperty()));
+                }
+
+                $autocompleteEndpointUrl = $this->adminUrlGenerator
+                    ->unsetAll()
+                    ->set('page', 1) // The autocomplete should always start on the first page
+                    ->setController($field->getCustomOption(AssociationField::OPTION_CRUD_CONTROLLER))
+                    ->setAction('autocomplete')
+                    ->set(AssociationField::PARAM_AUTOCOMPLETE_CONTEXT, [
+                        EA::CRUD_CONTROLLER_FQCN => $context->getRequest()->query->get(EA::CRUD_CONTROLLER_FQCN),
+                        'propertyName' => $propertyName,
+                        'originatingPage' => $context->getCrud()->getCurrentPage(),
+                    ])
+                    ->generateUrl();
             }
-
             $field->setFormType(CrudAutocompleteType::class);
-            $autocompleteEndpointUrl = $this->adminUrlGenerator
-                ->unsetAll()
-                ->set('page', 1) // The autocomplete should always start on the first page
-                ->setController($field->getCustomOption(AssociationField::OPTION_CRUD_CONTROLLER))
-                ->setAction('autocomplete')
-                ->set(AssociationField::PARAM_AUTOCOMPLETE_CONTEXT, [
-                    EA::CRUD_CONTROLLER_FQCN => $context->getRequest()->query->get(EA::CRUD_CONTROLLER_FQCN),
-                    'propertyName' => $propertyName,
-                    'originatingPage' => $context->getCrud()->getCurrentPage(),
-                ])
-                ->generateUrl();
-
             $field->setFormTypeOption('attr.data-ea-autocomplete-endpoint-url', $autocompleteEndpointUrl);
         } else {
             $field->setFormTypeOptionIfNotSet('query_builder', static function (EntityRepository $repository) use ($field) {

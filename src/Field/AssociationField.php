@@ -14,6 +14,7 @@ final class AssociationField implements FieldInterface
     use FieldTrait;
 
     public const OPTION_AUTOCOMPLETE = 'autocomplete';
+    public const OPTION_AUTOCOMPLETE_ENDPOINT_URL = 'autocomplete-endpoint-url';
     public const OPTION_CRUD_CONTROLLER = 'crudControllerFqcn';
     public const OPTION_WIDGET = 'widget';
     public const OPTION_QUERY_BUILDER_CALLABLE = 'queryBuilderCallable';

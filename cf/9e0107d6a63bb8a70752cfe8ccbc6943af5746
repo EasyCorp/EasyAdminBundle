@@ -1,0 +1,15 @@
+---------------------------------------------------------------------------
+
+by keichinger at 2022-11-03T15:01:08Z
+
+Failing tests are unrelated to this PR.
+
+---------------------------------------------------------------------------
+
+by keichinger at 2022-11-03T15:20:46Z
+
+Just a small heads-up: The same problem was also present within the `AdminUrlGenerator` with the very same logic.
+
+Personally, I'd probably go ahead and export this logic into a dedicated service, but I'm not sure how much refactoring I'm allowed to do, especially since I don't know anything about the project's architecture and design principles :)
+
+I'm open for suggestions ✌️

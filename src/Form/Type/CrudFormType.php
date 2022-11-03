@@ -89,7 +89,7 @@ class CrudFormType extends AbstractType
 
                 // plain arrays are not enough for tabs because they are modified in the
                 // lifecycle of a form (e.g. add info about form errors). Use an ArrayObject instead.
-                $formTabs[$currentFormTab] = new ArrayObject($metadata);
+                $formTabs[$currentFormTab] = new \ArrayObject($metadata);
 
                 continue;
             }

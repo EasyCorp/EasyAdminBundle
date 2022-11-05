@@ -56,14 +56,14 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
 
         $targetEntityFqcn = $field->getDoctrineMetadata()->get('targetEntity');
         // the target CRUD controller can be NULL; in that case, field value doesn't link to the related entity
-        $targetCrudControllerFqcn = $field->getCustomOption(AssociationField::OPTION_CRUD_CONTROLLER)
+        $targetCrudControllerFqcn = $field->getCustomOption(AssociationField::OPTION_EMBEDDED_CRUD_FORM_CONTROLLER)
             ?? $context->getCrudControllers()->findCrudFqcnByEntityFqcn($targetEntityFqcn);
 
-        if (true === $field->getCustomOption(AssociationField::OPTION_USES_CRUD_FORM)) {
+        if (true === $field->getCustomOption(AssociationField::OPTION_RENDER_AS_EMBEDDED_FORM)) {
             if (false === $entityDto->isToOneAssociation($propertyName)) {
                 throw new \RuntimeException(
                     sprintf(
-                        'The "%s" association field of "%s" is a to-many association but only to-one associations are allowed. If you want to use a CRUD form on to-many associations you can use a CollectionField instead of the AssociationField.',
+                        'The "%s" association field of "%s" is a to-many association but it\'s trying to use the "renderAsEmbeddedForm()" option, which is only available for to-one associations. If you want to use a CRUD form to render to-many associations, use a CollectionField instead of the AssociationField.',
                         $field->getProperty(),
                         $context->getCrud()?->getControllerFqcn(),
                     )
@@ -73,7 +73,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
             if (null === $targetCrudControllerFqcn) {
                 throw new \RuntimeException(
                     sprintf(
-                        'The "%s" association field of "%s" wants to render using an EasyAdmin CRUD form. However, no CRUD form was found related to this field. You can either create a CRUD controller for the entity "%s" or pass the CRUD controller to use as the first argument of the "useCrudForm()" method.',
+                        'The "%s" association field of "%s" wants to render its contents using an EasyAdmin CRUD form. However, no CRUD form was found related to this field. You can either create a CRUD controller for the entity "%s" or pass the CRUD controller to use as the first argument of the "renderAsEmbeddedForm()" method.',
                         $field->getProperty(),
                         $context->getCrud()?->getControllerFqcn(),
                         $targetEntityFqcn
@@ -86,7 +86,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
             return;
         }
 
-        $field->setCustomOption(AssociationField::OPTION_CRUD_CONTROLLER, $targetCrudControllerFqcn);
+        $field->setCustomOption(AssociationField::OPTION_EMBEDDED_CRUD_FORM_CONTROLLER, $targetCrudControllerFqcn);
 
         if (AssociationField::WIDGET_AUTOCOMPLETE === $field->getCustomOption(AssociationField::OPTION_WIDGET)) {
             $field->setFormTypeOption('attr.data-ea-widget', 'ea-autocomplete');
@@ -113,7 +113,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
             }
 
             $accessor = new PropertyAccessor();
-            $targetCrudControllerFqcn = $field->getCustomOption(AssociationField::OPTION_CRUD_CONTROLLER);
+            $targetCrudControllerFqcn = $field->getCustomOption(AssociationField::OPTION_EMBEDDED_CRUD_FORM_CONTROLLER);
 
             $field->setFormTypeOptionIfNotSet('class', $targetEntityFqcn);
 
@@ -137,7 +137,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         }
 
         if (true === $field->getCustomOption(AssociationField::OPTION_AUTOCOMPLETE)) {
-            $targetCrudControllerFqcn = $field->getCustomOption(AssociationField::OPTION_CRUD_CONTROLLER);
+            $targetCrudControllerFqcn = $field->getCustomOption(AssociationField::OPTION_EMBEDDED_CRUD_FORM_CONTROLLER);
             if (null === $targetCrudControllerFqcn) {
                 throw new \RuntimeException(sprintf('The "%s" field cannot be autocompleted because it doesn\'t define the related CRUD controller FQCN with the "setCrudController()" method.', $field->getProperty()));
             }
@@ -146,7 +146,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
             $autocompleteEndpointUrl = $this->adminUrlGenerator
                 ->unsetAll()
                 ->set('page', 1) // The autocomplete should always start on the first page
-                ->setController($field->getCustomOption(AssociationField::OPTION_CRUD_CONTROLLER))
+                ->setController($field->getCustomOption(AssociationField::OPTION_EMBEDDED_CRUD_FORM_CONTROLLER))
                 ->setAction('autocomplete')
                 ->set(AssociationField::PARAM_AUTOCOMPLETE_CONTEXT, [
                     EA::CRUD_CONTROLLER_FQCN => $context->getRequest()->query->get(EA::CRUD_CONTROLLER_FQCN),
@@ -179,7 +179,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         }
 
         $targetEntityFqcn = $field->getDoctrineMetadata()->get('targetEntity');
-        $targetCrudControllerFqcn = $field->getCustomOption(AssociationField::OPTION_CRUD_CONTROLLER);
+        $targetCrudControllerFqcn = $field->getCustomOption(AssociationField::OPTION_EMBEDDED_CRUD_FORM_CONTROLLER);
 
         $targetEntityDto = null === $field->getValue()
             ? $this->entityFactory->create($targetEntityFqcn)
@@ -261,13 +261,8 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         return 0;
     }
 
-    private function configureCrudForm(
-        FieldDto $field,
-        EntityDto $entityDto,
-        string $propertyName,
-        string $targetEntityFqcn,
-        string $targetCrudControllerFqcn,
-    ): void {
+    private function configureCrudForm(FieldDto $field, EntityDto $entityDto, string $propertyName, string $targetEntityFqcn, string $targetCrudControllerFqcn): void
+    {
         $field->setFormType(CrudFormType::class);
 
         $propertyAccessor = new PropertyAccessor();
@@ -277,12 +272,10 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
 
         if (null === $associatedEntity) {
             $targetCrudControllerAction = Action::NEW;
-            $targetCrudControllerPageName = $field->getCustomOption(AssociationField::OPTION_CRUD_NEW_PAGE_NAME)
-                ?? Crud::PAGE_NEW;
+            $targetCrudControllerPageName = $field->getCustomOption(AssociationField::OPTION_EMBEDDED_CRUD_FORM_NEW_PAGE_NAME) ?? Crud::PAGE_NEW;
         } else {
             $targetCrudControllerAction = Action::EDIT;
-            $targetCrudControllerPageName = $field->getCustomOption(AssociationField::OPTION_CRUD_EDIT_PAGE_NAME)
-                ?? Crud::PAGE_EDIT;
+            $targetCrudControllerPageName = $field->getCustomOption(AssociationField::OPTION_EMBEDDED_CRUD_FORM_EDIT_PAGE_NAME) ?? Crud::PAGE_EDIT;
         }
 
         $field->setFormTypeOption(
@@ -291,12 +284,8 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         );
     }
 
-    private function createEntityDto(
-        string $entityFqcn,
-        string $crudControllerFqcn,
-        string $crudControllerAction,
-        string $crudControllerPageName,
-    ): EntityDto {
+    private function createEntityDto(string $entityFqcn, string $crudControllerFqcn, string $crudControllerAction, string $crudControllerPageName): EntityDto
+    {
         $entityDto = $this->entityFactory->create($entityFqcn);
 
         $crudController = $this->controllerFactory->getCrudControllerInstance(

@@ -437,7 +437,7 @@
                                     {% macro recursiveTabForm(form, ea_crud_form, tab_name) %}
                                         {% for field in form|filter(field => not ea_crud_form.form_panels|filter((panel_config, form_panel) => form_panel == field.vars.ea_crud_form.form_panel) and ((field.vars.ea_crud_form.form_tab is defined and field.vars.ea_crud_form.form_tab == tab_name) or field.vars.ea_crud_form.form_tabs is defined)) %}
                                             {% if field.vars.ea_crud_form.form_tabs is defined %}
-                                                {# If the field is a nested CRUD form then only render it's children #}
+                                                {# If the field is a nested CRUD form then only render its children #}
                                                 {{ _self.recursiveTabForm(field, ea_crud_form, tab_name) }}
                                             {% else %}
                                                 {# Render all other fields #}
@@ -511,7 +511,7 @@
         {% macro recursivePanelForm(form) %}
             {% for field in form|filter(field => 'hidden' not in field.vars.block_prefixes and ((field.vars.ea_crud_form.form_tab is defined and not field.vars.ea_crud_form.form_tab) or field.vars.ea_crud_form.form_tabs is defined)) %}
                 {% if field.vars.ea_crud_form.form_tabs is defined %}
-                    {# If the field is a nested CRUD form then only render it's children #}
+                    {# If the field is a nested CRUD form then only render its children #}
                     {{ _self.recursivePanelForm(field) }}
                 {% else %}
                     {# Render all other fields #}

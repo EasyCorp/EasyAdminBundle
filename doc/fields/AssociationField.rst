@@ -98,27 +98,41 @@ Or if you prefer using the repository of the entity::
         fn (QueryBuilder $queryBuilder) => $queryBuilder->getEntityManager()->getRepository(Foo::class)->findBySomeCriteria();
     );
 
-``useCrudForm``
-~~~~~~~~~~~~~~~
+``renderAsEmbeddedForm``
+~~~~~~~~~~~~~~~~~~~~~~~~
 
-If the association is a to-one association the field can be rendered using an EasyAdmin
-CRUD Form. The ``useCrudForm()`` method defines the EasyAdmin CRUD form used to render
-the field::
+By default, to-one associations are rendered in forms as dropdowns where you can
+select one of the given values. For example, a blog post associated with one
+author will show a dropdown list to select one of the available authors.
+
+However, sometimes the associated property refers to a `value object`_. For example,
+a ``Customer`` entity related to an ``Address`` entity or a ``Server`` entity
+related to an ``IpAddres`` entity.
+
+In these cases it doesn't make sense to display a dropdown with all the
+(potentially millions!) addresses. Instead, it's better to embed the form fields
+of the related entity (e.g. ``Address``) inside the form of the entity that you
+are creating or editing (e.g. ``Customer``).
+
+The ``renderAsEmbeddedForm()`` option tells EasyAdmin to embed the CRUD form of
+the associated property instead of showing all its possible values in a dropdown::
 
     yield AssociationField::new('...')->useCrudForm();
 
-By default, EasyAdmin finds the CRUD controller associated to the property automatically.
-If you need better control about which CRUD controller to use, pass the fully-qualified
-class name of the controller as the first argument::
+EasyAdmin looks for the :doc:`CRUD controller </crud>` associated to the property
+automatically. If you need better control about which CRUD controller to use,
+pass the fully-qualified class name of the controller as the first argument::
 
     yield AssociationField::new('...')->useCrudForm(CategoryCrudController::class);
 
-    // the other optional arguments are the CRUD page names to pass to the configureFields()
-    // method when creating and editing entries respectively
+    // the other optional arguments are the page names passed to the configureFields()
+    // method of the CRUD controller (this allows you to have a better control of
+    // the fields displayed on different scenarios)
     yield AssociationField::new('...')->useCrudForm(
-        CategoryCrudController::class, 'new_category_on_article_page', 'edit_category_on_article_page'
+        CategoryCrudController::class, 'create_category_inside_an_article', 'edit_category_inside_an_article'
     );
 
 .. _`TomSelect`: https://tom-select.js.org/
 .. _`EntityType`: https://symfony.com/doc/current/reference/forms/types/entity.html
 .. _`query_builder option`: https://symfony.com/doc/current/reference/forms/types/entity.html#query-builder
+.. _`value object`: https://en.wikipedia.org/wiki/Value_object

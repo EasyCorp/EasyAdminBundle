@@ -94,10 +94,17 @@ class CrudFormType extends AbstractType
                 continue;
             }
 
+            // Pass the current panel and tab down to nested CRUD forms, the nested
+            // CRUD form fields are forced to use their parents panel and tab
+            if (self::class === $formFieldType) {
+                $formFieldOptions['ea_form_panel'] = $currentFormPanel;
+                $formFieldOptions['ea_form_tab'] = $currentFormTab;
+            }
+
             $formField = $builder->getFormFactory()->createNamedBuilder($name, $formFieldType, null, $formFieldOptions);
             $formField->setAttribute('ea_entity', $entityDto);
-            $formField->setAttribute('ea_form_panel', $currentFormPanel);
-            $formField->setAttribute('ea_form_tab', $currentFormTab);
+            $formField->setAttribute('ea_form_panel', $options['ea_form_panel'] ?? $currentFormPanel);
+            $formField->setAttribute('ea_form_tab', $options['ea_form_tab'] ?? $currentFormTab);
             $formField->setAttribute('ea_field', $fieldDto);
 
             $builder->add($formField);
@@ -128,7 +135,7 @@ class CrudFormType extends AbstractType
                 'allow_extra_fields' => true,
                 'data_class' => static fn (Options $options, $dataClass) => $dataClass ?? $options['entityDto']->getFqcn(),
             ])
-            ->setDefined(['entityDto'])
+            ->setDefined(['entityDto', 'ea_form_panel', 'ea_form_tab'])
             ->setRequired(['entityDto']);
     }
 

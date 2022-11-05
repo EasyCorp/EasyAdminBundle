@@ -98,6 +98,27 @@ Or if you prefer using the repository of the entity::
         fn (QueryBuilder $queryBuilder) => $queryBuilder->getEntityManager()->getRepository(Foo::class)->findBySomeCriteria();
     );
 
+``useCrudForm``
+~~~~~~~~~~~~~~~
+
+If the association is a to-one association the field can be rendered using an EasyAdmin
+CRUD Form. The ``useCrudForm()`` method defines the EasyAdmin CRUD form used to render
+the field::
+
+    yield AssociationField::new('...')->useCrudForm();
+
+By default, EasyAdmin finds the CRUD controller associated to the property automatically.
+If you need better control about which CRUD controller to use, pass the fully-qualified
+class name of the controller as the first argument::
+
+    yield AssociationField::new('...')->useCrudForm(CategoryCrudController::class);
+
+    // the other optional arguments are the CRUD page names to pass to the configureFields()
+    // method when creating and editing entries respectively
+    yield AssociationField::new('...')->useCrudForm(
+        CategoryCrudController::class, 'new_category_on_article_page', 'edit_category_on_article_page'
+    );
+
 .. _`TomSelect`: https://tom-select.js.org/
 .. _`EntityType`: https://symfony.com/doc/current/reference/forms/types/entity.html
 .. _`query_builder option`: https://symfony.com/doc/current/reference/forms/types/entity.html#query-builder

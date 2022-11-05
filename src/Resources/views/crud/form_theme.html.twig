@@ -434,9 +434,18 @@
 
                             <div class="row">
                                 {% if tab_name is defined and tab_name %}
-                                    {% for field in form|filter(field => not ea_crud_form.form_panels|filter((panel_config, form_panel) => form_panel == field.vars.ea_crud_form.form_panel) and field.vars.ea_crud_form.form_tab == tab_name) %}
-                                        {{ form_row(field) }}
-                                    {% endfor %}
+                                    {% macro recursiveTabForm(form, ea_crud_form, tab_name) %}
+                                        {% for field in form|filter(field => not ea_crud_form.form_panels|filter((panel_config, form_panel) => form_panel == field.vars.ea_crud_form.form_panel) and ((field.vars.ea_crud_form.form_tab is defined and field.vars.ea_crud_form.form_tab == tab_name) or field.vars.ea_crud_form.form_tabs is defined)) %}
+                                            {% if field.vars.ea_crud_form.form_tabs is defined %}
+                                                {# If the field is a nested CRUD form then only render it's children #}
+                                                {{ _self.recursiveTabForm(field, ea_crud_form, tab_name) }}
+                                            {% else %}
+                                                {# Render all other fields #}
+                                                {{ form_row(field) }}
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endmacro %}
+                                    {{ _self.recursiveTabForm(form, ea_crud_form, tab_name) }}
                                 {% endif %}
                                 {{ block('ea_crud_widget_panels') }}
                             </div>
@@ -499,9 +508,18 @@
             </div>
         </div>
     {% else %}
-        {% for field in form|filter(field => 'hidden' not in field.vars.block_prefixes and not field.vars.ea_crud_form.form_tab) %}
-            {{ form_row(field) }}
-        {% endfor %}
+        {% macro recursivePanelForm(form) %}
+            {% for field in form|filter(field => 'hidden' not in field.vars.block_prefixes and ((field.vars.ea_crud_form.form_tab is defined and not field.vars.ea_crud_form.form_tab) or field.vars.ea_crud_form.form_tabs is defined)) %}
+                {% if field.vars.ea_crud_form.form_tabs is defined %}
+                    {# If the field is a nested CRUD form then only render it's children #}
+                    {{ _self.recursivePanelForm(field) }}
+                {% else %}
+                    {# Render all other fields #}
+                    {{ form_row(field) }}
+                {% endif %}
+            {% endfor %}
+        {% endmacro %}
+        {{ _self.recursivePanelForm(form) }}
     {% endfor %}
 {% endblock ea_crud_widget_panels %}
 

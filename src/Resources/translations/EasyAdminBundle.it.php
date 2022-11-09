@@ -130,4 +130,14 @@ return [
         'no-more-results' => 'Non ci sono altri risultati',
         'loading-more-results' => 'Caricando più risultati…',
     ],
+
+    'settings' => [
+        'locale' => 'Lingua',
+        'appearance' => [
+            'label' => 'Aspetto',
+            'light' => 'Chiaro',
+            'dark' => 'Scuro',
+            'auto' => 'Auto',
+        ],
+    ],
 ];

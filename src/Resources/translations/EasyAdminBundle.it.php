@@ -110,6 +110,16 @@ return [
         'exit_impersonation' => 'Esci dall\'impersonazione',
     ],
 
+    'settings' => [
+        'locale' => 'Lingua',
+        'appearance' => [
+            'label' => 'Aspetto',
+            'light' => 'Chiaro',
+            'dark' => 'Scuro',
+            'auto' => 'Auto',
+        ],
+    ],
+
     'login_page' => [
         'username' => 'Nome utente',
         'password' => 'Password',
@@ -129,15 +139,5 @@ return [
         'no-results-found' => 'Nessun risultato trovato',
         'no-more-results' => 'Non ci sono altri risultati',
         'loading-more-results' => 'Caricando più risultati…',
-    ],
-
-    'settings' => [
-        'locale' => 'Lingua',
-        'appearance' => [
-            'label' => 'Aspetto',
-            'light' => 'Chiaro',
-            'dark' => 'Scuro',
-            'auto' => 'Auto',
-        ],
     ],
 ];

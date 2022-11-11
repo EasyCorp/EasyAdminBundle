@@ -117,18 +117,18 @@ are creating or editing (e.g. ``Customer``).
 The ``renderAsEmbeddedForm()`` option tells EasyAdmin to embed the CRUD form of
 the associated property instead of showing all its possible values in a dropdown::
 
-    yield AssociationField::new('...')->useCrudForm();
+    yield AssociationField::new('...')->renderAsEmbeddedForm();
 
 EasyAdmin looks for the :doc:`CRUD controller </crud>` associated to the property
 automatically. If you need better control about which CRUD controller to use,
 pass the fully-qualified class name of the controller as the first argument::
 
-    yield AssociationField::new('...')->useCrudForm(CategoryCrudController::class);
+    yield AssociationField::new('...')->renderAsEmbeddedForm(CategoryCrudController::class);
 
     // the other optional arguments are the page names passed to the configureFields()
     // method of the CRUD controller (this allows you to have a better control of
     // the fields displayed on different scenarios)
-    yield AssociationField::new('...')->useCrudForm(
+    yield AssociationField::new('...')->renderAsEmbeddedForm(
         CategoryCrudController::class, 'create_category_inside_an_article', 'edit_category_inside_an_article'
     );
 

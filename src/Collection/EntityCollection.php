@@ -61,7 +61,7 @@ final class EntityCollection implements CollectionInterface
     }
 
     /**
-     * @return EntityDto[]
+     * @return \ArrayIterator<EntityDto>
      */
     public function getIterator(): \ArrayIterator
     {

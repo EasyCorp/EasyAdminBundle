@@ -64,7 +64,7 @@ final class FilterCollection implements CollectionInterface
     }
 
     /**
-     * @return FilterDto[]
+     * @return \ArrayIterator<FilterDto>
      */
     public function getIterator(): \ArrayIterator
     {

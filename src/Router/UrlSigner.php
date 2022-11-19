@@ -62,7 +62,8 @@ final class UrlSigner
             return true;
         }
 
-        if (!isset($queryParams[EA::URL_SIGNATURE]) || empty($queryParams[EA::URL_SIGNATURE])) {
+        $urlSignature = $queryParams[EA::URL_SIGNATURE] ?? null;
+        if (null === $urlSignature || '' === $urlSignature) {
             return false;
         }
 
@@ -122,9 +123,9 @@ final class UrlSigner
         $port = isset($urlParts['port']) ? ':'.$urlParts['port'] : '';
         $user = $urlParts['user'] ?? '';
         $pass = isset($urlParts['pass']) ? ':'.$urlParts['pass'] : '';
-        $pass = ($user || $pass) ? "$pass@" : '';
+        $pass = ('' !== $user || '' !== $pass) ? "$pass@" : '';
         $path = $urlParts['path'] ?? '';
-        $query = isset($urlParts['query']) && $urlParts['query'] ? '?'.$urlParts['query'] : '';
+        $query = '' !== $urlParts['query'] ? '?'.$urlParts['query'] : '';
         $fragment = isset($urlParts['fragment']) ? '#'.$urlParts['fragment'] : '';
 
         return $scheme.$user.$pass.$host.$port.$path.$query.$fragment;

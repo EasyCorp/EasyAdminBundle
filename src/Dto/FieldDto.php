@@ -80,7 +80,7 @@ final class FieldDto
 
     public function isFormDecorationField(): bool
     {
-        return null !== u($this->getCssClass())->containsAny(['field-form_panel', 'field-form_tab']);
+        return u($this->getCssClass())->containsAny(['field-form_panel', 'field-form_tab']);
     }
 
     public function getFieldFqcn(): ?string
@@ -152,15 +152,9 @@ final class FieldDto
         return $this->label;
     }
 
-    /**
-     * @param TranslatableInterface|string|false|null $label
-     */
-    public function setLabel(/* TranslatableInterface|string|false|null */ $label): void
+    public function setLabel(/* @var TranslatableInterface|string|false|null */ $label): void
     {
-        if (!\is_string($label)
-            && !$label instanceof TranslatableInterface
-            && false !== $label
-            && null !== $label) {
+        if (!\is_string($label) && !$label instanceof TranslatableInterface && false !== $label && null !== $label) {
             trigger_deprecation(
                 'easycorp/easyadmin-bundle',
                 '4.0.5',

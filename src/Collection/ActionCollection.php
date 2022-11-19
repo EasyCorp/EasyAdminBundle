@@ -71,7 +71,7 @@ final class ActionCollection implements CollectionInterface
     }
 
     /**
-     * @return ActionDto[]
+     * @return \ArrayIterator<ActionDto>
      */
     public function getIterator(): \ArrayIterator
     {

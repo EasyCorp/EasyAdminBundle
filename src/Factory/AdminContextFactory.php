@@ -168,7 +168,7 @@ final class AdminContextFactory
 
         $configuredTextDirection = $dashboardDto->getTextDirection();
         $localePrefix = strtolower(substr($locale, 0, 2));
-        $defaultTextDirection = \in_array($localePrefix, ['ar', 'fa', 'he']) ? TextDirection::RTL : TextDirection::LTR;
+        $defaultTextDirection = \in_array($localePrefix, ['ar', 'fa', 'he'], true) ? TextDirection::RTL : TextDirection::LTR;
         $textDirection = $configuredTextDirection ?? $defaultTextDirection;
 
         $translationDomain = $dashboardDto->getTranslationDomain();
@@ -178,7 +178,7 @@ final class AdminContextFactory
             $translationParameters['%entity_name%'] = $entityName = basename(str_replace('\\', '/', $crudDto->getEntityFqcn()));
             $translationParameters['%entity_as_string%'] = null === $entityDto ? '' : $entityDto->toString();
             $translationParameters['%entity_id%'] = $entityId = $request->query->get(EA::ENTITY_ID);
-            $translationParameters['%entity_short_id%'] = null === $entityId ? null : u((string) $entityId)->truncate(7)->toString();
+            $translationParameters['%entity_short_id%'] = null === $entityId ? null : u($entityId)->truncate(7)->toString();
 
             $entityInstance = null === $entityDto ? null : $entityDto->getInstance();
             $pageName = $crudDto->getCurrentPage();
@@ -223,7 +223,7 @@ final class AdminContextFactory
     // (c) Fabien Potencier <fabien@symfony.com> - MIT License
     private function getUser(?TokenStorageInterface $tokenStorage): ?UserInterface
     {
-        if (null === $tokenStorage || !$token = $tokenStorage->getToken()) {
+        if (null === $token = $tokenStorage?->getToken()) {
             return null;
         }
 

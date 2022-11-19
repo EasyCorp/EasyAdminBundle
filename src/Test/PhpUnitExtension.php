@@ -7,10 +7,14 @@ use PHPUnit\Runner\BeforeFirstTestHook;
 
 final class PhpUnitExtension implements BeforeFirstTestHook, AfterLastTestHook
 {
+    // keep the values of these constants in sync with tests/bootstrap.php
+    private const EA_TEST_COMMENT_MARKER_START = '/* added-by-ea-tests';
+    private const EA_TEST_COMMENT_MARKER_END = '*/';
+
     public function executeBeforeFirstTest(): void
     {
         // do nothing because these changes must be done before loading
-        // PHP clases, so here it's too late. This is performed in the
+        // PHP classes, so here it's too late. This is performed in the
         // tests/bootstrap.php file
     }
 
@@ -25,7 +29,7 @@ final class PhpUnitExtension implements BeforeFirstTestHook, AfterLastTestHook
             $sourceFilePath = realpath($sourceFilePath);
             $sourceFileContents = file_get_contents($sourceFilePath);
             $sourceFileContentsWithFinalClasses = preg_replace(
-                sprintf('/^%s final %s class (.*)$/m', preg_quote(EA_TEST_COMMENT_MARKER_START, '/'), preg_quote(EA_TEST_COMMENT_MARKER_END, '/')),
+                sprintf('/^%s final %s class (.*)$/m', preg_quote(self::EA_TEST_COMMENT_MARKER_START, '/'), preg_quote(self::EA_TEST_COMMENT_MARKER_END, '/')),
                 'final class \1',
                 $sourceFileContents
             );

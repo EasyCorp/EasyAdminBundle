@@ -20,7 +20,7 @@ class TextFilterType extends AbstractType
 
     public function __construct(string $valueType = null)
     {
-        $this->valueType = $valueType ?: TextType::class;
+        $this->valueType = $valueType ?? TextType::class;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void

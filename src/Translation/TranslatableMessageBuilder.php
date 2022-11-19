@@ -17,6 +17,8 @@ class TranslatableMessageBuilder
      *
      * Due to the limited nature of TranslatableInterface we cannot guarantee correct behavior
      * of any other TranslatableInterface implementation, therefore they will be returned as provided.
+     *
+     * @param TranslatableMessage $translatable
      */
     public static function withParameters(TranslatableInterface $translatable, array $parameters): TranslatableInterface
     {

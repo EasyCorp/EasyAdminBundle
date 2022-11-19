@@ -21,7 +21,7 @@ class DateTimeFilterType extends AbstractType
 
     public function __construct(string $valueType = null)
     {
-        $this->valueType = $valueType ?: DateTimeType::class;
+        $this->valueType = $valueType ?? DateTimeType::class;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void

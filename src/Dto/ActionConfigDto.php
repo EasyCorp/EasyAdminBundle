@@ -11,7 +11,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 final class ActionConfigDto
 {
     private ?string $pageName = null;
-    /** @var ActionDto[] */
+    /** @var array<string, array<int, ActionDto>> */
     private array $actions = [
         Crud::PAGE_DETAIL => [],
         Crud::PAGE_EDIT => [],

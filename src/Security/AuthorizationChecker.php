@@ -24,7 +24,7 @@ class AuthorizationChecker implements AuthorizationCheckerInterface
     {
         // this check is needed for performance reasons because most of the times permissions
         // won't be set, so this function must return as early as possible in those cases
-        if (empty($permission)) {
+        if (null === $permission || '' === $permission) {
             return true;
         }
 

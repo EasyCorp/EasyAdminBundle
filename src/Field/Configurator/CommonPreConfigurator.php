@@ -79,7 +79,7 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
             $field->setFormTypeOptionIfNotSet('help_html', true);
         }
 
-        if (!empty($field->getCssClass())) {
+        if ('' !== $field->getCssClass()) {
             $field->setFormTypeOptionIfNotSet('row_attr.class', $field->getCssClass());
         }
 
@@ -113,7 +113,7 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
                 return $label;
             }
 
-            return empty($label) ? $label : t($label, $field->getTranslationParameters(), $translationDomain);
+            return (null === $label || false === $label || '' === $label) ? $label : t($label, $field->getTranslationParameters(), $translationDomain);
         }
 
         // if an Avatar field doesn't define its label, don't autogenerate it for the 'index' page
@@ -128,7 +128,7 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
             $label = $this->humanizeString($field->getProperty());
         }
 
-        if (empty($label)) {
+        if ('' === $label) {
             return $label;
         }
 
@@ -207,7 +207,7 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
             return false;
         }
 
-        return !$doctrinePropertyMetadata->get('nullable');
+        return false === $doctrinePropertyMetadata->get('nullable');
     }
 
     private function humanizeString(string $string): string

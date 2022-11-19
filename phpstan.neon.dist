@@ -1,0 +1,11 @@
+includes:
+	- phpstan-baseline.neon
+
+parameters:
+    level: 4
+    paths:
+        - src/
+    bootstrapFiles:
+        - vendor/bin/.phpunit/phpunit/vendor/autoload.php
+    ignoreErrors:
+        - '#Cannot use array destructuring on callable.#'

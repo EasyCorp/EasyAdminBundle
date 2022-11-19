@@ -21,7 +21,7 @@ class ComparisonFilterType extends AbstractType
     {
         $this->valueType = $valueType;
         $this->valueTypeOptions = $valueTypeOptions;
-        $this->comparisonType = $comparisonType ?: ComparisonType::class;
+        $this->comparisonType = $comparisonType ?? ComparisonType::class;
         $this->comparisonTypeOptions = $comparisonTypeOptions;
     }
 

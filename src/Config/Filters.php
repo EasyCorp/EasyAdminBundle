@@ -24,6 +24,9 @@ final class Filters
         return new self($dto);
     }
 
+    /**
+     * @param (FilterInterface & \Stringable)|string $propertyNameOrFilter
+     */
     public function add(FilterInterface|string $propertyNameOrFilter): self
     {
         $filterPropertyName = \is_string($propertyNameOrFilter) ? $propertyNameOrFilter : (string) $propertyNameOrFilter;

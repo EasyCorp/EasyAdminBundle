@@ -42,13 +42,11 @@ class Crud
     }
 
     /**
-     * @param TranslatableInterface|string|callable $label The callable signature is: fn ($entityInstance, $pageName): string
+     * @param $label The callable signature is: fn ($entityInstance, $pageName): string
      */
-    public function setEntityLabelInSingular(/* TranslatableInterface|string|callable */ $label): self
+    public function setEntityLabelInSingular(/* @var TranslatableInterface|string|callable */ $label): self
     {
-        if (!\is_string($label)
-            && !$label instanceof TranslatableInterface
-            && !\is_callable($label)) {
+        if (!\is_string($label) && !$label instanceof TranslatableInterface && !\is_callable($label)) {
             trigger_deprecation(
                 'easycorp/easyadmin-bundle',
                 '4.0.5',
@@ -66,13 +64,11 @@ class Crud
     }
 
     /**
-     * @param TranslatableInterface|string|callable $label The callable signature is: fn ($entityInstance, $pageName): string
+     * @param $label The callable signature is: fn ($entityInstance, $pageName): string
      */
-    public function setEntityLabelInPlural(/* TranslatableInterface|string|callable */ $label): self
+    public function setEntityLabelInPlural(/* @var TranslatableInterface|string|callable */ $label): self
     {
-        if (!\is_string($label)
-            && !$label instanceof TranslatableInterface
-            && !\is_callable($label)) {
+        if (!\is_string($label) && !$label instanceof TranslatableInterface && !\is_callable($label)) {
             trigger_deprecation(
                 'easycorp/easyadmin-bundle',
                 '4.0.5',
@@ -90,13 +86,11 @@ class Crud
     }
 
     /**
-     * @param TranslatableInterface|string|callable $title The callable signature is: fn ($entityInstance): string
+     * @param $title The callable signature is: fn ($entityInstance): string
      */
-    public function setPageTitle(string $pageName, /* TranslatableInterface|string|callable */ $title): self
+    public function setPageTitle(string $pageName, /* @var TranslatableInterface|string|callable */ $title): self
     {
-        if (!\is_string($title)
-            && !$title instanceof TranslatableInterface
-            && !\is_callable($title)) {
+        if (!\is_string($title) && !$title instanceof TranslatableInterface && !\is_callable($title)) {
             trigger_deprecation(
                 'easycorp/easyadmin-bundle',
                 '4.0.5',
@@ -178,7 +172,7 @@ class Crud
             throw new \InvalidArgumentException(sprintf('The first argument of the "%s()" method cannot be an empty string. Use either a date format (%s) or a datetime Intl pattern.', __METHOD__, implode(', ', DateTimeField::VALID_DATE_FORMATS)));
         }
 
-        $datePatternIsEmpty = DateTimeField::FORMAT_NONE === $dateFormatOrPattern || '' === trim($dateFormatOrPattern);
+        $datePatternIsEmpty = DateTimeField::FORMAT_NONE === $dateFormatOrPattern;
         $timePatternIsEmpty = DateTimeField::FORMAT_NONE === $timeFormat || '' === trim($timeFormat);
         if ($datePatternIsEmpty && $timePatternIsEmpty) {
             throw new \InvalidArgumentException(sprintf('The values of the arguments of "%s()" cannot be "%s" or an empty string at the same time. Change any of them (or both).', __METHOD__, DateTimeField::FORMAT_NONE));

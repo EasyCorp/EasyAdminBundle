@@ -65,9 +65,9 @@ final class EntityFactory
         return $this->actionFactory->processGlobalActions($actionConfigDto);
     }
 
-    public function create(string $entityFqcn, $entityId = null, ?string $entityPermission = null): EntityDto
+    public function create(string $entityFqcn, $entityId = null, ?string $entityPermission = null, bool $ignore_errors = false): EntityDto
     {
-        return $this->doCreate($entityFqcn, $entityId, $entityPermission);
+        return $this->doCreate($entityFqcn, $entityId, $entityPermission, null, $ignore_errors);
     }
 
     public function createForEntityInstance($entityInstance): EntityDto
@@ -104,10 +104,10 @@ final class EntityFactory
         return $entityMetadata;
     }
 
-    private function doCreate(?string $entityFqcn = null, $entityId = null, ?string $entityPermission = null, $entityInstance = null): EntityDto
+    private function doCreate(?string $entityFqcn = null, $entityId = null, ?string $entityPermission = null, $entityInstance = null, bool $ignore_errors = false): EntityDto
     {
         if (null === $entityInstance && null !== $entityFqcn) {
-            $entityInstance = null === $entityId ? null : $this->getEntityInstance($entityFqcn, $entityId);
+            $entityInstance = null === $entityId ? null : $this->getEntityInstance($entityFqcn, $entityId, $ignore_errors);
         }
 
         if (null !== $entityInstance && null === $entityFqcn) {
@@ -139,15 +139,15 @@ final class EntityFactory
         return $entityManager;
     }
 
-    private function getEntityInstance(string $entityFqcn, $entityIdValue): object
+    private function getEntityInstance(string $entityFqcn, $entityIdValue, bool $ignore_errors = false): ?object
     {
         $entityManager = $this->getEntityManager($entityFqcn);
         if (null === $entityInstance = $entityManager->getRepository($entityFqcn)->find($entityIdValue)) {
             $entityIdName = $entityManager->getClassMetadata($entityFqcn)->getIdentifierFieldNames()[0];
-
-            throw new EntityNotFoundException(['entity_name' => $entityFqcn, 'entity_id_name' => $entityIdName, 'entity_id_value' => $entityIdValue]);
+            if (! $ignore_errors) {
+                throw new EntityNotFoundException(['entity_name' => $entityFqcn, 'entity_id_name' => $entityIdName, 'entity_id_value' => $entityIdValue]);
+            }
         }
-
         return $entityInstance;
     }
 }

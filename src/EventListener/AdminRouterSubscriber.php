@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\EventListener;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\AdminContextFactory;
@@ -68,26 +69,61 @@ class AdminRouterSubscriber implements EventSubscriberInterface
      */
     public function onKernelRequest(RequestEvent $event): void
     {
+        $adminContext = null;
+        $brokenContextFailedWithException = null;
         $request = $event->getRequest();
-        if (null === $dashboardControllerFqcn = $this->getDashboardControllerFqcn($request)) {
-            return;
+
+        try {
+            $adminContext = $this->getAdminContext($request);
+        }
+        catch(\Throwable $e) {
+            $brokenContextFailedWithException = $e;
         }
 
+        // @ksn135: we need to get adminContext anyway to setup ea variable, so try again
+        if ($brokenContextFailedWithException) {
+            $adminContext = $this->getAdminContext($request, true);
+        }
+
+        $request->attributes->set(EA::CONTEXT_REQUEST_ATTRIBUTE, $adminContext);
+        // this makes the AdminContext available in all templates as a short named variable
+        $this->twig->addGlobal('ea', $adminContext);
+
+        // @ksn135: re-run to FAIL and show exception to user
+        // BUT now we have easy admin context in ea variable
+        // So ExceptionListener will works as expected
+        if ($brokenContextFailedWithException) {
+            throw $brokenContextFailedWithException;
+        }
+    }
+
+    public function getAdminContext(Request $request, bool $ignore_exception = false): ?AdminContext {
+        $adminContext = null;
+
+        if (null === $dashboardControllerFqcn = $this->getDashboardControllerFqcn($request)) {
+            return $adminContext;
+        }
+
+
         if (null === $dashboardControllerInstance = $this->getDashboardControllerInstance($dashboardControllerFqcn, $request)) {
-            return;
+            return $adminContext;
         }
 
         // creating the context is expensive, so it's created once and stored in the request
         // if the current request already has an AdminContext object, do nothing
         if (null === $adminContext = $request->attributes->get(EA::CONTEXT_REQUEST_ATTRIBUTE)) {
             $crudControllerInstance = $this->getCrudControllerInstance($request);
-            $adminContext = $this->adminContextFactory->create($request, $dashboardControllerInstance, $crudControllerInstance);
+            $adminContext = $this
+                ->adminContextFactory
+                ->create(
+                    $request, 
+                    $dashboardControllerInstance, 
+                    $crudControllerInstance, 
+                    $ignore_exception
+                )
+            ;
         }
-
-        $request->attributes->set(EA::CONTEXT_REQUEST_ATTRIBUTE, $adminContext);
-
-        // this makes the AdminContext available in all templates as a short named variable
-        $this->twig->addGlobal('ea', $adminContext);
+        return $adminContext;
     }
 
     /**

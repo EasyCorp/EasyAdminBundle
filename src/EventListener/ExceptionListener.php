@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\EventListener;
 
+use EasyCorp\Bundle\EasyAdminBundle\Context\ExceptionContext;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\BaseException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\FlattenException;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
@@ -42,11 +43,14 @@ final class ExceptionListener
             return;
         }
 
-        if ($this->kernelDebug || !$exception instanceof BaseException) {
+        if ($this->kernelDebug) {
             return;
         }
 
-        // TODO: check why these custom error pages don't work
+        if (!$exception instanceof BaseException) {
+            $exception = new BaseException(new ExceptionContext($exception->getMessage()));
+        }
+
         $event->setResponse($this->createExceptionResponse(FlattenException::create($exception)));
     }
 

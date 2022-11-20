@@ -46,7 +46,7 @@ final class AdminContextFactory
         $this->entityFactory = $entityFactory;
     }
 
-    public function create(Request $request, DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController): AdminContext
+    public function create(Request $request, DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController, bool $ignore_errors = false): AdminContext
     {
         $crudAction = $request->query->get(EA::CRUD_ACTION);
         $validPageNames = [Crud::PAGE_INDEX, Crud::PAGE_DETAIL, Crud::PAGE_EDIT, Crud::PAGE_NEW];
@@ -58,7 +58,7 @@ final class AdminContextFactory
         $filters = $this->getFilters($dashboardController, $crudController);
 
         $crudDto = $this->getCrudDto($this->crudControllers, $dashboardController, $crudController, $actionConfigDto, $filters, $crudAction, $pageName);
-        $entityDto = $this->getEntityDto($request, $crudDto);
+        $entityDto = $this->getEntityDto($request, $crudDto, $ignore_errors);
         $searchDto = $this->getSearchDto($request, $crudDto);
         $i18nDto = $this->getI18nDto($request, $dashboardDto, $crudDto, $entityDto);
         $templateRegistry = $this->getTemplateRegistry($dashboardController, $crudDto);
@@ -76,9 +76,8 @@ final class AdminContextFactory
 
         foreach ($dashboardControllerRoutes as $routeName => $controller) {
             if ($controller === $dashboardController) {
-                // if present, remove the suffix of i18n route names (it's a two-letter locale at the end
-                // of the route name; e.g. 'dashboard.en' -> remove '.en', 'admin.index.es' -> remove '.es')
-                $dashboardRouteName = preg_replace('~\.\w{2}$~', '', $routeName);
+                // needed for i18n routes, whose name follows the pattern "route_name.locale"
+                $dashboardRouteName = explode('.', $routeName, 2)[0];
 
                 break;
             }
@@ -232,12 +231,13 @@ final class AdminContextFactory
         return \is_object($user) ? $user : null;
     }
 
-    private function getEntityDto(Request $request, ?CrudDto $crudDto): ?EntityDto
+    private function getEntityDto(Request $request, ?CrudDto $crudDto, bool $ignore_errors = false): ?EntityDto
     {
         if (null === $crudDto) {
             return null;
         }
 
-        return $this->entityFactory->create($crudDto->getEntityFqcn(), $request->query->get(EA::ENTITY_ID), $crudDto->getEntityPermission());
+        return $this->entityFactory->create($crudDto->getEntityFqcn(), $request->query->get(EA::ENTITY_ID), $crudDto->getEntityPermission(), $ignore_errors);
     }
 }
+

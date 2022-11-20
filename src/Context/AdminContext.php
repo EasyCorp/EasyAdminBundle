@@ -78,7 +78,7 @@ final class AdminContext
         return $this->crudControllers;
     }
 
-    public function getEntity(): EntityDto
+    public function getEntity(): ?EntityDto
     {
         return $this->entityDto;
     }

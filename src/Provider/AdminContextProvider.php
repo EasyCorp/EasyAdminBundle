@@ -24,6 +24,6 @@ final class AdminContextProvider
     {
         $currentRequest = $this->requestStack->getCurrentRequest();
 
-        return null !== $currentRequest ? $currentRequest->get(EA::CONTEXT_REQUEST_ATTRIBUTE) : null;
+        return null !== $currentRequest ? $currentRequest->attributes->get(EA::CONTEXT_REQUEST_ATTRIBUTE) : null;
     }
 }

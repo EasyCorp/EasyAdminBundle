@@ -75,8 +75,7 @@ class AdminRouterSubscriber implements EventSubscriberInterface
 
         try {
             $adminContext = $this->getAdminContext($request);
-        }
-        catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             $brokenContextFailedWithException = $e;
         }
 
@@ -97,13 +96,13 @@ class AdminRouterSubscriber implements EventSubscriberInterface
         }
     }
 
-    public function getAdminContext(Request $request, bool $ignore_exception = false): ?AdminContext {
+    public function getAdminContext(Request $request, bool $ignore_exception = false): ?AdminContext
+    {
         $adminContext = null;
 
         if (null === $dashboardControllerFqcn = $this->getDashboardControllerFqcn($request)) {
             return $adminContext;
         }
-
 
         if (null === $dashboardControllerInstance = $this->getDashboardControllerInstance($dashboardControllerFqcn, $request)) {
             return $adminContext;
@@ -116,13 +115,14 @@ class AdminRouterSubscriber implements EventSubscriberInterface
             $adminContext = $this
                 ->adminContextFactory
                 ->create(
-                    $request, 
-                    $dashboardControllerInstance, 
-                    $crudControllerInstance, 
+                    $request,
+                    $dashboardControllerInstance,
+                    $crudControllerInstance,
                     $ignore_exception
                 )
             ;
         }
+
         return $adminContext;
     }
 

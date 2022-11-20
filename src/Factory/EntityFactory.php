@@ -144,10 +144,11 @@ final class EntityFactory
         $entityManager = $this->getEntityManager($entityFqcn);
         if (null === $entityInstance = $entityManager->getRepository($entityFqcn)->find($entityIdValue)) {
             $entityIdName = $entityManager->getClassMetadata($entityFqcn)->getIdentifierFieldNames()[0];
-            if (! $ignore_errors) {
+            if (!$ignore_errors) {
                 throw new EntityNotFoundException(['entity_name' => $entityFqcn, 'entity_id_name' => $entityIdName, 'entity_id_value' => $entityIdValue]);
             }
         }
+
         return $entityInstance;
     }
 }

@@ -240,4 +240,3 @@ final class AdminContextFactory
         return $this->entityFactory->create($crudDto->getEntityFqcn(), $request->query->get(EA::ENTITY_ID), $crudDto->getEntityPermission(), $ignore_errors);
     }
 }
-

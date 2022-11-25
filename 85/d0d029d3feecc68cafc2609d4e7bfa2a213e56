@@ -1,0 +1,29 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2022-11-04T19:10:29Z
+
+I've refactored this PR thanks to some tip given to me by @wouterj, so I'll merge this if nobody sees a problem with it. I want to be fully compatible with Symfony 6.2 before it's released.
+
+---------------------------------------------------------------------------
+
+by wouterj at 2022-11-05T12:05:24Z
+
+I don't think this works as you alias (i.e. create) the same class twice. You can probably add a new file to reuse the same definition instead, e.g:
+
+```php
+// src/ArgumentResolver/CompatValueResolverInteface.php
+use Symfony\Component\HttpKernel\Controller\ArgumentValueResolverInterface;
+use Symfony\Component\HttpKernel\Controller\ValueResolverInterface;
+
+if (class_exists(ValueResolverInterface::class)) {
+    class_alias(ValueResolverInterface::class, CompatValueResolverInterface::class);
+} else {
+    class_alias(ArgumentValueResolverInterface::class, CompatValueResolverInterface::class);
+}
+```
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2022-11-05T15:30:36Z
+
+Thanks for your review Wouter!

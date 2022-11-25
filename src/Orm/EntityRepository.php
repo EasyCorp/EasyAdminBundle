@@ -144,8 +144,13 @@ final class EntityRepository implements EntityRepositoryInterface
                 !$isUlidProperty &&
                 !$isJsonProperty
             ) {
+
+                $entityFqcn = 'entity' !== $entityName && isset($associatedEntityDto)
+                    ? $associatedEntityDto->getFqcn()
+                    : $entityDto->getFqcn()
+                ;
                 /** @var \ReflectionNamedType|\ReflectionUnionType|null $idClassType */
-                $idClassType = (new \ReflectionProperty($entityDto->getFqcn(), $propertyName))->getType();
+                $idClassType = (new \ReflectionProperty($entityFqcn, $propertyName))->getType();
 
                 if (null !== $idClassType) {
                     $idClassName = $idClassType->getName();

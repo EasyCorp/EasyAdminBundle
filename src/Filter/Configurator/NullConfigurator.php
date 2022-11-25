@@ -21,7 +21,9 @@ final class NullConfigurator implements FilterConfiguratorInterface
 
     public function configure(FilterDto $filterDto, ?FieldDto $fieldDto, EntityDto $entityDto, AdminContext $context): void
     {
-        if (empty($filterDto->getFormTypeOption('choices'))) {
+        $choices = $filterDto->getFormTypeOption('choices');
+
+        if (null === $choices || 0 === \count($choices)) {
             throw new \InvalidArgumentException(sprintf('The Null filter associated to the "%s" property does not define the labels of the NULL and NOT NULL options. Define them with the setChoiceLabels() method.', $filterDto->getProperty()));
         }
     }

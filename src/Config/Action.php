@@ -42,10 +42,10 @@ final class Action
     }
 
     /**
-     * @param TranslatableInterface|string|false|null $label Use FALSE to hide the label; use NULL to autogenerate it
-     * @param string|null                             $icon  The full CSS classes of the FontAwesome icon to render (see https://fontawesome.com/v6/search?m=free)
+     * @param mixed       $label Use FALSE to hide the label; use NULL to autogenerate it
+     * @param string|null $icon  The full CSS classes of the FontAwesome icon to render (see https://fontawesome.com/v6/search?m=free)
      */
-    public static function new(string $name, /* TranslatableInterface|string|false|null */ $label = null, ?string $icon = null): self
+    public static function new(string $name, /** @var TranslatableInterface|string|false|null */ $label = null, ?string $icon = null): self
     {
         if (!\is_string($label)
             && !$label instanceof TranslatableInterface
@@ -89,9 +89,9 @@ final class Action
     }
 
     /**
-     * @param TranslatableInterface|string|false|null $label Use FALSE to hide the label; use NULL to autogenerate it
+     * @param mixed $label Use FALSE to hide the label; use NULL to autogenerate it
      */
-    public function setLabel(/* TranslatableInterface|string|false|null */ $label): self
+    public function setLabel(/* @var TranslatableInterface|string|false|null */ $label): self
     {
         if (!\is_string($label)
             && !$label instanceof TranslatableInterface
@@ -193,13 +193,9 @@ final class Action
         return $this;
     }
 
-    /**
-     * @param string|callable $url
-     */
-    public function linkToUrl(/* string|callable */ $url): self
+    public function linkToUrl(/* @var string|callable */ $url): self
     {
-        if (!\is_string($url)
-            && !\is_callable($url)) {
+        if (!\is_string($url) && !\is_callable($url)) {
             trigger_deprecation(
                 'easycorp/easyadmin-bundle',
                 '4.0.5',

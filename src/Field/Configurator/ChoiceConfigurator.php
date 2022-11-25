@@ -26,9 +26,9 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
 
     public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
     {
-        $areChoicesTranslatable = $field->getCustomOption(ChoiceField::OPTION_USE_TRANSLATABLE_CHOICES);
-        $isExpanded = $field->getCustomOption(ChoiceField::OPTION_RENDER_EXPANDED);
-        $isMultipleChoice = $field->getCustomOption(ChoiceField::OPTION_ALLOW_MULTIPLE_CHOICES);
+        $areChoicesTranslatable = true === $field->getCustomOption(ChoiceField::OPTION_USE_TRANSLATABLE_CHOICES);
+        $isExpanded = true === $field->getCustomOption(ChoiceField::OPTION_RENDER_EXPANDED);
+        $isMultipleChoice = true === $field->getCustomOption(ChoiceField::OPTION_ALLOW_MULTIPLE_CHOICES);
 
         $choices = $this->getChoices($field->getCustomOption(ChoiceField::OPTION_CHOICES), $entityDto, $field);
 
@@ -57,7 +57,7 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
         $field->setFormTypeOptionIfNotSet('placeholder', '');
 
         // the value of this form option must be a string to properly propagate it as an HTML attribute value
-        $field->setFormTypeOption('attr.data-ea-autocomplete-render-items-as-html', $field->getCustomOption(ChoiceField::OPTION_ESCAPE_HTML_CONTENTS) ? 'false' : 'true');
+        $field->setFormTypeOption('attr.data-ea-autocomplete-render-items-as-html', true === $field->getCustomOption(ChoiceField::OPTION_ESCAPE_HTML_CONTENTS) ? 'false' : 'true');
 
         $fieldValue = $field->getValue();
         $isIndexOrDetail = \in_array($context->getCrud()->getCurrentPage(), [Crud::PAGE_INDEX, Crud::PAGE_DETAIL], true);
@@ -110,6 +110,7 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
     {
         $commonBadgeCssClass = 'badge';
 
+        $badgeType = '';
         if (true === $badgeSelector) {
             $badgeType = 'badge-secondary';
         } elseif (\is_array($badgeSelector)) {
@@ -121,7 +122,7 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
             }
         }
 
-        $badgeTypeCssClass = empty($badgeType) ? '' : u($badgeType)->ensureStart('badge-')->toString();
+        $badgeTypeCssClass = (null === $badgeType || '' === $badgeType) ? '' : u($badgeType)->ensureStart('badge-')->toString();
 
         return $commonBadgeCssClass.' '.$badgeTypeCssClass;
     }

@@ -17,7 +17,7 @@ final class InsufficientEntityPermissionException extends BaseException
             'entity_id' => $entityId = $adminContext->getRequest()->query->get('entityId'),
         ];
 
-        if (empty($entityId)) {
+        if (null !== $entityId) {
             $debugMessage = sprintf('You don\'t have enough permissions to access this instance of the "%s" entity.', $parameters['entity_fqcn']);
         } else {
             $debugMessage = sprintf('You don\'t have enough permissions to access the instance of the "%s" entity with id  = %s.', $parameters['entity_fqcn'], $entityId);

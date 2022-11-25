@@ -6,7 +6,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
-use EasyCorp\Bundle\EasyAdminBundle\Registry\CrudControllerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\DashboardControllerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Bridge\PhpUnit\ExpectDeprecationTrait;
@@ -273,14 +272,9 @@ class AdminUrlGeneratorTest extends WebTestCase
         $dashboardControllerRegistry->method('getNumberOfDashboards')->willReturn(2);
         $dashboardControllerRegistry->method('getFirstDashboardRoute')->willReturn('admin');
 
-        $crudControllerRegistry = $this->getMockBuilder(CrudControllerRegistry::class)->disableOriginalConstructor()->getMock();
-        $crudControllerRegistry->method('findCrudFqcnByCrudId')->willReturnMap([
-            ['a1b2c3', 'App\Controller\Admin\SomeCrudController'],
-        ]);
-
         $container = Kernel::MAJOR_VERSION >= 6 ? static::getContainer() : self::$container;
         $router = $container->get('router');
 
-        return new AdminUrlGenerator($adminContextProvider, $router, $dashboardControllerRegistry, $crudControllerRegistry);
+        return new AdminUrlGenerator($adminContextProvider, $router, $dashboardControllerRegistry);
     }
 }

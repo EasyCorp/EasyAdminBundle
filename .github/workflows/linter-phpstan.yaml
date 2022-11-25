@@ -1,0 +1,36 @@
+# It checks the PHPStan rules on the entire codebase
+name: "Linter: PHPStan"
+
+on: [push, pull_request]
+
+env:
+    fail-fast: true
+
+permissions:
+    contents: read
+
+jobs:
+    phpstan:
+        name: PHPStan
+        runs-on: ubuntu-latest
+        steps:
+            - name: 'Checkout code'
+              uses: actions/checkout@v3
+
+            - name: 'Install PHP with extensions'
+              uses: shivammathur/setup-php@v2
+              with:
+                  coverage: none
+                  php-version: 8.2
+                  tools: composer:v2
+                  extensions: mbstring, intl, pdo, pdo_sqlite, sqlite3
+                  ini-values: date.timezone=UTC
+
+            - name: 'Install project dependencies'
+              run: |
+                  composer require --no-progress --no-scripts --no-plugins symfony/flex
+                  composer update --no-interaction --prefer-dist --optimize-autoloader --prefer-stable
+                  vendor/bin/simple-phpunit install
+
+            - name: 'Run PHPStan analysis'
+              run: vendor/bin/phpstan analyse

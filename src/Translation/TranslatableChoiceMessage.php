@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Translation;
 
+use Symfony\Component\Translation\TranslatableMessage;
 use Symfony\Contracts\Translation\TranslatableInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -12,6 +13,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 final class TranslatableChoiceMessage implements TranslatableInterface
 {
+    /**
+     * @param TranslatableMessage $message
+     */
     public function __construct(
         private TranslatableInterface $message,
         private ?string $cssClass
@@ -22,7 +26,7 @@ final class TranslatableChoiceMessage implements TranslatableInterface
     {
         $message = $this->message->trans($translator, $locale);
 
-        if ($this->cssClass) {
+        if (null !== $this->cssClass) {
             return sprintf('<span class="%s">%s</span>', $this->cssClass, $message);
         }
 
@@ -31,7 +35,7 @@ final class TranslatableChoiceMessage implements TranslatableInterface
 
     public function __toString(): string
     {
-        if ($this->cssClass) {
+        if (null !== $this->cssClass) {
             return sprintf('<span class="%s">%s</span>', $this->cssClass, $this->message);
         }
 

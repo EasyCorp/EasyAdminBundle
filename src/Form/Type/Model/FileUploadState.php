@@ -34,7 +34,7 @@ class FileUploadState
     }
 
     /**
-     * @param File[] $currentFiles
+     * @param File|array<File>|null $currentFiles
      */
     public function setCurrentFiles($currentFiles): void
     {

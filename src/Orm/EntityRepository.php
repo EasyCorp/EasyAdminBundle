@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Orm;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
@@ -41,19 +42,19 @@ final class EntityRepository implements EntityRepositoryInterface
 
     public function createQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
     {
+        /** @var EntityManagerInterface $entityManager */
         $entityManager = $this->doctrine->getManagerForClass($entityDto->getFqcn());
-
-        /** @var QueryBuilder $queryBuilder */
         $queryBuilder = $entityManager->createQueryBuilder()
             ->select('entity')
             ->from($entityDto->getFqcn(), 'entity')
         ;
 
-        if (!empty($searchDto->getQuery())) {
+        if ('' !== $searchDto->getQuery()) {
             $this->addSearchClause($queryBuilder, $searchDto, $entityDto);
         }
 
-        if (!empty($searchDto->getAppliedFilters())) {
+        $appliedFilters = $searchDto->getAppliedFilters();
+        if (null !== $appliedFilters && 0 !== \count($appliedFilters)) {
             $this->addFilterClause($queryBuilder, $searchDto, $entityDto, $filters, $fields);
         }
 
@@ -82,7 +83,7 @@ final class EntityRepository implements EntityRepositoryInterface
 
         $entitiesAlreadyJoined = [];
         $configuredSearchableProperties = $searchDto->getSearchableProperties();
-        $searchableProperties = empty($configuredSearchableProperties) ? $entityDto->getAllPropertyNames() : $configuredSearchableProperties;
+        $searchableProperties = (null === $configuredSearchableProperties || 0 === \count($configuredSearchableProperties)) ? $entityDto->getAllPropertyNames() : $configuredSearchableProperties;
         foreach ($searchableProperties as $propertyName) {
             if ($entityDto->isAssociation($propertyName)) {
                 // support arbitrarily nested associations (e.g. foo.bar.baz.qux)
@@ -97,6 +98,7 @@ final class EntityRepository implements EntityRepositoryInterface
                 $originalPropertyMetadata = $entityDto->getPropertyMetadata($originalPropertyName);
                 $associatedEntityDto = $this->entityFactory->create($originalPropertyMetadata->get('targetEntity'));
 
+                $associatedEntityAlias = $associatedPropertyName = '';
                 for ($i = 0; $i < $numAssociatedProperties - 1; ++$i) {
                     $associatedEntityName = $associatedProperties[$i];
                     $associatedEntityAlias = Escaper::escapeDqlAlias($associatedEntityName);
@@ -126,10 +128,10 @@ final class EntityRepository implements EntityRepositoryInterface
             $isBoolean = 'boolean' === $propertyDataType;
             $isSmallIntegerProperty = 'smallint' === $propertyDataType;
             $isIntegerProperty = 'integer' === $propertyDataType;
-            $isNumericProperty = \in_array($propertyDataType, ['number', 'bigint', 'decimal', 'float']);
+            $isNumericProperty = \in_array($propertyDataType, ['number', 'bigint', 'decimal', 'float'], true);
             // 'citext' is a PostgreSQL extension (https://github.com/EasyCorp/EasyAdminBundle/issues/2556)
-            $isTextProperty = \in_array($propertyDataType, ['string', 'text', 'citext', 'array', 'simple_array']);
-            $isGuidProperty = \in_array($propertyDataType, ['guid', 'uuid']);
+            $isTextProperty = \in_array($propertyDataType, ['string', 'text', 'citext', 'array', 'simple_array'], true);
+            $isGuidProperty = \in_array($propertyDataType, ['guid', 'uuid'], true);
             $isUlidProperty = 'ulid' === $propertyDataType;
             $isJsonProperty = 'json' === $propertyDataType;
 
@@ -142,6 +144,7 @@ final class EntityRepository implements EntityRepositoryInterface
                 !$isUlidProperty &&
                 !$isJsonProperty
             ) {
+                /** @var \ReflectionNamedType|\ReflectionUnionType|null $idClassType */
                 $idClassType = (new \ReflectionProperty($entityDto->getFqcn(), $propertyName))->getType();
 
                 if (null !== $idClassType) {

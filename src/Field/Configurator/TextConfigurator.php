@@ -36,8 +36,8 @@ final class TextConfigurator implements FieldConfiguratorInterface
             throw new \RuntimeException(sprintf('The value of the "%s" field of the entity with ID = "%s" can\'t be converted into a string, so it cannot be represented by a TextField or a TextareaField.', $field->getProperty(), $entityDto->getPrimaryKeyValue()));
         }
 
-        $renderAsHtml = $field->getCustomOption(TextField::OPTION_RENDER_AS_HTML);
-        $stripTags = $field->getCustomOption(TextField::OPTION_STRIP_TAGS);
+        $renderAsHtml = true === $field->getCustomOption(TextField::OPTION_RENDER_AS_HTML);
+        $stripTags = true === $field->getCustomOption(TextField::OPTION_STRIP_TAGS);
         if ($renderAsHtml) {
             $formattedValue = (string) $field->getValue();
         } elseif ($stripTags) {

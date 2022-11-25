@@ -104,7 +104,7 @@ class MakeAdminDashboardCommand extends Command
             ->trim()
             ->toString();
 
-        return empty($guessedTitle) ? 'EasyAdmin' : $guessedTitle;
+        return '' === $guessedTitle ? 'EasyAdmin' : $guessedTitle;
     }
 
     private function getCommandHelp(): string

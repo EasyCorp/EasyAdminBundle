@@ -13,12 +13,13 @@ date_default_timezone_set('UTC');
 
 // we want final classes in code but we need non-final classes in tests
 // after trying many solutions (see https://tomasvotruba.com/blog/2019/03/28/how-to-mock-final-classes-in-phpunit/)
-// none ws reliable enough, so this custom solution removes the 'final' keyword
+// none was reliable enough, so this custom solution removes the 'final' keyword
 // from the source code of all project files (and restore it when tests finish)
 // This has to be done BEFORE loading any PHP classes. Otherwise the changes in the
 // source code contents are ignored
-define('EA_TEST_COMMENT_MARKER_START', '/* added-by-ea-tests');
-define('EA_TEST_COMMENT_MARKER_END', '*/');
+const EA_TEST_COMMENT_MARKER_START = '/* added-by-ea-tests';
+const EA_TEST_COMMENT_MARKER_END = '*/';
+
 foreach (glob(__DIR__.'/../src/**/*.php') as $sourceFilePath) {
     $sourceFilePath = realpath($sourceFilePath);
     $sourceFileContents = file_get_contents($sourceFilePath);

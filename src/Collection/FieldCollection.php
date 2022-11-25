@@ -80,7 +80,7 @@ final class FieldCollection implements CollectionInterface
 
     public function first(): ?FieldDto
     {
-        if (empty($this->fields)) {
+        if (0 === \count($this->fields)) {
             return null;
         }
 
@@ -118,7 +118,7 @@ final class FieldCollection implements CollectionInterface
     }
 
     /**
-     * @return FieldDto[]
+     * @return \ArrayIterator<FieldDto>
      */
     public function getIterator(): \ArrayIterator
     {

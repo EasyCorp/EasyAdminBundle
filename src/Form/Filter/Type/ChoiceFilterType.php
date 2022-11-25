@@ -17,7 +17,7 @@ class ChoiceFilterType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $multiple = $builder->get('value')->getOption('multiple');
+        $multiple = (bool) $builder->get('value')->getOption('multiple');
 
         $builder->addModelTransformer(new CallbackTransformer(
             static fn ($data) => $data,

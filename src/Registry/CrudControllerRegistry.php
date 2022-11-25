@@ -2,8 +2,6 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Registry;
 
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
-
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
@@ -14,9 +12,6 @@ final class CrudControllerRegistry
     private array $crudFqcnToCrudIdMap = [];
     private array $crudIdToCrudFqcnMap;
 
-    /**
-     * @param CrudControllerInterface[] $crudControllers
-     */
     public function __construct(string $kernelSecret, array $crudControllersFqcn)
     {
         foreach ($crudControllersFqcn as $controllerFqcn) {

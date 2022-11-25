@@ -91,7 +91,7 @@ final class MenuFactory
         if (!$menuItemDto->getLabel() instanceof TranslatableInterface) {
             $label = $menuItemDto->getLabel();
             $menuItemDto->setLabel(
-                empty($label) ? $label : t($label, $menuItemDto->getTranslationParameters(), $translationDomain)
+                '' === $label ? $label : t($label, $menuItemDto->getTranslationParameters(), $translationDomain)
             );
         }
 

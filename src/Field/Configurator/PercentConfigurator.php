@@ -23,7 +23,7 @@ final class PercentConfigurator implements FieldConfiguratorInterface
         $scale = $field->getCustomOption(PercentField::OPTION_NUM_DECIMALS);
         $roundingMode = $field->getCustomOption(PercentField::OPTION_ROUNDING_MODE);
         $symbol = $field->getCustomOption(PercentField::OPTION_SYMBOL);
-        $isStoredAsFractional = $field->getCustomOption(PercentField::OPTION_STORED_AS_FRACTIONAL);
+        $isStoredAsFractional = true === $field->getCustomOption(PercentField::OPTION_STORED_AS_FRACTIONAL);
 
         $field->setFormTypeOptionIfNotSet('scale', $scale);
         $field->setFormTypeOptionIfNotSet('symbol', $symbol);

@@ -21,7 +21,9 @@ final class ChoiceConfigurator implements FilterConfiguratorInterface
 
     public function configure(FilterDto $filterDto, ?FieldDto $fieldDto, EntityDto $entityDto, AdminContext $context): void
     {
-        if (empty($filterDto->getFormTypeOption('value_type_options.choices'))) {
+        $choices = $filterDto->getFormTypeOption('value_type_options.choices');
+
+        if (null === $choices || 0 === \count($choices)) {
             throw new \InvalidArgumentException(sprintf('The choice filter associated to the "%s" property does not define its choices. Define them with the setChoices() method.', $filterDto->getProperty()));
         }
     }

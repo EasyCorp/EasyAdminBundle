@@ -19,7 +19,7 @@ final class Locale
 
     public function __toString()
     {
-        return $this->dto->getValue();
+        return $this->dto->getName();
     }
 
     public static function new(string $locale, string|null $label = null, ?string $icon = null): self

@@ -218,10 +218,6 @@ trait FieldTrait
         }
 
         foreach ($entryNamesOrAssets as $entryNameOrAsset) {
-            if (!\is_string($entryNameOrAsset) && !($entryNameOrAsset instanceof Asset)) {
-                throw new \RuntimeException(sprintf('The argument passed to %s() can only be a string or a object of type "%s".', __METHOD__, Asset::class));
-            }
-
             if (\is_string($entryNameOrAsset)) {
                 $this->dto->addWebpackEncoreAsset(new AssetDto($entryNameOrAsset));
             } else {

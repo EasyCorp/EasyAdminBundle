@@ -42,7 +42,7 @@ final class BooleanConfigurator implements FieldConfiguratorInterface
                     ->setAction(Action::EDIT)
                     ->setEntityId($entityDto->getPrimaryKeyValue())
                     ->set('fieldName', $field->getProperty())
-                    ->set('csrfToken', $this->csrfTokenManager ? $this->csrfTokenManager->getToken(BooleanField::CSRF_TOKEN_NAME) : null)
+                    ->set('csrfToken', $this->csrfTokenManager?->getToken(BooleanField::CSRF_TOKEN_NAME))
                     ->generateUrl();
                 $field->setCustomOption(BooleanField::OPTION_TOGGLE_URL, $toggleUrl);
             }

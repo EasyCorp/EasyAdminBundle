@@ -7,13 +7,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\BatchActionDto;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Controller\ArgumentValueResolverInterface;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 
-/**
+/*
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class BatchActionDtoResolver implements ArgumentValueResolverInterface
+final class BatchActionDtoResolver implements CompatValueResolverInterface
 {
     private AdminContextProvider $adminContextProvider;
     private AdminUrlGenerator $adminUrlGenerator;
@@ -31,6 +30,10 @@ final class BatchActionDtoResolver implements ArgumentValueResolverInterface
 
     public function resolve(Request $request, ArgumentMetadata $argument): iterable
     {
+        if (BatchActionDto::class !== $argument->getType()) {
+            return [];
+        }
+
         if (null === $context = $this->adminContextProvider->getContext()) {
             throw new \RuntimeException(sprintf('Some of your controller actions have type-hinted an argument with the "%s" class but that\'s only available for actions run to serve EasyAdmin requests. Remove the type-hint or make sure the action is part of an EasyAdmin request.', BatchActionDto::class));
         }

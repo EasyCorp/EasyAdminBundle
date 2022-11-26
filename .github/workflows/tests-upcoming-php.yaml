@@ -5,7 +5,7 @@ on:
     pull_request:
     push:
         branches:
-            - 'master'
+            - '4.x'
 
 env:
     fail-fast: true
@@ -17,6 +17,10 @@ jobs:
     tests:
         runs-on: 'ubuntu-latest'
         continue-on-error: true
+        strategy:
+            matrix:
+                php-version: ['8.2']
+                symfony-version: ['6.2.*']
         steps:
             - name: 'Checkout code'
               uses: actions/checkout@v3
@@ -25,7 +29,7 @@ jobs:
               uses: shivammathur/setup-php@v2
               with:
                   coverage: none
-                  php-version: '8.2'
+                  php-version: ${{ matrix.php-version }}
                   tools: composer:v2
                   extensions: mbstring, intl, pdo, pdo_sqlite, sqlite3
                   ini-values: date.timezone=UTC
@@ -33,7 +37,8 @@ jobs:
             - name: 'Install project dependencies'
               run: |
                   composer require --no-progress --no-scripts --no-plugins symfony/flex
-                  composer config extra.symfony.require "5.4"
+                  composer config extra.symfony.require "${{ matrix.symfony-version }}"
+                  composer config minimum-stability "dev"
                   composer update --no-interaction --prefer-dist --optimize-autoloader --prefer-stable --ignore-platform-req=php
                   vendor/bin/simple-phpunit install
 

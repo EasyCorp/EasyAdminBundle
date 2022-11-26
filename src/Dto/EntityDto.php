@@ -16,6 +16,7 @@ final class EntityDto
 {
     private bool $isAccessible = true;
     private string $fqcn;
+    /** @var ClassMetadataInfo */
     private ClassMetadata $metadata;
     private $instance;
     private $primaryKeyName;
@@ -24,6 +25,9 @@ final class EntityDto
     private ?FieldCollection $fields = null;
     private ?ActionCollection $actions = null;
 
+    /**
+     * @param ClassMetadata&ClassMetadataInfo $entityMetadata
+     */
     public function __construct(string $entityFqcn, ClassMetadata $entityMetadata, ?string $entityPermission = null, /* ?object */ $entityInstance = null)
     {
         if (!\is_object($entityInstance)
@@ -156,10 +160,6 @@ final class EntityDto
 
     public function getPropertyMetadata(string $propertyName): KeyValueStore
     {
-        if (null === $this->metadata) {
-            return KeyValueStore::new();
-        }
-
         if (\array_key_exists($propertyName, $this->metadata->fieldMappings)) {
             return KeyValueStore::new($this->metadata->fieldMappings[$propertyName]);
         }

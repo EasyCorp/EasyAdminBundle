@@ -17,10 +17,7 @@ final class FilterConfigDto
         $this->filters = KeyValueStore::new();
     }
 
-    /**
-     * @param FilterInterface|string $filterNameOrConfig
-     */
-    public function addFilter(/* FilterInterface|string */ $filterNameOrConfig): void
+    public function addFilter(/* @var FilterInterface|string */ $filterNameOrConfig): void
     {
         if (!\is_string($filterNameOrConfig) && !$filterNameOrConfig instanceof FilterInterface) {
             trigger_deprecation(

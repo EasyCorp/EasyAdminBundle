@@ -122,7 +122,7 @@ final class Actions
         // if 'delete' is disabled, 'batch delete' is disabled automatically (but the
         // opposite doesn't happen). This is the most common case, but user can re-enable
         // the 'batch delete' action if needed manually
-        if (\in_array(Action::DELETE, $disabledActionNames)) {
+        if (\in_array(Action::DELETE, $disabledActionNames, true)) {
             $disabledActionNames[] = Action::BATCH_DELETE;
         }
 

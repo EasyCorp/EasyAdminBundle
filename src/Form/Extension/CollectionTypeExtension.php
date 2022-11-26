@@ -22,7 +22,8 @@ class CollectionTypeExtension extends AbstractTypeExtension
         // check if the entry type also defines a block prefix
         /** @var FormInterface $entry */
         foreach ($form as $entry) {
-            if ($entry->getConfig()->getOption('block_prefix')) {
+            $blockPrefix = $entry->getConfig()->getOption('block_prefix');
+            if (null !== $blockPrefix && '' !== $blockPrefix) {
                 --$prefixOffset;
             }
 
@@ -38,9 +39,11 @@ class CollectionTypeExtension extends AbstractTypeExtension
             array_splice($entryView->vars['block_prefixes'], $prefixOffset, 0, 'collection_entry');
         }
 
-        /** @var FormInterface $prototype */
-        if ($prototype = $form->getConfig()->getAttribute('prototype')) {
-            if ($prefixOffset > -3 && $prototype->getConfig()->getOption('block_prefix')) {
+        /** @var FormInterface|null $prototype */
+        $prototype = $form->getConfig()->getAttribute('prototype');
+        if (null !== $prototype) {
+            $blockPrefix = $prototype->getConfig()->getOption('block_prefix');
+            if ($prefixOffset > -3 && null !== $blockPrefix && '' !== $blockPrefix) {
                 --$prefixOffset;
             }
 

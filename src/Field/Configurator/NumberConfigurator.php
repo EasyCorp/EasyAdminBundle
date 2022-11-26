@@ -34,7 +34,7 @@ final class NumberConfigurator implements FieldConfiguratorInterface
 
         $scale = $field->getCustomOption(NumberField::OPTION_NUM_DECIMALS);
         $roundingMode = $field->getCustomOption(NumberField::OPTION_ROUNDING_MODE);
-        $isStoredAsString = $field->getCustomOption(NumberField::OPTION_STORED_AS_STRING);
+        $isStoredAsString = true === $field->getCustomOption(NumberField::OPTION_STORED_AS_STRING);
 
         $field->setFormTypeOptionIfNotSet('input', $isStoredAsString ? 'string' : 'number');
         $field->setFormTypeOptionIfNotSet('rounding_mode', $roundingMode);

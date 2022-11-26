@@ -29,7 +29,7 @@ final class KeyValueStore
 
     public function has(string $key): bool
     {
-        if (empty($this->map)) {
+        if (0 === \count($this->map)) {
             return false;
         }
 

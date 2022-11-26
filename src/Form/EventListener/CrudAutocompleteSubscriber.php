@@ -23,7 +23,7 @@ class CrudAutocompleteSubscriber implements EventSubscriberInterface
     public function preSetData(FormEvent $event)
     {
         $form = $event->getForm();
-        $data = $event->getData() ?: [];
+        $data = $event->getData() ?? [];
 
         $options = $form->getConfig()->getOptions();
         $options['compound'] = false;

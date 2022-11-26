@@ -22,6 +22,7 @@ final class ActionDto
     private ?string $crudActionName = null;
     private ?string $routeName = null;
     private $routeParameters = [];
+    /* @var callable|string|null */
     private $url;
     private array $translationParameters = [];
     private $displayCallable;
@@ -61,12 +62,12 @@ final class ActionDto
         $this->name = $name;
     }
 
-    public function getLabel(): TranslatableInterface|string|null
+    public function getLabel(): TranslatableInterface|string|false|null
     {
         return $this->label;
     }
 
-    public function setLabel(TranslatableInterface|string|null $label): void
+    public function setLabel(TranslatableInterface|string|false|null $label): void
     {
         $this->label = $label;
     }
@@ -169,13 +170,9 @@ final class ActionDto
         return $this->routeParameters;
     }
 
-    /**
-     * @param array|callable $routeParameters
-     */
-    public function setRouteParameters(/* array|callable */ $routeParameters): void
+    public function setRouteParameters(/* @var array|callable */ $routeParameters): void
     {
-        if (!\is_array($routeParameters)
-            && !\is_callable($routeParameters)) {
+        if (!\is_array($routeParameters) && !\is_callable($routeParameters)) {
             trigger_deprecation(
                 'easycorp/easyadmin-bundle',
                 '4.0.5',
@@ -191,20 +188,16 @@ final class ActionDto
     }
 
     /**
-     * @return string|callable
+     * @return string|callable|null
      */
     public function getUrl()/* : string|callable */
     {
         return $this->url;
     }
 
-    /**
-     * @param string|callable $url
-     */
-    public function setUrl(/* string|callable */ $url): void
+    public function setUrl(/* @var string|callable */ $url): void
     {
-        if (!\is_string($url)
-            && !\is_callable($url)) {
+        if (!\is_string($url) && !\is_callable($url)) {
             trigger_deprecation(
                 'easycorp/easyadmin-bundle',
                 '4.0.5',
@@ -231,7 +224,7 @@ final class ActionDto
 
     public function shouldBeDisplayedFor(EntityDto $entityDto): bool
     {
-        return null === $this->displayCallable || \call_user_func($this->displayCallable, $entityDto->getInstance());
+        return null === $this->displayCallable || (bool) \call_user_func($this->displayCallable, $entityDto->getInstance());
     }
 
     public function setDisplayCallable(callable $displayCallable): void

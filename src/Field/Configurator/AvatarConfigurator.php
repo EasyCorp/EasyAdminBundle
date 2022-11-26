@@ -26,7 +26,7 @@ final class AvatarConfigurator implements FieldConfiguratorInterface
             $field->setCustomOption(AvatarField::OPTION_HEIGHT, $isDetailAction ? 48 : 24);
         }
 
-        if ($field->getCustomOption(AvatarField::OPTION_IS_GRAVATAR_EMAIL)) {
+        if (false !== $field->getCustomOption(AvatarField::OPTION_IS_GRAVATAR_EMAIL)) {
             $field->setFormattedValue(sprintf('https://www.gravatar.com/avatar/%s?s=%d&d=mp', md5($field->getValue()), $field->getCustomOption(AvatarField::OPTION_HEIGHT)));
         }
     }

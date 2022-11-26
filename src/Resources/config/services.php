@@ -155,12 +155,11 @@ return static function (ContainerConfigurator $container) {
 
         ->set(AdminRouterSubscriber::class)
             ->arg(0, service(AdminContextFactory::class))
-            ->arg(1, service(CrudControllerRegistry::class))
-            ->arg(2, service(ControllerFactory::class))
-            ->arg(3, service('controller_resolver'))
+            ->arg(1, service(ControllerFactory::class))
+            ->arg(2, service('controller_resolver'))
+            ->arg(3, service('router'))
             ->arg(4, service('router'))
-            ->arg(5, service('router'))
-            ->arg(6, service('twig'))
+            ->arg(5, service('twig'))
             ->tag('kernel.event_subscriber')
 
         ->set(ControllerFactory::class)
@@ -186,7 +185,6 @@ return static function (ContainerConfigurator $container) {
             ->arg(0, service(AdminContextProvider::class))
             ->arg(1, service('router.default'))
             ->arg(2, service(DashboardControllerRegistry::class))
-            ->arg(3, service(CrudControllerRegistry::class))
 
         ->set('service_locator_'.AdminUrlGenerator::class, ServiceLocator::class)
             ->args([[AdminUrlGenerator::class => service(AdminUrlGenerator::class)]])

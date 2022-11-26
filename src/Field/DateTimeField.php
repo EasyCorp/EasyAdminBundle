@@ -89,7 +89,7 @@ final class DateTimeField implements FieldInterface
             throw new \InvalidArgumentException(sprintf('The first argument of the "%s()" method cannot be an empty string. Use either a date format (%s) or a datetime Intl pattern.', __METHOD__, implode(', ', self::VALID_DATE_FORMATS)));
         }
 
-        $datePatternIsEmpty = self::FORMAT_NONE === $dateFormatOrPattern || '' === trim($dateFormatOrPattern);
+        $datePatternIsEmpty = self::FORMAT_NONE === $dateFormatOrPattern;
         $timePatternIsEmpty = self::FORMAT_NONE === $timeFormat || '' === trim($timeFormat);
         if ($datePatternIsEmpty && $timePatternIsEmpty) {
             throw new \InvalidArgumentException(sprintf('The values of the arguments of "%s()" cannot be "%s" or an empty string at the same time. Change any of them (or both).', __METHOD__, self::FORMAT_NONE));

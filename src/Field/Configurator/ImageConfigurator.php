@@ -39,7 +39,7 @@ final class ImageConfigurator implements FieldConfiguratorInterface
         $field->setFormTypeOption('upload_filename', $field->getCustomOption(ImageField::OPTION_UPLOADED_FILE_NAME_PATTERN));
 
         // this check is needed to avoid displaying broken images when image properties are optional
-        if (empty($formattedValue) || $formattedValue === rtrim($configuredBasePath ?? '', '/')) {
+        if (null === $formattedValue || '' === $formattedValue || (\is_array($formattedValue) && 0 === \count($formattedValue)) || $formattedValue === rtrim($configuredBasePath ?? '', '/')) {
             $field->setTemplateName('label/empty');
         }
 

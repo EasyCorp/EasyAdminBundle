@@ -163,7 +163,7 @@ final class CrudDto
             $title = null !== $entityInstance ? $title($entityInstance) : $title();
         }
 
-        if (empty($title)) {
+        if (null === $title || '' === $title) {
             return null;
         }
 
@@ -174,14 +174,9 @@ final class CrudDto
         return t($title, $translationParameters);
     }
 
-    /**
-     * @param TranslatableInterface|string|callable $pageTitle
-     */
-    public function setCustomPageTitle(string $pageName, /* TranslatableInterface|string|callable */ $pageTitle): void
+    public function setCustomPageTitle(string $pageName, /* @var TranslatableInterface|string|callable */ $pageTitle): void
     {
-        if (!\is_string($pageTitle)
-            && !$pageTitle instanceof TranslatableInterface
-            && !\is_callable($pageTitle)) {
+        if (!\is_string($pageTitle) && !$pageTitle instanceof TranslatableInterface && !\is_callable($pageTitle)) {
             trigger_deprecation(
                 'easycorp/easyadmin-bundle',
                 '4.0.5',
@@ -215,7 +210,7 @@ final class CrudDto
             if (method_exists($entityInstance, '__toString')) {
                 $entityAsString = (string) $entityInstance;
 
-                if (!empty($entityAsString)) {
+                if ('' !== $entityAsString) {
                     return t($entityAsString, $translationParameters, 'EasyAdminBundle');
                 }
             }

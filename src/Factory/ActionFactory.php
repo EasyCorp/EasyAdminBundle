@@ -117,7 +117,7 @@ final class ActionFactory
                 $actionDto->getTranslationParameters()
             );
             $label = $actionDto->getLabel();
-            $translatableActionLabel = empty($label) ? $label : t($label, $translationParameters, $translationDomain);
+            $translatableActionLabel = (null === $label || '' === $label) ? $label : t($label, $translationParameters, $translationDomain);
             $actionDto->setLabel($translatableActionLabel);
         } else {
             $actionDto->setLabel(TranslatableMessageBuilder::withParameters($actionDto->getLabel(), $defaultTranslationParameters));
@@ -144,7 +144,7 @@ final class ActionFactory
             $actionDto->addHtmlAttributes([
                 'data-bs-toggle' => 'modal',
                 'data-bs-target' => '#modal-batch-action',
-                'data-action-csrf-token' => $this->csrfTokenManager ? $this->csrfTokenManager->getToken('ea-batch-action-'.$actionDto->getName()) : null,
+                'data-action-csrf-token' => $this->csrfTokenManager?->getToken('ea-batch-action-'.$actionDto->getName()),
                 'data-action-batch' => 'true',
                 'data-entity-fqcn' => $adminContext->getCrud()->getEntityFqcn(),
                 'data-action-url' => $actionDto->getLinkUrl(),

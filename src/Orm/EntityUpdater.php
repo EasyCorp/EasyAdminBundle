@@ -5,6 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Orm;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Orm\EntityUpdaterInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
+use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
@@ -30,7 +31,9 @@ final class EntityUpdater implements EntityUpdaterInterface
         $entityInstance = $entityDto->getInstance();
         $this->propertyAccessor->setValue($entityInstance, $propertyName, $value);
 
-        if (0 < \count($violations = $this->validator->validate($entityInstance))) {
+        /** @var ConstraintViolationList $violations */
+        $violations = $this->validator->validate($entityInstance);
+        if (0 < \count($violations)) {
             throw new \RuntimeException((string) $violations);
         }
 

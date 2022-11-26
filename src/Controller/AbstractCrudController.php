@@ -482,7 +482,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $this->container->get(EntityFactory::class)->processFields($context->getEntity(), $fields);
         $filters = $this->container->get(FilterFactory::class)->create($context->getCrud()->getFiltersConfig(), $context->getEntity()->getFields(), $context->getEntity());
 
-        /** @var FiltersFormType $filtersForm */
+        /** @var FormInterface&FiltersFormType $filtersForm */
         $filtersForm = $this->container->get(FormFactory::class)->createFiltersForm($filters, $context->getRequest());
         $formActionParts = parse_url($filtersForm->getConfig()->getAction());
         $queryString = $formActionParts[EA::QUERY] ?? '';

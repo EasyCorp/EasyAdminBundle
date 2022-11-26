@@ -174,11 +174,11 @@ class FileUploadType extends AbstractType implements DataMapperInterface
             };
         });
         $resolver->setNormalizer('allow_add', static function (Options $options, string $value): bool {
-            if ($value && !$options['multiple']) {
+            if ((bool) $value && !$options['multiple']) {
                 throw new InvalidArgumentException('Setting "allow_add" option to "true" when "multiple" option is "false" is not supported.');
             }
 
-            return $value;
+            return (bool) $value;
         });
     }
 

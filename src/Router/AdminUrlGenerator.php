@@ -7,7 +7,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
-use EasyCorp\Bundle\EasyAdminBundle\Registry\CrudControllerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\DashboardControllerRegistry;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -20,19 +19,17 @@ final class AdminUrlGenerator
     private AdminContextProvider $adminContextProvider;
     private UrlGeneratorInterface $urlGenerator;
     private DashboardControllerRegistry $dashboardControllerRegistry;
-    private CrudControllerRegistry $crudControllerRegistry;
     private ?string $dashboardRoute = null;
     private ?bool $includeReferrer = null;
     private array $routeParameters = [];
     private ?string $currentPageReferrer = null;
     private ?string $customPageReferrer = null;
 
-    public function __construct(AdminContextProvider $adminContextProvider, UrlGeneratorInterface $urlGenerator, DashboardControllerRegistry $dashboardControllerRegistry, CrudControllerRegistry $crudControllerRegistry)
+    public function __construct(AdminContextProvider $adminContextProvider, UrlGeneratorInterface $urlGenerator, DashboardControllerRegistry $dashboardControllerRegistry)
     {
         $this->adminContextProvider = $adminContextProvider;
         $this->urlGenerator = $urlGenerator;
         $this->dashboardControllerRegistry = $dashboardControllerRegistry;
-        $this->crudControllerRegistry = $crudControllerRegistry;
     }
 
     public function setDashboard(string $dashboardControllerFqcn): self

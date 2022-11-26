@@ -90,7 +90,7 @@ final class EntityPaginator implements EntityPaginatorInterface
      * This code was inspired by https://github.com/django/django/blob/55fabc53373a8c7ef31d8c4cffd2a07be0a88c2e/django/core/paginator.py#L134
      * (c) Django Project
      *
-     * @return int[]
+     * @return iterable<int|null>
      */
     public function getPageRange(int $pagesOnEachSide = null, int $pagesOnEdges = null): iterable
     {
@@ -173,6 +173,7 @@ final class EntityPaginator implements EntityPaginatorInterface
 
     public function getResultsAsJson(): string
     {
+        $jsonResult = [];
         foreach ($this->getResults() ?? [] as $entityInstance) {
             $entityDto = $this->entityFactory->createForEntityInstance($entityInstance);
 

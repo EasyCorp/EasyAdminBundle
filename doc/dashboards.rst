@@ -323,12 +323,17 @@ and render them in your own Twig template::
 
     class DashboardController extends AbstractDashboardController
     {
+        public function __construct(
+            private ChartBuilderInterface $chartBuilder,
+        ) {
+        }
+
         // ...
 
         #[Route('/admin')]
-        public function index(ChartBuilderInterface $chartBuilder): Response
+        public function admin(): Response
         {
-            $chart = $chartBuilder->createChart(Chart::TYPE_LINE);
+            $chart = $this->chartBuilder->createChart(Chart::TYPE_LINE);
             // ...set chart data and options somehow
 
             return $this->render('admin/my-dashboard.html.twig', [
@@ -336,6 +341,13 @@ and render them in your own Twig template::
             ]);
         }
     }
+
+.. note::
+
+    Since ``index()`` is part of the ``Dashboard`` interface, you cannot add arguments
+    to it to inject dependencies (such as ``ChartBuilderInterface`` in the above
+    example). Instead, inject dependencies in the controller constructor or use
+    a method name different from the ones defined in the interface.
 
 Another popular option is to make the dashboard redirect to the most common task
 for people working on the backend. This requires :ref:`generating admin URLs <generate-admin-urls>`,

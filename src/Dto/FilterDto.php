@@ -86,15 +86,9 @@ final class FilterDto
         return $this->label;
     }
 
-    /**
-     * @param TranslatableInterface|string|false|null $label
-     */
-    public function setLabel(/* TranslatableInterface|string|false|null */ $label): void
+    public function setLabel(/* @var TranslatableInterface|string|false|null */ $label): void
     {
-        if (!\is_string($label)
-            && !$label instanceof TranslatableInterface
-            && false !== $label
-            && null !== $label) {
+        if (!\is_string($label) && !$label instanceof TranslatableInterface && false !== $label && null !== $label) {
             trigger_deprecation(
                 'easycorp/easyadmin-bundle',
                 '4.0.5',

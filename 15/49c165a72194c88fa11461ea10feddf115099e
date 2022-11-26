@@ -1,0 +1,82 @@
+---------------------------------------------------------------------------
+
+by john-dufrene-dev at 2022-11-26T08:59:17Z
+
+Hi @ksn135 ,
+
+Just with this small add Line of code you have a complete Ajax system ?
+
+Could you add a complete example if possible ?
+
+Thanks in advance :)
+
+---------------------------------------------------------------------------
+
+by ksn135 at 2022-11-26T11:48:28Z
+
+> Just with this small add Line of code you have a complete Ajax system ?
+
+Yes, it’s full example. Just use my patch and install symfony ux, see links above. )
+
+---------------------------------------------------------------------------
+
+by ksn135 at 2022-11-26T11:55:39Z
+
+@john-dufrene-dev https://symfony.com/bundles/ux-swup/current/index.html
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2022-11-26T12:00:25Z
+
+This looks very nice. I wonder if we should add this as a built-in feature in EA 🤔
+
+---------------------------------------------------------------------------
+
+by ksn135 at 2022-11-26T12:11:23Z
+
+@javiereguiluz well, it looks VERY promising, BUT with my current setup it's has several glitches:
+* When exception occurs it stalled with exception page (needs browser reload)
+* Symfony toolbar not updated properly (probably need additional setup in ```containers ```)
+
+It's OK for production, but I've disabled it in development mode for now. )
+
+---------------------------------------------------------------------------
+
+by john-dufrene-dev at 2022-11-26T13:04:01Z
+
+> @javiereguiluz well, it looks VERY promising, BUT with my current setup it's has several glitches:
+> * When exception occurs it stalled with exception page (needs browser reload)
+> * Symfony toolbar not updated properly (probably need additional setup in ```containers ```)
+>
+> It's OK for production, but I've disabled it in development mode for now. )
+
+@ksn135 May be an option to disable / enable it,
+It's look very nice when I test it on my project
+
+@javiereguiluz could be a nice feature :)
+
+---------------------------------------------------------------------------
+
+by michaelKaefer at 2022-11-26T13:24:48Z
+
+I'm strictly against any PR from a Russian who seems to work for the entertainment industry of a criminal warfare country.
+
+---------------------------------------------------------------------------
+
+by ksn135 at 2022-11-26T13:53:33Z
+
+> I'm strictly against any PR from a Russian who seems to work for the entertainment industry of a criminal warfare country.
+
+It's PURE discrimination against Russians based on their ethnic or cultural origin, typical forms of [xenophobia](https://en.wikipedia.org/wiki/Xenophobia) and [racism](https://en.wikipedia.org/wiki/Racism).
+
+GitHub’s vision is to be the home for all developers, no matter where they reside. We take our obligations with respect to government mandates seriously, which includes complying with stringent new export controls aimed at severely restricting Russia’s access to technologies and other items needed to sustain its aggressive military capabilities.
+
+We also take seriously our responsibility to examine government mandates thoroughly to be certain that users and customers are not impacted beyond the scope of the mandates. This includes protecting open collaboration and the free flow of information in our interconnected community to support communications, humanitarian work, and organizing for change. You can read more about [GitHub policies](https://docs.github.com/en/github/site-policy/github-and-trade-controls) on GitHub Docs.
+
+P.S.: "хохлосрач" detected!
+
+---------------------------------------------------------------------------
+
+by ahmedyakoubi at 2022-11-26T17:42:47Z
+
+i think if we use turbo for the feel of spa experience is a better way than swup

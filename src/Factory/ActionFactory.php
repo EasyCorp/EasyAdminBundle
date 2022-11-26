@@ -164,12 +164,12 @@ final class ActionFactory
             return $url;
         }
 
-        if (null !== $routeName = $actionDto->getRouteName()) {
-            $routeParameters = $actionDto->getRouteParameters();
-            if (\is_callable($routeParameters) && null !== $entityInstance = $entityDto->getInstance()) {
-                $routeParameters = $routeParameters($entityInstance);
-            }
+        $routeParameters = $actionDto->getRouteParameters();
+        if (\is_callable($routeParameters) && null !== $entityInstance = $entityDto->getInstance()) {
+            $routeParameters = $routeParameters($entityInstance);
+        }
 
+        if (null !== $routeName = $actionDto->getRouteName()) {
             return $this->adminUrlGenerator->unsetAllExcept(EA::MENU_INDEX, EA::SUBMENU_INDEX)->includeReferrer()->setRoute($routeName, $routeParameters)->generateUrl();
         }
 
@@ -178,6 +178,10 @@ final class ActionFactory
             EA::CRUD_ACTION => $actionDto->getCrudActionName(),
             EA::REFERRER => $this->generateReferrerUrl($request, $actionDto, $currentAction),
         ];
+
+        if (\is_array($routeParameters)) {
+            $requestParameters += $routeParameters;
+        }
 
         if (\in_array($actionDto->getName(), [Action::INDEX, Action::NEW, Action::SAVE_AND_ADD_ANOTHER, Action::SAVE_AND_RETURN], true)) {
             $requestParameters[EA::ENTITY_ID] = null;

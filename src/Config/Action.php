@@ -172,9 +172,10 @@ final class Action
         return $this;
     }
 
-    public function linkToCrudAction(string $crudActionName): self
+    public function linkToCrudAction(string $crudActionName, array|callable $routeParameters = []): self
     {
         $this->dto->setCrudActionName($crudActionName);
+        $this->dto->setRouteParameters($routeParameters);
 
         return $this;
     }

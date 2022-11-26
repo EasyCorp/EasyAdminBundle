@@ -49,7 +49,7 @@
 </head>
 
 {% block body %}
-    <body
+    <body {% block body_attr %}{% endblock %}
         id="{% block body_id %}{% endblock %}"
         class="ea {% block body_class %}{% endblock %}"
         data-ea-content-width="{{ ea.crud.contentWidth ?? ea.dashboardContentWidth ?? 'normal' }}"

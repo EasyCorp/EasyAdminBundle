@@ -7,6 +7,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\PaginatorDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use Symfony\Contracts\Translation\TranslatableInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterConfigDto;
+use EasyCorp\Bundle\EasyAdminBundle\Interfaces\SelectedColumnStorageProviderInterface;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -42,7 +44,7 @@ class Crud
     }
 
     /**
-     * @param $label The callable signature is: fn ($entityInstance, $pageName): string
+     * @param TranslatableInterface|string|callable $label The callable signature is: fn ($entityInstance, $pageName): string
      */
     public function setEntityLabelInSingular(/* @var TranslatableInterface|string|callable */ $label): self
     {
@@ -64,7 +66,7 @@ class Crud
     }
 
     /**
-     * @param $label The callable signature is: fn ($entityInstance, $pageName): string
+     * @param TranslatableInterface|string|callable $label The callable signature is: fn ($entityInstance, $pageName): string
      */
     public function setEntityLabelInPlural(/* @var TranslatableInterface|string|callable */ $label): self
     {
@@ -86,7 +88,7 @@ class Crud
     }
 
     /**
-     * @param $title The callable signature is: fn ($entityInstance): string
+     * @param TranslatableInterface|string|callable $title The callable signature is: fn ($entityInstance): string
      */
     public function setPageTitle(string $pageName, /* @var TranslatableInterface|string|callable */ $title): self
     {
@@ -269,7 +271,7 @@ class Crud
 
     public function setFilters(?array $filters): self
     {
-        $this->dto->setFiltersConfig($filters);
+        $this->dto->setFiltersConfig(new FilterConfigDto($filters !== null ? $filters : []));
 
         return $this;
     }
@@ -389,4 +391,50 @@ class Crud
     {
         return [self::PAGE_DETAIL, self::PAGE_EDIT, self::PAGE_INDEX, self::PAGE_NEW];
     }
+
+    public function setupColumnChooser(SelectedColumnStorageProviderInterface $selectedColumnStorageProvider, bool $enableColumnChooser = true, array $defaultColumns = [], array $availableColumns = [], array $excludeColumns = []): self
+    {
+        $this->dto->setupColumnChooser($selectedColumnStorageProvider, $enableColumnChooser, $defaultColumns, $availableColumns, $excludeColumns);
+        return $this;
+    }
+
+    public function setColumnChooserColumns(array $defaultColumns = [], array $availableColumns = [], array $excludeColumns = []): self
+    {
+        $this->dto->setColumnChooserColumns($defaultColumns, $availableColumns, $excludeColumns);
+        return $this;
+    }
+
+    public function setColumnChooserSelectedColumnStorageProvider(?SelectedColumnStorageProviderInterface $selectedColumnStorageProvider = null): self
+    {
+        $this->dto->setColumnChooserSelectedColumnStorageProvider($selectedColumnStorageProvider);
+        return $this;
+    }
+
+    public function getColumnChooserSelectedColumnStorageProvider(): ?SelectedColumnStorageProviderInterface
+    {
+        return $this->dto->getColumnChooserSelectedColumnStorageProvider();
+    }
+
+    public function setColumnChooser(bool $columnChooser): self
+    {
+        $this->dto->setColumnChooser($columnChooser);
+        return $this;
+    }
+    public function enableColumnChooser(): self
+    {
+        $this->dto->enableColumnChooser();
+        return $this;
+    }
+
+    public function disableColumnChooser(): self
+    {
+        $this->dto->disableColumnChooser();
+        return $this;
+    }
+
+    public function isColumnChooserEnabled(): bool
+    {
+        return $this->dto->isColumnChooserEnabled();
+    }
+
 }

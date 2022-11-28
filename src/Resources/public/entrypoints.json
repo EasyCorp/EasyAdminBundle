@@ -6,12 +6,12 @@
         "/app.2167d418.rtl.css"
       ],
       "js": [
-        "/app.1bae3230.js"
+        "/app.9e8c46f5.js"
       ]
     },
     "form": {
       "js": [
-        "/form.5aa1447f.js"
+        "/form.4e5a992f.js"
       ]
     },
     "page-layout": {
@@ -21,12 +21,12 @@
     },
     "page-color-scheme": {
       "js": [
-        "/page-color-scheme.a1568167.js"
+        "/page-color-scheme.a1970567.js"
       ]
     },
     "field-boolean": {
       "js": [
-        "/field-boolean.33d03224.js"
+        "/field-boolean.353e173e.js"
       ]
     },
     "field-code-editor": {
@@ -45,22 +45,22 @@
     },
     "field-file-upload": {
       "js": [
-        "/field-file-upload.71a03f67.js"
+        "/field-file-upload.c4e5ca26.js"
       ]
     },
     "field-image": {
       "js": [
-        "/field-image.c14f1295.js"
+        "/field-image.b7b44654.js"
       ]
     },
     "field-slug": {
       "js": [
-        "/field-slug.1c789293.js"
+        "/field-slug.62c6c84c.js"
       ]
     },
     "field-textarea": {
       "js": [
-        "/field-textarea.f496dd73.js"
+        "/field-textarea.663dbf0a.js"
       ]
     },
     "field-text-editor": {
@@ -69,7 +69,7 @@
         "/field-text-editor.7348fb97.rtl.css"
       ],
       "js": [
-        "/field-text-editor.5848d9aa.js"
+        "/field-text-editor.b863403c.js"
       ]
     },
     "login": {

@@ -24,31 +24,25 @@ class UserSelectedColumnStorageProvider implements SelectedColumnStorageProvider
         if (! is_object($user) || ! ($user instanceof UserParametersStorageInterface)) {
             return $defaultColumns;
         }
-        $columns = $user->getParameter($key);
+        $columns = array_values($user->getParameter($key));
         if (! is_array($columns) || count($columns) < 1) {
-            $columns = $defaultColumns;
+            $columns = array_values($defaultColumns);
         }
-        return array_unique(array_filter(array_intersect($columns, $availableColumns)));
+        return array_unique(array_filter(array_intersect($columns, array_values($availableColumns))));
     }
 
     public function storeSelectedColumns(string $key, array $selectedColumns): bool
     {
-        try {
-            $user = $this->security->getUser();
-            if (! is_object($user) || ! ($user instanceof UserParametersStorageInterface)) {
-                return false;
-            }
-            $em = $this->managerRegistry->getManagerForClass(get_class($user));
-            if (! is_object($em)) {
-                return false;
-            }
-            $em->persist($user->setOrAddParameter($key, $selectedColumns));
-            $em->flush();
-        }
-        catch(\Throwable $e)
-        {
+        $user = $this->security->getUser();
+        if (! is_object($user) || ! ($user instanceof UserParametersStorageInterface)) {
             return false;
         }
+        $em = $this->managerRegistry->getManagerForClass(get_class($user));
+        if (! is_object($em)) {
+            return false;
+        }
+        $em->persist($user->setOrAddParameter($key, $selectedColumns));
+        $em->flush();
         return true;
     }
 }

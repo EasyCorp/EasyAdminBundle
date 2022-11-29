@@ -4,7 +4,10 @@ require('../css/app.scss');
 import bootstrap from 'bootstrap/dist/js/bootstrap.bundle';
 import Mark from 'mark.js/src/vanilla';
 import Autocomplete from './autocomplete';
+import Sortable from "sortablejs";
 
+// global export
+window.Sortable = Sortable;
 // Provide Bootstrap variable globally to allow custom backend pages to use it
 window.bootstrap = bootstrap;
 
@@ -28,6 +31,7 @@ class App {
         this.#createAutoCompleteFields();
         this.#createBatchActions();
         this.#createModalWindowsForDeleteActions();
+        this.#createColumnChooser();
         this.#createPopovers();
 
         document.addEventListener('ea.collection.item-added', () => this.#createAutoCompleteFields());
@@ -393,4 +397,29 @@ class App {
             });
         });
     }
+
+    #createColumnChooser() {
+        const columnChooserButton = document.querySelector('[data-action-name=columnChooser]');
+        if (null === columnChooserButton) {
+            return;
+        }
+        
+        const $group = document.querySelector('#form_columns');
+        if (null === $group) {
+            return;
+        }
+    
+        $group.classList.add('user-select-none');
+    
+        const $items = document.querySelectorAll('#form_columns .form-check');
+        $items.forEach(($item) => {
+            var $icon = document.createElement("i");
+            $icon.classList.add('fa', 'fa-duotone', 'fa-arrow-down-up-across-line', 'p-1', 'text-secondary');
+            $item.prepend(document.createTextNode(' '));
+            $item.prepend($icon);
+        });
+    
+        Sortable.create($group,  { animation: 150, ghostClass: 'text-bg-info' });
+    }
+    
 }

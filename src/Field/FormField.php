@@ -76,9 +76,6 @@ final class FormField implements FieldInterface
             ->setCustomOption(self::OPTION_ROW_BREAKPOINT, $breakpointName);
     }
 
-    /**
-     * @return static
-     */
     public static function addTab(TranslatableInterface|string $label, ?string $icon = null): self
     {
         $field = new self();

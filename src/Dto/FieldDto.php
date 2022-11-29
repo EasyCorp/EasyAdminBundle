@@ -197,7 +197,7 @@ final class FieldDto
     }
 
     /**
-     * @param $optionName You can use "dot" notation to set nested options (e.g. 'attr.class')
+     * @param string $optionName You can use "dot" notation to set nested options (e.g. 'attr.class')
      */
     public function setFormTypeOption(string $optionName, mixed $optionValue): void
     {
@@ -205,7 +205,7 @@ final class FieldDto
     }
 
     /**
-     * @param $optionName You can use "dot" notation to set nested options (e.g. 'attr.class')
+     * @param string $optionName You can use "dot" notation to set nested options (e.g. 'attr.class')
      */
     public function setFormTypeOptionIfNotSet(string $optionName, mixed $optionValue): void
     {

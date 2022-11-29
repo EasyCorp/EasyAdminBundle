@@ -20,6 +20,7 @@ final class Action
     public const SAVE_AND_ADD_ANOTHER = 'saveAndAddAnother';
     public const SAVE_AND_CONTINUE = 'saveAndContinue';
     public const SAVE_AND_RETURN = 'saveAndReturn';
+    public const COLUMN_CHOOSER = 'columnChooser';
 
     // these are the actions applied to a specific entity instance
     public const TYPE_ENTITY = 'entity';

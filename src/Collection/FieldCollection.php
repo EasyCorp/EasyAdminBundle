@@ -126,7 +126,7 @@ final class FieldCollection implements CollectionInterface
     }
 
     /**
-     * @param FieldInterface[]|string[] $fields
+     * @param FieldInterface[]|FieldDto[]|string[] $fields
      *
      * @return FieldDto[]
      */
@@ -136,15 +136,20 @@ final class FieldCollection implements CollectionInterface
 
         // for DX reasons, fields can be configured as a FieldInterface object and
         // as a simple string with the name of the Doctrine property
-        /** @var FieldInterface|string $field */
+        /** @var FieldInterface|FieldDto|string $field */
         foreach ($fields as $field) {
             if (\is_string($field)) {
                 $field = Field::new($field);
             }
 
-            $dto = $field->getAsDto();
-            if (null === $dto->getFieldFqcn()) {
-                $dto->setFieldFqcn(\get_class($field));
+            $dto = null;
+            if ($field instanceof FieldDto) {
+                $dto = $field;
+            } else {
+                $dto = $field->getAsDto();
+                if (null === $dto->getFieldFqcn()) {
+                    $dto->setFieldFqcn(\get_class($field));
+                }    
             }
             $dtos[$dto->getUniqueId()] = $dto;
         }

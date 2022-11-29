@@ -129,11 +129,10 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         if (!$this->isGranted(Permission::EA_EXECUTE_ACTION, ['action' => Action::INDEX, 'entity' => null])) {
             throw new ForbiddenActionException($context);
         }
-        $fields = FieldCollection::new($this->configureFields(Crud::PAGE_INDEX));
-        $selectedFields = $context->getCrud()->columnChooserProcessFields($fields);
+        $fields = $context->getCrud()->columnChooserProcessFields(FieldCollection::new($this->configureFields(Crud::PAGE_INDEX)));
         $context->getCrud()->setFieldAssets($this->getFieldAssets($fields));
         $filters = $this->container->get(FilterFactory::class)->create($context->getCrud()->getFiltersConfig(), $fields, $context->getEntity());
-        $queryBuilder = $this->createIndexQueryBuilder($context->getSearch(), $context->getEntity(), $selectedFields, $filters);
+        $queryBuilder = $this->createIndexQueryBuilder($context->getSearch(), $context->getEntity(), $fields, $filters);
         $paginator = $this->container->get(PaginatorFactory::class)->create($queryBuilder);
 
         // this can happen after deleting some items and trying to return

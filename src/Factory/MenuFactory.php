@@ -2,7 +2,6 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
-use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenu;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu\MenuItemInterface;
@@ -37,7 +36,7 @@ final class MenuFactory
     }
 
     /**
-     * @param MenuItem[] $menuItems
+     * @param MenuItemInterface[] $menuItems
      */
     public function createMainMenu(array $menuItems, int $selectedIndex, int $selectedSubIndex): MainMenuDto
     {
@@ -54,7 +53,7 @@ final class MenuFactory
     }
 
     /**
-     * @param MenuItem[] $menuItems
+     * @param MenuItemInterface[] $menuItems
      *
      * @return MenuItemDto[]
      */
@@ -64,7 +63,6 @@ final class MenuFactory
         $translationDomain = $adminContext->getI18n()->getTranslationDomain();
 
         $builtItems = [];
-        /** @var MenuItemInterface $menuItem */
         foreach ($menuItems as $i => $menuItem) {
             $menuItemDto = $menuItem->getAsDto();
             if (false === $this->authChecker->isGranted(Permission::EA_VIEW_MENU_ITEM, $menuItemDto)) {

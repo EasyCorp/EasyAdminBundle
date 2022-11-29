@@ -2,6 +2,8 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu\MenuItemInterface;
+
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
@@ -60,7 +62,11 @@ final class UserMenuDto
     }
 
     /**
-     * @param MenuItemDto[] $items
+     * When configuring the application, you are passed an array of
+     * MenuItemInterface objects; after building the user menu contents,
+     * this method is called with MenuItemDto objects.
+     *
+     * @param MenuItemInterface[]|MenuItemDto[] $items
      */
     public function setItems(array $items): void
     {

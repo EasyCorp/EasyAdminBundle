@@ -24,7 +24,7 @@ final class PaginatorFactory
     {
         $adminContext = $this->adminContextProvider->getContext();
         $paginatorDto = $adminContext->getCrud()->getPaginator();
-        $paginatorDto->setPageNumber($adminContext->getRequest()->query->get('page', 1));
+        $paginatorDto->setPageNumber((int) $adminContext->getRequest()->query->get('page', '1'));
 
         return $this->entityPaginator->paginate($paginatorDto, $queryBuilder);
     }

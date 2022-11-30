@@ -1,4 +1,5 @@
 parameters:
+	treatPhpDocTypesAsCertain: false
 	ignoreErrors:
 		-
 			message: "#^Cannot unset offset string on array\\<int, EasyCorp\\\\Bundle\\\\EasyAdminBundle\\\\Dto\\\\ActionDto\\>\\.$#"

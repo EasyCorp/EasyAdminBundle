@@ -25,7 +25,7 @@ class UserSelectedColumnStorageProvider implements SelectedColumnStorageProvider
             return $defaultColumns;
         }
         $columns = array_values($user->getParameter($key));
-        if (!\is_array($columns) || \count($columns) < 1) {
+        if (\count($columns) < 1) {
             $columns = array_values($defaultColumns);
         }
 

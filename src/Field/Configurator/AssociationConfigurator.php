@@ -265,6 +265,15 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
     {
         $field->setFormType(CrudFormType::class);
 
+        if (null === $entityDto->getInstance())
+        {
+            $associatedEntity = null;
+        } else{
+            $associatedEntity = $propertyAccessor->isReadable($entityDto->getInstance(), $propertyName)
+                ? $propertyAccessor->getValue($entityDto->getInstance(), $propertyName)
+                : null;
+        }
+
         $propertyAccessor = new PropertyAccessor();
         $associatedEntity = $propertyAccessor->isReadable($entityDto->getInstance(), $propertyName)
             ? $propertyAccessor->getValue($entityDto->getInstance(), $propertyName)

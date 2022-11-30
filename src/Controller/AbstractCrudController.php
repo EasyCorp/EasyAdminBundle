@@ -63,7 +63,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
-
 use function Symfony\Component\String\u;
 use function Symfony\Component\Translation\t;
 
@@ -156,7 +155,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             'batch_actions' => $actions->getBatchActions(),
             'filters' => $filters,
             'ea_column_chooser_url' => $this->container->get(AdminUrlGenerator::class)->setAction(Action::COLUMN_CHOOSER)->generateUrl(),
-            'ea_column_chooser_form' => $this->createColumnsForm($context->getCrud())->createView()
+            'ea_column_chooser_form' => $this->createColumnsForm($context->getCrud())->createView(),
         ]));
 
         $event = new AfterCrudActionEvent($context, $responseParameters);
@@ -178,9 +177,9 @@ abstract class AbstractCrudController extends AbstractController implements Crud
                     'required' => false,
                     'choices' => $crud->getCurrentColumns(),
                     'choice_translation_domain' => true,
-                    'translation_domain' => 'messages'
+                    'translation_domain' => 'messages',
                 ])
-            ->getForm();         
+            ->getForm();
     }
 
     public function columnChooser(AdminContext $context)
@@ -191,25 +190,27 @@ abstract class AbstractCrudController extends AbstractController implements Crud
                 ->setAction(Action::INDEX)->generateUrl();
         $storageProvider = $context->getCrud()?->getColumnChooserSelectedColumnStorageProvider();
         $fqcn = $context->getCrud()?->getEntityFqcn();
-        if (! is_object($storageProvider) || 0 == strlen($fqcn)) {
+        if (!\is_object($storageProvider) || 0 == \strlen($fqcn)) {
             // TODO: may be create custom exception to notify user?
             return $this->redirect($url);
         }
-        if (! is_null($request->get('reset'))) {
+        if (null !== $request->get('reset')) {
             $storageProvider->storeSelectedColumns($fqcn, []); // reset to defaults
-            return $this->redirect($url);    
+
+            return $this->redirect($url);
         }
-        
-        if (is_object($context->getCrud()) && ($request->getMethod() === Request::METHOD_POST)) {
+
+        if (\is_object($context->getCrud()) && (Request::METHOD_POST === $request->getMethod())) {
             $context->getCrud()->columnChooserProcessFields(FieldCollection::new($this->configureFields(Crud::PAGE_INDEX)));
             $columnsForm = $this->createColumnsForm($context->getCrud());
             $columnsForm->handleRequest($request);
             if ($columnsForm->isSubmitted() && $columnsForm->isValid()) {
-                $data = $request->get('form',['columns' => []]);
+                $data = $request->get('form', ['columns' => []]);
                 $selectedColumns = array_values(array_intersect(array_values($data['columns']), array_values($columnsForm['columns']->getData())));
-                $storageProvider->storeSelectedColumns($fqcn, $selectedColumns); 
+                $storageProvider->storeSelectedColumns($fqcn, $selectedColumns);
             }
         }
+
         return $this->redirect($url);
     }
 

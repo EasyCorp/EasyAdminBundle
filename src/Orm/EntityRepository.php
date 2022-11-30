@@ -144,7 +144,6 @@ final class EntityRepository implements EntityRepositoryInterface
                 !$isUlidProperty &&
                 !$isJsonProperty
             ) {
-
                 $entityFqcn = 'entity' !== $entityName && isset($associatedEntityDto)
                     ? $associatedEntityDto->getFqcn()
                     : $entityDto->getFqcn()

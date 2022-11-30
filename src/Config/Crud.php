@@ -4,11 +4,11 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Config;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\SortOrder;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterConfigDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\PaginatorDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
-use Symfony\Contracts\Translation\TranslatableInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterConfigDto;
 use EasyCorp\Bundle\EasyAdminBundle\Interfaces\SelectedColumnStorageProviderInterface;
+use Symfony\Contracts\Translation\TranslatableInterface;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -271,7 +271,7 @@ class Crud
 
     public function setFilters(?array $filters): self
     {
-        $this->dto->setFiltersConfig(new FilterConfigDto($filters !== null ? $filters : []));
+        $this->dto->setFiltersConfig(new FilterConfigDto(null !== $filters ? $filters : []));
 
         return $this;
     }
@@ -395,18 +395,21 @@ class Crud
     public function setupColumnChooser(SelectedColumnStorageProviderInterface $selectedColumnStorageProvider, bool $enableColumnChooser = true, array $defaultColumns = [], array $availableColumns = [], array $excludeColumns = []): self
     {
         $this->dto->setupColumnChooser($selectedColumnStorageProvider, $enableColumnChooser, $defaultColumns, $availableColumns, $excludeColumns);
+
         return $this;
     }
 
     public function setColumnChooserColumns(array $defaultColumns = [], array $availableColumns = [], array $excludeColumns = []): self
     {
         $this->dto->setColumnChooserColumns($defaultColumns, $availableColumns, $excludeColumns);
+
         return $this;
     }
 
     public function setColumnChooserSelectedColumnStorageProvider(?SelectedColumnStorageProviderInterface $selectedColumnStorageProvider = null): self
     {
         $this->dto->setColumnChooserSelectedColumnStorageProvider($selectedColumnStorageProvider);
+
         return $this;
     }
 
@@ -418,17 +421,21 @@ class Crud
     public function setColumnChooser(bool $columnChooser): self
     {
         $this->dto->setColumnChooser($columnChooser);
+
         return $this;
     }
+
     public function enableColumnChooser(): self
     {
         $this->dto->enableColumnChooser();
+
         return $this;
     }
 
     public function disableColumnChooser(): self
     {
         $this->dto->disableColumnChooser();
+
         return $this;
     }
 
@@ -436,5 +443,4 @@ class Crud
     {
         return $this->dto->isColumnChooserEnabled();
     }
-
 }

@@ -151,5 +151,5 @@ return [
             'reset' => 'Reset to defaults',
             'save' => 'Save and reload',
         ],
-    ]
+    ],
 ];

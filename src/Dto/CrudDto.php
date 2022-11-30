@@ -11,9 +11,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormRowType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminTabType;
 use EasyCorp\Bundle\EasyAdminBundle\Interfaces\SelectedColumnStorageProviderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Translation\TranslatableMessageBuilder;
-use Symfony\Contracts\Translation\TranslatableInterface;
-
 use function Symfony\Component\Translation\t;
+use Symfony\Contracts\Translation\TranslatableInterface;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -477,6 +476,7 @@ final class CrudDto
         $this->indexDefaultColumns = $defaultColumns;
         $this->indexAvailableColumns = $availableColumns;
         $this->indexExcludeColumns = $excludeColumns;
+
         return $this;
     }
 
@@ -485,12 +485,14 @@ final class CrudDto
         $this->setColumnChooserSelectedColumnStorageProvider($selectedColumnStorageProvider);
         $this->setColumnChooser($enableColumnChooser);
         $this->setColumnChooserColumns($defaultColumns, $availableColumns, $excludeColumns);
+
         return $this;
     }
 
     public function setColumnChooserSelectedColumnStorageProvider(?SelectedColumnStorageProviderInterface $selectedColumnStorageProvider = null): self
     {
         $this->selectedColumnStorageProvider = $selectedColumnStorageProvider;
+
         return $this;
     }
 
@@ -502,28 +504,32 @@ final class CrudDto
     public function setColumnChooser(bool $columnChooser): self
     {
         $this->columnChooser = $columnChooser;
+
         return $this;
     }
+
     public function enableColumnChooser(): self
     {
         $this->setColumnChooser(true);
+
         return $this;
     }
 
     public function disableColumnChooser(): self
     {
         $this->setColumnChooser(false);
+
         return $this;
     }
 
     public function isColumnChooserEnabled(): bool
     {
-        return (true === $this->columnChooser) && is_object($this->selectedColumnStorageProvider);
+        return (true === $this->columnChooser) && \is_object($this->selectedColumnStorageProvider);
     }
 
     public function isSpecialFormType(string $formType): bool
     {
-        return in_array($formType, [
+        return \in_array($formType, [
             EaFormPanelType::class,
             EaFormRowType::class,
             EasyAdminTabType::class,
@@ -542,19 +548,20 @@ final class CrudDto
     {
         return $this->indexSelectedColumns;
     }
+
     public function columnChooserProcessFields(FieldCollection $fieldsColl): FieldCollection
     {
-        if (! $this->isColumnChooserEnabled()) {
-            return $fieldsColl;            
+        if (!$this->isColumnChooserEnabled()) {
+            return $fieldsColl;
         }
 
         $iterator = $fieldsColl->getIterator();
-        if (0 === count($this->indexAvailableColumns)) {
-            while($iterator->valid()) {
-                $dto =  $iterator->current();
+        if (0 === \count($this->indexAvailableColumns)) {
+            while ($iterator->valid()) {
+                $dto = $iterator->current();
                 $columnName = $dto->getProperty();
-                if (! $this->isSpecialFormType($dto->getFormType())
-                    && ! in_array($columnName, $this->indexExcludeColumns, true)
+                if (!$this->isSpecialFormType($dto->getFormType())
+                    && !\in_array($columnName, $this->indexExcludeColumns, true)
                     && (
                         $dto->isDisplayedOn(Crud::PAGE_DETAIL)
                         || $dto->isDisplayedOn(Crud::PAGE_INDEX)
@@ -564,36 +571,36 @@ final class CrudDto
                     $this->indexAvailableColumnsWithLabels[$columnName] = $dto->getLabel() ?? $columnName;
                 }
                 $iterator->next();
-            }   
+            }
             $iterator->rewind();
         }
-        if (0 === count($this->indexAvailableColumns)) {
-            return $fieldsColl;            
+        if (0 === \count($this->indexAvailableColumns)) {
+            return $fieldsColl;
         }
 
-        if (0 === count($this->indexDefaultColumns)) {
-            $this->indexDefaultColumns = array_slice($this->indexAvailableColumns, 0, 7);
+        if (0 === \count($this->indexDefaultColumns)) {
+            $this->indexDefaultColumns = \array_slice($this->indexAvailableColumns, 0, 7);
         }
-        if (0 === count($this->indexDefaultColumns)) {
-            return $fieldsColl;            
+        if (0 === \count($this->indexDefaultColumns)) {
+            return $fieldsColl;
         }
         $this->indexSelectedColumns = $this->selectedColumnStorageProvider->getSelectedColumns($this->getEntityFqcn(), $this->indexDefaultColumns, $this->indexAvailableColumns);
-        if (0 === count($this->indexSelectedColumns)) {
-            $this->indexSelectedColumns =  $this->indexDefaultColumns;
+        if (0 === \count($this->indexSelectedColumns)) {
+            $this->indexSelectedColumns = $this->indexDefaultColumns;
         }
 
         $result = [];
         foreach ($this->indexSelectedColumns as $columnName) {
-            if (! in_array($columnName, $this->indexAvailableColumns, true)) {
+            if (!\in_array($columnName, $this->indexAvailableColumns, true)) {
                 continue;
             }
             $dto = $fieldsColl->getByProperty($columnName);
-            if (is_object($dto) && ! $this->isSpecialFormType($dto->getFormType())) {
+            if (\is_object($dto) && !$this->isSpecialFormType($dto->getFormType())) {
                 $dto->setDisplayedOn(KeyValueStore::new([Crud::PAGE_INDEX => Crud::PAGE_INDEX]));
                 $result[] = $dto;
             }
         }
 
-        return count($result) > 0 ? FieldCollection::new($result) : $fieldsColl;
+        return \count($result) > 0 ? FieldCollection::new($result) : $fieldsColl;
     }
 }

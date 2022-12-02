@@ -174,7 +174,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
                     'label' => t('columnchooser.modal.help', [], 'EasyAdminBundle'),
                     'multiple' => true,
                     'expanded' => true,
-                    'required' => true,
+                    'required' => false,
                     'choices' => $crud->getCurrentColumns(),
                     'choice_translation_domain' => true,
                     'translation_domain' => 'messages',

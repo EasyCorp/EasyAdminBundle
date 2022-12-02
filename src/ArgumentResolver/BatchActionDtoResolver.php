@@ -14,7 +14,7 @@ use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 /*
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-if (class_exists(ValueResolverInterface::class)) {
+if (interface_exists(ValueResolverInterface::class)) {
     final class BatchActionDtoResolver implements ValueResolverInterface
     {
         private AdminContextProvider $adminContextProvider;

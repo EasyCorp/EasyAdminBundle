@@ -183,7 +183,7 @@ return static function (ContainerConfigurator $container) {
             // initialization done after generating each URL
             ->share(false)
             ->arg(0, service(AdminContextProvider::class))
-            ->arg(1, service('router.default'))
+            ->arg(1, service('router'))
             ->arg(2, service(DashboardControllerRegistry::class))
 
         ->set('service_locator_'.AdminUrlGenerator::class, ServiceLocator::class)

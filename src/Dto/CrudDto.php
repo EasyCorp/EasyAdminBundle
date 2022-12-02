@@ -549,6 +549,11 @@ final class CrudDto
         return $this->indexSelectedColumns;
     }
 
+    public function getAvailableColumns()
+    {
+        return $this->indexAvailableColumns;
+    }
+
     public function columnChooserProcessFields(FieldCollection $fieldsColl): FieldCollection
     {
         if (!$this->isColumnChooserEnabled()) {

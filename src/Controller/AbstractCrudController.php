@@ -174,7 +174,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
                     'label' => t('columnchooser.modal.help', [], 'EasyAdminBundle'),
                     'multiple' => true,
                     'expanded' => true,
-                    'required' => false,
+                    'required' => true,
                     'choices' => $crud->getCurrentColumns(),
                     'choice_translation_domain' => true,
                     'translation_domain' => 'messages',
@@ -206,7 +206,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             $columnsForm->handleRequest($request);
             if ($columnsForm->isSubmitted() && $columnsForm->isValid()) {
                 $data = $request->get('form', ['columns' => []]);
-                $selectedColumns = array_values(array_intersect(array_values($data['columns']), array_values($columnsForm['columns']->getData())));
+                $selectedColumns = array_values(array_intersect(array_values($data['columns'] ?? []), $context->getCrud()->getAvailableColumns()));
                 $storageProvider->storeSelectedColumns($fqcn, $selectedColumns);
             }
         }

@@ -42,13 +42,13 @@ final class MoneyConfigurator implements FieldConfiguratorInterface
         $field->setFormTypeOption('scale', $numDecimals);
 
         $isStoredAsCents = true === $field->getCustomOption(MoneyField::OPTION_STORED_AS_CENTS);
-        $field->setFormTypeOption('divisor', $isStoredAsCents ? pow(10, $numDecimals) : 1);
+        $field->setFormTypeOption('divisor', 10 ** $numDecimals);
 
         if (null === $field->getValue()) {
             return;
         }
 
-        $amount = $isStoredAsCents ? $field->getValue() / pow(10, $numDecimals) : $field->getValue();
+        $amount = $field->getValue() / (10 ** $numDecimals);
 
         $formattedValue = $this->intlFormatter->formatCurrency($amount, $currencyCode, ['fraction_digit' => $numDecimals]);
         $field->setFormattedValue($formattedValue);

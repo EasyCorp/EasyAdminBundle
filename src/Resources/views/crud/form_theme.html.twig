@@ -548,8 +548,7 @@
 {# EasyAdmin's TextEditor form type #}
 {% block ea_text_editor_widget %}
     {{ form_widget(form, { attr: attr|merge({
-        style: 'display: none',
-        class: 'ea-text-editor-content',
+        class: 'ea-text-editor-content d-none',
         'data-number-of-rows': form.vars.ea_crud_form.ea_field.customOptions.get('numOfRows')|default(5),
         'data-trix-editor-config': form.vars.ea_crud_form.ea_field.customOptions.get('trixEditorConfig')|default(null)|json_encode,
     }) }) }}
@@ -609,7 +608,7 @@
     <div class="form-widget-compound">
         {{ form_row(form.comparison) }}
         {{ form_row(form.value) }}
-        <div data-ea-value2-of-comparison-id="{{ form.comparison.vars.id }}" {% if form.comparison.vars.value != 'between' %}style="display: none"{% endif %}>
+        <div data-ea-value2-of-comparison-id="{{ form.comparison.vars.id }}" class="{{ form.comparison.vars.value != 'between' ? 'd-none' }}">
             {{ form_row(form.value2) }}
         </div>
     </div>
@@ -635,7 +634,7 @@
                 {% endif %}
             {% endif %}
             <div class="custom-file">
-                {{ form_widget(form.file, { attr: form.file.vars.attr|merge({ placeholder: placeholder, title: title, 'data-files-label': filesLabel, style: 'display: none' }) }) }}
+                {{ form_widget(form.file, { attr: form.file.vars.attr|merge({ placeholder: placeholder, title: title, 'data-files-label': filesLabel, class: 'd-none' }) }) }}
                 {{ form_label(form.file, placeholder, { label_attr: { class: 'custom-file-label' }}) }}
             </div>
             <div class="input-group-text">
@@ -647,7 +646,7 @@
                     {% endif %}
                 {%- endif -%}
                 {% if allow_delete %}
-                    <label class="btn ea-fileupload-delete-btn" {% if currentFiles is empty %}style="display: none"{% endif %} for="{{ form.delete.vars.id }}">
+                    <label class="btn ea-fileupload-delete-btn {{ currentFiles is empty ? 'd-none' }}" for="{{ form.delete.vars.id }}">
                         <i class="fa fa-trash-o"></i>
                     </label>
                 {% endif %}
@@ -677,7 +676,7 @@
             </div>
         {% endif %}
         {% if allow_delete %}
-            <div style="display: none">{{ form_widget(form.delete, { label: false }) }}</div>
+            <div class="d-none">{{ form_widget(form.delete, { label: false }) }}</div>
         {% endif %}
     </div>
     {{ form_errors(form.file) }}
@@ -744,7 +743,7 @@
             </div>
         {% endif %}
         {% if allow_delete %}
-            <div style="display: none">{{ form_widget(form.delete, { label: false }) }}</div>
+            <div class="d-none">{{ form_widget(form.delete, { label: false }) }}</div>
         {% endif %}
     </div>
 

@@ -73,7 +73,7 @@
     {% endblock global_actions %}
     {% block batch_actions %}
         {% if has_batch_actions %}
-            <div class="batch-actions" style="display: none">
+            <div class="batch-actions d-none">
                 {% for action in batch_actions %}
                     {{ include(action.templatePath, { action: action }, with_context = false) }}
                 {% endfor %}
@@ -123,7 +123,7 @@
                         </th>
                     {% endfor %}
 
-                    <th {% if ea.crud.showEntityActionsAsDropdown %}style="width: 10px"{% endif %} dir="{{ ea.i18n.textDirection }}">
+                    <th class="{{ ea.crud.showEntityActionsAsDropdown ? 'actions-as-dropdown-table-head' }}" dir="{{ ea.i18n.textDirection }}">
                         <span class="sr-only">{{ t('action.entity_actions', ea.i18n.translationParameters, 'EasyAdminBundle')|trans }}</span>
                     </th>
                 </tr>

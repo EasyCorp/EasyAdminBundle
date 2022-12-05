@@ -244,8 +244,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
                 return $event->getResponse();
             }
 
-            // cast to integer instead of string to avoid sending empty responses for 'false'
-            return new Response((int) $newValue);
+            return new Response($newValue ? '1' : '0');
         }
 
         $editForm = $this->createEditForm($context->getEntity(), $context->getCrud()->getEditFormOptions(), $context);

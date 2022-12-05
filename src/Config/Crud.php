@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Config;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\SortOrder;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterConfigDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\PaginatorDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use Symfony\Contracts\Translation\TranslatableInterface;
@@ -267,7 +268,7 @@ class Crud
         return $this;
     }
 
-    public function setFilters(?array $filters): self
+    public function setFilters(?FilterConfigDto $filters): self
     {
         $this->dto->setFiltersConfig($filters);
 

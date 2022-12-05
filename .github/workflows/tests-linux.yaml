@@ -21,7 +21,7 @@ jobs:
         strategy:
             matrix:
                 php-version: ['8.1']
-                symfony-version: ['6.2.*']
+                symfony-version: ['6.2']
         steps:
             - name: 'Checkout code'
               uses: actions/checkout@v3
@@ -39,7 +39,6 @@ jobs:
               run: |
                   composer require --no-progress --no-scripts --no-plugins symfony/flex
                   composer config extra.symfony.require "${{ matrix.symfony-version }}"
-                  composer config minimum-stability "dev"
                   composer update --no-interaction --prefer-dist --optimize-autoloader --prefer-stable
                   vendor/bin/simple-phpunit install
 

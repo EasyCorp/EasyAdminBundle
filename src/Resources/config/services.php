@@ -291,6 +291,7 @@ return static function (ContainerConfigurator $container) {
             ->arg(1, new Reference(AdminUrlGenerator::class))
             ->arg(2, service('request_stack'))
             ->arg(3, service(ControllerFactory::class))
+            ->arg(4, service(AdminContextFactory::class))
 
         ->set(AvatarConfigurator::class)
 
@@ -350,6 +351,7 @@ return static function (ContainerConfigurator $container) {
             ->arg(0, service('request_stack'))
             ->arg(1, service(EntityFactory::class))
             ->arg(2, service(ControllerFactory::class))
+            ->arg(3, service(AdminContextFactory::class))
 
         ->set(SlugConfigurator::class)
 

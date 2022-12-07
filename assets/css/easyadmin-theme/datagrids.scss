@@ -154,6 +154,9 @@ table.datagrid {
       padding: 2px 8px;
     }
   }
+  td.actions-as-dropdown-table-head {
+    width: 10px;
+  }
   tr:not(.selected-row):hover .dropdown-toggle {
     background: var(--dropdown-toggle-bg);
     border-color: var(--dropdown-toggle-border-color);

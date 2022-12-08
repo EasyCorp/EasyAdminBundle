@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
 use Doctrine\Common\Util\ClassUtils;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
@@ -92,9 +93,13 @@ final class EntityFactory
         return EntityCollection::new($entityDtos);
     }
 
+    /**
+     * @return ClassMetadata&ClassMetadataInfo
+     */
     public function getEntityMetadata(string $entityFqcn): ClassMetadata
     {
         $entityManager = $this->getEntityManager($entityFqcn);
+        /** @var ClassMetadata&ClassMetadataInfo $entityMetadata */
         $entityMetadata = $entityManager->getClassMetadata($entityFqcn);
 
         if (1 !== \count($entityMetadata->getIdentifierFieldNames())) {

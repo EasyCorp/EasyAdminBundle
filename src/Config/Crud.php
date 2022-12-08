@@ -269,7 +269,7 @@ class Crud
         return $this;
     }
 
-    public function setFilters(?array $filters): self
+    public function setFilters(?FilterConfigDto $filters): self
     {
         $this->dto->setFiltersConfig(new FilterConfigDto(null !== $filters ? $filters : []));
 

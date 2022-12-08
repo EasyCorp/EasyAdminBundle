@@ -116,7 +116,7 @@ templates. First, you can replace some templates globally in the
         }
     }
 
-You can also replace templates per :doc:`CRUD controller </crud>` (this override
+You can also replace templates per :doc:`CRUD controller </crud>` (this overrides
 any change done in the dashboard)::
 
     namespace App\Controller\Admin;

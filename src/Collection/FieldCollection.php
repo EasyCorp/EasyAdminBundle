@@ -16,7 +16,7 @@ final class FieldCollection implements CollectionInterface
     private array $fields;
 
     /**
-     * @param FieldInterface[]|string[] $fields
+     * @param FieldDto[]|FieldInterface[]|string[] $fields
      */
     private function __construct(iterable $fields)
     {
@@ -35,7 +35,7 @@ final class FieldCollection implements CollectionInterface
     }
 
     /**
-     * @param FieldInterface[]|string[] $fields
+     * @param FieldDto[]|FieldInterface[]|string[] $fields
      */
     public static function new(iterable $fields): self
     {

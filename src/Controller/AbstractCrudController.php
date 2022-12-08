@@ -128,7 +128,10 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         if (!$this->isGranted(Permission::EA_EXECUTE_ACTION, ['action' => Action::INDEX, 'entity' => null])) {
             throw new ForbiddenActionException($context);
         }
-        $fields = $context->getCrud()->columnChooserProcessFields(FieldCollection::new($this->configureFields(Crud::PAGE_INDEX)));
+        $fields = FieldCollection::new($this->configureFields(
+            $context->getCrud()->isColumnChooserEnabled() ? Crud::PAGE_DETAIL : Crud::PAGE_INDEX
+        ));
+        $fields = $context->getCrud()->columnChooserProcessFields($fields);
         $context->getCrud()->setFieldAssets($this->getFieldAssets($fields));
         $filters = $this->container->get(FilterFactory::class)->create($context->getCrud()->getFiltersConfig(), $fields, $context->getEntity());
         $queryBuilder = $this->createIndexQueryBuilder($context->getSearch(), $context->getEntity(), $fields, $filters);
@@ -185,9 +188,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
     public function columnChooser(AdminContext $context)
     {
         $request = $context->getRequest();
-        $url = $context->getReferrer()
-            ?? $this->container->get(AdminUrlGenerator::class)
-                ->setAction(Action::INDEX)->generateUrl();
+        $url = $this->container->get(AdminUrlGenerator::class)->setAction(Action::INDEX)->generateUrl();
         $storageProvider = $context->getCrud()?->getColumnChooserSelectedColumnStorageProvider();
         $fqcn = $context->getCrud()?->getEntityFqcn();
         if (!\is_object($storageProvider) || 0 == \strlen($fqcn)) {

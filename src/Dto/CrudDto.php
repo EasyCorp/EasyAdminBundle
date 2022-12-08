@@ -527,9 +527,9 @@ final class CrudDto
         return (true === $this->columnChooser) && \is_object($this->selectedColumnStorageProvider);
     }
 
-    public function isSpecialFormType(string $formType): bool
+    public function isSpecialFormType(?string $formType): bool
     {
-        return \in_array($formType, [
+        return null !== $formType && \in_array($formType, [
             EaFormPanelType::class,
             EaFormRowType::class,
             EasyAdminTabType::class,

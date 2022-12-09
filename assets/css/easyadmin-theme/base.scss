@@ -313,17 +313,6 @@ body.ea-mobile-sidebar-visible .sidebar {
         }
     }
 }
-#sidebar-resizer-handler {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    min-height: 100vh;
-}
-
-#content-resizer-handler {
-    min-height: calc(100vh - 56px);
-}
 
 .content-top {
     align-items: center;

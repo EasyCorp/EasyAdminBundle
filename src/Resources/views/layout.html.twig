@@ -232,7 +232,7 @@
                     </aside>
                 </div>
 
-                <section class="main-content">
+                <section class="main-content d-flex flex-column">
                     {% set has_search = ea.crud is not null and ea.crud.isSearchEnabled %}
                     <aside class="content-top {{ has_search ? 'ea-search-enabled' : 'ea-search-disabled' }}">
                         {% block content_top_header %}
@@ -310,7 +310,7 @@
                         {% endblock content_top_header %}
                     </aside>
 
-                    <div class="content-wrapper">
+                    <div class="content-wrapper col">
                         {% block content %}
                             <article class="content">
                                 {% block content_header_wrapper %}

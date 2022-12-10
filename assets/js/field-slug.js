@@ -64,9 +64,7 @@ class Slugger {
     }
 
     setTargetElement() {
-
         const fieldNames = JSON.parse(this.field.dataset.target);
-
         this.targets = [];
 
         for (const name of fieldNames) {

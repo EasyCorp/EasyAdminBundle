@@ -108,12 +108,13 @@
   display: flex;
   align-content: center;
   justify-content: center;
+  font-size: 16px;
   font-weight: bold;
   height: 14px;
-  line-height: 1;
+  line-height: 0.5;
   padding: 0;
   right: 32px;
-  top: calc(50% - 8px);
+  top: calc(50% - 2px);
   width: 14px;
 }
 .ts-wrapper.plugin-clear_button.multi .clear-button {

@@ -24,6 +24,8 @@ final class EntityPaginator implements EntityPaginatorInterface
     private ?int $rangeEdgeSize = null;
     private $results;
     private $numResults;
+    private ?int $rangeFirstResultNumber = null;
+    private ?int $rangeLastResultNumber = null;
 
     public function __construct(AdminUrlGenerator $adminUrlGenerator, EntityFactory $entityFactory)
     {
@@ -38,6 +40,8 @@ final class EntityPaginator implements EntityPaginatorInterface
         $this->rangeEdgeSize = $paginatorDto->getRangeEdgeSize();
         $this->currentPage = max(1, $paginatorDto->getPageNumber());
         $firstResult = ($this->currentPage - 1) * $this->pageSize;
+        $this->rangeFirstResultNumber = $this->pageSize * ($this->currentPage - 1) + 1;
+        $this->rangeLastResultNumber = $this->rangeFirstResultNumber + $this->pageSize - 1;
 
         $query = $queryBuilder
             ->setFirstResult($firstResult)
@@ -62,6 +66,9 @@ final class EntityPaginator implements EntityPaginatorInterface
 
         $this->results = $paginator->getIterator();
         $this->numResults = $paginator->count();
+        if ($this->rangeLastResultNumber > $this->numResults) {
+            $this->rangeLastResultNumber = $this->numResults;
+        }
 
         return $this;
     }
@@ -169,6 +176,26 @@ final class EntityPaginator implements EntityPaginatorInterface
     public function getResults(): ?iterable
     {
         return $this->results;
+    }
+
+    /*
+     * Returns the result number (e.g. 21) of the first value
+     * included in the current results range. It's useful to
+     * display a message like: "Showing 21 to 40 of 135 entries"
+     */
+    public function getRangeFirstResultNumber(): int
+    {
+        return $this->rangeFirstResultNumber;
+    }
+
+    /*
+     * Returns the result number (e.g. 40) of the last value
+     * included in the current results range. It's useful to
+     * display a message like: "Showing 21 to 40 of 135 entries"
+     */
+    public function getRangeLastResultNumber(): int
+    {
+        return $this->rangeLastResultNumber;
     }
 
     public function getResultsAsJson(): string

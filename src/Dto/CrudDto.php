@@ -461,7 +461,7 @@ final class CrudDto
         $this->sidebarWidth = $sidebarWidth;
     }
 
-    public function getAutocompleteEntityNormalizer(): ?Closure
+    public function getAutocompleteEntityNormalizer(): ?\Closure
     {
         return $this->autocompleteEntityNormalizer;
     }

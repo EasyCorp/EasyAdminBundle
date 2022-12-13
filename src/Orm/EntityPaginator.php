@@ -2,7 +2,6 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Orm;
 
-use Closure;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\CountWalker;
 use Doctrine\ORM\Tools\Pagination\Paginator;
@@ -199,7 +198,7 @@ final class EntityPaginator implements EntityPaginatorInterface
         return $this->rangeLastResultNumber;
     }
 
-    public function getResultsAsJson(?Closure $entityAsStringNormalizer = null): string
+    public function getResultsAsJson(?\Closure $entityAsStringNormalizer = null): string
     {
         $jsonResult = [];
         foreach ($this->getResults() ?? [] as $entityInstance) {

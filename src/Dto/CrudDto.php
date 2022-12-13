@@ -2,7 +2,6 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
-use Closure;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
@@ -468,6 +467,10 @@ final class CrudDto
 
     public function setAutocompleteEntityNormalizer(?callable $autocompleteEntityNormalizer): void
     {
-        $this->autocompleteEntityNormalizer = $autocompleteEntityNormalizer ? \Closure::fromCallable($autocompleteEntityNormalizer) : null;
+        if (null !== $autocompleteEntityNormalizer) {
+            $autocompleteEntityNormalizer = \Closure::fromCallable($autocompleteEntityNormalizer);
+        }
+
+        $this->autocompleteEntityNormalizer = $autocompleteEntityNormalizer;
     }
 }

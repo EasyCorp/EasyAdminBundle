@@ -204,9 +204,14 @@ final class EntityPaginator implements EntityPaginatorInterface
         foreach ($this->getResults() ?? [] as $entityInstance) {
             $entityDto = $this->entityFactory->createForEntityInstance($entityInstance);
 
+            $entityAsString = $entityDto->toString();
+            if (null !== $entityAsStringNormalizer) {
+                $entityAsString = $entityAsStringNormalizer($entityInstance);
+            }
+
             $jsonResult['results'][] = [
                 EA::ENTITY_ID => $entityDto->getPrimaryKeyValueAsString(),
-                'entityAsString' => $entityAsStringNormalizer ? $entityAsStringNormalizer($entityInstance) : $entityDto->toString(),
+                'entityAsString' => $entityAsString,
             ];
         }
 

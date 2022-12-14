@@ -1,0 +1,13 @@
+---------------------------------------------------------------------------
+
+by Lustmored at 2022-12-12T14:53:33Z
+
+CI failures on Documentation are related to CI config, not this PR.
+
+PHPStan failure comes from `treatPhpDocTypesAsCertain` configuration. I believe it should be set to false, since there is no certainty in those methods, but I'd leave the decision to the maintainers.
+
+---------------------------------------------------------------------------
+
+by Lustmored at 2022-12-13T09:45:28Z
+
+I have mitigated PHPStan failures by adding "@psalm-param" to the methods. I think this PR is finished

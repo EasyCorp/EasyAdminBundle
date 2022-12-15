@@ -264,12 +264,18 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
     private function configureCrudForm(FieldDto $field, EntityDto $entityDto, string $propertyName, string $targetEntityFqcn, string $targetCrudControllerFqcn): void
     {
         $field->setFormType(CrudFormType::class);
+	$propertyAccessor = new PropertyAccessor();
+	
+        if (null === $entityDto->getInstance())
+        {
+            $associatedEntity = null;
+        } else {
+            $associatedEntity = $propertyAccessor->isReadable($entityDto->getInstance(), $propertyName)
+                ? $propertyAccessor->getValue($entityDto->getInstance(), $propertyName)
+                : null;
+        }
 
-        $propertyAccessor = new PropertyAccessor();
-        $associatedEntity = $propertyAccessor->isReadable($entityDto->getInstance(), $propertyName)
-            ? $propertyAccessor->getValue($entityDto->getInstance(), $propertyName)
-            : null;
-
+        
         if (null === $associatedEntity) {
             $targetCrudControllerAction = Action::NEW;
             $targetCrudControllerPageName = $field->getCustomOption(AssociationField::OPTION_EMBEDDED_CRUD_FORM_NEW_PAGE_NAME) ?? Crud::PAGE_NEW;

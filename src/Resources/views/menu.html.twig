@@ -6,14 +6,14 @@
         {% block main_menu %}
             {% for menuItem in ea.mainMenu.items %}
                 {% block menu_item %}
-                    <li class="{{ menuItem.isMenuSection ? 'menu-header' : 'menu-item' }} {{ menuItem.hasSubItems ? 'has-submenu' }} {{ ea.mainMenu.isSelected(menuItem) ? 'active' }} {{ ea.mainMenu.isExpanded(menuItem) ? 'expanded' }}">
+                    <li class="{{ menuItem.isMenuSection ? 'menu-header' : 'menu-item' }} {{ menuItem.hasSubItems ? 'has-submenu' }} {{ menuItem.isSelected ? 'active' }} {{ menuItem.isExpanded ? 'expanded' }}">
                         {{ _self.render_menu_item(menuItem) }}
 
                         {% if menuItem.hasSubItems %}
                             <ul class="submenu">
                                 {% for menuSubItem in menuItem.subItems %}
                                     {% block menu_subitem %}
-                                        <li class="{{ menuSubItem.isMenuSection ? 'menu-header' : 'menu-item' }} {{ ea.mainMenu.isSelected(menuSubItem) ? 'active' }}">
+                                        <li class="{{ menuSubItem.isMenuSection ? 'menu-header' : 'menu-item' }} {{ menuSubItem.isSelected ? 'active' }}">
                                             {{ _self.render_menu_item(menuSubItem) }}
                                         </li>
                                     {% endblock menu_subitem %}

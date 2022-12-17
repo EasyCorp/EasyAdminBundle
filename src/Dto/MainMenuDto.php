@@ -8,17 +8,13 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 final class MainMenuDto
 {
     private array $items;
-    private int $selectedIndex;
-    private int $selectedSubIndex;
 
     /**
      * @param MenuItemDto[] $items
      */
-    public function __construct(array $items, int $selectedIndex, int $selectedSubIndex)
+    public function __construct(array $items)
     {
         $this->items = $items;
-        $this->selectedIndex = $selectedIndex;
-        $this->selectedSubIndex = $selectedSubIndex;
     }
 
     /**
@@ -29,13 +25,19 @@ final class MainMenuDto
         return $this->items;
     }
 
+    /** @deprecated Don't use this method; the selected menu item is now detected automatically using
+     *              the Request data instead of having to deal with menuIndex/submenuIndex query params
+     */
     public function isSelected(MenuItemDto $menuItemDto): bool
     {
-        return $menuItemDto->getIndex() === $this->selectedIndex && $menuItemDto->getSubIndex() === $this->selectedSubIndex;
+        return $menuItemDto->isSelected();
     }
 
+    /** @deprecated Don't use this method; the expanded menu item is now detected automatically using
+     *              the Request data instead of having to deal with menuIndex/submenuIndex query params
+     */
     public function isExpanded(MenuItemDto $menuItemDto): bool
     {
-        return $menuItemDto->getIndex() === $this->selectedIndex && -1 !== $this->selectedSubIndex;
+        return $menuItemDto->isExpanded();
     }
 }

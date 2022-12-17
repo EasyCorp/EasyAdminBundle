@@ -154,10 +154,8 @@ final class AdminContext
 
         $configuredMenuItems = $this->dashboardControllerInstance->configureMenuItems();
         $mainMenuItems = \is_array($configuredMenuItems) ? $configuredMenuItems : iterator_to_array($configuredMenuItems, false);
-        $selectedMenuIndex = $this->request->query->getInt(EA::MENU_INDEX, -1);
-        $selectedMenuSubIndex = $this->request->query->getInt(EA::SUBMENU_INDEX, -1);
 
-        return $this->mainMenuDto = $this->menuFactory->createMainMenu($mainMenuItems, $selectedMenuIndex, $selectedMenuSubIndex);
+        return $this->mainMenuDto = $this->menuFactory->createMainMenu($mainMenuItems);
     }
 
     public function getUserMenu(): UserMenuDto

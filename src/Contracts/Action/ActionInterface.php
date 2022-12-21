@@ -10,4 +10,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
 interface ActionInterface
 {
     public function getAsDto(): ActionDto;
+
+    public function __toString();
 }

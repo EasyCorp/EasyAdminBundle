@@ -175,12 +175,21 @@ class AdminUrlGeneratorTest extends WebTestCase
         $this->assertNull($adminUrlGenerator->get(EA::CRUD_CONTROLLER_FQCN));
 
         $adminUrlGenerator->setController('App\Controller\Admin\SomeCrudController');
-        $adminUrlGenerator->set(EA::MENU_INDEX, 3);
         $adminUrlGenerator->set('foo', 'bar');
         $adminUrlGenerator->setRoute('some_route', ['key' => 'value']);
 
         $this->assertNull($adminUrlGenerator->get(EA::CRUD_CONTROLLER_FQCN));
         $this->assertNull($adminUrlGenerator->get('foo'));
+    }
+
+    /**
+     * @legacy
+     */
+    public function testLegacyParameters()
+    {
+        $adminUrlGenerator = $this->getAdminUrlGenerator();
+        $adminUrlGenerator->set(EA::MENU_INDEX, 3);
+
         $this->assertSame(3, $adminUrlGenerator->get(EA::MENU_INDEX));
     }
 

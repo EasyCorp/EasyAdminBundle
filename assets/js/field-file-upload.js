@@ -1,3 +1,5 @@
+import {toggleVisibilityClasses} from "./helpers";
+
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.ea-fileupload input[type="file"]').forEach((fileUploadElement) => {
         new FileUploadField(fileUploadElement);
@@ -50,7 +52,7 @@ class FileUploadField {
         }
         this.field.value = '';
         this.#getFieldCustomInput().innerHTML = '';
-        this.#getFieldDeleteButton().style.display = 'none';
+        toggleVisibilityClasses(this.#getFieldDeleteButton(), true);
 
         this.#getFieldSizeLabel().childNodes.forEach((fileSizeLabelChild) => {
             if (fileSizeLabelChild.nodeType === Node.TEXT_NODE) {
@@ -59,7 +61,7 @@ class FileUploadField {
         });
 
         if (null !== fieldListOfFiles) {
-            fieldListOfFiles.style.display = 'none';
+            toggleVisibilityClasses(fieldListOfFiles, true);
         }
     }
 

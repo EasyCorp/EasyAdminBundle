@@ -214,7 +214,7 @@ final class ActionDto
 
     public function getTranslationParameters(): array
     {
-        return $this->translationParameters;
+        return $this->translationParameters;q
     }
 
     public function setTranslationParameters(array $translationParameters): void

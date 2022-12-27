@@ -3,8 +3,6 @@
 use Symfony\Component\Security\Core\User\InMemoryUser;
 
 $configuration = [
-    'enable_authenticator_manager' => true,
-
     'password_hashers' => [
         InMemoryUser::class => 'plaintext',
     ],

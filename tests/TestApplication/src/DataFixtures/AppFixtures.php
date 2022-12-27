@@ -12,7 +12,7 @@ class AppFixtures extends Fixture
 {
     public function load(ObjectManager $manager)
     {
-        for ($i = 0; $i < 10; ++$i) {
+        for ($i = 0; $i < 30; ++$i) {
             $category = (new Category())
                 ->setName('Category '.$i)
                 ->setSlug('category-'.$i);

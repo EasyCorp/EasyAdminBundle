@@ -98,7 +98,7 @@ final class FieldFactory
 
                 $configurator->configure($fieldDto, $entityDto, $context);
             }
-            
+
             // skip here b/c displayedOn may change in configurators
             if (null !== $currentPage && false === $fieldDto->isDisplayedOn($currentPage)) {
                 $fields->unset($fieldDto);

@@ -78,8 +78,7 @@ final class FieldFactory
 
         $isDetailOrIndex = \in_array($currentPage, [Crud::PAGE_INDEX, Crud::PAGE_DETAIL], true);
         foreach ($fields as $fieldDto) {
-            if ((null !== $currentPage && false === $fieldDto->isDisplayedOn($currentPage))
-                || false === $this->authorizationChecker->isGranted(Permission::EA_VIEW_FIELD, $fieldDto)) {
+            if (false === $this->authorizationChecker->isGranted(Permission::EA_VIEW_FIELD, $fieldDto)) {
                 $fields->unset($fieldDto);
 
                 continue;
@@ -98,6 +97,13 @@ final class FieldFactory
                 }
 
                 $configurator->configure($fieldDto, $entityDto, $context);
+            }
+            
+            // skip here b/c displayedOn may change in configurators
+            if (null !== $currentPage && false === $fieldDto->isDisplayedOn($currentPage)) {
+                $fields->unset($fieldDto);
+
+                continue;
             }
 
             foreach ($fieldDto->getFormThemes() as $formThemePath) {

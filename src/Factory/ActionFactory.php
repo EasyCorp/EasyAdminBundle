@@ -185,6 +185,8 @@ final class ActionFactory
             $requestParameters[EA::ENTITY_ID] = $entityDto->getPrimaryKeyValueAsString();
         }
 
+        $requestParameters += $actionDto->getCrudRequestParameters();
+
         return $this->adminUrlGenerator->unsetAllExcept(EA::FILTERS, EA::PAGE)->setAll($requestParameters)->generateUrl();
     }
 

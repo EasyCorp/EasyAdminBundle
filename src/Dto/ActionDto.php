@@ -20,7 +20,7 @@ final class ActionDto
     private ?string $linkUrl = null;
     private ?string $templatePath = null;
     private ?string $crudActionName = null;
-    private ?array $crudRequestParameters = null;
+    private array $crudRequestParameters = [];
     private ?string $routeName = null;
     private $routeParameters = [];
     /* @var callable|string|null */
@@ -153,7 +153,7 @@ final class ActionDto
         $this->crudActionName = $crudActionName;
     }
 
-    public function getCrudRequestParameters(): ?array
+    public function getCrudRequestParameters(): array
     {
         return $this->crudRequestParameters;
     }

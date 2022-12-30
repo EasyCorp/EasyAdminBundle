@@ -111,6 +111,16 @@ return [
         'exit_impersonation' => 'Amaitu inpersonazioa',
     ],
 
+    'settings' => [
+        'appearance' => [
+            'label' => 'Itxura',
+            'light' => 'Argia',
+            'dark' => 'Iluna',
+            'auto' => 'Automatikoa',
+        ],
+        'locale' => 'Hizkuntza',
+    ],
+
     'login_page' => [
         'username' => 'Erabiltzailea',
         'password' => 'Pasahitza',

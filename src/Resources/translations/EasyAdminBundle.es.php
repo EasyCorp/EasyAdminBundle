@@ -102,7 +102,7 @@ return [
         'tab.error_badge_title' => 'Hay un campo inválido|Hay %count% campos inválidos',
         'slug.confirm_text' => 'Si cambias el slug, puedes romper enlaces en otras páginas.',
     ],
-    
+
     'user' => [
         'logged_in_as' => 'Conectado/a como',
         'unnamed' => 'Usuario sin nombre',

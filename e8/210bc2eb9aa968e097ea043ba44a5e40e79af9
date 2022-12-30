@@ -1,0 +1,5 @@
+---------------------------------------------------------------------------
+
+by kiler129 at 2022-12-27T19:41:24Z
+
+@javiereguiluz I think you're right with the empty string translation in Symfony, as this makes a logical sense. Thank you for the fix!

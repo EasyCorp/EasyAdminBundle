@@ -39,6 +39,7 @@
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^3.4",
+        "league/flysystem-bundle": "^3.0",
         "phpstan/extension-installer": "^1.2",
         "phpstan/phpstan": "^1.9",
         "phpstan/phpstan-phpunit": "^1.2",
@@ -73,5 +74,8 @@
         "branch-alias": {
             "dev-master": "4.0.x-dev"
         }
+    },
+    "suggest": {
+        "league/flysystem-bundle": "Allows to manage uploaded file destination"
     }
 }

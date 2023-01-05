@@ -13,7 +13,7 @@ $container->loadFromExtension('doctrine', [
         'mappings' => [
             'TestEntities' => [
                 'is_bundle' => false,
-                'type' => 'annotation',
+                'type' => 'attribute',
                 'dir' => '%kernel.project_dir%/src/Entity',
                 'prefix' => 'EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Entity',
                 'alias' => 'app',

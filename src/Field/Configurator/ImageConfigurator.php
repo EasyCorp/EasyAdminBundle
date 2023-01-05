@@ -78,7 +78,7 @@ final class ImageConfigurator implements FieldConfiguratorInterface
 
     private function getImagePath(?string $imagePath, ?string $basePath, ?FilesystemOperator $filesystemOperator): ?string
     {
-        if (null !==$filesystemOperator && null !== $imagePath) {
+        if (null !== $filesystemOperator && null !== $imagePath) {
             try {
                 return $filesystemOperator->publicUrl($imagePath);
             } catch (UnableToGeneratePublicUrl $e) {

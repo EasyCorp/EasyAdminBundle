@@ -2,11 +2,11 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\DataTransformer;
 
+use EasyCorp\Bundle\EasyAdminBundle\Decorator\FlysystemFile;
 use League\Flysystem\FilesystemOperator;
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\HttpFoundation\File\File;
-use EasyCorp\Bundle\EasyAdminBundle\Decorator\FlysystemFile;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**

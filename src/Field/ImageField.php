@@ -86,7 +86,7 @@ final class ImageField implements FieldInterface
      * - move uploaded file to its final destination
      * - delete the previously uploaded file
      * - retrieve file public url
-     * See https://github.com/thephpleague/flysystem-bundle
+     * See https://github.com/thephpleague/flysystem-bundle.
      */
     public function setFilesystemOperator(FilesystemOperator $filesystemOperator): self
     {

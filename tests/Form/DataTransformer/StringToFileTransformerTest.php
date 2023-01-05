@@ -9,11 +9,10 @@ use PHPUnit\Framework\TestCase;
 
 class StringToFileTransformerTest extends TestCase
 {
-
     public function testTransform(): void
     {
-        $uploadFilename = static fn($value) => 'foo';
-        $uploadValidate = static fn($filename) => 'foo';
+        $uploadFilename = static fn ($value) => 'foo';
+        $uploadValidate = static fn ($filename) => 'foo';
         $filesystemOperatorMock = $this->createStub(FilesystemOperator::class);
         $filesystemOperatorMock
             ->method('fileExists')

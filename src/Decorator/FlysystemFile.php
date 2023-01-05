@@ -3,7 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Decorator;
 
 use League\Flysystem\FilesystemOperator;
-use Symfony\Component\HttpFoundation\File\File as File;
+use Symfony\Component\HttpFoundation\File\File;
 
 class FlysystemFile extends File
 {

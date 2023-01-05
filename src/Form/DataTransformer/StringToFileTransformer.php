@@ -29,7 +29,7 @@ class StringToFileTransformer implements DataTransformerInterface
         $this->filesystemOperator = $filesystemOperator;
     }
 
-    public function transform($value): mixed
+    public function transform($value): null|File|array
     {
         if (null === $value || [] === $value) {
             return null;
@@ -46,7 +46,7 @@ class StringToFileTransformer implements DataTransformerInterface
         return array_map([$this, 'doTransform'], $value);
     }
 
-    public function reverseTransform($value): mixed
+    public function reverseTransform($value): null|string|array
     {
         if (null === $value || [] === $value) {
             return null;

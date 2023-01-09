@@ -41,6 +41,10 @@ class Form {
                     document.querySelectorAll('.form-tabs .nav-item .badge-danger.badge').forEach( (badge) => {
                         badge.parentElement.removeChild(badge);
                     });
+                    
+                    if(null !== form.getAttribute('novalidate')) {
+                        return;
+                    }
 
                     form.querySelectorAll('input,select,textarea').forEach( (input) => {
                         if (!input.disabled && !input.validity.valid) {

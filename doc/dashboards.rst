@@ -320,6 +320,7 @@ and render them in your own Twig template::
     use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
     use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
     use Symfony\UX\Chartjs\Model\Chart;
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 
     class DashboardController extends AbstractDashboardController
     {
@@ -339,6 +340,13 @@ and render them in your own Twig template::
             return $this->render('admin/my-dashboard.html.twig', [
                 'chart' => $chart,
             ]);
+        }
+        
+        public function configureAssets(): Assets
+        {
+          return Assets::new()
+            ->addWebpackEncoreEntry('app')
+          ;
         }
     }
 

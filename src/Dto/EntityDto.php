@@ -10,14 +10,18 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
 /**
+ * @template TInstance of object
+ *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
 final class EntityDto
 {
     private bool $isAccessible = true;
+    /** @var class-string<TInstance> */
     private string $fqcn;
     /** @var ClassMetadataInfo */
     private ClassMetadata $metadata;
+    /** @var TInstance|null */
     private $instance;
     private $primaryKeyName;
     private mixed $primaryKeyValue = null;
@@ -26,7 +30,9 @@ final class EntityDto
     private ?ActionCollection $actions = null;
 
     /**
+     * @param class-string<TInstance>         $entityFqcn
      * @param ClassMetadata&ClassMetadataInfo $entityMetadata
+     * @param TInstance|null                  $entityInstance
      */
     public function __construct(string $entityFqcn, ClassMetadata $entityMetadata, ?string $entityPermission = null, /* ?object */ $entityInstance = null)
     {
@@ -55,6 +61,9 @@ final class EntityDto
         return $this->toString();
     }
 
+    /**
+     * @return class-string<TInstance>
+     */
     public function getFqcn(): string
     {
         return $this->fqcn;
@@ -78,6 +87,9 @@ final class EntityDto
         return sprintf('%s #%s', $this->getName(), substr($this->getPrimaryKeyValueAsString(), 0, 16));
     }
 
+    /**
+     * @return TInstance|null
+     */
     public function getInstance()/* : ?object */
     {
         return $this->instance;
@@ -209,6 +221,9 @@ final class EntityDto
         return \array_key_exists($propertyNameParts[0], $this->metadata->embeddedClasses);
     }
 
+    /**
+     * @param TInstance|null $newEntityInstance
+     */
     public function setInstance(?object $newEntityInstance): void
     {
         if (null !== $this->instance && null !== $newEntityInstance && !$newEntityInstance instanceof $this->fqcn) {
@@ -219,6 +234,9 @@ final class EntityDto
         $this->primaryKeyValue = null;
     }
 
+    /**
+     * @param TInstance $newEntityInstance
+     */
     public function newWithInstance(/* object */ $newEntityInstance): self
     {
         if (!\is_object($newEntityInstance)) {
@@ -233,7 +251,7 @@ final class EntityDto
             );
         }
 
-        if (null !== $this->instance && !$newEntityInstance instanceof $this->fqcn) {
+        if (!$newEntityInstance instanceof $this->fqcn) {
             throw new \InvalidArgumentException(sprintf('The new entity instance must be of the same type as the previous instance (original instance: "%s", new instance: "%s").', $this->fqcn, \get_class($newEntityInstance)));
         }
 

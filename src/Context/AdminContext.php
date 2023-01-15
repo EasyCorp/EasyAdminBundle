@@ -23,6 +23,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 /**
  * A context object that stores all the state and config of the current admin request.
  *
+ * @template TInstance of object
+ *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
 final class AdminContext
@@ -31,6 +33,7 @@ final class AdminContext
     private ?UserInterface $user;
     private I18nDto $i18nDto;
     private CrudControllerRegistry $crudControllers;
+    /** @var EntityDto<TInstance>|null */
     private ?EntityDto $entityDto;
     private DashboardDto $dashboardDto;
     private DashboardControllerInterface $dashboardControllerInstance;
@@ -42,6 +45,9 @@ final class AdminContext
     private ?MainMenuDto $mainMenuDto = null;
     private ?UserMenuDto $userMenuDto = null;
 
+    /**
+     * @param EntityDto<TInstance>|null $entityDto
+     */
     public function __construct(Request $request, ?UserInterface $user, I18nDto $i18nDto, CrudControllerRegistry $crudControllers, DashboardDto $dashboardDto, DashboardControllerInterface $dashboardController, AssetsDto $assetDto, ?CrudDto $crudDto, ?EntityDto $entityDto, ?SearchDto $searchDto, MenuFactory $menuFactory, TemplateRegistry $templateRegistry)
     {
         $this->request = $request;
@@ -78,6 +84,9 @@ final class AdminContext
         return $this->crudControllers;
     }
 
+    /**
+     * @return EntityDto<TInstance>
+     */
     public function getEntity(): EntityDto
     {
         return $this->entityDto;

@@ -166,7 +166,9 @@ final class ActionFactory
 
         if (null !== $routeName = $actionDto->getRouteName()) {
             $routeParameters = $actionDto->getRouteParameters();
-            if (\is_callable($routeParameters) && null !== $entityInstance = $entityDto->getInstance()) {
+            if ($actionDto->isBatchAction() || $actionDto->isGlobalAction()) {
+                $routeParameters = [];
+            } elseif(\is_callable($routeParameters) && null !== $entityInstance = $entityDto->getInstance()) {
                 $routeParameters = $routeParameters($entityInstance);
             }
 

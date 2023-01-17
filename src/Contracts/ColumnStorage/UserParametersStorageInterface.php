@@ -1,6 +1,6 @@
 <?php
 
-namespace EasyCorp\Bundle\EasyAdminBundle\Interfaces;
+namespace EasyCorp\Bundle\EasyAdminBundle\Contracts\ColumnStorage;
 
 interface UserParametersStorageInterface
 {

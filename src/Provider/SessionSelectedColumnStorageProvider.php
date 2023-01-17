@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Provider;
 
-use EasyCorp\Bundle\EasyAdminBundle\Interfaces\SelectedColumnStorageProviderInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\ColumnStorage\SelectedColumnStorageProviderInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class SessionSelectedColumnStorageProvider implements SelectedColumnStorageProviderInterface

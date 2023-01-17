@@ -541,7 +541,7 @@ final class CrudDto
         return array_flip(array_merge(
             array_combine($this->getSelectedColumns(), $this->getSelectedColumns()),
             $this->indexAvailableColumnsWithLabels,
-            array_combine($this->getAvailableColumns(), $this->getAvailableColumns()), // thanks @TheoD02 
+            array_combine($this->getAvailableColumns(), $this->getAvailableColumns()), // thanks @TheoD02
         ));
     }
 

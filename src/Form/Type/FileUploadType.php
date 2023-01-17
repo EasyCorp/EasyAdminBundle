@@ -139,7 +139,8 @@ class FileUploadType extends AbstractType implements DataMapperInterface
                 $value .= \DIRECTORY_SEPARATOR;
             }
 
-            if (!str_starts_with($value, $this->projectDir)) {
+            $isStreamWrapper = filter_var($value, \FILTER_VALIDATE_URL);
+            if (!$isStreamWrapper && !str_starts_with($value, $this->projectDir)) {
                 $value = $this->projectDir.'/'.$value;
             }
 

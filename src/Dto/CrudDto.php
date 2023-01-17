@@ -175,7 +175,7 @@ final class CrudDto
             $title = null !== $entityInstance ? $title($entityInstance) : $title();
         }
 
-        if (null === $title || '' === $title) {
+        if (null === $title) {
             return null;
         }
 

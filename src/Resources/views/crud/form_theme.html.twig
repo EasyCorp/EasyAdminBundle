@@ -753,7 +753,7 @@
 {% block ea_slug_widget %}
     {% set attr = attr|merge({
         'data-ea-slug-field': '',
-        'data-target': form.parent.children[target].vars.id
+        'data-target': target|split('|')|map(name => form.parent.children[name].vars.id)|json_encode
     }) %}
     {% if attr['data-confirm-text'] is defined %}
         {% set attr = attr|merge({

@@ -67,6 +67,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Inspector\DataCollector;
 use EasyCorp\Bundle\EasyAdminBundle\Intl\IntlFormatter;
 use EasyCorp\Bundle\EasyAdminBundle\Maker\ClassMaker;
+use EasyCorp\Bundle\EasyAdminBundle\Menu\MenuItemMatcher;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityPaginator;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityUpdater;
@@ -197,10 +198,14 @@ return static function (ContainerConfigurator $container) {
             ->arg(0, '%kernel.secret%')
 
         ->set(MenuFactory::class)
-            ->arg(0, new Reference(AdminContextProvider::class))
-            ->arg(1, new Reference(AuthorizationChecker::class))
-            ->arg(2, new Reference('security.logout_url_generator'))
-            ->arg(3, new Reference(AdminUrlGenerator::class))
+            ->arg(0, service(AdminContextProvider::class))
+            ->arg(1, service(AuthorizationChecker::class))
+            ->arg(2, service('security.logout_url_generator'))
+            ->arg(3, service(AdminUrlGenerator::class))
+            ->arg(4, service(MenuItemMatcher::class))
+
+        ->set(MenuItemMatcher::class)
+            ->arg(0, service(AdminContextProvider::class))
 
         ->set(EntityRepository::class)
             ->arg(0, service(AdminContextProvider::class))
@@ -307,6 +312,7 @@ return static function (ContainerConfigurator $container) {
 
         ->set(CommonPreConfigurator::class)
             ->arg(0, new Reference('property_accessor'))
+            ->arg(1, service(EntityFactory::class))
             ->tag(EasyAdminExtension::TAG_FIELD_CONFIGURATOR, ['priority' => 9999])
 
         ->set(CountryConfigurator::class)

@@ -35,9 +35,12 @@ final class SlugField implements FieldInterface
         ;
     }
 
-    public function setTargetFieldName(string $fieldName): self
+    /**
+     * @param string|array<string> $fieldName
+     */
+    public function setTargetFieldName(string|array $fieldName): self
     {
-        $this->setCustomOption(self::OPTION_TARGET_FIELD_NAME, $fieldName);
+        $this->setCustomOption(self::OPTION_TARGET_FIELD_NAME, \is_string($fieldName) ? [$fieldName] : $fieldName);
 
         return $this;
     }

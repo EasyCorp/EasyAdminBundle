@@ -64,9 +64,17 @@ class Slugger {
     }
 
     setTargetElement() {
-        this.target = document.getElementById(this.field.dataset.target);
-        if (null === this.target) {
-            throw `Wrong target specified for slug widget ("${this.field.dataset.target}").`;
+        const fieldNames = JSON.parse(this.field.dataset.target);
+        this.targets = [];
+
+        for (const name of fieldNames) {
+            const target = document.getElementById(name);
+
+            if (null === target) {
+                throw `Wrong target specified for slug widget ("${name}").`;
+            }
+
+            this.targets.push(target);
         }
     }
 
@@ -120,7 +128,7 @@ class Slugger {
     }
 
     updateValue() {
-        this.field.value = slugify(this.target.value, {
+        this.field.value = slugify(this.targets.map(target => target.value).join('-'), {
             remove: /[^A-Za-z0-9\s-]/g,
             lower: true,
             strict: true,
@@ -131,11 +139,13 @@ class Slugger {
      * Observe the target field and slug it
      */
     listenTarget() {
-        this.target.addEventListener('keyup', (data) => {
-            if ('readonly' === this.field.getAttribute('readonly')) {
-                this.updateValue();
-            }
-        });
+        for (const target of this.targets) {
+            target.addEventListener('keyup', () => {
+                if ('readonly' === this.field.getAttribute('readonly')) {
+                    this.updateValue();
+                }
+            });
+        }
     }
 }
 

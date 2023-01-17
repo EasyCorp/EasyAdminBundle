@@ -9,6 +9,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MainMenuDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\UserMenuDto;
+use EasyCorp\Bundle\EasyAdminBundle\Menu\MenuItemMatcherInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
@@ -26,21 +27,23 @@ final class MenuFactory
     private AuthorizationCheckerInterface $authChecker;
     private LogoutUrlGenerator $logoutUrlGenerator;
     private AdminUrlGenerator $adminUrlGenerator;
+    private MenuItemMatcherInterface $menuItemMatcher;
 
-    public function __construct(AdminContextProvider $adminContextProvider, AuthorizationCheckerInterface $authChecker, LogoutUrlGenerator $logoutUrlGenerator, AdminUrlGenerator $adminUrlGenerator)
+    public function __construct(AdminContextProvider $adminContextProvider, AuthorizationCheckerInterface $authChecker, LogoutUrlGenerator $logoutUrlGenerator, AdminUrlGenerator $adminUrlGenerator, MenuItemMatcherInterface $menuItemMatcher)
     {
         $this->adminContextProvider = $adminContextProvider;
         $this->authChecker = $authChecker;
         $this->logoutUrlGenerator = $logoutUrlGenerator;
         $this->adminUrlGenerator = $adminUrlGenerator;
+        $this->menuItemMatcher = $menuItemMatcher;
     }
 
     /**
      * @param MenuItemInterface[] $menuItems
      */
-    public function createMainMenu(array $menuItems, int $selectedIndex, int $selectedSubIndex): MainMenuDto
+    public function createMainMenu(array $menuItems): MainMenuDto
     {
-        return new MainMenuDto($this->buildMenuItems($menuItems), $selectedIndex, $selectedSubIndex);
+        return new MainMenuDto($this->buildMenuItems($menuItems));
     }
 
     public function createUserMenu(UserMenu $userMenu): UserMenuDto
@@ -60,7 +63,7 @@ final class MenuFactory
     private function buildMenuItems(array $menuItems): array
     {
         $adminContext = $this->adminContextProvider->getContext();
-        $translationDomain = $adminContext->getI18n()->getTranslationDomain();
+        $translationDomain = $adminContext?->getI18n()->getTranslationDomain() ?? '';
 
         $builtItems = [];
         foreach ($menuItems as $i => $menuItem) {
@@ -75,16 +78,16 @@ final class MenuFactory
                     continue;
                 }
 
-                $subItems[] = $this->buildMenuItem($menuSubItemDto, [], $i, $j, $translationDomain);
+                $subItems[] = $this->buildMenuItem($menuSubItemDto, [], $translationDomain);
             }
 
-            $builtItems[] = $this->buildMenuItem($menuItemDto, $subItems, $i, -1, $translationDomain);
+            $builtItems[] = $this->buildMenuItem($menuItemDto, $subItems, $translationDomain);
         }
 
         return $builtItems;
     }
 
-    private function buildMenuItem(MenuItemDto $menuItemDto, array $subItems, int $index, int $subIndex, string $translationDomain): MenuItemDto
+    private function buildMenuItem(MenuItemDto $menuItemDto, array $subItems, string $translationDomain): MenuItemDto
     {
         if (!$menuItemDto->getLabel() instanceof TranslatableInterface) {
             $label = $menuItemDto->getLabel();
@@ -93,12 +96,13 @@ final class MenuFactory
             );
         }
 
-        $url = $this->generateMenuItemUrl($menuItemDto, $index, $subIndex);
-
-        $menuItemDto->setIndex($index);
-        $menuItemDto->setSubIndex($subIndex);
+        $url = $this->generateMenuItemUrl($menuItemDto);
         $menuItemDto->setLinkUrl($url);
+        $menuItemDto->setSelected($this->menuItemMatcher->isSelected($menuItemDto));
+
         $menuItemDto->setSubItems($subItems);
+        // this must be called after the menu subitems have been processed in setSubIems()
+        $menuItemDto->setExpanded($this->menuItemMatcher->isExpanded($menuItemDto));
 
         // if menu item points to an absolute URL and no 'rel' attribute is defined,
         // assign the 'rel="noopener"' attribute for performance and security reasons.
@@ -110,7 +114,7 @@ final class MenuFactory
         return $menuItemDto;
     }
 
-    private function generateMenuItemUrl(MenuItemDto $menuItemDto, int $index, int $subIndex): string
+    private function generateMenuItemUrl(MenuItemDto $menuItemDto): string
     {
         $menuItemType = $menuItemDto->getType();
 
@@ -120,8 +124,6 @@ final class MenuFactory
             $this->adminUrlGenerator
                 // remove all existing query params to avoid keeping search queries, filters and pagination
                 ->unsetAll()
-                // add the index and subIndex query parameters to display the selected menu item
-                ->set(EA::MENU_INDEX, $index)->set(EA::SUBMENU_INDEX, $subIndex)
                 // set any other parameters defined by the menu item
                 ->setAll($routeParameters);
 
@@ -136,7 +138,7 @@ final class MenuFactory
                 $this->adminUrlGenerator->setController($crudControllerFqcn);
             // 2. ...otherwise, find the CRUD controller from the entityFqcn
             } else {
-                $crudControllers = $this->adminContextProvider->getContext()->getCrudControllers();
+                $crudControllers = $this->adminContextProvider->getContext()?->getCrudControllers();
                 if (null === $controllerFqcn = $crudControllers->findCrudFqcnByEntityFqcn($entityFqcn)) {
                     throw new \RuntimeException(sprintf('Unable to find the controller related to the "%s" Entity; did you forget to extend "%s"?', $entityFqcn, AbstractCrudController::class));
                 }
@@ -149,19 +151,13 @@ final class MenuFactory
         }
 
         if (MenuItemDto::TYPE_DASHBOARD === $menuItemType) {
-            return $this->adminUrlGenerator
-                ->unsetAll()
-                ->set(EA::MENU_INDEX, $index)
-                ->set(EA::SUBMENU_INDEX, $subIndex)
-                ->generateUrl();
+            return $this->adminUrlGenerator->unsetAll()->generateUrl();
         }
 
         if (MenuItemDto::TYPE_ROUTE === $menuItemType) {
             return $this->adminUrlGenerator
                 ->unsetAll()
                 ->setRoute($menuItemDto->getRouteName(), $menuItemDto->getRouteParameters())
-                ->set(EA::MENU_INDEX, $index)
-                ->set(EA::SUBMENU_INDEX, $subIndex)
                 ->generateUrl();
         }
 

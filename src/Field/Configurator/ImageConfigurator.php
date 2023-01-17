@@ -52,7 +52,12 @@ final class ImageConfigurator implements FieldConfiguratorInterface
             throw new \InvalidArgumentException(sprintf('The "%s" image field must define the directory where the images are uploaded using the setUploadDir() method.', $field->getProperty()));
         }
         $relativeUploadDir = u($relativeUploadDir)->trimStart(\DIRECTORY_SEPARATOR)->ensureEnd(\DIRECTORY_SEPARATOR)->toString();
-        $absoluteUploadDir = u($relativeUploadDir)->ensureStart($this->projectDir.\DIRECTORY_SEPARATOR)->toString();
+        $isStreamWrapper = filter_var($relativeUploadDir, \FILTER_VALIDATE_URL);
+        if ($isStreamWrapper) {
+            $absoluteUploadDir = $relativeUploadDir;
+        } else {
+            $absoluteUploadDir = u($relativeUploadDir)->ensureStart($this->projectDir.\DIRECTORY_SEPARATOR)->toString();
+        }
         $field->setFormTypeOption('upload_dir', $absoluteUploadDir);
     }
 

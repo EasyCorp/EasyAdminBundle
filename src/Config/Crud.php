@@ -45,6 +45,8 @@ class Crud
 
     /**
      * @param TranslatableInterface|string|callable $label The callable signature is: fn ($entityInstance, $pageName): string
+     *
+     * @psalm-param mixed $label
      */
     public function setEntityLabelInSingular(/* @var TranslatableInterface|string|callable */ $label): self
     {
@@ -67,6 +69,8 @@ class Crud
 
     /**
      * @param TranslatableInterface|string|callable $label The callable signature is: fn ($entityInstance, $pageName): string
+     *
+     * @psalm-param mixed $label
      */
     public function setEntityLabelInPlural(/* @var TranslatableInterface|string|callable */ $label): self
     {
@@ -89,6 +93,8 @@ class Crud
 
     /**
      * @param TranslatableInterface|string|callable $title The callable signature is: fn ($entityInstance): string
+     *
+     * @psalm-param mixed $title
      */
     public function setPageTitle(string $pageName, /* @var TranslatableInterface|string|callable */ $title): self
     {

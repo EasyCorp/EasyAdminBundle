@@ -59,7 +59,7 @@ final class AdminUrlGenerator
 
     public function setRoute(string $routeName, array $routeParameters = []): self
     {
-        $this->unsetAllExcept(EA::MENU_INDEX, EA::SUBMENU_INDEX, EA::DASHBOARD_CONTROLLER_FQCN);
+        $this->unsetAllExcept(EA::DASHBOARD_CONTROLLER_FQCN);
         $this->setRouteParameter(EA::ROUTE_NAME, $routeName);
         $this->setRouteParameter(EA::ROUTE_PARAMS, $routeParameters);
 
@@ -84,6 +84,15 @@ final class AdminUrlGenerator
 
     public function set(string $paramName, $paramValue): self
     {
+        if (\in_array($paramName, [EA::MENU_INDEX, EA::SUBMENU_INDEX], true)) {
+            trigger_deprecation(
+                'easycorp/easyadmin-bundle',
+                '4.5.0',
+                'Using the "%s" query parameter is deprecated. Menu items are now highlighted automatically based on the Request data, so you don\'t have to deal with menu items manually anymore.',
+                $paramName,
+            );
+        }
+
         $this->setRouteParameter($paramName, $paramValue);
 
         return $this;

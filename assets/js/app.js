@@ -4,10 +4,12 @@ require('../css/app.scss');
 import bootstrap from 'bootstrap/dist/js/bootstrap.bundle';
 import Mark from 'mark.js/src/vanilla';
 import Autocomplete from './autocomplete';
+import {toggleVisibilityClasses} from "./helpers";
 import Sortable from "sortablejs";
 
 // global export
 window.Sortable = Sortable;
+
 // Provide Bootstrap variable globally to allow custom backend pages to use it
 window.bootstrap = bootstrap;
 
@@ -264,16 +266,16 @@ class App {
                 const batchActions = content.querySelector('.batch-actions');
 
                 if (null !== contentTitle) {
-                    contentTitle.style.visibility = rowsAreSelected ? 'hidden' : 'visible';
+                    toggleVisibilityClasses(contentTitle, rowsAreSelected);
                 }
                 if (null !== filters) {
-                    filters.style.display = rowsAreSelected ? 'none' : 'block';
+                    toggleVisibilityClasses(filters, rowsAreSelected);
                 }
                 if (null !== globalActions) {
-                    globalActions.style.display = rowsAreSelected ? 'none' : 'block';
+                    toggleVisibilityClasses(globalActions, rowsAreSelected);
                 }
                 if (null !== batchActions) {
-                    batchActions.style.display = rowsAreSelected ? 'block' : 'none';
+                    toggleVisibilityClasses(batchActions, !rowsAreSelected);
                 }
             });
         });

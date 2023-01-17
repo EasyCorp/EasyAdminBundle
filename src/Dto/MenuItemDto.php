@@ -19,8 +19,8 @@ final class MenuItemDto
     public const TYPE_ROUTE = 'route';
 
     private ?string $type = null;
-    private ?int $index = null;
-    private ?int $subIndex = null;
+    private bool $selected = false;
+    private bool $expanded = false;
     private TranslatableInterface|string|null $label = null;
     private ?string $icon = null;
     private string $cssClass = '';
@@ -45,24 +45,62 @@ final class MenuItemDto
         $this->type = $type;
     }
 
+    /** @deprecated This was used in the past to get the selected menu item
+     *              Now the active menu item is detected automatically via the Request data
+     */
     public function getIndex(): int
     {
-        return $this->index;
+        return -1;
     }
 
+    /** @deprecated This was used in the past to set the selected menu item
+     *              Now the active menu item is detected automatically via the Request data
+     */
     public function setIndex(int $index): void
     {
-        $this->index = $index;
+        // do nothing...
     }
 
+    /** @deprecated This was used in the past to get the selected menu subitem
+     *              Now the active menu item is detected automatically via the Request data
+     */
     public function getSubIndex(): int
     {
-        return $this->subIndex;
+        return -1;
     }
 
+    /** @deprecated This was used in the past to set the selected menu subitem
+     *              Now the active menu item is detected automatically via the Request data
+     */
     public function setSubIndex(int $subIndex): void
     {
-        $this->subIndex = $subIndex;
+        // do nothing
+    }
+
+    /**
+     * @return bool Returns true when this menu item is the selected one
+     */
+    public function isSelected(): bool
+    {
+        return $this->selected;
+    }
+
+    public function setSelected(bool $isSelected): void
+    {
+        $this->selected = $isSelected;
+    }
+
+    /**
+     * @return bool Returns true when any of its subitems is selected
+     */
+    public function isExpanded(): bool
+    {
+        return $this->expanded;
+    }
+
+    public function setExpanded(bool $isExpanded): void
+    {
+        $this->expanded = $isExpanded;
     }
 
     public function getLabel(): TranslatableInterface|string

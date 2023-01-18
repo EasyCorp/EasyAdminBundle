@@ -257,7 +257,8 @@ final class AdminUrlGenerator
 
         $context = $this->adminContextProvider->getContext();
         $urlType = null !== $context && false === $context->getAbsoluteUrls() ? UrlGeneratorInterface::RELATIVE_PATH : UrlGeneratorInterface::ABSOLUTE_URL;
-        $url = $this->urlGenerator->generate($this->dashboardRoute, $routeParameters, $urlType) ?: '?';
+        $url = $this->urlGenerator->generate($this->dashboardRoute, $routeParameters, $urlType);
+        $url = '' === $url ? '?' : $url;
 
         // this is important to start the generation a each URL from the same initial state
         // otherwise, some parameters used when generating some URL could leak to other URLs

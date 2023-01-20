@@ -313,7 +313,7 @@ saving the changes::
         $submitButtonName = $context->getRequest()->request->all()['ea']['newForm']['btn'];
 
         if ('saveAndViewDetail' === $submitButtonName) {
-            $url = $this->get(AdminUrlGenerator::class)
+            $url = $this->container->get(AdminUrlGenerator::class)
                 ->setAction(Action::DETAIL)
                 ->setEntityId($context->getEntity()->getPrimaryKeyValue())
                 ->generateUrl();
@@ -538,7 +538,7 @@ the ``unsetAll()`` method to remove all existing query parameters::
         {
             // instead of injecting the AdminUrlGenerator service in the constructor,
             // you can also get it from inside a controller action as follows:
-            // $adminUrlGenerator = $this->get(AdminUrlGenerator::class);
+            // $adminUrlGenerator = $this->container->get(AdminUrlGenerator::class);
 
             // the existing query parameters are maintained, so you only
             // have to pass the values you want to change.

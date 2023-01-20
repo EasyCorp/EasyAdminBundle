@@ -82,7 +82,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Router\UrlSigner;
 use EasyCorp\Bundle\EasyAdminBundle\Security\AuthorizationChecker;
 use EasyCorp\Bundle\EasyAdminBundle\Security\SecurityVoter;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\EasyAdminTwigExtension;
-use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\ServiceLocator;
@@ -374,7 +373,7 @@ return static function (ContainerConfigurator $container) {
             ->arg(0, service('request_stack'))
 
         ->set(UserSelectedColumnStorageProvider::class)->public()
-            ->arg(0, new Reference(Security::class))
+            ->arg(0, service('security.token_storage'))
             ->arg(1, service('doctrine'))
     ;
 };

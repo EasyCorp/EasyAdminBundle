@@ -5,22 +5,25 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Provider;
 use Doctrine\Persistence\ManagerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\ColumnStorage\SelectedColumnStorageProviderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\ColumnStorage\UserParametersStorageInterface;
-use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class UserSelectedColumnStorageProvider implements SelectedColumnStorageProviderInterface
 {
-    private Security $security;
+    private TokenStorageInterface $tokenStorage;
     private ManagerRegistry $managerRegistry;
 
-    public function __construct(Security $security, ManagerRegistry $managerRegistry)
+    public function __construct(TokenStorageInterface $tokenStorage, ManagerRegistry $managerRegistry)
     {
-        $this->security = $security;
+        $this->tokenStorage = $tokenStorage;
         $this->managerRegistry = $managerRegistry;
     }
 
     public function getSelectedColumns(string $key, array $defaultColumns, array $availableColumns): array
     {
-        $user = $this->security->getUser();
+        if (null === $token = $this->tokenStorage->getToken()) {
+            return $defaultColumns;
+        }
+        $user = $token->getUser();
         if (!\is_object($user) || !($user instanceof UserParametersStorageInterface)) {
             return $defaultColumns;
         }
@@ -34,7 +37,10 @@ class UserSelectedColumnStorageProvider implements SelectedColumnStorageProvider
 
     public function storeSelectedColumns(string $key, array $selectedColumns): bool
     {
-        $user = $this->security->getUser();
+        if (null === $token = $this->tokenStorage->getToken()) {
+            return false;
+        }
+        $user = $token->getUser();
         if (!\is_object($user) || !($user instanceof UserParametersStorageInterface)) {
             return false;
         }

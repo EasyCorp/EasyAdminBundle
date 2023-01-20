@@ -474,7 +474,7 @@ final class CrudDto
     public function setColumnChooserColumns(array $defaultColumns = [], array $availableColumns = [], array $excludeColumns = []): self
     {
         $this->indexDefaultColumns = $defaultColumns;
-        $this->indexAvailableColumns = $availableColumns;
+        $this->indexAvailableColumns = array_unique(array_merge($defaultColumns, $availableColumns));
         $this->indexExcludeColumns = $excludeColumns;
 
         return $this;
@@ -590,7 +590,8 @@ final class CrudDto
         if (0 === \count($this->indexDefaultColumns)) {
             return $fieldsColl;
         }
-        $this->indexSelectedColumns = $this->selectedColumnStorageProvider->getSelectedColumns($this->getEntityFqcn(), $this->indexDefaultColumns, $this->indexAvailableColumns);
+        $this->indexSelectedColumns = $this->selectedColumnStorageProvider
+            ->getSelectedColumns($this->getControllerFqcn(), $this->indexDefaultColumns, $this->indexAvailableColumns);
         if (0 === \count($this->indexSelectedColumns)) {
             $this->indexSelectedColumns = $this->indexDefaultColumns;
         }

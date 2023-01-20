@@ -190,13 +190,12 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $request = $context->getRequest();
         $url = $this->container->get(AdminUrlGenerator::class)->setAction(Action::INDEX)->generateUrl();
         $storageProvider = $context->getCrud()?->getColumnChooserSelectedColumnStorageProvider();
-        $fqcn = $context->getCrud()?->getEntityFqcn();
-        if (!\is_object($storageProvider) || 0 == \strlen($fqcn)) {
+        if (!\is_object($storageProvider)) {
             // TODO: may be create custom exception to notify user?
             return $this->redirect($url);
         }
         if (null !== $request->get('reset')) {
-            $storageProvider->storeSelectedColumns($fqcn, []); // reset to defaults
+            $storageProvider->storeSelectedColumns(static::class, []); // reset to defaults
 
             return $this->redirect($url);
         }
@@ -208,7 +207,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             if ($columnsForm->isSubmitted() && $columnsForm->isValid()) {
                 $data = $request->get('form', ['columns' => []]);
                 $selectedColumns = array_values(array_intersect(array_values($data['columns'] ?? []), $context->getCrud()->getAvailableColumns()));
-                $storageProvider->storeSelectedColumns($fqcn, $selectedColumns);
+                $storageProvider->storeSelectedColumns(static::class, $selectedColumns);
             }
         }
 

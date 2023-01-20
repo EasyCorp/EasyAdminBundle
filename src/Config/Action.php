@@ -240,7 +240,7 @@ final class Action
         return $this->dto;
     }
 
-    private static function humanizeString(string $string): string
+    public static function humanizeString(string $string): string
     {
         $uString = u($string);
         $upperString = $uString->upper()->toString();

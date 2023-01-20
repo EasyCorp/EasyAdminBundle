@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\ColumnStorage\SelectedColumnStorageProviderInterface;
@@ -11,8 +12,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormPanelType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormRowType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminTabType;
 use EasyCorp\Bundle\EasyAdminBundle\Translation\TranslatableMessageBuilder;
-use function Symfony\Component\Translation\t;
 use Symfony\Contracts\Translation\TranslatableInterface;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -541,7 +543,6 @@ final class CrudDto
         return array_flip(array_merge(
             array_combine($this->getSelectedColumns(), $this->getSelectedColumns()),
             $this->indexAvailableColumnsWithLabels,
-            array_combine($this->getAvailableColumns(), $this->getAvailableColumns()), // thanks @TheoD02
         ));
     }
 
@@ -561,25 +562,26 @@ final class CrudDto
             return $fieldsColl;
         }
 
+        $this->indexAvailableColumns = [];
+        $this->indexAvailableColumnsWithLabels = [];
         $iterator = $fieldsColl->getIterator();
-        if (0 === \count($this->indexAvailableColumns)) {
-            while ($iterator->valid()) {
-                $dto = $iterator->current();
-                $columnName = $dto->getProperty();
-                if (!$this->isSpecialFormType($dto->getFormType())
-                    && !\in_array($columnName, $this->indexExcludeColumns, true)
-                    && (
-                        $dto->isDisplayedOn(Crud::PAGE_DETAIL)
-                        || $dto->isDisplayedOn(Crud::PAGE_INDEX)
-                    )
-                ) {
-                    $this->indexAvailableColumns[] = $columnName;
-                    $this->indexAvailableColumnsWithLabels[$columnName] = $dto->getLabel() ?? $columnName;
-                }
-                $iterator->next();
+        while ($iterator->valid()) {
+            $dto = $iterator->current();
+            $columnName = $dto->getProperty();
+            if (!$this->isSpecialFormType($dto->getFormType())
+                && !\in_array($columnName, $this->indexExcludeColumns, true)
+                && (
+                    $dto->isDisplayedOn(Crud::PAGE_DETAIL)
+                    || $dto->isDisplayedOn(Crud::PAGE_INDEX)
+                )
+            ) {
+                $this->indexAvailableColumns[] = $columnName;
+                $this->indexAvailableColumnsWithLabels[$columnName] = $dto->getLabel() ?? Action::humanizeString($columnName);
             }
-            $iterator->rewind();
+            $iterator->next();
         }
+        $iterator->rewind();
+
         if (0 === \count($this->indexAvailableColumns)) {
             return $fieldsColl;
         }

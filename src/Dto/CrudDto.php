@@ -12,9 +12,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormPanelType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormRowType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminTabType;
 use EasyCorp\Bundle\EasyAdminBundle\Translation\TranslatableMessageBuilder;
-use Symfony\Contracts\Translation\TranslatableInterface;
-
 use function Symfony\Component\Translation\t;
+use Symfony\Contracts\Translation\TranslatableInterface;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>

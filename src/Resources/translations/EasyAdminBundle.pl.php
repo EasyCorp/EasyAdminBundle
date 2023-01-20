@@ -7,7 +7,7 @@ return [
         'edit' => '%entity_label_singular%',
         'index' => '%entity_label_plural%',
         'new' => 'Dodaj nowy %entity_label_singular%',
-        'exception' => 'Błąd|Błędy',
+        'exception' => 'Błąd|Błędy|Błędy',
     ],
 
     'datagrid' => [
@@ -99,7 +99,7 @@ return [
 
     'form' => [
         'are_you_sure' => 'Nie zapisano zmian wprowadzonych w tym formularzu.',
-        'tab.error_badge_title' => 'Wystąpił jeden błąd|Ilość błędów: %count%',
+        'tab.error_badge_title' => 'Wystąpił jeden błąd|Wystąpiły %count% błędy|Wystąpiło %count% błędów',
         'slug.confirm_text' => 'Jeśli zmienisz slug, linki mogą przestać działać na innych stronach.',
     ],
 

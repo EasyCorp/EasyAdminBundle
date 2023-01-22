@@ -29,7 +29,7 @@ abstract class AbstractLifecycleEvent implements EntityLifecycleEventInterface
             );
         }
 
-        if (!null === $form && !$form instanceof FormInterface) {
+        if (null !== $form && !$form instanceof FormInterface) {
             trigger_deprecation(
                 'easycorp/easyadmin-bundle',
                 '4.0.5',

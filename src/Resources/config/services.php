@@ -68,6 +68,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Inspector\DataCollector;
 use EasyCorp\Bundle\EasyAdminBundle\Intl\IntlFormatter;
 use EasyCorp\Bundle\EasyAdminBundle\Maker\ClassMaker;
 use EasyCorp\Bundle\EasyAdminBundle\Menu\MenuItemMatcher;
+use EasyCorp\Bundle\EasyAdminBundle\Menu\MenuItemMatcherInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityPaginator;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityUpdater;
@@ -199,10 +200,12 @@ return static function (ContainerConfigurator $container) {
             ->arg(1, service(AuthorizationChecker::class))
             ->arg(2, service('security.logout_url_generator'))
             ->arg(3, service(AdminUrlGenerator::class))
-            ->arg(4, service(MenuItemMatcher::class))
+            ->arg(4, service(MenuItemMatcherInterface::class))
 
         ->set(MenuItemMatcher::class)
             ->arg(0, service(AdminContextProvider::class))
+
+        ->alias(MenuItemMatcherInterface::class, MenuItemMatcher::class)
 
         ->set(EntityRepository::class)
             ->arg(0, service(AdminContextProvider::class))

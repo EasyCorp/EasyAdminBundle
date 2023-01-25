@@ -53,14 +53,13 @@ trait AdminControllerTrait
     protected $em;
 
     /**
-     * @Route("/", name="easyadmin")
-     *
      * @param Request $request
      *
      * @return RedirectResponse|Response
      *
      * @throws ForbiddenActionException
      */
+    #[Route('/', name: 'easyadmin')]
     public function indexAction(Request $request)
     {
         $this->initialize($request);

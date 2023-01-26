@@ -81,6 +81,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Security\AuthorizationChecker;
 use EasyCorp\Bundle\EasyAdminBundle\Security\SecurityVoter;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\EasyAdminTwigExtension;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\Exception\RuntimeException;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
@@ -362,9 +363,18 @@ return static function (ContainerConfigurator $container) {
         ->set(TimezoneConfigurator::class)
 
         ->set(UrlConfigurator::class)
-
-        ->set(AssetPackage::class)
-            ->arg(0, service('request_stack'))
-            ->tag('assets.package', ['package' => AssetPackage::PACKAGE_NAME])
     ;
+
+    $baseUrl = null;
+    try {
+        // this will trigger the use of UrlPackage allowing absolute URL
+        $baseUrl = param('easyadmin_base_url');
+    } catch (RuntimeException $exception) {
+        // Do nothing, just mute the exception
+    }
+    $services
+        ->set(AssetPackage::class)
+        ->arg(0, service('request_stack'))
+        ->arg(1, $baseUrl)
+        ->tag('assets.package', ['package' => AssetPackage::PACKAGE_NAME]);
 };

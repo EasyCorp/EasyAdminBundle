@@ -42,7 +42,7 @@ class Form {
                         badge.parentElement.removeChild(badge);
                     });
                     
-                    if(null !== form.getAttribute('novalidate')) {
+                    if (null !== form.getAttribute('novalidate')) {
                         return;
                     }
 

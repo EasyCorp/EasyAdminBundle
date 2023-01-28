@@ -316,7 +316,6 @@ provide yet any way of creating those widgets. It's in our list of future featur
 but meanwhile you can use `Symfony UX Chart.js`_ bundle to create those charts
 and render them in your own Twig template::
 
-    use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
     use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
     use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
     use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
@@ -329,7 +328,8 @@ and render them in your own Twig template::
         ) {
         }
 
-        // ...
+        // ... you'll also need to load some CSS/JavaScript assets to render
+        // the charts; this is explained later in the chapter about Design
 
         #[Route('/admin')]
         public function admin(): Response
@@ -340,13 +340,6 @@ and render them in your own Twig template::
             return $this->render('admin/my-dashboard.html.twig', [
                 'chart' => $chart,
             ]);
-        }
-        
-        public function configureAssets(): Assets
-        {
-            return Assets::new()
-                ->addWebpackEncoreEntry('app')
-            ;
         }
     }
 

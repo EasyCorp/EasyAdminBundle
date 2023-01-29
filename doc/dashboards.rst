@@ -328,7 +328,8 @@ and render them in your own Twig template::
         ) {
         }
 
-        // ...
+        // ... you'll also need to load some CSS/JavaScript assets to render
+        // the charts; this is explained later in the chapter about Design
 
         #[Route('/admin')]
         public function admin(): Response

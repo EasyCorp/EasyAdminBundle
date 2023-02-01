@@ -70,6 +70,7 @@ final class CrudDto
     private array $indexAvailableColumnsWithLabels = [];
     private array $indexExcludeColumns = [];
     private array $indexSelectedColumns = [];
+    private array $allColumnsLabels = [];
     private ?SelectedColumnStorageProviderInterface $selectedColumnStorageProvider = null;
     private bool $columnChooser = false;
 
@@ -550,9 +551,17 @@ final class CrudDto
         return $this->indexSelectedColumns;
     }
 
-    public function getAvailableColumns()
+    public function getAvailableColumns(): array
     {
         return $this->indexAvailableColumns;
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function getAllColumnsLabels(): array
+    {
+        return $this->allColumnsLabels;
     }
 
     public function columnChooserProcessFields(FieldCollection $fieldsColl): FieldCollection
@@ -561,12 +570,15 @@ final class CrudDto
             return $fieldsColl;
         }
 
+        $this->allColumnsLabels = [];
         $this->indexAvailableColumns = [];
         $this->indexAvailableColumnsWithLabels = [];
         $iterator = $fieldsColl->getIterator();
         while ($iterator->valid()) {
             $dto = $iterator->current();
             $columnName = $dto->getProperty();
+            $label = $dto->getLabel() ?? Action::humanizeString($columnName);
+            $this->allColumnsLabels[$columnName] = $label;
             if (!$this->isSpecialFormType($dto->getFormType())
                 && !\in_array($columnName, $this->indexExcludeColumns, true)
                 && (
@@ -575,7 +587,7 @@ final class CrudDto
                 )
             ) {
                 $this->indexAvailableColumns[] = $columnName;
-                $this->indexAvailableColumnsWithLabels[$columnName] = $dto->getLabel() ?? Action::humanizeString($columnName);
+                $this->indexAvailableColumnsWithLabels[$columnName] = $label;
             }
             $iterator->next();
         }

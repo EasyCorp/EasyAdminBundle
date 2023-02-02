@@ -11,14 +11,15 @@
             "homepage": "https://github.com/EasyCorp/EasyAdminBundle/blob/master/CONTRIBUTORS.md"
         }
     ],
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "require": {
         "php": ">=8.0",
         "doctrine/common": "^3.0.3",
         "doctrine/doctrine-bundle": "^2.5",
         "doctrine/orm": "^2.11",
         "doctrine/persistence": "^2.4 || ^3",
-        "pagerfanta/pagerfanta": "^1.0.1|^2.0",
+        "pagerfanta/core": "^3.7",
+        "pagerfanta/doctrine-orm-adapter": "^3.7",
         "symfony/asset": "^5.4|^6.0",
         "symfony/cache": "^5.4|^6.0",
         "symfony/config": "^5.4|^6.0",

@@ -32,32 +32,39 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
 
         $choices = $this->getChoices($field->getCustomOption(ChoiceField::OPTION_CHOICES), $entityDto, $field);
 
-        if (empty($choices)) {
-            if (\PHP_VERSION_ID >= 80100 && ($enumTypeClass = $field->getDoctrineMetadata()->get('enumType')) && enum_exists($enumTypeClass)) {
+        // using a more precise check like 'function_exists('enum_exists');' messes with IDEs like PhpStorm
+        $enumsAreSupported = \PHP_VERSION_ID >= 80100;
+        // if no choices are passed to the field, check if it's related to an Enum;
+        // in that case, get all the possible values of the Enum
+        if (null === $choices && $enumsAreSupported) {
+            $enumTypeClass = $field->getDoctrineMetadata()->get('enumType');
+            if (enum_exists($enumTypeClass)) {
                 $choices = $enumTypeClass::cases();
-            } else {
-                throw new \InvalidArgumentException(sprintf('The "%s" choice field must define its possible choices using the setChoices() method.', $field->getProperty()));
             }
         }
 
-        //support for enums
-        if (\PHP_VERSION_ID >= 80100) {
-            $elementIsEnum = array_unique(array_map(function ($element) {
-                return \is_object($element) && enum_exists($element::class);
-            }, $choices));
-            $allAreEnums = false === \in_array(false, $elementIsEnum, true);
+        if (null === $choices) {
+            $choices = [];
+        }
 
-            if ($allAreEnums) {
-                $isAssoc = array_values($choices) !== $choices;
-                if ($isAssoc) {
-                    array_walk($choices, function (&$choice) {
-                        $choice = $choice->value;
-                    });
-                } else {
-                    $choices = array_reduce($choices, function ($elements, $enum) {
-                        return $elements + [$enum->value => $enum->value];
-                    }, []);
+        // support for enums
+        if ($enumsAreSupported) {
+            $elementIsEnum = array_unique(array_map(static function ($element): bool {
+                return \is_object($element) && enum_exists($element::class) && $element;
+            }, $choices));
+            $allChoicesAreEnums = false === \in_array(false, $elementIsEnum, true);
+
+            if ($allChoicesAreEnums) {
+                $processedEnumChoices = [];
+                foreach ($choices as $choice) {
+                    if ($choice instanceof \BackedEnum) {
+                        $processedEnumChoices[$choice->name] = $choice->value;
+                    } else {
+                        $processedEnumChoices[$choice->name] = $choice->name;
+                    }
                 }
+
+                $choices = $processedEnumChoices;
             }
         }
 
@@ -122,10 +129,10 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
         $field->setFormattedValue(new TranslatableChoiceMessageCollection($choiceMessages, $isRenderedAsBadge));
     }
 
-    private function getChoices($choiceGenerator, EntityDto $entity, FieldDto $field): array
+    private function getChoices($choiceGenerator, EntityDto $entity, FieldDto $field): array|null
     {
         if (null === $choiceGenerator) {
-            return [];
+            return null;
         }
 
         if (\is_array($choiceGenerator)) {

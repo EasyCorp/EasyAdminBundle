@@ -29,7 +29,7 @@ class ArrayFilterTypeTest extends FilterTypeTest
         $this->assertSameDoctrineParams($params, $this->qb->getParameters()->toArray());
     }
 
-    public function getDataProvider(): iterable
+    public static function getDataProvider(): iterable
     {
         yield [
             ['comparison' => ComparisonType::CONTAINS, 'value' => ['bar']],

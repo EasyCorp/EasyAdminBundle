@@ -34,7 +34,7 @@ class ComparisonFilterTypeTest extends FilterTypeTest
         $this->assertSameDoctrineParams($params, $this->qb->getParameters()->toArray());
     }
 
-    public function getDataProvider(): iterable
+    public static function getDataProvider(): iterable
     {
         yield [
             ['comparison' => ComparisonType::LT, 'value' => '23'],

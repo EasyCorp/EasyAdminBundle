@@ -61,7 +61,7 @@ class CategoryCrudControllerTest extends WebTestCase
         }
     }
 
-    public function new(): \Generator
+    public static function new(): \Generator
     {
         yield [
             '', // Manipulate the CSRF token to an empty value
@@ -102,7 +102,7 @@ class CategoryCrudControllerTest extends WebTestCase
         }
     }
 
-    public function edit(): \Generator
+    public static function edit(): \Generator
     {
         yield [
             '', // Manipulate the CSRF token to an empty value
@@ -145,7 +145,7 @@ class CategoryCrudControllerTest extends WebTestCase
         $this->assertResultCount($expectedCategoriesCount($initialCategoriesCount));
     }
 
-    public function delete(): \Generator
+    public static function delete(): \Generator
     {
         yield [
             '', // Manipulate the CSRF token to an empty value
@@ -265,7 +265,7 @@ class CategoryCrudControllerTest extends WebTestCase
         $this->assertSame('foobar1234', $this->getParameterFromUrlQueryString($nextPagePageUrl, 'CUSTOM_param'));
     }
 
-    public function toggle(): \Generator
+    public static function toggle(): \Generator
     {
         yield [
             'GET', // HTTP method
@@ -301,7 +301,7 @@ class CategoryCrudControllerTest extends WebTestCase
         $this->assertResultCount($expectedResultCount);
     }
 
-    public function search(): \Generator
+    public static function search(): \Generator
     {
         yield [
             [],
@@ -342,7 +342,7 @@ class CategoryCrudControllerTest extends WebTestCase
         $this->assertResultCount($expectedResultCount);
     }
 
-    public function filter(): \Generator
+    public static function filter(): \Generator
     {
         yield [
             [],
@@ -400,10 +400,10 @@ class CategoryCrudControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame($expectedStatusCode);
     }
 
-    public function customPage(): \Generator
+    public static function customPage(): \Generator
     {
-        yield [$this->generateUsername('ROLE_USER'), Response::HTTP_FORBIDDEN];
-        yield [$this->generateUsername('ROLE_ADMIN'), Response::HTTP_OK];
+        yield [self::generateUsername('ROLE_USER'), Response::HTTP_FORBIDDEN];
+        yield [self::generateUsername('ROLE_ADMIN'), Response::HTTP_OK];
     }
 
     private function assertResultCount(int $expectedResultCount): void
@@ -484,7 +484,7 @@ class CategoryCrudControllerTest extends WebTestCase
             ->generateUrl();
     }
 
-    private function generateUsername(string $role): string
+    private static function generateUsername(string $role): string
     {
         switch ($role) {
             case 'ROLE_USER':

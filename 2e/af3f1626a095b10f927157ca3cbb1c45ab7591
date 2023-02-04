@@ -1,0 +1,201 @@
+---------------------------------------------------------------------------
+
+by cobyl at 2022-01-20T18:23:44Z
+
+issue: https://github.com/EasyCorp/EasyAdminBundle/issues/4989
+
+---------------------------------------------------------------------------
+
+by cobyl at 2022-01-20T18:59:54Z
+
+Because of doctrine limitations work only with this kind of enums:
+
+```php
+enum Status:string
+{
+    case WAITING = 'waiting';
+    case ERROR = 'error';
+}
+```
+
+and NOT with
+```php
+enum Status
+{
+    case WAITING;
+    case ERROR;
+}
+```
+
+---------------------------------------------------------------------------
+
+by oleg-andreyev at 2022-01-28T09:19:13Z
+
+Since Symfony has EnumType we can do it like this (workaround):
+
+```php
+// for index because of array_flip
+            ChoiceField::new('packingType')
+                ->onlyOnIndex()
+                ->setChoices(function () {
+                    $choices = array_map(static fn (?PackingUnit $unit) => [$unit->value => $unit->name], PackingUnit::cases());
+
+                    return array_merge(...$choices);
+                })
+                ->setFormType(EnumType::class)
+                ->setFormTypeOption('class', PackingUnit::class)
+                ->setFormTypeOption('choice_label', function (PackingUnit $enum) {
+                    return $enum->value;
+                }),
+// for form
+            ChoiceField::new('packingType')
+                ->onlyOnForms()
+                ->setChoices(function () {
+                    $choices = array_map(static fn (?PackingUnit $unit) => [$unit->value => $unit], PackingUnit::cases());
+
+                    return array_merge(...$choices);
+                })
+                ->setFormType(EnumType::class)
+                ->setFormTypeOption('class', PackingUnit::class)
+                ->setFormTypeOption('choice_label', function (PackingUnit $enum) {
+                    return $enum->value;
+                }),
+```
+
+---------------------------------------------------------------------------
+
+by ERuban at 2022-02-03T15:38:22Z
+
+@oleg-andreyev didn't work for me...
+waiting for this PR
+
+---------------------------------------------------------------------------
+
+by oleg-andreyev at 2022-02-03T17:19:03Z
+
+@ERuban updated my workaround.
+
+---------------------------------------------------------------------------
+
+by akalineskou at 2022-02-05T01:23:36Z
+
+For me this fixes it for all pages (with the current implementation)
+```php
+$choiceField = ChoiceField::new('status')
+    ->setChoices(Status::cases())
+    ->setFormType(EnumType::class)
+    ->setFormTypeOption('class', Status::class)
+;
+
+if (in_array($pageName, [Crud::PAGE_INDEX, Crud::PAGE_DETAIL], true)) {
+    $choiceField->setChoices(array_reduce(
+        Status::cases(),
+        static fn (array $choices, Status $status) => $choices + [$status->name => $status->value],
+        [],
+    ));
+}
+
+yield $choiceField;
+```
+
+---------------------------------------------------------------------------
+
+by shaneparsons at 2022-04-08T19:39:08Z
+
+A couple of the workarounds here work, but cause duplication if the key matches the value. e.g.
+```
+case OTHER = 'OTHER';
+```
+Results in:
+```
+OTHER, OTHER
+```
+
+---------------------------------------------------------------------------
+
+by asanikovich at 2022-05-31T11:19:58Z
+
+@javiereguiluz please, take a look on this
+
+---------------------------------------------------------------------------
+
+by Snowbaha at 2022-06-24T08:44:02Z
+
+> For me this fixes it for all pages (with the current implementation)
+>
+> ```
+> $choiceField = ChoiceField::new('status')
+>     ->setChoices(Status::cases())
+>     ->setFormType(EnumType::class)
+>     ->setFormTypeOption('class', Status::class)
+> ;
+>
+> if (in_array($pageName, [Crud::PAGE_INDEX, Crud::PAGE_DETAIL], true)) {
+>     $choiceField->setChoices(array_reduce(
+>         Status::cases(),
+>         static fn (array $choices, Status $status) => $choices + [$status->name => $status->value],
+>         [],
+>     ));
+> }
+>
+> yield $choiceField;
+> ```
+
+it looks nice for me, but it is not possible to use the `->setTranslatableChoices()` in this case.
+Or maybe use a different label displayed instead of the Enum name.
+
+Here is an example:
+
+My Enum:
+```php
+enum PageContentType: string
+{
+    case Banner = 'banner';
+    case Iframe = 'iframe';
+    case Image = 'image';
+    case Quote = 'quote';
+
+    public function label(): string
+    {
+        return match($this)
+        {
+            self::Banner => 'Bannière',
+            self::Iframe => 'Iframe (vidéo / map)',
+            self::Image => 'Image et texte',
+            self::Quote => 'Citation',
+        };
+    }
+}
+```
+
+And there the Field:
+```
+ ChoiceField::new('type', 'Type')->setColumns(4)
+                ->setChoices(PageContentType::cases())
+                ->setFormType(EnumType::class)
+                ->setFormTypeOption('class', PageContentType::class)
+```
+
+In the first case, The label displayed on the EA select is "Banner" with the value "banner" but I would like to display a specific label (I tried with the function label()) or be able to translate the "Banner" ?
+
+Maybe it is an issue related to [EnumType ](https://symfony.com/doc/current/reference/forms/types/enum.html) itself...
+
+EDIT:
+
+If I create a "messages.fr.yaml" with `Banner: "Bannière FR"`
+![image](https://user-images.githubusercontent.com/3284722/175512073-fcab0a72-63b5-4d92-b1e5-b0ffe4c3d0dd.png)
+
+We can see the translation.
+Is it a good way of translation the Enum Key in translation file without write a speciale var like "label.banner"?
+
+---------------------------------------------------------------------------
+
+by oussj at 2022-12-27T13:24:28Z
+
+Hello What's the status of this PR ? :) it would be very useful, I had to abandon enum for the moment and go for a class with const instead
+
+---------------------------------------------------------------------------
+
+by kiler129 at 2023-01-21T07:11:41Z
+
+One another area, which this PR doesn't address, is the `ChoiceFilter`. Maybe it would be good to include this as well?

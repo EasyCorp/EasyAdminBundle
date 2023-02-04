@@ -32,6 +32,35 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
 
         $choices = $this->getChoices($field->getCustomOption(ChoiceField::OPTION_CHOICES), $entityDto, $field);
 
+        if (empty($choices)) {
+            if (\PHP_VERSION_ID >= 80100 && ($enumTypeClass = $field->getDoctrineMetadata()->get('enumType')) && enum_exists($enumTypeClass)) {
+                $choices = $enumTypeClass::cases();
+            } else {
+                throw new \InvalidArgumentException(sprintf('The "%s" choice field must define its possible choices using the setChoices() method.', $field->getProperty()));
+            }
+        }
+
+        //support for enums
+        if (\PHP_VERSION_ID >= 80100) {
+            $elementIsEnum = array_unique(array_map(function ($element) {
+                return \is_object($element) && enum_exists($element::class);
+            }, $choices));
+            $allAreEnums = false === \in_array(false, $elementIsEnum, true);
+
+            if ($allAreEnums) {
+                $isAssoc = array_values($choices) !== $choices;
+                if ($isAssoc) {
+                    array_walk($choices, function (&$choice) {
+                        $choice = $choice->value;
+                    });
+                } else {
+                    $choices = array_reduce($choices, function ($elements, $enum) {
+                        return $elements + [$enum->value => $enum->value];
+                    }, []);
+                }
+            }
+        }
+
         if ($areChoicesTranslatable) {
             $field->setFormTypeOptionIfNotSet('choices', array_keys($choices));
             $field->setFormTypeOptionIfNotSet('choice_label', fn ($value) => $choices[$value]);

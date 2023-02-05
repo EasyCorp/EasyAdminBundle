@@ -31,7 +31,7 @@ abstract class AbstractFieldTest extends KernelTestCase
 
         $crudMock = $this->getMockBuilder(CrudDto::class)
             ->disableOriginalConstructor()
-            ->setMethods(['getCurrentPage', 'getDatePattern', 'getDateTimePattern', 'getTimePattern'])
+            ->onlyMethods(['getCurrentPage', 'getDatePattern', 'getDateTimePattern', 'getTimePattern'])
             ->getMock();
         $crudMock->method('getCurrentPage')->willReturn(Crud::PAGE_INDEX);
         $crudMock->method('getDatePattern')->willReturn(DateTimeField::FORMAT_MEDIUM);
@@ -40,14 +40,14 @@ abstract class AbstractFieldTest extends KernelTestCase
 
         $i18nMock = $this->getMockBuilder(I18nDto::class)
             ->disableOriginalConstructor()
-            ->setMethods(['getTranslationParameters', 'getTranslationDomain'])
+            ->onlyMethods(['getTranslationParameters', 'getTranslationDomain'])
             ->getMock();
         $i18nMock->method('getTranslationParameters')->willReturn([]);
         $i18nMock->method('getTranslationDomain')->willReturn('messages');
 
         $adminContextMock = $this->getMockBuilder(AdminContext::class)
             ->disableOriginalConstructor()
-            ->setMethods(['getCrud', 'getI18n', 'getTemplatePath'])
+            ->onlyMethods(['getCrud', 'getI18n', 'getTemplatePath'])
             ->getMock();
         $adminContextMock
             ->expects($this->any())

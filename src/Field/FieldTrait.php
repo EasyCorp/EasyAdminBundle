@@ -165,6 +165,20 @@ trait FieldTrait
         return $this;
     }
 
+    public function setFullWidth(bool $fullWidth = true): self
+    {
+        $this->dto->fullWidth = $fullWidth;
+
+        return $this;
+    }
+
+    public function setWithTwigContext(bool $withTwigContext = true): self
+    {
+        $this->dto->withTwigContext = $withTwigContext;
+
+        return $this;
+    }
+
     public function addCssClass(string $cssClass): self
     {
         $this->dto->setCssClass($this->dto->getCssClass().' '.$cssClass);

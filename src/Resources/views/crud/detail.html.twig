@@ -177,7 +177,7 @@
 {% endmacro %}
 
 {% macro render_field(entity, field) %}
-    <div class="data-row {{ field.cssClass }}">
+    <div class="data-{% if field.fullWidth %}full-width-{% endif %}row {{ field.cssClass }}">
         {% if not field.fullWidth %}
         <dt>
             {{ field.label|trans|raw }}

@@ -178,6 +178,7 @@
 
 {% macro render_field(entity, field) %}
     <div class="data-row {{ field.cssClass }}">
+        {% if not field.fullWidth %}
         <dt>
             {{ field.label|trans|raw }}
 
@@ -188,7 +189,10 @@
             {% endif %}
         </dt>
         <dd>
-            {{ include(field.templatePath, { field: field, entity: entity }, with_context = false) }}
+        {% endif %}
+            {{ include(field.templatePath, { field: field, entity: entity }, with_context = field.withTwigContext) }}
+        {% if not field.fullWidth %}
         </dd>
+        {% endif %}
     </div>
 {% endmacro %}

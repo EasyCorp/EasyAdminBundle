@@ -167,14 +167,14 @@ trait FieldTrait
 
     public function setFullWidth(bool $fullWidth = true): self
     {
-        $this->dto->fullWidth = $fullWidth;
+        $this->dto->setFullWidth($fullWidth);
 
         return $this;
     }
 
     public function setWithTwigContext(bool $withTwigContext = true): self
     {
-        $this->dto->withTwigContext = $withTwigContext;
+        $this->dto->setWithTwigContext($withTwigContext);
 
         return $this;
     }

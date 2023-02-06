@@ -50,6 +50,10 @@ class ChoiceFieldTest extends AbstractFieldTest
 
     public function testFieldWithUnitEnumChoices(): void
     {
+        if (\PHP_VERSION_ID < 80100) {
+            $this->markTestSkipped('PHP 8.1 or higher is required to run this test.');
+        }
+
         $field = ChoiceField::new('foo')->setChoices(PriorityUnitEnum::cases());
 
         $field->setValue(PriorityUnitEnum::High);
@@ -62,6 +66,10 @@ class ChoiceFieldTest extends AbstractFieldTest
 
     public function testFieldWithBackedEnumChoices(): void
     {
+        if (\PHP_VERSION_ID < 80100) {
+            $this->markTestSkipped('PHP 8.1 or higher is required to run this test.');
+        }
+
         $field = ChoiceField::new('foo')->setChoices(StatusBackedEnum::cases());
 
         $field->setValue(StatusBackedEnum::Draft);

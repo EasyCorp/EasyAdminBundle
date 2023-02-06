@@ -50,7 +50,7 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
         // support for enums
         if ($enumsAreSupported) {
             $elementIsEnum = array_unique(array_map(static function ($element): bool {
-                return \is_object($element) && enum_exists($element::class) && $element;
+                return \is_object($element) && enum_exists($element::class);
             }, $choices));
             $allChoicesAreEnums = false === \in_array(false, $elementIsEnum, true);
 

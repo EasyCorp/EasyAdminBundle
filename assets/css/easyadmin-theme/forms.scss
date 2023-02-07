@@ -603,13 +603,13 @@ form .invalid-feedback > .d-block + .d-block {
         left: 0;
         margin: 0 !important;
         overflow: hidden;
-        padding: 3px 40px 3px 7px;
+        padding: 3px 40px 3px 7px !important;
         position: absolute;
         text-align: left !important;
         text-overflow: ellipsis;
         top: 0;
         white-space: nowrap;
-        width: 100%;
+        width: 100% !important;
     }
     .custom-file-label::after {
         display: none;

@@ -17,19 +17,19 @@ class CategoryCrudControllerTest extends AbstractCrudTestCase
 {
     protected EntityRepository $categories;
 
-	protected function getControllerFqcn(): string
-	{
-		return CategoryCrudController::class;
-	}
+    protected function getControllerFqcn(): string
+    {
+        return CategoryCrudController::class;
+    }
 
-	protected function getDashboardFqcn(): string
-	{
-		return SecureDashboardController::class;
-	}
+    protected function getDashboardFqcn(): string
+    {
+        return SecureDashboardController::class;
+    }
 
     protected function setUp(): void
     {
-		parent::setUp();
+        parent::setUp();
         $this->client->followRedirects();
         $this->client->setServerParameters(['PHP_AUTH_USER' => 'admin', 'PHP_AUTH_PW' => '1234']);
 
@@ -53,11 +53,11 @@ class CategoryCrudControllerTest extends AbstractCrudTestCase
 
         $this->client->submitForm('Create', $form);
         if (null === $expectedErrorMessage) {
-	        static::assertSelectorNotExists('.global-invalid-feedback');
-	        static::assertInstanceOf(Category::class, $this->categories->findOneBy(['slug' => 'foo']));
+            static::assertSelectorNotExists('.global-invalid-feedback');
+            static::assertInstanceOf(Category::class, $this->categories->findOneBy(['slug' => 'foo']));
         } else {
-	        static::assertSelectorTextContains('.global-invalid-feedback', $expectedErrorMessage);
-	        static::assertNull($this->categories->findOneBy(['slug' => 'foo']));
+            static::assertSelectorTextContains('.global-invalid-feedback', $expectedErrorMessage);
+            static::assertNull($this->categories->findOneBy(['slug' => 'foo']));
         }
     }
 
@@ -97,8 +97,8 @@ class CategoryCrudControllerTest extends AbstractCrudTestCase
             static::assertSelectorNotExists('.global-invalid-feedback');
             static::assertInstanceOf(Category::class, $this->categories->findOneBy(['slug' => 'bar']));
         } else {
-	        static::assertSelectorTextContains('.global-invalid-feedback', $expectedErrorMessage);
-	        static::assertNull($this->categories->findOneBy(['slug' => 'bar']));
+            static::assertSelectorTextContains('.global-invalid-feedback', $expectedErrorMessage);
+            static::assertNull($this->categories->findOneBy(['slug' => 'bar']));
         }
     }
 
@@ -254,7 +254,7 @@ class CategoryCrudControllerTest extends AbstractCrudTestCase
 
         // test pagination maintains all query parameters, including custom ones
         $queryParameters = http_build_query(['sort[name]' => 'DESC', 'CUSTOM_param' => 'foobar1234']);
-        $crawler = $this->client->request('GET', $this->generateIndexUrl() . '&' . $queryParameters);
+        $crawler = $this->client->request('GET', $this->generateIndexUrl().'&'.$queryParameters);
 
         $firstPageUrl = $crawler->filter('.list-pagination-paginator .page-item:nth-child(2) .page-link')->attr('href');
         static::assertSame(['name' => 'DESC'], $this->getParameterFromUrlQueryString($firstPageUrl, 'sort'));
@@ -335,7 +335,7 @@ class CategoryCrudControllerTest extends AbstractCrudTestCase
         }
         $this->entityManager->flush();
 
-        $crawler = $this->client->request('GET', $this->generateFilterRenderUrl(), [], [], [ 'PHP_AUTH_USER' => 'admin', 'PHP_AUTH_PW' => '1234']);
+        $crawler = $this->client->request('GET', $this->generateFilterRenderUrl(), [], [], ['PHP_AUTH_USER' => 'admin', 'PHP_AUTH_PW' => '1234']);
         $form = $crawler->filter('form[name="filters"]')->form();
         $form['filters'] = $filters;
         $this->client->submit($form, [], ['PHP_AUTH_USER' => 'admin', 'PHP_AUTH_PW' => '1234']);
@@ -425,5 +425,4 @@ class CategoryCrudControllerTest extends AbstractCrudTestCase
 
         return $queryStringParams[$parameterName] ?? null;
     }
-
 }

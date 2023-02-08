@@ -13,8 +13,8 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 abstract class AbstractCrudTestCase extends WebTestCase
 {
-	use CrudTestUrlGeneration;
-	use CrudTestAsserts;
+    use CrudTestAsserts;
+    use CrudTestUrlGeneration;
 
     protected KernelBrowser $client;
     protected AdminUrlGenerator $adminUrlGenerator;

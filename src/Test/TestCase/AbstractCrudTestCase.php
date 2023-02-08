@@ -22,10 +22,6 @@ abstract class AbstractCrudTestCase extends WebTestCase
         $container = static::getContainer();
         $this->entityManager = $container->get(EntityManagerInterface::class);
         $this->adminUrlGenerator = $container->get(AdminUrlGenerator::class);
-        $this->adminUrlGenerator
-            ->setDashboard($this->getDashboardFqcn())
-            ->setController($this->getControllerFqcn())
-        ;
     }
 
     /**
@@ -38,12 +34,20 @@ abstract class AbstractCrudTestCase extends WebTestCase
      */
     abstract protected function getDashboardFqcn(): string;
 
+	/******
+	 *  Url Generators
+	 */
+
     /**
      * @param array<string, string> $options
      */
     protected function getCrudUrl(string $action, string|int $entityId = null, array $options = []): string
     {
-        $this->adminUrlGenerator->setAction($action);
+	    $this->adminUrlGenerator
+		    ->setDashboard($this->getDashboardFqcn())
+		    ->setController($this->getControllerFqcn())
+		    ->setAction($action)
+	    ;
 
         if (null !== $entityId) {
             $this->adminUrlGenerator->setEntityId($entityId);
@@ -56,7 +60,7 @@ abstract class AbstractCrudTestCase extends WebTestCase
         return $this->adminUrlGenerator->generateUrl();
     }
 
-    protected function generateCategoryIndexUrl(string $query = null): string
+    protected function generateIndexUrl(string $query = null): string
     {
         $options = [];
 
@@ -85,8 +89,25 @@ abstract class AbstractCrudTestCase extends WebTestCase
     protected function generateFilterFormUrl(): string
     {
         // Use the index URL as referrer but remove scheme, host and port
-        $referrer = preg_replace('/^.*(\/.*)$/', '$1', $this->generateCategoryIndexUrl());
+        $referrer = preg_replace('/^.*(\/.*)$/', '$1', $this->generateIndexUrl());
 
         return $this->getCrudUrl('renderFilters', null, [ 'referrer' => $referrer]);
     }
+
+	/******
+	 * Asserts
+	 */
+
+	protected function assertIndexRecordCount(int $expectedIndexRecordCount): void
+	{
+		if ( 0 > $expectedIndexRecordCount) {
+			throw new \InvalidArgumentException();
+		}
+
+		if ( 0 === $expectedIndexRecordCount) {
+			static::assertSelectorTextSame('.no-results', 'No results found.');
+		} else {
+			static::assertSelectorTextSame('.list-pagination-counter strong', (string) $expectedIndexRecordCount);
+		}
+	}
 }

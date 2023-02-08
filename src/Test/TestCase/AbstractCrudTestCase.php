@@ -6,6 +6,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Test\TestCase;
 
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use EasyCorp\Bundle\EasyAdminBundle\Test\Trait\CrudTestActions;
 use EasyCorp\Bundle\EasyAdminBundle\Test\Trait\CrudTestAsserts;
 use EasyCorp\Bundle\EasyAdminBundle\Test\Trait\CrudTestUrlGeneration;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -13,6 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 abstract class AbstractCrudTestCase extends WebTestCase
 {
+    use CrudTestActions;
     use CrudTestAsserts;
     use CrudTestUrlGeneration;
 

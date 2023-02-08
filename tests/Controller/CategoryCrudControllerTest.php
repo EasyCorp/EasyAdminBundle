@@ -335,7 +335,7 @@ class CategoryCrudControllerTest extends AbstractCrudTestCase
         }
         $this->entityManager->flush();
 
-        $crawler = $this->client->request('GET', $this->generateFilterFormUrl(), [], [], ['PHP_AUTH_USER' => 'admin', 'PHP_AUTH_PW' => '1234']);
+        $crawler = $this->client->request('GET', $this->generateFilterRenderUrl(), [], [], [ 'PHP_AUTH_USER' => 'admin', 'PHP_AUTH_PW' => '1234']);
         $form = $crawler->filter('form[name="filters"]')->form();
         $form['filters'] = $filters;
         $this->client->submit($form, [], ['PHP_AUTH_USER' => 'admin', 'PHP_AUTH_PW' => '1234']);

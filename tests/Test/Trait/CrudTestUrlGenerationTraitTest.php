@@ -6,8 +6,6 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Test\Trait;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
-use EasyCorp\Bundle\EasyAdminBundle\Test\Exception\InvalidClassPropertyTypeException;
-use EasyCorp\Bundle\EasyAdminBundle\Test\Exception\MissingClassMethodException;
 use EasyCorp\Bundle\EasyAdminBundle\Test\Trait\CrudTestUrlGeneration;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Controller\CategoryCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Controller\DashboardController;
@@ -24,32 +22,6 @@ final class CrudTestUrlGenerationTraitTest extends KernelTestCase
     {
         static::bootKernel();
         $this->adminUrlGenerator = self::getContainer()->get(AdminUrlGenerator::class);
-    }
-
-    public function testMissingPropertyOnClassUsingTrait(): void
-    {
-        $testClass = new class() extends CrudTestUrlGenerationTraitTestClassMissingProperty {
-            public function test(): string
-            {
-                return $this->generateIndexUrl();
-            }
-        };
-
-        static::expectException(InvalidClassPropertyTypeException::class);
-        $testClass->test();
-    }
-
-    public function testMissingMethodOnClassUsingTrait(): void
-    {
-        $testClass = new class($this->adminUrlGenerator) extends CrudTestUrlGenerationTraitTestClassMissingMethod {
-            public function test(): string
-            {
-                return $this->generateIndexUrl();
-            }
-        };
-
-        static::expectException(MissingClassMethodException::class);
-        $testClass->test();
     }
 
     public function testGenericUrlIndexGeneration()
@@ -231,32 +203,5 @@ class CrudTestUrlGenerationTraitTestClass
     protected function getDashboardFqcn(): string
     {
         return CrudTestUrlGenerationTraitTest::TEST_DASHBOARD;
-    }
-}
-
-class CrudTestUrlGenerationTraitTestClassMissingProperty
-{
-    use CrudTestUrlGeneration;
-
-    protected function getControllerFqcn(): string
-    {
-        return CrudTestUrlGenerationTraitTest::TEST_CONTROLLER;
-    }
-
-    protected function getDashboardFqcn(): string
-    {
-        return CrudTestUrlGenerationTraitTest::TEST_DASHBOARD;
-    }
-}
-
-class CrudTestUrlGenerationTraitTestClassMissingMethod
-{
-    use CrudTestUrlGeneration;
-
-    protected AdminUrlGenerator $adminUrlGenerator;
-
-    public function __construct(AdminUrlGenerator $adminUrlGenerator)
-    {
-        $this->adminUrlGenerator = $adminUrlGenerator;
     }
 }

@@ -127,7 +127,7 @@ class CategoryCrudControllerTest extends AbstractCrudTestCase
 
         // List all categories
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
-        $this->assertIndexRecordCount($initialCategoriesCount);
+        $this->assertIndexFullRecordCount($initialCategoriesCount);
 
         // Try to delete the first found category
         $form = $crawler->filter('#delete-form')->form();
@@ -142,7 +142,7 @@ class CategoryCrudControllerTest extends AbstractCrudTestCase
 
         // List all categories again and see if the result count changed
         $this->client->request('GET', $this->generateIndexUrl());
-        $this->assertIndexRecordCount($expectedCategoriesCount($initialCategoriesCount));
+        $this->assertIndexFullRecordCount($expectedCategoriesCount($initialCategoriesCount));
     }
 
     public static function delete(): \Generator
@@ -298,7 +298,7 @@ class CategoryCrudControllerTest extends AbstractCrudTestCase
         $this->entityManager->flush();
 
         $this->client->request('GET', $this->generateIndexUrl($query));
-        $this->assertIndexRecordCount($expectedResultCount);
+        $this->assertIndexFullRecordCount($expectedResultCount);
     }
 
     public static function search(): \Generator
@@ -339,7 +339,7 @@ class CategoryCrudControllerTest extends AbstractCrudTestCase
         $form = $crawler->filter('form[name="filters"]')->form();
         $form['filters'] = $filters;
         $this->client->submit($form, [], ['PHP_AUTH_USER' => 'admin', 'PHP_AUTH_PW' => '1234']);
-        $this->assertIndexRecordCount($expectedResultCount);
+        $this->assertIndexFullRecordCount($expectedResultCount);
     }
 
     public static function filter(): \Generator

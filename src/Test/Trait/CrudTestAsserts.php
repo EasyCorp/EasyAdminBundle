@@ -6,24 +6,38 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Test\Trait;
 
 trait CrudTestAsserts
 {
-    protected static function assertIndexFullRecordCount(int $expectedIndexRecordCount, string $message = ''): void
+    protected static function assertIndexFullEntityCount(int $expectedIndexFullEntityCount, string $message = ''): void
     {
-        if (0 > $expectedIndexRecordCount) {
+        if (0 > $expectedIndexFullEntityCount) {
             throw new \InvalidArgumentException();
         }
 
-        if (0 === $expectedIndexRecordCount) {
+        if (0 === $expectedIndexFullEntityCount) {
             $message = '' !== $message ? $message : 'There should be no results found in the index table';
             static::assertSelectorTextSame('.no-results', 'No results found.', $message);
         } else {
-            $message = '' !== $message ? $message : sprintf('There should be %d results found in the index table', $expectedIndexRecordCount);
+            $message = '' !== $message ? $message : sprintf('There should be a total of %d results found in the index table', $expectedIndexFullEntityCount);
             static::assertSelectorNotExists('.no-results');
-            static::assertSelectorTextSame('.list-pagination-counter strong', (string) $expectedIndexRecordCount, $message);
+            static::assertSelectorTextSame('.list-pagination-counter strong', (string) $expectedIndexFullEntityCount, $message);
         }
     }
 
-    protected function assertIndexPageRecordCount(int $expectedIndexPageRecordCount, string $message = ''): void
+    protected function assertIndexPageEntityCount(int $expectedIndexPageEntityCount, string $message = ''): void
     {
+        if (0 > $expectedIndexPageEntityCount) {
+            throw new \InvalidArgumentException();
+        }
+
+        if (0 === $expectedIndexPageEntityCount) {
+            $message = '' !== $message ? $message : 'There should be no results found in the index table';
+            static::assertSelectorExists('tr.no-results', $message);
+        } else {
+            $message = '' !== $message ? $message : sprintf('There should be %d results found in the current index page', $expectedIndexPageEntityCount);
+            static::assertSelectorNotExists('tr.no-results', );
+            static::assertSelectorExists('tbody tr');
+            $indexPageEntityRows = $this->client->getCrawler()->filter('tbody tr');
+            static::assertEquals($expectedIndexPageEntityCount, $indexPageEntityRows->count(), $message);
+        }
     }
 
     protected function assertIndexPagesCount(int $expectedIndexPagesCount, string $message = ''): void

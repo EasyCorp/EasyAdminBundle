@@ -111,7 +111,7 @@
     display: flex;
     padding: 12px 0;
 
-    label,
+    > label,
     legend.col-form-label {
       font-weight: 500;
       margin: 3px 10px 0 0;

@@ -127,7 +127,7 @@ class CategoryCrudControllerTest extends AbstractCrudTestCase
 
         // List all categories
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
-        $this->assertIndexFullRecordCount($initialCategoriesCount);
+        static::assertIndexFullRecordCount($initialCategoriesCount);
 
         // Try to delete the first found category
         $form = $crawler->filter('#delete-form')->form();
@@ -142,7 +142,7 @@ class CategoryCrudControllerTest extends AbstractCrudTestCase
 
         // List all categories again and see if the result count changed
         $this->client->request('GET', $this->generateIndexUrl());
-        $this->assertIndexFullRecordCount($expectedCategoriesCount($initialCategoriesCount));
+        static::assertIndexFullRecordCount($expectedCategoriesCount($initialCategoriesCount));
     }
 
     public static function delete(): \Generator
@@ -233,6 +233,9 @@ class CategoryCrudControllerTest extends AbstractCrudTestCase
         $nextPageItem = $crawler->filter('.list-pagination-paginator .page-item:nth-child(4)');
         $nextPageLink = $nextPageItem->filter('.page-link');
 
+        // test global number of pages
+        static::assertIndexPagesCount(2); // 30 categories with 20 categories per page
+
         // test default pagination items
         static::assertCount(4, $crawler->filter('.list-pagination-paginator .page-item'));
         static::assertStringContainsString('Previous', $prevPageLink->text());
@@ -298,7 +301,7 @@ class CategoryCrudControllerTest extends AbstractCrudTestCase
         $this->entityManager->flush();
 
         $this->client->request('GET', $this->generateIndexUrl($query));
-        $this->assertIndexFullRecordCount($expectedResultCount);
+        static::assertIndexFullRecordCount($expectedResultCount);
     }
 
     public static function search(): \Generator
@@ -339,7 +342,7 @@ class CategoryCrudControllerTest extends AbstractCrudTestCase
         $form = $crawler->filter('form[name="filters"]')->form();
         $form['filters'] = $filters;
         $this->client->submit($form, [], ['PHP_AUTH_USER' => 'admin', 'PHP_AUTH_PW' => '1234']);
-        $this->assertIndexFullRecordCount($expectedResultCount);
+        static::assertIndexFullRecordCount($expectedResultCount);
     }
 
     public static function filter(): \Generator

@@ -6,27 +6,41 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Test\Trait;
 
 trait CrudTestAsserts
 {
-    protected function assertIndexFullRecordCount(int $expectedIndexRecordCount): void
+    protected static function assertIndexFullRecordCount(int $expectedIndexRecordCount, string $message = ''): void
     {
         if (0 > $expectedIndexRecordCount) {
             throw new \InvalidArgumentException();
         }
 
         if (0 === $expectedIndexRecordCount) {
-            static::assertSelectorTextSame('.no-results', 'No results found.');
+            $message = '' !== $message ? $message : 'There should be no results found in the index table';
+            static::assertSelectorTextSame('.no-results', 'No results found.', $message);
         } else {
-            static::assertSelectorTextSame('.list-pagination-counter strong', (string) $expectedIndexRecordCount);
+            $message = '' !== $message ? $message : sprintf('There should be %d results found in the index table', $expectedIndexRecordCount);
+            static::assertSelectorNotExists('.no-results');
+            static::assertSelectorTextSame('.list-pagination-counter strong', (string) $expectedIndexRecordCount, $message);
         }
     }
 
-    protected function assertIndexPageRecordCount(int $expectedIndexPageRecordCount): void
+    protected function assertIndexPageRecordCount(int $expectedIndexPageRecordCount, string $message = ''): void
     {
-        // TODO : to implement
     }
 
-    protected function assertIndexPagesCount(int $expectedIndexPagesCount): void
+    protected function assertIndexPagesCount(int $expectedIndexPagesCount, string $message = ''): void
     {
-        // TODO : to implement
+        if (0 >= $expectedIndexPagesCount) {
+            throw new \InvalidArgumentException();
+        }
+
+        $crawler = $this->client->getCrawler();
+        $message = '' !== $message ? $message : sprintf('There should be a total of %d pages in the index page', $expectedIndexPagesCount);
+
+        $pageItemsSelector = '.list-pagination-paginator ul.pagination li.page-item';
+        static::assertSelectorExists($pageItemsSelector);
+
+        $pageItems = $crawler->filter($pageItemsSelector);
+        $lastNumberedPageItem = $pageItems->slice($pageItems->count() - 2, 1);
+        static::assertEquals((string) $expectedIndexPagesCount, $lastNumberedPageItem->filter('a')->text(), $message);
     }
 
     protected function assertActionExistsForEntity(string $action, string|int $entityId): void

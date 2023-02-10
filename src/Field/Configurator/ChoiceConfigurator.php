@@ -72,7 +72,9 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
             $field->setFormTypeOptionIfNotSet('choices', array_keys($choices));
             $field->setFormTypeOptionIfNotSet('choice_label', fn ($value) => $choices[$value]);
         } else {
-            $field->setFormTypeOptionIfNotSet('choices', $choices);
+            if($elementIsEnum === false) {
+                $field->setFormTypeOptionIfNotSet('choices', $choices);   
+            }
         }
         $field->setFormTypeOptionIfNotSet('multiple', $isMultipleChoice);
         $field->setFormTypeOptionIfNotSet('expanded', $isExpanded);

@@ -48,6 +48,7 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
         }
 
         // support for enums
+        $elementIsEnum = false;
         if ($enumsAreSupported) {
             $elementIsEnum = array_unique(array_map(static function ($element): bool {
                 return \is_object($element) && enum_exists($element::class);
@@ -72,7 +73,7 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
             $field->setFormTypeOptionIfNotSet('choices', array_keys($choices));
             $field->setFormTypeOptionIfNotSet('choice_label', fn ($value) => $choices[$value]);
         } else {
-            if(false === $elementIsEnum) {
+            if (false === $elementIsEnum) {
                 $field->setFormTypeOptionIfNotSet('choices', $choices);   
             }
         }

@@ -12,9 +12,9 @@ template fo render `Country` fields.
 
 Starting from this EasyAdmin version, `Country` fields allow to select more
 than one value. That's why the type of the formatted value has changed from
-`?string` to `?array`. E.g. if the value of your entity property is `es`;
+`?string` to `?array`. E.g. if the value of your entity property is `ES`;
 before, `field.formattedValue` stored the string `'Spain'` and now it stores
-the array `['es' => 'Spain']`.
+the array `['ES' => 'Spain']`.
 
 The country code (used to display the country flag) is now the key of the new
 array. Before, you had to use an internal propery called `flagCode` which has

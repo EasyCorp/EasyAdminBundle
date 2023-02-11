@@ -50,7 +50,7 @@ string conversion manually::
 
         public function setCountry(?array $countryCodes): self
         {
-            $this->country = null === $countryCodes : null : implode('|', $countryCodes);
+            $this->country = null === $countryCodes ? '' : implode('|', $countryCodes);
 
             return $this;
         }

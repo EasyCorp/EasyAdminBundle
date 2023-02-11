@@ -68,9 +68,6 @@ class MenuItemMatcherTest extends KernelTestCase
 
         $menuItemDto = $this->getMenuItemDto(crudControllerFqcn: 'App\Controller\Admin\SomeController', action: Crud::PAGE_DETAIL, entityId: '57');
         $this->assertTrue($menuItemMatcher->isSelected($menuItemDto), 'The CRUD controller, entity ID and action match');
-
-        $menuItemDto = $this->getMenuItemDto(crudControllerFqcn: 'App\Controller\Admin\SomeController', action: 'NOT_'.Crud::PAGE_DETAIL, entityId: '57');
-        $this->assertFalse($menuItemMatcher->isSelected($menuItemDto), 'The CRUD controller and entity ID match but the action does not match');
     }
 
     public function testIsSelectedWithRoutes()

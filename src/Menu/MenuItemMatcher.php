@@ -65,7 +65,7 @@ class MenuItemMatcher implements MenuItemMatcherInterface
      */
     private function filterIrrelevantQueryParameters(array $queryStringParameters): array
     {
-        $paramsToRemove = [EA::REFERRER, EA::PAGE, EA::FILTERS, EA::SORT];
+        $paramsToRemove = [EA::REFERRER, EA::PAGE, EA::FILTERS, EA::SORT, EA::CRUD_ACTION];
 
         return array_filter($queryStringParameters, static fn ($k) => !\in_array($k, $paramsToRemove, true), \ARRAY_FILTER_USE_KEY);
     }

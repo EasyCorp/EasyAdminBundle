@@ -21,8 +21,7 @@ final class CountryField implements FieldInterface
     public const OPTION_COUNTRY_CODE_FORMAT = 'countryCodeFormat';
     public const OPTION_COUNTRY_CODES_TO_KEEP = 'countryCodesToKeep';
     public const OPTION_COUNTRY_CODES_TO_REMOVE = 'countryCodesToRemove';
-    /** @internal used to store the code of the flag to use independently from the country code format used */
-    public const OPTION_FLAG_CODE = 'flagCode';
+    public const OPTION_ALLOW_MULTIPLE_CHOICES = 'allowMultipleChoices';
 
     /**
      * @param TranslatableInterface|string|false|null $label
@@ -40,7 +39,8 @@ final class CountryField implements FieldInterface
             ->setCustomOption(self::OPTION_SHOW_NAME, true)
             ->setCustomOption(self::OPTION_COUNTRY_CODE_FORMAT, self::FORMAT_ISO_3166_ALPHA2)
             ->setCustomOption(self::OPTION_COUNTRY_CODES_TO_KEEP, null)
-            ->setCustomOption(self::OPTION_COUNTRY_CODES_TO_REMOVE, null);
+            ->setCustomOption(self::OPTION_COUNTRY_CODES_TO_REMOVE, null)
+            ->setCustomOption(self::OPTION_ALLOW_MULTIPLE_CHOICES, false);
     }
 
     public function showFlag(bool $isShown = true): self
@@ -82,6 +82,13 @@ final class CountryField implements FieldInterface
     public function remove(array $countryCodesToRemove): self
     {
         $this->setCustomOption(self::OPTION_COUNTRY_CODES_TO_REMOVE, $countryCodesToRemove);
+
+        return $this;
+    }
+
+    public function allowMultipleChoices(bool $allow = true): self
+    {
+        $this->setCustomOption(self::OPTION_ALLOW_MULTIPLE_CHOICES, $allow);
 
         return $this;
     }

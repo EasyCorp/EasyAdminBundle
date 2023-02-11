@@ -2,8 +2,8 @@
   "entrypoints": {
     "app": {
       "css": [
-        "/app.b29cb79c.css",
-        "/app.b29cb79c.rtl.css"
+        "/app.d0ae0e32.css",
+        "/app.d0ae0e32.rtl.css"
       ],
       "js": [
         "/app.7ef09592.js"

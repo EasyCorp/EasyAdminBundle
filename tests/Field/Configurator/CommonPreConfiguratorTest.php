@@ -14,6 +14,7 @@ class CommonPreConfiguratorTest extends AbstractFieldTest
     {
         parent::setUp();
 
+        static::bootKernel();
         /** @var PropertyAccessorInterface $propertyAccessor */
         $container = self::$kernel->getContainer()->get('test.service_container');
         $propertyAccessor = $container->get(PropertyAccessorInterface::class);

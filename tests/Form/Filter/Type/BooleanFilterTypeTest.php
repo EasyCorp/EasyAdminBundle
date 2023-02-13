@@ -28,7 +28,7 @@ class BooleanFilterTypeTest extends FilterTypeTest
         $this->assertSameDoctrineParams($params, $this->qb->getParameters()->toArray());
     }
 
-    public function getDataProvider(): iterable
+    public static function getDataProvider(): iterable
     {
         yield [
             '1',

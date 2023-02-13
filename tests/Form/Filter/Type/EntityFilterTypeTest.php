@@ -98,7 +98,7 @@ class EntityFilterTypeTest extends FilterTypeTest
         $this->assertSameDoctrineParams($params, $this->qb->getParameters()->toArray());
     }
 
-    public function getDataProviderToOneAssoc(): iterable
+    public static function getDataProviderToOneAssoc(): iterable
     {
         $entity1 = new SingleIntIdEntity(1, 'Foo');
         $entity2 = new SingleIntIdEntity(2, 'Bar');
@@ -160,7 +160,7 @@ class EntityFilterTypeTest extends FilterTypeTest
         ];
     }
 
-    public function getDataProviderToManyAssoc(): iterable
+    public static function getDataProviderToManyAssoc(): iterable
     {
         $entity1 = new SingleIntIdEntity(1, 'Foo');
         $entity2 = new SingleIntIdEntity(2, 'Bar');

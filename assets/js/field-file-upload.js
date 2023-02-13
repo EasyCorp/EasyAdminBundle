@@ -1,10 +1,13 @@
 import {toggleVisibilityClasses} from "./helpers";
 
-document.addEventListener('DOMContentLoaded', () => {
+const eaFileUploadHandler = function (event) {
     document.querySelectorAll('.ea-fileupload input[type="file"]').forEach((fileUploadElement) => {
         new FileUploadField(fileUploadElement);
     });
-});
+}
+
+window.addEventListener('DOMContentLoaded', eaFileUploadHandler);
+document.addEventListener('ea.collection.item-added', eaFileUploadHandler);
 
 class FileUploadField {
     #fieldContainerElement;

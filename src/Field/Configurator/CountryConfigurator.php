@@ -34,9 +34,7 @@ final class CountryConfigurator implements FieldConfiguratorInterface
     {
         $field->setFormTypeOption('attr.data-ea-widget', 'ea-autocomplete');
         $countryCodeFormat = $field->getCustomOption(CountryField::OPTION_COUNTRY_CODE_FORMAT);
-
-        $field->setCustomOption(CountryField::OPTION_FLAG_CODE, $this->getFlagCode($field->getValue(), $countryCodeFormat));
-        $field->setFormattedValue($this->getCountryName($field->getValue(), $countryCodeFormat));
+        $field->setFormattedValue($this->getCountryNames((array) $field->getValue(), $countryCodeFormat, $context->getRequest()->getLocale()));
 
         if (null === $field->getTextAlign() && false === $field->getCustomOption(CountryField::OPTION_SHOW_NAME)) {
             $field->setTextAlign(TextAlign::CENTER);
@@ -47,43 +45,35 @@ final class CountryConfigurator implements FieldConfiguratorInterface
 
             // the value of this form option must be a string to properly propagate it as an HTML attribute value
             $field->setFormTypeOption('attr.data-ea-autocomplete-render-items-as-html', 'true');
+
+            if (true === $field->getCustomOption(CountryField::OPTION_ALLOW_MULTIPLE_CHOICES)) {
+                $field->setFormTypeOption('multiple', true);
+            }
         }
     }
 
-    private function getCountryName(?string $countryCode, string $countryCodeFormat): ?string
+    private function getCountryNames(?array $countryCodes, string $countryCodeFormat, string $displayLocale): ?array
     {
-        if (null === $countryCode) {
+        if (null === $countryCodes) {
             return null;
         }
 
-        try {
-            if (CountryField::FORMAT_ISO_3166_ALPHA3 === $countryCodeFormat) {
-                return Countries::getAlpha3Name($countryCode);
+        $countryNames = [];
+        $usesAlpha3Codes = CountryField::FORMAT_ISO_3166_ALPHA3 === $countryCodeFormat;
+        foreach ($countryCodes as $countryCode) {
+            if (null === $countryCode) {
+                continue;
             }
 
-            return Countries::getName($countryCode);
-        } catch (MissingResourceException) {
-            return null;
-        }
-    }
-
-    private function getFlagCode(?string $countryCode, string $countryCodeFormat): ?string
-    {
-        if (null === $countryCode) {
-            return null;
-        }
-
-        try {
-            $flagCode = $countryCode;
-
-            if (CountryField::FORMAT_ISO_3166_ALPHA3 === $countryCodeFormat) {
-                $flagCode = Countries::getAlpha2Code($flagCode);
+            try {
+                $alpha2CountryCode = $usesAlpha3Codes ? Countries::getAlpha2Code($countryCode) : $countryCode;
+                $countryNames[$alpha2CountryCode] = $usesAlpha3Codes ? Countries::getAlpha3Name($countryCode, $displayLocale) : Countries::getName($countryCode, $displayLocale);
+            } catch (MissingResourceException) {
+                $countryNames['UNKNOWN'] = sprintf('Unknown "%s" country code', $countryCode);
             }
-
-            return '' === $flagCode ? 'UNKNOWN' : $flagCode;
-        } catch (MissingResourceException) {
-            return null;
         }
+
+        return $countryNames;
     }
 
     private function generateFormTypeChoices(string $countryCodeFormat, ?array $countryCodesToKeep, ?array $countryCodesToRemove): array
@@ -103,7 +93,7 @@ final class CountryConfigurator implements FieldConfiguratorInterface
 
             $countryCodeAlpha2 = $usesAlpha3Codes ? Countries::getAlpha2Code($countryCode) : $countryCode;
             $flagImagePath = $this->assetPackage->getUrl(sprintf('images/flags/%s.svg', $countryCodeAlpha2));
-            $choiceKey = sprintf('<img src="%s" class="country-flag" loading="lazy" alt="%s"> %s', $flagImagePath, $countryName, $countryName);
+            $choiceKey = sprintf('<div class="country-name-flag"><img src="%s" class="country-flag" loading="lazy" alt="%s"> <span>%s</span></div>', $flagImagePath, $countryName, $countryName);
 
             $choices[$choiceKey] = $countryCode;
         }

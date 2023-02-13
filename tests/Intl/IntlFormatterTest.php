@@ -55,7 +55,7 @@ class IntlFormatterTest extends TestCase
         $this->assertSame($expectedResult, $formattedDateTimeWithNormalizedSpaces);
     }
 
-    public function provideFormatDate()
+    public static function provideFormatDate()
     {
         yield [null, null, 'medium', '', null, 'gregorian', null];
 
@@ -82,7 +82,7 @@ class IntlFormatterTest extends TestCase
         yield ['Nov 7, 2020', new \DateTime('2020-11-07'), 'medium', '', null, 'traditional', 'en'];
     }
 
-    public function provideFormatTime()
+    public static function provideFormatTime()
     {
         yield [null, null, 'medium', '', null, 'gregorian', null];
 
@@ -106,7 +106,7 @@ class IntlFormatterTest extends TestCase
         yield ['/Pacific (Standard|Daylight) Time Pacific Time -0(7|8):00/', new \DateTime('15:04:05 CET'), null, 'zzzz vvvv xxxxx', new \DateTimeZone('PST'), 'gregorian', 'en', 'assertMatchesRegularExpression'];
     }
 
-    public function provideFormatDateTime()
+    public static function provideFormatDateTime()
     {
         yield [null, null, 'medium', 'medium', '', null, 'gregorian', null];
 

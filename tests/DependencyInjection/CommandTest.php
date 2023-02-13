@@ -23,7 +23,7 @@ class CommandTest extends KernelTestCase
         $this->assertNotEmpty($command->getHelp());
     }
 
-    public function provideCommands()
+    public static function provideCommands()
     {
         yield ['make:admin:crud'];
         yield ['make:admin:dashboard'];

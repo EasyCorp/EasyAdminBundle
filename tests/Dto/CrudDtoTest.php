@@ -31,7 +31,7 @@ class CrudDtoTest extends TestCase
         $this->assertSame($expectedGetLabel, $crudDto->getEntityLabelInPlural($entityInstance));
     }
 
-    public function provideLabels()
+    public static function provideLabels()
     {
         yield [null, null];
         yield ['', ''];

@@ -24,6 +24,38 @@ Basic Information
 Options
 -------
 
+allowMultipleChoices
+~~~~~~~~~~~~~~~~~~~~
+
+By default, the country selector allows to select zero (if the property is nullable)
+or one value. Set this option to ``true`` if you want to allow selecting any
+number of values:
+
+    yield CountryField::new('...')->allowMultipleChoices();
+
+If you allow choosing multiple values, you might need to change your current
+entity because EasyAdmin will try to get/set an array with the country codes
+instead of a string with just one country code. You could use a Doctrine entity
+of type array or you could keep using a string property and handle the array to
+string conversion manually::
+
+    public class MyEntity
+    {
+        // ...
+
+        public function getCountry(): ?array
+        {
+            return '' === $this->country ? null : explode('|', $this->country);
+        }
+
+        public function setCountry(?array $countryCodes): self
+        {
+            $this->country = null === $countryCodes ? '' : implode('|', $countryCodes);
+
+            return $this;
+        }
+    }
+
 includeOnly
 ~~~~~~~~~~~
 

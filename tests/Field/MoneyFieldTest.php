@@ -15,7 +15,7 @@ class MoneyFieldTest extends AbstractFieldTest
 
         $intlFormatterMock = $this->getMockBuilder(IntlFormatter::class)
             ->disableOriginalConstructor()
-            ->setMethods(['formatCurrency'])
+            ->onlyMethods(['formatCurrency'])
             ->getMock();
         $intlFormatterMock->method('formatCurrency')->willReturnCallback(
             function ($value) { return $value.'€'; }
@@ -23,7 +23,7 @@ class MoneyFieldTest extends AbstractFieldTest
 
         $propertyAccessorMock = $this->getMockBuilder(PropertyAccessor::class)
             ->disableOriginalConstructor()
-            ->setMethods(['isReadable', 'getValue'])
+            ->onlyMethods(['isReadable', 'getValue'])
             ->getMock();
         $propertyAccessorMock->method('isReadable')->willReturn(true);
         $propertyAccessorMock->method('getValue')->willReturn('USD');

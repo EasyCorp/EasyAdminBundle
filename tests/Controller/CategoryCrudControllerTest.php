@@ -5,7 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Controller;
 use Doctrine\ORM\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\ForbiddenActionException;
-use EasyCorp\Bundle\EasyAdminBundle\Test\TestCase\AbstractCrudTestCase;
+use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Config\Action as AppAction;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Controller\CategoryCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Controller\SecureDashboardController;

@@ -112,7 +112,7 @@
                         {% set next_sort_direction = is_sorting_field ? (ea.search.sortDirection(field.property) == ea_sort_desc ? ea_sort_asc : ea_sort_desc) : ea_sort_desc %}
                         {% set column_icon = is_sorting_field ? (next_sort_direction == ea_sort_desc ? 'fa-arrow-up' : 'fa-arrow-down') : 'fa-sort' %}
 
-                        <th class="{{ is_sorting_field ? 'sorted' }} {{ field.isVirtual ? 'field-virtual' }} header-for-{{ field.cssClass|split(' ')|filter(class => class starts with 'field-')|join('') }} text-{{ field.textAlign }}" dir="{{ ea.i18n.textDirection }}">
+                        <th data-column="{{ field.property }}" class="{{ is_sorting_field ? 'sorted' }} {{ field.isVirtual ? 'field-virtual' }} header-for-{{ field.cssClass|split(' ')|filter(class => class starts with 'field-')|join('') }} text-{{ field.textAlign }}" dir="{{ ea.i18n.textDirection }}">
                             {% if field.isSortable %}
                                 <a href="{{ ea_url({ page: 1, sort: { (field.property): next_sort_direction } }).includeReferrer() }}">
                                     {{ field.label|trans|raw }} <i class="fa fa-fw {{ column_icon }}"></i>
@@ -145,7 +145,7 @@
                         {% endif %}
 
                         {% for field in entity.fields %}
-                            <td data-label="{{ field.label|trans|e('html_attr') }}" class="{{ field.property == sort_field_name ? 'sorted' }} text-{{ field.textAlign }} {{ field.cssClass }}" dir="{{ ea.i18n.textDirection }}">
+                            <td data-column="{{ field.property }}" data-label="{{ field.label|trans|e('html_attr') }}" class="{{ field.property == sort_field_name ? 'sorted' }} text-{{ field.textAlign }} {{ field.cssClass }}" dir="{{ ea.i18n.textDirection }}">
                                 {{ include(field.templatePath, { field: field, entity: entity }, with_context = false) }}
                             </td>
                         {% endfor %}

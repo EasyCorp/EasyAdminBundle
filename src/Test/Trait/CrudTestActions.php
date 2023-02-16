@@ -4,33 +4,17 @@ declare(strict_types=1);
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Test\Trait;
 
+use function PHPUnit\Framework\assertCount;
+
 trait CrudTestActions
 {
-    protected function clickOnIndexEntityAction(string|int $entityId, string $action): void
+    protected function clickOnIndexGlobalAction(string $globalAction): void
     {
-        // TODO : to implement
-    }
+        $crawler = $this->client->getCrawler();
+        $action = $crawler->filter(sprintf('.global-actions .action-%s', $globalAction));
 
-    /**
-     * @param array<array-key, string> $entityIds
-     */
-    protected function clickOnIndexGlobalAction(string $globalAction, array $entityIds = []): void
-    {
-        // TODO : to implement
-    }
+        assertCount(1, $action, sprintf('There is no action %s in the page', $globalAction));
 
-    protected function goToNextIndexPage(): void
-    {
-        // TODO : to implement
-    }
-
-    protected function goToPreviousIndexPage(): void
-    {
-        // TODO : to implement
-    }
-
-    protected function clickOnMenuItem(string $menuDisplayName): void
-    {
-        // TODO : to implement
+        $this->client->click($action->link());
     }
 }

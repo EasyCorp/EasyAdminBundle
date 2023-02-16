@@ -50,7 +50,8 @@ final class FormField implements FieldInterface
             ->setFormTypeOptions(['mapped' => false, 'required' => false])
             ->setCustomOption(self::OPTION_ICON, $icon)
             ->setCustomOption(self::OPTION_COLLAPSIBLE, false)
-            ->setCustomOption(self::OPTION_COLLAPSED, false);
+            ->setCustomOption(self::OPTION_COLLAPSED, false)
+            ->setValue(true);
     }
 
     /**
@@ -73,7 +74,8 @@ final class FormField implements FieldInterface
             ->setFormType(EaFormRowType::class)
             ->addCssClass('field-form_row')
             ->setFormTypeOptions(['mapped' => false, 'required' => false])
-            ->setCustomOption(self::OPTION_ROW_BREAKPOINT, $breakpointName);
+            ->setCustomOption(self::OPTION_ROW_BREAKPOINT, $breakpointName)
+            ->setValue(true);
     }
 
     /**
@@ -92,7 +94,8 @@ final class FormField implements FieldInterface
             ->setFormType(EasyAdminTabType::class)
             ->addCssClass('field-form_tab')
             ->setFormTypeOptions(['mapped' => false, 'required' => false])
-            ->setCustomOption(self::OPTION_ICON, $icon);
+            ->setCustomOption(self::OPTION_ICON, $icon)
+            ->setValue(true);
     }
 
     public function setIcon(string $iconCssClass): self

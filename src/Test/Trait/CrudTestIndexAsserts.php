@@ -6,7 +6,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Test\Trait;
 
 trait CrudTestIndexAsserts
 {
-    use CrudTestHelpersTrait;
+    use CrudTestSelectors;
 
     protected static function assertIndexFullEntityCount(int $expectedIndexFullEntityCount, ?string $message = null): void
     {

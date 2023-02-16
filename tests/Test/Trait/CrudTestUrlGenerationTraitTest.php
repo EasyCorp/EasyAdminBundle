@@ -7,8 +7,10 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Test\Trait;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Test\Trait\CrudTestUrlGeneration;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Controller\BlogPostCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Controller\CategoryCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Controller\DashboardController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Controller\SecureDashboardController;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 final class CrudTestUrlGenerationTraitTest extends KernelTestCase
@@ -20,7 +22,7 @@ final class CrudTestUrlGenerationTraitTest extends KernelTestCase
 
     protected function setUp(): void
     {
-        static::bootKernel();
+        self::bootKernel();
         $this->adminUrlGenerator = self::getContainer()->get(AdminUrlGenerator::class);
     }
 
@@ -34,34 +36,84 @@ final class CrudTestUrlGenerationTraitTest extends KernelTestCase
         };
 
         $expectedUrl = $this->adminUrlGenerator
-            ->setDashboard(static::TEST_DASHBOARD)
-            ->setController(static::TEST_CONTROLLER)
+            ->setDashboard(self::TEST_DASHBOARD)
+            ->setController(self::TEST_CONTROLLER)
             ->setAction(Action::INDEX)
             ->generateUrl()
         ;
 
-        static::assertEquals($expectedUrl, $testClass->test());
+        self::assertEquals($expectedUrl, $testClass->test());
+    }
+
+    /**
+     * @dataProvider specificDashboardAndControllerFqcn
+     */
+    public function testGenericUrlIndexGenerationWithSpecificDashboardAndController(
+        ?string $dashboardFqcn,
+        ?string $controllerFqcn
+    ) {
+        $testClass = new class($this->adminUrlGenerator) extends CrudTestUrlGenerationTraitTestClass {
+            public function test(?string $dashboardFqcn, ?string $controllerFqcn): string
+            {
+                return $this->generateIndexUrl(dashboardFqcn: $dashboardFqcn, controllerFqcn: $controllerFqcn);
+            }
+        };
+
+        $expectedUrl = $this->adminUrlGenerator
+            ->setDashboard($dashboardFqcn ?? self::TEST_DASHBOARD)
+            ->setController($controllerFqcn ?? self::TEST_CONTROLLER)
+            ->setAction(Action::INDEX)
+            ->generateUrl()
+        ;
+
+        self::assertEquals($expectedUrl, $testClass->test($dashboardFqcn, $controllerFqcn));
     }
 
     public function testUrlDetailGeneration()
     {
         $testClass = new class($this->adminUrlGenerator) extends CrudTestUrlGenerationTraitTestClass {
-            public function test(string|int $id): string
+            public function test(string|int $id, ?string $dashboardFqcn = null, ?string $controllerFqcn = null): string
             {
-                return $this->generateDetailUrl($id);
+                return $this->generateDetailUrl($id, dashboardFqcn: $dashboardFqcn, controllerFqcn: $controllerFqcn);
             }
         };
 
         $entityId = 'Test_id';
         $expectedUrl = $this->adminUrlGenerator
-            ->setDashboard(static::TEST_DASHBOARD)
-            ->setController(static::TEST_CONTROLLER)
+            ->setDashboard(self::TEST_DASHBOARD)
+            ->setController(self::TEST_CONTROLLER)
             ->setAction(Action::DETAIL)
             ->setEntityId($entityId)
             ->generateUrl()
         ;
 
-        static::assertEquals($expectedUrl, $testClass->test($entityId));
+        self::assertEquals($expectedUrl, $testClass->test($entityId));
+    }
+
+    /**
+     * @dataProvider specificDashboardAndControllerFqcn
+     */
+    public function testUrlDetailGenerationWithSpecificDashboardAndControllerFqcn(
+        ?string $dashboardFqcn,
+        ?string $controllerFqcn
+    ) {
+        $testClass = new class($this->adminUrlGenerator) extends CrudTestUrlGenerationTraitTestClass {
+            public function test(string|int $id, ?string $dashboardFqcn, ?string $controllerFqcn): string
+            {
+                return $this->generateDetailUrl($id, dashboardFqcn: $dashboardFqcn, controllerFqcn: $controllerFqcn);
+            }
+        };
+
+        $entityId = 'Test_id';
+        $expectedUrl = $this->adminUrlGenerator
+            ->setDashboard($dashboardFqcn ?? self::TEST_DASHBOARD)
+            ->setController($controllerFqcn ?? self::TEST_CONTROLLER)
+            ->setAction(Action::DETAIL)
+            ->setEntityId($entityId)
+            ->generateUrl()
+        ;
+
+        self::assertEquals($expectedUrl, $testClass->test($entityId, $dashboardFqcn, $controllerFqcn));
     }
 
     public function testUrlNewFormGeneration()
@@ -74,13 +126,38 @@ final class CrudTestUrlGenerationTraitTest extends KernelTestCase
         };
 
         $expectedUrl = $this->adminUrlGenerator
-            ->setDashboard(static::TEST_DASHBOARD)
-            ->setController(static::TEST_CONTROLLER)
+            ->setDashboard(self::TEST_DASHBOARD)
+            ->setController(self::TEST_CONTROLLER)
             ->setAction(Action::NEW)
             ->generateUrl()
         ;
 
-        static::assertEquals($expectedUrl, $testClass->test());
+        self::assertEquals($expectedUrl, $testClass->test());
+    }
+
+    /**
+     * @dataProvider specificDashboardAndControllerFqcn
+     */
+    public function testUrlNewFormGenerationWithSpecificDashboardAndControllerFqcn(
+        ?string $dashboardFqcn,
+        ?string $controllerFqcn
+    ) {
+        $testClass = new class($this->adminUrlGenerator) extends CrudTestUrlGenerationTraitTestClass {
+            public function test(?string $dashboardFqcn, ?string $controllerFqcn): string
+            {
+                return $this->generateNewFormUrl(dashboardFqcn: $dashboardFqcn, controllerFqcn: $controllerFqcn);
+            }
+        };
+
+        $entityId = 'Test_id';
+        $expectedUrl = $this->adminUrlGenerator
+            ->setDashboard($dashboardFqcn ?? self::TEST_DASHBOARD)
+            ->setController($controllerFqcn ?? self::TEST_CONTROLLER)
+            ->setAction(Action::NEW)
+            ->generateUrl()
+        ;
+
+        self::assertEquals($expectedUrl, $testClass->test($dashboardFqcn, $controllerFqcn));
     }
 
     public function testUrlEditFormGeneration()
@@ -94,14 +171,40 @@ final class CrudTestUrlGenerationTraitTest extends KernelTestCase
 
         $entityId = 'Test_id';
         $expectedUrl = $this->adminUrlGenerator
-            ->setDashboard(static::TEST_DASHBOARD)
-            ->setController(static::TEST_CONTROLLER)
+            ->setDashboard(self::TEST_DASHBOARD)
+            ->setController(self::TEST_CONTROLLER)
             ->setAction(Action::EDIT)
             ->setEntityId($entityId)
             ->generateUrl()
         ;
 
-        static::assertEquals($expectedUrl, $testClass->test($entityId));
+        self::assertEquals($expectedUrl, $testClass->test($entityId));
+    }
+
+    /**
+     * @dataProvider specificDashboardAndControllerFqcn
+     */
+    public function testUrlEditGenerationWithSpecificDashboardAndControllerFqcn(
+        ?string $dashboardFqcn,
+        ?string $controllerFqcn
+    ) {
+        $testClass = new class($this->adminUrlGenerator) extends CrudTestUrlGenerationTraitTestClass {
+            public function test(string|int $id, ?string $dashboardFqcn, ?string $controllerFqcn): string
+            {
+                return $this->generateEditFormUrl($id, dashboardFqcn: $dashboardFqcn, controllerFqcn: $controllerFqcn);
+            }
+        };
+
+        $entityId = 'Test_id';
+        $expectedUrl = $this->adminUrlGenerator
+            ->setDashboard($dashboardFqcn ?? self::TEST_DASHBOARD)
+            ->setController($controllerFqcn ?? self::TEST_CONTROLLER)
+            ->setAction(Action::EDIT)
+            ->setEntityId($entityId)
+            ->generateUrl()
+        ;
+
+        self::assertEquals($expectedUrl, $testClass->test($entityId, $dashboardFqcn, $controllerFqcn));
     }
 
     public function testUrlRenderFiltersGeneration()
@@ -114,23 +217,57 @@ final class CrudTestUrlGenerationTraitTest extends KernelTestCase
         };
 
         $indexUrl = $this->adminUrlGenerator
-            ->setDashboard(static::TEST_DASHBOARD)
-            ->setController(static::TEST_CONTROLLER)
+            ->setDashboard(self::TEST_DASHBOARD)
+            ->setController(self::TEST_CONTROLLER)
             ->setAction(Action::INDEX)
             ->generateUrl()
         ;
         $referrer = preg_replace('/^.*(\/.*)$/', '$1', $indexUrl);
 
         $expectedUrl = $this->adminUrlGenerator
-            ->setDashboard(static::TEST_DASHBOARD)
-            ->setController(static::TEST_CONTROLLER)
+            ->setDashboard(self::TEST_DASHBOARD)
+            ->setController(self::TEST_CONTROLLER)
             // No defined const in EasyCorp\Bundle\EasyAdminBundle\Config\Action so need to write it by hand
             ->setAction('renderFilters')
             ->setReferrer($referrer)
             ->generateUrl()
         ;
 
-        static::assertEquals($expectedUrl, $testClass->test());
+        self::assertEquals($expectedUrl, $testClass->test());
+    }
+
+    /**
+     * @dataProvider specificDashboardAndControllerFqcn
+     */
+    public function testUrlRenderFiltersGenerationWithSpecificDashboardAndControllerFqcn(
+        ?string $dashboardFqcn,
+        ?string $controllerFqcn
+    ) {
+        $testClass = new class($this->adminUrlGenerator) extends CrudTestUrlGenerationTraitTestClass {
+            public function test(?string $dashboardFqcn, ?string $controllerFqcn): string
+            {
+                return $this->generateFilterRenderUrl(dashboardFqcn: $dashboardFqcn, controllerFqcn: $controllerFqcn);
+            }
+        };
+
+        $indexUrl = $this->adminUrlGenerator
+            ->setDashboard(self::TEST_DASHBOARD)
+            ->setController(self::TEST_CONTROLLER)
+            ->setAction(Action::INDEX)
+            ->generateUrl()
+        ;
+        $referrer = preg_replace('/^.*(\/.*)$/', '$1', $indexUrl);
+
+        $expectedUrl = $this->adminUrlGenerator
+            ->setDashboard($dashboardFqcn ?? self::TEST_DASHBOARD)
+            ->setController($controllerFqcn ?? self::TEST_CONTROLLER)
+            // No defined const in EasyCorp\Bundle\EasyAdminBundle\Config\Action so need to write it by hand
+            ->setAction('renderFilters')
+            ->setReferrer($referrer)
+            ->generateUrl()
+        ;
+
+        self::assertEquals($expectedUrl, $testClass->test($dashboardFqcn, $controllerFqcn));
     }
 
     /**
@@ -148,8 +285,8 @@ final class CrudTestUrlGenerationTraitTest extends KernelTestCase
         };
 
         $expectedUrl = $this->adminUrlGenerator
-            ->setDashboard(static::TEST_DASHBOARD)
-            ->setController(static::TEST_CONTROLLER)
+            ->setDashboard(self::TEST_DASHBOARD)
+            ->setController(self::TEST_CONTROLLER)
             ->setAction($action)
         ;
 
@@ -161,7 +298,7 @@ final class CrudTestUrlGenerationTraitTest extends KernelTestCase
             $expectedUrl->set($key, $value);
         }
 
-        static::assertEquals($expectedUrl->generateUrl(), $testClass->test($action, $entityId, $options));
+        self::assertEquals($expectedUrl->generateUrl(), $testClass->test($action, $entityId, $options));
     }
 
     public function genericDataProvider(): \Generator
@@ -180,6 +317,39 @@ final class CrudTestUrlGenerationTraitTest extends KernelTestCase
 
         yield 'Action with specific options' => [
             'action_with_option', null, ['option_1' => 'fantastic_value'],
+        ];
+    }
+
+    public function specificDashboardAndControllerFqcn(): \Generator
+    {
+        yield 'only controller' => [
+            null,
+            BlogPostCrudController::class,
+        ];
+
+        yield 'same Dashboard different controller' => [
+            self::TEST_DASHBOARD,
+            BlogPostCrudController::class,
+        ];
+
+        yield 'only Dashboard' => [
+            SecureDashboardController::class,
+            null,
+        ];
+
+        yield 'same Controller different Dashboard' => [
+            SecureDashboardController::class,
+            self::TEST_CONTROLLER,
+        ];
+
+        yield 'both different' => [
+            SecureDashboardController::class,
+            BlogPostCrudController::class,
+        ];
+
+        yield 'both null for both same' => [
+            null,
+            null,
         ];
     }
 }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Test\Trait;
 
-trait CrudTestHelpersTrait
+trait CrudTestSelectors
 {
     protected function getIndexEntityActionSelector(string $action, string|int $entityId): string
     {

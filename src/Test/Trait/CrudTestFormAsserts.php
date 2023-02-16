@@ -9,7 +9,7 @@ use Symfony\Component\DomCrawler\Test\Constraint\CrawlerSelectorTextSame;
 
 trait CrudTestFormAsserts
 {
-    use CrudTestHelpersTrait;
+    use CrudTestSelectors;
 
     protected function assertFormFieldExists(string $fieldName, ?string $message = null): void
     {

@@ -16,11 +16,14 @@ trait CrudTestUrlGeneration
      * @throws InvalidClassPropertyTypeException
      * @throws MissingClassMethodException
      */
-    protected function getCrudUrl(string $action, string|int $entityId = null, array $options = []): string
+    protected function getCrudUrl(string $action, string|int $entityId = null, array $options = [], ?string $dashboardFqcn = null, ?string $controllerFqcn = null): string
     {
+        $dashboardFqcn ??= $this->getDashboardFqcn();
+        $controllerFqcn ??= $this->getControllerFqcn();
+
         $this->adminUrlGenerator
-            ->setDashboard($this->getDashboardFqcn())
-            ->setController($this->getControllerFqcn())
+            ->setDashboard($dashboardFqcn)
+            ->setController($controllerFqcn)
             ->setAction($action)
         ;
 
@@ -35,7 +38,7 @@ trait CrudTestUrlGeneration
         return $this->adminUrlGenerator->generateUrl();
     }
 
-    protected function generateIndexUrl(string $query = null): string
+    protected function generateIndexUrl(string $query = null, ?string $dashboardFqcn = null, ?string $controllerFqcn = null): string
     {
         $options = [];
 
@@ -43,29 +46,29 @@ trait CrudTestUrlGeneration
             $options['query'] = $query;
         }
 
-        return $this->getCrudUrl(Action::INDEX, null, $options);
+        return $this->getCrudUrl(Action::INDEX, null, $options, $dashboardFqcn, $controllerFqcn);
     }
 
-    protected function generateNewFormUrl(): string
+    protected function generateNewFormUrl(?string $dashboardFqcn = null, ?string $controllerFqcn = null): string
     {
-        return $this->getCrudUrl(Action::NEW);
+        return $this->getCrudUrl(Action::NEW, dashboardFqcn: $dashboardFqcn, controllerFqcn: $controllerFqcn);
     }
 
-    protected function generateEditFormUrl(string|int $id): string
+    protected function generateEditFormUrl(string|int $id, ?string $dashboardFqcn = null, ?string $controllerFqcn = null): string
     {
-        return $this->getCrudUrl(Action::EDIT, $id);
+        return $this->getCrudUrl(Action::EDIT, $id, dashboardFqcn: $dashboardFqcn, controllerFqcn: $controllerFqcn);
     }
 
-    protected function generateDetailUrl(string|int $id): string
+    protected function generateDetailUrl(string|int $id, ?string $dashboardFqcn = null, ?string $controllerFqcn = null): string
     {
-        return $this->getCrudUrl(Action::DETAIL, $id);
+        return $this->getCrudUrl(Action::DETAIL, $id, dashboardFqcn: $dashboardFqcn, controllerFqcn: $controllerFqcn);
     }
 
-    protected function generateFilterRenderUrl(): string
+    protected function generateFilterRenderUrl(?string $dashboardFqcn = null, ?string $controllerFqcn = null): string
     {
         // Use the index URL as referrer but remove scheme, host and port
         $referrer = preg_replace('/^.*(\/.*)$/', '$1', $this->generateIndexUrl());
 
-        return $this->getCrudUrl('renderFilters', null, ['referrer' => $referrer]);
+        return $this->getCrudUrl('renderFilters', null, ['referrer' => $referrer], dashboardFqcn: $dashboardFqcn, controllerFqcn: $controllerFqcn);
     }
 }

@@ -525,7 +525,9 @@ body.ea-edit .content-header {
     margin-right: 10px;
 }
 .content-header .page-actions {
-    align-items: center;
+    justify-content: right;
+    flex-wrap: wrap;
+    row-gap: 1em;
     display: flex;
     flex-direction: row;
     margin: 10px 0 15px;
@@ -533,7 +535,6 @@ body.ea-edit .content-header {
     &:empty { display: none; }
 
     @media(min-width: 768px) {
-        justify-content: space-between;
         margin: 2px 1px 0 10px;
     }
 

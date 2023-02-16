@@ -111,7 +111,7 @@
     display: flex;
     padding: 12px 0;
 
-    label,
+    > label,
     legend.col-form-label {
       font-weight: 500;
       margin: 3px 10px 0 0;
@@ -171,9 +171,27 @@
 .field-country .country-flag {
   border-radius: 2px;
   box-shadow: 0 0 0 1px var(--field-country-flag-border-color);
-  margin-right: 6px;
-  max-height: 18px;
+  margin: 0 6px 1px 0;
+  max-height: 17px;
   vertical-align: text-top;
+}
+.datagrid .field-country > span + span,
+.datalist .field-country dd > span + span {
+  margin-left: 10px;
+}
+
+.field-country .ts-control .country-name-flag,
+.field-country .ts-dropdown-content .country-name-flag {
+  .country-flag { margin-bottom: 0; }
+}
+.field-country .ts-wrapper.multi .ts-control > div {
+  margin-bottom: 5px;
+}
+.field-country .ts-wrapper.multi .ts-control .country-name-flag {
+  margin-right: 25px;
+}
+.field-country .ts-wrapper.multi.plugin-remove_button .item .remove {
+  border-color: var(--form-type-autocomplete-multi-item-border-color);
 }
 
 // Currency field

@@ -107,6 +107,12 @@ final class FieldFactory
 
                 $configurator->configure($fieldDto, $entityDto, $context);
             }
+            
+            if (null !== $currentPage && false === $fieldDto->isDisplayedOn($currentPage)) {
+                $fields->unset($fieldDto);
+
+                continue;
+            }
 
             foreach ($fieldDto->getFormThemes() as $formThemePath) {
                 $context?->getCrud()?->addFormTheme($formThemePath);

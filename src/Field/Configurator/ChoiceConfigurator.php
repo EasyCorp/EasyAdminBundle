@@ -10,6 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Translation\TranslatableChoiceMessage;
 use EasyCorp\Bundle\EasyAdminBundle\Translation\TranslatableChoiceMessageCollection;
+use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use function Symfony\Component\String\u;
 use function Symfony\Component\Translation\t;
 use Symfony\Contracts\Translation\TranslatableInterface;
@@ -38,7 +39,8 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
         // in that case, get all the possible values of the Enum
         if (null === $choices && $enumsAreSupported) {
             $enumTypeClass = $field->getDoctrineMetadata()->get('enumType');
-            if (enum_exists($enumTypeClass)) {
+            if (is_string($enumTypeClass) && enum_exists($enumTypeClass)) {
+                $field->setFormTypeOption('class', $enumTypeClass);
                 $choices = $enumTypeClass::cases();
             }
         }
@@ -55,13 +57,11 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
             $allChoicesAreEnums = false === \in_array(false, $elementIsEnum, true);
 
             if ($allChoicesAreEnums) {
+                $field->setFormType(EnumType::class);
+
                 $processedEnumChoices = [];
                 foreach ($choices as $choice) {
-                    if ($choice instanceof \BackedEnum) {
-                        $processedEnumChoices[$choice->name] = $choice->value;
-                    } else {
-                        $processedEnumChoices[$choice->name] = $choice->name;
-                    }
+                    $processedEnumChoices[$choice->name] = $choice;
                 }
 
                 $choices = $processedEnumChoices;
@@ -114,6 +114,13 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
                 if ($selectedValue instanceof TranslatableInterface) {
                     $choiceMessage = $selectedValue;
                 } else {
+                    if (\is_object($selectedLabel)) {
+                        $labeLCallback = $field->getFormTypeOption('choice_label');
+                        if (\is_callable($labeLCallback)) {
+                            $selectedLabel = $labeLCallback($selectedLabel);
+                        }
+                    }
+                    
                     $choiceMessage = t(
                         $selectedLabel,
                         $translationParameters,

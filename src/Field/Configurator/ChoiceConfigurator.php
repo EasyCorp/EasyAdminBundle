@@ -114,6 +114,13 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
                 if ($selectedValue instanceof TranslatableInterface) {
                     $choiceMessage = $selectedValue;
                 } else {
+                    if (\is_object($selectedLabel)) {
+                        $labeLCallback = $field->getFormTypeOption('choice_label');
+                        if (\is_callable($labeLCallback)) {
+                            $selectedLabel = $labeLCallback($selectedLabel);
+                        }
+                    }
+                    
                     $choiceMessage = t(
                         $selectedLabel,
                         $translationParameters,

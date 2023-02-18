@@ -10,6 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Translation\TranslatableChoiceMessage;
 use EasyCorp\Bundle\EasyAdminBundle\Translation\TranslatableChoiceMessageCollection;
+use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use function Symfony\Component\String\u;
 use function Symfony\Component\Translation\t;
 use Symfony\Contracts\Translation\TranslatableInterface;

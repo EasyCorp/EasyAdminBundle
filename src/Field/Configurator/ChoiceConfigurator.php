@@ -40,6 +40,7 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
         if (null === $choices && $enumsAreSupported) {
             $enumTypeClass = $field->getDoctrineMetadata()->get('enumType');
             if (enum_exists($enumTypeClass)) {
+                $field->setFormTypeOption('class', $enumTypeClass);
                 $choices = $enumTypeClass::cases();
             }
         }
@@ -49,22 +50,18 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
         }
 
         // support for enums
-        if ($enumsAreSupported) {
-            $field->setFormType(EnumType::class);
-            
+        if ($enumsAreSupported) {            
             $elementIsEnum = array_unique(array_map(static function ($element): bool {
                 return \is_object($element) && enum_exists($element::class);
             }, $choices));
             $allChoicesAreEnums = false === \in_array(false, $elementIsEnum, true);
 
             if ($allChoicesAreEnums) {
+                $field->setFormType(EnumType::class);
+
                 $processedEnumChoices = [];
                 foreach ($choices as $choice) {
-                    if ($choice instanceof \BackedEnum) {
-                        $processedEnumChoices[$choice->name] = $choice->value;
-                    } else {
-                        $processedEnumChoices[$choice->name] = $choice->name;
-                    }
+                    $processedEnumChoices[$choice->name] = $choice;
                 }
 
                 $choices = $processedEnumChoices;

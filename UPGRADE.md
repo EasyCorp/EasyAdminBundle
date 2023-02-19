@@ -1,6 +1,25 @@
 Upgrade between EasyAdmin 4.x versions
 ======================================
 
+EasyAdmin 4.6.0
+---------------
+
+### New formatted value for Country field
+
+This is a backward compatibility break that only affects you if you customize
+the default `crud/field/country.html.twig` template or if you use a custom
+template fo render `Country` fields.
+
+Starting from this EasyAdmin version, `Country` fields allow to select more
+than one value. That's why the type of the formatted value has changed from
+`?string` to `?array`. E.g. if the value of your entity property is `ES`;
+before, `field.formattedValue` stored the string `'Spain'` and now it stores
+the array `['ES' => 'Spain']`.
+
+The country code (used to display the country flag) is now the key of the new
+array. Before, you had to use an internal propery called `flagCode` which has
+been removed.
+
 EasyAdmin 4.4.0
 ---------------
 

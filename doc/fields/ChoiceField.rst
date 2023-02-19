@@ -124,9 +124,9 @@ If ``allowMultipleChoices`` is true, the expanded field will display checkboxes:
 setChoices
 ~~~~~~~~~~
 
-This is the most important option, because it choice fields require to set their
-possible values before using them. These options are defined in the same way as
-Symfony Forms: ``['Label visible to users' => 'submitted_value', ...]``::
+This is the most important option, because it sets the possible valid options
+for the field. These options are defined in the same way as Symfony Forms:
+``['Label visible to users' => 'submitted_value', ...]``::
 
     yield ChoiceField::new('...')->setChoices([
         'Paid Invoice' => 'paid',
@@ -143,6 +143,44 @@ Symfony Forms: ``['Label visible to users' => 'submitted_value', ...]``::
     yield ChoiceField::new('...')->setChoices(
         static fn (?MyEntity $foo, FieldDto $field): array => $field->getValue() < 10 ? $foo->getLowStockOptions() : $foo->getNormalStockOptions()
     );
+
+This option supports PHP enums too, both UnitEnum and BackedEnum. Suppose you
+have this backed enum defined somewhere in your project::
+
+    namespace App\Config;
+
+    enum BlogPostStatus: string {
+        case Draft = 'draft';
+        case Published = 'published';
+        case Deleted = 'deleted';
+    }
+
+This enum is supported in the ``setChoices()`` in different ways::
+
+    // you can set the options as all the possible cases of the Enum explicitly
+    yield ChoiceField::new('status')->setChoices(BlogPostStatus::cases());
+
+    // you can select only some of the possible enum values:
+    yield ChoiceField::new('status')->setChoices([BlogPostStatus::Draft, BlogPostStatus::Published]);
+
+In addition, EasyAdmin provides automatic supports for Doctrine properties
+associated to PHP enums. Consider the following Doctrine entity::
+
+    #[Entity]
+    class BlogPost
+    {
+        // ...
+
+        #[Column(type: 'string', enumType: BlogPostStatus::class)]
+        public $status;
+    }
+
+If you want to display all the possible values of that enum, you don't have to
+add them explicitly::
+
+    // there's no need to call ->setChoices(); EasyAdmin will get all possible
+    // values via Doctrine; it's equivalent to calling: ->setChoices(BlogPostStatus::cases())
+    yield ChoiceField::new('status');
 
 setTranslatableChoices
 ~~~~~~~~~~~~~~~~~~~~~~

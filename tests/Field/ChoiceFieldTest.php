@@ -4,6 +4,8 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Field;
 
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\ChoiceConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Field\Fixtures\ChoiceField\PriorityUnitEnum;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Field\Fixtures\ChoiceField\StatusBackedEnum;
 use function Symfony\Component\Translation\t;
 
 class ChoiceFieldTest extends AbstractFieldTest
@@ -25,6 +27,12 @@ class ChoiceFieldTest extends AbstractFieldTest
         self::assertSame([], $this->configure($field)->getFormTypeOption(ChoiceField::OPTION_CHOICES));
     }
 
+    public function testFieldWithEmptyChoices()
+    {
+        $field = ChoiceField::new('foo')->setChoices([]);
+        self::assertSame([], $this->configure($field)->getFormTypeOption(ChoiceField::OPTION_CHOICES));
+    }
+
     public function testFieldWithGroupedChoices(): void
     {
         $field = ChoiceField::new('foo')->setChoices([
@@ -38,6 +46,38 @@ class ChoiceFieldTest extends AbstractFieldTest
         self::assertSame('a', (string) $this->configure($field)->getFormattedValue());
         $field->setValue(2);
         self::assertSame('b', (string) $this->configure($field)->getFormattedValue());
+    }
+
+    public function testFieldWithUnitEnumChoices(): void
+    {
+        if (\PHP_VERSION_ID < 80100) {
+            $this->markTestSkipped('PHP 8.1 or higher is required to run this test.');
+        }
+
+        $field = ChoiceField::new('foo')->setChoices(PriorityUnitEnum::cases());
+
+        $field->setValue(PriorityUnitEnum::High);
+        self::assertSame(PriorityUnitEnum::High->name, (string) $this->configure($field)->getFormattedValue());
+        $field->setValue(PriorityUnitEnum::Normal);
+        self::assertSame(PriorityUnitEnum::Normal->name, (string) $this->configure($field)->getFormattedValue());
+        $field->setValue(PriorityUnitEnum::Low);
+        self::assertSame(PriorityUnitEnum::Low->name, (string) $this->configure($field)->getFormattedValue());
+    }
+
+    public function testFieldWithBackedEnumChoices(): void
+    {
+        if (\PHP_VERSION_ID < 80100) {
+            $this->markTestSkipped('PHP 8.1 or higher is required to run this test.');
+        }
+
+        $field = ChoiceField::new('foo')->setChoices(StatusBackedEnum::cases());
+
+        $field->setValue(StatusBackedEnum::Draft);
+        self::assertSame(StatusBackedEnum::Draft->name, (string) $this->configure($field)->getFormattedValue());
+        $field->setValue(StatusBackedEnum::Published);
+        self::assertSame(StatusBackedEnum::Published->name, (string) $this->configure($field)->getFormattedValue());
+        $field->setValue(StatusBackedEnum::Deleted);
+        self::assertSame(StatusBackedEnum::Deleted->name, (string) $this->configure($field)->getFormattedValue());
     }
 
     public function testFieldWithChoiceGeneratorCallback()

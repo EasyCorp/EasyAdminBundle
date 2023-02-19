@@ -2,8 +2,8 @@
   "entrypoints": {
     "app": {
       "css": [
-        "/app.efd86111.css",
-        "/app.efd86111.rtl.css"
+        "/app.db040f2c.css",
+        "/app.db040f2c.rtl.css"
       ],
       "js": [
         "/app.7ef09592.js"
@@ -11,7 +11,7 @@
     },
     "form": {
       "js": [
-        "/form.5aa1447f.js"
+        "/form.89417636.js"
       ]
     },
     "page-layout": {
@@ -45,7 +45,7 @@
     },
     "field-file-upload": {
       "js": [
-        "/field-file-upload.aef2ac30.js"
+        "/field-file-upload.5b3f6231.js"
       ]
     },
     "field-image": {

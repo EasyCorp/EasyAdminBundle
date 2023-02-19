@@ -153,8 +153,11 @@ final class EntityRepository implements EntityRepositoryInterface
 
                 if (null !== $idClassType) {
                     $idClassName = $idClassType->getName();
-                    $isUlidProperty = (new \ReflectionClass($idClassName))->isSubclassOf(Ulid::class);
-                    $isGuidProperty = (new \ReflectionClass($idClassName))->isSubclassOf(Uuid::class);
+
+                    if (class_exists($idClassName)) {
+                        $isUlidProperty = (new \ReflectionClass($idClassName))->isSubclassOf(Ulid::class);
+                        $isGuidProperty = (new \ReflectionClass($idClassName))->isSubclassOf(Uuid::class);
+                    }
                 }
             }
 

@@ -5,6 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Controller;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\ForbiddenActionException;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Config\Action as AppAction;
@@ -27,6 +28,7 @@ class CategoryCrudControllerTest extends WebTestCase
     {
         $this->client = static::createClient();
         $this->client->followRedirects();
+        $this->client->setServerParameters(['PHP_AUTH_USER' => 'admin', 'PHP_AUTH_PW' => '1234']);
 
         $container = static::getContainer();
         $this->adminUrlGenerator = $container->get(AdminUrlGenerator::class);
@@ -39,7 +41,7 @@ class CategoryCrudControllerTest extends WebTestCase
      */
     public function testNew(?string $invalidCsrfToken, ?string $expectedErrorMessage)
     {
-        $this->client->request('GET', $this->generateNewCategoryFormUrl(), [], [], ['PHP_AUTH_USER' => 'admin', 'PHP_AUTH_PW' => '1234']);
+        $this->client->request('GET', $this->generateNewCategoryFormUrl());
 
         $form = [
             'Category[name]' => 'Foo',
@@ -59,7 +61,7 @@ class CategoryCrudControllerTest extends WebTestCase
         }
     }
 
-    public function new(): \Generator
+    public static function new(): \Generator
     {
         yield [
             '', // Manipulate the CSRF token to an empty value
@@ -80,13 +82,7 @@ class CategoryCrudControllerTest extends WebTestCase
      */
     public function testEdit(?string $invalidCsrfToken, ?string $expectedErrorMessage)
     {
-        $this->client->request(
-            'GET',
-            $this->generateEditCategoryFormUrl($this->categories->findOneBy([])->getId()),
-            [],
-            [],
-            ['PHP_AUTH_USER' => 'admin', 'PHP_AUTH_PW' => '1234'],
-        );
+        $this->client->request('GET', $this->generateEditCategoryFormUrl($this->categories->findOneBy([])->getId()));
 
         $form = [
             'Category[name]' => 'Bar',
@@ -106,7 +102,7 @@ class CategoryCrudControllerTest extends WebTestCase
         }
     }
 
-    public function edit(): \Generator
+    public static function edit(): \Generator
     {
         yield [
             '', // Manipulate the CSRF token to an empty value
@@ -130,7 +126,7 @@ class CategoryCrudControllerTest extends WebTestCase
         $initialCategoriesCount = \count($this->categories->findAll());
 
         // List all categories
-        $crawler = $this->client->request('GET', $this->generateCategoryIndexUrl(), [], [], ['PHP_AUTH_USER' => 'admin', 'PHP_AUTH_PW' => '1234']);
+        $crawler = $this->client->request('GET', $this->generateCategoryIndexUrl());
         $this->assertResultCount($initialCategoriesCount);
 
         // Try to delete the first found category
@@ -145,11 +141,11 @@ class CategoryCrudControllerTest extends WebTestCase
         $this->client->submit($form);
 
         // List all categories again and see if the result count changed
-        $this->client->request('GET', $this->generateCategoryIndexUrl(), [], [], ['PHP_AUTH_USER' => 'admin', 'PHP_AUTH_PW' => '1234']);
+        $this->client->request('GET', $this->generateCategoryIndexUrl());
         $this->assertResultCount($expectedCategoriesCount($initialCategoriesCount));
     }
 
-    public function delete(): \Generator
+    public static function delete(): \Generator
     {
         yield [
             '', // Manipulate the CSRF token to an empty value
@@ -170,7 +166,7 @@ class CategoryCrudControllerTest extends WebTestCase
         /* @var Category $category */
         $category = $this->categories->findOneBy([]);
 
-        $this->client->request('GET', $this->generateCategoryDetailUrl($category->getId()), [], [], ['PHP_AUTH_USER' => 'admin', 'PHP_AUTH_PW' => '1234']);
+        $this->client->request('GET', $this->generateCategoryDetailUrl($category->getId()));
 
         $this->assertSelectorTextContains('.form-panel-body', $category->getId());
         $this->assertSelectorTextContains('.form-panel-body', $category->getName());
@@ -191,7 +187,7 @@ class CategoryCrudControllerTest extends WebTestCase
         }
 
         // Find the first toggle URL in the category list
-        $crawler = $this->client->request('GET', $this->generateCategoryIndexUrl(), [], [], ['PHP_AUTH_USER' => 'admin', 'PHP_AUTH_PW' => '1234']);
+        $crawler = $this->client->request('GET', $this->generateCategoryIndexUrl());
         $firstFoundToggleUrl = $crawler->filter('td.field-boolean .form-switch input[type="checkbox"]')->first()->attr('data-toggle-url');
 
         // Get the category's active state from the DB
@@ -225,7 +221,51 @@ class CategoryCrudControllerTest extends WebTestCase
         }
     }
 
-    public function toggle(): \Generator
+    public function testPagination()
+    {
+        $crawler = $this->client->request('GET', $this->generateCategoryIndexUrl());
+
+        $prevPageItem = $crawler->filter('.list-pagination-paginator .page-item:nth-child(1)');
+        $prevPageLink = $prevPageItem->filter('.page-link');
+        $firstPageItem = $crawler->filter('.list-pagination-paginator .page-item:nth-child(2)');
+        $firstPageLink = $firstPageItem->filter('.page-link');
+        $secondPageLink = $crawler->filter('.list-pagination-paginator .page-item:nth-child(3) .page-link');
+        $nextPageItem = $crawler->filter('.list-pagination-paginator .page-item:nth-child(4)');
+        $nextPageLink = $nextPageItem->filter('.page-link');
+
+        // test default pagination items
+        $this->assertCount(4, $crawler->filter('.list-pagination-paginator .page-item'));
+        $this->assertStringContainsString('Previous', $prevPageLink->text());
+        $this->assertStringContainsString('disabled', $prevPageItem->attr('class'));
+        $this->assertStringContainsString('1', $firstPageLink->text());
+        $this->assertStringContainsString('active', $firstPageItem->attr('class'));
+        $this->assertStringContainsString('2', $secondPageLink->text());
+        $this->assertStringContainsString('Next', $nextPageLink->text());
+
+        // test default pagination URLs
+        $firstPageUrl = $firstPageLink->attr('href');
+        $this->assertSame('1', $this->getParameterFromUrlQueryString($firstPageUrl, EA::PAGE));
+
+        $secondPageUrl = $secondPageLink->attr('href');
+        $this->assertSame('2', $this->getParameterFromUrlQueryString($secondPageUrl, EA::PAGE));
+
+        $nextPageUrl = $nextPageLink->attr('href');
+        $this->assertSame($secondPageUrl, $nextPageUrl);
+
+        // test pagination maintains all query parameters, including custom ones
+        $queryParameters = http_build_query(['sort[name]' => 'DESC', 'CUSTOM_param' => 'foobar1234']);
+        $crawler = $this->client->request('GET', $this->generateCategoryIndexUrl().'&'.$queryParameters);
+
+        $firstPageUrl = $crawler->filter('.list-pagination-paginator .page-item:nth-child(2) .page-link')->attr('href');
+        $this->assertSame(['name' => 'DESC'], $this->getParameterFromUrlQueryString($firstPageUrl, 'sort'));
+        $this->assertSame('foobar1234', $this->getParameterFromUrlQueryString($firstPageUrl, 'CUSTOM_param'));
+
+        $nextPagePageUrl = $crawler->filter('.list-pagination-paginator .page-item:nth-child(4) .page-link')->attr('href');
+        $this->assertSame(['name' => 'DESC'], $this->getParameterFromUrlQueryString($nextPagePageUrl, 'sort'));
+        $this->assertSame('foobar1234', $this->getParameterFromUrlQueryString($nextPagePageUrl, 'CUSTOM_param'));
+    }
+
+    public static function toggle(): \Generator
     {
         yield [
             'GET', // HTTP method
@@ -257,11 +297,11 @@ class CategoryCrudControllerTest extends WebTestCase
         }
         $this->entityManager->flush();
 
-        $this->client->request('GET', $this->generateCategoryIndexUrl($query), [], [], ['PHP_AUTH_USER' => 'admin', 'PHP_AUTH_PW' => '1234']);
+        $this->client->request('GET', $this->generateCategoryIndexUrl($query));
         $this->assertResultCount($expectedResultCount);
     }
 
-    public function search(): \Generator
+    public static function search(): \Generator
     {
         yield [
             [],
@@ -302,7 +342,7 @@ class CategoryCrudControllerTest extends WebTestCase
         $this->assertResultCount($expectedResultCount);
     }
 
-    public function filter(): \Generator
+    public static function filter(): \Generator
     {
         yield [
             [],
@@ -360,10 +400,10 @@ class CategoryCrudControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame($expectedStatusCode);
     }
 
-    public function customPage(): \Generator
+    public static function customPage(): \Generator
     {
-        yield [$this->generateUsername('ROLE_USER'), Response::HTTP_FORBIDDEN];
-        yield [$this->generateUsername('ROLE_ADMIN'), Response::HTTP_OK];
+        yield [self::generateUsername('ROLE_USER'), Response::HTTP_FORBIDDEN];
+        yield [self::generateUsername('ROLE_ADMIN'), Response::HTTP_OK];
     }
 
     private function assertResultCount(int $expectedResultCount): void
@@ -444,7 +484,7 @@ class CategoryCrudControllerTest extends WebTestCase
             ->generateUrl();
     }
 
-    private function generateUsername(string $role): string
+    private static function generateUsername(string $role): string
     {
         switch ($role) {
             case 'ROLE_USER':
@@ -454,5 +494,13 @@ class CategoryCrudControllerTest extends WebTestCase
         }
 
         throw new \InvalidArgumentException(sprintf('Unknown role, use one of: %s', implode(', ', ['ROLE_USER', 'ROLE_ADMIN'])));
+    }
+
+    private function getParameterFromUrlQueryString(string $url, string $parameterName): string|array|null
+    {
+        $queryString = parse_url($url, \PHP_URL_QUERY);
+        parse_str($queryString, $queryStringParams);
+
+        return $queryStringParams[$parameterName] ?? null;
     }
 }

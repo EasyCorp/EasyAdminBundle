@@ -34,7 +34,7 @@ class NumericFilterTypeTest extends FilterTypeTest
         }
     }
 
-    public function getDataProvider(): iterable
+    public static function getDataProvider(): iterable
     {
         yield [
             ['comparison' => ComparisonType::EQ, 'value' => '23', 'value2' => null],

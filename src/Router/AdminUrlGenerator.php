@@ -89,7 +89,7 @@ final class AdminUrlGenerator
                 'easycorp/easyadmin-bundle',
                 '4.5.0',
                 'Using the "%s" query parameter is deprecated. Menu items are now highlighted automatically based on the Request data, so you don\'t have to deal with menu items manually anymore.',
-                '$paramName'
+                $paramName,
             );
         }
 
@@ -258,6 +258,7 @@ final class AdminUrlGenerator
         $context = $this->adminContextProvider->getContext();
         $urlType = null !== $context && false === $context->getAbsoluteUrls() ? UrlGeneratorInterface::RELATIVE_PATH : UrlGeneratorInterface::ABSOLUTE_URL;
         $url = $this->urlGenerator->generate($this->dashboardRoute, $routeParameters, $urlType);
+        $url = '' === $url ? '?' : $url;
 
         // this is important to start the generation a each URL from the same initial state
         // otherwise, some parameters used when generating some URL could leak to other URLs

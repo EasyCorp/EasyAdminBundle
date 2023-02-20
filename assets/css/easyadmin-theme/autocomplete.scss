@@ -88,7 +88,7 @@
   border-radius: var(--border-radius);
   box-shadow: 0 0 0 1px var(--form-type-autocomplete-multi-item-border-color);
   color: var(--form-input-text-color);
-  margin: 0 5px 0 0;
+  margin: 2px 5px 2px 0;
   padding: 0 4px;
 }
 .ts-wrapper.plugin-remove_button .item .remove {
@@ -111,7 +111,7 @@
   font-size: 16px;
   font-weight: bold;
   height: 14px;
-  line-height: 0.5;
+  line-height: 0.65;
   padding: 0;
   right: 32px;
   top: calc(50% - 2px);

@@ -55,7 +55,7 @@ class Form {
                             const formTab = input.closest('div.tab-pane');
                             if (formTab) {
                                 // Match tab link either by "data-bs-target" attribute or by href linking to the id anchor
-                                const navLinkTab = document.querySelector(`[data-bs-target="#${ formTab.id }"], a[href="${ formTab.id }"]`);
+                                const navLinkTab = document.querySelector(`[data-bs-target="#${ formTab.id }"], a[href="#${ formTab.id }"]`);
 
                                 if (navLinkTab) {
                                     const badge = navLinkTab.querySelector('.badge');

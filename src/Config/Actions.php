@@ -241,4 +241,9 @@ final class Actions
 
         return $this;
     }
+    
+    public function __clone()
+    {
+        $this->dto = clone $this->dto;
+    }
 }

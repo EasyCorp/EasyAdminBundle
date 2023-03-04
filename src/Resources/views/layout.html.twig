@@ -101,12 +101,21 @@
                                 {% if item.isMenuSection and not loop.first %}
                                     <hr class="dropdown-divider">
                                 {% elseif not item.isMenuSection %}
-                                    <a href="{{ item.linkUrl }}" class="dropdown-item user-action {{ item.cssClass }}"
-                                       target="{{ item.linkTarget }}" rel="{{ item.linkRel }}"
-                                       referrerpolicy="origin-when-cross-origin">
-                                        {% if item.icon is not empty %}<i class="fa fa-fw {{ item.icon }}"></i>{% endif %}
-                                        <span>{{ item.label|trans }}</span>
-                                    </a>
+                                    {% if item.type == constant('EasyCorp\\Bundle\\EasyAdminBundle\\Dto\\MenuItemDto::TYPE_MODAL') %}
+                                        <a data-bs-toggle="modal" data-bs-target="{{ item.linkModal }}" href="#" class="dropdown-item user-action {{ item.cssClass }}" 
+                                            target="{{ item.linkTarget }}" rel="{{ item.linkRel }}" 
+                                            referrerpolicy="origin-when-cross-origin">
+                                            {% if item.icon is not empty %}<i class="fa fa-fw {{ item.icon }}"></i>{% endif %}
+                                            <span>{{ item.label|trans }}</span>
+                                        </a>
+                                    {% else %}
+                                        <a href="{{ item.linkUrl }}" class="dropdown-item user-action {{ item.cssClass }}"
+                                        target="{{ item.linkTarget }}" rel="{{ item.linkRel }}"
+                                        referrerpolicy="origin-when-cross-origin">
+                                            {% if item.icon is not empty %}<i class="fa fa-fw {{ item.icon }}"></i>{% endif %}
+                                            <span>{{ item.label|trans }}</span>
+                                        </a>
+                                    {% endif %}
                                 {% endif %}
                             </li>
                         {% endfor %}
@@ -367,6 +376,30 @@
             {{ htmlContent|raw }}
         {% endfor %}
     {% endblock %}
+
+    {# Render modals for TYPE_MODAL items #}
+    {% macro render_modal_menu_item(item) %}
+        {% if not item.isMenuSection %}
+            {% if item.type == constant('EasyCorp\\Bundle\\EasyAdminBundle\\Dto\\MenuItemDto::TYPE_MODAL') %}
+                {% include item.templatePathModal %}
+            {% endif %}
+        {% endif %}
+    {% endmacro %}
+
+    {% for menuItem in ea.mainMenu.items %}
+        {{ _self.render_modal_menu_item(menuItem) }}
+
+        {% if menuItem.hasSubItems %}
+            {% for menuSubItem in menuItem.subItems %}
+                {{ _self.render_modal_menu_item(menuSubItem) }}
+            {% endfor %}
+        {% endif %}
+    {% endfor %}
+
+    {% for item in ea.userMenu.items %}
+        {{ _self.render_modal_menu_item(item) }}
+    {% endfor %}
+
     </body>
 {% endblock body %}
 </html>

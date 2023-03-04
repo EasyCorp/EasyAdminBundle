@@ -6,6 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\CrudMenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\DashboardMenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\ExitImpersonationMenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\LogoutMenuItem;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\ModalMenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\RouteMenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\SectionMenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\SubMenuItem;
@@ -67,6 +68,14 @@ final class MenuItem
     public static function linkToUrl(TranslatableInterface|string $label, ?string $icon, string $url): UrlMenuItem
     {
         return new UrlMenuItem($label, $icon, $url);
+    }
+
+    /**
+     * @param string|null $icon The full CSS classes of the FontAwesome icon to render (see https://fontawesome.com/v5.15/icons?d=gallery&p=2&m=free)
+     */
+    public static function linkToModal(string $label, ?string $icon, string $tag, string $templatePath): ModalMenuItem
+    {
+        return new ModalMenuItem($label, $icon, $tag, $templatePath);
     }
 
     /**

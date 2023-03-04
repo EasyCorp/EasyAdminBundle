@@ -11,6 +11,7 @@ final class MenuItemDto
 {
     public const TYPE_CRUD = 'crud';
     public const TYPE_URL = 'url';
+    public const TYPE_MODAL = 'modal';
     public const TYPE_SECTION = 'section';
     public const TYPE_EXIT_IMPERSONATION = 'exit_impersonation';
     public const TYPE_DASHBOARD = 'dashboard';
@@ -28,6 +29,8 @@ final class MenuItemDto
     private ?string $routeName = null;
     private ?array $routeParameters = null;
     private ?string $linkUrl = null;
+    private ?string $linkModal = null;
+    private string $templatePathModal = '';
     private string $linkRel = '';
     private string $linkTarget = '_self';
     private array $translationParameters = [];
@@ -131,6 +134,26 @@ final class MenuItemDto
     public function setLinkUrl(?string $linkUrl): void
     {
         $this->linkUrl = $linkUrl;
+    }
+
+    public function getLinkModal(): ?string
+    {
+        return $this->linkModal;
+    }
+
+    public function setLinkModal(?string $linkModal): void
+    {
+        $this->linkModal = $linkModal;
+    }
+
+    public function getTemplatePathModal(): ?string
+    {
+        return $this->templatePathModal;
+    }
+
+    public function setTemplatePathModal(?string $templatePathModal): void
+    {
+        $this->templatePathModal = $templatePathModal;
     }
 
     public function getRouteName(): ?string

@@ -18,6 +18,7 @@ final class AssociationField implements FieldInterface
     /** @deprecated since easycorp/easyadmin-bundle 4.4.3 use AssociationField::OPTION_EMBEDDED_CRUD_FORM_CONTROLLER */
     public const OPTION_CRUD_CONTROLLER = self::OPTION_EMBEDDED_CRUD_FORM_CONTROLLER;
     public const OPTION_WIDGET = 'widget';
+    public const OPTION_ESCAPE_HTML_CONTENTS = 'renderAsHtml';
     public const OPTION_QUERY_BUILDER_CALLABLE = 'queryBuilderCallable';
     /** @internal this option is intended for internal use only */
     public const OPTION_RELATED_URL = 'relatedUrl';
@@ -51,6 +52,7 @@ final class AssociationField implements FieldInterface
             ->setCustomOption(self::OPTION_AUTOCOMPLETE, false)
             ->setCustomOption(self::OPTION_EMBEDDED_CRUD_FORM_CONTROLLER, null)
             ->setCustomOption(self::OPTION_WIDGET, self::WIDGET_AUTOCOMPLETE)
+            ->setCustomOption(self::OPTION_ESCAPE_HTML_CONTENTS, false)
             ->setCustomOption(self::OPTION_QUERY_BUILDER_CALLABLE, null)
             ->setCustomOption(self::OPTION_RELATED_URL, null)
             ->setCustomOption(self::OPTION_DOCTRINE_ASSOCIATION_TYPE, null)
@@ -93,6 +95,13 @@ final class AssociationField implements FieldInterface
         $this->setCustomOption(self::OPTION_EMBEDDED_CRUD_FORM_CONTROLLER, $crudControllerFqcn);
         $this->setCustomOption(self::OPTION_EMBEDDED_CRUD_FORM_NEW_PAGE_NAME, $crudNewPageName);
         $this->setCustomOption(self::OPTION_EMBEDDED_CRUD_FORM_EDIT_PAGE_NAME, $crudEditPageName);
+
+        return $this;
+    }
+
+    public function escapeHtml(bool $escape = true): self
+    {
+        $this->setCustomOption(self::OPTION_ESCAPE_HTML_CONTENTS, $escape);
 
         return $this;
     }

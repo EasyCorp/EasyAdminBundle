@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Menu;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
@@ -33,8 +34,9 @@ class MenuItemMatcher implements MenuItemMatcherInterface
             return $menuItemDto->getLinkUrl() === $adminContext->getRequest()->getUri();
         }
 
-        $menuItemQueryParameters = $this->filterIrrelevantQueryParameters($menuItemQueryParameters);
-        $currentPageQueryParameters = $this->filterIrrelevantQueryParameters($currentPageQueryParameters);
+        $menuItemLinksToIndexCrudAction = Crud::PAGE_INDEX === ($menuItemQueryParameters[EA::CRUD_ACTION] ?? false);
+        $menuItemQueryParameters = $this->filterIrrelevantQueryParameters($menuItemQueryParameters, $menuItemLinksToIndexCrudAction);
+        $currentPageQueryParameters = $this->filterIrrelevantQueryParameters($currentPageQueryParameters, $menuItemLinksToIndexCrudAction);
 
         // needed so you can pass route parameters in any order
         sort($menuItemQueryParameters);
@@ -63,9 +65,19 @@ class MenuItemMatcher implements MenuItemMatcherInterface
      * should be ignored when deciding if some menu item matches the current page
      * (such as the applied filters or sorting, the listing page number, etc.).
      */
-    private function filterIrrelevantQueryParameters(array $queryStringParameters): array
+    private function filterIrrelevantQueryParameters(array $queryStringParameters, bool $menuItemLinksToIndexCrudAction): array
     {
         $paramsToRemove = [EA::REFERRER, EA::PAGE, EA::FILTERS, EA::SORT];
+
+        // if the menu item being inspected links to the 'index' action of some entity,
+        // remove both the CRUD action and the entity ID from the list of parameters;
+        // this way, an 'index' menu item is highlighted for all actions of the same entity;
+        // however, if the menu item points to an action different from 'index' (e.g. 'detail',
+        // 'new', or 'edit'), only highlight it when the current page points to that same action
+        if ($menuItemLinksToIndexCrudAction) {
+            $paramsToRemove[] = EA::CRUD_ACTION;
+            $paramsToRemove[] = EA::ENTITY_ID;
+        }
 
         return array_filter($queryStringParameters, static fn ($k) => !\in_array($k, $paramsToRemove, true), \ARRAY_FILTER_USE_KEY);
     }

@@ -105,7 +105,7 @@
                                        target="{{ item.linkTarget }}" rel="{{ item.linkRel }}"
                                        referrerpolicy="origin-when-cross-origin">
                                         {% if item.icon is not empty %}<i class="fa fa-fw {{ item.icon }}"></i>{% endif %}
-                                        <span>{{ item.label|trans }}</span>
+                                        {{ item.label|trans }}
                                     </a>
                                 {% endif %}
                             </li>
@@ -124,8 +124,8 @@
 
                     <ul class="dropdown-menu dropdown-menu-end">
                         {% if ea.dashboardLocales %}
-                            <li>
-                                <span class="dropdown-header dropdown-locales-label">{{ 'settings.locale'|trans(domain = 'EasyAdminBundle') }}</span>
+                            <li class="dropdown-header dropdown-locales-label">
+                                {{ 'settings.locale'|trans(domain = 'EasyAdminBundle') }}
                             </li>
 
                             {% for localeDto in ea.dashboardLocales %}
@@ -145,22 +145,25 @@
                                 <div class="dropdown-divider"></div>
                             {% endif %}
 
-                            <li>
-                                <span class="dropdown-header dropdown-appearance-label">{{ 'settings.appearance.label'|trans(domain = 'EasyAdminBundle') }}</span>
+                            <li class="dropdown-header dropdown-appearance-label">
+                                {{ 'settings.appearance.label'|trans(domain = 'EasyAdminBundle') }}
                             </li>
                             <li>
                                 <a href="#" class="dropdown-item dropdown-appearance-item" data-ea-color-scheme="light">
-                                    <i class="far fa-sun"></i> <span>{{ 'settings.appearance.light'|trans(domain = 'EasyAdminBundle') }}</span>
+                                    <i class="far fa-sun fa-fw"></i>
+                                    {{ 'settings.appearance.light'|trans(domain = 'EasyAdminBundle') }}
                                 </a>
                             </li>
                             <li>
                                 <a href="#" class="dropdown-item dropdown-appearance-item" data-ea-color-scheme="dark">
-                                    <i class="far fa-moon"></i> <span>{{ 'settings.appearance.dark'|trans(domain = 'EasyAdminBundle') }}</span>
+                                    <i class="far fa-moon fa-fw"></i>
+                                    {{ 'settings.appearance.dark'|trans(domain = 'EasyAdminBundle') }}
                                 </a>
                             </li>
                             <li>
                                 <a href="#" class="dropdown-item dropdown-appearance-item active" data-ea-color-scheme="auto">
-                                    <i class="fas fa-desktop"></i> <span>{{ 'settings.appearance.auto'|trans(domain = 'EasyAdminBundle') }}</span>
+                                    <i class="fas fa-desktop fa-fw"></i>
+                                    {{ 'settings.appearance.auto'|trans(domain = 'EasyAdminBundle') }}
                                 </a>
                             </li>
                         {% endif %}

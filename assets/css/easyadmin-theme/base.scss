@@ -682,15 +682,8 @@ body.ea-edit .content-header {
     }
     i {
         color: var(--dropdown-icon-color);
-        font-size: var(--font-size-lg);
-        margin: 0 4px 0 10px;
-        text-align: center;
+        margin: 0 10px 0 4px;
         font-size: 15px;
-        height: 16px;
-        width: 16px;
-    }
-    span {
-        margin: 0 12px 0 6px;
     }
 
     .dropdown-item, .dropdown-header {
@@ -699,7 +692,7 @@ body.ea-edit .content-header {
         height: 28px;
         white-space: nowrap;
         overflow: hidden;
-        padding: 0;
+        padding: 0 12px 0 6px;
         text-overflow: ellipsis;
     }
     .dropdown-divider {

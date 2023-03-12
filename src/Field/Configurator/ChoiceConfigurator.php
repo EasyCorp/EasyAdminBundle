@@ -39,7 +39,7 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
         // in that case, get all the possible values of the Enum
         if (null === $choices && $enumsAreSupported) {
             $enumTypeClass = $field->getDoctrineMetadata()->get('enumType');
-            if ($enumTypeClass && enum_exists($enumTypeClass)) {
+            if (is_string($enumTypeClass) && enum_exists($enumTypeClass)) {
                 $field->setFormTypeOption('class', $enumTypeClass);
                 $choices = $enumTypeClass::cases();
             }

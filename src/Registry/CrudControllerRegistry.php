@@ -22,6 +22,7 @@ final class CrudControllerRegistry
         // more than one controller can manage the same entity, so this map will
         // only contain the last controller associated to that repeated entity. That's why
         // several methods in other classes allow to define the CRUD controller explicitly
+        // also you can define getDefaultPriority method in controller for change his position in list
         $this->entityFqcnToCrudFqcnMap = array_flip($this->crudFqcnToEntityFqcnMap);
         $this->crudIdToCrudFqcnMap = array_flip($this->crudFqcnToCrudIdMap);
     }

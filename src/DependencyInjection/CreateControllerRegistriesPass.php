@@ -4,8 +4,11 @@ namespace EasyCorp\Bundle\EasyAdminBundle\DependencyInjection;
 
 use EasyCorp\Bundle\EasyAdminBundle\Registry\CrudControllerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\DashboardControllerRegistry;
+use Symfony\Component\DependencyInjection\Argument\TaggedIteratorArgument;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\Compiler\PriorityTaggedServiceTrait;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Reference;
 
 /**
  * Creates the services of the Dashboard and CRUD controller registries. They can't
@@ -16,7 +19,9 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
  */
 class CreateControllerRegistriesPass implements CompilerPassInterface
 {
-    public function process(ContainerBuilder $container)
+    use PriorityTaggedServiceTrait;
+
+    public function process(ContainerBuilder $container): void
     {
         $this->createDashboardControllerRegistryService($container);
         $this->createCrudControllerRegistryService($container);
@@ -24,7 +29,11 @@ class CreateControllerRegistriesPass implements CompilerPassInterface
 
     private function createDashboardControllerRegistryService(ContainerBuilder $container): void
     {
-        $dashboardControllersFqcn = array_keys($container->findTaggedServiceIds(EasyAdminExtension::TAG_DASHBOARD_CONTROLLER, true));
+        $tag = new TaggedIteratorArgument(tag: EasyAdminExtension::TAG_DASHBOARD_CONTROLLER);
+        $dashboardControllersFqcn = array_map(
+            static fn (Reference $c) => (string) $c,
+            $this->findAndSortTaggedServices($tag, $container)
+        );
 
         $container
             ->register(DashboardControllerRegistry::class, DashboardControllerRegistry::class)
@@ -38,7 +47,11 @@ class CreateControllerRegistriesPass implements CompilerPassInterface
 
     private function createCrudControllerRegistryService(ContainerBuilder $container): void
     {
-        $crudControllersFqcn = array_keys($container->findTaggedServiceIds(EasyAdminExtension::TAG_CRUD_CONTROLLER, true));
+        $tag = new TaggedIteratorArgument(tag: EasyAdminExtension::TAG_CRUD_CONTROLLER);
+        $crudControllersFqcn = array_map(
+            static fn (Reference $c) => (string) $c,
+            $this->findAndSortTaggedServices($tag, $container)
+        );
 
         $container
             ->register(CrudControllerRegistry::class, CrudControllerRegistry::class)

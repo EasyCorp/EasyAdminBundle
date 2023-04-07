@@ -118,6 +118,7 @@ final class AdminContextFactory
         $entityFqcn = $crudControllers->findEntityFqcnByCrudFqcn(\get_class($crudController));
 
         if ($crudDto->isColumnChooserEnabled()) {
+            $class_parts = explode('\\', $entityFqcn);
             $actionConfigDto->appendAction(
                 Crud::PAGE_INDEX,
                 Action::new(Action::COLUMN_CHOOSER, t('columnchooser.action.label', [], 'EasyAdminBundle'), 'fa fa-thin fa-table-columns')
@@ -125,7 +126,7 @@ final class AdminContextFactory
                     ->linkToUrl('#')
                     ->setHtmlAttributes([
                         'data-bs-toggle' => 'modal',
-                        'data-bs-target' => '#modal-column-chooser',
+                        'data-bs-target' => '#modal-column-chooser-'.end($class_parts),
                     ])
                     ->displayAsButton()
                     ->getAsDto()
@@ -224,7 +225,6 @@ final class AdminContextFactory
         if (null === $crudDto) {
             return null;
         }
-
         $queryParams = $request->query->all();
         $searchableProperties = $crudDto->getSearchFields();
         $query = $queryParams[EA::QUERY] ?? null;

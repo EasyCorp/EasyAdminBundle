@@ -128,9 +128,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         if (!$this->isGranted(Permission::EA_EXECUTE_ACTION, ['action' => Action::INDEX, 'entity' => null])) {
             throw new ForbiddenActionException($context);
         }
-        $fields = FieldCollection::new($this->configureFields(
-            $context->getCrud()->isColumnChooserEnabled() ? Crud::PAGE_DETAIL : Crud::PAGE_INDEX
-        ));
+        $fields = FieldCollection::new($this->configureFields(Crud::PAGE_INDEX));
         $fields = $context->getCrud()->columnChooserProcessFields($fields);
         $context->getCrud()->setFieldAssets($this->getFieldAssets($fields));
         $filters = $this->container->get(FilterFactory::class)->create($context->getCrud()->getFiltersConfig(), $fields, $context->getEntity());
@@ -188,7 +186,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
     public function columnChooser(AdminContext $context)
     {
         $request = $context->getRequest();
-        $url = $this->container->get(AdminUrlGenerator::class)->setAction(Action::INDEX)->generateUrl();
+        $url = $request->headers->get('referer', $request->get('referer', $this->container->get(AdminUrlGenerator::class)->setAction(Action::INDEX)->generateUrl()));
         $storageProvider = $context->getCrud()?->getColumnChooserSelectedColumnStorageProvider();
         if (!\is_object($storageProvider)) {
             // TODO: may be create custom exception to notify user?

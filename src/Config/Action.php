@@ -166,6 +166,13 @@ final class Action
         return $this;
     }
 
+    public function setHtmlAttribute(string $attributeName, string $attributeValue): self
+    {
+        $this->dto->setHtmlAttribute($attributeName, $attributeValue);
+
+        return $this;
+    }
+
     public function setTemplatePath(string $templatePath): self
     {
         $this->dto->setTemplatePath($templatePath);

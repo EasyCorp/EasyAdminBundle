@@ -2,12 +2,18 @@
 {# @var action \EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto #}
 {# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
 {% if 'a' == action.htmlElement %}
+    {% if isIncludedInDropdown|default(false) and action.htmlAttributes['data-prefix-add-separator'] is defined %}
+    <hr class="dropdown-divider">
+    {% endif %}
     <a class="{{ isIncludedInDropdown|default(false) ? 'dropdown-item' }} {{ action.cssClass }}"
        href="{{ action.linkUrl }}"
        {% for name, value in action.htmlAttributes %}{{ name }}="{{ (value.trans is defined ? value|trans : value)|e('html_attr') }}" {% endfor %}>
         {%- if action.icon %}<i class="action-icon {{ action.icon }}"></i> {% endif -%}
         {%- if action.label is not empty -%}<span class="action-label">{{ action.label|trans|raw }}</span>{%- endif -%}
     </a>
+    {% if isIncludedInDropdown|default(false) and action.htmlAttributes['data-suffix-add-separator'] is defined %}
+    <hr class="dropdown-divider">
+    {% endif %}
 {% elseif 'button' == action.htmlElement %}
     <button class="{{ action.cssClass }}" {% for name, value in action.htmlAttributes %}{{ name }}="{{ (value.trans is defined ? value|trans : value)|e('html_attr') }}" {% endfor %}>
         <span class="btn-label">

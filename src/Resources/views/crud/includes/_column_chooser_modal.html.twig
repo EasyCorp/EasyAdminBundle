@@ -1,5 +1,6 @@
 <!-- Column chooser modal -->
-<div id="modal-column-chooser" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="true" tabindex="-1" aria-labelledby="modal-column-chooser-label" aria-hidden="true">
+{% if not fqcn is defined %}{% set fqcn = ea ? ea.entity.fqcn : (entities|first ? entities|first.fqcn : 'na') %}{% endif %}
+<div id="modal-column-chooser-{{ fqcn|split("\\")|last }}" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="true" tabindex="-1" aria-labelledby="modal-column-chooser-label" aria-hidden="true">
    <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">

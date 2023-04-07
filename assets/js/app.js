@@ -401,27 +401,26 @@ class App {
     }
 
     #createColumnChooser() {
-        const columnChooserButton = document.querySelector('[data-action-name=columnChooser]');
-        if (null === columnChooserButton) {
-            return;
-        }
+        document.querySelectorAll('[data-action-name=columnChooser]').forEach((columnChooserButton) => {
+            const target = columnChooserButton.getAttribute('data-bs-target');
+            
+            const $group = document.querySelector(target + ' #form_columns');
+            if (null === $group) {
+                return;
+            }
         
-        const $group = document.querySelector('#form_columns');
-        if (null === $group) {
-            return;
-        }
-    
-        $group.classList.add('user-select-none');
-    
-        const $items = document.querySelectorAll('#form_columns .form-check');
-        $items.forEach(($item) => {
-            var $icon = document.createElement("i");
-            $icon.classList.add('fa', 'fa-duotone', 'fa-arrow-down-up-across-line', 'p-1', 'text-secondary');
-            $item.prepend(document.createTextNode(' '));
-            $item.prepend($icon);
+            $group.classList.add('user-select-none');
+        
+            const $items = document.querySelectorAll(target + ' #form_columns .form-check');
+            $items.forEach(($item) => {
+                var $icon = document.createElement("i");
+                $icon.classList.add('fa', 'fa-duotone', 'fa-arrow-down-up-across-line', 'p-1', 'text-secondary');
+                $item.prepend(document.createTextNode(' '));
+                $item.prepend($icon);
+            });
+        
+            Sortable.create($group,  { animation: 150, ghostClass: 'text-bg-info' });
         });
-    
-        Sortable.create($group,  { animation: 150, ghostClass: 'text-bg-info' });
     }
     
 }

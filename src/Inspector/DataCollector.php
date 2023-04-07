@@ -24,7 +24,7 @@ class DataCollector extends BaseDataCollector
         $this->adminContextProvider = $adminContextProvider;
     }
 
-    public function reset()
+    public function reset(): void
     {
         $this->data = [];
     }

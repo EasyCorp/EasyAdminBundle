@@ -390,7 +390,7 @@ class App {
                     return;
                 }
 
-                secondValue.style.display = comparisonWidget.value === 'between' ? '' : 'none';
+                toggleVisibilityClasses(secondValue, comparisonWidget.value !== 'between');
             });
         });
     }

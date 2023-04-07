@@ -142,8 +142,7 @@ table.datagrid {
 .datagrid td.actions a:not(.dropdown-item) + a:not(.dropdown-item) {
   margin-left: 10px;
 }
-.datagrid td.actions .action-icon {
-  filter: opacity(0.6);
+.datagrid td.actions a:not(.dropdown-item) .action-icon {
   font-size: var(--font-size-base);
   margin-right: 2px;
 }

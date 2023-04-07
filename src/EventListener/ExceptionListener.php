@@ -46,6 +46,10 @@ final class ExceptionListener
             return;
         }
 
+        if (null === $this->adminContextProvider->getContext()) {
+            return;
+        }
+
         // TODO: check why these custom error pages don't work
         $event->setResponse($this->createExceptionResponse(FlattenException::create($exception)));
     }

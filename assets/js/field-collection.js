@@ -48,7 +48,7 @@ const EaCollectionProperty = {
                 .replace(nameRegexp, numItems);
 
             collection.dataset.numItems = numItems;
-            const newItemInsertionSelector = isArrayCollection ? '.ea-form-collection-items' : '.ea-form-collection-items .accordion > .form-widget-compound';
+            const newItemInsertionSelector = isArrayCollection ? '.ea-form-collection-items' : '.ea-form-collection-items .accordion > .form-widget-compound [data-empty-collection]';
             const collectionItemsWrapper = collection.querySelector(newItemInsertionSelector);
 
             collectionItemsWrapper.insertAdjacentHTML('beforeend', newItemHtml);

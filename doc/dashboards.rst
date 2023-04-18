@@ -388,7 +388,7 @@ reasons, a backend can only access to the resources associated to the dashboard
 via the main menu.
 
 The main menu is a collection of objects implementing
-``EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu\MenuInterface`` that configure
+``EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu\MenuItemInterface`` that configure
 the look and behavior of each menu item::
 
     use App\Entity\BlogPost;

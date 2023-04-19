@@ -18,6 +18,8 @@ interface EntityPaginatorInterface
 
     public function getLastPage(): int;
 
+    public function getPageRange(int $pagesOnEachSide = null, int $pagesOnEdges = null): iterable;
+
     public function getPageSize(): int;
 
     public function hasPreviousPage(): bool;
@@ -29,6 +31,8 @@ interface EntityPaginatorInterface
     public function getNextPage(): int;
 
     public function hasToPaginate(): bool;
+
+    public function isOutOfRange(): bool;
 
     public function getNumResults(): int;
 

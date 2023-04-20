@@ -54,12 +54,12 @@ trait MenuItemTrait
     }
 
     /**
-     * @param $content  This is rendered as the value of the badge; it can be anything that can be casted to
-     *                  a string (numbers, stringable objects, etc.)
-     * @param $style    Pass one of these values for predefined styles: 'primary', 'secondary', 'success',
-     *                  'danger', 'warning', 'info', 'light', 'dark'
-     *                  Otherwise, the passed value is applied "as is" to the `style` attribute of the HTML
-     *                  element of the badge
+     * @param mixed  $content This is rendered as the value of the badge; it can be anything that can be cast to
+     *                        a string (numbers, stringable objects, etc.)
+     * @param string $style   Pass one of these values for predefined styles: 'primary', 'secondary', 'success',
+     *                        'danger', 'warning', 'info', 'light', 'dark'
+     *                        Otherwise, the passed value is applied "as is" to the `style` attribute of the HTML
+     *                        element of the badge
      */
     public function setBadge(/* \Stringable|string|int|float|bool|null */ $content, string $style = 'secondary'): self
     {

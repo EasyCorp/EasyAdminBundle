@@ -105,7 +105,9 @@ label.form-check-label {
 }
 
 .form-widget .form-control:disabled,
-.form-widget .form-control[readonly] {
+.form-widget .form-control[readonly],
+.form-widget .form-select:disabled,
+.form-widget .form-select[readonly] {
     background-color: var(--form-control-disabled-bg);
     color: var(--form-control-disabled-color);
 }

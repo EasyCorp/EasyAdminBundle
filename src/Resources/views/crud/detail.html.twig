@@ -75,7 +75,7 @@
                             {%- if tab.customOption('icon') -%}
                                 <i class="fa-fw {{ tab.customOption('icon') }}"></i>
                             {%- endif -%}
-                            {{ tab.label|trans(domain = ea.i18n.translationDomain)|trans(domain = 'EasyAdminBundle') }}
+                            {{ tab.label|trans(domain = ea.i18n.translationDomain)|raw }}
                         </a>
                     </li>
                 {% endfor %}

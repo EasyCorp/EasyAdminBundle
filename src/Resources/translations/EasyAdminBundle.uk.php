@@ -128,7 +128,7 @@ return [
 
     'autocomplete' => [
         'no-results-found' => 'Нічого не знайдено',
-        // 'no-more-results' => 'No more results',
+        'no-more-results' => 'Більше немає результатів',
         'loading-more-results' => 'Завантаження інших результатів…',
     ],
 ];

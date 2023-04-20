@@ -10,7 +10,7 @@ import {toggleVisibilityClasses} from "./helpers";
 window.bootstrap = bootstrap;
 
 document.addEventListener('DOMContentLoaded', () => {
-    new App();
+    window.EasyAdminApp = new App();
 });
 
 class App {

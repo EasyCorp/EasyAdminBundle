@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace EasyCorp\Bundle\EasyAdminBundle\Test\Exception;
 
 final class MissingClassMethodException extends \Exception

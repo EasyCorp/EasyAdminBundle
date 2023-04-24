@@ -1,0 +1,32 @@
+---------------------------------------------------------------------------
+
+by quentint at 2023-04-14T07:14:50Z
+
+I think this is necessary before #5209, as a clean structure might help with drag and drop support.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2023-04-21T18:13:50Z
+
+Quentin, thanks for this.
+
+If you need help about rebuilding assets, it's just a matter of running these two commands:
+
+```
+$ yarn encore production
+$ php src/Resources/bin/fix-assets-manifest-file.php
+```
+
+I can do it for you after merging your PR if you want. Thanks
+
+---------------------------------------------------------------------------
+
+by quentint at 2023-04-21T18:37:44Z
+
+Won't be available until Monday, so I'll let you decide if you want that merged before or after 😉
+
+---------------------------------------------------------------------------
+
+by quentint at 2023-04-24T10:01:30Z
+
+Assets have been rebuilt, unfortunately creating a `manifest.json` conflict. I guess running the two commands again will fix that.

@@ -1,0 +1,60 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2022-09-13T18:20:36Z
+
+This is brilliant: pre-computing the controller FQCN cache and injecting the Twig variable looks so obvious now that you submitted your contribution! I wish we had done this earlier. Thanks a lot for taking care of improving performance in this way.
+
+I've tested this in a real complex Symfony + EA app. It works great in all backend pages, except for the dashboard index page (`/admin`) where I see the infamous _"Variable "ea" does not exist."_ error. I need to check if it's something related to my custom code or some condition that it's triggering some error somewhere. Thanks!
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2022-09-14T17:59:51Z
+
+I know the cause of the mentioned issue. In my backend dashboard, I do a `$this->render()`, which creates a `Response` object. When a controller returns a `Response`, the `kernel.view` event is not triggered.
+
+I could solve this by listening to `kernel.request` event with a priority lower than `0` (because EA's `AdminRouterSubscriber::onKernelRequest()` runs on `0` and creates the context variable). We also need to inject a nullable `twig` service and return early if `twig` service is `null`.
+
+Would this change work for you ... or would that nullify the improvements you gained with this change? Thanks!
+
+---------------------------------------------------------------------------
+
+by tucksaun at 2022-09-27T16:59:16Z
+
+@javiereguiluz thank you for looking into this.
+I forgot about this use case 🤦
+your suggestion would indeed nullify the improvement but let me see what I can do about this.
+
+---------------------------------------------------------------------------
+
+by tucksaun at 2022-09-27T19:44:33Z
+
+@javiereguiluz I followed @stof advice and went for the Twig extension implementation.
+As there is already a Twig extension present, I reused it. But I changed the constructor signature so let me know if you believe this is too much of a BC break and want me to adapt it.
+
+---------------------------------------------------------------------------
+
+by maxhelias at 2022-12-23T16:26:53Z
+
+> The only issue I can see is if one renders a Twig template before kernel.request is triggered and then Symfony goes on with request processing. But as you said previous code would then have failed too 🤷
+
+Is this isuue still blocking? What about moving `$this->adminContextFactory->create` on the `adminContextProvider` and only call him when we don't have the context ?
+
+---------------------------------------------------------------------------
+
+by tucksaun at 2023-02-02T21:56:16Z
+
+@maxhelias good question! I guess this is up to @javiereguiluz to determine if this is a blocker or not.
+In the meantime: PR rebased
+
+---------------------------------------------------------------------------
+
+by tourze at 2023-03-12T14:00:11Z
+
+Make the twig service lazy, can reduce the problem. like:
+
+```
+  App\Restful\Twig\Environment:
+    decorates: twig
+    parent: twig
+    lazy: true
+```

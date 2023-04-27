@@ -77,7 +77,7 @@ final class EntityRepository implements EntityRepositoryInterface
             // adding '0' turns the string into a numeric value
             'numeric_query' => is_numeric($query) ? 0 + $query : $query,
             'uuid_query' => $query,
-            'text_query' => '%'.str_replace(" ", "%", $lowercaseQuery).'%',
+            'text_query' => '%'.str_replace(' ', '%', $lowercaseQuery).'%',
             'words_query' => explode(' ', $lowercaseQuery),
         ];
 

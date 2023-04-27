@@ -63,12 +63,14 @@ use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
 use function Symfony\Component\String\u;
 
 /**
+ * @template TInstance of object
+ *
+ * @implements CrudControllerInterface<TInstance>
+ *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
 abstract class AbstractCrudController extends AbstractController implements CrudControllerInterface
 {
-    abstract public static function getEntityFqcn(): string;
-
     public function configureCrud(Crud $crud): Crud
     {
         return $crud;
@@ -392,6 +394,9 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         return $this->redirect($this->container->get(AdminUrlGenerator::class)->setAction(Action::INDEX)->unset(EA::ENTITY_ID)->generateUrl());
     }
 
+    /**
+     * @param AdminContext<TInstance> $context
+     */
     public function batchDelete(AdminContext $context, BatchActionDto $batchActionDto): Response
     {
         $event = new BeforeCrudActionEvent($context);
@@ -475,6 +480,9 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         return $this->container->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters);
     }
 
+    /**
+     * @param AdminContext<TInstance> $context
+     */
     public function renderFilters(AdminContext $context): KeyValueStore
     {
         $fields = FieldCollection::new($this->configureFields(Crud::PAGE_INDEX));
@@ -548,11 +556,17 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         return $responseParameters;
     }
 
+    /**
+     * @return AdminContext<TInstance>|null
+     */
     protected function getContext(): ?AdminContext
     {
         return $this->container->get(AdminContextProvider::class)->getContext();
     }
 
+    /**
+     * @param EntityDto<TInstance> $entityDto
+     */
     protected function ajaxEdit(EntityDto $entityDto, ?string $propertyName, bool $newValue): AfterCrudActionEvent
     {
         $this->container->get(EntityUpdater::class)->updateProperty($entityDto, $propertyName, $newValue);
@@ -619,6 +633,9 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         }
     }
 
+    /**
+     * @param AdminContext<TInstance> $context
+     */
     protected function getRedirectResponseAfterSave(AdminContext $context, string $action): RedirectResponse
     {
         $submitButtonName = $context->getRequest()->request->all()['ea']['newForm']['btn'];

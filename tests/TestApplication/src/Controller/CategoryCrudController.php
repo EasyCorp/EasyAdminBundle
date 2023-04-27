@@ -9,29 +9,19 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\ForbiddenActionException;
-use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Config\Action as AppAction;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Entity\Category;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * @extends AbstractCrudController<Category>
+ */
 class CategoryCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {
         return Category::class;
-    }
-
-    public function configureFields(string $pageName): iterable
-    {
-        return [
-            IdField::new('id')->hideOnForm(),
-            TextField::new('name'),
-            TextField::new('slug'),
-            BooleanField::new('active'),
-        ];
     }
 
     public function configureActions(Actions $actions): Actions
@@ -51,6 +41,9 @@ class CategoryCrudController extends AbstractCrudController
             ->add('active');
     }
 
+    /**
+     * @param AdminContext<Category> $context
+     */
     public function customAction(AdminContext $context): Response
     {
         if (!$this->isGranted(Permission::EA_EXECUTE_ACTION, ['action' => AppAction::CUSTOM_ACTION, 'entity' => $context->getEntity()])) {

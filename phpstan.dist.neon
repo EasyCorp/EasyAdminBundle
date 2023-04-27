@@ -7,5 +7,6 @@ parameters:
         - src/
     bootstrapFiles:
         - vendor/bin/.phpunit/phpunit/vendor/autoload.php
+    treatPhpDocTypesAsCertain: false
     ignoreErrors:
         - '#Cannot use array destructuring on callable.#'

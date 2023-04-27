@@ -21,10 +21,15 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
+ * @template TInstance of object
+ *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
 interface CrudControllerInterface
 {
+    /**
+     * @return class-string<TInstance>
+     */
     public static function getEntityFqcn(): string;
 
     public function configureCrud(Crud $crud): Crud;
@@ -42,40 +47,96 @@ interface CrudControllerInterface
      */
     public function configureFields(string $pageName): iterable;
 
-    /** @return KeyValueStore|Response */
+    /**
+     * @param AdminContext<TInstance> $context
+     *
+     * @return KeyValueStore|Response
+     */
     public function index(AdminContext $context);
 
-    /** @return KeyValueStore|Response */
+    /**
+     * @param AdminContext<TInstance> $context
+     *
+     * @return KeyValueStore|Response
+     */
     public function detail(AdminContext $context);
 
-    /** @return KeyValueStore|Response */
+    /**
+     * @param AdminContext<TInstance> $context
+     *
+     * @return KeyValueStore|Response
+     */
     public function edit(AdminContext $context);
 
-    /** @return KeyValueStore|Response */
+    /**
+     * @param AdminContext<TInstance> $context
+     *
+     * @return KeyValueStore|Response
+     */
     public function new(AdminContext $context);
 
-    /** @return KeyValueStore|Response */
+    /**
+     * @param AdminContext<TInstance> $context
+     *
+     * @return KeyValueStore|Response
+     */
     public function delete(AdminContext $context);
 
+    /**
+     * @param AdminContext<TInstance> $context
+     */
     public function autocomplete(AdminContext $context): JsonResponse;
 
     public function configureResponseParameters(KeyValueStore $responseParameters): KeyValueStore;
 
+    /**
+     * @param EntityDto<TInstance> $entityDto
+     */
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder;
 
+    /**
+     * @param class-string<TInstance> $entityFqcn
+     *
+     * @return TInstance
+     */
     public function createEntity(string $entityFqcn);
 
+    /**
+     * @param TInstance $entityInstance
+     */
     public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void;
 
+    /**
+     * @param TInstance $entityInstance
+     */
     public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void;
 
+    /**
+     * @param TInstance $entityInstance
+     */
     public function deleteEntity(EntityManagerInterface $entityManager, $entityInstance): void;
 
+    /**
+     * @param EntityDto<TInstance>    $entityDto
+     * @param AdminContext<TInstance> $context
+     */
     public function createEditFormBuilder(EntityDto $entityDto, KeyValueStore $formOptions, AdminContext $context): FormBuilderInterface;
 
+    /**
+     * @param EntityDto<TInstance>    $entityDto
+     * @param AdminContext<TInstance> $context
+     */
     public function createEditForm(EntityDto $entityDto, KeyValueStore $formOptions, AdminContext $context): FormInterface;
 
+    /**
+     * @param EntityDto<TInstance>    $entityDto
+     * @param AdminContext<TInstance> $context
+     */
     public function createNewFormBuilder(EntityDto $entityDto, KeyValueStore $formOptions, AdminContext $context): FormBuilderInterface;
 
+    /**
+     * @param EntityDto<TInstance>    $entityDto
+     * @param AdminContext<TInstance> $context
+     */
     public function createNewForm(EntityDto $entityDto, KeyValueStore $formOptions, AdminContext $context): FormInterface;
 }

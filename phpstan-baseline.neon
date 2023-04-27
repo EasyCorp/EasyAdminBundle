@@ -1,6 +1,11 @@
 parameters:
 	ignoreErrors:
 		-
+			message: "#^Parameter \\#2 \\$value \\(EasyCorp\\\\Bundle\\\\EasyAdminBundle\\\\Dto\\\\EntityDto\\<TInstance of object\\>\\) of method EasyCorp\\\\Bundle\\\\EasyAdminBundle\\\\Collection\\\\EntityCollection\\:\\:offsetSet\\(\\) should be contravariant with parameter \\$value \\(mixed\\) of method ArrayAccess\\<mixed,mixed\\>\\:\\:offsetSet\\(\\)$#"
+			count: 2
+			path: src/Collection/EntityCollection.php
+
+		-
 			message: "#^Cannot unset offset string on array\\<int, EasyCorp\\\\Bundle\\\\EasyAdminBundle\\\\Dto\\\\ActionDto\\>\\.$#"
 			count: 1
 			path: src/Dto/ActionConfigDto.php

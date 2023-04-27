@@ -6,30 +6,38 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Collection\CollectionInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 
 /**
+ * @template TInstance of object
+ *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
 final class EntityCollection implements CollectionInterface
 {
     /**
-     * @param EntityDto[] $entities
+     * @param EntityDto<TInstance>[] $entities
      */
     private function __construct(private array $entities)
     {
     }
 
     /**
-     * @param EntityDto[] $entities
+     * @param EntityDto<TInstance>[] $entities
      */
     public static function new(array $entities): self
     {
         return new self($entities);
     }
 
+    /**
+     * @return EntityDto<TInstance>|null
+     */
     public function get(string $entityId): ?EntityDto
     {
         return $this->entities[$entityId] ?? null;
     }
 
+    /**
+     * @param EntityDto<TInstance> $newOrUpdatedEntity
+     */
     public function set(EntityDto $newOrUpdatedEntity): void
     {
         $this->entities[$newOrUpdatedEntity->getPrimaryKeyValueAsString()] = $newOrUpdatedEntity;
@@ -40,11 +48,17 @@ final class EntityCollection implements CollectionInterface
         return \array_key_exists($offset, $this->entities);
     }
 
+    /**
+     * @return EntityDto<TInstance>
+     */
     public function offsetGet(mixed $offset): EntityDto
     {
         return $this->entities[$offset];
     }
 
+    /**
+     * @param EntityDto<TInstance> $value
+     */
     public function offsetSet(mixed $offset, mixed $value): void
     {
         $this->entities[$offset] = $value;
@@ -61,7 +75,7 @@ final class EntityCollection implements CollectionInterface
     }
 
     /**
-     * @return \ArrayIterator<EntityDto>
+     * @return \ArrayIterator<EntityDto<TInstance>>
      */
     public function getIterator(): \ArrayIterator
     {

@@ -66,16 +66,39 @@ final class EntityFactory
         return $this->actionFactory->processGlobalActions($actionConfigDto);
     }
 
+    /**
+     * @template TInstance of object
+     *
+     * @param class-string<TInstance> $entityFqcn
+     * @param mixed                   $entityId
+     *
+     * @return EntityDto<TInstance>
+     */
     public function create(string $entityFqcn, $entityId = null, ?string $entityPermission = null): EntityDto
     {
         return $this->doCreate($entityFqcn, $entityId, $entityPermission);
     }
 
+    /**
+     * @template TInstance of object
+     *
+     * @param TInstance $entityInstance
+     *
+     * @return EntityDto<TInstance>
+     */
     public function createForEntityInstance($entityInstance): EntityDto
     {
         return $this->doCreate(null, null, null, $entityInstance);
     }
 
+    /**
+     * @template TInstance of object
+     *
+     * @param EntityDto<TInstance> $entityDto
+     * @param iterable<TInstance>  $entityInstances
+     *
+     * @return EntityCollection<TInstance>
+     */
     public function createCollection(EntityDto $entityDto, ?iterable $entityInstances): EntityCollection
     {
         $entityDtos = [];
@@ -94,6 +117,8 @@ final class EntityFactory
     }
 
     /**
+     * @param class-string $entityFqcn
+     *
      * @return ClassMetadata&ClassMetadataInfo
      */
     public function getEntityMetadata(string $entityFqcn): ClassMetadata
@@ -109,6 +134,15 @@ final class EntityFactory
         return $entityMetadata;
     }
 
+    /**
+     * @template TInstance of object
+     *
+     * @param class-string<TInstance>|null $entityFqcn
+     * @param mixed                        $entityId
+     * @param TInstance|null               $entityInstance
+     *
+     * @return EntityDto<TInstance>
+     */
     private function doCreate(?string $entityFqcn = null, $entityId = null, ?string $entityPermission = null, $entityInstance = null): EntityDto
     {
         if (null === $entityInstance && null !== $entityFqcn) {
@@ -135,6 +169,9 @@ final class EntityFactory
         return $entityDto;
     }
 
+    /**
+     * @param class-string $entityFqcn
+     */
     private function getEntityManager(string $entityFqcn): ObjectManager
     {
         if (null === $entityManager = $this->doctrine->getManagerForClass($entityFqcn)) {
@@ -144,6 +181,14 @@ final class EntityFactory
         return $entityManager;
     }
 
+    /**
+     * @template TInstance of object
+     *
+     * @param class-string<TInstance> $entityFqcn
+     * @param mixed                   $entityIdValue
+     *
+     * @return TInstance
+     */
     private function getEntityInstance(string $entityFqcn, $entityIdValue): object
     {
         $entityManager = $this->getEntityManager($entityFqcn);

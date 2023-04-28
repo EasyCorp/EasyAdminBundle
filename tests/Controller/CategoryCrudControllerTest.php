@@ -36,6 +36,14 @@ class CategoryCrudControllerTest extends AbstractCrudTestCase
         $this->categories = $this->entityManager->getRepository(Category::class);
     }
 
+    public function testConfigureAssets()
+    {
+        $crawler = $this->client->request('GET', $this->generateIndexUrl());
+
+        static::assertCount(1, $crawler->filter('head > link[data-added-from-controller]'));
+        static::assertCount(1, $crawler->filter('body > span[data-added-from-controller]'));
+    }
+
     /**
      * @dataProvider new
      */

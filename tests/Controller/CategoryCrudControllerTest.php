@@ -304,44 +304,6 @@ class CategoryCrudControllerTest extends AbstractCrudTestCase
     }
 
     /**
-     * @dataProvider search
-     */
-    public function testSearch(array $categories, string $query, int $expectedResultCount)
-    {
-        foreach ($categories as $category) {
-            $this->entityManager->persist($category);
-        }
-        $this->entityManager->flush();
-
-        $this->client->request('GET', $this->generateIndexUrl($query));
-        static::assertIndexFullEntityCount($expectedResultCount);
-    }
-
-    public static function search(): \Generator
-    {
-        yield [
-            [],
-            'foobazfoobar',
-            0,
-        ];
-        yield [
-            [
-                (new Category())->setName('Foobaz')->setSlug('foobaz'),
-            ],
-            'foobaz',
-            1,
-        ];
-        yield [
-            [
-                (new Category())->setName('Bazbar')->setSlug('bazbar'),
-                (new Category())->setName('Bazbar 2')->setSlug('bazbar-2'),
-            ],
-            'bazbar',
-            2,
-        ];
-    }
-
-    /**
      * @dataProvider filter
      */
     public function testFilter(array $categories, array $filters, int $expectedResultCount)

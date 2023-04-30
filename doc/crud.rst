@@ -215,6 +215,8 @@ Search, Order, and Pagination Options
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
+            // ...
+
             // the names of the Doctrine entity properties where the search is made on
             // (by default it looks for in all properties)
             ->setSearchFields(['name', 'description'])
@@ -224,6 +226,22 @@ Search, Order, and Pagination Options
             ->setSearchFields(null)
             // call this method to focus the search input automatically when loading the 'index' page
             ->setAutofocusSearch()
+        ;
+    }
+
+.. tip::
+
+    The search engine makes an OR query by default (searching for ``foo bar``
+    returns items with ``foo`` OR ``bar`` OR ``foo bar``). You can wrap all or
+    part of your query with quotes to make an exact search: ``"foo bar"`` only
+    returns items with that exact content, including the middle white space.
+
+::
+
+    public function configureCrud(Crud $crud): Crud
+    {
+        return $crud
+            // ...
 
             // defines the initial sorting applied to the list of entities
             // (user can later change this sorting by clicking on the table columns)
@@ -231,6 +249,15 @@ Search, Order, and Pagination Options
             ->setDefaultSort(['id' => 'DESC', 'title' => 'ASC', 'startsAt' => 'DESC'])
             // you can sort by Doctrine associations up to two levels
             ->setDefaultSort(['seller.name' => 'ASC'])
+        ;
+    }
+
+::
+
+    public function configureCrud(Crud $crud): Crud
+    {
+        return $crud
+            // ...
 
             // the max number of entities to display per page
             ->setPaginatorPageSize(30)

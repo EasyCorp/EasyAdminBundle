@@ -50,6 +50,7 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
         }
 
         // support for enums
+        $allChoicesAreEnums = false;
         if ($enumsAreSupported) {
             $elementIsEnum = array_unique(array_map(static function ($element): bool {
                 return \is_object($element) && enum_exists($element::class);
@@ -70,7 +71,15 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
 
         if ($areChoicesTranslatable) {
             $field->setFormTypeOptionIfNotSet('choices', array_keys($choices));
-            $field->setFormTypeOptionIfNotSet('choice_label', fn ($value) => $choices[$value]);
+            $field->setFormTypeOptionIfNotSet('choice_label', static function ($value) use ($choices) {
+                $key = match (true) {
+                    \is_object($value) && enum_exists($value::class) => $value->name,
+                    \is_object($value) => (string) $value,
+                    default => $value,
+                };
+
+                return $choices[$key];
+            });
         } else {
             $field->setFormTypeOptionIfNotSet('choices', $choices);
         }
@@ -108,13 +117,15 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
         $translationDomain = $context->getI18n()->getTranslationDomain();
         $choiceMessages = [];
         // Translatable choice don't need to get flipped
-        $flippedChoices = $areChoicesTranslatable ? $choices : array_flip($this->flatten($choices));
+        $flippedChoices = ($areChoicesTranslatable || $allChoicesAreEnums) ? $choices : array_flip($this->flatten($choices));
         foreach ((array) $fieldValue as $selectedValue) {
             if (null !== $selectedLabel = $flippedChoices[$selectedValue] ?? null) {
                 if ($selectedValue instanceof TranslatableInterface) {
                     $choiceMessage = $selectedValue;
                 } else {
-                    if (\is_object($selectedLabel)) {
+                    if (\is_object($selectedLabel) && enum_exists($selectedLabel::class)) {
+                        $selectedLabel = $selectedLabel->name;
+                    } elseif (\is_object($selectedLabel)) {
                         $labelCallback = $field->getFormTypeOption('choice_label');
                         if (\is_callable($labelCallback)) {
                             $selectedLabel = $labelCallback($selectedLabel);

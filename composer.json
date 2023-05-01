@@ -29,6 +29,7 @@
         "symfony/http-foundation": "^5.4|^6.0",
         "symfony/http-kernel": "^5.4|^6.0",
         "symfony/intl": "^5.4|^6.0",
+        "symfony/polyfill-php81": "^1.27",
         "symfony/property-access": "^5.4|^6.0",
         "symfony/security-bundle": "^5.4|^6.0",
         "symfony/string": "^5.4|^6.0",

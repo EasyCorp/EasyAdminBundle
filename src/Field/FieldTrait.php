@@ -376,8 +376,8 @@ trait FieldTrait
     }
 
     /**
-     * @param $cols An integer with the number of columns that this field takes (e.g. 6),
-     *              or a string with responsive col CSS classes (e.g. 'col-6 col-sm-4 col-lg-3')
+     * @param int|string $cols An integer with the number of columns that this field takes (e.g. 6),
+     *                         or a string with responsive col CSS classes (e.g. 'col-6 col-sm-4 col-lg-3')
      */
     public function setColumns(int|string $cols): self
     {

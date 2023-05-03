@@ -62,6 +62,7 @@ final class CollectionConfigurator implements FieldConfiguratorInterface
         $field->setFormTypeOptionIfNotSet('allow_delete', $field->getCustomOptions()->get(CollectionField::OPTION_ALLOW_DELETE));
         $field->setFormTypeOptionIfNotSet('by_reference', false);
         $field->setFormTypeOptionIfNotSet('delete_empty', true);
+        $field->setFormTypeOptionIfNotSet('prototype_name', '__'.u($field->getProperty())->replace('.', '_').'name__');
 
         // TODO: check why this label (hidden by default) is not working properly
         // (generated values are always the same for all elements)

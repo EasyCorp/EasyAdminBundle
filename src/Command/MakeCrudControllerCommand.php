@@ -35,7 +35,7 @@ class MakeCrudControllerCommand extends Command
         $this->doctrine = $doctrine;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setHelp($this->getCommandHelp())

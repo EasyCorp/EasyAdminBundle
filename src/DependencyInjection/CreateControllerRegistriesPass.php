@@ -16,7 +16,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
  */
 class CreateControllerRegistriesPass implements CompilerPassInterface
 {
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         $this->createDashboardControllerRegistryService($container);
         $this->createCrudControllerRegistryService($container);

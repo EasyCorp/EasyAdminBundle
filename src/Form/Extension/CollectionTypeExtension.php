@@ -16,7 +16,7 @@ use Symfony\Component\Form\FormView;
  */
 class CollectionTypeExtension extends AbstractTypeExtension
 {
-    public function finishView(FormView $view, FormInterface $form, array $options)
+    public function finishView(FormView $view, FormInterface $form, array $options): void
     {
         $prefixOffset = -2;
         // check if the entry type also defines a block prefix

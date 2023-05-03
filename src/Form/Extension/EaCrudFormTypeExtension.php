@@ -24,12 +24,12 @@ class EaCrudFormTypeExtension extends AbstractTypeExtension
         $this->adminContextProvider = $adminContextProvider;
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefined(['ea_crud_form']);
     }
 
-    public function finishView(FormView $view, FormInterface $form, array $options)
+    public function finishView(FormView $view, FormInterface $form, array $options): void
     {
         if (null === $this->adminContextProvider->getContext()) {
             return;

@@ -13,7 +13,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class FiltersFormType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var FilterDto $filter */
         foreach ($options['ea_filters'] as $filter) {
@@ -21,7 +21,7 @@ class FiltersFormType extends AbstractType
         }
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefined('ea_filters');
         $resolver->setAllowedTypes('ea_filters', FilterCollection::class);

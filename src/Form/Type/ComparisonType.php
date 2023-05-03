@@ -24,7 +24,7 @@ class ComparisonType extends AbstractType
     public const STARTS_WITH = 'like*';
     public const ENDS_WITH = '*like';
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'label' => false,

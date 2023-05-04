@@ -15,14 +15,14 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class CrudAutocompleteType extends AbstractType implements DataMapperInterface
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->addEventSubscriber(new CrudAutocompleteSubscriber())
             ->setDataMapper($this);
     }
 
-    public function finishView(FormView $view, FormInterface $form, array $options)
+    public function finishView(FormView $view, FormInterface $form, array $options): void
     {
         // Add a custom block prefix to inner field to ease theming:
         array_splice($view['autocomplete']->vars['block_prefixes'], -1, 0, 'ea_autocomplete_inner');
@@ -33,7 +33,7 @@ class CrudAutocompleteType extends AbstractType implements DataMapperInterface
         }
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'multiple' => false,
@@ -44,21 +44,18 @@ class CrudAutocompleteType extends AbstractType implements DataMapperInterface
         $resolver->setRequired(['class']);
     }
 
-    /**
-     * @return string
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'ea_autocomplete';
     }
 
-    public function mapDataToForms($data, $forms)
+    public function mapDataToForms($data, $forms): void
     {
         $form = current(iterator_to_array($forms, false));
         $form->setData($data);
     }
 
-    public function mapFormsToData($forms, &$data)
+    public function mapFormsToData($forms, &$data): void
     {
         $form = current(iterator_to_array($forms, false));
         $data = $form->getData();

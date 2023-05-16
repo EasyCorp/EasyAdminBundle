@@ -5,6 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication;
 use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
 use Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle;
 use EasyCorp\Bundle\EasyAdminBundle\EasyAdminBundle;
+use Symfony\Bundle\DebugBundle\DebugBundle;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Bundle\SecurityBundle\SecurityBundle;
@@ -31,6 +32,7 @@ final class Kernel extends SymfonyKernel
             new DoctrineBundle(),
             new DoctrineFixturesBundle(),
             new SecurityBundle(),
+            new DebugBundle(),
             new EasyAdminBundle(),
         ];
     }

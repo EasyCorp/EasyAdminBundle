@@ -37,7 +37,12 @@ if (!file_exists($file)) {
 }
 $autoload = require $file;
 
-$application = new Application(new Kernel());
+$kernel = new Kernel();
+
+// delete the existing cache directory to avoid issues
+(new \Symfony\Component\Filesystem\Filesystem())->remove($kernel->getCacheDir());
+
+$application = new Application($kernel);
 $application->setAutoExit(false);
 
 $input = new ArrayInput(['command' => 'doctrine:database:drop', '--no-interaction' => true, '--force' => true]);

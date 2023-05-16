@@ -10,7 +10,7 @@
         <ini name="display_errors" value="1" />
         <ini name="error_reporting" value="-1" />
         <server name="APP_ENV" value="test" force="true" />
-        <server name="APP_DEBUG" value="false" force="true" />
+        <server name="APP_DEBUG" value="true" force="true" />
         <server name="SHELL_VERBOSITY" value="-1" />
         <server name="KERNEL_CLASS" value="EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Kernel" />
     </php>

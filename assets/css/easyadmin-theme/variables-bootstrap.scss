@@ -125,7 +125,7 @@ $modal-content-border-color: var(--border-color) !default;
 $modal-content-fallback-border-color: var(--border-color) !default;
 $modal-backdrop-bg: var(--black) !default;
 $modal-backdrop-opacity: .6 !default;
-$modal-header-border-color: var(--border-color) !default;
+$modal-header-border-color: var(--modal-header-border-color) !default;
 $modal-footer-border-color: $modal-header-border-color !default;
 $modal-lg: 900px !default;
 $modal-md: 500px !default;

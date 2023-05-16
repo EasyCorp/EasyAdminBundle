@@ -853,7 +853,8 @@ body.ea-edit .content-header {
         color: var(--alert-dark-color);
     }
 }
-.ea-dark-scheme .alert:not(.alert-light), .alert.alert-dark {
+.ea-dark-scheme .alert:not(.alert-light), .alert.alert-dark,
+.ea-dark-scheme .modal-header {
     .btn-close {
         filter: invert(1);
     }

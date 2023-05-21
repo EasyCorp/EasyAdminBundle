@@ -36,9 +36,9 @@ interface CrudControllerInterface
     public function configureFilters(Filters $filters): Filters;
 
     /**
-     * @return FieldInterface[]
+     * @return FieldInterface[]|string[]
      *
-     * @psalm-return iterable<FieldInterface>
+     * @psalm-return iterable<FieldInterface|string>
      */
     public function configureFields(string $pageName): iterable;
 

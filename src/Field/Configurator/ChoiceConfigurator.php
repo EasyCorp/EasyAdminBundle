@@ -111,8 +111,8 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
         $flippedChoices = $areChoicesTranslatable ? $choices : array_flip($this->flatten($choices));
         foreach ((array) $fieldValue as $selectedValue) {
             if (null !== $selectedLabel = $flippedChoices[$selectedValue] ?? null) {
-                if ($selectedValue instanceof TranslatableInterface) {
-                    $choiceMessage = $selectedValue;
+                if ($selectedLabel instanceof TranslatableInterface) {
+                    $choiceMessage = $selectedLabel;
                 } else {
                     $choiceMessage = t(
                         $selectedLabel,

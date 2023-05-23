@@ -5,7 +5,7 @@
     {# TODO: improve this to highlight code #}
     {% set configuredHeight = field.customOptions.get('height') %}
     <pre style="{{ configuredHeight is null ? 'max-height: 500px;' : 'max-height: unset; height: ' ~ configuredHeight ~ 'px' }}">
-        {{- field.value -}}
+        {{- field.formattedValue|escape -}}
     </pre>
 {% else %}
     {% set html_id = 'ea-code-editor-' ~ field.uniqueId %}

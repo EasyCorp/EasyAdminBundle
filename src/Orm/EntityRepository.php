@@ -82,6 +82,7 @@ final class EntityRepository implements EntityRepositoryInterface
         ];
 
         $entitiesAlreadyJoined = [];
+        $entityAliases = [];
         $configuredSearchableProperties = $searchDto->getSearchableProperties();
         $searchableProperties = (null === $configuredSearchableProperties || 0 === \count($configuredSearchableProperties)) ? $entityDto->getAllPropertyNames() : $configuredSearchableProperties;
         foreach ($searchableProperties as $propertyName) {
@@ -101,13 +102,16 @@ final class EntityRepository implements EntityRepositoryInterface
                 $associatedEntityAlias = $associatedPropertyName = '';
                 for ($i = 0; $i < $numAssociatedProperties - 1; ++$i) {
                     $associatedEntityName = $associatedProperties[$i];
-                    $associatedEntityAlias = Escaper::escapeDqlAlias($associatedEntityName);
+                    $associatedEntityPath = implode('.', \array_slice($associatedProperties, 0, $i + 1));
+                    $associatedEntityAlias = '__ea_alias_'.\count($entityAliases);
+                    $entityAliases[$associatedEntityPath] = $associatedEntityAlias;
                     $associatedPropertyName = $associatedProperties[$i + 1];
 
-                    if (!\in_array($associatedEntityName, $entitiesAlreadyJoined, true)) {
-                        $parentEntityName = 0 === $i ? 'entity' : $associatedProperties[$i - 1];
+                    if (!\in_array($associatedEntityPath, $entitiesAlreadyJoined, true)) {
+                        $associatedEntityParentPath = implode('.', \array_slice($associatedProperties, 0, $i));
+                        $parentEntityName = 0 === $i ? 'entity' : $entityAliases[$associatedEntityParentPath];
                         $queryBuilder->leftJoin($parentEntityName.'.'.$associatedEntityName, $associatedEntityAlias);
-                        $entitiesAlreadyJoined[] = $associatedEntityName;
+                        $entitiesAlreadyJoined[] = $associatedEntityPath;
                     }
 
                     if ($i < $numAssociatedProperties - 2) {

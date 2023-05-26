@@ -41,12 +41,14 @@ final class CrudResponseListener
 
         // to make parameters easier to modify, we pass around FormInterface objects
         // so we must convert those values to FormView before rendering the template
+        $formErrorCount = 0;
         foreach ($templateParameters as $paramName => $paramValue) {
             if ($paramValue instanceof FormInterface) {
                 $templateParameters[$paramName] = $paramValue->createView();
+                $formErrorCount = max($formErrorCount, \count($paramValue->getErrors(true)));
             }
         }
-
-        $event->setResponse(new Response($this->twig->render($templatePath, $templateParameters)));
+        $httpCode = $formErrorCount > 0 ? Response::HTTP_UNPROCESSABLE_ENTITY : Response::HTTP_OK;
+        $event->setResponse(new Response($this->twig->render($templatePath, $templateParameters), $httpCode));
     }
 }

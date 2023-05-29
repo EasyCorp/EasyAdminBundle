@@ -7,23 +7,23 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Registry;
  */
 final class CrudControllerRegistry
 {
-    private array $crudFqcnToEntityFqcnMap = [];
+    private array $crudFqcnToEntityFqcnMap;
     private array $entityFqcnToCrudFqcnMap;
-    private array $crudFqcnToCrudIdMap = [];
+    private array $crudFqcnToCrudIdMap;
     private array $crudIdToCrudFqcnMap;
 
-    public function __construct(string $kernelSecret, array $crudControllersFqcn)
+    /**
+     * @param array<string, string> $crudFqcnToEntityFqcnMap
+     * @param array<string, string> $crudFqcnToCrudIdMap
+     * @param array<string, string> $crudIdToCrudFqcnMap
+     * @param array<string, string> $entityFqcnToCrudFqcnMap
+     */
+    public function __construct(array $crudFqcnToEntityFqcnMap, array $crudFqcnToCrudIdMap, array $entityFqcnToCrudFqcnMap, array $crudIdToCrudFqcnMap)
     {
-        foreach ($crudControllersFqcn as $controllerFqcn) {
-            $this->crudFqcnToEntityFqcnMap[$controllerFqcn] = $controllerFqcn::getEntityFqcn();
-            $this->crudFqcnToCrudIdMap[$controllerFqcn] = substr(sha1($kernelSecret.$controllerFqcn), 0, 7);
-        }
-
-        // more than one controller can manage the same entity, so this map will
-        // only contain the last controller associated to that repeated entity. That's why
-        // several methods in other classes allow to define the CRUD controller explicitly
-        $this->entityFqcnToCrudFqcnMap = array_flip($this->crudFqcnToEntityFqcnMap);
-        $this->crudIdToCrudFqcnMap = array_flip($this->crudFqcnToCrudIdMap);
+        $this->crudFqcnToEntityFqcnMap = $crudFqcnToEntityFqcnMap;
+        $this->crudFqcnToCrudIdMap = $crudFqcnToCrudIdMap;
+        $this->entityFqcnToCrudFqcnMap = $entityFqcnToCrudFqcnMap;
+        $this->crudIdToCrudFqcnMap = $crudIdToCrudFqcnMap;
     }
 
     public function findCrudFqcnByEntityFqcn(string $entityFqcn): ?string

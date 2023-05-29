@@ -111,6 +111,8 @@ export default class Autocomplete
                     .then(json => { this.setNextUrl(query, json.next_page); callback(json.results) })
                     .catch(() => callback());
             },
+            preload: 'focus',
+            maxOptions: null,
             // on remote calls, we don't want tomselect to further filter the results by "entityAsString"
             // this override causes all results to be returned with the sorting from the server
             score: function(search) {

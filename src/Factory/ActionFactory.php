@@ -156,9 +156,11 @@ final class ActionFactory
 
     private function generateActionUrl(string $currentAction, Request $request, ActionDto $actionDto, ?EntityDto $entityDto = null): string
     {
+        $entityInstance = $entityDto?->getInstance();
+
         if (null !== $url = $actionDto->getUrl()) {
             if (\is_callable($url)) {
-                return null !== $entityDto ? $url($entityDto->getInstance()) : $url();
+                return null !== $entityDto ? $url($entityInstance) : $url();
             }
 
             return $url;
@@ -166,7 +168,7 @@ final class ActionFactory
 
         if (null !== $routeName = $actionDto->getRouteName()) {
             $routeParameters = $actionDto->getRouteParameters();
-            if (\is_callable($routeParameters) && null !== $entityInstance = $entityDto->getInstance()) {
+            if (\is_callable($routeParameters) && null !== $entityInstance) {
                 $routeParameters = $routeParameters($entityInstance);
             }
 

@@ -14,7 +14,6 @@ use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\Matcher\RequestMatcherInterface;
-use Twig\Environment;
 
 /**
  * This subscriber acts as a "proxy" of all backend requests. First, if the
@@ -36,16 +35,14 @@ class AdminRouterSubscriber implements EventSubscriberInterface
     private ControllerResolverInterface $controllerResolver;
     private UrlGeneratorInterface $urlGenerator;
     private RequestMatcherInterface $requestMatcher;
-    private Environment $twig;
 
-    public function __construct(AdminContextFactory $adminContextFactory, ControllerFactory $controllerFactory, ControllerResolverInterface $controllerResolver, UrlGeneratorInterface $urlGenerator, RequestMatcherInterface $requestMatcher, Environment $twig)
+    public function __construct(AdminContextFactory $adminContextFactory, ControllerFactory $controllerFactory, ControllerResolverInterface $controllerResolver, UrlGeneratorInterface $urlGenerator, RequestMatcherInterface $requestMatcher)
     {
         $this->adminContextFactory = $adminContextFactory;
         $this->controllerFactory = $controllerFactory;
         $this->controllerResolver = $controllerResolver;
         $this->urlGenerator = $urlGenerator;
         $this->requestMatcher = $requestMatcher;
-        $this->twig = $twig;
     }
 
     public static function getSubscribedEvents(): array
@@ -82,9 +79,6 @@ class AdminRouterSubscriber implements EventSubscriberInterface
         }
 
         $request->attributes->set(EA::CONTEXT_REQUEST_ATTRIBUTE, $adminContext);
-
-        // this makes the AdminContext available in all templates as a short named variable
-        $this->twig->addGlobal('ea', $adminContext);
     }
 
     /**

@@ -355,8 +355,6 @@ the "panels" created with the special ``FormField`` object::
     public function configureFields(string $pageName): iterable
     {
         return [
-            IdField::new('id')->hideOnForm(),
-
             // panels usually display only a title
             FormField::addPanel('User Details'),
             TextField::new('firstName'),

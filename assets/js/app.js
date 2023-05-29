@@ -14,7 +14,7 @@ window.Sortable = Sortable;
 window.bootstrap = bootstrap;
 
 document.addEventListener('DOMContentLoaded', () => {
-    new App();
+    window.EasyAdminApp = new App();
 });
 
 class App {

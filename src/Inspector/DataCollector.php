@@ -29,7 +29,7 @@ class DataCollector extends BaseDataCollector
         $this->data = [];
     }
 
-    public function collect(Request $request, Response $response, $exception = null)
+    public function collect(Request $request, Response $response, $exception = null): void
     {
         if (null === $context = $this->adminContextProvider->getContext()) {
             return;

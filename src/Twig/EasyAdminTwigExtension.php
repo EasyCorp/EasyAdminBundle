@@ -5,29 +5,35 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Twig;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldLayoutDto;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FieldLayoutFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Twig\Environment;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\ExtensionInterface;
+use Twig\Extension\GlobalsInterface;
 use Twig\Extension\RuntimeExtensionInterface;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
 
 /**
  * Defines the filters and functions used to render the bundle's templates.
+ * Also injects the admin context into Twig global variables as `ea` in order
+ * to be used by admin templates.
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-class EasyAdminTwigExtension extends AbstractExtension
+class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterface
 {
     private ServiceLocator $serviceLocator;
+    private AdminContextProvider $adminContextProvider;
     private ?CsrfTokenManagerInterface $csrfTokenManager;
 
-    public function __construct(ServiceLocator $serviceLocator, ?CsrfTokenManagerInterface $csrfTokenManager)
+    public function __construct(ServiceLocator $serviceLocator, AdminContextProvider $adminContextProvider, ?CsrfTokenManagerInterface $csrfTokenManager)
     {
         $this->serviceLocator = $serviceLocator;
+        $this->adminContextProvider = $adminContextProvider;
         $this->csrfTokenManager = $csrfTokenManager;
     }
 
@@ -49,6 +55,14 @@ class EasyAdminTwigExtension extends AbstractExtension
             new TwigFilter('ea_apply_filter_if_exists', [$this, 'applyFilterIfExists'], ['needs_environment' => true]),
             new TwigFilter('ea_as_string', [$this, 'representAsString']),
         ];
+    }
+
+    public function getGlobals(): array
+    {
+        $context = $this->adminContextProvider->getContext();
+
+        // when there's an admin context, make it available in all templates as a short named variable
+        return null === $context ? [] : ['ea' => $context];
     }
 
     /**

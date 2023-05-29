@@ -29,7 +29,7 @@ class CrudFormType extends AbstractType
         $this->doctrineOrmTypeGuesser = $doctrineOrmTypeGuesser;
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var EntityDto $entityDto */
         $entityDto = $options['entityDto'];
@@ -119,7 +119,7 @@ class CrudFormType extends AbstractType
         }
     }
 
-    public function finishView(FormView $view, FormInterface $form, array $options)
+    public function finishView(FormView $view, FormInterface $form, array $options): void
     {
         $view->vars['ea_crud_form'] = [
             'assets' => '** This variable no longer stores field assets. Instead, use "ea.crud.fieldAssets()" in your Twig template.',
@@ -129,7 +129,7 @@ class CrudFormType extends AbstractType
         ];
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
             ->setDefaults([

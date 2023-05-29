@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Controller;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
@@ -22,6 +23,14 @@ class CategoryCrudController extends AbstractCrudController
     public static function getEntityFqcn(): string
     {
         return Category::class;
+    }
+
+    public function configureAssets(Assets $assets): Assets
+    {
+        return parent::configureAssets($assets)
+            ->addHtmlContentToHead('<link data-added-from-controller rel="me" href="https://example.com">')
+            ->addHtmlContentToBody('<span data-added-from-controller><!-- foo --></span>')
+        ;
     }
 
     public function configureFields(string $pageName): iterable

@@ -72,7 +72,7 @@ final class AdminContextFactory
     {
         $dashboardRoutesCachePath = $this->cacheDir.'/'.CacheWarmer::DASHBOARD_ROUTES_CACHE;
         $dashboardControllerRoutes = !file_exists($dashboardRoutesCachePath) ? [] : require $dashboardRoutesCachePath;
-        $dashboardController = \get_class($dashboardControllerInstance).'::index';
+        $dashboardController = $dashboardControllerInstance::class.'::index';
         $dashboardRouteName = null;
 
         foreach ($dashboardControllerRoutes as $routeName => $controller) {
@@ -115,7 +115,7 @@ final class AdminContextFactory
         $defaultCrud = $dashboardController->configureCrud();
         $crudDto = $crudController->configureCrud($defaultCrud)->getAsDto();
 
-        $entityFqcn = $crudControllers->findEntityFqcnByCrudFqcn(\get_class($crudController));
+        $entityFqcn = $crudControllers->findEntityFqcnByCrudFqcn($crudController::class);
 
         if ($crudDto->isColumnChooserEnabled()) {
             $class_parts = explode('\\', $entityFqcn);
@@ -133,7 +133,7 @@ final class AdminContextFactory
             );
         }
 
-        $crudDto->setControllerFqcn(\get_class($crudController));
+        $crudDto->setControllerFqcn($crudController::class);
         $crudDto->setActionsConfig($actionConfigDto);
         $crudDto->setFiltersConfig($filters);
         $crudDto->setCurrentAction($crudAction);

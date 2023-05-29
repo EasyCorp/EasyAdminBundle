@@ -35,7 +35,7 @@ final class FormField implements FieldInterface
      * @param TranslatableInterface|string|false|null $label
      * @param string|null                             $icon  The full CSS classes of the FontAwesome icon to render (see https://fontawesome.com/v6/search?m=free)
      */
-    public static function addPanel($label = false, ?string $icon = null): self
+    public static function addPanel($label = false, string $icon = null): self
     {
         $field = new self();
         $icon = $field->fixIconFormat($icon, 'FormField::addPanel()');
@@ -78,7 +78,7 @@ final class FormField implements FieldInterface
             ->setValue(true);
     }
 
-    public static function addTab(TranslatableInterface|string $label, ?string $icon = null): self
+    public static function addTab(TranslatableInterface|string $label, string $icon = null): self
     {
         $field = new self();
         $icon = $field->fixIconFormat($icon, 'FormField::addTab()');

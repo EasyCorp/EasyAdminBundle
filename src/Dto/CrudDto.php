@@ -491,7 +491,7 @@ final class CrudDto
         return $this;
     }
 
-    public function setColumnChooserSelectedColumnStorageProvider(?SelectedColumnStorageProviderInterface $selectedColumnStorageProvider = null): self
+    public function setColumnChooserSelectedColumnStorageProvider(SelectedColumnStorageProviderInterface $selectedColumnStorageProvider = null): self
     {
         $this->selectedColumnStorageProvider = $selectedColumnStorageProvider;
 

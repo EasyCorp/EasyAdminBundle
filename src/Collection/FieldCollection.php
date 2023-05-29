@@ -148,7 +148,7 @@ final class FieldCollection implements CollectionInterface
             } else {
                 $dto = $field->getAsDto();
                 if (null === $dto->getFieldFqcn()) {
-                    $dto->setFieldFqcn(\get_class($field));
+                    $dto->setFieldFqcn($field::class);
                 }
             }
             $dtos[$dto->getUniqueId()] = $dto;

@@ -44,7 +44,7 @@ class UserSelectedColumnStorageProvider implements SelectedColumnStorageProvider
         if (!\is_object($user) || !($user instanceof UserParametersStorageInterface)) {
             return false;
         }
-        $em = $this->managerRegistry->getManagerForClass(\get_class($user));
+        $em = $this->managerRegistry->getManagerForClass($user::class);
         if (!\is_object($em)) {
             return false;
         }

@@ -7,7 +7,7 @@ final class MissingClassMethodException extends \Exception
     /**
      * @param array<array-key, string> $methodsName
      */
-    public function __construct(array $methodsName, int $code = 0, \Throwable $previous = null)
+    public function __construct(array $methodsName, int $code = 0, ?\Throwable $previous = null)
     {
         $message = 'The class should implement the following methods :';
 

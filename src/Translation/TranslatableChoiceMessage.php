@@ -22,7 +22,7 @@ final class TranslatableChoiceMessage implements TranslatableInterface
     ) {
     }
 
-    public function trans(TranslatorInterface $translator, string $locale = null): string
+    public function trans(TranslatorInterface $translator, ?string $locale = null): string
     {
         $message = $this->message->trans($translator, $locale);
 

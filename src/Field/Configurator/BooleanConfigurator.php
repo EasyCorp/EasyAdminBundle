@@ -19,7 +19,7 @@ final class BooleanConfigurator implements FieldConfiguratorInterface
     private AdminUrlGenerator $adminUrlGenerator;
     private ?CsrfTokenManagerInterface $csrfTokenManager;
 
-    public function __construct(AdminUrlGenerator $adminUrlGenerator, CsrfTokenManagerInterface $csrfTokenManager = null)
+    public function __construct(AdminUrlGenerator $adminUrlGenerator, ?CsrfTokenManagerInterface $csrfTokenManager = null)
     {
         $this->adminUrlGenerator = $adminUrlGenerator;
         $this->csrfTokenManager = $csrfTokenManager;

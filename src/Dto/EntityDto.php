@@ -28,7 +28,7 @@ final class EntityDto
     /**
      * @param ClassMetadata&ClassMetadataInfo $entityMetadata
      */
-    public function __construct(string $entityFqcn, ClassMetadata $entityMetadata, string $entityPermission = null, /* ?object */ $entityInstance = null)
+    public function __construct(string $entityFqcn, ClassMetadata $entityMetadata, ?string $entityPermission = null, /* ?object */ $entityInstance = null)
     {
         if (!\is_object($entityInstance)
             && null !== $entityInstance) {

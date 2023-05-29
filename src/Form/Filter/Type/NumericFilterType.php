@@ -18,7 +18,7 @@ class NumericFilterType extends AbstractType
     private string $valueType;
     private array $valueTypeOptions;
 
-    public function __construct(string $valueType = null, array $valueTypeOptions = [])
+    public function __construct(?string $valueType = null, array $valueTypeOptions = [])
     {
         $this->valueType = $valueType ?? NumberType::class;
         $this->valueTypeOptions = $valueTypeOptions;

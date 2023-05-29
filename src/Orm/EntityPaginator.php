@@ -99,7 +99,7 @@ final class EntityPaginator implements EntityPaginatorInterface
      *
      * @return iterable<int|null>
      */
-    public function getPageRange(int $pagesOnEachSide = null, int $pagesOnEdges = null): iterable
+    public function getPageRange(?int $pagesOnEachSide = null, ?int $pagesOnEdges = null): iterable
     {
         $pagesOnEachSide = $pagesOnEachSide ?? $this->rangeSize;
         $pagesOnEdges = $pagesOnEdges ?? $this->rangeEdgeSize;

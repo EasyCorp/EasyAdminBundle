@@ -135,14 +135,14 @@ final class EntityRepository implements EntityRepositoryInterface
             $isUlidProperty = 'ulid' === $propertyDataType;
             $isJsonProperty = 'json' === $propertyDataType;
 
-            if (!$isBoolean &&
-                !$isSmallIntegerProperty &&
-                !$isIntegerProperty &&
-                !$isNumericProperty &&
-                !$isTextProperty &&
-                !$isGuidProperty &&
-                !$isUlidProperty &&
-                !$isJsonProperty
+            if (!$isBoolean
+                && !$isSmallIntegerProperty
+                && !$isIntegerProperty
+                && !$isNumericProperty
+                && !$isTextProperty
+                && !$isGuidProperty
+                && !$isUlidProperty
+                && !$isJsonProperty
             ) {
                 $entityFqcn = 'entity' !== $entityName && isset($associatedEntityDto)
                     ? $associatedEntityDto->getFqcn()
@@ -163,9 +163,9 @@ final class EntityRepository implements EntityRepositoryInterface
 
             // this complex condition is needed to avoid issues on PostgreSQL databases
             if (
-                ($isSmallIntegerProperty && $isSmallIntegerQuery) ||
-                ($isIntegerProperty && $isIntegerQuery) ||
-                ($isNumericProperty && $isNumericQuery)
+                ($isSmallIntegerProperty && $isSmallIntegerQuery)
+                || ($isIntegerProperty && $isIntegerQuery)
+                || ($isNumericProperty && $isNumericQuery)
             ) {
                 $queryBuilder->orWhere(sprintf('%s.%s = :query_for_numbers', $entityName, $propertyName))
                     ->setParameter('query_for_numbers', $dqlParameters['numeric_query']);

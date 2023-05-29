@@ -136,7 +136,7 @@ final class MenuFactory
             // 1. if CRUD controller is defined, use it...
             if (null !== $crudControllerFqcn) {
                 $this->adminUrlGenerator->setController($crudControllerFqcn);
-            // 2. ...otherwise, find the CRUD controller from the entityFqcn
+                // 2. ...otherwise, find the CRUD controller from the entityFqcn
             } else {
                 $crudControllers = $this->adminContextProvider->getContext()?->getCrudControllers();
                 if (null === $controllerFqcn = $crudControllers->findCrudFqcnByEntityFqcn($entityFqcn)) {

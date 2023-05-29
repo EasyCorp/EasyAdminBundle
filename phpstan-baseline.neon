@@ -1,12 +1,8 @@
 parameters:
+	treatPhpDocTypesAsCertain: false
 	ignoreErrors:
 		-
 			message: "#^Cannot unset offset string on array\\<int, EasyCorp\\\\Bundle\\\\EasyAdminBundle\\\\Dto\\\\ActionDto\\>\\.$#"
-			count: 1
-			path: src/Dto/ActionConfigDto.php
-
-		-
-			message: "#^Offset string on array\\<int, EasyCorp\\\\Bundle\\\\EasyAdminBundle\\\\Dto\\\\ActionDto\\> on left side of \\?\\? does not exist\\.$#"
 			count: 1
 			path: src/Dto/ActionConfigDto.php
 

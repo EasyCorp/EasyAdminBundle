@@ -142,10 +142,10 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
             }
 
             if (method_exists($value, 'getId')) {
-                return sprintf('%s #%s', \get_class($value), $value->getId());
+                return sprintf('%s #%s', $value::class, $value->getId());
             }
 
-            return sprintf('%s #%s', \get_class($value), substr(md5(spl_object_hash($value)), 0, 7));
+            return sprintf('%s #%s', $value::class, substr(md5(spl_object_hash($value)), 0, 7));
         }
 
         return '';

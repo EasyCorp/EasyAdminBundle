@@ -116,7 +116,7 @@ final class EntityFilter implements FilterInterface
         $entityManager = $queryBuilder->getEntityManager();
 
         try {
-            $classMetadata = $entityManager->getClassMetadata(\get_class($parameterValue));
+            $classMetadata = $entityManager->getClassMetadata($parameterValue::class);
         } catch (\Throwable) {
             // only reached if $parameterValue does not contain an object of a managed
             // entity, return as we only need to process bound entities
@@ -126,7 +126,7 @@ final class EntityFilter implements FilterInterface
         try {
             $identifierType = $classMetadata->getTypeOfField($classMetadata->getSingleIdentifierFieldName());
         } catch (MappingException) {
-            throw new \RuntimeException(sprintf('The EntityFilter does not support entities with a composite primary key or entities without an identifier. Please check your entity "%s".', \get_class($parameterValue)));
+            throw new \RuntimeException(sprintf('The EntityFilter does not support entities with a composite primary key or entities without an identifier. Please check your entity "%s".', $parameterValue::class));
         }
 
         $identifierValue = $entityManager->getUnitOfWork()->getSingleIdentifierValue($parameterValue);

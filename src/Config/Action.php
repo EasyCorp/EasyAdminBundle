@@ -20,6 +20,7 @@ final class Action
     public const SAVE_AND_ADD_ANOTHER = 'saveAndAddAnother';
     public const SAVE_AND_CONTINUE = 'saveAndContinue';
     public const SAVE_AND_RETURN = 'saveAndReturn';
+    public const COLUMN_CHOOSER = 'columnChooser';
 
     // these are the actions applied to a specific entity instance
     public const TYPE_ENTITY = 'entity';
@@ -45,7 +46,7 @@ final class Action
      * @param mixed       $label Use FALSE to hide the label; use NULL to autogenerate it
      * @param string|null $icon  The full CSS classes of the FontAwesome icon to render (see https://fontawesome.com/v6/search?m=free)
      */
-    public static function new(string $name, /** @var TranslatableInterface|string|false|null */ $label = null, ?string $icon = null): self
+    public static function new(string $name, /** @var TranslatableInterface|string|false|null */ $label = null, string $icon = null): self
     {
         if (!\is_string($label)
             && !$label instanceof TranslatableInterface
@@ -165,6 +166,13 @@ final class Action
         return $this;
     }
 
+    public function setHtmlAttribute(string $attributeName, string $attributeValue): self
+    {
+        $this->dto->setHtmlAttribute($attributeName, $attributeValue);
+
+        return $this;
+    }
+
     public function setTemplatePath(string $templatePath): self
     {
         $this->dto->setTemplatePath($templatePath);
@@ -239,7 +247,7 @@ final class Action
         return $this->dto;
     }
 
-    private static function humanizeString(string $string): string
+    public static function humanizeString(string $string): string
     {
         $uString = u($string);
         $upperString = $uString->upper()->toString();

@@ -18,10 +18,10 @@ class TimeFieldTest extends AbstractFieldTest
             ->onlyMethods(['formatDate', 'formatTime'])
             ->getMock();
         $intlFormatterMock->method('formatDate')->willReturnCallback(
-            static function ($value, ?string $dateFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', string $locale = null) { return sprintf('value: %s | dateFormat: %s | pattern: %s | timezone: %s | calendar: %s | locale: %s', $value instanceof \DateTimeInterface ? $value->format('Y-m-d H:i:s') : $value, $dateFormat, $pattern, $timezone, $calendar, $locale); }
+            static function ($value, ?string $dateFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', ?string $locale = null) { return sprintf('value: %s | dateFormat: %s | pattern: %s | timezone: %s | calendar: %s | locale: %s', $value instanceof \DateTimeInterface ? $value->format('Y-m-d H:i:s') : $value, $dateFormat, $pattern, $timezone, $calendar, $locale); }
         );
         $intlFormatterMock->method('formatTime')->willReturnCallback(
-            static function ($value, ?string $timeFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', string $locale = null) { return sprintf('value: %s | timeFormat: %s | pattern: %s | timezone: %s | calendar: %s | locale: %s', $value instanceof \DateTimeInterface ? $value->format('Y-m-d H:i:s') : $value, $timeFormat, $pattern, $timezone, $calendar, $locale); }
+            static function ($value, ?string $timeFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', ?string $locale = null) { return sprintf('value: %s | timeFormat: %s | pattern: %s | timezone: %s | calendar: %s | locale: %s', $value instanceof \DateTimeInterface ? $value->format('Y-m-d H:i:s') : $value, $timeFormat, $pattern, $timezone, $calendar, $locale); }
         );
 
         $this->configurator = new DateTimeConfigurator($intlFormatterMock);

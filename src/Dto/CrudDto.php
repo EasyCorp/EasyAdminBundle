@@ -156,7 +156,7 @@ final class CrudDto
         $this->entityLabelInPlural = $label;
     }
 
-    public function getCustomPageTitle(string $pageName = null, $entityInstance = null, array $translationParameters = []): ?TranslatableInterface
+    public function getCustomPageTitle(?string $pageName = null, $entityInstance = null, array $translationParameters = []): ?TranslatableInterface
     {
         $title = $this->customPageTitles[$pageName ?? $this->pageName];
         if (\is_callable($title)) {
@@ -191,7 +191,7 @@ final class CrudDto
         $this->customPageTitles[$pageName] = $pageTitle;
     }
 
-    public function getDefaultPageTitle(string $pageName = null, /* ?object */ $entityInstance = null, array $translationParameters = []): ?TranslatableInterface
+    public function getDefaultPageTitle(?string $pageName = null, /* ?object */ $entityInstance = null, array $translationParameters = []): ?TranslatableInterface
     {
         if (!\is_object($entityInstance)
             && null !== $entityInstance) {
@@ -223,7 +223,7 @@ final class CrudDto
         return t($this->defaultPageTitles[$pageName ?? $this->pageName], $translationParameters, 'EasyAdminBundle');
     }
 
-    public function getHelpMessage(string $pageName = null): TranslatableInterface|string
+    public function getHelpMessage(?string $pageName = null): TranslatableInterface|string
     {
         return $this->helpMessages[$pageName ?? $this->pageName] ?? '';
     }

@@ -19,7 +19,7 @@ class DynamicChoiceLoader implements ChoiceLoaderInterface
     private bool $cached = false;
     private ?ArrayChoiceList $choiceList = null;
 
-    public function loadChoiceList(callable $value = null): ChoiceListInterface
+    public function loadChoiceList(?callable $value = null): ChoiceListInterface
     {
         if (null === $this->choiceList || !$this->cached) {
             $this->choiceList = new ArrayChoiceList(array_combine($this->choices, $this->choices));

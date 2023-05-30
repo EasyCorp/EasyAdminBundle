@@ -26,7 +26,7 @@ final class ScopeButton
             ->setLabel($label);
     }
 
-    public function addFilter(ScopeFilterDto|string $propertyName, string|array $value = null, string $comparison = ComparisonType::EQ, string $value2 = null): self
+    public function addFilter(ScopeFilterDto|string $propertyName, string|array $value = null, string $comparison = ComparisonType::EQ, ?string $value2 = null): self
     {
         if ($this->dto->hasFilterWithPropertyName($propertyName instanceof ScopeFilterDto ? $propertyName->getPropertyName() : $propertyName)) {
             throw new \InvalidArgumentException(sprintf('There is already a filter with the name "%s".', $propertyName));

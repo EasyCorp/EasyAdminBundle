@@ -32,5 +32,6 @@ return $config
         'non_printable_character' => false,
         'blank_line_between_import_groups' => false,
         'no_trailing_comma_in_singleline' => false,
+	'nullable_type_declaration_for_default_null_value' => true,
     ))
 ;

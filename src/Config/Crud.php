@@ -356,7 +356,7 @@ class Crud
         return $this;
     }
 
-    public function setFormOptions(array $newFormOptions, array $editFormOptions = null): self
+    public function setFormOptions(array $newFormOptions, ?array $editFormOptions = null): self
     {
         $this->dto->setNewFormOptions(KeyValueStore::new($newFormOptions));
         $this->dto->setEditFormOptions(KeyValueStore::new($editFormOptions ?? $newFormOptions));

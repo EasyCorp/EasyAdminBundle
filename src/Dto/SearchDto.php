@@ -21,7 +21,7 @@ final class SearchDto
     private ?array $appliedFilters;
     private ?ScopesDto $scopes = null;
 
-    public function __construct(Request $request, ?array $searchableProperties, ?string $query, array $defaultSort, array $customSort, ?array $appliedFilters, ScopesDto $scopes = null)
+    public function __construct(Request $request, ?array $searchableProperties, ?string $query, array $defaultSort, array $customSort, ?array $appliedFilters, ?ScopesDto $scopes = null)
     {
         $this->request = $request;
         $this->searchableProperties = $searchableProperties;

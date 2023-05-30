@@ -247,7 +247,7 @@
         {% for scopeName,scope in scopes %}    
             <div class="list_scope_group btn-group">
             {% for button in scope.buttons %}        
-                <a class="btn btn-sm btn-default {{ button.active ? '' : 'in' }}active" 
+                <a class="btn btn-sm btn-{{ button.active ? 'primary' : 'default' }}" 
                    href="{{ ea_url().set('page', 1).set('scope[' ~ scopeName ~ ']', button.name).includeReferrer() }}">{{ button.label|trans }}</a>
             {% endfor %}            
             </div>

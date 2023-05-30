@@ -19,6 +19,7 @@ final class CrudTestFormAssertsTraitTest extends WebTestCase
 
     protected KernelBrowser $client;
     protected EntityManagerInterface $entityManager;
+    private AdminUrlGenerator $adminUrlGenerator;
 
     protected function setUp(): void
     {

@@ -56,8 +56,8 @@ final class AdminContextFactory
 
         $scopesDto = null;
         if (null !== $crudController && Crud::PAGE_INDEX === $pageName) {
-            $scopesDto = $crudController?->configureScopes(Scopes::new())->getAsDto();
-            $scopesDto?->processRequest($request);
+            $scopesDto = $crudController->configureScopes(Scopes::new())->getAsDto();
+            $scopesDto->processRequest($request);
         }
 
         $dashboardDto = $this->getDashboardDto($request, $dashboardController);
@@ -66,13 +66,8 @@ final class AdminContextFactory
         $filters = $this->getFilters($dashboardController, $crudController);
 
         $crudDto = $this->getCrudDto($this->crudControllers, $dashboardController, $crudController, $actionConfigDto, $filters, $crudAction, $pageName);
-<<<<<<< Updated upstream
         $entityDto = $this->getEntityDto($request, $crudDto);
-        $searchDto = $this->getSearchDto($request, $crudDto);
-=======
-        $entityDto = $this->getEntityDto($request, $crudDto, $ignore_errors);
         $searchDto = $this->getSearchDto($request, $crudDto, $scopesDto);
->>>>>>> Stashed changes
         $i18nDto = $this->getI18nDto($request, $dashboardDto, $crudDto, $entityDto);
         $templateRegistry = $this->getTemplateRegistry($dashboardController, $crudDto);
         $user = $this->getUser($this->tokenStorage);

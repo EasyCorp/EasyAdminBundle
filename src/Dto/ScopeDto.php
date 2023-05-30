@@ -42,7 +42,6 @@ final class ScopeDto
         return $this->buttons;
     }
 
-    /** @var array<string,ScopeButtonDto> */
     public function setButtons(array $buttons): self
     {
         $this->buttons = $buttons;

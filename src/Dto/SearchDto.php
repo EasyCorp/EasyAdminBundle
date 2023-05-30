@@ -19,8 +19,9 @@ final class SearchDto
     private ?array $searchableProperties;
     /** @var string[]|null */
     private ?array $appliedFilters;
+    private ?ScopesDto $scopes = null;
 
-    public function __construct(Request $request, ?array $searchableProperties, ?string $query, array $defaultSort, array $customSort, ?array $appliedFilters)
+    public function __construct(Request $request, ?array $searchableProperties, ?string $query, array $defaultSort, array $customSort, ?array $appliedFilters, ScopesDto $scopes = null)
     {
         $this->request = $request;
         $this->searchableProperties = $searchableProperties;
@@ -28,6 +29,17 @@ final class SearchDto
         $this->defaultSort = $defaultSort;
         $this->customSort = $customSort;
         $this->appliedFilters = $appliedFilters;
+        $this->scopes = $scopes;
+    }
+
+    public function getScopes(): ?ScopesDto
+    {
+        return $this->scopes;
+    }
+
+    public function hasScopes(): bool
+    {
+        return null !== $this->scopes && (\count($this->scopes->getScopes()) > 0);
     }
 
     public function getRequest(): Request

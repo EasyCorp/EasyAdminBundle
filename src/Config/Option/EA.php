@@ -28,4 +28,5 @@ final class EA
     public const SORT = 'sort';
     public const SUBMENU_INDEX = 'submenuIndex';
     public const URL_SIGNATURE = 'signature';
+    public const SCOPE = 'scope';
 }

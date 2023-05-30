@@ -212,7 +212,7 @@ final class EntityDto
     public function setInstance(?object $newEntityInstance): void
     {
         if (null !== $this->instance && null !== $newEntityInstance && !$newEntityInstance instanceof $this->fqcn) {
-            throw new \InvalidArgumentException(sprintf('The new entity instance must be of the same type as the previous instance (original instance: "%s", new instance: "%s").', $this->fqcn, \get_class($newEntityInstance)));
+            throw new \InvalidArgumentException(sprintf('The new entity instance must be of the same type as the previous instance (original instance: "%s", new instance: "%s").', $this->fqcn, $newEntityInstance::class));
         }
 
         $this->instance = $newEntityInstance;
@@ -234,7 +234,7 @@ final class EntityDto
         }
 
         if (null !== $this->instance && !$newEntityInstance instanceof $this->fqcn) {
-            throw new \InvalidArgumentException(sprintf('The new entity instance must be of the same type as the previous instance (original instance: "%s", new instance: "%s").', $this->fqcn, \get_class($newEntityInstance)));
+            throw new \InvalidArgumentException(sprintf('The new entity instance must be of the same type as the previous instance (original instance: "%s", new instance: "%s").', $this->fqcn, $newEntityInstance::class));
         }
 
         return new self($this->fqcn, $this->metadata, $this->permission, $newEntityInstance);

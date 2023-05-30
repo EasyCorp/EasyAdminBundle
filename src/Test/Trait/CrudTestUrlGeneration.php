@@ -36,7 +36,7 @@ trait CrudTestUrlGeneration
         return $this->adminUrlGenerator->generateUrl();
     }
 
-    protected function generateIndexUrl(string $query = null, ?string $dashboardFqcn = null, ?string $controllerFqcn = null): string
+    protected function generateIndexUrl(?string $query = null, ?string $dashboardFqcn = null, ?string $controllerFqcn = null): string
     {
         $options = [];
 

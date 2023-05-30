@@ -64,6 +64,7 @@ class CategoryCrudControllerTest extends AbstractCrudTestCase
             static::assertSelectorNotExists('.global-invalid-feedback');
             static::assertInstanceOf(Category::class, $this->categories->findOneBy(['slug' => 'foo']));
         } else {
+            $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
             static::assertSelectorTextContains('.global-invalid-feedback', $expectedErrorMessage);
             static::assertNull($this->categories->findOneBy(['slug' => 'foo']));
         }
@@ -105,6 +106,7 @@ class CategoryCrudControllerTest extends AbstractCrudTestCase
             static::assertSelectorNotExists('.global-invalid-feedback');
             static::assertInstanceOf(Category::class, $this->categories->findOneBy(['slug' => 'bar']));
         } else {
+            $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
             static::assertSelectorTextContains('.global-invalid-feedback', $expectedErrorMessage);
             static::assertNull($this->categories->findOneBy(['slug' => 'bar']));
         }

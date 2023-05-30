@@ -17,7 +17,7 @@ class ComparisonFilterType extends AbstractType
     private string $comparisonType;
     private array $comparisonTypeOptions;
 
-    public function __construct(string $valueType = null, array $valueTypeOptions = [], string $comparisonType = null, array $comparisonTypeOptions = [])
+    public function __construct(?string $valueType = null, array $valueTypeOptions = [], ?string $comparisonType = null, array $comparisonTypeOptions = [])
     {
         $this->valueType = $valueType;
         $this->valueTypeOptions = $valueTypeOptions;

@@ -69,7 +69,7 @@ final class ActionFactory
         $entityDto->setActions(ActionCollection::new($entityActions));
     }
 
-    public function processGlobalActions(ActionConfigDto $actionsDto = null): ActionCollection
+    public function processGlobalActions(?ActionConfigDto $actionsDto = null): ActionCollection
     {
         if (null === $actionsDto) {
             $actionsDto = $this->adminContextProvider->getContext()->getCrud()->getActionsConfig();

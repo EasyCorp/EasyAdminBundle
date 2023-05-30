@@ -87,7 +87,7 @@ final class Asset
         return $this;
     }
 
-    public function webpackPackageName(string $packageName = null): self
+    public function webpackPackageName(?string $packageName = null): self
     {
         $this->dto->setWebpackPackageName($packageName);
 

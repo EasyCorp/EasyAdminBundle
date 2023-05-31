@@ -1,5 +1,5 @@
 {
-    "name": "pesseyjulien/easyadmin-bundle",
+    "name": "easycorp/easyadmin-bundle",
     "type": "symfony-bundle",
     "description": "Admin generator for Symfony applications",
     "keywords": ["backend", "admin", "generator"],

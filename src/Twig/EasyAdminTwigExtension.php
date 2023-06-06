@@ -10,10 +10,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Twig\Environment;
+use Twig\Error\RuntimeError;
 use Twig\Extension\AbstractExtension;
-use Twig\Extension\ExtensionInterface;
 use Twig\Extension\GlobalsInterface;
-use Twig\Extension\RuntimeExtensionInterface;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
 
@@ -94,21 +93,29 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
         return (int) ($bytes / (1024 ** $factor)).@$size[$factor];
     }
 
-    // Code adapted from https://stackoverflow.com/a/48606773/2804294 (License: CC BY-SA 3.0)
+    /**
+     * Code adapted from https://stackoverflow.com/a/48606773/2804294 (License: CC BY-SA 3.0).
+     *
+     * @throws RuntimeError When twig runtime can't find `$class`
+     */
     public function applyFilterIfExists(Environment $environment, $value, string $filterName, ...$filterArguments)
     {
         if (null === $filter = $environment->getFilter($filterName)) {
             return $value;
         }
 
-        [$class, $method] = $filter->getCallable();
-        if ($class instanceof ExtensionInterface) {
-            return $filter->getCallable()($value, ...$filterArguments);
+        $callback = $filter->getCallable();
+        if (\is_callable($callback)) {
+            return \call_user_func($callback, $value, ...$filterArguments);
         }
 
-        $object = $environment->getRuntime($class);
-        if ($object instanceof RuntimeExtensionInterface && method_exists($object, $method)) {
-            return $object->$method($value, ...$filterArguments);
+        if (!\is_array($callback)) {
+            return null;
+        }
+
+        $callback[0] = $environment->getRuntime($callback[0]);
+        if (\is_callable($callback)) {
+            return \call_user_func($callback, $value, ...$filterArguments);
         }
 
         return null;

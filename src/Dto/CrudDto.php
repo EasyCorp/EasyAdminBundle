@@ -174,7 +174,10 @@ final class CrudDto
         return t($title, $translationParameters);
     }
 
-    public function setCustomPageTitle(string $pageName, /* @var TranslatableInterface|string|callable */ $pageTitle): void
+    /**
+     * @param TranslatableInterface|string|callable $pageTitle
+     */
+    public function setCustomPageTitle(string $pageName, $pageTitle): void
     {
         if (!\is_string($pageTitle) && !$pageTitle instanceof TranslatableInterface && !\is_callable($pageTitle)) {
             trigger_deprecation(

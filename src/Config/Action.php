@@ -89,9 +89,9 @@ final class Action
     }
 
     /**
-     * @param mixed $label Use FALSE to hide the label; use NULL to autogenerate it
+     * @param TranslatableInterface|string|false|null $label Use FALSE to hide the label; use NULL to autogenerate it
      */
-    public function setLabel(/* @var TranslatableInterface|string|false|null */ $label): self
+    public function setLabel($label): self
     {
         if (!\is_string($label)
             && !$label instanceof TranslatableInterface
@@ -193,7 +193,10 @@ final class Action
         return $this;
     }
 
-    public function linkToUrl(/* @var string|callable */ $url): self
+    /**
+     * @param string|callable $url
+     */
+    public function linkToUrl($url): self
     {
         if (!\is_string($url) && !\is_callable($url)) {
             trigger_deprecation(

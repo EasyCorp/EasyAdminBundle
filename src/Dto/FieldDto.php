@@ -147,12 +147,15 @@ final class FieldDto
     /**
      * @return TranslatableInterface|string|false|null
      */
-    public function getLabel()/* : TranslatableInterface|string|false|null */
+    public function getLabel()
     {
         return $this->label;
     }
 
-    public function setLabel(/* @var TranslatableInterface|string|false|null */ $label): void
+    /**
+     * @param TranslatableInterface|string|false|null $label
+     */
+    public function setLabel($label): void
     {
         if (!\is_string($label) && !$label instanceof TranslatableInterface && false !== $label && null !== $label) {
             trigger_deprecation(

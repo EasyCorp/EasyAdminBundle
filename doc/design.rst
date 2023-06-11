@@ -290,7 +290,7 @@ and ``<script>`` tags, pass an ``Asset`` object to the ``addCssFile()``,
 
         ->addCssFile(Asset::new('build/admin-detail.css')->onlyOnDetail())
         ->addJsFile(Asset::new('build/admin.js')->onlyWhenCreating())
-        ->addWebpackEncoreEntry(Asset::new('admin-app')->ignoreOnForms())
+        ->addWebpackEncoreEntry(Asset::new('admin-app')->ignoreOnForm())
 
         // you can also define the Symfony Asset package which the asset belongs to
         ->addCssFile(Asset::new('some-path/foo.css')->package('legacy_assets'))

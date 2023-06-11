@@ -9,3 +9,5 @@ parameters:
         - vendor/bin/.phpunit/phpunit/vendor/autoload.php
     ignoreErrors:
         - '#Cannot use array destructuring on callable.#'
+    treatPhpDocTypesAsCertain: false
+    reportUnmatchedIgnoredErrors: false

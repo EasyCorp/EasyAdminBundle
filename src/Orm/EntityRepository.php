@@ -106,7 +106,7 @@ final class EntityRepository implements EntityRepositoryInterface
 
                     if (!\in_array($associatedEntityName, $entitiesAlreadyJoined, true)) {
                         $parentEntityName = 0 === $i ? 'entity' : $associatedProperties[$i - 1];
-                        $queryBuilder->leftJoin($parentEntityName.'.'.$associatedEntityName, $associatedEntityAlias);
+                        $queryBuilder->leftJoin(Escaper::escapeDqlAlias($parentEntityName).'.'.$associatedEntityName, $associatedEntityAlias);
                         $entitiesAlreadyJoined[] = $associatedEntityName;
                     }
 

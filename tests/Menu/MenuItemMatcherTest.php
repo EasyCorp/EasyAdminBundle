@@ -131,7 +131,7 @@ class MenuItemMatcherTest extends KernelTestCase
      * done in MenuFactory. To simplify tests, we just append the needed query parameters
      * to build the final menu item URL.
      */
-    private function getMenuItemDto(string $crudControllerFqcn = null, string $action = null, string $entityId = null, string $routeName = null, array $routeParameters = null): MenuItemDto
+    private function getMenuItemDto(?string $crudControllerFqcn = null, ?string $action = null, ?string $entityId = null, ?string $routeName = null, ?array $routeParameters = null): MenuItemDto
     {
         $menuItemDto = new MenuItemDto();
         $menuItemRouteParameters = [];
@@ -162,7 +162,7 @@ class MenuItemMatcherTest extends KernelTestCase
         return $menuItemDto;
     }
 
-    private function getMenuItemMatcher(bool $useNullContext = false, string $getControllerFqcn = null, string $getPrimaryKeyValue = null, string $getCurrentAction = null, string $routeName = null, array $routeParameters = null, string $getUri = null): MenuItemMatcherInterface
+    private function getMenuItemMatcher(bool $useNullContext = false, ?string $getControllerFqcn = null, ?string $getPrimaryKeyValue = null, ?string $getCurrentAction = null, ?string $routeName = null, ?array $routeParameters = null, ?string $getUri = null): MenuItemMatcherInterface
     {
         $queryParameters = [];
         $adminContextProviderMock = $this->getMockBuilder(AdminContextProvider::class)->disableOriginalConstructor()->getMock();

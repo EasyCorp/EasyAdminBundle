@@ -11,7 +11,7 @@ class IntlFormatterTest extends TestCase
     /**
      * @dataProvider provideFormatDate
      */
-    public function testFormatDate(?string $expectedResult, ?\DateTimeInterface $date, ?string $dateFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', string $locale = null)
+    public function testFormatDate(?string $expectedResult, ?\DateTimeInterface $date, ?string $dateFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', ?string $locale = null)
     {
         if (\PHP_VERSION_ID < 80200) {
             $this->markTestSkipped('PHP 8.2 or higher is required to run this test.');
@@ -29,7 +29,7 @@ class IntlFormatterTest extends TestCase
     /**
      * @dataProvider provideFormatTime
      */
-    public function testFormatTime(?string $expectedResult, ?\DateTimeInterface $date, ?string $timeFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', string $locale = null, string $assertMethod = 'assertSame')
+    public function testFormatTime(?string $expectedResult, ?\DateTimeInterface $date, ?string $timeFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', ?string $locale = null, string $assertMethod = 'assertSame')
     {
         if (\PHP_VERSION_ID < 80200) {
             $this->markTestSkipped('PHP 8.2 or higher is required to run this test.');
@@ -47,7 +47,7 @@ class IntlFormatterTest extends TestCase
     /**
      * @dataProvider provideFormatDateTime
      */
-    public function testFormatDateTime(?string $expectedResult, ?\DateTimeInterface $date, ?string $dateFormat = 'medium', ?string $timeFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', string $locale = null)
+    public function testFormatDateTime(?string $expectedResult, ?\DateTimeInterface $date, ?string $dateFormat = 'medium', ?string $timeFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', ?string $locale = null)
     {
         if (\PHP_VERSION_ID < 80200) {
             $this->markTestSkipped('PHP 8.2 or higher is required to run this test.');

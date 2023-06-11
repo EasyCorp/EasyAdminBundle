@@ -40,7 +40,7 @@ final class CountryConfigurator implements FieldConfiguratorInterface
             $field->setTextAlign(TextAlign::CENTER);
         }
 
-        if (\in_array($context->getCrud()->getCurrentPage(), [Crud::PAGE_EDIT, Crud::PAGE_NEW], true)) {
+        if (\in_array($context->getCrud()?->getCurrentPage(), [Crud::PAGE_EDIT, Crud::PAGE_NEW], true)) {
             $field->setFormTypeOption('choices', $this->generateFormTypeChoices($countryCodeFormat, $field->getCustomOption(CountryField::OPTION_COUNTRY_CODES_TO_KEEP), $field->getCustomOption(CountryField::OPTION_COUNTRY_CODES_TO_REMOVE)));
 
             // the value of this form option must be a string to properly propagate it as an HTML attribute value

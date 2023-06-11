@@ -50,7 +50,7 @@ final class TextConfigurator implements FieldConfiguratorInterface
         // when contents are rendered as HTML, "max length" option is ignored to prevent
         // truncating contents in the middle of an HTML tag, which messes the entire backend
         if (!$renderAsHtml) {
-            $isDetailAction = Action::DETAIL === $context->getCrud()->getCurrentAction();
+            $isDetailAction = Action::DETAIL === $context->getCrud()?->getCurrentAction();
             $defaultMaxLength = $isDetailAction ? \PHP_INT_MAX : 64;
             $formattedValue = u($formattedValue)->truncate($configuredMaxLength ?? $defaultMaxLength, '…')->toString();
         }

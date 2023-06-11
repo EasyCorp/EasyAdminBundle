@@ -131,7 +131,7 @@ final class CollectionConfigurator implements FieldConfiguratorInterface
             $collectionItemsAsText[] = (string) $item;
         }
 
-        $isDetailAction = Action::DETAIL === $context->getCrud()->getCurrentAction();
+        $isDetailAction = Action::DETAIL === $context->getCrud()?->getCurrentAction();
 
         return u(', ')->join($collectionItemsAsText)->truncate($isDetailAction ? 512 : 32, '…')->toString();
     }

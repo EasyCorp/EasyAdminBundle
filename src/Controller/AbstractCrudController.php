@@ -141,7 +141,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
         $entities = $this->container->get(EntityFactory::class)->createCollection($context->getEntity(), $paginator->getResults());
         $this->container->get(EntityFactory::class)->processFieldsForAll($entities, $fields);
-        $actions = $this->container->get(EntityFactory::class)->processActionsForAll($entities, $context->getCrud()->getActionsConfig());
+        $actions = $this->container->get(EntityFactory::class)->processActionsForAll($entities, $context->getCrud()?->getActionsConfig());
 
         $responseParameters = $this->configureResponseParameters(KeyValueStore::new([
             'pageName' => Crud::PAGE_INDEX,
@@ -179,8 +179,8 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         }
 
         $this->container->get(EntityFactory::class)->processFields($context->getEntity(), FieldCollection::new($this->configureFields(Crud::PAGE_DETAIL)));
-        $context->getCrud()->setFieldAssets($this->getFieldAssets($context->getEntity()->getFields()));
-        $this->container->get(EntityFactory::class)->processActions($context->getEntity(), $context->getCrud()->getActionsConfig());
+        $context->getCrud()?->setFieldAssets($this->getFieldAssets($context->getEntity()->getFields()));
+        $this->container->get(EntityFactory::class)->processActions($context->getEntity(), $context->getCrud()?->getActionsConfig());
 
         $responseParameters = $this->configureResponseParameters(KeyValueStore::new([
             'pageName' => Crud::PAGE_DETAIL,
@@ -214,8 +214,8 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         }
 
         $this->container->get(EntityFactory::class)->processFields($context->getEntity(), FieldCollection::new($this->configureFields(Crud::PAGE_EDIT)));
-        $context->getCrud()->setFieldAssets($this->getFieldAssets($context->getEntity()->getFields()));
-        $this->container->get(EntityFactory::class)->processActions($context->getEntity(), $context->getCrud()->getActionsConfig());
+        $context->getCrud()?->setFieldAssets($this->getFieldAssets($context->getEntity()->getFields()));
+        $this->container->get(EntityFactory::class)->processActions($context->getEntity(), $context->getCrud()?->getActionsConfig());
         $entityInstance = $context->getEntity()->getInstance();
 
         if ($context->getRequest()->isXmlHttpRequest()) {
@@ -247,7 +247,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             return new Response($newValue ? '1' : '0');
         }
 
-        $editForm = $this->createEditForm($context->getEntity(), $context->getCrud()->getEditFormOptions(), $context);
+        $editForm = $this->createEditForm($context->getEntity(), $context->getCrud()?->getEditFormOptions(), $context);
         $editForm->handleRequest($context->getRequest());
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $this->processUploadedFiles($editForm);
@@ -297,10 +297,10 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
         $context->getEntity()->setInstance($this->createEntity($context->getEntity()->getFqcn()));
         $this->container->get(EntityFactory::class)->processFields($context->getEntity(), FieldCollection::new($this->configureFields(Crud::PAGE_NEW)));
-        $context->getCrud()->setFieldAssets($this->getFieldAssets($context->getEntity()->getFields()));
-        $this->container->get(EntityFactory::class)->processActions($context->getEntity(), $context->getCrud()->getActionsConfig());
+        $context->getCrud()?->setFieldAssets($this->getFieldAssets($context->getEntity()->getFields()));
+        $this->container->get(EntityFactory::class)->processActions($context->getEntity(), $context->getCrud()?->getActionsConfig());
 
-        $newForm = $this->createNewForm($context->getEntity(), $context->getCrud()->getNewFormOptions(), $context);
+        $newForm = $this->createNewForm($context->getEntity(), $context->getCrud()?->getNewFormOptions(), $context);
         $newForm->handleRequest($context->getRequest());
 
         $entityInstance = $newForm->getData();
@@ -479,7 +479,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
     {
         $fields = FieldCollection::new($this->configureFields(Crud::PAGE_INDEX));
         $this->container->get(EntityFactory::class)->processFields($context->getEntity(), $fields);
-        $filters = $this->container->get(FilterFactory::class)->create($context->getCrud()->getFiltersConfig(), $context->getEntity()->getFields(), $context->getEntity());
+        $filters = $this->container->get(FilterFactory::class)->create($context->getCrud()?->getFiltersConfig(), $context->getEntity()->getFields(), $context->getEntity());
 
         /** @var FormInterface&FiltersFormType $filtersForm */
         $filtersForm = $this->container->get(FormFactory::class)->createFiltersForm($filters, $context->getRequest());

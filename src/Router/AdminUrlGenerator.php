@@ -8,6 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInte
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\DashboardControllerRegistry;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
@@ -202,6 +203,11 @@ final class AdminUrlGenerator
     public function __toString(): string
     {
         return $this->generateUrl();
+    }
+
+    public function redirect(int $status = 302): RedirectResponse
+    {
+        return new RedirectResponse($this->generateUrl(), 302);
     }
 
     public function generateUrl(): string

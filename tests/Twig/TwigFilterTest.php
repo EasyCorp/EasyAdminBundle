@@ -62,7 +62,17 @@ final class TwigFilterTest extends KernelTestCase
         $this->assertSame('10', $result);
     }
 
-    public function testNotFoundFilter(): void
+    public function testClosure(): void
+    {
+        $this->twig->addFilter(new TwigFilter('my_filter', fn (float $value) => 'closure: '.$value));
+
+        $view = "{{number | ea_apply_filter_if_exists('my_filter')}}";
+        $context = ['number' => 123_456.789];
+        $result = $this->twig->createTemplate($view)->render($context);
+        $this->assertSame('closure: 123456.789', $result);
+    }
+
+    public function testFilterNotFound(): void
     {
         $view = "{{number | ea_apply_filter_if_exists('imagine_filter')}}";
         $context = ['number' => 3.14];
@@ -70,10 +80,10 @@ final class TwigFilterTest extends KernelTestCase
         $this->assertSame('3.14', $result);
     }
 
-    public function testNotFoundClass(): void
+    public function testClassNotFound(): void
     {
         $this->expectException(RuntimeError::class);
-        $this->expectExceptionMessage('a');
+        $this->expectExceptionMessage('Unable to load the "EATests\NotFoundClass" runtime in');
 
         $this->twig->addFilter(new TwigFilter('my_filter', ['EATests\NotFoundClass', 'myFilter']));
 
@@ -82,18 +92,11 @@ final class TwigFilterTest extends KernelTestCase
         $this->twig->createTemplate($view)->render($context);
     }
 
-    public function testInvalidCallableString(): void
+    public function testClassMethodNotFound(): void
     {
-        $this->twig->addFilter(new TwigFilter('my_filter', 'not-callable'));
+        $this->expectException(RuntimeError::class);
+        $this->expectExceptionMessage('Unable to load runtime for filter: "my_filter"');
 
-        $view = "{{number | ea_apply_filter_if_exists('my_filter')}}";
-        $context = ['number' => 123_456.789];
-        $result = $this->twig->createTemplate($view)->render($context);
-        $this->assertSame('', $result);
-    }
-
-    public function testInvalidCallableArray(): void
-    {
         $loader = new FactoryRuntimeLoader([
             'EATests\MyLazyFilterRuntime' => fn () => new class() {},
         ]);
@@ -103,7 +106,30 @@ final class TwigFilterTest extends KernelTestCase
 
         $view = "{{number | ea_apply_filter_if_exists('my_filter')}}";
         $context = ['number' => 123_456.789];
-        $result = $this->twig->createTemplate($view)->render($context);
-        $this->assertSame('', $result);
+        $this->twig->createTemplate($view)->render($context);
+    }
+
+    public function testInvalidCallbackNotArray(): void
+    {
+        $this->expectException(RuntimeError::class);
+        $this->expectExceptionMessage('Invalid callback for filter: "my_filter"');
+
+        $this->twig->addFilter(new TwigFilter('my_filter', 'not-callable'));
+
+        $view = "{{number | ea_apply_filter_if_exists('my_filter')}}";
+        $context = ['number' => 123_456.789];
+        $this->twig->createTemplate($view)->render($context);
+    }
+
+    public function testInvalidCallbackArray(): void
+    {
+        $this->expectException(RuntimeError::class);
+        $this->expectExceptionMessage('Invalid callback for filter: "my_filter"');
+
+        $this->twig->addFilter(new TwigFilter('my_filter', [__CLASS__]));
+
+        $view = "{{number | ea_apply_filter_if_exists('my_filter')}}";
+        $context = ['number' => 123_456.789];
+        $this->twig->createTemplate($view)->render($context);
     }
 }

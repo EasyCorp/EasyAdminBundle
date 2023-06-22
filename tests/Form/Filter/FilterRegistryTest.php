@@ -82,7 +82,7 @@ class FilterRegistryTest extends TestCase
         $this->filterRegistry->resolveType($form);
     }
 
-    private function createFilterForm(FormTypeInterface $filterType, FormTypeInterface $childFilterType = null)
+    private function createFilterForm(FormTypeInterface $filterType, ?FormTypeInterface $childFilterType = null)
     {
         $resolvedFormType = $this->getMockBuilder(ResolvedFormTypeInterface::class)->getMock();
         $resolvedFormType->method('getInnerType')->willReturn($filterType);

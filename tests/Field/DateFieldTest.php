@@ -18,7 +18,7 @@ class DateFieldTest extends AbstractFieldTest
             ->onlyMethods(['formatDate'])
             ->getMock();
         $intlFormatterMock->method('formatDate')->willReturnCallback(
-            static function ($value, ?string $dateFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', string $locale = null) { return sprintf('value: %s | dateFormat: %s | pattern: %s | timezone: %s | calendar: %s | locale: %s', $value instanceof \DateTimeInterface ? $value->format('Y-m-d H:i:s') : $value, $dateFormat, $pattern, $timezone, $calendar, $locale); }
+            static function ($value, ?string $dateFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', ?string $locale = null) { return sprintf('value: %s | dateFormat: %s | pattern: %s | timezone: %s | calendar: %s | locale: %s', $value instanceof \DateTimeInterface ? $value->format('Y-m-d H:i:s') : $value, $dateFormat, $pattern, $timezone, $calendar, $locale); }
         );
 
         $this->configurator = new DateTimeConfigurator($intlFormatterMock);

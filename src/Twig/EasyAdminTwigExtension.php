@@ -96,11 +96,17 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
     /**
      * Code adapted from https://stackoverflow.com/a/48606773/2804294 (License: CC BY-SA 3.0).
      *
-     * @throws RuntimeError When twig runtime can't find `$class`
+     * @throws RuntimeError when twig runtime can't find the specified filter
      */
     public function applyFilterIfExists(Environment $environment, $value, string $filterName, ...$filterArguments)
     {
-        if (null === $filter = $environment->getFilter($filterName)) {
+        /**
+         * Twig v2 will return TwigFilter|false.
+         *
+         * @var TwigFilter|false|null $filter
+         */
+        $filter = $environment->getFilter($filterName);
+        if (null === $filter || false === $filter) {
             return $value;
         }
 
@@ -109,16 +115,16 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
             return \call_user_func($callback, $value, ...$filterArguments);
         }
 
-        if (!\is_array($callback)) {
-            return null;
-        }
+        if (\is_array($callback) && 2 === \count($callback)) {
+            $callback[0] = $environment->getRuntime($callback[0]);
+            if (!\is_callable($callback)) {
+                throw new RuntimeError(sprintf('Unable to load runtime for filter: "%s"', $filterName));
+            }
 
-        $callback[0] = $environment->getRuntime($callback[0]);
-        if (\is_callable($callback)) {
             return \call_user_func($callback, $value, ...$filterArguments);
         }
 
-        return null;
+        throw new RuntimeError(sprintf('Invalid callback for filter: "%s"', $filterName));
     }
 
     public function representAsString($value): string

@@ -100,7 +100,8 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
      */
     public function applyFilterIfExists(Environment $environment, $value, string $filterName, ...$filterArguments)
     {
-        if (null === $filter = $environment->getFilter($filterName)) {
+        $filter = $environment->getFilter($filterName);
+        if (null === $filter || $filter === false) {
             return $value;
         }
 

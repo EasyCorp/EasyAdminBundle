@@ -1,0 +1,5 @@
+---------------------------------------------------------------------------
+
+by ndench at 2023-06-09T06:55:24Z
+
+Any chance you could also update the documentation to remove `TextField` and `TextAreaField` from the recommendations for a Doctrine json type?

@@ -1,27 +1,2 @@
 parameters:
-	treatPhpDocTypesAsCertain: false
 	ignoreErrors: []
-#		-
-#			message: "#^Parameter \\#1 \\$message of class EasyCorp\\\\Bundle\\\\EasyAdminBundle\\\\Translation\\\\TranslatableChoiceMessage constructor expects Symfony\\\\Component\\\\Translation\\\\TranslatableMessage, Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface given\\.$#"
-#			count: 1
-#			path: src/Field/Configurator/ChoiceConfigurator.php
-#
-#		-
-#			message: "#^Call to an undefined method Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\:\\:getDomain\\(\\)\\.$#"
-#			count: 1
-#			path: src/Translation/TranslatableMessageBuilder.php
-#
-#		-
-#			message: "#^Call to an undefined method Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\:\\:getMessage\\(\\)\\.$#"
-#			count: 1
-#			path: src/Translation/TranslatableMessageBuilder.php
-#
-#		-
-#			message: "#^Call to an undefined method Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\:\\:getParameters\\(\\)\\.$#"
-#			count: 1
-#			path: src/Translation/TranslatableMessageBuilder.php
-#
-#		-
-#			message: "#^Variable method call on Twig\\\\Extension\\\\RuntimeExtensionInterface\\.$#"
-#			count: 1
-#			path: src/Twig/EasyAdminTwigExtension.php

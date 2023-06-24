@@ -170,7 +170,10 @@ final class ActionDto
         return $this->routeParameters;
     }
 
-    public function setRouteParameters(/* @var array|callable */ $routeParameters): void
+    /**
+     * @param array|callable $routeParameters
+     */
+    public function setRouteParameters($routeParameters): void
     {
         if (!\is_array($routeParameters) && !\is_callable($routeParameters)) {
             trigger_deprecation(
@@ -190,12 +193,15 @@ final class ActionDto
     /**
      * @return string|callable|null
      */
-    public function getUrl()/* : string|callable */
+    public function getUrl()
     {
         return $this->url;
     }
 
-    public function setUrl(/* @var string|callable */ $url): void
+    /**
+     * @param string|callable $url
+     */
+    public function setUrl($url): void
     {
         if (!\is_string($url) && !\is_callable($url)) {
             trigger_deprecation(

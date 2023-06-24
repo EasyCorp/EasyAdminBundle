@@ -239,6 +239,7 @@
                     {% set has_search = ea.crud is not null and ea.crud.isSearchEnabled %}
                     <aside class="content-top {{ has_search ? 'ea-search-enabled' : 'ea-search-disabled' }}">
                         {% block content_top_header %}
+                            {% block search_wrapper %}
                             <div class="content-search">
                                 {% if has_search %}
                                     {% block search %}
@@ -297,7 +298,9 @@
                                     {% endblock search %}
                                 {% endif %}
                             </div>
+                            {% endblock search_wrapper %}
 
+                            {% block header_custom_menu_wrapper %}
                             <div class="navbar-custom-menu">
                                 {% block header_custom_menu %}
                                     <div class="dropdown user-menu-wrapper {{ is_granted(impersonator_permission) ? 'user-is-impersonated' }}">
@@ -312,8 +315,11 @@
                                     </div>
                                 {% endblock header_custom_menu %}
                             </div>
+                            {% endblock header_custom_menu_wrapper %}
 
-                            {{ settings_dropdown }}
+                            {% block settings_dropdown_wrapper %}
+                                {{ settings_dropdown }}
+                            {% endblock settings_dropdown_wrapper %}
                         {% endblock content_top_header %}
                     </aside>
 

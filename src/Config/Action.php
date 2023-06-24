@@ -42,10 +42,10 @@ final class Action
     }
 
     /**
-     * @param mixed       $label Use FALSE to hide the label; use NULL to autogenerate it
-     * @param string|null $icon  The full CSS classes of the FontAwesome icon to render (see https://fontawesome.com/v6/search?m=free)
+     * @param TranslatableInterface|string|false|null $label Use FALSE to hide the label; use NULL to autogenerate it
+     * @param string|null                             $icon  The full CSS classes of the FontAwesome icon to render (see https://fontawesome.com/v6/search?m=free)
      */
-    public static function new(string $name, /** @var TranslatableInterface|string|false|null */ $label = null, ?string $icon = null): self
+    public static function new(string $name, $label = null, ?string $icon = null): self
     {
         if (!\is_string($label)
             && !$label instanceof TranslatableInterface
@@ -57,7 +57,7 @@ final class Action
                 'Argument "%s" for "%s" must be one of these types: %s. Passing type "%s" will cause an error in 5.0.0.',
                 '$label',
                 __METHOD__,
-                '"string", "false" or "null"',
+                sprintf('"%s", "string", "false" or "null"', TranslatableInterface::class),
                 \gettype($label)
             );
         }
@@ -89,9 +89,9 @@ final class Action
     }
 
     /**
-     * @param mixed $label Use FALSE to hide the label; use NULL to autogenerate it
+     * @param TranslatableInterface|string|false|null $label Use FALSE to hide the label; use NULL to autogenerate it
      */
-    public function setLabel(/* @var TranslatableInterface|string|false|null */ $label): self
+    public function setLabel($label): self
     {
         if (!\is_string($label)
             && !$label instanceof TranslatableInterface
@@ -193,7 +193,10 @@ final class Action
         return $this;
     }
 
-    public function linkToUrl(/* @var string|callable */ $url): self
+    /**
+     * @param string|callable $url
+     */
+    public function linkToUrl($url): self
     {
         if (!\is_string($url) && !\is_callable($url)) {
             trigger_deprecation(

@@ -347,7 +347,7 @@
                                                         {% set breadcrumb_url = ea_url().setRoute(breadcrumb_item.route) %}
                                                     {% elseif not breadcrumb_item.action is null %}
                                                         {% set breadcrumb_url = ea_url()
-                                                            .unsetAllExcept('crudControllerFqcn', 'dashboardControllerFqcn')
+                                                            .unsetAllExcept('crudControllerFqcn', 'dashboardControllerFqcn', 'entityId')
                                                             .setAction(breadcrumb_item.action) %}
                                                         {% if not breadcrumb_item.crudControllerFqcn is null %}
                                                             {% do breadcrumb_url.setController(breadcrumb_item.generateCrudControllerFqcn(breadcrumb_entity)) %}

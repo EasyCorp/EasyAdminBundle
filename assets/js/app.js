@@ -141,9 +141,26 @@ class App {
             return;
         }
 
+        // splits a string into tokens, taking into account quoted strings
+        // Example: 'foo "bar baz" qux' => ['foo', 'bar baz', 'qux']
+        const tokenizeString = (string) => {
+            const regex = /"([^"\\]*(\\.[^"\\]*)*)"|\S+/g;
+            const tokens = [];
+            let match;
+
+            while (null !== (match = regex.exec(string))) {
+                tokens.push(match[0].replaceAll('"', '').trim());
+            }
+
+            return tokens;
+        };
+
+        const searchQueryTerms = tokenizeString(searchElement.value);
+        const searchQueryTermsHighlightRegexp = new RegExp(searchQueryTerms.join('|'), 'i');
+
         const elementsToHighlight = document.querySelectorAll('table tbody td:not(.actions)');
         const highlighter = new Mark(elementsToHighlight);
-        highlighter.mark(searchQuery);
+        highlighter.markRegExp(searchQueryTermsHighlightRegexp);
     }
 
     #createFilters() {

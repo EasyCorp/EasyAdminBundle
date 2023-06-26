@@ -37,8 +37,8 @@ class AppFixtures extends Fixture
                 ->setContent('Lorem Ipsum Dolor Sit Amet.')
                 ->setCreatedAt(new \DateTime('2020-11-'.($i + 1).' 09:00:00'))
                 ->setPublishedAt(new \DateTimeImmutable('2020-11-'.($i + 1).' 11:00:00'))
-                ->addCategory($this->getReference('category'.($i % 10)))
-                ->setAuthor($this->getReference('user'.($i % 5)));
+                ->addCategory($this->getReference('category'.($i % 10), Category::class))
+                ->setAuthor($this->getReference('user'.($i % 5), User::class));
 
             $manager->persist($blogPost);
         }

@@ -65,25 +65,127 @@ final class EntityRepository implements EntityRepositoryInterface
 
     private function addSearchClause(QueryBuilder $queryBuilder, SearchDto $searchDto, EntityDto $entityDto): void
     {
-        $query = $searchDto->getQuery();
-        $lowercaseQuery = mb_strtolower($query);
-        $isNumericQuery = is_numeric($query);
-        $isSmallIntegerQuery = ctype_digit($query) && $query >= -32768 && $query <= 32767;
-        $isIntegerQuery = ctype_digit($query) && $query >= -2147483648 && $query <= 2147483647;
-        $isUuidQuery = Uuid::isValid($query);
-        $isUlidQuery = Ulid::isValid($query);
+        $searchablePropertiesConfig = $this->getSearchablePropertiesConfig($queryBuilder, $searchDto, $entityDto);
 
-        $dqlParameters = [
-            // adding '0' turns the string into a numeric value
-            'numeric_query' => is_numeric($query) ? 0 + $query : $query,
-            'uuid_query' => $query,
-            'text_query' => '%'.$lowercaseQuery.'%',
-            'words_query' => explode(' ', $lowercaseQuery),
-        ];
+        $queryTerms = $searchDto->getQueryTerms();
+        $queryTermIndex = 0;
+        foreach ($queryTerms as $queryTerm) {
+            ++$queryTermIndex;
 
-        $entitiesAlreadyJoined = [];
+            $lowercaseQueryTerm = mb_strtolower($queryTerm);
+            $isNumericQueryTerm = is_numeric($queryTerm);
+            $isSmallIntegerQueryTerm = ctype_digit($queryTerm) && $queryTerm >= -32768 && $queryTerm <= 32767;
+            $isIntegerQueryTerm = ctype_digit($queryTerm) && $queryTerm >= -2147483648 && $queryTerm <= 2147483647;
+            $isUuidQueryTerm = Uuid::isValid($queryTerm);
+            $isUlidQueryTerm = Ulid::isValid($queryTerm);
+
+            $dqlParameters = [
+                // adding '0' turns the string into a numeric value
+                'numeric_query' => is_numeric($queryTerm) ? 0 + $queryTerm : $queryTerm,
+                'uuid_query' => $queryTerm,
+                'text_query' => '%'.$lowercaseQueryTerm.'%',
+            ];
+
+            foreach ($searchablePropertiesConfig as $propertyName => $propertyConfig) {
+                $entityName = $propertyConfig['entity_name'];
+
+                // this complex condition is needed to avoid issues on PostgreSQL databases
+                if (
+                    ($propertyConfig['is_small_integer'] && $isSmallIntegerQueryTerm)
+                    || ($propertyConfig['is_integer'] && $isIntegerQueryTerm)
+                    || ($propertyConfig['is_numeric'] && $isNumericQueryTerm)
+                ) {
+                    $parameterName = sprintf('query_for_numbers_%d', $queryTermIndex);
+                    $queryBuilder->orWhere(sprintf('%s.%s = :%s', $entityName, $propertyName, $parameterName))
+                        ->setParameter($parameterName, $dqlParameters['numeric_query']);
+                } elseif ($propertyConfig['is_guid'] && $isUuidQueryTerm) {
+                    $parameterName = sprintf('query_for_uuids_%d', $queryTermIndex);
+                    $queryBuilder->orWhere(sprintf('%s.%s = :%s', $entityName, $propertyName, $parameterName))
+                        ->setParameter($parameterName, $dqlParameters['uuid_query'], 'uuid' === $propertyConfig['property_data_type'] ? 'uuid' : null);
+                } elseif ($propertyConfig['is_ulid'] && $isUlidQueryTerm) {
+                    $parameterName = sprintf('query_for_ulids_%d', $queryTermIndex);
+                    $queryBuilder->orWhere(sprintf('%s.%s = :%s', $entityName, $propertyName, $parameterName))
+                        ->setParameter($parameterName, $dqlParameters['uuid_query'], 'ulid');
+                } elseif ($propertyConfig['is_text']) {
+                    $parameterName = sprintf('query_for_text_%d', $queryTermIndex);
+                    $queryBuilder->orWhere(sprintf('LOWER(%s.%s) LIKE :%s', $entityName, $propertyName, $parameterName))
+                        ->setParameter($parameterName, $dqlParameters['text_query']);
+                }
+            }
+        }
+
+        $this->eventDispatcher->dispatch(new AfterEntitySearchEvent($queryBuilder, $searchDto, $entityDto));
+    }
+
+    private function addOrderClause(QueryBuilder $queryBuilder, SearchDto $searchDto, EntityDto $entityDto): void
+    {
+        foreach ($searchDto->getSort() as $sortProperty => $sortOrder) {
+            $aliases = $queryBuilder->getAllAliases();
+            $sortFieldIsDoctrineAssociation = $entityDto->isAssociation($sortProperty);
+
+            if ($sortFieldIsDoctrineAssociation) {
+                $sortFieldParts = explode('.', $sortProperty, 2);
+                // check if join has been added once before.
+                if (!\in_array($sortFieldParts[0], $aliases, true)) {
+                    $queryBuilder->leftJoin('entity.'.$sortFieldParts[0], $sortFieldParts[0]);
+                }
+
+                if (1 === \count($sortFieldParts)) {
+                    $queryBuilder->addOrderBy('entity.'.$sortProperty, $sortOrder);
+                } else {
+                    $queryBuilder->addOrderBy($sortProperty, $sortOrder);
+                }
+            } else {
+                $queryBuilder->addOrderBy('entity.'.$sortProperty, $sortOrder);
+            }
+        }
+    }
+
+    private function addFilterClause(QueryBuilder $queryBuilder, SearchDto $searchDto, EntityDto $entityDto, FilterCollection $configuredFilters, FieldCollection $fields): void
+    {
+        $filtersForm = $this->formFactory->createFiltersForm($configuredFilters, $this->adminContextProvider->getContext()->getRequest());
+        if (!$filtersForm->isSubmitted()) {
+            return;
+        }
+
+        $appliedFilters = $searchDto->getAppliedFilters();
+        $i = 0;
+        foreach ($filtersForm as $filterForm) {
+            $propertyName = $filterForm->getName();
+
+            $filter = $configuredFilters->get($propertyName);
+            // this filter is not defined or not applied
+            if (null === $filter || !isset($appliedFilters[$propertyName])) {
+                continue;
+            }
+
+            // if the form filter is not valid then we should not apply the filter
+            if (!$filterForm->isValid()) {
+                continue;
+            }
+
+            $submittedData = $filterForm->getData();
+            if (!\is_array($submittedData)) {
+                $submittedData = [
+                    'comparison' => ComparisonType::EQ,
+                    'value' => $submittedData,
+                ];
+            }
+
+            $filterDataDto = FilterDataDto::new($i, $filter, current($queryBuilder->getRootAliases()), $submittedData);
+            $filter->apply($queryBuilder, $filterDataDto, $fields->getByProperty($propertyName), $entityDto);
+
+            ++$i;
+        }
+    }
+
+    private function getSearchablePropertiesConfig(QueryBuilder $queryBuilder, SearchDto $searchDto, EntityDto $entityDto): array
+    {
+        $searchablePropertiesConfig = [];
         $configuredSearchableProperties = $searchDto->getSearchableProperties();
         $searchableProperties = (null === $configuredSearchableProperties || 0 === \count($configuredSearchableProperties)) ? $entityDto->getAllPropertyNames() : $configuredSearchableProperties;
+
+        $entitiesAlreadyJoined = [];
         foreach ($searchableProperties as $propertyName) {
             if ($entityDto->isAssociation($propertyName)) {
                 // support arbitrarily nested associations (e.g. foo.bar.baz.qux)
@@ -161,90 +263,20 @@ final class EntityRepository implements EntityRepositoryInterface
                 }
             }
 
-            // this complex condition is needed to avoid issues on PostgreSQL databases
-            if (
-                ($isSmallIntegerProperty && $isSmallIntegerQuery)
-                || ($isIntegerProperty && $isIntegerQuery)
-                || ($isNumericProperty && $isNumericQuery)
-            ) {
-                $queryBuilder->orWhere(sprintf('%s.%s = :query_for_numbers', $entityName, $propertyName))
-                    ->setParameter('query_for_numbers', $dqlParameters['numeric_query']);
-            } elseif ($isGuidProperty && $isUuidQuery) {
-                $queryBuilder->orWhere(sprintf('%s.%s = :query_for_uuids', $entityName, $propertyName))
-                    ->setParameter('query_for_uuids', $dqlParameters['uuid_query'], 'uuid' === $propertyDataType ? 'uuid' : null);
-            } elseif ($isUlidProperty && $isUlidQuery) {
-                $queryBuilder->orWhere(sprintf('%s.%s = :query_for_uuids', $entityName, $propertyName))
-                    ->setParameter('query_for_uuids', $dqlParameters['uuid_query'], 'ulid');
-            } elseif ($isTextProperty) {
-                $queryBuilder->orWhere(sprintf('LOWER(%s.%s) LIKE :query_for_text', $entityName, $propertyName))
-                    ->setParameter('query_for_text', $dqlParameters['text_query']);
-                $queryBuilder->orWhere(sprintf('LOWER(%s.%s) IN (:query_as_words)', $entityName, $propertyName))
-                    ->setParameter('query_as_words', $dqlParameters['words_query']);
-            }
+            $searchablePropertiesConfig[$propertyName] = [
+                'entity_name' => $entityName,
+                'property_data_type' => $propertyDataType,
+                'is_boolean' => $isBoolean,
+                'is_small_integer' => $isSmallIntegerProperty,
+                'is_integer' => $isIntegerProperty,
+                'is_numeric' => $isNumericProperty,
+                'is_text' => $isTextProperty,
+                'is_guid' => $isGuidProperty,
+                'is_ulid' => $isUlidProperty,
+                'is_json' => $isJsonProperty,
+            ];
         }
 
-        $this->eventDispatcher->dispatch(new AfterEntitySearchEvent($queryBuilder, $searchDto, $entityDto));
-    }
-
-    private function addOrderClause(QueryBuilder $queryBuilder, SearchDto $searchDto, EntityDto $entityDto): void
-    {
-        foreach ($searchDto->getSort() as $sortProperty => $sortOrder) {
-            $aliases = $queryBuilder->getAllAliases();
-            $sortFieldIsDoctrineAssociation = $entityDto->isAssociation($sortProperty);
-
-            if ($sortFieldIsDoctrineAssociation) {
-                $sortFieldParts = explode('.', $sortProperty, 2);
-                // check if join has been added once before.
-                if (!\in_array($sortFieldParts[0], $aliases, true)) {
-                    $queryBuilder->leftJoin('entity.'.$sortFieldParts[0], $sortFieldParts[0]);
-                }
-
-                if (1 === \count($sortFieldParts)) {
-                    $queryBuilder->addOrderBy('entity.'.$sortProperty, $sortOrder);
-                } else {
-                    $queryBuilder->addOrderBy($sortProperty, $sortOrder);
-                }
-            } else {
-                $queryBuilder->addOrderBy('entity.'.$sortProperty, $sortOrder);
-            }
-        }
-    }
-
-    private function addFilterClause(QueryBuilder $queryBuilder, SearchDto $searchDto, EntityDto $entityDto, FilterCollection $configuredFilters, FieldCollection $fields): void
-    {
-        $filtersForm = $this->formFactory->createFiltersForm($configuredFilters, $this->adminContextProvider->getContext()->getRequest());
-        if (!$filtersForm->isSubmitted()) {
-            return;
-        }
-
-        $appliedFilters = $searchDto->getAppliedFilters();
-        $i = 0;
-        foreach ($filtersForm as $filterForm) {
-            $propertyName = $filterForm->getName();
-
-            $filter = $configuredFilters->get($propertyName);
-            // this filter is not defined or not applied
-            if (null === $filter || !isset($appliedFilters[$propertyName])) {
-                continue;
-            }
-
-            // if the form filter is not valid then we should not apply the filter
-            if (!$filterForm->isValid()) {
-                continue;
-            }
-
-            $submittedData = $filterForm->getData();
-            if (!\is_array($submittedData)) {
-                $submittedData = [
-                    'comparison' => ComparisonType::EQ,
-                    'value' => $submittedData,
-                ];
-            }
-
-            $filterDataDto = FilterDataDto::new($i, $filter, current($queryBuilder->getRootAliases()), $submittedData);
-            $filter->apply($queryBuilder, $filterDataDto, $fields->getByProperty($propertyName), $entityDto);
-
-            ++$i;
-        }
+        return $searchablePropertiesConfig;
     }
 }

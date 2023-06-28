@@ -273,10 +273,10 @@ final class CrudTestUrlGenerationTraitTest extends KernelTestCase
      *
      * @dataProvider genericDataProvider
      */
-    public function testGenericUrlGeneration(string $action, string|int $entityId = null, array $options = [])
+    public function testGenericUrlGeneration(string $action, string|int|null $entityId = null, array $options = [])
     {
         $testClass = new class($this->adminUrlGenerator) extends CrudTestUrlGenerationTraitTestClass {
-            public function test(string $action, string|int $entityId = null, array $options = []): string
+            public function test(string $action, string|int|null $entityId = null, array $options = []): string
             {
                 return $this->getCrudUrl($action, $entityId, $options);
             }

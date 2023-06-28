@@ -172,6 +172,9 @@
     --form-type-autocomplete-multi-item-bg: var(--gray-100);
     --form-type-autocomplete-multi-item-border-color: var(--white);
     --form-type-autocomplete-multi-item-remove-button-hover-bg: var(--gray-200);
+    --form-global-error-bg: var(--red-100);
+    --form-global-error-color: var(--color-danger);
+    --form-global-error-border: 1px solid transparent;
     --form-help-color: var(--gray-600);
     --form-help-error-color: var(--gray-800);
     --form-help-active-color: var(--gray-800);
@@ -484,6 +487,9 @@
     --form-type-autocomplete-multi-item-bg: var(--true-gray-700);
     --form-type-autocomplete-multi-item-border-color: var(--true-gray-500);
     --form-type-autocomplete-multi-item-remove-button-hover-bg: var(--true-gray-800);
+    --form-global-error-bg: transparent;
+    --form-global-error-color: var(--red-400);
+    --form-global-error-border: 1px solid var(--red-400);
     --form-help-color: var(--true-gray-500);
     --form-help-error-color: var(--true-gray-200);
     --form-help-active-color: var(--true-gray-300);

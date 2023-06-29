@@ -36,16 +36,14 @@ because :ref:`each dashboard only uses a single URL <dashboard-route>`:
             - { path: ^/admin, roles: ROLE_ADMIN }
             # ...
 
-Another option is to `add security annotations`_ to the dashboard controller::
+Another option is to use the `#[IsGranted] attribute`_ in the dashboard controller::
 
     // app/Controller/Admin/DashboardController.php
     use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
     use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
-    use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+    use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-    /**
-     * @IsGranted("ROLE_ADMIN")
-     */
+    #[IsGranted('ROLE_ADMIN')]
     class DashboardController extends AbstractDashboardController
     {
         // ...
@@ -204,7 +202,7 @@ grants access only if there are no voters denying access:
 .. _`Symfony Security`: https://symfony.com/doc/current/security.html
 .. _`Create users`: https://symfony.com/doc/current/security.html#a-create-your-user-class
 .. _`Define a firewall`: https://symfony.com/doc/current/security.html#a-authentication-firewalls
-.. _`add security annotations`: https://symfony.com/doc/current/bundles/SensioFrameworkExtraBundle/annotations/security.html
+.. _`#[IsGranted] attribute`: https://symfony.com/doc/current/security.html#securing-controllers-and-other-code
 .. _`access_control option`: https://symfony.com/doc/current/security/access_control.html
 .. _`security voter`: https://symfony.com/doc/current/security/voters.html
 .. _`access decision strategy`: https://symfony.com/doc/current/security/voters.html#changing-the-access-decision-strategy

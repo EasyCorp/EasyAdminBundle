@@ -14,7 +14,7 @@ trait CrudTestUrlGeneration
      * @throws InvalidClassPropertyTypeException
      * @throws MissingClassMethodException
      */
-    protected function getCrudUrl(string $action, string|int $entityId = null, array $options = [], ?string $dashboardFqcn = null, ?string $controllerFqcn = null): string
+    protected function getCrudUrl(string $action, string|int|null $entityId = null, array $options = [], ?string $dashboardFqcn = null, ?string $controllerFqcn = null): string
     {
         $dashboardFqcn ??= $this->getDashboardFqcn();
         $controllerFqcn ??= $this->getControllerFqcn();

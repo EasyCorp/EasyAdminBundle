@@ -33,5 +33,6 @@ return $config
         'blank_line_between_import_groups' => false,
         'no_trailing_comma_in_singleline' => false,
         'nullable_type_declaration_for_default_null_value' => true,
+        'phpdoc_to_comment' => false,
     ))
 ;

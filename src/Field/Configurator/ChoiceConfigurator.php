@@ -12,6 +12,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Translation\TranslatableChoiceMessage;
 use EasyCorp\Bundle\EasyAdminBundle\Translation\TranslatableChoiceMessageCollection;
 use function Symfony\Component\String\u;
 use function Symfony\Component\Translation\t;
+use Symfony\Component\Translation\TranslatableMessage;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
 /**
@@ -120,6 +121,8 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
                         $translationDomain
                     );
                 }
+
+                /** @var TranslatableMessage $choiceMessage */
                 $choiceMessages[] = new TranslatableChoiceMessage(
                     $choiceMessage,
                     $isRenderedAsBadge ? $this->getBadgeCssClass($badgeSelector, $selectedValue, $field) : null

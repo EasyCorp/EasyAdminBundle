@@ -106,7 +106,7 @@ final class EntityRepository implements EntityRepositoryInterface
                     $parameterName = sprintf('query_for_ulids_%d', $queryTermIndex);
                     $queryBuilder->orWhere(sprintf('%s.%s = :%s', $entityName, $propertyName, $parameterName))
                         ->setParameter($parameterName, $dqlParameters['uuid_query'], 'ulid');
-                } elseif ($propertyConfig['is_text']) {
+                } elseif ($propertyConfig['is_text'] || $propertyConfig['is_json']) {
                     $parameterName = sprintf('query_for_text_%d', $queryTermIndex);
                     $queryBuilder->orWhere(sprintf('LOWER(%s.%s) LIKE :%s', $entityName, $propertyName, $parameterName))
                         ->setParameter($parameterName, $dqlParameters['text_query']);

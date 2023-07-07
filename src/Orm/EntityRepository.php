@@ -86,7 +86,7 @@ final class EntityRepository implements EntityRepositoryInterface
                 'text_query' => '%'.$lowercaseQueryTerm.'%',
             ];
 
-            foreach ($searchablePropertiesConfig as $propertyName => $propertyConfig) {
+            foreach ($searchablePropertiesConfig as $propertyConfig) {
                 $entityName = $propertyConfig['entity_name'];
 
                 // this complex condition is needed to avoid issues on PostgreSQL databases
@@ -96,19 +96,19 @@ final class EntityRepository implements EntityRepositoryInterface
                     || ($propertyConfig['is_numeric'] && $isNumericQueryTerm)
                 ) {
                     $parameterName = sprintf('query_for_numbers_%d', $queryTermIndex);
-                    $queryBuilder->orWhere(sprintf('%s.%s = :%s', $entityName, $propertyName, $parameterName))
+                    $queryBuilder->orWhere(sprintf('%s.%s = :%s', $entityName, $propertyConfig['property_name'], $parameterName))
                         ->setParameter($parameterName, $dqlParameters['numeric_query']);
                 } elseif ($propertyConfig['is_guid'] && $isUuidQueryTerm) {
                     $parameterName = sprintf('query_for_uuids_%d', $queryTermIndex);
-                    $queryBuilder->orWhere(sprintf('%s.%s = :%s', $entityName, $propertyName, $parameterName))
+                    $queryBuilder->orWhere(sprintf('%s.%s = :%s', $entityName, $propertyConfig['property_name'], $parameterName))
                         ->setParameter($parameterName, $dqlParameters['uuid_query'], 'uuid' === $propertyConfig['property_data_type'] ? 'uuid' : null);
                 } elseif ($propertyConfig['is_ulid'] && $isUlidQueryTerm) {
                     $parameterName = sprintf('query_for_ulids_%d', $queryTermIndex);
-                    $queryBuilder->orWhere(sprintf('%s.%s = :%s', $entityName, $propertyName, $parameterName))
+                    $queryBuilder->orWhere(sprintf('%s.%s = :%s', $entityName, $propertyConfig['property_name'], $parameterName))
                         ->setParameter($parameterName, $dqlParameters['uuid_query'], 'ulid');
                 } elseif ($propertyConfig['is_text']) {
                     $parameterName = sprintf('query_for_text_%d', $queryTermIndex);
-                    $queryBuilder->orWhere(sprintf('LOWER(%s.%s) LIKE :%s', $entityName, $propertyName, $parameterName))
+                    $queryBuilder->orWhere(sprintf('LOWER(%s.%s) LIKE :%s', $entityName, $propertyConfig['property_name'], $parameterName))
                         ->setParameter($parameterName, $dqlParameters['text_query']);
                 }
             }
@@ -263,9 +263,10 @@ final class EntityRepository implements EntityRepositoryInterface
                 }
             }
 
-            $searchablePropertiesConfig[$propertyName] = [
+            $searchablePropertiesConfig[] = [
                 'entity_name' => $entityName,
                 'property_data_type' => $propertyDataType,
+                'property_name' => $propertyName,
                 'is_boolean' => $isBoolean,
                 'is_small_integer' => $isSmallIntegerProperty,
                 'is_integer' => $isIntegerProperty,

@@ -657,7 +657,7 @@ for a given postal address. This is the class you could create for the field::
         use FieldTrait;
 
         /**
-         * @param string|false|null $label
+         * @param TranslatableInterface|string|false|null $label
          */
         public static function new(string $propertyName, $label = null): self
         {

@@ -8,6 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDataDto;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\NullFilterType;
+use Symfony\Contracts\Translation\TranslatableInterface;
 
 /**
  * @author Yonel Ceruto <yonelceruto@gmail.com>
@@ -29,12 +30,26 @@ final class NullFilter implements FilterInterface
             ->setFormType(NullFilterType::class);
     }
 
-    public function setChoiceLabels(string $nullChoiceLabel, string $notNullChoiceLabel): self
+    public function setChoiceLabels(string|TranslatableInterface $nullChoiceLabel, string|TranslatableInterface $notNullChoiceLabel): self
     {
-        $this->dto->setFormTypeOption('choices', [
-            $nullChoiceLabel => self::CHOICE_VALUE_NULL,
-            $notNullChoiceLabel => self::CHOICE_VALUE_NOT_NULL,
-        ]);
+        if (
+            $nullChoiceLabel instanceof TranslatableInterface
+            || $notNullChoiceLabel instanceof TranslatableInterface
+        ) {
+            $this->dto->setFormTypeOption('choices', [
+                self::CHOICE_VALUE_NULL,
+                self::CHOICE_VALUE_NOT_NULL,
+            ]);
+            $this->dto->setFormTypeOption(
+                'choice_label',
+                fn ($value) => self::CHOICE_VALUE_NULL === $value ? $nullChoiceLabel : $notNullChoiceLabel,
+            );
+        } else {
+            $this->dto->setFormTypeOption('choices', [
+                $nullChoiceLabel => self::CHOICE_VALUE_NULL,
+                $notNullChoiceLabel => self::CHOICE_VALUE_NOT_NULL,
+            ]);
+        }
 
         return $this;
     }

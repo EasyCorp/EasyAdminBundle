@@ -24,7 +24,7 @@ final class FormField implements FieldInterface
     /**
      * @internal Use the other named constructors instead (addPanel(), etc.)
      *
-     * @param string|false|null $label
+     * @param TranslatableInterface|string|false|null $label
      */
     public static function new(string $propertyName, $label = null)
     {

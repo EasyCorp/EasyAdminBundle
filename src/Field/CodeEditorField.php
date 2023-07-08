@@ -20,7 +20,7 @@ final class CodeEditorField implements FieldInterface
     public const OPTION_TAB_SIZE = 'tabSize';
     public const OPTION_SHOW_LINE_NUMBERS = 'showLineNumbers';
 
-    private const ALLOWED_LANGUAGES = ['css', 'dockerfile', 'js', 'markdown', 'nginx', 'php', 'shell', 'sql', 'twig', 'xml', 'yaml-frontmatter', 'yaml'];
+    private const ALLOWED_LANGUAGES = ['css', 'dockerfile', 'js', 'javascript', 'markdown', 'nginx', 'php', 'shell', 'sql', 'twig', 'xml', 'yaml-frontmatter', 'yaml'];
 
     /**
      * @param TranslatableInterface|string|false|null $label

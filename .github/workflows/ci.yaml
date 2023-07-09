@@ -23,12 +23,6 @@ jobs:
                   composer install
                   vendor/bin/simple-phpunit install
 
-            # see https://github.com/OskarStark/php-cs-fixer-ga
-            - name: PHP-CS-Fixer
-              uses: docker://oskarstark/php-cs-fixer-ga
-              with:
-                  args: --diff --dry-run
-
             - name: DOCtor-RST
               uses: docker://oskarstark/doctor-rst
               with:
@@ -36,8 +30,31 @@ jobs:
               env:
                   DOCS_DIR: 'doc/'
 
+            # see https://github.com/OskarStark/php-cs-fixer-ga
+            - name: PHP-CS-Fixer
+              uses: docker://oskarstark/php-cs-fixer-ga
+              with:
+                  args: --diff --dry-run
+
+    phpstan:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+
+            - name: Setup PHP, with composer and extensions
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: 8.2
+                  coverage: none
+
+            - name: Install dependencies
+              run: |
+                  composer install
+                  vendor/bin/simple-phpunit install
+
             - name: 'Run PHPStan analysis'
               run: vendor/bin/phpstan analyse
+
 
     maintained:
         strategy:

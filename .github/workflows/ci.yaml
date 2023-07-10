@@ -89,6 +89,8 @@ jobs:
                   SYMFONY_DEPRECATIONS_HELPER: "weak"
               run: vendor/bin/simple-phpunit
 
+    # This job is separated from `maintained` as only Symfony 5.4 and 6.0 support PHP 8.0.
+    # Once the support is dropped, we can simply remove this job.
     php-8_0:
         strategy:
             fail-fast: false

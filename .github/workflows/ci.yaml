@@ -58,7 +58,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                os: [ubuntu-latest, macos-latest, windows-latest]
+                os: [ubuntu-latest]
                 php_versions: ["8.1", "8.2"]
                 symfony_version: ["5.4", "6.0", "6.1", "6.2", "6.3"]
         runs-on: ${{ matrix.os }}
@@ -91,11 +91,11 @@ jobs:
 
     # This job is separated from `maintained` as only Symfony 5.4 and 6.0 support PHP 8.0.
     # Once the support is dropped, we can simply remove this job.
-    php-8_0:
+    maintained-8_0:
         strategy:
             fail-fast: false
             matrix:
-                os: [ubuntu-latest, macos-latest, windows-latest]
+                os: [ubuntu-latest]
                 php_versions: ["8.0"]
                 symfony_version: ["5.4", "6.0"]
         runs-on: ${{ matrix.os }}

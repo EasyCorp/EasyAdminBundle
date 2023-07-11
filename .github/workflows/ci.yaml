@@ -155,3 +155,39 @@ jobs:
               env:
                   SYMFONY_DEPRECATIONS_HELPER: "weak"
               run: vendor/bin/simple-phpunit
+
+    # Will use latest LTS and current Symfony versions only.
+    win_mac:
+        strategy:
+            fail-fast: false
+            matrix:
+                os: [macos-latest, windows-latest]
+                php_versions: ["8.2"]
+                symfony_version: ["5.4", "6.3"]
+        runs-on: ${{ matrix.os }}
+        steps:
+            - uses: actions/checkout@v3
+
+            - name: Setup PHP, with composer and extensions
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: ${{ matrix.php_versions }}
+                  coverage: none
+                  extensions: mbstring, intl, pdo, pdo_sqlite, sqlite3
+                  ini-values: date.timezone=UTC
+
+            - name: symfony/flex is required to install the correct symfony version
+              run: |
+                  composer global config --no-plugins allow-plugins.symfony/flex true
+                  composer global require symfony/flex
+
+            - name: Install dependencies
+              run: |
+                  composer config extra.symfony.require "${{ matrix.symfony_version }}"
+                  composer install
+                  vendor/bin/simple-phpunit install
+
+            - name: Run tests
+              env:
+                  SYMFONY_DEPRECATIONS_HELPER: "weak"
+              run: vendor/bin/simple-phpunit

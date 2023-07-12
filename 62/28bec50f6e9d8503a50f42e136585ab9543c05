@@ -1,0 +1,18 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2023-07-11T18:18:45Z
+
+Thanks a lot for working on this!
+
+I see that now we have 41 jobs in GitHub Actions. We have 12 jobs currently, so we might try to lower a bit the number of tests:
+
+1) This one will be easy: let's test `lowest` only with Linux OS, PHP 8.0.2 and PHP 5.4.x
+2) This one is harder and I don't know if it's possible: in the `maintained` task, let's test all PHP and Symfony versions with Linux ... but let's only test a few (or only one) set of PHP + Symfony for MacOS and Windows.
+
+Thanks!
+
+---------------------------------------------------------------------------
+
+by asispts at 2023-07-11T20:06:23Z
+
+Done. Now, we have 19 jobs only.

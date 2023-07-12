@@ -332,7 +332,7 @@ and render them in your own Twig template::
         // the charts; this is explained later in the chapter about Design
 
         #[Route('/admin')]
-        public function admin(): Response
+        public function index(): Response
         {
             $chart = $this->chartBuilder->createChart(Chart::TYPE_LINE);
             // ...set chart data and options somehow

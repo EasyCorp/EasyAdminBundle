@@ -1,0 +1,193 @@
+name: Build
+on:
+    push:
+        branches:
+            - "4.x"
+    pull_request:
+
+jobs:
+    linter:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+
+            - name: Setup PHP, with composer and extensions
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: 8.2
+                  coverage: none
+
+            - name: Install dependencies
+              run: |
+                  composer install
+                  vendor/bin/simple-phpunit install
+
+            - name: DOCtor-RST
+              uses: docker://oskarstark/doctor-rst
+              with:
+                  args: --short
+              env:
+                  DOCS_DIR: "doc/"
+
+            # see https://github.com/OskarStark/php-cs-fixer-ga
+            - name: PHP-CS-Fixer
+              uses: docker://oskarstark/php-cs-fixer-ga
+              with:
+                  args: --diff --dry-run
+
+    phpstan:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+
+            - name: Setup PHP, with composer and extensions
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: 8.2
+                  coverage: none
+
+            - name: Install dependencies
+              run: |
+                  composer install
+                  vendor/bin/simple-phpunit install
+
+            - name: "Run PHPStan analysis"
+              run: vendor/bin/phpstan analyse
+
+    maintained:
+        strategy:
+            fail-fast: false
+            matrix:
+                os: [ubuntu-latest]
+                php_versions: ["8.1", "8.2"]
+                symfony_version: ["5.4", "6.0", "6.1", "6.2", "6.3"]
+        runs-on: ${{ matrix.os }}
+        steps:
+            - uses: actions/checkout@v3
+
+            - name: Setup PHP, with composer and extensions
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: ${{ matrix.php_versions }}
+                  coverage: none
+                  extensions: mbstring, intl, pdo, pdo_sqlite, sqlite3
+                  ini-values: date.timezone=UTC
+
+            - name: symfony/flex is required to install the correct symfony version
+              run: |
+                  composer global config --no-plugins allow-plugins.symfony/flex true
+                  composer global require symfony/flex
+
+            - name: Install dependencies
+              run: |
+                  composer config extra.symfony.require "${{ matrix.symfony_version }}"
+                  composer install
+                  vendor/bin/simple-phpunit install
+
+            - name: Run tests
+              env:
+                  SYMFONY_DEPRECATIONS_HELPER: "weak"
+              run: vendor/bin/simple-phpunit
+
+    # This job is separated from `maintained` as only Symfony 5.4 and 6.0 support PHP 8.0.
+    # Once the support is dropped, we can simply remove this job.
+    maintained-8_0:
+        strategy:
+            fail-fast: false
+            matrix:
+                os: [ubuntu-latest]
+                php_versions: ["8.0"]
+                symfony_version: ["5.4", "6.0"]
+        runs-on: ${{ matrix.os }}
+        steps:
+            - uses: actions/checkout@v3
+
+            - name: Setup PHP, with composer and extensions
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: ${{ matrix.php_versions }}
+                  coverage: none
+                  extensions: mbstring, intl, pdo, pdo_sqlite, sqlite3
+                  ini-values: date.timezone=UTC
+
+            - name: symfony/flex is required to install the correct symfony version
+              run: |
+                  composer global config --no-plugins allow-plugins.symfony/flex true
+                  composer global require symfony/flex
+
+            - name: Install dependencies
+              run: |
+                  composer config extra.symfony.require "${{ matrix.symfony_version }}"
+                  composer install
+                  vendor/bin/simple-phpunit install
+
+            - name: Run tests
+              env:
+                  SYMFONY_DEPRECATIONS_HELPER: "weak"
+              run: vendor/bin/simple-phpunit
+
+    lowest:
+        strategy:
+            fail-fast: false
+            matrix:
+                os: [ubuntu-latest]
+                php_versions: ["8.0.2"]
+        runs-on: ${{ matrix.os }}
+        steps:
+            - uses: actions/checkout@v3
+
+            - name: Setup PHP, with composer and extensions
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: ${{ matrix.php_versions }}
+                  coverage: none
+                  extensions: mbstring, intl, pdo, pdo_sqlite, sqlite3
+                  ini-values: date.timezone=UTC
+
+            # We don't need `symfony/flex` and `composer config extra.symfony.require` here.
+            # `--prefer-lowest` will always install symfony 5.4
+            - name: Install dependencies
+              run: |
+                  composer update --no-progress --prefer-lowest
+                  vendor/bin/simple-phpunit install
+
+            - name: Run tests
+              env:
+                  SYMFONY_DEPRECATIONS_HELPER: "weak"
+              run: vendor/bin/simple-phpunit
+
+    # Will use latest LTS and current Symfony versions only.
+    win_mac:
+        strategy:
+            fail-fast: false
+            matrix:
+                os: [macos-latest, windows-latest]
+                php_versions: ["8.2"]
+                symfony_version: ["5.4", "6.3"]
+        runs-on: ${{ matrix.os }}
+        steps:
+            - uses: actions/checkout@v3
+
+            - name: Setup PHP, with composer and extensions
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: ${{ matrix.php_versions }}
+                  coverage: none
+                  extensions: mbstring, intl, pdo, pdo_sqlite, sqlite3
+                  ini-values: date.timezone=UTC
+
+            - name: symfony/flex is required to install the correct symfony version
+              run: |
+                  composer global config --no-plugins allow-plugins.symfony/flex true
+                  composer global require symfony/flex
+
+            - name: Install dependencies
+              run: |
+                  composer config extra.symfony.require "${{ matrix.symfony_version }}"
+                  composer install
+                  vendor/bin/simple-phpunit install
+
+            - name: Run tests
+              env:
+                  SYMFONY_DEPRECATIONS_HELPER: "weak"
+              run: vendor/bin/simple-phpunit

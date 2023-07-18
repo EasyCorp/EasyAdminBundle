@@ -1,0 +1,7 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2023-07-18T18:04:31Z
+
+I didn't know that you could use in `include:` some values that weren't part of the matrix variables. In this case, we only list `ubuntu-latest` in the `os` variable ... but then we use `windows-latest` and `macos-latest` too as the values of some jobs. That's nice!
+
+@OleksiiBulba thanks for proposing these changes and thanks @asispts for reviewing them 🙌

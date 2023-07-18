@@ -36,6 +36,9 @@ class BlogPost
     #[ORM\JoinColumn(nullable: false)]
     private $author;
 
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    private $publisher;
+
     public function __construct()
     {
         $this->categories = new ArrayCollection();
@@ -140,5 +143,15 @@ class BlogPost
         $this->author = $author;
 
         return $this;
+    }
+
+    public function getPublisher()
+    {
+        return $this->publisher;
+    }
+
+    public function setPublisher(?User $publisher): void
+    {
+        $this->publisher = $publisher;
     }
 }

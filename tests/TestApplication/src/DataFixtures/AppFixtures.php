@@ -40,6 +40,12 @@ class AppFixtures extends Fixture
                 ->addCategory($this->getReference('category'.($i % 10), Category::class))
                 ->setAuthor($this->getReference('user'.($i % 5), User::class));
 
+            if ($i < 10) {
+                $blogPost->setPublisher(
+                    $this->getReference('user'.(($i + 1) % 5), User::class)
+                );
+            }
+
             $manager->persist($blogPost);
         }
 

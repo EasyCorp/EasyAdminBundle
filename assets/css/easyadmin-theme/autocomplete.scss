@@ -127,3 +127,7 @@
 .plugin-clear_button.ts-wrapper.multi .clear-button:hover {
   background: var(--form-type-autocomplete-close-button-hover-bg) !important;
 }
+
+.ts-wrapper.disabled .ts-control {
+  background-color: var(--form-control-disabled-bg);
+}

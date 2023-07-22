@@ -613,7 +613,7 @@ Misc. Options
 
     TextField::new('firstName', 'Name')
         // if TRUE, listing can be sorted by this field (default: TRUE)
-        // unmapped fields and Doctrine associations cannot be sorted
+        // unmapped fields cannot be sorted
         ->setSortable(false)
 
         // help message displayed for this field in the 'detail', 'edit' and 'new' pages

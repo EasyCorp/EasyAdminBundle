@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Orm;
 
+use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -50,7 +51,14 @@ final class EntityRepository implements EntityRepositoryInterface
         ;
 
         if ('' !== $searchDto->getQuery()) {
-            $this->addSearchClause($queryBuilder, $searchDto, $entityDto);
+            try {
+                $databasePlatform = $entityManager->getConnection()->getDatabasePlatform();
+            } catch (\Throwable) {
+                $databasePlatform = null;
+            }
+            $databasePlatformFqcn = null !== $databasePlatform ? $databasePlatform::class : '';
+
+            $this->addSearchClause($queryBuilder, $searchDto, $entityDto, $databasePlatformFqcn);
         }
 
         $appliedFilters = $searchDto->getAppliedFilters();
@@ -63,8 +71,9 @@ final class EntityRepository implements EntityRepositoryInterface
         return $queryBuilder;
     }
 
-    private function addSearchClause(QueryBuilder $queryBuilder, SearchDto $searchDto, EntityDto $entityDto): void
+    private function addSearchClause(QueryBuilder $queryBuilder, SearchDto $searchDto, EntityDto $entityDto, string $databasePlatformFqcn): void
     {
+        $isPostgreSql = PostgreSQLPlatform::class === $databasePlatformFqcn || is_subclass_of($databasePlatformFqcn, PostgreSQLPlatform::class);
         $searchablePropertiesConfig = $this->getSearchablePropertiesConfig($queryBuilder, $searchDto, $entityDto);
 
         $queryTerms = $searchDto->getQueryTerms();
@@ -106,7 +115,12 @@ final class EntityRepository implements EntityRepositoryInterface
                     $parameterName = sprintf('query_for_ulids_%d', $queryTermIndex);
                     $queryBuilder->orWhere(sprintf('%s.%s = :%s', $entityName, $propertyConfig['property_name'], $parameterName))
                         ->setParameter($parameterName, $dqlParameters['uuid_query'], 'ulid');
-                } elseif ($propertyConfig['is_text'] || $propertyConfig['is_json']) {
+                } elseif ($propertyConfig['is_text']) {
+                    $parameterName = sprintf('query_for_text_%d', $queryTermIndex);
+                    $queryBuilder->orWhere(sprintf('LOWER(%s.%s) LIKE :%s', $entityName, $propertyConfig['property_name'], $parameterName))
+                        ->setParameter($parameterName, $dqlParameters['text_query']);
+                } elseif ($propertyConfig['is_json'] && !$isPostgreSql) {
+                    // neither LOWER() nor LIKE() are supported for JSON columns by all PostgreSQL installations
                     $parameterName = sprintf('query_for_text_%d', $queryTermIndex);
                     $queryBuilder->orWhere(sprintf('LOWER(%s.%s) LIKE :%s', $entityName, $propertyConfig['property_name'], $parameterName))
                         ->setParameter($parameterName, $dqlParameters['text_query']);

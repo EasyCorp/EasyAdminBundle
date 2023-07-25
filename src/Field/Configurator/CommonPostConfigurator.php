@@ -17,7 +17,7 @@ use Twig\Markup;
  */
 final class CommonPostConfigurator implements FieldConfiguratorInterface
 {
-    private AdminContextProvider$adminContextProvider;
+    private AdminContextProvider $adminContextProvider;
     private string $charset;
 
     public function __construct(AdminContextProvider $adminContextProvider, string $charset)

@@ -2,7 +2,6 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Orm;
 
-use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -51,14 +50,7 @@ final class EntityRepository implements EntityRepositoryInterface
         ;
 
         if ('' !== $searchDto->getQuery()) {
-            try {
-                $databasePlatform = $entityManager->getConnection()->getDatabasePlatform();
-            } catch (\Throwable) {
-                $databasePlatform = null;
-            }
-            $databasePlatformFqcn = null !== $databasePlatform ? $databasePlatform::class : '';
-
-            $this->addSearchClause($queryBuilder, $searchDto, $entityDto, $databasePlatformFqcn);
+            $this->addSearchClause($queryBuilder, $searchDto, $entityDto);
         }
 
         $appliedFilters = $searchDto->getAppliedFilters();
@@ -71,9 +63,8 @@ final class EntityRepository implements EntityRepositoryInterface
         return $queryBuilder;
     }
 
-    private function addSearchClause(QueryBuilder $queryBuilder, SearchDto $searchDto, EntityDto $entityDto, string $databasePlatformFqcn): void
+    private function addSearchClause(QueryBuilder $queryBuilder, SearchDto $searchDto, EntityDto $entityDto): void
     {
-        $isPostgreSql = PostgreSQLPlatform::class === $databasePlatformFqcn || is_subclass_of($databasePlatformFqcn, PostgreSQLPlatform::class);
         $searchablePropertiesConfig = $this->getSearchablePropertiesConfig($queryBuilder, $searchDto, $entityDto);
 
         $queryTerms = $searchDto->getQueryTerms();
@@ -97,6 +88,7 @@ final class EntityRepository implements EntityRepositoryInterface
 
             foreach ($searchablePropertiesConfig as $propertyConfig) {
                 $entityName = $propertyConfig['entity_name'];
+                $propertyName = $propertyConfig['property_name'];
 
                 // this complex condition is needed to avoid issues on PostgreSQL databases
                 if (
@@ -105,24 +97,19 @@ final class EntityRepository implements EntityRepositoryInterface
                     || ($propertyConfig['is_numeric'] && $isNumericQueryTerm)
                 ) {
                     $parameterName = sprintf('query_for_numbers_%d', $queryTermIndex);
-                    $queryBuilder->orWhere(sprintf('%s.%s = :%s', $entityName, $propertyConfig['property_name'], $parameterName))
+                    $queryBuilder->orWhere(sprintf('%s.%s = :%s', $entityName, $propertyName, $parameterName))
                         ->setParameter($parameterName, $dqlParameters['numeric_query']);
                 } elseif ($propertyConfig['is_guid'] && $isUuidQueryTerm) {
                     $parameterName = sprintf('query_for_uuids_%d', $queryTermIndex);
-                    $queryBuilder->orWhere(sprintf('%s.%s = :%s', $entityName, $propertyConfig['property_name'], $parameterName))
+                    $queryBuilder->orWhere(sprintf('%s.%s = :%s', $entityName, $propertyName, $parameterName))
                         ->setParameter($parameterName, $dqlParameters['uuid_query'], 'uuid' === $propertyConfig['property_data_type'] ? 'uuid' : null);
                 } elseif ($propertyConfig['is_ulid'] && $isUlidQueryTerm) {
                     $parameterName = sprintf('query_for_ulids_%d', $queryTermIndex);
-                    $queryBuilder->orWhere(sprintf('%s.%s = :%s', $entityName, $propertyConfig['property_name'], $parameterName))
+                    $queryBuilder->orWhere(sprintf('%s.%s = :%s', $entityName, $propertyName, $parameterName))
                         ->setParameter($parameterName, $dqlParameters['uuid_query'], 'ulid');
                 } elseif ($propertyConfig['is_text']) {
                     $parameterName = sprintf('query_for_text_%d', $queryTermIndex);
-                    $queryBuilder->orWhere(sprintf('LOWER(%s.%s) LIKE :%s', $entityName, $propertyConfig['property_name'], $parameterName))
-                        ->setParameter($parameterName, $dqlParameters['text_query']);
-                } elseif ($propertyConfig['is_json'] && !$isPostgreSql) {
-                    // neither LOWER() nor LIKE() are supported for JSON columns by all PostgreSQL installations
-                    $parameterName = sprintf('query_for_text_%d', $queryTermIndex);
-                    $queryBuilder->orWhere(sprintf('LOWER(%s.%s) LIKE :%s', $entityName, $propertyConfig['property_name'], $parameterName))
+                    $queryBuilder->orWhere(sprintf('LOWER(%s.%s) LIKE :%s', $entityName, $propertyName, $parameterName))
                         ->setParameter($parameterName, $dqlParameters['text_query']);
                 }
             }
@@ -201,6 +188,7 @@ final class EntityRepository implements EntityRepositoryInterface
 
         $entitiesAlreadyJoined = [];
         foreach ($searchableProperties as $propertyName) {
+            $key = $propertyName;
             if ($entityDto->isAssociation($propertyName)) {
                 // support arbitrarily nested associations (e.g. foo.bar.baz.qux)
                 $associatedProperties = explode('.', $propertyName);
@@ -277,10 +265,10 @@ final class EntityRepository implements EntityRepositoryInterface
                 }
             }
 
-            $searchablePropertiesConfig[] = [
+            $searchablePropertiesConfig[$key] = [
+                'property_name' => $propertyName,
                 'entity_name' => $entityName,
                 'property_data_type' => $propertyDataType,
-                'property_name' => $propertyName,
                 'is_boolean' => $isBoolean,
                 'is_small_integer' => $isSmallIntegerProperty,
                 'is_integer' => $isIntegerProperty,

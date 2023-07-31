@@ -73,9 +73,10 @@ final class AdminContextFactory
         $dashboardControllerRoutes = !file_exists($dashboardRoutesCachePath) ? [] : require $dashboardRoutesCachePath;
         $dashboardController = $dashboardControllerInstance::class.'::index';
         $dashboardRouteName = null;
+        $currentRouteName = $request->attributes->get('_route');
 
         foreach ($dashboardControllerRoutes as $routeName => $controller) {
-            if ($controller === $dashboardController) {
+            if ($controller === $dashboardController && $currentRouteName === $routeName) {
                 // if present, remove the suffix of i18n route names (it's a two-letter locale at the end
                 // of the route name; e.g. 'dashboard.en' -> remove '.en', 'admin.index.es' -> remove '.es')
                 $dashboardRouteName = preg_replace('~\.\w{2}$~', '', $routeName);

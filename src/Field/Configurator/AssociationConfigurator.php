@@ -195,9 +195,6 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
     {
         $field->setCustomOption(AssociationField::OPTION_DOCTRINE_ASSOCIATION_TYPE, 'toMany');
 
-        // associations different from *-to-one cannot be sorted
-        $field->setSortable(false);
-
         $field->setFormTypeOptionIfNotSet('multiple', true);
 
         /* @var PersistentCollection $collection */

@@ -1,0 +1,67 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2023-07-31T18:42:22Z
+
+This looks amazing 😍  Thanks a lot @chapterjason 🙇  About tests, we can merge this "as is" because it could be difficult to add those tests (it's unfortunate but some parts of the bundle are not properly tested yet 😐 ).
+
+---------------------------------------------------------------------------
+
+by chapterjason at 2023-07-31T19:47:12Z
+
+@javiereguiluz I understand, I will try too add some. Maybe I can find a way to test this as there is a test kernel available etc.
+
+---------------------------------------------------------------------------
+
+by chapterjason at 2023-07-31T19:49:11Z
+
+And I have to note the following drawback with this implementation:
+
+If the field has a `setFormattedValue` set to something other than the count, it doesn't matter because it will be sorted in the database and not in the view. Even if the formatted value is something like `Tuesday, Sunday`, it will be sorted as a value of `2`.
+
+---------------------------------------------------------------------------
+
+by chapterjason at 2023-07-31T23:05:55Z
+
+Added tests, was worth it, found a bug. 😄
+Works as expected, had to change a single other test, as the data-set have to be a bit different than "every user has 2 blog posts".
+
+The PHPStan error does not look like it is related to this pr.
+
+---------------------------------------------------------------------------
+
+by asispts at 2023-08-01T00:45:41Z
+
+You can ignore the PHPStan error in `src/Twig/EasyAdminTwigExtension.php`. The error was introduced by https://github.com/twigphp/Twig/pull/3856 and has been fixed in https://github.com/twigphp/Twig/pull/3862.
+
+---------------------------------------------------------------------------
+
+by chapterjason at 2023-08-01T07:19:25Z
+
+@asispts Thanks for information.
+
+Just noticed, I also could introduce other entities to make use cases for testing, without change any existing fixtures and tests. If you want, I can adjust before merging and also add tests for One-To-One cases.
+
+Currently, I tested Many-To-Many from both sides and One-To-Many, what would be missing are One-To-One and Many-To-One cases.
+
+---------------------------------------------------------------------------
+
+by chapterjason at 2023-08-01T21:47:28Z
+
+Found another bug and reworked the tests, also included *-To-One tests. Is now ready for a review.
+
+// Edit: Looks like some tests works only on my machine. 😄
+// Edit: I'am not able to find the issue, will try tomorrow.
+
+---------------------------------------------------------------------------
+
+by asispts at 2023-08-02T05:34:35Z
+
+Strange. I can't replicate it either. However, we can simplify the test class.
+
+---------------------------------------------------------------------------
+
+by chapterjason at 2023-08-02T17:28:59Z
+
+Hey @asispts, thanks for the review.
+
+I actually can't reuse the other entities, cause they are made up to have all the exact amount of relations. If I change that, I also have to change other tests which relay on that.

@@ -9,7 +9,7 @@
 {% if show_flag and not show_name %}
     {% for flag_code, country_name in field.formattedValue %}
         {% if flag_code is not null %}
-            <img class="country-flag" alt="{{ country_name }}" src="{{ asset('images/flags/' ~ flag_code ~ '.svg', ea.assets.defaultAssetPackageName) }}">
+            <img class="country-flag" alt="{{ country_name }}" title="{{ country_name }}" src="{{ asset('images/flags/' ~ flag_code ~ '.svg', ea.assets.defaultAssetPackageName) }}">
         {% endif %}
     {% endfor %}
 {% elseif show_name and not show_flag  %}
@@ -19,7 +19,7 @@
         <span>
             {%- if show_flag -%}
                 {%- if flag_code is not null -%}
-                    <img class="country-flag" alt="{{ country_name }}" src="{{ asset('images/flags/' ~ flag_code ~ '.svg', ea.assets.defaultAssetPackageName) }}">
+                    <img class="country-flag" alt="{{ country_name }}" title="{{ country_name }}" src="{{ asset('images/flags/' ~ flag_code ~ '.svg', ea.assets.defaultAssetPackageName) }}">
                 {%- endif -%}
             {%- endif -%}
 

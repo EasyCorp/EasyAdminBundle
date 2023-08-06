@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Orm;
 
+use Doctrine\ORM\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Controller\Sort\WebsiteCrudController;
@@ -9,6 +10,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Entity\Website;
 
 class WebsiteSortTest extends AbstractCrudTestCase
 {
+    /**
+     * @var EntityRepository
+     */
     private $repository;
 
     protected function getControllerFqcn(): string
@@ -31,20 +35,21 @@ class WebsiteSortTest extends AbstractCrudTestCase
     /**
      * @dataProvider sorting
      */
-    public function testSorting(array $query, ?string $sortFunction, string $expectedSortIcon)
+    public function testSorting(array $query, ?\Closure $sortFunction, string $expectedSortIcon)
     {
         // Arrange
         $expectedAmountMapping = [];
+        $entities = $this->repository->findAll();
+
+        if (null !== $sortFunction) {
+            $sortFunction($entities);
+        }
 
         /**
          * @var Website $entity
          */
-        foreach ($this->repository->findAll() as $entity) {
+        foreach ($entities as $entity) {
             $expectedAmountMapping[$entity->getName()] = $entity->getPages()->count();
-        }
-
-        if (null !== $sortFunction) {
-            $sortFunction($expectedAmountMapping);
         }
 
         // Act
@@ -75,13 +80,41 @@ class WebsiteSortTest extends AbstractCrudTestCase
 
         yield [
             ['sort' => ['pages' => 'ASC']],
-            'asort',
+            /**
+             * @param list<Website> $array
+             */
+            function (array &$array) {
+                usort($array, static function (Website $a, Website $b) {
+                    $aPages = $a->getPages()->count();
+                    $bPages = $b->getPages()->count();
+
+                    if ($aPages === $bPages) {
+                        return $a->getId() <=> $b->getId();
+                    }
+
+                    return $aPages <=> $bPages;
+                });
+            },
             'fa-arrow-up',
         ];
 
         yield [
             ['sort' => ['pages' => 'DESC']],
-            'arsort',
+            /**
+             * @param list<Website> $array
+             */
+            function (array &$array) {
+                usort($array, static function (Website $a, Website $b) {
+                    $aPages = $a->getPages()->count();
+                    $bPages = $b->getPages()->count();
+
+                    if ($aPages === $bPages) {
+                        return $b->getId() <=> $a->getId();
+                    }
+
+                    return $bPages <=> $aPages;
+                });
+            },
             'fa-arrow-down',
         ];
     }

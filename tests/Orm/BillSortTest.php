@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Orm;
 
+use Doctrine\ORM\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Controller\Sort\BillCrudController;
@@ -9,6 +10,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Entity\Bill;
 
 class BillSortTest extends AbstractCrudTestCase
 {
+    /**
+     * @var EntityRepository
+     */
     private $repository;
 
     protected function getControllerFqcn(): string
@@ -31,20 +35,21 @@ class BillSortTest extends AbstractCrudTestCase
     /**
      * @dataProvider sorting
      */
-    public function testSorting(array $query, ?string $sortFunction, string $expectedSortIcon)
+    public function testSorting(array $query, ?\Closure $sortFunction, string $expectedSortIcon)
     {
         // Arrange
         $expectedAmountMapping = [];
+        $entities = $this->repository->findAll();
+
+        if (null !== $sortFunction) {
+            $sortFunction($entities);
+        }
 
         /**
          * @var Bill $entity
          */
-        foreach ($this->repository->findAll() as $entity) {
+        foreach ($entities as $entity) {
             $expectedAmountMapping[$entity->getName()] = $entity->getCustomers()->count();
-        }
-
-        if (null !== $sortFunction) {
-            $sortFunction($expectedAmountMapping);
         }
 
         // Act
@@ -75,13 +80,41 @@ class BillSortTest extends AbstractCrudTestCase
 
         yield [
             ['sort' => ['customers' => 'ASC']],
-            'asort',
+            /**
+             * @param list<Bill> $array
+             */
+            function (array &$array) {
+                usort($array, static function (Bill $a, Bill $b) {
+                    $aCustomers = $a->getCustomers()->count();
+                    $bCustomers = $b->getCustomers()->count();
+
+                    if ($aCustomers === $bCustomers) {
+                        return $a->getId() <=> $b->getId();
+                    }
+
+                    return $aCustomers <=> $bCustomers;
+                });
+            },
             'fa-arrow-up',
         ];
 
         yield [
             ['sort' => ['customers' => 'DESC']],
-            'arsort',
+            /**
+             * @param list<Bill> $array
+             */
+            function (array &$array) {
+                usort($array, static function (Bill $a, Bill $b) {
+                    $aCustomers = $a->getCustomers()->count();
+                    $bCustomers = $b->getCustomers()->count();
+
+                    if ($aCustomers === $bCustomers) {
+                        return $b->getId() <=> $a->getId();
+                    }
+
+                    return $bCustomers <=> $aCustomers;
+                });
+            },
             'fa-arrow-down',
         ];
     }

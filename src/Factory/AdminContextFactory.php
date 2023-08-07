@@ -73,13 +73,9 @@ final class AdminContextFactory
         $dashboardControllerRoutes = !file_exists($dashboardRoutesCachePath) ? [] : require $dashboardRoutesCachePath;
         $dashboardController = $dashboardControllerInstance::class.'::index';
         $dashboardRouteName = null;
-        $currentRouteName = $request->attributes->get('_route');
 
         foreach ($dashboardControllerRoutes as $routeName => $controller) {
-            // checking if the route name matches is needed because the same
-            // dashboard controller can be associated to more than one route
-            // (see https://github.com/EasyCorp/EasyAdminBundle/pull/5853)
-            if ($controller === $dashboardController && $currentRouteName === $routeName) {
+            if ($controller === $dashboardController) {
                 // if present, remove the suffix of i18n route names (it's a two-letter locale at the end
                 // of the route name; e.g. 'dashboard.en' -> remove '.en', 'admin.index.es' -> remove '.es')
                 $dashboardRouteName = preg_replace('~\.\w{2}$~', '', $routeName);

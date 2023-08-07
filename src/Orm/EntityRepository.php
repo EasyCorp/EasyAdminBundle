@@ -170,6 +170,7 @@ final class EntityRepository implements EntityRepositoryInterface
 
                         $queryBuilder->addSelect(sprintf('(%s) as HIDDEN sub_query_sort', $countQueryBuilder->getDQL()));
                         $queryBuilder->addOrderBy('sub_query_sort', $sortOrder);
+                        $queryBuilder->addOrderBy('entity.'.$entityDto->getPrimaryKeyName(), $sortOrder);
                     } else {
                         $queryBuilder->addOrderBy('entity.'.$sortProperty, $sortOrder);
                     }

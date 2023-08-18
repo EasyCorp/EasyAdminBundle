@@ -29,7 +29,7 @@ return [
         'false' => 'لا',
         'empty' => 'فارغ',
         'null' => 'لا شيء',
-        'object' => 'Objet PHP',
+        'object' => 'كائن PHP',
         'inaccessible' => 'لا يمكن الوصول إليها',
         'inaccessible.explanation' => 'لا يوجد وصف الوصول لهذه الخاصية أو أنها ليست عامة.',
         'form.empty_value' => 'لا شيء',

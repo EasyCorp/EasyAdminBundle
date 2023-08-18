@@ -35,14 +35,6 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
 
         // using a more precise check like 'function_exists('enum_exists');' messes with IDEs like PhpStorm
         $enumsAreSupported = \PHP_VERSION_ID >= 80100;
-        // if no choices are passed to the field, check if it's related to an Enum;
-        // in that case, get all the possible values of the Enum
-        if (null === $choices && $enumsAreSupported) {
-            $enumTypeClass = $field->getDoctrineMetadata()->get('enumType');
-            if (null !== $enumTypeClass && enum_exists($enumTypeClass)) {
-                $choices = $enumTypeClass::cases();
-            }
-        }
 
         if (null === $choices) {
             $choices = [];
@@ -55,7 +47,12 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
             }, $choices));
             $allChoicesAreEnums = false === \in_array(false, $elementIsEnum, true);
 
-            if ($allChoicesAreEnums) {
+            // if no choices are passed to the field, check if it's related to an Enum;
+            // in that case, get all the possible values of the Enum (Doctrine supports only BackedEnum as enumType)
+            $enumTypeClass = $field->getDoctrineMetadata()->get('enumType');
+            if (0 === \count($choices) && null !== $enumTypeClass && enum_exists($enumTypeClass)) {
+                $choices = $enumTypeClass::cases();
+            } elseif ($allChoicesAreEnums) {
                 $processedEnumChoices = [];
                 foreach ($choices as $choice) {
                     if ($choice instanceof \BackedEnum) {
@@ -174,6 +171,10 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
             // Flatten grouped choices
             if (\is_array($choice)) {
                 $flattened = array_merge($flattened, $choice);
+            } elseif ($choice instanceof \BackedEnum) {
+                $flattened[$choice->name] = $choice->value;
+            } elseif ($choice instanceof \UnitEnum) {
+                $flattened[$choice->name] = $choice->name;
             } else {
                 $flattened[$label] = $choice;
             }

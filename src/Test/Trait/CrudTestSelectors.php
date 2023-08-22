@@ -11,7 +11,7 @@ trait CrudTestSelectors
 
     protected function getIndexEntityRowSelector(string|int $entityId): string
     {
-        return sprintf('tbody tr[data-id=%s]', (string) $entityId);
+        return sprintf('tbody tr[data-id="%s"]', (string) $entityId);
     }
 
     protected function getActionSelector(string $action): string

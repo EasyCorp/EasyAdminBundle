@@ -467,7 +467,11 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
         $paginator = $this->container->get(PaginatorFactory::class)->create($queryBuilder);
 
-        return JsonResponse::fromJsonString($paginator->getResultsAsJson());
+        return JsonResponse::fromJsonString(
+            $paginator->getResultsAsJson(
+                $context->getCrud()->getAutocompleteEntityNormalizer()
+            )
+        );
     }
 
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder

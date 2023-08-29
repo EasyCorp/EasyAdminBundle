@@ -38,5 +38,5 @@ interface EntityPaginatorInterface
 
     public function getResults(): ?iterable;
 
-    public function getResultsAsJson(): string;
+    public function getResultsAsJson(?\Closure $entityAsStringNormalizer = null): string;
 }

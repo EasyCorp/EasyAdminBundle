@@ -138,6 +138,11 @@ Entity Options
             // the Symfony Security permission needed to manage the entity
             // (none by default, so you can manage all instances of the entity)
             ->setEntityPermission('ROLE_EDITOR')
+
+            // By default EasyAdmin normalizes entities by calling __toString()
+            // on their object. If you need different normalization for
+            // autocompletion, you can pass custom callback
+            ->setAutocompleteEntityNormalizer(fn (Entity $entity) => $entity->getname())
         ;
     }
 

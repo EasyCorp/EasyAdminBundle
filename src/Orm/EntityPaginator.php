@@ -198,15 +198,20 @@ final class EntityPaginator implements EntityPaginatorInterface
         return $this->rangeLastResultNumber;
     }
 
-    public function getResultsAsJson(): string
+    public function getResultsAsJson(?\Closure $entityAsStringNormalizer = null): string
     {
         $jsonResult = [];
         foreach ($this->getResults() ?? [] as $entityInstance) {
             $entityDto = $this->entityFactory->createForEntityInstance($entityInstance);
 
+            $entityAsString = $entityDto->toString();
+            if (null !== $entityAsStringNormalizer) {
+                $entityAsString = $entityAsStringNormalizer($entityInstance);
+            }
+
             $jsonResult['results'][] = [
                 EA::ENTITY_ID => $entityDto->getPrimaryKeyValueAsString(),
-                'entityAsString' => $entityDto->toString(),
+                'entityAsString' => $entityAsString,
             ];
         }
 

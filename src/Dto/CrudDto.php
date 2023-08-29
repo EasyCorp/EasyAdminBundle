@@ -59,6 +59,7 @@ final class CrudDto
     private ?string $entityPermission = null;
     private ?string $contentWidth = null;
     private ?string $sidebarWidth = null;
+    private ?\Closure $autocompleteEntityNormalizer = null;
 
     public function __construct()
     {
@@ -460,5 +461,19 @@ final class CrudDto
     public function setSidebarWidth(string $sidebarWidth): void
     {
         $this->sidebarWidth = $sidebarWidth;
+    }
+
+    public function getAutocompleteEntityNormalizer(): ?\Closure
+    {
+        return $this->autocompleteEntityNormalizer;
+    }
+
+    public function setAutocompleteEntityNormalizer(?callable $autocompleteEntityNormalizer): void
+    {
+        if (null !== $autocompleteEntityNormalizer) {
+            $autocompleteEntityNormalizer = \Closure::fromCallable($autocompleteEntityNormalizer);
+        }
+
+        $this->autocompleteEntityNormalizer = $autocompleteEntityNormalizer;
     }
 }

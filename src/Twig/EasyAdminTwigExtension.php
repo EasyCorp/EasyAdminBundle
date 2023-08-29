@@ -116,7 +116,7 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
         }
 
         if (\is_array($callback) && 2 === \count($callback)) {
-            $callback = [$environment->getRuntime(array_shift($callback)), ...$callback];
+            $callback = [$environment->getRuntime(array_shift($callback)), array_pop($callback)];
             if (!\is_callable($callback)) {
                 throw new RuntimeError(sprintf('Unable to load runtime for filter: "%s"', $filterName));
             }

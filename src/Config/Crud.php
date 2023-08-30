@@ -385,6 +385,13 @@ class Crud
         return $this;
     }
 
+    public function hideNullValues(bool $hide = true): self
+    {
+        $this->dto->hideNullValues($hide);
+
+        return $this;
+    }
+
     public function getAsDto(): CrudDto
     {
         $this->dto->setPaginator(new PaginatorDto($this->paginatorPageSize, $this->paginatorRangeSize, 1, $this->paginatorFetchJoinCollection, $this->paginatorUseOutputWalkers));

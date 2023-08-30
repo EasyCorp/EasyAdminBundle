@@ -59,6 +59,7 @@ final class CrudDto
     private ?string $entityPermission = null;
     private ?string $contentWidth = null;
     private ?string $sidebarWidth = null;
+    private bool $hideNullValues = false;
 
     public function __construct()
     {
@@ -460,5 +461,15 @@ final class CrudDto
     public function setSidebarWidth(string $sidebarWidth): void
     {
         $this->sidebarWidth = $sidebarWidth;
+    }
+
+    public function areNullValuesHidden(): bool
+    {
+        return $this->hideNullValues;
+    }
+
+    public function hideNullValues(bool $hide): void
+    {
+        $this->hideNullValues = $hide;
     }
 }

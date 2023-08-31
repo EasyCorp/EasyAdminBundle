@@ -6,9 +6,9 @@
 {% if ea.crud.currentAction == 'detail' or not field.customOptions.get('renderAsSwitch') %}
     {% set badge_is_hidden = ea.crud.currentAction == 'index'
         and (
-            (field.value == true and field.customOptions.get('hideWhenTrue') == true)
+            (field.value == true and field.customOptions.get('hideValueWhenTrue') == true)
             or
-            (field.value == false and field.customOptions.get('hideWhenFalse') == true)
+            (field.value == false and field.customOptions.get('hideValueWhenFalse') == true)
         ) %}
 
     {% if not badge_is_hidden %}

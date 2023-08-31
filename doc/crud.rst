@@ -324,6 +324,23 @@ Templates and Form Options
         ;
     }
 
+Other Options
+~~~~~~~~~~~~~
+
+::
+
+    public function configureCrud(Crud $crud): Crud
+    {
+        return $crud
+            // by default, when the value of some field is `null`, EasyAdmin displays
+            // a label with the `null` text. You can change that by overriding
+            // the `label/null` template. However, if you have lots of `null` values
+            // and want to reduce the "visual noise" in your backend, you can use
+            // the following option to not display anything when some value is `null`
+            // (this option is applied both in the `index` and `detail` pages)
+            ->hideNullValues()
+    }
+
 Custom Redirect After Creating or Editing Entities
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

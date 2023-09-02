@@ -15,6 +15,7 @@ final class ActionDto
     private TranslatableInterface|string|null $label = null;
     private ?string $icon = null;
     private string $cssClass = '';
+    private string $addedCssClass = '';
     private ?string $htmlElement = null;
     private array $htmlAttributes = [];
     private ?string $linkUrl = null;
@@ -84,12 +85,22 @@ final class ActionDto
 
     public function getCssClass(): string
     {
-        return $this->cssClass;
+        return trim($this->cssClass);
     }
 
     public function setCssClass(string $cssClass): void
     {
         $this->cssClass = $cssClass;
+    }
+
+    public function getAddedCssClass(): string
+    {
+        return trim($this->addedCssClass);
+    }
+
+    public function setAddedCssClass(string $cssClass): void
+    {
+        $this->addedCssClass .= ' '.$cssClass;
     }
 
     public function getHtmlElement(): string

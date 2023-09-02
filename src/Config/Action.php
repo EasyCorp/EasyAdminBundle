@@ -121,25 +121,23 @@ final class Action
     }
 
     /**
-     * If you set your own CSS classes, the default CSS classes are not applied.
-     * You may want to also add the 'btn' (and 'btn-primary', etc.) classes to make
-     * your action look like a button.
+     * Use this to override the default CSS classes applied to actions and use instead your own CSS classes.
+     * See also addCssClass() to add your own custom classes without removing the default ones.
      */
     public function setCssClass(string $cssClass): self
     {
-        $this->dto->setCssClass($cssClass);
+        $this->dto->setCssClass(trim($cssClass));
 
         return $this;
     }
 
     /**
-     * If you add a custom CSS class, the default CSS classes are not applied.
-     * You may want to also add the 'btn' (and 'btn-primary', etc.) classes to make
-     * your action look like a button.
+     * This adds the given CSS class(es) to the classes already applied to the actions
+     * (no matter if they are the default ones or some custom CSS classes set with the setCssClass() method).
      */
     public function addCssClass(string $cssClass): self
     {
-        $this->dto->setCssClass(trim($this->dto->getCssClass().' '.$cssClass));
+        $this->dto->setAddedCssClass(trim($cssClass));
 
         return $this;
     }

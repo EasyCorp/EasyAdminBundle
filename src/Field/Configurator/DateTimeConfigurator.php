@@ -5,14 +5,11 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Field\Configurator;
 use Doctrine\DBAL\Types\Types;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDtoInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TimeField;
-use EasyCorp\Bundle\EasyAdminBundle\Intl\IntlFormatter;
 use EasyCorp\Bundle\EasyAdminBundle\Intl\IntlFormatterInterface;
 
 /**
@@ -20,7 +17,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Intl\IntlFormatterInterface;
  */
 final class DateTimeConfigurator implements FieldConfiguratorInterface
 {
-    private IntlFormatter $intlFormatter;
+    private IntlFormatterInterface $intlFormatter;
 
     public function __construct(IntlFormatterInterface $intlFormatter)
     {
@@ -37,7 +34,9 @@ final class DateTimeConfigurator implements FieldConfiguratorInterface
         // we don't require this PHP extension in composer.json because it's not mandatory to display
         // date/time fields in backends, so this is not a hard dependency
         if (!\extension_loaded('intl')) {
-            throw new \LogicException('When using date/time fields in EasyAdmin backends, you must install and enable the PHP Intl extension, which is used to format date/time values.');
+            throw new \LogicException(
+                'When using date/time fields in EasyAdmin backends, you must install and enable the PHP Intl extension, which is used to format date/time values.'
+            );
         }
 
         $crud = $context->getCrud();
@@ -61,7 +60,13 @@ final class DateTimeConfigurator implements FieldConfiguratorInterface
                 $icuDateTimePattern = $datePattern;
             }
 
-            $formattedValue = $this->intlFormatter->formatDateTime($field->getValue(), $dateFormat, $timeFormat, $icuDateTimePattern, $timezone);
+            $formattedValue = $this->intlFormatter->formatDateTime(
+                $field->getValue(),
+                $dateFormat,
+                $timeFormat,
+                $icuDateTimePattern,
+                $timezone
+            );
         } elseif (DateField::class === $field->getFieldFqcn()) {
             $dateFormatOrPattern = $field->getCustomOption(DateField::OPTION_DATE_PATTERN) ?? $crud->getDatePattern();
             if (\in_array($dateFormatOrPattern, DateTimeField::VALID_DATE_FORMATS, true)) {
@@ -70,7 +75,12 @@ final class DateTimeConfigurator implements FieldConfiguratorInterface
                 $icuDateTimePattern = $dateFormatOrPattern;
             }
 
-            $formattedValue = $this->intlFormatter->formatDate($field->getValue(), $dateFormat, $icuDateTimePattern, $timezone);
+            $formattedValue = $this->intlFormatter->formatDate(
+                $field->getValue(),
+                $dateFormat,
+                $icuDateTimePattern,
+                $timezone
+            );
         } elseif (TimeField::class === $field->getFieldFqcn()) {
             $timeFormatOrPattern = $field->getCustomOption(TimeField::OPTION_TIME_PATTERN) ?? $crud->getTimePattern();
             if (\in_array($timeFormatOrPattern, DateTimeField::VALID_DATE_FORMATS, true)) {
@@ -79,7 +89,12 @@ final class DateTimeConfigurator implements FieldConfiguratorInterface
                 $icuDateTimePattern = $timeFormatOrPattern;
             }
 
-            $formattedValue = $this->intlFormatter->formatTime($field->getValue(), $timeFormat, $icuDateTimePattern, $timezone);
+            $formattedValue = $this->intlFormatter->formatTime(
+                $field->getValue(),
+                $timeFormat,
+                $icuDateTimePattern,
+                $timezone
+            );
         }
 
         $widgetOption = $field->getCustomOption(DateTimeField::OPTION_WIDGET);
@@ -101,7 +116,11 @@ final class DateTimeConfigurator implements FieldConfiguratorInterface
             return;
         }
         $doctrineDataType = $entityDto->getPropertyMetadata($field->getProperty())->get('type');
-        $isImmutableDateTime = \in_array($doctrineDataType, [Types::DATETIMETZ_IMMUTABLE, Types::DATETIME_IMMUTABLE, Types::DATE_IMMUTABLE, Types::TIME_IMMUTABLE], true);
+        $isImmutableDateTime = \in_array(
+            $doctrineDataType,
+            [Types::DATETIMETZ_IMMUTABLE, Types::DATETIME_IMMUTABLE, Types::DATE_IMMUTABLE, Types::TIME_IMMUTABLE],
+            true
+        );
         if ($isImmutableDateTime) {
             $field->setFormTypeOptionIfNotSet('input', 'datetime_immutable');
         }

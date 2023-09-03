@@ -24,7 +24,7 @@ final class TranslatableChoiceMessageCollection implements TranslatableInterface
         return implode(
             $this->isRenderedAsBadge ? '' : ', ',
             array_map(
-                static fn (TranslatableChoiceMessage $message) => $message->trans($translator, $locale),
+                static fn(TranslatableChoiceMessage $message) => $message->trans($translator, $locale),
                 $this->choices
             )
         );

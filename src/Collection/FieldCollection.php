@@ -4,7 +4,6 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Collection;
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Collection\CollectionInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 

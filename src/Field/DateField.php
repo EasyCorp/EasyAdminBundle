@@ -40,7 +40,12 @@ final class DateField implements FieldInterface
     public function setTimezone(string $timezoneId): self
     {
         if (!\in_array($timezoneId, timezone_identifiers_list(), true)) {
-            throw new \InvalidArgumentException(sprintf('The "%s" timezone is not a valid PHP timezone ID. Use any of the values listed at https://www.php.net/manual/en/timezones.php', $timezoneId));
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'The "%s" timezone is not a valid PHP timezone ID. Use any of the values listed at https://www.php.net/manual/en/timezones.php',
+                    $timezoneId
+                )
+            );
         }
 
         $this->setCustomOption(DateTimeField::OPTION_TIMEZONE, $timezoneId);
@@ -56,10 +61,17 @@ final class DateField implements FieldInterface
         if (DateTimeField::FORMAT_NONE === $dateFormatOrPattern || '' === trim($dateFormatOrPattern)) {
             $validDateFormatsWithoutNone = array_filter(
                 DateTimeField::VALID_DATE_FORMATS,
-                static fn (string $format): bool => DateTimeField::FORMAT_NONE !== $format
+                static fn(string $format): bool => DateTimeField::FORMAT_NONE !== $format
             );
 
-            throw new \InvalidArgumentException(sprintf('The argument of the "%s()" method cannot be "%s" or an empty string. Use either the special date formats (%s) or a datetime Intl pattern.', __METHOD__, DateTimeField::FORMAT_NONE, implode(', ', $validDateFormatsWithoutNone)));
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'The argument of the "%s()" method cannot be "%s" or an empty string. Use either the special date formats (%s) or a datetime Intl pattern.',
+                    __METHOD__,
+                    DateTimeField::FORMAT_NONE,
+                    implode(', ', $validDateFormatsWithoutNone)
+                )
+            );
         }
 
         $this->setCustomOption(self::OPTION_DATE_PATTERN, $dateFormatOrPattern);

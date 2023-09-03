@@ -59,7 +59,10 @@ final class CountryField implements FieldInterface
 
     public function useAlpha3Codes(bool $useAlpha3 = true): self
     {
-        $this->setCustomOption(self::OPTION_COUNTRY_CODE_FORMAT, $useAlpha3 ? self::FORMAT_ISO_3166_ALPHA3 : self::FORMAT_ISO_3166_ALPHA2);
+        $this->setCustomOption(
+            self::OPTION_COUNTRY_CODE_FORMAT,
+            $useAlpha3 ? self::FORMAT_ISO_3166_ALPHA3 : self::FORMAT_ISO_3166_ALPHA2
+        );
 
         return $this;
     }

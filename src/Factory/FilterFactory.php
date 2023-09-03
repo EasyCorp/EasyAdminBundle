@@ -6,9 +6,7 @@ use Doctrine\DBAL\Types\Types;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDtoInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterConfigDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterConfigDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\ArrayFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\BooleanFilter;
@@ -17,12 +15,11 @@ use EasyCorp\Bundle\EasyAdminBundle\Filter\DateTimeFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\NumericFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\TextFilter;
-use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProviderInterface;
 
 final class FilterFactory implements FilterFactoryInterface
 {
-    private AdminContextProvider $adminContextProvider;
+    private AdminContextProviderInterface $adminContextProvider;
     private iterable $filterConfigurators;
     private static array $doctrineTypeToFilterClass = [
         'json_array' => ArrayFilter::class,
@@ -57,8 +54,11 @@ final class FilterFactory implements FilterFactoryInterface
         $this->filterConfigurators = $filterConfigurators;
     }
 
-    public function create(FilterConfigDtoInterface $filterConfig, FieldCollection $fields, EntityDtoInterface $entityDto): FilterCollection
-    {
+    public function create(
+        FilterConfigDtoInterface $filterConfig,
+        FieldCollection $fields,
+        EntityDtoInterface $entityDto
+    ): FilterCollection {
         $builtFilters = [];
         /** @var FilterInterface|string $filter */
         foreach ($filterConfig->all() as $property => $filter) {

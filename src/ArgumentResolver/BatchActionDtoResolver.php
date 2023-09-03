@@ -4,9 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\ArgumentResolver;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\BatchActionDto;
-use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProviderInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ArgumentValueResolverInterface;
@@ -23,8 +21,10 @@ if (interface_exists(ValueResolverInterface::class)) {
 
         private AdminUrlGeneratorInterface $adminUrlGenerator;
 
-        public function __construct(AdminContextProviderInterface $adminContextProvider, AdminUrlGeneratorInterface $adminUrlGenerator)
-        {
+        public function __construct(
+            AdminContextProviderInterface $adminContextProvider,
+            AdminUrlGeneratorInterface $adminUrlGenerator
+        ) {
             $this->adminContextProvider = $adminContextProvider;
             $this->adminUrlGenerator = $adminUrlGenerator;
         }
@@ -36,7 +36,12 @@ if (interface_exists(ValueResolverInterface::class)) {
             }
 
             if (null === $context = $this->adminContextProvider->getContext()) {
-                throw new \RuntimeException(sprintf('Some of your controller actions have type-hinted an argument with the "%s" class but that\'s only available for actions run to serve EasyAdmin requests. Remove the type-hint or make sure the action is part of an EasyAdmin request.', BatchActionDto::class));
+                throw new \RuntimeException(
+                    sprintf(
+                        'Some of your controller actions have type-hinted an argument with the "%s" class but that\'s only available for actions run to serve EasyAdmin requests. Remove the type-hint or make sure the action is part of an EasyAdmin request.',
+                        BatchActionDto::class
+                    )
+                );
             }
 
             $batchActionUrl = $context->getRequest()->request->get(EA::BATCH_ACTION_URL);
@@ -59,8 +64,10 @@ if (interface_exists(ValueResolverInterface::class)) {
         private AdminContextProviderInterface $adminContextProvider;
         private AdminUrlGeneratorInterface $adminUrlGenerator;
 
-        public function __construct(AdminContextProviderInterface $adminContextProvider, AdminUrlGeneratorInterface $adminUrlGenerator)
-        {
+        public function __construct(
+            AdminContextProviderInterface $adminContextProvider,
+            AdminUrlGeneratorInterface $adminUrlGenerator
+        ) {
             $this->adminContextProvider = $adminContextProvider;
             $this->adminUrlGenerator = $adminUrlGenerator;
         }
@@ -73,7 +80,12 @@ if (interface_exists(ValueResolverInterface::class)) {
         public function resolve(Request $request, ArgumentMetadata $argument): iterable
         {
             if (null === $context = $this->adminContextProvider->getContext()) {
-                throw new \RuntimeException(sprintf('Some of your controller actions have type-hinted an argument with the "%s" class but that\'s only available for actions run to serve EasyAdmin requests. Remove the type-hint or make sure the action is part of an EasyAdmin request.', BatchActionDto::class));
+                throw new \RuntimeException(
+                    sprintf(
+                        'Some of your controller actions have type-hinted an argument with the "%s" class but that\'s only available for actions run to serve EasyAdmin requests. Remove the type-hint or make sure the action is part of an EasyAdmin request.',
+                        BatchActionDto::class
+                    )
+                );
             }
 
             $batchActionUrl = $context->getRequest()->request->get(EA::BATCH_ACTION_URL);

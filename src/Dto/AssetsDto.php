@@ -8,13 +8,15 @@ final class AssetsDto implements AssetsDtoInterface
 {
     /** @var AssetDtoInterface[] */
     private array $webpackEncoreAssets = [];
+
     /** @var AssetDtoInterface[] */
     private array $cssAssets = [];
+
     /** @var AssetDtoInterface[] */
     private array $jsAssets = [];
-    /** @var AssetDtoInterface[] */
+
     private array $headContents = [];
-    /** @var AssetDtoInterface[] */
+
     private array $bodyContents = [];
 
     public function __construct()
@@ -24,7 +26,12 @@ final class AssetsDto implements AssetsDtoInterface
     public function addWebpackEncoreAsset(AssetDtoInterface $assetDto): void
     {
         if (\array_key_exists($entryName = $assetDto->getValue(), $this->webpackEncoreAssets)) {
-            throw new \InvalidArgumentException(sprintf('The "%s" Webpack Encore entry has been added more than once via the addWebpackEncoreEntry() method, but each entry can only be added once (to not overwrite its configuration).', $entryName));
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'The "%s" Webpack Encore entry has been added more than once via the addWebpackEncoreEntry() method, but each entry can only be added once (to not overwrite its configuration).',
+                    $entryName
+                )
+            );
         }
 
         $this->webpackEncoreAssets[$entryName] = $assetDto;
@@ -33,7 +40,12 @@ final class AssetsDto implements AssetsDtoInterface
     public function addCssAsset(AssetDtoInterface $assetDto): void
     {
         if (\array_key_exists($cssPath = $assetDto->getValue(), $this->cssAssets)) {
-            throw new \InvalidArgumentException(sprintf('The "%s" CSS file has been added more than once via the addCssFile() method, but each asset can only be added once (to not overwrite its configuration).', $cssPath));
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'The "%s" CSS file has been added more than once via the addCssFile() method, but each asset can only be added once (to not overwrite its configuration).',
+                    $cssPath
+                )
+            );
         }
 
         $this->cssAssets[$cssPath] = $assetDto;
@@ -42,7 +54,12 @@ final class AssetsDto implements AssetsDtoInterface
     public function addJsAsset(AssetDtoInterface $assetDto): void
     {
         if (\array_key_exists($jsPath = $assetDto->getValue(), $this->jsAssets)) {
-            throw new \InvalidArgumentException(sprintf('The "%s" JS file has been added more than once via the addJsFile() method, but each asset can only be added once (to not overwrite its configuration).', $jsPath));
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'The "%s" JS file has been added more than once via the addJsFile() method, but each asset can only be added once (to not overwrite its configuration).',
+                    $jsPath
+                )
+            );
         }
 
         $this->jsAssets[$jsPath] = $assetDto;

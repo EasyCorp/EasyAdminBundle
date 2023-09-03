@@ -10,8 +10,12 @@ final class I18nDto implements I18nDtoInterface
     private string $translationDomain;
     private array $translationParameters;
 
-    public function __construct(string $locale, string $textDirection, string $translationDomain, array $translationParameters)
-    {
+    public function __construct(
+        string $locale,
+        string $textDirection,
+        string $translationDomain,
+        array $translationParameters
+    ) {
         $this->locale = $locale;
         $this->language = strtok($locale, '-_');
         $this->textDirection = $textDirection;

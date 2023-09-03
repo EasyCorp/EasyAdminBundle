@@ -13,7 +13,12 @@ final class EntityNotFoundException extends BaseException
     {
         $exceptionContext = new ExceptionContext(
             'exception.entity_not_found',
-            sprintf('The "%s" entity with "%s = %s" does not exist in the database. The entity may have been deleted by mistake or by a "cascade={"remove"}" operation executed by Doctrine.', $parameters['entity_name'], $parameters['entity_id_name'], $parameters['entity_id_value']),
+            sprintf(
+                'The "%s" entity with "%s = %s" does not exist in the database. The entity may have been deleted by mistake or by a "cascade={"remove"}" operation executed by Doctrine.',
+                $parameters['entity_name'],
+                $parameters['entity_id_name'],
+                $parameters['entity_id_value']
+            ),
             $parameters,
             404
         );

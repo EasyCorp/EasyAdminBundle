@@ -2,7 +2,6 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Controller;
 
-use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\ActionInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
@@ -18,13 +17,13 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenu;
 use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenuInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
-use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use EasyCorp\Bundle\EasyAdminBundle\Security\PermissionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Logout\LogoutUrlGenerator;
+
 use function Symfony\Component\Translation\t;
 
 /**
@@ -74,10 +73,13 @@ abstract class AbstractDashboardController extends AbstractController implements
             $userMenuItems[] = MenuItem::linkToLogout(t('user.sign_out', domain: 'EasyAdminBundle'), 'fa-sign-out');
         }
         if ($this->isGranted(PermissionInterface::EA_EXIT_IMPERSONATION)) {
-            $userMenuItems[] = MenuItem::linkToExitImpersonation(t('user.exit_impersonation', domain: 'EasyAdminBundle'), 'fa-user-lock');
+            $userMenuItems[] = MenuItem::linkToExitImpersonation(
+                t('user.exit_impersonation', domain: 'EasyAdminBundle'),
+                'fa-user-lock'
+            );
         }
 
-        $userName = method_exists($user, '__toString') ? (string) $user : $user->getUserIdentifier();
+        $userName = method_exists($user, '__toString') ? (string)$user : $user->getUserIdentifier();
 
         return UserMenu::new()
             ->displayUserName()
@@ -99,17 +101,13 @@ abstract class AbstractDashboardController extends AbstractController implements
             ->add(CrudInterface::PAGE_INDEX, ActionInterface::NEW)
             ->add(CrudInterface::PAGE_INDEX, ActionInterface::EDIT)
             ->add(CrudInterface::PAGE_INDEX, ActionInterface::DELETE)
-
             ->add(CrudInterface::PAGE_DETAIL, ActionInterface::EDIT)
             ->add(CrudInterface::PAGE_DETAIL, ActionInterface::INDEX)
             ->add(CrudInterface::PAGE_DETAIL, ActionInterface::DELETE)
-
             ->add(CrudInterface::PAGE_EDIT, ActionInterface::SAVE_AND_RETURN)
             ->add(CrudInterface::PAGE_EDIT, ActionInterface::SAVE_AND_CONTINUE)
-
             ->add(CrudInterface::PAGE_NEW, ActionInterface::SAVE_AND_RETURN)
-            ->add(CrudInterface::PAGE_NEW, ActionInterface::SAVE_AND_ADD_ANOTHER)
-        ;
+            ->add(CrudInterface::PAGE_NEW, ActionInterface::SAVE_AND_ADD_ANOTHER);
     }
 
     public function configureFilters(): FiltersInterface

@@ -25,26 +25,28 @@ final class TextFilterType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->addModelTransformer(new CallbackTransformer(
-            static fn ($data) => $data,
-            static function ($data) {
-                switch ($data['comparison']) {
-                    case ComparisonType::STARTS_WITH:
-                        $data['comparison'] = ComparisonType::CONTAINS;
-                        $data['value'] .= '%';
-                        break;
-                    case ComparisonType::ENDS_WITH:
-                        $data['comparison'] = ComparisonType::CONTAINS;
-                        $data['value'] = '%'.$data['value'];
-                        break;
-                    case ComparisonType::CONTAINS:
-                    case ComparisonType::NOT_CONTAINS:
-                        $data['value'] = '%'.$data['value'].'%';
-                }
+        $builder->addModelTransformer(
+            new CallbackTransformer(
+                static fn($data) => $data,
+                static function ($data) {
+                    switch ($data['comparison']) {
+                        case ComparisonType::STARTS_WITH:
+                            $data['comparison'] = ComparisonType::CONTAINS;
+                            $data['value'] .= '%';
+                            break;
+                        case ComparisonType::ENDS_WITH:
+                            $data['comparison'] = ComparisonType::CONTAINS;
+                            $data['value'] = '%'.$data['value'];
+                            break;
+                        case ComparisonType::CONTAINS:
+                        case ComparisonType::NOT_CONTAINS:
+                            $data['value'] = '%'.$data['value'].'%';
+                    }
 
-                return $data;
-            }
-        ));
+                    return $data;
+                }
+            )
+        );
     }
 
     public function configureOptions(OptionsResolver $resolver): void

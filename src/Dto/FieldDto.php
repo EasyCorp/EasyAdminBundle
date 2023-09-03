@@ -2,44 +2,69 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
-use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\CrudInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
-use function Symfony\Component\String\u;
+use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStoreInterface;
 use Symfony\Component\Uid\Ulid;
 use Symfony\Contracts\Translation\TranslatableInterface;
+
+use function Symfony\Component\String\u;
 
 final class FieldDto implements FieldDtoInterface
 {
     private ?string $fieldFqcn = null;
+
     private ?string $propertyName = null;
+
     private mixed $value = null;
+
     private mixed $formattedValue = null;
+
     private $formatValueCallable;
-    private $label;
+
+    private null|string|TranslatableInterface|false $label;
+
     private ?string $formType = null;
-    private KeyValueStore $formTypeOptions;
+
+    private KeyValueStoreInterface $formTypeOptions;
+
     private ?bool $sortable = null;
+
     private ?bool $virtual = null;
+
     private ?string $permission = null;
+
     private ?string $textAlign = null;
-    private $help;
+
+    private null|string|TranslatableInterface $help = null;
+
     private string $cssClass = '';
+
     // how many columns the field takes when rendering
     // (defined as Bootstrap 5 grid classes; e.g. 'col-md-6 col-xxl-3')
     private ?string $columns = null;
+
     // same as $columns but used when the user doesn't define columns explicitly
     private string $defaultColumns = '';
+
     private array $translationParameters = [];
+
     private ?string $templateName = 'crud/field/text';
+
     private ?string $templatePath = null;
+
     private array $formThemePaths = [];
-    private AssetsDto $assets;
-    private KeyValueStore $customOptions;
-    private KeyValueStore $doctrineMetadata;
+
+    private AssetsDtoInterface $assets;
+
+    private KeyValueStoreInterface $customOptions;
+
+    private KeyValueStoreInterface $doctrineMetadata;
+
     /** @internal */
-    private $uniqueId;
-    private KeyValueStore $displayedOn;
+    private null|string|Ulid $uniqueId;
+
+    private KeyValueStoreInterface $displayedOn;
 
     public function __construct()
     {
@@ -350,7 +375,7 @@ final class FieldDto implements FieldDtoInterface
         $this->assets->addHtmlContentToBody($htmlContent);
     }
 
-    public function getCustomOptions(): KeyValueStore
+    public function getCustomOptions(): KeyValueStoreInterface
     {
         return $this->customOptions;
     }
@@ -370,7 +395,7 @@ final class FieldDto implements FieldDtoInterface
         $this->customOptions->set($optionName, $optionValue);
     }
 
-    public function getDoctrineMetadata(): KeyValueStore
+    public function getDoctrineMetadata(): KeyValueStoreInterface
     {
         return $this->doctrineMetadata;
     }
@@ -380,12 +405,12 @@ final class FieldDto implements FieldDtoInterface
         $this->doctrineMetadata = KeyValueStore::new($metadata);
     }
 
-    public function getDisplayedOn(): KeyValueStore
+    public function getDisplayedOn(): KeyValueStoreInterface
     {
         return $this->displayedOn;
     }
 
-    public function setDisplayedOn(KeyValueStore $displayedOn): void
+    public function setDisplayedOn(KeyValueStoreInterface $displayedOn): void
     {
         $this->displayedOn = $displayedOn;
     }

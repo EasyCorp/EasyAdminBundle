@@ -24,7 +24,11 @@ fixFontPathsInCssFiles($manifestJsonPath);
 // when assets contain RTL variants.
 function fixManifestJsonRtlEntries(string $manifestJsonPath)
 {
-    $manifestJsonContents = json_decode(file_get_contents($manifestJsonPath), associative: true, flags: \JSON_THROW_ON_ERROR);
+    $manifestJsonContents = json_decode(
+        file_get_contents($manifestJsonPath),
+        associative: true,
+        flags: \JSON_THROW_ON_ERROR
+    );
     $fixedManifestJsonContents = [];
     foreach ($manifestJsonContents as $assetName => $assetPath) {
         // only the assets that include '.rtl.' extensions in their paths are wrong; ignore the rest
@@ -50,7 +54,10 @@ function fixManifestJsonRtlEntries(string $manifestJsonPath)
         $fixedManifestJsonContents[$rtlAssetName] = $rtlAssetPath;
     }
 
-    $newJsonManifestContents = json_encode($fixedManifestJsonContents, flags: \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES);
+    $newJsonManifestContents = json_encode(
+        $fixedManifestJsonContents,
+        flags: \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES
+    );
     // the original manifest.json file uses a 2 white space indentation, so keep that
     $newJsonManifestContents = str_replace('    ', '  ', $newJsonManifestContents);
     file_put_contents($manifestJsonPath, $newJsonManifestContents);
@@ -70,14 +77,21 @@ function fixManifestJsonRtlEntries(string $manifestJsonPath)
 // This function removes that leading slash from all asset paths.
 function fixManifestJsonEntriesPaths(string $manifestJsonPath)
 {
-    $manifestJsonContents = json_decode(file_get_contents($manifestJsonPath), associative: true, flags: \JSON_THROW_ON_ERROR);
+    $manifestJsonContents = json_decode(
+        file_get_contents($manifestJsonPath),
+        associative: true,
+        flags: \JSON_THROW_ON_ERROR
+    );
     $fixedManifestJsonContents = [];
     foreach ($manifestJsonContents as $assetName => $assetPath) {
         $assetPath = ltrim($assetPath, '/');
         $fixedManifestJsonContents[$assetName] = $assetPath;
     }
 
-    $newJsonManifestContents = json_encode($fixedManifestJsonContents, flags: \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES);
+    $newJsonManifestContents = json_encode(
+        $fixedManifestJsonContents,
+        flags: \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES
+    );
     // the original manifest.json file uses a 2 white space indentation, so keep that
     $newJsonManifestContents = str_replace('    ', '  ', $newJsonManifestContents);
     file_put_contents($manifestJsonPath, $newJsonManifestContents);
@@ -91,7 +105,11 @@ function fixManifestJsonEntriesPaths(string $manifestJsonPath)
 // There might be some way of doing this in Webpack Encore, but I can't find it, so let's be pragmatic.
 function fixFontPathsInCssFiles(string $manifestJsonPath)
 {
-    $manifestJsonContents = json_decode(file_get_contents($manifestJsonPath), associative: true, flags: \JSON_THROW_ON_ERROR);
+    $manifestJsonContents = json_decode(
+        file_get_contents($manifestJsonPath),
+        associative: true,
+        flags: \JSON_THROW_ON_ERROR
+    );
     foreach ($manifestJsonContents as $assetName => $assetPath) {
         if (!str_ends_with($assetPath, '.css')) {
             continue;

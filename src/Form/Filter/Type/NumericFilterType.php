@@ -26,27 +26,35 @@ final class NumericFilterType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->add('value2', $options['value_type'], $options['value_type_options'] + [
-            'label' => false,
-        ]);
+        $builder->add(
+            'value2',
+            $options['value_type'],
+            $options['value_type_options'] + [
+                'label' => false,
+            ]
+        );
 
-        $builder->addModelTransformer(new CallbackTransformer(
-            static fn ($data) => $data,
-            static function ($data) {
-                if (ComparisonType::BETWEEN === $data['comparison']) {
-                    if (null === $data['value'] || '' === $data['value'] || null === $data['value2'] || '' === $data['value2']) {
-                        throw new TransformationFailedException('Two values must be provided when "BETWEEN" comparison is selected.');
+        $builder->addModelTransformer(
+            new CallbackTransformer(
+                static fn($data) => $data,
+                static function ($data) {
+                    if (ComparisonType::BETWEEN === $data['comparison']) {
+                        if (null === $data['value'] || '' === $data['value'] || null === $data['value2'] || '' === $data['value2']) {
+                            throw new TransformationFailedException(
+                                'Two values must be provided when "BETWEEN" comparison is selected.'
+                            );
+                        }
+
+                        // make sure value 2 is greater than value 1
+                        if ($data['value'] > $data['value2']) {
+                            [$data['value'], $data['value2']] = [$data['value2'], $data['value']];
+                        }
                     }
 
-                    // make sure value 2 is greater than value 1
-                    if ($data['value'] > $data['value2']) {
-                        [$data['value'], $data['value2']] = [$data['value2'], $data['value']];
-                    }
+                    return $data;
                 }
-
-                return $data;
-            }
-        ));
+            )
+        );
     }
 
     public function configureOptions(OptionsResolver $resolver): void

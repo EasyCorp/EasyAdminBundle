@@ -46,7 +46,14 @@ final class Dashboard implements DashboardInterface
     public function setTextDirection(string $direction): DashboardInterface
     {
         if (!\in_array($direction, [TextDirection::LTR, TextDirection::RTL], true)) {
-            throw new \InvalidArgumentException(sprintf('The "%s" value given to the textDirection option is not valid. It can only be "%s" or "%s"', $direction, TextDirection::LTR, TextDirection::RTL));
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'The "%s" value given to the textDirection option is not valid. It can only be "%s" or "%s"',
+                    $direction,
+                    TextDirection::LTR,
+                    TextDirection::RTL
+                )
+            );
         }
 
         $this->dto->setTextDirection($direction);
@@ -56,14 +63,18 @@ final class Dashboard implements DashboardInterface
 
     public function renderContentMaximized(bool $maximized = true): DashboardInterface
     {
-        $this->dto->setContentWidth($maximized ? CrudInterface::LAYOUT_CONTENT_FULL : CrudInterface::LAYOUT_CONTENT_DEFAULT);
+        $this->dto->setContentWidth(
+            $maximized ? CrudInterface::LAYOUT_CONTENT_FULL : CrudInterface::LAYOUT_CONTENT_DEFAULT
+        );
 
         return $this;
     }
 
     public function renderSidebarMinimized(bool $minimized = true): DashboardInterface
     {
-        $this->dto->setSidebarWidth($minimized ? CrudInterface::LAYOUT_SIDEBAR_COMPACT : CrudInterface::LAYOUT_SIDEBAR_DEFAULT);
+        $this->dto->setSidebarWidth(
+            $minimized ? CrudInterface::LAYOUT_SIDEBAR_COMPACT : CrudInterface::LAYOUT_SIDEBAR_DEFAULT
+        );
 
         return $this;
     }
@@ -102,8 +113,8 @@ final class Dashboard implements DashboardInterface
         foreach ($locales as $key => $value) {
             $locale = match (true) {
                 $value instanceof Locale => $value,
-                \is_string($key) => Locale::new($key, (string) $value),
-                default => Locale::new((string) $value),
+                \is_string($key) => Locale::new($key, (string)$value),
+                default => Locale::new((string)$value),
             };
 
             $localeDtos[] = $locale->getAsDto();

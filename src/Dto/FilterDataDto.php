@@ -5,18 +5,27 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 final class FilterDataDto implements FilterDataDtoInterface
 {
     private int $index;
+
     private string $entityAlias;
-    private FilterDto $filterDto;
-    private $comparison;
+
+    private FilterDtoInterface $filterDto;
+
+    private ?string $comparison = null;
+
     private mixed $value;
+
     private mixed $value2;
 
     private function __construct()
     {
     }
 
-    public static function new(int $index, FilterDtoInterface $filterDto, string $entityAlias, array $formData): FilterDataDtoInterface
-    {
+    public static function new(
+        int $index,
+        FilterDtoInterface $filterDto,
+        string $entityAlias,
+        array $formData
+    ): FilterDataDtoInterface {
         $filterData = new self();
         $filterData->index = $index;
         $filterData->filterDto = $filterDto;

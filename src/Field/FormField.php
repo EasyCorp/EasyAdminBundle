@@ -22,9 +22,9 @@ final class FormField implements FieldInterface
     public const OPTION_ROW_BREAKPOINT = 'rowBreakPoint';
 
     /**
+     * @param string|false|null $label
      * @internal Use the other named constructors instead (addPanel(), etc.)
      *
-     * @param string|false|null $label
      */
     public static function new(string $propertyName, $label = null)
     {
@@ -33,7 +33,7 @@ final class FormField implements FieldInterface
 
     /**
      * @param TranslatableInterface|string|false|null $label
-     * @param string|null                             $icon  The full CSS classes of the FontAwesome icon to render (see https://fontawesome.com/v6/search?m=free)
+     * @param string|null $icon The full CSS classes of the FontAwesome icon to render (see https://fontawesome.com/v6/search?m=free)
      */
     public static function addPanel($label = false, ?string $icon = null): self
     {
@@ -64,7 +64,13 @@ final class FormField implements FieldInterface
 
         $validBreakpointNames = ['', 'sm', 'md', 'lg', 'xl', 'xxl'];
         if (!\in_array($breakpointName, $validBreakpointNames, true)) {
-            throw new \InvalidArgumentException(sprintf('The value passed to the "addRow()" method of "FormField" can only be one of these values: "%s" ("%s" was given).', implode(', ', $validBreakpointNames), $breakpointName));
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'The value passed to the "addRow()" method of "FormField" can only be one of these values: "%s" ("%s" was given).',
+                    implode(', ', $validBreakpointNames),
+                    $breakpointName
+                )
+            );
         }
 
         return $field
@@ -109,7 +115,12 @@ final class FormField implements FieldInterface
     public function collapsible(bool $collapsible = true): self
     {
         if (!$this->hasLabelOrIcon()) {
-            throw new \InvalidArgumentException(sprintf('The %s() method used in one of your panels requires that the panel defines either a label or an icon, but it defines none of them.', __METHOD__));
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'The %s() method used in one of your panels requires that the panel defines either a label or an icon, but it defines none of them.',
+                    __METHOD__
+                )
+            );
         }
 
         $this->setCustomOption(self::OPTION_COLLAPSIBLE, $collapsible);
@@ -120,7 +131,12 @@ final class FormField implements FieldInterface
     public function renderCollapsed(bool $collapsed = true): self
     {
         if (!$this->hasLabelOrIcon()) {
-            throw new \InvalidArgumentException(sprintf('The %s() method used in one of your panels requires that the panel defines either a label or an icon, but it defines none of them.', __METHOD__));
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'The %s() method used in one of your panels requires that the panel defines either a label or an icon, but it defines none of them.',
+                    __METHOD__
+                )
+            );
         }
 
         $this->setCustomOption(self::OPTION_COLLAPSIBLE, true);
@@ -143,7 +159,12 @@ final class FormField implements FieldInterface
         }
 
         if (!str_contains($icon, 'fa-') && !str_contains($icon, 'far-') && !str_contains($icon, 'fab-')) {
-            trigger_deprecation('easycorp/easyadmin-bundle', '4.4.0', 'The value passed as the $icon argument in "%s" method must be the full FontAwesome CSS class of the icon. For example, if you passed "user" before, you now must pass "fa fa-user" (or any style variant like "fa fa-solid fa-user").', $methodName);
+            trigger_deprecation(
+                'easycorp/easyadmin-bundle',
+                '4.4.0',
+                'The value passed as the $icon argument in "%s" method must be the full FontAwesome CSS class of the icon. For example, if you passed "user" before, you now must pass "fa fa-user" (or any style variant like "fa fa-solid fa-user").',
+                $methodName
+            );
 
             $icon = sprintf('fa fa-%s', $icon);
         }

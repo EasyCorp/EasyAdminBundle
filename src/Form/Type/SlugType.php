@@ -22,8 +22,7 @@ final class SlugType extends AbstractType
     {
         $resolver
             ->setRequired(['target'])
-            ->setAllowedTypes('target', ['string'])
-        ;
+            ->setAllowedTypes('target', ['string']);
     }
 
     public function buildView(FormView $view, FormInterface $form, array $options): void

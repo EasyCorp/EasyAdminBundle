@@ -26,43 +26,51 @@ final class DateTimeFilterType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->add('value2', $options['value_type'], $options['value_type_options'] + [
-            'label' => false,
-        ]);
+        $builder->add(
+            'value2',
+            $options['value_type'],
+            $options['value_type_options'] + [
+                'label' => false,
+            ]
+        );
 
-        $builder->addModelTransformer(new CallbackTransformer(
-            static fn ($data) => $data,
-            static function ($data) use ($options) {
-                if (ComparisonType::BETWEEN === $data['comparison']) {
-                    if (null === $data['value'] || '' === $data['value'] || null === $data['value2'] || '' === $data['value2']) {
-                        throw new TransformationFailedException('Two values must be provided when "BETWEEN" comparison is selected.');
+        $builder->addModelTransformer(
+            new CallbackTransformer(
+                static fn($data) => $data,
+                static function ($data) use ($options) {
+                    if (ComparisonType::BETWEEN === $data['comparison']) {
+                        if (null === $data['value'] || '' === $data['value'] || null === $data['value2'] || '' === $data['value2']) {
+                            throw new TransformationFailedException(
+                                'Two values must be provided when "BETWEEN" comparison is selected.'
+                            );
+                        }
+
+                        // make sure end datetime is greater than start datetime
+                        if ($data['value'] > $data['value2']) {
+                            [$data['value'], $data['value2']] = [$data['value2'], $data['value']];
+                        }
+
+                        if (DateType::class === $options['value_type']) {
+                            $data['value2'] = $data['value2']->format('Y-m-d');
+                        } elseif (TimeType::class === $options['value_type']) {
+                            $data['value2'] = $data['value2']->format('H:i:s');
+                        }
                     }
 
-                    // make sure end datetime is greater than start datetime
-                    if ($data['value'] > $data['value2']) {
-                        [$data['value'], $data['value2']] = [$data['value2'], $data['value']];
+                    if ($data['value'] instanceof \DateTimeInterface) {
+                        if (DateType::class === $options['value_type']) {
+                            // sqlite: Don't include time format for date comparison
+                            $data['value'] = $data['value']->format('Y-m-d');
+                        } elseif (TimeType::class === $options['value_type']) {
+                            // sqlite: Don't include date format for time comparison
+                            $data['value'] = $data['value']->format('H:i:s');
+                        }
                     }
 
-                    if (DateType::class === $options['value_type']) {
-                        $data['value2'] = $data['value2']->format('Y-m-d');
-                    } elseif (TimeType::class === $options['value_type']) {
-                        $data['value2'] = $data['value2']->format('H:i:s');
-                    }
+                    return $data;
                 }
-
-                if ($data['value'] instanceof \DateTimeInterface) {
-                    if (DateType::class === $options['value_type']) {
-                        // sqlite: Don't include time format for date comparison
-                        $data['value'] = $data['value']->format('Y-m-d');
-                    } elseif (TimeType::class === $options['value_type']) {
-                        // sqlite: Don't include date format for time comparison
-                        $data['value'] = $data['value']->format('H:i:s');
-                    }
-                }
-
-                return $data;
-            }
-        ));
+            )
+        );
     }
 
     public function configureOptions(OptionsResolver $resolver): void

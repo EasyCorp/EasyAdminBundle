@@ -4,7 +4,6 @@ namespace EasyCorp\Bundle\EasyAdminBundle\EventListener;
 
 use EasyCorp\Bundle\EasyAdminBundle\Exception\BaseException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\FlattenException;
-use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProviderInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
@@ -23,11 +22,16 @@ use Twig\Error\RuntimeError;
 final class ExceptionListener
 {
     private bool $kernelDebug;
-    private AdminContextProvider $adminContextProvider;
+
+    private AdminContextProviderInterface $adminContextProvider;
+
     private Environment $twig;
 
-    public function __construct(bool $kernelDebug, AdminContextProviderInterface $adminContextProvider, Environment $twig)
-    {
+    public function __construct(
+        bool $kernelDebug,
+        AdminContextProviderInterface $adminContextProvider,
+        Environment $twig
+    ) {
         $this->kernelDebug = $kernelDebug;
         $this->adminContextProvider = $adminContextProvider;
         $this->twig = $twig;
@@ -37,7 +41,8 @@ final class ExceptionListener
     {
         $exception = $event->getThrowable();
 
-        if ($this->kernelDebug && $exception instanceof RuntimeError && 'Variable "ea" does not exist.' === $exception->getRawMessage()) {
+        if ($this->kernelDebug && $exception instanceof RuntimeError && 'Variable "ea" does not exist.' === $exception->getRawMessage(
+            )) {
             $exception->appendMessage($this->getEaVariableExceptionMessage());
 
             return;
@@ -58,13 +63,17 @@ final class ExceptionListener
     public function createExceptionResponse(FlattenException $exception): Response
     {
         $context = $this->adminContextProvider->getContext();
-        $exceptionTemplatePath = null === $context ? '@EasyAdmin/exception.html.twig' : $context->getTemplatePath('exception');
+        $exceptionTemplatePath = null === $context ? '@EasyAdmin/exception.html.twig' : $context->getTemplatePath(
+            'exception'
+        );
         $layoutTemplatePath = null === $context ? '@EasyAdmin/layout.html.twig' : $context->getTemplatePath('layout');
 
-        return new Response($this->twig->render($exceptionTemplatePath, [
-            'exception' => $exception,
-            'layout_template_path' => $layoutTemplatePath,
-        ]), $exception->getStatusCode());
+        return new Response(
+            $this->twig->render($exceptionTemplatePath, [
+                'exception' => $exception,
+                'layout_template_path' => $layoutTemplatePath,
+            ]), $exception->getStatusCode()
+        );
     }
 
     private function getEaVariableExceptionMessage(): string

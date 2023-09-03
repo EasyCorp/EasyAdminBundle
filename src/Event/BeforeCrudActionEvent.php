@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Event;
 
-use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContextInterface;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -11,14 +11,14 @@ final class BeforeCrudActionEvent
 {
     use StoppableEventTrait;
 
-    private ?AdminContext $adminContext;
+    private ?AdminContextInterface $adminContext;
 
-    public function __construct(?AdminContext $adminContext)
+    public function __construct(?AdminContextInterface $adminContext)
     {
         $this->adminContext = $adminContext;
     }
 
-    public function getAdminContext(): ?AdminContext
+    public function getAdminContext(): ?AdminContextInterface
     {
         return $this->adminContext;
     }

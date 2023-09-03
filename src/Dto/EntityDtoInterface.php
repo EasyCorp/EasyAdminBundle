@@ -7,7 +7,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 use EasyCorp\Bundle\EasyAdminBundle\Collection\ActionCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
-use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
+use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStoreInterface;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -48,7 +48,7 @@ interface EntityDtoInterface
      */
     public function getAllPropertyNames(): array;
 
-    public function getPropertyMetadata(string $propertyName): KeyValueStore;
+    public function getPropertyMetadata(string $propertyName): KeyValueStoreInterface;
 
     public function getPropertyDataType(string $propertyName);
 

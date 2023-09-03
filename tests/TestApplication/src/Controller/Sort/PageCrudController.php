@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Controller\Sort;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\CrudInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
@@ -23,7 +24,7 @@ class PageCrudController extends AbstractCrudController
         ];
     }
 
-    public function configureCrud(Crud $crud): Crud
+    public function configureCrud(CrudInterface $crud): CrudInterface
     {
         return parent::configureCrud($crud)
             ->setPaginatorPageSize(100);

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace EasyCorp\Bundle\EasyAdminBundle\Config;
 
 
-use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDtoInterface;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
@@ -45,7 +44,7 @@ interface ActionInterface
 
     /**
      * @param TranslatableInterface|string|false|null $label Use FALSE to hide the label; use NULL to autogenerate it
-     * @param string|null                             $icon  The full CSS classes of the FontAwesome icon to render (see https://fontawesome.com/v6/search?m=free)
+     * @param string|null $icon The full CSS classes of the FontAwesome icon to render (see https://fontawesome.com/v6/search?m=free)
      */
     public static function new(string $name, $label = null, ?string $icon = null): self;
 

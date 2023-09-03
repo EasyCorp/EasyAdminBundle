@@ -2,8 +2,6 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type;
 
-use ArrayObject;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Form\EventListener\EasyAdminTabSubscriber;
@@ -87,7 +85,7 @@ final class CrudFormType extends AbstractType
                 $metadata['label'] = $fieldDto->getLabel();
                 $metadata['help'] = $fieldDto->getHelp();
                 $metadata[FormField::OPTION_ICON] = $fieldDto->getCustomOption(FormField::OPTION_ICON);
-                $currentFormTab = (string) $fieldDto->getLabel();
+                $currentFormTab = (string)$fieldDto->getLabel();
 
                 // plain arrays are not enough for tabs because they are modified in the
                 // lifecycle of a form (e.g. add info about form errors). Use an ArrayObject instead.
@@ -135,7 +133,8 @@ final class CrudFormType extends AbstractType
         $resolver
             ->setDefaults([
                 'allow_extra_fields' => true,
-                'data_class' => static fn (Options $options, $dataClass) => $dataClass ?? $options['entityDto']->getFqcn(),
+                'data_class' => static fn(Options $options, $dataClass) => $dataClass ?? $options['entityDto']->getFqcn(
+                ),
             ])
             ->setDefined(['entityDto', 'ea_form_panel', 'ea_form_tab'])
             ->setRequired(['entityDto']);

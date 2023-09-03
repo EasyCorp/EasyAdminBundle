@@ -2,15 +2,13 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Field\Configurator;
 
-use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\ActionInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDtoInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Field\UrlField;
+
 use function Symfony\Component\String\u;
 
 /**
@@ -27,7 +25,9 @@ final class UrlConfigurator implements FieldConfiguratorInterface
     {
         $field->setFormTypeOptionIfNotSet('attr.inputmode', 'url');
 
-        $prettyUrl = str_replace(['http://www.', 'https://www.', 'http://', 'https://'], '', (string) $field->getValue());
+        $prettyUrl = str_replace(['http://www.', 'https://www.', 'http://', 'https://'],
+            '',
+            (string)$field->getValue());
         $prettyUrl = rtrim($prettyUrl, '/');
 
         if (ActionInterface::INDEX === $context->getCrud()->getCurrentAction()) {

@@ -17,11 +17,17 @@ final class SearchDto implements SearchDtoInterface
     /** @var string[]|null */
     private ?array $appliedFilters;
 
-    public function __construct(Request $request, ?array $searchableProperties, ?string $query, array $defaultSort, array $customSort, ?array $appliedFilters)
-    {
+    public function __construct(
+        Request $request,
+        ?array $searchableProperties,
+        ?string $query,
+        array $defaultSort,
+        array $customSort,
+        ?array $appliedFilters
+    ) {
         $this->request = $request;
         $this->searchableProperties = $searchableProperties;
-        $this->query = trim((string) $query);
+        $this->query = trim((string)$query);
         $this->defaultSort = $defaultSort;
         $this->customSort = $customSort;
         $this->appliedFilters = $appliedFilters;
@@ -75,7 +81,7 @@ final class SearchDto implements SearchDtoInterface
     public function getQueryTerms(): array
     {
         preg_match_all('/"(?:\\\\.|[^\\\\"])*"|\S+/', $this->query, $matches);
-        $terms = array_map(static fn ($match) => trim($match, '" '), $matches[0] ?? []);
+        $terms = array_map(static fn($match) => trim($match, '" '), $matches[0] ?? []);
 
         return $terms;
     }

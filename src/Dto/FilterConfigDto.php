@@ -28,7 +28,7 @@ final class FilterConfigDto implements FilterConfigDtoInterface
             );
         }
 
-        $this->filters->set((string) $filterNameOrConfig, $filterNameOrConfig);
+        $this->filters->set((string)$filterNameOrConfig, $filterNameOrConfig);
     }
 
     public function getFilter(string $propertyName)/* : FilterInterface|string|null */

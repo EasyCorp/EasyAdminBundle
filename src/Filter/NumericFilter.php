@@ -4,11 +4,8 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Filter;
 
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDtoInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDtoInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDataDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDataDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\NumericFilterType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
@@ -31,8 +28,12 @@ final class NumericFilter implements FilterInterface
             ->setFormTypeOption('translation_domain', 'EasyAdminBundle');
     }
 
-    public function apply(QueryBuilder $queryBuilder, FilterDataDtoInterface $filterDataDto, ?FieldDtoInterface $fieldDto, EntityDtoInterface $entityDto): void
-    {
+    public function apply(
+        QueryBuilder $queryBuilder,
+        FilterDataDtoInterface $filterDataDto,
+        ?FieldDtoInterface $fieldDto,
+        EntityDtoInterface $entityDto
+    ): void {
         $alias = $filterDataDto->getEntityAlias();
         $property = $filterDataDto->getProperty();
         $comparison = $filterDataDto->getComparison();
@@ -42,7 +43,9 @@ final class NumericFilter implements FilterInterface
         $value2 = $filterDataDto->getValue2();
 
         if (ComparisonType::BETWEEN === $comparison) {
-            $queryBuilder->andWhere(sprintf('%s.%s BETWEEN :%s and :%s', $alias, $property, $parameterName, $parameter2Name))
+            $queryBuilder->andWhere(
+                sprintf('%s.%s BETWEEN :%s and :%s', $alias, $property, $parameterName, $parameter2Name)
+            )
                 ->setParameter($parameterName, $value)
                 ->setParameter($parameter2Name, $value2);
         } else {

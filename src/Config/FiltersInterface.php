@@ -6,7 +6,6 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Config;
 
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterConfigDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterConfigDtoInterface;
 
 /**

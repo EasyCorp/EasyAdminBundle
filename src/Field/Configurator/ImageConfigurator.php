@@ -2,15 +2,13 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Field\Configurator;
 
-use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\CrudInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDtoInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
+
 use function Symfony\Component\String\u;
 
 /**
@@ -39,22 +37,38 @@ final class ImageConfigurator implements FieldConfiguratorInterface
             : $this->getImagePath($field->getValue(), $configuredBasePath);
         $field->setFormattedValue($formattedValue);
 
-        $field->setFormTypeOption('upload_filename', $field->getCustomOption(ImageField::OPTION_UPLOADED_FILE_NAME_PATTERN));
+        $field->setFormTypeOption(
+            'upload_filename',
+            $field->getCustomOption(ImageField::OPTION_UPLOADED_FILE_NAME_PATTERN)
+        );
 
         // this check is needed to avoid displaying broken images when image properties are optional
-        if (null === $formattedValue || '' === $formattedValue || (\is_array($formattedValue) && 0 === \count($formattedValue)) || $formattedValue === rtrim($configuredBasePath ?? '', '/')) {
+        if (null === $formattedValue || '' === $formattedValue || (\is_array($formattedValue) && 0 === \count(
+                    $formattedValue
+                )) || $formattedValue === rtrim($configuredBasePath ?? '', '/')) {
             $field->setTemplateName('label/empty');
         }
 
-        if (!\in_array($context->getCrud()->getCurrentPage(), [CrudInterface::PAGE_EDIT, CrudInterface::PAGE_NEW], true)) {
+        if (!\in_array(
+            $context->getCrud()->getCurrentPage(),
+            [CrudInterface::PAGE_EDIT, CrudInterface::PAGE_NEW],
+            true
+        )) {
             return;
         }
 
         $relativeUploadDir = $field->getCustomOption(ImageField::OPTION_UPLOAD_DIR);
         if (null === $relativeUploadDir) {
-            throw new \InvalidArgumentException(sprintf('The "%s" image field must define the directory where the images are uploaded using the setUploadDir() method.', $field->getProperty()));
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'The "%s" image field must define the directory where the images are uploaded using the setUploadDir() method.',
+                    $field->getProperty()
+                )
+            );
         }
-        $relativeUploadDir = u($relativeUploadDir)->trimStart(\DIRECTORY_SEPARATOR)->ensureEnd(\DIRECTORY_SEPARATOR)->toString();
+        $relativeUploadDir = u($relativeUploadDir)->trimStart(\DIRECTORY_SEPARATOR)->ensureEnd(
+            \DIRECTORY_SEPARATOR
+        )->toString();
         $isStreamWrapper = filter_var($relativeUploadDir, \FILTER_VALIDATE_URL);
         if ($isStreamWrapper) {
             $absoluteUploadDir = $relativeUploadDir;

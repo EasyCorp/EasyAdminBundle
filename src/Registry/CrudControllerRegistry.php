@@ -15,8 +15,12 @@ final class CrudControllerRegistry implements CrudControllerRegistryInterface
      * @param array<string, string> $crudIdToCrudFqcnMap
      * @param array<string, string> $entityFqcnToCrudFqcnMap
      */
-    public function __construct(array $crudFqcnToEntityFqcnMap, array $crudFqcnToCrudIdMap, array $entityFqcnToCrudFqcnMap, array $crudIdToCrudFqcnMap)
-    {
+    public function __construct(
+        array $crudFqcnToEntityFqcnMap,
+        array $crudFqcnToCrudIdMap,
+        array $entityFqcnToCrudFqcnMap,
+        array $crudIdToCrudFqcnMap
+    ) {
         $this->crudFqcnToEntityFqcnMap = $crudFqcnToEntityFqcnMap;
         $this->crudFqcnToCrudIdMap = $crudFqcnToCrudIdMap;
         $this->entityFqcnToCrudFqcnMap = $entityFqcnToCrudFqcnMap;

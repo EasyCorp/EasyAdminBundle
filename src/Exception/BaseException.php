@@ -2,18 +2,20 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Exception;
 
-use EasyCorp\Bundle\EasyAdminBundle\Context\ExceptionContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ExceptionContextInterface;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 abstract class BaseException extends HttpException implements BaseExceptionInterface
 {
-    private ExceptionContext $context;
+    private ExceptionContextInterface $context;
 
     public function __construct(ExceptionContextInterface $context)
     {
         $this->context = $context;
-        parent::__construct($this->context->getStatusCode(), $this->context->getDebugMessage());
+        parent::__construct(
+            $this->context->getStatusCode(),
+            $this->context->getDebugMessage()
+        );
     }
 
     public function getContext(): ExceptionContextInterface

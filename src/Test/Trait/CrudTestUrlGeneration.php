@@ -2,7 +2,6 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Test\Trait;
 
-use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\ActionInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Test\Exception\InvalidClassPropertyTypeException;
 use EasyCorp\Bundle\EasyAdminBundle\Test\Exception\MissingClassMethodException;
@@ -15,16 +14,20 @@ trait CrudTestUrlGeneration
      * @throws InvalidClassPropertyTypeException
      * @throws MissingClassMethodException
      */
-    protected function getCrudUrl(string $action, string|int|null $entityId = null, array $options = [], ?string $dashboardFqcn = null, ?string $controllerFqcn = null): string
-    {
+    protected function getCrudUrl(
+        string $action,
+        string|int|null $entityId = null,
+        array $options = [],
+        ?string $dashboardFqcn = null,
+        ?string $controllerFqcn = null
+    ): string {
         $dashboardFqcn ??= $this->getDashboardFqcn();
         $controllerFqcn ??= $this->getControllerFqcn();
 
         $this->adminUrlGenerator
             ->setDashboard($dashboardFqcn)
             ->setController($controllerFqcn)
-            ->setAction($action)
-        ;
+            ->setAction($action);
 
         if (null !== $entityId) {
             $this->adminUrlGenerator->setEntityId($entityId);
@@ -37,8 +40,11 @@ trait CrudTestUrlGeneration
         return $this->adminUrlGenerator->generateUrl();
     }
 
-    protected function generateIndexUrl(?string $query = null, ?string $dashboardFqcn = null, ?string $controllerFqcn = null): string
-    {
+    protected function generateIndexUrl(
+        ?string $query = null,
+        ?string $dashboardFqcn = null,
+        ?string $controllerFqcn = null
+    ): string {
         $options = [];
 
         if (null !== $query) {
@@ -53,14 +59,30 @@ trait CrudTestUrlGeneration
         return $this->getCrudUrl(ActionInterface::NEW, dashboardFqcn: $dashboardFqcn, controllerFqcn: $controllerFqcn);
     }
 
-    protected function generateEditFormUrl(string|int $id, ?string $dashboardFqcn = null, ?string $controllerFqcn = null): string
-    {
-        return $this->getCrudUrl(ActionInterface::EDIT, $id, dashboardFqcn: $dashboardFqcn, controllerFqcn: $controllerFqcn);
+    protected function generateEditFormUrl(
+        string|int $id,
+        ?string $dashboardFqcn = null,
+        ?string $controllerFqcn = null
+    ): string {
+        return $this->getCrudUrl(
+            ActionInterface::EDIT,
+            $id,
+            dashboardFqcn: $dashboardFqcn,
+            controllerFqcn: $controllerFqcn
+        );
     }
 
-    protected function generateDetailUrl(string|int $id, ?string $dashboardFqcn = null, ?string $controllerFqcn = null): string
-    {
-        return $this->getCrudUrl(ActionInterface::DETAIL, $id, dashboardFqcn: $dashboardFqcn, controllerFqcn: $controllerFqcn);
+    protected function generateDetailUrl(
+        string|int $id,
+        ?string $dashboardFqcn = null,
+        ?string $controllerFqcn = null
+    ): string {
+        return $this->getCrudUrl(
+            ActionInterface::DETAIL,
+            $id,
+            dashboardFqcn: $dashboardFqcn,
+            controllerFqcn: $controllerFqcn
+        );
     }
 
     protected function generateFilterRenderUrl(?string $dashboardFqcn = null, ?string $controllerFqcn = null): string
@@ -68,6 +90,12 @@ trait CrudTestUrlGeneration
         // Use the index URL as referrer but remove scheme, host and port
         $referrer = preg_replace('/^.*(\/.*)$/', '$1', $this->generateIndexUrl());
 
-        return $this->getCrudUrl('renderFilters', null, ['referrer' => $referrer], dashboardFqcn: $dashboardFqcn, controllerFqcn: $controllerFqcn);
+        return $this->getCrudUrl(
+            'renderFilters',
+            null,
+            ['referrer' => $referrer],
+            dashboardFqcn: $dashboardFqcn,
+            controllerFqcn: $controllerFqcn
+        );
     }
 }

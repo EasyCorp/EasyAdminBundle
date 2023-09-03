@@ -24,9 +24,14 @@ final class Filters implements FiltersInterface
 
     public function add(FilterInterface|string $propertyNameOrFilter): FiltersInterface
     {
-        $filterPropertyName = \is_string($propertyNameOrFilter) ? $propertyNameOrFilter : (string) $propertyNameOrFilter;
+        $filterPropertyName = \is_string($propertyNameOrFilter) ? $propertyNameOrFilter : (string)$propertyNameOrFilter;
         if (null !== $this->dto->getFilter($filterPropertyName)) {
-            throw new \InvalidArgumentException(sprintf('There are two or more different filters defined for the "%s" property, but you can only define a single filter per property.', $filterPropertyName));
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'There are two or more different filters defined for the "%s" property, but you can only define a single filter per property.',
+                    $filterPropertyName
+                )
+            );
         }
 
         $this->dto->addFilter($propertyNameOrFilter);

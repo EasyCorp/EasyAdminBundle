@@ -25,7 +25,12 @@ final class Assets implements AssetsInterface
     public function addWebpackEncoreEntry(AssetInterface|string $entryNameOrAsset): AssetsInterface
     {
         if (!class_exists('Symfony\\WebpackEncoreBundle\\WebpackEncoreBundle')) {
-            throw new \RuntimeException(sprintf('You are trying to add a Webpack Encore entry called "%s" but WebpackEncoreBundle is not installed in your project. Try running "composer require symfony/webpack-encore-bundle"', $entryNameOrAsset));
+            throw new \RuntimeException(
+                sprintf(
+                    'You are trying to add a Webpack Encore entry called "%s" but WebpackEncoreBundle is not installed in your project. Try running "composer require symfony/webpack-encore-bundle"',
+                    $entryNameOrAsset
+                )
+            );
         }
 
         if (\is_string($entryNameOrAsset)) {

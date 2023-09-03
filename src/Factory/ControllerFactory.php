@@ -17,13 +17,18 @@ final class ControllerFactory implements ControllerFactoryInterface
         $this->controllerResolver = $controllerResolver;
     }
 
-    public function getDashboardControllerInstance(string $controllerFqcn, Request $request): ?DashboardControllerInterface
-    {
+    public function getDashboardControllerInstance(
+        string $controllerFqcn,
+        Request $request
+    ): ?DashboardControllerInterface {
         return $this->getDashboardController($controllerFqcn, $request);
     }
 
-    public function getCrudControllerInstance(?string $crudControllerFqcn, ?string $crudAction, Request $request): ?CrudControllerInterface
-    {
+    public function getCrudControllerInstance(
+        ?string $crudControllerFqcn,
+        ?string $crudAction,
+        Request $request
+    ): ?CrudControllerInterface {
         if (null === $crudControllerFqcn) {
             return null;
         }
@@ -31,18 +36,27 @@ final class ControllerFactory implements ControllerFactoryInterface
         return $this->getCrudController($crudControllerFqcn, $crudAction, $request);
     }
 
-    private function getDashboardController(?string $dashboardControllerFqcn, Request $request): ?DashboardControllerInterface
-    {
+    private function getDashboardController(
+        ?string $dashboardControllerFqcn,
+        Request $request
+    ): ?DashboardControllerInterface {
         return $this->getController(DashboardControllerInterface::class, $dashboardControllerFqcn, 'index', $request);
     }
 
-    private function getCrudController(?string $crudControllerFqcn, ?string $crudAction, Request $request): ?CrudControllerInterface
-    {
+    private function getCrudController(
+        ?string $crudControllerFqcn,
+        ?string $crudAction,
+        Request $request
+    ): ?CrudControllerInterface {
         return $this->getController(CrudControllerInterface::class, $crudControllerFqcn, $crudAction, $request);
     }
 
-    private function getController(string $controllerInterface, ?string $controllerFqcn, ?string $controllerAction, Request $request)
-    {
+    private function getController(
+        string $controllerInterface,
+        ?string $controllerFqcn,
+        ?string $controllerAction,
+        Request $request
+    ) {
         if (null === $controllerFqcn || null === $controllerAction) {
             return null;
         }
@@ -51,7 +65,9 @@ final class ControllerFactory implements ControllerFactoryInterface
         $controllerCallable = $this->controllerResolver->getController($newRequest);
 
         if (false === $controllerCallable) {
-            throw new NotFoundHttpException(sprintf('Unable to find the controller "%s::%s".', $controllerFqcn, $controllerAction));
+            throw new NotFoundHttpException(
+                sprintf('Unable to find the controller "%s::%s".', $controllerFqcn, $controllerAction)
+            );
         }
 
         if (!\is_array($controllerCallable)) {

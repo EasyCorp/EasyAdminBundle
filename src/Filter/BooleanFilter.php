@@ -4,11 +4,8 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Filter;
 
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDtoInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDtoInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDataDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDataDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\BooleanFilterType;
 
@@ -30,10 +27,22 @@ final class BooleanFilter implements FilterInterface
             ->setFormTypeOption('translation_domain', 'EasyAdminBundle');
     }
 
-    public function apply(QueryBuilder $queryBuilder, FilterDataDtoInterface $filterDataDto, ?FieldDtoInterface $fieldDto, EntityDtoInterface $entityDto): void
-    {
+    public function apply(
+        QueryBuilder $queryBuilder,
+        FilterDataDtoInterface $filterDataDto,
+        ?FieldDtoInterface $fieldDto,
+        EntityDtoInterface $entityDto
+    ): void {
         $queryBuilder
-            ->andWhere(sprintf('%s.%s %s :%s', $filterDataDto->getEntityAlias(), $filterDataDto->getProperty(), $filterDataDto->getComparison(), $filterDataDto->getParameterName()))
+            ->andWhere(
+                sprintf(
+                    '%s.%s %s :%s',
+                    $filterDataDto->getEntityAlias(),
+                    $filterDataDto->getProperty(),
+                    $filterDataDto->getComparison(),
+                    $filterDataDto->getParameterName()
+                )
+            )
             ->setParameter($filterDataDto->getParameterName(), $filterDataDto->getValue());
     }
 }

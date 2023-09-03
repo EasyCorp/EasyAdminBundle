@@ -2,8 +2,8 @@
 {# @var field \EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto #}
 {# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
 {% if field.customOptions.get('showCode') %}
-    <span class="badge badge-language" title="{{ field.formattedValue }}">{{ field.value }}</span>
+	<span class="badge badge-language" title="{{ field.formattedValue }}">{{ field.value }}</span>
 {% endif %}
 {% if field.customOptions.get('showName') %}
-    {{ field.formattedValue ?? '' }}
+	{{ field.formattedValue ?? '' }}
 {% endif %}

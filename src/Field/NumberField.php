@@ -39,7 +39,9 @@ final class NumberField implements FieldInterface
     public function setNumDecimals(int $num): self
     {
         if ($num < 0) {
-            throw new \InvalidArgumentException(sprintf('The argument of the "%s()" method must be 0 or higher (%d given).', __METHOD__, $num));
+            throw new \InvalidArgumentException(
+                sprintf('The argument of the "%s()" method must be 0 or higher (%d given).', __METHOD__, $num)
+            );
         }
 
         $this->setCustomOption(self::OPTION_NUM_DECIMALS, $num);
@@ -60,7 +62,14 @@ final class NumberField implements FieldInterface
         ];
 
         if (!\in_array($mode, $validModes, true)) {
-            throw new \InvalidArgumentException(sprintf('The argument of the "%s()" method must be the value of any of the following constants from the %s class: %s.', __METHOD__, \NumberFormatter::class, implode(', ', array_keys($validModes))));
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'The argument of the "%s()" method must be the value of any of the following constants from the %s class: %s.',
+                    __METHOD__,
+                    \NumberFormatter::class,
+                    implode(', ', array_keys($validModes))
+                )
+            );
         }
 
         $this->setCustomOption(self::OPTION_ROUNDING_MODE, $mode);

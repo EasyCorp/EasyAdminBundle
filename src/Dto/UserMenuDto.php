@@ -2,8 +2,6 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu\MenuItemInterface;
-
 final class UserMenuDto implements UserMenuDtoInterface
 {
     private bool $displayName = true;

@@ -3,768 +3,786 @@
 
 {% block form_start %}
     {% if form.vars.errors|length > 0 and 'ea_crud' in form.vars.block_prefixes|default([]) %}
-        {{ form_errors(form, {attr: { class: 'global-invalid-feedback' }}) }}
-    {% endif %}
+		{{ form_errors(form, {attr: { class: 'global-invalid-feedback' }}) }}
+	{% endif %}
 
     {{ parent() }}
 
-    <div class="row"> {# this is closed in form_end #}
-        <input type="hidden" name="referrer" value="{{ ea.request.query.get('referrer') }}">
-{% endblock form_start %}
+<div class="row"> {# this is closed in form_end #}
+	<input type="hidden" name="referrer" value="{{ ea.request.query.get('referrer') }}">
+	{% endblock form_start %}
 
-{% block form_end %}
-            {% if not render_rest is defined or render_rest %}
-                {{ form_rest(form) }}
-            {% endif %}
-        </div> {# this closes the '<div class="row">' of form_start #}
-    </form>
+	{% block form_end %}
+	{% if not render_rest is defined or render_rest %}
+		{{ form_rest(form) }}
+	{% endif %}
+</div> {# this closes the '<div class="row">' of form_start #}
+	</form>
 {% endblock %}
 
 {% block form_errors %}
-    {% if errors|length > 0 %}
-        {% for error in errors %}
-            <div class="{{ attr.class|default('') }} invalid-feedback d-block">{{ error.message }}</div>
-        {% endfor %}
-    {% endif %}
+	{% if errors|length > 0 %}
+		{% for error in errors %}
+			<div class="{{ attr.class|default('') }} invalid-feedback d-block">{{ error.message }}</div>
+		{% endfor %}
+	{% endif %}
 {% endblock form_errors %}
 
 {# Widgets #}
 
 {% block form_widget_simple -%}
-    {% if type is not defined or type not in ['file', 'hidden'] %}
-        {%- set attr = attr|merge({class: (attr.class|default(''))|trim}) -%}
-    {% endif %}
-    {%- if type is defined and (type == 'range' or type == 'color') %}
-        {# Attribute "required" is not supported #}
-        {%- set required = false -%}
-    {% endif %}
-    {{- parent() -}}
+	{% if type is not defined or type not in ['file', 'hidden'] %}
+		{%- set attr = attr|merge({class: (attr.class|default(''))|trim}) -%}
+	{% endif %}
+	{%- if type is defined and (type == 'range' or type == 'color') %}
+		{# Attribute "required" is not supported #}
+		{%- set required = false -%}
+	{% endif %}
+	{{- parent() -}}
 {%- endblock form_widget_simple %}
 
 {% block datetime_widget %}
-    {% set attr = attr|merge({class: (attr.class|default('') ~ ' form-inline')|trim}) %}
-    <div class="datetime-widget datetime-widget-datetime">
-        {{- parent() -}}
-    </div>
+	{% set attr = attr|merge({class: (attr.class|default('') ~ ' form-inline')|trim}) %}
+	<div class="datetime-widget datetime-widget-datetime">
+		{{- parent() -}}
+	</div>
 {% endblock datetime_widget %}
 
 {% block date_widget -%}
-    <div class="datetime-widget datetime-widget-date">
-        {{- parent() -}}
-    </div>
+	<div class="datetime-widget datetime-widget-date">
+		{{- parent() -}}
+	</div>
 {%- endblock date_widget %}
 
 {% block time_widget -%}
-    <div class="datetime-widget datetime-widget-time">
-        {{- parent() -}}
-    </div>
+	<div class="datetime-widget datetime-widget-time">
+		{{- parent() -}}
+	</div>
 {%- endblock time_widget %}
 
 {% block file_widget -%}
-    {% if vich|default(false) %}
-        {%- set type = type|default('file') -%}
-        {{- block('form_widget_simple') -}}
-    {% else %}
-        {{- block('form_widget_simple') -}}
-    {% endif %}
+	{% if vich|default(false) %}
+		{%- set type = type|default('file') -%}
+		{{- block('form_widget_simple') -}}
+	{% else %}
+		{{- block('form_widget_simple') -}}
+	{% endif %}
 {%- endblock %}
 
 {# Rows #}
 
 {% block form_row %}
-    {% set row_attr = row_attr|merge({
-        class: row_attr.class|default('') ~ ' form-group'
-    }) %}
+	{% set row_attr = row_attr|merge({
+		class: row_attr.class|default('') ~ ' form-group'
+	}) %}
 
-    <div class="{{ form.vars.ea_crud_form.ea_field.columns ?? form.vars.ea_crud_form.ea_field.defaultColumns ?? '' }}">
-        <div {% with { attr: row_attr } %}{{ block('attributes') }}{% endwith %}>
-            {{- form_label(form) -}}
-            <div class="form-widget">
-                {% set has_prepend_html = ea.field.prepend_html|default(null) is not null %}
-                {% set has_append_html = ea.field.append_html|default(null) is not null %}
-                {% set has_input_groups = has_prepend_html or has_append_html %}
+	<div class="{{ form.vars.ea_crud_form.ea_field.columns ?? form.vars.ea_crud_form.ea_field.defaultColumns ?? '' }}">
+		<div {% with { attr: row_attr } %}{{ block('attributes') }}{% endwith %}>
+			{{- form_label(form) -}}
+			<div class="form-widget">
+				{% set has_prepend_html = ea.field.prepend_html|default(null) is not null %}
+				{% set has_append_html = ea.field.append_html|default(null) is not null %}
+				{% set has_input_groups = has_prepend_html or has_append_html %}
 
-                {% if has_input_groups %}<div class="input-group">{% endif %}
-                    {% if has_prepend_html %}
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">{{ ea.field.prepend_html|raw }}</span>
-                        </div>
-                    {% endif %}
+				{% if has_input_groups %}
+				<div class="input-group">{% endif %}
+					{% if has_prepend_html %}
+						<div class="input-group-prepend">
+							<span class="input-group-text">{{ ea.field.prepend_html|raw }}</span>
+						</div>
+					{% endif %}
 
-                    {{ form_widget(form) }}
+					{{ form_widget(form) }}
 
-                    {% if has_append_html %}
-                        <span class="input-group-text">{{ ea.field.append_html|raw }}</span>
-                    {% endif %}
-                {% if has_input_groups %}</div>{% endif %}
+					{% if has_append_html %}
+						<span class="input-group-text">{{ ea.field.append_html|raw }}</span>
+					{% endif %}
+					{% if has_input_groups %}</div>{% endif %}
 
-                {% if ea.field.help ?? false %}
-                    <small class="form-help">{{ ea.field.help|raw }}</small>
-                {% elseif form.vars.help ?? false %}
-                    <small class="form-help">{{ form.vars.help|trans(form.vars.help_translation_parameters, form.vars.translation_domain)|raw }}</small>
-                {% endif %}
+				{% if ea.field.help ?? false %}
+					<small class="form-help">{{ ea.field.help|raw }}</small>
+				{% elseif form.vars.help ?? false %}
+					<small class="form-help">{{ form.vars.help|trans(form.vars.help_translation_parameters, form.vars.translation_domain)|raw }}</small>
+				{% endif %}
 
-                {{- form_errors(form) -}}
-            </div>
-        </div>
-    </div>
+				{{- form_errors(form) -}}
+			</div>
+		</div>
+	</div>
 
-    {# if a field doesn't define its columns explicitly, insert a fill element to make the field take the entire row space #}
-    {% if form.vars.ea_crud_form.ea_field.columns|default(null) is null %}
-        <div class="flex-fill"></div>
-    {% endif %}
+	{# if a field doesn't define its columns explicitly, insert a fill element to make the field take the entire row space #}
+	{% if form.vars.ea_crud_form.ea_field.columns|default(null) is null %}
+		<div class="flex-fill"></div>
+	{% endif %}
 {% endblock form_row %}
 
 {% block choice_widget_collapsed %}
-    {% if 'ea-autocomplete' == attr['data-ea-widget']|default(false) %}
-        {% set attr = attr|merge({
-            'data-ea-i18n-no-results-found': 'autocomplete.no-results-found'|trans({}, 'EasyAdminBundle'),
-            'data-ea-i18n-no-more-results': 'autocomplete.no-more-results'|trans({}, 'EasyAdminBundle'),
-            'data-ea-i18n-loading-more-results': 'autocomplete.loading-more-results'|trans({}, 'EasyAdminBundle'),
-        }) %}
-    {% endif %}
+	{% if 'ea-autocomplete' == attr['data-ea-widget']|default(false) %}
+		{% set attr = attr|merge({
+			'data-ea-i18n-no-results-found': 'autocomplete.no-results-found'|trans({}, 'EasyAdminBundle'),
+			'data-ea-i18n-no-more-results': 'autocomplete.no-more-results'|trans({}, 'EasyAdminBundle'),
+			'data-ea-i18n-loading-more-results': 'autocomplete.loading-more-results'|trans({}, 'EasyAdminBundle'),
+		}) %}
+	{% endif %}
 
-    {{ parent() }}
+	{{ parent() }}
 {% endblock choice_widget_collapsed %}
 
 {% block collection_row %}
-    {% if prototype is defined and not prototype.rendered %}
-        {% set row_attr = row_attr|merge({ 'data-prototype': form_row(prototype) }) %}
-    {% endif %}
+	{% if prototype is defined and not prototype.rendered %}
+		{% set row_attr = row_attr|merge({ 'data-prototype': form_row(prototype) }) %}
+	{% endif %}
 
-    {% set row_attr = row_attr|merge({
-        'data-ea-collection-field': 'true',
-        'data-entry-is-complex': form.vars.ea_crud_form.ea_field and form.vars.ea_crud_form.ea_field.customOptions.get('entryIsComplex') ? 'true' : 'false',
-        'data-allow-add': allow_add ? 'true' : 'false',
-        'data-allow-delete': allow_delete ? 'true' : 'false',
-        'data-num-items': form.children is empty ? 0 : max(form.children|keys),
-        'data-form-type-name-placeholder': prototype is defined ? prototype.vars.name : '',
-    }) %}
+	{% set row_attr = row_attr|merge({
+		'data-ea-collection-field': 'true',
+		'data-entry-is-complex': form.vars.ea_crud_form.ea_field and form.vars.ea_crud_form.ea_field.customOptions.get('entryIsComplex') ? 'true' : 'false',
+		'data-allow-add': allow_add ? 'true' : 'false',
+		'data-allow-delete': allow_delete ? 'true' : 'false',
+		'data-num-items': form.children is empty ? 0 : max(form.children|keys),
+		'data-form-type-name-placeholder': prototype is defined ? prototype.vars.name : '',
+	}) %}
 
-    {{ block('form_row') }}
+	{{ block('form_row') }}
 {% endblock collection_row %}
 
 {% block collection_widget %}
-    {# the "is iterable" check is needed because if an object implements __toString() and
+	{# the "is iterable" check is needed because if an object implements __toString() and
                returns an empty string, "is empty" returns true even if it's not a collection #}
-    {% set isEmptyCollection = value is null or (value is iterable and value is empty) %}
-    {% set is_array_field = 'EasyCorp\\Bundle\\EasyAdminBundle\\Field\\ArrayField' == form.vars.ea_crud_form.ea_field.fieldFqcn ?? false %}
+	{% set isEmptyCollection = value is null or (value is iterable and value is empty) %}
+	{% set is_array_field = 'EasyCorp\\Bundle\\EasyAdminBundle\\Field\\ArrayField' == form.vars.ea_crud_form.ea_field.fieldFqcn ?? false %}
 
-    <div class="ea-form-collection-items">
-        {% if isEmptyCollection %}
-            {{ block('empty_collection') }}
-        {% elseif is_array_field %}
-            {{ block('form_widget') }}
-        {% else %}
-            <div class="accordion">
-                {{ block('form_widget') }}
-            </div>
-        {% endif %}
-    </div>
+	<div class="ea-form-collection-items">
+		{% if isEmptyCollection %}
+			{{ block('empty_collection') }}
+		{% elseif is_array_field %}
+			{{ block('form_widget') }}
+		{% else %}
+			<div class="accordion">
+				{{ block('form_widget') }}
+			</div>
+		{% endif %}
+	</div>
 
-    {% if isEmptyCollection or form.vars.prototype is defined %}
-        {% set attr = attr|merge({'data-empty-collection': block('empty_collection') }) %}
-    {% endif %}
+	{% if isEmptyCollection or form.vars.prototype is defined %}
+		{% set attr = attr|merge({'data-empty-collection': block('empty_collection') }) %}
+	{% endif %}
 
-    {% if allow_add|default(false) and not disabled %}
-        <button type="button" class="btn btn-link field-collection-add-button">
-            <i class="fa fa-plus pr-1"></i>
-            {{ 'action.add_new_item'|trans({}, 'EasyAdminBundle') }}
-        </button>
-    {% endif %}
+	{% if allow_add|default(false) and not disabled %}
+		<button type="button" class="btn btn-link field-collection-add-button">
+			<i class="fa fa-plus pr-1"></i>
+			{{ 'action.add_new_item'|trans({}, 'EasyAdminBundle') }}
+		</button>
+	{% endif %}
 {% endblock collection_widget %}
 
 {% block collection_entry_row %}
-    {% set is_array_field = 'EasyCorp\\Bundle\\EasyAdminBundle\\Field\\ArrayField' == form_parent(form).vars.ea_crud_form.ea_field.fieldFqcn ?? false %}
-    {% set is_complex = form_parent(form).vars.ea_crud_form.ea_field.customOptions.get('entryIsComplex') ?? false %}
-    {% set allows_deleting_items = form_parent(form).vars.allow_delete|default(false) %}
-    {% set render_expanded = form_parent(form).vars.ea_crud_form.ea_field.customOptions.get('renderExpanded') ?? false %}
-    {% set delete_item_button %}
-        <button type="button" class="btn btn-link btn-link-danger field-collection-delete-button"
-                title="{{ 'action.remove_item'|trans({}, 'EasyAdminBundle') }}">
-            <i class="far fa-trash-alt"></i>
-        </button>
-    {% endset %}
+	{% set is_array_field = 'EasyCorp\\Bundle\\EasyAdminBundle\\Field\\ArrayField' == form_parent(form).vars.ea_crud_form.ea_field.fieldFqcn ?? false %}
+	{% set is_complex = form_parent(form).vars.ea_crud_form.ea_field.customOptions.get('entryIsComplex') ?? false %}
+	{% set allows_deleting_items = form_parent(form).vars.allow_delete|default(false) %}
+	{% set render_expanded = form_parent(form).vars.ea_crud_form.ea_field.customOptions.get('renderExpanded') ?? false %}
+	{% set delete_item_button %}
+		<button type="button" class="btn btn-link btn-link-danger field-collection-delete-button"
+				title="{{ 'action.remove_item'|trans({}, 'EasyAdminBundle') }}">
+			<i class="far fa-trash-alt"></i>
+		</button>
+	{% endset %}
 
-    <div class="field-collection-item {{ is_complex ? 'field-collection-item-complex' }}">
-        {% if is_array_field|default(false) %}
-            {{ form_widget(form) }}
-            {% if allows_deleting_items and not disabled %}
-                {{ delete_item_button }}
-            {% endif %}
-        {% else %}
-            <div class="accordion-item">
-                <h2 class="accordion-header">
-                    <button class="accordion-button {{ render_expanded ? '' : 'collapsed' }}" type="button" data-bs-toggle="collapse" data-bs-target="#{{ id }}-contents">
-                        <i class="fas fw fa-chevron-right form-collection-item-collapse-marker"></i>
-                        {{ value|ea_as_string }}
-                    </button>
+	<div class="field-collection-item {{ is_complex ? 'field-collection-item-complex' }}">
+		{% if is_array_field|default(false) %}
+			{{ form_widget(form) }}
+			{% if allows_deleting_items and not disabled %}
+				{{ delete_item_button }}
+			{% endif %}
+		{% else %}
+			<div class="accordion-item">
+				<h2 class="accordion-header">
+					<button class="accordion-button {{ render_expanded ? '' : 'collapsed' }}" type="button"
+							data-bs-toggle="collapse" data-bs-target="#{{ id }}-contents">
+						<i class="fas fw fa-chevron-right form-collection-item-collapse-marker"></i>
+						{{ value|ea_as_string }}
+					</button>
 
-                    {% if allows_deleting_items and not disabled %}
-                        {{ delete_item_button }}
-                    {% endif %}
-                </h2>
-                <div id="{{ id }}-contents" class="accordion-collapse collapse {{ render_expanded ? 'show' }}">
-                    <div class="accordion-body">
-                        {{ form_widget(form) }}
-                    </div>
-                </div>
-            </div>
-        {% endif %}
-    </div>
+					{% if allows_deleting_items and not disabled %}
+						{{ delete_item_button }}
+					{% endif %}
+				</h2>
+				<div id="{{ id }}-contents" class="accordion-collapse collapse {{ render_expanded ? 'show' }}">
+					<div class="accordion-body">
+						{{ form_widget(form) }}
+					</div>
+				</div>
+			</div>
+		{% endif %}
+	</div>
 {% endblock collection_entry_row %}
 
 {% block form_widget_compound %}
-    <div class="form-widget-compound">
-        {% if 'collection' in block_prefixes %}
-            {# the "is iterable" check is needed because if an object implements __toString() and
+	<div class="form-widget-compound">
+		{% if 'collection' in block_prefixes %}
+			{# the "is iterable" check is needed because if an object implements __toString() and
                returns an empty string, "is empty" returns true even if it's not a collection #}
-            {% set isEmptyCollection = value is null or (value is iterable and value is empty) %}
-            {% if isEmptyCollection %}
-                {{ block('empty_collection') }}
-            {% endif %}
-            {% if isEmptyCollection or form.vars.prototype is defined %}
-                {% set attr = attr|merge({'data-empty-collection': block('empty_collection') }) %}
-            {% endif %}
-        {% endif %}
+			{% set isEmptyCollection = value is null or (value is iterable and value is empty) %}
+			{% if isEmptyCollection %}
+				{{ block('empty_collection') }}
+			{% endif %}
+			{% if isEmptyCollection or form.vars.prototype is defined %}
+				{% set attr = attr|merge({'data-empty-collection': block('empty_collection') }) %}
+			{% endif %}
+		{% endif %}
 
-        {{ parent() }}
-    </div>
+		{{ parent() }}
+	</div>
 {% endblock form_widget_compound %}
 
 {% block button_row -%}
-    <div class="form-group field-{{ block_prefixes|slice(-2)|first }} {{ ea.field.css_class|default('') }}">
-        {{- form_widget(form) -}}
-    </div>
+	<div class="form-group field-{{ block_prefixes|slice(-2)|first }} {{ ea.field.css_class|default('') }}">
+		{{- form_widget(form) -}}
+	</div>
 {%- endblock button_row %}
 
 {# Labels #}
 
 {% block form_label -%}
-    {% if label is same as(false) -%}
-        <label>{# the empty <label> is needed to not break the form design #}</label>
-    {%- else -%}
-        {%- if compound is defined and compound -%}
-            {%- set element = 'legend' -%}
-            {%- set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' col-form-label')|trim}) -%}
-        {%- else -%}
-            {%- set label_attr = label_attr|merge({for: id, class: (label_attr.class|default('') ~ ' form-control-label')|trim}) -%}
-        {%- endif -%}
-        {% if required -%}
-            {% set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' required')|trim}) %}
-        {%- endif -%}
-        {% if label is empty -%}
-            {%- if label_format is not empty -%}
-                {% set label = label_format|replace({
-                    '%name%': name,
-                    '%id%': id,
-                }) %}
-            {%- else -%}
-                {% set label = name|humanize %}
-            {%- endif -%}
-        {%- endif -%}
-        <{{ element|default('label') }}{% if label_attr %}{% with { attr: label_attr } %}{{ block('attributes') }}{% endwith %}{% endif %}>
-        {%- if translation_domain is same as(false) -%}
-            {%- if label_html|default(false) is same as(false) -%}
-                {{- label -}}
-            {%- else -%}
-                {{- label|raw -}}
-            {%- endif -%}
-        {%- else -%}
-            {%- if label_html|default(false) is same as(false) -%}
-                {{- label|trans(label_translation_parameters, translation_domain) -}}
-            {%- else -%}
-                {{- label|trans(label_translation_parameters, translation_domain)|raw -}}
-            {%- endif -%}
-        {%- endif -%}
-        </{{ element|default('label') }}>
-    {%- endif -%}
+	{% if label is same as(false) -%}
+		<label>{# the empty <label> is needed to not break the form design #}</label>
+	{%- else -%}
+		{%- if compound is defined and compound -%}
+			{%- set element = 'legend' -%}
+			{%- set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' col-form-label')|trim}) -%}
+		{%- else -%}
+			{%- set label_attr = label_attr|merge({for: id, class: (label_attr.class|default('') ~ ' form-control-label')|trim}) -%}
+		{%- endif -%}
+		{% if required -%}
+			{% set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' required')|trim}) %}
+		{%- endif -%}
+		{% if label is empty -%}
+			{%- if label_format is not empty -%}
+				{% set label = label_format|replace({
+					'%name%': name,
+					'%id%': id,
+				}) %}
+			{%- else -%}
+				{% set label = name|humanize %}
+			{%- endif -%}
+		{%- endif -%}
+		<{{ element|default('label') }}{% if label_attr %}{% with { attr: label_attr } %}{{ block('attributes') }}{% endwith %}{% endif %}>
+		{%- if translation_domain is same as(false) -%}
+			{%- if label_html|default(false) is same as(false) -%}
+				{{- label -}}
+			{%- else -%}
+				{{- label|raw -}}
+			{%- endif -%}
+		{%- else -%}
+			{%- if label_html|default(false) is same as(false) -%}
+				{{- label|trans(label_translation_parameters, translation_domain) -}}
+			{%- else -%}
+				{{- label|trans(label_translation_parameters, translation_domain)|raw -}}
+			{%- endif -%}
+		{%- endif -%}
+		</{{ element|default('label') }}>
+	{%- endif -%}
 {%- endblock form_label %}
 
 {# Errors #}
 
 {% block empty_collection %}
-    <div class="empty collection-empty">
-        {{ include(ea.templatePath('label/empty')) }}
-    </div>
+	<div class="empty collection-empty">
+		{{ include(ea.templatePath('label/empty')) }}
+	</div>
 {% endblock empty_collection %}
 
 {% block vich_file_row %}
-    {% set force_error = true %}
-    {{ block('form_row') }}
+	{% set force_error = true %}
+	{{ block('form_row') }}
 {% endblock %}
 
 {% block vich_file_widget %}
-    <div class="ea-vich-file">
-        {% if download_uri|default('') is not empty %}
-            {% set file_extension = download_uri|split('.')|last %}
-            {% set extension_icons = {
-                'gif': 'fa-file-image-o',
-                'jpg': 'fa-file-image-o',
-                'pdf': 'fa-file-pdf-o',
-                'png': 'fa-file-image-o',
-                'zip': 'fa-file-archive-o'
-            } %}
-            <a class="ea-vich-file-name" href="{{ asset_helper is same as(true) ? asset(download_uri) : download_uri }}">
-                <i class="fa fa-fw {{ extension_icons[file_extension] ?? 'fa-file-o' }}"></i>
-                {%- if download_label|default(false) -%}
-                    {{ download_label|trans({}, 'VichUploaderBundle') }}
-                {%- else -%}
-                    {{ download_uri|split('/')|last ?: 'download'|trans({}, 'VichUploaderBundle') }}
-                {%- endif -%}
-            </a>
-        {% endif %}
+	<div class="ea-vich-file">
+		{% if download_uri|default('') is not empty %}
+			{% set file_extension = download_uri|split('.')|last %}
+			{% set extension_icons = {
+				'gif': 'fa-file-image-o',
+				'jpg': 'fa-file-image-o',
+				'pdf': 'fa-file-pdf-o',
+				'png': 'fa-file-image-o',
+				'zip': 'fa-file-archive-o'
+			} %}
+			<a class="ea-vich-file-name"
+			   href="{{ asset_helper is same as(true) ? asset(download_uri) : download_uri }}">
+				<i class="fa fa-fw {{ extension_icons[file_extension] ?? 'fa-file-o' }}"></i>
+				{%- if download_label|default(false) -%}
+					{{ download_label|trans({}, 'VichUploaderBundle') }}
+				{%- else -%}
+					{{ download_uri|split('/')|last ?: 'download'|trans({}, 'VichUploaderBundle') }}
+				{%- endif -%}
+			</a>
+		{% endif %}
 
-        {% set file_upload_js %}
-            var newFile = document.getElementById('{{ form.file.vars.id }}').files[0];
-            var fileSizeInMegabytes = newFile.size > 1024 * 1024;
-            var fileSize = fileSizeInMegabytes ? newFile.size / (1024 * 1024) : newFile.size / 1024;
-            document.getElementById('{{ form.file.vars.id }}_new_file_name').innerText = newFile.name + ' (' + fileSize.toFixed(2) + ' ' + (fileSizeInMegabytes ? 'MB' : 'KB') + ')';
-        {% endset %}
+		{% set file_upload_js %}
+			var newFile = document.getElementById('{{ form.file.vars.id }}').files[0];
+			var fileSizeInMegabytes = newFile.size > 1024 * 1024;
+			var fileSize = fileSizeInMegabytes ? newFile.size / (1024 * 1024) : newFile.size / 1024;
+			document.getElementById('{{ form.file.vars.id }}_new_file_name').innerText = newFile.name + ' (' + fileSize.toFixed(2) + ' ' + (fileSizeInMegabytes ? 'MB' : 'KB') + ')';
+		{% endset %}
 
-        <div class="ea-vich-file-actions">
-            {# the container element is needed to allow customizing the <input type="file" /> #}
-            <div class="btn btn-secondary input-file-container">
-                <i class="fa fa-fw fa-upload"></i> {{ 'action.choose_file'|trans({}, 'EasyAdminBundle') }}
-                {{ form_widget(form.file, { 'attr': { 'onchange': file_upload_js }, vich: true}) }}
-            </div>
+		<div class="ea-vich-file-actions">
+			{# the container element is needed to allow customizing the <input type="file" /> #}
+			<div class="btn btn-secondary input-file-container">
+				<i class="fa fa-fw fa-upload"></i> {{ 'action.choose_file'|trans({}, 'EasyAdminBundle') }}
+				{{ form_widget(form.file, { 'attr': { 'onchange': file_upload_js }, vich: true}) }}
+			</div>
 
-            {% if form.delete is defined %}
-                {{ form_row(form.delete) }}
-            {% endif %}
-        </div>
-        <div class="small" id="{{ form.file.vars.id }}_new_file_name"></div>
-    </div>
+			{% if form.delete is defined %}
+				{{ form_row(form.delete) }}
+			{% endif %}
+		</div>
+		<div class="small" id="{{ form.file.vars.id }}_new_file_name"></div>
+	</div>
 {% endblock %}
 
 {% block vich_image_row %}
-    {% set force_error = true %}
-    {{ block('form_row') }}
+	{% set force_error = true %}
+	{{ block('form_row') }}
 {% endblock %}
 
 {% block vich_image_widget %}
-    {% set formTypeOptions = ea_crud_form.ea_field.formTypeOptions|default('') %}
-    <div class="ea-vich-image">
-        {% if image_uri|default('') is not empty %}
-            {% if download_uri|default('') is empty %}
-                <div class="ea-lightbox-thumbnail">
-                    {% if formTypeOptions.imagine_pattern is defined and formTypeOptions.imagine_pattern is not empty %}
-                        <img style="cursor: initial" src="{{ (asset_helper is same as(true) ? asset(image_uri) : image_uri)|ea_apply_filter_if_exists('imagine_filter', formTypeOptions.imagine_pattern) }}">
-                    {% else %}
-                        <img style="cursor: initial" src="{{ asset_helper is same as(true) ? asset(image_uri) : image_uri }}">
-                    {% endif %}
-                </div>
-            {% else %}
-                {% set _lightbox_id = 'ea-lightbox-' ~ id %}
+	{% set formTypeOptions = ea_crud_form.ea_field.formTypeOptions|default('') %}
+	<div class="ea-vich-image">
+		{% if image_uri|default('') is not empty %}
+			{% if download_uri|default('') is empty %}
+				<div class="ea-lightbox-thumbnail">
+					{% if formTypeOptions.imagine_pattern is defined and formTypeOptions.imagine_pattern is not empty %}
+						<img style="cursor: initial"
+							 src="{{ (asset_helper is same as(true) ? asset(image_uri) : image_uri)|ea_apply_filter_if_exists('imagine_filter', formTypeOptions.imagine_pattern) }}">
+					{% else %}
+						<img style="cursor: initial"
+							 src="{{ asset_helper is same as(true) ? asset(image_uri) : image_uri }}">
+					{% endif %}
+				</div>
+			{% else %}
+				{% set _lightbox_id = 'ea-lightbox-' ~ id %}
 
-                <a href="#" class="ea-lightbox-thumbnail" data-ea-lightbox-content-selector="#{{ _lightbox_id }}">
-                    {% if formTypeOptions.imagine_pattern is defined and formTypeOptions.imagine_pattern is not empty %}
-                        <img src="{{ (asset_helper is same as(true) ? asset(download_uri) : download_uri)|ea_apply_filter_if_exists('imagine_filter', formTypeOptions.imagine_pattern) }}">
-                    {% else %}
-                        <img src="{{ asset_helper is same as(true) ? asset(download_uri) : download_uri }}">
-                    {% endif %}
-                </a>
+				<a href="#" class="ea-lightbox-thumbnail" data-ea-lightbox-content-selector="#{{ _lightbox_id }}">
+					{% if formTypeOptions.imagine_pattern is defined and formTypeOptions.imagine_pattern is not empty %}
+						<img src="{{ (asset_helper is same as(true) ? asset(download_uri) : download_uri)|ea_apply_filter_if_exists('imagine_filter', formTypeOptions.imagine_pattern) }}">
+					{% else %}
+						<img src="{{ asset_helper is same as(true) ? asset(download_uri) : download_uri }}">
+					{% endif %}
+				</a>
 
-                <div id="{{ _lightbox_id }}" class="ea-lightbox">
-                    {% if formTypeOptions.imagine_pattern is defined and formTypeOptions.imagine_pattern is not empty %}
-                        <img src="{{ (asset_helper is same as(true) ? asset(download_uri) : download_uri)|ea_apply_filter_if_exists('imagine_filter', formTypeOptions.imagine_pattern) }}">
-                    {% else %}
-                        <img src="{{ asset_helper is same as(true) ? asset(download_uri) : download_uri }}">
-                    {% endif %}
-                </div>
-            {% endif %}
-        {% endif %}
+				<div id="{{ _lightbox_id }}" class="ea-lightbox">
+					{% if formTypeOptions.imagine_pattern is defined and formTypeOptions.imagine_pattern is not empty %}
+						<img src="{{ (asset_helper is same as(true) ? asset(download_uri) : download_uri)|ea_apply_filter_if_exists('imagine_filter', formTypeOptions.imagine_pattern) }}">
+					{% else %}
+						<img src="{{ asset_helper is same as(true) ? asset(download_uri) : download_uri }}">
+					{% endif %}
+				</div>
+			{% endif %}
+		{% endif %}
 
-        {% set file_upload_js %}
-            var newFile = document.getElementById('{{ form.file.vars.id }}').files[0];
-            var fileSizeInMegabytes = newFile.size > 1024 * 1024;
-            var fileSize = fileSizeInMegabytes ? newFile.size / (1024 * 1024) : newFile.size / 1024;
-            document.getElementById('{{ form.file.vars.id }}_new_file_name').innerText = newFile.name + ' (' + fileSize.toFixed(2) + ' ' + (fileSizeInMegabytes ? 'MB' : 'KB') + ')';
-        {% endset %}
+		{% set file_upload_js %}
+			var newFile = document.getElementById('{{ form.file.vars.id }}').files[0];
+			var fileSizeInMegabytes = newFile.size > 1024 * 1024;
+			var fileSize = fileSizeInMegabytes ? newFile.size / (1024 * 1024) : newFile.size / 1024;
+			document.getElementById('{{ form.file.vars.id }}_new_file_name').innerText = newFile.name + ' (' + fileSize.toFixed(2) + ' ' + (fileSizeInMegabytes ? 'MB' : 'KB') + ')';
+		{% endset %}
 
-        <div class="ea-vich-image-actions">
-            {# the container element is needed to allow customizing the <input type="file" /> #}
-            <div class="btn btn-secondary input-file-container">
-                <i class="fa fa-fw fa-upload"></i> {{ 'action.choose_file'|trans({}, 'EasyAdminBundle') }}
-                {{ form_widget(form.file, { 'attr': { 'onchange': file_upload_js }, vich: true}) }}
-            </div>
+		<div class="ea-vich-image-actions">
+			{# the container element is needed to allow customizing the <input type="file" /> #}
+			<div class="btn btn-secondary input-file-container">
+				<i class="fa fa-fw fa-upload"></i> {{ 'action.choose_file'|trans({}, 'EasyAdminBundle') }}
+				{{ form_widget(form.file, { 'attr': { 'onchange': file_upload_js }, vich: true}) }}
+			</div>
 
-            {% if form.delete is defined %}
-                {{ form_row(form.delete) }}
-            {% endif %}
-        </div>
-        <div class="small" id="{{ form.file.vars.id }}_new_file_name"></div>
-    </div>
+			{% if form.delete is defined %}
+				{{ form_row(form.delete) }}
+			{% endif %}
+		</div>
+		<div class="small" id="{{ form.file.vars.id }}_new_file_name"></div>
+	</div>
 {% endblock %}
 
 {% block ea_crud_rest %}
-    {{ form_rest(form) }}
+	{{ form_rest(form) }}
 {% endblock ea_crud_rest %}
 
 {# EasyAdmin form type #}
 {% block ea_crud_widget %}
-    {% if ea_crud_form.form_tabs|length > 0 %}
-        <div class="col-12">
-            <div class="nav-tabs-custom form-tabs">
-                <ul class="nav nav-tabs">
-                    {% for tab_name, tab_config in ea_crud_form.form_tabs %}
-                        <li class="nav-item">
-                            <a class="nav-link {% if tab_config.active %}active{% endif %}" href="#{{ tab_config['id'] }}" id="{{ tab_config['id'] }}-tab" data-bs-toggle="tab">
-                                {%- if tab_config.icon|default(false) -%}
-                                    <i class="fa-fw {{ tab_config.icon }}"></i>
-                                {%- endif -%}
-                                {{ tab_config['label']|trans(domain = ea.i18n.translationDomain) }}
-                                {%- if tab_config.errors > 0 -%}
-                                    <span class="badge badge-danger" title="{{ 'form.tab.error_badge_title'|trans({'%count%': tab_config.errors}, 'EasyAdminBundle') }}">
+	{% if ea_crud_form.form_tabs|length > 0 %}
+		<div class="col-12">
+			<div class="nav-tabs-custom form-tabs">
+				<ul class="nav nav-tabs">
+					{% for tab_name, tab_config in ea_crud_form.form_tabs %}
+						<li class="nav-item">
+							<a class="nav-link {% if tab_config.active %}active{% endif %}"
+							   href="#{{ tab_config['id'] }}" id="{{ tab_config['id'] }}-tab" data-bs-toggle="tab">
+								{%- if tab_config.icon|default(false) -%}
+									<i class="fa-fw {{ tab_config.icon }}"></i>
+								{%- endif -%}
+								{{ tab_config['label']|trans(domain = ea.i18n.translationDomain) }}
+								{%- if tab_config.errors > 0 -%}
+									<span class="badge badge-danger"
+										  title="{{ 'form.tab.error_badge_title'|trans({'%count%': tab_config.errors}, 'EasyAdminBundle') }}">
                                         {{- tab_config.errors -}}
                                     </span>
-                                {%- endif -%}
-                            </a>
-                        </li>
-                    {% endfor %}
-                </ul>
-                <div class="tab-content">
-                    {% for tab_name, tab_config in ea_crud_form.form_tabs %}
-                        <div id="{{ tab_config['id'] }}" class="tab-pane {% if tab_config.active %}active{% endif %} {{ tab_config['css_class']|default('') }}">
-                            {% if tab_config['help']|default(false) %}
-                                <div class="content-header-help tab-help">
-                                    {{ tab_config['help']|trans(domain = ea.i18n.translationDomain)|raw }}
-                                </div>
-                            {% endif %}
+								{%- endif -%}
+							</a>
+						</li>
+					{% endfor %}
+				</ul>
+				<div class="tab-content">
+					{% for tab_name, tab_config in ea_crud_form.form_tabs %}
+						<div id="{{ tab_config['id'] }}"
+							 class="tab-pane {% if tab_config.active %}active{% endif %} {{ tab_config['css_class']|default('') }}">
+							{% if tab_config['help']|default(false) %}
+								<div class="content-header-help tab-help">
+									{{ tab_config['help']|trans(domain = ea.i18n.translationDomain)|raw }}
+								</div>
+							{% endif %}
 
-                            <div class="row">
-                                {% if tab_name is defined and tab_name %}
-                                    {% macro recursiveTabForm(form, ea_crud_form, tab_name) %}
-                                        {% for field in form|filter(field => not ea_crud_form.form_panels|filter((panel_config, form_panel) => form_panel == field.vars.ea_crud_form.form_panel) and ((field.vars.ea_crud_form.form_tab is defined and field.vars.ea_crud_form.form_tab == tab_name) or field.vars.ea_crud_form.form_tabs is defined)) %}
-                                            {% if field.vars.ea_crud_form.form_tabs is defined %}
-                                                {# If the field is a nested CRUD form then only render its children #}
-                                                {{ _self.recursiveTabForm(field, ea_crud_form, tab_name) }}
-                                            {% else %}
-                                                {# Render all other fields #}
-                                                {{ form_row(field) }}
-                                            {% endif %}
-                                        {% endfor %}
-                                    {% endmacro %}
-                                    {{ _self.recursiveTabForm(form, ea_crud_form, tab_name) }}
-                                {% endif %}
-                                {{ block('ea_crud_widget_panels') }}
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-    {% else %}
-        {{ block('ea_crud_widget_panels') }}
-    {% endif %}
+							<div class="row">
+								{% if tab_name is defined and tab_name %}
+									{% macro recursiveTabForm(form, ea_crud_form, tab_name) %}
+										{% for field in form|filter(field => not ea_crud_form.form_panels|filter((panel_config, form_panel) => form_panel == field.vars.ea_crud_form.form_panel) and ((field.vars.ea_crud_form.form_tab is defined and field.vars.ea_crud_form.form_tab == tab_name) or field.vars.ea_crud_form.form_tabs is defined)) %}
+											{% if field.vars.ea_crud_form.form_tabs is defined %}
+												{# If the field is a nested CRUD form then only render its children #}
+												{{ _self.recursiveTabForm(field, ea_crud_form, tab_name) }}
+											{% else %}
+												{# Render all other fields #}
+												{{ form_row(field) }}
+											{% endif %}
+										{% endfor %}
+									{% endmacro %}
+									{{ _self.recursiveTabForm(form, ea_crud_form, tab_name) }}
+								{% endif %}
+								{{ block('ea_crud_widget_panels') }}
+							</div>
+						</div>
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+	{% else %}
+		{{ block('ea_crud_widget_panels') }}
+	{% endif %}
 {% endblock ea_crud_widget %}
 
 {% block ea_crud_widget_panels %}
-    {% for panel_name, panel_config in ea_crud_form.form_panels|filter(panel_config => not panel_config.form_tab or panel_config.form_tab == tab_name) %}
-        {% set panel_has_header = panel_config.label|default(false) or panel_config.icon|default(false) or panel_config.help|default(false) %}
+	{% for panel_name, panel_config in ea_crud_form.form_panels|filter(panel_config => not panel_config.form_tab or panel_config.form_tab == tab_name) %}
+		{% set panel_has_header = panel_config.label|default(false) or panel_config.icon|default(false) or panel_config.help|default(false) %}
 
-        {% set collapsible = panel_config.collapsible %}
-        {% set collapsed = panel_config.collapsed %}
+		{% set collapsible = panel_config.collapsible %}
+		{% set collapsed = panel_config.collapsed %}
 
-        <div class="{{ panel_config.css_class ?? '' }}">
-            <div class="form-panel">
-                {% if panel_has_header %}
-                    <div class="form-panel-header {{ collapsible ? 'collapsible' }} {{ panel_config.help|default(false) is not empty ? 'with-help' }}">
-                        <div class="form-panel-title">
-                            <a {% if not collapsible %}
-                                    href="#" class="not-collapsible"
-                               {% else %}
-                                    href="#content-{{ panel_name }}" data-bs-toggle="collapse"
-                                    class="form-panel-collapse {{ collapsed ? 'collapsed' }}"
-                                    aria-expanded="{{ collapsed ? 'false' : 'true' }}" aria-controls="content-{{ panel_name }}"
-                               {% endif %}
-                            >
-                                {% if collapsible %}
-                                    <i class="fas fw fa-chevron-right form-panel-collapse-marker"></i>
-                                {% endif %}
+		<div class="{{ panel_config.css_class ?? '' }}">
+			<div class="form-panel">
+				{% if panel_has_header %}
+					<div class="form-panel-header {{ collapsible ? 'collapsible' }} {{ panel_config.help|default(false) is not empty ? 'with-help' }}">
+						<div class="form-panel-title">
+							<a {% if not collapsible %}
+								href="#" class="not-collapsible"
+							{% else %}
+								href="#content-{{ panel_name }}" data-bs-toggle="collapse"
+								class="form-panel-collapse {{ collapsed ? 'collapsed' }}"
+								aria-expanded="{{ collapsed ? 'false' : 'true' }}" aria-controls="content-{{ panel_name }}"
+							{% endif %}
+							>
+								{% if collapsible %}
+									<i class="fas fw fa-chevron-right form-panel-collapse-marker"></i>
+								{% endif %}
 
-                                {% if panel_config.icon|default(false) %}
-                                    <i class="form-panel-icon {{ panel_config.icon }}"></i>
-                                {% endif %}
-                                {{ panel_config.label|trans|raw }}
-                            </a>
+								{% if panel_config.icon|default(false) %}
+									<i class="form-panel-icon {{ panel_config.icon }}"></i>
+								{% endif %}
+								{{ panel_config.label|trans|raw }}
+							</a>
 
-                            {% if panel_config.help|default(false) %}
-                                <div class="form-panel-help">{{ panel_config.help|trans|raw }}</div>
-                            {% endif %}
-                        </div>
-                    </div>
-                {% endif %}
+							{% if panel_config.help|default(false) %}
+								<div class="form-panel-help">{{ panel_config.help|trans|raw }}</div>
+							{% endif %}
+						</div>
+					</div>
+				{% endif %}
 
-                <div id="content-{{ panel_name }}" class="form-panel-body {{ not panel_has_header ? 'without-header' }} {{ collapsible ? 'collapse' }} {{ not collapsed ? 'show'}}">
-                    <div class="row">
-                        {% for field in form|filter(field => 'hidden' not in field.vars.block_prefixes and field.vars.ea_crud_form.form_panel == panel_name) %}
-                            {% if not field.vars.ea_crud_form.form_tab or field.vars.ea_crud_form.form_tab == tab_name %}
-                                {{ form_row(field) }}
-                            {% endif %}
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-        </div>
-    {% else %}
-        {% macro recursivePanelForm(form) %}
-            {% for field in form|filter(field => 'hidden' not in field.vars.block_prefixes and ((field.vars.ea_crud_form.form_tab is defined and not field.vars.ea_crud_form.form_tab) or field.vars.ea_crud_form.form_tabs is defined)) %}
-                {% if field.vars.ea_crud_form.form_tabs is defined %}
-                    {# If the field is a nested CRUD form then only render its children #}
-                    {{ _self.recursivePanelForm(field) }}
-                {% else %}
-                    {# Render all other fields #}
-                    {{ form_row(field) }}
-                {% endif %}
-            {% endfor %}
-        {% endmacro %}
-        {{ _self.recursivePanelForm(form) }}
-    {% endfor %}
+				<div id="content-{{ panel_name }}"
+					 class="form-panel-body {{ not panel_has_header ? 'without-header' }} {{ collapsible ? 'collapse' }} {{ not collapsed ? 'show' }}">
+					<div class="row">
+						{% for field in form|filter(field => 'hidden' not in field.vars.block_prefixes and field.vars.ea_crud_form.form_panel == panel_name) %}
+							{% if not field.vars.ea_crud_form.form_tab or field.vars.ea_crud_form.form_tab == tab_name %}
+								{{ form_row(field) }}
+							{% endif %}
+						{% endfor %}
+					</div>
+				</div>
+			</div>
+		</div>
+	{% else %}
+		{% macro recursivePanelForm(form) %}
+			{% for field in form|filter(field => 'hidden' not in field.vars.block_prefixes and ((field.vars.ea_crud_form.form_tab is defined and not field.vars.ea_crud_form.form_tab) or field.vars.ea_crud_form.form_tabs is defined)) %}
+				{% if field.vars.ea_crud_form.form_tabs is defined %}
+					{# If the field is a nested CRUD form then only render its children #}
+					{{ _self.recursivePanelForm(field) }}
+				{% else %}
+					{# Render all other fields #}
+					{{ form_row(field) }}
+				{% endif %}
+			{% endfor %}
+		{% endmacro %}
+		{{ _self.recursivePanelForm(form) }}
+	{% endfor %}
 {% endblock ea_crud_widget_panels %}
 
 {# EasyAdminAutocomplete form type #}
 {% block ea_autocomplete_widget %}
-    {{ form_widget(form.autocomplete, { attr: attr|merge({ required: required }) }) }}
+	{{ form_widget(form.autocomplete, { attr: attr|merge({ required: required }) }) }}
 {% endblock ea_autocomplete_widget %}
 
 {% block ea_autocomplete_inner_label %}
-    {% set name = form_parent(form).vars.name %}
-    {{ block('form_label') }}
+	{% set name = form_parent(form).vars.name %}
+	{{ block('form_label') }}
 {% endblock ea_autocomplete_inner_label %}
 
 {# EasyAdmin's CodeEditor form type #}
 {% block ea_code_editor_widget %}
-    {{ form_widget(form, { attr: attr|merge({
-        'data-ea-code-editor-field': 'true',
-        'data-language': form.vars.ea_crud_form.ea_field.customOptions.get('language'),
-        'data-tab-size': form.vars.ea_crud_form.ea_field.customOptions.get('tabSize'),
-        'data-indent-with-tabs': form.vars.ea_crud_form.ea_field.customOptions.get('indentWithTabs') ? 'true' : 'false',
-        'data-show-line-numbers': form.vars.ea_crud_form.ea_field.customOptions.get('showLineNumbers') ? 'true' : 'false',
-        'data-number-of-rows': form.vars.ea_crud_form.ea_field.customOptions.get('numOfRows'),
-    }) }) }}
+	{{ form_widget(form, { attr: attr|merge({
+		'data-ea-code-editor-field': 'true',
+		'data-language': form.vars.ea_crud_form.ea_field.customOptions.get('language'),
+		'data-tab-size': form.vars.ea_crud_form.ea_field.customOptions.get('tabSize'),
+		'data-indent-with-tabs': form.vars.ea_crud_form.ea_field.customOptions.get('indentWithTabs') ? 'true' : 'false',
+		'data-show-line-numbers': form.vars.ea_crud_form.ea_field.customOptions.get('showLineNumbers') ? 'true' : 'false',
+		'data-number-of-rows': form.vars.ea_crud_form.ea_field.customOptions.get('numOfRows'),
+	}) }) }}
 {% endblock ea_code_editor_widget %}
 
 {# EasyAdmin's TextEditor form type #}
 {% block ea_text_editor_widget %}
-    {{ form_widget(form, { attr: attr|merge({
-        class: 'ea-text-editor-content d-none',
-        'data-number-of-rows': form.vars.ea_crud_form.ea_field.customOptions.get('numOfRows')|default(5),
-        'data-trix-editor-config': form.vars.ea_crud_form.ea_field.customOptions.get('trixEditorConfig')|default(null)|json_encode,
-    }) }) }}
+	{{ form_widget(form, { attr: attr|merge({
+		class: 'ea-text-editor-content d-none',
+		'data-number-of-rows': form.vars.ea_crud_form.ea_field.customOptions.get('numOfRows')|default(5),
+		'data-trix-editor-config': form.vars.ea_crud_form.ea_field.customOptions.get('trixEditorConfig')|default(null)|json_encode,
+	}) }) }}
 
-    <div class="ea-text-editor-wrapper">
-        <trix-editor input="{{ id }}" class="trix-content"></trix-editor>
-    </div>
+	<div class="ea-text-editor-wrapper">
+		<trix-editor input="{{ id }}" class="trix-content"></trix-editor>
+	</div>
 {% endblock ea_text_editor_widget %}
 
 {# EasyAdminSection form type #}
 {% block ea_form_row_row %}
-    <div class="{{ form.vars.row_attr.class }}"></div>
+	<div class="{{ form.vars.row_attr.class }}"></div>
 {% endblock %}
 
 {% block ea_section_row %}
-    <div class="form-section {{ ea.field.icon|default(false) == false and ea.field.label|default(false) == false ? 'form-section-empty' }} {{ ea.field.css_class|default('') }}">
-        <h2>
-            {% if ea.field.icon|default(false) %}<i class="fa fa-fw fa-{{ ea.field.icon }}"></i>{% endif %}
-            <span>{% if ea.field.label|default(false) %}{{ ea.field.label|default('')|trans(domain = ea.i18n.translationDomain)|raw }}{% endif %}</span>
-        </h2>
+	<div class="form-section {{ ea.field.icon|default(false) == false and ea.field.label|default(false) == false ? 'form-section-empty' }} {{ ea.field.css_class|default('') }}">
+		<h2>
+			{% if ea.field.icon|default(false) %}<i class="fa fa-fw fa-{{ ea.field.icon }}"></i>{% endif %}
+			<span>{% if ea.field.label|default(false) %}{{ ea.field.label|default('')|trans(domain = ea.i18n.translationDomain)|raw }}{% endif %}</span>
+		</h2>
 
-        {% if ea.field.help|default(false) %}
-            <p class="form-section-help">{{ ea.field.help|trans(domain = ea.i18n.translationDomain)|raw }}</p>
-        {% endif %}
-    </div>
+		{% if ea.field.help|default(false) %}
+			<p class="form-section-help">{{ ea.field.help|trans(domain = ea.i18n.translationDomain)|raw }}</p>
+		{% endif %}
+	</div>
 {% endblock ea_section_row %}
 
 {# EasyAdminFilters form type #}
 {% block ea_filters_widget %}
-    {% set applied_filters = ea.request.query.all()['filters']|default([])|keys %}
+	{% set applied_filters = ea.request.query.all()['filters']|default([])|keys %}
 
-    {% for field in form %}
-        <div class="col-12">
-            <div class="filter-field py-1 px-3 {% if loop.last %}pb-2{% endif %}" data-filter-property="{{ field.vars.name }}">
-                <div class="filter-heading" id="filter-heading-{{ loop.index }}">
-                    <input type="checkbox" class="filter-checkbox" {% if field.vars.name in applied_filters %}checked{% endif %}>
-                    <a data-bs-toggle="collapse" href="#filter-content-{{ loop.index }}" aria-expanded="{{ field.vars.name in applied_filters ? 'true' : 'false' }}" aria-controls="filter-content-{{ loop.index }}"
-                        {% for name, value in field.vars.label_attr|default([]) %}{{ name }}="{{ value|e('html_attr') }}" {% endfor %}>
-                        {{ field.vars.label|default(field.vars.name|humanize)|trans(domain = ea.i18n.translationDomain) }}
-                    </a>
-                </div>
-                <div id="filter-content-{{ loop.index }}" class="filter-content collapse {% if field.vars.name in applied_filters %}show{% endif %}" aria-labelledby="filter-heading-{{ loop.index }}">
-                    <div class="form-widget my-2">
-                        {{ form_widget(field) }}
-                    </div>
-                </div>
-            </div>
-        </div>
-    {% endfor %}
+	{% for field in form %}
+		<div class="col-12">
+			<div class="filter-field py-1 px-3 {% if loop.last %}pb-2{% endif %}"
+				 data-filter-property="{{ field.vars.name }}">
+				<div class="filter-heading" id="filter-heading-{{ loop.index }}">
+					<input type="checkbox" class="filter-checkbox"
+						   {% if field.vars.name in applied_filters %}checked{% endif %}>
+					<a data-bs-toggle="collapse" href="#filter-content-{{ loop.index }}"
+					   aria-expanded="{{ field.vars.name in applied_filters ? 'true' : 'false' }}"
+					   aria-controls="filter-content-{{ loop.index }}"
+					{% for name, value in field.vars.label_attr|default([]) %}{{ name }}="{{ value|e('html_attr') }}" {% endfor %}
+					>
+					{{ field.vars.label|default(field.vars.name|humanize)|trans(domain = ea.i18n.translationDomain) }}
+					</a>
+				</div>
+				<div id="filter-content-{{ loop.index }}"
+					 class="filter-content collapse {% if field.vars.name in applied_filters %}show{% endif %}"
+					 aria-labelledby="filter-heading-{{ loop.index }}">
+					<div class="form-widget my-2">
+						{{ form_widget(field) }}
+					</div>
+				</div>
+			</div>
+		</div>
+	{% endfor %}
 {% endblock ea_filters_widget %}
 
 {% block comparison_widget %}
-    {{ form_widget(form, { attr: form.vars.attr|merge({'data-ea-comparison-id': form.vars.id}) }) }}
+	{{ form_widget(form, { attr: form.vars.attr|merge({'data-ea-comparison-id': form.vars.id}) }) }}
 {% endblock comparison_widget %}
 
 {% block ea_numeric_filter_widget %}
-    <div class="form-widget-compound">
-        {{ form_row(form.comparison) }}
-        {{ form_row(form.value) }}
-        <div data-ea-value2-of-comparison-id="{{ form.comparison.vars.id }}" class="{{ form.comparison.vars.value != 'between' ? 'd-none' }}">
-            {{ form_row(form.value2) }}
-        </div>
-    </div>
-    {{- form_errors(form) -}}
+	<div class="form-widget-compound">
+		{{ form_row(form.comparison) }}
+		{{ form_row(form.value) }}
+		<div data-ea-value2-of-comparison-id="{{ form.comparison.vars.id }}"
+			 class="{{ form.comparison.vars.value != 'between' ? 'd-none' }}">
+			{{ form_row(form.value2) }}
+		</div>
+	</div>
+	{{- form_errors(form) -}}
 {% endblock ea_numeric_filter_widget %}
 
 {% block ea_datetime_filter_widget %}
-    {{ block('ea_numeric_filter_widget') }}
+	{{ block('ea_numeric_filter_widget') }}
 {% endblock ea_datetime_filter_widget %}
 
 {% block ea_fileupload_widget %}
-    <div class="ea-fileupload">
-        <div class="input-group">
-            {% set placeholder = t('action.choose_file', {}, 'EasyAdminBundle') %}
-            {% set title = '' %}
-            {% set filesLabel = 'files'|trans({}, 'EasyAdminBundle') %}
-            {% if currentFiles %}
-                {% if multiple %}
-                    {% set placeholder = currentFiles|length ~ ' ' ~ filesLabel %}
-                {% else %}
-                    {% set placeholder = (currentFiles|first).filename %}
-                    {% set title = (currentFiles|first).mTime|date %}
-                {% endif %}
-            {% endif %}
-            <div class="custom-file">
-                {{ form_widget(form.file, { attr: form.file.vars.attr|merge({ placeholder: placeholder, title: title, 'data-files-label': filesLabel, class: 'd-none' }) }) }}
-                {{ form_label(form.file, placeholder, { label_attr: { class: 'custom-file-label' }}) }}
-            </div>
-            <div class="input-group-text">
-                {%- if currentFiles -%}
-                    {% if multiple %}
-                        {{ (currentFiles|reduce((carry, file) => carry + file.size))|ea_filesize }}
-                    {% else %}
-                        {{ (currentFiles|first).size|ea_filesize }}
-                    {% endif %}
-                {%- endif -%}
-                {% if allow_delete %}
-                    <label class="btn ea-fileupload-delete-btn {{ currentFiles is empty ? 'd-none' }}" for="{{ form.delete.vars.id }}">
-                        <i class="fa fa-trash-o"></i>
-                    </label>
-                {% endif %}
-                <label class="btn" for="{{ form.file.vars.id }}">
-                    <i class="fa fa-folder-open-o"></i>
-                </label>
-            </div>
-        </div>
-        {% if multiple and currentFiles %}
-            <div class="form-control fileupload-list">
-                <table class="fileupload-table">
-                    <tbody>
-                    {% for file in currentFiles %}
-                        <tr>
-                            <td>
-                                {% if download_path %}<a href="{{ asset(download_path ~ file.filename) }}">{% endif %}
-                                    <span title="{{ file.mTime|date }}">
+	<div class="ea-fileupload">
+		<div class="input-group">
+			{% set placeholder = t('action.choose_file', {}, 'EasyAdminBundle') %}
+			{% set title = '' %}
+			{% set filesLabel = 'files'|trans({}, 'EasyAdminBundle') %}
+			{% if currentFiles %}
+				{% if multiple %}
+					{% set placeholder = currentFiles|length ~ ' ' ~ filesLabel %}
+				{% else %}
+					{% set placeholder = (currentFiles|first).filename %}
+					{% set title = (currentFiles|first).mTime|date %}
+				{% endif %}
+			{% endif %}
+			<div class="custom-file">
+				{{ form_widget(form.file, { attr: form.file.vars.attr|merge({ placeholder: placeholder, title: title, 'data-files-label': filesLabel, class: 'd-none' }) }) }}
+				{{ form_label(form.file, placeholder, { label_attr: { class: 'custom-file-label' }}) }}
+			</div>
+			<div class="input-group-text">
+				{%- if currentFiles -%}
+					{% if multiple %}
+						{{ (currentFiles|reduce((carry, file) => carry + file.size))|ea_filesize }}
+					{% else %}
+						{{ (currentFiles|first).size|ea_filesize }}
+					{% endif %}
+				{%- endif -%}
+				{% if allow_delete %}
+					<label class="btn ea-fileupload-delete-btn {{ currentFiles is empty ? 'd-none' }}"
+						   for="{{ form.delete.vars.id }}">
+						<i class="fa fa-trash-o"></i>
+					</label>
+				{% endif %}
+				<label class="btn" for="{{ form.file.vars.id }}">
+					<i class="fa fa-folder-open-o"></i>
+				</label>
+			</div>
+		</div>
+		{% if multiple and currentFiles %}
+			<div class="form-control fileupload-list">
+				<table class="fileupload-table">
+					<tbody>
+					{% for file in currentFiles %}
+						<tr>
+							<td>
+								{% if download_path %}<a href="{{ asset(download_path ~ file.filename) }}">{% endif %}
+									<span title="{{ file.mTime|date }}">
                                         <i class="fa fa-file-o"></i> {{ file.filename }}
                                     </span>
-                                {% if download_path %}</a>{% endif %}
-                            </td>
-                            <td class="text-right file-size">{{ file.size|ea_filesize }}</td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        {% endif %}
-        {% if allow_delete %}
-            <div class="d-none">{{ form_widget(form.delete, { label: false }) }}</div>
-        {% endif %}
-    </div>
-    {{ form_errors(form.file) }}
+									{% if download_path %}</a>{% endif %}
+							</td>
+							<td class="text-right file-size">{{ file.size|ea_filesize }}</td>
+						</tr>
+					{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		{% endif %}
+		{% if allow_delete %}
+			<div class="d-none">{{ form_widget(form.delete, { label: false }) }}</div>
+		{% endif %}
+	</div>
+	{{ form_errors(form.file) }}
 {% endblock %}
 
 {% block TODO_ea_fileupload_widget %}
-    {% set placeholder = '' %}
-    {% set title = '' %}
-    {% set filesLabel = 'files'|trans({}, 'EasyAdminBundle') %}
-    {% if currentFiles %}
-        {% if multiple %}
-            {% set placeholder = currentFiles|length ~ ' ' ~ filesLabel %}
-        {% else %}
-            {% set placeholder = (currentFiles|first).filename %}
-            {% set title = (currentFiles|first).mTime|date %}
-        {% endif %}
-    {% endif %}
+	{% set placeholder = '' %}
+	{% set title = '' %}
+	{% set filesLabel = 'files'|trans({}, 'EasyAdminBundle') %}
+	{% if currentFiles %}
+		{% if multiple %}
+			{% set placeholder = currentFiles|length ~ ' ' ~ filesLabel %}
+		{% else %}
+			{% set placeholder = (currentFiles|first).filename %}
+			{% set title = (currentFiles|first).mTime|date %}
+		{% endif %}
+	{% endif %}
 
-    <div class="ea-fileupload">
-        <div class="input-group">
-            {{ form_widget(form.file, { attr: form.file.vars.attr|merge({ placeholder: placeholder, title: title, 'data-files-label': filesLabel, class: 'form-control' }) }) }}
+	<div class="ea-fileupload">
+		<div class="input-group">
+			{{ form_widget(form.file, { attr: form.file.vars.attr|merge({ placeholder: placeholder, title: title, 'data-files-label': filesLabel, class: 'form-control' }) }) }}
 
-            {% if currentFiles %}
-                <span class="input-group-text">
+			{% if currentFiles %}
+				<span class="input-group-text">
                     {% if multiple %}
-                        {{ (currentFiles|reduce((carry, file) => carry + file.size))|ea_filesize }}
-                    {% else %}
-                        {{ (currentFiles|first).size|ea_filesize }}
-                    {% endif %}
+						{{ (currentFiles|reduce((carry, file) => carry + file.size))|ea_filesize }}
+					{% else %}
+						{{ (currentFiles|first).size|ea_filesize }}
+					{% endif %}
                 </span>
-            {% endif %}
+			{% endif %}
 
-            {% if currentFiles and allow_delete %}
-                <button class="btn ea-fileupload-delete-btn">
-                    <i class="fa fa-trash-o"></i>
-                </button>
-            {% endif %}
+			{% if currentFiles and allow_delete %}
+				<button class="btn ea-fileupload-delete-btn">
+					<i class="fa fa-trash-o"></i>
+				</button>
+			{% endif %}
 
-            {% if currentFiles %}
-                <button class="btn">
-                    <i class="fa fa-folder-open-o"></i>
-                </button>
-            {% endif %}
-        </div>
+			{% if currentFiles %}
+				<button class="btn">
+					<i class="fa fa-folder-open-o"></i>
+				</button>
+			{% endif %}
+		</div>
 
-        {% if multiple and currentFiles %}
-            <div class="form-control fileupload-list">
-                <table class="fileupload-table">
-                    <tbody>
-                    {% for file in currentFiles %}
-                        <tr>
-                            <td>
-                                {% if download_path %}<a href="{{ asset(download_path ~ file.filename) }}">{% endif %}
-                                    <span title="{{ file.mTime|date }}">
+		{% if multiple and currentFiles %}
+			<div class="form-control fileupload-list">
+				<table class="fileupload-table">
+					<tbody>
+					{% for file in currentFiles %}
+						<tr>
+							<td>
+								{% if download_path %}<a href="{{ asset(download_path ~ file.filename) }}">{% endif %}
+									<span title="{{ file.mTime|date }}">
                                         <i class="fa fa-file-o"></i> {{ file.filename }}
                                     </span>
-                                    {% if download_path %}</a>{% endif %}
-                            </td>
-                            <td class="text-right file-size">{{ file.size|ea_filesize }}</td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        {% endif %}
-        {% if allow_delete %}
-            <div class="d-none">{{ form_widget(form.delete, { label: false }) }}</div>
-        {% endif %}
-    </div>
+									{% if download_path %}</a>{% endif %}
+							</td>
+							<td class="text-right file-size">{{ file.size|ea_filesize }}</td>
+						</tr>
+					{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		{% endif %}
+		{% if allow_delete %}
+			<div class="d-none">{{ form_widget(form.delete, { label: false }) }}</div>
+		{% endif %}
+	</div>
 
-    {{ form_errors(form.file) }}
+	{{ form_errors(form.file) }}
 {% endblock %}
 
 {% block ea_slug_widget %}
-    {% set attr = attr|merge({
-        'data-ea-slug-field': '',
-        'data-target': target|split('|')|map(name => form.parent.children[name].vars.id)|json_encode
-    }) %}
-    {% if attr['data-confirm-text'] is defined %}
-        {% set attr = attr|merge({
-            'data-confirm-text': attr['data-confirm-text']|trans
-        }) %}
-    {% endif %}
+	{% set attr = attr|merge({
+		'data-ea-slug-field': '',
+		'data-target': target|split('|')|map(name => form.parent.children[name].vars.id)|json_encode
+	}) %}
+	{% if attr['data-confirm-text'] is defined %}
+		{% set attr = attr|merge({
+			'data-confirm-text': attr['data-confirm-text']|trans
+		}) %}
+	{% endif %}
 
-    <div class="input-group">
-        {{ block('form_widget') }}
-        <button type="button" class="btn">
-            <i class="fas fa-lock fa-fw"></i>
-        </button>
-    </div>
+	<div class="input-group">
+		{{ block('form_widget') }}
+		<button type="button" class="btn">
+			<i class="fas fa-lock fa-fw"></i>
+		</button>
+	</div>
 {% endblock %}

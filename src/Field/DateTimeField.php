@@ -19,7 +19,13 @@ final class DateTimeField implements FieldInterface
     public const FORMAT_SHORT = 'short';
     public const FORMAT_NONE = 'none';
 
-    public const VALID_DATE_FORMATS = [self::FORMAT_NONE, self::FORMAT_SHORT, self::FORMAT_MEDIUM, self::FORMAT_LONG, self::FORMAT_FULL];
+    public const VALID_DATE_FORMATS = [
+        self::FORMAT_NONE,
+        self::FORMAT_SHORT,
+        self::FORMAT_MEDIUM,
+        self::FORMAT_LONG,
+        self::FORMAT_FULL,
+    ];
 
     public const INTL_DATE_PATTERNS = [
         self::FORMAT_FULL => 'EEEE, MMMM d, y',
@@ -71,7 +77,12 @@ final class DateTimeField implements FieldInterface
     public function setTimezone(string $timezoneId): self
     {
         if (!\in_array($timezoneId, timezone_identifiers_list(), true)) {
-            throw new \InvalidArgumentException(sprintf('The "%s" timezone is not a valid PHP timezone ID. Use any of the values listed at https://www.php.net/manual/en/timezones.php', $timezoneId));
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'The "%s" timezone is not a valid PHP timezone ID. Use any of the values listed at https://www.php.net/manual/en/timezones.php',
+                    $timezoneId
+                )
+            );
         }
 
         $this->setCustomOption(self::OPTION_TIMEZONE, $timezoneId);
@@ -81,18 +92,30 @@ final class DateTimeField implements FieldInterface
 
     /**
      * @param string $dateFormatOrPattern A format name ('none', 'short', 'medium', 'long', 'full') or a valid ICU Datetime Pattern (see https://unicode-org.github.io/icu/userguide/format_parse/datetime/#formatting-dates)
-     * @param string $timeFormat          A format name ('none', 'short', 'medium', 'long', 'full')
+     * @param string $timeFormat A format name ('none', 'short', 'medium', 'long', 'full')
      */
     public function setFormat(string $dateFormatOrPattern, string $timeFormat = self::FORMAT_NONE): self
     {
         if ('' === trim($dateFormatOrPattern)) {
-            throw new \InvalidArgumentException(sprintf('The first argument of the "%s()" method cannot be an empty string. Use either a date format (%s) or a datetime Intl pattern.', __METHOD__, implode(', ', self::VALID_DATE_FORMATS)));
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'The first argument of the "%s()" method cannot be an empty string. Use either a date format (%s) or a datetime Intl pattern.',
+                    __METHOD__,
+                    implode(', ', self::VALID_DATE_FORMATS)
+                )
+            );
         }
 
         $datePatternIsEmpty = self::FORMAT_NONE === $dateFormatOrPattern;
         $timePatternIsEmpty = self::FORMAT_NONE === $timeFormat || '' === trim($timeFormat);
         if ($datePatternIsEmpty && $timePatternIsEmpty) {
-            throw new \InvalidArgumentException(sprintf('The values of the arguments of "%s()" cannot be "%s" or an empty string at the same time. Change any of them (or both).', __METHOD__, self::FORMAT_NONE));
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'The values of the arguments of "%s()" cannot be "%s" or an empty string at the same time. Change any of them (or both).',
+                    __METHOD__,
+                    self::FORMAT_NONE
+                )
+            );
         }
 
         // when date format/pattern is none and time format is a pattern,
@@ -105,11 +128,22 @@ final class DateTimeField implements FieldInterface
         $isDatePattern = !\in_array($dateFormatOrPattern, self::VALID_DATE_FORMATS, true);
 
         if ($isDatePattern && self::FORMAT_NONE !== $timeFormat) {
-            throw new \InvalidArgumentException(sprintf('When the first argument of "%s()" is a datetime pattern, you cannot set the time format in the second argument (define the time format inside the datetime pattern).', __METHOD__));
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'When the first argument of "%s()" is a datetime pattern, you cannot set the time format in the second argument (define the time format inside the datetime pattern).',
+                    __METHOD__
+                )
+            );
         }
 
         if (!$isDatePattern && !\in_array($timeFormat, self::VALID_DATE_FORMATS, true)) {
-            throw new \InvalidArgumentException(sprintf('The value of the time format can only be one of the following: %s (but "%s" was given).', implode(', ', self::VALID_DATE_FORMATS), $timeFormat));
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'The value of the time format can only be one of the following: %s (but "%s" was given).',
+                    implode(', ', self::VALID_DATE_FORMATS),
+                    $timeFormat
+                )
+            );
         }
 
         $this->setCustomOption(self::OPTION_DATE_PATTERN, $dateFormatOrPattern);

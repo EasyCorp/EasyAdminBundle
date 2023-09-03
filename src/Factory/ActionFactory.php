@@ -3,39 +3,39 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
 use EasyCorp\Bundle\EasyAdminBundle\Collection\ActionCollection;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\ActionInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\CrudInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionConfigDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionConfigDtoInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDtoInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDtoInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProviderInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use EasyCorp\Bundle\EasyAdminBundle\Security\PermissionInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Translation\TranslatableMessageBuilder;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
-use function Symfony\Component\Translation\t;
 use Symfony\Contracts\Translation\TranslatableInterface;
+
+use function Symfony\Component\Translation\t;
 
 final class ActionFactory implements ActionFactoryInterface
 {
-    private AdminContextProvider $adminContextProvider;
+    private AdminContextProviderInterface $adminContextProvider;
+
     private AuthorizationCheckerInterface $authChecker;
-    private AdminUrlGenerator $adminUrlGenerator;
+
+    private AdminUrlGeneratorInterface $adminUrlGenerator;
+
     private ?CsrfTokenManagerInterface $csrfTokenManager;
 
-    public function __construct(AdminContextProviderInterface $adminContextProvider, AuthorizationCheckerInterface $authChecker, AdminUrlGeneratorInterface $adminUrlGenerator, ?CsrfTokenManagerInterface $csrfTokenManager = null)
-    {
+    public function __construct(
+        AdminContextProviderInterface $adminContextProvider,
+        AuthorizationCheckerInterface $authChecker,
+        AdminUrlGeneratorInterface $adminUrlGenerator,
+        ?CsrfTokenManagerInterface $csrfTokenManager = null
+    ) {
         $this->adminContextProvider = $adminContextProvider;
         $this->authChecker = $authChecker;
         $this->adminUrlGenerator = $adminUrlGenerator;
@@ -51,7 +51,10 @@ final class ActionFactory implements ActionFactoryInterface
                 continue;
             }
 
-            if (false === $this->authChecker->isGranted(PermissionInterface::EA_EXECUTE_ACTION, ['action' => $actionDto, 'entity' => $entityDto])) {
+            if (false === $this->authChecker->isGranted(
+                    PermissionInterface::EA_EXECUTE_ACTION,
+                    ['action' => $actionDto, 'entity' => $entityDto]
+                )) {
                 continue;
             }
 
@@ -94,12 +97,21 @@ final class ActionFactory implements ActionFactoryInterface
                 continue;
             }
 
-            if (false === $this->authChecker->isGranted(PermissionInterface::EA_EXECUTE_ACTION, ['action' => $actionDto, 'entity' => null])) {
+            if (false === $this->authChecker->isGranted(
+                    PermissionInterface::EA_EXECUTE_ACTION,
+                    ['action' => $actionDto, 'entity' => null]
+                )) {
                 continue;
             }
 
             if (CrudInterface::PAGE_INDEX !== $currentPage && $actionDto->isBatchAction()) {
-                throw new \RuntimeException(sprintf('Batch actions can be added only to the "index" page, but the "%s" batch action is defined in the "%s" page.', $actionDto->getName(), $currentPage));
+                throw new \RuntimeException(
+                    sprintf(
+                        'Batch actions can be added only to the "index" page, but the "%s" batch action is defined in the "%s" page.',
+                        $actionDto->getName(),
+                        $currentPage
+                    )
+                );
             }
 
             if ('' === $actionDto->getCssClass()) {
@@ -112,8 +124,11 @@ final class ActionFactory implements ActionFactoryInterface
         return ActionCollection::new($globalActions);
     }
 
-    private function processAction(string $pageName, ActionDtoInterface $actionDto, ?EntityDtoInterface $entityDto = null): ActionDtoInterface
-    {
+    private function processAction(
+        string $pageName,
+        ActionDtoInterface $actionDto,
+        ?EntityDtoInterface $entityDto = null
+    ): ActionDtoInterface {
         $adminContext = $this->adminContextProvider->getContext();
         $translationDomain = $adminContext->getI18n()->getTranslationDomain();
         $defaultTranslationParameters = $adminContext->getI18n()->getTranslationParameters();
@@ -129,24 +144,38 @@ final class ActionFactory implements ActionFactoryInterface
                 $actionDto->getTranslationParameters()
             );
             $label = $actionDto->getLabel();
-            $translatableActionLabel = (null === $label || '' === $label) ? $label : t($label, $translationParameters, $translationDomain);
+            $translatableActionLabel = (null === $label || '' === $label) ? $label : t(
+                $label,
+                $translationParameters,
+                $translationDomain
+            );
             $actionDto->setLabel($translatableActionLabel);
         } else {
-            $actionDto->setLabel(TranslatableMessageBuilder::withParameters($actionDto->getLabel(), $defaultTranslationParameters));
+            $actionDto->setLabel(
+                TranslatableMessageBuilder::withParameters($actionDto->getLabel(), $defaultTranslationParameters)
+            );
         }
 
         $defaultTemplatePath = $adminContext->getTemplatePath('crud/action');
         $actionDto->setTemplatePath($actionDto->getTemplatePath() ?? $defaultTemplatePath);
 
-        $actionDto->setLinkUrl($this->generateActionUrl($currentPage, $adminContext->getRequest(), $actionDto, $entityDto));
+        $actionDto->setLinkUrl(
+            $this->generateActionUrl($currentPage, $adminContext->getRequest(), $actionDto, $entityDto)
+        );
 
-        if (!$actionDto->isGlobalAction() && \in_array($pageName, [CrudInterface::PAGE_EDIT, CrudInterface::PAGE_NEW], true)) {
+        if (!$actionDto->isGlobalAction() && \in_array(
+                $pageName,
+                [CrudInterface::PAGE_EDIT, CrudInterface::PAGE_NEW],
+                true
+            )) {
             $actionDto->setHtmlAttribute('form', sprintf('%s-%s-form', $pageName, $entityDto->getName()));
         }
 
         if (ActionInterface::DELETE === $actionDto->getName()) {
             $actionDto->addHtmlAttributes([
-                'formaction' => $this->adminUrlGenerator->setAction(ActionInterface::DELETE)->setEntityId($entityDto->getPrimaryKeyValue())->removeReferrer()->generateUrl(),
+                'formaction' => $this->adminUrlGenerator->setAction(ActionInterface::DELETE)->setEntityId(
+                    $entityDto->getPrimaryKeyValue()
+                )->removeReferrer()->generateUrl(),
                 'data-bs-toggle' => 'modal',
                 'data-bs-target' => '#modal-delete',
             ]);
@@ -156,7 +185,9 @@ final class ActionFactory implements ActionFactoryInterface
             $actionDto->addHtmlAttributes([
                 'data-bs-toggle' => 'modal',
                 'data-bs-target' => '#modal-batch-action',
-                'data-action-csrf-token' => $this->csrfTokenManager?->getToken('ea-batch-action-'.$actionDto->getName()),
+                'data-action-csrf-token' => $this->csrfTokenManager?->getToken(
+                    'ea-batch-action-'.$actionDto->getName()
+                ),
                 'data-action-batch' => 'true',
                 'data-entity-fqcn' => $adminContext->getCrud()->getEntityFqcn(),
                 'data-action-url' => $actionDto->getLinkUrl(),
@@ -166,8 +197,12 @@ final class ActionFactory implements ActionFactoryInterface
         return $actionDto;
     }
 
-    private function generateActionUrl(string $currentAction, Request $request, ActionDtoInterface $actionDto, ?EntityDtoInterface $entityDto = null): string
-    {
+    private function generateActionUrl(
+        string $currentAction,
+        Request $request,
+        ActionDtoInterface $actionDto,
+        ?EntityDtoInterface $entityDto = null
+    ): string {
         $entityInstance = $entityDto?->getInstance();
 
         if (null !== $url = $actionDto->getUrl()) {
@@ -184,7 +219,10 @@ final class ActionFactory implements ActionFactoryInterface
                 $routeParameters = $routeParameters($entityInstance);
             }
 
-            return $this->adminUrlGenerator->unsetAll()->includeReferrer()->setRoute($routeName, $routeParameters)->generateUrl();
+            return $this->adminUrlGenerator->unsetAll()->includeReferrer()->setRoute(
+                $routeName,
+                $routeParameters
+            )->generateUrl();
         }
 
         $requestParameters = [
@@ -193,17 +231,30 @@ final class ActionFactory implements ActionFactoryInterface
             EA::REFERRER => $this->generateReferrerUrl($request, $actionDto, $currentAction),
         ];
 
-        if (\in_array($actionDto->getName(), [ActionInterface::INDEX, ActionInterface::NEW, ActionInterface::SAVE_AND_ADD_ANOTHER, ActionInterface::SAVE_AND_RETURN], true)) {
+        if (\in_array(
+            $actionDto->getName(),
+            [
+                ActionInterface::INDEX,
+                ActionInterface::NEW,
+                ActionInterface::SAVE_AND_ADD_ANOTHER,
+                ActionInterface::SAVE_AND_RETURN,
+            ],
+            true
+        )) {
             $requestParameters[EA::ENTITY_ID] = null;
         } elseif (null !== $entityDto) {
             $requestParameters[EA::ENTITY_ID] = $entityDto->getPrimaryKeyValueAsString();
         }
 
-        return $this->adminUrlGenerator->unsetAllExcept(EA::FILTERS, EA::PAGE)->setAll($requestParameters)->generateUrl();
+        return $this->adminUrlGenerator->unsetAllExcept(EA::FILTERS, EA::PAGE)->setAll($requestParameters)->generateUrl(
+        );
     }
 
-    private function generateReferrerUrl(Request $request, ActionDtoInterface $actionDto, string $currentAction): ?string
-    {
+    private function generateReferrerUrl(
+        Request $request,
+        ActionDtoInterface $actionDto,
+        string $currentAction
+    ): ?string {
         $nextAction = $actionDto->getName();
 
         if (ActionInterface::DETAIL === $currentAction) {
@@ -221,7 +272,7 @@ final class ActionFactory implements ActionFactoryInterface
         }
 
         $referrer = $request->query->get(EA::REFERRER);
-        $referrerParts = parse_url((string) $referrer);
+        $referrerParts = parse_url((string)$referrer);
         parse_str($referrerParts[EA::QUERY] ?? '', $referrerQueryStringVariables);
         $referrerCrudAction = $referrerQueryStringVariables[EA::CRUD_ACTION] ?? null;
 

@@ -2,11 +2,11 @@
 {# @var field \EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto #}
 {# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
 {% if ea.crud.currentAction == 'detail' %}
-    <ul>
-        {% for item in field.value %}
-            <li>{{ item }}</li>
-        {% endfor %}
-    </ul>
+	<ul>
+		{% for item in field.value %}
+			<li>{{ item }}</li>
+		{% endfor %}
+	</ul>
 {% else %}
-    {{ field.formattedValue }}
+	{{ field.formattedValue }}
 {% endif %}

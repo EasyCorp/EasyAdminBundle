@@ -9,7 +9,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Event\EntityLifecycleEventInterfac
  */
 abstract class AbstractLifecycleEvent implements EntityLifecycleEventInterface
 {
-    protected $entityInstance;
+    protected mixed $entityInstance;
 
     public function __construct(/* ?object */ $entityInstance)
     {

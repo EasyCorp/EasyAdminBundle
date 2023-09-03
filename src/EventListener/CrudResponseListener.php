@@ -3,7 +3,6 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\EventListener;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
-use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProviderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,7 +14,8 @@ use Twig\Environment;
  */
 final class CrudResponseListener
 {
-    private AdminContextProvider $adminContextProvider;
+    private AdminContextProviderInterface $adminContextProvider;
+
     private Environment $twig;
 
     public function __construct(AdminContextProviderInterface $adminContextProvider, Environment $twig)
@@ -32,7 +32,9 @@ final class CrudResponseListener
         }
 
         if (!$responseParameters->has('templateName') && !$responseParameters->has('templatePath')) {
-            throw new \RuntimeException('The KeyValueStore object returned by CrudController actions must include either a "templateName" or a "templatePath" parameter to define the template used to render the action result.');
+            throw new \RuntimeException(
+                'The KeyValueStore object returned by CrudController actions must include either a "templateName" or a "templatePath" parameter to define the template used to render the action result.'
+            );
         }
 
         $templateParameters = $responseParameters->all();

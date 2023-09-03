@@ -11,27 +11,34 @@ use Doctrine\Persistence\Proxy;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\ActionCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\EntityCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionConfigDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionConfigDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityBuiltEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\EntityNotFoundException;
-use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use EasyCorp\Bundle\EasyAdminBundle\Security\PermissionInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 final class EntityFactory implements EntityFactoryInterface
 {
-    private FieldFactory $fieldFactory;
-    private ActionFactory $actionFactory;
+    private FieldFactoryInterface $fieldFactory;
+
+    private ActionFactoryInterface $actionFactory;
+
     private AuthorizationCheckerInterface $authorizationChecker;
+
     private ManagerRegistry $doctrine;
+
     private EventDispatcherInterface $eventDispatcher;
 
-    public function __construct(FieldFactoryInterface $fieldFactory, ActionFactoryInterface $actionFactory, AuthorizationCheckerInterface $authorizationChecker, ManagerRegistry $doctrine, EventDispatcherInterface $eventDispatcher)
-    {
+    public function __construct(
+        FieldFactoryInterface $fieldFactory,
+        ActionFactoryInterface $actionFactory,
+        AuthorizationCheckerInterface $authorizationChecker,
+        ManagerRegistry $doctrine,
+        EventDispatcherInterface $eventDispatcher
+    ) {
         $this->fieldFactory = $fieldFactory;
         $this->actionFactory = $actionFactory;
         $this->authorizationChecker = $authorizationChecker;
@@ -57,8 +64,10 @@ final class EntityFactory implements EntityFactoryInterface
         $this->actionFactory->processEntityActions($entityDto, $actionConfigDto);
     }
 
-    public function processActionsForAll(EntityCollection $entities, ActionConfigDtoInterface $actionConfigDto): ActionCollection
-    {
+    public function processActionsForAll(
+        EntityCollection $entities,
+        ActionConfigDtoInterface $actionConfigDto
+    ): ActionCollection {
         foreach ($entities as $entity) {
             $this->processActions($entity, clone $actionConfigDto);
         }
@@ -100,14 +109,23 @@ final class EntityFactory implements EntityFactoryInterface
         $entityMetadata = $entityManager->getClassMetadata($entityFqcn);
 
         if (1 !== \count($entityMetadata->getIdentifierFieldNames())) {
-            throw new \RuntimeException(sprintf('EasyAdmin does not support Doctrine entities with composite primary keys (such as the ones used in the "%s" entity).', $entityFqcn));
+            throw new \RuntimeException(
+                sprintf(
+                    'EasyAdmin does not support Doctrine entities with composite primary keys (such as the ones used in the "%s" entity).',
+                    $entityFqcn
+                )
+            );
         }
 
         return $entityMetadata;
     }
 
-    private function doCreate(?string $entityFqcn = null, $entityId = null, ?string $entityPermission = null, $entityInstance = null): EntityDtoInterface
-    {
+    private function doCreate(
+        ?string $entityFqcn = null,
+        $entityId = null,
+        ?string $entityPermission = null,
+        $entityInstance = null
+    ): EntityDtoInterface {
         if (null === $entityInstance && null !== $entityFqcn) {
             $entityInstance = null === $entityId ? null : $this->getEntityInstance($entityFqcn, $entityId);
         }
@@ -135,7 +153,9 @@ final class EntityFactory implements EntityFactoryInterface
     private function getEntityManager(string $entityFqcn): ObjectManager
     {
         if (null === $entityManager = $this->doctrine->getManagerForClass($entityFqcn)) {
-            throw new \RuntimeException(sprintf('There is no Doctrine Entity Manager defined for the "%s" class', $entityFqcn));
+            throw new \RuntimeException(
+                sprintf('There is no Doctrine Entity Manager defined for the "%s" class', $entityFqcn)
+            );
         }
 
         return $entityManager;
@@ -150,7 +170,7 @@ final class EntityFactory implements EntityFactoryInterface
             throw new EntityNotFoundException([
                 'entity_name' => $entityFqcn,
                 'entity_id_name' => $entityIdName,
-                'entity_id_value' => $entityIdValue
+                'entity_id_value' => $entityIdValue,
             ]);
         }
 

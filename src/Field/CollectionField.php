@@ -96,8 +96,11 @@ final class CollectionField implements FieldInterface
         return $this;
     }
 
-    public function useEntryCrudForm(?string $crudControllerFqcn = null, ?string $crudNewPageName = null, ?string $crudEditPageName = null): self
-    {
+    public function useEntryCrudForm(
+        ?string $crudControllerFqcn = null,
+        ?string $crudNewPageName = null,
+        ?string $crudEditPageName = null
+    ): self {
         $this->setCustomOption(self::OPTION_ENTRY_USES_CRUD_FORM, true);
         $this->setCustomOption(self::OPTION_ENTRY_CRUD_CONTROLLER_FQCN, $crudControllerFqcn);
         $this->setCustomOption(self::OPTION_ENTRY_CRUD_NEW_PAGE_NAME, $crudNewPageName);

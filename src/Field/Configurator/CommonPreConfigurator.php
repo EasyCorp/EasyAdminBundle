@@ -2,26 +2,22 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Field\Configurator;
 
-use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\ActionInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\CrudInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDtoInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDtoInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactoryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AvatarField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use Symfony\Component\PropertyAccess\Exception\AccessException;
 use Symfony\Component\PropertyAccess\Exception\UnexpectedTypeException;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
+use Symfony\Contracts\Translation\TranslatableInterface;
+
 use function Symfony\Component\String\u;
 use function Symfony\Component\Translation\t;
-use Symfony\Contracts\Translation\TranslatableInterface;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -29,7 +25,7 @@ use Symfony\Contracts\Translation\TranslatableInterface;
 final class CommonPreConfigurator implements FieldConfiguratorInterface
 {
     private PropertyAccessorInterface $propertyAccessor;
-    private EntityFactory $entityFactory;
+    private EntityFactoryInterface $entityFactory;
 
     public function __construct(PropertyAccessorInterface $propertyAccessor, EntityFactoryInterface $entityFactory)
     {
@@ -52,7 +48,10 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
         $isReadable = true;
         if (null === $value = $field->getValue()) {
             try {
-                $value = null === $entityDto->getInstance() ? null : $this->propertyAccessor->getValue($entityDto->getInstance(), $field->getProperty());
+                $value = null === $entityDto->getInstance() ? null : $this->propertyAccessor->getValue(
+                    $entityDto->getInstance(),
+                    $field->getProperty()
+                );
             } catch (AccessException|UnexpectedTypeException) {
                 $isReadable = false;
             }
@@ -78,7 +77,9 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
         $templatePath = $this->buildTemplatePathOption($context, $field, $entityDto, $isReadable);
         $field->setTemplatePath($templatePath);
 
-        $doctrineMetadata = $entityDto->hasProperty($field->getProperty()) ? $entityDto->getPropertyMetadata($field->getProperty())->all() : [];
+        $doctrineMetadata = $entityDto->hasProperty($field->getProperty()) ? $entityDto->getPropertyMetadata(
+            $field->getProperty()
+        )->all() : [];
         $field->setDoctrineMetadata($doctrineMetadata);
 
         if (null !== $helpMessage = $this->buildHelpOption($field, $translationDomain)) {
@@ -121,12 +122,17 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
                 return $label;
             }
 
-            return (null === $label || false === $label || '' === $label) ? $label : t($label, $field->getTranslationParameters(), $translationDomain);
+            return (null === $label || false === $label || '' === $label) ? $label : t(
+                $label,
+                $field->getTranslationParameters(),
+                $translationDomain
+            );
         }
 
         // if an Avatar field doesn't define its label, don't autogenerate it for the 'index' page
         // (because the table of the 'index' page looks better without a header in the avatar column)
-        if (ActionInterface::INDEX === $currentPage && null === $field->getLabel() && AvatarField::class === $field->getFieldFqcn()) {
+        if (ActionInterface::INDEX === $currentPage && null === $field->getLabel(
+            ) && AvatarField::class === $field->getFieldFqcn()) {
             $field->setLabel(false);
         }
 
@@ -167,8 +173,12 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
         return !$entityDto->hasProperty($field->getProperty());
     }
 
-    private function buildTemplatePathOption(AdminContext $adminContext, FieldDtoInterface $field, EntityDtoInterface $entityDto, bool $isReadable): string
-    {
+    private function buildTemplatePathOption(
+        AdminContext $adminContext,
+        FieldDtoInterface $field,
+        EntityDtoInterface $entityDto,
+        bool $isReadable
+    ): string {
         if (null !== $templatePath = $field->getTemplatePath()) {
             return $templatePath;
         }
@@ -179,7 +189,12 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
         }
 
         if (null === $templateName = $field->getTemplateName()) {
-            throw new \RuntimeException(sprintf('Fields must define either their templateName or their templatePath. None given for "%s" field.', $field->getProperty()));
+            throw new \RuntimeException(
+                sprintf(
+                    'Fields must define either their templateName or their templatePath. None given for "%s" field.',
+                    $field->getProperty()
+                )
+            );
         }
 
         return $adminContext->getTemplatePath($templateName);
@@ -200,7 +215,9 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
 
         // If at least one join column of an association field isn't nullable then the field is "required" by default, otherwise the field is optional
         if ($entityDto->isAssociation($field->getProperty())) {
-            $associatedEntityMetadata = $this->entityFactory->getEntityMetadata($doctrinePropertyMetadata->get('targetEntity'));
+            $associatedEntityMetadata = $this->entityFactory->getEntityMetadata(
+                $doctrinePropertyMetadata->get('targetEntity')
+            );
             foreach ($doctrinePropertyMetadata->get('joinColumns', []) as $joinColumn) {
                 $propertyNameInAssociatedEntity = $joinColumn['referencedColumnName'];
                 $associatedPropertyMetadata = $associatedEntityMetadata->fieldMappings[$propertyNameInAssociatedEntity] ?? [];

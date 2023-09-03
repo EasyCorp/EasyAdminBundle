@@ -42,5 +42,8 @@ interface FormFactoryInterface
         AdminContext $context
     ): FormInterface;
 
-    public function createFiltersForm(FilterCollection $filters, Request $request): FormInterface;
+    public function createFiltersForm(
+        FilterCollection $filters,
+        Request $request
+    ): FormInterface;
 }

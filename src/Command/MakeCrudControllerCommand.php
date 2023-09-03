@@ -3,7 +3,6 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Command;
 
 use Doctrine\Persistence\ManagerRegistry;
-use EasyCorp\Bundle\EasyAdminBundle\Maker\ClassMaker;
 use EasyCorp\Bundle\EasyAdminBundle\Maker\ClassMakerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -11,6 +10,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
+
 use function Symfony\Component\String\u;
 
 /**
@@ -28,8 +28,12 @@ final class MakeCrudControllerCommand extends Command
     private ClassMakerInterface $classMaker;
     private ManagerRegistry $doctrine;
 
-    public function __construct(string $projectDir, ClassMakerInterface $classMaker, ManagerRegistry $doctrine, ?string $name = null)
-    {
+    public function __construct(
+        string $projectDir,
+        ClassMakerInterface $classMaker,
+        ManagerRegistry $doctrine,
+        ?string $name = null
+    ) {
         parent::__construct($name);
         $this->projectDir = $projectDir;
         $this->classMaker = $classMaker;
@@ -39,8 +43,7 @@ final class MakeCrudControllerCommand extends Command
     protected function configure(): void
     {
         $this
-            ->setHelp($this->getCommandHelp())
-        ;
+            ->setHelp($this->getCommandHelp());
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -50,7 +53,9 @@ final class MakeCrudControllerCommand extends Command
 
         $doctrineEntitiesFqcn = $this->getAllDoctrineEntitiesFqcn();
         if (0 === \count($doctrineEntitiesFqcn)) {
-            $io->error('This command generates the CRUD controller of an existing Doctrine entity, but no entities were found in your application. Create some Doctrine entities first and then run this command again.');
+            $io->error(
+                'This command generates the CRUD controller of an existing Doctrine entity, but no entities were found in your application. Create some Doctrine entities first and then run this command again.'
+            );
 
             return Command::FAILURE;
         }
@@ -62,22 +67,31 @@ final class MakeCrudControllerCommand extends Command
         $controllerFileNamePattern = sprintf('%s{number}CrudController.php', $entityClassName);
 
         $projectDir = $this->projectDir;
-        $controllerDir = $io->ask('Which directory do you want to generate the CRUD controller in?', 'src/Controller/Admin/', static function (string $selectedDir) use ($fs, $projectDir) {
-            $absoluteDir = u($selectedDir)->ensureStart($projectDir.\DIRECTORY_SEPARATOR);
-            if (!$fs->exists($absoluteDir)) {
-                throw new \RuntimeException('The given directory does not exist. Type in the path of an existing directory relative to your project root (e.g. src/Controller/Admin/)');
-            }
+        $controllerDir = $io->ask(
+            'Which directory do you want to generate the CRUD controller in?',
+            'src/Controller/Admin/',
+            static function (string $selectedDir) use ($fs, $projectDir) {
+                $absoluteDir = u($selectedDir)->ensureStart($projectDir.\DIRECTORY_SEPARATOR);
+                if (!$fs->exists($absoluteDir)) {
+                    throw new \RuntimeException(
+                        'The given directory does not exist. Type in the path of an existing directory relative to your project root (e.g. src/Controller/Admin/)'
+                    );
+                }
 
-            return $absoluteDir->after($projectDir.\DIRECTORY_SEPARATOR)->trimEnd(\DIRECTORY_SEPARATOR)->toString();
-        });
+                return $absoluteDir->after($projectDir.\DIRECTORY_SEPARATOR)->trimEnd(\DIRECTORY_SEPARATOR)->toString();
+            }
+        );
 
         $guessedNamespace = u($controllerDir)->equalsTo('src')
             ? 'App'
-            : u($controllerDir)->replace('/', ' ')->replace('\\', ' ')->replace('src ', 'app ')->title(true)->replace('App App ', 'App ')->replace(' ', '\\')->trimEnd(\DIRECTORY_SEPARATOR);
+            : u($controllerDir)->replace('/', ' ')->replace('\\', ' ')->replace('src ', 'app ')->title(true)->replace(
+                'App App ',
+                'App '
+            )->replace(' ', '\\')->trimEnd(\DIRECTORY_SEPARATOR);
         $namespace = $io->ask(
             'Namespace of the generated CRUD controller',
             $guessedNamespace,
-            static fn (string $namespace): string => u($namespace)->replace('/', '\\')->toString()
+            static fn(string $namespace): string => u($namespace)->replace('/', '\\')->toString()
         );
 
         $generatedFilePath = $this->classMaker->make(

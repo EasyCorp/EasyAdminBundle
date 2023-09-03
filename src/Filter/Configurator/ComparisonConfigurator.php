@@ -5,11 +5,8 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Filter\Configurator;
 use Doctrine\DBAL\Types\Types;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterConfiguratorInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDtoInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDtoInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\ComparisonFilter;
 use Symfony\Component\Form\Extension\Core\Type\DateIntervalType;
@@ -20,13 +17,21 @@ use Symfony\Component\Form\Extension\Core\Type\DateIntervalType;
  */
 final class ComparisonConfigurator implements FilterConfiguratorInterface
 {
-    public function supports(FilterDtoInterface $filterDto, ?FieldDtoInterface $fieldDto, EntityDtoInterface $entityDto, AdminContext $context): bool
-    {
+    public function supports(
+        FilterDtoInterface $filterDto,
+        ?FieldDtoInterface $fieldDto,
+        EntityDtoInterface $entityDto,
+        AdminContext $context
+    ): bool {
         return ComparisonFilter::class === $filterDto->getFqcn();
     }
 
-    public function configure(FilterDtoInterface $filterDto, ?FieldDtoInterface $fieldDto, EntityDtoInterface $entityDto, AdminContext $context): void
-    {
+    public function configure(
+        FilterDtoInterface $filterDto,
+        ?FieldDtoInterface $fieldDto,
+        EntityDtoInterface $entityDto,
+        AdminContext $context
+    ): void {
         $propertyType = $entityDto->getPropertyMetadata($filterDto->getProperty())->get('type');
 
         if (Types::DATEINTERVAL === $propertyType) {

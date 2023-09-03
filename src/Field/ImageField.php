@@ -30,7 +30,10 @@ final class ImageField implements FieldInterface
             ->setTemplateName('crud/field/image')
             ->setFormType(FileUploadType::class)
             ->addCssClass('field-image')
-            ->addJsFiles(Asset::fromEasyAdminAssetPackage('field-image.js'), Asset::fromEasyAdminAssetPackage('field-file-upload.js'))
+            ->addJsFiles(
+                Asset::fromEasyAdminAssetPackage('field-image.js'),
+                Asset::fromEasyAdminAssetPackage('field-file-upload.js')
+            )
             ->setDefaultColumns('col-md-7 col-xxl-5')
             ->setTextAlign(TextAlign::CENTER)
             ->setCustomOption(self::OPTION_BASE_PATH, null)

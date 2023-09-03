@@ -11,8 +11,13 @@ final class PaginatorDto implements PaginatorDtoInterface
     private bool $fetchJoinCollection;
     private ?bool $useOutputWalkers;
 
-    public function __construct(int $pageSize, int $rangeSize, int $rangeEdgeSize, bool $fetchJoinCollection, ?bool $useOutputWalkers)
-    {
+    public function __construct(
+        int $pageSize,
+        int $rangeSize,
+        int $rangeEdgeSize,
+        bool $fetchJoinCollection,
+        ?bool $useOutputWalkers
+    ) {
         $this->pageSize = $pageSize;
         $this->rangeSize = $rangeSize;
         $this->rangeEdgeSize = $rangeEdgeSize;

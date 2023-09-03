@@ -4,12 +4,9 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
 use Doctrine\DBAL\Types\Types;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\CrudInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDtoInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
@@ -25,9 +22,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormRowType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminTabType;
-use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProviderInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use EasyCorp\Bundle\EasyAdminBundle\Security\PermissionInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
@@ -60,12 +55,15 @@ final class FieldFactory implements FieldFactoryInterface
         Types::TIME_IMMUTABLE => TimeField::class,
     ];
 
-    private AdminContextProvider $adminContextProvider;
+    private AdminContextProviderInterface $adminContextProvider;
     private AuthorizationCheckerInterface $authorizationChecker;
     private iterable $fieldConfigurators;
 
-    public function __construct(AdminContextProviderInterface $adminContextProvider, AuthorizationCheckerInterface $authorizationChecker, iterable $fieldConfigurators)
-    {
+    public function __construct(
+        AdminContextProviderInterface $adminContextProvider,
+        AuthorizationCheckerInterface $authorizationChecker,
+        iterable $fieldConfigurators
+    ) {
         $this->adminContextProvider = $adminContextProvider;
         $this->authorizationChecker = $authorizationChecker;
         $this->fieldConfigurators = $fieldConfigurators;
@@ -117,7 +115,11 @@ final class FieldFactory implements FieldFactoryInterface
             $fields->set($fieldDto);
         }
 
-        $isPageWhereTabsAreVisible = \in_array($currentPage, [CrudInterface::PAGE_DETAIL, CrudInterface::PAGE_EDIT, CrudInterface::PAGE_NEW], true);
+        $isPageWhereTabsAreVisible = \in_array(
+            $currentPage,
+            [CrudInterface::PAGE_DETAIL, CrudInterface::PAGE_EDIT, CrudInterface::PAGE_NEW],
+            true
+        );
         if ($isPageWhereTabsAreVisible) {
             $this->checkOrphanTabFields($fields, $context);
         }
@@ -159,7 +161,13 @@ final class FieldFactory implements FieldFactoryInterface
                 $guessedFieldFqcn = self::$doctrineTypeToFieldFqcn[$doctrinePropertyType] ?? null;
 
                 if (null === $guessedFieldFqcn) {
-                    throw new \RuntimeException(sprintf('The Doctrine type of the "%s" field is "%s", which is not supported by EasyAdmin. For Doctrine\'s Custom Mapping Types have a look at EasyAdmin\'s field docs.', $fieldDto->getProperty(), $doctrinePropertyType));
+                    throw new \RuntimeException(
+                        sprintf(
+                            'The Doctrine type of the "%s" field is "%s", which is not supported by EasyAdmin. For Doctrine\'s Custom Mapping Types have a look at EasyAdmin\'s field docs.',
+                            $fieldDto->getProperty(),
+                            $doctrinePropertyType
+                        )
+                    );
                 }
             }
 
@@ -236,8 +244,8 @@ final class FieldFactory implements FieldFactoryInterface
     private function checkOrphanTabFields(FieldCollection $fields, AdminContext $context): void
     {
         $hasTabs = false;
-        $isTabField = static fn (FieldDtoInterface $fieldDto) => EasyAdminTabType::class === $fieldDto->getFormType();
-        $isFormField = static fn (FieldDtoInterface $fieldDto) => FormField::class === $fieldDto->getFieldFqcn();
+        $isTabField = static fn(FieldDtoInterface $fieldDto) => EasyAdminTabType::class === $fieldDto->getFormType();
+        $isFormField = static fn(FieldDtoInterface $fieldDto) => FormField::class === $fieldDto->getFieldFqcn();
 
         foreach ($fields as $fieldDto) {
             if ($isTabField($fieldDto)) {
@@ -263,6 +271,13 @@ final class FieldFactory implements FieldFactoryInterface
             $orphanFieldNames[] = $field->getProperty();
         }
 
-        throw new \RuntimeException(sprintf('The "%s" page of "%s" uses tabs to display its fields, but the following fields don\'t belong to any tab: %s. Use "FormField::addTab(\'...\')" to add a tab before those fields.', $context->getCrud()->getCurrentPage(), $context->getCrud()->getControllerFqcn(), implode(', ', $orphanFieldNames)));
+        throw new \RuntimeException(
+            sprintf(
+                'The "%s" page of "%s" uses tabs to display its fields, but the following fields don\'t belong to any tab: %s. Use "FormField::addTab(\'...\')" to add a tab before those fields.',
+                $context->getCrud()->getCurrentPage(),
+                $context->getCrud()->getControllerFqcn(),
+                implode(', ', $orphanFieldNames)
+            )
+        );
     }
 }

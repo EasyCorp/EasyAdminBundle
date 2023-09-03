@@ -5,9 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Contracts\Orm;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDtoInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDtoInterface;
 
 /**
@@ -15,5 +13,10 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDtoInterface;
  */
 interface EntityRepositoryInterface
 {
-    public function createQueryBuilder(SearchDtoInterface $searchDto, EntityDtoInterface $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder;
+    public function createQueryBuilder(
+        SearchDtoInterface $searchDto,
+        EntityDtoInterface $entityDto,
+        FieldCollection $fields,
+        FilterCollection $filters
+    ): QueryBuilder;
 }

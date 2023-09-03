@@ -4,11 +4,8 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Filter;
 
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDtoInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDtoInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDataDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDataDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\NullFilterType;
 
@@ -42,10 +39,16 @@ final class NullFilter implements FilterInterface
         return $this;
     }
 
-    public function apply(QueryBuilder $queryBuilder, FilterDataDtoInterface $filterDataDto, ?FieldDtoInterface $fieldDto, EntityDtoInterface $entityDto): void
-    {
+    public function apply(
+        QueryBuilder $queryBuilder,
+        FilterDataDtoInterface $filterDataDto,
+        ?FieldDtoInterface $fieldDto,
+        EntityDtoInterface $entityDto
+    ): void {
         $comparison = self::CHOICE_VALUE_NULL === $filterDataDto->getValue() ? 'IS' : 'IS NOT';
         $queryBuilder
-            ->andWhere(sprintf('%s.%s %s NULL', $filterDataDto->getEntityAlias(), $filterDataDto->getProperty(), $comparison));
+            ->andWhere(
+                sprintf('%s.%s %s NULL', $filterDataDto->getEntityAlias(), $filterDataDto->getProperty(), $comparison)
+            );
     }
 }

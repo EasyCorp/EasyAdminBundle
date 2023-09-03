@@ -2,8 +2,8 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Event;
 
-use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
-use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
+use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStoreInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContextInterface;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -12,16 +12,19 @@ final class AfterCrudActionEvent
 {
     use StoppableEventTrait;
 
-    private ?AdminContext $adminContext;
-    private KeyValueStore $responseParameters;
+    private ?AdminContextInterface $adminContext;
 
-    public function __construct(?AdminContext $adminContext, KeyValueStore $responseParameters)
-    {
+    private KeyValueStoreInterface $responseParameters;
+
+    public function __construct(
+        ?AdminContextInterface $adminContext,
+        KeyValueStoreInterface $responseParameters
+    ) {
         $this->adminContext = $adminContext;
         $this->responseParameters = $responseParameters;
     }
 
-    public function getAdminContext(): ?AdminContext
+    public function getAdminContext(): ?AdminContextInterface
     {
         return $this->adminContext;
     }
@@ -35,7 +38,7 @@ final class AfterCrudActionEvent
         $this->responseParameters->setAll($parameters);
     }
 
-    public function getResponseParameters(): KeyValueStore
+    public function getResponseParameters(): KeyValueStoreInterface
     {
         return $this->responseParameters;
     }

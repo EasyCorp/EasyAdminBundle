@@ -3,10 +3,8 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Twig;
 
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldLayoutDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldLayoutDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FieldLayoutFactory;
-use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProviderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
@@ -29,11 +27,14 @@ use Twig\TwigFunction;
 final class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterface
 {
     private ServiceLocator $serviceLocator;
-    private AdminContextProvider $adminContextProvider;
+    private AdminContextProviderInterface $adminContextProvider;
     private ?CsrfTokenManagerInterface $csrfTokenManager;
 
-    public function __construct(ServiceLocator $serviceLocator, AdminContextProviderInterface $adminContextProvider, ?CsrfTokenManagerInterface $csrfTokenManager)
-    {
+    public function __construct(
+        ServiceLocator $serviceLocator,
+        AdminContextProviderInterface $adminContextProvider,
+        ?CsrfTokenManagerInterface $csrfTokenManager
+    ) {
         $this->serviceLocator = $serviceLocator;
         $this->adminContextProvider = $adminContextProvider;
         $this->csrfTokenManager = $csrfTokenManager;
@@ -44,7 +45,11 @@ final class EasyAdminTwigExtension extends AbstractExtension implements GlobalsI
         return [
             new TwigFunction('ea_url', [$this, 'getAdminUrlGenerator']),
             new TwigFunction('ea_csrf_token', [$this, 'renderCsrfToken']),
-            new TwigFunction('ea_call_function_if_exists', [$this, 'callFunctionIfExists'], ['needs_environment' => true, 'is_safe' => ['html' => true]]),
+            new TwigFunction(
+                'ea_call_function_if_exists',
+                [$this, 'callFunctionIfExists'],
+                ['needs_environment' => true, 'is_safe' => ['html' => true]]
+            ),
             new TwigFunction('ea_create_field_layout', [$this, 'createFieldLayout']),
         ];
     }
@@ -91,9 +96,9 @@ final class EasyAdminTwigExtension extends AbstractExtension implements GlobalsI
     public function fileSize(int $bytes): string
     {
         $size = ['B', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'];
-        $factor = (int) floor(log($bytes) / log(1024));
+        $factor = (int)floor(log($bytes) / log(1024));
 
-        return (int) ($bytes / (1024 ** $factor)).@$size[$factor];
+        return (int)($bytes / (1024 ** $factor)).@$size[$factor];
     }
 
     /**
@@ -141,7 +146,7 @@ final class EasyAdminTwigExtension extends AbstractExtension implements GlobalsI
         }
 
         if (is_numeric($value)) {
-            return (string) $value;
+            return (string)$value;
         }
 
         if (\is_bool($value)) {
@@ -154,7 +159,7 @@ final class EasyAdminTwigExtension extends AbstractExtension implements GlobalsI
 
         if (\is_object($value)) {
             if (method_exists($value, '__toString')) {
-                return (string) $value;
+                return (string)$value;
             }
 
             if (method_exists($value, 'getId')) {

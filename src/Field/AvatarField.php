@@ -39,7 +39,14 @@ final class AvatarField implements FieldInterface
         $semanticHeights = [Size::SM => 18, Size::MD => 24, Size::LG => 48, Size::XL => 96];
 
         if (!\is_int($heightInPixels) && !\array_key_exists($heightInPixels, $semanticHeights)) {
-            throw new \InvalidArgumentException(sprintf('The argument of the "%s()" method must be either an integer (the height in pixels) or one of these string values: %s (%d given).', __METHOD__, implode(', ', $semanticHeights), $heightInPixels));
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'The argument of the "%s()" method must be either an integer (the height in pixels) or one of these string values: %s (%d given).',
+                    __METHOD__,
+                    implode(', ', $semanticHeights),
+                    $heightInPixels
+                )
+            );
         }
 
         if (\is_string($heightInPixels)) {
@@ -47,7 +54,13 @@ final class AvatarField implements FieldInterface
         }
 
         if ($heightInPixels < 1) {
-            throw new \InvalidArgumentException(sprintf('When passing an integer for the argument of the "%s()" method, the value must be 1 or higher (%d given).', __METHOD__, $heightInPixels));
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'When passing an integer for the argument of the "%s()" method, the value must be 1 or higher (%d given).',
+                    __METHOD__,
+                    $heightInPixels
+                )
+            );
         }
 
         $this->setCustomOption(self::OPTION_HEIGHT, $heightInPixels);

@@ -35,14 +35,15 @@ final class PercentField implements FieldInterface
             ->setCustomOption(self::OPTION_NUM_DECIMALS, 0)
             ->setCustomOption(self::OPTION_STORED_AS_FRACTIONAL, true)
             ->setCustomOption(self::OPTION_SYMBOL, '%')
-            ->setCustomOption(self::OPTION_ROUNDING_MODE, \NumberFormatter::ROUND_HALFUP)
-        ;
+            ->setCustomOption(self::OPTION_ROUNDING_MODE, \NumberFormatter::ROUND_HALFUP);
     }
 
     public function setNumDecimals(int $num): self
     {
         if ($num < 0) {
-            throw new \InvalidArgumentException(sprintf('The argument of the "%s()" method must be 0 or higher (%d given).', __METHOD__, $num));
+            throw new \InvalidArgumentException(
+                sprintf('The argument of the "%s()" method must be 0 or higher (%d given).', __METHOD__, $num)
+            );
         }
 
         $this->setCustomOption(self::OPTION_NUM_DECIMALS, $num);
@@ -84,7 +85,14 @@ final class PercentField implements FieldInterface
         ];
 
         if (!\in_array($mode, $validModes, true)) {
-            throw new \InvalidArgumentException(sprintf('The argument of the "%s()" method must be the value of any of the following constants from the %s class: %s.', __METHOD__, \NumberFormatter::class, implode(', ', array_keys($validModes))));
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'The argument of the "%s()" method must be the value of any of the following constants from the %s class: %s.',
+                    __METHOD__,
+                    \NumberFormatter::class,
+                    implode(', ', array_keys($validModes))
+                )
+            );
         }
 
         $this->setCustomOption(self::OPTION_ROUNDING_MODE, $mode);

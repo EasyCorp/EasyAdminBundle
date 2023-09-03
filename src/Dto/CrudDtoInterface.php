@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 
-use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
+use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStoreInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
@@ -33,19 +33,13 @@ interface CrudDtoInterface
     public function getEntityLabelInSingular(
         $entityInstance = null,
         $pageName = null
-    ): TranslatableInterface|string|null;
+    ): null|string|TranslatableInterface;
 
-    /**
-     * @param TranslatableInterface|string|callable $label
-     */
-    public function setEntityLabelInSingular($label): void;
+    public function setEntityLabelInSingular(null|string|TranslatableInterface $label): void;
 
-    public function getEntityLabelInPlural($entityInstance = null, $pageName = null): TranslatableInterface|string|null;
+    public function getEntityLabelInPlural($entityInstance = null, $pageName = null): null|string|TranslatableInterface;
 
-    /**
-     * @param TranslatableInterface|string|callable $label
-     */
-    public function setEntityLabelInPlural($label): void;
+    public function setEntityLabelInPlural(null|string|TranslatableInterface $label): void;
 
     public function getCustomPageTitle(
         ?string $pageName = null,
@@ -129,13 +123,13 @@ interface CrudDtoInterface
 
     public function setFormThemes(array $formThemes): void;
 
-    public function getNewFormOptions(): KeyValueStore;
+    public function getNewFormOptions(): KeyValueStoreInterface;
 
-    public function getEditFormOptions(): KeyValueStore;
+    public function getEditFormOptions(): KeyValueStoreInterface;
 
-    public function setNewFormOptions(KeyValueStore $formOptions): void;
+    public function setNewFormOptions(KeyValueStoreInterface $formOptions): void;
 
-    public function setEditFormOptions(KeyValueStore $formOptions): void;
+    public function setEditFormOptions(KeyValueStoreInterface $formOptions): void;
 
     public function getEntityPermission(): ?string;
 

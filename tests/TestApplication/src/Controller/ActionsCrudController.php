@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Controller;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+use EasyCorp\Bundle\EasyAdminBundle\Config\ActionsInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
@@ -26,7 +27,7 @@ class ActionsCrudController extends AbstractCrudController
         ];
     }
 
-    public function configureActions(Actions $actions): Actions
+    public function configureActions(ActionsInterface $actions): Actions
     {
         $action1 = Action::new('action1')->linkToCrudAction('');
         $action2 = Action::new('action2')->linkToCrudAction('')->setCssClass('foo');

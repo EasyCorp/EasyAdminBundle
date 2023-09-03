@@ -2,7 +2,6 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Event;
 
-use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDtoInterface;
 
 /**
@@ -10,7 +9,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDtoInterface;
  */
 final class AfterEntityBuiltEvent
 {
-    private EntityDto $entityDto;
+    private EntityDtoInterface $entityDto;
 
     public function __construct(EntityDtoInterface $entityDto)
     {

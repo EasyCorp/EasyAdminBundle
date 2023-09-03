@@ -3,7 +3,6 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Orm;
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Orm\EntityUpdaterInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDtoInterface;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Component\Validator\ConstraintViolationList;
@@ -26,7 +25,9 @@ final class EntityUpdater implements EntityUpdaterInterface
     public function updateProperty(EntityDtoInterface $entityDto, string $propertyName, $value): void
     {
         if (!$this->propertyAccessor->isWritable($entityDto->getInstance(), $propertyName)) {
-            throw new \RuntimeException(sprintf('The "%s" property of the "%s" entity is not writable.', $propertyName, $entityDto->getName()));
+            throw new \RuntimeException(
+                sprintf('The "%s" property of the "%s" entity is not writable.', $propertyName, $entityDto->getName())
+            );
         }
 
         $entityInstance = $entityDto->getInstance();
@@ -35,7 +36,7 @@ final class EntityUpdater implements EntityUpdaterInterface
         /** @var ConstraintViolationList $violations */
         $violations = $this->validator->validate($entityInstance);
         if (0 < \count($violations)) {
-            throw new \RuntimeException((string) $violations);
+            throw new \RuntimeException((string)$violations);
         }
 
         $entityDto->setInstance($entityInstance);

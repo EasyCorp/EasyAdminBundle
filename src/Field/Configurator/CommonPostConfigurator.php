@@ -2,26 +2,24 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Field\Configurator;
 
-use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\CrudInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDtoInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
-use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProviderInterface;
-use function Symfony\Component\String\u;
 use Twig\Markup;
+
+use function Symfony\Component\String\u;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
 final class CommonPostConfigurator implements FieldConfiguratorInterface
 {
-    private AdminContextProvider $adminContextProvider;
+    private AdminContextProviderInterface $adminContextProvider;
+
     private string $charset;
 
     public function __construct(AdminContextProviderInterface $adminContextProvider, string $charset)
@@ -38,7 +36,11 @@ final class CommonPostConfigurator implements FieldConfiguratorInterface
 
     public function configure(FieldDtoInterface $field, EntityDtoInterface $entityDto, AdminContext $context): void
     {
-        if (\in_array($context->getCrud()->getCurrentPage(), [CrudInterface::PAGE_INDEX, CrudInterface::PAGE_DETAIL], true)) {
+        if (\in_array(
+            $context->getCrud()->getCurrentPage(),
+            [CrudInterface::PAGE_INDEX, CrudInterface::PAGE_DETAIL],
+            true
+        )) {
             $formattedValue = $this->buildFormattedValueOption($field->getFormattedValue(), $field, $entityDto);
             $field->setFormattedValue($formattedValue);
         }

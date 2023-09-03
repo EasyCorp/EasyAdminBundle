@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace EasyCorp\Bundle\EasyAdminBundle\Config;
 
 
-use EasyCorp\Bundle\EasyAdminBundle\Dto\LocaleDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\LocaleDtoInterface;
 
 /**

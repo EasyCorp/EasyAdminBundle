@@ -2,12 +2,9 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Menu;
 
-use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\CrudInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDtoInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProviderInterface;
 
 /**
@@ -27,7 +24,10 @@ final class MenuItemMatcher implements MenuItemMatcherInterface
         }
 
         $currentPageQueryParameters = $adminContext->getRequest()->query->all();
-        $menuItemQueryString = null === $menuItemDto->getLinkUrl() ? null : parse_url($menuItemDto->getLinkUrl(), \PHP_URL_QUERY);
+        $menuItemQueryString = null === $menuItemDto->getLinkUrl() ? null : parse_url(
+            $menuItemDto->getLinkUrl(),
+            \PHP_URL_QUERY
+        );
         $menuItemQueryParameters = [];
         if (null !== $menuItemQueryString) {
             parse_str($menuItemQueryString, $menuItemQueryParameters);
@@ -38,8 +38,14 @@ final class MenuItemMatcher implements MenuItemMatcherInterface
         }
 
         $menuItemLinksToIndexCrudAction = CrudInterface::PAGE_INDEX === ($menuItemQueryParameters[EA::CRUD_ACTION] ?? false);
-        $menuItemQueryParameters = $this->filterIrrelevantQueryParameters($menuItemQueryParameters, $menuItemLinksToIndexCrudAction);
-        $currentPageQueryParameters = $this->filterIrrelevantQueryParameters($currentPageQueryParameters, $menuItemLinksToIndexCrudAction);
+        $menuItemQueryParameters = $this->filterIrrelevantQueryParameters(
+            $menuItemQueryParameters,
+            $menuItemLinksToIndexCrudAction
+        );
+        $currentPageQueryParameters = $this->filterIrrelevantQueryParameters(
+            $currentPageQueryParameters,
+            $menuItemLinksToIndexCrudAction
+        );
 
         // needed so you can pass route parameters in any order
         sort($menuItemQueryParameters);
@@ -68,8 +74,10 @@ final class MenuItemMatcher implements MenuItemMatcherInterface
      * should be ignored when deciding if some menu item matches the current page
      * (such as the applied filters or sorting, the listing page number, etc.).
      */
-    private function filterIrrelevantQueryParameters(array $queryStringParameters, bool $menuItemLinksToIndexCrudAction): array
-    {
+    private function filterIrrelevantQueryParameters(
+        array $queryStringParameters,
+        bool $menuItemLinksToIndexCrudAction
+    ): array {
         $paramsToRemove = [EA::REFERRER, EA::PAGE, EA::FILTERS, EA::SORT];
 
         // if the menu item being inspected links to the 'index' action of some entity,
@@ -82,6 +90,10 @@ final class MenuItemMatcher implements MenuItemMatcherInterface
             $paramsToRemove[] = EA::ENTITY_ID;
         }
 
-        return array_filter($queryStringParameters, static fn ($k) => !\in_array($k, $paramsToRemove, true), \ARRAY_FILTER_USE_KEY);
+        return array_filter(
+            $queryStringParameters,
+            static fn($k) => !\in_array($k, $paramsToRemove, true),
+            \ARRAY_FILTER_USE_KEY
+        );
     }
 }

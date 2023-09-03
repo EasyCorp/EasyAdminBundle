@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace EasyCorp\Bundle\EasyAdminBundle\Config;
 
 
-use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionConfigDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionConfigDtoInterface;
 
 /**

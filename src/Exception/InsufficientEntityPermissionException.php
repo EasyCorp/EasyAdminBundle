@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Exception;
 
-use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContextInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ExceptionContext;
 
 /**
@@ -10,7 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\ExceptionContext;
  */
 final class InsufficientEntityPermissionException extends BaseException
 {
-    public function __construct(AdminContext $adminContext)
+    public function __construct(AdminContextInterface $adminContext)
     {
         $parameters = [
             'entity_fqcn' => $adminContext->getEntity()->getFqcn(),
@@ -18,9 +18,16 @@ final class InsufficientEntityPermissionException extends BaseException
         ];
 
         if (null !== $entityId) {
-            $debugMessage = sprintf('You don\'t have enough permissions to access this instance of the "%s" entity.', $parameters['entity_fqcn']);
+            $debugMessage = sprintf(
+                'You don\'t have enough permissions to access this instance of the "%s" entity.',
+                $parameters['entity_fqcn']
+            );
         } else {
-            $debugMessage = sprintf('You don\'t have enough permissions to access the instance of the "%s" entity with id  = %s.', $parameters['entity_fqcn'], $entityId);
+            $debugMessage = sprintf(
+                'You don\'t have enough permissions to access the instance of the "%s" entity with id  = %s.',
+                $parameters['entity_fqcn'],
+                $entityId
+            );
         }
 
         $exceptionContext = new ExceptionContext(

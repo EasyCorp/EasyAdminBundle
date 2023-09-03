@@ -57,7 +57,10 @@ final class LanguageField implements FieldInterface
 
     public function useAlpha3Codes(bool $useAlpha3 = true): self
     {
-        $this->setCustomOption(self::OPTION_LANGUAGE_CODE_FORMAT, $useAlpha3 ? self::FORMAT_ISO_639_ALPHA3 : self::FORMAT_ISO_639_ALPHA2);
+        $this->setCustomOption(
+            self::OPTION_LANGUAGE_CODE_FORMAT,
+            $useAlpha3 ? self::FORMAT_ISO_639_ALPHA3 : self::FORMAT_ISO_639_ALPHA2
+        );
 
         return $this;
     }

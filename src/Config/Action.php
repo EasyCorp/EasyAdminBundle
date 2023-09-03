@@ -4,8 +4,9 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Config;
 
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDtoInterface;
-use function Symfony\Component\String\u;
 use Symfony\Contracts\Translation\TranslatableInterface;
+
+use function Symfony\Component\String\u;
 
 final class Action implements ActionInterface
 {
@@ -186,11 +187,22 @@ final class Action implements ActionInterface
     public function getAsDto(): ActionDtoInterface
     {
         if (null === $this->dto->getLabel() && null === $this->dto->getIcon()) {
-            throw new \InvalidArgumentException(sprintf('The label and icon of an action cannot be null at the same time. Either set the label, the icon or both for the "%s" action.', $this->dto->getName()));
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'The label and icon of an action cannot be null at the same time. Either set the label, the icon or both for the "%s" action.',
+                    $this->dto->getName()
+                )
+            );
         }
 
-        if (null === $this->dto->getCrudActionName() && null === $this->dto->getRouteName() && null === $this->dto->getUrl()) {
-            throw new \InvalidArgumentException(sprintf('Actions must link to either a route, a CRUD action, or a URL. Set the "linkToCrudAction()", "linkToRoute()", or "linkToUrl()" method for the "%s" action.', $this->dto->getName()));
+        if (null === $this->dto->getCrudActionName() && null === $this->dto->getRouteName(
+            ) && null === $this->dto->getUrl()) {
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'Actions must link to either a route, a CRUD action, or a URL. Set the "linkToCrudAction()", "linkToRoute()", or "linkToUrl()" method for the "%s" action.',
+                    $this->dto->getName()
+                )
+            );
         }
 
         return $this->dto;

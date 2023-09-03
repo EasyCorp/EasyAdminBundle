@@ -2,9 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 
-use EasyCorp\Bundle\EasyAdminBundle\Config\Asset;
 use EasyCorp\Bundle\EasyAdminBundle\Config\AssetInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\CrudInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\TextAlign;
@@ -153,7 +151,13 @@ trait FieldTrait
     {
         $validOptions = [TextAlign::LEFT, TextAlign::CENTER, TextAlign::RIGHT];
         if (!\in_array($textAlign, $validOptions, true)) {
-            throw new \InvalidArgumentException(sprintf('The value of the "textAlign" option can only be one of these: "%s" ("%s" was given).', implode(',', $validOptions), $textAlign));
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'The value of the "textAlign" option can only be one of these: "%s" ("%s" was given).',
+                    implode(',', $validOptions),
+                    $textAlign
+                )
+            );
         }
 
         $this->dto->setTextAlign($textAlign);
@@ -217,7 +221,9 @@ trait FieldTrait
     public function addWebpackEncoreEntries(AssetInterface|string ...$entryNamesOrAssets): self
     {
         if (!class_exists('Symfony\\WebpackEncoreBundle\\Twig\\EntryFilesTwigExtension')) {
-            throw new \RuntimeException('You are trying to add Webpack Encore entries in a field but Webpack Encore is not installed in your project. Try running "composer require symfony/webpack-encore-bundle"');
+            throw new \RuntimeException(
+                'You are trying to add Webpack Encore entries in a field but Webpack Encore is not installed in your project. Try running "composer require symfony/webpack-encore-bundle"'
+            );
         }
 
         foreach ($entryNamesOrAssets as $entryNameOrAsset) {
@@ -349,10 +355,12 @@ trait FieldTrait
 
     public function onlyOnForms(): self
     {
-        $this->dto->setDisplayedOn(KeyValueStore::new([
-            CrudInterface::PAGE_NEW => CrudInterface::PAGE_NEW,
-            CrudInterface::PAGE_EDIT => CrudInterface::PAGE_EDIT,
-        ]));
+        $this->dto->setDisplayedOn(
+            KeyValueStore::new([
+                CrudInterface::PAGE_NEW => CrudInterface::PAGE_NEW,
+                CrudInterface::PAGE_EDIT => CrudInterface::PAGE_EDIT,
+            ])
+        );
 
         return $this;
     }

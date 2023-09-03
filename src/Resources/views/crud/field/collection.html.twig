@@ -3,7 +3,7 @@
 {# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
 {# this is a bit ugly, but Twig doesn't have a 'is numeric' test #}
 {% if field.formattedValue matches '/^\\d+$/' %}
-    <span class="badge badge-secondary">{{ field.formattedValue }}</span>
+	<span class="badge badge-secondary">{{ field.formattedValue }}</span>
 {% else %}
-    {{ field.formattedValue }}
+	{{ field.formattedValue }}
 {% endif %}

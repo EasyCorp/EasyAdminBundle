@@ -5,9 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\EventListener;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Factory\AdminContextFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\AdminContextFactoryInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Factory\ControllerFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\ControllerFactoryInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,14 +30,23 @@ use Symfony\Component\Routing\Matcher\RequestMatcherInterface;
  */
 final class AdminRouterSubscriber implements EventSubscriberInterface
 {
-    private AdminContextFactory $adminContextFactory;
-    private ControllerFactory $controllerFactory;
+    private AdminContextFactoryInterface $adminContextFactory;
+
+    private ControllerFactoryInterface $controllerFactory;
+
     private ControllerResolverInterface $controllerResolver;
+
     private UrlGeneratorInterface $urlGenerator;
+
     private RequestMatcherInterface $requestMatcher;
 
-    public function __construct(AdminContextFactoryInterface $adminContextFactory, ControllerFactoryInterface $controllerFactory, ControllerResolverInterface $controllerResolver, UrlGeneratorInterface $urlGenerator, RequestMatcherInterface $requestMatcher)
-    {
+    public function __construct(
+        AdminContextFactoryInterface $adminContextFactory,
+        ControllerFactoryInterface $controllerFactory,
+        ControllerResolverInterface $controllerResolver,
+        UrlGeneratorInterface $urlGenerator,
+        RequestMatcherInterface $requestMatcher
+    ) {
         $this->adminContextFactory = $adminContextFactory;
         $this->controllerFactory = $controllerFactory;
         $this->controllerResolver = $controllerResolver;
@@ -69,7 +76,10 @@ final class AdminRouterSubscriber implements EventSubscriberInterface
             return;
         }
 
-        if (null === $dashboardControllerInstance = $this->getDashboardControllerInstance($dashboardControllerFqcn, $request)) {
+        if (null === $dashboardControllerInstance = $this->getDashboardControllerInstance(
+                $dashboardControllerFqcn,
+                $request
+            )) {
             return;
         }
 
@@ -77,7 +87,11 @@ final class AdminRouterSubscriber implements EventSubscriberInterface
         // if the current request already has an AdminContext object, do nothing
         if (null === $adminContext = $request->attributes->get(EA::CONTEXT_REQUEST_ATTRIBUTE)) {
             $crudControllerInstance = $this->getCrudControllerInstance($request);
-            $adminContext = $this->adminContextFactory->create($request, $dashboardControllerInstance, $crudControllerInstance);
+            $adminContext = $this->adminContextFactory->create(
+                $request,
+                $dashboardControllerInstance,
+                $crudControllerInstance
+            );
         }
 
         $request->attributes->set(EA::CONTEXT_REQUEST_ATTRIBUTE, $adminContext);
@@ -114,7 +128,10 @@ final class AdminRouterSubscriber implements EventSubscriberInterface
         // if the request is related to a custom action, change the controller to be executed
         if (null !== $request->query->get(EA::ROUTE_NAME)) {
             $symfonyControllerAsString = $this->getSymfonyControllerFqcn($request);
-            $symfonyControllerCallable = $this->getSymfonyControllerInstance($symfonyControllerAsString, $request->query->all()[EA::ROUTE_PARAMS] ?? []);
+            $symfonyControllerCallable = $this->getSymfonyControllerInstance(
+                $symfonyControllerAsString,
+                $request->query->all()[EA::ROUTE_PARAMS] ?? []
+            );
             if (false !== $symfonyControllerCallable) {
                 // this makes Symfony believe that another controller is being executed
                 // (e.g. this is needed for the autowiring of controller action arguments)
@@ -122,10 +139,12 @@ final class AdminRouterSubscriber implements EventSubscriberInterface
                 // Otherwise, the param converter of the controller method doesn't work
                 $event->getRequest()->attributes->set('_controller', $symfonyControllerAsString);
                 // route params must be added as route attribute; otherwise, param converters don't work
-                $event->getRequest()->attributes->replace(array_merge(
-                    $request->query->all()[EA::ROUTE_PARAMS] ?? [],
-                    $event->getRequest()->attributes->all()
-                ));
+                $event->getRequest()->attributes->replace(
+                    array_merge(
+                        $request->query->all()[EA::ROUTE_PARAMS] ?? [],
+                        $event->getRequest()->attributes->all()
+                    )
+                );
 
                 // this actually makes Symfony to execute the other controller
                 $event->setController($symfonyControllerCallable);
@@ -146,7 +165,7 @@ final class AdminRouterSubscriber implements EventSubscriberInterface
         $controllerFqcn = null;
 
         if (\is_string($controller)) {
-            [$controllerFqcn, ] = explode('::', $controller);
+            [$controllerFqcn,] = explode('::', $controller);
         }
 
         if (\is_array($controller)) {
@@ -160,8 +179,10 @@ final class AdminRouterSubscriber implements EventSubscriberInterface
         return is_subclass_of($controllerFqcn, DashboardControllerInterface::class) ? $controllerFqcn : null;
     }
 
-    private function getDashboardControllerInstance(string $dashboardControllerFqcn, Request $request): ?DashboardControllerInterface
-    {
+    private function getDashboardControllerInstance(
+        string $dashboardControllerFqcn,
+        Request $request
+    ): ?DashboardControllerInterface {
         return $this->controllerFactory->getDashboardControllerInstance($dashboardControllerFqcn, $request);
     }
 
@@ -193,7 +214,12 @@ final class AdminRouterSubscriber implements EventSubscriberInterface
 
     private function getSymfonyControllerInstance(string $controllerFqcn, array $routeParams): callable|false
     {
-        $newRequest = new Request([], [], ['_controller' => $controllerFqcn, '_route_params' => $routeParams], [], [], []);
+        $newRequest = new Request([],
+            [],
+            ['_controller' => $controllerFqcn, '_route_params' => $routeParams],
+            [],
+            [],
+            []);
 
         return $this->controllerResolver->getController($newRequest);
     }

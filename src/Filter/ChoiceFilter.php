@@ -5,11 +5,8 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Filter;
 use Doctrine\ORM\Query\Expr\Orx;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDtoInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDtoInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDataDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDataDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\ChoiceFilterType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
@@ -53,8 +50,12 @@ final class ChoiceFilter implements FilterInterface
         return $this;
     }
 
-    public function apply(QueryBuilder $queryBuilder, FilterDataDtoInterface $filterDataDto, ?FieldDtoInterface $fieldDto, EntityDtoInterface $entityDto): void
-    {
+    public function apply(
+        QueryBuilder $queryBuilder,
+        FilterDataDtoInterface $filterDataDto,
+        ?FieldDtoInterface $fieldDto,
+        EntityDtoInterface $entityDto
+    ): void {
         $alias = $filterDataDto->getEntityAlias();
         $property = $filterDataDto->getProperty();
         $comparison = $filterDataDto->getComparison();

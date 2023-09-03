@@ -41,7 +41,7 @@ final class ExceptionContext implements ExceptionContextInterface
     public function getTranslationParameters(): array
     {
         return array_map(
-            static fn ($parameter): string => u($parameter)->ensureStart('%')->ensureEnd('%')->toString(),
+            static fn($parameter): string => u($parameter)->ensureStart('%')->ensureEnd('%')->toString(),
             $this->parameters
         );
     }

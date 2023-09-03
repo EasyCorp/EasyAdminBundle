@@ -24,11 +24,17 @@ final class CreateControllerRegistriesPass implements CompilerPassInterface
 
     private function createDashboardControllerRegistryService(ContainerBuilder $container): void
     {
-        $dashboardControllersFqcn = array_keys($container->findTaggedServiceIds(EasyAdminExtension::TAG_DASHBOARD_CONTROLLER, true));
+        $dashboardControllersFqcn = array_keys(
+            $container->findTaggedServiceIds(EasyAdminExtension::TAG_DASHBOARD_CONTROLLER, true)
+        );
 
         $controllerFqcnToContextIdMap = [];
         foreach ($dashboardControllersFqcn as $controllerFqcn) {
-            $controllerFqcnToContextIdMap[$controllerFqcn] = substr(sha1($container->getParameter('kernel.secret').$controllerFqcn), 0, 7);
+            $controllerFqcnToContextIdMap[$controllerFqcn] = substr(
+                sha1($container->getParameter('kernel.secret').$controllerFqcn),
+                0,
+                7
+            );
         }
 
         $container
@@ -43,13 +49,19 @@ final class CreateControllerRegistriesPass implements CompilerPassInterface
 
     private function createCrudControllerRegistryService(ContainerBuilder $container): void
     {
-        $crudControllersFqcn = array_keys($container->findTaggedServiceIds(EasyAdminExtension::TAG_CRUD_CONTROLLER, true));
+        $crudControllersFqcn = array_keys(
+            $container->findTaggedServiceIds(EasyAdminExtension::TAG_CRUD_CONTROLLER, true)
+        );
 
         $crudFqcnToEntityFqcnMap = $crudFqcnToCrudIdMap = [];
 
         foreach ($crudControllersFqcn as $controllerFqcn) {
             $crudFqcnToEntityFqcnMap[$controllerFqcn] = $controllerFqcn::getEntityFqcn();
-            $crudFqcnToCrudIdMap[$controllerFqcn] = substr(sha1($container->getParameter('kernel.secret').$controllerFqcn), 0, 7);
+            $crudFqcnToCrudIdMap[$controllerFqcn] = substr(
+                sha1($container->getParameter('kernel.secret').$controllerFqcn),
+                0,
+                7
+            );
         }
 
         $container

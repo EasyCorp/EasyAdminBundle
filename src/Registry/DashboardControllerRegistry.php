@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Registry;
 
 use EasyCorp\Bundle\EasyAdminBundle\Cache\CacheWarmer;
+
 use function Symfony\Component\String\u;
 
 final class DashboardControllerRegistry implements DashboardControllerRegistryInterface
@@ -16,8 +17,11 @@ final class DashboardControllerRegistry implements DashboardControllerRegistryIn
      * @param string[] $controllerFqcnToContextIdMap
      * @param string[] $contextIdToControllerFqcnMap
      */
-    public function __construct(string $cacheDir, array $controllerFqcnToContextIdMap, array $contextIdToControllerFqcnMap)
-    {
+    public function __construct(
+        string $cacheDir,
+        array $controllerFqcnToContextIdMap,
+        array $contextIdToControllerFqcnMap
+    ) {
         $this->controllerFqcnToContextIdMap = $controllerFqcnToContextIdMap;
         $this->contextIdToControllerFqcnMap = $contextIdToControllerFqcnMap;
 
@@ -57,6 +61,8 @@ final class DashboardControllerRegistry implements DashboardControllerRegistryIn
 
     public function getFirstDashboardRoute(): ?string
     {
-        return \count($this->controllerFqcnToRouteMap) < 1 ? null : $this->controllerFqcnToRouteMap[array_key_first($this->controllerFqcnToRouteMap)];
+        return \count($this->controllerFqcnToRouteMap) < 1 ? null : $this->controllerFqcnToRouteMap[array_key_first(
+            $this->controllerFqcnToRouteMap
+        )];
     }
 }

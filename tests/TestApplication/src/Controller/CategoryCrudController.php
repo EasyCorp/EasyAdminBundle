@@ -4,9 +4,11 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Controller;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+use EasyCorp\Bundle\EasyAdminBundle\Config\ActionsInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\AssetsInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\CrudInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Config\FiltersInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
@@ -16,6 +18,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
+use EasyCorp\Bundle\EasyAdminBundle\Security\PermissionInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Config\Action as AppAction;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Entity\Category;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,8 +34,7 @@ class CategoryCrudController extends AbstractCrudController
     {
         return parent::configureAssets($assets)
             ->addHtmlContentToHead('<link data-added-from-controller rel="me" href="https://example.com">')
-            ->addHtmlContentToBody('<span data-added-from-controller><!-- foo --></span>')
-        ;
+            ->addHtmlContentToBody('<span data-added-from-controller><!-- foo --></span>');
     }
 
     public function configureFields(string $pageName): iterable
@@ -45,13 +47,13 @@ class CategoryCrudController extends AbstractCrudController
         ];
     }
 
-    public function configureActions(Actions $actions): Actions
+    public function configureActions(ActionsInterface $actions): Actions
     {
         $customPageAction = Action::new(AppAction::CUSTOM_ACTION)
             ->createAsGlobalAction()
             ->linkToCrudAction('customPage');
 
-        return $actions->add(Crud::PAGE_INDEX, $customPageAction)
+        return $actions->add(CrudInterface::PAGE_INDEX, $customPageAction)
             ->setPermission(AppAction::CUSTOM_ACTION, 'ROLE_ADMIN');
     }
 
@@ -64,7 +66,10 @@ class CategoryCrudController extends AbstractCrudController
 
     public function customAction(AdminContext $context): Response
     {
-        if (!$this->isGranted(Permission::EA_EXECUTE_ACTION, ['action' => AppAction::CUSTOM_ACTION, 'entity' => $context->getEntity()])) {
+        if (!$this->isGranted(
+            PermissionInterface::EA_EXECUTE_ACTION,
+            ['action' => AppAction::CUSTOM_ACTION, 'entity' => $context->getEntity()]
+        )) {
             throw new ForbiddenActionException($context);
         }
 

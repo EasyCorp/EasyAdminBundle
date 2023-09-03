@@ -2,14 +2,11 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Router;
 
-use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\ActionInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
-use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProviderInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Registry\DashboardControllerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\DashboardControllerRegistryInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -25,8 +22,11 @@ final class AdminUrlGenerator implements AdminUrlGeneratorInterface
     private ?string $currentPageReferrer = null;
     private ?string $customPageReferrer = null;
 
-    public function __construct(AdminContextProviderInterface $adminContextProvider, UrlGeneratorInterface $urlGenerator, DashboardControllerRegistryInterface $dashboardControllerRegistry)
-    {
+    public function __construct(
+        AdminContextProviderInterface $adminContextProvider,
+        UrlGeneratorInterface $urlGenerator,
+        DashboardControllerRegistryInterface $dashboardControllerRegistry
+    ) {
         $this->adminContextProvider = $adminContextProvider;
         $this->urlGenerator = $urlGenerator;
         $this->dashboardControllerRegistry = $dashboardControllerRegistry;
@@ -226,8 +226,17 @@ final class AdminUrlGenerator implements AdminUrlGeneratorInterface
         // if the Dashboard FQCN is defined, find its route and use it to override
         // the current route (this is needed to allow generating links to different dashboards)
         if (null !== $dashboardControllerFqcn = $this->get(EA::DASHBOARD_CONTROLLER_FQCN)) {
-            if (null === $dashboardRoute = $this->dashboardControllerRegistry->getRouteByControllerFqcn($dashboardControllerFqcn)) {
-                throw new \InvalidArgumentException(sprintf('The given "%s" class is not a valid Dashboard controller. Make sure it extends from "%s" or implements "%s".', $dashboardControllerFqcn, AbstractDashboardController::class, DashboardControllerInterface::class));
+            if (null === $dashboardRoute = $this->dashboardControllerRegistry->getRouteByControllerFqcn(
+                    $dashboardControllerFqcn
+                )) {
+                throw new \InvalidArgumentException(
+                    sprintf(
+                        'The given "%s" class is not a valid Dashboard controller. Make sure it extends from "%s" or implements "%s".',
+                        $dashboardControllerFqcn,
+                        AbstractDashboardController::class,
+                        DashboardControllerInterface::class
+                    )
+                );
             }
 
             $this->dashboardRoute = $dashboardRoute;
@@ -238,7 +247,9 @@ final class AdminUrlGenerator implements AdminUrlGeneratorInterface
         // no Dashboard FQCN has been defined explicitly
         if (null === $this->dashboardRoute) {
             if ($this->dashboardControllerRegistry->getNumberOfDashboards() > 1) {
-                throw new \RuntimeException('When generating admin URLs from outside EasyAdmin or without a related HTTP request (e.g. in tests, console commands, etc.), if your application has more than one Dashboard, you must associate the URL to a specific Dashboard using the "setDashboard()" method.');
+                throw new \RuntimeException(
+                    'When generating admin URLs from outside EasyAdmin or without a related HTTP request (e.g. in tests, console commands, etc.), if your application has more than one Dashboard, you must associate the URL to a specific Dashboard using the "setDashboard()" method.'
+                );
             }
 
             $this->dashboardRoute = $this->dashboardControllerRegistry->getFirstDashboardRoute();
@@ -251,12 +262,13 @@ final class AdminUrlGenerator implements AdminUrlGeneratorInterface
         // this removes any parameter with a NULL value
         $routeParameters = array_filter(
             $this->routeParameters,
-            static fn ($parameterValue): bool => null !== $parameterValue
+            static fn($parameterValue): bool => null !== $parameterValue
         );
         ksort($routeParameters, \SORT_STRING);
 
         $context = $this->adminContextProvider->getContext();
-        $urlType = null !== $context && false === $context->getAbsoluteUrls() ? UrlGeneratorInterface::RELATIVE_PATH : UrlGeneratorInterface::ABSOLUTE_URL;
+        $urlType = null !== $context && false === $context->getAbsoluteUrls(
+        ) ? UrlGeneratorInterface::RELATIVE_PATH : UrlGeneratorInterface::ABSOLUTE_URL;
         $url = $this->urlGenerator->generate($this->dashboardRoute, $routeParameters, $urlType);
         $url = '' === $url ? '?' : $url;
 
@@ -274,14 +286,24 @@ final class AdminUrlGenerator implements AdminUrlGeneratorInterface
         }
 
         if (\is_resource($paramValue)) {
-            throw new \InvalidArgumentException(sprintf('The value of the "%s" parameter is a PHP resource, which is not supported as a route parameter.', $paramName));
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'The value of the "%s" parameter is a PHP resource, which is not supported as a route parameter.',
+                    $paramName
+                )
+            );
         }
 
         if (\is_object($paramValue)) {
             if (method_exists($paramValue, '__toString')) {
-                $paramValue = (string) $paramValue;
+                $paramValue = (string)$paramValue;
             } else {
-                throw new \InvalidArgumentException(sprintf('The object passed as the value of the "%s" parameter must implement the "__toString()" method to allow using its value as a route parameter.', $paramName));
+                throw new \InvalidArgumentException(
+                    sprintf(
+                        'The object passed as the value of the "%s" parameter must implement the "__toString()" method to allow using its value as a route parameter.',
+                        $paramName
+                    )
+                );
             }
         }
 
@@ -302,7 +324,12 @@ final class AdminUrlGenerator implements AdminUrlGeneratorInterface
             $this->dashboardRoute = $adminContext->getDashboardRouteName();
             $currentRouteParameters = $routeParametersForReferrer = $adminContext->getRequest()->query->all();
             unset($routeParametersForReferrer[EA::REFERRER]);
-            $this->currentPageReferrer = sprintf('%s%s?%s', $adminContext->getRequest()->getBaseUrl(), $adminContext->getRequest()->getPathInfo(), http_build_query($routeParametersForReferrer));
+            $this->currentPageReferrer = sprintf(
+                '%s%s?%s',
+                $adminContext->getRequest()->getBaseUrl(),
+                $adminContext->getRequest()->getPathInfo(),
+                http_build_query($routeParametersForReferrer)
+            );
         }
 
         $this->includeReferrer = null;

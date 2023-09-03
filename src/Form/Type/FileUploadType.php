@@ -45,7 +45,9 @@ final class FileUploadType extends AbstractType implements DataMapperInterface
 
         $builder->setDataMapper($this);
         $builder->setAttribute('state', new FileUploadState($allowAdd));
-        $builder->addModelTransformer(new StringToFileTransformer($uploadDir, $uploadFilename, $uploadValidate, $options['multiple']));
+        $builder->addModelTransformer(
+            new StringToFileTransformer($uploadDir, $uploadFilename, $uploadValidate, $options['multiple'])
+        );
     }
 
     public function buildView(FormView $view, FormInterface $form, array $options): void
@@ -84,7 +86,7 @@ final class FileUploadType extends AbstractType implements DataMapperInterface
             unlink($file->getPathname());
         };
 
-        $uploadFilename = static fn (UploadedFile $file): string => $file->getClientOriginalName();
+        $uploadFilename = static fn(UploadedFile $file): string => $file->getClientOriginalName();
 
         $uploadValidate = static function (string $filename): string {
             if (!file_exists($filename)) {
@@ -93,20 +95,31 @@ final class FileUploadType extends AbstractType implements DataMapperInterface
 
             $index = 1;
             $pathInfo = pathinfo($filename);
-            while (file_exists($filename = sprintf('%s/%s_%d.%s', $pathInfo['dirname'], $pathInfo['filename'], $index, $pathInfo['extension']))) {
+            while (file_exists(
+                $filename = sprintf(
+                    '%s/%s_%d.%s',
+                    $pathInfo['dirname'],
+                    $pathInfo['filename'],
+                    $index,
+                    $pathInfo['extension']
+                )
+            )) {
                 ++$index;
             }
 
             return $filename;
         };
 
-        $downloadPath = fn (Options $options) => mb_substr($options['upload_dir'], mb_strlen($this->projectDir.'/public/'));
+        $downloadPath = fn(Options $options) => mb_substr(
+            $options['upload_dir'],
+            mb_strlen($this->projectDir.'/public/')
+        );
 
-        $allowAdd = static fn (Options $options) => $options['multiple'];
+        $allowAdd = static fn(Options $options) => $options['multiple'];
 
-        $dataClass = static fn (Options $options) => $options['multiple'] ? null : File::class;
+        $dataClass = static fn(Options $options) => $options['multiple'] ? null : File::class;
 
-        $emptyData = static fn (Options $options) => $options['multiple'] ? [] : null;
+        $emptyData = static fn(Options $options) => $options['multiple'] ? [] : null;
 
         $resolver->setDefaults([
             'upload_dir' => $this->projectDir.'/public/uploads/files/',
@@ -145,7 +158,9 @@ final class FileUploadType extends AbstractType implements DataMapperInterface
             }
 
             if ('' !== $value && (!is_dir($value) || !is_writable($value))) {
-                throw new InvalidArgumentException(sprintf('Invalid upload directory "%s" it does not exist or is not writable.', $value));
+                throw new InvalidArgumentException(
+                    sprintf('Invalid upload directory "%s" it does not exist or is not writable.', $value)
+                );
             }
 
             return $value;
@@ -175,11 +190,13 @@ final class FileUploadType extends AbstractType implements DataMapperInterface
             };
         });
         $resolver->setNormalizer('allow_add', static function (Options $options, string $value): bool {
-            if ((bool) $value && !$options['multiple']) {
-                throw new InvalidArgumentException('Setting "allow_add" option to "true" when "multiple" option is "false" is not supported.');
+            if ((bool)$value && !$options['multiple']) {
+                throw new InvalidArgumentException(
+                    'Setting "allow_add" option to "true" when "multiple" option is "false" is not supported.'
+                );
             }
 
-            return (bool) $value;
+            return (bool)$value;
         });
     }
 

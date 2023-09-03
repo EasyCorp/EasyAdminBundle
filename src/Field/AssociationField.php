@@ -95,8 +95,11 @@ final class AssociationField implements FieldInterface
         return $this;
     }
 
-    public function renderAsEmbeddedForm(?string $crudControllerFqcn = null, ?string $crudNewPageName = null, ?string $crudEditPageName = null): self
-    {
+    public function renderAsEmbeddedForm(
+        ?string $crudControllerFqcn = null,
+        ?string $crudNewPageName = null,
+        ?string $crudEditPageName = null
+    ): self {
         $this->setCustomOption(self::OPTION_RENDER_AS_EMBEDDED_FORM, true);
         $this->setCustomOption(self::OPTION_EMBEDDED_CRUD_FORM_CONTROLLER, $crudControllerFqcn);
         $this->setCustomOption(self::OPTION_EMBEDDED_CRUD_FORM_NEW_PAGE_NAME, $crudNewPageName);

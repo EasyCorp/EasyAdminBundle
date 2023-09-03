@@ -2,14 +2,11 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Field\Configurator;
 
-use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\CrudInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\TextAlign;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDtoInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CountryField;
 use Symfony\Component\Asset\PackageInterface;
@@ -37,14 +34,27 @@ final class CountryConfigurator implements FieldConfiguratorInterface
     {
         $field->setFormTypeOption('attr.data-ea-widget', 'ea-autocomplete');
         $countryCodeFormat = $field->getCustomOption(CountryField::OPTION_COUNTRY_CODE_FORMAT);
-        $field->setFormattedValue($this->getCountryNames((array) $field->getValue(), $countryCodeFormat, $context->getRequest()->getLocale()));
+        $field->setFormattedValue(
+            $this->getCountryNames((array)$field->getValue(), $countryCodeFormat, $context->getRequest()->getLocale())
+        );
 
         if (null === $field->getTextAlign() && false === $field->getCustomOption(CountryField::OPTION_SHOW_NAME)) {
             $field->setTextAlign(TextAlign::CENTER);
         }
 
-        if (\in_array($context->getCrud()->getCurrentPage(), [CrudInterface::PAGE_EDIT, CrudInterface::PAGE_NEW], true)) {
-            $field->setFormTypeOption('choices', $this->generateFormTypeChoices($countryCodeFormat, $field->getCustomOption(CountryField::OPTION_COUNTRY_CODES_TO_KEEP), $field->getCustomOption(CountryField::OPTION_COUNTRY_CODES_TO_REMOVE)));
+        if (\in_array(
+            $context->getCrud()->getCurrentPage(),
+            [CrudInterface::PAGE_EDIT, CrudInterface::PAGE_NEW],
+            true
+        )) {
+            $field->setFormTypeOption(
+                'choices',
+                $this->generateFormTypeChoices(
+                    $countryCodeFormat,
+                    $field->getCustomOption(CountryField::OPTION_COUNTRY_CODES_TO_KEEP),
+                    $field->getCustomOption(CountryField::OPTION_COUNTRY_CODES_TO_REMOVE)
+                )
+            );
 
             // the value of this form option must be a string to properly propagate it as an HTML attribute value
             $field->setFormTypeOption('attr.data-ea-autocomplete-render-items-as-html', 'true');
@@ -70,7 +80,10 @@ final class CountryConfigurator implements FieldConfiguratorInterface
 
             try {
                 $alpha2CountryCode = $usesAlpha3Codes ? Countries::getAlpha2Code($countryCode) : $countryCode;
-                $countryNames[$alpha2CountryCode] = $usesAlpha3Codes ? Countries::getAlpha3Name($countryCode, $displayLocale) : Countries::getName($countryCode, $displayLocale);
+                $countryNames[$alpha2CountryCode] = $usesAlpha3Codes ? Countries::getAlpha3Name(
+                    $countryCode,
+                    $displayLocale
+                ) : Countries::getName($countryCode, $displayLocale);
             } catch (MissingResourceException) {
                 $countryNames['UNKNOWN'] = sprintf('Unknown "%s" country code', $countryCode);
             }
@@ -79,8 +92,11 @@ final class CountryConfigurator implements FieldConfiguratorInterface
         return $countryNames;
     }
 
-    private function generateFormTypeChoices(string $countryCodeFormat, ?array $countryCodesToKeep, ?array $countryCodesToRemove): array
-    {
+    private function generateFormTypeChoices(
+        string $countryCodeFormat,
+        ?array $countryCodesToKeep,
+        ?array $countryCodesToRemove
+    ): array {
         $usesAlpha3Codes = CountryField::FORMAT_ISO_3166_ALPHA3 === $countryCodeFormat;
         $choices = [];
 
@@ -96,7 +112,12 @@ final class CountryConfigurator implements FieldConfiguratorInterface
 
             $countryCodeAlpha2 = $usesAlpha3Codes ? Countries::getAlpha2Code($countryCode) : $countryCode;
             $flagImagePath = $this->assetPackage->getUrl(sprintf('images/flags/%s.svg', $countryCodeAlpha2));
-            $choiceKey = sprintf('<div class="country-name-flag"><img src="%s" class="country-flag" loading="lazy" alt="%s"> <span>%s</span></div>', $flagImagePath, $countryName, $countryName);
+            $choiceKey = sprintf(
+                '<div class="country-name-flag"><img src="%s" class="country-flag" loading="lazy" alt="%s"> <span>%s</span></div>',
+                $flagImagePath,
+                $countryName,
+                $countryName
+            );
 
             $choices[$choiceKey] = $countryCode;
         }

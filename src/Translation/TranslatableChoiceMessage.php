@@ -39,6 +39,6 @@ final class TranslatableChoiceMessage implements TranslatableInterface
             return sprintf('<span class="%s">%s</span>', $this->cssClass, $this->message);
         }
 
-        return (string) $this->message;
+        return (string)$this->message;
     }
 }

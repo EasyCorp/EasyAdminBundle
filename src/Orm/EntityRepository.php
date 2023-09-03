@@ -10,18 +10,13 @@ use Doctrine\Persistence\ManagerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Orm\EntityRepositoryInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDataDto;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntitySearchEvent;
-use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactoryInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactoryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
-use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProviderInterface;
 use Symfony\Component\Uid\Ulid;
 use Symfony\Component\Uid\Uuid;
@@ -32,14 +27,23 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
  */
 final class EntityRepository implements EntityRepositoryInterface
 {
-    private AdminContextProvider $adminContextProvider;
+    private AdminContextProviderInterface $adminContextProvider;
+
     private ManagerRegistry $doctrine;
-    private EntityFactory $entityFactory;
-    private FormFactory $formFactory;
+
+    private EntityFactoryInterface $entityFactory;
+
+    private FormFactoryInterface $formFactory;
+
     private EventDispatcherInterface $eventDispatcher;
 
-    public function __construct(AdminContextProviderInterface $adminContextProvider, ManagerRegistry $doctrine, EntityFactoryInterface $entityFactory, FormFactoryInterface $formFactory, EventDispatcherInterface $eventDispatcher)
-    {
+    public function __construct(
+        AdminContextProviderInterface $adminContextProvider,
+        ManagerRegistry $doctrine,
+        EntityFactoryInterface $entityFactory,
+        FormFactoryInterface $formFactory,
+        EventDispatcherInterface $eventDispatcher
+    ) {
         $this->adminContextProvider = $adminContextProvider;
         $this->doctrine = $doctrine;
         $this->entityFactory = $entityFactory;
@@ -47,14 +51,17 @@ final class EntityRepository implements EntityRepositoryInterface
         $this->eventDispatcher = $eventDispatcher;
     }
 
-    public function createQueryBuilder(SearchDtoInterface $searchDto, EntityDtoInterface $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
-    {
+    public function createQueryBuilder(
+        SearchDtoInterface $searchDto,
+        EntityDtoInterface $entityDto,
+        FieldCollection $fields,
+        FilterCollection $filters
+    ): QueryBuilder {
         /** @var EntityManagerInterface $entityManager */
         $entityManager = $this->doctrine->getManagerForClass($entityDto->getFqcn());
         $queryBuilder = $entityManager->createQueryBuilder()
             ->select('entity')
-            ->from($entityDto->getFqcn(), 'entity')
-        ;
+            ->from($entityDto->getFqcn(), 'entity');
 
         if ('' !== $searchDto->getQuery()) {
             try {
@@ -77,9 +84,16 @@ final class EntityRepository implements EntityRepositoryInterface
         return $queryBuilder;
     }
 
-    private function addSearchClause(QueryBuilder $queryBuilder, SearchDtoInterface $searchDto, EntityDtoInterface $entityDto, string $databasePlatformFqcn): void
-    {
-        $isPostgreSql = PostgreSQLPlatform::class === $databasePlatformFqcn || is_subclass_of($databasePlatformFqcn, PostgreSQLPlatform::class);
+    private function addSearchClause(
+        QueryBuilder $queryBuilder,
+        SearchDtoInterface $searchDto,
+        EntityDtoInterface $entityDto,
+        string $databasePlatformFqcn
+    ): void {
+        $isPostgreSql = PostgreSQLPlatform::class === $databasePlatformFqcn || is_subclass_of(
+                $databasePlatformFqcn,
+                PostgreSQLPlatform::class
+            );
         $searchablePropertiesConfig = $this->getSearchablePropertiesConfig($queryBuilder, $searchDto, $entityDto);
 
         $queryTerms = $searchDto->getQueryTerms();
@@ -111,24 +125,38 @@ final class EntityRepository implements EntityRepositoryInterface
                     || ($propertyConfig['is_numeric'] && $isNumericQueryTerm)
                 ) {
                     $parameterName = sprintf('query_for_numbers_%d', $queryTermIndex);
-                    $queryBuilder->orWhere(sprintf('%s.%s = :%s', $entityName, $propertyConfig['property_name'], $parameterName))
+                    $queryBuilder->orWhere(
+                        sprintf('%s.%s = :%s', $entityName, $propertyConfig['property_name'], $parameterName)
+                    )
                         ->setParameter($parameterName, $dqlParameters['numeric_query']);
                 } elseif ($propertyConfig['is_guid'] && $isUuidQueryTerm) {
                     $parameterName = sprintf('query_for_uuids_%d', $queryTermIndex);
-                    $queryBuilder->orWhere(sprintf('%s.%s = :%s', $entityName, $propertyConfig['property_name'], $parameterName))
-                        ->setParameter($parameterName, $dqlParameters['uuid_query'], 'uuid' === $propertyConfig['property_data_type'] ? 'uuid' : null);
+                    $queryBuilder->orWhere(
+                        sprintf('%s.%s = :%s', $entityName, $propertyConfig['property_name'], $parameterName)
+                    )
+                        ->setParameter(
+                            $parameterName,
+                            $dqlParameters['uuid_query'],
+                            'uuid' === $propertyConfig['property_data_type'] ? 'uuid' : null
+                        );
                 } elseif ($propertyConfig['is_ulid'] && $isUlidQueryTerm) {
                     $parameterName = sprintf('query_for_ulids_%d', $queryTermIndex);
-                    $queryBuilder->orWhere(sprintf('%s.%s = :%s', $entityName, $propertyConfig['property_name'], $parameterName))
+                    $queryBuilder->orWhere(
+                        sprintf('%s.%s = :%s', $entityName, $propertyConfig['property_name'], $parameterName)
+                    )
                         ->setParameter($parameterName, $dqlParameters['uuid_query'], 'ulid');
                 } elseif ($propertyConfig['is_text']) {
                     $parameterName = sprintf('query_for_text_%d', $queryTermIndex);
-                    $queryBuilder->orWhere(sprintf('LOWER(%s.%s) LIKE :%s', $entityName, $propertyConfig['property_name'], $parameterName))
+                    $queryBuilder->orWhere(
+                        sprintf('LOWER(%s.%s) LIKE :%s', $entityName, $propertyConfig['property_name'], $parameterName)
+                    )
                         ->setParameter($parameterName, $dqlParameters['text_query']);
                 } elseif ($propertyConfig['is_json'] && !$isPostgreSql) {
                     // neither LOWER() nor LIKE() are supported for JSON columns by all PostgreSQL installations
                     $parameterName = sprintf('query_for_text_%d', $queryTermIndex);
-                    $queryBuilder->orWhere(sprintf('LOWER(%s.%s) LIKE :%s', $entityName, $propertyConfig['property_name'], $parameterName))
+                    $queryBuilder->orWhere(
+                        sprintf('LOWER(%s.%s) LIKE :%s', $entityName, $propertyConfig['property_name'], $parameterName)
+                    )
                         ->setParameter($parameterName, $dqlParameters['text_query']);
                 }
             }
@@ -137,8 +165,11 @@ final class EntityRepository implements EntityRepositoryInterface
         $this->eventDispatcher->dispatch(new AfterEntitySearchEvent($queryBuilder, $searchDto, $entityDto));
     }
 
-    private function addOrderClause(QueryBuilder $queryBuilder, SearchDtoInterface $searchDto, EntityDtoInterface $entityDto): void
-    {
+    private function addOrderClause(
+        QueryBuilder $queryBuilder,
+        SearchDtoInterface $searchDto,
+        EntityDtoInterface $entityDto
+    ): void {
         foreach ($searchDto->getSort() as $sortProperty => $sortOrder) {
             $aliases = $queryBuilder->getAllAliases();
             $sortFieldIsDoctrineAssociation = $entityDto->isAssociation($sortProperty);
@@ -173,7 +204,9 @@ final class EntityRepository implements EntityRepositoryInterface
                                 ->where(sprintf('subQueryEntity.%s = entity', $metadata->get('mappedBy')));
                         }
 
-                        $queryBuilder->addSelect(sprintf('(%s) as HIDDEN sub_query_sort', $countQueryBuilder->getDQL()));
+                        $queryBuilder->addSelect(
+                            sprintf('(%s) as HIDDEN sub_query_sort', $countQueryBuilder->getDQL())
+                        );
                         $queryBuilder->addOrderBy('sub_query_sort', $sortOrder);
                         $queryBuilder->addOrderBy('entity.'.$entityDto->getPrimaryKeyName(), $sortOrder);
                     } else {
@@ -188,9 +221,17 @@ final class EntityRepository implements EntityRepositoryInterface
         }
     }
 
-    private function addFilterClause(QueryBuilder $queryBuilder, SearchDtoInterface $searchDto, EntityDtoInterface $entityDto, FilterCollection $configuredFilters, FieldCollection $fields): void
-    {
-        $filtersForm = $this->formFactory->createFiltersForm($configuredFilters, $this->adminContextProvider->getContext()->getRequest());
+    private function addFilterClause(
+        QueryBuilder $queryBuilder,
+        SearchDtoInterface $searchDto,
+        EntityDtoInterface $entityDto,
+        FilterCollection $configuredFilters,
+        FieldCollection $fields
+    ): void {
+        $filtersForm = $this->formFactory->createFiltersForm(
+            $configuredFilters,
+            $this->adminContextProvider->getContext()->getRequest()
+        );
         if (!$filtersForm->isSubmitted()) {
             return;
         }
@@ -226,11 +267,16 @@ final class EntityRepository implements EntityRepositoryInterface
         }
     }
 
-    private function getSearchablePropertiesConfig(QueryBuilder $queryBuilder, SearchDtoInterface $searchDto, EntityDtoInterface $entityDto): array
-    {
+    private function getSearchablePropertiesConfig(
+        QueryBuilder $queryBuilder,
+        SearchDtoInterface $searchDto,
+        EntityDtoInterface $entityDto
+    ): array {
         $searchablePropertiesConfig = [];
         $configuredSearchableProperties = $searchDto->getSearchableProperties();
-        $searchableProperties = (null === $configuredSearchableProperties || 0 === \count($configuredSearchableProperties)) ? $entityDto->getAllPropertyNames() : $configuredSearchableProperties;
+        $searchableProperties = (null === $configuredSearchableProperties || 0 === \count(
+                $configuredSearchableProperties
+            )) ? $entityDto->getAllPropertyNames() : $configuredSearchableProperties;
 
         $entitiesAlreadyJoined = [];
         foreach ($searchableProperties as $propertyName) {
@@ -240,7 +286,14 @@ final class EntityRepository implements EntityRepositoryInterface
                 $numAssociatedProperties = \count($associatedProperties);
 
                 if (1 === $numAssociatedProperties) {
-                    throw new \InvalidArgumentException(sprintf('The "%s" property included in the setSearchFields() method is not a valid search field. When using associated properties in search, you must also define the exact field used in the search (e.g. \'%s.id\', \'%s.name\', etc.)', $propertyName, $propertyName, $propertyName));
+                    throw new \InvalidArgumentException(
+                        sprintf(
+                            'The "%s" property included in the setSearchFields() method is not a valid search field. When using associated properties in search, you must also define the exact field used in the search (e.g. \'%s.id\', \'%s.name\', etc.)',
+                            $propertyName,
+                            $propertyName,
+                            $propertyName
+                        )
+                    );
                 }
 
                 $originalPropertyName = $associatedProperties[0];
@@ -255,7 +308,10 @@ final class EntityRepository implements EntityRepositoryInterface
 
                     if (!\in_array($associatedEntityName, $entitiesAlreadyJoined, true)) {
                         $parentEntityName = 0 === $i ? 'entity' : $associatedProperties[$i - 1];
-                        $queryBuilder->leftJoin(Escaper::escapeDqlAlias($parentEntityName).'.'.$associatedEntityName, $associatedEntityAlias);
+                        $queryBuilder->leftJoin(
+                            Escaper::escapeDqlAlias($parentEntityName).'.'.$associatedEntityName,
+                            $associatedEntityAlias
+                        );
                         $entitiesAlreadyJoined[] = $associatedEntityName;
                     }
 
@@ -295,8 +351,7 @@ final class EntityRepository implements EntityRepositoryInterface
             ) {
                 $entityFqcn = 'entity' !== $entityName && isset($associatedEntityDto)
                     ? $associatedEntityDto->getFqcn()
-                    : $entityDto->getFqcn()
-                ;
+                    : $entityDto->getFqcn();
                 /** @var \ReflectionNamedType|\ReflectionUnionType|null $idClassType */
                 $idClassType = (new \ReflectionProperty($entityFqcn, $propertyName))->getType();
 

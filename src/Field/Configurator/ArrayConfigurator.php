@@ -3,16 +3,14 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Field\Configurator;
 
 use Doctrine\ORM\PersistentCollection;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\CrudInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDtoInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+
 use function Symfony\Component\String\u;
 
 /**
@@ -43,7 +41,7 @@ final class ArrayConfigurator implements FieldConfiguratorInterface
         if (CrudInterface::PAGE_INDEX === $context->getCrud()->getCurrentPage()) {
             $values = $field->getValue();
             if ($values instanceof PersistentCollection) {
-                $values = array_map(static fn ($item): string => (string) $item, $values->getValues());
+                $values = array_map(static fn($item): string => (string)$item, $values->getValues());
             }
 
             $field->setFormattedValue(u(', ')->join($values)->toString());

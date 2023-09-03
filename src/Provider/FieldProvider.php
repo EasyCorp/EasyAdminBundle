@@ -3,13 +3,12 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Provider;
 
 use Doctrine\DBAL\Types\Types;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\CrudInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 
 final class FieldProvider implements FieldProviderInterface
 {
-    private AdminContextProvider $adminContextProvider;
+    private AdminContextProviderInterface $adminContextProvider;
 
     public function __construct(AdminContextProviderInterface $adminContextProvider)
     {
@@ -24,7 +23,14 @@ final class FieldProvider implements FieldProviderInterface
 
         $excludedPropertyTypes = [
             CrudInterface::PAGE_EDIT => [Types::BINARY, Types::BLOB, Types::JSON, Types::OBJECT],
-            CrudInterface::PAGE_INDEX => [Types::BINARY, Types::BLOB, Types::GUID, Types::JSON, Types::OBJECT, Types::TEXT],
+            CrudInterface::PAGE_INDEX => [
+                Types::BINARY,
+                Types::BLOB,
+                Types::GUID,
+                Types::JSON,
+                Types::OBJECT,
+                Types::TEXT,
+            ],
             CrudInterface::PAGE_NEW => [Types::BINARY, Types::BLOB, Types::JSON, Types::OBJECT],
             CrudInterface::PAGE_DETAIL => [Types::BINARY, Types::JSON, Types::OBJECT],
         ];
@@ -38,7 +44,11 @@ final class FieldProvider implements FieldProviderInterface
 
         foreach ($entityDto->getAllPropertyNames() as $propertyName) {
             $metadata = $entityDto->getPropertyMetadata($propertyName);
-            if (!\in_array($propertyName, $excludedPropertyNames[$pageName], true) && !\in_array($metadata->get('type'), $excludedPropertyTypes[$pageName], true)) {
+            if (!\in_array($propertyName, $excludedPropertyNames[$pageName], true) && !\in_array(
+                    $metadata->get('type'),
+                    $excludedPropertyTypes[$pageName],
+                    true
+                )) {
                 $defaultPropertyNames[] = $propertyName;
             }
         }
@@ -47,6 +57,6 @@ final class FieldProvider implements FieldProviderInterface
             $defaultPropertyNames = \array_slice($defaultPropertyNames, 0, $maxNumProperties, true);
         }
 
-        return array_map(static fn (string $fieldName) => Field::new($fieldName), $defaultPropertyNames);
+        return array_map(static fn(string $fieldName) => Field::new($fieldName), $defaultPropertyNames);
     }
 }

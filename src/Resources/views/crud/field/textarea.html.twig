@@ -3,11 +3,11 @@
 {# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
 {% set render_as_html = field.customOptions.get('renderAsHtml') %}
 {% if ea.crud.currentAction == 'detail' %}
-    <span title="{{ field.value }}">
+	<span title="{{ field.value }}">
         {{ render_as_html ? field.formattedValue|raw|nl2br : field.formattedValue|nl2br }}
     </span>
 {% else %}
-    <span title="{{ field.value }}">
+	<span title="{{ field.value }}">
         {{ render_as_html ? field.formattedValue|raw : field.formattedValue|striptags }}
     </span>
 {% endif %}

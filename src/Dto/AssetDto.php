@@ -2,23 +2,32 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
-use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\CrudInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
+use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStoreInterface;
 
 final class AssetDto implements AssetDtoInterface
 {
     private string $value;
+
     // the Symfony Asset package name which this asset belongs to
     private ?string $packageName = null;
+
     private bool $async = false;
+
     private bool $defer = false;
+
     private bool $preload = false;
+
     private bool $nopush = false;
+
     private ?string $webpackPackageName = null;
+
     private string $webpackEntrypointName = '_default';
+
     private array $htmlAttributes = [];
-    private KeyValueStore $loadedOn;
+
+    private KeyValueStoreInterface $loadedOn;
 
     public function __construct(string $value)
     {
@@ -121,12 +130,12 @@ final class AssetDto implements AssetDtoInterface
         return $this->htmlAttributes;
     }
 
-    public function getLoadedOn(): KeyValueStore
+    public function getLoadedOn(): KeyValueStoreInterface
     {
         return $this->loadedOn;
     }
 
-    public function setLoadedOn(KeyValueStore $loadedOn): void
+    public function setLoadedOn(KeyValueStoreInterface $loadedOn): void
     {
         $this->loadedOn = $loadedOn;
     }

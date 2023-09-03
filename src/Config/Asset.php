@@ -29,7 +29,12 @@ final class Asset implements AssetInterface
     {
         $isWebpackEncoreEntry = !u($value)->endsWith('.css') && !u($value)->endsWith('.js');
         if ($isWebpackEncoreEntry && !class_exists('Symfony\\WebpackEncoreBundle\\WebpackEncoreBundle')) {
-            throw new \RuntimeException(sprintf('You are trying to add a Webpack Encore entry called "%s" but WebpackEncoreBundle is not installed in your project. Try running "composer require symfony/webpack-encore-bundle"', $value));
+            throw new \RuntimeException(
+                sprintf(
+                    'You are trying to add a Webpack Encore entry called "%s" but WebpackEncoreBundle is not installed in your project. Try running "composer require symfony/webpack-encore-bundle"',
+                    $value
+                )
+            );
         }
 
         $dto = new AssetDto($value);
@@ -67,7 +72,12 @@ final class Asset implements AssetInterface
     public function preload(bool $preload = true): AssetInterface
     {
         if (!class_exists('Symfony\\Component\\WebLink\\Link')) {
-            throw new \RuntimeException(sprintf('You are trying to preload an asset called "%s" but WebLink component is not installed in your project. Try running "composer require symfony/web-link"', $this->dto->getValue()));
+            throw new \RuntimeException(
+                sprintf(
+                    'You are trying to preload an asset called "%s" but WebLink component is not installed in your project. Try running "composer require symfony/web-link"',
+                    $this->dto->getValue()
+                )
+            );
         }
 
         $this->dto->setPreload($preload);
@@ -78,7 +88,12 @@ final class Asset implements AssetInterface
     public function nopush(bool $nopush = true): AssetInterface
     {
         if (!class_exists('Symfony\\Component\\WebLink\\Link')) {
-            throw new \RuntimeException(sprintf('You are trying to configure the "nopush" preload attribute of an asset called "%s" but WebLink component is not installed in your project. Try running "composer require symfony/web-link"', $this->dto->getValue()));
+            throw new \RuntimeException(
+                sprintf(
+                    'You are trying to configure the "nopush" preload attribute of an asset called "%s" but WebLink component is not installed in your project. Try running "composer require symfony/web-link"',
+                    $this->dto->getValue()
+                )
+            );
         }
 
         $this->dto->setNopush($nopush);
@@ -183,10 +198,12 @@ final class Asset implements AssetInterface
 
     public function onlyOnForms(): AssetInterface
     {
-        $this->dto->setLoadedOn(KeyValueStore::new([
-            CrudInterface::PAGE_NEW => CrudInterface::PAGE_NEW,
-            CrudInterface::PAGE_EDIT => CrudInterface::PAGE_EDIT,
-        ]));
+        $this->dto->setLoadedOn(
+            KeyValueStore::new([
+                CrudInterface::PAGE_NEW => CrudInterface::PAGE_NEW,
+                CrudInterface::PAGE_EDIT => CrudInterface::PAGE_EDIT,
+            ])
+        );
 
         return $this;
     }

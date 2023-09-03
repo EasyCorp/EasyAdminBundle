@@ -10,8 +10,13 @@ final class BatchActionDto implements BatchActionDtoInterface
     private string $referrerUrl;
     private string $csrfToken;
 
-    public function __construct(string $name, array $entityIds, string $entityFqcn, string $referrerUrl, string $csrfToken)
-    {
+    public function __construct(
+        string $name,
+        array $entityIds,
+        string $entityFqcn,
+        string $referrerUrl,
+        string $csrfToken
+    ) {
         $this->name = $name;
         $this->entityIds = $entityIds;
         $this->entityFqcn = $entityFqcn;

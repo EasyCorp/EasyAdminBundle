@@ -36,7 +36,13 @@ final class IdField implements FieldInterface
     public function setMaxLength(int $length): self
     {
         if (0 === $length) {
-            throw new \InvalidArgumentException(sprintf('The argument of the "%s()" method must be a positive integer or -1 (for unlimited length) (%d given).', __METHOD__, $length));
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'The argument of the "%s()" method must be a positive integer or -1 (for unlimited length) (%d given).',
+                    __METHOD__,
+                    $length
+                )
+            );
         }
 
         $this->setCustomOption(self::OPTION_MAX_LENGTH, $length);

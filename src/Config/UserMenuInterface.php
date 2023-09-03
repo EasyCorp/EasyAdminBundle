@@ -6,7 +6,6 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Config;
 
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu\MenuItemInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\UserMenuDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\UserMenuDtoInterface;
 
 /**

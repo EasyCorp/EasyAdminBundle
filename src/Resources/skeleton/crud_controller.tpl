@@ -7,19 +7,19 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 
 final class <?= $class_name; ?> extends AbstractCrudController
 {
-    public static function getEntityFqcn(): string
-    {
-        return <?= $entity_class_name; ?>::class;
-    }
+public static function getEntityFqcn(): string
+{
+return <?= $entity_class_name; ?>::class;
+}
 
-    /*
-    public function configureFields(string $pageName): iterable
-    {
-        return [
-            IdField::new('id'),
-            TextField::new('title'),
-            TextEditorField::new('description'),
-        ];
-    }
-    */
+/*
+public function configureFields(string $pageName): iterable
+{
+return [
+IdField::new('id'),
+TextField::new('title'),
+TextEditorField::new('description'),
+];
+}
+*/
 }

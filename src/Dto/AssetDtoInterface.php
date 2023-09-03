@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 
-use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
+use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStoreInterface;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -46,7 +46,7 @@ interface AssetDtoInterface
 
     public function getHtmlAttributes(): array;
 
-    public function getLoadedOn(): KeyValueStore;
+    public function getLoadedOn(): KeyValueStoreInterface;
 
-    public function setLoadedOn(KeyValueStore $loadedOn): void;
+    public function setLoadedOn(KeyValueStoreInterface $loadedOn): void;
 }

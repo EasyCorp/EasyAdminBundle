@@ -1,28 +1,28 @@
 {% extends '@WebProfiler/Profiler/layout.html.twig' %}
 
 {% block menu %}
-    <span class="label {{ not collector.isEasyAdminRequest ? 'disabled' }}">
+	<span class="label {{ not collector.isEasyAdminRequest ? 'disabled' }}">
         <span class="icon">{{ include(profiler_markup_version >= 3 ? '@EasyAdmin/inspector/icon-v3.svg.twig' : '@EasyAdmin/inspector/icon.svg.twig') }}</span>
         <strong>EasyAdmin</strong>
     </span>
 {% endblock %}
 
 {% block panel %}
-    <h2>EasyAdmin <small>({{ constant('EasyCorp\\Bundle\\EasyAdminBundle\\EasyAdminBundle::VERSION') }})</small></h2>
+	<h2>EasyAdmin <small>({{ constant('EasyCorp\\Bundle\\EasyAdminBundle\\EasyAdminBundle::VERSION') }})</small></h2>
 
-    {% if not collector.isEasyAdminRequest %}
-        <div class="empty">
-            <p>No information available because this route is not related to EasyAdmin.</p>
-        </div>
-    {% else %}
-        {{ include('@WebProfiler/Profiler/table.html.twig', { data: collector.data }, with_context = false) }}
-    {% endif %}
+	{% if not collector.isEasyAdminRequest %}
+		<div class="empty">
+			<p>No information available because this route is not related to EasyAdmin.</p>
+		</div>
+	{% else %}
+		{{ include('@WebProfiler/Profiler/table.html.twig', { data: collector.data }, with_context = false) }}
+	{% endif %}
 
-    <h3>Additional Resources</h3>
+	<h3>Additional Resources</h3>
 
-    <ul>
-        <li><a href="https://github.com/EasyCorp/EasyAdminBundle/issues">Report an issue</a></li>
-        <li><a href="https://symfony.com/doc/current/bundles/EasyAdminBundle/index.html">Read documentation</a></li>
-        <li><a href="https://github.com/EasyCorp/EasyAdminBundle">Project homepage</a></li>
-    </ul>
+	<ul>
+		<li><a href="https://github.com/EasyCorp/EasyAdminBundle/issues">Report an issue</a></li>
+		<li><a href="https://symfony.com/doc/current/bundles/EasyAdminBundle/index.html">Read documentation</a></li>
+		<li><a href="https://github.com/EasyCorp/EasyAdminBundle">Project homepage</a></li>
+	</ul>
 {% endblock %}

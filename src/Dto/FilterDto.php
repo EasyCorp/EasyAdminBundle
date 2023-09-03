@@ -104,8 +104,12 @@ final class FilterDto implements FilterDtoInterface
         $this->applyCallable = $callable;
     }
 
-    public function apply(QueryBuilder $queryBuilder, FilterDataDtoInterface $filterDataDto, ?FieldDtoInterface $fieldDto, EntityDtoInterface $entityDto): void
-    {
+    public function apply(
+        QueryBuilder $queryBuilder,
+        FilterDataDtoInterface $filterDataDto,
+        ?FieldDtoInterface $fieldDto,
+        EntityDtoInterface $entityDto
+    ): void {
         \call_user_func($this->applyCallable, $queryBuilder, $filterDataDto, $fieldDto, $entityDto);
     }
 }

@@ -2,61 +2,92 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
-use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\CrudInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
+use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStoreInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Translation\TranslatableMessageBuilder;
-use function Symfony\Component\Translation\t;
 use Symfony\Contracts\Translation\TranslatableInterface;
+
+use function Symfony\Component\Translation\t;
 
 final class CrudDto implements CrudDtoInterface
 {
     private ?string $controllerFqcn = null;
-    private AssetsDto $fieldAssetsDto;
+
+    private AssetsDtoInterface $fieldAssetsDto;
+
     private ?string $pageName = null;
+
     private ?string $actionName = null;
-    private ?ActionConfigDto $actionConfigDto = null;
-    private ?FilterConfigDto $filters = null;
+
+    private ?ActionConfigDtoInterface $actionConfigDto = null;
+
+    private ?FilterConfigDtoInterface $filters = null;
+
     private ?string $entityFqcn = null;
-    private $entityLabelInSingular;
-    private $entityLabelInPlural;
+
+    private string|null|TranslatableInterface $entityLabelInSingular;
+
+    private string|null|TranslatableInterface $entityLabelInPlural;
+
     private array $defaultPageTitles = [
         CrudInterface::PAGE_DETAIL => 'page_title.detail',
         CrudInterface::PAGE_EDIT => 'page_title.edit',
         CrudInterface::PAGE_INDEX => 'page_title.index',
         CrudInterface::PAGE_NEW => 'page_title.new',
     ];
+
     private array $customPageTitles = [
         CrudInterface::PAGE_DETAIL => null,
         CrudInterface::PAGE_EDIT => null,
         CrudInterface::PAGE_INDEX => null,
         CrudInterface::PAGE_NEW => null,
     ];
+
     private array $helpMessages = [
         CrudInterface::PAGE_DETAIL => null,
         CrudInterface::PAGE_EDIT => null,
         CrudInterface::PAGE_INDEX => null,
         CrudInterface::PAGE_NEW => null,
     ];
+
     private ?string $datePattern = 'medium';
+
     private ?string $timePattern = 'medium';
+
     private array $dateTimePattern = ['medium', 'medium'];
+
     private string $dateIntervalFormat = '%%y Year(s) %%m Month(s) %%d Day(s)';
+
     private ?string $timezone = null;
+
     private ?string $numberFormat = null;
+
     private array $defaultSort = [];
+
     private ?array $searchFields = [];
+
     private bool $autofocusSearch = false;
+
     private bool $showEntityActionsAsDropdown = true;
-    private ?PaginatorDto $paginatorDto = null;
-    private $overriddenTemplates;
+
+    private ?PaginatorDtoInterface $paginatorDto = null;
+
+    private array $overriddenTemplates;
+
     private array $formThemes = ['@EasyAdmin/crud/form_theme.html.twig'];
-    private KeyValueStore $newFormOptions;
-    private KeyValueStore $editFormOptions;
+
+    private KeyValueStoreInterface $newFormOptions;
+
+    private KeyValueStoreInterface $editFormOptions;
+
     private ?string $entityPermission = null;
+
     private ?string $contentWidth = null;
+
     private ?string $sidebarWidth = null;
+
     private bool $hideNullValues = false;
 
     public function __construct()
@@ -107,50 +138,41 @@ final class CrudDto implements CrudDtoInterface
         $this->entityFqcn = $entityFqcn;
     }
 
-    public function getEntityLabelInSingular($entityInstance = null, $pageName = null): TranslatableInterface|string|null
-    {
+    public function getEntityLabelInSingular(
+        $entityInstance = null,
+        $pageName = null
+    ): null|string|TranslatableInterface {
         if (null === $this->entityLabelInSingular) {
             return null;
         }
 
-        if (
-            \is_string($this->entityLabelInSingular)
-            || $this->entityLabelInSingular instanceof TranslatableInterface
-        ) {
-            return $this->entityLabelInSingular;
-        }
-
-        return ($this->entityLabelInSingular)($entityInstance, $pageName);
+        return $this->entityLabelInSingular;
     }
 
-    public function setEntityLabelInSingular($label): void
+    public function setEntityLabelInSingular(null|string|TranslatableInterface $label): void
     {
         $this->entityLabelInSingular = $label;
     }
 
-    public function getEntityLabelInPlural($entityInstance = null, $pageName = null): TranslatableInterface|string|null
+    public function getEntityLabelInPlural($entityInstance = null, $pageName = null): null|string|TranslatableInterface
     {
         if (null === $this->entityLabelInPlural) {
             return null;
         }
 
-        if (
-            \is_string($this->entityLabelInPlural)
-            || $this->entityLabelInPlural instanceof TranslatableInterface
-        ) {
-            return $this->entityLabelInPlural;
-        }
-
-        return ($this->entityLabelInPlural)($entityInstance, $pageName);
+        return $this->entityLabelInPlural;
     }
 
-    public function setEntityLabelInPlural($label): void
+    public function setEntityLabelInPlural(null|string|TranslatableInterface $label): void
     {
         $this->entityLabelInPlural = $label;
     }
 
-    public function getCustomPageTitle(?string $pageName = null, $entityInstance = null, array $translationParameters = []): ?TranslatableInterface
-    {
+    public function getCustomPageTitle(
+        ?string $pageName = null,
+        $entityInstance = null,
+        array $translationParameters = []
+    ): ?TranslatableInterface {
         $title = $this->customPageTitles[$pageName ?? $this->pageName];
         if (\is_callable($title)) {
             $title = null !== $entityInstance ? $title($entityInstance) : $title();
@@ -184,8 +206,10 @@ final class CrudDto implements CrudDtoInterface
         $this->customPageTitles[$pageName] = $pageTitle;
     }
 
-    public function getDefaultPageTitle(?string $pageName = null, /* ?object */ $entityInstance = null, array $translationParameters = []): ?TranslatableInterface
-    {
+    public function getDefaultPageTitle(
+        ?string $pageName = null, /* ?object */ $entityInstance = null,
+        array $translationParameters = []
+    ): ?TranslatableInterface {
         if (!\is_object($entityInstance)
             && null !== $entityInstance) {
             trigger_deprecation(
@@ -201,7 +225,7 @@ final class CrudDto implements CrudDtoInterface
 
         if (null !== $entityInstance) {
             if (method_exists($entityInstance, '__toString')) {
-                $entityAsString = (string) $entityInstance;
+                $entityAsString = (string)$entityInstance;
 
                 if ('' !== $entityAsString) {
                     return t($entityAsString, $translationParameters, 'EasyAdminBundle');
@@ -256,8 +280,10 @@ final class CrudDto implements CrudDtoInterface
         return $this->dateTimePattern;
     }
 
-    public function setDateTimePattern(string $dateFormatOrPattern, string $timeFormat = DateTimeField::FORMAT_NONE): void
-    {
+    public function setDateTimePattern(
+        string $dateFormatOrPattern,
+        string $timeFormat = DateTimeField::FORMAT_NONE
+    ): void {
         $this->dateTimePattern = [$dateFormatOrPattern, $timeFormat];
     }
 
@@ -372,22 +398,22 @@ final class CrudDto implements CrudDtoInterface
         $this->formThemes = $formThemes;
     }
 
-    public function getNewFormOptions(): KeyValueStore
+    public function getNewFormOptions(): KeyValueStoreInterface
     {
         return $this->newFormOptions;
     }
 
-    public function getEditFormOptions(): KeyValueStore
+    public function getEditFormOptions(): KeyValueStoreInterface
     {
         return $this->editFormOptions;
     }
 
-    public function setNewFormOptions(KeyValueStore $formOptions): void
+    public function setNewFormOptions(KeyValueStoreInterface $formOptions): void
     {
         $this->newFormOptions = $formOptions;
     }
 
-    public function setEditFormOptions(KeyValueStore $formOptions): void
+    public function setEditFormOptions(KeyValueStoreInterface $formOptions): void
     {
         $this->editFormOptions = $formOptions;
     }

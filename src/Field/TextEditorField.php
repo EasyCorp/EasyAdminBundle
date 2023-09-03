@@ -38,7 +38,9 @@ final class TextEditorField implements FieldInterface
     public function setNumOfRows(int $rows): self
     {
         if ($rows < 1) {
-            throw new \InvalidArgumentException(sprintf('The argument of the "%s()" method must be 1 or higher (%d given).', __METHOD__, $rows));
+            throw new \InvalidArgumentException(
+                sprintf('The argument of the "%s()" method must be 1 or higher (%d given).', __METHOD__, $rows)
+            );
         }
 
         $this->setCustomOption(self::OPTION_NUM_OF_ROWS, $rows);

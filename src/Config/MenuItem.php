@@ -18,8 +18,11 @@ final class MenuItem implements MenuItemInterface
     {
     }
 
-    public static function linkToCrud(TranslatableInterface|string $label, ?string $icon, string $entityFqcn): CrudMenuItem
-    {
+    public static function linkToCrud(
+        TranslatableInterface|string $label,
+        ?string $icon,
+        string $entityFqcn
+    ): CrudMenuItem {
         return new CrudMenuItem($label, $icon, $entityFqcn);
     }
 
@@ -28,8 +31,10 @@ final class MenuItem implements MenuItemInterface
         return new DashboardMenuItem($label, $icon);
     }
 
-    public static function linkToExitImpersonation(TranslatableInterface|string $label, ?string $icon = null): ExitImpersonationMenuItem
-    {
+    public static function linkToExitImpersonation(
+        TranslatableInterface|string $label,
+        ?string $icon = null
+    ): ExitImpersonationMenuItem {
         return new ExitImpersonationMenuItem($label, $icon);
     }
 
@@ -38,8 +43,12 @@ final class MenuItem implements MenuItemInterface
         return new LogoutMenuItem($label, $icon);
     }
 
-    public static function linkToRoute(TranslatableInterface|string $label, ?string $icon, string $routeName, array $routeParameters = []): RouteMenuItem
-    {
+    public static function linkToRoute(
+        TranslatableInterface|string $label,
+        ?string $icon,
+        string $routeName,
+        array $routeParameters = []
+    ): RouteMenuItem {
         return new RouteMenuItem($label, $icon, $routeName, $routeParameters);
     }
 
@@ -48,8 +57,10 @@ final class MenuItem implements MenuItemInterface
         return new UrlMenuItem($label, $icon, $url);
     }
 
-    public static function section(TranslatableInterface|string|null $label = null, ?string $icon = null): SectionMenuItem
-    {
+    public static function section(
+        TranslatableInterface|string|null $label = null,
+        ?string $icon = null
+    ): SectionMenuItem {
         return new SectionMenuItem($label, $icon);
     }
 

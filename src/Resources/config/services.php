@@ -95,279 +95,203 @@ return static function (ContainerConfigurator $container) {
 
     $services
         ->set(MakeAdminDashboardCommand::class)->public()
-            ->arg(0, service(ClassMaker::class))
-            ->arg(1, param('kernel.project_dir'))
-            ->tag('console.command')
-
+        ->arg(0, service(ClassMaker::class))
+        ->arg(1, param('kernel.project_dir'))
+        ->tag('console.command')
         ->set(MakeCrudControllerCommand::class)->public()
-            ->arg(0, param('kernel.project_dir'))
-            ->arg(1, service(ClassMaker::class))
-            ->arg(2, service('doctrine'))
-            ->tag('console.command')
-
+        ->arg(0, param('kernel.project_dir'))
+        ->arg(1, service(ClassMaker::class))
+        ->arg(2, service('doctrine'))
+        ->tag('console.command')
         ->set(ClassMaker::class)
-            ->arg(0, service(KernelInterface::class))
-            ->arg(1, param('kernel.project_dir'))
-
+        ->arg(0, service(KernelInterface::class))
+        ->arg(1, param('kernel.project_dir'))
         ->set(CacheWarmer::class)
-            ->arg(0, service('router'))
-            ->tag('kernel.cache_warmer')
-
+        ->arg(0, service('router'))
+        ->tag('kernel.cache_warmer')
         ->set(DataCollector::class)
-            ->arg(0, service(AdminContextProvider::class))
-            ->tag('data_collector', ['id' => 'easyadmin', 'template' => '@EasyAdmin/inspector/data_collector.html.twig'])
-
+        ->arg(0, service(AdminContextProvider::class))
+        ->tag('data_collector', ['id' => 'easyadmin', 'template' => '@EasyAdmin/inspector/data_collector.html.twig'])
         ->set(ExceptionListener::class)
-            ->arg(0, '%kernel.debug%')
-            ->arg(1, service(AdminContextProvider::class))
-            ->arg(2, service('twig'))
-            ->tag('kernel.event_listener', ['event' => 'kernel.exception', 'priority' => -64])
-
+        ->arg(0, '%kernel.debug%')
+        ->arg(1, service(AdminContextProvider::class))
+        ->arg(2, service('twig'))
+        ->tag('kernel.event_listener', ['event' => 'kernel.exception', 'priority' => -64])
         ->set(EasyAdminTwigExtension::class)
-            // I don't know if we truly need the locator to get a new instance of the
-            // service whenever we generate a new URL, Maybe it's enough with the route parameter
-            // initialization done after generating each URL
-            ->arg(0, service('service_locator_'.AdminUrlGenerator::class))
-            ->arg(1, service(AdminContextProvider::class))
-            ->arg(2, new Reference('security.csrf.token_manager', ContainerInterface::NULL_ON_INVALID_REFERENCE))
-            ->tag('twig.extension')
-
+        // I don't know if we truly need the locator to get a new instance of the
+        // service whenever we generate a new URL, Maybe it's enough with the route parameter
+        // initialization done after generating each URL
+        ->arg(0, service('service_locator_'.AdminUrlGenerator::class))
+        ->arg(1, service(AdminContextProvider::class))
+        ->arg(2, new Reference('security.csrf.token_manager', ContainerInterface::NULL_ON_INVALID_REFERENCE))
+        ->tag('twig.extension')
         ->set(EaCrudFormTypeExtension::class)
-            ->arg(0, service(AdminContextProvider::class))
-            ->tag('form.type_extension')
-
+        ->arg(0, service(AdminContextProvider::class))
+        ->tag('form.type_extension')
         ->set(CollectionTypeExtension::class)
-            ->tag('form.type_extension')
-
+        ->tag('form.type_extension')
         ->set(AuthorizationChecker::class)
-            ->arg(0, new Reference('security.authorization_checker', ContainerInterface::NULL_ON_INVALID_REFERENCE))
-
+        ->arg(0, new Reference('security.authorization_checker', ContainerInterface::NULL_ON_INVALID_REFERENCE))
         ->set(IntlFormatter::class)
-
         ->set(AdminContextProvider::class)
-            ->arg(0, service('request_stack'))
-
+        ->arg(0, service('request_stack'))
         ->set(AdminContextResolver::class)
-            ->arg(0, service(AdminContextProvider::class))
-            ->tag('controller.argument_value_resolver')
-
+        ->arg(0, service(AdminContextProvider::class))
+        ->tag('controller.argument_value_resolver')
         ->set(BatchActionDtoResolver::class)
-            ->arg(0, service(AdminContextProvider::class))
-            ->arg(1, service(AdminUrlGenerator::class))
-            ->tag('controller.argument_value_resolver')
-
+        ->arg(0, service(AdminContextProvider::class))
+        ->arg(1, service(AdminUrlGenerator::class))
+        ->tag('controller.argument_value_resolver')
         ->set(AdminRouterSubscriber::class)
-            ->arg(0, service(AdminContextFactory::class))
-            ->arg(1, service(ControllerFactory::class))
-            ->arg(2, service('controller_resolver'))
-            ->arg(3, service('router'))
-            ->arg(4, service('router'))
-            ->tag('kernel.event_subscriber')
-
+        ->arg(0, service(AdminContextFactory::class))
+        ->arg(1, service(ControllerFactory::class))
+        ->arg(2, service('controller_resolver'))
+        ->arg(3, service('router'))
+        ->arg(4, service('router'))
+        ->tag('kernel.event_subscriber')
         ->set(ControllerFactory::class)
-            ->arg(0, service('controller_resolver'))
-
+        ->arg(0, service('controller_resolver'))
         ->set(CrudResponseListener::class)
-            ->arg(0, service(AdminContextProvider::class))
-            ->arg(1, service('twig'))
-            ->tag('kernel.event_listener', ['event' => ViewEvent::class])
-
+        ->arg(0, service(AdminContextProvider::class))
+        ->arg(1, service('twig'))
+        ->tag('kernel.event_listener', ['event' => ViewEvent::class])
         ->set(AdminContextFactory::class)
-            ->arg(0, '%kernel.cache_dir%')
-            ->arg(1, new Reference('security.token_storage', ContainerInterface::NULL_ON_INVALID_REFERENCE))
-            ->arg(2, new Reference(MenuFactory::class))
-            ->arg(3, new Reference(CrudControllerRegistry::class))
-            ->arg(4, new Reference(EntityFactory::class))
-
+        ->arg(0, '%kernel.cache_dir%')
+        ->arg(1, new Reference('security.token_storage', ContainerInterface::NULL_ON_INVALID_REFERENCE))
+        ->arg(2, new Reference(MenuFactory::class))
+        ->arg(3, new Reference(CrudControllerRegistry::class))
+        ->arg(4, new Reference(EntityFactory::class))
         ->set(AdminUrlGenerator::class)
-            // I don't know if we truly need the share() method to get a new instance of the
-            // service whenever we generate a new URL. Maybe it's enough with the route parameter
-            // initialization done after generating each URL
-            ->share(false)
-            ->arg(0, service(AdminContextProvider::class))
-            ->arg(1, service('router'))
-            ->arg(2, service(DashboardControllerRegistry::class))
-
+        // I don't know if we truly need the share() method to get a new instance of the
+        // service whenever we generate a new URL. Maybe it's enough with the route parameter
+        // initialization done after generating each URL
+        ->share(false)
+        ->arg(0, service(AdminContextProvider::class))
+        ->arg(1, service('router'))
+        ->arg(2, service(DashboardControllerRegistry::class))
         ->set('service_locator_'.AdminUrlGenerator::class, ServiceLocator::class)
-            ->args([[AdminUrlGenerator::class => service(AdminUrlGenerator::class)]])
-            ->tag('container.service_locator')
-
+        ->args([[AdminUrlGenerator::class => service(AdminUrlGenerator::class)]])
+        ->tag('container.service_locator')
         ->set(UrlSigner::class)
-            ->arg(0, '%kernel.secret%')
-
+        ->arg(0, '%kernel.secret%')
         ->set(MenuFactory::class)
-            ->arg(0, service(AdminContextProvider::class))
-            ->arg(1, service(AuthorizationChecker::class))
-            ->arg(2, service('security.logout_url_generator'))
-            ->arg(3, service(AdminUrlGenerator::class))
-            ->arg(4, service(MenuItemMatcherInterface::class))
-
+        ->arg(0, service(AdminContextProvider::class))
+        ->arg(1, service(AuthorizationChecker::class))
+        ->arg(2, service('security.logout_url_generator'))
+        ->arg(3, service(AdminUrlGenerator::class))
+        ->arg(4, service(MenuItemMatcherInterface::class))
         ->set(MenuItemMatcher::class)
-            ->arg(0, service(AdminContextProvider::class))
-
+        ->arg(0, service(AdminContextProvider::class))
         ->alias(MenuItemMatcherInterface::class, MenuItemMatcher::class)
-
         ->set(EntityRepository::class)
-            ->arg(0, service(AdminContextProvider::class))
-            ->arg(1, service('doctrine'))
-            ->arg(2, service(EntityFactory::class))
-            ->arg(3, service(FormFactory::class))
-            ->arg(4, service('event_dispatcher'))
-
+        ->arg(0, service(AdminContextProvider::class))
+        ->arg(1, service('doctrine'))
+        ->arg(2, service(EntityFactory::class))
+        ->arg(3, service(FormFactory::class))
+        ->arg(4, service('event_dispatcher'))
         ->set(EntityFactory::class)
-            ->arg(0, service(FieldFactory::class))
-            ->arg(1, service(ActionFactory::class))
-            ->arg(2, service(AuthorizationChecker::class))
-            ->arg(3, service('doctrine'))
-            ->arg(4, service('event_dispatcher'))
-
+        ->arg(0, service(FieldFactory::class))
+        ->arg(1, service(ActionFactory::class))
+        ->arg(2, service(AuthorizationChecker::class))
+        ->arg(3, service('doctrine'))
+        ->arg(4, service('event_dispatcher'))
         ->set(EntityPaginator::class)
-            ->arg(0, service(AdminUrlGenerator::class))
-            ->arg(1, service(EntityFactory::class))
-
+        ->arg(0, service(AdminUrlGenerator::class))
+        ->arg(1, service(EntityFactory::class))
         ->set(EntityUpdater::class)
-            ->arg(0, service('property_accessor'))
-            ->arg(1, service('validator'))
-
+        ->arg(0, service('property_accessor'))
+        ->arg(1, service('validator'))
         ->set(PaginatorFactory::class)
-            ->arg(0, service(AdminContextProvider::class))
-            ->arg(1, service(EntityPaginator::class))
-
+        ->arg(0, service(AdminContextProvider::class))
+        ->arg(1, service(EntityPaginator::class))
         ->set(FormFactory::class)
-            ->arg(0, service('form.factory'))
-
+        ->arg(0, service('form.factory'))
         ->set(FieldFactory::class)
-            ->arg(0, service(AdminContextProvider::class))
-            ->arg(1, service(AuthorizationChecker::class))
-            ->arg(2, tagged_iterator(EasyAdminExtension::TAG_FIELD_CONFIGURATOR))
-
+        ->arg(0, service(AdminContextProvider::class))
+        ->arg(1, service(AuthorizationChecker::class))
+        ->arg(2, tagged_iterator(EasyAdminExtension::TAG_FIELD_CONFIGURATOR))
         ->set(FieldProvider::class)
-            ->arg(0, service(AdminContextProvider::class))
-
+        ->arg(0, service(AdminContextProvider::class))
         ->set(FilterFactory::class)
-            ->arg(0, service(AdminContextProvider::class))
-            ->arg(1, tagged_iterator(EasyAdminExtension::TAG_FILTER_CONFIGURATOR))
-
+        ->arg(0, service(AdminContextProvider::class))
+        ->arg(1, tagged_iterator(EasyAdminExtension::TAG_FILTER_CONFIGURATOR))
         ->set(FiltersFormType::class)
-            ->tag('form.type', ['alias' => 'ea_filters'])
-
+        ->tag('form.type', ['alias' => 'ea_filters'])
         ->set(FileUploadType::class)
-            ->arg(0, param('kernel.project_dir'))
-            ->tag('form.type')
-
+        ->arg(0, param('kernel.project_dir'))
+        ->tag('form.type')
         ->set(ChoiceFilterConfigurator::class)
-
         ->set(CommonFilterConfigurator::class)
-            ->tag(EasyAdminExtension::TAG_FILTER_CONFIGURATOR, ['priority' => 9999])
-
+        ->tag(EasyAdminExtension::TAG_FILTER_CONFIGURATOR, ['priority' => 9999])
         ->set(ComparisonFilterConfigurator::class)
-
         ->set(DateTimeFilterConfigurator::class)
-
         ->set(EntityFilterConfigurator::class)
-
         ->set(NullFilterConfigurator::class)
-
         ->set(NumericFilterConfigurator::class)
-
         ->set(TextFilterConfigurator::class)
-
         ->set(ActionFactory::class)
-            ->arg(0, new Reference(AdminContextProvider::class))
-            ->arg(1, new Reference(AuthorizationChecker::class))
-            ->arg(2, new Reference(AdminUrlGenerator::class))
-            ->arg(3, new Reference('security.csrf.token_manager', ContainerInterface::NULL_ON_INVALID_REFERENCE))
-
+        ->arg(0, new Reference(AdminContextProvider::class))
+        ->arg(1, new Reference(AuthorizationChecker::class))
+        ->arg(2, new Reference(AdminUrlGenerator::class))
+        ->arg(3, new Reference('security.csrf.token_manager', ContainerInterface::NULL_ON_INVALID_REFERENCE))
         ->set(SecurityVoter::class)
-            ->arg(0, service(AuthorizationChecker::class))
-            ->arg(1, service(AdminContextProvider::class))
-            ->tag('security.voter')
-
+        ->arg(0, service(AuthorizationChecker::class))
+        ->arg(1, service(AdminContextProvider::class))
+        ->tag('security.voter')
         ->set(CrudFormType::class)
-            ->arg(0, service('form.type_guesser.doctrine'))
-            ->tag('form.type', ['alias' => 'ea_crud'])
-
+        ->arg(0, service('form.type_guesser.doctrine'))
+        ->tag('form.type', ['alias' => 'ea_crud'])
         ->set(ArrayConfigurator::class)
-
         ->set(AssociationConfigurator::class)
-            ->arg(0, new Reference(EntityFactory::class))
-            ->arg(1, new Reference(AdminUrlGenerator::class))
-            ->arg(2, service('request_stack'))
-            ->arg(3, service(ControllerFactory::class))
-
+        ->arg(0, new Reference(EntityFactory::class))
+        ->arg(1, new Reference(AdminUrlGenerator::class))
+        ->arg(2, service('request_stack'))
+        ->arg(3, service(ControllerFactory::class))
         ->set(AvatarConfigurator::class)
-
         ->set(BooleanConfigurator::class)
-            ->arg(0, service(AdminUrlGenerator::class))
-            ->arg(1, new Reference('security.csrf.token_manager', ContainerInterface::NULL_ON_INVALID_REFERENCE))
-
+        ->arg(0, service(AdminUrlGenerator::class))
+        ->arg(1, new Reference('security.csrf.token_manager', ContainerInterface::NULL_ON_INVALID_REFERENCE))
         ->set(CodeEditorConfigurator::class)
-
         ->set(CollectionConfigurator::class)
-
         ->set(CommonPostConfigurator::class)
-            ->arg(0, service(AdminContextProvider::class))
-            ->arg(1, '%kernel.charset%')
-            ->tag(EasyAdminExtension::TAG_FIELD_CONFIGURATOR, ['priority' => -9999])
-
+        ->arg(0, service(AdminContextProvider::class))
+        ->arg(1, '%kernel.charset%')
+        ->tag(EasyAdminExtension::TAG_FIELD_CONFIGURATOR, ['priority' => -9999])
         ->set(CommonPreConfigurator::class)
-            ->arg(0, new Reference('property_accessor'))
-            ->arg(1, service(EntityFactory::class))
-            ->tag(EasyAdminExtension::TAG_FIELD_CONFIGURATOR, ['priority' => 9999])
-
+        ->arg(0, new Reference('property_accessor'))
+        ->arg(1, service(EntityFactory::class))
+        ->tag(EasyAdminExtension::TAG_FIELD_CONFIGURATOR, ['priority' => 9999])
         ->set(CountryConfigurator::class)
-            ->arg(0, service(AssetPackage::class))
-
+        ->arg(0, service(AssetPackage::class))
         ->set(CurrencyConfigurator::class)
-
         ->set(DateTimeConfigurator::class)
-            ->arg(0, service(IntlFormatter::class))
-
+        ->arg(0, service(IntlFormatter::class))
         ->set(EmailConfigurator::class)
-
         ->set(FormConfigurator::class)
-
         ->set(IdConfigurator::class)
-
         ->set(ImageConfigurator::class)
-            ->arg(0, param('kernel.project_dir'))
-
+        ->arg(0, param('kernel.project_dir'))
         ->set(IntegerConfigurator::class)
-
         ->set(LanguageConfigurator::class)
-
         ->set(LocaleConfigurator::class)
-
         ->set(MoneyConfigurator::class)
-            ->arg(0, service(IntlFormatter::class))
-            ->arg(1, service('property_accessor'))
-
+        ->arg(0, service(IntlFormatter::class))
+        ->arg(1, service('property_accessor'))
         ->set(NumberConfigurator::class)
-            ->arg(0, service(IntlFormatter::class))
-
+        ->arg(0, service(IntlFormatter::class))
         ->set(PercentConfigurator::class)
-
         ->set(ChoiceConfigurator::class)
-
         ->set(CollectionConfigurator::class)
-            ->arg(0, service('request_stack'))
-            ->arg(1, service(EntityFactory::class))
-            ->arg(2, service(ControllerFactory::class))
-
+        ->arg(0, service('request_stack'))
+        ->arg(1, service(EntityFactory::class))
+        ->arg(2, service(ControllerFactory::class))
         ->set(SlugConfigurator::class)
-
         ->set(TelephoneConfigurator::class)
-
         ->set(TextConfigurator::class)
-
         ->set(TextEditorConfigurator::class)
-
         ->set(TimezoneConfigurator::class)
-
         ->set(UrlConfigurator::class)
-
         ->set(AssetPackage::class)
-            ->arg(0, service('request_stack'))
-            ->tag('assets.package', ['package' => AssetPackage::PACKAGE_NAME])
-    ;
+        ->arg(0, service('request_stack'))
+        ->tag('assets.package', ['package' => AssetPackage::PACKAGE_NAME]);
 };

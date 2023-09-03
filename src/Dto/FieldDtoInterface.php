@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 
-use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
+use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStoreInterface;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
 /**
@@ -144,7 +144,7 @@ interface FieldDtoInterface
 
     public function addHtmlContentToBody(string $htmlContent): void;
 
-    public function getCustomOptions(): KeyValueStore;
+    public function getCustomOptions(): KeyValueStoreInterface;
 
     public function getCustomOption(string $optionName): mixed;
 
@@ -152,13 +152,13 @@ interface FieldDtoInterface
 
     public function setCustomOption(string $optionName, mixed $optionValue): void;
 
-    public function getDoctrineMetadata(): KeyValueStore;
+    public function getDoctrineMetadata(): KeyValueStoreInterface;
 
     public function setDoctrineMetadata(array $metadata): void;
 
-    public function getDisplayedOn(): KeyValueStore;
+    public function getDisplayedOn(): KeyValueStoreInterface;
 
-    public function setDisplayedOn(KeyValueStore $displayedOn): void;
+    public function setDisplayedOn(KeyValueStoreInterface $displayedOn): void;
 
     public function isDisplayedOn(string $pageName): bool;
 }

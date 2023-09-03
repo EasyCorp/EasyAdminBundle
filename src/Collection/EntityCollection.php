@@ -3,7 +3,6 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Collection;
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Collection\CollectionInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDtoInterface;
 
 /**

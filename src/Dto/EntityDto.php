@@ -7,26 +7,39 @@ use Doctrine\Persistence\Mapping\ClassMetadata;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\ActionCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
+use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStoreInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
 final class EntityDto implements EntityDtoInterface
 {
     private bool $isAccessible = true;
+
     private string $fqcn;
+
     /** @var ClassMetadataInfo */
     private ClassMetadata $metadata;
-    private $instance;
-    private $primaryKeyName;
+
+    private mixed $instance;
+
+    private string $primaryKeyName;
+
     private mixed $primaryKeyValue = null;
+
     private ?string $permission;
+
     private ?FieldCollection $fields = null;
+
     private ?ActionCollection $actions = null;
 
     /**
      * @param ClassMetadata&ClassMetadataInfo $entityMetadata
      */
-    public function __construct(string $entityFqcn, ClassMetadata $entityMetadata, ?string $entityPermission = null, /* ?object */ $entityInstance = null)
-    {
+    public function __construct(
+        string $entityFqcn,
+        ClassMetadata $entityMetadata,
+        ?string $entityPermission = null,
+        /* ?object */ $entityInstance = null
+    ) {
         if (!\is_object($entityInstance)
             && null !== $entityInstance) {
             trigger_deprecation(
@@ -69,7 +82,7 @@ final class EntityDto implements EntityDtoInterface
         }
 
         if (method_exists($this->instance, '__toString')) {
-            return (string) $this->instance;
+            return (string)$this->instance;
         }
 
         return sprintf('%s #%s', $this->getName(), substr($this->getPrimaryKeyValueAsString(), 0, 16));
@@ -106,7 +119,7 @@ final class EntityDto implements EntityDtoInterface
 
     public function getPrimaryKeyValueAsString(): string
     {
-        return (string) $this->getPrimaryKeyValue();
+        return (string)$this->getPrimaryKeyValue();
     }
 
     public function getPermission(): ?string
@@ -151,7 +164,7 @@ final class EntityDto implements EntityDtoInterface
         return $this->metadata->getFieldNames();
     }
 
-    public function getPropertyMetadata(string $propertyName): KeyValueStore
+    public function getPropertyMetadata(string $propertyName): KeyValueStoreInterface
     {
         if (\array_key_exists($propertyName, $this->metadata->fieldMappings)) {
             return KeyValueStore::new($this->metadata->fieldMappings[$propertyName]);
@@ -161,7 +174,9 @@ final class EntityDto implements EntityDtoInterface
             return KeyValueStore::new($this->metadata->associationMappings[$propertyName]);
         }
 
-        throw new \InvalidArgumentException(sprintf('The "%s" field does not exist in the "%s" entity.', $propertyName, $this->getFqcn()));
+        throw new \InvalidArgumentException(
+            sprintf('The "%s" field does not exist in the "%s" entity.', $propertyName, $this->getFqcn())
+        );
     }
 
     public function getPropertyDataType(string $propertyName)
@@ -205,7 +220,13 @@ final class EntityDto implements EntityDtoInterface
     public function setInstance(?object $newEntityInstance): void
     {
         if (null !== $this->instance && null !== $newEntityInstance && !$newEntityInstance instanceof $this->fqcn) {
-            throw new \InvalidArgumentException(sprintf('The new entity instance must be of the same type as the previous instance (original instance: "%s", new instance: "%s").', $this->fqcn, $newEntityInstance::class));
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'The new entity instance must be of the same type as the previous instance (original instance: "%s", new instance: "%s").',
+                    $this->fqcn,
+                    $newEntityInstance::class
+                )
+            );
         }
 
         $this->instance = $newEntityInstance;
@@ -227,7 +248,13 @@ final class EntityDto implements EntityDtoInterface
         }
 
         if (null !== $this->instance && !$newEntityInstance instanceof $this->fqcn) {
-            throw new \InvalidArgumentException(sprintf('The new entity instance must be of the same type as the previous instance (original instance: "%s", new instance: "%s").', $this->fqcn, $newEntityInstance::class));
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'The new entity instance must be of the same type as the previous instance (original instance: "%s", new instance: "%s").',
+                    $this->fqcn,
+                    $newEntityInstance::class
+                )
+            );
         }
 
         return new self($this->fqcn, $this->metadata, $this->permission, $newEntityInstance);

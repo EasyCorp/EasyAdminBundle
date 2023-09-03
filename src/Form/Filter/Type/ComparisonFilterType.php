@@ -17,8 +17,12 @@ final class ComparisonFilterType extends AbstractType
     private string $comparisonType;
     private array $comparisonTypeOptions;
 
-    public function __construct(?string $valueType = null, array $valueTypeOptions = [], ?string $comparisonType = null, array $comparisonTypeOptions = [])
-    {
+    public function __construct(
+        ?string $valueType = null,
+        array $valueTypeOptions = [],
+        ?string $comparisonType = null,
+        array $comparisonTypeOptions = []
+    ) {
         $this->valueType = $valueType;
         $this->valueTypeOptions = $valueTypeOptions;
         $this->comparisonType = $comparisonType ?? ComparisonType::class;
@@ -28,9 +32,13 @@ final class ComparisonFilterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('comparison', $options['comparison_type'], $options['comparison_type_options']);
-        $builder->add('value', $options['value_type'], $options['value_type_options'] + [
-            'label' => false,
-        ]);
+        $builder->add(
+            'value',
+            $options['value_type'],
+            $options['value_type_options'] + [
+                'label' => false,
+            ]
+        );
     }
 
     public function configureOptions(OptionsResolver $resolver): void

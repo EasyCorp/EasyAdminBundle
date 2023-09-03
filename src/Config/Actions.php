@@ -35,7 +35,10 @@ final class Actions implements ActionsInterface
 
     public function set(string $pageName, Action|string $actionNameOrObject): self
     {
-        $action = \is_string($actionNameOrObject) ? $this->createBuiltInAction($pageName, $actionNameOrObject) : $actionNameOrObject;
+        $action = \is_string($actionNameOrObject) ? $this->createBuiltInAction(
+            $pageName,
+            $actionNameOrObject
+        ) : $actionNameOrObject;
 
         $this->dto->appendAction($pageName, $action->getAsDto());
 
@@ -45,7 +48,13 @@ final class Actions implements ActionsInterface
     public function update(string $pageName, string $actionName, callable $callable): self
     {
         if (null === $actionDto = $this->dto->getAction($pageName, $actionName)) {
-            throw new \InvalidArgumentException(sprintf('The "%s" action does not exist in the "%s" page, so you cannot update it. Instead, add the action with the "add()" method.', $actionName, $pageName));
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'The "%s" action does not exist in the "%s" page, so you cannot update it. Instead, add the action with the "add()" method.',
+                    $actionName,
+                    $pageName
+                )
+            );
         }
 
         $action = $actionDto->getAsConfigObject();
@@ -59,7 +68,13 @@ final class Actions implements ActionsInterface
     public function remove(string $pageName, string $actionName): self
     {
         if (null === $this->dto->getAction($pageName, $actionName)) {
-            throw new \InvalidArgumentException(sprintf('The "%s" action does not exist in the "%s" page, so you cannot remove it.', $actionName, $pageName));
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'The "%s" action does not exist in the "%s" page, so you cannot remove it.',
+                    $actionName,
+                    $pageName
+                )
+            );
         }
 
         $this->dto->removeAction($pageName, $actionName);
@@ -79,7 +94,13 @@ final class Actions implements ActionsInterface
         $currentActions = $this->dto->getActions();
         foreach ($orderedActionNames as $actionName) {
             if (!\array_key_exists($actionName, $currentActions[$pageName])) {
-                throw new \InvalidArgumentException(sprintf('The "%s" action does not exist in the "%s" page, so you cannot set its order.', $actionName, $pageName));
+                throw new \InvalidArgumentException(
+                    sprintf(
+                        'The "%s" action does not exist in the "%s" page, so you cannot set its order.',
+                        $actionName,
+                        $pageName
+                    )
+                );
             }
 
             $newActionOrder[] = $actionName;
@@ -173,38 +194,69 @@ final class Actions implements ActionsInterface
             return Action::new(ActionInterface::INDEX, t('action.index', domain: 'EasyAdminBundle'))
                 ->linkToCrudAction(ActionInterface::INDEX)
                 ->setCssClass('action-'.ActionInterface::INDEX)
-                ->addCssClass(\in_array($pageName, [CrudInterface::PAGE_DETAIL, CrudInterface::PAGE_EDIT, CrudInterface::PAGE_NEW], true) ? 'btn btn-secondary' : '');
+                ->addCssClass(
+                    \in_array(
+                        $pageName,
+                        [CrudInterface::PAGE_DETAIL, CrudInterface::PAGE_EDIT, CrudInterface::PAGE_NEW],
+                        true
+                    ) ? 'btn btn-secondary' : ''
+                );
         }
 
         if (ActionInterface::DELETE === $actionName) {
-            $cssClass = \in_array($pageName, [CrudInterface::PAGE_DETAIL, CrudInterface::PAGE_EDIT], true) ? 'btn btn-secondary pr-0 text-danger' : 'text-danger';
+            $cssClass = \in_array(
+                $pageName,
+                [CrudInterface::PAGE_DETAIL, CrudInterface::PAGE_EDIT],
+                true
+            ) ? 'btn btn-secondary pr-0 text-danger' : 'text-danger';
 
-            return Action::new(ActionInterface::DELETE, t('action.delete', domain: 'EasyAdminBundle'), CrudInterface::PAGE_INDEX === $pageName ? null : 'fa fa-fw fa-trash-o')
+            return Action::new(
+                ActionInterface::DELETE,
+                t('action.delete', domain: 'EasyAdminBundle'),
+                CrudInterface::PAGE_INDEX === $pageName ? null : 'fa fa-fw fa-trash-o'
+            )
                 ->linkToCrudAction(ActionInterface::DELETE)
                 ->setCssClass('action-'.ActionInterface::DELETE)
                 ->addCssClass($cssClass);
         }
 
         if (ActionInterface::SAVE_AND_RETURN === $actionName) {
-            return Action::new(ActionInterface::SAVE_AND_RETURN, t(CrudInterface::PAGE_EDIT === $pageName ? 'action.save' : 'action.create', domain: 'EasyAdminBundle'))
+            return Action::new(
+                ActionInterface::SAVE_AND_RETURN,
+                t(CrudInterface::PAGE_EDIT === $pageName ? 'action.save' : 'action.create', domain: 'EasyAdminBundle')
+            )
                 ->setCssClass('action-'.ActionInterface::SAVE_AND_RETURN)
                 ->addCssClass('btn btn-primary action-save')
                 ->displayAsButton()
                 ->setHtmlAttributes(['type' => 'submit', 'name' => 'ea[newForm][btn]', 'value' => $actionName])
-                ->linkToCrudAction(CrudInterface::PAGE_EDIT === $pageName ? ActionInterface::EDIT : ActionInterface::NEW);
+                ->linkToCrudAction(
+                    CrudInterface::PAGE_EDIT === $pageName ? ActionInterface::EDIT : ActionInterface::NEW
+                );
         }
 
         if (ActionInterface::SAVE_AND_CONTINUE === $actionName) {
-            return Action::new(ActionInterface::SAVE_AND_CONTINUE, t(CrudInterface::PAGE_EDIT === $pageName ? 'action.save_and_continue' : 'action.create_and_continue', domain: 'EasyAdminBundle'), 'far fa-edit')
+            return Action::new(
+                ActionInterface::SAVE_AND_CONTINUE,
+                t(
+                    CrudInterface::PAGE_EDIT === $pageName ? 'action.save_and_continue' : 'action.create_and_continue',
+                    domain: 'EasyAdminBundle'
+                ),
+                'far fa-edit'
+            )
                 ->setCssClass('action-'.ActionInterface::SAVE_AND_CONTINUE)
                 ->addCssClass('btn btn-secondary action-save')
                 ->displayAsButton()
                 ->setHtmlAttributes(['type' => 'submit', 'name' => 'ea[newForm][btn]', 'value' => $actionName])
-                ->linkToCrudAction(CrudInterface::PAGE_EDIT === $pageName ? ActionInterface::EDIT : ActionInterface::NEW);
+                ->linkToCrudAction(
+                    CrudInterface::PAGE_EDIT === $pageName ? ActionInterface::EDIT : ActionInterface::NEW
+                );
         }
 
         if (ActionInterface::SAVE_AND_ADD_ANOTHER === $actionName) {
-            return Action::new(ActionInterface::SAVE_AND_ADD_ANOTHER, t('action.create_and_add_another', domain: 'EasyAdminBundle'))
+            return Action::new(
+                ActionInterface::SAVE_AND_ADD_ANOTHER,
+                t('action.create_and_add_another', domain: 'EasyAdminBundle')
+            )
                 ->setCssClass('action-'.ActionInterface::SAVE_AND_ADD_ANOTHER)
                 ->addCssClass('btn btn-secondary action-save')
                 ->displayAsButton()
@@ -212,16 +264,31 @@ final class Actions implements ActionsInterface
                 ->linkToCrudAction(ActionInterface::NEW);
         }
 
-        throw new \InvalidArgumentException(sprintf('The "%s" action is not a built-in action, so you can\'t add or configure it via its name. Either refer to one of the built-in actions or create a custom action called "%s".', $actionName, $actionName));
+        throw new \InvalidArgumentException(
+            sprintf(
+                'The "%s" action is not a built-in action, so you can\'t add or configure it via its name. Either refer to one of the built-in actions or create a custom action called "%s".',
+                $actionName,
+                $actionName
+            )
+        );
     }
 
     private function doAddAction(string $pageName, Action|string $actionNameOrObject, bool $isBatchAction = false): self
     {
-        $actionName = \is_string($actionNameOrObject) ? $actionNameOrObject : (string) $actionNameOrObject;
-        $action = \is_string($actionNameOrObject) ? $this->createBuiltInAction($pageName, $actionNameOrObject) : $actionNameOrObject;
+        $actionName = \is_string($actionNameOrObject) ? $actionNameOrObject : (string)$actionNameOrObject;
+        $action = \is_string($actionNameOrObject) ? $this->createBuiltInAction(
+            $pageName,
+            $actionNameOrObject
+        ) : $actionNameOrObject;
 
         if (null !== $this->dto->getAction($pageName, $actionName)) {
-            throw new \InvalidArgumentException(sprintf('The "%s" action already exists in the "%s" page, so you can\'t add it again. Instead, you can use the "updateAction()" method to update any options of an existing action.', $actionName, $pageName));
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'The "%s" action already exists in the "%s" page, so you can\'t add it again. Instead, you can use the "updateAction()" method to update any options of an existing action.',
+                    $actionName,
+                    $pageName
+                )
+            );
         }
 
         $actionDto = $action->getAsDto();

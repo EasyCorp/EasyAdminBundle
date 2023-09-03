@@ -2,21 +2,19 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Field\Configurator;
 
-use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\CrudInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDtoInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Translation\TranslatableChoiceMessage;
 use EasyCorp\Bundle\EasyAdminBundle\Translation\TranslatableChoiceMessageCollection;
-use function Symfony\Component\String\u;
-use function Symfony\Component\Translation\t;
 use Symfony\Component\Translation\TranslatableMessage;
 use Symfony\Contracts\Translation\TranslatableInterface;
+
+use function Symfony\Component\String\u;
+use function Symfony\Component\Translation\t;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -45,9 +43,11 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
 
         // support for enums
         if ($enumsAreSupported) {
-            $elementIsEnum = array_unique(array_map(static function ($element): bool {
-                return \is_object($element) && enum_exists($element::class);
-            }, $choices));
+            $elementIsEnum = array_unique(
+                array_map(static function ($element): bool {
+                    return \is_object($element) && enum_exists($element::class);
+                }, $choices)
+            );
             $allChoicesAreEnums = false === \in_array(false, $elementIsEnum, true);
 
             // if no choices are passed to the field, check if it's related to an Enum;
@@ -71,7 +71,7 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
 
         if ($areChoicesTranslatable) {
             $field->setFormTypeOptionIfNotSet('choices', array_keys($choices));
-            $field->setFormTypeOptionIfNotSet('choice_label', fn ($value) => $choices[$value]);
+            $field->setFormTypeOptionIfNotSet('choice_label', fn($value) => $choices[$value]);
         } else {
             $field->setFormTypeOptionIfNotSet('choices', $choices);
         }
@@ -79,11 +79,19 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
         $field->setFormTypeOptionIfNotSet('expanded', $isExpanded);
 
         if ($isExpanded && ChoiceField::WIDGET_AUTOCOMPLETE === $field->getCustomOption(ChoiceField::OPTION_WIDGET)) {
-            throw new \InvalidArgumentException(sprintf('The "%s" choice field wants to be displayed as an autocomplete widget and as an expanded list of choices at the same time, which is not possible. Use the renderExpanded() and renderAsNativeWidget() methods to change one of those options.', $field->getProperty()));
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'The "%s" choice field wants to be displayed as an autocomplete widget and as an expanded list of choices at the same time, which is not possible. Use the renderExpanded() and renderAsNativeWidget() methods to change one of those options.',
+                    $field->getProperty()
+                )
+            );
         }
 
         if (null === $field->getCustomOption(ChoiceField::OPTION_WIDGET)) {
-            $field->setCustomOption(ChoiceField::OPTION_WIDGET, $isExpanded ? ChoiceField::WIDGET_NATIVE : ChoiceField::WIDGET_AUTOCOMPLETE);
+            $field->setCustomOption(
+                ChoiceField::OPTION_WIDGET,
+                $isExpanded ? ChoiceField::WIDGET_NATIVE : ChoiceField::WIDGET_AUTOCOMPLETE
+            );
         }
 
         if (ChoiceField::WIDGET_AUTOCOMPLETE === $field->getCustomOption(ChoiceField::OPTION_WIDGET)) {
@@ -94,10 +102,17 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
         $field->setFormTypeOptionIfNotSet('placeholder', '');
 
         // the value of this form option must be a string to properly propagate it as an HTML attribute value
-        $field->setFormTypeOption('attr.data-ea-autocomplete-render-items-as-html', true === $field->getCustomOption(ChoiceField::OPTION_ESCAPE_HTML_CONTENTS) ? 'false' : 'true');
+        $field->setFormTypeOption(
+            'attr.data-ea-autocomplete-render-items-as-html',
+            true === $field->getCustomOption(ChoiceField::OPTION_ESCAPE_HTML_CONTENTS) ? 'false' : 'true'
+        );
 
         $fieldValue = $field->getValue();
-        $isIndexOrDetail = \in_array($context->getCrud()->getCurrentPage(), [CrudInterface::PAGE_INDEX, CrudInterface::PAGE_DETAIL], true);
+        $isIndexOrDetail = \in_array(
+            $context->getCrud()->getCurrentPage(),
+            [CrudInterface::PAGE_INDEX, CrudInterface::PAGE_DETAIL],
+            true
+        );
         if (null === $fieldValue || !$isIndexOrDetail) {
             return;
         }
@@ -110,7 +125,7 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
         $choiceMessages = [];
         // Translatable choice don't need to get flipped
         $flippedChoices = $areChoicesTranslatable ? $choices : array_flip($this->flatten($choices));
-        foreach ((array) $fieldValue as $selectedValue) {
+        foreach ((array)$fieldValue as $selectedValue) {
             if (null !== $selectedLabel = $flippedChoices[$selectedValue] ?? null) {
                 if ($selectedLabel instanceof TranslatableInterface) {
                     $choiceMessage = $selectedLabel;
@@ -157,11 +172,19 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
         } elseif (\is_callable($badgeSelector)) {
             $badgeType = $badgeSelector($value, $field);
             if (!\in_array($badgeType, ChoiceField::VALID_BADGE_TYPES, true)) {
-                throw new \RuntimeException(sprintf('The value returned by the callable passed to the "renderAsBadges()" method must be one of the following valid badge types: "%s" ("%s" given).', implode(', ', ChoiceField::VALID_BADGE_TYPES), $badgeType));
+                throw new \RuntimeException(
+                    sprintf(
+                        'The value returned by the callable passed to the "renderAsBadges()" method must be one of the following valid badge types: "%s" ("%s" given).',
+                        implode(', ', ChoiceField::VALID_BADGE_TYPES),
+                        $badgeType
+                    )
+                );
             }
         }
 
-        $badgeTypeCssClass = (null === $badgeType || '' === $badgeType) ? '' : u($badgeType)->ensureStart('badge-')->toString();
+        $badgeTypeCssClass = (null === $badgeType || '' === $badgeType) ? '' : u($badgeType)->ensureStart(
+            'badge-'
+        )->toString();
 
         return $commonBadgeCssClass.' '.$badgeTypeCssClass;
     }

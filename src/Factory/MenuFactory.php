@@ -3,38 +3,42 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
-use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenu;
 use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenuInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu\MenuItemInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MainMenuDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MainMenuDtoInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDtoInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\UserMenuDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\UserMenuDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Menu\MenuItemMatcherInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProviderInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use EasyCorp\Bundle\EasyAdminBundle\Security\PermissionInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Http\Logout\LogoutUrlGenerator;
-use function Symfony\Component\Translation\t;
 use Symfony\Contracts\Translation\TranslatableInterface;
+
+use function Symfony\Component\Translation\t;
 
 final class MenuFactory implements MenuFactoryInterface
 {
-    private AdminContextProvider $adminContextProvider;
+    private AdminContextProviderInterface $adminContextProvider;
+
     private AuthorizationCheckerInterface $authChecker;
+
     private LogoutUrlGenerator $logoutUrlGenerator;
-    private AdminUrlGenerator $adminUrlGenerator;
+
+    private AdminUrlGeneratorInterface $adminUrlGenerator;
+
     private MenuItemMatcherInterface $menuItemMatcher;
 
-    public function __construct(AdminContextProviderInterface $adminContextProvider, AuthorizationCheckerInterface $authChecker, LogoutUrlGenerator $logoutUrlGenerator, AdminUrlGeneratorInterface $adminUrlGenerator, MenuItemMatcherInterface $menuItemMatcher)
-    {
+    public function __construct(
+        AdminContextProviderInterface $adminContextProvider,
+        AuthorizationCheckerInterface $authChecker,
+        LogoutUrlGenerator $logoutUrlGenerator,
+        AdminUrlGeneratorInterface $adminUrlGenerator,
+        MenuItemMatcherInterface $menuItemMatcher
+    ) {
         $this->adminContextProvider = $adminContextProvider;
         $this->authChecker = $authChecker;
         $this->logoutUrlGenerator = $logoutUrlGenerator;
@@ -89,8 +93,10 @@ final class MenuFactory implements MenuFactoryInterface
     }
 
     private function buildMenuItem(
-        MenuItemDtoInterface $menuItemDto, array $subItems, string $translationDomain): MenuItemDtoInterface
-    {
+        MenuItemDtoInterface $menuItemDto,
+        array $subItems,
+        string $translationDomain
+    ): MenuItemDtoInterface {
         if (!$menuItemDto->getLabel() instanceof TranslatableInterface) {
             $label = $menuItemDto->getLabel();
             $menuItemDto->setLabel(
@@ -132,7 +138,12 @@ final class MenuFactory implements MenuFactoryInterface
             $entityFqcn = $routeParameters[EA::ENTITY_FQCN] ?? null;
             $crudControllerFqcn = $routeParameters[EA::CRUD_CONTROLLER_FQCN] ?? null;
             if (null === $entityFqcn && null === $crudControllerFqcn) {
-                throw new \RuntimeException(sprintf('The CRUD menu item with label "%s" must define either the entity FQCN (using the third constructor argument) or the CRUD Controller FQCN (using the "setController()" method).', $menuItemDto->getLabel()));
+                throw new \RuntimeException(
+                    sprintf(
+                        'The CRUD menu item with label "%s" must define either the entity FQCN (using the third constructor argument) or the CRUD Controller FQCN (using the "setController()" method).',
+                        $menuItemDto->getLabel()
+                    )
+                );
             }
 
             // 1. if CRUD controller is defined, use it...
@@ -142,7 +153,13 @@ final class MenuFactory implements MenuFactoryInterface
             } else {
                 $crudControllers = $this->adminContextProvider->getContext()?->getCrudControllers();
                 if (null === $controllerFqcn = $crudControllers->findCrudFqcnByEntityFqcn($entityFqcn)) {
-                    throw new \RuntimeException(sprintf('Unable to find the controller related to the "%s" Entity; did you forget to extend "%s"?', $entityFqcn, AbstractCrudController::class));
+                    throw new \RuntimeException(
+                        sprintf(
+                            'Unable to find the controller related to the "%s" Entity; did you forget to extend "%s"?',
+                            $entityFqcn,
+                            AbstractCrudController::class
+                        )
+                    );
                 }
 
                 $this->adminUrlGenerator->setController($controllerFqcn);

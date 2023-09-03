@@ -2,11 +2,11 @@
 {# @var field \EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto #}
 {# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
 {% if 'toMany' == field.customOptions.get('associationType') %}
-    <span class="badge badge-secondary">{{ field.formattedValue }}</span>
+	<span class="badge badge-secondary">{{ field.formattedValue }}</span>
 {% else %}
-    {% if field.customOptions.get('relatedUrl') is not null %}
-        <a href="{{ field.customOptions.get('relatedUrl') }}">{{ field.formattedValue }}</a>
-    {% else %}
-        {{ field.formattedValue }}
-    {% endif %}
+	{% if field.customOptions.get('relatedUrl') is not null %}
+		<a href="{{ field.customOptions.get('relatedUrl') }}">{{ field.formattedValue }}</a>
+	{% else %}
+		{{ field.formattedValue }}
+	{% endif %}
 {% endif %}

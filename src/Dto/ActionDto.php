@@ -20,7 +20,7 @@ final class ActionDto implements ActionDtoInterface
     private ?string $templatePath = null;
     private ?string $crudActionName = null;
     private ?string $routeName = null;
-    private $routeParameters = [];
+    private array $routeParameters = [];
     /* @var callable|string|null */
     private $url;
     private array $translationParameters = [];
@@ -227,7 +227,10 @@ final class ActionDto implements ActionDtoInterface
 
     public function shouldBeDisplayedFor(EntityDtoInterface $entityDto): bool
     {
-        return null === $this->displayCallable || (bool) \call_user_func($this->displayCallable, $entityDto->getInstance());
+        return null === $this->displayCallable || (bool)\call_user_func(
+                $this->displayCallable,
+                $entityDto->getInstance()
+            );
     }
 
     public function setDisplayCallable(callable $displayCallable): void

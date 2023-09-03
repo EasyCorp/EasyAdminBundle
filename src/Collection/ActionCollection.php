@@ -4,7 +4,6 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Collection;
 
 use ArrayIterator;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Collection\CollectionInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDtoInterface;
 
 use function array_key_exists;
@@ -85,25 +84,31 @@ final class ActionCollection implements CollectionInterface
 
     public function getEntityActions(): self
     {
-        return self::new(array_filter(
-            $this->actions,
-            static fn (ActionDtoInterface $action): bool => $action->isEntityAction()
-        ));
+        return self::new(
+            array_filter(
+                $this->actions,
+                static fn(ActionDtoInterface $action): bool => $action->isEntityAction()
+            )
+        );
     }
 
     public function getGlobalActions(): self
     {
-        return self::new(array_filter(
-            $this->actions,
-            static fn (ActionDtoInterface $action): bool => $action->isGlobalAction()
-        ));
+        return self::new(
+            array_filter(
+                $this->actions,
+                static fn(ActionDtoInterface $action): bool => $action->isGlobalAction()
+            )
+        );
     }
 
     public function getBatchActions(): self
     {
-        return self::new(array_filter(
-            $this->actions,
-            static fn (ActionDtoInterface $action): bool => $action->isBatchAction()
-        ));
+        return self::new(
+            array_filter(
+                $this->actions,
+                static fn(ActionDtoInterface $action): bool => $action->isBatchAction()
+            )
+        );
     }
 }

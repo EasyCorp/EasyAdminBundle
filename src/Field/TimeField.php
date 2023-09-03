@@ -40,7 +40,12 @@ final class TimeField implements FieldInterface
     public function setTimezone(string $timezoneId): self
     {
         if (!\in_array($timezoneId, timezone_identifiers_list(), true)) {
-            throw new \InvalidArgumentException(sprintf('The "%s" timezone is not a valid PHP timezone ID. Use any of the values listed at https://www.php.net/manual/en/timezones.php', $timezoneId));
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'The "%s" timezone is not a valid PHP timezone ID. Use any of the values listed at https://www.php.net/manual/en/timezones.php',
+                    $timezoneId
+                )
+            );
         }
 
         $this->setCustomOption(DateTimeField::OPTION_TIMEZONE, $timezoneId);
@@ -54,10 +59,17 @@ final class TimeField implements FieldInterface
     public function setFormat(string $timeFormatOrPattern): self
     {
         if (DateTimeField::FORMAT_NONE === $timeFormatOrPattern || '' === trim($timeFormatOrPattern)) {
-            $callable = static fn (string $format): bool => DateTimeField::FORMAT_NONE !== $format;
+            $callable = static fn(string $format): bool => DateTimeField::FORMAT_NONE !== $format;
             $validTimeFormatsWithoutNone = array_filter(DateTimeField::VALID_DATE_FORMATS, $callable);
 
-            throw new \InvalidArgumentException(sprintf('The first argument of the "%s()" method cannot be "%s" or an empty string. Use either the special time formats (%s) or a datetime Intl pattern.', __METHOD__, DateTimeField::FORMAT_NONE, implode(', ', $validTimeFormatsWithoutNone)));
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'The first argument of the "%s()" method cannot be "%s" or an empty string. Use either the special time formats (%s) or a datetime Intl pattern.',
+                    __METHOD__,
+                    DateTimeField::FORMAT_NONE,
+                    implode(', ', $validTimeFormatsWithoutNone)
+                )
+            );
         }
 
         $this->setCustomOption(self::OPTION_TIME_PATTERN, $timeFormatOrPattern);

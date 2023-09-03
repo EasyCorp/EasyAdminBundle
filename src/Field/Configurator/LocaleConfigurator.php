@@ -2,13 +2,10 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Field\Configurator;
 
-use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\CrudInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDtoInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Field\LocaleField;
 use Symfony\Component\Intl\Exception\MissingResourceException;
@@ -28,8 +25,18 @@ final class LocaleConfigurator implements FieldConfiguratorInterface
     {
         $field->setFormTypeOptionIfNotSet('attr.data-ea-widget', 'ea-autocomplete');
 
-        if (\in_array($context->getCrud()->getCurrentPage(), [CrudInterface::PAGE_EDIT, CrudInterface::PAGE_NEW], true)) {
-            $field->setFormTypeOption('choices', $this->generateFormTypeChoices($field->getCustomOption(LocaleField::OPTION_LOCALE_CODES_TO_KEEP), $field->getCustomOption(LocaleField::OPTION_LOCALE_CODES_TO_REMOVE)));
+        if (\in_array(
+            $context->getCrud()->getCurrentPage(),
+            [CrudInterface::PAGE_EDIT, CrudInterface::PAGE_NEW],
+            true
+        )) {
+            $field->setFormTypeOption(
+                'choices',
+                $this->generateFormTypeChoices(
+                    $field->getCustomOption(LocaleField::OPTION_LOCALE_CODES_TO_KEEP),
+                    $field->getCustomOption(LocaleField::OPTION_LOCALE_CODES_TO_REMOVE)
+                )
+            );
             $field->setFormTypeOption('choice_loader', null);
         }
 
@@ -39,7 +46,13 @@ final class LocaleConfigurator implements FieldConfiguratorInterface
 
         $localeName = $this->getLocaleName($localeCode);
         if (null === $localeName) {
-            throw new \InvalidArgumentException(sprintf('The "%s" value used as the locale code of the "%s" field is not a valid ICU locale code.', $localeCode, $field->getProperty()));
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'The "%s" value used as the locale code of the "%s" field is not a valid ICU locale code.',
+                    $localeCode,
+                    $field->getProperty()
+                )
+            );
         }
 
         $field->setFormattedValue($localeName);

@@ -17,31 +17,33 @@ final class ChoiceFilterType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $multiple = (bool) $builder->get('value')->getOption('multiple');
+        $multiple = (bool)$builder->get('value')->getOption('multiple');
 
-        $builder->addModelTransformer(new CallbackTransformer(
-            static fn ($data) => $data,
-            static function ($data) use ($multiple) {
-                switch ($data['comparison']) {
-                    case ComparisonType::EQ:
-                        if (null === $data['value'] || ($multiple && 0 === \count($data['value']))) {
-                            $data['comparison'] = 'IS NULL';
-                        } else {
-                            $data['comparison'] = $multiple ? 'IN' : '=';
-                        }
-                        break;
-                    case ComparisonType::NEQ:
-                        if (null === $data['value'] || ($multiple && 0 === \count($data['value']))) {
-                            $data['comparison'] = 'IS NOT NULL';
-                        } else {
-                            $data['comparison'] = $multiple ? 'NOT IN' : '!=';
-                        }
-                        break;
+        $builder->addModelTransformer(
+            new CallbackTransformer(
+                static fn($data) => $data,
+                static function ($data) use ($multiple) {
+                    switch ($data['comparison']) {
+                        case ComparisonType::EQ:
+                            if (null === $data['value'] || ($multiple && 0 === \count($data['value']))) {
+                                $data['comparison'] = 'IS NULL';
+                            } else {
+                                $data['comparison'] = $multiple ? 'IN' : '=';
+                            }
+                            break;
+                        case ComparisonType::NEQ:
+                            if (null === $data['value'] || ($multiple && 0 === \count($data['value']))) {
+                                $data['comparison'] = 'IS NOT NULL';
+                            } else {
+                                $data['comparison'] = $multiple ? 'NOT IN' : '!=';
+                            }
+                            break;
+                    }
+
+                    return $data;
                 }
-
-                return $data;
-            }
-        ));
+            )
+        );
     }
 
     public function configureOptions(OptionsResolver $resolver): void

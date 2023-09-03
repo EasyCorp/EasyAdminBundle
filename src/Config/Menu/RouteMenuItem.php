@@ -16,8 +16,12 @@ final class RouteMenuItem implements MenuItemInterface
 {
     use MenuItemTrait;
 
-    public function __construct(TranslatableInterface|string $label, ?string $icon, string $routeName, array $routeParameters)
-    {
+    public function __construct(
+        TranslatableInterface|string $label,
+        ?string $icon,
+        string $routeName,
+        array $routeParameters
+    ) {
         $this->dto = new MenuItemDto();
 
         $this->dto->setType(MenuItemDtoInterface::TYPE_ROUTE);

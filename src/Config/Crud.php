@@ -5,7 +5,6 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Config;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\SortOrder;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDtoInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterConfigDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterConfigDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\PaginatorDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
@@ -88,7 +87,14 @@ final class Crud implements CrudInterface
         }
 
         if (!\in_array($pageName, $this->getValidPageNames(), true)) {
-            throw new \InvalidArgumentException(sprintf('The first argument of the "%s()" method must be one of these valid page names: %s ("%s" given).', __METHOD__, implode(', ', $this->getValidPageNames()), $pageName));
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'The first argument of the "%s()" method must be one of these valid page names: %s ("%s" given).',
+                    __METHOD__,
+                    implode(', ', $this->getValidPageNames()),
+                    $pageName
+                )
+            );
         }
 
         $this->dto->setCustomPageTitle($pageName, $title);
@@ -99,7 +105,14 @@ final class Crud implements CrudInterface
     public function setHelp(string $pageName, TranslatableInterface|string $helpMessage): self
     {
         if (!\in_array($pageName, $this->getValidPageNames(), true)) {
-            throw new \InvalidArgumentException(sprintf('The first argument of the "%s()" method must be one of these valid page names: %s ("%s" given).', __METHOD__, implode(', ', $this->getValidPageNames()), $pageName));
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'The first argument of the "%s()" method must be one of these valid page names: %s ("%s" given).',
+                    __METHOD__,
+                    implode(', ', $this->getValidPageNames()),
+                    $pageName
+                )
+            );
         }
 
         $this->dto->setHelpMessage($pageName, $helpMessage);
@@ -112,10 +125,17 @@ final class Crud implements CrudInterface
         if (DateTimeField::FORMAT_NONE === $formatOrPattern || '' === trim($formatOrPattern)) {
             $validDateFormatsWithoutNone = array_filter(
                 DateTimeField::VALID_DATE_FORMATS,
-                static fn (string $format): bool => DateTimeField::FORMAT_NONE !== $format
+                static fn(string $format): bool => DateTimeField::FORMAT_NONE !== $format
             );
 
-            throw new \InvalidArgumentException(sprintf('The first argument of the "%s()" method cannot be "%s" or an empty string. Use either the special date formats (%s) or a datetime Intl pattern.', __METHOD__, DateTimeField::FORMAT_NONE, implode(', ', $validDateFormatsWithoutNone)));
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'The first argument of the "%s()" method cannot be "%s" or an empty string. Use either the special date formats (%s) or a datetime Intl pattern.',
+                    __METHOD__,
+                    DateTimeField::FORMAT_NONE,
+                    implode(', ', $validDateFormatsWithoutNone)
+                )
+            );
         }
 
         $datePattern = DateTimeField::INTL_DATE_PATTERNS[$formatOrPattern] ?? $formatOrPattern;
@@ -129,10 +149,17 @@ final class Crud implements CrudInterface
         if (DateTimeField::FORMAT_NONE === $formatOrPattern || '' === trim($formatOrPattern)) {
             $validTimeFormatsWithoutNone = array_filter(
                 DateTimeField::VALID_DATE_FORMATS,
-                static fn (string $format): bool => DateTimeField::FORMAT_NONE !== $format
+                static fn(string $format): bool => DateTimeField::FORMAT_NONE !== $format
             );
 
-            throw new \InvalidArgumentException(sprintf('The first argument of the "%s()" method cannot be "%s" or an empty string. Use either the special time formats (%s) or a datetime Intl pattern.', __METHOD__, DateTimeField::FORMAT_NONE, implode(', ', $validTimeFormatsWithoutNone)));
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'The first argument of the "%s()" method cannot be "%s" or an empty string. Use either the special time formats (%s) or a datetime Intl pattern.',
+                    __METHOD__,
+                    DateTimeField::FORMAT_NONE,
+                    implode(', ', $validTimeFormatsWithoutNone)
+                )
+            );
         }
 
         $timePattern = DateTimeField::INTL_TIME_PATTERNS[$formatOrPattern] ?? $formatOrPattern;
@@ -141,21 +168,39 @@ final class Crud implements CrudInterface
         return $this;
     }
 
-    public function setDateTimeFormat(string $dateFormatOrPattern, string $timeFormat = DateTimeField::FORMAT_NONE): self
-    {
+    public function setDateTimeFormat(
+        string $dateFormatOrPattern,
+        string $timeFormat = DateTimeField::FORMAT_NONE
+    ): self {
         if ('' === trim($dateFormatOrPattern)) {
-            throw new \InvalidArgumentException(sprintf('The first argument of the "%s()" method cannot be an empty string. Use either a date format (%s) or a datetime Intl pattern.', __METHOD__, implode(', ', DateTimeField::VALID_DATE_FORMATS)));
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'The first argument of the "%s()" method cannot be an empty string. Use either a date format (%s) or a datetime Intl pattern.',
+                    __METHOD__,
+                    implode(', ', DateTimeField::VALID_DATE_FORMATS)
+                )
+            );
         }
 
         $datePatternIsEmpty = DateTimeField::FORMAT_NONE === $dateFormatOrPattern;
         $timePatternIsEmpty = DateTimeField::FORMAT_NONE === $timeFormat || '' === trim($timeFormat);
         if ($datePatternIsEmpty && $timePatternIsEmpty) {
-            throw new \InvalidArgumentException(sprintf('The values of the arguments of "%s()" cannot be "%s" or an empty string at the same time. Change any of them (or both).', __METHOD__, DateTimeField::FORMAT_NONE));
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'The values of the arguments of "%s()" cannot be "%s" or an empty string at the same time. Change any of them (or both).',
+                    __METHOD__,
+                    DateTimeField::FORMAT_NONE
+                )
+            );
         }
 
         // when date format/pattern is none and time format is a pattern,
         // silently turn them into a datetime pattern
-        if (DateTimeField::FORMAT_NONE === $dateFormatOrPattern && !\in_array($timeFormat, DateTimeField::VALID_DATE_FORMATS, true)) {
+        if (DateTimeField::FORMAT_NONE === $dateFormatOrPattern && !\in_array(
+                $timeFormat,
+                DateTimeField::VALID_DATE_FORMATS,
+                true
+            )) {
             $dateFormatOrPattern = $timeFormat;
             $timeFormat = DateTimeField::FORMAT_NONE;
         }
@@ -163,11 +208,22 @@ final class Crud implements CrudInterface
         $isDatePattern = !\in_array($dateFormatOrPattern, DateTimeField::VALID_DATE_FORMATS, true);
 
         if ($isDatePattern && DateTimeField::FORMAT_NONE !== $timeFormat) {
-            throw new \InvalidArgumentException(sprintf('When the first argument of "%s()" is a datetime pattern, you cannot set the time format in the second argument (define the time format inside the datetime pattern).', __METHOD__));
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'When the first argument of "%s()" is a datetime pattern, you cannot set the time format in the second argument (define the time format inside the datetime pattern).',
+                    __METHOD__
+                )
+            );
         }
 
         if (!$isDatePattern && !\in_array($timeFormat, DateTimeField::VALID_DATE_FORMATS, true)) {
-            throw new \InvalidArgumentException(sprintf('The value of the time format can only be one of the following: %s (but "%s" was given).', implode(', ', DateTimeField::VALID_DATE_FORMATS), $timeFormat));
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'The value of the time format can only be one of the following: %s (but "%s" was given).',
+                    implode(', ', DateTimeField::VALID_DATE_FORMATS),
+                    $timeFormat
+                )
+            );
         }
 
         $this->dto->setDateTimePattern($dateFormatOrPattern, $timeFormat);
@@ -185,7 +241,12 @@ final class Crud implements CrudInterface
     public function setTimezone(string $timezoneId): self
     {
         if (!\in_array($timezoneId, timezone_identifiers_list(), true)) {
-            throw new \InvalidArgumentException(sprintf('The "%s" timezone is not a valid PHP timezone ID. Use any of the values listed at https://www.php.net/manual/en/timezones.php', $timezoneId));
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'The "%s" timezone is not a valid PHP timezone ID. Use any of the values listed at https://www.php.net/manual/en/timezones.php',
+                    $timezoneId
+                )
+            );
         }
 
         $this->dto->setTimezone($timezoneId);
@@ -205,11 +266,24 @@ final class Crud implements CrudInterface
         $sortFieldsAndOrder = array_map('strtoupper', $sortFieldsAndOrder);
         foreach ($sortFieldsAndOrder as $sortField => $sortOrder) {
             if (!\in_array($sortOrder, [SortOrder::ASC, SortOrder::DESC], true)) {
-                throw new \InvalidArgumentException(sprintf('The sort order can be only "%s" or "%s", "%s" given.', SortOrder::ASC, SortOrder::DESC, $sortOrder));
+                throw new \InvalidArgumentException(
+                    sprintf(
+                        'The sort order can be only "%s" or "%s", "%s" given.',
+                        SortOrder::ASC,
+                        SortOrder::DESC,
+                        $sortOrder
+                    )
+                );
             }
 
             if (!\is_string($sortField)) {
-                throw new \InvalidArgumentException(sprintf('The keys of the array that defines the default sort must be strings with the field names, but the given "%s" value is a "%s".', $sortField, \gettype($sortField)));
+                throw new \InvalidArgumentException(
+                    sprintf(
+                        'The keys of the array that defines the default sort must be strings with the field names, but the given "%s" value is a "%s".',
+                        $sortField,
+                        \gettype($sortField)
+                    )
+                );
             }
         }
 
@@ -309,7 +383,13 @@ final class Crud implements CrudInterface
     {
         foreach ($themePaths as $path) {
             if (!\is_string($path)) {
-                throw new \InvalidArgumentException(sprintf('All form theme paths passed to the "%s" method must be strings, but at least one of those values is of type "%s".', __METHOD__, \gettype($path)));
+                throw new \InvalidArgumentException(
+                    sprintf(
+                        'All form theme paths passed to the "%s" method must be strings, but at least one of those values is of type "%s".',
+                        __METHOD__,
+                        \gettype($path)
+                    )
+                );
             }
         }
 
@@ -356,7 +436,15 @@ final class Crud implements CrudInterface
 
     public function getAsDto(): CrudDtoInterface
     {
-        $this->dto->setPaginator(new PaginatorDto($this->paginatorPageSize, $this->paginatorRangeSize, 1, $this->paginatorFetchJoinCollection, $this->paginatorUseOutputWalkers));
+        $this->dto->setPaginator(
+            new PaginatorDto(
+                $this->paginatorPageSize,
+                $this->paginatorRangeSize,
+                1,
+                $this->paginatorFetchJoinCollection,
+                $this->paginatorUseOutputWalkers
+            )
+        );
 
         return $this->dto;
     }

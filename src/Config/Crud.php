@@ -232,6 +232,20 @@ class Crud
         return $this;
     }
 
+    public function setThousandsSeparator(string $separator): self
+    {
+        $this->dto->setThousandsSeparator($separator);
+
+        return $this;
+    }
+
+    public function setDecimalSeparator(string $separator): self
+    {
+        $this->dto->setDecimalSeparator($separator);
+
+        return $this;
+    }
+
     /**
      * @param array $sortFieldsAndOrder ['fieldName' => 'ASC|DESC', ...]
      */

@@ -97,8 +97,15 @@ final class ActionFactory
                 throw new \RuntimeException(sprintf('Batch actions can be added only to the "index" page, but the "%s" batch action is defined in the "%s" page.', $actionDto->getName(), $currentPage));
             }
 
+            // if CSS class hasn't been overridden, apply the default ones
             if ('' === $actionDto->getCssClass()) {
                 $actionDto->setCssClass('btn action-'.$actionDto->getName());
+            }
+
+            // these are the additional custom CSS classes defined via addCssClass()
+            // which are always appended to the CSS classes (default ones or custom ones)
+            if ('' !== $addedCssClass = $actionDto->getAddedCssClass()) {
+                $actionDto->setCssClass($actionDto->getCssClass().' '.$addedCssClass);
             }
 
             $globalActions[] = $this->processAction($currentPage, $actionDto);

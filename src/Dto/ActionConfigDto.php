@@ -10,7 +10,7 @@ final class ActionConfigDto implements ActionConfigDtoInterface
 {
     private ?string $pageName = null;
     /**
-     * @var array<string,array<string,ActionDto>>
+     * @var array<string,array<string,ActionDtoInterface>>
      */
     private array $actions = [
         CrudInterface::PAGE_DETAIL => [],

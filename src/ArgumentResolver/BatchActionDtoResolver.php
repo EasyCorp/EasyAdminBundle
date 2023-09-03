@@ -56,8 +56,8 @@ if (interface_exists(ValueResolverInterface::class)) {
 } else {
     final class BatchActionDtoResolver implements ArgumentValueResolverInterface
     {
-        private AdminContextProvider $adminContextProvider;
-        private AdminUrlGenerator $adminUrlGenerator;
+        private AdminContextProviderInterface $adminContextProvider;
+        private AdminUrlGeneratorInterface $adminUrlGenerator;
 
         public function __construct(AdminContextProviderInterface $adminContextProvider, AdminUrlGeneratorInterface $adminUrlGenerator)
         {

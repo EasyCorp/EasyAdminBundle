@@ -35,7 +35,7 @@ if (interface_exists(ValueResolverInterface::class)) {
 } else {
     final class AdminContextResolver implements ArgumentValueResolverInterface
     {
-        private AdminContextProvider $adminContextProvider;
+        private AdminContextProviderInterface $adminContextProvider;
 
         public function __construct(AdminContextProviderInterface $adminContextProvider)
         {

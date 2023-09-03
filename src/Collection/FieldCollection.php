@@ -119,7 +119,7 @@ final class FieldCollection implements CollectionInterface
     }
 
     /**
-     * @return \ArrayIterator<FieldDto>
+     * @return \ArrayIterator<FieldDtoInterface>
      */
     public function getIterator(): \ArrayIterator
     {

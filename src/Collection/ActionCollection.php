@@ -2,9 +2,13 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Collection;
 
+use ArrayIterator;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Collection\CollectionInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDtoInterface;
+
+use function array_key_exists;
+use function count;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -48,7 +52,7 @@ final class ActionCollection implements CollectionInterface
 
     public function offsetExists(mixed $offset): bool
     {
-        return \array_key_exists($offset, $this->actions);
+        return array_key_exists($offset, $this->actions);
     }
 
     public function offsetGet(mixed $offset): ActionDtoInterface
@@ -68,15 +72,15 @@ final class ActionCollection implements CollectionInterface
 
     public function count(): int
     {
-        return \count($this->actions);
+        return count($this->actions);
     }
 
     /**
-     * @return \ArrayIterator<ActionDto>
+     * @return ArrayIterator<ActionDtoInterface>
      */
-    public function getIterator(): \ArrayIterator
+    public function getIterator(): ArrayIterator
     {
-        return new \ArrayIterator($this->actions);
+        return new ArrayIterator($this->actions);
     }
 
     public function getEntityActions(): self

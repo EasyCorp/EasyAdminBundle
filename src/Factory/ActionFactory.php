@@ -4,7 +4,9 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
 use EasyCorp\Bundle\EasyAdminBundle\Collection\ActionCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\ActionInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\CrudInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionConfigDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionConfigDtoInterface;
@@ -17,6 +19,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProviderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
+use EasyCorp\Bundle\EasyAdminBundle\Security\PermissionInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Translation\TranslatableMessageBuilder;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -48,7 +51,7 @@ final class ActionFactory implements ActionFactoryInterface
                 continue;
             }
 
-            if (false === $this->authChecker->isGranted(Permission::EA_EXECUTE_ACTION, ['action' => $actionDto, 'entity' => $entityDto])) {
+            if (false === $this->authChecker->isGranted(PermissionInterface::EA_EXECUTE_ACTION, ['action' => $actionDto, 'entity' => $entityDto])) {
                 continue;
             }
 
@@ -59,7 +62,7 @@ final class ActionFactory implements ActionFactoryInterface
             // if CSS class hasn't been overridden, apply the default ones
             if ('' === $actionDto->getCssClass()) {
                 $defaultCssClass = 'action-'.$actionDto->getName();
-                if (Crud::PAGE_INDEX !== $currentPage) {
+                if (CrudInterface::PAGE_INDEX !== $currentPage) {
                     $defaultCssClass .= ' btn';
                 }
 
@@ -91,11 +94,11 @@ final class ActionFactory implements ActionFactoryInterface
                 continue;
             }
 
-            if (false === $this->authChecker->isGranted(Permission::EA_EXECUTE_ACTION, ['action' => $actionDto, 'entity' => null])) {
+            if (false === $this->authChecker->isGranted(PermissionInterface::EA_EXECUTE_ACTION, ['action' => $actionDto, 'entity' => null])) {
                 continue;
             }
 
-            if (Crud::PAGE_INDEX !== $currentPage && $actionDto->isBatchAction()) {
+            if (CrudInterface::PAGE_INDEX !== $currentPage && $actionDto->isBatchAction()) {
                 throw new \RuntimeException(sprintf('Batch actions can be added only to the "index" page, but the "%s" batch action is defined in the "%s" page.', $actionDto->getName(), $currentPage));
             }
 
@@ -137,13 +140,13 @@ final class ActionFactory implements ActionFactoryInterface
 
         $actionDto->setLinkUrl($this->generateActionUrl($currentPage, $adminContext->getRequest(), $actionDto, $entityDto));
 
-        if (!$actionDto->isGlobalAction() && \in_array($pageName, [Crud::PAGE_EDIT, Crud::PAGE_NEW], true)) {
+        if (!$actionDto->isGlobalAction() && \in_array($pageName, [CrudInterface::PAGE_EDIT, CrudInterface::PAGE_NEW], true)) {
             $actionDto->setHtmlAttribute('form', sprintf('%s-%s-form', $pageName, $entityDto->getName()));
         }
 
-        if (Action::DELETE === $actionDto->getName()) {
+        if (ActionInterface::DELETE === $actionDto->getName()) {
             $actionDto->addHtmlAttributes([
-                'formaction' => $this->adminUrlGenerator->setAction(Action::DELETE)->setEntityId($entityDto->getPrimaryKeyValue())->removeReferrer()->generateUrl(),
+                'formaction' => $this->adminUrlGenerator->setAction(ActionInterface::DELETE)->setEntityId($entityDto->getPrimaryKeyValue())->removeReferrer()->generateUrl(),
                 'data-bs-toggle' => 'modal',
                 'data-bs-target' => '#modal-delete',
             ]);
@@ -190,7 +193,7 @@ final class ActionFactory implements ActionFactoryInterface
             EA::REFERRER => $this->generateReferrerUrl($request, $actionDto, $currentAction),
         ];
 
-        if (\in_array($actionDto->getName(), [Action::INDEX, Action::NEW, Action::SAVE_AND_ADD_ANOTHER, Action::SAVE_AND_RETURN], true)) {
+        if (\in_array($actionDto->getName(), [ActionInterface::INDEX, ActionInterface::NEW, ActionInterface::SAVE_AND_ADD_ANOTHER, ActionInterface::SAVE_AND_RETURN], true)) {
             $requestParameters[EA::ENTITY_ID] = null;
         } elseif (null !== $entityDto) {
             $requestParameters[EA::ENTITY_ID] = $entityDto->getPrimaryKeyValueAsString();
@@ -203,17 +206,17 @@ final class ActionFactory implements ActionFactoryInterface
     {
         $nextAction = $actionDto->getName();
 
-        if (Action::DETAIL === $currentAction) {
-            if (Action::EDIT === $nextAction) {
+        if (ActionInterface::DETAIL === $currentAction) {
+            if (ActionInterface::EDIT === $nextAction) {
                 return $this->adminUrlGenerator->removeReferrer()->generateUrl();
             }
         }
 
-        if (Action::INDEX === $currentAction) {
+        if (ActionInterface::INDEX === $currentAction) {
             return $this->adminUrlGenerator->removeReferrer()->generateUrl();
         }
 
-        if (Action::NEW === $currentAction) {
+        if (ActionInterface::NEW === $currentAction) {
             return null;
         }
 
@@ -222,8 +225,8 @@ final class ActionFactory implements ActionFactoryInterface
         parse_str($referrerParts[EA::QUERY] ?? '', $referrerQueryStringVariables);
         $referrerCrudAction = $referrerQueryStringVariables[EA::CRUD_ACTION] ?? null;
 
-        if (Action::EDIT === $currentAction) {
-            if (\in_array($referrerCrudAction, [Action::INDEX, Action::DETAIL], true)) {
+        if (ActionInterface::EDIT === $currentAction) {
+            if (\in_array($referrerCrudAction, [ActionInterface::INDEX, ActionInterface::DETAIL], true)) {
                 return $referrer;
             }
         }

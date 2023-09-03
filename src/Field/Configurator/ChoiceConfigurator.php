@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Field\Configurator;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\CrudInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -96,7 +97,7 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
         $field->setFormTypeOption('attr.data-ea-autocomplete-render-items-as-html', true === $field->getCustomOption(ChoiceField::OPTION_ESCAPE_HTML_CONTENTS) ? 'false' : 'true');
 
         $fieldValue = $field->getValue();
-        $isIndexOrDetail = \in_array($context->getCrud()->getCurrentPage(), [Crud::PAGE_INDEX, Crud::PAGE_DETAIL], true);
+        $isIndexOrDetail = \in_array($context->getCrud()->getCurrentPage(), [CrudInterface::PAGE_INDEX, CrudInterface::PAGE_DETAIL], true);
         if (null === $fieldValue || !$isIndexOrDetail) {
             return;
         }

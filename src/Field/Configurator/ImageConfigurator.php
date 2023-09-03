@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Field\Configurator;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\CrudInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -45,7 +46,7 @@ final class ImageConfigurator implements FieldConfiguratorInterface
             $field->setTemplateName('label/empty');
         }
 
-        if (!\in_array($context->getCrud()->getCurrentPage(), [Crud::PAGE_EDIT, Crud::PAGE_NEW], true)) {
+        if (!\in_array($context->getCrud()->getCurrentPage(), [CrudInterface::PAGE_EDIT, CrudInterface::PAGE_NEW], true)) {
             return;
         }
 

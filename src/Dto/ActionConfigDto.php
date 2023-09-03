@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 use EasyCorp\Bundle\EasyAdminBundle\Collection\ActionCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\CrudInterface;
 
 final class ActionConfigDto implements ActionConfigDtoInterface
 {
@@ -12,10 +13,10 @@ final class ActionConfigDto implements ActionConfigDtoInterface
      * @var array<string,array<string,ActionDto>>
      */
     private array $actions = [
-        Crud::PAGE_DETAIL => [],
-        Crud::PAGE_EDIT => [],
-        Crud::PAGE_INDEX => [],
-        Crud::PAGE_NEW => [],
+        CrudInterface::PAGE_DETAIL => [],
+        CrudInterface::PAGE_EDIT => [],
+        CrudInterface::PAGE_INDEX => [],
+        CrudInterface::PAGE_NEW => [],
     ];
     /** @var string[] */
     private array $disabledActions = [];

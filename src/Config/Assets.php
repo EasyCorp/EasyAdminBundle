@@ -8,7 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetsDtoInterface;
 
 final class Assets implements AssetsInterface
 {
-    private AssetsDto $dto;
+    private AssetsDtoInterface $dto;
 
     private function __construct(AssetsDtoInterface $assetsDto)
     {

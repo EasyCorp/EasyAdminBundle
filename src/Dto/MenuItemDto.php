@@ -4,20 +4,8 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 use Symfony\Contracts\Translation\TranslatableInterface;
 
-/**
- * @author Javier Eguiluz <javier.eguiluz@gmail.com>
- */
-final class MenuItemDto
+final class MenuItemDto implements MenuItemDtoInterface
 {
-    public const TYPE_CRUD = 'crud';
-    public const TYPE_URL = 'url';
-    public const TYPE_SECTION = 'section';
-    public const TYPE_EXIT_IMPERSONATION = 'exit_impersonation';
-    public const TYPE_DASHBOARD = 'dashboard';
-    public const TYPE_LOGOUT = 'logout';
-    public const TYPE_SUBMENU = 'submenu';
-    public const TYPE_ROUTE = 'route';
-
     private ?string $type = null;
     private bool $selected = false;
     private bool $expanded = false;
@@ -32,7 +20,7 @@ final class MenuItemDto
     private string $linkTarget = '_self';
     private array $translationParameters = [];
     private ?MenuItemBadgeDto $badge = null;
-    /** @var MenuItemDto[] */
+    /** @var MenuItemDtoInterface[] */
     private array $subItems = [];
 
     public function getType(): string
@@ -45,41 +33,26 @@ final class MenuItemDto
         $this->type = $type;
     }
 
-    /** @deprecated This was used in the past to get the selected menu item
-     *              Now the active menu item is detected automatically via the Request data
-     */
     public function getIndex(): int
     {
         return -1;
     }
 
-    /** @deprecated This was used in the past to set the selected menu item
-     *              Now the active menu item is detected automatically via the Request data
-     */
     public function setIndex(int $index): void
     {
         // do nothing...
     }
 
-    /** @deprecated This was used in the past to get the selected menu subitem
-     *              Now the active menu item is detected automatically via the Request data
-     */
     public function getSubIndex(): int
     {
         return -1;
     }
 
-    /** @deprecated This was used in the past to set the selected menu subitem
-     *              Now the active menu item is detected automatically via the Request data
-     */
     public function setSubIndex(int $subIndex): void
     {
         // do nothing
     }
 
-    /**
-     * @return bool Returns true when this menu item is the selected one
-     */
     public function isSelected(): bool
     {
         return $this->selected;
@@ -90,9 +63,6 @@ final class MenuItemDto
         $this->selected = $isSelected;
     }
 
-    /**
-     * @return bool Returns true when any of its subitems is selected
-     */
     public function isExpanded(): bool
     {
         return $this->expanded;
@@ -218,17 +188,11 @@ final class MenuItemDto
         $this->badge = new MenuItemBadgeDto($content, trim($style));
     }
 
-    /**
-     * @return MenuItemDto[]
-     */
     public function getSubItems(): array
     {
         return $this->subItems;
     }
 
-    /**
-     * @param MenuItemDto[] $subItems
-     */
     public function setSubItems(array $subItems): void
     {
         $this->subItems = $subItems;

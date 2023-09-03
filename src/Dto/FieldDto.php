@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\CrudInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use function Symfony\Component\String\u;
 use Symfony\Component\Uid\Ulid;
@@ -48,10 +49,10 @@ final class FieldDto implements FieldDtoInterface
         $this->customOptions = KeyValueStore::new();
         $this->doctrineMetadata = KeyValueStore::new();
         $this->displayedOn = KeyValueStore::new([
-            Crud::PAGE_INDEX => Crud::PAGE_INDEX,
-            Crud::PAGE_DETAIL => Crud::PAGE_DETAIL,
-            Crud::PAGE_EDIT => Crud::PAGE_EDIT,
-            Crud::PAGE_NEW => Crud::PAGE_NEW,
+            CrudInterface::PAGE_INDEX => CrudInterface::PAGE_INDEX,
+            CrudInterface::PAGE_DETAIL => CrudInterface::PAGE_DETAIL,
+            CrudInterface::PAGE_EDIT => CrudInterface::PAGE_EDIT,
+            CrudInterface::PAGE_NEW => CrudInterface::PAGE_NEW,
         ]);
     }
 

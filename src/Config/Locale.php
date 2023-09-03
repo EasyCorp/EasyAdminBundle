@@ -8,7 +8,7 @@ use Symfony\Component\Intl\Locales;
 
 final class Locale implements LocaleInterface
 {
-    private LocaleDto $dto;
+    private LocaleDtoInterface $dto;
 
     private function __construct(LocaleDtoInterface $localeDto)
     {

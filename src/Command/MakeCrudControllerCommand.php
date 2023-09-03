@@ -25,7 +25,7 @@ use function Symfony\Component\String\u;
 final class MakeCrudControllerCommand extends Command
 {
     private string $projectDir;
-    private ClassMaker $classMaker;
+    private ClassMakerInterface $classMaker;
     private ManagerRegistry $doctrine;
 
     public function __construct(string $projectDir, ClassMakerInterface $classMaker, ManagerRegistry $doctrine, ?string $name = null)

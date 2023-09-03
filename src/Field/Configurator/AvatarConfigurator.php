@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Field\Configurator;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\ActionInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -24,7 +25,7 @@ final class AvatarConfigurator implements FieldConfiguratorInterface
     public function configure(FieldDtoInterface $field, EntityDtoInterface $entityDto, AdminContext $context): void
     {
         if (null === $field->getCustomOption(AvatarField::OPTION_HEIGHT)) {
-            $isDetailAction = Action::DETAIL === $context->getCrud()->getCurrentAction();
+            $isDetailAction = ActionInterface::DETAIL === $context->getCrud()->getCurrentAction();
             $field->setCustomOption(AvatarField::OPTION_HEIGHT, $isDetailAction ? 48 : 24);
         }
 

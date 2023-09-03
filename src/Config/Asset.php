@@ -10,7 +10,7 @@ use function Symfony\Component\String\u;
 
 final class Asset implements AssetInterface
 {
-    private AssetDto $dto;
+    private AssetDtoInterface $dto;
 
     private function __construct(AssetDtoInterface $assetDto)
     {
@@ -126,7 +126,7 @@ final class Asset implements AssetInterface
     public function ignoreOnDetail(): AssetInterface
     {
         $loadedOn = $this->dto->getLoadedOn();
-        $loadedOn->delete(Crud::PAGE_DETAIL);
+        $loadedOn->delete(CrudInterface::PAGE_DETAIL);
 
         $this->dto->setLoadedOn($loadedOn);
 
@@ -136,8 +136,8 @@ final class Asset implements AssetInterface
     public function ignoreOnForm(): AssetInterface
     {
         $loadedOn = $this->dto->getLoadedOn();
-        $loadedOn->delete(Crud::PAGE_NEW);
-        $loadedOn->delete(Crud::PAGE_EDIT);
+        $loadedOn->delete(CrudInterface::PAGE_NEW);
+        $loadedOn->delete(CrudInterface::PAGE_EDIT);
 
         $this->dto->setLoadedOn($loadedOn);
 
@@ -147,7 +147,7 @@ final class Asset implements AssetInterface
     public function ignoreWhenCreating(): AssetInterface
     {
         $loadedOn = $this->dto->getLoadedOn();
-        $loadedOn->delete(Crud::PAGE_NEW);
+        $loadedOn->delete(CrudInterface::PAGE_NEW);
 
         $this->dto->setLoadedOn($loadedOn);
 
@@ -157,7 +157,7 @@ final class Asset implements AssetInterface
     public function ignoreWhenUpdating(): AssetInterface
     {
         $loadedOn = $this->dto->getLoadedOn();
-        $loadedOn->delete(Crud::PAGE_EDIT);
+        $loadedOn->delete(CrudInterface::PAGE_EDIT);
 
         $this->dto->setLoadedOn($loadedOn);
 
@@ -167,7 +167,7 @@ final class Asset implements AssetInterface
     public function ignoreOnIndex(): AssetInterface
     {
         $loadedOn = $this->dto->getLoadedOn();
-        $loadedOn->delete(Crud::PAGE_INDEX);
+        $loadedOn->delete(CrudInterface::PAGE_INDEX);
 
         $this->dto->setLoadedOn($loadedOn);
 
@@ -176,7 +176,7 @@ final class Asset implements AssetInterface
 
     public function onlyOnDetail(): AssetInterface
     {
-        $this->dto->setLoadedOn(KeyValueStore::new([Crud::PAGE_DETAIL => Crud::PAGE_DETAIL]));
+        $this->dto->setLoadedOn(KeyValueStore::new([CrudInterface::PAGE_DETAIL => CrudInterface::PAGE_DETAIL]));
 
         return $this;
     }
@@ -184,8 +184,8 @@ final class Asset implements AssetInterface
     public function onlyOnForms(): AssetInterface
     {
         $this->dto->setLoadedOn(KeyValueStore::new([
-            Crud::PAGE_NEW => Crud::PAGE_NEW,
-            Crud::PAGE_EDIT => Crud::PAGE_EDIT,
+            CrudInterface::PAGE_NEW => CrudInterface::PAGE_NEW,
+            CrudInterface::PAGE_EDIT => CrudInterface::PAGE_EDIT,
         ]));
 
         return $this;
@@ -193,21 +193,21 @@ final class Asset implements AssetInterface
 
     public function onlyOnIndex(): AssetInterface
     {
-        $this->dto->setLoadedOn(KeyValueStore::new([Crud::PAGE_INDEX => Crud::PAGE_INDEX]));
+        $this->dto->setLoadedOn(KeyValueStore::new([CrudInterface::PAGE_INDEX => CrudInterface::PAGE_INDEX]));
 
         return $this;
     }
 
     public function onlyWhenCreating(): AssetInterface
     {
-        $this->dto->setLoadedOn(KeyValueStore::new([Crud::PAGE_NEW => Crud::PAGE_NEW]));
+        $this->dto->setLoadedOn(KeyValueStore::new([CrudInterface::PAGE_NEW => CrudInterface::PAGE_NEW]));
 
         return $this;
     }
 
     public function onlyWhenUpdating(): AssetInterface
     {
-        $this->dto->setLoadedOn(KeyValueStore::new([Crud::PAGE_EDIT => Crud::PAGE_EDIT]));
+        $this->dto->setLoadedOn(KeyValueStore::new([CrudInterface::PAGE_EDIT => CrudInterface::PAGE_EDIT]));
 
         return $this;
     }

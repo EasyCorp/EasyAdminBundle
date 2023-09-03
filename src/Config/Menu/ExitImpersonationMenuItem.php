@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Config\Menu;
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu\MenuItemInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDtoInterface;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
 /**
@@ -19,7 +20,7 @@ final class ExitImpersonationMenuItem implements MenuItemInterface
     {
         $this->dto = new MenuItemDto();
 
-        $this->dto->setType(MenuItemDto::TYPE_EXIT_IMPERSONATION);
+        $this->dto->setType(MenuItemDtoInterface::TYPE_EXIT_IMPERSONATION);
         $this->dto->setLabel($label);
         $this->dto->setIcon($icon);
     }

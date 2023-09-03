@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Field\Configurator;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\CrudInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -26,7 +27,7 @@ final class IdConfigurator implements FieldConfiguratorInterface
     {
         $maxLength = $field->getCustomOption(IdField::OPTION_MAX_LENGTH);
         if (null === $maxLength) {
-            $maxLength = Crud::PAGE_INDEX === $context->getCrud()->getCurrentPage() ? 7 : -1;
+            $maxLength = CrudInterface::PAGE_INDEX === $context->getCrud()->getCurrentPage() ? 7 : -1;
         }
 
         if (-1 !== $maxLength && null !== $field->getValue()) {

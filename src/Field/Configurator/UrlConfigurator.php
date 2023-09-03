@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Field\Configurator;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\ActionInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -29,7 +30,7 @@ final class UrlConfigurator implements FieldConfiguratorInterface
         $prettyUrl = str_replace(['http://www.', 'https://www.', 'http://', 'https://'], '', (string) $field->getValue());
         $prettyUrl = rtrim($prettyUrl, '/');
 
-        if (Action::INDEX === $context->getCrud()->getCurrentAction()) {
+        if (ActionInterface::INDEX === $context->getCrud()->getCurrentAction()) {
             $prettyUrl = u($prettyUrl)->truncate(32, '…')->toString();
         }
 

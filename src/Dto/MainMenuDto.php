@@ -7,7 +7,7 @@ final class MainMenuDto implements MainMenuDtoInterface
     private array $items;
 
     /**
-     * @param MenuItemDto[] $items
+     * @param MenuItemDtoInterface[] $items
      */
     public function __construct(array $items)
     {
@@ -19,12 +19,12 @@ final class MainMenuDto implements MainMenuDtoInterface
         return $this->items;
     }
 
-    public function isSelected(MenuItemDto $menuItemDto): bool
+    public function isSelected(MenuItemDtoInterface $menuItemDto): bool
     {
         return $menuItemDto->isSelected();
     }
 
-    public function isExpanded(MenuItemDto $menuItemDto): bool
+    public function isExpanded(MenuItemDtoInterface $menuItemDto): bool
     {
         return $menuItemDto->isExpanded();
     }

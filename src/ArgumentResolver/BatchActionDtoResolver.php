@@ -19,8 +19,9 @@ use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 if (interface_exists(ValueResolverInterface::class)) {
     final class BatchActionDtoResolver implements ValueResolverInterface
     {
-        private AdminContextProvider $adminContextProvider;
-        private AdminUrlGenerator $adminUrlGenerator;
+        private AdminContextProviderInterface $adminContextProvider;
+
+        private AdminUrlGeneratorInterface $adminUrlGenerator;
 
         public function __construct(AdminContextProviderInterface $adminContextProvider, AdminUrlGeneratorInterface $adminUrlGenerator)
         {

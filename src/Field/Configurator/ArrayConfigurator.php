@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Field\Configurator;
 
 use Doctrine\ORM\PersistentCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\CrudInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -39,7 +40,7 @@ final class ArrayConfigurator implements FieldConfiguratorInterface
             return;
         }
 
-        if (Crud::PAGE_INDEX === $context->getCrud()->getCurrentPage()) {
+        if (CrudInterface::PAGE_INDEX === $context->getCrud()->getCurrentPage()) {
             $values = $field->getValue();
             if ($values instanceof PersistentCollection) {
                 $values = array_map(static fn ($item): string => (string) $item, $values->getValues());

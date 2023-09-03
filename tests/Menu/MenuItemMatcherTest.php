@@ -8,6 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Menu\MenuItemMatcher;
 use EasyCorp\Bundle\EasyAdminBundle\Menu\MenuItemMatcherInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
@@ -131,7 +132,7 @@ class MenuItemMatcherTest extends KernelTestCase
      * done in MenuFactory. To simplify tests, we just append the needed query parameters
      * to build the final menu item URL.
      */
-    private function getMenuItemDto(?string $crudControllerFqcn = null, ?string $action = null, ?string $entityId = null, ?string $routeName = null, ?array $routeParameters = null): MenuItemDto
+    private function getMenuItemDto(?string $crudControllerFqcn = null, ?string $action = null, ?string $entityId = null, ?string $routeName = null, ?array $routeParameters = null): MenuItemDtoInterface
     {
         $menuItemDto = new MenuItemDto();
         $menuItemRouteParameters = [];

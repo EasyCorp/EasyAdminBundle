@@ -3,13 +3,14 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Config\Menu;
 
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDtoInterface;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
 trait MenuItemTrait
 {
-    private MenuItemDto $dto;
+    private MenuItemDtoInterface $dto;
 
     public function setCssClass(string $cssClass): self
     {
@@ -85,7 +86,7 @@ trait MenuItemTrait
         return $this;
     }
 
-    public function getAsDto(): MenuItemDto
+    public function getAsDto(): MenuItemDtoInterface
     {
         return $this->dto;
     }

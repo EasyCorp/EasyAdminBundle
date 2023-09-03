@@ -10,6 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MainMenuDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MainMenuDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\UserMenuDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\UserMenuDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Menu\MenuItemMatcherInterface;
@@ -18,6 +19,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProviderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
+use EasyCorp\Bundle\EasyAdminBundle\Security\PermissionInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Http\Logout\LogoutUrlGenerator;
 use function Symfony\Component\Translation\t;
@@ -57,7 +59,7 @@ final class MenuFactory implements MenuFactoryInterface
     /**
      * @param MenuItemInterface[] $menuItems
      *
-     * @return MenuItemDto[]
+     * @return MenuItemDtoInterface[]
      */
     private function buildMenuItems(array $menuItems): array
     {
@@ -67,13 +69,13 @@ final class MenuFactory implements MenuFactoryInterface
         $builtItems = [];
         foreach ($menuItems as $i => $menuItem) {
             $menuItemDto = $menuItem->getAsDto();
-            if (false === $this->authChecker->isGranted(Permission::EA_VIEW_MENU_ITEM, $menuItemDto)) {
+            if (false === $this->authChecker->isGranted(PermissionInterface::EA_VIEW_MENU_ITEM, $menuItemDto)) {
                 continue;
             }
 
             $subItems = [];
             foreach ($menuItemDto->getSubItems() as $j => $menuSubItemDto) {
-                if (false === $this->authChecker->isGranted(Permission::EA_VIEW_MENU_ITEM, $menuSubItemDto)) {
+                if (false === $this->authChecker->isGranted(PermissionInterface::EA_VIEW_MENU_ITEM, $menuSubItemDto)) {
                     continue;
                 }
 
@@ -86,7 +88,8 @@ final class MenuFactory implements MenuFactoryInterface
         return $builtItems;
     }
 
-    private function buildMenuItem(MenuItemDto $menuItemDto, array $subItems, string $translationDomain): MenuItemDto
+    private function buildMenuItem(
+        MenuItemDtoInterface $menuItemDto, array $subItems, string $translationDomain): MenuItemDtoInterface
     {
         if (!$menuItemDto->getLabel() instanceof TranslatableInterface) {
             $label = $menuItemDto->getLabel();
@@ -106,18 +109,18 @@ final class MenuFactory implements MenuFactoryInterface
         // if menu item points to an absolute URL and no 'rel' attribute is defined,
         // assign the 'rel="noopener"' attribute for performance and security reasons.
         // see https://web.dev/external-anchors-use-rel-noopener/
-        if ('' === $menuItemDto->getLinkRel() && MenuItemDto::TYPE_URL === $menuItemDto->getType()) {
+        if ('' === $menuItemDto->getLinkRel() && MenuItemDtoInterface::TYPE_URL === $menuItemDto->getType()) {
             $menuItemDto->setLinkRel('noopener');
         }
 
         return $menuItemDto;
     }
 
-    private function generateMenuItemUrl(MenuItemDto $menuItemDto): string
+    private function generateMenuItemUrl(MenuItemDtoInterface $menuItemDto): string
     {
         $menuItemType = $menuItemDto->getType();
 
-        if (MenuItemDto::TYPE_CRUD === $menuItemType) {
+        if (MenuItemDtoInterface::TYPE_CRUD === $menuItemType) {
             $routeParameters = $menuItemDto->getRouteParameters();
 
             $this->adminUrlGenerator
@@ -149,30 +152,30 @@ final class MenuFactory implements MenuFactoryInterface
             return $this->adminUrlGenerator->generateUrl();
         }
 
-        if (MenuItemDto::TYPE_DASHBOARD === $menuItemType) {
+        if (MenuItemDtoInterface::TYPE_DASHBOARD === $menuItemType) {
             return $this->adminUrlGenerator->unsetAll()->generateUrl();
         }
 
-        if (MenuItemDto::TYPE_ROUTE === $menuItemType) {
+        if (MenuItemDtoInterface::TYPE_ROUTE === $menuItemType) {
             return $this->adminUrlGenerator
                 ->unsetAll()
                 ->setRoute($menuItemDto->getRouteName(), $menuItemDto->getRouteParameters())
                 ->generateUrl();
         }
 
-        if (MenuItemDto::TYPE_SECTION === $menuItemType) {
+        if (MenuItemDtoInterface::TYPE_SECTION === $menuItemType) {
             return '#';
         }
 
-        if (MenuItemDto::TYPE_URL === $menuItemType) {
+        if (MenuItemDtoInterface::TYPE_URL === $menuItemType) {
             return $menuItemDto->getLinkUrl();
         }
 
-        if (MenuItemDto::TYPE_LOGOUT === $menuItemType) {
+        if (MenuItemDtoInterface::TYPE_LOGOUT === $menuItemType) {
             return $this->logoutUrlGenerator->getLogoutPath();
         }
 
-        if (MenuItemDto::TYPE_EXIT_IMPERSONATION === $menuItemType) {
+        if (MenuItemDtoInterface::TYPE_EXIT_IMPERSONATION === $menuItemType) {
             // the switch parameter name can be changed, but this code assumes it's always
             // the default one because Symfony doesn't provide a generic exitImpersonationUrlGenerator
             return '?_switch_user=_exit';

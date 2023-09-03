@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Router;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\ActionInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
@@ -15,9 +16,9 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 final class AdminUrlGenerator implements AdminUrlGeneratorInterface
 {
     private bool $isInitialized = false;
-    private AdminContextProvider $adminContextProvider;
+    private AdminContextProviderInterface $adminContextProvider;
     private UrlGeneratorInterface $urlGenerator;
-    private DashboardControllerRegistry $dashboardControllerRegistry;
+    private DashboardControllerRegistryInterface $dashboardControllerRegistry;
     private ?string $dashboardRoute = null;
     private ?bool $includeReferrer = null;
     private array $routeParameters = [];
@@ -219,7 +220,7 @@ final class AdminUrlGenerator implements AdminUrlGeneratorInterface
 
         // this avoids forcing users to always be explicit about the action to execute
         if (null !== $this->get(EA::CRUD_CONTROLLER_FQCN) && null === $this->get(EA::CRUD_ACTION)) {
-            $this->set(EA::CRUD_ACTION, Action::INDEX);
+            $this->set(EA::CRUD_ACTION, ActionInterface::INDEX);
         }
 
         // if the Dashboard FQCN is defined, find its route and use it to override

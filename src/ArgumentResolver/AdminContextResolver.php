@@ -16,7 +16,7 @@ use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 if (interface_exists(ValueResolverInterface::class)) {
     final class AdminContextResolver implements ValueResolverInterface
     {
-        private AdminContextProvider $adminContextProvider;
+        private AdminContextProviderInterface $adminContextProvider;
 
         public function __construct(AdminContextProviderInterface $adminContextProvider)
         {

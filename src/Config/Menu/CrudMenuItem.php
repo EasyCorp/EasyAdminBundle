@@ -6,6 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\SortOrder;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu\MenuItemInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDtoInterface;
 use Symfony\Component\Uid\AbstractUid;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
@@ -21,8 +22,7 @@ final class CrudMenuItem implements MenuItemInterface
     public function __construct(TranslatableInterface|string $label, ?string $icon, string $entityFqcn)
     {
         $this->dto = new MenuItemDto();
-
-        $this->dto->setType(MenuItemDto::TYPE_CRUD);
+        $this->dto->setType(MenuItemDtoInterface::TYPE_CRUD);
         $this->dto->setLabel($label);
         $this->dto->setIcon($icon);
         $this->dto->setRouteParameters([

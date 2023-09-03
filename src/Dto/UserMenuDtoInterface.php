@@ -35,7 +35,7 @@ interface UserMenuDtoInterface
      * MenuItemInterface objects; after building the user menu contents,
      * this method is called with MenuItemDto objects.
      *
-     * @param MenuItemInterface[]|MenuItemDto[] $items
+     * @param MenuItemInterface[]|MenuItemDtoInterface[] $items
      */
     public function setItems(array $items): void;
 }

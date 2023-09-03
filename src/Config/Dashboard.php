@@ -8,7 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\DashboardDtoInterface;
 
 final class Dashboard implements DashboardInterface
 {
-    private DashboardDto $dto;
+    private DashboardDtoInterface $dto;
 
     private function __construct(DashboardDtoInterface $dashboardDto)
     {
@@ -56,14 +56,14 @@ final class Dashboard implements DashboardInterface
 
     public function renderContentMaximized(bool $maximized = true): DashboardInterface
     {
-        $this->dto->setContentWidth($maximized ? Crud::LAYOUT_CONTENT_FULL : Crud::LAYOUT_CONTENT_DEFAULT);
+        $this->dto->setContentWidth($maximized ? CrudInterface::LAYOUT_CONTENT_FULL : CrudInterface::LAYOUT_CONTENT_DEFAULT);
 
         return $this;
     }
 
     public function renderSidebarMinimized(bool $minimized = true): DashboardInterface
     {
-        $this->dto->setSidebarWidth($minimized ? Crud::LAYOUT_SIDEBAR_COMPACT : Crud::LAYOUT_SIDEBAR_DEFAULT);
+        $this->dto->setSidebarWidth($minimized ? CrudInterface::LAYOUT_SIDEBAR_COMPACT : CrudInterface::LAYOUT_SIDEBAR_DEFAULT);
 
         return $this;
     }

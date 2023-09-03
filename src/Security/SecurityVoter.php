@@ -11,6 +11,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProviderInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -38,30 +39,30 @@ final class SecurityVoter extends Voter
 
     protected function voteOnAttribute($permissionName, $subject, TokenInterface $token): bool
     {
-        if (Permission::EA_VIEW_MENU_ITEM === $permissionName) {
+        if (PermissionInterface::EA_VIEW_MENU_ITEM === $permissionName) {
             return $this->voteOnViewMenuItemPermission($subject);
         }
 
-        if (Permission::EA_EXECUTE_ACTION === $permissionName) {
+        if (PermissionInterface::EA_EXECUTE_ACTION === $permissionName) {
             return $this->voteOnExecuteActionPermission($this->adminContextProvider->getContext()->getCrud(), $subject['action'] ?? null, $subject['entity'] ?? null);
         }
 
-        if (Permission::EA_VIEW_FIELD === $permissionName) {
+        if (PermissionInterface::EA_VIEW_FIELD === $permissionName) {
             return $this->voteOnViewPropertyPermission($subject);
         }
 
-        if (Permission::EA_ACCESS_ENTITY === $permissionName) {
+        if (PermissionInterface::EA_ACCESS_ENTITY === $permissionName) {
             return $this->voteOnViewEntityPermission($subject);
         }
 
-        if (Permission::EA_EXIT_IMPERSONATION === $permissionName) {
+        if (PermissionInterface::EA_EXIT_IMPERSONATION === $permissionName) {
             return $this->voteOnExitImpersonationPermission();
         }
 
         return true;
     }
 
-    private function voteOnViewMenuItemPermission(MenuItemDto $menuItemDto): bool
+    private function voteOnViewMenuItemPermission(MenuItemDtoInterface $menuItemDto): bool
     {
         // users can see the menu item if they have the permission required by the menu item
         return $this->authorizationChecker->isGranted($menuItemDto->getPermission(), $menuItemDto);

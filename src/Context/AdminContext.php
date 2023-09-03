@@ -35,21 +35,33 @@ final class AdminContext implements AdminContextInterface
 {
     private Request $request;
     private ?UserInterface $user;
-    private I18nDto $i18nDto;
-    private CrudControllerRegistry $crudControllers;
-    private ?EntityDto $entityDto;
-    private DashboardDto $dashboardDto;
+    private I18nDtoInterface $i18nDto;
+    private CrudControllerRegistryInterface $crudControllers;
+    private ?EntityDtoInterface $entityDto;
+    private DashboardDtoInterface $dashboardDto;
     private DashboardControllerInterface $dashboardControllerInstance;
-    private AssetsDto $assetDto;
-    private ?CrudDto $crudDto;
-    private ?SearchDto $searchDto;
-    private MenuFactory $menuFactory;
-    private TemplateRegistry $templateRegistry;
-    private ?MainMenuDto $mainMenuDto = null;
-    private ?UserMenuDto $userMenuDto = null;
+    private AssetsDtoInterface $assetDto;
+    private ?CrudDtoInterface $crudDto;
+    private ?SearchDtoInterface $searchDto;
+    private MenuFactoryInterface $menuFactory;
+    private TemplateRegistryInterface $templateRegistry;
+    private ?MainMenuDtoInterface $mainMenuDto = null;
+    private ?UserMenuDtoInterface $userMenuDto = null;
 
-    public function __construct(Request $request, ?UserInterface $user, I18nDtoInterface $i18nDto, CrudControllerRegistryInterface $crudControllers, DashboardDtoInterface $dashboardDto, DashboardControllerInterface $dashboardController, AssetsDtoInterface $assetDto, ?CrudDtoInterface $crudDto, ?EntityDtoInterface $entityDto, ?SearchDtoInterface $searchDto, MenuFactoryInterface $menuFactory, TemplateRegistryInterface $templateRegistry)
-    {
+    public function __construct(
+        Request $request,
+        ?UserInterface $user,
+        I18nDtoInterface $i18nDto,
+        CrudControllerRegistryInterface $crudControllers,
+        DashboardDtoInterface $dashboardDto,
+        DashboardControllerInterface $dashboardController,
+        AssetsDtoInterface $assetDto,
+        ?CrudDtoInterface $crudDto,
+        ?EntityDtoInterface $entityDto,
+        ?SearchDtoInterface $searchDto,
+        MenuFactoryInterface $menuFactory,
+        TemplateRegistryInterface $templateRegistry
+    ) {
         $this->request = $request;
         $this->user = $user;
         $this->i18nDto = $i18nDto;

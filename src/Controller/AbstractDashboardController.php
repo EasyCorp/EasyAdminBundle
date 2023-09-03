@@ -3,10 +3,12 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Controller;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\ActionInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\AssetsInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\CrudInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\DashboardInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
@@ -17,6 +19,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenuInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
+use EasyCorp\Bundle\EasyAdminBundle\Security\PermissionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -70,7 +73,7 @@ abstract class AbstractDashboardController extends AbstractController implements
             $userMenuItems[] = MenuItem::section();
             $userMenuItems[] = MenuItem::linkToLogout(t('user.sign_out', domain: 'EasyAdminBundle'), 'fa-sign-out');
         }
-        if ($this->isGranted(Permission::EA_EXIT_IMPERSONATION)) {
+        if ($this->isGranted(PermissionInterface::EA_EXIT_IMPERSONATION)) {
             $userMenuItems[] = MenuItem::linkToExitImpersonation(t('user.exit_impersonation', domain: 'EasyAdminBundle'), 'fa-user-lock');
         }
 
@@ -92,20 +95,20 @@ abstract class AbstractDashboardController extends AbstractController implements
     public function configureActions(): Actions
     {
         return Actions::new()
-            ->addBatchAction(Action::BATCH_DELETE)
-            ->add(Crud::PAGE_INDEX, Action::NEW)
-            ->add(Crud::PAGE_INDEX, Action::EDIT)
-            ->add(Crud::PAGE_INDEX, Action::DELETE)
+            ->addBatchAction(ActionInterface::BATCH_DELETE)
+            ->add(CrudInterface::PAGE_INDEX, ActionInterface::NEW)
+            ->add(CrudInterface::PAGE_INDEX, ActionInterface::EDIT)
+            ->add(CrudInterface::PAGE_INDEX, ActionInterface::DELETE)
 
-            ->add(Crud::PAGE_DETAIL, Action::EDIT)
-            ->add(Crud::PAGE_DETAIL, Action::INDEX)
-            ->add(Crud::PAGE_DETAIL, Action::DELETE)
+            ->add(CrudInterface::PAGE_DETAIL, ActionInterface::EDIT)
+            ->add(CrudInterface::PAGE_DETAIL, ActionInterface::INDEX)
+            ->add(CrudInterface::PAGE_DETAIL, ActionInterface::DELETE)
 
-            ->add(Crud::PAGE_EDIT, Action::SAVE_AND_RETURN)
-            ->add(Crud::PAGE_EDIT, Action::SAVE_AND_CONTINUE)
+            ->add(CrudInterface::PAGE_EDIT, ActionInterface::SAVE_AND_RETURN)
+            ->add(CrudInterface::PAGE_EDIT, ActionInterface::SAVE_AND_CONTINUE)
 
-            ->add(Crud::PAGE_NEW, Action::SAVE_AND_RETURN)
-            ->add(Crud::PAGE_NEW, Action::SAVE_AND_ADD_ANOTHER)
+            ->add(CrudInterface::PAGE_NEW, ActionInterface::SAVE_AND_RETURN)
+            ->add(CrudInterface::PAGE_NEW, ActionInterface::SAVE_AND_ADD_ANOTHER)
         ;
     }
 

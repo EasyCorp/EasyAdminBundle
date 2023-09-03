@@ -18,6 +18,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityBuiltEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\EntityNotFoundException;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
+use EasyCorp\Bundle\EasyAdminBundle\Security\PermissionInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
@@ -82,7 +83,7 @@ final class EntityFactory implements EntityFactoryInterface
         foreach ($entityInstances as $entityInstance) {
             $newEntityDto = $entityDto->newWithInstance($entityInstance);
             $newEntityId = $newEntityDto->getPrimaryKeyValueAsString();
-            if (!$this->authorizationChecker->isGranted(Permission::EA_ACCESS_ENTITY, $newEntityDto)) {
+            if (!$this->authorizationChecker->isGranted(PermissionInterface::EA_ACCESS_ENTITY, $newEntityDto)) {
                 $newEntityDto->markAsInaccessible();
             }
 
@@ -122,7 +123,7 @@ final class EntityFactory implements EntityFactoryInterface
         $entityMetadata = $this->getEntityMetadata($entityFqcn);
         $entityDto = new EntityDto($entityFqcn, $entityMetadata, $entityPermission, $entityInstance);
 
-        if (!$this->authorizationChecker->isGranted(Permission::EA_ACCESS_ENTITY, $entityDto)) {
+        if (!$this->authorizationChecker->isGranted(PermissionInterface::EA_ACCESS_ENTITY, $entityDto)) {
             $entityDto->markAsInaccessible();
         }
 

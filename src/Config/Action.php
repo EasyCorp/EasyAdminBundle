@@ -9,7 +9,7 @@ use Symfony\Contracts\Translation\TranslatableInterface;
 
 final class Action implements ActionInterface
 {
-    private ActionDto $dto;
+    private ActionDtoInterface $dto;
 
     private function __construct(ActionDtoInterface $actionDto)
     {

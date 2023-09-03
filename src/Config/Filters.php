@@ -8,7 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterConfigDtoInterface;
 
 final class Filters implements FiltersInterface
 {
-    private FilterConfigDto $dto;
+    private FilterConfigDtoInterface $dto;
 
     private function __construct(FilterConfigDtoInterface $filterConfigDto)
     {

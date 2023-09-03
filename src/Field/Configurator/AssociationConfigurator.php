@@ -6,7 +6,9 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\PersistentCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\ActionInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\CrudInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\TextAlign;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
@@ -238,7 +240,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         // TODO: check if user has permission to see the related entity
         return $this->adminUrlGenerator
             ->setController($crudController)
-            ->setAction(Action::DETAIL)
+            ->setAction(ActionInterface::DETAIL)
             ->setEntityId($entityDto->getPrimaryKeyValue())
             ->unset(EA::MENU_INDEX)
             ->unset(EA::SUBMENU_INDEX)
@@ -277,11 +279,11 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         }
 
         if (null === $associatedEntity) {
-            $targetCrudControllerAction = Action::NEW;
-            $targetCrudControllerPageName = $field->getCustomOption(AssociationField::OPTION_EMBEDDED_CRUD_FORM_NEW_PAGE_NAME) ?? Crud::PAGE_NEW;
+            $targetCrudControllerAction = ActionInterface::NEW;
+            $targetCrudControllerPageName = $field->getCustomOption(AssociationField::OPTION_EMBEDDED_CRUD_FORM_NEW_PAGE_NAME) ?? CrudInterface::PAGE_NEW;
         } else {
-            $targetCrudControllerAction = Action::EDIT;
-            $targetCrudControllerPageName = $field->getCustomOption(AssociationField::OPTION_EMBEDDED_CRUD_FORM_EDIT_PAGE_NAME) ?? Crud::PAGE_EDIT;
+            $targetCrudControllerAction = ActionInterface::EDIT;
+            $targetCrudControllerPageName = $field->getCustomOption(AssociationField::OPTION_EMBEDDED_CRUD_FORM_EDIT_PAGE_NAME) ?? CrudInterface::PAGE_EDIT;
         }
 
         $field->setFormTypeOption(

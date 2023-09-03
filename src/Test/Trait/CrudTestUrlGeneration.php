@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Test\Trait;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\ActionInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Test\Exception\InvalidClassPropertyTypeException;
 use EasyCorp\Bundle\EasyAdminBundle\Test\Exception\MissingClassMethodException;
 
@@ -44,22 +45,22 @@ trait CrudTestUrlGeneration
             $options['query'] = $query;
         }
 
-        return $this->getCrudUrl(Action::INDEX, null, $options, $dashboardFqcn, $controllerFqcn);
+        return $this->getCrudUrl(ActionInterface::INDEX, null, $options, $dashboardFqcn, $controllerFqcn);
     }
 
     protected function generateNewFormUrl(?string $dashboardFqcn = null, ?string $controllerFqcn = null): string
     {
-        return $this->getCrudUrl(Action::NEW, dashboardFqcn: $dashboardFqcn, controllerFqcn: $controllerFqcn);
+        return $this->getCrudUrl(ActionInterface::NEW, dashboardFqcn: $dashboardFqcn, controllerFqcn: $controllerFqcn);
     }
 
     protected function generateEditFormUrl(string|int $id, ?string $dashboardFqcn = null, ?string $controllerFqcn = null): string
     {
-        return $this->getCrudUrl(Action::EDIT, $id, dashboardFqcn: $dashboardFqcn, controllerFqcn: $controllerFqcn);
+        return $this->getCrudUrl(ActionInterface::EDIT, $id, dashboardFqcn: $dashboardFqcn, controllerFqcn: $controllerFqcn);
     }
 
     protected function generateDetailUrl(string|int $id, ?string $dashboardFqcn = null, ?string $controllerFqcn = null): string
     {
-        return $this->getCrudUrl(Action::DETAIL, $id, dashboardFqcn: $dashboardFqcn, controllerFqcn: $controllerFqcn);
+        return $this->getCrudUrl(ActionInterface::DETAIL, $id, dashboardFqcn: $dashboardFqcn, controllerFqcn: $controllerFqcn);
     }
 
     protected function generateFilterRenderUrl(?string $dashboardFqcn = null, ?string $controllerFqcn = null): string

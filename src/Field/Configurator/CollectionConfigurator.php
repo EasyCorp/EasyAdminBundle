@@ -5,7 +5,9 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Field\Configurator;
 use Doctrine\ORM\PersistentCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\ActionInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\CrudInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -104,12 +106,12 @@ final class CollectionConfigurator implements FieldConfiguratorInterface
                 throw new \RuntimeException(sprintf('The "%s" collection field of "%s" wants to render its entries using an EasyAdmin CRUD form. However, no CRUD form was found related to this field. You can either create a CRUD controller for the entity "%s" or pass the CRUD controller to use as the first argument of the "useEntryCrudForm()" method.', $field->getProperty(), $context->getCrud()?->getControllerFqcn(), $targetEntityFqcn));
             }
 
-            $crudEditPageName = $field->getCustomOption(CollectionField::OPTION_ENTRY_CRUD_EDIT_PAGE_NAME) ?? Crud::PAGE_EDIT;
-            $editEntityDto = $this->createEntityDto($targetEntityFqcn, $targetCrudControllerFqcn, Action::EDIT, $crudEditPageName);
+            $crudEditPageName = $field->getCustomOption(CollectionField::OPTION_ENTRY_CRUD_EDIT_PAGE_NAME) ?? CrudInterface::PAGE_EDIT;
+            $editEntityDto = $this->createEntityDto($targetEntityFqcn, $targetCrudControllerFqcn, ActionInterface::EDIT, $crudEditPageName);
             $field->setFormTypeOption('entry_options.entityDto', $editEntityDto);
 
-            $crudNewPageName = $field->getCustomOption(CollectionField::OPTION_ENTRY_CRUD_NEW_PAGE_NAME) ?? Crud::PAGE_NEW;
-            $newEntityDto = $this->createEntityDto($targetEntityFqcn, $targetCrudControllerFqcn, Action::NEW, $crudNewPageName);
+            $crudNewPageName = $field->getCustomOption(CollectionField::OPTION_ENTRY_CRUD_NEW_PAGE_NAME) ?? CrudInterface::PAGE_NEW;
+            $newEntityDto = $this->createEntityDto($targetEntityFqcn, $targetCrudControllerFqcn, ActionInterface::NEW, $crudNewPageName);
 
             try {
                 $field->setFormTypeOption('prototype_options.entityDto', $newEntityDto);
@@ -135,7 +137,7 @@ final class CollectionConfigurator implements FieldConfiguratorInterface
             $collectionItemsAsText[] = (string) $item;
         }
 
-        $isDetailAction = Action::DETAIL === $context->getCrud()->getCurrentAction();
+        $isDetailAction = ActionInterface::DETAIL === $context->getCrud()->getCurrentAction();
 
         return u(', ')->join($collectionItemsAsText)->truncate($isDetailAction ? 512 : 32, '…')->toString();
     }

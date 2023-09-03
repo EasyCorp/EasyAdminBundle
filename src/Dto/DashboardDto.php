@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\CrudInterface;
 
 final class DashboardDto implements DashboardDtoInterface
 {
@@ -11,8 +12,8 @@ final class DashboardDto implements DashboardDtoInterface
     private string $title = 'EasyAdmin';
     private string $translationDomain = 'messages';
     private $textDirection;
-    private string $contentWidth = Crud::LAYOUT_CONTENT_DEFAULT;
-    private string $sidebarWidth = Crud::LAYOUT_SIDEBAR_DEFAULT;
+    private string $contentWidth = CrudInterface::LAYOUT_CONTENT_DEFAULT;
+    private string $sidebarWidth = CrudInterface::LAYOUT_SIDEBAR_DEFAULT;
     private bool $signedUrls = false;
     private bool $absoluteUrls = true;
     private bool $enableDarkMode = true;

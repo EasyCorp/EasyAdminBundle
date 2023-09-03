@@ -3,8 +3,10 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Menu;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\CrudInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProviderInterface;
 
@@ -17,7 +19,7 @@ final class MenuItemMatcher implements MenuItemMatcherInterface
     {
     }
 
-    public function isSelected(MenuItemDto $menuItemDto): bool
+    public function isSelected(MenuItemDtoInterface $menuItemDto): bool
     {
         $adminContext = $this->adminContextProvider->getContext();
         if (null === $adminContext || $menuItemDto->isMenuSection()) {
@@ -35,7 +37,7 @@ final class MenuItemMatcher implements MenuItemMatcherInterface
             return $menuItemDto->getLinkUrl() === $adminContext->getRequest()->getUri();
         }
 
-        $menuItemLinksToIndexCrudAction = Crud::PAGE_INDEX === ($menuItemQueryParameters[EA::CRUD_ACTION] ?? false);
+        $menuItemLinksToIndexCrudAction = CrudInterface::PAGE_INDEX === ($menuItemQueryParameters[EA::CRUD_ACTION] ?? false);
         $menuItemQueryParameters = $this->filterIrrelevantQueryParameters($menuItemQueryParameters, $menuItemLinksToIndexCrudAction);
         $currentPageQueryParameters = $this->filterIrrelevantQueryParameters($currentPageQueryParameters, $menuItemLinksToIndexCrudAction);
 
@@ -46,7 +48,7 @@ final class MenuItemMatcher implements MenuItemMatcherInterface
         return $menuItemQueryParameters === $currentPageQueryParameters;
     }
 
-    public function isExpanded(MenuItemDto $menuItemDto): bool
+    public function isExpanded(MenuItemDtoInterface $menuItemDto): bool
     {
         if ([] === $menuSubitems = $menuItemDto->getSubItems()) {
             return false;

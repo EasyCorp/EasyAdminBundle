@@ -3,11 +3,12 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu;
 
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDtoInterface;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
 interface MenuItemInterface
 {
-    public function getAsDto(): MenuItemDto;
+    public function getAsDto(): MenuItemDtoInterface;
 }

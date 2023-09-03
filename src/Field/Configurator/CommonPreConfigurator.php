@@ -3,7 +3,9 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Field\Configurator;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\ActionInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\CrudInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -124,7 +126,7 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
 
         // if an Avatar field doesn't define its label, don't autogenerate it for the 'index' page
         // (because the table of the 'index' page looks better without a header in the avatar column)
-        if (Action::INDEX === $currentPage && null === $field->getLabel() && AvatarField::class === $field->getFieldFqcn()) {
+        if (ActionInterface::INDEX === $currentPage && null === $field->getLabel() && AvatarField::class === $field->getFieldFqcn()) {
             $field->setLabel(false);
         }
 
@@ -140,7 +142,7 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
 
         // don't translate labels in form-related pages because Symfony Forms translates
         // labels automatically and that causes false "translation is missing" errors
-        if (\in_array($currentPage, [Crud::PAGE_EDIT, Crud::PAGE_NEW], true)) {
+        if (\in_array($currentPage, [CrudInterface::PAGE_EDIT, CrudInterface::PAGE_NEW], true)) {
             return $label;
         }
 

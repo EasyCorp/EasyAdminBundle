@@ -11,25 +11,16 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\PaginatorDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
-/**
- * @author Javier Eguiluz <javier.eguiluz@gmail.com>
- */
-final class Crud
+final class Crud implements CrudInterface
 {
-    public const PAGE_DETAIL = 'detail';
-    public const PAGE_EDIT = 'edit';
-    public const PAGE_INDEX = 'index';
-    public const PAGE_NEW = 'new';
-    public const LAYOUT_CONTENT_DEFAULT = 'normal';
-    public const LAYOUT_CONTENT_FULL = 'full';
-    public const LAYOUT_SIDEBAR_DEFAULT = 'normal';
-    public const LAYOUT_SIDEBAR_COMPACT = 'compact';
-
-    private CrudDto $dto;
+    private CrudDtoInterface $dto;
 
     private int $paginatorPageSize = 20;
+
     private int $paginatorRangeSize = 3;
+
     private bool $paginatorFetchJoinCollection = true;
+
     private ?bool $paginatorUseOutputWalkers = null;
 
     private function __construct(CrudDtoInterface $crudDto)
@@ -44,11 +35,6 @@ final class Crud
         return new self($dto);
     }
 
-    /**
-     * @param TranslatableInterface|string|callable $label The callable signature is: fn ($entityInstance, $pageName): string
-     *
-     * @psalm-param mixed $label
-     */
     public function setEntityLabelInSingular($label): self
     {
         if (!\is_string($label) && !$label instanceof TranslatableInterface && !\is_callable($label)) {
@@ -68,11 +54,6 @@ final class Crud
         return $this;
     }
 
-    /**
-     * @param TranslatableInterface|string|callable $label The callable signature is: fn ($entityInstance, $pageName): string
-     *
-     * @psalm-param mixed $label
-     */
     public function setEntityLabelInPlural($label): self
     {
         if (!\is_string($label) && !$label instanceof TranslatableInterface && !\is_callable($label)) {
@@ -92,11 +73,6 @@ final class Crud
         return $this;
     }
 
-    /**
-     * @param TranslatableInterface|string|callable $title The callable signature is: fn ($entityInstance): string
-     *
-     * @psalm-param mixed $title
-     */
     public function setPageTitle(string $pageName, $title): self
     {
         if (!\is_string($title) && !$title instanceof TranslatableInterface && !\is_callable($title)) {
@@ -131,9 +107,6 @@ final class Crud
         return $this;
     }
 
-    /**
-     * @param string $formatOrPattern A format name ('short', 'medium', 'long', 'full') or a valid ICU Datetime Pattern (see https://unicode-org.github.io/icu/userguide/format_parse/datetime/)
-     */
     public function setDateFormat(string $formatOrPattern): self
     {
         if (DateTimeField::FORMAT_NONE === $formatOrPattern || '' === trim($formatOrPattern)) {
@@ -151,9 +124,6 @@ final class Crud
         return $this;
     }
 
-    /**
-     * @param string $formatOrPattern A format name ('short', 'medium', 'long', 'full') or a valid ICU Datetime Pattern (see https://unicode-org.github.io/icu/userguide/format_parse/datetime/)
-     */
     public function setTimeFormat(string $formatOrPattern): self
     {
         if (DateTimeField::FORMAT_NONE === $formatOrPattern || '' === trim($formatOrPattern)) {
@@ -171,10 +141,6 @@ final class Crud
         return $this;
     }
 
-    /**
-     * @param string $dateFormatOrPattern A format name ('none', 'short', 'medium', 'long', 'full') or a valid ICU Datetime Pattern (see https://unicode-org.github.io/icu/userguide/format_parse/datetime/)
-     * @param string $timeFormat          A format name ('none', 'short', 'medium', 'long', 'full')
-     */
     public function setDateTimeFormat(string $dateFormatOrPattern, string $timeFormat = DateTimeField::FORMAT_NONE): self
     {
         if ('' === trim($dateFormatOrPattern)) {
@@ -234,9 +200,6 @@ final class Crud
         return $this;
     }
 
-    /**
-     * @param array $sortFieldsAndOrder ['fieldName' => 'ASC|DESC', ...]
-     */
     public function setDefaultSort(array $sortFieldsAndOrder): self
     {
         $sortFieldsAndOrder = array_map('strtoupper', $sortFieldsAndOrder);
@@ -326,9 +289,6 @@ final class Crud
         return $this;
     }
 
-    /**
-     * Format: ['templateName' => 'templatePath', ...].
-     */
     public function overrideTemplates(array $templateNamesAndPaths): self
     {
         foreach ($templateNamesAndPaths as $templateName => $templatePath) {

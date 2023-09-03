@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Config\Menu;
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu\MenuItemInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDtoInterface;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
 /**
@@ -22,7 +23,7 @@ final class SectionMenuItem implements MenuItemInterface
     {
         $this->dto = new MenuItemDto();
 
-        $this->dto->setType(MenuItemDto::TYPE_SECTION);
+        $this->dto->setType(MenuItemDtoInterface::TYPE_SECTION);
         $this->dto->setLabel($label ?? '');
         $this->dto->setIcon($icon);
     }

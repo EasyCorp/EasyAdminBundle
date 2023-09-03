@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Config\Menu;
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu\MenuItemInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDtoInterface;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
 /**
@@ -25,7 +26,7 @@ final class SubMenuItem implements MenuItemInterface
     {
         $this->dto = new MenuItemDto();
 
-        $this->dto->setType(MenuItemDto::TYPE_SUBMENU);
+        $this->dto->setType(MenuItemDtoInterface::TYPE_SUBMENU);
         $this->dto->setLabel($label);
         $this->dto->setIcon($icon);
     }
@@ -40,7 +41,7 @@ final class SubMenuItem implements MenuItemInterface
         return $this;
     }
 
-    public function getAsDto(): MenuItemDto
+    public function getAsDto(): MenuItemDtoInterface
     {
         $subItemDtos = [];
         foreach ($this->subMenuItems as $subItem) {

@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\CrudInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Translation\TranslatableMessageBuilder;
@@ -21,22 +22,22 @@ final class CrudDto implements CrudDtoInterface
     private $entityLabelInSingular;
     private $entityLabelInPlural;
     private array $defaultPageTitles = [
-        Crud::PAGE_DETAIL => 'page_title.detail',
-        Crud::PAGE_EDIT => 'page_title.edit',
-        Crud::PAGE_INDEX => 'page_title.index',
-        Crud::PAGE_NEW => 'page_title.new',
+        CrudInterface::PAGE_DETAIL => 'page_title.detail',
+        CrudInterface::PAGE_EDIT => 'page_title.edit',
+        CrudInterface::PAGE_INDEX => 'page_title.index',
+        CrudInterface::PAGE_NEW => 'page_title.new',
     ];
     private array $customPageTitles = [
-        Crud::PAGE_DETAIL => null,
-        Crud::PAGE_EDIT => null,
-        Crud::PAGE_INDEX => null,
-        Crud::PAGE_NEW => null,
+        CrudInterface::PAGE_DETAIL => null,
+        CrudInterface::PAGE_EDIT => null,
+        CrudInterface::PAGE_INDEX => null,
+        CrudInterface::PAGE_NEW => null,
     ];
     private array $helpMessages = [
-        Crud::PAGE_DETAIL => null,
-        Crud::PAGE_EDIT => null,
-        Crud::PAGE_INDEX => null,
-        Crud::PAGE_NEW => null,
+        CrudInterface::PAGE_DETAIL => null,
+        CrudInterface::PAGE_EDIT => null,
+        CrudInterface::PAGE_INDEX => null,
+        CrudInterface::PAGE_NEW => null,
     ];
     private ?string $datePattern = 'medium';
     private ?string $timePattern = 'medium';

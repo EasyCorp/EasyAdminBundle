@@ -11,17 +11,17 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 interface MainMenuDtoInterface
 {
     /**
-     * @return MenuItemDto[]
+     * @return MenuItemDtoInterface[]
      */
     public function getItems(): array;
 
     /** @deprecated Don't use this method; the selected menu item is now detected automatically using
      *              the Request data instead of having to deal with menuIndex/submenuIndex query params
      */
-    public function isSelected(MenuItemDto $menuItemDto): bool;
+    public function isSelected(MenuItemDtoInterface $menuItemDto): bool;
 
     /** @deprecated Don't use this method; the expanded menu item is now detected automatically using
      *              the Request data instead of having to deal with menuIndex/submenuIndex query params
      */
-    public function isExpanded(MenuItemDto $menuItemDto): bool;
+    public function isExpanded(MenuItemDtoInterface $menuItemDto): bool;
 }

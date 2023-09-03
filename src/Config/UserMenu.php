@@ -8,7 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\UserMenuDtoInterface;
 
 final class UserMenu implements UserMenuInterface
 {
-    private UserMenuDto $dto;
+    private UserMenuDtoInterface $dto;
 
     private function __construct(UserMenuDtoInterface $userMenuDto)
     {

@@ -9,7 +9,7 @@ use function Symfony\Component\Translation\t;
 
 final class Actions implements ActionsInterface
 {
-    private ActionConfigDto $dto;
+    private ActionConfigDtoInterface $dto;
 
     private function __construct(ActionConfigDtoInterface $actionConfigDto)
     {
@@ -30,7 +30,7 @@ final class Actions implements ActionsInterface
 
     public function addBatchAction(Action|string $actionNameOrObject): self
     {
-        return $this->doAddAction(Crud::PAGE_INDEX, $actionNameOrObject, true);
+        return $this->doAddAction(CrudInterface::PAGE_INDEX, $actionNameOrObject, true);
     }
 
     public function set(string $pageName, Action|string $actionNameOrObject): self
@@ -141,14 +141,14 @@ final class Actions implements ActionsInterface
     private function createBuiltInAction(string $pageName, string $actionName): Action
     {
         if (ActionInterface::BATCH_DELETE === $actionName) {
-            return ActionInterface::new(ActionInterface::BATCH_DELETE, t('action.delete', domain: 'EasyAdminBundle'), null)
+            return Action::new(ActionInterface::BATCH_DELETE, t('action.delete', domain: 'EasyAdminBundle'), null)
                 ->linkToCrudAction(ActionInterface::BATCH_DELETE)
                 ->setCssClass('action-'.ActionInterface::BATCH_DELETE)
                 ->addCssClass('btn btn-danger pr-0');
         }
 
         if (ActionInterface::NEW === $actionName) {
-            return ActionInterface::new(ActionInterface::NEW, t('action.new', domain: 'EasyAdminBundle'), null)
+            return Action::new(ActionInterface::NEW, t('action.new', domain: 'EasyAdminBundle'), null)
                 ->createAsGlobalAction()
                 ->linkToCrudAction(ActionInterface::NEW)
                 ->setCssClass('action-'.ActionInterface::NEW)
@@ -156,55 +156,55 @@ final class Actions implements ActionsInterface
         }
 
         if (ActionInterface::EDIT === $actionName) {
-            return ActionInterface::new(ActionInterface::EDIT, t('action.edit', domain: 'EasyAdminBundle'), null)
+            return Action::new(ActionInterface::EDIT, t('action.edit', domain: 'EasyAdminBundle'), null)
                 ->linkToCrudAction(ActionInterface::EDIT)
                 ->setCssClass('action-'.ActionInterface::EDIT)
-                ->addCssClass(Crud::PAGE_DETAIL === $pageName ? 'btn btn-primary' : '');
+                ->addCssClass(CrudInterface::PAGE_DETAIL === $pageName ? 'btn btn-primary' : '');
         }
 
         if (ActionInterface::DETAIL === $actionName) {
-            return ActionInterface::new(ActionInterface::DETAIL, t('action.detail', domain: 'EasyAdminBundle'))
+            return Action::new(ActionInterface::DETAIL, t('action.detail', domain: 'EasyAdminBundle'))
                 ->linkToCrudAction(ActionInterface::DETAIL)
                 ->setCssClass('action-'.ActionInterface::DETAIL)
-                ->addCssClass(Crud::PAGE_EDIT === $pageName ? 'btn btn-secondary' : '');
+                ->addCssClass(CrudInterface::PAGE_EDIT === $pageName ? 'btn btn-secondary' : '');
         }
 
         if (ActionInterface::INDEX === $actionName) {
-            return ActionInterface::new(ActionInterface::INDEX, t('action.index', domain: 'EasyAdminBundle'))
+            return Action::new(ActionInterface::INDEX, t('action.index', domain: 'EasyAdminBundle'))
                 ->linkToCrudAction(ActionInterface::INDEX)
                 ->setCssClass('action-'.ActionInterface::INDEX)
-                ->addCssClass(\in_array($pageName, [Crud::PAGE_DETAIL, Crud::PAGE_EDIT, Crud::PAGE_NEW], true) ? 'btn btn-secondary' : '');
+                ->addCssClass(\in_array($pageName, [CrudInterface::PAGE_DETAIL, CrudInterface::PAGE_EDIT, CrudInterface::PAGE_NEW], true) ? 'btn btn-secondary' : '');
         }
 
         if (ActionInterface::DELETE === $actionName) {
-            $cssClass = \in_array($pageName, [Crud::PAGE_DETAIL, Crud::PAGE_EDIT], true) ? 'btn btn-secondary pr-0 text-danger' : 'text-danger';
+            $cssClass = \in_array($pageName, [CrudInterface::PAGE_DETAIL, CrudInterface::PAGE_EDIT], true) ? 'btn btn-secondary pr-0 text-danger' : 'text-danger';
 
-            return ActionInterface::new(ActionInterface::DELETE, t('action.delete', domain: 'EasyAdminBundle'), Crud::PAGE_INDEX === $pageName ? null : 'fa fa-fw fa-trash-o')
+            return Action::new(ActionInterface::DELETE, t('action.delete', domain: 'EasyAdminBundle'), CrudInterface::PAGE_INDEX === $pageName ? null : 'fa fa-fw fa-trash-o')
                 ->linkToCrudAction(ActionInterface::DELETE)
                 ->setCssClass('action-'.ActionInterface::DELETE)
                 ->addCssClass($cssClass);
         }
 
         if (ActionInterface::SAVE_AND_RETURN === $actionName) {
-            return ActionInterface::new(ActionInterface::SAVE_AND_RETURN, t(Crud::PAGE_EDIT === $pageName ? 'action.save' : 'action.create', domain: 'EasyAdminBundle'))
+            return Action::new(ActionInterface::SAVE_AND_RETURN, t(CrudInterface::PAGE_EDIT === $pageName ? 'action.save' : 'action.create', domain: 'EasyAdminBundle'))
                 ->setCssClass('action-'.ActionInterface::SAVE_AND_RETURN)
                 ->addCssClass('btn btn-primary action-save')
                 ->displayAsButton()
                 ->setHtmlAttributes(['type' => 'submit', 'name' => 'ea[newForm][btn]', 'value' => $actionName])
-                ->linkToCrudAction(Crud::PAGE_EDIT === $pageName ? ActionInterface::EDIT : ActionInterface::NEW);
+                ->linkToCrudAction(CrudInterface::PAGE_EDIT === $pageName ? ActionInterface::EDIT : ActionInterface::NEW);
         }
 
         if (ActionInterface::SAVE_AND_CONTINUE === $actionName) {
-            return ActionInterface::new(ActionInterface::SAVE_AND_CONTINUE, t(Crud::PAGE_EDIT === $pageName ? 'action.save_and_continue' : 'action.create_and_continue', domain: 'EasyAdminBundle'), 'far fa-edit')
+            return Action::new(ActionInterface::SAVE_AND_CONTINUE, t(CrudInterface::PAGE_EDIT === $pageName ? 'action.save_and_continue' : 'action.create_and_continue', domain: 'EasyAdminBundle'), 'far fa-edit')
                 ->setCssClass('action-'.ActionInterface::SAVE_AND_CONTINUE)
                 ->addCssClass('btn btn-secondary action-save')
                 ->displayAsButton()
                 ->setHtmlAttributes(['type' => 'submit', 'name' => 'ea[newForm][btn]', 'value' => $actionName])
-                ->linkToCrudAction(Crud::PAGE_EDIT === $pageName ? ActionInterface::EDIT : ActionInterface::NEW);
+                ->linkToCrudAction(CrudInterface::PAGE_EDIT === $pageName ? ActionInterface::EDIT : ActionInterface::NEW);
         }
 
         if (ActionInterface::SAVE_AND_ADD_ANOTHER === $actionName) {
-            return ActionInterface::new(ActionInterface::SAVE_AND_ADD_ANOTHER, t('action.create_and_add_another', domain: 'EasyAdminBundle'))
+            return Action::new(ActionInterface::SAVE_AND_ADD_ANOTHER, t('action.create_and_add_another', domain: 'EasyAdminBundle'))
                 ->setCssClass('action-'.ActionInterface::SAVE_AND_ADD_ANOTHER)
                 ->addCssClass('btn btn-secondary action-save')
                 ->displayAsButton()
@@ -229,7 +229,7 @@ final class Actions implements ActionsInterface
             $actionDto->setType(ActionInterface::TYPE_BATCH);
         }
 
-        if (Crud::PAGE_INDEX === $pageName && ActionInterface::DELETE === $actionName) {
+        if (CrudInterface::PAGE_INDEX === $pageName && ActionInterface::DELETE === $actionName) {
             $this->dto->prependAction($pageName, $actionDto);
         } else {
             $this->dto->appendAction($pageName, $actionDto);

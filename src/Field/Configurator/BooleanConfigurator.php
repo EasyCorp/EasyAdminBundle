@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Field\Configurator;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\ActionInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -40,9 +41,9 @@ final class BooleanConfigurator implements FieldConfiguratorInterface
         if ($isRenderedAsSwitch) {
             $crudDto = $context->getCrud();
 
-            if (null !== $crudDto && Action::NEW !== $crudDto->getCurrentAction()) {
+            if (null !== $crudDto && ActionInterface::NEW !== $crudDto->getCurrentAction()) {
                 $toggleUrl = $this->adminUrlGenerator
-                    ->setAction(Action::EDIT)
+                    ->setAction(ActionInterface::EDIT)
                     ->setEntityId($entityDto->getPrimaryKeyValue())
                     ->set('fieldName', $field->getProperty())
                     ->set('csrfToken', $this->csrfTokenManager?->getToken(BooleanField::CSRF_TOKEN_NAME))

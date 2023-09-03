@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Config\Menu;
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu\MenuItemInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDtoInterface;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
 /**
@@ -18,8 +19,7 @@ final class DashboardMenuItem implements MenuItemInterface
     public function __construct(TranslatableInterface|string $label, ?string $icon)
     {
         $this->dto = new MenuItemDto();
-
-        $this->dto->setType(MenuItemDto::TYPE_DASHBOARD);
+        $this->dto->setType(MenuItemDtoInterface::TYPE_DASHBOARD);
         $this->dto->setLabel($label);
         $this->dto->setIcon($icon);
     }

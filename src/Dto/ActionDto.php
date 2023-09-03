@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\ActionInterface;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
 final class ActionDto implements ActionDtoInterface
@@ -37,17 +38,17 @@ final class ActionDto implements ActionDtoInterface
 
     public function isEntityAction(): bool
     {
-        return Action::TYPE_ENTITY === $this->type;
+        return ActionInterface::TYPE_ENTITY === $this->type;
     }
 
     public function isGlobalAction(): bool
     {
-        return Action::TYPE_GLOBAL === $this->type;
+        return ActionInterface::TYPE_GLOBAL === $this->type;
     }
 
     public function isBatchAction(): bool
     {
-        return Action::TYPE_BATCH === $this->type;
+        return ActionInterface::TYPE_BATCH === $this->type;
     }
 
     public function getName(): string

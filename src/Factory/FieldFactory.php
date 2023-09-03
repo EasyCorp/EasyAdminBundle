@@ -5,6 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 use Doctrine\DBAL\Types\Types;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\CrudInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDtoInterface;
@@ -27,6 +28,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminTabType;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProviderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
+use EasyCorp\Bundle\EasyAdminBundle\Security\PermissionInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 final class FieldFactory implements FieldFactoryInterface
@@ -76,10 +78,10 @@ final class FieldFactory implements FieldFactoryInterface
         $context = $this->adminContextProvider->getContext();
         $currentPage = $context->getCrud()->getCurrentPage();
 
-        $isDetailOrIndex = \in_array($currentPage, [Crud::PAGE_INDEX, Crud::PAGE_DETAIL], true);
+        $isDetailOrIndex = \in_array($currentPage, [CrudInterface::PAGE_INDEX, CrudInterface::PAGE_DETAIL], true);
         foreach ($fields as $fieldDto) {
             if ((null !== $currentPage && false === $fieldDto->isDisplayedOn($currentPage))
-                || false === $this->authorizationChecker->isGranted(Permission::EA_VIEW_FIELD, $fieldDto)) {
+                || false === $this->authorizationChecker->isGranted(PermissionInterface::EA_VIEW_FIELD, $fieldDto)) {
                 $fields->unset($fieldDto);
 
                 continue;
@@ -94,7 +96,7 @@ final class FieldFactory implements FieldFactoryInterface
 
             // when creating new entities with "useEntryCrudForm" on an edit page we must
             // explicitly check for the "new" page because $currentPage will be "edit"
-            if ((null === $entityDto->getInstance()) && !$fieldDto->isDisplayedOn(Crud::PAGE_NEW)) {
+            if ((null === $entityDto->getInstance()) && !$fieldDto->isDisplayedOn(CrudInterface::PAGE_NEW)) {
                 $fields->unset($fieldDto);
 
                 continue;
@@ -115,7 +117,7 @@ final class FieldFactory implements FieldFactoryInterface
             $fields->set($fieldDto);
         }
 
-        $isPageWhereTabsAreVisible = \in_array($currentPage, [Crud::PAGE_DETAIL, Crud::PAGE_EDIT, Crud::PAGE_NEW], true);
+        $isPageWhereTabsAreVisible = \in_array($currentPage, [CrudInterface::PAGE_DETAIL, CrudInterface::PAGE_EDIT, CrudInterface::PAGE_NEW], true);
         if ($isPageWhereTabsAreVisible) {
             $this->checkOrphanTabFields($fields, $context);
         }

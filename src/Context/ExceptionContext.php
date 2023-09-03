@@ -11,8 +11,12 @@ final class ExceptionContext implements ExceptionContextInterface
     private array $parameters;
     private int $statusCode;
 
-    public function __construct(string $publicMessage, string $debugMessage = '', array $parameters = [], int $statusCode = 500)
-    {
+    public function __construct(
+        string $publicMessage,
+        string $debugMessage = '',
+        array $parameters = [],
+        int $statusCode = 500
+    ) {
         $this->publicMessage = $publicMessage;
         $this->debugMessage = $debugMessage;
         $this->parameters = $parameters;

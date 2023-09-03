@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Field\Configurator;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\CrudInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -27,7 +28,7 @@ final class LocaleConfigurator implements FieldConfiguratorInterface
     {
         $field->setFormTypeOptionIfNotSet('attr.data-ea-widget', 'ea-autocomplete');
 
-        if (\in_array($context->getCrud()->getCurrentPage(), [Crud::PAGE_EDIT, Crud::PAGE_NEW], true)) {
+        if (\in_array($context->getCrud()->getCurrentPage(), [CrudInterface::PAGE_EDIT, CrudInterface::PAGE_NEW], true)) {
             $field->setFormTypeOption('choices', $this->generateFormTypeChoices($field->getCustomOption(LocaleField::OPTION_LOCALE_CODES_TO_KEEP), $field->getCustomOption(LocaleField::OPTION_LOCALE_CODES_TO_REMOVE)));
             $field->setFormTypeOption('choice_loader', null);
         }

@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
 use EasyCorp\Bundle\EasyAdminBundle\Cache\CacheWarmer;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\CrudInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\TextDirection;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
@@ -56,7 +57,7 @@ final class AdminContextFactory implements AdminContextFactoryInterface
     public function create(Request $request, DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController): AdminContext
     {
         $crudAction = $request->query->get(EA::CRUD_ACTION);
-        $validPageNames = [Crud::PAGE_INDEX, Crud::PAGE_DETAIL, Crud::PAGE_EDIT, Crud::PAGE_NEW];
+        $validPageNames = [CrudInterface::PAGE_INDEX, CrudInterface::PAGE_DETAIL, CrudInterface::PAGE_EDIT, CrudInterface::PAGE_NEW];
         $pageName = \in_array($crudAction, $validPageNames, true) ? $crudAction : null;
 
         $dashboardDto = $this->getDashboardDto($request, $dashboardController);

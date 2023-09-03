@@ -10,7 +10,7 @@ final class UserMenuDto implements UserMenuDtoInterface
     private bool $displayAvatar = true;
     private ?string $name = null;
     private ?string $avatarUrl = null;
-    /** @var MenuItemDto[] */
+    /** @var MenuItemDtoInterface[] */
     private array $items = [];
 
     public function isNameDisplayed(): bool

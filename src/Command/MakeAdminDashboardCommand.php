@@ -24,7 +24,7 @@ use function Symfony\Component\String\u;
 )]
 final class MakeAdminDashboardCommand extends Command
 {
-    private ClassMaker $classMaker;
+    private ClassMakerInterface $classMaker;
     private string $projectDir;
 
     public function __construct(ClassMakerInterface $classMaker, string $projectDir, ?string $name = null)

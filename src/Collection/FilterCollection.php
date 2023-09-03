@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Collection;
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Collection\CollectionInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDtoInterface;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -11,14 +12,14 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDto;
 final class FilterCollection implements CollectionInterface
 {
     /**
-     * @param FilterDto[] $filters
+     * @param FilterDtoInterface[] $filters
      */
     private function __construct(private array $filters)
     {
     }
 
     /**
-     * @param FilterDto[] $filters
+     * @param FilterDtoInterface[] $filters
      */
     public static function new(array $filters = []): self
     {
@@ -26,14 +27,14 @@ final class FilterCollection implements CollectionInterface
     }
 
     /**
-     * @return FilterDto[]
+     * @return FilterDtoInterface[]
      */
     public function all(): array
     {
         return $this->filters;
     }
 
-    public function get(string $filterName): ?FilterDto
+    public function get(string $filterName): ?FilterDtoInterface
     {
         return $this->filters[$filterName] ?? null;
     }
@@ -43,7 +44,7 @@ final class FilterCollection implements CollectionInterface
         return \array_key_exists($offset, $this->filters);
     }
 
-    public function offsetGet(mixed $offset): FilterDto
+    public function offsetGet(mixed $offset): FilterDtoInterface
     {
         return $this->filters[$offset];
     }

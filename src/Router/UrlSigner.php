@@ -4,13 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Router;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 
-/**
- * This class is entirely based on Symfony\Component\HttpKernel\UriSigner.
- * (c) Fabien Potencier <fabien@symfony.com> - MIT License.
- *
- * @author Javier Eguiluz <javier.eguiluz@gmail.com>
- */
-final class UrlSigner
+final class UrlSigner implements UrlSignerInterface
 {
     private string $kernelSecret;
 
@@ -26,10 +20,6 @@ final class UrlSigner
         $this->kernelSecret = $kernelSecret;
     }
 
-    /**
-     * Signs a URL adding a query parameter with a hash generated
-     * with the values of some of the URL query parameters.
-     */
     public function sign(string $url): string
     {
         $urlParts = parse_url($url);
@@ -44,9 +34,6 @@ final class UrlSigner
         return $this->buildUrl($urlParts, $queryParams);
     }
 
-    /**
-     * Checks that a URL contains a valid signature.
-     */
     public function check(string $url): bool
     {
         $urlParts = parse_url($url);

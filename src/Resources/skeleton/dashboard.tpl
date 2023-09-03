@@ -8,7 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class <?= $class_name; ?> extends AbstractDashboardController
+final class <?= $class_name; ?> extends AbstractDashboardController
 {
     #[Route('/admin', name: 'admin')]
     public function index(): Response

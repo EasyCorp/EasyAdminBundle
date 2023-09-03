@@ -2,10 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
-/**
- * @author Javier Eguiluz <javier.eguiluz@gmail.com>
- */
-final class FilterDataDto
+final class FilterDataDto implements FilterDataDtoInterface
 {
     private int $index;
     private string $entityAlias;
@@ -18,7 +15,7 @@ final class FilterDataDto
     {
     }
 
-    public static function new(int $index, FilterDto $filterDto, string $entityAlias, array $formData): self
+    public static function new(int $index, FilterDtoInterface $filterDto, string $entityAlias, array $formData): FilterDataDtoInterface
     {
         $filterData = new self();
         $filterData->index = $index;

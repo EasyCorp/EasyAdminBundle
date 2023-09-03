@@ -11,13 +11,18 @@ use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Orm\EntityRepositoryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDataDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntitySearchEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactoryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactoryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProviderInterface;
 use Symfony\Component\Uid\Ulid;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
@@ -33,7 +38,7 @@ final class EntityRepository implements EntityRepositoryInterface
     private FormFactory $formFactory;
     private EventDispatcherInterface $eventDispatcher;
 
-    public function __construct(AdminContextProvider $adminContextProvider, ManagerRegistry $doctrine, EntityFactory $entityFactory, FormFactory $formFactory, EventDispatcherInterface $eventDispatcher)
+    public function __construct(AdminContextProviderInterface $adminContextProvider, ManagerRegistry $doctrine, EntityFactoryInterface $entityFactory, FormFactoryInterface $formFactory, EventDispatcherInterface $eventDispatcher)
     {
         $this->adminContextProvider = $adminContextProvider;
         $this->doctrine = $doctrine;
@@ -42,7 +47,7 @@ final class EntityRepository implements EntityRepositoryInterface
         $this->eventDispatcher = $eventDispatcher;
     }
 
-    public function createQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
+    public function createQueryBuilder(SearchDtoInterface $searchDto, EntityDtoInterface $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
     {
         /** @var EntityManagerInterface $entityManager */
         $entityManager = $this->doctrine->getManagerForClass($entityDto->getFqcn());
@@ -72,7 +77,7 @@ final class EntityRepository implements EntityRepositoryInterface
         return $queryBuilder;
     }
 
-    private function addSearchClause(QueryBuilder $queryBuilder, SearchDto $searchDto, EntityDto $entityDto, string $databasePlatformFqcn): void
+    private function addSearchClause(QueryBuilder $queryBuilder, SearchDtoInterface $searchDto, EntityDtoInterface $entityDto, string $databasePlatformFqcn): void
     {
         $isPostgreSql = PostgreSQLPlatform::class === $databasePlatformFqcn || is_subclass_of($databasePlatformFqcn, PostgreSQLPlatform::class);
         $searchablePropertiesConfig = $this->getSearchablePropertiesConfig($queryBuilder, $searchDto, $entityDto);
@@ -132,7 +137,7 @@ final class EntityRepository implements EntityRepositoryInterface
         $this->eventDispatcher->dispatch(new AfterEntitySearchEvent($queryBuilder, $searchDto, $entityDto));
     }
 
-    private function addOrderClause(QueryBuilder $queryBuilder, SearchDto $searchDto, EntityDto $entityDto): void
+    private function addOrderClause(QueryBuilder $queryBuilder, SearchDtoInterface $searchDto, EntityDtoInterface $entityDto): void
     {
         foreach ($searchDto->getSort() as $sortProperty => $sortOrder) {
             $aliases = $queryBuilder->getAllAliases();
@@ -183,7 +188,7 @@ final class EntityRepository implements EntityRepositoryInterface
         }
     }
 
-    private function addFilterClause(QueryBuilder $queryBuilder, SearchDto $searchDto, EntityDto $entityDto, FilterCollection $configuredFilters, FieldCollection $fields): void
+    private function addFilterClause(QueryBuilder $queryBuilder, SearchDtoInterface $searchDto, EntityDtoInterface $entityDto, FilterCollection $configuredFilters, FieldCollection $fields): void
     {
         $filtersForm = $this->formFactory->createFiltersForm($configuredFilters, $this->adminContextProvider->getContext()->getRequest());
         if (!$filtersForm->isSubmitted()) {
@@ -221,7 +226,7 @@ final class EntityRepository implements EntityRepositoryInterface
         }
     }
 
-    private function getSearchablePropertiesConfig(QueryBuilder $queryBuilder, SearchDto $searchDto, EntityDto $entityDto): array
+    private function getSearchablePropertiesConfig(QueryBuilder $queryBuilder, SearchDtoInterface $searchDto, EntityDtoInterface $entityDto): array
     {
         $searchablePropertiesConfig = [];
         $configuredSearchableProperties = $searchDto->getSearchableProperties();

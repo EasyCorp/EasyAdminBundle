@@ -9,7 +9,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * @author Yonel Ceruto <yonelceruto@gmail.com>
  */
-class BooleanFilterType extends AbstractType
+final class BooleanFilterType extends AbstractType
 {
     public function configureOptions(OptionsResolver $resolver): void
     {

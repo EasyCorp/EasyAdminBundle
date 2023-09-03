@@ -5,10 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\ActionCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 
-/**
- * @author Javier Eguiluz <javier.eguiluz@gmail.com>
- */
-final class ActionConfigDto
+final class ActionConfigDto implements ActionConfigDtoInterface
 {
     private ?string $pageName = null;
     /**
@@ -53,22 +50,22 @@ final class ActionConfigDto
         $this->actionPermissions = $permissions;
     }
 
-    public function prependAction(string $pageName, ActionDto $actionDto): void
+    public function prependAction(string $pageName, ActionDtoInterface $actionDto): void
     {
         $this->actions[$pageName][$actionDto->getName()] = $actionDto;
     }
 
-    public function appendAction(string $pageName, ActionDto $actionDto): void
+    public function appendAction(string $pageName, ActionDtoInterface $actionDto): void
     {
         $this->actions[$pageName] = array_merge([$actionDto->getName() => $actionDto], $this->actions[$pageName]);
     }
 
-    public function setAction(string $pageName, ActionDto $actionDto): void
+    public function setAction(string $pageName, ActionDtoInterface $actionDto): void
     {
         $this->actions[$pageName][$actionDto->getName()] = $actionDto;
     }
 
-    public function getAction(string $pageName, string $actionName): ?ActionDto
+    public function getAction(string $pageName, string $actionName): ?ActionDtoInterface
     {
         return $this->actions[$pageName][$actionName] ?? null;
     }
@@ -102,9 +99,6 @@ final class ActionConfigDto
         return null === $this->pageName ? $this->actions : ActionCollection::new($this->actions[$this->pageName]);
     }
 
-    /**
-     * @param ActionDto[] $newActions
-     */
     public function setActions(string $pageName, array $newActions): void
     {
         $this->actions[$pageName] = $newActions;

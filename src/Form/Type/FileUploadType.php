@@ -23,7 +23,7 @@ use Symfony\Component\Uid\Uuid;
 /**
  * @author Yonel Ceruto <yonelceruto@gmail.com>
  */
-class FileUploadType extends AbstractType implements DataMapperInterface
+final class FileUploadType extends AbstractType implements DataMapperInterface
 {
     private string $projectDir;
 

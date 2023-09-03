@@ -4,24 +4,26 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenu;
+use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenuInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu\MenuItemInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MainMenuDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\MainMenuDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\UserMenuDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\UserMenuDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Menu\MenuItemMatcherInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProviderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Http\Logout\LogoutUrlGenerator;
 use function Symfony\Component\Translation\t;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
-/**
- * @author Javier Eguiluz <javier.eguiluz@gmail.com>
- */
-final class MenuFactory
+final class MenuFactory implements MenuFactoryInterface
 {
     private AdminContextProvider $adminContextProvider;
     private AuthorizationCheckerInterface $authChecker;
@@ -29,7 +31,7 @@ final class MenuFactory
     private AdminUrlGenerator $adminUrlGenerator;
     private MenuItemMatcherInterface $menuItemMatcher;
 
-    public function __construct(AdminContextProvider $adminContextProvider, AuthorizationCheckerInterface $authChecker, LogoutUrlGenerator $logoutUrlGenerator, AdminUrlGenerator $adminUrlGenerator, MenuItemMatcherInterface $menuItemMatcher)
+    public function __construct(AdminContextProviderInterface $adminContextProvider, AuthorizationCheckerInterface $authChecker, LogoutUrlGenerator $logoutUrlGenerator, AdminUrlGeneratorInterface $adminUrlGenerator, MenuItemMatcherInterface $menuItemMatcher)
     {
         $this->adminContextProvider = $adminContextProvider;
         $this->authChecker = $authChecker;
@@ -38,15 +40,12 @@ final class MenuFactory
         $this->menuItemMatcher = $menuItemMatcher;
     }
 
-    /**
-     * @param MenuItemInterface[] $menuItems
-     */
-    public function createMainMenu(array $menuItems): MainMenuDto
+    public function createMainMenu(array $menuItems): MainMenuDtoInterface
     {
         return new MainMenuDto($this->buildMenuItems($menuItems));
     }
 
-    public function createUserMenu(UserMenu $userMenu): UserMenuDto
+    public function createUserMenu(UserMenuInterface $userMenu): UserMenuDtoInterface
     {
         $userMenuDto = $userMenu->getAsDto();
         $builtUserMenuItems = $this->buildMenuItems($userMenuDto->getItems());

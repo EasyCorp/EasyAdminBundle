@@ -2,10 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Registry;
 
-/**
- * @author Javier Eguiluz <javier.eguiluz@gmail.com>
- */
-final class CrudControllerRegistry
+final class CrudControllerRegistry implements CrudControllerRegistryInterface
 {
     private array $crudFqcnToEntityFqcnMap;
     private array $entityFqcnToCrudFqcnMap;

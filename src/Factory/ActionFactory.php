@@ -7,10 +7,15 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionConfigDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionConfigDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProviderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use EasyCorp\Bundle\EasyAdminBundle\Translation\TranslatableMessageBuilder;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,17 +24,14 @@ use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use function Symfony\Component\Translation\t;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
-/**
- * @author Javier Eguiluz <javier.eguiluz@gmail.com>
- */
-final class ActionFactory
+final class ActionFactory implements ActionFactoryInterface
 {
     private AdminContextProvider $adminContextProvider;
     private AuthorizationCheckerInterface $authChecker;
     private AdminUrlGenerator $adminUrlGenerator;
     private ?CsrfTokenManagerInterface $csrfTokenManager;
 
-    public function __construct(AdminContextProvider $adminContextProvider, AuthorizationCheckerInterface $authChecker, AdminUrlGenerator $adminUrlGenerator, ?CsrfTokenManagerInterface $csrfTokenManager = null)
+    public function __construct(AdminContextProviderInterface $adminContextProvider, AuthorizationCheckerInterface $authChecker, AdminUrlGeneratorInterface $adminUrlGenerator, ?CsrfTokenManagerInterface $csrfTokenManager = null)
     {
         $this->adminContextProvider = $adminContextProvider;
         $this->authChecker = $authChecker;
@@ -37,7 +39,7 @@ final class ActionFactory
         $this->csrfTokenManager = $csrfTokenManager;
     }
 
-    public function processEntityActions(EntityDto $entityDto, ActionConfigDto $actionsDto): void
+    public function processEntityActions(EntityDtoInterface $entityDto, ActionConfigDtoInterface $actionsDto): void
     {
         $currentPage = $this->adminContextProvider->getContext()->getCrud()->getCurrentPage();
         $entityActions = [];
@@ -76,7 +78,7 @@ final class ActionFactory
         $entityDto->setActions(ActionCollection::new($entityActions));
     }
 
-    public function processGlobalActions(?ActionConfigDto $actionsDto = null): ActionCollection
+    public function processGlobalActions(?ActionConfigDtoInterface $actionsDto = null): ActionCollection
     {
         if (null === $actionsDto) {
             $actionsDto = $this->adminContextProvider->getContext()->getCrud()->getActionsConfig();
@@ -107,7 +109,7 @@ final class ActionFactory
         return ActionCollection::new($globalActions);
     }
 
-    private function processAction(string $pageName, ActionDto $actionDto, ?EntityDto $entityDto = null): ActionDto
+    private function processAction(string $pageName, ActionDtoInterface $actionDto, ?EntityDtoInterface $entityDto = null): ActionDtoInterface
     {
         $adminContext = $this->adminContextProvider->getContext();
         $translationDomain = $adminContext->getI18n()->getTranslationDomain();
@@ -161,7 +163,7 @@ final class ActionFactory
         return $actionDto;
     }
 
-    private function generateActionUrl(string $currentAction, Request $request, ActionDto $actionDto, ?EntityDto $entityDto = null): string
+    private function generateActionUrl(string $currentAction, Request $request, ActionDtoInterface $actionDto, ?EntityDtoInterface $entityDto = null): string
     {
         $entityInstance = $entityDto?->getInstance();
 
@@ -197,7 +199,7 @@ final class ActionFactory
         return $this->adminUrlGenerator->unsetAllExcept(EA::FILTERS, EA::PAGE)->setAll($requestParameters)->generateUrl();
     }
 
-    private function generateReferrerUrl(Request $request, ActionDto $actionDto, string $currentAction): ?string
+    private function generateReferrerUrl(Request $request, ActionDtoInterface $actionDto, string $currentAction): ?string
     {
         $nextAction = $actionDto->getName();
 

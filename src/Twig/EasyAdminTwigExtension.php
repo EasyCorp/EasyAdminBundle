@@ -4,9 +4,12 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Twig;
 
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldLayoutDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldLayoutDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FieldLayoutFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProviderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Twig\Environment;
@@ -23,13 +26,13 @@ use Twig\TwigFunction;
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterface
+final class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterface
 {
     private ServiceLocator $serviceLocator;
     private AdminContextProvider $adminContextProvider;
     private ?CsrfTokenManagerInterface $csrfTokenManager;
 
-    public function __construct(ServiceLocator $serviceLocator, AdminContextProvider $adminContextProvider, ?CsrfTokenManagerInterface $csrfTokenManager)
+    public function __construct(ServiceLocator $serviceLocator, AdminContextProviderInterface $adminContextProvider, ?CsrfTokenManagerInterface $csrfTokenManager)
     {
         $this->serviceLocator = $serviceLocator;
         $this->adminContextProvider = $adminContextProvider;
@@ -173,7 +176,7 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
         return $function->getCallable()(...$functionArguments);
     }
 
-    public function getAdminUrlGenerator(array $queryParameters = []): AdminUrlGenerator
+    public function getAdminUrlGenerator(array $queryParameters = []): AdminUrlGeneratorInterface
     {
         return $this->serviceLocator->get(AdminUrlGenerator::class)->setAll($queryParameters);
     }
@@ -190,7 +193,7 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
         }
     }
 
-    public function createFieldLayout(?FieldCollection $fieldDtos): FieldLayoutDto
+    public function createFieldLayout(?FieldCollection $fieldDtos): FieldLayoutDtoInterface
     {
         return FieldLayoutFactory::createFromFieldDtos($fieldDtos);
     }

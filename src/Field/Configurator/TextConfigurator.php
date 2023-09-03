@@ -6,7 +6,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use function Symfony\Component\String\u;
@@ -16,12 +18,12 @@ use function Symfony\Component\String\u;
  */
 final class TextConfigurator implements FieldConfiguratorInterface
 {
-    public function supports(FieldDto $field, EntityDto $entityDto): bool
+    public function supports(FieldDtoInterface $field, EntityDtoInterface $entityDto): bool
     {
         return \in_array($field->getFieldFqcn(), [TextField::class, TextareaField::class], true);
     }
 
-    public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
+    public function configure(FieldDtoInterface $field, EntityDtoInterface $entityDto, AdminContext $context): void
     {
         if (TextareaField::class === $field->getFieldFqcn()) {
             $field->setFormTypeOptionIfNotSet('attr.rows', $field->getCustomOption(TextareaField::OPTION_NUM_OF_ROWS));

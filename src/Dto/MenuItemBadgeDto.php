@@ -2,10 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
-/**
- * @author Javier Eguiluz <javier.eguiluz@gmail.com>
- */
-final class MenuItemBadgeDto
+final class MenuItemBadgeDto implements MenuItemBadgeDtoInterface
 {
     // these are the names as the predefined styles used by Bootstrap 5
     public const PREDEFINED_STYLES = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'dark'];

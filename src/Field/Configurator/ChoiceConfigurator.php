@@ -6,7 +6,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Translation\TranslatableChoiceMessage;
 use EasyCorp\Bundle\EasyAdminBundle\Translation\TranslatableChoiceMessageCollection;
@@ -20,12 +22,12 @@ use Symfony\Contracts\Translation\TranslatableInterface;
  */
 final class ChoiceConfigurator implements FieldConfiguratorInterface
 {
-    public function supports(FieldDto $field, EntityDto $entityDto): bool
+    public function supports(FieldDtoInterface $field, EntityDtoInterface $entityDto): bool
     {
         return ChoiceField::class === $field->getFieldFqcn();
     }
 
-    public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
+    public function configure(FieldDtoInterface $field, EntityDtoInterface $entityDto, AdminContext $context): void
     {
         $areChoicesTranslatable = true === $field->getCustomOption(ChoiceField::OPTION_USE_TRANSLATABLE_CHOICES);
         $isExpanded = true === $field->getCustomOption(ChoiceField::OPTION_RENDER_EXPANDED);
@@ -129,7 +131,7 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
         $field->setFormattedValue(new TranslatableChoiceMessageCollection($choiceMessages, $isRenderedAsBadge));
     }
 
-    private function getChoices($choiceGenerator, EntityDto $entity, FieldDto $field): array|null
+    private function getChoices($choiceGenerator, EntityDtoInterface $entity, FieldDtoInterface $field): array|null
     {
         if (null === $choiceGenerator) {
             return null;
@@ -142,7 +144,7 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
         return $choiceGenerator($entity->getInstance(), $field);
     }
 
-    private function getBadgeCssClass($badgeSelector, $value, FieldDto $field): string
+    private function getBadgeCssClass($badgeSelector, $value, FieldDtoInterface $field): string
     {
         $commonBadgeCssClass = 'badge';
 

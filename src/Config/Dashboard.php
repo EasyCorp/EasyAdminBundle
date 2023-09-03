@@ -4,48 +4,46 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Config;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\TextDirection;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\DashboardDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\DashboardDtoInterface;
 
-/**
- * @author Javier Eguiluz <javier.eguiluz@gmail.com>
- */
-final class Dashboard
+final class Dashboard implements DashboardInterface
 {
     private DashboardDto $dto;
 
-    private function __construct(DashboardDto $dashboardDto)
+    private function __construct(DashboardDtoInterface $dashboardDto)
     {
         $this->dto = $dashboardDto;
     }
 
-    public static function new(): self
+    public static function new(): DashboardInterface
     {
         $dto = new DashboardDto();
 
         return new self($dto);
     }
 
-    public function setFaviconPath(string $path): self
+    public function setFaviconPath(string $path): DashboardInterface
     {
         $this->dto->setFaviconPath($path);
 
         return $this;
     }
 
-    public function setTitle(string $title): self
+    public function setTitle(string $title): DashboardInterface
     {
         $this->dto->setTitle($title);
 
         return $this;
     }
 
-    public function setTranslationDomain(string $translationDomain): self
+    public function setTranslationDomain(string $translationDomain): DashboardInterface
     {
         $this->dto->setTranslationDomain($translationDomain);
 
         return $this;
     }
 
-    public function setTextDirection(string $direction): self
+    public function setTextDirection(string $direction): DashboardInterface
     {
         if (!\in_array($direction, [TextDirection::LTR, TextDirection::RTL], true)) {
             throw new \InvalidArgumentException(sprintf('The "%s" value given to the textDirection option is not valid. It can only be "%s" or "%s"', $direction, TextDirection::LTR, TextDirection::RTL));
@@ -56,21 +54,21 @@ final class Dashboard
         return $this;
     }
 
-    public function renderContentMaximized(bool $maximized = true): self
+    public function renderContentMaximized(bool $maximized = true): DashboardInterface
     {
         $this->dto->setContentWidth($maximized ? Crud::LAYOUT_CONTENT_FULL : Crud::LAYOUT_CONTENT_DEFAULT);
 
         return $this;
     }
 
-    public function renderSidebarMinimized(bool $minimized = true): self
+    public function renderSidebarMinimized(bool $minimized = true): DashboardInterface
     {
         $this->dto->setSidebarWidth($minimized ? Crud::LAYOUT_SIDEBAR_COMPACT : Crud::LAYOUT_SIDEBAR_DEFAULT);
 
         return $this;
     }
 
-    public function disableUrlSignatures(bool $disableSignatures = true): self
+    public function disableUrlSignatures(bool $disableSignatures = true): DashboardInterface
     {
         trigger_deprecation(
             'easycorp/easyadmin-bundle',
@@ -84,21 +82,21 @@ final class Dashboard
         return $this;
     }
 
-    public function generateRelativeUrls(bool $relativeUrls = true): self
+    public function generateRelativeUrls(bool $relativeUrls = true): DashboardInterface
     {
         $this->dto->setAbsoluteUrls(!$relativeUrls);
 
         return $this;
     }
 
-    public function disableDarkMode(bool $disableDarkMode = true): self
+    public function disableDarkMode(bool $disableDarkMode = true): DashboardInterface
     {
         $this->dto->setEnableDarkMode(!$disableDarkMode);
 
         return $this;
     }
 
-    public function setLocales(array $locales): self
+    public function setLocales(array $locales): DashboardInterface
     {
         $localeDtos = [];
         foreach ($locales as $key => $value) {
@@ -116,7 +114,7 @@ final class Dashboard
         return $this;
     }
 
-    public function getAsDto(): DashboardDto
+    public function getAsDto(): DashboardDtoInterface
     {
         return $this->dto;
     }

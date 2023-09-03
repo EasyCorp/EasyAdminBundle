@@ -2,16 +2,11 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
-/**
- * @author Javier Eguiluz <javier.eguiluz@gmail.com>
- *
- * @internal and @experimental don't use this in your own apps
- */
-final class FieldLayoutDto
+final class FieldLayoutDto implements FieldLayoutDtoInterface
 {
-    /** @var FieldDto[] */
+    /** @var FieldDtoInterface[] */
     private array $fields;
-    /** @var FieldDto[] */
+    /** @var FieldDtoInterface[] */
     private array $tabs;
 
     public function __construct(array $fields = [], array $tabs = [])

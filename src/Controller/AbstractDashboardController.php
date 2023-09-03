@@ -5,11 +5,15 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Controller;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
+use EasyCorp\Bundle\EasyAdminBundle\Config\AssetsInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
+use EasyCorp\Bundle\EasyAdminBundle\Config\DashboardInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
+use EasyCorp\Bundle\EasyAdminBundle\Config\FiltersInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenu;
+use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenuInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
@@ -43,12 +47,12 @@ abstract class AbstractDashboardController extends AbstractController implements
         ]);
     }
 
-    public function configureDashboard(): Dashboard
+    public function configureDashboard(): DashboardInterface
     {
         return Dashboard::new();
     }
 
-    public function configureAssets(): Assets
+    public function configureAssets(): AssetsInterface
     {
         return Assets::new();
     }
@@ -58,7 +62,7 @@ abstract class AbstractDashboardController extends AbstractController implements
         yield MenuItem::linkToDashboard(t('page_title.dashboard', domain: 'EasyAdminBundle'), 'fa fa-home');
     }
 
-    public function configureUserMenu(UserInterface $user): UserMenu
+    public function configureUserMenu(UserInterface $user): UserMenuInterface
     {
         $userMenuItems = [];
 
@@ -105,7 +109,7 @@ abstract class AbstractDashboardController extends AbstractController implements
         ;
     }
 
-    public function configureFilters(): Filters
+    public function configureFilters(): FiltersInterface
     {
         return Filters::new();
     }

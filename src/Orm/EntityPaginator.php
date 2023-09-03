@@ -8,8 +8,11 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Orm\EntityPaginatorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\PaginatorDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\PaginatorDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactoryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -27,13 +30,13 @@ final class EntityPaginator implements EntityPaginatorInterface
     private ?int $rangeFirstResultNumber = null;
     private ?int $rangeLastResultNumber = null;
 
-    public function __construct(AdminUrlGenerator $adminUrlGenerator, EntityFactory $entityFactory)
+    public function __construct(AdminUrlGeneratorInterface $adminUrlGenerator, EntityFactoryInterface $entityFactory)
     {
         $this->adminUrlGenerator = $adminUrlGenerator;
         $this->entityFactory = $entityFactory;
     }
 
-    public function paginate(PaginatorDto $paginatorDto, QueryBuilder $queryBuilder): EntityPaginatorInterface
+    public function paginate(PaginatorDtoInterface $paginatorDto, QueryBuilder $queryBuilder): EntityPaginatorInterface
     {
         $this->pageSize = $paginatorDto->getPageSize();
         $this->rangeSize = $paginatorDto->getRangeSize();

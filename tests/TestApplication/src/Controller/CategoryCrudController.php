@@ -5,8 +5,10 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Controller;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
+use EasyCorp\Bundle\EasyAdminBundle\Config\AssetsInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
+use EasyCorp\Bundle\EasyAdminBundle\Config\FiltersInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\ForbiddenActionException;
@@ -25,7 +27,7 @@ class CategoryCrudController extends AbstractCrudController
         return Category::class;
     }
 
-    public function configureAssets(Assets $assets): Assets
+    public function configureAssets(AssetsInterface $assets): AssetsInterface
     {
         return parent::configureAssets($assets)
             ->addHtmlContentToHead('<link data-added-from-controller rel="me" href="https://example.com">')
@@ -53,7 +55,7 @@ class CategoryCrudController extends AbstractCrudController
             ->setPermission(AppAction::CUSTOM_ACTION, 'ROLE_ADMIN');
     }
 
-    public function configureFilters(Filters $filters): Filters
+    public function configureFilters(FiltersInterface $filters): FiltersInterface
     {
         return $filters
             ->add('name')

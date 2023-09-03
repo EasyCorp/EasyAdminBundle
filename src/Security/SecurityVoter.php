@@ -3,11 +3,16 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Security;
 
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProviderInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -20,7 +25,7 @@ final class SecurityVoter extends Voter
     private AuthorizationCheckerInterface $authorizationChecker;
     private AdminContextProvider $adminContextProvider;
 
-    public function __construct(AuthorizationCheckerInterface $authorizationChecker, AdminContextProvider $adminContextProvider)
+    public function __construct(AuthorizationCheckerInterface $authorizationChecker, AdminContextProviderInterface $adminContextProvider)
     {
         $this->authorizationChecker = $authorizationChecker;
         $this->adminContextProvider = $adminContextProvider;
@@ -62,7 +67,7 @@ final class SecurityVoter extends Voter
         return $this->authorizationChecker->isGranted($menuItemDto->getPermission(), $menuItemDto);
     }
 
-    private function voteOnExecuteActionPermission(CrudDto $crudDto, ActionDto|string $actionNameOrDto, ?EntityDto $entityDto): bool
+    private function voteOnExecuteActionPermission(CrudDtoInterface $crudDto, ActionDtoInterface|string $actionNameOrDto, ?EntityDtoInterface $entityDto): bool
     {
         // users can run the Crud action if:
         // * they have the required permission to execute the action on the given entity instance
@@ -78,13 +83,13 @@ final class SecurityVoter extends Voter
         return $this->authorizationChecker->isGranted($actionPermission, $subject) && !\in_array($actionName, $disabledActionNames, true);
     }
 
-    private function voteOnViewPropertyPermission(FieldDto $field): bool
+    private function voteOnViewPropertyPermission(FieldDtoInterface $field): bool
     {
         // users can see the field if they have the permission required by the field
         return $this->authorizationChecker->isGranted($field->getPermission(), $field);
     }
 
-    private function voteOnViewEntityPermission(EntityDto $entityDto): bool
+    private function voteOnViewEntityPermission(EntityDtoInterface $entityDto): bool
     {
         // users can see the entity if they have the required permission on the specific entity instance
         return $this->authorizationChecker->isGranted($entityDto->getPermission(), $entityDto->getInstance());

@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 /**
  * @author Yonel Ceruto <yonelceruto@gmail.com>
  */
-class FileUploadState
+final class FileUploadState
 {
     private bool $allowAdd;
 

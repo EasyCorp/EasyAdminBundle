@@ -7,6 +7,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -14,10 +15,7 @@ use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 
-/**
- * @author Javier Eguiluz <javier.eguiluz@gmail.com>
- */
-final class FormFactory
+final class FormFactory implements FormFactoryInterface
 {
     private FormFactoryInterface $symfonyFormFactory;
 
@@ -26,7 +24,7 @@ final class FormFactory
         $this->symfonyFormFactory = $symfonyFormFactory;
     }
 
-    public function createEditFormBuilder(EntityDto $entityDto, KeyValueStore $formOptions, AdminContext $context): FormBuilderInterface
+    public function createEditFormBuilder(EntityDtoInterface $entityDto, KeyValueStore $formOptions, AdminContext $context): FormBuilderInterface
     {
         $cssClass = sprintf('ea-%s-form', $context->getCrud()->getCurrentAction());
         $formOptions->set('attr.class', trim(($formOptions->get('attr.class') ?? '').' '.$cssClass));
@@ -37,12 +35,12 @@ final class FormFactory
         return $this->symfonyFormFactory->createNamedBuilder($entityDto->getName(), CrudFormType::class, $entityDto->getInstance(), $formOptions->all());
     }
 
-    public function createEditForm(EntityDto $entityDto, KeyValueStore $formOptions, AdminContext $context): FormInterface
+    public function createEditForm(EntityDtoInterface $entityDto, KeyValueStore $formOptions, AdminContext $context): FormInterface
     {
         return $this->createEditFormBuilder($entityDto, $formOptions, $context)->getForm();
     }
 
-    public function createNewFormBuilder(EntityDto $entityDto, KeyValueStore $formOptions, AdminContext $context): FormBuilderInterface
+    public function createNewFormBuilder(EntityDtoInterface $entityDto, KeyValueStore $formOptions, AdminContext $context): FormBuilderInterface
     {
         $cssClass = sprintf('ea-%s-form', $context->getCrud()->getCurrentAction());
         $formOptions->set('attr.class', trim(($formOptions->get('attr.class') ?? '').' '.$cssClass));
@@ -53,7 +51,7 @@ final class FormFactory
         return $this->symfonyFormFactory->createNamedBuilder($entityDto->getName(), CrudFormType::class, $entityDto->getInstance(), $formOptions->all());
     }
 
-    public function createNewForm(EntityDto $entityDto, KeyValueStore $formOptions, AdminContext $context): FormInterface
+    public function createNewForm(EntityDtoInterface $entityDto, KeyValueStore $formOptions, AdminContext $context): FormInterface
     {
         return $this->createNewFormBuilder($entityDto, $formOptions, $context)->getForm();
     }

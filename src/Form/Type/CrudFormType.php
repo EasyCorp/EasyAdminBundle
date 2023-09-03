@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type;
 
 use ArrayObject;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Form\EventListener\EasyAdminTabSubscriber;
 use Symfony\Bridge\Doctrine\Form\DoctrineOrmTypeGuesser;
@@ -20,7 +21,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  *
  * @author Maxime Steinhausser <maxime.steinhausser@gmail.com>
  */
-class CrudFormType extends AbstractType
+final class CrudFormType extends AbstractType
 {
     private DoctrineOrmTypeGuesser $doctrineOrmTypeGuesser;
 
@@ -31,7 +32,7 @@ class CrudFormType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        /** @var EntityDto $entityDto */
+        /** @var EntityDtoInterface $entityDto */
         $entityDto = $options['entityDto'];
         $formTabs = [];
         $currentFormTab = null;

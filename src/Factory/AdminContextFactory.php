@@ -10,15 +10,25 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionConfigDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionConfigDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetsDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetsDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\DashboardDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\DashboardDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterConfigDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterConfigDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\I18nDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\I18nDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\CrudControllerRegistry;
+use EasyCorp\Bundle\EasyAdminBundle\Registry\CrudControllerRegistryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\TemplateRegistry;
+use EasyCorp\Bundle\EasyAdminBundle\Registry\TemplateRegistryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -26,10 +36,7 @@ use function Symfony\Component\String\u;
 use function Symfony\Component\Translation\t;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
-/**
- * @author Javier Eguiluz <javier.eguiluz@gmail.com>
- */
-final class AdminContextFactory
+final class AdminContextFactory implements AdminContextFactoryInterface
 {
     private string $cacheDir;
     private ?TokenStorageInterface $tokenStorage;
@@ -37,7 +44,7 @@ final class AdminContextFactory
     private CrudControllerRegistry $crudControllers;
     private EntityFactory $entityFactory;
 
-    public function __construct(string $cacheDir, ?TokenStorageInterface $tokenStorage, MenuFactory $menuFactory, CrudControllerRegistry $crudControllers, EntityFactory $entityFactory)
+    public function __construct(string $cacheDir, ?TokenStorageInterface $tokenStorage, MenuFactoryInterface $menuFactory, CrudControllerRegistryInterface $crudControllers, EntityFactoryInterface $entityFactory)
     {
         $this->cacheDir = $cacheDir;
         $this->tokenStorage = $tokenStorage;
@@ -67,7 +74,7 @@ final class AdminContextFactory
         return new AdminContext($request, $user, $i18nDto, $this->crudControllers, $dashboardDto, $dashboardController, $assetDto, $crudDto, $entityDto, $searchDto, $this->menuFactory, $templateRegistry);
     }
 
-    private function getDashboardDto(Request $request, DashboardControllerInterface $dashboardControllerInstance): DashboardDto
+    private function getDashboardDto(Request $request, DashboardControllerInterface $dashboardControllerInstance): DashboardDtoInterface
     {
         $dashboardRoutesCachePath = $this->cacheDir.'/'.CacheWarmer::DASHBOARD_ROUTES_CACHE;
         $dashboardControllerRoutes = !file_exists($dashboardRoutesCachePath) ? [] : require $dashboardRoutesCachePath;
@@ -94,7 +101,7 @@ final class AdminContextFactory
         return $dashboardDto;
     }
 
-    private function getAssetDto(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController, ?string $pageName): AssetsDto
+    private function getAssetDto(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController, ?string $pageName): AssetsDtoInterface
     {
         $defaultAssets = $dashboardController->configureAssets();
 
@@ -105,7 +112,7 @@ final class AdminContextFactory
         return $crudController->configureAssets($defaultAssets)->getAsDto()->loadedOn($pageName);
     }
 
-    private function getCrudDto(CrudControllerRegistry $crudControllers, DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController, ActionConfigDto $actionConfigDto, FilterConfigDto $filters, ?string $crudAction, ?string $pageName): ?CrudDto
+    private function getCrudDto(CrudControllerRegistryInterface $crudControllers, DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController, ActionConfigDtoInterface $actionConfigDto, FilterConfigDtoInterface $filters, ?string $crudAction, ?string $pageName): ?CrudDtoInterface
     {
         if (null === $crudController) {
             return null;
@@ -126,7 +133,7 @@ final class AdminContextFactory
         return $crudDto;
     }
 
-    private function getActionConfig(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController, ?string $pageName): ActionConfigDto
+    private function getActionConfig(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController, ?string $pageName): ActionConfigDtoInterface
     {
         if (null === $crudController) {
             return new ActionConfigDto();
@@ -137,7 +144,7 @@ final class AdminContextFactory
         return $crudController->configureActions($defaultActionConfig)->getAsDto($pageName);
     }
 
-    private function getFilters(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController): FilterConfigDto
+    private function getFilters(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController): FilterConfigDtoInterface
     {
         if (null === $crudController) {
             return new FilterConfigDto();
@@ -148,7 +155,7 @@ final class AdminContextFactory
         return $crudController->configureFilters($defaultFilterConfig)->getAsDto();
     }
 
-    private function getTemplateRegistry(DashboardControllerInterface $dashboardController, ?CrudDto $crudDto): TemplateRegistry
+    private function getTemplateRegistry(DashboardControllerInterface $dashboardController, ?CrudDtoInterface $crudDto): TemplateRegistryInterface
     {
         $templateRegistry = TemplateRegistry::new();
 
@@ -162,7 +169,7 @@ final class AdminContextFactory
         return $templateRegistry;
     }
 
-    private function getI18nDto(Request $request, DashboardDto $dashboardDto, ?CrudDto $crudDto, ?EntityDto $entityDto): I18nDto
+    private function getI18nDto(Request $request, DashboardDtoInterface $dashboardDto, ?CrudDtoInterface $crudDto, ?EntityDtoInterface $entityDto): I18nDtoInterface
     {
         $locale = $request->getLocale();
 
@@ -203,7 +210,7 @@ final class AdminContextFactory
         return new I18nDto($locale, $textDirection, $translationDomain, $translationParameters);
     }
 
-    public function getSearchDto(Request $request, ?CrudDto $crudDto): ?SearchDto
+    public function getSearchDto(Request $request, ?CrudDtoInterface $crudDto): ?SearchDtoInterface
     {
         if (null === $crudDto) {
             return null;
@@ -232,7 +239,7 @@ final class AdminContextFactory
         return \is_object($user) ? $user : null;
     }
 
-    private function getEntityDto(Request $request, ?CrudDto $crudDto): ?EntityDto
+    private function getEntityDto(Request $request, ?CrudDtoInterface $crudDto): ?EntityDtoInterface
     {
         if (null === $crudDto) {
             return null;

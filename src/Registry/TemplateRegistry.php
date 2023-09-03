@@ -2,10 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Registry;
 
-/**
- * @author Javier Eguiluz <javier.eguiluz@gmail.com>
- */
-final class TemplateRegistry
+final class TemplateRegistry implements TemplateRegistryInterface
 {
     private array $templates = [
         'layout' => '@EasyAdmin/layout.html.twig',
@@ -66,7 +63,7 @@ final class TemplateRegistry
     {
     }
 
-    public static function new(): self
+    public static function new(): TemplateRegistryInterface
     {
         return new self();
     }

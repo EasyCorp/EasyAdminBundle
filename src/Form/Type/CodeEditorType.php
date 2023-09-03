@@ -8,7 +8,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 /**
  * @author Yonel Ceruto <yonelceruto@gmail.com>
  */
-class CodeEditorType extends AbstractType
+final class CodeEditorType extends AbstractType
 {
     public function getParent(): string
     {

@@ -5,21 +5,16 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Inspector;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\DataCollector\DataCollector as BaseDataCollector;
 
-/**
- * Collects information about the requests related to EasyAdmin and displays
- * it both in the web debug toolbar and in the profiler.
- *
- * @author Javier Eguiluz <javier.eguiluz@gmail.com>
- */
-class DataCollector extends BaseDataCollector
+final class DataCollector extends BaseDataCollector implements DataCollectorInterface
 {
     private AdminContextProvider $adminContextProvider;
 
-    public function __construct(AdminContextProvider $adminContextProvider)
+    public function __construct(AdminContextProviderInterface $adminContextProvider)
     {
         $this->adminContextProvider = $adminContextProvider;
     }

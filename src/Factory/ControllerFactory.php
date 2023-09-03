@@ -8,10 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ControllerResolverInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-/**
- * @author Lukas Lücke <lukas@luecke.me>
- */
-final class ControllerFactory
+final class ControllerFactory implements ControllerFactoryInterface
 {
     private ControllerResolverInterface $controllerResolver;
 

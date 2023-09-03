@@ -6,9 +6,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProviderInterface;
 use function Symfony\Component\String\u;
 use Twig\Markup;
 
@@ -20,19 +23,19 @@ final class CommonPostConfigurator implements FieldConfiguratorInterface
     private AdminContextProvider $adminContextProvider;
     private string $charset;
 
-    public function __construct(AdminContextProvider $adminContextProvider, string $charset)
+    public function __construct(AdminContextProviderInterface $adminContextProvider, string $charset)
     {
         $this->adminContextProvider = $adminContextProvider;
         $this->charset = $charset;
     }
 
-    public function supports(FieldDto $field, EntityDto $entityDto): bool
+    public function supports(FieldDtoInterface $field, EntityDtoInterface $entityDto): bool
     {
         // this configurator applies to all kinds of properties
         return true;
     }
 
-    public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
+    public function configure(FieldDtoInterface $field, EntityDtoInterface $entityDto, AdminContext $context): void
     {
         if (\in_array($context->getCrud()->getCurrentPage(), [Crud::PAGE_INDEX, Crud::PAGE_DETAIL], true)) {
             $formattedValue = $this->buildFormattedValueOption($field->getFormattedValue(), $field, $entityDto);
@@ -42,7 +45,7 @@ final class CommonPostConfigurator implements FieldConfiguratorInterface
         $this->updateFieldTemplate($field);
     }
 
-    private function buildFormattedValueOption($value, FieldDto $field, EntityDto $entityDto)
+    private function buildFormattedValueOption($value, FieldDtoInterface $field, EntityDtoInterface $entityDto)
     {
         if (null === $callable = $field->getFormatValueCallable()) {
             return $value;
@@ -55,7 +58,7 @@ final class CommonPostConfigurator implements FieldConfiguratorInterface
         return \is_string($formatted) ? new Markup($formatted, $this->charset) : $formatted;
     }
 
-    private function updateFieldTemplate(FieldDto $field): void
+    private function updateFieldTemplate(FieldDtoInterface $field): void
     {
         $usesEasyAdminTemplate = u($field->getTemplatePath())->startsWith('@EasyAdmin/');
         $isBooleanField = BooleanField::class === $field->getFieldFqcn();

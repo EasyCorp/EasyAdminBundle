@@ -10,7 +10,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * @author Yonel Ceruto <yonelceruto@gmail.com>
  */
-class ComparisonFilterType extends AbstractType
+final class ComparisonFilterType extends AbstractType
 {
     private ?string $valueType;
     private array $valueTypeOptions;

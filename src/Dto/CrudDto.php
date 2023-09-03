@@ -9,10 +9,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Translation\TranslatableMessageBuilder;
 use function Symfony\Component\Translation\t;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
-/**
- * @author Javier Eguiluz <javier.eguiluz@gmail.com>
- */
-final class CrudDto
+final class CrudDto implements CrudDtoInterface
 {
     private ?string $controllerFqcn = null;
     private AssetsDto $fieldAssetsDto;
@@ -89,12 +86,12 @@ final class CrudDto
         $this->pageName = $pageName;
     }
 
-    public function getFieldAssets(string $pageName): AssetsDto
+    public function getFieldAssets(string $pageName): AssetsDtoInterface
     {
         return $this->fieldAssetsDto;
     }
 
-    public function setFieldAssets(AssetsDto $assets): void
+    public function setFieldAssets(AssetsDtoInterface $assets): void
     {
         $this->fieldAssetsDto = $assets;
     }
@@ -125,9 +122,6 @@ final class CrudDto
         return ($this->entityLabelInSingular)($entityInstance, $pageName);
     }
 
-    /**
-     * @param TranslatableInterface|string|callable $label
-     */
     public function setEntityLabelInSingular($label): void
     {
         $this->entityLabelInSingular = $label;
@@ -149,9 +143,6 @@ final class CrudDto
         return ($this->entityLabelInPlural)($entityInstance, $pageName);
     }
 
-    /**
-     * @param TranslatableInterface|string|callable $label
-     */
     public function setEntityLabelInPlural($label): void
     {
         $this->entityLabelInPlural = $label;
@@ -175,9 +166,6 @@ final class CrudDto
         return t($title, $translationParameters);
     }
 
-    /**
-     * @param TranslatableInterface|string|callable $pageTitle
-     */
     public function setCustomPageTitle(string $pageName, $pageTitle): void
     {
         if (!\is_string($pageTitle) && !$pageTitle instanceof TranslatableInterface && !\is_callable($pageTitle)) {
@@ -347,12 +335,12 @@ final class CrudDto
         $this->showEntityActionsAsDropdown = $showAsDropdown;
     }
 
-    public function getPaginator(): PaginatorDto
+    public function getPaginator(): PaginatorDtoInterface
     {
         return $this->paginatorDto;
     }
 
-    public function setPaginator(PaginatorDto $paginatorDto): void
+    public function setPaginator(PaginatorDtoInterface $paginatorDto): void
     {
         $this->paginatorDto = $paginatorDto;
     }
@@ -423,22 +411,22 @@ final class CrudDto
         $this->actionName = $actionName;
     }
 
-    public function getActionsConfig(): ActionConfigDto
+    public function getActionsConfig(): ActionConfigDtoInterface
     {
         return $this->actionConfigDto;
     }
 
-    public function setActionsConfig(ActionConfigDto $actionConfig): void
+    public function setActionsConfig(ActionConfigDtoInterface $actionConfig): void
     {
         $this->actionConfigDto = $actionConfig;
     }
 
-    public function getFiltersConfig(): FilterConfigDto
+    public function getFiltersConfig(): FilterConfigDtoInterface
     {
         return $this->filters;
     }
 
-    public function setFiltersConfig(FilterConfigDto $filterConfig): void
+    public function setFiltersConfig(FilterConfigDtoInterface $filterConfig): void
     {
         $this->filters = $filterConfig;
     }

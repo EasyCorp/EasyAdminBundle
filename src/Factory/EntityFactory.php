@@ -12,17 +12,16 @@ use EasyCorp\Bundle\EasyAdminBundle\Collection\ActionCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\EntityCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionConfigDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionConfigDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityBuiltEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\EntityNotFoundException;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
-/**
- * @author Javier Eguiluz <javier.eguiluz@gmail.com>
- */
-final class EntityFactory
+final class EntityFactory implements EntityFactoryInterface
 {
     private FieldFactory $fieldFactory;
     private ActionFactory $actionFactory;
@@ -30,7 +29,7 @@ final class EntityFactory
     private ManagerRegistry $doctrine;
     private EventDispatcherInterface $eventDispatcher;
 
-    public function __construct(FieldFactory $fieldFactory, ActionFactory $actionFactory, AuthorizationCheckerInterface $authorizationChecker, ManagerRegistry $doctrine, EventDispatcherInterface $eventDispatcher)
+    public function __construct(FieldFactoryInterface $fieldFactory, ActionFactoryInterface $actionFactory, AuthorizationCheckerInterface $authorizationChecker, ManagerRegistry $doctrine, EventDispatcherInterface $eventDispatcher)
     {
         $this->fieldFactory = $fieldFactory;
         $this->actionFactory = $actionFactory;
@@ -39,7 +38,7 @@ final class EntityFactory
         $this->eventDispatcher = $eventDispatcher;
     }
 
-    public function processFields(EntityDto $entityDto, FieldCollection $fields): void
+    public function processFields(EntityDtoInterface $entityDto, FieldCollection $fields): void
     {
         $this->fieldFactory->processFields($entityDto, $fields);
     }
@@ -52,12 +51,12 @@ final class EntityFactory
         }
     }
 
-    public function processActions(EntityDto $entityDto, ActionConfigDto $actionConfigDto): void
+    public function processActions(EntityDtoInterface $entityDto, ActionConfigDtoInterface $actionConfigDto): void
     {
         $this->actionFactory->processEntityActions($entityDto, $actionConfigDto);
     }
 
-    public function processActionsForAll(EntityCollection $entities, ActionConfigDto $actionConfigDto): ActionCollection
+    public function processActionsForAll(EntityCollection $entities, ActionConfigDtoInterface $actionConfigDto): ActionCollection
     {
         foreach ($entities as $entity) {
             $this->processActions($entity, clone $actionConfigDto);
@@ -66,17 +65,17 @@ final class EntityFactory
         return $this->actionFactory->processGlobalActions($actionConfigDto);
     }
 
-    public function create(string $entityFqcn, $entityId = null, ?string $entityPermission = null): EntityDto
+    public function create(string $entityFqcn, $entityId = null, ?string $entityPermission = null): EntityDtoInterface
     {
         return $this->doCreate($entityFqcn, $entityId, $entityPermission);
     }
 
-    public function createForEntityInstance($entityInstance): EntityDto
+    public function createForEntityInstance($entityInstance): EntityDtoInterface
     {
         return $this->doCreate(null, null, null, $entityInstance);
     }
 
-    public function createCollection(EntityDto $entityDto, ?iterable $entityInstances): EntityCollection
+    public function createCollection(EntityDtoInterface $entityDto, ?iterable $entityInstances): EntityCollection
     {
         $entityDtos = [];
 
@@ -93,9 +92,6 @@ final class EntityFactory
         return EntityCollection::new($entityDtos);
     }
 
-    /**
-     * @return ClassMetadata&ClassMetadataInfo
-     */
     public function getEntityMetadata(string $entityFqcn): ClassMetadata
     {
         $entityManager = $this->getEntityManager($entityFqcn);
@@ -109,7 +105,7 @@ final class EntityFactory
         return $entityMetadata;
     }
 
-    private function doCreate(?string $entityFqcn = null, $entityId = null, ?string $entityPermission = null, $entityInstance = null): EntityDto
+    private function doCreate(?string $entityFqcn = null, $entityId = null, ?string $entityPermission = null, $entityInstance = null): EntityDtoInterface
     {
         if (null === $entityInstance && null !== $entityFqcn) {
             $entityInstance = null === $entityId ? null : $this->getEntityInstance($entityFqcn, $entityId);
@@ -150,7 +146,11 @@ final class EntityFactory
         if (null === $entityInstance = $entityManager->getRepository($entityFqcn)->find($entityIdValue)) {
             $entityIdName = $entityManager->getClassMetadata($entityFqcn)->getIdentifierFieldNames()[0];
 
-            throw new EntityNotFoundException(['entity_name' => $entityFqcn, 'entity_id_name' => $entityIdName, 'entity_id_value' => $entityIdValue]);
+            throw new EntityNotFoundException([
+                'entity_name' => $entityFqcn,
+                'entity_id_name' => $entityIdName,
+                'entity_id_value' => $entityIdValue
+            ]);
         }
 
         return $entityInstance;

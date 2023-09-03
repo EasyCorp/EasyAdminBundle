@@ -7,8 +7,11 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactoryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AvatarField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use Symfony\Component\PropertyAccess\Exception\AccessException;
@@ -26,19 +29,19 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
     private PropertyAccessorInterface $propertyAccessor;
     private EntityFactory $entityFactory;
 
-    public function __construct(PropertyAccessorInterface $propertyAccessor, EntityFactory $entityFactory)
+    public function __construct(PropertyAccessorInterface $propertyAccessor, EntityFactoryInterface $entityFactory)
     {
         $this->propertyAccessor = $propertyAccessor;
         $this->entityFactory = $entityFactory;
     }
 
-    public function supports(FieldDto $field, EntityDto $entityDto): bool
+    public function supports(FieldDtoInterface $field, EntityDtoInterface $entityDto): bool
     {
         // this configurator applies to all kinds of properties
         return true;
     }
 
-    public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
+    public function configure(FieldDtoInterface $field, EntityDtoInterface $entityDto, AdminContext $context): void
     {
         $translationDomain = $context->getI18n()->getTranslationDomain();
 
@@ -93,7 +96,7 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
         $field->setFormTypeOptionIfNotSet('label', $field->getLabel());
     }
 
-    private function buildHelpOption(FieldDto $field, string $translationDomain): ?TranslatableInterface
+    private function buildHelpOption(FieldDtoInterface $field, string $translationDomain): ?TranslatableInterface
     {
         $help = $field->getHelp();
         if (null === $help || $help instanceof TranslatableInterface) {
@@ -106,7 +109,7 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
     /**
      * @return TranslatableInterface|string|false|null
      */
-    private function buildLabelOption(FieldDto $field, string $translationDomain, ?string $currentPage)
+    private function buildLabelOption(FieldDtoInterface $field, string $translationDomain, ?string $currentPage)
     {
         // don't autogenerate a label for these special fields (there's a dedicated configurator for them)
         if (FormField::class === $field->getFieldFqcn()) {
@@ -148,7 +151,7 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
         return t($label, $field->getTranslationParameters(), $translationDomain);
     }
 
-    private function buildSortableOption(FieldDto $field, EntityDto $entityDto): bool
+    private function buildSortableOption(FieldDtoInterface $field, EntityDtoInterface $entityDto): bool
     {
         if (null !== $isSortable = $field->isSortable()) {
             return $isSortable;
@@ -157,12 +160,12 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
         return $entityDto->hasProperty($field->getProperty());
     }
 
-    private function buildVirtualOption(FieldDto $field, EntityDto $entityDto): bool
+    private function buildVirtualOption(FieldDtoInterface $field, EntityDtoInterface $entityDto): bool
     {
         return !$entityDto->hasProperty($field->getProperty());
     }
 
-    private function buildTemplatePathOption(AdminContext $adminContext, FieldDto $field, EntityDto $entityDto, bool $isReadable): string
+    private function buildTemplatePathOption(AdminContext $adminContext, FieldDtoInterface $field, EntityDtoInterface $entityDto, bool $isReadable): string
     {
         if (null !== $templatePath = $field->getTemplatePath()) {
             return $templatePath;
@@ -180,7 +183,7 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
         return $adminContext->getTemplatePath($templateName);
     }
 
-    private function buildRequiredOption(FieldDto $field, EntityDto $entityDto): bool
+    private function buildRequiredOption(FieldDtoInterface $field, EntityDtoInterface $entityDto): bool
     {
         if (null !== $isRequired = $field->getFormTypeOption('required')) {
             return $isRequired;

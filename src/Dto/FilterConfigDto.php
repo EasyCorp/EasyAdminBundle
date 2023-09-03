@@ -5,10 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterInterface;
 
-/**
- * @author Javier Eguiluz <javier.eguiluz@gmail.com>
- */
-final class FilterConfigDto
+final class FilterConfigDto implements FilterConfigDtoInterface
 {
     private KeyValueStore $filters;
 
@@ -17,9 +14,6 @@ final class FilterConfigDto
         $this->filters = KeyValueStore::new();
     }
 
-    /**
-     * @param FilterInterface|string $filterNameOrConfig
-     */
     public function addFilter($filterNameOrConfig): void
     {
         if (!\is_string($filterNameOrConfig) && !$filterNameOrConfig instanceof FilterInterface) {
@@ -37,9 +31,6 @@ final class FilterConfigDto
         $this->filters->set((string) $filterNameOrConfig, $filterNameOrConfig);
     }
 
-    /**
-     * @return FilterInterface|string|null
-     */
     public function getFilter(string $propertyName)/* : FilterInterface|string|null */
     {
         return $this->filters->get($propertyName);

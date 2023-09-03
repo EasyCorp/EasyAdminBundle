@@ -9,10 +9,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
-/**
- * @author Javier Eguiluz <javier.eguiluz@gmail.com>
- */
-final class EntityDto
+final class EntityDto implements EntityDtoInterface
 {
     private bool $isAccessible = true;
     private string $fqcn;
@@ -149,10 +146,6 @@ final class EntityDto
         return $this->actions;
     }
 
-    /**
-     * Returns the names of all properties defined in the entity, no matter
-     * if they are used or not in the application.
-     */
     public function getAllPropertyNames(): array
     {
         return $this->metadata->getFieldNames();
@@ -219,7 +212,7 @@ final class EntityDto
         $this->primaryKeyValue = null;
     }
 
-    public function newWithInstance(/* object */ $newEntityInstance): self
+    public function newWithInstance(/* object */ $newEntityInstance): EntityDtoInterface
     {
         if (!\is_object($newEntityInstance)) {
             trigger_deprecation(

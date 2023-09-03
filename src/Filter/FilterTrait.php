@@ -4,9 +4,13 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Filter;
 
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDataDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDataDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDtoInterface;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -18,7 +22,7 @@ trait FilterTrait
     private function __construct()
     {
         $dto = new FilterDto();
-        $dto->setApplyCallable(fn (QueryBuilder $queryBuilder, FilterDataDto $filterDataDto, ?FieldDto $fieldDto, EntityDto $entityDto) => $this->apply($queryBuilder, $filterDataDto, $fieldDto, $entityDto));
+        $dto->setApplyCallable(fn (QueryBuilder $queryBuilder, FilterDataDtoInterface $filterDataDto, ?FieldDtoInterface $fieldDto, EntityDtoInterface $entityDto) => $this->apply($queryBuilder, $filterDataDto, $fieldDto, $entityDto));
 
         $this->dto = $dto;
     }
@@ -70,7 +74,7 @@ trait FilterTrait
         return $this;
     }
 
-    public function getAsDto(): FilterDto
+    public function getAsDto(): FilterDtoInterface
     {
         return $this->dto;
     }

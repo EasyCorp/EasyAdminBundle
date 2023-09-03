@@ -7,7 +7,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterConfigDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterConfigDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\ArrayFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\BooleanFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\ComparisonFilter;
@@ -16,12 +18,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\NumericFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\TextFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProviderInterface;
 
-/**
- * @author Yonel Ceruto <yonelceruto@gmail.com>
- * @author Javier Eguiluz <javier.eguiluz@gmail.com>
- */
-final class FilterFactory
+final class FilterFactory implements FilterFactoryInterface
 {
     private AdminContextProvider $adminContextProvider;
     private iterable $filterConfigurators;
@@ -52,13 +51,13 @@ final class FilterFactory
         Types::TEXT => TextFilter::class,
     ];
 
-    public function __construct(AdminContextProvider $adminContextProvider, iterable $filterConfigurators)
+    public function __construct(AdminContextProviderInterface $adminContextProvider, iterable $filterConfigurators)
     {
         $this->adminContextProvider = $adminContextProvider;
         $this->filterConfigurators = $filterConfigurators;
     }
 
-    public function create(FilterConfigDto $filterConfig, FieldCollection $fields, EntityDto $entityDto): FilterCollection
+    public function create(FilterConfigDtoInterface $filterConfig, FieldCollection $fields, EntityDtoInterface $entityDto): FilterCollection
     {
         $builtFilters = [];
         /** @var FilterInterface|string $filter */
@@ -86,7 +85,7 @@ final class FilterFactory
         return FilterCollection::new($builtFilters);
     }
 
-    private function guessFilterClass(EntityDto $entityDto, string $propertyName): string
+    private function guessFilterClass(EntityDtoInterface $entityDto, string $propertyName): string
     {
         if ($entityDto->isAssociation($propertyName)) {
             return EntityFilter::class;

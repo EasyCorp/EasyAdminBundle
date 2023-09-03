@@ -4,10 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 
-/**
- * @author Javier Eguiluz <javier.eguiluz@gmail.com>
- */
-final class DashboardDto
+final class DashboardDto implements DashboardDtoInterface
 {
     private $routeName;
     private string $faviconPath = 'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⬛</text></svg>';
@@ -19,7 +16,7 @@ final class DashboardDto
     private bool $signedUrls = false;
     private bool $absoluteUrls = true;
     private bool $enableDarkMode = true;
-    /** @var LocaleDto[] */
+    /** @var LocaleDtoInterface[] */
     private array $locales = [];
 
     public function getRouteName(): string
@@ -122,7 +119,7 @@ final class DashboardDto
         return $this->signedUrls;
     }
 
-    public function setSignedUrls(bool $signedUrls): self
+    public function setSignedUrls(bool $signedUrls): DashboardDtoInterface
     {
         $this->signedUrls = $signedUrls;
 
@@ -134,14 +131,14 @@ final class DashboardDto
         return $this->absoluteUrls;
     }
 
-    public function setAbsoluteUrls(bool $absoluteUrls): self
+    public function setAbsoluteUrls(bool $absoluteUrls): DashboardDtoInterface
     {
         $this->absoluteUrls = $absoluteUrls;
 
         return $this;
     }
 
-    public function setEnableDarkMode(bool $enableDarkMode): self
+    public function setEnableDarkMode(bool $enableDarkMode): DashboardDtoInterface
     {
         $this->enableDarkMode = $enableDarkMode;
 
@@ -158,9 +155,6 @@ final class DashboardDto
         return $this->locales;
     }
 
-    /**
-     * @param LocaleDto[] $locales
-     */
     public function setLocales(array $locales): void
     {
         $this->locales = $locales;

@@ -6,7 +6,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Asset;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CodeEditorField;
 
 /**
@@ -14,12 +16,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\CodeEditorField;
  */
 final class CodeEditorConfigurator implements FieldConfiguratorInterface
 {
-    public function supports(FieldDto $field, EntityDto $entityDto): bool
+    public function supports(FieldDtoInterface $field, EntityDtoInterface $entityDto): bool
     {
         return CodeEditorField::class === $field->getFieldFqcn();
     }
 
-    public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
+    public function configure(FieldDtoInterface $field, EntityDtoInterface $entityDto, AdminContext $context): void
     {
         if ('rtl' === $context->getI18n()->getTextDirection()) {
             $field->addCssAsset(Asset::fromEasyAdminAssetPackage('field-code-editor.rtl.css')->getAsDto());

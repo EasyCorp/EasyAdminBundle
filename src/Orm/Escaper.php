@@ -4,7 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Orm;
 
 use Doctrine\ORM\Query\Lexer;
 
-class Escaper
+final class Escaper
 {
     public const DQL_ALIAS_PREFIX = 'ea_';
 

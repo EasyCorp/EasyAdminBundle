@@ -3,37 +3,29 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Exception;
 
 use EasyCorp\Bundle\EasyAdminBundle\Context\ExceptionContext;
+use EasyCorp\Bundle\EasyAdminBundle\Context\ExceptionContextInterface;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
-/**
- * @author Javier Eguiluz <javier.eguiluz@gmail.com>
- */
-class BaseException extends HttpException
+abstract class BaseException extends HttpException implements BaseExceptionInterface
 {
     private ExceptionContext $context;
 
-    public function __construct(ExceptionContext $context)
+    public function __construct(ExceptionContextInterface $context)
     {
         $this->context = $context;
         parent::__construct($this->context->getStatusCode(), $this->context->getDebugMessage());
     }
 
-    public function getContext(): ExceptionContext
+    public function getContext(): ExceptionContextInterface
     {
         return $this->context;
     }
 
-    /**
-     * @return string The message that can safely be displayed to end-users because it doesn't contain sensitive data
-     */
     public function getPublicMessage(): string
     {
         return $this->context->getPublicMessage();
     }
 
-    /**
-     * @return string The full exception message that is logged and it can contain sensitive data
-     */
     public function getDebugMessage(): string
     {
         return $this->context->getDebugMessage();

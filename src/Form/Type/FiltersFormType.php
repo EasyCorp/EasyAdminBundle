@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type;
 
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDtoInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -11,11 +12,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * @author Yonel Ceruto <yonelceruto@gmail.com>
  */
-class FiltersFormType extends AbstractType
+final class FiltersFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        /** @var FilterDto $filter */
+        /** @var FilterDtoInterface $filter */
         foreach ($options['ea_filters'] as $filter) {
             $builder->add($filter->getProperty(), $filter->getFormType(), $filter->getFormTypeOptions());
         }

@@ -6,10 +6,7 @@ use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
-/**
- * @author Javier Eguiluz <javier.eguiluz@gmail.com>
- */
-final class FilterDto
+final class FilterDto implements FilterDtoInterface
 {
     private ?string $fqcn = null;
     private ?string $formType = null;
@@ -78,17 +75,11 @@ final class FilterDto
         $this->propertyName = $propertyName;
     }
 
-    /**
-     * @return TranslatableInterface|string|false|null
-     */
     public function getLabel()
     {
         return $this->label;
     }
 
-    /**
-     * @param TranslatableInterface|string|false|null $label
-     */
     public function setLabel($label): void
     {
         if (!\is_string($label) && !$label instanceof TranslatableInterface && false !== $label && null !== $label) {
@@ -113,7 +104,7 @@ final class FilterDto
         $this->applyCallable = $callable;
     }
 
-    public function apply(QueryBuilder $queryBuilder, FilterDataDto $filterDataDto, ?FieldDto $fieldDto, EntityDto $entityDto): void
+    public function apply(QueryBuilder $queryBuilder, FilterDataDtoInterface $filterDataDto, ?FieldDtoInterface $fieldDto, EntityDtoInterface $entityDto): void
     {
         \call_user_func($this->applyCallable, $queryBuilder, $filterDataDto, $fieldDto, $entityDto);
     }

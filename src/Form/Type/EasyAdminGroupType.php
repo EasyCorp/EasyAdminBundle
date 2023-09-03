@@ -11,7 +11,7 @@ use Symfony\Component\Form\AbstractType;
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-class EasyAdminGroupType extends AbstractType
+final class EasyAdminGroupType extends AbstractType
 {
     public function getBlockPrefix(): string
     {

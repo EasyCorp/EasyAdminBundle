@@ -3,11 +3,13 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Asset;
+use EasyCorp\Bundle\EasyAdminBundle\Config\AssetInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\TextAlign;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDtoInterface;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
 /**
@@ -211,7 +213,7 @@ trait FieldTrait
         return $this;
     }
 
-    public function addWebpackEncoreEntries(Asset|string ...$entryNamesOrAssets): self
+    public function addWebpackEncoreEntries(AssetInterface|string ...$entryNamesOrAssets): self
     {
         if (!class_exists('Symfony\\WebpackEncoreBundle\\Twig\\EntryFilesTwigExtension')) {
             throw new \RuntimeException('You are trying to add Webpack Encore entries in a field but Webpack Encore is not installed in your project. Try running "composer require symfony/webpack-encore-bundle"');
@@ -228,7 +230,7 @@ trait FieldTrait
         return $this;
     }
 
-    public function addCssFiles(Asset|string ...$pathsOrAssets): self
+    public function addCssFiles(AssetInterface|string ...$pathsOrAssets): self
     {
         foreach ($pathsOrAssets as $pathOrAsset) {
             if (\is_string($pathOrAsset)) {
@@ -241,7 +243,7 @@ trait FieldTrait
         return $this;
     }
 
-    public function addJsFiles(Asset|string ...$pathsOrAssets): self
+    public function addJsFiles(AssetInterface|string ...$pathsOrAssets): self
     {
         foreach ($pathsOrAssets as $pathOrAsset) {
             if (\is_string($pathOrAsset)) {
@@ -401,7 +403,7 @@ trait FieldTrait
         return $this;
     }
 
-    public function getAsDto(): FieldDto
+    public function getAsDto(): FieldDtoInterface
     {
         return $this->dto;
     }

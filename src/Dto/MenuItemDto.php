@@ -208,7 +208,7 @@ final class MenuItemDto
         $this->translationParameters = $translationParameters;
     }
 
-    public function getBadge(): ?MenuItemBadgeDto
+    public function getBadge(): ?MenuItemBadgeDtoInterface
     {
         return $this->badge;
     }

@@ -5,10 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
-/**
- * @author Javier Eguiluz <javier.eguiluz@gmail.com>
- */
-final class ActionDto
+final class ActionDto implements ActionDtoInterface
 {
     private ?string $type = null;
     private ?string $name = null;
@@ -173,17 +170,11 @@ final class ActionDto
         $this->routeName = $routeName;
     }
 
-    /**
-     * @return array|callable
-     */
     public function getRouteParameters()/* : array|callable */
     {
         return $this->routeParameters;
     }
 
-    /**
-     * @param array|callable $routeParameters
-     */
     public function setRouteParameters($routeParameters): void
     {
         if (!\is_array($routeParameters) && !\is_callable($routeParameters)) {
@@ -201,17 +192,11 @@ final class ActionDto
         $this->routeParameters = $routeParameters;
     }
 
-    /**
-     * @return string|callable|null
-     */
     public function getUrl()
     {
         return $this->url;
     }
 
-    /**
-     * @param string|callable $url
-     */
     public function setUrl($url): void
     {
         if (!\is_string($url) && !\is_callable($url)) {
@@ -239,7 +224,7 @@ final class ActionDto
         $this->translationParameters = $translationParameters;
     }
 
-    public function shouldBeDisplayedFor(EntityDto $entityDto): bool
+    public function shouldBeDisplayedFor(EntityDtoInterface $entityDto): bool
     {
         return null === $this->displayCallable || (bool) \call_user_func($this->displayCallable, $entityDto->getInstance());
     }
@@ -249,9 +234,6 @@ final class ActionDto
         $this->displayCallable = $displayCallable;
     }
 
-    /**
-     * @internal
-     */
     public function getAsConfigObject(): Action
     {
         $action = Action::new($this->name, $this->label, $this->icon);

@@ -6,12 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use Symfony\Component\HttpFoundation\RequestStack;
 
-/**
- * Inject this in services that need to get the admin context object.
- *
- * @author Javier Eguiluz <javier.eguiluz@gmail.com>
- */
-final class AdminContextProvider
+final class AdminContextProvider implements AdminContextProviderInterface
 {
     private RequestStack $requestStack;
 

@@ -4,13 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Intl;
 
 use Twig\Error\RuntimeError;
 
-/**
- * Copied from https://github.com/twigphp/intl-extra/blob/2.x/src/IntlExtension.php
- * (c) Fabien Potencier - MIT License.
- *
- * @author Fabien Potencier <fabien@symfony.com>
- */
-final class IntlFormatter
+final class IntlFormatter implements IntlFormatterInterface
 {
     private const DATE_FORMATS = [
         'none' => \IntlDateFormatter::NONE,
@@ -19,6 +13,7 @@ final class IntlFormatter
         'long' => \IntlDateFormatter::LONG,
         'full' => \IntlDateFormatter::FULL,
     ];
+
     private const NUMBER_TYPES = [
         'default' => \NumberFormatter::TYPE_DEFAULT,
         'int32' => \NumberFormatter::TYPE_INT32,
@@ -26,6 +21,7 @@ final class IntlFormatter
         'double' => \NumberFormatter::TYPE_DOUBLE,
         'currency' => \NumberFormatter::TYPE_CURRENCY,
     ];
+
     private const NUMBER_STYLES = [
         'decimal' => \NumberFormatter::DECIMAL,
         'currency' => \NumberFormatter::CURRENCY,
@@ -35,6 +31,7 @@ final class IntlFormatter
         'ordinal' => \NumberFormatter::ORDINAL,
         'duration' => \NumberFormatter::DURATION,
     ];
+
     private const NUMBER_ATTRIBUTES = [
         'grouping_used' => \NumberFormatter::GROUPING_USED,
         'decimal_always_shown' => \NumberFormatter::DECIMAL_ALWAYS_SHOWN,
@@ -56,6 +53,7 @@ final class IntlFormatter
         'max_significant_digits_used' => \NumberFormatter::MAX_SIGNIFICANT_DIGITS,
         'lenient_parse' => \NumberFormatter::LENIENT_PARSE,
     ];
+
     private const NUMBER_ROUNDING_ATTRIBUTES = [
         'ceiling' => \NumberFormatter::ROUND_CEILING,
         'floor' => \NumberFormatter::ROUND_FLOOR,
@@ -65,6 +63,7 @@ final class IntlFormatter
         'halfdown' => \NumberFormatter::ROUND_HALFDOWN,
         'halfup' => \NumberFormatter::ROUND_HALFUP,
     ];
+
     private const NUMBER_PADDING_ATTRIBUTES = [
         'before_prefix' => \NumberFormatter::PAD_BEFORE_PREFIX,
         'after_prefix' => \NumberFormatter::PAD_AFTER_PREFIX,
@@ -102,9 +101,6 @@ final class IntlFormatter
         return $ret;
     }
 
-    /**
-     * @param \DateTimeZone|string|false|null $timezone The target timezone, null to use the default, false to leave unchanged
-     */
     public function formatDateTime(?\DateTimeInterface $date, ?string $dateFormat = 'medium', ?string $timeFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', ?string $locale = null): ?string
     {
         if (null === $date = $this->convertDate($date, $timezone)) {
@@ -117,17 +113,11 @@ final class IntlFormatter
         return false !== $formattedDateTime ? $formattedDateTime : null;
     }
 
-    /**
-     * @param \DateTimeZone|string|false|null $timezone The target timezone, null to use the default, false to leave unchanged
-     */
     public function formatDate(?\DateTimeInterface $date, ?string $dateFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', ?string $locale = null): ?string
     {
         return $this->formatDateTime($date, $dateFormat, 'none', $pattern, $timezone, $calendar, $locale);
     }
 
-    /**
-     * @param \DateTimeZone|string|false|null $timezone The target timezone, null to use the default, false to leave unchanged
-     */
     public function formatTime(?\DateTimeInterface $date, ?string $timeFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', ?string $locale = null): ?string
     {
         return $this->formatDateTime($date, 'none', $timeFormat, $pattern, $timezone, $calendar, $locale);

@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 /**
  * @author Yonel Ceruto <yonelceruto@gmail.com>
  */
-class StringToFileTransformer implements DataTransformerInterface
+final class StringToFileTransformer implements DataTransformerInterface
 {
     private string $uploadDir;
     private $uploadFilename;

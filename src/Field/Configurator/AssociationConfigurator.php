@@ -12,13 +12,18 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Option\TextAlign;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\ControllerFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\ControllerFactoryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactoryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudAutocompleteType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\PropertyAccess\Exception\UnexpectedTypeException;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
@@ -34,7 +39,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
     private RequestStack $requestStack;
     private ControllerFactory $controllerFactory;
 
-    public function __construct(EntityFactory $entityFactory, AdminUrlGenerator $adminUrlGenerator, RequestStack $requestStack, ControllerFactory $controllerFactory)
+    public function __construct(EntityFactoryInterface $entityFactory, AdminUrlGeneratorInterface $adminUrlGenerator, RequestStack $requestStack, ControllerFactoryInterface $controllerFactory)
     {
         $this->entityFactory = $entityFactory;
         $this->adminUrlGenerator = $adminUrlGenerator;
@@ -42,12 +47,12 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         $this->controllerFactory = $controllerFactory;
     }
 
-    public function supports(FieldDto $field, EntityDto $entityDto): bool
+    public function supports(FieldDtoInterface $field, EntityDtoInterface $entityDto): bool
     {
         return AssociationField::class === $field->getFieldFqcn();
     }
 
-    public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
+    public function configure(FieldDtoInterface $field, EntityDtoInterface $entityDto, AdminContext $context): void
     {
         $propertyName = $field->getProperty();
         if (!$entityDto->isAssociation($propertyName)) {
@@ -170,7 +175,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         }
     }
 
-    private function configureToOneAssociation(FieldDto $field): void
+    private function configureToOneAssociation(FieldDtoInterface $field): void
     {
         $field->setCustomOption(AssociationField::OPTION_DOCTRINE_ASSOCIATION_TYPE, 'toOne');
 
@@ -191,7 +196,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         $field->setFormattedValue($this->formatAsString($field->getValue(), $targetEntityDto));
     }
 
-    private function configureToManyAssociation(FieldDto $field): void
+    private function configureToManyAssociation(FieldDtoInterface $field): void
     {
         $field->setCustomOption(AssociationField::OPTION_DOCTRINE_ASSOCIATION_TYPE, 'toMany');
 
@@ -207,7 +212,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         $field->setFormattedValue($this->countNumElements($field->getValue()));
     }
 
-    private function formatAsString($entityInstance, EntityDto $entityDto): ?string
+    private function formatAsString($entityInstance, EntityDtoInterface $entityDto): ?string
     {
         if (null === $entityInstance) {
             return null;
@@ -224,7 +229,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         return $entityDto->getName();
     }
 
-    private function generateLinkToAssociatedEntity(?string $crudController, EntityDto $entityDto): ?string
+    private function generateLinkToAssociatedEntity(?string $crudController, EntityDtoInterface $entityDto): ?string
     {
         if (null === $crudController) {
             return null;
@@ -258,7 +263,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         return 0;
     }
 
-    private function configureCrudForm(FieldDto $field, EntityDto $entityDto, string $propertyName, string $targetEntityFqcn, string $targetCrudControllerFqcn): void
+    private function configureCrudForm(FieldDtoInterface $field, EntityDtoInterface $entityDto, string $propertyName, string $targetEntityFqcn, string $targetCrudControllerFqcn): void
     {
         $field->setFormType(CrudFormType::class);
         $propertyAccessor = new PropertyAccessor();
@@ -285,7 +290,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         );
     }
 
-    private function createEntityDto(string $entityFqcn, string $crudControllerFqcn, string $crudControllerAction, string $crudControllerPageName): EntityDto
+    private function createEntityDto(string $entityFqcn, string $crudControllerFqcn, string $crudControllerAction, string $crudControllerPageName): EntityDtoInterface
     {
         $entityDto = $this->entityFactory->create($entityFqcn);
 

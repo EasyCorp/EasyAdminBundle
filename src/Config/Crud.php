@@ -4,7 +4,9 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Config;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\SortOrder;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterConfigDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterConfigDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\PaginatorDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use Symfony\Contracts\Translation\TranslatableInterface;
@@ -12,7 +14,7 @@ use Symfony\Contracts\Translation\TranslatableInterface;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-class Crud
+final class Crud
 {
     public const PAGE_DETAIL = 'detail';
     public const PAGE_EDIT = 'edit';
@@ -30,7 +32,7 @@ class Crud
     private bool $paginatorFetchJoinCollection = true;
     private ?bool $paginatorUseOutputWalkers = null;
 
-    private function __construct(CrudDto $crudDto)
+    private function __construct(CrudDtoInterface $crudDto)
     {
         $this->dto = $crudDto;
     }
@@ -274,7 +276,7 @@ class Crud
         return $this;
     }
 
-    public function setFilters(?FilterConfigDto $filters): self
+    public function setFilters(?FilterConfigDtoInterface $filters): self
     {
         $this->dto->setFiltersConfig($filters);
 
@@ -392,7 +394,7 @@ class Crud
         return $this;
     }
 
-    public function getAsDto(): CrudDto
+    public function getAsDto(): CrudDtoInterface
     {
         $this->dto->setPaginator(new PaginatorDto($this->paginatorPageSize, $this->paginatorRangeSize, 1, $this->paginatorFetchJoinCollection, $this->paginatorUseOutputWalkers));
 

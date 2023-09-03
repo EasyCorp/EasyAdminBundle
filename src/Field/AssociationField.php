@@ -14,17 +14,24 @@ final class AssociationField implements FieldInterface
     use FieldTrait;
 
     public const OPTION_AUTOCOMPLETE = 'autocomplete';
+
     public const OPTION_EMBEDDED_CRUD_FORM_CONTROLLER = 'crudControllerFqcn';
+
     /** @deprecated since easycorp/easyadmin-bundle 4.4.3 use AssociationField::OPTION_EMBEDDED_CRUD_FORM_CONTROLLER */
     public const OPTION_CRUD_CONTROLLER = self::OPTION_EMBEDDED_CRUD_FORM_CONTROLLER;
+
     public const OPTION_WIDGET = 'widget';
+
     public const OPTION_QUERY_BUILDER_CALLABLE = 'queryBuilderCallable';
+
     /** @internal this option is intended for internal use only */
     public const OPTION_RELATED_URL = 'relatedUrl';
+
     /** @internal this option is intended for internal use only */
     public const OPTION_DOCTRINE_ASSOCIATION_TYPE = 'associationType';
 
     public const WIDGET_AUTOCOMPLETE = 'autocomplete';
+
     public const WIDGET_NATIVE = 'native';
 
     /** @internal this option is intended for internal use only */
@@ -34,6 +41,7 @@ final class AssociationField implements FieldInterface
     public const OPTION_RENDER_AS_EMBEDDED_FORM = 'renderAsEmbeddedForm';
 
     public const OPTION_EMBEDDED_CRUD_FORM_NEW_PAGE_NAME = 'crudNewPageName';
+
     public const OPTION_EMBEDDED_CRUD_FORM_EDIT_PAGE_NAME = 'crudEditPageName';
 
     /**

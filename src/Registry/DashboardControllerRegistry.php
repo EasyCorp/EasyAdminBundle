@@ -5,10 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Registry;
 use EasyCorp\Bundle\EasyAdminBundle\Cache\CacheWarmer;
 use function Symfony\Component\String\u;
 
-/**
- * @author Javier Eguiluz <javier.eguiluz@gmail.com>
- */
-final class DashboardControllerRegistry
+final class DashboardControllerRegistry implements DashboardControllerRegistryInterface
 {
     private array $controllerFqcnToContextIdMap = [];
     private array $contextIdToControllerFqcnMap;

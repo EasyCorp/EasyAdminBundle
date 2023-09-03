@@ -4,13 +4,14 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Contracts\Orm;
 
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\PaginatorDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\PaginatorDtoInterface;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
 interface EntityPaginatorInterface
 {
-    public function paginate(PaginatorDto $paginatorDto, QueryBuilder $queryBuilder): self;
+    public function paginate(PaginatorDtoInterface $paginatorDto, QueryBuilder $queryBuilder): self;
 
     public function generateUrlForPage(int $page): string;
 

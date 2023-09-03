@@ -2,10 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
-/**
- * @author Jakub Caban <kuba.iluvatar@gmail.com>
- */
-final class LocaleDto
+final class LocaleDto implements LocaleDtoInterface
 {
     public function __construct(
         private string $locale,

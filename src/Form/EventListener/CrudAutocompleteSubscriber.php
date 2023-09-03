@@ -10,7 +10,7 @@ use Symfony\Component\Form\FormEvents;
 /**
  * @author Yonel Ceruto <yonelceruto@gmail.com>
  */
-class CrudAutocompleteSubscriber implements EventSubscriberInterface
+final class CrudAutocompleteSubscriber implements EventSubscriberInterface
 {
     public static function getSubscribedEvents(): array
     {
@@ -20,7 +20,7 @@ class CrudAutocompleteSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function preSetData(FormEvent $event)
+    public function preSetData(FormEvent $event): void
     {
         $form = $event->getForm();
         $data = $event->getData() ?? [];
@@ -32,7 +32,7 @@ class CrudAutocompleteSubscriber implements EventSubscriberInterface
         $form->add('autocomplete', EntityType::class, $options);
     }
 
-    public function preSubmit(FormEvent $event)
+    public function preSubmit(FormEvent $event): void
     {
         $data = $event->getData();
         $form = $event->getForm();

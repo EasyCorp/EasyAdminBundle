@@ -2,10 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
-/**
- * @author Javier Eguiluz <javier.eguiluz@gmail.com>
- */
-class BatchActionDto
+final class BatchActionDto implements BatchActionDtoInterface
 {
     private string $name;
     private array $entityIds;

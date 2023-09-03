@@ -9,7 +9,7 @@ use Symfony\Contracts\Translation\TranslatableInterface;
 /**
  * @author Jakub Caban <kuba.iluvatar@gmail.com>
  */
-class TranslatableMessageBuilder
+final class TranslatableMessageBuilder
 {
     /**
      * This method creates a new TranslationMessage object with the same content and domain as the given object,

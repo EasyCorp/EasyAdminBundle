@@ -11,17 +11,24 @@ use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
+use EasyCorp\Bundle\EasyAdminBundle\Config\AssetsInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
+use EasyCorp\Bundle\EasyAdminBundle\Config\FiltersInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetsDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetsDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\BatchActionDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\BatchActionDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterCrudActionEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityDeletedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityPersistedEvent;
@@ -74,7 +81,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         return $crud;
     }
 
-    public function configureAssets(Assets $assets): Assets
+    public function configureAssets(AssetsInterface $assets): AssetsInterface
     {
         return $assets;
     }
@@ -84,7 +91,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         return $actions;
     }
 
-    public function configureFilters(Filters $filters): Filters
+    public function configureFilters(FiltersInterface $filters): FiltersInterface
     {
         return $filters;
     }
@@ -392,7 +399,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         return $this->redirect($this->container->get(AdminUrlGenerator::class)->setAction(Action::INDEX)->unset(EA::ENTITY_ID)->generateUrl());
     }
 
-    public function batchDelete(AdminContext $context, BatchActionDto $batchActionDto): Response
+    public function batchDelete(AdminContext $context, BatchActionDtoInterface $batchActionDto): Response
     {
         $event = new BeforeCrudActionEvent($context);
         $this->container->get('event_dispatcher')->dispatch($event);
@@ -456,7 +463,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
         /** @var CrudControllerInterface $controller */
         $controller = $this->container->get(ControllerFactory::class)->getCrudControllerInstance($autocompleteContext[EA::CRUD_CONTROLLER_FQCN], Action::INDEX, $context->getRequest());
-        /** @var FieldDto|null $field */
+        /** @var FieldDtoInterface|null $field */
         $field = FieldCollection::new($controller->configureFields($autocompleteContext['originatingPage']))->getByProperty($autocompleteContext['propertyName']);
         /** @var \Closure|null $queryBuilderCallable */
         $queryBuilderCallable = $field?->getCustomOption(AssociationField::OPTION_QUERY_BUILDER_CALLABLE);
@@ -470,7 +477,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         return JsonResponse::fromJsonString($paginator->getResultsAsJson());
     }
 
-    public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
+    public function createIndexQueryBuilder(SearchDtoInterface $searchDto, EntityDtoInterface $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
     {
         return $this->container->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters);
     }
@@ -520,22 +527,22 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $entityManager->flush();
     }
 
-    public function createEditForm(EntityDto $entityDto, KeyValueStore $formOptions, AdminContext $context): FormInterface
+    public function createEditForm(EntityDtoInterface $entityDto, KeyValueStore $formOptions, AdminContext $context): FormInterface
     {
         return $this->createEditFormBuilder($entityDto, $formOptions, $context)->getForm();
     }
 
-    public function createEditFormBuilder(EntityDto $entityDto, KeyValueStore $formOptions, AdminContext $context): FormBuilderInterface
+    public function createEditFormBuilder(EntityDtoInterface $entityDto, KeyValueStore $formOptions, AdminContext $context): FormBuilderInterface
     {
         return $this->container->get(FormFactory::class)->createEditFormBuilder($entityDto, $formOptions, $context);
     }
 
-    public function createNewForm(EntityDto $entityDto, KeyValueStore $formOptions, AdminContext $context): FormInterface
+    public function createNewForm(EntityDtoInterface $entityDto, KeyValueStore $formOptions, AdminContext $context): FormInterface
     {
         return $this->createNewFormBuilder($entityDto, $formOptions, $context)->getForm();
     }
 
-    public function createNewFormBuilder(EntityDto $entityDto, KeyValueStore $formOptions, AdminContext $context): FormBuilderInterface
+    public function createNewFormBuilder(EntityDtoInterface $entityDto, KeyValueStore $formOptions, AdminContext $context): FormBuilderInterface
     {
         return $this->container->get(FormFactory::class)->createNewFormBuilder($entityDto, $formOptions, $context);
     }
@@ -553,7 +560,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         return $this->container->get(AdminContextProvider::class)->getContext();
     }
 
-    protected function ajaxEdit(EntityDto $entityDto, ?string $propertyName, bool $newValue): AfterCrudActionEvent
+    protected function ajaxEdit(EntityDtoInterface $entityDto, ?string $propertyName, bool $newValue): AfterCrudActionEvent
     {
         $this->container->get(EntityUpdater::class)->updateProperty($entityDto, $propertyName, $newValue);
 
@@ -648,7 +655,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         return $this->redirectToRoute($context->getDashboardRouteName());
     }
 
-    protected function getFieldAssets(FieldCollection $fieldDtos): AssetsDto
+    protected function getFieldAssets(FieldCollection $fieldDtos): AssetsDtoInterface
     {
         $fieldAssetsDto = new AssetsDto();
         $currentPageName = $this->getContext()?->getCrud()?->getCurrentPage();

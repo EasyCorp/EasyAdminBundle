@@ -9,9 +9,13 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\ControllerFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\ControllerFactoryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactoryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudFormType;
 use Symfony\Component\Form\Extension\Core\Type\CountryType;
@@ -32,19 +36,19 @@ final class CollectionConfigurator implements FieldConfiguratorInterface
     private EntityFactory $entityFactory;
     private ControllerFactory $controllerFactory;
 
-    public function __construct(RequestStack $requestStack, EntityFactory $entityFactory, ControllerFactory $controllerFactory)
+    public function __construct(RequestStack $requestStack, EntityFactoryInterface $entityFactory, ControllerFactoryInterface $controllerFactory)
     {
         $this->requestStack = $requestStack;
         $this->entityFactory = $entityFactory;
         $this->controllerFactory = $controllerFactory;
     }
 
-    public function supports(FieldDto $field, EntityDto $entityDto): bool
+    public function supports(FieldDtoInterface $field, EntityDtoInterface $entityDto): bool
     {
         return CollectionField::class === $field->getFieldFqcn();
     }
 
-    public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
+    public function configure(FieldDtoInterface $field, EntityDtoInterface $entityDto, AdminContext $context): void
     {
         if (null !== $entryTypeFqcn = $field->getCustomOptions()->get(CollectionField::OPTION_ENTRY_TYPE)) {
             $field->setFormTypeOption('entry_type', $entryTypeFqcn);
@@ -115,7 +119,7 @@ final class CollectionConfigurator implements FieldConfiguratorInterface
         }
     }
 
-    private function formatCollection(FieldDto $field, AdminContext $context)
+    private function formatCollection(FieldDtoInterface $field, AdminContext $context)
     {
         $doctrineMetadata = $field->getDoctrineMetadata();
         if ('array' !== $doctrineMetadata->get('type') && !$field->getValue() instanceof PersistentCollection) {
@@ -153,7 +157,7 @@ final class CollectionConfigurator implements FieldConfiguratorInterface
         return 0;
     }
 
-    private function createEntityDto(string $targetEntityFqcn, string $targetCrudControllerFqcn, string $crudAction, string $pageName): EntityDto
+    private function createEntityDto(string $targetEntityFqcn, string $targetCrudControllerFqcn, string $crudAction, string $pageName): EntityDtoInterface
     {
         $entityDto = $this->entityFactory->create($targetEntityFqcn);
 

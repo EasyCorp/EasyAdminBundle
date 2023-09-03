@@ -6,7 +6,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\KernelInterface;
 use function Symfony\Component\String\u;
 
-final class ClassMaker
+final class ClassMaker implements ClassMakerInterface
 {
     private KernelInterface $kernel;
     private string $projectDir;
@@ -19,9 +19,6 @@ final class ClassMaker
         $this->fs = new Filesystem();
     }
 
-    /**
-     * @return string The path of the created file (relative to the project dir)
-     */
     public function make(string $generatedFilePathPattern, string $skeletonName, array $skeletonParameters): string
     {
         $skeletonPath = sprintf('%s/%s', $this->kernel->locateResource('@EasyAdminBundle/Resources/skeleton'), $skeletonName);

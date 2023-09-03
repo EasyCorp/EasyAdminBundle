@@ -6,11 +6,14 @@ use Doctrine\DBAL\Types\Types;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Intl\IntlFormatter;
+use EasyCorp\Bundle\EasyAdminBundle\Intl\IntlFormatterInterface;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -19,17 +22,17 @@ final class DateTimeConfigurator implements FieldConfiguratorInterface
 {
     private IntlFormatter $intlFormatter;
 
-    public function __construct(IntlFormatter $intlFormatter)
+    public function __construct(IntlFormatterInterface $intlFormatter)
     {
         $this->intlFormatter = $intlFormatter;
     }
 
-    public function supports(FieldDto $field, EntityDto $entityDto): bool
+    public function supports(FieldDtoInterface $field, EntityDtoInterface $entityDto): bool
     {
         return \in_array($field->getFieldFqcn(), [DateTimeField::class, DateField::class, TimeField::class], true);
     }
 
-    public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
+    public function configure(FieldDtoInterface $field, EntityDtoInterface $entityDto, AdminContext $context): void
     {
         // we don't require this PHP extension in composer.json because it's not mandatory to display
         // date/time fields in backends, so this is not a hard dependency

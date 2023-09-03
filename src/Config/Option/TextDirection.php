@@ -8,5 +8,6 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Config\Option;
 final class TextDirection
 {
     public const LTR = 'ltr';
+
     public const RTL = 'rtl';
 }

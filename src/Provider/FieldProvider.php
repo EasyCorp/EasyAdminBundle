@@ -6,14 +6,11 @@ use Doctrine\DBAL\Types\Types;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 
-/**
- * @author Javier Eguiluz <javier.eguiluz@gmail.com>
- */
-final class FieldProvider
+final class FieldProvider implements FieldProviderInterface
 {
     private AdminContextProvider $adminContextProvider;
 
-    public function __construct(AdminContextProvider $adminContextProvider)
+    public function __construct(AdminContextProviderInterface $adminContextProvider)
     {
         $this->adminContextProvider = $adminContextProvider;
     }

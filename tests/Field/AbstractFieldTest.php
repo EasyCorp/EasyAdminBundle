@@ -7,7 +7,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\I18nDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -19,7 +21,7 @@ abstract class AbstractFieldTest extends KernelTestCase
     protected $adminContext;
     protected $configurator;
 
-    private function getEntityDto(): EntityDto
+    private function getEntityDto(): EntityDtoInterface
     {
         $entityDtoMock = $this->createMock(EntityDto::class);
         $entityDtoMock
@@ -80,7 +82,7 @@ abstract class AbstractFieldTest extends KernelTestCase
         return $this->adminContext = $adminContextMock;
     }
 
-    protected function configure(FieldInterface $field, string $pageName = Crud::PAGE_INDEX, string $requestLocale = 'en'): FieldDto
+    protected function configure(FieldInterface $field, string $pageName = Crud::PAGE_INDEX, string $requestLocale = 'en'): FieldDtoInterface
     {
         $fieldDto = $field->getAsDto();
         $this->configurator->configure($fieldDto, $this->getEntityDto(), $this->getAdminContext($pageName, $requestLocale));

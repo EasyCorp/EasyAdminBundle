@@ -9,7 +9,7 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 /**
  * @author Maxime Steinhausser <maxime.steinhausser@gmail.com>
  */
-class EasyAdminBundle extends Bundle
+final class EasyAdminBundle extends Bundle
 {
     public const VERSION = '4.7.2';
 

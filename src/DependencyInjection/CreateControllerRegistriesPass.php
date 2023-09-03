@@ -14,7 +14,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-class CreateControllerRegistriesPass implements CompilerPassInterface
+final class CreateControllerRegistriesPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container): void
     {

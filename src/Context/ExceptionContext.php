@@ -4,10 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Context;
 
 use function Symfony\Component\String\u;
 
-/**
- * @author Javier Eguiluz <javier.eguiluz@gmail.com>
- */
-final class ExceptionContext
+final class ExceptionContext implements ExceptionContextInterface
 {
     private string $publicMessage;
     private string $debugMessage;

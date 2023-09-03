@@ -3,16 +3,14 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Config;
 
 use EasyCorp\Bundle\EasyAdminBundle\Dto\LocaleDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\LocaleDtoInterface;
 use Symfony\Component\Intl\Locales;
 
-/**
- * @author Javier Eguiluz <javier.eguiluz@gmail.com>
- */
-final class Locale
+final class Locale implements LocaleInterface
 {
     private LocaleDto $dto;
 
-    private function __construct(LocaleDto $localeDto)
+    private function __construct(LocaleDtoInterface $localeDto)
     {
         $this->dto = $localeDto;
     }
@@ -35,7 +33,7 @@ final class Locale
         return new self($dto);
     }
 
-    public function getAsDto(): LocaleDto
+    public function getAsDto(): LocaleDtoInterface
     {
         return $this->dto;
     }

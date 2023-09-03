@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Command;
 
 use Doctrine\Persistence\ManagerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Maker\ClassMaker;
+use EasyCorp\Bundle\EasyAdminBundle\Maker\ClassMakerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -21,13 +22,13 @@ use function Symfony\Component\String\u;
     name: 'make:admin:crud',
     description: 'Creates a new EasyAdmin CRUD controller class',
 )]
-class MakeCrudControllerCommand extends Command
+final class MakeCrudControllerCommand extends Command
 {
     private string $projectDir;
     private ClassMaker $classMaker;
     private ManagerRegistry $doctrine;
 
-    public function __construct(string $projectDir, ClassMaker $classMaker, ManagerRegistry $doctrine, ?string $name = null)
+    public function __construct(string $projectDir, ClassMakerInterface $classMaker, ManagerRegistry $doctrine, ?string $name = null)
     {
         parent::__construct($name);
         $this->projectDir = $projectDir;

@@ -4,10 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 use Symfony\Component\HttpFoundation\Request;
 
-/**
- * @author Javier Eguiluz <javier.eguiluz@gmail.com>
- */
-final class SearchDto
+final class SearchDto implements SearchDtoInterface
 {
     private Request $request;
     private array $defaultSort;
@@ -75,13 +72,6 @@ final class SearchDto
         return $this->query;
     }
 
-    /**
-     * Splits the query search string into a set of terms to search, taking into
-     * account that quoted strings must be considered as a single term.
-     * For example:
-     *  'foo bar' => ['foo', 'bar']
-     *  'foo "bar baz" qux' => ['foo', 'bar baz', 'qux'].
-     */
     public function getQueryTerms(): array
     {
         preg_match_all('/"(?:\\\\.|[^\\\\"])*"|\S+/', $this->query, $matches);
@@ -90,9 +80,6 @@ final class SearchDto
         return $terms;
     }
 
-    /**
-     * @return string[]|null
-     */
     public function getSearchableProperties(): ?array
     {
         return $this->searchableProperties;

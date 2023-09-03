@@ -15,7 +15,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * @author Yonel Ceruto <yonelceruto@gmail.com>
  */
-class DateTimeFilterType extends AbstractType
+final class DateTimeFilterType extends AbstractType
 {
     private string $valueType;
 

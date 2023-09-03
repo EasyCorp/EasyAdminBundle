@@ -11,7 +11,7 @@ use Symfony\Component\Form\FormEvents;
  *
  * @author naitsirch <naitsirch@e.mail.de>
  */
-class EasyAdminTabSubscriber implements EventSubscriberInterface
+final class EasyAdminTabSubscriber implements EventSubscriberInterface
 {
     public static function getSubscribedEvents(): array
     {
@@ -24,7 +24,7 @@ class EasyAdminTabSubscriber implements EventSubscriberInterface
      * Deal with form constraint violations. This method has to be executed with
      * a negative priority to make sure that the validation process is done.
      */
-    public function handleViolations(FormEvent $event)
+    public function handleViolations(FormEvent $event): void
     {
         $formTabs = $event->getForm()->getConfig()->getAttribute('ea_form_tabs');
 

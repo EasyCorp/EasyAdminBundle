@@ -2,13 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Config;
 
-/**
- * Code adapted from https://github.com/adbario/php-dot-notation/blob/2.x/src/Dot.php
- * Copyright (c) Riku Särkinen <riku@adbar.io> - MIT License.
- *
- * @author Javier Eguiluz <javier.eguiluz@gmail.com>
- */
-final class KeyValueStore
+final class KeyValueStore implements KeyValueStoreInterface
 {
     private array $map;
 

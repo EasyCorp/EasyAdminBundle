@@ -5,6 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Collection;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Collection\CollectionInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 
 /**
@@ -12,7 +13,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
  */
 final class FieldCollection implements CollectionInterface
 {
-    /** @var FieldDto[] */
+    /** @var FieldDtoInterface[] */
     private array $fields;
 
     /**
@@ -42,7 +43,7 @@ final class FieldCollection implements CollectionInterface
         return new self($fields);
     }
 
-    public function get(string $fieldUniqueId): ?FieldDto
+    public function get(string $fieldUniqueId): ?FieldDtoInterface
     {
         return $this->fields[$fieldUniqueId] ?? null;
     }
@@ -52,7 +53,7 @@ final class FieldCollection implements CollectionInterface
      * Some pages (index/detail) can render the same field more than once.
      * In those cases, this method always returns the first field occurrence.
      */
-    public function getByProperty(string $propertyName): ?FieldDto
+    public function getByProperty(string $propertyName): ?FieldDtoInterface
     {
         foreach ($this->fields as $field) {
             if ($propertyName === $field->getProperty()) {
@@ -63,22 +64,22 @@ final class FieldCollection implements CollectionInterface
         return null;
     }
 
-    public function set(FieldDto $newOrUpdatedField): void
+    public function set(FieldDtoInterface $newOrUpdatedField): void
     {
         $this->fields[$newOrUpdatedField->getUniqueId()] = $newOrUpdatedField;
     }
 
-    public function unset(FieldDto $removedField): void
+    public function unset(FieldDtoInterface $removedField): void
     {
         unset($this->fields[$removedField->getUniqueId()]);
     }
 
-    public function prepend(FieldDto $newField): void
+    public function prepend(FieldDtoInterface $newField): void
     {
         $this->fields = array_merge([$newField->getUniqueId() => $newField], $this->fields);
     }
 
-    public function first(): ?FieldDto
+    public function first(): ?FieldDtoInterface
     {
         if (0 === \count($this->fields)) {
             return null;
@@ -97,7 +98,7 @@ final class FieldCollection implements CollectionInterface
         return \array_key_exists($offset, $this->fields);
     }
 
-    public function offsetGet(mixed $offset): FieldDto
+    public function offsetGet(mixed $offset): FieldDtoInterface
     {
         return $this->fields[$offset];
     }
@@ -128,7 +129,7 @@ final class FieldCollection implements CollectionInterface
     /**
      * @param FieldInterface[]|string[] $fields
      *
-     * @return FieldDto[]
+     * @return FieldDtoInterface[]
      */
     private function processFields(iterable $fields): array
     {

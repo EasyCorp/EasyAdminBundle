@@ -5,9 +5,12 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Field\Configurator;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
 use EasyCorp\Bundle\EasyAdminBundle\Intl\IntlFormatter;
+use EasyCorp\Bundle\EasyAdminBundle\Intl\IntlFormatterInterface;
 use Symfony\Component\Intl\Currencies;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
@@ -19,18 +22,18 @@ final class MoneyConfigurator implements FieldConfiguratorInterface
     private IntlFormatter $intlFormatter;
     private PropertyAccessorInterface $propertyAccessor;
 
-    public function __construct(IntlFormatter $intlFormatter, PropertyAccessorInterface $propertyAccessor)
+    public function __construct(IntlFormatterInterface $intlFormatter, PropertyAccessorInterface $propertyAccessor)
     {
         $this->intlFormatter = $intlFormatter;
         $this->propertyAccessor = $propertyAccessor;
     }
 
-    public function supports(FieldDto $field, EntityDto $entityDto): bool
+    public function supports(FieldDtoInterface $field, EntityDtoInterface $entityDto): bool
     {
         return MoneyField::class === $field->getFieldFqcn();
     }
 
-    public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
+    public function configure(FieldDtoInterface $field, EntityDtoInterface $entityDto, AdminContext $context): void
     {
         $currencyCode = $this->getCurrency($field, $entityDto);
         if (null !== $currencyCode && !Currencies::exists($currencyCode)) {
@@ -54,7 +57,7 @@ final class MoneyConfigurator implements FieldConfiguratorInterface
         $field->setFormattedValue($formattedValue);
     }
 
-    private function getCurrency(FieldDto $field, EntityDto $entityDto): ?string
+    private function getCurrency(FieldDtoInterface $field, EntityDtoInterface $entityDto): ?string
     {
         if (null !== $currencyCode = $field->getCustomOption(MoneyField::OPTION_CURRENCY)) {
             return $currencyCode;

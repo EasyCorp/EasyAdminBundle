@@ -14,7 +14,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  *
  * @internal Don't use this to define a text filter. Use Filter\TextFilter instead.
  */
-class TextFilterType extends AbstractType
+final class TextFilterType extends AbstractType
 {
     private string $valueType;
 

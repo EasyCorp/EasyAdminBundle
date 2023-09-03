@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Controller;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
+use EasyCorp\Bundle\EasyAdminBundle\Config\FiltersInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
@@ -27,7 +28,7 @@ class BlogPostCrudController extends AbstractCrudController
         ];
     }
 
-    public function configureFilters(Filters $filters): Filters
+    public function configureFilters(FiltersInterface $filters): FiltersInterface
     {
         return $filters
             ->add('title')

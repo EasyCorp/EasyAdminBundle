@@ -8,10 +8,7 @@ use function Symfony\Component\String\u;
 use Symfony\Component\Uid\Ulid;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
-/**
- * @author Javier Eguiluz <javier.eguiluz@gmail.com>
- */
-final class FieldDto
+final class FieldDto implements FieldDtoInterface
 {
     private ?string $fieldFqcn = null;
     private ?string $propertyName = null;
@@ -88,10 +85,6 @@ final class FieldDto
         return $this->fieldFqcn;
     }
 
-    /**
-     * @internal Don't use this method yourself. EasyAdmin uses it internally
-     *           to set the field FQCN. It's OK to use getFieldFqcn() to get this value.
-     */
     public function setFieldFqcn(string $fieldFqcn): void
     {
         $this->fieldFqcn = $fieldFqcn;
@@ -107,9 +100,6 @@ final class FieldDto
         $this->propertyName = $propertyName;
     }
 
-    /**
-     * Returns the original unmodified value stored in the entity field.
-     */
     public function getValue(): mixed
     {
         return $this->value;
@@ -120,10 +110,6 @@ final class FieldDto
         $this->value = $value;
     }
 
-    /**
-     * Returns the value to be displayed for the field (it could be the
-     * same as the value stored in the field or not).
-     */
     public function getFormattedValue(): mixed
     {
         return $this->formattedValue;
@@ -144,17 +130,11 @@ final class FieldDto
         $this->formatValueCallable = $callable;
     }
 
-    /**
-     * @return TranslatableInterface|string|false|null
-     */
     public function getLabel()
     {
         return $this->label;
     }
 
-    /**
-     * @param TranslatableInterface|string|false|null $label
-     */
     public function setLabel($label): void
     {
         if (!\is_string($label) && !$label instanceof TranslatableInterface && false !== $label && null !== $label) {
@@ -199,17 +179,11 @@ final class FieldDto
         }
     }
 
-    /**
-     * @param string $optionName You can use "dot" notation to set nested options (e.g. 'attr.class')
-     */
     public function setFormTypeOption(string $optionName, mixed $optionValue): void
     {
         $this->formTypeOptions->set($optionName, $optionValue);
     }
 
-    /**
-     * @param string $optionName You can use "dot" notation to set nested options (e.g. 'attr.class')
-     */
     public function setFormTypeOptionIfNotSet(string $optionName, mixed $optionValue): void
     {
         $this->formTypeOptions->setIfNotSet($optionName, $optionValue);
@@ -340,27 +314,27 @@ final class FieldDto
         $this->formThemePaths = $formThemePaths;
     }
 
-    public function getAssets(): AssetsDto
+    public function getAssets(): AssetsDtoInterface
     {
         return $this->assets;
     }
 
-    public function setAssets(AssetsDto $assets): void
+    public function setAssets(AssetsDtoInterface $assets): void
     {
         $this->assets = $assets;
     }
 
-    public function addWebpackEncoreAsset(AssetDto $assetDto): void
+    public function addWebpackEncoreAsset(AssetDtoInterface $assetDto): void
     {
         $this->assets->addWebpackEncoreAsset($assetDto);
     }
 
-    public function addCssAsset(AssetDto $assetDto): void
+    public function addCssAsset(AssetDtoInterface $assetDto): void
     {
         $this->assets->addCssAsset($assetDto);
     }
 
-    public function addJsAsset(AssetDto $assetDto): void
+    public function addJsAsset(AssetDtoInterface $assetDto): void
     {
         $this->assets->addJsAsset($assetDto);
     }

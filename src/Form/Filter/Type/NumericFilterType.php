@@ -13,7 +13,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * @author Yonel Ceruto <yonelceruto@gmail.com>
  */
-class NumericFilterType extends AbstractType
+final class NumericFilterType extends AbstractType
 {
     private string $valueType;
     private array $valueTypeOptions;

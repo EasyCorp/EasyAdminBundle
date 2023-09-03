@@ -10,7 +10,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * @author Yonel Ceruto <yonelceruto@gmail.com>
  */
-class ComparisonType extends AbstractType
+final class ComparisonType extends AbstractType
 {
     public const EQ = '=';
     public const NEQ = '!=';

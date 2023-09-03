@@ -4,27 +4,25 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Config;
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterConfigDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterConfigDtoInterface;
 
-/**
- * @author Javier Eguiluz <javier.eguiluz@gmail.com>
- */
-final class Filters
+final class Filters implements FiltersInterface
 {
     private FilterConfigDto $dto;
 
-    private function __construct(FilterConfigDto $filterConfigDto)
+    private function __construct(FilterConfigDtoInterface $filterConfigDto)
     {
         $this->dto = $filterConfigDto;
     }
 
-    public static function new(): self
+    public static function new(): FiltersInterface
     {
         $dto = new FilterConfigDto();
 
         return new self($dto);
     }
 
-    public function add(FilterInterface|string $propertyNameOrFilter): self
+    public function add(FilterInterface|string $propertyNameOrFilter): FiltersInterface
     {
         $filterPropertyName = \is_string($propertyNameOrFilter) ? $propertyNameOrFilter : (string) $propertyNameOrFilter;
         if (null !== $this->dto->getFilter($filterPropertyName)) {
@@ -36,7 +34,7 @@ final class Filters
         return $this;
     }
 
-    public function getAsDto(): FilterConfigDto
+    public function getAsDto(): FilterConfigDtoInterface
     {
         return $this->dto;
     }

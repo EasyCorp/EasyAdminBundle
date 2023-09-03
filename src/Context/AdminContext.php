@@ -6,26 +6,32 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenu;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetsDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetsDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\DashboardDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\DashboardDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\I18nDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\I18nDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\LocaleDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MainMenuDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\MainMenuDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\UserMenuDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\UserMenuDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\MenuFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\MenuFactoryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\CrudControllerRegistry;
+use EasyCorp\Bundle\EasyAdminBundle\Registry\CrudControllerRegistryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\TemplateRegistry;
+use EasyCorp\Bundle\EasyAdminBundle\Registry\TemplateRegistryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-/**
- * A context object that stores all the state and config of the current admin request.
- *
- * @author Javier Eguiluz <javier.eguiluz@gmail.com>
- */
-final class AdminContext
+final class AdminContext implements AdminContextInterface
 {
     private Request $request;
     private ?UserInterface $user;
@@ -42,7 +48,7 @@ final class AdminContext
     private ?MainMenuDto $mainMenuDto = null;
     private ?UserMenuDto $userMenuDto = null;
 
-    public function __construct(Request $request, ?UserInterface $user, I18nDto $i18nDto, CrudControllerRegistry $crudControllers, DashboardDto $dashboardDto, DashboardControllerInterface $dashboardController, AssetsDto $assetDto, ?CrudDto $crudDto, ?EntityDto $entityDto, ?SearchDto $searchDto, MenuFactory $menuFactory, TemplateRegistry $templateRegistry)
+    public function __construct(Request $request, ?UserInterface $user, I18nDtoInterface $i18nDto, CrudControllerRegistryInterface $crudControllers, DashboardDtoInterface $dashboardDto, DashboardControllerInterface $dashboardController, AssetsDtoInterface $assetDto, ?CrudDtoInterface $crudDto, ?EntityDtoInterface $entityDto, ?SearchDtoInterface $searchDto, MenuFactoryInterface $menuFactory, TemplateRegistryInterface $templateRegistry)
     {
         $this->request = $request;
         $this->user = $user;
@@ -68,17 +74,17 @@ final class AdminContext
         return $this->request->query->get(EA::REFERRER);
     }
 
-    public function getI18n(): I18nDto
+    public function getI18n(): I18nDtoInterface
     {
         return $this->i18nDto;
     }
 
-    public function getCrudControllers(): CrudControllerRegistry
+    public function getCrudControllers(): CrudControllerRegistryInterface
     {
         return $this->crudControllers;
     }
 
-    public function getEntity(): EntityDto
+    public function getEntity(): EntityDtoInterface
     {
         return $this->entityDto;
     }
@@ -88,7 +94,7 @@ final class AdminContext
         return $this->user;
     }
 
-    public function getAssets(): AssetsDto
+    public function getAssets(): AssetsDtoInterface
     {
         return $this->assetDto;
     }
@@ -138,15 +144,12 @@ final class AdminContext
         return $this->dashboardDto->isDarkModeEnabled();
     }
 
-    /**
-     * @return LocaleDto[]
-     */
     public function getDashboardLocales(): array
     {
         return $this->dashboardDto->getLocales();
     }
 
-    public function getMainMenu(): MainMenuDto
+    public function getMainMenu(): MainMenuDtoInterface
     {
         if (null !== $this->mainMenuDto) {
             return $this->mainMenuDto;
@@ -158,7 +161,7 @@ final class AdminContext
         return $this->mainMenuDto = $this->menuFactory->createMainMenu($mainMenuItems);
     }
 
-    public function getUserMenu(): UserMenuDto
+    public function getUserMenu(): UserMenuDtoInterface
     {
         if (null !== $this->userMenuDto) {
             return $this->userMenuDto;
@@ -173,12 +176,12 @@ final class AdminContext
         return $this->userMenuDto = $this->menuFactory->createUserMenu($userMenu);
     }
 
-    public function getCrud(): ?CrudDto
+    public function getCrud(): ?CrudDtoInterface
     {
         return $this->crudDto;
     }
 
-    public function getSearch(): ?SearchDto
+    public function getSearch(): ?SearchDtoInterface
     {
         return $this->searchDto;
     }

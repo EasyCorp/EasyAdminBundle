@@ -13,7 +13,7 @@ use Symfony\Component\Form\ChoiceList\Loader\ChoiceLoaderInterface;
  *
  * @author Yonel Ceruto <yonelceruto@gmail.com>
  */
-class DynamicChoiceLoader implements ChoiceLoaderInterface
+final class DynamicChoiceLoader implements ChoiceLoaderInterface
 {
     private array $choices = [];
     private bool $cached = false;

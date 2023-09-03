@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Controller;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
+use EasyCorp\Bundle\EasyAdminBundle\Config\DashboardInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Entity\BlogPost;
@@ -18,7 +19,7 @@ class DashboardController extends AbstractDashboardController
         return parent::index();
     }
 
-    public function configureDashboard(): Dashboard
+    public function configureDashboard(): DashboardInterface
     {
         return Dashboard::new()
             ->setTitle('EasyAdmin Tests');

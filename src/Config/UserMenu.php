@@ -4,55 +4,53 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Config;
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu\MenuItemInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\UserMenuDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\UserMenuDtoInterface;
 
-/**
- * @author Javier Eguiluz <javier.eguiluz@gmail.com>
- */
-final class UserMenu
+final class UserMenu implements UserMenuInterface
 {
     private UserMenuDto $dto;
 
-    private function __construct(UserMenuDto $userMenuDto)
+    private function __construct(UserMenuDtoInterface $userMenuDto)
     {
         $this->dto = $userMenuDto;
     }
 
-    public static function new(): self
+    public static function new(): UserMenuInterface
     {
         $dto = new UserMenuDto();
 
         return new self($dto);
     }
 
-    public function displayUserName(bool $isDisplayed = true): self
+    public function displayUserName(bool $isDisplayed = true): UserMenuInterface
     {
         $this->dto->setDisplayName($isDisplayed);
 
         return $this;
     }
 
-    public function displayUserAvatar(bool $isDisplayed = true): self
+    public function displayUserAvatar(bool $isDisplayed = true): UserMenuInterface
     {
         $this->dto->setDisplayAvatar($isDisplayed);
 
         return $this;
     }
 
-    public function setName(?string $name): self
+    public function setName(?string $name): UserMenuInterface
     {
         $this->dto->setName($name);
 
         return $this;
     }
 
-    public function setAvatarUrl(?string $url): self
+    public function setAvatarUrl(?string $url): UserMenuInterface
     {
         $this->dto->setAvatarUrl($url);
 
         return $this;
     }
 
-    public function setGravatarEmail(string $emailAddress): self
+    public function setGravatarEmail(string $emailAddress): UserMenuInterface
     {
         $hash = md5(strtolower(trim($emailAddress)));
         $this->dto->setAvatarUrl(sprintf('https://www.gravatar.com/avatar/%s', $hash));
@@ -60,27 +58,21 @@ final class UserMenu
         return $this;
     }
 
-    /**
-     * @param MenuItemInterface[] $items
-     */
-    public function addMenuItems(array $items): self
+    public function addMenuItems(array $items): UserMenuInterface
     {
         $this->dto->setItems(array_merge($items, $this->dto->getItems()));
 
         return $this;
     }
 
-    /**
-     * @param MenuItemInterface[] $items
-     */
-    public function setMenuItems(array $items): self
+    public function setMenuItems(array $items): UserMenuInterface
     {
         $this->dto->setItems($items);
 
         return $this;
     }
 
-    public function getAsDto(): UserMenuDto
+    public function getAsDto(): UserMenuDtoInterface
     {
         return $this->dto;
     }

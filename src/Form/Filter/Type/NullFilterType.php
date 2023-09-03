@@ -10,7 +10,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * @author Yonel Ceruto <yonelceruto@gmail.com>
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-class NullFilterType extends AbstractType
+final class NullFilterType extends AbstractType
 {
     public function configureOptions(OptionsResolver $resolver): void
     {

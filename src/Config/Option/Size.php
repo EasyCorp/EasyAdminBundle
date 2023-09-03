@@ -8,7 +8,10 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Config\Option;
 final class Size
 {
     public const SM = 'sm';
+
     public const MD = 'md';
+
     public const LG = 'lg';
+
     public const XL = 'xl';
 }

@@ -9,7 +9,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * @author Yonel Ceruto <yonelceruto@gmail.com>
  */
-class EntityFilterType extends AbstractType
+final class EntityFilterType extends AbstractType
 {
     public function configureOptions(OptionsResolver $resolver): void
     {

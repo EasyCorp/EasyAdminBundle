@@ -11,7 +11,7 @@ use Symfony\Component\Security\Core\Exception\AuthenticationCredentialsNotFoundE
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-class AuthorizationChecker implements AuthorizationCheckerInterface
+final class AuthorizationChecker implements AuthorizationCheckerInterface
 {
     private AuthorizationCheckerInterface $authorizationChecker;
 
@@ -22,7 +22,7 @@ class AuthorizationChecker implements AuthorizationCheckerInterface
 
     public function isGranted($permission, $subject = null): bool
     {
-        // this check is needed for performance reasons because most of the times permissions
+        // this check is needed for performance reasons because most of the time permissions
         // won't be set, so this function must return as early as possible in those cases
         if (null === $permission || '' === $permission) {
             return true;

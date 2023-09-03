@@ -7,7 +7,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
@@ -23,13 +25,11 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormRowType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminTabType;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProviderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
-/**
- * @author Javier Eguiluz <javier.eguiluz@gmail.com>
- */
-final class FieldFactory
+final class FieldFactory implements FieldFactoryInterface
 {
     private static array $doctrineTypeToFieldFqcn = [
         Types::ARRAY => ArrayField::class,
@@ -62,14 +62,14 @@ final class FieldFactory
     private AuthorizationCheckerInterface $authorizationChecker;
     private iterable $fieldConfigurators;
 
-    public function __construct(AdminContextProvider $adminContextProvider, AuthorizationCheckerInterface $authorizationChecker, iterable $fieldConfigurators)
+    public function __construct(AdminContextProviderInterface $adminContextProvider, AuthorizationCheckerInterface $authorizationChecker, iterable $fieldConfigurators)
     {
         $this->adminContextProvider = $adminContextProvider;
         $this->authorizationChecker = $authorizationChecker;
         $this->fieldConfigurators = $fieldConfigurators;
     }
 
-    public function processFields(EntityDto $entityDto, FieldCollection $fields): void
+    public function processFields(EntityDtoInterface $entityDto, FieldCollection $fields): void
     {
         $this->preProcessFields($fields, $entityDto);
 
@@ -123,7 +123,7 @@ final class FieldFactory
         $entityDto->setFields($fields);
     }
 
-    private function preProcessFields(FieldCollection $fields, EntityDto $entityDto): void
+    private function preProcessFields(FieldCollection $fields, EntityDtoInterface $entityDto): void
     {
         if ($fields->isEmpty()) {
             return;
@@ -166,9 +166,9 @@ final class FieldFactory
     }
 
     // transforms a generic Field class into a specific <type>Field class (e.g. DateTimeField)
-    private function transformField(FieldDto $fieldDto, string $newFieldFqcn): FieldDto
+    private function transformField(FieldDtoInterface $fieldDto, string $newFieldFqcn): FieldDtoInterface
     {
-        /** @var FieldDto $newField */
+        /** @var FieldDtoInterface $newField */
         $newField = $newFieldFqcn::new($fieldDto->getProperty())->getAsDto();
         $newField->setUniqueId($fieldDto->getUniqueId());
 
@@ -234,8 +234,8 @@ final class FieldFactory
     private function checkOrphanTabFields(FieldCollection $fields, AdminContext $context): void
     {
         $hasTabs = false;
-        $isTabField = static fn (FieldDto $fieldDto) => EasyAdminTabType::class === $fieldDto->getFormType();
-        $isFormField = static fn (FieldDto $fieldDto) => FormField::class === $fieldDto->getFieldFqcn();
+        $isTabField = static fn (FieldDtoInterface $fieldDto) => EasyAdminTabType::class === $fieldDto->getFormType();
+        $isFormField = static fn (FieldDtoInterface $fieldDto) => FormField::class === $fieldDto->getFieldFqcn();
 
         foreach ($fields as $fieldDto) {
             if ($isTabField($fieldDto)) {

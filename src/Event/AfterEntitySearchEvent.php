@@ -4,7 +4,9 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Event;
 
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDtoInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDtoInterface;
 
 final class AfterEntitySearchEvent
 {
@@ -12,7 +14,7 @@ final class AfterEntitySearchEvent
     private SearchDto $searchDto;
     private EntityDto $entityDto;
 
-    public function __construct(QueryBuilder $queryBuilder, SearchDto $searchDto, EntityDto $entityDto)
+    public function __construct(QueryBuilder $queryBuilder, SearchDtoInterface $searchDto, EntityDtoInterface $entityDto)
     {
         $this->queryBuilder = $queryBuilder;
         $this->searchDto = $searchDto;
@@ -24,12 +26,12 @@ final class AfterEntitySearchEvent
         return $this->queryBuilder;
     }
 
-    public function getSearchDto(): SearchDto
+    public function getSearchDto(): SearchDtoInterface
     {
         return $this->searchDto;
     }
 
-    public function getEntityDto(): EntityDto
+    public function getEntityDto(): EntityDtoInterface
     {
         return $this->entityDto;
     }

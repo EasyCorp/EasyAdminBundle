@@ -2,10 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
-/**
- * @author Javier Eguiluz <javier.eguiluz@gmail.com>
- */
-final class PaginatorDto
+final class PaginatorDto implements PaginatorDtoInterface
 {
     private ?int $pageNumber = null;
     private int $pageSize;

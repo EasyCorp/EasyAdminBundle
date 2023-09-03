@@ -5,7 +5,7 @@ namespace <?= $namespace; ?>;
 use <?= $entity_fqcn; ?>;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 
-class <?= $class_name; ?> extends AbstractCrudController
+final class <?= $class_name; ?> extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {

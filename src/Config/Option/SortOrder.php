@@ -8,5 +8,6 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Config\Option;
 final class SortOrder
 {
     public const ASC = 'ASC';
+
     public const DESC = 'DESC';
 }

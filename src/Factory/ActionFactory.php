@@ -54,6 +54,7 @@ final class ActionFactory
                 continue;
             }
 
+            // if CSS class hasn't been overridden, apply the default ones
             if ('' === $actionDto->getCssClass()) {
                 $defaultCssClass = 'action-'.$actionDto->getName();
                 if (Crud::PAGE_INDEX !== $currentPage) {
@@ -61,6 +62,12 @@ final class ActionFactory
                 }
 
                 $actionDto->setCssClass($defaultCssClass);
+            }
+
+            // these are the additional custom CSS classes defined via addCssClass()
+            // which are always appended to the CSS classes (default ones or custom ones)
+            if ('' !== $addedCssClass = $actionDto->getAddedCssClass()) {
+                $actionDto->setCssClass($actionDto->getCssClass().' '.$addedCssClass);
             }
 
             $entityActions[] = $this->processAction($currentPage, $actionDto, $entityDto);

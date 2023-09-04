@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Test\Trait;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Test\Trait\CrudTestUrlGeneration;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Controller\BlogPostCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Controller\CategoryCrudController;
@@ -16,7 +17,7 @@ final class CrudTestUrlGenerationTraitTest extends KernelTestCase
     public const TEST_CONTROLLER = CategoryCrudController::class;
     public const TEST_DASHBOARD = DashboardController::class;
 
-    private AdminUrlGenerator $adminUrlGenerator;
+    private AdminUrlGeneratorInterface $adminUrlGenerator;
 
     protected function setUp(): void
     {
@@ -358,7 +359,7 @@ class CrudTestUrlGenerationTraitTestClass
 
     protected AdminUrlGenerator $adminUrlGenerator;
 
-    public function __construct(AdminUrlGenerator $adminUrlGenerator)
+    public function __construct(AdminUrlGeneratorInterface $adminUrlGenerator)
     {
         $this->adminUrlGenerator = $adminUrlGenerator;
     }

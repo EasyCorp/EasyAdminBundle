@@ -9,14 +9,14 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Orm\EntityPaginatorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\PaginatorDto;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
-use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
 final class EntityPaginator implements EntityPaginatorInterface
 {
-    private AdminUrlGenerator $adminUrlGenerator;
+    private AdminUrlGeneratorInterface $adminUrlGenerator;
     private EntityFactory $entityFactory;
     private ?int $currentPage = null;
     private ?int $pageSize = null;
@@ -27,7 +27,7 @@ final class EntityPaginator implements EntityPaginatorInterface
     private ?int $rangeFirstResultNumber = null;
     private ?int $rangeLastResultNumber = null;
 
-    public function __construct(AdminUrlGenerator $adminUrlGenerator, EntityFactory $entityFactory)
+    public function __construct(AdminUrlGeneratorInterface $adminUrlGenerator, EntityFactory $entityFactory)
     {
         $this->adminUrlGenerator = $adminUrlGenerator;
         $this->entityFactory = $entityFactory;

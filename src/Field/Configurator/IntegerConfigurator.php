@@ -27,7 +27,7 @@ final class IntegerConfigurator implements FieldConfiguratorInterface
 
         if (null !== $numberFormat = $field->getCustomOption(NumberField::OPTION_NUMBER_FORMAT)) {
             $field->setFormattedValue(sprintf($numberFormat, $value));
-        } elseif (null !== $numberFormat = $context->getCrud()->getNumberFormat()) {
+        } elseif (null !== $numberFormat = $context->getCrud()?->getNumberFormat()) {
             $field->setFormattedValue(sprintf($numberFormat, $value));
         }
     }

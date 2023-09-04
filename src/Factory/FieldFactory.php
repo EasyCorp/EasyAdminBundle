@@ -74,7 +74,7 @@ final class FieldFactory
         $this->preProcessFields($fields, $entityDto);
 
         $context = $this->adminContextProvider->getContext();
-        $currentPage = $context->getCrud()->getCurrentPage();
+        $currentPage = $context->getCrud()?->getCurrentPage();
 
         $isDetailOrIndex = \in_array($currentPage, [Crud::PAGE_INDEX, Crud::PAGE_DETAIL], true);
         foreach ($fields as $fieldDto) {
@@ -261,6 +261,6 @@ final class FieldFactory
             $orphanFieldNames[] = $field->getProperty();
         }
 
-        throw new \RuntimeException(sprintf('The "%s" page of "%s" uses tabs to display its fields, but the following fields don\'t belong to any tab: %s. Use "FormField::addTab(\'...\')" to add a tab before those fields.', $context->getCrud()->getCurrentPage(), $context->getCrud()->getControllerFqcn(), implode(', ', $orphanFieldNames)));
+        throw new \RuntimeException(sprintf('The "%s" page of "%s" uses tabs to display its fields, but the following fields don\'t belong to any tab: %s. Use "FormField::addTab(\'...\')" to add a tab before those fields.', $context->getCrud()?->getCurrentPage(), $context->getCrud()?->getControllerFqcn(), implode(', ', $orphanFieldNames)));
     }
 }

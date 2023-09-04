@@ -28,7 +28,7 @@ final class LanguageConfigurator implements FieldConfiguratorInterface
         $languageCodeFormat = $field->getCustomOption(LanguageField::OPTION_LANGUAGE_CODE_FORMAT);
         $usesAlpha3Codes = LanguageField::FORMAT_ISO_639_ALPHA3 === $languageCodeFormat;
 
-        if (\in_array($context->getCrud()->getCurrentPage(), [Crud::PAGE_EDIT, Crud::PAGE_NEW], true)) {
+        if (\in_array($context->getCrud()?->getCurrentPage(), [Crud::PAGE_EDIT, Crud::PAGE_NEW], true)) {
             $field->setFormTypeOption('choices', $this->generateFormTypeChoices(
                 $usesAlpha3Codes,
                 $field->getCustomOption(LanguageField::OPTION_LANGUAGE_CODES_TO_KEEP),

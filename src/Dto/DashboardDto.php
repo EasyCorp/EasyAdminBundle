@@ -2,6 +2,8 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\BreadcrumbItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 
 /**
@@ -21,6 +23,12 @@ final class DashboardDto
     private bool $enableDarkMode = true;
     /** @var LocaleDto[] */
     private array $locales = [];
+    private ?string $breadcrumbRootLabel = null;
+    private ?string $breadcrumbDivider = null;
+    /**
+     * @var \Closure(string|BreadcrumbItem|null): (string|BreadcrumbItem|null)
+     */
+    private ?\Closure $breadcrumbHierarchyCallback = null;
 
     public function getRouteName(): string
     {
@@ -164,5 +172,65 @@ final class DashboardDto
     public function setLocales(array $locales): void
     {
         $this->locales = $locales;
+    }
+
+    public function setBreadcrumbRootLabel(?string $breadcrumbRootLabel): void
+    {
+        $this->breadcrumbRootLabel = $breadcrumbRootLabel;
+    }
+
+    public function getBreadcrumbRootLabel(): ?string
+    {
+        return $this->breadcrumbRootLabel;
+    }
+
+    public function setBreadcrumbDivider(?string $breadcrumbDivider): void
+    {
+        $this->breadcrumbDivider = $breadcrumbDivider;
+    }
+
+    public function getBreadcrumbDivider(): ?string
+    {
+        return null === $this->breadcrumbDivider ? null
+            : (str_starts_with($this->breadcrumbDivider, 'url')
+                ? $this->breadcrumbDivider
+                : "'{$this->breadcrumbDivider}'")
+        ;
+    }
+
+    /**
+     * @param \Closure(string|BreadcrumbItem|null): (string|BreadcrumbItem|null) $callback
+     */
+    public function setBreadcrumbHierarchyCallback(?\Closure $callback): void
+    {
+        $this->breadcrumbHierarchyCallback = $callback;
+    }
+
+    /**
+     * @return \Closure(string|BreadcrumbItem|null): (string|BreadcrumbItem|null)
+     */
+    public function getBreadcrumbHierarchyCallback(): \Closure
+    {
+        return $this->breadcrumbHierarchyCallback ?? $this->getDefaultBreadcrumbHierarchyCallback();
+    }
+
+    /**
+     * @return \Closure(string|BreadcrumbItem|null): (string|BreadcrumbItem|null)
+     */
+    public function getDefaultBreadcrumbHierarchyCallback(): \Closure
+    {
+        return function (null|string|BreadcrumbItem $action): null|string {
+            if ($action instanceof BreadcrumbItem) {
+                $action = $action->action;
+            }
+
+            return match ($action) {
+                Action::INDEX => null,
+                Action::NEW => Action::INDEX,
+                Action::DETAIL => Action::INDEX,
+                Action::EDIT => Action::DETAIL,
+                default => Action::INDEX,
+            };
+        };
     }
 }

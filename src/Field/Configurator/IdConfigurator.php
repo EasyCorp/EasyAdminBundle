@@ -24,7 +24,7 @@ final class IdConfigurator implements FieldConfiguratorInterface
     {
         $maxLength = $field->getCustomOption(IdField::OPTION_MAX_LENGTH);
         if (null === $maxLength) {
-            $maxLength = Crud::PAGE_INDEX === $context->getCrud()->getCurrentPage() ? 7 : -1;
+            $maxLength = Crud::PAGE_INDEX === $context->getCrud()?->getCurrentPage() ? 7 : -1;
         }
 
         if (-1 !== $maxLength && null !== $field->getValue()) {

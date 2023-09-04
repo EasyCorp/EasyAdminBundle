@@ -186,7 +186,7 @@
         </button>
     {% endset %}
 
-    <div class="field-collection-item {{ is_complex ? 'field-collection-item-complex' }}">
+    <div class="field-collection-item {{ is_complex ? 'field-collection-item-complex' }} {{ not form.vars.valid ? 'is-invalid' }}">
         {% if is_array_field|default(false) %}
             {{ form_widget(form) }}
             {% if allows_deleting_items and not disabled %}

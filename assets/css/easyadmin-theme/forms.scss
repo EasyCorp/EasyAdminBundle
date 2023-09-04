@@ -92,9 +92,11 @@ label.form-check-label {
 .form-widget input.form-control.is-invalid,
 .form-widget textarea.form-control.is-invalid,
 .form-widget .form-select.is-invalid,
+.field-collection-item.field-collection-item-complex.is-invalid,
 .form-widget input.form-control.is-invalid:focus,
 .form-widget textarea.form-control.is-invalid:focus,
-.form-widget .form-select.is-invalid:focus {
+.form-widget .form-select.is-invalid:focus,
+.field-collection-item.field-collection-item-complex.is-invalid:focus {
     background-image: none;
     border: 1px solid var(--form-input-error-border-color);
     box-shadow: var(--form-input-error-shadow);

@@ -38,6 +38,9 @@ class ActionsCrudController extends AbstractCrudController
             ->add(Crud::PAGE_INDEX, $action2)
             ->add(Crud::PAGE_INDEX, $action3)
             ->add(Crud::PAGE_INDEX, $action4)
+            ->update(Crud::PAGE_INDEX, Action::NEW, function (Action $action) {
+                return $action->setIcon('fa fa-fw fa-plus')->setLabel(false);
+            })
         ;
     }
 }

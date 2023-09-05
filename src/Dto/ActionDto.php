@@ -256,6 +256,7 @@ final class ActionDto
     {
         $action = Action::new($this->name, $this->label, $this->icon);
         $action->setCssClass($this->cssClass);
+        $action->addCssClass($this->addedCssClass);
         $action->setHtmlAttributes($this->htmlAttributes);
         $action->setTranslationParameters($this->translationParameters);
 

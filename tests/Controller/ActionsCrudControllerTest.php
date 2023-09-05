@@ -39,5 +39,7 @@ class ActionsCrudControllerTest extends AbstractCrudTestCase
         static::assertSame('dropdown-item foo', $crawler->filter('a.dropdown-item:contains("Action2")')->attr('class'));
         static::assertSame('dropdown-item action-action3 bar', $crawler->filter('a.dropdown-item:contains("Action3")')->attr('class'));
         static::assertSame('dropdown-item foo bar', $crawler->filter('a.dropdown-item:contains("Action4")')->attr('class'));
+
+        static::assertSame('action-new btn btn-primary', trim($crawler->filter('.global-actions > a')->first()->attr('class')));
     }
 }

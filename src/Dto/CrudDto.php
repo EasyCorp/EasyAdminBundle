@@ -47,6 +47,8 @@ final class CrudDto
     private string $dateIntervalFormat = '%%y Year(s) %%m Month(s) %%d Day(s)';
     private ?string $timezone = null;
     private ?string $numberFormat = null;
+    private ?string $thousandsSeparator = null;
+    private ?string $decimalSeparator = null;
     private array $defaultSort = [];
     private ?array $searchFields = [];
     private bool $autofocusSearch = false;
@@ -300,6 +302,26 @@ final class CrudDto
     public function setNumberFormat(string $numberFormat): void
     {
         $this->numberFormat = $numberFormat;
+    }
+
+    public function getThousandsSeparator(): ?string
+    {
+        return $this->thousandsSeparator;
+    }
+
+    public function setThousandsSeparator(string $separator): void
+    {
+        $this->thousandsSeparator = $separator;
+    }
+
+    public function getDecimalSeparator(): ?string
+    {
+        return $this->decimalSeparator;
+    }
+
+    public function setDecimalSeparator(string $separator): void
+    {
+        $this->decimalSeparator = $separator;
     }
 
     public function getDefaultSort(): array

@@ -37,4 +37,14 @@ argument of the ``sprintf()`` function::
     // the following example would format 123 as '+00123'
     yield IntegerField::new('...')->setNumberFormat('%+06d');
 
+setThousandsSeparator
+~~~~~~~~~~~~~~~~~~~~~
+
+By default, the integer value doesn't separate each thousands group in any way
+(e.g. ``12345`` is displayed like that, instead of ``12,345``). Use this option
+to set the character to use to separate each thousands group::
+
+    // this would display '12345' as '12 345'
+    yield IntegerField::new('...')->setThousandsSeparator(' ');
+
 .. _`IntegerType`: https://symfony.com/doc/current/reference/forms/types/integer.html

@@ -71,6 +71,36 @@ final class IntlFormatter
         'before_suffix' => \NumberFormatter::PAD_BEFORE_SUFFIX,
         'after_suffix' => \NumberFormatter::PAD_AFTER_SUFFIX,
     ];
+    private const NUMBER_TEXT_ATTRIBUTES = [
+        'positive_prefix' => \NumberFormatter::POSITIVE_PREFIX,
+        'positive_suffix' => \NumberFormatter::POSITIVE_SUFFIX,
+        'negative_prefix' => \NumberFormatter::NEGATIVE_PREFIX,
+        'negative_suffix' => \NumberFormatter::NEGATIVE_SUFFIX,
+        'padding_character' => \NumberFormatter::PADDING_CHARACTER,
+        'currency_code' => \NumberFormatter::CURRENCY_CODE,
+        'default_ruleset' => \NumberFormatter::DEFAULT_RULESET,
+        'public_rulesets' => \NumberFormatter::PUBLIC_RULESETS,
+    ];
+    private const NUMBER_SYMBOLS = [
+        'decimal_separator' => \NumberFormatter::DECIMAL_SEPARATOR_SYMBOL,
+        'grouping_separator' => \NumberFormatter::GROUPING_SEPARATOR_SYMBOL,
+        'pattern_separator' => \NumberFormatter::PATTERN_SEPARATOR_SYMBOL,
+        'percent' => \NumberFormatter::PERCENT_SYMBOL,
+        'zero_digit' => \NumberFormatter::ZERO_DIGIT_SYMBOL,
+        'digit' => \NumberFormatter::DIGIT_SYMBOL,
+        'minus_sign' => \NumberFormatter::MINUS_SIGN_SYMBOL,
+        'plus_sign' => \NumberFormatter::PLUS_SIGN_SYMBOL,
+        'currency' => \NumberFormatter::CURRENCY_SYMBOL,
+        'intl_currency' => \NumberFormatter::INTL_CURRENCY_SYMBOL,
+        'monetary_separator' => \NumberFormatter::MONETARY_SEPARATOR_SYMBOL,
+        'exponential' => \NumberFormatter::EXPONENTIAL_SYMBOL,
+        'permill' => \NumberFormatter::PERMILL_SYMBOL,
+        'pad_escape' => \NumberFormatter::PAD_ESCAPE_SYMBOL,
+        'infinity' => \NumberFormatter::INFINITY_SYMBOL,
+        'nan' => \NumberFormatter::NAN_SYMBOL,
+        'significant_digit' => \NumberFormatter::SIGNIFICANT_DIGIT_SYMBOL,
+        'monetary_grouping_separator' => \NumberFormatter::MONETARY_GROUPING_SEPARATOR_SYMBOL,
+    ];
 
     private array $dateFormatters = [];
     private array $numberFormatters = [];
@@ -171,8 +201,24 @@ final class IntlFormatter
             $locale = \Locale::getDefault();
         }
 
+        $textAttrs = [];
+        foreach ($attrs as $name => $value) {
+            if (isset(self::NUMBER_TEXT_ATTRIBUTES[$name])) {
+                $textAttrs[$name] = $value;
+                unset($attrs[$name]);
+            }
+        }
+
+        $symbols = [];
+        foreach ($attrs as $name => $value) {
+            if (isset(self::NUMBER_SYMBOLS[$name])) {
+                $symbols[$name] = $value;
+                unset($attrs[$name]);
+            }
+        }
+
         ksort($attrs);
-        $hash = sprintf('%s|%s|%s', $locale, $style, json_encode($attrs, \JSON_THROW_ON_ERROR));
+        $hash = $locale.'|'.$style.'|'.json_encode($attrs).'|'.json_encode($textAttrs).'|'.json_encode($symbols);
 
         if (!isset($this->numberFormatters[$hash])) {
             $this->numberFormatters[$hash] = new \NumberFormatter($locale, self::NUMBER_STYLES[$style]);
@@ -198,6 +244,14 @@ final class IntlFormatter
             }
 
             $this->numberFormatters[$hash]->setAttribute(self::NUMBER_ATTRIBUTES[$name], $value);
+        }
+
+        foreach ($textAttrs as $name => $value) {
+            $this->numberFormatters[$hash]->setTextAttribute(self::NUMBER_TEXT_ATTRIBUTES[$name], $value);
+        }
+
+        foreach ($symbols as $name => $value) {
+            $this->numberFormatters[$hash]->setSymbol(self::NUMBER_SYMBOLS[$name], $value);
         }
 
         return $this->numberFormatters[$hash];

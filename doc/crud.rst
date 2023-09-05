@@ -204,6 +204,20 @@ Date, Time and Number Formatting Options
             // NumberField and IntegerField can override this value with their
             // own setNumberFormat() methods, which works in the same way
             ->setNumberFormat('%.2d');
+
+            // Sets the character used to separate each thousand group in a number
+            // e.g. if separator is ',' then 12345 is formatted as 12,345
+            // By default, EasyAdmin doesn't add any thousands separator to numbers;
+            // NumberField and IntegerField can override this value with their
+            // own setThousandsSeparator() methods, which works in the same way
+            ->setThousandsSeparator(',')
+
+            // Sets the character used to separate the decimal part of a non-integer number
+            // e.g. if separator is '.' then 1/10 is formatted as 0.1
+            // by default, EasyAdmin displays the default decimal separator used by PHP;
+            // NumberField and IntegerField can override this value with their
+            // own setDecimalSeparator() methods, which works in the same way
+            ->setDecimalSeparator('.')
         ;
     }
 

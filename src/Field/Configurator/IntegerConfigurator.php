@@ -25,10 +25,17 @@ final class IntegerConfigurator implements FieldConfiguratorInterface
             return;
         }
 
-        if (null !== $numberFormat = $field->getCustomOption(NumberField::OPTION_NUMBER_FORMAT)) {
-            $field->setFormattedValue(sprintf($numberFormat, $value));
-        } elseif (null !== $numberFormat = $context->getCrud()->getNumberFormat()) {
-            $field->setFormattedValue(sprintf($numberFormat, $value));
-        }
+        $numberFormat = $field->getCustomOption(NumberField::OPTION_NUMBER_FORMAT)
+            ?? $context->getCrud()->getNumberFormat()
+            ?? null;
+        $thousandsSeparator = $field->getCustomOption(NumberField::OPTION_THOUSANDS_SEPARATOR)
+            ?? $context->getCrud()->getThousandsSeparator()
+            ?? null;
+
+        $field->setFormattedValue(match (true) {
+            null !== $numberFormat => sprintf($numberFormat, $value),
+            null !== $thousandsSeparator => number_format($value, 0, '.', $thousandsSeparator),
+            default => $value,
+        });
     }
 }

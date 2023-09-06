@@ -197,14 +197,12 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
         if ($entityDto->isAssociation($field->getProperty())) {
             $associatedEntityMetadata = $this->entityFactory->getEntityMetadata($doctrinePropertyMetadata->get('targetEntity'));
             foreach ($doctrinePropertyMetadata->get('joinColumns', []) as $joinColumn) {
-                $propertyNameInAssociatedEntity = $joinColumn['referencedColumnName'];
-                $associatedPropertyMetadata = $associatedEntityMetadata->fieldMappings[$propertyNameInAssociatedEntity] ?? [];
-                $isNullable = $associatedPropertyMetadata['nullable'] ?? true;
+                $isNullable = $joinColumn['nullable'] ?? true;
                 if (false === $isNullable) {
                     return true;
                 }
             }
-
+            
             return false;
         }
 

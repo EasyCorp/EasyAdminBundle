@@ -4,7 +4,8 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
-use function Symfony\Component\String\u;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormFieldsetType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminTabType;
 use Symfony\Component\Uid\Ulid;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
@@ -80,7 +81,17 @@ final class FieldDto
 
     public function isFormDecorationField(): bool
     {
-        return u($this->getCssClass())->containsAny(['field-form_panel', 'field-form_tab']);
+        return $this->isFormTab() || $this->isFormFieldset();
+    }
+
+    public function isFormFieldset(): bool
+    {
+        return EaFormFieldsetType::class === $this->formType;
+    }
+
+    public function isFormTab(): bool
+    {
+        return EasyAdminTabType::class === $this->formType;
     }
 
     public function getFieldFqcn(): ?string

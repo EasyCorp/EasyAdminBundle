@@ -20,6 +20,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TimeField;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormFieldsetType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormRowType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminTabType;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
@@ -135,16 +136,7 @@ final class FieldFactory
             return;
         }
 
-        // this is needed to handle this edge-case: the list of fields include one or more form panels,
-        // but the first fields of the list don't belong to any panel. We must create an automatic empty
-        // form panel for those "orphaned fields" so they are displayed as expected
-        $firstFieldIsAFormPanel = $fields->first()->isFormDecorationField();
-        foreach ($fields as $fieldDto) {
-            if (!$firstFieldIsAFormPanel && $fieldDto->isFormDecorationField()) {
-                $fields->prepend(FormField::addPanel()->getAsDto());
-                break;
-            }
-        }
+        $this->fixOrphanFieldsetFields($fields);
 
         foreach ($fields as $fieldDto) {
             if (Field::class !== $fieldDto->getFieldFqcn()) {
@@ -268,5 +260,27 @@ final class FieldFactory
         }
 
         throw new \RuntimeException(sprintf('The "%s" page of "%s" uses tabs to display its fields, but the following fields don\'t belong to any tab: %s. Use "FormField::addTab(\'...\')" to add a tab before those fields.', $context->getCrud()->getCurrentPage(), $context->getCrud()->getControllerFqcn(), implode(', ', $orphanFieldNames)));
+    }
+
+    /*
+     * This is needed to handle this edge-case: the list of fields include one or more form fieldsets,
+     * but the first fields of the list don't belong to any fieldset. We must create an automatic empty
+     * form fieldset for those "orphaned fields" so they are displayed as expected.
+     */
+    private function fixOrphanFieldsetFields(FieldCollection $fields): void
+    {
+        $formUsesFieldsets = false;
+        /** @var FieldDto $fieldDto */
+        foreach ($fields as $fieldDto) {
+            if (EaFormFieldsetType::class === $fieldDto->getFormType()) {
+                $formUsesFieldsets = true;
+                break;
+            }
+        }
+
+        $firstFieldIsAFieldsetOrTab = $fields->first()?->isFormDecorationField();
+        if ($formUsesFieldsets && !$firstFieldIsAFieldsetOrTab) {
+            $fields->prepend(FormField::addFieldset()->getAsDto());
+        }
     }
 }

@@ -178,10 +178,10 @@ class CategoryCrudControllerTest extends AbstractCrudTestCase
 
         $this->client->request('GET', $this->generateDetailUrl($category->getId()));
 
-        static::assertSelectorTextContains('.form-panel-body', $category->getId());
-        static::assertSelectorTextContains('.form-panel-body', $category->getName());
-        static::assertSelectorTextContains('.form-panel-body', $category->getSlug());
-        static::assertSelectorTextContains('.form-panel-body', true === $category->isActive() ? 'Yes' : 'No');
+        static::assertSelectorTextContains('.form-fieldset-body', $category->getId());
+        static::assertSelectorTextContains('.form-fieldset-body', $category->getName());
+        static::assertSelectorTextContains('.form-fieldset-body', $category->getSlug());
+        static::assertSelectorTextContains('.form-fieldset-body', true === $category->isActive() ? 'Yes' : 'No');
     }
 
     /**

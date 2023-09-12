@@ -99,77 +99,77 @@
 {% endmacro %}
 
 {% macro render_detail_fields(entity, fields) %}
-    {% set form_panel_is_already_open = false %}
+    {% set form_fieldset_is_already_open = false %}
     {% for field in fields %}
-        {% set is_form_field_panel = 'field-form_panel' in field.cssClass %}
+        {% set is_form_fieldset = 'field-form_fieldset' in field.cssClass %}
 
-        {% if is_form_field_panel or (loop.first and not is_form_field_panel) %}
-            {% if form_panel_is_already_open %}
-                {{ _self.close_form_field_panel() }}
-                {% set form_panel_is_already_open = false %}
+        {% if is_form_fieldset or (loop.first and not is_form_fieldset) %}
+            {% if form_fieldset_is_already_open %}
+                {{ _self.close_form_fieldset() }}
+                {% set form_fieldset_is_already_open = false %}
             {% endif %}
 
-            {{ _self.open_form_field_panel(is_form_field_panel ? field : null) }}
-            {% set form_panel_is_already_open = true %}
+            {{ _self.open_form_fieldset(is_form_fieldset ? field : null) }}
+            {% set form_fieldset_is_already_open = true %}
         {% endif %}
 
         {% block detail_field %}
-            {% if not is_form_field_panel %}
+            {% if not is_form_fieldset %}
                 {{ _self.render_field(entity, field) }}
             {% endif %}
         {% endblock %}
     {% endfor %}
 
-    {% if form_panel_is_already_open %}
-        {{ _self.close_form_field_panel() }}
-        {% set form_panel_is_already_open = false %}
+    {% if form_fieldset_is_already_open %}
+        {{ _self.close_form_fieldset() }}
+        {% set form_fieldset_is_already_open = false %}
     {% endif %}
 {% endmacro %}
 
-{% macro open_form_field_panel(field = null) %}
-    {% set panel_name = field is null ? null : 'content-' ~ field.uniqueId %}
+{% macro open_form_fieldset(field = null) %}
+    {% set fieldset_name = field is null ? null : 'content-' ~ field.uniqueId %}
     {% set collapsible = field is null ? false : field.customOption('collapsible') %}
     {% set collapsed = field is null ? false : field.customOption('collapsed') %}
-    {% set panel_icon = field is null ? null : (field.customOptions.get('icon')|default(false)) %}
-    {% set panel_label = field is null ? null : field.label %}
-    {% set panel_help = field is null ? null : field.help|default(false)%}
-    {% set panel_has_header = collapsible or panel_icon or panel_label or panel_help %}
+    {% set fieldset_icon = field is null ? null : (field.customOptions.get('icon')|default(false)) %}
+    {% set fieldset_label = field is null ? null : field.label %}
+    {% set fieldset_help = field is null ? null : field.help|default(false)%}
+    {% set fieldset_has_header = collapsible or fieldset_icon or fieldset_label or fieldset_help %}
 
     <div class="{{ field.cssClass ?? '' }}">
-        <div class="form-panel">
-            {% if panel_has_header %}
-                <div class="form-panel-header {{ collapsible ? 'collapsible' }} {{ panel_help is not empty ? 'with-help' }}">
-                    <div class="form-panel-title">
+        <div class="form-fieldset">
+            {% if fieldset_has_header %}
+                <div class="form-fieldset-header {{ collapsible ? 'collapsible' }} {{ fieldset_help is not empty ? 'with-help' }}">
+                    <div class="form-fieldset-title">
                         <a {% if not collapsible %}
                             href="#" class="not-collapsible"
                         {% else %}
-                            href="#{{ panel_name }}" data-bs-toggle="collapse"
-                            class="form-panel-collapse {{ collapsed ? 'collapsed' }}"
-                            aria-expanded="{{ collapsed ? 'false' : 'true' }}" aria-controls="{{ panel_name }}"
+                            href="#{{ fieldset_name }}" data-bs-toggle="collapse"
+                            class="form-fieldset-collapse {{ collapsed ? 'collapsed' }}"
+                            aria-expanded="{{ collapsed ? 'false' : 'true' }}" aria-controls="{{ fieldset_name }}"
                         {% endif %}
                         >
                             {% if collapsible %}
-                                <i class="fas fw fa-chevron-right form-panel-collapse-marker"></i>
+                                <i class="fas fw fa-chevron-right form-fieldset-collapse-marker"></i>
                             {% endif %}
 
-                            {% if panel_icon %}
-                                <i class="form-panel-icon {{ panel_icon }}"></i>
+                            {% if fieldset_icon %}
+                                <i class="form-fieldset-icon {{ fieldset_icon }}"></i>
                             {% endif %}
-                            {{ panel_label|trans|raw }}
+                            {{ fieldset_label|trans|raw }}
                         </a>
 
-                        {% if panel_help %}
-                            <div class="form-panel-help">{{ panel_help|trans|raw }}</div>
+                        {% if fieldset_help %}
+                            <div class="form-fieldset-help">{{ fieldset_help|trans|raw }}</div>
                         {% endif %}
                     </div>
                 </div>
             {% endif %}
 
-            <div {% if panel_name %}id="{{ panel_name }}"{% endif %} class="form-panel-body {{ collapsible ? 'collapse' }} {{ not collapsed ? 'show'}}">
+            <div {% if fieldset_name %}id="{{ fieldset_name }}"{% endif %} class="form-fieldset-body {{ collapsible ? 'collapse' }} {{ not collapsed ? 'show'}}">
                 <dl class="datalist">
 {% endmacro %}
 
-{% macro close_form_field_panel() %}
+{% macro close_form_fieldset() %}
             </dl>
         </div>
     </div>

@@ -344,38 +344,43 @@ force the creation of a new line (the next field will forcibly render on a new r
         ];
     }
 
-Form Panels
-~~~~~~~~~~~
+Form Fieldsets
+~~~~~~~~~~~~~~
+
+.. versionadded:: 4.8.0
+
+    Form fieldsets were introduced in EasyAdmin 4.8.0. In previous versions,
+    this feature was called "Form Panels".
 
 In pages where you display lots of fields, you can divide them in groups using
-the "panels" created with the special ``FormField`` object::
+the fieldsets created with the special ``FormField`` object::
 
     use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 
     public function configureFields(string $pageName): iterable
     {
         return [
-            // panels usually display only a title
-            FormField::addPanel('User Details'),
+            // fielfsets usually display only a title
+            FormField::addFieldset('User Details'),
             TextField::new('firstName'),
             TextField::new('lastName'),
 
-            // panels without titles only display a separation between fields
-            FormField::addPanel(),
+            // fieldsets without titles only display a separation between fields
+            FormField::addFieldset(),
             DateTimeField::new('createdAt')->onlyOnDetail(),
 
-            // panels can also define their icon, CSS class and help message
-            FormField::addPanel('Contact information')
+            // fieldsets can also define their icon, CSS class and help message
+            FormField::addFieldset('Contact information')
                 ->setIcon('phone')->addCssClass('optional')
                 ->setHelp('Phone number is preferred'),
             TextField::new('phone'),
             TextField::new('email')->hideOnIndex(),
 
-            // panels can be collapsible too (useful if your forms are long)
-            // this makes the panel collapsible but renders it expanded by default
-            FormField::addPanel('Contact information')->collapsible(),
-            // this makes the panel collapsible and renders it collapsed by default
-            FormField::addPanel('Contact information')->renderCollapsed(),
+            // fieldsets can be collapsible too (useful if your forms are long)
+            // this makes the fieldset collapsible but renders it expanded by default
+            FormField::addFieldset('Contact information')->collapsible(),
+            // this makes the fieldset collapsible and renders it collapsed by default
+            FormField::addFieldset('Contact information')->renderCollapsed(),
         ];
     }
 
@@ -395,8 +400,8 @@ the "tabs" created with the special ``FormField`` object::
             // Add a tab
             FormField::addTab('First Tab'),
 
-            // You can use a Form Panel inside a Form Tab
-            FormField::addPanel('User Details'),
+            // You can use a form fieldset inside a Form Tab
+            FormField::addFieldset('User Details'),
 
             // Your fields
             TextField::new('firstName'),

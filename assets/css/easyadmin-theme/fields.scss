@@ -36,6 +36,12 @@
   box-shadow: var(--badge-boolean-true-box-shadow);
   color: var(--badge-boolean-true-color);
 }
+.field-boolean .badge-boolean-null {
+  background: var(--badge-boolean-null-bg);
+  border: 0;
+  box-shadow: var(--badge-boolean-null-box-shadow);
+  color: var(--badge-boolean-null-color);
+}
 
 // CodeEditor field
 .field-code_editor .form-widget {

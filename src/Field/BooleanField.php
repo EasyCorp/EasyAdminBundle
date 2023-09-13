@@ -18,6 +18,7 @@ final class BooleanField implements FieldInterface
     public const OPTION_RENDER_AS_SWITCH = 'renderAsSwitch';
     public const OPTION_HIDE_VALUE_WHEN_TRUE = 'hideValueWhenTrue';
     public const OPTION_HIDE_VALUE_WHEN_FALSE = 'hideValueWhenFalse';
+    public const OPTION_NULLABLE = 'nullable';
     /** @internal */
     public const OPTION_TOGGLE_URL = 'toggleUrl';
     /** @internal */
@@ -38,7 +39,8 @@ final class BooleanField implements FieldInterface
             ->addJsFiles(Asset::fromEasyAdminAssetPackage('field-boolean.js')->onlyOnIndex())
             ->setCustomOption(self::OPTION_RENDER_AS_SWITCH, true)
             ->setCustomOption(self::OPTION_HIDE_VALUE_WHEN_TRUE, false)
-            ->setCustomOption(self::OPTION_HIDE_VALUE_WHEN_FALSE, false);
+            ->setCustomOption(self::OPTION_HIDE_VALUE_WHEN_FALSE, false)
+            ->setCustomOption(self::OPTION_NULLABLE, false);
     }
 
     public function renderAsSwitch(bool $isASwitch = true): self
@@ -58,6 +60,13 @@ final class BooleanField implements FieldInterface
     public function hideValueWhenFalse(bool $hide = true): self
     {
         $this->setCustomOption(self::OPTION_HIDE_VALUE_WHEN_FALSE, $hide);
+
+        return $this;
+    }
+
+    public function nullable(bool $nullable = true): self
+    {
+        $this->setCustomOption(self::OPTION_NULLABLE, $nullable);
 
         return $this;
     }

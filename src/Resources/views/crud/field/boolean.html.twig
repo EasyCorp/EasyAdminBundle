@@ -12,8 +12,8 @@
         ) %}
 
     {% if not badge_is_hidden %}
-        <span class="badge {{ field.value == true ? 'badge-boolean-true' : 'badge-boolean-false' }}">
-            {{ (field.value == true ? 'label.true' : 'label.false')|trans }}
+        <span class="badge {{ field.customOptions.get('nullable') == true and field.value is same as(null) ? 'badge-boolean-null' : field.value == true ? 'badge-boolean-true' : 'badge-boolean-false' }}">
+            {{ (field.customOptions.get('nullable') == true and field.value is same as(null) ? 'label.null' : field.value == true ? 'label.true' : 'label.false')|trans }}
         </span>
     {% endif %}
 {% else %}

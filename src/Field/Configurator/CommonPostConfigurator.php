@@ -58,12 +58,11 @@ final class CommonPostConfigurator implements FieldConfiguratorInterface
     private function updateFieldTemplate(FieldDto $field): void
     {
         $usesEasyAdminTemplate = u($field->getTemplatePath())->startsWith('@EasyAdmin/');
-        $isBooleanField = BooleanField::class === $field->getFieldFqcn();
         $isNullValue = null === $field->getFormattedValue();
         $isEmpty = is_countable($field->getFormattedValue()) && 0 === \count($field->getFormattedValue());
 
         $adminContext = $this->adminContextProvider->getContext();
-        if ($usesEasyAdminTemplate && $isNullValue && !$isBooleanField) {
+        if ($usesEasyAdminTemplate && $isNullValue) {
             $field->setTemplatePath($adminContext->getTemplatePath('label/null'));
         }
 

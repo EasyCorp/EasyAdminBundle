@@ -61,3 +61,8 @@
   box-shadow: var(--badge-dark-box-shadow);
   color: var(--badge-dark-color);
 }
+.badge.badge-outline {
+  background-color: transparent;
+  box-shadow: var(--badge-outline-box-shadow);
+  color: var(--badge-outline-color);
+}

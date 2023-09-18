@@ -216,6 +216,8 @@
     --badge-dark-bg: var(--gray-900);
     --badge-dark-box-shadow: none;
     --badge-dark-color: var(--gray-50);
+    --badge-outline-box-shadow: inset 0 0 0 1px var(--gray-300);
+    --badge-outline-color: var(--datalist-value-color);
     --alert-primary-bg: var(--indigo-100);
     --alert-primary-color: var(--indigo-800);
     --alert-primary-border-color: var(--indigo-200);
@@ -531,6 +533,8 @@
     --badge-dark-bg: rgba(0, 0, 0, 0.18);
     --badge-dark-box-shadow: inset 0 0 0 1px rgba(153, 153, 153, 0.3);
     --badge-dark-color: rgb(153, 153, 153);
+    --badge-outline-box-shadow: inset 0 0 0 1px var(--true-gray-500);
+    --badge-outline-color: var(--datalist-value-color);
     --alert-primary-bg: var(--indigo-900);
     --alert-primary-color: var(--indigo-100);
     --alert-primary-border-color: var(--indigo-800);

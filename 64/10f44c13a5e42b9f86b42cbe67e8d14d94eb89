@@ -1,0 +1,19 @@
+---------------------------------------------------------------------------
+
+by scuben at 2023-09-19T12:29:53Z
+
+This PR works fine too and does what the original PR does. But I'd suggest to adjust the css styling to better distinguish false from null. The current style looks like that:
+![image](https://github.com/EasyCorp/EasyAdminBundle/assets/922919/8751c535-b5e6-4f73-a11b-803279d14f9e)
+
+Other `null` values are not transformed to uppercase as it is with the boolean labels. But I'd suggest to go with a new style for null like I had planned in the original PR which would look like that:
+![image](https://github.com/EasyCorp/EasyAdminBundle/assets/922919/a399a2bd-a5d9-450d-addd-28b5b6966574)
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2023-09-20T18:11:47Z
+
+@scuben I agree with you. I've updated the `null` label design and now it looks like this:
+
+| Light theme | Dark theme
+| ----------- | ----------
+| <img width="264" alt="" src="https://github.com/EasyCorp/EasyAdminBundle/assets/73419/e5e4595c-860a-4145-b97a-3ee8028e4c77"> | <img width="382" alt="" src="https://github.com/EasyCorp/EasyAdminBundle/assets/73419/43fb4aff-68ed-4eaf-86f0-958225964656">

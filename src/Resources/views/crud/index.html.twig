@@ -100,7 +100,7 @@
                     {% if has_batch_actions %}
                         <th>
                             <div class="form-check">
-                                <span><input type="checkbox" class="form-check-input form-batch-checkbox-all"></span>
+                                <span><input type="checkbox" class="form-check-input form-batch-checkbox-all" id="form-batch-checkbox-all"></span>
                             </div>
                         </th>
                     {% endif %}
@@ -139,7 +139,7 @@
                         {% if has_batch_actions %}
                             <td class="batch-actions-selector">
                                 <div class="form-check">
-                                    <input type="checkbox" class="form-check-input form-batch-checkbox" value="{{ entity.primaryKeyValue }}">
+                                    <input type="checkbox" class="form-check-input form-batch-checkbox" id="form-batch-checkbox-{{ entity.primaryKeyValue }}" value="{{ entity.primaryKeyValue }}">
                                 </div>
                             </td>
                         {% endif %}

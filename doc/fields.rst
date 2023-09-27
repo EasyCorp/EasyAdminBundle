@@ -554,6 +554,12 @@ Design Options
         // (this is not used in the 'edit'/'new' pages because they use Symfony Forms themes)
         ->setTemplatePath('admin/fields/my_template.html.twig')
 
+        // if you need to access custom twig variables setted via call to CrudController::configureResponseParameters
+        ->setWithTwigContext(true)
+
+        // Display field as full-width, remove completly dt,dd tags and label
+        ->setFullWidth(true)
+
         // useful for example to right-align numbers/money values (this setting is ignored in 'detail' page)
         ->setTextAlign('right')
     ;

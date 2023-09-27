@@ -54,9 +54,9 @@
     {% set field_layout = ea_create_field_layout(entity.fields) %}
     {% block detail_fields %}
         {% if field_layout.hasTabs %}
-            {{ _self.render_detail_fields_with_tabs(entity, field_layout) }}
+            {{ _self.render_detail_fields_with_tabs(entity, field_layout, _context) }}
         {% else %}
-            {{ _self.render_detail_fields(entity, field_layout.fields) }}
+            {{ _self.render_detail_fields(entity, field_layout.fields, _context) }}
         {% endif %}
     {% endblock detail_fields %}
 
@@ -65,7 +65,7 @@
     {% endblock delete_form %}
 {% endblock %}
 
-{% macro render_detail_fields_with_tabs(entity, field_layout) %}
+{% macro render_detail_fields_with_tabs(entity, field_layout, variables) %}
     <div class="col-12">
         <div class="nav-tabs-custom form-tabs">
             <ul class="nav nav-tabs">
@@ -89,7 +89,7 @@
                             </div>
                         {% endif %}
                         <div class="row">
-                            {{ _self.render_detail_fields(entity, field_layout.fieldsInTab(tab.uniqueId)) }}
+                            {{ _self.render_detail_fields(entity, field_layout.fieldsInTab(tab.uniqueId), variables) }}
                         </div>
                     </div>
                 {% endfor %}
@@ -98,7 +98,7 @@
     </div>
 {% endmacro %}
 
-{% macro render_detail_fields(entity, fields) %}
+{% macro render_detail_fields(entity, fields, variables) %}
     {% set form_panel_is_already_open = false %}
     {% for field in fields %}
         {% set is_form_field_panel = 'field-form_panel' in field.cssClass %}
@@ -115,7 +115,7 @@
 
         {% block detail_field %}
             {% if not is_form_field_panel %}
-                {{ _self.render_field(entity, field) }}
+                {{ _self.render_field(entity, field, variables) }}
             {% endif %}
         {% endblock %}
     {% endfor %}
@@ -176,8 +176,9 @@
 </div>
 {% endmacro %}
 
-{% macro render_field(entity, field) %}
-    <div class="data-row {{ field.cssClass }}">
+{% macro render_field(entity, field, variables) %}
+    <div class="data-{% if field.fullWidth %}full-width-{% endif %}row {{ field.cssClass }}">
+        {% if not field.fullWidth %}
         <dt>
             {{ field.label|trans|raw }}
 
@@ -188,7 +189,12 @@
             {% endif %}
         </dt>
         <dd>
-            {{ include(field.templatePath, { field: field, entity: entity }, with_context = false) }}
+        {% endif %}
+            {% set twigVars = { field: field, entity: entity } %}
+            {% if field.withTwigContext %}{% set twigVars = twigVars|merge({variables: variables}) %}{% endif %}
+            {{ include(field.templatePath, twigVars, with_context = false) }}
+        {% if not field.fullWidth %}
         </dd>
+        {% endif %}
     </div>
 {% endmacro %}

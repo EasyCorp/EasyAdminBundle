@@ -26,6 +26,8 @@ final class FieldDto
     private ?string $permission = null;
     private ?string $textAlign = null;
     private $help;
+    private bool $fullWidth = false;
+    private bool $withTwigContext = false;
     private string $cssClass = '';
     // how many columns the field takes when rendering
     // (defined as Bootstrap 5 grid classes; e.g. 'col-md-6 col-xxl-3')
@@ -263,6 +265,30 @@ final class FieldDto
     public function setHelp(TranslatableInterface|string $help): void
     {
         $this->help = $help;
+    }
+
+    public function setFullWidth(bool $fullWidth = true): self
+    {
+        $this->fullWidth = $fullWidth;
+
+        return $this;
+    }
+
+    public function getFullWidth(): bool
+    {
+        return $this->fullWidth;
+    }
+
+    public function setWithTwigContext(bool $withTwigContext = true): self
+    {
+        $this->withTwigContext = $withTwigContext;
+
+        return $this;
+    }
+
+    public function getWithTwigContext(): bool
+    {
+        return $this->withTwigContext;
     }
 
     public function getCssClass(): string

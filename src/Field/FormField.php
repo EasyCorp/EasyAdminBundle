@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormColumnType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormFieldsetType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormRowType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminTabType;
@@ -108,6 +109,23 @@ final class FormField implements FieldInterface
             ->setLabel($label)
             ->setFormType(EasyAdminTabType::class)
             ->addCssClass('field-form_tab')
+            ->setFormTypeOptions(['mapped' => false, 'required' => false])
+            ->setCustomOption(self::OPTION_ICON, $icon)
+            ->setValue(true);
+    }
+
+    public static function addColumn(int|string $cols, TranslatableInterface|string $label = null, ?string $icon = null, string $help = null): self
+    {
+        $field = new self();
+        //$icon = $field->fixIconFormat($icon, 'FormField::addTab()');
+
+        return $field
+            ->setFieldFqcn(__CLASS__)
+            ->hideOnIndex()
+            ->setProperty('ea_form_column_'.(new Ulid()))
+            ->setLabel($label)
+            ->setFormType(EaFormColumnType::class)
+            ->addCssClass(sprintf('field-form_column %s', \is_int($cols) ? 'col-md-'.$cols : $cols))
             ->setFormTypeOptions(['mapped' => false, 'required' => false])
             ->setCustomOption(self::OPTION_ICON, $icon)
             ->setValue(true);

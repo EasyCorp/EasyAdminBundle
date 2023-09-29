@@ -37,6 +37,8 @@ class CrudFormType extends AbstractType
         $currentFormTab = null;
         $formFieldsets = [];
         $currentFormFieldset = 0;
+        $formColumns = [];
+        $currentFormColumn = 0;
 
         foreach ($entityDto->getFields() as $fieldDto) {
             $formFieldOptions = $fieldDto->getFormTypeOptions();
@@ -95,17 +97,33 @@ class CrudFormType extends AbstractType
                 continue;
             }
 
-            // Pass the current fieldset and tab down to nested CRUD forms, the nested
-            // CRUD form fields are forced to use their parents fieldset and tab
+            if (\in_array($formFieldType, [EaFormColumnType::class], true)) {
+                ++$currentFormColumn;
+                $metadata = [];
+
+                $metadata['id'] = $fieldDto->getProperty();
+                $metadata['label'] = $fieldDto->getLabel();
+                $metadata['help'] = $fieldDto->getHelp();
+                $metadata[FormField::OPTION_ICON] = $fieldDto->getCustomOption(FormField::OPTION_ICON);
+                $currentFormColumn = (string) $fieldDto->getLabel();
+                $formColumns[$currentFormColumn] = $metadata;
+
+                continue;
+            }
+
+            // Pass the current panel and tab down to nested CRUD forms, the nested
+            // CRUD form fields are forced to use their parents panel and tab
             if (self::class === $formFieldType) {
                 $formFieldOptions['ea_form_fieldset'] = $currentFormFieldset;
                 $formFieldOptions['ea_form_tab'] = $currentFormTab;
+                $formFieldOptions['ea_form_column'] = $currentFormColumn;
             }
 
             $formField = $builder->getFormFactory()->createNamedBuilder($name, $formFieldType, null, $formFieldOptions);
             $formField->setAttribute('ea_entity', $entityDto);
             $formField->setAttribute('ea_form_fieldset', $options['ea_form_fieldset'] ?? $currentFormFieldset);
             $formField->setAttribute('ea_form_tab', $options['ea_form_tab'] ?? $currentFormTab);
+            $formField->setAttribute('ea_form_column', $options['ea_form_column'] ?? $currentFormColumn);
             $formField->setAttribute('ea_field', $fieldDto);
 
             $builder->add($formField);
@@ -113,6 +131,7 @@ class CrudFormType extends AbstractType
 
         $builder->setAttribute('ea_form_tabs', $formTabs);
         $builder->setAttribute('ea_form_fieldsets', $formFieldsets);
+        $builder->setAttribute('ea_form_columns', $formColumns);
 
         if (\count($formTabs) > 0) {
             $builder->addEventSubscriber(new EasyAdminTabSubscriber());

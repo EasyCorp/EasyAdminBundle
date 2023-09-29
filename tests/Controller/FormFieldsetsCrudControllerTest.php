@@ -47,7 +47,8 @@ class FormFieldsetsCrudControllerTest extends AbstractCrudTestCase
         $blogPost = $this->blogPosts->findOneBy([]);
         $crawler = $this->client->request('GET', $this->generateDetailUrl($blogPost->getId()));
 
-        static::assertSame('ID', trim($crawler->filter('.form-fieldset')->first()->filter('dt')->text()));
+        static::assertSame('ID', $crawler->filter('.content-body .field-group')->first()->filter('.field-label')->text());
+        // static::assertSame('ID', trim($crawler->filter('.form-fieldset')->first()->filter('dt')->text()));
     }
 
     public function testFieldsInsideFieldsetsInForms()
@@ -73,14 +74,14 @@ class FormFieldsetsCrudControllerTest extends AbstractCrudTestCase
         $crawler = $this->client->request('GET', $this->generateDetailUrl($blogPost->getId()));
 
         static::assertCount(1, $crawler->filter('.form-fieldset:contains("Fieldset 1")'));
-        static::assertCount(1, $crawler->filter('.form-fieldset:contains("Fieldset 1") dt'));
-        static::assertSame('Title', trim($crawler->filter('.form-fieldset:contains("Fieldset 1") dt')->text()));
+        static::assertCount(1, $crawler->filter('.form-fieldset:contains("Fieldset 1") .field-group'));
+        static::assertSame('Title', trim($crawler->filter('.form-fieldset:contains("Fieldset 1") .field-group .field-label')->text()));
         static::assertCount(1, $crawler->filter('.field-form_fieldset.bg-info .form-fieldset:contains("Fieldset 1")'));
         static::assertStringContainsString('fa fa-cog', $crawler->filter('.form-fieldset:contains("Fieldset 1") .form-fieldset-title i')->attr('class'));
 
         static::assertCount(1, $crawler->filter('.form-fieldset:contains("Fieldset 2")'));
-        static::assertCount(1, $crawler->filter('.form-fieldset:contains("Fieldset 2") dt'));
-        static::assertSame('Slug', trim($crawler->filter('.form-fieldset:contains("Fieldset 2") dt')->text()));
+        static::assertCount(1, $crawler->filter('.form-fieldset:contains("Fieldset 2") .field-group'));
+        static::assertSame('Slug', trim($crawler->filter('.form-fieldset:contains("Fieldset 2") .field-group .field-label')->text()));
         static::assertCount(1, $crawler->filter('.field-form_fieldset.bg-warning .form-fieldset:contains("Fieldset 2")'));
         static::assertStringContainsString('fa fa-user', $crawler->filter('.form-fieldset:contains("Fieldset 2") .form-fieldset-title i')->attr('class'));
     }

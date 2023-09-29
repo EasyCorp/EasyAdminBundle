@@ -13,7 +13,7 @@ input[disabled] {
 
 // Base form groups
 .form-group {
-    padding: 12px 0;
+    padding: 0 0 24px;
 }
 
 .form-group label,
@@ -283,7 +283,7 @@ label.form-check-label {
 .form-tabs .nav-tabs {
     background: transparent;
     border: 0;
-    box-shadow: 0 1px 0 var(--form-tabs-border-color);
+    box-shadow: 0 2px 0 var(--form-tabs-border-color);
     margin: 0px 0px 20px;
     padding-left: 0px;
 }
@@ -302,8 +302,7 @@ label.form-check-label {
 
 .form-tabs .nav-tabs .fa {
     color: var(--text-muted);
-    font-size: var(--font-size-lg);
-    margin-right: 4px;
+    margin-right: 5px;
 }
 
 .form-tabs .nav-tabs .nav-link.active {
@@ -317,7 +316,7 @@ label.form-check-label {
     height: 2px;
     background: var(--body-bg);
     position: absolute;
-    bottom: -1px;
+    bottom: -2px;
     left: 0;
 }
 .form-tabs .nav-tabs .nav-link.active:after {
@@ -326,7 +325,7 @@ label.form-check-label {
     height: 2px;
     background: var(--link-color);
     position: absolute;
-    bottom: -1px;
+    bottom: -2px;
     left: var(--form-tabs-gutter-x);
 }
 .form-tabs .nav-tabs .nav-item:first-child .nav-link.active:after {
@@ -335,18 +334,80 @@ label.form-check-label {
 }
 
 .form-tabs .nav-tabs .nav-item .badge {
+    line-height: 1;
     margin-left: 4px;
     padding: 3px 6px;
 }
 
 .form-tabs .tab-help {
+    color: var(--form-tabs-help-color);
     margin-top: -10px;
     margin-bottom: 15px;
 }
 
-// Form sections
-.form-fieldset {
-    padding: 0 0 20px;
+// Form columns
+.form-column {
+    .form-column-title {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 5px;
+
+        .form-column-title-content {
+            align-items: center;
+            display: flex;
+            color: var(--form-column-header-color);
+            font-size: 17px;
+            font-weight: bold;
+            padding: 0 0 2px;
+        }
+
+        .form-column-icon {
+            color: var(--form-column-icon-color);
+            margin-right: 7px;
+        }
+
+        .form-column-help {
+            color: var(--form-column-help-color);
+            flex: 1;
+            margin: 0;
+        }
+    }
+
+    .field-form_fieldset {
+        margin-bottom: var(--bs-gutter-x);
+    }
+
+    .form-fieldset {
+        border-radius: var(--border-radius);
+        box-shadow: inset 0 0 0 1px var(--form-fieldset-border-color);
+    }
+
+    .form-fieldset-header {
+        box-shadow: none;
+        padding: calc(var(--bs-gutter-x) - 5px) var(--bs-gutter-x) calc(var(--bs-gutter-x) / 2);
+
+        &:has(.form-fieldset-title-content.collapsed) {
+            padding-top: calc(var(--bs-gutter-x) / 2);
+        }
+
+        .form-fieldset-title .form-fieldset-title-content {
+            box-shadow: none;
+            padding: 0;
+        }
+    }
+
+    .form-fieldset-body {
+        padding: 5px var(--bs-gutter-x);
+
+        &.without-header {
+            padding: var(--bs-gutter-x);
+        }
+    }
+}
+
+// Form fieldsets
+.field-form_fieldset {
+    margin-bottom: calc(1.5 * var(--bs-gutter-x)); //not a typo; don't use --bs-gutter-y here
 }
 
 .form-section-empty {
@@ -355,14 +416,14 @@ label.form-check-label {
 
 .form-fieldset-header {
     align-items: flex-start;
-    box-shadow: 0 1px 0 var(--form-fieldset-header-border-color);
     display: flex;
     flex-wrap: nowrap;
-    padding: 15px 0 10px;
+    padding: 0 0 15px;
     position: relative;
 
     .form-fieldset-collapse-marker {
         color: var(--form-fieldset-collapse-marker-color);
+        font-size: 90%;
         margin: 0 10px 0 2px;
         transform: rotate(90deg);
         transition: transform .2s ease-in-out;
@@ -371,10 +432,14 @@ label.form-check-label {
     .form-fieldset-title {
         flex: 1;
 
-        a {
+        .form-fieldset-title-content {
+            align-items: center;
+            box-shadow: 0 1px 0 var(--form-fieldset-header-border-color);
+            display: flex;
             color: var(--form-fieldset-header-color);
-            font-size: 20px;
+            font-size: 17px;
             font-weight: bold;
+            padding: 0 0 5px;
 
             &.not-collapsible { cursor: default; }
             &.collapsed {
@@ -395,17 +460,14 @@ label.form-check-label {
 
         .form-fieldset-icon {
             color: var(--form-fieldset-icon-color);
-            margin-right: 5px;
+            margin-right: 7px;
         }
 
         .form-fieldset-help {
             color: var(--form-fieldset-help-color);
+            margin-top: 2px;
         }
     }
-}
-
-.form-fieldset-body {
-    padding-top: 5px;
 }
 
 // Form actions ("Save changes", "Delete", etc.)

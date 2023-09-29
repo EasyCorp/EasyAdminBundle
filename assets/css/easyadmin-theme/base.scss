@@ -285,12 +285,12 @@ body.ea-mobile-sidebar-visible .sidebar {
 }
 
 .content-wrapper {
-    padding: 0 var(--content-padding-right) 0 var(--content-padding-left);
+    padding: 0 var(--content-padding-right) 15px var(--content-padding-left);
 
     @media(min-width: 992px) {
         display: grid;
         grid-template-columns: auto var(--resize-handler-width);
-        padding: 0 var(--lg-content-padding-right) 0 var(--lg-content-padding-left);
+        padding: 0 var(--lg-content-padding-right) 45px var(--lg-content-padding-left);
     }
 }
 
@@ -487,6 +487,8 @@ body.ea-edit .content-header {
 // customizing Bootstrap's Saas variables for popovers doesn't work,
 // so we need to define these styles explicitly
 .popover.ea-content-help-popover {
+  --bs-popover-border-radius: var(--border-radius);
+
   border-color: var(--popover-border-color);
   box-shadow: var(--popover-shadow);
   max-width: var(--popover-max-width);

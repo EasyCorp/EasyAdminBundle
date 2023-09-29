@@ -5,7 +5,17 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormFieldsetType;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminTabType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormColumnCloseType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormColumnGroupCloseType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormColumnGroupOpenType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormColumnOpenType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormFieldsetCloseType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormFieldsetOpenType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabListType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabPaneCloseType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabPaneGroupCloseType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabPaneGroupOpenType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabPaneOpenType;
 use Symfony\Component\Uid\Ulid;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
@@ -81,17 +91,47 @@ final class FieldDto
 
     public function isFormDecorationField(): bool
     {
-        return $this->isFormTab() || $this->isFormFieldset();
+        trigger_deprecation(
+            'easycorp/easyadmin-bundle',
+            '4.8.0',
+            '"FieldDto::isFormDecorationField()" has been deprecated in favor of "FieldDto::isFormLayoutField()" and it will be removed in 5.0.0.',
+        );
+
+        return $this->isFormLayoutField();
+    }
+
+    public function isFormLayoutField(): bool
+    {
+        $formLayoutFieldClasses = [
+            EaFormTabListType::class,
+            EaFormTabPaneGroupOpenType::class,
+            EaFormTabPaneGroupCloseType::class,
+            EaFormTabPaneOpenType::class,
+            EaFormTabPaneCloseType::class,
+            EaFormColumnGroupOpenType::class,
+            EaFormColumnGroupCloseType::class,
+            EaFormColumnOpenType::class,
+            EaFormColumnCloseType::class,
+            EaFormFieldsetOpenType::class,
+            EaFormFieldsetCloseType::class,
+        ];
+
+        return \in_array($this->formType, $formLayoutFieldClasses, true);
     }
 
     public function isFormFieldset(): bool
     {
-        return EaFormFieldsetType::class === $this->formType;
+        return \in_array($this->formType, [EaFormFieldsetType::class, EaFormFieldsetOpenType::class], true);
     }
 
     public function isFormTab(): bool
     {
-        return EasyAdminTabType::class === $this->formType;
+        return EaFormTabPaneOpenType::class === $this->formType;
+    }
+
+    public function isFormColumn(): bool
+    {
+        return EaFormColumnOpenType::class === $this->formType;
     }
 
     public function getFieldFqcn(): ?string

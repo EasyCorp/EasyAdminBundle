@@ -4,8 +4,9 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type;
 
 use ArrayObject;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
-use EasyCorp\Bundle\EasyAdminBundle\Form\EventListener\EasyAdminTabSubscriber;
+use EasyCorp\Bundle\EasyAdminBundle\Form\EventListener\FormLayoutSubscriber;
 use Symfony\Bridge\Doctrine\Form\DoctrineOrmTypeGuesser;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -38,6 +39,7 @@ class CrudFormType extends AbstractType
         $formFieldsets = [];
         $currentFormFieldset = 0;
 
+        /** @var FieldDto $fieldDto */
         foreach ($entityDto->getFields() as $fieldDto) {
             $formFieldOptions = $fieldDto->getFormTypeOptions();
 
@@ -95,8 +97,8 @@ class CrudFormType extends AbstractType
                 continue;
             }
 
-            // Pass the current fieldset and tab down to nested CRUD forms, the nested
-            // CRUD form fields are forced to use their parents fieldset and tab
+            // Pass the current panel and tab down to nested CRUD forms, the nested
+            // CRUD form fields are forced to use their parents panel and tab
             if (self::class === $formFieldType) {
                 $formFieldOptions['ea_form_fieldset'] = $currentFormFieldset;
                 $formFieldOptions['ea_form_tab'] = $currentFormTab;
@@ -114,9 +116,7 @@ class CrudFormType extends AbstractType
         $builder->setAttribute('ea_form_tabs', $formTabs);
         $builder->setAttribute('ea_form_fieldsets', $formFieldsets);
 
-        if (\count($formTabs) > 0) {
-            $builder->addEventSubscriber(new EasyAdminTabSubscriber());
-        }
+        $builder->addEventSubscriber(new FormLayoutSubscriber());
     }
 
     public function finishView(FormView $view, FormInterface $form, array $options): void
@@ -136,7 +136,7 @@ class CrudFormType extends AbstractType
                 'allow_extra_fields' => true,
                 'data_class' => static fn (Options $options, $dataClass) => $dataClass ?? $options['entityDto']->getFqcn(),
             ])
-            ->setDefined(['entityDto', 'ea_form_fieldset', 'ea_form_tab'])
+            ->setDefined(['entityDto', 'ea_form_fieldset', 'ea_form_tab', 'ea_form_columns'])
             ->setRequired(['entityDto']);
     }
 

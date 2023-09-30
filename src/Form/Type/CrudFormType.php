@@ -39,6 +39,14 @@ class CrudFormType extends AbstractType
         $currentFormFieldset = 0;
         $formColumns = [];
         $currentFormColumn = 0;
+        $columnNumber = 0;
+        $totalNumberOfColumns = 0;
+
+        foreach ($entityDto->getFields() as $fieldDto) {
+            if ($fieldDto->getFormType() === EaFormColumnType::class) {
+                ++$totalNumberOfColumns;
+            }
+        }
 
         foreach ($entityDto->getFields() as $fieldDto) {
             $formFieldOptions = $fieldDto->getFormTypeOptions();
@@ -98,15 +106,16 @@ class CrudFormType extends AbstractType
             }
 
             if (\in_array($formFieldType, [EaFormColumnType::class], true)) {
-                ++$currentFormColumn;
+                $columnNumber++;
                 $metadata = [];
 
                 $metadata['id'] = $fieldDto->getProperty();
                 $metadata['label'] = $fieldDto->getLabel();
                 $metadata['help'] = $fieldDto->getHelp();
                 $metadata[FormField::OPTION_ICON] = $fieldDto->getCustomOption(FormField::OPTION_ICON);
-                $currentFormColumn = (string) $fieldDto->getLabel();
-                $formColumns[$currentFormColumn] = $metadata;
+                $metadata['is_first'] = 1 === $columnNumber;
+                $metadata['is_last'] = $columnNumber === $totalNumberOfColumns;
+                $formColumns['column-'.$columnNumber] = $metadata;
 
                 continue;
             }
@@ -116,14 +125,12 @@ class CrudFormType extends AbstractType
             if (self::class === $formFieldType) {
                 $formFieldOptions['ea_form_fieldset'] = $currentFormFieldset;
                 $formFieldOptions['ea_form_tab'] = $currentFormTab;
-                $formFieldOptions['ea_form_column'] = $currentFormColumn;
             }
 
             $formField = $builder->getFormFactory()->createNamedBuilder($name, $formFieldType, null, $formFieldOptions);
             $formField->setAttribute('ea_entity', $entityDto);
             $formField->setAttribute('ea_form_fieldset', $options['ea_form_fieldset'] ?? $currentFormFieldset);
             $formField->setAttribute('ea_form_tab', $options['ea_form_tab'] ?? $currentFormTab);
-            $formField->setAttribute('ea_form_column', $options['ea_form_column'] ?? $currentFormColumn);
             $formField->setAttribute('ea_field', $fieldDto);
 
             $builder->add($formField);

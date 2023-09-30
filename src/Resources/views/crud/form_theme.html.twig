@@ -568,7 +568,8 @@
     <div class="{{ form.vars.row_attr.class }}"></div>
 {% endblock %}
 
-{% block ea_form_column %}
+{% block ea_form_column_row %}
+    {{ dump() }}
     <div class="form-column {{ ea.field.icon|default(false) == false and ea.field.label|default(false) == false ? 'form-column-empty' }} {{ ea.field.css_class|default('') }}">
         <h2>
             {% if ea.field.icon|default(false) %}<i class="fa fa-fw fa-{{ ea.field.icon }}"></i>{% endif %}
@@ -581,7 +582,7 @@
 
         ...
     </div>
-{% endblock ea_form_column %}
+{% endblock ea_form_column_row %}
 
 {# EasyAdminFilters form type #}
 {% block ea_filters_widget %}

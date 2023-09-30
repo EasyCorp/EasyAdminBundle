@@ -435,7 +435,7 @@
                             <div class="row">
                                 {% if tab_name is defined and tab_name %}
                                     {% macro recursiveTabForm(form, ea_crud_form, tab_name) %}
-                                        {% for field in form|filter(field => not ea_crud_form.form_panels|filter((panel_config, form_panel) => form_panel == field.vars.ea_crud_form.form_panel) and ((field.vars.ea_crud_form.form_tab is defined and field.vars.ea_crud_form.form_tab == tab_name) or field.vars.ea_crud_form.form_tabs is defined)) %}
+                                        {% for field in form|filter(field => not ea_crud_form.form_fieldsets|filter((fieldset_config, form_fieldset) => form_fieldset == field.vars.ea_crud_form.form_fieldset) and ((field.vars.ea_crud_form.form_tab is defined and field.vars.ea_crud_form.form_tab == tab_name) or field.vars.ea_crud_form.form_tabs is defined)) %}
                                             {% if field.vars.ea_crud_form.form_tabs is defined %}
                                                 {# If the field is a nested CRUD form then only render its children #}
                                                 {{ _self.recursiveTabForm(field, ea_crud_form, tab_name) }}
@@ -447,7 +447,7 @@
                                     {% endmacro %}
                                     {{ _self.recursiveTabForm(form, ea_crud_form, tab_name) }}
                                 {% endif %}
-                                {{ block('ea_crud_widget_panels') }}
+                                {{ block('ea_crud_widget_fieldsets') }}
                             </div>
                         </div>
                     {% endfor %}
@@ -455,73 +455,78 @@
             </div>
         </div>
     {% else %}
-        {{ block('ea_crud_widget_panels') }}
+        {{ block('ea_crud_widget_fieldsets') }}
     {% endif %}
 {% endblock ea_crud_widget %}
 
+{# TODO: remove this when "form panels" are removed #}
 {% block ea_crud_widget_panels %}
-    {% for panel_name, panel_config in ea_crud_form.form_panels|filter(panel_config => not panel_config.form_tab or panel_config.form_tab == tab_name) %}
-        {% set panel_has_header = panel_config.label|default(false) or panel_config.icon|default(false) or panel_config.help|default(false) %}
+    {{ block('ea_crud_widget_fieldsets') }}
+{% endblock ea_crud_widget_panels %}
 
-        {% set collapsible = panel_config.collapsible %}
-        {% set collapsed = panel_config.collapsed %}
+{% block ea_crud_widget_fieldsets %}
+    {% for fieldset_name, fieldset_config in ea_crud_form.form_fieldsets|filter(fieldset_config => not fieldset_config.form_tab or fieldset_config.form_tab == tab_name) %}
+        {% set fieldset_has_header = fieldset_config.label|default(false) or fieldset_config.icon|default(false) or fieldset_config.help|default(false) %}
 
-        <div class="{{ panel_config.css_class ?? '' }}">
-            <div class="form-panel">
-                {% if panel_has_header %}
-                    <div class="form-panel-header {{ collapsible ? 'collapsible' }} {{ panel_config.help|default(false) is not empty ? 'with-help' }}">
-                        <div class="form-panel-title">
+        {% set collapsible = fieldset_config.collapsible %}
+        {% set collapsed = fieldset_config.collapsed %}
+
+        <div class="{{ fieldset_config.css_class ?? '' }}">
+            <fieldset class="form-fieldset">
+                {% if fieldset_has_header %}
+                    <div class="form-fieldset-header {{ collapsible ? 'collapsible' }} {{ fieldset_config.help|default(false) is not empty ? 'with-help' }}">
+                        <div class="form-fieldset-title">
                             <a {% if not collapsible %}
-                                    href="#" class="not-collapsible"
-                               {% else %}
-                                    href="#content-{{ panel_name }}" data-bs-toggle="collapse"
-                                    class="form-panel-collapse {{ collapsed ? 'collapsed' }}"
-                                    aria-expanded="{{ collapsed ? 'false' : 'true' }}" aria-controls="content-{{ panel_name }}"
-                               {% endif %}
+                                href="#" class="not-collapsible"
+                            {% else %}
+                                href="#content-{{ fieldset_name }}" data-bs-toggle="collapse"
+                                class="form-fieldset-collapse {{ collapsed ? 'collapsed' }}"
+                                aria-expanded="{{ collapsed ? 'false' : 'true' }}" aria-controls="content-{{ fieldset_name }}"
+                            {% endif %}
                             >
                                 {% if collapsible %}
-                                    <i class="fas fw fa-chevron-right form-panel-collapse-marker"></i>
+                                    <i class="fas fw fa-chevron-right form-fieldset-collapse-marker"></i>
                                 {% endif %}
 
-                                {% if panel_config.icon|default(false) %}
-                                    <i class="form-panel-icon {{ panel_config.icon }}"></i>
+                                {% if fieldset_config.icon|default(false) %}
+                                    <i class="form-fieldset-icon {{ fieldset_config.icon }}"></i>
                                 {% endif %}
-                                {{ panel_config.label|trans|raw }}
+                                {{ fieldset_config.label|trans|raw }}
                             </a>
 
-                            {% if panel_config.help|default(false) %}
-                                <div class="form-panel-help">{{ panel_config.help|trans|raw }}</div>
+                            {% if fieldset_config.help|default(false) %}
+                                <div class="form-fieldset-help">{{ fieldset_config.help|trans|raw }}</div>
                             {% endif %}
                         </div>
                     </div>
                 {% endif %}
 
-                <div id="content-{{ panel_name }}" class="form-panel-body {{ not panel_has_header ? 'without-header' }} {{ collapsible ? 'collapse' }} {{ not collapsed ? 'show'}}">
+                <div id="content-{{ fieldset_name }}" class="form-fieldset-body {{ not fieldset_has_header ? 'without-header' }} {{ collapsible ? 'collapse' }} {{ not collapsed ? 'show'}}">
                     <div class="row">
-                        {% for field in form|filter(field => 'hidden' not in field.vars.block_prefixes and field.vars.ea_crud_form.form_panel == panel_name) %}
+                        {% for field in form|filter(field => 'hidden' not in field.vars.block_prefixes and field.vars.ea_crud_form.form_fieldset == fieldset_name) %}
                             {% if not field.vars.ea_crud_form.form_tab or field.vars.ea_crud_form.form_tab == tab_name %}
                                 {{ form_row(field) }}
                             {% endif %}
                         {% endfor %}
                     </div>
                 </div>
-            </div>
+            </fieldset>
         </div>
     {% else %}
-        {% macro recursivePanelForm(form) %}
+        {% macro recursiveFieldsetForm(form) %}
             {% for field in form|filter(field => 'hidden' not in field.vars.block_prefixes and ((field.vars.ea_crud_form.form_tab is defined and not field.vars.ea_crud_form.form_tab) or field.vars.ea_crud_form.form_tabs is defined)) %}
                 {% if field.vars.ea_crud_form.form_tabs is defined %}
                     {# If the field is a nested CRUD form then only render its children #}
-                    {{ _self.recursivePanelForm(field) }}
+                    {{ _self.recursiveFieldsetForm(field) }}
                 {% else %}
                     {# Render all other fields #}
                     {{ form_row(field) }}
                 {% endif %}
             {% endfor %}
         {% endmacro %}
-        {{ _self.recursivePanelForm(form) }}
+        {{ _self.recursiveFieldsetForm(form) }}
     {% endfor %}
-{% endblock ea_crud_widget_panels %}
+{% endblock ea_crud_widget_fieldsets %}
 
 {# EasyAdminAutocomplete form type #}
 {% block ea_autocomplete_widget %}

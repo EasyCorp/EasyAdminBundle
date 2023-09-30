@@ -36,7 +36,9 @@ class EaCrudFormTypeExtension extends AbstractTypeExtension
         }
 
         $view->vars['ea_crud_form'] = [
+            // TODO: remove this in EasyAdmin 5.0.0 when "form panels" are completely removed
             'form_panel' => $form->getConfig()->getAttribute('ea_form_panel'),
+            'form_fieldset' => $form->getConfig()->getAttribute('ea_form_fieldset'),
             'form_tab' => $form->getConfig()->getAttribute('ea_form_tab'),
             'ea_field' => $form->getConfig()->getAttribute('ea_field'),
             'ea_entity' => $form->getConfig()->getAttribute('ea_entity'),

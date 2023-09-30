@@ -3,7 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormPanelType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormFieldsetType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormRowType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminTabType;
 use Symfony\Component\Uid\Ulid;
@@ -37,16 +37,31 @@ final class FormField implements FieldInterface
      */
     public static function addPanel($label = false, ?string $icon = null): self
     {
+        trigger_deprecation(
+            'easycorp/easyadmin-bundle',
+            '4.7.7',
+            '"FormField::addPanel()" has been deprecated in favor of "FormField::addFieldset()" and it will be removed in 5.0.0.',
+        );
+
+        return self::addFieldset($label, $icon);
+    }
+
+    /**
+     * @param TranslatableInterface|string|false|null $label
+     * @param string|null                             $icon  The full CSS classes of the FontAwesome icon to render (see https://fontawesome.com/v6/search?m=free)
+     */
+    public static function addFieldset($label = false, ?string $icon = null): self
+    {
         $field = new self();
-        $icon = $field->fixIconFormat($icon, 'FormField::addPanel()');
+        $icon = $field->fixIconFormat($icon, 'FormField::addFieldset()');
 
         return $field
             ->setFieldFqcn(__CLASS__)
             ->hideOnIndex()
-            ->setProperty('ea_form_panel_'.(new Ulid()))
+            ->setProperty('ea_form_fieldset_'.(new Ulid()))
             ->setLabel($label)
-            ->setFormType(EaFormPanelType::class)
-            ->addCssClass('field-form_panel')
+            ->setFormType(EaFormFieldsetType::class)
+            ->addCssClass('field-form_fieldset')
             ->setFormTypeOptions(['mapped' => false, 'required' => false])
             ->setCustomOption(self::OPTION_ICON, $icon)
             ->setCustomOption(self::OPTION_COLLAPSIBLE, false)
@@ -109,7 +124,7 @@ final class FormField implements FieldInterface
     public function collapsible(bool $collapsible = true): self
     {
         if (!$this->hasLabelOrIcon()) {
-            throw new \InvalidArgumentException(sprintf('The %s() method used in one of your panels requires that the panel defines either a label or an icon, but it defines none of them.', __METHOD__));
+            throw new \InvalidArgumentException(sprintf('The %s() method used in one of your fieldsets requires that the fieldset defines either a label or an icon, but it defines none of them.', __METHOD__));
         }
 
         $this->setCustomOption(self::OPTION_COLLAPSIBLE, $collapsible);
@@ -120,7 +135,7 @@ final class FormField implements FieldInterface
     public function renderCollapsed(bool $collapsed = true): self
     {
         if (!$this->hasLabelOrIcon()) {
-            throw new \InvalidArgumentException(sprintf('The %s() method used in one of your panels requires that the panel defines either a label or an icon, but it defines none of them.', __METHOD__));
+            throw new \InvalidArgumentException(sprintf('The %s() method used in one of your fieldsets requires that the fieldset defines either a label or an icon, but it defines none of them.', __METHOD__));
         }
 
         $this->setCustomOption(self::OPTION_COLLAPSIBLE, true);

@@ -1,6 +1,25 @@
 Upgrade between EasyAdmin 4.x versions
 ======================================
 
+EasyAdmin 4.8.0
+---------------
+
+### Form Panels are now called Form Fieldsets
+
+You can still use `FormField::addPanel()` but it's deprecated and it will be
+removed in EasyAdmin 5.0.0. To fix the deprecation, "Find & Replace" in your IDE:
+
+    // Before
+    yield FormField::addPanel('...');
+
+    // After
+    yield FormField::addFieldset('...');
+
+If your application uses custom advanced features, you might need to change some
+other occurrences of "panel" such as CSS styles (`.form-panel` -> `.form-fieldset`)
+and form attributes in `CrudFormType` (`$formFieldOptions['ea_form_panel']` ->
+`$formFieldOptions['ea_form_fieldset'] = $currentFormFieldset`)
+
 EasyAdmin 4.6.0
 ---------------
 

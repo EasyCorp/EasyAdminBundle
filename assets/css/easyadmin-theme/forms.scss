@@ -344,75 +344,8 @@ label.form-check-label {
     margin-bottom: 15px;
 }
 
-// Form fieldsets (used for the "from groups" feature)
-fieldset {
-    background: var(--fieldset-bg);
-    border: var(--border-width) var(--border-style) var(--border-color);
-    border-radius: var(--border-radius);
-    margin: 10px 0;
-    padding: 10px 20px 15px;
-}
-
-fieldset > legend {
-    border: 0;
-    font-size: var(--font-size-sm);
-    font-weight: 500;
-    text-transform: uppercase;
-    margin: 0 0 5px -5px;
-    padding: 0 5px;
-    width: auto;
-}
-fieldset > legend .fa {
-    color: var(--text-muted);
-    font-size: var(--font-size-lg);
-    margin-right: 4px;
-}
-
-fieldset .form-section {
-    padding-left: 0;
-    padding-right: 0;
-}
-
-fieldset .form-group {
-    padding: 10px 0;
-}
-
-fieldset .form-group label,
-fieldset .form-group legend.col-form-label {
-    flex: 100% 0 0;
-    margin: 0 0 4px 0;
-    text-align: left;
-}
-
-fieldset .form-group .form-widget,
-fieldset .field-checkbox .form-widget {
-    flex: 0 0 100%;
-    padding-left: 0;
-    padding-right: 0;
-}
-
-fieldset .field-checkbox .form-widget,
-fieldset .form-group.field-collection-action {
-    margin-left: 0;
-}
-
-fieldset .form-group.field-collection-action {
-    padding-top: 0;
-}
-
-fieldset .field-collection-action .btn {
-    margin-left: 0;
-}
-
-fieldset .legend-help {
-    color: var(--text-muted);
-    font-size: var(--font-size-sm);
-    margin-bottom: 15px;
-    margin-top: -5px;
-}
-
 // Form sections
-.form-panel {
+.form-fieldset {
     padding: 0 0 20px;
 }
 
@@ -420,32 +353,32 @@ fieldset .legend-help {
     padding: 25px 10px 25px;
 }
 
-.form-panel-header {
+.form-fieldset-header {
     align-items: flex-start;
-    box-shadow: 0 1px 0 var(--form-panel-header-border-color);
+    box-shadow: 0 1px 0 var(--form-fieldset-header-border-color);
     display: flex;
     flex-wrap: nowrap;
     padding: 15px 0 10px;
     position: relative;
 
-    .form-panel-collapse-marker {
-        color: var(--form-panel-collapse-marker-color);
+    .form-fieldset-collapse-marker {
+        color: var(--form-fieldset-collapse-marker-color);
         margin: 0 10px 0 2px;
         transform: rotate(90deg);
         transition: transform .2s ease-in-out;
     }
 
-    .form-panel-title {
+    .form-fieldset-title {
         flex: 1;
 
         a {
-            color: var(--form-panel-header-color);
+            color: var(--form-fieldset-header-color);
             font-size: 20px;
             font-weight: bold;
 
             &.not-collapsible { cursor: default; }
             &.collapsed {
-                .form-panel-collapse-marker {
+                .form-fieldset-collapse-marker {
                     transform: rotate(0deg);
                 }
             }
@@ -460,18 +393,18 @@ fieldset .legend-help {
             }
         }
 
-        .form-panel-icon {
-            color: var(--form-panel-icon-color);
+        .form-fieldset-icon {
+            color: var(--form-fieldset-icon-color);
             margin-right: 5px;
         }
 
-        .form-panel-help {
-            color: var(--form-panel-help-color);
+        .form-fieldset-help {
+            color: var(--form-fieldset-help-color);
         }
     }
 }
 
-.form-panel-body {
+.form-fieldset-body {
     padding-top: 5px;
 }
 

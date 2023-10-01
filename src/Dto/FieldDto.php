@@ -4,8 +4,10 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormColumnType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormFieldsetType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminTabType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Internal\EaFormColumnOpen;
 use Symfony\Component\Uid\Ulid;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
@@ -81,7 +83,7 @@ final class FieldDto
 
     public function isFormDecorationField(): bool
     {
-        return $this->isFormTab() || $this->isFormFieldset();
+        return $this->isFormTab() || $this->isFormFieldset() || $this->isFormColumn();
     }
 
     public function isFormFieldset(): bool
@@ -92,6 +94,11 @@ final class FieldDto
     public function isFormTab(): bool
     {
         return EasyAdminTabType::class === $this->formType;
+    }
+
+    public function isFormColumn(): bool
+    {
+        return EaFormColumnOpen::class === $this->formType;
     }
 
     public function getFieldFqcn(): ?string

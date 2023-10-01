@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type;
 
 use ArrayObject;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Form\EventListener\EasyAdminTabSubscriber;
 use Symfony\Bridge\Doctrine\Form\DoctrineOrmTypeGuesser;
@@ -37,17 +38,8 @@ class CrudFormType extends AbstractType
         $currentFormTab = null;
         $formFieldsets = [];
         $currentFormFieldset = 0;
-        $formColumns = [];
-        $currentFormColumn = 0;
-        $columnNumber = 0;
-        $totalNumberOfColumns = 0;
 
-        foreach ($entityDto->getFields() as $fieldDto) {
-            if ($fieldDto->getFormType() === EaFormColumnType::class) {
-                ++$totalNumberOfColumns;
-            }
-        }
-
+        /** @var FieldDto $fieldDto */
         foreach ($entityDto->getFields() as $fieldDto) {
             $formFieldOptions = $fieldDto->getFormTypeOptions();
 
@@ -105,7 +97,8 @@ class CrudFormType extends AbstractType
                 continue;
             }
 
-            if (\in_array($formFieldType, [EaFormColumnType::class], true)) {
+            /*
+            if ($formFieldType === EaFormColumnType::class) {
                 $columnNumber++;
                 $metadata = [];
 
@@ -115,10 +108,8 @@ class CrudFormType extends AbstractType
                 $metadata[FormField::OPTION_ICON] = $fieldDto->getCustomOption(FormField::OPTION_ICON);
                 $metadata['is_first'] = 1 === $columnNumber;
                 $metadata['is_last'] = $columnNumber === $totalNumberOfColumns;
-                $formColumns['column-'.$columnNumber] = $metadata;
-
-                continue;
-            }
+                $formColumns[$fieldDto->getProperty()] = $metadata;
+            }*/
 
             // Pass the current panel and tab down to nested CRUD forms, the nested
             // CRUD form fields are forced to use their parents panel and tab
@@ -138,7 +129,6 @@ class CrudFormType extends AbstractType
 
         $builder->setAttribute('ea_form_tabs', $formTabs);
         $builder->setAttribute('ea_form_fieldsets', $formFieldsets);
-        $builder->setAttribute('ea_form_columns', $formColumns);
 
         if (\count($formTabs) > 0) {
             $builder->addEventSubscriber(new EasyAdminTabSubscriber());
@@ -162,7 +152,7 @@ class CrudFormType extends AbstractType
                 'allow_extra_fields' => true,
                 'data_class' => static fn (Options $options, $dataClass) => $dataClass ?? $options['entityDto']->getFqcn(),
             ])
-            ->setDefined(['entityDto', 'ea_form_fieldset', 'ea_form_tab'])
+            ->setDefined(['entityDto', 'ea_form_fieldset', 'ea_form_tab', 'ea_form_columns'])
             ->setRequired(['entityDto']);
     }
 

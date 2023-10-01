@@ -7,6 +7,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormColumnType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormFieldsetType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormRowType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminTabType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Internal\EaFormColumnOpen;
 use Symfony\Component\Uid\Ulid;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
@@ -114,7 +115,13 @@ final class FormField implements FieldInterface
             ->setValue(true);
     }
 
-    public static function addColumn(int|string $cols, TranslatableInterface|string $label = null, ?string $icon = null, string $help = null): self
+    /**
+     * @param int|string $cols Any value compatible with Bootstrap grid system
+     *                         (https://getbootstrap.com/docs/5.3/layout/grid/)
+     *                         (e.g. 'col-6', 'col-sm-3', 'col-md-6 col-xl-4', etc.)
+     *                         (integer values are transformed like this: N -> 'col-N')
+     */
+    public static function addColumn(int|string $cols = 'col', TranslatableInterface|string $label = null, ?string $icon = null, string $help = null): self
     {
         $field = new self();
         //$icon = $field->fixIconFormat($icon, 'FormField::addTab()');
@@ -124,7 +131,7 @@ final class FormField implements FieldInterface
             ->hideOnIndex()
             ->setProperty('ea_form_column_'.(new Ulid()))
             ->setLabel($label)
-            ->setFormType(EaFormColumnType::class)
+            ->setFormType(EaFormColumnOpen::class)
             ->addCssClass(sprintf('field-form_column %s', \is_int($cols) ? 'col-md-'.$cols : $cols))
             ->setFormTypeOptions(['mapped' => false, 'required' => false])
             ->setCustomOption(self::OPTION_ICON, $icon)

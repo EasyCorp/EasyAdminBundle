@@ -23,9 +23,14 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormFieldsetType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormRowType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminTabType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Internal\EaFormColumnClose;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Internal\EaFormColumnGroupClose;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Internal\EaFormColumnGroupOpen;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Internal\EaFormColumnOpen;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Uid\Ulid;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -137,6 +142,11 @@ final class FieldFactory
         }
 
         $this->fixOrphanFieldsetFields($fields);
+
+        $currentPage = $this->adminContextProvider->getContext()->getCrud()->getCurrentPage();
+        if (\in_array($currentPage, [Crud::PAGE_EDIT, Crud::PAGE_NEW], true)) {
+            $this->fixFormColumns($fields);
+        }
 
         foreach ($fields as $fieldDto) {
             if (Field::class !== $fieldDto->getFieldFqcn()) {
@@ -282,5 +292,129 @@ final class FieldFactory
         if ($formUsesFieldsets && !$firstFieldIsAFieldsetOrTab) {
             $fields->prepend(FormField::addFieldset()->getAsDto());
         }
+    }
+
+    /*
+     * This is used to add some special form types that will later simplify
+     * the rendering of a form that uses columns.
+     * If the user configures this:
+     *   FormField::addColumn()
+     *   Field 1
+     *   FormField::addColumn()
+     *   Field 2
+     *   Field 3
+     * This method creates the following fields:
+     *   FormField::openColumnGroup()
+     *   FormField::openColumn()
+     *   Field 1
+     *   FormField::closeColumn()
+     *   FormField::openColumn()
+     *   Field 2
+     *   Field 3
+     *   FormField::closeColumn()
+     *   FormField::closeColumnGroup()
+     */
+    private function fixFormColumns(FieldCollection $fields): void
+    {
+        $formUsesColumns = false;
+        $formUsesTabs = false;
+        foreach ($fields as $fieldDto) {
+            if ($fieldDto->isFormColumn()) {
+                $formUsesColumns = true;
+                continue;
+            }
+
+            if ($fieldDto->isFormTab()) {
+                $formUsesTabs = true;
+            }
+        }
+
+        if (false === $formUsesColumns) {
+            return;
+        }
+
+        // tabs can't be defined inside columns, but columns can be defined inside tabs:
+        // Not allowed: ['column', 'tab', 'field', 'tab', 'field', ...]
+        // Allowed:     ['tab', 'column', 'field', 'column', 'field', 'tab', ...]
+        $theFirstFieldWhichIsATabOrColumn = null;
+        foreach ($fields as $fieldDto) {
+            if (!$fieldDto->isFormColumn() && !$fieldDto->isFormTab()) {
+                continue;
+            }
+
+            if (null === $theFirstFieldWhichIsATabOrColumn) {
+                $theFirstFieldWhichIsATabOrColumn = $fieldDto;
+                continue;
+            }
+
+            if ($theFirstFieldWhichIsATabOrColumn->isFormColumn() && $fieldDto->isFormTab()) {
+                throw new \InvalidArgumentException(sprintf('When using form columns, you can\'t define tabs inside columns (but you can define columns inside tabs). Move the tab "%s" outside any column.', $fieldDto->getLabel()));
+            }
+        }
+
+        $aFormColumnIsOpen = false;
+        $aFormTabIsOpen = false;
+        $isFirstFormColumn = true;
+
+        /** @var FieldDto $fieldDto */
+        foreach ($fields as $fieldDto) {
+            if ($formUsesColumns && !($aFormColumnIsOpen || $aFormTabIsOpen) && !$fieldDto->isFormDecorationField()) {
+                throw new \InvalidArgumentException(sprintf('When using form columns, all fields must be rendered inside a column. However, your field "%s" does not belong to any column. Move it under a form column or create a new form column before it.', $fieldDto->getProperty()));
+            }
+
+            if ($fieldDto->isFormTab()) {
+                $aFormTabIsOpen = true;
+            }
+
+            if ($fieldDto->isFormColumn()) {
+                $formUsesColumns = true;
+
+                if ($isFirstFormColumn) {
+                    $fields->insertBefore($this->createFieldDtoForColumnGroupOpen(), $fieldDto);
+                    $isFirstFormColumn = false;
+                }
+
+                if ($aFormColumnIsOpen) {
+                    $fields->insertBefore($this->createFieldDtoForColumnClose(), $fieldDto);
+                }
+
+                $aFormColumnIsOpen = true;
+            }
+
+            if ($fieldDto->isFormTab() && $aFormColumnIsOpen) {
+                $fields->insertBefore($this->createFieldDtoForColumnClose(), $fieldDto);
+                $fields->insertBefore($this->createFieldDtoForColumnGroupClose(), $fieldDto);
+                $aFormColumnIsOpen = false;
+            }
+        }
+
+        if ($formUsesColumns && $aFormColumnIsOpen) {
+            $fields->add($this->createFieldDtoForColumnClose());
+            $fields->add($this->createFieldDtoForColumnGroupClose());
+        }
+    }
+
+    private function createFieldDtoForColumnGroupOpen(): FieldDto
+    {
+        return Field::new(sprintf('ea_form_column_group_open_%s', Ulid::generate()))
+            ->setFormType(EaFormColumnGroupOpen::class)
+            ->setFormTypeOptions(['mapped' => false, 'required' => false])
+            ->getAsDto();
+    }
+
+    private function createFieldDtoForColumnGroupClose(): FieldDto
+    {
+        return Field::new(sprintf('ea_form_column_group_close_%s', Ulid::generate()))
+            ->setFormType(EaFormColumnGroupClose::class)
+            ->setFormTypeOptions(['mapped' => false, 'required' => false])
+            ->getAsDto();
+    }
+
+    private function createFieldDtoForColumnClose(): FieldDto
+    {
+        return Field::new(sprintf('ea_form_column_close_%s', Ulid::generate()))
+            ->setFormType(EaFormColumnClose::class)
+            ->setFormTypeOptions(['mapped' => false, 'required' => false])
+            ->getAsDto();
     }
 }

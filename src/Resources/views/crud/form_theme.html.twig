@@ -447,6 +447,7 @@
                                     {% endmacro %}
                                     {{ _self.recursiveTabForm(form, ea_crud_form, tab_name) }}
                                 {% endif %}
+
                                 {{ block('ea_crud_widget_fieldsets') }}
                             </div>
                         </div>
@@ -568,21 +569,32 @@
     <div class="{{ form.vars.row_attr.class }}"></div>
 {% endblock %}
 
-{% block ea_form_column_row %}
-    {{ dump() }}
-    <div class="form-column {{ ea.field.icon|default(false) == false and ea.field.label|default(false) == false ? 'form-column-empty' }} {{ ea.field.css_class|default('') }}">
+{% block ea_form_column_group_open_row %}
+    <div class="row">
+{% endblock ea_form_column_group_open_row %}
+
+{% block ea_form_column_group_close_row %}
+    </div>
+{% endblock ea_form_column_group_close_row %}
+
+{% block ea_form_column_open_row %}
+    {% set field = form.vars.ea_crud_form.ea_field %}
+    {% set field_icon = field.getCustomOption('icon') %}
+
+    <div class="form-column {{ field.icon|default(false) == false and field.label|default(false) == false ? 'form-column-empty' }} {{ field.cssClass|default('') }}">
         <h2>
-            {% if ea.field.icon|default(false) %}<i class="fa fa-fw fa-{{ ea.field.icon }}"></i>{% endif %}
-            <span>{% if ea.field.label|default(false) %}{{ ea.field.label|default('')|trans(domain = ea.i18n.translationDomain)|raw }}{% endif %}</span>
+            {% if field_icon|default(false) %}<i class="fa fa-fw fa-{{ field_icon }}"></i>{% endif %}
+            <span>{% if field.label|default(false) %}{{ field.label|default('')|trans(domain = ea.i18n.translationDomain)|raw }}{% endif %}</span>
         </h2>
 
-        {% if ea.field.help|default(false) %}
-            <p class="form-section-help">{{ ea.field.help|trans(domain = ea.i18n.translationDomain)|raw }}</p>
+        {% if field.help|default(false) %}
+            <p class="form-section-help">{{ field.help|trans(domain = ea.i18n.translationDomain)|raw }}</p>
         {% endif %}
+{% endblock ea_form_column_open_row %}
 
-        ...
+{% block ea_form_column_close_row %}
     </div>
-{% endblock ea_form_column_row %}
+{% endblock ea_form_column_close_row %}
 
 {# EasyAdminFilters form type #}
 {% block ea_filters_widget %}

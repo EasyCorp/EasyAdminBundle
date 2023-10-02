@@ -27,6 +27,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Internal\EaFormColumnClose;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Internal\EaFormColumnGroupClose;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Internal\EaFormColumnGroupOpen;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Internal\EaFormColumnOpen;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Internal\EaFormFieldsetClose;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -141,10 +142,8 @@ final class FieldFactory
             return;
         }
 
-        $this->fixOrphanFieldsetFields($fields);
-
         $currentPage = $this->adminContextProvider->getContext()->getCrud()->getCurrentPage();
-        if (\in_array($currentPage, [Crud::PAGE_EDIT, Crud::PAGE_NEW], true)) {
+        if (Crud::PAGE_INDEX !== $currentPage) {
             $this->fixFormColumns($fields);
         }
 
@@ -282,7 +281,7 @@ final class FieldFactory
         $formUsesFieldsets = false;
         /** @var FieldDto $fieldDto */
         foreach ($fields as $fieldDto) {
-            if (EaFormFieldsetType::class === $fieldDto->getFormType()) {
+            if ($fieldDto->isFormFieldset()) {
                 $formUsesFieldsets = true;
                 break;
             }
@@ -297,7 +296,7 @@ final class FieldFactory
     /*
      * This is used to add some special form types that will later simplify
      * the rendering of a form that uses columns.
-     * If the user configures this:
+     * Fir example, if the user configures this:
      *   FormField::addColumn()
      *   Field 1
      *   FormField::addColumn()
@@ -313,9 +312,18 @@ final class FieldFactory
      *   Field 3
      *   FormField::closeColumn()
      *   FormField::closeColumnGroup()
+     *
+     * See tests for many other examples of complex layouts
      */
     private function fixFormColumns(FieldCollection $fields): void
     {
+        $this->fixOrphanFieldsetFields($fields);
+
+        dump("BEFORE");
+        foreach ($fields as $field) {
+            dump($field->getFormType());
+        }
+
         $formUsesColumns = false;
         $formUsesTabs = false;
         foreach ($fields as $fieldDto) {
@@ -327,10 +335,6 @@ final class FieldFactory
             if ($fieldDto->isFormTab()) {
                 $formUsesTabs = true;
             }
-        }
-
-        if (false === $formUsesColumns) {
-            return;
         }
 
         // tabs can't be defined inside columns, but columns can be defined inside tabs:
@@ -354,6 +358,7 @@ final class FieldFactory
 
         $aFormColumnIsOpen = false;
         $aFormTabIsOpen = false;
+        $aFormFieldsetIsOpen = false;
         $isFirstFormColumn = true;
 
         /** @var FieldDto $fieldDto */
@@ -364,6 +369,19 @@ final class FieldFactory
 
             if ($fieldDto->isFormTab()) {
                 $aFormTabIsOpen = true;
+
+                if ($aFormFieldsetIsOpen) {
+                    $fields->insertBefore($this->createFieldDtoForFieldsetClose(), $fieldDto);
+                    $aFormFieldsetIsOpen = false;
+                }
+            }
+
+            if ($fieldDto->isFormFieldset()) {
+                if ($aFormFieldsetIsOpen) {
+                    $fields->insertBefore($this->createFieldDtoForFieldsetClose(), $fieldDto);
+                }
+
+                $aFormFieldsetIsOpen = true;
             }
 
             if ($fieldDto->isFormColumn()) {
@@ -372,6 +390,11 @@ final class FieldFactory
                 if ($isFirstFormColumn) {
                     $fields->insertBefore($this->createFieldDtoForColumnGroupOpen(), $fieldDto);
                     $isFirstFormColumn = false;
+                }
+
+                if ($aFormFieldsetIsOpen) {
+                    $fields->insertBefore($this->createFieldDtoForFieldsetClose(), $fieldDto);
+                    $aFormFieldsetIsOpen = false;
                 }
 
                 if ($aFormColumnIsOpen) {
@@ -386,11 +409,26 @@ final class FieldFactory
                 $fields->insertBefore($this->createFieldDtoForColumnGroupClose(), $fieldDto);
                 $aFormColumnIsOpen = false;
             }
+
+            if ($aFormColumnIsOpen) {
+                // this is needed because fields inside columns look better when they take the
+                // entire width available; users can override this by setting custom CSS classes
+                $fieldDto->setDefaultColumns('');
+            }
         }
 
-        if ($formUsesColumns && $aFormColumnIsOpen) {
+        if ($aFormFieldsetIsOpen) {
+            $fields->add($this->createFieldDtoForFieldsetClose());
+        }
+
+        if ($aFormColumnIsOpen) {
             $fields->add($this->createFieldDtoForColumnClose());
             $fields->add($this->createFieldDtoForColumnGroupClose());
+        }
+
+dump("AFTER");
+        foreach ($fields as $field) {
+            dump($field->getFormType());
         }
     }
 
@@ -414,6 +452,14 @@ final class FieldFactory
     {
         return Field::new(sprintf('ea_form_column_close_%s', Ulid::generate()))
             ->setFormType(EaFormColumnClose::class)
+            ->setFormTypeOptions(['mapped' => false, 'required' => false])
+            ->getAsDto();
+    }
+
+    private function createFieldDtoForFieldsetClose(): FieldDto
+    {
+        return Field::new(sprintf('ea_form_fieldset_close_%s', Ulid::generate()))
+            ->setFormType(EaFormFieldsetClose::class)
             ->setFormTypeOptions(['mapped' => false, 'required' => false])
             ->getAsDto();
     }

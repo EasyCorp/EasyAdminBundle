@@ -8,6 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormColumnType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormFieldsetType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminTabType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Internal\EaFormColumnOpen;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Internal\EaFormFieldsetOpen;
 use Symfony\Component\Uid\Ulid;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
@@ -88,7 +89,7 @@ final class FieldDto
 
     public function isFormFieldset(): bool
     {
-        return EaFormFieldsetType::class === $this->formType;
+        return \in_Array($this->formType, [EaFormFieldsetType::class,EaFormFieldsetOpen::class], true);
     }
 
     public function isFormTab(): bool

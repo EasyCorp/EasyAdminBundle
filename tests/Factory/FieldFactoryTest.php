@@ -12,6 +12,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Internal\EaFormColumnClose;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Internal\EaFormColumnGroupClose;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Internal\EaFormColumnGroupOpen;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Internal\EaFormColumnOpen;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Internal\EaFormFieldsetClose;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Internal\EaFormFieldsetOpen;
 use PHPUnit\Framework\TestCase;
 
 class FieldFactoryTest extends TestCase
@@ -69,9 +71,24 @@ class FieldFactoryTest extends TestCase
 
     public function provideFormLayouts()
     {
-        yield 'No columns' => [
+        yield 'Only fields' => [
             ['field', 'field', 'field'],
             ['field', 'field', 'field'],
+        ];
+
+        yield 'One fieldset for all fields' => [
+            ['fieldset', 'field', 'field', 'field'],
+            ['fieldset_open', 'field', 'field', 'field', 'fieldset_close'],
+        ];
+
+        yield 'Two fieldsets for all fields' => [
+            ['fieldset', 'field', 'fieldset', 'field', 'field'],
+            ['fieldset_open', 'field', 'fieldset_close', 'fieldset_open', 'field', 'field', 'fieldset_close'],
+        ];
+
+        yield 'One fieldset for some fields different from first' => [
+            ['field', 'fieldset', 'field', 'field'],
+            ['fieldset_open', 'field',  'fieldset_close', 'fieldset_open', 'field', 'field', 'fieldset_close'],
         ];
 
         yield 'One column for all fields' => [
@@ -84,9 +101,19 @@ class FieldFactoryTest extends TestCase
             ['column_group_open', 'column_open', 'field', 'column_close', 'column_open', 'field', 'field', 'column_close', 'column_group_close'],
         ];
 
+        yield 'Fieldsets and columns' => [
+            ['column', 'fieldset', 'field', 'column', 'fieldset', 'field', 'field'],
+            ['column_group_open', 'column_open', 'fieldset_open', 'field', 'fieldset_close', 'column_close', 'column_open', 'fieldset_open', 'field', 'field', 'fieldset_close', 'column_close', 'column_group_close',],
+        ];
+
         yield 'Tabs and columns' => [
             ['tab', 'column', 'field', 'column', 'field', 'tab', 'field'],
             ['tab', 'column_group_open', 'column_open', 'field', 'column_close', 'column_open', 'field', 'column_close', 'column_group_close', 'tab', 'field'],
+        ];
+
+        yield 'Tabs, fieldsets and columns' => [
+            ['tab', 'column', 'fieldset', 'field', 'column', 'field', 'tab', 'fieldset', 'field'],
+            ['tab', 'column_group_open', 'column_open', 'fieldset_open', 'field', 'fieldset_close', 'column_close', 'column_open', 'field', 'column_close', 'column_group_close', 'tab', 'fieldset_open', 'field', 'fieldset_close'],
         ];
     }
 
@@ -124,6 +151,8 @@ class FieldFactoryTest extends TestCase
 
             yield match ($fieldType) {
                 'field' => TextField::new('field_'.$fieldNumber),
+                'fieldset', 'fieldset_open' => FormField::addFieldset(),
+                'fieldset_close' => Field::new('fieldset_open_'.$fieldNumber)->setFormType(EaFormFieldsetClose::class),
                 'tab' => FormField::addTab('tab_'.$fieldNumber),
                 'column', 'column_open' => FormField::addColumn(8),
                 'column_group_open' => Field::new('column_group_open_'.$fieldNumber)->setFormType(EaFormColumnGroupOpen::class),

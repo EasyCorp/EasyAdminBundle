@@ -8,6 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormFieldsetType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormRowType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminTabType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Internal\EaFormColumnOpen;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Internal\EaFormFieldsetOpen;
 use Symfony\Component\Uid\Ulid;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
@@ -62,7 +63,7 @@ final class FormField implements FieldInterface
             ->hideOnIndex()
             ->setProperty('ea_form_fieldset_'.(new Ulid()))
             ->setLabel($label)
-            ->setFormType(EaFormFieldsetType::class)
+            ->setFormType(EaFormFieldsetOpen::class)
             ->addCssClass('field-form_fieldset')
             ->setFormTypeOptions(['mapped' => false, 'required' => false])
             ->setCustomOption(self::OPTION_ICON, $icon)

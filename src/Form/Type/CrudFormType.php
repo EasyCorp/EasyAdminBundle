@@ -97,20 +97,6 @@ class CrudFormType extends AbstractType
                 continue;
             }
 
-            /*
-            if ($formFieldType === EaFormColumnType::class) {
-                $columnNumber++;
-                $metadata = [];
-
-                $metadata['id'] = $fieldDto->getProperty();
-                $metadata['label'] = $fieldDto->getLabel();
-                $metadata['help'] = $fieldDto->getHelp();
-                $metadata[FormField::OPTION_ICON] = $fieldDto->getCustomOption(FormField::OPTION_ICON);
-                $metadata['is_first'] = 1 === $columnNumber;
-                $metadata['is_last'] = $columnNumber === $totalNumberOfColumns;
-                $formColumns[$fieldDto->getProperty()] = $metadata;
-            }*/
-
             // Pass the current panel and tab down to nested CRUD forms, the nested
             // CRUD form fields are forced to use their parents panel and tab
             if (self::class === $formFieldType) {

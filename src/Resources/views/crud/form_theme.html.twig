@@ -447,8 +447,6 @@
                                     {% endmacro %}
                                     {{ _self.recursiveTabForm(form, ea_crud_form, tab_name) }}
                                 {% endif %}
-
-                                {{ block('ea_crud_widget_fieldsets') }}
                             </div>
                         </div>
                     {% endfor %}
@@ -456,7 +454,7 @@
             </div>
         </div>
     {% else %}
-        {{ block('ea_crud_widget_fieldsets') }}
+
     {% endif %}
 {% endblock ea_crud_widget %}
 
@@ -581,7 +579,7 @@
     {% set field = form.vars.ea_crud_form.ea_field %}
     {% set field_icon = field.getCustomOption('icon') %}
 
-    <div class="form-column {{ field.icon|default(false) == false and field.label|default(false) == false ? 'form-column-empty' }} {{ field.cssClass|default('') }}">
+    <div class="form-column {{ field.icon|default(false) == false and field.label|default(false) == false ? 'form-column-no-header' }} {{ field.cssClass|default('') }}">
         <h2>
             {% if field_icon|default(false) %}<i class="fa fa-fw fa-{{ field_icon }}"></i>{% endif %}
             <span>{% if field.label|default(false) %}{{ field.label|default('')|trans(domain = ea.i18n.translationDomain)|raw }}{% endif %}</span>
@@ -595,6 +593,14 @@
 {% block ea_form_column_close_row %}
     </div>
 {% endblock ea_form_column_close_row %}
+
+{% block ea_form_fieldset_open_row %}
+    <div>FIELDSET
+{% endblock ea_form_fieldset_open_row %}
+
+{% block ea_form_fieldset_close_row %}
+    </div>
+{% endblock ea_form_fieldset_close_row %}
 
 {# EasyAdminFilters form type #}
 {% block ea_filters_widget %}

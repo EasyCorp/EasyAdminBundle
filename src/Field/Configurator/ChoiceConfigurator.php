@@ -52,7 +52,10 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
             $enumTypeClass = $field->getDoctrineMetadata()->get('enumType');
             if (0 === \count($choices) && null !== $enumTypeClass && enum_exists($enumTypeClass)) {
                 $choices = $enumTypeClass::cases();
-            } elseif ($allChoicesAreEnums) {
+                $allChoicesAreEnums = true;
+            }
+
+            if ($allChoicesAreEnums) {
                 $processedEnumChoices = [];
                 foreach ($choices as $choice) {
                     if ($choice instanceof \BackedEnum) {

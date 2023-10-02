@@ -58,11 +58,7 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
             if ($allChoicesAreEnums) {
                 $processedEnumChoices = [];
                 foreach ($choices as $choice) {
-                    if ($choice instanceof \BackedEnum) {
-                        $processedEnumChoices[$choice->name] = $choice->value;
-                    } else {
-                        $processedEnumChoices[$choice->name] = $choice->name;
-                    }
+                    $processedEnumChoices[$choice->name] = $choice;
                 }
 
                 $choices = $processedEnumChoices;

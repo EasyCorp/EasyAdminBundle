@@ -51,7 +51,12 @@ class ChoiceConfiguratorTest extends AbstractFieldTest
         $field = ChoiceField::new(self::PROPERTY_NAME);
         $field->getAsDto()->setDoctrineMetadata(['enumType' => StatusBackedEnum::class]);
 
-        $this->assertSame($this->configure($field)->getFormTypeOption('choices'), StatusBackedEnum::cases());
+        $formChoices = array_combine(
+            array_column(StatusBackedEnum::cases(), 'name'),
+            StatusBackedEnum::cases(),
+        );
+
+        $this->assertSame($this->configure($field)->getFormTypeOption('choices'), $formChoices);
     }
 
     public function testBackedEnumChoices(): void
@@ -63,7 +68,7 @@ class ChoiceConfiguratorTest extends AbstractFieldTest
 
         $expected = [];
         foreach (StatusBackedEnum::cases() as $case) {
-            $expected[$case->name] = $case->value;
+            $expected[$case->name] = $case;
         }
 
         $this->assertSame($this->configure($field)->getFormTypeOption('choices'), $expected);
@@ -76,7 +81,12 @@ class ChoiceConfiguratorTest extends AbstractFieldTest
         $field = ChoiceField::new(self::PROPERTY_NAME);
         $field->getAsDto()->setDoctrineMetadata(['enumType' => PriorityUnitEnum::class]);
 
-        $this->assertSame($this->configure($field)->getFormTypeOption('choices'), PriorityUnitEnum::cases());
+        $formChoices = array_combine(
+            array_column(PriorityUnitEnum::cases(), 'name'),
+            PriorityUnitEnum::cases(),
+        );
+
+        $this->assertSame($this->configure($field)->getFormTypeOption('choices'), $formChoices);
     }
 
     public function testUnitEnumChoices(): void
@@ -88,7 +98,7 @@ class ChoiceConfiguratorTest extends AbstractFieldTest
 
         $expected = [];
         foreach (PriorityUnitEnum::cases() as $case) {
-            $expected[$case->name] = $case->name;
+            $expected[$case->name] = $case;
         }
 
         $this->assertSame($this->configure($field)->getFormTypeOption('choices'), $expected);

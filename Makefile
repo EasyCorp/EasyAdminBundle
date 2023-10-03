@@ -27,6 +27,6 @@ build: ## Initially build the package before development
 
 build-assets: ## Rebuild assets after changes in JS or SCSS
 	yarn encore production
-	src/Resources/bin/fix-assets-manifest-file.php
+	php ./src/Resources/bin/fix-assets-manifest-file.php
 
 checks-before-pr: linter-code-syntax linter-docs tests ## Runs tests and linters which are also run on PRs

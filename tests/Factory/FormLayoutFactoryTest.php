@@ -3,20 +3,20 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Factory;
 
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FieldFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\FormLayoutFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Internal\EaFormColumnClose;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Internal\EaFormColumnGroupClose;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Internal\EaFormColumnGroupOpen;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Internal\EaFormColumnOpen;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Internal\EaFormFieldsetClose;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Internal\EaFormFieldsetOpen;
 use PHPUnit\Framework\TestCase;
 
-class FieldFactoryTest extends TestCase
+class FormLayoutFactoryTest extends TestCase
 {
     /**
      * @dataProvider provideFormLayouts
@@ -26,14 +26,11 @@ class FieldFactoryTest extends TestCase
         $originalFields = $this->createFormFields($originalFields);
         $expectedFields = $this->createFormFields($expectedFields);
 
-        $fieldFactory = $this->getMockBuilder(FieldFactory::class)
+        $formLayoutFactory = $this->getMockBuilder(FormLayoutFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        // make the fixFormColumns() method public
-        $method = new \ReflectionMethod(FieldFactory::class, 'fixFormColumns');
-        $method->setAccessible(true);
-        $method->invoke($fieldFactory, $originalFields);
+        $formLayoutFactory->createLayout($originalFields, Crud::PAGE_EDIT);
 
         if (false=== $this->isFormLayoutTheSame($expectedFields, $originalFields)) {
             dump("EXPECTED");

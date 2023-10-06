@@ -19,6 +19,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Factory\AdminContextFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\ControllerFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FieldFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\FormLayoutFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FilterFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\MenuFactory;
@@ -236,10 +237,13 @@ return static function (ContainerConfigurator $container) {
         ->set(FormFactory::class)
             ->arg(0, service('form.factory'))
 
+        ->set(FormLayoutFactory::class)
+
         ->set(FieldFactory::class)
             ->arg(0, service(AdminContextProvider::class))
             ->arg(1, service(AuthorizationChecker::class))
             ->arg(2, tagged_iterator(EasyAdminExtension::TAG_FIELD_CONFIGURATOR))
+            ->arg(3, service(FormLayoutFactory::class))
 
         ->set(FieldProvider::class)
             ->arg(0, service(AdminContextProvider::class))

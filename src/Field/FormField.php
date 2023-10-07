@@ -7,8 +7,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormColumnType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormFieldsetType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormRowType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminTabType;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Internal\EaFormColumnOpen;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Internal\EaFormFieldsetOpen;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormColumnOpenType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormFieldsetOpenType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabPaneOpenType;
 use Symfony\Component\Uid\Ulid;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
@@ -63,7 +64,7 @@ final class FormField implements FieldInterface
             ->hideOnIndex()
             ->setProperty('ea_form_fieldset_'.(new Ulid()))
             ->setLabel($label)
-            ->setFormType(EaFormFieldsetOpen::class)
+            ->setFormType(EaFormFieldsetOpenType::class)
             ->addCssClass('field-form_fieldset')
             ->setFormTypeOptions(['mapped' => false, 'required' => false])
             ->setCustomOption(self::OPTION_ICON, $icon)
@@ -109,7 +110,7 @@ final class FormField implements FieldInterface
             ->hideOnIndex()
             ->setProperty('ea_form_tab_'.(new Ulid()))
             ->setLabel($label)
-            ->setFormType(EasyAdminTabType::class)
+            ->setFormType(EaFormTabPaneOpenType::class)
             ->addCssClass('field-form_tab')
             ->setFormTypeOptions(['mapped' => false, 'required' => false])
             ->setCustomOption(self::OPTION_ICON, $icon)
@@ -132,7 +133,7 @@ final class FormField implements FieldInterface
             ->hideOnIndex()
             ->setProperty('ea_form_column_'.(new Ulid()))
             ->setLabel($label)
-            ->setFormType(EaFormColumnOpen::class)
+            ->setFormType(EaFormColumnOpenType::class)
             ->addCssClass(sprintf('field-form_column %s', \is_int($cols) ? 'col-md-'.$cols : $cols))
             ->setFormTypeOptions(['mapped' => false, 'required' => false])
             ->setCustomOption(self::OPTION_ICON, $icon)

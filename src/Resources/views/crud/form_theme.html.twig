@@ -402,7 +402,7 @@
 {% endblock ea_crud_rest %}
 
 {# EasyAdmin form type #}
-{% block ea_crud_widget %}
+{% block eeea_crud_widget %}
     {% if ea_crud_form.form_tabs|length > 0 %}
         <div class="col-12">
             <div class="nav-tabs-custom form-tabs">
@@ -456,7 +456,9 @@
     {% else %}
 
     {% endif %}
-{% endblock ea_crud_widget %}
+
+    AAAAA
+{% endblock eeea_crud_widget %}
 
 {# TODO: remove this when "form panels" are removed #}
 {% block ea_crud_widget_panels %}
@@ -601,6 +603,63 @@
 {% block ea_form_fieldset_close_row %}
     </div>
 {% endblock ea_form_fieldset_close_row %}
+
+{% block ea_form_tabpane_group_open %}
+    <div class="nav-tabs-custom form-tabs">
+{% endblock ea_form_tabpane_group_open %}
+
+{% block ea_form_tabpane_group_close %}
+    </div>
+{% endblock ea_form_tabpane_group_close %}
+
+{% block ea_form_tabpane_open %}
+    <div class="tab-content">
+{% endblock ea_form_tabpane_open %}
+
+{% block ea_form_tabpane_close %}
+    </div>
+{% endblock ea_form_tabpane_close %}
+
+{% block ea_form_tablist %}
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Home</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">Profile</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact-tab-pane" type="button" role="tab" aria-controls="contact-tab-pane" aria-selected="false">Contact</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="disabled-tab" data-bs-toggle="tab" data-bs-target="#disabled-tab-pane" type="button" role="tab" aria-controls="disabled-tab-pane" aria-selected="false" disabled>Disabled</button>
+        </li>
+    </ul>
+
+
+    {#
+
+    <ul class="nav nav-tabs">
+                    {% for tab_name, tab_config in ea_crud_form.form_tabs %}
+                        <li class="nav-item">
+                            <a class="nav-link {% if tab_config.active %}active{% endif %}" href="#{{ tab_config['id'] }}" id="{{ tab_config['id'] }}-tab" data-bs-toggle="tab">
+                                {%- if tab_config.icon|default(false) -%}
+                                    <i class="fa-fw {{ tab_config.icon }}"></i>
+                                {%- endif -%}
+                                {{ tab_config['label']|trans(domain = ea.i18n.translationDomain) }}
+                                {%- if tab_config.errors > 0 -%}
+                                    <span class="badge badge-danger" title="{{ 'form.tab.error_badge_title'|trans({'%count%': tab_config.errors}, 'EasyAdminBundle') }}">
+                                        {{- tab_config.errors -}}
+                                    </span>
+                                {%- endif -%}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+
+
+    #}
+{% endblock ea_form_tablist %}
 
 {# EasyAdminFilters form type #}
 {% block ea_filters_widget %}

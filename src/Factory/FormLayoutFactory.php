@@ -9,10 +9,15 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldLayoutDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminTabType;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Internal\EaFormColumnClose;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Internal\EaFormColumnGroupClose;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Internal\EaFormColumnGroupOpen;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Internal\EaFormFieldsetClose;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormColumnCloseType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormColumnGroupCloseType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormColumnGroupOpenType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormFieldsetCloseType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabListType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabPaneCloseType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabPaneGroupCloseType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabPaneGroupOpenType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabPaneOpenType;
 use Symfony\Component\Uid\Ulid;
 
 /**
@@ -22,7 +27,7 @@ use Symfony\Component\Uid\Ulid;
  */
 final class FormLayoutFactory
 {
-    private function __construct()
+    public function __construct()
     {
     }
 
@@ -35,7 +40,6 @@ final class FormLayoutFactory
 
         $this->fixOrphanFieldsetFields($fields);
         $this->fixFormColumns($fields);
-
         $this->checkOrphanTabFields($fields);
     }
 
@@ -132,6 +136,7 @@ final class FormLayoutFactory
         $aFormFieldsetIsOpen = false;
         $isFirstFormColumn = true;
 
+        $tabs = [];
         /** @var FieldDto $fieldDto */
         foreach ($fields as $fieldDto) {
             if ($formUsesColumns && !($aFormColumnIsOpen || $aFormTabIsOpen) && !$fieldDto->isFormLayoutField()) {
@@ -139,12 +144,24 @@ final class FormLayoutFactory
             }
 
             if ($fieldDto->isFormTab()) {
-                $aFormTabIsOpen = true;
+                $tabs[] = $fieldDto;
 
                 if ($aFormFieldsetIsOpen) {
                     $fields->insertBefore($this->createFieldDtoForFieldsetClose(), $fieldDto);
                     $aFormFieldsetIsOpen = false;
                 }
+
+                if ($aFormColumnIsOpen) {
+                    $fields->insertBefore($this->createFieldDtoForColumnClose(), $fieldDto);
+                    $fields->insertBefore($this->createFieldDtoForColumnGroupClose(), $fieldDto);
+                    $aFormColumnIsOpen = false;
+                }
+
+                if ($aFormTabIsOpen) {
+                    $fields->insertBefore($this->createTabPaneCloseField(), $fieldDto);
+                }
+
+                $aFormTabIsOpen = true;
             }
 
             if ($fieldDto->isFormFieldset()) {
@@ -175,12 +192,6 @@ final class FormLayoutFactory
                 $aFormColumnIsOpen = true;
             }
 
-            if ($fieldDto->isFormTab() && $aFormColumnIsOpen) {
-                $fields->insertBefore($this->createFieldDtoForColumnClose(), $fieldDto);
-                $fields->insertBefore($this->createFieldDtoForColumnGroupClose(), $fieldDto);
-                $aFormColumnIsOpen = false;
-            }
-
             if ($aFormColumnIsOpen) {
                 // this is needed because fields inside columns look better when they take the
                 // entire width available; users can override this by setting custom CSS classes
@@ -197,6 +208,13 @@ final class FormLayoutFactory
             $fields->add($this->createFieldDtoForColumnGroupClose());
         }
 
+        if ($formUsesTabs) {
+            $fields->add($this->createTabPaneCloseField());
+            $fields->add($this->createTabPaneGroupCloseField());
+            $fields->prepend($this->createTabPaneGroupOpenField());
+            $fields->prepend($this->createTabListField($tabs));
+        }
+
         dump("AFTER");
         foreach ($fields as $field) {
             dump($field->getFormType());
@@ -206,7 +224,7 @@ final class FormLayoutFactory
     private function createFieldDtoForColumnGroupOpen(): FieldDto
     {
         return Field::new(sprintf('ea_form_column_group_open_%s', Ulid::generate()))
-            ->setFormType(EaFormColumnGroupOpen::class)
+            ->setFormType(EaFormColumnGroupOpenType::class)
             ->setFormTypeOptions(['mapped' => false, 'required' => false])
             ->getAsDto();
     }
@@ -214,7 +232,7 @@ final class FormLayoutFactory
     private function createFieldDtoForColumnGroupClose(): FieldDto
     {
         return Field::new(sprintf('ea_form_column_group_close_%s', Ulid::generate()))
-            ->setFormType(EaFormColumnGroupClose::class)
+            ->setFormType(EaFormColumnGroupCloseType::class)
             ->setFormTypeOptions(['mapped' => false, 'required' => false])
             ->getAsDto();
     }
@@ -222,7 +240,7 @@ final class FormLayoutFactory
     private function createFieldDtoForColumnClose(): FieldDto
     {
         return Field::new(sprintf('ea_form_column_close_%s', Ulid::generate()))
-            ->setFormType(EaFormColumnClose::class)
+            ->setFormType(EaFormColumnCloseType::class)
             ->setFormTypeOptions(['mapped' => false, 'required' => false])
             ->getAsDto();
     }
@@ -230,7 +248,47 @@ final class FormLayoutFactory
     private function createFieldDtoForFieldsetClose(): FieldDto
     {
         return Field::new(sprintf('ea_form_fieldset_close_%s', Ulid::generate()))
-            ->setFormType(EaFormFieldsetClose::class)
+            ->setFormType(EaFormFieldsetCloseType::class)
+            ->setFormTypeOptions(['mapped' => false, 'required' => false])
+            ->getAsDto();
+    }
+
+    private function createTabPaneGroupOpenField(): FieldDto
+    {
+        return Field::new(sprintf('ea_form_tabpane_group_open_%s', Ulid::generate()))
+            ->setFormType(EaFormTabPaneGroupOpenType::class)
+            ->setFormTypeOptions(['mapped' => false, 'required' => false])
+            ->getAsDto();
+    }
+
+    private function createTabPaneGroupCloseField(): FieldDto
+    {
+        return Field::new(sprintf('ea_form_tabpane_group_close_%s', Ulid::generate()))
+            ->setFormType(EaFormTabPaneGroupCloseType::class)
+            ->setFormTypeOptions(['mapped' => false, 'required' => false])
+            ->getAsDto();
+    }
+
+    private function createTabListField(array $tabs): FieldDto
+    {
+        return Field::new(sprintf('ea_form_tablist_%s', Ulid::generate()))
+            ->setFormType(EaFormTabListType::class)
+            ->setFormTypeOptions(['mapped' => false, 'required' => false, 'tabs' => $tabs])
+            ->getAsDto();
+    }
+
+    private function createTabPaneOpenField(): FieldDto
+    {
+        return Field::new(sprintf('ea_form_tabpane_open_%s', Ulid::generate()))
+            ->setFormType(EaFormTabPaneOpenType::class)
+            ->setFormTypeOptions(['mapped' => false, 'required' => false])
+            ->getAsDto();
+    }
+
+    private function createTabPaneCloseField(): FieldDto
+    {
+        return Field::new(sprintf('ea_form_tabpane_close_%s', Ulid::generate()))
+            ->setFormType(EaFormTabPaneCloseType::class)
             ->setFormTypeOptions(['mapped' => false, 'required' => false])
             ->getAsDto();
     }

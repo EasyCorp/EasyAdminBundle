@@ -10,10 +10,14 @@ use EasyCorp\Bundle\EasyAdminBundle\Factory\FormLayoutFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Internal\EaFormColumnClose;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Internal\EaFormColumnGroupClose;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Internal\EaFormColumnGroupOpen;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Internal\EaFormFieldsetClose;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormColumnCloseType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormColumnGroupCloseType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormColumnGroupOpenType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormFieldsetCloseType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabListType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabPaneCloseType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabPaneGroupCloseType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabPaneGroupOpenType;
 use PHPUnit\Framework\TestCase;
 
 class FormLayoutFactoryTest extends TestCase
@@ -21,15 +25,12 @@ class FormLayoutFactoryTest extends TestCase
     /**
      * @dataProvider provideFormLayouts
      */
-    public function testFixFormColumns(array $originalFields, array $expectedFields)
+    public function testFixFormColumns(array $fieldConfig, string $expectedLayout)
     {
-        $originalFields = $this->createFormFields($originalFields);
-        $expectedFields = $this->createFormFields($expectedFields);
+        $originalFields = $this->createFormFieldsFromConfig($fieldConfig);
+        $expectedFields = $this->createFormFieldsFromLayout($expectedLayout);
 
-        $formLayoutFactory = $this->getMockBuilder(FormLayoutFactory::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
+        $formLayoutFactory = new FormLayoutFactory();
         $formLayoutFactory->createLayout($originalFields, Crud::PAGE_EDIT);
 
         if (false=== $this->isFormLayoutTheSame($expectedFields, $originalFields)) {
@@ -51,66 +52,156 @@ class FormLayoutFactoryTest extends TestCase
      */
     public function testFixFormColumnsErrors(array $originalFields, string $expectedExceptionFqcn, string $expectedExceptionMessage)
     {
-        $originalFields = $this->createFormFields($originalFields);
-
-        $fieldFactory = $this->getMockBuilder(FieldFactory::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        // make the fixFormColumns() method public
-        $method = new \ReflectionMethod(FieldFactory::class, 'fixFormColumns');
-        $method->setAccessible(true);
-
         $this->expectException($expectedExceptionFqcn);
         $this->expectExceptionMessage($expectedExceptionMessage);
-        $method->invoke($fieldFactory, $originalFields);
+
+        $originalFields = $this->createFormFieldsFromConfig($originalFields);
+
+        $fieldFactory = new FormLayoutFactory();
+        $fieldFactory->createLayout($originalFields, Crud::PAGE_EDIT);
     }
 
     public function provideFormLayouts()
     {
         yield 'Only fields' => [
             ['field', 'field', 'field'],
-            ['field', 'field', 'field'],
+            <<<LAYOUT
+                field
+                field
+                field
+            LAYOUT,
         ];
 
         yield 'One fieldset for all fields' => [
             ['fieldset', 'field', 'field', 'field'],
-            ['fieldset_open', 'field', 'field', 'field', 'fieldset_close'],
+            <<<LAYOUT
+                fieldset_open
+                    field
+                    field
+                    field
+                fieldset_close
+            LAYOUT,
         ];
 
         yield 'Two fieldsets for all fields' => [
             ['fieldset', 'field', 'fieldset', 'field', 'field'],
-            ['fieldset_open', 'field', 'fieldset_close', 'fieldset_open', 'field', 'field', 'fieldset_close'],
+            <<<LAYOUT
+                fieldset_open
+                    field
+                fieldset_close
+                fieldset_open
+                    field
+                    field
+                fieldset_close
+            LAYOUT,
         ];
 
-        yield 'One fieldset for some fields different from first' => [
+        yield 'A field outside of all fieldsets is included in an automatic fieldset' => [
             ['field', 'fieldset', 'field', 'field'],
-            ['fieldset_open', 'field',  'fieldset_close', 'fieldset_open', 'field', 'field', 'fieldset_close'],
+            <<<LAYOUT
+                fieldset_open
+                    field
+                fieldset_close
+                fieldset_open
+                    field
+                    field
+                fieldset_close
+            LAYOUT,
         ];
 
         yield 'One column for all fields' => [
             ['column', 'field', 'field', 'field'],
-            ['column_group_open', 'column_open', 'field', 'field', 'field', 'column_close', 'column_group_close'],
+            <<<LAYOUT
+                column_group_open
+                    column_open
+                        field
+                        field
+                        field
+                    column_close
+                column_group_close
+            LAYOUT,
         ];
 
         yield 'Two columns for all fields' => [
             ['column', 'field', 'column', 'field', 'field'],
-            ['column_group_open', 'column_open', 'field', 'column_close', 'column_open', 'field', 'field', 'column_close', 'column_group_close'],
+            <<<LAYOUT
+                column_group_open
+                    column_open
+                        field
+                    column_close
+                    column_open
+                        field
+                        field
+                    column_close
+                column_group_close
+            LAYOUT,
         ];
 
         yield 'Fieldsets and columns' => [
             ['column', 'fieldset', 'field', 'column', 'fieldset', 'field', 'field'],
-            ['column_group_open', 'column_open', 'fieldset_open', 'field', 'fieldset_close', 'column_close', 'column_open', 'fieldset_open', 'field', 'field', 'fieldset_close', 'column_close', 'column_group_close',],
+            <<<LAYOUT
+                column_group_open
+                    column_open
+                        fieldset_open
+                            field
+                        fieldset_close
+                    column_close
+                    column_open
+                        fieldset_open
+                            field
+                            field
+                        fieldset_close
+                    column_close
+                column_group_close
+            LAYOUT,
         ];
 
         yield 'Tabs and columns' => [
             ['tab', 'column', 'field', 'column', 'field', 'tab', 'field'],
-            ['tab', 'column_group_open', 'column_open', 'field', 'column_close', 'column_open', 'field', 'column_close', 'column_group_close', 'tab', 'field'],
+            <<<LAYOUT
+                tab_list
+                tab_pane_group_open
+                    tab_pane_open
+                        column_group_open
+                            column_open
+                                field
+                            column_close
+                            column_open
+                                field
+                            column_close
+                        column_group_close
+                    tab_pane_close
+                    tab_pane_open
+                        field
+                    tab_pane_close
+                tab_pane_group_close
+            LAYOUT,
         ];
 
         yield 'Tabs, fieldsets and columns' => [
             ['tab', 'column', 'fieldset', 'field', 'column', 'field', 'tab', 'fieldset', 'field'],
-            ['tab', 'column_group_open', 'column_open', 'fieldset_open', 'field', 'fieldset_close', 'column_close', 'column_open', 'field', 'column_close', 'column_group_close', 'tab', 'fieldset_open', 'field', 'fieldset_close'],
+            <<<LAYOUT
+                tab_list
+                tab_pane_group_open
+                    tab_pane_open
+                        column_group_open
+                            column_open
+                                fieldset_open
+                                    field
+                                fieldset_close
+                            column_close
+                            column_open
+                                field
+                            column_close
+                        column_group_close
+                    tab_pane_close
+                    tab_pane_open
+                        fieldset_open
+                            field
+                        fieldset_close
+                    tab_pane_close
+                tab_pane_group_close
+            LAYOUT,
         ];
     }
 
@@ -131,13 +222,28 @@ class FormLayoutFactoryTest extends TestCase
         yield 'Tabs inside columns' => [
             ['column', 'tab', 'field', 'tab', 'field', 'field'],
             \InvalidArgumentException::class,
-            'When using form columns, you can\'t define tabs inside columns (but you can define columns inside tabs). Move the tab "tab_2" outside any column.'
+            'When using form columns, you can\'t define tabs inside columns (but you can define columns inside tabs). Move the tab "tab_pane_open_2" outside any column.'
         ];
     }
 
-    private function createFormFields(array $fieldDefinition): FieldCollection
+    private function createFormFieldsFromConfig(array $fieldDefinition): FieldCollection
     {
         return FieldCollection::new($this->doCreateFormFields($fieldDefinition));
+    }
+
+    private function createFormFieldsFromLayout(string $layoutDescription): FieldCollection
+    {
+        $fieldNames = [];
+
+        foreach (preg_split("/[\s]+/", $layoutDescription) as $fieldDefinition) {
+            if ('' === $trimmedFieldName = trim($fieldDefinition)) {
+                continue;
+            }
+
+            $fieldNames[] = $trimmedFieldName;
+        }
+dump($fieldNames);
+        return $this->createFormFieldsFromConfig($fieldNames);
     }
 
     private function doCreateFormFields(array $fields): iterable
@@ -149,12 +255,16 @@ class FormLayoutFactoryTest extends TestCase
             yield match ($fieldType) {
                 'field' => TextField::new('field_'.$fieldNumber),
                 'fieldset', 'fieldset_open' => FormField::addFieldset(),
-                'fieldset_close' => Field::new('fieldset_open_'.$fieldNumber)->setFormType(EaFormFieldsetClose::class),
-                'tab' => FormField::addTab('tab_'.$fieldNumber),
+                'fieldset_close' => Field::new('fieldset_open_'.$fieldNumber)->setFormType(EaFormFieldsetCloseType::class),
+                'tab_list' => Field::new('tab_list_'.$fieldNumber)->setFormType(EaFormTabListType::class),
+                'tab', 'tab_pane_open' => FormField::addTab('tab_pane_open_'.$fieldNumber),
+                'tab_pane_close' => Field::new('tab_pane_close_'.$fieldNumber)->setFormType(EaFormTabPaneCloseType::class),
+                'tab_pane_group_open' => Field::new('tab_pane_group_open_'.$fieldNumber)->setFormType(EaFormTabPaneGroupOpenType::class),
+                'tab_pane_group_close' => Field::new('tab_pane_group_close_'.$fieldNumber)->setFormType(EaFormTabPaneGroupCloseType::class),
                 'column', 'column_open' => FormField::addColumn(8),
-                'column_group_open' => Field::new('column_group_open_'.$fieldNumber)->setFormType(EaFormColumnGroupOpen::class),
-                'column_group_close' => Field::new('column_group_close_'.$fieldNumber)->setFormType(EaFormColumnGroupClose::class),
-                'column_close' => Field::new('column_close_'.$fieldNumber)->setFormType(EaFormColumnClose::class),
+                'column_group_open' => Field::new('column_group_open_'.$fieldNumber)->setFormType(EaFormColumnGroupOpenType::class),
+                'column_group_close' => Field::new('column_group_close_'.$fieldNumber)->setFormType(EaFormColumnGroupCloseType::class),
+                'column_close' => Field::new('column_close_'.$fieldNumber)->setFormType(EaFormColumnCloseType::class),
                 default => Field::new('field'.$fieldNumber),
             };
         }

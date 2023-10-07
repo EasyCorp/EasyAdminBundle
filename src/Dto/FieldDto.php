@@ -7,8 +7,13 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormColumnType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormFieldsetType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminTabType;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Internal\EaFormColumnOpen;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Internal\EaFormFieldsetOpen;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormColumnOpenType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormFieldsetOpenType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabListType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabPaneCloseType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabPaneGroupCloseType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabPaneGroupOpenType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabPaneOpenType;
 use Symfony\Component\Uid\Ulid;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
@@ -95,22 +100,22 @@ final class FieldDto
 
     public function isFormLayoutField(): bool
     {
-        return $this->isFormTab() || $this->isFormFieldset() || $this->isFormColumn();
+        return $this->isFormTab() || $this->isFormFieldset() || $this->isFormColumn() || \in_array($this->formType, [EaFormTabListType::class, EaFormTabPaneCloseType::class, EaFormTabPaneGroupOpenType::class, EaFormTabPaneGroupCloseType::class], true);
     }
 
     public function isFormFieldset(): bool
     {
-        return \in_Array($this->formType, [EaFormFieldsetType::class,EaFormFieldsetOpen::class], true);
+        return \in_Array($this->formType, [EaFormFieldsetType::class,EaFormFieldsetOpenType::class], true);
     }
 
     public function isFormTab(): bool
     {
-        return EasyAdminTabType::class === $this->formType;
+        return EaFormTabPaneOpenType::class === $this->formType;
     }
 
     public function isFormColumn(): bool
     {
-        return EaFormColumnOpen::class === $this->formType;
+        return EaFormColumnOpenType::class === $this->formType;
     }
 
     public function getFieldFqcn(): ?string

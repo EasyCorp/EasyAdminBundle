@@ -1,6 +1,6 @@
 <?php
 
-namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type\Internal;
+namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout;
 
 use Symfony\Component\Form\AbstractType;
 
@@ -10,7 +10,7 @@ use Symfony\Component\Form\AbstractType;
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  * @internal don't use this type in your applications
  */
-class EaFormFieldsetOpen extends AbstractType
+class EaFormFieldsetOpenType extends AbstractType
 {
     public function getBlockPrefix(): string
     {

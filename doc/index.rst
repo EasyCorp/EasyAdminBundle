@@ -6,7 +6,7 @@ applications. It's free, fast and fully documented.
 
 If you already used previous EasyAdmin versions, beware that EasyAdmin 3 uses a
 brand new architecture and it's incompatible with previous versions. However,
-there's a command to :doc:`upgrade from EasyAdmin 2 to EasyAdmin 3 automatically </upgrade>`.
+there's a command to :doc:`upgrade from EasyAdmin 2 to EasyAdmin 4 automatically </upgrade>`.
 
 .. admonition:: Screencast
     :class: screencast

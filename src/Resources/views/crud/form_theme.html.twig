@@ -402,63 +402,12 @@
 {% endblock ea_crud_rest %}
 
 {# EasyAdmin form type #}
-{% block eeea_crud_widget %}
-    {% if ea_crud_form.form_tabs|length > 0 %}
-        <div class="col-12">
-            <div class="nav-tabs-custom form-tabs">
-                <ul class="nav nav-tabs">
-                    {% for tab_name, tab_config in ea_crud_form.form_tabs %}
-                        <li class="nav-item">
-                            <a class="nav-link {% if tab_config.active %}active{% endif %}" href="#{{ tab_config['id'] }}" id="{{ tab_config['id'] }}-tab" data-bs-toggle="tab">
-                                {%- if tab_config.icon|default(false) -%}
-                                    <i class="fa-fw {{ tab_config.icon }}"></i>
-                                {%- endif -%}
-                                {{ tab_config['label']|trans(domain = ea.i18n.translationDomain) }}
-                                {%- if tab_config.errors > 0 -%}
-                                    <span class="badge badge-danger" title="{{ 'form.tab.error_badge_title'|trans({'%count%': tab_config.errors}, 'EasyAdminBundle') }}">
-                                        {{- tab_config.errors -}}
-                                    </span>
-                                {%- endif -%}
-                            </a>
-                        </li>
-                    {% endfor %}
-                </ul>
-                <div class="tab-content">
-                    {% for tab_name, tab_config in ea_crud_form.form_tabs %}
-                        <div id="{{ tab_config['id'] }}" class="tab-pane {% if tab_config.active %}active{% endif %} {{ tab_config['css_class']|default('') }}">
-                            {% if tab_config['help']|default(false) %}
-                                <div class="content-header-help tab-help">
-                                    {{ tab_config['help']|trans(domain = ea.i18n.translationDomain)|raw }}
-                                </div>
-                            {% endif %}
-
-                            <div class="row">
-                                {% if tab_name is defined and tab_name %}
-                                    {% macro recursiveTabForm(form, ea_crud_form, tab_name) %}
-                                        {% for field in form|filter(field => not ea_crud_form.form_fieldsets|filter((fieldset_config, form_fieldset) => form_fieldset == field.vars.ea_crud_form.form_fieldset) and ((field.vars.ea_crud_form.form_tab is defined and field.vars.ea_crud_form.form_tab == tab_name) or field.vars.ea_crud_form.form_tabs is defined)) %}
-                                            {% if field.vars.ea_crud_form.form_tabs is defined %}
-                                                {# If the field is a nested CRUD form then only render its children #}
-                                                {{ _self.recursiveTabForm(field, ea_crud_form, tab_name) }}
-                                            {% else %}
-                                                {# Render all other fields #}
-                                                {{ form_row(field) }}
-                                            {% endif %}
-                                        {% endfor %}
-                                    {% endmacro %}
-                                    {{ _self.recursiveTabForm(form, ea_crud_form, tab_name) }}
-                                {% endif %}
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-    {% else %}
-
-    {% endif %}
-
-    AAAAA
-{% endblock eeea_crud_widget %}
+{% block ea_crud_widget %}
+    AAA
+    {% for field in form %}
+        {{ form_row(field) }}
+    {% endfor %}
+{% endblock ea_crud_widget %}
 
 {# TODO: remove this when "form panels" are removed #}
 {% block ea_crud_widget_panels %}
@@ -578,7 +527,7 @@
 {% endblock ea_form_column_group_close_row %}
 
 {% block ea_form_column_open_row %}
-    {% set field = form.vars.ea_crud_form.ea_field %}
+    {% set field = form.vars.ea_vars.field %}
     {% set field_icon = field.getCustomOption('icon') %}
 
     <div class="form-column {{ field.icon|default(false) == false and field.label|default(false) == false ? 'form-column-no-header' }} {{ field.cssClass|default('') }}">
@@ -597,45 +546,73 @@
 {% endblock ea_form_column_close_row %}
 
 {% block ea_form_fieldset_open_row %}
-    <div>FIELDSET
+    {% set fieldset_has_header = form.vars.label or ea_icon or ea_help %}
+
+    <div class="{{ ea_css_class }}">
+        <fieldset class="form-fieldset">
+            {% if fieldset_has_header %}
+                <div class="form-fieldset-header {{ ea_is_collapsible ? 'collapsible' }} {{ ea_help is not empty ? 'with-help' }}">
+                    <div class="form-fieldset-title">
+                        {% if not ea_is_collapsible %}
+                            <a href="#" class="not-collapsible">
+                        {% else %}
+                            <a href="#content-{{ form.vars.name }}" data-bs-toggle="collapse"
+                            class="form-fieldset-collapse {{ ea_is_collapsed ? 'collapsed' }}"
+                            aria-expanded="{{ ea_is_collapsed ? 'false' : 'true' }}" aria-controls="content-{{ form.vars.name }}">
+                        {% endif %}
+                            {% if ea_is_collapsible %}
+                                <i class="fas fw fa-chevron-right form-fieldset-collapse-marker"></i>
+                            {% endif %}
+
+                            {% if ea_icon %}
+                                <i class="form-fieldset-icon {{ ea_icon }}"></i>
+                            {% endif %}
+
+                            {{ form.vars.label|trans|raw }}
+                        </a>
+
+                        {% if ea_help %}
+                            <div class="form-fieldset-help">{{ ea_help|trans|raw }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+
+            <div id="content-{{ form.vars.name }}" class="form-fieldset-body {{ not fieldset_has_header ? 'without-header' }} {{ ea_is_collapsible ? 'collapse' }} {{ not ea_is_collapsed ? 'show'}}">
+                <div class="row">
 {% endblock ea_form_fieldset_open_row %}
 
 {% block ea_form_fieldset_close_row %}
+        </fieldset>
     </div>
 {% endblock ea_form_fieldset_close_row %}
 
-{% block ea_form_tabpane_group_open %}
+{% block ea_form_tablist_row %}
+    {% set tab_id_option_name = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Field\\FormField::OPTION_TAB_ID') %}
+    {% set tab_is_active_option_name = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Field\\FormField::OPTION_TAB_IS_ACTIVE') %}
+    {% set field = form.vars.ea_vars.field %}
+
     <div class="nav-tabs-custom form-tabs">
-{% endblock ea_form_tabpane_group_open %}
-
-{% block ea_form_tabpane_group_close %}
+        <ul class="nav nav-tabs">
+            {% for tab in field.getCustomOption('tabs') %}
+                <li class="nav-item">
+                    <a class="nav-link {% if tab.getCustomOption(tab_is_active_option_name) %}active{% endif %}" href="#{{ tab.getCustomOption(tab_id_option_name) }}" id="tablist-tab-{{ loop.index }}" data-bs-toggle="tab">
+                        {%- if tab.getCustomOption('icon')|default(false) -%}
+                            <i class="fa-fw {{ tab.getCustomOption('icon') }}"></i>
+                        {%- endif -%}
+                        {{ tab.label|trans(domain = ea.i18n.translationDomain) }}
+                        {#
+                        {%- if tab_config.errors > 0 -%}
+                            <span class="badge badge-danger" title="{{ 'form.tab.error_badge_title'|trans({'%count%': tab_config.errors}, 'EasyAdminBundle') }}">
+                                            {{- tab_config.errors -}}
+                                        </span>
+                        {%- endif -%}
+                        #}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
     </div>
-{% endblock ea_form_tabpane_group_close %}
-
-{% block ea_form_tabpane_open %}
-    <div class="tab-content">
-{% endblock ea_form_tabpane_open %}
-
-{% block ea_form_tabpane_close %}
-    </div>
-{% endblock ea_form_tabpane_close %}
-
-{% block ea_form_tablist %}
-    <ul class="nav nav-tabs" id="myTab" role="tablist">
-        <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Home</button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">Profile</button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact-tab-pane" type="button" role="tab" aria-controls="contact-tab-pane" aria-selected="false">Contact</button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="disabled-tab" data-bs-toggle="tab" data-bs-target="#disabled-tab-pane" type="button" role="tab" aria-controls="disabled-tab-pane" aria-selected="false" disabled>Disabled</button>
-        </li>
-    </ul>
-
 
     {#
 
@@ -659,7 +636,32 @@
 
 
     #}
-{% endblock ea_form_tablist %}
+{% endblock ea_form_tablist_row %}
+
+{% block ea_form_tabpane_group_open_row %}
+    <div class="nav-tabs-custom form-tabs">
+{% endblock ea_form_tabpane_group_open_row %}
+
+{% block ea_form_tabpane_group_close_row %}
+    </div>
+{% endblock ea_form_tabpane_group_close_row %}
+
+{% block ea_form_tabpane_open_row %}
+    <div class="tab-content">
+        <div id="{{ ea_tab_id }}" class="tab-pane {% if ea_tab_is_active %}active{% endif %} {{ ea_css_class }}">
+            {% if ea_help %}
+                <div class="content-header-help tab-help">
+                    {{ ea_help|trans(domain = ea.i18n.translationDomain)|raw }}
+                </div>
+            {% endif %}
+
+            <div class="row">
+{% endblock ea_form_tabpane_open_row %}
+
+{% block ea_form_tabpane_close_row %}
+        </div>
+    </div>
+{% endblock ea_form_tabpane_close_row %}
 
 {# EasyAdminFilters form type #}
 {% block ea_filters_widget %}

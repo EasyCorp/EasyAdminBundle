@@ -3,10 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormColumnType;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormFieldsetType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormRowType;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminTabType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormColumnOpenType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormFieldsetOpenType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabPaneOpenType;
@@ -24,6 +21,8 @@ final class FormField implements FieldInterface
     public const OPTION_COLLAPSIBLE = 'collapsible';
     public const OPTION_COLLAPSED = 'collapsed';
     public const OPTION_ROW_BREAKPOINT = 'rowBreakPoint';
+    public const OPTION_TAB_ID = 'tabId';
+    public const OPTION_TAB_IS_ACTIVE = 'tabIsActive';
 
     /**
      * @internal Use the other named constructors instead (addPanel(), etc.)

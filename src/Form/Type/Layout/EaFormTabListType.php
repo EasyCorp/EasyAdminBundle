@@ -15,10 +15,9 @@ class EaFormTabListType extends AbstractType
 {
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->define('tabs')
-            ->required()
-            ->default(null)
-            ->allowedTypes('array');
+        $resolver
+            ->define('tabs')->required()->default([])->allowedTypes('array')
+        ;
     }
 
     public function getBlockPrefix(): string

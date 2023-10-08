@@ -18,6 +18,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabPaneCloseType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabPaneGroupCloseType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabPaneGroupOpenType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabPaneOpenType;
+use Symfony\Component\String\Slugger\AsciiSlugger;
 use Symfony\Component\Uid\Ulid;
 
 /**
@@ -135,7 +136,9 @@ final class FormLayoutFactory
         $aFormTabIsOpen = false;
         $aFormFieldsetIsOpen = false;
         $isFirstFormColumn = true;
+        $tabsWithoutLabelCounter = 0;
 
+        $slugger = new AsciiSlugger();
         $tabs = [];
         /** @var FieldDto $fieldDto */
         foreach ($fields as $fieldDto) {
@@ -144,16 +147,28 @@ final class FormLayoutFactory
             }
 
             if ($fieldDto->isFormTab()) {
+                $isTabActive = 0 === \count($tabs);
+                $tabId = sprintf('tab-%s', $fieldDto->getLabel() ? $slugger->slug($fieldDto->getLabel())->lower()->toString() : ++$tabsWithoutLabelCounter);
+                $fieldDto->setCustomOption(FormField::OPTION_TAB_ID, $tabId);
+                $fieldDto->setCustomOption(FormField::OPTION_TAB_IS_ACTIVE, $isTabActive);
+
+                $fieldDto->setFormTypeOptions([
+                    'ea_tab_id' => $tabId,
+                    'ea_css_class' => $fieldDto->getCssClass(),
+                    'ea_help' => $fieldDto->getHelp(),
+                    'ea_tab_is_active' => $isTabActive,
+                ]);
+
                 $tabs[] = $fieldDto;
 
                 if ($aFormFieldsetIsOpen) {
-                    $fields->insertBefore($this->createFieldDtoForFieldsetClose(), $fieldDto);
+                    $fields->insertBefore($this->createFieldsetCloseField(), $fieldDto);
                     $aFormFieldsetIsOpen = false;
                 }
 
                 if ($aFormColumnIsOpen) {
-                    $fields->insertBefore($this->createFieldDtoForColumnClose(), $fieldDto);
-                    $fields->insertBefore($this->createFieldDtoForColumnGroupClose(), $fieldDto);
+                    $fields->insertBefore($this->createColumnCloseField(), $fieldDto);
+                    $fields->insertBefore($this->createColumnGroupCloseField(), $fieldDto);
                     $aFormColumnIsOpen = false;
                 }
 
@@ -166,27 +181,35 @@ final class FormLayoutFactory
 
             if ($fieldDto->isFormFieldset()) {
                 if ($aFormFieldsetIsOpen) {
-                    $fields->insertBefore($this->createFieldDtoForFieldsetClose(), $fieldDto);
+                    $fields->insertBefore($this->createFieldsetCloseField(), $fieldDto);
                 }
 
                 $aFormFieldsetIsOpen = true;
+
+                $fieldDto->setFormTypeOptions([
+                    'ea_css_class' => $fieldDto->getCssClass(),
+                    'ea_icon' => $fieldDto->getCustomOption('icon'),
+                    'ea_help' => $fieldDto->getHelp(),
+                    'ea_is_collapsible' => $fieldDto->getCustomOption(FormField::OPTION_COLLAPSIBLE),
+                    'ea_is_collapsed' => $fieldDto->getCustomOption(FormField::OPTION_COLLAPSED),
+                ]);
             }
 
             if ($fieldDto->isFormColumn()) {
                 $formUsesColumns = true;
 
                 if ($isFirstFormColumn) {
-                    $fields->insertBefore($this->createFieldDtoForColumnGroupOpen(), $fieldDto);
+                    $fields->insertBefore($this->createColumnGroupOpenField(), $fieldDto);
                     $isFirstFormColumn = false;
                 }
 
                 if ($aFormFieldsetIsOpen) {
-                    $fields->insertBefore($this->createFieldDtoForFieldsetClose(), $fieldDto);
+                    $fields->insertBefore($this->createFieldsetCloseField(), $fieldDto);
                     $aFormFieldsetIsOpen = false;
                 }
 
                 if ($aFormColumnIsOpen) {
-                    $fields->insertBefore($this->createFieldDtoForColumnClose(), $fieldDto);
+                    $fields->insertBefore($this->createColumnCloseField(), $fieldDto);
                 }
 
                 $aFormColumnIsOpen = true;
@@ -200,12 +223,12 @@ final class FormLayoutFactory
         }
 
         if ($aFormFieldsetIsOpen) {
-            $fields->add($this->createFieldDtoForFieldsetClose());
+            $fields->add($this->createFieldsetCloseField());
         }
 
         if ($aFormColumnIsOpen) {
-            $fields->add($this->createFieldDtoForColumnClose());
-            $fields->add($this->createFieldDtoForColumnGroupClose());
+            $fields->add($this->createColumnCloseField());
+            $fields->add($this->createColumnGroupCloseField());
         }
 
         if ($formUsesTabs) {
@@ -221,7 +244,7 @@ final class FormLayoutFactory
         }
     }
 
-    private function createFieldDtoForColumnGroupOpen(): FieldDto
+    private function createColumnGroupOpenField(): FieldDto
     {
         return Field::new(sprintf('ea_form_column_group_open_%s', Ulid::generate()))
             ->setFormType(EaFormColumnGroupOpenType::class)
@@ -229,7 +252,7 @@ final class FormLayoutFactory
             ->getAsDto();
     }
 
-    private function createFieldDtoForColumnGroupClose(): FieldDto
+    private function createColumnGroupCloseField(): FieldDto
     {
         return Field::new(sprintf('ea_form_column_group_close_%s', Ulid::generate()))
             ->setFormType(EaFormColumnGroupCloseType::class)
@@ -237,7 +260,7 @@ final class FormLayoutFactory
             ->getAsDto();
     }
 
-    private function createFieldDtoForColumnClose(): FieldDto
+    private function createColumnCloseField(): FieldDto
     {
         return Field::new(sprintf('ea_form_column_close_%s', Ulid::generate()))
             ->setFormType(EaFormColumnCloseType::class)
@@ -245,7 +268,7 @@ final class FormLayoutFactory
             ->getAsDto();
     }
 
-    private function createFieldDtoForFieldsetClose(): FieldDto
+    private function createFieldsetCloseField(): FieldDto
     {
         return Field::new(sprintf('ea_form_fieldset_close_%s', Ulid::generate()))
             ->setFormType(EaFormFieldsetCloseType::class)
@@ -273,7 +296,8 @@ final class FormLayoutFactory
     {
         return Field::new(sprintf('ea_form_tablist_%s', Ulid::generate()))
             ->setFormType(EaFormTabListType::class)
-            ->setFormTypeOptions(['mapped' => false, 'required' => false, 'tabs' => $tabs])
+            ->setFormTypeOptions(['mapped' => false, 'required' => false])
+            ->setCustomOption('tabs', $tabs)
             ->getAsDto();
     }
 

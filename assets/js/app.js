@@ -299,7 +299,8 @@ class App {
             dataActionBatch.addEventListener('click', (event) => {
                 event.preventDefault();
 
-                const actionElement = event.target.tagName.toUpperCase() === 'A' ? event.target : event.target.parentNode;
+                const actionElement = event.currentTarget;
+                // There is still a possibility that actionName will remain undefined. The title attribute is not always present on elements with the [data-action-batch] attribute.
                 const actionName = actionElement.textContent.trim() || actionElement.getAttribute('title');
                 const selectedItems = document.querySelectorAll('input[type="checkbox"].form-batch-checkbox:checked');
                 modalTitle.textContent = titleContentWithPlaceholders

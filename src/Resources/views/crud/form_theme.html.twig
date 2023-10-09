@@ -590,24 +590,25 @@
 {% block ea_form_tablist_row %}
     {% set tab_id_option_name = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Field\\FormField::OPTION_TAB_ID') %}
     {% set tab_is_active_option_name = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Field\\FormField::OPTION_TAB_IS_ACTIVE') %}
+    {% set tab_error_count_option_name = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Field\\FormField::OPTION_TAB_ERROR_COUNT') %}
     {% set field = form.vars.ea_vars.field %}
 
     <div class="nav-tabs-custom form-tabs">
         <ul class="nav nav-tabs">
             {% for tab in field.getCustomOption('tabs') %}
                 <li class="nav-item">
-                    <a class="nav-link {% if tab.getCustomOption(tab_is_active_option_name) %}active{% endif %}" href="#{{ tab.getCustomOption(tab_id_option_name) }}" id="tablist-tab-{{ loop.index }}" data-bs-toggle="tab">
+                    <a class="nav-link {% if tab.getCustomOption(tab_is_active_option_name) %}active{% endif %}" href="#{{ tab.getCustomOption(tab_id_option_name) }}" id="tablist-{{ tab.getCustomOption(tab_id_option_name) }}" data-bs-toggle="tab">
                         {%- if tab.getCustomOption('icon')|default(false) -%}
                             <i class="fa-fw {{ tab.getCustomOption('icon') }}"></i>
                         {%- endif -%}
                         {{ tab.label|trans(domain = ea.i18n.translationDomain) }}
-                        {#
-                        {%- if tab_config.errors > 0 -%}
-                            <span class="badge badge-danger" title="{{ 'form.tab.error_badge_title'|trans({'%count%': tab_config.errors}, 'EasyAdminBundle') }}">
-                                            {{- tab_config.errors -}}
-                                        </span>
+
+                        {% set tab_error_count = tab.getCustomOption(tab_error_count_option_name)  %}
+                        {%- if tab_error_count > 0 -%}
+                            <span class="badge badge-danger" title="{{ 'form.tab.error_badge_title'|trans({'%count%': tab_error_count}, 'EasyAdminBundle') }}">
+                                {{- tab_error_count -}}
+                            </span>
                         {%- endif -%}
-                        #}
                     </a>
                 </li>
             {% endfor %}

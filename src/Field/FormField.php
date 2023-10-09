@@ -23,6 +23,7 @@ final class FormField implements FieldInterface
     public const OPTION_ROW_BREAKPOINT = 'rowBreakPoint';
     public const OPTION_TAB_ID = 'tabId';
     public const OPTION_TAB_IS_ACTIVE = 'tabIsActive';
+    public const OPTION_TAB_ERROR_COUNT = 'tabErrorCount';
 
     /**
      * @internal Use the other named constructors instead (addPanel(), etc.)
@@ -113,6 +114,7 @@ final class FormField implements FieldInterface
             ->addCssClass('field-form_tab')
             ->setFormTypeOptions(['mapped' => false, 'required' => false])
             ->setCustomOption(self::OPTION_ICON, $icon)
+            ->setCustomOption(self::OPTION_TAB_ERROR_COUNT, 0)
             ->setValue(true);
     }
 

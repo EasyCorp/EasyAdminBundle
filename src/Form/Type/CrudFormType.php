@@ -6,7 +6,7 @@ use ArrayObject;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
-use EasyCorp\Bundle\EasyAdminBundle\Form\EventListener\EasyAdminTabSubscriber;
+use EasyCorp\Bundle\EasyAdminBundle\Form\EventListener\FormLayoutSubscriber;
 use Symfony\Bridge\Doctrine\Form\DoctrineOrmTypeGuesser;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -116,9 +116,7 @@ class CrudFormType extends AbstractType
         $builder->setAttribute('ea_form_tabs', $formTabs);
         $builder->setAttribute('ea_form_fieldsets', $formFieldsets);
 
-        if (\count($formTabs) > 0) {
-            $builder->addEventSubscriber(new EasyAdminTabSubscriber());
-        }
+        $builder->addEventSubscriber(new FormLayoutSubscriber());
     }
 
     public function finishView(FormView $view, FormInterface $form, array $options): void

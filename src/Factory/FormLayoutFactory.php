@@ -159,7 +159,7 @@ final class FormLayoutFactory
                     'ea_tab_is_active' => $isTabActive,
                 ]);
 
-                $tabs[] = $fieldDto;
+                $tabs[$tabId] = $fieldDto;
 
                 if ($aFormFieldsetIsOpen) {
                     $fields->insertBefore($this->createFieldsetCloseField(), $fieldDto);

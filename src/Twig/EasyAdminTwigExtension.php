@@ -3,8 +3,10 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Twig;
 
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldLayoutDto;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FieldLayoutFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\FormLayoutFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Component\DependencyInjection\ServiceLocator;
@@ -28,12 +30,14 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
     private ServiceLocator $serviceLocator;
     private AdminContextProvider $adminContextProvider;
     private ?CsrfTokenManagerInterface $csrfTokenManager;
+    private FormLayoutFactory $formLayoutFactory;
 
-    public function __construct(ServiceLocator $serviceLocator, AdminContextProvider $adminContextProvider, ?CsrfTokenManagerInterface $csrfTokenManager)
+    public function __construct(ServiceLocator $serviceLocator, AdminContextProvider $adminContextProvider, ?CsrfTokenManagerInterface $csrfTokenManager, FormLayoutFactory $formLayoutFactory)
     {
         $this->serviceLocator = $serviceLocator;
         $this->adminContextProvider = $adminContextProvider;
         $this->csrfTokenManager = $csrfTokenManager;
+        $this->formLayoutFactory = $formLayoutFactory;
     }
 
     public function getFunctions(): array
@@ -43,6 +47,7 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
             new TwigFunction('ea_csrf_token', [$this, 'renderCsrfToken']),
             new TwigFunction('ea_call_function_if_exists', [$this, 'callFunctionIfExists'], ['needs_environment' => true, 'is_safe' => ['html' => true]]),
             new TwigFunction('ea_create_field_layout', [$this, 'createFieldLayout']),
+            new TwigFunction('ea_create_form_layout', [$this, 'createFormLayout']),
         ];
     }
 
@@ -192,6 +197,17 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
 
     public function createFieldLayout(?FieldCollection $fieldDtos): FieldLayoutDto
     {
-        return FieldLayoutFactory::createFromFieldDtos($fieldDtos);
+        trigger_deprecation(
+            'easycorp/easyadmin-bundle',
+            '4.8.0',
+            'The "ea_create_field_layout()" Twig function is deprecated in favor of "ea_create_form_layout()" and it will be removed in 5.0.0.',
+        );
+
+        return FormLayoutFactory::createFromFieldDtos($fieldDtos);
+    }
+
+    public function createFormLayout(FieldCollection $fieldDtos): FieldCollection
+    {
+        return $this->formLayoutFactory->createLayout($fieldDtos, $this->adminContextProvider->getContext()?->getCrud()?->getCurrentPage() ?? Crud::PAGE_DETAIL);
     }
 }

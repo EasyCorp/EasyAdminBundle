@@ -109,6 +109,103 @@ class FormLayoutFactoryTest extends TestCase
             LAYOUT,
         ];
 
+        yield 'A field outside of all fieldsets but inside a column is included in an automatic fieldset' => [
+            ['column', 'field', 'fieldset', 'field', 'field'],
+            <<<LAYOUT
+                column_group_open
+                    column_open
+                        fieldset_open
+                            field
+                        fieldset_close
+                        fieldset_open
+                            field
+                            field
+                        fieldset_close
+                    column_close
+                column_group_close
+            LAYOUT,
+        ];
+
+        yield 'Multiple fields outside of all fieldsets but inside a column are included in an automatic fieldset' => [
+            ['column', 'field', 'fieldset', 'field', 'field', 'column', 'field', 'fieldset', 'field'],
+            <<<LAYOUT
+                column_group_open
+                    column_open
+                        fieldset_open
+                            field
+                        fieldset_close
+                        fieldset_open
+                            field
+                            field
+                        fieldset_close
+                    column_close
+                    column_open
+                        fieldset_open
+                            field
+                        fieldset_close
+                        fieldset_open
+                            field
+                        fieldset_close
+                    column_close
+                column_group_close
+            LAYOUT,
+        ];
+
+        yield 'A field outside of all fieldsets but inside a tab is included in an automatic fieldset' => [
+            ['tab', 'field', 'fieldset', 'field', 'field'],
+            <<<LAYOUT
+                tab_list
+                tab_pane_group_open
+                    tab_pane_open
+                        fieldset_open
+                            field
+                        fieldset_close
+                        fieldset_open
+                            field
+                            field
+                        fieldset_close
+                    tab_pane_close
+                tab_pane_group_close
+            LAYOUT,
+        ];
+
+        yield 'Multiple fields outside of all fieldsets but inside a column or tab are included in an automatic fieldset' => [
+            ['tab', 'column', 'field', 'fieldset', 'field', 'column', 'field', 'fieldset', 'field', 'tab', 'field', 'fieldset', 'field'],
+            <<<LAYOUT
+                tab_list
+                tab_pane_group_open
+                    tab_pane_open
+                        column_group_open
+                            column_open
+                                fieldset_open
+                                    field
+                                fieldset_close
+                                fieldset_open
+                                    field
+                                fieldset_close
+                            column_close
+                            column_open
+                                fieldset_open
+                                    field
+                                fieldset_close
+                                fieldset_open
+                                    field
+                                fieldset_close
+                            column_close
+                        column_group_close
+                    tab_pane_close
+                    tab_pane_open
+                        fieldset_open
+                            field
+                        fieldset_close
+                        fieldset_open
+                            field
+                        fieldset_close
+                   tab_pane_close
+               tab_pane_group_close
+            LAYOUT,
+        ];
+
         yield 'One column for all fields' => [
             ['column', 'field', 'field', 'field'],
             <<<LAYOUT

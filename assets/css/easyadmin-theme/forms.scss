@@ -345,9 +345,27 @@ label.form-check-label {
     margin-bottom: 15px;
 }
 
-// Form sections
-.form-fieldset {
-    padding: 0 0 20px;
+// Form columns
+.form-column {
+    .form-fieldset {
+        border: 1px solid var(--form-fieldset-border-color);
+        border-radius: var(--border-radius);
+        padding: 0 var(--bs-gutter-x);
+    }
+
+    .form-fieldset-header {
+        padding: 10px 15px;
+        margin: 0 calc(-1 * var(--bs-gutter-x));
+
+        .form-fieldset-title {
+            a { font-size: 18px; }
+        }
+    }
+}
+
+// Form fieldsets
+.field-form_fieldset {
+    margin-bottom: var(--bs-gutter-x); //not a typo; don't use --bs-gutter-y here
 }
 
 .form-section-empty {

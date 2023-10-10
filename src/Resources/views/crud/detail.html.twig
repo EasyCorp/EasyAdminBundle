@@ -51,13 +51,9 @@
 {% block content_footer_wrapper '' %}
 
 {% block main %}
-    {% set field_layout = ea_create_field_layout(entity.fields) %}
+    {% set form_layout = ea_create_form_layout(entity.fields) %}
     {% block detail_fields %}
-        {% if field_layout.hasTabs %}
-            {{ _self.render_detail_fields_with_tabs(entity, field_layout) }}
-        {% else %}
-            {{ _self.render_detail_fields(entity, field_layout.fields) }}
-        {% endif %}
+        {{ dump(form_layout) }}
     {% endblock detail_fields %}
 
     {% block delete_form %}

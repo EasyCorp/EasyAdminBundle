@@ -614,29 +614,6 @@
             {% endfor %}
         </ul>
     </div>
-
-    {#
-
-    <ul class="nav nav-tabs">
-                    {% for tab_name, tab_config in ea_crud_form.form_tabs %}
-                        <li class="nav-item">
-                            <a class="nav-link {% if tab_config.active %}active{% endif %}" href="#{{ tab_config['id'] }}" id="{{ tab_config['id'] }}-tab" data-bs-toggle="tab">
-                                {%- if tab_config.icon|default(false) -%}
-                                    <i class="fa-fw {{ tab_config.icon }}"></i>
-                                {%- endif -%}
-                                {{ tab_config['label']|trans(domain = ea.i18n.translationDomain) }}
-                                {%- if tab_config.errors > 0 -%}
-                                    <span class="badge badge-danger" title="{{ 'form.tab.error_badge_title'|trans({'%count%': tab_config.errors}, 'EasyAdminBundle') }}">
-                                        {{- tab_config.errors -}}
-                                    </span>
-                                {%- endif -%}
-                            </a>
-                        </li>
-                    {% endfor %}
-                </ul>
-
-
-    #}
 {% endblock ea_form_tablist_row %}
 
 {% block ea_form_tabpane_group_open_row %}

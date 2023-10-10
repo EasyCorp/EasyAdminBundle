@@ -13,6 +13,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormColumnCloseType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormColumnGroupCloseType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormColumnGroupOpenType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormFieldsetCloseType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormFieldsetOpenType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabListType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabPaneCloseType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabPaneGroupCloseType;
@@ -32,16 +33,18 @@ final class FormLayoutFactory
     {
     }
 
-    public function createLayout(FieldCollection $fields, string $pageName): void
+    public function createLayout(FieldCollection $fields, string $pageName): FieldCollection
     {
         // the index page has no layout elements such as tabs, form columns or fieldsets
         if (Crud::PAGE_INDEX === $pageName) {
-            return;
+            return $fields;
         }
 
         $this->fixOrphanFieldsetFields($fields);
         $this->fixFormColumns($fields);
         $this->checkOrphanTabFields($fields);
+
+        return $fields;
     }
 
     /*
@@ -51,21 +54,41 @@ final class FormLayoutFactory
      */
     private function fixOrphanFieldsetFields(FieldCollection $fields): void
     {
+        $firstFieldAfterFormTabOrColumn = null;
+        $weAreInAFormTabOrColumn = false;
         $formUsesFieldsets = false;
+        $insertFieldsetBeforeTheseFields = [];
         /** @var FieldDto $fieldDto */
         foreach ($fields as $fieldDto) {
+            if ($fieldDto->isFormTab() || $fieldDto->isFormColumn()) {
+                $firstFieldAfterFormTabOrColumn = null;
+                $weAreInAFormTabOrColumn = true;
+                continue;
+            }
+
+            if ($weAreInAFormTabOrColumn && null === $firstFieldAfterFormTabOrColumn && !$fieldDto->isFormLayoutField()) {
+                $firstFieldAfterFormTabOrColumn = $fieldDto;
+                continue;
+            }
+
             if ($fieldDto->isFormFieldset()) {
                 $formUsesFieldsets = true;
-                break;
+
+                if (null !== $firstFieldAfterFormTabOrColumn) {
+                    $insertFieldsetBeforeTheseFields[] = $firstFieldAfterFormTabOrColumn;
+                }
             }
         }
 
+        // edge-case: the form doesn't use tabs or columns and some fields are
+        // outside of fieldsets; we must add a fieldset in this case too
         $firstFieldIsALayoutField = $fields->first()?->isFormLayoutField();
         if ($formUsesFieldsets && !$firstFieldIsALayoutField) {
-            // if the first field is not a layout field, then it's a regular field;
-            // but, since the form uses fieldset, this field (and possibly others)
-            // don't belong to any fieldset. To avoid design issues, add a fieldset to them
-            $fields->prepend(FormField::addFieldset()->getAsDto());
+            $insertFieldsetBeforeTheseFields[] = $fields->first();
+        }
+
+        foreach ($insertFieldsetBeforeTheseFields as $fieldDto) {
+            $fields->insertBefore($this->createFieldsetOpenField(), $fieldDto);
         }
     }
 
@@ -93,7 +116,7 @@ final class FormLayoutFactory
      */
     private function fixFormColumns(FieldCollection $fields): void
     {
-        $this->fixOrphanFieldsetFields($fields);
+        //$this->fixOrphanFieldsetFields($fields);
 
         dump("BEFORE");
         foreach ($fields as $field) {
@@ -268,6 +291,11 @@ final class FormLayoutFactory
             ->getAsDto();
     }
 
+    private function createFieldsetOpenField(): FieldDto
+    {
+        return FormField::addFieldset()->getAsDto();
+    }
+
     private function createFieldsetCloseField(): FieldDto
     {
         return Field::new(sprintf('ea_form_fieldset_close_%s', Ulid::generate()))
@@ -298,14 +326,6 @@ final class FormLayoutFactory
             ->setFormType(EaFormTabListType::class)
             ->setFormTypeOptions(['mapped' => false, 'required' => false])
             ->setCustomOption('tabs', $tabs)
-            ->getAsDto();
-    }
-
-    private function createTabPaneOpenField(): FieldDto
-    {
-        return Field::new(sprintf('ea_form_tabpane_open_%s', Ulid::generate()))
-            ->setFormType(EaFormTabPaneOpenType::class)
-            ->setFormTypeOptions(['mapped' => false, 'required' => false])
             ->getAsDto();
     }
 

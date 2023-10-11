@@ -7,7 +7,11 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormColumnType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormFieldsetType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminTabType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormColumnCloseType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormColumnGroupCloseType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormColumnGroupOpenType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormColumnOpenType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormFieldsetCloseType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormFieldsetOpenType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabListType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabPaneCloseType;
@@ -100,7 +104,21 @@ final class FieldDto
 
     public function isFormLayoutField(): bool
     {
-        return $this->isFormTab() || $this->isFormFieldset() || $this->isFormColumn() || \in_array($this->formType, [EaFormTabListType::class, EaFormTabPaneCloseType::class, EaFormTabPaneGroupOpenType::class, EaFormTabPaneGroupCloseType::class], true);
+        $formLayoutFieldClasses = [
+            EaFormTabListType::class,
+            EaFormTabPaneGroupOpenType::class,
+            EaFormTabPaneGroupCloseType::class,
+            EaFormTabPaneOpenType::class,
+            EaFormTabPaneCloseType::class,
+            EaFormColumnGroupOpenType::class,
+            EaFormColumnGroupCloseType::class,
+            EaFormColumnOpenType::class,
+            EaFormColumnCloseType::class,
+            EaFormFieldsetOpenType::class,
+            EaFormFieldsetCloseType::class,
+        ];
+
+        return \in_array($this->formType, $formLayoutFieldClasses, true);
     }
 
     public function isFormFieldset(): bool

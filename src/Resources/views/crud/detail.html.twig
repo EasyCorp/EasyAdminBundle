@@ -53,13 +53,192 @@
 {% block main %}
     {% set form_layout = ea_create_form_layout(entity.fields) %}
     {% block detail_fields %}
-        {{ dump(form_layout) }}
+        {% for field in form_layout %}
+            {% if field.isFormLayoutField %}
+                {{ _self.render_layout_field(field) }}
+            {% else %}
+                {{ _self.render_field(entity, field) }}
+            {% endif %}
+        {% endfor %}
     {% endblock detail_fields %}
 
     {% block delete_form %}
         {{ include('@EasyAdmin/crud/includes/_delete_form.html.twig', { entity_id: entity.primaryKeyValue }, with_context = false) }}
     {% endblock delete_form %}
 {% endblock %}
+
+{% macro render_field(entity, field) %}
+
+        {{ field.label|trans|raw }}
+
+        {% if field.help is not empty %}
+            <a tabindex="0" class="data-help" data-bs-toggle="popover" data-bs-custom-class="ea-content-help-popover" data-bs-animation="true" data-bs-html="true" data-bs-placement="right" data-bs-trigger="focus" data-bs-content="{{ field.help|trans|e('html_attr') }}">
+                <i class="far fa-question-circle"></i>
+            </a>
+        {% endif %}
+
+        {{ include(field.templatePath, { field: field, entity: entity }, with_context = false) }}
+
+{% endmacro %}
+
+{% macro render_layout_field(field) %}
+    {% if field.formType == 'EasyCorp\\Bundle\\EasyAdminBundle\\Form\\Type\\Layout\\EaFormTabListType' %}
+        {{ _self.render_tab_list(field) }}
+    {% elseif field.formType == 'EasyCorp\\Bundle\\EasyAdminBundle\\Form\\Type\\Layout\\EaFormTabPaneGroupOpenType' %}
+        {{ _self.render_tab_group_open(field) }}
+    {% elseif field.formType == 'EasyCorp\\Bundle\\EasyAdminBundle\\Form\\Type\\Layout\\EaFormTabPaneGroupCloseType' %}
+        {{ _self.render_tab_group_close(field) }}
+    {% elseif field.formType == 'EasyCorp\\Bundle\\EasyAdminBundle\\Form\\Type\\Layout\\EaFormTabPaneOpenType' %}
+        {{ _self.render_tab_open(field) }}
+    {% elseif field.formType == 'EasyCorp\\Bundle\\EasyAdminBundle\\Form\\Type\\Layout\\EaFormTabPaneCloseType' %}
+        {{ _self.render_tab_close(field) }}
+    {% elseif field.formType == 'EasyCorp\\Bundle\\EasyAdminBundle\\Form\\Type\\Layout\\EaFormColumnGroupOpenType' %}
+        {{ _self.render_column_group_open(field) }}
+    {% elseif field.formType == 'EasyCorp\\Bundle\\EasyAdminBundle\\Form\\Type\\Layout\\EaFormColumnGroupCloseType' %}
+        {{ _self.render_column_group_close(field) }}
+    {% elseif field.formType == 'EasyCorp\\Bundle\\EasyAdminBundle\\Form\\Type\\Layout\\EaFormColumnOpenType' %}
+        {{ _self.render_column_open(field) }}
+    {% elseif field.formType == 'EasyCorp\\Bundle\\EasyAdminBundle\\Form\\Type\\Layout\\EaFormColumnCloseType' %}
+        {{ _self.render_column_close(field) }}
+    {% elseif field.formType == 'EasyCorp\\Bundle\\EasyAdminBundle\\Form\\Type\\Layout\\EaFormFieldsetOpenType' %}
+        {{ _self.render_column_fieldset_open(field) }}
+    {% elseif field.formType == 'EasyCorp\\Bundle\\EasyAdminBundle\\Form\\Type\\Layout\\EaFormFieldsetCloseType' %}
+        {{ _self.render_column_fieldset_close(field) }}
+    {% endif %}
+{% endmacro %}
+
+{% macro render_tab_list(field) %}
+    HOLA
+    {% set tab_id_option_name = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Field\\FormField::OPTION_TAB_ID') %}
+    {% set tab_is_active_option_name = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Field\\FormField::OPTION_TAB_IS_ACTIVE') %}
+    {% set tab_error_count_option_name = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Field\\FormField::OPTION_TAB_ERROR_COUNT') %}
+
+    <div class="nav-tabs-custom form-tabs">
+        <ul class="nav nav-tabs">
+            {% for tab in field.getCustomOption('tabs') %}
+                <li class="nav-item">
+                    <a class="nav-link {% if tab.getCustomOption(tab_is_active_option_name) %}active{% endif %}" href="#{{ tab.getCustomOption(tab_id_option_name) }}" id="tablist-{{ tab.getCustomOption(tab_id_option_name) }}" data-bs-toggle="tab">
+                        {%- if tab.getCustomOption('icon')|default(false) -%}
+                            <i class="fa-fw {{ tab.getCustomOption('icon') }}"></i>
+                        {%- endif -%}
+                        {{ tab.label|trans(domain = ea.i18n.translationDomain) }}
+
+                        {% set tab_error_count = tab.getCustomOption(tab_error_count_option_name)  %}
+                        {%- if tab_error_count > 0 -%}
+                            <span class="badge badge-danger" title="{{ 'form.tab.error_badge_title'|trans({'%count%': tab_error_count}, 'EasyAdminBundle') }}">
+                                {{- tab_error_count -}}
+                            </span>
+                        {%- endif -%}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endmacro %}
+
+{% macro render_tab_group_open(field) %}
+    <div class="nav-tabs-custom form-tabs">
+{% endmacro %}
+
+{% macro render_tab_group_close(field) %}
+    </div>
+{% endmacro %}
+
+{% macro render_tab_open(field) %}
+    {% set tab_id_option_name = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Field\\FormField::OPTION_TAB_ID') %}
+    {% set tab_is_active_option_name = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Field\\FormField::OPTION_TAB_IS_ACTIVE') %}
+
+    <div class="tab-content">
+        <div id="{{ field.getCustomOption(tab_id_option_name) }}" class="tab-pane {% if field.getCustomOption(tab_is_active_option_name) %}active{% endif %} {{ field.cssClass }}">
+            {% if field.help %}
+                <div class="content-header-help tab-help">
+                    {{ field.help|trans(domain = ea.i18n.translationDomain)|raw }}
+                </div>
+            {% endif %}
+
+            <div class="row">
+{% endmacro %}
+
+{% macro render_tab_close(field) %}
+            </div>
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro render_column_group_open(field) %}
+    <div class="row">
+{% endmacro %}
+
+{% macro render_column_group_close(field) %}
+    </div>
+{% endmacro %}
+
+{% macro render_column_open(field) %}
+    {% set field_icon = field.getCustomOption('icon') %}
+
+    <div class="form-column {{ field.icon|default(false) == false and field.label|default(false) == false ? 'form-column-no-header' }} {{ field.cssClass|default('') }}">
+        <h2>
+            {% if field_icon|default(false) %}<i class="fa fa-fw fa-{{ field_icon }}"></i>{% endif %}
+            <span>{% if field.label|default(false) %}{{ field.label|default('')|trans(domain = ea.i18n.translationDomain)|raw }}{% endif %}</span>
+        </h2>
+
+        {% if field.help|default(false) %}
+            <p class="form-section-help">{{ field.help|trans(domain = ea.i18n.translationDomain)|raw }}</p>
+        {% endif %}
+{% endmacro %}
+
+{% macro render_column_close(field) %}
+    </div>
+{% endmacro %}
+
+{% macro render_column_fieldset_open(field) %}
+    {% set fieldset_has_header = field.label or field.getCustomOption('icon') or field.help %}
+    {% set is_collapsible_option_name = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Field\\FormField::OPTION_COLLAPSIBLE') %}
+    {% set is_collapsed_option_name = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Field\\FormField::OPTION_COLLAPSED') %}
+    {% set is_collapsible = field.getCustomOption(is_collapsible_option_name) %}
+    {% set is_collapsed = field.getCustomOption(is_collapsed_option_name) %}
+
+    <div class="{{ field.cssClass }}">
+        <fieldset class="form-fieldset">
+            {% if fieldset_has_header %}
+                <div class="form-fieldset-header {{ is_collapsible ? 'collapsible' }} {{ field.help is not empty ? 'with-help' }}">
+                    <div class="form-fieldset-title">
+                        {% if not is_collapsible %}
+                            <a href="#" class="not-collapsible">
+                        {% else %}
+                            <a href="#content-{{ field.property }}" data-bs-toggle="collapse"
+                            class="form-fieldset-collapse {{ is_collapsed ? 'collapsed' }}"
+                            aria-expanded="{{ is_collapsed ? 'false' : 'true' }}" aria-controls="content-{{ field.property }}">
+                        {% endif %}
+                            {% if is_collapsible %}
+                                <i class="fas fw fa-chevron-right form-fieldset-collapse-marker"></i>
+                            {% endif %}
+
+                            {% if field.getCustomOption('icon') %}
+                                <i class="form-fieldset-icon {{ field.getCustomOption('icon') }}"></i>
+                            {% endif %}
+
+                            {{ field.label|trans|raw }}
+                        </a>
+
+                        {% if field.help %}
+                            <div class="form-fieldset-help">{{ field.help|trans|raw }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+
+            <div id="content-{{ field.property }}" class="form-fieldset-body {{ not fieldset_has_header ? 'without-header' }} {{ is_collapsible ? 'collapse' }} {{ not is_collapsed ? 'show'}}">
+                <div class="row">
+{% endmacro %}
+
+{% macro render_column_fieldset_close(field) %}
+                </div>
+            </div>
+        </fieldset>
+    </div>
+{% endmacro %}
+
 
 {% macro render_detail_fields_with_tabs(entity, field_layout) %}
     <div class="col-12">

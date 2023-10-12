@@ -13,12 +13,10 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormColumnCloseType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormColumnGroupCloseType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormColumnGroupOpenType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormFieldsetCloseType;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormFieldsetOpenType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabListType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabPaneCloseType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabPaneGroupCloseType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabPaneGroupOpenType;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabPaneOpenType;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 use Symfony\Component\Uid\Ulid;
 
@@ -42,7 +40,8 @@ final class FormLayoutFactory
 
         $this->fixOrphanFieldsetFields($fields);
         $this->fixFormColumns($fields);
-        $this->checkOrphanTabFields($fields);
+        // TODO: reenable and update this
+        //$this->checkOrphanTabFields($fields);
 
         return $fields;
     }
@@ -55,36 +54,27 @@ final class FormLayoutFactory
     private function fixOrphanFieldsetFields(FieldCollection $fields): void
     {
         $firstFieldAfterFormTabOrColumn = null;
-        $weAreInAFormTabOrColumn = false;
-        $formUsesFieldsets = false;
+        $aNewTabOrColumnHasOpened = false;
         $insertFieldsetBeforeTheseFields = [];
+
         /** @var FieldDto $fieldDto */
         foreach ($fields as $fieldDto) {
             if ($fieldDto->isFormTab() || $fieldDto->isFormColumn()) {
                 $firstFieldAfterFormTabOrColumn = null;
-                $weAreInAFormTabOrColumn = true;
+                $aNewTabOrColumnHasOpened = true;
                 continue;
             }
 
-            if ($weAreInAFormTabOrColumn && null === $firstFieldAfterFormTabOrColumn && !$fieldDto->isFormLayoutField()) {
+            if ($aNewTabOrColumnHasOpened && null === $firstFieldAfterFormTabOrColumn && !$fieldDto->isFormLayoutField()) {
                 $firstFieldAfterFormTabOrColumn = $fieldDto;
                 continue;
             }
 
-            if ($fieldDto->isFormFieldset()) {
-                $formUsesFieldsets = true;
-
-                if (null !== $firstFieldAfterFormTabOrColumn) {
-                    $insertFieldsetBeforeTheseFields[] = $firstFieldAfterFormTabOrColumn;
-                }
+            if ($fieldDto->isFormFieldset() && null !== $firstFieldAfterFormTabOrColumn) {
+                $insertFieldsetBeforeTheseFields[] = $firstFieldAfterFormTabOrColumn;
+                $aNewTabOrColumnHasOpened = false;
+                $firstFieldAfterFormTabOrColumn = null;
             }
-        }
-
-        // edge-case: the form doesn't use tabs or columns and some fields are
-        // outside of fieldsets; we must add a fieldset in this case too
-        $firstFieldIsALayoutField = $fields->first()?->isFormLayoutField();
-        if ($formUsesFieldsets && !$firstFieldIsALayoutField) {
-            $insertFieldsetBeforeTheseFields[] = $fields->first();
         }
 
         foreach ($insertFieldsetBeforeTheseFields as $fieldDto) {
@@ -118,10 +108,10 @@ final class FormLayoutFactory
     {
         //$this->fixOrphanFieldsetFields($fields);
 
-        dump("BEFORE");
+        /*dump("BEFORE");
         foreach ($fields as $field) {
             dump($field->getFormType());
-        }
+        }*/
 
         $formUsesColumns = false;
         $formUsesTabs = false;
@@ -257,14 +247,14 @@ final class FormLayoutFactory
         if ($formUsesTabs) {
             $fields->add($this->createTabPaneCloseField());
             $fields->add($this->createTabPaneGroupCloseField());
-            $fields->prepend($this->createTabPaneGroupOpenField());
             $fields->prepend($this->createTabListField($tabs));
         }
 
+        /*
         dump("AFTER");
         foreach ($fields as $field) {
             dump($field->getFormType());
-        }
+        }*/
     }
 
     private function createColumnGroupOpenField(): FieldDto

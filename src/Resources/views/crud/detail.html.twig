@@ -53,13 +53,15 @@
 {% block main %}
     {% set form_layout = ea_create_form_layout(entity.fields) %}
     {% block detail_fields %}
+    <div class="row">
         {% for field in form_layout %}
             {% if field.isFormLayoutField %}
                 {{ _self.render_layout_field(field) }}
             {% else %}
-                {{ _self.render_field(entity, field) }}
+                {{ _self.render_field_contents(entity, field) }}
             {% endif %}
         {% endfor %}
+    </div>
     {% endblock detail_fields %}
 
     {% block delete_form %}
@@ -67,8 +69,8 @@
     {% endblock delete_form %}
 {% endblock %}
 
-{% macro render_field(entity, field) %}
-
+{% macro render_field_contents(entity, field) %}
+<div>
         {{ field.label|trans|raw }}
 
         {% if field.help is not empty %}
@@ -78,7 +80,7 @@
         {% endif %}
 
         {{ include(field.templatePath, { field: field, entity: entity }, with_context = false) }}
-
+</div>
 {% endmacro %}
 
 {% macro render_layout_field(field) %}
@@ -101,14 +103,13 @@
     {% elseif field.formType == 'EasyCorp\\Bundle\\EasyAdminBundle\\Form\\Type\\Layout\\EaFormColumnCloseType' %}
         {{ _self.render_column_close(field) }}
     {% elseif field.formType == 'EasyCorp\\Bundle\\EasyAdminBundle\\Form\\Type\\Layout\\EaFormFieldsetOpenType' %}
-        {{ _self.render_column_fieldset_open(field) }}
+        {{ _self.render_fieldset_open(field) }}
     {% elseif field.formType == 'EasyCorp\\Bundle\\EasyAdminBundle\\Form\\Type\\Layout\\EaFormFieldsetCloseType' %}
-        {{ _self.render_column_fieldset_close(field) }}
+        {{ _self.render_fieldset_close(field) }}
     {% endif %}
 {% endmacro %}
 
 {% macro render_tab_list(field) %}
-    HOLA
     {% set tab_id_option_name = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Field\\FormField::OPTION_TAB_ID') %}
     {% set tab_is_active_option_name = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Field\\FormField::OPTION_TAB_IS_ACTIVE') %}
     {% set tab_error_count_option_name = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Field\\FormField::OPTION_TAB_ERROR_COUNT') %}
@@ -191,7 +192,7 @@
     </div>
 {% endmacro %}
 
-{% macro render_column_fieldset_open(field) %}
+{% macro render_fieldset_open(field) %}
     {% set fieldset_has_header = field.label or field.getCustomOption('icon') or field.help %}
     {% set is_collapsible_option_name = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Field\\FormField::OPTION_COLLAPSIBLE') %}
     {% set is_collapsed_option_name = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Field\\FormField::OPTION_COLLAPSED') %}
@@ -210,6 +211,7 @@
                             class="form-fieldset-collapse {{ is_collapsed ? 'collapsed' }}"
                             aria-expanded="{{ is_collapsed ? 'false' : 'true' }}" aria-controls="content-{{ field.property }}">
                         {% endif %}
+
                             {% if is_collapsible %}
                                 <i class="fas fw fa-chevron-right form-fieldset-collapse-marker"></i>
                             {% endif %}
@@ -219,6 +221,7 @@
                             {% endif %}
 
                             {{ field.label|trans|raw }}
+
                         </a>
 
                         {% if field.help %}
@@ -232,7 +235,7 @@
                 <div class="row">
 {% endmacro %}
 
-{% macro render_column_fieldset_close(field) %}
+{% macro render_fieldset_close(field) %}
                 </div>
             </div>
         </fieldset>
@@ -241,6 +244,8 @@
 
 
 {% macro render_detail_fields_with_tabs(entity, field_layout) %}
+    {% deprecated 'The "render_detail_fields_with_tabs" macro is deprecated because the layout building logic has been revamped for the "detail" page. Check EasyAdmin\'s `detail.html.page` for more details.' %}
+
     <div class="col-12">
         <div class="nav-tabs-custom form-tabs">
             <ul class="nav nav-tabs">
@@ -274,6 +279,8 @@
 {% endmacro %}
 
 {% macro render_detail_fields(entity, fields) %}
+    {% deprecated 'The "render_detail_fields" macro is deprecated because the layout building logic has been revamped for the "detail" page. Check EasyAdmin\'s `detail.html.page` for more details.' %}
+
     {% set form_fieldset_is_already_open = false %}
     {% for field in fields %}
         {% set is_form_fieldset = 'field-form_fieldset' in field.cssClass %}
@@ -302,6 +309,8 @@
 {% endmacro %}
 
 {% macro open_form_fieldset(field = null) %}
+    {% deprecated 'The "open_form_fieldset" macro is deprecated because the layout building logic has been revamped for the "detail" page. Check EasyAdmin\'s `detail.html.page` for more details.' %}
+
     {% set fieldset_name = field is null ? null : 'content-' ~ field.uniqueId %}
     {% set collapsible = field is null ? false : field.customOption('collapsible') %}
     {% set collapsed = field is null ? false : field.customOption('collapsed') %}
@@ -345,6 +354,8 @@
 {% endmacro %}
 
 {% macro close_form_fieldset() %}
+    {% deprecated 'The "close_form_fieldset" macro is deprecated because the layout building logic has been revamped for the "detail" page. Check EasyAdmin\'s `detail.html.page` for more details.' %}
+
             </dl>
         </div>
     </div>
@@ -352,6 +363,8 @@
 {% endmacro %}
 
 {% macro render_field(entity, field) %}
+    {% deprecated 'The "render_field" macro is deprecated because the layout building logic has been revamped for the "detail" page. Check EasyAdmin\'s `detail.html.page` for more details.' %}
+
     <div class="data-row {{ field.cssClass }}">
         <dt>
             {{ field.label|trans|raw }}

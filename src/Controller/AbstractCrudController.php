@@ -194,6 +194,10 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             return $event->getResponse();
         }
 
+foreach ($context->getEntity()->getFields() as $field) {
+    dump($field->getFormType());
+}
+//dd('');
         return $responseParameters;
     }
 

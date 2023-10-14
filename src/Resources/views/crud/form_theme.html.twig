@@ -206,7 +206,9 @@
                 </h2>
                 <div id="{{ id }}-contents" class="accordion-collapse collapse {{ render_expanded ? 'show' }}">
                     <div class="accordion-body">
-                        {{ form_widget(form) }}
+                        <div class="row">
+                            {{ form_widget(form) }}
+                        </div>
                     </div>
                 </div>
             </div>

@@ -47,13 +47,14 @@ class FormFieldsetsCrudControllerTest extends AbstractCrudTestCase
         $blogPost = $this->blogPosts->findOneBy([]);
         $crawler = $this->client->request('GET', $this->generateDetailUrl($blogPost->getId()));
 
-        static::assertSame('ID', trim($crawler->filter('.form-fieldset')->first()->filter('dt')->text()));
+        static::assertSame('ID', $crawler->filter('.content-body .field-group')->first()->filter('.field-label')->text());
+        //static::assertSame('ID', trim($crawler->filter('.form-fieldset')->first()->filter('dt')->text()));
     }
 
     public function testFieldsInsideFieldsetsInForms()
     {
         $crawler = $this->client->request('GET', $this->generateNewFormUrl());
-
+        dump($this->client->getResponse()->getContent());
         static::assertCount(1, $crawler->filter('.form-fieldset:contains("Fieldset 1")'));
         static::assertCount(1, $crawler->filter('.form-fieldset:contains("Fieldset 1") input'));
         static::assertSame('BlogPost[title]', trim($crawler->filter('.form-fieldset:contains("Fieldset 1") input')->attr('name')));

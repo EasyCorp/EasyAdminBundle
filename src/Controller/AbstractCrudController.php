@@ -193,11 +193,11 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         if ($event->isPropagationStopped()) {
             return $event->getResponse();
         }
-
+/*
 foreach ($context->getEntity()->getFields() as $field) {
     dump($field->getFormType());
 }
-//dd('');
+dd('');*/
         return $responseParameters;
     }
 

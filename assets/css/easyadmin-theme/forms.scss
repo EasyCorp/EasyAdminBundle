@@ -13,7 +13,7 @@ input[disabled] {
 
 // Base form groups
 .form-group {
-    padding: 12px 0;
+    padding: 0 0 24px;
 }
 
 .form-group label,
@@ -283,7 +283,7 @@ label.form-check-label {
 .form-tabs .nav-tabs {
     background: transparent;
     border: 0;
-    box-shadow: 0 1px 0 var(--form-tabs-border-color);
+    box-shadow: 0 2px 0 var(--form-tabs-border-color);
     margin: 0px 0px 20px;
     padding-left: 0px;
 }
@@ -317,7 +317,7 @@ label.form-check-label {
     height: 2px;
     background: var(--body-bg);
     position: absolute;
-    bottom: -1px;
+    bottom: -2px;
     left: 0;
 }
 .form-tabs .nav-tabs .nav-link.active:after {
@@ -326,7 +326,7 @@ label.form-check-label {
     height: 2px;
     background: var(--link-color);
     position: absolute;
-    bottom: -1px;
+    bottom: -2px;
     left: var(--form-tabs-gutter-x);
 }
 .form-tabs .nav-tabs .nav-item:first-child .nav-link.active:after {
@@ -421,10 +421,6 @@ label.form-check-label {
             color: var(--form-fieldset-help-color);
         }
     }
-}
-
-.form-fieldset-body {
-    padding-top: 5px;
 }
 
 // Form actions ("Save changes", "Delete", etc.)

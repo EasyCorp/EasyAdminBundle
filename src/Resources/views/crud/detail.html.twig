@@ -51,10 +51,9 @@
 {% block content_footer_wrapper '' %}
 
 {% block main %}
-    {% set form_layout = ea_create_form_layout(entity.fields) %}
     {% block detail_fields %}
     <div class="row">
-        {% for field in form_layout %}
+        {% for field in entity.fields %}
             {% if field.isFormLayoutField %}
                 {{ _self.render_layout_field(field) }}
             {% else %}
@@ -70,17 +69,21 @@
 {% endblock %}
 
 {% macro render_field_contents(entity, field) %}
-<div>
-        {{ field.label|trans|raw }}
+    <div class="field-group {{ field.cssClass }}">
+        <div class="field-label">
+            {{ field.label|trans|raw }}
 
-        {% if field.help is not empty %}
-            <a tabindex="0" class="data-help" data-bs-toggle="popover" data-bs-custom-class="ea-content-help-popover" data-bs-animation="true" data-bs-html="true" data-bs-placement="right" data-bs-trigger="focus" data-bs-content="{{ field.help|trans|e('html_attr') }}">
-                <i class="far fa-question-circle"></i>
-            </a>
-        {% endif %}
+            {% if field.help is not empty %}
+                <a tabindex="0" class="data-help" data-bs-toggle="popover" data-bs-custom-class="ea-content-help-popover" data-bs-animation="true" data-bs-html="true" data-bs-placement="right" data-bs-trigger="focus" data-bs-content="{{ field.help|trans|e('html_attr') }}">
+                    <i class="far fa-question-circle"></i>
+                </a>
+            {% endif %}
+        </div>
 
-        {{ include(field.templatePath, { field: field, entity: entity }, with_context = false) }}
-</div>
+        <div class="field-value">
+            {{ include(field.templatePath, { field: field, entity: entity }, with_context = false) }}
+        </div>
+    </div>
 {% endmacro %}
 
 {% macro render_layout_field(field) %}

@@ -403,7 +403,6 @@
 
 {# EasyAdmin form type #}
 {% block ea_crud_widget %}
-    AAA
     {% for field in form %}
         {{ form_row(field) }}
     {% endfor %}
@@ -583,6 +582,8 @@
 {% endblock ea_form_fieldset_open_row %}
 
 {% block ea_form_fieldset_close_row %}
+                </div>
+            </div>
         </fieldset>
     </div>
 {% endblock ea_form_fieldset_close_row %}
@@ -637,6 +638,7 @@
 {% endblock ea_form_tabpane_open_row %}
 
 {% block ea_form_tabpane_close_row %}
+            </div>
         </div>
     </div>
 {% endblock ea_form_tabpane_close_row %}

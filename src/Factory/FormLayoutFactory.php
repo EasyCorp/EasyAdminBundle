@@ -8,7 +8,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldLayoutDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminTabType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormColumnCloseType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormColumnGroupCloseType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormColumnGroupOpenType;
@@ -38,10 +37,9 @@ final class FormLayoutFactory
             return $fields;
         }
 
+        $this->checkOrphanTabFields($fields);
         $this->fixOrphanFieldsetFields($fields);
         $this->fixFormColumns($fields);
-        // TODO: reenable and update this
-        //$this->checkOrphanTabFields($fields);
 
         return $fields;
     }
@@ -53,6 +51,73 @@ final class FormLayoutFactory
      */
     private function fixOrphanFieldsetFields(FieldCollection $fields): void
     {
+        $fieldThatMightBeOrphan = null;
+        $weMightNeedToAddAFieldset = true;
+        $insertFieldsetBeforeTheseFields = [];
+        /** @var FieldDto $fieldDto */
+        foreach ($fields as $fieldDto) {
+            if ($fieldDto->isFormTab() || $fieldDto->isFormColumn()) {
+                $weMightNeedToAddAFieldset = true;
+                $fieldThatMightBeOrphan = null;
+                continue;
+            }
+
+            if ($fieldDto->isFormFieldset()) {
+                $weMightNeedToAddAFieldset = false;
+            }
+
+            if ($weMightNeedToAddAFieldset) {
+                if ($fieldDto->isFormLayoutField()) {
+                    continue;
+                }
+
+                if (null === $fieldThatMightBeOrphan) {
+                    $fieldThatMightBeOrphan = $fieldDto;
+                }
+            }
+
+            if ($fieldDto->isFormFieldset() && null !== $fieldThatMightBeOrphan) {
+                $insertFieldsetBeforeTheseFields[] = $fieldThatMightBeOrphan;
+                $fieldThatMightBeOrphan = null;
+            }
+        }
+
+        foreach ($insertFieldsetBeforeTheseFields as $fieldDto) {
+            $fields->insertBefore($this->createFieldsetOpenField(), $fieldDto);
+        }
+
+        return;
+
+        /** @var FieldDto $fieldDto */
+        foreach ($fields as $fieldDto) {
+            if (!$fieldDto->isFormLayoutField()) {
+                if (null === $previousField || null === $itemThatMightNeedAFieldsetBeforeIt) {
+                    $itemThatMightNeedAFieldsetBeforeIt = $fieldDto;
+                }
+            }
+
+            if ($fieldDto->isFormTab() || $fieldDto->isFormColumn()) {
+                $itemThatMightNeedAFieldsetBeforeIt = null;
+            }
+
+            if ($fieldDto->isFormFieldset()) {
+                if (null !== $itemThatMightNeedAFieldsetBeforeIt) {
+                    $insertFieldsetBeforeTheseFields[] = $itemThatMightNeedAFieldsetBeforeIt;
+                }
+            }
+
+            $previousField = $fieldDto;
+        }
+
+        foreach ($insertFieldsetBeforeTheseFields as $fieldDto) {
+            $fields->insertBefore($this->createFieldsetOpenField(), $fieldDto);
+        }
+
+        return;
+
+
+
+
         $firstFieldAfterFormTabOrColumn = null;
         $aNewTabOrColumnHasOpened = false;
         $insertFieldsetBeforeTheseFields = [];
@@ -106,12 +171,10 @@ final class FormLayoutFactory
      */
     private function fixFormColumns(FieldCollection $fields): void
     {
-        //$this->fixOrphanFieldsetFields($fields);
-
-        /*dump("BEFORE");
+        dump("BEFORE");
         foreach ($fields as $field) {
             dump($field->getFormType());
-        }*/
+        }
 
         $formUsesColumns = false;
         $formUsesTabs = false;
@@ -231,7 +294,7 @@ final class FormLayoutFactory
             if ($aFormColumnIsOpen) {
                 // this is needed because fields inside columns look better when they take the
                 // entire width available; users can override this by setting custom CSS classes
-                $fieldDto->setDefaultColumns('');
+                $fieldDto->setDefaultColumns(12);
             }
         }
 
@@ -247,14 +310,16 @@ final class FormLayoutFactory
         if ($formUsesTabs) {
             $fields->add($this->createTabPaneCloseField());
             $fields->add($this->createTabPaneGroupCloseField());
+            $fields->prepend($this->createTabPaneGroupOpenField());
             $fields->prepend($this->createTabListField($tabs));
         }
 
-        /*
+
         dump("AFTER");
         foreach ($fields as $field) {
             dump($field->getFormType());
-        }*/
+        }
+        //dd('');
     }
 
     private function createColumnGroupOpenField(): FieldDto
@@ -332,39 +397,32 @@ final class FormLayoutFactory
      */
     private function checkOrphanTabFields(FieldCollection $fields): void
     {
-        $hasTabs = false;
-        $isTabField = static fn (FieldDto $fieldDto) => EasyAdminTabType::class === $fieldDto->getFormType();
-        $isFormField = static fn (FieldDto $fieldDto) => FormField::class === $fieldDto->getFieldFqcn();
-
+        $firstRegularField = null;
         foreach ($fields as $fieldDto) {
-            if ($isTabField($fieldDto)) {
-                $hasTabs = true;
-                break;
-            }
-        }
+            if ($fieldDto->isFormTab()) {
+                if (null !== $firstRegularField) {
+                    throw new \InvalidArgumentException(sprintf('When using form tabs, all fields must be rendered inside a tab. However, your field "%s" does not belong to any tab. Move it under a form tab or create a new form tab before it.', $firstRegularField->getProperty()));
+                }
 
-        if (!$hasTabs || $isTabField($fields->first())) {
-            return;
-        }
-
-        $orphanFieldNames = [];
-        foreach ($fields as $field) {
-            if ($isTabField($field)) {
+                // everything is fine; there are no regular fields before the first tab
                 break;
             }
 
-            if ($isFormField($field)) {
-                continue;
+            if (!$fieldDto->isFormLayoutField()) {
+                $firstRegularField = $fieldDto;
             }
-
-            $orphanFieldNames[] = $field->getProperty();
         }
-
-        throw new \RuntimeException(sprintf('The "%s" page of "%s" uses tabs to display its fields, but the following fields don\'t belong to any tab: %s. Use "FormField::addTab(\'...\')" to add a tab before those fields.', '$context->getCrud()->getCurrentPage()', '$context->getCrud()->getControllerFqcn()', implode(', ', $orphanFieldNames)));
     }
 
     public static function createFromFieldDtos(FieldCollection|null $fieldDtos): FieldLayoutDto
     {
+        trigger_deprecation(
+            'easycorp/easyadmin-bundle',
+            '4.8.0',
+            '"FormLayoutFactory::createFromFieldDtos()" has been deprecated in favor of "FormLayoutFactory::createLayout()" and it will be removed in 5.0.0.',
+        );
+
+
         if (null === $fieldDtos) {
             return new FieldLayoutDto();
         }

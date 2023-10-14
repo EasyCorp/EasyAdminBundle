@@ -321,6 +321,12 @@ class FormLayoutFactoryTest extends TestCase
             \InvalidArgumentException::class,
             'When using form columns, you can\'t define tabs inside columns (but you can define columns inside tabs). Move the tab "tab_pane_open_2" outside any column.'
         ];
+
+        yield 'Fields outside tabs' => [
+            ['field', 'tab', 'field', 'field', 'tab', 'field'],
+            \InvalidArgumentException::class,
+            'When using form tabs, all fields must be rendered inside a tab. However, your field "field_1" does not belong to any tab. Move it under a form tab or create a new form tab before it'
+        ];
     }
 
     private function createFormFieldsFromConfig(array $fieldDefinition): FieldCollection

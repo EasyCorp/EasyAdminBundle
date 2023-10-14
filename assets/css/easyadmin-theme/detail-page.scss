@@ -1,0 +1,49 @@
+// Detail Page styles
+// ----------------------------------------------------------------------------
+
+.ea-detail .form-column .form-fieldset-body {
+  padding-bottom: 5px;
+  padding-top: 5px;
+
+  &.without-header {
+    padding-bottom: var(--bs-gutter-x);
+    padding-top: var(--bs-gutter-x);
+  }
+}
+
+.ea-detail .field-group {
+  margin-bottom: 12px;
+}
+
+.ea-detail .field-group .field-label {
+  color: var(--form-label-color);
+  font-size: var(--font-size-base);
+  font-weight: 500;
+  margin: 0;
+  padding: 0 0 1px 0;
+
+  .data-help {
+    color: var(--gray-600);
+    font-size: var(--font-size-sm);
+    margin: 15px 0 0;
+
+    i {
+      color: var(--datalist-label-color);
+    }
+  }
+}
+
+.ea-detail .field-group .field-code_editor {
+  color: inherit;
+  font-family: var(--font-family-monospace);
+  font-size: var(--font-size-sm);
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.ea-detail .field-group.field-textarea .field-value,
+.ea-detail .field-group.field-text_editor .field-value {
+  max-height: 350px;
+  max-width: 80ch;
+  overflow-y: auto;
+}

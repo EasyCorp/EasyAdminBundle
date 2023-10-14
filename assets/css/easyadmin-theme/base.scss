@@ -487,6 +487,8 @@ body.ea-edit .content-header {
 // customizing Bootstrap's Saas variables for popovers doesn't work,
 // so we need to define these styles explicitly
 .popover.ea-content-help-popover {
+  --bs-popover-border-radius: var(--border-radius);
+
   border-color: var(--popover-border-color);
   box-shadow: var(--popover-shadow);
   max-width: var(--popover-max-width);

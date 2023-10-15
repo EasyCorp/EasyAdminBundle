@@ -54,6 +54,7 @@ final class FormLayoutFactory
         $fieldThatMightBeOrphan = null;
         $weMightNeedToAddAFieldset = true;
         $insertFieldsetBeforeTheseFields = [];
+
         /** @var FieldDto $fieldDto */
         foreach ($fields as $fieldDto) {
             if ($fieldDto->isFormTab() || $fieldDto->isFormColumn()) {
@@ -79,66 +80,6 @@ final class FormLayoutFactory
             if ($fieldDto->isFormFieldset() && null !== $fieldThatMightBeOrphan) {
                 $insertFieldsetBeforeTheseFields[] = $fieldThatMightBeOrphan;
                 $fieldThatMightBeOrphan = null;
-            }
-        }
-
-        foreach ($insertFieldsetBeforeTheseFields as $fieldDto) {
-            $fields->insertBefore($this->createFieldsetOpenField(), $fieldDto);
-        }
-
-        return;
-
-        /** @var FieldDto $fieldDto */
-        foreach ($fields as $fieldDto) {
-            if (!$fieldDto->isFormLayoutField()) {
-                if (null === $previousField || null === $itemThatMightNeedAFieldsetBeforeIt) {
-                    $itemThatMightNeedAFieldsetBeforeIt = $fieldDto;
-                }
-            }
-
-            if ($fieldDto->isFormTab() || $fieldDto->isFormColumn()) {
-                $itemThatMightNeedAFieldsetBeforeIt = null;
-            }
-
-            if ($fieldDto->isFormFieldset()) {
-                if (null !== $itemThatMightNeedAFieldsetBeforeIt) {
-                    $insertFieldsetBeforeTheseFields[] = $itemThatMightNeedAFieldsetBeforeIt;
-                }
-            }
-
-            $previousField = $fieldDto;
-        }
-
-        foreach ($insertFieldsetBeforeTheseFields as $fieldDto) {
-            $fields->insertBefore($this->createFieldsetOpenField(), $fieldDto);
-        }
-
-        return;
-
-
-
-
-        $firstFieldAfterFormTabOrColumn = null;
-        $aNewTabOrColumnHasOpened = false;
-        $insertFieldsetBeforeTheseFields = [];
-
-        /** @var FieldDto $fieldDto */
-        foreach ($fields as $fieldDto) {
-            if ($fieldDto->isFormTab() || $fieldDto->isFormColumn()) {
-                $firstFieldAfterFormTabOrColumn = null;
-                $aNewTabOrColumnHasOpened = true;
-                continue;
-            }
-
-            if ($aNewTabOrColumnHasOpened && null === $firstFieldAfterFormTabOrColumn && !$fieldDto->isFormLayoutField()) {
-                $firstFieldAfterFormTabOrColumn = $fieldDto;
-                continue;
-            }
-
-            if ($fieldDto->isFormFieldset() && null !== $firstFieldAfterFormTabOrColumn) {
-                $insertFieldsetBeforeTheseFields[] = $firstFieldAfterFormTabOrColumn;
-                $aNewTabOrColumnHasOpened = false;
-                $firstFieldAfterFormTabOrColumn = null;
             }
         }
 
@@ -171,11 +112,6 @@ final class FormLayoutFactory
      */
     private function fixFormColumns(FieldCollection $fields): void
     {
-        dump("BEFORE");
-        foreach ($fields as $field) {
-            dump($field->getFormType());
-        }
-
         $formUsesColumns = false;
         $formUsesTabs = false;
         foreach ($fields as $fieldDto) {
@@ -313,13 +249,6 @@ final class FormLayoutFactory
             $fields->prepend($this->createTabPaneGroupOpenField());
             $fields->prepend($this->createTabListField($tabs));
         }
-
-
-        dump("AFTER");
-        foreach ($fields as $field) {
-            dump($field->getFormType());
-        }
-        //dd('');
     }
 
     private function createColumnGroupOpenField(): FieldDto

@@ -347,25 +347,48 @@ label.form-check-label {
 
 // Form columns
 .form-column {
+    .field-form_fieldset {
+        margin-bottom: var(--bs-gutter-x);
+    }
+
     .form-fieldset {
-        border: 1px solid var(--form-fieldset-border-color);
         border-radius: var(--border-radius);
-        padding: 0 var(--bs-gutter-x);
+        box-shadow: inset 0 0 0 1px var(--form-fieldset-border-color);
+    }
+
+    .collapsed .form-fieldset {
+        .form-fieldset-header {
+            padding: calc(var(--bs-gutter-x) / 2) var(--bs-gutter-x);
+        }
     }
 
     .form-fieldset-header {
-        padding: 10px 15px;
-        margin: 0 calc(-1 * var(--bs-gutter-x));
+        box-shadow: none;
+        padding: calc(var(--bs-gutter-x) - 5px) var(--bs-gutter-x) calc(var(--bs-gutter-x) / 2);
 
-        .form-fieldset-title {
-            a { font-size: 18px; }
+        .form-fieldset-title .form-fieldset-title-contents {
+            box-shadow: none;
+            padding: 0;
+        }
+    }
+
+    .form-fieldset-body {
+        padding: 5px var(--bs-gutter-x);
+
+        &.without-header {
+            padding: var(--bs-gutter-x);
         }
     }
 }
 
 // Form fieldsets
 .field-form_fieldset {
-    margin-bottom: var(--bs-gutter-x); //not a typo; don't use --bs-gutter-y here
+    margin-bottom: calc(1.5 * var(--bs-gutter-x)); //not a typo; don't use --bs-gutter-y here
+
+    &.collapsed {
+        border-radius: var(--border-radius);
+        box-shadow: inset 0 0 0 1px var(--form-fieldset-border-color);
+    }
 }
 
 .form-section-empty {
@@ -374,14 +397,14 @@ label.form-check-label {
 
 .form-fieldset-header {
     align-items: flex-start;
-    box-shadow: 0 1px 0 var(--form-fieldset-header-border-color);
     display: flex;
     flex-wrap: nowrap;
-    padding: 15px 0 10px;
+    padding: 0 0 15px;
     position: relative;
 
     .form-fieldset-collapse-marker {
         color: var(--form-fieldset-collapse-marker-color);
+        font-size: 90%;
         margin: 0 10px 0 2px;
         transform: rotate(90deg);
         transition: transform .2s ease-in-out;
@@ -390,10 +413,14 @@ label.form-check-label {
     .form-fieldset-title {
         flex: 1;
 
-        a {
+        .form-fieldset-title-contents {
+            align-items: center;
+            box-shadow: 0 1px 0 var(--form-fieldset-header-border-color);
+            display: flex;
             color: var(--form-fieldset-header-color);
-            font-size: 20px;
+            font-size: 17px;
             font-weight: bold;
+            padding: 0 0 5px;
 
             &.not-collapsible { cursor: default; }
             &.collapsed {
@@ -419,6 +446,7 @@ label.form-check-label {
 
         .form-fieldset-help {
             color: var(--form-fieldset-help-color);
+            margin-top: 5px;
         }
     }
 }

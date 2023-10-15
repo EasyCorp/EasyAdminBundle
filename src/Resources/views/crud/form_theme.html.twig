@@ -547,18 +547,12 @@
 {% block ea_form_fieldset_open_row %}
     {% set fieldset_has_header = form.vars.label or ea_icon or ea_help %}
 
-    <div class="{{ ea_css_class }}">
+    <div class="{{ ea_css_class }} {{ ea_is_collapsed ? 'collapsed' }}">
         <fieldset class="form-fieldset">
             {% if fieldset_has_header %}
                 <div class="form-fieldset-header {{ ea_is_collapsible ? 'collapsible' }} {{ ea_help is not empty ? 'with-help' }}">
                     <div class="form-fieldset-title">
-                        {% if not ea_is_collapsible %}
-                            <a href="#" class="not-collapsible">
-                        {% else %}
-                            <a href="#content-{{ form.vars.name }}" data-bs-toggle="collapse"
-                            class="form-fieldset-collapse {{ ea_is_collapsed ? 'collapsed' }}"
-                            aria-expanded="{{ ea_is_collapsed ? 'false' : 'true' }}" aria-controls="content-{{ form.vars.name }}">
-                        {% endif %}
+                        {% set fieldset_title_contents %}
                             {% if ea_is_collapsible %}
                                 <i class="fas fw fa-chevron-right form-fieldset-collapse-marker"></i>
                             {% endif %}
@@ -568,7 +562,19 @@
                             {% endif %}
 
                             {{ form.vars.label|trans|raw }}
-                        </a>
+                        {% endset %}
+
+                        {% if ea_is_collapsible %}
+                            <a href="#content-{{ form.vars.name }}" data-bs-toggle="collapse"
+                               class="form-fieldset-title-contents form-fieldset-collapse {{ ea_is_collapsed ? 'collapsed' }}"
+                               aria-expanded="{{ ea_is_collapsed ? 'false' : 'true' }}" aria-controls="content-{{ form.vars.name }}">
+                                {{ fieldset_title_contents|raw }}
+                            </a>
+                        {% else %}
+                            <span class="not-collapsible form-fieldset-title-contents">
+                                {{ fieldset_title_contents|raw }}
+                            </span>
+                        {% endif %}
 
                         {% if ea_help %}
                             <div class="form-fieldset-help">{{ ea_help|trans|raw }}</div>

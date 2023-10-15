@@ -250,13 +250,168 @@ the fields using `PHP generators`_::
 Field Layout
 ------------
 
-Form Rows
-~~~~~~~~~
-
 By default, EasyAdmin displays one form field per row. Inside the row, each
 field type uses a different default width (e.g. integer fields are narrow and
-code editor fields are very wide). You can override this behavior with the
-``setColumns()`` method of each field.
+code editor fields are very wide).
+
+EasyAdmin also provides somre features to create complex form layouts: tabs,
+columns, fieldsets and rows.
+
+Form Tabs
+~~~~~~~~~
+
+In pages where you display lots of fields, you can divide them in tabs using
+the "tabs" created with the special ``FormField`` object::
+
+    use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
+
+    public function configureFields(string $pageName): iterable
+    {
+        return [
+            IdField::new('id')->hideOnForm(),
+
+            // Add a tab
+            FormField::addTab('First Tab'),
+
+            // Your fields
+            TextField::new('firstName'),
+            TextField::new('lastName'),
+
+            // Add a second Form Tab
+            // Tabs can also define their icon, CSS class and help message
+            FormField::addTab('Contact information Tab')
+                ->setIcon('phone')->addCssClass('optional')
+                ->setHelp('Phone number is preferred'),
+
+            TextField::new('phone'),
+
+        ];
+    }
+
+Form Columns
+~~~~~~~~~~~~
+
+.. versionadded:: 4.8.0
+
+    Form columns were introduced in EasyAdmin 4.8.0.
+
+Before using this option, you must be familiar with the `Bootstrap grid system`_,
+which divides each row into 12 same-width columns, and the `Bootstrap breakpoints`_,
+which are ``xs`` (device width < 576px), ``sm`` (>= 576px), ``md`` (>= 768px),
+``lg`` (>= 992px), ``xl`` (>= 1,200px) and ``xxl`` (>= 1,400px).
+
+Form columns allows to break down a complex form into two or more columns of
+fields. In addition to increasing the density of information, columns allow to
+better separate fields according to their function.
+
+The following is a simple example that divides a form in two columns (the first
+one spanning 8 of the available 12 Bootstrap columns and the second column
+spanning the other 4 Bootstrap columns)::
+
+    use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
+
+    public function configureFields(string $pageName): iterable
+    {
+        return [
+            FormField::addColumn(8),
+            TextField::new('firstName'),
+            TextField::new('lastName'),
+
+            FormField::addColumn(4),
+            TextField::new('phone'),
+            TextField::new('email')->hideOnIndex(),
+        ];
+    }
+
+Thanks to Bootstap responsive classes, you can have columns of different sizes,
+or even no columns at all, depending on the browser window size. In the following
+example, breakpoints below ``lg`` doesn't display columns. Also, the sum of the
+two columns doesn't total ``12``: this is allowed to create columns shorter than
+the total spave available::
+
+    use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
+
+    public function configureFields(string $pageName): iterable
+    {
+        return [
+            FormField::addColumn('col-lg-8 col-xl-6'),
+            TextField::new('firstName'),
+            TextField::new('lastName'),
+
+            FormField::addColumn('col-lg-3 col-xl-2'),
+            TextField::new('phone'),
+            TextField::new('email')->hideOnIndex(),
+        ];
+    }
+
+You can also use columns inside tabs to further organize the contents of very
+complex layouts::
+
+    use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
+
+    public function configureFields(string $pageName): iterable
+    {
+        return [
+            FormField::addTab('User Data'),
+
+            FormField::addColumn('col-lg-8 col-xl-6'),
+            TextField::new('firstName'),
+            TextField::new('lastName'),
+
+            FormField::addColumn('col-lg-3 col-xl-2'),
+            TextField::new('phone'),
+            TextField::new('email')->hideOnIndex(),
+
+            FormField::addTab('Financial Information'),
+
+            // ...
+        ];
+    }
+
+Form Fieldsets
+~~~~~~~~~~~~~~
+
+.. versionadded:: 4.8.0
+
+    Form fieldsets were introduced in EasyAdmin 4.8.0. In previous versions,
+    this feature was called "Form Panels".
+
+In pages where you display lots of fields, you can divide them in groups using
+the fieldsets created with the special ``FormField`` object::
+
+    use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
+
+    public function configureFields(string $pageName): iterable
+    {
+        return [
+            // fielfsets usually display only a title
+            FormField::addFieldset('User Details'),
+            TextField::new('firstName'),
+            TextField::new('lastName'),
+
+            // fieldsets without titles only display a separation between fields
+            FormField::addFieldset(),
+            DateTimeField::new('createdAt')->onlyOnDetail(),
+
+            // fieldsets can also define their icon, CSS class and help message
+            FormField::addFieldset('Contact information')
+                ->setIcon('phone')->addCssClass('optional')
+                ->setHelp('Phone number is preferred'),
+            TextField::new('phone'),
+            TextField::new('email')->hideOnIndex(),
+
+            // fieldsets can be collapsible too (useful if your forms are long)
+            // this makes the fieldset collapsible but renders it expanded by default
+            FormField::addFieldset('Contact information')->collapsible(),
+            // this makes the fieldset collapsible and renders it collapsed by default
+            FormField::addFieldset('Contact information')->renderCollapsed(),
+        ];
+    }
+
+* TODO: recommed using fieldsets inside columns
+
+Form Rows
+~~~~~~~~~
 
 Before using this option, you must be familiar with the `Bootstrap grid system`_,
 which divides each row into 12 same-width columns, and the `Bootstrap breakpoints`_,
@@ -341,80 +496,6 @@ force the creation of a new line (the next field will forcibly render on a new r
             // this field will always render on its own row, even if there's
             // enough space for it in the previous row in `lg`, `xl` and `xxl` breakpoints
             BooleanField::new('published')->setColumns(2),
-        ];
-    }
-
-Form Fieldsets
-~~~~~~~~~~~~~~
-
-.. versionadded:: 4.8.0
-
-    Form fieldsets were introduced in EasyAdmin 4.8.0. In previous versions,
-    this feature was called "Form Panels".
-
-In pages where you display lots of fields, you can divide them in groups using
-the fieldsets created with the special ``FormField`` object::
-
-    use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
-
-    public function configureFields(string $pageName): iterable
-    {
-        return [
-            // fielfsets usually display only a title
-            FormField::addFieldset('User Details'),
-            TextField::new('firstName'),
-            TextField::new('lastName'),
-
-            // fieldsets without titles only display a separation between fields
-            FormField::addFieldset(),
-            DateTimeField::new('createdAt')->onlyOnDetail(),
-
-            // fieldsets can also define their icon, CSS class and help message
-            FormField::addFieldset('Contact information')
-                ->setIcon('phone')->addCssClass('optional')
-                ->setHelp('Phone number is preferred'),
-            TextField::new('phone'),
-            TextField::new('email')->hideOnIndex(),
-
-            // fieldsets can be collapsible too (useful if your forms are long)
-            // this makes the fieldset collapsible but renders it expanded by default
-            FormField::addFieldset('Contact information')->collapsible(),
-            // this makes the fieldset collapsible and renders it collapsed by default
-            FormField::addFieldset('Contact information')->renderCollapsed(),
-        ];
-    }
-
-Form Tabs
-~~~~~~~~~
-
-In pages where you display lots of fields, you can divide them in tabs using
-the "tabs" created with the special ``FormField`` object::
-
-    use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
-
-    public function configureFields(string $pageName): iterable
-    {
-        return [
-            IdField::new('id')->hideOnForm(),
-
-            // Add a tab
-            FormField::addTab('First Tab'),
-
-            // You can use a form fieldset inside a Form Tab
-            FormField::addFieldset('User Details'),
-
-            // Your fields
-            TextField::new('firstName'),
-            TextField::new('lastName'),
-
-            // Add a second Form Tab
-            // Tabs can also define their icon, CSS class and help message
-            FormField::addTab('Contact information Tab')
-                ->setIcon('phone')->addCssClass('optional')
-                ->setHelp('Phone number is preferred'),
-
-            TextField::new('phone'),
-
         ];
     }
 

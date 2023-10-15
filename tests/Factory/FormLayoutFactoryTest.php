@@ -33,17 +33,6 @@ class FormLayoutFactoryTest extends TestCase
         $formLayoutFactory = new FormLayoutFactory();
         $formLayoutFactory->createLayout($originalFields, Crud::PAGE_EDIT);
 
-        if (false=== $this->isFormLayoutTheSame($expectedFields, $originalFields)) {
-            dump("EXPECTED");
-            foreach ($expectedFields as $field) {
-                dump($field->getFormType());
-            }
-
-            dump("ORIGINAL");
-            foreach ($originalFields as $field) {
-                dump($field->getFormType());
-            }
-        }
         $this->assertTrue($this->isFormLayoutTheSame($expectedFields, $originalFields));
     }
 
@@ -345,7 +334,7 @@ class FormLayoutFactoryTest extends TestCase
 
             $fieldNames[] = $trimmedFieldName;
         }
-dump($fieldNames);
+
         return $this->createFormFieldsFromConfig($fieldNames);
     }
 

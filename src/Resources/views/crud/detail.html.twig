@@ -202,19 +202,12 @@
     {% set is_collapsible = field.getCustomOption(is_collapsible_option_name) %}
     {% set is_collapsed = field.getCustomOption(is_collapsed_option_name) %}
 
-    <div class="{{ field.cssClass }}">
+    <div class="{{ field.cssClass }} {{ is_collapsed ? 'collapsed' }}">
         <fieldset class="form-fieldset">
             {% if fieldset_has_header %}
                 <div class="form-fieldset-header {{ is_collapsible ? 'collapsible' }} {{ field.help is not empty ? 'with-help' }}">
                     <div class="form-fieldset-title">
-                        {% if not is_collapsible %}
-                            <a href="#" class="not-collapsible">
-                        {% else %}
-                            <a href="#content-{{ field.property }}" data-bs-toggle="collapse"
-                            class="form-fieldset-collapse {{ is_collapsed ? 'collapsed' }}"
-                            aria-expanded="{{ is_collapsed ? 'false' : 'true' }}" aria-controls="content-{{ field.property }}">
-                        {% endif %}
-
+                        {% set fieldset_title_contents %}
                             {% if is_collapsible %}
                                 <i class="fas fw fa-chevron-right form-fieldset-collapse-marker"></i>
                             {% endif %}
@@ -224,8 +217,19 @@
                             {% endif %}
 
                             {{ field.label|trans|raw }}
+                        {% endset %}
 
-                        </a>
+                        {% if is_collapsible %}
+                            <a href="#content-{{ field.property }}" data-bs-toggle="collapse"
+                               class="form-fieldset-title-contents form-fieldset-collapse {{ is_collapsed ? 'collapsed' }}"
+                               aria-expanded="{{ is_collapsed ? 'false' : 'true' }}" aria-controls="content-{{ field.property }}">
+                                {{ fieldset_title_contents|raw }}
+                            </a>
+                        {% else %}
+                            <span class="not-collapsible form-fieldset-title-contents">
+                                {{ fieldset_title_contents|raw }}
+                            </span>
+                        {% endif %}
 
                         {% if field.help %}
                             <div class="form-fieldset-help">{{ field.help|trans|raw }}</div>

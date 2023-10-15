@@ -285,12 +285,12 @@ body.ea-mobile-sidebar-visible .sidebar {
 }
 
 .content-wrapper {
-    padding: 0 var(--content-padding-right) 0 var(--content-padding-left);
+    padding: 0 var(--content-padding-right) 15px var(--content-padding-left);
 
     @media(min-width: 992px) {
         display: grid;
         grid-template-columns: auto var(--resize-handler-width);
-        padding: 0 var(--lg-content-padding-right) 0 var(--lg-content-padding-left);
+        padding: 0 var(--lg-content-padding-right) 45px var(--lg-content-padding-left);
     }
 }
 

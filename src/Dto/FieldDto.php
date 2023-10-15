@@ -4,9 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormColumnType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormFieldsetType;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminTabType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormColumnCloseType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormColumnGroupCloseType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormColumnGroupOpenType;
@@ -123,7 +121,7 @@ final class FieldDto
 
     public function isFormFieldset(): bool
     {
-        return \in_Array($this->formType, [EaFormFieldsetType::class,EaFormFieldsetOpenType::class], true);
+        return \in_array($this->formType, [EaFormFieldsetType::class, EaFormFieldsetOpenType::class], true);
     }
 
     public function isFormTab(): bool

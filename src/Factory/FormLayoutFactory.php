@@ -351,7 +351,6 @@ final class FormLayoutFactory
             '"FormLayoutFactory::createFromFieldDtos()" has been deprecated in favor of "FormLayoutFactory::createLayout()" and it will be removed in 5.0.0.',
         );
 
-
         if (null === $fieldDtos) {
             return new FieldLayoutDto();
         }

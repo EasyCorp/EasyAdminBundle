@@ -5,7 +5,6 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Factory;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
-use EasyCorp\Bundle\EasyAdminBundle\Factory\FieldFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FormLayoutFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
@@ -296,25 +295,25 @@ class FormLayoutFactoryTest extends TestCase
         yield 'One or more fields outside of all columns' => [
             ['field', 'column', 'field', 'field'],
             \InvalidArgumentException::class,
-            'When using form columns, all fields must be rendered inside a column. However, your field "field_1" does not belong to any column. Move it under a form column or create a new form column before it.'
+            'When using form columns, all fields must be rendered inside a column. However, your field "field_1" does not belong to any column. Move it under a form column or create a new form column before it.',
         ];
 
         yield 'Column defined at the bottom of fields' => [
             ['field', 'field', 'field', 'column'],
             \InvalidArgumentException::class,
-            'When using form columns, all fields must be rendered inside a column. However, your field "field_1" does not belong to any column. Move it under a form column or create a new form column before it.'
+            'When using form columns, all fields must be rendered inside a column. However, your field "field_1" does not belong to any column. Move it under a form column or create a new form column before it.',
         ];
 
         yield 'Tabs inside columns' => [
             ['column', 'tab', 'field', 'tab', 'field', 'field'],
             \InvalidArgumentException::class,
-            'When using form columns, you can\'t define tabs inside columns (but you can define columns inside tabs). Move the tab "tab_pane_open_2" outside any column.'
+            'When using form columns, you can\'t define tabs inside columns (but you can define columns inside tabs). Move the tab "tab_pane_open_2" outside any column.',
         ];
 
         yield 'Fields outside tabs' => [
             ['field', 'tab', 'field', 'field', 'tab', 'field'],
             \InvalidArgumentException::class,
-            'When using form tabs, all fields must be rendered inside a tab. However, your field "field_1" does not belong to any tab. Move it under a form tab or create a new form tab before it'
+            'When using form tabs, all fields must be rendered inside a tab. However, your field "field_1" does not belong to any tab. Move it under a form tab or create a new form tab before it',
         ];
     }
 

@@ -10,7 +10,7 @@ final class FormVarsDto
     private FieldDto|null $fieldDto;
     private EntityDto|null $entityDto;
 
-    public function __construct(FieldDto $fieldDto = null, EntityDto $entityDto = null)
+    public function __construct(?FieldDto $fieldDto = null, ?EntityDto $entityDto = null)
     {
         $this->fieldDto = $fieldDto;
         $this->entityDto = $entityDto;

@@ -48,7 +48,7 @@ class FormFieldsetsCrudControllerTest extends AbstractCrudTestCase
         $crawler = $this->client->request('GET', $this->generateDetailUrl($blogPost->getId()));
 
         static::assertSame('ID', $crawler->filter('.content-body .field-group')->first()->filter('.field-label')->text());
-        //static::assertSame('ID', trim($crawler->filter('.form-fieldset')->first()->filter('dt')->text()));
+        // static::assertSame('ID', trim($crawler->filter('.form-fieldset')->first()->filter('dt')->text()));
     }
 
     public function testFieldsInsideFieldsetsInForms()

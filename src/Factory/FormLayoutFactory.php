@@ -37,19 +37,58 @@ final class FormLayoutFactory
             return $fields;
         }
 
-        $this->checkOrphanTabFields($fields);
-        $this->fixOrphanFieldsetFields($fields);
-        $this->fixFormColumns($fields);
+        $this->validateLayoutConfiguration($fields);
+        $this->addMissingLayoutFields($fields);
+        $this->linearizeLayoutConfiguration($fields);
 
         return $fields;
     }
 
+    private function validateLayoutConfiguration(FieldCollection $fields): void
+    {
+        // When rendering fields using tabs, all fields must belong to some tab.
+        $firstRegularField = null;
+        foreach ($fields as $fieldDto) {
+            if ($fieldDto->isFormTab()) {
+                if (null !== $firstRegularField) {
+                    throw new \InvalidArgumentException(sprintf('When using form tabs, all fields must be rendered inside a tab. However, your field "%s" does not belong to any tab. Move it under a form tab or create a new form tab before it.', $firstRegularField->getProperty()));
+                }
+
+                // everything is fine; there are no regular fields before the first tab
+                break;
+            }
+
+            if (!$fieldDto->isFormLayoutField()) {
+                $firstRegularField = $fieldDto;
+            }
+        }
+
+        // tabs can't be defined inside columns, but columns can be defined inside tabs:
+        // Not allowed: ['column', 'tab', 'field', 'tab', 'field', ...]
+        // Allowed:     ['tab', 'column', 'field', 'column', 'field', 'tab', ...]
+        $theFirstFieldWhichIsATabOrColumn = null;
+        foreach ($fields as $fieldDto) {
+            if (!$fieldDto->isFormColumn() && !$fieldDto->isFormTab()) {
+                continue;
+            }
+
+            if (null === $theFirstFieldWhichIsATabOrColumn) {
+                $theFirstFieldWhichIsATabOrColumn = $fieldDto;
+                continue;
+            }
+
+            if ($theFirstFieldWhichIsATabOrColumn->isFormColumn() && $fieldDto->isFormTab()) {
+                throw new \InvalidArgumentException(sprintf('When using form columns, you can\'t define tabs inside columns (but you can define columns inside tabs). Move the tab "%s" outside any column.', $fieldDto->getLabel()));
+            }
+        }
+    }
+
     /*
-     * This is needed to handle this edge-case: the list of fields include one or more form fieldsets,
-     * but the first fields of the list don't belong to any fieldset. We must create an automatic empty
-     * form fieldset for those "orphaned fields" so they are displayed as expected.
+     * This is needed to handle edge-cases like this: the list of fields include one or more form fieldsets,
+     * but the first fields of the list don't belong to any fieldset. Instead of throwing an error,
+     * we create an automatic empty form fieldset for those "orphaned fields" so they are displayed as expected.
      */
-    private function fixOrphanFieldsetFields(FieldCollection $fields): void
+    private function addMissingLayoutFields(FieldCollection $fields): void
     {
         $fieldThatMightBeOrphan = null;
         $weMightNeedToAddAFieldset = true;
@@ -90,8 +129,9 @@ final class FormLayoutFactory
 
     /*
      * This is used to add some special form types that will later simplify
-     * the rendering of a form that uses columns.
-     * Fir example, if the user configures this:
+     * the rendering of a form that uses columns, tabs, fieldsets, etc.
+     *
+     * For example, if the user configures this:
      *   FormField::addColumn()
      *   Field 1
      *   FormField::addColumn()
@@ -110,7 +150,7 @@ final class FormLayoutFactory
      *
      * See tests for many other examples of complex layouts
      */
-    private function fixFormColumns(FieldCollection $fields): void
+    private function linearizeLayoutConfiguration(FieldCollection $fields): void
     {
         $formUsesColumns = false;
         $formUsesTabs = false;
@@ -122,25 +162,6 @@ final class FormLayoutFactory
 
             if ($fieldDto->isFormTab()) {
                 $formUsesTabs = true;
-            }
-        }
-
-        // tabs can't be defined inside columns, but columns can be defined inside tabs:
-        // Not allowed: ['column', 'tab', 'field', 'tab', 'field', ...]
-        // Allowed:     ['tab', 'column', 'field', 'column', 'field', 'tab', ...]
-        $theFirstFieldWhichIsATabOrColumn = null;
-        foreach ($fields as $fieldDto) {
-            if (!$fieldDto->isFormColumn() && !$fieldDto->isFormTab()) {
-                continue;
-            }
-
-            if (null === $theFirstFieldWhichIsATabOrColumn) {
-                $theFirstFieldWhichIsATabOrColumn = $fieldDto;
-                continue;
-            }
-
-            if ($theFirstFieldWhichIsATabOrColumn->isFormColumn() && $fieldDto->isFormTab()) {
-                throw new \InvalidArgumentException(sprintf('When using form columns, you can\'t define tabs inside columns (but you can define columns inside tabs). Move the tab "%s" outside any column.', $fieldDto->getLabel()));
             }
         }
 
@@ -319,28 +340,6 @@ final class FormLayoutFactory
             ->setFormType(EaFormTabPaneCloseType::class)
             ->setFormTypeOptions(['mapped' => false, 'required' => false])
             ->getAsDto();
-    }
-
-    /**
-     * When rendering fields using tabs, all fields must belong to some tab.
-     */
-    private function checkOrphanTabFields(FieldCollection $fields): void
-    {
-        $firstRegularField = null;
-        foreach ($fields as $fieldDto) {
-            if ($fieldDto->isFormTab()) {
-                if (null !== $firstRegularField) {
-                    throw new \InvalidArgumentException(sprintf('When using form tabs, all fields must be rendered inside a tab. However, your field "%s" does not belong to any tab. Move it under a form tab or create a new form tab before it.', $firstRegularField->getProperty()));
-                }
-
-                // everything is fine; there are no regular fields before the first tab
-                break;
-            }
-
-            if (!$fieldDto->isFormLayoutField()) {
-                $firstRegularField = $fieldDto;
-            }
-        }
     }
 
     public static function createFromFieldDtos(FieldCollection|null $fieldDtos): FieldLayoutDto

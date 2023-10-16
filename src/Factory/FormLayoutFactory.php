@@ -230,7 +230,7 @@ final class FormLayoutFactory
             if ($aFormColumnIsOpen) {
                 // this is needed because fields inside columns look better when they take the
                 // entire width available; users can override this by setting custom CSS classes
-                $fieldDto->setDefaultColumns(12);
+                $fieldDto->setDefaultColumns('col-12');
             }
         }
 

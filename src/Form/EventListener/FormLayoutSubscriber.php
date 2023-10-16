@@ -31,7 +31,7 @@ class FormLayoutSubscriber implements EventSubscriberInterface
     public function handleTabErrors(FormEvent $event)
     {
         $formTabs = [];
-        /** @var Form $formType */
+        /** @var Form $child */
         foreach ($event->getForm() as $child) {
             /** @var FieldDto $fieldDto */
             if (null === $fieldDto = $child->getConfig()->getAttribute('ea_field')) {

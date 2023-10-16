@@ -75,31 +75,32 @@
     {% set row_attr = row_attr|merge({
         class: row_attr.class|default('') ~ ' form-group'
     }) %}
+    {%  set field = form.vars.ea_vars.field %}
 
-    <div class="{{ form.vars.ea_crud_form.ea_field.columns ?? form.vars.ea_crud_form.ea_field.defaultColumns ?? '' }}">
+    <div class="{{ field.columns ?? field.defaultColumns ?? '' }}">
         <div {% with { attr: row_attr } %}{{ block('attributes') }}{% endwith %}>
             {{- form_label(form) -}}
             <div class="form-widget">
-                {% set has_prepend_html = ea.field.prepend_html|default(null) is not null %}
-                {% set has_append_html = ea.field.append_html|default(null) is not null %}
+                {% set has_prepend_html = field.prepend_html|default(null) is not null %}
+                {% set has_append_html = field.append_html|default(null) is not null %}
                 {% set has_input_groups = has_prepend_html or has_append_html %}
 
                 {% if has_input_groups %}<div class="input-group">{% endif %}
                     {% if has_prepend_html %}
                         <div class="input-group-prepend">
-                            <span class="input-group-text">{{ ea.field.prepend_html|raw }}</span>
+                            <span class="input-group-text">{{ field.prepend_html|raw }}</span>
                         </div>
                     {% endif %}
 
                     {{ form_widget(form) }}
 
                     {% if has_append_html %}
-                        <span class="input-group-text">{{ ea.field.append_html|raw }}</span>
+                        <span class="input-group-text">{{ field.append_html|raw }}</span>
                     {% endif %}
                 {% if has_input_groups %}</div>{% endif %}
 
-                {% if ea.field.help ?? false %}
-                    <small class="form-help">{{ ea.field.help|raw }}</small>
+                {% if field.help ?? false %}
+                    <small class="form-help">{{ field.help|raw }}</small>
                 {% elseif form.vars.help ?? false %}
                     <small class="form-help">{{ form.vars.help|trans(form.vars.help_translation_parameters, form.vars.translation_domain)|raw }}</small>
                 {% endif %}
@@ -110,7 +111,7 @@
     </div>
 
     {# if a field doesn't define its columns explicitly, insert a fill element to make the field take the entire row space #}
-    {% if form.vars.ea_crud_form.ea_field.columns|default(null) is null %}
+    {% if field.columns|default(null) is null %}
         <div class="flex-fill"></div>
     {% endif %}
 {% endblock form_row %}
@@ -134,7 +135,7 @@
 
     {% set row_attr = row_attr|merge({
         'data-ea-collection-field': 'true',
-        'data-entry-is-complex': form.vars.ea_crud_form.ea_field and form.vars.ea_crud_form.ea_field.customOptions.get('entryIsComplex') ? 'true' : 'false',
+        'data-entry-is-complex': form.vars.ea_vars.field and form.vars.ea_vars.field.customOptions.get('entryIsComplex') ? 'true' : 'false',
         'data-allow-add': allow_add ? 'true' : 'false',
         'data-allow-delete': allow_delete ? 'true' : 'false',
         'data-num-items': form.children is empty ? 0 : max(form.children|keys),
@@ -148,7 +149,7 @@
     {# the "is iterable" check is needed because if an object implements __toString() and
                returns an empty string, "is empty" returns true even if it's not a collection #}
     {% set isEmptyCollection = value is null or (value is iterable and value is empty) %}
-    {% set is_array_field = 'EasyCorp\\Bundle\\EasyAdminBundle\\Field\\ArrayField' == form.vars.ea_crud_form.ea_field.fieldFqcn ?? false %}
+    {% set is_array_field = 'EasyCorp\\Bundle\\EasyAdminBundle\\Field\\ArrayField' == form.vars.ea_vars.field.fieldFqcn ?? false %}
 
     <div class="ea-form-collection-items">
         {% if isEmptyCollection %}
@@ -175,10 +176,10 @@
 {% endblock collection_widget %}
 
 {% block collection_entry_row %}
-    {% set is_array_field = 'EasyCorp\\Bundle\\EasyAdminBundle\\Field\\ArrayField' == form_parent(form).vars.ea_crud_form.ea_field.fieldFqcn ?? false %}
-    {% set is_complex = form_parent(form).vars.ea_crud_form.ea_field.customOptions.get('entryIsComplex') ?? false %}
+    {% set is_array_field = 'EasyCorp\\Bundle\\EasyAdminBundle\\Field\\ArrayField' == form_parent(form).vars.ea_vars.field.fieldFqcn ?? false %}
+    {% set is_complex = form_parent(form).vars.ea_vars.field.customOptions.get('entryIsComplex') ?? false %}
     {% set allows_deleting_items = form_parent(form).vars.allow_delete|default(false) %}
-    {% set render_expanded = form_parent(form).vars.ea_crud_form.ea_field.customOptions.get('renderExpanded') ?? false %}
+    {% set render_expanded = form_parent(form).vars.ea_vars.field.customOptions.get('renderExpanded') ?? false %}
     {% set delete_item_button %}
         <button type="button" class="btn btn-link btn-link-danger field-collection-delete-button"
                 title="{{ 'action.remove_item'|trans({}, 'EasyAdminBundle') }}">
@@ -343,7 +344,7 @@
 {% endblock %}
 
 {% block vich_image_widget %}
-    {% set formTypeOptions = ea_crud_form.ea_field.formTypeOptions|default('') %}
+    {% set formTypeOptions = ea_vars.field.formTypeOptions|default('') %}
     <div class="ea-vich-image">
         {% if image_uri|default('') is not empty %}
             {% if download_uri|default('') is empty %}
@@ -410,10 +411,14 @@
 
 {# TODO: remove this when "form panels" are removed #}
 {% block ea_crud_widget_panels %}
+    {% deprecated 'The "ea_crud_widget_panels" block is deprecated because the form layout building logic has been revamped. Check "ea_crud_widget" block in `form_theme.html.page` for more details.' %}
+
     {{ block('ea_crud_widget_fieldsets') }}
 {% endblock ea_crud_widget_panels %}
 
 {% block ea_crud_widget_fieldsets %}
+    {% deprecated 'The "ea_crud_widget_fieldsets" block is deprecated because the form layout building logic has been revamped. Check "ea_crud_widget" block in `form_theme.html.page` for more details.' %}
+
     {% for fieldset_name, fieldset_config in ea_crud_form.form_fieldsets|filter(fieldset_config => not fieldset_config.form_tab or fieldset_config.form_tab == tab_name) %}
         {% set fieldset_has_header = fieldset_config.label|default(false) or fieldset_config.icon|default(false) or fieldset_config.help|default(false) %}
 
@@ -491,11 +496,11 @@
 {% block ea_code_editor_widget %}
     {{ form_widget(form, { attr: attr|merge({
         'data-ea-code-editor-field': 'true',
-        'data-language': form.vars.ea_crud_form.ea_field.customOptions.get('language'),
-        'data-tab-size': form.vars.ea_crud_form.ea_field.customOptions.get('tabSize'),
-        'data-indent-with-tabs': form.vars.ea_crud_form.ea_field.customOptions.get('indentWithTabs') ? 'true' : 'false',
-        'data-show-line-numbers': form.vars.ea_crud_form.ea_field.customOptions.get('showLineNumbers') ? 'true' : 'false',
-        'data-number-of-rows': form.vars.ea_crud_form.ea_field.customOptions.get('numOfRows'),
+        'data-language': form.vars.ea_vars.field.customOptions.get('language'),
+        'data-tab-size': form.vars.ea_vars.field.customOptions.get('tabSize'),
+        'data-indent-with-tabs': form.vars.ea_vars.field.customOptions.get('indentWithTabs') ? 'true' : 'false',
+        'data-show-line-numbers': form.vars.ea_vars.field.customOptions.get('showLineNumbers') ? 'true' : 'false',
+        'data-number-of-rows': form.vars.ea_vars.field.customOptions.get('numOfRows'),
     }) }) }}
 {% endblock ea_code_editor_widget %}
 
@@ -503,8 +508,8 @@
 {% block ea_text_editor_widget %}
     {{ form_widget(form, { attr: attr|merge({
         class: 'ea-text-editor-content d-none',
-        'data-number-of-rows': form.vars.ea_crud_form.ea_field.customOptions.get('numOfRows')|default(5),
-        'data-trix-editor-config': form.vars.ea_crud_form.ea_field.customOptions.get('trixEditorConfig')|default(null)|json_encode,
+        'data-number-of-rows': form.vars.ea_vars.field.customOptions.get('numOfRows')|default(5),
+        'data-trix-editor-config': form.vars.ea_vars.field.customOptions.get('trixEditorConfig')|default(null)|json_encode,
     }) }) }}
 
     <div class="ea-text-editor-wrapper">

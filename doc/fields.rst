@@ -250,43 +250,44 @@ the fields using `PHP generators`_::
 Field Layout
 ------------
 
-By default, EasyAdmin displays one form field per row. Inside the row, each
-field type uses a different default width (e.g. integer fields are narrow and
-code editor fields are very wide).
+By default, EasyAdmin forms displays one field per row. Inside each row, fields
+show a different width depending on their type (e.g. integer fields are narrow
+and code editor fields are very wide).
 
-EasyAdmin also provides somre features to create complex form layouts: tabs,
-columns, fieldsets and rows.
+In this section, you'll learn how to customize the width of each field and also
+the whole form layout thanks to elements such as tabs, columns, fieldsets and rows.
 
 Form Tabs
 ~~~~~~~~~
 
-In pages where you display lots of fields, you can divide them in tabs using
-the "tabs" created with the special ``FormField`` object::
+This is the best element to make a very long/complex form more usable. It allows
+to group fields into separate tabs that are visible one at a time. To do so,
+call the ``addTab()`` method on the special ``FormField`` object:
 
     use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 
     public function configureFields(string $pageName): iterable
     {
         return [
-            IdField::new('id')->hideOnForm(),
-
-            // Add a tab
+            // Creates a tab: all fields following it will belong to that tab
+            // (until the end of the form or until you create another tab)
             FormField::addTab('First Tab'),
-
-            // Your fields
             TextField::new('firstName'),
             TextField::new('lastName'),
 
-            // Add a second Form Tab
-            // Tabs can also define their icon, CSS class and help message
+            // Creates a second tab and customizes some of its properties, such
+            // as its icon, CSS class and help message
             FormField::addTab('Contact information Tab')
                 ->setIcon('phone')->addCssClass('optional')
                 ->setHelp('Phone number is preferred'),
 
             TextField::new('phone'),
-
+            // ...
         ];
     }
+
+Inside tabs you can include not only form fields but all the other form layout
+fields explained in the following sections: columns, fieldsets and rows.
 
 Form Columns
 ~~~~~~~~~~~~
@@ -323,11 +324,11 @@ spanning the other 4 Bootstrap columns)::
         ];
     }
 
-Thanks to Bootstap responsive classes, you can have columns of different sizes,
+Thanks to Bootstrap responsive classes, you can have columns of different sizes,
 or even no columns at all, depending on the browser window size. In the following
 example, breakpoints below ``lg`` doesn't display columns. Also, the sum of the
-two columns doesn't total ``12``: this is allowed to create columns shorter than
-the total spave available::
+two columns doesn't total ``12``; this is allowed to create columns shorter than
+the total space available::
 
     use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 
@@ -368,6 +369,12 @@ complex layouts::
         ];
     }
 
+.. note::
+
+    By default, all fields inside columns are as wide as their containing column.
+    Use form rows, as explained below, to customize the field width and/or to
+    display more than one field on the same row.
+
 Form Fieldsets
 ~~~~~~~~~~~~~~
 
@@ -384,7 +391,7 @@ the fieldsets created with the special ``FormField`` object::
     public function configureFields(string $pageName): iterable
     {
         return [
-            // fielfsets usually display only a title
+            // fieldsets usually display only a title
             FormField::addFieldset('User Details'),
             TextField::new('firstName'),
             TextField::new('lastName'),
@@ -408,7 +415,11 @@ the fieldsets created with the special ``FormField`` object::
         ];
     }
 
-* TODO: recommed using fieldsets inside columns
+.. tip::
+
+    When using form columns, fieldsets inside them display a slightly different
+    design to better group the different fields. That's why it's recommended to
+    use fieldsets whenever you use columns.
 
 Form Rows
 ~~~~~~~~~

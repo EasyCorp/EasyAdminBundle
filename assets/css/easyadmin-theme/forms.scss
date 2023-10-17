@@ -302,8 +302,7 @@ label.form-check-label {
 
 .form-tabs .nav-tabs .fa {
     color: var(--text-muted);
-    font-size: var(--font-size-lg);
-    margin-right: 4px;
+    margin-right: 5px;
 }
 
 .form-tabs .nav-tabs .nav-link.active {
@@ -341,12 +340,30 @@ label.form-check-label {
 }
 
 .form-tabs .tab-help {
+    color: var(--form-fieldset-help-color);
     margin-top: -10px;
     margin-bottom: 15px;
 }
 
 // Form columns
 .form-column {
+    .form-column-title {
+        align-items: center;
+        display: flex;
+        color: var(--form-fieldset-header-color);
+        font-size: 17px;
+        font-weight: bold;
+        padding: 0 0 5px;
+
+        .form-column-icon {
+            color: var(--form-fieldset-icon-color);
+            margin-right: 7px;
+        }
+    }
+    .form-column-help {
+        color: var(--form-fieldset-help-color);
+    }
+
     .field-form_fieldset {
         margin-bottom: var(--bs-gutter-x);
     }
@@ -441,7 +458,7 @@ label.form-check-label {
 
         .form-fieldset-icon {
             color: var(--form-fieldset-icon-color);
-            margin-right: 5px;
+            margin-right: 7px;
         }
 
         .form-fieldset-help {

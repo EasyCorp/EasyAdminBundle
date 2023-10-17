@@ -535,13 +535,13 @@
     {% set field_icon = field.getCustomOption('icon') %}
 
     <div class="form-column {{ field.icon|default(false) == false and field.label|default(false) == false ? 'form-column-no-header' }} {{ field.cssClass|default('') }}">
-        <h2>
-            {% if field_icon|default(false) %}<i class="fa fa-fw fa-{{ field_icon }}"></i>{% endif %}
+        <div class="form-column-title">
+            {% if field_icon|default(false) %}<i class="form-column-icon fa fa-fw fa-{{ field_icon }}"></i>{% endif %}
             <span>{% if field.label|default(false) %}{{ field.label|default('')|trans(domain = ea.i18n.translationDomain)|raw }}{% endif %}</span>
-        </h2>
+        </div>
 
         {% if field.help|default(false) %}
-            <p class="form-section-help">{{ field.help|trans(domain = ea.i18n.translationDomain)|raw }}</p>
+            <p class="form-column-help">{{ field.help|trans(domain = ea.i18n.translationDomain)|raw }}</p>
         {% endif %}
 {% endblock ea_form_column_open_row %}
 

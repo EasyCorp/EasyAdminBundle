@@ -236,8 +236,8 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
             try {
                 $event = $this->ajaxEdit($context->getEntity(), $fieldName, $newValue);
-            } catch (\Exception) {
-                throw new BadRequestHttpException();
+            } catch (\Exception $e) {
+                throw new BadRequestHttpException($e->getMessage());
             }
 
             if ($event->isPropagationStopped()) {

@@ -340,7 +340,7 @@ label.form-check-label {
 }
 
 .form-tabs .tab-help {
-    color: var(--form-fieldset-help-color);
+    color: var(--form-tabs-help-color);
     margin-top: -10px;
     margin-bottom: 15px;
 }
@@ -348,20 +348,29 @@ label.form-check-label {
 // Form columns
 .form-column {
     .form-column-title {
-        align-items: center;
         display: flex;
-        color: var(--form-fieldset-header-color);
-        font-size: 17px;
-        font-weight: bold;
-        padding: 0 0 5px;
+        flex-direction: column;
+        margin-bottom: 5px;
+
+        .form-column-title-content {
+            align-items: center;
+            display: flex;
+            color: var(--form-column-header-color);
+            font-size: 17px;
+            font-weight: bold;
+            padding: 0 0 2px;
+        }
 
         .form-column-icon {
-            color: var(--form-fieldset-icon-color);
+            color: var(--form-column-icon-color);
             margin-right: 7px;
         }
-    }
-    .form-column-help {
-        color: var(--form-fieldset-help-color);
+
+        .form-column-help {
+            color: var(--form-column-help-color);
+            flex: 1;
+            margin: 0;
+        }
     }
 
     .field-form_fieldset {
@@ -383,7 +392,7 @@ label.form-check-label {
         box-shadow: none;
         padding: calc(var(--bs-gutter-x) - 5px) var(--bs-gutter-x) calc(var(--bs-gutter-x) / 2);
 
-        .form-fieldset-title .form-fieldset-title-contents {
+        .form-fieldset-title .form-fieldset-title-content {
             box-shadow: none;
             padding: 0;
         }
@@ -430,7 +439,7 @@ label.form-check-label {
     .form-fieldset-title {
         flex: 1;
 
-        .form-fieldset-title-contents {
+        .form-fieldset-title-content {
             align-items: center;
             box-shadow: 0 1px 0 var(--form-fieldset-header-border-color);
             display: flex;
@@ -463,7 +472,7 @@ label.form-check-label {
 
         .form-fieldset-help {
             color: var(--form-fieldset-help-color);
-            margin-top: 5px;
+            margin-top: 2px;
         }
     }
 }

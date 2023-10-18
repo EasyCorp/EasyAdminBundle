@@ -179,7 +179,11 @@
     --form-help-error-color: var(--gray-800);
     --form-help-active-color: var(--gray-800);
     --form-tabs-border-color: var(--gray-200);
-    --form-fieldset-header-color: var(--gray-800);
+    --form-tabs-help-color: var(--gray-600);
+    --form-column-header-color: var(--gray-700);
+    --form-column-help-color: var(--gray-600);
+    --form-column-icon-color: var(--gray-500);
+    --form-fieldset-header-color: var(--gray-700);
     --form-fieldset-help-color: var(--gray-600);
     --form-fieldset-border-color: var(--gray-200);
     --form-fieldset-header-border-color: var(--gray-200);
@@ -497,6 +501,10 @@
     --form-help-error-color: var(--true-gray-200);
     --form-help-active-color: var(--true-gray-300);
     --form-tabs-border-color: var(--true-gray-600);
+    --form-tabs-help-color: var(--true-gray-500);
+    --form-column-header-color: var(--true-gray-300);
+    --form-column-help-color: var(--true-gray-500);
+    --form-column-icon-color: var(--true-gray-400);
     --form-fieldset-header-color: var(--true-gray-300);
     --form-fieldset-help-color: var(--true-gray-500);
     --form-fieldset-border-color: var(--true-gray-600);

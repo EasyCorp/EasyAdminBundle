@@ -181,14 +181,16 @@
     {% set field_icon = field.getCustomOption('icon') %}
 
     <div class="form-column {{ field.icon|default(false) == false and field.label|default(false) == false ? 'form-column-no-header' }} {{ field.cssClass|default('') }}">
-        <h2>
-            {% if field_icon|default(false) %}<i class="fa fa-fw fa-{{ field_icon }}"></i>{% endif %}
-            <span>{% if field.label|default(false) %}{{ field.label|default('')|trans(domain = ea.i18n.translationDomain)|raw }}{% endif %}</span>
-        </h2>
+        <div class="form-column-title">
+            <div class="form-column-title-content">
+                {% if field_icon|default(false) %}<i class="form-column-icon fa fa-fw fa-{{ field_icon }}"></i>{% endif %}
+                {% if field.label|default(false) %}{{ field.label|default('')|trans(domain = ea.i18n.translationDomain)|raw }}{% endif %}
+            </div>
 
-        {% if field.help|default(false) %}
-            <p class="form-section-help">{{ field.help|trans(domain = ea.i18n.translationDomain)|raw }}</p>
-        {% endif %}
+            {% if field.help|default(false) %}
+                <div class="form-column-help">{{ field.help|trans(domain = ea.i18n.translationDomain)|raw }}</div>
+            {% endif %}
+        </div>
 {% endmacro %}
 
 {% macro render_column_close(field) %}
@@ -221,12 +223,12 @@
 
                         {% if is_collapsible %}
                             <a href="#content-{{ field.property }}" data-bs-toggle="collapse"
-                               class="form-fieldset-title-contents form-fieldset-collapse {{ is_collapsed ? 'collapsed' }}"
+                               class="form-fieldset-title-content form-fieldset-collapse {{ is_collapsed ? 'collapsed' }}"
                                aria-expanded="{{ is_collapsed ? 'false' : 'true' }}" aria-controls="content-{{ field.property }}">
                                 {{ fieldset_title_contents|raw }}
                             </a>
                         {% else %}
-                            <span class="not-collapsible form-fieldset-title-contents">
+                            <span class="not-collapsible form-fieldset-title-content">
                                 {{ fieldset_title_contents|raw }}
                             </span>
                         {% endif %}

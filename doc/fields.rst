@@ -260,9 +260,14 @@ the whole form layout thanks to elements such as tabs, columns, fieldsets and ro
 Form Tabs
 ~~~~~~~~~
 
-This is the best element to make a very long/complex form more usable. It allows
-to group fields into separate tabs that are visible one at a time. To do so,
-call the ``addTab()`` method on the special ``FormField`` object:
+This element is intended to make very long/complex form more usable. It allows
+to group fields into separate tabs that are visible one at a time. It looks like
+this:
+
+.. image:: images/easyadmin-form-tabs.png
+   :alt: EasyAdmin form that uses tabs to group fields
+
+Add tabs to your forms with the ``addTab()`` method of the special ``FormField`` object:
 
     use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 
@@ -287,7 +292,11 @@ call the ``addTab()`` method on the special ``FormField`` object:
     }
 
 Inside tabs you can include not only form fields but all the other form layout
-fields explained in the following sections: columns, fieldsets and rows.
+fields explained in the following sections: columns, fieldsets and rows. This
+is how a form using all those elements looks like:
+
+.. image:: images/easyadmin-form-tabs-columns-fieldsets.png
+   :alt: EasyAdmin form that uses tabs, columns, fieldsets and rows
 
 Form Columns
 ~~~~~~~~~~~~
@@ -303,7 +312,11 @@ which are ``xs`` (device width < 576px), ``sm`` (>= 576px), ``md`` (>= 768px),
 
 Form columns allows to break down a complex form into two or more columns of
 fields. In addition to increasing the density of information, columns allow to
-better separate fields according to their function.
+better separate fields according to their function. This is how a three column
+form looks like:
+
+.. image:: images/easyadmin-form-columns.png
+   :alt: EasyAdmin form that uses three columns to group fields
 
 The following is a simple example that divides a form in two columns (the first
 one spanning 8 of the available 12 Bootstrap columns and the second column
@@ -384,7 +397,13 @@ Form Fieldsets
     this feature was called "Form Panels".
 
 In pages where you display lots of fields, you can divide them in groups using
-the fieldsets created with the special ``FormField`` object::
+fieldsets. This is how they look like:
+
+.. image:: images/easyadmin-form-fieldsets.png
+   :alt: EasyAdmin form that uses fieldsets to group fields into different sections
+
+Add fieldsets with the created with the ``addFieldset()`` method of the special
+``FormField`` object::
 
     use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 
@@ -415,11 +434,12 @@ the fieldsets created with the special ``FormField`` object::
         ];
     }
 
-.. tip::
+When using form columns, fieldsets inside them display a slightly different
+design to better group the different fields. That's why it's recommended to
+use fieldsets whenever you use columns. This is how it looks like:
 
-    When using form columns, fieldsets inside them display a slightly different
-    design to better group the different fields. That's why it's recommended to
-    use fieldsets whenever you use columns.
+.. image:: images/easyadmin-form-columns-fieldsets.png
+   :alt: EasyAdmin form that uses three columns and several fieldsets to group fields
 
 Form Rows
 ~~~~~~~~~
@@ -428,6 +448,12 @@ Before using this option, you must be familiar with the `Bootstrap grid system`_
 which divides each row into 12 same-width columns, and the `Bootstrap breakpoints`_,
 which are ``xs`` (device width < 576px), ``sm`` (>= 576px), ``md`` (>= 768px),
 ``lg`` (>= 992px), ``xl`` (>= 1,200px) and ``xxl`` (>= 1,400px).
+
+Form rows allow to display two or more fields on the same row. This is how it
+looks like:
+
+.. image:: images/easyadmin-form-rows.png
+   :alt: EasyAdmin form that uses rows to display several fields on the same row
 
 Imagine that you want to display two fields called  ``startsAt`` and ``endsAt``
 on the same row, each of them spanning 6 columns of the row. This is how you

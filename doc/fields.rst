@@ -267,7 +267,7 @@ this:
 .. image:: images/easyadmin-form-tabs.png
    :alt: EasyAdmin form that uses tabs to group fields
 
-Add tabs to your forms with the ``addTab()`` method of the special ``FormField`` object:
+Add tabs to your forms with the ``addTab()`` method of the special ``FormField`` object::
 
     use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 

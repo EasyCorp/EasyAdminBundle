@@ -201,7 +201,7 @@ final class FormLayoutFactory
 
                 if ($aFormColumnIsOpen) {
                     $fields->insertBefore($this->createColumnCloseField(), $fieldDto);
-                    $fields->insertBefore($this->createColumnGroupCloseField(), $fieldDto);
+                    $fields->insertBefore($this->createColumnGroupCloseField($formUsesTabs), $fieldDto);
                     $aFormColumnIsOpen = false;
                 }
 
@@ -232,7 +232,7 @@ final class FormLayoutFactory
                 $formUsesColumns = true;
 
                 if ($isFirstFormColumn) {
-                    $fields->insertBefore($this->createColumnGroupOpenField(), $fieldDto);
+                    $fields->insertBefore($this->createColumnGroupOpenField($formUsesTabs), $fieldDto);
                     $isFirstFormColumn = false;
                 }
 
@@ -261,7 +261,7 @@ final class FormLayoutFactory
 
         if ($aFormColumnIsOpen) {
             $fields->add($this->createColumnCloseField());
-            $fields->add($this->createColumnGroupCloseField());
+            $fields->add($this->createColumnGroupCloseField($formUsesTabs));
         }
 
         if ($formUsesTabs) {
@@ -272,19 +272,19 @@ final class FormLayoutFactory
         }
     }
 
-    private function createColumnGroupOpenField(): FieldDto
+    private function createColumnGroupOpenField(bool $formUsesTabs): FieldDto
     {
         return Field::new(sprintf('ea_form_column_group_open_%s', Ulid::generate()))
             ->setFormType(EaFormColumnGroupOpenType::class)
-            ->setFormTypeOptions(['mapped' => false, 'required' => false])
+            ->setFormTypeOptions(['mapped' => false, 'required' => false, 'ea_is_inside_tab' => $formUsesTabs])
             ->getAsDto();
     }
 
-    private function createColumnGroupCloseField(): FieldDto
+    private function createColumnGroupCloseField(bool $formUsesTabs): FieldDto
     {
         return Field::new(sprintf('ea_form_column_group_close_%s', Ulid::generate()))
             ->setFormType(EaFormColumnGroupCloseType::class)
-            ->setFormTypeOptions(['mapped' => false, 'required' => false])
+            ->setFormTypeOptions(['mapped' => false, 'required' => false, 'ea_is_inside_tab' => $formUsesTabs])
             ->getAsDto();
     }
 

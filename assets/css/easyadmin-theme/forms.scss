@@ -382,15 +382,13 @@ label.form-check-label {
         box-shadow: inset 0 0 0 1px var(--form-fieldset-border-color);
     }
 
-    .collapsed .form-fieldset {
-        .form-fieldset-header {
-            padding: calc(var(--bs-gutter-x) / 2) var(--bs-gutter-x);
-        }
-    }
-
     .form-fieldset-header {
         box-shadow: none;
         padding: calc(var(--bs-gutter-x) - 5px) var(--bs-gutter-x) calc(var(--bs-gutter-x) / 2);
+
+        &:has(.form-fieldset-title-content.collapsed) {
+            padding-top: calc(var(--bs-gutter-x) / 2);
+        }
 
         .form-fieldset-title .form-fieldset-title-content {
             box-shadow: none;
@@ -410,11 +408,6 @@ label.form-check-label {
 // Form fieldsets
 .field-form_fieldset {
     margin-bottom: calc(1.5 * var(--bs-gutter-x)); //not a typo; don't use --bs-gutter-y here
-
-    &.collapsed {
-        border-radius: var(--border-radius);
-        box-shadow: inset 0 0 0 1px var(--form-fieldset-border-color);
-    }
 }
 
 .form-section-empty {

@@ -170,11 +170,17 @@
 {% endmacro %}
 
 {% macro render_column_group_open(field) %}
-    <div class="row">
+    {# if columns are inside tabs, don't add a '.row' element because the tab pane already opens it #}
+    {% if not field.getFormTypeOption('ea_is_inside_tab')|default(false) %}
+        <div class="row">
+    {% endif %}
 {% endmacro %}
 
 {% macro render_column_group_close(field) %}
-    </div>
+    {# if columns are inside tabs, don't add a '.row' element because the tab pane already opens it #}
+    {% if not field.getFormTypeOption('ea_is_inside_tab')|default(false) %}
+        </div>
+    {% endif %}
 {% endmacro %}
 
 {% macro render_column_open(field) %}
@@ -204,7 +210,7 @@
     {% set is_collapsible = field.getCustomOption(is_collapsible_option_name) %}
     {% set is_collapsed = field.getCustomOption(is_collapsed_option_name) %}
 
-    <div class="{{ field.cssClass }} {{ is_collapsed ? 'collapsed' }}">
+    <div class="{{ field.cssClass }}">
         <fieldset class="form-fieldset">
             {% if fieldset_has_header %}
                 <div class="form-fieldset-header {{ is_collapsible ? 'collapsible' }} {{ field.help is not empty ? 'with-help' }}">

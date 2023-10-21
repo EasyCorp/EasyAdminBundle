@@ -523,11 +523,18 @@
 {% endblock %}
 
 {% block ea_form_column_group_open_row %}
-    <div class="row">
+    {# if columns are inside tabs, don't add a '.row' element because the tab pane already opens it #}
+    {% if not form.vars.ea_is_inside_tab|default(false) %}
+        <div class="row">
+    {% endif %}
 {% endblock ea_form_column_group_open_row %}
 
 {% block ea_form_column_group_close_row %}
-    </div>
+    {# if columns are inside tabs, we don't add a '.row' element because
+       the tab pane already opens it; so, don't close it here #}
+    {% if not form.vars.ea_is_inside_tab|default(false) %}
+        </div>
+    {% endif %}
 {% endblock ea_form_column_group_close_row %}
 
 {% block ea_form_column_open_row %}
@@ -554,7 +561,7 @@
 {% block ea_form_fieldset_open_row %}
     {% set fieldset_has_header = form.vars.label or ea_icon or ea_help %}
 
-    <div class="{{ ea_css_class }} {{ ea_is_collapsed ? 'collapsed' }}">
+    <div class="{{ ea_css_class }}">
         <fieldset class="form-fieldset">
             {% if fieldset_has_header %}
                 <div class="form-fieldset-header {{ ea_is_collapsible ? 'collapsible' }} {{ ea_help is not empty ? 'with-help' }}">

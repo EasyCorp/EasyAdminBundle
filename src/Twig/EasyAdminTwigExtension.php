@@ -4,7 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Twig;
 
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldLayoutDto;
-use EasyCorp\Bundle\EasyAdminBundle\Factory\FieldLayoutFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\FormLayoutFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Component\DependencyInjection\ServiceLocator;
@@ -192,6 +192,12 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
 
     public function createFieldLayout(?FieldCollection $fieldDtos): FieldLayoutDto
     {
-        return FieldLayoutFactory::createFromFieldDtos($fieldDtos);
+        trigger_deprecation(
+            'easycorp/easyadmin-bundle',
+            '4.8.0',
+            'The "ea_create_field_layout()" Twig function is deprecated in favor of "ea_create_form_layout()" and it will be removed in 5.0.0.',
+        );
+
+        return FormLayoutFactory::createFromFieldDtos($fieldDtos);
     }
 }

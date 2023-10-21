@@ -176,12 +176,12 @@ class CategoryCrudControllerTest extends AbstractCrudTestCase
         /* @var Category $category */
         $category = $this->categories->findOneBy([]);
 
-        $this->client->request('GET', $this->generateDetailUrl($category->getId()));
+        $crawler = $this->client->request('GET', $this->generateDetailUrl($category->getId()));
 
-        static::assertSelectorTextContains('.form-fieldset-body', $category->getId());
-        static::assertSelectorTextContains('.form-fieldset-body', $category->getName());
-        static::assertSelectorTextContains('.form-fieldset-body', $category->getSlug());
-        static::assertSelectorTextContains('.form-fieldset-body', true === $category->isActive() ? 'Yes' : 'No');
+        static::assertSame((string) $category->getId(), $crawler->filter('.content-body .field-group')->eq(0)->filter('.field-value')->text());
+        static::assertSame($category->getName(), $crawler->filter('.content-body .field-group')->eq(1)->filter('.field-value')->text());
+        static::assertSame($category->getSlug(), $crawler->filter('.content-body .field-group')->eq(2)->filter('.field-value')->text());
+        static::assertSame(true === $category->isActive() ? 'Yes' : 'No', $crawler->filter('.content-body .field-group')->eq(3)->filter('.field-value')->text());
     }
 
     /**

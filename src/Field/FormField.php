@@ -3,9 +3,10 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormFieldsetType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormRowType;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminTabType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormColumnOpenType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormFieldsetOpenType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabPaneOpenType;
 use Symfony\Component\Uid\Ulid;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
@@ -20,6 +21,9 @@ final class FormField implements FieldInterface
     public const OPTION_COLLAPSIBLE = 'collapsible';
     public const OPTION_COLLAPSED = 'collapsed';
     public const OPTION_ROW_BREAKPOINT = 'rowBreakPoint';
+    public const OPTION_TAB_ID = 'tabId';
+    public const OPTION_TAB_IS_ACTIVE = 'tabIsActive';
+    public const OPTION_TAB_ERROR_COUNT = 'tabErrorCount';
 
     /**
      * @internal Use the other named constructors instead (addPanel(), etc.)
@@ -60,7 +64,7 @@ final class FormField implements FieldInterface
             ->hideOnIndex()
             ->setProperty('ea_form_fieldset_'.(new Ulid()))
             ->setLabel($label)
-            ->setFormType(EaFormFieldsetType::class)
+            ->setFormType(EaFormFieldsetOpenType::class)
             ->addCssClass('field-form_fieldset')
             ->setFormTypeOptions(['mapped' => false, 'required' => false])
             ->setCustomOption(self::OPTION_ICON, $icon)
@@ -106,8 +110,32 @@ final class FormField implements FieldInterface
             ->hideOnIndex()
             ->setProperty('ea_form_tab_'.(new Ulid()))
             ->setLabel($label)
-            ->setFormType(EasyAdminTabType::class)
+            ->setFormType(EaFormTabPaneOpenType::class)
             ->addCssClass('field-form_tab')
+            ->setFormTypeOptions(['mapped' => false, 'required' => false])
+            ->setCustomOption(self::OPTION_ICON, $icon)
+            ->setCustomOption(self::OPTION_TAB_ERROR_COUNT, 0)
+            ->setValue(true);
+    }
+
+    /**
+     * @param int|string $cols Any value compatible with Bootstrap grid system
+     *                         (https://getbootstrap.com/docs/5.3/layout/grid/)
+     *                         (e.g. 'col-6', 'col-sm-3', 'col-md-6 col-xl-4', etc.)
+     *                         (integer values are transformed like this: N -> 'col-N')
+     */
+    public static function addColumn(int|string $cols = 'col', TranslatableInterface|string|null $label = null, ?string $icon = null, ?string $help = null): self
+    {
+        $field = new self();
+        // $icon = $field->fixIconFormat($icon, 'FormField::addTab()');
+
+        return $field
+            ->setFieldFqcn(__CLASS__)
+            ->hideOnIndex()
+            ->setProperty('ea_form_column_'.(new Ulid()))
+            ->setLabel($label)
+            ->setFormType(EaFormColumnOpenType::class)
+            ->addCssClass(sprintf('field-form_column %s', \is_int($cols) ? 'col-md-'.$cols : $cols))
             ->setFormTypeOptions(['mapped' => false, 'required' => false])
             ->setCustomOption(self::OPTION_ICON, $icon)
             ->setValue(true);

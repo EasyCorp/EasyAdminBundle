@@ -6,10 +6,12 @@ use Doctrine\ORM\PersistentCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\AdminContextFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\ControllerFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
@@ -31,12 +33,14 @@ final class CollectionConfigurator implements FieldConfiguratorInterface
     private RequestStack $requestStack;
     private EntityFactory $entityFactory;
     private ControllerFactory $controllerFactory;
+    private AdminContextFactory $adminContextFactory;
 
-    public function __construct(RequestStack $requestStack, EntityFactory $entityFactory, ControllerFactory $controllerFactory)
+    public function __construct(RequestStack $requestStack, EntityFactory $entityFactory, ControllerFactory $controllerFactory, AdminContextFactory $adminContextFactory)
     {
         $this->requestStack = $requestStack;
         $this->entityFactory = $entityFactory;
         $this->controllerFactory = $controllerFactory;
+        $this->adminContextFactory = $adminContextFactory;
     }
 
     public function supports(FieldDto $field, EntityDto $entityDto): bool
@@ -101,11 +105,10 @@ final class CollectionConfigurator implements FieldConfiguratorInterface
             }
 
             $crudEditPageName = $field->getCustomOption(CollectionField::OPTION_ENTRY_CRUD_EDIT_PAGE_NAME) ?? Crud::PAGE_EDIT;
-            $editEntityDto = $this->createEntityDto($targetEntityFqcn, $targetCrudControllerFqcn, Action::EDIT, $crudEditPageName);
+            $editEntityDto = $this->createEntityDto($targetEntityFqcn, $targetCrudControllerFqcn, Action::EDIT, $crudEditPageName, $context);
             $field->setFormTypeOption('entry_options.entityDto', $editEntityDto);
-
             $crudNewPageName = $field->getCustomOption(CollectionField::OPTION_ENTRY_CRUD_NEW_PAGE_NAME) ?? Crud::PAGE_NEW;
-            $newEntityDto = $this->createEntityDto($targetEntityFqcn, $targetCrudControllerFqcn, Action::NEW, $crudNewPageName);
+            $newEntityDto = $this->createEntityDto($targetEntityFqcn, $targetCrudControllerFqcn, Action::NEW, $crudNewPageName, $context);
 
             try {
                 $field->setFormTypeOption('prototype_options.entityDto', $newEntityDto);
@@ -153,19 +156,32 @@ final class CollectionConfigurator implements FieldConfiguratorInterface
         return 0;
     }
 
-    private function createEntityDto(string $targetEntityFqcn, string $targetCrudControllerFqcn, string $crudAction, string $pageName): EntityDto
+    private function createEntityDto(string $targetEntityFqcn, string $targetCrudControllerFqcn, string $crudAction, string $pageName, AdminContext $context): EntityDto
     {
         $entityDto = $this->entityFactory->create($targetEntityFqcn);
+
+        $currReq = $this->requestStack->getCurrentRequest();
+        $subReqQuery = [EA::CRUD_ACTION => $pageName, EA::CRUD_CONTROLLER_FQCN => $targetCrudControllerFqcn, EA::ENTITY_ID => null];
+        $subReq = $currReq->duplicate($subReqQuery);
+        $subReq->attributes->remove(EA::CONTEXT_REQUEST_ATTRIBUTE);
 
         $crudController = $this->controllerFactory->getCrudControllerInstance(
             $targetCrudControllerFqcn,
             $crudAction,
-            $this->requestStack->getMainRequest()
+            $subReq
         );
 
-        $fields = $crudController->configureFields($pageName);
+        $dashboardController = $this->controllerFactory->getDashboardControllerInstance($context->getDashboardControllerFqcn(), $subReq);
+        $embeddedCtx = $this->adminContextFactory->create($subReq, $dashboardController, $crudController);
+        $subReq->attributes->set(EA::CONTEXT_REQUEST_ATTRIBUTE, $embeddedCtx);
 
-        $this->entityFactory->processFields($entityDto, FieldCollection::new($fields));
+        $this->requestStack->push($subReq);
+        try {
+            $fields = $crudController->configureFields($pageName);
+            $this->entityFactory->processFields($entityDto, FieldCollection::new($fields));
+        } finally {
+            $this->requestStack->pop();
+        }
 
         return $entityDto;
     }

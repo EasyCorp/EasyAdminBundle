@@ -13,6 +13,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\AdminContextFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\ControllerFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
@@ -33,13 +34,15 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
     private AdminUrlGenerator $adminUrlGenerator;
     private RequestStack $requestStack;
     private ControllerFactory $controllerFactory;
+    private AdminContextFactory $adminContextFactory;
 
-    public function __construct(EntityFactory $entityFactory, AdminUrlGenerator $adminUrlGenerator, RequestStack $requestStack, ControllerFactory $controllerFactory)
+    public function __construct(EntityFactory $entityFactory, AdminUrlGenerator $adminUrlGenerator, RequestStack $requestStack, ControllerFactory $controllerFactory, AdminContextFactory $adminContextFactory)
     {
         $this->entityFactory = $entityFactory;
         $this->adminUrlGenerator = $adminUrlGenerator;
         $this->requestStack = $requestStack;
         $this->controllerFactory = $controllerFactory;
+        $this->adminContextFactory = $adminContextFactory;
     }
 
     public function supports(FieldDto $field, EntityDto $entityDto): bool
@@ -81,7 +84,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
                 );
             }
 
-            $this->configureCrudForm($field, $entityDto, $propertyName, $targetEntityFqcn, $targetCrudControllerFqcn);
+            $this->configureCrudForm($field, $entityDto, $propertyName, $targetEntityFqcn, $targetCrudControllerFqcn, $context);
 
             return;
         }
@@ -258,7 +261,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         return 0;
     }
 
-    private function configureCrudForm(FieldDto $field, EntityDto $entityDto, string $propertyName, string $targetEntityFqcn, string $targetCrudControllerFqcn): void
+    private function configureCrudForm(FieldDto $field, EntityDto $entityDto, string $propertyName, string $targetEntityFqcn, string $targetCrudControllerFqcn, AdminContext $context): void
     {
         $field->setFormType(CrudFormType::class);
         $propertyAccessor = new PropertyAccessor();
@@ -274,30 +277,48 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         if (null === $associatedEntity) {
             $targetCrudControllerAction = Action::NEW;
             $targetCrudControllerPageName = $field->getCustomOption(AssociationField::OPTION_EMBEDDED_CRUD_FORM_NEW_PAGE_NAME) ?? Crud::PAGE_NEW;
+            $entityPK = null;
         } else {
             $targetCrudControllerAction = Action::EDIT;
             $targetCrudControllerPageName = $field->getCustomOption(AssociationField::OPTION_EMBEDDED_CRUD_FORM_EDIT_PAGE_NAME) ?? Crud::PAGE_EDIT;
+            $entityMeta = $this->entityFactory->getEntityMetadata($targetEntityFqcn);
+            $entityPK = $entityMeta->getIdentifierValues($associatedEntity)[$entityMeta->getIdentifierFieldNames()[0]];
         }
 
         $field->setFormTypeOption(
             'entityDto',
-            $this->createEntityDto($targetEntityFqcn, $targetCrudControllerFqcn, $targetCrudControllerAction, $targetCrudControllerPageName),
+            $this->createEntityDto($targetEntityFqcn, $entityPK, $targetCrudControllerFqcn, $targetCrudControllerAction, $targetCrudControllerPageName, $context),
         );
     }
 
-    private function createEntityDto(string $entityFqcn, string $crudControllerFqcn, string $crudControllerAction, string $crudControllerPageName): EntityDto
+    private function createEntityDto(string $entityFqcn, ?string $entityPK, string $crudControllerFqcn, string $crudControllerAction, string $crudControllerPageName, AdminContext $context): EntityDto
     {
         $entityDto = $this->entityFactory->create($entityFqcn);
+
+        $currReq = $this->requestStack->getCurrentRequest();
+        $subReqQuery = [EA::CRUD_ACTION => $crudControllerPageName, EA::CRUD_CONTROLLER_FQCN => $crudControllerFqcn];
+        if (null !== $entityPK) {
+            $subReqQuery[EA::ENTITY_ID] = $entityPK;
+        }
+        $subReq = $currReq->duplicate($subReqQuery);
+        $subReq->attributes->remove(EA::CONTEXT_REQUEST_ATTRIBUTE);
 
         $crudController = $this->controllerFactory->getCrudControllerInstance(
             $crudControllerFqcn,
             $crudControllerAction,
-            $this->requestStack->getMainRequest()
+            $subReq
         );
+        $dashboardController = $this->controllerFactory->getDashboardControllerInstance($context->getDashboardControllerFqcn(), $subReq);
+        $embeddedCtx = $this->adminContextFactory->create($subReq, $dashboardController, $crudController);
+        $subReq->attributes->set(EA::CONTEXT_REQUEST_ATTRIBUTE, $embeddedCtx);
 
-        $fields = $crudController->configureFields($crudControllerPageName);
-
-        $this->entityFactory->processFields($entityDto, FieldCollection::new($fields));
+        $this->requestStack->push($subReq);
+        try {
+            $fields = $crudController->configureFields($crudControllerPageName);
+            $this->entityFactory->processFields($entityDto, FieldCollection::new($fields));
+        } finally {
+            $this->requestStack->pop();
+        }
 
         return $entityDto;
     }

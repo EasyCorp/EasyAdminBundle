@@ -1,0 +1,63 @@
+---------------------------------------------------------------------------
+
+by nopenopenope at 2023-09-04T21:15:44Z
+
+Seems like there is some flakyness? Also, it would be good if the project ships a Development `Dockerfile` that can be used to run quality tools directly in the IDE rather than having to rely on the (eventually expensive) GitHub actions - would ease the development a bit.
+
+@javiereguiluz looks like I am having a hard time to get the tests passing as they throw arbitrary errors. Can you check if I made a mistake or if its an issue with GH and replay the failed ones? :thinking: thanks.
+
+---------------------------------------------------------------------------
+
+by OskarStark at 2023-09-06T05:05:18Z
+
+@javiereguiluz after merge, I would propose a new release to see how things are going 👍🏻
+
+After some time, I could check it myself easy, by using the interface, create more interfaces
+
+---------------------------------------------------------------------------
+
+by nopenopenope at 2023-09-06T07:04:35Z
+
+@OskarStark Autowire and Autoconfigure are taking care of it automatically, as we only use this Interface for this very class, Symfony detects it automatically.
+
+---------------------------------------------------------------------------
+
+by OskarStark at 2023-09-08T04:25:51Z
+
+While this is true for services in src/ it is not for vendor. @javiereguiluz do you register the class somewhere? If yes we need to alias the Interface there too
+
+---------------------------------------------------------------------------
+
+by nopenopenope at 2023-09-17T14:44:33Z
+
+Can I have an update on whats the planned procedure here now? If this PR is going to get merged I'd prepare more changes to further improve the application. :+1:
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2023-09-18T18:13:52Z
+
+Hi! Sorry for the lack of response here 🙏  I need more time to review this. Thanks!
+
+---------------------------------------------------------------------------
+
+by nopenopenope at 2023-09-19T11:15:50Z
+
+@javiereguiluz please ask me anything you want to know about it in here - I want to propose many more changes with basic interfaces before proposing bigger changes (to simplify, or work with composite patterns etc), and it just makes sense that everyone involved is on the same level on the matter. Also - great chance to learn a thing or two for everyone, I guess. :+1: So, take your time, but please do not forget about me :-)
+
+---------------------------------------------------------------------------
+
+by nopenopenope at 2023-10-05T10:24:02Z
+
+Another 2 weeks, whats the status of this? @javiereguiluz
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2023-10-05T12:55:06Z
+
+I promise I haven't forgotten about you or your PR 🙏  These past days I've been very busy working on some improvement for EasyAdmin. It's mostly internal, and not trivial, so it's taking me a lot of time. I'll try to find some time for this too.
+
+---------------------------------------------------------------------------
+
+by nopenopenope at 2023-10-05T14:45:23Z
+
+@javiereguiluz I will ping you in another few weeks then! :pray: happy coding in the meantime!!

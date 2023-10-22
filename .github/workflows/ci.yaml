@@ -61,6 +61,7 @@ jobs:
                 os: [ubuntu-latest]
                 php_version: ["8.1", "8.2"]
                 symfony_version: ["5.4", "6.0", "6.1", "6.2", "6.3", "6.4.0-beta1", "7.0.0-beta1"]
+                stability: "stable"
                 include:
                     # Latest Symfony version support
                     - os: macos-latest
@@ -91,9 +92,11 @@ jobs:
                     -   os: ubuntu-latest
                         php_version: "8.1"
                         symfony_version: "6.4.0-beta1"
+                        stability: "dev"
                     -   os: ubuntu-latest
                         php_version: "8.2"
                         symfony_version: "7.0.0-beta1"
+                        stability: "dev"
         runs-on: ${{ matrix.os }}
         steps:
             - uses: actions/checkout@v4
@@ -112,10 +115,9 @@ jobs:
                   composer global config --no-plugins allow-plugins.symfony/flex true
                   composer global require symfony/flex
 
-            - name: Allow beta versions for upcoming Symfony versions
-              if: ${{ matrix.symfony_version }} = "6.4.0-beta1" || ${{ matrix.symfony_version }} = "7.0.0-beta1"
+            - name: Configure Composer stability
               run: |
-                  composer config minimum-stability beta
+                  composer config minimum-stability ${{ matrix.stability }}
 
             - name: Configure Symfony version for symfony/flex
               if: ${{ matrix.symfony_version }}

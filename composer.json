@@ -44,7 +44,7 @@
         "phpstan/phpstan-phpunit": "^1.2",
         "phpstan/phpstan-strict-rules": "^1.4",
         "phpstan/phpstan-symfony": "^1.2",
-        "psr/log": "^1.0",
+        "psr/log": "^1.0|^2.0|^3.0",
         "symfony/browser-kit": "^5.4|^6.0|^7.0",
         "symfony/css-selector": "^5.4|^6.0|^7.0",
         "symfony/debug-bundle": "^5.4|^6.0|^7.0",

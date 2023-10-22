@@ -13,6 +13,7 @@ trigger_deprecation(
 
 class_exists(ContractMenuItemMatcherInterface::class);
 
+/** @phpstan-ignore-next-line */
 if (false) {
     /**
      * @deprecated since EasyAdmin 4.8.1, to be removed in 5.0, use {@link ContractMenuItemMatcherInterface} instead

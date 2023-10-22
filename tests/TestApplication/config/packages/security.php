@@ -1,10 +1,9 @@
 <?php
 
 use Symfony\Component\Security\Core\User\InMemoryUser;
+use Symfony\Component\HttpKernel\Kernel;
 
 $configuration = [
-    'enable_authenticator_manager' => true,
-
     'password_hashers' => [
         InMemoryUser::class => 'plaintext',
     ],
@@ -43,5 +42,9 @@ $configuration = [
         ['path' => '^/secure_admin', 'roles' => ['ROLE_USER']],
     ],
 ];
+
+if (Kernel::MAJOR_VERSION < 7) {
+    $configuration['enable_authenticator_manager'] = true;
+}
 
 $container->loadFromExtension('security', $configuration);

@@ -18,6 +18,8 @@ export default class Autocomplete
             return this.#createAutocompleteWithHtmlContents(element);
         }
 
+        if (! element.hasAttribute("value")) return;
+
         return this.#createAutocomplete(element);
     }
 

@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Menu;
 
-use  EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu\MenuItemMatcherInterface as ContractMenuItemMatcherInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu\MenuItemMatcherInterface as ContractMenuItemMatcherInterface;
 
 trigger_deprecation(
     'easycorp/easyadmin-bundle',

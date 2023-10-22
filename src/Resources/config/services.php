@@ -10,6 +10,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Command\MakeAdminDashboardCommand;
 use EasyCorp\Bundle\EasyAdminBundle\Command\MakeCrudControllerCommand;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterConfiguratorInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu\MenuItemMatcherInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Orm\EntityPaginatorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\DependencyInjection\EasyAdminExtension;
 use EasyCorp\Bundle\EasyAdminBundle\EventListener\AdminRouterSubscriber;
 use EasyCorp\Bundle\EasyAdminBundle\EventListener\CrudResponseListener;
@@ -69,7 +71,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Inspector\DataCollector;
 use EasyCorp\Bundle\EasyAdminBundle\Intl\IntlFormatter;
 use EasyCorp\Bundle\EasyAdminBundle\Maker\ClassMaker;
 use EasyCorp\Bundle\EasyAdminBundle\Menu\MenuItemMatcher;
-use EasyCorp\Bundle\EasyAdminBundle\Menu\MenuItemMatcherInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityPaginator;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityUpdater;
@@ -227,13 +228,15 @@ return static function (ContainerConfigurator $container) {
             ->arg(0, service(AdminUrlGenerator::class))
             ->arg(1, service(EntityFactory::class))
 
+        ->alias(EntityPaginatorInterface::class, EntityPaginator::class)
+
         ->set(EntityUpdater::class)
             ->arg(0, service('property_accessor'))
             ->arg(1, service('validator'))
 
         ->set(PaginatorFactory::class)
             ->arg(0, service(AdminContextProvider::class))
-            ->arg(1, service(EntityPaginator::class))
+            ->arg(1, service(EntityPaginatorInterface::class))
 
         ->set(FormFactory::class)
             ->arg(0, service('form.factory'))

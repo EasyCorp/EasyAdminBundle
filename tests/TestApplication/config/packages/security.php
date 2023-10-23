@@ -4,6 +4,9 @@ use Symfony\Component\Security\Core\User\InMemoryUser;
 use Symfony\Component\HttpKernel\Kernel;
 
 $configuration = [
+    // TODO: remove this when we require Symfony 7.0 or higher in this project
+    'enable_authenticator_manager' => true,
+
     'password_hashers' => [
         InMemoryUser::class => 'plaintext',
     ],
@@ -43,8 +46,9 @@ $configuration = [
     ],
 ];
 
-if (Kernel::MAJOR_VERSION < 7) {
-    $configuration['enable_authenticator_manager'] = true;
+// TODO: remove this when we require Symfony 7.0 or higher in this project
+if (Kernel::MAJOR_VERSION >= 7) {
+    unset($configuration['enable_authenticator_manager']);
 }
 
 $container->loadFromExtension('security', $configuration);

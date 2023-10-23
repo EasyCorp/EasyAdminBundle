@@ -129,7 +129,7 @@ export default class Autocomplete
                     return `<div>${item.entityAsString}</div>`;
                 },
                 item: function(item, escape) {
-                    return `<div>${item.entityAsString}</div>`;
+                    return `<div>${escape(item.entityAsString)}</div>`;
                 },
                 loading_more: function(data, escape) {
                     return `<div class="loading-more-results">${element.getAttribute('data-ea-i18n-loading-more-results')}</div>`;

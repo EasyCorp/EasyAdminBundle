@@ -16,14 +16,14 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class EaFormColumnGroupOpenType extends AbstractType
 {
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
             ->define('ea_is_inside_tab')->default(false)->allowedTypes('boolean')
         ;
     }
 
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $view->vars['ea_is_inside_tab'] = $options['ea_is_inside_tab'];
     }

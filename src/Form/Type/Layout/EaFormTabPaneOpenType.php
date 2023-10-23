@@ -17,7 +17,7 @@ use Symfony\Contracts\Translation\TranslatableInterface;
  */
 class EaFormTabPaneOpenType extends AbstractType
 {
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
             ->define('ea_tab_id')->allowedTypes('string')
@@ -27,7 +27,7 @@ class EaFormTabPaneOpenType extends AbstractType
         ;
     }
 
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $view->vars['ea_tab_id'] = $options['ea_tab_id'];
         $view->vars['ea_css_class'] = $options['ea_css_class'];

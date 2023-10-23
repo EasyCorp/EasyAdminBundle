@@ -17,7 +17,7 @@ use Symfony\Contracts\Translation\TranslatableInterface;
  */
 class EaFormFieldsetOpenType extends AbstractType
 {
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
             ->define('ea_css_class')->default(null)->allowedTypes('string', 'null')
@@ -28,7 +28,7 @@ class EaFormFieldsetOpenType extends AbstractType
         ;
     }
 
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $view->vars['ea_css_class'] = $options['ea_css_class'];
         $view->vars['ea_icon'] = $options['ea_icon'];

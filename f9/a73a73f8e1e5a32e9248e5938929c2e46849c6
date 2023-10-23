@@ -1,0 +1,11 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2023-08-28T18:17:08Z
+
+@yalit regarding your question, I'd prefer to not use UUIDs in the test application. I mean, adding some UUID property somewhere or even an entire new entity with a UUID as its primary key is OK ... but I'd prefer to not use UUIDs in all the entities of the test app. Thanks!
+
+---------------------------------------------------------------------------
+
+by yalit at 2023-08-28T19:06:57Z
+
+@javiereguiluz thanks for the answer.

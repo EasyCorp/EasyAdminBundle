@@ -2,17 +2,17 @@ includes:
 	- phpstan-baseline.neon
 
 parameters:
-    level: 5
-    paths:
-        - src/
+	level: 5
+	paths:
+		- src/
 	excludePaths:
-	    # these are excluded because Symfony changed the ArgumentValueResolver interface
-	    # and PHPStan complains that one of the two doesn't exist, depending on the Symfony version
+		# these are excluded because Symfony changed the ArgumentValueResolver interface
+		# and PHPStan complains that one of the two doesn't exist, depending on the Symfony version
 		- src/Controller/AbstractCrudController.php
 		- src/Controller/AbstractDashboardController.php
-    bootstrapFiles:
-        - vendor/bin/.phpunit/phpunit/vendor/autoload.php
-    ignoreErrors:
-        - '#Cannot use array destructuring on callable.#'
-    treatPhpDocTypesAsCertain: false
-    reportUnmatchedIgnoredErrors: false
+	bootstrapFiles:
+		- vendor/bin/.phpunit/phpunit/vendor/autoload.php
+	ignoreErrors:
+		- '#Cannot use array destructuring on callable.#'
+	treatPhpDocTypesAsCertain: false
+	reportUnmatchedIgnoredErrors: false

@@ -14,39 +14,77 @@ use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 /*
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class BatchActionDtoResolver implements ArgumentValueResolverInterface, ValueResolverInterface
-{
-    private AdminContextProvider $adminContextProvider;
-    private AdminUrlGeneratorInterface $adminUrlGenerator;
-
-    public function __construct(AdminContextProvider $adminContextProvider, AdminUrlGeneratorInterface $adminUrlGenerator)
+if (interface_exists(ValueResolverInterface::class)) {
+    final class BatchActionDtoResolver implements ValueResolverInterface
     {
-        $this->adminContextProvider = $adminContextProvider;
-        $this->adminUrlGenerator = $adminUrlGenerator;
-    }
+        private AdminContextProvider $adminContextProvider;
+        private AdminUrlGeneratorInterface $adminUrlGenerator;
 
-    public function supports(Request $request, ArgumentMetadata $argument): bool
-    {
-        return BatchActionDto::class === $argument->getType();
-    }
-
-    public function resolve(Request $request, ArgumentMetadata $argument): iterable
-    {
-        if (null === $context = $this->adminContextProvider->getContext()) {
-            throw new \RuntimeException(sprintf('Some of your controller actions have type-hinted an argument with the "%s" class but that\'s only available for actions run to serve EasyAdmin requests. Remove the type-hint or make sure the action is part of an EasyAdmin request.', BatchActionDto::class));
+        public function __construct(AdminContextProvider $adminContextProvider, AdminUrlGeneratorInterface $adminUrlGenerator)
+        {
+            $this->adminContextProvider = $adminContextProvider;
+            $this->adminUrlGenerator = $adminUrlGenerator;
         }
 
-        $batchActionUrl = $context->getRequest()->request->get(EA::BATCH_ACTION_URL);
-        $batchActionUrlQueryString = parse_url($batchActionUrl, \PHP_URL_QUERY);
-        parse_str($batchActionUrlQueryString, $batchActionUrlParts);
-        $referrerUrl = $batchActionUrlParts[EA::REFERRER] ?? $this->adminUrlGenerator->unsetAll()->generateUrl();
+        public function resolve(Request $request, ArgumentMetadata $argument): iterable
+        {
+            if (BatchActionDto::class !== $argument->getType()) {
+                return [];
+            }
 
-        yield new BatchActionDto(
-            $context->getRequest()->request->get(EA::BATCH_ACTION_NAME),
-            $context->getRequest()->request->all()[EA::BATCH_ACTION_ENTITY_IDS] ?? [],
-            $context->getRequest()->request->get(EA::ENTITY_FQCN),
-            $referrerUrl,
-            $context->getRequest()->request->get(EA::BATCH_ACTION_CSRF_TOKEN)
-        );
+            if (null === $context = $this->adminContextProvider->getContext()) {
+                throw new \RuntimeException(sprintf('Some of your controller actions have type-hinted an argument with the "%s" class but that\'s only available for actions run to serve EasyAdmin requests. Remove the type-hint or make sure the action is part of an EasyAdmin request.', BatchActionDto::class));
+            }
+
+            $batchActionUrl = $context->getRequest()->request->get(EA::BATCH_ACTION_URL);
+            $batchActionUrlQueryString = parse_url($batchActionUrl, \PHP_URL_QUERY);
+            parse_str($batchActionUrlQueryString, $batchActionUrlParts);
+            $referrerUrl = $batchActionUrlParts[EA::REFERRER] ?? $this->adminUrlGenerator->unsetAll()->generateUrl();
+
+            yield new BatchActionDto(
+                $context->getRequest()->request->get(EA::BATCH_ACTION_NAME),
+                $context->getRequest()->request->all()[EA::BATCH_ACTION_ENTITY_IDS] ?? [],
+                $context->getRequest()->request->get(EA::ENTITY_FQCN),
+                $referrerUrl,
+                $context->getRequest()->request->get(EA::BATCH_ACTION_CSRF_TOKEN)
+            );
+        }
+    }
+} else {
+    final class BatchActionDtoResolver implements ArgumentValueResolverInterface
+    {
+        private AdminContextProvider $adminContextProvider;
+        private AdminUrlGeneratorInterface $adminUrlGenerator;
+
+        public function __construct(AdminContextProvider $adminContextProvider, AdminUrlGeneratorInterface $adminUrlGenerator)
+        {
+            $this->adminContextProvider = $adminContextProvider;
+            $this->adminUrlGenerator = $adminUrlGenerator;
+        }
+
+        public function supports(Request $request, ArgumentMetadata $argument): bool
+        {
+            return BatchActionDto::class === $argument->getType();
+        }
+
+        public function resolve(Request $request, ArgumentMetadata $argument): iterable
+        {
+            if (null === $context = $this->adminContextProvider->getContext()) {
+                throw new \RuntimeException(sprintf('Some of your controller actions have type-hinted an argument with the "%s" class but that\'s only available for actions run to serve EasyAdmin requests. Remove the type-hint or make sure the action is part of an EasyAdmin request.', BatchActionDto::class));
+            }
+
+            $batchActionUrl = $context->getRequest()->request->get(EA::BATCH_ACTION_URL);
+            $batchActionUrlQueryString = parse_url($batchActionUrl, \PHP_URL_QUERY);
+            parse_str($batchActionUrlQueryString, $batchActionUrlParts);
+            $referrerUrl = $batchActionUrlParts[EA::REFERRER] ?? $this->adminUrlGenerator->unsetAll()->generateUrl();
+
+            yield new BatchActionDto(
+                $context->getRequest()->request->get(EA::BATCH_ACTION_NAME),
+                $context->getRequest()->request->all()[EA::BATCH_ACTION_ENTITY_IDS] ?? [],
+                $context->getRequest()->request->get(EA::ENTITY_FQCN),
+                $referrerUrl,
+                $context->getRequest()->request->get(EA::BATCH_ACTION_CSRF_TOKEN)
+            );
+        }
     }
 }

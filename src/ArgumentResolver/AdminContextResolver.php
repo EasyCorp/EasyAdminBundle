@@ -12,22 +12,43 @@ use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 /*
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class AdminContextResolver implements ArgumentValueResolverInterface, ValueResolverInterface
-{
-    private AdminContextProvider $adminContextProvider;
-
-    public function __construct(AdminContextProvider $adminContextProvider)
+if (interface_exists(ValueResolverInterface::class)) {
+    final class AdminContextResolver implements ValueResolverInterface
     {
-        $this->adminContextProvider = $adminContextProvider;
+        private AdminContextProvider $adminContextProvider;
+
+        public function __construct(AdminContextProvider $adminContextProvider)
+        {
+            $this->adminContextProvider = $adminContextProvider;
+        }
+
+        public function resolve(Request $request, ArgumentMetadata $argument): iterable
+        {
+            if (AdminContext::class !== $argument->getType()) {
+                return [];
+            }
+
+            yield $this->adminContextProvider->getContext();
+        }
     }
-
-    public function supports(Request $request, ArgumentMetadata $argument): bool
+} else {
+    final class AdminContextResolver implements ArgumentValueResolverInterface
     {
-        return AdminContext::class === $argument->getType();
-    }
+        private AdminContextProvider $adminContextProvider;
 
-    public function resolve(Request $request, ArgumentMetadata $argument): iterable
-    {
-        yield $this->adminContextProvider->getContext();
+        public function __construct(AdminContextProvider $adminContextProvider)
+        {
+            $this->adminContextProvider = $adminContextProvider;
+        }
+
+        public function supports(Request $request, ArgumentMetadata $argument): bool
+        {
+            return AdminContext::class === $argument->getType();
+        }
+
+        public function resolve(Request $request, ArgumentMetadata $argument): iterable
+        {
+            yield $this->adminContextProvider->getContext();
+        }
     }
 }

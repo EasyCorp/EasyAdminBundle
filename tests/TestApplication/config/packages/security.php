@@ -1,7 +1,7 @@
 <?php
 
-use Symfony\Component\Security\Core\User\InMemoryUser;
 use Symfony\Component\HttpKernel\Kernel;
+use Symfony\Component\Security\Core\User\InMemoryUser;
 
 $configuration = [
     // TODO: remove this when we require Symfony 7.0 or higher in this project

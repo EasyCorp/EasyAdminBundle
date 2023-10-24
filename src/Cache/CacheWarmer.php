@@ -28,7 +28,7 @@ final class CacheWarmer implements CacheWarmerInterface
         return false;
     }
 
-    public function warmUp(string $cacheDir): array
+    public function warmUp(string $cacheDir, string $buildDir = null): array
     {
         $allRoutes = $this->router->getRouteCollection();
         $dashboardRoutes = [];

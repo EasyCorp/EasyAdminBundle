@@ -71,13 +71,17 @@
 {% macro render_field_contents(entity, field) %}
     <div class="field-group {{ field.cssClass }}">
         <div class="field-label">
-            {{ field.label|trans|raw }}
+            {%- set label_html_attributes -%}
+                {%- if field.help is not empty -%}
+                    data-bs-toggle="tooltip" data-bs-placement="auto" data-bs-animation="false"
+                    data-bs-html="true" data-bs-custom-class="ea-detail-label-tooltip"
+                    data-bs-title="{{ field.help|trans|e('html_attr') }}"
+                {%- endif -%}
+            {%- endset -%}
 
-            {% if field.help is not empty %}
-                <a tabindex="0" class="data-help" data-bs-toggle="popover" data-bs-custom-class="ea-content-help-popover" data-bs-animation="true" data-bs-html="true" data-bs-placement="right" data-bs-trigger="focus" data-bs-content="{{ field.help|trans|e('html_attr') }}">
-                    <i class="far fa-question-circle"></i>
-                </a>
-            {% endif %}
+            <div {{ label_html_attributes }}>
+                {{ field.label|trans|raw }}
+            </div>
         </div>
 
         <div class="field-value">

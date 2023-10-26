@@ -1,0 +1,39 @@
+---------------------------------------------------------------------------
+
+by mahono at 2023-10-25T18:55:09Z
+
+Interesting. You changed to align-right to still be able to not have horizontal lines. I like it. And people can probably still change to align-left and add/or add horizontal lines if they want with some simple CSS.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2023-10-25T19:03:29Z
+
+There's something I'm not sure about. For boolean fields, we have this:
+
+```
+<-- short label space -->  <-------------- long value space -------------->
+     The contents of the   YES
+   label of the checkbox
+```
+
+I wonder if it'd be better to flip the label/value order for boolean fields:
+
+```
+<-- short label space -->  <-------------- long value space -------------->
+                      YES  The contents of the label of the checkbox
+```
+
+---------------------------------------------------------------------------
+
+by john-dufrene-dev at 2023-10-25T19:45:36Z
+
+I like it too,
+Do you think it's possible to have an option to add separate Line between field ?
+
+---------------------------------------------------------------------------
+
+by mahono at 2023-10-26T13:33:46Z
+
+The horizontal lines can probably be added very easy via one or two lines of custom CSS.
+
+But the flipping is really interesting. Maybe worth adding a setting in the Dashboard/Crud config classes?

@@ -1,0 +1,15 @@
+{
+    "_hash": "cf77d4402e325a0f8e6c4bfe814b7b00bf0f663e54b31b8786f4df0d024e837f",
+    "patches": {
+        "doctrine/doctrine-fixtures-bundle": [
+            {
+                "package": "doctrine/doctrine-fixtures-bundle",
+                "description": "0",
+                "url": "patches/doctrine-fixtures-bundle.patch",
+                "sha256": "f1a215d0b7a4aee936fd0dd6636e6f4594e339cb54153c03d59de789e69623fd",
+                "depth": 1,
+                "extra": []
+            }
+        ]
+    }
+}

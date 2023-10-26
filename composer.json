@@ -38,7 +38,7 @@
         "symfony/validator": "^5.4|^6.0|^7.0"
     },
     "require-dev": {
-        "cweagans/composer-patches": "dev-main",
+        "cweagans/composer-patches": "^1.7.3",
         "doctrine/doctrine-fixtures-bundle": "^3.4|4.0.x-dev",
         "phpstan/extension-installer": "^1.2",
         "phpstan/phpstan": "^1.9",

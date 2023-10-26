@@ -38,6 +38,7 @@
         "symfony/validator": "^5.4|^6.0|^7.0"
     },
     "require-dev": {
+        "cweagans/composer-patches": "dev-main",
         "doctrine/doctrine-fixtures-bundle": "^3.4|4.0.x-dev",
         "phpstan/extension-installer": "^1.2",
         "phpstan/phpstan": "^1.9",
@@ -55,7 +56,8 @@
         "sort-packages": true,
         "allow-plugins": {
             "symfony/flex": true,
-            "phpstan/extension-installer": true
+            "phpstan/extension-installer": true,
+            "cweagans/composer-patches": true
         }
     },
     "autoload": {
@@ -75,7 +77,12 @@
         },
         "symfony": {
             "require": "7.0.0-beta1"
-        }
-    },
+        },
+        "composer-exit-on-patch-failure": true,
+        "patches": {
+            "doctrine/doctrine-fixtures-bundle": [
+                "patches/doctrine-fixtures-bundle.patch"
+            ]
+        },
     "minimum-stability": "dev"
 }

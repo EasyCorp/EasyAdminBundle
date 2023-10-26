@@ -84,5 +84,6 @@
                 "patches/doctrine-fixtures-bundle.patch"
             ]
         },
-    "minimum-stability": "dev"
+        "minimum-stability": "dev"
+    }
 }

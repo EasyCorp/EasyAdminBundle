@@ -350,7 +350,7 @@ label.form-check-label {
     .form-column-title {
         display: flex;
         flex-direction: column;
-        margin-bottom: 5px;
+        margin-bottom: 15px;
 
         .form-column-title-content {
             align-items: center;
@@ -394,13 +394,17 @@ label.form-check-label {
             box-shadow: none;
             padding: 0;
         }
+
+        .form-fieldset-title .form-fieldset-help {
+            margin-top: 2px;
+        }
     }
 
     .form-fieldset-body {
-        padding: 5px var(--bs-gutter-x);
+        padding: 5px var(--bs-gutter-x) 0;
 
         &.without-header {
-            padding: var(--bs-gutter-x);
+            padding: var(--bs-gutter-x) var(--bs-gutter-x) 0;
         }
     }
 }
@@ -465,7 +469,7 @@ label.form-check-label {
 
         .form-fieldset-help {
             color: var(--form-fieldset-help-color);
-            margin-top: 2px;
+            margin-top: 6px;
         }
     }
 }

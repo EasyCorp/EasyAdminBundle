@@ -30,6 +30,7 @@ class App {
         this.#createBatchActions();
         this.#createModalWindowsForDeleteActions();
         this.#createPopovers();
+        this.#createTooltips();
 
         document.addEventListener('ea.collection.item-added', () => this.#createAutoCompleteFields());
     }
@@ -364,6 +365,12 @@ class App {
     #createPopovers() {
         document.querySelectorAll('[data-bs-toggle="popover"]').forEach((popoverElement) => {
             new bootstrap.Popover(popoverElement);
+        });
+    }
+
+    #createTooltips() {
+        document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach((tooltipElement) => {
+            new bootstrap.Tooltip(tooltipElement);
         });
     }
 

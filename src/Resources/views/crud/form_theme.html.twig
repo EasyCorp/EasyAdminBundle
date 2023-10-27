@@ -100,7 +100,7 @@
                 {% if has_input_groups %}</div>{% endif %}
 
                 {% if field.help ?? false %}
-                    <small class="form-help">{{ field.help|raw|trans(label_translation_parameters, translation_domain) }}</small>
+                    <small class="form-help">{{ field.help|trans(label_translation_parameters, translation_domain)|raw }}</small>
                 {% elseif form.vars.help ?? false %}
                     <small class="form-help">{{ form.vars.help|trans(form.vars.help_translation_parameters, form.vars.translation_domain)|raw }}</small>
                 {% endif %}

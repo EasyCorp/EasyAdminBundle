@@ -70,19 +70,24 @@
 
 {% macro render_field_contents(entity, field) %}
     <div class="field-group {{ field.cssClass }}">
-        <div class="field-label">
-            {%- set label_html_attributes -%}
-                {%- if field.help is not empty -%}
-                    data-bs-toggle="tooltip" data-bs-placement="auto" data-bs-animation="false"
-                    data-bs-html="true" data-bs-custom-class="ea-detail-label-tooltip"
-                    data-bs-title="{{ field.help|trans|e('html_attr') }}"
-                {%- endif -%}
-            {%- endset -%}
+        {% if field.label is same as (false) %}
+            {# a FALSE label value means that the field doesn't even display the <label> element;
+               use an empty string to not display a label but keep the <label> element to not mess with the layout #}
+        {% else %}
+            <div class="field-label">
+                {%- set label_html_attributes -%}
+                    {%- if field.help is not empty -%}
+                        data-bs-toggle="tooltip" data-bs-placement="auto" data-bs-animation="false"
+                        data-bs-html="true" data-bs-custom-class="ea-detail-label-tooltip"
+                        data-bs-title="{{ field.help|trans|e('html_attr') }}"
+                    {%- endif -%}
+                {%- endset -%}
 
-            <div {{ label_html_attributes }}>
-                {{ field.label|trans|raw }}
+                <div {{ label_html_attributes }}>
+                    {{ field.label|trans|raw }}
+                </div>
             </div>
-        </div>
+        {% endif %}
 
         <div class="field-value">
             {{ include(field.templatePath, { field: field, entity: entity }, with_context = false) }}

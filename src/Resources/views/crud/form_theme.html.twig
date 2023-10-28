@@ -245,7 +245,8 @@
 
 {% block form_label -%}
     {% if label is same as(false) -%}
-        <label>{# the empty <label> is needed to not break the form design #}</label>
+        {# don't display anything, not even an empty <label> element; if you want to not display
+           any label contents but keep the form layout, use an empty string as the field label #}
     {%- else -%}
         {%- if compound is defined and compound -%}
             {%- set element = 'legend' -%}
@@ -256,7 +257,10 @@
         {% if required -%}
             {% set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' required')|trim}) %}
         {%- endif -%}
-        {% if label is empty -%}
+        {% if label == '' -%}
+            {# don't process the label; this is used to not display any label content
+               but render an empty <label> element keep the form layout #}
+        {%- elseif label is null -%}
             {%- if label_format is not empty -%}
                 {% set label = label_format|replace({
                     '%name%': name,

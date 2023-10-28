@@ -131,7 +131,7 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
             $label = $this->humanizeString($field->getProperty());
         }
 
-        if ('' === $label) {
+        if ('' === $label || false === $label) {
             return $label;
         }
 

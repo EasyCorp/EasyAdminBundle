@@ -30,7 +30,7 @@ class FormFieldHelpControllerTest extends AbstractCrudTestCase
         return DashboardController::class;
     }
 
-    public function testFieldsWithoutHelp()
+    public function testFieldsHelpMessages()
     {
         $crawler = $this->client->request('GET', $this->generateNewFormUrl());
 

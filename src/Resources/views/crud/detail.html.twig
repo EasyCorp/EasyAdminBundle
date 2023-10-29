@@ -134,7 +134,7 @@
                         {%- if tab.getCustomOption('icon')|default(false) -%}
                             <i class="fa-fw {{ tab.getCustomOption('icon') }}"></i>
                         {%- endif -%}
-                        {{ tab.label|trans(domain = ea.i18n.translationDomain) }}
+                        {{ tab.label|trans(domain = ea.i18n.translationDomain)|raw }}
 
                         {% set tab_error_count = tab.getCustomOption(tab_error_count_option_name)  %}
                         {%- if tab_error_count > 0 -%}
@@ -194,18 +194,21 @@
 
 {% macro render_column_open(field) %}
     {% set field_icon = field.getCustomOption('icon') %}
+    {% set column_has_title = field_icon != null or field.label != false or field.label != null or field.label != '' or field.help != null %}
 
-    <div class="form-column {{ field.icon|default(false) == false and field.label|default(false) == false ? 'form-column-no-header' }} {{ field.cssClass|default('') }}">
-        <div class="form-column-title">
-            <div class="form-column-title-content">
-                {% if field_icon|default(false) %}<i class="form-column-icon fa fa-fw fa-{{ field_icon }}"></i>{% endif %}
-                {% if field.label|default(false) %}{{ field.label|default('')|trans(domain = ea.i18n.translationDomain)|raw }}{% endif %}
+    <div class="form-column {{ not column_has_title ? 'form-column-no-header' }} {{ field.cssClass }}">
+        {% if column_has_title %}
+            <div class="form-column-title">
+                <div class="form-column-title-content">
+                    {% if field_icon %}<i class="form-column-icon fa fa-fw fa-{{ field_icon }}"></i>{% endif %}
+                    {% if field.label %}{{ field.label|trans(domain = ea.i18n.translationDomain)|raw }}{% endif %}
+                </div>
+
+                {% if field.help %}
+                    <div class="form-column-help">{{ field.help|trans(domain = ea.i18n.translationDomain)|raw }}</div>
+                {% endif %}
             </div>
-
-            {% if field.help|default(false) %}
-                <div class="form-column-help">{{ field.help|trans(domain = ea.i18n.translationDomain)|raw }}</div>
-            {% endif %}
-        </div>
+        {% endif %}
 {% endmacro %}
 
 {% macro render_column_close(field) %}
@@ -219,8 +222,8 @@
     {% set is_collapsible = field.getCustomOption(is_collapsible_option_name) %}
     {% set is_collapsed = field.getCustomOption(is_collapsed_option_name) %}
 
-    <div class="{{ field.cssClass }}">
-        <fieldset class="form-fieldset">
+    <div class="form-fieldset {{ not fieldset_has_header ? 'form-fieldset-no-header' }} {{ field.cssClass }}">
+        <fieldset>
             {% if fieldset_has_header %}
                 <div class="form-fieldset-header {{ is_collapsible ? 'collapsible' }} {{ field.help is not empty ? 'with-help' }}">
                     <div class="form-fieldset-title">

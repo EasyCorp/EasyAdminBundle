@@ -100,7 +100,7 @@ final class FormField implements FieldInterface
     /**
      * @return static
      */
-    public static function addTab(TranslatableInterface|string $label, ?string $icon = null): self
+    public static function addTab(TranslatableInterface|string|false|null $label = null, ?string $icon = null): self
     {
         $field = new self();
         $icon = $field->fixIconFormat($icon, 'FormField::addTab()');
@@ -124,7 +124,7 @@ final class FormField implements FieldInterface
      *                         (e.g. 'col-6', 'col-sm-3', 'col-md-6 col-xl-4', etc.)
      *                         (integer values are transformed like this: N -> 'col-N')
      */
-    public static function addColumn(int|string $cols = 'col', TranslatableInterface|string|null $label = null, ?string $icon = null, ?string $help = null): self
+    public static function addColumn(int|string $cols = 'col', TranslatableInterface|string|false|null $label = null, ?string $icon = null, ?string $help = null): self
     {
         $field = new self();
         // $icon = $field->fixIconFormat($icon, 'FormField::addTab()');

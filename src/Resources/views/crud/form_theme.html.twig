@@ -546,7 +546,7 @@
 {% block ea_form_column_open_row %}
     {% set field = form.vars.ea_vars.field %}
     {% set field_icon = field.getCustomOption('icon') %}
-    {% set column_has_title = field_icon != null or field.label != false or field.label != null or field.help != null %}
+    {% set column_has_title = field_icon != null or field.label != false or field.label != null or field.label != '' or field.help != null %}
 
     <div class="form-column {{ not column_has_title ? 'form-column-no-header' }} {{ field.cssClass }}">
         {% if column_has_title %}
@@ -570,8 +570,8 @@
 {% block ea_form_fieldset_open_row %}
     {% set fieldset_has_header = form.vars.label or ea_icon or ea_help %}
 
-    <div class="{{ ea_css_class }}">
-        <fieldset class="form-fieldset">
+    <div class="form-fieldset {{ not fieldset_has_header ? 'form-fieldset-no-header' }} {{ ea_css_class }}">
+        <fieldset>
             {% if fieldset_has_header %}
                 <div class="form-fieldset-header {{ ea_is_collapsible ? 'collapsible' }} {{ ea_help is not empty ? 'with-help' }}">
                     <div class="form-fieldset-title">
@@ -631,7 +631,7 @@
                         {%- if tab.getCustomOption('icon')|default(false) -%}
                             <i class="fa-fw {{ tab.getCustomOption('icon') }}"></i>
                         {%- endif -%}
-                        {{ tab.label|trans(domain = ea.i18n.translationDomain) }}
+                        {{ tab.label|trans(domain = ea.i18n.translationDomain)|raw }}
 
                         {% set tab_error_count = tab.getCustomOption(tab_error_count_option_name)  %}
                         {%- if tab_error_count > 0 -%}

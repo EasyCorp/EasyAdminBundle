@@ -181,7 +181,7 @@ final class FormLayoutFactory
 
             if ($fieldDto->isFormTab()) {
                 $isTabActive = 0 === \count($tabs);
-                $tabId = sprintf('tab-%s', $fieldDto->getLabel() ? $slugger->slug($fieldDto->getLabel())->lower()->toString() : ++$tabsWithoutLabelCounter);
+                $tabId = sprintf('tab-%s', $fieldDto->getLabel() ? $slugger->slug(strip_tags($fieldDto->getLabel()))->lower()->toString() : ++$tabsWithoutLabelCounter);
                 $fieldDto->setCustomOption(FormField::OPTION_TAB_ID, $tabId);
                 $fieldDto->setCustomOption(FormField::OPTION_TAB_IS_ACTIVE, $isTabActive);
 

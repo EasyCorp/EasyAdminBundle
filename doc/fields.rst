@@ -291,6 +291,18 @@ Add tabs to your forms with the ``addTab()`` method of the special ``FormField``
         ];
     }
 
+The arguments of the ``addTab()`` method are:
+
+* ``$label``: (type: ``TranslatableInterface|string|false|null``) the text that
+  this tab displays in the clickable list of tabs; if you set it to ``false``,
+  ``null`` or an empty string, no text will be displayed (make sure to show an
+  icon for the tab or users won't be able to click on it); You can also pass
+  ``string`` and ``TranslatableInterface`` variables. In both cases, if they
+  contain HTML tags they will be rendered in stead of escaped;
+* ``$icon``: (type: ``?string``) the full CSS class of a `FontAwesome icon`_
+  (e.g. ``far fa-folder-open``); if you don't display a text label for the tab,
+  make sure to display an icon or users won't be able to click on the tab.
+
 Inside tabs you can include not only form fields but all the other form layout
 fields explained in the following sections: columns, fieldsets and rows. This
 is how a form using all those elements looks like:
@@ -336,6 +348,24 @@ spanning the other 4 Bootstrap columns)::
             TextField::new('email')->hideOnIndex(),
         ];
     }
+
+The arguments of the ``addColumn()`` method are:
+
+* ``$cols``: (type: ``int|string``) the width of the column defined as any value
+  compatible with the `Bootstrap grid system`_  (e.g. ``'col-6'``, ``'col-md-6 col-xl-4'``,
+  etc.). Integer values are transformed like this: N -> 'col-N' (e.g. ``8`` is
+  transformed to ``col-8``);
+* ``$label``: (type: ``TranslatableInterface|string|false|null``) an optional title
+  that is displayed at the top of the column. If you pass ``false``, ``null``
+  or an empy string, no title is displayed. You can also pass ``string`` and
+  ``TranslatableInterface`` variables. In both cases, if they contain HTML tags
+  they will be rendered in stead of escaped;
+* ``$icon``: (type: ``?string``) the full CSS class of a `FontAwesome icon`_
+  (e.g. ``far fa-folder-open``) that is displayed next to the column label;
+* ``$help``: (type: ``?string``) an optional content that is displayed below the
+  column label; it's mostly used to describe the column contents or provide further
+  instructions or help contents. You can include HTML tags and they will be
+  rendered instead of escaped.
 
 Thanks to Bootstrap responsive classes, you can have columns of different sizes,
 or even no columns at all, depending on the browser window size. In the following
@@ -433,6 +463,16 @@ Add fieldsets with the created with the ``addFieldset()`` method of the special
             FormField::addFieldset('Contact information')->renderCollapsed(),
         ];
     }
+
+The arguments of the ``addFieldset()`` method are:
+
+* ``$label``: (type: ``TranslatableInterface|string|false|null``) an optional title
+  that is displayed at the top of the fieldset. If you pass ``false``, ``null``
+  or an empy string, no title is displayed. You can also pass ``string`` and
+  ``TranslatableInterface`` variables. In both cases, if they contain HTML tags
+  they will be rendered in stead of escaped;
+* ``$icon``: (type: ``?string``) the full CSS class of a `FontAwesome icon`_
+  (e.g. ``far fa-folder-open``) that is displayed next to the fieldset label.
 
 When using form columns, fieldsets inside them display a slightly different
 design to better group the different fields. That's why it's recommended to
@@ -944,3 +984,4 @@ attribute of the tag to run your configurator before or after the built-in ones.
 .. _`Doctrine DBAL Type`: https://www.doctrine-project.org/projects/doctrine-dbal/en/latest/reference/types.html
 .. _`Custom Mapping Types`: https://www.doctrine-project.org/projects/doctrine-dbal/en/latest/reference/types.html#custom-mapping-types
 .. _`Custom Form Field Types`: https://symfony.com/doc/current/form/create_custom_field_type.html
+.. _`FontAwesome icon`: https://fontawesome.com/v6/search?m=free

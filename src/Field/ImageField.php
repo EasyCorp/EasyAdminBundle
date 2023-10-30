@@ -6,6 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Asset;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\TextAlign;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FileUploadType;
+use League\Flysystem\FilesystemOperator;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
 /**
@@ -18,6 +19,7 @@ final class ImageField implements FieldInterface
     public const OPTION_BASE_PATH = 'basePath';
     public const OPTION_UPLOAD_DIR = 'uploadDir';
     public const OPTION_UPLOADED_FILE_NAME_PATTERN = 'uploadedFileNamePattern';
+    public const OPTION_FILESYSTEM_OPERATOR = 'filesystemOperator';
 
     /**
      * @param TranslatableInterface|string|false|null $label
@@ -35,7 +37,9 @@ final class ImageField implements FieldInterface
             ->setTextAlign(TextAlign::CENTER)
             ->setCustomOption(self::OPTION_BASE_PATH, null)
             ->setCustomOption(self::OPTION_UPLOAD_DIR, null)
-            ->setCustomOption(self::OPTION_UPLOADED_FILE_NAME_PATTERN, '[name].[extension]');
+            ->setCustomOption(self::OPTION_UPLOADED_FILE_NAME_PATTERN, '[name].[extension]')
+            ->setCustomOption(self::OPTION_FILESYSTEM_OPERATOR, null)
+        ;
     }
 
     public function setBasePath(string $path): self
@@ -73,6 +77,20 @@ final class ImageField implements FieldInterface
     public function setUploadedFileNamePattern($patternOrCallable): self
     {
         $this->setCustomOption(self::OPTION_UPLOADED_FILE_NAME_PATTERN, $patternOrCallable);
+
+        return $this;
+    }
+
+    /**
+     * File system to use in order to :
+     * - move uploaded file to its final destination
+     * - delete the previously uploaded file
+     * - retrieve file public url
+     * See https://github.com/thephpleague/flysystem-bundle.
+     */
+    public function setFilesystemOperator(FilesystemOperator $filesystemOperator): self
+    {
+        $this->setCustomOption(self::OPTION_FILESYSTEM_OPERATOR, $filesystemOperator);
 
         return $this;
     }

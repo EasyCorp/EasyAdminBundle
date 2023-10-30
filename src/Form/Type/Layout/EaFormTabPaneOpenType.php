@@ -23,7 +23,6 @@ class EaFormTabPaneOpenType extends AbstractType
             ->define('ea_tab_id')->allowedTypes('string')
             ->define('ea_css_class')->default(null)->allowedTypes('string', 'null')
             ->define('ea_help')->default(null)->allowedTypes(TranslatableInterface::class, 'string', 'null')
-            ->define('ea_tab_is_active')->default(false)->allowedTypes('boolean')
         ;
     }
 
@@ -32,7 +31,6 @@ class EaFormTabPaneOpenType extends AbstractType
         $view->vars['ea_tab_id'] = $options['ea_tab_id'];
         $view->vars['ea_css_class'] = $options['ea_css_class'];
         $view->vars['ea_help'] = $options['ea_help'];
-        $view->vars['ea_tab_is_active'] = $options['ea_tab_is_active'];
     }
 
     public function getBlockPrefix(): string

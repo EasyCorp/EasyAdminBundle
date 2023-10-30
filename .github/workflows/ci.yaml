@@ -91,7 +91,11 @@ jobs:
                     # Upcoming Symfony versions
                     -   os: ubuntu-latest
                         php_version: "8.1"
-                        symfony_version: "6.4.0-beta1"
+                        symfony_version: "6.4.0-beta2"
+                        stability: "dev"
+                    -   os: ubuntu-latest
+                        php_version: "8.2"
+                        symfony_version: "7.0.0-beta1"
                         stability: "dev"
         runs-on: ${{ matrix.os }}
         steps:

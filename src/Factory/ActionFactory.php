@@ -22,7 +22,7 @@ use Symfony\Contracts\Translation\TranslatableInterface;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class ActionFactory
+final class ActionFactory implements ActionFactoryInterface
 {
     private AdminContextProvider $adminContextProvider;
     private AuthorizationCheckerInterface $authChecker;

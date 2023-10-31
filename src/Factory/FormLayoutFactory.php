@@ -24,12 +24,8 @@ use Symfony\Component\Uid\Ulid;
  *
  * @internal and @experimental don't use this in your own apps
  */
-final class FormLayoutFactory
+final class FormLayoutFactory implements FormLayoutFactoryInterface
 {
-    public function __construct()
-    {
-    }
-
     public function createLayout(FieldCollection $fields, string $pageName): FieldCollection
     {
         // the index page has no layout elements such as tabs, form columns or fieldsets

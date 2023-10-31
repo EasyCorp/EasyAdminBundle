@@ -9,7 +9,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class PaginatorFactory
+final class PaginatorFactory implements PaginatorFactoryInterface
 {
     private AdminContextProvider $adminContextProvider;
     private EntityPaginatorInterface $entityPaginator;

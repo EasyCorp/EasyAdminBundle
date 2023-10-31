@@ -10,18 +10,18 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\Form\FormFactoryInterface as BaseFormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class FormFactory
+final class FormFactory implements FormFactoryInterface
 {
-    private FormFactoryInterface $symfonyFormFactory;
+    private BaseFormFactoryInterface $symfonyFormFactory;
 
-    public function __construct(FormFactoryInterface $symfonyFormFactory)
+    public function __construct(BaseFormFactoryInterface $symfonyFormFactory)
     {
         $this->symfonyFormFactory = $symfonyFormFactory;
     }

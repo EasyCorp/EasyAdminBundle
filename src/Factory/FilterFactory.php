@@ -21,11 +21,11 @@ use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
  * @author Yonel Ceruto <yonelceruto@gmail.com>
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class FilterFactory
+final class FilterFactory implements FilterFactoryInterface
 {
     private AdminContextProvider $adminContextProvider;
     private iterable $filterConfigurators;
-    private static array $doctrineTypeToFilterClass = [
+    private array $doctrineTypeToFilterClass = [
         'json_array' => ArrayFilter::class,
         Types::SIMPLE_ARRAY => ArrayFilter::class,
         Types::ARRAY => ArrayFilter::class,
@@ -98,6 +98,6 @@ final class FilterFactory
             return TextFilter::class;
         }
 
-        return self::$doctrineTypeToFilterClass[$metadata->get('type')] ?? TextFilter::class;
+        return $this->doctrineTypeToFilterClass[$metadata->get('type')] ?? TextFilter::class;
     }
 }

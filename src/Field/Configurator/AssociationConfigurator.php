@@ -13,7 +13,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
-use EasyCorp\Bundle\EasyAdminBundle\Factory\ControllerFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\ControllerFactoryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactoryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
@@ -33,7 +32,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
     private EntityFactoryInterface $entityFactory;
     private AdminUrlGeneratorInterface $adminUrlGenerator;
     private RequestStack $requestStack;
-    private ControllerFactory $controllerFactory;
+    private ControllerFactoryInterface $controllerFactory;
 
     public function __construct(
         EntityFactoryInterface $entityFactory,

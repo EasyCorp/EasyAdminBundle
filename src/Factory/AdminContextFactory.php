@@ -33,9 +33,9 @@ final class AdminContextFactory implements AdminContextFactoryInterface
 {
     private string $cacheDir;
     private ?TokenStorageInterface $tokenStorage;
-    private MenuFactory $menuFactory;
+    private MenuFactoryInterface $menuFactory;
     private CrudControllerRegistry $crudControllers;
-    private EntityFactory $entityFactory;
+    private EntityFactoryInterface $entityFactory;
 
     public function __construct(
         string $cacheDir,

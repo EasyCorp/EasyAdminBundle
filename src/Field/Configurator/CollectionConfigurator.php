@@ -10,7 +10,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
-use EasyCorp\Bundle\EasyAdminBundle\Factory\ControllerFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\ControllerFactoryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactoryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
@@ -31,7 +30,7 @@ final class CollectionConfigurator implements FieldConfiguratorInterface
 {
     private RequestStack $requestStack;
     private EntityFactoryInterface $entityFactory;
-    private ControllerFactory $controllerFactory;
+    private ControllerFactoryInterface $controllerFactory;
 
     public function __construct(
         RequestStack $requestStack,

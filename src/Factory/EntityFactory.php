@@ -24,8 +24,8 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
  */
 final class EntityFactory implements EntityFactoryInterface
 {
-    private FieldFactory $fieldFactory;
-    private ActionFactory $actionFactory;
+    private FieldFactoryInterface $fieldFactory;
+    private ActionFactoryInterface $actionFactory;
     private AuthorizationCheckerInterface $authorizationChecker;
     private ManagerRegistry $doctrine;
     private EventDispatcherInterface $eventDispatcher;

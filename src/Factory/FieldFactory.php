@@ -58,7 +58,7 @@ final class FieldFactory implements FieldFactoryInterface
     private AdminContextProvider $adminContextProvider;
     private AuthorizationCheckerInterface $authorizationChecker;
     private iterable $fieldConfigurators;
-    private FormLayoutFactory $fieldLayoutFactory;
+    private FormLayoutFactoryInterface $fieldLayoutFactory;
 
     public function __construct(
         AdminContextProvider $adminContextProvider,
@@ -151,7 +151,7 @@ final class FieldFactory implements FieldFactoryInterface
                 $guessedFieldFqcn = IdField::class;
             } else {
                 $doctrinePropertyType = $entityDto->getPropertyMetadata($fieldDto->getProperty())->get('type');
-                $guessedFieldFqcn = $this->$doctrineTypeToFieldFqcn[$doctrinePropertyType] ?? null;
+                $guessedFieldFqcn = $this->doctrineTypeToFieldFqcn[$doctrinePropertyType] ?? null;
 
                 if (null === $guessedFieldFqcn) {
                     throw new \RuntimeException(sprintf('The Doctrine type of the "%s" field is "%s", which is not supported by EasyAdmin. For Doctrine\'s Custom Mapping Types have a look at EasyAdmin\'s field docs.', $fieldDto->getProperty(), $doctrinePropertyType));

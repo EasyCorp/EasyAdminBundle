@@ -37,8 +37,7 @@ final class CollectionConfigurator implements FieldConfiguratorInterface
         RequestStack $requestStack,
         EntityFactoryInterface $entityFactory,
         ControllerFactoryInterface $controllerFactory
-    )
-    {
+    ) {
         $this->requestStack = $requestStack;
         $this->entityFactory = $entityFactory;
         $this->controllerFactory = $controllerFactory;

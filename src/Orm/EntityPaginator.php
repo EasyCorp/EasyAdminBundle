@@ -10,7 +10,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Orm\EntityPaginatorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\PaginatorDto;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactoryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
-use Traversable;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -23,7 +22,7 @@ final class EntityPaginator implements EntityPaginatorInterface
     private ?int $pageSize = null;
     private ?int $rangeSize = null;
     private ?int $rangeEdgeSize = null;
-    private Traversable $results;
+    private \Traversable $results;
     private ?int $numResults;
     private ?int $rangeFirstResultNumber = null;
     private ?int $rangeLastResultNumber = null;

@@ -39,8 +39,7 @@ final class EntityRepository implements EntityRepositoryInterface
         EntityFactoryInterface $entityFactory,
         FormFactoryInterface $formFactory,
         EventDispatcherInterface $eventDispatcher
-    )
-    {
+    ) {
         $this->adminContextProvider = $adminContextProvider;
         $this->doctrine = $doctrine;
         $this->entityFactory = $entityFactory;

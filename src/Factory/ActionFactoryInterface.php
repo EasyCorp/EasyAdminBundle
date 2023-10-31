@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
-
 use EasyCorp\Bundle\EasyAdminBundle\Collection\ActionCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionConfigDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;

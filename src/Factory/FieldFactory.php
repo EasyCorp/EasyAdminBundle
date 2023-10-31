@@ -60,8 +60,12 @@ final class FieldFactory implements FieldFactoryInterface
     private iterable $fieldConfigurators;
     private FormLayoutFactory $fieldLayoutFactory;
 
-    public function __construct(AdminContextProvider $adminContextProvider, AuthorizationCheckerInterface $authorizationChecker, iterable $fieldConfigurators, FormLayoutFactoryInterface $fieldLayoutFactory)
-    {
+    public function __construct(
+        AdminContextProvider $adminContextProvider,
+        AuthorizationCheckerInterface $authorizationChecker,
+        iterable $fieldConfigurators,
+        FormLayoutFactoryInterface $fieldLayoutFactory
+    ) {
         $this->adminContextProvider = $adminContextProvider;
         $this->authorizationChecker = $authorizationChecker;
         $this->fieldConfigurators = $fieldConfigurators;

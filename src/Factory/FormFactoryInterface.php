@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
-
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;

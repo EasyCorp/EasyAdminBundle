@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
-
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Orm\EntityPaginatorInterface;
 

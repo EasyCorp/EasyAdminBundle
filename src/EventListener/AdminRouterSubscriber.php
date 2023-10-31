@@ -5,7 +5,6 @@ namespace EasyCorp\Bundle\EasyAdminBundle\EventListener;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Factory\AdminContextFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\AdminContextFactoryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\ControllerFactoryInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -31,7 +30,7 @@ use Symfony\Component\Routing\Matcher\RequestMatcherInterface;
  */
 class AdminRouterSubscriber implements EventSubscriberInterface
 {
-    private AdminContextFactory $adminContextFactory;
+    private AdminContextFactoryInterface $adminContextFactory;
     private ControllerFactoryInterface $controllerFactory;
     private ControllerResolverInterface $controllerResolver;
     private UrlGeneratorInterface $urlGenerator;
@@ -43,8 +42,7 @@ class AdminRouterSubscriber implements EventSubscriberInterface
         ControllerResolverInterface $controllerResolver,
         UrlGeneratorInterface $urlGenerator,
         RequestMatcherInterface $requestMatcher
-    )
-    {
+    ) {
         $this->adminContextFactory = $adminContextFactory;
         $this->controllerFactory = $controllerFactory;
         $this->controllerResolver = $controllerResolver;

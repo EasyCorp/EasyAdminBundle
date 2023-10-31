@@ -40,8 +40,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         AdminUrlGeneratorInterface $adminUrlGenerator,
         RequestStack $requestStack,
         ControllerFactoryInterface $controllerFactory
-    )
-    {
+    ) {
         $this->entityFactory = $entityFactory;
         $this->adminUrlGenerator = $adminUrlGenerator;
         $this->requestStack = $requestStack;

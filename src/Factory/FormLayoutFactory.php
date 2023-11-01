@@ -189,7 +189,6 @@ final class FormLayoutFactory
                     'ea_tab_id' => $tabId,
                     'ea_css_class' => $fieldDto->getCssClass(),
                     'ea_help' => $fieldDto->getHelp(),
-                    'ea_tab_is_active' => $isTabActive,
                 ]);
 
                 $tabs[$tabId] = $fieldDto;

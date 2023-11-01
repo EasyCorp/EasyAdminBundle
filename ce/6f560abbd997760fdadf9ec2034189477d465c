@@ -1,0 +1,11 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2023-10-23T17:53:05Z
+
+Regarding the asset building, you are not doing anything wrong ... but because of how we need to define assets in this project, you need to run another command after running `yarn build`. See https://github.com/EasyCorp/EasyAdminBundle/blob/3b7e8c4eba598d357e16b29c8f3be62c590d37c6/Makefile#L28-L30
+
+---------------------------------------------------------------------------
+
+by Uplink03 at 2023-10-25T19:56:30Z
+
+Thanks @javiereguiluz . I didn't notice that `Makefile` there. It's all built now.

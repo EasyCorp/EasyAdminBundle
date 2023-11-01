@@ -2,11 +2,19 @@
 {# @var field \EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto #}
 {# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
 {% if ea.crud.currentAction == 'detail' %}
-    {# TODO: improve this to highlight code #}
     {% set configuredHeight = field.customOptions.get('height') %}
-    <pre style="{{ configuredHeight is null ? 'max-height: 500px;' : 'max-height: unset; height: ' ~ configuredHeight ~ 'px' }}">
+    <textarea
+            readonly
+            style="{{ configuredHeight is null ? 'max-height: 500px;' : 'max-height: unset; height: ' ~ configuredHeight ~ 'px' }}"
+            data-ea-code-editor-field="true"
+            data-language="{{ field.customOptions.get('language')|e('html_attr') }}"
+            data-tab-size="{{ field.customOptions.get('tabSize')|e('html_attr') }}"
+            data-indent-with-tabs="{{ field.customOptions.get('indentWithTabs') ? 'true' : 'false' }}"
+            data-show-line-numbers="{{ field.customOptions.get('showLineNumbers') ? 'true' : 'false' }}"
+            data-number-of-rows="{{ field.customOptions.get('numOfRows')|e('html_attr') }}"
+    >
         {{- field.formattedValue|escape -}}
-    </pre>
+    </textarea>
 {% else %}
     {% set html_id = 'ea-code-editor-' ~ field.uniqueId %}
     <a href="#" data-bs-toggle="modal" data-bs-target="#{{ html_id }}">

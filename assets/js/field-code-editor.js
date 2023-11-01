@@ -30,6 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
             tabSize: codeBlock.dataset.tabSize,
             theme: 'default',
             autoRefresh: true,
+            readOnly: codeBlock.readOnly,
         });
 
         if (codeBlock.required) {

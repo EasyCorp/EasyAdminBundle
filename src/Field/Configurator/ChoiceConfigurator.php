@@ -107,6 +107,11 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
         // Translatable choice don't need to get flipped
         $flippedChoices = $areChoicesTranslatable ? $choices : array_flip($this->flatten($choices));
         foreach ((array) $fieldValue as $selectedValue) {
+            $selectedValue = match (true) {
+                $selectedValue instanceof \BackedEnum => $selectedValue->value,
+                $selectedValue instanceof \UnitEnum => $selectedValue->name,
+                default => $selectedValue
+            };
             if (null !== $selectedLabel = $flippedChoices[$selectedValue] ?? null) {
                 if ($selectedLabel instanceof TranslatableInterface) {
                     $choiceMessage = $selectedLabel;

@@ -65,7 +65,24 @@ class IntlFormatterTest extends TestCase
     /**
      * @dataProvider provideFormatNumber
      */
-    public function testFormatNumber(?string $expectedResult, int|float|null $number, array $attrs)
+    public function testFormatNumber(?string $expectedResult, int|float $number, array $attrs)
+    {
+        if (\PHP_VERSION_ID < 80200) {
+            $this->markTestSkipped('PHP 8.2 or higher is required to run this test.');
+        }
+
+        $intlFormatter = new IntlFormatter();
+        $formattedNumber = $intlFormatter->formatNumber($number, $attrs);
+
+        $this->assertSame($expectedResult, $formattedNumber);
+    }
+
+    /**
+     * @dataProvider provideLegacyFormatNumber
+     *
+     * @group legacy
+     */
+    public function testLegacyFormatNumber(?string $expectedResult, int|float|null $number, array $attrs)
     {
         if (\PHP_VERSION_ID < 80200) {
             $this->markTestSkipped('PHP 8.2 or higher is required to run this test.');
@@ -157,7 +174,6 @@ class IntlFormatterTest extends TestCase
 
     public static function provideFormatNumber()
     {
-        yield ['0', null, []];
         yield ['0', 0, []];
         yield ['0', 0.0, []];
 
@@ -170,6 +186,11 @@ class IntlFormatterTest extends TestCase
         yield ['1,234,560', 1234.56, ['fraction_digit' => 3, 'decimal_separator' => ',']];
         yield ['1 234.560', 1234.56, ['fraction_digit' => 3, 'grouping_separator' => ' ']];
         yield ['1 234,560', 1234.56, ['fraction_digit' => 3, 'decimal_separator' => ',', 'grouping_separator' => ' ']];
+    }
+
+    public static function provideLegacyFormatNumber()
+    {
+        yield ['0', null, []];
     }
 
     private function normalizeWhiteSpaces(string $string): string

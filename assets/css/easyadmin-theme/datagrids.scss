@@ -331,6 +331,7 @@ table.datagrid {
 #modal-filters .modal-content {
   background: var(--modal-bg);
   border: 1px solid var(--modal-border-color);
+  border-radius: var(--border-radius);
 }
 #modal-filters .modal-header {
   background: var(--modal-header-bg);
@@ -344,6 +345,7 @@ table.datagrid {
 #modal-filters .modal-body {
   background: var(--modal-bg);
   border-bottom: 0;
+  border-radius: var(--border-radius);
   padding: 15px;
 }
 .action-filters-button i {
@@ -365,7 +367,7 @@ table.datagrid {
 .filter-heading {
   align-items: center;
   display: flex;
-  padding: 4px 0;
+  padding: 10px 0;
 }
 .filter-heading a {
   color: var(--link-color);
@@ -374,15 +376,13 @@ table.datagrid {
   margin-left: 7px;
 }
 .filter-content {
-  margin-left: 15px;
+  margin: -5px 0 0 15px;
+  padding: 0 0 10px;
 }
 .filter-content .form-group,
 .filter-content .form-widget-compound .form-group {
   display: block;
-  padding-right: 5px;
-}
-.filter-content .form-group:last-of-type {
-  padding-bottom: 0;
+  padding: 4px 0;
 }
 .filter-content .form-widget-compound label {
   display: none;

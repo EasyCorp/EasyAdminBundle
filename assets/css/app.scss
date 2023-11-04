@@ -1,3 +1,9 @@
+// The order of these imports is critical.
+// See https://getbootstrap.com/docs/5.3/customize/sass/
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/variables-dark";
+
 @import "./easyadmin-theme/variables-theme.scss";
 @import "./easyadmin-theme/variables-bootstrap.scss";
 

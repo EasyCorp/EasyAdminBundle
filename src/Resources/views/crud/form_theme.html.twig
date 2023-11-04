@@ -8,15 +8,13 @@
 
     {{ parent() }}
 
-    <div class="row"> {# this is closed in form_end #}
-        <input type="hidden" name="referrer" value="{{ ea.request.query.get('referrer') }}">
+    <input type="hidden" name="referrer" value="{{ ea.request.query.get('referrer') }}">
 {% endblock form_start %}
 
 {% block form_end %}
-            {% if not render_rest is defined or render_rest %}
-                {{ form_rest(form) }}
-            {% endif %}
-        </div> {# this closes the '<div class="row">' of form_start #}
+        {% if not render_rest is defined or render_rest %}
+            {{ form_rest(form) }}
+        {% endif %}
     </form>
 {% endblock %}
 

@@ -51,12 +51,14 @@ class FormLayoutFactoryTest extends TestCase
 
     public function provideFormLayouts()
     {
-        yield 'Only fields' => [
+        yield 'Only fields (a fieldset is added automatically to wrap all fields)' => [
             ['field', 'field', 'field'],
             <<<LAYOUT
-                field
-                field
-                field
+                fieldset_open
+                    field
+                    field
+                    field
+                fieldset_close
             LAYOUT,
         ];
 

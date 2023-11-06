@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\SearchMode;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Translation\TranslatableMessageBuilder;
 use function Symfony\Component\Translation\t;
@@ -51,6 +52,7 @@ final class CrudDto
     private ?string $decimalSeparator = null;
     private array $defaultSort = [];
     private ?array $searchFields = [];
+    private string $searchMode = SearchMode::ALL_TERMS;
     private bool $autofocusSearch = false;
     private bool $showEntityActionsAsDropdown = true;
     private ?PaginatorDto $paginatorDto = null;
@@ -332,6 +334,16 @@ final class CrudDto
     public function setDefaultSort(array $defaultSort): void
     {
         $this->defaultSort = $defaultSort;
+    }
+
+    public function getSearchMode(): string
+    {
+        return $this->searchMode;
+    }
+
+    public function setSearchMode(string $searchMode): void
+    {
+        $this->searchMode = $searchMode;
     }
 
     public function getSearchFields(): ?array

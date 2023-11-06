@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Config;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\SearchMode;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\SortOrder;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterConfigDto;
@@ -270,6 +271,17 @@ class Crud
     public function setSearchFields(?array $fieldNames): self
     {
         $this->dto->setSearchFields($fieldNames);
+
+        return $this;
+    }
+
+    public function setSearchMode(string $searchMode): self
+    {
+        if (!\in_array($searchMode, [SearchMode::ANY_TERMS, SearchMode::ALL_TERMS], true)) {
+            throw new \InvalidArgumentException(sprintf('The search mode can be only "%s" or "%s", "%s" given.', SearchMode::ANY_TERMS, SearchMode::ALL_TERMS, $searchMode));
+        }
+
+        $this->dto->setSearchMode($searchMode);
 
         return $this;
     }

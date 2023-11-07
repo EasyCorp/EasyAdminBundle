@@ -86,12 +86,13 @@ final class FieldCollection implements CollectionInterface
     public function insertBefore(FieldDto $newField, FieldDto $existingField): void
     {
         $newFields = [];
-        foreach ($this->fields as $field) {
-            if ($existingField->getUniqueId() === $field->getUniqueId()) {
+        $existingFieldUniqueId = $existingField->getUniqueId();
+        foreach ($this->fields as $fieldUniqueId => $field) {
+            if ($existingFieldUniqueId === $fieldUniqueId) {
                 $newFields[$newField->getUniqueId()] = $newField;
             }
 
-            $newFields[$field->getUniqueId()] = $field;
+            $newFields[$fieldUniqueId] = $field;
         }
 
         $this->fields = $newFields;

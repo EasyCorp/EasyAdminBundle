@@ -18,10 +18,6 @@ export default class Autocomplete
             return this.#createAutocompleteWithHtmlContents(element);
         }
 
-        // needed because choice fields can be displayed as a expanded list of
-        // values without autocompletion. See https://github.com/EasyCorp/EasyAdminBundle/pull/5705
-        if (! element.hasAttribute('value')) return;
-
         return this.#createAutocomplete(element);
     }
 

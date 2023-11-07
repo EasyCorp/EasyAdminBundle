@@ -8,15 +8,13 @@
 
     {{ parent() }}
 
-    <div class="row"> {# this is closed in form_end #}
-        <input type="hidden" name="referrer" value="{{ ea.request.query.get('referrer') }}">
+    <input type="hidden" name="referrer" value="{{ ea.request.query.get('referrer') }}">
 {% endblock form_start %}
 
 {% block form_end %}
-            {% if not render_rest is defined or render_rest %}
-                {{ form_rest(form) }}
-            {% endif %}
-        </div> {# this closes the '<div class="row">' of form_start #}
+        {% if not render_rest is defined or render_rest %}
+            {{ form_rest(form) }}
+        {% endif %}
     </form>
 {% endblock %}
 
@@ -257,7 +255,7 @@
         {% if required -%}
             {% set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' required')|trim}) %}
         {%- endif -%}
-        {% if label == '' -%}
+        {% if label is same as('') -%}
             {# don't process the label; this is used to not display any label content
                but render an empty <label> element keep the form layout #}
         {%- elseif label is null -%}
@@ -655,8 +653,10 @@
 {% endblock ea_form_tabpane_group_close_row %}
 
 {% block ea_form_tabpane_open_row %}
+    {% set tab_is_active_option_name = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Field\\FormField::OPTION_TAB_IS_ACTIVE') %}
+    {% set field = form.vars.ea_vars.field %}
     <div class="tab-content">
-        <div id="{{ ea_tab_id }}" class="tab-pane {% if ea_tab_is_active %}active{% endif %} {{ ea_css_class }}">
+        <div id="{{ ea_tab_id }}" class="tab-pane {% if field.getCustomOption(tab_is_active_option_name) %}active{% endif %} {{ ea_css_class }}">
             {% if ea_help %}
                 <div class="content-header-help tab-help">
                     {{ ea_help|trans(domain = ea.i18n.translationDomain)|raw }}

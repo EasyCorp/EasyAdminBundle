@@ -48,11 +48,8 @@
     {% endfor %}
 {% endblock %}
 
-{% block content_footer_wrapper '' %}
-
 {% block main %}
     {% block detail_fields %}
-    <div class="row">
         {% for field in entity.fields %}
             {% if field.isFormLayoutField %}
                 {{ _self.render_layout_field(field) }}
@@ -60,7 +57,6 @@
                 {{ _self.render_field_contents(entity, field) }}
             {% endif %}
         {% endfor %}
-    </div>
     {% endblock detail_fields %}
 
     {% block delete_form %}

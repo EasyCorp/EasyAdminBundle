@@ -154,15 +154,14 @@ final class FormLayoutFactory
     {
         $formUsesColumns = false;
         $formUsesTabs = false;
+        $formUsesFieldsets = false;
         foreach ($fields as $fieldDto) {
-            if ($fieldDto->isFormColumn()) {
-                $formUsesColumns = true;
-                continue;
-            }
-
-            if ($fieldDto->isFormTab()) {
-                $formUsesTabs = true;
-            }
+            match (true) {
+                $fieldDto->isFormColumn() => $formUsesColumns = true,
+                $fieldDto->isFormTab() => $formUsesTabs = true,
+                $fieldDto->isFormFieldset() => $formUsesFieldsets = true,
+                default => null,
+            };
         }
 
         $aFormColumnIsOpen = false;
@@ -189,7 +188,6 @@ final class FormLayoutFactory
                     'ea_tab_id' => $tabId,
                     'ea_css_class' => $fieldDto->getCssClass(),
                     'ea_help' => $fieldDto->getHelp(),
-                    'ea_tab_is_active' => $isTabActive,
                 ]);
 
                 $tabs[$tabId] = $fieldDto;
@@ -269,6 +267,14 @@ final class FormLayoutFactory
             $fields->add($this->createTabPaneGroupCloseField());
             $fields->prepend($this->createTabPaneGroupOpenField());
             $fields->prepend($this->createTabListField($tabs));
+        }
+
+        // if the form doesn't use any layout fields (tabs, columns, fieldsets, etc.),
+        // wrap all fields inside a fieldset to simplify the rendering of the form later
+        // (by default, this fieldset is invisible and doesn't change the form layout, so it's fine)
+        if (!$formUsesTabs && !$formUsesColumns && !$formUsesFieldsets) {
+            $fields->prepend($this->createFieldsetOpenField());
+            $fields->add($this->createFieldsetCloseField());
         }
     }
 

@@ -20,7 +20,7 @@ final class LanguageField extends AbstractField
     public const OPTION_LANGUAGE_CODES_TO_KEEP = 'languageCodesToKeep';
     public const OPTION_LANGUAGE_CODES_TO_REMOVE = 'languageCodesToRemove';
 
-    public static function new(string $propertyName, TranslatableInterface|string|null $label = null): FieldInterface
+    public static function new(string $propertyName, TranslatableInterface|string|false|null $label = null): FieldInterface
     {
         return parent::new($propertyName, $label)
             ->setTemplateName('crud/field/language')

@@ -21,7 +21,7 @@ final class BooleanField extends AbstractField
     /** @internal */
     public const CSRF_TOKEN_NAME = 'ea-toggle';
 
-    public static function new(string $propertyName, TranslatableInterface|string|null $label = null): FieldInterface
+    public static function new(string $propertyName, TranslatableInterface|string|false|null $label = null): FieldInterface
     {
         return parent::new($propertyName, $label)
             ->setTextAlign(TextAlign::CENTER)

@@ -25,7 +25,7 @@ final class ChoiceField extends AbstractField
     public const WIDGET_AUTOCOMPLETE = 'autocomplete';
     public const WIDGET_NATIVE = 'native';
 
-    public static function new(string $propertyName, TranslatableInterface|string|null $label = null): FieldInterface
+    public static function new(string $propertyName, TranslatableInterface|string|false|null $label = null): FieldInterface
     {
         return parent::new($propertyName, $label)
             ->setTemplateName('crud/field/choice')

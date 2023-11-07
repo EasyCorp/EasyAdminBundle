@@ -22,7 +22,7 @@ final class FormField extends AbstractField
     public const OPTION_TAB_IS_ACTIVE = 'tabIsActive';
     public const OPTION_TAB_ERROR_COUNT = 'tabErrorCount';
 
-    public static function new(string $propertyName, TranslatableInterface|string|null $label = null): FieldInterface
+    public static function new(string $propertyName, TranslatableInterface|string|false|null $label = null): FieldInterface
     {
         throw new \RuntimeException('Instead of this method, use the "addPanel()" method.');
     }

@@ -15,7 +15,7 @@ final class TextEditorField extends AbstractField
     public const OPTION_NUM_OF_ROWS = 'numOfRows';
     public const OPTION_TRIX_EDITOR_CONFIG = 'trixEditorConfig';
 
-    public static function new(string $propertyName, TranslatableInterface|string|null $label = null): FieldInterface
+    public static function new(string $propertyName, TranslatableInterface|string|false|null $label = null): FieldInterface
     {
         return parent::new($propertyName, $label)
             ->setTemplateName('crud/field/text_editor')

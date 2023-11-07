@@ -12,7 +12,7 @@ use Symfony\Contracts\Translation\TranslatableInterface;
  */
 final class ArrayField extends AbstractField
 {
-    public static function new(string $propertyName, TranslatableInterface|string|null $label = null): FieldInterface
+    public static function new(string $propertyName, TranslatableInterface|string|false|null $label = null): FieldInterface
     {
         return parent::new($propertyName, $label)
             ->setTemplateName('crud/field/array')

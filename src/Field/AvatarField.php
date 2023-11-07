@@ -15,7 +15,7 @@ final class AvatarField extends AbstractField
     public const OPTION_IS_GRAVATAR_EMAIL = 'isGravatarEmail';
     public const OPTION_HEIGHT = 'height';
 
-    public static function new(string $propertyName, TranslatableInterface|string|null $label = null): FieldInterface
+    public static function new(string $propertyName, TranslatableInterface|string|false|null $label = null): FieldInterface
     {
         return parent::new($propertyName, $label)
             ->setTemplateName('crud/field/avatar')

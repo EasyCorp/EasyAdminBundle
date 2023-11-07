@@ -44,7 +44,7 @@ final class DateTimeField extends AbstractField
     public const OPTION_TIMEZONE = 'timezone';
     public const OPTION_WIDGET = 'widget';
 
-    public static function new(string $propertyName, TranslatableInterface|string|null $label = null): FieldInterface
+    public static function new(string $propertyName, TranslatableInterface|string|false|null $label = null): FieldInterface
     {
         return parent::new($propertyName, $label)
             ->setTemplateName('crud/field/datetime')

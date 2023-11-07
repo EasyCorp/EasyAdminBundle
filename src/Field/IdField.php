@@ -13,7 +13,7 @@ final class IdField extends AbstractField
 {
     public const OPTION_MAX_LENGTH = 'maxLength';
 
-    public static function new(string $propertyName, TranslatableInterface|string|null $label = null): FieldInterface
+    public static function new(string $propertyName, TranslatableInterface|string|false|null $label = null): FieldInterface
     {
         return parent::new($propertyName, $label)
             ->setTemplateName('crud/field/id')

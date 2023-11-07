@@ -14,7 +14,7 @@ final class IntegerField extends AbstractField
     public const OPTION_NUMBER_FORMAT = 'numberFormat';
     public const OPTION_THOUSANDS_SEPARATOR = 'thousandsSeparator';
 
-    public static function new(string $propertyName, TranslatableInterface|string|null $label = null): FieldInterface
+    public static function new(string $propertyName, TranslatableInterface|string|false|null $label = null): FieldInterface
     {
         return parent::new($propertyName, $label)
             ->setTemplateName('crud/field/integer')

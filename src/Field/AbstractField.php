@@ -13,8 +13,17 @@ abstract class AbstractField implements FieldInterface
 
     public const OPTION_ICON = 'icon';
 
-    public static function new(string $propertyName, TranslatableInterface|string|null $label = null): FieldInterface
+    public static function new(string $propertyName, TranslatableInterface|string|false|null $label = null): FieldInterface
     {
+        if($label === false) {
+            trigger_deprecation(
+                'easycorp/easyadmin-bundle',
+                '4.8.4',
+                'Passing `false` as the second argument of the "%s()" method is deprecated. Use `null` instead.',
+                __METHOD__
+            );
+        }
+
         return (new static())
             ->setFieldFqcn(static::class)
             ->setProperty($propertyName)

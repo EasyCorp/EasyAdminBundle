@@ -54,6 +54,8 @@ class ColorSchemeHandler {
         document.body.classList.add('light' === resolvedColorScheme ? 'ea-light-scheme' : 'ea-dark-scheme');
         localStorage.setItem(this.#colorSchemeLocalStorageKey, colorScheme);
         document.body.style.colorScheme = resolvedColorScheme;
+        // needed for Bootstrap (see https://getbootstrap.com/docs/5.3/customize/color-modes/)
+        document.body.setAttribute('data-bs-theme', 'light' === resolvedColorScheme ? 'light' : 'dark');
     }
 }
 

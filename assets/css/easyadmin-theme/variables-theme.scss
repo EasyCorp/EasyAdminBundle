@@ -675,3 +675,23 @@
 
     --border-color: hsl(213, 24%, 91%);
 }
+
+// Bootstrap variables
+.badge {
+    --bs-badge-font-weight: 500;
+}
+.btn {
+    --bs-btn-padding-x: 8px;
+    --bs-btn-padding-y: 4px;
+    --bs-btn-font-size: 0.875rem;
+    --bs-btn-font-weight: 400;
+    --bs-btn-border-width: 0;
+    --bs-btn-border-radius: var(--border-radius);
+}
+.dropdown-menu {
+    --bs-dropdown-font-size: 0.875rem;
+}
+.table {
+    --bs-table-color-state: var(--table-cell-color);
+    --bs-table-bg: var(--body-bg);
+}

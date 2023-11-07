@@ -208,6 +208,7 @@
 .field-date input[type="date"].form-control,
 .field-time input[type="time"].form-control {
   width: auto;
+  max-width: 100%;
 }
 
 // Language field

@@ -2,11 +2,11 @@
   "entrypoints": {
     "app": {
       "css": [
-        "/app.bb26af28.css",
-        "/app.bb26af28.rtl.css"
+        "/app.20c8f923.css",
+        "/app.20c8f923.rtl.css"
       ],
       "js": [
-        "/app.1357e916.js"
+        "/app.00a7b690.js"
       ]
     },
     "form": {
@@ -21,7 +21,7 @@
     },
     "page-color-scheme": {
       "js": [
-        "/page-color-scheme.a1970567.js"
+        "/page-color-scheme.f25113a4.js"
       ]
     },
     "field-boolean": {
@@ -65,8 +65,8 @@
     },
     "field-text-editor": {
       "css": [
-        "/field-text-editor.7348fb97.css",
-        "/field-text-editor.7348fb97.rtl.css"
+        "/field-text-editor.7f2b8426.css",
+        "/field-text-editor.7f2b8426.rtl.css"
       ],
       "js": [
         "/field-text-editor.722b7f0e.js"

@@ -16,8 +16,14 @@
 trix-toolbar {
     background:  var(--form-type-text-editor-toolbar-bg);
     border-bottom: 1px solid var(--form-input-border-color);
+    border-top-left-radius: var(--border-radius);
+    border-top-right-radius: var(--border-radius);
     margin: -7px -7px 10px;
     padding: 0;
+}
+trix-toolbar .trix-button-row {
+    border-top-left-radius: var(--border-radius);
+    border-top-right-radius: var(--border-radius);
 }
 trix-toolbar .trix-button-group {
     border: 0;

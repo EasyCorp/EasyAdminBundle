@@ -678,7 +678,7 @@
 
     {% for field in form %}
         <div class="col-12">
-            <div class="filter-field py-1 px-3 {% if loop.last %}pb-2{% endif %}" data-filter-property="{{ field.vars.name }}">
+            <div class="filter-field px-3" data-filter-property="{{ field.vars.name }}">
                 <div class="filter-heading" id="filter-heading-{{ loop.index }}">
                     <input type="checkbox" class="filter-checkbox" {% if field.vars.name in applied_filters %}checked{% endif %}>
                     <a data-bs-toggle="collapse" href="#filter-content-{{ loop.index }}" aria-expanded="{{ field.vars.name in applied_filters ? 'true' : 'false' }}" aria-controls="filter-content-{{ loop.index }}"
@@ -687,7 +687,7 @@
                     </a>
                 </div>
                 <div id="filter-content-{{ loop.index }}" class="filter-content collapse {% if field.vars.name in applied_filters %}show{% endif %}" aria-labelledby="filter-heading-{{ loop.index }}">
-                    <div class="form-widget my-2">
+                    <div class="form-widget">
                         {{ form_widget(field) }}
                     </div>
                 </div>

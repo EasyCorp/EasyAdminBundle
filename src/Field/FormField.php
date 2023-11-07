@@ -47,7 +47,6 @@ final class FormField extends AbstractField
     public static function addFieldset(TranslatableInterface|string|null $label = null, ?string $icon = null): FieldInterface
     {
         return parent::new('ea_form_fieldset_'.(new Ulid()), $label)
-            ->setFieldFqcn(__CLASS__)
             ->hideOnIndex()
             ->setFormType(EaFormFieldsetOpenType::class)
             ->addCssClass('field-form_fieldset')
@@ -70,7 +69,6 @@ final class FormField extends AbstractField
         }
 
         return parent::new('ea_form_row_'.(new Ulid()))
-            ->setFieldFqcn(__CLASS__)
             ->hideOnIndex()
             ->setFormType(EaFormRowType::class)
             ->addCssClass('field-form_row')
@@ -82,7 +80,6 @@ final class FormField extends AbstractField
     public static function addTab(TranslatableInterface|string|null $label = null, ?string $icon = null): FieldInterface
     {
         return parent::new('ea_form_tab_'.(new Ulid()), $label)
-            ->setFieldFqcn(__CLASS__)
             ->hideOnIndex()
             ->setFormType(EaFormTabPaneOpenType::class)
             ->addCssClass('field-form_tab')

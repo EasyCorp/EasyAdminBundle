@@ -1,0 +1,35 @@
+---------------------------------------------------------------------------
+
+by chapterjason at 2023-11-04T17:29:24Z
+
+I found the following things in a project, some might not be related to the update.
+- To enable the bootstrap dark color mode, we need to set the `data-bs-theme="dark"` for the body element here. https://github.com/EasyCorp/EasyAdminBundle/blob/4537990112b08d090465a37c1f78b31ecb9e98c6/assets/js/page-color-scheme.js#L53-L56
+- Noticed a missing border radius in the trix editor, which causes the overlap of an inner element over the border.
+![Screenshot 2023-11-04 at 5 57 29 PM](https://github.com/EasyCorp/EasyAdminBundle/assets/1337562/c6d8acfb-44e7-4432-be08-9283791630a5)
+  Can be fixed by
+  ```
+  trix-toolbar {
+    border-top-left-radius: var(--border-radius);
+    border-top-right-radius: var(--border-radius);
+  }
+  ```
+  in file https://github.com/EasyCorp/EasyAdminBundle/blob/4537990112b08d090465a37c1f78b31ecb9e98c6/assets/css/form-type-text-editor.css#L16
+- The checkbox doesn't get updated by clicking on the text, but the checkbox changed and opened the inputs. (Looks like this works only with `label` tag and the `for` attribute)
+- And the space between the filter inputs is missing.
+  ![Screenshot 2023-11-04 at 6 01 28 PM](https://github.com/EasyCorp/EasyAdminBundle/assets/1337562/76fc38cd-7a94-47ac-b234-f562fa899661)
+-  Also here I noticed a missing border-radius. (The dialog and the dropdown)
+    ![Screenshot 2023-11-04 at 6 03 38 PM](https://github.com/EasyCorp/EasyAdminBundle/assets/1337562/4fd2ab54-2458-47da-8712-8197e067765d)
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2023-11-05T16:59:20Z
+
+@chapterjason thanks for your great review 🙇
+
+I fixed all the issues that you pointed (and you are right, some of those issues happened before the update to Bootstrap 5.3).
+
+The only pending thing is:
+
+> _"The checkbox doesn't get updated by clicking on the text, but the checkbox changed and opened the inputs. (Looks like this works only with label tag and the for attribute)"_
+
+I think that the current behavior is "correct" ... you click on the label but that doesn't check the checkbox ... only opens/closes the filter. If you select any option or type anything or click on anything inside the filter, then the filter it's checked automatically. Thanks.

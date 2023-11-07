@@ -6,6 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Asset;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\TextAlign;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use Symfony\Contracts\Translation\TranslatableInterface;
@@ -17,21 +18,21 @@ trait FieldTrait
 {
     private FieldDto $dto;
 
-    private function __construct()
+    final protected function __construct()
     {
         $this->dto = new FieldDto();
     }
 
-    public function setFieldFqcn(string $fieldFqcn): self
+    public function setFieldFqcn(string $fieldFqcn): FieldInterface
     {
-        $this->dto->setFieldFqcn($fieldFqcn);
+        $this->getAsDto()->setFieldFqcn($fieldFqcn);
 
         return $this;
     }
 
-    public function setProperty(string $propertyName): self
+    public function setProperty(string $propertyName): FieldInterface
     {
-        $this->dto->setProperty($propertyName);
+        $this->getAsDto()->setProperty($propertyName);
 
         return $this;
     }
@@ -39,82 +40,72 @@ trait FieldTrait
     /**
      * @param TranslatableInterface|string|false|null $label
      */
-    public function setLabel($label): self
+    public function setLabel($label): FieldInterface
     {
-        $this->dto->setLabel($label);
+        $this->getAsDto()->setLabel($label);
 
         return $this;
     }
 
-    public function setValue($value): self
+    public function setValue($value): FieldInterface
     {
-        $this->dto->setValue($value);
+        $this->getAsDto()->setValue($value);
 
         return $this;
     }
 
-    public function setFormattedValue($value): self
+    public function setFormattedValue($value): FieldInterface
     {
-        $this->dto->setFormattedValue($value);
+        $this->getAsDto()->setFormattedValue($value);
 
         return $this;
     }
 
-    public function formatValue(?callable $callable): self
+    public function formatValue(?callable $callable): FieldInterface
     {
-        $this->dto->setFormatValueCallable($callable);
+        $this->getAsDto()->setFormatValueCallable($callable);
 
         return $this;
     }
 
-    public function setVirtual(bool $isVirtual): self
+    public function setVirtual(bool $isVirtual): FieldInterface
     {
-        $this->dto->setVirtual($isVirtual);
+        $this->getAsDto()->setVirtual($isVirtual);
 
         return $this;
     }
 
-    public function setDisabled(bool $disabled = true): self
+    public function setDisabled(bool $disabled = true): FieldInterface
     {
-        $this->dto->setFormTypeOption('disabled', $disabled);
+        $this->getAsDto()->setFormTypeOption('disabled', $disabled);
 
         return $this;
     }
 
-    public function setRequired(bool $isRequired): self
+    public function setRequired(bool $isRequired): FieldInterface
     {
-        $this->dto->setFormTypeOption('required', $isRequired);
+        $this->getAsDto()->setFormTypeOption('required', $isRequired);
 
         return $this;
     }
 
-    public function setEmptyData($emptyData = null): self
+    public function setEmptyData($emptyData = null): FieldInterface
     {
-        $this->dto->setFormTypeOption('empty_data', $emptyData);
+        $this->getAsDto()->setFormTypeOption('empty_data', $emptyData);
 
         return $this;
     }
 
-    public function setFormType(string $formTypeFqcn): self
+    public function setFormType(string $formTypeFqcn): FieldInterface
     {
-        $this->dto->setFormType($formTypeFqcn);
+        $this->getAsDto()->setFormType($formTypeFqcn);
 
         return $this;
     }
 
-    public function setFormTypeOptions(array $options): self
+    public function setFormTypeOptions(array $options): FieldInterface
     {
-        $this->dto->setFormTypeOptions($options);
-
-        return $this;
-    }
-
-    /**
-     * @param string $optionName You can use "dot" notation to set nested options (e.g. 'attr.class')
-     */
-    public function setFormTypeOption(string $optionName, $optionValue): self
-    {
-        $this->dto->setFormTypeOption($optionName, $optionValue);
+        $this->getAsDto()->setFormTypeOptions($options);
 
         return $this;
     }
@@ -122,23 +113,33 @@ trait FieldTrait
     /**
      * @param string $optionName You can use "dot" notation to set nested options (e.g. 'attr.class')
      */
-    public function setFormTypeOptionIfNotSet(string $optionName, $optionValue): self
+    public function setFormTypeOption(string $optionName, $optionValue): FieldInterface
     {
-        $this->dto->setFormTypeOptionIfNotSet($optionName, $optionValue);
+        $this->getAsDto()->setFormTypeOption($optionName, $optionValue);
 
         return $this;
     }
 
-    public function setSortable(bool $isSortable): self
+    /**
+     * @param string $optionName You can use "dot" notation to set nested options (e.g. 'attr.class')
+     */
+    public function setFormTypeOptionIfNotSet(string $optionName, $optionValue): FieldInterface
     {
-        $this->dto->setSortable($isSortable);
+        $this->getAsDto()->setFormTypeOptionIfNotSet($optionName, $optionValue);
 
         return $this;
     }
 
-    public function setPermission(string $permission): self
+    public function setSortable(bool $isSortable): FieldInterface
     {
-        $this->dto->setPermission($permission);
+        $this->getAsDto()->setSortable($isSortable);
+
+        return $this;
+    }
+
+    public function setPermission(string $permission): FieldInterface
+    {
+        $this->getAsDto()->setPermission($permission);
 
         return $this;
     }
@@ -146,72 +147,72 @@ trait FieldTrait
     /**
      * @param string $textAlign It can be 'left', 'center' or 'right'
      */
-    public function setTextAlign(string $textAlign): self
+    public function setTextAlign(string $textAlign): FieldInterface
     {
         $validOptions = [TextAlign::LEFT, TextAlign::CENTER, TextAlign::RIGHT];
         if (!\in_array($textAlign, $validOptions, true)) {
             throw new \InvalidArgumentException(sprintf('The value of the "textAlign" option can only be one of these: "%s" ("%s" was given).', implode(',', $validOptions), $textAlign));
         }
 
-        $this->dto->setTextAlign($textAlign);
+        $this->getAsDto()->setTextAlign($textAlign);
 
         return $this;
     }
 
-    public function setHelp(TranslatableInterface|string $help): self
+    public function setHelp(TranslatableInterface|string $help): FieldInterface
     {
-        $this->dto->setHelp($help);
+        $this->getAsDto()->setHelp($help);
 
         return $this;
     }
 
-    public function addCssClass(string $cssClass): self
+    public function addCssClass(string $cssClass): FieldInterface
     {
-        $this->dto->setCssClass($this->dto->getCssClass().' '.$cssClass);
+        $this->getAsDto()->setCssClass($this->getAsDto()->getCssClass().' '.$cssClass);
 
         return $this;
     }
 
-    public function setCssClass(string $cssClass): self
+    public function setCssClass(string $cssClass): FieldInterface
     {
-        $this->dto->setCssClass($cssClass);
+        $this->getAsDto()->setCssClass($cssClass);
 
         return $this;
     }
 
-    public function setTranslationParameters(array $parameters): self
+    public function setTranslationParameters(array $parameters): FieldInterface
     {
-        $this->dto->setTranslationParameters($parameters);
+        $this->getAsDto()->setTranslationParameters($parameters);
 
         return $this;
     }
 
-    public function setTemplateName(string $name): self
+    public function setTemplateName(string $name): FieldInterface
     {
-        $this->dto->setTemplateName($name);
-        $this->dto->setTemplatePath(null);
+        $this->getAsDto()->setTemplateName($name);
+        $this->getAsDto()->setTemplatePath(null);
 
         return $this;
     }
 
-    public function setTemplatePath(string $path): self
+    public function setTemplatePath(string $path): FieldInterface
     {
-        $this->dto->setTemplateName(null);
-        $this->dto->setTemplatePath($path);
+        $this->getAsDto()->setTemplateName(null);
+        $this->getAsDto()->setTemplatePath($path);
 
         return $this;
     }
 
-    public function addFormTheme(string ...$formThemePaths): self
+    public function addFormTheme(string ...$formThemePaths): FieldInterface
     {
         foreach ($formThemePaths as $formThemePath) {
-            $this->dto->addFormTheme($formThemePath);
+            $this->getAsDto()->addFormTheme($formThemePath);
         }
 
         return $this;
     }
 
-    public function addWebpackEncoreEntries(Asset|string ...$entryNamesOrAssets): self
+    public function addWebpackEncoreEntries(Asset|string ...$entryNamesOrAssets): FieldInterface
     {
         if (!class_exists('Symfony\\WebpackEncoreBundle\\Twig\\EntryFilesTwigExtension')) {
             throw new \RuntimeException('You are trying to add Webpack Encore entries in a field but Webpack Encore is not installed in your project. Try running "composer require symfony/webpack-encore-bundle"');
@@ -219,134 +220,134 @@ trait FieldTrait
 
         foreach ($entryNamesOrAssets as $entryNameOrAsset) {
             if (\is_string($entryNameOrAsset)) {
-                $this->dto->addWebpackEncoreAsset(new AssetDto($entryNameOrAsset));
+                $this->getAsDto()->addWebpackEncoreAsset(new AssetDto($entryNameOrAsset));
             } else {
-                $this->dto->addWebpackEncoreAsset($entryNameOrAsset->getAsDto());
+                $this->getAsDto()->addWebpackEncoreAsset($entryNameOrAsset->getAsDto());
             }
         }
 
         return $this;
     }
 
-    public function addCssFiles(Asset|string ...$pathsOrAssets): self
+    public function addCssFiles(Asset|string ...$pathsOrAssets): FieldInterface
     {
         foreach ($pathsOrAssets as $pathOrAsset) {
             if (\is_string($pathOrAsset)) {
-                $this->dto->addCssAsset(new AssetDto($pathOrAsset));
+                $this->getAsDto()->addCssAsset(new AssetDto($pathOrAsset));
             } else {
-                $this->dto->addCssAsset($pathOrAsset->getAsDto());
+                $this->getAsDto()->addCssAsset($pathOrAsset->getAsDto());
             }
         }
 
         return $this;
     }
 
-    public function addJsFiles(Asset|string ...$pathsOrAssets): self
+    public function addJsFiles(Asset|string ...$pathsOrAssets): FieldInterface
     {
         foreach ($pathsOrAssets as $pathOrAsset) {
             if (\is_string($pathOrAsset)) {
-                $this->dto->addJsAsset(new AssetDto($pathOrAsset));
+                $this->getAsDto()->addJsAsset(new AssetDto($pathOrAsset));
             } else {
-                $this->dto->addJsAsset($pathOrAsset->getAsDto());
+                $this->getAsDto()->addJsAsset($pathOrAsset->getAsDto());
             }
         }
 
         return $this;
     }
 
-    public function addHtmlContentsToHead(string ...$contents): self
+    public function addHtmlContentsToHead(string ...$contents): FieldInterface
     {
         foreach ($contents as $content) {
-            $this->dto->addHtmlContentToHead($content);
+            $this->getAsDto()->addHtmlContentToHead($content);
         }
 
         return $this;
     }
 
-    public function addHtmlContentsToBody(string ...$contents): self
+    public function addHtmlContentsToBody(string ...$contents): FieldInterface
     {
         foreach ($contents as $content) {
-            $this->dto->addHtmlContentToBody($content);
+            $this->getAsDto()->addHtmlContentToBody($content);
         }
 
         return $this;
     }
 
-    public function setCustomOption(string $optionName, $optionValue): self
+    public function setCustomOption(string $optionName, $optionValue): FieldInterface
     {
-        $this->dto->setCustomOption($optionName, $optionValue);
+        $this->getAsDto()->setCustomOption($optionName, $optionValue);
 
         return $this;
     }
 
-    public function setCustomOptions(array $options): self
+    public function setCustomOptions(array $options): FieldInterface
     {
-        $this->dto->setCustomOptions($options);
+        $this->getAsDto()->setCustomOptions($options);
 
         return $this;
     }
 
-    public function hideOnDetail(): self
+    public function hideOnDetail(): FieldInterface
     {
-        $displayedOn = $this->dto->getDisplayedOn();
+        $displayedOn = $this->getAsDto()->getDisplayedOn();
         $displayedOn->delete(Crud::PAGE_DETAIL);
 
-        $this->dto->setDisplayedOn($displayedOn);
+        $this->getAsDto()->setDisplayedOn($displayedOn);
 
         return $this;
     }
 
-    public function hideOnForm(): self
+    public function hideOnForm(): FieldInterface
     {
-        $displayedOn = $this->dto->getDisplayedOn();
+        $displayedOn = $this->getAsDto()->getDisplayedOn();
         $displayedOn->delete(Crud::PAGE_NEW);
         $displayedOn->delete(Crud::PAGE_EDIT);
 
-        $this->dto->setDisplayedOn($displayedOn);
+        $this->getAsDto()->setDisplayedOn($displayedOn);
 
         return $this;
     }
 
-    public function hideWhenCreating(): self
+    public function hideWhenCreating(): FieldInterface
     {
-        $displayedOn = $this->dto->getDisplayedOn();
+        $displayedOn = $this->getAsDto()->getDisplayedOn();
         $displayedOn->delete(Crud::PAGE_NEW);
 
-        $this->dto->setDisplayedOn($displayedOn);
+        $this->getAsDto()->setDisplayedOn($displayedOn);
 
         return $this;
     }
 
-    public function hideWhenUpdating(): self
+    public function hideWhenUpdating(): FieldInterface
     {
-        $displayedOn = $this->dto->getDisplayedOn();
+        $displayedOn = $this->getAsDto()->getDisplayedOn();
         $displayedOn->delete(Crud::PAGE_EDIT);
 
-        $this->dto->setDisplayedOn($displayedOn);
+        $this->getAsDto()->setDisplayedOn($displayedOn);
 
         return $this;
     }
 
-    public function hideOnIndex(): self
+    public function hideOnIndex(): FieldInterface
     {
-        $displayedOn = $this->dto->getDisplayedOn();
+        $displayedOn = $this->getAsDto()->getDisplayedOn();
         $displayedOn->delete(Crud::PAGE_INDEX);
 
-        $this->dto->setDisplayedOn($displayedOn);
+        $this->getAsDto()->setDisplayedOn($displayedOn);
 
         return $this;
     }
 
-    public function onlyOnDetail(): self
+    public function onlyOnDetail(): FieldInterface
     {
-        $this->dto->setDisplayedOn(KeyValueStore::new([Crud::PAGE_DETAIL => Crud::PAGE_DETAIL]));
+        $this->getAsDto()->setDisplayedOn(KeyValueStore::new([Crud::PAGE_DETAIL => Crud::PAGE_DETAIL]));
 
         return $this;
     }
 
-    public function onlyOnForms(): self
+    public function onlyOnForms(): FieldInterface
     {
-        $this->dto->setDisplayedOn(KeyValueStore::new([
+        $this->getAsDto()->setDisplayedOn(KeyValueStore::new([
             Crud::PAGE_NEW => Crud::PAGE_NEW,
             Crud::PAGE_EDIT => Crud::PAGE_EDIT,
         ]));
@@ -354,23 +355,23 @@ trait FieldTrait
         return $this;
     }
 
-    public function onlyOnIndex(): self
+    public function onlyOnIndex(): FieldInterface
     {
-        $this->dto->setDisplayedOn(KeyValueStore::new([Crud::PAGE_INDEX => Crud::PAGE_INDEX]));
+        $this->getAsDto()->setDisplayedOn(KeyValueStore::new([Crud::PAGE_INDEX => Crud::PAGE_INDEX]));
 
         return $this;
     }
 
-    public function onlyWhenCreating(): self
+    public function onlyWhenCreating(): FieldInterface
     {
-        $this->dto->setDisplayedOn(KeyValueStore::new([Crud::PAGE_NEW => Crud::PAGE_NEW]));
+        $this->getAsDto()->setDisplayedOn(KeyValueStore::new([Crud::PAGE_NEW => Crud::PAGE_NEW]));
 
         return $this;
     }
 
-    public function onlyWhenUpdating(): self
+    public function onlyWhenUpdating(): FieldInterface
     {
-        $this->dto->setDisplayedOn(KeyValueStore::new([Crud::PAGE_EDIT => Crud::PAGE_EDIT]));
+        $this->getAsDto()->setDisplayedOn(KeyValueStore::new([Crud::PAGE_EDIT => Crud::PAGE_EDIT]));
 
         return $this;
     }
@@ -379,9 +380,9 @@ trait FieldTrait
      * @param int|string $cols An integer with the number of columns that this field takes (e.g. 6),
      *                         or a string with responsive col CSS classes (e.g. 'col-6 col-sm-4 col-lg-3')
      */
-    public function setColumns(int|string $cols): self
+    public function setColumns(int|string $cols): FieldInterface
     {
-        $this->dto->setColumns(\is_int($cols) ? 'col-md-'.$cols : $cols);
+        $this->getAsDto()->setColumns(\is_int($cols) ? 'col-md-'.$cols : $cols);
 
         return $this;
     }
@@ -394,9 +395,9 @@ trait FieldTrait
      *
      * @internal
      */
-    public function setDefaultColumns(int|string $cols): self
+    public function setDefaultColumns(int|string $cols): FieldInterface
     {
-        $this->dto->setDefaultColumns(\is_int($cols) ? 'col-md-'.$cols : $cols);
+        $this->getAsDto()->setDefaultColumns(\is_int($cols) ? 'col-md-'.$cols : $cols);
 
         return $this;
     }
@@ -404,5 +405,37 @@ trait FieldTrait
     public function getAsDto(): FieldDto
     {
         return $this->dto;
+    }
+
+    public function setIcon(?string $iconCssClass, string $invokingMethod = 'FormField::setIcon()'): FieldInterface
+    {
+        $iconCssClass = $this->fixIconFormat(
+            $iconCssClass,
+            $invokingMethod
+        );
+
+        $this->getAsDto()->setCustomOption(AbstractField::OPTION_ICON, $iconCssClass);
+
+        return $this;
+    }
+
+    private function fixIconFormat(?string $icon, string $methodName = 'FormField::setIcon()'): ?string
+    {
+        if (null === $icon) {
+            return null;
+        }
+
+        if (!str_contains($icon, 'fa-') && !str_contains($icon, 'far-') && !str_contains($icon, 'fab-')) {
+            trigger_deprecation(
+                'easycorp/easyadmin-bundle',
+                '4.4.0',
+                'The value passed as the $icon argument in "%s" method must be the full FontAwesome CSS class of the icon. For example, if you passed "user" before, you now must pass "fa fa-user" (or any style variant like "fa fa-solid fa-user").',
+                $methodName
+            );
+
+            $icon = sprintf('fa fa-%s', $icon);
+        }
+
+        return $icon;
     }
 }

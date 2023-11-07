@@ -10,23 +10,16 @@ use Symfony\Contracts\Translation\TranslatableInterface;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class PercentField implements FieldInterface
+final class PercentField extends AbstractField
 {
-    use FieldTrait;
-
     public const OPTION_NUM_DECIMALS = 'numDecimals';
     public const OPTION_STORED_AS_FRACTIONAL = 'storedAsFractional';
     public const OPTION_SYMBOL = 'symbol';
     public const OPTION_ROUNDING_MODE = 'roundingMode';
 
-    /**
-     * @param TranslatableInterface|string|false|null $label
-     */
-    public static function new(string $propertyName, $label = null): self
+    public static function new(string $propertyName, TranslatableInterface|string|null $label = null): FieldInterface
     {
-        return (new self())
-            ->setProperty($propertyName)
-            ->setLabel($label)
+        return parent::new($propertyName, $label)
             ->setTemplateName('crud/field/percent')
             ->setFormType(PercentType::class)
             ->addCssClass('field-percent')

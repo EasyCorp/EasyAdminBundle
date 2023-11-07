@@ -10,21 +10,14 @@ use Symfony\Contracts\Translation\TranslatableInterface;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class TextEditorField implements FieldInterface
+final class TextEditorField extends AbstractField
 {
-    use FieldTrait;
-
     public const OPTION_NUM_OF_ROWS = 'numOfRows';
     public const OPTION_TRIX_EDITOR_CONFIG = 'trixEditorConfig';
 
-    /**
-     * @param TranslatableInterface|string|false|null $label
-     */
-    public static function new(string $propertyName, $label = null): self
+    public static function new(string $propertyName, TranslatableInterface|string|null $label = null): FieldInterface
     {
-        return (new self())
-            ->setProperty($propertyName)
-            ->setLabel($label)
+        return parent::new($propertyName, $label)
             ->setTemplateName('crud/field/text_editor')
             ->setFormType(TextEditorType::class)
             ->addCssClass('field-text_editor')

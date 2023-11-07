@@ -9,10 +9,8 @@ use Symfony\Contracts\Translation\TranslatableInterface;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class CountryField implements FieldInterface
+final class CountryField extends AbstractField
 {
-    use FieldTrait;
-
     public const FORMAT_ISO_3166_ALPHA2 = 'iso3166Alpha2';
     public const FORMAT_ISO_3166_ALPHA3 = 'iso3166Alpha3';
 
@@ -23,14 +21,9 @@ final class CountryField implements FieldInterface
     public const OPTION_COUNTRY_CODES_TO_REMOVE = 'countryCodesToRemove';
     public const OPTION_ALLOW_MULTIPLE_CHOICES = 'allowMultipleChoices';
 
-    /**
-     * @param TranslatableInterface|string|false|null $label
-     */
-    public static function new(string $propertyName, $label = null): self
+    public static function new(string $propertyName, TranslatableInterface|string|null $label = null): FieldInterface
     {
-        return (new self())
-            ->setProperty($propertyName)
-            ->setLabel($label)
+        return parent::new($propertyName, $label)
             ->setTemplateName('crud/field/country')
             ->setFormType(ChoiceType::class)
             ->addCssClass('field-country')

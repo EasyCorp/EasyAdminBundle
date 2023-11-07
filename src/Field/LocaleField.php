@@ -9,23 +9,16 @@ use Symfony\Contracts\Translation\TranslatableInterface;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class LocaleField implements FieldInterface
+final class LocaleField extends AbstractField
 {
-    use FieldTrait;
-
     public const OPTION_SHOW_CODE = 'showCode';
     public const OPTION_SHOW_NAME = 'showName';
     public const OPTION_LOCALE_CODES_TO_KEEP = 'localeCodesToKeep';
     public const OPTION_LOCALE_CODES_TO_REMOVE = 'localeCodesToRemove';
 
-    /**
-     * @param TranslatableInterface|string|false|null $label
-     */
-    public static function new(string $propertyName, $label = null): self
+    public static function new(string $propertyName, TranslatableInterface|string|null $label = null): FieldInterface
     {
-        return (new self())
-            ->setProperty($propertyName)
-            ->setLabel($label)
+        return parent::new($propertyName, $label)
             ->setTemplateName('crud/field/locale')
             ->setFormType(LocaleType::class)
             ->addCssClass('field-locale')

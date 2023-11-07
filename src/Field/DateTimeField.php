@@ -9,10 +9,8 @@ use Symfony\Contracts\Translation\TranslatableInterface;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class DateTimeField implements FieldInterface
+final class DateTimeField extends AbstractField
 {
-    use FieldTrait;
-
     public const FORMAT_FULL = 'full';
     public const FORMAT_LONG = 'long';
     public const FORMAT_MEDIUM = 'medium';
@@ -46,14 +44,9 @@ final class DateTimeField implements FieldInterface
     public const OPTION_TIMEZONE = 'timezone';
     public const OPTION_WIDGET = 'widget';
 
-    /**
-     * @param TranslatableInterface|string|false|null $label
-     */
-    public static function new(string $propertyName, $label = null): self
+    public static function new(string $propertyName, TranslatableInterface|string|null $label = null): FieldInterface
     {
-        return (new self())
-            ->setProperty($propertyName)
-            ->setLabel($label)
+        return parent::new($propertyName, $label)
             ->setTemplateName('crud/field/datetime')
             ->setFormType(DateTimeType::class)
             ->addCssClass('field-datetime')

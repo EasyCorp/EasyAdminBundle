@@ -9,21 +9,14 @@ use Symfony\Contracts\Translation\TranslatableInterface;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class IntegerField implements FieldInterface
+final class IntegerField extends AbstractField
 {
-    use FieldTrait;
-
     public const OPTION_NUMBER_FORMAT = 'numberFormat';
     public const OPTION_THOUSANDS_SEPARATOR = 'thousandsSeparator';
 
-    /**
-     * @param TranslatableInterface|string|false|null $label
-     */
-    public static function new(string $propertyName, $label = null): self
+    public static function new(string $propertyName, TranslatableInterface|string|null $label = null): FieldInterface
     {
-        return (new self())
-            ->setProperty($propertyName)
-            ->setLabel($label)
+        return parent::new($propertyName, $label)
             ->setTemplateName('crud/field/integer')
             ->setFormType(IntegerType::class)
             ->addCssClass('field-integer')

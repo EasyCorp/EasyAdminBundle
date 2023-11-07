@@ -11,10 +11,8 @@ use Symfony\Contracts\Translation\TranslatableInterface;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class BooleanField implements FieldInterface
+final class BooleanField extends AbstractField
 {
-    use FieldTrait;
-
     public const OPTION_RENDER_AS_SWITCH = 'renderAsSwitch';
     public const OPTION_HIDE_VALUE_WHEN_TRUE = 'hideValueWhenTrue';
     public const OPTION_HIDE_VALUE_WHEN_FALSE = 'hideValueWhenFalse';
@@ -23,14 +21,9 @@ final class BooleanField implements FieldInterface
     /** @internal */
     public const CSRF_TOKEN_NAME = 'ea-toggle';
 
-    /**
-     * @param TranslatableInterface|string|false|null $label
-     */
-    public static function new(string $propertyName, $label = null): self
+    public static function new(string $propertyName, TranslatableInterface|string|null $label = null): FieldInterface
     {
-        return (new self())
-            ->setProperty($propertyName)
-            ->setLabel($label)
+        return parent::new($propertyName, $label)
             ->setTextAlign(TextAlign::CENTER)
             ->setTemplateName('crud/field/boolean')
             ->setFormType(CheckboxType::class)

@@ -13,11 +13,8 @@ use Symfony\Contracts\Translation\TranslatableInterface;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class FormField implements FieldInterface
+final class FormField extends AbstractField
 {
-    use FieldTrait;
-
-    public const OPTION_ICON = 'icon';
     public const OPTION_COLLAPSIBLE = 'collapsible';
     public const OPTION_COLLAPSED = 'collapsed';
     public const OPTION_ROW_BREAKPOINT = 'rowBreakPoint';
@@ -25,21 +22,15 @@ final class FormField implements FieldInterface
     public const OPTION_TAB_IS_ACTIVE = 'tabIsActive';
     public const OPTION_TAB_ERROR_COUNT = 'tabErrorCount';
 
-    /**
-     * @internal Use the other named constructors instead (addPanel(), etc.)
-     *
-     * @param string|false|null $label
-     */
-    public static function new(string $propertyName, $label = null)
+    public static function new(string $propertyName, TranslatableInterface|string|null $label = null): FieldInterface
     {
         throw new \RuntimeException('Instead of this method, use the "addPanel()" method.');
     }
 
     /**
-     * @param TranslatableInterface|string|false|null $label
-     * @param string|null                             $icon  The full CSS classes of the FontAwesome icon to render (see https://fontawesome.com/v6/search?m=free)
+     * @param string|null $icon The full CSS classes of the FontAwesome icon to render (see https://fontawesome.com/v6/search?m=free)
      */
-    public static function addPanel($label = false, ?string $icon = null): self
+    public static function addPanel(TranslatableInterface|string|null $label = null, ?string $icon = null): FieldInterface
     {
         trigger_deprecation(
             'easycorp/easyadmin-bundle',
@@ -51,23 +42,17 @@ final class FormField implements FieldInterface
     }
 
     /**
-     * @param TranslatableInterface|string|false|null $label
-     * @param string|null                             $icon  The full CSS classes of the FontAwesome icon to render (see https://fontawesome.com/v6/search?m=free)
+     * @param string|null $icon The full CSS classes of the FontAwesome icon to render (see https://fontawesome.com/v6/search?m=free)
      */
-    public static function addFieldset($label = false, ?string $icon = null): self
+    public static function addFieldset(TranslatableInterface|string|null $label = null, ?string $icon = null): FieldInterface
     {
-        $field = new self();
-        $icon = $field->fixIconFormat($icon, 'FormField::addFieldset()');
-
-        return $field
+        return parent::new('ea_form_fieldset_'.(new Ulid()), $label)
             ->setFieldFqcn(__CLASS__)
             ->hideOnIndex()
-            ->setProperty('ea_form_fieldset_'.(new Ulid()))
-            ->setLabel($label)
             ->setFormType(EaFormFieldsetOpenType::class)
             ->addCssClass('field-form_fieldset')
             ->setFormTypeOptions(['mapped' => false, 'required' => false])
-            ->setCustomOption(self::OPTION_ICON, $icon)
+            ->setIcon($icon, 'FormField::addFieldset()')
             ->setCustomOption(self::OPTION_COLLAPSIBLE, false)
             ->setCustomOption(self::OPTION_COLLAPSED, false)
             ->setValue(true);
@@ -77,19 +62,16 @@ final class FormField implements FieldInterface
      * @param string $breakpointName The name of the breakpoint where the new row is inserted
      *                               It must be a valid Bootstrap 5 name ('', 'sm', 'md', 'lg', 'xl', 'xxl')
      */
-    public static function addRow(string $breakpointName = ''): self
+    public static function addRow(string $breakpointName = ''): FieldInterface
     {
-        $field = new self();
-
         $validBreakpointNames = ['', 'sm', 'md', 'lg', 'xl', 'xxl'];
         if (!\in_array($breakpointName, $validBreakpointNames, true)) {
             throw new \InvalidArgumentException(sprintf('The value passed to the "addRow()" method of "FormField" can only be one of these values: "%s" ("%s" was given).', implode(', ', $validBreakpointNames), $breakpointName));
         }
 
-        return $field
+        return parent::new('ea_form_row_'.(new Ulid()))
             ->setFieldFqcn(__CLASS__)
             ->hideOnIndex()
-            ->setProperty('ea_form_row_'.(new Ulid()))
             ->setFormType(EaFormRowType::class)
             ->addCssClass('field-form_row')
             ->setFormTypeOptions(['mapped' => false, 'required' => false])
@@ -97,23 +79,15 @@ final class FormField implements FieldInterface
             ->setValue(true);
     }
 
-    /**
-     * @return static
-     */
-    public static function addTab(TranslatableInterface|string|false|null $label = null, ?string $icon = null): self
+    public static function addTab(TranslatableInterface|string|null $label = null, ?string $icon = null): FieldInterface
     {
-        $field = new self();
-        $icon = $field->fixIconFormat($icon, 'FormField::addTab()');
-
-        return $field
+        return parent::new('ea_form_tab_'.(new Ulid()), $label)
             ->setFieldFqcn(__CLASS__)
             ->hideOnIndex()
-            ->setProperty('ea_form_tab_'.(new Ulid()))
-            ->setLabel($label)
             ->setFormType(EaFormTabPaneOpenType::class)
             ->addCssClass('field-form_tab')
             ->setFormTypeOptions(['mapped' => false, 'required' => false])
-            ->setCustomOption(self::OPTION_ICON, $icon)
+            ->setIcon($icon, 'FormField::addTab()')
             ->setCustomOption(self::OPTION_TAB_ERROR_COUNT, 0)
             ->setValue(true);
     }
@@ -124,29 +98,15 @@ final class FormField implements FieldInterface
      *                         (e.g. 'col-6', 'col-sm-3', 'col-md-6 col-xl-4', etc.)
      *                         (integer values are transformed like this: N -> 'col-N')
      */
-    public static function addColumn(int|string $cols = 'col', TranslatableInterface|string|false|null $label = null, ?string $icon = null, ?string $help = null): self
+    public static function addColumn(int|string $cols = 'col', TranslatableInterface|string|null $label = null, ?string $icon = null): FieldInterface
     {
-        $field = new self();
-        // $icon = $field->fixIconFormat($icon, 'FormField::addTab()');
-
-        return $field
-            ->setFieldFqcn(__CLASS__)
+        return parent::new('ea_form_column_'.(new Ulid()), $label)
             ->hideOnIndex()
-            ->setProperty('ea_form_column_'.(new Ulid()))
-            ->setLabel($label)
             ->setFormType(EaFormColumnOpenType::class)
             ->addCssClass(sprintf('field-form_column %s', \is_int($cols) ? 'col-md-'.$cols : $cols))
             ->setFormTypeOptions(['mapped' => false, 'required' => false])
             ->setCustomOption(self::OPTION_ICON, $icon)
             ->setValue(true);
-    }
-
-    public function setIcon(string $iconCssClass): self
-    {
-        $iconCssClass = $this->fixIconFormat($iconCssClass, 'FormField::setIcon()');
-        $this->setCustomOption(self::OPTION_ICON, $iconCssClass);
-
-        return $this;
     }
 
     public function collapsible(bool $collapsible = true): self
@@ -175,22 +135,7 @@ final class FormField implements FieldInterface
     private function hasLabelOrIcon(): bool
     {
         // don't use empty() because the label can contain only white spaces (it's a valid edge-case)
-        return (null !== $this->dto->getLabel() && '' !== $this->dto->getLabel())
-            || null !== $this->dto->getCustomOption(self::OPTION_ICON);
-    }
-
-    private function fixIconFormat(?string $icon, string $methodName): ?string
-    {
-        if (null === $icon) {
-            return $icon;
-        }
-
-        if (!str_contains($icon, 'fa-') && !str_contains($icon, 'far-') && !str_contains($icon, 'fab-')) {
-            trigger_deprecation('easycorp/easyadmin-bundle', '4.4.0', 'The value passed as the $icon argument in "%s" method must be the full FontAwesome CSS class of the icon. For example, if you passed "user" before, you now must pass "fa fa-user" (or any style variant like "fa fa-solid fa-user").', $methodName);
-
-            $icon = sprintf('fa fa-%s', $icon);
-        }
-
-        return $icon;
+        return (null !== $this->getAsDto()->getLabel() && '' !== $this->getAsDto()->getLabel())
+            || null !== $this->getAsDto()->getCustomOption(self::OPTION_ICON);
     }
 }

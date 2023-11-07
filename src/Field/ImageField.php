@@ -11,22 +11,15 @@ use Symfony\Contracts\Translation\TranslatableInterface;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class ImageField implements FieldInterface
+final class ImageField extends AbstractField
 {
-    use FieldTrait;
-
     public const OPTION_BASE_PATH = 'basePath';
     public const OPTION_UPLOAD_DIR = 'uploadDir';
     public const OPTION_UPLOADED_FILE_NAME_PATTERN = 'uploadedFileNamePattern';
 
-    /**
-     * @param TranslatableInterface|string|false|null $label
-     */
-    public static function new(string $propertyName, $label = null): self
+    public static function new(string $propertyName, TranslatableInterface|string|null $label = null): FieldInterface
     {
-        return (new self())
-            ->setProperty($propertyName)
-            ->setLabel($label)
+        return parent::new($propertyName, $label)
             ->setTemplateName('crud/field/image')
             ->setFormType(FileUploadType::class)
             ->addCssClass('field-image')

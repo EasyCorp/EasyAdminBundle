@@ -10,21 +10,14 @@ use Symfony\Contracts\Translation\TranslatableInterface;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class AvatarField implements FieldInterface
+final class AvatarField extends AbstractField
 {
-    use FieldTrait;
-
     public const OPTION_IS_GRAVATAR_EMAIL = 'isGravatarEmail';
     public const OPTION_HEIGHT = 'height';
 
-    /**
-     * @param TranslatableInterface|string|false|null $label
-     */
-    public static function new(string $propertyName, $label = null): self
+    public static function new(string $propertyName, TranslatableInterface|string|null $label = null): FieldInterface
     {
-        return (new self())
-            ->setProperty($propertyName)
-            ->setLabel($label)
+        return parent::new($propertyName, $label)
             ->setTemplateName('crud/field/avatar')
             ->setFormType(TextType::class)
             ->addCssClass('field-avatar')

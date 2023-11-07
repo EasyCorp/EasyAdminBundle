@@ -9,10 +9,8 @@ use Symfony\Contracts\Translation\TranslatableInterface;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class AssociationField implements FieldInterface
+final class AssociationField extends AbstractField
 {
-    use FieldTrait;
-
     public const OPTION_AUTOCOMPLETE = 'autocomplete';
     public const OPTION_EMBEDDED_CRUD_FORM_CONTROLLER = 'crudControllerFqcn';
     /** @deprecated since easycorp/easyadmin-bundle 4.4.3 use AssociationField::OPTION_EMBEDDED_CRUD_FORM_CONTROLLER */
@@ -36,12 +34,9 @@ final class AssociationField implements FieldInterface
     public const OPTION_EMBEDDED_CRUD_FORM_NEW_PAGE_NAME = 'crudNewPageName';
     public const OPTION_EMBEDDED_CRUD_FORM_EDIT_PAGE_NAME = 'crudEditPageName';
 
-    /**
-     * @param TranslatableInterface|string|false|null $label
-     */
-    public static function new(string $propertyName, $label = null): self
+    public static function new(string $propertyName, TranslatableInterface|string|null $label = null): FieldInterface
     {
-        return (new self())
+        return parent::new($propertyName, $label)
             ->setProperty($propertyName)
             ->setLabel($label)
             ->setTemplateName('crud/field/association')

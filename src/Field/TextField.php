@@ -15,7 +15,7 @@ final class TextField extends AbstractField
     public const OPTION_RENDER_AS_HTML = 'renderAsHtml';
     public const OPTION_STRIP_TAGS = 'stripTags';
 
-    public static function new(string $propertyName, TranslatableInterface|string|false|null $label = null): FieldInterface
+    public static function new(string $propertyName, TranslatableInterface|string|null $label = null): FieldInterface
     {
         return parent::new($propertyName, $label)
             ->setTemplateName('crud/field/text')

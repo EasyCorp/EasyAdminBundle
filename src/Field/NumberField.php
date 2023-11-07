@@ -18,7 +18,7 @@ final class NumberField extends AbstractField
     public const OPTION_THOUSANDS_SEPARATOR = 'thousandsSeparator';
     public const OPTION_DECIMAL_SEPARATOR = 'decimalSeparator';
 
-    public static function new(string $propertyName, TranslatableInterface|string|false|null $label = null): FieldInterface
+    public static function new(string $propertyName, TranslatableInterface|string|null $label = null): FieldInterface
     {
         return parent::new($propertyName, $label)
             ->setTemplateName('crud/field/number')

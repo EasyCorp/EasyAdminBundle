@@ -17,7 +17,7 @@ final class PercentField extends AbstractField
     public const OPTION_SYMBOL = 'symbol';
     public const OPTION_ROUNDING_MODE = 'roundingMode';
 
-    public static function new(string $propertyName, TranslatableInterface|string|false|null $label = null): FieldInterface
+    public static function new(string $propertyName, TranslatableInterface|string|null $label = null): FieldInterface
     {
         return parent::new($propertyName, $label)
             ->setTemplateName('crud/field/percent')

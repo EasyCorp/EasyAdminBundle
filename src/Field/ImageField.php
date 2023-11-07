@@ -17,7 +17,7 @@ final class ImageField extends AbstractField
     public const OPTION_UPLOAD_DIR = 'uploadDir';
     public const OPTION_UPLOADED_FILE_NAME_PATTERN = 'uploadedFileNamePattern';
 
-    public static function new(string $propertyName, TranslatableInterface|string|false|null $label = null): FieldInterface
+    public static function new(string $propertyName, TranslatableInterface|string|null $label = null): FieldInterface
     {
         return parent::new($propertyName, $label)
             ->setTemplateName('crud/field/image')

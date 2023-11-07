@@ -21,7 +21,7 @@ final class CountryField extends AbstractField
     public const OPTION_COUNTRY_CODES_TO_REMOVE = 'countryCodesToRemove';
     public const OPTION_ALLOW_MULTIPLE_CHOICES = 'allowMultipleChoices';
 
-    public static function new(string $propertyName, TranslatableInterface|string|false|null $label = null): FieldInterface
+    public static function new(string $propertyName, TranslatableInterface|string|null $label = null): FieldInterface
     {
         return parent::new($propertyName, $label)
             ->setTemplateName('crud/field/country')

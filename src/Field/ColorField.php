@@ -14,7 +14,7 @@ final class ColorField extends AbstractField
     public const OPTION_SHOW_SAMPLE = 'showSample';
     public const OPTION_SHOW_VALUE = 'showValue';
 
-    public static function new(string $propertyName, TranslatableInterface|string|false|null $label = null): FieldInterface
+    public static function new(string $propertyName, TranslatableInterface|string|null $label = null): FieldInterface
     {
         return parent::new($propertyName, $label)
             ->setTemplateName('crud/field/color')

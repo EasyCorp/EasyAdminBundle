@@ -52,15 +52,6 @@ class FormFieldLabelControllerTest extends AbstractCrudTestCase
         static::assertStringContainsString('form-fieldset-no-header', $crawler->filter('.form-fieldset.fieldset-2')->attr('class'), 'Fieldsets without explicit labels get a special CSS class to adjust the page design.');
         static::assertSelectorTextSame('label[for="BlogPost_title"]', 'Title', 'The "title" field uses NULL as the value of the label, which tells EasyAdmin to generate a label automatically as the title-case value of the field name.');
 
-        // fields with a FALSE label defined
-        static::assertSelectorTextSame('ul.nav-tabs #tablist-tab-3', '', 'The "Tab 3" defines its label as FALSE, so its label is rendered as an empty string.');
-        static::assertSame($crawler->filter('ul.nav-tabs #tablist-tab-3')->attr('href'), '#tab-3', 'Tabs without explicit labels get IDs generated automatically with autoincrement numbers.');
-        static::assertSelectorNotExists('.form-column.column-3 .form-column-title-content', 'The "Column 3" field defines its label as NULL, so its label element is not rendered.');
-        static::assertStringContainsString('form-column-no-header', $crawler->filter('.form-column.column-3')->attr('class'), 'Columns without explicit labels get a special CSS class to adjust the page design.');
-        static::assertSelectorNotExists('.form-fieldset.fieldset-3 .form-fieldset-title-content', 'The "Fieldset 3" field defines its label as FALSE, so its label element is not rendered.');
-        static::assertStringContainsString('form-fieldset-no-header', $crawler->filter('.form-fieldset.fieldset-3')->attr('class'), 'Fieldsets without explicit labels get a special CSS class to adjust the page design.');
-        static::assertSelectorNotExists('.form-group.field-slug label', 'The "slug" field uses FALSE as the value of the label, which means that no <label> element should be rendered for that field.');
-
         // fields with a label defined as an empty string
         static::assertSelectorTextSame('ul.nav-tabs #tablist-tab-4', '', 'The "Tab 4" defines its label as an empty string, so its label is rendered as an empty string.');
         static::assertSame($crawler->filter('ul.nav-tabs #tablist-tab-4')->attr('href'), '#tab-4', 'Tabs without explicit labels get IDs generated automatically with autoincrement numbers.');
@@ -129,15 +120,6 @@ class FormFieldLabelControllerTest extends AbstractCrudTestCase
         static::assertSelectorNotExists('.form-fieldset.fieldset-2 .form-fieldset-title-content', 'The "Fieldset 2" field defines its label as NULL, so its label element is not rendered.');
         static::assertStringContainsString('form-fieldset-no-header', $crawler->filter('.form-fieldset.fieldset-2')->attr('class'), 'Fieldsets without explicit labels get a special CSS class to adjust the page design.');
         static::assertSelectorTextSame('.field-group.field-title .field-label > div', 'Title', 'The "title" field uses NULL as the value of the label, which tells EasyAdmin to generate a label automatically as the title-case value of the field name.');
-
-        // fields with a FALSE label defined
-        static::assertSelectorTextSame('ul.nav-tabs #tablist-tab-3', '', 'The "Tab 3" defines its label as FALSE, so its label is rendered as an empty string.');
-        static::assertSame($crawler->filter('ul.nav-tabs #tablist-tab-3')->attr('href'), '#tab-3', 'Tabs without explicit labels get IDs generated automatically with autoincrement numbers.');
-        static::assertSelectorNotExists('.form-column.column-3 .form-column-title-content', 'The "Column 3" field defines its label as NULL, so its label element is not rendered.');
-        static::assertStringContainsString('form-column-no-header', $crawler->filter('.form-column.column-3')->attr('class'), 'Columns without explicit labels get a special CSS class to adjust the page design.');
-        static::assertSelectorNotExists('.form-fieldset.fieldset-3 .form-fieldset-title-content', 'The "Fieldset 3" field defines its label as FALSE, so its label element is not rendered.');
-        static::assertStringContainsString('form-fieldset-no-header', $crawler->filter('.form-fieldset.fieldset-3')->attr('class'), 'Fieldsets without explicit labels get a special CSS class to adjust the page design.');
-        static::assertSelectorNotExists('.field-group.field-slug .field-label', 'The "slug" field uses FALSE as the value of the label, which means that no <label> element should be rendered for that field.');
 
         // fields with a label defined as an empty string
         static::assertSelectorTextSame('ul.nav-tabs #tablist-tab-4', '', 'The "Tab 4" defines its label as an empty string, so its label is rendered as an empty string.');

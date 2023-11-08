@@ -15,15 +15,6 @@ abstract class AbstractField implements FieldInterface
 
     public static function new(string $propertyName, TranslatableInterface|string|false|null $label = null): FieldInterface
     {
-        if (false === $label) {
-            trigger_deprecation(
-                'easycorp/easyadmin-bundle',
-                '4.8.4',
-                'Passing `false` as the second argument of the "%s()" method is deprecated. Use `null` instead.',
-                __METHOD__
-            );
-        }
-
         return (new static())
             ->setFieldFqcn(static::class)
             ->setProperty($propertyName)

@@ -93,6 +93,11 @@ class Form {
                     if (formHasErrors) {
                         clickEvent.preventDefault();
                         clickEvent.stopPropagation();
+
+                        document.dispatchEvent(new CustomEvent('ea.form.error', {
+                            cancelable: true,
+                            detail: { page: pageName, form: form }
+                        }));
                     }
                 });
             });

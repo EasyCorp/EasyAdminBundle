@@ -29,16 +29,21 @@ use Symfony\Contracts\Translation\TranslatableInterface;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class AdminContextFactory
+final class AdminContextFactory implements AdminContextFactoryInterface
 {
     private string $cacheDir;
     private ?TokenStorageInterface $tokenStorage;
-    private MenuFactory $menuFactory;
+    private MenuFactoryInterface $menuFactory;
     private CrudControllerRegistry $crudControllers;
-    private EntityFactory $entityFactory;
+    private EntityFactoryInterface $entityFactory;
 
-    public function __construct(string $cacheDir, ?TokenStorageInterface $tokenStorage, MenuFactory $menuFactory, CrudControllerRegistry $crudControllers, EntityFactory $entityFactory)
-    {
+    public function __construct(
+        string $cacheDir,
+        ?TokenStorageInterface $tokenStorage,
+        MenuFactoryInterface $menuFactory,
+        CrudControllerRegistry $crudControllers,
+        EntityFactoryInterface $entityFactory
+    ) {
         $this->cacheDir = $cacheDir;
         $this->tokenStorage = $tokenStorage;
         $this->menuFactory = $menuFactory;

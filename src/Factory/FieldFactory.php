@@ -26,9 +26,9 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class FieldFactory
+final class FieldFactory implements FieldFactoryInterface
 {
-    private static array $doctrineTypeToFieldFqcn = [
+    private array $doctrineTypeToFieldFqcn = [
         Types::ARRAY => ArrayField::class,
         Types::BIGINT => TextField::class,
         Types::BINARY => TextareaField::class,
@@ -58,10 +58,14 @@ final class FieldFactory
     private AdminContextProvider $adminContextProvider;
     private AuthorizationCheckerInterface $authorizationChecker;
     private iterable $fieldConfigurators;
-    private FormLayoutFactory $fieldLayoutFactory;
+    private FormLayoutFactoryInterface $fieldLayoutFactory;
 
-    public function __construct(AdminContextProvider $adminContextProvider, AuthorizationCheckerInterface $authorizationChecker, iterable $fieldConfigurators, FormLayoutFactory $fieldLayoutFactory)
-    {
+    public function __construct(
+        AdminContextProvider $adminContextProvider,
+        AuthorizationCheckerInterface $authorizationChecker,
+        iterable $fieldConfigurators,
+        FormLayoutFactoryInterface $fieldLayoutFactory
+    ) {
         $this->adminContextProvider = $adminContextProvider;
         $this->authorizationChecker = $authorizationChecker;
         $this->fieldConfigurators = $fieldConfigurators;
@@ -147,7 +151,7 @@ final class FieldFactory
                 $guessedFieldFqcn = IdField::class;
             } else {
                 $doctrinePropertyType = $entityDto->getPropertyMetadata($fieldDto->getProperty())->get('type');
-                $guessedFieldFqcn = self::$doctrineTypeToFieldFqcn[$doctrinePropertyType] ?? null;
+                $guessedFieldFqcn = $this->doctrineTypeToFieldFqcn[$doctrinePropertyType] ?? null;
 
                 if (null === $guessedFieldFqcn) {
                     throw new \RuntimeException(sprintf('The Doctrine type of the "%s" field is "%s", which is not supported by EasyAdmin. For Doctrine\'s Custom Mapping Types have a look at EasyAdmin\'s field docs.', $fieldDto->getProperty(), $doctrinePropertyType));

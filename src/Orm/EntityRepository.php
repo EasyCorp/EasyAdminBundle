@@ -14,8 +14,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDataDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntitySearchEvent;
-use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
-use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactoryInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactoryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use Symfony\Component\Uid\Ulid;
@@ -29,12 +29,17 @@ final class EntityRepository implements EntityRepositoryInterface
 {
     private AdminContextProvider $adminContextProvider;
     private ManagerRegistry $doctrine;
-    private EntityFactory $entityFactory;
-    private FormFactory $formFactory;
+    private EntityFactoryInterface $entityFactory;
+    private FormFactoryInterface $formFactory;
     private EventDispatcherInterface $eventDispatcher;
 
-    public function __construct(AdminContextProvider $adminContextProvider, ManagerRegistry $doctrine, EntityFactory $entityFactory, FormFactory $formFactory, EventDispatcherInterface $eventDispatcher)
-    {
+    public function __construct(
+        AdminContextProvider $adminContextProvider,
+        ManagerRegistry $doctrine,
+        EntityFactoryInterface $entityFactory,
+        FormFactoryInterface $formFactory,
+        EventDispatcherInterface $eventDispatcher
+    ) {
         $this->adminContextProvider = $adminContextProvider;
         $this->doctrine = $doctrine;
         $this->entityFactory = $entityFactory;

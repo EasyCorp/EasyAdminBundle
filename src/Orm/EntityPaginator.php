@@ -8,7 +8,7 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Orm\EntityPaginatorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\PaginatorDto;
-use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactoryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 
 /**
@@ -17,18 +17,20 @@ use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 final class EntityPaginator implements EntityPaginatorInterface
 {
     private AdminUrlGeneratorInterface $adminUrlGenerator;
-    private EntityFactory $entityFactory;
+    private EntityFactoryInterface $entityFactory;
     private ?int $currentPage = null;
     private ?int $pageSize = null;
     private ?int $rangeSize = null;
     private ?int $rangeEdgeSize = null;
-    private $results;
-    private $numResults;
+    private \Traversable $results;
+    private ?int $numResults;
     private ?int $rangeFirstResultNumber = null;
     private ?int $rangeLastResultNumber = null;
 
-    public function __construct(AdminUrlGeneratorInterface $adminUrlGenerator, EntityFactory $entityFactory)
-    {
+    public function __construct(
+        AdminUrlGeneratorInterface $adminUrlGenerator,
+        EntityFactoryInterface $entityFactory
+    ) {
         $this->adminUrlGenerator = $adminUrlGenerator;
         $this->entityFactory = $entityFactory;
     }

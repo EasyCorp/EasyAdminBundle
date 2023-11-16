@@ -8,7 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
-use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactoryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AvatarField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use Symfony\Component\PropertyAccess\Exception\AccessException;
@@ -24,10 +24,12 @@ use Symfony\Contracts\Translation\TranslatableInterface;
 final class CommonPreConfigurator implements FieldConfiguratorInterface
 {
     private PropertyAccessorInterface $propertyAccessor;
-    private EntityFactory $entityFactory;
+    private EntityFactoryInterface $entityFactory;
 
-    public function __construct(PropertyAccessorInterface $propertyAccessor, EntityFactory $entityFactory)
-    {
+    public function __construct(
+        PropertyAccessorInterface $propertyAccessor,
+        EntityFactoryInterface $entityFactory
+    ) {
         $this->propertyAccessor = $propertyAccessor;
         $this->entityFactory = $entityFactory;
     }

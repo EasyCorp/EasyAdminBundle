@@ -13,8 +13,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
-use EasyCorp\Bundle\EasyAdminBundle\Factory\ControllerFactory;
-use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\ControllerFactoryInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactoryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudAutocompleteType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudFormType;
@@ -29,13 +29,17 @@ use function Symfony\Component\Translation\t;
  */
 final class AssociationConfigurator implements FieldConfiguratorInterface
 {
-    private EntityFactory $entityFactory;
+    private EntityFactoryInterface $entityFactory;
     private AdminUrlGeneratorInterface $adminUrlGenerator;
     private RequestStack $requestStack;
-    private ControllerFactory $controllerFactory;
+    private ControllerFactoryInterface $controllerFactory;
 
-    public function __construct(EntityFactory $entityFactory, AdminUrlGeneratorInterface $adminUrlGenerator, RequestStack $requestStack, ControllerFactory $controllerFactory)
-    {
+    public function __construct(
+        EntityFactoryInterface $entityFactory,
+        AdminUrlGeneratorInterface $adminUrlGenerator,
+        RequestStack $requestStack,
+        ControllerFactoryInterface $controllerFactory
+    ) {
         $this->entityFactory = $entityFactory;
         $this->adminUrlGenerator = $adminUrlGenerator;
         $this->requestStack = $requestStack;

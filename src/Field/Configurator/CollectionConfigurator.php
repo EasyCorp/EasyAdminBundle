@@ -10,8 +10,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
-use EasyCorp\Bundle\EasyAdminBundle\Factory\ControllerFactory;
-use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\ControllerFactoryInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactoryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudFormType;
 use Symfony\Component\Form\Extension\Core\Type\CountryType;
@@ -29,11 +29,14 @@ use function Symfony\Component\String\u;
 final class CollectionConfigurator implements FieldConfiguratorInterface
 {
     private RequestStack $requestStack;
-    private EntityFactory $entityFactory;
-    private ControllerFactory $controllerFactory;
+    private EntityFactoryInterface $entityFactory;
+    private ControllerFactoryInterface $controllerFactory;
 
-    public function __construct(RequestStack $requestStack, EntityFactory $entityFactory, ControllerFactory $controllerFactory)
-    {
+    public function __construct(
+        RequestStack $requestStack,
+        EntityFactoryInterface $entityFactory,
+        ControllerFactoryInterface $controllerFactory
+    ) {
         $this->requestStack = $requestStack;
         $this->entityFactory = $entityFactory;
         $this->controllerFactory = $controllerFactory;

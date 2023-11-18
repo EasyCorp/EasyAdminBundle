@@ -51,7 +51,7 @@ final class CommonPostConfigurator implements FieldConfiguratorInterface
             return $value;
         }
 
-        $formatted = $callable($value, $entityDto->getInstance());
+        $formatted = $callable($field->getValue(), $entityDto->getInstance());
 
         // if the callable returns a string, wrap it in a Twig Markup to render the
         // HTML and CSS/JS elements that it might contain

@@ -37,7 +37,7 @@ final class AdminContextFactory
     private CrudControllerRegistry $crudControllers;
     private EntityFactory $entityFactory;
 
-    public function __construct(string $cacheDir, ?TokenStorageInterface $tokenStorage, MenuFactory $menuFactory, CrudControllerRegistry $crudControllers, EntityFactory $entityFactory)
+    public function __construct(string $cacheDir, ?TokenStorageInterface $tokenStorage, MenuFactoryInterface $menuFactory, CrudControllerRegistry $crudControllers, EntityFactory $entityFactory)
     {
         $this->cacheDir = $cacheDir;
         $this->tokenStorage = $tokenStorage;

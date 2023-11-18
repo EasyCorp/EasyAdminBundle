@@ -1,6 +1,5 @@
-// Forms
-// ----------------------------------------------------------------------------
-
+/* Forms
+   -------------------------------------------------------------------------- */
 input[disabled] {
     cursor: not-allowed;
 }
@@ -11,7 +10,7 @@ input[disabled] {
     flex-flow: row wrap;
 }
 
-// Base form groups
+/* Base form groups */
 .form-group {
     padding: 0 0 24px;
 }
@@ -33,7 +32,7 @@ input[disabled] {
 .form-check:not(.form-switch) .form-check-input:not(:checked) {
     background-color: unset;
 }
-// Used in checkbox and radio buttons
+/* Used in checkbox and radio buttons */
 label.form-check-label {
     cursor: pointer;
     font-weight: normal;
@@ -60,7 +59,7 @@ label.form-check-label {
     width: 4px;
 }
 
-// Form widgets (inputs, selects, etc.)
+/* Form widgets (inputs, selects, etc.) */
 .form-widget {
 }
 
@@ -175,7 +174,7 @@ body.ea-dark-scheme .form-widget .form-select {
     height: auto;
 }
 
-// Checkbox widgets
+/* Checkbox widgets */
 .form-widget .form-check {
     margin: 0;
     padding: 0;
@@ -193,7 +192,7 @@ label.form-check-label {
     margin-left: 15px;
 }
 
-// in Bootstrap custom file widgets, the label is used to simulate the file input
+/* in Bootstrap custom file widgets, the label is used to simulate the file input */
 .field-file .custom-file, .field-file .custom-file-input {
     height: 30px;
 }
@@ -217,7 +216,7 @@ label.form-check-label {
     vertical-align: middle;
 }
 
-// Date-time widgets
+/* Date-time widgets */
 .field-date .form-widget,
 .field-time .form-widget,
 .field-datetime .form-widget {
@@ -227,7 +226,7 @@ label.form-check-label {
 .datetime-widget select,
 .datetime-widget .input-group > .form-select {
     min-width: max-content;
-    -webkit-appearance: none; // needed for Safari
+    -webkit-appearance: none; /* needed for Safari */
 }
 .datetime-widget + .datetime-widget {
     margin-left: 10px;
@@ -247,7 +246,7 @@ label.form-check-label {
     margin-right: 0;
 }
 
-// Utilities to create common form fields (long, short, etc.)
+/* Utilities to create common form fields (long, short, etc.) */
 .short .form-widget {
     flex: 0 0 20% !important;
 }
@@ -280,7 +279,7 @@ label.form-check-label {
     max-width: unset !important;
 }
 
-// Form tabs
+/* Form tabs */
 .form-tabs .nav-tabs {
     background: transparent;
     border: 0;
@@ -346,71 +345,58 @@ label.form-check-label {
     margin-bottom: 15px;
 }
 
-// Form columns
-.form-column {
-    .form-column-title {
-        display: flex;
-        flex-direction: column;
-        margin-bottom: 15px;
-
-        .form-column-title-content {
-            align-items: center;
-            display: flex;
-            color: var(--form-column-header-color);
-            font-size: 17px;
-            font-weight: bold;
-            padding: 0 0 2px;
-        }
-
-        .form-column-icon {
-            color: var(--form-column-icon-color);
-            margin-right: 7px;
-        }
-
-        .form-column-help {
-            color: var(--form-column-help-color);
-            flex: 1;
-            margin: 0;
-        }
-    }
-
-    .field-form_fieldset {
-        margin-bottom: var(--bs-gutter-x);
-    }
-
-    .form-fieldset {
-        border-radius: var(--border-radius);
-        box-shadow: inset 0 0 0 1px var(--form-fieldset-border-color);
-    }
-
-    .form-fieldset-header {
-        box-shadow: none;
-        padding: calc(var(--bs-gutter-x) - 5px) var(--bs-gutter-x) calc(var(--bs-gutter-x) / 2);
-
-        &:has(.form-fieldset-title-content.collapsed) {
-            padding-top: calc(var(--bs-gutter-x) / 2);
-        }
-
-        .form-fieldset-title .form-fieldset-title-content {
-            box-shadow: none;
-            padding: 0;
-        }
-
-        .form-fieldset-title .form-fieldset-help {
-            margin-top: 2px;
-        }
-    }
-
-    .form-fieldset-body {
-        padding: 5px var(--bs-gutter-x) 0;
-
-        &.without-header {
-            padding: var(--bs-gutter-x) var(--bs-gutter-x) 0;
-        }
-    }
+/* Form columns */
+.form-column .form-column-title {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+}
+.form-column .form-column-title .form-column-title-content {
+    align-items: center;
+    display: flex;
+    color: var(--form-column-header-color);
+    font-size: 17px;
+    font-weight: bold;
+    padding: 0 0 2px;
+}
+.form-column .form-column-title .form-column-icon {
+    color: var(--form-column-icon-color);
+    margin-right: 7px;
+}
+.form-column .form-column-title .form-column-help {
+    color: var(--form-column-help-color);
+    flex: 1;
+    margin: 0;
+}
+.form-column .field-form_fieldset {
+    margin-bottom: var(--bs-gutter-x);
+}
+.form-column .form-fieldset {
+    border-radius: var(--border-radius);
+    box-shadow: inset 0 0 0 1px var(--form-fieldset-border-color);
+}
+.form-column .form-fieldset-header {
+    box-shadow: none;
+    padding: calc(var(--bs-gutter-x) - 5px) var(--bs-gutter-x) calc(var(--bs-gutter-x) / 2);
+}
+.form-column .form-fieldset-header:has(.form-fieldset-title-content.collapsed) {
+    padding-top: calc(var(--bs-gutter-x) / 2);
+}
+.form-column .form-fieldset-header .form-fieldset-title .form-fieldset-title-content {
+    box-shadow: none;
+    padding: 0;
+}
+.form-column .form-fieldset-header .form-fieldset-title .form-fieldset-help {
+    margin-top: 2px;
+}
+.form-column .form-fieldset-body {
+    padding: 5px var(--bs-gutter-x) 0;
+}
+.form-column .form-fieldset-body .without-header {
+    padding: var(--bs-gutter-x) var(--bs-gutter-x) 0;
 }
 
-// Form fieldsets
+/* Form fieldsets */
 .field-form_fieldset {
     margin-bottom: calc(1.5 * var(--bs-gutter-x)); //not a typo; don't use --bs-gutter-y here
 }
@@ -425,57 +411,50 @@ label.form-check-label {
     flex-wrap: nowrap;
     padding: 0 0 15px;
     position: relative;
-
-    .form-fieldset-collapse-marker {
-        color: var(--form-fieldset-collapse-marker-color);
-        font-size: 90%;
-        margin: 0 10px 0 2px;
-        transform: rotate(90deg);
-        transition: transform .2s ease-in-out;
-    }
-
-    .form-fieldset-title {
-        flex: 1;
-
-        .form-fieldset-title-content {
-            align-items: center;
-            box-shadow: 0 1px 0 var(--form-fieldset-header-border-color);
-            display: flex;
-            color: var(--form-fieldset-header-color);
-            font-size: 17px;
-            font-weight: bold;
-            padding: 0 0 5px;
-
-            &.not-collapsible { cursor: default; }
-            &.collapsed {
-                .form-fieldset-collapse-marker {
-                    transform: rotate(0deg);
-                }
-            }
-
-            &::after {
-                content: '';
-                position: absolute;
-                width: 100%;
-                height: 100%;
-                top: 0;
-                left: 0;
-            }
-        }
-
-        .form-fieldset-icon {
-            color: var(--form-fieldset-icon-color);
-            margin-right: 7px;
-        }
-
-        .form-fieldset-help {
-            color: var(--form-fieldset-help-color);
-            margin-top: 6px;
-        }
-    }
+}
+.form-fieldset-header .form-fieldset-collapse-marker {
+    color: var(--form-fieldset-collapse-marker-color);
+    font-size: 90%;
+    margin: 0 10px 0 2px;
+    transform: rotate(90deg);
+    transition: transform .2s ease-in-out;
+}
+.form-fieldset-header .form-fieldset-title {
+    flex: 1;
+}
+.form-fieldset-header .form-fieldset-title .form-fieldset-title-content {
+    align-items: center;
+    box-shadow: 0 1px 0 var(--form-fieldset-header-border-color);
+    display: flex;
+    color: var(--form-fieldset-header-color);
+    font-size: 17px;
+    font-weight: bold;
+    padding: 0 0 5px;
+}
+.form-fieldset-header .form-fieldset-title .form-fieldset-title-content.not-collapsible {
+    cursor: default;
+}
+.form-fieldset-header .form-fieldset-title .form-fieldset-title-content.collapsed .form-fieldset-collapse-marker {
+    transform: rotate(0deg);
+}
+.form-fieldset-header .form-fieldset-title .form-fieldset-title-content::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+}
+.form-fieldset-header .form-fieldset-title .form-fieldset-icon {
+    color: var(--form-fieldset-icon-color);
+    margin-right: 7px;
+}
+.form-fieldset-header .form-fieldset-title .form-fieldset-help {
+    color: var(--form-fieldset-help-color);
+    margin-top: 6px;
 }
 
-// Form actions ("Save changes", "Delete", etc.)
+/* Form actions ("Save changes", "Delete", etc.) */
 .form-actions {
     display: flex;
     justify-content: flex-end;
@@ -485,7 +464,7 @@ label.form-check-label {
     margin-left: 10px;
 }
 
-// Form errors
+/* Form errors */
 .has-error .form-help, .has-error .control-label, .has-error .radio,
 .has-error .checkbox, .has-error .radio-inline, .has-error .checkbox-inline,
 .has-error.radio label, .has-error.checkbox label, .has-error.radio-inline label,
@@ -536,7 +515,7 @@ form .invalid-feedback > .d-block + .d-block {
     margin-top: 5px;
 }
 
-// Form group inputs
+/* Form group inputs */
 .input-group-text {
     background-color: var(--form-input-group-text-bg);
     border: 1px solid var(--form-input-group-text-border-color);
@@ -560,109 +539,103 @@ form .invalid-feedback > .d-block + .d-block {
     margin-right: 0;
 }
 
-//fileupload widgets
-.ea-fileupload {
-    .custom-file {
-        height: 30px;
-    }
-    .input-group {
-        flex-wrap: nowrap;
-    }
-    .input-group .btn,
-    .input-group .btn:hover {
-        background: var(--form-input-group-text-bg);
-        box-shadow: none !important;
-        border-radius: 0;
-        color: var(--text-color);
-        font-size: 17px;
-        height: 28px;
-        line-height: 28px;
-        margin: 0;
-        padding: 0 8px;
-        vertical-align: middle;
-
-        &:first-child {
-            margin-left: 5px;
-        }
-        &:last-child {
-            border-top-right-radius: var(--border-radius);
-            border-bottom-right-radius: var(--border-radius);
-        }
-    }
-
-    .custom-file-input {
-        cursor: pointer;
-        height: calc(1.5em + .75rem + 2px);
-        margin: 0;
-        overflow: hidden;
-        opacity: 0;
-        position: relative;
-        width: 100%;
-        z-index: 2;
-    }
-
-    .custom-file-label {
-        background: var(--form-control-bg);
-        border-radius: var(--border-radius);
-        border: 1px solid var(--form-input-border-color);
-        box-shadow: var(--form-input-shadow);
-        color: var(--form-input-text-color);
-        height: 30px;
-        left: 0;
-        margin: 0 !important;
-        overflow: hidden;
-        padding: 3px 40px 3px 7px !important;
-        position: absolute;
-        text-align: left !important;
-        text-overflow: ellipsis;
-        top: 0;
-        white-space: nowrap;
-        width: 100% !important;
-    }
-    .custom-file-label::after {
-        display: none;
-    }
-
-    .input-group-text {
-        background: var(--form-input-group-text-bg);
-        border: 1px solid var(--form-input-border-color);
-        box-shadow: none;
-        color: var(--text-muted);
-        height: 30px;
-        padding: 7px 0 7px 7px;
-        position: absolute;
-        right: 0;
-        z-index: 3;
-    }
-
-    .fileupload-list {
-        height: auto;
-        margin-top: 7px;
-        padding: 0;
-
-        .fileupload-table {
-            width: 100%;
-        }
-        .fileupload-table td {
-            padding: 3px 7px;
-            border-radius: 3px;
-        }
-        .fileupload-table td:first-child {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            max-width: 300px;
-        }
-        .fileupload-table tr:nth-child(odd) td {
-            background-color: #f5f7ff;
-        }
-        .fileupload-table td.file-size {
-            color: #4e566d;
-        }
-    }
+/* fileupload widgets */
+.ea-fileupload .custom-file {
+    height: 30px;
+}
+.ea-fileupload .input-group {
+    flex-wrap: nowrap;
+}
+.ea-fileupload .input-group .btn,
+.ea-fileupload .input-group .btn:hover {
+    background: var(--form-input-group-text-bg);
+    box-shadow: none !important;
+    border-radius: 0;
+    color: var(--text-color);
+    font-size: 17px;
+    height: 28px;
+    line-height: 28px;
+    margin: 0;
+    padding: 0 8px;
+    vertical-align: middle;
+}
+.ea-fileupload .input-group .btn:first-child,
+.ea-fileupload .input-group .btn:hover:first-child {
+    margin-left: 5px;
+}
+.ea-fileupload .input-group .btn:last-child,
+.ea-fileupload .input-group .btn:last-child {
+    border-top-right-radius: var(--border-radius);
+    border-bottom-right-radius: var(--border-radius);
+}
+.ea-fileupload .custom-file-input {
+    cursor: pointer;
+    height: calc(1.5em + .75rem + 2px);
+    margin: 0;
+    overflow: hidden;
+    opacity: 0;
+    position: relative;
+    width: 100%;
+    z-index: 2;
+}
+.ea-fileupload .custom-file-label {
+    background: var(--form-control-bg);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--form-input-border-color);
+    box-shadow: var(--form-input-shadow);
+    color: var(--form-input-text-color);
+    height: 30px;
+    left: 0;
+    margin: 0 !important;
+    overflow: hidden;
+    padding: 3px 40px 3px 7px !important;
+    position: absolute;
+    text-align: left !important;
+    text-overflow: ellipsis;
+    top: 0;
+    white-space: nowrap;
+    width: 100% !important;
+}
+.ea-fileupload .custom-file-label::after {
+    display: none;
+}
+.ea-fileupload .input-group-text {
+    background: var(--form-input-group-text-bg);
+    border: 1px solid var(--form-input-border-color);
+    box-shadow: none;
+    color: var(--text-muted);
+    height: 30px;
+    padding: 7px 0 7px 7px;
+    position: absolute;
+    right: 0;
+    z-index: 3;
+}
+.ea-fileupload .fileupload-list {
+    height: auto;
+    margin-top: 7px;
+    padding: 0;
+}
+.ea-fileupload .fileupload-list .fileupload-table {
+    width: 100%;
+}
+.ea-fileupload .fileupload-list .fileupload-table td {
+    padding: 3px 7px;
+    border-radius: 3px;
+}
+.ea-fileupload .fileupload-list .fileupload-table td:first-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 300px;
+}
+.ea-fileupload .fileupload-list .fileupload-table tr:nth-child(odd) td {
+    background-color: #f5f7ff;
+}
+.ea-fileupload .fileupload-list .fileupload-table td.file-size {
+    color: #4e566d;
 }
 
-// Image/file vich uploads
+/* Image/file vich uploads */
 .ea-vich-image img {
     box-shadow: 0 0 0 4px var(--white), 0px 0px 4px 3px var(--gray-600);
     margin: 6px 4px 12px;
@@ -679,9 +652,8 @@ form .invalid-feedback > .d-block + .d-block {
     font-size: 18px;
 }
 
-// this element should use 'display: flex', but that doesn't work with
-// the CSS trick used to customize the <input type="file" /> fields.
-
+/* this element should use 'display: flex', but that doesn't work with
+   the CSS trick used to customize the <input type="file" /> fields. */
 .ea-vich-image-actions > div,
 .ea-vich-file-actions > div {
     float: left;
@@ -704,8 +676,8 @@ form .invalid-feedback > .d-block + .d-block {
     flex-basis: 100%;
 }
 
-// This CSS trick allows to customize the <input type="file" /> field entirely
-// as explained in https://gist.github.com/barneycarroll/5244258
+/* This CSS trick allows to customize the <input type="file" /> field entirely
+   as explained in https://gist.github.com/barneycarroll/5244258 */
 .input-file-container {
     overflow: hidden;
     position: relative;
@@ -725,18 +697,15 @@ form .invalid-feedback > .d-block + .d-block {
     top: 0;
 }
 
-// Fix "Browse" button for regular file inputs
-.form-control {
-    &::file-selector-button, &::-webkit-file-upload-button {
-        color: var(--button-secondary-color);
-        background-color: var(--button-secondary-bg);
-        box-shadow: var(--button-shadow);
-    }
-
-    &:hover:not(:disabled):not([readonly]) {
-        &::file-selector-button, &::-webkit-file-upload-button {
-            background-color: var(--button-secondary-bg);
-            box-shadow: var(--button-hover-shadow);
-        }
-    }
+/* Fix "Browse" button for regular file inputs */
+.form-control::file-selector-button,
+.form-control::-webkit-file-upload-button {
+    color: var(--button-secondary-color);
+    background-color: var(--button-secondary-bg);
+    box-shadow: var(--button-shadow);
+}
+.form-control:hover:not(:disabled):not([readonly])::file-selector-button,
+.form-control:hover:not(:disabled):not([readonly])::-webkit-file-upload-button {
+    background-color: var(--button-secondary-bg);
+    box-shadow: var(--button-hover-shadow);
 }

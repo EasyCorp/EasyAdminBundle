@@ -17,6 +17,7 @@
         "doctrine/doctrine-bundle": "^2.5",
         "doctrine/orm": "^2.10",
         "symfony/asset": "^5.4|^6.0|^7.0",
+        "symfony/asset-mapper": "^6.3|^7.0",
         "symfony/cache": "^5.4|^6.0|^7.0",
         "symfony/config": "^5.4|^6.0|^7.0",
         "symfony/dependency-injection": "^5.4|^6.0|^7.0",
@@ -55,7 +56,8 @@
         "sort-packages": true,
         "allow-plugins": {
             "symfony/flex": true,
-            "phpstan/extension-installer": true
+            "phpstan/extension-installer": true,
+            "cweagans/composer-patches": false
         }
     },
     "autoload": {

@@ -1,10 +1,16 @@
-// Page templates available or custom backends
-// ----------------------------------------------------------------------------
-
+/* Page templates available or custom backends
+   ---------------------------------------------------------------------------- */
 body.page-login {
     background: var(--page-login-bg);
-
-    @media(min-width: 992px) {
+}
+body.page-login #flash-messages {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+}
+@media(min-width: 992px) {
+    body.page-login {
         align-items: center;
         display: flex;
         height: 100vh;
@@ -12,13 +18,6 @@ body.page-login {
         overflow: hidden;
         position: absolute;
         width: 100vw;
-    }
-
-    #flash-messages {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
     }
 }
 
@@ -29,8 +28,9 @@ body.page-login {
     margin: 0 auto;
     max-width: 28rem;
     width: 94%;
-
-    @media(min-width: 992px) {
+}
+@media(min-width: 992px) {
+    .login-wrapper {
         margin-top: -225px;
         width: 100%;
     }
@@ -42,8 +42,9 @@ body.page-login {
 .login-wrapper .main-header #header-logo a {
     font-size: var(--font-size-lg);
     text-align: center;
-
-    @media(min-width: 992px) {
+}
+@media(min-width: 992px) {
+    .login-wrapper .main-header #header-logo a {
         font-size: var(--font-size-xl);
     }
 }
@@ -53,11 +54,13 @@ body.page-login {
     box-shadow: var(--shadow-lg);
     padding: 15px 30px;
     width: 100%;
-
-    @media(min-width: 992px) {
+}
+@media(min-width: 992px) {
+    .login-wrapper .content {
         padding: 2rem 2.5rem;
     }
 }
+
 .login-wrapper .form-widget input {
     background-color: var(--page-login-form-control-bg);
     border-color: var(--page-login-form-control-border-color);

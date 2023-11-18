@@ -1,5 +1,5 @@
-// Error pages (shown when exceptions are triggered in production)
-// ----------------------------------------------------------------------------
+/* Error pages (shown when exceptions are triggered in production)
+   ---------------------------------------------------------------------------- */
 body.error .error-message {
   max-width: 500px;
   min-height: 400px;

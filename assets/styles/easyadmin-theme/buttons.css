@@ -1,5 +1,5 @@
-// Buttons
-// ----------------------------------------------------------------------------
+/* Buttons
+   ---------------------------------------------------------------------------- */
 
 .btn {
     background-color: var(--button-bg);
@@ -13,7 +13,7 @@
 }
 .btn:not(:disabled):not(.disabled):not(.btn-link):not(.btn-danger):hover {
     border: 0;
-    // needed because $btn-focus-box-shadow and $btn-active-box-shadow are ignored for .btn-primary, .btn-info, etc.
+    /* needed because $btn-focus-box-shadow and $btn-active-box-shadow are ignored for .btn-primary, .btn-info, etc. */
     box-shadow: var(--button-hover-shadow);
     color: var(--button-hover-color);
 }
@@ -21,7 +21,7 @@
 .btn:not(:disabled):not(.disabled):not(.btn-link):focus,
 .btn:not(:disabled):not(.disabled):not(.btn-link):active:focus {
     border: 0;
-    // needed because $btn-focus-box-shadow and $btn-active-box-shadow are ignored for .btn-primary, .btn-info, etc.
+    /* needed because $btn-focus-box-shadow and $btn-active-box-shadow are ignored for .btn-primary, .btn-info, etc. */
     box-shadow: var(--button-active-shadow);
     color: var(--button-active-color);
 }
@@ -106,7 +106,7 @@
     cursor: not-allowed;
 }
 a.btn.disabled, fieldset:disabled a.btn {
-    // needed to display the 'not-allowed' cursor on disabled buttons
+    /* needed to display the 'not-allowed' cursor on disabled buttons */
     pointer-events: unset;
 }
 

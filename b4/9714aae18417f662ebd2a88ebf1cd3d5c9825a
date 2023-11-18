@@ -1,0 +1,58 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2023-10-21T17:24:21Z
+
+Thanks for this proposal ... but I'm not sure if we can merge this "as is" without breaking things for other people 🤔
+
+---------------------------------------------------------------------------
+
+by abozhinov at 2023-10-23T08:16:54Z
+
+In both cases you trigger Exception. BadRequestHttpException is used only in the edit form.  Also everyone read the change log before update.
+
+---------------------------------------------------------------------------
+
+by ndench at 2023-11-02T21:56:43Z
+
+I agree with @javiereguiluz, this would a BC break, so at the very least it'll need to go into 5.x. I also agree that people should be reading the change log, but semantic versioning exists so that you only have to read the change log for major version updates. No one is reading the change log for every minor version up for every package they depend on.
+
+However, I'm not sure what value it provides. @abozhinov can you please provide some more details and maybe an example of what you're trying to acomplish?
+
+I think, given that this is a controller, it shouldn't be throwing random exceptions. It's meant to throw HttpExceptions so that the correct http status code is returned.
+
+If you're trying to catch specific exceptions, could you instead override this method in your CrudController? for example:
+
+```php
+public function edit(AdminContext $context)
+{
+    try {
+        return parent::edit($context);
+    } catch (BadRequestHttpException $e) {
+        // some custom logic
+    }
+
+    if ($event->isPropagationStopped()) {
+        return $event->getResponse();
+    }
+
+    return new Response($newValue ? '1' : '0');
+}
+```
+
+---------------------------------------------------------------------------
+
+by abozhinov at 2023-11-03T08:10:41Z
+
+Hi,
+I think this change is very important because:
+1. Have Page entity.
+2. In EventListener you add some logic and throw Exception with specific Message that you want to show.
+3. When edit Page Entity you don't receive the Exception you throw in the EventListener instead that you receive BadRequestHttpException with empty message.
+
+If you think this change can break something let's set Message to  BadRequestHttpException?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2023-11-18T09:58:36Z
+
+Things are more clear to me now ... and the updated code looks safer to merge 🙌  Thanks Alexandar!

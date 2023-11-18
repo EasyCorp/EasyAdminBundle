@@ -12,9 +12,9 @@
 {% endblock form_start %}
 
 {% block form_end %}
-    {% if not render_rest is defined or render_rest %}
-        {{ form_rest(form) }}
-    {% endif %}
+        {% if not render_rest is defined or render_rest %}
+            {{ form_rest(form) }}
+        {% endif %}
     </form>
 {% endblock %}
 
@@ -95,7 +95,7 @@
                     {% if has_append_html %}
                         <span class="input-group-text">{{ field.append_html|raw }}</span>
                     {% endif %}
-                    {% if has_input_groups %}</div>{% endif %}
+                {% if has_input_groups %}</div>{% endif %}
 
                 {% if field.help ?? false %}
                     <small class="form-help">{{ field.help|trans(label_translation_parameters, translation_domain)|raw }}</small>
@@ -530,15 +530,15 @@
 {% block ea_form_column_group_open_row %}
     {# if columns are inside tabs, don't add a '.row' element because the tab pane already opens it #}
     {% if not form.vars.ea_is_inside_tab|default(false) %}
-<div class="row">
+        <div class="row">
     {% endif %}
-    {% endblock ea_form_column_group_open_row %}
+{% endblock ea_form_column_group_open_row %}
 
-    {% block ea_form_column_group_close_row %}
+{% block ea_form_column_group_close_row %}
     {# if columns are inside tabs, we don't add a '.row' element because
        the tab pane already opens it; so, don't close it here #}
     {% if not form.vars.ea_is_inside_tab|default(false) %}
-</div>
+        </div>
     {% endif %}
 {% endblock ea_form_column_group_close_row %}
 
@@ -547,73 +547,73 @@
     {% set field_icon = field.getCustomOption('icon') %}
     {% set column_has_title = field_icon != null or field.label != false or field.label != null or field.label != '' or field.help != null %}
 
-<div class="form-column {{ not column_has_title ? 'form-column-no-header' }} {{ field.cssClass }}">
-    {% if column_has_title %}
-        <div class="form-column-title">
-            <div class="form-column-title-content">
-                {% if field_icon %}<i class="form-column-icon fa fa-fw fa-{{ field_icon }}"></i>{% endif %}
-                {% if field.label %}{{ field.label|default('')|trans(domain = ea.i18n.translationDomain)|raw }}{% endif %}
+    <div class="form-column {{ not column_has_title ? 'form-column-no-header' }} {{ field.cssClass }}">
+        {% if column_has_title %}
+            <div class="form-column-title">
+                <div class="form-column-title-content">
+                    {% if field_icon %}<i class="form-column-icon fa fa-fw fa-{{ field_icon }}"></i>{% endif %}
+                    {% if field.label %}{{ field.label|default('')|trans(domain = ea.i18n.translationDomain)|raw }}{% endif %}
+                </div>
+
+                {% if field.help %}
+                    <div class="form-column-help">{{ field.help|trans(domain = ea.i18n.translationDomain)|raw }}</div>
+                {% endif %}
             </div>
+        {% endif %}
+{% endblock ea_form_column_open_row %}
 
-            {% if field.help %}
-                <div class="form-column-help">{{ field.help|trans(domain = ea.i18n.translationDomain)|raw }}</div>
-            {% endif %}
-        </div>
-    {% endif %}
-    {% endblock ea_form_column_open_row %}
-
-    {% block ea_form_column_close_row %}
-</div>
+{% block ea_form_column_close_row %}
+    </div>
 {% endblock ea_form_column_close_row %}
 
 {% block ea_form_fieldset_open_row %}
     {% set fieldset_has_header = form.vars.label or ea_icon or ea_help %}
 
-<div class="form-fieldset {{ not fieldset_has_header ? 'form-fieldset-no-header' }} {{ ea_css_class }}">
-    <fieldset>
-        {% if fieldset_has_header %}
-            <div class="form-fieldset-header {{ ea_is_collapsible ? 'collapsible' }} {{ ea_help is not empty ? 'with-help' }}">
-                <div class="form-fieldset-title">
-                    {% set fieldset_title_contents %}
+    <div class="form-fieldset {{ not fieldset_has_header ? 'form-fieldset-no-header' }} {{ ea_css_class }}">
+        <fieldset>
+            {% if fieldset_has_header %}
+                <div class="form-fieldset-header {{ ea_is_collapsible ? 'collapsible' }} {{ ea_help is not empty ? 'with-help' }}">
+                    <div class="form-fieldset-title">
+                        {% set fieldset_title_contents %}
+                            {% if ea_is_collapsible %}
+                                <i class="fas fw fa-chevron-right form-fieldset-collapse-marker"></i>
+                            {% endif %}
+
+                            {% if ea_icon %}
+                                <i class="form-fieldset-icon {{ ea_icon }}"></i>
+                            {% endif %}
+
+                            {{ form.vars.label|trans|raw }}
+                        {% endset %}
+
                         {% if ea_is_collapsible %}
-                            <i class="fas fw fa-chevron-right form-fieldset-collapse-marker"></i>
-                        {% endif %}
-
-                        {% if ea_icon %}
-                            <i class="form-fieldset-icon {{ ea_icon }}"></i>
-                        {% endif %}
-
-                        {{ form.vars.label|trans|raw }}
-                    {% endset %}
-
-                    {% if ea_is_collapsible %}
-                        <a href="#content-{{ form.vars.name }}" data-bs-toggle="collapse"
-                           class="form-fieldset-title-content form-fieldset-collapse {{ ea_is_collapsed ? 'collapsed' }}"
-                           aria-expanded="{{ ea_is_collapsed ? 'false' : 'true' }}" aria-controls="content-{{ form.vars.name }}">
-                            {{ fieldset_title_contents|raw }}
-                        </a>
-                    {% else %}
-                        <span class="not-collapsible form-fieldset-title-content">
+                            <a href="#content-{{ form.vars.name }}" data-bs-toggle="collapse"
+                               class="form-fieldset-title-content form-fieldset-collapse {{ ea_is_collapsed ? 'collapsed' }}"
+                               aria-expanded="{{ ea_is_collapsed ? 'false' : 'true' }}" aria-controls="content-{{ form.vars.name }}">
+                                {{ fieldset_title_contents|raw }}
+                            </a>
+                        {% else %}
+                            <span class="not-collapsible form-fieldset-title-content">
                                 {{ fieldset_title_contents|raw }}
                             </span>
-                    {% endif %}
+                        {% endif %}
 
-                    {% if ea_help %}
-                        <div class="form-fieldset-help">{{ ea_help|trans|raw }}</div>
-                    {% endif %}
+                        {% if ea_help %}
+                            <div class="form-fieldset-help">{{ ea_help|trans|raw }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+
+            <div id="content-{{ form.vars.name }}" class="form-fieldset-body {{ not fieldset_has_header ? 'without-header' }} {{ ea_is_collapsible ? 'collapse' }} {{ not ea_is_collapsed ? 'show'}}">
+                <div class="row">
+{% endblock ea_form_fieldset_open_row %}
+
+{% block ea_form_fieldset_close_row %}
                 </div>
             </div>
-        {% endif %}
-
-        <div id="content-{{ form.vars.name }}" class="form-fieldset-body {{ not fieldset_has_header ? 'without-header' }} {{ ea_is_collapsible ? 'collapse' }} {{ not ea_is_collapsed ? 'show'}}">
-            <div class="row">
-                {% endblock ea_form_fieldset_open_row %}
-
-                {% block ea_form_fieldset_close_row %}
-            </div>
-        </div>
-    </fieldset>
-</div>
+        </fieldset>
+    </div>
 {% endblock ea_form_fieldset_close_row %}
 
 {% block ea_form_tablist_row %}
@@ -646,31 +646,31 @@
 {% endblock ea_form_tablist_row %}
 
 {% block ea_form_tabpane_group_open_row %}
-<div class="nav-tabs-custom form-tabs">
-    {% endblock ea_form_tabpane_group_open_row %}
+    <div class="nav-tabs-custom form-tabs">
+{% endblock ea_form_tabpane_group_open_row %}
 
-    {% block ea_form_tabpane_group_close_row %}
-</div>
+{% block ea_form_tabpane_group_close_row %}
+    </div>
 {% endblock ea_form_tabpane_group_close_row %}
 
 {% block ea_form_tabpane_open_row %}
     {% set tab_is_active_option_name = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Field\\FormField::OPTION_TAB_IS_ACTIVE') %}
     {% set field = form.vars.ea_vars.field %}
-<div class="tab-content">
-    <div id="{{ ea_tab_id }}" class="tab-pane {% if field.getCustomOption(tab_is_active_option_name) %}active{% endif %} {{ ea_css_class }}">
-        {% if ea_help %}
-            <div class="content-header-help tab-help">
-                {{ ea_help|trans(domain = ea.i18n.translationDomain)|raw }}
+    <div class="tab-content">
+        <div id="{{ ea_tab_id }}" class="tab-pane {% if field.getCustomOption(tab_is_active_option_name) %}active{% endif %} {{ ea_css_class }}">
+            {% if ea_help %}
+                <div class="content-header-help tab-help">
+                    {{ ea_help|trans(domain = ea.i18n.translationDomain)|raw }}
+                </div>
+            {% endif %}
+
+            <div class="row">
+{% endblock ea_form_tabpane_open_row %}
+
+{% block ea_form_tabpane_close_row %}
             </div>
-        {% endif %}
-
-        <div class="row">
-            {% endblock ea_form_tabpane_open_row %}
-
-            {% block ea_form_tabpane_close_row %}
         </div>
     </div>
-</div>
 {% endblock ea_form_tabpane_close_row %}
 
 {# EasyAdminFilters form type #}
@@ -683,8 +683,8 @@
                 <div class="filter-heading" id="filter-heading-{{ loop.index }}">
                     <input type="checkbox" class="filter-checkbox" {% if field.vars.name in applied_filters %}checked{% endif %}>
                     <a data-bs-toggle="collapse" href="#filter-content-{{ loop.index }}" aria-expanded="{{ field.vars.name in applied_filters ? 'true' : 'false' }}" aria-controls="filter-content-{{ loop.index }}"
-                    {% for name, value in field.vars.label_attr|default([]) %}{{ name }}="{{ value|e('html_attr') }}" {% endfor %}>
-                    {{ field.vars.label|default(field.vars.name|humanize)|trans(domain = ea.i18n.translationDomain) }}
+                        {% for name, value in field.vars.label_attr|default([]) %}{{ name }}="{{ value|e('html_attr') }}" {% endfor %}>
+                        {{ field.vars.label|default(field.vars.name|humanize)|trans(domain = ea.i18n.translationDomain) }}
                     </a>
                 </div>
                 <div id="filter-content-{{ loop.index }}" class="filter-content collapse {% if field.vars.name in applied_filters %}show{% endif %}" aria-labelledby="filter-heading-{{ loop.index }}">
@@ -763,7 +763,7 @@
                                     <span title="{{ file.mTime|date }}">
                                         <i class="fa fa-file-o"></i> {{ file.filename }}
                                     </span>
-                                    {% if download_path %}</a>{% endif %}
+                                {% if download_path %}</a>{% endif %}
                             </td>
                             <td class="text-right file-size">{{ file.size|ea_filesize }}</td>
                         </tr>

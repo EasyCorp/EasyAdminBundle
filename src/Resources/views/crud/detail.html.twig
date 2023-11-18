@@ -37,8 +37,8 @@
     {%- apply spaceless -%}
         {% set custom_page_title = ea.crud.customPageTitle(pageName, entity ? entity.instance : null, ea.i18n.translationParameters) %}
         {{ custom_page_title is null
-            ? ea.crud.defaultPageTitle(null, null, ea.i18n.translationParameters)|trans|raw
-            : custom_page_title|trans|raw }}
+        ? ea.crud.defaultPageTitle(null, null, ea.i18n.translationParameters)|trans|raw
+        : custom_page_title|trans|raw }}
     {%- endapply -%}
 {% endblock %}
 
@@ -146,45 +146,45 @@
 {% endmacro %}
 
 {% macro render_tab_group_open(field) %}
-    <div class="nav-tabs-custom form-tabs">
-{% endmacro %}
+<div class="nav-tabs-custom form-tabs">
+    {% endmacro %}
 
-{% macro render_tab_group_close(field) %}
-    </div>
+    {% macro render_tab_group_close(field) %}
+</div>
 {% endmacro %}
 
 {% macro render_tab_open(field) %}
     {% set tab_id_option_name = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Field\\FormField::OPTION_TAB_ID') %}
     {% set tab_is_active_option_name = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Field\\FormField::OPTION_TAB_IS_ACTIVE') %}
 
-    <div class="tab-content">
-        <div id="{{ field.getCustomOption(tab_id_option_name) }}" class="tab-pane {% if field.getCustomOption(tab_is_active_option_name) %}active{% endif %} {{ field.cssClass }}">
-            {% if field.help %}
-                <div class="content-header-help tab-help">
-                    {{ field.help|trans(domain = ea.i18n.translationDomain)|raw }}
-                </div>
-            {% endif %}
-
-            <div class="row">
-{% endmacro %}
-
-{% macro render_tab_close(field) %}
+<div class="tab-content">
+    <div id="{{ field.getCustomOption(tab_id_option_name) }}" class="tab-pane {% if field.getCustomOption(tab_is_active_option_name) %}active{% endif %} {{ field.cssClass }}">
+        {% if field.help %}
+            <div class="content-header-help tab-help">
+                {{ field.help|trans(domain = ea.i18n.translationDomain)|raw }}
             </div>
+        {% endif %}
+
+        <div class="row">
+            {% endmacro %}
+
+            {% macro render_tab_close(field) %}
         </div>
     </div>
+</div>
 {% endmacro %}
 
 {% macro render_column_group_open(field) %}
     {# if columns are inside tabs, don't add a '.row' element because the tab pane already opens it #}
     {% if not field.getFormTypeOption('ea_is_inside_tab')|default(false) %}
-        <div class="row">
+<div class="row">
     {% endif %}
-{% endmacro %}
+    {% endmacro %}
 
-{% macro render_column_group_close(field) %}
+    {% macro render_column_group_close(field) %}
     {# if columns are inside tabs, don't add a '.row' element because the tab pane already opens it #}
     {% if not field.getFormTypeOption('ea_is_inside_tab')|default(false) %}
-        </div>
+</div>
     {% endif %}
 {% endmacro %}
 
@@ -192,23 +192,23 @@
     {% set field_icon = field.getCustomOption('icon') %}
     {% set column_has_title = field_icon != null or field.label != false or field.label != null or field.label != '' or field.help != null %}
 
-    <div class="form-column {{ not column_has_title ? 'form-column-no-header' }} {{ field.cssClass }}">
-        {% if column_has_title %}
-            <div class="form-column-title">
-                <div class="form-column-title-content">
-                    {% if field_icon %}<i class="form-column-icon fa fa-fw fa-{{ field_icon }}"></i>{% endif %}
-                    {% if field.label %}{{ field.label|trans(domain = ea.i18n.translationDomain)|raw }}{% endif %}
-                </div>
-
-                {% if field.help %}
-                    <div class="form-column-help">{{ field.help|trans(domain = ea.i18n.translationDomain)|raw }}</div>
-                {% endif %}
+<div class="form-column {{ not column_has_title ? 'form-column-no-header' }} {{ field.cssClass }}">
+    {% if column_has_title %}
+        <div class="form-column-title">
+            <div class="form-column-title-content">
+                {% if field_icon %}<i class="form-column-icon fa fa-fw fa-{{ field_icon }}"></i>{% endif %}
+                {% if field.label %}{{ field.label|trans(domain = ea.i18n.translationDomain)|raw }}{% endif %}
             </div>
-        {% endif %}
-{% endmacro %}
 
-{% macro render_column_close(field) %}
-    </div>
+            {% if field.help %}
+                <div class="form-column-help">{{ field.help|trans(domain = ea.i18n.translationDomain)|raw }}</div>
+            {% endif %}
+        </div>
+    {% endif %}
+    {% endmacro %}
+
+    {% macro render_column_close(field) %}
+</div>
 {% endmacro %}
 
 {% macro render_fieldset_open(field) %}
@@ -218,51 +218,51 @@
     {% set is_collapsible = field.getCustomOption(is_collapsible_option_name) %}
     {% set is_collapsed = field.getCustomOption(is_collapsed_option_name) %}
 
-    <div class="form-fieldset {{ not fieldset_has_header ? 'form-fieldset-no-header' }} {{ field.cssClass }}">
-        <fieldset>
-            {% if fieldset_has_header %}
-                <div class="form-fieldset-header {{ is_collapsible ? 'collapsible' }} {{ field.help is not empty ? 'with-help' }}">
-                    <div class="form-fieldset-title">
-                        {% set fieldset_title_contents %}
-                            {% if is_collapsible %}
-                                <i class="fas fw fa-chevron-right form-fieldset-collapse-marker"></i>
-                            {% endif %}
-
-                            {% if field.getCustomOption('icon') %}
-                                <i class="form-fieldset-icon {{ field.getCustomOption('icon') }}"></i>
-                            {% endif %}
-
-                            {{ field.label|trans|raw }}
-                        {% endset %}
-
+<div class="form-fieldset {{ not fieldset_has_header ? 'form-fieldset-no-header' }} {{ field.cssClass }}">
+    <fieldset>
+        {% if fieldset_has_header %}
+            <div class="form-fieldset-header {{ is_collapsible ? 'collapsible' }} {{ field.help is not empty ? 'with-help' }}">
+                <div class="form-fieldset-title">
+                    {% set fieldset_title_contents %}
                         {% if is_collapsible %}
-                            <a href="#content-{{ field.property }}" data-bs-toggle="collapse"
-                               class="form-fieldset-title-content form-fieldset-collapse {{ is_collapsed ? 'collapsed' }}"
-                               aria-expanded="{{ is_collapsed ? 'false' : 'true' }}" aria-controls="content-{{ field.property }}">
-                                {{ fieldset_title_contents|raw }}
-                            </a>
-                        {% else %}
-                            <span class="not-collapsible form-fieldset-title-content">
+                            <i class="fas fw fa-chevron-right form-fieldset-collapse-marker"></i>
+                        {% endif %}
+
+                        {% if field.getCustomOption('icon') %}
+                            <i class="form-fieldset-icon {{ field.getCustomOption('icon') }}"></i>
+                        {% endif %}
+
+                        {{ field.label|trans|raw }}
+                    {% endset %}
+
+                    {% if is_collapsible %}
+                        <a href="#content-{{ field.property }}" data-bs-toggle="collapse"
+                           class="form-fieldset-title-content form-fieldset-collapse {{ is_collapsed ? 'collapsed' }}"
+                           aria-expanded="{{ is_collapsed ? 'false' : 'true' }}" aria-controls="content-{{ field.property }}">
+                            {{ fieldset_title_contents|raw }}
+                        </a>
+                    {% else %}
+                        <span class="not-collapsible form-fieldset-title-content">
                                 {{ fieldset_title_contents|raw }}
                             </span>
-                        {% endif %}
+                    {% endif %}
 
-                        {% if field.help %}
-                            <div class="form-fieldset-help">{{ field.help|trans|raw }}</div>
-                        {% endif %}
-                    </div>
-                </div>
-            {% endif %}
-
-            <div id="content-{{ field.property }}" class="form-fieldset-body {{ not fieldset_has_header ? 'without-header' }} {{ is_collapsible ? 'collapse' }} {{ not is_collapsed ? 'show'}}">
-                <div class="row">
-{% endmacro %}
-
-{% macro render_fieldset_close(field) %}
+                    {% if field.help %}
+                        <div class="form-fieldset-help">{{ field.help|trans|raw }}</div>
+                    {% endif %}
                 </div>
             </div>
-        </fieldset>
-    </div>
+        {% endif %}
+
+        <div id="content-{{ field.property }}" class="form-fieldset-body {{ not fieldset_has_header ? 'without-header' }} {{ is_collapsible ? 'collapse' }} {{ not is_collapsed ? 'show'}}">
+            <div class="row">
+                {% endmacro %}
+
+                {% macro render_fieldset_close(field) %}
+            </div>
+        </div>
+    </fieldset>
+</div>
 {% endmacro %}
 
 
@@ -342,42 +342,42 @@
     {% set fieldset_help = field is null ? null : field.help|default(false)%}
     {% set fieldset_has_header = collapsible or fieldset_icon or fieldset_label or fieldset_help %}
 
-    <div class="{{ field.cssClass ?? '' }}">
-        <div class="form-fieldset">
-            {% if fieldset_has_header %}
-                <div class="form-fieldset-header {{ collapsible ? 'collapsible' }} {{ fieldset_help is not empty ? 'with-help' }}">
-                    <div class="form-fieldset-title">
-                        <a {% if not collapsible %}
-                            href="#" class="not-collapsible"
-                        {% else %}
-                            href="#{{ fieldset_name }}" data-bs-toggle="collapse"
-                            class="form-fieldset-collapse {{ collapsed ? 'collapsed' }}"
-                            aria-expanded="{{ collapsed ? 'false' : 'true' }}" aria-controls="{{ fieldset_name }}"
+<div class="{{ field.cssClass ?? '' }}">
+    <div class="form-fieldset">
+        {% if fieldset_has_header %}
+            <div class="form-fieldset-header {{ collapsible ? 'collapsible' }} {{ fieldset_help is not empty ? 'with-help' }}">
+                <div class="form-fieldset-title">
+                    <a {% if not collapsible %}
+                        href="#" class="not-collapsible"
+                    {% else %}
+                        href="#{{ fieldset_name }}" data-bs-toggle="collapse"
+                        class="form-fieldset-collapse {{ collapsed ? 'collapsed' }}"
+                        aria-expanded="{{ collapsed ? 'false' : 'true' }}" aria-controls="{{ fieldset_name }}"
+                    {% endif %}
+                    >
+                        {% if collapsible %}
+                            <i class="fas fw fa-chevron-right form-fieldset-collapse-marker"></i>
                         {% endif %}
-                        >
-                            {% if collapsible %}
-                                <i class="fas fw fa-chevron-right form-fieldset-collapse-marker"></i>
-                            {% endif %}
 
-                            {% if fieldset_icon %}
-                                <i class="form-fieldset-icon {{ fieldset_icon }}"></i>
-                            {% endif %}
-                            {{ fieldset_label|trans|raw }}
-                        </a>
-
-                        {% if fieldset_help %}
-                            <div class="form-fieldset-help">{{ fieldset_help|trans|raw }}</div>
+                        {% if fieldset_icon %}
+                            <i class="form-fieldset-icon {{ fieldset_icon }}"></i>
                         {% endif %}
-                    </div>
+                        {{ fieldset_label|trans|raw }}
+                    </a>
+
+                    {% if fieldset_help %}
+                        <div class="form-fieldset-help">{{ fieldset_help|trans|raw }}</div>
+                    {% endif %}
                 </div>
-            {% endif %}
+            </div>
+        {% endif %}
 
-            <div {% if fieldset_name %}id="{{ fieldset_name }}"{% endif %} class="form-fieldset-body {{ collapsible ? 'collapse' }} {{ not collapsed ? 'show'}}">
-                <dl class="datalist">
-{% endmacro %}
+        <div {% if fieldset_name %}id="{{ fieldset_name }}"{% endif %} class="form-fieldset-body {{ collapsible ? 'collapse' }} {{ not collapsed ? 'show'}}">
+            <dl class="datalist">
+                {% endmacro %}
 
-{% macro close_form_fieldset() %}
-    {% deprecated 'The "close_form_fieldset" macro is deprecated because the layout building logic has been revamped for the "detail" page. Check EasyAdmin\'s `detail.html.page` for more details.' %}
+                {% macro close_form_fieldset() %}
+                {% deprecated 'The "close_form_fieldset" macro is deprecated because the layout building logic has been revamped for the "detail" page. Check EasyAdmin\'s `detail.html.page` for more details.' %}
 
             </dl>
         </div>

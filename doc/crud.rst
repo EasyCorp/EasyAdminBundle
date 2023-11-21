@@ -240,11 +240,20 @@ Search, Order, and Pagination Options
             ->setSearchFields(null)
             // call this method to focus the search input automatically when loading the 'index' page
             ->setAutofocusSearch()
-            // force to match all the terms (default mode)
-            // term1 in (field1 or field2) and term2 in (field1 or field2)
+
+            // by default, the search results match all the terms (SearchMode::ALL_TERMS):
+            // term1 in (field1 or field2) AND term2 in (field1 or field2)
+            // e.g. if you look for 'lorem ipsum' in [title, description],
+            // results require matching 'lorem' in either title or description
+            // (or both) AND 'ipsum' in either title or description (or both)
             ->setSearchMode(SearchMode::ALL_TERMS)
-            // match any terms
-            // term1 in (field1 or field2) or term2 in (field1 or field2)
+
+            // use the SearchMode::ANY_TERMS option to change the search mode to
+            // match at least one of the terms:
+            // term1 in (field1 or field2) OR term2 in (field1 or field2)
+            // e.g. if you look for 'lorem ipsum' in [title, description],
+            // results will match either 'lorem' in title or description (or both)
+            // OR 'ipsum' in title or description (or both)
             ->setSearchMode(SearchMode::ANY_TERMS)
         ;
     }

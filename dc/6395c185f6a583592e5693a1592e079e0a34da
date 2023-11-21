@@ -1,0 +1,43 @@
+---------------------------------------------------------------------------
+
+by tasiot at 2023-11-06T16:22:26Z
+
+IMO the default search mode should be `SearchMode::ALL_TERMS` but for compatibility reasons I set ANY_TERMS as default.
+
+Must I set ALL_TERMS as default?
+
+---------------------------------------------------------------------------
+
+by tasiot at 2023-11-06T16:43:10Z
+
+Yes, it is.
+
+When you type once word ANY_TERMS and ALL_TERMS are identical.
+But with many words (=terms), all terms must be found: the word1 must be found in field1 or field2 or field3 but the word2 must also be found in field1, field2 or field3.
+
+According my documentation:
+
+```php
+$crud
+    // match any terms (default mode)
+    // term1 in (field1 or field2) or term2 in (field1 or field2)
+    ->setSearchMode(SearchMode::ANY_TERMS)
+    // force to match all the terms
+    // term1 in (field1 or field2) and term2 in (field1 or field2)
+    ->setSearchMode(SearchMode::ALL_TERMS)
+;
+```
+
+---------------------------------------------------------------------------
+
+by nopenopenope at 2023-11-06T16:44:22Z
+
+Then I absolutely agree with you. :+1: Thank you very much for explaining it once again.
+
+---------------------------------------------------------------------------
+
+by tasiot at 2023-11-06T18:02:19Z
+
+I just pushed a new commit to set ALL_TERMS as default.
+
+I've kept it as a separate commit in case the owner wants to use ANY_TERMS as default like now.

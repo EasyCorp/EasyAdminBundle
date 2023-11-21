@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Dto;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\SearchMode;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
@@ -54,6 +55,20 @@ class SearchDtoTest extends TestCase
     {
         $dto = new SearchDto(new Request(), null, $query, [], [], null);
         $this->assertSame($expectedQueryTerms, $dto->getQueryTerms());
+    }
+
+    public function testDefaultSearchMode()
+    {
+        $dto = new SearchDto(new Request(), null, null, ['foo' => 'ASC'], [], null);
+        $this->assertSame(SearchMode::ALL_TERMS, $dto->getSearchMode());
+    }
+
+    public function testSearchMode()
+    {
+        foreach ([SearchMode::ANY_TERMS, SearchMode::ALL_TERMS] as $searchMode) {
+            $dto = new SearchDto(new Request(), null, null, ['foo' => 'ASC'], [], null, $searchMode);
+            $this->assertSame($searchMode, $dto->getSearchMode());
+        }
     }
 
     public function provideSortDirectionTests(): iterable

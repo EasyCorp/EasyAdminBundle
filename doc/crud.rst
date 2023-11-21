@@ -240,15 +240,21 @@ Search, Order, and Pagination Options
             ->setSearchFields(null)
             // call this method to focus the search input automatically when loading the 'index' page
             ->setAutofocusSearch()
+            // force to match all the terms (default mode)
+            // term1 in (field1 or field2) and term2 in (field1 or field2)
+            ->setSearchMode(SearchMode::ALL_TERMS)
+            // match any terms
+            // term1 in (field1 or field2) or term2 in (field1 or field2)
+            ->setSearchMode(SearchMode::ANY_TERMS)
         ;
     }
 
 .. tip::
 
-    The search engine makes an OR query by default (searching for ``foo bar``
-    returns items with ``foo`` OR ``bar`` OR ``foo bar``). You can wrap all or
-    part of your query with quotes to make an exact search: ``"foo bar"`` only
-    returns items with that exact content, including the middle white space.
+    The search engine splits all terms by default (searching for ``foo bar``
+    returns items with ``foo`` and ``bar``). You can wrap all or part of your 
+    query with quotes to make an exact search: ``"foo bar"`` only returns 
+    items with that exact content, including the middle white space.
 
 ::
 

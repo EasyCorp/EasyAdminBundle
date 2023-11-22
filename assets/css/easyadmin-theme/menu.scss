@@ -164,8 +164,6 @@ body.ea-sidebar-width-compact .sidebar {
                 padding: 7px 5px 7px 0;
             }
 
-            &.active { background: transparent; }
-
             &:hover {
                 background: var(--body-bg);
                 box-shadow: var(--sidebar-menu-compact-hover-box-shadow);
@@ -173,8 +171,10 @@ body.ea-sidebar-width-compact .sidebar {
                 padding-left: var(--sidebar-padding-left);
                 z-index: $zindex-modal-backdrop;
 
+                i { color: var(--sidebar-menu-icon-color) !important; }
+
                 .menu-item-label, .menu-item-badge, .submenu, .submenu-toggle-icon { display: block; }
-                .menu-item-contents { background: var(--body-bg); }
+                .menu-item-contents { background: var(--body-bg); color: var(--text-color); }
 
                 .submenu {
                     background: var(--body-bg);

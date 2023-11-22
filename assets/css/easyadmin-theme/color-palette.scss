@@ -192,6 +192,7 @@
   --red-800: #991b1b;
   --red-900: #7f1d1d;
 
+  // "warm gray" is called "stone" in recent Tailwind CSS versions
   --warm-gray-50: #fafaf9;
   --warm-gray-100: #f5f5f4;
   --warm-gray-200: #e7e5e4;
@@ -202,7 +203,9 @@
   --warm-gray-700: #44403c;
   --warm-gray-800: #292524;
   --warm-gray-900: #1c1917;
+  --warm-gray-950: #0c0a09;
 
+  // "true gray" is called "neutral" in recent Tailwind CSS versions
   --true-gray-50: #fafafa;
   --true-gray-100: #f5f5f5;
   --true-gray-200: #e5e5e5;
@@ -213,10 +216,12 @@
   --true-gray-700: #404040;
   --true-gray-800: #262626;
   --true-gray-900: #171717;
+  --true-gray-950: #0a0a0a;
 
   // Tailwind CSS calls this color "gray", but we renamed it to "neutral gray"
   // because our design is based on blue tones, so the best "gray" for our design
   // is "blue gray" and we alias "blue gray" color as "gray" to simplify things
+  // "gray" is called "zinc" in recent Tailwind CSS versions
   --neutral-gray-50: #fafafa;
   --neutral-gray-100: #f4f4f5;
   --neutral-gray-200: #e4e4e7;
@@ -227,7 +232,9 @@
   --neutral-gray-700: #3f3f46;
   --neutral-gray-800: #27272a;
   --neutral-gray-900: #18181b;
+  --neutral-gray-950: #09090b;
 
+  // "cool gray" is called "gray" in recent Tailwind CSS versions
   --cool-gray-50: #f9fafb;
   --cool-gray-100: #f3f4f6;
   --cool-gray-200: #e5e7eb;
@@ -238,7 +245,9 @@
   --cool-gray-700: #374151;
   --cool-gray-800: #1f2937;
   --cool-gray-900: #111827;
+  --cool-gray-950: #030712;
 
+  // "blue gray" is called "slate" in recent Tailwind CSS versions
   --blue-gray-50: #f8fafc;
   --blue-gray-100: #f1f5f9;
   --blue-gray-200: #e2e8f0;
@@ -249,6 +258,7 @@
   --blue-gray-700: #334155;
   --blue-gray-800: #1e293b;
   --blue-gray-900: #0f172a;
+  --blue-gray-950: #020617;
 
   // this is the color alias to consider the "blue gray" color as "the normal gray"
   --gray-50:  var(--blue-gray-50);

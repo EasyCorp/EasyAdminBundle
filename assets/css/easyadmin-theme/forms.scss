@@ -301,7 +301,7 @@ label.form-check-label {
      padding-left: 0;
  }
 
-.form-tabs .nav-tabs .fa {
+.form-tabs .nav-tabs .tab-nav-item-icon {
     color: var(--text-muted);
     margin-right: 5px;
 }
@@ -310,6 +310,9 @@ label.form-check-label {
     background: transparent;
     color: var(--link-color);
     position: relative;
+}
+.form-tabs .nav-tabs .nav-link.active .tab-nav-item-icon {
+    color: var(--link-color);
 }
 .form-tabs .nav-tabs .nav-link.active:before {
     content: '';
@@ -364,7 +367,7 @@ label.form-check-label {
 
         .form-column-icon {
             color: var(--form-column-icon-color);
-            margin-right: 7px;
+            margin-right: 10px;
         }
 
         .form-column-help {
@@ -465,7 +468,7 @@ label.form-check-label {
 
         .form-fieldset-icon {
             color: var(--form-fieldset-icon-color);
-            margin-right: 7px;
+            margin-right: 10px;
         }
 
         .form-fieldset-help {

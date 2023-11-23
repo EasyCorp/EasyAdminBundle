@@ -742,7 +742,10 @@ body.ea-edit .content-header {
     color: var(--pagination-color);
 }
 
-.pager ul {
+.pager .pagination {
+    --bs-pagination-font-size: var(--font-size-sm);
+    --bs-pagination-focus-box-shadow: none;
+
     margin-bottom: 0;
 
     @media (max-width: 992px) {

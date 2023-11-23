@@ -9,7 +9,8 @@
     cursor: pointer;
     text-decoration: none;
     white-space: nowrap;
-    transition: box-shadow .2s;
+    transition: 80ms cubic-bezier(0.33, 1, 0.68, 1);
+    transition-property: box-shadow;
 }
 .btn:not(:disabled):not(.disabled):not(.btn-link):not(.btn-danger):hover {
     border: 0;

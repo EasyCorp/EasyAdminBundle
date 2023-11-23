@@ -128,7 +128,7 @@
                 <li class="nav-item">
                     <a class="nav-link {% if tab.getCustomOption(tab_is_active_option_name) %}active{% endif %}" href="#{{ tab.getCustomOption(tab_id_option_name) }}" id="tablist-{{ tab.getCustomOption(tab_id_option_name) }}" data-bs-toggle="tab">
                         {%- if tab.getCustomOption('icon')|default(false) -%}
-                            <i class="fa-fw {{ tab.getCustomOption('icon') }}"></i>
+                            <i class="tab-nav-item-icon fa-fw {{ tab.getCustomOption('icon') }}"></i>
                         {%- endif -%}
                         {{ tab.label|trans(domain = ea.i18n.translationDomain)|raw }}
 

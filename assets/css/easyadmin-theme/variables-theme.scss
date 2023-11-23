@@ -365,36 +365,36 @@
 .ea-dark-scheme {
     --text-primary-color: var(--text-color);
     --text-secondary-color: var(--text-muted);
-    --text-tertiary-color: var(--true-gray-500);
-    --border-primary-color: var(--true-gray-500);
-    --border-secondary-color: var(--true-gray-600);
-    --border-tertiary-color: var(--true-gray-700);
-    --primary-bg: var(--true-gray-500);
-    --secondary-bg: var(--true-gray-700);
+    --text-tertiary-color: var(--true-gray-600);
+    --border-primary-color: var(--true-gray-600);
+    --border-secondary-color: var(--true-gray-700);
+    --border-tertiary-color: var(--true-gray-800);
+    --primary-bg: var(--true-gray-600);
+    --secondary-bg: var(--true-gray-800);
     --tertiary-bg: var(--true-gray-900);
 
     --shadow-md: 0 4px 6px -1px rgb(0, 0, 0, 0.3), 0 2px 4px -2px rgb(0, 0, 0, 0.3);
     --shadow-lg: 0 10px 15px -3px rgb(0, 0, 0, 0.3), 0 4px 6px -4px rgb(0, 0, 0, 0.3);
     --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
-    --body-bg: #222222; // custom value between --true-gray-900 and --true-gray-800
-    --responsive-header-bg: #303030;
+    --body-bg: var(--true-gray-950);
+    --responsive-header-bg: var(--true-gray-800);
     --responsive-header-border-color: var(--true-gray-600);
     --responsive-header-logo-color: var(--true-gray-300);
     --responsive-table-label-color: var(--true-gray-500);
     --responsive-table-row-border-color: var(--true-gray-700);
-    --sidebar-bg: #303030; // custom value between --true-gray-800 and --true-gray-700
-    --sidebar-border-color: var(--true-gray-700);
+    --sidebar-bg: var(--true-gray-900);
+    --sidebar-border-color: var(--true-gray-800);
     --sidebar-logo-color: var(--true-gray-200);
-    --sidebar-menu-color: #b5b5b5; // custom value between --true-gray-400 and --true-gray-300
+    --sidebar-menu-color: var(--true-gray-300);
     --sidebar-menu-badge-bg: var(--true-gray-800);
     --sidebar-menu-badge-color: var(--true-gray-300);
     --sidebar-menu-badge-active-bg: var(--blue-800);
     --sidebar-menu-badge-active-color: var(--true-gray-300);
     --sidebar-menu-submenu-color: var(--true-gray-400);
     --sidebar-menu-header-color: var(--true-gray-400);
-    --sidebar-menu-icon-color: var(--true-gray-500);
-    --sidebar-menu-active-item-bg: var(--true-gray-700);
-    --sidebar-menu-active-item-color: var(--blue-400);
+    --sidebar-menu-icon-color: var(--true-gray-400);
+    --sidebar-menu-active-item-bg: var(--true-gray-300);
+    --sidebar-menu-active-item-color: var(--true-gray-950);
     --sidebar-menu-compact-hover-box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
     --resize-handler-hover-bg: var(--indigo-400);
     --content-section-border-color: var(--true-gray-700);
@@ -404,38 +404,38 @@
     --content-search-reset-button-color: var(--true-gray-300);
     --content-search-reset-button-hover-bg: var(--true-gray-700);
     --content-search-reset-button-hover-color: var(--true-gray-200);
-    --content-top-border-color: var(--true-gray-600);
+    --content-top-border-color: var(--true-gray-700);
     --content-bg: var(--true-gray-900);
     --user-avatar-icon-bg: var(--true-gray-700);
-    --user-avatar-icon-color: var(--true-gray-500);
-    --user-name-color: var(--true-gray-500);
+    --user-avatar-icon-color: var(--true-gray-400);
+    --user-name-color: var(--true-gray-400);
     --user-menu-impersonated-link-color: var(--color-primary);
-    --popover-bg: #303030;
-    --popover-border-color: var(--true-gray-600);
+    --popover-bg: var(--true-gray-900);
+    --popover-border-color: var(--true-gray-700);
     --popover-color: var(--text-color);
     --popover-shadow: var(--shadow-xl);
     --popover-max-width: 480px;
-    --dropdown-toggle-bg: var(--true-gray-600);
+    --dropdown-toggle-bg: var(--true-gray-800);
     --dropdown-toggle-color: var(--true-gray-200);
-    --dropdown-toggle-border-color: var(--true-gray-600);
-    --dropdown-toggle-hover-border-color: var(--true-gray-500);
-    --dropdown-bg: #303030;
+    --dropdown-toggle-border-color: var(--true-gray-700);
+    --dropdown-toggle-hover-border-color: var(--true-gray-600);
+    --dropdown-bg: var(--true-gray-900);
     --dropdown-color: var(--true-gray-300);
-    --dropdown-border-color: var(--true-gray-600);
+    --dropdown-border-color: var(--true-gray-700);
     --dropdown-link-color: var(--true-gray-300);
-    --dropdown-link-hover-bg: var(--true-gray-700);
+    --dropdown-link-hover-bg: var(--true-gray-800);
     --dropdown-icon-color: var(--true-gray-400);
     --dropdown-settings-icon-color: var(--true-gray-500);
-    --dropdown-settings-active-item-bg: var(--true-gray-800);
+    --dropdown-settings-active-item-bg: var(--true-gray-950);
     --dropdown-settings-active-item-color: var(--color-primary);
-    --dropdown-settings-active-item-shadow: inset 0 0 0 1px var(--true-gray-500);
+    --dropdown-settings-active-item-shadow: inset 0 0 0 1px var(--true-gray-800);
     --datagrid-noresults-placeholder-bg: var(--true-gray-700);
     --datagrid-hidden-results-gradient-bg: var(--true-gray-700);
     --table-thead-color: var(--true-gray-200);
     --table-cell-color: var(--true-gray-300);
     --table-thead-marker-color: var(--true-gray-500);
-    --table-cell-border-color: var(--true-gray-700);
-    --table-hover-cell-bg: var(--true-gray-800);
+    --table-cell-border-color: var(--true-gray-800);
+    --table-hover-cell-bg: var(--true-gray-900);
     --table-selected-cell-bg: rgba(3, 102, 214, 0.25);
     --table-thead-sorted-color: var(--color-primary);
     --table-thead-sorted-marker-color: var(--color-primary);
@@ -455,16 +455,16 @@
     --modal-footer-bg: var(--true-gray-700);
     --modal-title-color: var(--true-gray-400);
     --pagination-disabled-color: var(--true-gray-600);
-    --detail-label-tooltip-underline-color: var(--true-gray-400);
+    --detail-label-tooltip-underline-color: var(--true-gray-500);
     --form-label-color: var(--true-gray-300);
-    --form-control-bg: var(--true-gray-700);
-    --form-control-disabled-bg: var(--true-gray-800);
-    --form-control-disabled-color: #939393;
-    --form-input-border-color: var(--true-gray-600);
+    --form-control-bg: var(--true-gray-900);
+    --form-control-disabled-bg: var(--true-gray-900);
+    --form-control-disabled-color: var(--true-gray-500);
+    --form-input-border-color: var(--true-gray-700);
     --form-input-error-border-color: var(--red-500);
-    --form-input-hover-border-color: var(--true-gray-400);
-    --form-input-shadow: 0 1px 2px 0 var(--true-gray-800);
-    --form-input-hover-shadow: 0 0 0 4px var(--true-gray-800);
+    --form-input-hover-border-color: var(--true-gray-500);
+    --form-input-shadow: none;
+    --form-input-hover-shadow: none;
     --form-input-error-shadow: 0 0 0 3px var(--red-900);
     --form-input-text-color: var(--true-gray-200);
     --form-input-group-text-bg: var(--true-gray-800);
@@ -509,11 +509,11 @@
     --form-column-icon-color: var(--true-gray-400);
     --form-fieldset-header-color: var(--true-gray-300);
     --form-fieldset-help-color: var(--true-gray-500);
-    --form-fieldset-border-color: var(--true-gray-600);
+    --form-fieldset-border-color: var(--true-gray-700);
     --form-fieldset-header-border-color: var(--true-gray-600);
-    --form-fieldset-icon-color: var(--true-gray-500);
-    --form-fieldset-collapse-marker-color: var(--true-gray-400);
-    --form-collection-item-collapse-marker-color: var(--true-gray-400);
+    --form-fieldset-icon-color: var(--true-gray-400);
+    --form-fieldset-collapse-marker-color: var(--true-gray-500);
+    --form-collection-item-collapse-marker-color: var(--true-gray-500);
     --badge-box-shadow: inset 0 0 0 1px rgba(245, 245, 245, 0.3);
     --badge-boolean-false-bg: rgba(245, 245, 245, 0.1);
     --badge-boolean-false-box-shadow: inset 0 0 0 1px rgba(245, 245, 245, 0.3);
@@ -575,49 +575,19 @@
     --button-color: var(--true-gray-200);
     --button-hover-color: var(--true-gray-100);
     --button-active-color: var(--true-gray-100);
-    --button-border-color: var(--true-gray-700);
+    --button-border-color: var(--true-gray-600);
     --button-hover-border-color: var(--true-gray-600);
-    --button-shadow:
-        /* border */
-        0 0 0 1px var(--true-gray-700),
-        /* drop shadow md (--true-gray-900) */
-        0 1px 1px 0 hsla(0, 0%, 9%, 0.5),
-        /* drop shadow lg (--true-gray-700) */
-        0 2px 5px 0 hsla(0, 0%, 25%, 0.5);
-    --button-hover-shadow:
-        /* border */
-        0 0 0 1px var(--true-gray-800),
-        /* drop shadow md (--true-gray-900) */
-        0 1px 1px 0 hsla(0, 0%, 9%, 0.5),
-        /* drop shadow lg (--true-gray-800) */
-        0 2px 5px 0 hsla(0, 0%, 15%, 0.5),
-        /* drop shadow xl (--true-gray-800) */
-        0 3px 9px 0 hsla(0, 0%, 15%, 0.5);
-    --button-active-shadow:
-        /* border */
-        0 0 0 1px var(--true-gray-900),
-        /* ring */
-        0 0 0 4px var(--true-gray-800),
-        /* drop shadow md (--true-gray-900) */
-        0 1px 1px 0 hsla(0, 0%, 9%, 0.9),
-        /* drop shadow lg (--true-gray-800) */
-        0 2px 5px 0 hsla(0, 0%, 15%, 0.9),
-        /* drop shadow xl (--true-gray-800) */
-        0 3px 9px 0 hsla(0, 0%, 15%, 0.9);
+    --button-shadow: 0 0 0 1px var(--true-gray-700);
+    --button-hover-shadow: 0 0 0 1px var(--true-gray-500);
+    --button-active-shadow: 0 0 0 1px var(--true-gray-600);
     --button-active-primary-shadow:
         /* border */
         0 0 0 1px var(--true-gray-700),
         /* ring */
-        0 0 0 4px var(--blue-700),
-        /* drop shadow md (--true-gray-900) */
-        0 1px 1px 0 hsla(0, 0%, 9%, 0.9),
-        /* drop shadow lg (--true-gray-800) */
-        0 2px 5px 0 hsla(0, 0%, 15%, 0.9),
-        /* drop shadow xl (--true-gray-800) */
-        0 3px 9px 0 hsla(0, 0%, 15%, 0.9);
+        0 0 0 4px var(--blue-600);
     --button-primary-bg: var(--blue-600);
     --button-primary-color: var(--text-on-primary);
-    --button-secondary-bg: var(--true-gray-600);
+    --button-secondary-bg: var(--true-gray-800);
     --button-secondary-color: var(--button-color);
     --button-info-bg: var(--color-info);
     --button-info-color: var(--white);
@@ -667,7 +637,7 @@
     --highlight-bg: rgba(210, 153, 34, 0.4);
 
     --text-on-primary: var(--white);
-    --text-muted: var(--true-gray-400);
+    --text-muted: var(--true-gray-500);
 
     --link-color: var(--blue-400);
     --link-hover-color: var(--blue-300);

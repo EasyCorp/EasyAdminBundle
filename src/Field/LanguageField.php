@@ -9,10 +9,8 @@ use Symfony\Contracts\Translation\TranslatableInterface;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class LanguageField implements FieldInterface
+final class LanguageField extends AbstractField
 {
-    use FieldTrait;
-
     public const FORMAT_ISO_639_ALPHA2 = 'iso639Alpha2';
     public const FORMAT_ISO_639_ALPHA3 = 'iso639Alpha3';
 
@@ -22,14 +20,9 @@ final class LanguageField implements FieldInterface
     public const OPTION_LANGUAGE_CODES_TO_KEEP = 'languageCodesToKeep';
     public const OPTION_LANGUAGE_CODES_TO_REMOVE = 'languageCodesToRemove';
 
-    /**
-     * @param TranslatableInterface|string|false|null $label
-     */
-    public static function new(string $propertyName, $label = null): self
+    public static function new(string $propertyName, TranslatableInterface|string|false|null $label = null): FieldInterface
     {
-        return (new self())
-            ->setProperty($propertyName)
-            ->setLabel($label)
+        return parent::new($propertyName, $label)
             ->setTemplateName('crud/field/language')
             ->setFormType(LanguageType::class)
             ->addCssClass('field-language')

@@ -9,18 +9,11 @@ use Symfony\Contracts\Translation\TranslatableInterface;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class TimezoneField implements FieldInterface
+final class TimezoneField extends AbstractField
 {
-    use FieldTrait;
-
-    /**
-     * @param TranslatableInterface|string|false|null $label
-     */
-    public static function new(string $propertyName, $label = null): self
+    public static function new(string $propertyName, TranslatableInterface|string|false|null $label = null): FieldInterface
     {
-        return (new self())
-            ->setProperty($propertyName)
-            ->setLabel($label)
+        return parent::new($propertyName, $label)
             ->setTemplateName('crud/field/timezone')
             ->setFormType(TimezoneType::class)
             ->addCssClass('field-timezone')

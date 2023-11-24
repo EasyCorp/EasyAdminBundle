@@ -9,10 +9,8 @@ use Symfony\Contracts\Translation\TranslatableInterface;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class ChoiceField implements FieldInterface
+final class ChoiceField extends AbstractField
 {
-    use FieldTrait;
-
     public const OPTION_ALLOW_MULTIPLE_CHOICES = 'allowMultipleChoices';
     public const OPTION_AUTOCOMPLETE = 'autocomplete';
     public const OPTION_CHOICES = 'choices';
@@ -27,14 +25,9 @@ final class ChoiceField implements FieldInterface
     public const WIDGET_AUTOCOMPLETE = 'autocomplete';
     public const WIDGET_NATIVE = 'native';
 
-    /**
-     * @param TranslatableInterface|string|false|null $label
-     */
-    public static function new(string $propertyName, $label = null): self
+    public static function new(string $propertyName, TranslatableInterface|string|false|null $label = null): FieldInterface
     {
-        return (new self())
-            ->setProperty($propertyName)
-            ->setLabel($label)
+        return parent::new($propertyName, $label)
             ->setTemplateName('crud/field/choice')
             ->setFormType(ChoiceType::class)
             ->addCssClass('field-select')

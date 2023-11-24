@@ -10,23 +10,16 @@ use Symfony\Contracts\Translation\TranslatableInterface;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class TextareaField implements FieldInterface
+final class TextareaField extends AbstractField
 {
-    use FieldTrait;
-
     public const OPTION_MAX_LENGTH = TextField::OPTION_MAX_LENGTH;
     public const OPTION_NUM_OF_ROWS = 'numOfRows';
     public const OPTION_RENDER_AS_HTML = TextField::OPTION_RENDER_AS_HTML;
     public const OPTION_STRIP_TAGS = TextField::OPTION_STRIP_TAGS;
 
-    /**
-     * @param TranslatableInterface|string|false|null $label
-     */
-    public static function new(string $propertyName, $label = null): self
+    public static function new(string $propertyName, TranslatableInterface|string|false|null $label = null): FieldInterface
     {
-        return (new self())
-            ->setProperty($propertyName)
-            ->setLabel($label)
+        return parent::new($propertyName, $label)
             ->setTemplateName('crud/field/textarea')
             ->setFormType(TextareaType::class)
             ->addCssClass('field-textarea')

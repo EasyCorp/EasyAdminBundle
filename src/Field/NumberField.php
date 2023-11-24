@@ -9,10 +9,8 @@ use Symfony\Contracts\Translation\TranslatableInterface;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class NumberField implements FieldInterface
+final class NumberField extends AbstractField
 {
-    use FieldTrait;
-
     public const OPTION_NUM_DECIMALS = 'numDecimals';
     public const OPTION_ROUNDING_MODE = 'roundingMode';
     public const OPTION_STORED_AS_STRING = 'storedAsString';
@@ -20,14 +18,9 @@ final class NumberField implements FieldInterface
     public const OPTION_THOUSANDS_SEPARATOR = 'thousandsSeparator';
     public const OPTION_DECIMAL_SEPARATOR = 'decimalSeparator';
 
-    /**
-     * @param TranslatableInterface|string|false|null $label
-     */
-    public static function new(string $propertyName, $label = null): self
+    public static function new(string $propertyName, TranslatableInterface|string|false|null $label = null): FieldInterface
     {
-        return (new self())
-            ->setProperty($propertyName)
-            ->setLabel($label)
+        return parent::new($propertyName, $label)
             ->setTemplateName('crud/field/number')
             ->setFormType(NumberType::class)
             ->addCssClass('field-number')

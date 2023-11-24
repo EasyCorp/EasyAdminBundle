@@ -10,21 +10,14 @@ use Symfony\Contracts\Translation\TranslatableInterface;
 /**
  * @author Jonathan Scheiber <contact@jmsche.fr>
  */
-final class SlugField implements FieldInterface
+final class SlugField extends AbstractField
 {
-    use FieldTrait;
-
     public const OPTION_TARGET_FIELD_NAME = 'targetFieldName';
     public const OPTION_UNLOCK_CONFIRMATION_MESSAGE = 'unlockConfirmationMessage';
 
-    /**
-     * @param TranslatableInterface|string|false|null $label
-     */
-    public static function new(string $propertyName, $label = null): self
+    public static function new(string $propertyName, TranslatableInterface|string|false|null $label = null): FieldInterface
     {
-        return (new self())
-            ->setProperty($propertyName)
-            ->setLabel($label)
+        return parent::new($propertyName, $label)
             ->setTemplateName('crud/field/text')
             ->setFormType(SlugType::class)
             ->addCssClass('field-text')

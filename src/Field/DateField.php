@@ -9,21 +9,14 @@ use Symfony\Contracts\Translation\TranslatableInterface;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class DateField implements FieldInterface
+final class DateField extends AbstractField
 {
-    use FieldTrait;
-
     public const OPTION_DATE_PATTERN = 'datePattern';
     public const OPTION_WIDGET = 'widget';
 
-    /**
-     * @param TranslatableInterface|string|false|null $label
-     */
-    public static function new(string $propertyName, $label = null): self
+    public static function new(string $propertyName, TranslatableInterface|string|false|null $label = null): FieldInterface
     {
-        return (new self())
-            ->setProperty($propertyName)
-            ->setLabel($label)
+        return parent::new($propertyName, $label)
             ->setTemplateName('crud/field/date')
             ->setFormType(DateType::class)
             ->addCssClass('field-date')

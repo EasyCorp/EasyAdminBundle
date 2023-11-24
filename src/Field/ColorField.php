@@ -9,21 +9,14 @@ use Symfony\Contracts\Translation\TranslatableInterface;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class ColorField implements FieldInterface
+final class ColorField extends AbstractField
 {
-    use FieldTrait;
-
     public const OPTION_SHOW_SAMPLE = 'showSample';
     public const OPTION_SHOW_VALUE = 'showValue';
 
-    /**
-     * @param TranslatableInterface|string|false|null $label
-     */
-    public static function new(string $propertyName, $label = null): self
+    public static function new(string $propertyName, TranslatableInterface|string|false|null $label = null): FieldInterface
     {
-        return (new self())
-            ->setProperty($propertyName)
-            ->setLabel($label)
+        return parent::new($propertyName, $label)
             ->setTemplateName('crud/field/color')
             ->setFormType(ColorType::class)
             ->addCssClass('field-color')

@@ -41,7 +41,7 @@ of all those fields (they are concatenated in the same order as you defined the
 fields)::
 
     // the slugs are concatenated in the same order (e.g. '2023-news-lorem-ipsum')
-    yield SlugField::new('...')->setTargetFieldName(['year', 'type', title']);
+    yield SlugField::new('...')->setTargetFieldName(['year', 'type', 'title']);
 
 ``setUnlockConfirmationMessage``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -64,7 +64,7 @@ final class ChoiceFilter implements FilterInterface
         } else {
             $orX = new Orx();
             $orX->add(sprintf('%s.%s %s (:%s)', $alias, $property, $comparison, $parameterName));
-            if (ComparisonType::NEQ === $comparison) {
+            if (ComparisonType::NEQ === $comparison || 'NOT IN' === $comparison) {
                 $orX->add(sprintf('%s.%s IS NULL', $alias, $property));
             }
             $queryBuilder->andWhere($orX)

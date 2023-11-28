@@ -281,7 +281,7 @@ label.form-check-label {
 }
 
 // Form tabs
-.form-tabs .nav-tabs {
+.form-tabs-tablist .nav-tabs {
     background: transparent;
     border: 0;
     box-shadow: 0 2px 0 var(--form-tabs-border-color);
@@ -289,7 +289,7 @@ label.form-check-label {
     padding-left: 0px;
 }
 
-.form-tabs .nav-tabs a, .form-tabs .nav-tabs a:hover {
+.form-tabs-tablist .nav-tabs a, .form-tabs-tablist .nav-tabs a:hover {
     border: 0;
     color: var(--text-color);
     font-size: var(--font-size-base);
@@ -297,24 +297,24 @@ label.form-check-label {
     margin: 0;
     padding: 4px 14px 8px;
 }
-.form-tabs .nav-tabs .nav-item:first-child a, .form-tabs .nav-tabs .nav-item:first-child a:hover {
+.form-tabs-tablist .nav-tabs .nav-item:first-child a, .form-tabs-tablist .nav-tabs .nav-item:first-child a:hover {
      padding-left: 0;
  }
 
-.form-tabs .nav-tabs .tab-nav-item-icon {
+.form-tabs-tablist .nav-tabs .tab-nav-item-icon {
     color: var(--text-muted);
     margin-right: 5px;
 }
 
-.form-tabs .nav-tabs .nav-link.active {
+.form-tabs-tablist .nav-tabs .nav-link.active {
     background: transparent;
     color: var(--link-color);
     position: relative;
 }
-.form-tabs .nav-tabs .nav-link.active .tab-nav-item-icon {
+.form-tabs-tablist .nav-tabs .nav-link.active .tab-nav-item-icon {
     color: var(--link-color);
 }
-.form-tabs .nav-tabs .nav-link.active:before {
+.form-tabs-tablist .nav-tabs .nav-link.active:before {
     content: '';
     width: 100%;
     height: 2px;
@@ -323,7 +323,7 @@ label.form-check-label {
     bottom: -2px;
     left: 0;
 }
-.form-tabs .nav-tabs .nav-link.active:after {
+.form-tabs-tablist .nav-tabs .nav-link.active:after {
     content: '';
     width: calc(100% - 2 * var(--form-tabs-gutter-x));
     height: 2px;
@@ -332,18 +332,18 @@ label.form-check-label {
     bottom: -2px;
     left: var(--form-tabs-gutter-x);
 }
-.form-tabs .nav-tabs .nav-item:first-child .nav-link.active:after {
+.form-tabs-tablist .nav-tabs .nav-item:first-child .nav-link.active:after {
     width: calc(100% - var(--form-tabs-gutter-x));
     left: 0;
 }
 
-.form-tabs .nav-tabs .nav-item .badge {
+.form-tabs-tablist .nav-tabs .nav-item .badge {
     line-height: 1;
     margin-left: 4px;
     padding: 3px 6px;
 }
 
-.form-tabs .tab-help {
+.form-tabs-tablist .tab-help {
     color: var(--form-tabs-help-color);
     margin-top: -10px;
     margin-bottom: 15px;

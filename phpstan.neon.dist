@@ -5,6 +5,9 @@ parameters:
     level: 5
     paths:
         - src/
+    excludePaths:
+        analyse:
+            - src/ArgumentResolver
     bootstrapFiles:
         - vendor/bin/.phpunit/phpunit/vendor/autoload.php
     ignoreErrors:

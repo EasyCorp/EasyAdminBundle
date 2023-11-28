@@ -622,7 +622,7 @@
     {% set tab_error_count_option_name = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Field\\FormField::OPTION_TAB_ERROR_COUNT') %}
     {% set field = form.vars.ea_vars.field %}
 
-    <div class="nav-tabs-custom form-tabs">
+    <div class="nav-tabs-custom form-tabs-tablist">
         <ul class="nav nav-tabs">
             {% for tab in field.getCustomOption('tabs') %}
                 <li class="nav-item">
@@ -646,29 +646,30 @@
 {% endblock ea_form_tablist_row %}
 
 {% block ea_form_tabpane_group_open_row %}
-    <div class="nav-tabs-custom form-tabs">
+    <div class="nav-tabs-custom form-tabs-content">
+        <div class="tab-content">
 {% endblock ea_form_tabpane_group_open_row %}
 
 {% block ea_form_tabpane_group_close_row %}
+        </div>
     </div>
 {% endblock ea_form_tabpane_group_close_row %}
 
 {% block ea_form_tabpane_open_row %}
     {% set tab_is_active_option_name = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Field\\FormField::OPTION_TAB_IS_ACTIVE') %}
     {% set field = form.vars.ea_vars.field %}
-    <div class="tab-content">
-        <div id="{{ ea_tab_id }}" class="tab-pane {% if field.getCustomOption(tab_is_active_option_name) %}active{% endif %} {{ ea_css_class }}">
-            {% if ea_help %}
-                <div class="content-header-help tab-help">
-                    {{ ea_help|trans(domain = ea.i18n.translationDomain)|raw }}
-                </div>
-            {% endif %}
 
-            <div class="row">
+    <div id="{{ ea_tab_id }}" class="tab-pane {% if field.getCustomOption(tab_is_active_option_name) %}active{% endif %} {{ ea_css_class }}">
+        {% if ea_help %}
+            <div class="content-header-help tab-help">
+                {{ ea_help|trans(domain = ea.i18n.translationDomain)|raw }}
+            </div>
+        {% endif %}
+
+        <div class="row">
 {% endblock ea_form_tabpane_open_row %}
 
 {% block ea_form_tabpane_close_row %}
-            </div>
         </div>
     </div>
 {% endblock ea_form_tabpane_close_row %}

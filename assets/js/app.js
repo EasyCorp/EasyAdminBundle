@@ -21,6 +21,7 @@ class App {
         this.#sidebarWidthLocalStorageKey = 'ea/sidebar/width';
         this.#contentWidthLocalStorageKey = 'ea/content/width';
 
+        this.#removeHashFormUrl();
         this.#createMainMenu();
         this.#createLayoutResizeControls();
         this.#createNavigationToggler();
@@ -33,6 +34,26 @@ class App {
         this.#createTooltips();
 
         document.addEventListener('ea.collection.item-added', () => this.#createAutoCompleteFields());
+    }
+
+    // When using tabs in forms, the selected tab is persisted (in the URL hash) so you
+    // can see the same tab when reloading the page (e.g. '#tab-contact-information').
+    // This method removes the hash from URL in the index page to not show form-related
+    // information in the index page
+    #removeHashFormUrl() {
+        if (!window.location.href.includes('#')) {
+            return;
+        }
+
+        // remove the hash only in the index page
+        if (!document.querySelector('body').classList.contains('ea-index')) {
+            return;
+        }
+
+        // don't set the hash to '' because that also removes the query parameters
+        const urlParts = window.location.href.split('#');
+        const urlWithoutHash = urlParts[0];
+        window.history.replaceState({}, '', urlWithoutHash);
     }
 
     #createMainMenu() {

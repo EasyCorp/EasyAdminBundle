@@ -122,7 +122,7 @@
     {% set tab_is_active_option_name = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Field\\FormField::OPTION_TAB_IS_ACTIVE') %}
     {% set tab_error_count_option_name = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Field\\FormField::OPTION_TAB_ERROR_COUNT') %}
 
-    <div class="nav-tabs-custom form-tabs">
+    <div class="nav-tabs-custom form-tabs-tablist">
         <ul class="nav nav-tabs">
             {% for tab in field.getCustomOption('tabs') %}
                 <li class="nav-item">
@@ -146,10 +146,12 @@
 {% endmacro %}
 
 {% macro render_tab_group_open(field) %}
-    <div class="nav-tabs-custom form-tabs">
+    <div class="nav-tabs-custom form-tabs-content">
+        <div class="tab-content">
 {% endmacro %}
 
 {% macro render_tab_group_close(field) %}
+        </div>
     </div>
 {% endmacro %}
 
@@ -157,19 +159,17 @@
     {% set tab_id_option_name = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Field\\FormField::OPTION_TAB_ID') %}
     {% set tab_is_active_option_name = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Field\\FormField::OPTION_TAB_IS_ACTIVE') %}
 
-    <div class="tab-content">
-        <div id="{{ field.getCustomOption(tab_id_option_name) }}" class="tab-pane {% if field.getCustomOption(tab_is_active_option_name) %}active{% endif %} {{ field.cssClass }}">
-            {% if field.help %}
-                <div class="content-header-help tab-help">
-                    {{ field.help|trans(domain = ea.i18n.translationDomain)|raw }}
-                </div>
-            {% endif %}
+    <div id="{{ field.getCustomOption(tab_id_option_name) }}" class="tab-pane {% if field.getCustomOption(tab_is_active_option_name) %}active{% endif %} {{ field.cssClass }}">
+        {% if field.help %}
+            <div class="content-header-help tab-help">
+                {{ field.help|trans(domain = ea.i18n.translationDomain)|raw }}
+            </div>
+        {% endif %}
 
-            <div class="row">
+        <div class="row">
 {% endmacro %}
 
 {% macro render_tab_close(field) %}
-            </div>
         </div>
     </div>
 {% endmacro %}

@@ -1,4 +1,5 @@
 import DirtyForm from 'dirty-form';
+import { Tab } from 'bootstrap';
 
 document.addEventListener('DOMContentLoaded', () => {
     new Form();
@@ -6,9 +7,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
 class Form {
     constructor() {
+        this.#persistSelectedTab();
         this.#createUnsavedFormChangesWarning();
         this.#createFieldsWithErrors();
         this.#preventMultipleFormSubmission();
+    }
+
+    #persistSelectedTab() {
+        // the ID of the selected tab is appended as a hash in the URL to persist it;
+        // if the URL has a hash, try to look for a tab with that ID and show it
+        const urlHash = window.location.hash;
+        if (urlHash) {
+            const selectedTabPaneId = urlHash.substring(1); // remove the leading '#' from the hash
+            const selectedTabId = `tablist-${ selectedTabPaneId }`;
+            this.#setTabAsActive(selectedTabId);
+        }
+
+        // update the page anchor when the selected tab changes
+        document.querySelectorAll('a[data-bs-toggle="tab"]').forEach((tabElement) => {
+            tabElement.addEventListener('shown.bs.tab', function (event) {
+                const urlHash = '#' + event.target.getAttribute('href').substring(1);
+                history.pushState({}, '', urlHash);
+            });
+        });
     }
 
     #createUnsavedFormChangesWarning() {
@@ -33,12 +54,13 @@ class Form {
             // itself to support custom/complex fields.
             //
             // Adding visual error counter feedback for invalid fields inside form tabs (visible or not)
+            const that = this;
             document.querySelector('.ea-edit, .ea-new').querySelectorAll('[type="submit"]').forEach((button) => {
                 button.addEventListener('click', function onSubmitButtonsClick(clickEvent) {
                     let formHasErrors = false;
 
                     // Remove all error counter badges
-                    document.querySelectorAll('.form-tabs .nav-item .badge-danger.badge').forEach( (badge) => {
+                    document.querySelectorAll('.form-tabs-tablist .nav-item .badge-danger.badge').forEach( (badge) => {
                         badge.parentElement.removeChild(badge);
                     });
 
@@ -46,7 +68,7 @@ class Form {
                         return;
                     }
 
-                    form.querySelectorAll('input,select,textarea').forEach( (input) => {
+                    form.querySelectorAll('input, select, textarea').forEach((input) => {
                         if (!input.disabled && !input.validity.valid) {
                             formHasErrors = true;
 
@@ -58,6 +80,8 @@ class Form {
                                 const navLinkTab = document.querySelector(`[data-bs-target="#${ formTab.id }"], a[href="#${ formTab.id }"]`);
 
                                 if (navLinkTab) {
+                                    navLinkTab.classList.add('has-error');
+
                                     const badge = navLinkTab.querySelector('.badge');
                                     if (badge) {
                                         // Increment number of error
@@ -66,16 +90,9 @@ class Form {
                                         // Create a new badge
                                         let newErrorBadge = document.createElement('span');
                                         newErrorBadge.classList.add('badge', 'badge-danger');
-                                        newErrorBadge.title = 'form.tab.error_badge_title';
                                         newErrorBadge.textContent = '1';
                                         navLinkTab.appendChild(newErrorBadge);
                                     }
-                                    navLinkTab.addEventListener('click', function onFormNavLinkTabClick() {
-                                        navLinkTab.querySelectorAll('.badge-danger.badge').forEach( (badge) => {
-                                            badge.parentElement.removeChild(badge);
-                                        });
-                                        navLinkTab.removeEventListener('click', onFormNavLinkTabClick);
-                                    });
                                 }
                             }
 
@@ -93,6 +110,12 @@ class Form {
                     if (formHasErrors) {
                         clickEvent.preventDefault();
                         clickEvent.stopPropagation();
+
+                        // set as active the first tab with errors
+                        const firstTabWithErrors = document.querySelector('.form-tabs-tablist .nav-tabs .nav-item .nav-link.has-error');
+                        if (null !== firstTabWithErrors) {
+                            that.#setTabAsActive(firstTabWithErrors.id);
+                        }
 
                         document.dispatchEvent(new CustomEvent('ea.form.error', {
                             cancelable: true,
@@ -121,6 +144,17 @@ class Form {
                 handleFieldsWithErrors(form, formSelector.includes('-new-') ? 'new' : 'edit');
             }
         });
+    }
+
+    #setTabAsActive(tabItemId) {
+        const tabElement = document.getElementById(tabItemId);
+        if (!tabElement) {
+            return;
+        }
+
+        const bootstrapTab = new Tab(tabElement);
+        // when showing a tab, Bootstrap hides all the other tabs automatically
+        bootstrapTab.show();
     }
 
     #preventMultipleFormSubmission() {

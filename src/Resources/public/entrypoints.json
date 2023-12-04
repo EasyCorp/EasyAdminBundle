@@ -2,16 +2,16 @@
   "entrypoints": {
     "app": {
       "css": [
-        "/app.8a77f38a.css",
-        "/app.8a77f38a.rtl.css"
+        "/app.1a60afe8.css",
+        "/app.1a60afe8.rtl.css"
       ],
       "js": [
-        "/app.00a7b690.js"
+        "/app.483e7f79.js"
       ]
     },
     "form": {
       "js": [
-        "/form.5e2c4e01.js"
+        "/form.8b8c9feb.js"
       ]
     },
     "page-layout": {

@@ -46,8 +46,8 @@ pre {
 
 // Needed to provide BC compatibility because
 // Bootstrap 5 replaced these classes by .text-start and .text-end
-.text-left { text-align: left !important; }
-.text-right { text-align: right !important; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
 
 /* Layout
    ========================================================================= */

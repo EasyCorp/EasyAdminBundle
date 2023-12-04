@@ -36,8 +36,9 @@ class MenuItemMatcher implements MenuItemMatcherInterface
         }
 
         $menuItemLinksToIndexCrudAction = Crud::PAGE_INDEX === ($menuItemQueryParameters[EA::CRUD_ACTION] ?? false);
+        $currentPageLinksToIndexCrudAction = Crud::PAGE_INDEX === ($currentPageQueryParameters[EA::CRUD_ACTION] ?? false);
         $menuItemQueryParameters = $this->filterIrrelevantQueryParameters($menuItemQueryParameters, $menuItemLinksToIndexCrudAction);
-        $currentPageQueryParameters = $this->filterIrrelevantQueryParameters($currentPageQueryParameters, $menuItemLinksToIndexCrudAction);
+        $currentPageQueryParameters = $this->filterIrrelevantQueryParameters($currentPageQueryParameters, $currentPageLinksToIndexCrudAction);
 
         // needed so you can pass route parameters in any order
         sort($menuItemQueryParameters);

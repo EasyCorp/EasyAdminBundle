@@ -1,0 +1,21 @@
+---------------------------------------------------------------------------
+
+by Eptagone at 2023-12-07T06:48:11Z
+
+Hello, I have tried it in my local environment.
+I think it happens [here](https://github.com/EasyCorp/EasyAdminBundle/blame/ebb1eff78048180d301632e10292eeca2349b017/assets/css/app.scss#L10)
+```scss
+@import "~bootstrap/scss/bootstrap";
+```
+Because bootstrap also load the variables in "bootstrap/scss/bootstrap", all variables with `!default` are overwritten again.
+A solution could be removing the `!default` in `variables-bootstrap.scss`
+```scss
+// $enable-important-utilities: false !default; <- Not works
+$enable-important-utilities: false; // Works
+```
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2023-12-07T18:56:13Z
+
+Thanks a lot for investigating this. I made your suggested change and it worked. Thanks!

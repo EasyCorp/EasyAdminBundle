@@ -12,6 +12,8 @@ table.datagrid {
     @media (max-width: 767px) {
       tbody, tr, td { display: block; }
       tbody, tr { border-radius: var(--border-radius); }
+      tbody tr td:first-of-type { border-top-left-radius: var(--border-radius); border-top-right-radius: var(--border-radius); }
+      tbody tr td:last-of-type { border-bottom-left-radius: var(--border-radius); border-bottom-right-radius: var(--border-radius); }
       thead { display: none; }
       tr {
         border: 1px solid var(--responsive-table-row-border-color);

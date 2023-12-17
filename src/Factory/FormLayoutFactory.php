@@ -172,6 +172,7 @@ final class FormLayoutFactory
 
         $slugger = new AsciiSlugger();
         $tabs = [];
+        $isFirstTab = true;
         /** @var FieldDto $fieldDto */
         foreach ($fields as $fieldDto) {
             if ($formUsesColumns && !($aFormColumnIsOpen || $aFormTabIsOpen) && !$fieldDto->isFormLayoutField()) {
@@ -179,10 +180,10 @@ final class FormLayoutFactory
             }
 
             if ($fieldDto->isFormTab()) {
-                $isTabActive = 0 === \count($tabs);
                 $tabId = sprintf('tab-%s', $fieldDto->getLabel() ? $slugger->slug(strip_tags($fieldDto->getLabel()))->lower()->toString() : ++$tabsWithoutLabelCounter);
                 $fieldDto->setCustomOption(FormField::OPTION_TAB_ID, $tabId);
-                $fieldDto->setCustomOption(FormField::OPTION_TAB_IS_ACTIVE, $isTabActive);
+                $fieldDto->setCustomOption(FormField::OPTION_TAB_IS_ACTIVE, $isFirstTab);
+                $isFirstTab = false;
 
                 $fieldDto->setFormTypeOptions([
                     'ea_tab_id' => $tabId,

@@ -16,7 +16,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabListType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabPaneCloseType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabPaneGroupCloseType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabPaneGroupOpenType;
-use Symfony\Component\String\Slugger\AsciiSlugger;
 use Symfony\Component\Uid\Ulid;
 
 /**
@@ -168,9 +167,7 @@ final class FormLayoutFactory
         $aFormTabIsOpen = false;
         $aFormFieldsetIsOpen = false;
         $isFirstFormColumn = true;
-        $tabsWithoutLabelCounter = 0;
 
-        $slugger = new AsciiSlugger();
         $tabs = [];
         $isFirstTab = true;
         /** @var FieldDto $fieldDto */
@@ -180,7 +177,7 @@ final class FormLayoutFactory
             }
 
             if ($fieldDto->isFormTab()) {
-                $tabId = sprintf('tab-%s', $fieldDto->getLabel() ? $slugger->slug(strip_tags($fieldDto->getLabel()))->lower()->toString() : ++$tabsWithoutLabelCounter);
+                $tabId = $fieldDto->getProperty();
                 $fieldDto->setCustomOption(FormField::OPTION_TAB_ID, $tabId);
                 $fieldDto->setCustomOption(FormField::OPTION_TAB_IS_ACTIVE, $isFirstTab);
                 $isFirstTab = false;

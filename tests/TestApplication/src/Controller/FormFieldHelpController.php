@@ -25,32 +25,32 @@ class FormFieldHelpController extends AbstractCrudController
     {
         return [
             // fields with no help defined
-            FormField::addTab('Tab 1'),
+            FormField::addTab('Tab 1')->setProperty('tab-tab-1'),
             FormField::addColumn()->addCssClass('column-1'),
             FormField::addFieldset('Fieldset 1'),
             IdField::new('id'),
             TextField::new('title')->setHelp(''),
 
             // fields with help defined as simple text strings
-            FormField::addTab('Tab 2')->setHelp('Tab 2 Lorem Ipsum'),
+            FormField::addTab('Tab 2')->setProperty('tab-tab-2')->setHelp('Tab 2 Lorem Ipsum'),
             FormField::addColumn()->addCssClass('column-2')->setHelp('Column 2 Lorem Ipsum'),
             FormField::addFieldset('Fieldset 2')->setHelp('Fieldset 2 Lorem Ipsum'),
             TextField::new('slug')->setHelp('Slug Lorem Ipsum'),
 
             // fields with help defined as text strings with HTML contents
-            FormField::addTab('Tab 3')->setHelp('<a href="https://example.com">Tab 3</a> <b>Lorem</b> Ipsum'),
+            FormField::addTab('Tab 3')->setProperty('tab-tab-3')->setHelp('<a href="https://example.com">Tab 3</a> <b>Lorem</b> Ipsum'),
             FormField::addColumn()->addCssClass('column-3')->setHelp('<a href="https://example.com">Column 3</a> <b>Lorem</b> Ipsum'),
             FormField::addFieldset('Fieldset 3')->setHelp('<a href="https://example.com">Fieldset 3</a> <b>Lorem</b> Ipsum'),
             TextField::new('content')->setHelp('<a href="https://example.com">Content</a> <b>Lorem</b> Ipsum'),
 
             // fields with help defined as Translatable objects using simple text strings
-            FormField::addTab('Tab 4')->setHelp(t('Tab 4 Lorem Ipsum')),
+            FormField::addTab('Tab 4')->setProperty('tab-tab-4')->setHelp(t('Tab 4 Lorem Ipsum')),
             FormField::addColumn()->addCssClass('column-4')->setHelp(t('Column 4 Lorem Ipsum')),
             FormField::addFieldset('Fieldset 4')->setHelp(t('Fieldset 4 Lorem Ipsum')),
             DateTimeField::new('createdAt')->setHelp(t('CreatedAt Lorem Ipsum')),
 
             // fields with help defined as Translatable objects using text strings with HTML contents
-            FormField::addTab('Tab 5')->setHelp(t('<a href="https://example.com">Tab 5</a> <b>Lorem</b> Ipsum')),
+            FormField::addTab('Tab 5')->setProperty('tab-tab-5')->setHelp(t('<a href="https://example.com">Tab 5</a> <b>Lorem</b> Ipsum')),
             FormField::addColumn()->addCssClass('column-5')->setHelp(t('<a href="https://example.com">Column 5</a> <b>Lorem</b> Ipsum')),
             FormField::addFieldset('Fieldset 5')->setHelp(t('<a href="https://example.com">Fieldset 5</a> <b>Lorem</b> Ipsum')),
             DateTimeField::new('publishedAt')->setHelp(t('<a href="https://example.com">PublishedAt</a> <b>Lorem</b> Ipsum')),

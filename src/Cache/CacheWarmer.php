@@ -47,6 +47,11 @@ final class CacheWarmer implements CacheWarmerInterface
             }
 
             $controller = u($controller);
+            if ($controller->isEmpty()) {
+                // this happens e.g. when using 'lexik/jwt-authentication-bundle', which defines an empty controller
+                continue;
+            }
+
             if (!$controller->endsWith('::index') && !$controller->endsWith('::__invoke')) {
                 continue;
             }

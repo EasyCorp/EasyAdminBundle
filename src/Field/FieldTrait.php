@@ -129,6 +129,35 @@ trait FieldTrait
         return $this;
     }
 
+    /**
+     * Sets the value of a custom HTML attribute that will be added when rendering the field.
+     * E.g. setAttribute('data-foo', 'bar') will render a 'data-foo="bar"' attribute in HTML.
+     * It's a shortcut for the equivalent setFormTypeOption('attr.data-foo', 'bar).
+     */
+    public function setHtmlAttribute(string $attributeName, $attributeValue): self
+    {
+        if (str_contains($attributeName, '.')) {
+            throw new \InvalidArgumentException(sprintf('Field attributes must be defined as pairs of "(string) key => (scalar) value". That\'s why the attribute name ("%s") cannot use the "dot notation" with the "." character to create nested attributes.', $attributeName));
+        }
+
+        if (!\is_scalar($attributeValue)) {
+            throw new \InvalidArgumentException(sprintf('The value of the "%s" attribute must be a scalar value (string, integer, float, boolean); "%s" given.', $attributeName, \gettype($attributeValue)));
+        }
+
+        $this->dto->setFormTypeOption('attr.'.$attributeName, $attributeValue);
+
+        return $this;
+    }
+
+    public function setHtmlAttributes(array $attributes): self
+    {
+        foreach ($attributes as $attributeName => $attributeValue) {
+            $this->setHtmlAttribute($attributeName, $attributeValue);
+        }
+
+        return $this;
+    }
+
     public function setSortable(bool $isSortable): self
     {
         $this->dto->setSortable($isSortable);

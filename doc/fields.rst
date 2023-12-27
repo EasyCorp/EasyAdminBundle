@@ -811,6 +811,14 @@ Misc. Options
         // it leaves all the other existing type options unchanged)
         ->setFormTypeOptions(['option_name' => 'option_value'])
 
+        // a custom HTML attribute added when rendering the field
+        // e.g. setAttribute('data-foo', 'bar') renders a 'data-foo="bar"' attribute in HTML
+        // it's a shortcut for the equivalent setFormTypeOption('attr.data-foo', 'bar)
+        ->setHtmlAttribute('attribute_name' => 'attribute_value')
+
+        // a key-value array of attributes to add to the HTML element
+        ->setHtmlAttributes(['data-foo' => 'bar', 'autofocus' => 'autofocus'])
+
 .. _custom-fields:
 
 Creating Custom Fields

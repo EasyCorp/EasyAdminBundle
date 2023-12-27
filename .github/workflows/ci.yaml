@@ -58,46 +58,47 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                os: [ubuntu-latest]
-                php_version: ["8.1", "8.2", "8.3"]
-                symfony_version: ["5.4", "6.0", "6.1", "6.2", "6.3", "6.4.0-beta1"]
-                stability: ["stable"]
                 include:
                     # Latest Symfony version support
                     - os: macos-latest
-                      php_version: "8.2"
-                      symfony_version: "6.3"
+                      php_version: "8.3"
+                      symfony_version: "7.0"
+                      stability: "stable"
                     - os: windows-latest
-                      php_version: "8.2"
-                      symfony_version: "6.3"
+                      php_version: "8.3"
+                      symfony_version: "7.0"
+                      stability: "stable"
                     # LTS Symfony version support
                     - os: macos-latest
-                      php_version: "8.2"
-                      symfony_version: "5.4"
+                      php_version: "8.3"
+                      symfony_version: "6.4"
+                      stability: "stable"
                     - os: windows-latest
-                      php_version: "8.2"
-                      symfony_version: "5.4"
+                      php_version: "8.3"
+                      symfony_version: "6.4"
+                      stability: "stable"
                     # Lowest deps support
                     - os: ubuntu-latest
                       php_version: "8.0.2"
                       composer_args: "--prefer-lowest"
+                      stability: "stable"
                     # Lowest PHP version support. Remove when it is dropped
                     - os: ubuntu-latest
                       php_version: "8.0"
                       symfony_version: "5.4"
+                      stability: "stable"
                     - os: ubuntu-latest
-                      php_version: "8.0"
-                      symfony_version: "6.0"
-                    - os: ubuntu-latest
-                      php_version: "8.1"
+                      php_version: "8.2"
                       symfony_version: "6.4"
+                      stability: "stable"
                     - os: ubuntu-latest
                       php_version: "8.3"
                       symfony_version: "7.0"
+                      stability: "stable"
                     # Upcoming Symfony versions
                     - os: ubuntu-latest
                       php_version: "8.3"
-                      symfony_version: "7.1"
+                      symfony_version: "7.1.x-dev"
                       stability: "dev"
         runs-on: ${{ matrix.os }}
         steps:

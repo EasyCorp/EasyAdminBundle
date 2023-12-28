@@ -132,6 +132,7 @@ jobs:
                   vendor/bin/simple-phpunit install
 
             - name: Run tests
+              continue-on-error: ${{ matrix.stability == 'dev' }}
               env:
                   SYMFONY_DEPRECATIONS_HELPER: "weak"
               run: vendor/bin/simple-phpunit

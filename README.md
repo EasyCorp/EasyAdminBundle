@@ -38,6 +38,24 @@ Demo Application
 Symfony application that showcases EasyAdmin features. It's based on the
 [Symfony Demo](https://github.com/symfony/demo) project.
 
+Dev Environment
+---------------
+
+EasyAdmin ships a DDEV environment, which allows you to run EasyAdmin in a Symfony Framework project
+providing example entities and CRUD Controllers. 
+
+**Requirements:**
+
+  * [Docker](https://www.docker.com/get-started/)
+  * [DDEV](https://ddev.com/get-started/)
+
+**Using the environment:**
+
+  * Checkout the EasyAdmin git repository and switch in the project directory
+  * Perform `ddev setup` which starts and provisions the web container
+  * EasyAdmin is available under the URL: https://easy-admin-bundle.ddev.site
+  * To (re-)build frontend assets perform `ddev build-assets`
+
 License
 -------
 

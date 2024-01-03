@@ -61,7 +61,7 @@ class App {
         const menuItemsWithSubmenus = document.querySelectorAll('#main-menu .menu-item.has-submenu');
         menuItemsWithSubmenus.forEach((menuItem) => {
             const menuItemSubmenu = menuItem.querySelector('.submenu');
-            if(menuItemSubmenu === null) {
+            if (null === menuItemSubmenu) {
                 return;
             }
 

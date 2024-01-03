@@ -1,0 +1,5 @@
+---------------------------------------------------------------------------
+
+by a-r-m-i-n at 2024-01-03T10:45:23Z
+
+Ehm, the issue in check `Build / phpunit (ubuntu-latest, 8.3, 7.0, stable) (pull_request)` occured because of some connection issues during run

@@ -1,5 +1,4 @@
 import DirtyForm from 'dirty-form';
-import { Tab } from 'bootstrap';
 
 document.addEventListener('DOMContentLoaded', () => {
     new Form();
@@ -152,6 +151,7 @@ class Form {
             return;
         }
 
+        const Tab = bootstrap.Tab;
         const bootstrapTab = new Tab(tabElement);
         // when showing a tab, Bootstrap hides all the other tabs automatically
         bootstrapTab.show();

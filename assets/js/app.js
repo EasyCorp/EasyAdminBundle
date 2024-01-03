@@ -61,6 +61,9 @@ class App {
         const menuItemsWithSubmenus = document.querySelectorAll('#main-menu .menu-item.has-submenu');
         menuItemsWithSubmenus.forEach((menuItem) => {
             const menuItemSubmenu = menuItem.querySelector('.submenu');
+            if(menuItemSubmenu === null) {
+                return;
+            }
 
             // needed because the menu accordion is based on the max-height property.
             // visible elements must be initialized with a explicit max-height; otherwise

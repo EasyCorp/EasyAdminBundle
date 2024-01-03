@@ -1,0 +1,49 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2024-01-02T19:18:28Z
+
+I know nothing about `ddev` so I wont be able to debug or review anything. But, if this is helpful for some folks, I'll be happy to merge this. Thanks.
+
+---------------------------------------------------------------------------
+
+by a-r-m-i-n at 2024-01-02T22:15:14Z
+
+DDEV is worth taking a look. It's an incredible good dev environment, completely isolated for each project. And thanks to the commands you can ship in your projects, it makes it a no brainer to setup any web environments you want.
+
+You just need to install Docker and DDEV. All complicated Docker setup is done by DDEV scripts. It also ships an own router (aka reverse proxy) which allows you to run multiple projects simultaneously without any port struggling. Also self-signed SSL certificates are supported.
+
+Which web-server and which database should run can get configured in the .ddev/config.yaml file. Usually DDEV would mount the root of your project to /var/www/html which is the default htdocs root directory. In case of Easy Admin Bundle I changed this, with some Docker Compose config, to mount the bundle in a separate directory and install a Symfony skeleton project in the htdocs root, using a DDEV command (ddev setup).
+
+To build the frontend assets, I've written another command, inspired by the given make file,in your project. Fortunately the web container, provided by DDEV, already contains all necessary tools (like NodeJS and Yarn).
+
+This environment enables me to set up a fresh easy admin installation, based on checked out branch. Any changes to PHP files will directly apply.
+
+I'm working with DDEV since years (in TYPO3 and Symfony context) and can just strongly recommend to take a look. The real power gets unleashed when you want to work with additional services like Solr, RabbitMQ or whatever other tool/service, which got a Docker image, is existing.
+
+Some Docker knowledge is recommend, but definitely not required to use DDEV.
+
+I hope I was able to convince you to give it a try 🙂
+
+---------------------------------------------------------------------------
+
+by nopenopenope at 2024-01-03T16:21:03Z
+
+Whilst its great to have stuff like this, I'd say that we should instead go for a plain docker environment to begin with. Ddev is a great tool, but adds not just one but two requirements to the repository when working with it locally. Also, I'd like to point out that this PR introduces just another way of doing things (with its own commands feature instead of extending the existing make one).
+
+Plus, in the past this repository used to decline any software-specific and non-agnostic PRs. What I'd prefer much more is having a plain docker-compose setup, which will have the same benefits, but with stronger control over everything.
+
+---------------------------------------------------------------------------
+
+by a-r-m-i-n at 2024-01-03T18:01:38Z
+
+A plain Docker Compose setup raises the Docker knowledge required for the end-user. And technically you also have two requirements (Docker and Docker Compose). DDEV loads Docker Compose when first starting (or upgrading).
+
+Then, with Docker Compose you also need to take care of ports on your own. The way to open the environment in browser would be like http://localhost:8080 (or whatever port you defined, hopefully one which is not already in use). And you also will not have self-signed certificates, supporting https.
+
+Also, to create this Docker Compose environment you need to heavily customize the web container (using a Dockerfile) to also be able to compile the frontend assets (NodeJS in the correct version, Yarn). Stuff you don't need to do, when using DDEV.
+
+Merging this PR will not require you to use DDEV. It just gives you the opportunity to use it, with ease. **Currently there is absolutely no environment existing, to help PHP developers to contribute to EasyAdmin.** Not even a guide, which tools and setup are required and how to install them (at least I did not find one).
+
+> Also, I'd like to point out that this PR introduces just another way of doing things (with its own commands feature instead of extending the existing make one).
+
+True. Unfortunately, the web-container of DDEV does not include the make tool. We could change this, by providing a Dockerfile, installing it. But instead, I personally would prefer to outsource the commands being executed to a shell script, then the make tool as well as the DDEV commands could call them, without duplicating the code.

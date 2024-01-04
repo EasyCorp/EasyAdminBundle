@@ -20,6 +20,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormRowType;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProviderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
@@ -60,7 +61,7 @@ final class FieldFactory
     private iterable $fieldConfigurators;
     private FormLayoutFactory $fieldLayoutFactory;
 
-    public function __construct(AdminContextProvider $adminContextProvider, AuthorizationCheckerInterface $authorizationChecker, iterable $fieldConfigurators, FormLayoutFactory $fieldLayoutFactory)
+    public function __construct(AdminContextProviderInterface $adminContextProvider, AuthorizationCheckerInterface $authorizationChecker, iterable $fieldConfigurators, FormLayoutFactory $fieldLayoutFactory)
     {
         $this->adminContextProvider = $adminContextProvider;
         $this->authorizationChecker = $authorizationChecker;

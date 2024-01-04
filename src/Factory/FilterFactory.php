@@ -16,6 +16,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\NumericFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\TextFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProviderInterface;
 
 /**
  * @author Yonel Ceruto <yonelceruto@gmail.com>
@@ -52,7 +53,7 @@ final class FilterFactory
         Types::TEXT => TextFilter::class,
     ];
 
-    public function __construct(AdminContextProvider $adminContextProvider, iterable $filterConfigurators)
+    public function __construct(AdminContextProviderInterface $adminContextProvider, iterable $filterConfigurators)
     {
         $this->adminContextProvider = $adminContextProvider;
         $this->filterConfigurators = $filterConfigurators;

@@ -12,6 +12,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\MainMenuDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\UserMenuDto;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProviderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -30,7 +31,7 @@ final class MenuFactory implements MenuFactoryInterface
     private AdminUrlGeneratorInterface $adminUrlGenerator;
     private MenuItemMatcherInterface $menuItemMatcher;
 
-    public function __construct(AdminContextProvider $adminContextProvider, AuthorizationCheckerInterface $authChecker, LogoutUrlGenerator $logoutUrlGenerator, AdminUrlGeneratorInterface $adminUrlGenerator, MenuItemMatcherInterface $menuItemMatcher)
+    public function __construct(AdminContextProviderInterface $adminContextProvider, AuthorizationCheckerInterface $authChecker, LogoutUrlGenerator $logoutUrlGenerator, AdminUrlGeneratorInterface $adminUrlGenerator, MenuItemMatcherInterface $menuItemMatcher)
     {
         $this->adminContextProvider = $adminContextProvider;
         $this->authChecker = $authChecker;

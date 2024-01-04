@@ -13,7 +13,7 @@ final class FieldProvider
 {
     private AdminContextProvider $adminContextProvider;
 
-    public function __construct(AdminContextProvider $adminContextProvider)
+    public function __construct(AdminContextProviderInterface $adminContextProvider)
     {
         $this->adminContextProvider = $adminContextProvider;
     }

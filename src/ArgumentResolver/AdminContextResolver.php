@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\ArgumentResolver;
 
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ArgumentValueResolverInterface;
 use Symfony\Component\HttpKernel\Controller\ValueResolverInterface;
@@ -17,7 +18,7 @@ if (interface_exists(ValueResolverInterface::class)) {
     {
         private AdminContextProvider $adminContextProvider;
 
-        public function __construct(AdminContextProvider $adminContextProvider)
+        public function __construct(AdminContextProviderInterface $adminContextProvider)
         {
             $this->adminContextProvider = $adminContextProvider;
         }
@@ -36,7 +37,7 @@ if (interface_exists(ValueResolverInterface::class)) {
     {
         private AdminContextProvider $adminContextProvider;
 
-        public function __construct(AdminContextProvider $adminContextProvider)
+        public function __construct(AdminContextProviderInterface $adminContextProvider)
         {
             $this->adminContextProvider = $adminContextProvider;
         }

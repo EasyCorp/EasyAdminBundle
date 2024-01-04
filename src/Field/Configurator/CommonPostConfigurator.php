@@ -8,6 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProviderInterface;
 use function Symfony\Component\String\u;
 use Twig\Markup;
 
@@ -19,7 +20,7 @@ final class CommonPostConfigurator implements FieldConfiguratorInterface
     private AdminContextProvider $adminContextProvider;
     private string $charset;
 
-    public function __construct(AdminContextProvider $adminContextProvider, string $charset)
+    public function __construct(AdminContextProviderInterface $adminContextProvider, string $charset)
     {
         $this->adminContextProvider = $adminContextProvider;
         $this->charset = $charset;

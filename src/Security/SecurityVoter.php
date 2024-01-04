@@ -8,6 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProviderInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -20,7 +21,7 @@ final class SecurityVoter extends Voter
     private AuthorizationCheckerInterface $authorizationChecker;
     private AdminContextProvider $adminContextProvider;
 
-    public function __construct(AuthorizationCheckerInterface $authorizationChecker, AdminContextProvider $adminContextProvider)
+    public function __construct(AuthorizationCheckerInterface $authorizationChecker, AdminContextProviderInterface $adminContextProvider)
     {
         $this->authorizationChecker = $authorizationChecker;
         $this->adminContextProvider = $adminContextProvider;

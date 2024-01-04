@@ -13,7 +13,8 @@ final class FieldProvider
 {
     public function __construct(
         private AdminContextProviderInterface $adminContextProvider
-    ) {}
+    ) {
+    }
 
     public function getDefaultFields(string $pageName): array
     {

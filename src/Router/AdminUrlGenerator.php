@@ -6,7 +6,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
-use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProviderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\DashboardControllerRegistry;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -27,7 +26,8 @@ final class AdminUrlGenerator implements AdminUrlGeneratorInterface
         private AdminContextProviderInterface $adminContextProvider,
         private UrlGeneratorInterface $urlGenerator,
         private DashboardControllerRegistry $dashboardControllerRegistry
-    ) {}
+    ) {
+    }
 
     /**
      * @return AdminUrlGenerator

@@ -13,7 +13,8 @@ final class AdminContextProvider implements AdminContextProviderInterface
 {
     public function __construct(
         private RequestStack $requestStack
-    ) {}
+    ) {
+    }
 
     public function getContext(): ?AdminContext
     {

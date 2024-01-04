@@ -19,7 +19,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntitySearchEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
-use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProviderInterface;
 use Symfony\Component\Uid\Ulid;
 use Symfony\Component\Uid\Uuid;
@@ -36,7 +35,8 @@ final class EntityRepository implements EntityRepositoryInterface
         private EntityFactory $entityFactory,
         private FormFactory $formFactory,
         private EventDispatcherInterface $eventDispatcher
-    ) {}
+    ) {
+    }
 
     public function createQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
     {

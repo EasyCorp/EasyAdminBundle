@@ -4,7 +4,6 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Inspector;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
-use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,7 +19,8 @@ class DataCollector extends BaseDataCollector
 {
     public function __construct(
         private AdminContextProviderInterface $adminContextProvider
-    ) {}
+    ) {
+    }
 
     public function reset(): void
     {

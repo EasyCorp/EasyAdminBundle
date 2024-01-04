@@ -4,7 +4,6 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Orm\EntityPaginatorInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProviderInterface;
 
 /**
@@ -15,7 +14,8 @@ final class PaginatorFactory
     public function __construct(
         private AdminContextProviderInterface $adminContextProvider,
         private EntityPaginatorInterface $entityPaginator
-    ) {}
+    ) {
+    }
 
     public function create(QueryBuilder $queryBuilder): EntityPaginatorInterface
     {

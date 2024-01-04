@@ -3,7 +3,6 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\Extension;
 
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FormVarsDto;
-use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProviderInterface;
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
@@ -21,7 +20,8 @@ class EaCrudFormTypeExtension extends AbstractTypeExtension
 {
     public function __construct(
         private AdminContextProviderInterface $adminContextProvider
-    ) {}
+    ) {
+    }
 
     public function configureOptions(OptionsResolver $resolver): void
     {

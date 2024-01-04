@@ -11,7 +11,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MainMenuDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\UserMenuDto;
-use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProviderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
@@ -31,7 +30,8 @@ final class MenuFactory implements MenuFactoryInterface
         private LogoutUrlGenerator $logoutUrlGenerator,
         private AdminUrlGeneratorInterface $adminUrlGenerator,
         private MenuItemMatcherInterface $menuItemMatcher
-    ) {}
+    ) {
+    }
 
     /**
      * @param MenuItemInterface[] $menuItems

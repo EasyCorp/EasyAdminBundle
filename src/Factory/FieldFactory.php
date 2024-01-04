@@ -19,7 +19,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormRowType;
-use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProviderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -61,7 +60,8 @@ final class FieldFactory
         private AuthorizationCheckerInterface $authorizationChecker,
         private iterable $fieldConfigurators,
         private FormLayoutFactory $fieldLayoutFactory
-    ) {}
+    ) {
+    }
 
     public function processFields(EntityDto $entityDto, FieldCollection $fields): void
     {

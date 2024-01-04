@@ -9,7 +9,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionConfigDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
-use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProviderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
@@ -30,7 +29,8 @@ final class ActionFactory
         private AuthorizationCheckerInterface $authChecker,
         private AdminUrlGeneratorInterface $adminUrlGenerator,
         private ?CsrfTokenManagerInterface $csrfTokenManager = null
-    ) {}
+    ) {
+    }
 
     public function processEntityActions(EntityDto $entityDto, ActionConfigDto $actionsDto): void
     {

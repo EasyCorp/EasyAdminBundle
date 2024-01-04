@@ -17,21 +17,17 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 final class AdminUrlGenerator implements AdminUrlGeneratorInterface
 {
     private bool $isInitialized = false;
-    private AdminContextProvider $adminContextProvider;
-    private UrlGeneratorInterface $urlGenerator;
-    private DashboardControllerRegistry $dashboardControllerRegistry;
     private ?string $dashboardRoute = null;
     private ?bool $includeReferrer = null;
     private array $routeParameters = [];
     private ?string $currentPageReferrer = null;
     private ?string $customPageReferrer = null;
 
-    public function __construct(AdminContextProviderInterface $adminContextProvider, UrlGeneratorInterface $urlGenerator, DashboardControllerRegistry $dashboardControllerRegistry)
-    {
-        $this->adminContextProvider = $adminContextProvider;
-        $this->urlGenerator = $urlGenerator;
-        $this->dashboardControllerRegistry = $dashboardControllerRegistry;
-    }
+    public function __construct(
+        private AdminContextProviderInterface $adminContextProvider,
+        private UrlGeneratorInterface $urlGenerator,
+        private DashboardControllerRegistry $dashboardControllerRegistry
+    ) {}
 
     /**
      * @return AdminUrlGenerator

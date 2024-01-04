@@ -25,18 +25,12 @@ use Symfony\Contracts\Translation\TranslatableInterface;
  */
 final class ActionFactory
 {
-    private AdminContextProvider $adminContextProvider;
-    private AuthorizationCheckerInterface $authChecker;
-    private AdminUrlGeneratorInterface $adminUrlGenerator;
-    private ?CsrfTokenManagerInterface $csrfTokenManager;
-
-    public function __construct(AdminContextProviderInterface $adminContextProvider, AuthorizationCheckerInterface $authChecker, AdminUrlGeneratorInterface $adminUrlGenerator, ?CsrfTokenManagerInterface $csrfTokenManager = null)
-    {
-        $this->adminContextProvider = $adminContextProvider;
-        $this->authChecker = $authChecker;
-        $this->adminUrlGenerator = $adminUrlGenerator;
-        $this->csrfTokenManager = $csrfTokenManager;
-    }
+    public function __construct(
+        private AdminContextProviderInterface $adminContextProvider,
+        private AuthorizationCheckerInterface $authChecker,
+        private AdminUrlGeneratorInterface $adminUrlGenerator,
+        private ?CsrfTokenManagerInterface $csrfTokenManager = null
+    ) {}
 
     public function processEntityActions(EntityDto $entityDto, ActionConfigDto $actionsDto): void
     {

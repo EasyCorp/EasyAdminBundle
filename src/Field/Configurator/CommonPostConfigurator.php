@@ -17,14 +17,10 @@ use Twig\Markup;
  */
 final class CommonPostConfigurator implements FieldConfiguratorInterface
 {
-    private AdminContextProvider $adminContextProvider;
-    private string $charset;
-
-    public function __construct(AdminContextProviderInterface $adminContextProvider, string $charset)
-    {
-        $this->adminContextProvider = $adminContextProvider;
-        $this->charset = $charset;
-    }
+    public function __construct(
+        private AdminContextProviderInterface $adminContextProvider,
+        private string $charset
+    ) {}
 
     public function supports(FieldDto $field, EntityDto $entityDto): bool
     {

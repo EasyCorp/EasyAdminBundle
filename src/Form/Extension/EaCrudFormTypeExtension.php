@@ -19,12 +19,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class EaCrudFormTypeExtension extends AbstractTypeExtension
 {
-    private AdminContextProvider $adminContextProvider;
-
-    public function __construct(AdminContextProviderInterface $adminContextProvider)
-    {
-        $this->adminContextProvider = $adminContextProvider;
-    }
+    public function __construct(
+        private AdminContextProviderInterface $adminContextProvider
+    ) {}
 
     public function configureOptions(OptionsResolver $resolver): void
     {

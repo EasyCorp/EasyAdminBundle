@@ -30,20 +30,13 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
  */
 final class EntityRepository implements EntityRepositoryInterface
 {
-    private AdminContextProvider $adminContextProvider;
-    private ManagerRegistry $doctrine;
-    private EntityFactory $entityFactory;
-    private FormFactory $formFactory;
-    private EventDispatcherInterface $eventDispatcher;
-
-    public function __construct(AdminContextProviderInterface $adminContextProvider, ManagerRegistry $doctrine, EntityFactory $entityFactory, FormFactory $formFactory, EventDispatcherInterface $eventDispatcher)
-    {
-        $this->adminContextProvider = $adminContextProvider;
-        $this->doctrine = $doctrine;
-        $this->entityFactory = $entityFactory;
-        $this->formFactory = $formFactory;
-        $this->eventDispatcher = $eventDispatcher;
-    }
+    public function __construct(
+        private AdminContextProviderInterface $adminContextProvider,
+        private ManagerRegistry $doctrine,
+        private EntityFactory $entityFactory,
+        private FormFactory $formFactory,
+        private EventDispatcherInterface $eventDispatcher
+    ) {}
 
     public function createQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
     {

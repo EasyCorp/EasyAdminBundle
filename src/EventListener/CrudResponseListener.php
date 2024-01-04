@@ -15,14 +15,10 @@ use Twig\Environment;
  */
 final class CrudResponseListener
 {
-    private AdminContextProvider $adminContextProvider;
-    private Environment $twig;
-
-    public function __construct(AdminContextProviderInterface $adminContextProvider, Environment $twig)
-    {
-        $this->adminContextProvider = $adminContextProvider;
-        $this->twig = $twig;
-    }
+    public function __construct(
+        private AdminContextProviderInterface $adminContextProvider,
+        private Environment $twig
+    ) {}
 
     public function onKernelView(ViewEvent $event): void
     {

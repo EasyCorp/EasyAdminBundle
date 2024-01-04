@@ -12,14 +12,10 @@ use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProviderInterface;
  */
 final class PaginatorFactory
 {
-    private AdminContextProvider $adminContextProvider;
-    private EntityPaginatorInterface $entityPaginator;
-
-    public function __construct(AdminContextProviderInterface $adminContextProvider, EntityPaginatorInterface $entityPaginator)
-    {
-        $this->adminContextProvider = $adminContextProvider;
-        $this->entityPaginator = $entityPaginator;
-    }
+    public function __construct(
+        private AdminContextProviderInterface $adminContextProvider,
+        private EntityPaginatorInterface $entityPaginator
+    ) {}
 
     public function create(QueryBuilder $queryBuilder): EntityPaginatorInterface
     {

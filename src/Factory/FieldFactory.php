@@ -56,18 +56,12 @@ final class FieldFactory
         Types::TIME_IMMUTABLE => TimeField::class,
     ];
 
-    private AdminContextProvider $adminContextProvider;
-    private AuthorizationCheckerInterface $authorizationChecker;
-    private iterable $fieldConfigurators;
-    private FormLayoutFactory $fieldLayoutFactory;
-
-    public function __construct(AdminContextProviderInterface $adminContextProvider, AuthorizationCheckerInterface $authorizationChecker, iterable $fieldConfigurators, FormLayoutFactory $fieldLayoutFactory)
-    {
-        $this->adminContextProvider = $adminContextProvider;
-        $this->authorizationChecker = $authorizationChecker;
-        $this->fieldConfigurators = $fieldConfigurators;
-        $this->fieldLayoutFactory = $fieldLayoutFactory;
-    }
+    public function __construct(
+        private AdminContextProviderInterface $adminContextProvider,
+        private AuthorizationCheckerInterface $authorizationChecker,
+        private iterable $fieldConfigurators,
+        private FormLayoutFactory $fieldLayoutFactory
+    ) {}
 
     public function processFields(EntityDto $entityDto, FieldCollection $fields): void
     {

@@ -22,16 +22,11 @@ use Twig\Error\RuntimeError;
  */
 final class ExceptionListener
 {
-    private bool $kernelDebug;
-    private AdminContextProvider $adminContextProvider;
-    private Environment $twig;
-
-    public function __construct(bool $kernelDebug, AdminContextProviderInterface $adminContextProvider, Environment $twig)
-    {
-        $this->kernelDebug = $kernelDebug;
-        $this->adminContextProvider = $adminContextProvider;
-        $this->twig = $twig;
-    }
+    public function __construct(
+        private bool $kernelDebug,
+        private AdminContextProviderInterface $adminContextProvider,
+        private Environment $twig
+    ) {}
 
     public function onKernelException(ExceptionEvent $event)
     {

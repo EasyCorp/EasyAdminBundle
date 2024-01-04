@@ -27,16 +27,11 @@ use Twig\TwigFunction;
  */
 class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterface
 {
-    private ServiceLocator $serviceLocator;
-    private AdminContextProvider $adminContextProvider;
-    private ?CsrfTokenManagerInterface $csrfTokenManager;
-
-    public function __construct(ServiceLocator $serviceLocator, AdminContextProviderInterface $adminContextProvider, ?CsrfTokenManagerInterface $csrfTokenManager)
-    {
-        $this->serviceLocator = $serviceLocator;
-        $this->adminContextProvider = $adminContextProvider;
-        $this->csrfTokenManager = $csrfTokenManager;
-    }
+    public function __construct(
+        private ServiceLocator $serviceLocator,
+        private AdminContextProviderInterface $adminContextProvider,
+        private ?CsrfTokenManagerInterface $csrfTokenManager
+    ) {}
 
     public function getFunctions(): array
     {

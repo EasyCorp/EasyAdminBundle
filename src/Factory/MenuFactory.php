@@ -25,20 +25,13 @@ use Symfony\Contracts\Translation\TranslatableInterface;
  */
 final class MenuFactory implements MenuFactoryInterface
 {
-    private AdminContextProvider $adminContextProvider;
-    private AuthorizationCheckerInterface $authChecker;
-    private LogoutUrlGenerator $logoutUrlGenerator;
-    private AdminUrlGeneratorInterface $adminUrlGenerator;
-    private MenuItemMatcherInterface $menuItemMatcher;
-
-    public function __construct(AdminContextProviderInterface $adminContextProvider, AuthorizationCheckerInterface $authChecker, LogoutUrlGenerator $logoutUrlGenerator, AdminUrlGeneratorInterface $adminUrlGenerator, MenuItemMatcherInterface $menuItemMatcher)
-    {
-        $this->adminContextProvider = $adminContextProvider;
-        $this->authChecker = $authChecker;
-        $this->logoutUrlGenerator = $logoutUrlGenerator;
-        $this->adminUrlGenerator = $adminUrlGenerator;
-        $this->menuItemMatcher = $menuItemMatcher;
-    }
+    public function __construct(
+        private AdminContextProviderInterface $adminContextProvider,
+        private AuthorizationCheckerInterface $authChecker,
+        private LogoutUrlGenerator $logoutUrlGenerator,
+        private AdminUrlGeneratorInterface $adminUrlGenerator,
+        private MenuItemMatcherInterface $menuItemMatcher
+    ) {}
 
     /**
      * @param MenuItemInterface[] $menuItems

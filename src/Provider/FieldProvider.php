@@ -11,12 +11,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
  */
 final class FieldProvider
 {
-    private AdminContextProvider $adminContextProvider;
-
-    public function __construct(AdminContextProviderInterface $adminContextProvider)
-    {
-        $this->adminContextProvider = $adminContextProvider;
-    }
+    public function __construct(
+        private AdminContextProviderInterface $adminContextProvider
+    ) {}
 
     public function getDefaultFields(string $pageName): array
     {

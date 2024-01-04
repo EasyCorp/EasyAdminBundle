@@ -18,12 +18,9 @@ use Symfony\Component\HttpKernel\DataCollector\DataCollector as BaseDataCollecto
  */
 class DataCollector extends BaseDataCollector
 {
-    private AdminContextProvider $adminContextProvider;
-
-    public function __construct(AdminContextProviderInterface $adminContextProvider)
-    {
-        $this->adminContextProvider = $adminContextProvider;
-    }
+    public function __construct(
+        private AdminContextProviderInterface $adminContextProvider
+    ) {}
 
     public function reset(): void
     {

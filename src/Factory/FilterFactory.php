@@ -24,8 +24,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProviderInterface;
  */
 final class FilterFactory
 {
-    private AdminContextProvider $adminContextProvider;
-    private iterable $filterConfigurators;
     private static array $doctrineTypeToFilterClass = [
         'json_array' => ArrayFilter::class,
         Types::SIMPLE_ARRAY => ArrayFilter::class,
@@ -53,11 +51,10 @@ final class FilterFactory
         Types::TEXT => TextFilter::class,
     ];
 
-    public function __construct(AdminContextProviderInterface $adminContextProvider, iterable $filterConfigurators)
-    {
-        $this->adminContextProvider = $adminContextProvider;
-        $this->filterConfigurators = $filterConfigurators;
-    }
+    public function __construct(
+        private AdminContextProviderInterface $adminContextProvider,
+        private iterable $filterConfigurators
+    ) {}
 
     public function create(FilterConfigDto $filterConfig, FieldCollection $fields, EntityDto $entityDto): FilterCollection
     {

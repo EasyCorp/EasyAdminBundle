@@ -18,14 +18,10 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  */
 final class SecurityVoter extends Voter
 {
-    private AuthorizationCheckerInterface $authorizationChecker;
-    private AdminContextProvider $adminContextProvider;
-
-    public function __construct(AuthorizationCheckerInterface $authorizationChecker, AdminContextProviderInterface $adminContextProvider)
-    {
-        $this->authorizationChecker = $authorizationChecker;
-        $this->adminContextProvider = $adminContextProvider;
-    }
+    public function __construct(
+        private AuthorizationCheckerInterface $authorizationChecker,
+        private AdminContextProviderInterface $adminContextProvider,
+    ) {}
 
     protected function supports(string $permissionName, mixed $subject): bool
     {

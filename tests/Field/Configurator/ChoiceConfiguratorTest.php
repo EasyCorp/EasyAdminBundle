@@ -117,4 +117,19 @@ class ChoiceConfiguratorTest extends AbstractFieldTest
             $this->markTestSkipped('PHP 8.1 or higher is required to run this test.');
         }
     }
+
+    public function testBackedEnumChoicesLabeled(): void
+    {
+        $this->checkPhpVersion();
+
+        $choices = [];
+        foreach (StatusBackedEnum::cases() as $case) {
+            $choices[$case->label()] = $case;
+        }
+
+        $field = ChoiceField::new(self::PROPERTY_NAME);
+        $field->setCustomOptions(['choices' => $choices]);
+
+        $this->assertSame($choices, $this->configure($field)->getFormTypeOption('choices'));
+    }
 }

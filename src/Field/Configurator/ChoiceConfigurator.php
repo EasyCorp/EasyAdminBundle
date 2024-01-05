@@ -162,7 +162,7 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
             }
         }
 
-        $badgeTypeCssClass = (null === $badgeType || '' === $badgeType) ? '' : u($badgeType)->ensureStart('badge-')->toString();
+        $badgeTypeCssClass = '' === $badgeType ? '' : u($badgeType)->ensureStart('badge-')->toString();
 
         return $commonBadgeCssClass.' '.$badgeTypeCssClass;
     }

@@ -40,7 +40,7 @@ $autoload = require $file;
 $kernel = new Kernel();
 
 // delete the existing cache directory to avoid issues
-(new \Symfony\Component\Filesystem\Filesystem())->remove($kernel->getCacheDir());
+(new Symfony\Component\Filesystem\Filesystem())->remove($kernel->getCacheDir());
 
 $application = new Application($kernel);
 $application->setAutoExit(false);

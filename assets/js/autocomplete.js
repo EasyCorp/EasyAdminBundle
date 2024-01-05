@@ -122,7 +122,7 @@ export default class Autocomplete
             },
             render: {
                 option: function(item, escape) {
-                    return `<div>${item.entityAsString}</div>`;
+                    return `<div>${escape(item.entityAsString)}</div>`;
                 },
                 item: function(item, escape) {
                     return `<div>${escape(item.entityAsString)}</div>`;

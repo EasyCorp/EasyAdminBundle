@@ -350,7 +350,15 @@ and render them in your own Twig template::
     example). Instead, inject dependencies in the controller constructor or use
     a method name different from the ones defined in the interface.
 
-Another popular option is to make the dashboard redirect to the most common task
+To use EasyAdmin's overall layout on your custom dashboard (e.g. the main menu bar on the left - see next section),
+extend `vendor/easycorp/easyadmin-bundle/src/Resources/views/layout.html.twig` and override some blocks like this::
+
+    {% extends '@EasyAdmin/layout.html.twig' %}
+    {% block main %}
+        {# ... #}
+    {% endblock main %}
+
+Another popular option is to avoid a dashboard at all and instead redirect to the most common task
 for people working on the backend. This requires :ref:`generating admin URLs <generate-admin-urls>`,
 and :doc:`CRUD controllers </crud>`, which is explained in detail later::
 

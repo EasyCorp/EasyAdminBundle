@@ -350,10 +350,14 @@ and render them in your own Twig template::
     example). Instead, inject dependencies in the controller constructor or use
     a method name different from the ones defined in the interface.
 
-To use EasyAdmin's overall layout on your custom dashboard (e.g. the main menu bar on the left - see next section),
-extend `vendor/easycorp/easyadmin-bundle/src/Resources/views/layout.html.twig` and override some blocks like this::
+To use EasyAdmin's built-in layout on your custom dashboard (e.g. the main menu
+bar on the left - explained in the next section), make your template extend
+`vendor/easycorp/easyadmin-bundle/src/Resources/views/layout.html.twig` and override
+some blocks::
 
+    {# templates/admin/my_dashboard.html.twig #}
     {% extends '@EasyAdmin/layout.html.twig' %}
+
     {% block main %}
         {# ... #}
     {% endblock main %}

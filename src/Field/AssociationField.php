@@ -37,7 +37,6 @@ final class AssociationField implements FieldInterface
     public const OPTION_EMBEDDED_CRUD_FORM_EDIT_PAGE_NAME = 'crudEditPageName';
     public const OPTION_ESCAPE_HTML_CONTENTS = 'escapeHtml';
 
-
     /**
      * @param TranslatableInterface|string|false|null $label
      */

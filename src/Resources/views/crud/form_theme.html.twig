@@ -424,7 +424,7 @@
 {% block ea_crud_widget_fieldsets %}
     {% deprecated 'The "ea_crud_widget_fieldsets" block is deprecated because the form layout building logic has been revamped. Check "ea_crud_widget" block in `form_theme.html.page` for more details.' %}
 
-    {% for fieldset_name, fieldset_config in ea_crud_form.form_fieldsets|filter(fieldset_config => not fieldset_config.form_tab or fieldset_config.form_tab == tab_name) %}
+    {% for fieldset_name, fieldset_config in field.vars.ea_crud_form.form_fieldsets|filter(fieldset_config => not fieldset_config.form_tab or fieldset_config.form_tab == tab_name) %}
         {% set fieldset_has_header = fieldset_config.label|default(false) or fieldset_config.icon|default(false) or fieldset_config.help|default(false) %}
 
         {% set collapsible = fieldset_config.collapsible %}

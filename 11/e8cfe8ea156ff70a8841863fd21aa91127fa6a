@@ -1,0 +1,5 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2024-01-09T18:37:56Z
+
+I'm always a bit afraid of merging changes in the handling of enums in choice fields because we introduced many bugs in the past when merging things ... but checking your code, I agree with you and this looks like a bug fix. The proposed code looks correct to me, so let's merge it. Thanks Anatoly!

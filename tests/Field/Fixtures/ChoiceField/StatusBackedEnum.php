@@ -8,5 +8,14 @@ if (\PHP_VERSION_ID >= 80100) {
         case Draft = 'draft';
         case Published = 'published';
         case Deleted = 'deleted';
+
+        public function label(): string
+        {
+            return match ($this) {
+                self::Draft => 'Draft label',
+                self::Published => 'Published label',
+                self::Deleted => 'Deleted label',
+            };
+        }
     }
 }

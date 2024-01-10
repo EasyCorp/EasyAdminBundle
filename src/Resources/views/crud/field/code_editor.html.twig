@@ -30,7 +30,9 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    {{ field.formattedValue|escape|nl2br }}
+                    <pre>
+                        {{- field.formattedValue|escape -}}
+                    </pre>
                 </div>
             </div>
         </div>

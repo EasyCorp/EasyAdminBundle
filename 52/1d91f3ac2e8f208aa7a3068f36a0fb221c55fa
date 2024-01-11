@@ -1,0 +1,5 @@
+---------------------------------------------------------------------------
+
+by nopenopenope at 2024-01-04T11:32:37Z
+
+I don't know why - but we do enforce Yoda comparison. Its not good practice to do it, as best, its developer preference. We should not enforce it. One interesting article about it: https://dev.to/greg0ire/why-using-yoda-conditions-you-should-probably-not

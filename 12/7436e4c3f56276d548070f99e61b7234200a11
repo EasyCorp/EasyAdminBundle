@@ -1,0 +1,15 @@
+---------------------------------------------------------------------------
+
+by nopenopenope at 2024-01-05T13:22:18Z
+
+@simoheinonen can you resolve the merge conflicts for this?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2024-01-13T14:12:30Z
+
+Thanks Simo. This is explained in https://tom-select.js.org/docs/#render-templates
+
+> Each template is defined by a function that is passed two arguments (data and escape) and returns NodeDefinition with a single root element. The escape argument is a function that takes a string and escapes all special HTML characters. This is very important to use to prevent XSS vulnerabilities.
+
+Let's merge and release this ASAP.

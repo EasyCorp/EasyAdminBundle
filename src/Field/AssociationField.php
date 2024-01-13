@@ -35,6 +35,7 @@ final class AssociationField implements FieldInterface
 
     public const OPTION_EMBEDDED_CRUD_FORM_NEW_PAGE_NAME = 'crudNewPageName';
     public const OPTION_EMBEDDED_CRUD_FORM_EDIT_PAGE_NAME = 'crudEditPageName';
+    public const OPTION_ESCAPE_HTML_CONTENTS = 'escapeHtml';
 
     /**
      * @param TranslatableInterface|string|false|null $label
@@ -56,7 +57,8 @@ final class AssociationField implements FieldInterface
             ->setCustomOption(self::OPTION_DOCTRINE_ASSOCIATION_TYPE, null)
             ->setCustomOption(self::OPTION_RENDER_AS_EMBEDDED_FORM, false)
             ->setCustomOption(self::OPTION_EMBEDDED_CRUD_FORM_NEW_PAGE_NAME, null)
-            ->setCustomOption(self::OPTION_EMBEDDED_CRUD_FORM_EDIT_PAGE_NAME, null);
+            ->setCustomOption(self::OPTION_EMBEDDED_CRUD_FORM_EDIT_PAGE_NAME, null)
+            ->setCustomOption(self::OPTION_ESCAPE_HTML_CONTENTS, true);
     }
 
     public function autocomplete(): self
@@ -93,6 +95,13 @@ final class AssociationField implements FieldInterface
         $this->setCustomOption(self::OPTION_EMBEDDED_CRUD_FORM_CONTROLLER, $crudControllerFqcn);
         $this->setCustomOption(self::OPTION_EMBEDDED_CRUD_FORM_NEW_PAGE_NAME, $crudNewPageName);
         $this->setCustomOption(self::OPTION_EMBEDDED_CRUD_FORM_EDIT_PAGE_NAME, $crudEditPageName);
+
+        return $this;
+    }
+
+    public function escapeHtml(bool $escape = true): self
+    {
+        $this->setCustomOption(self::OPTION_ESCAPE_HTML_CONTENTS, $escape);
 
         return $this;
     }

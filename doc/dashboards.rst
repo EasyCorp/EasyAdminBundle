@@ -447,14 +447,17 @@ All menu items define the following methods to configure some options:
 * ``setPermission(string $permission)``, sets the `Symfony security permission`_
   that the user must have to see this menu item. Read the :ref:`menu security reference <security-menu>`
   for more details.
-* ``setBadge($content, string $style='secondary')``, renders the given content
+* ``setHtmlAttribute(string $name, mixed $value)``, sets a custom HTML attribute
+  in the HTML element that renders the menu item.
+* ``setBadge($content, string $style='secondary', array $htmlAttributes = [])``, renders the given content
   as a badge of the menu item. It's commonly used to show notification counts.
   The first argument can be any value that can be converted to a string in a Twig
   template (numbers, strings, *stringable* objects, etc.) The second argument is
   one of the predefined Bootstrap styles (``primary``, ``secondary``, ``success``,
   ``danger``, ``warning``, ``info``, ``light``, ``dark``) or an arbitrary string
   content which is passed as the value of the ``style`` attribute of the HTML
-  element associated to the badge.
+  element associated to the badge. The third argument allows to set custom
+  HTML attributes in the element that renders the badge.
 
 The rest of options depend on each menu item type, as explained in the next sections.
 

@@ -34,7 +34,7 @@ final class MenuItemDto
     private ?MenuItemBadgeDto $badge = null;
     /** @var MenuItemDto[] */
     private array $subItems = [];
-    private array $customAttributes = [];
+    private array $htmlAttributes = [];
 
     public function getType(): string
     {
@@ -214,9 +214,9 @@ final class MenuItemDto
         return $this->badge;
     }
 
-    public function setBadge(mixed $content, string $style, array $attributes = []): void
+    public function setBadge(mixed $content, string $style, array $htmlAttributes = []): void
     {
-        $this->badge = new MenuItemBadgeDto($content, trim($style), $attributes);
+        $this->badge = new MenuItemBadgeDto($content, trim($style), $htmlAttributes);
     }
 
     /**
@@ -245,23 +245,13 @@ final class MenuItemDto
         return self::TYPE_SECTION === $this->type;
     }
 
-    public function getCustomAttributes(): array
+    public function getHtmlAttributes(): array
     {
-        return $this->customAttributes;
+        return $this->htmlAttributes;
     }
 
-    public function setCustomAttributes(array $customAttributes): void
+    public function setHtmlAttribute(string $attribute, mixed $value): void
     {
-        $this->customAttributes = $customAttributes;
-    }
-
-    public function addCustomAttribute(string $attribute, mixed $value): void
-    {
-        $this->customAttributes[$attribute] = $value;
-    }
-
-    public function removeCustomAttribute(string $attribute): void
-    {
-        unset($this->customAttributes[$attribute]);
+        $this->htmlAttributes[$attribute] = $value;
     }
 }

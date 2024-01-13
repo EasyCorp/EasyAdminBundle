@@ -5,10 +5,10 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Controller;
 use Doctrine\ORM\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Controller\CategoryCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Controller\CustomAttributeDashboardController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Controller\CustomHtmlAttributeDashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Entity\Category;
 
-class AddCustomAttributeDashboardControllerTest extends AbstractCrudTestCase
+class AddCustomHtmlAttributeDashboardControllerTest extends AbstractCrudTestCase
 {
     protected EntityRepository $categories;
 
@@ -19,7 +19,7 @@ class AddCustomAttributeDashboardControllerTest extends AbstractCrudTestCase
 
     protected function getDashboardFqcn(): string
     {
-        return CustomAttributeDashboardController::class;
+        return CustomHtmlAttributeDashboardController::class;
     }
 
     protected function setUp(): void

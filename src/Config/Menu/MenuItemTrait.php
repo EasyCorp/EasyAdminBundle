@@ -61,7 +61,7 @@ trait MenuItemTrait
      *                        Otherwise, the passed value is applied "as is" to the `style` attribute of the HTML
      *                        element of the badge
      */
-    public function setBadge(/* \Stringable|string|int|float|bool|null */ $content, string $style = 'secondary', array $attributes = []): self
+    public function setBadge(/* \Stringable|string|int|float|bool|null */ $content, string $style = 'secondary', array $htmlAttributes = []): self
     {
         if (!\is_string($content)
             && !$content instanceof \Stringable
@@ -80,7 +80,7 @@ trait MenuItemTrait
             );
         }
 
-        $this->dto->setBadge($content, $style, $attributes);
+        $this->dto->setBadge($content, $style, $htmlAttributes);
 
         return $this;
     }

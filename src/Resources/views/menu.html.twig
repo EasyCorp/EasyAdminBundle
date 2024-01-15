@@ -6,21 +6,23 @@
         {% block main_menu %}
             {% for menuItem in ea.mainMenu.items %}
                 {% block menu_item %}
-                    <li class="{{ menuItem.isMenuSection ? 'menu-header' : 'menu-item' }} {{ menuItem.hasSubItems ? 'has-submenu' }} {{ menuItem.isSelected ? 'active' }} {{ menuItem.isExpanded ? 'expanded' }}">
-                        {{ _self.render_menu_item(menuItem) }}
-
-                        {% if menuItem.hasSubItems %}
-                            <ul class="submenu">
-                                {% for menuSubItem in menuItem.subItems %}
-                                    {% block menu_subitem %}
-                                        <li class="{{ menuSubItem.isMenuSection ? 'menu-header' : 'menu-item' }} {{ menuSubItem.isSelected ? 'active' }}">
-                                            {{ _self.render_menu_item(menuSubItem) }}
-                                        </li>
-                                    {% endblock menu_subitem %}
-                                {% endfor %}
-                            </ul>
-                        {% endif %}
-                    </li>
+                    {% if not (menuItem.type == constant('EasyCorp\\Bundle\\EasyAdminBundle\\Dto\\MenuItemDto::TYPE_SUBMENU') and not menuItem.hasSubItems) %}
+                        <li class="{{ menuItem.isMenuSection ? 'menu-header' : 'menu-item' }} {{ menuItem.hasSubItems ? 'has-submenu' }} {{ menuItem.isSelected ? 'active' }} {{ menuItem.isExpanded ? 'expanded' }}">
+                            {{ _self.render_menu_item(menuItem) }}
+    
+                            {% if menuItem.hasSubItems %}
+                                <ul class="submenu">
+                                    {% for menuSubItem in menuItem.subItems %}
+                                        {% block menu_subitem %}
+                                            <li class="{{ menuSubItem.isMenuSection ? 'menu-header' : 'menu-item' }} {{ menuSubItem.isSelected ? 'active' }}">
+                                                {{ _self.render_menu_item(menuSubItem) }}
+                                            </li>
+                                        {% endblock menu_subitem %}
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </li>
+                    {% endif %}
                 {% endblock menu_item %}
             {% endfor %}
         {% endblock main_menu %}

@@ -623,29 +623,18 @@ abstract class AbstractCrudController extends AbstractController implements Crud
     {
         $submitButtonName = $context->getRequest()->request->all()['ea']['newForm']['btn'];
 
-        if (Action::SAVE_AND_CONTINUE === $submitButtonName) {
-            $url = $this->container->get(AdminUrlGenerator::class)
+        $url = match ($submitButtonName) {
+            Action::SAVE_AND_CONTINUE => $this->container->get(AdminUrlGenerator::class)
                 ->setAction(Action::EDIT)
                 ->setEntityId($context->getEntity()->getPrimaryKeyValue())
-                ->generateUrl();
+                ->generateUrl(),
+            Action::SAVE_AND_RETURN => $context->getReferrer()
+                ?? $this->container->get(AdminUrlGenerator::class)->setAction(Action::INDEX)->generateUrl(),
+            Action::SAVE_AND_ADD_ANOTHER => $this->container->get(AdminUrlGenerator::class)->setAction(Action::NEW)->generateUrl(),
+            default => $this->generateUrl($context->getDashboardRouteName()),
+        };
 
-            return $this->redirect($url);
-        }
-
-        if (Action::SAVE_AND_RETURN === $submitButtonName) {
-            $url = $context->getReferrer()
-                ?? $this->container->get(AdminUrlGenerator::class)->setAction(Action::INDEX)->generateUrl();
-
-            return $this->redirect($url);
-        }
-
-        if (Action::SAVE_AND_ADD_ANOTHER === $submitButtonName) {
-            $url = $this->container->get(AdminUrlGenerator::class)->setAction(Action::NEW)->generateUrl();
-
-            return $this->redirect($url);
-        }
-
-        return $this->redirectToRoute($context->getDashboardRouteName());
+        return $this->redirect($url);
     }
 
     protected function getFieldAssets(FieldCollection $fieldDtos): AssetsDto

@@ -2,7 +2,7 @@
 {# @var field \EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto #}
 {# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
 {% if field.customOptions.get('showSample') %}
-    <span class="color-sample" style="background: {{ field.value }}; {{ field.customOptions.get('showValue') ? 'margin-right: 5px;' }}" title="{{ field.formattedValue }}">&nbsp;</span>
+    <span class="color-sample" style="background: {{ field.formattedValue }}; {{ field.customOptions.get('showValue') ? 'margin-right: 5px;' }}" title="{{ field.formattedValue }}">&nbsp;</span>
 {% endif %}
 {% if field.customOptions.get('showValue') %}
     {{ field.formattedValue }}

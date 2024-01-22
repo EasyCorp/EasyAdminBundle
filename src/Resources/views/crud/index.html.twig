@@ -51,7 +51,7 @@
             {% block filters %}
                 {% set applied_filters = ea.request.query.all['filters']|default([])|keys %}
                 <div class="btn-group action-filters">
-                    <a href="#" data-href="{{ ea_url().setAction('renderFilters').includeReferrer() }}" class="btn btn-secondary btn-labeled btn-labeled-right action-filters-button disabled {{ applied_filters ? 'action-filters-applied' }}" data-bs-toggle="modal" data-bs-target="#modal-filters">
+                    <a href="#" data-href="{{ ea_url().setAction('renderFilters') }}" class="btn btn-secondary btn-labeled btn-labeled-right action-filters-button disabled {{ applied_filters ? 'action-filters-applied' }}" data-bs-toggle="modal" data-bs-target="#modal-filters">
                         <i class="fa fa-filter fa-fw"></i> {{ t('filter.title', ea.i18n.translationParameters, 'EasyAdminBundle')|trans }}{% if applied_filters %} <span class="action-filters-button-count">({{ applied_filters|length }})</span>{% endif %}
                     </a>
                     {% if applied_filters %}
@@ -114,7 +114,7 @@
 
                         <th data-column="{{ field.property }}" class="{{ is_sorting_field ? 'sorted' }} {{ field.isVirtual ? 'field-virtual' }} header-for-{{ field.cssClass|split(' ')|filter(class => class starts with 'field-')|join('') }} text-{{ field.textAlign }}" dir="{{ ea.i18n.textDirection }}">
                             {% if field.isSortable %}
-                                <a href="{{ ea_url({ page: 1, sort: { (field.property): next_sort_direction } }).includeReferrer() }}">
+                                <a href="{{ ea_url({ page: 1, sort: { (field.property): next_sort_direction } }) }}">
                                     {{ field.label|trans|raw }} <i class="fa fa-fw {{ column_icon }}"></i>
                                 </a>
                             {% else %}

@@ -215,20 +215,11 @@ final class CrudTestUrlGenerationTraitTest extends KernelTestCase
             }
         };
 
-        $indexUrl = $this->adminUrlGenerator
-            ->setDashboard(self::TEST_DASHBOARD)
-            ->setController(self::TEST_CONTROLLER)
-            ->setAction(Action::INDEX)
-            ->generateUrl()
-        ;
-        $referrer = preg_replace('/^.*(\/.*)$/', '$1', $indexUrl);
-
         $expectedUrl = $this->adminUrlGenerator
             ->setDashboard(self::TEST_DASHBOARD)
             ->setController(self::TEST_CONTROLLER)
             // No defined const in EasyCorp\Bundle\EasyAdminBundle\Config\Action so need to write it by hand
             ->setAction('renderFilters')
-            ->setReferrer($referrer)
             ->generateUrl()
         ;
 
@@ -249,20 +240,11 @@ final class CrudTestUrlGenerationTraitTest extends KernelTestCase
             }
         };
 
-        $indexUrl = $this->adminUrlGenerator
-            ->setDashboard(self::TEST_DASHBOARD)
-            ->setController(self::TEST_CONTROLLER)
-            ->setAction(Action::INDEX)
-            ->generateUrl()
-        ;
-        $referrer = preg_replace('/^.*(\/.*)$/', '$1', $indexUrl);
-
         $expectedUrl = $this->adminUrlGenerator
             ->setDashboard($dashboardFqcn ?? self::TEST_DASHBOARD)
             ->setController($controllerFqcn ?? self::TEST_CONTROLLER)
             // No defined const in EasyCorp\Bundle\EasyAdminBundle\Config\Action so need to write it by hand
             ->setAction('renderFilters')
-            ->setReferrer($referrer)
             ->generateUrl()
         ;
 

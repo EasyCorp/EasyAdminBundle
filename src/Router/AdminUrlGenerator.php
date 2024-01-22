@@ -175,6 +175,12 @@ final class AdminUrlGenerator implements AdminUrlGeneratorInterface
      */
     public function includeReferrer(): AdminUrlGeneratorInterface
     {
+        trigger_deprecation(
+            'easycorp/easyadmin-bundle',
+            '4.9.0',
+            'Adding the referrer argument in the admin URLs via the AdminUrlGenerator::includeReferrer() method is deprecated and it will be removed in 5.0.0. The referrer will now be determined automatically based on the current request.',
+        );
+
         if (false === $this->isInitialized) {
             $this->initialize();
         }
@@ -203,6 +209,12 @@ final class AdminUrlGenerator implements AdminUrlGeneratorInterface
      */
     public function setReferrer(string $referrer): AdminUrlGeneratorInterface
     {
+        trigger_deprecation(
+            'easycorp/easyadmin-bundle',
+            '4.9.0',
+            'Adding the referrer argument in the admin URLs via the AdminUrlGenerator::setReferrer() method is deprecated and it will be removed in 5.0.0. The referrer will now be determined automatically based on the current request.',
+        );
+
         if (false === $this->isInitialized) {
             $this->initialize();
         }
@@ -254,10 +266,6 @@ final class AdminUrlGenerator implements AdminUrlGeneratorInterface
 
         if (true === $this->includeReferrer) {
             $this->setRouteParameter(EA::REFERRER, $this->customPageReferrer ?? $this->currentPageReferrer);
-        }
-
-        if (false === $this->includeReferrer) {
-            $this->unset(EA::REFERRER);
         }
 
         // this avoids forcing users to always be explicit about the action to execute

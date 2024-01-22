@@ -239,6 +239,7 @@ return static function (ContainerConfigurator $container) {
 
         ->set(FormFactory::class)
             ->arg(0, service('form.factory'))
+            ->arg(1, service(AdminUrlGenerator::class))
 
         ->set(FormLayoutFactory::class)
 

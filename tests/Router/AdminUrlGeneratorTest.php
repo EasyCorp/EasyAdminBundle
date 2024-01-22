@@ -204,6 +204,9 @@ class AdminUrlGeneratorTest extends WebTestCase
         $adminUrlGenerator->set('menuIndex', 1);
     }
 
+    /**
+     * @group legacy
+     */
     public function testIncludeReferrer()
     {
         $adminUrlGenerator = $this->getAdminUrlGenerator();
@@ -212,6 +215,9 @@ class AdminUrlGeneratorTest extends WebTestCase
         $this->assertSame('http://localhost/admin?foo=bar&referrer=/?foo%3Dbar', $adminUrlGenerator->generateUrl());
     }
 
+    /**
+     * @group legacy
+     */
     public function testRemoveReferrer()
     {
         $adminUrlGenerator = $this->getAdminUrlGenerator();
@@ -224,14 +230,16 @@ class AdminUrlGeneratorTest extends WebTestCase
         $this->assertSame('http://localhost/admin?foo=bar', $adminUrlGenerator->generateUrl());
     }
 
-    public function testDefaultReferrer()
+    public function testNoReferrerByDefault()
     {
         $adminUrlGenerator = $this->getAdminUrlGenerator();
 
-        $adminUrlGenerator->includeReferrer();
-        $this->assertSame('http://localhost/admin?foo=bar&referrer=/?foo%3Dbar', $adminUrlGenerator->generateUrl());
+        $this->assertStringNotContainsString('referrer', $adminUrlGenerator->generateUrl());
     }
 
+    /**
+     * @group legacy
+     */
     public function testCustomReferrer()
     {
         $adminUrlGenerator = $this->getAdminUrlGenerator();
@@ -240,6 +248,9 @@ class AdminUrlGeneratorTest extends WebTestCase
         $this->assertSame('http://localhost/admin?foo=bar&referrer=any_custom_value', $adminUrlGenerator->generateUrl());
     }
 
+    /**
+     * @group legacy
+     */
     public function testPersistentCustomReferrer()
     {
         $adminUrlGenerator = $this->getAdminUrlGenerator();

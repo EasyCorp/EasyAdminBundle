@@ -1,0 +1,27 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2024-01-21T18:27:12Z
+
+Hi @chapterjason! I'm going crazy in this PR because I cannot make a test pass (`test/Orm/PageSortTest.php`). Since you create this test file, maybe you can give me a clue about what could I do here to make the test pass? Thanks a lot!
+
+---------------------------------------------------------------------------
+
+by chapterjason at 2024-01-21T20:52:02Z
+
+@javiereguiluz I will have a look at that, I guess your changes on the test are unrelated to the referrer removal?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2024-01-21T21:06:20Z
+
+Thanks. In theory, we should not make any change to the test. On my local machine it works without changes. On GitHub CI, there's one combination of OS, PHP and Symfony that also works, but the rest of combinations fail.
+
+---------------------------------------------------------------------------
+
+by chapterjason at 2024-01-22T08:46:24Z
+
+I can reproduce it locally, I will dig in later today. Also noticed the merge build of 4.x of the latest commit also failed. (https://github.com/EasyCorp/EasyAdminBundle/commit/4a080891dbc54480853653936f91104234096572)
+
+Based on latest commit on `4.x`. The sorting is based on the website **id** but I checked the website **name**, the pr #6110 will fix that. This is and was expected behaviour, why the test doesn't fail since the beginning? I don't know. 😄
+
+My old pr just added sorting for *-To-Many features but I also added this test to check if the Many-To-One also works as expected. My test was just wrong.

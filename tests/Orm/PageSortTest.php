@@ -35,14 +35,12 @@ class PageSortTest extends AbstractCrudTestCase
     {
         // Arrange
         $expectedAmountMapping = [];
-        $websites = [];
 
         /**
          * @var Page $entity
          */
         foreach ($this->repository->findAll() as $entity) {
-            $expectedAmountMapping[$entity->getName()] = $entity->getWebsite()->getId();
-            $websites[$entity->getWebsite()->getId()] = $entity->getWebsite()->getName();
+            $expectedAmountMapping[$entity->getName()] = $entity->getWebsite()->getName();
         }
 
         if (null !== $sortFunction) {
@@ -59,10 +57,8 @@ class PageSortTest extends AbstractCrudTestCase
 
         $index = 1;
 
-        foreach ($expectedAmountMapping as $expectedPageName => $websiteId) {
+        foreach ($expectedAmountMapping as $expectedPageName => $expectedWebsiteName) {
             $expectedRow = $index++;
-
-            $expectedWebsiteName = $websites[$websiteId];
 
             $this->assertSelectorTextSame('tbody tr:nth-child('.$expectedRow.') td:nth-child(2)', $expectedPageName, sprintf('Expected "%s" in row %d', $expectedPageName, $expectedRow));
             $this->assertSelectorTextSame('tbody tr:nth-child('.$expectedRow.') td:nth-child(3)', $expectedWebsiteName, sprintf('Expected "%s" in row %d', $expectedWebsiteName, $expectedRow));

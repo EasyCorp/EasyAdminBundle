@@ -19,7 +19,8 @@ class PageCrudController extends AbstractCrudController
     {
         return [
             TextField::new('name'),
-            AssociationField::new('website'),
+            AssociationField::new('website')
+                ->setSortProperty('name'),
         ];
     }
 

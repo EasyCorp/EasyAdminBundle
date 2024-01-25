@@ -18,6 +18,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntitySearchEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use Symfony\Component\Uid\Ulid;
@@ -69,7 +70,7 @@ final class EntityRepository implements EntityRepositoryInterface
             $this->addFilterClause($queryBuilder, $searchDto, $entityDto, $filters, $fields);
         }
 
-        $this->addOrderClause($queryBuilder, $searchDto, $entityDto);
+        $this->addOrderClause($queryBuilder, $searchDto, $entityDto, $fields);
 
         return $queryBuilder;
     }
@@ -140,7 +141,7 @@ final class EntityRepository implements EntityRepositoryInterface
         $this->eventDispatcher->dispatch(new AfterEntitySearchEvent($queryBuilder, $searchDto, $entityDto));
     }
 
-    private function addOrderClause(QueryBuilder $queryBuilder, SearchDto $searchDto, EntityDto $entityDto): void
+    private function addOrderClause(QueryBuilder $queryBuilder, SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields): void
     {
         foreach ($searchDto->getSort() as $sortProperty => $sortOrder) {
             $aliases = $queryBuilder->getAllAliases();
@@ -180,7 +181,14 @@ final class EntityRepository implements EntityRepositoryInterface
                         $queryBuilder->addOrderBy('sub_query_sort', $sortOrder);
                         $queryBuilder->addOrderBy('entity.'.$entityDto->getPrimaryKeyName(), $sortOrder);
                     } else {
-                        $queryBuilder->addOrderBy('entity.'.$sortProperty, $sortOrder);
+                        $field = $fields->getByProperty($sortProperty);
+                        $associationSortProperty = $field?->getCustomOption(AssociationField::OPTION_SORT_PROPERTY);
+
+                        if (null === $associationSortProperty) {
+                            $queryBuilder->addOrderBy('entity.'.$sortProperty, $sortOrder);
+                        } else {
+                            $queryBuilder->addOrderBy($sortProperty.'.'.$associationSortProperty, $sortOrder);
+                        }
                     }
                 } else {
                     $queryBuilder->addOrderBy($sortProperty, $sortOrder);

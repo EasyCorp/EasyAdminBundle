@@ -35,9 +35,7 @@ final class AssociationField implements FieldInterface
 
     public const OPTION_EMBEDDED_CRUD_FORM_NEW_PAGE_NAME = 'crudNewPageName';
     public const OPTION_EMBEDDED_CRUD_FORM_EDIT_PAGE_NAME = 'crudEditPageName';
-    /**
-     * Which property to use in the associated entity to sort the results. (For *-To-One associations).
-     */
+    // the name of the property in the associated entity used to sort the results (only for *-To-One associations)
     public const OPTION_SORT_PROPERTY = 'sortProperty';
 
     /**

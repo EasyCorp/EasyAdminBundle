@@ -48,6 +48,40 @@ element, use this option::
 
     yield AssociationField::new('...')->renderAsNativeWidget();
 
+``renderAsEmbeddedForm``
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+By default, to-one associations are rendered in forms as dropdowns where you can
+select one of the given values. For example, a blog post associated with one
+author will show a dropdown list to select one of the available authors.
+
+However, sometimes the associated property refers to a `value object`_. For example,
+a ``Customer`` entity related to an ``Address`` entity or a ``Server`` entity
+related to an ``IpAddres`` entity.
+
+In these cases it doesn't make sense to display a dropdown with all the
+(potentially millions!) addresses. Instead, it's better to embed the form fields
+of the related entity (e.g. ``Address``) inside the form of the entity that you
+are creating or editing (e.g. ``Customer``).
+
+The ``renderAsEmbeddedForm()`` option tells EasyAdmin to embed the CRUD form of
+the associated property instead of showing all its possible values in a dropdown::
+
+    yield AssociationField::new('...')->renderAsEmbeddedForm();
+
+EasyAdmin looks for the :doc:`CRUD controller </crud>` associated to the property
+automatically. If you need better control about which CRUD controller to use,
+pass the fully-qualified class name of the controller as the first argument::
+
+    yield AssociationField::new('...')->renderAsEmbeddedForm(CategoryCrudController::class);
+
+    // the other optional arguments are the page names passed to the configureFields()
+    // method of the CRUD controller (this allows you to have a better control of
+    // the fields displayed on different scenarios)
+    yield AssociationField::new('...')->renderAsEmbeddedForm(
+        CategoryCrudController::class, 'create_category_inside_an_article', 'edit_category_inside_an_article'
+    );
+
 ``setCrudController``
 ~~~~~~~~~~~~~~~~~~~~~
 
@@ -98,39 +132,15 @@ Or if you prefer using the repository of the entity::
         fn (QueryBuilder $queryBuilder) => $queryBuilder->getEntityManager()->getRepository(Foo::class)->findBySomeCriteria();
     );
 
-``renderAsEmbeddedForm``
-~~~~~~~~~~~~~~~~~~~~~~~~
+setSortProperty
+~~~~~~~~~~~~~~~
 
-By default, to-one associations are rendered in forms as dropdowns where you can
-select one of the given values. For example, a blog post associated with one
-author will show a dropdown list to select one of the available authors.
+If you sort the ``index`` page results using an association field, by default
+those results are sorted using the ``id`` property of the associated entity.
+Set this option to sort results using any of the other properties of the
+associated entity::
 
-However, sometimes the associated property refers to a `value object`_. For example,
-a ``Customer`` entity related to an ``Address`` entity or a ``Server`` entity
-related to an ``IpAddres`` entity.
-
-In these cases it doesn't make sense to display a dropdown with all the
-(potentially millions!) addresses. Instead, it's better to embed the form fields
-of the related entity (e.g. ``Address``) inside the form of the entity that you
-are creating or editing (e.g. ``Customer``).
-
-The ``renderAsEmbeddedForm()`` option tells EasyAdmin to embed the CRUD form of
-the associated property instead of showing all its possible values in a dropdown::
-
-    yield AssociationField::new('...')->renderAsEmbeddedForm();
-
-EasyAdmin looks for the :doc:`CRUD controller </crud>` associated to the property
-automatically. If you need better control about which CRUD controller to use,
-pass the fully-qualified class name of the controller as the first argument::
-
-    yield AssociationField::new('...')->renderAsEmbeddedForm(CategoryCrudController::class);
-
-    // the other optional arguments are the page names passed to the configureFields()
-    // method of the CRUD controller (this allows you to have a better control of
-    // the fields displayed on different scenarios)
-    yield AssociationField::new('...')->renderAsEmbeddedForm(
-        CategoryCrudController::class, 'create_category_inside_an_article', 'edit_category_inside_an_article'
-    );
+    yield AssociationField::new('user')->setSortProperty('name');
 
 .. _`TomSelect`: https://tom-select.js.org/
 .. _`EntityType`: https://symfony.com/doc/current/reference/forms/types/entity.html

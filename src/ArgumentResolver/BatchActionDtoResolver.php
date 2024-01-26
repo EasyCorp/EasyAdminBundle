@@ -5,7 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\ArgumentResolver;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\BatchActionDto;
-use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProviderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ArgumentValueResolverInterface;
@@ -18,13 +18,10 @@ use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 if (interface_exists(ValueResolverInterface::class)) {
     final class BatchActionDtoResolver implements ValueResolverInterface
     {
-        private AdminContextProvider $adminContextProvider;
-        private AdminUrlGeneratorInterface $adminUrlGenerator;
-
-        public function __construct(AdminContextProvider $adminContextProvider, AdminUrlGeneratorInterface $adminUrlGenerator)
-        {
-            $this->adminContextProvider = $adminContextProvider;
-            $this->adminUrlGenerator = $adminUrlGenerator;
+        public function __construct(
+            private AdminContextProviderInterface $adminContextProvider,
+            private AdminUrlGeneratorInterface $adminUrlGenerator
+        ) {
         }
 
         public function resolve(Request $request, ArgumentMetadata $argument): iterable
@@ -64,13 +61,10 @@ if (interface_exists(ValueResolverInterface::class)) {
 } else {
     final class BatchActionDtoResolver implements ArgumentValueResolverInterface
     {
-        private AdminContextProvider $adminContextProvider;
-        private AdminUrlGeneratorInterface $adminUrlGenerator;
-
-        public function __construct(AdminContextProvider $adminContextProvider, AdminUrlGeneratorInterface $adminUrlGenerator)
-        {
-            $this->adminContextProvider = $adminContextProvider;
-            $this->adminUrlGenerator = $adminUrlGenerator;
+        public function __construct(
+            private AdminContextProviderInterface $adminContextProvider,
+            private AdminUrlGeneratorInterface $adminUrlGenerator
+        ) {
         }
 
         public function supports(Request $request, ArgumentMetadata $argument): bool

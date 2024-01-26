@@ -5,7 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Twig;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldLayoutDto;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FormLayoutFactory;
-use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProviderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 use Symfony\Component\DependencyInjection\ServiceLocator;
@@ -26,15 +26,11 @@ use Twig\TwigFunction;
  */
 class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterface
 {
-    private ServiceLocator $serviceLocator;
-    private AdminContextProvider $adminContextProvider;
-    private ?CsrfTokenManagerInterface $csrfTokenManager;
-
-    public function __construct(ServiceLocator $serviceLocator, AdminContextProvider $adminContextProvider, ?CsrfTokenManagerInterface $csrfTokenManager)
-    {
-        $this->serviceLocator = $serviceLocator;
-        $this->adminContextProvider = $adminContextProvider;
-        $this->csrfTokenManager = $csrfTokenManager;
+    public function __construct(
+        private ServiceLocator $serviceLocator,
+        private AdminContextProviderInterface $adminContextProvider,
+        private ?CsrfTokenManagerInterface $csrfTokenManager
+    ) {
     }
 
     public function getFunctions(): array

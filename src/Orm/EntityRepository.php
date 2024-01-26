@@ -20,7 +20,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
-use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProviderInterface;
 use Symfony\Component\Uid\Ulid;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
@@ -30,19 +30,13 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
  */
 final class EntityRepository implements EntityRepositoryInterface
 {
-    private AdminContextProvider $adminContextProvider;
-    private ManagerRegistry $doctrine;
-    private EntityFactory $entityFactory;
-    private FormFactory $formFactory;
-    private EventDispatcherInterface $eventDispatcher;
-
-    public function __construct(AdminContextProvider $adminContextProvider, ManagerRegistry $doctrine, EntityFactory $entityFactory, FormFactory $formFactory, EventDispatcherInterface $eventDispatcher)
-    {
-        $this->adminContextProvider = $adminContextProvider;
-        $this->doctrine = $doctrine;
-        $this->entityFactory = $entityFactory;
-        $this->formFactory = $formFactory;
-        $this->eventDispatcher = $eventDispatcher;
+    public function __construct(
+        private AdminContextProviderInterface $adminContextProvider,
+        private ManagerRegistry $doctrine,
+        private EntityFactory $entityFactory,
+        private FormFactory $formFactory,
+        private EventDispatcherInterface $eventDispatcher
+    ) {
     }
 
     public function createQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder

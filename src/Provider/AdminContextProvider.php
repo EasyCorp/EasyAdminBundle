@@ -7,23 +7,17 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
- * Inject this in services that need to get the admin context object.
- *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class AdminContextProvider
+final class AdminContextProvider implements AdminContextProviderInterface
 {
-    private RequestStack $requestStack;
-
-    public function __construct(RequestStack $requestStack)
-    {
-        $this->requestStack = $requestStack;
+    public function __construct(
+        private RequestStack $requestStack
+    ) {
     }
 
     public function getContext(): ?AdminContext
     {
-        $currentRequest = $this->requestStack->getCurrentRequest();
-
-        return null !== $currentRequest ? $currentRequest->get(EA::CONTEXT_REQUEST_ATTRIBUTE) : null;
+        return $this->requestStack->getCurrentRequest()?->get(EA::CONTEXT_REQUEST_ATTRIBUTE);
     }
 }

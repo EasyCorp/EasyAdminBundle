@@ -7,7 +7,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
-use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProviderInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -17,13 +17,10 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  */
 final class SecurityVoter extends Voter
 {
-    private AuthorizationCheckerInterface $authorizationChecker;
-    private AdminContextProvider $adminContextProvider;
-
-    public function __construct(AuthorizationCheckerInterface $authorizationChecker, AdminContextProvider $adminContextProvider)
-    {
-        $this->authorizationChecker = $authorizationChecker;
-        $this->adminContextProvider = $adminContextProvider;
+    public function __construct(
+        private AuthorizationCheckerInterface $authorizationChecker,
+        private AdminContextProviderInterface $adminContextProvider,
+    ) {
     }
 
     protected function supports(string $permissionName, mixed $subject): bool

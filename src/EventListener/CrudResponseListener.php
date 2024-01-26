@@ -3,7 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\EventListener;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
-use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProviderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
@@ -14,13 +14,10 @@ use Twig\Environment;
  */
 final class CrudResponseListener
 {
-    private AdminContextProvider $adminContextProvider;
-    private Environment $twig;
-
-    public function __construct(AdminContextProvider $adminContextProvider, Environment $twig)
-    {
-        $this->adminContextProvider = $adminContextProvider;
-        $this->twig = $twig;
+    public function __construct(
+        private AdminContextProviderInterface $adminContextProvider,
+        private Environment $twig
+    ) {
     }
 
     public function onKernelView(ViewEvent $event): void

@@ -9,7 +9,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionConfigDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
-use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProviderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use EasyCorp\Bundle\EasyAdminBundle\Translation\TranslatableMessageBuilder;
@@ -24,17 +24,12 @@ use Symfony\Contracts\Translation\TranslatableInterface;
  */
 final class ActionFactory
 {
-    private AdminContextProvider $adminContextProvider;
-    private AuthorizationCheckerInterface $authChecker;
-    private AdminUrlGeneratorInterface $adminUrlGenerator;
-    private ?CsrfTokenManagerInterface $csrfTokenManager;
-
-    public function __construct(AdminContextProvider $adminContextProvider, AuthorizationCheckerInterface $authChecker, AdminUrlGeneratorInterface $adminUrlGenerator, ?CsrfTokenManagerInterface $csrfTokenManager = null)
-    {
-        $this->adminContextProvider = $adminContextProvider;
-        $this->authChecker = $authChecker;
-        $this->adminUrlGenerator = $adminUrlGenerator;
-        $this->csrfTokenManager = $csrfTokenManager;
+    public function __construct(
+        private AdminContextProviderInterface $adminContextProvider,
+        private AuthorizationCheckerInterface $authChecker,
+        private AdminUrlGeneratorInterface $adminUrlGenerator,
+        private ?CsrfTokenManagerInterface $csrfTokenManager = null
+    ) {
     }
 
     public function processEntityActions(EntityDto $entityDto, ActionConfigDto $actionsDto): void

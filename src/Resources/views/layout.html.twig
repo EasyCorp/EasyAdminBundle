@@ -30,6 +30,10 @@
 
     {% block head_javascript %}
         <script src="{{ asset('app.js', ea.assets.defaultAssetPackageName) }}"></script>
+
+        {% block importmap %}
+            {{ include('@EasyAdmin/includes/_importmap.html.twig', { assets: ea.assets.assetMapperAssets ?? [] }, with_context = false) }}
+        {% endblock %}
     {% endblock head_javascript %}
 
     {% block configured_javascripts %}

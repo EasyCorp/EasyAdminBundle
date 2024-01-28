@@ -8,6 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Factory\FormLayoutFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
+use Symfony\Component\AssetMapper\ImportMap\ImportMapRenderer;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Twig\Environment;
@@ -29,12 +30,14 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
     private ServiceLocator $serviceLocator;
     private AdminContextProvider $adminContextProvider;
     private ?CsrfTokenManagerInterface $csrfTokenManager;
+    private ?ImportMapRenderer $importMapRenderer;
 
-    public function __construct(ServiceLocator $serviceLocator, AdminContextProvider $adminContextProvider, ?CsrfTokenManagerInterface $csrfTokenManager)
+    public function __construct(ServiceLocator $serviceLocator, AdminContextProvider $adminContextProvider, ?CsrfTokenManagerInterface $csrfTokenManager, ?ImportMapRenderer $importMapRenderer)
     {
         $this->serviceLocator = $serviceLocator;
         $this->adminContextProvider = $adminContextProvider;
         $this->csrfTokenManager = $csrfTokenManager;
+        $this->importMapRenderer = $importMapRenderer;
     }
 
     public function getFunctions(): array
@@ -44,6 +47,7 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
             new TwigFunction('ea_csrf_token', [$this, 'renderCsrfToken']),
             new TwigFunction('ea_call_function_if_exists', [$this, 'callFunctionIfExists'], ['needs_environment' => true, 'is_safe' => ['html' => true]]),
             new TwigFunction('ea_create_field_layout', [$this, 'createFieldLayout']),
+            new TwigFunction('ea_importmap', [$this, 'renderImportmap'], ['is_safe' => ['html']]),
         ];
     }
 
@@ -200,5 +204,18 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
         );
 
         return FormLayoutFactory::createFromFieldDtos($fieldDtos);
+    }
+
+    /**
+     * We need to recreate the 'importmap()' Twig function from Symfony because calling it
+     * via 'ea_call_function_if_exists('importmap', '...')' doesn't work.
+     */
+    public function renderImportmap(string|array $entryPoint = 'app', array $attributes = []): string
+    {
+        if ('' === $entryPoint || [] === $entryPoint || null === $this->importMapRenderer) {
+            return '';
+        }
+
+        return $this->importMapRenderer->render($entryPoint, $attributes);
     }
 }

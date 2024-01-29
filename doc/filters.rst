@@ -185,14 +185,30 @@ You can now use this custom filter in any of your dashboards and CRUD controller
         }
     }
 
+Filters on  associated entities
+-------------------------------
+(starting from version 3.x)
+If you need to filter by the property of a related entity (e.g.
+an ``order`` is associated with a ``customer`` and you want to filter orders by
+the ``last_visit`` property of the ``customer``), just use the dot notation to get to the property
+
+        public function configureFilters(Filters $filters): Filters
+        {
+            return $filters
+                // just as a string
+                ->add('customer.last_visit_date')
+                // or with an explicit type, either built-in or custom*
+                ->add(DateTimeFilter::new('customer.last_visit_date')
+            ;
+        }
+
+* Please note that, if you have pre-3.x custom filters, you'll have to update them to be able
+to work like this.
+
 Unmapped Filters
 ----------------
 
-By default, each filter must be associated with a property of the entity.
-However, sometimes you need to filter by the property of a related entity (e.g.
-an ``order`` is associated with a ``customer`` and you want to filter orders by
-the ``country`` property of the ``customer``). In those cases, set the
-``mapped`` option to ``false`` in the filter or you'll see an exception::
+In more complex cases, set the ``mapped`` option to ``false`` in the filter or you'll see an exception::
 
     namespace App\Controller\Admin;
 
@@ -210,9 +226,10 @@ the ``country`` property of the ``customer``). In those cases, set the
             return $filters
                 // 'country' doesn't exist as a property of 'Order' so it's
                 // defined as 'not mapped' to avoid errors
-                ->add(CustomerCountryFilter::new('country')->mapped(false))
+                ->add(CustomerCountryFilter::new('country')->setFormTypeOptions('mapped', false))
             ;
         }
     }
 
 .. TODO: explain and show an example of compound filter forms
+.. TODO : separate how filter is rendered (the filter form) and how it will go get the property

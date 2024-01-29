@@ -17,7 +17,7 @@ class FiltersFormType extends AbstractType
     {
         /** @var FilterDto $filter */
         foreach ($options['ea_filters'] as $filter) {
-            $builder->add($filter->getProperty(), $filter->getFormType(), $filter->getFormTypeOptions());
+            $builder->add($filter->getName(), $filter->getFormType(), $filter->getFormTypeOptions());
         }
     }
 

@@ -60,6 +60,7 @@ final class ChoiceFilter implements FilterInterface
 
     public function apply(QueryBuilder $queryBuilder, FilterDataDto $filterDataDto, ?FieldDto $fieldDto, EntityDto $entityDto): void
     {
+        // TODO : if filter property is compound, traverse the main property to get to the good one
         $alias = $filterDataDto->getEntityAlias();
         $property = $filterDataDto->getProperty();
         $comparison = $filterDataDto->getComparison();

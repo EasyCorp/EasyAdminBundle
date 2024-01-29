@@ -55,6 +55,7 @@ final class ArrayFilter implements FilterInterface
     public function apply(QueryBuilder $queryBuilder, FilterDataDto $filterDataDto, ?FieldDto $fieldDto, EntityDto $entityDto): void
     {
         $alias = $filterDataDto->getEntityAlias();
+        // TODO : if filter property is compound, traverse the main property to get to the good one
         $property = $filterDataDto->getProperty();
         $comparison = $filterDataDto->getComparison();
         $parameterName = $filterDataDto->getParameterName();

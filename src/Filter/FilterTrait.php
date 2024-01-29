@@ -25,12 +25,18 @@ trait FilterTrait
 
     public function __toString(): string
     {
-        return $this->dto->getProperty();
+        return $this->dto->getName();
     }
 
     public function setFilterFqcn(string $fqcn): self
     {
         $this->dto->setFqcn($fqcn);
+
+        return $this;
+    }
+
+    public function setName(string $name): self {
+        $this->dto->setName($name);
 
         return $this;
     }

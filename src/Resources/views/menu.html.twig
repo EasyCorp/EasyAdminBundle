@@ -6,10 +6,14 @@
         {% block main_menu %}
             {% for menuItem in ea.mainMenu.items %}
                 {% block menu_item %}
-                    {% if not (menuItem.type == constant('EasyCorp\\Bundle\\EasyAdminBundle\\Dto\\MenuItemDto::TYPE_SUBMENU') and not menuItem.hasSubItems) %}
+                    {% set is_submenu_item_with_no_items = menuItem.type == constant('EasyCorp\\Bundle\\EasyAdminBundle\\Dto\\MenuItemDto::TYPE_SUBMENU') and not menuItem.hasSubItems %}
+                    {% if is_submenu_item_with_no_items %}
+                        {# this can happen when submenu items define permissions and the current user can't see any
+                           of the subitems; instead of only displaying the label of the empty submenu, don't display anything #}
+                    {% else %}
                         <li class="{{ menuItem.isMenuSection ? 'menu-header' : 'menu-item' }} {{ menuItem.hasSubItems ? 'has-submenu' }} {{ menuItem.isSelected ? 'active' }} {{ menuItem.isExpanded ? 'expanded' }}">
                             {{ _self.render_menu_item(menuItem) }}
-    
+
                             {% if menuItem.hasSubItems %}
                                 <ul class="submenu">
                                     {% for menuSubItem in menuItem.subItems %}

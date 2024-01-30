@@ -145,6 +145,11 @@ final class AssetsDto
                 $filteredAssets->addJsAsset($jsAsset);
             }
         }
+        foreach ($this->assetMapperAssets as $assetMapperAsset) {
+            if ($assetMapperAsset->getLoadedOn()->has($pageName)) {
+                $filteredAssets->addAssetMapperAsset($assetMapperAsset);
+            }
+        }
         foreach ($this->webpackEncoreAssets as $webpackEncoreAsset) {
             if ($webpackEncoreAsset->getLoadedOn()->has($pageName)) {
                 $filteredAssets->addWebpackEncoreAsset($webpackEncoreAsset);
@@ -162,6 +167,7 @@ final class AssetsDto
 
     public function mergeWith(self $assetsDto): self
     {
+        $this->assetMapperAssets = array_merge($this->assetMapperAssets, $assetsDto->getAssetMapperAssets());
         $this->webpackEncoreAssets = array_merge($this->webpackEncoreAssets, $assetsDto->getWebpackEncoreAssets());
         $this->cssAssets = array_merge($this->cssAssets, $assetsDto->getCssAssets());
         $this->jsAssets = array_merge($this->jsAssets, $assetsDto->getJsAssets());

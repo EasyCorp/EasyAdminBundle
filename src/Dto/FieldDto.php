@@ -401,6 +401,11 @@ final class FieldDto
         $this->assets = $assets;
     }
 
+    public function addAssetMapperEncoreAsset(AssetDto $assetDto): void
+    {
+        $this->assets->addAssetMapperAsset($assetDto);
+    }
+
     public function addWebpackEncoreAsset(AssetDto $assetDto): void
     {
         $this->assets->addWebpackEncoreAsset($assetDto);

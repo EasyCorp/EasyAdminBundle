@@ -257,6 +257,23 @@ trait FieldTrait
         return $this;
     }
 
+    public function addAssetMapperEntries(Asset|string ...$entryNamesOrAssets): self
+    {
+        if (!class_exists('Symfony\\Component\\AssetMapper\\AssetMapper')) {
+            throw new \RuntimeException('You are trying to add AssetMapper entries in a field but AssetMapper is not installed in your project. Try running "composer require symfony/asset-mapper"');
+        }
+
+        foreach ($entryNamesOrAssets as $entryNameOrAsset) {
+            if (\is_string($entryNameOrAsset)) {
+                $this->dto->addAssetMapperEncoreAsset(new AssetDto($entryNameOrAsset));
+            } else {
+                $this->dto->addAssetMapperEncoreAsset($entryNameOrAsset->getAsDto());
+            }
+        }
+
+        return $this;
+    }
+
     public function addCssFiles(Asset|string ...$pathsOrAssets): self
     {
         foreach ($pathsOrAssets as $pathOrAsset) {

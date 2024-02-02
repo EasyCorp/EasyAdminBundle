@@ -306,6 +306,10 @@ label.form-check-label {
     margin-right: 5px;
 }
 
+.form-tabs-tablist .nav-tabs .nav-link:focus-visible {
+    box-shadow: none;
+    outline: 0;
+}
 .form-tabs-tablist .nav-tabs .nav-link.active {
     background: transparent;
     color: var(--link-color);
@@ -343,7 +347,7 @@ label.form-check-label {
     padding: 3px 6px;
 }
 
-.form-tabs-tablist .tab-help {
+.form-tabs-content .tab-help {
     color: var(--form-tabs-help-color);
     margin-top: -10px;
     margin-bottom: 15px;

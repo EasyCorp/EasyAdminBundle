@@ -22,5 +22,7 @@ final class TimezoneConfigurator implements FieldConfiguratorInterface
     {
         $field->setFormTypeOptionIfNotSet('attr.data-ea-widget', 'ea-autocomplete');
         $field->setFormTypeOptionIfNotSet('intl', true);
+        // timezone names passed to the form are already translated, so don't translate them again in the template
+        $field->setFormTypeOptionIfNotSet('choice_translation_domain', false);
     }
 }

@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 use EasyCorp\Bundle\EasyAdminBundle\Collection\ActionCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use Symfony\Component\ExpressionLanguage\Expression;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -22,7 +23,7 @@ final class ActionConfigDto
     ];
     /** @var string[] */
     private array $disabledActions = [];
-    /** @var string[] */
+    /** @var string[]|Expression[] */
     private array $actionPermissions = [];
 
     public function __construct()
@@ -43,7 +44,7 @@ final class ActionConfigDto
         $this->pageName = $pageName;
     }
 
-    public function setActionPermission(string $actionName, string $permission): void
+    public function setActionPermission(string $actionName, string|Expression $permission): void
     {
         $this->actionPermissions[$actionName] = $permission;
     }

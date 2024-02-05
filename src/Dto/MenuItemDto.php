@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
 /**
@@ -24,7 +25,7 @@ final class MenuItemDto
     private TranslatableInterface|string|null $label = null;
     private ?string $icon = null;
     private string $cssClass = '';
-    private ?string $permission = null;
+    private string|Expression|null $permission = null;
     private ?string $routeName = null;
     private ?array $routeParameters = null;
     private ?string $linkUrl = null;
@@ -159,12 +160,12 @@ final class MenuItemDto
         $this->routeParameters = $routeParameters;
     }
 
-    public function getPermission(): ?string
+    public function getPermission(): string|Expression|null
     {
         return $this->permission;
     }
 
-    public function setPermission(?string $permission): void
+    public function setPermission(string|Expression|null $permission): void
     {
         $this->permission = $permission;
     }

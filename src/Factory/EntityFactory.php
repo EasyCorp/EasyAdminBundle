@@ -16,6 +16,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityBuiltEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\EntityNotFoundException;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
@@ -66,7 +67,7 @@ final class EntityFactory
         return $this->actionFactory->processGlobalActions($actionConfigDto);
     }
 
-    public function create(string $entityFqcn, $entityId = null, ?string $entityPermission = null): EntityDto
+    public function create(string $entityFqcn, $entityId = null, string|Expression|null $entityPermission = null): EntityDto
     {
         return $this->doCreate($entityFqcn, $entityId, $entityPermission);
     }
@@ -109,7 +110,7 @@ final class EntityFactory
         return $entityMetadata;
     }
 
-    private function doCreate(?string $entityFqcn = null, $entityId = null, ?string $entityPermission = null, $entityInstance = null): EntityDto
+    private function doCreate(?string $entityFqcn = null, $entityId = null, string|Expression|null $entityPermission = null, $entityInstance = null): EntityDto
     {
         if (null === $entityInstance && null !== $entityFqcn) {
             $entityInstance = null === $entityId ? null : $this->getEntityInstance($entityFqcn, $entityId);

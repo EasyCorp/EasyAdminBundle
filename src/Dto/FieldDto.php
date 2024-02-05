@@ -16,6 +16,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabPaneCloseType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabPaneGroupCloseType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabPaneGroupOpenType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabPaneOpenType;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\Uid\Ulid;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
@@ -34,7 +35,7 @@ final class FieldDto
     private KeyValueStore $formTypeOptions;
     private ?bool $sortable = null;
     private ?bool $virtual = null;
-    private ?string $permission = null;
+    private string|Expression|null $permission = null;
     private ?string $textAlign = null;
     private $help;
     private string $cssClass = '';
@@ -296,12 +297,12 @@ final class FieldDto
         $this->textAlign = $textAlign;
     }
 
-    public function getPermission(): ?string
+    public function getPermission(): string|Expression|null
     {
         return $this->permission;
     }
 
-    public function setPermission(string $permission): void
+    public function setPermission(string|Expression $permission): void
     {
         $this->permission = $permission;
     }

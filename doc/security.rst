@@ -176,6 +176,39 @@ permissions to see some items:
 .. image:: images/easyadmin-list-hidden-results.png
    :alt: Index page with some results hidden because user does not have enough permissions
 
+.. _security-expressions:
+
+Using expressions
+-----------------
+
+EasyAdmin supports for all permissions the usage of Symfony Expressions.
+To use them you need to require the expression language component to your project, using Composer:
+
+.. code-block:: terminal
+
+    $ composer require symfony/expression-language
+
+Now, when defining permissions, instead of a role name string (like ``ROLE_ADMIN``) only,
+you can pass an Symfony Expression object, like this:
+
+.. code-block:: php
+
+    use Symfony\Component\ExpressionLanguage\Expression;
+
+    MenuItem::linkToCrud('Restricted menu-item', null, Example::class)
+        ->setPermission(new Expression('"ROLE_DEVELOPER" in role_names and "ROLE_EXTERNAL" not in role_names'));
+
+This allows you to define much more detailed permissions, based on several role names, user attributes or the given subject.
+
+Available variables in expression are:
+
+* ``user`` - the current user object
+* ``role_names`` - all roles of current user as array
+* ``subject`` or ``object`` - the current subject being checked
+* ``token`` - authentication token
+* ``trust_resolver`` - authentication trust resolver
+* ``auth_checker`` - instance of auth_checker
+
 Custom Security Voters
 ----------------------
 

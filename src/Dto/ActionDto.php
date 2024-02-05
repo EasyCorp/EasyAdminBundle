@@ -239,9 +239,9 @@ final class ActionDto
         $this->translationParameters = $translationParameters;
     }
 
-    public function shouldBeDisplayedFor(EntityDto $entityDto): bool
+    public function shouldBeDisplayedFor(?EntityDto $entityDto): bool
     {
-        return null === $this->displayCallable || (bool) \call_user_func($this->displayCallable, $entityDto->getInstance());
+        return null === $this->displayCallable || (bool) \call_user_func($this->displayCallable, $entityDto?->getInstance());
     }
 
     public function setDisplayCallable(callable $displayCallable): void

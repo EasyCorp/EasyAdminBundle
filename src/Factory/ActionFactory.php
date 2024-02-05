@@ -93,6 +93,10 @@ final class ActionFactory
                 continue;
             }
 
+            if (false === $actionDto->shouldBeDisplayedFor(null)) {
+                continue;
+            }
+
             if (Crud::PAGE_INDEX !== $currentPage && $actionDto->isBatchAction()) {
                 throw new \RuntimeException(sprintf('Batch actions can be added only to the "index" page, but the "%s" batch action is defined in the "%s" page.', $actionDto->getName(), $currentPage));
             }

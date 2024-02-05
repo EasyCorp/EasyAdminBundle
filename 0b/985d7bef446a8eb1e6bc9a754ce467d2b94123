@@ -1,0 +1,24 @@
+---------------------------------------------------------------------------
+
+by a-r-m-i-n at 2024-02-05T14:27:19Z
+
+Oh okay. I'm going to fix the phpstan issues 😅
+
+---------------------------------------------------------------------------
+
+by a-r-m-i-n at 2024-02-05T14:31:13Z
+
+Ah. The issue is, that symfony/expression-language is not required in EasyAdmin's composer.json file.
+Not sure if you want to add this as regular dependency. I would add it as dev-dependency first.
+
+---------------------------------------------------------------------------
+
+by a-r-m-i-n at 2024-02-05T14:39:17Z
+
+The remaining issue
+```
+  40     Call to function is_array() with Doctrine\Common\Lexer\Token|null
+         will always evaluate to false.
+```
+seems not be caused by my changes.
+Because you do not provide a composer.lock file, it has updated doctrine/orm to 2.18.0 - which probably causes this issue.

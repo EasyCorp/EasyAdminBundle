@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Config\Menu;
 
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
+use Symfony\Component\ExpressionLanguage\Expression;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -25,7 +26,7 @@ trait MenuItemTrait
         return $this;
     }
 
-    public function setPermission(string $permission): self
+    public function setPermission(string|Expression $permission): self
     {
         $this->dto->setPermission($permission);
 

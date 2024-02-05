@@ -7,6 +7,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\SearchMode;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Translation\TranslatableMessageBuilder;
+use Symfony\Component\ExpressionLanguage\Expression;
 use function Symfony\Component\Translation\t;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
@@ -60,7 +61,7 @@ final class CrudDto
     private array $formThemes = ['@EasyAdmin/crud/form_theme.html.twig'];
     private KeyValueStore $newFormOptions;
     private KeyValueStore $editFormOptions;
-    private ?string $entityPermission = null;
+    private string|Expression|null $entityPermission = null;
     private ?string $contentWidth = null;
     private ?string $sidebarWidth = null;
     private bool $hideNullValues = false;
@@ -437,12 +438,12 @@ final class CrudDto
         $this->editFormOptions = $formOptions;
     }
 
-    public function getEntityPermission(): ?string
+    public function getEntityPermission(): string|Expression|null
     {
         return $this->entityPermission;
     }
 
-    public function setEntityPermission(string $entityPermission): void
+    public function setEntityPermission(string|Expression $entityPermission): void
     {
         $this->entityPermission = $entityPermission;
     }

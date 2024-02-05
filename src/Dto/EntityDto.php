@@ -7,6 +7,7 @@ use Doctrine\Persistence\Mapping\ClassMetadata;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\ActionCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
 /**
@@ -21,14 +22,14 @@ final class EntityDto
     private $instance;
     private $primaryKeyName;
     private mixed $primaryKeyValue = null;
-    private ?string $permission;
+    private string|Expression|null $permission;
     private ?FieldCollection $fields = null;
     private ?ActionCollection $actions = null;
 
     /**
      * @param ClassMetadata&ClassMetadataInfo $entityMetadata
      */
-    public function __construct(string $entityFqcn, ClassMetadata $entityMetadata, ?string $entityPermission = null, /* ?object */ $entityInstance = null)
+    public function __construct(string $entityFqcn, ClassMetadata $entityMetadata, string|Expression|null $entityPermission = null, /* ?object */ $entityInstance = null)
     {
         if (!\is_object($entityInstance)
             && null !== $entityInstance) {
@@ -112,7 +113,7 @@ final class EntityDto
         return (string) $this->getPrimaryKeyValue();
     }
 
-    public function getPermission(): ?string
+    public function getPermission(): string|Expression|null
     {
         return $this->permission;
     }

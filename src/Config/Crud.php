@@ -8,6 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterConfigDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\PaginatorDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
 /**
@@ -390,7 +391,7 @@ class Crud
         return $this;
     }
 
-    public function setEntityPermission(string $permission): self
+    public function setEntityPermission(string|Expression $permission): self
     {
         $this->dto->setEntityPermission($permission);
 

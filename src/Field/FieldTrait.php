@@ -8,6 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\TextAlign;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
 /**
@@ -165,7 +166,7 @@ trait FieldTrait
         return $this;
     }
 
-    public function setPermission(string $permission): self
+    public function setPermission(string|Expression $permission): self
     {
         $this->dto->setPermission($permission);
 

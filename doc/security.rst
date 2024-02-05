@@ -178,18 +178,22 @@ permissions to see some items:
 
 .. _security-expressions:
 
-Using expressions
------------------
+Restricting Access with Expressions
+-----------------------------------
 
-EasyAdmin supports for all permissions the usage of Symfony Expressions.
-To use them you need to require the expression language component to your project, using Composer:
+The `Symfony ExpressionLanguage component`_ allows to define complex configuration
+logic using simple expressions. In EasyAdmin, all ``setPermission()`` methods
+allow to pass not only a string with some security role name (e.g. ``ROLE_ADMIN``)
+but also a full ``Expression`` object.
+
+First, install the component in your project using Composer:
 
 .. code-block:: terminal
 
     $ composer require symfony/expression-language
 
-Now, when defining permissions, instead of a role name string (like ``ROLE_ADMIN``) only,
-you can pass an Symfony Expression object, like this:
+Now, you can pass a Symfony Expression object to any ``setPermission()`` method
+like this:
 
 .. code-block:: php
 
@@ -198,16 +202,16 @@ you can pass an Symfony Expression object, like this:
     MenuItem::linkToCrud('Restricted menu-item', null, Example::class)
         ->setPermission(new Expression('"ROLE_DEVELOPER" in role_names and "ROLE_EXTERNAL" not in role_names'));
 
-This allows you to define much more detailed permissions, based on several role names, user attributes or the given subject.
-
-Available variables in expression are:
+Expressions enable the definition of much more detailed permissions, based on
+several role names, user attributes, or the given subject. The expressions can
+include any of these variables:
 
 * ``user`` - the current user object
-* ``role_names`` - all roles of current user as array
+* ``role_names`` - all the roles of current user as an array
 * ``subject`` or ``object`` - the current subject being checked
-* ``token`` - authentication token
-* ``trust_resolver`` - authentication trust resolver
-* ``auth_checker`` - instance of auth_checker
+* ``token`` - the authentication token
+* ``trust_resolver`` - the authentication trust resolver
+* ``auth_checker`` - an instance of the authorization checker service
 
 Custom Security Voters
 ----------------------
@@ -239,3 +243,4 @@ grants access only if there are no voters denying access:
 .. _`access_control option`: https://symfony.com/doc/current/security/access_control.html
 .. _`security voter`: https://symfony.com/doc/current/security/voters.html
 .. _`access decision strategy`: https://symfony.com/doc/current/security/voters.html#changing-the-access-decision-strategy
+.. _`Symfony ExpressionLanguage component`: https://symfony.com/doc/current/components/expression_language.html

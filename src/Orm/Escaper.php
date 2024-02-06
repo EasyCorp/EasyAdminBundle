@@ -37,6 +37,7 @@ class Escaper
         $token = $lexer->lookahead;
         // backwards compat for when $token changed from array to object
         // https://github.com/doctrine/lexer/pull/79
+        /** @phpstan-ignore-next-line */
         $type = \is_array($token) ? $token['type'] : $token->type;
 
         if (200 <= $type) {

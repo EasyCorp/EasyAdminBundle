@@ -1,10 +1,9 @@
-{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
 <nav id="main-menu">
     {% block main_menu_before %}{% endblock %}
 
     <ul class="menu">
         {% block main_menu %}
-            {% for menuItem in ea.mainMenu.items %}
+            {% for menuItem in ea().mainMenu.items %}
                 {% block menu_item %}
                     {% set is_submenu_item_with_no_items = menuItem.type == constant('EasyCorp\\Bundle\\EasyAdminBundle\\Dto\\MenuItemDto::TYPE_SUBMENU') and not menuItem.hasSubItems %}
                     {% if is_submenu_item_with_no_items %}

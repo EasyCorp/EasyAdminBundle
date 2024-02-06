@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Twig;
 
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldLayoutDto;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FormLayoutFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
@@ -48,6 +49,7 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
             new TwigFunction('ea_call_function_if_exists', [$this, 'callFunctionIfExists'], ['needs_environment' => true, 'is_safe' => ['html' => true]]),
             new TwigFunction('ea_create_field_layout', [$this, 'createFieldLayout']),
             new TwigFunction('ea_importmap', [$this, 'renderImportmap'], ['is_safe' => ['html']]),
+            new TwigFunction('ea', [$this, 'getEa']),
         ];
     }
 
@@ -67,6 +69,11 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
 
         // when there's an admin context, make it available in all templates as a short named variable
         return null === $context ? [] : ['ea' => $context];
+    }
+
+    public function getEa(): ?AdminContext
+    {
+        return $this->adminContextProvider->getContext();
     }
 
     /**

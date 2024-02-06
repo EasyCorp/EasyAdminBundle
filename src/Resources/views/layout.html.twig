@@ -1,8 +1,7 @@
-{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
-{% trans_default_domain ea.i18n.translationDomain %}
+{% trans_default_domain ea().i18n.translationDomain %}
 
 <!DOCTYPE html>
-<html lang="{{ ea.i18n.htmlLocale }}" dir="{{ ea.i18n.textDirection }}" data-turbo="false">
+<html lang="{{ ea().i18n.htmlLocale }}" dir="{{ ea().i18n.textDirection }}" data-turbo="false">
 <head>
     {% block head_metas %}
         <meta charset="utf-8">
@@ -16,37 +15,37 @@
     <title>{{ page_title_block_output|striptags|raw }}</title>
 
     {% block head_stylesheets %}
-        <link rel="stylesheet" href="{{ asset('app.css', ea.assets.defaultAssetPackageName) }}">
+        <link rel="stylesheet" href="{{ asset('app.css', ea().assets.defaultAssetPackageName) }}">
     {% endblock %}
 
     {% block configured_stylesheets %}
-        {{ include('@EasyAdmin/includes/_css_assets.html.twig', { assets: ea.assets.cssAssets ?? [] }, with_context = false) }}
-        {{ include('@EasyAdmin/includes/_encore_link_tags.html.twig', { assets: ea.assets.webpackEncoreAssets ?? [] }, with_context = false) }}
+        {{ include('@EasyAdmin/includes/_css_assets.html.twig', { assets: ea().assets.cssAssets ?? [] }, with_context = false) }}
+        {{ include('@EasyAdmin/includes/_encore_link_tags.html.twig', { assets: ea().assets.webpackEncoreAssets ?? [] }, with_context = false) }}
     {% endblock %}
 
     {% block head_favicon %}
-        <link rel="shortcut icon" href="{{ asset(ea.dashboardFaviconPath) }}">
+        <link rel="shortcut icon" href="{{ asset(ea().dashboardFaviconPath) }}">
     {% endblock %}
 
     {% block head_javascript %}
-        <script src="{{ asset('app.js', ea.assets.defaultAssetPackageName) }}"></script>
+        <script src="{{ asset('app.js', ea().assets.defaultAssetPackageName) }}"></script>
 
         {% block importmap %}
-            {{ include('@EasyAdmin/includes/_importmap.html.twig', { assets: ea.assets.assetMapperAssets ?? [] }, with_context = false) }}
+            {{ include('@EasyAdmin/includes/_importmap.html.twig', { assets: ea().assets.assetMapperAssets ?? [] }, with_context = false) }}
         {% endblock %}
     {% endblock head_javascript %}
 
     {% block configured_javascripts %}
-        {{ include('@EasyAdmin/includes/_js_assets.html.twig', { assets: ea.assets.jsAssets ?? [] }, with_context = false) }}
-        {{ include('@EasyAdmin/includes/_encore_script_tags.html.twig', { assets: ea.assets.webpackEncoreAssets ?? [] }, with_context = false) }}
+        {{ include('@EasyAdmin/includes/_js_assets.html.twig', { assets: ea().assets.jsAssets ?? [] }, with_context = false) }}
+        {{ include('@EasyAdmin/includes/_encore_script_tags.html.twig', { assets: ea().assets.webpackEncoreAssets ?? [] }, with_context = false) }}
     {% endblock %}
 
-    {% if 'rtl' == ea.i18n.textDirection %}
-        <link rel="stylesheet" href="{{ asset('app.rtl.css', ea.assets.defaultAssetPackageName) }}">
+    {% if 'rtl' == ea().i18n.textDirection %}
+        <link rel="stylesheet" href="{{ asset('app.rtl.css', ea().assets.defaultAssetPackageName) }}">
     {% endif %}
 
     {% block configured_head_contents %}
-        {% for htmlContent in ea.assets.headContents ?? [] %}
+        {% for htmlContent in ea().assets.headContents ?? [] %}
             {{ htmlContent|raw }}
         {% endfor %}
     {% endblock %}
@@ -56,32 +55,32 @@
     <body {% block body_attr %}{% endblock %}
         id="{% block body_id %}{% endblock %}"
         class="ea {% block body_class %}{% endblock %}"
-        data-ea-content-width="{{ ea.crud.contentWidth ?? ea.dashboardContentWidth ?? 'normal' }}"
-        data-ea-sidebar-width="{{ ea.crud.sidebarWidth ?? ea.dashboardSidebarWidth ?? 'normal' }}"
-        data-ea-dark-scheme-is-enabled="{{ ea.dashboardHasDarkModeEnabled ? 'true' : 'false' }}"
+        data-ea-content-width="{{ ea().crud.contentWidth ?? ea().dashboardContentWidth ?? 'normal' }}"
+        data-ea-sidebar-width="{{ ea().crud.sidebarWidth ?? ea().dashboardSidebarWidth ?? 'normal' }}"
+        data-ea-dark-scheme-is-enabled="{{ ea().dashboardHasDarkModeEnabled ? 'true' : 'false' }}"
     >
     {% block javascript_page_layout %}
-        <script src="{{ asset('page-layout.js', ea.assets.defaultAssetPackageName) }}"></script>
+        <script src="{{ asset('page-layout.js', ea().assets.defaultAssetPackageName) }}"></script>
     {% endblock javascript_page_layout %}
     {% block javascript_page_color_scheme %}
-        <script src="{{ asset('page-color-scheme.js', ea.assets.defaultAssetPackageName) }}"></script>
+        <script src="{{ asset('page-color-scheme.js', ea().assets.defaultAssetPackageName) }}"></script>
     {% endblock javascript_page_color_scheme %}
 
     {% block wrapper_wrapper %}
         {% block flash_messages %}
-            {{ include(ea.templatePath('flash_messages')) }}
+            {{ include(ea().templatePath('flash_messages')) }}
         {% endblock flash_messages %}
 
         {% set user_menu_avatar %}
-            {% if null == ea.userMenu.avatarUrl %}
+            {% if null == ea().userMenu.avatarUrl %}
                 <span class="user-avatar">
                     <span class="fa-stack">
                         <i class="user-avatar-icon-background fas fa-square fa-stack-2x"></i>
-                        <i class="user-avatar-icon-foreground {{ ea.user is not null ? 'fa fa-user' : 'fas fa-user-slash' }} fa-stack-1x fa-inverse"></i>
+                        <i class="user-avatar-icon-foreground {{ ea().user is not null ? 'fa fa-user' : 'fas fa-user-slash' }} fa-stack-1x fa-inverse"></i>
                     </span>
                 </span>
             {% else %}
-                <img class="user-avatar" src="{{ ea.userMenu.avatarUrl }}" />
+                <img class="user-avatar" src="{{ ea().userMenu.avatarUrl }}" />
             {% endif %}
         {% endset %}
 
@@ -93,14 +92,14 @@
                     <div>{{ user_menu_avatar }}</div>
                     <div>
                         <span class="user-label">{{ 'user.logged_in_as'|trans(domain = 'EasyAdminBundle') }}</span>
-                        <span class="user-name">{{ ea.user is null ? 'user.anonymous'|trans(domain = 'EasyAdminBundle') : ea.userMenu.name }}</span>
+                        <span class="user-name">{{ ea().user is null ? 'user.anonymous'|trans(domain = 'EasyAdminBundle') : ea().userMenu.name }}</span>
                     </div>
                 </li>
 
                 {% block user_menu %}
-                    {% if ea.userMenu.items|length > 0 %}
+                    {% if ea().userMenu.items|length > 0 %}
                         <li><hr class="dropdown-divider"></li>
-                        {% for item in ea.userMenu.items %}
+                        {% for item in ea().userMenu.items %}
                             <li>
                                 {% if item.isMenuSection and not loop.first %}
                                     <hr class="dropdown-divider">
@@ -120,19 +119,19 @@
         {% endset %}
 
         {% set settings_dropdown %}
-            {% if ea.dashboardLocales or ea.dashboardHasDarkModeEnabled %}
+            {% if ea().dashboardLocales or ea().dashboardHasDarkModeEnabled %}
                 <div class="dropdown dropdown-settings">
                     <a class="dropdown-settings-button" type="button" data-bs-toggle="dropdown" data-bs-offset="0,5" aria-expanded="false">
                         <i class="fas fa-gear"></i>
                     </a>
 
                     <ul class="dropdown-menu dropdown-menu-end">
-                        {% if ea.dashboardLocales %}
+                        {% if ea().dashboardLocales %}
                             <li class="dropdown-header dropdown-locales-label">
                                 {{ 'settings.locale'|trans(domain = 'EasyAdminBundle') }}
                             </li>
 
-                            {% for localeDto in ea.dashboardLocales %}
+                            {% for localeDto in ea().dashboardLocales %}
                                 <li>
                                     <a href="{{ ea_url().set('_locale', localeDto.locale) }}" class="dropdown-item{% if app.request.locale == localeDto.locale %} active{% endif %}">
                                         {% if localeDto.icon %}
@@ -144,8 +143,8 @@
                             {% endfor %}
                         {% endif %}
 
-                        {% if ea.dashboardHasDarkModeEnabled %}
-                            {% if ea.dashboardLocales %}
+                        {% if ea().dashboardHasDarkModeEnabled %}
+                            {% if ea().dashboardLocales %}
                                 <div class="dropdown-divider"></div>
                             {% endif %}
 
@@ -186,8 +185,8 @@
 
                         <div id="responsive-header-logo" class="text-truncate ms-auto">
                             {% block responsive_header_logo %}
-                                <a class="responsive-logo" title="{{ ea.dashboardTitle|striptags }}" href="{{ path(ea.dashboardRouteName) }}">
-                                    {{ ea.dashboardTitle|raw }}
+                                <a class="responsive-logo" title="{{ ea().dashboardTitle|striptags }}" href="{{ path(ea().dashboardRouteName) }}">
+                                    {{ ea().dashboardTitle|raw }}
                                 </a>
                             {% endblock responsive_header_logo %}
                         </div>
@@ -196,10 +195,10 @@
                             <a class="user-details" type="button" data-bs-toggle="dropdown" data-bs-offset="0,5" aria-expanded="false">
                                 {# to make the site design consistent, always display the user avatar in responsive header
                                    and hide the user name (because there's no space left) regardless of the user config #}
-                                {% if ea.userMenu.avatarDisplayed %}
+                                {% if ea().userMenu.avatarDisplayed %}
                                     {{ user_menu_avatar }}
                                 {% else %}
-                                    <i class="user-avatar fa fa-fw {{ ea.user is not null ? 'fa-user' : 'fa-user-times' }}"></i>
+                                    <i class="user-avatar fa fa-fw {{ ea().user is not null ? 'fa-user' : 'fa-user-times' }}"></i>
                                 {% endif %}
                             </a>
 
@@ -219,8 +218,8 @@
                                     {% block header_navbar %}
                                         <div id="header-logo">
                                             {% block header_logo %}
-                                                <a class="logo" title="{{ ea.dashboardTitle|striptags }}" href="{{ path(ea.dashboardRouteName) }}">
-                                                    <span class="logo-custom">{{ ea.dashboardTitle|raw }}</span>
+                                                <a class="logo" title="{{ ea().dashboardTitle|striptags }}" href="{{ path(ea().dashboardRouteName) }}">
+                                                    <span class="logo-custom">{{ ea().dashboardTitle|raw }}</span>
                                                     <span class="logo-compact"><i class="fas fa-home"></i></span>
                                                 </a>
                                             {% endblock header_logo %}
@@ -231,7 +230,7 @@
                             </header>
 
                             {% block main_menu_wrapper %}
-                                {{ include(ea.templatePath('main_menu')) }}
+                                {{ include(ea().templatePath('main_menu')) }}
                             {% endblock main_menu_wrapper %}
                         {% endblock sidebar %}
 
@@ -240,7 +239,7 @@
                 </div>
 
                 <section class="main-content">
-                    {% set has_search = ea.crud is not null and ea.crud.isSearchEnabled %}
+                    {% set has_search = ea().crud is not null and ea().crud.isSearchEnabled %}
                     <aside class="content-top {{ has_search ? 'ea-search-enabled' : 'ea-search-disabled' }}">
                         {% block content_top_header %}
                             {% block search_wrapper %}
@@ -251,7 +250,7 @@
                                         <form class="form-action-search" method="get">
                                             {% block search_form %}
                                                 {% block search_form_filters %}
-                                                    {% for field, fieldValue in ea.search.appliedFilters %}
+                                                    {% for field, fieldValue in ea().search.appliedFilters %}
                                                         {% if fieldValue is iterable %}
                                                             {% for key, value in fieldValue %}
                                                                 {# This code re-applies your filters on searches, an iterable check is needed in cases we have more than one object for a filter #}
@@ -277,7 +276,7 @@
                                                 {% endblock %}
 
                                                 <input type="hidden" name="crudAction" value="index">
-                                                <input type="hidden" name="crudControllerFqcn" value="{{ ea.request.query.get('crudControllerFqcn') }}">
+                                                <input type="hidden" name="crudControllerFqcn" value="{{ ea().request.query.get('crudControllerFqcn') }}">
                                                 <input type="hidden" name="page" value="1">
 
                                                 <div class="form-group">
@@ -285,7 +284,7 @@
                                                         <i class="fas fa-search content-search-icon"></i>
 
                                                         <label class="content-search-label" data-value="{{ app.request.get('query') }}">
-                                                            <input class="form-control {{ app.request.get('query') is null ? 'is-blank' }}" type="search" name="query" value="{{ app.request.get('query') ?? '' }}" placeholder="{{ t('action.search', ea.i18n.translationParameters, 'EasyAdminBundle')|trans }}" spellcheck="false" autocorrect="off" onInput="this.parentNode.dataset.value=this.value"{% if ea.crud.currentAction == 'index' and ea.crud.autofocusSearch == true %} autofocus="autofocus"{% endif %}>
+                                                            <input class="form-control {{ app.request.get('query') is null ? 'is-blank' }}" type="search" name="query" value="{{ app.request.get('query') ?? '' }}" placeholder="{{ t('action.search', ea().i18n.translationParameters, 'EasyAdminBundle')|trans }}" spellcheck="false" autocorrect="off" onInput="this.parentNode.dataset.value=this.value"{% if ea().crud.currentAction == 'index' and ea().crud.autofocusSearch == true %} autofocus="autofocus"{% endif %}>
                                                         </label>
 
                                                         {% if app.request.get('query') %}
@@ -308,8 +307,8 @@
                                     <div class="dropdown user-menu-wrapper {{ is_granted(impersonator_permission) ? 'user-is-impersonated' }}">
                                         <a class="user-details" type="button" data-bs-toggle="dropdown" data-bs-offset="0,5" aria-expanded="false">
                                             {{ user_menu_avatar }}
-                                            {% if ea.userMenu.isNameDisplayed %}
-                                                <span class="user-name">{{ ea.userMenu.name }}</span>
+                                            {% if ea().userMenu.isNameDisplayed %}
+                                                <span class="user-name">{{ ea().userMenu.name }}</span>
                                             {% endif %}
                                         </a>
 
@@ -329,7 +328,7 @@
                         {% block content %}
                             <article class="content">
                                 {% block content_header_wrapper %}
-                                    {% set has_help_message = (ea.crud.helpMessage ?? '') is not empty %}
+                                    {% set has_help_message = (ea().crud.helpMessage ?? '') is not empty %}
                                     <section class="content-header">
                                         {% block content_header %}
                                             <div class="content-header-title">
@@ -338,7 +337,7 @@
 
                                                     {% block content_help %}
                                                         {% if has_help_message %}
-                                                            <a tabindex="0" class="content-header-help" data-bs-toggle="popover" data-bs-custom-class="ea-content-help-popover" data-bs-animation="true" data-bs-html="true" data-bs-placement="bottom" data-bs-trigger="focus" data-bs-content="{{ ea.crud.helpMessage|trans|e('html_attr') }}">
+                                                            <a tabindex="0" class="content-header-help" data-bs-toggle="popover" data-bs-custom-class="ea-content-help-popover" data-bs-animation="true" data-bs-html="true" data-bs-placement="bottom" data-bs-trigger="focus" data-bs-content="{{ ea().crud.helpMessage|trans|e('html_attr') }}">
                                                                 <i class="far fa-question-circle"></i>
                                                             </a>
                                                         {% endif %}
@@ -378,7 +377,7 @@
     {% block body_javascript %}{% endblock body_javascript %}
 
     {% block configured_body_contents %}
-        {% for htmlContent in ea.assets.bodyContents ?? [] %}
+        {% for htmlContent in ea().assets.bodyContents ?? [] %}
             {{ htmlContent|raw }}
         {% endfor %}
     {% endblock %}

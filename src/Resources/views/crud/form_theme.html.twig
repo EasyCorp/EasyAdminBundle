@@ -1,4 +1,3 @@
-{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
 {% use '@EasyAdmin/symfony-form-themes/bootstrap_5_layout.html.twig' %}
 
 {% block form_start %}
@@ -8,7 +7,7 @@
 
     {{ parent() }}
 
-    <input type="hidden" name="referrer" value="{{ ea.request.query.get('referrer') }}">
+    <input type="hidden" name="referrer" value="{{ ea().request.query.get('referrer') }}">
 {% endblock form_start %}
 
 {% block form_end %}
@@ -235,7 +234,7 @@
 {% endblock form_widget_compound %}
 
 {% block button_row -%}
-    <div class="form-group field-{{ block_prefixes|slice(-2)|first }} {{ ea.field.css_class|default('') }}">
+    <div class="form-group field-{{ block_prefixes|slice(-2)|first }} {{ ea().field.css_class|default('') }}">
         {{- form_widget(form) -}}
     </div>
 {%- endblock button_row %}
@@ -291,7 +290,7 @@
 
 {% block empty_collection %}
     <div class="empty collection-empty">
-        {{ include(ea.templatePath('label/empty')) }}
+        {{ include(ea().templatePath('label/empty')) }}
     </div>
 {% endblock empty_collection %}
 
@@ -552,11 +551,11 @@
             <div class="form-column-title">
                 <div class="form-column-title-content">
                     {% if field_icon %}<i class="form-column-icon fa fa-fw fa-{{ field_icon }}"></i>{% endif %}
-                    {% if field.label %}{{ field.label|default('')|trans(domain = ea.i18n.translationDomain)|raw }}{% endif %}
+                    {% if field.label %}{{ field.label|default('')|trans(domain = ea().i18n.translationDomain)|raw }}{% endif %}
                 </div>
 
                 {% if field.help %}
-                    <div class="form-column-help">{{ field.help|trans(domain = ea.i18n.translationDomain)|raw }}</div>
+                    <div class="form-column-help">{{ field.help|trans(domain = ea().i18n.translationDomain)|raw }}</div>
                 {% endif %}
             </div>
         {% endif %}
@@ -630,7 +629,7 @@
                         {%- if tab.getCustomOption('icon')|default(false) -%}
                             <i class="tab-nav-item-icon fa-fw {{ tab.getCustomOption('icon') }}"></i>
                         {%- endif -%}
-                        {{ tab.label|trans(domain = ea.i18n.translationDomain)|raw }}
+                        {{ tab.label|trans(domain = ea().i18n.translationDomain)|raw }}
 
                         {% set tab_error_count = tab.getCustomOption(tab_error_count_option_name)  %}
                         {%- if tab_error_count > 0 -%}
@@ -662,7 +661,7 @@
     <div id="{{ ea_tab_id }}" class="tab-pane {% if field.getCustomOption(tab_is_active_option_name) %}active{% endif %} {{ ea_css_class }}" {% for key, value in form.vars.attr %}{{ key }}={{ value|e('html_attr') }}{% endfor %}>
         {% if ea_help %}
             <div class="content-header-help tab-help">
-                {{ ea_help|trans(domain = ea.i18n.translationDomain)|raw }}
+                {{ ea_help|trans(domain = ea().i18n.translationDomain)|raw }}
             </div>
         {% endif %}
 
@@ -676,7 +675,7 @@
 
 {# EasyAdminFilters form type #}
 {% block ea_filters_widget %}
-    {% set applied_filters = ea.request.query.all()['filters']|default([])|keys %}
+    {% set applied_filters = ea().request.query.all()['filters']|default([])|keys %}
 
     {% for field in form %}
         <div class="col-12">
@@ -685,7 +684,7 @@
                     <input type="checkbox" class="filter-checkbox" {% if field.vars.name in applied_filters %}checked{% endif %}>
                     <a data-bs-toggle="collapse" href="#filter-content-{{ loop.index }}" aria-expanded="{{ field.vars.name in applied_filters ? 'true' : 'false' }}" aria-controls="filter-content-{{ loop.index }}"
                         {% for name, value in field.vars.label_attr|default([]) %}{{ name }}="{{ value|e('html_attr') }}" {% endfor %}>
-                        {{ field.vars.label|default(field.vars.name|humanize)|trans(domain = ea.i18n.translationDomain) }}
+                        {{ field.vars.label|default(field.vars.name|humanize)|trans(domain = ea().i18n.translationDomain) }}
                     </a>
                 </div>
                 <div id="filter-content-{{ loop.index }}" class="filter-content collapse {% if field.vars.name in applied_filters %}show{% endif %}" aria-labelledby="filter-heading-{{ loop.index }}">

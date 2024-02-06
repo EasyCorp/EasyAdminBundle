@@ -5,6 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Controller;
 use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Event\EasyAdminEvents;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\EntityRemoveException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\ForbiddenActionException;
@@ -52,14 +53,13 @@ trait AdminControllerTrait
     protected $em;
 
     /**
-     * @Route("/", name="easyadmin")
-     *
      * @param Request $request
      *
      * @return RedirectResponse|Response
      *
      * @throws ForbiddenActionException
      */
+    #[Route('/', name: 'easyadmin')]
     public function indexAction(Request $request)
     {
         $this->initialize($request);
@@ -77,7 +77,7 @@ trait AdminControllerTrait
             $id = $this->request->query->get('id');
             $entity = $this->request->attributes->get('easyadmin')['item'];
             $requiredPermission = $this->entity[$action]['item_permission'];
-            $userHasPermission = $this->get('easyadmin.security.authorization_checker')->isGranted($requiredPermission, $entity);
+            $userHasPermission = $this->container->get('easyadmin.security.authorization_checker')->isGranted($requiredPermission, $entity);
             if (false === $userHasPermission) {
                 throw new NoPermissionException(['action' => $action, 'entity_name' => $this->entity['name'], 'entity_id' => $id]);
             }
@@ -99,7 +99,7 @@ trait AdminControllerTrait
     {
         $this->dispatch(EasyAdminEvents::PRE_INITIALIZE);
 
-        $this->config = $this->get('easyadmin.config.manager')->getBackendConfig();
+        $this->config = $this->container->get('easyadmin.config.manager')->getBackendConfig();
 
         if (0 === \count($this->config['entities'])) {
             throw new NoEntitiesConfiguredException();
@@ -115,7 +115,7 @@ trait AdminControllerTrait
             throw new UndefinedEntityException(['entity_name' => $entityName]);
         }
 
-        $this->entity = $this->get('easyadmin.config.manager')->getEntityConfig($entityName);
+        $this->entity = $this->container->get('easyadmin.config.manager')->getEntityConfig($entityName);
 
         $action = $request->query->get('action', 'list');
         if (!$request->query->has('sortField')) {
@@ -146,9 +146,9 @@ trait AdminControllerTrait
         $event = new GenericEvent($subject, $arguments);
 
         if (Kernel::VERSION_ID >= 40300) {
-            $this->get('event_dispatcher')->dispatch($event, $eventName);
+            $this->container->get('event_dispatcher')->dispatch($event, $eventName);
         } else {
-            $this->get('event_dispatcher')->dispatch($eventName, $event);
+            $this->container->get('event_dispatcher')->dispatch($eventName, $event);
         }
     }
 
@@ -160,7 +160,7 @@ trait AdminControllerTrait
      */
     protected function autocompleteAction()
     {
-        $results = $this->get('easyadmin.autocomplete')->find(
+        $results = $this->container->get('easyadmin.autocomplete')->find(
             $this->request->query->get('entity'),
             $this->request->query->get('query'),
             $this->request->query->get('page', 1)
@@ -385,7 +385,7 @@ trait AdminControllerTrait
             $queryParameters = array_replace($this->request->query->all(), ['action' => 'list']);
             unset($queryParameters['query']);
 
-            return $this->redirect($this->get('router')->generate('easyadmin', $queryParameters));
+            return $this->redirect($this->container->get('router')->generate('easyadmin', $queryParameters));
         }
 
         $searchableFields = $this->entity['search']['fields'];
@@ -439,7 +439,7 @@ trait AdminControllerTrait
 
     protected function createBatchForm(string $entityName): FormInterface
     {
-        return $this->get('form.factory')->createNamed('batch_form', EasyAdminBatchFormType::class, null, [
+        return $this->container->get('form.factory')->createNamed('batch_form', EasyAdminBatchFormType::class, null, [
             'action' => $this->generateUrl('easyadmin', ['action' => 'batch', 'entity' => $entityName]),
             'entity' => $entityName,
         ]);
@@ -500,7 +500,7 @@ trait AdminControllerTrait
         }
 
         /** @var FilterRegistry $filterRegistry */
-        $filterRegistry = $this->get('easyadmin.filter.registry');
+        $filterRegistry = $this->container->get('easyadmin.filter.registry');
 
         $appliedFilters = [];
         foreach ($filtersForm as $filterForm) {
@@ -532,7 +532,7 @@ trait AdminControllerTrait
 
     protected function createFiltersForm(string $entityName): FormInterface
     {
-        return $this->get('form.factory')->createNamed('filters', EasyAdminFiltersFormType::class, null, [
+        return $this->container->get('form.factory')->createNamed('filters', EasyAdminFiltersFormType::class, null, [
             'method' => 'GET',
             'entity' => $entityName,
         ]);
@@ -595,11 +595,11 @@ trait AdminControllerTrait
     {
         $entityConfig = $this->entity;
 
-        if (!$this->get('easyadmin.property_accessor')->isWritable($entity, $property)) {
+        if (!$this->container->get('easyadmin.property_accessor')->isWritable($entity, $property)) {
             throw new \RuntimeException(sprintf('The "%s" property of the "%s" entity is not writable.', $property, $entityConfig['name']));
         }
 
-        $this->get('easyadmin.property_accessor')->setValue($entity, $property, $value);
+        $this->container->get('easyadmin.property_accessor')->setValue($entity, $property, $value);
 
         $this->dispatch(EasyAdminEvents::PRE_UPDATE, ['entity' => $entity, 'property' => $property, 'newValue' => $value]);
         $this->executeDynamicMethod('update<EntityName>Entity', [$entity]);
@@ -687,7 +687,7 @@ trait AdminControllerTrait
             'sort_direction' => $sortDirection,
         ]);
 
-        return $this->get('easyadmin.paginator')->createOrmPaginator($queryBuilder, $page, $maxPerPage);
+        return $this->container->get('easyadmin.paginator')->createOrmPaginator($queryBuilder, $page, $maxPerPage);
     }
 
     /**
@@ -702,7 +702,7 @@ trait AdminControllerTrait
      */
     protected function createListQueryBuilder($entityClass, $sortDirection, $sortField = null, $dqlFilter = null)
     {
-        return $this->get('easyadmin.query_builder')->createListQueryBuilder($this->entity, $sortField, $sortDirection, $dqlFilter);
+        return $this->container->get('easyadmin.query_builder')->createListQueryBuilder($this->entity, $sortField, $sortDirection, $dqlFilter);
     }
 
     /**
@@ -736,7 +736,7 @@ trait AdminControllerTrait
             'searchable_fields' => $searchableFields,
         ]);
 
-        return $this->get('easyadmin.paginator')->createOrmPaginator($queryBuilder, $page, $maxPerPage);
+        return $this->container->get('easyadmin.paginator')->createOrmPaginator($queryBuilder, $page, $maxPerPage);
     }
 
     /**
@@ -753,7 +753,7 @@ trait AdminControllerTrait
      */
     protected function createSearchQueryBuilder($entityClass, $searchQuery, array $searchableFields, $sortField = null, $sortDirection = null, $dqlFilter = null)
     {
-        return $this->get('easyadmin.query_builder')->createSearchQueryBuilder($this->entity, $searchQuery, $sortField, $sortDirection, $dqlFilter);
+        return $this->container->get('easyadmin.query_builder')->createSearchQueryBuilder($this->entity, $searchQuery, $sortField, $sortDirection, $dqlFilter);
     }
 
     /**
@@ -794,7 +794,7 @@ trait AdminControllerTrait
     {
         $formOptions = $this->executeDynamicMethod('get<EntityName>EntityFormOptions', [$entity, $view]);
 
-        return $this->get('form.factory')->createNamedBuilder(mb_strtolower($this->entity['name']), EasyAdminFormType::class, $entity, $formOptions);
+        return $this->container->get('form.factory')->createNamedBuilder(mb_strtolower($this->entity['name']), EasyAdminFormType::class, $entity, $formOptions);
     }
 
     /**
@@ -859,7 +859,7 @@ trait AdminControllerTrait
     protected function createDeleteForm($entityName, $entityId)
     {
         /** @var FormBuilder $formBuilder */
-        $formBuilder = $this->get('form.factory')->createNamedBuilder('delete_form')
+        $formBuilder = $this->container->get('form.factory')->createNamedBuilder('delete_form')
             ->setAction($this->generateUrl('easyadmin', ['action' => 'delete', 'entity' => $entityName, 'id' => $entityId]))
             ->setMethod('DELETE')
         ;
@@ -919,7 +919,7 @@ trait AdminControllerTrait
     {
         $homepageConfig = $this->config['homepage'];
 
-        $url = $homepageConfig['url'] ?? $this->get('router')->generate($homepageConfig['route'], $homepageConfig['params']);
+        $url = $homepageConfig['url'] ?? $this->container->get('router')->generate($homepageConfig['route'], $homepageConfig['params']);
 
         return $this->redirect($url);
     }
@@ -986,5 +986,11 @@ trait AdminControllerTrait
     protected function renderTemplate($actionName, $templatePath, array $parameters = [])
     {
         return $this->render($templatePath, $parameters);
+    }
+
+
+    protected function getDoctrine(): ManagerRegistry
+    {
+        return $this->container->get('doctrine');
     }
 }

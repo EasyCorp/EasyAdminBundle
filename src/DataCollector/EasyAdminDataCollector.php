@@ -29,7 +29,7 @@ class EasyAdminDataCollector extends DataCollector
     /**
      * {@inheritdoc}
      */
-    public function reset()
+    public function reset(): void
     {
         $this->data = [
             'num_entities' => 0,
@@ -42,7 +42,7 @@ class EasyAdminDataCollector extends DataCollector
     /**
      * {@inheritdoc}
      */
-    public function collect(Request $request, Response $response, \Throwable $exception = null)
+    public function collect(Request $request, Response $response, \Throwable $exception = null): void
     {
         if ('easyadmin' !== $request->attributes->get('_route')) {
             return;
@@ -142,7 +142,7 @@ class EasyAdminDataCollector extends DataCollector
     /**
      * {@inheritdoc}
      */
-    public function getName()
+    public function getName(): string
     {
         return 'easyadmin';
     }

@@ -48,7 +48,7 @@ class EasyAdminTwigExtension extends AbstractExtension
     /**
      * {@inheritdoc}
      */
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
             new TwigFunction('easyadmin_render_field_for_*_view', [$this, 'renderEntityField'], ['is_safe' => ['html'], 'needs_environment' => true]),
@@ -69,7 +69,7 @@ class EasyAdminTwigExtension extends AbstractExtension
     /**
      * {@inheritdoc}
      */
-    public function getFilters()
+    public function getFilters(): array
     {
         $filters = [
             new TwigFilter('easyadmin_truncate', [$this, 'truncateText'], ['needs_environment' => true]),
@@ -280,7 +280,7 @@ class EasyAdminTwigExtension extends AbstractExtension
         $isShowActionAllowed = !\in_array('show', $targetEntityConfig['disabled_actions']);
 
         if ($templateParameters['field_options']['associationType'] & ClassMetadata::TO_ONE) {
-            if ($this->propertyAccessor->isReadable($templateParameters['value'], $targetEntityConfig['primary_key_field_name'])) {
+            if (null !== $templateParameters['value'] && $this->propertyAccessor->isReadable($templateParameters['value'], $targetEntityConfig['primary_key_field_name'])) {
                 $primaryKeyValue = $this->propertyAccessor->getValue($templateParameters['value'], $targetEntityConfig['primary_key_field_name']);
             } else {
                 $primaryKeyValue = null;

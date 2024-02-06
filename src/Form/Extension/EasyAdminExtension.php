@@ -26,7 +26,7 @@ class EasyAdminExtension extends AbstractTypeExtension
     /**
      * {@inheritdoc}
      */
-    public function finishView(FormView $view, FormInterface $form, array $options)
+    public function finishView(FormView $view, FormInterface $form, array $options): void
     {
         $request = null;
         if (null !== $this->requestStack) {
@@ -74,7 +74,7 @@ class EasyAdminExtension extends AbstractTypeExtension
     /**
      * This legacy method can be removed when the minimum supported version is Symfony 4.2.
      */
-    public function getExtendedType()
+    public function getExtendedType(): string
     {
         return FormType::class;
     }

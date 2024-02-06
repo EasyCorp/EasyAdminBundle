@@ -28,7 +28,7 @@ class EasyAdminFiltersFormType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $entityConfig = $this->configManager->getEntityConfig($options['entity']);
 
@@ -49,7 +49,7 @@ class EasyAdminFiltersFormType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setRequired('entity');
         $resolver->setDefaults([

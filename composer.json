@@ -23,7 +23,6 @@
         "symfony/deprecation-contracts": "^3.0",
         "symfony/doctrine-bridge": "^5.4|^6.0|^7.0",
         "symfony/event-dispatcher": "^5.4|^6.0|^7.0",
-        "symfony/expression-language": "^5.4|^6.0|^7.0",
         "symfony/filesystem": "^5.4|^6.0|^7.0",
         "symfony/form": "^5.4|^6.0|^7.0",
         "symfony/framework-bundle": "^5.4|^6.0|^7.0",
@@ -50,6 +49,7 @@
         "symfony/css-selector": "^5.4|^6.0|^7.0",
         "symfony/debug-bundle": "^5.4|^6.0|^7.0",
         "symfony/dom-crawler": "^5.4|^6.0|^7.0",
+        "symfony/expression-language": "^5.4|^6.0|^7.0",
         "symfony/phpunit-bridge": "^5.4|^6.0|^7.0"
     },
     "config": {

@@ -4,7 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Orm;
 
 use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Query\Expr\Orx;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -162,7 +162,7 @@ final class EntityRepository implements EntityRepositoryInterface
                         $entityManager = $this->doctrine->getManagerForClass($entityDto->getFqcn());
                         $countQueryBuilder = $entityManager->createQueryBuilder();
 
-                        if (ClassMetadataInfo::MANY_TO_MANY === $metadata->get('type')) {
+                        if (ClassMetadata::MANY_TO_MANY === $metadata->get('type')) {
                             // many-to-many relation
                             $countQueryBuilder
                                 ->select($queryBuilder->expr()->count('subQueryEntity'))

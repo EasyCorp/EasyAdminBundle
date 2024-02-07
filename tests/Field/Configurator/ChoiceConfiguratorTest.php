@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Field\Configurator;
 
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
@@ -26,7 +26,7 @@ class ChoiceConfiguratorTest extends AbstractFieldTest
 
         $this->configurator = new ChoiceConfigurator();
 
-        $metadata = new ClassMetadataInfo(self::ENTITY_CLASS);
+        $metadata = new ClassMetadata(self::ENTITY_CLASS);
         $metadata->setIdentifier(['id']);
         $this->entity = new EntityDto(self::ENTITY_CLASS, $metadata);
     }

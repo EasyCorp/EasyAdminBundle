@@ -29,7 +29,7 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 final class FieldFactory
 {
     private static array $doctrineTypeToFieldFqcn = [
-        Types::ARRAY => ArrayField::class,
+        'array' => ArrayField::class, // don't use Types::ARRAY because it was removed in Doctrine ORM 3.0
         Types::BIGINT => TextField::class,
         Types::BINARY => TextareaField::class,
         Types::BLOB => TextareaField::class,
@@ -46,7 +46,7 @@ final class FieldFactory
         Types::GUID => TextField::class,
         Types::INTEGER => IntegerField::class,
         Types::JSON => TextField::class,
-        Types::OBJECT => TextField::class,
+        'object' => TextField::class, // don't use Types::OBJECT because it was removed in Doctrine ORM 3.0
         Types::SIMPLE_ARRAY => ArrayField::class,
         Types::SMALLINT => IntegerField::class,
         Types::STRING => TextField::class,

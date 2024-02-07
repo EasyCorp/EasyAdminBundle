@@ -7,8 +7,7 @@
 // ----------------------------------------------------------------------------
 $enable-print-styles: false !default;
 $enable-gradients: false !default;
-// this removes the !important modifier in all the Bootstrap utility classes
-$enable-important-utilities: false;
+$enable-important-utilities: true;
 
 $body-bg: hsl(220, 20%, 91%) !default;
 $body-color: hsl(225, 15%, 35%) !default;

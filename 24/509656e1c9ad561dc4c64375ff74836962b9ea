@@ -1,0 +1,12 @@
+---------------------------------------------------------------------------
+
+by Macko82 at 2024-02-07T23:08:09Z
+
+PR has typo (`ture` should be `true`).
+https://github.com/EasyCorp/EasyAdminBundle/pull/6141/files#diff-87fae523a62bc1cc205d453fddcf3da346378eceab2ee894083b6c8fa2c2923aR10
+
+---------------------------------------------------------------------------
+
+by astronati at 2024-02-09T09:53:21Z
+
+PR is updated with the fixed typo

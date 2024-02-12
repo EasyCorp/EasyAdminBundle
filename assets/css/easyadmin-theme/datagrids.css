@@ -1,5 +1,5 @@
-// Datagrid tables (used in the INDEX page)
-// ----------------------------------------------------------------------------
+/* Datagrid tables (used in the INDEX page)
+/* ------------------------------------------------------------------------- */
 
 table.datagrid {
   border-collapse: collapse;
@@ -7,70 +7,66 @@ table.datagrid {
   color: var(--table-cell-color);
   margin-bottom: 0;
   width: 100%;
-
-  &:not(.datagrid-empty) {
-    @media (max-width: 767px) {
-      tbody, tr, td { display: block; }
-      tbody, tr { border-radius: var(--border-radius); }
-      tbody tr td:first-of-type { border-top-left-radius: var(--border-radius); border-top-right-radius: var(--border-radius); }
-      tbody tr td:last-of-type { border-bottom-left-radius: var(--border-radius); border-bottom-right-radius: var(--border-radius); }
-      thead { display: none; }
-      tr {
-        border: 1px solid var(--responsive-table-row-border-color);
-        margin-bottom: 30px;
-      }
-      tr:not(.empty-row) td {
-        box-shadow: inset 0 1px 0 var(--table-cell-border-color);
-        padding-left: 35%;
-        position: relative;
-
-        &:first-child { box-shadow: none; }
-        &.batch-actions-selector {
-          padding: 8px;
-
-          &:before { display: none; }
-        }
-        &.actions,
-        &.actions.actions-as-dropdown {
-          padding: 8px;
-
-          &:before { display: none; }
-        }
-      }
-      td {
-        // because of how the contents are rendered in small screens, table contents must be left-aligned
-        // the !important flag is needed to override the !important used by Bootstrap in .text-center, .text-right, etc.
-        text-align: left !important;
-      }
-      td::before {
-        content: attr(data-label);
-        color: var(--responsive-table-label-color);
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        width: 35%;
-        font-weight: 500;
-        padding: 8px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        text-align: left;
-        white-space: nowrap;
-      }
-      td.field-boolean {
-        padding-left: 8px;
-
-        &::before {
-          color: var(--table-cell-color);
-          font-weight: 400;
-          left: 0;
-          // needed to truncate text when the switch label is too long
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-        }
-      }
-    }
+}
+@media (max-width: 767px) {
+  table.datagrid:not(.datagrid-empty) tbody,
+  table.datagrid:not(.datagrid-empty) tr,
+  table.datagrid:not(.datagrid-empty) td { display: block; }
+  table.datagrid:not(.datagrid-empty) tbody,
+  table.datagrid:not(.datagrid-empty) tr { border-radius: var(--border-radius); }
+  table.datagrid:not(.datagrid-empty) tbody tr td:first-of-type { border-top-left-radius: var(--border-radius); border-top-right-radius: var(--border-radius); }
+  table.datagrid:not(.datagrid-empty) tbody tr td:last-of-type { border-bottom-left-radius: var(--border-radius); border-bottom-right-radius: var(--border-radius); }
+  table.datagrid:not(.datagrid-empty) thead { display: none; }
+  table.datagrid:not(.datagrid-empty) tr {
+    border: 1px solid var(--responsive-table-row-border-color);
+    margin-bottom: 30px;
+  }
+  table.datagrid:not(.datagrid-empty) tr:not(.empty-row) td {
+    box-shadow: inset 0 1px 0 var(--table-cell-border-color);
+    padding-left: 35%;
+    position: relative;
+  }
+  table.datagrid:not(.datagrid-empty) tr:not(.empty-row) td:first-child { box-shadow: none; }
+  table.datagrid:not(.datagrid-empty) tr:not(.empty-row) td.batch-actions-selector {
+    padding: 8px;
+  }
+  table.datagrid:not(.datagrid-empty) tr:not(.empty-row) td.batch-actions-selector:before { display: none; }
+  table.datagrid:not(.datagrid-empty) tr:not(.empty-row) td.actions,
+  table.datagrid:not(.datagrid-empty) tr:not(.empty-row) td.actions.actions-as-dropdown {
+    padding: 8px;
+  }
+  table.datagrid:not(.datagrid-empty) tr:not(.empty-row) td.actions.actions-as-dropdown:before { display: none; }
+  table.datagrid:not(.datagrid-empty) td {
+    /* because of how the contents are rendered in small screens, table contents must be left-aligned
+       the !important flag is needed to override the !important used by Bootstrap in .text-center, .text-right, etc. */
+    text-align: left !important;
+  }
+  table.datagrid:not(.datagrid-empty) td::before {
+    content: attr(data-label);
+    color: var(--responsive-table-label-color);
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 35%;
+    font-weight: 500;
+    padding: 8px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: left;
+    white-space: nowrap;
+  }
+  table.datagrid:not(.datagrid-empty) td.field-boolean {
+    padding-left: 8px;
+  }
+  table.datagrid:not(.datagrid-empty) td.field-boolean::before {
+    color: var(--table-cell-color);
+    font-weight: 400;
+    left: 0;
+    /* needed to truncate text when the switch label is too long */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }
 .datagrid thead th {
@@ -94,8 +90,8 @@ table.datagrid {
 .datagrid tbody {
   box-shadow: 0 1px 0 var(--table-cell-border-color);
 }
-.datagrid thead + tbody tr:first-child td {
-  @media (min-width: 992px) {
+@media (min-width: 992px) {
+  .datagrid thead + tbody tr:first-child td {
     box-shadow: none;
   }
 }
@@ -122,15 +118,15 @@ table.datagrid {
   border: none;
   vertical-align: middle;
 }
-.datagrid tbody tr:hover td, .datagrid tbody tr:hover th {
-  @media (min-width: 992px) {
+@media (min-width: 992px) {
+  .datagrid tbody tr:hover td, .datagrid tbody tr:hover th {
     background: var(--table-hover-cell-bg);
   }
 }
 .datagrid tbody tr.selected-row td {
   background: var(--table-selected-cell-bg);
 }
-// needed to avoid showing the text of selected rows with the background of selected text
+/* needed to avoid showing the text of selected rows with the background of selected text */
 .datagrid tbody tr.selected-row td ::-moz-selection {
   background: transparent;
 }
@@ -149,47 +145,48 @@ table.datagrid {
   margin-right: 2px;
 }
 
-.datagrid {
-  td.actions-as-dropdown {
-    @media (min-width: 992px) {
-      padding: 2px 8px;
-    }
-  }
-  td.actions-as-dropdown-table-head {
-    width: 10px;
-  }
-  tr:not(.selected-row):hover .dropdown-toggle {
-    background: var(--dropdown-toggle-bg);
-    border-color: var(--dropdown-toggle-border-color);
-  }
-  tr:hover .dropdown-toggle:hover {
-    border-color: var(--dropdown-toggle-hover-border-color);
-  }
-  tr:hover .dropdown-toggle:focus, tr:hover .dropdown-toggle:active, tr:hover .dropdown-toggle:active:focus,
-  .dropdown-toggle:focus, .dropdown-toggle:active, .dropdown-toggle:active:focus,
-  tr:hover .dropdown-toggle.show, tr .dropdown-toggle.show, .dropdown-toggle.show {
-    border-color: var(--dropdown-toggle-hover-border-color);
-    box-shadow: var(--button-active-shadow);
-    outline: none;
-  }
-
-  .dropdown-actions {
-    .dropdown-toggle {
-      border: 1px solid transparent;
-      border-radius: var(--border-radius);
-      color: var(--dropdown-toggle-color);
-      padding: 3px 5px;
-
-      // hides the caret added automatically by Bootstrap
-      &:after { display: none; }
-      &:hover { cursor: pointer; }
-
-      svg { vertical-align: top; }
-    }
-
-    .dropdown-menu { z-index: var(--zindex-900); }
+@media (min-width: 992px) {
+  .datagrid td.actions-as-dropdown {
+    padding: 2px 8px;
   }
 }
+.datagrid td.actions-as-dropdown-table-head {
+  width: 10px;
+}
+.datagrid tr:not(.selected-row):hover .dropdown-toggle {
+  background: var(--dropdown-toggle-bg);
+  border-color: var(--dropdown-toggle-border-color);
+}
+.datagrid tr:hover .dropdown-toggle:hover {
+  border-color: var(--dropdown-toggle-hover-border-color);
+}
+.datagrid tr:hover .dropdown-toggle:focus,
+.datagrid tr:hover .dropdown-toggle:active,
+.datagrid tr:hover .dropdown-toggle:active:focus,
+.datagrid .dropdown-toggle:focus,
+.datagrid .dropdown-toggle:active,
+.datagrid .dropdown-toggle:active:focus,
+.datagrid tr:hover .dropdown-toggle.show,
+.datagrid tr .dropdown-toggle.show,
+.datagrid .dropdown-toggle.show {
+  border-color: var(--dropdown-toggle-hover-border-color);
+  box-shadow: var(--button-active-shadow);
+  outline: none;
+}
+
+.datagrid .dropdown-actions .dropdown-toggle {
+  border: 1px solid transparent;
+  border-radius: var(--border-radius);
+  color: var(--dropdown-toggle-color);
+  padding: 3px 5px;
+}
+/* hides the caret added automatically by Bootstrap */
+.datagrid .dropdown-actions .dropdown-toggle:after { display: none; }
+.datagrid .dropdown-actions .dropdown-toggle:hover { cursor: pointer; }
+
+.datagrid .dropdown-actions .dropdown-toggle svg { vertical-align: top; }
+
+.datagrid .dropdown-actions .dropdown-menu { z-index: var(--zindex-900); }
 
 .datagrid .ea-lightbox-thumbnail img {
   background: var(--white);
@@ -216,26 +213,24 @@ table.datagrid {
 }
 .datagrid .field-boolean {
   text-align: center;
-
-  &.has-switch {
-    padding: 6px 8px;
-  }
-
-  .form-switch {
-    display: inline-flex;
-    justify-content: center;
-    margin-bottom: 0;
-    padding-left: 0;
-
-    input {
-      margin-top: 0;
-      position: relative;
-      top: 3px;
-    }
-  }
 }
-.datagrid .field-country {
-  @media (max-width: 992px) {
+.datagrid .field-boolean.has-switch {
+  padding: 6px 8px;
+}
+
+.datagrid .field-boolean .form-switch {
+  display: inline-flex;
+  justify-content: center;
+  margin-bottom: 0;
+  padding-left: 0;
+}
+.datagrid .field-boolean .form-switch input {
+  margin-top: 0;
+  position: relative;
+  top: 3px;
+}
+@media (max-width: 992px) {
+  .datagrid .field-country {
     text-align: left !important;
   }
 }
@@ -399,7 +394,7 @@ table.datagrid {
 .filter-content .form-check.form-check-inline {
   margin-top: 0;
 }
-// needed to hide the visual marker in the labels of required fields
+/* needed to hide the visual marker in the labels of required fields */
 .filter-content .form-group label.required:after {
   content: none;
 }

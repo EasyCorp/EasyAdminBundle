@@ -1,5 +1,5 @@
-// Badges
-// ----------------------------------------------------------------------------
+/* Badges
+/* ------------------------------------------------------------------------- */
 
 .badge + .badge {
   margin-left: 8px;
@@ -13,12 +13,8 @@
 }
 
 .badge {
-  border-radius: var(--border-radius);
   box-shadow: var(--badge-box-shadow);
-  color: var(--text-color);
-  font-size: var(--font-size-xs);
   line-height: 16px;
-  padding: 1px 5px;
 }
 
 .badge.badge-success {

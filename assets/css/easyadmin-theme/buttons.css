@@ -1,5 +1,5 @@
-// Buttons
-// ----------------------------------------------------------------------------
+/* Buttons
+/* ------------------------------------------------------------------------- */
 
 .btn {
     background-color: var(--button-bg);
@@ -14,7 +14,7 @@
 }
 .btn:not(:disabled):not(.disabled):not(.btn-link):not(.btn-danger):hover {
     border: 0;
-    // needed because $btn-focus-box-shadow and $btn-active-box-shadow are ignored for .btn-primary, .btn-info, etc.
+    /* needed because $btn-focus-box-shadow and $btn-active-box-shadow are ignored for .btn-primary, .btn-info, etc. */
     box-shadow: var(--button-hover-shadow);
     color: var(--button-hover-color);
 }
@@ -22,7 +22,7 @@
 .btn:not(:disabled):not(.disabled):not(.btn-link):focus,
 .btn:not(:disabled):not(.disabled):not(.btn-link):active:focus {
     border: 0;
-    // needed because $btn-focus-box-shadow and $btn-active-box-shadow are ignored for .btn-primary, .btn-info, etc.
+    /* needed because $btn-focus-box-shadow and $btn-active-box-shadow are ignored for .btn-primary, .btn-info, etc. */
     box-shadow: var(--button-active-shadow);
     color: var(--button-active-color);
 }
@@ -45,7 +45,10 @@
     background-color: var(--button-secondary-bg);
     color: var(--button-secondary-color);
 }
-.btn-secondary:hover, .btn-secondary:not(:disabled):not(.disabled):focus, .btn-secondary:not(:disabled):not(.disabled):active, .btn-secondary:not(:disabled):not(.disabled):active:focus {
+.btn-secondary:hover,
+.btn-secondary:not(:disabled):not(.disabled):focus,
+.btn-secondary:not(:disabled):not(.disabled):active,
+.btn-secondary:not(:disabled):not(.disabled):active:focus {
     background-color: var(--button-secondary-bg);
     color: var(--button-hover-color);
 }
@@ -68,7 +71,12 @@
     color: var(--button-success-color);
 }
 
-.btn.btn-danger, .btn-danger, .btn-danger:hover, .btn-danger:not(:disabled):not(.disabled):focus, .btn-danger:not(:disabled):not(.disabled):active, .btn-danger:not(:disabled):not(.disabled):active:focus {
+.btn.btn-danger,
+.btn-danger,
+.btn-danger:hover,
+.btn-danger:not(:disabled):not(.disabled):focus,
+.btn-danger:not(:disabled):not(.disabled):active,
+.btn-danger:not(:disabled):not(.disabled):active:focus {
     background-color: var(--button-danger-bg);
     color: var(--button-danger-color);
 }
@@ -86,7 +94,7 @@
     background: transparent;
     border-color: transparent;
     color: var(--link-color);
-    box-shadow: none; // needed to make the button link look like a regular link
+    box-shadow: none; /* needed to make the button link look like a regular link */
 }
 .btn-link:hover {
     color: var(--link-hover-color)
@@ -107,7 +115,7 @@
     cursor: not-allowed;
 }
 a.btn.disabled, fieldset:disabled a.btn {
-    // needed to display the 'not-allowed' cursor on disabled buttons
+    /* needed to display the 'not-allowed' cursor on disabled buttons */
     pointer-events: unset;
 }
 

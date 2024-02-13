@@ -5,8 +5,6 @@
    works, some styles can't be customized with CSS variables and you'll need
    to also customize the Sass variables defined in bootstrap-variables.scss.
  --------------------------------------------------------------------------- */
-@import "./color-palette.scss";
-
 :root {
     --font-family-sans-serif: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     --font-family-monospace: "JetBrains Mono", ui-monospace, "Roboto Mono", SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
@@ -29,6 +27,8 @@
     --width-lg: 992px;
     --width-xl: 1200px;
     --width-xxl: 1400px;
+
+    --zindex-modal-backdrop: 2020;
 
     --form-tabs-gutter-x: 5px;
 
@@ -105,7 +105,7 @@
     --dropdown-settings-icon-color: var(--gray-400);
     --dropdown-settings-active-item-bg: var(--gray-100);
     --dropdown-settings-active-item-color: var(--color-primary);
-    --dropdown-settings-active-item-shadow: inset 0 0 0 1px #5368d580; // color is --color-primary with 50% alpha
+    --dropdown-settings-active-item-shadow: inset 0 0 0 1px #5368d580; /* color is --color-primary with 50% alpha */
     --datagrid-noresults-placeholder-bg: var(--gray-100);
     --datagrid-hidden-results-gradient-bg: var(--gray-50);
     --table-thead-color: var(--gray-800);
@@ -305,11 +305,13 @@
     --button-warning-bg: var(--color-warning);
     --button-warning-color: var(--white);
     --text-color: var(--gray-800);
+    --text-color-rgb: rgb(30, 41, 59);
     --text-color-dark: hsl(229, 24%, 21%);
     --text-color-light: hsl(215, 14%, 67%);
-    --box-shadow-lg: 0 10px 15px -3px hsla(222, 47%, 11%, 0.1), 0 4px 6px -2px hsla(222, 47%, 11%, 0.05); // it uses --gray-900
+    --box-shadow-lg: 0 10px 15px -3px hsla(222, 47%, 11%, 0.1), 0 4px 6px -2px hsla(222, 47%, 11%, 0.05); /* it uses --gray-900 */
     --content-panel-bg: hsl(210, 45%, 98%);
     --fieldset-bg: hsl(210, 30%, 97%);
+    --code-color: #c44c34;
     --code-editor-string-color: #032f62;
     --code-editor-keyword-color: #d73a49;
     --code-editor-comment-color: #22863a;
@@ -340,11 +342,12 @@
     --text-red-600: hsl(338, 71%, 37%);
     --text-yellow-600: hsl(20, 94%, 30%);
 
-    --color-primary: hsl(230, 61%, 58%); // custom shade between indigo-400 and indigo-500
+    --color-primary: hsl(230, 61%, 58%); /* custom shade between indigo-400 and indigo-500 */
     --color-success: hsl(157, 69%, 38%);
     --color-info: hsl(201, 94%, 37%);
     --color-warning: hsl(30, 81%, 47%);
     --color-danger: var(--red-600);
+    --color-danger-rgb: rgb(220, 38, 38);
 
     --highlight-bg: rgba(255, 237, 40, .4);
 
@@ -352,12 +355,16 @@
     --text-muted: var(--gray-500);
 
     --link-color: hsl(230, 60%, 60%);
+    --link-color-rgb: rgb(92, 112, 214);
     --link-hover-color: hsl(230, 60%, 75%);
+    --link-hover-color-rgb: rgb(153, 166, 230);
     --link-hover-decoration: none;
     --link-danger-color: var(--red-600);
     --link-danger-hover-color: var(--red-500);
 
     --border-radius: 4px;
+    --border-radius-lg: 8px;
+    --border-radius-sm: 2px;
     --border-width: 1px;
     --border-style: solid;
     --border-color: hsl(213, 24%, 91%);
@@ -599,11 +606,13 @@
     --button-warning-bg: var(--color-warning);
     --button-warning-color: var(--white);
     --text-color: var(--true-gray-300);
+    --text-color-rgb: rgb(212, 212, 212);
     --text-color-dark: var(--true-gray-200);
     --text-color-light: var(--true-gray-400);
-    --box-shadow-lg: 0 10px 15px -3px hsla(222, 47%, 11%, 0.1), 0 4px 6px -2px hsla(222, 47%, 11%, 0.05); // it uses --true-gray-900
+    --box-shadow-lg: 0 10px 15px -3px hsla(222, 47%, 11%, 0.1), 0 4px 6px -2px hsla(222, 47%, 11%, 0.05); /* it uses --true-gray-900 */
     --content-panel-bg: hsl(210, 45%, 98%);
     --fieldset-bg: hsl(210, 30%, 97%);
+    --code-color: #c44c34;
     --code-editor-string-color: #a5d6ff;
     --code-editor-keyword-color: #ff7b72;
     --code-editor-comment-color: #7ee787;
@@ -648,9 +657,45 @@
     --border-color: hsl(213, 24%, 91%);
 }
 
-// Bootstrap variables
-.badge {
-    --bs-badge-font-weight: 500;
+/* Bootstrap variables */
+:root, [data-bs-theme=light], [data-bs-theme=dark] {
+    --bs-body-bg: var(--body-bg);
+    --bs-body-color-rgb: var(--text-color-rgb);
+    --bs-body-color: var(--text-color);
+    --bs-body-font-family: var(--font-family-base);
+    --bs-body-font-size: var(--font-size-base);
+    --bs-body-font-weight: normal;
+    --bs-border-color: var(--border-color);
+    --bs-border-radius-lg: var(--border-radius-lg);
+    --bs-border-radius-sm: var(--border-radius-sm);
+    --bs-border-radius: var(--border-radius);
+    --bs-border-width: var(--border-width);
+    --bs-code-color: var(--code-color);
+    --bs-danger-rgb: var(--color-danger-rgb);
+    --bs-danger: var(--color-danger);
+    --bs-emphasis-color-rgb: var(--text-color-rgb);
+    --bs-emphasis-color: var(--text-color);
+    --bs-font-monospace: var(--font-family-monospace);
+    --bs-form-invalid-border-color: var(--color-danger);
+    --bs-form-invalid-color: var(--color-danger);
+    --bs-form-valid-border-color: var(--color-success);
+    --bs-form-valid-color: var(--color-success);
+    --bs-heading-color: var(--text-color);
+    --bs-highlight-bg: var(--highlight-bg);
+    --bs-highlight-color: inherit;
+    --bs-info: var(--color-info);
+    --bs-link-color-rgb: var(--link-color-rgb);
+    --bs-link-decoration: none;
+    --bs-link-hover-color-rgb: var(--link-hover-color-rgb);
+    --bs-link-opacity: 1;
+    --bs-primary: var(--color-primary);
+    --bs-secondary-bg: var(--secondary-bg);
+    --bs-secondary-color: var(--text-secondary-color);
+    --bs-secondary: var(--text-muted);
+    --bs-success: var(--color-success);
+    --bs-tertiary-bg: var(--tertiary-bg);
+    --bs-tertiary-color: var(--text-tertiary-color);
+    --bs-warning: var(--color-warning);
 }
 .btn {
     --bs-btn-padding-x: 8px;
@@ -664,6 +709,79 @@
     --bs-dropdown-font-size: 0.875rem;
 }
 .table {
-    --bs-table-color-state: var(--table-cell-color);
+    --bs-table-active-bg: var(--table-selected-cell-bg);
+    --bs-table-active-color: var(--table-cell-color);
     --bs-table-bg: var(--body-bg);
+    --bs-table-border-color: var(--table-cell-border-color);
+    --bs-table-color: var(--table-cell-color);
+    --bs-table-hover-bg: var(--table-hover-cell-bg);
+    --bs-table-hover-color: var(--table-cell-color);
+}
+.pagination {
+    --bs-pagination-padding-y: 4px;
+    --bs-pagination-padding-x: 10px;
+    --bs-pagination-color: var(--pagination-color);
+    --bs-pagination-line-height: 1.5;
+    --bs-pagination-bg: var(--body-bg);
+    --bs-pagination-border-width: 1px;
+    --bs-pagination-border-color: transparent;
+    --bs-pagination-focus-box-shadow: none;
+    --bs-pagination-focus-outline: 0;
+    --bs-pagination-hover-color: var(--text-color);
+    --bs-pagination-hover-bg: var(--body-bg);
+    --bs-pagination-hover-border-color: var(--pagination-hover-border-color);
+    --bs-pagination-disabled-color: var(--text-muted);
+    --bs-pagination-disabled-bg: var(--body-bg);
+    --bs-pagination-disabled-border-color: transparent;
+}
+.modal {
+    --bs-modal-zindex: 2040;
+    --bs-modal-width: 500px;
+    --bs-modal-padding: 1rem 1.25rem;
+    --bs-modal-margin: 0.5rem;
+    --bs-modal-color: var(--text-color);
+    --bs-modal-bg: var(--modal-bg);
+    --bs-modal-border-color: var(--modal-border-color);
+    --bs-modal-border-width: var(--border-width);
+    --bs-modal-border-radius: var(--border-radius);
+    --bs-modal-box-shadow: var(--bs-box-shadow-sm);
+    --bs-modal-inner-border-radius: calc(var(--bs-border-radius-lg) - (var(--bs-border-width)));
+    --bs-modal-header-padding-x: 1.25rem;
+    --bs-modal-header-padding-y: 1rem;
+    --bs-modal-header-padding: 1rem 1.25rem;
+    --bs-modal-header-border-color: var(--modal-border-color);
+    --bs-modal-header-border-width: var(--border-width);
+    --bs-modal-title-line-height: 1.2;
+    --bs-modal-footer-gap: 0.5rem;
+    --bs-modal-footer-bg: var(--modal-footer-bg);
+    --bs-modal-footer-border-color: var(--modal-border-color);
+    --bs-modal-footer-border-width: var(--border-width);
+}
+.nav-tabs {
+    --bs-nav-tabs-border-width: var(--border-width);
+    --bs-nav-tabs-border-color: var(--form-tabs-border-color);
+    --bs-nav-tabs-border-radius: var(--border-radius);
+    --bs-nav-tabs-link-hover-border-color: var(--bs-secondary-bg) var(--bs-secondary-bg) var(--bs-border-color);
+    --bs-nav-tabs-link-active-color: var(--link-color);
+    --bs-nav-tabs-link-active-bg: transparent;
+    --bs-nav-tabs-link-active-border-color: var(--border-color) var(--border-color) transparent var(--border-color);
+}
+.badge {
+    --bs-badge-padding-x: 5px;
+    --bs-badge-padding-y: 1px;
+    --bs-badge-font-size: var(--font-size-xs);
+    --bs-badge-font-weight: 500;
+    --bs-badge-color: var(--text-color);
+    --bs-badge-border-radius: var(--bs-border-radius);
+}
+.offcanvas, .offcanvas-xxl, .offcanvas-xl, .offcanvas-lg, .offcanvas-md, .offcanvas-sm {
+    --bs-offcanvas-padding-x: 20px;
+    --bs-offcanvas-padding-y: 15px;
+}
+.alert {
+    --bs-alert-padding-x: 1rem;
+    --bs-alert-padding-y: 1rem;
+    --bs-alert-margin-bottom: 0;
+    --bs-alert-border-radius: 0;
+    --bs-alert-link-color: inherit;
 }

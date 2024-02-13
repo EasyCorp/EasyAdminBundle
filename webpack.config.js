@@ -7,7 +7,6 @@ Encore
     .setManifestKeyPrefix('')
 
     .cleanupOutputBeforeBuild()
-    .enableSassLoader()
     .enableSourceMaps(false)
     .enableVersioning(true)
     .disableSingleRuntimeChunk()

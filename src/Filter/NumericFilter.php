@@ -40,7 +40,7 @@ final class NumericFilter implements FilterInterface
         $value = $filterDataDto->getValue();
         $value2 = $filterDataDto->getValue2();
 
-        if (null !== $fieldDto && null !== $fieldDto->getCustomOption(MoneyField::OPTION_STORED_AS_CENTS)) {
+        if (null !== $fieldDto && true === $fieldDto->getCustomOption(MoneyField::OPTION_STORED_AS_CENTS)) {
             $divisor = $fieldDto->getFormTypeOption('divisor') ?? MoneyConfigurator::DEFAULT_DIVISOR;
             $value *= $divisor;
             $value2 *= $divisor;

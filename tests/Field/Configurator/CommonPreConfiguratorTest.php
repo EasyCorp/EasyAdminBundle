@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Field\Configurator;
 
-use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Factory\EntityFactoryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\CommonPreConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Field\AbstractFieldTest;
@@ -18,7 +18,7 @@ class CommonPreConfiguratorTest extends AbstractFieldTest
         /** @var PropertyAccessorInterface $propertyAccessor */
         $container = self::$kernel->getContainer()->get('test.service_container');
         $propertyAccessor = $container->get(PropertyAccessorInterface::class);
-        $entityFactory = $container->get(EntityFactory::class);
+        $entityFactory = $container->get(EntityFactoryInterface::class);
         $this->configurator = new CommonPreConfigurator($propertyAccessor, $entityFactory);
     }
 

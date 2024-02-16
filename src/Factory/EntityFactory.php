@@ -9,6 +9,7 @@ use Doctrine\Persistence\Proxy;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\ActionCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\EntityCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Factory\EntityFactoryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionConfigDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityBuiltEvent;
@@ -21,7 +22,7 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class EntityFactory
+final class EntityFactory implements EntityFactoryInterface
 {
     private FieldFactory $fieldFactory;
     private ActionFactory $actionFactory;

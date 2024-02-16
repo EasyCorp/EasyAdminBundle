@@ -17,6 +17,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Factory\EntityFactoryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetsDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\BatchActionDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -35,7 +36,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Exception\ForbiddenActionException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\InsufficientEntityPermissionException;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\ActionFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\ControllerFactory;
-use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FilterFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\PaginatorFactory;
@@ -103,7 +103,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             AdminContextProvider::class => '?'.AdminContextProvider::class,
             AdminUrlGenerator::class => '?'.AdminUrlGenerator::class,
             ControllerFactory::class => '?'.ControllerFactory::class,
-            EntityFactory::class => '?'.EntityFactory::class,
+            EntityFactoryInterface::class => '?'.EntityFactoryInterface::class,
             EntityRepository::class => '?'.EntityRepository::class,
             EntityUpdater::class => '?'.EntityUpdater::class,
             FieldProvider::class => '?'.FieldProvider::class,
@@ -139,9 +139,9 @@ abstract class AbstractCrudController extends AbstractController implements Crud
                 ->generateUrl());
         }
 
-        $entities = $this->container->get(EntityFactory::class)->createCollection($context->getEntity(), $paginator->getResults());
-        $this->container->get(EntityFactory::class)->processFieldsForAll($entities, $fields);
-        $actions = $this->container->get(EntityFactory::class)->processActionsForAll($entities, $context->getCrud()->getActionsConfig());
+        $entities = $this->container->get(EntityFactoryInterface::class)->createCollection($context->getEntity(), $paginator->getResults());
+        $this->container->get(EntityFactoryInterface::class)->processFieldsForAll($entities, $fields);
+        $actions = $this->container->get(EntityFactoryInterface::class)->processActionsForAll($entities, $context->getCrud()->getActionsConfig());
 
         $responseParameters = $this->configureResponseParameters(KeyValueStore::new([
             'pageName' => Crud::PAGE_INDEX,
@@ -178,9 +178,9 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             throw new InsufficientEntityPermissionException($context);
         }
 
-        $this->container->get(EntityFactory::class)->processFields($context->getEntity(), FieldCollection::new($this->configureFields(Crud::PAGE_DETAIL)));
+        $this->container->get(EntityFactoryInterface::class)->processFields($context->getEntity(), FieldCollection::new($this->configureFields(Crud::PAGE_DETAIL)));
         $context->getCrud()->setFieldAssets($this->getFieldAssets($context->getEntity()->getFields()));
-        $this->container->get(EntityFactory::class)->processActions($context->getEntity(), $context->getCrud()->getActionsConfig());
+        $this->container->get(EntityFactoryInterface::class)->processActions($context->getEntity(), $context->getCrud()->getActionsConfig());
 
         $responseParameters = $this->configureResponseParameters(KeyValueStore::new([
             'pageName' => Crud::PAGE_DETAIL,
@@ -213,9 +213,9 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             throw new InsufficientEntityPermissionException($context);
         }
 
-        $this->container->get(EntityFactory::class)->processFields($context->getEntity(), FieldCollection::new($this->configureFields(Crud::PAGE_EDIT)));
+        $this->container->get(EntityFactoryInterface::class)->processFields($context->getEntity(), FieldCollection::new($this->configureFields(Crud::PAGE_EDIT)));
         $context->getCrud()->setFieldAssets($this->getFieldAssets($context->getEntity()->getFields()));
-        $this->container->get(EntityFactory::class)->processActions($context->getEntity(), $context->getCrud()->getActionsConfig());
+        $this->container->get(EntityFactoryInterface::class)->processActions($context->getEntity(), $context->getCrud()->getActionsConfig());
         $entityInstance = $context->getEntity()->getInstance();
 
         if ($context->getRequest()->isXmlHttpRequest()) {
@@ -296,9 +296,9 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         }
 
         $context->getEntity()->setInstance($this->createEntity($context->getEntity()->getFqcn()));
-        $this->container->get(EntityFactory::class)->processFields($context->getEntity(), FieldCollection::new($this->configureFields(Crud::PAGE_NEW)));
+        $this->container->get(EntityFactoryInterface::class)->processFields($context->getEntity(), FieldCollection::new($this->configureFields(Crud::PAGE_NEW)));
         $context->getCrud()->setFieldAssets($this->getFieldAssets($context->getEntity()->getFields()));
-        $this->container->get(EntityFactory::class)->processActions($context->getEntity(), $context->getCrud()->getActionsConfig());
+        $this->container->get(EntityFactoryInterface::class)->processActions($context->getEntity(), $context->getCrud()->getActionsConfig());
 
         $newForm = $this->createNewForm($context->getEntity(), $context->getCrud()->getNewFormOptions(), $context);
         $newForm->handleRequest($context->getRequest());
@@ -478,7 +478,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
     public function renderFilters(AdminContext $context): KeyValueStore
     {
         $fields = FieldCollection::new($this->configureFields(Crud::PAGE_INDEX));
-        $this->container->get(EntityFactory::class)->processFields($context->getEntity(), $fields);
+        $this->container->get(EntityFactoryInterface::class)->processFields($context->getEntity(), $fields);
         $filters = $this->container->get(FilterFactory::class)->create($context->getCrud()->getFiltersConfig(), $context->getEntity()->getFields(), $context->getEntity());
 
         /** @var FormInterface&FiltersFormType $filtersForm */

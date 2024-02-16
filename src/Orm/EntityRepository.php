@@ -11,12 +11,12 @@ use Doctrine\Persistence\ManagerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\SearchMode;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Factory\EntityFactoryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Orm\EntityRepositoryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDataDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntitySearchEvent;
-use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
@@ -32,11 +32,11 @@ final class EntityRepository implements EntityRepositoryInterface
 {
     private AdminContextProvider $adminContextProvider;
     private ManagerRegistry $doctrine;
-    private EntityFactory $entityFactory;
+    private EntityFactoryInterface $entityFactory;
     private FormFactory $formFactory;
     private EventDispatcherInterface $eventDispatcher;
 
-    public function __construct(AdminContextProvider $adminContextProvider, ManagerRegistry $doctrine, EntityFactory $entityFactory, FormFactory $formFactory, EventDispatcherInterface $eventDispatcher)
+    public function __construct(AdminContextProvider $adminContextProvider, ManagerRegistry $doctrine, EntityFactoryInterface $entityFactory, FormFactory $formFactory, EventDispatcherInterface $eventDispatcher)
     {
         $this->adminContextProvider = $adminContextProvider;
         $this->doctrine = $doctrine;

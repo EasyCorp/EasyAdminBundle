@@ -8,6 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Asset\AssetPackage;
 use EasyCorp\Bundle\EasyAdminBundle\Cache\CacheWarmer;
 use EasyCorp\Bundle\EasyAdminBundle\Command\MakeAdminDashboardCommand;
 use EasyCorp\Bundle\EasyAdminBundle\Command\MakeCrudControllerCommand;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Factory\EntityFactoryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu\MenuItemMatcherInterface;
@@ -180,7 +181,7 @@ return static function (ContainerConfigurator $container) {
             ->arg(1, new Reference('security.token_storage', ContainerInterface::NULL_ON_INVALID_REFERENCE))
             ->arg(2, new Reference(MenuFactory::class))
             ->arg(3, new Reference(CrudControllerRegistry::class))
-            ->arg(4, new Reference(EntityFactory::class))
+            ->arg(4, new Reference(EntityFactoryInterface::class))
 
         ->set(AdminUrlGenerator::class)
             // I don't know if we truly need the share() method to get a new instance of the
@@ -213,7 +214,7 @@ return static function (ContainerConfigurator $container) {
         ->set(EntityRepository::class)
             ->arg(0, service(AdminContextProvider::class))
             ->arg(1, service('doctrine'))
-            ->arg(2, service(EntityFactory::class))
+            ->arg(2, service(EntityFactoryInterface::class))
             ->arg(3, service(FormFactory::class))
             ->arg(4, service('event_dispatcher'))
 
@@ -224,9 +225,11 @@ return static function (ContainerConfigurator $container) {
             ->arg(3, service('doctrine'))
             ->arg(4, service('event_dispatcher'))
 
+        ->alias(EntityFactoryInterface::class, EntityFactory::class)
+
         ->set(EntityPaginator::class)
             ->arg(0, service(AdminUrlGenerator::class))
-            ->arg(1, service(EntityFactory::class))
+            ->arg(1, service(EntityFactoryInterface::class))
 
         ->alias(EntityPaginatorInterface::class, EntityPaginator::class)
 
@@ -299,7 +302,7 @@ return static function (ContainerConfigurator $container) {
         ->set(ArrayConfigurator::class)
 
         ->set(AssociationConfigurator::class)
-            ->arg(0, new Reference(EntityFactory::class))
+            ->arg(0, new Reference(EntityFactoryInterface::class))
             ->arg(1, new Reference(AdminUrlGenerator::class))
             ->arg(2, service('request_stack'))
             ->arg(3, service(ControllerFactory::class))
@@ -321,7 +324,7 @@ return static function (ContainerConfigurator $container) {
 
         ->set(CommonPreConfigurator::class)
             ->arg(0, new Reference('property_accessor'))
-            ->arg(1, service(EntityFactory::class))
+            ->arg(1, service(EntityFactoryInterface::class))
             ->tag(EasyAdminExtension::TAG_FIELD_CONFIGURATOR, ['priority' => 9999])
 
         ->set(CountryConfigurator::class)
@@ -360,7 +363,7 @@ return static function (ContainerConfigurator $container) {
 
         ->set(CollectionConfigurator::class)
             ->arg(0, service('request_stack'))
-            ->arg(1, service(EntityFactory::class))
+            ->arg(1, service(EntityFactoryInterface::class))
             ->arg(2, service(ControllerFactory::class))
 
         ->set(SlugConfigurator::class)

@@ -9,6 +9,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Option\TextDirection;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Factory\EntityFactoryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Factory\MenuFactoryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionConfigDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetsDto;
@@ -36,9 +37,9 @@ final class AdminContextFactory
     private ?TokenStorageInterface $tokenStorage;
     private MenuFactoryInterface $menuFactory;
     private CrudControllerRegistry $crudControllers;
-    private EntityFactory $entityFactory;
+    private EntityFactoryInterface $entityFactory;
 
-    public function __construct(string $cacheDir, ?TokenStorageInterface $tokenStorage, MenuFactoryInterface $menuFactory, CrudControllerRegistry $crudControllers, EntityFactory $entityFactory)
+    public function __construct(string $cacheDir, ?TokenStorageInterface $tokenStorage, MenuFactoryInterface $menuFactory, CrudControllerRegistry $crudControllers, EntityFactoryInterface $entityFactory)
     {
         $this->cacheDir = $cacheDir;
         $this->tokenStorage = $tokenStorage;

@@ -10,6 +10,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Translation\TranslatableChoiceMessage;
 use EasyCorp\Bundle\EasyAdminBundle\Translation\TranslatableChoiceMessageCollection;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use function Symfony\Component\String\u;
 use function Symfony\Component\Translation\t;
 use Symfony\Component\Translation\TranslatableMessage;
@@ -28,6 +30,7 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
     public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
     {
         $areChoicesTranslatable = true === $field->getCustomOption(ChoiceField::OPTION_USE_TRANSLATABLE_CHOICES);
+        $choicesSupportTranslatableInterface = false;
         $isExpanded = true === $field->getCustomOption(ChoiceField::OPTION_RENDER_EXPANDED);
         $isMultipleChoice = true === $field->getCustomOption(ChoiceField::OPTION_ALLOW_MULTIPLE_CHOICES);
 
@@ -55,6 +58,11 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
                 $allChoicesAreEnums = true;
             }
 
+            // SF 6.4 and up has native support for translatable enums, we should respect that too
+            if (is_subclass_of($enumTypeClass, TranslatableInterface::class)) {
+                $areChoicesTranslatable = $choicesSupportTranslatableInterface = true;
+            }
+
             if ($allChoicesAreEnums && array_is_list($choices)) {
                 $processedEnumChoices = [];
                 foreach ($choices as $choice) {
@@ -62,10 +70,17 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
                 }
 
                 $choices = $processedEnumChoices;
+
+                // Update form type to be EnumType if current form type is still ChoiceType
+                // Leave the form type as is if user set something else explicitly
+                if (ChoiceType::class === $field->getFormType()) {
+                    $field->setFormType(EnumType::class);
+                }
+                $field->setFormTypeOptionIfNotSet('class', $enumTypeClass);
             }
         }
 
-        if ($areChoicesTranslatable) {
+        if ($areChoicesTranslatable && !$choicesSupportTranslatableInterface) {
             $field->setFormTypeOptionIfNotSet('choices', array_keys($choices));
             $field->setFormTypeOptionIfNotSet('choice_label', fn ($value) => $choices[$value]);
         } else {
@@ -96,6 +111,15 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
         $isIndexOrDetail = \in_array($context->getCrud()->getCurrentPage(), [Crud::PAGE_INDEX, Crud::PAGE_DETAIL], true);
         if (null === $fieldValue || !$isIndexOrDetail) {
             return;
+        }
+
+        if ($enumsAreSupported) {
+            // Backed enum converted to array result in array [enum->name, enum->value] as done in the loop bellow
+            // That results in grid displaying two values when single enum is a selected value
+            // This makes sure we pass an array of enums as selected value when single enum is selected
+            if ($fieldValue instanceof \UnitEnum) {
+                $fieldValue = [$fieldValue];
+            }
         }
 
         $badgeSelector = $field->getCustomOption(ChoiceField::OPTION_RENDER_AS_BADGES);

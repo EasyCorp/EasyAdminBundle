@@ -181,6 +181,10 @@ permissions to see some items:
 Restricting Access with Expressions
 -----------------------------------
 
+.. versionadded:: 4.9.0
+
+    The Expressions support was introduced in EasyAdmin 4.9.0.
+
 The `Symfony ExpressionLanguage component`_ allows to define complex configuration
 logic using simple expressions. In EasyAdmin, all ``setPermission()`` methods
 allow to pass not only a string with some security role name (e.g. ``ROLE_ADMIN``)

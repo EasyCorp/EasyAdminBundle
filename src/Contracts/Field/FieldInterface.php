@@ -12,4 +12,6 @@ interface FieldInterface
     public static function new(string $propertyName, ?string /* TranslatableInterface|string|false|null */ $label = null);
 
     public function getAsDto(): FieldDto;
+
+    public function __clone(): void;
 }

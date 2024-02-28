@@ -23,6 +23,11 @@ trait FieldTrait
         $this->dto = new FieldDto();
     }
 
+    public function __clone(): void
+    {
+        $this->dto = clone $this->dto;
+    }
+
     public function setFieldFqcn(string $fieldFqcn): self
     {
         $this->dto->setFieldFqcn($fieldFqcn);

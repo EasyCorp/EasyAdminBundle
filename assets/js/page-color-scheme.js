@@ -11,11 +11,11 @@ class ColorSchemeHandler {
     }
 
     createColorSchemeSelector() {
-        if (null === document.querySelector('.dropdown-settings')) {
+        if (null === document.querySelector('.dropdown-settings a[data-ea-color-scheme]')) {
             return;
         }
 
-        // for·responsive design" reasons, pages contain two settings dropdowns (and inside them, one
+        // for responsive design" reasons, pages contain two settings dropdowns (and inside them, one
         // scheme selector each) instead of one and the selected scheme must be kept in sync in both
         const colorSchemeSelectors = document.querySelectorAll('.dropdown-settings');
         const currentScheme = localStorage.getItem(this.#colorSchemeLocalStorageKey) || 'auto';

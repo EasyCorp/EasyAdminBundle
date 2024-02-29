@@ -28,6 +28,9 @@ class Category
     #[ORM\Column(type: 'boolean')]
     private bool $active = false;
 
+    #[ORM\Column(type: 'boolean')]
+    private bool $activeDisabled = false;
+
     public function __construct()
     {
         $this->blogPosts = new ArrayCollection();
@@ -97,6 +100,18 @@ class Category
     public function setActive(bool $active): self
     {
         $this->active = $active;
+
+        return $this;
+    }
+
+    public function isActiveDisabled(): bool
+    {
+        return $this->activeDisabled;
+    }
+
+    public function setActiveDisabled(bool $activeDisabled): self
+    {
+        $this->activeDisabled = $activeDisabled;
 
         return $this;
     }

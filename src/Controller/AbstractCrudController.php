@@ -59,6 +59,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
 use function Symfony\Component\String\u;
 
@@ -555,6 +556,11 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
     protected function ajaxEdit(EntityDto $entityDto, ?string $propertyName, bool $newValue): AfterCrudActionEvent
     {
+        $field = $entityDto->getFields()->getByProperty($propertyName);
+        if (null === $field || true === $field->getFormTypeOption('disabled')) {
+            throw new AccessDeniedException(sprintf('The field "%s" is not allowed to be modified.', $propertyName));
+        }
+
         $this->container->get(EntityUpdater::class)->updateProperty($entityDto, $propertyName, $newValue);
 
         $event = new BeforeEntityUpdatedEvent($entityDto->getInstance());

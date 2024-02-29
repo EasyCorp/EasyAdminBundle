@@ -11,6 +11,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Controller\CategoryCru
 use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Controller\SecureDashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Entity\Category;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 
 class CategoryCrudControllerTest extends AbstractCrudTestCase
@@ -187,12 +188,18 @@ class CategoryCrudControllerTest extends AbstractCrudTestCase
     /**
      * @dataProvider toggle
      */
-    public function testToggle(string $method, ?string $invalidCsrfToken, int $expectedStatusCode, bool $toggleIsExpectedToSucceed)
+    public function testToggle(string $method, ?string $invalidCsrfToken, ?string $fieldName, int $expectedStatusCode, bool $toggleIsExpectedToSucceed)
     {
-        if (Response::HTTP_METHOD_NOT_ALLOWED === $expectedStatusCode) {
+        $expectedExceptionClass = match ($expectedStatusCode) {
+            Response::HTTP_METHOD_NOT_ALLOWED => MethodNotAllowedHttpException::class,
+            Response::HTTP_BAD_REQUEST => BadRequestHttpException::class,
+            default => null,
+        };
+
+        if (null !== $expectedExceptionClass) {
             // needed to not display 'Uncaught PHP exception' messages in PHPUnit output
             // see https://stackoverflow.com/questions/50456114/phpunit-dont-report-symfony-exceptions-rendered-to-http-errors/50465691
-            $this->expectException(MethodNotAllowedHttpException::class);
+            $this->expectException($expectedExceptionClass);
             $this->client->catchExceptions(false);
         }
 
@@ -212,6 +219,11 @@ class CategoryCrudControllerTest extends AbstractCrudTestCase
         // Change the CSRF token
         if (null !== $invalidCsrfToken) {
             $firstFoundToggleUrl = preg_replace('/csrfToken=.+?&/', sprintf('csrfToken=%s&', $invalidCsrfToken), $firstFoundToggleUrl);
+        }
+
+        // Change the field name
+        if (null !== $fieldName) {
+            $firstFoundToggleUrl = preg_replace('/fieldName=.+?&/', sprintf('fieldName=%s&', $fieldName), $firstFoundToggleUrl);
         }
 
         // Do the AJAX request
@@ -286,20 +298,37 @@ class CategoryCrudControllerTest extends AbstractCrudTestCase
         yield [
             'GET', // HTTP method
             null, // Do not manipulate the CSRF token
+            null, // Do not manipulate the field name
             Response::HTTP_METHOD_NOT_ALLOWED, // Response status code, fails because of wrong method "GET"
             false, // Should the toggle successfully change the toggled property?
         ];
         yield [
             'PATCH',
             '123abc', // Manipulate the CSRF token to this invalid value
+            null, // Do not manipulate the field name
             Response::HTTP_UNAUTHORIZED, // Response status code, fails because of wrong CSRF token
             false,
         ];
         yield [
             'PATCH',
             null, // Do not manipulate the CSRF token
+            null, // Do not manipulate the field name
             Response::HTTP_OK,
             true,
+        ];
+        yield [
+            'PATCH',
+            null, // Do not manipulate the CSRF token
+            'activeWithNoPermission', // Manipulate the field name to field with invalid permission
+            Response::HTTP_BAD_REQUEST,
+            false,
+        ];
+        yield [
+            'PATCH',
+            null, // Do not manipulate the CSRF token
+            'activeDisabled', // Manipulate the field name to disabled field
+            Response::HTTP_BAD_REQUEST,
+            false,
         ];
     }
 

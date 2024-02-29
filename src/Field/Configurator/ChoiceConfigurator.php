@@ -157,7 +157,7 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
         $field->setFormattedValue(new TranslatableChoiceMessageCollection($choiceMessages, $isRenderedAsBadge));
     }
 
-    private function getChoices($choiceGenerator, EntityDto $entity, FieldDto $field): array|null
+    private function getChoices($choiceGenerator, EntityDto $entity, FieldDto $field): ?array
     {
         if (null === $choiceGenerator) {
             return null;

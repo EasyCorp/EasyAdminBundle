@@ -11,8 +11,8 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
  */
 final class FormVarsDto
 {
-    private FieldDto|null $fieldDto;
-    private EntityDto|null $entityDto;
+    private ?FieldDto $fieldDto;
+    private ?EntityDto $entityDto;
 
     public function __construct(?FieldDto $fieldDto = null, ?EntityDto $entityDto = null)
     {
@@ -20,12 +20,12 @@ final class FormVarsDto
         $this->entityDto = $entityDto;
     }
 
-    public function getField(): FieldDto|null
+    public function getField(): ?FieldDto
     {
         return $this->fieldDto;
     }
 
-    public function getEntity(): EntityDto|null
+    public function getEntity(): ?EntityDto
     {
         return $this->entityDto;
     }

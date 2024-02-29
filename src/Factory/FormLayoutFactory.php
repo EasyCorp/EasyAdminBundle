@@ -348,7 +348,7 @@ final class FormLayoutFactory
             ->getAsDto();
     }
 
-    public static function createFromFieldDtos(FieldCollection|null $fieldDtos): FieldLayoutDto
+    public static function createFromFieldDtos(?FieldCollection $fieldDtos): FieldLayoutDto
     {
         trigger_deprecation(
             'easycorp/easyadmin-bundle',

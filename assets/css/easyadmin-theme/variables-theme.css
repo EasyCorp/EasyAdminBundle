@@ -305,7 +305,7 @@
     --button-warning-bg: var(--color-warning);
     --button-warning-color: var(--white);
     --text-color: var(--gray-800);
-    --text-color-rgb: rgb(30, 41, 59);
+    --text-color-rgb: 30, 41, 59;
     --text-color-dark: hsl(229, 24%, 21%);
     --text-color-light: hsl(215, 14%, 67%);
     --box-shadow-lg: 0 10px 15px -3px hsla(222, 47%, 11%, 0.1), 0 4px 6px -2px hsla(222, 47%, 11%, 0.05); /* it uses --gray-900 */
@@ -347,7 +347,7 @@
     --color-info: hsl(201, 94%, 37%);
     --color-warning: hsl(30, 81%, 47%);
     --color-danger: var(--red-600);
-    --color-danger-rgb: rgb(220, 38, 38);
+    --color-danger-rgb: 220, 38, 38;
 
     --highlight-bg: rgba(255, 237, 40, .4);
 
@@ -355,9 +355,9 @@
     --text-muted: var(--gray-500);
 
     --link-color: hsl(230, 60%, 60%);
-    --link-color-rgb: rgb(92, 112, 214);
+    --link-color-rgb: 92, 112, 214;
     --link-hover-color: hsl(230, 60%, 75%);
-    --link-hover-color-rgb: rgb(153, 166, 230);
+    --link-hover-color-rgb: 153, 166, 230;
     --link-hover-decoration: none;
     --link-danger-color: var(--red-600);
     --link-danger-hover-color: var(--red-500);
@@ -606,7 +606,7 @@
     --button-warning-bg: var(--color-warning);
     --button-warning-color: var(--white);
     --text-color: var(--true-gray-300);
-    --text-color-rgb: rgb(212, 212, 212);
+    --text-color-rgb: 212, 212, 212;
     --text-color-dark: var(--true-gray-200);
     --text-color-light: var(--true-gray-400);
     --box-shadow-lg: 0 10px 15px -3px hsla(222, 47%, 11%, 0.1), 0 4px 6px -2px hsla(222, 47%, 11%, 0.05); /* it uses --true-gray-900 */

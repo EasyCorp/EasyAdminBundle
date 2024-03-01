@@ -149,6 +149,8 @@ to users::
             ->add(Crud::PAGE_INDEX, $viewInvoice);
     }
 
+Note: When using ``displayIf()`` for global actions like "new", no entity instance is passed to closure function.
+
 Disabling Actions
 -----------------
 

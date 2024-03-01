@@ -50,7 +50,7 @@ final class ActionFactory
                 continue;
             }
 
-            if (false === $actionDto->shouldBeDisplayedFor($entityDto)) {
+            if (false === $actionDto->isDisplayed($entityDto)) {
                 continue;
             }
 
@@ -93,7 +93,7 @@ final class ActionFactory
                 continue;
             }
 
-            if (false === $actionDto->shouldBeDisplayedFor(null)) {
+            if (false === $actionDto->isDisplayed()) {
                 continue;
             }
 

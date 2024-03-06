@@ -7,8 +7,9 @@
     {% endif %}
 
     {{ parent() }}
-
-    <input type="hidden" name="referrer" value="{{ ea.request.query.get('referrer') }}">
+    {% if ea.request.query.get('referrer')  %}
+        <input type="hidden" name="referrer" value="{{ ea.request.query.get('referrer') }}">
+    {% endif %}
 {% endblock form_start %}
 
 {% block form_end %}

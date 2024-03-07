@@ -183,7 +183,7 @@ class App {
         const searchQueryTerms = tokenizeString(searchElement.value);
         const searchQueryTermsHighlightRegexp = new RegExp(searchQueryTerms.join('|'), 'i');
 
-        const elementsToHighlight = document.querySelectorAll('table tbody td:not(.actions)');
+        const elementsToHighlight = document.querySelectorAll('table tbody td.searchable');
         const highlighter = new Mark(elementsToHighlight);
         highlighter.markRegExp(searchQueryTermsHighlightRegexp);
     }

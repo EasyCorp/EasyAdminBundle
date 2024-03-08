@@ -201,11 +201,10 @@ table.datagrid {
 }
 
 .datagrid mark {
-  border-radius: var(--border-radius);
+  border-radius: 0;
   background: var(--highlight-bg);
-  box-shadow: 0 1px 0 rgba(250, 204, 21, 0.4);
-  color: inherit;
-  padding: 0 1px;
+  color: var(--highlight-color);
+  padding: 0;
 }
 
 .datagrid .header-for-field-boolean {

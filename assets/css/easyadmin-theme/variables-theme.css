@@ -349,7 +349,8 @@
     --color-danger: var(--red-600);
     --color-danger-rgb: 220, 38, 38;
 
-    --highlight-bg: rgba(255, 237, 40, .4);
+    --highlight-bg: #FEFF3F;
+    --highlight-color: var(--text-color);
 
     --text-on-primary: var(--white);
     --text-muted: var(--gray-500);
@@ -645,7 +646,8 @@
     --color-danger: var(--red-500);
     --bs-danger-rgb: 239, 68, 68;
 
-    --highlight-bg: rgba(210, 153, 34, 0.4);
+    --highlight-bg: #FEFF3F;
+    --highlight-color: var(--true-gray-900);
 
     --text-on-primary: var(--white);
     --text-muted: var(--true-gray-500);

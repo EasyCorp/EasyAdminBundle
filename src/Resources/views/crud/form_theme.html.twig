@@ -99,9 +99,9 @@
                 {% if has_input_groups %}</div>{% endif %}
 
                 {% if field.help ?? false %}
-                    <small class="form-help">{{ field.help|trans(label_translation_parameters, translation_domain)|raw }}</small>
+                    <small class="form-text form-help">{{ field.help|trans(label_translation_parameters, translation_domain)|raw }}</small>
                 {% elseif form.vars.help ?? false %}
-                    <small class="form-help">{{ form.vars.help|trans(form.vars.help_translation_parameters, form.vars.translation_domain)|raw }}</small>
+                    <small class="form-text form-help">{{ form.vars.help|trans(form.vars.help_translation_parameters, form.vars.translation_domain)|raw }}</small>
                 {% endif %}
 
                 {{- form_errors(form) -}}

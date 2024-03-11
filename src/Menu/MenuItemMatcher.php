@@ -69,7 +69,7 @@ class MenuItemMatcher implements MenuItemMatcherInterface
      */
     private function filterIrrelevantQueryParameters(array $queryStringParameters, bool $menuItemLinksToIndexCrudAction): array
     {
-        $paramsToRemove = [EA::REFERRER, EA::PAGE, EA::FILTERS, EA::SORT];
+        $paramsToRemove = [EA::REFERRER, EA::PAGE, EA::FILTERS, EA::SORT, EA::QUERY];
 
         // if the menu item being inspected links to the 'index' action of some entity,
         // remove both the CRUD action and the entity ID from the list of parameters;

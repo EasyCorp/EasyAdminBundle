@@ -68,6 +68,10 @@ table.datagrid {
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+  table.datagrid:not(.datagrid-empty) td.actions::before {
+    /* needed to make actions clickable when they are shown inlined */
+    display: none;
+  }
 }
 .datagrid thead th {
   border: 0;

@@ -51,14 +51,15 @@ pre {
 
 /* Layout
    ========================================================================= */
-.wrapper {
-    @media(min-width: 992px) {
+@media(min-width: 992px) {
+    .wrapper {
         display: grid;
         grid-template-columns: var(--sidebar-max-width) auto;
         min-height: 100vh;
     }
-
-    @media(min-width: 1280px) {
+}
+@media(min-width: 1280px) {
+    .wrapper {
         grid-column-gap: 0;
     }
 }

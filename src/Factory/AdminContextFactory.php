@@ -115,7 +115,7 @@ final class AdminContextFactory
         $defaultCrud = $dashboardController->configureCrud();
         $crudDto = $crudController->configureCrud($defaultCrud)->getAsDto();
 
-        $entityFqcn = $crudControllers->findEntityFqcnByCrudFqcn($crudController::class);
+        $entityFqcn = $crudControllers->findEntityFqcnByCrud($crudController);
 
         $crudDto->setControllerFqcn($crudController::class);
         $crudDto->setActionsConfig($actionConfigDto);

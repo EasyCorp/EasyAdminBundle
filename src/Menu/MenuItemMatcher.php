@@ -37,9 +37,8 @@ class MenuItemMatcher implements MenuItemMatcherInterface
         }
 
         $menuItemLinksToIndexCrudAction = Crud::PAGE_INDEX === ($menuItemQueryParameters[EA::CRUD_ACTION] ?? false);
-        $currentPageLinksToIndexCrudAction = Crud::PAGE_INDEX === ($currentPageQueryParameters[EA::CRUD_ACTION] ?? false);
         $menuItemQueryParameters = $this->filterIrrelevantQueryParameters($menuItemQueryParameters, $menuItemLinksToIndexCrudAction);
-        $currentPageQueryParameters = $this->filterIrrelevantQueryParameters($currentPageQueryParameters, $currentPageLinksToIndexCrudAction);
+        $currentPageQueryParameters = $this->filterIrrelevantQueryParameters($currentPageQueryParameters, $menuItemLinksToIndexCrudAction);
 
         // needed so you can pass route parameters in any order
         sort($menuItemQueryParameters);
@@ -70,7 +69,7 @@ class MenuItemMatcher implements MenuItemMatcherInterface
      */
     private function filterIrrelevantQueryParameters(array $queryStringParameters, bool $menuItemLinksToIndexCrudAction): array
     {
-        $paramsToRemove = [EA::REFERRER, EA::PAGE, EA::FILTERS, EA::SORT];
+        $paramsToRemove = [EA::REFERRER, EA::PAGE, EA::FILTERS, EA::SORT, EA::QUERY];
 
         // if the menu item being inspected links to the 'index' action of some entity,
         // remove both the CRUD action and the entity ID from the list of parameters;

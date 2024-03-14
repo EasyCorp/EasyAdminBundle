@@ -132,7 +132,7 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
         throw new RuntimeError(sprintf('Invalid callback for filter: "%s"', $filterName));
     }
 
-    public function representAsString($value, string $toStringMethod = '__toString'): string
+    public function representAsString($value, ?string $toStringMethod = null): string
     {
         if (null === $value) {
             return '';
@@ -155,8 +155,15 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
         }
 
         if (\is_object($value)) {
-            if (method_exists($value, $toStringMethod)) {
-                return (string) $value;
+            if (null !== $toStringMethod && method_exists($value, $toStringMethod)) {
+                $strVal = $value->$toStringMethod();
+                if (\is_string($strVal)) {
+                    return $strVal;
+                }
+            }
+
+            if (method_exists($value, '__toString')) {
+                $strVal = (string) $value;
             }
 
             if (method_exists($value, 'getId')) {

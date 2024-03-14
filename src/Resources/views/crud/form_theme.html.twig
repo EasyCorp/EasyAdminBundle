@@ -189,7 +189,7 @@
 {% block collection_entry_row %}
     {% set is_array_field = 'EasyCorp\\Bundle\\EasyAdminBundle\\Field\\ArrayField' == form_parent(form).vars.ea_vars.field.fieldFqcn|default(false) %}
     {% set is_complex = form_parent(form).vars.ea_vars.field.customOptions.get('entryIsComplex') ?? false %}
-    {% set to_string_method = form_parent(form).vars.ea_vars.field.customOptions.get('entryToStringMethod') ?? '__toString' %}
+    {% set to_string_method = form_parent(form).vars.ea_vars.field.customOptions.get('entryToStringMethod') %}
     {% set allows_deleting_items = form_parent(form).vars.allow_delete|default(false) %}
     {% set render_expanded = not form.vars.valid or form_parent(form).vars.ea_vars.field.customOptions.get('renderExpanded')|default(false) %}
     {% set delete_item_button %}

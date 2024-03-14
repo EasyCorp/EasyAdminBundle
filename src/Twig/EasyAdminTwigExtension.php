@@ -155,8 +155,9 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
         }
 
         if (\is_object($value)) {
-            if (null !== $toStringMethod && method_exists($value, $toStringMethod)) {
-                $strVal = $value->$toStringMethod();
+            $callable = [$value, $toStringMethod];
+            if (\is_callable($callable)) {
+                $strVal = \call_user_func($callable);
                 if (\is_string($strVal)) {
                     return $strVal;
                 }

@@ -1,0 +1,14 @@
+---------------------------------------------------------------------------
+
+by zorn-v at 2024-03-14T05:01:42Z
+
+Other possible fix is just change in form theme `collection_row` block without js editing (as I do in my project for now)
+```
+'data-num-items': form.children is empty ? 0 : max(form.children|keys),
+```
+to
+```
+'data-num-items': form.children is empty ? -1 : max(form.children|keys),
+```
+
+but "num items" should contain actual items count I think

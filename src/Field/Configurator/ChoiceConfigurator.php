@@ -33,6 +33,8 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
         $choicesSupportTranslatableInterface = false;
         $isExpanded = true === $field->getCustomOption(ChoiceField::OPTION_RENDER_EXPANDED);
         $isMultipleChoice = true === $field->getCustomOption(ChoiceField::OPTION_ALLOW_MULTIPLE_CHOICES);
+        // Initialize the variable since we are using it outside the $enumsAreSupported condition
+        $allChoicesAreEnums = false;
 
         $choices = $this->getChoices($field->getCustomOption(ChoiceField::OPTION_CHOICES), $entityDto, $field);
 
@@ -132,7 +134,8 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
         $flippedChoices = $areChoicesTranslatable ? $choices : array_flip($this->flatten($choices));
         foreach ((array) $fieldValue as $selectedValue) {
             $selectedValue = match (true) {
-                $selectedValue instanceof \BackedEnum => $selectedValue->value,
+                // We check if $allChoicesAreEnums is true for enum's and choices array is generated using ->name as index
+                $selectedValue instanceof \BackedEnum => $allChoicesAreEnums && $choicesSupportTranslatableInterface ? $selectedValue->name : $selectedValue->value,
                 $selectedValue instanceof \UnitEnum => $selectedValue->name,
                 default => $selectedValue
             };
@@ -198,7 +201,9 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
         foreach ($choices as $label => $choice) {
             // Flatten grouped choices
             if (\is_array($choice)) {
-                $flattened = array_merge($flattened, $choice);
+                foreach ($choice as $subLabel => $subChoice) {
+                    $flattened[$subLabel] = $subChoice;
+                }
             } elseif ($choice instanceof \BackedEnum) {
                 $flattened[$choice->name] = $choice->value;
             } elseif ($choice instanceof \UnitEnum) {

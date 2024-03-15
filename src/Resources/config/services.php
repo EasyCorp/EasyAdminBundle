@@ -133,7 +133,7 @@ return static function (ContainerConfigurator $container) {
             ->arg(1, service(AdminContextProvider::class))
             ->arg(2, new Reference('security.csrf.token_manager', ContainerInterface::NULL_ON_INVALID_REFERENCE))
             ->arg(3, new Reference('asset_mapper.importmap.renderer', ContainerInterface::NULL_ON_INVALID_REFERENCE))
-            ->arg(4, service('translator.default'))
+            ->arg(4, service('translator'))
             ->tag('twig.extension')
 
         ->set(EaCrudFormTypeExtension::class)

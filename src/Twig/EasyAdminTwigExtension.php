@@ -11,6 +11,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 use Symfony\Component\AssetMapper\ImportMap\ImportMapRenderer;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
+use Symfony\Contracts\Translation\TranslatableInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 use Twig\Error\RuntimeError;
 use Twig\Extension\AbstractExtension;
@@ -31,13 +33,15 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
     private AdminContextProvider $adminContextProvider;
     private ?CsrfTokenManagerInterface $csrfTokenManager;
     private ?ImportMapRenderer $importMapRenderer;
+    private TranslatorInterface $translator;
 
-    public function __construct(ServiceLocator $serviceLocator, AdminContextProvider $adminContextProvider, ?CsrfTokenManagerInterface $csrfTokenManager, ?ImportMapRenderer $importMapRenderer)
+    public function __construct(ServiceLocator $serviceLocator, AdminContextProvider $adminContextProvider, ?CsrfTokenManagerInterface $csrfTokenManager, ?ImportMapRenderer $importMapRenderer, TranslatorInterface $translator)
     {
         $this->serviceLocator = $serviceLocator;
         $this->adminContextProvider = $adminContextProvider;
         $this->csrfTokenManager = $csrfTokenManager;
         $this->importMapRenderer = $importMapRenderer;
+        $this->translator = $translator;
     }
 
     public function getFunctions(): array
@@ -161,6 +165,10 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
                 if (\is_string($strVal)) {
                     return $strVal;
                 }
+            }
+
+            if ($value instanceof TranslatableInterface) {
+                return $value->trans($this->translator);
             }
 
             if (method_exists($value, '__toString')) {

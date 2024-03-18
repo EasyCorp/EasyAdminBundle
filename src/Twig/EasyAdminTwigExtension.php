@@ -10,10 +10,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Factory\FormLayoutFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
-use Symfony\Bridge\Twig\AppVariable;
 use Symfony\Component\AssetMapper\ImportMap\ImportMapRenderer;
 use Symfony\Component\DependencyInjection\ServiceLocator;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Contracts\Translation\TranslatableInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -52,7 +50,7 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
     {
         return [
             new TwigFunction('ea_url', [$this, 'getAdminUrlGenerator']),
-            new TwigFunction('ea_context', [$this, 'getContext'], ['needs_context' => true]),
+            new TwigFunction('ea_context', [$this, 'getContext']),
             new TwigFunction('ea_csrf_token', [$this, 'renderCsrfToken']),
             new TwigFunction('ea_call_function_if_exists', [$this, 'callFunctionIfExists'], ['needs_environment' => true, 'is_safe' => ['html' => true]]),
             new TwigFunction('ea_create_field_layout', [$this, 'createFieldLayout']),
@@ -197,13 +195,9 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
         return $this->serviceLocator->get(AdminUrlGenerator::class)->setAll($queryParameters);
     }
 
-    public function getContext(array $context): ?AdminContext
+    public function getContext(): ?AdminContext
     {
-        if (!isset($context['app']) || !$context['app'] instanceof AppVariable) {
-            throw new \LogicException('The Twig variable "app" cannot be overwritten before using "ea_context" function.');
-        }
-
-        return null !== ($request = $context['app']->getRequest()) ? $request->get(EA::CONTEXT_REQUEST_ATTRIBUTE) : null;
+        return $this->adminContextProvider->getContext();
     }
 
     /**

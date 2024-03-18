@@ -1,11 +1,11 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
 {# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
-{% extends ea_context(app.request).templatePath('layout') %}
+{% extends ea_context().templatePath('layout') %}
 
 {% block body_id 'ea-detail-' ~ entity.name ~ '-' ~ entity.primaryKeyValue %}
 {% block body_class 'ea-detail ea-detail-' ~ entity.name %}
 
-{% set ea_field_assets = ea_context(app.request).crud.fieldAssets(constant('EasyCorp\\Bundle\\EasyAdminBundle\\Config\\Crud::PAGE_DETAIL')) %}
+{% set ea_field_assets = ea_context().crud.fieldAssets(constant('EasyCorp\\Bundle\\EasyAdminBundle\\Config\\Crud::PAGE_DETAIL')) %}
 
 {% block configured_head_contents %}
     {{ parent() }}
@@ -35,9 +35,9 @@
 
 {% block content_title %}
     {%- apply spaceless -%}
-        {% set custom_page_title = ea_context(app.request).crud.customPageTitle(pageName, entity ? entity.instance : null, ea_context(app.request).i18n.translationParameters) %}
+        {% set custom_page_title = ea_context().crud.customPageTitle(pageName, entity ? entity.instance : null, ea_context().i18n.translationParameters) %}
         {{ custom_page_title is null
-            ? ea_context(app.request).crud.defaultPageTitle(null, null, ea_context(app.request).i18n.translationParameters)|trans|raw
+            ? ea_context().crud.defaultPageTitle(null, null, ea_context().i18n.translationParameters)|trans|raw
             : custom_page_title|trans|raw }}
     {%- endapply -%}
 {% endblock %}
@@ -130,7 +130,7 @@
                         {%- if tab.getCustomOption('icon')|default(false) -%}
                             <i class="tab-nav-item-icon fa-fw {{ tab.getCustomOption('icon') }}"></i>
                         {%- endif -%}
-                        {{ tab.label|trans(domain = ea_context(app.request).i18n.translationDomain)|raw }}
+                        {{ tab.label|trans(domain = ea_context().i18n.translationDomain)|raw }}
 
                         {% set tab_error_count = tab.getCustomOption(tab_error_count_option_name)  %}
                         {%- if tab_error_count > 0 -%}
@@ -162,7 +162,7 @@
     <div id="{{ field.getCustomOption(tab_id_option_name) }}" class="tab-pane {% if field.getCustomOption(tab_is_active_option_name) %}active{% endif %} {{ field.cssClass }}" {% for key, value in field.getFormTypeOption('attr') %}{{ key }}="{{ value|e('html_attr') }}"{% endfor %}>
         {% if field.help %}
             <div class="content-header-help tab-help">
-                {{ field.help|trans(domain = ea_context(app.request).i18n.translationDomain)|raw }}
+                {{ field.help|trans(domain = ea_context().i18n.translationDomain)|raw }}
             </div>
         {% endif %}
 
@@ -197,11 +197,11 @@
             <div class="form-column-title">
                 <div class="form-column-title-content">
                     {% if field_icon %}<i class="form-column-icon fa fa-fw fa-{{ field_icon }}"></i>{% endif %}
-                    {% if field.label %}{{ field.label|trans(domain = ea_context(app.request).i18n.translationDomain)|raw }}{% endif %}
+                    {% if field.label %}{{ field.label|trans(domain = ea_context().i18n.translationDomain)|raw }}{% endif %}
                 </div>
 
                 {% if field.help %}
-                    <div class="form-column-help">{{ field.help|trans(domain = ea_context(app.request).i18n.translationDomain)|raw }}</div>
+                    <div class="form-column-help">{{ field.help|trans(domain = ea_context().i18n.translationDomain)|raw }}</div>
                 {% endif %}
             </div>
         {% endif %}
@@ -278,7 +278,7 @@
                             {%- if tab.customOption('icon') -%}
                                 <i class="fa-fw {{ tab.customOption('icon') }}"></i>
                             {%- endif -%}
-                            {{ tab.label|trans(domain = ea_context(app.request).i18n.translationDomain)|raw }}
+                            {{ tab.label|trans(domain = ea_context().i18n.translationDomain)|raw }}
                         </a>
                     </li>
                 {% endfor %}
@@ -288,7 +288,7 @@
                     <div id="tab-pane-{{ tab.uniqueId }}" class="tab-pane {% if loop.first %}active{% endif %} {{ tab.cssClass|default('') }}">
                         {% if tab.help|default(false) %}
                             <div class="content-header-help tab-help">
-                                {{ tab.help|trans(domain = ea_context(app.request).i18n.translationDomain)|raw }}
+                                {{ tab.help|trans(domain = ea_context().i18n.translationDomain)|raw }}
                             </div>
                         {% endif %}
                         <div class="row">

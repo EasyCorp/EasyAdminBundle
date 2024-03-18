@@ -1,13 +1,13 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
 {# @var entities \EasyCorp\Bundle\EasyAdminBundle\Collection\EntityCollection #}
 {# @var paginator \EasyCorp\Bundle\EasyAdminBundle\Orm\EntityPaginator #}
-{% extends ea_context(app.request).templatePath('layout') %}
-{% trans_default_domain ea_context(app.request).i18n.translationDomain %}
+{% extends ea_context().templatePath('layout') %}
+{% trans_default_domain ea_context().i18n.translationDomain %}
 
 {% block body_id entities|length > 0 ? 'ea-index-' ~ entities|first.name : '' %}
 {% block body_class 'ea-index' ~ (entities|length > 0 ? ' ea-index-' ~ entities|first.name : '') %}
 
-{% set ea_field_assets = ea_context(app.request).crud.fieldAssets(constant('EasyCorp\\Bundle\\EasyAdminBundle\\Config\\Crud::PAGE_INDEX')) %}
+{% set ea_field_assets = ea_context().crud.fieldAssets(constant('EasyCorp\\Bundle\\EasyAdminBundle\\Config\\Crud::PAGE_INDEX')) %}
 
 {% block configured_head_contents %}
     {{ parent() }}
@@ -37,9 +37,9 @@
 
 {% block content_title %}
     {%- apply spaceless -%}
-        {% set custom_page_title = ea_context(app.request).crud.customPageTitle('index', null, ea_context(app.request).i18n.translationParameters) %}
+        {% set custom_page_title = ea_context().crud.customPageTitle('index', null, ea_context().i18n.translationParameters) %}
         {{ custom_page_title is null
-            ? ea_context(app.request).crud.defaultPageTitle('index', null, ea_context(app.request).i18n.translationParameters)|trans|raw
+            ? ea_context().crud.defaultPageTitle('index', null, ea_context().i18n.translationParameters)|trans|raw
             : custom_page_title|trans|raw }}
     {%- endapply -%}
 {% endblock %}
@@ -49,10 +49,10 @@
     {% if filters|length > 0 %}
         <div class="datagrid-filters">
             {% block filters %}
-                {% set applied_filters = ea_context(app.request).request.query.all['filters']|default([])|keys %}
+                {% set applied_filters = ea_context().request.query.all['filters']|default([])|keys %}
                 <div class="btn-group action-filters">
                     <a href="#" data-href="{{ ea_url().setAction('renderFilters') }}" class="btn btn-secondary btn-labeled btn-labeled-right action-filters-button disabled {{ applied_filters ? 'action-filters-applied' }}" data-bs-toggle="modal" data-bs-target="#modal-filters">
-                        <i class="fa fa-filter fa-fw"></i> {{ t('filter.title', ea_context(app.request).i18n.translationParameters, 'EasyAdminBundle')|trans }}{% if applied_filters %} <span class="action-filters-button-count">({{ applied_filters|length }})</span>{% endif %}
+                        <i class="fa fa-filter fa-fw"></i> {{ t('filter.title', ea_context().i18n.translationParameters, 'EasyAdminBundle')|trans }}{% if applied_filters %} <span class="action-filters-button-count">({{ applied_filters|length }})</span>{% endif %}
                     </a>
                     {% if applied_filters %}
                         <a href="{{ ea_url().unset('filters') }}" class="btn btn-secondary action-filters-reset">
@@ -88,7 +88,7 @@
     {% set sort_order = app.request.get('sort')|first %}
     {% set some_results_are_hidden = entities|reduce((some_results_are_hidden, entity) => some_results_are_hidden or not entity.isAccessible, false) %}
     {% set has_footer = entities|length != 0 %}
-    {% set has_search = ea_context(app.request).crud.isSearchEnabled %}
+    {% set has_search = ea_context().crud.isSearchEnabled %}
     {% set has_filters = filters|length > 0 %}
     {% set num_results = entities|length %}
 
@@ -108,12 +108,12 @@
                     {% set ea_sort_asc = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Config\\Option\\SortOrder::ASC') %}
                     {% set ea_sort_desc = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Config\\Option\\SortOrder::DESC') %}
                     {% for field in entities|filter(e => e.isAccessible)|first.fields ?? [] %}
-                        {% set is_searchable = null == ea_context(app.request).crud.searchFields or field.property in ea_context(app.request).crud.searchFields %}
-                        {% set is_sorting_field = ea_context(app.request).search.isSortingField(field.property) %}
-                        {% set next_sort_direction = is_sorting_field ? (ea_context(app.request).search.sortDirection(field.property) == ea_sort_desc ? ea_sort_asc : ea_sort_desc) : ea_sort_desc %}
+                        {% set is_searchable = null == ea_context().crud.searchFields or field.property in ea_context().crud.searchFields %}
+                        {% set is_sorting_field = ea_context().search.isSortingField(field.property) %}
+                        {% set next_sort_direction = is_sorting_field ? (ea_context().search.sortDirection(field.property) == ea_sort_desc ? ea_sort_asc : ea_sort_desc) : ea_sort_desc %}
                         {% set column_icon = is_sorting_field ? (next_sort_direction == ea_sort_desc ? 'fa-arrow-up' : 'fa-arrow-down') : 'fa-sort' %}
 
-                        <th data-column="{{ field.property }}" class="{{ is_searchable ? 'searchable' }} {{ is_sorting_field ? 'sorted' }} {{ field.isVirtual ? 'field-virtual' }} header-for-{{ field.cssClass|split(' ')|filter(class => class starts with 'field-')|join('') }} text-{{ field.textAlign }}" dir="{{ ea_context(app.request).i18n.textDirection }}">
+                        <th data-column="{{ field.property }}" class="{{ is_searchable ? 'searchable' }} {{ is_sorting_field ? 'sorted' }} {{ field.isVirtual ? 'field-virtual' }} header-for-{{ field.cssClass|split(' ')|filter(class => class starts with 'field-')|join('') }} text-{{ field.textAlign }}" dir="{{ ea_context().i18n.textDirection }}">
                             {% if field.isSortable %}
                                 <a href="{{ ea_url({ page: 1, sort: { (field.property): next_sort_direction } }) }}">
                                     {{ field.label|trans|raw }} <i class="fa fa-fw {{ column_icon }}"></i>
@@ -124,8 +124,8 @@
                         </th>
                     {% endfor %}
 
-                    <th class="{{ ea_context(app.request).crud.showEntityActionsAsDropdown ? 'actions-as-dropdown-table-head' }}" dir="{{ ea_context(app.request).i18n.textDirection }}">
-                        <span class="sr-only">{{ t('action.entity_actions', ea_context(app.request).i18n.translationParameters, 'EasyAdminBundle')|trans }}</span>
+                    <th class="{{ ea_context().crud.showEntityActionsAsDropdown ? 'actions-as-dropdown-table-head' }}" dir="{{ ea_context().i18n.textDirection }}">
+                        <span class="sr-only">{{ t('action.entity_actions', ea_context().i18n.translationParameters, 'EasyAdminBundle')|trans }}</span>
                     </th>
                 </tr>
             {% endblock table_head %}
@@ -146,17 +146,17 @@
                         {% endif %}
 
                         {% for field in entity.fields %}
-                            {% set is_searchable = null == ea_context(app.request).crud.searchFields or field.property in ea_context(app.request).crud.searchFields %}
+                            {% set is_searchable = null == ea_context().crud.searchFields or field.property in ea_context().crud.searchFields %}
 
-                            <td data-column="{{ field.property }}" data-label="{{ field.label|trans|e('html_attr') }}" class="{{ is_searchable ? 'searchable' }} {{ field.property == sort_field_name ? 'sorted' }} text-{{ field.textAlign }} {{ field.cssClass }}" dir="{{ ea_context(app.request).i18n.textDirection }}">
+                            <td data-column="{{ field.property }}" data-label="{{ field.label|trans|e('html_attr') }}" class="{{ is_searchable ? 'searchable' }} {{ field.property == sort_field_name ? 'sorted' }} text-{{ field.textAlign }} {{ field.cssClass }}" dir="{{ ea_context().i18n.textDirection }}">
                                 {{ include(field.templatePath, { field: field, entity: entity }, with_context = false) }}
                             </td>
                         {% endfor %}
 
                         {% block entity_actions %}
-                            <td class="actions {{ ea_context(app.request).crud.showEntityActionsAsDropdown ? 'actions-as-dropdown' }}">
+                            <td class="actions {{ ea_context().crud.showEntityActionsAsDropdown ? 'actions-as-dropdown' }}">
                                 {% if entity.actions.count > 0 %}
-                                    {% if ea_context(app.request).crud.showEntityActionsAsDropdown %}
+                                    {% if ea_context().crud.showEntityActionsAsDropdown %}
                                         <div class="dropdown dropdown-actions">
                                             <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                 {# don't use FontAwesome 'fa-ellipsis-h' icon here because it doesn't look good #}
@@ -168,13 +168,13 @@
 
                                             <div class="dropdown-menu dropdown-menu-right">
                                                 {% for action in entity.actions %}
-                                                    {{ include(action.templatePath, { action: action, entity: entity, isIncludedInDropdown: ea_context(app.request).crud.showEntityActionsAsDropdown }, with_context = false) }}
+                                                    {{ include(action.templatePath, { action: action, entity: entity, isIncludedInDropdown: ea_context().crud.showEntityActionsAsDropdown }, with_context = false) }}
                                                 {% endfor %}
                                             </div>
                                         </div>
                                     {% else %}
                                         {% for action in entity.actions %}
-                                            {{ include(action.templatePath, { action: action, entity: entity, isIncludedInDropdown: ea_context(app.request).crud.showEntityActionsAsDropdown }, with_context = false) }}
+                                            {{ include(action.templatePath, { action: action, entity: entity, isIncludedInDropdown: ea_context().crud.showEntityActionsAsDropdown }, with_context = false) }}
                                         {% endfor %}
                                     {% endif %}
                                 {% endif %}
@@ -198,7 +198,7 @@
                         {% if 3 == loop.index %}
                             <tr class="no-results">
                                 <td colspan="100">
-                                    {{ t('datagrid.no_results', ea_context(app.request).i18n.translationParameters, 'EasyAdminBundle')|trans }}
+                                    {{ t('datagrid.no_results', ea_context().i18n.translationParameters, 'EasyAdminBundle')|trans }}
                                 </td>
                             </tr>
                         {% endif %}
@@ -225,7 +225,7 @@
     {% if entities|length > 0 %}
         <div class="content-panel-footer without-padding without-border">
             {% block paginator %}
-                {{ include(ea_context(app.request).templatePath('crud/paginator'), { render_detailed_pagination: not some_results_are_hidden }) }}
+                {{ include(ea_context().templatePath('crud/paginator'), { render_detailed_pagination: not some_results_are_hidden }) }}
             {% endblock paginator %}
         </div>
     {% endif %}

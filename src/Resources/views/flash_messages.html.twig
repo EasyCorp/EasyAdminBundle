@@ -2,7 +2,7 @@
 {# This template checks for 'ea' variable existence because it can
    be used in a EasyAdmin Dashboard controller, where 'ea' is defined
    or from any other Symfony controller, where 'ea' is not defined #}
-{% trans_default_domain ea is defined ? ea_context(app.request).i18n.translationDomain : (translation_domain is defined ? translation_domain ?? 'messages') %}
+{% trans_default_domain ea is defined ? ea_context().i18n.translationDomain : (translation_domain is defined ? translation_domain ?? 'messages') %}
 
 {% set flash_messages = app.flashes %}
 

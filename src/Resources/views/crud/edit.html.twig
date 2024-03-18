@@ -1,18 +1,18 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
 {# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
-{% extends ea_context(app.request).templatePath('layout') %}
-{% form_theme edit_form with ea_context(app.request).crud.formThemes only %}
+{% extends ea_context().templatePath('layout') %}
+{% form_theme edit_form with ea_context().crud.formThemes only %}
 
-{% trans_default_domain ea_context(app.request).i18n.translationDomain %}
+{% trans_default_domain ea_context().i18n.translationDomain %}
 
 {% block body_id 'ea-edit-' ~ entity.name ~ '-' ~ entity.primaryKeyValue %}
 {% block body_class 'ea-edit ea-edit-' ~ entity.name %}
 
-{% set ea_field_assets = ea_context(app.request).crud.fieldAssets(constant('EasyCorp\\Bundle\\EasyAdminBundle\\Config\\Crud::PAGE_EDIT')) %}
+{% set ea_field_assets = ea_context().crud.fieldAssets(constant('EasyCorp\\Bundle\\EasyAdminBundle\\Config\\Crud::PAGE_EDIT')) %}
 
 {% block head_javascript %}
     {{ parent() }}
-    <script src="{{ asset('form.js', ea_context(app.request).assets.defaultAssetPackageName) }}"></script>
+    <script src="{{ asset('form.js', ea_context().assets.defaultAssetPackageName) }}"></script>
 {% endblock head_javascript %}
 
 {% block configured_head_contents %}
@@ -43,9 +43,9 @@
 
 {% block content_title %}
     {%- apply spaceless -%}
-        {% set custom_page_title = ea_context(app.request).crud.customPageTitle(pageName, entity ? entity.instance : null, ea_context(app.request).i18n.translationParameters) %}
+        {% set custom_page_title = ea_context().crud.customPageTitle(pageName, entity ? entity.instance : null, ea_context().i18n.translationParameters) %}
         {{ custom_page_title is null
-            ? ea_context(app.request).crud.defaultPageTitle(null, null, ea_context(app.request).i18n.translationParameters)|trans|raw
+            ? ea_context().crud.defaultPageTitle(null, null, ea_context().i18n.translationParameters)|trans|raw
             : custom_page_title|trans|raw }}
     {%- endapply -%}
 {% endblock %}

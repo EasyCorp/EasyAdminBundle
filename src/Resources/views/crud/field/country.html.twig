@@ -10,7 +10,7 @@
     {% for flag_code, country_name in field.formattedValue %}
         {% if flag_code is not null %}
             {# the explicit height is needed to avoid issues with SVG images in Safari browser #}
-            <img class="country-flag" height="17" alt="{{ country_name }}" title="{{ country_name }}" src="{{ asset('images/flags/' ~ flag_code ~ '.svg', ea.assets.defaultAssetPackageName) }}">
+            <img class="country-flag" height="17" alt="{{ country_name }}" title="{{ country_name }}" src="{{ asset('images/flags/' ~ flag_code ~ '.svg', ea_context(app.request).assets.defaultAssetPackageName) }}">
         {% endif %}
     {% endfor %}
 {% elseif show_name and not show_flag  %}
@@ -21,7 +21,7 @@
             {%- if show_flag -%}
                 {%- if flag_code is not null -%}
                     {# the explicit height is needed to avoid issues with SVG images in Safari browser #}
-                    <img class="country-flag" height="17" alt="{{ country_name }}" title="{{ country_name }}" src="{{ asset('images/flags/' ~ flag_code ~ '.svg', ea.assets.defaultAssetPackageName) }}">
+                    <img class="country-flag" height="17" alt="{{ country_name }}" title="{{ country_name }}" src="{{ asset('images/flags/' ~ flag_code ~ '.svg', ea_context(app.request).assets.defaultAssetPackageName) }}">
                 {%- endif -%}
             {%- endif -%}
 

@@ -1,6 +1,6 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
-{% extends ea.templatePath('layout') %}
-{% trans_default_domain ea.i18n.translationDomain %}
+{% extends ea_context(app.request).templatePath('layout') %}
+{% trans_default_domain ea_context(app.request).i18n.translationDomain %}
 
 {% block body_class 'page-content' %}
 

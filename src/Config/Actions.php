@@ -149,6 +149,13 @@ final class Actions
         return $this;
     }
 
+    public function enable(string ...$enabledActionNames): self
+    {
+        $this->dto->enableActions($enabledActionNames);
+
+        return $this;
+    }
+
     public function getAsDto(?string $pageName): ActionConfigDto
     {
         $this->dto->setPageName($pageName);

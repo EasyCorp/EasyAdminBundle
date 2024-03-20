@@ -40,7 +40,7 @@ final class EntityConfigurator implements FilterConfiguratorInterface
             $numberOfRequiredJoinColumns = \count(array_filter(
                 $doctrineMetadata->get('joinColumns'),
                 // Doctrine ORM 3.x changed the returned type from array to JoinColumnMapping
-                static fn (array|JoinColumnMapping $joinColumn): bool => false === ($joinColumn['nullable'] ?? false))
+                static fn (array|JoinColumnMapping $joinColumn): bool => false === (($joinColumn instanceof JoinColumnMapping ? $joinColumn->nullable ?? false : $joinColumn['nullable'] ?? false)))
             );
 
             $someJoinColumnsAreNullable = \count($doctrineMetadata->get('joinColumns')) !== $numberOfRequiredJoinColumns;

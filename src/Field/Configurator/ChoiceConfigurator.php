@@ -65,7 +65,7 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
                 $areChoicesTranslatable = $choicesSupportTranslatableInterface = true;
             }
 
-            if ($allChoicesAreEnums && array_is_list($choices)) {
+            if ($allChoicesAreEnums && array_is_list($choices) && \count($choices) > 0) {
                 $processedEnumChoices = [];
                 foreach ($choices as $choice) {
                     $processedEnumChoices[$choice->name] = $choice;

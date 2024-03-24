@@ -16,6 +16,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Config\Action as AppAction;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Entity\Category;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Security\CustomVoterForNewCategory;
 use Symfony\Component\HttpFoundation\Response;
 
 class CategoryCrudController extends AbstractCrudController
@@ -52,7 +53,9 @@ class CategoryCrudController extends AbstractCrudController
             ->linkToCrudAction('customPage');
 
         return $actions->add(Crud::PAGE_INDEX, $customPageAction)
-            ->setPermission(AppAction::CUSTOM_ACTION, 'ROLE_ADMIN');
+            ->setPermission(AppAction::CUSTOM_ACTION, 'ROLE_ADMIN')
+            ->setPermission(Action::NEW, CustomVoterForNewCategory::NEW_CATEGORY)
+        ;
     }
 
     public function configureFilters(Filters $filters): Filters

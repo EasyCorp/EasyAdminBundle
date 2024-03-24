@@ -7,7 +7,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Test\Trait\CrudTestActions;
 use EasyCorp\Bundle\EasyAdminBundle\Test\Trait\CrudTestUrlGeneration;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Controller\CategoryCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Controller\BlogPostCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Controller\DashboardController;
 use PHPUnit\Framework\AssertionFailedError;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -38,7 +38,7 @@ final class CrudTestActionsTraitTest extends WebTestCase
      */
     protected function getControllerFqcn(): string
     {
-        return CategoryCrudController::class;
+        return BlogPostCrudController::class;
     }
 
     /**

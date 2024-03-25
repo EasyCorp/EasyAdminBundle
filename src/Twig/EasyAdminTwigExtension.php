@@ -3,6 +3,8 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Twig;
 
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldLayoutDto;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FormLayoutFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
@@ -48,6 +50,7 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
     {
         return [
             new TwigFunction('ea_url', [$this, 'getAdminUrlGenerator']),
+            new TwigFunction('ea_context', [$this, 'getContext']),
             new TwigFunction('ea_csrf_token', [$this, 'renderCsrfToken']),
             new TwigFunction('ea_call_function_if_exists', [$this, 'callFunctionIfExists'], ['needs_environment' => true, 'is_safe' => ['html' => true]]),
             new TwigFunction('ea_create_field_layout', [$this, 'createFieldLayout']),
@@ -70,6 +73,7 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
         $context = $this->adminContextProvider->getContext();
 
         // when there's an admin context, make it available in all templates as a short named variable
+        // @deprecated
         return null === $context ? [] : ['ea' => $context];
     }
 
@@ -189,6 +193,11 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
     public function getAdminUrlGenerator(array $queryParameters = []): AdminUrlGeneratorInterface
     {
         return $this->serviceLocator->get(AdminUrlGenerator::class)->setAll($queryParameters);
+    }
+
+    public function getContext(): ?AdminContext
+    {
+        return $this->adminContextProvider->getContext();
     }
 
     /**

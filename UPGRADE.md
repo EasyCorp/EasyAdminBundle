@@ -1,6 +1,22 @@
 Upgrade between EasyAdmin 4.x versions
 ======================================
 
+EasyAdmin 4.10.0
+----------------
+
+### Twig variables in `ea` in templates
+
+If you use the `ea` variable in your custom templates, you should update it to
+use the new `ea_context` function that is now available in all templates. This new
+function returns the current context of the EasyAdmin application, which is the
+same as the `ea` variable in previous versions.
+
+    // Before
+    {{ ea.i18n.translationDomain }}
+
+    // After
+    {{ ea_context().i18n.translationDomain }}
+
 EasyAdmin 4.8.0
 ---------------
 

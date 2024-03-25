@@ -131,6 +131,12 @@ final class EntityRepository implements EntityRepositoryInterface
                     $queryBuilder->setParameter($parameterName, $dqlParameters['text_query']);
                 }
             }
+
+            // When no fields are queried, the current condition must not yield any results
+            if (0 === $queryTermConditions->count()) {
+                $queryTermConditions->add('0 = 1');
+            }
+
             if (SearchMode::ALL_TERMS === $searchDto->getSearchMode()) {
                 $queryBuilder->andWhere($queryTermConditions);
             } else {

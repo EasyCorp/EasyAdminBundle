@@ -112,16 +112,6 @@ jobs:
                   extensions: mbstring, intl, pdo, pdo_sqlite, sqlite3
                   ini-values: date.timezone=UTC
 
-            - name: Get Composer cache directory
-              id: composer-cache
-              run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
-
-            - name: Mount PHP dependencies cache
-              uses: actions/cache@v4
-              with:
-                  path: ${{ steps.composer-cache.outputs.dir }}
-                  key: ${{ runner.os }}-php-${{ matrix.php_version }}-symfony-${{ matrix.symfony_version }}-${{ matrix.stability }}
-
             - name: symfony/flex is required to install the correct symfony version
               if: ${{ matrix.symfony_version }}
               run: |

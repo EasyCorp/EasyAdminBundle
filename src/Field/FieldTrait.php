@@ -151,6 +151,7 @@ trait FieldTrait
         }
 
         $this->dto->setFormTypeOption('attr.'.$attributeName, $attributeValue);
+        $this->dto->setHtmlAttribute($attributeName, $attributeValue);
 
         return $this;
     }

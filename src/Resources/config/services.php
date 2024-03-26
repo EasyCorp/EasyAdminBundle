@@ -298,6 +298,7 @@ return static function (ContainerConfigurator $container) {
             ->tag('form.type', ['alias' => 'ea_crud'])
 
         ->set(ArrayConfigurator::class)
+            ->arg(0, service('translator.default'))
 
         ->set(AssociationConfigurator::class)
             ->arg(0, new Reference(EntityFactory::class))

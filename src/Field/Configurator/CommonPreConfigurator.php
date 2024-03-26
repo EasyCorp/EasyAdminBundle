@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Field\Configurator;
 
+use Doctrine\ORM\Mapping\JoinColumnMapping;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
@@ -198,11 +199,16 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
             $associatedEntityMetadata = $this->entityFactory->getEntityMetadata($doctrinePropertyMetadata->get('targetEntity'));
             foreach ($doctrinePropertyMetadata->get('joinColumns', []) as $joinColumn) {
                 if (true === $doctrinePropertyMetadata->get('isOwningSide', true)) {
-                    if (false === ($joinColumn['nullable'] ?? true)) {
+                    if ($joinColumn instanceof JoinColumnMapping) {
+                        $isNullable = $joinColumn->nullable ?? true;
+                    } else {
+                        $isNullable = $joinColumn['nullable'] ?? true;
+                    }
+                    if (false === $isNullable) {
                         return true;
                     }
                 } else {
-                    $propertyNameInAssociatedEntity = $joinColumn['referencedColumnName'];
+                    $propertyNameInAssociatedEntity = $joinColumn instanceof JoinColumnMapping ? $joinColumn->referencedColumnName : $joinColumn['referencedColumnName'];
                     $associatedPropertyMetadata = $associatedEntityMetadata->fieldMappings[$propertyNameInAssociatedEntity] ?? [];
                     $isNullable = $associatedPropertyMetadata['nullable'] ?? true;
 

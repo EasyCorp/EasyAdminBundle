@@ -77,9 +77,10 @@ final class AdminContextFactory
 
         foreach ($dashboardControllerRoutes as $routeName => $controller) {
             if ($controller === $dashboardController) {
-                // if present, remove the suffix of i18n route names (it's a two-letter locale at the end
-                // of the route name; e.g. 'dashboard.en' -> remove '.en', 'admin.index.es' -> remove '.es')
-                $dashboardRouteName = preg_replace('~\.\w{2}$~', '', $routeName);
+                // if present, remove the suffix of i18n route names (it's an ISO639 or ISO3166 locale at the end
+                // of the route name for ; e.g. 'dashboard.en' -> remove '.en', 'admin.index.es' -> remove '.es'
+                // or 'dashboard.en_GB' -> remove '.en_GB', 'admin.index.es_ES' -> remove '.es_ES')
+                $dashboardRouteName = preg_replace('~\.\w{2}(_\w{2})?$~', '', $routeName);
 
                 break;
             }

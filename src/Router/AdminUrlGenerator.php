@@ -294,9 +294,10 @@ final class AdminUrlGenerator implements AdminUrlGeneratorInterface
             $this->dashboardRoute = $this->dashboardControllerRegistry->getFirstDashboardRoute();
         }
 
-        // if present, remove the suffix of i18n route names (it's a two-letter locale at the end
-        // of the route name; e.g. 'dashboard.en' -> remove '.en', 'admin.index.es' -> remove '.es')
-        $this->dashboardRoute = preg_replace('~\.\w{2}$~', '', $this->dashboardRoute);
+        // if present, remove the suffix of i18n route names (it's an ISO639 or ISO3166 locale at the end
+        // of the route name for ; e.g. 'dashboard.en' -> remove '.en', 'admin.index.es' -> remove '.es'
+        // or 'dashboard.en_GB' -> remove '.en_GB', 'admin.index.es_ES' -> remove '.es_ES')
+        $this->dashboardRoute = preg_replace('~\.\w{2}(_\w{2})?$~', '', $this->dashboardRoute);
 
         // this removes any parameter with a NULL value
         $routeParameters = array_filter(

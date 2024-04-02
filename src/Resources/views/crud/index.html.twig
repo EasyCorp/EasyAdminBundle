@@ -39,7 +39,7 @@
     {%- apply spaceless -%}
         {% set custom_page_title = ea.crud.customPageTitle('index', null, ea.i18n.translationParameters) %}
         {{ custom_page_title is null
-            ? ea.crud.defaultPageTitle('index', null, ea.i18n.translationParameters)|trans|raw
+            ? ea.crud.defaultPageTitle('index', null, ea.i18n.translationParameters)|trans
             : custom_page_title|trans|raw }}
     {%- endapply -%}
 {% endblock %}

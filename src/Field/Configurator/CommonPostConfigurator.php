@@ -7,7 +7,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\FieldTrait;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use function Symfony\Component\String\u;
 use Twig\Markup;
@@ -58,7 +58,7 @@ final class CommonPostConfigurator implements FieldConfiguratorInterface
         // in the code just because some people need to have HTML/JS
         // so that if you want know what you're doing you have to explicitly
         // disable this.
-        if ($field->getCustomOptions(TextField::OPTION_STRIP_TAGS)) {
+        if ($field->getCustomOption(FieldTrait::OPTION_STRIP_TAGS) ?? true) {
             return $formatted;
         }
 

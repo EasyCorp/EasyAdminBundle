@@ -83,6 +83,7 @@
     --content-padding-right: 15px;
     --lg-content-padding-left: 35px;
     --lg-content-padding-right: 25px;
+    --lg-content-padding-bottom: 45px;
     --user-avatar-icon-bg: var(--gray-200);
     --user-avatar-icon-color: var(--gray-500);
     --user-name-color: var(--gray-500);

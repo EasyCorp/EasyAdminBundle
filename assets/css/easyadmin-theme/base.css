@@ -315,7 +315,7 @@ a.user-menu-wrapper .user-details:hover {
 }
 
 #content-resizer-handler {
-    min-height: calc(100vh - 56px);
+    min-height: calc(100vh - 56px - 45px);
 }
 
 .content-top {
@@ -332,6 +332,7 @@ a.user-menu-wrapper .user-details:hover {
 @media(min-width: 992px) {
     .content-top {
         display: flex;
+        margin-bottom: 0;
         height: 56px;
         justify-content: space-between;
         padding: 11px calc(var(--lg-content-padding-right) + var(--resize-handler-width)) 11px var(--lg-content-padding-left);

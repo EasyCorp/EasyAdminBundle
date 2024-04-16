@@ -33,7 +33,7 @@ class DateTimeFilterType extends AbstractType
         $builder->addModelTransformer(new CallbackTransformer(
             static fn ($data) => $data,
             static function ($data) use ($options) {
-                // symfony form will cut off invalid values, so make sure no warnings will be thrown out:
+                // Symfony Form will cut off invalid values, so make sure no warnings will be thrown out
                 $data['value'] ??= null;
                 $data['value2'] ??= null;
 

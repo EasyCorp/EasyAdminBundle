@@ -120,7 +120,7 @@ final class EntityRepository implements EntityRepositoryInterface
                     $parameterName = sprintf('query_for_ulids_%d', $queryTermIndex);
                     $queryTermConditions->add(sprintf('%s.%s = :%s', $entityName, $propertyConfig['property_name'], $parameterName));
                     $queryBuilder->setParameter($parameterName, $dqlParameters['uuid_query'], 'ulid');
-                } elseif ($propertyConfig['is_text'] || ($propertyConfig['is_integer'] && !$isPostgreSql)) {
+                } elseif ($propertyConfig['is_text']) {
                     $parameterName = sprintf('query_for_text_%d', $queryTermIndex);
                     $queryTermConditions->add(sprintf('LOWER(%s.%s) LIKE :%s', $entityName, $propertyConfig['property_name'], $parameterName));
                     $queryBuilder->setParameter($parameterName, $dqlParameters['text_query']);
@@ -131,6 +131,12 @@ final class EntityRepository implements EntityRepositoryInterface
                     $queryBuilder->setParameter($parameterName, $dqlParameters['text_query']);
                 }
             }
+
+            // Query should return 0 results if there are no searchable properties:
+            if ($queryTermConditions->count() === 0) {
+                $queryTermConditions->add('1 = 2');
+            }
+
             if (SearchMode::ALL_TERMS === $searchDto->getSearchMode()) {
                 $queryBuilder->andWhere($queryTermConditions);
             } else {

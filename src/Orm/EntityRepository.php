@@ -133,7 +133,7 @@ final class EntityRepository implements EntityRepositoryInterface
             }
 
             // Query should return 0 results if there are no searchable properties:
-            if ($queryTermConditions->count() === 0) {
+            if (0 === $queryTermConditions->count()) {
                 $queryTermConditions->add('1 = 2');
             }
 

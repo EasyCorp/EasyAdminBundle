@@ -175,6 +175,20 @@ You can override the default page titles with the following methods::
         ;
     }
 
+EasyAdmin applies the ``raw`` filter to all titles, labels, help messages, etc.
+displayed in templates. This allows you to customize everything with HTML tags
+because they are rendered instead of escaped.
+
+This is generally safe because you are in charge of writing those contents yourself.
+However, in pages like the ``detail`` page, the default title is the string
+representation of the entity (which is the value returned by the ``__toString()``
+method). If you include user-generated contents in that value, your backend (and
+your application in general) will be vulnerable to `XSS attacks`_.
+
+If the string representation of your entity must include those user-generated values,
+make sure to sanitize those contents before storing them in the database. You can
+use the `HtmlSanitizer component`_ from Symfony to do that.
+
 .. _crud-date-time-number-format-options:
 
 Date, Time and Number Formatting Options
@@ -731,3 +745,5 @@ The same applies to URLs generated in Twig templates:
 
 .. _`Symfony controllers`: https://symfony.com/doc/current/controller.html
 .. _`Doctrine filters`: https://www.doctrine-project.org/projects/doctrine-orm/en/current/reference/filters.html
+.. _`XSS attacks`: https://en.wikipedia.org/wiki/Cross-site_scripting
+.. _`HtmlSanitizer component`: https://symfony.com/components/HTML%20Sanitizer

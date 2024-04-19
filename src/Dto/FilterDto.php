@@ -14,6 +14,7 @@ final class FilterDto
     private ?string $fqcn = null;
     private ?string $formType = null;
     private KeyValueStore $formTypeOptions;
+    private KeyValueStore $customOptions;
     private ?string $propertyName = null;
     private $label;
     private $applyCallable;
@@ -21,6 +22,7 @@ final class FilterDto
     public function __construct()
     {
         $this->formTypeOptions = KeyValueStore::new();
+        $this->customOptions = KeyValueStore::new();
     }
 
     public function getFqcn(): ?string
@@ -63,6 +65,27 @@ final class FilterDto
         $this->formTypeOptions->setIfNotSet($optionName, $optionValue);
     }
 
+    public function getCustomOptions(): KeyValueStore
+    {
+        return $this->customOptions;
+    }
+
+    public function getCustomOption(string $optionName): mixed
+    {
+        return $this->customOptions->get($optionName);
+    }
+
+    public function setCustomOptions(array $customOptions): void
+    {
+        $this->customOptions = KeyValueStore::new($customOptions);
+    }
+
+    public function setCustomOption(string $optionName, mixed $optionValue): void
+    {
+        $this->customOptions->set($optionName, $optionValue);
+    }
+
+    
     public function setFormType(string $formType): void
     {
         $this->formType = $formType;

@@ -70,6 +70,20 @@ trait FilterTrait
         return $this;
     }
 
+        public function setCustomOption(string $optionName, $optionValue): self
+    {
+        $this->dto->setCustomOption($optionName, $optionValue);
+
+        return $this;
+    }
+
+    public function setCustomOptions(array $options): self
+    {
+        $this->dto->setCustomOptions($options);
+
+        return $this;
+    }
+
     public function getAsDto(): FilterDto
     {
         return $this->dto;

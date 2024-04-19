@@ -3,7 +3,7 @@
 return [
     'page_title' => [
         'dashboard' => 'Πίνακας ελέγχου',
-        'detail' => '%entity_as_string%',
+        'detail' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
         'edit' => 'Επεξεργασία %entity_label_singular%',
         'index' => '%entity_label_plural%',
         'new' => 'Δημιουργία %entity_label_singular%',

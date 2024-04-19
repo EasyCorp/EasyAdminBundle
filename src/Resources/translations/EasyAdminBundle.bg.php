@@ -3,7 +3,7 @@
 return [
     'page_title' => [
         'dashboard' => 'Табло',
-        'detail' => '%entity_as_string%',
+        'detail' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
         'edit' => 'Редактиране на %entity_label_singular%',
         'index' => '%entity_label_plural%',
         'new' => 'Създаване на %entity_label_singular%',

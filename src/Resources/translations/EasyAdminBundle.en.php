@@ -3,7 +3,7 @@
 return [
     'page_title' => [
         'dashboard' => 'Dashboard',
-        'detail' => '%entity_as_string%',
+        'detail' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
         'edit' => 'Edit %entity_label_singular%',
         'index' => '%entity_label_plural%',
         'new' => 'Create %entity_label_singular%',

@@ -227,7 +227,9 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
             return false;
         }
 
-        return !$doctrinePropertyMetadata->get('nullable');
+        $nullable = $doctrinePropertyMetadata->get('nullable');
+
+        return false === $nullable || null === $nullable;
     }
 
     private function humanizeString(string $string): string

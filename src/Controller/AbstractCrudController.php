@@ -253,13 +253,13 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $this->processUploadedFiles($editForm);
 
-            $event = new BeforeEntityUpdatedEvent($entityInstance);
+            $event = new BeforeEntityUpdatedEvent($entityInstance, $editForm);
             $this->container->get('event_dispatcher')->dispatch($event);
             $entityInstance = $event->getEntityInstance();
 
             $this->updateEntity($this->container->get('doctrine')->getManagerForClass($context->getEntity()->getFqcn()), $entityInstance);
 
-            $this->container->get('event_dispatcher')->dispatch(new AfterEntityUpdatedEvent($entityInstance));
+            $this->container->get('event_dispatcher')->dispatch(new AfterEntityUpdatedEvent($entityInstance, $editForm));
 
             return $this->getRedirectResponseAfterSave($context, Action::EDIT);
         }
@@ -310,13 +310,13 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         if ($newForm->isSubmitted() && $newForm->isValid()) {
             $this->processUploadedFiles($newForm);
 
-            $event = new BeforeEntityPersistedEvent($entityInstance);
+            $event = new BeforeEntityPersistedEvent($entityInstance, $newForm);
             $this->container->get('event_dispatcher')->dispatch($event);
             $entityInstance = $event->getEntityInstance();
 
             $this->persistEntity($this->container->get('doctrine')->getManagerForClass($context->getEntity()->getFqcn()), $entityInstance);
 
-            $this->container->get('event_dispatcher')->dispatch(new AfterEntityPersistedEvent($entityInstance));
+            $this->container->get('event_dispatcher')->dispatch(new AfterEntityPersistedEvent($entityInstance, $newForm));
             $context->getEntity()->setInstance($entityInstance);
 
             return $this->getRedirectResponseAfterSave($context, Action::NEW);

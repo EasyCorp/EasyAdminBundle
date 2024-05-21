@@ -288,6 +288,7 @@ a.user-menu-wrapper .user-details:hover {
 }
 
 .content {
+    margin-top: 1px;
 }
 
 .resizer-handler {
@@ -322,7 +323,6 @@ a.user-menu-wrapper .user-details:hover {
     align-items: center;
     box-shadow: 0 1px 0 var(--content-top-border-color);
     display: flex;
-    margin-bottom: 1px;
     padding: 5px 15px 5px var(--content-padding-left);
 }
 @media(max-width: 992px) {
@@ -332,7 +332,6 @@ a.user-menu-wrapper .user-details:hover {
 @media(min-width: 992px) {
     .content-top {
         display: flex;
-        margin-bottom: 0;
         height: 56px;
         justify-content: space-between;
         padding: 11px calc(var(--lg-content-padding-right) + var(--resize-handler-width)) 11px var(--lg-content-padding-left);

@@ -48,7 +48,7 @@ class CrudFormType extends AbstractType
             // 'property_path' option to keep the original field name
             if (str_contains($fieldDto->getProperty(), '.')) {
                 $formFieldOptions['property_path'] = $fieldDto->getProperty();
-                $name = str_replace(['.', '[', ']'], '_', $fieldDto->getProperty());
+                $name = str_replace(['.', '[', ']', '?'], '_', $fieldDto->getProperty());
             } else {
                 $name = $fieldDto->getProperty();
             }

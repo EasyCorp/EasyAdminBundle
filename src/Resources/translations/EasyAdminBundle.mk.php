@@ -3,7 +3,7 @@
 return [
     'page_title' => [
         'dashboard' => 'Контролна табла',
-        'detail' => '%entity_as_string%',
+        'detail' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
         'edit' => 'Уреди %entity_label_singular%',
         'index' => '%entity_label_plural%',
         'new' => 'Креирај %entity_label_singular%',

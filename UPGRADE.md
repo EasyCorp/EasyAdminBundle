@@ -1,6 +1,39 @@
 Upgrade between EasyAdmin 4.x versions
 ======================================
 
+EasyAdmin 4.10.0
+----------------
+
+### Updated the Default Title of Detail Page
+
+The default title of the `detail` page in previous versions was `%entity_as_string%`
+which is a placeholder that refers to the value returned by the `__toString()`
+method of the entity.
+
+This can potentially result in a XSS vulnerability because page titles and other
+elements are rendered with the `raw` Twig filter (to allow you to customize the
+contents with HTML tags).
+
+Starting from EasyAdmin 4.10.0, the default page title is `%entity_label_singular% <small>(#%entity_short_id%)</small>`,
+which only contains safe items that will never result in a XSS issue. If you
+want to keep the previous page title (because you don't include user-generated
+contents in `__toString()` or because you sanitize all user-submitted data) you
+can add the following to your dashboard and all your CRUD controllers will use
+that page title:
+
+    class DashboardController extends AbstractDashboardController
+    {
+        // ...
+
+        public function configureCrud(Crud $crud): Crud
+        {
+            return $crud
+                // ...
+                ->setPageTitle('detail', '%entity_as_string%')
+            ;
+        }
+    }
+
 EasyAdmin 4.8.0
 ---------------
 

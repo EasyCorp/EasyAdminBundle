@@ -3,7 +3,7 @@
 return [
     'page_title' => [
         'dashboard' => 'Hasiera',
-        'detail' => '%entity_as_string%',
+        'detail' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
         'edit' => '%entity_label_singular% aldatu',
         'index' => '%entity_label_plural%',
         'new' => '%entity_label_singular%-a sortu',

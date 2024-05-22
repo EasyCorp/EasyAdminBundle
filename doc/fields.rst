@@ -969,7 +969,7 @@ field DTO. For example, in a Twig template:
 Field Configurators
 -------------------
 
-Some default options of some fields depend on the value of the of the entity
+Some default options of some fields depend on the value of the entity
 property, which is only available during runtime. That's why you can optionally
 define a **field configurator**, which is a class that updates the config of the
 field before rendering them.

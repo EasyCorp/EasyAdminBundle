@@ -283,11 +283,12 @@ a.user-menu-wrapper .user-details:hover {
     .content-wrapper {
         display: grid;
         grid-template-columns: auto var(--resize-handler-width);
-        padding: 0 var(--lg-content-padding-right) 45px var(--lg-content-padding-left);
+        padding: 0 var(--lg-content-padding-right) var(--lg-content-padding-bottom) var(--lg-content-padding-left);
     }
 }
 
 .content {
+    margin-top: 1px;
 }
 
 .resizer-handler {
@@ -315,14 +316,13 @@ a.user-menu-wrapper .user-details:hover {
 }
 
 #content-resizer-handler {
-    min-height: calc(100vh - 56px);
+    min-height: calc(100vh - 56px - var(--lg-content-padding-bottom));
 }
 
 .content-top {
     align-items: center;
     box-shadow: 0 1px 0 var(--content-top-border-color);
     display: flex;
-    margin-bottom: 1px;
     padding: 5px 15px 5px var(--content-padding-left);
 }
 @media(max-width: 992px) {

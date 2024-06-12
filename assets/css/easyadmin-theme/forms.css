@@ -447,8 +447,8 @@ label.form-check-label {
     font-weight: bold;
     padding: 0 0 5px;
 }
-.form-fieldset-header .form-fieldset-title .form-fieldset-title-content .not-collapsible { cursor: default; }
-.form-fieldset-header .form-fieldset-title .form-fieldset-title-content .collapsed .form-fieldset-collapse-marker {
+.form-fieldset-header .form-fieldset-title .form-fieldset-title-content.not-collapsible { cursor: default; }
+.form-fieldset-header .form-fieldset-title .form-fieldset-title-content.collapsed .form-fieldset-collapse-marker {
     transform: rotate(0deg);
 }
 .form-fieldset-header .form-fieldset-title .form-fieldset-title-content .collapsible::after {

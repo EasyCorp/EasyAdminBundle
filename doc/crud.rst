@@ -216,7 +216,7 @@ Date, Time and Number Formatting Options
             // (e.g. setNumDecimals(), setRoundingMode(), etc. are ignored)
             // NumberField and IntegerField can override this value with their
             // own setNumberFormat() methods, which works in the same way
-            ->setNumberFormat('%.2d');
+            ->setNumberFormat('%.2d')
 
             // Sets the character used to separate each thousand group in a number
             // e.g. if separator is ',' then 12345 is formatted as 12,345

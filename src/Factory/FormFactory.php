@@ -32,7 +32,7 @@ final class FormFactory
 
     public function createEditFormBuilder(EntityDto $entityDto, KeyValueStore $formOptions, AdminContext $context): FormBuilderInterface
     {
-        $cssClass = sprintf('ea-%s-form', $context->getCrud()?->getCurrentAction());
+        $cssClass = sprintf('ea-%s-form', $context->getCrud()->getCurrentAction());
         $formOptions->set('attr.class', trim(($formOptions->get('attr.class') ?? '').' '.$cssClass));
         $formOptions->set('attr.id', sprintf('edit-%s-form', $entityDto->getName()));
         $formOptions->set('entityDto', $entityDto);
@@ -48,7 +48,7 @@ final class FormFactory
 
     public function createNewFormBuilder(EntityDto $entityDto, KeyValueStore $formOptions, AdminContext $context): FormBuilderInterface
     {
-        $cssClass = sprintf('ea-%s-form', $context->getCrud()?->getCurrentAction());
+        $cssClass = sprintf('ea-%s-form', $context->getCrud()->getCurrentAction());
         $formOptions->set('attr.class', trim(($formOptions->get('attr.class') ?? '').' '.$cssClass));
         $formOptions->set('attr.id', sprintf('new-%s-form', $entityDto->getName()));
         $formOptions->set('entityDto', $entityDto);

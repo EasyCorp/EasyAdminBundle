@@ -13,8 +13,8 @@ final class ForbiddenActionException extends BaseException
     public function __construct(AdminContext $context)
     {
         $parameters = [
-            'crud_controller' => $context->getCrud()?->getControllerFqcn(),
-            'action' => $context->getCrud()?->getCurrentAction(),
+            'crud_controller' => null === $context->getCrud() ? null : $context->getCrud()->getControllerFqcn(),
+            'action' => null === $context->getCrud() ? null : $context->getCrud()->getCurrentAction(),
         ];
 
         $exceptionContext = new ExceptionContext(

@@ -59,7 +59,7 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
             }
         }
 
-        $label = $this->buildLabelOption($field, $translationDomain, $context->getCrud()?->getCurrentPage());
+        $label = $this->buildLabelOption($field, $translationDomain, $context->getCrud()->getCurrentPage());
         $field->setLabel($label);
 
         $isRequired = $this->buildRequiredOption($field, $entityDto);

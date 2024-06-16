@@ -151,7 +151,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
                 ->set(AssociationField::PARAM_AUTOCOMPLETE_CONTEXT, [
                     EA::CRUD_CONTROLLER_FQCN => $context->getRequest()->query->get(EA::CRUD_CONTROLLER_FQCN),
                     'propertyName' => $propertyName,
-                    'originatingPage' => $context->getCrud()?->getCurrentPage(),
+                    'originatingPage' => $context->getCrud()->getCurrentPage(),
                 ])
                 ->generateUrl();
 

@@ -22,7 +22,7 @@ final class AvatarConfigurator implements FieldConfiguratorInterface
     public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
     {
         if (null === $field->getCustomOption(AvatarField::OPTION_HEIGHT)) {
-            $isDetailAction = Action::DETAIL === $context->getCrud()?->getCurrentAction();
+            $isDetailAction = Action::DETAIL === $context->getCrud()->getCurrentAction();
             $field->setCustomOption(AvatarField::OPTION_HEIGHT, $isDetailAction ? 48 : 24);
         }
 

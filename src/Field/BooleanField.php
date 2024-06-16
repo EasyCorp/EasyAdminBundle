@@ -16,6 +16,8 @@ final class BooleanField implements FieldInterface
     use FieldTrait;
 
     public const OPTION_RENDER_AS_SWITCH = 'renderAsSwitch';
+    public const OPTION_HIDE_VALUE_WHEN_TRUE = 'hideValueWhenTrue';
+    public const OPTION_HIDE_VALUE_WHEN_FALSE = 'hideValueWhenFalse';
     /** @internal */
     public const OPTION_TOGGLE_URL = 'toggleUrl';
     /** @internal */
@@ -34,12 +36,28 @@ final class BooleanField implements FieldInterface
             ->setFormType(CheckboxType::class)
             ->addCssClass('field-boolean')
             ->addJsFiles(Asset::fromEasyAdminAssetPackage('field-boolean.js')->onlyOnIndex())
-            ->setCustomOption(self::OPTION_RENDER_AS_SWITCH, true);
+            ->setCustomOption(self::OPTION_RENDER_AS_SWITCH, true)
+            ->setCustomOption(self::OPTION_HIDE_VALUE_WHEN_TRUE, false)
+            ->setCustomOption(self::OPTION_HIDE_VALUE_WHEN_FALSE, false);
     }
 
     public function renderAsSwitch(bool $isASwitch = true): self
     {
         $this->setCustomOption(self::OPTION_RENDER_AS_SWITCH, $isASwitch);
+
+        return $this;
+    }
+
+    public function hideValueWhenTrue(bool $hide = true): self
+    {
+        $this->setCustomOption(self::OPTION_HIDE_VALUE_WHEN_TRUE, $hide);
+
+        return $this;
+    }
+
+    public function hideValueWhenFalse(bool $hide = true): self
+    {
+        $this->setCustomOption(self::OPTION_HIDE_VALUE_WHEN_FALSE, $hide);
 
         return $this;
     }

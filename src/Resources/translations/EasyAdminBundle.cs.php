@@ -3,15 +3,15 @@
 return [
     'page_title' => [
         'dashboard' => 'Úvod',
-        'detail' => '%entity_as_string%',
-        'edit' => 'Edit %entity_label_singular%',
+        'detail' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
+        'edit' => 'Editovat %entity_label_singular%',
         'index' => '%entity_label_plural%',
         'new' => 'Vytvořit %entity_label_singular%',
         'exception' => 'Chyba|Chyby',
     ],
 
     'datagrid' => [
-        'hidden_results' => 'Některé výsledky nebohly být zobrazeny neboď nemáte patřičná oprávnění',
+        'hidden_results' => 'Některé položky nemohly být zobrazeny neboť nemáte patřičná oprávnění',
         'no_results' => 'Žádné položky.',
     ],
 
@@ -21,7 +21,7 @@ return [
         'next' => 'Další',
         'last' => 'Poslední',
         'counter' => '<strong>%start%</strong> - <strong>%end%</strong> z <strong>%results%</strong>',
-        'results' => '{0} Žádné výsledky|{1} <strong>1</strong> výsledek|{2,3,4} <strong>%count%</strong> výsledky|[5,Inf] <strong>%count%</strong> výsledků',
+        'results' => '{0} Žádná položka|{1} <strong>1</strong> položka|{2,3,4} <strong>%count%</strong> položky|[5,Inf] <strong>%count%</strong> položek',
     ],
 
     'label' => [
@@ -29,9 +29,9 @@ return [
         'false' => 'Ne',
         'empty' => 'Prázdné',
         'null' => 'Nulové',
-        'object' => 'PHP Objekt',
+        'object' => 'PHP objekt',
         'inaccessible' => 'Nepřístupné',
-        'inaccessible.explanation' => 'Getter metoda pro toto pole neexistuje nebo není veřejná (public)',
+        'inaccessible.explanation' => 'Getter metoda pro toto pole neexistuje nebo není veřejná',
         'form.empty_value' => 'Prázdné',
     ],
 
@@ -45,7 +45,7 @@ return [
         'new' => 'Vytvořit %entity_label_singular%',
         'search' => 'Hledat',
         'detail' => 'Zobrazit',
-        'edit' => 'Editace',
+        'edit' => 'Upravit',
         'delete' => 'Smazat',
         'cancel' => 'Zrušit',
         'index' => 'Zpět na výpis',
@@ -62,7 +62,7 @@ return [
     ],
 
     'batch_action_modal' => [
-        'title' => 'Opravdu chcete změnit vybrané položky?',
+        'title' => 'Opravdu chcete upravit vybrané položky?',
         'content' => 'Tuto akci není možné vrátit zpět.',
         'action' => 'Pokračovat',
     ],
@@ -89,8 +89,8 @@ return [
         'label.ends_with' => 'končí na',
         'label.exactly' => 'je přesně',
         'label.not_exactly' => 'není přesně',
-        'label.is_same' => 'je stejný',
-        'label.is_not_same' => 'není stejný',
+        'label.is_same' => 'je stejné',
+        'label.is_not_same' => 'není stejné',
         'label.is_after' => 'je po',
         'label.is_after_or_same' => 'je po nebo stejně',
         'label.is_before' => 'je před',
@@ -131,13 +131,13 @@ return [
     'exception' => [
         'entity_not_found' => 'Tato položka již není dostupná.',
         'entity_remove' => 'Tato položka nemůže být smazána, neboť na ní závisí ostatní položky.',
-        'forbidden_action' => 'Požadovaná akce nemůže být provedena na této položce.',
+        'forbidden_action' => 'Na této položce nemůže být provedena požadovaná akce.',
         'insufficient_entity_permission' => 'Nemáte dostatečná oprávnění pro přístup k této položce.',
     ],
 
     'autocomplete' => [
         'no-results-found' => 'Nenalezeny žádné položky',
-        // 'no-more-results' => 'No more results',
-        'loading-more-results' => 'Načítají se další výsledky…',
+        'no-more-results' => 'Žádné další položky',
+        'loading-more-results' => 'Načítají se další položky…',
     ],
 ];

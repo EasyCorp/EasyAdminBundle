@@ -37,6 +37,14 @@ final class ArrayFilter implements FilterInterface
         return $this;
     }
 
+    public function setTranslatableChoices(array $choiceGenerator): self
+    {
+        $this->dto->setFormTypeOption('value_type_options.choices', array_keys($choiceGenerator));
+        $this->dto->setFormTypeOption('value_type_options.choice_label', fn ($value) => $choiceGenerator[$value]);
+
+        return $this;
+    }
+
     public function canSelectMultiple(bool $selectMultiple = true): self
     {
         $this->dto->setFormTypeOption('value_type_options.multiple', $selectMultiple);

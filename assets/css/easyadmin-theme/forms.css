@@ -1,0 +1,732 @@
+/* Forms
+/* ------------------------------------------------------------------------- */
+
+input[disabled] {
+    cursor: not-allowed;
+}
+
+.form-inline {
+    align-items: center;
+    display: flex;
+    flex-flow: row wrap;
+}
+
+/* Base form groups */
+.form-group {
+    padding: 0 0 24px;
+}
+
+.form-group label,
+.form-group legend.col-form-label {
+    color: var(--form-label-color);
+    font-size: var(--font-size-base);
+    font-weight: 500;
+    margin: 0;
+    padding: 0 0 8px 0;
+}
+
+.form-check .form-check-input {
+    border-color: var(--form-type-check-input-border-color);
+    height: 15px;
+    width: 15px;
+}
+.form-check:not(.form-switch) .form-check-input:not(:checked) {
+    background-color: unset;
+}
+/* Used in checkbox and radio buttons */
+label.form-check-label {
+    cursor: pointer;
+    font-weight: normal;
+}
+.form-group label.form-check-label.required:after {
+    display: none;
+}
+.form-widget .form-check + .form-check {
+    margin-top: 5px;
+}
+
+.form-group label.required:after,
+.form-group .col-form-label.required:after {
+    background: var(--color-danger);
+    border-radius: 50%;
+    content: '';
+    display: inline-block;
+    filter: opacity(75%);
+    position: relative;
+    right: -2px;
+    top: -8px;
+    z-index: var(--zindex-700);
+    height: 4px;
+    width: 4px;
+}
+
+/* Form widgets (inputs, selects, etc.) */
+.form-widget {
+}
+
+.form-widget .form-help {
+    color: var(--form-help-color);
+    display: block;
+    font-size: var(--font-size-sm);
+    margin-top: 5px;
+    transition: color 0.5s ease;
+}
+.form-widget:focus-within .form-help {
+    color: var(--form-help-active-color);
+}
+
+.form-widget input.form-control,
+.form-widget textarea.form-control,
+.form-widget .form-select {
+    background-color: var(--form-control-bg);
+    background-repeat: no-repeat; /* see https://github.com/EasyCorp/EasyAdminBundle/issues/5197 */
+    border: 1px solid var(--form-input-border-color);
+    box-shadow: var(--form-input-shadow);
+    color: var(--form-input-text-color);
+    font-size: .875rem;
+    height: 30px;
+    padding: 3px 7px 4px;
+    white-space: nowrap;
+    word-break: keep-all;
+    transition: box-shadow .08s ease-in, color .08s ease-in;
+}
+.form-widget input.form-control.is-invalid,
+.form-widget textarea.form-control.is-invalid,
+.form-widget .form-select.is-invalid,
+.field-collection-item.field-collection-item-complex.is-invalid,
+.form-widget input.form-control.is-invalid:focus,
+.form-widget textarea.form-control.is-invalid:focus,
+.form-widget .form-select.is-invalid:focus,
+.field-collection-item.field-collection-item-complex.is-invalid:focus {
+    background-image: none;
+    border: 1px solid var(--form-input-error-border-color);
+    box-shadow: var(--form-input-error-shadow);
+}
+.form-widget input.form-check-input.is-invalid {
+    border: 1px solid var(--form-input-error-border-color);
+    box-shadow: var(--form-input-error-shadow);
+}
+
+.form-widget .form-control:disabled,
+.form-widget .form-control[readonly],
+.form-widget .form-select:disabled,
+.form-widget .form-select[readonly] {
+    background-color: var(--form-control-disabled-bg);
+    border-color: var(--form-input-border-color) !important;
+    box-shadow: none !important;
+    color: var(--form-control-disabled-color);
+    cursor: not-allowed;
+}
+body.ea-dark-scheme .form-widget .form-select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23adb5bd' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+}
+
+.form-widget .form-select[multiple] {
+    height: auto;
+    background-image: none;
+    padding: 0;
+}
+.form-widget input.form-check-input {
+    border: 1px solid var(--form-type-check-input-border-color);
+    box-shadow: var(--form-type-check-input-box-shadow);
+}
+.form-widget input.form-control:focus,
+.form-widget textarea.form-control:focus,
+.form-widget .form-select:focus,
+.form-widget .custom-file-input:focus ~ .custom-file-label,
+.form-widget input.form-check-input:focus {
+    border-color: var(--form-input-hover-border-color);
+    box-shadow: var(--form-input-hover-shadow);
+    outline: 0;
+}
+.form-check-input:checked {
+    background-color: var(--form-type-check-input-checked-bg);
+}
+.form-check-input:focus {
+    box-shadow: var(--form-input-hover-shadow);
+}
+
+.form-widget .form-control + .input-group-append {
+    color: var(--gray-600);
+    height: 30px;
+}
+.form-widget .form-control + .input-group-append i {
+    color: var(--gray-600);
+}
+
+.form-widget input.form-control[data-ea-align=right] {
+    text-align: right;
+}
+.form-widget input.form-control.is-invalid[data-ea-align=right] {
+    padding-right: 30px;
+}
+
+.form-widget textarea.form-control {
+    height: auto;
+    line-height: 1.6;
+    white-space: pre-wrap;
+}
+
+.form-widget .form-select {
+    background-position: right 5px center;
+    padding: 3px 28px 4px 7px;
+}
+.ts-dropdown.form-select {
+    height: auto;
+}
+
+/* Checkbox widgets */
+.form-widget .form-check {
+    margin: 0;
+    padding: 0;
+}
+label.form-check-label {
+    margin: 0;
+    padding: 0 0 0 5px;
+}
+.form-check .form-check-input {
+    float: none;
+    margin-left: 0;
+    margin-top: 2px;
+}
+.form-check-inline + .form-check-inline {
+    margin-left: 15px;
+}
+
+/* in Bootstrap custom file widgets, the label is used to simulate the file input */
+.field-file .custom-file, .field-file .custom-file-input {
+    height: 30px;
+}
+.field-file .custom-file label.custom-file-label {
+    height: 30px;
+    margin: 0;
+    max-width: 350px;
+    overflow: hidden;
+    padding: 3px 7px 5px;
+    text-align: left;
+}
+.field-file .custom-file label.custom-file-label:after {
+    color: var(--text-color);
+    content: "\f07c";
+    display: inline-block;
+    font-family: "Font Awesome 6 Free";
+    font-size: 17px;
+    height: 28px;
+    line-height: 28px;
+    padding: 0 8px;
+    vertical-align: middle;
+}
+
+/* Date-time widgets */
+.field-date .form-widget,
+.field-time .form-widget,
+.field-datetime .form-widget {
+    margin: 0;
+}
+
+.datetime-widget select,
+.datetime-widget .input-group > .form-select {
+    min-width: max-content;
+    -webkit-appearance: none; /* needed for Safari */
+}
+.datetime-widget + .datetime-widget {
+    margin-left: 10px;
+}
+
+.datetime-widget select + select {
+    margin-left: 4px;
+}
+
+.datetime-widget-time select {
+    margin: 0 0 0 2px;
+}
+.datetime-widget-time select:first-child {
+    margin-left: 0;
+}
+.datetime-widget-time select:last-child {
+    margin-right: 0;
+}
+
+/* Utilities to create common form fields (long, short, etc.) */
+.short .form-widget {
+    flex: 0 0 20% !important;
+}
+
+.long .form-control, .large .form-control {
+    max-width: unset !important;
+}
+
+.large .input.form-control {
+    font-size: 18px !important;
+}
+
+.large textarea.form-control {
+    height: 500px;
+    max-width: unset !important;
+}
+
+.code input.form-control, .code textarea.form-control {
+    font-family: monospace !important;
+}
+
+.field-group .long .form-control, .field-group .large .form-control {
+    flex: 0 0 100% !important;
+    max-width: unset !important;
+}
+
+.field-group .large textarea.form-control {
+    flex: 0 0 100% !important;
+    height: 500px;
+    max-width: unset !important;
+}
+
+/* Form tabs */
+.form-tabs-tablist .nav-tabs {
+    background: transparent;
+    border: 0;
+    box-shadow: 0 2px 0 var(--form-tabs-border-color);
+    margin: 0px 0px 20px;
+    padding-left: 0px;
+}
+
+.form-tabs-tablist .nav-tabs a, .form-tabs-tablist .nav-tabs a:hover {
+    border: 0;
+    color: var(--text-color);
+    font-size: var(--font-size-base);
+    font-weight: 500;
+    margin: 0;
+    padding: 4px 14px 8px;
+}
+.form-tabs-tablist .nav-tabs .nav-item:first-child a, .form-tabs-tablist .nav-tabs .nav-item:first-child a:hover {
+     padding-left: 0;
+ }
+
+.form-tabs-tablist .nav-tabs .tab-nav-item-icon {
+    color: var(--text-muted);
+    margin-right: 5px;
+}
+
+.form-tabs-tablist .nav-tabs .nav-link:focus-visible {
+    box-shadow: none;
+    outline: 0;
+}
+.form-tabs-tablist .nav-tabs .nav-link.active {
+    background: transparent;
+    color: var(--link-color);
+    position: relative;
+}
+.form-tabs-tablist .nav-tabs .nav-link.active .tab-nav-item-icon {
+    color: var(--link-color);
+}
+.form-tabs-tablist .nav-tabs .nav-link.active:before {
+    content: '';
+    width: 100%;
+    height: 2px;
+    background: var(--body-bg);
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+}
+.form-tabs-tablist .nav-tabs .nav-link.active:after {
+    content: '';
+    width: calc(100% - 2 * var(--form-tabs-gutter-x));
+    height: 2px;
+    background: var(--link-color);
+    position: absolute;
+    bottom: -2px;
+    left: var(--form-tabs-gutter-x);
+}
+.form-tabs-tablist .nav-tabs .nav-item:first-child .nav-link.active:after {
+    width: calc(100% - var(--form-tabs-gutter-x));
+    left: 0;
+}
+
+.form-tabs-tablist .nav-tabs .nav-item .badge {
+    line-height: 1;
+    margin-left: 4px;
+    padding: 3px 6px;
+}
+
+.form-tabs-content .tab-help {
+    color: var(--form-tabs-help-color);
+    margin-top: -10px;
+    margin-bottom: 15px;
+}
+
+/* Form columns */
+.form-column .form-column-title {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+}
+.form-column .form-column-title .form-column-title-content {
+    align-items: center;
+    display: flex;
+    color: var(--form-column-header-color);
+    font-size: 17px;
+    font-weight: bold;
+    padding: 0 0 2px;
+}
+
+.form-column .form-column-title .form-column-icon {
+    color: var(--form-column-icon-color);
+    margin-right: 10px;
+}
+
+.form-column .form-column-title .form-column-help {
+    color: var(--form-column-help-color);
+    flex: 1;
+    margin: 0;
+}
+.form-column .field-form_fieldset {
+    margin-bottom: var(--bs-gutter-x);
+}
+
+.form-column .form-fieldset {
+    border-radius: var(--border-radius);
+    box-shadow: inset 0 0 0 1px var(--form-fieldset-border-color);
+}
+
+.form-column .form-fieldset-header {
+    box-shadow: none;
+    padding: calc(var(--bs-gutter-x) - 5px) var(--bs-gutter-x) calc(var(--bs-gutter-x) / 2);
+}
+.form-column .form-fieldset-header :has(.form-fieldset-title-content.collapsed) {
+    padding-top: calc(var(--bs-gutter-x) / 2);
+}
+
+.form-column .form-fieldset-header .form-fieldset-title .form-fieldset-title-content {
+    box-shadow: none;
+    padding: 0;
+}
+
+.form-column .form-fieldset-header .form-fieldset-title .form-fieldset-help {
+    margin-top: 2px;
+}
+
+.form-column .form-fieldset-body {
+    padding: 5px var(--bs-gutter-x) 0;
+}
+.form-column .form-fieldset-body.without-header {
+    padding: var(--bs-gutter-x) var(--bs-gutter-x) 0;
+}
+
+/* Form fieldsets */
+.field-form_fieldset {
+    margin-bottom: calc(1.5 * var(--bs-gutter-x)); /* not a typo; don't use --bs-gutter-y here */
+}
+
+.form-section-empty {
+    padding: 25px 10px 25px;
+}
+
+.form-fieldset-header {
+    align-items: flex-start;
+    display: flex;
+    flex-wrap: nowrap;
+    padding: 0 0 15px;
+    position: relative;
+}
+.form-fieldset-header .form-fieldset-collapse-marker {
+    color: var(--form-fieldset-collapse-marker-color);
+    font-size: 90%;
+    margin: 0 10px 0 2px;
+    transform: rotate(90deg);
+    transition: transform .2s ease-in-out;
+}
+
+.form-fieldset-header .form-fieldset-title {
+    flex: 1;
+}
+.form-fieldset-header .form-fieldset-title .form-fieldset-title-content {
+    align-items: center;
+    box-shadow: 0 1px 0 var(--form-fieldset-header-border-color);
+    display: flex;
+    color: var(--form-fieldset-header-color);
+    font-size: 17px;
+    font-weight: bold;
+    padding: 0 0 5px;
+}
+.form-fieldset-header .form-fieldset-title .form-fieldset-title-content.not-collapsible { cursor: default; }
+.form-fieldset-header .form-fieldset-title .form-fieldset-title-content.collapsed .form-fieldset-collapse-marker {
+    transform: rotate(0deg);
+}
+.form-fieldset-header .form-fieldset-title .form-fieldset-title-content .collapsible::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+}
+
+.form-fieldset-header .form-fieldset-title .form-fieldset-icon {
+    color: var(--form-fieldset-icon-color);
+    margin-right: 10px;
+}
+
+.form-fieldset-header .form-fieldset-title .form-fieldset-help {
+    color: var(--form-fieldset-help-color);
+    margin-top: 6px;
+}
+
+/* Form actions ("Save changes", "Delete", etc.) */
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    padding: 0;
+}
+.form-actions .btn {
+    margin-left: 10px;
+}
+
+/* Form errors */
+.has-error .form-help, .has-error .control-label, .has-error .radio,
+.has-error .checkbox, .has-error .radio-inline, .has-error .checkbox-inline,
+.has-error.radio label, .has-error.checkbox label, .has-error.radio-inline label,
+.has-error.checkbox-inline label {
+    color: var(--form-help-error-color);
+}
+
+.has-error .form-widget input.form-control,
+.has-error .form-widget textarea.form-control,
+.has-error .form-widget .form-select,
+.has-error .ea-fileupload .input-group,
+.has-error .btn.input-file-container,
+.has-error .CodeMirror,
+.has-error .ea-text-editor-wrapper {
+    box-shadow: var(--form-input-error-shadow);
+}
+
+.has-error .ea-fileupload .input-group {
+    border-radius: var(--border-radius);
+}
+
+.global-invalid-feedback {
+    background: var(--form-global-error-bg);
+    border: var(--form-global-error-border);
+    border-radius: var(--border-radius);
+    color: var(--form-global-error-color);
+    font-size:  14px;
+    margin:  5px 0;
+    padding: 6px 12px;
+}
+form .invalid-feedback {
+    color: var(--color-danger);
+    font-size: 1em;
+    font-weight: 500;
+    padding-top: 6px;
+}
+.form-check-input.is-invalid ~ .form-check-label,
+.was-validated .form-check-input:not([type="checkbox"]):invalid ~ .form-check-label {
+    color: inherit;
+}
+
+form .invalid-feedback .badge-danger {
+    font-size: 0.6875rem;
+    margin-right: 2px;
+    padding: 3px 4px;
+}
+form .invalid-feedback > .d-block + .d-block {
+    margin-top: 5px;
+}
+
+/* Form group inputs */
+.input-group-text {
+    background-color: var(--form-input-group-text-bg);
+    border: 1px solid var(--form-input-group-text-border-color);
+    box-shadow: var(--form-input-box-shadow);
+    color: var(--form-input-text-color);
+    height: 30px;
+    padding: 3px 10px 5px;
+}
+.input-group button,
+.input-group button:hover,
+.input-group button:active,
+.input-group button:focus {
+    height: 28px;
+    margin-top: 1px;
+}
+
+.input-group-append {
+    margin-left: 0;
+}
+.input-group-prepend {
+    margin-right: 0;
+}
+
+/* fileupload widgets */
+.ea-fileupload .custom-file {
+    height: 30px;
+}
+.ea-fileupload .input-group {
+    flex-wrap: nowrap;
+}
+.ea-fileupload .input-group .btn,
+.ea-fileupload .input-group .btn:hover {
+    background: var(--form-input-group-text-bg);
+    box-shadow: none !important;
+    border-radius: 0;
+    color: var(--text-color);
+    font-size: 17px;
+    height: 28px;
+    line-height: 28px;
+    margin: 0;
+    padding: 0 8px;
+    vertical-align: middle;
+}
+.ea-fileupload .input-group .btn:first-child,
+.ea-fileupload .input-group .btn:hover:first-child {
+    margin-left: 5px;
+}
+.ea-fileupload .input-group .btn:last-child,
+.ea-fileupload .input-group .btn:hover:last-child {
+    border-top-right-radius: var(--border-radius);
+    border-bottom-right-radius: var(--border-radius);
+}
+
+.ea-fileupload .custom-file-input {
+    cursor: pointer;
+    height: calc(1.5em + .75rem + 2px);
+    margin: 0;
+    overflow: hidden;
+    opacity: 0;
+    position: relative;
+    width: 100%;
+    z-index: 2;
+}
+
+.ea-fileupload .custom-file-label {
+    background: var(--form-control-bg);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--form-input-border-color);
+    box-shadow: var(--form-input-shadow);
+    color: var(--form-input-text-color);
+    height: 30px;
+    left: 0;
+    margin: 0 !important;
+    overflow: hidden;
+    padding: 3px 40px 3px 7px !important;
+    position: absolute;
+    text-align: left !important;
+    text-overflow: ellipsis;
+    top: 0;
+    white-space: nowrap;
+    width: 100% !important;
+}
+.ea-fileupload .custom-file-label::after {
+    display: none;
+}
+
+.ea-fileupload .input-group-text {
+    background: var(--form-input-group-text-bg);
+    border: 1px solid var(--form-input-border-color);
+    box-shadow: none;
+    color: var(--text-muted);
+    height: 30px;
+    padding: 7px 0 7px 7px;
+    position: absolute;
+    right: 0;
+    z-index: 3;
+}
+
+.ea-fileupload .fileupload-list {
+    height: auto;
+    margin-top: 7px;
+    padding: 0;
+}
+.ea-fileupload .fileupload-list .fileupload-table {
+    width: 100%;
+}
+.ea-fileupload .fileupload-list .fileupload-table td {
+    padding: 3px 7px;
+    border-radius: 3px;
+}
+.ea-fileupload .fileupload-list .fileupload-table td:first-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 300px;
+}
+.ea-fileupload .fileupload-list .fileupload-table tr:nth-child(odd) td {
+    background-color: #f5f7ff;
+}
+.ea-fileupload .fileupload-list .fileupload-table td.file-size {
+    color: #4e566d;
+}
+
+/* Image/file vich uploads */
+.ea-vich-image img {
+    box-shadow: 0 0 0 4px var(--white), 0px 0px 4px 3px var(--gray-600);
+    margin: 6px 4px 12px;
+    max-height: 300px;
+    max-width: 100%;
+}
+
+.ea-vich-file-name {
+    display: block;
+    margin: 4px 0 8px;
+}
+
+.ea-vich-file-name .fa {
+    font-size: 18px;
+}
+
+/* this element should use 'display: flex', but that doesn't work with
+   the CSS trick used to customize the <input type="file" /> fields. */
+
+.ea-vich-image-actions > div,
+.ea-vich-file-actions > div {
+    float: left;
+    margin-right: 4px;
+}
+
+.ea-vich-image-actions:after,
+.ea-vich-file-actions:after {
+    clear: left;
+    content: "";
+    display: block;
+}
+
+.ea-vich-image-actions .field-checkbox,
+.ea-vich-file-actions .field-checkbox {
+    padding-top: 4px;
+}
+
+.ea-vich-image-actions .form-widget {
+    flex-basis: 100%;
+}
+
+/* This CSS trick allows to customize the <input type="file" /> field entirely
+   as explained in https://gist.github.com/barneycarroll/5244258 */
+.input-file-container {
+    overflow: hidden;
+    position: relative;
+}
+
+.input-file-container [type=file] {
+    cursor: inherit;
+    display: block;
+    font-size: 999px;
+    filter: opacity(0);
+    min-height: 100%;
+    min-width: 100%;
+    opacity: 0;
+    position: absolute;
+    right: 0;
+    text-align: right;
+    top: 0;
+}
+
+/* Fix "Browse" button for regular file inputs */
+.form-control::file-selector-button, .form-control::-webkit-file-upload-button {
+    color: var(--button-secondary-color);
+    background-color: var(--button-secondary-bg);
+    box-shadow: var(--button-shadow);
+}
+
+.form-control:hover:not(:disabled):not([readonly])::file-selector-button,
+.form-control:hover:not(:disabled):not([readonly])::-webkit-file-upload-button {
+    background-color: var(--button-secondary-bg);
+    box-shadow: var(--button-hover-shadow);
+}

@@ -23,6 +23,8 @@ final class CurrencyConfigurator implements FieldConfiguratorInterface
     public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
     {
         $field->setFormTypeOptionIfNotSet('attr.data-ea-widget', 'ea-autocomplete');
+        // currency names passed to the form are already translated, so don't translate them again in the template
+        $field->setFormTypeOptionIfNotSet('choice_translation_domain', false);
 
         if (null === $currencyCode = $field->getValue()) {
             return;

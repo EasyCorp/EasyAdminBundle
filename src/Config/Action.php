@@ -42,10 +42,10 @@ final class Action
     }
 
     /**
-     * @param mixed       $label Use FALSE to hide the label; use NULL to autogenerate it
-     * @param string|null $icon  The full CSS classes of the FontAwesome icon to render (see https://fontawesome.com/v6/search?m=free)
+     * @param TranslatableInterface|string|false|null $label Use FALSE to hide the label; use NULL to autogenerate it
+     * @param string|null                             $icon  The full CSS classes of the FontAwesome icon to render (see https://fontawesome.com/v6/search?m=free)
      */
-    public static function new(string $name, /** @var TranslatableInterface|string|false|null */ $label = null, ?string $icon = null): self
+    public static function new(string $name, $label = null, ?string $icon = null): self
     {
         if (!\is_string($label)
             && !$label instanceof TranslatableInterface
@@ -57,7 +57,7 @@ final class Action
                 'Argument "%s" for "%s" must be one of these types: %s. Passing type "%s" will cause an error in 5.0.0.',
                 '$label',
                 __METHOD__,
-                '"string", "false" or "null"',
+                sprintf('"%s", "string", "false" or "null"', TranslatableInterface::class),
                 \gettype($label)
             );
         }
@@ -89,9 +89,9 @@ final class Action
     }
 
     /**
-     * @param mixed $label Use FALSE to hide the label; use NULL to autogenerate it
+     * @param TranslatableInterface|string|false|null $label Use FALSE to hide the label; use NULL to autogenerate it
      */
-    public function setLabel(/* @var TranslatableInterface|string|false|null */ $label): self
+    public function setLabel($label): self
     {
         if (!\is_string($label)
             && !$label instanceof TranslatableInterface
@@ -121,25 +121,23 @@ final class Action
     }
 
     /**
-     * If you set your own CSS classes, the default CSS classes are not applied.
-     * You may want to also add the 'btn' (and 'btn-primary', etc.) classes to make
-     * your action look like a button.
+     * Use this to override the default CSS classes applied to actions and use instead your own CSS classes.
+     * See also addCssClass() to add your own custom classes without removing the default ones.
      */
     public function setCssClass(string $cssClass): self
     {
-        $this->dto->setCssClass($cssClass);
+        $this->dto->setCssClass(trim($cssClass));
 
         return $this;
     }
 
     /**
-     * If you add a custom CSS class, the default CSS classes are not applied.
-     * You may want to also add the 'btn' (and 'btn-primary', etc.) classes to make
-     * your action look like a button.
+     * This adds the given CSS class(es) to the classes already applied to the actions
+     * (no matter if they are the default ones or some custom CSS classes set with the setCssClass() method).
      */
     public function addCssClass(string $cssClass): self
     {
-        $this->dto->setCssClass(trim($this->dto->getCssClass().' '.$cssClass));
+        $this->dto->setAddedCssClass(trim($cssClass));
 
         return $this;
     }
@@ -193,7 +191,10 @@ final class Action
         return $this;
     }
 
-    public function linkToUrl(/* @var string|callable */ $url): self
+    /**
+     * @param string|callable $url
+     */
+    public function linkToUrl($url): self
     {
         if (!\is_string($url) && !\is_callable($url)) {
             trigger_deprecation(

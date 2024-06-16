@@ -30,7 +30,8 @@ final class TextConfigurator implements FilterConfiguratorInterface
             $filterDto->setFormTypeOption('value_type', TextareaType::class);
         }
 
-        if (\in_array($propertyType, [Types::BLOB, Types::OBJECT, Types::TEXT], true)) {
+        // don't use Types::OBJECT because it was removed in Doctrine ORM 3.0
+        if (\in_array($propertyType, [Types::BLOB, 'object', Types::TEXT], true)) {
             $filterDto->setFormTypeOptionIfNotSet('value_type', TextareaType::class);
         }
     }

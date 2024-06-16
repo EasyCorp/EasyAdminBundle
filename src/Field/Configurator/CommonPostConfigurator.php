@@ -7,7 +7,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
-use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use function Symfony\Component\String\u;
 use Twig\Markup;
@@ -17,7 +16,7 @@ use Twig\Markup;
  */
 final class CommonPostConfigurator implements FieldConfiguratorInterface
 {
-    private AdminContextProvider$adminContextProvider;
+    private AdminContextProvider $adminContextProvider;
     private string $charset;
 
     public function __construct(AdminContextProvider $adminContextProvider, string $charset)
@@ -34,6 +33,10 @@ final class CommonPostConfigurator implements FieldConfiguratorInterface
 
     public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
     {
+        // EasyAdmin by default allows using HTML contents in labels, help messages, etc.
+        // so we must enable the 'label_html' form option unless a field has configured it explicitly
+        $field->setFormTypeOptionIfNotSet('label_html', true);
+
         if (\in_array($context->getCrud()->getCurrentPage(), [Crud::PAGE_INDEX, Crud::PAGE_DETAIL], true)) {
             $formattedValue = $this->buildFormattedValueOption($field->getFormattedValue(), $field, $entityDto);
             $field->setFormattedValue($formattedValue);
@@ -48,7 +51,7 @@ final class CommonPostConfigurator implements FieldConfiguratorInterface
             return $value;
         }
 
-        $formatted = $callable($value, $entityDto->getInstance());
+        $formatted = $callable($field->getValue(), $entityDto->getInstance());
 
         // if the callable returns a string, wrap it in a Twig Markup to render the
         // HTML and CSS/JS elements that it might contain
@@ -58,12 +61,11 @@ final class CommonPostConfigurator implements FieldConfiguratorInterface
     private function updateFieldTemplate(FieldDto $field): void
     {
         $usesEasyAdminTemplate = u($field->getTemplatePath())->startsWith('@EasyAdmin/');
-        $isBooleanField = BooleanField::class === $field->getFieldFqcn();
         $isNullValue = null === $field->getFormattedValue();
         $isEmpty = is_countable($field->getFormattedValue()) && 0 === \count($field->getFormattedValue());
 
         $adminContext = $this->adminContextProvider->getContext();
-        if ($usesEasyAdminTemplate && $isNullValue && !$isBooleanField) {
+        if ($usesEasyAdminTemplate && $isNullValue) {
             $field->setTemplatePath($adminContext->getTemplatePath('label/null'));
         }
 

@@ -5,7 +5,9 @@
 | Branch  | Supported          |
 | ------- | ------------------ |
 | 1.x     | No                 |
-| master  | Yes                |
+| 2.x     | No                 |
+| 3.x     | No                 |
+| 4.x     | Yes                |
 
 ## Reporting a Vulnerability
 
@@ -18,8 +20,9 @@
    as regular issues.
 
 3) If you find truly critical security issues (e.g. a way to bypass the
-   restricted access to the admin) you can report them to my private email
-   address at `javier.eguiluz@symfony.com`.
+   restricted access to the admin) you can report them in this repository using
+   the tool provided by GitHub in [Security > Advisories][3].
 
 [1]: https://symfony.com/components
 [2]: https://symfony.com/security
+[3]: https://github.com/EasyCorp/EasyAdminBundle/security/advisories

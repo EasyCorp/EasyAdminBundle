@@ -2,20 +2,23 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Menu;
 
-use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu\MenuItemMatcherInterface as ContractMenuItemMatcherInterface;
 
-/**
- * @author Javier Eguiluz <javier.eguiluz@gmail.com>
- */
-interface MenuItemMatcherInterface
-{
-    /**
-     * @return bool Returns true when this menu item is the selected one
-     */
-    public function isSelected(MenuItemDto $menuItemDto): bool;
+trigger_deprecation(
+    'easycorp/easyadmin-bundle',
+    '4.8.1',
+    'The "%s" class is deprecated and it will be removed in EasyAdmin 5.0.0, use "%s" instead.',
+    MenuItemMatcherInterface::class, ContractMenuItemMatcherInterface::class
+);
 
+class_exists(ContractMenuItemMatcherInterface::class);
+
+/** @phpstan-ignore-next-line */
+if (false) {
     /**
-     * @return bool Returns true when any of the subitems of the menu item is selected
+     * @deprecated since EasyAdmin 4.8.1, to be removed in 5.0, use {@link ContractMenuItemMatcherInterface} instead
      */
-    public function isExpanded(MenuItemDto $menuItemDto): bool;
+    class MenuItemMatcherInterface
+    {
+    }
 }

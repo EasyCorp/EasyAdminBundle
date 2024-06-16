@@ -1,0 +1,226 @@
+/* Properties (the styles applied to properties in INDEX and DETAIL pages)
+/* -------------------------------------------------------------------------  */
+
+/* Array field */
+.field-array ul {
+  margin-bottom: 0;
+  padding-left: 1.2em;
+}
+.field-array li + li {
+  margin-top: 4px;
+}
+
+/* Avatar field */
+.field-avatar .image-avatar {
+  border-radius: var(--border-radius);
+  border: 0;
+  box-shadow: none;
+}
+
+/* Boolean field */
+.field-boolean .badge {
+  min-width: 33px;
+  text-transform: uppercase;
+}
+/* Boolean values don't use "true = green, false = red" on purpose because being FALSE
+   or TRUE can be good or bad depending on the context, so red/green doesn't always work */
+.field-boolean .badge-boolean-false {
+  background: var(--badge-boolean-false-bg);
+  border: 0;
+  box-shadow: var(--badge-boolean-false-box-shadow);
+  color: var(--badge-boolean-false-color);
+}
+.field-boolean .badge-boolean-true {
+  background: var(--badge-boolean-true-bg);
+  border: 0;
+  box-shadow: var(--badge-boolean-true-box-shadow);
+  color: var(--badge-boolean-true-color);
+}
+
+/* CodeEditor field */
+.field-code_editor .form-widget {
+  flex: 1;
+}
+.field-code_editor dt {
+   max-height: 480px;
+   overflow-y: auto;
+ }
+
+/* Collection field */
+.form-widget-compound .collection-empty {
+  margin-bottom: 10px;
+  padding-top: 5px;
+}
+.form-group.field-collection label:empty {
+  display: none;
+}
+
+/* this is the label of each array elements (it's probably OK to always hide it) */
+.form-group.field-array .form-widget .form-group {
+  padding: 6px 0;
+}
+.form-group.field-array .form-widget .form-group label { display: none; }
+
+.form-group.field-array .field-collection-item + .field-collection-item {
+  margin-top: 5px;
+}
+.form-group.field-array .field-collection-item {
+  display: flex;
+}
+
+.form-group.field-collection .accordion {
+  border-radius: var(--border-radius);
+  box-shadow: inset 0 0 0 1px var(--form-input-border-color);
+}
+.form-group.field-collection .accordion  .form-group { padding: 0; }
+
+.form-group.field-collection .accordion-header {
+  padding-right: 28px;
+  position: relative;
+}
+.form-group.field-collection .accordion-header:hover {
+  background: var(--form-type-collection-item-collapsed-hover-bg);
+  box-shadow: inset 0 0 0 1px var(--form-input-border-color);
+}
+.form-group.field-collection .accordion-header .accordion-button {
+  font-size: var(--font-size-base);
+}
+
+.form-group.field-collection .accordion-item {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: inset 0 -1px 0 var(--form-input-border-color);
+}
+
+.form-group.field-collection .field-collection-item-first .accordion-item,
+.form-group.field-collection .field-collection-item-first .accordion-header {
+  border-top-left-radius: var(--border-radius);
+  border-top-right-radius: var(--border-radius);
+}
+.form-group.field-collection .field-collection-item-last .accordion-item,
+.form-group.field-collection .field-collection-item-last .accordion-header {
+  border-bottom-left-radius: var(--border-radius);
+  border-bottom-right-radius: var(--border-radius);
+}
+
+.form-group.field-collection .field-collection-item.field-collection-item-last .accordion-item {
+  box-shadow: none;
+}
+
+.form-group.field-collection .accordion-item .form-group {
+  align-items: flex-start;
+  display: flex;
+  padding: 12px 0;
+}
+.form-group.field-collection .accordion-item .form-group > label,
+.form-group.field-collection .accordion-item .form-group legend.col-form-label {
+  font-weight: 500;
+  margin: 3px 10px 0 0;
+  padding: 0;
+  width: 20%;
+}
+.form-group.field-collection .accordion-item .accordion-body .form-widget {
+  flex: 1;
+}
+
+.form-group.field-collection .accordion-button,
+.form-group.field-collection .accordion-button:hover {
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+  color: var(--text-color);
+  flex: 1;
+  padding: 8px 7px;
+}
+
+.form-group.field-collection .accordion-button:after {
+  /* hides the default collapse marker */
+  display: none;
+}
+.form-group.field-collection .accordion-button i {
+  transition: transform .2s ease-in-out;
+}
+.form-group.field-collection .accordion-button:not(.collapsed) i {
+  transform: rotate(90deg);
+}
+.form-group.field-collection .accordion-button .form-collection-item-collapse-marker {
+  color: var(--form-collection-item-collapse-marker-color);
+  margin: 0 8px 0 4px;
+}
+
+.form-group.field-collection .field-collection-add-button {
+  margin-top: 5px;
+}
+.form-group.field-collection .field-collection-delete-button {
+  position: absolute;
+  top: 1px;
+  right: 5px;
+}
+
+/* Color field */
+.field-color .color-sample {
+  border-radius: var(--border-radius);
+  box-shadow: 0 0 0 2px var(--white), 0 0 0 4px var(--gray-300);
+  display: inline-block;
+  height: 19px;
+  width: 45px;
+}
+
+/* Country field */
+.field-country .country-flag {
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px var(--field-country-flag-border-color);
+  margin: 0 6px 1px 0;
+  max-height: 17px;
+  vertical-align: text-top;
+}
+.datagrid .field-country > span + span,
+.datalist .field-country dd > span + span {
+  margin-left: 10px;
+}
+
+.field-country .ts-control .country-name-flag,
+.field-country .ts-dropdown-content .country-name-flag .country-flag { margin-bottom: 0; }
+.field-country .ts-wrapper.multi .ts-control > div {
+  margin-bottom: 5px;
+}
+.field-country .ts-wrapper.multi .ts-control .country-name-flag {
+  margin-right: 25px;
+}
+.field-country .ts-wrapper.multi.plugin-remove_button .item .remove {
+  border-color: var(--form-type-autocomplete-multi-item-border-color);
+}
+
+/* Currency field */
+.field-currency .badge-currency {
+  border: 2px solid var(--gray-300);
+  display: inline-block;
+  font-size: 12px;
+  padding: 2px 4px;
+  text-transform: uppercase;
+}
+
+/* Date, Time and DateTime fields */
+.field-datetime input[type="datetime-local"].form-control,
+.field-date input[type="date"].form-control,
+.field-time input[type="time"].form-control {
+  width: auto;
+  max-width: 100%;
+}
+
+/* Language field */
+.field-language .badge-language {
+  border: 2px solid var(--field-language-badge-border-color);
+  box-shadow: none;
+  display: inline-block;
+  font-size: 12px;
+  padding: 2px 4px;
+  text-transform: uppercase;
+}
+
+/* Text editor field */
+.field-text_editor dt {
+  max-height: 480px;
+  overflow-y: auto;
+}

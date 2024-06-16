@@ -247,6 +247,14 @@ the :doc:`CRUD controllers </crud>` to add your own CSS and JavaScript files::
         public function configureAssets(Assets $assets): Assets
         {
             return $assets
+                // imports the given entrypoint defined in the importmap.php file of AssetMapper
+                // it's equivalent to adding this inside the <head> element:
+                // {{ importmap('admin') }}
+                ->addAssetMapperEntry('admin')
+                // you can also import multiple entries
+                // it's equivalent to calling {{ importmap(['app', 'admin']) }}
+                ->addAssetMapperEntry('app', 'admin')
+
                 // adds the CSS and JS assets associated to the given Webpack Encore entry
                 // it's equivalent to adding these inside the <head> element:
                 // {{ encore_entry_link_tags('...') }} and {{ encore_entry_script_tags('...') }}
@@ -288,9 +296,13 @@ and ``<script>`` tags, pass an ``Asset`` object to the ``addCssFile()``,
 
         ->addWebpackEncoreEntry(Asset::new('admin-app')->webpackEntrypointName('...'))
 
+        // adding full Asset objects for AssetMapper entries work too, but it's
+        // useless because entries can't define any property, only their name
+        ->addAssetMapperEntry(Asset::new('admin'))
+
         ->addCssFile(Asset::new('build/admin-detail.css')->onlyOnDetail())
         ->addJsFile(Asset::new('build/admin.js')->onlyWhenCreating())
-        ->addWebpackEncoreEntry(Asset::new('admin-app')->ignoreOnForms())
+        ->addWebpackEncoreEntry(Asset::new('admin-app')->ignoreOnForm())
 
         // you can also define the Symfony Asset package which the asset belongs to
         ->addCssFile(Asset::new('some-path/foo.css')->package('legacy_assets'))

@@ -26,6 +26,16 @@ Basic Information
 Options
 -------
 
+setDecimalSeparator
+~~~~~~~~~~~~~~~~~~~
+
+The numeric values show the default decimal separator used by PHP (e.g. 1/10 is
+shown as ``0.1``). Use this option to set a different character to separate the
+decimal part of the number::
+
+    // this would display '12345.67' as '12345,67'
+    yield NumberField::new('...')->setDecimalSeparator(',');
+
 setNumberFormat
 ~~~~~~~~~~~~~~~
 
@@ -70,6 +80,16 @@ this option to also display a ``<input type="text">`` element instead of the
 default ``<input type="number">`` element::
 
     yield NumberField::new('...')->setStoredAsString();
+
+setThousandsSeparator
+~~~~~~~~~~~~~~~~~~~~~
+
+By default, the numeric value doesn't separate each thousands group in any way
+(e.g. ``12345.67`` is displayed like that, instead of ``12,345.67``). Use this option
+to set the character to use to separate each thousands group::
+
+    // this would display '12345.67' as '12 345.67'
+    yield NumberField::new('...')->setThousandsSeparator(' ');
 
 .. _`NumberType`: https://symfony.com/doc/current/reference/forms/types/number.html
 .. _`PHP NumberFormatter class`: https://www.php.net/manual/en/class.numberformatter.php

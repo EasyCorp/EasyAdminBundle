@@ -14,7 +14,7 @@ trait CrudTestUrlGeneration
      * @throws InvalidClassPropertyTypeException
      * @throws MissingClassMethodException
      */
-    protected function getCrudUrl(string $action, string|int $entityId = null, array $options = [], ?string $dashboardFqcn = null, ?string $controllerFqcn = null): string
+    protected function getCrudUrl(string $action, string|int|null $entityId = null, array $options = [], ?string $dashboardFqcn = null, ?string $controllerFqcn = null): string
     {
         $dashboardFqcn ??= $this->getDashboardFqcn();
         $controllerFqcn ??= $this->getControllerFqcn();
@@ -64,9 +64,6 @@ trait CrudTestUrlGeneration
 
     protected function generateFilterRenderUrl(?string $dashboardFqcn = null, ?string $controllerFqcn = null): string
     {
-        // Use the index URL as referrer but remove scheme, host and port
-        $referrer = preg_replace('/^.*(\/.*)$/', '$1', $this->generateIndexUrl());
-
-        return $this->getCrudUrl('renderFilters', null, ['referrer' => $referrer], dashboardFqcn: $dashboardFqcn, controllerFqcn: $controllerFqcn);
+        return $this->getCrudUrl('renderFilters', dashboardFqcn: $dashboardFqcn, controllerFqcn: $controllerFqcn);
     }
 }

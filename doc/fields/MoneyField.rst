@@ -80,6 +80,12 @@ cents automatically when displaying and storing money amounts::
 
     yield MoneyField::new('...')->setStoredAsCents();
 
+.. note::
+
+    When this option is enabled, the ``divisor`` is set at ``100`` automatically.
+    However, if you've defined your own custom divisor with the
+    ``setFormTypeOption('divisor', ...)`` method, the custom divisor will be used.
+
 .. _`MoneyType`: https://symfony.com/doc/current/reference/forms/types/money.html
 .. _`ISO 4217 standard`: https://en.wikipedia.org/wiki/ISO_4217
 .. _`Symfony PropertyAccess`: https://symfony.com/doc/current/components/property_access.html

@@ -5,7 +5,6 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 use Doctrine\DBAL\Types\Types;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
-use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
@@ -13,7 +12,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
-use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
@@ -21,7 +19,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormRowType;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminTabType;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -32,7 +29,7 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 final class FieldFactory
 {
     private static array $doctrineTypeToFieldFqcn = [
-        Types::ARRAY => ArrayField::class,
+        'array' => ArrayField::class, // don't use Types::ARRAY because it was removed in Doctrine ORM 3.0
         Types::BIGINT => TextField::class,
         Types::BINARY => TextareaField::class,
         Types::BLOB => TextareaField::class,
@@ -49,7 +46,7 @@ final class FieldFactory
         Types::GUID => TextField::class,
         Types::INTEGER => IntegerField::class,
         Types::JSON => TextField::class,
-        Types::OBJECT => TextField::class,
+        'object' => TextField::class, // don't use Types::OBJECT because it was removed in Doctrine ORM 3.0
         Types::SIMPLE_ARRAY => ArrayField::class,
         Types::SMALLINT => IntegerField::class,
         Types::STRING => TextField::class,
@@ -61,12 +58,14 @@ final class FieldFactory
     private AdminContextProvider $adminContextProvider;
     private AuthorizationCheckerInterface $authorizationChecker;
     private iterable $fieldConfigurators;
+    private FormLayoutFactory $fieldLayoutFactory;
 
-    public function __construct(AdminContextProvider $adminContextProvider, AuthorizationCheckerInterface $authorizationChecker, iterable $fieldConfigurators)
+    public function __construct(AdminContextProvider $adminContextProvider, AuthorizationCheckerInterface $authorizationChecker, iterable $fieldConfigurators, FormLayoutFactory $fieldLayoutFactory)
     {
         $this->adminContextProvider = $adminContextProvider;
         $this->authorizationChecker = $authorizationChecker;
         $this->fieldConfigurators = $fieldConfigurators;
+        $this->fieldLayoutFactory = $fieldLayoutFactory;
     }
 
     public function processFields(EntityDto $entityDto, FieldCollection $fields): void
@@ -108,6 +107,12 @@ final class FieldFactory
                 $configurator->configure($fieldDto, $entityDto, $context);
             }
 
+            // check again if the field is displayed because this can change in the configurators
+            if (null !== $currentPage && false === $fieldDto->isDisplayedOn($currentPage)) {
+                $fields->unset($fieldDto);
+                continue;
+            }
+
             foreach ($fieldDto->getFormThemes() as $formThemePath) {
                 $context?->getCrud()?->addFormTheme($formThemePath);
             }
@@ -115,9 +120,8 @@ final class FieldFactory
             $fields->set($fieldDto);
         }
 
-        $isPageWhereTabsAreVisible = \in_array($currentPage, [Crud::PAGE_DETAIL, Crud::PAGE_EDIT, Crud::PAGE_NEW], true);
-        if ($isPageWhereTabsAreVisible) {
-            $this->checkOrphanTabFields($fields, $context);
+        if (!$fields->isEmpty()) {
+            $this->fieldLayoutFactory->createLayout($fields, $this->adminContextProvider->getContext()?->getCrud()?->getCurrentPage() ?? Crud::PAGE_INDEX);
         }
 
         $entityDto->setFields($fields);
@@ -127,17 +131,6 @@ final class FieldFactory
     {
         if ($fields->isEmpty()) {
             return;
-        }
-
-        // this is needed to handle this edge-case: the list of fields include one or more form panels,
-        // but the first fields of the list don't belong to any panel. We must create an automatic empty
-        // form panel for those "orphaned fields" so they are displayed as expected
-        $firstFieldIsAFormPanel = $fields->first()->isFormDecorationField();
-        foreach ($fields as $fieldDto) {
-            if (!$firstFieldIsAFormPanel && $fieldDto->isFormDecorationField()) {
-                $fields->prepend(FormField::addPanel()->getAsDto());
-                break;
-            }
         }
 
         foreach ($fields as $fieldDto) {
@@ -226,41 +219,5 @@ final class FieldFactory
         // and use the template name/path from the new specific field (e.g. 'crud/field/datetime')
 
         return $newField;
-    }
-
-    /**
-     * When rendering fields using tabs, all fields must belong to some tab.
-     */
-    private function checkOrphanTabFields(FieldCollection $fields, AdminContext $context): void
-    {
-        $hasTabs = false;
-        $isTabField = static fn (FieldDto $fieldDto) => EasyAdminTabType::class === $fieldDto->getFormType();
-        $isFormField = static fn (FieldDto $fieldDto) => FormField::class === $fieldDto->getFieldFqcn();
-
-        foreach ($fields as $fieldDto) {
-            if ($isTabField($fieldDto)) {
-                $hasTabs = true;
-                break;
-            }
-        }
-
-        if (!$hasTabs || $isTabField($fields->first())) {
-            return;
-        }
-
-        $orphanFieldNames = [];
-        foreach ($fields as $field) {
-            if ($isTabField($field)) {
-                break;
-            }
-
-            if ($isFormField($field)) {
-                continue;
-            }
-
-            $orphanFieldNames[] = $field->getProperty();
-        }
-
-        throw new \RuntimeException(sprintf('The "%s" page of "%s" uses tabs to display its fields, but the following fields don\'t belong to any tab: %s. Use "FormField::addTab(\'...\')" to add a tab before those fields.', $context->getCrud()->getCurrentPage(), $context->getCrud()->getControllerFqcn(), implode(', ', $orphanFieldNames)));
     }
 }

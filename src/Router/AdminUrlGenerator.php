@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class AdminUrlGenerator
+final class AdminUrlGenerator implements AdminUrlGeneratorInterface
 {
     private bool $isInitialized = false;
     private AdminContextProvider $adminContextProvider;
@@ -32,14 +32,20 @@ final class AdminUrlGenerator
         $this->dashboardControllerRegistry = $dashboardControllerRegistry;
     }
 
-    public function setDashboard(string $dashboardControllerFqcn): self
+    /**
+     * @return AdminUrlGenerator
+     */
+    public function setDashboard(string $dashboardControllerFqcn): AdminUrlGeneratorInterface
     {
         $this->setRouteParameter(EA::DASHBOARD_CONTROLLER_FQCN, $dashboardControllerFqcn);
 
         return $this;
     }
 
-    public function setController(string $crudControllerFqcn): self
+    /**
+     * @return AdminUrlGenerator
+     */
+    public function setController(string $crudControllerFqcn): AdminUrlGeneratorInterface
     {
         $this->setRouteParameter(EA::CRUD_CONTROLLER_FQCN, $crudControllerFqcn);
         $this->unset(EA::ROUTE_NAME);
@@ -48,7 +54,10 @@ final class AdminUrlGenerator
         return $this;
     }
 
-    public function setAction(string $action): self
+    /**
+     * @return AdminUrlGenerator
+     */
+    public function setAction(string $action): AdminUrlGeneratorInterface
     {
         $this->setRouteParameter(EA::CRUD_ACTION, $action);
         $this->unset(EA::ROUTE_NAME);
@@ -57,7 +66,10 @@ final class AdminUrlGenerator
         return $this;
     }
 
-    public function setRoute(string $routeName, array $routeParameters = []): self
+    /**
+     * @return AdminUrlGenerator
+     */
+    public function setRoute(string $routeName, array $routeParameters = []): AdminUrlGeneratorInterface
     {
         $this->unsetAllExcept(EA::DASHBOARD_CONTROLLER_FQCN);
         $this->setRouteParameter(EA::ROUTE_NAME, $routeName);
@@ -66,14 +78,17 @@ final class AdminUrlGenerator
         return $this;
     }
 
-    public function setEntityId($entityId): self
+    /**
+     * @return AdminUrlGenerator
+     */
+    public function setEntityId($entityId): AdminUrlGeneratorInterface
     {
         $this->setRouteParameter(EA::ENTITY_ID, $entityId);
 
         return $this;
     }
 
-    public function get(string $paramName)
+    public function get(string $paramName): mixed
     {
         if (false === $this->isInitialized) {
             $this->initialize();
@@ -82,7 +97,10 @@ final class AdminUrlGenerator
         return $this->routeParameters[$paramName] ?? null;
     }
 
-    public function set(string $paramName, $paramValue): self
+    /**
+     * @return AdminUrlGenerator
+     */
+    public function set(string $paramName, $paramValue): AdminUrlGeneratorInterface
     {
         if (\in_array($paramName, [EA::MENU_INDEX, EA::SUBMENU_INDEX], true)) {
             trigger_deprecation(
@@ -98,7 +116,10 @@ final class AdminUrlGenerator
         return $this;
     }
 
-    public function setAll(array $routeParameters): self
+    /**
+     * @return AdminUrlGenerator
+     */
+    public function setAll(array $routeParameters): AdminUrlGeneratorInterface
     {
         foreach ($routeParameters as $paramName => $paramValue) {
             $this->setRouteParameter($paramName, $paramValue);
@@ -107,7 +128,10 @@ final class AdminUrlGenerator
         return $this;
     }
 
-    public function unset(string $paramName): self
+    /**
+     * @return AdminUrlGenerator
+     */
+    public function unset(string $paramName): AdminUrlGeneratorInterface
     {
         if (false === $this->isInitialized) {
             $this->initialize();
@@ -118,7 +142,10 @@ final class AdminUrlGenerator
         return $this;
     }
 
-    public function unsetAll(): self
+    /**
+     * @return AdminUrlGenerator
+     */
+    public function unsetAll(): AdminUrlGeneratorInterface
     {
         if (false === $this->isInitialized) {
             $this->initialize();
@@ -129,7 +156,10 @@ final class AdminUrlGenerator
         return $this;
     }
 
-    public function unsetAllExcept(string ...$namesOfParamsToKeep): self
+    /**
+     * @return AdminUrlGenerator
+     */
+    public function unsetAllExcept(string ...$namesOfParamsToKeep): AdminUrlGeneratorInterface
     {
         if (false === $this->isInitialized) {
             $this->initialize();
@@ -140,8 +170,17 @@ final class AdminUrlGenerator
         return $this;
     }
 
-    public function includeReferrer(): self
+    /**
+     * @return AdminUrlGenerator
+     */
+    public function includeReferrer(): AdminUrlGeneratorInterface
     {
+        trigger_deprecation(
+            'easycorp/easyadmin-bundle',
+            '4.9.0',
+            'Adding the referrer argument in the admin URLs via the AdminUrlGenerator::includeReferrer() method is deprecated and it will be removed in 5.0.0. The referrer will now be determined automatically based on the current request.',
+        );
+
         if (false === $this->isInitialized) {
             $this->initialize();
         }
@@ -151,7 +190,10 @@ final class AdminUrlGenerator
         return $this;
     }
 
-    public function removeReferrer(): self
+    /**
+     * @return AdminUrlGenerator
+     */
+    public function removeReferrer(): AdminUrlGeneratorInterface
     {
         if (false === $this->isInitialized) {
             $this->initialize();
@@ -162,8 +204,17 @@ final class AdminUrlGenerator
         return $this;
     }
 
-    public function setReferrer(string $referrer): self
+    /**
+     * @return AdminUrlGenerator
+     */
+    public function setReferrer(string $referrer): AdminUrlGeneratorInterface
     {
+        trigger_deprecation(
+            'easycorp/easyadmin-bundle',
+            '4.9.0',
+            'Adding the referrer argument in the admin URLs via the AdminUrlGenerator::setReferrer() method is deprecated and it will be removed in 5.0.0. The referrer will now be determined automatically based on the current request.',
+        );
+
         if (false === $this->isInitialized) {
             $this->initialize();
         }
@@ -174,7 +225,10 @@ final class AdminUrlGenerator
         return $this;
     }
 
-    public function addSignature(bool $addSignature = true): self
+    /**
+     * @return AdminUrlGenerator
+     */
+    public function addSignature(bool $addSignature = true): AdminUrlGeneratorInterface
     {
         trigger_deprecation(
             'easycorp/easyadmin-bundle',
@@ -212,10 +266,6 @@ final class AdminUrlGenerator
 
         if (true === $this->includeReferrer) {
             $this->setRouteParameter(EA::REFERRER, $this->customPageReferrer ?? $this->currentPageReferrer);
-        }
-
-        if (false === $this->includeReferrer) {
-            $this->unset(EA::REFERRER);
         }
 
         // this avoids forcing users to always be explicit about the action to execute

@@ -5,6 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Context;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenu;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Factory\MenuFactoryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetsDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\DashboardDto;
@@ -14,7 +15,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\LocaleDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MainMenuDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\UserMenuDto;
-use EasyCorp\Bundle\EasyAdminBundle\Factory\MenuFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\CrudControllerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\TemplateRegistry;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,12 +37,12 @@ final class AdminContext
     private AssetsDto $assetDto;
     private ?CrudDto $crudDto;
     private ?SearchDto $searchDto;
-    private MenuFactory $menuFactory;
+    private MenuFactoryInterface $menuFactory;
     private TemplateRegistry $templateRegistry;
     private ?MainMenuDto $mainMenuDto = null;
     private ?UserMenuDto $userMenuDto = null;
 
-    public function __construct(Request $request, ?UserInterface $user, I18nDto $i18nDto, CrudControllerRegistry $crudControllers, DashboardDto $dashboardDto, DashboardControllerInterface $dashboardController, AssetsDto $assetDto, ?CrudDto $crudDto, ?EntityDto $entityDto, ?SearchDto $searchDto, MenuFactory $menuFactory, TemplateRegistry $templateRegistry)
+    public function __construct(Request $request, ?UserInterface $user, I18nDto $i18nDto, CrudControllerRegistry $crudControllers, DashboardDto $dashboardDto, DashboardControllerInterface $dashboardController, AssetsDto $assetDto, ?CrudDto $crudDto, ?EntityDto $entityDto, ?SearchDto $searchDto, MenuFactoryInterface $menuFactory, TemplateRegistry $templateRegistry)
     {
         $this->request = $request;
         $this->user = $user;
@@ -65,7 +65,9 @@ final class AdminContext
 
     public function getReferrer(): ?string
     {
-        return $this->request->query->get(EA::REFERRER);
+        $referrer = $this->request->query->get(EA::REFERRER);
+
+        return '' !== $referrer ? $referrer : null;
     }
 
     public function getI18n(): I18nDto

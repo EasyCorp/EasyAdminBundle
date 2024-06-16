@@ -109,3 +109,5 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 .CodeMirror-matchingtag {
   background: rgba(255,150,0,.3)
 }
+
+div.CodeMirror-selected { background-color: var(--code-editor-selection-bg) !important; }

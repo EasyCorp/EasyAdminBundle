@@ -3,19 +3,18 @@
    be used in a EasyAdmin Dashboard controller, where 'ea' is defined
    or from any other Symfony controller, where 'ea' is not defined #}
 {% trans_default_domain ea is defined ? ea.i18n.translationDomain : (translation_domain is defined ? translation_domain ?? 'messages') %}
-{% if app.session is not null and app.session.started %}
-    {% set flash_messages = app.session.flashbag.all %}
 
-    {% if flash_messages|length > 0 %}
-        <div id="flash-messages">
-            {% for label, messages in flash_messages %}
-                {% for message in messages %}
-                    <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        {{ message|trans|raw }}
-                    </div>
-                {% endfor %}
+{% set flash_messages = app.flashes %}
+
+{% if flash_messages|length > 0 %}
+    <div id="flash-messages">
+        {% for label, messages in flash_messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    {{ message|trans|raw }}
+                </div>
             {% endfor %}
-        </div>
-    {% endif %}
+        {% endfor %}
+    </div>
 {% endif %}

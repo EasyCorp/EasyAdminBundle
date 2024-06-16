@@ -3,7 +3,7 @@
 return [
     'page_title' => [
         'dashboard' => 'Kontrol Paneli',
-        'detail' => '%entity_as_string%',
+        'detail' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
         'edit' => '%entity_label_singular% Düzenle',
         'index' => '%entity_label_plural%',
         'new' => 'Oluştur : %entity_label_singular%',

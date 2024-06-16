@@ -2,10 +2,11 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\ArgumentResolver;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\BatchActionDto;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
-use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ArgumentValueResolverInterface;
 use Symfony\Component\HttpKernel\Controller\ValueResolverInterface;
@@ -18,9 +19,9 @@ if (interface_exists(ValueResolverInterface::class)) {
     final class BatchActionDtoResolver implements ValueResolverInterface
     {
         private AdminContextProvider $adminContextProvider;
-        private AdminUrlGenerator $adminUrlGenerator;
+        private AdminUrlGeneratorInterface $adminUrlGenerator;
 
-        public function __construct(AdminContextProvider $adminContextProvider, AdminUrlGenerator $adminUrlGenerator)
+        public function __construct(AdminContextProvider $adminContextProvider, AdminUrlGeneratorInterface $adminUrlGenerator)
         {
             $this->adminContextProvider = $adminContextProvider;
             $this->adminUrlGenerator = $adminUrlGenerator;
@@ -39,7 +40,17 @@ if (interface_exists(ValueResolverInterface::class)) {
             $batchActionUrl = $context->getRequest()->request->get(EA::BATCH_ACTION_URL);
             $batchActionUrlQueryString = parse_url($batchActionUrl, \PHP_URL_QUERY);
             parse_str($batchActionUrlQueryString, $batchActionUrlParts);
-            $referrerUrl = $batchActionUrlParts[EA::REFERRER] ?? $this->adminUrlGenerator->unsetAll()->generateUrl();
+            $batchActionUrlParts = $request->query->all();
+            if ($batchActionUrlParts[EA::CRUD_ACTION] ?? null) {
+                $batchActionUrlParts[EA::CRUD_ACTION] = Action::INDEX;
+            }
+
+            $referrerUrl = $this->adminUrlGenerator
+                ->setAll($batchActionUrlParts)
+                // reset the page number to avoid confusing elements after the page reload
+                // (we're deleting items, so the original listing pages will change)
+                ->unset(EA::PAGE)
+                ->generateUrl();
 
             yield new BatchActionDto(
                 $context->getRequest()->request->get(EA::BATCH_ACTION_NAME),
@@ -54,9 +65,9 @@ if (interface_exists(ValueResolverInterface::class)) {
     final class BatchActionDtoResolver implements ArgumentValueResolverInterface
     {
         private AdminContextProvider $adminContextProvider;
-        private AdminUrlGenerator $adminUrlGenerator;
+        private AdminUrlGeneratorInterface $adminUrlGenerator;
 
-        public function __construct(AdminContextProvider $adminContextProvider, AdminUrlGenerator $adminUrlGenerator)
+        public function __construct(AdminContextProvider $adminContextProvider, AdminUrlGeneratorInterface $adminUrlGenerator)
         {
             $this->adminContextProvider = $adminContextProvider;
             $this->adminUrlGenerator = $adminUrlGenerator;
@@ -76,7 +87,17 @@ if (interface_exists(ValueResolverInterface::class)) {
             $batchActionUrl = $context->getRequest()->request->get(EA::BATCH_ACTION_URL);
             $batchActionUrlQueryString = parse_url($batchActionUrl, \PHP_URL_QUERY);
             parse_str($batchActionUrlQueryString, $batchActionUrlParts);
-            $referrerUrl = $batchActionUrlParts[EA::REFERRER] ?? $this->adminUrlGenerator->unsetAll()->generateUrl();
+            $batchActionUrlParts = $request->query->all();
+            if ($batchActionUrlParts[EA::CRUD_ACTION] ?? null) {
+                $batchActionUrlParts[EA::CRUD_ACTION] = Action::INDEX;
+            }
+
+            $referrerUrl = $this->adminUrlGenerator
+                ->setAll($batchActionUrlParts)
+                // reset the page number to avoid confusing elements after the page reload
+                // (we're deleting items, so the original listing pages will change)
+                ->unset(EA::PAGE)
+                ->generateUrl();
 
             yield new BatchActionDto(
                 $context->getRequest()->request->get(EA::BATCH_ACTION_NAME),

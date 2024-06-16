@@ -19,6 +19,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 use Symfony\Component\Uid\Ulid;
 use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Validator\Constraint;
 
 /**
  * @author Yonel Ceruto <yonelceruto@gmail.com>
@@ -38,7 +39,8 @@ class FileUploadType extends AbstractType implements DataMapperInterface
         $uploadFilename = $options['upload_filename'];
         $uploadValidate = $options['upload_validate'];
         $allowAdd = $options['allow_add'];
-        unset($options['upload_dir'], $options['upload_new'], $options['upload_delete'], $options['upload_filename'], $options['upload_validate'], $options['download_path'], $options['allow_add'], $options['allow_delete'], $options['compound']);
+        $options['constraints'] = $options['file_constraints'];
+        unset($options['upload_dir'], $options['upload_new'], $options['upload_delete'], $options['upload_filename'], $options['upload_validate'], $options['download_path'], $options['allow_add'], $options['allow_delete'], $options['compound'], $options['file_constraints']);
 
         $builder->add('file', FileType::class, $options);
         $builder->add('delete', CheckboxType::class, ['required' => false]);
@@ -123,6 +125,7 @@ class FileUploadType extends AbstractType implements DataMapperInterface
             'required' => false,
             'error_bubbling' => false,
             'allow_file_upload' => true,
+            'file_constraints' => [],
         ]);
 
         $resolver->setAllowedTypes('upload_dir', 'string');
@@ -133,6 +136,7 @@ class FileUploadType extends AbstractType implements DataMapperInterface
         $resolver->setAllowedTypes('download_path', ['null', 'string']);
         $resolver->setAllowedTypes('allow_add', 'bool');
         $resolver->setAllowedTypes('allow_delete', 'bool');
+        $resolver->setAllowedTypes('file_constraints', [Constraint::class, Constraint::class.'[]']);
 
         $resolver->setNormalizer('upload_dir', function (Options $options, string $value): string {
             if (\DIRECTORY_SEPARATOR !== mb_substr($value, -1)) {
@@ -144,7 +148,7 @@ class FileUploadType extends AbstractType implements DataMapperInterface
                 $value = $this->projectDir.'/'.$value;
             }
 
-            if ('' !== $value && (!is_dir($value) || !is_writable($value))) {
+            if (!$isStreamWrapper && '' !== $value && (!is_dir($value) || !is_writable($value))) {
                 throw new InvalidArgumentException(sprintf('Invalid upload directory "%s" it does not exist or is not writable.', $value));
             }
 
@@ -180,6 +184,9 @@ class FileUploadType extends AbstractType implements DataMapperInterface
             }
 
             return (bool) $value;
+        });
+        $resolver->setNormalizer('file_constraints', static function (Options $options, $constraints) {
+            return \is_object($constraints) ? [$constraints] : (array) $constraints;
         });
     }
 

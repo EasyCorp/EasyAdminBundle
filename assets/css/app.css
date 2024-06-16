@@ -1,0 +1,7 @@
+@import "~bootstrap/dist/css/bootstrap.min.css";
+
+@import "~@fortawesome/fontawesome-free/css/all.css";
+@import "~@fortawesome/fontawesome-free/css/v4-shims.css";
+@import "~@fortawesome/fontawesome-free/css/v5-font-face.css";
+
+@import "./easyadmin-theme/theme.css";

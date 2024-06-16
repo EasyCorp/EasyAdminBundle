@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Filter\Configurator;
 
+use Doctrine\ORM\Mapping\JoinColumnMapping;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -38,8 +39,17 @@ final class EntityConfigurator implements FilterConfiguratorInterface
             // because an empty filter value would always return no result
             $numberOfRequiredJoinColumns = \count(array_filter(
                 $doctrineMetadata->get('joinColumns'),
-                static fn (array $joinColumn): bool => false === ($joinColumn['nullable'] ?? false))
-            );
+                static function (array|JoinColumnMapping $joinColumn): bool {
+                    // Doctrine ORM 3.x changed the returned type from array to JoinColumnMapping
+                    if ($joinColumn instanceof JoinColumnMapping) {
+                        $isNullable = $joinColumn->nullable ?? false;
+                    } else {
+                        $isNullable = $joinColumn['nullable'] ?? false;
+                    }
+
+                    return false === $isNullable;
+                }
+            ));
 
             $someJoinColumnsAreNullable = \count($doctrineMetadata->get('joinColumns')) !== $numberOfRequiredJoinColumns;
 

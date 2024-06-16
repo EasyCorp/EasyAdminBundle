@@ -5,8 +5,10 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 use EasyCorp\Bundle\EasyAdminBundle\Config\BreadcrumbItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\SearchMode;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Translation\TranslatableMessageBuilder;
+use Symfony\Component\ExpressionLanguage\Expression;
 use function Symfony\Component\Translation\t;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
@@ -52,8 +54,11 @@ final class CrudDto
     private string $dateIntervalFormat = '%%y Year(s) %%m Month(s) %%d Day(s)';
     private ?string $timezone = null;
     private ?string $numberFormat = null;
+    private ?string $thousandsSeparator = null;
+    private ?string $decimalSeparator = null;
     private array $defaultSort = [];
     private ?array $searchFields = [];
+    private string $searchMode = SearchMode::ALL_TERMS;
     private bool $autofocusSearch = false;
     private bool $showEntityActionsAsDropdown = true;
     private ?PaginatorDto $paginatorDto = null;
@@ -61,9 +66,10 @@ final class CrudDto
     private array $formThemes = ['@EasyAdmin/crud/form_theme.html.twig'];
     private KeyValueStore $newFormOptions;
     private KeyValueStore $editFormOptions;
-    private ?string $entityPermission = null;
+    private string|Expression|null $entityPermission = null;
     private ?string $contentWidth = null;
     private ?string $sidebarWidth = null;
+    private bool $hideNullValues = false;
 
     public function __construct()
     {
@@ -322,6 +328,26 @@ final class CrudDto
         $this->numberFormat = $numberFormat;
     }
 
+    public function getThousandsSeparator(): ?string
+    {
+        return $this->thousandsSeparator;
+    }
+
+    public function setThousandsSeparator(string $separator): void
+    {
+        $this->thousandsSeparator = $separator;
+    }
+
+    public function getDecimalSeparator(): ?string
+    {
+        return $this->decimalSeparator;
+    }
+
+    public function setDecimalSeparator(string $separator): void
+    {
+        $this->decimalSeparator = $separator;
+    }
+
     public function getDefaultSort(): array
     {
         return $this->defaultSort;
@@ -330,6 +356,16 @@ final class CrudDto
     public function setDefaultSort(array $defaultSort): void
     {
         $this->defaultSort = $defaultSort;
+    }
+
+    public function getSearchMode(): string
+    {
+        return $this->searchMode;
+    }
+
+    public function setSearchMode(string $searchMode): void
+    {
+        $this->searchMode = $searchMode;
     }
 
     public function getSearchFields(): ?array
@@ -423,12 +459,12 @@ final class CrudDto
         $this->editFormOptions = $formOptions;
     }
 
-    public function getEntityPermission(): ?string
+    public function getEntityPermission(): string|Expression|null
     {
         return $this->entityPermission;
     }
 
-    public function setEntityPermission(string $entityPermission): void
+    public function setEntityPermission(string|Expression $entityPermission): void
     {
         $this->entityPermission = $entityPermission;
     }
@@ -481,5 +517,15 @@ final class CrudDto
     public function setSidebarWidth(string $sidebarWidth): void
     {
         $this->sidebarWidth = $sidebarWidth;
+    }
+
+    public function areNullValuesHidden(): bool
+    {
+        return $this->hideNullValues;
+    }
+
+    public function hideNullValues(bool $hide): void
+    {
+        $this->hideNullValues = $hide;
     }
 }

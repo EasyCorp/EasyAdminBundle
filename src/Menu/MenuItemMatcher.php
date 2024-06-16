@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Menu;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu\MenuItemMatcherInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 
@@ -25,8 +26,9 @@ class MenuItemMatcher implements MenuItemMatcherInterface
 
         $currentPageQueryParameters = $adminContext->getRequest()->query->all();
         $menuItemQueryString = null === $menuItemDto->getLinkUrl() ? null : parse_url($menuItemDto->getLinkUrl(), \PHP_URL_QUERY);
+
         $menuItemQueryParameters = [];
-        if (null !== $menuItemQueryString) {
+        if (\is_string($menuItemQueryString)) {
             parse_str($menuItemQueryString, $menuItemQueryParameters);
         }
 
@@ -35,8 +37,9 @@ class MenuItemMatcher implements MenuItemMatcherInterface
         }
 
         $menuItemLinksToIndexCrudAction = Crud::PAGE_INDEX === ($menuItemQueryParameters[EA::CRUD_ACTION] ?? false);
+        $currentPageLinksToIndexCrudAction = Crud::PAGE_INDEX === ($currentPageQueryParameters[EA::CRUD_ACTION] ?? false);
         $menuItemQueryParameters = $this->filterIrrelevantQueryParameters($menuItemQueryParameters, $menuItemLinksToIndexCrudAction);
-        $currentPageQueryParameters = $this->filterIrrelevantQueryParameters($currentPageQueryParameters, $menuItemLinksToIndexCrudAction);
+        $currentPageQueryParameters = $this->filterIrrelevantQueryParameters($currentPageQueryParameters, $currentPageLinksToIndexCrudAction);
 
         // needed so you can pass route parameters in any order
         sort($menuItemQueryParameters);

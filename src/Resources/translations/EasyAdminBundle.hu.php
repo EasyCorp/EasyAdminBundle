@@ -3,7 +3,7 @@
 return [
     'page_title' => [
         'dashboard' => 'Vezérlőpult',
-        'detail' => '%entity_as_string%',
+        'detail' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
         'edit' => '%entity_label_singular% szerkesztése',
         'index' => '%entity_label_plural%',
         'new' => 'Új %entity_label_singular% létrehozása',

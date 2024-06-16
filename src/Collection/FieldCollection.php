@@ -73,9 +73,29 @@ final class FieldCollection implements CollectionInterface
         unset($this->fields[$removedField->getUniqueId()]);
     }
 
+    public function add(FieldDto $newField): void
+    {
+        $this->fields[$newField->getUniqueId()] = $newField;
+    }
+
     public function prepend(FieldDto $newField): void
     {
         $this->fields = array_merge([$newField->getUniqueId() => $newField], $this->fields);
+    }
+
+    public function insertBefore(FieldDto $newField, FieldDto $existingField): void
+    {
+        $newFields = [];
+        $existingFieldUniqueId = $existingField->getUniqueId();
+        foreach ($this->fields as $fieldUniqueId => $field) {
+            if ($existingFieldUniqueId === $fieldUniqueId) {
+                $newFields[$newField->getUniqueId()] = $newField;
+            }
+
+            $newFields[$fieldUniqueId] = $field;
+        }
+
+        $this->fields = $newFields;
     }
 
     public function first(): ?FieldDto

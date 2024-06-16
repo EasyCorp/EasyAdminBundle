@@ -175,6 +175,19 @@ You can override the default page titles with the following methods::
         ;
     }
 
+EasyAdmin applies the ``raw`` filter to all titles, labels, help messages, etc.
+displayed in templates. This is done to allow you to customize everything with
+HTML tags (because those tags will be rendered instead of escaped).
+
+That's why the default page titles used by EasyAdmin only include safe contents
+like the entity name and ID. Otherwise, your backend could be vulnerable to
+`XSS attacks`_.
+
+If you change the default page title to include the placeholder ``%entity_as_string%``,
+check that you don't include user-created contents in the value returned by the
+``__toString()`` method of the related entity. If you can't avoid that, make sure
+to sanitize any user submitted data with the Symfony `HtmlSanitizer component`_.
+
 .. _crud-date-time-number-format-options:
 
 Date, Time and Number Formatting Options
@@ -203,7 +216,21 @@ Date, Time and Number Formatting Options
             // (e.g. setNumDecimals(), setRoundingMode(), etc. are ignored)
             // NumberField and IntegerField can override this value with their
             // own setNumberFormat() methods, which works in the same way
-            ->setNumberFormat('%.2d');
+            ->setNumberFormat('%.2d')
+
+            // Sets the character used to separate each thousand group in a number
+            // e.g. if separator is ',' then 12345 is formatted as 12,345
+            // By default, EasyAdmin doesn't add any thousands separator to numbers;
+            // NumberField and IntegerField can override this value with their
+            // own setThousandsSeparator() methods, which works in the same way
+            ->setThousandsSeparator(',')
+
+            // Sets the character used to separate the decimal part of a non-integer number
+            // e.g. if separator is '.' then 1/10 is formatted as 0.1
+            // by default, EasyAdmin displays the default decimal separator used by PHP;
+            // NumberField and IntegerField can override this value with their
+            // own setDecimalSeparator() methods, which works in the same way
+            ->setDecimalSeparator('.')
         ;
     }
 
@@ -226,15 +253,30 @@ Search, Order, and Pagination Options
             ->setSearchFields(null)
             // call this method to focus the search input automatically when loading the 'index' page
             ->setAutofocusSearch()
+
+            // by default, the search results match all the terms (SearchMode::ALL_TERMS):
+            // term1 in (field1 or field2) AND term2 in (field1 or field2)
+            // e.g. if you look for 'lorem ipsum' in [title, description],
+            // results require matching 'lorem' in either title or description
+            // (or both) AND 'ipsum' in either title or description (or both)
+            ->setSearchMode(SearchMode::ALL_TERMS)
+
+            // use the SearchMode::ANY_TERMS option to change the search mode to
+            // match at least one of the terms:
+            // term1 in (field1 or field2) OR term2 in (field1 or field2)
+            // e.g. if you look for 'lorem ipsum' in [title, description],
+            // results will match either 'lorem' in title or description (or both)
+            // OR 'ipsum' in title or description (or both)
+            ->setSearchMode(SearchMode::ANY_TERMS)
         ;
     }
 
 .. tip::
 
-    The search engine makes an OR query by default (searching for ``foo bar``
-    returns items with ``foo`` OR ``bar`` OR ``foo bar``). You can wrap all or
-    part of your query with quotes to make an exact search: ``"foo bar"`` only
-    returns items with that exact content, including the middle white space.
+    The search engine splits all terms by default (searching for ``foo bar``
+    returns items with ``foo`` and ``bar``). You can wrap all or part of your 
+    query with quotes to make an exact search: ``"foo bar"`` only returns 
+    items with that exact content, including the middle white space.
 
 ::
 
@@ -322,6 +364,23 @@ Templates and Form Options
                 ['validation_groups' => ['Default'], '...' => '...'],
             );
         ;
+    }
+
+Other Options
+~~~~~~~~~~~~~
+
+::
+
+    public function configureCrud(Crud $crud): Crud
+    {
+        return $crud
+            // by default, when the value of some field is `null`, EasyAdmin displays
+            // a label with the `null` text. You can change that by overriding
+            // the `label/null` template. However, if you have lots of `null` values
+            // and want to reduce the "visual noise" in your backend, you can use
+            // the following option to not display anything when some value is `null`
+            // (this option is applied both in the `index` and `detail` pages)
+            ->hideNullValues()
     }
 
 Custom Redirect After Creating or Editing Entities
@@ -685,3 +744,5 @@ The same applies to URLs generated in Twig templates:
 
 .. _`Symfony controllers`: https://symfony.com/doc/current/controller.html
 .. _`Doctrine filters`: https://www.doctrine-project.org/projects/doctrine-orm/en/current/reference/filters.html
+.. _`XSS attacks`: https://en.wikipedia.org/wiki/Cross-site_scripting
+.. _`HtmlSanitizer component`: https://symfony.com/components/HTML%20Sanitizer

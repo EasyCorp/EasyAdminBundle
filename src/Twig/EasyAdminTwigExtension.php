@@ -4,11 +4,15 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Twig;
 
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldLayoutDto;
-use EasyCorp\Bundle\EasyAdminBundle\Factory\FieldLayoutFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\FormLayoutFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
+use Symfony\Component\AssetMapper\ImportMap\ImportMapRenderer;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
+use Symfony\Contracts\Translation\TranslatableInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 use Twig\Error\RuntimeError;
 use Twig\Extension\AbstractExtension;
@@ -28,12 +32,16 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
     private ServiceLocator $serviceLocator;
     private AdminContextProvider $adminContextProvider;
     private ?CsrfTokenManagerInterface $csrfTokenManager;
+    private ?ImportMapRenderer $importMapRenderer;
+    private TranslatorInterface $translator;
 
-    public function __construct(ServiceLocator $serviceLocator, AdminContextProvider $adminContextProvider, ?CsrfTokenManagerInterface $csrfTokenManager)
+    public function __construct(ServiceLocator $serviceLocator, AdminContextProvider $adminContextProvider, ?CsrfTokenManagerInterface $csrfTokenManager, ?ImportMapRenderer $importMapRenderer, TranslatorInterface $translator)
     {
         $this->serviceLocator = $serviceLocator;
         $this->adminContextProvider = $adminContextProvider;
         $this->csrfTokenManager = $csrfTokenManager;
+        $this->importMapRenderer = $importMapRenderer;
+        $this->translator = $translator;
     }
 
     public function getFunctions(): array
@@ -43,6 +51,7 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
             new TwigFunction('ea_csrf_token', [$this, 'renderCsrfToken']),
             new TwigFunction('ea_call_function_if_exists', [$this, 'callFunctionIfExists'], ['needs_environment' => true, 'is_safe' => ['html' => true]]),
             new TwigFunction('ea_create_field_layout', [$this, 'createFieldLayout']),
+            new TwigFunction('ea_importmap', [$this, 'renderImportmap'], ['is_safe' => ['html']]),
         ];
     }
 
@@ -116,7 +125,7 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
         }
 
         if (\is_array($callback) && 2 === \count($callback)) {
-            $callback[0] = $environment->getRuntime($callback[0]);
+            $callback = [$environment->getRuntime(array_shift($callback)), array_pop($callback)];
             if (!\is_callable($callback)) {
                 throw new RuntimeError(sprintf('Unable to load runtime for filter: "%s"', $filterName));
             }
@@ -150,6 +159,10 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
         }
 
         if (\is_object($value)) {
+            if ($value instanceof TranslatableInterface) {
+                return $value->trans($this->translator);
+            }
+
             if (method_exists($value, '__toString')) {
                 return (string) $value;
             }
@@ -173,7 +186,7 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
         return $function->getCallable()(...$functionArguments);
     }
 
-    public function getAdminUrlGenerator(array $queryParameters = []): AdminUrlGenerator
+    public function getAdminUrlGenerator(array $queryParameters = []): AdminUrlGeneratorInterface
     {
         return $this->serviceLocator->get(AdminUrlGenerator::class)->setAll($queryParameters);
     }
@@ -192,6 +205,25 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
 
     public function createFieldLayout(?FieldCollection $fieldDtos): FieldLayoutDto
     {
-        return FieldLayoutFactory::createFromFieldDtos($fieldDtos);
+        trigger_deprecation(
+            'easycorp/easyadmin-bundle',
+            '4.8.0',
+            'The "ea_create_field_layout()" Twig function is deprecated in favor of "ea_create_form_layout()" and it will be removed in 5.0.0.',
+        );
+
+        return FormLayoutFactory::createFromFieldDtos($fieldDtos);
+    }
+
+    /**
+     * We need to recreate the 'importmap()' Twig function from Symfony because calling it
+     * via 'ea_call_function_if_exists('importmap', '...')' doesn't work.
+     */
+    public function renderImportmap(string|array $entryPoint = 'app', array $attributes = []): string
+    {
+        if ('' === $entryPoint || [] === $entryPoint || null === $this->importMapRenderer) {
+            return '';
+        }
+
+        return $this->importMapRenderer->render($entryPoint, $attributes);
     }
 }

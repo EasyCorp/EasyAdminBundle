@@ -4,14 +4,15 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenu;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Factory\MenuFactoryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu\MenuItemInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu\MenuItemMatcherInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MainMenuDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\UserMenuDto;
-use EasyCorp\Bundle\EasyAdminBundle\Menu\MenuItemMatcherInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
-use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Http\Logout\LogoutUrlGenerator;
@@ -21,15 +22,15 @@ use Symfony\Contracts\Translation\TranslatableInterface;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class MenuFactory
+final class MenuFactory implements MenuFactoryInterface
 {
     private AdminContextProvider $adminContextProvider;
     private AuthorizationCheckerInterface $authChecker;
     private LogoutUrlGenerator $logoutUrlGenerator;
-    private AdminUrlGenerator $adminUrlGenerator;
+    private AdminUrlGeneratorInterface $adminUrlGenerator;
     private MenuItemMatcherInterface $menuItemMatcher;
 
-    public function __construct(AdminContextProvider $adminContextProvider, AuthorizationCheckerInterface $authChecker, LogoutUrlGenerator $logoutUrlGenerator, AdminUrlGenerator $adminUrlGenerator, MenuItemMatcherInterface $menuItemMatcher)
+    public function __construct(AdminContextProvider $adminContextProvider, AuthorizationCheckerInterface $authChecker, LogoutUrlGenerator $logoutUrlGenerator, AdminUrlGeneratorInterface $adminUrlGenerator, MenuItemMatcherInterface $menuItemMatcher)
     {
         $this->adminContextProvider = $adminContextProvider;
         $this->authChecker = $authChecker;
@@ -136,7 +137,7 @@ final class MenuFactory
             // 1. if CRUD controller is defined, use it...
             if (null !== $crudControllerFqcn) {
                 $this->adminUrlGenerator->setController($crudControllerFqcn);
-                // 2. ...otherwise, find the CRUD controller from the entityFqcn
+            // 2. ...otherwise, find the CRUD controller from the entityFqcn
             } else {
                 $crudControllers = $this->adminContextProvider->getContext()?->getCrudControllers();
                 if (null === $controllerFqcn = $crudControllers->findCrudFqcnByEntityFqcn($entityFqcn)) {

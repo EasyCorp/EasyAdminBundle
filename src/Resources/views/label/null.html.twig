@@ -1,1 +1,3 @@
-<span class="badge badge-secondary">{{ 'label.null'|trans(domain = 'EasyAdminBundle') }}</span>
+{% if not (ea.crud.areNullValuesHidden ?? false) %}
+    <span class="badge badge-outline">{{ 'label.null'|trans(domain = 'EasyAdminBundle') }}</span>
+{% endif %}

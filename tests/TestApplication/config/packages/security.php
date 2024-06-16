@@ -1,5 +1,6 @@
 <?php
 
+use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Kernel;
 use Symfony\Component\Security\Core\User\InMemoryUser;
 
 $configuration = [
@@ -43,5 +44,9 @@ $configuration = [
         ['path' => '^/secure_admin', 'roles' => ['ROLE_USER']],
     ],
 ];
+
+if (Kernel::MAJOR_VERSION >= 7) {
+    unset($configuration['enable_authenticator_manager']);
+}
 
 $container->loadFromExtension('security', $configuration);

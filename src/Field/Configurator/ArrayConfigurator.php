@@ -24,7 +24,7 @@ final class ArrayConfigurator implements FieldConfiguratorInterface
 
     public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
     {
-        $field->setFormTypeOption('entry_type', TextType::class);
+        $field->setFormTypeOptionIfNotSet('entry_type', TextType::class);
         $field->setFormTypeOptionIfNotSet('allow_add', true);
         $field->setFormTypeOptionIfNotSet('allow_delete', true);
         $field->setFormTypeOptionIfNotSet('delete_empty', true);

@@ -2,11 +2,15 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Orm;
 
+use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Query\Expr\Orx;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\SearchMode;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Orm\EntityRepositoryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDataDto;
@@ -14,6 +18,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntitySearchEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use Symfony\Component\Uid\Ulid;
@@ -50,7 +55,14 @@ final class EntityRepository implements EntityRepositoryInterface
         ;
 
         if ('' !== $searchDto->getQuery()) {
-            $this->addSearchClause($queryBuilder, $searchDto, $entityDto);
+            try {
+                $databasePlatform = $entityManager->getConnection()->getDatabasePlatform();
+            } catch (\Throwable) {
+                $databasePlatform = null;
+            }
+            $databasePlatformFqcn = null !== $databasePlatform ? $databasePlatform::class : '';
+
+            $this->addSearchClause($queryBuilder, $searchDto, $entityDto, $databasePlatformFqcn);
         }
 
         $appliedFilters = $searchDto->getAppliedFilters();
@@ -58,13 +70,14 @@ final class EntityRepository implements EntityRepositoryInterface
             $this->addFilterClause($queryBuilder, $searchDto, $entityDto, $filters, $fields);
         }
 
-        $this->addOrderClause($queryBuilder, $searchDto, $entityDto);
+        $this->addOrderClause($queryBuilder, $searchDto, $entityDto, $fields);
 
         return $queryBuilder;
     }
 
-    private function addSearchClause(QueryBuilder $queryBuilder, SearchDto $searchDto, EntityDto $entityDto): void
+    private function addSearchClause(QueryBuilder $queryBuilder, SearchDto $searchDto, EntityDto $entityDto, string $databasePlatformFqcn): void
     {
+        $isPostgreSql = PostgreSQLPlatform::class === $databasePlatformFqcn || is_subclass_of($databasePlatformFqcn, PostgreSQLPlatform::class);
         $searchablePropertiesConfig = $this->getSearchablePropertiesConfig($queryBuilder, $searchDto, $entityDto);
 
         $queryTerms = $searchDto->getQueryTerms();
@@ -86,7 +99,8 @@ final class EntityRepository implements EntityRepositoryInterface
                 'text_query' => '%'.$lowercaseQueryTerm.'%',
             ];
 
-            foreach ($searchablePropertiesConfig as $propertyName => $propertyConfig) {
+            $queryTermConditions = new Orx();
+            foreach ($searchablePropertiesConfig as $propertyConfig) {
                 $entityName = $propertyConfig['entity_name'];
 
                 // this complex condition is needed to avoid issues on PostgreSQL databases
@@ -96,28 +110,39 @@ final class EntityRepository implements EntityRepositoryInterface
                     || ($propertyConfig['is_numeric'] && $isNumericQueryTerm)
                 ) {
                     $parameterName = sprintf('query_for_numbers_%d', $queryTermIndex);
-                    $queryBuilder->orWhere(sprintf('%s.%s = :%s', $entityName, $propertyName, $parameterName))
-                        ->setParameter($parameterName, $dqlParameters['numeric_query']);
+                    $queryTermConditions->add(sprintf('%s.%s = :%s', $entityName, $propertyConfig['property_name'], $parameterName));
+                    $queryBuilder->setParameter($parameterName, $dqlParameters['numeric_query']);
                 } elseif ($propertyConfig['is_guid'] && $isUuidQueryTerm) {
                     $parameterName = sprintf('query_for_uuids_%d', $queryTermIndex);
-                    $queryBuilder->orWhere(sprintf('%s.%s = :%s', $entityName, $propertyName, $parameterName))
-                        ->setParameter($parameterName, $dqlParameters['uuid_query'], 'uuid' === $propertyConfig['property_data_type'] ? 'uuid' : null);
+                    $queryTermConditions->add(sprintf('%s.%s = :%s', $entityName, $propertyConfig['property_name'], $parameterName));
+                    $queryBuilder->setParameter($parameterName, $dqlParameters['uuid_query'], 'uuid' === $propertyConfig['property_data_type'] ? 'uuid' : null);
                 } elseif ($propertyConfig['is_ulid'] && $isUlidQueryTerm) {
                     $parameterName = sprintf('query_for_ulids_%d', $queryTermIndex);
-                    $queryBuilder->orWhere(sprintf('%s.%s = :%s', $entityName, $propertyName, $parameterName))
-                        ->setParameter($parameterName, $dqlParameters['uuid_query'], 'ulid');
-                } elseif ($propertyConfig['is_text']) {
+                    $queryTermConditions->add(sprintf('%s.%s = :%s', $entityName, $propertyConfig['property_name'], $parameterName));
+                    $queryBuilder->setParameter($parameterName, $dqlParameters['uuid_query'], 'ulid');
+                } elseif ($propertyConfig['is_text'] || $propertyConfig['is_integer']) {
                     $parameterName = sprintf('query_for_text_%d', $queryTermIndex);
-                    $queryBuilder->orWhere(sprintf('LOWER(%s.%s) LIKE :%s', $entityName, $propertyName, $parameterName))
-                        ->setParameter($parameterName, $dqlParameters['text_query']);
+                    // concatenating an empty string is needed to avoid issues on PostgreSQL databases (https://github.com/EasyCorp/EasyAdminBundle/issues/6290)
+                    $queryTermConditions->add(sprintf('LOWER(CONCAT(%s.%s, \'\')) LIKE :%s', $entityName, $propertyConfig['property_name'], $parameterName));
+                    $queryBuilder->setParameter($parameterName, $dqlParameters['text_query']);
+                } elseif ($propertyConfig['is_json'] && !$isPostgreSql) {
+                    // neither LOWER() nor LIKE() are supported for JSON columns by all PostgreSQL installations
+                    $parameterName = sprintf('query_for_text_%d', $queryTermIndex);
+                    $queryTermConditions->add(sprintf('LOWER(%s.%s) LIKE :%s', $entityName, $propertyConfig['property_name'], $parameterName));
+                    $queryBuilder->setParameter($parameterName, $dqlParameters['text_query']);
                 }
+            }
+            if (SearchMode::ALL_TERMS === $searchDto->getSearchMode()) {
+                $queryBuilder->andWhere($queryTermConditions);
+            } else {
+                $queryBuilder->orWhere($queryTermConditions);
             }
         }
 
         $this->eventDispatcher->dispatch(new AfterEntitySearchEvent($queryBuilder, $searchDto, $entityDto));
     }
 
-    private function addOrderClause(QueryBuilder $queryBuilder, SearchDto $searchDto, EntityDto $entityDto): void
+    private function addOrderClause(QueryBuilder $queryBuilder, SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields): void
     {
         foreach ($searchDto->getSort() as $sortProperty => $sortOrder) {
             $aliases = $queryBuilder->getAllAliases();
@@ -131,7 +156,41 @@ final class EntityRepository implements EntityRepositoryInterface
                 }
 
                 if (1 === \count($sortFieldParts)) {
-                    $queryBuilder->addOrderBy('entity.'.$sortProperty, $sortOrder);
+                    if ($entityDto->isToManyAssociation($sortProperty)) {
+                        $metadata = $entityDto->getPropertyMetadata($sortProperty);
+
+                        /** @var EntityManagerInterface $entityManager */
+                        $entityManager = $this->doctrine->getManagerForClass($entityDto->getFqcn());
+                        $countQueryBuilder = $entityManager->createQueryBuilder();
+
+                        if (ClassMetadata::MANY_TO_MANY === $metadata->get('type')) {
+                            // many-to-many relation
+                            $countQueryBuilder
+                                ->select($queryBuilder->expr()->count('subQueryEntity'))
+                                ->from($entityDto->getFqcn(), 'subQueryEntity')
+                                ->join(sprintf('subQueryEntity.%s', $sortProperty), 'relatedEntity')
+                                ->where('subQueryEntity = entity');
+                        } else {
+                            // one-to-many relation
+                            $countQueryBuilder
+                                ->select($queryBuilder->expr()->count('subQueryEntity'))
+                                ->from($metadata->get('targetEntity'), 'subQueryEntity')
+                                ->where(sprintf('subQueryEntity.%s = entity', $metadata->get('mappedBy')));
+                        }
+
+                        $queryBuilder->addSelect(sprintf('(%s) as HIDDEN sub_query_sort', $countQueryBuilder->getDQL()));
+                        $queryBuilder->addOrderBy('sub_query_sort', $sortOrder);
+                        $queryBuilder->addOrderBy('entity.'.$entityDto->getPrimaryKeyName(), $sortOrder);
+                    } else {
+                        $field = $fields->getByProperty($sortProperty);
+                        $associationSortProperty = $field?->getCustomOption(AssociationField::OPTION_SORT_PROPERTY);
+
+                        if (null === $associationSortProperty) {
+                            $queryBuilder->addOrderBy('entity.'.$sortProperty, $sortOrder);
+                        } else {
+                            $queryBuilder->addOrderBy($sortProperty.'.'.$associationSortProperty, $sortOrder);
+                        }
+                    }
                 } else {
                     $queryBuilder->addOrderBy($sortProperty, $sortOrder);
                 }
@@ -263,9 +322,10 @@ final class EntityRepository implements EntityRepositoryInterface
                 }
             }
 
-            $searchablePropertiesConfig[$propertyName] = [
+            $searchablePropertiesConfig[] = [
                 'entity_name' => $entityName,
                 'property_data_type' => $propertyDataType,
+                'property_name' => $propertyName,
                 'is_boolean' => $isBoolean,
                 'is_small_integer' => $isSmallIntegerProperty,
                 'is_integer' => $isIntegerProperty,

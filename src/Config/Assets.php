@@ -39,6 +39,25 @@ final class Assets
         return $this;
     }
 
+    public function addAssetMapperEntry(Asset|string ...$entryNameOrAsset): self
+    {
+        if (!class_exists('Symfony\\Component\\AssetMapper\\AssetMapper')) {
+            $names = array_map(static fn (Asset|string $nameOrAsset) => \is_string($nameOrAsset) ? '"'.$nameOrAsset.'"' : '"'.$nameOrAsset->getAsDto()->getValue().'"', $entryNameOrAsset);
+
+            throw new \RuntimeException(sprintf('You are trying to add '.(1 === \count($names) ? 'an AssetMapper entry called %s' : ' some AssetMapper entries (%s)').' but the AssetMapper component is not installed in your project. Try running "composer require symfony/asset-mapper"', implode(', ', $names)));
+        }
+
+        foreach ($entryNameOrAsset as $nameOrAsset) {
+            if (\is_string($nameOrAsset)) {
+                $this->dto->addAssetMapperAsset(new AssetDto($nameOrAsset));
+            } else {
+                $this->dto->addAssetMapperAsset($nameOrAsset->getAsDto());
+            }
+        }
+
+        return $this;
+    }
+
     public function addCssFile(Asset|string $pathOrAsset): self
     {
         if (\is_string($pathOrAsset)) {

@@ -28,7 +28,7 @@ final class FilterFactory
     private static array $doctrineTypeToFilterClass = [
         'json_array' => ArrayFilter::class,
         Types::SIMPLE_ARRAY => ArrayFilter::class,
-        Types::ARRAY => ArrayFilter::class,
+        'array' => ArrayFilter::class, // don't use Types::ARRAY because it was removed in Doctrine ORM 3.0
         Types::JSON => TextFilter::class,
         Types::BOOLEAN => BooleanFilter::class,
         Types::DATE_MUTABLE => DateTimeFilter::class,
@@ -48,7 +48,7 @@ final class FilterFactory
         Types::GUID => TextFilter::class,
         Types::STRING => TextFilter::class,
         Types::BLOB => TextFilter::class,
-        Types::OBJECT => TextFilter::class,
+        'object' => TextFilter::class, // don't use Types::OBJECT because it was removed in Doctrine ORM 3.0
         Types::TEXT => TextFilter::class,
     ];
 

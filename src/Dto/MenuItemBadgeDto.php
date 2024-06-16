@@ -12,11 +12,13 @@ final class MenuItemBadgeDto
 
     private mixed $content;
     private string $style;
+    private array $htmlAttributes;
 
-    public function __construct(mixed $content, string $style)
+    public function __construct(mixed $content, string $style, array $htmlAttributes = [])
     {
         $this->content = $content;
         $this->style = $style;
+        $this->htmlAttributes = $htmlAttributes;
     }
 
     public function getContent(): mixed
@@ -32,5 +34,10 @@ final class MenuItemBadgeDto
     public function getHtmlStyle(): string
     {
         return \in_array($this->style, self::PREDEFINED_STYLES, true) ? '' : $this->style;
+    }
+
+    public function getHtmlAttributes(): array
+    {
+        return $this->htmlAttributes;
     }
 }

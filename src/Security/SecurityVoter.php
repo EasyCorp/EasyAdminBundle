@@ -28,6 +28,11 @@ final class SecurityVoter extends Voter
 
     protected function supports(string $permissionName, mixed $subject): bool
     {
+        return $this->supportsAttribute($permissionName);
+    }
+
+    public function supportsAttribute(string $permissionName): bool
+    {
         return Permission::exists($permissionName);
     }
 

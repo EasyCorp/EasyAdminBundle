@@ -15,6 +15,7 @@ final class ActionDto
     private TranslatableInterface|string|null $label = null;
     private ?string $icon = null;
     private string $cssClass = '';
+    private string $addedCssClass = '';
     private ?string $htmlElement = null;
     private array $htmlAttributes = [];
     private ?string $linkUrl = null;
@@ -84,12 +85,22 @@ final class ActionDto
 
     public function getCssClass(): string
     {
-        return $this->cssClass;
+        return trim($this->cssClass);
     }
 
     public function setCssClass(string $cssClass): void
     {
         $this->cssClass = $cssClass;
+    }
+
+    public function getAddedCssClass(): string
+    {
+        return trim($this->addedCssClass);
+    }
+
+    public function setAddedCssClass(string $cssClass): void
+    {
+        $this->addedCssClass .= ' '.$cssClass;
     }
 
     public function getHtmlElement(): string
@@ -230,7 +241,19 @@ final class ActionDto
 
     public function shouldBeDisplayedFor(EntityDto $entityDto): bool
     {
-        return null === $this->displayCallable || (bool) \call_user_func($this->displayCallable, $entityDto->getInstance());
+        trigger_deprecation(
+            'easycorp/easyadmin-bundle',
+            '4.9.4',
+            'The "%s" method is deprecated and it will be removed in 5.0.0 because it\'s been replaced by the method "isDisplayed()" of the same class.',
+            __METHOD__,
+        );
+
+        return $this->isDisplayed($entityDto);
+    }
+
+    public function isDisplayed(?EntityDto $entityDto = null): bool
+    {
+        return null === $this->displayCallable || (bool) \call_user_func($this->displayCallable, $entityDto?->getInstance());
     }
 
     public function setDisplayCallable(callable $displayCallable): void
@@ -245,6 +268,7 @@ final class ActionDto
     {
         $action = Action::new($this->name, $this->label, $this->icon);
         $action->setCssClass($this->cssClass);
+        $action->addCssClass($this->addedCssClass);
         $action->setHtmlAttributes($this->htmlAttributes);
         $action->setTranslationParameters($this->translationParameters);
 

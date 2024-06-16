@@ -28,6 +28,40 @@ Basic Information
 Options
 -------
 
+``hideValueWhenFalse``
+~~~~~~~~~~~~~~~~~~~~~~
+
+Use this option to not display anything when the field value is ``false``. This
+is useful to reduce the "visual noise" in listings where most rows have the same
+``false`` value and you want to ignore those and better highlight the rows with
+the ``true`` value::
+
+    yield BooleanField::new('...')->hideValueWhenFalse();
+
+Keep in mind that:
+
+* This option is ignored when using the ``renderAsSwitch()`` option, which always
+  displays a switch/toggle with the field value;
+* This option is only applied to the ``index`` page; in the ``detail`` page you
+  will always see the field value to avoid any confussion.
+
+``hideValueWhenTrue``
+~~~~~~~~~~~~~~~~~~~~~
+
+Use this option to not display anything when the field value is ``true``. This
+is useful to reduce the "visual noise" in listings where most rows have the same
+``true`` value and you want to ignore those and better highlight the rows with
+the ``false`` value::
+
+    yield BooleanField::new('...')->hideValueWhenTrue();
+
+Keep in mind that:
+
+* This option is ignored when using the ``renderAsSwitch()`` option, which always
+  displays a switch/toggle with the field value;
+* This option is only applied to the ``index`` page; in the ``detail`` page you
+  will always see the field value to avoid any confussion.
+
 ``renderAsSwitch``
 ~~~~~~~~~~~~~~~~~~
 

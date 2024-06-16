@@ -18,7 +18,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudAutocompleteType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudFormType;
-use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\PropertyAccess\Exception\UnexpectedTypeException;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
@@ -30,11 +30,11 @@ use function Symfony\Component\Translation\t;
 final class AssociationConfigurator implements FieldConfiguratorInterface
 {
     private EntityFactory $entityFactory;
-    private AdminUrlGenerator $adminUrlGenerator;
+    private AdminUrlGeneratorInterface $adminUrlGenerator;
     private RequestStack $requestStack;
     private ControllerFactory $controllerFactory;
 
-    public function __construct(EntityFactory $entityFactory, AdminUrlGenerator $adminUrlGenerator, RequestStack $requestStack, ControllerFactory $controllerFactory)
+    public function __construct(EntityFactory $entityFactory, AdminUrlGeneratorInterface $adminUrlGenerator, RequestStack $requestStack, ControllerFactory $controllerFactory)
     {
         $this->entityFactory = $entityFactory;
         $this->adminUrlGenerator = $adminUrlGenerator;
@@ -195,9 +195,6 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
     {
         $field->setCustomOption(AssociationField::OPTION_DOCTRINE_ASSOCIATION_TYPE, 'toMany');
 
-        // associations different from *-to-one cannot be sorted
-        $field->setSortable(false);
-
         $field->setFormTypeOptionIfNotSet('multiple', true);
 
         /* @var PersistentCollection $collection */
@@ -238,9 +235,10 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
             ->setController($crudController)
             ->setAction(Action::DETAIL)
             ->setEntityId($entityDto->getPrimaryKeyValue())
-            ->unset(EA::MENU_INDEX)
-            ->unset(EA::SUBMENU_INDEX)
-            ->includeReferrer()
+            ->unset(EA::FILTERS)
+            ->unset(EA::PAGE)
+            ->unset(EA::QUERY)
+            ->unset(EA::SORT)
             ->generateUrl();
     }
 

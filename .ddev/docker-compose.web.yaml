@@ -1,0 +1,12 @@
+version: "3.6"
+services:
+  web:
+    volumes:
+      - type: bind
+        source: ../
+        target: /var/www/easyadminbundle
+        consistency: cached
+      - htdocs-data:/var/www/html/
+volumes:
+  htdocs-data:
+    name: "${DDEV_SITENAME}-htdocs-data"

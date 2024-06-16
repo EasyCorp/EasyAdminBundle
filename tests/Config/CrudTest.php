@@ -22,4 +22,40 @@ class CrudTest extends TestCase
 
         $this->assertSame(['common/base_form_theme.html.twig', 'admin/form/my_theme.html.twig'], $crudConfig->getAsDto()->getFormThemes());
     }
+
+    public function testDefaultThousandsSeparator()
+    {
+        $crudConfig = Crud::new();
+
+        $this->assertNull($crudConfig->getAsDto()->getThousandsSeparator());
+    }
+
+    /**
+     * @testWith [",", ".", " ", "-", ""]
+     */
+    public function testSetThousandsSeparator(string $separator)
+    {
+        $crudConfig = Crud::new();
+        $crudConfig->setThousandsSeparator($separator);
+
+        $this->assertSame($separator, $crudConfig->getAsDto()->getThousandsSeparator());
+    }
+
+    public function testDefaultDecimalSeparator()
+    {
+        $crudConfig = Crud::new();
+
+        $this->assertNull($crudConfig->getAsDto()->getDecimalSeparator());
+    }
+
+    /**
+     * @testWith [",", ".", " ", "-", ""]
+     */
+    public function testSetDecimalSeparator(string $separator)
+    {
+        $crudConfig = Crud::new();
+        $crudConfig->setDecimalSeparator($separator);
+
+        $this->assertSame($separator, $crudConfig->getAsDto()->getDecimalSeparator());
+    }
 }

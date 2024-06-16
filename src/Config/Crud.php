@@ -2,11 +2,13 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Config;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\SearchMode;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\SortOrder;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterConfigDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\PaginatorDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
 /**
@@ -242,6 +244,20 @@ class Crud
         return $this;
     }
 
+    public function setThousandsSeparator(string $separator): self
+    {
+        $this->dto->setThousandsSeparator($separator);
+
+        return $this;
+    }
+
+    public function setDecimalSeparator(string $separator): self
+    {
+        $this->dto->setDecimalSeparator($separator);
+
+        return $this;
+    }
+
     /**
      * @param array $sortFieldsAndOrder ['fieldName' => 'ASC|DESC', ...]
      */
@@ -266,6 +282,17 @@ class Crud
     public function setSearchFields(?array $fieldNames): self
     {
         $this->dto->setSearchFields($fieldNames);
+
+        return $this;
+    }
+
+    public function setSearchMode(string $searchMode): self
+    {
+        if (!\in_array($searchMode, [SearchMode::ANY_TERMS, SearchMode::ALL_TERMS], true)) {
+            throw new \InvalidArgumentException(sprintf('The search mode can be only "%s" or "%s", "%s" given.', SearchMode::ANY_TERMS, SearchMode::ALL_TERMS, $searchMode));
+        }
+
+        $this->dto->setSearchMode($searchMode);
 
         return $this;
     }
@@ -374,7 +401,7 @@ class Crud
         return $this;
     }
 
-    public function setEntityPermission(string $permission): self
+    public function setEntityPermission(string|Expression $permission): self
     {
         $this->dto->setEntityPermission($permission);
 
@@ -391,6 +418,13 @@ class Crud
     public function renderSidebarMinimized(bool $minimized = true): self
     {
         $this->dto->setSidebarWidth($minimized ? self::LAYOUT_SIDEBAR_COMPACT : self::LAYOUT_SIDEBAR_DEFAULT);
+
+        return $this;
+    }
+
+    public function hideNullValues(bool $hide = true): self
+    {
+        $this->dto->hideNullValues($hide);
 
         return $this;
     }

@@ -3,7 +3,7 @@
 return [
     'page_title' => [
         'dashboard' => 'Úvod',
-        'detail' => '%entity_as_string%',
+        'detail' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
         'edit' => 'Upraviť %entity_label_singular%',
         'index' => '%entity_label_plural%',
         'new' => 'Vytvoriť %entity_label_singular%',

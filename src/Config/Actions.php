@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Config;
 
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionConfigDto;
+use Symfony\Component\ExpressionLanguage\Expression;
 use function Symfony\Component\Translation\t;
 
 /**
@@ -100,7 +101,7 @@ final class Actions
         return $this;
     }
 
-    public function setPermission(string $actionName, string $permission): self
+    public function setPermission(string $actionName, string|Expression $permission): self
     {
         $this->dto->setActionPermission($actionName, $permission);
 

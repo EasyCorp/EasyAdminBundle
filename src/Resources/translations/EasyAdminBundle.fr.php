@@ -3,7 +3,7 @@
 return [
     'page_title' => [
         'dashboard' => 'Tableau de bord',
-        'detail' => '%entity_as_string%',
+        'detail' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
         'edit' => 'Modifier %entity_label_singular%',
         'index' => '%entity_label_plural%',
         'new' => 'Créer "%entity_label_singular%"',
@@ -45,7 +45,7 @@ return [
         'new' => 'Créer %entity_label_singular%',
         'search' => 'Rechercher',
         'detail' => 'Consulter',
-        'edit' => 'Éditer',
+        'edit' => 'Modifier',
         'delete' => 'Supprimer',
         'cancel' => 'Annuler',
         'index' => 'Retour à la liste',
@@ -56,9 +56,9 @@ return [
         'close' => 'Fermer',
         'create' => 'Créer',
         'create_and_add_another' => 'Créer et ajouter un nouvel élément',
-        'create_and_continue' => 'Créer et continuer l\'édition',
+        'create_and_continue' => 'Créer et modifier',
         'save' => 'Sauvegarder les modifications',
-        'save_and_continue' => 'Sauvegarder et continuer l\'édition',
+        'save_and_continue' => 'Sauvegarder et modifier',
     ],
 
     'batch_action_modal' => [

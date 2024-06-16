@@ -40,6 +40,8 @@ class CategoryCrudController extends AbstractCrudController
             TextField::new('name'),
             TextField::new('slug'),
             BooleanField::new('active'),
+            BooleanField::new('activeWithNoPermission')->setPermission('ROLE_FOO'),
+            BooleanField::new('activeDisabled')->setDisabled(),
         ];
     }
 

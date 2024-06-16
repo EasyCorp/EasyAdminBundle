@@ -63,6 +63,20 @@ class DefaultCrudSearchControllerTest extends AbstractCrudTestCase
         $this->assertSame($this->generateIndexUrl(), $crawler->filter('form.form-action-search .content-search-reset')->attr('href'));
     }
 
+    public function testPaginationNotDisplayedWhenNotNeeded()
+    {
+        // Browse the index page and make some query
+        $crawler = $this->client->request('GET', $this->generateIndexUrl());
+        $form = $crawler->filter('form.form-action-search')->form();
+        $crawler = $this->client->submit($form, ['query' => 'blog-post-0']);
+
+        // assert that the pagination is not displayed because there are not enough results
+        $form = $crawler->filter('form.form-action-search');
+        $this->assertSame('1', $form->filter('input[type="hidden"][name="page"]')->attr('value'));
+        $this->assertSame('1', $crawler->filter('.list-pagination .list-pagination-counter strong')->text());
+        $this->assertSelectorNotExists('.list-pagination nav.pager');
+    }
+
     public function testPaginationAndSortingIsResetAfterAQuery()
     {
         // Browse the index page, click on 'next page' and click on a table column to sort the results
@@ -123,16 +137,34 @@ class DefaultCrudSearchControllerTest extends AbstractCrudTestCase
             $totalNumberOfPosts,
         ];
 
-        yield 'default search is OR search' => [
+        yield 'search all blog posts (use quotes)' => [
             [],
-            'post 17',
+            '"blog post"',
             $totalNumberOfPosts,
         ];
 
-        yield 'use quotes to make an AND search' => [
+        yield 'search all terms' => [
+            [],
+            'blog post-17',
+            1,
+        ];
+
+        yield 'search all terms (inversed terms)' => [
+            [],
+            'post-17 blog',
+            1,
+        ];
+
+        yield 'search all terms with quotes' => [
             [],
             '"post 17"',
             1,
+        ];
+
+        yield 'search all terms with quotes (inversed terms)' => [
+            [],
+            '"17 post"',
+            0,
         ];
 
         yield 'quoted terms with inside quotes' => [
@@ -143,16 +175,16 @@ class DefaultCrudSearchControllerTest extends AbstractCrudTestCase
             1,
         ];
 
-        yield "multiple quoted terms (it's an OR of two AND terms)" => [
+        yield 'multiple quoted terms' => [
             [],
-            '"post 17" "post 18"',
-            2,
+            '"Blog post" "post 17"',
+            1,
         ];
 
-        yield "multiple quoted terms and unquoted terms (it's an OR search again)" => [
+        yield 'multiple quoted terms and unquoted terms' => [
             [],
-            '"post 17" "post 18" post 5',
-            $totalNumberOfPosts,
+            '"Blog post" "post 17" post ipsum',
+            1,
         ];
     }
 

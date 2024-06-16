@@ -35,6 +35,8 @@ final class LanguageConfigurator implements FieldConfiguratorInterface
                 $field->getCustomOption(LanguageField::OPTION_LANGUAGE_CODES_TO_REMOVE))
             );
             $field->setFormTypeOption('choice_loader', null);
+            // language names passed to the form are already translated, so don't translate them again in the template
+            $field->setFormTypeOptionIfNotSet('choice_translation_domain', false);
         }
 
         if (null === $languageCode = $field->getValue()) {

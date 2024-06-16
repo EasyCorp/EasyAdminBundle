@@ -9,6 +9,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Option\TextDirection;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Factory\MenuFactoryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionConfigDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetsDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
@@ -33,11 +34,11 @@ final class AdminContextFactory
 {
     private string $cacheDir;
     private ?TokenStorageInterface $tokenStorage;
-    private MenuFactory $menuFactory;
+    private MenuFactoryInterface $menuFactory;
     private CrudControllerRegistry $crudControllers;
     private EntityFactory $entityFactory;
 
-    public function __construct(string $cacheDir, ?TokenStorageInterface $tokenStorage, MenuFactory $menuFactory, CrudControllerRegistry $crudControllers, EntityFactory $entityFactory)
+    public function __construct(string $cacheDir, ?TokenStorageInterface $tokenStorage, MenuFactoryInterface $menuFactory, CrudControllerRegistry $crudControllers, EntityFactory $entityFactory)
     {
         $this->cacheDir = $cacheDir;
         $this->tokenStorage = $tokenStorage;
@@ -215,8 +216,9 @@ final class AdminContextFactory
         $defaultSort = $crudDto->getDefaultSort();
         $customSort = $queryParams[EA::SORT] ?? [];
         $appliedFilters = $queryParams[EA::FILTERS] ?? [];
+        $searchMode = $crudDto->getSearchMode();
 
-        return new SearchDto($request, $searchableProperties, $query, $defaultSort, $customSort, $appliedFilters);
+        return new SearchDto($request, $searchableProperties, $query, $defaultSort, $customSort, $appliedFilters, $searchMode);
     }
 
     // Copied from https://github.com/symfony/twig-bridge/blob/master/AppVariable.php

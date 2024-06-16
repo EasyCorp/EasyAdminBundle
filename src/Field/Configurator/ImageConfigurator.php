@@ -59,6 +59,8 @@ final class ImageConfigurator implements FieldConfiguratorInterface
             $absoluteUploadDir = u($relativeUploadDir)->ensureStart($this->projectDir.\DIRECTORY_SEPARATOR)->toString();
         }
         $field->setFormTypeOption('upload_dir', $absoluteUploadDir);
+
+        $field->setFormTypeOption('file_constraints', $field->getCustomOption(ImageField::OPTION_FILE_CONSTRAINTS));
     }
 
     private function getImagesPaths(?array $images, ?string $basePath): array

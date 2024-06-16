@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Config\Menu;
 
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
+use Symfony\Component\ExpressionLanguage\Expression;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -25,7 +26,7 @@ trait MenuItemTrait
         return $this;
     }
 
-    public function setPermission(string $permission): self
+    public function setPermission(string|Expression $permission): self
     {
         $this->dto->setPermission($permission);
 
@@ -61,7 +62,7 @@ trait MenuItemTrait
      *                        Otherwise, the passed value is applied "as is" to the `style` attribute of the HTML
      *                        element of the badge
      */
-    public function setBadge(/* \Stringable|string|int|float|bool|null */ $content, string $style = 'secondary'): self
+    public function setBadge(/* \Stringable|string|int|float|bool|null */ $content, string $style = 'secondary', array $htmlAttributes = []): self
     {
         if (!\is_string($content)
             && !$content instanceof \Stringable
@@ -80,7 +81,7 @@ trait MenuItemTrait
             );
         }
 
-        $this->dto->setBadge($content, $style);
+        $this->dto->setBadge($content, $style, $htmlAttributes);
 
         return $this;
     }

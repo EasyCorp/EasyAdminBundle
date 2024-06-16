@@ -7,6 +7,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDataDto;
+use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\MoneyConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\NumericFilterType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
 
@@ -37,6 +39,12 @@ final class NumericFilter implements FilterInterface
         $parameter2Name = $filterDataDto->getParameter2Name();
         $value = $filterDataDto->getValue();
         $value2 = $filterDataDto->getValue2();
+
+        if (null !== $fieldDto && true === $fieldDto->getCustomOption(MoneyField::OPTION_STORED_AS_CENTS)) {
+            $divisor = $fieldDto->getFormTypeOption('divisor') ?? MoneyConfigurator::DEFAULT_DIVISOR;
+            $value *= $divisor;
+            $value2 *= $divisor;
+        }
 
         if (ComparisonType::BETWEEN === $comparison) {
             $queryBuilder->andWhere(sprintf('%s.%s BETWEEN :%s and :%s', $alias, $property, $parameterName, $parameter2Name))

@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\SearchMode;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -19,8 +20,9 @@ final class SearchDto
     private ?array $searchableProperties;
     /** @var string[]|null */
     private ?array $appliedFilters;
+    private string $searchMode;
 
-    public function __construct(Request $request, ?array $searchableProperties, ?string $query, array $defaultSort, array $customSort, ?array $appliedFilters)
+    public function __construct(Request $request, ?array $searchableProperties, ?string $query, array $defaultSort, array $customSort, ?array $appliedFilters, string $searchMode = SearchMode::ALL_TERMS)
     {
         $this->request = $request;
         $this->searchableProperties = $searchableProperties;
@@ -28,6 +30,7 @@ final class SearchDto
         $this->defaultSort = $defaultSort;
         $this->customSort = $customSort;
         $this->appliedFilters = $appliedFilters;
+        $this->searchMode = $searchMode;
     }
 
     public function getRequest(): Request
@@ -101,5 +104,10 @@ final class SearchDto
     public function getAppliedFilters(): ?array
     {
         return $this->appliedFilters;
+    }
+
+    public function getSearchMode(): string
+    {
+        return $this->searchMode;
     }
 }

@@ -16,7 +16,7 @@ final class FieldCollection implements CollectionInterface
     private array $fields;
 
     /**
-     * @param FieldInterface[]|string[] $fields
+     * @param FieldDto[]|FieldInterface[]|string[] $fields
      */
     private function __construct(iterable $fields)
     {
@@ -35,7 +35,7 @@ final class FieldCollection implements CollectionInterface
     }
 
     /**
-     * @param FieldInterface[]|string[] $fields
+     * @param FieldDto[]|FieldInterface[]|string[] $fields
      */
     public static function new(iterable $fields): self
     {
@@ -146,7 +146,7 @@ final class FieldCollection implements CollectionInterface
     }
 
     /**
-     * @param FieldInterface[]|string[] $fields
+     * @param FieldInterface[]|FieldDto[]|string[] $fields
      *
      * @return FieldDto[]
      */
@@ -156,15 +156,20 @@ final class FieldCollection implements CollectionInterface
 
         // for DX reasons, fields can be configured as a FieldInterface object and
         // as a simple string with the name of the Doctrine property
-        /** @var FieldInterface|string $field */
+        /** @var FieldInterface|FieldDto|string $field */
         foreach ($fields as $field) {
             if (\is_string($field)) {
                 $field = Field::new($field);
             }
 
-            $dto = $field->getAsDto();
-            if (null === $dto->getFieldFqcn()) {
-                $dto->setFieldFqcn($field::class);
+            $dto = null;
+            if ($field instanceof FieldDto) {
+                $dto = $field;
+            } else {
+                $dto = $field->getAsDto();
+                if (null === $dto->getFieldFqcn()) {
+                    $dto->setFieldFqcn($field::class);
+                }
             }
             $dtos[$dto->getUniqueId()] = $dto;
         }

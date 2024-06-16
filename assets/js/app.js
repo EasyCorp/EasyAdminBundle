@@ -5,6 +5,10 @@ import bootstrap from 'bootstrap/dist/js/bootstrap.bundle';
 import Mark from 'mark.js/src/vanilla';
 import Autocomplete from './autocomplete';
 import {toggleVisibilityClasses} from "./helpers";
+import Sortable from "sortablejs";
+
+// global export
+window.Sortable = Sortable;
 
 // Provide Bootstrap variable globally to allow custom backend pages to use it
 window.bootstrap = bootstrap;
@@ -30,6 +34,7 @@ class App {
         this.#createAutoCompleteFields();
         this.#createBatchActions();
         this.#createModalWindowsForDeleteActions();
+        this.#createColumnChooser();
         this.#createPopovers();
         this.#createTooltips();
 
@@ -443,4 +448,28 @@ class App {
             });
         });
     }
+
+    #createColumnChooser() {
+        document.querySelectorAll('[data-action-name=columnChooser]').forEach((columnChooserButton) => {
+            const target = columnChooserButton.getAttribute('data-bs-target');
+            
+            const $group = document.querySelector(target + ' #form_columns');
+            if (null === $group) {
+                return;
+            }
+        
+            $group.classList.add('user-select-none');
+        
+            const $items = document.querySelectorAll(target + ' #form_columns .form-check');
+            $items.forEach(($item) => {
+                var $icon = document.createElement("i");
+                $icon.classList.add('fa', 'fa-duotone', 'fa-arrow-down-up-across-line', 'p-1', 'text-secondary');
+                $item.prepend(document.createTextNode(' '));
+                $item.prepend($icon);
+            });
+        
+            Sortable.create($group,  { animation: 150, ghostClass: 'text-bg-info' });
+        });
+    }
+    
 }

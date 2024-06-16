@@ -19,6 +19,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetsDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\BatchActionDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
@@ -52,16 +53,19 @@ use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
 use function Symfony\Component\String\u;
+use function Symfony\Component\Translation\t;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -125,8 +129,8 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         if (!$this->isGranted(Permission::EA_EXECUTE_ACTION, ['action' => Action::INDEX, 'entity' => null])) {
             throw new ForbiddenActionException($context);
         }
-
         $fields = FieldCollection::new($this->configureFields(Crud::PAGE_INDEX));
+        $fields = $context->getCrud()->columnChooserProcessFields($fields);
         $context->getCrud()->setFieldAssets($this->getFieldAssets($fields));
         $filters = $this->container->get(FilterFactory::class)->create($context->getCrud()->getFiltersConfig(), $fields, $context->getEntity());
         $queryBuilder = $this->createIndexQueryBuilder($context->getSearch(), $context->getEntity(), $fields, $filters);
@@ -152,6 +156,8 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             'global_actions' => $actions->getGlobalActions(),
             'batch_actions' => $actions->getBatchActions(),
             'filters' => $filters,
+            'ea_column_chooser_url' => $this->container->get(AdminUrlGenerator::class)->setAction(Action::COLUMN_CHOOSER)->generateUrl(),
+            'ea_column_chooser_form' => $this->createColumnsForm($context->getCrud())->createView(),
         ]));
 
         $event = new AfterCrudActionEvent($context, $responseParameters);
@@ -161,6 +167,50 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         }
 
         return $responseParameters;
+    }
+
+    protected function createColumnsForm(CrudDto $crud): FormInterface
+    {
+        return $this->createFormBuilder(['columns' => $crud->getSelectedColumns()])
+            ->add('columns', ChoiceType::class, [
+                'label' => t('columnchooser.modal.help', [], 'EasyAdminBundle'),
+                'multiple' => true,
+                'expanded' => true,
+                'required' => false,
+                'choices' => $crud->getCurrentColumns(),
+                'choice_translation_domain' => true,
+                'translation_domain' => 'messages',
+            ])
+            ->getForm();
+    }
+
+    public function columnChooser(AdminContext $context)
+    {
+        $request = $context->getRequest();
+        $url = $request->headers->get('referer', $request->get('referer', $this->container->get(AdminUrlGenerator::class)->setAction(Action::INDEX)->generateUrl()));
+        $storageProvider = $context->getCrud()?->getColumnChooserSelectedColumnStorageProvider();
+        if (!\is_object($storageProvider)) {
+            // TODO: may be create custom exception to notify user?
+            return $this->redirect($url);
+        }
+        if (null !== $request->get('reset')) {
+            $storageProvider->storeSelectedColumns(static::class, []); // reset to defaults
+
+            return $this->redirect($url);
+        }
+
+        if (\is_object($context->getCrud()) && (Request::METHOD_POST === $request->getMethod())) {
+            $context->getCrud()->columnChooserProcessFields(FieldCollection::new($this->configureFields(Crud::PAGE_INDEX)));
+            $columnsForm = $this->createColumnsForm($context->getCrud());
+            $columnsForm->handleRequest($request);
+            if ($columnsForm->isSubmitted() && $columnsForm->isValid()) {
+                $data = $request->get('form', ['columns' => []]);
+                $selectedColumns = array_values(array_intersect(array_values($data['columns'] ?? []), $context->getCrud()->getAvailableColumns()));
+                $storageProvider->storeSelectedColumns(static::class, $selectedColumns);
+            }
+        }
+
+        return $this->redirect($url);
     }
 
     public function detail(AdminContext $context)

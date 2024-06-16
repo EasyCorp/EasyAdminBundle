@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Config;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\SearchMode;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\SortOrder;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\ColumnStorage\SelectedColumnStorageProviderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterConfigDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\PaginatorDto;
@@ -303,7 +304,7 @@ class Crud
 
     public function setFilters(?FilterConfigDto $filters): self
     {
-        $this->dto->setFiltersConfig($filters);
+        $this->dto->setFiltersConfig(new FilterConfigDto(null !== $filters ? $filters : []));
 
         return $this;
     }
@@ -429,5 +430,57 @@ class Crud
     private function getValidPageNames(): array
     {
         return [self::PAGE_DETAIL, self::PAGE_EDIT, self::PAGE_INDEX, self::PAGE_NEW];
+    }
+
+    public function setupColumnChooser(SelectedColumnStorageProviderInterface $selectedColumnStorageProvider, bool $enableColumnChooser = true, array $defaultColumns = [], array $availableColumns = [], array $excludeColumns = []): self
+    {
+        $this->dto->setupColumnChooser($selectedColumnStorageProvider, $enableColumnChooser, $defaultColumns, $availableColumns, $excludeColumns);
+
+        return $this;
+    }
+
+    public function setColumnChooserColumns(array $defaultColumns = [], array $availableColumns = [], array $excludeColumns = []): self
+    {
+        $this->dto->setColumnChooserColumns($defaultColumns, $availableColumns, $excludeColumns);
+
+        return $this;
+    }
+
+    public function setColumnChooserSelectedColumnStorageProvider(?SelectedColumnStorageProviderInterface $selectedColumnStorageProvider = null): self
+    {
+        $this->dto->setColumnChooserSelectedColumnStorageProvider($selectedColumnStorageProvider);
+
+        return $this;
+    }
+
+    public function getColumnChooserSelectedColumnStorageProvider(): ?SelectedColumnStorageProviderInterface
+    {
+        return $this->dto->getColumnChooserSelectedColumnStorageProvider();
+    }
+
+    public function setColumnChooser(bool $columnChooser): self
+    {
+        $this->dto->setColumnChooser($columnChooser);
+
+        return $this;
+    }
+
+    public function enableColumnChooser(): self
+    {
+        $this->dto->enableColumnChooser();
+
+        return $this;
+    }
+
+    public function disableColumnChooser(): self
+    {
+        $this->dto->disableColumnChooser();
+
+        return $this;
+    }
+
+    public function isColumnChooserEnabled(): bool
+    {
+        return $this->dto->isColumnChooserEnabled();
     }
 }

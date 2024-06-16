@@ -138,7 +138,18 @@ return [
 
     'autocomplete' => [
         'no-results-found' => 'Совпадений не найдено',
-        // 'no-more-results' => 'No more results',
+        'no-more-results' => 'Больше нет совпадений',
         'loading-more-results' => 'Загрузка данных…',
+    ],
+
+    'columnchooser' => [
+        'action.label' => 'Выбор колонок',
+        'modal' => [
+            'title' => 'Выбор столбцов для отображения',
+            'help' => 'Столбцы (можно передвигать их вверх/вниз с зажатой левой клавишей мыши)',
+            'close' => 'Отмена',
+            'reset' => 'По умолчанию',
+            'save' => 'Сохранить',
+        ],
     ],
 ];

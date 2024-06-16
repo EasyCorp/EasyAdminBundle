@@ -89,6 +89,7 @@
     {% set some_results_are_hidden = entities|reduce((some_results_are_hidden, entity) => some_results_are_hidden or not entity.isAccessible, false) %}
     {% set has_footer = entities|length != 0 %}
     {% set has_search = ea.crud.isSearchEnabled %}
+    {% set has_column_chooser = ea.crud.isColumnChooserEnabled %}
     {% set has_filters = filters|length > 0 %}
     {% set num_results = entities|length %}
 
@@ -241,4 +242,9 @@
     {% if has_batch_actions %}
         {{ include('@EasyAdmin/crud/includes/_batch_action_modal.html.twig', {}, with_context = false) }}
     {% endif %}
+
+    {% if has_column_chooser %}
+        {{ include('@EasyAdmin/crud/includes/_column_chooser_modal.html.twig') }}
+    {% endif %}
+
 {% endblock main %}

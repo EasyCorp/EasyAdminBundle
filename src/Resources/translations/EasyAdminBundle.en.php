@@ -141,4 +141,15 @@ return [
         'no-more-results' => 'No more results',
         'loading-more-results' => 'Loading more results…',
     ],
+
+    'columnchooser' => [
+        'action.label' => 'Column chooser',
+        'modal' => [
+            'title' => 'Selecting columns to display',
+            'help' => 'Columns (you can move them up/down with the left mouse button)',
+            'close' => 'Close',
+            'reset' => 'Reset to defaults',
+            'save' => 'Save and reload',
+        ],
+    ],
 ];

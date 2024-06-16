@@ -13,6 +13,7 @@
     "mark.js": "^8.11.1",
     "postcss": "^8.4.31",
     "slugify": "^1.4.0",
+    "sortablejs": "^1.15.0",
     "tom-select": "^2.0.1",
     "trix": "^1.3.1"
   },

@@ -76,6 +76,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityUpdater;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\FieldProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Provider\SessionSelectedColumnStorageProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Provider\UserSelectedColumnStorageProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\CrudControllerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\DashboardControllerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
@@ -379,5 +381,12 @@ return static function (ContainerConfigurator $container) {
         ->set(AssetPackage::class)
             ->arg(0, service('request_stack'))
             ->tag('assets.package', ['package' => AssetPackage::PACKAGE_NAME])
+
+        ->set(SessionSelectedColumnStorageProvider::class)->public()
+            ->arg(0, service('request_stack'))
+
+        ->set(UserSelectedColumnStorageProvider::class)->public()
+            ->arg(0, service('security.token_storage'))
+            ->arg(1, service('doctrine'))
     ;
 };

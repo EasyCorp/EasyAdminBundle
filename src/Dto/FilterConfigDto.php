@@ -12,9 +12,9 @@ final class FilterConfigDto
 {
     private KeyValueStore $filters;
 
-    public function __construct()
+    public function __construct(array $keyValuePairs = [])
     {
-        $this->filters = KeyValueStore::new();
+        $this->filters = KeyValueStore::new($keyValuePairs);
     }
 
     /**

@@ -1,0 +1,24 @@
+<!-- Column chooser modal -->
+{% if not fqcn is defined %}{% set fqcn = ea ? ea.entity.fqcn : (entities|first ? entities|first.fqcn : 'na') %}{% endif %}
+<div id="modal-column-chooser-{{ fqcn|split("\\")|last }}" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="true" tabindex="-1" aria-labelledby="modal-column-chooser-label" aria-hidden="true">
+   <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modal-column-chooser-label">{{ 'columnchooser.modal.title'|trans(domain = 'EasyAdminBundle') }}</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'columnchooser.modal.close'|trans(domain = 'EasyAdminBundle') }}"></button>
+      </div>
+<form action="{{ ea_column_chooser_url }}" method="post" role="form" novalidate="novalidate">
+      <div class="modal-body">
+        {% form_theme ea_column_chooser_form with ea.crud.formThemes only %}
+        {{ form_widget(ea_column_chooser_form) }}
+        {{ form_rest(ea_column_chooser_form) }}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fa fa-times"></i> {{ 'columnchooser.modal.close'|trans(domain = 'EasyAdminBundle') }}</button>
+        <button type="submit" class="btn btn-default" name="reset" value="true"><i class="fa fa-refresh"></i> {{ 'columnchooser.modal.reset'|trans(domain = 'EasyAdminBundle') }}</button>
+        <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i> {{ 'columnchooser.modal.save'|trans(domain = 'EasyAdminBundle') }}</button>
+      </div>
+</form> 
+    </div>
+  </div>
+</div>

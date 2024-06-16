@@ -262,13 +262,13 @@ final class EntityRepository implements EntityRepositoryInterface
                 $associatedEntityAlias = $associatedPropertyName = '';
                 for ($i = 0; $i < $numAssociatedProperties - 1; ++$i) {
                     $associatedEntityName = $associatedProperties[$i];
-                    $associatedEntityAlias = Escaper::escapeDqlAlias($associatedEntityName);
+                    $associatedEntityAlias = Escaper::escapeDqlAlias($associatedEntityName).($i ?: '');
                     $associatedPropertyName = $associatedProperties[$i + 1];
 
-                    if (!\in_array($associatedEntityName, $entitiesAlreadyJoined, true)) {
+                    if (!\in_array($associatedEntityAlias, $entitiesAlreadyJoined, true)) {
                         $parentEntityName = 0 === $i ? 'entity' : $associatedProperties[$i - 1];
                         $queryBuilder->leftJoin(Escaper::escapeDqlAlias($parentEntityName).'.'.$associatedEntityName, $associatedEntityAlias);
-                        $entitiesAlreadyJoined[] = $associatedEntityName;
+                        $entitiesAlreadyJoined[] = $associatedEntityAlias;
                     }
 
                     if ($i < $numAssociatedProperties - 2) {

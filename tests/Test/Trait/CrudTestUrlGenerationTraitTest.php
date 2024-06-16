@@ -71,7 +71,7 @@ final class CrudTestUrlGenerationTraitTest extends KernelTestCase
     public function testUrlDetailGeneration()
     {
         $testClass = new class($this->adminUrlGenerator) extends CrudTestUrlGenerationTraitTestClass {
-            public function test(string|int $id, string $dashboardFqcn = null, string $controllerFqcn = null): string
+            public function test(string|int $id, ?string $dashboardFqcn = null, ?string $controllerFqcn = null): string
             {
                 return $this->generateDetailUrl($id, dashboardFqcn: $dashboardFqcn, controllerFqcn: $controllerFqcn);
             }

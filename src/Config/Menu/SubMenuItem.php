@@ -21,7 +21,7 @@ final class SubMenuItem implements MenuItemInterface
     /** @var MenuItemInterface[] */
     private array $subMenuItems = [];
 
-    public function __construct(TranslatableInterface|string $label, string $icon = null)
+    public function __construct(TranslatableInterface|string $label, ?string $icon = null)
     {
         $this->dto = new MenuItemDto();
 

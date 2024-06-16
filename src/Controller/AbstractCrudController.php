@@ -173,14 +173,14 @@ abstract class AbstractCrudController extends AbstractController implements Crud
     {
         return $this->createFormBuilder(['columns' => $crud->getSelectedColumns()])
             ->add('columns', ChoiceType::class, [
-                    'label' => t('columnchooser.modal.help', [], 'EasyAdminBundle'),
-                    'multiple' => true,
-                    'expanded' => true,
-                    'required' => false,
-                    'choices' => $crud->getCurrentColumns(),
-                    'choice_translation_domain' => true,
-                    'translation_domain' => 'messages',
-                ])
+                'label' => t('columnchooser.modal.help', [], 'EasyAdminBundle'),
+                'multiple' => true,
+                'expanded' => true,
+                'required' => false,
+                'choices' => $crud->getCurrentColumns(),
+                'choice_translation_domain' => true,
+                'translation_domain' => 'messages',
+            ])
             ->getForm();
     }
 

@@ -530,7 +530,7 @@ final class CrudDto
         return $this;
     }
 
-    public function setColumnChooserSelectedColumnStorageProvider(SelectedColumnStorageProviderInterface $selectedColumnStorageProvider = null): self
+    public function setColumnChooserSelectedColumnStorageProvider(?SelectedColumnStorageProviderInterface $selectedColumnStorageProvider = null): self
     {
         $this->selectedColumnStorageProvider = $selectedColumnStorageProvider;
 
@@ -662,7 +662,7 @@ final class CrudDto
 
         return \count($result) > 0 ? FieldCollection::new($result) : $fieldsColl;
     }
-    
+
     public function areNullValuesHidden(): bool
     {
         return $this->hideNullValues;

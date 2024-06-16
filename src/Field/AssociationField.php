@@ -35,6 +35,8 @@ final class AssociationField implements FieldInterface
 
     public const OPTION_EMBEDDED_CRUD_FORM_NEW_PAGE_NAME = 'crudNewPageName';
     public const OPTION_EMBEDDED_CRUD_FORM_EDIT_PAGE_NAME = 'crudEditPageName';
+    // the name of the property in the associated entity used to sort the results (only for *-To-One associations)
+    public const OPTION_SORT_PROPERTY = 'sortProperty';
 
     /**
      * @param TranslatableInterface|string|false|null $label
@@ -93,6 +95,13 @@ final class AssociationField implements FieldInterface
         $this->setCustomOption(self::OPTION_EMBEDDED_CRUD_FORM_CONTROLLER, $crudControllerFqcn);
         $this->setCustomOption(self::OPTION_EMBEDDED_CRUD_FORM_NEW_PAGE_NAME, $crudNewPageName);
         $this->setCustomOption(self::OPTION_EMBEDDED_CRUD_FORM_EDIT_PAGE_NAME, $crudEditPageName);
+
+        return $this;
+    }
+
+    public function setSortProperty(string $orderProperty): self
+    {
+        $this->setCustomOption(self::OPTION_SORT_PROPERTY, $orderProperty);
 
         return $this;
     }

@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Orm;
 
 use Doctrine\ORM\Query\Lexer;
+use Doctrine\ORM\Query\TokenType;
 
 class Escaper
 {
@@ -35,11 +36,24 @@ class Escaper
 
         $lexer->moveNext();
         $token = $lexer->lookahead;
+        // backwards compat for when $token changed from array to object
+        // https://github.com/doctrine/lexer/pull/79
+        /** @phpstan-ignore-next-line */
+        $type = \is_array($token) ? $token['type'] : $token->type;
 
-        if (200 <= $token['type']) {
-            return true;
+        // Doctrine ORM 3.x changed this and the type is now a TokenType object
+        if ($type instanceof TokenType) {
+            $type = $type->value;
         }
 
-        return false;
+        // tokens that are not valid identifiers (e.g. T_OPEN_PARENTHESIS, T_EQUALS) are < 100
+        // see https://www.doctrine-project.org/projects/doctrine-lexer/en/3.1/dql-parser.html
+        if ($type < 100) {
+            throw new \RuntimeException(sprintf('The "%s" string is not a valid identifier in Doctrine queries.', $string));
+        }
+
+        // tokens that are keywords (e.g. T_AND, T_JOIN, T_ORDER) are >= 200
+        // see https://www.doctrine-project.org/projects/doctrine-lexer/en/3.1/dql-parser.html
+        return $type >= 200;
     }
 }

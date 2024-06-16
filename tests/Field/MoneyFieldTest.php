@@ -93,16 +93,29 @@ class MoneyFieldTest extends AbstractFieldTest
         self::assertSame(3, $fieldDto->getFormTypeOption('scale'));
     }
 
-    public function testFieldCents()
+    public function testFieldsDefaultsToCents()
     {
         $field = MoneyField::new('foo')->setValue(100)->setCurrency('EUR');
         $fieldDto = $this->configure($field);
         self::assertSame('1€', $fieldDto->getFormattedValue());
         self::assertSame(100, $fieldDto->getFormTypeOption('divisor'));
+    }
 
+    public function testFieldCents()
+    {
+        $field = MoneyField::new('foo')->setValue(100)->setCurrency('EUR');
         $field->setStoredAsCents(false);
         $fieldDto = $this->configure($field);
         self::assertSame('100€', $fieldDto->getFormattedValue());
         self::assertSame(1, $fieldDto->getFormTypeOption('divisor'));
+    }
+
+    public function testFieldWithCustomDivisor()
+    {
+        $field = MoneyField::new('foo')->setValue(725)->setCurrency('EUR');
+        $field->setFormTypeOption('divisor', 10000);
+        $fieldDto = $this->configure($field);
+        self::assertSame('0.0725€', $fieldDto->getFormattedValue());
+        self::assertSame(10000, $fieldDto->getFormTypeOption('divisor'));
     }
 }

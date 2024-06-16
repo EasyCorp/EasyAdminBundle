@@ -11,7 +11,7 @@ class IntlFormatterTest extends TestCase
     /**
      * @dataProvider provideFormatDate
      */
-    public function testFormatDate(?string $expectedResult, ?\DateTimeInterface $date, ?string $dateFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', string $locale = null)
+    public function testFormatDate(?string $expectedResult, ?\DateTimeInterface $date, ?string $dateFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', ?string $locale = null)
     {
         if (\PHP_VERSION_ID < 80200) {
             $this->markTestSkipped('PHP 8.2 or higher is required to run this test.');
@@ -29,7 +29,7 @@ class IntlFormatterTest extends TestCase
     /**
      * @dataProvider provideFormatTime
      */
-    public function testFormatTime(?string $expectedResult, ?\DateTimeInterface $date, ?string $timeFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', string $locale = null, string $assertMethod = 'assertSame')
+    public function testFormatTime(?string $expectedResult, ?\DateTimeInterface $date, ?string $timeFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', ?string $locale = null, string $assertMethod = 'assertSame')
     {
         if (\PHP_VERSION_ID < 80200) {
             $this->markTestSkipped('PHP 8.2 or higher is required to run this test.');
@@ -47,7 +47,7 @@ class IntlFormatterTest extends TestCase
     /**
      * @dataProvider provideFormatDateTime
      */
-    public function testFormatDateTime(?string $expectedResult, ?\DateTimeInterface $date, ?string $dateFormat = 'medium', ?string $timeFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', string $locale = null)
+    public function testFormatDateTime(?string $expectedResult, ?\DateTimeInterface $date, ?string $dateFormat = 'medium', ?string $timeFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', ?string $locale = null)
     {
         if (\PHP_VERSION_ID < 80200) {
             $this->markTestSkipped('PHP 8.2 or higher is required to run this test.');
@@ -60,6 +60,38 @@ class IntlFormatterTest extends TestCase
         }
 
         $this->assertSame($expectedResult, $formattedDateTime);
+    }
+
+    /**
+     * @dataProvider provideFormatNumber
+     */
+    public function testFormatNumber(?string $expectedResult, int|float $number, array $attrs)
+    {
+        if (\PHP_VERSION_ID < 80200) {
+            $this->markTestSkipped('PHP 8.2 or higher is required to run this test.');
+        }
+
+        $intlFormatter = new IntlFormatter();
+        $formattedNumber = $intlFormatter->formatNumber($number, $attrs);
+
+        $this->assertSame($expectedResult, $formattedNumber);
+    }
+
+    /**
+     * @dataProvider provideLegacyFormatNumber
+     *
+     * @group legacy
+     */
+    public function testLegacyFormatNumber(?string $expectedResult, int|float|null $number, array $attrs)
+    {
+        if (\PHP_VERSION_ID < 80200) {
+            $this->markTestSkipped('PHP 8.2 or higher is required to run this test.');
+        }
+
+        $intlFormatter = new IntlFormatter();
+        $formattedNumber = $intlFormatter->formatNumber($number, $attrs);
+
+        $this->assertSame($expectedResult, $formattedNumber);
     }
 
     public static function provideFormatDate()
@@ -138,6 +170,27 @@ class IntlFormatterTest extends TestCase
         yield ['Nov 8, 2020, 3:04:05 AM', new \DateTimeImmutable('2020-11-07 15:04:05', new \DateTimeZone('America/Montevideo')), 'medium', 'medium', '', new \DateTimeZone('Asia/Tokyo'), 'gregorian', 'en'];
 
         yield ['Nov 7, 2020, 2:04:05 PM', new \DateTime('2020-11-07 15:04:05 CET'), 'medium', 'medium', '', null, 'traditional', 'en'];
+    }
+
+    public static function provideFormatNumber()
+    {
+        yield ['0', 0, []];
+        yield ['0', 0.0, []];
+
+        yield ['123,456.000', 123456, ['fraction_digit' => 3]];
+        yield ['123,456,000', 123456, ['fraction_digit' => 3, 'decimal_separator' => ',']];
+        yield ['123 456.000', 123456, ['fraction_digit' => 3, 'grouping_separator' => ' ']];
+        yield ['123 456,000', 123456, ['fraction_digit' => 3, 'decimal_separator' => ',', 'grouping_separator' => ' ']];
+
+        yield ['1,234.560', 1234.56, ['fraction_digit' => 3]];
+        yield ['1,234,560', 1234.56, ['fraction_digit' => 3, 'decimal_separator' => ',']];
+        yield ['1 234.560', 1234.56, ['fraction_digit' => 3, 'grouping_separator' => ' ']];
+        yield ['1 234,560', 1234.56, ['fraction_digit' => 3, 'decimal_separator' => ',', 'grouping_separator' => ' ']];
+    }
+
+    public static function provideLegacyFormatNumber()
+    {
+        yield ['0', null, []];
     }
 
     private function normalizeWhiteSpaces(string $string): string

@@ -4,7 +4,6 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Config;
 
 use EasyCorp\Bundle\EasyAdminBundle\Asset\AssetPackage;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetDto;
-use function Symfony\Component\String\u;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -24,15 +23,15 @@ final class Asset
     }
 
     /**
-     * @param string $value The 'path' when adding CSS or JS files and the 'entryName' when adding Webpack Encore entries
+     * The argument is the 'path' when adding CSS or JS files and the 'entryName' when
+     * adding Webpack Encore or ImportMap entries:
+     *
+     *   Asset::new('build/admin.css')
+     *   Asset::new('some/path/admin.js')
+     *   Asset::new('admin-app') (Webpack Encore or AssetMapper entry)
      */
     public static function new(string $value): self
     {
-        $isWebpackEncoreEntry = !u($value)->endsWith('.css') && !u($value)->endsWith('.js');
-        if ($isWebpackEncoreEntry && !class_exists('Symfony\\WebpackEncoreBundle\\WebpackEncoreBundle')) {
-            throw new \RuntimeException(sprintf('You are trying to add a Webpack Encore entry called "%s" but WebpackEncoreBundle is not installed in your project. Try running "composer require symfony/webpack-encore-bundle"', $value));
-        }
-
         $dto = new AssetDto($value);
 
         return new self($dto);
@@ -87,7 +86,7 @@ final class Asset
         return $this;
     }
 
-    public function webpackPackageName(string $packageName = null): self
+    public function webpackPackageName(?string $packageName = null): self
     {
         $this->dto->setWebpackPackageName($packageName);
 

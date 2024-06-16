@@ -332,7 +332,7 @@ and render them in your own Twig template::
         // the charts; this is explained later in the chapter about Design
 
         #[Route('/admin')]
-        public function admin(): Response
+        public function index(): Response
         {
             $chart = $this->chartBuilder->createChart(Chart::TYPE_LINE);
             // ...set chart data and options somehow
@@ -350,7 +350,19 @@ and render them in your own Twig template::
     example). Instead, inject dependencies in the controller constructor or use
     a method name different from the ones defined in the interface.
 
-Another popular option is to make the dashboard redirect to the most common task
+To use EasyAdmin's built-in layout on your custom dashboard (e.g. the main menu
+bar on the left - explained in the next section), make your template extend
+`vendor/easycorp/easyadmin-bundle/src/Resources/views/layout.html.twig` and override
+some blocks::
+
+    {# templates/admin/my_dashboard.html.twig #}
+    {% extends '@EasyAdmin/layout.html.twig' %}
+
+    {% block main %}
+        {# ... #}
+    {% endblock main %}
+
+Another popular option is to avoid a dashboard at all and instead redirect to the most common task
 for people working on the backend. This requires :ref:`generating admin URLs <generate-admin-urls>`,
 and :doc:`CRUD controllers </crud>`, which is explained in detail later::
 
@@ -435,14 +447,17 @@ All menu items define the following methods to configure some options:
 * ``setPermission(string $permission)``, sets the `Symfony security permission`_
   that the user must have to see this menu item. Read the :ref:`menu security reference <security-menu>`
   for more details.
-* ``setBadge($content, string $style='secondary')``, renders the given content
+* ``setHtmlAttribute(string $name, mixed $value)``, sets a custom HTML attribute
+  in the HTML element that renders the menu item.
+* ``setBadge($content, string $style='secondary', array $htmlAttributes = [])``, renders the given content
   as a badge of the menu item. It's commonly used to show notification counts.
   The first argument can be any value that can be converted to a string in a Twig
   template (numbers, strings, *stringable* objects, etc.) The second argument is
   one of the predefined Bootstrap styles (``primary``, ``secondary``, ``success``,
   ``danger``, ``warning``, ``info``, ``light``, ``dark``) or an arbitrary string
   content which is passed as the value of the ``style`` attribute of the HTML
-  element associated to the badge.
+  element associated to the badge. The third argument allows to set custom
+  HTML attributes in the element that renders the badge.
 
 The rest of options depend on each menu item type, as explained in the next sections.
 

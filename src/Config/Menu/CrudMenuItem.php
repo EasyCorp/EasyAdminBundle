@@ -33,6 +33,13 @@ final class CrudMenuItem implements MenuItemInterface
         ]);
     }
 
+    public function setHtmlAttribute(string $name, mixed $value): self
+    {
+        $this->dto->setHtmlAttribute($name, $value);
+
+        return $this;
+    }
+
     public function setController(string $controllerFqcn): self
     {
         $this->dto->setRouteParameters(array_merge(

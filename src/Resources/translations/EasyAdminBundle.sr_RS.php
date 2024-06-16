@@ -3,7 +3,7 @@
 return [
     'page_title' => [
         'dashboard' => 'Kontrolna tabla',
-        'detail' => '%entity_as_string%',
+        'detail' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
         'edit' => 'Izmena %entity_label_singular%',
         'index' => '%entity_label_plural%',
         'new' => 'Novi %entity_label_singular%',

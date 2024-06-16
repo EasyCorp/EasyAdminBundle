@@ -3,7 +3,7 @@
 return [
     'page_title' => [
         'dashboard' => 'Tableau de bord',
-        'detail' => '%entity_as_string%',
+        'detail' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
         'edit' => '%entity_label_singular% beaarbechten',
         'index' => '%entity_label_plural%',
         'new' => '%entity_label_singular% erstellen',

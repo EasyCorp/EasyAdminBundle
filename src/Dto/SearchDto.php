@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\SearchMode;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -13,14 +14,15 @@ final class SearchDto
     private array $defaultSort;
     private array $customSort;
     /** @internal */
-    private ?array $mergedSort = null;
+    private ?array $cachedSortConfig = null;
     private string $query;
     /** @var string[]|null */
     private ?array $searchableProperties;
     /** @var string[]|null */
     private ?array $appliedFilters;
+    private string $searchMode;
 
-    public function __construct(Request $request, ?array $searchableProperties, ?string $query, array $defaultSort, array $customSort, ?array $appliedFilters)
+    public function __construct(Request $request, ?array $searchableProperties, ?string $query, array $defaultSort, array $customSort, ?array $appliedFilters, string $searchMode = SearchMode::ALL_TERMS)
     {
         $this->request = $request;
         $this->searchableProperties = $searchableProperties;
@@ -28,6 +30,7 @@ final class SearchDto
         $this->defaultSort = $defaultSort;
         $this->customSort = $customSort;
         $this->appliedFilters = $appliedFilters;
+        $this->searchMode = $searchMode;
     }
 
     public function getRequest(): Request
@@ -37,8 +40,8 @@ final class SearchDto
 
     public function getSort(): array
     {
-        if (null !== $this->mergedSort) {
-            return $this->mergedSort;
+        if (null !== $this->cachedSortConfig) {
+            return $this->cachedSortConfig;
         }
 
         // we can't use an array_merge() call because $customSort has more priority
@@ -51,7 +54,7 @@ final class SearchDto
             }
         }
 
-        return $this->mergedSort = $mergedSort;
+        return $this->cachedSortConfig = $mergedSort;
     }
 
     public function isSortingField(string $fieldProperty): bool
@@ -76,6 +79,21 @@ final class SearchDto
     }
 
     /**
+     * Splits the query search string into a set of terms to search, taking into
+     * account that quoted strings must be considered as a single term.
+     * For example:
+     *  'foo bar' => ['foo', 'bar']
+     *  'foo "bar baz" qux' => ['foo', 'bar baz', 'qux'].
+     */
+    public function getQueryTerms(): array
+    {
+        preg_match_all('/"(?:\\\\.|[^\\\\"])*"|\S+/', $this->query, $matches);
+        $terms = array_map(static fn ($match) => trim($match, '" '), $matches[0] ?? []);
+
+        return $terms;
+    }
+
+    /**
      * @return string[]|null
      */
     public function getSearchableProperties(): ?array
@@ -86,5 +104,10 @@ final class SearchDto
     public function getAppliedFilters(): ?array
     {
         return $this->appliedFilters;
+    }
+
+    public function getSearchMode(): string
+    {
+        return $this->searchMode;
     }
 }

@@ -2,12 +2,14 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Config;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\SearchMode;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\SortOrder;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\ColumnStorage\SelectedColumnStorageProviderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterConfigDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\PaginatorDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
 /**
@@ -48,7 +50,7 @@ class Crud
      *
      * @psalm-param mixed $label
      */
-    public function setEntityLabelInSingular(/* @var TranslatableInterface|string|callable */ $label): self
+    public function setEntityLabelInSingular($label): self
     {
         if (!\is_string($label) && !$label instanceof TranslatableInterface && !\is_callable($label)) {
             trigger_deprecation(
@@ -72,7 +74,7 @@ class Crud
      *
      * @psalm-param mixed $label
      */
-    public function setEntityLabelInPlural(/* @var TranslatableInterface|string|callable */ $label): self
+    public function setEntityLabelInPlural($label): self
     {
         if (!\is_string($label) && !$label instanceof TranslatableInterface && !\is_callable($label)) {
             trigger_deprecation(
@@ -96,7 +98,7 @@ class Crud
      *
      * @psalm-param mixed $title
      */
-    public function setPageTitle(string $pageName, /* @var TranslatableInterface|string|callable */ $title): self
+    public function setPageTitle(string $pageName, $title): self
     {
         if (!\is_string($title) && !$title instanceof TranslatableInterface && !\is_callable($title)) {
             trigger_deprecation(
@@ -233,6 +235,20 @@ class Crud
         return $this;
     }
 
+    public function setThousandsSeparator(string $separator): self
+    {
+        $this->dto->setThousandsSeparator($separator);
+
+        return $this;
+    }
+
+    public function setDecimalSeparator(string $separator): self
+    {
+        $this->dto->setDecimalSeparator($separator);
+
+        return $this;
+    }
+
     /**
      * @param array $sortFieldsAndOrder ['fieldName' => 'ASC|DESC', ...]
      */
@@ -257,6 +273,17 @@ class Crud
     public function setSearchFields(?array $fieldNames): self
     {
         $this->dto->setSearchFields($fieldNames);
+
+        return $this;
+    }
+
+    public function setSearchMode(string $searchMode): self
+    {
+        if (!\in_array($searchMode, [SearchMode::ANY_TERMS, SearchMode::ALL_TERMS], true)) {
+            throw new \InvalidArgumentException(sprintf('The search mode can be only "%s" or "%s", "%s" given.', SearchMode::ANY_TERMS, SearchMode::ALL_TERMS, $searchMode));
+        }
+
+        $this->dto->setSearchMode($searchMode);
 
         return $this;
     }
@@ -357,7 +384,7 @@ class Crud
         return $this;
     }
 
-    public function setFormOptions(array $newFormOptions, array $editFormOptions = null): self
+    public function setFormOptions(array $newFormOptions, ?array $editFormOptions = null): self
     {
         $this->dto->setNewFormOptions(KeyValueStore::new($newFormOptions));
         $this->dto->setEditFormOptions(KeyValueStore::new($editFormOptions ?? $newFormOptions));
@@ -365,7 +392,7 @@ class Crud
         return $this;
     }
 
-    public function setEntityPermission(string $permission): self
+    public function setEntityPermission(string|Expression $permission): self
     {
         $this->dto->setEntityPermission($permission);
 
@@ -382,6 +409,13 @@ class Crud
     public function renderSidebarMinimized(bool $minimized = true): self
     {
         $this->dto->setSidebarWidth($minimized ? self::LAYOUT_SIDEBAR_COMPACT : self::LAYOUT_SIDEBAR_DEFAULT);
+
+        return $this;
+    }
+
+    public function hideNullValues(bool $hide = true): self
+    {
+        $this->dto->hideNullValues($hide);
 
         return $this;
     }

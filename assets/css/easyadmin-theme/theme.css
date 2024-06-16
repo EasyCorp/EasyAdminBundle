@@ -1,0 +1,16 @@
+@import "./color-palette.css";
+@import "./variables-theme.css";
+
+@import "./base.css";
+@import "./menu.css";
+@import "./datagrids.css";
+@import "./detail-page.css";
+@import "./fields.css";
+@import "./images.css";
+@import "./forms.css";
+@import "./buttons.css";
+@import "./badges.css";
+@import "./switches.css";
+@import "./autocomplete.css";
+@import "./errors.css";
+@import "./pages.css";

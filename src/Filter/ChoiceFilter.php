@@ -36,6 +36,14 @@ final class ChoiceFilter implements FilterInterface
         return $this;
     }
 
+    public function setTranslatableChoices(array $choiceGenerator): self
+    {
+        $this->dto->setFormTypeOption('value_type_options.choices', array_keys($choiceGenerator));
+        $this->dto->setFormTypeOption('value_type_options.choice_label', fn ($value) => $choiceGenerator[$value]);
+
+        return $this;
+    }
+
     public function renderExpanded(bool $isExpanded = true): self
     {
         $this->dto->setFormTypeOption('value_type_options.expanded', $isExpanded);
@@ -64,7 +72,7 @@ final class ChoiceFilter implements FilterInterface
         } else {
             $orX = new Orx();
             $orX->add(sprintf('%s.%s %s (:%s)', $alias, $property, $comparison, $parameterName));
-            if (ComparisonType::NEQ === $comparison) {
+            if (ComparisonType::NEQ === $comparison || 'NOT IN' === $comparison) {
                 $orX->add(sprintf('%s.%s IS NULL', $alias, $property));
             }
             $queryBuilder->andWhere($orX)

@@ -140,7 +140,7 @@ class Slugger {
      */
     listenTarget() {
         for (const target of this.targets) {
-            target.addEventListener('keyup', () => {
+            target.addEventListener('input', () => {
                 if ('readonly' === this.field.getAttribute('readonly')) {
                     this.updateValue();
                 }

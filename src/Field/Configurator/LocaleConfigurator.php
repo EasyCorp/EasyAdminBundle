@@ -28,6 +28,8 @@ final class LocaleConfigurator implements FieldConfiguratorInterface
         if (\in_array($context->getCrud()->getCurrentPage(), [Crud::PAGE_EDIT, Crud::PAGE_NEW], true)) {
             $field->setFormTypeOption('choices', $this->generateFormTypeChoices($field->getCustomOption(LocaleField::OPTION_LOCALE_CODES_TO_KEEP), $field->getCustomOption(LocaleField::OPTION_LOCALE_CODES_TO_REMOVE)));
             $field->setFormTypeOption('choice_loader', null);
+            // locale names passed to the form are already translated, so don't translate them again in the template
+            $field->setFormTypeOptionIfNotSet('choice_translation_domain', false);
         }
 
         if (null === $localeCode = $field->getValue()) {

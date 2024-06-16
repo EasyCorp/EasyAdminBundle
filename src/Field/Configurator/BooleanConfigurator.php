@@ -8,7 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
-use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
 /**
@@ -16,10 +16,10 @@ use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
  */
 final class BooleanConfigurator implements FieldConfiguratorInterface
 {
-    private AdminUrlGenerator $adminUrlGenerator;
+    private AdminUrlGeneratorInterface $adminUrlGenerator;
     private ?CsrfTokenManagerInterface $csrfTokenManager;
 
-    public function __construct(AdminUrlGenerator $adminUrlGenerator, CsrfTokenManagerInterface $csrfTokenManager = null)
+    public function __construct(AdminUrlGeneratorInterface $adminUrlGenerator, ?CsrfTokenManagerInterface $csrfTokenManager = null)
     {
         $this->adminUrlGenerator = $adminUrlGenerator;
         $this->csrfTokenManager = $csrfTokenManager;

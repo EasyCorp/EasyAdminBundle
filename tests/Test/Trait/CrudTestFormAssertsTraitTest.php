@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Test\Trait;
 
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Test\Trait\CrudTestFormAsserts;
 use EasyCorp\Bundle\EasyAdminBundle\Test\Trait\CrudTestUrlGeneration;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Controller\CategoryCrudController;
@@ -19,6 +20,7 @@ final class CrudTestFormAssertsTraitTest extends WebTestCase
 
     protected KernelBrowser $client;
     protected EntityManagerInterface $entityManager;
+    private AdminUrlGeneratorInterface $adminUrlGenerator;
 
     protected function setUp(): void
     {

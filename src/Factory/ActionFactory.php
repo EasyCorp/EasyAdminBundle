@@ -10,7 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionConfigDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
-use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use EasyCorp\Bundle\EasyAdminBundle\Translation\TranslatableMessageBuilder;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,10 +26,10 @@ final class ActionFactory
 {
     private AdminContextProvider $adminContextProvider;
     private AuthorizationCheckerInterface $authChecker;
-    private AdminUrlGenerator $adminUrlGenerator;
+    private AdminUrlGeneratorInterface $adminUrlGenerator;
     private ?CsrfTokenManagerInterface $csrfTokenManager;
 
-    public function __construct(AdminContextProvider $adminContextProvider, AuthorizationCheckerInterface $authChecker, AdminUrlGenerator $adminUrlGenerator, CsrfTokenManagerInterface $csrfTokenManager = null)
+    public function __construct(AdminContextProvider $adminContextProvider, AuthorizationCheckerInterface $authChecker, AdminUrlGeneratorInterface $adminUrlGenerator, ?CsrfTokenManagerInterface $csrfTokenManager = null)
     {
         $this->adminContextProvider = $adminContextProvider;
         $this->authChecker = $authChecker;
@@ -50,10 +50,11 @@ final class ActionFactory
                 continue;
             }
 
-            if (false === $actionDto->shouldBeDisplayedFor($entityDto)) {
+            if (false === $actionDto->isDisplayed($entityDto)) {
                 continue;
             }
 
+            // if CSS class hasn't been overridden, apply the default ones
             if ('' === $actionDto->getCssClass()) {
                 $defaultCssClass = 'action-'.$actionDto->getName();
                 if (Crud::PAGE_INDEX !== $currentPage) {
@@ -63,13 +64,19 @@ final class ActionFactory
                 $actionDto->setCssClass($defaultCssClass);
             }
 
+            // these are the additional custom CSS classes defined via addCssClass()
+            // which are always appended to the CSS classes (default ones or custom ones)
+            if ('' !== $addedCssClass = $actionDto->getAddedCssClass()) {
+                $actionDto->setCssClass($actionDto->getCssClass().' '.$addedCssClass);
+            }
+
             $entityActions[] = $this->processAction($currentPage, $actionDto, $entityDto);
         }
 
         $entityDto->setActions(ActionCollection::new($entityActions));
     }
 
-    public function processGlobalActions(ActionConfigDto $actionsDto = null): ActionCollection
+    public function processGlobalActions(?ActionConfigDto $actionsDto = null): ActionCollection
     {
         if (null === $actionsDto) {
             $actionsDto = $this->adminContextProvider->getContext()->getCrud()->getActionsConfig();
@@ -86,12 +93,23 @@ final class ActionFactory
                 continue;
             }
 
+            if (false === $actionDto->isDisplayed()) {
+                continue;
+            }
+
             if (Crud::PAGE_INDEX !== $currentPage && $actionDto->isBatchAction()) {
                 throw new \RuntimeException(sprintf('Batch actions can be added only to the "index" page, but the "%s" batch action is defined in the "%s" page.', $actionDto->getName(), $currentPage));
             }
 
+            // if CSS class hasn't been overridden, apply the default ones
             if ('' === $actionDto->getCssClass()) {
                 $actionDto->setCssClass('btn action-'.$actionDto->getName());
+            }
+
+            // these are the additional custom CSS classes defined via addCssClass()
+            // which are always appended to the CSS classes (default ones or custom ones)
+            if ('' !== $addedCssClass = $actionDto->getAddedCssClass()) {
+                $actionDto->setCssClass($actionDto->getCssClass().' '.$addedCssClass);
             }
 
             $globalActions[] = $this->processAction($currentPage, $actionDto);
@@ -100,12 +118,11 @@ final class ActionFactory
         return ActionCollection::new($globalActions);
     }
 
-    private function processAction(string $pageName, ActionDto $actionDto, EntityDto $entityDto = null): ActionDto
+    private function processAction(string $pageName, ActionDto $actionDto, ?EntityDto $entityDto = null): ActionDto
     {
         $adminContext = $this->adminContextProvider->getContext();
         $translationDomain = $adminContext->getI18n()->getTranslationDomain();
         $defaultTranslationParameters = $adminContext->getI18n()->getTranslationParameters();
-        $currentPage = $adminContext->getCrud()->getCurrentPage();
 
         $actionDto->setHtmlAttribute('data-action-name', $actionDto->getName());
 
@@ -126,7 +143,7 @@ final class ActionFactory
         $defaultTemplatePath = $adminContext->getTemplatePath('crud/action');
         $actionDto->setTemplatePath($actionDto->getTemplatePath() ?? $defaultTemplatePath);
 
-        $actionDto->setLinkUrl($this->generateActionUrl($currentPage, $adminContext->getRequest(), $actionDto, $entityDto));
+        $actionDto->setLinkUrl($this->generateActionUrl($adminContext->getRequest(), $actionDto, $entityDto));
 
         if (!$actionDto->isGlobalAction() && \in_array($pageName, [Crud::PAGE_EDIT, Crud::PAGE_NEW], true)) {
             $actionDto->setHtmlAttribute('form', sprintf('%s-%s-form', $pageName, $entityDto->getName()));
@@ -154,7 +171,7 @@ final class ActionFactory
         return $actionDto;
     }
 
-    private function generateActionUrl(string $currentAction, Request $request, ActionDto $actionDto, EntityDto $entityDto = null): string
+    private function generateActionUrl(Request $request, ActionDto $actionDto, ?EntityDto $entityDto = null): string
     {
         $entityInstance = $entityDto?->getInstance();
 
@@ -172,13 +189,12 @@ final class ActionFactory
                 $routeParameters = $routeParameters($entityInstance);
             }
 
-            return $this->adminUrlGenerator->unsetAll()->includeReferrer()->setRoute($routeName, $routeParameters)->generateUrl();
+            return $this->adminUrlGenerator->unsetAllExcept(EA::FILTERS, EA::PAGE, EA::QUERY, EA::SORT)->setRoute($routeName, $routeParameters)->generateUrl();
         }
 
         $requestParameters = [
             EA::CRUD_CONTROLLER_FQCN => $request->query->get(EA::CRUD_CONTROLLER_FQCN),
             EA::CRUD_ACTION => $actionDto->getCrudActionName(),
-            EA::REFERRER => $this->generateReferrerUrl($request, $actionDto, $currentAction),
         ];
 
         if (\in_array($actionDto->getName(), [Action::INDEX, Action::NEW, Action::SAVE_AND_ADD_ANOTHER, Action::SAVE_AND_RETURN], true)) {
@@ -187,38 +203,16 @@ final class ActionFactory
             $requestParameters[EA::ENTITY_ID] = $entityDto->getPrimaryKeyValueAsString();
         }
 
-        return $this->adminUrlGenerator->unsetAllExcept(EA::FILTERS, EA::PAGE)->setAll($requestParameters)->generateUrl();
-    }
-
-    private function generateReferrerUrl(Request $request, ActionDto $actionDto, string $currentAction): ?string
-    {
-        $nextAction = $actionDto->getName();
-
-        if (Action::DETAIL === $currentAction) {
-            if (Action::EDIT === $nextAction) {
-                return $this->adminUrlGenerator->removeReferrer()->generateUrl();
-            }
+        $urlParametersToKeep = [EA::FILTERS, EA::QUERY, EA::SORT, EA::BATCH_ACTION_CSRF_TOKEN, EA::BATCH_ACTION_ENTITY_IDS, EA::BATCH_ACTION_NAME, EA::BATCH_ACTION_URL];
+        // when creating a new entity, keeping the selected page number is usually confusing:
+        // 1. the user filters/searches/sorts/paginates the results and then creates a new entity
+        // 2. if we keep the page number, when the backend returns to the listing, it's very probable
+        //    that the user doesn't see the new entity, so they might think that it wasn't created
+        // 3. if we keep the other parameters, it's probable that the new entity is shown (sometimes it won't)
+        if (Action::NEW !== $actionDto->getName()) {
+            $urlParametersToKeep[] = EA::PAGE;
         }
 
-        if (Action::INDEX === $currentAction) {
-            return $this->adminUrlGenerator->removeReferrer()->generateUrl();
-        }
-
-        if (Action::NEW === $currentAction) {
-            return null;
-        }
-
-        $referrer = $request->query->get(EA::REFERRER);
-        $referrerParts = parse_url((string) $referrer);
-        parse_str($referrerParts[EA::QUERY] ?? '', $referrerQueryStringVariables);
-        $referrerCrudAction = $referrerQueryStringVariables[EA::CRUD_ACTION] ?? null;
-
-        if (Action::EDIT === $currentAction) {
-            if (\in_array($referrerCrudAction, [Action::INDEX, Action::DETAIL], true)) {
-                return $referrer;
-            }
-        }
-
-        return $this->adminUrlGenerator->removeReferrer()->generateUrl();
+        return $this->adminUrlGenerator->unsetAllExcept(...$urlParametersToKeep)->setAll($requestParameters)->generateUrl();
     }
 }

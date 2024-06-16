@@ -5,6 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity]
 class Category
@@ -14,6 +15,7 @@ class Category
     #[ORM\Column(type: 'integer')]
     private $id;
 
+    #[Assert\NotBlank]
     #[ORM\Column(type: 'string', length: 255)]
     private $name;
 
@@ -25,6 +27,9 @@ class Category
 
     #[ORM\Column(type: 'boolean')]
     private bool $active = false;
+
+    #[ORM\Column(type: 'boolean')]
+    private bool $activeDisabled = false;
 
     public function __construct()
     {
@@ -95,6 +100,18 @@ class Category
     public function setActive(bool $active): self
     {
         $this->active = $active;
+
+        return $this;
+    }
+
+    public function isActiveDisabled(): bool
+    {
+        return $this->activeDisabled;
+    }
+
+    public function setActiveDisabled(bool $activeDisabled): self
+    {
+        $this->activeDisabled = $activeDisabled;
 
         return $this;
     }

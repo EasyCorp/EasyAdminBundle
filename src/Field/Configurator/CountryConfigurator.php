@@ -41,6 +41,8 @@ final class CountryConfigurator implements FieldConfiguratorInterface
         }
 
         if (\in_array($context->getCrud()->getCurrentPage(), [Crud::PAGE_EDIT, Crud::PAGE_NEW], true)) {
+            // country names passed to the form are already translated, so don't translate them again in the template
+            $field->setFormTypeOptionIfNotSet('choice_translation_domain', false);
             $field->setFormTypeOption('choices', $this->generateFormTypeChoices($countryCodeFormat, $field->getCustomOption(CountryField::OPTION_COUNTRY_CODES_TO_KEEP), $field->getCustomOption(CountryField::OPTION_COUNTRY_CODES_TO_REMOVE)));
 
             // the value of this form option must be a string to properly propagate it as an HTML attribute value

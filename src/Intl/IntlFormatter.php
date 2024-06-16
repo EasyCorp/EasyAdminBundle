@@ -24,7 +24,6 @@ final class IntlFormatter
         'int32' => \NumberFormatter::TYPE_INT32,
         'int64' => \NumberFormatter::TYPE_INT64,
         'double' => \NumberFormatter::TYPE_DOUBLE,
-        'currency' => \NumberFormatter::TYPE_CURRENCY,
     ];
     private const NUMBER_STYLES = [
         'decimal' => \NumberFormatter::DECIMAL,
@@ -71,11 +70,41 @@ final class IntlFormatter
         'before_suffix' => \NumberFormatter::PAD_BEFORE_SUFFIX,
         'after_suffix' => \NumberFormatter::PAD_AFTER_SUFFIX,
     ];
+    private const NUMBER_TEXT_ATTRIBUTES = [
+        'positive_prefix' => \NumberFormatter::POSITIVE_PREFIX,
+        'positive_suffix' => \NumberFormatter::POSITIVE_SUFFIX,
+        'negative_prefix' => \NumberFormatter::NEGATIVE_PREFIX,
+        'negative_suffix' => \NumberFormatter::NEGATIVE_SUFFIX,
+        'padding_character' => \NumberFormatter::PADDING_CHARACTER,
+        'currency_code' => \NumberFormatter::CURRENCY_CODE,
+        'default_ruleset' => \NumberFormatter::DEFAULT_RULESET,
+        'public_rulesets' => \NumberFormatter::PUBLIC_RULESETS,
+    ];
+    private const NUMBER_SYMBOLS = [
+        'decimal_separator' => \NumberFormatter::DECIMAL_SEPARATOR_SYMBOL,
+        'grouping_separator' => \NumberFormatter::GROUPING_SEPARATOR_SYMBOL,
+        'pattern_separator' => \NumberFormatter::PATTERN_SEPARATOR_SYMBOL,
+        'percent' => \NumberFormatter::PERCENT_SYMBOL,
+        'zero_digit' => \NumberFormatter::ZERO_DIGIT_SYMBOL,
+        'digit' => \NumberFormatter::DIGIT_SYMBOL,
+        'minus_sign' => \NumberFormatter::MINUS_SIGN_SYMBOL,
+        'plus_sign' => \NumberFormatter::PLUS_SIGN_SYMBOL,
+        'currency' => \NumberFormatter::CURRENCY_SYMBOL,
+        'intl_currency' => \NumberFormatter::INTL_CURRENCY_SYMBOL,
+        'monetary_separator' => \NumberFormatter::MONETARY_SEPARATOR_SYMBOL,
+        'exponential' => \NumberFormatter::EXPONENTIAL_SYMBOL,
+        'permill' => \NumberFormatter::PERMILL_SYMBOL,
+        'pad_escape' => \NumberFormatter::PAD_ESCAPE_SYMBOL,
+        'infinity' => \NumberFormatter::INFINITY_SYMBOL,
+        'nan' => \NumberFormatter::NAN_SYMBOL,
+        'significant_digit' => \NumberFormatter::SIGNIFICANT_DIGIT_SYMBOL,
+        'monetary_grouping_separator' => \NumberFormatter::MONETARY_GROUPING_SEPARATOR_SYMBOL,
+    ];
 
     private array $dateFormatters = [];
     private array $numberFormatters = [];
 
-    public function formatCurrency($amount, string $currency, array $attrs = [], string $locale = null): string
+    public function formatCurrency($amount, string $currency, array $attrs = [], ?string $locale = null): string
     {
         $formatter = $this->createNumberFormatter($locale, 'currency', $attrs);
         /** @var string|false $formattedCurrency */
@@ -87,8 +116,22 @@ final class IntlFormatter
         return $formattedCurrency;
     }
 
-    public function formatNumber($number, array $attrs = [], string $style = 'decimal', string $type = 'default', string $locale = null): string
+    /**
+     * @param int|float $number
+     */
+    public function formatNumber($number, array $attrs = [], string $style = 'decimal', string $type = 'default', ?string $locale = null): string
     {
+        if (null === $number) {
+            trigger_deprecation(
+                'easycorp/easyadmin-bundle',
+                '4.8.5',
+                'Passing null values to "%s()" method is deprecated and will throw an exception in EasyAdmin 5.0.0.',
+                __METHOD__,
+            );
+
+            return '0';
+        }
+
         if (!isset(self::NUMBER_TYPES[$type])) {
             throw new RuntimeError(sprintf('The type "%s" does not exist, known types are: "%s".', $type, implode('", "', array_keys(self::NUMBER_TYPES))));
         }
@@ -105,7 +148,7 @@ final class IntlFormatter
     /**
      * @param \DateTimeZone|string|false|null $timezone The target timezone, null to use the default, false to leave unchanged
      */
-    public function formatDateTime(?\DateTimeInterface $date, ?string $dateFormat = 'medium', ?string $timeFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', string $locale = null): ?string
+    public function formatDateTime(?\DateTimeInterface $date, ?string $dateFormat = 'medium', ?string $timeFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', ?string $locale = null): ?string
     {
         if (null === $date = $this->convertDate($date, $timezone)) {
             return null;
@@ -120,7 +163,7 @@ final class IntlFormatter
     /**
      * @param \DateTimeZone|string|false|null $timezone The target timezone, null to use the default, false to leave unchanged
      */
-    public function formatDate(?\DateTimeInterface $date, ?string $dateFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', string $locale = null): ?string
+    public function formatDate(?\DateTimeInterface $date, ?string $dateFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', ?string $locale = null): ?string
     {
         return $this->formatDateTime($date, $dateFormat, 'none', $pattern, $timezone, $calendar, $locale);
     }
@@ -128,12 +171,12 @@ final class IntlFormatter
     /**
      * @param \DateTimeZone|string|false|null $timezone The target timezone, null to use the default, false to leave unchanged
      */
-    public function formatTime(?\DateTimeInterface $date, ?string $timeFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', string $locale = null): ?string
+    public function formatTime(?\DateTimeInterface $date, ?string $timeFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', ?string $locale = null): ?string
     {
         return $this->formatDateTime($date, 'none', $timeFormat, $pattern, $timezone, $calendar, $locale);
     }
 
-    private function createDateFormatter(?string $locale, ?string $dateFormat, ?string $timeFormat, string $pattern = '', \DateTimeZone $timezone = null, string $calendarName = 'gregorian'): \IntlDateFormatter
+    private function createDateFormatter(?string $locale, ?string $dateFormat, ?string $timeFormat, string $pattern = '', ?\DateTimeZone $timezone = null, string $calendarName = 'gregorian'): \IntlDateFormatter
     {
         if (null !== $dateFormat && !isset(self::DATE_FORMATS[$dateFormat])) {
             throw new RuntimeError(sprintf('The date format "%s" does not exist, known formats are: "%s".', $dateFormat, implode('", "', array_keys(self::DATE_FORMATS))));
@@ -171,8 +214,24 @@ final class IntlFormatter
             $locale = \Locale::getDefault();
         }
 
+        $textAttrs = [];
+        foreach ($attrs as $name => $value) {
+            if (isset(self::NUMBER_TEXT_ATTRIBUTES[$name])) {
+                $textAttrs[$name] = $value;
+                unset($attrs[$name]);
+            }
+        }
+
+        $symbols = [];
+        foreach ($attrs as $name => $value) {
+            if (isset(self::NUMBER_SYMBOLS[$name])) {
+                $symbols[$name] = $value;
+                unset($attrs[$name]);
+            }
+        }
+
         ksort($attrs);
-        $hash = sprintf('%s|%s|%s', $locale, $style, json_encode($attrs, \JSON_THROW_ON_ERROR));
+        $hash = $locale.'|'.$style.'|'.json_encode($attrs).'|'.json_encode($textAttrs).'|'.json_encode($symbols);
 
         if (!isset($this->numberFormatters[$hash])) {
             $this->numberFormatters[$hash] = new \NumberFormatter($locale, self::NUMBER_STYLES[$style]);
@@ -198,6 +257,14 @@ final class IntlFormatter
             }
 
             $this->numberFormatters[$hash]->setAttribute(self::NUMBER_ATTRIBUTES[$name], $value);
+        }
+
+        foreach ($textAttrs as $name => $value) {
+            $this->numberFormatters[$hash]->setTextAttribute(self::NUMBER_TEXT_ATTRIBUTES[$name], $value);
+        }
+
+        foreach ($symbols as $name => $value) {
+            $this->numberFormatters[$hash]->setSymbol(self::NUMBER_SYMBOLS[$name], $value);
         }
 
         return $this->numberFormatters[$hash];

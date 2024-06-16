@@ -45,6 +45,15 @@ change that location. The argument is the directory relative to your project roo
 
     yield ImageField::new('...')->setUploadDir('assets/images/');
 
+setFileConstraints
+~~~~~~~~~~~~~~~~~~
+
+By default, the uploaded file is validated using an empty `Image constraint`_
+(which means it only validates that the uploaded file is of type image). Use this
+option to define the constraints applied to the uploaded file::
+
+    yield ImageField::new('...')->setFileConstraints(new Image(maxSize: '100k'));
+
 setUploadedFileNamePattern
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -74,3 +83,5 @@ argument the Symfony's UploadedFile instance::
     yield ImageField::new('...')->setUploadedFileNamePattern(
         fn (UploadedFile $file): string => sprintf('upload_%d_%s.%s', random_int(1, 999), $file->getFilename(), $file->guessExtension()))
     );
+
+.. _`Image constraint`: https://symfony.com/doc/current/reference/constraints/Image.html

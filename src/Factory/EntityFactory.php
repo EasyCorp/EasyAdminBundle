@@ -2,10 +2,8 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
-use Doctrine\Common\Util\ClassUtils;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\Persistence\ManagerRegistry;
-use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Persistence\Proxy;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\ActionCollection;
@@ -16,6 +14,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityBuiltEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\EntityNotFoundException;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
@@ -66,7 +65,7 @@ final class EntityFactory
         return $this->actionFactory->processGlobalActions($actionConfigDto);
     }
 
-    public function create(string $entityFqcn, $entityId = null, string $entityPermission = null): EntityDto
+    public function create(string $entityFqcn, $entityId = null, string|Expression|null $entityPermission = null): EntityDto
     {
         return $this->doCreate($entityFqcn, $entityId, $entityPermission);
     }
@@ -93,13 +92,10 @@ final class EntityFactory
         return EntityCollection::new($entityDtos);
     }
 
-    /**
-     * @return ClassMetadata&ClassMetadataInfo
-     */
     public function getEntityMetadata(string $entityFqcn): ClassMetadata
     {
         $entityManager = $this->getEntityManager($entityFqcn);
-        /** @var ClassMetadata&ClassMetadataInfo $entityMetadata */
+        /** @var ClassMetadata $entityMetadata */
         $entityMetadata = $entityManager->getClassMetadata($entityFqcn);
 
         if (1 !== \count($entityMetadata->getIdentifierFieldNames())) {
@@ -109,7 +105,7 @@ final class EntityFactory
         return $entityMetadata;
     }
 
-    private function doCreate(string $entityFqcn = null, $entityId = null, string $entityPermission = null, $entityInstance = null): EntityDto
+    private function doCreate(?string $entityFqcn = null, $entityId = null, string|Expression|null $entityPermission = null, $entityInstance = null): EntityDto
     {
         if (null === $entityInstance && null !== $entityFqcn) {
             $entityInstance = null === $entityId ? null : $this->getEntityInstance($entityFqcn, $entityId);
@@ -120,7 +116,7 @@ final class EntityFactory
                 $entityInstance->__load();
             }
 
-            $entityFqcn = ClassUtils::getClass($entityInstance);
+            $entityFqcn = $this->getRealClass($entityInstance::class);
         }
 
         $entityMetadata = $this->getEntityMetadata($entityFqcn);
@@ -154,5 +150,19 @@ final class EntityFactory
         }
 
         return $entityInstance;
+    }
+
+    /**
+     * Code copied from Symfony\Bridge\Doctrine\Form\DoctrineOrmTypeGuesser
+     * because Doctrine ORM 3.x removed the ClassUtil class where this method was defined
+     * (c) Fabien Potencier <fabien@symfony.com> - MIT License.
+     */
+    private function getRealClass(string $class): string
+    {
+        if (false === $pos = strrpos($class, '\\'.Proxy::MARKER.'\\')) {
+            return $class;
+        }
+
+        return substr($class, $pos + Proxy::MARKER_LENGTH + 2);
     }
 }

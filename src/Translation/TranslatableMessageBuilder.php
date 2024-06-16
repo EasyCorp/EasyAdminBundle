@@ -20,7 +20,7 @@ class TranslatableMessageBuilder
      */
     public static function withParameters(TranslatableInterface $translatable, array $parameters): TranslatableInterface
     {
-        if (TranslatableMessage::class !== $translatable::class) {
+        if (!($translatable instanceof TranslatableMessage)) {
             return $translatable;
         }
 

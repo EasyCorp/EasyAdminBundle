@@ -26,7 +26,7 @@ class BlogPost
     #[ORM\ManyToMany(targetEntity: Category::class, inversedBy: 'blogPosts')]
     private $categories;
 
-    #[ORM\Column(type: 'datetime')]
+    #[ORM\Column(type: 'datetime_immutable')]
     private $createdAt;
 
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
@@ -35,6 +35,9 @@ class BlogPost
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'blogPosts')]
     #[ORM\JoinColumn(nullable: false)]
     private $author;
+
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    private $publisher;
 
     public function __construct()
     {
@@ -111,7 +114,7 @@ class BlogPost
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    public function setCreatedAt(\DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
 
@@ -140,5 +143,15 @@ class BlogPost
         $this->author = $author;
 
         return $this;
+    }
+
+    public function getPublisher()
+    {
+        return $this->publisher;
+    }
+
+    public function setPublisher(?User $publisher): void
+    {
+        $this->publisher = $publisher;
     }
 }

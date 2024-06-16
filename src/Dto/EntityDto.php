@@ -2,11 +2,16 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use Doctrine\Persistence\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\FieldMapping;
+use Doctrine\ORM\Mapping\ManyToManyAssociationMapping;
+use Doctrine\ORM\Mapping\ManyToOneAssociationMapping;
+use Doctrine\ORM\Mapping\OneToManyAssociationMapping;
+use Doctrine\ORM\Mapping\OneToOneAssociationMapping;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\ActionCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
 /**
@@ -16,19 +21,15 @@ final class EntityDto
 {
     private bool $isAccessible = true;
     private string $fqcn;
-    /** @var ClassMetadataInfo */
     private ClassMetadata $metadata;
     private $instance;
     private $primaryKeyName;
     private mixed $primaryKeyValue = null;
-    private ?string $permission;
+    private string|Expression|null $permission;
     private ?FieldCollection $fields = null;
     private ?ActionCollection $actions = null;
 
-    /**
-     * @param ClassMetadata&ClassMetadataInfo $entityMetadata
-     */
-    public function __construct(string $entityFqcn, ClassMetadata $entityMetadata, string $entityPermission = null, /* ?object */ $entityInstance = null)
+    public function __construct(string $entityFqcn, ClassMetadata $entityMetadata, string|Expression|null $entityPermission = null, /* ?object */ $entityInstance = null)
     {
         if (!\is_object($entityInstance)
             && null !== $entityInstance) {
@@ -112,7 +113,7 @@ final class EntityDto
         return (string) $this->getPrimaryKeyValue();
     }
 
-    public function getPermission(): ?string
+    public function getPermission(): string|Expression|null
     {
         return $this->permission;
     }
@@ -161,11 +162,37 @@ final class EntityDto
     public function getPropertyMetadata(string $propertyName): KeyValueStore
     {
         if (\array_key_exists($propertyName, $this->metadata->fieldMappings)) {
-            return KeyValueStore::new($this->metadata->fieldMappings[$propertyName]);
+            /** @var FieldMapping|array $fieldMapping */
+            $fieldMapping = $this->metadata->fieldMappings[$propertyName];
+            // Doctrine ORM 2.x returns an array and Doctrine ORM 3.x returns a FieldMapping object
+            if ($fieldMapping instanceof FieldMapping) {
+                $fieldMapping = (array) $fieldMapping;
+            }
+
+            return KeyValueStore::new($fieldMapping);
         }
 
         if (\array_key_exists($propertyName, $this->metadata->associationMappings)) {
-            return KeyValueStore::new($this->metadata->associationMappings[$propertyName]);
+            /** @var OneToOneAssociationMapping|OneToManyAssociationMapping|ManyToOneAssociationMapping|ManyToManyAssociationMapping|array $associationMapping */
+            $associationMapping = $this->metadata->associationMappings[$propertyName];
+            // Doctrine ORM 2.x returns an array and Doctrine ORM 3.x returns one of the many *Mapping objects
+            // there's not a single interface implemented by all of them, so let's only check if it's an object
+            if (\is_object($associationMapping)) {
+                // Doctrine ORM 3.x doesn't include the 'type' key that tells the type of association
+                // recreate that key to keep the code compatible with both versions
+                $associationType = match (true) {
+                    $associationMapping instanceof OneToOneAssociationMapping => ClassMetadata::ONE_TO_ONE,
+                    $associationMapping instanceof OneToManyAssociationMapping => ClassMetadata::ONE_TO_MANY,
+                    $associationMapping instanceof ManyToOneAssociationMapping => ClassMetadata::MANY_TO_ONE,
+                    $associationMapping instanceof ManyToManyAssociationMapping => ClassMetadata::MANY_TO_MANY,
+                    default => null,
+                };
+
+                $associationMapping = (array) $associationMapping;
+                $associationMapping['type'] = $associationType;
+            }
+
+            return KeyValueStore::new($associationMapping);
         }
 
         throw new \InvalidArgumentException(sprintf('The "%s" field does not exist in the "%s" entity.', $propertyName, $this->getFqcn()));
@@ -192,14 +219,14 @@ final class EntityDto
     {
         $associationType = $this->getPropertyMetadata($propertyName)->get('type');
 
-        return \in_array($associationType, [ClassMetadataInfo::ONE_TO_ONE, ClassMetadataInfo::MANY_TO_ONE], true);
+        return \in_array($associationType, [ClassMetadata::ONE_TO_ONE, ClassMetadata::MANY_TO_ONE], true);
     }
 
     public function isToManyAssociation(string $propertyName): bool
     {
         $associationType = $this->getPropertyMetadata($propertyName)->get('type');
 
-        return \in_array($associationType, [ClassMetadataInfo::ONE_TO_MANY, ClassMetadataInfo::MANY_TO_MANY], true);
+        return \in_array($associationType, [ClassMetadata::ONE_TO_MANY, ClassMetadata::MANY_TO_MANY], true);
     }
 
     public function isEmbeddedClassProperty(string $propertyName): bool

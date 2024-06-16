@@ -10,6 +10,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Command\MakeAdminDashboardCommand;
 use EasyCorp\Bundle\EasyAdminBundle\Command\MakeCrudControllerCommand;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterConfiguratorInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu\MenuItemMatcherInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Orm\EntityPaginatorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\DependencyInjection\EasyAdminExtension;
 use EasyCorp\Bundle\EasyAdminBundle\EventListener\AdminRouterSubscriber;
 use EasyCorp\Bundle\EasyAdminBundle\EventListener\CrudResponseListener;
@@ -21,6 +23,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FieldFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FilterFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\FormLayoutFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\MenuFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\PaginatorFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\ArrayConfigurator;
@@ -68,7 +71,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Inspector\DataCollector;
 use EasyCorp\Bundle\EasyAdminBundle\Intl\IntlFormatter;
 use EasyCorp\Bundle\EasyAdminBundle\Maker\ClassMaker;
 use EasyCorp\Bundle\EasyAdminBundle\Menu\MenuItemMatcher;
-use EasyCorp\Bundle\EasyAdminBundle\Menu\MenuItemMatcherInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityPaginator;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityUpdater;
@@ -132,6 +134,8 @@ return static function (ContainerConfigurator $container) {
             ->arg(0, service('service_locator_'.AdminUrlGenerator::class))
             ->arg(1, service(AdminContextProvider::class))
             ->arg(2, new Reference('security.csrf.token_manager', ContainerInterface::NULL_ON_INVALID_REFERENCE))
+            ->arg(3, new Reference('asset_mapper.importmap.renderer', ContainerInterface::NULL_ON_INVALID_REFERENCE))
+            ->arg(4, service('translator'))
             ->tag('twig.extension')
 
         ->set(EaCrudFormTypeExtension::class)
@@ -227,21 +231,27 @@ return static function (ContainerConfigurator $container) {
             ->arg(0, service(AdminUrlGenerator::class))
             ->arg(1, service(EntityFactory::class))
 
+        ->alias(EntityPaginatorInterface::class, EntityPaginator::class)
+
         ->set(EntityUpdater::class)
             ->arg(0, service('property_accessor'))
             ->arg(1, service('validator'))
 
         ->set(PaginatorFactory::class)
             ->arg(0, service(AdminContextProvider::class))
-            ->arg(1, service(EntityPaginator::class))
+            ->arg(1, service(EntityPaginatorInterface::class))
 
         ->set(FormFactory::class)
             ->arg(0, service('form.factory'))
+            ->arg(1, service(AdminUrlGenerator::class))
+
+        ->set(FormLayoutFactory::class)
 
         ->set(FieldFactory::class)
             ->arg(0, service(AdminContextProvider::class))
             ->arg(1, service(AuthorizationChecker::class))
             ->arg(2, tagged_iterator(EasyAdminExtension::TAG_FIELD_CONFIGURATOR))
+            ->arg(3, service(FormLayoutFactory::class))
 
         ->set(FieldProvider::class)
             ->arg(0, service(AdminContextProvider::class))

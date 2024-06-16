@@ -10,6 +10,8 @@ use Symfony\Component\Form\AbstractType;
  * some HTML tags and it must be added to a form as "unmapped" and "non required".
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
+ *
+ * @deprecated since 4.7.7, use EaFormFieldsetType instead
  */
 class EaFormPanelType extends AbstractType
 {

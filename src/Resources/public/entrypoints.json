@@ -2,16 +2,16 @@
   "entrypoints": {
     "app": {
       "css": [
-        "/app.404e52fc.css",
-        "/app.404e52fc.rtl.css"
+        "/app.dea15b53.css",
+        "/app.dea15b53.rtl.css"
       ],
       "js": [
-        "/app.bdbe7759.js"
+        "/app.5a01f8c5.js"
       ]
     },
     "form": {
       "js": [
-        "/form.fc39362b.js"
+        "/form.6e84c31d.js"
       ]
     },
     "page-layout": {
@@ -21,55 +21,55 @@
     },
     "page-color-scheme": {
       "js": [
-        "/page-color-scheme.a1970567.js"
+        "/page-color-scheme.4c28406c.js"
       ]
     },
     "field-boolean": {
       "js": [
-        "/field-boolean.353e173e.js"
+        "/field-boolean.38cf4737.js"
       ]
     },
     "field-code-editor": {
       "css": [
-        "/field-code-editor.09574d54.css",
-        "/field-code-editor.09574d54.rtl.css"
+        "/field-code-editor.78ccdb00.css",
+        "/field-code-editor.78ccdb00.rtl.css"
       ],
       "js": [
-        "/field-code-editor.8988bf27.js"
+        "/field-code-editor.5893dd28.js"
       ]
     },
     "field-collection": {
       "js": [
-        "/field-collection.8ea41328.js"
+        "/field-collection.32367ca8.js"
       ]
     },
     "field-file-upload": {
       "js": [
-        "/field-file-upload.b5f460d6.js"
+        "/field-file-upload.a3a92842.js"
       ]
     },
     "field-image": {
       "js": [
-        "/field-image.b7b44654.js"
+        "/field-image.19d51d41.js"
       ]
     },
     "field-slug": {
       "js": [
-        "/field-slug.0af8dc08.js"
+        "/field-slug.0dd3942b.js"
       ]
     },
     "field-textarea": {
       "js": [
-        "/field-textarea.663dbf0a.js"
+        "/field-textarea.268f9a4d.js"
       ]
     },
     "field-text-editor": {
       "css": [
-        "/field-text-editor.7348fb97.css",
-        "/field-text-editor.7348fb97.rtl.css"
+        "/field-text-editor.7f2b8426.css",
+        "/field-text-editor.7f2b8426.rtl.css"
       ],
       "js": [
-        "/field-text-editor.beed4e76.js"
+        "/field-text-editor.833157ee.js"
       ]
     },
     "login": {

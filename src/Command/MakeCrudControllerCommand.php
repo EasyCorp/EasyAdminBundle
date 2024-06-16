@@ -27,7 +27,7 @@ class MakeCrudControllerCommand extends Command
     private ClassMaker $classMaker;
     private ManagerRegistry $doctrine;
 
-    public function __construct(string $projectDir, ClassMaker $classMaker, ManagerRegistry $doctrine, string $name = null)
+    public function __construct(string $projectDir, ClassMaker $classMaker, ManagerRegistry $doctrine, ?string $name = null)
     {
         parent::__construct($name);
         $this->projectDir = $projectDir;
@@ -72,7 +72,7 @@ class MakeCrudControllerCommand extends Command
 
         $guessedNamespace = u($controllerDir)->equalsTo('src')
             ? 'App'
-            : u($controllerDir)->replace('/', ' ')->replace('\\', ' ')->replace('src ', 'app ')->title(true)->replace(' ', '\\')->trimEnd(\DIRECTORY_SEPARATOR);
+            : u($controllerDir)->replace('/', ' ')->replace('\\', ' ')->replace('src ', 'app ')->title(true)->replace('App App ', 'App ')->replace(' ', '\\')->trimEnd(\DIRECTORY_SEPARATOR);
         $namespace = $io->ask(
             'Namespace of the generated CRUD controller',
             $guessedNamespace,

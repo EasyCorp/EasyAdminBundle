@@ -219,7 +219,7 @@ final class DashboardDto
      */
     public function getDefaultBreadcrumbHierarchyCallback(): \Closure
     {
-        return function (null|string|BreadcrumbItem $action): null|string {
+        return function (string|BreadcrumbItem|null $action): ?string {
             if ($action instanceof BreadcrumbItem) {
                 $action = $action->action;
             }

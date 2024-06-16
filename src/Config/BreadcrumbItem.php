@@ -10,12 +10,12 @@ final /* readonly */ class BreadcrumbItem
 {
     public function __construct(
         public ?string $action = null,
-        public null|string|\Closure $label = null,
+        public string|\Closure|null $label = null,
         public ?string $route = null,
-        public null|string|\Closure $crudControllerFqcn = null,
-        public null|string|\Closure $entityId = null,
+        public string|\Closure|null $crudControllerFqcn = null,
+        public string|\Closure|null $entityId = null,
         public ?string $credentials = null,
-        public null|string|\Closure|array $entityInstanceCallback = null,
+        public string|\Closure|array|null $entityInstanceCallback = null,
     ) {
     }
 

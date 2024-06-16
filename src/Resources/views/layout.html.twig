@@ -359,10 +359,10 @@
                                                         {% endif %}                                                
                                                     {% endif %}   
                                                     {% if breadcrumb_item.credentials is null or is_granted(breadcrumb_item.credentials) %}                                              
-                                                <li class="breadcrumb-item"><a href="{{ breadcrumb_url }}">{{ breadcrumb_label }}</a></li>
+                                                <li class="breadcrumb-item"><a href="{{ breadcrumb_url }}">{{ breadcrumb_label|striptags }}</a></li>
                                                     {% endif %}
                                                 {% endfor %}
-                                                <li class="breadcrumb-item active" aria-current="page">{{ block('content_title') }}</li>
+                                                <li class="breadcrumb-item active" aria-current="page">{{ block('content_title')|striptags }}</li>
                                             </ol>
                                         </nav>
                                     {% endif %}

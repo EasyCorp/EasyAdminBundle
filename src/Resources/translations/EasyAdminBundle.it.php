@@ -2,7 +2,7 @@
 
 return [
     'page_title' => [
-        // 'dashboard' => '',
+        'dashboard' => 'Dashboard',
         'detail' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
         'edit' => 'Modifica %entity_label_singular%',
         'index' => '%entity_label_plural%',
@@ -11,7 +11,7 @@ return [
     ],
 
     'datagrid' => [
-        // 'hidden_results' => '',
+        'hidden_results' => 'Alcuni risultati non possono essere visualizzati perché non hai permessi sufficienti',
         'no_results' => 'Nessun risultato trovato.',
     ],
 
@@ -36,8 +36,8 @@ return [
     ],
 
     'field' => [
-        // 'code_editor.view_code' => '',
-        // 'text_editor.view_content' => '',
+        'code_editor.view_code' => 'Visualizza codice',
+        'text_editor.view_content' => 'Visualizza contenuto',
     ],
 
     'action' => [
@@ -62,9 +62,9 @@ return [
     ],
 
     'batch_action_modal' => [
-        // 'title' => '',
-        // 'content' => '',
-        // 'action' => '',
+        'title' => 'Stai per applicare l\'azione "%action_name%" su %num_items% elemento(i).',
+        'content' => 'Non è possibile annulare questa operazione.',
+        'action' => 'Procedi',
     ],
 
     'delete_modal' => [
@@ -82,7 +82,7 @@ return [
         'label.is_greater_than_or_equal_to' => 'è maggiore o uguale di',
         'label.is_less_than' => 'è minore di',
         'label.is_less_than_or_equal_to' => 'è minore o uguale di',
-        // 'label.is_between' => '',
+        'label.is_between' => 'è tra',
         'label.contains' => 'contiene',
         'label.not_contains' => 'non contiene',
         'label.starts_with' => 'inizia con',
@@ -100,6 +100,7 @@ return [
     'form' => [
         'are_you_sure' => 'Non hai salvato le modifiche apportate su questo modulo.',
         'tab.error_badge_title' => 'Un campo non è valido|%count% campi non sono validi',
+        'slug.confirm_text' => 'Se cambi lo slug, potresti rompere i collegamenti su altre pagine.',
     ],
 
     'user' => [
@@ -111,13 +112,13 @@ return [
     ],
 
     'settings' => [
-        'locale' => 'Lingua',
         'appearance' => [
             'label' => 'Aspetto',
             'light' => 'Chiaro',
             'dark' => 'Scuro',
             'auto' => 'Auto',
         ],
+        'locale' => 'Lingua',
     ],
 
     'login_page' => [
@@ -132,7 +133,7 @@ return [
         'entity_not_found' => 'Questo elemento non è più disponibile.',
         'entity_remove' => 'L\'elemento selezionato non può essere cancellato perché altri elementi dipendono da questo.',
         'forbidden_action' => 'L\'azione richiesta non può essere eseguita su questo elemento.',
-        // 'insufficient_entity_permission' => 'You don't have permission to access this item.',
+        'insufficient_entity_permission' => 'Non hai il permesso di accedere a questo elemento.',
     ],
 
     'autocomplete' => [

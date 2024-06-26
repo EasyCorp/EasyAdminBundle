@@ -203,4 +203,4 @@ order to use ``value => label`` instead of ``label => value``::
     ]);
 
 .. _`TomSelect`: https://tom-select.js.org/
-.. _`ChoiceType`: https://symfony.com/doc/current/reference/forms/types/entity.html
+.. _`ChoiceType`: https://symfony.com/doc/current/reference/forms/types/choice.html

@@ -1,0 +1,7 @@
+---------------------------------------------------------------------------
+
+by ServerExe at 2024-06-04T12:11:59Z
+
+This is some kind of strange behavior of Doctrine or EasyAdmin. But changing the `APP_ENV` to `prod` and removing the var/cache folder leads to exactly this behavior as it is on production. When debugging, it's really hard to find the turning point in the code where it takes another path of workflow. I am not sure but somehow it might have something to do with Doctrine Caching system. Because on production mode it doesn't even call the AdminContextFactory, where actually some metadata would be loaded from the entities. I am really not sure if my information is valid but as it seems production has a completely different behavior. I realized that when loading the PHP attributes of the entity via Reflection it recognizes the `#[ORM\Id]` and `#[ORM\Column]` attributes on DEV mode but it completely ignores them on production mode. So the default KeyValueStore of these attributes aren't even loaded ...
+
+I can't rely on the entity property detection anymore and will add the required flag to all of my fields in the crud controllers :(

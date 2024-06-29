@@ -16,7 +16,8 @@ final class I18nDto
     public function __construct(string $locale, string $textDirection, string $translationDomain, array $translationParameters)
     {
         $this->locale = $locale;
-        $this->language = strtok($locale, '-_');
+        // returns 'en' for 'en', 'en-US', 'en_US', 'en-US.UTF-8', 'en_US.UTF-8', etc.
+        $this->language = explode('-', str_replace('_', '-', $locale))[0];
         $this->textDirection = $textDirection;
         $this->translationDomain = $translationDomain;
         $this->translationParameters = $translationParameters;

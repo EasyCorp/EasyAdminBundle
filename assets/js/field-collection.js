@@ -67,7 +67,7 @@ const EaCollectionProperty = {
                 lastElementBody.classList.add('show');
             }
 
-            document.dispatchEvent(new Event('ea.collection.item-added'));
+            document.dispatchEvent(new CustomEvent('ea.collection.item-added', { detail: { newElement: lastElement }));
         });
 
         collection.classList.add('processed');

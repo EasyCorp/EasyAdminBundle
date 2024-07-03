@@ -78,7 +78,9 @@ final class SecurityVoter extends Voter
         $actionPermission = $crudDto->getActionsConfig()->getActionPermissions()[$actionName] ?? null;
         $disabledActionNames = $crudDto->getActionsConfig()->getDisabledActions();
 
-        $subject = null === $entityDto ? null : $entityDto->getInstance();
+        // if the entityDto is null, try to get a default instance of the entity from the context
+        $entityClassName = $this->adminContextProvider->getContext()?->getEntity()?->getFqcn() ?? null;
+        $subject = null === $entityDto ? (null === $entityClassName ? null : new $entityClassName()) : $entityDto->getInstance();
 
         return $this->authorizationChecker->isGranted($actionPermission, $subject) && !\in_array($actionName, $disabledActionNames, true);
     }

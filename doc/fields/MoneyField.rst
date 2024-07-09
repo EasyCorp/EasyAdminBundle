@@ -75,10 +75,14 @@ storing money amounts using float or decimal numbers.
     In Symfony/PHP applications you can use the `Money PHP`_ library to handle
     the conversion of money amounts from/into cents.
 
-If you follow this practice, use this option to tell EasyAdmin to convert from/into
+If you follow this practice (this is set by default), use this option to tell EasyAdmin to convert from/into
 cents automatically when displaying and storing money amounts::
 
     yield MoneyField::new('...')->setStoredAsCents();
+
+If you do not store this in cents, you have to explicit define this.
+
+    yield MoneyField::new('...')->setStoredAsCents(false);
 
 .. note::
 

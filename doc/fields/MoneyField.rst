@@ -64,23 +64,20 @@ this option if you want to format values with a different number of decimals::
 setStoredAsCents
 ~~~~~~~~~~~~~~~~
 
-Although it may seem over-complicated at first, the most recommended way to
-store money amounts in the database is to use cents. For example, "5 euros"
-would be stored as ``500``(5 x 100 cents) and "349.99 yens" would be stored as
-``34,999``. Doing this solves all the rounding problems that you'll find when
-storing money amounts using float or decimal numbers.
+By default, EasyAdmin stores money amounts as cents. For example, "5 euros"
+is stored as the integer ``500`` (5 x 100 cents) and "349.99 yens" is stored as
+the integer ``34,999``.
+
+Although it may seem over-complicated at first, this is the most recommended
+way to store money amounts in the database. Doing this solves all the rounding
+problems that you'll find when storing money amounts using float or decimal numbers.
 
 .. tip::
 
     In Symfony/PHP applications you can use the `Money PHP`_ library to handle
     the conversion of money amounts from/into cents.
 
-If you follow this practice (this is set by default), use this option to tell EasyAdmin to convert from/into
-cents automatically when displaying and storing money amounts::
-
-    yield MoneyField::new('...')->setStoredAsCents();
-
-If you do not store this in cents, you have to explicit define this.
+If you do not store money amounts in cents, set this option to ``false``:
 
     yield MoneyField::new('...')->setStoredAsCents(false);
 

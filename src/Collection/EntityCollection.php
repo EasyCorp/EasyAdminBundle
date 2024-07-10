@@ -35,6 +35,11 @@ final class EntityCollection implements CollectionInterface
         $this->entities[$newOrUpdatedEntity->getPrimaryKeyValueAsString()] = $newOrUpdatedEntity;
     }
 
+    public function first(): ?EntityDto
+    {
+        return $this->entities[array_key_first($this->entities)] ?? null;
+    }
+
     public function offsetExists(mixed $offset): bool
     {
         return \array_key_exists($offset, $this->entities);

@@ -180,7 +180,7 @@
     {% set is_array_field = 'EasyCorp\\Bundle\\EasyAdminBundle\\Field\\ArrayField' == form_parent(form).vars.ea_vars.field.fieldFqcn ?? false %}
     {% set is_complex = form_parent(form).vars.ea_vars.field.customOptions.get('entryIsComplex') ?? false %}
     {% set allows_deleting_items = form_parent(form).vars.allow_delete|default(false) %}
-    {% set render_expanded = form_parent(form).vars.ea_vars.field.customOptions.get('renderExpanded') ?? false %}
+    {% set render_expanded = not form.vars.valid or form_parent(form).vars.ea_vars.field.customOptions.get('renderExpanded') ?? false %}
     {% set delete_item_button %}
         <button type="button" class="btn btn-link btn-link-danger field-collection-delete-button"
                 title="{{ 'action.remove_item'|trans({}, 'EasyAdminBundle') }}">

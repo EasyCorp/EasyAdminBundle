@@ -108,9 +108,9 @@ final class AssociationField implements FieldInterface
         return $this;
     }
 
-    public function escapeHtml(bool $escape = true): self
+    public function renderAsHtml(bool $asHtml = true): self
     {
-        $this->setCustomOption(self::OPTION_ESCAPE_HTML_CONTENTS, $escape);
+        $this->setCustomOption(self::OPTION_ESCAPE_HTML_CONTENTS, !$asHtml);
 
         return $this;
     }

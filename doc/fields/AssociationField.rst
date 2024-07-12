@@ -82,6 +82,16 @@ pass the fully-qualified class name of the controller as the first argument::
         CategoryCrudController::class, 'create_category_inside_an_article', 'edit_category_inside_an_article'
     );
 
+``renderAsHtml``
+~~~~~~~~~~~~~~~~
+
+By default, the HTML contents of the items displayed in the select lists are
+escaped to avoid security issues like `XSS`_. If you need to render custom HTML
+contents and you are certain that they are safe to display "as is", set this
+option to not escape those contents::
+
+    yield AssociationField::new('...')->renderAsHtml();
+
 ``setCrudController``
 ~~~~~~~~~~~~~~~~~~~~~
 
@@ -146,3 +156,4 @@ associated entity::
 .. _`EntityType`: https://symfony.com/doc/current/reference/forms/types/entity.html
 .. _`query_builder option`: https://symfony.com/doc/current/reference/forms/types/entity.html#query-builder
 .. _`value object`: https://en.wikipedia.org/wiki/Value_object
+.. _`XSS`: https://en.wikipedia.org/wiki/Cross-site_scripting

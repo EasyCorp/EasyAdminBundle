@@ -162,7 +162,7 @@ final class CrudDto
         $this->entityLabelInPlural = $label;
     }
 
-    public function getCustomPageTitle(?string $pageName = null, $entityInstance = null, array $translationParameters = []): ?TranslatableInterface
+    public function getCustomPageTitle(?string $pageName = null, $entityInstance = null, array $translationParameters = [], ?string $domain = null): ?TranslatableInterface
     {
         $title = $this->customPageTitles[$pageName ?? $this->pageName];
         if (\is_callable($title)) {
@@ -177,7 +177,7 @@ final class CrudDto
             return TranslatableMessageBuilder::withParameters($title, $translationParameters);
         }
 
-        return t($title, $translationParameters);
+        return t($title, $translationParameters, $domain);
     }
 
     /**

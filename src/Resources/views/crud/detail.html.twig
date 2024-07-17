@@ -35,7 +35,7 @@
 
 {% block content_title %}
     {%- apply spaceless -%}
-        {% set custom_page_title = ea.crud.customPageTitle(pageName, entity ? entity.instance : null, ea.i18n.translationParameters) %}
+        {% set custom_page_title = ea.crud.customPageTitle(pageName, entity ? entity.instance : null, ea.i18n.translationParameters, ea.i18n.translationDomain) %}
         {{ custom_page_title is null
             ? ea.crud.defaultPageTitle(null, null, ea.i18n.translationParameters)|trans|raw
             : custom_page_title|trans|raw }}

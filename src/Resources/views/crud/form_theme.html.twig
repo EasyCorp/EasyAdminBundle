@@ -136,7 +136,7 @@
 
     {% set maxKey = 0 %}
     {% for key in form.children|keys %}
-        {% if key matches '/^\d+$/' %}
+        {% if key matches '/^\\d+$/' %}
             {% set intKey = key|number_format(0, '', '', '') %}
             {% if intKey > maxKey %}
                 {% set maxKey = intKey %}

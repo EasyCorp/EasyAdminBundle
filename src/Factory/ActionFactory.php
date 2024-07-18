@@ -70,7 +70,7 @@ final class ActionFactory
                 $actionDto->setCssClass($actionDto->getCssClass().' '.$addedCssClass);
             }
 
-            $entityActions[] = $this->processAction($currentPage, $actionDto, $entityDto);
+            $entityActions[$actionDto->getName()] = $this->processAction($currentPage, $actionDto, $entityDto);
         }
 
         $entityDto->setActions(ActionCollection::new($entityActions));
@@ -112,7 +112,7 @@ final class ActionFactory
                 $actionDto->setCssClass($actionDto->getCssClass().' '.$addedCssClass);
             }
 
-            $globalActions[] = $this->processAction($currentPage, $actionDto);
+            $globalActions[$actionDto->getName()] = $this->processAction($currentPage, $actionDto);
         }
 
         return ActionCollection::new($globalActions);

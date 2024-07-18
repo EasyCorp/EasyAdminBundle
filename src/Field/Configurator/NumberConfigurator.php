@@ -28,21 +28,21 @@ final class NumberConfigurator implements FieldConfiguratorInterface
 
     public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
     {
-        if (null === $value = $field->getValue()) {
-            return;
-        }
-
-        $numDecimals = $field->getCustomOption(NumberField::OPTION_NUM_DECIMALS);
+        $scale = $field->getCustomOption(NumberField::OPTION_NUM_DECIMALS);
         $roundingMode = $field->getCustomOption(NumberField::OPTION_ROUNDING_MODE);
         $isStoredAsString = true === $field->getCustomOption(NumberField::OPTION_STORED_AS_STRING);
 
         $field->setFormTypeOptionIfNotSet('input', $isStoredAsString ? 'string' : 'number');
         $field->setFormTypeOptionIfNotSet('rounding_mode', $roundingMode);
-        $field->setFormTypeOptionIfNotSet('scale', $numDecimals);
+        $field->setFormTypeOptionIfNotSet('scale', $scale);
+
+        if (null === $value = $field->getValue()) {
+            return;
+        }
 
         $formatterAttributes = ['rounding_mode' => $this->getRoundingModeAsString($roundingMode)];
-        if (null !== $numDecimals) {
-            $formatterAttributes['fraction_digit'] = $numDecimals;
+        if (null !== $scale) {
+            $formatterAttributes['fraction_digit'] = $scale;
         }
 
         $numberFormat = $field->getCustomOption(NumberField::OPTION_NUMBER_FORMAT)

@@ -1,6 +1,20 @@
 Upgrade between EasyAdmin 4.x versions
 ======================================
 
+EasyAdmin 4.11.0
+----------------
+
+### Updated the `MenuItemMatcherInterface`
+
+The `MenuItemMatcherInterface` has changed as follows:
+
+  * The `isSelected(MenuItemDto $menuItemDto)` method has been removed
+  * The `isExpanded(MenuItemDto $menuItemDto)` method has been removed
+  * A new `markSelectedMenuItem(array<MenuItemDto> $menuItems)` method has been added
+
+Read the comments in the code of the `MenuItemMatcher` class to learn about the
+new menu item matching logic.
+
 EasyAdmin 4.10.0
 ----------------
 

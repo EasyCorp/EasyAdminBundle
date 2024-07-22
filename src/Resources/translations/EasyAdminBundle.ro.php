@@ -138,7 +138,7 @@ return [
 
     'autocomplete' => [
         'no-results-found' => 'Nu au fost găsite rezultate',
-        // 'no-more-results' => 'No more results',
+        'no-more-results' => 'Nu mai sunt rezultate',
         'loading-more-results' => 'Se încarcă mai multe rezultate…',
     ],
 ];

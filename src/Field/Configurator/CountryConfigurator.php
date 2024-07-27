@@ -95,7 +95,7 @@ final class CountryConfigurator implements FieldConfiguratorInterface
 
             $countryCodeAlpha2 = $usesAlpha3Codes ? Countries::getAlpha2Code($countryCode) : $countryCode;
             $flagImagePath = $this->assetPackage->getUrl(sprintf('images/flags/%s.svg', $countryCodeAlpha2));
-            $choiceKey = sprintf('<div class="country-name-flag"><img src="%s" class="country-flag" loading="lazy" alt="%s"> <span>%s</span></div>', $flagImagePath, $countryName, $countryName);
+            $choiceKey = sprintf('<div class="country-name-flag"><img src="%s" height="17" class="country-flag" loading="lazy" alt="%s"> <span>%s</span></div>', $flagImagePath, $countryName, $countryName);
 
             $choices[$choiceKey] = $countryCode;
         }

@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenu;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Factory\MenuFactoryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu\MenuItemInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu\MenuItemMatcherInterface;
@@ -63,8 +64,9 @@ final class MenuFactory implements MenuFactoryInterface
      */
     private function buildMenuItems(array $menuItems): array
     {
+        /** @var AdminContext $adminContext */
         $adminContext = $this->adminContextProvider->getContext();
-        $translationDomain = $adminContext?->getI18n()->getTranslationDomain() ?? '';
+        $translationDomain = $adminContext->getI18n()->getTranslationDomain() ?? '';
 
         $builtItems = [];
         foreach ($menuItems as $i => $menuItem) {
@@ -85,6 +87,8 @@ final class MenuFactory implements MenuFactoryInterface
             $builtItems[] = $this->buildMenuItem($menuItemDto, $subItems, $translationDomain);
         }
 
+        $builtItems = $this->menuItemMatcher->markSelectedMenuItem($builtItems, $adminContext->getRequest());
+
         return $builtItems;
     }
 
@@ -99,11 +103,8 @@ final class MenuFactory implements MenuFactoryInterface
 
         $url = $this->generateMenuItemUrl($menuItemDto);
         $menuItemDto->setLinkUrl($url);
-        $menuItemDto->setSelected($this->menuItemMatcher->isSelected($menuItemDto));
 
         $menuItemDto->setSubItems($subItems);
-        // this must be called after the menu subitems have been processed in setSubIems()
-        $menuItemDto->setExpanded($this->menuItemMatcher->isExpanded($menuItemDto));
 
         // if menu item points to an absolute URL and no 'rel' attribute is defined,
         // assign the 'rel="noopener"' attribute for performance and security reasons.

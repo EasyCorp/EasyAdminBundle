@@ -43,7 +43,7 @@ class CountryFieldTest extends AbstractFieldTest
         $formSelectChoices = $fieldDto->getFormTypeOption(ChoiceField::OPTION_CHOICES);
 
         self::assertCount(self::NUM_COUNTRIES_AND_REGIONS, $formSelectChoices);
-        self::assertSame('GQ', $formSelectChoices['<div class="country-name-flag"><img src="images/flags/GQ.svg" class="country-flag" loading="lazy" alt="Equatorial Guinea"> <span>Equatorial Guinea</span></div>']);
+        self::assertSame('GQ', $formSelectChoices['<div class="country-name-flag"><img src="images/flags/GQ.svg" height="17" class="country-flag" loading="lazy" alt="Equatorial Guinea"> <span>Equatorial Guinea</span></div>']);
         self::assertSame('true', $fieldDto->getFormTypeOption('attr.data-ea-autocomplete-render-items-as-html'));
     }
 

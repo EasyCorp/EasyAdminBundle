@@ -1,0 +1,7 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2024-07-24T18:54:47Z
+
+This PR is ready for the final review.
+
+This PR includes a BC break because an interface has been changed completely. I know this is unfortunate but, hopefully, this is an interface that it's rarely implemented by end-users. Now that we've fixed many edge-cases in the menu matching logic, it makes even less sense to implement your own logic. 🙏

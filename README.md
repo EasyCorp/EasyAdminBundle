@@ -55,6 +55,7 @@ providing example entities and CRUD Controllers.
   * Perform `ddev setup` which starts and provisions the web container
   * EasyAdmin is available under the URL: https://easy-admin-bundle.ddev.site
   * To (re-)build frontend assets perform `ddev build-assets`
+  * To run unit tests perform `ddev run-tests`
 
 License
 -------

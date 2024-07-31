@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Installing Symfony Framework
-composer create-project symfony/skeleton:"7.0.*" -n
+composer create-project symfony/skeleton:"7.1.*" -n
 mv -f ./skeleton/* ./
 mv -f ./skeleton/.env ./
 mv -f ./skeleton/.gitignore ./
@@ -21,4 +21,4 @@ cp -r ../easyadminbundle/.ddev/example/Form/* src/Form/
 
 # Initialize DB
 echo 'DATABASE_URL="mysql://db:db@db:3306/db?serverVersion=10.4.0-MariaDB&charset=utf8mb4"' >> .env.local
-./bin/console doc:sch:up --complete --force
+./bin/console doc:sch:up --force

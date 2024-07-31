@@ -93,7 +93,7 @@ class MenuItemMatcher implements MenuItemMatcherInterface
                     $menuItemDto->setSelected(true);
                 }
 
-                break;
+                continue;
             }
 
             // if the menu only contains links to the INDEX action of the CRUD controller,

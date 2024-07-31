@@ -26,8 +26,7 @@ final class NumberConfigurator implements FieldConfiguratorInterface
         IntlFormatter $intlFormatter,
         AdminUrlGeneratorInterface $adminUrlGenerator,
         ?CsrfTokenManagerInterface $csrfTokenManager = null
-    )
-    {
+    ) {
         $this->intlFormatter = $intlFormatter;
         $this->adminUrlGenerator = $adminUrlGenerator;
         $this->csrfTokenManager = $csrfTokenManager;

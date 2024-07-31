@@ -26,7 +26,7 @@ final class TextConfigurator implements FieldConfiguratorInterface
     public function __construct(
         AdminUrlGeneratorInterface $adminUrlGenerator,
         ?CsrfTokenManagerInterface $csrfTokenManager = null
-    ){
+    ) {
         $this->adminUrlGenerator = $adminUrlGenerator;
         $this->csrfTokenManager = $csrfTokenManager;
     }

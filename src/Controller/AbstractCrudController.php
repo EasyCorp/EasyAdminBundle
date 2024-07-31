@@ -236,9 +236,9 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             $fieldName = $context->getRequest()->query->get('fieldName');
 
             $valueData = $context->getRequest()->query->get('newValue');
-            if (mb_strtolower($valueData) === 'true') {
+            if ('true' === mb_strtolower($valueData)) {
                 $newValue = true;
-            } elseif (mb_strtolower($valueData) === 'false') {
+            } elseif ('false' === mb_strtolower($valueData)) {
                 $newValue = false;
             } else {
                 $newValue = $valueData;

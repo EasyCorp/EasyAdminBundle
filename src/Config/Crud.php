@@ -201,7 +201,7 @@ class Crud
         }
 
         if (!$isDatePattern && !\in_array($timeFormat, DateTimeField::VALID_DATE_FORMATS, true)) {
-            throw new \InvalidArgumentException(sprintf('The value of the time format can only be one of the following: %s (but "%s" was given).', implode(', ', DateTimeField::VALID_DATE_FORMATS), $timeFormat));
+            throw new \InvalidArgumentException(sprintf('When using a predefined format for the date, the time format must also be a predefined format (one of the following: %s) but "%s" was given.', implode(', ', DateTimeField::VALID_DATE_FORMATS), $timeFormat));
         }
 
         $this->dto->setDateTimePattern($dateFormatOrPattern, $timeFormat);

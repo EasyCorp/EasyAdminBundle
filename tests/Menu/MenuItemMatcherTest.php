@@ -149,6 +149,27 @@ class MenuItemMatcherTest extends KernelTestCase
         $this->assertTrue($menuItemDto->isSelected(), 'The URL matches');
     }
 
+    public function testMenuWithDashboardItem()
+    {
+        $dashboardMenuItem = new MenuItemDto();
+        $dashboardMenuItem->setLabel('item1');
+        $dashboardMenuItem->setType(MenuItemDto::TYPE_DASHBOARD);
+
+        $menuItems = [
+            $dashboardMenuItem,
+            $this->getMenuItemDto(label: 'item2', routeName: 'item2'),
+        ];
+
+        $request = $this->getRequestMock(
+            routeName: 'item2',
+        );
+
+        $menuItemMatcher = new MenuItemMatcher();
+        $menuItems = $menuItemMatcher->markSelectedMenuItem($menuItems, $request);
+
+        $this->assertSame('item2', $this->getSelectedMenuItemLabel($menuItems), 'Perfect match: Dashboard item');
+    }
+
     public function testComplexMenu()
     {
         $menuItems = $this->getComplexMenuItems();

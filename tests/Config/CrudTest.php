@@ -68,7 +68,6 @@ class CrudTest extends TestCase
      *           ["MMMM/d, EEEE", "MMMM/d, EEEE"]
      *           // the following invalid format is used on purpose to test that the method accept any custom format
      *           ["this is wrong", "this is wrong"]
-     *
      */
     public function testSetDateFormat(string $dateFormat, string $parsedFormat)
     {
@@ -99,7 +98,6 @@ class CrudTest extends TestCase
      *           ["ss, a, mm", "ss, a, mm"]
      *           // the following invalid format is used on purpose to test that the method accept any custom format
      *           ["this is wrong", "this is wrong"]
-     *
      */
     public function testSetTimeFormat(string $timeFormat, string $parsedFormat)
     {

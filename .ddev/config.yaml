@@ -2,7 +2,7 @@ name: easy-admin-bundle
 type: php
 docroot: public
 no_project_mount: true
-php_version: "8.2"
+php_version: "8.3"
 webserver_type: apache-fpm
 router_http_port: "80"
 router_https_port: "443"

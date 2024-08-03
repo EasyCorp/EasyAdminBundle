@@ -145,8 +145,7 @@ class Crud
             throw new \InvalidArgumentException(sprintf('The first argument of the "%s()" method cannot be "%s" or an empty string. Use either the special date formats (%s) or a datetime Intl pattern.', __METHOD__, DateTimeField::FORMAT_NONE, implode(', ', $validDateFormatsWithoutNone)));
         }
 
-        $datePattern = DateTimeField::INTL_DATE_PATTERNS[$formatOrPattern] ?? $formatOrPattern;
-        $this->dto->setDatePattern($datePattern);
+        $this->dto->setDatePattern($formatOrPattern);
 
         return $this;
     }
@@ -165,8 +164,7 @@ class Crud
             throw new \InvalidArgumentException(sprintf('The first argument of the "%s()" method cannot be "%s" or an empty string. Use either the special time formats (%s) or a datetime Intl pattern.', __METHOD__, DateTimeField::FORMAT_NONE, implode(', ', $validTimeFormatsWithoutNone)));
         }
 
-        $timePattern = DateTimeField::INTL_TIME_PATTERNS[$formatOrPattern] ?? $formatOrPattern;
-        $this->dto->setTimePattern($timePattern);
+        $this->dto->setTimePattern($formatOrPattern);
 
         return $this;
     }

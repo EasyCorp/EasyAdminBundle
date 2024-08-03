@@ -60,21 +60,23 @@ class CrudTest extends TestCase
     }
 
     /**
-     * @testWith ["short", "M/d/yy"]
-     *           ["medium", "MMM d, y"]
-     *           ["long", "MMMM d, y"]
-     *           ["full", "EEEE, MMMM d, y"]
-     *           ["EEEE", "EEEE"]
-     *           ["MMMM/d, EEEE", "MMMM/d, EEEE"]
-     *           // the following invalid format is used on purpose to test that the method accept any custom format
-     *           ["this is wrong", "this is wrong"]
+     * @testWith ["short"]
+     *           ["medium"]
+     *           ["long"]
+     *           ["full"]
+     *           // custom time pattern
+     *           ["EEEE"]
+     *           // custom time pattern
+     *           ["MMMM/d, EEEE"]
+     *           // invalid value used on purpose to test that the method accepts any custom pattern/format
+     *           ["this is wrong"]
      */
-    public function testSetDateFormat(string $dateFormat, string $parsedFormat)
+    public function testSetDateFormat(string $dateFormat)
     {
         $crudConfig = Crud::new();
         $crudConfig->setDateFormat($dateFormat);
 
-        $this->assertSame($parsedFormat, $crudConfig->getAsDto()->getDatePattern());
+        $this->assertSame($dateFormat, $crudConfig->getAsDto()->getDatePattern());
     }
 
     /**
@@ -90,21 +92,23 @@ class CrudTest extends TestCase
     }
 
     /**
-     * @testWith ["short", "h:mm a"]
-     *           ["medium", "h:mm:ss a"]
-     *           ["long", "h:mm:ss a z"]
-     *           ["full", "h:mm:ss a zzzz"]
-     *           ["zzzz", "zzzz"]
-     *           ["ss, a, mm", "ss, a, mm"]
-     *           // the following invalid format is used on purpose to test that the method accept any custom format
-     *           ["this is wrong", "this is wrong"]
+     * @testWith ["short"]
+     *           ["medium"]
+     *           ["long"]
+     *           ["full"]
+     *           // custom time pattern
+     *           ["zzzz"]
+     *           // custom time pattern
+     *           ["ss, a, mm"]
+     *           // invalid value used on purpose to test that the method accepts any custom pattern/format
+     *           ["this is wrong"]
      */
-    public function testSetTimeFormat(string $timeFormat, string $parsedFormat)
+    public function testSetTimeFormat(string $timeFormat)
     {
         $crudConfig = Crud::new();
         $crudConfig->setTimeFormat($timeFormat);
 
-        $this->assertSame($parsedFormat, $crudConfig->getAsDto()->getTimePattern());
+        $this->assertSame($timeFormat, $crudConfig->getAsDto()->getTimePattern());
     }
 
     /**
@@ -145,7 +149,7 @@ class CrudTest extends TestCase
      *           ["full", "long"]
      *           ["full", "full"]
      *           ["MMMM/d, EEEE ss, a, mm", "none"]
-     *           // the following invalid formats are used on purpose to test that the method accept any custom formats
+     *           // the following invalid value are used on purpose to test that the method accepts any custom formats/patterns
      *           ["this is wrong", "this is wrong"]
      */
     public function testSetDateTimeFormat(string $dateFormat, string $timeFormat)

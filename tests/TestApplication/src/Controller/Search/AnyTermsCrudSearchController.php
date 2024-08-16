@@ -17,7 +17,7 @@ class AnyTermsCrudSearchController extends AbstractCrudController
     public function configureCrud(Crud $crud): Crud
     {
         return parent::configureCrud($crud)
-            ->setSearchFields(['id', 'author.email', 'publisher.email'])
+            ->setSearchFields(['id', 'author.email', 'publisher.email', 'author.blogPosts.publisher.email'])
             ->setSearchMode(SearchMode::ANY_TERMS);
     }
 }

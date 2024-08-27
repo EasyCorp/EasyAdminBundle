@@ -21,7 +21,7 @@ class CrudDtoTest extends TestCase
             $crudDto->setEntityLabelInPlural($setLabel);
         }
 
-        $entityInstance = new class() {
+        $entityInstance = new class {
             public function getPrimaryKeyValue()
             {
                 return '42';

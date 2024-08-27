@@ -44,7 +44,7 @@ class AdminRouterSubscriberTest extends TestCase
         yield ['Some\\Class::method'];
         yield ['Some\\Class'];
         yield [['Some\\Class', 'method']];
-        yield [new class() {
+        yield [new class {
             public function __invoke()
             {
             }

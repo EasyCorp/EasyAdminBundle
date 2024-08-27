@@ -25,7 +25,7 @@ abstract class AbstractFieldTest extends KernelTestCase
         $entityDtoMock
             ->expects($this->any())
             ->method('getInstance')
-            ->willReturn(new class() {});
+            ->willReturn(new class {});
 
         return $this->entityDto = $entityDtoMock;
     }

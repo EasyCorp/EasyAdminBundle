@@ -71,6 +71,10 @@ trix-toolbar .trix-dialog {
     font-size:  12px;
 }
 
+trix-toolbar .trix-dialog .trix-input {
+    background: var(--form-control-bg);
+}
+
 .trix-content pre {
     background-color: var(--form-type-text-editor-content-pre-bg);
     border-radius: var(--border-radius);

@@ -37,7 +37,7 @@ final class TwigFilterTest extends KernelTestCase
     public function testLazyLoadedFilter(): void
     {
         $loader = new FactoryRuntimeLoader([
-            'EATests\MyLazyFilterRuntime' => fn () => new class() {
+            'EATests\MyLazyFilterRuntime' => fn () => new class {
                 public function myFilter($number, int $decimals, string $decPoint, string $thousandsSep)
                 {
                     return number_format($number, $decimals, $decPoint, $thousandsSep);
@@ -98,7 +98,7 @@ final class TwigFilterTest extends KernelTestCase
         $this->expectExceptionMessage('Unable to load runtime for filter: "my_filter"');
 
         $loader = new FactoryRuntimeLoader([
-            'EATests\MyLazyFilterRuntime' => fn () => new class() {},
+            'EATests\MyLazyFilterRuntime' => fn () => new class {},
         ]);
 
         $this->twig->addRuntimeLoader($loader);

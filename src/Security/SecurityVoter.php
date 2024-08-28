@@ -67,7 +67,7 @@ final class SecurityVoter extends Voter
         return $this->authorizationChecker->isGranted($menuItemDto->getPermission(), $menuItemDto);
     }
 
-    private function voteOnExecuteActionPermission(CrudDto $crudDto, ActionDto|string $actionNameOrDto, ?EntityDto $entityDto): bool
+    private function voteOnExecuteActionPermission(CrudDto $crudDto, ActionDto|string $actionNameOrDto, EntityDto|string|null $entityDto): bool
     {
         // users can run the Crud action if:
         // * they have the required permission to execute the action on the given entity instance
@@ -78,7 +78,7 @@ final class SecurityVoter extends Voter
         $actionPermission = $crudDto->getActionsConfig()->getActionPermissions()[$actionName] ?? null;
         $disabledActionNames = $crudDto->getActionsConfig()->getDisabledActions();
 
-        $subject = null === $entityDto ? null : $entityDto->getInstance();
+        $subject = $entityDto instanceof EntityDto ? $entityDto->getInstance() : $entityDto;
 
         return $this->authorizationChecker->isGranted($actionPermission, $subject) && !\in_array($actionName, $disabledActionNames, true);
     }

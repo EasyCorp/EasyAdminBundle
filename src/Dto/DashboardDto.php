@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\ColorScheme;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -19,6 +20,7 @@ final class DashboardDto
     private bool $signedUrls = false;
     private bool $absoluteUrls = true;
     private bool $enableDarkMode = true;
+    private string $defaultColorScheme = ColorScheme::LIGHT;
     /** @var LocaleDto[] */
     private array $locales = [];
 
@@ -151,6 +153,18 @@ final class DashboardDto
     public function isDarkModeEnabled(): bool
     {
         return $this->enableDarkMode;
+    }
+
+    public function getDefaultColorScheme(): string
+    {
+        return $this->defaultColorScheme;
+    }
+
+    public function setDefaultColorScheme(string $defaultColorScheme): self
+    {
+        $this->defaultColorScheme = $defaultColorScheme;
+
+        return $this;
     }
 
     public function getLocales(): array

@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Config;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\ColorScheme;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\TextDirection;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\DashboardDto;
 
@@ -94,6 +95,17 @@ final class Dashboard
     public function disableDarkMode(bool $disableDarkMode = true): self
     {
         $this->dto->setEnableDarkMode(!$disableDarkMode);
+
+        return $this;
+    }
+
+    public function setDefaultColorScheme(string $colorScheme): self
+    {
+        if (!\in_array($colorScheme, [ColorScheme::LIGHT, ColorScheme::DARK, ColorScheme::AUTO], true)) {
+            throw new \InvalidArgumentException(sprintf('The "%s" value given to the colorScheme option is not valid. It can only be "%s", "%s" or "%s"', $colorScheme, ColorScheme::LIGHT, ColorScheme::DARK, ColorScheme::AUTO));
+        }
+
+        $this->dto->setDefaultColorScheme($colorScheme);
 
         return $this;
     }

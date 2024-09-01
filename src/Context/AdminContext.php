@@ -140,6 +140,11 @@ final class AdminContext
         return $this->dashboardDto->isDarkModeEnabled();
     }
 
+    public function getDashboardDefaultColorScheme(): string
+    {
+        return $this->dashboardDto->getDefaultColorScheme();
+    }
+
     /**
      * @return LocaleDto[]
      */

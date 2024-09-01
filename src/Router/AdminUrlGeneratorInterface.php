@@ -17,7 +17,7 @@ interface AdminUrlGeneratorInterface
 
     public function setRoute(
         string $routeName,
-        array $routeParameters = []
+        array $routeParameters = [],
     ): self;
 
     public function setEntityId($entityId): self;

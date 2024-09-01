@@ -15,7 +15,7 @@ final class TranslatableChoiceMessageCollection implements TranslatableInterface
     public function __construct(
         /** @var TranslatableChoiceMessage[] */
         private array $choices,
-        private bool $isRenderedAsBadge
+        private bool $isRenderedAsBadge,
     ) {
     }
 

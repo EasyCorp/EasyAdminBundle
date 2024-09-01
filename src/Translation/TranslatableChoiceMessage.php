@@ -18,7 +18,7 @@ final class TranslatableChoiceMessage implements TranslatableInterface
      */
     public function __construct(
         private TranslatableInterface $message,
-        private ?string $cssClass
+        private ?string $cssClass,
     ) {
     }
 

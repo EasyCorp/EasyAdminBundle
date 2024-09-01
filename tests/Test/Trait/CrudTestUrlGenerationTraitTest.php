@@ -49,7 +49,7 @@ final class CrudTestUrlGenerationTraitTest extends KernelTestCase
      */
     public function testGenericUrlIndexGenerationWithSpecificDashboardAndController(
         ?string $dashboardFqcn,
-        ?string $controllerFqcn
+        ?string $controllerFqcn,
     ) {
         $testClass = new class($this->adminUrlGenerator) extends CrudTestUrlGenerationTraitTestClass {
             public function test(?string $dashboardFqcn, ?string $controllerFqcn): string
@@ -94,7 +94,7 @@ final class CrudTestUrlGenerationTraitTest extends KernelTestCase
      */
     public function testUrlDetailGenerationWithSpecificDashboardAndControllerFqcn(
         ?string $dashboardFqcn,
-        ?string $controllerFqcn
+        ?string $controllerFqcn,
     ) {
         $testClass = new class($this->adminUrlGenerator) extends CrudTestUrlGenerationTraitTestClass {
             public function test(string|int $id, ?string $dashboardFqcn, ?string $controllerFqcn): string
@@ -139,7 +139,7 @@ final class CrudTestUrlGenerationTraitTest extends KernelTestCase
      */
     public function testUrlNewFormGenerationWithSpecificDashboardAndControllerFqcn(
         ?string $dashboardFqcn,
-        ?string $controllerFqcn
+        ?string $controllerFqcn,
     ) {
         $testClass = new class($this->adminUrlGenerator) extends CrudTestUrlGenerationTraitTestClass {
             public function test(?string $dashboardFqcn, ?string $controllerFqcn): string
@@ -185,7 +185,7 @@ final class CrudTestUrlGenerationTraitTest extends KernelTestCase
      */
     public function testUrlEditGenerationWithSpecificDashboardAndControllerFqcn(
         ?string $dashboardFqcn,
-        ?string $controllerFqcn
+        ?string $controllerFqcn,
     ) {
         $testClass = new class($this->adminUrlGenerator) extends CrudTestUrlGenerationTraitTestClass {
             public function test(string|int $id, ?string $dashboardFqcn, ?string $controllerFqcn): string
@@ -231,7 +231,7 @@ final class CrudTestUrlGenerationTraitTest extends KernelTestCase
      */
     public function testUrlRenderFiltersGenerationWithSpecificDashboardAndControllerFqcn(
         ?string $dashboardFqcn,
-        ?string $controllerFqcn
+        ?string $controllerFqcn,
     ) {
         $testClass = new class($this->adminUrlGenerator) extends CrudTestUrlGenerationTraitTestClass {
             public function test(?string $dashboardFqcn, ?string $controllerFqcn): string

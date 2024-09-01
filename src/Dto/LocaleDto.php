@@ -10,7 +10,7 @@ final class LocaleDto
     public function __construct(
         private string $locale,
         private string $name,
-        private ?string $icon = null
+        private ?string $icon = null,
     ) {
     }
 

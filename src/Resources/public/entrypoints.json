@@ -2,16 +2,16 @@
   "entrypoints": {
     "app": {
       "css": [
-        "/app.19616e33.css",
-        "/app.19616e33.rtl.css"
+        "/app.879098eb.css",
+        "/app.879098eb.rtl.css"
       ],
       "js": [
-        "/app.18be9a54.js"
+        "/app.aa57e76f.js"
       ]
     },
     "form": {
       "js": [
-        "/form.6e84c31d.js"
+        "/form.ec4ce275.js"
       ]
     },
     "page-layout": {
@@ -21,12 +21,12 @@
     },
     "page-color-scheme": {
       "js": [
-        "/page-color-scheme.6860ce57.js"
+        "/page-color-scheme.30cb23c2.js"
       ]
     },
     "field-boolean": {
       "js": [
-        "/field-boolean.38cf4737.js"
+        "/field-boolean.ae2abe46.js"
       ]
     },
     "field-code-editor": {
@@ -35,41 +35,41 @@
         "/field-code-editor.78ccdb00.rtl.css"
       ],
       "js": [
-        "/field-code-editor.5893dd28.js"
+        "/field-code-editor.d5ecf759.js"
       ]
     },
     "field-collection": {
       "js": [
-        "/field-collection.60fea06d.js"
+        "/field-collection.f685c209.js"
       ]
     },
     "field-file-upload": {
       "js": [
-        "/field-file-upload.a3a92842.js"
+        "/field-file-upload.7f9cb952.js"
       ]
     },
     "field-image": {
       "js": [
-        "/field-image.19d51d41.js"
+        "/field-image.672243bd.js"
       ]
     },
     "field-slug": {
       "js": [
-        "/field-slug.0dd3942b.js"
+        "/field-slug.978b0c9c.js"
       ]
     },
     "field-textarea": {
       "js": [
-        "/field-textarea.268f9a4d.js"
+        "/field-textarea.74319bb1.js"
       ]
     },
     "field-text-editor": {
       "css": [
-        "/field-text-editor.20a546a4.css",
-        "/field-text-editor.20a546a4.rtl.css"
+        "/field-text-editor.cbc3dbc9.css",
+        "/field-text-editor.cbc3dbc9.rtl.css"
       ],
       "js": [
-        "/field-text-editor.833157ee.js"
+        "/field-text-editor.23827214.js"
       ]
     },
     "login": {

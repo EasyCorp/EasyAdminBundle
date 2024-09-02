@@ -59,6 +59,7 @@
         data-ea-content-width="{{ ea.crud.contentWidth ?? ea.dashboardContentWidth ?? 'normal' }}"
         data-ea-sidebar-width="{{ ea.crud.sidebarWidth ?? ea.dashboardSidebarWidth ?? 'normal' }}"
         data-ea-dark-scheme-is-enabled="{{ ea.dashboardHasDarkModeEnabled ? 'true' : 'false' }}"
+        data-ea-default-color-scheme="{{ ea.dashboardDefaultColorScheme }}"
     >
     {% block javascript_page_layout %}
         <script src="{{ asset('page-layout.js', ea.assets.defaultAssetPackageName) }}"></script>

@@ -273,6 +273,15 @@ explained later)::
                 // mode for any reason (e.g. if your interface customizations are not ready for it)
                 ->disableDarkMode()
 
+                // by default, the UI color scheme is 'auto', which means that the backend
+                // will use the same mode (light/dark) as the operating system and will
+                // change in sync when the OS mode changes.
+                // Use this option to set which mode ('light', 'dark' or 'auto') will users see
+                // by default in the backend (users can change it via the color scheme selector)
+                ->setDefaultColorScheme('dark')
+                // instead of magic strings, you can use constants as the value of
+                // this option: EasyCorp\Bundle\EasyAdminBundle\Config\Option\ColorScheme::DARK
+
                 // by default, all backend URLs are generated as absolute URLs. If you
                 // need to generate relative URLs instead, call this method
                 ->generateRelativeUrls()

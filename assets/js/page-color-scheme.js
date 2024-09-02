@@ -6,7 +6,9 @@ class ColorSchemeHandler {
     }
 
     updateColorScheme() {
-        const selectedColorScheme = localStorage.getItem(this.#colorSchemeLocalStorageKey) || 'auto';
+        const defaultColorScheme = document.body.getAttribute('data-ea-default-color-scheme');
+        const userDefinedColorScheme = localStorage.getItem(this.#colorSchemeLocalStorageKey);
+        const selectedColorScheme = userDefinedColorScheme || defaultColorScheme || 'auto';
         this.#setColorScheme(selectedColorScheme);
     }
 
@@ -30,7 +32,7 @@ class ColorSchemeHandler {
             selectorOptions.forEach((selector) => {
                 selector.addEventListener('click', () => {
                     const selectedColorScheme = selector.getAttribute('data-ea-color-scheme');
-                    this.#setColorScheme(selectedColorScheme);
+                    this.#setColorScheme(selectedColorScheme, true);
 
                     const allSelectorOptions = document.querySelectorAll('a.dropdown-appearance-item[data-ea-color-scheme]');
                     const allSelectorActiveOptions = document.querySelectorAll(`a.dropdown-appearance-item[data-ea-color-scheme="${ selectedColorScheme }"]`);
@@ -41,7 +43,7 @@ class ColorSchemeHandler {
         });
     }
 
-    #setColorScheme(colorScheme) {
+    #setColorScheme(colorScheme, persistInLocalStorage = false) {
         if ('false' === document.body.getAttribute('data-ea-dark-scheme-is-enabled')) {
             return;
         }
@@ -52,7 +54,11 @@ class ColorSchemeHandler {
 
         document.body.classList.remove('ea-light-scheme', 'ea-dark-scheme');
         document.body.classList.add('light' === resolvedColorScheme ? 'ea-light-scheme' : 'ea-dark-scheme');
-        localStorage.setItem(this.#colorSchemeLocalStorageKey, colorScheme);
+
+        if (true === persistInLocalStorage)  {
+            localStorage.setItem(this.#colorSchemeLocalStorageKey, colorScheme);
+        }
+
         document.body.style.colorScheme = resolvedColorScheme;
         // needed for Bootstrap (see https://getbootstrap.com/docs/5.3/customize/color-modes/)
         document.body.setAttribute('data-bs-theme', 'light' === resolvedColorScheme ? 'light' : 'dark');

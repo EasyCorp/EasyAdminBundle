@@ -1,7 +1,7 @@
 require('../css/form-type-text-editor.css');
 
 import DirtyForm from "dirty-form";
-import Trix from 'trix/dist/trix';
+import Trix from 'trix/dist/trix.esm';
 
 // Provide Trix variable globally to allow custom backend pages to use it
 window.Trix = Trix;

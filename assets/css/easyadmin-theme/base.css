@@ -193,8 +193,8 @@ a.user-menu-wrapper .user-details:hover {
     display: flex;
     -webkit-appearance: none; /* needed for Safari */
 }
-.user-menu-wrapper .user-is-impersonated a.user-details,
-.user-menu-wrapper .user-is-impersonated a.user-details:hover {
+.user-menu-wrapper.user-is-impersonated a.user-details,
+.user-menu-wrapper.user-is-impersonated a.user-details:hover {
     color: var(--user-menu-impersonated-link-color);
     font-weight: 500;
 }

@@ -7,11 +7,14 @@
     padding: 0;
 }
 
+.ea-detail .field-image .ea-lightbox-thumbnail {
+    display: block;
+    max-width: 400px;
+}
 .ea-detail .field-image img {
     border: 1px solid transparent;
     border-radius: var(--border-radius);
     max-height: 300px;
-    max-width: 400px;
     padding: 8px;
 }
 .ea-detail .field-image img:hover {

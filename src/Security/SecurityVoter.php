@@ -43,7 +43,7 @@ final class SecurityVoter extends Voter
         }
 
         if (Permission::EA_EXECUTE_ACTION === $permissionName) {
-            return $this->voteOnExecuteActionPermission($this->adminContextProvider->getContext()->getCrud(), $subject['action'] ?? null, $subject['entity'] ?? null);
+            return $this->voteOnExecuteActionPermission($this->adminContextProvider->getContext()->getCrud(), $subject['action'] ?? null, $subject['entity'] ?? null, $subject['entityFqcn'] ?? null);
         }
 
         if (Permission::EA_VIEW_FIELD === $permissionName) {
@@ -67,7 +67,7 @@ final class SecurityVoter extends Voter
         return $this->authorizationChecker->isGranted($menuItemDto->getPermission(), $menuItemDto);
     }
 
-    private function voteOnExecuteActionPermission(CrudDto $crudDto, ActionDto|string $actionNameOrDto, ?EntityDto $entityDto): bool
+    private function voteOnExecuteActionPermission(CrudDto $crudDto, ActionDto|string $actionNameOrDto, ?EntityDto $entityDto, ?string $entityFqcn): bool
     {
         // users can run the Crud action if:
         // * they have the required permission to execute the action on the given entity instance
@@ -78,9 +78,9 @@ final class SecurityVoter extends Voter
         $actionPermission = $crudDto->getActionsConfig()->getActionPermissions()[$actionName] ?? null;
         $disabledActionNames = $crudDto->getActionsConfig()->getDisabledActions();
 
-        $subject = null === $entityDto ? null : $entityDto->getInstance();
+        $subject = $entityDto?->getInstance() ?? $entityFqcn;
 
-        return $this->authorizationChecker->isGranted($actionPermission, $subject) && !\in_array($actionName, $disabledActionNames, true);
+        return !\in_array($actionName, $disabledActionNames, true) && $this->authorizationChecker->isGranted($actionPermission, $subject);
     }
 
     private function voteOnViewPropertyPermission(FieldDto $field): bool

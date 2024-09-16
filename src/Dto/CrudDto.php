@@ -517,7 +517,7 @@ final class CrudDto
     public function getIndexRowClass($entityInstance) {
         return match (true) {
             is_string($this->indexRowClass) => $this->indexRowClass,
-            is_callable($this->indexRowClass) => $this->indexRowClass->__invoke($entityInstance),
+            is_callable($this->indexRowClass) => call_user_func($this->indexRowClass, $entityInstance),
             default => null,
         };
     }

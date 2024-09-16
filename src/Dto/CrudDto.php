@@ -510,14 +510,16 @@ final class CrudDto
         $this->hideNullValues = $hide;
     }
 
-    public function setIndexRowClass(string|callable $indexRowClass): void {
+    public function setIndexRowClass(string|callable $indexRowClass): void
+    {
         $this->indexRowClass = $indexRowClass;
     }
 
-    public function getIndexRowClass($entityInstance) {
+    public function getIndexRowClass($entityInstance)
+    {
         return match (true) {
-            is_string($this->indexRowClass) => $this->indexRowClass,
-            is_callable($this->indexRowClass) => call_user_func($this->indexRowClass, $entityInstance),
+            \is_string($this->indexRowClass) => $this->indexRowClass,
+            \is_callable($this->indexRowClass) => \call_user_func($this->indexRowClass, $entityInstance),
             default => null,
         };
     }

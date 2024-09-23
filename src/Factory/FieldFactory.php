@@ -79,7 +79,8 @@ final class FieldFactory
         foreach ($fields as $fieldDto) {
             if ((null !== $currentPage && false === $fieldDto->isDisplayedOn($currentPage))
                 || false === $fieldDto->isDisplayed($entityDto)
-                || false === $this->authorizationChecker->isGranted(Permission::EA_VIEW_FIELD, $fieldDto)) {
+                || false === $this->authorizationChecker->isGranted(Permission::EA_VIEW_FIELD, $fieldDto)
+            ) {
                 $fields->unset($fieldDto);
 
                 continue;

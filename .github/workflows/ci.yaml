@@ -64,8 +64,16 @@ jobs:
                       php_version: "8.3"
                       symfony_version: "7.0"
                       stability: "stable"
+                    - os: macos-latest
+                      php_version: "8.4"
+                      symfony_version: "7.0"
+                      stability: "stable"
                     - os: windows-latest
                       php_version: "8.3"
+                      symfony_version: "7.0"
+                      stability: "stable"
+                    - os: windows-latest
+                      php_version: "8.4"
                       symfony_version: "7.0"
                       stability: "stable"
                     # LTS Symfony version support
@@ -95,10 +103,14 @@ jobs:
                       php_version: "8.3"
                       symfony_version: "7.0"
                       stability: "stable"
+                    - os: ubuntu-latest
+                      php_version: "8.4"
+                      symfony_version: "7.0"
+                      stability: "stable"
                     # Upcoming Symfony versions
                     - os: ubuntu-latest
                       php_version: "8.3"
-                      symfony_version: "7.1.x-dev"
+                      symfony_version: "7.2.x-dev"
                       stability: "dev"
         runs-on: ${{ matrix.os }}
         steps:

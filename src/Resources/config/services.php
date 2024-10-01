@@ -78,6 +78,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\FieldProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\CrudControllerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\DashboardControllerRegistry;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminRouteLoader;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Router\UrlSigner;
 use EasyCorp\Bundle\EasyAdminBundle\Security\AuthorizationChecker;
@@ -166,6 +167,7 @@ return static function (ContainerConfigurator $container) {
             ->arg(2, service('controller_resolver'))
             ->arg(3, service('router'))
             ->arg(4, service('router'))
+            ->arg(5, service('router'))
             ->tag('kernel.event_subscriber')
 
         ->set(ControllerFactory::class)
@@ -195,6 +197,11 @@ return static function (ContainerConfigurator $container) {
         ->set('service_locator_'.AdminUrlGenerator::class, ServiceLocator::class)
             ->args([[AdminUrlGenerator::class => service(AdminUrlGenerator::class)]])
             ->tag('container.service_locator')
+
+        ->set(AdminRouteLoader::class)
+            ->arg(0, tagged_iterator(EasyAdminExtension::TAG_DASHBOARD_CONTROLLER))
+            ->arg(1, tagged_iterator(EasyAdminExtension::TAG_CRUD_CONTROLLER))
+            ->tag('routing.loader', ['type' => AdminRouteLoader::ROUTE_TYPE_NAME])
 
         ->set(UrlSigner::class)
             ->arg(0, '%kernel.secret%')

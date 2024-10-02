@@ -49,11 +49,15 @@ class AdminRouteLoader extends Loader
             ],
             'edit' => [
                 'path' => '/edit/{entityId}',
-                'methods' => ['GET', 'POST'],
+                'methods' => ['GET', 'POST', 'PATCH'],
             ],
             'delete' => [
                 'path' => '/delete/{entityId}',
                 'methods' => ['POST'],
+            ],
+            'autocomplete' => [
+                'path' => '/autocomplete',
+                'methods' => ['GET'],
             ],
         ];
 

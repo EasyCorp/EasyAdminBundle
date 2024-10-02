@@ -307,7 +307,17 @@ final class AdminUrlGenerator implements AdminUrlGeneratorInterface
 
         $context = $this->adminContextProvider->getContext();
         $urlType = null !== $context && false === $context->getAbsoluteUrls() ? UrlGeneratorInterface::RELATIVE_PATH : UrlGeneratorInterface::ABSOLUTE_URL;
-        $url = $this->urlGenerator->generate($this->dashboardRoute, $routeParameters, $urlType);
+
+        if (null !== $this->get(EA::CRUD_CONTROLLER_FQCN)) {
+            $crudControllerShortName = str_replace(['CrudController', 'Controller'], '', (new \ReflectionClass($this->get(EA::CRUD_CONTROLLER_FQCN)))->getShortName());
+            $crudControllerShortName = strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $crudControllerShortName));
+            $routeName = sprintf('%s_%s_%s', $this->dashboardRoute, $crudControllerShortName, $this->get(EA::CRUD_ACTION));
+            unset($routeParameters[EA::DASHBOARD_CONTROLLER_FQCN], $routeParameters[EA::CRUD_CONTROLLER_FQCN], $routeParameters[EA::CRUD_ACTION], $routeParameters[EA::ENTITY_FQCN]);
+        } else {
+            $routeName = $this->dashboardRoute;
+        }
+
+        $url = $this->urlGenerator->generate($routeName, $routeParameters, $urlType);
         $url = '' === $url ? '?' : $url;
 
         // this is important to start the generation a each URL from the same initial state

@@ -75,8 +75,7 @@ class AdminRouterSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $dashboardControllerFqcn = $route->getOption('ea_dashboard_fqcn');
-
+        $dashboardControllerFqcn = $route->getOption('ea_dashboard_controller_fqcn');
         if (null === $dashboardControllerInstance = $this->getDashboardControllerInstance($dashboardControllerFqcn, $request)) {
             return;
         }
@@ -84,8 +83,10 @@ class AdminRouterSubscriber implements EventSubscriberInterface
         // creating the context is expensive, so it's created once and stored in the request
         // if the current request already has an AdminContext object, do nothing
         if (null === $adminContext = $request->attributes->get(EA::CONTEXT_REQUEST_ATTRIBUTE)) {
-            $crudControllerInstance = $this->getCrudControllerInstance($request);
-            $adminContext = $this->adminContextFactory->create($request, $dashboardControllerInstance, $crudControllerInstance);
+            $crudControllerFqcn = $route->getOption('ea_crud_controller_fqcn');
+            $actionName = $route->getOption('ea_action');
+            $crudControllerInstance = $this->controllerFactory->getCrudControllerInstance($crudControllerFqcn, $actionName, $request);
+            $adminContext = $this->adminContextFactory->create($request, $dashboardControllerInstance, $crudControllerInstance, $actionName);
         }
 
         $request->attributes->set(EA::CONTEXT_REQUEST_ATTRIBUTE, $adminContext);

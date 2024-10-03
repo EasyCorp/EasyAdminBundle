@@ -8,39 +8,21 @@
 {% set crudControllers = ea.crudControllers %}
 {% set target_entity_crud_fqcn = crudControllers.findCrudFqcnByEntityFqcn(target_entity) %}
 
-{% set url = ea_url().unset('entityId').setController(target_entity_crud_fqcn).setAction('index').set('embedContext', {
+{% set url = ea_url().unsetAll().setController(target_entity_crud_fqcn).setAction('index').set('embedContext', {
     mappedBy: field.doctrineMetadata.get('mappedBy'),
     embeddedIn: entity.primaryKeyValue
 }) %}
 
 {% set id_suffix = '-'~field.property %}
 
-<div id="embed{{ id_suffix }}" class="position-relative embed-loading">
-    <div class="position-absolute text-center embed-spinner">
-        <div class="spinner-border text-primary spinner-border-lg mt-2"></div>
+<div id="embed{{ id_suffix }}" class="position-relative">
+    <div class="d-flex justify-content-center d-none spinner">
+        <div class="spinner-border m-5" role="status">
+            <span class="sr-only"></span>
+        </div>
     </div>
     <div class="embed-content"></div>
 </div>
-
-<style>
-    .embed-spinner {
-        display: none;
-        top: 50%;
-        left: 50%;
-        margin-top: -1rem;
-        margin-left: -1rem;
-        z-index: 10;
-    }
-
-    .embed-loading .embed-spinner {
-        display: block;
-    }
-
-    .embed-loading .embed-content {
-        opacity: 0.5;
-        pointer-events: none;
-    }
-</style>
 
 <script>
     window.addEventListener('load', () => {
@@ -49,9 +31,10 @@
 
         const embed = document.querySelector('#embed{{ id_suffix }}');
         const embedContent = embed.querySelector('.embed-content');
+        const spinner = embed.querySelector('.spinner');
 
         const load = (url) => {
-            embed.classList.add('embed-loading');
+            spinner.classList.remove('d-none');
             fetch(url)
                 .then(it => it.text())
                 .then(it => embedContent.innerHTML = it)
@@ -113,7 +96,7 @@
                     // can be used to re-initialize dynamic content
                     document.dispatchEvent(new Event('ea.embed.content-loaded'))
                 })
-                .finally(() => embed.classList.remove('embed-loading'))
+                .finally(() => spinner.classList.add('d-none'))
             ;
         }
 

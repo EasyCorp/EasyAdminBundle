@@ -55,6 +55,10 @@ class AdminRouteLoader extends Loader
                 'path' => '/delete/{entityId}',
                 'methods' => ['POST'],
             ],
+            'batchDelete' => [
+                'path' => '/batchDelete',
+                'methods' => ['POST'],
+            ],
             'autocomplete' => [
                 'path' => '/autocomplete',
                 'methods' => ['GET'],
@@ -66,6 +70,7 @@ class AdminRouteLoader extends Loader
             $dashboardFqcn = \get_class($dashboardController);
             $dashboardRouteName = $dashboardRouteConfiguration[$dashboardFqcn]['route_name'];
             $crudControllerShortNames = [];
+
             foreach ($this->crudControllers as $crudController) {
                 $crudControllerFqcn = \get_class($crudController);
                 $crudControllerShortName = $this->getCrudControllerShortName($crudControllerFqcn, $crudControllerShortNames);
@@ -81,8 +86,8 @@ class AdminRouteLoader extends Loader
                     $options = [
                         'ea_generated_route' => true,
                         'ea_dashboard_controller_fqcn' => $dashboardFqcn,
-                        'ea_crud_controller_fqcn' => $crudControllerFqcn,
-                        'ea_action' => $actionName,
+                        'crudControllerFqcn' => $crudControllerFqcn,
+                        'crudAction' => $actionName,
                     ];
 
                     $route = new Route($path, $defaults, [], $options, '', [], $actionConfig['methods']);

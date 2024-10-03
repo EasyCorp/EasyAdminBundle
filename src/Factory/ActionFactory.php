@@ -151,7 +151,7 @@ final class ActionFactory
 
         if (Action::DELETE === $actionDto->getName()) {
             $actionDto->addHtmlAttributes([
-                'formaction' => $this->adminUrlGenerator->setAction(Action::DELETE)->setEntityId($entityDto->getPrimaryKeyValue())->removeReferrer()->generateUrl(),
+                'formaction' => $this->adminUrlGenerator->setController($adminContext->getCrud()->getControllerFqcn())->setAction(Action::DELETE)->setEntityId($entityDto->getPrimaryKeyValue())->removeReferrer()->generateUrl(),
                 'data-bs-toggle' => 'modal',
                 'data-bs-target' => '#modal-delete',
             ]);
@@ -193,7 +193,8 @@ final class ActionFactory
         }
 
         $requestParameters = [
-            EA::CRUD_CONTROLLER_FQCN => $request->query->get(EA::CRUD_CONTROLLER_FQCN),
+            // when using pretty URLs, the data is in the request attributes instead of the query string
+            EA::CRUD_CONTROLLER_FQCN => $request->attributes->get(EA::CRUD_CONTROLLER_FQCN) ?? $request->query->get(EA::CRUD_CONTROLLER_FQCN),
             EA::CRUD_ACTION => $actionDto->getCrudActionName(),
         ];
 

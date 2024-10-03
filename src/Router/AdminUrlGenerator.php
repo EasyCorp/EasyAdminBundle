@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Router;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
@@ -308,7 +309,7 @@ final class AdminUrlGenerator implements AdminUrlGeneratorInterface
         $context = $this->adminContextProvider->getContext();
         $urlType = null !== $context && false === $context->getAbsoluteUrls() ? UrlGeneratorInterface::RELATIVE_PATH : UrlGeneratorInterface::ABSOLUTE_URL;
 
-        if (null !== $this->get(EA::CRUD_CONTROLLER_FQCN)) {
+        if (null !== $this->get(EA::CRUD_CONTROLLER_FQCN) && \in_array($this->get(EA::CRUD_ACTION), Crud::ACTION_NAMES, true)) {
             $crudControllerShortName = str_replace(['CrudController', 'Controller'], '', (new \ReflectionClass($this->get(EA::CRUD_CONTROLLER_FQCN)))->getShortName());
             $crudControllerShortName = strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $crudControllerShortName));
             $routeName = sprintf('%s_%s_%s', $this->dashboardRoute, $crudControllerShortName, $this->get(EA::CRUD_ACTION));

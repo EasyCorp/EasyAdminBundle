@@ -182,7 +182,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
         $responseParameters = $this->configureResponseParameters(KeyValueStore::new([
             'pageName' => Crud::PAGE_INDEX,
-            'templateName' => null !== $embedContext ? 'crud/embedded' : 'crud/index',
+            'templateName' => array_key_exists('mappedBy', $embedContext) ? 'crud/embedded' : 'crud/index',
             'entities' => $entities,
             'paginator' => $paginator,
             'global_actions' => $actions->getGlobalActions(),

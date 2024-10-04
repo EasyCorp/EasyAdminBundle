@@ -41,7 +41,7 @@ final class ActionFactory
     {
         $currentPage = $this->adminContextProvider->getContext()->getCrud()->getCurrentPage();
         $entityActions = [];
-        foreach ($actionsDto->getActions()->all() as $actionDto) {
+        foreach ($actionsDto->getActions()->all() as $actionDto) {dump($actionDto);
             if (!$actionDto->isEntityAction()) {
                 continue;
             }
@@ -198,7 +198,7 @@ final class ActionFactory
             EA::CRUD_ACTION => $actionDto->getCrudActionName(),
         ];
 
-        if (\in_array($actionDto->getName(), [Action::INDEX, Action::NEW, Action::SAVE_AND_ADD_ANOTHER, Action::SAVE_AND_RETURN], true)) {
+        if (\in_array($actionDto->getName(), [Action::INDEX, Action::NEW, Action::SAVE_AND_ADD_ANOTHER], true)) {
             $requestParameters[EA::ENTITY_ID] = null;
         } elseif (null !== $entityDto) {
             $requestParameters[EA::ENTITY_ID] = $entityDto->getPrimaryKeyValueAsString();

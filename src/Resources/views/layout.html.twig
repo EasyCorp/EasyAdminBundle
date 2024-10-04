@@ -248,8 +248,12 @@
                             <div class="content-search">
                                 {% if has_search %}
                                     {% block search %}
-
-                                        <form class="form-action-search" method="get">
+                                        {% set use_pretty_urls = null != ea.request.attributes.get('crudControllerFqcn') %}
+                                        {% set formActionUrl = null %}
+                                        {% if use_pretty_urls %}
+                                            {% set formActionUrl = ea_url().setController(ea.request.attributes.get('crudControllerFqcn')).setAction('index').set('page', 1) %}
+                                        {% endif %}
+                                        <form class="form-action-search" method="get" {% if formActionUrl %}action="{{ formActionUrl }}"{% endif %}>
                                             {% block search_form %}
                                                 {% block search_form_filters %}
                                                     {% for field, fieldValue in ea.search.appliedFilters %}
@@ -277,9 +281,11 @@
                                                     {% endfor %}
                                                 {% endblock %}
 
-                                                <input type="hidden" name="crudAction" value="index">
-                                                <input type="hidden" name="crudControllerFqcn" value="{{ ea.request.query.get('crudControllerFqcn') }}">
-                                                <input type="hidden" name="page" value="1">
+                                                {% if not use_pretty_urls %}
+                                                    <input type="hidden" name="crudAction" value="index">
+                                                    <input type="hidden" name="crudControllerFqcn" value="{{ ea.request.query.get('crudControllerFqcn') }}">
+                                                    <input type="hidden" name="page" value="1">
+                                                {% endif %}
 
                                                 <div class="form-group">
                                                     <div class="form-widget">

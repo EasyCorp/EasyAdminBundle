@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Router;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\CrudControllerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\DashboardControllerRegistry;
 use Symfony\Component\Config\Loader\Loader;
@@ -84,10 +85,10 @@ class AdminRouteLoader extends Loader
                         '_controller' => $crudControllerFqcn.'::'.$actionName,
                     ];
                     $options = [
-                        'ea_generated_route' => true,
-                        'ea_dashboard_controller_fqcn' => $dashboardFqcn,
-                        'crudControllerFqcn' => $crudControllerFqcn,
-                        'crudAction' => $actionName,
+                        EA::ROUTE_EASYADMIN_LOADER => true,
+                        EA::DASHBOARD_CONTROLLER_FQCN => $dashboardFqcn,
+                        EA::CRUD_CONTROLLER_FQCN => $crudControllerFqcn,
+                        EA::CRUD_ACTION => $actionName,
                     ];
 
                     $route = new Route($path, $defaults, [], $options, '', [], $actionConfig['methods']);

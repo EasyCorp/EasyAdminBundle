@@ -1,6 +1,18 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
 {% use '@EasyAdmin/symfony-form-themes/bootstrap_5_layout.html.twig' %}
 
+{% block embedded_list_row %}
+    <div class="pe-3 ps-3">
+        {% if content is empty -%}
+            <div class="alert alert-light">
+                {{ 'datagrid.no_results'|trans({}, 'EasyAdminBundle') }}
+            </div>
+        {% else -%}
+            {{ content|raw }}
+        {% endif -%}
+    </div>
+{% endblock embedded_list_row %}
+
 {% block form_start %}
     {% if form.vars.errors|length > 0 and 'ea_crud' in form.vars.block_prefixes|default([]) %}
         {{ form_errors(form, {attr: { class: 'global-invalid-feedback' }}) }}

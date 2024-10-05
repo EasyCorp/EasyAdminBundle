@@ -82,9 +82,9 @@ final class EntityPaginator implements EntityPaginatorInterface
         $pageUrl = $this->adminUrlGenerator->set(EA::PAGE, $page);
 
         $currentRequest = $this->requestStack->getCurrentRequest();
-        $usesPrettyUrls = null !== $curdControllerFqcn = $currentRequest->attributes->get(EA::CRUD_CONTROLLER_FQCN);
+        $usesPrettyUrls = null !== $crudControllerFqcn = $currentRequest->attributes->get(EA::CRUD_CONTROLLER_FQCN);
         if ($usesPrettyUrls) {
-            $pageUrl->setController($curdControllerFqcn)->setAction(Crud::PAGE_INDEX);
+            $pageUrl->setController($crudControllerFqcn)->setAction($currentRequest->attributes->get(EA::CRUD_ACTION));
         }
 
         return $pageUrl->generateUrl();
@@ -222,8 +222,14 @@ final class EntityPaginator implements EntityPaginatorInterface
             ];
         }
 
-        $nextPageUrl = !$this->hasNextPage() ? null : $this->adminUrlGenerator->set(EA::PAGE, $this->getNextPage())->removeReferrer()->generateUrl();
-        $jsonResult['next_page'] = $nextPageUrl;
+        $nextPageUrl = !$this->hasNextPage() ? null : $this->adminUrlGenerator->set(EA::PAGE, $this->getNextPage());
+        $currentRequest = $this->requestStack->getCurrentRequest();
+        $usesPrettyUrls = null !== $crudControllerFqcn = $currentRequest->attributes->get(EA::CRUD_CONTROLLER_FQCN);
+        if ($usesPrettyUrls && null !== $nextPageUrl) {
+            $nextPageUrl->setController($crudControllerFqcn)->setAction($currentRequest->attributes->get(EA::CRUD_ACTION));
+        }
+
+        $jsonResult['next_page'] = $nextPageUrl->generateUrl();
 
         return json_encode($jsonResult, \JSON_THROW_ON_ERROR);
     }

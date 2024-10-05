@@ -145,13 +145,15 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
             }
 
             $field->setFormType(CrudAutocompleteType::class);
+
             $autocompleteEndpointUrl = $this->adminUrlGenerator
                 ->unsetAll()
                 ->set('page', 1) // The autocomplete should always start on the first page
-                ->setController($field->getCustomOption(AssociationField::OPTION_EMBEDDED_CRUD_FORM_CONTROLLER))
+                ->setController($targetCrudControllerFqcn)
                 ->setAction('autocomplete')
                 ->set(AssociationField::PARAM_AUTOCOMPLETE_CONTEXT, [
-                    EA::CRUD_CONTROLLER_FQCN => $context->getRequest()->query->get(EA::CRUD_CONTROLLER_FQCN),
+                    // when using pretty URLs, the data is in the request attributes instead of the autocomplete context
+                    EA::CRUD_CONTROLLER_FQCN => $context->getRequest()->attributes->get(EA::CRUD_CONTROLLER_FQCN) ?? $context->getRequest()->query->get(EA::CRUD_CONTROLLER_FQCN),
                     'propertyName' => $propertyName,
                     'originatingPage' => $context->getCrud()->getCurrentPage(),
                 ])

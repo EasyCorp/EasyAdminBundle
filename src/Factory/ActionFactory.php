@@ -41,7 +41,7 @@ final class ActionFactory
     {
         $currentPage = $this->adminContextProvider->getContext()->getCrud()->getCurrentPage();
         $entityActions = [];
-        foreach ($actionsDto->getActions()->all() as $actionDto) {dump($actionDto);
+        foreach ($actionsDto->getActions()->all() as $actionDto) {
             if (!$actionDto->isEntityAction()) {
                 continue;
             }

@@ -201,7 +201,7 @@ return static function (ContainerConfigurator $container) {
         ->set(AdminRouteLoader::class)
             ->arg(0, tagged_iterator(EasyAdminExtension::TAG_DASHBOARD_CONTROLLER))
             ->arg(1, tagged_iterator(EasyAdminExtension::TAG_CRUD_CONTROLLER))
-            ->tag('routing.loader', ['type' => AdminRouteLoader::ROUTE_TYPE_NAME])
+            ->tag('routing.loader', ['type' => AdminRouteLoader::ROUTE_LOADER_TYPE])
 
         ->set(UrlSigner::class)
             ->arg(0, '%kernel.secret%')

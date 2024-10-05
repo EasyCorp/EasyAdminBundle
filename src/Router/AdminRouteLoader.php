@@ -3,17 +3,14 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Router;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
-use EasyCorp\Bundle\EasyAdminBundle\Registry\CrudControllerRegistry;
-use EasyCorp\Bundle\EasyAdminBundle\Registry\DashboardControllerRegistry;
 use Symfony\Component\Config\Loader\Loader;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\Attribute\Route as RouteAttribute;
 use Symfony\Component\Routing\RouteCollection;
-use Symfony\Component\Routing\RouterInterface;
 
 class AdminRouteLoader extends Loader
 {
-    public const ROUTE_TYPE_NAME = 'easyadmin';
+    public const ROUTE_LOADER_TYPE = 'easyadmin.routes';
 
     public function __construct(
         private iterable $dashboardControllers,
@@ -24,7 +21,7 @@ class AdminRouteLoader extends Loader
 
     public function supports($resource, string $type = null): bool
     {
-        return self::ROUTE_TYPE_NAME === $type;
+        return self::ROUTE_LOADER_TYPE === $type;
     }
 
     public function load($resource, string $type = null): RouteCollection
@@ -41,7 +38,7 @@ class AdminRouteLoader extends Loader
                 'methods' => ['GET'],
             ],
             'detail' => [
-                'path' => '/detail/{entityId}',
+                'path' => '/{entityId}',
                 'methods' => ['GET'],
             ],
             'new' => [
@@ -49,11 +46,11 @@ class AdminRouteLoader extends Loader
                 'methods' => ['GET', 'POST'],
             ],
             'edit' => [
-                'path' => '/edit/{entityId}',
+                'path' => '/{entityId}/edit',
                 'methods' => ['GET', 'POST', 'PATCH'],
             ],
             'delete' => [
-                'path' => '/delete/{entityId}',
+                'path' => '/{entityId}/delete',
                 'methods' => ['POST'],
             ],
             'batchDelete' => [
@@ -85,7 +82,7 @@ class AdminRouteLoader extends Loader
                         '_controller' => $crudControllerFqcn.'::'.$actionName,
                     ];
                     $options = [
-                        EA::ROUTE_EASYADMIN_LOADER => true,
+                        EA::ROUTE_CREATED_BY_EASYADMIN => true,
                         EA::DASHBOARD_CONTROLLER_FQCN => $dashboardFqcn,
                         EA::CRUD_CONTROLLER_FQCN => $crudControllerFqcn,
                         EA::CRUD_ACTION => $actionName,
@@ -108,7 +105,7 @@ class AdminRouteLoader extends Loader
         foreach ($this->dashboardControllers as $dashboardController) {
             $reflectionClass = new \ReflectionClass($dashboardController);
             $indexMethod = $reflectionClass->getMethod('index');
-            $attributes = $indexMethod->getAttributes(RouteAttribute::class);
+            $attributes = $indexMethod->getAttributes('Symfony\Component\Routing\Annotation\Route');
 
             if (empty($attributes)) {
                 throw new \RuntimeException(sprintf('The "%s" EasyAdmin dashboard controller must define its route configuration (route name, path) using a #[Route] attribute applied to its "index()" method.', $reflectionClass->getName()));

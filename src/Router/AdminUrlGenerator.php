@@ -307,9 +307,10 @@ final class AdminUrlGenerator implements AdminUrlGeneratorInterface
         ksort($routeParameters, \SORT_STRING);
 
         $context = $this->adminContextProvider->getContext();
+        $usePrettyUrls = null !== $context && $context->usePrettyUrls();
         $urlType = null !== $context && false === $context->getAbsoluteUrls() ? UrlGeneratorInterface::RELATIVE_PATH : UrlGeneratorInterface::ABSOLUTE_URL;
 
-        if (null !== $this->get(EA::CRUD_CONTROLLER_FQCN) && \in_array($this->get(EA::CRUD_ACTION), Crud::ACTION_NAMES, true)) {
+        if ($usePrettyUrls && \in_array($this->get(EA::CRUD_ACTION), Crud::ACTION_NAMES, true)) {
             $crudControllerShortName = str_replace(['CrudController', 'Controller'], '', (new \ReflectionClass($this->get(EA::CRUD_CONTROLLER_FQCN)))->getShortName());
             $crudControllerShortName = strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $crudControllerShortName));
             $routeName = sprintf('%s_%s_%s', $this->dashboardRoute, $crudControllerShortName, $this->get(EA::CRUD_ACTION));
@@ -321,7 +322,7 @@ final class AdminUrlGenerator implements AdminUrlGeneratorInterface
         $url = $this->urlGenerator->generate($routeName, $routeParameters, $urlType);
         $url = '' === $url ? '?' : $url;
 
-        // this is important to start the generation a each URL from the same initial state
+        // this is important to start the generation of each URL from the same initial state
         // otherwise, some parameters used when generating some URL could leak to other URLs
         $this->isInitialized = false;
 

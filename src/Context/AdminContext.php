@@ -105,6 +105,11 @@ final class AdminContext
         return $this->dashboardDto->getAbsoluteUrls();
     }
 
+    public function usePrettyUrls(): bool
+    {
+        return true === $this->request->attributes->get(EA::ROUTE_CREATED_BY_EASYADMIN);
+    }
+
     public function getDashboardTitle(): string
     {
         return $this->dashboardDto->getTitle();

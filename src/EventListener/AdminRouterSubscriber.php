@@ -71,9 +71,11 @@ class AdminRouterSubscriber implements EventSubscriberInterface
         $routes = $this->router->getRouteCollection();
         $route = $routes->get($routeName);
 
-        if (null === $route || true !== $route->getOption(EA::ROUTE_EASYADMIN_LOADER)) {
+        if (null === $route || true !== $route->getOption(EA::ROUTE_CREATED_BY_EASYADMIN)) {
             return;
         }
+
+        $request->attributes->set(EA::ROUTE_CREATED_BY_EASYADMIN, true);
 
         $dashboardControllerFqcn = $route->getOption(EA::DASHBOARD_CONTROLLER_FQCN);
         if (null === $dashboardControllerInstance = $this->getDashboardControllerInstance($dashboardControllerFqcn, $request)) {

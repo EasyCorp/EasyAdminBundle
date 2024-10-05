@@ -1,6 +1,7 @@
 <?php
 
 use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Kernel;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\PrettyUrlsTestApplication\Kernel as PrettyUrlsKernel;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
@@ -37,7 +38,11 @@ if (!file_exists($file)) {
 }
 $autoload = require $file;
 
-$kernel = new Kernel();
+if ('1' === getenv('USE_PRETTY_URLS')) {
+    $kernel = new PrettyUrlsKernel();
+} else {
+    $kernel = new Kernel();
+}
 
 // delete the existing cache directory to avoid issues
 (new Symfony\Component\Filesystem\Filesystem())->remove($kernel->getCacheDir());

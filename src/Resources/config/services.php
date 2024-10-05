@@ -234,6 +234,7 @@ return static function (ContainerConfigurator $container) {
         ->set(EntityPaginator::class)
             ->arg(0, service(AdminUrlGenerator::class))
             ->arg(1, service(EntityFactory::class))
+            ->arg(2, service('request_stack'))
 
         ->alias(EntityPaginatorInterface::class, EntityPaginator::class)
 

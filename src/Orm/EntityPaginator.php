@@ -5,11 +5,13 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Orm;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\CountWalker;
 use Doctrine\ORM\Tools\Pagination\Paginator;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Orm\EntityPaginatorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\PaginatorDto;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -18,6 +20,7 @@ final class EntityPaginator implements EntityPaginatorInterface
 {
     private AdminUrlGeneratorInterface $adminUrlGenerator;
     private EntityFactory $entityFactory;
+    private RequestStack $requestStack;
     private ?int $currentPage = null;
     private ?int $pageSize = null;
     private ?int $rangeSize = null;
@@ -27,10 +30,11 @@ final class EntityPaginator implements EntityPaginatorInterface
     private ?int $rangeFirstResultNumber = null;
     private ?int $rangeLastResultNumber = null;
 
-    public function __construct(AdminUrlGeneratorInterface $adminUrlGenerator, EntityFactory $entityFactory)
+    public function __construct(AdminUrlGeneratorInterface $adminUrlGenerator, EntityFactory $entityFactory, RequestStack $requestStack)
     {
         $this->adminUrlGenerator = $adminUrlGenerator;
         $this->entityFactory = $entityFactory;
+        $this->requestStack = $requestStack;
     }
 
     public function paginate(PaginatorDto $paginatorDto, QueryBuilder $queryBuilder): EntityPaginatorInterface
@@ -75,7 +79,15 @@ final class EntityPaginator implements EntityPaginatorInterface
 
     public function generateUrlForPage(int $page): string
     {
-        return $this->adminUrlGenerator->set(EA::PAGE, $page)->generateUrl();
+        $pageUrl = $this->adminUrlGenerator->set(EA::PAGE, $page);
+
+        $currentRequest = $this->requestStack->getCurrentRequest();
+        $usesPrettyUrls = null !== $curdControllerFqcn = $currentRequest->attributes->get(EA::CRUD_CONTROLLER_FQCN);
+        if ($usesPrettyUrls) {
+            $pageUrl->setController($curdControllerFqcn)->setAction(Crud::PAGE_INDEX);
+        }
+
+        return $pageUrl->generateUrl();
     }
 
     public function getCurrentPage(): int

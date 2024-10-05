@@ -106,8 +106,11 @@ class AdminRouteLoader extends Loader
             $reflectionClass = new \ReflectionClass($dashboardController);
             $indexMethod = $reflectionClass->getMethod('index');
             $attributes = $indexMethod->getAttributes('Symfony\\Component\\Routing\\Attribute\\Route');
+            if ([] === $attributes) {
+                $attributes = $indexMethod->getAttributes('Symfony\\Component\\Routing\\Annotation\\Route');
+            }
 
-            if (empty($attributes)) {
+            if ([] === $attributes) {
                 throw new \RuntimeException(sprintf('The "%s" EasyAdmin dashboard controller must define its route configuration (route name, path) using a #[Route] attribute applied to its "index()" method.', $reflectionClass->getName()));
             }
 

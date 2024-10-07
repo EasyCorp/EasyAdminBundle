@@ -6,7 +6,10 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Registry\CrudControllerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\DashboardControllerRegistry;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminRouteGenerator;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminRouteLoader;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 use Symfony\Bridge\PhpUnit\ExpectDeprecationTrait;
@@ -306,6 +309,8 @@ class AdminUrlGeneratorTest extends WebTestCase
         $container = Kernel::MAJOR_VERSION >= 6 ? static::getContainer() : self::$container;
         $router = $container->get('router');
 
-        return new AdminUrlGenerator($adminContextProvider, $router, $dashboardControllerRegistry);
+        $adminRouteGenerator = $this->getMockBuilder(AdminRouteGenerator::class)->disableOriginalConstructor()->getMock();
+
+        return new AdminUrlGenerator($adminContextProvider, $router, $dashboardControllerRegistry, $adminRouteGenerator);
     }
 }

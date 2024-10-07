@@ -63,6 +63,11 @@ final class DashboardControllerRegistry
         return \count($this->controllerFqcnToRouteMap) < 1 ? null : $this->controllerFqcnToRouteMap[array_key_first($this->controllerFqcnToRouteMap)];
     }
 
+    public function getFirstDashboardFqcn(): ?string
+    {
+        return \count($this->controllerFqcnToRouteMap) < 1 ? null : array_key_first($this->controllerFqcnToRouteMap);
+    }
+
     /**
      * @return array<int, array{controller: string, route: string, context: string}>
      */

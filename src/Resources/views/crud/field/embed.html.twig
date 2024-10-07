@@ -2,8 +2,10 @@
 {# @var field \EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto #}
 {# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
 {% set current_url = ea_url() %}
-{% set field = form.vars.ea_vars.field %}
-{% set entity = form.vars.ea_vars.entity %}
+{% if form is defined %}
+    {% set field = form.vars.ea_vars.field %}
+    {% set entity = form.vars.ea_vars.entity %}
+{% endif %}
 {% set target_entity = field.doctrineMetadata.get('targetEntity') %}
 {% set crudControllers = ea.crudControllers %}
 {% set target_entity_crud_fqcn = crudControllers.findCrudFqcnByEntityFqcn(target_entity) %}

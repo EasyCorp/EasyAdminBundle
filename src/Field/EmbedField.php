@@ -17,7 +17,7 @@ final class EmbedField implements FieldInterface
             ->setTemplateName('crud/field/embed')
             ->setFormType(EmbedType::class)
             ->setFormTypeOption('mapped', false)
-            ->onlyWhenUpdating()
+            ->hideWhenCreating()
         ;
     }
 }

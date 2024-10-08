@@ -66,4 +66,44 @@ class PrettyUrlsController extends WebTestCase
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('h1.title', 'BlogPost');
     }
+
+    public function testMainMenuUsesPrettyUrls()
+    {
+        $client = static::createClient();
+        $client->followRedirects();
+
+        $crawler = $client->request('GET', '/admin/pretty/urls/blog_post');
+
+        $this->assertSame('Dashboard', $crawler->filter('li.menu-item a[href="http://localhost/admin/pretty/urls/blog_post/"]')->first()->text());
+        $this->assertSame('Blog Posts', $crawler->filter('li.menu-item a[href="http://localhost/admin/pretty/urls/blog_post/"]')->last()->text());
+        $this->assertSame('Categories', $crawler->filter('li.menu-item a[href="http://localhost/admin/pretty/urls/category/"]')->text());
+    }
+
+    public function testActionsUsePrettyUrls()
+    {
+        $client = static::createClient();
+        $client->followRedirects();
+
+        $crawler = $client->request('GET', '/admin/pretty/urls/blog_post');
+
+        $this->assertSame('http://localhost/admin/pretty/urls/blog_post/?page=1', $crawler->filter('form.form-action-search')->attr('action'));
+        $this->assertSame('Add BlogPost', $crawler->filter('.global-actions a.action-new[href="http://localhost/admin/pretty/urls/blog_post/new"]')->text());
+        $this->assertMatchesRegularExpression('#http://localhost/admin/pretty/urls/blog_post/1/edit\?csrfToken=.*&fieldName=content#', $crawler->filter('td.field-boolean input[type="checkbox"]')->attr('data-toggle-url'));
+        $this->assertSame('Edit', $crawler->filter('td a.action-edit[href="http://localhost/admin/pretty/urls/blog_post/1/edit"]')->text());
+        $this->assertSame('Delete', $crawler->filter('td a.action-delete[href="http://localhost/admin/pretty/urls/blog_post/1/delete"]')->text());
+    }
+
+    public function testSortLinksUsePrettyUrls()
+    {
+        $client = static::createClient();
+        $client->followRedirects();
+
+        $crawler = $client->request('GET', '/admin/pretty/urls/blog_post');
+
+        $this->assertSame('http://localhost/admin/pretty/urls/blog_post/?page=1&sort%5Bid%5D=DESC', $crawler->filter('th.searchable a')->eq(0)->attr('href'));
+        $this->assertSame('http://localhost/admin/pretty/urls/blog_post/?page=1&sort%5Btitle%5D=DESC', $crawler->filter('th.searchable a')->eq(1)->attr('href'));
+        $this->assertSame('http://localhost/admin/pretty/urls/blog_post/?page=1&sort%5Bslug%5D=DESC', $crawler->filter('th.searchable a')->eq(2)->attr('href'));
+        $this->assertSame('http://localhost/admin/pretty/urls/blog_post/?page=1&sort%5Bcontent%5D=DESC', $crawler->filter('th.searchable a')->eq(3)->attr('href'));
+        $this->assertSame('http://localhost/admin/pretty/urls/blog_post/?page=1&sort%5Bauthor%5D=DESC', $crawler->filter('th.searchable a')->eq(4)->attr('href'));
+    }
 }

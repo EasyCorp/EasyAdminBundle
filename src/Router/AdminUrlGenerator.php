@@ -326,10 +326,10 @@ final class AdminUrlGenerator implements AdminUrlGeneratorInterface
                 $routeName = $this->dashboardRoute;
             } else {
                 // remove these parameters so they don't appear in the query string when using pretty URLs
-                $this->unset(EA::DASHBOARD_CONTROLLER_FQCN);
-                $this->unset(EA::CRUD_CONTROLLER_FQCN);
-                $this->unset(EA::CRUD_ACTION);
-                $this->unset(EA::ENTITY_FQCN);
+                unset($routeParameters[EA::DASHBOARD_CONTROLLER_FQCN]);
+                unset($routeParameters[EA::CRUD_CONTROLLER_FQCN]);
+                unset($routeParameters[EA::CRUD_ACTION]);
+                unset($routeParameters[EA::ENTITY_FQCN]);
             }
         } else {
             $routeName = $this->dashboardRoute;

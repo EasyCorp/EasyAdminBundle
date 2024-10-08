@@ -9,18 +9,25 @@ use Symfony\Component\Routing\RouteCollection;
 
 final class AdminRouteGenerator
 {
+    // the order in which routes are defined here is important because routes
+    // are added to the application in the same order and e.g. the path of the
+    // 'detail' route collides with the 'new' route and must be defined after it
     private const ROUTES = [
         'index' => [
             'path' => '/',
             'methods' => ['GET'],
         ],
-        'detail' => [
-            'path' => '/{entityId}',
-            'methods' => ['GET'],
-        ],
         'new' => [
             'path' => '/new',
             'methods' => ['GET', 'POST'],
+        ],
+        'batchDelete' => [
+            'path' => '/batchDelete',
+            'methods' => ['POST'],
+        ],
+        'autocomplete' => [
+            'path' => '/autocomplete',
+            'methods' => ['GET'],
         ],
         'edit' => [
             'path' => '/{entityId}/edit',
@@ -30,12 +37,8 @@ final class AdminRouteGenerator
             'path' => '/{entityId}/delete',
             'methods' => ['POST'],
         ],
-        'batchDelete' => [
-            'path' => '/batchDelete',
-            'methods' => ['POST'],
-        ],
-        'autocomplete' => [
-            'path' => '/autocomplete',
+        'detail' => [
+            'path' => '/{entityId}',
             'methods' => ['GET'],
         ],
     ];

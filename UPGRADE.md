@@ -1,6 +1,22 @@
 Upgrade between EasyAdmin 4.x versions
 ======================================
 
+EasyAdmin 4.13.0
+----------------
+
+### Added Pretty URLs Support
+
+Starting from 4.13.0 version, EasyAdmin includes a custom route loader that
+can generate pretty URLs in your backend. Enable this feature by creating the
+following routing file in your application:
+
+```yaml
+# config/routes/easyadmin.yaml
+easyadmin:
+    resource: .
+    type: easyadmin.routes
+```
+
 EasyAdmin 4.11.0
 ----------------
 

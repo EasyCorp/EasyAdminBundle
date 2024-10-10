@@ -4,10 +4,14 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Router;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Router\AdminRouteGeneratorInterface;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 
-final class AdminRouteGenerator
+/**
+ * @author Javier Eguiluz <javier.eguiluz@gmail.com>
+ */
+final class AdminRouteGenerator implements AdminRouteGeneratorInterface
 {
     // the order in which routes are defined here is important because routes
     // are added to the application in the same order and e.g. the path of the

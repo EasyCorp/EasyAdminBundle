@@ -2,15 +2,19 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Router;
 
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Router\AdminRouteGeneratorInterface;
 use Symfony\Component\Config\Loader\Loader;
 use Symfony\Component\Routing\RouteCollection;
 
-class AdminRouteLoader extends Loader
+/**
+ * @author Javier Eguiluz <javier.eguiluz@gmail.com>
+ */
+final class AdminRouteLoader extends Loader
 {
     public const ROUTE_LOADER_TYPE = 'easyadmin.routes';
 
     public function __construct(
-        private AdminRouteGenerator $adminRouteGenerator
+        private AdminRouteGeneratorInterface $adminRouteGenerator
     ) {
         parent::__construct(null);
     }

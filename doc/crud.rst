@@ -48,7 +48,7 @@ CRUD route name     CRUD route path
 ``*_autocomplete``  ``/autocomplete``
 ``*_edit``          ``/{entityId}/edit``
 ``*_delete``        ``/{entityId}/delete``
-``*_detail``         ``/{entityId}``
+``*_detail``        ``/{entityId}``
 ==================  ======================
 
 For example, for a CRUD controller called ``ProductCrudController`` that belongs
@@ -66,6 +66,12 @@ Admin route name                Admin route path
 ``admin_product_delete``        ``/admin/product/324/delete``
 ``admin_product_detail``        ``/admin/product/324``
 ==============================  ===============================
+
+.. tip::
+
+    By default, EasyAdmin generates routes for all CRUD controllers on all
+    dashboards. You can :ref:`restrict which controllers are accessible <security-controllers>`
+    on each dahboard to not generate all these routes.
 
 The default behavior of the CRUD actions provided by the ``AbstractCrudController``
 is appropriate for most backends, but you can customize it in several ways:
@@ -305,8 +311,8 @@ Search, Order, and Pagination Options
 .. tip::
 
     The search engine splits all terms by default (searching for ``foo bar``
-    returns items with ``foo`` and ``bar``). You can wrap all or part of your 
-    query with quotes to make an exact search: ``"foo bar"`` only returns 
+    returns items with ``foo`` and ``bar``). You can wrap all or part of your
+    query with quotes to make an exact search: ``"foo bar"`` only returns
     items with that exact content, including the middle white space.
 
 ::

@@ -49,6 +49,48 @@ Another option is to use the `#[IsGranted] attribute`_ in the dashboard controll
         // ...
     }
 
+.. _security-controllers:
+
+Restrict Access to Some CRUD Controllers
+----------------------------------------
+
+When using more than one :doc:`Dashboard </dashboards>` you might need to restrict
+which :doc:`CRUD controllers </crud>` are accessible for each of them.
+
+Consider that in your application you have two dashboards (``DashboardController``
+used by your employees and ``GuestDashboardController`` used by external collaborators).
+In the guest dashboard you only want to allow certain actions related to your blog.
+
+However, when using :ref:`pretty admin URLs <pretty-admin-urls>`, EasyAdmin will
+generate the routes for all CRUD controllers in all dashboards. This means that
+there will be undesired routes like ``adminb_guest_invoice``, ``admin_guest_user_detail``, etc.
+The best way to restrict which CRUD controllers are accessible via each dashboard
+is to use the ``configureControllers()`` method::
+
+    // app/Controller/Admin/DashboardController.php
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Controllers;
+    use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
+
+    class DashboardController extends AbstractDashboardController
+    {
+        public static function configureControllers(): Controllers
+        {
+            return Controllers::new()
+                ->allowOnly(BlogPostCrudController::class, BlogCategoryCrudController::class);
+        }
+
+        // ...
+    }
+
+.. tip::
+
+    The ``Controllers`` config object provides many utility methods like
+    ``allowOnly()``, ``allowAllExcept()``, ``disallowOnly()`` and ``disallowAllExcept()``.
+
+The above configuration will make EasyAdmin to only generate the routes
+``admin_guest_blog_post_*`` and ``admin_guest_blog_category_*``, skipping all
+the other routes that would hae allowed to access the other controllers.
+
 .. _security-menu:
 
 Restrict Access to Menu Items

@@ -2,9 +2,11 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Router;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Controllers;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Router\AdminRouteGeneratorInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\ControllersDto;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 
@@ -59,8 +61,22 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
         $addedRouteNames = [];
         foreach ($this->dashboardControllers as $dashboardController) {
             $dashboardFqcn = \get_class($dashboardController);
+            /** @var ControllersDto $controllersDto */
+            $controllersDto = method_exists($dashboardController, 'configureControllers') ? $dashboardController::configureControllers()->getAsDto() : Controllers::new()->getAsDto();
+            $allowCrudControllersByDefault = $controllersDto->allowByDefault();
+            $allowedCrudControllers = $controllersDto->getAllowedControllers();
+            $disallowedCrudControllers = $controllersDto->getDisallowedControllers();
+
             foreach ($this->crudControllers as $crudController) {
                 $crudControllerFqcn = \get_class($crudController);
+
+                if ($allowCrudControllersByDefault && \in_array($crudControllerFqcn, $disallowedCrudControllers, true)) {
+                    continue;
+                }
+
+                if (!$allowCrudControllersByDefault && !\in_array($crudControllerFqcn, $allowedCrudControllers, true)) {
+                    continue;
+                }
 
                 foreach (self::ROUTES as $actionName => $actionConfig) {
                     $crudActionRouteName = $this->getRouteName($dashboardFqcn, $crudControllerFqcn, $actionName);

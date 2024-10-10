@@ -74,7 +74,7 @@ first in your application. To do so, create this file:
 .. note::
 
     The ``easyadmin.routes`` string is also available as the PHP constant
-    ``EasyCorp\\Bundle\\EasyAdminBundle\\Router::ROUTE_LOADER_TYPE``.
+    ``EasyCorp\Bundle\EasyAdminBundle\Router::ROUTE_LOADER_TYPE``.
 
 Now, define the main route of your dashboard class using a PHP attribute in the
 ``index()`` method of that controller (if you don't have a Dashboard yet, you can

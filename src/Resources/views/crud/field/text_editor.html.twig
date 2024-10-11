@@ -2,7 +2,7 @@
 {# @var field \EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto #}
 {# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
 {% if ea.crud.currentAction == 'detail' %}
-    {{ field.formattedValue|nl2br }}
+    {{ field.formattedValue|raw|nl2br }}
 {% else %}
     {% set html_id = 'ea-text-editor-' ~ field.uniqueId %}
     <a href="#" data-bs-toggle="modal" data-bs-target="#{{ html_id }}">
@@ -18,7 +18,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    {{ field.formattedValue|nl2br }}
+                    {{ field.formattedValue|raw|nl2br }}
                 </div>
             </div>
         </div>

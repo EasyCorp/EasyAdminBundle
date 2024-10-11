@@ -14,7 +14,7 @@ final class AdminRouteLoader extends Loader
     public const ROUTE_LOADER_TYPE = 'easyadmin.routes';
 
     public function __construct(
-        private AdminRouteGeneratorInterface $adminRouteGenerator
+        private AdminRouteGeneratorInterface $adminRouteGenerator,
     ) {
         parent::__construct(null);
     }

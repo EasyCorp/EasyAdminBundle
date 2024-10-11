@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Router;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
@@ -333,6 +334,14 @@ final class AdminUrlGenerator implements AdminUrlGeneratorInterface
             }
         } else {
             $routeName = $this->dashboardRoute;
+        }
+
+        if (!$usePrettyUrls && \in_array($routeParameters[EA::CRUD_ACTION] ?? Action::INDEX, Crud::ACTION_NAMES, true)) {
+            trigger_deprecation(
+                'easycorp/easyadmin-bundle',
+                '4.13.0',
+                'Not using pretty admin URLs is deprecated because they will become the only available URLs starting from EasyAdmin 5.0.0. Read the docs to learn how to enable pretty URLs in your application.',
+            );
         }
 
         $url = $this->urlGenerator->generate($routeName, $routeParameters, $urlType);

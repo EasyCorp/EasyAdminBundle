@@ -63,7 +63,7 @@ In the guest dashboard you only want to allow certain actions related to your bl
 
 However, when using :ref:`pretty admin URLs <pretty-admin-urls>`, EasyAdmin will
 generate the routes for all CRUD controllers in all dashboards. This means that
-there will be undesired routes like ``adminb_guest_invoice``, ``admin_guest_user_detail``, etc.
+there will be undesired routes like ``admin_guest_invoice``, ``admin_guest_user_detail``, etc.
 The best way to restrict which CRUD controllers are accessible via each dashboard
 is to use the ``configureControllers()`` method::
 
@@ -89,7 +89,7 @@ is to use the ``configureControllers()`` method::
 
 The above configuration will make EasyAdmin to only generate the routes
 ``admin_guest_blog_post_*`` and ``admin_guest_blog_category_*``, skipping all
-the other routes that would hae allowed to access the other controllers.
+the other routes that would have allowed to access the other controllers.
 
 .. _security-menu:
 

@@ -145,11 +145,11 @@ jobs:
                   SYMFONY_DEPRECATIONS_HELPER: "weak"
               run: |
                 if [[ "$RUNNER_OS" == "Windows" ]]; then
-                    $env:SYMFONY_DEPRECATIONS_HELPER='ignoreFile=./tests/baseline-ignore.txt'
+                    $env:SYMFONY_DEPRECATIONS_HELPER='max[total]=1657&ignoreFile=./tests/baseline-ignore.txt'
                     vendor/bin/simple-phpunit
                     $env:USE_PRETTY_URLS=1
                     ./vendor/bin/simple-phpunit tests/Controller/PrettyUrls/PrettyUrlsController.php
                 else
-                    SYMFONY_DEPRECATIONS_HELPER='ignoreFile=./tests/baseline-ignore.txt' vendor/bin/simple-phpunit
+                    SYMFONY_DEPRECATIONS_HELPER='max[total]=1657&ignoreFile=./tests/baseline-ignore.txt' vendor/bin/simple-phpunit
                     USE_PRETTY_URLS=1 ./vendor/bin/simple-phpunit tests/Controller/PrettyUrls/PrettyUrlsController.php
                 fi

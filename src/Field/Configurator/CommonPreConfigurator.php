@@ -155,6 +155,26 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
             return $isSortable;
         }
 
+        // if it's an association, check recursively if the nested property exists
+        if ($entityDto->isAssociation($field->getProperty())) {
+            $associatedProperties = explode('.', $field->getProperty());
+            for ($i = 0; $i < \count($associatedProperties); $i++) {
+                $property = $associatedProperties[$i];
+                if (!$entityDto->hasProperty($property)) {
+                    return false;
+                }
+
+                // try to get the entity associated to the property, except for the last property
+                if (isset($associatedProperties[$i + 1])) {
+                    $propertyMetadata = $entityDto->getPropertyMetadata($property);
+                    $targetEntity = $propertyMetadata->get('targetEntity');
+                    $entityDto = $this->entityFactory->create($targetEntity);
+                }
+            }
+
+            return true;
+        }
+
         return $entityDto->hasProperty($field->getProperty());
     }
 

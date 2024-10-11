@@ -5,7 +5,6 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Orm;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\CountWalker;
 use Doctrine\ORM\Tools\Pagination\Paginator;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Orm\EntityPaginatorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\PaginatorDto;

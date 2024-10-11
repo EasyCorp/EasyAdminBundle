@@ -1,7 +1,7 @@
 <?php
 
-use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Kernel;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\PrettyUrlsTestApplication\Kernel as PrettyUrlsKernel;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Kernel;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\ConsoleOutput;

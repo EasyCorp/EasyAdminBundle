@@ -148,6 +148,7 @@ class MenuItemMatcher implements MenuItemMatcherInterface
 
         return $menuItems;
     }
+
     /**
      * @param MenuItemDto[] $menuItems
      *
@@ -202,8 +203,7 @@ class MenuItemMatcher implements MenuItemMatcherInterface
             if (str_ends_with($menuItemUrl, $currentRequestUriWithoutQueryString)
                 || str_ends_with($menuItemUrl, $currentRequestUriWithoutAction)
                 || str_ends_with($menuItemUrlWithoutQueryString, $currentRequestUriWithoutQueryString)
-                || str_ends_with($menuItemUrlWithoutQueryString, $currentRequestUriWithoutAction))
-            {
+                || str_ends_with($menuItemUrlWithoutQueryString, $currentRequestUriWithoutAction)) {
                 $menuItemDto->setSelected(true);
 
                 return $menuItems;

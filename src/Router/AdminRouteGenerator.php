@@ -60,7 +60,7 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
         $collection = new RouteCollection();
         $addedRouteNames = [];
         foreach ($this->dashboardControllers as $dashboardController) {
-            $dashboardFqcn = \get_class($dashboardController);
+            $dashboardFqcn = $dashboardController::class;
             /** @var ControllersDto $controllersDto */
             $controllersDto = method_exists($dashboardController, 'configureControllers') ? $dashboardController::configureControllers()->getAsDto() : Controllers::new()->getAsDto();
             $allowCrudControllersByDefault = $controllersDto->allowByDefault();
@@ -68,7 +68,7 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
             $disallowedCrudControllers = $controllersDto->getDisallowedControllers();
 
             foreach ($this->crudControllers as $crudController) {
-                $crudControllerFqcn = \get_class($crudController);
+                $crudControllerFqcn = $crudController::class;
 
                 if ($allowCrudControllersByDefault && \in_array($crudControllerFqcn, $disallowedCrudControllers, true)) {
                     continue;

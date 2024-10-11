@@ -25,7 +25,6 @@ interface DashboardControllerInterface
      *
      * public static function configureControllers(EasyCorp\Bundle\EasyAdminBundle\Config\Controllers $controllers): Controllers;
      */
-
     public function configureDashboard(): Dashboard;
 
     public function configureAssets(): Assets;

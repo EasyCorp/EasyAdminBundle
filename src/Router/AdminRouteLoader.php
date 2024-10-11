@@ -19,12 +19,12 @@ final class AdminRouteLoader extends Loader
         parent::__construct(null);
     }
 
-    public function supports($resource, string $type = null): bool
+    public function supports($resource, ?string $type = null): bool
     {
         return self::ROUTE_LOADER_TYPE === $type;
     }
 
-    public function load($resource, string $type = null): RouteCollection
+    public function load($resource, ?string $type = null): RouteCollection
     {
         return $this->adminRouteGenerator->generateAll();
     }

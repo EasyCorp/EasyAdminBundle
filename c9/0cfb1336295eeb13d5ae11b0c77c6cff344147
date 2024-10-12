@@ -1,0 +1,80 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2024-04-19T15:24:11Z
+
+This could definitely be a solution that could work for us 🙏  Nicolas, thanks a lot for working on this. I'm going to test and look into this very soon!
+
+You've probably seen it but ... in https://github.com/twigphp/Twig/issues/4007 some people are reporting that they face a similar issue but when using Shopware instead of EasyAdmin. I don't know if there's a way to solve this at Twig level for all projects, but I just wanted to mention it. Thanks!
+
+---------------------------------------------------------------------------
+
+by nicolas-grekas at 2024-04-19T15:32:38Z
+
+I tried relying on __call but that breaks the CI so I reverted to listing methods explicitly.
+
+About shopware/etc. I suppose they do the same mistake.
+Possibly a `RefreshGlobalsInterface` could help. Or Twig could always refresh globals coming from extensions on reset.
+Anyway, that's not a short term solution for EA so not applicable.
+
+A better option would be to deprecate the global and replace it with a function. This PR gives a hook to do so.
+This would have the benefit of freeing the hot path from loading anything related to EA, and I suppose that'd be the same for shopware.
+
+My TL;DR is: don't use globals for non-static values.
+
+---------------------------------------------------------------------------
+
+by stof at 2024-04-19T15:42:15Z
+
+this will still break if templates do things like `{% if ea is defined %}`
+
+---------------------------------------------------------------------------
+
+by nicolas-grekas at 2024-04-19T15:43:39Z
+
+> this will still break if templates do things like {% if ea is defined %}
+
+True, and there is no way around this so we have to go with it IMHO.
+
+---------------------------------------------------------------------------
+
+by Seb33300 at 2024-05-05T05:02:03Z
+
+Is [this PR](https://github.com/EasyCorp/EasyAdminBundle/pull/6209) also fixing this issue with another approach?
+
+---------------------------------------------------------------------------
+
+by nicolas-grekas at 2024-05-05T06:17:53Z
+
+Both should be merged, and a deprecation should be added here. Note that the getGlobals() method should be deprecated soon in twig.
+
+---------------------------------------------------------------------------
+
+by AykutCevik at 2024-07-16T19:49:45Z
+
+Thanks for the fix @nicolas-grekas!
+Is this PR going to be merged soon?
+
+---------------------------------------------------------------------------
+
+by laferte-tech at 2024-08-29T11:18:17Z
+
+Yes thanks a lot, same question, is this will be merged soon?
+
+---------------------------------------------------------------------------
+
+by Skewmos at 2024-09-01T09:43:03Z
+
+@nicolas-grekas how can we work around the problem while waiting for the PR to be merged, because currently my back office is completely blocked due to the error.
+
+---------------------------------------------------------------------------
+
+by fabpot at 2024-09-07T13:43:23Z
+
+LGTM
+
+---------------------------------------------------------------------------
+
+by dunglt90vt at 2024-10-01T09:36:52Z
+
+Hi @nicolas-grekas
+Can I set up decorated services while waiting for them to be merged?

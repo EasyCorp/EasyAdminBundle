@@ -138,7 +138,7 @@ trait FieldTrait
     /**
      * Sets the value of a custom HTML attribute that will be added when rendering the field.
      * E.g. setAttribute('data-foo', 'bar') will render a 'data-foo="bar"' attribute in HTML.
-     * It's a shortcut for the equivalent setFormTypeOption('attr.data-foo', 'bar).
+     * It's a shortcut for the equivalent setFormTypeOption('attr.data-foo', 'bar').
      */
     public function setHtmlAttribute(string $attributeName, $attributeValue): self
     {

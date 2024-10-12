@@ -67,6 +67,7 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
 
     public function getGlobals(): array
     {
+        // this is needed to make the admin context available on any Twig template via the short named variable 'ea'
         return ['ea' => $this->adminContextProvider];
     }
 

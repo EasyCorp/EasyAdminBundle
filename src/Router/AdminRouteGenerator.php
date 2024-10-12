@@ -151,10 +151,8 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
         foreach ($this->dashboardControllers as $dashboardController) {
             $reflectionClass = new \ReflectionClass($dashboardController);
             $indexMethod = $reflectionClass->getMethod('index');
-            $attributes = $indexMethod->getAttributes('Symfony\\Component\\Routing\\Attribute\\Route');
-            if ([] === $attributes) {
-                $attributes = $indexMethod->getAttributes('Symfony\\Component\\Routing\\Annotation\\Route');
-            }
+            $routeAttributeFqcn = \class_exists(\Symfony\Component\Routing\Attribute\Route::class) ? \Symfony\Component\Routing\Attribute\Route::class : \Symfony\Component\Routing\Annotation\Route::class;
+            $attributes = $indexMethod->getAttributes($routeAttributeFqcn);
 
             if ([] === $attributes) {
                 throw new \RuntimeException(sprintf('When using pretty URLs, the "%s" EasyAdmin dashboard controller must define its route configuration (route name, path) using a #[Route] attribute applied to its "index()" method.', $reflectionClass->getName()));

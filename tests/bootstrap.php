@@ -39,14 +39,7 @@ if (!file_exists($file)) {
 $autoload = require $file;
 
 if ('1' === getenv('USE_PRETTY_URLS')) {
-    if (!class_exists('Symfony\Component\Routing\Attribute\Route')) {
-        // TODO: remove this ugly hack when we no longer support Symfony 5.4.
-        // the Pretty URLs tests must run in a Symfony version that supports the #[Route] attribute (not only the @Route annotation)
-        // so, if the installed Symfony version is 5, let's trick tests to run the normal tests again instead of the Pretty URLs tests
-        $kernel = new Kernel();
-    } else {
-        $kernel = new PrettyUrlsKernel();
-    }
+    $kernel = new PrettyUrlsKernel();
 } else {
     $kernel = new Kernel();
 }

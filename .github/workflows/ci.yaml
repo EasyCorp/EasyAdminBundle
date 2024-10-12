@@ -147,6 +147,8 @@ jobs:
                   vendor/bin/simple-phpunit
 
             - name: Run Pretty URLs tests
+              # Symfony 5.4 version doesn't include the #[Route] attribute needed to run these tests (it only includes the @Route annotation)
+              if: ${{ matrix.symfony_version != '5.4' && matrix.composer_args != '--prefer-lowest' }}
               continue-on-error: ${{ matrix.stability == 'dev' }}
               env:
                   USE_PRETTY_URLS: "1"

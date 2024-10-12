@@ -151,7 +151,7 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
         foreach ($this->dashboardControllers as $dashboardController) {
             $reflectionClass = new \ReflectionClass($dashboardController);
             $indexMethod = $reflectionClass->getMethod('index');
-            $routeAttributeFqcn = \class_exists(\Symfony\Component\Routing\Attribute\Route::class) ? \Symfony\Component\Routing\Attribute\Route::class : \Symfony\Component\Routing\Annotation\Route::class;
+            $routeAttributeFqcn = class_exists(\Symfony\Component\Routing\Attribute\Route::class) ? \Symfony\Component\Routing\Attribute\Route::class : \Symfony\Component\Routing\Annotation\Route::class;
             $attributes = $indexMethod->getAttributes($routeAttributeFqcn);
 
             if ([] === $attributes) {

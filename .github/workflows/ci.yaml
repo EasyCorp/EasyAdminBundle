@@ -80,7 +80,7 @@ jobs:
                     # Lowest deps support
                     - os: ubuntu-latest
                       php_version: "8.0.2"
-                      composer_args: "--prefer-lowest"
+                      prefer-lowest: "true"
                       stability: "stable"
                     # Lowest PHP version support. Remove when it is dropped
                     - os: ubuntu-latest
@@ -136,7 +136,11 @@ jobs:
 
             - name: Install dependencies
               run: |
-                  composer update ${{ matrix.composer_args }}
+                  if [ "${{ matrix.prefer-lowest }}" = "true" ]; then
+                      composer update --prefer-lowest ${{ matrix.composer_args }};
+                  else
+                      composer update ${{ matrix.composer_args }};
+                  fi
                   vendor/bin/simple-phpunit install
 
             - name: Run tests
@@ -147,6 +151,8 @@ jobs:
                   vendor/bin/simple-phpunit
 
             - name: Run Pretty URLs tests
+              # this tests must run in a Symfony version that supports the #[Route] attribute (not only the @Route annotation)
+              if: ${{ !contains(fromJson('["5.4"]'), matrix.symfony_version) && matrix.prefer_lowest != 'true' }}
               continue-on-error: ${{ matrix.stability == 'dev' }}
               env:
                   USE_PRETTY_URLS: "1"

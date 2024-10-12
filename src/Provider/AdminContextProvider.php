@@ -126,6 +126,11 @@ final class AdminContextProvider
         return $this->getContext(true)->getDashboardHasDarkModeEnabled();
     }
 
+    public function getDashboardDefaultColorScheme(): string
+    {
+        return $this->getContext(true)->getDashboardDefaultColorScheme();
+    }
+
     /**
      * @return LocaleDto[]
      */

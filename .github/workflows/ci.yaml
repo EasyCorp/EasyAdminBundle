@@ -142,7 +142,7 @@ jobs:
             - name: Run tests
               continue-on-error: ${{ matrix.stability == 'dev' }}
               env:
-                  SYMFONY_DEPRECATIONS_HELPER: "weak&max[total]=999999&ignoreFile=./tests/baseline-ignore.txt"
+                  SYMFONY_DEPRECATIONS_HELPER: "max[total]=999999&ignoreFile=./tests/baseline-ignore.txt"
               run: |
                   vendor/bin/simple-phpunit
                   USE_PRETTY_URLS=1 ./vendor/bin/simple-phpunit tests/Controller/PrettyUrls/PrettyUrlsController.php

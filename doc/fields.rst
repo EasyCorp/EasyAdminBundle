@@ -115,7 +115,7 @@ To do so, add the following method to the entity::
 
     use Doctrine\ORM\Mapping as ORM;
 
-    /** @ORM\Entity */
+    #[ORM\Entity]
     class Customer
     {
         // ...

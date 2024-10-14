@@ -31,6 +31,13 @@ final class AdminContextProvider
         $this->requestStack = $requestStack;
     }
 
+    public function hasContext(): bool
+    {
+        $currentRequest = $this->requestStack->getCurrentRequest();
+
+        return null !== $currentRequest && $currentRequest->attributes->has(EA::CONTEXT_REQUEST_ATTRIBUTE);
+    }
+
     public function getContext(bool $throw = false): ?AdminContext
     {
         $currentRequest = $this->requestStack->getCurrentRequest();

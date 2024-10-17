@@ -50,7 +50,7 @@
         "symfony/debug-bundle": "^5.4|^6.0|^7.0",
         "symfony/dom-crawler": "^5.4|^6.0|^7.0",
         "symfony/expression-language": "^5.4|^6.0|^7.0",
-        "symfony/phpunit-bridge": "^5.4|^6.0|^7.0"
+        "symfony/phpunit-bridge": "^6.1|^7.0"
     },
     "config": {
         "sort-packages": true,
@@ -67,6 +67,7 @@
     "autoload-dev": {
         "psr-4": {
             "EasyCorp\\Bundle\\EasyAdminBundle\\Tests\\TestApplication\\": "tests/TestApplication/src/",
+            "EasyCorp\\Bundle\\EasyAdminBundle\\Tests\\PrettyUrlsTestApplication\\": "tests/PrettyUrlsTestApplication/src/",
             "EasyCorp\\Bundle\\EasyAdminBundle\\Tests\\": "tests/"
         }
     },

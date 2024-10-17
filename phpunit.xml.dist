@@ -22,9 +22,14 @@
     <testsuites>
         <testsuite name="EasyAdmin Test Suite">
             <directory>tests/</directory>
+            <exclude>tests/Controller/PrettyUrls/</exclude>
             <exclude>tests/DataCollector/</exclude>
             <exclude>tests/EventListener/</exclude>
             <exclude>tests/Form/</exclude>
+        </testsuite>
+
+        <testsuite name="pretty_urls">
+            <directory>tests/Controller/PrettyUrls/</directory>
         </testsuite>
     </testsuites>
 
@@ -34,3 +39,4 @@
         </include>
     </coverage>
 </phpunit>
+

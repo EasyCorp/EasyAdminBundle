@@ -113,7 +113,12 @@
 
                         <th data-column="{{ field.property }}" class="{{ is_searchable ? 'searchable' }} {{ is_sorting_field ? 'sorted' }} {{ field.isVirtual ? 'field-virtual' }} header-for-{{ field.cssClass|split(' ')|filter(class => class starts with 'field-')|join('') }} text-{{ field.textAlign }}" dir="{{ ea.i18n.textDirection }}">
                             {% if field.isSortable %}
-                                <a href="{{ ea_url({ page: 1, sort: { (field.property): next_sort_direction } }) }}">
+                                {% set sortable_url = ea_url().set('page', 1).set('sort', { (field.property): next_sort_direction }) %}
+                                {% if ea.usePrettyUrls %}
+                                    {% set sortable_url = sortable_url.setController(ea.request.attributes.get('crudControllerFqcn')).setAction('index') %}
+                                {% endif %}
+
+                                <a href="{{ sortable_url }}">
                                     {{ field.label|trans|raw }} <i class="fa fa-fw {{ column_icon }}"></i>
                                 </a>
                             {% else %}

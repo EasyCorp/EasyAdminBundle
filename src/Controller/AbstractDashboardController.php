@@ -5,6 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Controller;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Controllers;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
@@ -33,6 +34,11 @@ abstract class AbstractDashboardController extends AbstractController implements
         return array_merge(parent::getSubscribedServices(), [
             AdminUrlGenerator::class => '?'.AdminUrlGenerator::class,
         ]);
+    }
+
+    public static function configureControllers(): Controllers
+    {
+        return Controllers::new();
     }
 
     #[Route('/admin')]

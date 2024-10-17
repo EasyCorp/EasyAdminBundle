@@ -136,11 +136,22 @@ jobs:
 
             - name: Install dependencies
               run: |
-                  composer update ${{ matrix.composer_args }}
+                  composer update ${{ matrix.composer_args }};
                   vendor/bin/simple-phpunit install
 
             - name: Run tests
               continue-on-error: ${{ matrix.stability == 'dev' }}
               env:
-                  SYMFONY_DEPRECATIONS_HELPER: "weak"
-              run: vendor/bin/simple-phpunit
+                  SYMFONY_DEPRECATIONS_HELPER: "max[total]=999999&ignoreFile=./tests/baseline-ignore.txt"
+              run: |
+                  vendor/bin/simple-phpunit
+
+            - name: Run Pretty URLs tests
+              # Symfony 5.4 version doesn't include the #[Route] attribute needed to run these tests (it only includes the @Route annotation)
+              if: ${{ matrix.symfony_version != '5.4' && matrix.composer_args != '--prefer-lowest' }}
+              continue-on-error: ${{ matrix.stability == 'dev' }}
+              env:
+                  USE_PRETTY_URLS: "1"
+                  SYMFONY_DEPRECATIONS_HELPER: "max[total]=999999&ignoreFile=./tests/baseline-ignore.txt"
+              run: |
+                  ./vendor/bin/simple-phpunit tests/Controller/PrettyUrls/PrettyUrlsController.php

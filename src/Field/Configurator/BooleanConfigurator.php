@@ -39,6 +39,7 @@ final class BooleanConfigurator implements FieldConfiguratorInterface
 
             if (null !== $crudDto && Action::NEW !== $crudDto->getCurrentAction()) {
                 $toggleUrl = $this->adminUrlGenerator
+                    ->setController($crudDto->getControllerFqcn())
                     ->setAction(Action::EDIT)
                     ->setEntityId($entityDto->getPrimaryKeyValue())
                     ->set('fieldName', $field->getProperty())

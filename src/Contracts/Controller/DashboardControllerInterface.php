@@ -19,6 +19,12 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 interface DashboardControllerInterface
 {
+    /**
+     * This method will be added to the interface in EayAdmin 5.0.
+     * Not implementing it is deprecated.
+     *
+     * public static function configureControllers(EasyCorp\Bundle\EasyAdminBundle\Config\Controllers $controllers): Controllers;
+     */
     public function configureDashboard(): Dashboard;
 
     public function configureAssets(): Assets;

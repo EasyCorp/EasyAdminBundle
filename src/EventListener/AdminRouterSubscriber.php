@@ -14,6 +14,7 @@ use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\Matcher\RequestMatcherInterface;
+use Symfony\Component\Routing\RouterInterface;
 
 /**
  * This subscriber acts as a "proxy" of all backend requests. First, if the
@@ -35,25 +36,67 @@ class AdminRouterSubscriber implements EventSubscriberInterface
     private ControllerResolverInterface $controllerResolver;
     private UrlGeneratorInterface $urlGenerator;
     private RequestMatcherInterface $requestMatcher;
+    private RouterInterface $router;
 
-    public function __construct(AdminContextFactory $adminContextFactory, ControllerFactory $controllerFactory, ControllerResolverInterface $controllerResolver, UrlGeneratorInterface $urlGenerator, RequestMatcherInterface $requestMatcher)
+    public function __construct(AdminContextFactory $adminContextFactory, ControllerFactory $controllerFactory, ControllerResolverInterface $controllerResolver, UrlGeneratorInterface $urlGenerator, RequestMatcherInterface $requestMatcher, RouterInterface $router)
     {
         $this->adminContextFactory = $adminContextFactory;
         $this->controllerFactory = $controllerFactory;
         $this->controllerResolver = $controllerResolver;
         $this->urlGenerator = $urlGenerator;
         $this->requestMatcher = $requestMatcher;
+        $this->router = $router;
     }
 
     public static function getSubscribedEvents(): array
     {
         return [
             RequestEvent::class => [
+                ['onKernelRequestPrettyUrls', 1],
                 ['onKernelRequest', 0],
             ],
             // the priority must be higher than 0 to run it before ParamConverterListener
             ControllerEvent::class => ['onKernelController', 128],
         ];
+    }
+
+    public function onKernelRequestPrettyUrls(RequestEvent $event): void
+    {
+        $request = $event->getRequest();
+        $routeName = $request->attributes->get('_route');
+        if (null === $routeName) {
+            return;
+        }
+
+        $routes = $this->router->getRouteCollection();
+        $route = $routes->get($routeName);
+
+        if (null === $route || true !== $route->getOption(EA::ROUTE_CREATED_BY_EASYADMIN)) {
+            return;
+        }
+
+        $request->attributes->set(EA::ROUTE_CREATED_BY_EASYADMIN, true);
+
+        $dashboardControllerFqcn = $route->getOption(EA::DASHBOARD_CONTROLLER_FQCN);
+        if (null === $dashboardControllerInstance = $this->getDashboardControllerInstance($dashboardControllerFqcn, $request)) {
+            return;
+        }
+
+        // creating the context is expensive, so it's created once and stored in the request
+        // if the current request already has an AdminContext object, do nothing
+        if (null === $adminContext = $request->attributes->get(EA::CONTEXT_REQUEST_ATTRIBUTE)) {
+            $crudControllerFqcn = $route->getOption(EA::CRUD_CONTROLLER_FQCN);
+            $actionName = $route->getOption(EA::CRUD_ACTION);
+
+            $request->attributes->set(EA::DASHBOARD_CONTROLLER_FQCN, $dashboardControllerFqcn);
+            $request->attributes->set(EA::CRUD_CONTROLLER_FQCN, $crudControllerFqcn);
+            $request->attributes->set(EA::CRUD_ACTION, $actionName);
+
+            $crudControllerInstance = $this->controllerFactory->getCrudControllerInstance($crudControllerFqcn, $actionName, $request);
+            $adminContext = $this->adminContextFactory->create($request, $dashboardControllerInstance, $crudControllerInstance, $actionName);
+        }
+
+        $request->attributes->set(EA::CONTEXT_REQUEST_ATTRIBUTE, $adminContext);
     }
 
     /**

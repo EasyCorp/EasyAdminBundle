@@ -81,6 +81,15 @@ used to render the form of each collection entry::
 
     yield CollectionField::new('...')->setEntryType(SomeType::class);
 
+setEntryToStringMethod
+~~~~~~~~~~~~
+
+By default, items in the collection are represented by a single line showing
+their ``__toString()`` value. The ``setEntryToStringMethod()`` method defines the method
+used to get string value of each item::
+
+    yield CollectionField::new('...')->setEntryToStringMethod('getFullName');
+
 showEntryLabel
 ~~~~~~~~~~~~~~
 

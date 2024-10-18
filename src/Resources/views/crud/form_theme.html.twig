@@ -160,7 +160,7 @@
     {# the "is iterable" check is needed because if an object implements __toString() and
                returns an empty string, "is empty" returns true even if it's not a collection #}
     {% set isEmptyCollection = value is null or (value is iterable and value is empty) %}
-    {% set is_array_field = 'EasyCorp\\Bundle\\EasyAdminBundle\\Field\\ArrayField' == form.vars.ea_vars.field.fieldFqcn ?? false %}
+    {% set is_array_field = 'EasyCorp\\Bundle\\EasyAdminBundle\\Field\\ArrayField' == form.vars.ea_vars.field.fieldFqcn|default(false) %}
 
     <div class="ea-form-collection-items">
         {% if isEmptyCollection %}
@@ -187,10 +187,10 @@
 {% endblock collection_widget %}
 
 {% block collection_entry_row %}
-    {% set is_array_field = 'EasyCorp\\Bundle\\EasyAdminBundle\\Field\\ArrayField' == form_parent(form).vars.ea_vars.field.fieldFqcn ?? false %}
+    {% set is_array_field = 'EasyCorp\\Bundle\\EasyAdminBundle\\Field\\ArrayField' == form_parent(form).vars.ea_vars.field.fieldFqcn|default(false) %}
     {% set is_complex = form_parent(form).vars.ea_vars.field.customOptions.get('entryIsComplex') ?? false %}
     {% set allows_deleting_items = form_parent(form).vars.allow_delete|default(false) %}
-    {% set render_expanded = not form.vars.valid or form_parent(form).vars.ea_vars.field.customOptions.get('renderExpanded') ?? false %}
+    {% set render_expanded = not form.vars.valid or form_parent(form).vars.ea_vars.field.customOptions.get('renderExpanded')|default(false) %}
     {% set delete_item_button %}
         <button type="button" class="btn btn-link btn-link-danger field-collection-delete-button"
                 title="{{ 'action.remove_item'|trans({}, 'EasyAdminBundle') }}">

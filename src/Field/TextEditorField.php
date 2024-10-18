@@ -16,6 +16,7 @@ final class TextEditorField implements FieldInterface
 
     public const OPTION_NUM_OF_ROWS = 'numOfRows';
     public const OPTION_TRIX_EDITOR_CONFIG = 'trixEditorConfig';
+    public const OPTION_RENDER_AS_HTML = TextField::OPTION_RENDER_AS_HTML;
 
     /**
      * @param TranslatableInterface|string|false|null $label
@@ -32,7 +33,8 @@ final class TextEditorField implements FieldInterface
             ->addJsFiles(Asset::fromEasyAdminAssetPackage('field-text-editor.js')->onlyOnForms())
             ->setDefaultColumns('col-md-9 col-xxl-7')
             ->setCustomOption(self::OPTION_NUM_OF_ROWS, null)
-            ->setCustomOption(self::OPTION_TRIX_EDITOR_CONFIG, null);
+            ->setCustomOption(self::OPTION_TRIX_EDITOR_CONFIG, null)
+            ->setCustomOption(self::OPTION_RENDER_AS_HTML, false);
     }
 
     public function setNumOfRows(int $rows): self
@@ -42,6 +44,13 @@ final class TextEditorField implements FieldInterface
         }
 
         $this->setCustomOption(self::OPTION_NUM_OF_ROWS, $rows);
+
+        return $this;
+    }
+
+    public function renderAsHtml(bool $asHtml = true): self
+    {
+        $this->setCustomOption(self::OPTION_RENDER_AS_HTML, $asHtml);
 
         return $this;
     }

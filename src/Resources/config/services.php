@@ -39,6 +39,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\CountryConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\CurrencyConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\DateTimeConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\EmailConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\FieldActionConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\FormConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\IdConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\ImageConfigurator;
@@ -375,6 +376,11 @@ return static function (ContainerConfigurator $container) {
         ->set(TimezoneConfigurator::class)
 
         ->set(UrlConfigurator::class)
+
+        ->set(FieldActionConfigurator::class)
+            ->arg(0, service(AdminUrlGenerator::class))
+            ->arg(1, '%kernel.charset%')
+            ->tag(EasyAdminExtension::TAG_FIELD_CONFIGURATOR, ['priority' => -9000])
 
         ->set(AssetPackage::class)
             ->arg(0, service('request_stack'))

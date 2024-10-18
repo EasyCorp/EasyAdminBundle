@@ -54,6 +54,7 @@ final class FieldDto
     /** @internal */
     private $uniqueId;
     private KeyValueStore $displayedOn;
+    private ?string $action = null;
 
     public function __construct()
     {
@@ -430,6 +431,16 @@ final class FieldDto
     public function addHtmlContentToBody(string $htmlContent): void
     {
         $this->assets->addHtmlContentToBody($htmlContent);
+    }
+
+    public function getAction(): ?string
+    {
+        return $this->action;
+    }
+
+    public function setAction(string $action): void
+    {
+        $this->action = $action;
     }
 
     public function getCustomOptions(): KeyValueStore

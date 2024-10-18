@@ -324,6 +324,13 @@ trait FieldTrait
         return $this;
     }
 
+    public function action(string $action): self
+    {
+        $this->dto->setAction($action);
+
+        return $this;
+    }
+
     public function setCustomOption(string $optionName, $optionValue): self
     {
         $this->dto->setCustomOption($optionName, $optionValue);

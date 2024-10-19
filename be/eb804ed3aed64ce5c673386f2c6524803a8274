@@ -1,0 +1,42 @@
+---------------------------------------------------------------------------
+
+by Seb33300 at 2024-04-17T03:49:15Z
+
+@javiereguiluz This PR is the correct fix for https://github.com/EasyCorp/EasyAdminBundle/issues/6223
+
+https://github.com/EasyCorp/EasyAdminBundle/pull/6242 must be reverted (it breaks postgres) and replaced by this PR. See details in https://github.com/EasyCorp/EasyAdminBundle/pull/6262
+
+---------------------------------------------------------------------------
+
+by Seb33300 at 2024-04-18T04:51:34Z
+
+@guillaume-sainthillier could you commit revert of https://github.com/EasyCorp/EasyAdminBundle/pull/6242 in this PR?
+
+---------------------------------------------------------------------------
+
+by guillaume-sainthillier at 2024-04-18T06:51:21Z
+
+> @guillaume-sainthillier could you commit revert of #6242 in this PR?
+
+done
+
+---------------------------------------------------------------------------
+
+by guillaume-sainthillier at 2024-05-31T09:24:06Z
+
+Hello @Seb33300, any updates about this PR? Does I need to add something?
+
+---------------------------------------------------------------------------
+
+by Seb33300 at 2024-05-31T10:11:48Z
+
+Hi @guillaume-sainthillier, I just tried to help by reviewing it but I am not a maintainer of the project.
+We need to wait for @javiereguiluz to review and merge the PR.
+
+---------------------------------------------------------------------------
+
+by guillaume-sainthillier at 2024-06-26T09:08:40Z
+
+Hello @javiereguiluz, any news about this PR? Does I need to add something to get this PR merged?
+
+phpstan error is not related to PR changes

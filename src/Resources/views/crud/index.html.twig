@@ -42,12 +42,6 @@
         : custom_page_title|trans|raw -}}
 {% endblock %}
 
-{% macro render_html_attributes(item) %}
-    {% for attribute_name, attribute_value in item.htmlAttributes %}
-        {{ attribute_name }}="{{ attribute_value|e('html_attr') }}"
-    {% endfor %}
-{% endmacro %}
-
 {% set has_batch_actions = batch_actions|length > 0 %}
 {% block page_actions %}
     {% if filters|length > 0 %}
@@ -152,7 +146,7 @@
                         {% for field in entity.fields %}
                             {% set is_searchable = null == ea.crud.searchFields or field.property in ea.crud.searchFields %}
 
-                            <td data-column="{{ field.property }}" data-label="{{ field.label|trans|e('html_attr') }}" class="{{ is_searchable ? 'searchable' }} {{ field.property == sort_field_name ? 'sorted' }} text-{{ field.textAlign }} {{ field.cssClass }}" dir="{{ ea.i18n.textDirection }}" {{ _self.render_html_attributes(field) }}>
+                            <td data-column="{{ field.property }}" data-label="{{ field.label|trans|e('html_attr') }}" class="{{ is_searchable ? 'searchable' }} {{ field.property == sort_field_name ? 'sorted' }} text-{{ field.textAlign }} {{ field.cssClass }}" dir="{{ ea.i18n.textDirection }}" {% for name, value in field.htmlAttributes %}{{ name }}="{{ value|e('html_attr') }}" {% endfor %}>
                                 {{ include(field.templatePath, { field: field, entity: entity }, with_context = false) }}
                             </td>
                         {% endfor %}

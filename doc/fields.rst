@@ -812,8 +812,11 @@ Misc. Options
         ->setFormTypeOptions(['option_name' => 'option_value'])
 
         // a custom HTML attribute added when rendering the field
-        // e.g. setAttribute('data-foo', 'bar') renders a 'data-foo="bar"' attribute in HTML
-        // it's a shortcut for the equivalent setFormTypeOption('attr.data-foo', 'bar')
+        // e.g. setHtmlAttribute('data-foo', 'bar') renders a 'data-foo="bar"' attribute in HTML
+        // On 'index' and 'detail' pages, the attribute is added to the field container:
+        // <td> and div.field-group respectively
+        // On 'new' and 'edit' pages, the attribute is added to the form field;
+        // it's a shortcut for the equivalent setFormTypeOption('attr.data-foo', 'bar)
         ->setHtmlAttribute('attribute_name', 'attribute_value')
 
         // a key-value array of attributes to add to the HTML element

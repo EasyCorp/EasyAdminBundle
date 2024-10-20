@@ -30,6 +30,69 @@ Basic Information
     <!-- when loading the page this is transformed into a dynamic list of embedded forms -->
     <ul> ... </ul>
 
+Prerequisites
+-------------
+
+As explained in the `documentation about Symfony CollectionType options`_, the
+``allowAdd`` and ``allowDelete`` option requires that your entity defines some
+special methods with very specific names. Otherwise, changes won't be persisted
+when creating or updating the entity collection items in the backend.
+
+Consider a ``BlogPost`` entity that defines a one-to-many relation with a ``Comment``
+entity and a many-to-many relation with a ``Tag`` entity::
+
+    use Doctrine\Common\Collections\Collection;
+    use Doctrine\ORM\Mapping as ORM;
+    // ...
+
+    class BlogPost
+    {
+        // ...
+
+        #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'post', orphanRemoval: true, cascade: ['persist'])]
+        private Collection $comments;
+
+        #[ORM\ManyToMany(targetEntity: Tag::class, cascade: ['persist'])]
+        #[ORM\JoinTable(name: 'my_app_blogpost_tag')]
+        private Collection $tags;
+    }
+
+In order to add/delete comments or tags, you must define "adder" and "remover"
+methods called ``add<Related Entity Singular Name>()`` and ``remove<Related Entity Singular Name>()``::
+
+    class BlogPost
+    {
+        // ...
+
+        public function addComment(Comment $comment): void
+        {
+            $comment->setBlogPost($this);
+
+            if (!$this->comments->contains($comment)) {
+                $this->comments->add($comment);
+            }
+        }
+
+        public function removeComment(Comment $comment): void
+        {
+            $this->comments->removeElement($comment);
+        }
+
+        public function addTag(Tag ...$tags): void
+        {
+            foreach ($tags as $tag) {
+                if (!$this->tags->contains($tag)) {
+                    $this->tags->add($tag);
+                }
+            }
+        }
+
+        public function removeTag(Tag $tag): void
+        {
+            $this->tags->removeElement($tag);
+        }
+    }
+
 Options
 -------
 
@@ -116,38 +179,4 @@ class name of the controller as the first argument::
     The ``useEntryCrudForm()`` method requires Symfony 6.1 or newer version.
 
 .. _`CollectionType`: https://symfony.com/doc/current/reference/forms/types/collection.html
-
-
-Extra Considerations
---------------------
-
-In order to add and delete items to the collection it is necessary to include the following methods in your parent entity, otherwise the collection values will not be binded to the parent entity and changes will not be persisted when creating or updating the entity via CRUD::
-
-    use App\Entity\PageBlock;
-    use Doctrine\Common\Collections\Collection;
-    use Doctrine\ORM\Mapping as ORM;
-    // Supossing a "MainBlock" entity as the one that owns a "blocks" collection
-    Class MainBlock {
-        // ...
-
-        // collection we want to manipulate with CollectionField class
-        #[ORM\OneToMany(targetEntity:PageBlock::class, mappedBy:'page', cascade:['persist', 'remove'])]
-        private Collection $blocks;
-
-        // method used by CollectionField class to add entity items
-        public function addBlock(PageBlock $block) : void
-        {
-            // implementation example, you may adjust this lines to your specific requirements
-            $block->setPage($this);
-            $this->blocks->add($block);
-        }
-
-        // method used by CollectionField class to remove entity items
-        public function removeBlock(PageBlock $block) : void
-        {
-            // implementation example, you may adjust this lines to your specific requirements
-            $block->setPage(null);
-            $this->blocks->remove($block);
-        }
-    }
-..
+.. _`documentation about Symfony CollectionType options`: https://symfony.com/doc/current/reference/forms/types/collection.html#field-options

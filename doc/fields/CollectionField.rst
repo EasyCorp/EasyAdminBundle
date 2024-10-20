@@ -144,6 +144,23 @@ used to render the form of each collection entry::
 
     yield CollectionField::new('...')->setEntryType(SomeType::class);
 
+setEntryToStringMethod
+~~~~~~~~~~~~~~~~~~~~~~
+
+By default, items in the collection are represented by a single line showing
+their ``__toString()`` value. Use this option to define how to get the string
+representation of each collection entry::
+
+    // this calls the 'getFullName()' method in the entity
+    yield CollectionField::new('...')->setEntryToStringMethod('getFullName');
+
+    // you can also pass a callable to generate the string
+    yield CollectionField::new('...')->setEntryToStringMethod(fn (): string => '...');
+    // your callable receives the entity and the translator service as arguments
+    yield CollectionField::new('...')->setEntryToStringMethod(
+        fn (Category $value, TranslatorInterface $translator): string => $translator->trans($value->getDescription())
+    );
+
 showEntryLabel
 ~~~~~~~~~~~~~~
 

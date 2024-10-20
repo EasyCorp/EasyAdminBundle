@@ -134,8 +134,21 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
         throw new RuntimeError(sprintf('Invalid callback for filter: "%s"', $filterName));
     }
 
-    public function representAsString($value): string
+    public function representAsString($value, string|callable|null $toStringMethod = null): string
     {
+        if (null !== $toStringMethod) {
+            if (\is_callable($toStringMethod)) {
+                return $toStringMethod($value, $this->translator);
+            }
+
+            $callable = [$value, $toStringMethod];
+            if (!\is_callable($callable) || !method_exists($value, $toStringMethod)) {
+                throw new \RuntimeException(sprintf('The method "%s()" does not exist or is not callable in the value of type "%s"', $toStringMethod, \is_object($value) ? $value::class : \gettype($value)));
+            }
+
+            return \call_user_func($callable);
+        }
+
         if (null === $value) {
             return '';
         }

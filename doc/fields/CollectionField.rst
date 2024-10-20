@@ -116,3 +116,38 @@ class name of the controller as the first argument::
     The ``useEntryCrudForm()`` method requires Symfony 6.1 or newer version.
 
 .. _`CollectionType`: https://symfony.com/doc/current/reference/forms/types/collection.html
+
+
+Extra Considerations
+--------------------
+
+In order to add and delete items to the collection it is necessary to include the following methods in your parent entity, otherwise the collection values will not be binded to the parent entity and changes will not be persisted when creating or updating the entity via CRUD::
+
+    use App\Entity\PageBlock;
+    use Doctrine\Common\Collections\Collection;
+    use Doctrine\ORM\Mapping as ORM;
+    // Supossing a "MainBlock" entity as the one that owns a "blocks" collection
+    Class MainBlock {
+        // ...
+
+        // collection we want to manipulate with CollectionField class
+        #[ORM\OneToMany(targetEntity:PageBlock::class, mappedBy:'page', cascade:['persist', 'remove'])]
+        private Collection $blocks;
+
+        // method used by CollectionField class to add entity items
+        public function addBlock(PageBlock $block) : void
+        {
+            // implementation example, you may adjust this lines to your specific requirements
+            $block->setPage($this);
+            $this->blocks->add($block);
+        }
+
+        // method used by CollectionField class to remove entity items
+        public function removeBlock(PageBlock $block) : void
+        {
+            // implementation example, you may adjust this lines to your specific requirements
+            $block->setPage(null);
+            $this->blocks->remove($block);
+        }
+    }
+..

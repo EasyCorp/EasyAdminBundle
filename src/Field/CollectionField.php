@@ -84,7 +84,10 @@ final class CollectionField implements FieldInterface
         return $this;
     }
 
-    public function setEntryToStringMethod(string $toStringMethod): self
+    /**
+     * @param string|callable $toStringMethod Either a string with the name of the method to call in the entry object or a callable to generate the string representation of the entry. The callable is passed the value as the first argument and the translator service as the second argument.
+     */
+    public function setEntryToStringMethod(string|callable $toStringMethod): self
     {
         $this->setCustomOption(self::OPTION_ENTRY_TO_STRING_METHOD, $toStringMethod);
 

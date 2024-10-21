@@ -211,7 +211,7 @@
                 <h2 class="accordion-header">
                     <button class="accordion-button {{ render_expanded ? '' : 'collapsed' }}" type="button" data-bs-toggle="collapse" data-bs-target="#{{ id }}-contents">
                         <i class="fas fw fa-chevron-right form-collection-item-collapse-marker"></i>
-                        {{ to_string_method ? value|ea_as_string(to_string_method) : value|ea_as_string }}
+                        {{ value|ea_as_string(to_string_method) }}
                     </button>
 
                     {% if allows_deleting_items and not disabled %}

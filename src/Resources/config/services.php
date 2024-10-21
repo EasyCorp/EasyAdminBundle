@@ -78,6 +78,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\FieldProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\CrudControllerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\DashboardControllerRegistry;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminRouteGenerator;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminRouteLoader;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Router\UrlSigner;
 use EasyCorp\Bundle\EasyAdminBundle\Security\AuthorizationChecker;
@@ -166,6 +168,7 @@ return static function (ContainerConfigurator $container) {
             ->arg(2, service('controller_resolver'))
             ->arg(3, service('router'))
             ->arg(4, service('router'))
+            ->arg(5, service('router'))
             ->tag('kernel.event_subscriber')
 
         ->set(ControllerFactory::class)
@@ -191,10 +194,19 @@ return static function (ContainerConfigurator $container) {
             ->arg(0, service(AdminContextProvider::class))
             ->arg(1, service('router'))
             ->arg(2, service(DashboardControllerRegistry::class))
+            ->arg(3, service(AdminRouteGenerator::class))
 
         ->set('service_locator_'.AdminUrlGenerator::class, ServiceLocator::class)
             ->args([[AdminUrlGenerator::class => service(AdminUrlGenerator::class)]])
             ->tag('container.service_locator')
+
+        ->set(AdminRouteGenerator::class)
+        ->arg(0, tagged_iterator(EasyAdminExtension::TAG_DASHBOARD_CONTROLLER))
+        ->arg(1, tagged_iterator(EasyAdminExtension::TAG_CRUD_CONTROLLER))
+
+        ->set(AdminRouteLoader::class)
+            ->arg(0, service(AdminRouteGenerator::class))
+            ->tag('routing.loader', ['type' => AdminRouteLoader::ROUTE_LOADER_TYPE])
 
         ->set(UrlSigner::class)
             ->arg(0, '%kernel.secret%')
@@ -227,6 +239,7 @@ return static function (ContainerConfigurator $container) {
         ->set(EntityPaginator::class)
             ->arg(0, service(AdminUrlGenerator::class))
             ->arg(1, service(EntityFactory::class))
+            ->arg(2, service('request_stack'))
 
         ->alias(EntityPaginatorInterface::class, EntityPaginator::class)
 

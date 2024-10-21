@@ -147,13 +147,15 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
             }
 
             $field->setFormType(CrudAutocompleteType::class);
+
             $autocompleteEndpointUrl = $this->adminUrlGenerator
                 ->unsetAll()
                 ->set('page', 1) // The autocomplete should always start on the first page
-                ->setController($field->getCustomOption(AssociationField::OPTION_EMBEDDED_CRUD_FORM_CONTROLLER))
+                ->setController($targetCrudControllerFqcn)
                 ->setAction('autocomplete')
                 ->set(AssociationField::PARAM_AUTOCOMPLETE_CONTEXT, [
-                    EA::CRUD_CONTROLLER_FQCN => $context->getRequest()->query->get(EA::CRUD_CONTROLLER_FQCN),
+                    // when using pretty URLs, the data is in the request attributes instead of the autocomplete context
+                    EA::CRUD_CONTROLLER_FQCN => $context->getRequest()->attributes->get(EA::CRUD_CONTROLLER_FQCN) ?? $context->getRequest()->query->get(EA::CRUD_CONTROLLER_FQCN),
                     'propertyName' => $propertyName,
                     'originatingPage' => $context->getCrud()->getCurrentPage(),
                 ])
@@ -234,11 +236,16 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
             return null;
         }
 
+        $primaryKeyValue = $entityDto->getPrimaryKeyValue();
+        // when processing fields for an entity in the index page, the primary key of the
+        // associated entity is null (e.g. admin_post_index and Post <-> User)
+        $crudAction = null === $primaryKeyValue ? Action::INDEX : Action::DETAIL;
+
         // TODO: check if user has permission to see the related entity
         return $this->adminUrlGenerator
             ->setController($crudController)
-            ->setAction(Action::DETAIL)
-            ->setEntityId($entityDto->getPrimaryKeyValue())
+            ->setAction($crudAction)
+            ->setEntityId($primaryKeyValue)
             ->unset(EA::FILTERS)
             ->unset(EA::PAGE)
             ->unset(EA::QUERY)

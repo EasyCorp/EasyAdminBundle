@@ -62,4 +62,26 @@ final class DashboardControllerRegistry
     {
         return \count($this->controllerFqcnToRouteMap) < 1 ? null : $this->controllerFqcnToRouteMap[array_key_first($this->controllerFqcnToRouteMap)];
     }
+
+    public function getFirstDashboardFqcn(): ?string
+    {
+        return \count($this->controllerFqcnToRouteMap) < 1 ? null : array_key_first($this->controllerFqcnToRouteMap);
+    }
+
+    /**
+     * @return array<int, array{controller: string, route: string, context: string}>
+     */
+    public function getAll(): array
+    {
+        $dashboards = [];
+        foreach ($this->controllerFqcnToContextIdMap as $controllerFqcn => $contextId) {
+            $dashboards[] = [
+                'controller' => $controllerFqcn,
+                'route' => $this->controllerFqcnToRouteMap[$controllerFqcn] ?? null,
+                'context' => $contextId,
+            ];
+        }
+
+        return $dashboards;
+    }
 }

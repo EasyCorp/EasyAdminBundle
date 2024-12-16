@@ -159,4 +159,7 @@ return [
         'no-more-results' => 'Aucun autre résultat trouvé',
         'loading-more-results' => 'Chargement de résultats supplémentaires…',
     ],
+    'flash_lock_error' => [
+        'message' => 'Cet enregistrement a été modifié par un autre utilisateur pendant que vous le modifiiez. Vos modifications n\'ont pas été enregistrées afin d\'éviter toute perte de données. La dernière version est affichée ci-dessous ; veuillez réappliquer vos modifications.',
+    ],
 ];

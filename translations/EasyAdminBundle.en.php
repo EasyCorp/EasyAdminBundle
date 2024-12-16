@@ -159,4 +159,7 @@ return [
         'no-more-results' => 'No more results',
         'loading-more-results' => 'Loading more results…',
     ],
+    'flash_lock_error' => [
+        'message' => 'This record was modified by another user while you were editing it. Your changes were not saved to prevent data loss. The latest version is shown below; please apply your changes again.',
+    ],
 ];

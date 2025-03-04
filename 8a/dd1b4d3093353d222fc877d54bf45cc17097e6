@@ -1,0 +1,7 @@
+---------------------------------------------------------------------------
+
+by jorisdugue at 2025-03-03T15:10:28Z
+
+I’ve just rewritten my patch to fix this issue without all the exceptions, which should optimize the loading time.
+
+Hey @javiereguiluz, could you review this when you have a moment?

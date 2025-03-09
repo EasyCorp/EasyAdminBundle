@@ -139,7 +139,7 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
                 $selectedValue instanceof \UnitEnum => $selectedValue->name,
                 default => $selectedValue,
             };
-            if (is_object($selectedValue) && $selectedValue instanceof Stringable) {
+            if (is_object($selectedValue) && $selectedValue instanceof \Stringable) {
                 $selectedValue = (string)$selectedValue;
             }
             if (null !== $selectedLabel = $flippedChoices[$selectedValue] ?? null) {

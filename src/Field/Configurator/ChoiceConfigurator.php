@@ -139,7 +139,7 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
                 $selectedValue instanceof \UnitEnum => $selectedValue->name,
                 default => $selectedValue,
             };
-            if (null !== $selectedLabel = $flippedChoices[$selectedValue] ?? null) {
+            if (null !== $selectedLabel = $flippedChoices[(string) $selectedValue] ?? null) {
                 if ($selectedLabel instanceof TranslatableInterface) {
                     $choiceMessage = $selectedLabel;
                 } else {

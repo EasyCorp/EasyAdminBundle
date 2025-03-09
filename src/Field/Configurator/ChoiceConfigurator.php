@@ -137,11 +137,9 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
                 // We check if $allChoicesAreEnums is true for enum's and choices array is generated using ->name as index
                 $selectedValue instanceof \BackedEnum => $allChoicesAreEnums && $choicesSupportTranslatableInterface ? $selectedValue->name : $selectedValue->value,
                 $selectedValue instanceof \UnitEnum => $selectedValue->name,
+                \is_object($selectedValue) && $selectedValue instanceof \Stringable => (string) $selectedValue,
                 default => $selectedValue,
             };
-            if (\is_object($selectedValue) && $selectedValue instanceof \Stringable) {
-                $selectedValue = (string) $selectedValue;
-            }
             if (null !== $selectedLabel = $flippedChoices[$selectedValue] ?? null) {
                 if ($selectedLabel instanceof TranslatableInterface) {
                     $choiceMessage = $selectedLabel;

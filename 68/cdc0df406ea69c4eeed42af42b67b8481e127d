@@ -1,0 +1,9 @@
+---------------------------------------------------------------------------
+
+by JorickPepin at 2025-03-07T10:04:05Z
+
+Hello @javiereguiluz.
+
+For the second case, I think you can simply remove the `@var` annotation as the false case is handled by the if just below.
+
+For the first one, it seems to be related to the fact that with Doctrine ORM 3.x, `$fieldMapping` can only be of type `FieldMapping` but I don't know how to fix that.

@@ -211,8 +211,8 @@ return static function (ContainerConfigurator $container) {
             ->tag('cache.pool')
 
         ->set(AdminRouteGenerator::class)
-            ->arg(0, tagged_iterator(EasyAdminExtension::TAG_DASHBOARD_CONTROLLER))
-            ->arg(1, tagged_iterator(EasyAdminExtension::TAG_CRUD_CONTROLLER))
+            ->arg(0, abstract_arg(sprintf('class list of %s tag', EasyAdminExtension::TAG_DASHBOARD_CONTROLLER)))
+            ->arg(1, abstract_arg(sprintf('class list of %s tag', EasyAdminExtension::TAG_CRUD_CONTROLLER)))
             ->arg(2, service('cache.easyadmin'))
             ->arg(3, service('filesystem'))
             ->arg(4, '%kernel.build_dir%')

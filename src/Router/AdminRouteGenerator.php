@@ -63,8 +63,8 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
     private ?bool $applicationUsesPrettyUrls = null;
 
     public function __construct(
-        private iterable $dashboardControllers,
-        private iterable $crudControllers,
+        private array $dashboardControllersFqcn,
+        private array $crudControllersFqcn,
         private CacheItemPoolInterface $cache,
         private Filesystem $filesystem,
         private string $buildDir,
@@ -100,8 +100,7 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
         $adminRoutes = $this->cache->getItem(self::CACHE_KEY_FQCN_TO_ROUTE)->get();
 
         if (null === $dashboardFqcn) {
-            $dashboardControllers = iterator_to_array($this->dashboardControllers);
-            $dashboardFqcn = $dashboardControllers[array_key_first($dashboardControllers)]::class;
+            $dashboardFqcn = reset($this->dashboardControllersFqcn);
         }
 
         return $adminRoutes[$dashboardFqcn][$crudControllerFqcn ?? ''][$actionName ?? ''] ?? null;
@@ -117,8 +116,7 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
         /** @var array<string> $addedRouteNames Temporary cache that stores the route names to ensure that we don't add duplicated admin routes */
         $addedRouteNames = [];
 
-        foreach ($this->dashboardControllers as $dashboardController) {
-            $dashboardFqcn = $dashboardController::class;
+        foreach ($this->dashboardControllersFqcn as $dashboardFqcn) {
             [$allowedCrudControllers, $deniedCrudControllers] = $this->getAllowedAndDeniedControllers($dashboardFqcn);
             $defaultRoutesConfig = $this->getDefaultRoutesConfig($dashboardFqcn);
             $dashboardRouteConfig = $this->getDashboardsRouteConfig()[$dashboardFqcn];
@@ -130,9 +128,7 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
             }
 
             // then, create the routes of the CRUD controllers associated with the dashboard
-            foreach ($this->crudControllers as $crudController) {
-                $crudControllerFqcn = $crudController::class;
-
+            foreach ($this->crudControllersFqcn as $crudControllerFqcn) {
                 if (null !== $allowedCrudControllers && !\in_array($crudControllerFqcn, $allowedCrudControllers, true)) {
                     continue;
                 }
@@ -231,8 +227,8 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
     {
         $config = [];
 
-        foreach ($this->dashboardControllers as $dashboardController) {
-            $reflectionClass = new \ReflectionClass($dashboardController);
+        foreach ($this->dashboardControllersFqcn as $dashboardControllerFqcn) {
+            $reflectionClass = new \ReflectionClass($dashboardControllerFqcn);
 
             // first, check if the dashboard uses the #[AdminDashboard] attribute to define its route configuration;
             // this is the recommended way for modern EasyAdmin applications

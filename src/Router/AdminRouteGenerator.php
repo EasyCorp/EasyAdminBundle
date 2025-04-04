@@ -133,6 +133,12 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
             foreach ($this->crudControllers as $crudController) {
                 $crudControllerFqcn = $crudController::class;
 
+                // By default, all CRUD controllers are allowed.
+                // If the dashboard controller returns false, it was explicitly set to not be allowed.
+                if (!$dashboardController::isCrudControllerAllowed($crudControllerFqcn)) {
+                    continue;
+                }
+
                 if (null !== $allowedCrudControllers && !\in_array($crudControllerFqcn, $allowedCrudControllers, true)) {
                     continue;
                 }

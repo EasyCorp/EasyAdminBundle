@@ -173,7 +173,7 @@
                                                             icon="{{ action.icon }}" icon:class="action-icon"
                                                             htmlAttributes="{{ action.htmlAttributes }}"
                                                             label="{{ action.label|trans }}" label:class="action-label" renderLabelRaw 
-                                                            htmlElement="{{ action.htmlElement }}"
+                                                            type="{{ 'form' == action.htmlElement ? 'form' : 'a' }}"
                                                             name="{{ action.name }}"/>
                                                     {% endfor %}
                                                 </twig:ea:ActionMenu:ActionList>

@@ -24,7 +24,7 @@ class InlineActionsCrudController extends AbstractCrudController
         return parent::configureCrud($crud)
             ->showEntityActionsInlined(true)
         ;
-    } 
+    }
 
     public function configureFields(string $pageName): iterable
     {

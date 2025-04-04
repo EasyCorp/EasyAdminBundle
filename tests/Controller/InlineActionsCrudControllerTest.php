@@ -35,7 +35,7 @@ class InlineActionsCrudControllerTest extends AbstractCrudTestCase
     {
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
-        //TODO : see how to test the presence of the form into the inline actions
+        // TODO : see how to test the presence of the form into the inline actions
     }
 
     public function testFormAction(): void

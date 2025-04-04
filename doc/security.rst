@@ -104,7 +104,7 @@ Restrict CRUD Controllers Dynamically
 
 If you have more than one dashboard (for example, one for admins in ``App\Controller\Admin``
 and another one for customers in ``App\Controller\Customer``), you may want to dedicate
-all the CRUD controllers in a namespace to a specific dashboard to avoid confusion,
+all the CRUD controllers to a specific dashboard to avoid confusion,
 useless routes, and security issues when your app having admin routes available for
 customers. At the same time, it may be inconvenient to list them all in the
 ``#[AdminDashboard]`` attribute. In this case, you can implement the ``isCrudControllerAllowed()``

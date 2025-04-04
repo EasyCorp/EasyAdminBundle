@@ -60,5 +60,10 @@ class ActionsCrudControllerTest extends AbstractCrudTestCase
         static::assertCount(1, $crawler->filter('form[id^="form-action9-"]'));
         static::assertCount(1, $crawler->filter('form[id^="form-action9-"] > .btn'));
         static::assertSame('POST', $crawler->filter('form[id^="form-action9-"]')->attr('method'));
+
+        // use of 20 as there will be 1 on each of the line => by default 20 as defined in EasyAdminBundle\Config\Crud
+        static::assertCount(20, $crawler->filter('form[id^="form-action_form_entity-"]'), "There is no Action Entity form in the dropdown");
+        static::assertCount(20, $crawler->filter('form[id^="form-action_form_entity-"] > button',  "There is no Action Entity form button in the dropdown"));
+        static::assertSame('POST', $crawler->filter('form[id^="form-action_form_entity-"]')->attr('method'),  "The method of the Action Entity form is not POST");
     }
 }

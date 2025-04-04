@@ -4,11 +4,25 @@
     icon = null,
     url = null,
     htmlAttributes = {},
+    htmlElement = "a",
+    name = ""
 %}
 
 <li>
+    {% if htmlElement == "form" %}
+        {%- set form_id = 'form-' ~ name ~ '-' ~ random() -%}
+        <form action="{{ url }}" method="POST" id="{{ form_id }}" class="dropdown-item">
+            <button {{ attributes.defaults({class: 'action-button', href: url}|merge(htmlAttributes)) }}>
+                <span class="btn-label">
+                    {%- if icon %}<twig:ea:Icon name="{{ icon }}"/> {% endif -%}
+                    {%- if label is not empty -%}<span class="action-label">{{ renderLabelRaw ? label|trans|raw : label|trans }}</span>{%- endif -%}
+                </span>
+            </button>
+        </form>
+    {% else %}
     <a {{ attributes.defaults({class: 'dropdown-item', href: url}|merge(htmlAttributes)) }}>
         {%- if icon %}<twig:ea:Icon {{ ...attributes.nested('icon').defaults({name: icon}) }} /> {% endif -%}
         {%- if label is not empty -%}<span {{ attributes.nested('label') }}>{{ renderLabelRaw ? label|raw : label }}</span>{%- endif -%}
     </a>
+    {% endif %}
 </li>

@@ -45,6 +45,9 @@ class ActionsCrudController extends AbstractCrudController
 
         $action9 = Action::new('action9')->linkToCrudAction('')->createAsGlobalAction()->displayAsForm();
 
+        // this tests the existence of the form action in an entity action
+        $actionFormEntity = Action::new('action_form_entity')->linkToCrudAction('')->displayAsForm();
+
         return $actions
             ->add(Crud::PAGE_INDEX, $action1)
             ->add(Crud::PAGE_INDEX, $action2)
@@ -55,6 +58,7 @@ class ActionsCrudController extends AbstractCrudController
             ->add(Crud::PAGE_INDEX, $action7)
             ->add(Crud::PAGE_INDEX, $action8)
             ->add(Crud::PAGE_INDEX, $action9)
+            ->add(Crud::PAGE_INDEX, $actionFormEntity)
             ->update(Crud::PAGE_INDEX, Action::NEW, function (Action $action) {
                 return $action->setIcon('fa fa-fw fa-plus')->setLabel(false);
             })

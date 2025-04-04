@@ -1,0 +1,10 @@
+.dropdown-actions {
+  .dropdown-menu {
+
+    li > form > button.action-button {
+      all: unset;
+      cursor: pointer;
+      width: 100%;
+    }
+  }
+}

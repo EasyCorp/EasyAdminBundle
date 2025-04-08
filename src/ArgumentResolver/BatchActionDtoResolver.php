@@ -48,7 +48,7 @@ if (interface_exists(ValueResolverInterface::class)) {
 
         private function getReferrerUrl(AdminContext $adminContext, Request $request): string
         {
-            $urlUsesPrettyUrls = $request->attributes->has(EA::CRUD_CONTROLLER_FQCN);
+            $urlUsesPrettyUrls = $request->attributes->has(EA::CRUD_CONTROLLER_FQCN) && $request->attributes->get(EA::CRUD_CONTROLLER_FQCN);
             if ($urlUsesPrettyUrls) {
                 $crudControllerFqcn = $request->attributes->get(EA::CRUD_CONTROLLER_FQCN);
             } else {
@@ -103,7 +103,7 @@ if (interface_exists(ValueResolverInterface::class)) {
 
         private function getReferrerUrl(AdminContext $adminContext, Request $request): string
         {
-            $urlUsesPrettyUrls = $request->attributes->has(EA::CRUD_CONTROLLER_FQCN);
+            $urlUsesPrettyUrls = $request->attributes->has(EA::CRUD_CONTROLLER_FQCN) && $request->attributes->get(EA::CRUD_CONTROLLER_FQCN);
             if ($urlUsesPrettyUrls) {
                 $crudControllerFqcn = $request->attributes->get(EA::CRUD_CONTROLLER_FQCN);
             } else {

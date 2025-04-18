@@ -378,7 +378,7 @@
                                     {% set content_footer = block('content_footer') is defined ? block('content_footer') : '' %}
                                     {% if content_footer is not empty %}
                                         <section class="content-footer">
-                                            {{ content_footer }}
+                                            {{ content_footer|raw }}
                                         </section>
                                     {% endif %}
                                 {% endblock %}

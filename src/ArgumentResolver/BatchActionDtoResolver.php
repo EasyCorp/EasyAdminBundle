@@ -50,7 +50,7 @@ if (interface_exists(ValueResolverInterface::class)) {
         {
             $urlUsesPrettyUrls = $request->attributes->has(EA::CRUD_CONTROLLER_FQCN);
             if ($urlUsesPrettyUrls) {
-                $crudControllerFqcn = $request->attributes->get(EA::CRUD_CONTROLLER_FQCN);
+                $crudControllerFqcn = $request->query->get(EA::CRUD_CONTROLLER_FQCN);
             } else {
                 $batchActionUrl = $adminContext->getRequest()->request->get(EA::BATCH_ACTION_URL);
                 $batchActionUrlQueryString = parse_url($batchActionUrl, \PHP_URL_QUERY);

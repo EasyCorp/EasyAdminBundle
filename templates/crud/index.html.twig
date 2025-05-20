@@ -172,7 +172,9 @@
                                                             class="{{ action.cssClass }}" url="{{ action.linkUrl }}"
                                                             icon="{{ action.icon }}" icon:class="action-icon"
                                                             htmlAttributes="{{ action.htmlAttributes }}"
-                                                            label="{{ action.label|trans }}" label:class="action-label" renderLabelRaw />
+                                                            label="{{ action.label|trans }}" label:class="action-label" renderLabelRaw 
+                                                            type="{{ 'form' == action.htmlElement ? 'form' : 'a' }}"
+                                                            name="{{ action.name }}"/>
                                                     {% endfor %}
                                                 </twig:ea:ActionMenu:ActionList>
                                             </twig:ea:ActionMenu:Overlay>

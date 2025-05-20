@@ -145,13 +145,29 @@ table.datagrid:not(.datagrid-empty) tr:not(.empty-row) td.actions.actions-as-dro
 .datagrid td.actions {
   text-align: right;
 }
-.datagrid td.actions a:not(.dropdown-item) {
+.datagrid td.actions a:not(.dropdown-item), 
+.datagrid td.actions form:not(.dropdown-item) {
   font-size: var(--font-size-sm);
   font-weight: 500;
 }
-.datagrid td.actions a:not(.dropdown-item) + a:not(.dropdown-item) {
+
+.datagrid td.actions form:not(.dropdown-item) {
+  display: inline-block;
+  color: var(--link-color);
+}
+
+.datagrid td.actions form:not(.dropdown-item) button {
+  all: unset;
+  cursor: pointer;
+  width: 100%;
+}
+
+.datagrid td.actions a:not(.dropdown-item) + a:not(.dropdown-item), 
+.datagrid td.actions form:not(.dropdown-item) + a:not(.dropdown-item),
+.datagrid td.actions a:not(.dropdown-item) + form:not(.dropdown-item) {
   margin-inline-start: 10px;
 }
+
 .datagrid td.actions a:not(.dropdown-item) .action-icon {
   font-size: var(--font-size-base);
   margin-inline-end: 2px;
@@ -204,6 +220,13 @@ table.datagrid:not(.datagrid-empty) tr:not(.empty-row) td.actions.actions-as-dro
 }
 
 .datagrid .dropdown-actions .dropdown-menu { z-index: var(--zindex-900); }
+
+.datagrid .dropdown-actions .dropdown-menu form button.action-button {
+  all: unset;
+  cursor: pointer;
+  width: 100%;
+}
+
 
 .datagrid .ea-lightbox-thumbnail img {
   background: var(--white);

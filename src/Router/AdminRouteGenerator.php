@@ -68,7 +68,6 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
         private CacheItemPoolInterface $cache,
         private Filesystem $filesystem,
         private string $buildDir,
-        private string $defaultLocale,
     ) {
     }
 
@@ -166,7 +165,6 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
                     }
 
                     $defaults = [
-                        '_locale' => $this->defaultLocale,
                         '_controller' => $crudControllerFqcn.'::'.$actionName,
                         EA::ROUTE_CREATED_BY_EASYADMIN => true,
                         EA::DASHBOARD_CONTROLLER_FQCN => $dashboardFqcn,

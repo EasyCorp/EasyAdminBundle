@@ -249,18 +249,20 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             return new Response($newValue ? '1' : '0');
         }
 
+        $originalEntityInstance = clone $entityInstance;
+
         $editForm = $this->createEditForm($context->getEntity(), $context->getCrud()->getEditFormOptions(), $context);
         $editForm->handleRequest($context->getRequest());
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $this->processUploadedFiles($editForm);
 
-            $event = new BeforeEntityUpdatedEvent($entityInstance);
+            $event = new BeforeEntityUpdatedEvent($entityInstance, $originalEntityInstance);
             $this->container->get('event_dispatcher')->dispatch($event);
             $entityInstance = $event->getEntityInstance();
 
             $this->updateEntity($this->container->get('doctrine')->getManagerForClass($context->getEntity()->getFqcn()), $entityInstance);
 
-            $this->container->get('event_dispatcher')->dispatch(new AfterEntityUpdatedEvent($entityInstance));
+            $this->container->get('event_dispatcher')->dispatch(new AfterEntityUpdatedEvent($entityInstance, $originalEntityInstance));
 
             return $this->getRedirectResponseAfterSave($context, Action::EDIT);
         }
@@ -562,15 +564,17 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             throw new AccessDeniedException(sprintf('The field "%s" does not exist or it\'s configured as disabled, so it can\'t be modified.', $propertyName));
         }
 
+        $originalEntityInstance = clone $entityDto->getInstance();
+
         $this->container->get(EntityUpdater::class)->updateProperty($entityDto, $propertyName, $newValue);
 
-        $event = new BeforeEntityUpdatedEvent($entityDto->getInstance());
+        $event = new BeforeEntityUpdatedEvent($entityDto->getInstance(), $originalEntityInstance);
         $this->container->get('event_dispatcher')->dispatch($event);
         $entityInstance = $event->getEntityInstance();
 
         $this->updateEntity($this->container->get('doctrine')->getManagerForClass($entityDto->getFqcn()), $entityInstance);
 
-        $this->container->get('event_dispatcher')->dispatch(new AfterEntityUpdatedEvent($entityInstance));
+        $this->container->get('event_dispatcher')->dispatch(new AfterEntityUpdatedEvent($entityInstance, $originalEntityInstance));
 
         $entityDto->setInstance($entityInstance);
 

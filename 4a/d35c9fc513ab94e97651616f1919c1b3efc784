@@ -1,0 +1,9 @@
+---------------------------------------------------------------------------
+
+by VincentLanglet at 2025-06-13T08:45:27Z
+
+@javiereguiluz I split the bump of PHPStan level 6 in two between here and https://github.com/EasyCorp/EasyAdminBundle/pull/6984 for easier review.
+
+You can review this PR/merge it and then the second one will be smaller
+
+Or you can review directly https://github.com/EasyCorp/EasyAdminBundle/pull/6984 for a whole merge.

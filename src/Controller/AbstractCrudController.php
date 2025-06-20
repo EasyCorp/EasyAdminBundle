@@ -49,6 +49,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityUpdater;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\FieldProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -106,7 +107,8 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             'event_dispatcher' => '?'.EventDispatcherInterface::class,
             ActionFactory::class => '?'.ActionFactory::class,
             AdminContextProvider::class => '?'.AdminContextProvider::class,
-            AdminUrlGenerator::class => '?'.AdminUrlGenerator::class,
+            AdminUrlGenerator::class => '?'.AdminUrlGenerator::class, // To be removed in 5.0.0
+            AdminUrlGeneratorInterface::class => '?'.AdminUrlGeneratorInterface::class,
             ControllerFactory::class => '?'.ControllerFactory::class,
             EntityFactory::class => '?'.EntityFactory::class,
             EntityRepository::class => '?'.EntityRepository::class,
@@ -138,7 +140,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         // this can happen after deleting some items and trying to return
         // to a 'index' page that no longer exists. Redirect to the last page instead
         if ($paginator->isOutOfRange()) {
-            return $this->redirect($this->container->get(AdminUrlGenerator::class)
+            return $this->redirect($this->container->get(AdminUrlGeneratorInterface::class)
                 ->set(EA::PAGE, $paginator->getLastPage())
                 ->generateUrl());
         }
@@ -391,7 +393,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             return $event->getResponse();
         }
 
-        return $this->redirect($this->container->get(AdminUrlGenerator::class)->setController($context->getCrud()->getControllerFqcn())->setAction(Action::INDEX)->unset(EA::ENTITY_ID)->generateUrl());
+        return $this->redirect($this->container->get(AdminUrlGeneratorInterface::class)->setController($context->getCrud()->getControllerFqcn())->setAction(Action::INDEX)->unset(EA::ENTITY_ID)->generateUrl());
     }
 
     public function batchDelete(AdminContext $context, BatchActionDto $batchActionDto): Response
@@ -451,7 +453,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         }
 
         // resetting the page number is needed because after deleting some entities, the pagination will change
-        return $this->redirect($this->container->get(AdminUrlGenerator::class)->setAction(Action::INDEX)->set(EA::PAGE, 1)->generateUrl());
+        return $this->redirect($this->container->get(AdminUrlGeneratorInterface::class)->setAction(Action::INDEX)->set(EA::PAGE, 1)->generateUrl());
     }
 
     public function autocomplete(AdminContext $context): JsonResponse
@@ -635,12 +637,12 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $submitButtonName = $context->getRequest()->request->all()['ea']['newForm']['btn'] ?? null;
 
         $url = match ($submitButtonName) {
-            Action::SAVE_AND_CONTINUE => $this->container->get(AdminUrlGenerator::class)
+            Action::SAVE_AND_CONTINUE => $this->container->get(AdminUrlGeneratorInterface::class)
                 ->setAction(Action::EDIT)
                 ->setEntityId($context->getEntity()->getPrimaryKeyValue())
                 ->generateUrl(),
-            Action::SAVE_AND_RETURN => $this->container->get(AdminUrlGenerator::class)->setAction(Action::INDEX)->generateUrl(),
-            Action::SAVE_AND_ADD_ANOTHER => $this->container->get(AdminUrlGenerator::class)->setAction(Action::NEW)->generateUrl(),
+            Action::SAVE_AND_RETURN => $this->container->get(AdminUrlGeneratorInterface::class)->setAction(Action::INDEX)->generateUrl(),
+            Action::SAVE_AND_ADD_ANOTHER => $this->container->get(AdminUrlGeneratorInterface::class)->setAction(Action::NEW)->generateUrl(),
             default => $this->generateUrl($context->getDashboardRouteName()),
         };
 

@@ -12,6 +12,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenu;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,7 +32,8 @@ abstract class AbstractDashboardController extends AbstractController implements
     public static function getSubscribedServices(): array
     {
         return array_merge(parent::getSubscribedServices(), [
-            AdminUrlGenerator::class => '?'.AdminUrlGenerator::class,
+            AdminUrlGenerator::class => '?'.AdminUrlGenerator::class, // To be removed in 5.0.0
+            AdminUrlGeneratorInterface::class => '?'.AdminUrlGeneratorInterface::class,
         ]);
     }
 

@@ -3,7 +3,6 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Test;
 
 use Doctrine\ORM\EntityManagerInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Test\Trait\CrudTestActions;
 use EasyCorp\Bundle\EasyAdminBundle\Test\Trait\CrudTestIndexAsserts;
@@ -26,7 +25,7 @@ abstract class AbstractCrudTestCase extends WebTestCase
         $this->client = static::createClient();
         $container = static::getContainer();
         $this->entityManager = $container->get(EntityManagerInterface::class);
-        $this->adminUrlGenerator = $container->get(AdminUrlGenerator::class);
+        $this->adminUrlGenerator = $container->get(AdminUrlGeneratorInterface::class);
     }
 
     /**

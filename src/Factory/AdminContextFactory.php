@@ -132,7 +132,7 @@ final class AdminContextFactory
         return $crudDto;
     }
 
-    private function getActionConfig(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController, ?string $pageName): ActionConfigDto
+    private function getActionConfig(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController, ?string $pageName = null): ActionConfigDto
     {
         if (null === $crudController) {
             return new ActionConfigDto();

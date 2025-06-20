@@ -81,7 +81,7 @@ final class Actions
     public function reorder(string $pageName, array $orderedActionNames): self
     {
         $newActionOrder = [];
-        $currentActions = $this->dto->getActions();
+        $currentActions = $this->dto->getActionList();
         foreach ($orderedActionNames as $actionName) {
             if (!\array_key_exists($actionName, $currentActions[$pageName])) {
                 throw new \InvalidArgumentException(sprintf('The "%s" action does not exist in the "%s" page, so you cannot set its order.', $actionName, $pageName));

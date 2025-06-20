@@ -36,7 +36,7 @@ final class ActionFactory
     {
         $currentPage = $this->adminContextProvider->getContext()->getCrud()->getCurrentPage();
         $entityActions = [];
-        foreach ($actionsDto->getActions()->all() as $actionDto) {
+        foreach ($actionsDto->getPageActions($currentPage)->all() as $actionDto) {
             if (!$actionDto->isEntityAction()) {
                 continue;
             }
@@ -79,7 +79,7 @@ final class ActionFactory
 
         $currentPage = $this->adminContextProvider->getContext()->getCrud()->getCurrentPage();
         $globalActions = [];
-        foreach ($actionsDto->getActions()->all() as $actionDto) {
+        foreach ($actionsDto->getPageActions($currentPage)->all() as $actionDto) {
             if (!$actionDto->isGlobalAction() && !$actionDto->isBatchAction()) {
                 continue;
             }

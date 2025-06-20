@@ -39,6 +39,9 @@ final class ActionConfigDto
         }
     }
 
+    /**
+     * @deprecated since 4.25.0 and it will be removed in EasyAdmin 5.0.0.
+     */
     public function setPageName(?string $pageName): void
     {
         $this->pageName = $pageName;
@@ -109,16 +112,55 @@ final class ActionConfigDto
 
     /**
      * @return ActionCollection|array<string,array<string,ActionDto>>
+     *
+     * @deprecated since 4.25.0 and it will be removed in EasyAdmin 5.0.0. Use `getPageActions` or `getActionList` instead.
      */
     public function getActions(): ActionCollection|array
     {
+        trigger_deprecation(
+            'easycorp/easyadmin-bundle',
+            '4.25.0',
+            'Calling "%s" is deprecated and will be removed in 5.0.0. Use `getPageActions` or `getActionList` instead.',
+            __METHOD__,
+        );
+
         return null === $this->pageName ? $this->actions : ActionCollection::new($this->actions[$this->pageName]);
+    }
+
+    public function getPageActions(string $pageName): ActionCollection
+    {
+        return ActionCollection::new($this->actions[$pageName]);
+    }
+
+    /**
+     * @return array<string,array<string,ActionDto>>
+     */
+    public function getActionList(): array
+    {
+        return $this->actions;
+    }
+
+    /**
+     * @param array<string, ActionDto> $newActions
+     *
+     * @deprecated since 4.25.0 and it will be removed in EasyAdmin 5.0.0. Use `setPageActions` instead.
+     */
+    public function setActions(string $pageName, array $newActions): void
+    {
+        trigger_deprecation(
+            'easycorp/easyadmin-bundle',
+            '4.25.0',
+            'Calling "%s" is deprecated and will be removed in 5.0.0. Use `setPageActions` instead.',
+            __METHOD__,
+        );
+
+        $this->actions[$pageName] = $newActions;
     }
 
     /**
      * @param array<string, ActionDto> $newActions
      */
-    public function setActions(string $pageName, array $newActions): void
+    public function setPageActions(string $pageName, array $newActions): void
     {
         $this->actions[$pageName] = $newActions;
     }

@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Field;
 
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\ChoiceConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Field\Style\BadgeStyle;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Field\Fixtures\ChoiceField\PriorityUnitEnum;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Field\Fixtures\ChoiceField\StatusBackedEnum;
 use function Symfony\Component\Translation\t;
@@ -172,16 +173,16 @@ class ChoiceFieldTest extends AbstractFieldTest
         $field->setValue([1, 3])->renderAsBadges(function ($value) { return $value > 1 ? 'success' : 'primary'; });
         self::assertSame('<span class="badge badge-primary">a</span><span class="badge badge-success">c</span>', (string) $this->configure($field)->getFormattedValue());
 
-        $field->setValue(1)->renderAsBadges([1 => '#123456', '3' => '#AAAAAA']);
+        $field->setValue(1)->renderAsBadges([1 => new BadgeStyle('#123456'), '3' => new BadgeStyle('#AAAAAA')]);
         self::assertSame('<span class="badge" style="background-color:#123456; color:#FFFFFF;">a</span>', (string) $this->configure($field)->getFormattedValue());
 
-        $field->setValue([1, 3])->renderAsBadges([1 => '#123456', '3' => '#AAAAAA']);
+        $field->setValue([1, 3])->renderAsBadges([1 => new BadgeStyle('#123456'), '3' => new BadgeStyle('#AAAAAA')]);
         self::assertSame('<span class="badge" style="background-color:#123456; color:#FFFFFF;">a</span><span class="badge" style="background-color:#AAAAAA; color:#000000;">c</span>', (string) $this->configure($field)->getFormattedValue());
 
-        $field->setValue(1)->renderAsBadges(function ($value) { return $value > 1 ? '#AAAAAA' : '#123456'; });
+        $field->setValue(1)->renderAsBadges(function ($value) { return $value > 1 ? new BadgeStyle('#AAAAAA') : new BadgeStyle('#123456'); });
         self::assertSame('<span class="badge" style="background-color:#123456; color:#FFFFFF;">a</span>', (string) $this->configure($field)->getFormattedValue());
 
-        $field->setValue([1, 3])->renderAsBadges(function ($value) { return $value > 1 ? '#AAAAAA' : '#123456'; });
+        $field->setValue([1, 3])->renderAsBadges(function ($value) { return $value > 1 ? new BadgeStyle('#AAAAAA') : new BadgeStyle('#123456'); });
         self::assertSame('<span class="badge" style="background-color:#123456; color:#FFFFFF;">a</span><span class="badge" style="background-color:#AAAAAA; color:#000000;">c</span>', (string) $this->configure($field)->getFormattedValue());
     }
 }

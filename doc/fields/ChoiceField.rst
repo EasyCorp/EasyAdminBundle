@@ -94,9 +94,9 @@ The built-in badge styles are the same as Bootstrap: ``'success'``,
 
     yield ChoiceField::new('...')->renderAsBadges([
         // $value => $badgeStyleName
-        'paid' => '#00FF00',
-        'pending' => '#FFFF00',
-        'refunded' => '#FF0000',
+        'paid' => new BadgeStyle('#00FF00'),
+        'pending' => new BadgeStyle('#FFFF00'),
+        'refunded' => new BadgeStyle('#FF0000'),
     ]);
 
 renderAsNativeWidget

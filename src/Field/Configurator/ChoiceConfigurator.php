@@ -8,6 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\Style\BadgeStyle;
 use EasyCorp\Bundle\EasyAdminBundle\Translation\TranslatableChoiceMessage;
 use EasyCorp\Bundle\EasyAdminBundle\Translation\TranslatableChoiceMessageCollection;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -184,6 +185,7 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
     private function getBadgeCssClassAndStyle(array|bool|callable|null $badgeSelector, mixed $value, FieldDto $field): array
     {
         $cssClass = 'badge';
+        $style = null;
 
         $badgeType = '';
         if (true === $badgeSelector) {
@@ -192,35 +194,18 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
             $badgeType = $badgeSelector[$value] ?? 'badge-secondary';
         } elseif (\is_callable($badgeSelector)) {
             $badgeType = $badgeSelector($value, $field);
-            if (!ChoiceField::isSupportedBadge($badgeType)) {
-                throw new \RuntimeException(sprintf('The value returned by the callable passed to the "renderAsBadges()" method must be a full 6-digit hexadecimal color or one of the following valid badge types: "%s" ("%s" given).', implode(', ', ChoiceField::VALID_BADGE_TYPES), $badgeType));
+            if (!$badgeType instanceof BadgeStyle && !\in_array($badgeType, ChoiceField::VALID_BADGE_TYPES, true)) {
+                throw new \RuntimeException(sprintf('The value returned by the callable passed to the "renderAsBadges()" method must be an instance of "%s" or one of the following valid badge types: "%s" ("%s" given).', BadgeStyle::class, implode(', ', ChoiceField::VALID_BADGE_TYPES), $badgeType));
             }
         }
 
-        if ('' !== $badgeType && !ChoiceField::isSupportedBadgeColor($badgeType)) {
+        if ($badgeType instanceof BadgeStyle) {
+            $style = $badgeType->toStyle();
+        } elseif ('' !== $badgeType) {
             $cssClass .= ' '.u($badgeType)->ensureStart('badge-')->toString();
         }
 
-        return [$cssClass, $this->getBadgeStyle($badgeType)];
-    }
-
-    private function getBadgeStyle(string $bgColor): ?string
-    {
-        if (!ChoiceField::isSupportedBadgeColor($bgColor)) {
-            return null;
-        }
-
-        [$r, $g, $b] = [
-            hexdec(substr($bgColor, 1, 2)),
-            hexdec(substr($bgColor, 3, 2)),
-            hexdec(substr($bgColor, 5, 2)),
-        ];
-
-        $luminance = (0.299 * $r + 0.587 * $g + 0.114 * $b) / 255;
-
-        $color = $luminance > 0.5 ? '#000000' : '#FFFFFF';
-
-        return sprintf('background-color:%s; color:%s;', $bgColor, $color);
+        return [$cssClass, $style];
     }
 
     /**

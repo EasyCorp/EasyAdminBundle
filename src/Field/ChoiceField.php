@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Field\Style\BadgeStyle;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
@@ -157,8 +158,8 @@ final class ChoiceField implements FieldInterface
 
         if (\is_array($badgeSelector)) {
             foreach ($badgeSelector as $badgeType) {
-                if (!self::isSupportedBadge($badgeType)) {
-                    throw new \InvalidArgumentException(sprintf('The values of the array passed to the "%s" method must be a full 6-digit hexadecimal color or one of the following valid badge types: "%s" ("%s" given).', __METHOD__, implode(', ', self::VALID_BADGE_TYPES), $badgeType));
+                if (!$badgeType instanceof BadgeStyle && !\in_array($badgeType, self::VALID_BADGE_TYPES, true)) {
+                    throw new \InvalidArgumentException(sprintf('The values of the array passed to the "%s" method must be an instance of "%s" or one of the following valid badge types: "%s" ("%s" given).', __METHOD__, BadgeStyle::class, implode(', ', self::VALID_BADGE_TYPES), $badgeType));
                 }
             }
         }
@@ -166,16 +167,6 @@ final class ChoiceField implements FieldInterface
         $this->setCustomOption(self::OPTION_RENDER_AS_BADGES, $badgeSelector);
 
         return $this;
-    }
-
-    public static function isSupportedBadge(string $badgeType): bool
-    {
-        return \in_array($badgeType, self::VALID_BADGE_TYPES, true) || self::isSupportedBadgeColor($badgeType);
-    }
-
-    public static function isSupportedBadgeColor(string $badgeColor): bool
-    {
-        return 1 === preg_match('/^#[0-9a-f]{6}$/iD', $badgeColor);
     }
 
     public function renderAsNativeWidget(bool $asNative = true): self

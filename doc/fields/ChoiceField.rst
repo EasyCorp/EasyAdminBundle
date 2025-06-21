@@ -90,7 +90,14 @@ pages (``index`` and ``detail``)::
 
 The built-in badge styles are the same as Bootstrap: ``'success'``,
 ``'warning'``, ``'danger'``, ``'info'``, ``'primary'``, ``'secondary'``,
-``'light'``, ``'dark'``.
+``'light'``, ``'dark'``, but you can also pass a custom full 6-digit hexadecimal background color::
+
+    yield ChoiceField::new('...')->renderAsBadges([
+        // $value => $badgeStyleName
+        'paid' => '#00FF00',
+        'pending' => '#FFFF00',
+        'refunded' => '#FF0000',
+    ]);
 
 renderAsNativeWidget
 ~~~~~~~~~~~~~~~~~~~~

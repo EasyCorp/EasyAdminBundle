@@ -143,10 +143,15 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
                     );
                 }
 
+                [$cssClass, $style] = $isRenderedAsBadge
+                    ? $this->getBadgeCssClassAndStyle($badgeSelector, $selectedValue, $field)
+                    : [null, null];
+
                 /** @var TranslatableMessage $choiceMessage */
                 $choiceMessages[] = new TranslatableChoiceMessage(
                     $choiceMessage,
-                    $isRenderedAsBadge ? $this->getBadgeCssClass($badgeSelector, $selectedValue, $field) : null
+                    $cssClass,
+                    $style,
                 );
             }
         }
@@ -173,10 +178,12 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
 
     /**
      * @param array<string>|bool|callable|null $badgeSelector
+     *
+     * @return array{string, string|null}
      */
-    private function getBadgeCssClass(array|bool|callable|null $badgeSelector, mixed $value, FieldDto $field): string
+    private function getBadgeCssClassAndStyle(array|bool|callable|null $badgeSelector, mixed $value, FieldDto $field): array
     {
-        $commonBadgeCssClass = 'badge';
+        $cssClass = 'badge';
 
         $badgeType = '';
         if (true === $badgeSelector) {
@@ -185,14 +192,35 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
             $badgeType = $badgeSelector[$value] ?? 'badge-secondary';
         } elseif (\is_callable($badgeSelector)) {
             $badgeType = $badgeSelector($value, $field);
-            if (!\in_array($badgeType, ChoiceField::VALID_BADGE_TYPES, true)) {
-                throw new \RuntimeException(sprintf('The value returned by the callable passed to the "renderAsBadges()" method must be one of the following valid badge types: "%s" ("%s" given).', implode(', ', ChoiceField::VALID_BADGE_TYPES), $badgeType));
+            if (!ChoiceField::isSupportedBadge($badgeType)) {
+                throw new \RuntimeException(sprintf('The value returned by the callable passed to the "renderAsBadges()" method must be a full 6-digit hexadecimal color or one of the following valid badge types: "%s" ("%s" given).', implode(', ', ChoiceField::VALID_BADGE_TYPES), $badgeType));
             }
         }
 
-        $badgeTypeCssClass = '' === $badgeType ? '' : u($badgeType)->ensureStart('badge-')->toString();
+        if ('' !== $badgeType && !ChoiceField::isSupportedBadgeColor($badgeType)) {
+            $cssClass .= ' '.u($badgeType)->ensureStart('badge-')->toString();
+        }
 
-        return $commonBadgeCssClass.' '.$badgeTypeCssClass;
+        return [$cssClass, $this->getBadgeStyle($badgeType)];
+    }
+
+    private function getBadgeStyle(string $bgColor): ?string
+    {
+        if (!ChoiceField::isSupportedBadgeColor($bgColor)) {
+            return null;
+        }
+
+        [$r, $g, $b] = [
+            hexdec(substr($bgColor, 1, 2)),
+            hexdec(substr($bgColor, 3, 2)),
+            hexdec(substr($bgColor, 5, 2)),
+        ];
+
+        $luminance = (0.299 * $r + 0.587 * $g + 0.114 * $b) / 255;
+
+        $color = $luminance > 0.5 ? '#000000' : '#FFFFFF';
+
+        return sprintf('background-color:%s; color:%s;', $bgColor, $color);
     }
 
     /**

@@ -139,7 +139,7 @@ final class ChoiceField implements FieldInterface
      *
      * Possible badge types: 'success', 'warning', 'danger', 'info', 'primary', 'secondary', 'light', 'dark'
      *
-     * @param array<string>|bool|callable $badgeSelector
+     * @param array<BadgeStyle|string>|bool|callable $badgeSelector
      */
     public function renderAsBadges($badgeSelector = true): self
     {

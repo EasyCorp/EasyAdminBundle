@@ -91,7 +91,7 @@ pages (``index`` and ``detail``)::
 The built-in badge styles are the same as Bootstrap: ``'success'``,
 ``'warning'``, ``'danger'``, ``'info'``, ``'primary'``, ``'secondary'``,
 ``'light'``, ``'dark'``, but you can also pass a custom
- ``EasyCorp\Bundle\EasyAdminBundle\Field\Style\BadgeStyle`` instance::
+``EasyCorp\Bundle\EasyAdminBundle\Field\Style\BadgeStyle`` instance::
 
     yield ChoiceField::new('...')->renderAsBadges([
         // $value => $badgeStyleName

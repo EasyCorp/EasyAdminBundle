@@ -178,7 +178,7 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
     }
 
     /**
-     * @param array<string>|bool|callable|null $badgeSelector
+     * @param array<BadgeStyle|string>|bool|callable|null $badgeSelector
      *
      * @return array{string, string|null}
      */

@@ -19,25 +19,28 @@ final class BadgeStyle
 
     public function withBgColor(string $backgroundColor, bool $autoTextContrast = true): self
     {
-        if (!self::isSupportedColor($backgroundColor)) {
-            throw new \InvalidArgumentException(sprintf('The background color must be a full 6-digit hexadecimal color ("%s" given).', $backgroundColor));
-        }
-
-        $this->style['background-color'] = $backgroundColor;
         if ($autoTextContrast) {
-            $this->classes[] = self::generateTextClassFromBackgroundColor($backgroundColor);
+            $this->addClass(self::generateTextClassFromBackgroundColor($backgroundColor));
         }
 
-        return $this;
+        return $this->addStyle('background-color', $backgroundColor);
     }
 
     public function withTextColor(string $textColor): self
     {
-        if (!self::isSupportedColor($textColor)) {
-            throw new \InvalidArgumentException(sprintf('The text color must be a full 6-digit hexadecimal color ("%s" given).', $textColor));
-        }
+        return $this->addStyle('color', $textColor);
+    }
 
-        $this->style['color'] = $textColor;
+    public function addClass(string $class): self
+    {
+        $this->classes[] = $class;
+
+        return $this;
+    }
+
+    public function addStyle(string $key, string $value): self
+    {
+        $this->style[$key] = $value;
 
         return $this;
     }
@@ -72,6 +75,10 @@ final class BadgeStyle
 
     private static function generateTextClassFromBackgroundColor(string $backgroundColor): string
     {
+        if (!self::isSupportedColor($backgroundColor)) {
+            throw new \InvalidArgumentException(sprintf('The background color must be a full 6-digit hexadecimal color ("%s" given).', $backgroundColor));
+        }
+
         [$r, $g, $b] = [
             hexdec(substr($backgroundColor, 1, 2)),
             hexdec(substr($backgroundColor, 3, 2)),

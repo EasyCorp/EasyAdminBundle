@@ -200,7 +200,12 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
         }
 
         if ($badgeType instanceof BadgeStyle) {
-            $style = $badgeType->toStyle();
+            $style = $badgeType->getStyle();
+
+            $extraClasses = $badgeType->getClasses();
+            if ('' !== $extraClasses) {
+                $cssClass .= ' '.$extraClasses;
+            }
         } elseif ('' !== $badgeType) {
             $cssClass .= ' '.u($badgeType)->ensureStart('badge-')->toString();
         }

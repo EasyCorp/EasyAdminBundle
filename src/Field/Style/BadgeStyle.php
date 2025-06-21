@@ -4,43 +4,68 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Field\Style;
 
 final class BadgeStyle
 {
-    private ?string $textColor = null;
+    private function __construct(private string $classes, private string $style)
+    {
+    }
 
-    public function __construct(
-        private string $backgroundColor,
-        ?string $textColor = null
-    ) {
-        if (!$this->isSupportedColor($this->backgroundColor)) {
-            throw new \InvalidArgumentException(sprintf('The background color must be a full 6-digit hexadecimal color ("%s" given).', $this->backgroundColor));
+    public static function fromBgColor(string $backgroundColor, ?string $textColor = null): self
+    {
+        if (!self::isSupportedColor($backgroundColor)) {
+            throw new \InvalidArgumentException(sprintf('The background color must be a full 6-digit hexadecimal color ("%s" given).', $backgroundColor));
         }
+
+        $classes = [];
+        $styleProperties = ['background-color' => $backgroundColor];
 
         if (null === $textColor) {
-            $this->textColor = $this->computeTextColor($this->backgroundColor);
-        } elseif (!$this->isSupportedColor($this->textColor)) {
-            throw new \InvalidArgumentException(sprintf('The text color must be a full 6-digit hexadecimal color ("%s" given).', $this->textColor));
+            $classes[] = self::computeTextClass($backgroundColor);
+        } elseif (self::isSupportedColor($textColor)) {
+            $styleProperties['color'] = $textColor;
+        } else {
+            throw new \InvalidArgumentException(sprintf('The text color must be a full 6-digit hexadecimal color ("%s" given).', $textColor));
         }
+
+        return new self(implode(' ', $classes), self::generateStyle($styleProperties));
     }
 
-    public function toStyle(): string
+    public function getClasses(): string
     {
-        return sprintf('background-color:%s; color:%s;', $this->backgroundColor, $this->textColor);
+        return $this->classes;
     }
 
-    private function isSupportedColor(string $color): bool
+    public function getStyle(): string
+    {
+        return $this->style;
+    }
+
+    /**
+     * @param array<string, string> $properties
+     */
+    private static function generateStyle(array $properties): string
+    {
+        $style = [];
+        foreach ($properties as $key => $value) {
+            $style[] = sprintf('%s:%s;', $key, $value);
+        }
+
+        return implode(' ', $style);
+    }
+
+    private static function isSupportedColor(string $color): bool
     {
         return 1 === preg_match('/^#[0-9a-f]{6}$/iD', $color);
     }
 
-    private function computeTextColor(string $bgColor): string
+    private static function computeTextClass(string $backgroundColor): string
     {
         [$r, $g, $b] = [
-            hexdec(substr($bgColor, 1, 2)),
-            hexdec(substr($bgColor, 3, 2)),
-            hexdec(substr($bgColor, 5, 2)),
+            hexdec(substr($backgroundColor, 1, 2)),
+            hexdec(substr($backgroundColor, 3, 2)),
+            hexdec(substr($backgroundColor, 5, 2)),
         ];
 
         $luminance = (0.299 * $r + 0.587 * $g + 0.114 * $b) / 255;
 
-        return $luminance > 0.5 ? '#000000' : '#FFFFFF';
+        return $luminance > 0.5 ? 'text-dark' : 'text-light';
     }
 }

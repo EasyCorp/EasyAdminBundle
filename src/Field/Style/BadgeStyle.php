@@ -4,7 +4,11 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Field\Style;
 
 final class BadgeStyle
 {
-    private function __construct(private string $classes, private string $style)
+    /**
+     * @param array<string>         $classes
+     * @param array<string, string> $style
+     */
+    private function __construct(private readonly array $classes, private readonly array $style)
     {
     }
 
@@ -25,17 +29,17 @@ final class BadgeStyle
             throw new \InvalidArgumentException(sprintf('The text color must be a full 6-digit hexadecimal color ("%s" given).', $textColor));
         }
 
-        return new self(implode(' ', $classes), self::generateStyle($styleProperties));
+        return new self($classes, $styleProperties);
     }
 
     public function getClasses(): string
     {
-        return $this->classes;
+        return implode(' ', $this->classes);
     }
 
     public function getStyle(): string
     {
-        return $this->style;
+        return self::generateStyle($this->style);
     }
 
     /**

@@ -23,7 +23,8 @@ final class ChoiceField implements FieldInterface
     public const OPTION_WIDGET = 'widget';
     public const OPTION_ESCAPE_HTML_CONTENTS = 'escapeHtml';
 
-    public const VALID_BADGE_TYPES = ['success', 'warning', 'danger', 'info', 'primary', 'secondary', 'light', 'dark'];
+    /** @deprecated use BadgeStyle::VALID_BADGE_TYPES instead */
+    public const VALID_BADGE_TYPES = BadgeStyle::VALID_BADGE_TYPES;
 
     public const WIDGET_AUTOCOMPLETE = 'autocomplete';
     public const WIDGET_NATIVE = 'native';
@@ -157,11 +158,17 @@ final class ChoiceField implements FieldInterface
         }
 
         if (\is_array($badgeSelector)) {
-            foreach ($badgeSelector as $badgeType) {
-                if (!$badgeType instanceof BadgeStyle && !\in_array($badgeType, self::VALID_BADGE_TYPES, true)) {
-                    throw new \InvalidArgumentException(sprintf('The values of the array passed to the "%s" method must be an instance of "%s" or one of the following valid badge types: "%s" ("%s" given).', __METHOD__, BadgeStyle::class, implode(', ', self::VALID_BADGE_TYPES), $badgeType));
+            $badges = [];
+            foreach ($badgeSelector as $key => $badge) {
+                if ($badge instanceof BadgeStyle) {
+                    $badges[$key] = $badge;
+                } elseif (\in_array($badge, BadgeStyle::VALID_BADGE_TYPES, true)) {
+                    $badges[$key] = BadgeStyle::new()->withType($badge);
+                } else {
+                    throw new \InvalidArgumentException(sprintf('The values of the array passed to the "%s" method must be an instance of "%s" or one of the following valid badge types: "%s" ("%s" given).', __METHOD__, BadgeStyle::class, implode(', ', BadgeStyle::VALID_BADGE_TYPES), $badge));
                 }
             }
+            $badgeSelector = $badges;
         }
 
         $this->setCustomOption(self::OPTION_RENDER_AS_BADGES, $badgeSelector);

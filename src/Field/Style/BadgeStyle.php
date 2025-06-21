@@ -4,6 +4,8 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Field\Style;
 
 final class BadgeStyle
 {
+    public const VALID_BADGE_TYPES = ['success', 'warning', 'danger', 'info', 'primary', 'secondary', 'light', 'dark'];
+
     /**
      * @param array<string>         $classes
      * @param array<string, string> $style
@@ -14,7 +16,7 @@ final class BadgeStyle
 
     public static function new(): self
     {
-        return new self([], []);
+        return new self(['badge'], []);
     }
 
     public function withBgColor(string $backgroundColor, bool $autoTextContrast = true): self
@@ -31,28 +33,53 @@ final class BadgeStyle
         return $this->addStyle('color', $textColor);
     }
 
-    public function addClass(string $class): self
+    /**
+     * @param value-of<self::VALID_BADGE_TYPES> $type
+     */
+    public function withType(string $type): self
+    {
+        if (!\in_array($type, self::VALID_BADGE_TYPES, true)) {
+            throw new \InvalidArgumentException(sprintf('Invalid badge type "%s". Allowed types are: "%s".', $type, implode(', ', self::VALID_BADGE_TYPES)));
+        }
+
+        return $this->addClass('badge-'.$type);
+    }
+
+    public function asPill(): self
+    {
+        return $this->addClass('badge-pill');
+    }
+
+    public function getClasses(): ?string
+    {
+        if ([] === $this->classes) {
+            return null;
+        }
+
+        return implode(' ', $this->classes);
+    }
+
+    public function getStyle(): ?string
+    {
+        if ([] === $this->style) {
+            return null;
+        }
+
+        return self::generateStyle($this->style);
+    }
+
+    private function addClass(string $class): self
     {
         $this->classes[] = $class;
 
         return $this;
     }
 
-    public function addStyle(string $key, string $value): self
+    private function addStyle(string $key, string $value): self
     {
         $this->style[$key] = $value;
 
         return $this;
-    }
-
-    public function getClasses(): string
-    {
-        return implode(' ', $this->classes);
-    }
-
-    public function getStyle(): string
-    {
-        return self::generateStyle($this->style);
     }
 
     /**
@@ -76,7 +103,7 @@ final class BadgeStyle
     private static function generateTextClassFromBackgroundColor(string $backgroundColor): string
     {
         if (!self::isSupportedColor($backgroundColor)) {
-            throw new \InvalidArgumentException(sprintf('The background color must be a full 6-digit hexadecimal color ("%s" given).', $backgroundColor));
+            throw new \InvalidArgumentException(sprintf('Only full 6-digit hexadecimal color are supported to generate the appropriate text color ("%s" given).', $backgroundColor));
         }
 
         [$r, $g, $b] = [

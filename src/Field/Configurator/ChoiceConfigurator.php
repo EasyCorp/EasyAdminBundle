@@ -13,7 +13,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Translation\TranslatableChoiceMessage;
 use EasyCorp\Bundle\EasyAdminBundle\Translation\TranslatableChoiceMessageCollection;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
-use function Symfony\Component\String\u;
 use function Symfony\Component\Translation\t;
 use Symfony\Component\Translation\TranslatableMessage;
 use Symfony\Contracts\Translation\TranslatableInterface;
@@ -144,15 +143,13 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
                     );
                 }
 
-                [$cssClass, $style] = $isRenderedAsBadge
-                    ? $this->getBadgeCssClassAndStyle($badgeSelector, $selectedValue, $field)
-                    : [null, null];
+                $badge = $isRenderedAsBadge ? $this->getBadgeStyle($badgeSelector, $selectedValue, $field) : null;
 
                 /** @var TranslatableMessage $choiceMessage */
                 $choiceMessages[] = new TranslatableChoiceMessage(
                     $choiceMessage,
-                    $cssClass,
-                    $style,
+                    $badge?->getClasses(),
+                    $badge?->getStyle(),
                 );
             }
         }
@@ -178,39 +175,27 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
     }
 
     /**
-     * @param array<BadgeStyle|string>|bool|callable|null $badgeSelector
-     *
-     * @return array{string, string|null}
+     * @param array<BadgeStyle>|bool|callable|null $badgeSelector
      */
-    private function getBadgeCssClassAndStyle(array|bool|callable|null $badgeSelector, mixed $value, FieldDto $field): array
+    private function getBadgeStyle(array|bool|callable|null $badgeSelector, mixed $value, FieldDto $field): ?BadgeStyle
     {
-        $cssClass = 'badge';
-        $style = null;
-
-        $badgeType = '';
+        $badge = null;
         if (true === $badgeSelector) {
-            $badgeType = 'badge-secondary';
+            $badge = BadgeStyle::new()->withType('secondary');
         } elseif (\is_array($badgeSelector)) {
-            $badgeType = $badgeSelector[$value] ?? 'badge-secondary';
+            $badge = $badgeSelector[$value] ?? BadgeStyle::new()->withType('secondary');
         } elseif (\is_callable($badgeSelector)) {
-            $badgeType = $badgeSelector($value, $field);
-            if (!$badgeType instanceof BadgeStyle && !\in_array($badgeType, ChoiceField::VALID_BADGE_TYPES, true)) {
-                throw new \RuntimeException(sprintf('The value returned by the callable passed to the "renderAsBadges()" method must be an instance of "%s" or one of the following valid badge types: "%s" ("%s" given).', BadgeStyle::class, implode(', ', ChoiceField::VALID_BADGE_TYPES), $badgeType));
+            $result = $badgeSelector($value, $field);
+            if ($result instanceof BadgeStyle) {
+                $badge = $result;
+            } elseif (\in_array($result, BadgeStyle::VALID_BADGE_TYPES, true)) {
+                $badge = BadgeStyle::new()->withType($result);
+            } else {
+                throw new \RuntimeException(sprintf('The value returned by the callable passed to the "renderAsBadges()" method must be an instance of "%s" or one of the following valid badge types: "%s" ("%s" given).', BadgeStyle::class, implode(', ', BadgeStyle::VALID_BADGE_TYPES), $result));
             }
         }
 
-        if ($badgeType instanceof BadgeStyle) {
-            $style = $badgeType->getStyle();
-
-            $extraClasses = $badgeType->getClasses();
-            if ('' !== $extraClasses) {
-                $cssClass .= ' '.$extraClasses;
-            }
-        } elseif ('' !== $badgeType) {
-            $cssClass .= ' '.u($badgeType)->ensureStart('badge-')->toString();
-        }
-
-        return [$cssClass, $style];
+        return $badge;
     }
 
     /**

@@ -90,13 +90,14 @@ pages (``index`` and ``detail``)::
 
 The built-in badge styles are the same as Bootstrap: ``'success'``,
 ``'warning'``, ``'danger'``, ``'info'``, ``'primary'``, ``'secondary'``,
-``'light'``, ``'dark'``, but you can also pass a custom full 6-digit hexadecimal background color::
+``'light'``, ``'dark'``, but you can also pass a custom
+ ``EasyCorp\Bundle\EasyAdminBundle\Field\Style\BadgeStyle`` instance::
 
     yield ChoiceField::new('...')->renderAsBadges([
         // $value => $badgeStyleName
-        'paid' => BadgeStyle::fromBgColor('#00FF00'),
-        'pending' => BadgeStyle::fromBgColor('#FFFF00'),
-        'refunded' => BadgeStyle::fromBgColor('#FF0000'),
+        'paid' => BadgeStyle::new()->withBgColor('#00FF00'),
+        'pending' => BadgeStyle::new()->withBgColor('#FFFF00'),
+        'refunded' => BadgeStyle::new()->withBgColor('#FF0000'),
     ]);
 
 renderAsNativeWidget

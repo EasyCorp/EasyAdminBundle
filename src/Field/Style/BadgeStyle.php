@@ -8,28 +8,38 @@ final class BadgeStyle
      * @param array<string>         $classes
      * @param array<string, string> $style
      */
-    private function __construct(private readonly array $classes, private readonly array $style)
+    private function __construct(private array $classes, private array $style)
     {
     }
 
-    public static function fromBgColor(string $backgroundColor, ?string $textColor = null): self
+    public static function new(): self
+    {
+        return new self([], []);
+    }
+
+    public function withBgColor(string $backgroundColor, bool $autoTextContrast = true): self
     {
         if (!self::isSupportedColor($backgroundColor)) {
             throw new \InvalidArgumentException(sprintf('The background color must be a full 6-digit hexadecimal color ("%s" given).', $backgroundColor));
         }
 
-        $classes = [];
-        $styleProperties = ['background-color' => $backgroundColor];
+        $this->style['background-color'] = $backgroundColor;
+        if ($autoTextContrast) {
+            $this->classes[] = self::generateTextClassFromBackgroundColor($backgroundColor);
+        }
 
-        if (null === $textColor) {
-            $classes[] = self::computeTextClass($backgroundColor);
-        } elseif (self::isSupportedColor($textColor)) {
-            $styleProperties['color'] = $textColor;
-        } else {
+        return $this;
+    }
+
+    public function withTextColor(string $textColor): self
+    {
+        if (!self::isSupportedColor($textColor)) {
             throw new \InvalidArgumentException(sprintf('The text color must be a full 6-digit hexadecimal color ("%s" given).', $textColor));
         }
 
-        return new self($classes, $styleProperties);
+        $this->style['color'] = $textColor;
+
+        return $this;
     }
 
     public function getClasses(): string
@@ -60,7 +70,7 @@ final class BadgeStyle
         return 1 === preg_match('/^#[0-9a-f]{6}$/iD', $color);
     }
 
-    private static function computeTextClass(string $backgroundColor): string
+    private static function generateTextClassFromBackgroundColor(string $backgroundColor): string
     {
         [$r, $g, $b] = [
             hexdec(substr($backgroundColor, 1, 2)),

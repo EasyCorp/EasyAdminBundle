@@ -99,6 +99,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         $propertyNameParts = explode('.', $propertyName);
         if (\count($propertyNameParts) > 1) {
             // prepare starting class for association
+            /** @var class-string $targetEntityFqcn */
             $targetEntityFqcn = $entityDto->getPropertyMetadata($propertyNameParts[0])->get('targetEntity');
             array_shift($propertyNameParts);
             $metadata = $this->entityFactory->getEntityMetadata($targetEntityFqcn);

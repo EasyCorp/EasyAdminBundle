@@ -197,7 +197,9 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
 
         // If at least one join column of an association field isn't nullable then the field is "required" by default, otherwise the field is optional
         if ($entityDto->isAssociation($field->getProperty())) {
-            $associatedEntityMetadata = $this->entityFactory->getEntityMetadata($doctrinePropertyMetadata->get('targetEntity'));
+            /** @var class-string $targetEntityFqcn */
+            $targetEntityFqcn = $doctrinePropertyMetadata->get('targetEntity');
+            $associatedEntityMetadata = $this->entityFactory->getEntityMetadata($targetEntityFqcn);
             foreach ($doctrinePropertyMetadata->get('joinColumns', []) as $joinColumn) {
                 if (true === $doctrinePropertyMetadata->get('isOwningSide', true)) {
                     if ($joinColumn instanceof JoinColumnMapping) {

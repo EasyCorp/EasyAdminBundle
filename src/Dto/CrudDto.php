@@ -5,6 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\SearchMode;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Translation\TranslatableMessageBuilder;
 use Symfony\Component\ExpressionLanguage\Expression;
@@ -16,6 +17,7 @@ use Symfony\Contracts\Translation\TranslatableInterface;
  */
 final class CrudDto
 {
+    /** @var class-string<CrudControllerInterface>|null */
     private ?string $controllerFqcn = null;
     private AssetsDto $fieldAssetsDto;
     private ?string $pageName = null;
@@ -85,11 +87,17 @@ final class CrudDto
         $this->overriddenTemplates = [];
     }
 
+    /**
+     * @return class-string<CrudControllerInterface>|null
+     */
     public function getControllerFqcn(): ?string
     {
         return $this->controllerFqcn;
     }
 
+    /**
+     * @param class-string<CrudControllerInterface> $fqcn
+     */
     public function setControllerFqcn(string $fqcn): void
     {
         $this->controllerFqcn = $fqcn;

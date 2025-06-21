@@ -251,7 +251,7 @@ class AdminRouterSubscriber implements EventSubscriberInterface
      * Dashboard controller, so its enough to check if the request controller implements
      * the DashboardControllerInterface.
      *
-     * @return class-string|null
+     * @return class-string<DashboardControllerInterface>|null
      */
     private function getDashboardControllerFqcn(Request $request): ?string
     {

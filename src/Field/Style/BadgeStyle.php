@@ -65,7 +65,13 @@ final class BadgeStyle
             return null;
         }
 
-        return self::generateStyle($this->style);
+
+        $style = [];
+        foreach ($this->style as $key => $value) {
+            $style[] = sprintf('%s:%s;', $key, $value);
+        }
+
+        return implode(' ', $style);
     }
 
     private function addClass(string $class): self
@@ -82,27 +88,9 @@ final class BadgeStyle
         return $this;
     }
 
-    /**
-     * @param array<string, string> $properties
-     */
-    private static function generateStyle(array $properties): string
-    {
-        $style = [];
-        foreach ($properties as $key => $value) {
-            $style[] = sprintf('%s:%s;', $key, $value);
-        }
-
-        return implode(' ', $style);
-    }
-
-    private static function isSupportedColor(string $color): bool
-    {
-        return 1 === preg_match('/^#[0-9a-f]{6}$/iD', $color);
-    }
-
     private static function generateTextClassFromBackgroundColor(string $backgroundColor): string
     {
-        if (!self::isSupportedColor($backgroundColor)) {
+        if (1 !== preg_match('/^#[0-9a-f]{6}$/iD', $backgroundColor)) {
             throw new \InvalidArgumentException(sprintf('Only full 6-digit hexadecimal color are supported to generate the appropriate text color ("%s" given).', $backgroundColor));
         }
 

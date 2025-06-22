@@ -14,6 +14,20 @@ final class BadgeStyle
     {
     }
 
+    public function addClass(string $class): self
+    {
+        $this->classes[] = $class;
+
+        return $this;
+    }
+
+    public function addStyle(string $key, string $value): self
+    {
+        $this->style[$key] = $value;
+
+        return $this;
+    }
+
     public static function new(): self
     {
         return new self(['badge'], []);
@@ -65,27 +79,12 @@ final class BadgeStyle
             return null;
         }
 
-
         $style = [];
         foreach ($this->style as $key => $value) {
             $style[] = sprintf('%s:%s;', $key, $value);
         }
 
         return implode(' ', $style);
-    }
-
-    private function addClass(string $class): self
-    {
-        $this->classes[] = $class;
-
-        return $this;
-    }
-
-    private function addStyle(string $key, string $value): self
-    {
-        $this->style[$key] = $value;
-
-        return $this;
     }
 
     private static function generateTextClassFromBackgroundColor(string $backgroundColor): string

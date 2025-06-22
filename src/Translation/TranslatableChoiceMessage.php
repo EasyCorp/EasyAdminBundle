@@ -16,7 +16,7 @@ final class TranslatableChoiceMessage implements \Stringable, TranslatableInterf
     public function __construct(
         /** @var TranslatableMessage $message */
         private readonly TranslatableInterface $message,
-        private readonly ?string $cssClass,
+        private readonly ?string $cssClasses,
         private readonly ?string $style = null,
     ) {
     }
@@ -30,20 +30,16 @@ final class TranslatableChoiceMessage implements \Stringable, TranslatableInterf
 
     public function __toString(): string
     {
-        if (null !== $this->cssClass) {
-            return sprintf('<span class="%s">%s</span>', $this->cssClass, $this->message->getMessage());
-        }
-
         return $this->generateHtml($this->message->getMessage());
     }
 
     private function generateHtml(string $message): string
     {
-        if (null !== $this->cssClass || null !== $this->style) {
+        if (null !== $this->cssClasses || null !== $this->style) {
             return sprintf(
                 '<span %s%s%s>%s</span>',
-                null !== $this->cssClass ? sprintf('class="%s"', $this->cssClass) : '',
-                null !== $this->cssClass && null !== $this->style ? ' ' : '',
+                null !== $this->cssClasses ? sprintf('class="%s"', $this->cssClasses) : '',
+                null !== $this->cssClasses && null !== $this->style ? ' ' : '',
                 null !== $this->style ? sprintf('style="%s"', $this->style) : '',
                 $message
             );

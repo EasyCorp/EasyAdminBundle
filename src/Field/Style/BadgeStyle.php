@@ -7,16 +7,16 @@ final class BadgeStyle
     public const VALID_BADGE_TYPES = ['success', 'warning', 'danger', 'info', 'primary', 'secondary', 'light', 'dark'];
 
     /**
-     * @param array<string>         $classes
+     * @param array<string>         $cssClasses
      * @param array<string, string> $style
      */
-    private function __construct(private array $classes, private array $style)
+    private function __construct(private array $cssClasses, private array $style)
     {
     }
 
-    public function addClass(string $class): self
+    public function addCssClass(string $cssClass): self
     {
-        $this->classes[] = $class;
+        $this->cssClasses[] = $cssClass;
 
         return $this;
     }
@@ -36,7 +36,7 @@ final class BadgeStyle
     public function withBgColor(string $backgroundColor, bool $autoTextContrast = true): self
     {
         if ($autoTextContrast) {
-            $this->addClass(self::generateTextClassFromBackgroundColor($backgroundColor));
+            $this->addCssClass(self::generateTextClassFromBackgroundColor($backgroundColor));
         }
 
         return $this->addStyle('background-color', $backgroundColor);
@@ -56,21 +56,21 @@ final class BadgeStyle
             throw new \InvalidArgumentException(sprintf('Invalid badge type "%s". Allowed types are: "%s".', $type, implode(', ', self::VALID_BADGE_TYPES)));
         }
 
-        return $this->addClass('badge-'.$type);
+        return $this->addCssClass('badge-'.$type);
     }
 
     public function asPill(): self
     {
-        return $this->addClass('badge-pill');
+        return $this->addCssClass('badge-pill');
     }
 
-    public function getClasses(): ?string
+    public function getCssClasses(): ?string
     {
-        if ([] === $this->classes) {
+        if ([] === $this->cssClasses) {
             return null;
         }
 
-        return implode(' ', $this->classes);
+        return implode(' ', $this->cssClasses);
     }
 
     public function getStyle(): ?string

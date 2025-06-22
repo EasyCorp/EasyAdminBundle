@@ -148,7 +148,7 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
                 /** @var TranslatableMessage $choiceMessage */
                 $choiceMessages[] = new TranslatableChoiceMessage(
                     $choiceMessage,
-                    $badge?->getClasses(),
+                    $badge?->getCssClasses(),
                     $badge?->getStyle(),
                 );
             }

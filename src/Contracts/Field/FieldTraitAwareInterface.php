@@ -122,6 +122,4 @@ interface FieldTraitAwareInterface extends FieldInterface
      * @internal
      */
     public function setDefaultColumns(int|string $cols): self;
-
-    public function setIcon(?string $iconCssClass, string $invokingMethod = 'FormField::setIcon()'): self;
 }

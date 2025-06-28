@@ -82,6 +82,7 @@ return [
         // 'label.is_greater_than_or_equal_to' => '',
         // 'label.is_less_than' => '',
         // 'label.is_less_than_or_equal_to' => '',
+        // 'label.is_in' => 'är i',
         // 'label.is_between' => '',
         // 'label.contains' => '',
         // 'label.not_contains' => '',

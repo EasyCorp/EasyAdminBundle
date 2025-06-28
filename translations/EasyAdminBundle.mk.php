@@ -82,6 +82,7 @@ return [
         'label.is_greater_than_or_equal_to' => 'е поголемо или еднакво со',
         'label.is_less_than' => 'е помало од',
         'label.is_less_than_or_equal_to' => 'е помало или еднакво со',
+        'label.is_in' => 'е во',
         'label.is_between' => 'е помеѓу',
         'label.contains' => 'содржи',
         'label.not_contains' => 'не содржи',

@@ -729,7 +729,7 @@
 {% block ea_numeric_filter_widget %}
     <div class="form-widget-compound">
         {{ form_row(form.comparison) }}
-        {{ form_row(form.value) }}
+        {{ form_row(form.value, { attr: form.value.vars.attr|merge({'data-ea-value-of-comparison-id': form.comparison.vars.id}) }) }}
         <div data-ea-value2-of-comparison-id="{{ form.comparison.vars.id }}" class="{{ form.comparison.vars.value != 'between' ? 'd-none' }}">
             {{ form_row(form.value2) }}
         </div>

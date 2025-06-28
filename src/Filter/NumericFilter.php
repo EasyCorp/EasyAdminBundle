@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Filter;
 
 use Doctrine\ORM\QueryBuilder;
+use \Doctrine\DBAL\ArrayParameterType;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
@@ -44,18 +45,39 @@ final class NumericFilter implements FilterInterface
         $value = $filterDataDto->getValue();
         $value2 = $filterDataDto->getValue2();
 
-        if (null !== $fieldDto && true === $fieldDto->getCustomOption(MoneyField::OPTION_STORED_AS_CENTS)) {
-            $divisor = $fieldDto->getFormTypeOption('divisor') ?? MoneyConfigurator::DEFAULT_DIVISOR;
-            $value *= $divisor;
-            $value2 *= $divisor;
-        }
+        $storedAsCents = null !== $fieldDto && true === $fieldDto->getCustomOption(MoneyField::OPTION_STORED_AS_CENTS);
+        $divisor = $storedAsCents ? ($fieldDto->getFormTypeOption('divisor') ?? MoneyConfigurator::DEFAULT_DIVISOR) : 1;
 
         if (ComparisonType::BETWEEN === $comparison) {
-            $queryBuilder->andWhere(sprintf('%s.%s BETWEEN :%s and :%s', $alias, $property, $parameterName, $parameter2Name))
+            if ($storedAsCents) {
+                if (is_numeric($value)) {
+                    $value *= $divisor;
+                }
+                if (is_numeric($value2)) {
+                    $value2 *= $divisor;
+                }
+            }
+            $queryBuilder
+                ->andWhere(sprintf('%s.%s BETWEEN :%s and :%s', $alias, $property, $parameterName, $parameter2Name))
                 ->setParameter($parameterName, $value)
                 ->setParameter($parameter2Name, $value2);
+        } elseif (ComparisonType::IN === $comparison) {
+            // allow semicolon-separated or array values for 'IN' comparator (supports integers or decimals)
+            $values = is_iterable($value)
+                ? $value
+                : array_filter(array_map('trim', explode(';', (string) $value)), static fn(string $v): bool => '' !== $v);
+            if ($storedAsCents) {
+                $values = array_map(static fn($v) => is_numeric($v) ? $v * $divisor : $v, $values);
+            }
+            $queryBuilder
+                ->andWhere(sprintf('%s.%s IN (:%s)', $alias, $property, $parameterName))
+                ->setParameter($parameterName, $values, ArrayParameterType::STRING);
         } else {
-            $queryBuilder->andWhere(sprintf('%s.%s %s :%s', $alias, $property, $comparison, $parameterName))
+            if ($storedAsCents && is_numeric($value)) {
+                $value *= $divisor;
+            }
+            $queryBuilder
+                ->andWhere(sprintf('%s.%s %s :%s', $alias, $property, $comparison, $parameterName))
                 ->setParameter($parameterName, $value);
         }
     }

@@ -82,6 +82,7 @@ return [
         'label.is_greater_than_or_equal_to' => 'بزرگتر یا مساوی با',
         'label.is_less_than' => 'کوچکتر از',
         'label.is_less_than_or_equal_to' => 'کوچکتر یا مساوی با',
+        'label.is_in' => ' در',
         'label.is_between' => 'در بین',
         'label.contains' => 'شامل',
         'label.not_contains' => 'شامل نمی‌شود',

@@ -82,6 +82,7 @@ return [
         'label.is_greater_than_or_equal_to' => 'je veće ili jednako',
         'label.is_less_than' => 'je manje od',
         'label.is_less_than_or_equal_to' => 'je manje ili jednako',
+        'label.is_in' => 'је у',
         'label.is_between' => 'je između',
         'label.contains' => 'sadrži',
         'label.not_contains' => 'ne sadrži',

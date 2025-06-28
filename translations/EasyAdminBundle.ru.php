@@ -82,6 +82,7 @@ return [
         'label.is_greater_than_or_equal_to' => 'больше или равно',
         'label.is_less_than' => 'меньше чем',
         'label.is_less_than_or_equal_to' => 'меньше или равно',
+        'label.is_in' => 'включен в',
         'label.is_between' => 'между',
         'label.contains' => 'содержит',
         'label.not_contains' => 'не содержит',

@@ -452,14 +452,21 @@ class App {
                 if (comparisonId === undefined) {
                     return;
                 }
-
                 const secondValue = document.querySelector(`[data-ea-value2-of-comparison-id="${comparisonId}"]`);
+                const firstValue = document.querySelector(`[data-ea-value-of-comparison-id="${comparisonId}"]`);
 
-                if (secondValue === null) {
-                    return;
+                if (secondValue !== null) {
+                    toggleVisibilityClasses(secondValue, comparisonWidget.value !== 'between');
                 }
-
-                toggleVisibilityClasses(secondValue, comparisonWidget.value !== 'between');
+                if (firstValue !== null) {
+                    if (comparisonWidget.value === 'IN') {
+                        firstValue.type = 'text';
+                        firstValue.placeholder = 'xxx; yyy; zzz';
+                    } else {
+                        firstValue.type = 'number';
+                        firstValue.placeholder = '';
+                    }
+                }
             });
         });
     }

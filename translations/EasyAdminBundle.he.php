@@ -82,6 +82,7 @@ return [
         'label.is_greater_than_or_equal_to' => 'גדול/שווה לערך',
         'label.is_less_than' => 'קטן מהערך',
         'label.is_less_than_or_equal_to' => 'קטן/שווה לערך',
+        'label.is_in' => 'נמצא ב',
         'label.is_between' => 'בין',
         'label.contains' => 'מכיל',
         'label.not_contains' => 'לא מכיל',

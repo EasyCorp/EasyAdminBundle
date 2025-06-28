@@ -82,6 +82,7 @@ return [
         'label.is_greater_than_or_equal_to' => 'մեծ է կամ հավասար է',
         'label.is_less_than' => 'փոքր է',
         'label.is_less_than_or_equal_to' => 'փոքր է կամ հավասար է',
+        'label.is_in' => 'գտնվում է',
         'label.is_between' => 'միջակայքում է',
         'label.contains' => 'պարունակում է',
         'label.not_contains' => 'չի պարունակում',

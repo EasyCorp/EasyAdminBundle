@@ -82,6 +82,7 @@ return [
         'label.is_greater_than_or_equal_to' => 'Büyüktür veya eşittir',
         'label.is_less_than' => 'Küçüktür',
         'label.is_less_than_or_equal_to' => 'Küçüktür veya eşittir',
+        'label.is_in' => 'içindedir',
         'label.is_between' => 'arasında',
         'label.contains' => 'Metin şunları içeriyor',
         'label.not_contains' => 'Metin şunları içermiyor',

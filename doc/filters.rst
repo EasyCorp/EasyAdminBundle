@@ -75,7 +75,8 @@ These are the built-in filters provided by EasyAdmin:
   It's rendered as two radio buttons for the null and not null options.
 * ``NumericFilter``: applied by default to numeric fields.
   It's rendered as a ``<select>`` list with the condition (higher/lower/equal/etc.) and a
-  ``<input>`` to define the comparison value.
+  ``<input>`` to define the comparison value. When using the ``IN`` comparator, the value
+  input becomes a text field where you can enter a semicolon-separated list of numbers.
 * ``TextFilter``: applied by default to string/text fields. It's rendered as a
   ``<select>`` list with the condition (contains/not contains/etc.) and an ``<input>`` or
   ``<textarea>`` to define the comparison value.

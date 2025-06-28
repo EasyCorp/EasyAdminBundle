@@ -82,6 +82,7 @@ return [
         'label.is_greater_than_or_equal_to' => 'este mai mare sau egal cu',
         'label.is_less_than' => 'este mai mic decât',
         'label.is_less_than_or_equal_to' => 'este mai mic sau egal cu',
+        'label.is_in' => 'este în',
         'label.is_between' => 'e între',
         'label.contains' => 'conține',
         'label.not_contains' => 'nu conține',

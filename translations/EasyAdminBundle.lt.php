@@ -82,6 +82,7 @@ return [
         'label.is_greater_than_or_equal_to' => 'didesnis arba lygus',
         'label.is_less_than' => 'mažesnis',
         'label.is_less_than_or_equal_to' => 'mažesnis arba lygus',
+        'label.is_in' => 'yra',
         'label.is_between' => 'tarp',
         'label.contains' => 'turi',
         'label.not_contains' => 'neturi',

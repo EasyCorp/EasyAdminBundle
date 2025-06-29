@@ -19,7 +19,7 @@ class ComparisonType extends AbstractType
     public const LT = '<';
     public const LTE = '<=';
     public const BETWEEN = 'between';
-    public const IN = 'IN';
+    public const IN = 'in';
     public const CONTAINS = 'like';
     public const NOT_CONTAINS = 'not like';
     public const STARTS_WITH = 'like*';

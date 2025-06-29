@@ -459,7 +459,7 @@ class App {
                     toggleVisibilityClasses(secondValue, comparisonWidget.value !== 'between');
                 }
                 if (firstValue !== null) {
-                    if (comparisonWidget.value === 'IN') {
+                    if (comparisonWidget.value === 'in') {
                         firstValue.type = 'text';
                         firstValue.placeholder = 'xxx; yyy; zzz';
                     } else {

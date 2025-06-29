@@ -65,9 +65,9 @@ final class NumericFilter implements FilterInterface
             // allow semicolon-separated or array values for 'IN' comparator (supports integers or decimals)
             $values = is_iterable($value)
                 ? $value
-                : array_filter(array_map('trim', explode(';', (string) $value)), static fn(string $v): bool => '' !== $v);
+                : array_filter(array_map('trim', explode(';', (string) $value)), static fn (string $v): bool => '' !== $v);
             if ($storedAsCents) {
-                $values = array_map(static fn($v) => is_numeric($v) ? $v * $divisor : $v, $values);
+                $values = array_map(static fn ($v) => is_numeric($v) ? $v * $divisor : $v, $values);
             }
             $queryBuilder
                 ->andWhere(sprintf('%s.%s IN (:%s)', $alias, $property, $parameterName))

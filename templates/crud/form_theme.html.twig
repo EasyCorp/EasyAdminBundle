@@ -216,7 +216,7 @@
                         {{ value|ea_as_string(to_string_method) }}
                     </button>
 
-                    {% if allows_deleting_items and not disabled %}
+                    {% if not value.id|default(false) or (allows_deleting_items and not disabled) %}
                         {{ delete_item_button }}
                     {% endif %}
                 </h2>

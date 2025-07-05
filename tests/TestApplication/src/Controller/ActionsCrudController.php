@@ -47,6 +47,8 @@ class ActionsCrudController extends AbstractCrudController
 
         $action9 = Action::new('action9')->linkToCrudAction('')->createAsGlobalAction()->displayAsForm();
 
+        $action10 = Action::new('action10')->linkToCrudAction('')->setLabel([new LabelGenerator2(), 'generateLabel']);
+
         return $actions
             ->add(Crud::PAGE_INDEX, $action1)
             ->add(Crud::PAGE_INDEX, $action2)
@@ -57,6 +59,7 @@ class ActionsCrudController extends AbstractCrudController
             ->add(Crud::PAGE_INDEX, $action7)
             ->add(Crud::PAGE_INDEX, $action8)
             ->add(Crud::PAGE_INDEX, $action9)
+            ->add(Crud::PAGE_INDEX, $action10)
             ->update(Crud::PAGE_INDEX, Action::NEW, function (Action $action) {
                 return $action->setIcon('fa fa-fw fa-plus')->setLabel(false);
             })
@@ -69,5 +72,12 @@ final class LabelGenerator
     public function generateLabel(Category $category): string
     {
         return 'Action 6: '.$category->getName();
+    }
+}
+final class LabelGenerator2
+{
+    public function generateLabel(Category $category): string
+    {
+        return 'Action 10: '.$category->getName();
     }
 }

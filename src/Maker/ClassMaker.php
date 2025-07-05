@@ -62,6 +62,6 @@ final class ClassMaker
         extract($parameters, \EXTR_SKIP);
         include $filePath;
 
-        return ob_get_clean();
+        return (string) ob_get_clean();
     }
 }

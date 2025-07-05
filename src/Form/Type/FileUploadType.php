@@ -96,7 +96,10 @@ class FileUploadType extends AbstractType implements DataMapperInterface
 
             $index = 1;
             $pathInfo = pathinfo($filename);
-            while (file_exists($filename = sprintf('%s/%s_%d.%s', $pathInfo['dirname'], $pathInfo['filename'], $index, $pathInfo['extension']))) {
+
+            $basePath = isset($pathInfo['dirname']) ? sprintf('%s/%s', $pathInfo['dirname'], $pathInfo['filename']) : $pathInfo['filename'];
+            $endPath = isset($pathInfo['extension']) ? '.'.$pathInfo['extension'] : '';
+            while (file_exists($filename = sprintf('%s_%d%s', $basePath, $index, $endPath))) {
                 ++$index;
             }
 

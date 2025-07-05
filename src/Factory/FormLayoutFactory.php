@@ -16,6 +16,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabListType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabPaneCloseType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabPaneGroupCloseType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabPaneGroupOpenType;
+use Stringable;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 use Symfony\Component\Uid\Ulid;
 
@@ -78,7 +79,10 @@ final class FormLayoutFactory
             }
 
             if ($theFirstFieldWhichIsATabOrColumn->isFormColumn() && $fieldDto->isFormTab()) {
-                throw new \InvalidArgumentException(sprintf('When using form columns, you can\'t define tabs inside columns (but you can define columns inside tabs). Move the tab "%s" outside any column.', $fieldDto->getLabel()));
+                $label = $fieldDto->getLabel();
+                $labelAsString = (\is_string($label) || $label instanceof \Stringable) ? (string) $label : '';
+
+                throw new \InvalidArgumentException(sprintf('When using form columns, you can\'t define tabs inside columns (but you can define columns inside tabs). Move the tab "%s" outside any column.', $labelAsString));
             }
         }
     }
@@ -181,7 +185,9 @@ final class FormLayoutFactory
 
             if ($fieldDto->isFormTab()) {
                 $isTabActive = 0 === \count($tabs);
-                $tabId = sprintf('tab-%s', $fieldDto->getLabel() ? $slugger->slug(strip_tags($fieldDto->getLabel()))->lower()->toString() : ++$tabsWithoutLabelCounter);
+                $label = $fieldDto->getLabel();
+                $labelAsString = (\is_string($label) || $label instanceof Stringable) ? (string) $label : '';
+                $tabId = sprintf('tab-%s', '' !== $labelAsString ? $slugger->slug(strip_tags($labelAsString))->lower()->toString() : ++$tabsWithoutLabelCounter);
                 $fieldDto->setCustomOption(FormField::OPTION_TAB_ID, $tabId);
                 $fieldDto->setCustomOption(FormField::OPTION_TAB_IS_ACTIVE, $isTabActive);
 
@@ -395,6 +401,7 @@ final class FormLayoutFactory
                 $tabs[$fieldDto->getUniqueId()] = $fieldDto;
             } else {
                 if ($hasTabs) {
+                    /** @phpstan-ignore-next-line offsetAccess.nonOffsetAccessible */
                     $fields[$currentTab->getUniqueId()][] = $fieldDto;
                 } else {
                     $fields[] = $fieldDto;

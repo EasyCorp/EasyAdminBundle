@@ -97,6 +97,7 @@ class MenuItemMatcher implements MenuItemMatcherInterface
 
             $menuItemQueryString = null === $menuItemDto->getLinkUrl() ? null : parse_url($menuItemDto->getLinkUrl(), \PHP_URL_QUERY);
 
+            /** @var array<string, mixed> $menuItemQueryParameters */
             $menuItemQueryParameters = [];
             if (\is_string($menuItemQueryString)) {
                 parse_str($menuItemQueryString, $menuItemQueryParameters);
@@ -114,7 +115,9 @@ class MenuItemMatcher implements MenuItemMatcherInterface
             // match that menu item for all actions (EDIT, NEW, etc.) of the same controller;
             // this is not strictly correct, but backend users expect this behavior because it
             // makes the sidebar menu more predictable and easier to use
+            /** @var class-string|null $menuItemController */
             $menuItemController = $menuItemQueryParameters[EA::CRUD_CONTROLLER_FQCN] ?? null;
+            /** @var class-string|null $currentPageController */
             $currentPageController = $currentPageQueryParameters[EA::CRUD_CONTROLLER_FQCN] ?? null;
             $actionsLinkedInTheMenuForThisEntity = $controllersAndActionsLinkedInTheMenu[$currentPageController] ?? [];
             $menuOnlyLinksToIndexActionOfThisEntity = $actionsLinkedInTheMenuForThisEntity === [Crud::PAGE_INDEX];
@@ -190,18 +193,20 @@ class MenuItemMatcher implements MenuItemMatcherInterface
 
             // remove host part from the menu item link URL
             $urlParts = parse_url($menuItemDto->getLinkUrl());
-            $menuItemUrlWithoutHost = $urlParts['path'] ?? '';
-            if (\array_key_exists('query', $urlParts)) {
-                $menuItemUrlWithoutHost .= '?'.$urlParts['query'];
-            }
-            if (\array_key_exists('fragment', $urlParts)) {
-                $menuItemUrlWithoutHost .= '#'.$urlParts['fragment'];
-            }
+            if (false !== $urlParts) {
+                $menuItemUrlWithoutHost = $urlParts['path'] ?? '';
+                if (\array_key_exists('query', $urlParts)) {
+                    $menuItemUrlWithoutHost .= '?'.$urlParts['query'];
+                }
+                if (\array_key_exists('fragment', $urlParts)) {
+                    $menuItemUrlWithoutHost .= '#'.$urlParts['fragment'];
+                }
 
-            if ($menuItemUrlWithoutHost === $currentUrlWithoutHostAndWithNormalizedQueryString) {
-                $menuItemDto->setSelected(true);
+                if ($menuItemUrlWithoutHost === $currentUrlWithoutHostAndWithNormalizedQueryString) {
+                    $menuItemDto->setSelected(true);
 
-                return $menuItems;
+                    return $menuItems;
+                }
             }
         }
 

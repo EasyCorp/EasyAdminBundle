@@ -163,7 +163,9 @@ class AdminRouterSubscriber implements EventSubscriberInterface
 
         // if this is a ugly URL from legacy EasyAdmin versions and the application
         // uses pretty URLs, redirect to the equivalent pretty URL
-        if ($this->adminRouteGenerator->usesPrettyUrls() && null !== $entityFqcnOrCrudControllerFqcn = $request->query->get(EA::CRUD_CONTROLLER_FQCN)) {
+        if ($this->adminRouteGenerator->usesPrettyUrls()) {
+            /** @var class-string|null $entityFqcnOrCrudControllerFqcn */
+            $entityFqcnOrCrudControllerFqcn = $request->query->get(EA::CRUD_CONTROLLER_FQCN);
             if (is_subclass_of($entityFqcnOrCrudControllerFqcn, CrudControllerInterface::class)) {
                 $crudControllerFqcn = $entityFqcnOrCrudControllerFqcn;
             } else {
@@ -209,7 +211,9 @@ class AdminRouterSubscriber implements EventSubscriberInterface
 
         // if the request is related to a CRUD controller, change the controller to be executed
         if (null !== $crudControllerInstance = $this->getCrudControllerInstance($request)) {
+            /** @var callable $symfonyControllerFqcnCallable */
             $symfonyControllerFqcnCallable = [$crudControllerInstance, $request->attributes->get(EA::CRUD_ACTION) ?? $request->query->get(EA::CRUD_ACTION)];
+            /** @var callable $symfonyControllerStringCallable */
             $symfonyControllerStringCallable = [$crudControllerInstance::class, $request->attributes->get(EA::CRUD_ACTION) ?? $request->query->get(EA::CRUD_ACTION)];
 
             // this makes Symfony believe that another controller is being executed

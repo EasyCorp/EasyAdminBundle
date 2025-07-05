@@ -260,8 +260,9 @@ class Crud
      */
     public function setDefaultSort(array $sortFieldsAndOrder): self
     {
-        $sortFieldsAndOrder = array_map('strtoupper', $sortFieldsAndOrder);
+        $defaultSort = [];
         foreach ($sortFieldsAndOrder as $sortField => $sortOrder) {
+            $sortOrder = strtoupper($sortOrder);
             if (!\in_array($sortOrder, [SortOrder::ASC, SortOrder::DESC], true)) {
                 throw new \InvalidArgumentException(sprintf('The sort order can be only "%s" or "%s", "%s" given.', SortOrder::ASC, SortOrder::DESC, $sortOrder));
             }
@@ -269,9 +270,11 @@ class Crud
             if (!\is_string($sortField)) {
                 throw new \InvalidArgumentException(sprintf('The keys of the array that defines the default sort must be strings with the field names, but the given "%s" value is a "%s".', $sortField, \gettype($sortField)));
             }
+
+            $defaultSort[$sortField] = $sortOrder;
         }
 
-        $this->dto->setDefaultSort($sortFieldsAndOrder);
+        $this->dto->setDefaultSort($defaultSort);
 
         return $this;
     }

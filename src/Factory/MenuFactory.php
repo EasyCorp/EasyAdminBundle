@@ -15,6 +15,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\UserMenuDto;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
+use Stringable;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Http\Logout\LogoutUrlGenerator;
 use function Symfony\Component\Translation\t;
@@ -134,7 +135,10 @@ final class MenuFactory implements MenuFactoryInterface
             $entityFqcn = $routeParameters[EA::ENTITY_FQCN] ?? null;
             $crudControllerFqcn = $routeParameters[EA::CRUD_CONTROLLER_FQCN] ?? null;
             if (null === $entityFqcn && null === $crudControllerFqcn) {
-                throw new \RuntimeException(sprintf('The CRUD menu item with label "%s" must define either the entity FQCN (using the third constructor argument) or the CRUD Controller FQCN (using the "setController()" method).', $menuItemDto->getLabel()));
+                $label = $menuItemDto->getLabel();
+                $labelAsString = (\is_string($label) || $label instanceof \Stringable) ? (string) $label : '';
+
+                throw new \RuntimeException(sprintf('The CRUD menu item with label "%s" must define either the entity FQCN (using the third constructor argument) or the CRUD Controller FQCN (using the "setController()" method).', $labelAsString));
             }
 
             // 1. if CRUD controller is defined, use it...

@@ -51,6 +51,7 @@ class ActionsCrudControllerTest extends AbstractCrudTestCase
         static::assertSame('Action 6: Category 0', $crawler->filter('a.dropdown-item[data-action-name="action6"]')->text());
         static::assertSame('Action 7: Category 0', $crawler->filter('a.dropdown-item[data-action-name="action7"]')->text());
         static::assertSame('Reset', $crawler->filter('a.dropdown-item[data-action-name="action8"]')->text());
+        static::assertSame('Action 10: Category 0', $crawler->filter('a.dropdown-item[data-action-name="action10"]')->text());
     }
 
     public function testFormAction()

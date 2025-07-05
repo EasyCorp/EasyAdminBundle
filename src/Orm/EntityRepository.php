@@ -230,6 +230,7 @@ final class EntityRepository implements EntityRepositoryInterface
                     'value' => $submittedData,
                 ];
             }
+            /** @var array{comparison: string, value: mixed, value2?: mixed} $submittedData */
 
             /** @var string $rootAlias */
             $rootAlias = current($queryBuilder->getRootAliases());
@@ -328,7 +329,6 @@ final class EntityRepository implements EntityRepositoryInterface
                     : $entityDto->getFqcn()
                 ;
 
-                /** @var \ReflectionNamedType|\ReflectionUnionType|null $idClassType */
                 $idClassType = null;
                 $reflectionClass = new \ReflectionClass($entityFqcn);
 
@@ -342,8 +342,7 @@ final class EntityRepository implements EntityRepositoryInterface
                     $reflectionClass = $reflectionClass->getParentClass();
                 }
 
-                if (null !== $idClassType) {
-                    /** @var \ReflectionNamedType|\ReflectionUnionType $idClassType */
+                if ($idClassType instanceof \ReflectionNamedType) {
                     $idClassName = $idClassType->getName();
 
                     if (class_exists($idClassName)) {

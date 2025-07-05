@@ -13,6 +13,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormFieldsetOpenType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormRowType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabPaneCloseType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabPaneOpenType;
+use Stringable;
 use Symfony\Bridge\Doctrine\Form\DoctrineOrmTypeGuesser;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -94,7 +95,9 @@ class CrudFormType extends AbstractType
                 $metadata['label'] = $fieldDto->getLabel();
                 $metadata['help'] = $fieldDto->getHelp();
                 $metadata[FormField::OPTION_ICON] = $fieldDto->getCustomOption(FormField::OPTION_ICON);
-                $currentFormTab = (string) $fieldDto->getLabel();
+
+                $label = $fieldDto->getLabel();
+                $currentFormTab = (\is_string($label) || $label instanceof \Stringable) ? (string) $label : '';
 
                 // plain arrays are not enough for tabs because they are modified in the
                 // lifecycle of a form (e.g. add info about form errors). Use an ArrayObject instead.

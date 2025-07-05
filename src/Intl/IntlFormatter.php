@@ -141,7 +141,7 @@ final class IntlFormatter implements IntlFormatterInterface
         $formatter = $this->createNumberFormatter($locale, $style, $attrs);
 
         $ret = $formatter->format($number, self::NUMBER_TYPES[$type]);
-        if (!\is_string($formatter->format($number, self::NUMBER_TYPES[$type]))) {
+        if (!\is_string($ret)) {
             throw new RuntimeError('Unable to format the given number.');
         }
 
@@ -261,14 +261,16 @@ final class IntlFormatter implements IntlFormatterInterface
 
                 $value = self::NUMBER_PADDING_ATTRIBUTES[$value];
             }
-
+            /** @var int|float $value */
             $this->numberFormatters[$hash]->setAttribute(self::NUMBER_ATTRIBUTES[$name], $value);
         }
 
+        /** @var string $value */
         foreach ($textAttrs as $name => $value) {
             $this->numberFormatters[$hash]->setTextAttribute(self::NUMBER_TEXT_ATTRIBUTES[$name], $value);
         }
 
+        /** @var string $value */
         foreach ($symbols as $name => $value) {
             $this->numberFormatters[$hash]->setSymbol(self::NUMBER_SYMBOLS[$name], $value);
         }

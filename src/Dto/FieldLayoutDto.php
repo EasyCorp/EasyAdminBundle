@@ -59,6 +59,7 @@ final class FieldLayoutDto
      */
     public function getFieldsInTab(string $tabUniqueId): array
     {
+        /** @phpstan-ignore-next-line return.type */
         return $this->fields[$tabUniqueId] ?? [];
     }
 }

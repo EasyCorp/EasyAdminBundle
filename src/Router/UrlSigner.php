@@ -33,10 +33,14 @@ final class UrlSigner
     public function sign(string $url): string
     {
         $urlParts = parse_url($url);
+        if (false === $urlParts) {
+            return $url;
+        }
+
+        /** @var array<string, mixed> $queryParams */
+        $queryParams = [];
         if (isset($urlParts['query'])) {
             parse_str($urlParts['query'], $queryParams);
-        } else {
-            $queryParams = [];
         }
 
         $queryParams[EA::URL_SIGNATURE] = $this->computeHash($this->getQueryParamsToSign($queryParams));
@@ -50,10 +54,10 @@ final class UrlSigner
     public function check(string $url): bool
     {
         $urlParts = parse_url($url);
+        /** @var array<string, mixed> $queryParams */
+        $queryParams = [];
         if (isset($urlParts['query'])) {
             parse_str($urlParts['query'], $queryParams);
-        } else {
-            $queryParams = [];
         }
 
         // this differs from Symfony's UriSigner behavior: if the URL doesn't contain any
@@ -63,11 +67,11 @@ final class UrlSigner
         }
 
         $urlSignature = $queryParams[EA::URL_SIGNATURE] ?? null;
-        if (null === $urlSignature || '' === $urlSignature) {
+        if (!\is_string($urlSignature) || '' === $urlSignature) {
             return false;
         }
 
-        $expectedHash = $queryParams[EA::URL_SIGNATURE];
+        $expectedHash = $urlSignature;
         $calculatedHash = $this->computeHash($this->getQueryParamsToSign($queryParams));
 
         return hash_equals($calculatedHash, $expectedHash);

@@ -1,0 +1,58 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2025-06-22T17:29:35Z
+
+Thanks for reporting this.
+
+IS there any way in PHPStan to tell it to get the value returned by the `abstract public static function getEntityFqcn(): string;` method in that class, which returns the needed entity class?
+
+---------------------------------------------------------------------------
+
+by VincentLanglet at 2025-06-22T17:36:34Z
+
+> Thanks for reporting this.
+>
+> IS there any way in PHPStan to tell it to get the value returned by the `abstract public static function getEntityFqcn(): string;` method in that class, which returns the needed entity class?
+
+I don't think so. It's more the opposite.
+You give the contract with `extends AbstractCrudController<Foo>` and then PHPStan check you implements the method correctly.
+
+> I also use the level 6 of PHPStan in a project.
+>
+> With the changes of this PR, PHPStan reported some errors like this:
+>
+> > Class App\Controller\Admin\UserCrudController extends generic class EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController but does not specify its types: TEntity
+>
+> I add to update my code like this:
+>
+> ```diff
+> + /**
+> +  * @extends AbstractCrudController<User>
+> +  */
+>   class UserCrudController extends AbstractCrudController
+>   {
+> ```
+
+This is kinda expected, and the "classic" behavior of PHPStan. Not sure it should be mentioned in the Upgrade note.
+As a big user of PHPStan I always expect new PHPStan-issues (or some issues resolved) when bumping a lib (or PHPStan one). And when you're familiar with it you "does not specify its types: TEntity" is an issue you easily fix or ignore.
+
+I let the maintainer decide about adding a note or no.
+
+The other option is to give a defaut value to the template like
+https://github.com/EasyCorp/EasyAdminBundle/blob/4.x/src/Dto/EntityDto.php#L25
+but this is not a feature I used a lot so far so I cannot say if it has drawback like covariant issues
+(cf https://phpstan.org/blog/whats-up-with-template-covariant)
+
+---------------------------------------------------------------------------
+
+by alexislefebvre at 2025-06-23T14:09:01Z
+
+> This is kinda expected, and the "classic" behavior of PHPStan. Not sure it should be mentioned in the Upgrade note. As a big user of PHPStan I always expect new PHPStan-issues (or some issues resolved) when bumping a lib (or PHPStan one). And when you're familiar with it you "does not specify its types: TEntity" is an issue you easily fix or ignore.
+>
+> I let the maintainer decide about adding a note or no.
+
+I'm not a big user of PHPStan and I was a little bit confused by the error it reported.
+
+I think that there's is no drawback to document it:
+- if people are looking for a solution, they could look at the UPGRADE guide
+- if people already found the solution, they won't need the guide and could simply ignore it

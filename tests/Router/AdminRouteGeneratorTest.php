@@ -63,7 +63,6 @@ class AdminRouteGeneratorTest extends WebTestCase
             $cacheMock,
             new Filesystem(),
             $client->getKernel()->getBuildDir(),
-            'en',
         );
 
         $routeName = $adminRouteGenerator->findRouteName($dashboardControllerFqcn, $crudControllerFqcn, $action);

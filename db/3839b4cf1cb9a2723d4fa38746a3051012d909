@@ -1,0 +1,37 @@
+---------------------------------------------------------------------------
+
+by Seb33300 at 2025-08-09T17:02:52Z
+
+Hi @BatsaxIV,
+
+Using `choice_label` works, but a better way to add labels is to implement `TranslatableInterface` on your enum.
+So this will also work on multilingual apps.
+
+And that's all!
+
+See: https://symfony.com/doc/current/reference/forms/types/enum.html#example-usage
+
+Example:
+
+```php
+use Symfony\Contracts\Translation\TranslatableInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
+
+enum Status: string implements TranslatableInterface {
+    case Draft = 'draft';
+    case Published = 'published';
+    case Deleted = 'deleted';
+
+    public function trans(TranslatorInterface $translator, ?string $locale = null): string
+    {
+        return return $translator->trans(
+            match($this) {
+                self::Draft => 'Draft 📝',
+                self::Published => 'Published ✅',
+                self::Deleted => 'Deleted ❌',
+            },
+            locale: $locale
+        );
+    }
+}
+```

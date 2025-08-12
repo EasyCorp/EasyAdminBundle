@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
 use Doctrine\DBAL\Types\Types;
+use EasyCorp\Bundle\EasyAdminBundle\Collection\EntityCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
@@ -71,8 +72,15 @@ final class FieldFactory
     {
     }
 
-    public function processFields(EntityDto $entityDto, FieldCollection $fields): void
+    public function processFields(EntityCollection $entities, FieldCollection $fields): void
     {
+        if (0 === $entities->count()) {
+            return;
+        }
+
+        // something that can be and should be done only once for all entities
+        $entityDto = clone $entities->first();
+        $entityDto->setInstance(null);
         $this->preProcessFields($fields, $entityDto);
 
         $context = $this->adminContextProvider->getContext();
@@ -89,14 +97,6 @@ final class FieldFactory
 
             // "form rows" only make sense in pages that contain forms
             if ($isDetailOrIndex && EaFormRowType::class === $fieldDto->getFormType()) {
-                $fields->unset($fieldDto);
-
-                continue;
-            }
-
-            // when creating new entities with "useEntryCrudForm" on an edit page we must
-            // explicitly check for the "new" page because $currentPage will be "edit"
-            if ((null === $entityDto->getInstance()) && !$fieldDto->isDisplayedOn(Crud::PAGE_NEW)) {
                 $fields->unset($fieldDto);
 
                 continue;
@@ -123,12 +123,42 @@ final class FieldFactory
 
             $fields->set($fieldDto);
         }
+        unset($entityDto, $fieldDto);
 
         if (!$fields->isEmpty()) {
             $this->fieldLayoutFactory->createLayout($fields, $this->adminContextProvider->getContext()?->getCrud()?->getCurrentPage() ?? Crud::PAGE_INDEX);
         }
 
-        $entityDto->setFields($fields);
+        $originalFields = $fields;
+        foreach ($entities as $entityDto) {
+            $fields = clone $originalFields;
+            foreach ($fields as $fieldDto) {
+                if (false === $this->authorizationChecker->isGranted(Permission::EA_VIEW_FIELD, $fieldDto)) {
+                    $fieldDto->markAsInaccessible();
+
+                    continue;
+                }
+
+                // when creating new entities with "useEntryCrudForm" on an edit page we must
+                // explicitly check for the "new" page because $currentPage will be "edit"
+                if ((null === $entityDto->getInstance()) && !$fieldDto->isDisplayedOn(Crud::PAGE_NEW)) {
+                    $fieldDto->markAsInaccessible();
+
+                    continue;
+                }
+
+                foreach ($this->fieldConfigurators as $configurator) {
+                    if (!$configurator->supports($fieldDto, $entityDto)) {
+                        continue;
+                    }
+
+                    // @phpstan-ignore-next-line argument.type
+                    $configurator->configure($fieldDto, $entityDto, $context);
+                }
+            }
+
+            $entityDto->setFields($fields);
+        }
     }
 
     private function preProcessFields(FieldCollection $fields, EntityDto $entityDto): void

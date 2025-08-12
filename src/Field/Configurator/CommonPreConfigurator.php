@@ -45,12 +45,13 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
 
         // if a field already has set a value, someone has written something to
         // it (as a virtual field or overwrite); don't modify the value in that case
-        $isReadable = true;
         if (null === $value = $field->getValue()) {
             try {
                 $value = null === $entityDto->getInstance() ? null : $this->propertyAccessor->getValue($entityDto->getInstance(), $field->getProperty());
             } catch (AccessException|UnexpectedTypeException) {
-                $isReadable = false;
+                if (!$field->isFormLayoutField()) {
+                    $field->markAsInaccessible();
+                }
             }
 
             $field->setValue($value);
@@ -72,7 +73,7 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
         $isVirtual = $this->buildVirtualOption($field, $entityDto);
         $field->setVirtual($isVirtual);
 
-        $templatePath = $this->buildTemplatePathOption($context, $field, $entityDto, $isReadable);
+        $templatePath = $this->buildTemplatePathOption($context, $field, $entityDto);
         $field->setTemplatePath($templatePath);
 
         $doctrineMetadata = $entityDto->hasProperty($field->getProperty()) ? $entityDto->getPropertyMetadata($field->getProperty())->all() : [];
@@ -164,14 +165,10 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
         return !$entityDto->hasProperty($field->getProperty());
     }
 
-    private function buildTemplatePathOption(AdminContext $adminContext, FieldDto $field, EntityDto $entityDto, bool $isReadable): string
+    private function buildTemplatePathOption(AdminContext $adminContext, FieldDto $field, EntityDto $entityDto): string
     {
-        if (null !== $templatePath = $field->getTemplatePath()) {
-            return $templatePath;
-        }
-
         // if field has a value set, don't display it as inaccessible (needed e.g. for virtual fields)
-        if (!$isReadable && null === $field->getValue()) {
+        if (!$field->isAccessible() && null === $field->getValue()) {
             return $adminContext->getTemplatePath('label/inaccessible');
         }
 

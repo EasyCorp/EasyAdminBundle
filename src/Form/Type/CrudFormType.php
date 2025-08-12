@@ -47,6 +47,10 @@ class CrudFormType extends AbstractType
 
         /** @var FieldDto $fieldDto */
         foreach ($entityDto->getFields() as $fieldDto) {
+            if (!$fieldDto->isAccessible()) {
+                continue;
+            }
+
             $formFieldOptions = $fieldDto->getFormTypeOptions();
 
             // the names of embedded Doctrine entities contain dots, which are not allowed

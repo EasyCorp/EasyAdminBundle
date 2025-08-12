@@ -38,17 +38,20 @@ final class EntityFactory
         $this->eventDispatcher = $eventDispatcher;
     }
 
-    public function processFields(EntityDto $entityDto, FieldCollection $fields): void
+    public function processFields(EntityDto|EntityCollection $entities, FieldCollection $fields): void
     {
-        $this->fieldFactory->processFields($entityDto, $fields);
+        if ($entities instanceof EntityDto) {
+            $collection = EntityCollection::new([]);
+            $collection->set($entities);
+            $entities = $collection;
+        }
+
+        $this->fieldFactory->processFields($entities, $fields);
     }
 
     public function processFieldsForAll(EntityCollection $entities, FieldCollection $fields): void
     {
-        foreach ($entities as $entity) {
-            $this->processFields($entity, clone $fields);
-            $entities->set($entity);
-        }
+        $this->processFields($entities, $fields);
     }
 
     public function processActions(EntityDto $entityDto, ActionConfigDto $actionConfigDto): void

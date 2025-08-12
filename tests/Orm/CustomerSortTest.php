@@ -57,6 +57,7 @@ class CustomerSortTest extends AbstractCrudTestCase
 
         // Assert
         $this->assertResponseIsSuccessful();
+
         $this->assertSelectorTextSame('th.header-for-field-association > a', 'Bills');
         $this->assertSelectorExists('th.header-for-field-association span.icon svg');
 

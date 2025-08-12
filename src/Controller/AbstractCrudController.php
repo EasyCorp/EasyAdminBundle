@@ -153,6 +153,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             'pageName' => Crud::PAGE_INDEX,
             'templateName' => 'crud/index',
             'entities' => $entities,
+            'fields' => $fields,
             'paginator' => $paginator,
             'global_actions' => $actions->getGlobalActions(),
             'batch_actions' => $actions->getBatchActions(),

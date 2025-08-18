@@ -10,7 +10,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\PrettyUrlsTestApplication\Controller\S
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\Cache\CacheItem;
-use Symfony\Component\DependencyInjection\Argument\RewindableGenerator;
 use Symfony\Component\Filesystem\Filesystem;
 
 class AdminRouteGeneratorTest extends WebTestCase
@@ -52,13 +51,13 @@ class AdminRouteGeneratorTest extends WebTestCase
             return $item;
         });
 
-        $dashboardControllers = new RewindableGenerator(function () {
-            yield DashboardController::class => new DashboardController();
-            yield SecondDashboardController::class => new SecondDashboardController();
-        }, 2);
+        $dashboardControllersFqcn = [
+            DashboardController::class,
+            SecondDashboardController::class,
+        ];
 
         $adminRouteGenerator = new AdminRouteGenerator(
-            $dashboardControllers,
+            $dashboardControllersFqcn,
             [],
             $cacheMock,
             new Filesystem(),

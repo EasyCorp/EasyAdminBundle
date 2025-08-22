@@ -51,6 +51,11 @@ final class CountryConfigurator implements FieldConfiguratorInterface
         }
     }
 
+    /**
+     * @param array<string>|null $countryCodes
+     *
+     * @return array<string, string>|null
+     */
     private function getCountryNames(?array $countryCodes, string $countryCodeFormat, string $displayLocale): ?array
     {
         if (null === $countryCodes) {
@@ -75,6 +80,12 @@ final class CountryConfigurator implements FieldConfiguratorInterface
         return $countryNames;
     }
 
+    /**
+     * @param array<string>|null $countryCodesToKeep
+     * @param array<string>|null $countryCodesToRemove
+     *
+     * @return array<string, string>
+     */
     private function generateFormTypeChoices(string $countryCodeFormat, ?array $countryCodesToKeep, ?array $countryCodesToRemove): array
     {
         $usesAlpha3Codes = CountryField::FORMAT_ISO_3166_ALPHA3 === $countryCodeFormat;

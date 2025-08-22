@@ -75,6 +75,8 @@ final class ChoiceField implements FieldInterface
      * ->setChoices(fn () => ['foo' => 1, 'bar' => 2])
      * ->setChoices(fn (?MyEntity $foo) => $foo->someField()->getChoices())
      * ->setChoices(fn (?MyEntity $foo, FieldDto $field) => ...)
+     *
+     * @param array<mixed>|callable $choiceGenerator
      */
     public function setChoices($choiceGenerator): self
     {
@@ -93,6 +95,8 @@ final class ChoiceField implements FieldInterface
      *
      * Given choices must follow the opposite of the format used in Symfony Forms:
      * ['submitted_value' => t('Label visible to users'), ...].
+     *
+     * @param array<string|TranslatableInterface>|callable $choiceGenerator
      */
     public function setTranslatableChoices($choiceGenerator): self
     {
@@ -111,6 +115,8 @@ final class ChoiceField implements FieldInterface
      *     (e.g. function(FieldDto $field) { return $field->getValue() < 10 ? 'warning' : 'primary'; }).
      *
      * Possible badge types: 'success', 'warning', 'danger', 'info', 'primary', 'secondary', 'light', 'dark'
+     *
+     * @param array<string>|bool|callable $badgeSelector
      */
     public function renderAsBadges($badgeSelector = true): self
     {

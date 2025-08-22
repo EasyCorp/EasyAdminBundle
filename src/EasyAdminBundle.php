@@ -11,7 +11,7 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
  */
 class EasyAdminBundle extends Bundle
 {
-    public const VERSION = '4.24.9-DEV';
+    public const VERSION = '4.24.10-DEV';
 
     public function build(ContainerBuilder $container): void
     {
@@ -21,7 +21,9 @@ class EasyAdminBundle extends Bundle
     public function getPath(): string
     {
         $reflected = new \ReflectionObject($this);
+        /** @var non-empty-string $fileName */
+        $fileName = $reflected->getFileName();
 
-        return \dirname($reflected->getFileName(), 2);
+        return \dirname($fileName, 2);
     }
 }

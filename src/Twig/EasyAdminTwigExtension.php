@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Twig;
 
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Context\AdminContextInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Provider\AdminContextProviderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldLayoutDto;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FormLayoutFactory;
@@ -45,6 +46,7 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
     public function getFunctions(): array
     {
         return [
+            new TwigFunction('ea', [$this, 'ea']),
             new TwigFunction('ea_url', [$this, 'getAdminUrlGenerator']),
             new TwigFunction('ea_form_ealabel', null, ['node_class' => 'Symfony\Bridge\Twig\Node\SearchAndRenderBlockNode', 'is_safe' => ['html']]),
             // deprecated functions
@@ -69,8 +71,12 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
 
     public function getGlobals(): array
     {
-        // this is needed to make the admin context available on any Twig template via the short named variable 'ea'
         return ['ea' => $this->adminContextProvider];
+    }
+
+    public function ea(): ?AdminContextInterface
+    {
+        return $this->adminContextProvider->getContext();
     }
 
     /**
@@ -222,9 +228,26 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
             return '';
         }
 
-        return $function->getCallable()(...$functionArguments);
+        $callback = $function->getCallable();
+        if (\is_callable($callback)) {
+            return \call_user_func($callback, ...$functionArguments);
+        }
+
+        if (\is_array($callback) && 2 === \count($callback)) {
+            $callback = [$environment->getRuntime(array_shift($callback)), array_pop($callback)];
+            if (!\is_callable($callback)) {
+                throw new RuntimeError(sprintf('Unable to load runtime for function: "%s"', $functionName));
+            }
+
+            return \call_user_func($callback, ...$functionArguments);
+        }
+
+        throw new RuntimeError(sprintf('Invalid callback for function: "%s"', $functionName));
     }
 
+    /**
+     * @param array<string, mixed> $queryParameters
+     */
     public function getAdminUrlGenerator(array $queryParameters = []): AdminUrlGeneratorInterface
     {
         return $this->serviceLocator->get(AdminUrlGenerator::class)->setAll($queryParameters);
@@ -250,6 +273,9 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
     /**
      * We need to recreate the 'importmap()' Twig function from Symfony because calling it
      * via 'ea_call_function_if_exists('importmap', '...')' doesn't work.
+     *
+     * @param string|array<string>       $entryPoint
+     * @param array<string, string|true> $attributes
      */
     public function renderImportmap(string|array $entryPoint = 'app', array $attributes = []): string
     {
@@ -263,6 +289,8 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
     /**
      * We need to recreate the 'ux_icon()' Twig function from Symfony because calling it
      * via 'ea_call_function_if_exists('ux_icon', '...')' doesn't work.
+     *
+     * @param array<string, string|bool|int|float> $attributes
      */
     public function renderIcon(string $name, array $attributes = []): string
     {

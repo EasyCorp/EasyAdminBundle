@@ -6,6 +6,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminAction;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminCrud;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Router\AdminRouteGeneratorInterface;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\Filesystem\Filesystem;
@@ -62,6 +64,10 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
 
     private ?bool $applicationUsesPrettyUrls = null;
 
+    /**
+     * @param iterable<DashboardControllerInterface> $dashboardControllers
+     * @param iterable<CrudControllerInterface>      $crudControllers
+     */
     public function __construct(
         private iterable $dashboardControllers,
         private iterable $crudControllers,
@@ -185,6 +191,8 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
     }
 
     /**
+     * @param class-string<DashboardControllerInterface> $dashboardFqcn
+     *
      * @return array{0: class-string[]|null, 1: class-string[]|null}
      */
     private function getAllowedAndDeniedControllers(string $dashboardFqcn): array
@@ -200,6 +208,11 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
         return [$attribute->allowedControllers, $attribute->deniedControllers];
     }
 
+    /**
+     * @param class-string<DashboardControllerInterface> $dashboardFqcn
+     *
+     * @return array<string, array{routeName: string, routePath: string, methods?: array<string>}>
+     */
     private function getDefaultRoutesConfig(string $dashboardFqcn): array
     {
         if (null === $dashboardAttribute = $this->getPhpAttributeInstance($dashboardFqcn, AdminDashboard::class)) {
@@ -215,7 +228,7 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
                 throw new \RuntimeException(sprintf('In the #[AdminDashboard] attribute of the "%s" dashboard controller, the route configuration for the "%s" action defines some unsupported keys. You can only define these keys: "routePath" and "routeName".', $dashboardFqcn, $action));
             }
 
-            if (isset($customRouteConfig['routeName']) && !preg_match('/^[a-zA-Z0-9_-]+$/', $customRouteConfig['routeName'])) {
+            if (isset($customRouteConfig['routeName']) && 1 !== preg_match('/^[a-zA-Z0-9_-]+$/', $customRouteConfig['routeName'])) {
                 throw new \RuntimeException(sprintf('In the #[AdminDashboard] attribute of the "%s" dashboard controller, the route name "%s" for the "%s" action is not valid. It can only contain letter, numbers, dashes, and underscores.', $dashboardFqcn, $customRouteConfig['routeName'], $action));
             }
 
@@ -227,6 +240,9 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
         return array_replace_recursive(self::DEFAULT_ROUTES_CONFIG, $customRoutesConfig);
     }
 
+    /**
+     * @return array<string, array{routeName: string, routePath: string}>
+     */
     private function getDashboardsRouteConfig(): array
     {
         $config = [];
@@ -298,6 +314,11 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
         return $config;
     }
 
+    /**
+     * @param class-string<CrudControllerInterface> $crudControllerFqcn
+     *
+     * @return array{routeName: string, routePath: string}
+     */
     private function getCrudControllerRouteConfig(string $crudControllerFqcn): array
     {
         $crudControllerConfig = [];
@@ -320,7 +341,7 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
             }
 
             if (null !== $attributeInstance->routeName) {
-                if (!preg_match('/^[a-zA-Z0-9_-]+$/', $attributeInstance->routeName)) {
+                if (1 !== preg_match('/^[a-zA-Z0-9_-]+$/', $attributeInstance->routeName)) {
                     throw new \RuntimeException(sprintf('In the #[AdminCrud] attribute of the "%s" CRUD controller, the route name "%s" is not valid. It can only contain letter, numbers, dashes, and underscores.', $crudControllerFqcn, $attributeInstance->routeName));
                 }
 
@@ -340,6 +361,11 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
         return $crudControllerConfig;
     }
 
+    /**
+     * @param class-string<CrudControllerInterface> $crudControllerFqcn
+     *
+     * @return array<string, array{routeName?: string, routePath?: string, methods?: array<string>}>
+     */
     private function getCustomActionsConfig(string $crudControllerFqcn): array
     {
         $customActionsConfig = [];
@@ -370,7 +396,7 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
             }
 
             if (null !== $attributeInstance->routeName) {
-                if (!preg_match('/^[a-zA-Z0-9_-]+$/', $attributeInstance->routeName)) {
+                if (1 !== preg_match('/^[a-zA-Z0-9_-]+$/', $attributeInstance->routeName)) {
                     throw new \RuntimeException(sprintf('In the "%s" CRUD controller, the #[AdminAction] attribute applied to the "%s()" action defines an invalid route name: "%s". Valid route names can only contain letters, numbers, dashes, and underscores.', $crudControllerFqcn, $action, $attributeInstance->routeName));
                 }
 
@@ -397,6 +423,8 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
     }
 
     /**
+     * @param class-string<DashboardControllerInterface> $dashboardFqcn
+     *
      * @return array{routeName: string, route: Route}|null
      */
     private function createDashboardRoute(string $dashboardFqcn): ?array
@@ -461,6 +489,14 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
         return ['routeName' => $routeName, 'route' => $route];
     }
 
+    /**
+     * @template T of object
+     *
+     * @param class-string    $classFqcn
+     * @param class-string<T> $attributeFqcn
+     *
+     * @return T|null
+     */
     private function getPhpAttributeInstance(string $classFqcn, string $attributeFqcn): ?object
     {
         $reflectionClass = new \ReflectionClass($classFqcn);
@@ -471,7 +507,11 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
         return $attributes[0]->newInstance();
     }
 
-    // transforms 'App\Controller\Admin\FooBarBazCrudController' into 'foo-bar-baz'
+    /**
+     * Transforms 'App\Controller\Admin\FooBarBazCrudController' into 'foo-bar-baz'.
+     *
+     * @param class-string<CrudControllerInterface> $crudControllerFqcn
+     */
     private function transformCrudControllerNameToKebabCase(string $crudControllerFqcn): string
     {
         $cleanShortName = str_replace(['CrudController', 'Controller'], '', (new \ReflectionClass($crudControllerFqcn))->getShortName());
@@ -480,7 +520,11 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
         return $snakeCaseName;
     }
 
-    // transforms 'App\Controller\Admin\FooBarBazCrudController' into 'foo_bar_baz'
+    /**
+     * Transforms 'App\Controller\Admin\FooBarBazCrudController' into 'foo_bar_baz'.
+     *
+     * @param class-string<CrudControllerInterface> $crudControllerFqcn
+     */
     private function transformCrudControllerNameToSnakeCase(string $crudControllerFqcn): string
     {
         $shortName = str_replace(['CrudController', 'Controller'], '', (new \ReflectionClass($crudControllerFqcn))->getShortName());

@@ -8,6 +8,9 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Attribute;
 #[\Attribute(\Attribute::TARGET_METHOD)]
 class AdminAction
 {
+    /**
+     * @param array<string> $methods
+     */
     public function __construct(
         public ?string $routePath = null,
         public ?string $routeName = null,

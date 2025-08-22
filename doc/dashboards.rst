@@ -133,7 +133,7 @@ method of the controller.
 The name of the dashboard route should be concise because it's used as the prefix
 of all the routes associated to this dashboard (e.g. if this route name is ``my_private_backend``,
 the generated routes will be like ``my_private_backend_product_index``). The path
-of this route will also be used by all the dasboard routes (e.g. if the path is
+of this route will also be used by all the dashboard routes (e.g. if the path is
 ``/_secret/backend``, the generated routes paths will be like ``/_secret/backend/category/324``).
 
 That's it. Later, when you start adding :doc:`CRUD controllers </crud>`, the route

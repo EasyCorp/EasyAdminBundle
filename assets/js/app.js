@@ -182,17 +182,10 @@ class App {
         };
 
         const searchQueryTerms = tokenizeString(searchElement.value);
-        const searchQueryTermsHighlightRegexp = new RegExp(
-            searchQueryTerms
-                // escapes all characters that are special inside a RegExp
-                .map((term) => term.replace(/[|\\{}()[\]^$+*?.-]/g, '\\$&'))
-                .join('|'),
-            'i'
-        );
 
         const elementsToHighlight = document.querySelectorAll('table tbody td.searchable');
         const highlighter = new Mark(elementsToHighlight);
-        highlighter.markRegExp(searchQueryTermsHighlightRegexp);
+        highlighter.mark(searchQueryTerms, { separateWordSearch: false });
     }
 
     #createFilters() {

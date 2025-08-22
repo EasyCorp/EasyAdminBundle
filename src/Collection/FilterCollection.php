@@ -7,18 +7,20 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDto;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
+ *
+ * @implements CollectionInterface<string, FilterDto>
  */
 final class FilterCollection implements CollectionInterface
 {
     /**
-     * @param FilterDto[] $filters
+     * @param array<string, FilterDto> $filters
      */
     private function __construct(private array $filters)
     {
     }
 
     /**
-     * @param FilterDto[] $filters
+     * @param array<string, FilterDto> $filters
      */
     public static function new(array $filters = []): self
     {
@@ -26,7 +28,7 @@ final class FilterCollection implements CollectionInterface
     }
 
     /**
-     * @return FilterDto[]
+     * @return array<string, FilterDto>
      */
     public function all(): array
     {
@@ -64,7 +66,7 @@ final class FilterCollection implements CollectionInterface
     }
 
     /**
-     * @return \ArrayIterator<FilterDto>
+     * @return \ArrayIterator<string, FilterDto>
      */
     public function getIterator(): \ArrayIterator
     {

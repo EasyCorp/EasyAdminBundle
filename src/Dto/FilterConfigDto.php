@@ -45,6 +45,9 @@ final class FilterConfigDto
         return $this->filters->get($propertyName);
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function all(): array
     {
         return $this->filters->all();

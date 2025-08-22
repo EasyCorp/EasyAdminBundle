@@ -7,6 +7,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Registry;
  */
 final class TemplateRegistry
 {
+    /** @var array<string, string> */
     private array $templates = [
         'layout' => '@EasyAdmin/layout.html.twig',
         'main_menu' => '@EasyAdmin/menu.html.twig',
@@ -94,6 +95,9 @@ final class TemplateRegistry
         $this->templates[$templateName] = $templatePath;
     }
 
+    /**
+     * @param array<string, string> $templateNamesAndPaths
+     */
     public function setTemplates(array $templateNamesAndPaths): void
     {
         foreach ($templateNamesAndPaths as $templateName => $templatePath) {

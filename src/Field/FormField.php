@@ -30,7 +30,7 @@ final class FormField implements FieldInterface
      *
      * @param TranslatableInterface|string|false|null $label
      */
-    public static function new(string $propertyName, $label = null)
+    public static function new(string $propertyName, $label = null): never
     {
         throw new \RuntimeException('Instead of this method, use the "addPanel()" method.');
     }

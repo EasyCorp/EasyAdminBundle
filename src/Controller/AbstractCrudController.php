@@ -222,6 +222,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $this->container->get(EntityFactory::class)->processFields($context->getEntity(), FieldCollection::new($this->configureFields(Crud::PAGE_EDIT)));
         $context->getCrud()->setFieldAssets($this->getFieldAssets($context->getEntity()->getFields()));
         $this->container->get(EntityFactory::class)->processActions($context->getEntity(), $context->getCrud()->getActionsConfig());
+        /** @var TEntity $entityInstance */
         $entityInstance = $context->getEntity()->getInstance();
 
         if ($context->getRequest()->isXmlHttpRequest()) {
@@ -301,7 +302,9 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             throw new InsufficientEntityPermissionException($context);
         }
 
-        $context->getEntity()->setInstance($this->createEntity($context->getEntity()->getFqcn()));
+        /** @var class-string<TEntity> $entityFqcn */
+        $entityFqcn = $context->getEntity()->getFqcn();
+        $context->getEntity()->setInstance($this->createEntity($entityFqcn));
         $this->container->get(EntityFactory::class)->processFields($context->getEntity(), FieldCollection::new($this->configureFields(Crud::PAGE_NEW)));
         $context->getCrud()->setFieldAssets($this->getFieldAssets($context->getEntity()->getFields()));
         $this->container->get(EntityFactory::class)->processActions($context->getEntity(), $context->getCrud()->getActionsConfig());
@@ -309,6 +312,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $newForm = $this->createNewForm($context->getEntity(), $context->getCrud()->getNewFormOptions(), $context);
         $newForm->handleRequest($context->getRequest());
 
+        /** @var TEntity $entityInstance */
         $entityInstance = $newForm->getData();
         $context->getEntity()->setInstance($entityInstance);
 
@@ -359,11 +363,14 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             throw new InsufficientEntityPermissionException($context);
         }
 
-        $csrfToken = $context->getRequest()->request->get('token');
+        $csrfToken = $context->getRequest()->request->has('token')
+            ? (string) $context->getRequest()->request->get('token')
+            : null;
         if ($this->container->has('security.csrf.token_manager') && !$this->isCsrfTokenValid('ea-delete', $csrfToken)) {
             return $this->redirectToRoute($context->getDashboardRouteName());
         }
 
+        /** @var TEntity $entityInstance */
         $entityInstance = $context->getEntity()->getInstance();
 
         $event = new BeforeEntityDeletedEvent($entityInstance);
@@ -394,6 +401,9 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         return $this->redirect($this->container->get(AdminUrlGenerator::class)->setController($context->getCrud()->getControllerFqcn())->setAction(Action::INDEX)->unset(EA::ENTITY_ID)->generateUrl());
     }
 
+    /**
+     * @param BatchActionDto<TEntity> $batchActionDto
+     */
     public function batchDelete(AdminContext $context, BatchActionDto $batchActionDto): Response
     {
         $event = new BeforeCrudActionEvent($context);
@@ -406,11 +416,12 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             return $this->redirectToRoute($context->getDashboardRouteName());
         }
 
+        /** @var EntityManagerInterface $entityManager */
         $entityManager = $this->container->get('doctrine')->getManagerForClass($batchActionDto->getEntityFqcn());
         $repository = $entityManager->getRepository($batchActionDto->getEntityFqcn());
         foreach ($batchActionDto->getEntityIds() as $entityId) {
             $entityInstance = $repository->find($entityId);
-            if (!$entityInstance) {
+            if (null === $entityInstance) {
                 continue;
             }
 
@@ -559,6 +570,9 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         return $this->container->get(AdminContextProvider::class)->getContext();
     }
 
+    /**
+     * @param EntityDto<TEntity> $entityDto
+     */
     protected function ajaxEdit(EntityDto $entityDto, ?string $propertyName, bool $newValue): AfterCrudActionEvent
     {
         $field = $entityDto->getFields()->getByProperty($propertyName);
@@ -568,7 +582,9 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
         $this->container->get(EntityUpdater::class)->updateProperty($entityDto, $propertyName, $newValue);
 
-        $event = new BeforeEntityUpdatedEvent($entityDto->getInstance());
+        /** @var TEntity $entityInstance */
+        $entityInstance = $entityDto->getInstance();
+        $event = new BeforeEntityUpdatedEvent($entityInstance);
         $this->container->get('event_dispatcher')->dispatch($event);
         $entityInstance = $event->getEntityInstance();
 

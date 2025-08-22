@@ -52,7 +52,7 @@ final class MenuFactory implements MenuFactoryInterface
     }
 
     /**
-     * @param MenuItemInterface[] $menuItems
+     * @param array<MenuItemDto|MenuItemInterface> $menuItems
      *
      * @return MenuItemDto[]
      */
@@ -63,14 +63,19 @@ final class MenuFactory implements MenuFactoryInterface
         $translationDomain = $adminContext->getI18n()->getTranslationDomain() ?? '';
 
         $builtItems = [];
-        foreach ($menuItems as $i => $menuItem) {
-            $menuItemDto = $menuItem->getAsDto();
+        foreach ($menuItems as $menuItem) {
+            if ($menuItem instanceof MenuItemDto) {
+                $menuItemDto = $menuItem;
+            } else {
+                $menuItemDto = $menuItem->getAsDto();
+            }
+
             if (false === $this->authChecker->isGranted(Permission::EA_VIEW_MENU_ITEM, $menuItemDto)) {
                 continue;
             }
 
             $subItems = [];
-            foreach ($menuItemDto->getSubItems() as $j => $menuSubItemDto) {
+            foreach ($menuItemDto->getSubItems() as $menuSubItemDto) {
                 if (false === $this->authChecker->isGranted(Permission::EA_VIEW_MENU_ITEM, $menuSubItemDto)) {
                     continue;
                 }
@@ -86,6 +91,9 @@ final class MenuFactory implements MenuFactoryInterface
         return $builtItems;
     }
 
+    /**
+     * @param MenuItemDto[] $subItems
+     */
     private function buildMenuItem(MenuItemDto $menuItemDto, array $subItems, string $translationDomain): MenuItemDto
     {
         if (!$menuItemDto->getLabel() instanceof TranslatableInterface) {

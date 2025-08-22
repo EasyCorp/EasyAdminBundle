@@ -154,6 +154,9 @@ final class ActionFactory
         return $actionDto;
     }
 
+    /**
+     * @param array<string, mixed> $defaultTranslationParameters
+     */
     private function processActionLabel(ActionDto $actionDto, ?EntityDto $entityDto, string $translationDomain, array $defaultTranslationParameters): void
     {
         $label = $actionDto->getLabel();
@@ -181,7 +184,9 @@ final class ActionFactory
         if ($label instanceof TranslatableInterface) {
             $actionDto->setLabel(TranslatableMessageBuilder::withParameters($label, $translationParameters));
         } else {
-            $translatableActionLabel = (null === $label || '' === $label) ? $label : t($label, $translationParameters, $translationDomain);
+            $translatableActionLabel = (null === $label || '' === $label || false === $label)
+                ? $label
+                : t($label, $translationParameters, $translationDomain);
             $actionDto->setLabel($translatableActionLabel);
         }
     }

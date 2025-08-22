@@ -24,6 +24,7 @@ final class EntityPaginator implements EntityPaginatorInterface
     private ?int $pageSize = null;
     private ?int $rangeSize = null;
     private ?int $rangeEdgeSize = null;
+    /** @var iterable<mixed>|null */
     private ?iterable $results = null;
     private ?int $numResults = null;
     private ?int $rangeFirstResultNumber = null;

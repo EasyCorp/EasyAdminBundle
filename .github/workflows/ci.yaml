@@ -9,7 +9,7 @@ jobs:
     phpstan:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v5
 
             - name: Setup PHP, with composer and extensions
               uses: shivammathur/setup-php@v2
@@ -82,7 +82,7 @@ jobs:
         runs-on: ${{ matrix.os }}
         continue-on-error: ${{ matrix.stability == 'dev' }}
         steps:
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v5
 
             - name: Setup PHP, with composer and extensions
               uses: shivammathur/setup-php@v2
@@ -133,7 +133,7 @@ jobs:
     php-linter:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v5
 
             # see https://github.com/OskarStark/php-cs-fixer-ga
             - name: PHP-CS-Fixer
@@ -144,7 +144,7 @@ jobs:
     doc-linter:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v5
 
             - name: DOCtor-RST
               uses: docker://oskarstark/doctor-rst
@@ -156,7 +156,7 @@ jobs:
     css-linter:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v5
 
             - name: Setup PHP, with composer and extensions
               uses: shivammathur/setup-php@v2
@@ -175,7 +175,7 @@ jobs:
     js-linter:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v5
             - run: npm i -g corepack && corepack enable
             - uses: actions/setup-node@v4
               with:

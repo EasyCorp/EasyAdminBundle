@@ -7,18 +7,20 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
+ *
+ * @implements CollectionInterface<string, EntityDto>
  */
 final class EntityCollection implements CollectionInterface
 {
     /**
-     * @param EntityDto[] $entities
+     * @param array<string, EntityDto> $entities
      */
     private function __construct(private array $entities)
     {
     }
 
     /**
-     * @param EntityDto[] $entities
+     * @param array<string, EntityDto> $entities
      */
     public static function new(array $entities): self
     {
@@ -66,7 +68,7 @@ final class EntityCollection implements CollectionInterface
     }
 
     /**
-     * @return \ArrayIterator<EntityDto>
+     * @return \ArrayIterator<string, EntityDto>
      */
     public function getIterator(): \ArrayIterator
     {

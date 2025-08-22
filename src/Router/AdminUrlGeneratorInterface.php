@@ -13,6 +13,9 @@ interface AdminUrlGeneratorInterface
 
     public function setAction(string $action): self;
 
+    /**
+     * @param array<string, mixed> $routeParameters
+     */
     public function setRoute(
         string $routeName,
         array $routeParameters = [],
@@ -24,6 +27,9 @@ interface AdminUrlGeneratorInterface
 
     public function set(string $paramName, mixed $paramValue): self;
 
+    /**
+     * @param array<string, mixed> $routeParameters
+     */
     public function setAll(array $routeParameters): self;
 
     public function unset(string $paramName): self;

@@ -53,7 +53,7 @@ final class ImageConfigurator implements FieldConfiguratorInterface
         }
         $relativeUploadDir = u($relativeUploadDir)->trimStart(\DIRECTORY_SEPARATOR)->ensureEnd(\DIRECTORY_SEPARATOR)->toString();
         $isStreamWrapper = filter_var($relativeUploadDir, \FILTER_VALIDATE_URL);
-        if ($isStreamWrapper) {
+        if (false !== $isStreamWrapper) {
             $absoluteUploadDir = $relativeUploadDir;
         } else {
             $absoluteUploadDir = u($relativeUploadDir)->ensureStart($this->projectDir.\DIRECTORY_SEPARATOR)->toString();
@@ -63,6 +63,11 @@ final class ImageConfigurator implements FieldConfiguratorInterface
         $field->setFormTypeOption('file_constraints', $field->getCustomOption(ImageField::OPTION_FILE_CONSTRAINTS));
     }
 
+    /**
+     * @param array<string|null>|null $images
+     *
+     * @return array<string|null>
+     */
     private function getImagesPaths(?array $images, ?string $basePath): array
     {
         $imagesPaths = [];

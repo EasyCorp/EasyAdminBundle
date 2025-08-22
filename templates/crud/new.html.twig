@@ -1,5 +1,6 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
 {# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
+{% set ea = ea() %}
 {% extends ea.templatePath('layout') %}
 {% form_theme new_form with ea.crud.formThemes only %}
 

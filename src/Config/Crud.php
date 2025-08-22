@@ -56,7 +56,7 @@ class Crud
     /**
      * @param TranslatableInterface|string|callable $label The callable signature is: fn ($entityInstance, $pageName): string
      *
-     * @psalm-param mixed $label
+     * @phpstan-param mixed $label
      */
     public function setEntityLabelInSingular($label): self
     {
@@ -80,7 +80,7 @@ class Crud
     /**
      * @param TranslatableInterface|string|callable $label The callable signature is: fn ($entityInstance, $pageName): string
      *
-     * @psalm-param mixed $label
+     * @phpstan-param mixed $label
      */
     public function setEntityLabelInPlural($label): self
     {
@@ -104,7 +104,7 @@ class Crud
     /**
      * @param TranslatableInterface|string|callable $title The callable signature is: fn ($entityInstance): string
      *
-     * @psalm-param mixed $title
+     * @phpstan-param mixed $title
      */
     public function setPageTitle(string $pageName, $title): self
     {
@@ -256,7 +256,7 @@ class Crud
     }
 
     /**
-     * @param array $sortFieldsAndOrder ['fieldName' => 'ASC|DESC', ...]
+     * @param array<string, 'ASC'|'DESC'> $sortFieldsAndOrder ['fieldName' => 'ASC|DESC', ...]
      */
     public function setDefaultSort(array $sortFieldsAndOrder): self
     {
@@ -276,6 +276,9 @@ class Crud
         return $this;
     }
 
+    /**
+     * @param array<string>|null $fieldNames
+     */
     public function setSearchFields(?array $fieldNames): self
     {
         $this->dto->setSearchFields($fieldNames);
@@ -360,6 +363,8 @@ class Crud
 
     /**
      * Format: ['templateName' => 'templatePath', ...].
+     *
+     * @param array<string, string> $templateNamesAndPaths
      */
     public function overrideTemplates(array $templateNamesAndPaths): self
     {
@@ -377,6 +382,9 @@ class Crud
         return $this;
     }
 
+    /**
+     * @param array<string, string> $themePaths
+     */
     public function setFormThemes(array $themePaths): self
     {
         foreach ($themePaths as $path) {
@@ -390,6 +398,12 @@ class Crud
         return $this;
     }
 
+    /**
+     * @param array<string, mixed>      $newFormOptions
+     * @param array<string, mixed>|null $editFormOptions
+     *
+     * @return $this
+     */
     public function setFormOptions(array $newFormOptions, ?array $editFormOptions = null): self
     {
         $this->dto->setNewFormOptions(KeyValueStore::new($newFormOptions));
@@ -433,6 +447,9 @@ class Crud
         return $this->dto;
     }
 
+    /**
+     * @return array<self::PAGE_*>
+     */
     private function getValidPageNames(): array
     {
         return [self::PAGE_DETAIL, self::PAGE_EDIT, self::PAGE_INDEX, self::PAGE_NEW];

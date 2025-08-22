@@ -34,6 +34,9 @@ final class AvatarField implements FieldInterface
             ->setCustomOption(self::OPTION_HEIGHT, null);
     }
 
+    /**
+     * @param int|string $heightInPixels
+     */
     public function setHeight($heightInPixels): self
     {
         $semanticHeights = [Size::SM => 18, Size::MD => 24, Size::LG => 48, Size::XL => 96];

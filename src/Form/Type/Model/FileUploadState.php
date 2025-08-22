@@ -70,6 +70,9 @@ class FileUploadState
         }
     }
 
+    /**
+     * @param UploadedFile[]|UploadedFile|null $uploadedFiles
+     */
     public function setUploadedFiles($uploadedFiles): void
     {
         if (null === $uploadedFiles) {

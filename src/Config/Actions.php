@@ -75,6 +75,9 @@ final class Actions
         return $this;
     }
 
+    /**
+     * @param array<string> $orderedActionNames
+     */
     public function reorder(string $pageName, array $orderedActionNames): self
     {
         $newActionOrder = [];
@@ -109,7 +112,7 @@ final class Actions
     }
 
     /**
-     * @param array $permissions Syntax: ['actionName' => 'actionPermission', ...]
+     * @param array<string, string|Expression> $permissions Syntax: ['actionName' => 'actionPermission', ...]
      */
     public function setPermissions(array $permissions): self
     {

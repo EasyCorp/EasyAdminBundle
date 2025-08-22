@@ -168,7 +168,7 @@ class MenuItemMatcher implements MenuItemMatcherInterface
         // 1) check all menu items for an exact match with the current URL
         // 2) if no match, check again with the current URL action changed to 'index'
         // 3) if still no match, check again with the current URL action changed to 'index' and no query parameters
-        $currentUrlWithoutHost = $request->getPathInfo();
+        $currentUrlWithoutHost = $request->getBasePath().$request->getPathInfo();
         $currentUrlQueryParams = $request->query->all();
         unset($currentUrlQueryParams['sort'], $currentUrlQueryParams['page'], $currentUrlQueryParams['query']);
         // sort them because menu items always have their query parameters sorted
@@ -297,6 +297,8 @@ class MenuItemMatcher implements MenuItemMatcherInterface
      *     'App\Controller\Admin\UserCrudController' => ['index', 'new'],
      * ].
      *
+     * @param array<MenuItemDto> $menuItems
+     *
      * @return array<string, array<string>>
      */
     private function getControllersAndActionsLinkedInTheMenu(array $menuItems): array
@@ -325,7 +327,7 @@ class MenuItemMatcher implements MenuItemMatcherInterface
 
             $controllerFqcn = $menuItemQueryParameters[EA::CRUD_CONTROLLER_FQCN] ?? null;
             $crudAction = $menuItemQueryParameters[EA::CRUD_ACTION] ?? null;
-            if (null === $controllerFqcn || null === $crudAction) {
+            if (!\is_string($controllerFqcn) || !\is_string($crudAction)) {
                 continue;
             }
 
@@ -339,7 +341,7 @@ class MenuItemMatcher implements MenuItemMatcherInterface
         return $controllersAndActionsLinkedInTheMenu;
     }
 
-    /*
+    /**
      * Sorts an array recursively by its keys. This is needed because some values
      * of the array with the query string parameters can be arrays too, and we must
      * sort those before the comparison.
@@ -361,6 +363,10 @@ class MenuItemMatcher implements MenuItemMatcherInterface
      * Removes from the given list of query parameters all the parameters that
      * should be ignored when deciding if some menu item matches the current page
      * (such as the applied filters or sorting, the listing page number, etc.).
+     *
+     * @param array<string, mixed> $queryStringParameters
+     *
+     * @return array<string, mixed>
      */
     private function filterIrrelevantQueryParameters(array $queryStringParameters): array
     {

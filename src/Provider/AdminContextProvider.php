@@ -37,19 +37,29 @@ final class AdminContextProvider implements AdminContextProviderInterface
     {
         $currentRequest = $this->requestStack->getCurrentRequest();
 
-        if (null === $currentRequest) {
-            if ($throw) {
-                throw new \LogicException('Cannot use the EasyAdmin context: no request is available.');
-            }
+        if (null === $currentRequest && $throw) {
+            trigger_deprecation(
+                'easycorp/easyadmin-bundle',
+                '4.25.0',
+                'The "$throw" argument of the "%s" method is deprecated and will be removed in EasyAdmin 5.0.0. Avoid using the EasyAdmin context outside HTTP requests or for non-admin requests.',
+                __METHOD__
+            );
 
-            return null;
+            throw new \LogicException('Cannot use the EasyAdmin context: no request is available.');
         }
 
-        return $currentRequest->get(EA::CONTEXT_REQUEST_ATTRIBUTE);
+        return $currentRequest?->get(EA::CONTEXT_REQUEST_ATTRIBUTE);
     }
 
     public function getRequest(): Request
     {
+        trigger_deprecation(
+            'easycorp/easyadmin-bundle',
+            '4.25.0',
+            'The "%s" method is deprecated and will be removed in EasyAdmin 5.0.0. Use the method with the same name from the "EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext" class instead. This deprecation may have been triggered by the usage of the global "ea" variable in a Twig template, which is also deprecated. Use the equivalent "ea()" Twig function instead.',
+            __METHOD__
+        );
+
         return $this->getContext(true)->getRequest();
     }
 
@@ -62,31 +72,73 @@ final class AdminContextProvider implements AdminContextProviderInterface
             __METHOD__,
         );
 
+        trigger_deprecation(
+            'easycorp/easyadmin-bundle',
+            '4.25.0',
+            'The "%s" method is deprecated and will be removed in EasyAdmin 5.0.0. Use the method with the same name from the "EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext" class instead. This deprecation may have been triggered by the usage of the global "ea" variable in a Twig template, which is also deprecated. Use the equivalent "ea()" Twig function instead.',
+            __METHOD__
+        );
+
         return $this->getContext(true)->getReferrer();
     }
 
     public function getI18n(): I18nDto
     {
+        trigger_deprecation(
+            'easycorp/easyadmin-bundle',
+            '4.25.0',
+            'The "%s" method is deprecated and will be removed in EasyAdmin 5.0.0. Use the method with the same name from the "EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext" class instead. This deprecation may have been triggered by the usage of the global "ea" variable in a Twig template, which is also deprecated. Use the equivalent "ea()" Twig function instead.',
+            __METHOD__
+        );
+
         return $this->getContext(true)->getI18n();
     }
 
     public function getCrudControllers(): CrudControllerRegistry
     {
+        trigger_deprecation(
+            'easycorp/easyadmin-bundle',
+            '4.25.0',
+            'The "%s" method is deprecated and will be removed in EasyAdmin 5.0.0. Use the method with the same name from the "EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext" class instead. This deprecation may have been triggered by the usage of the global "ea" variable in a Twig template, which is also deprecated. Use the equivalent "ea()" Twig function instead.',
+            __METHOD__
+        );
+
         return $this->getContext(true)->getCrudControllers();
     }
 
     public function getEntity(): EntityDto
     {
+        trigger_deprecation(
+            'easycorp/easyadmin-bundle',
+            '4.25.0',
+            'The "%s" method is deprecated and will be removed in EasyAdmin 5.0.0. Use the method with the same name from the "EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext" class instead. This deprecation may have been triggered by the usage of the global "ea" variable in a Twig template, which is also deprecated. Use the equivalent "ea()" Twig function instead.',
+            __METHOD__
+        );
+
         return $this->getContext(true)->getEntity();
     }
 
     public function getUser(): ?UserInterface
     {
+        trigger_deprecation(
+            'easycorp/easyadmin-bundle',
+            '4.25.0',
+            'The "%s" method is deprecated and will be removed in EasyAdmin 5.0.0. Use the method with the same name from the "EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext" class instead. This deprecation may have been triggered by the usage of the global "ea" variable in a Twig template, which is also deprecated. Use the equivalent "ea()" Twig function instead.',
+            __METHOD__
+        );
+
         return $this->getContext(true)->getUser();
     }
 
     public function getAssets(): AssetsDto
     {
+        trigger_deprecation(
+            'easycorp/easyadmin-bundle',
+            '4.25.0',
+            'The "%s" method is deprecated and will be removed in EasyAdmin 5.0.0. Use the method with the same name from the "EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext" class instead. This deprecation may have been triggered by the usage of the global "ea" variable in a Twig template, which is also deprecated. Use the equivalent "ea()" Twig function instead.',
+            __METHOD__
+        );
+
         return $this->getContext(true)->getAssets();
     }
 
@@ -99,86 +151,205 @@ final class AdminContextProvider implements AdminContextProviderInterface
             __METHOD__
         );
 
+        trigger_deprecation(
+            'easycorp/easyadmin-bundle',
+            '4.25.0',
+            'The "%s" method is deprecated and will be removed in EasyAdmin 5.0.0. Use the method with the same name from the "EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext" class instead. This deprecation may have been triggered by the usage of the global "ea" variable in a Twig template, which is also deprecated. Use the equivalent "ea()" Twig function instead.',
+            __METHOD__
+        );
+
         return $this->getContext(true)->getSignedUrls();
     }
 
     public function getAbsoluteUrls(): bool
     {
+        trigger_deprecation(
+            'easycorp/easyadmin-bundle',
+            '4.25.0',
+            'The "%s" method is deprecated and will be removed in EasyAdmin 5.0.0. Use the method with the same name from the "EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext" class instead. This deprecation may have been triggered by the usage of the global "ea" variable in a Twig template, which is also deprecated. Use the equivalent "ea()" Twig function instead.',
+            __METHOD__
+        );
+
         return $this->getContext(true)->getAbsoluteUrls();
     }
 
     public function getDashboardTitle(): string
     {
+        trigger_deprecation(
+            'easycorp/easyadmin-bundle',
+            '4.25.0',
+            'The "%s" method is deprecated and will be removed in EasyAdmin 5.0.0. Use the method with the same name from the "EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext" class instead. This deprecation may have been triggered by the usage of the global "ea" variable in a Twig template, which is also deprecated. Use the equivalent "ea()" Twig function instead.',
+            __METHOD__
+        );
+
         return $this->getContext(true)->getDashboardTitle();
     }
 
     public function getDashboardFaviconPath(): string
     {
+        trigger_deprecation(
+            'easycorp/easyadmin-bundle',
+            '4.25.0',
+            'The "%s" method is deprecated and will be removed in EasyAdmin 5.0.0. Use the method with the same name from the "EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext" class instead. This deprecation may have been triggered by the usage of the global "ea" variable in a Twig template, which is also deprecated. Use the equivalent "ea()" Twig function instead.',
+            __METHOD__
+        );
+
         return $this->getContext(true)->getDashboardFaviconPath();
     }
 
     public function getDashboardControllerFqcn(): string
     {
+        trigger_deprecation(
+            'easycorp/easyadmin-bundle',
+            '4.25.0',
+            'The "%s" method is deprecated and will be removed in EasyAdmin 5.0.0. Use the method with the same name from the "EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext" class instead. This deprecation may have been triggered by the usage of the global "ea" variable in a Twig template, which is also deprecated. Use the equivalent "ea()" Twig function instead.',
+            __METHOD__
+        );
+
         return $this->getContext(true)->getDashboardControllerFqcn();
     }
 
     public function getDashboardRouteName(): string
     {
+        trigger_deprecation(
+            'easycorp/easyadmin-bundle',
+            '4.25.0',
+            'The "%s" method is deprecated and will be removed in EasyAdmin 5.0.0. Use the method with the same name from the "EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext" class instead. This deprecation may have been triggered by the usage of the global "ea" variable in a Twig template, which is also deprecated. Use the equivalent "ea()" Twig function instead.',
+            __METHOD__
+        );
+
         return $this->getContext(true)->getDashboardRouteName();
     }
 
     public function getDashboardContentWidth(): string
     {
+        trigger_deprecation(
+            'easycorp/easyadmin-bundle',
+            '4.25.0',
+            'The "%s" method is deprecated and will be removed in EasyAdmin 5.0.0. Use the method with the same name from the "EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext" class instead. This deprecation may have been triggered by the usage of the global "ea" variable in a Twig template, which is also deprecated. Use the equivalent "ea()" Twig function instead.',
+            __METHOD__
+        );
+
         return $this->getContext(true)->getDashboardContentWidth();
     }
 
     public function getDashboardSidebarWidth(): string
     {
+        trigger_deprecation(
+            'easycorp/easyadmin-bundle',
+            '4.25.0',
+            'The "%s" method is deprecated and will be removed in EasyAdmin 5.0.0. Use the method with the same name from the "EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext" class instead. This deprecation may have been triggered by the usage of the global "ea" variable in a Twig template, which is also deprecated. Use the equivalent "ea()" Twig function instead.',
+            __METHOD__
+        );
+
         return $this->getContext(true)->getDashboardSidebarWidth();
     }
 
     public function getDashboardHasDarkModeEnabled(): bool
     {
+        trigger_deprecation(
+            'easycorp/easyadmin-bundle',
+            '4.25.0',
+            'The "%s" method is deprecated and will be removed in EasyAdmin 5.0.0. Use the method with the same name from the "EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext" class instead. This deprecation may have been triggered by the usage of the global "ea" variable in a Twig template, which is also deprecated. Use the equivalent "ea()" Twig function instead.',
+            __METHOD__
+        );
+
         return $this->getContext(true)->getDashboardHasDarkModeEnabled();
     }
 
     public function getDashboardDefaultColorScheme(): string
     {
+        trigger_deprecation(
+            'easycorp/easyadmin-bundle',
+            '4.25.0',
+            'The "%s" method is deprecated and will be removed in EasyAdmin 5.0.0. Use the method with the same name from the "EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext" class instead. This deprecation may have been triggered by the usage of the global "ea" variable in a Twig template, which is also deprecated. Use the equivalent "ea()" Twig function instead.',
+            __METHOD__
+        );
+
         return $this->getContext(true)->getDashboardDefaultColorScheme();
     }
 
     public function getDashboardLocales(): array
     {
+        trigger_deprecation(
+            'easycorp/easyadmin-bundle',
+            '4.25.0',
+            'The "%s" method is deprecated and will be removed in EasyAdmin 5.0.0. Use the method with the same name from the "EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext" class instead. This deprecation may have been triggered by the usage of the global "ea" variable in a Twig template, which is also deprecated. Use the equivalent "ea()" Twig function instead.',
+            __METHOD__
+        );
+
         return $this->getContext(true)->getDashboardLocales();
     }
 
     public function getMainMenu(): MainMenuDto
     {
+        trigger_deprecation(
+            'easycorp/easyadmin-bundle',
+            '4.25.0',
+            'The "%s" method is deprecated and will be removed in EasyAdmin 5.0.0. Use the method with the same name from the "EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext" class instead. This deprecation may have been triggered by the usage of the global "ea" variable in a Twig template, which is also deprecated. Use the equivalent "ea()" Twig function instead.',
+            __METHOD__
+        );
+
         return $this->getContext(true)->getMainMenu();
     }
 
     public function getUserMenu(): UserMenuDto
     {
+        trigger_deprecation(
+            'easycorp/easyadmin-bundle',
+            '4.25.0',
+            'The "%s" method is deprecated and will be removed in EasyAdmin 5.0.0. Use the method with the same name from the "EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext" class instead. This deprecation may have been triggered by the usage of the global "ea" variable in a Twig template, which is also deprecated. Use the equivalent "ea()" Twig function instead.',
+            __METHOD__
+        );
+
         return $this->getContext(true)->getUserMenu();
     }
 
     public function getCrud(): ?CrudDto
     {
+        trigger_deprecation(
+            'easycorp/easyadmin-bundle',
+            '4.25.0',
+            'The "%s" method is deprecated and will be removed in EasyAdmin 5.0.0. Use the method with the same name from the "EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext" class instead. This deprecation may have been triggered by the usage of the global "ea" variable in a Twig template, which is also deprecated. Use the equivalent "ea()" Twig function instead.',
+            __METHOD__
+        );
+
         return $this->getContext(true)->getCrud();
     }
 
     public function getSearch(): ?SearchDto
     {
+        trigger_deprecation(
+            'easycorp/easyadmin-bundle',
+            '4.25.0',
+            'The "%s" method is deprecated and will be removed in EasyAdmin 5.0.0. Use the method with the same name from the "EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext" class instead. This deprecation may have been triggered by the usage of the global "ea" variable in a Twig template, which is also deprecated. Use the equivalent "ea()" Twig function instead.',
+            __METHOD__
+        );
+
         return $this->getContext(true)->getSearch();
     }
 
     public function getTemplatePath(string $templateName): string
     {
+        trigger_deprecation(
+            'easycorp/easyadmin-bundle',
+            '4.25.0',
+            'The "%s" method is deprecated and will be removed in EasyAdmin 5.0.0. Use the method with the same name from the "EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext" class instead. This deprecation may have been triggered by the usage of the global "ea" variable in a Twig template, which is also deprecated. Use the equivalent "ea()" Twig function instead.',
+            __METHOD__
+        );
+
         return $this->getContext(true)->getTemplatePath($templateName);
     }
 
     public function usePrettyUrls(): bool
     {
+        trigger_deprecation(
+            'easycorp/easyadmin-bundle',
+            '4.25.0',
+            'The "%s" method is deprecated and will be removed in EasyAdmin 5.0.0. Use the method with the same name from the "EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext" class instead. This deprecation may have been triggered by the usage of the global "ea" variable in a Twig template, which is also deprecated. Use the equivalent "ea()" Twig function instead.',
+            __METHOD__
+        );
+
         return $this->getContext(true)->usePrettyUrls();
     }
 }

@@ -22,7 +22,7 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  *
- * @template TEntity of object
+ * @template TEntity of object = object
  */
 final class EntityDto
 {
@@ -33,6 +33,7 @@ final class EntityDto
     private ClassMetadata $metadata;
     /** @var TEntity|null */
     private $instance;
+    /** @var string|null */
     private $primaryKeyName;
     private mixed $primaryKeyValue = null;
     private string|Expression|null $permission;
@@ -98,7 +99,9 @@ final class EntityDto
     }
 
     /**
-     * @return TEntity|null
+     * @return object|null
+     *
+     * @phpstan-return TEntity|null
      */
     public function getInstance()/* : ?object */
     {
@@ -178,6 +181,8 @@ final class EntityDto
     /**
      * Returns the names of all properties defined in the entity, no matter
      * if they are used or not in the application.
+     *
+     * @return array<string>
      */
     public function getAllPropertyNames(): array
     {
@@ -224,6 +229,9 @@ final class EntityDto
         throw new \InvalidArgumentException(sprintf('The "%s" field does not exist in the "%s" entity.', $propertyName, $this->getFqcn()));
     }
 
+    /**
+     * @return string
+     */
     public function getPropertyDataType(string $propertyName)
     {
         return $this->getPropertyMetadata($propertyName)->get('type');

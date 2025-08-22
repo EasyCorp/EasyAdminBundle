@@ -151,7 +151,12 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
         $field->setFormattedValue(new TranslatableChoiceMessageCollection($choiceMessages, $isRenderedAsBadge));
     }
 
-    private function getChoices($choiceGenerator, EntityDto $entity, FieldDto $field): ?array
+    /**
+     * @param array<mixed>|callable|null $choiceGenerator
+     *
+     * @return array<mixed>|null
+     */
+    private function getChoices(array|callable|null $choiceGenerator, EntityDto $entity, FieldDto $field): ?array
     {
         if (null === $choiceGenerator) {
             return null;
@@ -164,7 +169,10 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
         return $choiceGenerator($entity->getInstance(), $field);
     }
 
-    private function getBadgeCssClass($badgeSelector, $value, FieldDto $field): string
+    /**
+     * @param array<string>|bool|callable|null $badgeSelector
+     */
+    private function getBadgeCssClass(array|bool|callable|null $badgeSelector, mixed $value, FieldDto $field): string
     {
         $commonBadgeCssClass = 'badge';
 
@@ -185,6 +193,11 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
         return $commonBadgeCssClass.' '.$badgeTypeCssClass;
     }
 
+    /**
+     * @param array<mixed> $choices
+     *
+     * @return array<mixed>
+     */
     private function flatten(array $choices): array
     {
         $flattened = [];

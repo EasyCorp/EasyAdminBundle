@@ -18,9 +18,9 @@ final class AssetsDto
     private array $cssAssets = [];
     /** @var AssetDto[] */
     private array $jsAssets = [];
-    /** @var AssetDto[] */
+    /** @var string[] */
     private array $headContents = [];
-    /** @var AssetDto[] */
+    /** @var string[] */
     private array $bodyContents = [];
     private string $iconSet = IconSet::FontAwesome;
     private string $defaultIconPrefix = '';
@@ -130,11 +130,17 @@ final class AssetsDto
         return $this->jsAssets;
     }
 
+    /**
+     * @return string[]
+     */
     public function getHeadContents(): array
     {
         return $this->headContents;
     }
 
+    /**
+     * @return string[]
+     */
     public function getBodyContents(): array
     {
         return $this->bodyContents;

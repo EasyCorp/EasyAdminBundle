@@ -85,8 +85,13 @@ function lintFileCssProperties(string $file, array $logicalCssProperties): int
 {
     $numErrors = 0;
     $lines = file($file);
-    $insideMediaQuery = false;
+    if (false === $lines) {
+        echo sprintf('Cannot read file %s.', $file).\PHP_EOL;
 
+        return $numErrors;
+    }
+
+    $insideMediaQuery = false;
     foreach ($lines as $lineNumber => $line) {
         if (str_contains($line, '@media')) {
             $insideMediaQuery = true;
@@ -102,7 +107,7 @@ function lintFileCssProperties(string $file, array $logicalCssProperties): int
             }
 
             $pattern = '/(?<!-)\b'.preg_quote($forbidden, '/').'\s*:/';
-            if (preg_match($pattern, $line)) {
+            if (1 === preg_match($pattern, $line)) {
                 echo sprintf("File: %s\n", $file);
                 echo sprintf("Line: %d\n", $lineNumber + 1);
                 echo sprintf("Issue: you can't use the property '%s' because it's not safe for different writing systems; use instead the logical property '%s'\n", $forbidden, $alternative);

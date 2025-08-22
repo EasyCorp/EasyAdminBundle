@@ -5,6 +5,8 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 use Doctrine\DBAL\Types\Types;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Provider\AdminContextProviderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
@@ -28,6 +30,9 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  */
 final class FieldFactory
 {
+    /**
+     * @var array<string, class-string<FieldInterface>>
+     */
     private static array $doctrineTypeToFieldFqcn = [
         'array' => ArrayField::class, // don't use Types::ARRAY because it was removed in Doctrine ORM 3.0
         Types::BIGINT => TextField::class,
@@ -55,6 +60,9 @@ final class FieldFactory
         Types::TIME_IMMUTABLE => TimeField::class,
     ];
 
+    /**
+     * @param iterable<FieldConfiguratorInterface> $fieldConfigurators
+     */
     public function __construct(
         private readonly AdminContextProviderInterface $adminContextProvider,
         private readonly AuthorizationCheckerInterface $authorizationChecker,
@@ -99,6 +107,7 @@ final class FieldFactory
                     continue;
                 }
 
+                // @phpstan-ignore-next-line argument.type
                 $configurator->configure($fieldDto, $entityDto, $context);
             }
 

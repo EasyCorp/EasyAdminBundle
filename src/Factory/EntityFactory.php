@@ -68,16 +68,25 @@ final class EntityFactory
         return $this->actionFactory->processGlobalActions($actionConfigDto);
     }
 
-    public function create(string $entityFqcn, $entityId = null, string|Expression|null $entityPermission = null): EntityDto
+    /**
+     * @param class-string $entityFqcn
+     */
+    public function create(string $entityFqcn, mixed $entityId = null, string|Expression|null $entityPermission = null): EntityDto
     {
         return $this->doCreate($entityFqcn, $entityId, $entityPermission);
     }
 
+    /**
+     * @param object $entityInstance
+     */
     public function createForEntityInstance($entityInstance): EntityDto
     {
         return $this->doCreate(null, null, null, $entityInstance);
     }
 
+    /**
+     * @param iterable<object>|null $entityInstances
+     */
     public function createCollection(EntityDto $entityDto, ?iterable $entityInstances): EntityCollection
     {
         $entityDtos = [];
@@ -95,10 +104,17 @@ final class EntityFactory
         return EntityCollection::new($entityDtos);
     }
 
+    /**
+     * @template TEntity of object
+     *
+     * @param class-string<TEntity> $entityFqcn
+     *
+     * @return ClassMetadata<TEntity>
+     */
     public function getEntityMetadata(string $entityFqcn): ClassMetadata
     {
         $entityManager = $this->getEntityManager($entityFqcn);
-        /** @var ClassMetadata $entityMetadata */
+        /** @var ClassMetadata<TEntity> $entityMetadata */
         $entityMetadata = $entityManager->getClassMetadata($entityFqcn);
 
         if (1 !== \count($entityMetadata->getIdentifierFieldNames())) {
@@ -108,7 +124,10 @@ final class EntityFactory
         return $entityMetadata;
     }
 
-    private function doCreate(?string $entityFqcn = null, $entityId = null, string|Expression|null $entityPermission = null, $entityInstance = null): EntityDto
+    /**
+     * @param class-string|null $entityFqcn
+     */
+    private function doCreate(?string $entityFqcn = null, mixed $entityId = null, string|Expression|null $entityPermission = null, ?object $entityInstance = null): EntityDto
     {
         if (null === $entityInstance && null !== $entityFqcn) {
             $entityInstance = null === $entityId ? null : $this->getEntityInstance($entityFqcn, $entityId);
@@ -134,6 +153,9 @@ final class EntityFactory
         return $entityDto;
     }
 
+    /**
+     * @param class-string $entityFqcn
+     */
     private function getEntityManager(string $entityFqcn): ObjectManager
     {
         if (null === $entityManager = $this->doctrine->getManagerForClass($entityFqcn)) {
@@ -143,7 +165,10 @@ final class EntityFactory
         return $entityManager;
     }
 
-    private function getEntityInstance(string $entityFqcn, $entityIdValue): object
+    /**
+     * @param class-string $entityFqcn
+     */
+    private function getEntityInstance(string $entityFqcn, mixed $entityIdValue): object
     {
         $entityManager = $this->getEntityManager($entityFqcn);
         if (null === $entityInstance = $entityManager->getRepository($entityFqcn)->find($entityIdValue)) {
@@ -159,6 +184,10 @@ final class EntityFactory
      * Code copied from Symfony\Bridge\Doctrine\Form\DoctrineOrmTypeGuesser
      * because Doctrine ORM 3.x removed the ClassUtil class where this method was defined
      * (c) Fabien Potencier <fabien@symfony.com> - MIT License.
+     *
+     * @param class-string $class
+     *
+     * @return class-string
      */
     private function getRealClass(string $class): string
     {
@@ -166,6 +195,9 @@ final class EntityFactory
             return $class;
         }
 
-        return substr($class, $pos + Proxy::MARKER_LENGTH + 2);
+        /** @var class-string $realClass */
+        $realClass = substr($class, $pos + Proxy::MARKER_LENGTH + 2);
+
+        return $realClass;
     }
 }

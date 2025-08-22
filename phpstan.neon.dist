@@ -2,7 +2,7 @@ includes:
 	- phpstan-baseline.neon
 
 parameters:
-    level: 5
+    level: 6
     paths:
         - src/
     excludePaths:
@@ -19,5 +19,7 @@ parameters:
         - '#Property EasyCorp\\Bundle\\EasyAdminBundle\\Twig\\EasyAdminTwigExtension::\$uxIconRuntime has unknown class Symfony\\UX\\Icons\\Twig\\UXIconRuntime as its type#'
         - '#Parameter \$uxIconRuntime of method EasyCorp\\Bundle\\EasyAdminBundle\\Twig\\EasyAdminTwigExtension::__construct\(\) has invalid type Symfony\\UX\\Icons\\Twig\\UXIconRuntime#'
         - '#Call to method renderIcon\(\) on an unknown class Symfony\\UX\\Icons\\Twig\\UXIconRuntime#'
+        -
+            identifier: missingType.generics
     treatPhpDocTypesAsCertain: false
     reportUnmatchedIgnoredErrors: false

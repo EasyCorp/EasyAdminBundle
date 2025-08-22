@@ -18,15 +18,19 @@ final class ActionDto
     private string $cssClass = '';
     private string $addedCssClass = '';
     private ?string $htmlElement = null;
+    /** @var array<string, string> */
     private array $htmlAttributes = [];
     private ?string $linkUrl = null;
     private ?string $templatePath = null;
     private ?string $crudActionName = null;
     private ?string $routeName = null;
+    /** @var array<string, mixed>|callable */
     private $routeParameters = [];
-    /* @var callable|string|null */
+    /** @var callable|string|null */
     private $url;
+    /** @var array<string, mixed> */
     private array $translationParameters = [];
+    /** @var callable|null */
     private $displayCallable;
 
     public function getType(): string
@@ -122,16 +126,25 @@ final class ActionDto
         $this->htmlElement = $htmlElement;
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function getHtmlAttributes(): array
     {
         return $this->htmlAttributes;
     }
 
+    /**
+     * @param array<string, string> $htmlAttributes
+     */
     public function addHtmlAttributes(array $htmlAttributes): void
     {
         $this->htmlAttributes = array_merge($this->htmlAttributes, $htmlAttributes);
     }
 
+    /**
+     * @param array<string, string> $htmlAttributes
+     */
     public function setHtmlAttributes(array $htmlAttributes): void
     {
         $this->htmlAttributes = $htmlAttributes;
@@ -183,7 +196,7 @@ final class ActionDto
     }
 
     /**
-     * @return array|callable
+     * @return array<string, mixed>|callable
      */
     public function getRouteParameters()/* : array|callable */
     {
@@ -191,7 +204,7 @@ final class ActionDto
     }
 
     /**
-     * @param array|callable $routeParameters
+     * @param array<string, mixed>|callable $routeParameters
      */
     public function setRouteParameters($routeParameters): void
     {
@@ -238,11 +251,17 @@ final class ActionDto
         $this->url = $url;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getTranslationParameters(): array
     {
         return $this->translationParameters;
     }
 
+    /**
+     * @param array<string, mixed> $translationParameters
+     */
     public function setTranslationParameters(array $translationParameters): void
     {
         $this->translationParameters = $translationParameters;

@@ -20,6 +20,7 @@ final class AdminUrlGenerator implements AdminUrlGeneratorInterface
     private bool $isInitialized = false;
     private ?string $dashboardRoute = null;
     private ?bool $includeReferrer = null;
+    /** @var array<string, mixed> */
     private array $routeParameters = [];
     private ?string $currentPageReferrer = null;
     private ?string $customPageReferrer = null;

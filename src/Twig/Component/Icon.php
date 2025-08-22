@@ -59,10 +59,11 @@ class Icon
     {
         [$iconPrefix, $iconName] = explode(':', $internalIconName);
         $iconFilePath = sprintf('%s/%s/%s.svg', $this->iconsDir, $iconPrefix, $iconName);
-        if (!file_exists($iconFilePath)) {
+        $content = @file_get_contents($iconFilePath);
+        if (!\is_string($content)) {
             throw new \RuntimeException(sprintf('The icon "%s" does not exist. Check the icon name spelling and make sure that the "%s.svg" file exists in the "assets/icons/internal/ directory of EasyAdmin".', $internalIconName, $iconName));
         }
 
-        return IconDto::new(name: $internalIconName, path: $iconFilePath, svgContents: file_get_contents($iconFilePath), iconSet: IconSet::Internal);
+        return IconDto::new(name: $internalIconName, path: $iconFilePath, svgContents: $content, iconSet: IconSet::Internal);
     }
 }

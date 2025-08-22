@@ -13,7 +13,9 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 class StringToFileTransformer implements DataTransformerInterface
 {
     private string $uploadDir;
+    /** @var callable */
     private $uploadFilename;
+    /** @var callable */
     private $uploadValidate;
     private bool $multiple;
 
@@ -25,7 +27,7 @@ class StringToFileTransformer implements DataTransformerInterface
         $this->multiple = $multiple;
     }
 
-    public function transform($value): mixed
+    public function transform(mixed $value): mixed
     {
         if (null === $value || [] === $value) {
             return null;
@@ -42,7 +44,7 @@ class StringToFileTransformer implements DataTransformerInterface
         return array_map([$this, 'doTransform'], $value);
     }
 
-    public function reverseTransform($value): mixed
+    public function reverseTransform(mixed $value): mixed
     {
         if (null === $value || [] === $value) {
             return null;
@@ -59,7 +61,7 @@ class StringToFileTransformer implements DataTransformerInterface
         return array_map([$this, 'doReverseTransform'], $value);
     }
 
-    private function doTransform($value): ?File
+    private function doTransform(mixed $value): ?File
     {
         if (null === $value) {
             return null;
@@ -80,7 +82,7 @@ class StringToFileTransformer implements DataTransformerInterface
         return null;
     }
 
-    private function doReverseTransform($value): ?string
+    private function doReverseTransform(mixed $value): ?string
     {
         if (null === $value) {
             return null;

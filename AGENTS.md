@@ -52,6 +52,7 @@ Welcome, 🤖 AI assistant! Please follow these guidelines when contributing to 
 - Use modern PHP 8.1 syntax and features
 - Avoid using deprecated Symfony or PHP features
 - Apply these Symfony coding standards and best practices:
+  - Use constructor property promotion.
   - Follow PSR-1, PSR-2, PSR-4, and PSR-12 coding standards.
   - Use Yoda conditions for comparisons (e.g. `if (null === $value)`).
   - Always use strict (`===`) and not loose (`==`) comparisons.

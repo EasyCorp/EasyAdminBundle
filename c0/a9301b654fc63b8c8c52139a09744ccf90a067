@@ -1,0 +1,13 @@
+---------------------------------------------------------------------------
+
+by Seb33300 at 2025-08-02T17:01:40Z
+
+Wouldn't it be better to replace EasyAdmin's implementation of Tom Select with Symfony UX Autocomplete?
+
+---------------------------------------------------------------------------
+
+by Deksor at 2025-08-03T02:29:00Z
+
+Oh absolutely having Symfony UX autocomplete in easy admin would be awesome !
+I was just suggesting this because it would be faster to implement this 10 lines fix than switching ea to Symfony UX autocomplete.
+But if it is planned to move easyadmin to Symfony UX autocomplete (and turbo, please :+1: ) it would be better.

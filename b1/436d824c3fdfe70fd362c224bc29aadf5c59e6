@@ -1,0 +1,17 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2025-09-02T17:40:51Z
+
+Thanks for this!
+
+I initially thought about that ... but what about controllers not defined as services? If I'm right, there are a ton of different ways to define controllers in Symfony apps (including not defining them as services) but there's not a way to tell Symfony _"give me all controllers, services or not"_.
+
+---------------------------------------------------------------------------
+
+by GromNaN at 2025-09-02T19:28:46Z
+
+> what about controllers not defined as services?
+
+The compiler pass can only process definitions that are registered in the ContainerBuilder. If a class is not discovered in this way, it will not be included in your compiler pass or with the `registerAttributeForAutoconfiguration`.
+
+The only requirement if that the service definition has "autoconfiguration" enabled, which is the default config for new Symfony applications. Moreover, controllers should have "autoconfiguration" enabled [to](https://github.com/symfony/symfony/blob/7278aa035af69b83d398b7220669ecb61be5a639/src/Symfony/Bundle/FrameworkBundle/DependencyInjection/FrameworkExtension.php#L696-L697) [get](https://github.com/symfony/symfony/blob/7278aa035af69b83d398b7220669ecb61be5a639/src/Symfony/Bundle/FrameworkBundle/DependencyInjection/FrameworkExtension.php#L769-L774) the `controller.service_arguments` tag.

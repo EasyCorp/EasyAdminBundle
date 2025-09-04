@@ -85,11 +85,11 @@ served by some dashboard using the ``routes`` option of the ``#[AdminDashboard]`
     // ...
 
     #[AdminDashboard(routePath: '/admin', routeName: 'admin', routes: [
-        'index' => ['routePath' => '/all'],
-        'new' => ['routePath' => '/create', 'routeName' => 'create'],
-        'edit' => ['routePath' => '/editing-{entityId}', 'routeName' => 'editing'],
-        'delete' => ['routePath' => '/remove/{entityId}'],
-        'detail' => ['routeName' => 'view'],
+        'index' => ['admin_product_index' => '/all'],
+        'new' => ['admin_product_create' => '/create', 'routeName' => 'create'],
+        'edit' => ['admin_product_editing' => '/editing-{entityId}', 'routeName' => 'editing'],
+        'delete' => ['admin_product_delete' => '/remove/{entityId}'],
+        'detail' => ['admin_product_view' => 'view'],
     ])]
     class SomeDashboardController extends AbstractDashboardController
     {

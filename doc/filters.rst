@@ -45,7 +45,7 @@ explicitly::
             return $filters
                 ->add('title')
                 ->add('price')
-                // most of the times there is no need to define the
+                // most of the time there is no need to define the
                 // filter type because EasyAdmin can guess it automatically
                 ->add(BooleanFilter::new('published'))
             ;
@@ -57,8 +57,8 @@ Built-in Filters
 
 These are the built-in filters provided by EasyAdmin:
 
-* ``ArrayFilter``: applied by default to array fields. It's rendered as a ``<select>`` list
-  with the condition (equal/not equal) and another ``<select>`` tags input to introduce
+* ``ArrayFilter``: applied by default to array fields. It's rendered as a ``<select>``
+  list with the condition (equal/not equal) and another ``<select>`` list to introduce
   the comparison value.
 * ``BooleanFilter``: applied by default to boolean fields. It's rendered as two
   radio buttons labeled "Yes" and "No".
@@ -66,7 +66,7 @@ These are the built-in filters provided by EasyAdmin:
 * ``ComparisonFilter``: generic compound filter with two fields.
 * ``DatetimeFilter``: applied by default to datetime, date
   or time fields respectively. It's rendered as a ``<select>`` list with the condition
-  (before/after/etc.) and a browser native datepicker to pick the date/time.
+  (before/after/etc.) and the browser's native date picker to pick the date/time.
 * ``EntityFilter``: applied to fields with Doctrine associations (all kinds
   supported). It's rendered as a ``<select>`` list with the condition (equal/not
   equal/etc.) and another ``<select>`` list to choose the comparison value.
@@ -93,9 +93,9 @@ defined using two classes:
   the HTML widgets used to input the filter data in the application.
 
 You can use the ``FilterTrait`` in your filter config class to avoid implementing
-all the commonly methods. That way you only need to implement the ``apply()``
-method, which is the one that changes the ``$queryBuilder`` object to apply the
-query clauses needed by the filter.
+all the common methods. That way you only need to implement the ``apply()``
+method, which receives the filter form data and the ``QueryBuilder`` to customize
+the query::
 
 Consider this example which creates a custom date filter with some special values::
 

@@ -127,11 +127,11 @@ Generating Dynamic Action Labels
 
 Action labels can be dynamically generated based on the related entity they
 belong to. For example, an ``Invoice`` entity can be paid with multiple payments.
-On the top of each ``Invoice`` details page, administrators want to have an action
+At the top of each ``Invoice`` detail page, administrators want to have an action
 link (or button) that brings them to a custom page that shows the received payments
 for that invoice. In order to provide a better user experience, the action link
 (or button) label must display the current number of received payments
-(i.e: ``3 payments``)::
+(e.g.: ``3 payments``)::
 
         use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
         use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
@@ -152,10 +152,10 @@ for that invoice. In order to provide a better user experience, the action link
                 ->add(Crud::PAGE_DETAIL, $viewPayments);
         }
 
-When the related entity object isn't enough for computing the action label,
+If the related entity object is not enough for computing the action label,
 then any more specific service object can be used as a delegator. For example,
 a Doctrine repository service object can be used for counting the related number
-of payments for the administrated invoice::
+of payments for the administered invoice::
 
     use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
     use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
@@ -289,7 +289,7 @@ Dropdown and Inline Entity Actions
 
 In the ``index`` page, the entity actions (``edit``, ``delete``, etc.) are
 displayed by default in a dropdown. This is done to better display the field
-contents on each row. If you prefer to display all the actions *inlined*
+contents on each row. If you prefer to display all the actions *inline*
 (that is, without a dropdown) use the ``showEntityActionsInlined()`` method::
 
     namespace App\Controller\Admin;
@@ -314,6 +314,12 @@ contents on each row. If you prefer to display all the actions *inlined*
 
 Adding Custom Actions
 ---------------------
+
+.. tip::
+
+    If you already have a controller action that implements the logic for your
+    custom action, you can :ref:`integrate any Symfony controller into your EasyAdmin backend <actions-integrating-symfony>`
+    without defining a new custom action.
 
 In addition to the built-in actions provided by EasyAdmin, you can create your
 own actions. First, define the basics of your action (name, label, icon) with
@@ -365,7 +371,7 @@ that will represent the action::
     manually to make your actions look as expected.
 
 Once you've configured the basics, use one of the following methods to define
-which method is executed when clicking on the action:
+which method runs when you click the action:
 
 * ``linkToCrudAction()``: to execute some method of the current CRUD controller;
 * ``linkToRoute()``: to execute some regular Symfony controller via its route;
@@ -438,14 +444,14 @@ The following example shows all kinds of actions in practice::
     of the shortcuts and utilities available in regular `Symfony controllers`_,
     such as ``$this->render()``, ``$this->redirect()``, and others.
 
-Custom actions can define the ``#[AdminAction]`` attribute to
+Custom actions can define the ``#[AdminRoute]`` attribute to
 :ref:`customize their route name, path and methods <crud_routes>`::
 
-    use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminAction;
+    use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminRoute;
     // ...
 
 
-    #[AdminAction(routePath: '/invoice', routeName: 'view_invoice', methods: ['GET', 'POST'])]
+    #[AdminRoute(path: '/invoice', name: 'view_invoice')]
     public function renderInvoice(AdminContext $context)
     {
         // ...
@@ -553,20 +559,20 @@ Integrating Symfony Actions
 ---------------------------
 
 If the action logic is small and directly related to the backend, it's OK to add
-it to the :doc:`CRUD controller </crud>`, because that simplifies a lot its
-integration in EasyAdmin. However, sometimes you have some logic that it's too
-complex or used in other parts of the Symfony application, so you can't move it
-to the CRUD controller. This section explains how to integrate an existing Symfony
-action in EasyAdmin so you can reuse the backend layout, menu and other features.
+it to the :doc:`CRUD controller </crud>` as a quick and simple way of integrating
+it into your EasyAdmin backend. However, sometimes the logic is too complex or
+also used in other parts of the Symfony application, so you can't move it into
+the CRUD controller. This section explains how to integrate an existing Symfony
+controller action in EasyAdmin so you can reuse the backend layout, menu, and other features.
 
-Imagine that your Symfony application has an action to calculate some business
-stats about your clients (average order amount, yearly number of purchases, etc.)
-All this is calculated in a ``BusinessStatsCalculator`` service, so you can't
-create a CRUD controller to display that information. Instead, create a normal
+Imagine that your Symfony application has an action that calculates business
+statistics about your clients (average order amount, yearly number of purchases, etc.).
+All of this is calculated in a ``BusinessStatsCalculator`` service, so you can't
+create a CRUD controller to display that information. Instead, create a standard
 Symfony controller called ``BusinessStatsController``::
 
-    // src/Controller/Admin/BusinessStatsController.php
-    namespace App\Controller\Admin;
+    // src/Controller/BusinessStatsController.php
+    namespace App\Controller;
 
     use App\Stats\BusinessStatsCalculator;
     use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -581,7 +587,7 @@ Symfony controller called ``BusinessStatsController``::
             $this->businessStatsCalculator = $businessStatsCalculator;
         }
 
-        #[Route("/admin/business-stats", name: "admin_business_stats")]
+        #[Route("/admin/business-stats", name: "business_stats_index")]
         public function index()
         {
             return $this->render('admin/business_stats/index.html.twig', [
@@ -589,7 +595,7 @@ Symfony controller called ``BusinessStatsController``::
             ]);
         }
 
-        #[Route("/admin/business-stats/{id}", name: "admin_business_stats_customer")]
+        #[Route("/admin/business-stats/{id}", name: "business_stats_customer")]
         public function customer(Customer $customer)
         {
             return $this->render('admin/business_stats/customer.html.twig', [
@@ -598,10 +604,102 @@ Symfony controller called ``BusinessStatsController``::
         }
     }
 
-This is a normal Symfony controller (it doesn't extend any EasyAdmin class) with
-some logic which renders the result in Twig templates (which will be shown later).
-The first step to integrate this into your EasyAdmin backend is to add it to the
-main menu using the ``configureMenuItems()`` method::
+This is a regular Symfony controller (it doesn't extend any EasyAdmin class)
+with some logic that renders results in Twig templates (shown later). The first
+step to integrate this into your EasyAdmin backend is to create **admin routes**
+for the actions using the ``#[AdminRoute]`` attribute::
+
+    // src/Controller/BusinessStatsController.php
+    namespace App\Controller;
+
+    use App\Stats\BusinessStatsCalculator;
+    use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+    use Symfony\Component\Routing\Attribute\Route;
+    use Symfony\Component\Security\Http\Attribute\IsGranted;
+
+    #[IsGranted('ROLE_ADMIN')]
+    #[AdminRoute('/business-stats', name: 'business_stats')]
+    class BusinessStatsController extends AbstractController
+    {
+        public function __construct(BusinessStatsCalculator $businessStatsCalculator)
+        {
+            $this->businessStatsCalculator = $businessStatsCalculator;
+        }
+
+        #[Route("/admin/business-stats", name: "business_stats_index")]
+        #[AdminRoute("/", name: "index")]
+        public function index()
+        {
+            return $this->render('admin/business_stats/index.html.twig', [
+                'data' => $this->businessStatsCalculator->getStatsSummary(),
+            ]);
+        }
+
+        #[Route("/admin/business-stats/{id}", name: "business_stats_customer")]
+        #[AdminRoute("/{id}", name: "customer")]
+        public function customer(Customer $customer)
+        {
+            return $this->render('admin/business_stats/customer.html.twig', [
+                'data' => $this->businessStatsCalculator->getCustomerStats($customer),
+            ]);
+        }
+    }
+
+The ``#[AdminRoute]`` attribute generates admin routes for the given actions
+following this logic:
+
+* Take the route path and name of each EasyAdmin dashboard. For example, in the
+  common case of using ``/admin`` and ``admin`` in your dashboard, those values are taken.
+* If there's an ``#[AdminRoute]`` attribute at the class level, treat it as a
+  prefix of the final route, just like Symfony's ``#[Route]`` attribute works.
+* Use the route path and name of the ``#[AdminRoute]`` attribute of each action
+  as the final segment in the generated route.
+
+In this example:
+
+* The first route path will be ``/admin/business-stats`` (``/admin`` + ``/business-stats`` + ``/``)
+  and its name will be ``admin_business_stats_index`` (``admin`` + ``business_stats`` + ``index``)
+* The second route path will be ``/admin/business-stats/{id}`` (``/admin`` + ``/business-stats`` + ``/{id}``)
+  and its name will be ``admin_business_stats_customer`` (``admin`` + ``business_stats`` + ``customer``)
+
+.. note::
+
+    You might need to clear the cache of your Symfony application before the
+    new routes become available.
+
+This process is applied for each of the EasyAdmin dashboards defined in your
+application. You can restrict in which dashboards each route is available using
+the following options::
+
+    use App\Controller\Admin\DashboardController;
+    use App\Controller\Admin\GuestDashboardController;
+
+    // Use the 'allowedDashboards' option to NOT generate a route for ANY dashboards
+    // except those listed explicitly:
+
+    #[AdminRoute('...', name: '...', allowedDashboards: [DashboardController::class, '...'])]
+    class BusinessStatsController extends AbstractController
+
+    // Use the 'deniedDashboards' option to generate a route for ALL dashboards
+    // except those listed explicitly:
+
+    #[AdminRoute('...', name: '...', deniedDashboards: [GuestDashboardController::class, '...'])]
+    class BusinessStatsController extends AbstractController
+
+The options to allow or exclude dashboards can be applied at both the class and
+action levels, and you can override them at the action level as follows:
+
+* ``false`` (it's the default value): means "option not set" and tells EasyAdmin
+  to inherit the value from the ``#[AdminRoute]`` attribute defined at the class
+  level (if any);
+* ``null``: explicitly allow/deny all dashboards; it's used to override the same
+  option in the ``#[AdminRoute]`` attribute at class level;
+* ``[]``: explicitly allow/deny no dashboards;
+* ``[FooDashboard::class, BarDashboard::class, ...]``: allow/deny only these
+  specific dashboards.
+
+Now you can link to those admin routes from your main menu to render the actions
+fully integrated into each dashboard::
 
     // src/Controller/Admin/DashboardController.php
     namespace App\Controller\Admin;
@@ -619,42 +717,14 @@ main menu using the ``configureMenuItems()`` method::
         {
             // ...
 
-            yield MenuItem::linktoRoute('Stats', 'fa fa-chart-bar', 'admin_business_stats');
+            yield MenuItem::linktoRoute('Stats', 'fa fa-chart-bar', 'admin_business_stats_index');
         }
     }
 
 If you reload your backend and click on that new menu item, you'll see an error
-because the templates used by the BusinessStatsController are not created yet.
-Check out the URL of the page and you'll see the trick used by EasyAdmin to
-integrate Symfony actions.
-
-Instead of the expected ``/admin/business-stats`` clean URL, the generated URL
-is ``/admin?menuIndex=...&submenuIndex=...&routeName=admin_business_stats``.
-This is an admin URL, so EasyAdmin can create the :ref:`admin context <admin-context>`,
-load the appropriate menu, etc. However, thanks to the ``routeName`` query string
-parameter, EasyAdmin knows that it must forward the request to the Symfony
-controller that serves that route, and does that transparently to you.
-
-.. note::
-
-    Handling route parameters in this way is fine in most situations. However,
-    sometimes you need to handle route arguments as proper Symfony route arguments.
-    For example, if you want to pass the ``_switch_user`` query parameter for
-    Symfony's impersonation feature, you can do this::
-
-        // you can generate the full URL with Symfony's URL generator:
-        $impersonate = Action::new('impersonate')->linkToUrl(
-            $urlGenerator->generate('admin', ['_switch_user' => 'user@example.com'], UrlGeneratorInterface::ABSOLUTE_URL)
-        );
-
-        // or you can add the query string parameter directly:
-        $impersonate = Action::new('impersonate')
-            ->linkToRoute('some_route')
-            ->setQueryParameter('_switch_user', 'user@example.com');
-
-Now, create the template used by the ``index()`` method, which lists a summary
-of the stats of all customers and includes a link to the detailed stats of each
-of them:
+because the templates used by the ``BusinessStatsController`` haven't been created yet.
+Next, create the template used by the ``index()`` method, which shows a summary
+of the stats of all customers and includes a link to the detailed stats of each one:
 
 .. code-block:: twig
 
@@ -671,7 +741,7 @@ of them:
                         {# ... #}
 
                         <td>
-                            <a href="{{ ea_url().setRoute('admin_business_stats_customer', { id: customer_data.id }) }}">
+                            <a href="{{ path('admin_business_stats_customer', { id: customer_data.id }) }}">
                                 View Details
                             </a>
                         </td>
@@ -682,26 +752,22 @@ of them:
     {% endblock %}
 
 The Twig template extends the :ref:`content page template <content_page_template>`
-provided by EasyAdmin to reuse all the backend design. The rest of the template
-is normal Twig code, except for the URL generation. Instead of using Symfony's
-``path()`` function, you must use the :ref:`ea_url() function <ea-url-function>`
-and pass the Symfony route name and parameter.
+provided by EasyAdmin to reuse the backend design. The rest of the template
+is standard Twig code, including the use of the Symfony's ``path()`` function t
+ generate the URL for the ``admin_business_stats_customer`` admin route.
 
-Similar to what happened before, the generated URL is not the expected
-``/admin/business-stats/5`` but
-``/admin?routeName=admin_business_stats_customer&routeParams%5Bid%5D=5``.
-But that's fine. EasyAdmin will run the ``customer()`` method of your
-BusinessStatsController, so you can render another Twig template with the
-customer stats.
+.. _generating-urls-to-symfony-actions-integrated-in-easyadmin:
 
-Generating URLs to Symfony Actions Integrated in EasyAdmin
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Legacy URL Generation for Symfony Actions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-As explained in detail in the previous section, when integrating a Symfony
-action in an EasyAdmin backend, you need to generate URLs a bit differently.
-Instead of using Symfony's UrlGenerator service or the ``$this->generateUrl()``
-shortcut in a controller, you must use the AdminUrlGenerator service provided
-by EasyAdmin::
+In EasyAdmin versions prior to 4.25.0, you couldn't define custom admin routes
+for your actions. This meant that you couldn't use Symfony features related to
+routing, such as the ``UrlGenerator`` service or the ``path()`` Twig function
+to generate URLs.
+
+In those cases, you had to use the EasyAdmin ``AdminUrlGenerator`` to generate
+admin URLs pointing to your custom actions, as follows::
 
     // src/Controller/SomeController.php
     namespace App\Controller;
@@ -727,6 +793,10 @@ by EasyAdmin::
             // ...
         }
     }
+
+This is no longer needed in modern EasyAdmin versions and is now a discouraged
+practice that you should avoid in your applications. Instead, see the previous
+section about :ref:`how to integrate custom Symfony controllers into EasyAdmin dashboards <actions-integrating-symfony>`.
 
 .. _`FontAwesome`: https://fontawesome.com/
 .. _`Symfony base controller class`: https://symfony.com/doc/current/controller.html#the-base-controller-class-services

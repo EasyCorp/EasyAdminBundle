@@ -3,7 +3,7 @@ Dashboards
 
 **Dashboards** are the entry point of backends and they link to one or more
 :doc:`resources </crud>`. Dashboards also display a main menu to navigate the
-resources and the information of the logged in user.
+resources and information about the logged-in user.
 
 Imagine that you have a simple application with three Doctrine entities: users,
 blog posts and categories. Your own employees can create and edit any of them

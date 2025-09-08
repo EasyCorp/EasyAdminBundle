@@ -1,12 +1,12 @@
 Tests
 =====
 
-As EasyAdmin is based on Symfony, you can add functional tests for the admin pages
+As EasyAdmin is based on Symfony, you can add functional tests for admin pages by
 extending the ``WebTestCase`` class and using the `Symfony functional testing workflow`_ .
 
-However, as EasyAdmin uses specific defined ways of displaying the data in its
+However, as EasyAdmin uses specific ways of displaying the data in its
 CRUD pages, a custom test class is provided: ``AbstractCrudTestCase``. The
-class is based on traits which defines custom asserts and helpers:
+class is based on traits that define custom asserts and helpers:
 
 #. `Functional Test Case Example`_
 #. `Url Generation`_
@@ -21,7 +21,7 @@ Suppose you have a :doc:`Dashboard </dashboards>` named ``App\Controller\Admin\A
 and a ``Category`` :doc:`Crud Controller </crud>` named ``App\Controller\Admin\CategoryCrudController``.
 Here's an example of a functional test class for that controller.
 
-First, your test class need to extend the ``AbstractCrudTestCase``::
+First, your test class needs to extend the ``AbstractCrudTestCase``::
 
     # tests/Admin/Controller/CategoryCrudControllerTest.php
     namespace App\Tests\Admin\Controller;
@@ -54,21 +54,20 @@ First, your test class need to extend the ``AbstractCrudTestCase``::
 URL Generation
 --------------
 
-Used by the ``AbstractCrudTestCase``, ``CrudTestUrlGeneration`` is an
-URL generation trait which helps to generate the specific of the EasyAdmin
-URLs.
+Used by the ``AbstractCrudTestCase``, ``CrudTestUrlGeneration`` is a
+URL generation trait that helps generate EasyAdmin-specific URLs.
 
 .. note::
 
     The trait can be used on its own but, in that case, the class that is using
-    it needs either:
+    it needs either of the following:
 
-    * to define the two functions ``getControllerFqcn()`` and ``getDashboardFqcn()``
-    * to add the DashboardFqcn (class name) and ControllerFqcn (class name) as
-      input to the URL generation functions
+    * to define two functions ``getControllerFqcn()`` and ``getDashboardFqcn()``;
+    * to pass the DashboardFqcn (class name) and ControllerFqcn (class name) as
+      input to the URL generation functions.
 
-Here is the list of the URL generation functions that are all providing URL
-based on provided Dashboard and Controller class names:
+Here is the list of URL generation functions. All of them build URLs
+based on the provided Dashboard and Controller class names:
 
 * ``getCrudUrl()``: is the main function that allows for a complete generation
   with all possible options;
@@ -142,9 +141,8 @@ The following asserts are provided:
 Selector Helpers
 ----------------
 
-Used by the Asserts to locate elements, the Trait ``CrudTestSelectors`` is
-defining a specific amounts of selector helpers linked to the specifics of
-EasyAdmin layout.
+Used by the Asserts to locate elements, the ``CrudTestSelectors`` trait defines
+a set of selector helpers tailored to EasyAdmin layout.
 
 .. note::
 

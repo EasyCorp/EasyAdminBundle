@@ -55,7 +55,17 @@ export default class Autocomplete {
             maxOptions: null,
         });
 
-        return new TomSelect(element, config);
+        document.dispatchEvent(
+            new CustomEvent('ea.autocomplete.pre-connect', { detail: { config, prefix: 'autocomplete' } })
+        );
+
+        const tomSelect = new TomSelect(element, config);
+
+        document.dispatchEvent(
+            new CustomEvent('ea.autocomplete.connect', { detail: { tomSelect, config, prefix: 'autocomplete' } })
+        );
+
+        return tomSelect;
     }
 
     #createAutocompleteWithHtmlContents(element) {

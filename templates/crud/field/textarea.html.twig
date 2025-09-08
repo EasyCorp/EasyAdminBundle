@@ -4,7 +4,7 @@
 {% set render_as_html = field.customOptions.get('renderAsHtml') %}
 {% if ea().crud.currentAction == 'detail' %}
     <span title="{{ field.value }}">
-        {{ render_as_html ? field.formattedValue|raw|nl2br : field.formattedValue|nl2br }}
+        {{ render_as_html ? field.formattedValue|raw : field.formattedValue|nl2br }}
     </span>
 {% else %}
     <span title="{{ field.value }}">

@@ -96,7 +96,7 @@ final class FieldFactory
 
             // when creating new entities with "useEntryCrudForm" on an edit page we must
             // explicitly check for the "new" page because $currentPage will be "edit"
-            if ((null === $entityDto->getInstance()) && !$fieldDto->isDisplayedOn(Crud::PAGE_NEW)) {
+            if ($isDetailOrIndex && (null === $entityDto->getInstance()) && !$fieldDto->isDisplayedOn(Crud::PAGE_NEW)) {
                 $fields->unset($fieldDto);
 
                 continue;

@@ -383,7 +383,7 @@ class Crud
     }
 
     /**
-     * @param array<string, string> $themePaths
+     * @param array<string> $themePaths
      */
     public function setFormThemes(array $themePaths): self
     {

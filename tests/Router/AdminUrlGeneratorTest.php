@@ -10,8 +10,10 @@ use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\DashboardControllerRegistryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
+use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Bridge\PhpUnit\ExpectDeprecationTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\Cache\CacheItem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Kernel;
@@ -314,6 +316,12 @@ class AdminUrlGeneratorTest extends WebTestCase
         $adminRouteGenerator->method('findRouteName')->willReturn(null);
         $adminRouteGenerator->method('usesPrettyUrls')->willReturn(false);
 
-        return new AdminUrlGenerator($adminContextProvider, $router, $dashboardControllerRegistry, $adminRouteGenerator);
+        $cacheItem = new CacheItem();
+        $cacheItem->set([]);
+        $cacheMock = $this->getMockBuilder(CacheItemPoolInterface::class)->getMock();
+        $cacheMock->method('getItem')->willReturn($cacheItem);
+        $cacheMock->method('save')->willReturn(true);
+
+        return new AdminUrlGenerator($adminContextProvider, $router, $dashboardControllerRegistry, $adminRouteGenerator, $cacheMock);
     }
 }

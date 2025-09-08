@@ -5,6 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Router;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminAction;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminCrud;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
+use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminRoute;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
@@ -67,6 +68,7 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
     /**
      * @param iterable<DashboardControllerInterface> $dashboardControllers
      * @param iterable<CrudControllerInterface>      $crudControllers
+     * @param iterable<object>                       $adminRouteControllers Controllers with the #[AdminRoute] attribute
      */
     public function __construct(
         private iterable $dashboardControllers,
@@ -75,6 +77,7 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
         private Filesystem $filesystem,
         private string $buildDir,
         private string $defaultLocale,
+        private iterable $adminRouteControllers = [],
     ) {
     }
 
@@ -123,6 +126,7 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
         /** @var array<string> $addedRouteNames Temporary cache that stores the route names to ensure that we don't add duplicated admin routes */
         $addedRouteNames = [];
 
+        // create the routes for the CRUD controllers and actions
         foreach ($this->dashboardControllers as $dashboardController) {
             $dashboardFqcn = $dashboardController::class;
             [$allowedCrudControllers, $deniedCrudControllers] = $this->getAllowedAndDeniedControllers($dashboardFqcn);
@@ -187,7 +191,205 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
             }
         }
 
+        // create the routes for the controllers that use the #[AdminRoute] attribute
+        foreach ($this->adminRouteControllers as $controller) {
+            $controllerFqcn = \is_object($controller) ? $controller::class : $controller;
+            $reflectionClass = new \ReflectionClass($controllerFqcn);
+
+            // check first for class-level attribute
+            $classAttributes = $reflectionClass->getAttributes(AdminRoute::class);
+            $classAdminRoute = null;
+            $hasMethodRoutes = false;
+
+            // Check if there are any method-level routes
+            foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
+                if ([] !== $method->getAttributes(AdminRoute::class)) {
+                    $hasMethodRoutes = true;
+                    break;
+                }
+            }
+
+            if ([] !== $classAttributes) {
+                /** @var AdminRoute $classAdminRoute */
+                $classAdminRoute = $classAttributes[0]->newInstance();
+
+                // Only create a route for the class itself if:
+                // 1. Both routeName and routePath are defined AND
+                // 2. There are no method-level routes (otherwise it acts as a prefix)
+                if (null !== $classAdminRoute->name && null !== $classAdminRoute->path && !$hasMethodRoutes) {
+                    if (!method_exists($controller, '__invoke')) {
+                        throw new \RuntimeException(sprintf('When applying the #[AdminRoute] attribute only to the controller class (as in "%s"), the controller must be invokable (i.e. it must define the "__invoke()" method).', $controllerFqcn));
+                    }
+
+                    // create route for the entire controller
+                    foreach ($this->dashboardControllers as $dashboardController) {
+                        $dashboardFqcn = $dashboardController::class;
+                        $allowedDashboards = $classAdminRoute->allowedDashboards;
+                        $deniedDashboards = $classAdminRoute->deniedDashboards;
+
+                        // skip if not in allowed dashboards (when restrictions are set)
+                        if (\is_array($allowedDashboards) && !\in_array($dashboardFqcn, $allowedDashboards, true)) {
+                            continue;
+                        }
+
+                        // skip if in denied dashboards (when restrictions are set)
+                        if (\is_array($deniedDashboards) && \in_array($dashboardFqcn, $deniedDashboards, true)) {
+                            continue;
+                        }
+
+                        $dashboardRouteConfig = $this->getDashboardsRouteConfig()[$dashboardFqcn];
+
+                        $adminRoutePath = rtrim(sprintf('%s/%s', $dashboardRouteConfig['routePath'], ltrim($classAdminRoute->path, '/')), '/');
+                        $adminRouteName = sprintf('%s_%s', $dashboardRouteConfig['routeName'], ltrim($classAdminRoute->name, '_'));
+
+                        if (\in_array($adminRouteName, $addedRouteNames, true)) {
+                            throw new \RuntimeException(sprintf('The #[AdminRoute] attribute applied to the "%s" controller would create an admin route called "%s", which already exists. You must change the "routeName" argument to generate a different route name.', $controllerFqcn, $adminRouteName));
+                        }
+
+                        $adminRoute = $this->createRouteForAdminAttribute($classAdminRoute, $adminRoutePath, $dashboardFqcn, $controllerFqcn, '__invoke');
+
+                        $adminRoutes[$adminRouteName] = $adminRoute;
+                        $addedRouteNames[] = $adminRouteName;
+                    }
+                }
+            }
+
+            // now, check for method-level attributes
+            foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
+                $methodAttributes = $method->getAttributes(AdminRoute::class);
+                if ([] === $methodAttributes) {
+                    continue;
+                }
+
+                /** @var AdminRoute $methodAdminRoute */
+                $methodAdminRoute = $methodAttributes[0]->newInstance();
+
+                // create route for the method
+                foreach ($this->dashboardControllers as $dashboardController) {
+                    $dashboardFqcn = $dashboardController::class;
+
+                    // Dashboard restrictions inheritance:
+                    // - false: Not set - inherit from class attribute
+                    // - null: Explicitly allow all (for allowed) or deny none (for denied)
+                    // - []: Explicitly allow/deny none
+                    // - [...]: Allow/deny specific dashboards
+                    $allowedDashboards = false !== $methodAdminRoute->allowedDashboards
+                        ? $methodAdminRoute->allowedDashboards
+                        : $classAdminRoute?->allowedDashboards;
+
+                    $deniedDashboards = false !== $methodAdminRoute->deniedDashboards
+                        ? $methodAdminRoute->deniedDashboards
+                        : $classAdminRoute?->deniedDashboards;
+
+                    // Skip if not in allowed dashboards (when restrictions are set)
+                    if (\is_array($allowedDashboards) && !\in_array($dashboardFqcn, $allowedDashboards, true)) {
+                        continue;
+                    }
+
+                    // Skip if in denied dashboards (when restrictions are set)
+                    if (\is_array($deniedDashboards) && \in_array($dashboardFqcn, $deniedDashboards, true)) {
+                        continue;
+                    }
+
+                    $dashboardRouteConfig = $this->getDashboardsRouteConfig()[$dashboardFqcn];
+
+                    // Build the route path: dashboard + class prefix (if any) + method path
+                    $routePathParts = [$dashboardRouteConfig['routePath']];
+                    if (null !== $classAdminRoute?->path) {
+                        $routePathParts[] = ltrim($classAdminRoute->path, '/');
+                    }
+                    if (null !== $methodAdminRoute->path) {
+                        $routePathParts[] = ltrim($methodAdminRoute->path, '/');
+                    }
+                    $adminRoutePath = rtrim(implode('/', $routePathParts), '/');
+
+                    // Build the route name: dashboard + class prefix (if any) + method name
+                    $routeNameParts = [$dashboardRouteConfig['routeName']];
+                    if (null !== $classAdminRoute?->name) {
+                        $routeNameParts[] = ltrim($classAdminRoute->name, '_');
+                    }
+                    if (null !== $methodAdminRoute->name) {
+                        $routeNameParts[] = ltrim($methodAdminRoute->name, '_');
+                    }
+                    $adminRouteName = implode('_', $routeNameParts);
+
+                    if (\in_array($adminRouteName, $addedRouteNames, true)) {
+                        throw new \RuntimeException(sprintf('The #[AdminRoute] attribute applied to the "%s" method of the "%s" controller would create an admin route called "%s", which already exists. You must change the "routeName" argument to generate a different route name.', $method->name, $controllerFqcn, $adminRouteName));
+                    }
+
+                    // Merge route options: method options override class options
+                    $mergedRouteOptions = array_merge(
+                        $classAdminRoute->options ?? [],
+                        $methodAdminRoute->options
+                    );
+
+                    // Create a new AdminRoute with merged configuration
+                    $mergedAdminRoute = new AdminRoute(
+                        path: $methodAdminRoute->path,
+                        name: $methodAdminRoute->name,
+                        options: $mergedRouteOptions,
+                        allowedDashboards: $allowedDashboards,
+                        deniedDashboards: $deniedDashboards
+                    );
+
+                    $adminRoute = $this->createRouteForAdminAttribute($mergedAdminRoute, $adminRoutePath, $dashboardFqcn, $controllerFqcn, $method->name);
+
+                    $adminRoutes[$adminRouteName] = $adminRoute;
+                    $addedRouteNames[] = $adminRouteName;
+                }
+            }
+        }
+
         return $adminRoutes;
+    }
+
+    private function createRouteForAdminAttribute(AdminRoute $adminRouteAttribute, string $routePath, string $dashboardFqcn, string $controllerFqcn, string $methodName): Route
+    {
+        $route = new Route($routePath);
+
+        $routeOptions = $adminRouteAttribute->options;
+
+        if (isset($routeOptions['requirements'])) {
+            $route->setRequirements($routeOptions['requirements']);
+        }
+        if (isset($routeOptions['host'])) {
+            $route->setHost($routeOptions['host']);
+        }
+        if (isset($routeOptions['methods'])) {
+            $route->setMethods($routeOptions['methods']);
+        }
+        if (isset($routeOptions['schemes'])) {
+            $route->setSchemes($routeOptions['schemes']);
+        }
+        if (isset($routeOptions['condition'])) {
+            $route->setCondition($routeOptions['condition']);
+        }
+
+        $defaults = $routeOptions['defaults'] ?? [];
+        if (isset($routeOptions['locale'])) {
+            $defaults['_locale'] = $routeOptions['locale'];
+        }
+        if (isset($routeOptions['format'])) {
+            $defaults['_format'] = $routeOptions['format'];
+        }
+        if (isset($routeOptions['stateless'])) {
+            $defaults['_stateless'] = $routeOptions['stateless'];
+        }
+        $defaults['_controller'] = $controllerFqcn.'::'.$methodName;
+        $defaults[EA::ROUTE_CREATED_BY_EASYADMIN] = true;
+        $defaults[EA::DASHBOARD_CONTROLLER_FQCN] = $dashboardFqcn;
+        $defaults[EA::CRUD_CONTROLLER_FQCN] = $controllerFqcn;
+        $defaults[EA::CRUD_ACTION] = $methodName;
+        $route->setDefaults($defaults);
+
+        if (isset($routeOptions['utf8'])) {
+            $routeOptions['options']['utf8'] = $routeOptions['utf8'];
+        }
+        if (isset($routeOptions['options'])) {
+            $route->setOptions($routeOptions['options']);
+        }
+
+        return $route;
     }
 
     /**
@@ -324,28 +526,55 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
         $crudControllerConfig = [];
 
         $reflectionClass = new \ReflectionClass($crudControllerFqcn);
-        $attributes = $reflectionClass->getAttributes(AdminCrud::class);
-        $attribute = $attributes[0] ?? null;
 
-        // first, check if the CRUD controller defines a custom route config in the #[AdminCrud] attribute
-        if (null !== $attribute) {
-            /** @var AdminCrud $attributeInstance */
-            $attributeInstance = $attribute->newInstance();
+        // first, check for #[AdminRoute] attribute
+        $adminRouteAttributes = $reflectionClass->getAttributes(AdminRoute::class);
+        if ([] !== $adminRouteAttributes) {
+            /** @var AdminRoute $adminRouteInstance */
+            $adminRouteInstance = $adminRouteAttributes[0]->newInstance();
 
-            if (\count(array_diff(array_keys($attribute->getArguments()), ['routePath', 'routeName', 0, 1])) > 0) {
-                throw new \RuntimeException(sprintf('In the #[AdminCrud] attribute of the "%s" CRUD controller, the route configuration defines some unsupported keys. You can only define these keys: "routePath" and "routeName".', $crudControllerFqcn));
+            if (null !== $adminRouteInstance->path) {
+                $crudControllerConfig['routePath'] = trim($adminRouteInstance->path, '/');
             }
 
-            if (null !== $attributeInstance->routePath) {
-                $crudControllerConfig['routePath'] = trim($attributeInstance->routePath, '/');
-            }
-
-            if (null !== $attributeInstance->routeName) {
-                if (1 !== preg_match('/^[a-zA-Z0-9_-]+$/', $attributeInstance->routeName)) {
-                    throw new \RuntimeException(sprintf('In the #[AdminCrud] attribute of the "%s" CRUD controller, the route name "%s" is not valid. It can only contain letter, numbers, dashes, and underscores.', $crudControllerFqcn, $attributeInstance->routeName));
+            if (null !== $adminRouteInstance->name) {
+                if (1 !== preg_match('/^[a-zA-Z0-9_-]+$/', $adminRouteInstance->name)) {
+                    throw new \RuntimeException(sprintf('In the #[AdminRoute] attribute of the "%s" CRUD controller, the route name "%s" is not valid. It can only contain letters, numbers, dashes, and underscores.', $crudControllerFqcn, $adminRouteInstance->name));
                 }
 
-                $crudControllerConfig['routeName'] = trim($attributeInstance->routeName, '_');
+                $crudControllerConfig['routeName'] = trim($adminRouteInstance->name, '_');
+            }
+        } else {
+            // fallback to deprecated #[AdminCrud] attribute for backward compatibility
+            $attributes = $reflectionClass->getAttributes(AdminCrud::class);
+            $attribute = $attributes[0] ?? null;
+
+            if (null !== $attribute) {
+                trigger_deprecation(
+                    'easycorp/easyadmin-bundle',
+                    '4.25.0',
+                    'The #[AdminCrud] attribute used in "%s" is deprecated. Use #[AdminRoute] instead.',
+                    $crudControllerFqcn,
+                );
+
+                /** @var AdminCrud $attributeInstance */
+                $attributeInstance = $attribute->newInstance();
+
+                if (\count(array_diff(array_keys($attribute->getArguments()), ['routePath', 'routeName', 0, 1])) > 0) {
+                    throw new \RuntimeException(sprintf('In the #[AdminCrud] attribute of the "%s" CRUD controller, the route configuration defines some unsupported keys. You can only define these keys: "routePath" and "routeName".', $crudControllerFqcn));
+                }
+
+                if (null !== $attributeInstance->routePath) {
+                    $crudControllerConfig['routePath'] = trim($attributeInstance->routePath, '/');
+                }
+
+                if (null !== $attributeInstance->routeName) {
+                    if (1 !== preg_match('/^[a-zA-Z0-9_-]+$/', $attributeInstance->routeName)) {
+                        throw new \RuntimeException(sprintf('In the #[AdminCrud] attribute of the "%s" CRUD controller, the route name "%s" is not valid. It can only contain letter, numbers, dashes, and underscores.', $crudControllerFqcn, $attributeInstance->routeName));
+                    }
+
+                    $crudControllerConfig['routeName'] = trim($attributeInstance->routeName, '_');
+                }
             }
         }
 
@@ -373,15 +602,77 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
         $methods = $reflectionClass->getMethods();
 
         foreach ($methods as $method) {
+            $action = $method->getName();
+
+            // first, check for #[AdminRoute] attribute
+            $adminRouteAttributes = $method->getAttributes(AdminRoute::class);
+            if ([] !== $adminRouteAttributes) {
+                /** @var AdminRoute $adminRouteInstance */
+                $adminRouteInstance = $adminRouteAttributes[0]->newInstance();
+
+                if (null !== $adminRouteInstance->path) {
+                    if (\in_array($action, ['edit', 'detail', 'delete'], true) && !str_contains($adminRouteInstance->path, '{entityId}')) {
+                        throw new \RuntimeException(sprintf('In the "%s" CRUD controller, the #[AdminRoute] attribute applied to the "%s()" action is missing the "{entityId}" placeholder in its route path.', $crudControllerFqcn, $action));
+                    }
+
+                    $customActionsConfig[$action]['routePath'] = trim($adminRouteInstance->path, '/');
+                }
+
+                if (null !== $adminRouteInstance->name) {
+                    if (1 !== preg_match('/^[a-zA-Z0-9_-]+$/', $adminRouteInstance->name)) {
+                        throw new \RuntimeException(sprintf('In the "%s" CRUD controller, the #[AdminRoute] attribute applied to the "%s()" action defines an invalid route name: "%s". Valid route names can only contain letters, numbers, dashes, and underscores.', $crudControllerFqcn, $action, $adminRouteInstance->name));
+                    }
+
+                    $customActionsConfig[$action]['routeName'] = trim($adminRouteInstance->name, '_');
+                }
+
+                // handle methods from routeOptions or use smart defaults
+                $methods = $adminRouteInstance->options['methods'] ?? null;
+                if (null === $methods) {
+                    // smart defaults: built-in actions have fixed methods, custom actions default to GET and POST
+                    if (\in_array($action, ['index', 'detail'], true)) {
+                        $methods = ['GET'];
+                    } elseif (\in_array($action, ['new', 'edit', 'delete', 'batchDelete'], true)) {
+                        $methods = ['GET', 'POST'];
+                    } else {
+                        // custom actions default to GET and POST
+                        $methods = ['GET', 'POST'];
+                    }
+                }
+
+                if (\is_string($methods)) {
+                    $methods = [$methods];
+                }
+
+                // validate HTTP methods
+                $allowedMethods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD'];
+                foreach ($methods as $httpMethod) {
+                    if (!\in_array(strtoupper($httpMethod), $allowedMethods, true)) {
+                        throw new \RuntimeException(sprintf('In the "%s" CRUD controller, the #[AdminRoute] attribute applied to the "%s()" action includes "%s" as part of its HTTP methods. However, the only allowed HTTP methods are: %s', $crudControllerFqcn, $action, $httpMethod, implode(', ', $allowedMethods)));
+                    }
+                }
+
+                $customActionsConfig[$action]['methods'] = array_map('strtoupper', $methods);
+
+                continue; // used to skip checking for deprecated AdminAction
+            }
+
+            // fallback to deprecated #[AdminAction] attribute for backward compatibility
             $attributes = $method->getAttributes(AdminAction::class);
             if ([] === $attributes) {
                 continue;
             }
 
+            trigger_deprecation(
+                'easycorp/easyadmin-bundle',
+                '4.25.0',
+                'The #[AdminAction] attribute used in "%s::%s()" is deprecated. Use #[AdminRoute] instead.',
+                $crudControllerFqcn, $action
+            );
+
             $attribute = $attributes[0];
             /** @var AdminAction $attributeInstance */
             $attributeInstance = $attribute->newInstance();
-            $action = $method->getName();
 
             if (\count(array_diff(array_keys($attribute->getArguments()), ['routePath', 'routeName', 'methods', 0, 1, 2])) > 0) {
                 throw new \RuntimeException(sprintf('In the "%s" CRUD controller, the #[AdminAction] attribute applied to the "%s()" action includes some unsupported keys. You can only define these keys: "routePath", "routeName", and "methods".', $crudControllerFqcn, $action));

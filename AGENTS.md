@@ -34,7 +34,7 @@ Welcome, 🤖 AI assistant! Please follow these guidelines when contributing to 
 - Write in American English with second person (you), avoid first person (we)
 - Use gender-neutral language (they/them)
 - Avoid belittling or exclusionary words (e.g. "just", "obviously", "easy")
-- Contractions are allowed (e.g. "it's", "you're")
+- Always prefer contractions over expanded forms (e.g. "it's", "you're", "don't")
 
 ## Commands
 

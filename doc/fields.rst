@@ -1,7 +1,7 @@
 Fields
 ======
 
-Fields allow to display the contents of your Doctrine entities on each
+Fields let you display the contents of your Doctrine entities on each
 :ref:`CRUD page <crud-pages>`. EasyAdmin provides built-in fields to display
 all the common data types, but you can also :ref:`create your own fields <custom-fields>`.
 
@@ -9,8 +9,8 @@ Configuring the Fields to Display
 ---------------------------------
 
 If your :doc:`CRUD controller </crud>` extends from the ``AbstractCrudController``
-provided by EasyAdmin, the fields are configured automatically. In the ``index``
-page you'll see a few fields and in the rest of pages you'll see as many fields
+provided by EasyAdmin, the fields are configured automatically. On the ``index``
+page you'll see a few fields, and on the other pages you'll see as many fields
 as needed to display all the properties of your Doctrine entity.
 
 Implement the ``configureFields()`` method in your CRUD controller to customize
@@ -91,9 +91,8 @@ used to display each type of property::
 The only mandatory argument of the field constructors is the name of the
 Doctrine entity property managed by this field. EasyAdmin uses the
 `PropertyAccess component`_ to get the value of the properties, so the entity
-can define their access as public properties (e.g. ``public $firstName``) or
-public methods (e.g. ``public function getFirstName()``, ``public function
-firstName()``).
+can expose data as public properties (e.g. ``public $firstName``) or as public
+methods (e.g. ``public function getFirstName()``, ``public function firstName()``).
 
 .. note::
 
@@ -394,7 +393,7 @@ The arguments of the ``addColumn()`` method are:
   that is displayed at the top of the column. If you pass ``false``, ``null``
   or an empty string, no title is displayed. You can also pass ``string`` and
   ``TranslatableInterface`` variables. In both cases, if they contain HTML tags
-  they will be rendered in stead of escaped;
+  they will be rendered instead of escaped;
 * ``$icon``: (type: ``?string``) the full CSS class of a `FontAwesome icon`_
   (e.g. ``far fa-folder-open``) that is displayed next to the column label;
 * ``$help``: (type: ``?string``) an optional content that is displayed below the
@@ -768,7 +767,7 @@ Doctrine Type             Recommended EasyAdmin Fields
 ``datetime``              ``DateTimeField``
 ``datetimetz_immutable``  ``DateTimeField``
 ``datetimetz``            ``DateTimeField``
-``datetinterval``         ``TextField``
+``dateinterval``          ``TextField``
 ``decimal``               ``NumberField``
 ``float``                 ``NumberField``
 ``guid``                  ``TextField``
@@ -871,7 +870,7 @@ Design Options
     ;
 
 Similar to the :ref:`CRUD design options <crud-design-custom-web-assets>`, fields
-can also load CSS files, Javascript files and Webpack Encore entries and add HTML
+can also load CSS files, Javascript files and Webpack Encore entries, and add HTML
 contents to the ``<head>`` and/or ``<body>`` elements of the backend pages::
 
     TextField::new('firstName', 'Name')

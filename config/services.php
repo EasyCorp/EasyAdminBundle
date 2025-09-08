@@ -201,6 +201,7 @@ return static function (ContainerConfigurator $container) {
             ->arg(1, service('router'))
             ->arg(2, service(DashboardControllerRegistry::class))
             ->arg(3, service(AdminRouteGenerator::class))
+            ->arg(4, service('cache.easyadmin'))
 
         ->set('service_locator_'.AdminUrlGenerator::class, ServiceLocator::class)
             ->args([[AdminUrlGenerator::class => service(AdminUrlGenerator::class)]])
@@ -217,6 +218,7 @@ return static function (ContainerConfigurator $container) {
             ->arg(3, service('filesystem'))
             ->arg(4, '%kernel.build_dir%')
             ->arg(5, '%kernel.default_locale%')
+            ->arg(6, tagged_iterator(EasyAdminExtension::TAG_ADMIN_ROUTE_CONTROLLER))
 
         ->set(AdminRouteLoader::class)
             ->arg(0, service(AdminRouteGenerator::class))
@@ -233,6 +235,7 @@ return static function (ContainerConfigurator $container) {
             ->arg(2, service('security.logout_url_generator'))
             ->arg(3, service(AdminUrlGenerator::class))
             ->arg(4, service(MenuItemMatcherInterface::class))
+            ->arg(5, service('router'))
 
         ->set(MenuItemMatcher::class)
             ->arg(0, service(AdminUrlGenerator::class))

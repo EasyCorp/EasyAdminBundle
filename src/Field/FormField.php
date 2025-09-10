@@ -142,7 +142,7 @@ final class FormField implements FieldTraitAwareInterface
             ->setValue(true);
     }
 
-    public function setIcon(string $iconCssClass): self
+    public function setIcon(?string $iconCssClass, string $invokingMethod = 'FormField::setIcon()'): self
     {
         $this->setCustomOption(self::OPTION_ICON, $iconCssClass);
 

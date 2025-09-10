@@ -503,4 +503,9 @@ trait FieldTrait
     {
         return $this->dto;
     }
+
+    public function setIcon(?string $iconCssClass, string $invokingMethod = 'FormField::setIcon()'): self
+    {
+        return $this;
+    }
 }

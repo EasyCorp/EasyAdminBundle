@@ -84,7 +84,7 @@ served by some dashboard using the ``routes`` option of the ``#[AdminDashboard]`
     use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
     // ...
 
-    #[(routePath: '/admin', routeName: 'admin', routes: [
+    #[AdminDashboard(routePath: '/admin', routeName: 'admin', routes: [
         'index' => ['routePath' => '/all'],
         'new' => ['routePath' => '/create', 'routeName' => 'create'],
         'edit' => ['routePath' => '/editing-{entityId}', 'routeName' => 'editing'],

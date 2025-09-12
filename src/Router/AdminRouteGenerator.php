@@ -196,7 +196,13 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
             $controllerFqcn = \is_object($controller) ? $controller::class : $controller;
             $reflectionClass = new \ReflectionClass($controllerFqcn);
 
-            // check first for class-level attribute
+            // if the class is a CRUD controller, skip it because all the routes (default and custom) were already
+            // created before when creating the regular CRUD controller routes
+            if ($reflectionClass->implementsInterface(CrudControllerInterface::class)) {
+                continue;
+            }
+
+            // check first for class-level attributes
             $classAttributes = $reflectionClass->getAttributes(AdminRoute::class);
             $classAdminRoute = null;
             $hasMethodRoutes = false;
@@ -210,22 +216,89 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
             }
 
             if ([] !== $classAttributes) {
-                /** @var AdminRoute $classAdminRoute */
-                $classAdminRoute = $classAttributes[0]->newInstance();
-
-                // Only create a route for the class itself if:
-                // 1. Both routeName and routePath are defined AND
-                // 2. There are no method-level routes (otherwise it acts as a prefix)
-                if (null !== $classAdminRoute->name && null !== $classAdminRoute->path && !$hasMethodRoutes) {
+                // Only create routes for class-level attributes if there are NO method-level routes
+                // If there are method routes, the class attribute is used only as a prefix
+                if (!$hasMethodRoutes) {
+                    // the controller must be invokable when using class-level routes without method routes
                     if (!method_exists($controller, '__invoke')) {
-                        throw new \RuntimeException(sprintf('When applying the #[AdminRoute] attribute only to the controller class (as in "%s"), the controller must be invokable (i.e. it must define the "__invoke()" method).', $controllerFqcn));
+                        throw new \RuntimeException(sprintf('When applying the #[AdminRoute] attribute only to the controller class (as in "%s") without any methods having #[AdminRoute], the controller must be invokable (i.e. it must define the "__invoke()" method).', $controllerFqcn));
                     }
 
-                    // create route for the entire controller
+                    // AdminRoute attribute is repeatable, so there can be more than one
+                    foreach ($classAttributes as $classAttribute) {
+                        /** @var AdminRoute $currentClassAdminRoute */
+                        $currentClassAdminRoute = $classAttribute->newInstance();
+
+                        // both name and path must be defined to create a route
+                        if (null === $currentClassAdminRoute->name || null === $currentClassAdminRoute->path) {
+                            throw new \RuntimeException(sprintf('The #[AdminRoute] attribute applied to the "%s" controller class must define both "name" and "path" arguments to generate its route (because the controller has no other methods with #[AdminRoute] and therefore, the class-level attribute doesn\'t work as a path/name prefix of other actions but as a standalone route).', $controllerFqcn));
+                        }
+
+                        // create route for the entire controller
+                        foreach ($this->dashboardControllers as $dashboardController) {
+                            $dashboardFqcn = $dashboardController::class;
+                            $allowedDashboards = $currentClassAdminRoute->allowedDashboards;
+                            $deniedDashboards = $currentClassAdminRoute->deniedDashboards;
+
+                            // skip if not in allowed dashboards (when restrictions are set)
+                            if (\is_array($allowedDashboards) && !\in_array($dashboardFqcn, $allowedDashboards, true)) {
+                                continue;
+                            }
+
+                            // skip if in denied dashboards (when restrictions are set)
+                            if (\is_array($deniedDashboards) && \in_array($dashboardFqcn, $deniedDashboards, true)) {
+                                continue;
+                            }
+
+                            $dashboardRouteConfig = $this->getDashboardsRouteConfig()[$dashboardFqcn];
+
+                            $adminRoutePath = rtrim(sprintf('%s/%s', $dashboardRouteConfig['routePath'], ltrim($currentClassAdminRoute->path, '/')), '/');
+                            $adminRouteName = sprintf('%s_%s', $dashboardRouteConfig['routeName'], ltrim($currentClassAdminRoute->name, '_'));
+
+                            if (\in_array($adminRouteName, $addedRouteNames, true)) {
+                                throw new \RuntimeException(sprintf('The #[AdminRoute] attribute applied to the "%s" controller would create an admin route called "%s", which already exists. You must change the "routeName" argument to generate a different route name.', $controllerFqcn, $adminRouteName));
+                            }
+
+                            $adminRoute = $this->createRouteForAdminAttribute($currentClassAdminRoute, $adminRoutePath, $dashboardFqcn, $controllerFqcn, '__invoke');
+
+                            $adminRoutes[$adminRouteName] = $adminRoute;
+                            $addedRouteNames[] = $adminRouteName;
+                        }
+                    }
+                }
+
+                // store the first class attribute for use as a prefix with method routes
+                /** @var AdminRoute $classAdminRoute */
+                $classAdminRoute = $classAttributes[0]->newInstance();
+            }
+
+            // now, check for method-level attributes
+            foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
+                $methodAttributes = $method->getAttributes(AdminRoute::class);
+                if ([] === $methodAttributes) {
+                    continue;
+                }
+
+                foreach ($methodAttributes as $methodAttribute) {
+                    /** @var AdminRoute $methodAdminRoute */
+                    $methodAdminRoute = $methodAttribute->newInstance();
+
+                    // create route for the method
                     foreach ($this->dashboardControllers as $dashboardController) {
                         $dashboardFqcn = $dashboardController::class;
-                        $allowedDashboards = $classAdminRoute->allowedDashboards;
-                        $deniedDashboards = $classAdminRoute->deniedDashboards;
+
+                        // Dashboard restrictions inheritance:
+                        // - false: Not set - inherit from class attribute
+                        // - null: Explicitly allow all (for allowed) or deny none (for denied)
+                        // - []: Explicitly allow/deny none
+                        // - [...]: Allow/deny specific dashboards
+                        $allowedDashboards = false !== $methodAdminRoute->allowedDashboards
+                            ? $methodAdminRoute->allowedDashboards
+                            : $classAdminRoute?->allowedDashboards;
+
+                        $deniedDashboards = false !== $methodAdminRoute->deniedDashboards
+                            ? $methodAdminRoute->deniedDashboards
+                            : $classAdminRoute?->deniedDashboards;
 
                         // skip if not in allowed dashboards (when restrictions are set)
                         if (\is_array($allowedDashboards) && !\in_array($dashboardFqcn, $allowedDashboards, true)) {
@@ -239,103 +312,56 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
 
                         $dashboardRouteConfig = $this->getDashboardsRouteConfig()[$dashboardFqcn];
 
-                        $adminRoutePath = rtrim(sprintf('%s/%s', $dashboardRouteConfig['routePath'], ltrim($classAdminRoute->path, '/')), '/');
-                        $adminRouteName = sprintf('%s_%s', $dashboardRouteConfig['routeName'], ltrim($classAdminRoute->name, '_'));
+                        // build the route path: dashboard + class prefix (if any) + method path
+                        $routePathParts = [$dashboardRouteConfig['routePath']];
 
-                        if (\in_array($adminRouteName, $addedRouteNames, true)) {
-                            throw new \RuntimeException(sprintf('The #[AdminRoute] attribute applied to the "%s" controller would create an admin route called "%s", which already exists. You must change the "routeName" argument to generate a different route name.', $controllerFqcn, $adminRouteName));
+                        if (null !== $classAdminRoute?->path) {
+                            // Use the explicit class-level AdminRoute path
+                            $routePathParts[] = ltrim($classAdminRoute->path, '/');
                         }
 
-                        $adminRoute = $this->createRouteForAdminAttribute($classAdminRoute, $adminRoutePath, $dashboardFqcn, $controllerFqcn, '__invoke');
+                        if (null !== $methodAdminRoute->path) {
+                            $routePathParts[] = ltrim($methodAdminRoute->path, '/');
+                        }
+                        $adminRoutePath = rtrim(implode('/', $routePathParts), '/');
+
+                        // build the route name: dashboard + class prefix (if any) + method name
+                        $routeNameParts = [$dashboardRouteConfig['routeName']];
+
+                        if (null !== $classAdminRoute?->name) {
+                            // Use the explicit class-level AdminRoute name
+                            $routeNameParts[] = ltrim($classAdminRoute->name, '_');
+                        }
+
+                        if (null !== $methodAdminRoute->name) {
+                            $routeNameParts[] = ltrim($methodAdminRoute->name, '_');
+                        }
+                        $adminRouteName = implode('_', $routeNameParts);
+
+                        if (\in_array($adminRouteName, $addedRouteNames, true)) {
+                            throw new \RuntimeException(sprintf('The #[AdminRoute] attribute applied to the "%s" method of the "%s" controller would create an admin route called "%s", which already exists. You must change the "routeName" argument to generate a different route name.', $method->name, $controllerFqcn, $adminRouteName));
+                        }
+
+                        // merge route options: method options override class options
+                        $mergedRouteOptions = array_merge(
+                            $classAdminRoute->options ?? [],
+                            $methodAdminRoute->options
+                        );
+
+                        // create a new AdminRoute with merged configuration
+                        $mergedAdminRoute = new AdminRoute(
+                            path: $methodAdminRoute->path,
+                            name: $methodAdminRoute->name,
+                            options: $mergedRouteOptions,
+                            allowedDashboards: $allowedDashboards,
+                            deniedDashboards: $deniedDashboards
+                        );
+
+                        $adminRoute = $this->createRouteForAdminAttribute($mergedAdminRoute, $adminRoutePath, $dashboardFqcn, $controllerFqcn, $method->name);
 
                         $adminRoutes[$adminRouteName] = $adminRoute;
                         $addedRouteNames[] = $adminRouteName;
                     }
-                }
-            }
-
-            // now, check for method-level attributes
-            foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
-                $methodAttributes = $method->getAttributes(AdminRoute::class);
-                if ([] === $methodAttributes) {
-                    continue;
-                }
-
-                /** @var AdminRoute $methodAdminRoute */
-                $methodAdminRoute = $methodAttributes[0]->newInstance();
-
-                // create route for the method
-                foreach ($this->dashboardControllers as $dashboardController) {
-                    $dashboardFqcn = $dashboardController::class;
-
-                    // Dashboard restrictions inheritance:
-                    // - false: Not set - inherit from class attribute
-                    // - null: Explicitly allow all (for allowed) or deny none (for denied)
-                    // - []: Explicitly allow/deny none
-                    // - [...]: Allow/deny specific dashboards
-                    $allowedDashboards = false !== $methodAdminRoute->allowedDashboards
-                        ? $methodAdminRoute->allowedDashboards
-                        : $classAdminRoute?->allowedDashboards;
-
-                    $deniedDashboards = false !== $methodAdminRoute->deniedDashboards
-                        ? $methodAdminRoute->deniedDashboards
-                        : $classAdminRoute?->deniedDashboards;
-
-                    // Skip if not in allowed dashboards (when restrictions are set)
-                    if (\is_array($allowedDashboards) && !\in_array($dashboardFqcn, $allowedDashboards, true)) {
-                        continue;
-                    }
-
-                    // Skip if in denied dashboards (when restrictions are set)
-                    if (\is_array($deniedDashboards) && \in_array($dashboardFqcn, $deniedDashboards, true)) {
-                        continue;
-                    }
-
-                    $dashboardRouteConfig = $this->getDashboardsRouteConfig()[$dashboardFqcn];
-
-                    // Build the route path: dashboard + class prefix (if any) + method path
-                    $routePathParts = [$dashboardRouteConfig['routePath']];
-                    if (null !== $classAdminRoute?->path) {
-                        $routePathParts[] = ltrim($classAdminRoute->path, '/');
-                    }
-                    if (null !== $methodAdminRoute->path) {
-                        $routePathParts[] = ltrim($methodAdminRoute->path, '/');
-                    }
-                    $adminRoutePath = rtrim(implode('/', $routePathParts), '/');
-
-                    // Build the route name: dashboard + class prefix (if any) + method name
-                    $routeNameParts = [$dashboardRouteConfig['routeName']];
-                    if (null !== $classAdminRoute?->name) {
-                        $routeNameParts[] = ltrim($classAdminRoute->name, '_');
-                    }
-                    if (null !== $methodAdminRoute->name) {
-                        $routeNameParts[] = ltrim($methodAdminRoute->name, '_');
-                    }
-                    $adminRouteName = implode('_', $routeNameParts);
-
-                    if (\in_array($adminRouteName, $addedRouteNames, true)) {
-                        throw new \RuntimeException(sprintf('The #[AdminRoute] attribute applied to the "%s" method of the "%s" controller would create an admin route called "%s", which already exists. You must change the "routeName" argument to generate a different route name.', $method->name, $controllerFqcn, $adminRouteName));
-                    }
-
-                    // Merge route options: method options override class options
-                    $mergedRouteOptions = array_merge(
-                        $classAdminRoute->options ?? [],
-                        $methodAdminRoute->options
-                    );
-
-                    // Create a new AdminRoute with merged configuration
-                    $mergedAdminRoute = new AdminRoute(
-                        path: $methodAdminRoute->path,
-                        name: $methodAdminRoute->name,
-                        options: $mergedRouteOptions,
-                        allowedDashboards: $allowedDashboards,
-                        deniedDashboards: $deniedDashboards
-                    );
-
-                    $adminRoute = $this->createRouteForAdminAttribute($mergedAdminRoute, $adminRoutePath, $dashboardFqcn, $controllerFqcn, $method->name);
-
-                    $adminRoutes[$adminRouteName] = $adminRoute;
-                    $addedRouteNames[] = $adminRouteName;
                 }
             }
         }

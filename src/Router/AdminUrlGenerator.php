@@ -12,6 +12,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\DashboardControllerRegistryInterface;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\Exception\MissingMandatoryParametersException;
+use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -329,8 +331,22 @@ final class AdminUrlGenerator implements AdminUrlGeneratorInterface
             );
         }
 
-        $url = $this->urlGenerator->generate($routeName, $routeParameters, $urlType);
-        $url = '' === $url ? '?' : $url;
+        try {
+            $url = $this->urlGenerator->generate($routeName, $routeParameters, $urlType);
+            $url = '' === $url ? '?' : $url;
+        } catch (MissingMandatoryParametersException | RouteNotFoundException $e) {
+            // If URL generation fails because required parameters are missing or the route
+            // is not found, avoid breaking template rendering by returning a safe
+            // fallback URL. Use the dashboard route as a safe entry point. This
+            // preserves the behavior expected in templates (links are rendered)
+            // while avoiding uncaught exceptions during layout rendering.
+            try {
+                $url = $this->urlGenerator->generate($this->dashboardRoute, [], $urlType);
+            } catch (\Throwable $e) {
+                // As a last resort, return a query placeholder so templates still render
+                $url = '?';
+            }
+        }
 
         // this is important to start the generation of each URL from the same initial state
         // otherwise, some parameters used when generating some URL could leak to other URLs

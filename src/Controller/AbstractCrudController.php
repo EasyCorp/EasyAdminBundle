@@ -17,6 +17,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Factory\ActionFactoryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetsDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\BatchActionDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -33,7 +34,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityUpdatedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\EntityRemoveException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\ForbiddenActionException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\InsufficientEntityPermissionException;
-use EasyCorp\Bundle\EasyAdminBundle\Factory\ActionFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\ControllerFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FilterFactory;
@@ -104,7 +104,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         return array_merge(parent::getSubscribedServices(), [
             'doctrine' => '?'.ManagerRegistry::class,
             'event_dispatcher' => '?'.EventDispatcherInterface::class,
-            ActionFactory::class => '?'.ActionFactory::class,
+            ActionFactoryInterface::class => '?'.ActionFactoryInterface::class,
             AdminContextProvider::class => '?'.AdminContextProvider::class,
             AdminUrlGenerator::class => '?'.AdminUrlGenerator::class,
             ControllerFactory::class => '?'.ControllerFactory::class,

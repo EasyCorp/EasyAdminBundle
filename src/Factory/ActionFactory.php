@@ -23,7 +23,6 @@ use Symfony\Contracts\Translation\TranslatableInterface;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-#[AsDecorator(ActionFactoryInterface::class)]
 final class ActionFactory implements ActionFactoryInterface
 {
     public function __construct(

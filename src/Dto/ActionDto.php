@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
 /**
@@ -32,6 +33,17 @@ final class ActionDto
     private array $translationParameters = [];
     /** @var callable|null */
     private $displayCallable;
+    private KeyValueStore $customOptions;
+
+    public function __construct()
+    {
+        $this->customOptions = KeyValueStore::new();
+    }
+
+    public function __clone()
+    {
+        $this->customOptions = clone $this->customOptions;
+    }
 
     public function getType(): string
     {
@@ -331,5 +343,28 @@ final class ActionDto
         }
 
         return $action;
+    }
+
+    public function getCustomOptions(): KeyValueStore
+    {
+        return $this->customOptions;
+    }
+
+    public function getCustomOption(string $optionName): mixed
+    {
+        return $this->customOptions->get($optionName);
+    }
+
+    /**
+     * @param array<string, mixed> $customOptions
+     */
+    public function setCustomOptions(array $customOptions): void
+    {
+        $this->customOptions = KeyValueStore::new($customOptions);
+    }
+
+    public function setCustomOption(string $optionName, mixed $optionValue): void
+    {
+        $this->customOptions->set($optionName, $optionValue);
     }
 }

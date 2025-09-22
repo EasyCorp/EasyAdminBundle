@@ -4,7 +4,7 @@ require('../css/app.css');
 import bootstrap from 'bootstrap/dist/js/bootstrap.bundle';
 import Mark from 'mark.js/src/vanilla';
 import Autocomplete from './autocomplete';
-import {toggleVisibilityClasses} from "./helpers";
+import { toggleVisibilityClasses } from './helpers';
 
 // Provide Bootstrap variable globally to allow custom backend pages to use it
 window.bootstrap = bootstrap;
@@ -65,14 +65,14 @@ class App {
                 return;
             }
 
-            // needed because the menu accordion is based on the max-height property.
-            // visible elements must be initialized with a explicit max-height; otherwise
+            // needed because the menu accordion is based on the max-block-size property.
+            // visible elements must be initialized with a explicit max-block-size; otherwise
             // when you click on them the first time, the animation is not smooth
             if (menuItem.classList.contains('expanded')) {
-                menuItemSubmenu.style.maxHeight = menuItemSubmenu.scrollHeight + 'px';
+                menuItemSubmenu.style.maxHeight = `${menuItemSubmenu.scrollHeight}px`;
             }
 
-            menuItem.querySelector('.submenu-toggle').addEventListener('click', (event) =>  {
+            menuItem.querySelector('.submenu-toggle').addEventListener('click', (event) => {
                 event.preventDefault();
 
                 // hide other submenus
@@ -93,7 +93,7 @@ class App {
                     menuItemSubmenu.style.maxHeight = '0px';
                     menuItem.classList.remove('expanded');
                 } else {
-                    menuItemSubmenu.style.maxHeight = menuItemSubmenu.scrollHeight + 'px';
+                    menuItemSubmenu.style.maxHeight = `${menuItemSubmenu.scrollHeight}px`;
                     menuItem.classList.add('expanded');
                 }
             });
@@ -107,8 +107,8 @@ class App {
                 const oldValue = localStorage.getItem(this.#sidebarWidthLocalStorageKey) || 'normal';
                 const newValue = 'normal' === oldValue ? 'compact' : 'normal';
 
-                document.querySelector('body').classList.remove(`ea-sidebar-width-${ oldValue }`);
-                document.querySelector('body').classList.add(`ea-sidebar-width-${ newValue }`);
+                document.querySelector('body').classList.remove(`ea-sidebar-width-${oldValue}`);
+                document.querySelector('body').classList.add(`ea-sidebar-width-${newValue}`);
                 localStorage.setItem(this.#sidebarWidthLocalStorageKey, newValue);
             });
         }
@@ -119,8 +119,8 @@ class App {
                 const oldValue = localStorage.getItem(this.#contentWidthLocalStorageKey) || 'normal';
                 const newValue = 'normal' === oldValue ? 'full' : 'normal';
 
-                document.querySelector('body').classList.remove(`ea-content-width-${ oldValue }`);
-                document.querySelector('body').classList.add(`ea-content-width-${ newValue }`);
+                document.querySelector('body').classList.remove(`ea-content-width-${oldValue}`);
+                document.querySelector('body').classList.add(`ea-content-width-${newValue}`);
                 localStorage.setItem(this.#contentWidthLocalStorageKey, newValue);
             });
         }
@@ -171,21 +171,21 @@ class App {
         const tokenizeString = (string) => {
             const regex = /"([^"\\]*(\\.[^"\\]*)*)"|\S+/g;
             const tokens = [];
-            let match;
 
-            while (null !== (match = regex.exec(string))) {
+            let match = regex.exec(string);
+            while (null !== match) {
                 tokens.push(match[0].replaceAll('"', '').trim());
+                match = regex.exec(string);
             }
 
             return tokens;
         };
 
         const searchQueryTerms = tokenizeString(searchElement.value);
-        const searchQueryTermsHighlightRegexp = new RegExp(searchQueryTerms.join('|'), 'i');
 
         const elementsToHighlight = document.querySelectorAll('table tbody td.searchable');
         const highlighter = new Mark(elementsToHighlight);
-        highlighter.markRegExp(searchQueryTermsHighlightRegexp);
+        highlighter.mark(searchQueryTerms, { separateWordSearch: false });
     }
 
     #createFilters() {
@@ -203,24 +203,32 @@ class App {
 
         filterButton.addEventListener('click', (event) => {
             const filterModalBody = filterModal.querySelector('.modal-body');
-            filterModalBody.innerHTML = '<div class="fa-3x px-3 py-3 text-muted text-center"><i class="fas fa-circle-notch fa-spin"></i></div>';
+            filterModalBody.innerHTML =
+                '<div class="fa-3x px-3 py-3 text-muted text-center"><i class="fas fa-circle-notch fa-spin"></i></div>';
 
             fetch(filterButton.getAttribute('href'))
-                .then((response) => { return response.text(); })
+                .then((response) => {
+                    return response.text();
+                })
                 .then((text) => {
                     filterModalBody.innerHTML = text;
                     this.#createAutoCompleteFields();
                     this.#createFilterToggles();
                 })
-                .catch((error) => { console.error(error); });
+                .catch((error) => {
+                    console.error(error);
+                });
 
             event.preventDefault();
         });
 
         const removeFilter = (filterField) => {
-            filterField.closest('form').querySelectorAll(`input[name^="filters[${filterField.dataset.filterProperty}]"]`).forEach((filterFieldInput) => {
-                filterFieldInput.remove();
-            });
+            filterField
+                .closest('form')
+                .querySelectorAll(`input[name^="filters[${filterField.dataset.filterProperty}]"]`)
+                .forEach((filterFieldInput) => {
+                    filterFieldInput.remove();
+                });
 
             filterField.remove();
         };
@@ -268,8 +276,8 @@ class App {
 
             rowCheckbox.addEventListener('click', (e) => {
                 if (lastUpdatedRowCheckbox && e.shiftKey) {
-                    const lastIndex = parseInt(lastUpdatedRowCheckbox.dataset.rowIndex);
-                    const currentIndex = parseInt(e.target.dataset.rowIndex);
+                    const lastIndex = Number.parseInt(lastUpdatedRowCheckbox.dataset.rowIndex);
+                    const currentIndex = Number.parseInt(e.target.dataset.rowIndex);
                     const valueToApply = e.target.checked;
                     const lowest = Math.min(lastIndex, currentIndex);
                     const highest = Math.max(lastIndex, currentIndex);
@@ -285,7 +293,9 @@ class App {
             });
 
             rowCheckbox.addEventListener('change', () => {
-                const selectedRowCheckboxes = document.querySelectorAll('input[type="checkbox"].form-batch-checkbox:checked');
+                const selectedRowCheckboxes = document.querySelectorAll(
+                    'input[type="checkbox"].form-batch-checkbox:checked'
+                );
                 const row = rowCheckbox.closest('tr');
                 const content = rowCheckbox.closest('.content');
 
@@ -337,10 +347,10 @@ class App {
                     actionElement.setAttribute('disabled', 'disabled');
 
                     const batchFormFields = {
-                        'batchActionName': actionElement.getAttribute('data-action-name'),
-                        'entityFqcn': actionElement.getAttribute('data-entity-fqcn'),
-                        'batchActionUrl': actionElement.getAttribute('data-action-url'),
-                        'batchActionCsrfToken': actionElement.getAttribute('data-action-csrf-token'),
+                        batchActionName: actionElement.getAttribute('data-action-name'),
+                        entityFqcn: actionElement.getAttribute('data-entity-fqcn'),
+                        batchActionUrl: actionElement.getAttribute('data-action-url'),
+                        batchActionCsrfToken: actionElement.getAttribute('data-action-csrf-token'),
                     };
                     selectedItems.forEach((item, i) => {
                         batchFormFields[`batchActionEntityIds[${i}]`] = item.value;
@@ -349,7 +359,7 @@ class App {
                     const batchForm = document.createElement('form');
                     batchForm.setAttribute('method', 'POST');
                     batchForm.setAttribute('action', actionElement.getAttribute('data-action-url'));
-                    for (let fieldName in batchFormFields) {
+                    for (const fieldName in batchFormFields) {
                         const formField = document.createElement('input');
                         formField.setAttribute('type', 'hidden');
                         formField.setAttribute('name', fieldName);
@@ -404,7 +414,10 @@ class App {
                 const filterToggleLink = filterCheckbox.nextElementSibling;
                 const filterExpandedAttribute = filterCheckbox.nextElementSibling.getAttribute('aria-expanded');
 
-                if ((filterCheckbox.checked && 'false' === filterExpandedAttribute) || (!filterCheckbox.checked && 'true' === filterExpandedAttribute)) {
+                if (
+                    (filterCheckbox.checked && 'false' === filterExpandedAttribute) ||
+                    (!filterCheckbox.checked && 'true' === filterExpandedAttribute)
+                ) {
                     filterToggleLink.click();
                 }
             });

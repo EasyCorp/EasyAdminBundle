@@ -2,12 +2,8 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Twig;
 
-use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\EasyAdminTwigExtension;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Symfony\Component\AssetMapper\ImportMap\ImportMapRenderer;
-use Symfony\Component\DependencyInjection\ServiceLocator;
-use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Contracts\Translation\TranslatableInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -18,43 +14,78 @@ class EasyAdminTwigExtensionTest extends KernelTestCase
      */
     public function testRepresentAsString($value, $expectedValue, bool $assertRegex = false, string|callable|null $toStringMethod = null): void
     {
-        $translator = $this->getMockBuilder(TranslatorInterface::class)->disableOriginalConstructor()->getMock();
-        $translator->method('trans')->willReturnCallback(fn ($value) => '*'.$value);
+        $customTranslator = new class implements TranslatorInterface {
+            public function trans(string $id, array $parameters = [], ?string $domain = null, ?string $locale = null): string
+            {
+                return '*'.$id;
+            }
 
-        $extension = new EasyAdminTwigExtension(
-            $this->getMockBuilder(ServiceLocator::class)->disableOriginalConstructor()->getMock(),
-            $this->getMockBuilder(AdminContextProvider::class)->disableOriginalConstructor()->getMock(),
-            $this->getMockBuilder(CsrfTokenManagerInterface::class)->disableOriginalConstructor()->getMock(),
-            $this->getMockBuilder(ImportMapRenderer::class)->disableOriginalConstructor()->getMock(),
-            $translator
-        );
+            public function getLocale(): string
+            {
+                return 'en';
+            }
+        };
 
-        $result = $extension->representAsString($value, $toStringMethod);
+        $reflectedClass = new \ReflectionClass(EasyAdminTwigExtension::class);
+        $twigExtensionInstance = $reflectedClass->newInstanceWithoutConstructor();
+        $property = $reflectedClass->getProperty('translator');
+        $property->setValue($twigExtensionInstance, $customTranslator);
+
+        $result = $twigExtensionInstance->representAsString($value, $toStringMethod);
 
         if ($assertRegex) {
             $this->assertMatchesRegularExpression($expectedValue, $result);
         } else {
             $this->assertSame($expectedValue, $result);
         }
+
+        $this->assertStringNotContainsString("\0", $result, 'The string representation of a value must not contain the null character (which can happen when the original value is an anonymous class object)');
     }
 
-    public function testRepresentAsStringExcepion()
+    public function testRepresentAsStringException(): void
     {
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessageMatches('/The method "someMethod\(\)" does not exist or is not callable in the value of type "class@anonymous.*"/');
 
-        $extension = new EasyAdminTwigExtension(
-            $this->getMockBuilder(ServiceLocator::class)->disableOriginalConstructor()->getMock(),
-            $this->getMockBuilder(AdminContextProvider::class)->disableOriginalConstructor()->getMock(),
-            $this->getMockBuilder(CsrfTokenManagerInterface::class)->disableOriginalConstructor()->getMock(),
-            $this->getMockBuilder(ImportMapRenderer::class)->disableOriginalConstructor()->getMock(),
-            $this->getMockBuilder(TranslatorInterface::class)->disableOriginalConstructor()->getMock()
-        );
+        $reflectedClass = new \ReflectionClass(EasyAdminTwigExtension::class);
+        $twigExtensionInstance = $reflectedClass->newInstanceWithoutConstructor();
 
-        $extension->representAsString(new class {}, 'someMethod');
+        $twigExtensionInstance->representAsString(new class {}, 'someMethod');
     }
 
-    public function provideValuesForRepresentAsString()
+    /**
+     * @dataProvider provideValuesForFileSize
+     */
+    public function testFileSize(int $bytes, string $expected): void
+    {
+        $reflectedClass = new \ReflectionClass(EasyAdminTwigExtension::class);
+        $twigExtensionInstance = $reflectedClass->newInstanceWithoutConstructor();
+
+        $result = $twigExtensionInstance->fileSize($bytes);
+
+        $this->assertSame($expected, $result);
+    }
+
+    public function provideValuesForFileSize(): iterable
+    {
+        yield [0, '0B'];
+        yield [1, '1B'];
+        yield [1023, '1023B'];
+        yield [1024, '1K'];
+        yield [999_900, '976K'];
+        yield [1024 ** 2 - 100, '1023K'];
+        yield [1024 ** 2, '1M'];
+        yield [1024 ** 2 + 100, '1M'];
+        yield [1024 ** 3 - 1, '1023M'];
+        yield [1024 ** 3, '1G'];
+        yield [1024 ** 3 + 1, '1G'];
+        yield [1024 ** 4, '1T'];
+        yield [1024 ** 5, '1P'];
+        yield [1024 ** 6, '1E'];
+        yield [\PHP_INT_MAX, '8E'];
+    }
+
+    public function provideValuesForRepresentAsString(): iterable
     {
         yield [null, ''];
         yield ['foo bar', 'foo bar'];

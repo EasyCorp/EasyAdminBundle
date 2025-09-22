@@ -1,0 +1,78 @@
+{
+  "entrypoints": {
+    "app": {
+      "css": [
+        "/app.769fc123.css"
+      ],
+      "js": [
+        "/app.dfa39831.js"
+      ]
+    },
+    "form": {
+      "js": [
+        "/form.875c88d4.js"
+      ]
+    },
+    "page-layout": {
+      "js": [
+        "/page-layout.6e9fe55d.js"
+      ]
+    },
+    "page-color-scheme": {
+      "js": [
+        "/page-color-scheme.30cb23c2.js"
+      ]
+    },
+    "field-boolean": {
+      "js": [
+        "/field-boolean.adeeab81.js"
+      ]
+    },
+    "field-code-editor": {
+      "css": [
+        "/field-code-editor.cdcf15eb.css"
+      ],
+      "js": [
+        "/field-code-editor.877c61fa.js"
+      ]
+    },
+    "field-collection": {
+      "js": [
+        "/field-collection.2f5a0337.js"
+      ]
+    },
+    "field-file-upload": {
+      "js": [
+        "/field-file-upload.5c32db38.js"
+      ]
+    },
+    "field-image": {
+      "js": [
+        "/field-image.c338d2ad.js"
+      ]
+    },
+    "field-slug": {
+      "js": [
+        "/field-slug.cfe3a8f7.js"
+      ]
+    },
+    "field-textarea": {
+      "js": [
+        "/field-textarea.62282244.js"
+      ]
+    },
+    "field-text-editor": {
+      "css": [
+        "/field-text-editor.d426785c.css"
+      ],
+      "js": [
+        "/field-text-editor.0600a34b.js"
+      ]
+    },
+    "login": {
+      "js": [
+        "/login.7259f5de.js"
+      ]
+    }
+  }
+}

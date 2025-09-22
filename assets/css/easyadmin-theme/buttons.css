@@ -41,7 +41,9 @@
     box-shadow: var(--button-active-primary-shadow);
 }
 
-.btn-secondary, .btn-secondary[disabled], .btn-secondary.disabled {
+.btn-secondary,
+.btn-secondary[disabled],
+.btn-secondary.disabled {
     background-color: var(--button-secondary-bg);
     color: var(--button-secondary-color);
 }
@@ -90,31 +92,45 @@
     color: var(--button-warning-color);
 }
 
-.btn-link, .btn-link:hover, .btn-link:focus, .btn-link:active, .btn-link:active:focus {
+.btn-link,
+.btn-link:hover,
+.btn-link:focus,
+.btn-link:active,
+.btn-link:active:focus {
     background: transparent;
     border-color: transparent;
     color: var(--link-color);
     box-shadow: none; /* needed to make the button link look like a regular link */
 }
 .btn-link:hover {
-    color: var(--link-hover-color)
+    color: var(--link-hover-color);
 }
-.btn-link-danger, .btn-link-danger:hover, .btn-link-danger:focus, .btn-link-danger:active, .btn-link-danger:active:focus {
+.btn-link-danger,
+.btn-link-danger:hover,
+.btn-link-danger:focus,
+.btn-link-danger:active,
+.btn-link-danger:active:focus {
     color: var(--link-danger-color);
 }
 .btn-link-danger:hover {
     color: var(--link-danger-hover-color);
 }
 
-.btn.disabled, .btn:disabled,
-.btn.disabled:hover, .btn:disabled:hover,
-.btn.disabled:focus, .btn:disabled:focus,
-.btn.disabled:active, .btn:disabled:active,
-.btn.disabled:active:focus, .btn:disabled:active:focus {
+.btn.disabled,
+.btn:disabled,
+.btn.disabled:hover,
+.btn:disabled:hover,
+.btn.disabled:focus,
+.btn:disabled:focus,
+.btn.disabled:active,
+.btn:disabled:active,
+.btn.disabled:active:focus,
+.btn:disabled:active:focus {
     box-shadow: none;
     cursor: not-allowed;
 }
-a.btn.disabled, fieldset:disabled a.btn {
+a.btn.disabled,
+fieldset:disabled a.btn {
     /* needed to display the 'not-allowed' cursor on disabled buttons */
     pointer-events: unset;
 }
@@ -124,12 +140,13 @@ a.btn.disabled, fieldset:disabled a.btn {
     cursor: inherit;
 }
 .btn > i + .btn-label {
-    margin-left: 4px;
+    margin-inline-start: 4px;
 }
 .btn > .btn-label + i {
-    margin-left: 4px;
+    margin-inline-start: 4px;
 }
 
-.btn-group-sm > .btn, .btn-sm {
+.btn-group-sm > .btn,
+.btn-sm {
     padding: 3px 7px;
 }

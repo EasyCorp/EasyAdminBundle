@@ -11,11 +11,15 @@ use EasyCorp\Bundle\EasyAdminBundle\Factory\FormLayoutFactory;
  */
 final class FieldLayoutDto
 {
-    /** @var FieldDto[] */
+    /** @var array<FieldDto>|array<string, array<FieldDto>> */
     private array $fields;
-    /** @var FieldDto[] */
+    /** @var array<string, FieldDto> */
     private array $tabs;
 
+    /**
+     * @param array<FieldDto>|array<string, array<FieldDto>> $fields
+     * @param array<string, FieldDto>                        $tabs
+     */
     public function __construct(array $fields = [], array $tabs = [])
     {
         trigger_deprecation(
@@ -34,16 +38,25 @@ final class FieldLayoutDto
         return [] !== $this->tabs;
     }
 
+    /**
+     * @return array<string, FieldDto>
+     */
     public function getTabs(): array
     {
         return $this->tabs;
     }
 
+    /**
+     * @return array<FieldDto>|array<string, array<FieldDto>>
+     */
     public function getFields(): array
     {
         return $this->fields;
     }
 
+    /**
+     * @return array<FieldDto>
+     */
     public function getFieldsInTab(string $tabUniqueId): array
     {
         return $this->fields[$tabUniqueId] ?? [];

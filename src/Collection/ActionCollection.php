@@ -7,11 +7,13 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
+ *
+ * @implements CollectionInterface<string, ActionDto>
  */
 final class ActionCollection implements CollectionInterface
 {
     /**
-     * @param ActionDto[] $actions
+     * @param array<string, ActionDto> $actions
      */
     private function __construct(private array $actions)
     {
@@ -25,7 +27,7 @@ final class ActionCollection implements CollectionInterface
     }
 
     /**
-     * @param ActionDto[] $actions
+     * @param array<string, ActionDto> $actions
      */
     public static function new(array $actions): self
     {
@@ -33,7 +35,7 @@ final class ActionCollection implements CollectionInterface
     }
 
     /**
-     * @return ActionDto[]
+     * @return array<string, ActionDto>
      */
     public function all(): array
     {
@@ -71,7 +73,7 @@ final class ActionCollection implements CollectionInterface
     }
 
     /**
-     * @return \ArrayIterator<ActionDto>
+     * @return \ArrayIterator<string, ActionDto>
      */
     public function getIterator(): \ArrayIterator
     {

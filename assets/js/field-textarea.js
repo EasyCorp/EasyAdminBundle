@@ -14,13 +14,13 @@ class Autogrow {
         // this check is needed because the <textarea> element can be inside a
         // minimizable panel, causing its scrollHeight value to be 0
         if (this.field.scrollHeight > 0) {
-            this.field.style.height = this.field.scrollHeight + 'px';
+            this.field.style.height = `${this.field.scrollHeight}px`;
         }
     }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('[data-ea-textarea-field]').forEach(function (field) {
+    document.querySelectorAll('[data-ea-textarea-field]').forEach((field) => {
         new Autogrow(field);
     });
 });

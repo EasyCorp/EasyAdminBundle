@@ -2,8 +2,6 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu\MenuItemInterface;
-
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
@@ -13,7 +11,7 @@ final class UserMenuDto
     private bool $displayAvatar = true;
     private ?string $name = null;
     private ?string $avatarUrl = null;
-    /** @var MenuItemDto[] */
+    /** @var array<MenuItemDto> */
     private array $items = [];
 
     public function isNameDisplayed(): bool
@@ -56,20 +54,34 @@ final class UserMenuDto
         $this->avatarUrl = $url;
     }
 
+    /**
+     * @return array<MenuItemDto>
+     */
     public function getItems(): array
     {
         return $this->items;
     }
 
     /**
-     * When configuring the application, you are passed an array of
-     * MenuItemInterface objects; after building the user menu contents,
-     * this method is called with MenuItemDto objects.
-     *
-     * @param MenuItemInterface[]|MenuItemDto[] $items
+     * @param array<MenuItemDto> $items
      */
     public function setItems(array $items): void
     {
+        foreach ($items as $item) {
+            if (!$item instanceof MenuItemDto) {
+                trigger_deprecation(
+                    'easycorp/easyadmin-bundle',
+                    '4.25.0',
+                    'Argument "%s" for "%s" must be one of type: %s. Passing type %s will cause an error in 5.0.0.',
+                    '$items',
+                    __METHOD__,
+                    '"array<MenuItemDto>"',
+                    '"array<MenuItemInterface>"'
+                );
+                break;
+            }
+        }
+
         $this->items = $items;
     }
 }

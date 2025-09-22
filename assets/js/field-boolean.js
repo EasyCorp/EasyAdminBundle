@@ -15,22 +15,24 @@ class ToggleSwitch {
 
     #updateFieldValue() {
         const newValue = this.field.checked;
-        const toggleUrl = this.field.getAttribute('data-toggle-url') + "&newValue=" + newValue.toString();
+        const toggleUrl = `${this.field.getAttribute('data-toggle-url')}&newValue=${newValue.toString()}`;
 
         fetch(toggleUrl, {
             method: 'PATCH',
             // the XMLHttpRequest header is needed to keep compatibility with the previous code, which didn't use the Fetch API
             headers: { 'X-Requested-With': 'XMLHttpRequest' },
         })
-        .then((response) => {
-            if (!response.ok) {
-                this.#disableField();
-            }
+            .then((response) => {
+                if (!response.ok) {
+                    this.#disableField();
+                }
 
-            return response.text();
-        })
-        .then(() => { /* do nothing else when the toggle request is successful */ })
-        .catch(() => this.#disableField());
+                return response.text();
+            })
+            .then(() => {
+                /* do nothing else when the toggle request is successful */
+            })
+            .catch(() => this.#disableField());
     }
 
     // used in case of error, to restore the original toggle field value and disable it

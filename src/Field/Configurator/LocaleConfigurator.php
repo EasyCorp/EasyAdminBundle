@@ -53,6 +53,12 @@ final class LocaleConfigurator implements FieldConfiguratorInterface
         }
     }
 
+    /**
+     * @param array<string>|null $localeCodesToKeep
+     * @param array<string>|null $localeCodesToRemove
+     *
+     * @return array<string>
+     */
     private function generateFormTypeChoices(?array $localeCodesToKeep, ?array $localeCodesToRemove): array
     {
         $choices = [];

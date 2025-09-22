@@ -9,14 +9,16 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
+ *
+ * @implements CollectionInterface<string, FieldDto>
  */
 final class FieldCollection implements CollectionInterface
 {
-    /** @var FieldDto[] */
+    /** @var array<string, FieldDto> */
     private array $fields;
 
     /**
-     * @param FieldInterface[]|string[] $fields
+     * @param array<FieldInterface|string> $fields
      */
     private function __construct(iterable $fields)
     {
@@ -35,7 +37,7 @@ final class FieldCollection implements CollectionInterface
     }
 
     /**
-     * @param FieldInterface[]|string[] $fields
+     * @param array<FieldInterface|string> $fields
      */
     public static function new(iterable $fields): self
     {
@@ -138,7 +140,7 @@ final class FieldCollection implements CollectionInterface
     }
 
     /**
-     * @return \ArrayIterator<FieldDto>
+     * @return \ArrayIterator<string, FieldDto>
      */
     public function getIterator(): \ArrayIterator
     {
@@ -146,9 +148,9 @@ final class FieldCollection implements CollectionInterface
     }
 
     /**
-     * @param FieldInterface[]|string[] $fields
+     * @param array<FieldInterface|string> $fields
      *
-     * @return FieldDto[]
+     * @return array<string, FieldDto>
      */
     private function processFields(iterable $fields): array
     {

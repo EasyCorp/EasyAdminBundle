@@ -1,6 +1,127 @@
 Upgrade between EasyAdmin 4.x versions
 ======================================
 
+EasyAdmin 4.25.0
+----------------
+
+The global `ea` variable injected in all templates is deprecated.
+Use the equivalent `ea()` Twig function, which returns the current context
+of the EasyAdmin application.
+
+    // Before
+    {{ ea.i18n.translationDomain }}
+
+    // After
+    {{ ea().i18n.translationDomain }}
+
+EasyAdmin 4.24.8
+----------------
+
+Starting with this version, PHPStan will report an error if a class extends
+`AbstractCrudController` without specifying the entity type:
+
+> Class App\Controller\Admin\UserCrudController extends generic class
+> EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController
+> but does not specify its types: TEntity
+
+To fix this, update your controller like this:
+
+```diff
++ /**
++  * @extends AbstractCrudController<User>
++  */
+  class UserCrudController extends AbstractCrudController
+  {
+```
+
+EasyAdmin 4.22.0
+----------------
+
+The `referrerUrl` property and the `getReferrerUrl()` method of `BatchActionDto`
+are deprecated. This is similar to the rest of deprecations of features related
+to the "referrer URL".
+
+The referrer URL is now handled automatically inside EasyAdmin. In your own
+batch actions, you can redirect to a specific URL (built with the `AdminUrlGenerator`)
+or get the referrer URL from the HTTP headers provided by browsers:
+
+```php
+// Before
+return $this->redirect($batchActionDto->getReferrer());
+
+// After
+return $this->redirect($adminContext->getRequest()->headers->get('referer'));
+```
+
+EasyAdmin 4.20.0
+----------------
+
+### Country Flags now Use a Flag Twig Component
+
+Instead of rendering country flags (in `CountryField`) using an `<img>` tag,
+they are now rendered as plain `<svg>` files using a Twig component. This change
+removes hundreds of lines in our `manifest.json` file and also removes a JavaScript
+dependency. Flags still look and work the same as before.
+
+If you used the included country flags in your own templates (which is rare and
+not documented) you need to do the following change:
+
+```twig
+{# Before #}
+<img class="country-flag" height="17" alt="{{ country_name }}" title="{{ country_name }}" src="{{ asset('images/flags/' ~ flag_code ~ '.svg', ea.assets.defaultAssetPackageName) }}">
+
+{# After #}
+<twig:ea:Flag countryCode="{{ flag_code }}" height="17" />
+```
+
+EasyAdmin 4.18.0
+----------------
+
+### Reverted FontAwesome Icon Changes
+
+In EasyAdmin 4.16.0, we introduced a feature allowing the use of custom icon
+sets in addition to the default FontAwesome icons. As part of this update,
+FontAwesome icons were changed to be rendered as inline SVGs instead of being
+applied via CSS classes. **This change has been reverted in this version**,
+restoring the previous behavior so you can continue using FontAwesome icons as
+before in EasyAdmin.
+
+EasyAdmin 4.17.0
+----------------
+
+### Pretty URLs Changed Their Url Patterns
+
+This is a small BC break. When using pretty URLs, the generated URLs used
+underscores and they now use dashes and snake case. For example, before an URL
+could be `/admin/blog_post/batchDelete` and now it's `/admin/blog-post/batch-delete`
+
+The route names remain the same (e.g. `admin_blog_post_batch_delete`) and you
+probably always generate URLs using the route name, so this BC break won't impact you.
+
+EasyAdmin 4.16.0
+----------------
+
+### FontAwesome Icons Are Now Inlined as SVGs
+
+**REVERTED** This change was reverted in EasyAdmin 4.18.0. If you use FontAwesome
+icons, you don't have to do any change.
+
+EasyAdmin 4.14.0
+----------------
+
+### Added Pretty URLs Support
+
+Starting from 4.14.0 version, EasyAdmin includes a custom route loader that
+can generate pretty URLs in your backend. Enable this feature by creating the
+following routing file in your application:
+
+```yaml
+# config/routes/easyadmin.yaml
+easyadmin:
+    resource: .
+    type: easyadmin.routes
+```
+
 EasyAdmin 4.11.0
 ----------------
 
@@ -47,6 +168,24 @@ that page title:
             ;
         }
     }
+
+EasyAdmin 4.8.11
+----------------
+
+EasyAdmin URLs no longer include the `referrer` query parameter, and the
+`AdminContext:getReferrer()` method is deprecated.
+
+This change is part of the long-term project to simplify URLs, with the goal of
+using pretty URLs in the future. If you still need to access the referrer, you
+can retrieve it from the HTTP headers provided by browsers:
+
+```php
+// Before
+return $this->redirect($context->getReferrer());
+
+// After
+return $this->redirect($context->getRequest()->headers->get('referer'));
+```
 
 EasyAdmin 4.8.0
 ---------------

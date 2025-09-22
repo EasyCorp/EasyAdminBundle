@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace EasyCorp\Bundle\EasyAdminBundle\Router;
 
 /**
@@ -15,17 +13,23 @@ interface AdminUrlGeneratorInterface
 
     public function setAction(string $action): self;
 
+    /**
+     * @param array<string, mixed> $routeParameters
+     */
     public function setRoute(
         string $routeName,
         array $routeParameters = [],
     ): self;
 
-    public function setEntityId($entityId): self;
+    public function setEntityId(mixed $entityId): self;
 
     public function get(string $paramName): mixed;
 
-    public function set(string $paramName, $paramValue): self;
+    public function set(string $paramName, mixed $paramValue): self;
 
+    /**
+     * @param array<string, mixed> $routeParameters
+     */
     public function setAll(array $routeParameters): self;
 
     public function unset(string $paramName): self;
@@ -34,14 +38,29 @@ interface AdminUrlGeneratorInterface
 
     public function unsetAllExcept(string ...$namesOfParamsToKeep): self;
 
+    /**
+     * @deprecated since 4.9.0, will be removed in 5.0.0. The referrer will now be determined automatically based on the current request.
+     */
     public function includeReferrer(): self;
 
+    /**
+     * @deprecated since 4.9.0, will be removed in 5.0.0. The referrer will now be determined automatically based on the current request.
+     */
     public function removeReferrer(): self;
 
+    /**
+     * @deprecated since 4.9.0, will be removed in 5.0.0. The referrer will now be determined automatically based on the current request.
+     */
     public function setReferrer(string $referrer): self;
 
+    /**
+     * @deprecated since 4.1.0, will be removed in 5.0.0. Signed URLs don't provide additional security in backends and have been removed without a replacement.
+     */
     public function addSignature(bool $addSignature = true): self;
 
+    /**
+     * @deprecated since 4.1.0, will be removed in 5.0.0. Signed URLs don't provide additional security in backends and have been removed without a replacement.
+     */
     public function getSignature(): string;
 
     public function generateUrl(): string;

@@ -95,6 +95,9 @@ class MakeCrudControllerCommand extends Command
         return Command::SUCCESS;
     }
 
+    /**
+     * @return array<class-string>
+     */
     private function getAllDoctrineEntitiesFqcn(): array
     {
         $entitiesFqcn = [];

@@ -42,4 +42,23 @@ class ActionsCrudControllerTest extends AbstractCrudTestCase
 
         static::assertSame('action-new btn btn-primary', trim($crawler->filter('.global-actions > a')->first()->attr('class')));
     }
+
+    public function testDynamicLabels()
+    {
+        $crawler = $this->client->request('GET', $this->generateIndexUrl());
+
+        static::assertSame('Action 5: Category 0', $crawler->filter('a.dropdown-item[data-action-name="action5"]')->text());
+        static::assertSame('Action 6: Category 0', $crawler->filter('a.dropdown-item[data-action-name="action6"]')->text());
+        static::assertSame('Action 7: Category 0', $crawler->filter('a.dropdown-item[data-action-name="action7"]')->text());
+        static::assertSame('Reset', $crawler->filter('a.dropdown-item[data-action-name="action8"]')->text());
+    }
+
+    public function testFormAction()
+    {
+        $crawler = $this->client->request('GET', $this->generateIndexUrl());
+
+        static::assertCount(1, $crawler->filter('form[id^="form-action9-"]'));
+        static::assertCount(1, $crawler->filter('form[id^="form-action9-"] > .btn'));
+        static::assertSame('POST', $crawler->filter('form[id^="form-action9-"]')->attr('method'));
+    }
 }

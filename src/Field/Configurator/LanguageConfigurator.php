@@ -60,6 +60,12 @@ final class LanguageConfigurator implements FieldConfiguratorInterface
         }
     }
 
+    /**
+     * @param array<string>|null $languageCodesToKeep
+     * @param array<string>|null $languageCodesToRemove
+     *
+     * @return array<string>
+     */
     private function generateFormTypeChoices(bool $usesAlpha3Codes, ?array $languageCodesToKeep, ?array $languageCodesToRemove): array
     {
         $choices = [];

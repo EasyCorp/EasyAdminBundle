@@ -8,6 +8,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Entity\BlogPost;
 
+/**
+ * @extends AbstractCrudController<BlogPost>
+ */
 class FormFieldsetsCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string

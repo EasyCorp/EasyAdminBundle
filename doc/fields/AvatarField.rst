@@ -23,6 +23,24 @@ Basic Information
 Options
 -------
 
+``setGravatarDefaultImage``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+When using `Gravatar`_ service, you can customize the default image that will be
+shown when the email address has no associated avatar. By default, Gravatar uses
+the ``'mp'`` image (a simple silhouette of a person). You can use any of the
+predefined `default Gravatar images`_ or use your own custom image by passing its URL::
+
+    // use one of Gravatar's predefined images
+    yield AvatarField::new('someEmail')
+        ->setIsGravatarEmail()
+        ->setGravatarDefaultImage('identicon');
+
+    // use your own custom image (make sure it's publicly accessible)
+    yield AvatarField::new('someEmail')
+        ->setIsGravatarEmail()
+        ->setGravatarDefaultImage('https://example.com/my-default-avatar.png');
+
 ``setHeight``
 ~~~~~~~~~~~~~
 
@@ -55,3 +73,4 @@ email stored in the property::
 
 .. _`TextType`: https://symfony.com/doc/current/reference/forms/types/text.html
 .. _`Gravatar`: https://gravatar.com/
+.. _`default Gravatar images`: https://docs.gravatar.com/sdk/images/#default-image

@@ -11,9 +11,9 @@ additional_hostnames: []
 additional_fqdns: []
 database:
   type: mariadb
-  version: "10.4"
+  version: "10.11"
 use_dns_when_possible: true
 composer_version: "2"
 web_environment: []
-nodejs_version: "16"
+nodejs_version: "22"
 timezone: "Europe/Berlin"

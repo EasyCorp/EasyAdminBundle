@@ -5,6 +5,9 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 use Doctrine\DBAL\Types\Types;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Provider\AdminContextProviderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
@@ -18,8 +21,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TimeField;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormRowType;
-use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormRowType;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
@@ -28,6 +30,9 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  */
 final class FieldFactory
 {
+    /**
+     * @var array<string, class-string<FieldInterface>>
+     */
     private static array $doctrineTypeToFieldFqcn = [
         'array' => ArrayField::class, // don't use Types::ARRAY because it was removed in Doctrine ORM 3.0
         Types::BIGINT => TextField::class,
@@ -55,17 +60,15 @@ final class FieldFactory
         Types::TIME_IMMUTABLE => TimeField::class,
     ];
 
-    private AdminContextProvider $adminContextProvider;
-    private AuthorizationCheckerInterface $authorizationChecker;
-    private iterable $fieldConfigurators;
-    private FormLayoutFactory $fieldLayoutFactory;
-
-    public function __construct(AdminContextProvider $adminContextProvider, AuthorizationCheckerInterface $authorizationChecker, iterable $fieldConfigurators, FormLayoutFactory $fieldLayoutFactory)
+    /**
+     * @param iterable<FieldConfiguratorInterface> $fieldConfigurators
+     */
+    public function __construct(
+        private readonly AdminContextProviderInterface $adminContextProvider,
+        private readonly AuthorizationCheckerInterface $authorizationChecker,
+        private readonly iterable $fieldConfigurators,
+        private readonly FormLayoutFactory $fieldLayoutFactory)
     {
-        $this->adminContextProvider = $adminContextProvider;
-        $this->authorizationChecker = $authorizationChecker;
-        $this->fieldConfigurators = $fieldConfigurators;
-        $this->fieldLayoutFactory = $fieldLayoutFactory;
     }
 
     public function processFields(EntityDto $entityDto, FieldCollection $fields): void
@@ -95,7 +98,7 @@ final class FieldFactory
 
             // when creating new entities with "useEntryCrudForm" on an edit page we must
             // explicitly check for the "new" page because $currentPage will be "edit"
-            if ((null === $entityDto->getInstance()) && !$fieldDto->isDisplayedOn(Crud::PAGE_NEW)) {
+            if ($isDetailOrIndex && (null === $entityDto->getInstance()) && !$fieldDto->isDisplayedOn(Crud::PAGE_NEW)) {
                 $fields->unset($fieldDto);
 
                 continue;
@@ -106,6 +109,7 @@ final class FieldFactory
                     continue;
                 }
 
+                // @phpstan-ignore-next-line argument.type
                 $configurator->configure($fieldDto, $entityDto, $context);
             }
 
@@ -217,7 +221,7 @@ final class FieldFactory
         }
 
         // don't copy the template name and path from the original Field class
-        // (because they are just 'crud/field/text' and ' @EasyAdmin/crud/field/text.html.twig')
+        // (because they are 'crud/field/text' and '@EasyAdmin/crud/field/text.html.twig')
         // and use the template name/path from the new specific field (e.g. 'crud/field/datetime')
 
         return $newField;

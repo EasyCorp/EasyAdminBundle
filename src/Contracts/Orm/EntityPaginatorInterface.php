@@ -18,6 +18,9 @@ interface EntityPaginatorInterface
 
     public function getLastPage(): int;
 
+    /**
+     * @return iterable<int|null>
+     */
     public function getPageRange(?int $pagesOnEachSide = null, ?int $pagesOnEdges = null): iterable;
 
     public function getPageSize(): int;
@@ -36,6 +39,9 @@ interface EntityPaginatorInterface
 
     public function getNumResults(): int;
 
+    /**
+     * @return iterable<mixed>|null
+     */
     public function getResults(): ?iterable;
 
     public function getResultsAsJson(): string;

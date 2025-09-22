@@ -10,13 +10,20 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Config;
  */
 final class KeyValueStore
 {
+    /** @var array<string, mixed> */
     private array $map;
 
+    /**
+     * @param array<string, mixed> $keyValueMap
+     */
     private function __construct(array $keyValueMap)
     {
         $this->map = $keyValueMap;
     }
 
+    /**
+     * @param array<string, mixed> $keyValuePairs
+     */
     public static function new(array $keyValuePairs = []): self
     {
         return new self($keyValuePairs);
@@ -92,6 +99,9 @@ final class KeyValueStore
         }
     }
 
+    /**
+     * @param array<string, mixed> $keyValuePairs
+     */
     public function setAll(array $keyValuePairs): void
     {
         foreach ($keyValuePairs as $key => $value) {
@@ -122,6 +132,9 @@ final class KeyValueStore
         unset($items[$lastSegment]);
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function all(): array
     {
         return $this->map;

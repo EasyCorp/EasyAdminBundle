@@ -1,0 +1,17 @@
+{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContext #}
+{% set ea = ea() %}
+{% trans_default_domain null != ea ? ea.i18n.translationDomain : (translation_domain is defined ? translation_domain ?? 'messages') %}
+
+{% set flash_messages = app.flashes %}
+
+{% if flash_messages|length > 0 %}
+    <div id="flash-messages">
+        {% for label, messages in flash_messages %}
+            {% for message in messages %}
+                <twig:ea:Alert variant="{{ label }}" withDismissButton>
+                    {{ message|trans|raw }}
+                </twig:ea:Alert>
+            {% endfor %}
+        {% endfor %}
+    </div>
+{% endif %}

@@ -11,9 +11,13 @@ final class ExceptionContext
 {
     private string $publicMessage;
     private string $debugMessage;
+    /** @var array<string> */
     private array $parameters;
     private int $statusCode;
 
+    /**
+     * @param array<string> $parameters
+     */
     public function __construct(string $publicMessage, string $debugMessage = '', array $parameters = [], int $statusCode = 500)
     {
         $this->publicMessage = $publicMessage;
@@ -32,11 +36,17 @@ final class ExceptionContext
         return $this->debugMessage;
     }
 
+    /**
+     * @return array<string>
+     */
     public function getParameters(): array
     {
         return $this->parameters;
     }
 
+    /**
+     * @return array<string>
+     */
     public function getTranslationParameters(): array
     {
         return array_map(

@@ -1,8 +1,0 @@
-{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
-{# @var field \EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto #}
-{# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
-{% if ea.crud.currentAction == 'detail' %}
-    <span title="{{ field.value }}">{{ field.formattedValue|raw|nl2br }}</span>
-{% else %}
-    <span title="{{ field.value }}">{{ field.formattedValue|raw }}</span>
-{% endif %}

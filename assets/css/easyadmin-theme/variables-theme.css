@@ -6,8 +6,10 @@
    to also customize the Sass variables defined in bootstrap-variables.scss.
  --------------------------------------------------------------------------- */
 :root {
-    --font-family-sans-serif: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-    --font-family-monospace: "JetBrains Mono", ui-monospace, "Roboto Mono", SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    --font-family-sans-serif:
+        system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --font-family-monospace: "JetBrains Mono", ui-monospace, "Roboto Mono", SFMono-Regular, Menlo, Monaco, Consolas,
+        "Liberation Mono", "Courier New", monospace;
     --font-family-base: var(--font-family-sans-serif);
 
     --font-size-xs: 12px;
@@ -139,6 +141,7 @@
     --form-control-disabled-bg: var(--gray-200);
     --form-control-disabled-color: var(--gray-600);
     --form-input-border-color: var(--gray-300);
+    --form-input-error-legend-color: var(--red-600);
     --form-input-error-border-color: var(--red-600);
     --form-input-hover-border-color: var(--gray-400);
     --form-input-shadow: 0 1px 2px 0 var(--gray-50);
@@ -255,24 +258,15 @@
     --button-active-color: var(--gray-800);
     --button-border-color: var(--gray-300);
     --button-hover-border-color: var(--gray-300);
-    --button-shadow:
-        /* border */
-        0 0 0 1px var(--gray-300),
-        /* drop shadow md (--gray-900) */
-        0 1px 1px 0 hsla(222, 47%, 11%, 0.1),
-        /* drop shadow lg (--gray-700) */
+    /* border */
+    --button-shadow: 0 0 0 1px var(--gray-300), /* drop shadow md (--gray-900) */ 0 1px 1px 0 hsla(222, 47%, 11%, 0.1), /* drop shadow lg (--gray-700) */
         0 2px 5px 0 hsla(215, 25%, 27%, 0.1);
-    --button-hover-shadow:
-        /* border */
-        0 0 0 1px var(--gray-300),
-        /* drop shadow md (--gray-900) */
-        0 1px 1px 0 hsla(222, 47%, 11%, 0.1),
-        /* drop shadow lg (--gray-700) */
-        0 2px 5px 0 hsla(215, 25%, 27%, 0.1),
-        /* drop shadow xl (--gray-700) */
+    /* border */
+    --button-hover-shadow: 0 0 0 1px var(--gray-300), /* drop shadow md (--gray-900) */ 0 1px 1px 0
+        hsla(222, 47%, 11%, 0.1), /* drop shadow lg (--gray-700) */ 0 2px 5px 0 hsla(215, 25%, 27%, 0.1), /* drop shadow xl (--gray-700) */
         0 3px 9px 0 hsla(215, 25%, 27%, 0.1);
+    /* border */
     --button-active-shadow:
-        /* border */
         0 0 0 1px var(--gray-300),
         /* ring */
         0 0 0 4px var(--gray-200),
@@ -282,8 +276,8 @@
         0 2px 5px 0 hsla(215, 25%, 27%, 0.1),
         /* drop shadow xl (--gray-700) */
         0 3px 9px 0 hsla(215, 25%, 27%, 0.1);
+    /* border */
     --button-active-primary-shadow:
-        /* border */
         0 0 0 1px var(--gray-300),
         /* ring */
         0 0 0 4px var(--indigo-200),
@@ -350,7 +344,7 @@
     --color-danger: var(--red-600);
     --color-danger-rgb: 220, 38, 38;
 
-    --highlight-bg: #FEFF3F;
+    --highlight-bg: #feff3f;
     --highlight-color: var(--text-color);
 
     --text-on-primary: var(--white);
@@ -471,6 +465,7 @@
     --form-control-disabled-bg: var(--true-gray-900);
     --form-control-disabled-color: var(--true-gray-500);
     --form-input-border-color: var(--true-gray-700);
+    --form-input-error-legend-color: var(--red-500);
     --form-input-error-border-color: var(--red-500);
     --form-input-hover-border-color: var(--true-gray-500);
     --form-input-shadow: none;
@@ -550,7 +545,7 @@
     --badge-secondary-box-shadow: inset 0 0 0 1px rgba(245, 245, 245, 0.3);
     --badge-secondary-color: var(--true-gray-200);
     --badge-light-bg: rgba(255, 255, 255, 0.18);
-    --badge-light-box-shadow:inset 0 0 0 1px rgba(255, 255, 255, 0.3);
+    --badge-light-box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3);
     --badge-light-color: rgb(255, 255, 255);
     --badge-dark-bg: rgba(0, 0, 0, 0.18);
     --badge-dark-box-shadow: inset 0 0 0 1px rgba(153, 153, 153, 0.3);
@@ -590,11 +585,8 @@
     --button-shadow: 0 0 0 1px var(--true-gray-700);
     --button-hover-shadow: 0 0 0 1px var(--true-gray-500);
     --button-active-shadow: 0 0 0 1px var(--true-gray-600);
-    --button-active-primary-shadow:
-        /* border */
-        0 0 0 1px var(--true-gray-700),
-        /* ring */
-        0 0 0 4px var(--blue-600);
+    /* border */
+    --button-active-primary-shadow: 0 0 0 1px var(--true-gray-700), /* ring */ 0 0 0 4px var(--blue-600);
     --button-primary-bg: var(--blue-600);
     --button-primary-color: var(--text-on-primary);
     --button-secondary-bg: var(--true-gray-800);
@@ -626,7 +618,7 @@
     --code-editor-attribute-color: #7ee787;
     --code-editor-addition-bg: rgba(46, 160, 67, 0.3);
     --code-editor-deletion-bg: rgba(218, 54, 51, 0.3);
-    --code-editor-selection-bg: #203E6F;
+    --code-editor-selection-bg: #203e6f;
 
     --page-login-bg: var(--true-gray-800);
     --page-login-form-bg: var(--true-gray-700);
@@ -647,7 +639,7 @@
     --color-danger: var(--red-500);
     --bs-danger-rgb: 239, 68, 68;
 
-    --highlight-bg: #FEFF3F;
+    --highlight-bg: #feff3f;
     --highlight-color: var(--true-gray-900);
 
     --text-on-primary: var(--white);
@@ -661,7 +653,9 @@
 }
 
 /* Bootstrap variables */
-:root, [data-bs-theme=light], [data-bs-theme=dark] {
+:root,
+[data-bs-theme="light"],
+[data-bs-theme="dark"] {
     --bs-body-bg: var(--body-bg);
     --bs-body-color-rgb: var(--text-color-rgb);
     --bs-body-color: var(--text-color);
@@ -777,14 +771,19 @@
     --bs-badge-color: var(--text-color);
     --bs-badge-border-radius: var(--bs-border-radius);
 }
-.offcanvas, .offcanvas-xxl, .offcanvas-xl, .offcanvas-lg, .offcanvas-md, .offcanvas-sm {
+.offcanvas,
+.offcanvas-xxl,
+.offcanvas-xl,
+.offcanvas-lg,
+.offcanvas-md,
+.offcanvas-sm {
     --bs-offcanvas-padding-x: 20px;
     --bs-offcanvas-padding-y: 15px;
 }
 .alert {
     --bs-alert-padding-x: 1rem;
     --bs-alert-padding-y: 1rem;
-    --bs-alert-margin-bottom: 0;
+    --bs-alert-margin-block-end: 0;
     --bs-alert-border-radius: 0;
     --bs-alert-link-color: inherit;
 }

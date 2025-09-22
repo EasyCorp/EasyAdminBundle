@@ -144,8 +144,11 @@ for the field. These options are defined in the same way as Symfony Forms:
         static fn (?MyEntity $foo, FieldDto $field): array => $field->getValue() < 10 ? $foo->getLowStockOptions() : $foo->getNormalStockOptions()
     );
 
-This option supports PHP enums too, both UnitEnum and BackedEnum. Suppose you
-have this backed enum defined somewhere in your project::
+PHP Enums Support
+·················
+
+The ``setChoices`` option supports PHP enums too, both UnitEnum and BackedEnum.
+Suppose you have this backed enum defined somewhere in your project::
 
     namespace App\Config;
 
@@ -182,6 +185,51 @@ add them explicitly::
     // values via Doctrine; it's equivalent to calling: ->setChoices(BlogPostStatus::cases())
     yield ChoiceField::new('status');
 
+To customize the values displayed for each enum case, implement the ``TranslatableInterface``
+in your enum class. This is `recommended in the Symfony Docs`_ even if your application
+is not translated into any languages::
+
+    use Symfony\Contracts\Translation\TranslatableInterface;
+    use Symfony\Contracts\Translation\TranslatorInterface;
+
+    enum Status: string implements TranslatableInterface
+    {
+        // ...
+
+        public function trans(TranslatorInterface $translator, ?string $locale = null): string
+        {
+            return $translator->trans(
+                match($this) {
+                    self::Draft => 'Draft 📝',
+                    self::Published => 'Published ✅',
+                    self::Deleted => 'Deleted ❌',
+                },
+                locale: $locale
+            );
+        }
+    }
+
+Alternatively, you can implement any arbitrary method in your enum to generate
+the labels to display::
+
+    enum Status: string
+    {
+        // ...
+
+        public function getLabel(): string
+        {
+            return match($this) {
+                self::Draft => 'Draft 📝',
+                self::Published => 'Published ✅',
+                self::Deleted => 'Deleted ❌',
+            };
+        }
+    }
+
+Then, configure your field to use it with ``setFormTypeOption()``:: 
+  
+    yield ChoiceField::new('status')->setFormTypeOption('choice_label', fn ($value) => $value->getLabel());
+
 setTranslatableChoices
 ~~~~~~~~~~~~~~~~~~~~~~
 
@@ -204,3 +252,4 @@ order to use ``value => label`` instead of ``label => value``::
 
 .. _`TomSelect`: https://tom-select.js.org/
 .. _`ChoiceType`: https://symfony.com/doc/current/reference/forms/types/choice.html
+.. _`recommended in the Symfony Docs`: https://symfony.com/doc/current/reference/forms/types/enum.html#example-usage

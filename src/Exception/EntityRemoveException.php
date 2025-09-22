@@ -9,7 +9,10 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\ExceptionContext;
  */
 final class EntityRemoveException extends BaseException
 {
-    public function __construct(array $parameters = [])
+    /**
+     * @param array<string> $parameters
+     */
+    public function __construct(array $parameters = [], ?\Throwable $previous = null)
     {
         $exceptionContext = new ExceptionContext(
             'exception.entity_remove',
@@ -18,6 +21,6 @@ final class EntityRemoveException extends BaseException
             409
         );
 
-        parent::__construct($exceptionContext);
+        parent::__construct($exceptionContext, $previous);
     }
 }

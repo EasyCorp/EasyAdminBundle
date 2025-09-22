@@ -1,0 +1,13 @@
+{# @var assets \EasyCorp\Bundle\EasyAdminBundle\Dto\AssetDto[] #}
+{% for css_asset in assets %}
+    {% if css_asset.preload %}
+        {% guard function preload %}
+            {% set href = asset(css_asset.value, css_asset.packageName) %}
+            <link rel="stylesheet" href="{{ preload(href, { as: 'style', nopush: css_asset.nopush }) }}"
+            {%- for attr, value in css_asset.htmlAttributes %} {{ attr }}="{{ value|e('html') }}"{% endfor %}>
+        {% endguard %}
+    {% else %}
+        <link rel="stylesheet" href="{{ asset(css_asset.value, css_asset.packageName) }}"
+        {%- for attr, value in css_asset.htmlAttributes %} {{ attr }}="{{ value|e('html') }}"{% endfor %}>
+    {% endif %}
+{% endfor %}

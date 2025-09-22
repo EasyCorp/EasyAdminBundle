@@ -1,0 +1,13 @@
+{# @var icon \EasyCorp\Bundle\EasyAdminBundle\Dto\IconDto #}
+<span {{ attributes.defaults({class: 'icon'}) }}>
+    {% set icon = this.getIcon() %}
+    {% if icon.isFontAwesomeIconSet %}
+        <i class="{{ icon.name }}"></i>
+    {% elseif icon.svgContents %}
+        {{ icon.svgContents|raw }}
+    {% else %}
+        {% guard function ux_icon %}
+            {{ ux_icon(icon.name, attributes.all) }}
+        {% endguard %}
+    {% endif %}
+</span>

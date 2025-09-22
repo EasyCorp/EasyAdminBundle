@@ -1,0 +1,12 @@
+{% props
+    withoutDropdownToggleMarker = false,
+%}
+
+{% set css_class = html_classes(
+    'dropdown-toggle',
+    { 'dropdown-toggle-hidden-marker': withoutDropdownToggleMarker }
+) %}
+
+<a {{ attributes.defaults({class: css_class, href: '#', role: 'button', 'data-bs-toggle': 'dropdown', 'aria-haspopup': 'true', 'aria-expanded': 'false'}) }}>
+    <twig:block name="content"></twig:block>
+</a>

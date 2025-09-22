@@ -4,16 +4,20 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Router;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
-use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Context\AdminContextInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Router\AdminRouteGeneratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
-use EasyCorp\Bundle\EasyAdminBundle\Registry\DashboardControllerRegistry;
+use EasyCorp\Bundle\EasyAdminBundle\Registry\DashboardControllerRegistryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
+use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Bridge\PhpUnit\ExpectDeprecationTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\Cache\CacheItem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Kernel;
+use Symfony\Component\Routing\RouteCollection;
 
 class AdminUrlGeneratorTest extends WebTestCase
 {
@@ -281,22 +285,20 @@ class AdminUrlGeneratorTest extends WebTestCase
     {
         self::bootKernel();
 
-        $adminContext = $this->getMockBuilder(AdminContext::class)->disableOriginalConstructor()->getMock();
+        $adminContext = $this->getMockBuilder(AdminContextInterface::class)->disableOriginalConstructor()->getMock();
         $adminContext->method('getDashboardRouteName')->willReturn('admin');
         $adminContext->method('getSignedUrls')->willReturn($signedUrls);
         $adminContext->method('getAbsoluteUrls')->willReturn($absoluteUrls);
         $adminContext->method('getRequest')->willReturn(new Request(['foo' => 'bar']));
 
-        $request = new Request();
-        $request->query->set('foo', 'bar');
-        $request->attributes->set(EA::CONTEXT_REQUEST_ATTRIBUTE, $adminContext);
+        $request = new Request(query: ['foo' => 'bar'], attributes: [EA::CONTEXT_REQUEST_ATTRIBUTE => $adminContext]);
 
         $requestStack = new RequestStack();
         $requestStack->push($request);
 
         $adminContextProvider = new AdminContextProvider($requestStack);
 
-        $dashboardControllerRegistry = $this->getMockBuilder(DashboardControllerRegistry::class)->disableOriginalConstructor()->getMock();
+        $dashboardControllerRegistry = $this->getMockBuilder(DashboardControllerRegistryInterface::class)->disableOriginalConstructor()->getMock();
         $dashboardControllerRegistry->method('getRouteByControllerFqcn')->willReturnMap([
             ['App\Controller\Admin\SecureDashboardController', 'secure_admin'],
         ]);
@@ -306,6 +308,20 @@ class AdminUrlGeneratorTest extends WebTestCase
         $container = Kernel::MAJOR_VERSION >= 6 ? static::getContainer() : self::$container;
         $router = $container->get('router');
 
-        return new AdminUrlGenerator($adminContextProvider, $router, $dashboardControllerRegistry);
+        $adminRouteGenerator = $this->getMockBuilder(AdminRouteGeneratorInterface::class)
+            ->disableOriginalConstructor()
+            ->addMethods(['usesPrettyUrls'])
+            ->getMockForAbstractClass();
+        $adminRouteGenerator->method('generateAll')->willReturn(new RouteCollection());
+        $adminRouteGenerator->method('findRouteName')->willReturn(null);
+        $adminRouteGenerator->method('usesPrettyUrls')->willReturn(false);
+
+        $cacheItem = new CacheItem();
+        $cacheItem->set([]);
+        $cacheMock = $this->getMockBuilder(CacheItemPoolInterface::class)->getMock();
+        $cacheMock->method('getItem')->willReturn($cacheItem);
+        $cacheMock->method('save')->willReturn(true);
+
+        return new AdminUrlGenerator($adminContextProvider, $router, $dashboardControllerRegistry, $adminRouteGenerator, $cacheMock);
     }
 }

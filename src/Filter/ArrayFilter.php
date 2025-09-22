@@ -11,6 +11,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDataDto;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\ArrayFilterType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
+use Symfony\Contracts\Translation\TranslatableInterface;
 
 /**
  * @author Yonel Ceruto <yonelceruto@gmail.com>
@@ -20,6 +21,9 @@ final class ArrayFilter implements FilterInterface
 {
     use FilterTrait;
 
+    /**
+     * @param TranslatableInterface|string|false|null $label
+     */
     public static function new(string $propertyName, $label = null): self
     {
         return (new self())
@@ -30,6 +34,9 @@ final class ArrayFilter implements FilterInterface
             ->setFormTypeOption('translation_domain', 'EasyAdminBundle');
     }
 
+    /**
+     * @param array<mixed> $choices
+     */
     public function setChoices(array $choices): self
     {
         $this->dto->setFormTypeOption('value_type_options.choices', $choices);
@@ -37,6 +44,9 @@ final class ArrayFilter implements FilterInterface
         return $this;
     }
 
+    /**
+     * @param array<string|TranslatableInterface> $choiceGenerator
+     */
     public function setTranslatableChoices(array $choiceGenerator): self
     {
         $this->dto->setFormTypeOption('value_type_options.choices', array_keys($choiceGenerator));
@@ -67,7 +77,6 @@ final class ArrayFilter implements FilterInterface
         } else {
             $orX = new Orx();
             foreach ($value as $key => $item) {
-                // TODO: check this code because the loop variable is not used
                 $itemParameterName = sprintf('%s_%s', $parameterName, $key);
                 $orX->add(sprintf('%s.%s %s :%s', $alias, $property, $comparison, $itemParameterName));
                 $queryBuilder->setParameter($itemParameterName, $useQuotes ? '%"'.$item.'"%' : '%'.$item.'%');

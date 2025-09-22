@@ -28,6 +28,9 @@ class ChoiceFilterType extends AbstractType
         $builder->addModelTransformer(new CallbackTransformer(
             static fn ($data) => $data,
             static function ($data) use ($multiple) {
+                // symfony form will cut off invalid values, so make sure no warnings will be thrown out:
+                $data['value'] ??= null;
+
                 switch ($data['comparison']) {
                     case ComparisonType::EQ:
                         if (null === $data['value'] || ($multiple && 0 === \count($data['value']))) {

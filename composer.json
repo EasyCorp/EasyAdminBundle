@@ -12,10 +12,10 @@
         }
     ],
     "require": {
-        "php": ">=8.0.2",
+        "php": ">=8.1",
         "ext-json": "*",
         "doctrine/doctrine-bundle": "^2.5",
-        "doctrine/orm": "^2.10|^3.0",
+        "doctrine/orm": "^2.12|^3.0",
         "symfony/asset": "^5.4|^6.0|^7.0",
         "symfony/cache": "^5.4|^6.0|^7.0",
         "symfony/config": "^5.4|^6.0|^7.0",
@@ -33,24 +33,31 @@
         "symfony/security-bundle": "^5.4|^6.0|^7.0",
         "symfony/string": "^5.4|^6.0|^7.0",
         "symfony/translation": "^5.4|^6.0|^7.0",
+        "symfony/twig-bridge": "^5.4.48|^6.4.16|^7.1.9",
         "symfony/twig-bundle": "^5.4|^6.0|^7.0",
         "symfony/uid": "^5.4|^6.0|^7.0",
-        "symfony/validator": "^5.4|^6.0|^7.0"
+        "symfony/ux-twig-component": "^2.21",
+        "symfony/validator": "^5.4|^6.0|^7.0",
+        "twig/extra-bundle": "^3.17",
+        "twig/html-extra": "^3.17",
+        "twig/twig": "^3.20"
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^3.4|3.5.x-dev",
-        "phpstan/extension-installer": "^1.2",
-        "phpstan/phpstan": "^1.9",
-        "phpstan/phpstan-phpunit": "^1.2",
-        "phpstan/phpstan-strict-rules": "^1.4",
-        "phpstan/phpstan-symfony": "^1.2",
+        "phpstan/extension-installer": "^1.4",
+        "phpstan/phpstan": "^2.0",
+        "phpstan/phpstan-phpunit": "^2.0",
+        "phpstan/phpstan-strict-rules": "^2.0",
+        "phpstan/phpstan-symfony": "^2.0",
         "psr/log": "^1.0",
         "symfony/browser-kit": "^5.4|^6.0|^7.0",
         "symfony/css-selector": "^5.4|^6.0|^7.0",
         "symfony/debug-bundle": "^5.4|^6.0|^7.0",
         "symfony/dom-crawler": "^5.4|^6.0|^7.0",
         "symfony/expression-language": "^5.4|^6.0|^7.0",
-        "symfony/phpunit-bridge": "^5.4|^6.0|^7.0"
+        "symfony/phpunit-bridge": "^6.1|^7.0",
+        "symfony/process": "^5.4|^6.0|^7.0",
+        "symfony/web-link": "^5.4|^6.0|^7.0"
     },
     "config": {
         "sort-packages": true,
@@ -67,6 +74,8 @@
     "autoload-dev": {
         "psr-4": {
             "EasyCorp\\Bundle\\EasyAdminBundle\\Tests\\TestApplication\\": "tests/TestApplication/src/",
+            "EasyCorp\\Bundle\\EasyAdminBundle\\Tests\\PrettyUrlsTestApplication\\": "tests/PrettyUrlsTestApplication/src/",
+            "EasyCorp\\Bundle\\EasyAdminBundle\\Tests\\AdminRouteTestApplication\\": "tests/AdminRouteTestApplication/src/",
             "EasyCorp\\Bundle\\EasyAdminBundle\\Tests\\": "tests/"
         }
     },

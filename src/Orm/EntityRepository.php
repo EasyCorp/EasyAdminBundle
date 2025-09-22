@@ -12,6 +12,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\SearchMode;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Orm\EntityRepositoryInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Provider\AdminContextProviderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDataDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
@@ -20,7 +21,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
-use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use Symfony\Component\Uid\Ulid;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
@@ -30,19 +30,13 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
  */
 final class EntityRepository implements EntityRepositoryInterface
 {
-    private AdminContextProvider $adminContextProvider;
-    private ManagerRegistry $doctrine;
-    private EntityFactory $entityFactory;
-    private FormFactory $formFactory;
-    private EventDispatcherInterface $eventDispatcher;
-
-    public function __construct(AdminContextProvider $adminContextProvider, ManagerRegistry $doctrine, EntityFactory $entityFactory, FormFactory $formFactory, EventDispatcherInterface $eventDispatcher)
-    {
-        $this->adminContextProvider = $adminContextProvider;
-        $this->doctrine = $doctrine;
-        $this->entityFactory = $entityFactory;
-        $this->formFactory = $formFactory;
-        $this->eventDispatcher = $eventDispatcher;
+    public function __construct(
+        private readonly AdminContextProviderInterface $adminContextProvider,
+        private readonly ManagerRegistry $doctrine,
+        private readonly EntityFactory $entityFactory,
+        private readonly FormFactory $formFactory,
+        private readonly EventDispatcherInterface $eventDispatcher,
+    ) {
     }
 
     public function createQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
@@ -237,13 +231,31 @@ final class EntityRepository implements EntityRepositoryInterface
                 ];
             }
 
-            $filterDataDto = FilterDataDto::new($i, $filter, current($queryBuilder->getRootAliases()), $submittedData);
+            /** @var string $rootAlias */
+            $rootAlias = current($queryBuilder->getRootAliases());
+
+            $filterDataDto = FilterDataDto::new($i, $filter, $rootAlias, $submittedData);
             $filter->apply($queryBuilder, $filterDataDto, $fields->getByProperty($propertyName), $entityDto);
 
             ++$i;
         }
     }
 
+    /**
+     * @return array<array{
+     *     entity_name: string,
+     *     property_data_type: string,
+     *     property_name: string,
+     *     is_boolean: bool,
+     *     is_small_integer: bool,
+     *     is_integer: bool,
+     *     is_numeric: bool,
+     *     is_text: bool,
+     *     is_guid: bool,
+     *     is_ulid: bool,
+     *     is_json: bool,
+     * }>
+     */
     private function getSearchablePropertiesConfig(QueryBuilder $queryBuilder, SearchDto $searchDto, EntityDto $entityDto): array
     {
         $searchablePropertiesConfig = [];
@@ -315,10 +327,23 @@ final class EntityRepository implements EntityRepositoryInterface
                     ? $associatedEntityDto->getFqcn()
                     : $entityDto->getFqcn()
                 ;
+
                 /** @var \ReflectionNamedType|\ReflectionUnionType|null $idClassType */
-                $idClassType = (new \ReflectionProperty($entityFqcn, $propertyName))->getType();
+                $idClassType = null;
+                $reflectionClass = new \ReflectionClass($entityFqcn);
+
+                // this is needed to handle inherited properties
+                while (false !== $reflectionClass) {
+                    if ($reflectionClass->hasProperty($propertyName)) {
+                        $reflection = $reflectionClass->getProperty($propertyName);
+                        $idClassType = $reflection->getType();
+                        break;
+                    }
+                    $reflectionClass = $reflectionClass->getParentClass();
+                }
 
                 if (null !== $idClassType) {
+                    /** @var \ReflectionNamedType|\ReflectionUnionType $idClassType */
                     $idClassName = $idClassType->getName();
 
                     if (class_exists($idClassName)) {

@@ -10,6 +10,7 @@ final class FilterDataDto
     private int $index;
     private string $entityAlias;
     private FilterDto $filterDto;
+    /** @var string */
     private $comparison;
     private mixed $value;
     private mixed $value2;
@@ -18,6 +19,9 @@ final class FilterDataDto
     {
     }
 
+    /**
+     * @param array{comparison: string, value: mixed, value2?: mixed} $formData
+     */
     public static function new(int $index, FilterDto $filterDto, string $entityAlias, array $formData): self
     {
         $filterData = new self();
@@ -41,7 +45,7 @@ final class FilterDataDto
         return $this->filterDto->getProperty();
     }
 
-    public function getFormTypeOption(string $optionName)
+    public function getFormTypeOption(string $optionName): mixed
     {
         return $this->filterDto->getFormTypeOption($optionName);
     }

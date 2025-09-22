@@ -5,30 +5,46 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\FieldMapping;
 use Doctrine\ORM\Mapping\ManyToManyAssociationMapping;
+use Doctrine\ORM\Mapping\ManyToManyInverseSideMapping;
+use Doctrine\ORM\Mapping\ManyToManyOwningSideMapping;
 use Doctrine\ORM\Mapping\ManyToOneAssociationMapping;
 use Doctrine\ORM\Mapping\OneToManyAssociationMapping;
 use Doctrine\ORM\Mapping\OneToOneAssociationMapping;
+use Doctrine\ORM\Mapping\OneToOneInverseSideMapping;
+use Doctrine\ORM\Mapping\OneToOneOwningSideMapping;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\ActionCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use Symfony\Component\ExpressionLanguage\Expression;
+use Symfony\Component\PropertyAccess\Exception\UninitializedPropertyException;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
+ *
+ * @template TEntity of object = object
  */
 final class EntityDto
 {
     private bool $isAccessible = true;
+    /** @var class-string<TEntity> */
     private string $fqcn;
+    /** @var ClassMetadata<TEntity> */
     private ClassMetadata $metadata;
+    /** @var TEntity|null */
     private $instance;
+    /** @var string|null */
     private $primaryKeyName;
     private mixed $primaryKeyValue = null;
     private string|Expression|null $permission;
     private ?FieldCollection $fields = null;
     private ?ActionCollection $actions = null;
 
+    /**
+     * @param class-string<TEntity>  $entityFqcn
+     * @param ClassMetadata<TEntity> $entityMetadata
+     * @param TEntity|null           $entityInstance
+     */
     public function __construct(string $entityFqcn, ClassMetadata $entityMetadata, string|Expression|null $entityPermission = null, /* ?object */ $entityInstance = null)
     {
         if (!\is_object($entityInstance)
@@ -56,6 +72,9 @@ final class EntityDto
         return $this->toString();
     }
 
+    /**
+     * @return class-string<TEntity>
+     */
     public function getFqcn(): string
     {
         return $this->fqcn;
@@ -79,6 +98,11 @@ final class EntityDto
         return sprintf('%s #%s', $this->getName(), substr($this->getPrimaryKeyValueAsString(), 0, 16));
     }
 
+    /**
+     * @return object|null
+     *
+     * @phpstan-return TEntity|null
+     */
     public function getInstance()/* : ?object */
     {
         return $this->instance;
@@ -103,7 +127,11 @@ final class EntityDto
             ->enableExceptionOnInvalidIndex()
             ->getPropertyAccessor();
 
-        $primaryKeyValue = $propertyAccessor->getValue($this->instance, $this->primaryKeyName);
+        try {
+            $primaryKeyValue = $propertyAccessor->getValue($this->instance, $this->primaryKeyName);
+        } catch (UninitializedPropertyException $exception) {
+            $primaryKeyValue = null;
+        }
 
         return $this->primaryKeyValue = $primaryKeyValue;
     }
@@ -153,6 +181,8 @@ final class EntityDto
     /**
      * Returns the names of all properties defined in the entity, no matter
      * if they are used or not in the application.
+     *
+     * @return array<string>
      */
     public function getAllPropertyNames(): array
     {
@@ -163,6 +193,7 @@ final class EntityDto
     {
         if (\array_key_exists($propertyName, $this->metadata->fieldMappings)) {
             /** @var FieldMapping|array $fieldMapping */
+            /** @phpstan-ignore-next-line */
             $fieldMapping = $this->metadata->fieldMappings[$propertyName];
             // Doctrine ORM 2.x returns an array and Doctrine ORM 3.x returns a FieldMapping object
             if ($fieldMapping instanceof FieldMapping) {
@@ -173,7 +204,7 @@ final class EntityDto
         }
 
         if (\array_key_exists($propertyName, $this->metadata->associationMappings)) {
-            /** @var OneToOneAssociationMapping|OneToManyAssociationMapping|ManyToOneAssociationMapping|ManyToManyAssociationMapping|array $associationMapping */
+            /** @var OneToOneOwningSideMapping|OneToOneInverseSideMapping|ManyToOneAssociationMapping|OneToManyAssociationMapping|ManyToManyOwningSideMapping|ManyToManyInverseSideMapping $associationMapping */
             $associationMapping = $this->metadata->associationMappings[$propertyName];
             // Doctrine ORM 2.x returns an array and Doctrine ORM 3.x returns one of the many *Mapping objects
             // there's not a single interface implemented by all of them, so let's only check if it's an object
@@ -198,6 +229,9 @@ final class EntityDto
         throw new \InvalidArgumentException(sprintf('The "%s" field does not exist in the "%s" entity.', $propertyName, $this->getFqcn()));
     }
 
+    /**
+     * @return string
+     */
     public function getPropertyDataType(string $propertyName)
     {
         return $this->getPropertyMetadata($propertyName)->get('type');
@@ -236,6 +270,9 @@ final class EntityDto
         return \array_key_exists($propertyNameParts[0], $this->metadata->embeddedClasses);
     }
 
+    /**
+     * @param TEntity|null $newEntityInstance
+     */
     public function setInstance(?object $newEntityInstance): void
     {
         if (null !== $this->instance && null !== $newEntityInstance && !$newEntityInstance instanceof $this->fqcn) {
@@ -246,6 +283,9 @@ final class EntityDto
         $this->primaryKeyValue = null;
     }
 
+    /**
+     * @param TEntity $newEntityInstance
+     */
     public function newWithInstance(/* object */ $newEntityInstance): self
     {
         if (!\is_object($newEntityInstance)) {

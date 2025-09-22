@@ -11,6 +11,8 @@ use function Symfony\Component\String\u;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
+ *
+ * @deprecated since 4.25.0 and it will be removed in EasyAdmin 5.0.0. The file generated in this cache warmer is no longer needed because an equivalent file will be stored in the Symfony Cache pool managed by EasyAdmin (inject the 'cache.easyadmin' service if you need to access it).
  */
 final class CacheWarmer implements CacheWarmerInterface
 {
@@ -30,6 +32,14 @@ final class CacheWarmer implements CacheWarmerInterface
 
     public function warmUp(string $cacheDir, ?string $buildDir = null): array
     {
+        $cacheFilename = ($buildDir ?? $cacheDir).'/'.self::DASHBOARD_ROUTES_CACHE;
+
+        if (file_exists($cacheFilename)) {
+            // this method must return an array of classes to preload, but we don't use
+            // this feature, so we return an empty array
+            return [];
+        }
+
         $allRoutes = $this->router->getRouteCollection();
         $dashboardRoutes = [];
 
@@ -67,11 +77,12 @@ final class CacheWarmer implements CacheWarmerInterface
         }
 
         (new Filesystem())->dumpFile(
-            $cacheDir.'/'.self::DASHBOARD_ROUTES_CACHE,
+            $cacheFilename,
             '<?php return '.var_export($dashboardRoutes, true).';'
         );
 
-        // we don't use this, but it's required by the interface to return the list of classes to preload
+        // this method must return an array of classes to preload, but we don't use
+        // this feature, so we return an empty array
         return [];
     }
 }

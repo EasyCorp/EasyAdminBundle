@@ -13,7 +13,9 @@ class Image {
     }
 
     #renderLightbox() {
-        const lightboxContent = document.querySelector(this.field.getAttribute('data-ea-lightbox-content-selector')).innerHTML;
+        const lightboxContent = document.querySelector(
+            this.field.getAttribute('data-ea-lightbox-content-selector')
+        ).innerHTML;
         const lightbox = basicLightbox.create(lightboxContent);
         lightbox.show();
     }

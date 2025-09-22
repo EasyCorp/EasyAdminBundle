@@ -195,5 +195,30 @@ class name of the controller as the first argument::
 
     The ``useEntryCrudForm()`` method requires Symfony 6.1 or newer version.
 
+JavaScript Events
+-----------------
+
+When an item is added to a collection field, a `CustomEvent`_ with the type
+``'ea.collection.item-added'`` is dispatched. Similarly, when an item is removed,
+an `Event`_ with the type ``'ea.collection.item-removed'`` is dispatched.
+
+The ``'ea.collection.item-added'`` event contains information about the added
+item in the `detail property`_:
+
+.. code-block:: javascript
+
+    document.addEventListener('ea.collection.item-added', (event) => {
+        const {newElement} = event.detail
+        console.debug(newElement, 'added to collection')
+    });
+
+    document.addEventListener('ea.collection.item-removed', (event) => {
+        // Do something with the event
+        console.debug('item removed from collection')
+    });
+
 .. _`CollectionType`: https://symfony.com/doc/current/reference/forms/types/collection.html
 .. _`documentation about Symfony CollectionType options`: https://symfony.com/doc/current/reference/forms/types/collection.html#field-options
+.. _`CustomEvent`: https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent
+.. _`Event`: https://developer.mozilla.org/en-US/docs/Web/API/Event/Event
+.. _`detail property`: https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/detail

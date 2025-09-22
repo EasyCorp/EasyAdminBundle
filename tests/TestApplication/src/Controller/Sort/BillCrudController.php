@@ -8,6 +8,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Entity\Bill;
 
+/**
+ * @extends AbstractCrudController<Bill>
+ */
 class BillCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string

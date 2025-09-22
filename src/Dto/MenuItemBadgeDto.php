@@ -12,8 +12,12 @@ final class MenuItemBadgeDto
 
     private mixed $content;
     private string $style;
+    /** @var array<string, mixed> */
     private array $htmlAttributes;
 
+    /**
+     * @param array<string, mixed> $htmlAttributes
+     */
     public function __construct(mixed $content, string $style, array $htmlAttributes = [])
     {
         $this->content = $content;
@@ -36,6 +40,9 @@ final class MenuItemBadgeDto
         return \in_array($this->style, self::PREDEFINED_STYLES, true) ? '' : $this->style;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getHtmlAttributes(): array
     {
         return $this->htmlAttributes;

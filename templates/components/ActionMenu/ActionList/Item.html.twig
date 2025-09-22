@@ -1,0 +1,14 @@
+{% props
+    label = null,
+    renderLabelRaw = false,
+    icon = null,
+    url = null,
+    htmlAttributes = {},
+%}
+
+<li>
+    <a {{ attributes.defaults({class: 'dropdown-item', href: url}|merge(htmlAttributes)) }}>
+        {%- if icon %}<twig:ea:Icon {{ ...attributes.nested('icon').defaults({name: icon}) }} /> {% endif -%}
+        {%- if label is not empty -%}<span {{ attributes.nested('label') }}>{{ renderLabelRaw ? label|raw : label }}</span>{%- endif -%}
+    </a>
+</li>

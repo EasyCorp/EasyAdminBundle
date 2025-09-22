@@ -2,12 +2,13 @@ includes:
 	- phpstan-baseline.neon
 
 parameters:
-    level: 5
+    level: 6
     paths:
         - src/
     excludePaths:
         analyse:
             - src/ArgumentResolver
+            - src/Test/Trait/CrudTestFormAsserts.php
     bootstrapFiles:
         - vendor/bin/.phpunit/phpunit/vendor/autoload.php
     ignoreErrors:
@@ -15,5 +16,10 @@ parameters:
         - '#Property EasyCorp\\Bundle\\EasyAdminBundle\\Twig\\EasyAdminTwigExtension\:\:\$importMapRenderer has unknown class Symfony\\Component\\AssetMapper\\ImportMap\\ImportMapRenderer as its type\.#'
         - '#Parameter \$importMapRenderer of method EasyCorp\\Bundle\\EasyAdminBundle\\Twig\\EasyAdminTwigExtension\:\:__construct\(\) has invalid type Symfony\\Component\\AssetMapper\\ImportMap\\ImportMapRenderer\.#'
         - '#Call to method render\(\) on an unknown class Symfony\\Component\\AssetMapper\\ImportMap\\ImportMapRenderer\.#'
+        - '#Property EasyCorp\\Bundle\\EasyAdminBundle\\Twig\\EasyAdminTwigExtension::\$uxIconRuntime has unknown class Symfony\\UX\\Icons\\Twig\\UXIconRuntime as its type#'
+        - '#Parameter \$uxIconRuntime of method EasyCorp\\Bundle\\EasyAdminBundle\\Twig\\EasyAdminTwigExtension::__construct\(\) has invalid type Symfony\\UX\\Icons\\Twig\\UXIconRuntime#'
+        - '#Call to method renderIcon\(\) on an unknown class Symfony\\UX\\Icons\\Twig\\UXIconRuntime#'
+        -
+            identifier: missingType.generics
     treatPhpDocTypesAsCertain: false
     reportUnmatchedIgnoredErrors: false

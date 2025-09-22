@@ -1,48 +1,48 @@
 const slugify = require('slugify');
 slugify.extend({
-    "$": "",
-    "%": "",
-    "&": "",
-    "<": "",
-    ">": "",
-    "|": "",
-    "¢": "",
-    "£": "",
-    "¤": "",
-    "¥": "",
-    "₠": "",
-    "₢": "",
-    "₣": "",
-    "₤": "",
-    "₥": "",
-    "₦": "",
-    "₧": "",
-    "₨": "",
-    "₩": "",
-    "₪": "",
-    "₫": "",
-    "€": "",
-    "₭": "",
-    "₮": "",
-    "₯": "",
-    "₰": "",
-    "₱": "",
-    "₲": "",
-    "₳": "",
-    "₴": "",
-    "₵": "",
-    "₸": "",
-    "₹": "",
-    "₽": "",
-    "₿": "",
-    "∂": "",
-    "∆": "",
-    "∑": "",
-    "∞": "",
-    "♥": "",
-    "元": "",
-    "円": "",
-    "﷼": "",
+    $: '',
+    '%': '',
+    '&': '',
+    '<': '',
+    '>': '',
+    '|': '',
+    '¢': '',
+    '£': '',
+    '¤': '',
+    '¥': '',
+    '₠': '',
+    '₢': '',
+    '₣': '',
+    '₤': '',
+    '₥': '',
+    '₦': '',
+    '₧': '',
+    '₨': '',
+    '₩': '',
+    '₪': '',
+    '₫': '',
+    '€': '',
+    '₭': '',
+    '₮': '',
+    '₯': '',
+    '₰': '',
+    '₱': '',
+    '₲': '',
+    '₳': '',
+    '₴': '',
+    '₵': '',
+    '₸': '',
+    '₹': '',
+    '₽': '',
+    '₿': '',
+    '∂': '',
+    '∆': '',
+    '∑': '',
+    '∞': '',
+    '♥': '',
+    元: '',
+    円: '',
+    '﷼': '',
 });
 
 class Slugger {
@@ -83,14 +83,15 @@ class Slugger {
      */
     appendLockButton() {
         this.lockButton = this.field.parentNode.querySelector('button');
-        this.lockButtonIcon = this.lockButton.querySelector('i');
         this.lockButton.addEventListener('click', () => {
             if (this.locked) {
-                let confirmMessage = this.field.dataset.confirmText || null;
+                const confirmMessage = this.field.dataset.confirmText || null;
                 if (null === confirmMessage) {
                     this.unlock();
                 } else {
-                    let formattedConfirmMessage = decodeURIComponent(JSON.parse('"' + confirmMessage.replace(/\"/g, '\\"') + '"'));
+                    const formattedConfirmMessage = decodeURIComponent(
+                        JSON.parse(`"${confirmMessage.replace(/\"/g, '\\"')}"`)
+                    );
                     if (true === confirm(formattedConfirmMessage)) {
                         this.unlock();
                     }
@@ -106,7 +107,7 @@ class Slugger {
      */
     unlock() {
         this.locked = false;
-        this.lockButtonIcon.classList.replace('fa-lock', 'fa-lock-open');
+        this.lockButton.innerHTML = this.lockButton.getAttribute('data-icon-unlocked');
         this.field.removeAttribute('readonly');
     }
 
@@ -115,7 +116,7 @@ class Slugger {
      */
     lock() {
         this.locked = true;
-        this.lockButtonIcon.classList.replace('fa-lock-open', 'fa-lock');
+        this.lockButton.innerHTML = this.lockButton.getAttribute('data-icon-locked');
 
         // Locking it back changes the value either to default value, or recomputes it
         if ('' !== this.currentSlug) {
@@ -128,7 +129,7 @@ class Slugger {
     }
 
     updateValue() {
-        this.field.value = slugify(this.targets.map(target => target.value).join('-'), {
+        this.field.value = slugify(this.targets.map((target) => target.value).join('-'), {
             remove: /[^A-Za-z0-9\s-]/g,
             lower: true,
             strict: true,

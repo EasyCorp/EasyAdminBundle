@@ -7,6 +7,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Option\SearchMode;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Entity\BlogPost;
 
+/**
+ * @extends AbstractCrudController<BlogPost>
+ */
 class AnyTermsCrudSearchController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string

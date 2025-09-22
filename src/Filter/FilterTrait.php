@@ -7,6 +7,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDataDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDto;
+use Symfony\Contracts\Translation\TranslatableInterface;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -42,6 +43,9 @@ trait FilterTrait
         return $this;
     }
 
+    /**
+     * @param TranslatableInterface|string|false|null $label
+     */
     public function setLabel($label): self
     {
         $this->dto->setLabel($label);
@@ -56,6 +60,9 @@ trait FilterTrait
         return $this;
     }
 
+    /**
+     * @param array<string, mixed> $options
+     */
     public function setFormTypeOptions(array $options): self
     {
         $this->dto->setFormTypeOptions($options);

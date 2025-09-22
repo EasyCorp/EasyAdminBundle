@@ -33,6 +33,9 @@ trait MenuItemTrait
         return $this;
     }
 
+    /**
+     * @param array<string, mixed> $parameters
+     */
     public function setTranslationParameters(array $parameters): self
     {
         $this->dto->setTranslationParameters($parameters);
@@ -55,12 +58,13 @@ trait MenuItemTrait
     }
 
     /**
-     * @param mixed  $content This is rendered as the value of the badge; it can be anything that can be cast to
-     *                        a string (numbers, stringable objects, etc.)
-     * @param string $style   Pass one of these values for predefined styles: 'primary', 'secondary', 'success',
-     *                        'danger', 'warning', 'info', 'light', 'dark'
-     *                        Otherwise, the passed value is applied "as is" to the `style` attribute of the HTML
-     *                        element of the badge
+     * @param mixed                $content        This is rendered as the value of the badge; it can be anything that can be cast to
+     *                                             a string (numbers, stringable objects, etc.)
+     * @param string               $style          Pass one of these values for predefined styles: 'primary', 'secondary', 'success',
+     *                                             'danger', 'warning', 'info', 'light', 'dark'
+     *                                             Otherwise, the passed value is applied "as is" to the `style` attribute of the HTML
+     *                                             element of the badge
+     * @param array<string, mixed> $htmlAttributes
      */
     public function setBadge(/* \Stringable|string|int|float|bool|null */ $content, string $style = 'secondary', array $htmlAttributes = []): self
     {

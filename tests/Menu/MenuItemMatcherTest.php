@@ -6,16 +6,21 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
 use EasyCorp\Bundle\EasyAdminBundle\Menu\MenuItemMatcher;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminRouteGenerator;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Symfony\Component\HttpFoundation\InputBag;
 use Symfony\Component\HttpFoundation\Request;
 
 class MenuItemMatcherTest extends KernelTestCase
 {
     public function testIsSelectedWhenContextIsNull()
     {
-        $request = $this->getRequestMock();
-        $menuItemMatcher = new MenuItemMatcher();
+        $request = $this->createRequest();
+
+        self::bootKernel();
+        $adminUrlGenerator = self::getContainer()->get(AdminUrlGenerator::class);
+        $adminRouteGenerator = self::getContainer()->get(AdminRouteGenerator::class);
+        $menuItemMatcher = new MenuItemMatcher($adminUrlGenerator, $adminRouteGenerator);
         $menuItemDto = new MenuItemDto();
 
         $menuItemMatcher->markSelectedMenuItem([$menuItemDto], $request);
@@ -25,8 +30,12 @@ class MenuItemMatcherTest extends KernelTestCase
 
     public function testIsSelectedWhenMenuItemIsSection()
     {
-        $request = $this->getRequestMock();
-        $menuItemMatcher = new MenuItemMatcher();
+        $request = $this->createRequest();
+
+        self::bootKernel();
+        $adminUrlGenerator = self::getContainer()->get(AdminUrlGenerator::class);
+        $adminRouteGenerator = self::getContainer()->get(AdminRouteGenerator::class);
+        $menuItemMatcher = new MenuItemMatcher($adminUrlGenerator, $adminRouteGenerator);
         $menuItemDto = new MenuItemDto();
         $menuItemDto->setType(MenuItemDto::TYPE_SECTION);
 
@@ -37,10 +46,14 @@ class MenuItemMatcherTest extends KernelTestCase
 
     public function testIsSelectedWithCrudControllers()
     {
-        $request = $this->getRequestMock(
-            getControllerFqcn: 'App\Controller\Admin\SomeController',
+        $request = $this->createRequest(
+            crudControllerFqcn: 'App\Controller\Admin\SomeController',
         );
-        $menuItemMatcher = new MenuItemMatcher();
+
+        self::bootKernel();
+        $adminUrlGenerator = self::getContainer()->get(AdminUrlGenerator::class);
+        $adminRouteGenerator = self::getContainer()->get(AdminRouteGenerator::class);
+        $menuItemMatcher = new MenuItemMatcher($adminUrlGenerator, $adminRouteGenerator);
         $menuItemDto = $this->getMenuItemDto();
         $menuItemMatcher->markSelectedMenuItem([$menuItemDto], $request);
 
@@ -54,10 +67,10 @@ class MenuItemMatcherTest extends KernelTestCase
         $menuItemMatcher->markSelectedMenuItem([$menuItemDto], $request);
         $this->assertTrue($menuItemDto->isSelected(), 'The CRUD controller matches');
 
-        $request = $this->getRequestMock(
-            getControllerFqcn: 'App\Controller\Admin\SomeController',
-            getPrimaryKeyValue: '57',
-            getCurrentAction: 'edit',
+        $request = $this->createRequest(
+            crudControllerFqcn: 'App\Controller\Admin\SomeController',
+            entityId: '57',
+            action: 'edit',
         );
 
         $menuItemDto = $this->getMenuItemDto(crudControllerFqcn: 'App\Controller\Admin\SomeController', action: 'edit', entityId: '57');
@@ -68,10 +81,10 @@ class MenuItemMatcherTest extends KernelTestCase
         $menuItemMatcher->markSelectedMenuItem([$menuItemDto], $request);
         $this->assertFalse($menuItemDto->isSelected(), 'The entity ID of the menu item does not match');
 
-        $request = $this->getRequestMock(
-            getControllerFqcn: 'App\Controller\Admin\SomeController',
-            getPrimaryKeyValue: '57',
-            getCurrentAction: 'detail',
+        $request = $this->createRequest(
+            crudControllerFqcn: 'App\Controller\Admin\SomeController',
+            entityId: '57',
+            action: 'detail',
         );
 
         $menuItemDto = $this->getMenuItemDto(crudControllerFqcn: 'App\Controller\Admin\SomeController', action: Crud::PAGE_DETAIL, entityId: '57');
@@ -85,10 +98,14 @@ class MenuItemMatcherTest extends KernelTestCase
 
     public function testIsSelectedWithRoutes()
     {
-        $request = $this->getRequestMock(
+        $request = $this->createRequest(
             routeName: 'some_route',
         );
-        $menuItemMatcher = new MenuItemMatcher();
+
+        self::bootKernel();
+        $adminUrlGenerator = self::getContainer()->get(AdminUrlGenerator::class);
+        $adminRouteGenerator = self::getContainer()->get(AdminRouteGenerator::class);
+        $menuItemMatcher = new MenuItemMatcher($adminUrlGenerator, $adminRouteGenerator);
         $menuItemDto = $this->getMenuItemDto(routeName: 'some_route');
 
         $menuItemMatcher->markSelectedMenuItem([$menuItemDto], $request);
@@ -99,7 +116,7 @@ class MenuItemMatcherTest extends KernelTestCase
         $menuItemMatcher->markSelectedMenuItem([$menuItemDto], $request);
         $this->assertFalse($menuItemDto->isSelected());
 
-        $request = $this->getRequestMock(
+        $request = $this->createRequest(
             routeName: 'some_route',
             routeParameters: ['foo1' => 'bar1', 'foo2' => 'bar2'],
         );
@@ -123,10 +140,15 @@ class MenuItemMatcherTest extends KernelTestCase
 
     public function testIsSelectedWithUrls()
     {
-        $request = $this->getRequestMock(
-            getUri: 'https://example.com/foo?bar=baz',
+        $request = $this->createRequest(
+            requestPath: '/foo',
+            queryParameters: ['bar' => 'baz'],
         );
-        $menuItemMatcher = new MenuItemMatcher();
+
+        self::bootKernel();
+        $adminUrlGenerator = self::getContainer()->get(AdminUrlGenerator::class);
+        $adminRouteGenerator = self::getContainer()->get(AdminRouteGenerator::class);
+        $menuItemMatcher = new MenuItemMatcher($adminUrlGenerator, $adminRouteGenerator);
         $menuItemDto = new MenuItemDto();
 
         $menuItemMatcher->markSelectedMenuItem([$menuItemDto], $request);
@@ -160,11 +182,14 @@ class MenuItemMatcherTest extends KernelTestCase
             $this->getMenuItemDto(label: 'item2', routeName: 'item2'),
         ];
 
-        $request = $this->getRequestMock(
+        $request = $this->createRequest(
             routeName: 'item2',
         );
 
-        $menuItemMatcher = new MenuItemMatcher();
+        self::bootKernel();
+        $adminUrlGenerator = self::getContainer()->get(AdminUrlGenerator::class);
+        $adminRouteGenerator = self::getContainer()->get(AdminRouteGenerator::class);
+        $menuItemMatcher = new MenuItemMatcher($adminUrlGenerator, $adminRouteGenerator);
         $menuItems = $menuItemMatcher->markSelectedMenuItem($menuItems, $request);
 
         $this->assertSame('item2', $this->getSelectedMenuItemLabel($menuItems), 'Perfect match: Dashboard item');
@@ -173,10 +198,14 @@ class MenuItemMatcherTest extends KernelTestCase
     public function testComplexMenu()
     {
         $menuItems = $this->getComplexMenuItems();
-        $request = $this->getRequestMock(
-            getControllerFqcn: 'App\Controller\Admin\Controller1',
+        $request = $this->createRequest(
+            crudControllerFqcn: 'App\Controller\Admin\Controller1',
         );
-        $menuItemMatcher = new MenuItemMatcher();
+
+        self::bootKernel();
+        $adminUrlGenerator = self::getContainer()->get(AdminUrlGenerator::class);
+        $adminRouteGenerator = self::getContainer()->get(AdminRouteGenerator::class);
+        $menuItemMatcher = new MenuItemMatcher($adminUrlGenerator, $adminRouteGenerator);
 
         $menuItems = $menuItemMatcher->markSelectedMenuItem($menuItems, $request);
 
@@ -185,9 +214,9 @@ class MenuItemMatcherTest extends KernelTestCase
 
         unset($menuItems);
         $menuItems = $this->getComplexMenuItems();
-        $request = $this->getRequestMock(
-            getControllerFqcn: 'App\Controller\Admin\Controller1',
-            getCurrentAction: 'edit',
+        $request = $this->createRequest(
+            crudControllerFqcn: 'App\Controller\Admin\Controller1',
+            action: 'edit',
             // the primary key value is missing on purpose in this example
         );
         $menuItems = $menuItemMatcher->markSelectedMenuItem($menuItems, $request);
@@ -196,9 +225,9 @@ class MenuItemMatcherTest extends KernelTestCase
 
         unset($menuItems);
         $menuItems = $this->getComplexMenuItems();
-        $request = $this->getRequestMock(
-            getControllerFqcn: 'App\Controller\Admin\Controller1',
-            getCurrentAction: 'new',
+        $request = $this->createRequest(
+            crudControllerFqcn: 'App\Controller\Admin\Controller1',
+            action: 'new',
         );
         $menuItems = $menuItemMatcher->markSelectedMenuItem($menuItems, $request);
         $this->assertSame('item5', $this->getSelectedMenuItemLabel($menuItems), 'Perfect match: CRUD controller and action');
@@ -206,9 +235,9 @@ class MenuItemMatcherTest extends KernelTestCase
 
         unset($menuItems);
         $menuItems = $this->getComplexMenuItems();
-        $request = $this->getRequestMock(
-            getControllerFqcn: 'App\Controller\Admin\Controller2',
-            getCurrentAction: 'new',
+        $request = $this->createRequest(
+            crudControllerFqcn: 'App\Controller\Admin\Controller2',
+            action: 'new',
         );
         $menuItems = $menuItemMatcher->markSelectedMenuItem($menuItems, $request);
         $this->assertSame('item3', $this->getSelectedMenuItemLabel($menuItems), 'Approximate match: controller matches, action doesn\'t match; the item with the INDEX action is selected by default');
@@ -216,10 +245,10 @@ class MenuItemMatcherTest extends KernelTestCase
 
         unset($menuItems);
         $menuItems = $this->getComplexMenuItems();
-        $request = $this->getRequestMock(
-            getControllerFqcn: 'App\Controller\Admin\Controller2',
-            getCurrentAction: 'edit',
-            getPrimaryKeyValue: 'NOT_57',
+        $request = $this->createRequest(
+            crudControllerFqcn: 'App\Controller\Admin\Controller2',
+            action: 'edit',
+            entityId: 'NOT_57',
         );
         $menuItems = $menuItemMatcher->markSelectedMenuItem($menuItems, $request);
         $this->assertNull($this->getSelectedMenuItemLabel($menuItems), 'No match: controller and action match, but query parameters don\'t');
@@ -227,9 +256,9 @@ class MenuItemMatcherTest extends KernelTestCase
 
         unset($menuItems);
         $menuItems = $this->getComplexMenuItems();
-        $request = $this->getRequestMock(
-            getControllerFqcn: 'App\Controller\Admin\Controller3',
-            getCurrentAction: 'new',
+        $request = $this->createRequest(
+            crudControllerFqcn: 'App\Controller\Admin\Controller3',
+            action: 'new',
         );
         $menuItems = $menuItemMatcher->markSelectedMenuItem($menuItems, $request);
         $this->assertSame('item7', $this->getSelectedMenuItemLabel($menuItems), 'Approximate match: only the controller matches; the item with the INDEX action is selected');
@@ -327,37 +356,25 @@ class MenuItemMatcherTest extends KernelTestCase
         return $menuItemDto;
     }
 
-    private function getRequestMock(?string $getControllerFqcn = null, ?string $getPrimaryKeyValue = null, ?string $getCurrentAction = null, ?string $routeName = null, ?array $routeParameters = null, ?string $getUri = null): Request
+    private function createRequest(?string $crudControllerFqcn = null, ?string $entityId = null, ?string $action = null, ?string $routeName = null, ?array $routeParameters = null, ?string $requestPath = null, array $queryParameters = []): Request
     {
-        $queryParameters = [];
+        $queryParameters[EA::CRUD_CONTROLLER_FQCN] = $crudControllerFqcn;
+        $queryParameters[EA::CRUD_ACTION] = $action;
+        $queryParameters[EA::ENTITY_ID] = $entityId;
+        $queryParameters[EA::ROUTE_NAME] = $routeName;
+        $queryParameters[EA::ROUTE_PARAMS] = $routeParameters;
 
-        if (null !== $getControllerFqcn) {
-            $queryParameters[EA::CRUD_CONTROLLER_FQCN] = $getControllerFqcn;
-        }
-        if (null !== $getCurrentAction) {
-            $queryParameters[EA::CRUD_ACTION] = $getCurrentAction;
-        }
+        $queryParameters = array_filter($queryParameters, static fn ($value) => null !== $value);
 
-        if (null !== $getPrimaryKeyValue) {
-            $queryParameters[EA::ENTITY_ID] = $getPrimaryKeyValue;
-        }
-
-        if (null !== $routeName) {
-            $queryParameters[EA::ROUTE_NAME] = $routeName;
-        }
-        if (null !== $routeParameters) {
-            $queryParameters[EA::ROUTE_PARAMS] = $routeParameters;
+        $serverParameters = [
+            'HTTPS' => 'On',
+            'HTTP_HOST' => 'example.com',
+            'QUERY_STRING' => http_build_query($queryParameters),
+        ];
+        if (null !== $requestPath) {
+            $serverParameters['REQUEST_URI'] = '/'.ltrim($requestPath, '/');
         }
 
-        $request = $this->getMockBuilder(Request::class)->getMock();
-        $request->query = new InputBag($queryParameters);
-
-        if (null !== $getUri) {
-            $request->method('getUri')->willReturn($getUri);
-        } else {
-            $request->method('getUri')->willReturn('/?'.http_build_query($queryParameters));
-        }
-
-        return $request;
+        return new Request(query: $queryParameters, attributes: $queryParameters, server: $serverParameters);
     }
 }

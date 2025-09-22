@@ -67,6 +67,8 @@ final class CountryField implements FieldInterface
     /**
      * Restricts the list of countries shown by the field to the given list of country codes.
      * e.g. ->includeOnly(['AR', 'BR', 'ES', 'PT']).
+     *
+     * @param array<string> $countryCodesToKeep
      */
     public function includeOnly(array $countryCodesToKeep): self
     {
@@ -78,6 +80,8 @@ final class CountryField implements FieldInterface
     /**
      * Removes the given list of country codes from the countries displayed by the field.
      * e.g. ->remove(['AF', 'KP']).
+     *
+     * @param array<string> $countryCodesToRemove
      */
     public function remove(array $countryCodesToRemove): self
     {

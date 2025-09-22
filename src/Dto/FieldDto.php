@@ -64,6 +64,7 @@ final class FieldDto
      */
     private $uniqueId;
     private KeyValueStore $displayedOn;
+    /** @var callable|null */
     private $displayCallable;
     /** @var array<string, bool|int|float|string> */
     private array $htmlAttributes = [];

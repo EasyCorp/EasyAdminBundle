@@ -66,6 +66,7 @@ final class FieldDto
     private KeyValueStore $displayedOn;
     /** @var array<string, bool|int|float|string> */
     private array $htmlAttributes = [];
+    private bool $isAccessible = true;
 
     public function __construct()
     {
@@ -559,5 +560,15 @@ final class FieldDto
         $this->htmlAttributes[$attribute] = $value;
 
         return $this;
+    }
+
+    public function markAsInaccessible(): void
+    {
+        $this->isAccessible = false;
+    }
+
+    public function isAccessible(): bool
+    {
+        return $this->isAccessible;
     }
 }

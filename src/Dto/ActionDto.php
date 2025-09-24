@@ -335,23 +335,11 @@ final class ActionDto
         return $action;
     }
 
-    /**
-     * @param string $optionName
-     * @param mixed $value
-     *
-     * @return void
-     */
     public function setCustomOption(string $optionName, mixed $value): void
     {
         $this->customOptions[$optionName] = $value;
     }
 
-    /**
-     * @param string $optionName
-     * @param mixed|null $default
-     *
-     * @return mixed
-     */
     public function getCustomOption(string $optionName, mixed $default = null): mixed
     {
         return $this->customOptions[$optionName] ?? $default;

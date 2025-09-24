@@ -156,6 +156,33 @@ class AdminRouteTest extends WebTestCase
         $action1Route2 = $router->getRouteCollection()->get('second_admin_standalone_action1');
         $this->assertNotNull($action1Route2);
         $this->assertSame('/second-admin/standalone/action1', $action1Route2->getPath());
+
+        // #[AdminRoute] applied only to the method should not create a route for the class
+        $this->assertNull($router->getRouteCollection()->get('admin_standalone'));
+    }
+
+    public function testStandaloneMethodCrudRoutes(): void
+    {
+        $client = static::createClient();
+        $router = $client->getContainer()->get('router');
+
+        // Standalone CRUD methods should create routes for all dashboards
+        $action1Route = $router->getRouteCollection()->get('admin_standalone_methods_crud_action1');
+        $this->assertNotNull($action1Route);
+        $this->assertSame('/admin/standalone-methods/crud/action1', $action1Route->getPath());
+
+        $action2Route = $router->getRouteCollection()->get('admin_standalone_methods_crud_action2');
+        $this->assertNotNull($action2Route);
+        $this->assertSame('/admin/standalone-methods/crud/action2', $action2Route->getPath());
+        $this->assertContains('POST', $action2Route->getMethods());
+
+        // Should also exist for second dashboard
+        $action1Route2 = $router->getRouteCollection()->get('second_admin_standalone_methods_crud_action1');
+        $this->assertNotNull($action1Route2);
+        $this->assertSame('/second-admin/standalone-methods/crud/action1', $action1Route2->getPath());
+
+        // #[AdminRoute] applied only to the method should not create a route for the class
+        $this->assertNull($router->getRouteCollection()->get('admin_standalone_methods'));
     }
 
     public function testRouteAccessibility(): void
@@ -224,5 +251,231 @@ class AdminRouteTest extends WebTestCase
         foreach ($expectedRoutes as $routeName) {
             $this->assertArrayHasKey($routeName, $adminRoutes, "Expected route '$routeName' not found");
         }
+    }
+
+    public function testRepeatedAdminRouteAttributes(): void
+    {
+        $client = static::createClient();
+        $router = $client->getContainer()->get('router');
+
+        // test that repeated AdminRoute attributes on the same method generate multiple routes
+        $route1 = $router->getRouteCollection()->get('admin_route1');
+        $this->assertNotNull($route1, 'admin_route1 route should exist');
+        $this->assertSame('/admin/route1/{id}', $route1->getPath());
+        $this->assertSame(
+            'EasyCorp\Bundle\EasyAdminBundle\Tests\AdminRouteTestApplication\Controller\RepeatedRouteController::twoRoutes',
+            $route1->getDefault('_controller')
+        );
+
+        $route2 = $router->getRouteCollection()->get('admin_route2');
+        $this->assertNotNull($route2, 'admin_route2 route should exist');
+        $this->assertSame('/admin/route2/{id}', $route2->getPath());
+        $this->assertSame(
+            'EasyCorp\Bundle\EasyAdminBundle\Tests\AdminRouteTestApplication\Controller\RepeatedRouteController::twoRoutes',
+            $route2->getDefault('_controller')
+        );
+
+        // test multiple routes pointing to the same action
+        $route1 = $router->getRouteCollection()->get('admin_multiple_route1');
+        $this->assertNotNull($route1, 'Multiple route 1 should exist');
+        $this->assertSame('/admin/multiple/route1', $route1->getPath());
+
+        $route2 = $router->getRouteCollection()->get('admin_multiple_route2');
+        $this->assertNotNull($route2, 'Multiple route 2 should exist');
+        $this->assertSame('/admin/multiple/route2', $route2->getPath());
+
+        $route3 = $router->getRouteCollection()->get('admin_multiple_route3');
+        $this->assertNotNull($route3, 'Multiple route 3 should exist');
+        $this->assertSame('/admin/multiple/route3', $route3->getPath());
+
+        // all three routes should point to the same controller action
+        $this->assertSame(
+            'EasyCorp\Bundle\EasyAdminBundle\Tests\AdminRouteTestApplication\Controller\RepeatedRouteController::multipleRoutes',
+            $route1->getDefault('_controller')
+        );
+        $this->assertSame(
+            'EasyCorp\Bundle\EasyAdminBundle\Tests\AdminRouteTestApplication\Controller\RepeatedRouteController::multipleRoutes',
+            $route2->getDefault('_controller')
+        );
+        $this->assertSame(
+            'EasyCorp\Bundle\EasyAdminBundle\Tests\AdminRouteTestApplication\Controller\RepeatedRouteController::multipleRoutes',
+            $route3->getDefault('_controller')
+        );
+
+        // test that routes work for second dashboard too
+        $this->assertNotNull($router->getRouteCollection()->get('second_admin_route1'));
+        $this->assertNotNull($router->getRouteCollection()->get('second_admin_route2'));
+        $this->assertNotNull($router->getRouteCollection()->get('second_admin_multiple_route1'));
+        $this->assertNotNull($router->getRouteCollection()->get('second_admin_multiple_route2'));
+        $this->assertNotNull($router->getRouteCollection()->get('second_admin_multiple_route3'));
+    }
+
+    public function testMethodRoutesWithSameName(): void
+    {
+        $client = static::createClient();
+        $router = $client->getContainer()->get('router');
+
+        // test that custom routes with same name in different CRUD controllers are generated for both dashboards
+        $this->assertNotNull($router->getRouteCollection()->get('admin_same_action_one_same_action_name'));
+        $this->assertNotNull($router->getRouteCollection()->get('admin_same_action_two_same_action_name'));
+        $this->assertNotNull($router->getRouteCollection()->get('second_admin_same_action_one_same_action_name'));
+        $this->assertNotNull($router->getRouteCollection()->get('second_admin_same_action_two_same_action_name'));
+    }
+
+    public function testRepeatedRoutesAreAccessible(): void
+    {
+        $client = static::createClient();
+        $client->setServerParameters(['PHP_AUTH_USER' => 'admin', 'PHP_AUTH_PW' => 'admin']);
+
+        $client->request('GET', '/admin/route1/123');
+        $this->assertResponseIsSuccessful();
+        $this->assertSame('ID: 123', $client->getResponse()->getContent());
+
+        $client->request('GET', '/admin/route2/456');
+        $this->assertResponseIsSuccessful();
+        $this->assertSame('ID: 456', $client->getResponse()->getContent());
+
+        $client->request('GET', '/admin/multiple/route1');
+        $this->assertResponseIsSuccessful();
+        $this->assertSame('Multiple routes to same action', $client->getResponse()->getContent());
+
+        $client->request('GET', '/admin/multiple/route2');
+        $this->assertResponseIsSuccessful();
+        $this->assertSame('Multiple routes to same action', $client->getResponse()->getContent());
+
+        $client->request('GET', '/admin/multiple/route3');
+        $this->assertResponseIsSuccessful();
+        $this->assertSame('Multiple routes to same action', $client->getResponse()->getContent());
+    }
+
+    public function testClassLevelAdminRouteAsPrefix(): void
+    {
+        $client = static::createClient();
+        $router = $client->getContainer()->get('router');
+
+        // test that class-level AdminRoute acts as a prefix when methods have AdminRoute
+        $usersRoute = $router->getRouteCollection()->get('admin_api_users');
+        $this->assertNotNull($usersRoute, 'API users route should exist');
+        $this->assertSame('/admin/api/users', $usersRoute->getPath());
+        $this->assertSame(
+            'EasyCorp\Bundle\EasyAdminBundle\Tests\AdminRouteTestApplication\Controller\PrefixedController::listUsers',
+            $usersRoute->getDefault('_controller')
+        );
+
+        $userDetailRoute = $router->getRouteCollection()->get('admin_api_user_detail');
+        $this->assertNotNull($userDetailRoute, 'API user detail route should exist');
+        $this->assertSame('/admin/api/users/{id}', $userDetailRoute->getPath());
+        $this->assertSame(
+            'EasyCorp\Bundle\EasyAdminBundle\Tests\AdminRouteTestApplication\Controller\PrefixedController::getUserDetail',
+            $userDetailRoute->getDefault('_controller')
+        );
+
+        // test that routes work for second dashboard too
+        $this->assertNotNull($router->getRouteCollection()->get('second_admin_api_users'));
+        $this->assertNotNull($router->getRouteCollection()->get('second_admin_api_user_detail'));
+    }
+
+    public function testClassLevelRoutesAreAccessible(): void
+    {
+        $client = static::createClient();
+        $client->setServerParameters(['PHP_AUTH_USER' => 'admin', 'PHP_AUTH_PW' => 'admin']);
+
+        // Test prefixed routes
+        $client->request('GET', '/admin/api/users');
+        $this->assertResponseIsSuccessful();
+        $this->assertSame('User list', $client->getResponse()->getContent());
+
+        $client->request('GET', '/admin/api/users/789');
+        $this->assertResponseIsSuccessful();
+        $this->assertSame('User detail: 789', $client->getResponse()->getContent());
+    }
+
+    public function testMultipleAdminRoutesOnSameCrudAction(): void
+    {
+        $client = static::createClient();
+        $router = $client->getContainer()->get('router');
+
+        // Test that multiple AdminRoute attributes on the same CRUD action generate multiple routes
+
+        // customAction1 with two routes
+        $action1Route = $router->getRouteCollection()->get('admin_multiple_route_action1');
+        $this->assertNotNull($action1Route, 'Action1 route should exist');
+        $this->assertSame('/admin/multiple-route/action1', $action1Route->getPath());
+        $this->assertSame(
+            'EasyCorp\Bundle\EasyAdminBundle\Tests\AdminRouteTestApplication\Controller\MultipleRouteCrudController::customAction1',
+            $action1Route->getDefault('_controller')
+        );
+
+        $action1AltRoute = $router->getRouteCollection()->get('admin_multiple_route_action1_alt');
+        $this->assertNotNull($action1AltRoute, 'Action1 alt route should exist');
+        $this->assertSame('/admin/multiple-route/action1-alt', $action1AltRoute->getPath());
+        $this->assertSame(
+            'EasyCorp\Bundle\EasyAdminBundle\Tests\AdminRouteTestApplication\Controller\MultipleRouteCrudController::customAction1',
+            $action1AltRoute->getDefault('_controller')
+        );
+
+        // customAction2 with three routes and different HTTP methods
+        $action2Path1Route = $router->getRouteCollection()->get('admin_multiple_route_action2_path1');
+        $this->assertNotNull($action2Path1Route, 'Action2 path1 route should exist');
+        $this->assertSame('/admin/multiple-route/action2/path1', $action2Path1Route->getPath());
+        $this->assertEquals(['GET'], $action2Path1Route->getMethods());
+        $this->assertSame(
+            'EasyCorp\Bundle\EasyAdminBundle\Tests\AdminRouteTestApplication\Controller\MultipleRouteCrudController::customAction2',
+            $action2Path1Route->getDefault('_controller')
+        );
+
+        $action2Path2Route = $router->getRouteCollection()->get('admin_multiple_route_action2_path2');
+        $this->assertNotNull($action2Path2Route, 'Action2 path2 route should exist');
+        $this->assertSame('/admin/multiple-route/action2/path2', $action2Path2Route->getPath());
+        $this->assertEquals(['GET'], $action2Path2Route->getMethods());
+
+        $action2Path3Route = $router->getRouteCollection()->get('admin_multiple_route_action2_path3');
+        $this->assertNotNull($action2Path3Route, 'Action2 path3 route should exist');
+        $this->assertSame('/admin/multiple-route/action2/path3', $action2Path3Route->getPath());
+        $this->assertContains('GET', $action2Path3Route->getMethods());
+        $this->assertContains('POST', $action2Path3Route->getMethods());
+
+        // customAction3 with entity ID parameter
+        $action3Route = $router->getRouteCollection()->get('admin_multiple_route_action3');
+        $this->assertNotNull($action3Route, 'Action3 route should exist');
+        $this->assertSame('/admin/multiple-route/action3/{entityId}', $action3Route->getPath());
+
+        $action3AltRoute = $router->getRouteCollection()->get('admin_multiple_route_action3_alt');
+        $this->assertNotNull($action3AltRoute, 'Action3 alt route should exist');
+        $this->assertSame('/admin/multiple-route/action3-alt/{entityId}', $action3AltRoute->getPath());
+
+        // customAction4, where one of the routes doesn't define its path, only its name
+        $action4Route = $router->getRouteCollection()->get('admin_multiple_route_action4');
+        $this->assertNotNull($action4Route, 'Action4 route should exist');
+        $this->assertSame('/admin/multiple-route/action4/{entityId}', $action4Route->getPath());
+
+        $action4AltRoute = $router->getRouteCollection()->get('admin_multiple_route_custom_action4');
+        $this->assertNotNull($action4AltRoute, 'Action4 alt route should exist with an autogenerated route name based on the method name');
+        $this->assertSame('/admin/multiple-route/action4-alt/{entityId}', $action4AltRoute->getPath());
+
+        // customAction5, where one of the routes doesn't define its name, only its path
+        $action5Route = $router->getRouteCollection()->get('admin_multiple_route_action5');
+        $this->assertNotNull($action5Route, 'Action5 route should exist');
+        $this->assertSame('/admin/multiple-route/action5', $action5Route->getPath());
+
+        $action5AltRoute = $router->getRouteCollection()->get('admin_multiple_route_action5_alt');
+        $this->assertNotNull($action5AltRoute, 'Action5 alt route should exist with an autogenerated route path based on the method name');
+        $this->assertSame('/admin/multiple-route/custom-action5', $action5AltRoute->getPath());
+
+        // customAction6, where one of the routes doesn't define neither its name nor path
+        $action6Route = $router->getRouteCollection()->get('admin_multiple_route_action6');
+        $this->assertNotNull($action6Route, 'Action6 route should exist');
+        $this->assertSame('/admin/multiple-route/action6', $action6Route->getPath());
+
+        $action6AltRoute = $router->getRouteCollection()->get('admin_multiple_route_custom_action6');
+        $this->assertNotNull($action6AltRoute, 'Action6 alt route should exist with an autogenerated route name and path based on the method name');
+        $this->assertSame('/admin/multiple-route/custom-action6', $action6AltRoute->getPath());
+
+        // Test that routes work for second dashboard too
+        $this->assertNotNull($router->getRouteCollection()->get('second_admin_multiple_route_action1'));
+        $this->assertNotNull($router->getRouteCollection()->get('second_admin_multiple_route_action1_alt'));
+        $this->assertNotNull($router->getRouteCollection()->get('second_admin_multiple_route_action2_path1'));
+        $this->assertNotNull($router->getRouteCollection()->get('second_admin_multiple_route_action2_path2'));
+        $this->assertNotNull($router->getRouteCollection()->get('second_admin_multiple_route_action2_path3'));
     }
 }

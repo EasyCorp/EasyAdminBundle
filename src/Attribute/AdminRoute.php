@@ -5,7 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Attribute;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-#[\Attribute(\Attribute::TARGET_CLASS | \Attribute::TARGET_METHOD)]
+#[\Attribute(\Attribute::TARGET_CLASS | \Attribute::TARGET_METHOD | \Attribute::IS_REPEATABLE)]
 class AdminRoute
 {
     public function __construct(

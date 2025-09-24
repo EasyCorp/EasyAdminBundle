@@ -8,6 +8,6 @@ interface FieldProviderInterface
 {
     /**
      * @return Field[]
-    */
+     */
     public function getDefaultFields(string $pageName): array;
 }

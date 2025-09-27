@@ -382,7 +382,7 @@ class App {
     }
 
     #createModalWindowsForDeleteActions() {
-        document.querySelectorAll('.action-delete').forEach((actionElement) => {
+        document.querySelectorAll('[data-action-name="delete"]').forEach((actionElement) => {
             actionElement.addEventListener('click', (event) => {
                 event.preventDefault();
 

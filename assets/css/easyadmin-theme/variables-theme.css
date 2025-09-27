@@ -252,53 +252,110 @@
     --alert-dark-bg: var(--gray-800);
     --alert-dark-color: var(--gray-50);
     --alert-dark-border-color: var(--gray-500);
-    --button-bg: var(--white);
-    --button-color: var(--gray-700);
-    --button-hover-color: var(--gray-800);
-    --button-active-color: var(--gray-800);
-    --button-border-color: var(--gray-300);
-    --button-hover-border-color: var(--gray-300);
-    /* border */
-    --button-shadow: 0 0 0 1px var(--gray-300), /* drop shadow md (--gray-900) */ 0 1px 1px 0 hsla(222, 47%, 11%, 0.1), /* drop shadow lg (--gray-700) */
-        0 2px 5px 0 hsla(215, 25%, 27%, 0.1);
-    /* border */
-    --button-hover-shadow: 0 0 0 1px var(--gray-300), /* drop shadow md (--gray-900) */ 0 1px 1px 0
-        hsla(222, 47%, 11%, 0.1), /* drop shadow lg (--gray-700) */ 0 2px 5px 0 hsla(215, 25%, 27%, 0.1), /* drop shadow xl (--gray-700) */
-        0 3px 9px 0 hsla(215, 25%, 27%, 0.1);
-    /* border */
-    --button-active-shadow:
-        0 0 0 1px var(--gray-300),
-        /* ring */
-        0 0 0 4px var(--gray-200),
-        /* drop shadow md (--gray-900) */
-        0 1px 1px 0 hsla(222, 47%, 11%, 0.1),
-        /* drop shadow lg (--gray-700) */
-        0 2px 5px 0 hsla(215, 25%, 27%, 0.1),
-        /* drop shadow xl (--gray-700) */
-        0 3px 9px 0 hsla(215, 25%, 27%, 0.1);
-    /* border */
-    --button-active-primary-shadow:
-        0 0 0 1px var(--gray-300),
-        /* ring */
-        0 0 0 4px var(--indigo-200),
-        /* drop shadow md (--gray-900) */
-        0 1px 1px 0 hsla(222, 47%, 11%, 0.1),
-        /* drop shadow lg (--gray-700) */
-        0 2px 5px 0 hsla(215, 25%, 27%, 0.1),
-        /* drop shadow xl (--gray-700) */
-        0 3px 9px 0 hsla(215, 25%, 27%, 0.1);
-    --button-primary-bg: var(--color-primary);
-    --button-primary-color: var(--text-on-primary);
-    --button-secondary-bg: var(--white);
-    --button-secondary-color: var(--button-color);
-    --button-info-bg: var(--color-info);
-    --button-info-color: var(--white);
-    --button-success-bg: var(--color-success);
-    --button-success-color: var(--white);
-    --button-danger-bg: var(--color-danger);
-    --button-danger-color: var(--white);
-    --button-warning-bg: var(--color-warning);
-    --button-warning-color: var(--white);
+
+    --button-padding-y-sm: 0px;
+    --button-padding-x-sm: 8px;
+    --button-padding-y-md: 0;
+    --button-padding-x-md: 12px;
+    --button-padding-y-lg: 8px;
+    --button-padding-x-lg: 16px;
+    --button-font-size-sm: 12px;
+    --button-font-size-md: 14px;
+    --button-font-size-lg: 16px;
+    --button-line-height: 1.5;
+
+    --button-transition-duration: 80ms;
+    --button-transition-timing: cubic-bezier(0.65, 0, 0.35, 1);
+
+    --button-disabled-opacity: 0.9;
+
+    --button-focus-outline-color: var(--indigo-600);
+
+    --button-primary-box-shadow: 0px 1px 1px 0px #1f23280f, 0px 1px 3px 0px #1f23280f;
+    --button-primary-bg: linear-gradient(to bottom, #566cdb, #5368d5);
+    --button-primary-color: var(--white);
+    --button-primary-icon-color: inherit;
+    --button-primary-border-color: #1f232826;
+    --button-primary-hover-bg: linear-gradient(to bottom, #5368d5, #5064cc);
+    --button-primary-hover-color: var(--white);
+    --button-primary-hover-border-color: #1f232826;
+    --button-primary-active-box-shadow: inset 0 1px 0 0 #002d114d;
+    --button-primary-active-bg: linear-gradient(to bottom, #5064cc, #4c5fc2);
+    --button-primary-active-color: var(--white);
+    --button-primary-active-border-color: #1f232826;
+
+    --button-secondary-box-shadow: 0 1px 0 0 #1f23280a;
+    --button-secondary-bg: linear-gradient(to bottom, #fafdff, #f6f8fa);
+    --button-secondary-color: var(--text-primary-color);
+    --button-secondary-icon-color: var(--gray-700);
+    --button-secondary-border-color: #d1d9e0;
+    --button-secondary-hover-bg: linear-gradient(to bottom, #f6f8fa, #eff2f5);
+    --button-secondary-hover-color: var(--text-primary-color);
+    --button-secondary-hover-border-color: #d1d9e0;
+    --button-secondary-active-box-shadow: inset 0 1px 0 0 #dee6ed;
+    --button-secondary-active-bg: linear-gradient(to bottom, #eff2f5, #e6eaef);
+    --button-secondary-active-color: var(--text-primary-color);
+    --button-secondary-active-border-color: #d1d9e0;
+
+    --button-success-box-shadow: 0 1px 0 0 #1f23280a;
+    --button-success-bg: linear-gradient(to bottom, white, #f6f8fa);
+    --button-success-color: #1f883d;
+    --button-success-icon-color: inherit;
+    --button-success-border-color: #1f232826;
+    --button-success-hover-bg: #1f883d;
+    --button-success-hover-color: var(--white);
+    --button-success-hover-border-color: #1f232826;
+    --button-success-active-box-shadow: inset 0px 1px 0px 0px #002d114d;
+    --button-success-active-bg: #197935;
+    --button-success-active-color: var(--white);
+    --button-success-active-border-color: #1f232826;
+
+    --button-warning-box-shadow: 0 1px 0 0 #1f23280a;
+    --button-warning-bg: linear-gradient(to bottom, white, #f6f8fa);
+    --button-warning-color: #a67a00;
+    --button-warning-icon-color: inherit;
+    --button-warning-border-color: #1f232826;
+    --button-warning-hover-bg: #b88700;
+    --button-warning-hover-color: var(--white);
+    --button-warning-hover-border-color: #1f232826;
+    --button-warning-active-box-shadow: inset 0px 1px 0px 0px #2d24004d;
+    --button-warning-active-bg: #b88700;
+    --button-warning-active-color: var(--white);
+    --button-warning-active-border-color: #2d24004d;
+
+    --button-danger-box-shadow: 0 1px 0 0 #1f23280a;
+    --button-danger-bg: linear-gradient(to bottom, white, #f6f8fa);
+    --button-danger-color: #d1242f;
+    --button-danger-icon-color: inherit;
+    --button-danger-border-color: #d1d9e0;
+    --button-danger-hover-bg: #cf222e;
+    --button-danger-hover-color: var(--white);
+    --button-danger-hover-border-color: #1f23280a;
+    --button-danger-active-box-shadow: inset 0 1px 0 0 #4c001433;
+    --button-danger-active-bg: #a40e26;
+    --button-danger-active-color: var(--white);
+    --button-danger-active-border-color: #1f23280a;
+
+    --button-invisible-box-shadow: none;
+    --button-invisible-bg: transparent;
+    --button-invisible-color: inherit;
+    --button-invisible-icon-color: inherit;
+    --button-invisible-border-color: transparent;
+    --button-invisible-hover-bg: #00000026;
+    --button-invisible-hover-color: inherit;
+    --button-invisible-hover-border-color: transparent;
+    --button-invisible-active-bg: #00000026;
+    --button-invisible-active-color: inherit;
+    --button-invisible-active-box-shadow: none;
+    --button-invisible-active-border-color: transparent;
+
+    --button-invisible-danger-color: #cf222e;
+    --button-invisible-danger-hover-color: #cf222e;
+    --button-invisible-danger-hover-icon-color: inherit;
+    --button-invisible-danger-hover-hover-bg: #ffebe9;
+    --button-invisible-danger-active-color: #a40e26;
+    --button-invisible-danger-hover-active-bg: #ffdad6;
+
     --text-color: var(--gray-800);
     --text-color-rgb: 30, 41, 59;
     --text-color-dark: hsl(229, 24%, 21%);
@@ -576,29 +633,94 @@
     --alert-dark-bg: var(--true-gray-900);
     --alert-dark-color: var(--true-gray-200);
     --alert-dark-border-color: var(--true-gray-700);
-    --button-bg: var(--true-gray-600);
-    --button-color: var(--true-gray-200);
-    --button-hover-color: var(--true-gray-100);
-    --button-active-color: var(--true-gray-100);
-    --button-border-color: var(--true-gray-600);
-    --button-hover-border-color: var(--true-gray-600);
-    --button-shadow: 0 0 0 1px var(--true-gray-700);
-    --button-hover-shadow: 0 0 0 1px var(--true-gray-500);
-    --button-active-shadow: 0 0 0 1px var(--true-gray-600);
-    /* border */
-    --button-active-primary-shadow: 0 0 0 1px var(--true-gray-700), /* ring */ 0 0 0 4px var(--blue-600);
-    --button-primary-bg: var(--blue-600);
-    --button-primary-color: var(--text-on-primary);
-    --button-secondary-bg: var(--true-gray-800);
-    --button-secondary-color: var(--button-color);
-    --button-info-bg: var(--color-info);
-    --button-info-color: var(--white);
-    --button-success-bg: var(--color-success);
-    --button-success-color: var(--white);
-    --button-danger-bg: var(--color-danger);
-    --button-danger-color: var(--white);
-    --button-warning-bg: var(--color-warning);
-    --button-warning-color: var(--white);
+
+    --button-focus-outline-color: #1f6febb3;
+
+    --button-primary-box-shadow: none;
+    --button-primary-bg: #1447e6;
+    --button-primary-color: var(--white);
+    --button-primary-icon-color: rgba(255, 255, 255, 0.85);
+    --button-primary-border-color: #ffffff26;
+    --button-primary-hover-bg: #135af2;
+    --button-primary-hover-color: var(--white);
+    --button-primary-hover-border-color: #ffffff26;
+    --button-primary-active-box-shadow: none;
+    --button-primary-active-bg: #1f66ff;
+    --button-primary-active-color: var(--white);
+    --button-primary-active-border-color: #ffffff26;
+
+    --button-secondary-box-shadow: none;
+    --button-secondary-bg: #242424;
+    --button-secondary-color: var(--text-primary-color);
+    --button-secondary-icon-color: var(--text-muted);
+    --button-secondary-border-color: #3d3d3d;
+    --button-secondary-hover-bg: #2c2c2c;
+    --button-secondary-hover-color: var(--text-primary-color);
+    --button-secondary-hover-border-color: #3d3d3d;
+    --button-secondary-active-box-shadow: none;
+    --button-secondary-active-bg: #313131;
+    --button-secondary-active-color: var(--text-primary-color);
+    --button-secondary-active-border-color: #4d4d4d;
+
+    --button-success-box-shadow: none;
+    --button-success-bg: #242424;
+    --button-success-color: #56d364;
+    --button-success-icon-color: inherit;
+    --button-success-border-color: #3d3d3d;
+    --button-success-hover-bg: #29903b;
+    --button-success-hover-color: var(--white);
+    --button-success-hover-border-color: #ffffff26;
+    --button-success-active-box-shadow: none;
+    --button-success-active-bg: #2e9a40;
+    --button-success-active-color: var(--white);
+    --button-success-active-border-color: #ffffff26;
+
+    --button-warning-box-shadow: 0 1px 0 0 #1f23280a;
+    --button-warning-bg: #242424;
+    --button-warning-color: #e3b341;
+    --button-warning-icon-color: inherit;
+    --button-warning-border-color: #3d3d3d;
+    --button-warning-hover-bg: #9e6a03;
+    --button-warning-hover-color: var(--white);
+    --button-warning-hover-border-color: #ffffff26;
+    --button-warning-active-box-shadow: none;
+    --button-warning-active-bg: #bb8009;
+    --button-warning-active-color: var(--white);
+    --button-warning-active-border-color: #ffffff26;
+
+    --button-danger-box-shadow: none;
+    --button-danger-bg: #242424;
+    --button-danger-color: #fa5e55;
+    --button-danger-icon-color: inherit;
+    --button-danger-border-color: #3d3d3d;
+    --button-danger-hover-bg: #b62324;
+    --button-danger-hover-color: var(--white);
+    --button-danger-hover-border-color: #ffffff26;
+    --button-danger-active-box-shadow: none;
+    --button-danger-active-bg: #da3633;
+    --button-danger-active-color: var(--white);
+    --button-danger-active-border-color: #ffffff26;
+
+    --button-invisible-box-shadow: none;
+    --button-invisible-bg: transparent;
+    --button-invisible-color: inherit;
+    --button-invisible-icon-color: inherit;
+    --button-invisible-border-color: transparent;
+    --button-invisible-hover-bg: #ffffff40;
+    --button-invisible-hover-color: inherit;
+    --button-invisible-hover-border-color: transparent;
+    --button-invisible-active-bg: #ffffff40;
+    --button-invisible-active-color: inherit;
+    --button-invisible-active-box-shadow: none;
+    --button-invisible-active-border-color: transparent;
+
+    --button-invisible-danger-color: #fa5e55;
+    --button-invisible-danger-hover-color: var(--white);
+    --button-invisible-danger-hover-icon-color: inherit;
+    --button-invisible-danger-hover-hover-bg: #b62324;
+    --button-invisible-danger-active-color: var(--white);
+    --button-invisible-danger-hover-active-bg: #da3633;
+
     --text-color: var(--true-gray-300);
     --text-color-rgb: 212, 212, 212;
     --text-color-dark: var(--true-gray-200);

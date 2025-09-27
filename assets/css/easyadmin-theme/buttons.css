@@ -1,152 +1,379 @@
 /* Buttons
 /* ------------------------------------------------------------------------- */
-
 .btn {
-    background-color: var(--button-bg);
-    border: 0;
-    box-shadow: var(--button-shadow);
+    --button-bg: transparent;
+    --button-border-color: transparent;
+    --button-color: var(--text-color);
+    --button-box-shadow: none;
+
+    align-items: center;
+    appearance: none;
+    background: var(--button-bg);
+    border: var(--button-border-width, .0625rem) solid;
+    border-color: var(--button-border-color);
+    border-radius: var(--button-border-radius, .375rem);
+    box-shadow: var(--button-box-shadow);
     color: var(--button-color);
     cursor: pointer;
+    display: inline-flex;
+    font-family: inherit;
+    font-size: var(--button-font-size, .875rem);
+    font-weight: var(--button-font-weight, 500);
+    gap: var(--button-icon-gap, .5rem);
+    block-size: var(--button-height, 2rem);
+    justify-content: space-between;
+    line-height: var(--button-line-height);
+    min-inline-size: max-content;
+    padding: var(--button-padding-y, var(--button-padding-y-md)) var(--button-padding-x, var(--button-padding-x-md));
+    position: relative;
+    text-align: center;
     text-decoration: none;
+    transition: var(--button-transition-duration) var(--button-transition-timing);
+    transition-property: background-color, border-color, color, opacity, fill;
+    user-select: none;
     white-space: nowrap;
-    transition: 80ms cubic-bezier(0.33, 1, 0.68, 1);
-    transition-property: box-shadow;
 }
-.btn:not(:disabled):not(.disabled):not(.btn-link):not(.btn-danger):hover {
-    border: 0;
-    /* needed because $btn-focus-box-shadow and $btn-active-box-shadow are ignored for .btn-primary, .btn-info, etc. */
-    box-shadow: var(--button-hover-shadow);
-    color: var(--button-hover-color);
+
+/* Button hover state */
+.btn:not(:disabled):not(.disabled):hover,
+.btn:not(:disabled):not(.disabled):focus,
+.btn:not(:disabled):not(.disabled):focus-visible {
+    background: var(--button-hover-bg, var(--button-bg));
+    border-color: var(--button-hover-border-color, var(--button-border-color));
+    color: var(--button-hover-color, var(--button-color));
+    text-decoration: none;
 }
-.btn:not(:disabled):not(.disabled):not(.btn-link):active,
-.btn:not(:disabled):not(.disabled):not(.btn-link):focus,
-.btn:not(:disabled):not(.disabled):not(.btn-link):active:focus {
-    border: 0;
-    /* needed because $btn-focus-box-shadow and $btn-active-box-shadow are ignored for .btn-primary, .btn-info, etc. */
-    box-shadow: var(--button-active-shadow);
-    color: var(--button-active-color);
+
+/* Button active/focus states */
+.btn:not(:disabled):not(.disabled):active {
+    background: var(--button-active-bg, var(--button-bg));
+    border-color: var(--button-active-border-color, var(--button-border-color));
+    box-shadow: var(--button-active-box-shadow, var(--button-box-shadow));
+    color: var(--button-active-color, var(--button-color));
+    outline: none;
+}
+.btn:not(:disabled):not(.disabled):focus:not(:active),
+.btn:not(:disabled):not(.disabled):focus-visible:not(:active) {
+    box-shadow: none;
+    outline: 2px solid var(--button-focus-outline-color);
+    outline-offset: -2px;
 }
 
 .btn-primary,
-.btn-primary:not(:disabled):not(.disabled):not(.btn-link):not(.btn-danger):hover,
-.btn-primary:not(:disabled):not(.disabled):not(.btn-link):not(.btn-danger):focus,
-.btn-primary:not(:disabled):not(.disabled):not(.btn-link):not(.btn-danger):active,
-.btn-primary:not(:disabled):not(.disabled):not(.btn-link):not(.btn-danger):active:focus {
-    background-color: var(--button-primary-bg);
-    color: var(--button-primary-color);
-}
-.btn-primary:not(:disabled):not(.disabled):focus,
-.btn-primary:not(:disabled):not(.disabled):active,
-.btn-primary:not(:disabled):not(.disabled):active:focus {
-    box-shadow: var(--button-active-primary-shadow);
+.btn-primary.btn.disabled,
+.btn-primary.btn:disabled {
+    --button-box-shadow: var(--button-primary-box-shadow);
+    --button-bg: var(--button-primary-bg);
+    --button-color: var(--button-primary-color);
+    --button-icon-color: var(--button-primary-icon-color);
+    --button-border-color: var(--button-primary-border-color);
+    --button-hover-bg: var(--button-primary-hover-bg);
+    --button-hover-color: var(--button-primary-hover-color);
+    --button-hover-border-color: var(--button-primary-hover-border-color);
+    --button-active-box-shadow: var(--button-primary-active-box-shadow);
+    --button-active-color: var(--button-primary-active-color);
+    --button-active-bg: var(--button-primary-active-bg);
+    --button-active-border-color: var(--button-primary-active-border-color);
 }
 
 .btn-secondary,
-.btn-secondary[disabled],
-.btn-secondary.disabled {
-    background-color: var(--button-secondary-bg);
-    color: var(--button-secondary-color);
-}
-.btn-secondary:hover,
-.btn-secondary:not(:disabled):not(.disabled):focus,
-.btn-secondary:not(:disabled):not(.disabled):active,
-.btn-secondary:not(:disabled):not(.disabled):active:focus {
-    background-color: var(--button-secondary-bg);
-    color: var(--button-hover-color);
-}
-
-.btn-info,
-.btn-info:not(:disabled):not(.disabled):not(.btn-link):not(.btn-danger):hover,
-.btn-info:not(:disabled):not(.disabled):not(.btn-link):not(.btn-danger):focus,
-.btn-info:not(:disabled):not(.disabled):not(.btn-link):not(.btn-danger):active,
-.btn-info:not(:disabled):not(.disabled):not(.btn-link):not(.btn-danger):active:focus {
-    background-color: var(--button-info-bg);
-    color: var(--button-info-color);
+.btn-secondary.btn.disabled,
+.btn-secondary.btn:disabled {
+    --button-box-shadow: var(--button-secondary-box-shadow);
+    --button-bg: var(--button-secondary-bg);
+    --button-color: var(--button-secondary-color);
+    --button-icon-color: var(--button-secondary-icon-color);
+    --button-border-color: var(--button-secondary-border-color);
+    --button-hover-bg: var(--button-secondary-hover-bg);
+    --button-hover-color: var(--button-secondary-hover-color);
+    --button-hover-border-color: var(--button-secondary-hover-border-color);
+    --button-active-box-shadow: var(--button-secondary-active-box-shadow);
+    --button-active-color: var(--button-secondary-active-color);
+    --button-active-bg: var(--button-secondary-active-bg);
+    --button-active-border-color: var(--button-secondary-active-border-color);
 }
 
 .btn-success,
-.btn-success:not(:disabled):not(.disabled):not(.btn-link):not(.btn-danger):hover,
-.btn-success:not(:disabled):not(.disabled):not(.btn-link):not(.btn-danger):focus,
-.btn-success:not(:disabled):not(.disabled):not(.btn-link):not(.btn-danger):active,
-.btn-success:not(:disabled):not(.disabled):not(.btn-link):not(.btn-danger):active:focus {
-    background-color: var(--button-success-bg);
-    color: var(--button-success-color);
-}
-
-.btn.btn-danger,
-.btn-danger,
-.btn-danger:hover,
-.btn-danger:not(:disabled):not(.disabled):focus,
-.btn-danger:not(:disabled):not(.disabled):active,
-.btn-danger:not(:disabled):not(.disabled):active:focus {
-    background-color: var(--button-danger-bg);
-    color: var(--button-danger-color);
+.btn-success.btn.disabled,
+.btn-success.btn:disabled {
+    --button-box-shadow: var(--button-success-box-shadow);
+    --button-bg: var(--button-success-bg);
+    --button-color: var(--button-success-color);
+    --button-icon-color: var(--button-success-icon-color);
+    --button-border-color: var(--button-success-border-color);
+    --button-hover-bg: var(--button-success-hover-bg);
+    --button-hover-color: var(--button-success-hover-color);
+    --button-hover-border-color: var(--button-success-hover-border-color);
+    --button-active-box-shadow: var(--button-success-active-box-shadow);
+    --button-active-color: var(--button-success-active-color);
+    --button-active-bg: var(--button-success-active-bg);
+    --button-active-border-color: var(--button-success-active-border-color);
 }
 
 .btn-warning,
-.btn-warning:not(:disabled):not(.disabled):not(.btn-link):not(.btn-danger):hover,
-.btn-warning:not(:disabled):not(.disabled):not(.btn-link):not(.btn-danger):focus,
-.btn-warning:not(:disabled):not(.disabled):not(.btn-link):not(.btn-danger):active,
-.btn-warning:not(:disabled):not(.disabled):not(.btn-link):not(.btn-danger):active:focus {
-    background-color: var(--button-warning-bg);
-    color: var(--button-warning-color);
+.btn-warning.btn.disabled,
+.btn-warning.btn:disabled {
+    --button-box-shadow: var(--button-warning-box-shadow);
+    --button-bg: var(--button-warning-bg);
+    --button-color: var(--button-warning-color);
+    --button-icon-color: var(--button-warning-icon-color);
+    --button-border-color: var(--button-warning-border-color);
+    --button-hover-bg: var(--button-warning-hover-bg);
+    --button-hover-color: var(--button-warning-hover-color);
+    --button-hover-border-color: var(--button-warning-hover-border-color);
+    --button-active-box-shadow: var(--button-warning-active-box-shadow);
+    --button-active-color: var(--button-warning-active-color);
+    --button-active-bg: var(--button-warning-active-bg);
+    --button-active-border-color: var(--button-warning-active-border-color);
 }
 
-.btn-link,
-.btn-link:hover,
-.btn-link:focus,
-.btn-link:active,
-.btn-link:active:focus {
-    background: transparent;
-    border-color: transparent;
-    color: var(--link-color);
-    box-shadow: none; /* needed to make the button link look like a regular link */
-}
-.btn-link:hover {
-    color: var(--link-hover-color);
-}
-.btn-link-danger,
-.btn-link-danger:hover,
-.btn-link-danger:focus,
-.btn-link-danger:active,
-.btn-link-danger:active:focus {
-    color: var(--link-danger-color);
-}
-.btn-link-danger:hover {
-    color: var(--link-danger-hover-color);
+.btn-danger,
+.btn-danger.btn.disabled,
+.btn-danger.btn:disabled {
+    --button-box-shadow: var(--button-danger-box-shadow);
+    --button-bg: var(--button-danger-bg);
+    --button-color: var(--button-danger-color);
+    --button-icon-color: var(--button-danger-icon-color);
+    --button-border-color: var(--button-danger-border-color);
+    --button-hover-bg: var(--button-danger-hover-bg);
+    --button-hover-color: var(--button-danger-hover-color);
+    --button-hover-border-color: var(--button-danger-hover-border-color);
+    --button-active-box-shadow: var(--button-danger-active-box-shadow);
+    --button-active-color: var(--button-danger-active-color);
+    --button-active-bg: var(--button-danger-active-bg);
+    --button-active-border-color: var(--button-danger-active-border-color);
 }
 
+.btn-invisible,
+.btn-invisible.btn.disabled,
+.btn-invisible.btn:disabled {
+    --button-box-shadow: var(--button-invisible-box-shadow);
+    --button-bg: var(--button-invisible-bg);
+    --button-color: var(--button-invisible-color);
+    --button-icon-color: var(--button-invisible-icon-color);
+    --button-border-color: var(--button-invisible-border-color);
+    --button-hover-bg: var(--button-invisible-hover-bg);
+    --button-hover-color: var(--button-invisible-hover-color);
+    --button-hover-border-color: var(--button-invisible-hover-border-color);
+    --button-active-box-shadow: var(--button-invisible-active-box-shadow);
+    --button-active-color: var(--button-invisible-active-color);
+    --button-active-bg: var(--button-invisible-active-bg);
+    --button-active-border-color: var(--button-invisible-active-border-color);
+}
+.btn-invisible:hover,
+.btn-invisible:focus,
+.btn-invisible:focus-visible,
+.btn-invisible:active {
+    box-shadow: none;
+}
+
+.btn-invisible.btn-danger,
+.btn-invisible.btn-danger.btn.disabled,
+.btn-invisible.btn-danger.btn:disabled {
+    --button-color: var(--button-invisible-danger-color);
+    --button-icon-color: var(--button-invisible-danger-hover-icon-color);
+    --button-hover-color: var(--button-invisible-danger-hover-color);
+    --button-hover-bg: var(--button-invisible-danger-hover-hover-bg);
+    --button-active-color: var(--button-invisible-danger-active-color);
+    --button-active-bg: var(--button-invisible-danger-hover-active-bg);
+}
+.btn-invisible.btn-danger:hover,
+.btn-invisible.btn-danger:focus,
+.btn-invisible.btn-danger:focus-visible,
+.btn-invisible.btn-danger:active {
+    box-shadow: none;
+}
+
+/* Button sizes */
+.btn-sm {
+    --button-font-size: var(--button-font-size-sm);
+    --button-padding-y: var(--button-padding-y-sm);
+    --button-padding-x: var(--button-padding-x-sm);
+    --button-icon-gap: .25rem;
+    --button-height: 1.75rem;
+}
+
+.btn-lg {
+    --button-font-size: var(--button-font-size-lg);
+    --button-padding-y: var(--button-padding-y-lg);
+    --button-padding-x: var(--button-padding-x-lg);
+
+    block-size: 2.5rem;
+}
+
+.btn-block {
+    display: block;
+    inline-size: 100%;
+    place-content: center;
+}
+
+/* Disabled state */
 .btn.disabled,
-.btn:disabled,
-.btn.disabled:hover,
-.btn:disabled:hover,
-.btn.disabled:focus,
-.btn:disabled:focus,
-.btn.disabled:active,
-.btn:disabled:active,
-.btn.disabled:active:focus,
-.btn:disabled:active:focus {
+.btn:disabled {
     box-shadow: none;
     cursor: not-allowed;
+    opacity: var(--button-disabled-opacity);
+    pointer-events: none;
 }
+
+/* For anchor tags styled as buttons */
 a.btn.disabled,
 fieldset:disabled a.btn {
-    /* needed to display the 'not-allowed' cursor on disabled buttons */
     pointer-events: unset;
 }
 
+/* Button content elements */
 .btn > .btn-label {
+    align-items: center;
+    display: inline-flex;
     margin: 0;
-    cursor: inherit;
-}
-.btn > i + .btn-label {
-    margin-inline-start: 4px;
-}
-.btn > .btn-label + i {
-    margin-inline-start: 4px;
 }
 
-.btn-group-sm > .btn,
-.btn-sm {
-    padding: 3px 7px;
+.btn > .btn-icon {
+    color: var(--button-icon-color, currentColor);
+    display: grid;
+    flex-shrink: 0;
+    place-content: center;
+    inline-size: 1em;
+}
+
+.btn .btn-icon svg {
+    color: var(--button-icon-color, currentColor);
+    fill: var(--button-icon-color, currentColor);
+}
+
+.btn > .btn-icon + .btn-label,
+.btn > i + .btn-label {
+    margin-inline-start: 0;
+}
+
+.btn > .btn-label + .btn-icon,
+.btn > .btn-label + i {
+    margin-inline-start: 0;
+}
+
+.btn-sm:not(:has(.btn-label)) {
+    padding: var(--button-padding-y-sm);
+}
+
+.btn-lg:not(:has(.btn-label)) {
+    padding: var(--button-padding-y-lg);
+}
+
+/* Button groups */
+.btn-group {
+    display: inline-flex;
+    position: relative;
+    vertical-align: middle;
+}
+
+.btn-group > .btn {
+    flex: 1 1 auto;
+    position: relative;
+}
+
+.btn-group > .btn:not(:first-child) {
+    border-start-start-radius: 0;
+    border-end-start-radius: 0;
+    margin-inline-start: -1px;
+}
+
+.btn-group > .btn:not(:last-child) {
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
+}
+
+/* Dropdown toggle for split buttons */
+.btn-group > .dropdown-toggle-split {
+    --button-padding-x: calc(var(--button-padding-x-md) * 0.75);
+}
+
+.btn-group > .btn-sm + .dropdown-toggle-split {
+    --button-padding-x: calc(var(--button-padding-x-sm) * 0.75);
+}
+
+.btn-group > .btn-lg + .dropdown-toggle-split {
+    --button-padding-x: calc(var(--button-padding-x-lg) * 0.75);
+}
+
+.dropdown-toggle-split::after {
+    margin-inline-start: 0;
+}
+
+/* Block buttons (full width) */
+.btn-block {
+    display: flex;
+    inline-size: 100%;
+}
+
+/* Button with badge */
+.btn .badge {
+    margin-inline-start: var(--button-icon-gap);
+}
+
+/* Loading state placeholder */
+.btn.is-loading {
+    color: transparent;
+    pointer-events: none;
+    position: relative;
+}
+
+.btn.is-loading::after {
+    animation: button-spin 500ms linear infinite;
+    border: 2px solid currentColor;
+    border-radius: 50%;
+    border-inline-end-color: transparent;
+    border-block-start-color: transparent;
+    content: "";
+    block-size: 1em;
+    inset-inline-start: 50%;
+    position: absolute;
+    inset-block-start: 50%;
+    transform: translate(-50%, -50%);
+    inline-size: 1em;
+}
+
+@keyframes button-spin {
+    to {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+/* Ensure compatibility with existing button usage */
+.btn > i {
+    font-size: inherit;
+    line-height: inherit;
+    vertical-align: middle;
+}
+
+/* RTL support using logical properties */
+[dir="rtl"] .btn > .btn-icon + .btn-label,
+[dir="rtl"] .btn > i + .btn-label {
+    margin-inline-start: 0;
+    margin-inline-end: 0;
+}
+
+[dir="rtl"] .btn > .btn-label + .btn-icon,
+[dir="rtl"] .btn > .btn-label + i {
+    margin-inline-start: 0;
+    margin-inline-end: 0;
+}
+
+/* Focus visible for accessibility */
+.btn:focus-visible {
+    outline: 2px solid var(--link-color);
+    outline-offset: 2px;
+}
+
+/* Ensure button text doesn't wrap */
+.btn {
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+/* Allow wrapping when needed */
+.btn.text-wrap {
+    overflow: visible;
+    text-overflow: unset;
+    white-space: normal;
 }

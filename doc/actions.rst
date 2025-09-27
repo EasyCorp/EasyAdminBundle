@@ -350,15 +350,44 @@ Then you can configure the basic HTML/CSS attributes of the button/element
 that will represent the action::
 
     $viewInvoice = Action::new('viewInvoice', 'Invoice', 'fa fa-file-invoice')
-        // renders the action as a <a> HTML element
-        ->displayAsLink()
-        // renders the action as a <button> HTML element
-        ->displayAsButton()
+        // by default, actions are rendered with `<button>` HTML elements;
+        // use this method to use an `<a>` element instead. Visually, this will
+        // look the same as a button
+        ->renderAsLink()
+
+        // by default, actions are rendered as `<button type="submit" ...>` elements.
+        // this method allows to change it and use a `<button type="button" ...>` element.
+        ->renderAsButton('submit')
+        // also available as EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\ButtonType
+        ->renderAsButton(ButtonType::Submit)
+
+        // by default, custom actions are rendered as <a> elements that trigger GET requests.
+        // use this method to render them as <button> elements with an associated hidden <form>,
+        // so that custom actions send a POST request to the action URL.
+        ->renderAsForm()
+
         // a key-value array of attributes to add to the HTML element
         ->setHtmlAttributes(['data-foo' => 'bar', 'target' => '_blank'])
+
+        // by default, actions are shown as `btn-secondary` elements; use the
+        // following actions to change their style accordingly
+        ->asDefaultAction()
+        ->asPrimaryAction()
+        ->asSuccessAction()
+        ->asWarningAction()
+        ->asDangerAction()
+
+        // by default, actions are rendered as solid buttons; this method makes
+        // the action to be rendered as a simple text link without button background
+        // (the background is shown when hovering the action link).
+        ->asTextLink()
+        // you can combine it with the styling methods (e.g. to create a "text danger" action)
+        ->asTextLink()->asDangerAction()
+
         // removes all existing CSS classes of the action and sets
-        // the given value as the CSS class of the HTML element
+        // the given value as the CSS class of the HTML element;
         ->setCssClass('btn btn-primary action-foo')
+
         // adds the given value to the existing CSS classes of the action (this is
         // useful when customizing a built-in action, which already has CSS classes)
         ->addCssClass('some-custom-css-class text-danger')
@@ -366,7 +395,7 @@ that will represent the action::
 .. note::
 
     When using ``setCssClass()`` or ``addCssClass()`` methods, the action loses
-    the default CSS classes applied by EasyAdmin (``.btn`` and
+    the default CSS classes applied by EasyAdmin (``.btn-*`` and
     ``.action-<the-action-name>``). You might want to add those CSS classes
     manually to make your actions look as expected.
 

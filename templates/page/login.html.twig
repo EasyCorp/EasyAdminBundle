@@ -89,7 +89,7 @@
                     </div>
                 {% endif %}
 
-                <button type="submit" class="btn btn-primary btn-lg btn-block">{{ _sign_in_label }}</button>
+                <twig:ea:Button type="submit" variant="primary" size="lg" isBlock htmlAttributes="{class: 'btn-block'}">{{ _sign_in_label }}</twig:ea:Button>
             </form>
 
             <script src="{{ asset('login.js', constant('EasyCorp\\Bundle\\EasyAdminBundle\\Asset\\AssetPackage::PACKAGE_NAME')) }}"></script>

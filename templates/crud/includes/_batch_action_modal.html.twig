@@ -6,13 +6,12 @@
                 <p>{{ 'batch_action_modal.content'|trans(domain = 'EasyAdminBundle') }}</p>
             </div>
             <div class="modal-footer">
-                <button type="button" data-bs-dismiss="modal" class="btn btn-secondary">
-                    <span class="btn-label">{{ 'action.cancel'|trans(domain = 'EasyAdminBundle') }}</span>
-                </button>
-                <button type="button" data-bs-dismiss="modal" class="btn btn-danger" id="modal-batch-action-button">
-                    <twig:ea:Icon name="internal:check" />
-                    <span class="btn-label">{{ 'batch_action_modal.action'|trans(domain = 'EasyAdminBundle') }}</span>
-                </button>
+                <twig:ea:Button type="button" data-bs-dismiss="modal">
+                    {{ 'action.cancel'|trans([], 'EasyAdminBundle') }}
+                </twig:ea:Button>
+                <twig:ea:Button type="button" variant="danger" icon="internal:check" data-bs-dismiss="modal" id="modal-batch-action-button">
+                    {{ 'batch_action_modal.action'|trans(domain = 'EasyAdminBundle') }}
+                </twig:ea:Button>
             </div>
         </div>
     </div>

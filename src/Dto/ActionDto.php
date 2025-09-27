@@ -3,6 +3,10 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\ButtonElement;
+use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\ButtonStyle;
+use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\ButtonType;
+use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\ButtonVariant;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
 /**
@@ -17,7 +21,6 @@ final class ActionDto
     private ?string $icon = null;
     private string $cssClass = '';
     private string $addedCssClass = '';
-    private ?string $htmlElement = null;
     /** @var array<string, string> */
     private array $htmlAttributes = [];
     private ?string $linkUrl = null;
@@ -32,6 +35,10 @@ final class ActionDto
     private array $translationParameters = [];
     /** @var callable|null */
     private $displayCallable;
+    private ButtonElement $htmlElement = ButtonElement::Button;
+    private ButtonType $butonType = ButtonType::Submit;
+    private ButtonVariant $variant = ButtonVariant::Default;
+    private ButtonStyle $style = ButtonStyle::Solid;
 
     public function getType(): string
     {
@@ -116,14 +123,44 @@ final class ActionDto
         $this->addedCssClass .= ' '.$cssClass;
     }
 
-    public function getHtmlElement(): string
+    public function getHtmlElement(): ButtonElement
     {
         return $this->htmlElement;
     }
 
-    public function setHtmlElement(string $htmlElement): void
+    public function isRenderedAsButton(): bool
     {
+        return ButtonElement::Button === $this->htmlElement;
+    }
+
+    public function isRenderedAsLink(): bool
+    {
+        return ButtonElement::A === $this->htmlElement;
+    }
+
+    public function isRenderedAsForm(): bool
+    {
+        return ButtonElement::Form === $this->htmlElement;
+    }
+
+    public function setHtmlElement(ButtonElement|string $htmlElement): void
+    {
+        if (\is_string($htmlElement)) {
+            $validElementsAsStrings = array_map(static fn (ButtonElement $case): string => $case->value, ButtonElement::cases());
+            $htmlElement = ButtonElement::tryFrom($htmlElement) ?? throw new \InvalidArgumentException(sprintf('The "%s" value is not valid for the "%s" option. Valid values are: %s', $htmlElement, '$htmlElement', implode(', ', $validElementsAsStrings)));
+        }
+
         $this->htmlElement = $htmlElement;
+    }
+
+    public function getButtonType(): ButtonType
+    {
+        return $this->butonType;
+    }
+
+    public function setButtonType(ButtonType $buttonType): void
+    {
+        $this->butonType = $buttonType;
     }
 
     /**
@@ -289,6 +326,31 @@ final class ActionDto
         $this->displayCallable = $displayCallable;
     }
 
+    public function getVariant(): ButtonVariant
+    {
+        return $this->variant;
+    }
+
+    public function setVariant(?ButtonVariant $variant): void
+    {
+        $this->variant = $variant;
+    }
+
+    public function getStyle(): ButtonStyle
+    {
+        return $this->style;
+    }
+
+    public function setStyle(?ButtonStyle $style): void
+    {
+        $this->style = $style;
+    }
+
+    public function usesTextStyle(): bool
+    {
+        return ButtonStyle::Text === $this->style;
+    }
+
     /**
      * @internal
      */
@@ -310,13 +372,21 @@ final class ActionDto
             $action->createAsBatchAction();
         }
 
-        if ('a' === $this->htmlElement) {
-            $action->displayAsLink();
-        } elseif ('form' === $this->htmlElement) {
-            $action->displayAsForm();
+        if ('a' === $this->htmlElement->value) {
+            $action->renderAsLink();
+        } elseif ('form' === $this->htmlElement->value) {
+            $action->renderAsForm();
         } else {
-            $action->displayAsButton();
+            $action->renderAsButton($this->butonType);
         }
+
+        $action->asTextLink(ButtonStyle::Text === $this->style);
+
+        $action->asPrimaryAction(ButtonVariant::Primary === $this->variant);
+        $action->asDefaultAction(ButtonVariant::Default === $this->variant);
+        $action->asSuccessAction(ButtonVariant::Success === $this->variant);
+        $action->asDangerAction(ButtonVariant::Danger === $this->variant);
+        $action->asWarningAction(ButtonVariant::Warning === $this->variant);
 
         if (null !== $this->crudActionName) {
             $action->linkToCrudAction($this->crudActionName);

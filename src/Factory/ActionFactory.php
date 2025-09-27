@@ -52,10 +52,6 @@ final class ActionFactory
             // if CSS class hasn't been overridden, apply the default ones
             if ('' === $actionDto->getCssClass()) {
                 $defaultCssClass = 'action-'.$actionDto->getName();
-                if (Crud::PAGE_INDEX !== $currentPage) {
-                    $defaultCssClass .= ' btn';
-                }
-
                 $actionDto->setCssClass($defaultCssClass);
             }
 
@@ -98,7 +94,7 @@ final class ActionFactory
 
             // if CSS class hasn't been overridden, apply the default ones
             if ('' === $actionDto->getCssClass()) {
-                $actionDto->setCssClass('btn action-'.$actionDto->getName());
+                $actionDto->setCssClass('action-'.$actionDto->getName());
             }
 
             // these are the additional custom CSS classes defined via addCssClass()
@@ -129,7 +125,12 @@ final class ActionFactory
         $actionDto->setLinkUrl($this->generateActionUrl($adminContext->getRequest(), $actionDto, $entityDto));
 
         if (!$actionDto->isGlobalAction() && \in_array($pageName, [Crud::PAGE_EDIT, Crud::PAGE_NEW], true)) {
-            $actionDto->setHtmlAttribute('form', sprintf('%s-%s-form', $pageName, $entityDto->getName()));
+            // these actions are given the 'form' HTML attribute so when they are clicked, they submit
+            // the form that edits/creates the entity; but, for custom actions rendered as forms (this is rare)
+            // they use their own form (where the 'action' is the action URL) instead of the entity edit/new form
+            if (!$actionDto->isRenderedAsForm()) {
+                $actionDto->setHtmlAttribute('form', sprintf('%s-%s-form', $pageName, $entityDto->getName()));
+            }
         }
 
         if (Action::DELETE === $actionDto->getName()) {

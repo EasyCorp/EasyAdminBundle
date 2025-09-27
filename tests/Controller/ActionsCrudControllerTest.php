@@ -40,7 +40,7 @@ class ActionsCrudControllerTest extends AbstractCrudTestCase
         static::assertSame('dropdown-item action-action3 bar', $crawler->filter('a.dropdown-item:contains("Action3")')->attr('class'));
         static::assertSame('dropdown-item foo bar', $crawler->filter('a.dropdown-item:contains("Action4")')->attr('class'));
 
-        static::assertSame('action-new btn btn-primary', trim($crawler->filter('.global-actions > a')->first()->attr('class')));
+        static::assertSame('btn btn-primary  action-new', trim($crawler->filter('.global-actions > a')->first()->attr('class')));
     }
 
     public function testDynamicLabels()
@@ -57,8 +57,8 @@ class ActionsCrudControllerTest extends AbstractCrudTestCase
     {
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
-        static::assertCount(1, $crawler->filter('form[id^="form-action9-"]'));
-        static::assertCount(1, $crawler->filter('form[id^="form-action9-"] > .btn'));
-        static::assertSame('POST', $crawler->filter('form[id^="form-action9-"]')->attr('method'));
+        static::assertCount(1, $crawler->filter('.global-actions form.action-action9'));
+        static::assertCount(1, $crawler->filter('.global-actions form.action-action9 button'));
+        static::assertSame('POST', $crawler->filter('.global-actions form.action-action9')->attr('method'));
     }
 }

@@ -64,7 +64,7 @@ These are the built-in filters provided by EasyAdmin:
   radio buttons labeled "Yes" and "No".
 * ``ChoiceFilter``: it's rendered as a ``<select>`` list with choices.
 * ``ComparisonFilter``: generic compound filter with two fields.
-* ``DatetimeFilter``: applied by default to datetime, date
+* ``DateTimeFilter``: applied by default to datetime, date
   or time fields respectively. It's rendered as a ``<select>`` list with the condition
   (before/after/etc.) and the browser's native date picker to pick the date/time.
 * ``EntityFilter``: applied to fields with Doctrine associations (all kinds

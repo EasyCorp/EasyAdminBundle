@@ -185,9 +185,7 @@
             {% block wrapper %}
                 <div class="responsive-header">
                     {% block responsive_header %}
-                        <button id="navigation-toggler" type="button" aria-label="Toggle navigation">
-                            <twig:ea:Icon name="internal:menu-bars" />
-                        </button>
+                        <twig:ea:Button type="button" isInvisible icon="internal:menu-bars" id="navigation-toggler" aria-label="Toggle navigation"></twig:ea:Button>
 
                         <div id="responsive-header-logo" class="text-truncate ms-auto">
                             {% block responsive_header_logo %}

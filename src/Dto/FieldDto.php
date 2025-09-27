@@ -31,7 +31,9 @@ final class FieldDto
     private ?string $propertyNameSuffix = null;
     private mixed $value = null;
     private mixed $formattedValue = null;
+    /** @var callable|null */
     private $formatValueCallable;
+    /** @var TranslatableInterface|string|false|null */
     private $label;
     private ?string $formType = null;
     private KeyValueStore $formTypeOptions;
@@ -39,6 +41,7 @@ final class FieldDto
     private ?bool $virtual = null;
     private string|Expression|null $permission = null;
     private ?string $textAlign = null;
+    /** @var TranslatableInterface|string|null */
     private $help;
     private string $cssClass = '';
     // how many columns the field takes when rendering
@@ -46,16 +49,23 @@ final class FieldDto
     private ?string $columns = null;
     // same as $columns but used when the user doesn't define columns explicitly
     private string $defaultColumns = '';
+    /** @var array<string, mixed> */
     private array $translationParameters = [];
     private ?string $templateName = 'crud/field/text';
     private ?string $templatePath = null;
+    /** @var array<string> */
     private array $formThemePaths = [];
     private AssetsDto $assets;
     private KeyValueStore $customOptions;
     private KeyValueStore $doctrineMetadata;
-    /** @internal */
+    /**
+     * @internal
+     *
+     * @var string|Ulid
+     */
     private $uniqueId;
     private KeyValueStore $displayedOn;
+    /** @var array<string, bool|int|float|string> */
     private array $htmlAttributes = [];
     private ?ActionCollection $actions = null;
 
@@ -258,16 +268,22 @@ final class FieldDto
         $this->formType = $formTypeFqcn;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getFormTypeOptions(): array
     {
         return $this->formTypeOptions->all();
     }
 
-    public function getFormTypeOption(string $optionName)
+    public function getFormTypeOption(string $optionName): mixed
     {
         return $this->formTypeOptions->get($optionName);
     }
 
+    /**
+     * @param array<string, mixed> $formTypeOptions
+     */
     public function setFormTypeOptions(array $formTypeOptions): void
     {
         foreach ($formTypeOptions as $optionName => $optionValue) {
@@ -371,11 +387,17 @@ final class FieldDto
         $this->defaultColumns = $columnCssClasses;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getTranslationParameters(): array
     {
         return $this->translationParameters;
     }
 
+    /**
+     * @param array<string, mixed> $translationParameters
+     */
     public function setTranslationParameters(array $translationParameters): void
     {
         $this->translationParameters = $translationParameters;
@@ -406,11 +428,17 @@ final class FieldDto
         $this->formThemePaths[] = $formThemePath;
     }
 
+    /**
+     * @return array<string>
+     */
     public function getFormThemes(): array
     {
         return $this->formThemePaths;
     }
 
+    /**
+     * @param array<string> $formThemePaths
+     */
     public function setFormThemes(array $formThemePaths): void
     {
         $this->formThemePaths = $formThemePaths;
@@ -466,6 +494,9 @@ final class FieldDto
         return $this->customOptions->get($optionName);
     }
 
+    /**
+     * @param array<string, mixed> $customOptions
+     */
     public function setCustomOptions(array $customOptions): void
     {
         $this->customOptions = KeyValueStore::new($customOptions);
@@ -481,6 +512,9 @@ final class FieldDto
         return $this->doctrineMetadata;
     }
 
+    /**
+     * @param array<string, mixed> $metadata
+     */
     public function setDoctrineMetadata(array $metadata): void
     {
         $this->doctrineMetadata = KeyValueStore::new($metadata);
@@ -501,11 +535,17 @@ final class FieldDto
         return $this->displayedOn->has($pageName);
     }
 
+    /**
+     * @return array<string, bool|int|float|string>
+     */
     public function getHtmlAttributes(): array
     {
         return $this->htmlAttributes;
     }
 
+    /**
+     * @param array<string, bool|int|float|string> $htmlAttributes
+     */
     public function setHtmlAttributes(array $htmlAttributes): self
     {
         $this->htmlAttributes = $htmlAttributes;
@@ -513,6 +553,9 @@ final class FieldDto
         return $this;
     }
 
+    /**
+     * @param bool|int|float|string $value
+     */
     public function setHtmlAttribute(string $attribute, mixed $value): self
     {
         $this->htmlAttributes[$attribute] = $value;

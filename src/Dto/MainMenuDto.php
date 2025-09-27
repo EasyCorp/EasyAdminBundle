@@ -7,6 +7,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
  */
 final class MainMenuDto
 {
+    /** @var MenuItemDto[] */
     private array $items;
 
     /**

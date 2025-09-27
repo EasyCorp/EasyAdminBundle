@@ -9,6 +9,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Entity\BlogPost;
 
 /**
  * Tests all the different ways of configuring asn customizing the assets.
+ *
+ * @extends AbstractCrudController<BlogPost>
  */
 class AssetsController extends AbstractCrudController
 {

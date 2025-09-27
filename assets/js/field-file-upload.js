@@ -1,10 +1,10 @@
-import {toggleVisibilityClasses} from "./helpers";
+import { toggleVisibilityClasses } from './helpers';
 
-const eaFileUploadHandler = function (event) {
+const eaFileUploadHandler = (event) => {
     document.querySelectorAll('.ea-fileupload input[type="file"]').forEach((fileUploadElement) => {
         new FileUploadField(fileUploadElement);
     });
-}
+};
 
 window.addEventListener('DOMContentLoaded', eaFileUploadHandler);
 document.addEventListener('ea.collection.item-added', eaFileUploadHandler);
@@ -17,7 +17,7 @@ class FileUploadField {
         this.#fieldContainerElement = this.field.closest('.ea-fileupload');
         this.field.addEventListener('change', this.#updateField.bind(this));
 
-        let deleteButton = this.#getFieldDeleteButton();
+        const deleteButton = this.#getFieldDeleteButton();
         if (deleteButton) {
             deleteButton.addEventListener('click', this.#resetField.bind(this));
         }
@@ -28,7 +28,10 @@ class FileUploadField {
             return;
         }
 
-        const filename = (1 === this.field.files.length) ? this.field.files[0].name : this.field.files.length + ' ' + this.field.getAttribute('data-files-label');
+        const filename =
+            1 === this.field.files.length
+                ? this.field.files[0].name
+                : `${this.field.files.length} ${this.field.getAttribute('data-files-label')}`;
 
         let totalSizeInBytes = 0;
         for (const file of this.field.files) {
@@ -72,7 +75,7 @@ class FileUploadField {
         const unit = ['B', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'];
         const factor = Math.trunc(Math.floor(Math.log(bytes) / Math.log(1024)));
 
-        return Math.trunc(bytes / (1024 ** factor)) + unit[factor];
+        return Math.trunc(bytes / 1024 ** factor) + unit[factor];
     }
 
     #getFieldCustomInput() {

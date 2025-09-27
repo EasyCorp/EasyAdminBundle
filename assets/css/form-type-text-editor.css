@@ -1,4 +1,4 @@
-@import '~trix/dist/trix.css';
+@import "~trix/dist/trix.css";
 
 .ea-text-editor-wrapper {
     background: var(--form-control-bg);
@@ -14,7 +14,7 @@
     outline: 0;
 }
 trix-toolbar {
-    background:  var(--form-type-text-editor-toolbar-bg);
+    background: var(--form-type-text-editor-toolbar-bg);
     border-block-end: 1px solid var(--form-input-border-color);
     border-start-start-radius: var(--border-radius);
     border-start-end-radius: var(--border-radius);
@@ -57,7 +57,7 @@ trix-toolbar .trix-button.trix-button--icon::before {
     text-indent: -999em;
 }
 .ea-dark-scheme trix-toolbar .trix-button.trix-button--icon::before {
-    filter:  invert(1);
+    filter: invert(1);
 }
 trix-editor {
     border: 0;
@@ -68,7 +68,7 @@ trix-toolbar .trix-dialog {
     background: var(--form-type-text-editor-dialog-bg);
     box-shadow: var(--form-type-text-editor-dialog-box-shadow);
     border: 0;
-    font-size:  12px;
+    font-size: 12px;
 }
 
 trix-toolbar .trix-dialog .trix-input {
@@ -79,7 +79,7 @@ trix-toolbar .trix-dialog .trix-input {
     background-color: var(--form-type-text-editor-content-pre-bg);
     border-radius: var(--border-radius);
     color: var(--form-type-text-editor-content-pre-color);
-    font-family:  var(--font-family-monospace);
+    font-family: var(--font-family-monospace);
 }
 
 /* there's no way to disable buttons from the Trix toolbar except by hiding them via CSS
@@ -88,7 +88,7 @@ trix-toolbar .trix-button-group--file-tools,
 trix-toolbar .trix-button-group--history-tools {
     display: none;
 }
-@media(min-width: 1200px) {
+@media (min-width: 1200px) {
     trix-toolbar .trix-button-group--history-tools {
         display: flex;
     }

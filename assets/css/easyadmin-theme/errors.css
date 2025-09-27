@@ -1,15 +1,15 @@
 /* Error pages (shown when exceptions are triggered in production)
 /* ------------------------------------------------------------------------- */
 body.error .error-message {
-  max-inline-size: 500px;
-  min-block-size: 400px;
-  padding: 45px;
+    max-inline-size: 500px;
+    min-block-size: 400px;
+    padding: 45px;
 }
 body.error .error-message h1 {
-  color: var(--color-danger);
-  font-size: var(--font-size-lg);
-  font-weight: 600;
+    color: var(--color-danger);
+    font-size: var(--font-size-lg);
+    font-weight: 600;
 }
 body.error .error-message h1 i {
-  margin-inline-end: 4px;
+    margin-inline-end: 4px;
 }

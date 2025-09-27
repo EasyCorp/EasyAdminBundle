@@ -1,9 +1,10 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
+{% set ea = ea() %}
 {% use '@EasyAdmin/symfony-form-themes/bootstrap_5_layout.html.twig' %}
 
 {% block form_start %}
     {% if form.vars.errors|length > 0 and 'ea_crud' in form.vars.block_prefixes|default([]) %}
-        {{ form_errors(form, {attr: { class: 'global-invalid-feedback' }}) }}
+        {{ form_errors(form, {attr: { errorClass: 'global-invalid-feedback' }}) }}
     {% endif %}
 
     {{ parent() }}
@@ -22,7 +23,7 @@
 {% block form_errors %}
     {% if errors|length > 0 %}
         {% for error in errors %}
-            <div class="{{ attr.class|default('') }} invalid-feedback d-block">{{ error.message }}</div>
+            <div class="{{ attr.errorClass|default('') }} invalid-feedback d-block">{{ error.message }}</div>
         {% endfor %}
     {% endif %}
 {% endblock form_errors %}
@@ -362,7 +363,11 @@
             {% if download_uri|default('') is empty %}
                 <div class="ea-lightbox-thumbnail">
                     {% if formTypeOptions.imagine_pattern is defined and formTypeOptions.imagine_pattern is not empty %}
-                        <img style="cursor: initial" src="{{ (asset_helper is same as(true) ? asset(image_uri) : image_uri)|ea_apply_filter_if_exists('imagine_filter', formTypeOptions.imagine_pattern) }}">
+                        {% guard filter imagine_filter %}
+                            <img style="cursor: initial" src="{{ (asset_helper is same as(true) ? asset(image_uri) : image_uri)|imagine_filter(formTypeOptions.imagine_pattern) }}">
+                        {% else %}
+                            <img style="cursor: initial" src="{{ (asset_helper is same as(true) ? asset(image_uri) : image_uri) }}">
+                        {% endguard %}
                     {% else %}
                         <img style="cursor: initial" src="{{ asset_helper is same as(true) ? asset(image_uri) : image_uri }}">
                     {% endif %}
@@ -372,7 +377,11 @@
 
                 <a href="#" class="ea-lightbox-thumbnail" data-ea-lightbox-content-selector="#{{ _lightbox_id }}">
                     {% if formTypeOptions.imagine_pattern is defined and formTypeOptions.imagine_pattern is not empty %}
-                        <img src="{{ (asset_helper is same as(true) ? asset(image_uri) : image_uri)|ea_apply_filter_if_exists('imagine_filter', formTypeOptions.imagine_pattern) }}">
+                        {% guard filter imagine_filter %}
+                            <img src="{{ (asset_helper is same as(true) ? asset(image_uri) : image_uri)|imagine_filter(formTypeOptions.imagine_pattern) }}">
+                        {% else %}
+                            <img src="{{ (asset_helper is same as(true) ? asset(image_uri) : image_uri) }}">
+                        {% endguard %}
                     {% else %}
                         <img src="{{ asset_helper is same as(true) ? asset(image_uri) : image_uri }}">
                     {% endif %}
@@ -380,7 +389,11 @@
 
                 <div id="{{ _lightbox_id }}" class="ea-lightbox">
                     {% if formTypeOptions.imagine_pattern is defined and formTypeOptions.imagine_pattern is not empty %}
-                        <img src="{{ (asset_helper is same as(true) ? asset(download_uri) : download_uri)|ea_apply_filter_if_exists('imagine_filter', formTypeOptions.imagine_pattern) }}">
+                        {% guard filter imagine_filter %}
+                            <img src="{{ (asset_helper is same as(true) ? asset(download_uri) : download_uri)|imagine_filter(formTypeOptions.imagine_pattern) }}">
+                        {% else %}
+                            <img src="{{ (asset_helper is same as(true) ? asset(download_uri) : download_uri) }}">
+                        {% endguard %}
                     {% else %}
                         <img src="{{ asset_helper is same as(true) ? asset(download_uri) : download_uri }}">
                     {% endif %}
@@ -670,7 +683,7 @@
     {% set tab_is_active_option_name = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Field\\FormField::OPTION_TAB_IS_ACTIVE') %}
     {% set field = form.vars.ea_vars.field %}
 
-    <div id="{{ ea_tab_id }}" class="tab-pane {% if field.getCustomOption(tab_is_active_option_name) %}active{% endif %} {{ ea_css_class }}" {% for key, value in form.vars.attr %}{{ key }}={{ value|e('html_attr') }}{% endfor %}>
+    <div id="{{ ea_tab_id }}" class="tab-pane {% if field.getCustomOption(tab_is_active_option_name) %}active{% endif %} {{ ea_css_class }}" {% for key, value in form.vars.attr %}{{ key }}="{{ value|e('html') }}"{% endfor %}>
         {% if ea_help %}
             <div class="content-header-help tab-help">
                 {{ ea_help|trans(domain = ea.i18n.translationDomain)|raw }}
@@ -695,7 +708,7 @@
                 <div class="filter-heading" id="filter-heading-{{ loop.index }}">
                     <input type="checkbox" class="filter-checkbox" {% if field.vars.name in applied_filters %}checked{% endif %}>
                     <a data-bs-toggle="collapse" href="#filter-content-{{ loop.index }}" aria-expanded="{{ field.vars.name in applied_filters ? 'true' : 'false' }}" aria-controls="filter-content-{{ loop.index }}"
-                        {% for name, value in field.vars.label_attr|default([]) %}{{ name }}="{{ value|e('html_attr') }}" {% endfor %}>
+                        {% for name, value in field.vars.label_attr|default([]) %}{{ name }}="{{ value|e('html') }}" {% endfor %}>
                         {{ field.vars.label|default(field.vars.name|humanize)|trans(domain = ea.i18n.translationDomain) }}
                     </a>
                 </div>
@@ -873,8 +886,8 @@
     <div class="input-group">
         {{ block('form_widget') }}
         <button type="button" class="btn"
-                data-icon-locked="{{ component('ea:Icon', {name: 'internal:lock'})|e('html_attr') }}"
-                data-icon-unlocked="{{ component('ea:Icon', {name: 'internal:lock-open-solid'})|e('html_attr') }}">
+                data-icon-locked="{{ component('ea:Icon', {name: 'internal:lock'})|e('html') }}"
+                data-icon-unlocked="{{ component('ea:Icon', {name: 'internal:lock-open-solid'})|e('html') }}">
             <twig:ea:Icon name="internal:lock" />
         </button>
     </div>

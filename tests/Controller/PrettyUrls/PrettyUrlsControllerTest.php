@@ -8,9 +8,11 @@ use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\PrettyUrlsTestApplication\Controller\BlogPostCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\PrettyUrlsTestApplication\Controller\CategoryCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\PrettyUrlsTestApplication\Controller\DashboardController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\PrettyUrlsTestApplication\Controller\SecondDashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\PrettyUrlsTestApplication\Entity\Category;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\PrettyUrlsTestApplication\Kernel;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\Routing\Router;
 
 /**
  * @group pretty_urls
@@ -72,9 +74,21 @@ class PrettyUrlsControllerTest extends WebTestCase
         $expectedRoutes['second_dashboard_external_user_editor_detail'] = '/second/dashboard/user-editor/custom/path-for-detail/{entityId}';
         $expectedRoutes['second_dashboard_external_user_editor_foobar'] = '/second/dashboard/user-editor/bar/foo';
         $expectedRoutes['second_dashboard_external_user_editor_foofoo'] = '/second/dashboard/user-editor/bar/bar';
+        $expectedRoutes['admin3'] = '/backend/three/';
+        $expectedRoutes['admin3_external_user_editor_custom_route_for_index'] = '/backend/three/user-editor/custom/path-for-index';
+        $expectedRoutes['admin3_external_user_editor_custom_route_for_new'] = '/backend/three/user-editor/new';
+        $expectedRoutes['admin3_external_user_editor_batch_delete'] = '/backend/three/user-editor/batch-delete';
+        $expectedRoutes['admin3_external_user_editor_autocomplete'] = '/backend/three/user-editor/autocomplete';
+        $expectedRoutes['admin3_external_user_editor_render_filters'] = '/backend/three/user-editor/render-filters';
+        $expectedRoutes['admin3_external_user_editor_edit'] = '/backend/three/user-editor/{entityId}/edit';
+        $expectedRoutes['admin3_external_user_editor_delete'] = '/backend/three/user-editor/{entityId}/delete';
+        $expectedRoutes['admin3_external_user_editor_detail'] = '/backend/three/user-editor/custom/path-for-detail/{entityId}';
+        $expectedRoutes['admin3_external_user_editor_foobar'] = '/backend/three/user-editor/bar/foo';
+        $expectedRoutes['admin3_external_user_editor_foofoo'] = '/backend/three/user-editor/bar/bar';
 
         self::bootKernel();
         $container = static::getContainer();
+        /** @var Router $router */
         $router = $container->get('router');
         $generatedRoutes = [];
         foreach ($router->getRouteCollection() as $name => $route) {
@@ -116,7 +130,7 @@ class PrettyUrlsControllerTest extends WebTestCase
         $crawler = $client->request('GET', '/admin/pretty/urls/category');
 
         // assert the Dashboard link points to the right URL
-        $this->assertSame('/admin/pretty/urls', $crawler->filter('.menu-item a:contains("Dashboard")')->attr('href'));
+        $this->assertSame('http://localhost/admin/pretty/urls', $crawler->filter('.menu-item a:contains("Dashboard")')->attr('href'));
         // assert the main menu contains the right items pointing to the right URLs
         $this->assertSelectorExists('.menu-item a:contains("Dashboard")');
         $this->assertSelectorExists('.menu-item.active a:contains("Categories")');
@@ -128,7 +142,7 @@ class PrettyUrlsControllerTest extends WebTestCase
         $crawler = $client->request('GET', '/second/dashboard/user-editor/custom/path-for-index');
 
         // assert the Dashboard link points to the right URL
-        $this->assertSame('/second/dashboard', $crawler->filter('.menu-item a:contains("Dashboard")')->attr('href'));
+        $this->assertSame('http://localhost/second/dashboard', $crawler->filter('.menu-item a:contains("Dashboard")')->attr('href'));
         // assert the main menu contains the right items pointing to the right URLs
         $this->assertSelectorExists('.menu-item a:contains("Dashboard")');
         $this->assertSelectorNotExists('.menu-item.active a:contains("Categories")');
@@ -167,7 +181,7 @@ class PrettyUrlsControllerTest extends WebTestCase
         $crawler = $client->request('GET', '/admin/pretty/urls/blog-post');
 
         $this->assertSame('/admin/pretty/urls', $crawler->filter('#header-logo a.logo')->attr('href'), 'The main Dashboard logo link points to the dashboard entry URL');
-        $this->assertSame('/admin/pretty/urls', $crawler->filter('li.menu-item a:contains("Dashboard")')->attr('href'), 'The Dashboard link inside the menu points to the dashboard entry URL (even if it later redirects to some other entity)');
+        $this->assertSame('http://localhost/admin/pretty/urls', $crawler->filter('li.menu-item a:contains("Dashboard")')->attr('href'), 'The Dashboard link inside the menu points to the dashboard entry URL (even if it later redirects to some other entity)');
         $this->assertSame('http://localhost/admin/pretty/urls/blog-post', $crawler->filter('li.menu-item a:contains("Blog Posts")')->attr('href'));
         $this->assertSame('http://localhost/admin/pretty/urls/category', $crawler->filter('li.menu-item a:contains("Categories")')->attr('href'));
     }
@@ -180,7 +194,7 @@ class PrettyUrlsControllerTest extends WebTestCase
         $crawler = $client->request('GET', '/second/dashboard/user-editor/custom/path-for-index');
 
         $this->assertSame('/second/dashboard', $crawler->filter('#header-logo a.logo')->attr('href'), 'The main Dashboard logo link points to the dashboard entry URL');
-        $this->assertSame('/second/dashboard', $crawler->filter('li.menu-item a:contains("Dashboard")')->attr('href'), 'The Dashboard link inside the menu points to the dashboard entry URL (even if it later redirects to some other entity)');
+        $this->assertSame('http://localhost/second/dashboard', $crawler->filter('li.menu-item a:contains("Dashboard")')->attr('href'), 'The Dashboard link inside the menu points to the dashboard entry URL (even if it later redirects to some other entity)');
         $this->assertSame('http://localhost/second/dashboard/user-editor/custom/path-for-index', $crawler->filter('li.menu-item a:contains("Users")')->attr('href'));
     }
 
@@ -281,6 +295,58 @@ class PrettyUrlsControllerTest extends WebTestCase
         $this->assertSame('http://localhost/admin/pretty/urls/blog-post', $blogPostIndexUrl);
     }
 
+    public function testAdminUrlGenerator(): void
+    {
+        $client = static::createClient();
+        $client->followRedirects();
+
+        self::bootKernel();
+        $container = static::getContainer();
+        $adminUrlGenerator = $container->get(AdminUrlGenerator::class);
+
+        $url = $adminUrlGenerator
+            ->setDashboard(DashboardController::class)
+            ->setController(CategoryCrudController::class)
+            ->setAction('customAction')
+            ->generateUrl()
+        ;
+        $client->request('GET', $url);
+
+        $this->assertSelectorTextSame('#url1', 'http://localhost/admin/pretty/urls?'.http_build_query([
+            'crudAction' => 'customAction',
+            'crudControllerFqcn' => CategoryCrudController::class,
+            'dashboardControllerFqcn' => DashboardController::class,
+        ]));
+
+        $this->assertSelectorTextSame('#url2', 'http://localhost/admin/pretty/urls?'.http_build_query([
+            'crudAction' => 'customAction',
+            'crudControllerFqcn' => CategoryCrudController::class,
+            'dashboardControllerFqcn' => DashboardController::class,
+            'page' => 2,
+        ]));
+
+        $this->assertSelectorTextSame('#url3', 'http://localhost/admin/pretty/urls/category/new');
+
+        $this->assertSelectorTextSame('#url4', 'http://localhost/admin/pretty/urls?'.http_build_query([
+            'crudAction' => 'customAction',
+            'crudControllerFqcn' => BlogPostCrudController::class,
+            'dashboardControllerFqcn' => DashboardController::class,
+        ]));
+
+        $this->assertSelectorTextSame('#url5', 'http://localhost/second/dashboard?'.http_build_query([
+            'crudAction' => 'customAction',
+            'crudControllerFqcn' => CategoryCrudController::class,
+            'dashboardControllerFqcn' => SecondDashboardController::class,
+        ]));
+
+        $this->assertSelectorTextSame('#url6', 'http://localhost/second/dashboard?'.http_build_query([
+            'crudAction' => 'detail',
+            'crudControllerFqcn' => BlogPostCrudController::class,
+            'dashboardControllerFqcn' => SecondDashboardController::class,
+            'entityId' => 3,
+        ]));
+    }
+
     /**
      * @dataProvider provideUglyUrlRedirects
      */
@@ -299,6 +365,34 @@ class PrettyUrlsControllerTest extends WebTestCase
         $client->request('GET', $uglyUrl);
 
         $this->assertSame($expectedPrettyUrlRedirect, $client->getResponse()->headers->get('Location'));
+    }
+
+    public function testPrettyAdminUrlCreatedWithAdminDashboardAttribute(): void
+    {
+        $container = static::getContainer();
+        /** @var Router $router */
+        $router = $container->get('router');
+        $route = $router->getRouteCollection()->get('admin3');
+
+        $this->assertSame('/backend/three/', $route->getPath());
+        $this->assertSame('example.com', $route->getHost());
+        $this->assertSame(['https'], $route->getSchemes());
+        $this->assertSame(['GET', 'HEAD'], $route->getMethods());
+        $this->assertSame(['foo' => '.*'], $route->getRequirements());
+        $this->assertSame('Symfony\Component\Routing\RouteCompiler', $route->getOption('compiler_class'));
+        $this->assertTrue($route->getOption('utf8'));
+        $this->assertSame('context.getMethod() in ["GET", "HEAD"]', $route->getCondition());
+        $this->assertSame([
+            'foo' => 'bar',
+            '_locale' => 'es',
+            '_format' => 'html',
+            '_stateless' => true,
+            '_controller' => 'EasyCorp\Bundle\EasyAdminBundle\Tests\PrettyUrlsTestApplication\Controller\ThirdDashboardController::index',
+            'routeCreatedByEasyAdmin' => true,
+            'dashboardControllerFqcn' => 'EasyCorp\Bundle\EasyAdminBundle\Tests\PrettyUrlsTestApplication\Controller\ThirdDashboardController',
+            'crudControllerFqcn' => null,
+            'crudAction' => null,
+        ], $route->getDefaults());
     }
 
     public static function provideActiveMenuUrls(): iterable

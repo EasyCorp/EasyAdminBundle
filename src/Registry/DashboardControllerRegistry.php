@@ -7,7 +7,9 @@ use function Symfony\Component\String\u;
 
 final class DashboardControllerRegistry implements DashboardControllerRegistryInterface
 {
+    /** @var array<string, string> */
     private array $controllerFqcnToRouteMap = [];
+    /** @var array<string, string> */
     private array $routeToControllerFqcnMap;
 
     /**

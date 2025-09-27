@@ -33,5 +33,7 @@ return $config
         'no_trailing_comma_in_singleline' => false,
         'nullable_type_declaration_for_default_null_value' => true,
         'phpdoc_to_comment' => false,
+        // Override @Symfony ruleset to keep mixed return type for PHPStan
+        'no_superfluous_phpdoc_tags' => ['allow_hidden_params' => true, 'allow_mixed' => true, 'remove_inheritdoc' => true],
     ))
 ;

@@ -62,9 +62,9 @@ return [
     ],
 
     'batch_action_modal' => [
-        'title' => '标题',
-        'content' => '内容',
-        'action' => '操作',
+        'title' => '你即将 %action_name% 选中的 %num_items% 条项目',
+        'content' => '此操作无法撤销。',
+        'action' => '继续',
     ],
 
     'delete_modal' => [

@@ -1,0 +1,59 @@
+{
+    "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+    "files": {
+        "include": ["*.json", "*.md", "assets/css/**", "assets/js/**"],
+        "ignore": [
+            "**/composer.json",
+            "**/vendor",
+            "**/package.json",
+            "**/node_modules",
+            "**/var",
+            "assets/js/autocomplete.js",
+            "assets/js/field-collection.js",
+            "public/entrypoints.json",
+            "public/manifest.json"
+        ]
+    },
+    "linter": {
+        "rules": {
+            "suspicious": {
+                "noExplicitAny": "off",
+                "noEmptyBlockStatements": "off"
+            },
+            "complexity": {
+                "noStaticOnlyClass": "off",
+                "noForEach": "off"
+            },
+            "style": {
+                "noParameterAssign": "off"
+            },
+            "performance": {
+                "noDelete": "off"
+            }
+        }
+    },
+    "formatter": {
+        "lineWidth": 120,
+        "indentStyle": "space",
+        "indentWidth": 4
+    },
+    "javascript": {
+        "formatter": {
+            "trailingCommas": "es5",
+            "bracketSameLine": true,
+            "quoteStyle": "single"
+        }
+    },
+    "overrides": [
+        {
+            "include": ["*.svelte"],
+            "linter": {
+                "rules": {
+                    "style": {
+                        "useConst": "off"
+                    }
+                }
+            }
+        }
+    ]
+}

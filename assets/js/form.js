@@ -18,14 +18,14 @@ class Form {
         const urlHash = window.location.hash;
         if (urlHash) {
             const selectedTabPaneId = urlHash.substring(1); // remove the leading '#' from the hash
-            const selectedTabId = `tablist-${ selectedTabPaneId }`;
+            const selectedTabId = `tablist-${selectedTabPaneId}`;
             this.#setTabAsActive(selectedTabId);
         }
 
         // update the page anchor when the selected tab changes
         document.querySelectorAll('a[data-bs-toggle="tab"]').forEach((tabElement) => {
-            tabElement.addEventListener('shown.bs.tab', function (event) {
-                const urlHash = '#' + event.target.getAttribute('href').substring(1);
+            tabElement.addEventListener('shown.bs.tab', (event) => {
+                const urlHash = `#${event.target.getAttribute('href').substring(1)}`;
                 history.pushState({}, '', urlHash);
             });
         });
@@ -54,80 +54,91 @@ class Form {
             //
             // Adding visual error counter feedback for invalid fields inside form tabs (visible or not)
             const that = this;
-            document.querySelector('.ea-edit, .ea-new').querySelectorAll('[type="submit"]').forEach((button) => {
-                button.addEventListener('click', function onSubmitButtonsClick(clickEvent) {
-                    let formHasErrors = false;
+            document
+                .querySelector('.ea-edit, .ea-new')
+                .querySelectorAll('[type="submit"]')
+                .forEach((button) => {
+                    button.addEventListener('click', function onSubmitButtonsClick(clickEvent) {
+                        let formHasErrors = false;
 
-                    // Remove all error counter badges
-                    document.querySelectorAll('.form-tabs-tablist .nav-item .badge-danger.badge').forEach( (badge) => {
-                        badge.parentElement.removeChild(badge);
-                    });
+                        // Remove all error counter badges
+                        document
+                            .querySelectorAll('.form-tabs-tablist .nav-item .badge-danger.badge')
+                            .forEach((badge) => {
+                                badge.parentElement.removeChild(badge);
+                            });
 
-                    if (null !== form.getAttribute('novalidate')) {
-                        return;
-                    }
+                        if (null !== form.getAttribute('novalidate')) {
+                            return;
+                        }
 
-                    form.querySelectorAll('input, select, textarea').forEach((input) => {
-                        if (!input.disabled && !input.validity.valid) {
-                            formHasErrors = true;
+                        form.querySelectorAll('input, select, textarea').forEach((input) => {
+                            if (!input.disabled && !input.validity.valid) {
+                                formHasErrors = true;
 
-                            // Visual feedback for tabs
-                            // Adding a badge with a error count next to the tab label
-                            const formTab = input.closest('div.tab-pane');
-                            if (formTab) {
-                                // Match tab link either by "data-bs-target" attribute or by href linking to the id anchor
-                                const navLinkTab = document.querySelector(`[data-bs-target="#${ formTab.id }"], a[href="#${ formTab.id }"]`);
+                                // Visual feedback for tabs
+                                // Adding a badge with a error count next to the tab label
+                                const formTab = input.closest('div.tab-pane');
+                                if (formTab) {
+                                    // Match tab link either by "data-bs-target" attribute or by href linking to the id anchor
+                                    const navLinkTab = document.querySelector(
+                                        `[data-bs-target="#${formTab.id}"], a[href="#${formTab.id}"]`
+                                    );
 
-                                if (navLinkTab) {
-                                    navLinkTab.classList.add('has-error');
+                                    if (navLinkTab) {
+                                        navLinkTab.classList.add('has-error');
 
-                                    const badge = navLinkTab.querySelector('.badge');
-                                    if (badge) {
-                                        // Increment number of error
-                                        badge.textContent = (parseInt(badge.textContent) + 1).toString();
-                                    } else {
-                                        // Create a new badge
-                                        let newErrorBadge = document.createElement('span');
-                                        newErrorBadge.classList.add('badge', 'badge-danger');
-                                        newErrorBadge.textContent = '1';
-                                        navLinkTab.appendChild(newErrorBadge);
+                                        const badge = navLinkTab.querySelector('.badge');
+                                        if (badge) {
+                                            // Increment number of error
+                                            badge.textContent = (Number.parseInt(badge.textContent) + 1).toString();
+                                        } else {
+                                            // Create a new badge
+                                            const newErrorBadge = document.createElement('span');
+                                            newErrorBadge.classList.add('badge', 'badge-danger');
+                                            newErrorBadge.textContent = '1';
+                                            navLinkTab.appendChild(newErrorBadge);
+                                        }
                                     }
                                 }
+
+                                // Visual feedback for group
+                                const formGroup = input.closest('div.form-group');
+                                formGroup.classList.add('has-error');
+
+                                formGroup.addEventListener('click', function onFormGroupClick() {
+                                    formGroup.classList.remove('has-error');
+                                    formGroup.removeEventListener('click', onFormGroupClick);
+                                });
+                            }
+                        });
+
+                        if (formHasErrors) {
+                            clickEvent.preventDefault();
+                            clickEvent.stopPropagation();
+
+                            // set as active the first tab with errors
+                            const firstTabWithErrors = document.querySelector(
+                                '.form-tabs-tablist .nav-tabs .nav-item .nav-link.has-error'
+                            );
+                            if (null !== firstTabWithErrors) {
+                                that.#setTabAsActive(firstTabWithErrors.id);
                             }
 
-                            // Visual feedback for group
-                            const formGroup = input.closest('div.form-group');
-                            formGroup.classList.add('has-error');
-
-                            formGroup.addEventListener('click', function onFormGroupClick() {
-                                formGroup.classList.remove('has-error');
-                                formGroup.removeEventListener('click', onFormGroupClick);
-                            });
+                            document.dispatchEvent(
+                                new CustomEvent('ea.form.error', {
+                                    cancelable: true,
+                                    detail: { page: pageName, form: form },
+                                })
+                            );
                         }
                     });
-
-                    if (formHasErrors) {
-                        clickEvent.preventDefault();
-                        clickEvent.stopPropagation();
-
-                        // set as active the first tab with errors
-                        const firstTabWithErrors = document.querySelector('.form-tabs-tablist .nav-tabs .nav-item .nav-link.has-error');
-                        if (null !== firstTabWithErrors) {
-                            that.#setTabAsActive(firstTabWithErrors.id);
-                        }
-
-                        document.dispatchEvent(new CustomEvent('ea.form.error', {
-                            cancelable: true,
-                            detail: { page: pageName, form: form }
-                        }));
-                    }
                 });
-            });
 
             form.addEventListener('submit', (submitEvent) => {
                 const eaEvent = new CustomEvent('ea.form.submit', {
                     cancelable: true,
-                    detail: { page: pageName, form: form }
+                    detail: { page: pageName, form: form },
                 });
                 const eaEventResult = document.dispatchEvent(eaEvent);
                 if (false === eaEventResult) {
@@ -164,15 +175,21 @@ class Form {
                 return;
             }
 
-            form.addEventListener('submit', () => {
-                // this timeout is needed to include the disabled button into the submitted form
-                setTimeout(() => {
-                    const submitButtons = document.querySelector('.ea-edit, .ea-new').querySelectorAll('[type="submit"]');
-                    submitButtons.forEach((button) => {
-                        button.setAttribute('disabled', 'disabled');
-                    });
-                }, 1);
-            }, false);
+            form.addEventListener(
+                'submit',
+                () => {
+                    // this timeout is needed to include the disabled button into the submitted form
+                    setTimeout(() => {
+                        const submitButtons = document
+                            .querySelector('.ea-edit, .ea-new')
+                            .querySelectorAll('[type="submit"]');
+                        submitButtons.forEach((button) => {
+                            button.setAttribute('disabled', 'disabled');
+                        });
+                    }, 1);
+                },
+                false
+            );
         });
     }
 }

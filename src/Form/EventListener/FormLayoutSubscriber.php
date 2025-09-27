@@ -6,9 +6,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabListType;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormInterface;
 
 /**
  * Handles some logic related to the form layout, like error counters in tabs.
@@ -27,11 +27,13 @@ class FormLayoutSubscriber implements EventSubscriberInterface
     /**
      * Deal with the errors of fields inside form tabs. This method has to be executed with
      * a negative priority to make sure that the validation process is done.
+     *
+     * @return void
      */
     public function handleTabErrors(FormEvent $event)
     {
         $formTabs = [];
-        /** @var Form $child */
+        /** @var FormInterface $child */
         foreach ($event->getForm() as $child) {
             /** @var FieldDto $fieldDto */
             if (null === $fieldDto = $child->getConfig()->getAttribute('ea_field')) {

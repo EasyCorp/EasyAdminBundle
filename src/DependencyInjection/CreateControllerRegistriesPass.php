@@ -26,9 +26,12 @@ class CreateControllerRegistriesPass implements CompilerPassInterface
     {
         $dashboardControllersFqcn = array_keys($container->findTaggedServiceIds(EasyAdminExtension::TAG_DASHBOARD_CONTROLLER, true));
 
+        /** @var string $secret */
+        $secret = $container->getParameter('kernel.secret');
+
         $controllerFqcnToContextIdMap = [];
         foreach ($dashboardControllersFqcn as $controllerFqcn) {
-            $controllerFqcnToContextIdMap[$controllerFqcn] = substr(sha1($container->getParameter('kernel.secret').$controllerFqcn), 0, 7);
+            $controllerFqcnToContextIdMap[$controllerFqcn] = substr(sha1($secret.$controllerFqcn), 0, 7);
         }
 
         $container
@@ -45,11 +48,13 @@ class CreateControllerRegistriesPass implements CompilerPassInterface
     {
         $crudControllersFqcn = array_keys($container->findTaggedServiceIds(EasyAdminExtension::TAG_CRUD_CONTROLLER, true));
 
-        $crudFqcnToEntityFqcnMap = $crudFqcnToCrudIdMap = [];
+        $secret = $container->getParameter('kernel.secret');
+        \assert(\is_string($secret));
 
+        $crudFqcnToEntityFqcnMap = $crudFqcnToCrudIdMap = [];
         foreach ($crudControllersFqcn as $controllerFqcn) {
             $crudFqcnToEntityFqcnMap[$controllerFqcn] = $controllerFqcn::getEntityFqcn();
-            $crudFqcnToCrudIdMap[$controllerFqcn] = substr(sha1($container->getParameter('kernel.secret').$controllerFqcn), 0, 7);
+            $crudFqcnToCrudIdMap[$controllerFqcn] = substr(sha1($secret.$controllerFqcn), 0, 7);
         }
 
         $container

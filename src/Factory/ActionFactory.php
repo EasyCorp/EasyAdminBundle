@@ -53,10 +53,6 @@ final class ActionFactory
             // if CSS class hasn't been overridden, apply the default ones
             if ('' === $actionDto->getCssClass()) {
                 $defaultCssClass = 'action-'.$actionDto->getName();
-                if (Crud::PAGE_INDEX !== $currentPage) {
-                    $defaultCssClass .= ' btn';
-                }
-
                 $actionDto->setCssClass($defaultCssClass);
             }
 
@@ -109,7 +105,7 @@ final class ActionFactory
 
             // if CSS class hasn't been overridden, apply the default ones
             if ('' === $actionDto->getCssClass()) {
-                $actionDto->setCssClass('btn action-'.$actionDto->getName());
+                $actionDto->setCssClass('action-'.$actionDto->getName());
             }
 
             // these are the additional custom CSS classes defined via addCssClass()
@@ -140,7 +136,12 @@ final class ActionFactory
         $actionDto->setLinkUrl($this->generateActionUrl($adminContext->getRequest(), $actionDto, $entityDto));
 
         if (!$actionDto->isGlobalAction() && \in_array($pageName, [Crud::PAGE_EDIT, Crud::PAGE_NEW], true)) {
-            $actionDto->setHtmlAttribute('form', sprintf('%s-%s-form', $pageName, $entityDto->getName()));
+            // these actions are given the 'form' HTML attribute so when they are clicked, they submit
+            // the form that edits/creates the entity; but, for custom actions rendered as forms (this is rare)
+            // they use their own form (where the 'action' is the action URL) instead of the entity edit/new form
+            if (!$actionDto->isRenderedAsForm()) {
+                $actionDto->setHtmlAttribute('form', sprintf('%s-%s-form', $pageName, $entityDto->getName()));
+            }
         }
 
         if (Action::DELETE === $actionDto->getName()) {
@@ -165,19 +166,25 @@ final class ActionFactory
         return $actionDto;
     }
 
+    /**
+     * @param array<string, mixed> $defaultTranslationParameters
+     */
     private function processActionLabel(ActionDto $actionDto, ?EntityDto $entityDto, string $translationDomain, array $defaultTranslationParameters): void
     {
         $label = $actionDto->getLabel();
+        $htmlTitle = trim($actionDto->getHtmlAttributes()['title'] ?? '');
 
-        // FALSE means that action doesn't show a visible label in the interface
-        if (false === $label) {
+        // FALSE means that action doesn't show a visible label in the interface;
+        // add an HTML 'title' attribute (unless the user defined one explicitly) to
+        // improve accessibility and show the action name on mouse hover
+        if (false === $label && '' === $htmlTitle) {
             $actionDto->setHtmlAttribute('title', $actionDto->getName());
 
             return;
         }
 
         if (\is_callable($label) && $label instanceof \Closure) {
-            $label = \call_user_func_array($label, array_filter([$entityDto?->getInstance()]));
+            $label = \call_user_func_array($label, array_filter([$entityDto?->getInstance()], static fn ($item): bool => null !== $item));
 
             if (!\is_string($label) && !$label instanceof TranslatableInterface) {
                 throw new \RuntimeException(sprintf('The callable used to define the label of the "%s" action label %s must return a string or a %s instance but it returned a(n) "%s" value instead.', $actionDto->getName(), null !== $entityDto ? 'in the "'.$entityDto->getName().'" entity' : '', TranslatableInterface::class, \gettype($label)));
@@ -189,7 +196,9 @@ final class ActionFactory
         if ($label instanceof TranslatableInterface) {
             $actionDto->setLabel(TranslatableMessageBuilder::withParameters($label, $translationParameters));
         } else {
-            $translatableActionLabel = (null === $label || '' === $label) ? $label : t($label, $translationParameters, $translationDomain);
+            $translatableActionLabel = (null === $label || '' === $label || false === $label)
+                ? $label
+                : t($label, $translationParameters, $translationDomain);
             $actionDto->setLabel($translatableActionLabel);
         }
     }

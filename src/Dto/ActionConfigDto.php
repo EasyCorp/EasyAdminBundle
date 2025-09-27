@@ -23,7 +23,7 @@ final class ActionConfigDto
     ];
     /** @var string[] */
     private array $disabledActions = [];
-    /** @var string[]|Expression[] */
+    /** @var array<string, string|Expression> */
     private array $actionPermissions = [];
 
     public function __construct()
@@ -49,6 +49,9 @@ final class ActionConfigDto
         $this->actionPermissions[$actionName] = $permission;
     }
 
+    /**
+     * @param array<string, string|Expression> $permissions
+     */
     public function setActionPermissions(array $permissions): void
     {
         $this->actionPermissions = $permissions;
@@ -79,6 +82,9 @@ final class ActionConfigDto
         unset($this->actions[$pageName][$actionName]);
     }
 
+    /**
+     * @param array<string> $orderedActionNames
+     */
     public function reorderActions(string $pageName, array $orderedActionNames): void
     {
         $orderedActions = [];
@@ -89,6 +95,9 @@ final class ActionConfigDto
         $this->actions[$pageName] = $orderedActions;
     }
 
+    /**
+     * @param array<string> $actionNames
+     */
     public function disableActions(array $actionNames): void
     {
         foreach ($actionNames as $actionName) {
@@ -98,24 +107,33 @@ final class ActionConfigDto
         }
     }
 
+    /**
+     * @return ActionCollection|array<string,array<string,ActionDto>>
+     */
     public function getActions(): ActionCollection|array
     {
         return null === $this->pageName ? $this->actions : ActionCollection::new($this->actions[$this->pageName]);
     }
 
     /**
-     * @param ActionDto[] $newActions
+     * @param array<string, ActionDto> $newActions
      */
     public function setActions(string $pageName, array $newActions): void
     {
         $this->actions[$pageName] = $newActions;
     }
 
+    /**
+     * @return array<string>
+     */
     public function getDisabledActions(): array
     {
         return $this->disabledActions;
     }
 
+    /**
+     * @return array<string|Expression>
+     */
     public function getActionPermissions(): array
     {
         return $this->actionPermissions;

@@ -10,9 +10,10 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
-/*
+/**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
 final class SecurityVoter extends Voter
@@ -33,7 +34,7 @@ final class SecurityVoter extends Voter
         return Permission::exists($permissionName);
     }
 
-    protected function voteOnAttribute($permissionName, $subject, TokenInterface $token): bool
+    protected function voteOnAttribute($permissionName, $subject, TokenInterface $token, ?Vote $vote = null): bool
     {
         if (Permission::EA_VIEW_MENU_ITEM === $permissionName) {
             return $this->voteOnViewMenuItemPermission($subject);

@@ -170,6 +170,8 @@ class IntlFormatterTest extends TestCase
         yield ['Nov 8, 2020, 3:04:05 AM', new \DateTimeImmutable('2020-11-07 15:04:05', new \DateTimeZone('America/Montevideo')), 'medium', 'medium', '', new \DateTimeZone('Asia/Tokyo'), 'gregorian', 'en'];
 
         yield ['Nov 7, 2020, 2:04:05 PM', new \DateTime('2020-11-07 15:04:05 CET'), 'medium', 'medium', '', null, 'traditional', 'en'];
+
+        yield ['Nov 7, 2020, 2:04:05 PM', new \DateTime('2020-11-07 14:04:05 CET'), 'medium', 'medium', '', false, 'traditional', 'en'];
     }
 
     public static function provideFormatNumber()

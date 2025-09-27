@@ -110,6 +110,9 @@ final class Dashboard
         return $this;
     }
 
+    /**
+     * @param array<Locale|string> $locales
+     */
     public function setLocales(array $locales): self
     {
         $localeDtos = [];

@@ -13,17 +13,23 @@ interface AdminUrlGeneratorInterface
 
     public function setAction(string $action): self;
 
+    /**
+     * @param array<string, mixed> $routeParameters
+     */
     public function setRoute(
         string $routeName,
         array $routeParameters = [],
     ): self;
 
-    public function setEntityId($entityId): self;
+    public function setEntityId(mixed $entityId): self;
 
     public function get(string $paramName): mixed;
 
-    public function set(string $paramName, $paramValue): self;
+    public function set(string $paramName, mixed $paramValue): self;
 
+    /**
+     * @param array<string, mixed> $routeParameters
+     */
     public function setAll(array $routeParameters): self;
 
     public function unset(string $paramName): self;
@@ -47,8 +53,14 @@ interface AdminUrlGeneratorInterface
      */
     public function setReferrer(string $referrer): self;
 
+    /**
+     * @deprecated since 4.1.0, will be removed in 5.0.0. Signed URLs don't provide additional security in backends and have been removed without a replacement.
+     */
     public function addSignature(bool $addSignature = true): self;
 
+    /**
+     * @deprecated since 4.1.0, will be removed in 5.0.0. Signed URLs don't provide additional security in backends and have been removed without a replacement.
+     */
     public function getSignature(): string;
 
     public function generateUrl(): string;

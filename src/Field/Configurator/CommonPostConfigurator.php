@@ -42,7 +42,7 @@ final class CommonPostConfigurator implements FieldConfiguratorInterface
         $this->updateFieldTemplate($field);
     }
 
-    private function buildFormattedValueOption($value, FieldDto $field, EntityDto $entityDto)
+    private function buildFormattedValueOption(mixed $value, FieldDto $field, EntityDto $entityDto): mixed
     {
         if (null === $callable = $field->getFormatValueCallable()) {
             return $value;

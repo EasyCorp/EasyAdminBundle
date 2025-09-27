@@ -2,15 +2,15 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header justify-content-between">
-                <button type="button" data-bs-dismiss="modal" class="btn btn-sm btn-secondary" id="modal-clear-button" formtarget="_self">
-                    <twig:ea:Icon name="internal:xmark" /> {{ 'filter.button.clear'|trans(domain = 'EasyAdminBundle') }}
-                </button>
+                <twig:ea:Button type="button" size="sm" icon="internal:xmark" data-bs-dismiss="modal" id="modal-clear-button" formtarget="_self">
+                    {{ 'filter.button.clear'|trans(domain = 'EasyAdminBundle') }}
+                </twig:ea:Button>
                 <h5 class="modal-title">
                     <twig:ea:Icon name="internal:filter" /> {{ 'filter.title'|trans(domain = 'EasyAdminBundle') }}
                 </h5>
-                <button type="button" data-bs-dismiss="modal" class="btn btn-sm btn-primary" id="modal-apply-button" formtarget="_self">
-                    <twig:ea:Icon name="internal:check" /> {{ 'filter.button.apply'|trans(domain = 'EasyAdminBundle') }}
-                </button>
+                <twig:ea:Button type="button" variant="primary" size="sm" data-bs-dismiss="modal" class="btn btn-sm btn-primary" id="modal-apply-button" formtarget="_self" icon="internal:check">
+                    {{ 'filter.button.apply'|trans(domain = 'EasyAdminBundle') }}
+                </twig:ea:Button>
             </div>
             <div class="modal-body p-0">
                 {# The filters form will be loaded via AJAX for better performance #}

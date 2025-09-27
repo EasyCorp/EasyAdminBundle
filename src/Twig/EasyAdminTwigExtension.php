@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Twig;
 
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Context\AdminContextInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Provider\AdminContextProviderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldLayoutDto;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FormLayoutFactory;
@@ -14,6 +15,7 @@ use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Contracts\Translation\TranslatableInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\UX\Icons\Twig\UXIconRuntime;
+use Twig\DeprecatedCallableInfo;
 use Twig\Environment;
 use Twig\Error\RuntimeError;
 use Twig\Extension\AbstractExtension;
@@ -44,14 +46,15 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
     public function getFunctions(): array
     {
         return [
+            new TwigFunction('ea', [$this, 'ea']),
             new TwigFunction('ea_url', [$this, 'getAdminUrlGenerator']),
-            new TwigFunction('ea_csrf_token', [$this, 'renderCsrfToken']),
-            new TwigFunction('ea_call_function_if_exists', [$this, 'callFunctionIfExists'], ['needs_environment' => true, 'is_safe' => ['html' => true]]),
-            new TwigFunction('ea_create_field_layout', [$this, 'createFieldLayout']),
-            new TwigFunction('ea_importmap', [$this, 'renderImportmap'], ['is_safe' => ['html']]),
             new TwigFunction('ea_form_ealabel', null, ['node_class' => 'Symfony\Bridge\Twig\Node\SearchAndRenderBlockNode', 'is_safe' => ['html']]),
-            // TODO: remove this when Twig 3.15 is published and we can use the 'guard' tag
-            new TwigFunction('ea_ux_icon', [$this, 'renderIcon'], ['is_safe' => ['html']]),
+            // deprecated functions
+            new TwigFunction('ea_call_function_if_exists', [$this, 'callFunctionIfExists'], ['needs_environment' => true, 'is_safe' => ['html' => true], 'deprecation_info' => new DeprecatedCallableInfo('easycorp/easyadmin-bundle', '4.21.0', 'No alternative is provided because it\'s no longer needed thanks to the Twig guard tag.')]),
+            new TwigFunction('ea_create_field_layout', [$this, 'createFieldLayout'], ['deprecation_info' => new DeprecatedCallableInfo('easycorp/easyadmin-bundle', '4.8.0', 'No alternative is provided because it\'s no longer needed thanks to the new rendering engine')]),
+            new TwigFunction('ea_csrf_token', [$this, 'renderCsrfToken'], ['deprecation_info' => new DeprecatedCallableInfo('easycorp/easyadmin-bundle', '4.21.0', 'No alternative is provided because it\'s no longer needed thanks to the Twig guard tag.')]),
+            new TwigFunction('ea_importmap', [$this, 'renderImportmap'], ['is_safe' => ['html'], 'deprecation_info' => new DeprecatedCallableInfo('easycorp/easyadmin-bundle', '4.21.0', 'No alternative is provided because it\'s no longer needed thanks to the Twig guard tag.')]),
+            new TwigFunction('ea_ux_icon', [$this, 'renderIcon'], ['is_safe' => ['html'], 'deprecation_info' => new DeprecatedCallableInfo('easycorp/easyadmin-bundle', '4.21.0', 'No alternative is provided because it\'s no longer needed thanks to the Twig guard tag.')]),
         ];
     }
 
@@ -60,20 +63,30 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
         return [
             new TwigFilter('ea_flatten_array', [$this, 'flattenArray']),
             new TwigFilter('ea_filesize', [$this, 'fileSize']),
-            new TwigFilter('ea_apply_filter_if_exists', [$this, 'applyFilterIfExists'], ['needs_environment' => true]),
             new TwigFilter('ea_as_string', [$this, 'representAsString']),
+            // deprecated filters
+            new TwigFilter('ea_apply_filter_if_exists', [$this, 'applyFilterIfExists'], ['needs_environment' => true, 'deprecation_info' => new DeprecatedCallableInfo('easycorp/easyadmin-bundle', '4.21.0', 'No alternative is provided because it\'s no longer needed thanks to the Twig guard tag.')]),
         ];
     }
 
     public function getGlobals(): array
     {
-        // this is needed to make the admin context available on any Twig template via the short named variable 'ea'
         return ['ea' => $this->adminContextProvider];
+    }
+
+    public function ea(): ?AdminContextInterface
+    {
+        return $this->adminContextProvider->getContext();
     }
 
     /**
      * Transforms ['a' => 'foo', 'b' => ['c' => ['d' => 7]]] into ['a' => 'foo', 'b[c][d]' => 7]
      * It's useful to submit nested arrays (e.g. query string parameters) as form fields.
+     *
+     * @param mixed[]     $array
+     * @param string|null $parentKey
+     *
+     * @return mixed[]
      */
     public function flattenArray($array, $parentKey = null): array
     {
@@ -95,22 +108,30 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
     public function fileSize(int $bytes): string
     {
         $size = ['B', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'];
-        $factor = (int) floor(log($bytes) / log(1024));
 
-        return (int) ($bytes / (1024 ** $factor)).@$size[$factor];
+        if (0 === $bytes) {
+            return '0B';
+        }
+
+        $factor = (int) floor(log($bytes) / log(1024));
+        $factor = min($factor, \count($size) - 1);
+
+        $scaledValue = (int) ($bytes / (1024 ** $factor));
+
+        return sprintf('%d%s', $scaledValue, $size[$factor]);
     }
 
     /**
      * Code adapted from https://stackoverflow.com/a/48606773/2804294 (License: CC BY-SA 3.0).
      *
+     * @return mixed
+     *
      * @throws RuntimeError when twig runtime can't find the specified filter
      */
-    public function applyFilterIfExists(Environment $environment, $value, string $filterName, ...$filterArguments)
+    public function applyFilterIfExists(Environment $environment, mixed $value, string $filterName, mixed ...$filterArguments)
     {
         /**
-         * Twig v2 will return TwigFilter|false.
-         *
-         * @var TwigFilter|false|null $filter
+         * @var TwigFilter|null $filter
          */
         $filter = $environment->getFilter($filterName);
         if (null === $filter || false === $filter) {
@@ -134,7 +155,7 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
         throw new RuntimeError(sprintf('Invalid callback for filter: "%s"', $filterName));
     }
 
-    public function representAsString($value, string|callable|null $toStringMethod = null): string
+    public function representAsString(mixed $value, string|callable|null $toStringMethod = null): string
     {
         if (null !== $toStringMethod) {
             if (\is_callable($toStringMethod)) {
@@ -179,24 +200,54 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
             }
 
             if (method_exists($value, 'getId')) {
-                return sprintf('%s #%s', $value::class, $value->getId());
+                return sprintf(
+                    '%s #%s',
+                    // remove null bytes from class name (this happens in anonymous classes)
+                    str_replace("\0", '', $value::class),
+                    $value->getId()
+                );
             }
 
-            return sprintf('%s #%s', $value::class, hash('xxh32', (string) spl_object_id($value)));
+            return sprintf(
+                '%s #%s',
+                // remove null bytes from class name (this happens in anonymous classes)
+                str_replace("\0", '', $value::class),
+                hash('xxh32', (string) spl_object_id($value))
+            );
         }
 
         return '';
     }
 
-    public function callFunctionIfExists(Environment $environment, string $functionName, ...$functionArguments)
+    /**
+     * @return mixed
+     */
+    public function callFunctionIfExists(Environment $environment, string $functionName, mixed ...$functionArguments)
     {
         if (null === $function = $environment->getFunction($functionName)) {
             return '';
         }
 
-        return $function->getCallable()(...$functionArguments);
+        $callback = $function->getCallable();
+        if (\is_callable($callback)) {
+            return \call_user_func($callback, ...$functionArguments);
+        }
+
+        if (\is_array($callback) && 2 === \count($callback)) {
+            $callback = [$environment->getRuntime(array_shift($callback)), array_pop($callback)];
+            if (!\is_callable($callback)) {
+                throw new RuntimeError(sprintf('Unable to load runtime for function: "%s"', $functionName));
+            }
+
+            return \call_user_func($callback, ...$functionArguments);
+        }
+
+        throw new RuntimeError(sprintf('Invalid callback for function: "%s"', $functionName));
     }
 
+    /**
+     * @param array<string, mixed> $queryParameters
+     */
     public function getAdminUrlGenerator(array $queryParameters = []): AdminUrlGeneratorInterface
     {
         return $this->serviceLocator->get(AdminUrlGenerator::class)->setAll($queryParameters);
@@ -216,18 +267,15 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
 
     public function createFieldLayout(?FieldCollection $fieldDtos): FieldLayoutDto
     {
-        trigger_deprecation(
-            'easycorp/easyadmin-bundle',
-            '4.8.0',
-            'The "ea_create_field_layout()" Twig function is deprecated in favor of "ea_create_form_layout()" and it will be removed in 5.0.0.',
-        );
-
         return FormLayoutFactory::createFromFieldDtos($fieldDtos);
     }
 
     /**
      * We need to recreate the 'importmap()' Twig function from Symfony because calling it
      * via 'ea_call_function_if_exists('importmap', '...')' doesn't work.
+     *
+     * @param string|array<string>       $entryPoint
+     * @param array<string, string|true> $attributes
      */
     public function renderImportmap(string|array $entryPoint = 'app', array $attributes = []): string
     {
@@ -241,6 +289,8 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
     /**
      * We need to recreate the 'ux_icon()' Twig function from Symfony because calling it
      * via 'ea_call_function_if_exists('ux_icon', '...')' doesn't work.
+     *
+     * @param array<string, string|bool|int|float> $attributes
      */
     public function renderIcon(string $name, array $attributes = []): string
     {

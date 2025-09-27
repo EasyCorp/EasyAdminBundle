@@ -1,48 +1,48 @@
 const slugify = require('slugify');
 slugify.extend({
-    "$": "",
-    "%": "",
-    "&": "",
-    "<": "",
-    ">": "",
-    "|": "",
-    "¢": "",
-    "£": "",
-    "¤": "",
-    "¥": "",
-    "₠": "",
-    "₢": "",
-    "₣": "",
-    "₤": "",
-    "₥": "",
-    "₦": "",
-    "₧": "",
-    "₨": "",
-    "₩": "",
-    "₪": "",
-    "₫": "",
-    "€": "",
-    "₭": "",
-    "₮": "",
-    "₯": "",
-    "₰": "",
-    "₱": "",
-    "₲": "",
-    "₳": "",
-    "₴": "",
-    "₵": "",
-    "₸": "",
-    "₹": "",
-    "₽": "",
-    "₿": "",
-    "∂": "",
-    "∆": "",
-    "∑": "",
-    "∞": "",
-    "♥": "",
-    "元": "",
-    "円": "",
-    "﷼": "",
+    $: '',
+    '%': '',
+    '&': '',
+    '<': '',
+    '>': '',
+    '|': '',
+    '¢': '',
+    '£': '',
+    '¤': '',
+    '¥': '',
+    '₠': '',
+    '₢': '',
+    '₣': '',
+    '₤': '',
+    '₥': '',
+    '₦': '',
+    '₧': '',
+    '₨': '',
+    '₩': '',
+    '₪': '',
+    '₫': '',
+    '€': '',
+    '₭': '',
+    '₮': '',
+    '₯': '',
+    '₰': '',
+    '₱': '',
+    '₲': '',
+    '₳': '',
+    '₴': '',
+    '₵': '',
+    '₸': '',
+    '₹': '',
+    '₽': '',
+    '₿': '',
+    '∂': '',
+    '∆': '',
+    '∑': '',
+    '∞': '',
+    '♥': '',
+    元: '',
+    円: '',
+    '﷼': '',
 });
 
 class Slugger {
@@ -85,11 +85,13 @@ class Slugger {
         this.lockButton = this.field.parentNode.querySelector('button');
         this.lockButton.addEventListener('click', () => {
             if (this.locked) {
-                let confirmMessage = this.field.dataset.confirmText || null;
+                const confirmMessage = this.field.dataset.confirmText || null;
                 if (null === confirmMessage) {
                     this.unlock();
                 } else {
-                    let formattedConfirmMessage = decodeURIComponent(JSON.parse('"' + confirmMessage.replace(/\"/g, '\\"') + '"'));
+                    const formattedConfirmMessage = decodeURIComponent(
+                        JSON.parse(`"${confirmMessage.replace(/\"/g, '\\"')}"`)
+                    );
                     if (true === confirm(formattedConfirmMessage)) {
                         this.unlock();
                     }
@@ -127,7 +129,7 @@ class Slugger {
     }
 
     updateValue() {
-        this.field.value = slugify(this.targets.map(target => target.value).join('-'), {
+        this.field.value = slugify(this.targets.map((target) => target.value).join('-'), {
             remove: /[^A-Za-z0-9\s-]/g,
             lower: true,
             strict: true,

@@ -5,6 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 use Doctrine\DBAL\Types\Types;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Provider\AdminContextProviderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -23,6 +24,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Filter\TextFilter;
  */
 final class FilterFactory
 {
+    /**
+     * @var array<string, class-string<FilterInterface>>
+     */
     private static array $doctrineTypeToFilterClass = [
         'json_array' => ArrayFilter::class,
         Types::SIMPLE_ARRAY => ArrayFilter::class,
@@ -50,6 +54,9 @@ final class FilterFactory
         Types::TEXT => TextFilter::class,
     ];
 
+    /**
+     * @param iterable<FilterConfiguratorInterface> $filterConfigurators
+     */
     public function __construct(
         private readonly AdminContextProviderInterface $adminContextProvider,
         private readonly iterable $filterConfigurators,
@@ -71,10 +78,12 @@ final class FilterFactory
 
             $context = $this->adminContextProvider->getContext();
             foreach ($this->filterConfigurators as $configurator) {
+                // @phpstan-ignore-next-line argument.type
                 if (!$configurator->supports($filterDto, $fields->getByProperty($property), $entityDto, $context)) {
                     continue;
                 }
 
+                // @phpstan-ignore-next-line argument.type
                 $configurator->configure($filterDto, $fields->getByProperty($property), $entityDto, $context);
             }
 

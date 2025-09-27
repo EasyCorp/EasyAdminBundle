@@ -38,13 +38,13 @@ $validCountries = Countries::getCountryCodes();
 foreach ($validCountries as $countryCode) {
     // the 3x2/ dir at the root of the repository contains the minified SVG flags
     $flagSvgFilePath = sprintf('%s/3x2/%s.svg', $countryFlagsTempDir, $countryCode);
-    if (!file_exists($flagSvgFilePath)) {
+    $flagSvgContent = @file_get_contents($flagSvgFilePath);
+    if (false === $flagSvgContent) {
         echo sprintf('Warning: the "%s" country code does not have a flag icon in the country flags repository.', $countryCode).\PHP_EOL;
         continue;
     }
 
     // these placeholders will be replaced by the real values when the SVG file is used in the Flag Twig component
-    $flagSvgContent = file_get_contents($flagSvgFilePath);
     $flagSvgContent = str_replace(' viewBox=', ' class="country-flag" height="__HEIGHT__" viewBox=', $flagSvgContent);
     $flagSvgContent = str_replace('</svg>', '<title>__COUNTRY_NAME__</title></svg>', $flagSvgContent);
 

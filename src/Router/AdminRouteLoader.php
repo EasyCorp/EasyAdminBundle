@@ -29,7 +29,7 @@ final class AdminRouteLoader extends Loader
         return self::ROUTE_LOADER_TYPE === $type;
     }
 
-    public function load($resource, ?string $type = null): RouteCollection
+    public function load(mixed $resource, ?string $type = null): RouteCollection
     {
         // this is ugly, but I can't find any other way of solving this problem.
         // Details about the problem to solve: EasyAdmin must support both ugly and

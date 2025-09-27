@@ -1,7 +1,7 @@
 Fields
 ======
 
-Fields allow to display the contents of your Doctrine entities on each
+Fields let you display the contents of your Doctrine entities on each
 :ref:`CRUD page <crud-pages>`. EasyAdmin provides built-in fields to display
 all the common data types, but you can also :ref:`create your own fields <custom-fields>`.
 
@@ -9,8 +9,8 @@ Configuring the Fields to Display
 ---------------------------------
 
 If your :doc:`CRUD controller </crud>` extends from the ``AbstractCrudController``
-provided by EasyAdmin, the fields are configured automatically. In the ``index``
-page you'll see a few fields and in the rest of pages you'll see as many fields
+provided by EasyAdmin, the fields are configured automatically. On the ``index``
+page you'll see a few fields, and on the other pages you'll see as many fields
 as needed to display all the properties of your Doctrine entity.
 
 Implement the ``configureFields()`` method in your CRUD controller to customize
@@ -91,9 +91,8 @@ used to display each type of property::
 The only mandatory argument of the field constructors is the name of the
 Doctrine entity property managed by this field. EasyAdmin uses the
 `PropertyAccess component`_ to get the value of the properties, so the entity
-can define their access as public properties (e.g. ``public $firstName``) or
-public methods (e.g. ``public function getFirstName()``, ``public function
-firstName()``).
+can expose data as public properties (e.g. ``public $firstName``) or as public
+methods (e.g. ``public function getFirstName()``, ``public function firstName()``).
 
 .. note::
 
@@ -298,7 +297,7 @@ The arguments of the ``addTab()`` method are:
   ``null`` or an empty string, no text will be displayed (make sure to show an
   icon for the tab or users won't be able to click on it); You can also pass
   ``string`` and ``TranslatableInterface`` variables. In both cases, if they
-  contain HTML tags they will be rendered in stead of escaped;
+  contain HTML tags they will be rendered instead of escaped;
 * ``$icon``: (type: ``?string``) the full CSS class of a `FontAwesome icon`_
   (e.g. ``far fa-folder-open``); if you don't display a text label for the tab,
   make sure to display an icon or users won't be able to click on the tab.
@@ -388,13 +387,13 @@ The arguments of the ``addColumn()`` method are:
 
 * ``$cols``: (type: ``int|string``) the width of the column defined as any value
   compatible with the `Bootstrap grid system`_  (e.g. ``'col-6'``, ``'col-md-6 col-xl-4'``,
-  etc.). Integer values are transformed like this: N -> 'col-N' (e.g. ``8`` is
-  transformed to ``col-8``);
+  etc.). Integer values are transformed like this: N -> 'col-md-N' (e.g. ``8`` is
+  transformed to ``col-md-8``);
 * ``$label``: (type: ``TranslatableInterface|string|false|null``) an optional title
   that is displayed at the top of the column. If you pass ``false``, ``null``
-  or an empy string, no title is displayed. You can also pass ``string`` and
+  or an empty string, no title is displayed. You can also pass ``string`` and
   ``TranslatableInterface`` variables. In both cases, if they contain HTML tags
-  they will be rendered in stead of escaped;
+  they will be rendered instead of escaped;
 * ``$icon``: (type: ``?string``) the full CSS class of a `FontAwesome icon`_
   (e.g. ``far fa-folder-open``) that is displayed next to the column label;
 * ``$help``: (type: ``?string``) an optional content that is displayed below the
@@ -538,7 +537,7 @@ The arguments of the ``addFieldset()`` method are:
 
 * ``$label``: (type: ``TranslatableInterface|string|false|null``) an optional title
   that is displayed at the top of the fieldset. If you pass ``false``, ``null``
-  or an empy string, no title is displayed. You can also pass ``string`` and
+  or an empty string, no title is displayed. You can also pass ``string`` and
   ``TranslatableInterface`` variables. In both cases, if they contain HTML tags
   they will be rendered in stead of escaped;
 * ``$icon``: (type: ``?string``) the full CSS class of a `FontAwesome icon`_
@@ -768,7 +767,7 @@ Doctrine Type             Recommended EasyAdmin Fields
 ``datetime``              ``DateTimeField``
 ``datetimetz_immutable``  ``DateTimeField``
 ``datetimetz``            ``DateTimeField``
-``datetinterval``         ``TextField``
+``dateinterval``          ``TextField``
 ``decimal``               ``NumberField``
 ``float``                 ``NumberField``
 ``guid``                  ``TextField``
@@ -821,7 +820,7 @@ take many different values:
   automatically based on the field name (e.g. 'firstName' -> 'First Name');
 * **null**: EasyAdmin generates the label automatically based on the field name
   (e.g. 'firstName' -> 'First Name');
-* **An empty string**: the field doesn't display any label, but and empty
+* **An empty string**: the field doesn't display any label, but an empty
   ``<label>`` element is rendered to not mess with the form layout;
 * **false**: the field doesn't display any label and no ``<label>`` element is
   rendered either. This is useful to display special full-width fields such as
@@ -871,15 +870,15 @@ Design Options
     ;
 
 Similar to the :ref:`CRUD design options <crud-design-custom-web-assets>`, fields
-can also load CSS files, Javascript files and Webpack Encore entries and add HTML
+can also load CSS files, Javascript files and Webpack Encore entries, and add HTML
 contents to the ``<head>`` and/or ``<body>`` elements of the backend pages::
 
     TextField::new('firstName', 'Name')
         ->addCssFiles('bundle/some-bundle/foo.css', 'some-custom-styles.css')
         ->addJsFiles('admin/some-custom-code.js')
         ->addWebpackEncoreEntry('admin-maps')
-        ->addHtmlContentToHead('<link rel="dns-prefetch" href="https://assets.example.com">')
-        ->addHtmlContentToBody('<!-- generated at '.time().' -->')
+        ->addHtmlContentsToHead('<link rel="dns-prefetch" href="https://assets.example.com">')
+        ->addHtmlContentsToBody('<!-- generated at '.time().' -->')
     ;
 
 By default, these web assets are loaded in all backend pages. If you need a more

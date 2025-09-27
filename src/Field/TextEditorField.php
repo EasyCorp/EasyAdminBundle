@@ -46,6 +46,9 @@ final class TextEditorField implements FieldInterface
         return $this;
     }
 
+    /**
+     * @param array<string, mixed> $config
+     */
     public function setTrixEditorConfig(array $config): self
     {
         $this->setCustomOption(self::OPTION_TRIX_EDITOR_CONFIG, $config);

@@ -4,15 +4,23 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
+ *
+ * @template TEntity of object = object
  */
 class BatchActionDto
 {
     private string $name;
+    /** @var array<mixed> */
     private array $entityIds;
+    /** @var class-string<TEntity> */
     private string $entityFqcn;
     private string $referrerUrl;
     private string $csrfToken;
 
+    /**
+     * @param array<mixed>          $entityIds
+     * @param class-string<TEntity> $entityFqcn
+     */
     public function __construct(string $name, array $entityIds, string $entityFqcn, string $referrerUrl, string $csrfToken /* , bool $triggerDeprecation = true */)
     {
         $this->name = $name;
@@ -46,11 +54,17 @@ class BatchActionDto
         return $this->name;
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function getEntityIds(): array
     {
         return $this->entityIds;
     }
 
+    /**
+     * @return class-string<TEntity>
+     */
     public function getEntityFqcn(): string
     {
         return $this->entityFqcn;

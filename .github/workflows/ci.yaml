@@ -6,43 +6,10 @@ on:
     pull_request:
 
 jobs:
-    linter:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v4
-
-            - name: Setup PHP, with composer and extensions
-              uses: shivammathur/setup-php@v2
-              with:
-                  php-version: 8.2
-                  coverage: none
-
-            - name: Install dependencies
-              run: |
-                  composer install
-                  vendor/bin/simple-phpunit install
-
-            - name: DOCtor-RST
-              uses: docker://oskarstark/doctor-rst
-              with:
-                  args: --short
-              env:
-                  DOCS_DIR: "doc/"
-
-            # see https://github.com/OskarStark/php-cs-fixer-ga
-            - name: PHP-CS-Fixer
-              uses: docker://oskarstark/php-cs-fixer-ga
-              with:
-                  args: --diff --dry-run
-
-            - name: Lint logical CSS properties
-              run: |
-                  php ./src/Resources/bin/logical-css-properties-linter.php
-
     phpstan:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v5
 
             - name: Setup PHP, with composer and extensions
               uses: shivammathur/setup-php@v2
@@ -66,11 +33,11 @@ jobs:
                     # Latest Symfony version support
                     - os: macos-latest
                       php_version: "8.4"
-                      symfony_version: "7.2"
+                      symfony_version: "7.3"
                       stability: "stable"
                     - os: windows-latest
                       php_version: "8.4"
-                      symfony_version: "7.2"
+                      symfony_version: "7.3"
                       stability: "stable"
                     # LTS Symfony version support
                     - os: macos-latest
@@ -101,16 +68,21 @@ jobs:
                       stability: "stable"
                     - os: ubuntu-latest
                       php_version: "8.4"
-                      symfony_version: "7.1"
+                      symfony_version: "7.2"
                       stability: "stable"
                     # Upcoming Symfony versions
                     - os: ubuntu-latest
                       php_version: "8.4"
-                      symfony_version: "7.2"
-                      stability: "stable"
+                      symfony_version: "7.4.x"
+                      stability: "dev"
+                    #- os: ubuntu-latest
+                    #  php_version: "8.4"
+                    #  symfony_version: "8.0.x"
+                    #  stability: "dev"
         runs-on: ${{ matrix.os }}
+        continue-on-error: ${{ matrix.stability == 'dev' }}
         steps:
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v5
 
             - name: Setup PHP, with composer and extensions
               uses: shivammathur/setup-php@v2
@@ -144,7 +116,6 @@ jobs:
                   composer show
 
             - name: Run tests
-              continue-on-error: ${{ matrix.stability == 'dev' || matrix.symfony_version == '7.2' }}
               env:
                   SYMFONY_DEPRECATIONS_HELPER: "max[total]=999999&ignoreFile=./tests/baseline-ignore.txt"
               run: |
@@ -153,9 +124,61 @@ jobs:
             - name: Run Pretty URLs tests
                 # Symfony 5.4 version doesn't include the #[Route] attribute needed to run these tests (it only includes the @Route annotation)
               if: ${{ matrix.symfony_version != '5.4' && matrix.composer_args != '--prefer-lowest' }}
-              continue-on-error: ${{ matrix.stability == 'dev' || matrix.symfony_version == '7.2' }}
               env:
                   USE_PRETTY_URLS: "1"
                   SYMFONY_DEPRECATIONS_HELPER: "max[total]=999999&ignoreFile=./tests/baseline-ignore.txt"
               run: |
                   ./vendor/bin/simple-phpunit tests/Controller/PrettyUrls/PrettyUrlsControllerTest.php
+
+    php-linter:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v5
+
+            # see https://github.com/OskarStark/php-cs-fixer-ga
+            - name: PHP-CS-Fixer
+              uses: docker://oskarstark/php-cs-fixer-ga
+              with:
+                  args: --diff --dry-run
+
+    doc-linter:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v5
+
+            - name: DOCtor-RST
+              uses: docker://oskarstark/doctor-rst
+              with:
+                  args: --short
+              env:
+                  DOCS_DIR: "doc/"
+
+    css-linter:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v5
+
+            - name: Setup PHP, with composer and extensions
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: 8.2
+                  coverage: none
+
+            - name: Install dependencies
+              run: |
+                  composer install
+
+            -   name: Lint logical CSS properties
+                run: |
+                    php ./src/Resources/bin/logical-css-properties-linter.php
+
+    js-linter:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v5
+            - run: npm i -g corepack && corepack enable
+            - uses: actions/setup-node@v5
+              with:
+                  cache: 'yarn'
+            - run: yarn --immutable
+            - run: yarn ci

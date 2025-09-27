@@ -65,6 +65,8 @@ final class LanguageField implements FieldInterface
     /**
      * Restricts the list of languages shown by the field to the given list of languages codes.
      * e.g. ->includeOnly(['de', 'en', 'fr']).
+     *
+     * @param array<string> $countryCodesToKeep
      */
     public function includeOnly(array $countryCodesToKeep): self
     {
@@ -76,6 +78,8 @@ final class LanguageField implements FieldInterface
     /**
      * Removes the given list of languages codes from the languages displayed by the field.
      * e.g. ->remove(['de', 'fr']).
+     *
+     * @param array<string> $countryCodesToRemove
      */
     public function remove(array $countryCodesToRemove): self
     {

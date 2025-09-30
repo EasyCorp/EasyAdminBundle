@@ -1,8 +1,9 @@
 <?php
 
 namespace PHPSTORM_META {
+    use EasyCorp\Bundle\EasyAdminBundle\Contracts\Factory\ActionFactoryInterface;
     use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
-    use EasyCorp\Bundle\EasyAdminBundle\Factory\ActionFactory;
+    use EasyCorp\Bundle\EasyAdminBundle\Factory\ActionFactoryInterface;
     use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
     use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
     use EasyCorp\Bundle\EasyAdminBundle\Factory\PaginatorFactory;
@@ -12,7 +13,7 @@ namespace PHPSTORM_META {
     use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
 
     override(\Symfony\Bundle\FrameworkBundle\Controller\ControllerTrait::get(), map([
-        ActionFactory::class => ActionFactory::class,
+        ActionFactoryInterface::class => ActionFactoryInterface::class,
         AdminContextProvider::class => AdminContextProvider::class,
         AdminUrlGenerator::class => AdminUrlGenerator::class,
         CrudUrlGenerator::class => CrudUrlGenerator::class,

@@ -8,6 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Asset\AssetPackage;
 use EasyCorp\Bundle\EasyAdminBundle\Cache\CacheWarmer;
 use EasyCorp\Bundle\EasyAdminBundle\Command\MakeAdminDashboardCommand;
 use EasyCorp\Bundle\EasyAdminBundle\Command\MakeCrudControllerCommand;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Factory\ActionFactoryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu\MenuItemMatcherInterface;
@@ -252,7 +253,7 @@ return static function (ContainerConfigurator $container) {
 
         ->set(EntityFactory::class)
             ->arg(0, service(FieldFactory::class))
-            ->arg(1, service(ActionFactory::class))
+            ->arg(1, service(ActionFactoryInterface::class))
             ->arg(2, service(AuthorizationChecker::class))
             ->arg(3, service('doctrine'))
             ->arg(4, service('event_dispatcher'))
@@ -315,7 +316,8 @@ return static function (ContainerConfigurator $container) {
 
         ->set(TextFilterConfigurator::class)
 
-        ->set(ActionFactory::class)
+        ->set(ActionFactoryInterface::class)
+            ->class(ActionFactory::class)
             ->arg(0, new Reference(AdminContextProvider::class))
             ->arg(1, new Reference(AuthorizationChecker::class))
             ->arg(2, new Reference(AdminUrlGenerator::class))

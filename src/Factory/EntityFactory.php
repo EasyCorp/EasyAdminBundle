@@ -9,6 +9,7 @@ use Doctrine\Persistence\Proxy;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\ActionCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\EntityCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Factory\ActionFactoryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionConfigDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityBuiltEvent;
@@ -24,12 +25,12 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 final class EntityFactory
 {
     private FieldFactory $fieldFactory;
-    private ActionFactory $actionFactory;
+    private ActionFactoryInterface $actionFactory;
     private AuthorizationCheckerInterface $authorizationChecker;
     private ManagerRegistry $doctrine;
     private EventDispatcherInterface $eventDispatcher;
 
-    public function __construct(FieldFactory $fieldFactory, ActionFactory $actionFactory, AuthorizationCheckerInterface $authorizationChecker, ManagerRegistry $doctrine, EventDispatcherInterface $eventDispatcher)
+    public function __construct(FieldFactory $fieldFactory, ActionFactoryInterface $actionFactory, AuthorizationCheckerInterface $authorizationChecker, ManagerRegistry $doctrine, EventDispatcherInterface $eventDispatcher)
     {
         $this->fieldFactory = $fieldFactory;
         $this->actionFactory = $actionFactory;

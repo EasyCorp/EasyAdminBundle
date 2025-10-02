@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Config;
 
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Action\ActionInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\ButtonElement;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\ButtonStyle;
@@ -13,7 +14,7 @@ use Symfony\Contracts\Translation\TranslatableInterface;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class Action
+final class Action implements ActionInterface
 {
     public const BATCH_DELETE = 'batchDelete';
     public const DELETE = 'delete';

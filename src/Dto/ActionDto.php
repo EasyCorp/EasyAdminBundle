@@ -32,6 +32,8 @@ final class ActionDto
     private array $translationParameters = [];
     /** @var callable|null */
     private $displayCallable;
+    /** @var array<string, mixed> */
+    private array $customOptions = [];
 
     public function getType(): string
     {
@@ -331,5 +333,23 @@ final class ActionDto
         }
 
         return $action;
+    }
+
+    public function setCustomOption(string $optionName, mixed $value): void
+    {
+        $this->customOptions[$optionName] = $value;
+    }
+
+    public function getCustomOption(string $optionName, mixed $default = null): mixed
+    {
+        return $this->customOptions[$optionName] ?? $default;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function getCustomOptions(): array
+    {
+        return $this->customOptions;
     }
 }

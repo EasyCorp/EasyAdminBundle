@@ -8,6 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Asset\AssetPackage;
 use EasyCorp\Bundle\EasyAdminBundle\Cache\CacheWarmer;
 use EasyCorp\Bundle\EasyAdminBundle\Command\MakeAdminDashboardCommand;
 use EasyCorp\Bundle\EasyAdminBundle\Command\MakeCrudControllerCommand;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Factory\FieldFactoryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu\MenuItemMatcherInterface;
@@ -251,7 +252,7 @@ return static function (ContainerConfigurator $container) {
             ->arg(4, service('event_dispatcher'))
 
         ->set(EntityFactory::class)
-            ->arg(0, service(FieldFactory::class))
+            ->arg(0, service(FieldFactoryInterface::class))
             ->arg(1, service(ActionFactory::class))
             ->arg(2, service(AuthorizationChecker::class))
             ->arg(3, service('doctrine'))
@@ -278,7 +279,8 @@ return static function (ContainerConfigurator $container) {
 
         ->set(FormLayoutFactory::class)
 
-        ->set(FieldFactory::class)
+        ->set(FieldFactoryInterface::class)
+            ->class(FieldFactory::class)
             ->arg(0, service(AdminContextProvider::class))
             ->arg(1, service(AuthorizationChecker::class))
             ->arg(2, tagged_iterator(EasyAdminExtension::TAG_FIELD_CONFIGURATOR))

@@ -5,6 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 use Doctrine\DBAL\Types\Types;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Factory\FieldFactoryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Provider\AdminContextProviderInterface;
@@ -28,7 +29,7 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class FieldFactory
+final class FieldFactory implements FieldFactoryInterface
 {
     /**
      * @var array<string, class-string<FieldInterface>>
@@ -162,7 +163,11 @@ final class FieldFactory
         }
     }
 
-    // transforms a generic Field class into a specific <type>Field class (e.g. DateTimeField)
+    /**
+     * transforms a generic Field class into a specific <type>Field class (e.g. DateTimeField).
+     *
+     * @param class-string<FieldInterface> $newFieldFqcn
+     */
     private function transformField(FieldDto $fieldDto, string $newFieldFqcn): FieldDto
     {
         /** @var FieldDto $newField */

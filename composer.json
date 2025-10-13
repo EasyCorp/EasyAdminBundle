@@ -14,7 +14,7 @@
     "require": {
         "php": ">=8.1",
         "ext-json": "*",
-        "doctrine/doctrine-bundle": "^2.5",
+        "doctrine/doctrine-bundle": "^2.5|^3.0",
         "doctrine/orm": "^2.12|^3.0",
         "symfony/asset": "^5.4|^6.0|^7.0",
         "symfony/cache": "^5.4|^6.0|^7.0",
@@ -43,13 +43,13 @@
         "twig/twig": "^3.20"
     },
     "require-dev": {
-        "doctrine/doctrine-fixtures-bundle": "^3.4|3.5.x-dev",
+        "doctrine/doctrine-fixtures-bundle": "^3.4|3.5.x-dev|^4",
         "phpstan/extension-installer": "^1.4",
         "phpstan/phpstan": "^2.0",
         "phpstan/phpstan-phpunit": "^2.0",
         "phpstan/phpstan-strict-rules": "^2.0",
         "phpstan/phpstan-symfony": "^2.0",
-        "psr/log": "^1.0",
+        "psr/log": "^1.0|^2.0|^3.0",
         "symfony/browser-kit": "^5.4|^6.0|^7.0",
         "symfony/css-selector": "^5.4|^6.0|^7.0",
         "symfony/debug-bundle": "^5.4|^6.0|^7.0",

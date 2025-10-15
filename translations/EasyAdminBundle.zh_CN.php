@@ -84,6 +84,7 @@ return [
         'label.is_less_than_or_equal_to' => '小于或等于',
         'label.is_between' => '之间',
         'label.contains' => '包含',
+        'label.contains_all' => '包含所有',
         'label.not_contains' => '不包含',
         'label.starts_with' => '起始于',
         'label.ends_with' => '结束于',

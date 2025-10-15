@@ -40,6 +40,14 @@ class ArrayFilterTypeTest extends FilterTypeTest
         ];
 
         yield [
+            ['comparison' => ComparisonType::CONTAINS_ALL, 'value' => ['bar', 'baz']],
+            ['comparison' => 'like', 'value' => ['bar', 'baz']],
+            [],
+            'SELECT o FROM Object o WHERE o.foo like :foo_1 AND o.foo like :foo_2',
+            [new Parameter('foo_1', '%"bar"%'), new Parameter('foo_2', '%"baz"%')],
+        ];
+
+        yield [
             ['comparison' => ComparisonType::NOT_CONTAINS, 'value' => ['foo', 'bar']],
             ['comparison' => 'not like', 'value' => ['foo', 'bar']],
             [],
@@ -59,7 +67,27 @@ class ArrayFilterTypeTest extends FilterTypeTest
         ];
 
         yield [
+            ['comparison' => ComparisonType::CONTAINS_ALL, 'value' => []],
+            ['comparison' => 'IS NULL', 'value' => []],
+            [],
+            'SELECT o FROM Object o WHERE o.foo IS NULL',
+            [],
+        ];
+
+        yield [
             ['comparison' => ComparisonType::CONTAINS, 'value' => null],
+            ['comparison' => 'IS NULL', 'value' => null],
+            [
+                'value_type_options' => [
+                    'choices' => ['a' => 'a', 'b' => 'b', 'c' => 'c'],
+                ],
+            ],
+            'SELECT o FROM Object o WHERE o.foo IS NULL',
+            [],
+        ];
+
+        yield [
+            ['comparison' => ComparisonType::CONTAINS_ALL, 'value' => null],
             ['comparison' => 'IS NULL', 'value' => null],
             [
                 'value_type_options' => [

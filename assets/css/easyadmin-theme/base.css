@@ -575,12 +575,15 @@ a.user-menu-wrapper .user-details:hover {
 .content-header .datagrid-filters {
     margin-inline-end: 10px;
 }
+.content-header .global-actions,
 .content-header .page-actions {
     justify-content: right;
     flex-wrap: wrap;
-    row-gap: 1em;
+    gap: 10px;
     display: flex;
     flex-direction: row;
+}
+.content-header .page-actions {
     margin: 10px 0 15px;
 }
 @media (min-width: 768px) {
@@ -590,14 +593,6 @@ a.user-menu-wrapper .user-details:hover {
 }
 .content-header .page-actions:empty {
     display: none;
-}
-
-.content-header .page-actions :is(.btn, form:has(.btn)) + :is(.btn, form:has(.btn)) {
-    margin-inline-start: 10px;
-}
-
-.content-header .page-actions .btn-group .btn + .btn {
-    margin-inline-start: 0;
 }
 
 .batch-actions form {
@@ -718,6 +713,9 @@ a.user-menu-wrapper .user-details:hover {
     max-inline-size: 240px;
     padding: 5px;
 }
+.dropdown-menu.dropdown-has-submenus {
+    padding-inline-start: 25px;
+}
 .dropdown-menu li {
     border-radius: var(--border-radius);
 }
@@ -733,11 +731,15 @@ a.user-menu-wrapper .user-details:hover {
 .dropdown-menu i,
 .dropdown-menu .icon {
     color: var(--dropdown-icon-color);
-    margin: 0 10px 0 4px;
+    margin: 0 8px 0 0;
     font-size: 15px;
+}
+.dropdown-menu .icon i {
+    margin: 0;
 }
 .dropdown-menu .icon {
     display: inline-flex;
+    justify-content: center;
 }
 
 .dropdown-menu .dropdown-item,
@@ -780,6 +782,16 @@ a.user-menu-wrapper .user-details:hover {
     margin-inline-start: 10px;
     outline: none;
     padding: 0 4px;
+}
+.dropdown-menu .dropdown-submenu .dropdown-item.dropdown-toggle {
+    border: 0;
+    display: flex;
+    padding: 0 12px 0 6px;
+    position: relative;
+}
+.dropdown-menu .dropdown-submenu .dropdown-item.dropdown-toggle:not(.dropdown-toggle-split):hover {
+    /* unlike the toggle split, this dropdown item is not clickable, so make that very clear */
+    cursor: default;
 }
 
 .list-pagination {

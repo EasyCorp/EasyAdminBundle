@@ -84,6 +84,7 @@ return [
         'label.is_less_than_or_equal_to' => 'փոքր է կամ հավասար է',
         'label.is_between' => 'միջակայքում է',
         'label.contains' => 'պարունակում է',
+        'label.contains_all' => 'պարունակում է բոլորը',
         'label.not_contains' => 'չի պարունակում',
         'label.starts_with' => 'սկսվում է',
         'label.ends_with' => 'ավարտվում է',

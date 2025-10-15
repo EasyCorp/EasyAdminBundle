@@ -26,6 +26,9 @@ final class AdminContextProvider implements AdminContextProviderInterface
         $this->requestStack = $requestStack;
     }
 
+    /**
+     * @deprecated since 4.27 and it will be removed in EasyAdmin 5.0 without a replacement
+     */
     public function hasContext(): bool
     {
         $currentRequest = $this->requestStack->getCurrentRequest();

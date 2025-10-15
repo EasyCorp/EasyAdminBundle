@@ -34,7 +34,7 @@ final class FieldFactory
      * @var array<string, class-string<FieldInterface>>
      */
     private static array $doctrineTypeToFieldFqcn = [
-        'array' => ArrayField::class, // don't use Types::ARRAY because it was removed in Doctrine ORM 3.0
+        'array' => ArrayField::class, // don't use Types::ARRAY because it was removed in Doctrine DBAL 4
         Types::BIGINT => TextField::class,
         Types::BINARY => TextareaField::class,
         Types::BLOB => TextareaField::class,
@@ -50,8 +50,8 @@ final class FieldFactory
         Types::FLOAT => NumberField::class,
         Types::GUID => TextField::class,
         Types::INTEGER => IntegerField::class,
-        Types::JSON => TextField::class,
-        'object' => TextField::class, // don't use Types::OBJECT because it was removed in Doctrine ORM 3.0
+        Types::JSON => ArrayField::class,
+        'object' => TextField::class, // don't use Types::OBJECT because it was removed in Doctrine DBAL 4
         Types::SIMPLE_ARRAY => ArrayField::class,
         Types::SMALLINT => IntegerField::class,
         Types::STRING => TextField::class,
@@ -150,7 +150,7 @@ final class FieldFactory
             if ($fieldDto->getProperty() === $entityDto->getPrimaryKeyName()) {
                 $guessedFieldFqcn = IdField::class;
             } else {
-                $doctrinePropertyType = $entityDto->getPropertyMetadata($fieldDto->getProperty())->get('type');
+                $doctrinePropertyType = $entityDto->getPropertyDataType($fieldDto->getProperty());
                 $guessedFieldFqcn = self::$doctrineTypeToFieldFqcn[$doctrinePropertyType] ?? null;
 
                 if (null === $guessedFieldFqcn) {

@@ -84,6 +84,7 @@ return [
         'label.is_less_than_or_equal_to' => 'txikiagoa edo berdina da',
         'label.is_between' => 'tartean dago',
         'label.contains' => 'dauka',
+        'label.contains_all' => 'dauka guztiak',
         'label.not_contains' => 'ez dauka',
         'label.starts_with' => 'honela hasten da',
         'label.ends_with' => 'honela amaitzen da',

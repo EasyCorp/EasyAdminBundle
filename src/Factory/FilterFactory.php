@@ -99,12 +99,6 @@ final class FilterFactory
             return EntityFilter::class;
         }
 
-        $metadata = $entityDto->getPropertyMetadata($propertyName);
-
-        if ($metadata->isEmpty()) {
-            return TextFilter::class;
-        }
-
-        return self::$doctrineTypeToFilterClass[$metadata->get('type')] ?? TextFilter::class;
+        return self::$doctrineTypeToFilterClass[$entityDto->getPropertyDataType($propertyName)] ?? TextFilter::class;
     }
 }

@@ -261,43 +261,18 @@ fieldset:disabled a.btn {
 }
 
 /* Button groups */
-.btn-group {
-    display: inline-flex;
-    position: relative;
-    vertical-align: middle;
-}
-
-.btn-group > .btn {
-    flex: 1 1 auto;
-    position: relative;
-}
-
-.btn-group > .btn:not(:first-child) {
-    border-start-start-radius: 0;
-    border-end-start-radius: 0;
-    margin-inline-start: -1px;
-}
-
-.btn-group > .btn:not(:last-child) {
-    border-start-end-radius: 0;
-    border-end-end-radius: 0;
-}
-
-/* Dropdown toggle for split buttons */
-.btn-group > .dropdown-toggle-split {
-    --button-padding-x: calc(var(--button-padding-x-md) * 0.75);
-}
-
-.btn-group > .btn-sm + .dropdown-toggle-split {
-    --button-padding-x: calc(var(--button-padding-x-sm) * 0.75);
-}
-
-.btn-group > .btn-lg + .dropdown-toggle-split {
-    --button-padding-x: calc(var(--button-padding-x-lg) * 0.75);
-}
-
-.dropdown-toggle-split::after {
+.btn-group > .btn-group:not(:first-child),
+.btn-group > :not(.btn-check:first-child) + .btn {
     margin-inline-start: 0;
+}
+.btn-group > .btn.dropdown-toggle.dropdown-toggle-split {
+    margin-inline-start: -1px;
+    padding-inline-end: .5625rem;
+    padding-inline-start: .5625rem;
+}
+.dropdown-menu .dropdown-submenu .dropdown-toggle.dropdown-toggle-split {
+    border: 0;
+    inline-size: auto;
 }
 
 /* Block buttons (full width) */

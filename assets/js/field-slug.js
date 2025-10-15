@@ -155,3 +155,9 @@ document.addEventListener('DOMContentLoaded', () => {
         new Slugger(field);
     });
 });
+
+document.addEventListener('ea.collection.item-added', (event) => {
+    event.detail.newElement.querySelectorAll('[data-ea-slug-field]').forEach((field) => {
+        new Slugger(field);
+    });
+});

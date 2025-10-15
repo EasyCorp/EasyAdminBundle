@@ -258,8 +258,25 @@ Permissions are defined globally; you cannot define different permissions per pa
 Reordering Actions
 ------------------
 
-Use the ``reorder()`` to define the order in which actions are displayed
-in some page::
+By default, actions are ordered by type: "primary" actions are displayed first,
+followed by "default", "success", "warning", and, lastly, "danger" actions. This
+ordering also applies to your :ref:`custom actions <actions-custom>`, as explained below.
+
+This ordering usually produces the best visual result. However, you can disable
+this behavior in your application by calling the following method::
+
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+
+    public function configureActions(Actions $actions): Actions
+    {
+        return $actions
+            // ...
+            ->disableAutomaticOrdering();
+    }
+}
+
+You can also use the ``reorder()`` method to define an explicit order in which
+actions are displayed on a page::
 
     use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
     use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
@@ -283,6 +300,11 @@ in some page::
             ->reorder(Crud::PAGE_INDEX, [Action::DETAIL, 'viewInvoice'])
         ;
     }
+
+.. note::
+
+    When using the ``reorder()`` method, the smart sorting feature is
+    automatically disabled.
 
 Dropdown and Inline Entity Actions
 ----------------------------------
@@ -309,6 +331,157 @@ contents on each row. If you prefer to display all the actions *inline*
             ;
         }
     }
+
+Grouping Actions
+----------------
+
+In addition to individual actions, you can group multiple related actions into
+a single button. This is useful when you have many actions and want to organize
+them better or save space in the interface. Use the ``ActionGroup`` class
+to create these grouped actions::
+
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+    use EasyCorp\Bundle\EasyAdminBundle\Config\ActionGroup;
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+
+    public function configureActions(Actions $actions): Actions
+    {
+        $publishActions = ActionGroup::new('publish', 'Publish')
+            ->addAction(Action::new('publishNow', 'Publish Now')->linkToCrudAction('...'))
+            ->addAction(Action::new('schedule', 'Schedule...')->linkToCrudAction('...'))
+            ->addAction(Action::new('publishDraft', 'Save as Draft')->linkToCrudAction('...'));
+
+        return $actions
+            // ...
+            ->add(Crud::PAGE_EDIT, $publishActions)
+        ;
+    }
+
+This is how the action group looks in practice:
+
+.. image:: images/easyadmin-action-group.gif
+   :alt: An action group that includes three different actions into a single button
+
+Similar to standalone actions, on the index page there are two types of action
+groups: those associated with each entity and those associated with the entire page::
+
+    public function configureActions(Actions $actions): Actions
+    {
+        $createActions = ActionGroup::new('create')
+            ->createAsGlobalActionGroup()
+            ->addAction(Action::new('new', 'Create Post')->linkToCrudAction('...'))
+            ->addAction(Action::new('draft', 'Draft Post')->linkToCrudAction('...'))
+            ->addAction(Action::new('template', 'Create from Template')->linkToCrudAction('...'));
+
+        $sendActions = ActionGroup::new('send', 'Send ...')
+            ->addAction(Action::new('sendEmail', 'Send by Email')->linkToCrudAction('...'))
+            ->addAction(Action::new('sendSlack', 'Send to Slack')->linkToCrudAction('...'))
+            ->addAction(Action::new('sendTelegram', 'Send via Telegram')->linkToCrudAction('...'));
+
+        return $actions
+            // ...
+            ->add(Crud::PAGE_INDEX, $createActions)
+            ->add(Crud::PAGE_INDEX, $sendActions)
+        ;
+    }
+
+The ``createAsGlobalActionGroup()`` method creates an action group associated
+with the entire page rather than any specific entity. It appears like the image
+shown above for action groups.
+
+When not using the ``createAsGlobalActionGroup()`` method on the index page, the
+action group is displayed as a nested dropdown on each entity row (see the image
+in the next section below).
+
+Split Button Dropdowns
+~~~~~~~~~~~~~~~~~~~~~~
+
+If one of the grouped actions is more common than the others, you can render the
+group as a "split button". This displays the **main action** as a clickable button,
+with the other actions available in the dropdown::
+
+    $publishActions = ActionGroup::new('publish', 'Publish')
+        ->addMainAction(Action::new('publishNow', 'Publish Now')->linkToCrudAction('...'))
+        ->addAction(Action::new('schedule', 'Schedule...')->linkToCrudAction('...'))
+        ->addAction(Action::new('publishDraft', 'Save as Draft')->linkToCrudAction('...'));
+
+Now, the action group will look as follows:
+
+.. image:: images/easyadmin-action-group-split-button.gif
+   :alt: An action group that defines a main action and a list of secondary actions
+
+On the index page, if the action group is associated with each entity, it's
+displayed as a dropdown. In the following image, the first action group is a
+simple dropdown because it doesn't define a main action. The second action
+group is a split dropdown, where the main action is a clickable element and the
+remaining actions appear when hovering over the submenu marker:
+
+.. image:: images/easyadmin-action-group-entity-dropdown.gif
+   :alt: An action group inside an entity dropdown. The second group defines a main action.
+
+Headers and Dividers
+~~~~~~~~~~~~~~~~~~~~
+
+For better organization, especially with many actions in a dropdown, you can add
+headers and dividers to create logical groups::
+
+    $actionsGroup = ActionGroup::new('actions', 'Actions', 'fa fa-cog')
+        ->addHeader('Quick Actions')
+        ->addAction(Action::new('approve', 'Approve')->linkToCrudAction('approve'))
+        ->addAction(Action::new('reject', 'Reject')->linkToCrudAction('reject'))
+        ->addDivider()
+        ->addHeader('Advanced')
+        ->addAction(Action::new('archive', 'Archive')->linkToCrudAction('archive'))
+        ->addAction(Action::new('delete', 'Delete')->linkToCrudAction('delete')
+            ->addCssClass('text-danger'));
+
+Headers help users understand the purpose of each group, while dividers provide
+visual separation between different sections.
+
+Conditional Dropdown Display
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Like regular actions, dropdowns can be displayed conditionally based on the
+entity state or user permissions::
+
+    $moderationGroup = ActionGroup::new('moderation', 'Moderation')
+        // the callable receives the current entity instance or null (in the index page)
+        ->displayIf(static function ($entity) {
+            return null !== $entity && 'pending' === $entity->getStatus();
+        })
+        ->addAction(Action::new('approve', 'Approve')->linkToCrudAction('approve'))
+        ->addAction(Action::new('reject', 'Reject')->linkToCrudAction('reject'));
+
+The dropdown will only appear when the condition is met. Individual actions
+within the dropdown can also have their own display conditions.
+
+Customizing Dropdown Appearance
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Dropdowns support the same customization options as regular actions for styling
+and HTML attributes::
+
+    $customGroup = ActionGroup::new('custom', 'Options')
+        // use only an icon, no label
+        ->setLabel(false)
+        ->setIcon('fa fa-ellipsis-v')
+
+        // create different variants of action groups
+        ->asPrimaryActionGroup()
+        ->asDefaultActionGroup()
+        ->asSuccessActionGroup()
+        ->asWarningActionGroup()
+        ->asDangerActionGroup()
+
+        // add custom CSS classes
+        ->addCssClass('my-custom-dropdown')
+
+        // add HTML attributes
+        ->setHtmlAttributes(['data-foo' => 'bar']);
+
+You can also customize individual actions within the dropdown using the standard
+action configuration methods.
 
 .. _actions-custom:
 
@@ -370,7 +543,7 @@ that will represent the action::
         ->setHtmlAttributes(['data-foo' => 'bar', 'target' => '_blank'])
 
         // by default, actions are shown as `btn-secondary` elements; use the
-        // following actions to change their style accordingly
+        // following actions to change their style and priority accordingly
         ->asDefaultAction()
         ->asPrimaryAction()
         ->asSuccessAction()
@@ -391,6 +564,14 @@ that will represent the action::
         // adds the given value to the existing CSS classes of the action (this is
         // useful when customizing a built-in action, which already has CSS classes)
         ->addCssClass('some-custom-css-class text-danger')
+
+This is how the different button style variants look in light and dark mode:
+
+.. image:: images/easyadmin-buttons-light-mode.gif
+   :alt: EasyAdmin button variants in light mode
+
+.. image:: images/easyadmin-buttons-dark-mode.gif
+   :alt: EasyAdmin button variants in dark mode
 
 .. note::
 
@@ -642,6 +823,7 @@ for the actions using the ``#[AdminRoute]`` attribute::
     namespace App\Controller;
 
     use App\Stats\BusinessStatsCalculator;
+    use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminRoute;
     use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
     use Symfony\Component\Routing\Attribute\Route;
     use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -702,6 +884,7 @@ the following options::
 
     use App\Controller\Admin\DashboardController;
     use App\Controller\Admin\GuestDashboardController;
+    use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminRoute;
 
     // Use the 'allowedDashboards' option to NOT generate a route for ANY dashboards
     // except those listed explicitly:

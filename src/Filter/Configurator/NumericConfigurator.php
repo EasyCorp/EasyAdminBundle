@@ -24,7 +24,7 @@ final class NumericConfigurator implements FilterConfiguratorInterface
 
     public function configure(FilterDto $filterDto, ?FieldDto $fieldDto, EntityDto $entityDto, AdminContext $context): void
     {
-        $propertyType = $entityDto->getPropertyMetadata($filterDto->getProperty())->get('type');
+        $propertyType = $entityDto->getPropertyDataType($filterDto->getProperty());
 
         if (Types::DECIMAL === $propertyType) {
             $filterDto->setFormTypeOptionIfNotSet('value_type_options.input', 'string');

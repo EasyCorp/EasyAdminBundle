@@ -109,6 +109,8 @@
     --dropdown-settings-active-item-bg: var(--gray-100);
     --dropdown-settings-active-item-color: var(--color-primary);
     --dropdown-settings-active-item-shadow: inset 0 0 0 1px #5368d580; /* color is --color-primary with 50% alpha */
+    --dropdown-item-danger-bg: #ffebe9;
+    --dropdown-item-danger-color: #d1242f;
     --datagrid-noresults-placeholder-bg: var(--gray-100);
     --datagrid-hidden-results-gradient-bg: var(--gray-50);
     --table-thead-color: var(--gray-800);
@@ -490,6 +492,8 @@
     --dropdown-settings-active-item-bg: var(--true-gray-950);
     --dropdown-settings-active-item-color: var(--color-primary);
     --dropdown-settings-active-item-shadow: inset 0 0 0 1px var(--true-gray-800);
+    --dropdown-item-danger-bg: #f851491a;
+    --dropdown-item-danger-color: #ff7b72;
     --datagrid-noresults-placeholder-bg: var(--true-gray-700);
     --datagrid-hidden-results-gradient-bg: var(--true-gray-700);
     --table-thead-color: var(--true-gray-200);

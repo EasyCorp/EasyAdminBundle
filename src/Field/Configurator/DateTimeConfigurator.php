@@ -97,7 +97,7 @@ final class DateTimeConfigurator implements FieldConfiguratorInterface
         if (!$entityDto->hasProperty($field->getProperty())) {
             return;
         }
-        $doctrineDataType = $entityDto->getPropertyMetadata($field->getProperty())->get('type');
+        $doctrineDataType = $entityDto->getPropertyDataType($field->getProperty());
         $isImmutableDateTime = \in_array($doctrineDataType, [Types::DATETIMETZ_IMMUTABLE, Types::DATETIME_IMMUTABLE, Types::DATE_IMMUTABLE, Types::TIME_IMMUTABLE], true);
         if ($isImmutableDateTime) {
             $field->setFormTypeOptionIfNotSet('input', 'datetime_immutable');

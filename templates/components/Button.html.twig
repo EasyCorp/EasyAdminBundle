@@ -39,7 +39,7 @@
             <twig:ea:Icon name="{{ icon }}" class="btn-icon" />
         {% endif %}
         {% if block('content') is defined %}
-            <span class="btn-label">{{ block('content') }}</span>
+            <span {{ attributes.nested('label').defaults({class: 'btn-label'}) }}>{{ block('content') }}</span>
         {% endif %}
         {% if icon and withTrailingIcon %}
             <twig:ea:Icon name="{{ icon }}" class="btn-icon btn-icon-trailing" />
@@ -63,7 +63,7 @@
                 <twig:ea:Icon name="{{ icon }}" class="btn-icon" />
             {% endif %}
             {% if block('content') is defined %}
-                <span class="btn-label">{{ block('content') }}</span>
+                <span {{ attributes.nested('label').defaults({class: 'btn-label'}) }}>{{ block('content') }}</span>
             {% endif %}
             {% if icon and withTrailingIcon %}
                 <twig:ea:Icon name="{{ icon }}" class="btn-icon btn-icon-trailing" />
@@ -80,7 +80,7 @@
             <twig:ea:Icon name="{{ icon }}" class="btn-icon" />
         {% endif %}
         {% if block('content') is defined %}
-            <span class="btn-label">{{ block('content') }}</span>
+            <span {{ attributes.nested('label').defaults({class: 'btn-label'}) }}>{{ block('content') }}</span>
         {% endif %}
         {% if icon and withTrailingIcon %}
             <twig:ea:Icon name="{{ icon }}" class="btn-icon btn-icon-trailing" />

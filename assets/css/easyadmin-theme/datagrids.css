@@ -179,6 +179,13 @@ table.datagrid:not(.datagrid-empty) tr:not(.empty-row) td.actions.actions-as-dro
     font-size: var(--font-size-base);
     margin-inline-end: 2px;
 }
+.datagrid td.actions .dropdown-item-variant-danger:hover,
+.page-actions .dropdown-item-variant-danger:hover {
+    --dropdown-icon-color: var(--dropdown-item-danger-color);
+
+    background: var(--dropdown-item-danger-bg);
+    color: var(--dropdown-item-danger-color);
+}
 
 @media (min-width: 992px) {
     .datagrid td.actions-as-dropdown {
@@ -188,13 +195,14 @@ table.datagrid:not(.datagrid-empty) tr:not(.empty-row) td.actions.actions-as-dro
 .datagrid td.actions-as-dropdown-table-head {
     inline-size: 10px;
 }
-.datagrid tr:not(.selected-row):hover .dropdown-toggle {
+.datagrid tr:not(.selected-row):hover .actions-as-dropdown .dropdown-actions > .dropdown-toggle {
     background: var(--dropdown-toggle-bg);
     border-color: var(--dropdown-toggle-border-color);
 }
-.datagrid tr:hover .dropdown-toggle:hover {
+.datagrid tr:hover .actions-as-dropdown .dropdown-actions > .dropdown-toggle:hover {
     border-color: var(--dropdown-toggle-hover-border-color);
 }
+
 .datagrid tr:hover .dropdown-toggle:focus,
 .datagrid tr:hover .dropdown-toggle:active,
 .datagrid tr:hover .dropdown-toggle:active:focus,
@@ -218,6 +226,7 @@ table.datagrid:not(.datagrid-empty) tr:not(.empty-row) td.actions.actions-as-dro
     color: var(--dropdown-toggle-color);
     display: block;
     padding: 1px 5px;
+    overflow: visible;
 }
 
 .datagrid .dropdown-actions .dropdown-toggle .icon {
@@ -228,6 +237,69 @@ table.datagrid:not(.datagrid-empty) tr:not(.empty-row) td.actions.actions-as-dro
 
 .datagrid .dropdown-actions .dropdown-menu {
     z-index: var(--zindex-900);
+}
+
+/* Nested dropdown menus (action groups) - always open to the left for better UX */
+.datagrid .dropdown-actions .dropdown-menu .dropstart {
+    position: relative;
+}
+
+.datagrid .dropdown-actions .dropstart .dropdown-toggle:before {
+    margin-inline-start: -20px;
+    position: absolute;
+}
+
+/* Position nested dropdown menu to the left */
+.datagrid .dropdown-actions .dropdown-menu .dropstart > .dropdown-menu {
+    inset-block-start: 0;
+    inset-inline-end: 100%;
+    inset-inline-start: auto;
+    margin-block-end: 0;
+    margin-block-start: 0;
+    margin-inline-end: -0.125rem;
+    margin-inline-start: 0;
+}
+.datagrid .dropdown-actions .dropdown-menu .dropstart:has(.dropdown-toggle-split) > .dropdown-menu {
+    margin-inline-end: 1.125rem;
+}
+
+/* Submenus without toggle-split */
+.datagrid .dropdown-actions .dropdown-menu .dropstart:not(:has(.dropdown-toggle-split)):hover > .dropdown-menu,
+.datagrid
+    .dropdown-actions
+    .dropdown-menu
+    .dropstart:not(:has(.dropdown-toggle-split))
+    > .dropdown-toggle:focus
+    .dropdown-menu,
+.datagrid .dropdown-actions .dropdown-menu .dropstart:not(:has(.dropdown-toggle-split)) > .dropdown-menu:hover,
+/* Submenus with toggle-split */
+    .datagrid
+    .dropdown-actions
+    .dropdown-menu
+    .dropstart:has(.dropdown-toggle-split:hover)
+    > .dropdown-menu,
+.datagrid .dropdown-actions .dropdown-menu .dropstart:has(.dropdown-toggle-split) > .dropdown-menu:hover {
+    display: block;
+}
+
+/* Split button submenu styling */
+.datagrid .dropdown-actions .dropdown-menu .dropstart .dropdown-toggle-split {
+    padding-inline-start: 0.5rem;
+    padding-inline-end: 0.5rem;
+    position: absolute;
+    inset-inline-start: -22px;
+}
+.datagrid .dropdown-actions .dropdown-menu .dropstart .dropdown-toggle-split:before {
+    display: none;
+}
+
+.datagrid .dropdown-actions .dropdown-menu .dropstart .dropdown-toggle-split .dropdown-toggle-marker {
+    /* this is a chevron-like icon made out of text with CSS border tricks */
+    border-block-end: .3em solid transparent;
+    border-inline-end: .3em solid;
+    border-block-start: .3em solid transparent;
+    content: "";
+    display: inline-block;
 }
 
 .datagrid .ea-lightbox-thumbnail img {

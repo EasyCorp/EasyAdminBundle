@@ -1,6 +1,22 @@
 Upgrade between EasyAdmin 4.x versions
 ======================================
 
+EasyAdmin 4.26.0
+----------------
+
+Some methods related to actions have been deprecated in favor of equivalent
+methods with better names:
+
+    // Before
+    $action->displayAsLink()->...
+    $action->displayAsButton()->...
+    $action->displayAsForm()->...
+
+    // After
+    $action->renderAsLink()->...
+    $action->renderAsButton()->...
+    $action->renderAsForm()->...
+
 EasyAdmin 4.25.0
 ----------------
 

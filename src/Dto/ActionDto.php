@@ -65,6 +65,12 @@ final class ActionDto
         return Action::TYPE_BATCH === $this->type;
     }
 
+    // A utility method for Twig templates that deal with actions and action groups
+    public function isActionGroup(): bool
+    {
+        return false;
+    }
+
     public function getName(): string
     {
         return $this->name;

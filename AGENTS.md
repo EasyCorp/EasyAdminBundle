@@ -84,6 +84,7 @@ Welcome, 🤖 AI assistant! Please follow these guidelines when contributing to 
 - Services configuration must use PHP format (`config/services.php`)
 - Translations must be in PHP format (`translations/*.php`)
 - Handle exceptions explicitly and avoid silent catch blocks
+- In tests, use simple descriptive names like 'Action 1', 'Action 2', 'Group 1', etc. instead of realistic examples
 
 ## Twig Templates
 

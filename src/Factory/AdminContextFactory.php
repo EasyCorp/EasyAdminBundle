@@ -10,6 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Factory\MenuFactoryInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Router\AdminRouteGeneratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionConfigDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetsDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
@@ -20,7 +21,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\I18nDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\CrudControllerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\TemplateRegistry;
-use EasyCorp\Bundle\EasyAdminBundle\Router\AdminRouteGenerator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -38,9 +38,9 @@ final class AdminContextFactory
     private MenuFactoryInterface $menuFactory;
     private CrudControllerRegistry $crudControllers;
     private EntityFactory $entityFactory;
-    private AdminRouteGenerator $adminRouteGenerator;
+    private AdminRouteGeneratorInterface $adminRouteGenerator;
 
-    public function __construct(string $buildDir, ?TokenStorageInterface $tokenStorage, MenuFactoryInterface $menuFactory, CrudControllerRegistry $crudControllers, EntityFactory $entityFactory, AdminRouteGenerator $adminRouteGenerator)
+    public function __construct(string $buildDir, ?TokenStorageInterface $tokenStorage, MenuFactoryInterface $menuFactory, CrudControllerRegistry $crudControllers, EntityFactory $entityFactory, AdminRouteGeneratorInterface $adminRouteGenerator)
     {
         $this->buildDir = $buildDir;
         $this->tokenStorage = $tokenStorage;

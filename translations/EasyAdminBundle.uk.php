@@ -84,6 +84,7 @@ return [
         'label.is_less_than_or_equal_to' => 'менше ніж або рівно',
         'label.is_between' => 'між',
         'label.contains' => 'містить',
+        'label.contains_all' => 'містить все',
         'label.not_contains' => 'не містить',
         'label.starts_with' => 'починається з',
         'label.ends_with' => 'закінчується на',

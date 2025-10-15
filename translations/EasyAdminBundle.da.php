@@ -84,6 +84,7 @@ return [
         'label.is_less_than_or_equal_to' => 'er mindre end eller lig med',
         'label.is_between' => 'er i mellem',
         'label.contains' => 'indeholder',
+        'label.contains_all' => 'indeholder alle',
         'label.not_contains' => 'indeholder ikke',
         'label.starts_with' => 'starter med',
         'label.ends_with' => 'slutter med',

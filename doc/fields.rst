@@ -773,7 +773,7 @@ Doctrine Type             Recommended EasyAdmin Fields
 ``guid``                  ``TextField``
 ``integer``               ``IntegerField``
 ``json_array``            ``ArrayField``
-``json``                  ``TextField``, ``TextareaField``, ``CodeEditorField``
+``json``                  ``TextField``, ``TextareaField``, ``CodeEditorField``, ``ArrayField``
 ``object``                ``TextField``, ``TextareaField``, ``CodeEditorField``
 ``simple_array``          ``ArrayField``
 ``smallint``              ``IntegerField``

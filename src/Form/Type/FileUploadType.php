@@ -145,11 +145,11 @@ class FileUploadType extends AbstractType implements DataMapperInterface
             }
 
             $isStreamWrapper = filter_var($value, \FILTER_VALIDATE_URL);
-            if (false !== $isStreamWrapper && !str_starts_with($value, $this->projectDir)) {
+            if (false === $isStreamWrapper && !str_starts_with($value, $this->projectDir)) {
                 $value = $this->projectDir.'/'.$value;
             }
 
-            if (false !== $isStreamWrapper && (!is_dir($value) || !is_writable($value))) {
+            if (false === $isStreamWrapper && (!is_dir($value) || !is_writable($value))) {
                 throw new InvalidArgumentException(sprintf('Invalid upload directory "%s" it does not exist or is not writable.', $value));
             }
 

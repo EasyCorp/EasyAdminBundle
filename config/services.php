@@ -2,6 +2,7 @@
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
+use EasyCorp\Bundle\EasyAdminBundle\Adapter\UploadedFileAdapterFactory;
 use EasyCorp\Bundle\EasyAdminBundle\ArgumentResolver\AdminContextResolver;
 use EasyCorp\Bundle\EasyAdminBundle\ArgumentResolver\BatchActionDtoResolver;
 use EasyCorp\Bundle\EasyAdminBundle\Asset\AssetPackage;
@@ -420,5 +421,8 @@ return static function (ContainerConfigurator $container) {
 
         ->set(Alert::class)
             ->tag('twig.component')
+
+        ->set(UploadedFileAdapterFactory::class)
+            ->arg(0, param('kernel.project_dir'))
     ;
 };

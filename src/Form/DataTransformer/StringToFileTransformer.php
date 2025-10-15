@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\DataTransformer;
 
+use EasyCorp\Bundle\EasyAdminBundle\Adapter\UploadedFileAdapterInterface;
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\HttpFoundation\File\File;
@@ -12,19 +13,19 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  */
 class StringToFileTransformer implements DataTransformerInterface
 {
-    private string $uploadDir;
     /** @var callable */
     private $uploadFilename;
     /** @var callable */
     private $uploadValidate;
     private bool $multiple;
+    private UploadedFileAdapterInterface $uploadedFileAdapter;
 
-    public function __construct(string $uploadDir, callable $uploadFilename, callable $uploadValidate, bool $multiple)
+    public function __construct(callable $uploadFilename, callable $uploadValidate, bool $multiple, UploadedFileAdapterInterface $uploadedFileAdapter)
     {
-        $this->uploadDir = $uploadDir;
         $this->uploadFilename = $uploadFilename;
         $this->uploadValidate = $uploadValidate;
         $this->multiple = $multiple;
+        $this->uploadedFileAdapter = $uploadedFileAdapter;
     }
 
     public function transform(mixed $value): mixed
@@ -75,8 +76,8 @@ class StringToFileTransformer implements DataTransformerInterface
             throw new TransformationFailedException('Expected a string or null.');
         }
 
-        if (is_file($this->uploadDir.$value)) {
-            return new File($this->uploadDir.$value);
+        if ($this->uploadedFileAdapter->supports($value)) {
+            return $this->uploadedFileAdapter->create($value);
         }
 
         return null;
@@ -95,7 +96,7 @@ class StringToFileTransformer implements DataTransformerInterface
 
             $filename = ($this->uploadFilename)($value);
 
-            return ($this->uploadValidate)($filename);
+            return ($this->uploadValidate)($filename, $this->uploadedFileAdapter);
         }
 
         if ($value instanceof File) {

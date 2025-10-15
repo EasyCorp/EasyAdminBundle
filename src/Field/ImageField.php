@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 
+use EasyCorp\Bundle\EasyAdminBundle\Adapter\UploadedFileAdapterInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Asset;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\TextAlign;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
@@ -17,10 +18,13 @@ final class ImageField implements FieldInterface
 {
     use FieldTrait;
 
+    /** @deprecated use OPTION_UPLOADED_FILE_ADAPTER instead */
     public const OPTION_BASE_PATH = 'basePath';
+    /** @deprecated use OPTION_UPLOADED_FILE_ADAPTER instead */
     public const OPTION_UPLOAD_DIR = 'uploadDir';
     public const OPTION_UPLOADED_FILE_NAME_PATTERN = 'uploadedFileNamePattern';
     public const OPTION_FILE_CONSTRAINTS = 'fileConstraints';
+    public const OPTION_UPLOADED_FILE_ADAPTER = 'uploadedFileAdapter';
 
     /**
      * @param TranslatableInterface|string|false|null $label
@@ -39,9 +43,13 @@ final class ImageField implements FieldInterface
             ->setCustomOption(self::OPTION_BASE_PATH, null)
             ->setCustomOption(self::OPTION_UPLOAD_DIR, null)
             ->setCustomOption(self::OPTION_UPLOADED_FILE_NAME_PATTERN, '[name].[extension]')
+            ->setCustomOption(self::OPTION_UPLOADED_FILE_ADAPTER, null)
             ->setCustomOption(self::OPTION_FILE_CONSTRAINTS, [new Image()]);
     }
 
+    /**
+     * @deprecated use setUploadedFileAdapter instead
+     */
     public function setBasePath(string $path): self
     {
         $this->setCustomOption(self::OPTION_BASE_PATH, $path);
@@ -49,7 +57,15 @@ final class ImageField implements FieldInterface
         return $this;
     }
 
+    public function setUploadedFileAdapter(UploadedFileAdapterInterface $uploadedFileAdapter): self
+    {
+        $this->setCustomOption(self::OPTION_UPLOADED_FILE_ADAPTER, $uploadedFileAdapter);
+
+        return $this;
+    }
+
     /**
+     * @deprecated use setUploadedFileAdapter instead
      * Relative to project's root directory (e.g. use 'public/uploads/' for `<your-project-dir>/public/uploads/`)
      * Default upload dir: `<your-project-dir>/public/uploads/images/`.
      */

@@ -27,7 +27,26 @@ Basic Information
 Options
 -------
 
-setBasePath
+setUploadedFileAdapter
+~~~~~~~~~~~~~~~~~~~~~~
+
+You need to use this method to define how you want to store and read your files. 
+EasyAdmin provides two solutions: a classic local storage option using the ``LocalFileAdapter``, 
+or a solution compatible with S3 storage using the ``FlysystemFileAdapter``.
+``FlysystemFileAdapter`` use the ``thephpleague/flysystem-bundle`` dependency to store the files.
+
+To easily configure the content of the ``setUploadedFileAdapter`` method, we recommend using the ``UploadedFileAdapterFactory`` service, which offers two helper methods: ``createLocalFileAdapter`` and ``createFlysystemFileAdapter``::
+
+    yield ImageField::new('picture')
+        ->setUploadedFileAdapter($this->uploadedFileAdapterFactory->createLocalFileAdapter('public/uploads/posts', 'uploads/posts'));
+
+    yield ImageField::new('picture')
+        ->setUploadedFileAdapter($this->uploadedFileAdapterFactory->createFlysystemFileAdapter($this->defaultStorage));
+
+
+Of course, you can also create your own storage system by implementing ``UploadedFileAdapterInterface``.
+
+setBasePath (deprecated)
 ~~~~~~~~~~~
 
 By default, images are loaded in read-only pages (``index`` and ``detail``) "as is",
@@ -36,7 +55,7 @@ without changing their path. If you serve your images under some path (e.g.
 
     yield ImageField::new('...')->setBasePath('uploads/images/');
 
-setUploadDir
+setUploadDir (deprecated)
 ~~~~~~~~~~~~
 
 By default, the contents of uploaded images are stored into files inside the

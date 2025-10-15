@@ -89,7 +89,7 @@ jobs:
               with:
                   php-version: ${{ matrix.php_version }}
                   coverage: none
-                  extensions: mbstring, intl, pdo, pdo_sqlite, sqlite3
+                  extensions: mbstring, intl, pdo, pdo_sqlite, sqlite3, fileinfo
                   ini-values: date.timezone=UTC
 
             - name: symfony/flex is required to install the correct symfony version

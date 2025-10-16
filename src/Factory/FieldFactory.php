@@ -81,6 +81,15 @@ final class FieldFactory implements FieldFactoryInterface
 
         $isDetailOrIndex = \in_array($currentPage, [Crud::PAGE_INDEX, Crud::PAGE_DETAIL], true);
         foreach ($fields as $fieldDto) {
+            // Set entityInstance for voter
+            $fieldDto->setEntityInstance($entityDto->getInstance());
+
+            // Dynamic permission
+            $className = $entityDto->getFqcn();
+            $fieldName = $fieldDto->getProperty();
+            $permission = sprintf('EASYADMIN_FIELD_%s_%s', strtoupper((new \ReflectionClass($className))->getShortName()), strtoupper($fieldName));
+            $fieldDto->setPermission($permission);
+
             if ((null !== $currentPage && false === $fieldDto->isDisplayedOn($currentPage))
                 || false === $this->authorizationChecker->isGranted(Permission::EA_VIEW_FIELD, $fieldDto)) {
                 $fields->unset($fieldDto);

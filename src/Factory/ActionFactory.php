@@ -42,7 +42,12 @@ final class ActionFactory implements ActionFactoryInterface
                 continue;
             }
 
+            // Set entityInstance for voter
+            $actionDto->setEntityInstance($entityDto->getInstance());
+
+            // Check permissions via voter
             if (false === $this->authChecker->isGranted(Permission::EA_EXECUTE_ACTION, ['action' => $actionDto, 'entity' => $entityDto])) {
+                $actionDto->setCustomOption('acl_denied', true);
                 continue;
             }
 

@@ -403,7 +403,7 @@ class App {
             const titleContentWithPlaceholders = modalTitle.textContent;
             const actionName = modalTitle.getAttribute('data-action-title');
             modalTitle.textContent = titleContentWithPlaceholders.replace('%action_name%', actionName);
-        })
+        });
     }
 
     #createPopovers() {

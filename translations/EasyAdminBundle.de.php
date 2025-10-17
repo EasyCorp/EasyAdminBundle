@@ -68,7 +68,7 @@ return [
     ],
 
     'confirmation_modal' => [
-        'title' => 'Möchten Sie die ausgewählten Elemente wirklich verändern?',
+        'title' => 'Sie möchten die Aktion „%action_name%“ verwenden.',
         'action' => 'Fortfahren',
     ],
 

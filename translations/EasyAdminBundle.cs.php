@@ -68,7 +68,7 @@ return [
     ],
 
     'confirmation_modal' => [
-        'title' => 'Opravdu chcete upravit vybrané položky?',
+        'title' => 'Chcete použít akci "%action_name%".',
         'action' => 'Pokračovat',
     ],
 

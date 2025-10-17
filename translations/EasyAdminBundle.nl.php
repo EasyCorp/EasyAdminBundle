@@ -69,7 +69,7 @@ return [
 
     'confirmation_modal' => [
         // 'title' => '',
-        // 'action' => '',
+        'action' => 'Verdergaan',
     ],
 
     'delete_modal' => [

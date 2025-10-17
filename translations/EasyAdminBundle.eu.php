@@ -68,8 +68,8 @@ return [
     ],
 
     'confirmation_modal' => [
-        // 'title' => '',
-        // 'action' => '',
+        'title' => '"%action_name%" ekintza erabili nahi duzu.',
+        'action' => 'Aurrera',
     ],
 
     'delete_modal' => [

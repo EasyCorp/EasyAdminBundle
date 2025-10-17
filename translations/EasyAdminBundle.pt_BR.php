@@ -69,7 +69,7 @@ return [
 
     'confirmation_modal' => [
         // 'title' => '',
-        // 'action' => '',
+        'action' => 'Continuar',
     ],
 
     'delete_modal' => [

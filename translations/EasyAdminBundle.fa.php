@@ -68,8 +68,8 @@ return [
     ],
 
     'confirmation_modal' => [
-        // 'title' => '',
-        // 'action' => '',
+        'title' => 'شما قصد دارید اکشن "%action_name%" را اعمال کنید.',
+        'action' => 'ادامه دهید',
     ],
 
     'delete_modal' => [

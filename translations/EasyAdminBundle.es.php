@@ -68,8 +68,8 @@ return [
     ],
 
     'confirmation_modal' => [
-        // 'title' => '',
-        // 'action' => '',
+        'title' => 'Desea utilizar la acción "%action_name%".',
+        'action' => 'Continuar',
     ],
 
     'delete_modal' => [

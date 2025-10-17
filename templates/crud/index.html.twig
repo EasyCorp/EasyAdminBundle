@@ -196,8 +196,16 @@
                                         {% for action in entity.actions %}
                                             {% if action.isActionGroup %}
                                                 {{ include(action.templatePath, { group: action, entity: entity }, with_context = false) }}
+                                                {% for item in action.items %}
+                                                    {% if item.hasConfirmationModal %}
+                                                        {{ include('@EasyAdmin/crud/includes/_confirm_action_modal.html.twig', {action: item}, with_context = false) }}
+                                                    {% endif %}
+                                                {% endfor %}
                                             {% else %}
                                                 {{ include(action.templatePath, { action: action, entity: entity, isIncludedInDropdown: ea.crud.showEntityActionsAsDropdown }, with_context = false) }}
+                                                {% if action.hasConfirmationModal %}
+                                                    {{ include('@EasyAdmin/crud/includes/_confirm_action_modal.html.twig', {}, with_context = false) }}
+                                                {% endif %}
                                             {% endif %}
                                         {% endfor %}
                                     {% endif %}
@@ -265,16 +273,4 @@
     {% if has_batch_actions %}
         {{ include('@EasyAdmin/crud/includes/_batch_action_modal.html.twig', {}, with_context = false) }}
     {% endif %}
-
-    {% for action in entity.actions %}
-        {% if action.isActionGroup %}
-            {% for item in action.items %}
-                {% if item.hasConfirmationModal %}
-                    {{ include('@EasyAdmin/crud/includes/_confirm_action_modal.html.twig', {action: item}, with_context = false) }}
-                {% endif %}
-            {% endfor %}
-        {% elseif action.hasConfirmationModal %}
-            {{ include('@EasyAdmin/crud/includes/_confirm_action_modal.html.twig', {}, with_context = false) }}
-        {% endif %}
-    {% endfor %}
 {% endblock main %}

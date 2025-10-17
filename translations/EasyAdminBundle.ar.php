@@ -67,6 +67,11 @@ return [
         'action' => 'استمرار',
     ],
 
+    'confirmation_modal' => [
+        'title' => 'سوف تقوم بتطبيق الأجراء "%action_name%"',
+        'action' => 'استمرار',
+    ],
+
     'delete_modal' => [
         'title' => 'هل تريد حذف هذا العنصر؟',
         'content' => 'هذا الإجراء غير قابل للإلغاء.',

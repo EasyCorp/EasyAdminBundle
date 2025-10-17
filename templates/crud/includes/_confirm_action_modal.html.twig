@@ -1,0 +1,18 @@
+<div id="modal-confirmation-{{action.name}}" class="modal fade" tabindex="-1">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-body">
+				<h4 class="action-confirmation-title" data-action-title="{{action.label ?? action.name}}">{{ 'confirmation_modal.title'|trans(domain = 'EasyAdminBundle') }}</h4>
+				<p>{{action.modalText}}</p>
+			</div>
+			<div class="modal-footer">
+				<twig:ea:Button type="button" data-bs-dismiss="modal">
+					{{ 'action.cancel'|trans([], 'EasyAdminBundle') }}
+				</twig:ea:Button>
+				<twig:ea:Button type="button" variant="danger" icon="internal:check" data-bs-dismiss="modal" href="{{action.linkUrl}}">
+					{{ 'batch_action_modal.action'|trans(domain = 'EasyAdminBundle') }}
+				</twig:ea:Button>
+			</div>
+		</div>
+	</div>
+</div>

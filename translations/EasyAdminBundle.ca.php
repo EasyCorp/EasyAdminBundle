@@ -67,6 +67,11 @@ return [
         'action' => 'Continuar',
     ],
 
+    'confirmation_modal' => [
+        'title' => 'Du vil anvende "%action_name%" handlingen.',
+        'action' => 'Continuar',
+    ],
+
     'delete_modal' => [
         'title' => 'Realment vols esborrar aquest element?',
         'content' => 'Aquesta acció no es pot desfer.',

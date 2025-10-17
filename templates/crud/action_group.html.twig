@@ -55,7 +55,7 @@
                     label="{{ item.label }}" icon="{{ item.icon }}" class="{{ item.cssClass }} dropdown-item-variant-{{ item.variant.value }}"
                     htmlAttributes="{{ item.htmlAttributes }}"
                     renderAsForm="{{ item.isRenderedAsForm }}"
-                    url="{{ item.linkUrl }}" renderLabelRaw="true"
+                    url="{{ item.hasConfirmationModal == false ? item.linkUrl : null }}" renderLabelRaw="true"
                     showBlankIcons="{{ group.hasAnyActionWithIcon }}"
                 />
             {% endif %}

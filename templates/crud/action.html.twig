@@ -10,8 +10,8 @@
     htmlElement="{{ action.htmlElement }}"
     type="{{ action.buttonType.value }}"
     icon="{{ action.icon }}"
-    href="{{ action.htmlElement.isLink ? action.linkUrl : null }}"
-    action="{{ action.htmlElement.isForm ? action.linkUrl : null }}"
+    href="{{ action.hasConfirmationModal == false and action.htmlElement.isLink ? action.linkUrl : null }}"
+    action="{{ action.hasConfirmationModal == false and action.htmlElement.isForm ? action.linkUrl : null }}"
     method="{{ action.htmlElement.isForm ? 'POST' : null }}"
 >
     {%- if outerScope.action.label is not empty -%}<span class="action-label">{{ outerScope.action.label|trans|raw }}</span>{%- endif -%}

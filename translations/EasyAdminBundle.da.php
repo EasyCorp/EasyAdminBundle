@@ -67,6 +67,11 @@ return [
         'action' => 'Udfør handling',
     ],
 
+    'confirmation_modal' => [
+        'title' => 'Du vil anvende "%action_name%" handlingen.',
+        'action' => 'Udfør handling',
+    ],
+
     'delete_modal' => [
         'title' => 'Er du sikker på du vil slette dette element?',
         'content' => 'Denne operation kan ikke fortrydes.',

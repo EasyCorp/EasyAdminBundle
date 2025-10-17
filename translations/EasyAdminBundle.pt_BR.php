@@ -67,6 +67,11 @@ return [
         'action' => 'Continuar',
     ],
 
+    'confirmation_modal' => [
+        // 'title' => '',
+        // 'action' => '',
+    ],
+
     'delete_modal' => [
         'title' => 'Você realmente deseja excluir esse item?',
         'content' => 'Não há como desfazer essa operação.',

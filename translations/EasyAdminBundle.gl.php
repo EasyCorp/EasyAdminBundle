@@ -67,6 +67,11 @@ return [
         // 'action' => '',
     ],
 
+    'confirmation_modal' => [
+        // 'title' => '',
+        // 'action' => '',
+    ],
+
     'delete_modal' => [
         'title' => '¿Queres realmente borrar este elemento?',
         'content' => 'Esta acción non se pode desfacer.',

@@ -67,6 +67,11 @@ return [
         'action' => 'Wykonaj',
     ],
 
+    'confirmation_modal' => [
+        // 'title' => '',
+        // 'action' => '',
+    ],
+
     'delete_modal' => [
         'title' => 'Czy na pewno chcesz usunąć ten element?',
         'content' => 'Tej operacji nie można cofnąć.',

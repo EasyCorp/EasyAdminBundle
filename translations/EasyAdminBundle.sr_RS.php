@@ -67,6 +67,11 @@ return [
         'action' => 'Nastavi',
     ],
 
+    'confirmation_modal' => [
+        // 'title' => '',
+        // 'action' => '',
+    ],
+
     'delete_modal' => [
         'title' => 'Da li sigurno želite da obrišete ovaj zapis?',
         'content' => 'Ova operacija je nepovratna.',

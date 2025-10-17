@@ -67,6 +67,11 @@ return [
         'action' => 'Proceder',
     ],
 
+    'confirmation_modal' => [
+        // 'title' => '',
+        // 'action' => '',
+    ],
+
     'delete_modal' => [
         'title' => 'Tem a certeza que deseja excluir este item?',
         'content' => 'Esta operação é irreversível.',

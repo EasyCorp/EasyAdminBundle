@@ -185,6 +185,14 @@ final class ActionFactory
             }
         }
 
+		if ($actionDto->hasConfirmationModal()) {
+			$actionDto->addHtmlAttributes([
+				'data-bs-toggle' => 'modal',
+				'data-bs-target' => '#modal-confirmation-' . $actionDto->getName(),
+				'data-action-url' => $actionDto->getLinkUrl(),
+			]);
+		}
+
         if (Action::DELETE === $actionDto->getName()) {
             $actionDto->addHtmlAttributes([
                 'formaction' => $this->adminUrlGenerator->setController($adminContext->getCrud()->getControllerFqcn())->setAction(Action::DELETE)->setEntityId($entityDto->getPrimaryKeyValue())->generateUrl(),

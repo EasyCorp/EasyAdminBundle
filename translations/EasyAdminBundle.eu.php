@@ -67,6 +67,11 @@ return [
         'action' => 'Aurrera',
     ],
 
+    'confirmation_modal' => [
+        // 'title' => '',
+        // 'action' => '',
+    ],
+
     'delete_modal' => [
         'title' => 'Ziur zaude elementu hau ezabatu nahi duzula?',
         'content' => 'Ekintza hau ezin da desegin.',

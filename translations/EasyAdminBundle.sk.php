@@ -67,6 +67,11 @@ return [
         'action' => 'Pokračovať',
     ],
 
+    'confirmation_modal' => [
+        // 'title' => '',
+        // 'action' => '',
+    ],
+
     'delete_modal' => [
         'title' => 'Naozaj chcete vymazať túto položku?',
         'content' => 'Táto akcia sa nedá zvrátiť.',

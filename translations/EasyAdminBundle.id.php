@@ -67,6 +67,11 @@ return [
         'action' => 'Proses',
     ],
 
+    'confirmation_modal' => [
+        // 'title' => '',
+        // 'action' => '',
+    ],
+
     'delete_modal' => [
         'title' => 'Apakah Anda benar-benar ingin menghapus item ini?',
         'content' => 'Tidak ada pembatalan untuk operasi ini.',

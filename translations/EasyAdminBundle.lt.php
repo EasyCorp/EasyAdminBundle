@@ -67,6 +67,11 @@ return [
         'action' => 'Tęsti',
     ],
 
+    'confirmation_modal' => [
+        // 'title' => '',
+        // 'action' => '',
+    ],
+
     'delete_modal' => [
         'title' => 'Ar tikrai norite ištrinti šį elementą?',
         'content' => 'Šios operacijos atkurti nebegalėsite.',

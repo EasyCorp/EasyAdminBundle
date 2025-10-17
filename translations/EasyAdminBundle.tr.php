@@ -67,6 +67,11 @@ return [
         'action' => 'İlerle',
     ],
 
+    'confirmation_modal' => [
+        // 'title' => '',
+        // 'action' => '',
+    ],
+
     'delete_modal' => [
         'title' => 'Bu öğeyi silmek istediğinize emin misiniz?',
         'content' => 'Bu işlem geri alınamaz.',

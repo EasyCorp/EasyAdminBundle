@@ -30,6 +30,7 @@ class App {
         this.#createAutoCompleteFields();
         this.#createBatchActions();
         this.#createModalWindowsForDeleteActions();
+        this.#createModalWindowsFormConfirmationActions();
         this.#createPopovers();
         this.#createTooltips();
 
@@ -394,6 +395,16 @@ class App {
                 });
             });
         });
+    }
+
+    #createModalWindowsFormConfirmationActions() {
+        const modalTitles = document.querySelectorAll('.action-confirmation-title');
+        modalTitles.forEach((modalTitle) => {
+            const titleContentWithPlaceholders = modalTitle.textContent;
+            const actionName = modalTitle.getAttribute('data-action-title');
+            modalTitle.textContent = titleContentWithPlaceholders
+                .replace('%action_name%', actionName);
+        })
     }
 
     #createPopovers() {

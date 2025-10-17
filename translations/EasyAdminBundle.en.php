@@ -67,6 +67,11 @@ return [
         'action' => 'Proceed',
     ],
 
+    'confirmation_modal' => [
+        'title' => 'You are going to apply the "%action_name%" action.',
+        'action' => 'Proceed',
+    ],
+
     'delete_modal' => [
         'title' => 'Do you really want to delete this item?',
         'content' => 'There is no undo for this operation.',

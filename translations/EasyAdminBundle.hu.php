@@ -67,6 +67,11 @@ return [
         'action' => 'Folytatás',
     ],
 
+    'confirmation_modal' => [
+        // 'title' => '',
+        // 'action' => '',
+    ],
+
     'delete_modal' => [
         'title' => 'Biztos benne, hogy törli ezt az elemet?',
         'content' => 'Ez a művelet visszavonhatatlan.',

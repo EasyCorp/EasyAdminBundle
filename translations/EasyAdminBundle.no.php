@@ -67,6 +67,11 @@ return [
         'action' => 'Utfør handlinger',
     ],
 
+    'confirmation_modal' => [
+        // 'title' => '',
+        // 'action' => '',
+    ],
+
     'delete_modal' => [
         'title' => 'Vil du virkelig slette dette elementet?',
         'content' => 'Du kan ikke angre dette valget.',

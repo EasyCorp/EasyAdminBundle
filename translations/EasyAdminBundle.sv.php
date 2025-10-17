@@ -67,6 +67,11 @@ return [
         // 'action' => '',
     ],
 
+    'confirmation_modal' => [
+        // 'title' => '',
+        // 'action' => '',
+    ],
+
     'delete_modal' => [
         'title' => 'Vill du verkligen ta bort detta?',
         'content' => 'Du kan inte ångra det här.',

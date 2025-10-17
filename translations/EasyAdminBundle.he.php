@@ -67,6 +67,11 @@ return [
         'action' => 'המשך',
     ],
 
+    'confirmation_modal' => [
+        // 'title' => '',
+        // 'action' => '',
+    ],
+
     'delete_modal' => [
         'title' => 'האם הנך בטוח שברצונך למחוק פריט זה?',
         'content' => 'לא ניתן לבטל פעולה זו לאחר ביצועה.',

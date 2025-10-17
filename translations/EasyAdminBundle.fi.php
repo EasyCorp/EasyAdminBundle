@@ -67,6 +67,11 @@ return [
         // 'action' => '',
     ],
 
+    'confirmation_modal' => [
+        // 'title' => '',
+        // 'action' => '',
+    ],
+
     'delete_modal' => [
         'title' => 'Oletko varma että haluat poistaa tämän?',
         'content' => 'Toimintoa ei voi peruuttaa.',

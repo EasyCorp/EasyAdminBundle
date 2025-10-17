@@ -67,6 +67,11 @@ return [
         'action' => '继续',
     ],
 
+    'confirmation_modal' => [
+        // 'title' => '',
+        // 'action' => '',
+    ],
+
     'delete_modal' => [
         'title' => '是否删除',
         'content' => '是否删除，该操作不可恢复',

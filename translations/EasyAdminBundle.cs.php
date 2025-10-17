@@ -67,6 +67,11 @@ return [
         'action' => 'Pokračovat',
     ],
 
+    'confirmation_modal' => [
+        'title' => 'Opravdu chcete upravit vybrané položky?',
+        'action' => 'Pokračovat',
+    ],
+
     'delete_modal' => [
         'title' => 'Opravdu chcete smazat tuto položku?',
         'content' => 'Tuto akci není možné vrátit zpět.',

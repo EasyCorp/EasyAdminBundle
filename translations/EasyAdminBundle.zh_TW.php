@@ -67,6 +67,11 @@ return [
         'action' => '繼續',
     ],
 
+    'confirmation_modal' => [
+        // 'title' => '',
+        // 'action' => '',
+    ],
+
     'delete_modal' => [
         'title' => '您確定要刪除此項目嗎？',
         'content' => '此動作無法復原。',

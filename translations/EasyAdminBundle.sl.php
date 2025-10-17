@@ -67,6 +67,11 @@ return [
         'action' => 'Nadaljuj',
     ],
 
+    'confirmation_modal' => [
+        // 'title' => '',
+        // 'action' => '',
+    ],
+
     'delete_modal' => [
         'title' => 'Ali res želite izbrisati ta element?',
         'content' => 'Razveljavitev za to operacijo ne obstaja.',

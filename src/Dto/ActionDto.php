@@ -39,6 +39,7 @@ final class ActionDto
     private ButtonType $butonType = ButtonType::Submit;
     private ButtonVariant $variant = ButtonVariant::Default;
     private ButtonStyle $style = ButtonStyle::Solid;
+    private ?string $modalText = null;
 
     public function getType(): string
     {
@@ -355,6 +356,21 @@ final class ActionDto
     public function usesTextStyle(): bool
     {
         return ButtonStyle::Text === $this->style;
+    }
+
+    public function hasConfirmationModal(): bool
+    {
+        return isset($this->modalText);
+    }
+
+    public function setConfirmationModal(string $modalText): void
+    {
+        $this->modalText = $modalText;
+    }
+
+    public function getModalText(): ?string
+    {
+        return $this->modalText;
     }
 
     /**

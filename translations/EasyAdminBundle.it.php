@@ -67,6 +67,11 @@ return [
         'action' => 'Procedi',
     ],
 
+    'confirmation_modal' => [
+        // 'title' => '',
+        // 'action' => '',
+    ],
+
     'delete_modal' => [
         'title' => 'Vuoi eliminare questo elemento?',
         'content' => 'Questa azione è irreversibile.',

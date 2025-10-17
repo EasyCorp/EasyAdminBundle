@@ -67,6 +67,11 @@ return [
         'action' => 'Procedează',
     ],
 
+    'confirmation_modal' => [
+        // 'title' => '',
+        // 'action' => '',
+    ],
+
     'delete_modal' => [
         'title' => 'Ești sigur că vrei să ștergi acest item?',
         'content' => 'Nu există posibilitatea de a reveni asupra acestei decizii.',

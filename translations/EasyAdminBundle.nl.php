@@ -67,6 +67,11 @@ return [
         'action' => 'Verdergaan',
     ],
 
+    'confirmation_modal' => [
+        // 'title' => '',
+        // 'action' => '',
+    ],
+
     'delete_modal' => [
         'title' => 'Weet je zeker dat je dit item wilt verwijderen?',
         'content' => 'Deze actie kan niet ongedaan worden gemaakt.',

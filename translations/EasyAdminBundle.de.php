@@ -67,6 +67,11 @@ return [
         'action' => 'Fortfahren',
     ],
 
+    'confirmation_modal' => [
+        'title' => 'Möchten Sie die ausgewählten Elemente wirklich verändern?',
+        'action' => 'Fortfahren',
+    ],
+
     'delete_modal' => [
         'title' => 'Soll das Element wirklich gelöscht werden?',
         'content' => 'Diese Aktion kann nicht rückgängig gemacht werden.',

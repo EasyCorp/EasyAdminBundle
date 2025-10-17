@@ -67,6 +67,11 @@ return [
         'action' => 'ادامه دهید',
     ],
 
+    'confirmation_modal' => [
+        // 'title' => '',
+        // 'action' => '',
+    ],
+
     'delete_modal' => [
         'title' => 'واقعا می‌خواهید این آیتم را حذف کنید؟',
         'content' => 'این عملیات غیرقابل بازگشت است.',

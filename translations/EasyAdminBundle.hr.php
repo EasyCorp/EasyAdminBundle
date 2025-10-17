@@ -67,6 +67,11 @@ return [
         // 'action' => '',
     ],
 
+    'confirmation_modal' => [
+        // 'title' => '',
+        // 'action' => '',
+    ],
+
     'delete_modal' => [
         'title' => 'Jeste li sigurni da želite izbrisati ovu stavku?',
         'content' => 'Izbrisana stavka se ne može povratiti',

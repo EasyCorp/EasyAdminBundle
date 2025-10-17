@@ -67,6 +67,11 @@ return [
         'action' => 'Procéder',
     ],
 
+    'confirmation_modal' => [
+        'title' => 'Vous allez appliquer l\'action "%action_name%".',
+        'action' => 'Procéder',
+    ],
+
     'delete_modal' => [
         'title' => 'Voulez-vous supprimer cet élément ?',
         'content' => 'Cette action est irréversible.',

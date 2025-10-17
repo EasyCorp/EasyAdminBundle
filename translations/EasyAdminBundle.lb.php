@@ -67,6 +67,11 @@ return [
         'action' => 'Weidermaachen',
     ],
 
+    'confirmation_modal' => [
+        // 'title' => '',
+        // 'action' => '',
+    ],
+
     'delete_modal' => [
         'title' => 'Soll dat Element wierklich geläscht ginn?',
         'content' => 'Dës Aktioun kann net réckgängeg gemaach ginn.',

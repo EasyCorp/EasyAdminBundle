@@ -402,8 +402,7 @@ class App {
         modalTitles.forEach((modalTitle) => {
             const titleContentWithPlaceholders = modalTitle.textContent;
             const actionName = modalTitle.getAttribute('data-action-title');
-            modalTitle.textContent = titleContentWithPlaceholders
-                .replace('%action_name%', actionName);
+            modalTitle.textContent = titleContentWithPlaceholders.replace('%action_name%', actionName);
         })
     }
 

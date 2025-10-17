@@ -124,11 +124,11 @@ final class Action
     }
 
     public function setConfirmationModal(string $modalText): self
-	{
-		$this->dto->setConfirmationModal($modalText);
+    {
+        $this->dto->setConfirmationModal($modalText);
 
-		return $this;
-	}
+        return $this;
+    }
 
     /**
      * Use this to override the default CSS classes applied to actions and use instead your own CSS classes.

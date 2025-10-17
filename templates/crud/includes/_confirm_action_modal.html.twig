@@ -9,9 +9,15 @@
 				<twig:ea:Button type="button" data-bs-dismiss="modal">
 					{{ 'action.cancel'|trans([], 'EasyAdminBundle') }}
 				</twig:ea:Button>
-				<twig:ea:Button type="button" variant="danger" icon="internal:check" data-bs-dismiss="modal" href="{{action.linkUrl}}">
-					{{ 'batch_action_modal.action'|trans(domain = 'EasyAdminBundle') }}
-				</twig:ea:Button>
+				<twig:ea:Button
+                    variant="danger"
+                    htmlElement="{{ action.htmlElement }}"
+                    type="{{ action.buttonType.value }}"
+                    icon="{{ action.icon }}"
+                    href="{{ action.linkUrl }}"
+                >
+                    {{ 'confirmation_modal.action'|trans(domain = 'EasyAdminBundle') }}
+                </twig:ea:Button>
 			</div>
 		</div>
 	</div>

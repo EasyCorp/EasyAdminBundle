@@ -72,11 +72,11 @@
         {% if action.isActionGroup %}
             {% for item in action.items %}
                 {% if item.hasConfirmationModal %}
-                    {{ include('@EasyAdmin/crud/includes/_confirm_action_modal.html.twig', {action: item}, with_context = false) }}
+                    {{ include('@EasyAdmin/crud/includes/_confirm_action_modal.html.twig', {action: item}, with_context: false) }}
                 {% endif %}
             {% endfor %}
         {% elseif action.hasConfirmationModal %}
-            {{ include('@EasyAdmin/crud/includes/_confirm_action_modal.html.twig', {action: action}, with_context = false) }}
+            {{ include('@EasyAdmin/crud/includes/_confirm_action_modal.html.twig', {action: action}, with_context: false) }}
         {% endif %}
     {% endfor %}
 {% endblock %}

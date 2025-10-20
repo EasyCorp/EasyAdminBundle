@@ -199,7 +199,6 @@ final class ActionFactory
             $actionDto->addHtmlAttributes([
                 'data-bs-toggle' => 'modal',
                 'data-bs-target' => '#modal-confirmation-'.$actionDto->getName(),
-                'data-action-url' => $actionDto->getLinkUrl(),
             ]);
         }
 

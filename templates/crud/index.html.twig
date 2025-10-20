@@ -195,16 +195,16 @@
                                     {% else %}
                                         {% for action in entity.actions %}
                                             {% if action.isActionGroup %}
-                                                {{ include(action.templatePath, {group: action, entity: entity}, with_context = false) }}
+                                                {{ include(action.templatePath, {group: action, entity: entity}, with_context: false) }}
                                                 {% for item in action.items %}
                                                     {% if item.hasConfirmationModal %}
-                                                        {{ include('@EasyAdmin/crud/includes/_confirm_action_modal.html.twig', {action: item}, with_context = false) }}
+                                                        {{ include('@EasyAdmin/crud/includes/_confirm_action_modal.html.twig', {action: item}, with_context: false) }}
                                                     {% endif %}
                                                 {% endfor %}
                                             {% else %}
-                                                {{ include(action.templatePath, {action: action, entity: entity, isIncludedInDropdown: ea.crud.showEntityActionsAsDropdown}, with_context = false) }}
+                                                {{ include(action.templatePath, {action: action, entity: entity, isIncludedInDropdown: ea.crud.showEntityActionsAsDropdown}, with_context: false) }}
                                                 {% if action.hasConfirmationModal %}
-                                                    {{ include('@EasyAdmin/crud/includes/_confirm_action_modal.html.twig', {action: action}, with_context = false) }}
+                                                    {{ include('@EasyAdmin/crud/includes/_confirm_action_modal.html.twig', {action: action}, with_context: false) }}
                                                 {% endif %}
                                             {% endif %}
                                         {% endfor %}

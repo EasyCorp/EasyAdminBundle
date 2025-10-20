@@ -163,6 +163,11 @@ final class EntityDto
         return $this->actions;
     }
 
+    public function getClassMetadata(): ClassMetadata
+    {
+        return $this->metadata;
+    }
+
     /**
      * Returns the names of all properties defined in the entity, no matter
      * if they are used or not in the application.
@@ -176,7 +181,7 @@ final class EntityDto
 
     public function getPropertyMetadata(string $propertyName): KeyValueStore
     {
-        if (\array_key_exists($propertyName, $this->metadata->fieldMappings)) {
+        if (isset($this->metadata->fieldMappings[$propertyName])) {
             /** @var FieldMapping|array $fieldMapping */
             /** @phpstan-ignore-next-line */
             $fieldMapping = $this->metadata->fieldMappings[$propertyName];
@@ -189,7 +194,7 @@ final class EntityDto
             return KeyValueStore::new($fieldMapping);
         }
 
-        if (\array_key_exists($propertyName, $this->metadata->associationMappings)) {
+        if ($this->metadata->hasAssociation($propertyName)) {
             /** @var AssociationMapping|array $associationMapping */
             /** @phpstan-ignore-next-line */
             $associationMapping = $this->metadata->associationMappings[$propertyName];
@@ -210,6 +215,9 @@ final class EntityDto
         throw new \InvalidArgumentException(sprintf('The "%s" field does not exist in the "%s" entity.', $propertyName, $this->getFqcn()));
     }
 
+    /**
+     * @deprecated since 4.27 and to be removed in 5.0, use $entityDto->getClassMetadata()->getFieldMapping($propertyName)->type and $entityDto->getClassMetadata()->getAssociationMapping($propertyName)->type() instead
+     */
     public function getPropertyDataType(string $propertyName): string|int
     {
         return $this->getPropertyMetadata($propertyName)->get('type');
@@ -217,35 +225,37 @@ final class EntityDto
 
     public function hasProperty(string $propertyName): bool
     {
-        return \array_key_exists($propertyName, $this->metadata->fieldMappings)
-            || \array_key_exists($propertyName, $this->metadata->associationMappings);
+        return isset($this->metadata->fieldMappings[$propertyName])
+            || $this->metadata->hasAssociation($propertyName);
     }
 
     public function isAssociation(string $propertyName): bool
     {
-        return \array_key_exists($propertyName, $this->metadata->associationMappings)
+        return $this->metadata->hasAssociation($propertyName)
             || (str_contains($propertyName, '.') && !$this->isEmbeddedClassProperty($propertyName));
     }
 
+    /**
+     * @deprecated since 4.27 and to be removed in 5.0, use $entityDto->getClassMetadata()->isSingleValuedAssociation($propertyName)
+     */
     public function isToOneAssociation(string $propertyName): bool
     {
-        $associationType = $this->getPropertyDataType($propertyName);
-
-        return \in_array($associationType, [ClassMetadata::ONE_TO_ONE, ClassMetadata::MANY_TO_ONE], true);
+        return $this->getClassMetadata()->isSingleValuedAssociation($propertyName);
     }
 
+    /**
+     * @deprecated since 4.27 and to be removed in 5.0, use $entityDto->getClassMetadata()->isCollectionValuedAssociation($propertyName)
+     */
     public function isToManyAssociation(string $propertyName): bool
     {
-        $associationType = $this->getPropertyDataType($propertyName);
-
-        return \in_array($associationType, [ClassMetadata::ONE_TO_MANY, ClassMetadata::MANY_TO_MANY], true);
+        return $this->getClassMetadata()->isCollectionValuedAssociation($propertyName);
     }
 
     public function isEmbeddedClassProperty(string $propertyName): bool
     {
         $propertyNameParts = explode('.', $propertyName, 2);
 
-        return \array_key_exists($propertyNameParts[0], $this->metadata->embeddedClasses);
+        return isset($this->metadata->embeddedClasses[$propertyNameParts[0]]);
     }
 
     /**

@@ -166,5 +166,12 @@ class FieldFactoryTest extends KernelTestCase
         yield ['name', Field\TextField::class];
         yield ['startTimeMutable', Field\TimeField::class];
         yield ['startTimeImmutable', Field\TimeField::class];
+        yield ['price.amount', Field\IntegerField::class];
+        yield ['price.currency', Field\TextField::class];
+        yield ['latestRelease', Field\AssociationField::class];
+        yield ['leadDeveloper', Field\AssociationField::class];
+        yield ['projectIssues', Field\CollectionField::class];
+        yield ['favouriteProjectOf', Field\AssociationField::class];
+        yield ['projectTags', Field\AssociationField::class];
     }
 }

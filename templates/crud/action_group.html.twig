@@ -13,7 +13,7 @@
             action="{{ main_action.htmlElement.isForm ? main_action.linkUrl : null }}"
             method="{{ main_action.htmlElement.isForm ? 'POST' : null }}"
             icon="{{ group.icon }}"
-            htmlAttributes="{{ main_action.htmlAttributes|merge({'data-action-group-name-main-action': true, 'onclick': main_action.htmlElement.isButton ? 'window.location=\'' ~ main_action.linkUrl ~ '\'' : null})|filter((v) => v is not null) }}"
+            htmlAttributes="{{ main_action.htmlAttributes|merge({'data-action-group-name-main-action': true, onclick: main_action.htmlElement.isButton ? 'window.location=\'' ~ main_action.linkUrl ~ '\'' : null})|filter((v) => v is not null) }}"
         >
             {%- if main_action.label is not same as(false) -%}{{ main_action.label|trans|raw }}{%- endif -%}
         </twig:ea:Button>

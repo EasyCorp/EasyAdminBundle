@@ -1,0 +1,164 @@
+name: Integration test
+
+on:
+    schedule:
+        - cron: "0 5 * * *" # Run daily at 05:00 UTC
+    workflow_dispatch:      # Allow manual execution
+
+permissions:
+    contents: read
+    issues: write
+
+jobs:
+    e2e-integration:
+        name: Full Symfony + EasyAdmin integration
+        runs-on: ubuntu-latest
+        timeout-minutes: 25
+
+        steps:
+            - uses: actions/checkout@v5
+
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: "8.4"
+                  coverage: none
+                  extensions: mbstring, intl, pdo, pdo_sqlite, sqlite3
+                  ini-values: date.timezone=UTC
+
+            - name: Install dependencies
+              run: |
+                  sudo apt-get update && sudo apt-get install -y sqlite3 expect wget gpg
+                  wget https://get.symfony.com/cli/installer -O - | bash
+                  mv ~/.symfony*/bin/symfony /usr/local/bin/symfony
+                  symfony version
+
+            - name: Create fresh Symfony app
+              run: |
+                  composer create-project symfony/skeleton:"^7.3" e2e-app
+                  cd e2e-app
+                  composer config extra.symfony.require "7.3.*"
+                  composer require symfony/orm-pack symfony/twig-pack symfony/runtime
+                  composer require easycorp/easyadmin-bundle
+                  composer require --dev symfony/maker-bundle doctrine/doctrine-fixtures-bundle zenstruck/foundry symfony/test-pack fakerphp/faker
+
+            - name: Configure SQLite
+              working-directory: e2e-app
+              run: |
+                  sed -i 's|^#\? *DATABASE_URL=.*$|DATABASE_URL="sqlite:///%kernel.project_dir%/var/data.db"|' .env
+                  mkdir -p var
+
+            - name: Create Product entity
+              working-directory: e2e-app
+              run: |
+                  expect <<'EOD'
+                  spawn php bin/console make:entity Product
+                  expect "New property name" { send "name\r" }
+                  expect "Field type" { send "string\r" }
+                  expect "Field length" { send "\r" }
+                  expect "nullable" { send "no\r" }
+                  expect "Add another property" { send "price\r" }
+                  expect "Field type" { send "integer\r" }
+                  expect "nullable" { send "no\r" }
+                  expect "Add another property" { send "\r" }
+                  expect eof
+                  EOD
+
+            - name: Create DB schema
+              working-directory: e2e-app
+              run: |
+                  # Ensure DB file exists for SQLite, ignore if already present
+                  touch var/data.db
+                  php bin/console doctrine:schema:create -q
+
+            - name: Generate Dashboard and CRUD
+              working-directory: e2e-app
+              run: |
+                  php bin/console make:admin:dashboard --no-interaction
+                  
+                  # Run make:admin:crud interactively with expect
+                  mkdir -p src/Controller/Admin/
+                  expect <<'EOD'
+                  spawn php bin/console make:admin:crud
+                  expect "Which Doctrine entity" { send "0\r" }
+                  expect "Which directory" { send "\r" }
+                  expect "Namespace of the generated CRUD controller" { send "\r" }
+                  expect eof
+                  EOD
+                  
+                  # Add MenuItem::linkToCrud() entry if missing
+                  file="src/Controller/Admin/DashboardController.php"
+                  if ! grep -q "linkToCrud" "$file"; then
+                    sed -i '/yield MenuItem::linkToDashboard/a\
+                        yield MenuItem::linkToCrud("Products", "fa fa-box", App\\Entity\\Product::class);' "$file"
+                  fi
+
+            - name: Create factory and fixtures
+              working-directory: e2e-app
+              run: |
+                  expect <<'EOD'
+                  spawn php bin/console make:factory
+                  expect "Entity, Document or class" { send "0\r" }
+                  expect eof
+                  EOD
+
+                  if [ ! -f src/DataFixtures/AppFixtures.php ]; then
+                    php bin/console make:fixtures AppFixtures
+                  else
+                    echo "AppFixtures.php already exists, skipping creation."
+                  fi
+
+                  sed -i 's|use Doctrine\\Persistence\\ObjectManager;|use Doctrine\\Persistence\\ObjectManager;\nuse App\\Factory\\ProductFactory;|' src/DataFixtures/AppFixtures.php
+                  sed -i 's|// \$product = new Product();|ProductFactory::createMany(10);|' src/DataFixtures/AppFixtures.php
+
+            - name: Load fixtures
+              working-directory: e2e-app
+              run: php bin/console doctrine:fixtures:load --no-interaction -q
+
+            - name: Start Symfony server
+              working-directory: e2e-app
+              run: |
+                  symfony server:start --no-tls --port=8000 --daemon --no-humanize
+                  for i in {1..20}; do
+                    if curl -sSf http://127.0.0.1:8000/ > /dev/null; then break; fi
+                    sleep 0.5
+                  done
+
+            - name: Functional smoke test
+              id: smoke
+              working-directory: e2e-app
+              run: |
+                  set -e
+                  status=$(curl -sS -o /tmp/page.html -w "%{http_code}" http://127.0.0.1:8000/admin)
+                  echo "HTTP_STATUS=$status" >> $GITHUB_OUTPUT
+                  test "$status" = "200"
+                  grep -q "Products" /tmp/page.html
+                  grep -qi "Dashboard" /tmp/page.html
+                  grep -qi "Product" /tmp/page.html || (echo "No product content found" && exit 1)
+
+            - name: Stop Symfony server
+              if: always()
+              working-directory: e2e-app
+              run: symfony server:stop || true
+
+            - name: Create issue on failure
+              if: failure()
+              uses: actions/github-script@v7
+              with:
+                  script: |
+                      const fs = require('fs');
+                      let body = 'Integration test failed.\n\n';
+                      try {
+                        const page = fs.readFileSync('/tmp/page.html', 'utf8');
+                        body += 'Last page HTML (truncated):\n\n```\n' + page.slice(0, 4000) + '\n```\n';
+                      } catch (e) {
+                        body += 'Could not attach page HTML.\n';
+                      }
+                      const runUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+                      body += `\nRun: ${runUrl}`;
+                      #await github.rest.issues.create({
+                      #  owner: context.repo.owner,
+                      #  repo: context.repo.repo,
+                      #  title: `Integration test failed: ${new Date().toISOString().slice(0,10)}`,
+                      #  body
+                      #});

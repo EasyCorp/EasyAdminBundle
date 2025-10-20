@@ -31,10 +31,10 @@ final class EntityConfigurator implements FilterConfiguratorInterface
         $doctrineMetadata = $entityDto->getPropertyMetadata($propertyName);
         // TODO: add the 'em' form type option too?
         $filterDto->setFormTypeOptionIfNotSet('value_type_options.class', $doctrineMetadata->get('targetEntity'));
-        $filterDto->setFormTypeOptionIfNotSet('value_type_options.multiple', $entityDto->isToManyAssociation($propertyName));
+        $filterDto->setFormTypeOptionIfNotSet('value_type_options.multiple', $entityDto->getClassMetadata()->isCollectionValuedAssociation($propertyName));
         $filterDto->setFormTypeOptionIfNotSet('value_type_options.attr.data-ea-widget', 'ea-autocomplete');
 
-        if ($entityDto->isToOneAssociation($propertyName)) {
+        if ($entityDto->getClassMetadata()->isSingleValuedAssociation($propertyName)) {
             // don't show the 'empty value' placeholder when all join columns are required,
             // because an empty filter value would always return no result
             $numberOfRequiredJoinColumns = \count(array_filter(

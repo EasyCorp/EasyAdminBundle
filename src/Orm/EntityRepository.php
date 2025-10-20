@@ -5,6 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Orm;
 use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\FieldMapping;
 use Doctrine\ORM\Query\Expr\Orx;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -156,7 +157,7 @@ final class EntityRepository implements EntityRepositoryInterface
                 }
 
                 if (1 === \count($sortFieldParts)) {
-                    if ($entityDto->isToManyAssociation($sortProperty)) {
+                    if ($entityDto->getClassMetadata()->isCollectionValuedAssociation($sortProperty)) {
                         $metadata = $entityDto->getPropertyMetadata($sortProperty);
 
                         /** @var EntityManagerInterface $entityManager */
@@ -298,10 +299,34 @@ final class EntityRepository implements EntityRepositoryInterface
 
                 $entityName = $associatedEntityAlias;
                 $propertyName = $associatedPropertyName;
-                $propertyDataType = $associatedEntityDto->getPropertyDataType($propertyName);
+                if (!isset($associatedEntityDto->getClassMetadata()->fieldMappings[$propertyName])) {
+                    throw new \InvalidArgumentException(sprintf('The "%s" property included in the setSearchFields() method is not a valid search field. When using associated properties in search, you must also define the exact field used in the search (e.g. \'%s.id\', \'%s.name\', etc.)', $propertyName, $propertyName, $propertyName));
+                }
+
+                // Doctrine ORM 2.x returns an array and Doctrine ORM 3.x returns a FieldMapping object
+                /** @var FieldMapping|array $fieldMapping */
+                /** @phpstan-ignore-next-line */
+                $fieldMapping = $associatedEntityDto->getClassMetadata()->getFieldMapping($propertyName);
+                if (\is_array($fieldMapping)) {
+                    $propertyDataType = $fieldMapping['type'];
+                } else {
+                    $propertyDataType = $fieldMapping->type;
+                }
             } else {
                 $entityName = 'entity';
-                $propertyDataType = $entityDto->getPropertyDataType($propertyName);
+                if (!isset($entityDto->getClassMetadata()->fieldMappings[$propertyName])) {
+                    throw new \InvalidArgumentException(sprintf('The "%s" property included in the setSearchFields() method is not a valid search field. When using associated properties in search, you must also define the exact field used in the search (e.g. \'%s.id\', \'%s.name\', etc.)', $propertyName, $propertyName, $propertyName));
+                }
+
+                // Doctrine ORM 2.x returns an array and Doctrine ORM 3.x returns a FieldMapping object
+                /** @var FieldMapping|array $fieldMapping */
+                /** @phpstan-ignore-next-line */
+                $fieldMapping = $entityDto->getClassMetadata()->getFieldMapping($propertyName);
+                if (\is_array($fieldMapping)) {
+                    $propertyDataType = $fieldMapping['type'];
+                } else {
+                    $propertyDataType = $fieldMapping->type;
+                }
             }
 
             $isBoolean = 'boolean' === $propertyDataType;

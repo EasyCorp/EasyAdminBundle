@@ -39,9 +39,9 @@ class ActionGroupsCrudController extends AbstractCrudController
             ->addAction(Action::new('action3', 'Action 3')->linkToCrudAction('delete'));
         $group1Global = ActionGroup::new('group1global', 'Global Action Group 1')
             ->createAsGlobalActionGroup()
-            ->addAction(Action::new('action1', 'Action 1')->linkToCrudAction('edit'))
-            ->addAction(Action::new('action2', 'Action 2')->linkToCrudAction('detail'))
-            ->addAction(Action::new('action3', 'Action 3')->linkToCrudAction('delete'));
+            ->addAction(Action::new('action1', 'Action 1')->linkToCrudAction('aGlobalAction'))
+            ->addAction(Action::new('action2', 'Action 2')->linkToCrudAction('aGlobalAction'))
+            ->addAction(Action::new('action3', 'Action 3')->linkToCrudAction('aGlobalAction'));
 
         // split button with main action
         $group2 = ActionGroup::new('group2', 'Action Group 2')
@@ -50,9 +50,9 @@ class ActionGroupsCrudController extends AbstractCrudController
             ->addAction(Action::new('action2', 'Action 2')->linkToCrudAction('delete'));
         $group2Global = ActionGroup::new('group2global', 'Global Action Group 2')
             ->createAsGlobalActionGroup()
-            ->addMainAction(Action::new('main_action', 'Main Action')->linkToCrudAction('edit'))
-            ->addAction(Action::new('action1', 'Action 1')->linkToCrudAction('detail'))
-            ->addAction(Action::new('action2', 'Action 2')->linkToCrudAction('delete'));
+            ->addMainAction(Action::new('main_action', 'Main Action')->linkToCrudAction('aGlobalAction'))
+            ->addAction(Action::new('action1', 'Action 1')->linkToCrudAction('aGlobalAction'))
+            ->addAction(Action::new('action2', 'Action 2')->linkToCrudAction('aGlobalAction'));
 
         // action group with headers and dividers
         $group3 = ActionGroup::new('group3', 'Action Group 3')
@@ -65,11 +65,11 @@ class ActionGroupsCrudController extends AbstractCrudController
         $group3Global = ActionGroup::new('group3global', 'Global Action Group 3')
             ->createAsGlobalActionGroup()
             ->addHeader('Group 1')
-            ->addAction(Action::new('action1', 'Action 1')->linkToCrudAction('edit'))
-            ->addAction(Action::new('action2', 'Action 2')->linkToCrudAction('detail'))
+            ->addAction(Action::new('action1', 'Action 1')->linkToCrudAction('aGlobalAction'))
+            ->addAction(Action::new('action2', 'Action 2')->linkToCrudAction('aGlobalAction'))
             ->addDivider()
             ->addHeader('Group 2')
-            ->addAction(Action::new('action3', 'Action 3')->linkToCrudAction('delete'));
+            ->addAction(Action::new('action3', 'Action 3')->linkToCrudAction('aGlobalAction'));
 
         // mixed action types (link, button, form)
         $group4 = ActionGroup::new('group4', 'Action Group 4')
@@ -78,9 +78,9 @@ class ActionGroupsCrudController extends AbstractCrudController
             ->addAction(Action::new('form_action', 'Action 3')->linkToCrudAction('delete')->displayAsForm());
         $group4Global = ActionGroup::new('group4global ', 'Global Action Group 4')
             ->createAsGlobalActionGroup()
-            ->addAction(Action::new('link_action', 'Action 1')->linkToCrudAction('edit'))
-            ->addAction(Action::new('button_action', 'Action 2')->linkToCrudAction('detail')->addCssClass('btn-primary'))
-            ->addAction(Action::new('form_action', 'Action 3')->linkToCrudAction('delete')->displayAsForm());
+            ->addAction(Action::new('link_action', 'Action 1')->linkToCrudAction('aGlobalAction'))
+            ->addAction(Action::new('button_action', 'Action 2')->linkToCrudAction('aGlobalAction')->addCssClass('btn-primary'))
+            ->addAction(Action::new('form_action', 'Action 3')->linkToCrudAction('aGlobalAction')->displayAsForm());
 
         // custom styling
         $group5 = ActionGroup::new('group5', 'Action Group 5')
@@ -100,8 +100,8 @@ class ActionGroupsCrudController extends AbstractCrudController
                 'data-test' => 'group-5',
                 'data-custom' => 'value',
             ])
-            ->addAction(Action::new('action1', 'Action 1')->linkToCrudAction('edit'))
-            ->addAction(Action::new('action2', 'Action 2')->linkToCrudAction('detail'));
+            ->addAction(Action::new('action1', 'Action 1')->linkToCrudAction('aGlobalAction'))
+            ->addAction(Action::new('action2', 'Action 2')->linkToCrudAction('aGlobalAction'));
 
         // conditional display
         $group6 = ActionGroup::new('group6', 'Action Group 6')
@@ -111,8 +111,8 @@ class ActionGroupsCrudController extends AbstractCrudController
         $group6Global = ActionGroup::new('group6global', 'Global Action Group 6')
             ->createAsGlobalActionGroup()
             ->displayIf(static fn ($entity): bool => $entity instanceof Category && str_starts_with($entity->getName(), 'Category 1'))
-            ->addAction(Action::new('action1', 'Action 1')->linkToCrudAction('edit'))
-            ->addAction(Action::new('action2', 'Action 2')->linkToCrudAction('detail'));
+            ->addAction(Action::new('action1', 'Action 1')->linkToCrudAction('aGlobalAction'))
+            ->addAction(Action::new('action2', 'Action 2')->linkToCrudAction('aGlobalAction'));
 
         // action group with icon only (no label)
         $group7 = ActionGroup::new('group7', false, 'fa fa-ellipsis-v')
@@ -120,8 +120,8 @@ class ActionGroupsCrudController extends AbstractCrudController
             ->addAction(Action::new('action2', 'Action 2')->linkToCrudAction('detail'));
         $group7Global = ActionGroup::new('group7global', false, 'fa fa-ellipsis-v')
             ->createAsGlobalActionGroup()
-            ->addAction(Action::new('action1', 'Action 1')->linkToCrudAction('edit'))
-            ->addAction(Action::new('action2', 'Action 2')->linkToCrudAction('detail'));
+            ->addAction(Action::new('action1', 'Action 1')->linkToCrudAction('aGlobalAction'))
+            ->addAction(Action::new('action2', 'Action 2')->linkToCrudAction('aGlobalAction'));
 
         // action group with translatable labels
         $group8 = ActionGroup::new('group8', t('Action Group 8'))
@@ -179,5 +179,10 @@ class ActionGroupsCrudController extends AbstractCrudController
             ->update(Crud::PAGE_INDEX, Action::DELETE, function (Action $action) {
                 return $action->addCssClass('text-danger');
             });
+    }
+
+    public function aGlobalAction(): void
+    {
+        // no need to add any logic here because the action won't be executed in the tests
     }
 }

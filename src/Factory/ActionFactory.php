@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
 use EasyCorp\Bundle\EasyAdminBundle\Collection\ActionCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Collection\EntityCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
@@ -159,6 +160,15 @@ final class ActionFactory
         }
 
         return ActionCollection::new($processedItems);
+    }
+
+    public function processGlobalActionsAndEntityActionsForAll(EntityCollection $entityDtos, ActionConfigDto $actionConfigDto): ActionCollection
+    {
+        foreach ($entityDtos as $entityDto) {
+            $this->processEntityActions($entityDto, clone $actionConfigDto);
+        }
+
+        return $this->processGlobalActions($actionConfigDto);
     }
 
     private function processAction(string $pageName, ActionDto $actionDto, ?EntityDto $entityDto = null): ActionDto

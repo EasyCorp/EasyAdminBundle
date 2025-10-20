@@ -112,13 +112,9 @@ and EasyAdmin passes the action to it automatically::
     {
         return $actions
             // ...
-            ->update(Crud::PAGE_INDEX, Action::NEW, function (Action $action) {
-                return $action->setIcon('fa fa-file-alt')->setLabel(false);
-            })
-
-            // in PHP 7.4 and newer you can use arrow functions
-            // ->update(Crud::PAGE_INDEX, Action::NEW,
-            //     fn (Action $action) => $action->setIcon('fa fa-file-alt')->setLabel(false))
+            ->update(Crud::PAGE_INDEX, Action::NEW,
+                static fn (Action $action) => $action->setIcon('fa fa-file-alt')->setLabel(false)
+            )
         ;
     }
 
@@ -140,12 +136,7 @@ for that invoice. In order to provide a better user experience, the action link
         public function configureActions(Actions $actions): Actions
         {
             $viewPayments = Action::new('payments')
-                ->setLabel(function (Invoice $invoice)) {
-                    return \count($invoice->getPayments()) . ' payments';
-                });
-
-                // in PHP 7.4 and newer you can use arrow functions
-                // ->setLabel(fn (Invoice $invoice) => \count($invoice->getPayments()) . ' payments')
+                ->setLabel(static fn (Invoice $invoice): string => \count($invoice->getPayments()) . ' payments')
 
             return $actions
                 // ...
@@ -195,12 +186,7 @@ to users::
     public function configureActions(Actions $actions): Actions
     {
         $viewInvoice = Action::new('View Invoice', 'fas fa-file-invoice')
-            ->displayIf(static function ($entity) {
-                return $entity->isPaid();
-            });
-
-            // in PHP 7.4 and newer you can use arrow functions
-            // ->displayIf(fn ($entity) => $entity->isPaid())
+            ->displayIf(static fn (Invoice $invoice): bool => $invoice->isPaid())
 
         return $actions
             // ...

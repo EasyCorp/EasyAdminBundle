@@ -172,6 +172,25 @@ jobs:
                 run: |
                     php ./src/Resources/bin/logical-css-properties-linter.php
 
+    twig-linter:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v5
+
+            - name: Setup PHP, with composer and extensions
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: 8.2
+                  coverage: none
+
+            - name: Install dependencies
+              run: |
+                  composer install
+
+            -   name: Lint Twig template syntax
+                run: |
+                    vendor/bin/twig-cs-fixer lint templates/ --report=github
+
     js-linter:
         runs-on: ubuntu-latest
         steps:

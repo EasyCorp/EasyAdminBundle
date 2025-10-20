@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
 use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping\FieldMapping;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterConfiguratorInterface;
@@ -99,6 +100,20 @@ final class FilterFactory
             return EntityFilter::class;
         }
 
-        return self::$doctrineTypeToFilterClass[$entityDto->getPropertyDataType($propertyName)] ?? TextFilter::class;
+        if (isset($entityDto->getClassMetadata()->embeddedClasses[$propertyName])) {
+            return TextFilter::class;
+        }
+
+        // Doctrine ORM 2.x returns an array and Doctrine ORM 3.x returns a FieldMapping object
+        /** @var FieldMapping|array $fieldMapping */
+        /** @phpstan-ignore-next-line */
+        $fieldMapping = $entityDto->getClassMetadata()->getFieldMapping($propertyName);
+        if (\is_array($fieldMapping)) {
+            $doctrineFieldMappingType = $fieldMapping['type'];
+        } else {
+            $doctrineFieldMappingType = $fieldMapping->type;
+        }
+
+        return self::$doctrineTypeToFilterClass[$doctrineFieldMappingType] ?? TextFilter::class;
     }
 }

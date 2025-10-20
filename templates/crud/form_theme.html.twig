@@ -4,11 +4,11 @@
 
 {% block form_start %}
     {% if form.vars.errors|length > 0 and 'ea_crud' in form.vars.block_prefixes|default([]) %}
-        {{ form_errors(form, {attr: { errorClass: 'global-invalid-feedback' }}) }}
+        {{ form_errors(form, {attr: {errorClass: 'global-invalid-feedback'}}) }}
     {% endif %}
 
     {{ parent() }}
-    {% if ea.request.query.get('referrer')  %}
+    {% if ea.request.query.get('referrer') %}
         <input type="hidden" name="referrer" value="{{ ea.request.query.get('referrer') }}">
     {% endif %}
 {% endblock form_start %}
@@ -75,9 +75,9 @@
 
 {% block form_row %}
     {% set row_attr = row_attr|merge({
-        class: row_attr.class|default('') ~ ' form-group'
+        class: row_attr.class|default('') ~ ' form-group',
     }) %}
-    {%  set field = form.vars.ea_vars.field %}
+    {% set field = form.vars.ea_vars.field %}
 
     <div class="{{ field.columns ?? field.defaultColumns ?? '' }}">
         {%- set row_class = row_class|default(row_attr.class|default('mb-3')) -%}
@@ -133,7 +133,7 @@
 
 {% block collection_row %}
     {% if prototype is defined and not prototype.rendered %}
-        {% set row_attr = row_attr|merge({ 'data-prototype': form_row(prototype) }) %}
+        {% set row_attr = row_attr|merge({'data-prototype': form_row(prototype)}) %}
     {% endif %}
 
     {% set maxKey = 0 %}
@@ -177,7 +177,7 @@
     </div>
 
     {% if isEmptyCollection or form.vars.prototype is defined %}
-        {% set attr = attr|merge({'data-empty-collection': block('empty_collection') }) %}
+        {% set attr = attr|merge({'data-empty-collection': block('empty_collection')}) %}
     {% endif %}
 
     {% if allow_add|default(false) and not disabled %}
@@ -242,7 +242,7 @@
                 {{ block('empty_collection') }}
             {% endif %}
             {% if isEmptyCollection or form.vars.prototype is defined %}
-                {% set attr = attr|merge({'data-empty-collection': block('empty_collection') }) %}
+                {% set attr = attr|merge({'data-empty-collection': block('empty_collection')}) %}
             {% endif %}
         {% endif %}
 
@@ -285,7 +285,7 @@
                 {% set label = name|humanize %}
             {%- endif -%}
         {%- endif -%}
-        <{{ element|default('label') }}{% if label_attr %}{% with { attr: label_attr } %}{{ block('attributes') }}{% endwith %}{% endif %}>
+        <{{ element|default('label') }}{% if label_attr %}{% with {attr: label_attr} %}{{ block('attributes') }}{% endwith %}{% endif %}>
         {%- if translation_domain is same as(false) -%}
             {%- if label_html|default(false) is same as(false) -%}
                 {{- label -}}
@@ -340,7 +340,7 @@
             {# the container element is needed to allow customizing the <input type="file" /> #}
             <div class="btn btn-secondary input-file-container">
                 <twig:ea:Icon name="internal:upload" /> {{ 'action.choose_file'|trans({}, 'EasyAdminBundle') }}
-                {{ form_widget(form.file, { 'attr': { 'onchange': file_upload_js }, vich: true}) }}
+                {{ form_widget(form.file, {attr: {onchange: file_upload_js}, vich: true}) }}
             </div>
 
             {% if form.delete is defined %}
@@ -412,7 +412,7 @@
             {# the container element is needed to allow customizing the <input type="file" /> #}
             <div class="btn btn-secondary input-file-container">
                 <twig:ea:Icon name="internal:upload" /> {{ 'action.choose_file'|trans({}, 'EasyAdminBundle') }}
-                {{ form_widget(form.file, { 'attr': { 'onchange': file_upload_js }, vich: true}) }}
+                {{ form_widget(form.file, {attr: {onchange: file_upload_js}, vich: true}) }}
             </div>
 
             {% if form.delete is defined %}
@@ -480,7 +480,7 @@
                     </div>
                 {% endif %}
 
-                <div id="content-{{ fieldset_name }}" class="form-fieldset-body {{ not fieldset_has_header ? 'without-header' }} {{ collapsible ? 'collapse' }} {{ not collapsed ? 'show'}}">
+                <div id="content-{{ fieldset_name }}" class="form-fieldset-body {{ not fieldset_has_header ? 'without-header' }} {{ collapsible ? 'collapse' }} {{ not collapsed ? 'show' }}">
                     <div class="row">
                         {% for field in form|filter(field => 'hidden' not in field.vars.block_prefixes and field.vars.ea_crud_form.form_fieldset == fieldset_name) %}
                             {% if not field.vars.ea_crud_form.form_tab or field.vars.ea_crud_form.form_tab == tab_name %}
@@ -509,7 +509,7 @@
 
 {# EasyAdminAutocomplete form type #}
 {% block ea_autocomplete_widget %}
-    {{ form_widget(form.autocomplete, { attr: attr|merge({ required: required }) }) }}
+    {{ form_widget(form.autocomplete, {attr: attr|merge({required: required})}) }}
 {% endblock ea_autocomplete_widget %}
 
 {% block ea_autocomplete_inner_label %}
@@ -519,23 +519,23 @@
 
 {# EasyAdmin's CodeEditor form type #}
 {% block ea_code_editor_widget %}
-    {{ form_widget(form, { attr: attr|merge({
+    {{ form_widget(form, {attr: attr|merge({
         'data-ea-code-editor-field': 'true',
         'data-language': form.vars.ea_vars.field.customOptions.get('language'),
         'data-tab-size': form.vars.ea_vars.field.customOptions.get('tabSize'),
         'data-indent-with-tabs': form.vars.ea_vars.field.customOptions.get('indentWithTabs') ? 'true' : 'false',
         'data-show-line-numbers': form.vars.ea_vars.field.customOptions.get('showLineNumbers') ? 'true' : 'false',
         'data-number-of-rows': form.vars.ea_vars.field.customOptions.get('numOfRows'),
-    }) }) }}
+    })}) }}
 {% endblock ea_code_editor_widget %}
 
 {# EasyAdmin's TextEditor form type #}
 {% block ea_text_editor_widget %}
-    {{ form_widget(form, { attr: attr|merge({
+    {{ form_widget(form, {attr: attr|merge({
         class: 'ea-text-editor-content d-none',
         'data-number-of-rows': form.vars.ea_vars.field.customOptions.get('numOfRows')|default(5),
         'data-trix-editor-config': form.vars.ea_vars.field.customOptions.get('trixEditorConfig')|default(null)|json_encode,
-    }) }) }}
+    })}) }}
 
     <div class="ea-text-editor-wrapper {{ row_attr.class|default('') ~ (not valid ? ' has-error') }}">
         <trix-editor input="{{ id }}" class="trix-content"></trix-editor>
@@ -572,11 +572,11 @@
             <div class="form-column-title">
                 <div class="form-column-title-content">
                     {% if field_icon %}<twig:ea:Icon name="{{ field_icon }}" class="form-column-icon" />{% endif %}
-                    {% if field.label %}{{ field.label|default('')|trans(domain = ea.i18n.translationDomain)|raw }}{% endif %}
+                    {% if field.label %}{{ field.label|default('')|trans(domain: ea.i18n.translationDomain)|raw }}{% endif %}
                 </div>
 
                 {% if field.help %}
-                    <div class="form-column-help">{{ field.help|trans(domain = ea.i18n.translationDomain)|raw }}</div>
+                    <div class="form-column-help">{{ field.help|trans(domain: ea.i18n.translationDomain)|raw }}</div>
                 {% endif %}
             </div>
         {% endif %}
@@ -629,7 +629,7 @@
                 {{ form_label(form) }}
             {% endif %}
 
-            <div id="content-{{ form.vars.name }}" class="form-fieldset-body {{ not fieldset_has_header ? 'without-header' }} {{ ea_is_collapsible ? 'collapse' }} {{ not ea_is_collapsed ? 'show'}}">
+            <div id="content-{{ form.vars.name }}" class="form-fieldset-body {{ not fieldset_has_header ? 'without-header' }} {{ ea_is_collapsible ? 'collapse' }} {{ not ea_is_collapsed ? 'show' }}">
                 <div class="row">
 {% endblock ea_form_fieldset_open_row %}
 
@@ -654,9 +654,9 @@
                         {%- if tab.getCustomOption('icon')|default(false) -%}
                             <twig:ea:Icon name="{{ tab.getCustomOption('icon') }}" class="tab-nav-item-icon" />
                         {%- endif -%}
-                        {{ tab.label|trans(domain = ea.i18n.translationDomain)|raw }}
+                        {{ tab.label|trans(domain: ea.i18n.translationDomain)|raw }}
 
-                        {% set tab_error_count = tab.getCustomOption(tab_error_count_option_name)  %}
+                        {% set tab_error_count = tab.getCustomOption(tab_error_count_option_name) %}
                         {%- if tab_error_count > 0 -%}
                             <span class="badge badge-danger" title="{{ 'form.tab.error_badge_title'|trans({'%count%': tab_error_count}, 'EasyAdminBundle') }}">
                                 {{- tab_error_count -}}
@@ -686,7 +686,7 @@
     <div id="{{ ea_tab_id }}" class="tab-pane {% if field.getCustomOption(tab_is_active_option_name) %}active{% endif %} {{ ea_css_class }}" {% for key, value in form.vars.attr %}{{ key }}="{{ value|e('html') }}"{% endfor %}>
         {% if ea_help %}
             <div class="content-header-help tab-help">
-                {{ ea_help|trans(domain = ea.i18n.translationDomain)|raw }}
+                {{ ea_help|trans(domain: ea.i18n.translationDomain)|raw }}
             </div>
         {% endif %}
 
@@ -709,7 +709,7 @@
                     <input type="checkbox" class="filter-checkbox" {% if field.vars.name in applied_filters %}checked{% endif %}>
                     <a data-bs-toggle="collapse" href="#filter-content-{{ loop.index }}" aria-expanded="{{ field.vars.name in applied_filters ? 'true' : 'false' }}" aria-controls="filter-content-{{ loop.index }}"
                         {% for name, value in field.vars.label_attr|default([]) %}{{ name }}="{{ value|e('html') }}" {% endfor %}>
-                        {{ field.vars.label|default(field.vars.name|humanize)|trans(domain = ea.i18n.translationDomain) }}
+                        {{ field.vars.label|default(field.vars.name|humanize)|trans(domain: ea.i18n.translationDomain) }}
                     </a>
                 </div>
                 <div id="filter-content-{{ loop.index }}" class="filter-content collapse {% if field.vars.name in applied_filters %}show{% endif %}" aria-labelledby="filter-heading-{{ loop.index }}">
@@ -723,7 +723,7 @@
 {% endblock ea_filters_widget %}
 
 {% block comparison_widget %}
-    {{ form_widget(form, { attr: form.vars.attr|merge({'data-ea-comparison-id': form.vars.id}) }) }}
+    {{ form_widget(form, {attr: form.vars.attr|merge({'data-ea-comparison-id': form.vars.id})}) }}
 {% endblock comparison_widget %}
 
 {% block ea_numeric_filter_widget %}
@@ -756,8 +756,8 @@
                 {% endif %}
             {% endif %}
             <div class="custom-file">
-                {{ form_widget(form.file, { attr: form.file.vars.attr|merge({ placeholder: placeholder, title: title, 'data-files-label': filesLabel, class: 'd-none' }) }) }}
-                {{ form_label(form.file, placeholder, { label_attr: { class: 'custom-file-label' }}) }}
+                {{ form_widget(form.file, {attr: form.file.vars.attr|merge({placeholder: placeholder, title: title, 'data-files-label': filesLabel, class: 'd-none'})}) }}
+                {{ form_label(form.file, placeholder, {label_attr: {class: 'custom-file-label'}}) }}
             </div>
             <div class="input-group-text">
                 {%- if currentFiles -%}
@@ -798,7 +798,7 @@
             </div>
         {% endif %}
         {% if allow_delete %}
-            <div class="d-none">{{ form_widget(form.delete, { label: false }) }}</div>
+            <div class="d-none">{{ form_widget(form.delete, {label: false}) }}</div>
         {% endif %}
     </div>
     {{ form_errors(form.file) }}
@@ -819,7 +819,7 @@
 
     <div class="ea-fileupload">
         <div class="input-group">
-            {{ form_widget(form.file, { attr: form.file.vars.attr|merge({ placeholder: placeholder, title: title, 'data-files-label': filesLabel, class: 'form-control' }) }) }}
+            {{ form_widget(form.file, {attr: form.file.vars.attr|merge({placeholder: placeholder, title: title, 'data-files-label': filesLabel, class: 'form-control'})}) }}
 
             {% if currentFiles %}
                 <span class="input-group-text">
@@ -865,7 +865,7 @@
             </div>
         {% endif %}
         {% if allow_delete %}
-            <div class="d-none">{{ form_widget(form.delete, { label: false }) }}</div>
+            <div class="d-none">{{ form_widget(form.delete, {label: false}) }}</div>
         {% endif %}
     </div>
 
@@ -875,11 +875,11 @@
 {% block ea_slug_widget %}
     {% set attr = attr|merge({
         'data-ea-slug-field': '',
-        'data-target': target|split('|')|map(name => form.parent.children[name].vars.id)|json_encode
+        'data-target': target|split('|')|map(name => form.parent.children[name].vars.id)|json_encode,
     }) %}
     {% if attr['data-confirm-text'] is defined %}
         {% set attr = attr|merge({
-            'data-confirm-text': attr['data-confirm-text']|trans
+            'data-confirm-text': attr['data-confirm-text']|trans,
         }) %}
     {% endif %}
 

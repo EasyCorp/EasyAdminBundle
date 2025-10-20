@@ -24,55 +24,58 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 final class EntityFactory
 {
     public function __construct(
-        private readonly FieldFactory $fieldFactory,
-        private readonly ActionFactory $actionFactory,
-        private readonly AuthorizationCheckerInterface $authorizationChecker,
-        private readonly ManagerRegistry $doctrine,
-        private readonly EventDispatcherInterface $eventDispatcher,
+        private FieldFactory|AuthorizationCheckerInterface|null $fieldFactory,
+        private ActionFactory|ManagerRegistry|null $actionFactory,
+        private AuthorizationCheckerInterface|EventDispatcherInterface $authorizationChecker,
+        private ?ManagerRegistry $doctrine = null,
+        private ?EventDispatcherInterface $eventDispatcher = null,
     ) {
-    }
-
-    public function processFields(EntityDto $entityDto, FieldCollection $fields, ?string $pageName = null): void
-    {
-        if (null === $pageName) {
+        if ($this->fieldFactory instanceof FieldFactory) {
             trigger_deprecation(
                 'easycorp/easyadmin-bundle',
                 '4.27.0',
-                'Argument "$pageName" is missing. Omitting it will cause an error in 5.0.0.',
+                'Passing the arguments "$fieldFactory" and "$actionFactory" to the "%s" constructor is deprecated.',
+                self::class
             );
+        } else {
+            $this->fieldFactory = null;
+            $this->actionFactory = null;
+            $this->authorizationChecker = $fieldFactory;
+            $this->doctrine = $actionFactory;
+            $this->eventDispatcher = $authorizationChecker;
         }
+    }
 
+    /**
+     * @deprecated since 4.27.0 and it will be removed in EasyAdmin 5.0.0. Use FieldFactory::processFields() instead
+     */
+    public function processFields(EntityDto $entityDto, FieldCollection $fields, ?string $pageName = null): void
+    {
         $this->fieldFactory->processFields($entityDto, $fields, $pageName);
     }
 
+    /**
+     * @deprecated since 4.27.0 and it will be removed in EasyAdmin 5.0.0. Use FieldFactory::processFieldsForAll() instead
+     */
     public function processFieldsForAll(EntityCollection $entities, FieldCollection $fields, ?string $pageName = null): void
     {
-        if (null === $pageName) {
-            trigger_deprecation(
-                'easycorp/easyadmin-bundle',
-                '4.27.0',
-                'Argument "$pageName" is missing. Omitting it will cause an error in 5.0.0.',
-            );
-        }
-
-        foreach ($entities as $entity) {
-            $this->processFields($entity, clone $fields, $pageName);
-            $entities->set($entity);
-        }
+        $this->fieldFactory->processFieldsForAll($entities, $fields);
     }
 
+    /**
+     * @deprecated since 4.27.0 and it will be removed in EasyAdmin 5.0.0. Use ActionFactory::processEntityActions() instead
+     */
     public function processActions(EntityDto $entityDto, ActionConfigDto $actionConfigDto): void
     {
         $this->actionFactory->processEntityActions($entityDto, $actionConfigDto);
     }
 
+    /**
+     * @deprecated since 4.27.0 and it will be removed in EasyAdmin 5.0.0. Use ActionFactory::processGlobalActionsAndEntityActionsForAll() instead
+     */
     public function processActionsForAll(EntityCollection $entities, ActionConfigDto $actionConfigDto): ActionCollection
     {
-        foreach ($entities as $entity) {
-            $this->processActions($entity, clone $actionConfigDto);
-        }
-
-        return $this->actionFactory->processGlobalActions($actionConfigDto);
+        return $this->actionFactory->processGlobalActionsAndEntityActionsForAll($entities, $actionConfigDto);
     }
 
     /**

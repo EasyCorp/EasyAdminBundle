@@ -15,6 +15,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\ControllerFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\FieldFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudAutocompleteType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudFormType;
@@ -35,7 +36,16 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         private readonly AdminUrlGeneratorInterface $adminUrlGenerator,
         private readonly RequestStack $requestStack,
         private readonly ControllerFactory $controllerFactory,
+        private readonly ?FieldFactory $fieldFactory = null,
     ) {
+        if (null === $this->fieldFactory) {
+            trigger_deprecation(
+                'easycorp/easyadmin-bundle',
+                '4.27.0',
+                'Not passing argument "$fieldFactory" to the "%s" constructor is deprecated.',
+                self::class
+            );
+        }
     }
 
     public function supports(FieldDto $field, EntityDto $entityDto): bool
@@ -56,7 +66,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
             ?? $context->getCrudControllers()->findCrudFqcnByEntityFqcn($targetEntityFqcn);
 
         if (true === $field->getCustomOption(AssociationField::OPTION_RENDER_AS_EMBEDDED_FORM)) {
-            if (false === $entityDto->isToOneAssociation($propertyName)) {
+            if (false === $entityDto->getClassMetadata()->isSingleValuedAssociation($propertyName)) {
                 throw new \RuntimeException(
                     sprintf(
                         'The "%s" association field of "%s" is a to-many association but it\'s trying to use the "renderAsEmbeddedForm()" option, which is only available for to-one associations. If you want to use a CRUD form to render to-many associations, use a CollectionField instead of the AssociationField.',
@@ -130,11 +140,11 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
                 //   * the route is not found, which happens when the associated entity is not accessible from this dashboard; do nothing in that case either.
             }
         } else {
-            if ($entityDto->isToOneAssociation($propertyName)) {
+            if ($entityDto->getClassMetadata()->isSingleValuedAssociation($propertyName)) {
                 $this->configureToOneAssociation($field);
             }
 
-            if ($entityDto->isToManyAssociation($propertyName)) {
+            if ($entityDto->getClassMetadata()->isCollectionValuedAssociation($propertyName)) {
                 $this->configureToManyAssociation($field);
             }
         }
@@ -328,7 +338,11 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
 
         $fields = $crudController->configureFields($crudControllerPageName);
 
-        $this->entityFactory->processFields($entityDto, FieldCollection::new($fields), $crudPageName);
+        if (null === $this->fieldFactory) {
+            $this->entityFactory->processFields($entityDto, FieldCollection::new($fields), $crudPageName);
+        } else {
+            $this->fieldFactory->processFields($entityDto, FieldCollection::new($fields), $crudPageName);
+        }
 
         return $entityDto;
     }

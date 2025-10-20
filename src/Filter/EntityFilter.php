@@ -54,7 +54,7 @@ final class EntityFilter implements FilterInterface
         $value = $filterDataDto->getValue();
         $isMultiple = (bool) $filterDataDto->getFormTypeOption('value_type_options.multiple');
 
-        if ($entityDto->isToManyAssociation($property)) {
+        if ($entityDto->getClassMetadata()->isCollectionValuedAssociation($property)) {
             // the 'ea_' prefix is needed to avoid errors when using reserved words as assocAlias ('order', 'group', etc.)
             // see https://github.com/EasyCorp/EasyAdminBundle/pull/4344
             $assocAlias = 'ea_'.$filterDataDto->getParameterName();

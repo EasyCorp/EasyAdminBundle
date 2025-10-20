@@ -478,4 +478,85 @@ class AdminRouteTest extends WebTestCase
         $this->assertNotNull($router->getRouteCollection()->get('second_admin_multiple_route_action2_path2'));
         $this->assertNotNull($router->getRouteCollection()->get('second_admin_multiple_route_action2_path3'));
     }
+
+    public function testBuiltInActionsWithCustomRouteNames(): void
+    {
+        $client = static::createClient();
+        $router = $client->getContainer()->get('router');
+
+        // Test that when built-in actions have custom route names, only the custom routes are generated
+        // and the default routes are NOT generated (avoiding duplicates)
+
+        // 'index' action was customized with route name 'list' (path not customized, so it uses the default '/')
+        $indexCustomRoute = $router->getRouteCollection()->get('admin_built_in_action_list');
+        $this->assertNotNull($indexCustomRoute, 'Custom route for index action should exist');
+        $this->assertSame('/admin/built-in-action/index', $indexCustomRoute->getPath());
+        $this->assertSame(
+            'EasyCorp\Bundle\EasyAdminBundle\Tests\AdminRouteTestApplication\Controller\BuiltInActionCrudController::index',
+            $indexCustomRoute->getDefault('_controller')
+        );
+
+        // The default 'index' route should NOT exist
+        $indexDefaultRoute = $router->getRouteCollection()->get('admin_built_in_action_index');
+        $this->assertNull($indexDefaultRoute, 'Default route for index action should NOT exist when overridden');
+
+        // 'new' action was customized with route name 'create' and path '/create'
+        $newCustomRoute = $router->getRouteCollection()->get('admin_built_in_action_create');
+        $this->assertNotNull($newCustomRoute, 'Custom route for new action should exist');
+        $this->assertSame('/admin/built-in-action/create', $newCustomRoute->getPath());
+        $this->assertSame(
+            'EasyCorp\Bundle\EasyAdminBundle\Tests\AdminRouteTestApplication\Controller\BuiltInActionCrudController::new',
+            $newCustomRoute->getDefault('_controller')
+        );
+
+        // The default 'new' route should NOT exist
+        $newDefaultRoute = $router->getRouteCollection()->get('admin_built_in_action_new');
+        $this->assertNull($newDefaultRoute, 'Default route for new action should NOT exist when overridden');
+
+        // 'edit' action was customized with route name 'update' (path not customized, so it auto-generates based on action name)
+        $editCustomRoute = $router->getRouteCollection()->get('admin_built_in_action_update');
+        $this->assertNotNull($editCustomRoute, 'Custom route for edit action should exist');
+        $this->assertSame('/admin/built-in-action/edit', $editCustomRoute->getPath());
+        $this->assertSame(
+            'EasyCorp\Bundle\EasyAdminBundle\Tests\AdminRouteTestApplication\Controller\BuiltInActionCrudController::edit',
+            $editCustomRoute->getDefault('_controller')
+        );
+
+        // The default 'edit' route should NOT exist
+        $editDefaultRoute = $router->getRouteCollection()->get('admin_built_in_action_edit');
+        $this->assertNull($editDefaultRoute, 'Default route for edit action should NOT exist when overridden');
+
+        // 'detail' action was customized with route name 'show' (path not customized, so it auto-generates based on action name)
+        $detailCustomRoute = $router->getRouteCollection()->get('admin_built_in_action_show');
+        $this->assertNotNull($detailCustomRoute, 'Custom route for detail action should exist');
+        $this->assertSame('/admin/built-in-action/detail', $detailCustomRoute->getPath());
+        $this->assertSame(
+            'EasyCorp\Bundle\EasyAdminBundle\Tests\AdminRouteTestApplication\Controller\BuiltInActionCrudController::detail',
+            $detailCustomRoute->getDefault('_controller')
+        );
+
+        // The default 'detail' route should NOT exist
+        $detailDefaultRoute = $router->getRouteCollection()->get('admin_built_in_action_detail');
+        $this->assertNull($detailDefaultRoute, 'Default route for detail action should NOT exist when overridden');
+
+        // 'delete' action was NOT customized, so it should use the default route
+        $deleteDefaultRoute = $router->getRouteCollection()->get('admin_built_in_action_delete');
+        $this->assertNotNull($deleteDefaultRoute, 'Default route for delete action should exist when NOT overridden');
+        $this->assertSame('/admin/built-in-action/{entityId}/delete', $deleteDefaultRoute->getPath());
+        $this->assertSame(
+            'EasyCorp\Bundle\EasyAdminBundle\Tests\AdminRouteTestApplication\Controller\BuiltInActionCrudController::delete',
+            $deleteDefaultRoute->getDefault('_controller')
+        );
+
+        // Test that routes work for second dashboard too
+        $this->assertNotNull($router->getRouteCollection()->get('second_admin_built_in_action_list'));
+        $this->assertNull($router->getRouteCollection()->get('second_admin_built_in_action_index'));
+        $this->assertNotNull($router->getRouteCollection()->get('second_admin_built_in_action_create'));
+        $this->assertNull($router->getRouteCollection()->get('second_admin_built_in_action_new'));
+        $this->assertNotNull($router->getRouteCollection()->get('second_admin_built_in_action_update'));
+        $this->assertNull($router->getRouteCollection()->get('second_admin_built_in_action_edit'));
+        $this->assertNotNull($router->getRouteCollection()->get('second_admin_built_in_action_show'));
+        $this->assertNull($router->getRouteCollection()->get('second_admin_built_in_action_detail'));
+        $this->assertNotNull($router->getRouteCollection()->get('second_admin_built_in_action_delete'));
+    }
 }

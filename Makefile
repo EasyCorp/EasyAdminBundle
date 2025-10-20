@@ -23,6 +23,8 @@ linter-phpstan: ## Lint PHP code (does not edit files)
 	php vendor/bin/phpstan analyse
 linter-docs: ## Lint docs
 	docker run --rm -it --pull always -e DOCS_DIR='/docs' -v "$(shell pwd)"/doc:/docs oskarstark/doctor-rst:latest --short
+linter-twig: ## Lint Twig templates (does not edit files)
+	./vendor/bin/twig-cs-fixer lint templates/
 
 ## —— Development —————————————————————————————
 build: ## Initially build the package before development
@@ -33,4 +35,4 @@ build-assets: ## Rebuild assets after changes in JS or SCSS
 	yarn encore production
 	php ./src/Resources/bin/fix-assets-manifest-file.php
 
-checks-before-pr: linter-cs-fixer linter-phpstan linter-docs tests ## Runs tests and linters which are also run on PRs
+checks-before-pr: linter-cs-fixer linter-phpstan linter-docs linter-twig tests ## Runs tests and linters which are also run on PRs

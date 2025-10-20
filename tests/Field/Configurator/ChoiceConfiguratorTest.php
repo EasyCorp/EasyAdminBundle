@@ -34,7 +34,7 @@ class ChoiceConfiguratorTest extends AbstractFieldTest
     /**
      * @dataProvider fieldTypes
      */
-    public function testSupporsField(string $fieldType, bool $expectedResult): void
+    public function testSupportsField(string $fieldType, bool $expectedResult): void
     {
         $this->checkPhpVersion();
 

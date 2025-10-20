@@ -2,6 +2,8 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Entity\FieldFactory;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -13,14 +15,41 @@ class Project
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $name = null;
+
+    #[ORM\Embedded]
+    private Money $price;
+
+    #[ORM\OneToOne]
+    private ?ProjectRelease $latestRelease = null;
+
+    #[ORM\ManyToOne]
+    private ?Developer $leadDeveloper = null;
+
+    /**
+     * @var Collection<int, ProjectIssue>
+     */
+    #[ORM\OneToMany(targetEntity: ProjectIssue::class, mappedBy: 'project', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    private Collection $projectIssues;
+
+    /**
+     * @var Collection<int, Developer>
+     */
+    #[ORM\OneToMany(targetEntity: Developer::class, mappedBy: 'favouriteProject')]
+    private Collection $favouriteProjectOf;
+
+    /**
+     * @var Collection<int, ProjectTag>
+     */
+    #[ORM\ManyToMany(targetEntity: ProjectTag::class, inversedBy: 'projects')]
+    private Collection $projectTags;
+
     #[ORM\Column(type: Types::SIMPLE_ARRAY)]
     private array $statesSimpleArray = [];
 
     #[ORM\Column(type: Types::JSON)]
     private array $rolesJson = [];
-
-    #[ORM\Column(length: 255)]
-    private ?string $name = null;
 
     #[ORM\Column(nullable: true)]
     private ?\DateTime $startDate = null;
@@ -67,6 +96,14 @@ class Project
     #[ORM\Column(type: Types::TIME_IMMUTABLE)]
     private ?\DateTimeImmutable $startTimeImmutable = null;
 
+    public function __construct()
+    {
+        $this->price = (new Money())->setAmount(0)->setCurrency('EUR');
+        $this->projectIssues = new ArrayCollection();
+        $this->favouriteProjectOf = new ArrayCollection();
+        $this->projectTags = new ArrayCollection();
+    }
+
     public function __toString(): string
     {
         return $this->name;
@@ -75,6 +112,138 @@ class Project
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): static
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function getPrice(): Money
+    {
+        return $this->price;
+    }
+
+    public function setPrice(Money $price): static
+    {
+        $this->price = $price;
+
+        return $this;
+    }
+
+    public function getLatestRelease(): ?ProjectRelease
+    {
+        return $this->latestRelease;
+    }
+
+    public function setLatestRelease(?ProjectRelease $latestRelease): static
+    {
+        $this->latestRelease = $latestRelease;
+
+        return $this;
+    }
+
+    public function getLeadDeveloper(): ?Developer
+    {
+        return $this->leadDeveloper;
+    }
+
+    public function setLeadDeveloper(?Developer $leadDeveloper): static
+    {
+        $this->leadDeveloper = $leadDeveloper;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ProjectIssue>
+     */
+    public function getProjectIssues(): Collection
+    {
+        return $this->projectIssues;
+    }
+
+    public function addProjectIssue(ProjectIssue $projectIssue): static
+    {
+        if (!$this->projectIssues->contains($projectIssue)) {
+            $this->projectIssues->add($projectIssue);
+            $projectIssue->setProject($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProjectIssue(ProjectIssue $projectIssue): static
+    {
+        if ($this->projectIssues->removeElement($projectIssue)) {
+            // set the owning side to null (unless already changed)
+            if ($projectIssue->getProject() === $this) {
+                $projectIssue->setProject(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Developer>
+     */
+    public function getFavouriteProjectOf(): Collection
+    {
+        return $this->favouriteProjectOf;
+    }
+
+    public function addFavouriteProjectOf(Developer $favouriteProjectOf): static
+    {
+        if (!$this->favouriteProjectOf->contains($favouriteProjectOf)) {
+            $this->favouriteProjectOf->add($favouriteProjectOf);
+            $favouriteProjectOf->setFavouriteProject($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFavouriteProjectOf(Developer $favouriteProjectOf): static
+    {
+        if ($this->favouriteProjectOf->removeElement($favouriteProjectOf)) {
+            // set the owning side to null (unless already changed)
+            if ($favouriteProjectOf->getFavouriteProject() === $this) {
+                $favouriteProjectOf->setFavouriteProject(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ProjectTag>
+     */
+    public function getProjectTags(): Collection
+    {
+        return $this->projectTags;
+    }
+
+    public function addProjectTag(ProjectTag $projectTag): static
+    {
+        if (!$this->projectTags->contains($projectTag)) {
+            $this->projectTags->add($projectTag);
+        }
+
+        return $this;
+    }
+
+    public function removeProjectTag(ProjectTag $projectTag): static
+    {
+        $this->projectTags->removeElement($projectTag);
+
+        return $this;
     }
 
     public function getRolesJson(): array
@@ -97,18 +266,6 @@ class Project
     public function setStatesSimpleArray(array $statesSimpleArray): static
     {
         $this->statesSimpleArray = $statesSimpleArray;
-
-        return $this;
-    }
-
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
-
-    public function setName(string $name): static
-    {
-        $this->name = $name;
 
         return $this;
     }

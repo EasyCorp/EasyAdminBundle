@@ -3,6 +3,9 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
 use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping\AssociationMapping;
+use Doctrine\ORM\Mapping\FieldMapping;
+use EasyCorp\Bundle\EasyAdminBundle\Collection\EntityCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
@@ -11,7 +14,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Provider\AdminContextProviderInter
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
@@ -131,6 +136,22 @@ final class FieldFactory
         $entityDto->setFields($fields);
     }
 
+    public function processFieldsForAll(EntityCollection $entityDtos, FieldCollection $fields, ?string $currentPage = null): void
+    {
+        if (null === $currentPage) {
+            trigger_deprecation(
+                'easycorp/easyadmin-bundle',
+                '4.27.0',
+                'Argument "$currentPage" is missing. Omitting it will cause an error in 5.0.0.',
+            );
+        }
+
+        foreach ($entityDtos as $entityDto) {
+            $this->processFields($entityDto, clone $fields, $currentPage);
+            $entityDtos->set($entityDto);
+        }
+    }
+
     private function replaceGenericFieldsWithSpecificFields(FieldCollection $fields, EntityDto $entityDto): void
     {
         foreach ($fields as $fieldDto) {
@@ -145,12 +166,35 @@ final class FieldFactory
 
             if ($fieldDto->getProperty() === $entityDto->getPrimaryKeyName()) {
                 $guessedFieldFqcn = IdField::class;
+            } elseif ($entityDto->getClassMetadata()->hasAssociation($fieldDto->getProperty())) {
+                /** @var AssociationMapping|array $associationMapping */
+                /** @phpstan-ignore-next-line */
+                $associationMapping = $entityDto->getClassMetadata()->getAssociationMapping($fieldDto->getProperty());
+                $orphanRemoval = $associationMapping instanceof AssociationMapping
+                    ? $associationMapping->orphanRemoval
+                    : (isset($associationMapping['orphanRemoval']) && $associationMapping['orphanRemoval']);
+                if ($orphanRemoval && $entityDto->getClassMetadata()->isCollectionValuedAssociation($fieldDto->getProperty())) {
+                    $guessedFieldFqcn = CollectionField::class;
+                } else {
+                    $guessedFieldFqcn = AssociationField::class;
+                }
+            } elseif (!isset($entityDto->getClassMetadata()->fieldMappings[$fieldDto->getProperty()])) {
+                throw new \RuntimeException(sprintf('Could not guess a field class for "%s" field. It possibly is an association field or an embedded class field.', $fieldDto->getProperty()));
             } else {
-                $doctrinePropertyType = $entityDto->getPropertyDataType($fieldDto->getProperty());
-                $guessedFieldFqcn = self::$doctrineTypeToFieldFqcn[$doctrinePropertyType] ?? null;
+                // Doctrine ORM 2.x returns an array and Doctrine ORM 3.x returns a FieldMapping object
+                /** @var FieldMapping|array $fieldMapping */
+                /** @phpstan-ignore-next-line */
+                $fieldMapping = $entityDto->getClassMetadata()->getFieldMapping($fieldDto->getProperty());
+                if (\is_array($fieldMapping)) {
+                    $doctrineFieldMappingType = $fieldMapping['type'];
+                } else {
+                    $doctrineFieldMappingType = $fieldMapping->type;
+                }
+
+                $guessedFieldFqcn = self::$doctrineTypeToFieldFqcn[$doctrineFieldMappingType] ?? null;
 
                 if (null === $guessedFieldFqcn) {
-                    throw new \RuntimeException(sprintf('The Doctrine type of the "%s" field is "%s", which is not supported by EasyAdmin. For Doctrine\'s Custom Mapping Types have a look at EasyAdmin\'s field docs.', $fieldDto->getProperty(), $doctrinePropertyType));
+                    throw new \RuntimeException(sprintf('The Doctrine type of the "%s" field is "%s", which is not supported by EasyAdmin. For Doctrine\'s Custom Mapping Types have a look at EasyAdmin\'s field docs.', $fieldDto->getProperty(), $doctrineFieldMappingType));
                 }
             }
 

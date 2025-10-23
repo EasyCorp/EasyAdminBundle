@@ -158,13 +158,11 @@ final class EntityRepository implements EntityRepositoryInterface
 
                 if (1 === \count($sortFieldParts)) {
                     if ($entityDto->getClassMetadata()->isCollectionValuedAssociation($sortProperty)) {
-                        $metadata = $entityDto->getPropertyMetadata($sortProperty);
-
                         /** @var EntityManagerInterface $entityManager */
                         $entityManager = $this->doctrine->getManagerForClass($entityDto->getFqcn());
                         $countQueryBuilder = $entityManager->createQueryBuilder();
 
-                        if (ClassMetadata::MANY_TO_MANY === $metadata->get('type')) {
+                        if (ClassMetadata::MANY_TO_MANY === $entityDto->getClassMetadata()->getAssociationMapping($sortProperty)['type']) {
                             // many-to-many relation
                             $countQueryBuilder
                                 ->select($queryBuilder->expr()->count('subQueryEntity'))
@@ -176,7 +174,7 @@ final class EntityRepository implements EntityRepositoryInterface
                             $countQueryBuilder
                                 ->select($queryBuilder->expr()->count('subQueryEntity'))
                                 ->from($entityDto->getClassMetadata()->getAssociationTargetClass($sortProperty), 'subQueryEntity')
-                                ->where(sprintf('subQueryEntity.%s = entity', $metadata->get('mappedBy')));
+                                ->where(sprintf('subQueryEntity.%s = entity', $entityDto->getClassMetadata()->getAssociationMapping($sortProperty)['mappedBy']));
                         }
 
                         $queryBuilder->addSelect(sprintf('(%s) as HIDDEN sub_query_sort', $countQueryBuilder->getDQL()));

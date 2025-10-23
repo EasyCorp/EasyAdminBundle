@@ -42,8 +42,10 @@ final class FieldProvider
         ];
 
         foreach ($entityDto->getAllPropertyNames() as $propertyName) {
-            $metadata = $entityDto->getPropertyMetadata($propertyName);
-            if (!\in_array($propertyName, $excludedPropertyNames[$pageName], true) && !\in_array($metadata->get('type'), $excludedPropertyTypes[$pageName], true)) {
+            $isFieldMapping = isset($entityDto->getClassMetadata()->fieldMappings[$propertyName]);
+            $fieldMappingType = $isFieldMapping ? $entityDto->getClassMetadata()->getFieldMapping($propertyName)['type'] : null;
+            if (!\in_array($propertyName, $excludedPropertyNames[$pageName], true)
+                && (!$isFieldMapping || !\in_array($fieldMappingType, $excludedPropertyTypes[$pageName], true))) {
                 $defaultPropertyNames[] = $propertyName;
             }
         }

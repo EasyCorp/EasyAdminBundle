@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Field\Configurator;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping\JoinColumnMapping;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
@@ -221,7 +222,8 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
 
         // TODO: check if it's correct to never make a boolean value required
         // I guess it's correct because Symfony Forms treat NULL as FALSE by default (i.e. in the database the value won't be NULL)
-        if ('boolean' === $doctrinePropertyMetadata->get('type')) {
+        if (isset($entityDto->getClassMetadata()->fieldMappings[$field->getProperty()])
+            && Types::BOOLEAN === $entityDto->getClassMetadata()->getFieldMapping($field->getProperty())['type']) {
             return false;
         }
 

@@ -85,7 +85,7 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
         private readonly CacheItemPoolInterface $cache,
         private readonly Filesystem $filesystem,
         private readonly string $buildDir,
-        private readonly string $defaultLocale,
+        private readonly ?string $defaultLocale,
         private readonly iterable $adminRouteControllers = [],
     ) {
     }

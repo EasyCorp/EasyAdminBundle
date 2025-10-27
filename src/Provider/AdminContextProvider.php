@@ -48,7 +48,7 @@ final class AdminContextProvider implements AdminContextProviderInterface
             throw new \LogicException('Cannot use the EasyAdmin context: no request is available.');
         }
 
-        return $currentRequest?->get(EA::CONTEXT_REQUEST_ATTRIBUTE);
+        return $currentRequest?->attributes->get(EA::CONTEXT_REQUEST_ATTRIBUTE);
     }
 
     public function getRequest(): Request

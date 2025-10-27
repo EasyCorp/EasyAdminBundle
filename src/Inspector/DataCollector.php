@@ -62,9 +62,9 @@ class DataCollector extends BaseDataCollector
     {
         return [
             'CRUD Controller FQCN' => null === $context->getCrud() ? null : $context->getCrud()->getControllerFqcn(),
-            'CRUD Action' => $context->getRequest()->get(EA::CRUD_ACTION),
-            'Entity ID' => $context->getRequest()->get(EA::ENTITY_ID),
-            'Sort' => $context->getRequest()->get(EA::SORT),
+            'CRUD Action' => $context->getRequest()->attributes->get(EA::CRUD_ACTION),
+            'Entity ID' => $context->getRequest()->attributes->get(EA::ENTITY_ID),
+            'Sort' => $context->getRequest()->attributes->get(EA::SORT),
         ];
     }
 

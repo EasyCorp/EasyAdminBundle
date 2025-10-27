@@ -87,8 +87,8 @@
 
 {% block main %}
     {# sort can be multiple; let's consider the sorting field the first one #}
-    {% set sort_field_name = app.request.get('sort')|keys|first %}
-    {% set sort_order = app.request.get('sort')|first %}
+    {% set sort_field_name = app.request.attributes.get('sort')|keys|first %}
+    {% set sort_order = app.request.attributes.get('sort')|first %}
     {% set some_results_are_hidden = entities|reduce((some_results_are_hidden, entity) => some_results_are_hidden or not entity.isAccessible, false) %}
     {% set has_footer = entities|length != 0 %}
     {% set has_search = ea.crud.isSearchEnabled %}

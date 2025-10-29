@@ -33,7 +33,6 @@ class Form {
             // itself to support custom/complex fields.
             //
             // Adding visual error counter feedback for invalid fields inside form tabs (visible or not)
-            const that = this;
             document
                 .querySelector('.ea-edit, .ea-new')
                 .querySelectorAll('[type="submit"]')

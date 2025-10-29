@@ -1,0 +1,27 @@
+---------------------------------------------------------------------------
+
+by Guite at 2025-10-20T16:55:30Z
+
+Side effect to be aware of: readonly classes can not be mocked.
+
+---------------------------------------------------------------------------
+
+by michaelKaefer at 2025-10-20T17:02:51Z
+
+@Guite Thank you, I will rethink this PR and maybe reopen later.
+
+---------------------------------------------------------------------------
+
+by michaelKaefer at 2025-10-20T21:19:51Z
+
+I reopen the PR. No tests fail so that doesn't block this PR - even if readonly classes can't be mocked.
+
+(Also it seems that readonly classes can be mocked after upgrading to PHPUnit 11.2, see https://github.com/sebastianbergmann/phpunit/blob/11.2.0/ChangeLog-11.2.md)
+
+---------------------------------------------------------------------------
+
+by Guite at 2025-10-21T05:25:50Z
+
+> (Also it seems that readonly classes can be mocked after upgrading to PHPUnit 11.2, see https://github.com/sebastianbergmann/phpunit/blob/11.2.0/ChangeLog-11.2.md)
+
+Didn't know this, thanks for the pointer!

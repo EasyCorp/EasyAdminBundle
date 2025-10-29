@@ -32,14 +32,15 @@ class App {
         this.#createModalWindowsForDeleteActions();
         this.#createPopovers();
         this.#createTooltips();
+        this.#persistSelectedTab();
 
         document.addEventListener('ea.collection.item-added', () => this.#createAutoCompleteFields());
     }
 
-    // When using tabs in forms, the selected tab is persisted (in the URL hash) so you
+    // When using tabs, the selected tab is persisted (in the URL hash) so you
     // can see the same tab when reloading the page (e.g. '#tab-contact-information').
-    // This method removes the hash from URL in the index page to not show form-related
-    // information in the index page
+    // This method removes the hash from URL in the index page to not show tab-related
+    // information on the index page
     #removeHashFormUrl() {
         if (!window.location.href.includes('#')) {
             return;
@@ -455,5 +456,41 @@ class App {
                 toggleVisibilityClasses(secondValue, comparisonWidget.value !== 'between');
             });
         });
+    }
+
+    #persistSelectedTab() {
+        // Only run if tabs exist
+        const tabs = document.querySelectorAll('a[data-bs-toggle="tab"]');
+        if (tabs.length === 0) {
+            return;
+        }
+
+        // Activate tab from URL hash on page load
+        const urlHash = window.location.hash;
+        if (urlHash) {
+            const selectedTabPaneId = urlHash.substring(1);
+            const selectedTabId = `tablist-${selectedTabPaneId}`;
+            this.#setTabAsActive(selectedTabId);
+        }
+
+        // Update URL hash when tabs are clicked
+        tabs.forEach((tabElement) => {
+            tabElement.addEventListener('shown.bs.tab', (event) => {
+                const urlHash = `#${event.target.getAttribute('href').substring(1)}`;
+                history.pushState({}, '', urlHash);
+            });
+        });
+    }
+
+    #setTabAsActive(tabItemId) {
+        const tabElement = document.getElementById(tabItemId);
+        if (!tabElement) {
+            return;
+        }
+
+        const Tab = bootstrap.Tab;
+        const bootstrapTab = new Tab(tabElement);
+        // when showing a tab, Bootstrap hides all the other tabs automatically
+        bootstrapTab.show();
     }
 }

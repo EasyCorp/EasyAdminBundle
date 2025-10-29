@@ -102,6 +102,7 @@ class Form {
                                 '.form-tabs-tablist .nav-tabs .nav-item .nav-link.has-error'
                             );
                             if (null !== firstTabWithErrors) {
+                                // Activate (show) the first tab with errors
                                 const Tab = bootstrap.Tab;
                                 const bootstrapTab = new Tab(firstTabWithErrors);
                                 bootstrapTab.show();

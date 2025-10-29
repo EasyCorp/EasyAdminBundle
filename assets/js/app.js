@@ -459,22 +459,17 @@ class App {
     }
 
     #persistSelectedTab() {
-        // Only run if tabs exist
-        const tabs = document.querySelectorAll('a[data-bs-toggle="tab"]');
-        if (tabs.length === 0) {
-            return;
-        }
-
-        // Activate tab from URL hash on page load
+        // the ID of the selected tab is appended as a hash in the URL to persist it;
+        // if the URL has a hash, try to look for a tab with that ID and show it
         const urlHash = window.location.hash;
         if (urlHash) {
-            const selectedTabPaneId = urlHash.substring(1);
+            const selectedTabPaneId = urlHash.substring(1); // remove the leading '#' from the hash
             const selectedTabId = `tablist-${selectedTabPaneId}`;
             this.#setTabAsActive(selectedTabId);
         }
 
-        // Update URL hash when tabs are clicked
-        tabs.forEach((tabElement) => {
+        // update the page anchor when the selected tab changes
+        document.querySelectorAll('a[data-bs-toggle="tab"]').forEach((tabElement) => {
             tabElement.addEventListener('shown.bs.tab', (event) => {
                 const urlHash = `#${event.target.getAttribute('href').substring(1)}`;
                 history.pushState({}, '', urlHash);

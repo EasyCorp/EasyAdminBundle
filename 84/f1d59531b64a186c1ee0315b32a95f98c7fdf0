@@ -1,0 +1,19 @@
+---------------------------------------------------------------------------
+
+by gassan at 2025-11-04T18:07:59Z
+
+This variant is less vulnerable. Returns all as is.
+```php
+private function collectData(AdminContextInterface $context): array
+    {
+        $attributes = $context->getRequest()->attributes->all();
+        $query = $context->getRequest()->query->all();
+
+        return [
+            'CRUD Controller FQCN' => null === $context->getCrud() ? null : $context->getCrud()->getControllerFqcn(),
+            'CRUD Action' => $attributes[EA::CRUD_ACTION] ?? $query[EA::CRUD_ACTION] ?? null,
+            'Entity ID' => $attributes[EA::ENTITY_ID] ?? $query[EA::ENTITY_ID] ?? null,
+            'Sort' => $attributes[EA::SORT] ?? $query[EA::SORT] ?? null,
+        ];
+    }
+```

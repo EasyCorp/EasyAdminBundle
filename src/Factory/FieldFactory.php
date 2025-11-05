@@ -91,6 +91,21 @@ final class FieldFactory
 
         $isDetailOrIndex = \in_array($currentPage, [Crud::PAGE_INDEX, Crud::PAGE_DETAIL], true);
         foreach ($fields as $fieldDto) {
+            $hideIf = $fieldDto->getCustomOption('hide_if');
+
+            if (\is_callable($hideIf)) {
+                $entity = $entityDto->getInstance();
+                $reflection = new \ReflectionFunction($hideIf);
+                $shouldHide = $reflection->getNumberOfParameters() > 0
+                    ? $hideIf($entity)
+                    : $hideIf();
+
+                if ($shouldHide) {
+                    $fields->unset($fieldDto);
+                    continue;
+                }
+            }
+
             if ((null !== $currentPage && false === $fieldDto->isDisplayedOn($currentPage))
                 || false === $this->authorizationChecker->isGranted(Permission::EA_VIEW_FIELD, $fieldDto)) {
                 $fields->unset($fieldDto);

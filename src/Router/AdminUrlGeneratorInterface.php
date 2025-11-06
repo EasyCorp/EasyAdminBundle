@@ -23,6 +23,8 @@ interface AdminUrlGeneratorInterface
 
     public function setEntityId(mixed $entityId): self;
 
+    public function setFragment(string $fragment): self;
+
     public function get(string $paramName): mixed;
 
     public function set(string $paramName, mixed $paramValue): self;

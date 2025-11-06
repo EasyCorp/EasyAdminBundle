@@ -24,9 +24,9 @@ final class HideIfFieldConfigurator implements FieldConfiguratorInterface
 
         $shouldHide = false;
 
-        if (is_bool($condition)) {
+        if (\is_bool($condition)) {
             $shouldHide = $condition;
-        } elseif (is_callable($condition)) {
+        } elseif (\is_callable($condition)) {
             $entityInstance = $entityDto->getInstance();
             $shouldHide = (bool) $condition($entityInstance);
         }

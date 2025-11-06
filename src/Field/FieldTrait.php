@@ -507,35 +507,19 @@ trait FieldTrait
     }
 
     /**
-     * Hides this field if the given callable returns true.
+     * Hides this field based on a condition.
+     *
+     * The $condition can be:
+     * - a callable that returns a boolean (receives the entity as argument)
+     * - a boolean value
      *
      * Example usage:
      *     ->hideIf(fn($entity) => !$entity->isActive())
-     *     ->hideIf(fn() => !featureEnabled())
+     *     ->hideIf(true) // always hide
      */
-    public function hideIf(callable $callback): static
+    public function hideIf(bool|callable $condition): static
     {
-        $this->setCustomOption('hide_if', $callback);
-
+        $this->setCustomOption('hideIf', $condition);
         return $this;
-    }
-
-    /**
-     * Returns true if the field should be hidden for the given entity.
-     */
-    public function shouldHide(?object $entity = null): bool
-    {
-        $callback = $this->getCustomOption('hide_if');
-
-        if (!\is_callable($callback)) {
-            return false;
-        }
-
-        $reflection = new \ReflectionFunction($callback);
-        if ($reflection->getNumberOfParameters() > 0) {
-            return (bool) $callback($entity);
-        }
-
-        return (bool) $callback();
     }
 }

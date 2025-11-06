@@ -520,7 +520,7 @@ trait FieldTrait
     public function hideIf(bool|callable $condition): static
     {
         $this->setCustomOption('hideIf', $condition);
-    
+
         return $this;
     }
 }

@@ -288,11 +288,14 @@ final class AdminUrlGenerator implements AdminUrlGeneratorInterface
         // if no route parameters are passed, the route doesn't point to any CRUD controller
         // action or to any custom action/route; consider it a link to the current dashboard
         if ([] === $routeParameters) {
+            $this->isInitialized = false;
+
             return $this->urlGenerator->generate($this->dashboardRoute, [], $urlType);
         }
 
         if (null !== $routeName = $this->get(EA::ROUTE_NAME)) {
             $adminRoutes = $this->cache->getItem(AdminRouteGenerator::CACHE_KEY_ROUTE_TO_FQCN)->get();
+            $this->isInitialized = false;
             if (null !== $adminRoutes && \array_key_exists($routeName, $adminRoutes)) {
                 return $this->urlGenerator->generate($routeName, $routeParameters[EA::ROUTE_PARAMS] ?? [], $urlType);
             }

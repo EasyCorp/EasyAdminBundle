@@ -105,6 +105,6 @@ final class FilterFactory
 
         $fieldMapping = $entityDto->getClassMetadata()->getFieldMapping($propertyName);
 
-        return self::$doctrineTypeToFilterClass[$fieldMapping['type']] ?? TextFilter::class;
+        return self::$doctrineTypeToFilterClass[$fieldMapping->type] ?? TextFilter::class;
     }
 }

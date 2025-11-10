@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
+use Composer\InstalledVersions;
 use Doctrine\DBAL\Types\Types;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
@@ -105,6 +106,12 @@ final class FilterFactory
 
         $fieldMapping = $entityDto->getClassMetadata()->getFieldMapping($propertyName);
 
-        return self::$doctrineTypeToFilterClass[$fieldMapping['type']] ?? TextFilter::class;
+        if (version_compare(InstalledVersions::getVersion('doctrine/orm'), '3.0', '<')) {
+            $index = $fieldMapping['type'];
+        } else {
+            $index = $fieldMapping->type;
+        }
+
+        return self::$doctrineTypeToFilterClass[$index] ?? TextFilter::class;
     }
 }

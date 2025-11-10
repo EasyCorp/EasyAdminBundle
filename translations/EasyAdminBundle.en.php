@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Create and continue editing',
         'save' => 'Save changes',
         'save_and_continue' => 'Save and continue editing',
+        'toggle_dropdown' => 'Toogle'
     ],
 
     'batch_action_modal' => [

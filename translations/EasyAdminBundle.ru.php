@@ -139,7 +139,7 @@ return [
 
     'autocomplete' => [
         'no-results-found' => 'Совпадений не найдено',
-        // 'no-more-results' => 'No more results',
+        'no-more-results' => 'Нет больше результатов',
         'loading-more-results' => 'Загрузка данных…',
     ],
 ];

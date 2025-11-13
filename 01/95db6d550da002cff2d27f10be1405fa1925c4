@@ -1,0 +1,13 @@
+---------------------------------------------------------------------------
+
+by lenni-io at 2025-11-13T09:57:02Z
+
+There is a disabled selector on [L:217](https://github.com/EasyCorp/EasyAdminBundle/blob/76a1c3a7d3d939733803ac1196ad01664371a463/assets/css/easyadmin-theme/buttons.css#L217) already.
+
+If you move your changes to this the failing js-linter will also be fixed.
+
+---------------------------------------------------------------------------
+
+by MrJuliuss at 2025-11-13T09:59:16Z
+
+Indeed, fixed ! Thanks

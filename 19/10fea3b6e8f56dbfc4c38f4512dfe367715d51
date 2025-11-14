@@ -1,0 +1,5 @@
+---------------------------------------------------------------------------
+
+by xabbuh at 2025-11-14T14:29:47Z
+
+It seems to me that two of the currently failing jobs suffer from the issue described in composer/composer#12607. So downgrading Composer to 2.18 should work around this.

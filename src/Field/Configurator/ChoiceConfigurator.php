@@ -60,18 +60,24 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
         }
 
         if ($allChoicesAreEnums && array_is_list($choices) && \count($choices) > 0) {
-            $processedEnumChoices = [];
-            foreach ($choices as $choice) {
-                $processedEnumChoices[$choice->name] = $choice;
-            }
-
-            $choices = $processedEnumChoices;
-
             // Update form type to be EnumType if current form type is still ChoiceType
             // Leave the form type as is if user set something else explicitly
             if (ChoiceType::class === $field->getFormType()) {
                 $field->setFormType(EnumType::class);
             }
+
+            // When dealing with enums that implement TranslatableInterface, they are now translated by Symfony only if
+            // the keys of the choices are integers.
+            // So, keep choices with integer keys if using EnumType with translatable enum, otherwise set name as key.
+            if (!$choicesSupportTranslatableInterface || EnumType::class !== $field->getFormType()) {
+                $processedEnumChoices = [];
+                foreach ($choices as $choice) {
+                    $processedEnumChoices[$choice->name] = $choice;
+                }
+
+                $choices = $processedEnumChoices;
+            }
+
             $field->setFormTypeOptionIfNotSet('class', $enumTypeClass);
         }
 

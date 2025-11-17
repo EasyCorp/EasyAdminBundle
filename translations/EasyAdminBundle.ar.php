@@ -82,6 +82,7 @@ return [
         'label.is_greater_than_or_equal_to' => 'اكبر من او يساوي',
         'label.is_less_than' => 'أصغر من',
         'label.is_less_than_or_equal_to' => 'أصغر من أو يساوي',
+        'label.is_in' => 'ي',
         'label.is_between' => 'بين',
         'label.contains' => 'يحتوي',
         'label.contains_all' => 'يحتوي على الكل',

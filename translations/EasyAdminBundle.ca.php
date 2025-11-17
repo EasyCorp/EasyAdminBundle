@@ -82,6 +82,7 @@ return [
         'label.is_greater_than_or_equal_to' => 'és més gran o igual a',
         'label.is_less_than' => 'és menor que',
         'label.is_less_than_or_equal_to' => 'és menor o igual a',
+        'label.is_in' => 'està a',
         'label.is_between' => 'està entre',
         'label.contains' => 'conté',
         'label.contains_all' => 'conté tot',

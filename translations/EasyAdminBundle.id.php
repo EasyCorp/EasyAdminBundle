@@ -82,6 +82,7 @@ return [
         'label.is_greater_than_or_equal_to' => 'lebih besar atau sama dengan',
         'label.is_less_than' => 'kurang dari',
         'label.is_less_than_or_equal_to' => 'kurang dari atau sama dengan',
+        'label.is_in' => 'ada di',
         'label.is_between' => 'antara',
         'label.contains' => 'mengandung',
         'label.contains_all' => 'mengandung semua',

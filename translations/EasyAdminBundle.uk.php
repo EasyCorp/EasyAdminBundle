@@ -82,6 +82,7 @@ return [
         'label.is_greater_than_or_equal_to' => 'більше ніж або рівно',
         'label.is_less_than' => 'менше ніж',
         'label.is_less_than_or_equal_to' => 'менше ніж або рівно',
+        'label.is_in' => 'є в',
         'label.is_between' => 'між',
         'label.contains' => 'містить',
         'label.contains_all' => 'містить все',

@@ -82,6 +82,7 @@ return [
         'label.is_greater_than_or_equal_to' => 'είναι μεγαλύτερο ή ίσο με',
         'label.is_less_than' => 'είναι μικρότερο από',
         'label.is_less_than_or_equal_to' => 'είναι μικρότερο ή ίσο με',
+        'label.is_in' => 'είναι σε',
         'label.is_between' => 'είναι μεταξύ',
         'label.contains' => 'περιέχει',
         'label.contains_all' => 'περιέχει όλα',

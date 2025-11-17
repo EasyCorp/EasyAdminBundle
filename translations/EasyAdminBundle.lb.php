@@ -82,6 +82,7 @@ return [
         'label.is_greater_than_or_equal_to' => 'ass gréisser wéi oder gläich',
         'label.is_less_than' => 'ass méi kleng wéi',
         'label.is_less_than_or_equal_to' => 'ass méi kleng wéi oder gläich',
+        'label.is_in' => 'ass an',
         'label.is_between' => 'ass tëscht',
         'label.contains' => 'enthält',
         'label.contains_all' => 'enthält alles',

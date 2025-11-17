@@ -437,6 +437,9 @@ class App {
             });
         });
 
+        document.querySelectorAll('[data-ea-value-of-comparison-id]').forEach((firstValue) => {
+            firstValue.dataset.eaOriginalInputType = firstValue.type;
+        });
         document.querySelectorAll('[data-ea-comparison-id]').forEach((comparisonWidget) => {
             comparisonWidget.addEventListener('change', (event) => {
                 const comparisonWidget = event.currentTarget;
@@ -445,14 +448,21 @@ class App {
                 if (comparisonId === undefined) {
                     return;
                 }
-
                 const secondValue = document.querySelector(`[data-ea-value2-of-comparison-id="${comparisonId}"]`);
+                const firstValue = document.querySelector(`[data-ea-value-of-comparison-id="${comparisonId}"]`);
 
-                if (secondValue === null) {
-                    return;
+                if (secondValue !== null) {
+                    toggleVisibilityClasses(secondValue, comparisonWidget.value !== 'between');
                 }
-
-                toggleVisibilityClasses(secondValue, comparisonWidget.value !== 'between');
+                if (firstValue !== null && firstValue.dataset.eaOriginalInputType === 'number') {
+                    if (comparisonWidget.value === 'in') {
+                        firstValue.type = 'text';
+                        firstValue.placeholder = 'xxx; yyy; zzz';
+                    } else {
+                        firstValue.type = 'number';
+                        firstValue.placeholder = '';
+                    }
+                }
             });
         });
     }

@@ -82,6 +82,7 @@ return [
         'label.is_greater_than_or_equal_to' => 'je večje ali enako',
         'label.is_less_than' => 'je manjše od',
         'label.is_less_than_or_equal_to' => 'je manjše od ali enako',
+        'label.is_in' => 'je v',
         'label.is_between' => 'je med',
         'label.contains' => 'vsebuje',
         'label.contains_all' => 'vsebuje vse',

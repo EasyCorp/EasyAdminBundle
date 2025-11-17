@@ -2,10 +2,12 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Form\Filter\Type;
 
+use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\ORM\Query\Parameter;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\NumericFilterType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\StringType;
 
 class NumericFilterTypeTest extends FilterTypeTest
 {
@@ -81,6 +83,14 @@ class NumericFilterTypeTest extends FilterTypeTest
             '',
             [],
             'Unable to reverse value for field path "easyadmin_numeric_filter": Two values must be provided when "BETWEEN" comparison is selected.',
+        ];
+
+        yield [
+            ['comparison' => ComparisonType::IN, 'value' => '1;2;3', 'value2' => null],
+            ['comparison' => 'in', 'value' => '1;2;3', 'value2' => null],
+            ['value_type' => StringType::class],
+            'SELECT o FROM Object o WHERE o.foo IN (:foo_1)',
+            [new Parameter('foo_1', ['1', '2', '3'], ArrayParameterType::STRING)],
         ];
     }
 }

@@ -82,6 +82,7 @@ return [
         'label.is_greater_than_or_equal_to' => 'est supérieur(e) ou égal(e) à',
         'label.is_less_than' => 'est inférieur(e) à',
         'label.is_less_than_or_equal_to' => 'est inférieur(e) ou égal(e) à',
+        'label.is_in' => 'est dans',
         'label.is_between' => 'est entre',
         'label.contains' => 'contient',
         'label.contains_all' => 'contient tous',

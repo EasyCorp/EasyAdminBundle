@@ -82,6 +82,7 @@ return [
         'label.is_greater_than_or_equal_to' => 'nagyobb vagy egyenlő',
         'label.is_less_than' => 'kisebb',
         'label.is_less_than_or_equal_to' => 'kisebb vagy egyenlő',
+        'label.is_in' => 'is in',
         'label.is_between' => 'kettő között',
         'label.contains' => 'tartalmazza',
         'label.contains_all' => 'tartalmaz mindent',

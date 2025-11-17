@@ -82,6 +82,7 @@ return [
         // 'label.is_greater_than_or_equal_to' => '',
         // 'label.is_less_than' => '',
         // 'label.is_less_than_or_equal_to' => '',
+        'label.is_in' => 'je u',
         // 'label.is_between' => '',
         // 'label.contains' => '',
         // 'label.contains_all' => '',

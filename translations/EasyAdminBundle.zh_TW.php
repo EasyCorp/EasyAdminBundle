@@ -82,6 +82,7 @@ return [
         'label.is_greater_than_or_equal_to' => '大於或等於',
         'label.is_less_than' => '小於',
         'label.is_less_than_or_equal_to' => '小於或等於',
+        'label.is_in' => '在',
         'label.is_between' => '處於範圍',
         'label.contains' => '包含',
         'label.contains_all' => '包含所有',

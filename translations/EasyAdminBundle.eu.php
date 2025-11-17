@@ -82,6 +82,7 @@ return [
         'label.is_greater_than_or_equal_to' => 'handiagoa edo berdina da',
         'label.is_less_than' => 'baino txikiagoa da',
         'label.is_less_than_or_equal_to' => 'txikiagoa edo berdina da',
+        'label.is_in' => 'barruan dago',
         'label.is_between' => 'tartean dago',
         'label.contains' => 'dauka',
         'label.contains_all' => 'dauka guztiak',

@@ -7,7 +7,10 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -30,6 +33,22 @@ class NumericFilterType extends AbstractType
         $builder->add('value2', $options['value_type'], $options['value_type_options'] + [
             'label' => false,
         ]);
+
+        // switch to a text-based value field when 'IN' comparator is selected
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options): void {
+            $data = $event->getData();
+            if (isset($data['comparison']) && ComparisonType::IN === $data['comparison']) {
+                $form = $event->getForm();
+                $form->add('value', TextType::class, $options['value_type_options'] + ['label' => false]);
+            }
+        });
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($options): void {
+            $data = $event->getData();
+            if (isset($data['comparison']) && ComparisonType::IN === $data['comparison']) {
+                $form = $event->getForm();
+                $form->add('value', TextType::class, $options['value_type_options'] + ['label' => false]);
+            }
+        });
 
         $builder->addModelTransformer(new CallbackTransformer(
             static fn ($data) => $data,

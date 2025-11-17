@@ -82,6 +82,7 @@ return [
         'label.is_greater_than_or_equal_to' => 'is groter dan of gelijk aan',
         'label.is_less_than' => 'is minder dan',
         'label.is_less_than_or_equal_to' => 'is minder dan of gelijk aan',
+        'label.is_in' => 'zit in',
         'label.is_between' => 'ligt tussen',
         'label.contains' => 'bevat',
         'label.contains_all' => 'bevat alles',

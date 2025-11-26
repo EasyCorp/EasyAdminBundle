@@ -10,7 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterInterface;
  */
 final class FilterConfigDto
 {
-    private KeyValueStore $filters;
+    private readonly KeyValueStore $filters;
 
     public function __construct()
     {

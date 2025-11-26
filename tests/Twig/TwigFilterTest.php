@@ -24,6 +24,9 @@ final class TwigFilterTest extends KernelTestCase
         return number_format($number, $decimals, $decPoint, $thousandsSep);
     }
 
+    /**
+     * @group legacy
+     */
     public function testNonLazyLoadedFilter(): void
     {
         $this->twig->addFilter(new TwigFilter('my_filter', [$this, 'myFilter']));
@@ -34,6 +37,9 @@ final class TwigFilterTest extends KernelTestCase
         $this->assertSame('123.456,79', $result);
     }
 
+    /**
+     * @group legacy
+     */
     public function testLazyLoadedFilter(): void
     {
         $loader = new FactoryRuntimeLoader([
@@ -54,6 +60,9 @@ final class TwigFilterTest extends KernelTestCase
         $this->assertSame('123.456,79', $result);
     }
 
+    /**
+     * @group legacy
+     */
     public function testBuiltinFilter(): void
     {
         $view = "{{number | ea_apply_filter_if_exists('abs')}}";
@@ -62,6 +71,9 @@ final class TwigFilterTest extends KernelTestCase
         $this->assertSame('10', $result);
     }
 
+    /**
+     * @group legacy
+     */
     public function testClosure(): void
     {
         $this->twig->addFilter(new TwigFilter('my_filter', fn (float $value) => 'closure: '.$value));
@@ -72,6 +84,9 @@ final class TwigFilterTest extends KernelTestCase
         $this->assertSame('closure: 123456.789', $result);
     }
 
+    /**
+     * @group legacy
+     */
     public function testFilterNotFound(): void
     {
         $view = "{{number | ea_apply_filter_if_exists('imagine_filter')}}";
@@ -80,6 +95,9 @@ final class TwigFilterTest extends KernelTestCase
         $this->assertSame('3.14', $result);
     }
 
+    /**
+     * @group legacy
+     */
     public function testClassNotFound(): void
     {
         $this->expectException(RuntimeError::class);
@@ -92,6 +110,9 @@ final class TwigFilterTest extends KernelTestCase
         $this->twig->createTemplate($view)->render($context);
     }
 
+    /**
+     * @group legacy
+     */
     public function testClassMethodNotFound(): void
     {
         $this->expectException(RuntimeError::class);
@@ -109,6 +130,9 @@ final class TwigFilterTest extends KernelTestCase
         $this->twig->createTemplate($view)->render($context);
     }
 
+    /**
+     * @group legacy
+     */
     public function testInvalidCallbackNotArray(): void
     {
         $this->expectException(RuntimeError::class);
@@ -121,6 +145,9 @@ final class TwigFilterTest extends KernelTestCase
         $this->twig->createTemplate($view)->render($context);
     }
 
+    /**
+     * @group legacy
+     */
     public function testInvalidCallbackArray(): void
     {
         $this->expectException(RuntimeError::class);

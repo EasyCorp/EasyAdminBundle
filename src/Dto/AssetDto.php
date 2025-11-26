@@ -10,7 +10,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
  */
 final class AssetDto
 {
-    private string $value;
     // the Symfony Asset package name which this asset belongs to
     private ?string $packageName = null;
     private bool $async = false;
@@ -23,9 +22,8 @@ final class AssetDto
     private array $htmlAttributes = [];
     private KeyValueStore $loadedOn;
 
-    public function __construct(string $value)
+    public function __construct(private readonly string $value)
     {
-        $this->value = $value;
         $this->loadedOn = KeyValueStore::new([
             Crud::PAGE_INDEX => Crud::PAGE_INDEX,
             Crud::PAGE_DETAIL => Crud::PAGE_DETAIL,

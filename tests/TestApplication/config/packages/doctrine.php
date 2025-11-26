@@ -7,7 +7,6 @@ $config = [
     ],
 
     'orm' => [
-        'auto_generate_proxy_classes' => true,
         'naming_strategy' => 'doctrine.orm.naming_strategy.underscore_number_aware',
         'auto_mapping' => true,
         'mappings' => [
@@ -28,6 +27,11 @@ if (class_exists(Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\Con
     $config['orm']['controller_resolver'] = [
         'auto_mapping' => false,
     ];
+}
+
+// doctrine-bundle 2.x compatibility
+if (class_exists(Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\CacheCompatibilityPass::class)) {
+    $config['orm']['auto_generate_proxy_classes'] = true;
 }
 
 $container->loadFromExtension('doctrine', $config);

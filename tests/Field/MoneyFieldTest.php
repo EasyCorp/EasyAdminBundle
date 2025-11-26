@@ -61,8 +61,6 @@ class MoneyFieldTest extends AbstractFieldTest
     {
         $reflectedClass = new \ReflectionClass(EntityDto::class);
         $entityDto = $reflectedClass->newInstanceWithoutConstructor();
-        $primaryKeyNameProperty = $reflectedClass->getProperty('primaryKeyName');
-        $primaryKeyNameProperty->setValue($entityDto, 'id');
         $primaryKeyValueProperty = $reflectedClass->getProperty('primaryKeyValue');
         $primaryKeyValueProperty->setValue($entityDto, 1);
         $fqcnProperty = $reflectedClass->getProperty('fqcn');

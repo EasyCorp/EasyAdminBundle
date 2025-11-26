@@ -18,6 +18,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabPaneCloseType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabPaneGroupCloseType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabPaneGroupOpenType;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Translation\IdentityTranslator;
 
 class FormLayoutFactoryTest extends TestCase
 {
@@ -29,7 +30,7 @@ class FormLayoutFactoryTest extends TestCase
         $originalFields = $this->createFormFieldsFromConfig($fieldConfig);
         $expectedFields = $this->createFormFieldsFromLayout($expectedLayout);
 
-        $formLayoutFactory = new FormLayoutFactory();
+        $formLayoutFactory = new FormLayoutFactory(new IdentityTranslator());
         $formLayoutFactory->createLayout($originalFields, Crud::PAGE_EDIT);
 
         $this->assertTrue($this->isFormLayoutTheSame($expectedFields, $originalFields));
@@ -45,7 +46,7 @@ class FormLayoutFactoryTest extends TestCase
 
         $originalFields = $this->createFormFieldsFromConfig($originalFields);
 
-        $fieldFactory = new FormLayoutFactory();
+        $fieldFactory = new FormLayoutFactory(new IdentityTranslator());
         $fieldFactory->createLayout($originalFields, Crud::PAGE_EDIT);
     }
 

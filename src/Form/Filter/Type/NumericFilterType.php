@@ -15,17 +15,14 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class NumericFilterType extends AbstractType
 {
-    private string $valueType;
-    /** @var array<string, mixed> */
-    private array $valueTypeOptions;
+    private readonly string $valueType;
 
     /**
      * @param array<string, mixed> $valueTypeOptions
      */
-    public function __construct(?string $valueType = null, array $valueTypeOptions = [])
+    public function __construct(?string $valueType = null, private readonly array $valueTypeOptions = [])
     {
         $this->valueType = $valueType ?? NumberType::class;
-        $this->valueTypeOptions = $valueTypeOptions;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void

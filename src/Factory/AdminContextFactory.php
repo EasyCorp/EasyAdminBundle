@@ -33,21 +33,15 @@ use Symfony\Contracts\Translation\TranslatableInterface;
  */
 final class AdminContextFactory
 {
-    private string $buildDir;
-    private ?TokenStorageInterface $tokenStorage;
-    private MenuFactoryInterface $menuFactory;
-    private CrudControllerRegistry $crudControllers;
-    private EntityFactory $entityFactory;
-    private AdminRouteGeneratorInterface $adminRouteGenerator;
-
-    public function __construct(string $buildDir, ?TokenStorageInterface $tokenStorage, MenuFactoryInterface $menuFactory, CrudControllerRegistry $crudControllers, EntityFactory $entityFactory, AdminRouteGeneratorInterface $adminRouteGenerator)
-    {
-        $this->buildDir = $buildDir;
-        $this->tokenStorage = $tokenStorage;
-        $this->menuFactory = $menuFactory;
-        $this->crudControllers = $crudControllers;
-        $this->entityFactory = $entityFactory;
-        $this->adminRouteGenerator = $adminRouteGenerator;
+    public function __construct(
+        private readonly string $buildDir,
+        private readonly ?TokenStorageInterface $tokenStorage,
+        private readonly MenuFactoryInterface $menuFactory,
+        private readonly CrudControllerRegistry $crudControllers,
+        private readonly EntityFactory $entityFactory,
+        private readonly AdminRouteGeneratorInterface $adminRouteGenerator,
+        private readonly ActionFactory $actionFactory,
+    ) {
     }
 
     public function create(Request $request, DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController, ?string $actionName = null): AdminContext
@@ -58,19 +52,27 @@ final class AdminContextFactory
 
         $dashboardDto = $this->getDashboardDto($request, $dashboardController);
         $assetDto = $this->getAssetDto($dashboardController, $crudController, $pageName);
-        $actionConfigDto = $this->getActionConfig($dashboardController, $crudController, $pageName);
         $filters = $this->getFilters($dashboardController, $crudController);
 
-        $crudDto = $this->getCrudDto($this->crudControllers, $dashboardController, $crudController, $actionConfigDto, $filters, $crudAction, $pageName);
+        // build a first version of CrudDto without actions so we can create AdminContext, which is
+        // needed for action extensions; later, we'll update the CrudDto object with the full action config
+        $crudDto = $this->getCrudDto($this->crudControllers, $dashboardController, $crudController, new ActionConfigDto(), $filters, $crudAction, $pageName);
         $entityDto = $this->getEntityDto($request, $crudDto);
         $searchDto = $this->getSearchDto($request, $crudDto);
         $i18nDto = $this->getI18nDto($request, $dashboardDto, $crudDto, $entityDto);
         $templateRegistry = $this->getTemplateRegistry($dashboardController, $crudDto);
         $user = $this->getUser($this->tokenStorage);
-
         $usePrettyUrls = $this->adminRouteGenerator->usesPrettyUrls();
 
-        return new AdminContext($request, $user, $i18nDto, $this->crudControllers, $dashboardDto, $dashboardController, $assetDto, $crudDto, $entityDto, $searchDto, $this->menuFactory, $templateRegistry, $usePrettyUrls);
+        // create AdminContext (with empty actions initially)
+        $adminContext = new AdminContext($request, $user, $i18nDto, $this->crudControllers, $dashboardDto, $dashboardController, $assetDto, $crudDto, $entityDto, $searchDto, $this->menuFactory, $templateRegistry, $usePrettyUrls);
+
+        // build actions with extensions and update the CrudDto
+        // (ActionFactory needs the full AdminContext to apply extensions)
+        $actionConfigDto = $this->actionFactory->buildActionsConfig($dashboardController, $crudController, $adminContext, $pageName);
+        $crudDto?->setActionsConfig($actionConfigDto);
+
+        return $adminContext;
     }
 
     private function getDashboardDto(Request $request, DashboardControllerInterface $dashboardControllerInstance): DashboardDto
@@ -130,17 +132,6 @@ final class AdminContextFactory
         $crudDto->setPageName($pageName);
 
         return $crudDto;
-    }
-
-    private function getActionConfig(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController, ?string $pageName): ActionConfigDto
-    {
-        if (null === $crudController) {
-            return new ActionConfigDto();
-        }
-
-        $defaultActionConfig = $dashboardController->configureActions();
-
-        return $crudController->configureActions($defaultActionConfig)->getAsDto($pageName);
     }
 
     private function getFilters(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController): FilterConfigDto

@@ -11,16 +11,11 @@ use EasyCorp\Bundle\EasyAdminBundle\Factory\FormLayoutFactory;
  */
 final class FieldLayoutDto
 {
-    /** @var array<FieldDto>|array<string, array<FieldDto>> */
-    private array $fields;
-    /** @var array<string, FieldDto> */
-    private array $tabs;
-
     /**
      * @param array<FieldDto>|array<string, array<FieldDto>> $fields
      * @param array<string, FieldDto>                        $tabs
      */
-    public function __construct(array $fields = [], array $tabs = [])
+    public function __construct(private readonly array $fields = [], private readonly array $tabs = [])
     {
         trigger_deprecation(
             'easycorp/easyadmin-bundle',
@@ -28,9 +23,6 @@ final class FieldLayoutDto
             'The "%s" class is deprecated and it will be removed in 5.0.0 because a DTO is no longer used to handle the form layout. Check the new "%s" class.',
             __CLASS__, FormLayoutFactory::class
         );
-
-        $this->fields = $fields;
-        $this->tabs = $tabs;
     }
 
     public function hasTabs(): bool

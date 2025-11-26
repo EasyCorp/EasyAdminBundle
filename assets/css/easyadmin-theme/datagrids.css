@@ -168,6 +168,11 @@ table.datagrid:not(.datagrid-empty) tr:not(.empty-row) td.actions.actions-as-dro
 .datagrid td.actions {
     text-align: right;
 }
+.datagrid td.actions:not(.actions-as-dropdown) form {
+    display: inline;
+    margin-inline-start: 10px;
+    margin-inline-end: 10px;
+}
 .datagrid td.actions a:not(.dropdown-item) {
     font-size: var(--font-size-sm);
     font-weight: 500;

@@ -79,13 +79,13 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
      * @param iterable<object>                       $adminRouteControllers Controllers with the #[AdminRoute] attribute
      */
     public function __construct(
-        private iterable $dashboardControllers,
-        private iterable $crudControllers,
-        private CacheItemPoolInterface $cache,
-        private Filesystem $filesystem,
-        private string $buildDir,
-        private string $defaultLocale,
-        private iterable $adminRouteControllers = [],
+        private readonly iterable $dashboardControllers,
+        private readonly iterable $crudControllers,
+        private readonly CacheItemPoolInterface $cache,
+        private readonly Filesystem $filesystem,
+        private readonly string $buildDir,
+        private readonly string $defaultLocale,
+        private readonly iterable $adminRouteControllers = [],
     ) {
     }
 
@@ -161,6 +161,25 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
 
                 $crudControllerRouteConfig = $this->getCrudControllerRouteConfig($crudControllerFqcn);
                 $actionsRouteConfig = array_replace_recursive($defaultRoutesConfig, $this->getCustomActionsConfig($crudControllerFqcn));
+
+                // if a controller overrides the name of a route for a built-in action (e.g. 'update' for edit() action)
+                // remove the default route config for that built-in action (e.g. 'edit'); otherwise, we'd generate two
+                // different routes for the same built-in action: the custom one ('update') and the default one ('edit')
+                $builtInActionKeys = array_keys(self::DEFAULT_ROUTES_CONFIG);
+                foreach ($actionsRouteConfig as $key => $config) {
+                    // $actionsRouteConfig contains both the built-in and custom routes; skip entries that are built-in
+                    if (\in_array($key, $builtInActionKeys, true)) {
+                        continue;
+                    }
+
+                    $actionName = $config['actionName'];
+
+                    // if this custom route is for a built-in action (e.g. 'edit'), remove the default route entry associated to it
+                    if (isset($actionsRouteConfig[$actionName]) && \in_array($actionName, $builtInActionKeys, true)) {
+                        unset($actionsRouteConfig[$actionName]);
+                    }
+                }
+
                 // by default, the 'detail' route uses a catch-all route pattern (/{entityId});
                 // so, if the user hasn't customized the 'detail' route path, we need to sort the actions
                 // to make sure that the 'detail' action is always the last one
@@ -548,8 +567,11 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
 
             $routeAttribute = $attributes[0]->newInstance();
             $config[$reflectionClass->getName()] = [
-                'routeName' => $routeAttribute->getName(),
-                'routePath' => rtrim($routeAttribute->getPath(), '/'),
+                // Symfony 8 removed the getName() and getPath() methods in favor of public properties
+                /** @phpstan-ignore-next-line */
+                'routeName' => method_exists($routeAttribute, 'getName') ? $routeAttribute->getName() : $routeAttribute->name,
+                /** @phpstan-ignore-next-line */
+                'routePath' => rtrim(method_exists($routeAttribute, 'getPath') ? $routeAttribute->getPath() : $routeAttribute->path, '/'),
             ];
         }
 

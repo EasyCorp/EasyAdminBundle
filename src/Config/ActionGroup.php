@@ -18,11 +18,8 @@ final class ActionGroup
     // (they are available only in the INDEX page)
     public const TYPE_GLOBAL = 'global';
 
-    private ActionGroupDto $dto;
-
-    private function __construct(ActionGroupDto $actionGroupDto)
+    private function __construct(private readonly ActionGroupDto $dto)
     {
-        $this->dto = $actionGroupDto;
     }
 
     public function __toString()

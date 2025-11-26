@@ -13,7 +13,7 @@ class Icon
     private ?string $iconSet = null;
 
     public function __construct(
-        private AdminContextProviderInterface $adminContextProvider,
+        private readonly AdminContextProviderInterface $adminContextProvider,
     ) {
     }
 

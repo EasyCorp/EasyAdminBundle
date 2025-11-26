@@ -9,21 +9,15 @@ use function Symfony\Component\String\u;
  */
 final class ExceptionContext
 {
-    private string $publicMessage;
-    private string $debugMessage;
-    /** @var array<string> */
-    private array $parameters;
-    private int $statusCode;
-
     /**
      * @param array<string> $parameters
      */
-    public function __construct(string $publicMessage, string $debugMessage = '', array $parameters = [], int $statusCode = 500)
-    {
-        $this->publicMessage = $publicMessage;
-        $this->debugMessage = $debugMessage;
-        $this->parameters = $parameters;
-        $this->statusCode = $statusCode;
+    public function __construct(
+        private readonly string $publicMessage,
+        private readonly string $debugMessage = '',
+        private readonly array $parameters = [],
+        private readonly int $statusCode = 500,
+    ) {
     }
 
     public function getPublicMessage(): string

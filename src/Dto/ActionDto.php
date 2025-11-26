@@ -36,7 +36,7 @@ final class ActionDto
     /** @var callable|null */
     private $displayCallable;
     private ButtonElement $htmlElement = ButtonElement::Button;
-    private ButtonType $butonType = ButtonType::Submit;
+    private ButtonType $buttonType = ButtonType::Submit;
     private ButtonVariant $variant = ButtonVariant::Default;
     private ButtonStyle $style = ButtonStyle::Solid;
 
@@ -161,12 +161,12 @@ final class ActionDto
 
     public function getButtonType(): ButtonType
     {
-        return $this->butonType;
+        return $this->buttonType;
     }
 
     public function setButtonType(ButtonType $buttonType): void
     {
-        $this->butonType = $buttonType;
+        $this->buttonType = $buttonType;
     }
 
     /**
@@ -383,7 +383,7 @@ final class ActionDto
         } elseif ('form' === $this->htmlElement->value) {
             $action->renderAsForm();
         } else {
-            $action->renderAsButton($this->butonType);
+            $action->renderAsButton($this->buttonType);
         }
 
         $action->asTextLink(ButtonStyle::Text === $this->style);

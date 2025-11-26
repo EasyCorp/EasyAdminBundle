@@ -59,7 +59,7 @@
                 {# subItem is an ActionDto #}
                 <twig:ea:ActionMenu:ActionList:Item
                     class="{{ subItem.cssClass }} dropdown-item-variant-{{ subItem.variant.value }}"
-                    label="{{ subItem.label }}" icon="{{ subItem.icon }}"
+                    label="{{ subItem.label|trans }}" icon="{{ subItem.icon }}"
                     htmlAttributes="{{ subItem.htmlAttributes }}"
                     url="{{ subItem.linkUrl }}" renderLabelRaw="true"
                     renderAsForm="{{ subItem.isRenderedAsForm }}"

@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\DependencyInjection;
 
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminRoute;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Action\ActionsExtensionInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
@@ -24,6 +25,7 @@ class EasyAdminExtension extends Extension implements PrependExtensionInterface
     public const TAG_ADMIN_ROUTE_CONTROLLER = 'ea.admin_route_controller';
     public const TAG_FIELD_CONFIGURATOR = 'ea.field_configurator';
     public const TAG_FILTER_CONFIGURATOR = 'ea.filter_configurator';
+    public const TAG_ACTIONS_EXTENSION = 'ea.actions_extension';
 
     public function load(array $configs, ContainerBuilder $container): void
     {
@@ -44,6 +46,9 @@ class EasyAdminExtension extends Extension implements PrependExtensionInterface
 
         $container->registerForAutoconfiguration(FilterConfiguratorInterface::class)
             ->addTag(self::TAG_FILTER_CONFIGURATOR);
+
+        $container->registerForAutoconfiguration(ActionsExtensionInterface::class)
+            ->addTag(self::TAG_ACTIONS_EXTENSION);
 
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../config'));
         $loader->load('services.php');

@@ -10,23 +10,13 @@ use Symfony\Component\HttpFoundation\Request;
  */
 final class SearchDto
 {
-    private Request $request;
-    /** @var array<string, 'ASC'|'DESC'> */
-    private array $defaultSort;
-    /** @var array<string, 'ASC'|'DESC'> */
-    private array $customSort;
     /**
      * @internal
      *
      * @var array<string, 'ASC'|'DESC'>
      */
     private ?array $cachedSortConfig = null;
-    private string $query;
-    /** @var string[]|null */
-    private ?array $searchableProperties;
-    /** @var string[]|null */
-    private ?array $appliedFilters;
-    private string $searchMode;
+    private readonly string $query;
 
     /**
      * @param array<string>|null          $searchableProperties
@@ -34,15 +24,16 @@ final class SearchDto
      * @param array<string, 'ASC'|'DESC'> $customSort
      * @param array<string>|null          $appliedFilters
      */
-    public function __construct(Request $request, ?array $searchableProperties, ?string $query, array $defaultSort, array $customSort, ?array $appliedFilters, string $searchMode = SearchMode::ALL_TERMS)
-    {
-        $this->request = $request;
-        $this->searchableProperties = $searchableProperties;
+    public function __construct(
+        private readonly Request $request,
+        private readonly ?array $searchableProperties,
+        ?string $query,
+        private readonly array $defaultSort,
+        private readonly array $customSort,
+        private readonly ?array $appliedFilters,
+        private readonly string $searchMode = SearchMode::ALL_TERMS,
+    ) {
         $this->query = trim((string) $query);
-        $this->defaultSort = $defaultSort;
-        $this->customSort = $customSort;
-        $this->appliedFilters = $appliedFilters;
-        $this->searchMode = $searchMode;
     }
 
     public function getRequest(): Request

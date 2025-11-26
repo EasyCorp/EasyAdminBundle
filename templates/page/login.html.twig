@@ -22,7 +22,7 @@
     {% set _remember_me_label = remember_me_label is defined ? remember_me_label|trans : 'login_page.remember_me'|trans({}, 'EasyAdminBundle') %}
     {% set _sign_in_label = sign_in_label is defined ? sign_in_label|trans : 'login_page.sign_in'|trans({}, 'EasyAdminBundle') %}
 
-    {% include '@EasyAdmin/flash_messages.html.twig' %}
+    {{ include('@EasyAdmin/flash_messages.html.twig') }}
 
     <div class="login-wrapper">
         <header class="main-header">

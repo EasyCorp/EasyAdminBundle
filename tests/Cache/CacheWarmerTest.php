@@ -13,8 +13,8 @@ use Symfony\Component\Routing\RouterInterface;
 
 class CacheWarmerTest extends TestCase
 {
-    private $cacheDirectory;
-    private $dashboardRoutesCacheFile;
+    private string $cacheDirectory;
+    private string $dashboardRoutesCacheFile;
 
     protected function setUp(): void
     {

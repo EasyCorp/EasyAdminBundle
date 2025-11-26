@@ -88,8 +88,31 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
      *
      * @return mixed[]
      */
-    public function flattenArray($array, $parentKey = null): array
+    public function flattenArray(/* array */ $array, /* ?string */ $parentKey = null): array
     {
+        if (!\is_array($array)) {
+            trigger_deprecation(
+                'easycorp/easyadmin-bundle',
+                '4.27.0',
+                'Argument "%s" for "%s" must be one of these types: %s. Passing type "%s" will cause an error in 5.0.0.',
+                '$array',
+                __METHOD__,
+                '"array"',
+                \gettype($array)
+            );
+        }
+        if (!\is_string($parentKey) && null !== $parentKey) {
+            trigger_deprecation(
+                'easycorp/easyadmin-bundle',
+                '4.27.0',
+                'Argument "%s" for "%s" must be one of these types: %s. Passing type "%s" will cause an error in 5.0.0.',
+                '$parentKey',
+                __METHOD__,
+                '"string" or "null"',
+                \gettype($parentKey)
+            );
+        }
+
         $flattenedArray = [];
 
         foreach ($array as $flattenedKey => $value) {
@@ -144,7 +167,9 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
         }
 
         if (\is_array($callback) && 2 === \count($callback)) {
-            $callback = [$environment->getRuntime(array_shift($callback)), array_pop($callback)];
+            /** @var class-string $runtimeClass */
+            $runtimeClass = array_shift($callback);
+            $callback = [$environment->getRuntime($runtimeClass), array_pop($callback)];
             if (!\is_callable($callback)) {
                 throw new RuntimeError(sprintf('Unable to load runtime for filter: "%s"', $filterName));
             }
@@ -234,7 +259,9 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
         }
 
         if (\is_array($callback) && 2 === \count($callback)) {
-            $callback = [$environment->getRuntime(array_shift($callback)), array_pop($callback)];
+            /** @var class-string $runtimeClass */
+            $runtimeClass = array_shift($callback);
+            $callback = [$environment->getRuntime($runtimeClass), array_pop($callback)];
             if (!\is_callable($callback)) {
                 throw new RuntimeError(sprintf('Unable to load runtime for function: "%s"', $functionName));
             }

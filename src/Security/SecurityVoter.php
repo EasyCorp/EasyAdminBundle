@@ -34,7 +34,7 @@ final class SecurityVoter extends Voter
         return Permission::exists($permissionName);
     }
 
-    protected function voteOnAttribute($permissionName, $subject, TokenInterface $token, ?Vote $vote = null): bool
+    protected function voteOnAttribute(string $permissionName, mixed $subject, TokenInterface $token, ?Vote $vote = null): bool
     {
         if (Permission::EA_VIEW_MENU_ITEM === $permissionName) {
             return $this->voteOnViewMenuItemPermission($subject);

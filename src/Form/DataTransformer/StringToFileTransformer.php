@@ -12,19 +12,19 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  */
 class StringToFileTransformer implements DataTransformerInterface
 {
-    private string $uploadDir;
     /** @var callable */
     private $uploadFilename;
     /** @var callable */
     private $uploadValidate;
-    private bool $multiple;
 
-    public function __construct(string $uploadDir, callable $uploadFilename, callable $uploadValidate, bool $multiple)
-    {
-        $this->uploadDir = $uploadDir;
+    public function __construct(
+        private readonly string $uploadDir,
+        callable $uploadFilename,
+        callable $uploadValidate,
+        private readonly bool $multiple,
+    ) {
         $this->uploadFilename = $uploadFilename;
         $this->uploadValidate = $uploadValidate;
-        $this->multiple = $multiple;
     }
 
     public function transform(mixed $value): mixed

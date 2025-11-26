@@ -16,7 +16,7 @@ final class CrudResponseListener
 {
     public function __construct(
         private readonly AdminContextProviderInterface $adminContextProvider,
-        private Environment $twig,
+        private readonly Environment $twig,
     ) {
     }
 

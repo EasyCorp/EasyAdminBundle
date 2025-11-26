@@ -13,11 +13,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 final class ControllerFactory
 {
-    private ControllerResolverInterface $controllerResolver;
-
-    public function __construct(ControllerResolverInterface $controllerResolver)
+    public function __construct(private readonly ControllerResolverInterface $controllerResolver)
     {
-        $this->controllerResolver = $controllerResolver;
     }
 
     public function getDashboardControllerInstance(string $controllerFqcn, Request $request): ?DashboardControllerInterface

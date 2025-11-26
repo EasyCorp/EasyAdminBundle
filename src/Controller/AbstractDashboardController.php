@@ -15,10 +15,18 @@ use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Logout\LogoutUrlGenerator;
 use function Symfony\Component\Translation\t;
+
+// needed for Symfony 5.4 - 8.0 compatibility (Attribute doesn't exist in 5.4 and
+// Annotation doesn't exist in 8.0; both exist in the other versions)
+if (class_exists('Symfony\Component\Routing\Annotation\Route') && !class_exists('Symfony\Component\Routing\Attribute\Route')) {
+    // @phpstan-ignore-next-line class.notFound
+    class_alias(\Symfony\Component\Routing\Annotation\Route::class, 'Symfony\Component\Routing\Attribute\Route');
+}
+
+use Symfony\Component\Routing\Attribute\Route;
 
 /**
  * This class is useful to extend your dashboard from it instead of implementing

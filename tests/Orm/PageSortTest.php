@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Orm;
 
+use Doctrine\ORM\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Controller\Sort\PageCrudController;
@@ -9,7 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Entity\Page;
 
 class PageSortTest extends AbstractCrudTestCase
 {
-    private $repository;
+    private EntityRepository $repository;
 
     protected function getControllerFqcn(): string
     {

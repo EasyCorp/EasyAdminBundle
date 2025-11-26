@@ -99,9 +99,9 @@
             {% set valid = true %}
         {% endif %}
         <div {{ block('widget_container_attributes') }}>
-            {{- form_widget(form.date, { datetime: true } ) -}}
+            {{- form_widget(form.date, {datetime: true}) -}}
             {{- form_errors(form.date) -}}
-            {{- form_widget(form.time, { datetime: true } ) -}}
+            {{- form_widget(form.time, {datetime: true}) -}}
             {{- form_errors(form.time) -}}
         </div>
     {%- endif -%}
@@ -219,7 +219,7 @@
         {% set row_class = row_class ~ ' form-switch' %}
     {% endif -%}
     <div class="{{ row_class }}">
-        {{- form_label(form, null, { widget: parent() }) -}}
+        {{- form_label(form, null, {widget: parent()}) -}}
     </div>
 {%- endblock checkbox_widget %}
 
@@ -231,7 +231,7 @@
         {%- set row_class = row_class ~ ' form-check-inline' -%}
     {%- endif -%}
     <div class="{{ row_class }}">
-        {{- form_label(form, null, { widget: parent() }) -}}
+        {{- form_label(form, null, {widget: parent()}) -}}
     </div>
 {%- endblock radio_widget %}
 
@@ -260,13 +260,13 @@
         {%- if compound is defined and compound -%}
             {%- set element = 'legend' -%}
             {%- if 'col-form-label' not in parent_label_class -%}
-                {%- set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' col-form-label' )|trim}) -%}
+                {%- set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' col-form-label')|trim}) -%}
             {%- endif -%}
         {%- else -%}
             {%- set row_class = row_class|default(row_attr.class|default('')) -%}
             {%- set label_attr = label_attr|merge({for: id}) -%}
             {%- if 'col-form-label' not in parent_label_class -%}
-                {%- set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ('input-group' in row_class ? ' input-group-text' : ' form-label') )|trim}) -%}
+                {%- set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ('input-group' in row_class ? ' input-group-text' : ' form-label'))|trim}) -%}
             {%- endif -%}
         {%- endif -%}
     {%- endif -%}
@@ -278,7 +278,7 @@
     {%- if widget is defined -%}
         {%- set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' form-check-label')|trim}) -%}
         {%- if not compound -%}
-            {% set label_attr = label_attr|merge({'for': id}) %}
+            {% set label_attr = label_attr|merge({for: id}) %}
         {%- endif -%}
         {%- if required -%}
             {%- set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' required')|trim}) -%}
@@ -298,7 +298,7 @@
         {%- endif -%}
 
         {{ widget|raw }}
-        <label{% with { attr: label_attr } %}{{ block('attributes') }}{% endwith %}>
+        <label{% with {attr: label_attr} %}{{ block('attributes') }}{% endwith %}>
             {%- if label is not same as(false) -%}
                 {%- if translation_domain is same as(false) -%}
                     {%- if label_html is defined and label_html is same as(false) -%}
@@ -326,7 +326,7 @@
     {%- endif -%}
     {%- set widget_attr = {} -%}
     {%- if help is not empty -%}
-        {%- set widget_attr = {attr: {'aria-describedby': id ~"_help"}} -%}
+        {%- set widget_attr = {attr: {'aria-describedby': id ~ '_help'}} -%}
     {%- endif -%}
     {%- set row_class = row_class|default(row_attr.class|default('mb-3')|trim) -%}
     <{{ element|default('div') }}{% with {attr: row_attr|merge({class: row_class})} %}{{ block('attributes') }}{% endwith %}>

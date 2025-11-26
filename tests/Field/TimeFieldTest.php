@@ -80,7 +80,8 @@ class TimeFieldTest extends AbstractFieldTest
         $fieldDto = $this->configure($field);
 
         $this->assertSame('HH:mm:ss ZZZZ a', $fieldDto->getCustomOption(TimeField::OPTION_TIME_PATTERN));
-        $this->assertSame('15:04:05 GMT PM', $fieldDto->getFormattedValue());
+        // some ICU versions return "GMT" while others return "GMT+00:00"
+        $this->assertMatchesRegularExpression('/^15:04:05 GMT(\+00:00)? PM$/', $fieldDto->getFormattedValue());
     }
 
     public function testFieldDefaultWidget()

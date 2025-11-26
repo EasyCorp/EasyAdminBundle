@@ -12,9 +12,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
  */
 final class UrlSigner
 {
-    private string $kernelSecret;
-
-    public function __construct(string $kernelSecret)
+    public function __construct(private readonly string $kernelSecret)
     {
         trigger_deprecation(
             'easycorp/easyadmin-bundle',
@@ -22,8 +20,6 @@ final class UrlSigner
             'EasyAdmin URLs no longer include signatures because they don\'t provide any additional security. The "%s" class will be removed in future EasyAdmin versions, so you should stop using it.',
             __CLASS__
         );
-
-        $this->kernelSecret = $kernelSecret;
     }
 
     /**

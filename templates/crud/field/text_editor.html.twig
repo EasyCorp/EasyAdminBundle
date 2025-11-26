@@ -6,7 +6,7 @@
 {% else %}
     {% set html_id = 'ea-text-editor-' ~ field.uniqueId %}
     <a href="#" data-bs-toggle="modal" data-bs-target="#{{ html_id }}">
-        <twig:ea:Icon name="internal:file-lines" /> {{ 'field.text_editor.view_content'|trans([], domain = 'EasyAdminBundle') }}
+        <twig:ea:Icon name="internal:file-lines" /> {{ 'field.text_editor.view_content'|trans([], domain: 'EasyAdminBundle') }}
     </a>
 
     <div class="modal fade" id="{{ html_id }}" tabindex="-1" role="dialog" aria-hidden="true">
@@ -14,7 +14,7 @@
             <div class="modal-content">
                 <div class="modal-header d-flex justify-content-between">
                     <h5 class="modal-title">{{ field.label|trans }}</h5>
-                    <twig:ea:Button type="button" isInvisible icon="internal:xmark" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans([], domain = 'EasyAdminBundle') }}" />
+                    <twig:ea:Button type="button" isInvisible icon="internal:xmark" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans([], domain: 'EasyAdminBundle') }}" />
                 </div>
                 <div class="modal-body">
                     {{ field.formattedValue|nl2br }}

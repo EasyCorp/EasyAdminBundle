@@ -11,11 +11,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\UserMenuDto;
  */
 final class UserMenu
 {
-    private UserMenuDto $dto;
-
-    private function __construct(UserMenuDto $userMenuDto)
+    private function __construct(private readonly UserMenuDto $dto)
     {
-        $this->dto = $userMenuDto;
     }
 
     public static function new(): self

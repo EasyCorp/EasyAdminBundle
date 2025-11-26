@@ -9,7 +9,7 @@ jobs:
     phpstan:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v5
+            - uses: actions/checkout@v6
 
             - name: Setup PHP, with composer and extensions
               uses: shivammathur/setup-php@v2
@@ -70,19 +70,24 @@ jobs:
                       php_version: "8.4"
                       symfony_version: "7.2"
                       stability: "stable"
+                    # New PHP version
+                    - os: ubuntu-latest
+                      php_version: "8.5"
+                      symfony_version: "7.3"
+                      stability: "stable"
                     # Upcoming Symfony versions
                     - os: ubuntu-latest
                       php_version: "8.4"
                       symfony_version: "7.4.x"
                       stability: "dev"
-                    #- os: ubuntu-latest
-                    #  php_version: "8.4"
-                    #  symfony_version: "8.0.x"
-                    #  stability: "dev"
+                    - os: ubuntu-latest
+                      php_version: "8.4"
+                      symfony_version: "8.0.x"
+                      stability: "dev"
         runs-on: ${{ matrix.os }}
         continue-on-error: ${{ matrix.stability == 'dev' }}
         steps:
-            - uses: actions/checkout@v5
+            - uses: actions/checkout@v6
 
             - name: Setup PHP, with composer and extensions
               uses: shivammathur/setup-php@v2
@@ -91,6 +96,7 @@ jobs:
                   coverage: none
                   extensions: mbstring, intl, pdo, pdo_sqlite, sqlite3
                   ini-values: date.timezone=UTC
+                  tools: composer:2.8
 
             - name: symfony/flex is required to install the correct symfony version
               if: ${{ matrix.symfony_version }}
@@ -133,7 +139,7 @@ jobs:
     php-linter:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v5
+            - uses: actions/checkout@v6
 
             # see https://github.com/OskarStark/php-cs-fixer-ga
             - name: PHP-CS-Fixer
@@ -144,7 +150,7 @@ jobs:
     doc-linter:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v5
+            - uses: actions/checkout@v6
 
             - name: DOCtor-RST
               uses: docker://oskarstark/doctor-rst
@@ -156,7 +162,7 @@ jobs:
     css-linter:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v5
+            - uses: actions/checkout@v6
 
             - name: Setup PHP, with composer and extensions
               uses: shivammathur/setup-php@v2
@@ -172,12 +178,31 @@ jobs:
                 run: |
                     php ./src/Resources/bin/logical-css-properties-linter.php
 
+    twig-linter:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v6
+
+            - name: Setup PHP, with composer and extensions
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: 8.2
+                  coverage: none
+
+            - name: Install dependencies
+              run: |
+                  composer install
+
+            -   name: Lint Twig template syntax
+                run: |
+                    vendor/bin/twig-cs-fixer lint templates/ --report=github
+
     js-linter:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v5
+            - uses: actions/checkout@v6
             - run: npm i -g corepack && corepack enable
-            - uses: actions/setup-node@v5
+            - uses: actions/setup-node@v6
               with:
                   cache: 'yarn'
             - run: yarn --immutable

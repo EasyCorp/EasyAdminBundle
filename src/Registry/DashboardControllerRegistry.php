@@ -10,7 +10,7 @@ final class DashboardControllerRegistry implements DashboardControllerRegistryIn
     /** @var array<string, string> */
     private array $controllerFqcnToRouteMap = [];
     /** @var array<string, string> */
-    private array $routeToControllerFqcnMap;
+    private readonly array $routeToControllerFqcnMap;
 
     /**
      * @param string[] $controllerFqcnToContextIdMap

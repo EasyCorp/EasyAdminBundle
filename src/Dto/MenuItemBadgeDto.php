@@ -10,19 +10,11 @@ final class MenuItemBadgeDto
     // these are the names as the predefined styles used by Bootstrap 5
     public const PREDEFINED_STYLES = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'dark'];
 
-    private mixed $content;
-    private string $style;
-    /** @var array<string, mixed> */
-    private array $htmlAttributes;
-
     /**
      * @param array<string, mixed> $htmlAttributes
      */
-    public function __construct(mixed $content, string $style, array $htmlAttributes = [])
+    public function __construct(private readonly mixed $content, private readonly string $style, private readonly array $htmlAttributes = [])
     {
-        $this->content = $content;
-        $this->style = $style;
-        $this->htmlAttributes = $htmlAttributes;
     }
 
     public function getContent(): mixed

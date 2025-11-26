@@ -14,13 +14,8 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
  */
 final class EntityUpdater implements EntityUpdaterInterface
 {
-    private PropertyAccessorInterface $propertyAccessor;
-    private ValidatorInterface $validator;
-
-    public function __construct(PropertyAccessorInterface $propertyAccessor, ValidatorInterface $validator)
+    public function __construct(private readonly PropertyAccessorInterface $propertyAccessor, private readonly ValidatorInterface $validator)
     {
-        $this->propertyAccessor = $propertyAccessor;
-        $this->validator = $validator;
     }
 
     public function updateProperty(EntityDto $entityDto, string $propertyName, mixed $value): void

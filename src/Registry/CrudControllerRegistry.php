@@ -7,27 +7,18 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Registry;
  */
 final class CrudControllerRegistry
 {
-    /** @var array<class-string, class-string> */
-    private array $crudFqcnToEntityFqcnMap;
-    /** @var array<class-string, class-string> */
-    private array $entityFqcnToCrudFqcnMap;
-    /** @var array<class-string, string> */
-    private array $crudFqcnToCrudIdMap;
-    /** @var array<string, class-string> */
-    private array $crudIdToCrudFqcnMap;
-
     /**
      * @param array<class-string, class-string> $crudFqcnToEntityFqcnMap
      * @param array<class-string, string>       $crudFqcnToCrudIdMap
      * @param array<string, class-string>       $crudIdToCrudFqcnMap
      * @param array<class-string, class-string> $entityFqcnToCrudFqcnMap
      */
-    public function __construct(array $crudFqcnToEntityFqcnMap, array $crudFqcnToCrudIdMap, array $entityFqcnToCrudFqcnMap, array $crudIdToCrudFqcnMap)
-    {
-        $this->crudFqcnToEntityFqcnMap = $crudFqcnToEntityFqcnMap;
-        $this->crudFqcnToCrudIdMap = $crudFqcnToCrudIdMap;
-        $this->entityFqcnToCrudFqcnMap = $entityFqcnToCrudFqcnMap;
-        $this->crudIdToCrudFqcnMap = $crudIdToCrudFqcnMap;
+    public function __construct(
+        private readonly array $crudFqcnToEntityFqcnMap,
+        private readonly array $crudFqcnToCrudIdMap,
+        private readonly array $entityFqcnToCrudFqcnMap,
+        private readonly array $crudIdToCrudFqcnMap,
+    ) {
     }
 
     /**

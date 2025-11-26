@@ -15,11 +15,8 @@ use function Symfony\Component\String\u;
  */
 final class ImageConfigurator implements FieldConfiguratorInterface
 {
-    private string $projectDir;
-
-    public function __construct(string $projectDir)
+    public function __construct(private readonly string $projectDir)
     {
-        $this->projectDir = $projectDir;
     }
 
     public function supports(FieldDto $field, EntityDto $entityDto): bool

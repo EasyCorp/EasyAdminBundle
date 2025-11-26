@@ -27,11 +27,8 @@ use Symfony\Component\Validator\Constraints\All;
  */
 class FileUploadType extends AbstractType implements DataMapperInterface
 {
-    private string $projectDir;
-
-    public function __construct(string $projectDir)
+    public function __construct(private readonly string $projectDir)
     {
-        $this->projectDir = $projectDir;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -196,8 +193,20 @@ class FileUploadType extends AbstractType implements DataMapperInterface
         return 'ea_fileupload';
     }
 
-    public function mapDataToForms($currentFiles, $forms): void
+    public function mapDataToForms(mixed $currentFiles, /* \Traversable */ $forms): void
     {
+        if (!$forms instanceof \Traversable) {
+            trigger_deprecation(
+                'easycorp/easyadmin-bundle',
+                '4.27.0',
+                'Argument "%s" for "%s" must be one of these types: %s. Passing type "%s" will cause an error in 5.0.0.',
+                '$forms',
+                __METHOD__,
+                '"Traversable"',
+                \gettype($forms)
+            );
+        }
+
         /** @var FormInterface $fileForm */
         $fileForm = current(iterator_to_array($forms));
         $fileForm->setData($currentFiles);

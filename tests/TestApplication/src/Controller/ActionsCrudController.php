@@ -45,7 +45,7 @@ class ActionsCrudController extends AbstractCrudController
         // this tests that the 'Reset' label is interpreted as a string and not as a callable to the PHP reset() function
         $action8 = Action::new('action8')->linkToCrudAction('')->setLabel('Reset');
 
-        $action9 = Action::new('action9')->linkToCrudAction('')->createAsGlobalAction()->displayAsForm();
+        $action9 = Action::new('action9')->linkToCrudAction('')->createAsGlobalAction()->renderAsForm();
 
         return $actions
             ->add(Crud::PAGE_INDEX, $action1)

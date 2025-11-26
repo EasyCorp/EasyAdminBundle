@@ -23,34 +23,48 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
  */
 final class EntityFactory
 {
-    private FieldFactory $fieldFactory;
-    private ActionFactory $actionFactory;
-    private AuthorizationCheckerInterface $authorizationChecker;
-    private ManagerRegistry $doctrine;
-    private EventDispatcherInterface $eventDispatcher;
-
-    public function __construct(FieldFactory $fieldFactory, ActionFactory $actionFactory, AuthorizationCheckerInterface $authorizationChecker, ManagerRegistry $doctrine, EventDispatcherInterface $eventDispatcher)
-    {
-        $this->fieldFactory = $fieldFactory;
-        $this->actionFactory = $actionFactory;
-        $this->authorizationChecker = $authorizationChecker;
-        $this->doctrine = $doctrine;
-        $this->eventDispatcher = $eventDispatcher;
-    }
-
-    public function processFields(EntityDto $entityDto, FieldCollection $fields): void
-    {
-        $this->fieldFactory->processFields($entityDto, $fields);
-    }
-
-    public function processFieldsForAll(EntityCollection $entities, FieldCollection $fields): void
-    {
-        foreach ($entities as $entity) {
-            $this->processFields($entity, clone $fields);
-            $entities->set($entity);
+    public function __construct(
+        private FieldFactory|AuthorizationCheckerInterface|null $fieldFactory,
+        private ActionFactory|ManagerRegistry|null $actionFactory,
+        private AuthorizationCheckerInterface|EventDispatcherInterface $authorizationChecker,
+        private ?ManagerRegistry $doctrine = null,
+        private ?EventDispatcherInterface $eventDispatcher = null,
+    ) {
+        if ($this->fieldFactory instanceof FieldFactory) {
+            trigger_deprecation(
+                'easycorp/easyadmin-bundle',
+                '4.27.0',
+                'Passing the arguments "$fieldFactory" and "$actionFactory" to the "%s" constructor is deprecated.',
+                self::class
+            );
+        } else {
+            $this->fieldFactory = null;
+            $this->actionFactory = null;
+            $this->authorizationChecker = $fieldFactory;
+            $this->doctrine = $actionFactory;
+            $this->eventDispatcher = $authorizationChecker;
         }
     }
 
+    /**
+     * @deprecated since 4.27.0 and it will be removed in EasyAdmin 5.0.0. Use FieldFactory::processFields() instead
+     */
+    public function processFields(EntityDto $entityDto, FieldCollection $fields, ?string $pageName = null): void
+    {
+        $this->fieldFactory->processFields($entityDto, $fields, $pageName);
+    }
+
+    /**
+     * @deprecated since 4.27.0 and it will be removed in EasyAdmin 5.0.0. Use FieldFactory::processFieldsForAll() instead
+     */
+    public function processFieldsForAll(EntityCollection $entities, FieldCollection $fields, ?string $pageName = null): void
+    {
+        $this->fieldFactory->processFieldsForAll($entities, $fields);
+    }
+
+    /**
+     * @deprecated since 4.27.0 and it will be removed in EasyAdmin 5.0.0. Use ActionFactory::processEntityActions() instead
+     */
     public function processActions(EntityDto $entityDto, ActionConfigDto $actionConfigDto): void
     {
         if (!$entityDto->isAccessible()) {
@@ -59,13 +73,12 @@ final class EntityFactory
         $this->actionFactory->processEntityActions($entityDto, $actionConfigDto);
     }
 
+    /**
+     * @deprecated since 4.27.0 and it will be removed in EasyAdmin 5.0.0. Use ActionFactory::processGlobalActionsAndEntityActionsForAll() instead
+     */
     public function processActionsForAll(EntityCollection $entities, ActionConfigDto $actionConfigDto): ActionCollection
     {
-        foreach ($entities as $entity) {
-            $this->processActions($entity, clone $actionConfigDto);
-        }
-
-        return $this->actionFactory->processGlobalActions($actionConfigDto);
+        return $this->actionFactory->processGlobalActionsAndEntityActionsForAll($entities, $actionConfigDto);
     }
 
     /**
@@ -79,8 +92,17 @@ final class EntityFactory
     /**
      * @param object $entityInstance
      */
-    public function createForEntityInstance($entityInstance): EntityDto
+    public function createForEntityInstance(/* object */ $entityInstance): EntityDto
     {
+        if (!\is_object($entityInstance)) {
+            trigger_deprecation(
+                'easycorp/easyadmin-bundle',
+                '4.27.0',
+                'Not passing argument "$entityInstance" for method "%s" of type "object" is deprecated.',
+                __METHOD__,
+            );
+        }
+
         return $this->doCreate(null, null, null, $entityInstance);
     }
 
@@ -117,7 +139,7 @@ final class EntityFactory
         /** @var ClassMetadata<TEntity> $entityMetadata */
         $entityMetadata = $entityManager->getClassMetadata($entityFqcn);
 
-        if (1 !== \count($entityMetadata->getIdentifierFieldNames())) {
+        if ($entityMetadata->isIdentifierComposite) {
             throw new \RuntimeException(sprintf('EasyAdmin does not support Doctrine entities with composite primary keys (such as the ones used in the "%s" entity).', $entityFqcn));
         }
 

@@ -508,9 +508,12 @@ a.user-menu-wrapper .user-details:hover {
     line-height: var(--font-size-lg);
 }
 
+.content-header-help {
+    cursor: pointer;
+}
+
 .content-header-help i {
     color: var(--text-muted);
-    cursor: pointer;
     font-size: 21px;
 }
 

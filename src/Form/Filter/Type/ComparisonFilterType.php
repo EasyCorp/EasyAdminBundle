@@ -12,23 +12,19 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class ComparisonFilterType extends AbstractType
 {
-    private ?string $valueType;
-    /** @var array<string, mixed> */
-    private array $valueTypeOptions;
-    private string $comparisonType;
-    /** @var array<string, mixed> */
-    private array $comparisonTypeOptions;
+    private readonly string $comparisonType;
 
     /**
      * @param array<string, mixed> $valueTypeOptions
      * @param array<string, mixed> $comparisonTypeOptions
      */
-    public function __construct(?string $valueType = null, array $valueTypeOptions = [], ?string $comparisonType = null, array $comparisonTypeOptions = [])
-    {
-        $this->valueType = $valueType;
-        $this->valueTypeOptions = $valueTypeOptions;
+    public function __construct(
+        private readonly ?string $valueType = null,
+        private readonly array $valueTypeOptions = [],
+        ?string $comparisonType = null,
+        private readonly array $comparisonTypeOptions = [],
+    ) {
         $this->comparisonType = $comparisonType ?? ComparisonType::class;
-        $this->comparisonTypeOptions = $comparisonTypeOptions;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void

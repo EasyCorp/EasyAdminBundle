@@ -6,7 +6,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Cache\CacheWarmer;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\Router\AdminRouteGeneratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\AdminContextFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\ControllerFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\CrudControllerRegistry;
@@ -36,28 +35,19 @@ use Symfony\Component\Routing\Matcher\RequestMatcherInterface;
  */
 class AdminRouterSubscriber implements EventSubscriberInterface
 {
-    private AdminContextFactory $adminContextFactory;
-    private ControllerFactory $controllerFactory;
-    private ControllerResolverInterface $controllerResolver;
-    private UrlGeneratorInterface $urlGenerator;
-    private RequestMatcherInterface $requestMatcher;
-    private CacheItemPoolInterface $cache;
-    private AdminRouteGeneratorInterface $adminRouteGenerator;
-    private CrudControllerRegistry $crudControllerRegistry;
-    private string $buildDir;
     private bool $requestAlreadyProcessedAsPrettyUrl = false;
 
-    public function __construct(AdminContextFactory $adminContextFactory, ControllerFactory $controllerFactory, ControllerResolverInterface $controllerResolver, UrlGeneratorInterface $urlGenerator, RequestMatcherInterface $requestMatcher, CacheItemPoolInterface $cache, AdminRouteGenerator $adminRouteGenerator, string $buildDir, CrudControllerRegistry $crudControllerRegistry)
-    {
-        $this->adminContextFactory = $adminContextFactory;
-        $this->controllerFactory = $controllerFactory;
-        $this->controllerResolver = $controllerResolver;
-        $this->urlGenerator = $urlGenerator;
-        $this->requestMatcher = $requestMatcher;
-        $this->cache = $cache;
-        $this->adminRouteGenerator = $adminRouteGenerator;
-        $this->buildDir = $buildDir;
-        $this->crudControllerRegistry = $crudControllerRegistry;
+    public function __construct(
+        private readonly AdminContextFactory $adminContextFactory,
+        private readonly ControllerFactory $controllerFactory,
+        private readonly ControllerResolverInterface $controllerResolver,
+        private readonly UrlGeneratorInterface $urlGenerator,
+        private readonly RequestMatcherInterface $requestMatcher,
+        private readonly CacheItemPoolInterface $cache,
+        private readonly AdminRouteGenerator $adminRouteGenerator,
+        private readonly string $buildDir,
+        private readonly CrudControllerRegistry $crudControllerRegistry,
+    ) {
     }
 
     public static function getSubscribedEvents(): array

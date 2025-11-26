@@ -8,9 +8,9 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 final class LocaleDto
 {
     public function __construct(
-        private string $locale,
-        private string $name,
-        private ?string $icon = null,
+        private readonly string $locale,
+        private readonly string $name,
+        private readonly ?string $icon = null,
     ) {
     }
 

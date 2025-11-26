@@ -25,7 +25,7 @@ return [
     ],
 
     'label' => [
-        'true' => 'Si',
+        'true' => 'Sì',
         'false' => 'No',
         'empty' => 'Vuoto',
         'null' => 'Null',
@@ -63,7 +63,7 @@ return [
 
     'batch_action_modal' => [
         'title' => 'Stai per applicare l\'azione "%action_name%" su %num_items% elemento(i).',
-        'content' => 'Non è possibile annulare questa operazione.',
+        'content' => 'Non è possibile annullare questa operazione.',
         'action' => 'Procedi',
     ],
 
@@ -79,9 +79,9 @@ return [
         'label.is_equal_to' => 'è uguale a',
         'label.is_not_equal_to' => 'non è uguale a',
         'label.is_greater_than' => 'è maggiore di',
-        'label.is_greater_than_or_equal_to' => 'è maggiore o uguale di',
+        'label.is_greater_than_or_equal_to' => 'è maggiore o uguale a',
         'label.is_less_than' => 'è minore di',
-        'label.is_less_than_or_equal_to' => 'è minore o uguale di',
+        'label.is_less_than_or_equal_to' => 'è minore o uguale a',
         'label.is_between' => 'è tra',
         'label.contains' => 'contiene',
         'label.contains_all' => 'contiene tutto',

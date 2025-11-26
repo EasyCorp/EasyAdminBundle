@@ -34,16 +34,13 @@ class Crud
     public const LAYOUT_SIDEBAR_DEFAULT = 'normal';
     public const LAYOUT_SIDEBAR_COMPACT = 'compact';
 
-    private CrudDto $dto;
-
     private int $paginatorPageSize = 20;
     private int $paginatorRangeSize = 3;
     private bool $paginatorFetchJoinCollection = true;
     private ?bool $paginatorUseOutputWalkers = null;
 
-    private function __construct(CrudDto $crudDto)
+    private function __construct(private readonly CrudDto $dto)
     {
-        $this->dto = $crudDto;
     }
 
     public static function new(): self

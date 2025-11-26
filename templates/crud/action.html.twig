@@ -14,5 +14,6 @@
     action="{{ action.htmlElement.isForm ? action.linkUrl : null }}"
     method="{{ action.htmlElement.isForm ? 'POST' : null }}"
 >
-    {%- if outerScope.action.label is not empty -%}<span class="action-label">{{ outerScope.action.label|trans|raw }}</span>{%- endif -%}
+    {% set action_label = outerScope.action.label|trans %}
+    {%- if action_label is not empty -%}<span class="action-label">{{ action_label|raw }}</span>{%- endif -%}
 </twig:ea:Button>

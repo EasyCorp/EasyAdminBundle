@@ -7,7 +7,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Provider\AdminContextProviderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\BatchActionDto;
-use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ArgumentValueResolverInterface;
@@ -71,13 +70,8 @@ if (interface_exists(ValueResolverInterface::class)) {
 } else {
     final class BatchActionDtoResolver implements ArgumentValueResolverInterface
     {
-        private AdminContextProvider $adminContextProvider;
-        private AdminUrlGeneratorInterface $adminUrlGenerator;
-
-        public function __construct(AdminContextProviderInterface $adminContextProvider, AdminUrlGeneratorInterface $adminUrlGenerator)
+        public function __construct(private readonly AdminContextProviderInterface $adminContextProvider, private readonly AdminUrlGeneratorInterface $adminUrlGenerator)
         {
-            $this->adminContextProvider = $adminContextProvider;
-            $this->adminUrlGenerator = $adminUrlGenerator;
         }
 
         public function supports(Request $request, ArgumentMetadata $argument): bool

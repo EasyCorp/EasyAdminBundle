@@ -11,11 +11,8 @@ use function Symfony\Component\Translation\t;
  */
 final class Actions
 {
-    private ActionConfigDto $dto;
-
-    private function __construct(ActionConfigDto $actionConfigDto)
+    private function __construct(private readonly ActionConfigDto $dto)
     {
-        $this->dto = $actionConfigDto;
     }
 
     public static function new(): self
@@ -186,7 +183,7 @@ final class Actions
         }
 
         if (Action::DETAIL === $actionName) {
-            return Action::new(Action::DETAIL, t('action.detail', domain: 'EasyAdminBundle'))
+            return Action::new(Action::DETAIL, t('action.detail', domain: 'EasyAdminBundle'), Crud::PAGE_INDEX === $pageName ? 'internal:detail' : null)
                 ->linkToCrudAction(Action::DETAIL);
         }
 

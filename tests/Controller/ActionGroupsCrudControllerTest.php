@@ -100,8 +100,8 @@ class ActionGroupsCrudControllerTest extends AbstractCrudTestCase
         // Test that at least one dropdown has actions
         static::assertGreaterThan(0, $crawler->filter('.action-group .dropdown-menu .dropdown-item')->count(), 'Should have dropdown items');
 
-        // Note: Form actions are only rendered if configured with displayAsForm()
-        // Since our test controller has form_action configured with displayAsForm(),
+        // Note: Form actions are only rendered if configured with renderAsForm()
+        // Since our test controller has form_action configured with renderAsForm(),
         // forms should exist somewhere in the dropdowns
         $forms = $crawler->filter('.dropdown-menu form');
         if ($forms->count() > 0) {

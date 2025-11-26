@@ -97,7 +97,8 @@ class DateTimeFieldTest extends AbstractFieldTest
         $fieldDto = $this->configure($field);
 
         $this->assertSame('HH:mm:ss ZZZZ a', $fieldDto->getCustomOption(DateTimeField::OPTION_DATE_PATTERN));
-        $this->assertSame('00:00:00 GMT AM', $fieldDto->getFormattedValue());
+        // some ICU versions return "GMT" while others return "GMT+00:00"
+        $this->assertMatchesRegularExpression('/^00:00:00 GMT(\+00:00)? AM$/', $fieldDto->getFormattedValue());
     }
 
     public function testFieldDefaultWidget()

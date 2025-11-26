@@ -10,15 +10,11 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Config;
  */
 final class KeyValueStore
 {
-    /** @var array<string, mixed> */
-    private array $map;
-
     /**
-     * @param array<string, mixed> $keyValueMap
+     * @param array<string, mixed> $map
      */
-    private function __construct(array $keyValueMap)
+    private function __construct(private array $map)
     {
-        $this->map = $keyValueMap;
     }
 
     /**

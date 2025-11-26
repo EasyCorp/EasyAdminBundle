@@ -24,14 +24,14 @@
 
 {% block configured_stylesheets %}
     {{ parent() }}
-    {{ include('@EasyAdmin/includes/_css_assets.html.twig', { assets: ea_field_assets.cssAssets }, with_context = false) }}
-    {{ include('@EasyAdmin/includes/_encore_link_tags.html.twig', { assets: ea_field_assets.webpackEncoreAssets }, with_context = false) }}
+    {{ include('@EasyAdmin/includes/_css_assets.html.twig', {assets: ea_field_assets.cssAssets}, with_context: false) }}
+    {{ include('@EasyAdmin/includes/_encore_link_tags.html.twig', {assets: ea_field_assets.webpackEncoreAssets}, with_context: false) }}
 {% endblock %}
 
 {% block configured_javascripts %}
     {{ parent() }}
-    {{ include('@EasyAdmin/includes/_js_assets.html.twig', { assets: ea_field_assets.jsAssets }, with_context = false) }}
-    {{ include('@EasyAdmin/includes/_encore_script_tags.html.twig', { assets: ea_field_assets.webpackEncoreAssets }, with_context = false) }}
+    {{ include('@EasyAdmin/includes/_js_assets.html.twig', {assets: ea_field_assets.jsAssets}, with_context: false) }}
+    {{ include('@EasyAdmin/includes/_encore_script_tags.html.twig', {assets: ea_field_assets.webpackEncoreAssets}, with_context: false) }}
 {% endblock %}
 
 {% block content_title %}
@@ -44,9 +44,9 @@
 {% block page_actions %}
     {% for item in entity.actions|reverse %}
         {% if item.isActionGroup %}
-            {{ include(item.templatePath, { group: item, entity: entity }, with_context = false) }}
+            {{ include(item.templatePath, {group: item, entity: entity}, with_context: false) }}
         {% else %}
-            {{ include(item.templatePath, { action: item }, with_context = false) }}
+            {{ include(item.templatePath, {action: item}, with_context: false) }}
         {% endif %}
     {% endfor %}
 {% endblock %}
@@ -63,7 +63,7 @@
     {% endblock detail_fields %}
 
     {% block delete_form %}
-        {{ include('@EasyAdmin/crud/includes/_delete_form.html.twig', { entity_id: entity.primaryKeyValue }, with_context = false) }}
+        {{ include('@EasyAdmin/crud/includes/_delete_form.html.twig', {entity_id: entity.primaryKeyValue}, with_context: false) }}
     {% endblock delete_form %}
 {% endblock %}
 
@@ -89,7 +89,7 @@
         {% endif %}
 
         <div class="field-value">
-            {{ include(field.templatePath, { field: field, entity: entity }, with_context = false) }}
+            {{ include(field.templatePath, {field: field, entity: entity}, with_context: false) }}
         </div>
     </div>
 {% endmacro %}
@@ -133,9 +133,9 @@
                         {%- if tab.getCustomOption('icon')|default(false) -%}
                             <twig:ea:Icon name="{{ tab.getCustomOption('icon') }}" class="tab-nav-item-icon"/>
                         {%- endif -%}
-                        {{ tab.label|trans(domain = ea().i18n.translationDomain)|raw }}
+                        {{ tab.label|trans(domain: ea().i18n.translationDomain)|raw }}
 
-                        {% set tab_error_count = tab.getCustomOption(tab_error_count_option_name)  %}
+                        {% set tab_error_count = tab.getCustomOption(tab_error_count_option_name) %}
                         {%- if tab_error_count > 0 -%}
                             <span class="badge badge-danger" title="{{ 'form.tab.error_badge_title'|trans({'%count%': tab_error_count}, 'EasyAdminBundle') }}">
                                 {{- tab_error_count -}}
@@ -165,7 +165,7 @@
     <div id="{{ field.getCustomOption(tab_id_option_name) }}" class="tab-pane {% if field.getCustomOption(tab_is_active_option_name) %}active{% endif %} {{ field.cssClass }}" {% for key, value in field.getFormTypeOption('attr') %}{{ key }}="{{ value|e('html') }}"{% endfor %}>
         {% if field.help %}
             <div class="content-header-help tab-help">
-                {{ field.help|trans(domain = ea().i18n.translationDomain)|raw }}
+                {{ field.help|trans(domain: ea().i18n.translationDomain)|raw }}
             </div>
         {% endif %}
 
@@ -200,11 +200,11 @@
             <div class="form-column-title">
                 <div class="form-column-title-content">
                     {% if field_icon %}<twig:ea:Icon name="{{ field_icon }}" class="form-column-icon" />{% endif %}
-                    {% if field.label %}{{ field.label|trans(domain = ea().i18n.translationDomain)|raw }}{% endif %}
+                    {% if field.label %}{{ field.label|trans(domain: ea().i18n.translationDomain)|raw }}{% endif %}
                 </div>
 
                 {% if field.help %}
-                    <div class="form-column-help">{{ field.help|trans(domain = ea().i18n.translationDomain)|raw }}</div>
+                    <div class="form-column-help">{{ field.help|trans(domain: ea().i18n.translationDomain)|raw }}</div>
                 {% endif %}
             </div>
         {% endif %}
@@ -257,7 +257,7 @@
                 </div>
             {% endif %}
 
-            <div id="content-{{ field.propertyNameWithSuffix }}" class="form-fieldset-body {{ not fieldset_has_header ? 'without-header' }} {{ is_collapsible ? 'collapse' }} {{ not is_collapsed ? 'show'}}">
+            <div id="content-{{ field.propertyNameWithSuffix }}" class="form-fieldset-body {{ not fieldset_has_header ? 'without-header' }} {{ is_collapsible ? 'collapse' }} {{ not is_collapsed ? 'show' }}">
                 <div class="row">
 {% endmacro %}
 
@@ -267,7 +267,6 @@
         </fieldset>
     </div>
 {% endmacro %}
-
 
 {% macro render_detail_fields_with_tabs(entity, field_layout) %}
     {% deprecated 'The "render_detail_fields_with_tabs" macro is deprecated because the layout building logic has been revamped for the "detail" page. Check EasyAdmin\'s `detail.html.page` for more details.' %}
@@ -281,7 +280,7 @@
                             {%- if tab.customOption('icon') -%}
                                 <twig:ea:Icon name="{{ tab.customOption('icon') }}" />
                             {%- endif -%}
-                            {{ tab.label|trans(domain = ea().i18n.translationDomain)|raw }}
+                            {{ tab.label|trans(domain: ea().i18n.translationDomain)|raw }}
                         </a>
                     </li>
                 {% endfor %}
@@ -291,7 +290,7 @@
                     <div id="tab-pane-{{ tab.uniqueId }}" class="tab-pane {% if loop.first %}active{% endif %} {{ tab.cssClass|default('') }}">
                         {% if tab.help|default(false) %}
                             <div class="content-header-help tab-help">
-                                {{ tab.help|trans(domain = ea().i18n.translationDomain)|raw }}
+                                {{ tab.help|trans(domain: ea().i18n.translationDomain)|raw }}
                             </div>
                         {% endif %}
                         <div class="row">
@@ -342,7 +341,7 @@
     {% set collapsed = field is null ? false : field.customOption('collapsed') %}
     {% set fieldset_icon = field is null ? null : (field.customOptions.get('icon')|default(false)) %}
     {% set fieldset_label = field is null ? null : field.label %}
-    {% set fieldset_help = field is null ? null : field.help|default(false)%}
+    {% set fieldset_help = field is null ? null : field.help|default(false) %}
     {% set fieldset_has_header = collapsible or fieldset_icon or fieldset_label or fieldset_help %}
 
     <div class="{{ field.cssClass ?? '' }}">
@@ -375,7 +374,7 @@
                 </div>
             {% endif %}
 
-            <div {% if fieldset_name %}id="{{ fieldset_name }}"{% endif %} class="form-fieldset-body {{ collapsible ? 'collapse' }} {{ not collapsed ? 'show'}}">
+            <div {% if fieldset_name %}id="{{ fieldset_name }}"{% endif %} class="form-fieldset-body {{ collapsible ? 'collapse' }} {{ not collapsed ? 'show' }}">
                 <dl class="datalist">
 {% endmacro %}
 
@@ -402,7 +401,7 @@
             {% endif %}
         </dt>
         <dd>
-            {{ include(field.templatePath, { field: field, entity: entity }, with_context = false) }}
+            {{ include(field.templatePath, {field: field, entity: entity}, with_context: false) }}
         </dd>
     </div>
 {% endmacro %}

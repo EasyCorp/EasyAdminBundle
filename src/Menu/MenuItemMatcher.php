@@ -18,8 +18,8 @@ use Symfony\Component\HttpFoundation\Request;
 class MenuItemMatcher implements MenuItemMatcherInterface
 {
     public function __construct(
-        private AdminUrlGeneratorInterface $adminUrlGenerator,
-        private AdminRouteGeneratorInterface $adminRouteGenerator,
+        private readonly AdminUrlGeneratorInterface $adminUrlGenerator,
+        private readonly AdminRouteGeneratorInterface $adminRouteGenerator,
     ) {
     }
 

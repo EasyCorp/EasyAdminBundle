@@ -210,6 +210,9 @@
 /* Disabled state */
 .btn.disabled,
 .btn:disabled {
+    background: var(--button-active-bg, var(--button-bg));
+    border-color: var(--button-active-border-color, var(--button-border-color));
+    color: var(--button-active-color, var(--button-color));
     box-shadow: none;
     cursor: not-allowed;
     opacity: var(--button-disabled-opacity);
@@ -250,6 +253,10 @@ fieldset:disabled a.btn {
 .btn > .btn-label + .btn-icon,
 .btn > .btn-label + i {
     margin-inline-start: 0;
+}
+
+.btn > .btn-icon + .btn-label:empty {
+    display: none;
 }
 
 .btn-sm:not(:has(.btn-label)) {

@@ -16,15 +16,10 @@ use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
  */
 final class MoneyConfigurator implements FieldConfiguratorInterface
 {
-    private IntlFormatterInterface $intlFormatter;
-    private PropertyAccessorInterface $propertyAccessor;
-
     public const DEFAULT_DIVISOR = 100;
 
-    public function __construct(IntlFormatterInterface $intlFormatter, PropertyAccessorInterface $propertyAccessor)
+    public function __construct(private readonly IntlFormatterInterface $intlFormatter, private readonly PropertyAccessorInterface $propertyAccessor)
     {
-        $this->intlFormatter = $intlFormatter;
-        $this->propertyAccessor = $propertyAccessor;
     }
 
     public function supports(FieldDto $field, EntityDto $entityDto): bool

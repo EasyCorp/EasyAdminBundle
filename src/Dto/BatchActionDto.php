@@ -9,11 +9,6 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
  */
 class BatchActionDto
 {
-    private string $name;
-    /** @var array<mixed> */
-    private array $entityIds;
-    /** @var class-string<TEntity> */
-    private string $entityFqcn;
     private string $referrerUrl;
     private string $csrfToken;
 
@@ -21,12 +16,8 @@ class BatchActionDto
      * @param array<mixed>          $entityIds
      * @param class-string<TEntity> $entityFqcn
      */
-    public function __construct(string $name, array $entityIds, string $entityFqcn, string $referrerUrl, string $csrfToken /* , bool $triggerDeprecation = true */)
+    public function __construct(private readonly string $name, private readonly array $entityIds, private readonly string $entityFqcn, string $referrerUrl, string $csrfToken /* , bool $triggerDeprecation = true */)
     {
-        $this->name = $name;
-        $this->entityIds = $entityIds;
-        $this->entityFqcn = $entityFqcn;
-
         // the $referrerUrl argument is deprecated; instead of removing it, do this:
         //   * if the user passes 5 arguments to the constructor, trigger a deprecation message
         //     and assign the 4th argument to referrerUrl and the fifth to csrfToken;

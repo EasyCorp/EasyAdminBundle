@@ -10,8 +10,6 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  */
 class FileUploadState
 {
-    private bool $allowAdd;
-
     /** @var File[] */
     private array $currentFiles = [];
 
@@ -20,9 +18,8 @@ class FileUploadState
 
     private bool $delete = false;
 
-    public function __construct(bool $allowAdd = false)
+    public function __construct(private bool $allowAdd = false)
     {
-        $this->allowAdd = $allowAdd;
     }
 
     /**
@@ -36,8 +33,20 @@ class FileUploadState
     /**
      * @param File|array<File>|null $currentFiles
      */
-    public function setCurrentFiles($currentFiles): void
+    public function setCurrentFiles(/* File|array|null */ $currentFiles): void
     {
+        if (null !== $currentFiles && !\is_array($currentFiles) && !$currentFiles instanceof File) {
+            trigger_deprecation(
+                'easycorp/easyadmin-bundle',
+                '4.27.0',
+                'Argument "%s" for "%s" must be one of these types: %s. Passing type "%s" will cause an error in 5.0.0.',
+                '$currentFiles',
+                __METHOD__,
+                '"array" or "File" or "null"',
+                \gettype($currentFiles)
+            );
+        }
+
         if (null === $currentFiles) {
             $currentFiles = [];
         }
@@ -73,8 +82,20 @@ class FileUploadState
     /**
      * @param UploadedFile[]|UploadedFile|null $uploadedFiles
      */
-    public function setUploadedFiles($uploadedFiles): void
+    public function setUploadedFiles(/* UploadedFile|array|null */ $uploadedFiles): void
     {
+        if (null !== $uploadedFiles && !\is_array($uploadedFiles) && !$uploadedFiles instanceof UploadedFile) {
+            trigger_deprecation(
+                'easycorp/easyadmin-bundle',
+                '4.27.0',
+                'Argument "%s" for "%s" must be one of these types: %s. Passing type "%s" will cause an error in 5.0.0.',
+                '$uploadedFiles',
+                __METHOD__,
+                '"array" or "UploadedFile" or "null"',
+                \gettype($uploadedFiles)
+            );
+        }
+
         if (null === $uploadedFiles) {
             $uploadedFiles = [];
         }

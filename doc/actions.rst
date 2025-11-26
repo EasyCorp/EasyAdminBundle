@@ -31,6 +31,8 @@ strings with the action names (``'index'``, ``'detail'``, ``'edit'``, etc.) you
 can also use constants for these values: ``Action::INDEX``, ``Action::DETAIL``,
 ``Action::EDIT``, etc. (they are defined in the ``EasyCorp\Bundle\EasyAdminBundle\Config\Action`` class).
 
+.. _actions-built-in:
+
 Built-in Actions
 ----------------
 
@@ -112,13 +114,9 @@ and EasyAdmin passes the action to it automatically::
     {
         return $actions
             // ...
-            ->update(Crud::PAGE_INDEX, Action::NEW, function (Action $action) {
-                return $action->setIcon('fa fa-file-alt')->setLabel(false);
-            })
-
-            // in PHP 7.4 and newer you can use arrow functions
-            // ->update(Crud::PAGE_INDEX, Action::NEW,
-            //     fn (Action $action) => $action->setIcon('fa fa-file-alt')->setLabel(false))
+            ->update(Crud::PAGE_INDEX, Action::NEW,
+                static fn (Action $action) => $action->setIcon('fa fa-file-alt')->setLabel(false)
+            )
         ;
     }
 
@@ -140,12 +138,7 @@ for that invoice. In order to provide a better user experience, the action link
         public function configureActions(Actions $actions): Actions
         {
             $viewPayments = Action::new('payments')
-                ->setLabel(function (Invoice $invoice)) {
-                    return \count($invoice->getPayments()) . ' payments';
-                });
-
-                // in PHP 7.4 and newer you can use arrow functions
-                // ->setLabel(fn (Invoice $invoice) => \count($invoice->getPayments()) . ' payments')
+                ->setLabel(static fn (Invoice $invoice): string => \count($invoice->getPayments()) . ' payments')
 
             return $actions
                 // ...
@@ -195,12 +188,7 @@ to users::
     public function configureActions(Actions $actions): Actions
     {
         $viewInvoice = Action::new('View Invoice', 'fas fa-file-invoice')
-            ->displayIf(static function ($entity) {
-                return $entity->isPaid();
-            });
-
-            // in PHP 7.4 and newer you can use arrow functions
-            // ->displayIf(fn ($entity) => $entity->isPaid())
+            ->displayIf(static fn (Invoice $invoice): bool => $invoice->isPaid())
 
         return $actions
             // ...
@@ -654,17 +642,39 @@ The following example shows all kinds of actions in practice::
     of the shortcuts and utilities available in regular `Symfony controllers`_,
     such as ``$this->render()``, ``$this->redirect()``, and others.
 
-Custom actions can define the ``#[AdminRoute]`` attribute to
-:ref:`customize their route name, path and methods <crud_routes>`::
+It's recommended to apply the ``#[AdminRoute]`` attribute to your custom actions
+to :ref:`customize their route name, path and methods <crud_routes>`. This is
+recommended even for custom actions defined as methods in the CRUD controllers::
+
+    namespace App\Controller\Admin;
 
     use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminRoute;
-    // ...
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+    use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 
-
-    #[AdminRoute(path: '/invoice', name: 'view_invoice')]
-    public function renderInvoice(AdminContext $context)
+    class OrderCrudController extends AbstractCrudController
     {
+        public function configureActions(Actions $actions): Actions
+        {
+            $viewInvoice = Action::new('viewInvoice', 'Invoice', 'fa fa-file-invoice')
+                ->linkToCrudAction('renderInvoice');
+
+            // ...
+        }
+
         // ...
+
+        #[AdminRoute(path: '/invoice', name: 'view_invoice')]
+        public function renderInvoice(AdminContext $context)
+        {
+            // if the dashboard uses 'admin' as the main route name, the resulting
+            // route of this action will be:
+            //   path: /admin/order/invoice
+            //   name: admin_order_view_invoice
+
+            // ...
+        }
     }
 
 .. _global-actions:
@@ -837,7 +847,6 @@ for the actions using the ``#[AdminRoute]`` attribute::
             $this->businessStatsCalculator = $businessStatsCalculator;
         }
 
-        #[Route("/admin/business-stats", name: "business_stats_index")]
         #[AdminRoute("/", name: "index")]
         public function index()
         {
@@ -846,7 +855,6 @@ for the actions using the ``#[AdminRoute]`` attribute::
             ]);
         }
 
-        #[Route("/admin/business-stats/{id}", name: "business_stats_customer")]
         #[AdminRoute("/{id}", name: "customer")]
         public function customer(Customer $customer)
         {
@@ -1010,6 +1018,63 @@ This is no longer needed in modern EasyAdmin versions and is now a discouraged
 practice that you should avoid in your applications. Instead, see the previous
 section about :ref:`how to integrate custom Symfony controllers into EasyAdmin dashboards <actions-integrating-symfony>`.
 
+Actions Extensions
+------------------
+
+Applications using EasyAdmin define their actions in the ``configureActions()``
+method of the :doc:`CRUD controllers </crud>`. You can enable, disable, or modify
+:ref:`built-in actions <actions-built-in>`, and also create your own
+:ref:`custom actions <actions-custom>`.
+
+EasyAdmin provides an additional feature to add, remove, or change actions
+(built-in or custom) dynamically at runtime: **action extensions**. They allow
+your application (or third-party bundles installed in it) to modify the actions
+defined for your controllers.
+
+Action extensions are PHP classes that receive the full configuration of
+actions in your backend so they can add, remove, or update any of them.
+
+For example, imagine you need a **Duplicate** action across most of your
+backends. Instead of defining it repeatedly, you can create a reusable package
+(such as a `Symfony bundle`_) and add the following class::
+
+    // <your-package>/src/DuplicateActionExtension.php
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+    use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
+    use EasyCorp\Bundle\EasyAdminBundle\Contracts\Action\ActionsExtensionInterface;
+
+    final class DuplicateActionExtension implements ActionsExtension
+    {
+        // return true in this method to enable the extension for
+        // the current backend request
+        public function supports(AdminContext $context): bool
+        {
+            // enable the extension only on some pages
+            return $context->getCrud()->getCurrentPage() === Crud::PAGE_DETAIL;
+
+            // enable it on all except some entities
+            $entityFqcn = $context->getCrud()->getEntityFqcn();
+            return null !== $entityFqcn && !\in_array(entityFqcn, ['...'], true);
+
+            // or use any other admin context data to make the decision
+        }
+
+        public function extend(Actions $actions, AdminContext $context): void
+        {
+            $duplicate = Action::new('duplicate', 'Duplicate', 'fa fa-clone')
+                ->linkToCrudAction('duplicate')
+                ->asSuccessAction();
+
+            $actions->add(Crud::PAGE_DETAIL, $duplicate);
+
+            // you can add single actions, groups of actions, etc.
+            // you can also remove or update existing actions
+        }
+    }
+
 .. _`FontAwesome`: https://fontawesome.com/
 .. _`Symfony base controller class`: https://symfony.com/doc/current/controller.html#the-base-controller-class-services
 .. _`Symfony controllers`: https://symfony.com/doc/current/controller.html
+.. _`Symfony bundle`: https://symfony.com/doc/current/bundles.html

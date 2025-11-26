@@ -32,14 +32,14 @@
 
 {% block configured_stylesheets %}
     {{ parent() }}
-    {{ include('@EasyAdmin/includes/_css_assets.html.twig', { assets: ea_field_assets.cssAssets }, with_context = false) }}
-    {{ include('@EasyAdmin/includes/_encore_link_tags.html.twig', { assets: ea_field_assets.webpackEncoreAssets }, with_context = false) }}
+    {{ include('@EasyAdmin/includes/_css_assets.html.twig', {assets: ea_field_assets.cssAssets}, with_context: false) }}
+    {{ include('@EasyAdmin/includes/_encore_link_tags.html.twig', {assets: ea_field_assets.webpackEncoreAssets}, with_context: false) }}
 {% endblock %}
 
 {% block configured_javascripts %}
     {{ parent() }}
-    {{ include('@EasyAdmin/includes/_js_assets.html.twig', { assets: ea_field_assets.jsAssets }, with_context = false) }}
-    {{ include('@EasyAdmin/includes/_encore_script_tags.html.twig', { assets: ea_field_assets.webpackEncoreAssets }, with_context = false) }}
+    {{ include('@EasyAdmin/includes/_js_assets.html.twig', {assets: ea_field_assets.jsAssets}, with_context: false) }}
+    {{ include('@EasyAdmin/includes/_encore_script_tags.html.twig', {assets: ea_field_assets.webpackEncoreAssets}, with_context: false) }}
 {% endblock %}
 
 {% block content_title %}
@@ -52,9 +52,9 @@
 {% block page_actions %}
     {% for item in entity.actions|reverse %}
         {% if item.isActionGroup %}
-            {{ include(item.templatePath, { group: item, entity: entity }, with_context = false) }}
+            {{ include(item.templatePath, {group: item, entity: entity}, with_context: false) }}
         {% else %}
-            {{ include(item.templatePath, { action: item }, with_context = false) }}
+            {{ include(item.templatePath, {action: item}, with_context: false) }}
         {% endif %}
     {% endfor %}
 {% endblock %}
@@ -65,6 +65,6 @@
     {% endblock edit_form %}
 
     {% block delete_form %}
-        {{ include('@EasyAdmin/crud/includes/_delete_form.html.twig', { entity_id: entity.primaryKeyValue }, with_context = false) }}
+        {{ include('@EasyAdmin/crud/includes/_delete_form.html.twig', {entity_id: entity.primaryKeyValue}, with_context: false) }}
     {% endblock delete_form %}
 {% endblock %}

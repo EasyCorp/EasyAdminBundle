@@ -20,13 +20,8 @@ use Symfony\Component\HttpFoundation\Request;
  */
 final class FormFactory
 {
-    private FormFactoryInterface $symfonyFormFactory;
-    private AdminUrlGeneratorInterface $adminUrlGenerator;
-
-    public function __construct(FormFactoryInterface $symfonyFormFactory, AdminUrlGeneratorInterface $adminUrlGenerator)
+    public function __construct(private readonly FormFactoryInterface $symfonyFormFactory, private readonly AdminUrlGeneratorInterface $adminUrlGenerator)
     {
-        $this->symfonyFormFactory = $symfonyFormFactory;
-        $this->adminUrlGenerator = $adminUrlGenerator;
     }
 
     public function createEditFormBuilder(EntityDto $entityDto, KeyValueStore $formOptions, AdminContext $context): FormBuilderInterface

@@ -196,7 +196,7 @@ final class Actions
             return Action::new(Action::DELETE, t('action.delete', domain: 'EasyAdminBundle'), 'internal:delete')
                 ->linkToCrudAction(Action::DELETE)
                 ->asDangerAction()
-                ->asTextLink()
+                ->renderAsLink()
             ;
         }
 

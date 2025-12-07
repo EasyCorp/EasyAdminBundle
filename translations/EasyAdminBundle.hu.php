@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Létrehozás és szerkesztés',
         'save' => 'Mentés',
         'save_and_continue' => 'Mentés és szerkesztés',
+        'toggle_dropdown' => 'Legördülő menü be- és kikapcsolása',
     ],
 
     'batch_action_modal' => [

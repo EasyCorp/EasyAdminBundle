@@ -59,6 +59,7 @@ return [
         'create_and_continue' => '添加并继续',
         'save' => '保存',
         'save_and_continue' => '保存并继续',
+        'toggle_dropdown' => '切换下拉菜单',
     ],
 
     'batch_action_modal' => [

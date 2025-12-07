@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'צור והמשך לערוך',
         'save' => 'שמור שינויים',
         'save_and_continue' => 'שמור והמשך עריכה',
+        'toggle_dropdown' => 'תפריט נפתח',
     ],
 
     'batch_action_modal' => [

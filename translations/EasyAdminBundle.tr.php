@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Oluştur ve düzenlemeye devam et',
         'save' => 'Kaydet',
         'save_and_continue' => 'Kaydet ve düzenlemeye devam et',
+        'toggle_dropdown' => 'Açılır menüyü aç/kapat',
     ],
 
     'batch_action_modal' => [

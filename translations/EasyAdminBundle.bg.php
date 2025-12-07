@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Създай и продължи редакцията',
         'save' => 'Запиши',
         'save_and_continue' => 'Запиши и продължи редакцията',
+        'toggle_dropdown' => 'Превключване на падащото меню',
     ],
 
     'batch_action_modal' => [

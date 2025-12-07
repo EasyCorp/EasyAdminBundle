@@ -27,7 +27,7 @@
                 htmlAttributes="{{ {'data-bs-toggle': 'dropdown', 'aria-expanded': 'false'} }}"
                 label:class="visually-hidden"
         >
-            {{ 'action.toggle_dropdown'|trans }}
+            {{ 'action.toggle_dropdown'|trans(domain: 'EasyAdminBundle') }}
         </twig:ea:Button>
     {% else %} {# render as a single button that toggles the dropdown (no main action) #}
         <twig:ea:Button

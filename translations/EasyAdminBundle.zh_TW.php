@@ -59,6 +59,7 @@ return [
         'create_and_continue' => '建立並繼續編輯',
         'save' => '儲存更改',
         'save_and_continue' => '儲存並繼續編輯',
+        'toggle_dropdown' => '切換下拉式選單',
     ],
 
     'batch_action_modal' => [

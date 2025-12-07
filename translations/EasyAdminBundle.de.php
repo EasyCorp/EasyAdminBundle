@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Erstellen und weiter bearbeiten',
         'save' => 'Speichern',
         'save_and_continue' => 'Speichern und weiter bearbeiten',
+        'toggle_dropdown' => 'Dropdown-Menü umschalten',
     ],
 
     'batch_action_modal' => [

@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Vytvořit a pokračovat',
         'save' => 'Uložit',
         'save_and_continue' => 'Uložit a pokračovat',
+        'toggle_dropdown' => 'Otevřít/zavřít rozbalovací nabídku',
     ],
 
     'batch_action_modal' => [

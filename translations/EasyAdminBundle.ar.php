@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'أنشاء و متابعة',
         'save' => 'حفظ',
         'save_and_continue' => 'حفظ و متابعة',
+        'toggle_dropdown' => 'تبديل القائمة المنسدلة',
     ],
 
     'batch_action_modal' => [

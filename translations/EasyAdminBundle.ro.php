@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Crează și continuă editarea',
         'save' => 'Salvează modificarile',
         'save_and_continue' => 'Salvează și continuă editarea',
+        'toggle_dropdown' => 'Comutare meniu derulant',
     ],
 
     'batch_action_modal' => [

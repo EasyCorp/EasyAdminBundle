@@ -59,6 +59,7 @@ return [
         // 'create_and_continue' => '',
         // 'save' => '',
         // 'save_and_continue' => '',
+        'toggle_dropdown' => 'Uključi/isključi padajući izbornik',
     ],
 
     'batch_action_modal' => [

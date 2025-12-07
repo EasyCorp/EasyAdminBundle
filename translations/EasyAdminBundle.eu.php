@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Sortu eta jarraitu',
         'save' => 'Gorde',
         'save_and_continue' => 'Gorde eta jarraitu',
+        'toggle_dropdown' => 'Goitibeherako menua txandakatu',
     ],
 
     'batch_action_modal' => [

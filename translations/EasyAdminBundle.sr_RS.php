@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Napravi i nastavi sa izmenama',
         'save' => 'Sačuvaj izmene',
         'save_and_continue' => 'Sačuvaj i nastavi sa izmenama',
+        'toggle_dropdown' => 'Uključi/isključi padajući meni',
     ],
 
     'batch_action_modal' => [

@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Crear i continuar editant',
         'save' => 'Desar els canvis',
         'save_and_continue' => 'Desar i continuar editant',
+        'toggle_dropdown' => 'Obre/tanca el menú desplegable',
     ],
 
     'batch_action_modal' => [

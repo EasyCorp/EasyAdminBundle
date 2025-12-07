@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Создать и продолжить',
         'save' => 'Сохранить',
         'save_and_continue' => 'Сохранить и продолжить',
+        'toggle_dropdown' => 'Переключить выпадающее меню',
     ],
 
     'batch_action_modal' => [

@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Opret og fortsæt redigering',
         'save' => 'Gem ændringer',
         'save_and_continue' => 'Gem og fortsæt redigering',
+        'toggle_dropdown' => 'Slå rullemenu til/fra',
     ],
 
     'batch_action_modal' => [

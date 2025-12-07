@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Buat dan teruskan penyuntingan',
         'save' => 'Simpan perubahan',
         'save_and_continue' => 'Simpan dan teruskan penyuntingan',
+        'toggle_dropdown' => 'Alihkan menu tarik-turun',
     ],
 
     'batch_action_modal' => [

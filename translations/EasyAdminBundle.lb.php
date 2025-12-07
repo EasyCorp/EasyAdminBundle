@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Erstellen a weider beaarbechten',
         'save' => 'Späicheren',
         'save_and_continue' => 'Späicheren a weider beaarbechten',
+        'toggle_dropdown' => 'Ausklappmenü opklappen',
     ],
 
     'batch_action_modal' => [

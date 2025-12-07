@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Crear y seguir editando',
         'save' => 'Guardar cambios',
         'save_and_continue' => 'Guardar y seguir editando',
+        'toggle_dropdown' => 'Alternar menú desplegable',
     ],
 
     'batch_action_modal' => [

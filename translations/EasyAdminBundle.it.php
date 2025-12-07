@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Crea e continua',
         'save' => 'Salva',
         'save_and_continue' => 'Salva e continua a modificare',
+        'toggle_dropdown' => 'Attiva/disattiva il menu a discesa',
     ],
 
     'batch_action_modal' => [

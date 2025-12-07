@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Ustvari in nadaljuj urejanje',
         'save' => 'Shrani spremembe',
         'save_and_continue' => 'Shrani in nadaljuj urejanje',
+        'toggle_dropdown' => 'Preklopi spustni meni',
     ],
 
     'batch_action_modal' => [

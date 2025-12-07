@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Créer et modifier',
         'save' => 'Sauvegarder les modifications',
         'save_and_continue' => 'Sauvegarder et modifier',
+        'toggle_dropdown' => 'Afficher/masquer le menu déroulant',
     ],
 
     'batch_action_modal' => [

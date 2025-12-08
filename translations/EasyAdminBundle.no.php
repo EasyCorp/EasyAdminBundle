@@ -59,7 +59,7 @@ return [
         'create_and_continue' => 'Lagre og fortsett redigering',
         // 'save' => 'Lagre endringer',
         'save_and_continue' => 'Lagre og fortsett redigering',
-        'toggle_dropdown' => 'Keuzemenu in-/uitschakelen',
+        'toggle_dropdown' => 'Veksle rullegardinmeny',
     ],
 
     'batch_action_modal' => [

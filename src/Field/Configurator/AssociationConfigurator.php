@@ -168,6 +168,8 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
                         EA::CRUD_CONTROLLER_FQCN => $context->getRequest()->attributes->get(EA::CRUD_CONTROLLER_FQCN) ?? $context->getRequest()->query->get(EA::CRUD_CONTROLLER_FQCN),
                         'propertyName' => $propertyName,
                         'originatingPage' => $context->getCrud()->getCurrentPage(),
+                        EA::ENTITY_ID => $entityDto->getPrimaryKeyValueAsString(),
+                        EA::ENTITY_FQCN => $entityDto->getFqcn(),
                     ])
                     ->generateUrl();
             } catch (RouteNotFoundException $e) {
@@ -177,12 +179,12 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
 
             $field->setFormTypeOption('attr.data-ea-autocomplete-endpoint-url', $autocompleteEndpointUrl ?? null);
         } else {
-            $field->setFormTypeOptionIfNotSet('query_builder', static function (EntityRepository $repository) use ($field) {
+            $field->setFormTypeOptionIfNotSet('query_builder', static function (EntityRepository $repository) use ($entityDto, $field) {
                 // TODO: should this use `createIndexQueryBuilder` instead, so we get the default ordering etc.?
                 // it would then be identical to the one used in autocomplete action, but it is a bit complex getting it in here
                 $queryBuilder = $repository->createQueryBuilder('entity');
                 if (null !== $queryBuilderCallable = $field->getCustomOption(AssociationField::OPTION_QUERY_BUILDER_CALLABLE)) {
-                    $queryBuilderCallable($queryBuilder);
+                    $queryBuilderCallable($queryBuilder, $entityDto);
                 }
 
                 return $queryBuilder;

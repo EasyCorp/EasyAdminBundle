@@ -39,7 +39,13 @@ final class ComparisonFilter implements FilterInterface
         $parameterName = $filterDataDto->getParameterName();
         $value = $filterDataDto->getValue();
 
-        $queryBuilder->andWhere(sprintf('%s.%s %s :%s', $alias, $property, $comparison, $parameterName))
-            ->setParameter($parameterName, $value);
+        if (str_contains($property, '.')) {
+            [$joinAlias, $propertyPath] = $this->createJoinForAssociationFilter($queryBuilder, $alias, $property, $parameterName);
+            $queryBuilder->andWhere(sprintf('%s.%s %s :%s', $joinAlias, $propertyPath, $comparison, $parameterName));
+        } else {
+            $queryBuilder->andWhere(sprintf('%s.%s %s :%s', $alias, $property, $comparison, $parameterName));
+        }
+
+        $queryBuilder->setParameter($parameterName, $value);
     }
 }

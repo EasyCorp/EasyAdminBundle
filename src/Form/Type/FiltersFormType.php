@@ -15,10 +15,17 @@ class FiltersFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $nameMapping = [];
+
         /** @var FilterDto $filter */
-        foreach ($options['ea_filters'] as $filter) {
-            $builder->add($filter->getProperty(), $filter->getFormType(), $filter->getFormTypeOptions());
+        foreach ($options['ea_filters'] as $filterName => $filter) {
+            $normalizedName = str_replace('.', '_', $filterName);
+            $nameMapping[$normalizedName] = $filterName;
+
+            $builder->add($normalizedName, $filter->getFormType(), $filter->getFormTypeOptions());
         }
+
+        $builder->setAttribute('ea_filter_name_mapping', $nameMapping);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

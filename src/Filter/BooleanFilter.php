@@ -33,8 +33,19 @@ final class BooleanFilter implements FilterInterface
 
     public function apply(QueryBuilder $queryBuilder, FilterDataDto $filterDataDto, ?FieldDto $fieldDto, EntityDto $entityDto): void
     {
-        $queryBuilder
-            ->andWhere(sprintf('%s.%s %s :%s', $filterDataDto->getEntityAlias(), $filterDataDto->getProperty(), $filterDataDto->getComparison(), $filterDataDto->getParameterName()))
-            ->setParameter($filterDataDto->getParameterName(), $filterDataDto->getValue());
+        $alias = $filterDataDto->getEntityAlias();
+        $property = $filterDataDto->getProperty();
+        $comparison = $filterDataDto->getComparison();
+        $parameterName = $filterDataDto->getParameterName();
+        $value = $filterDataDto->getValue();
+
+        if (str_contains($property, '.')) {
+            [$joinAlias, $propertyPath] = $this->createJoinForAssociationFilter($queryBuilder, $alias, $property, $parameterName);
+            $queryBuilder->andWhere(sprintf('%s.%s %s :%s', $joinAlias, $propertyPath, $comparison, $parameterName));
+        } else {
+            $queryBuilder->andWhere(sprintf('%s.%s %s :%s', $alias, $property, $comparison, $parameterName));
+        }
+
+        $queryBuilder->setParameter($parameterName, $value);
     }
 }

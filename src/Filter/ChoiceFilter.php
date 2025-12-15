@@ -77,13 +77,22 @@ final class ChoiceFilter implements FilterInterface
         $value = $filterDataDto->getValue();
         $isMultiple = (bool) $filterDataDto->getFormTypeOption('value_type_options.multiple');
 
+        $aliasToUse = $alias;
+        $propertyToUse = $property;
+
+        if (str_contains($property, '.')) {
+            [$joinAlias, $propertyPath] = $this->createJoinForAssociationFilter($queryBuilder, $alias, $property, $parameterName);
+            $aliasToUse = $joinAlias;
+            $propertyToUse = $propertyPath;
+        }
+
         if (null === $value || ($isMultiple && 0 === \count($value))) {
-            $queryBuilder->andWhere(sprintf('%s.%s %s', $alias, $property, $comparison));
+            $queryBuilder->andWhere(sprintf('%s.%s %s', $aliasToUse, $propertyToUse, $comparison));
         } else {
             $orX = new Orx();
-            $orX->add(sprintf('%s.%s %s (:%s)', $alias, $property, $comparison, $parameterName));
+            $orX->add(sprintf('%s.%s %s (:%s)', $aliasToUse, $propertyToUse, $comparison, $parameterName));
             if (ComparisonType::NEQ === $comparison || 'NOT IN' === $comparison) {
-                $orX->add(sprintf('%s.%s IS NULL', $alias, $property));
+                $orX->add(sprintf('%s.%s IS NULL', $aliasToUse, $propertyToUse));
             }
             $queryBuilder->andWhere($orX)
                 ->setParameter($parameterName, $value);

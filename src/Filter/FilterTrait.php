@@ -93,4 +93,46 @@ trait FilterTrait
     {
         return $this->dto;
     }
+
+    /**
+     * Creates JOIN clauses for association field filters (e.g., "author.country").
+     * Handles nested associations by creating multiple joins if needed.
+     *
+     * @param QueryBuilder $queryBuilder  The query builder instance
+     * @param string       $rootAlias     The root entity alias (e.g., "entity")
+     * @param string       $propertyPath  The full property path (e.g., "author.country" or "author.address.city")
+     * @param string       $parameterName Unique parameter name for the filter
+     *
+     * @return array{0: string, 1: string} Returns [joinAlias, finalProperty]
+     */
+    protected function createJoinForAssociationFilter(QueryBuilder $queryBuilder, string $rootAlias, string $propertyPath, string $parameterName): array
+    {
+        $parts = explode('.', $propertyPath);
+        $finalProperty = array_pop($parts);
+        $currentAlias = $rootAlias;
+
+        foreach ($parts as $index => $associationName) {
+            $joinAlias = sprintf('%s_%s_%d', $associationName, $parameterName, $index);
+            $joinPath = sprintf('%s.%s', $currentAlias, $associationName);
+            $existingJoins = $queryBuilder->getDQLPart('join');
+            $joinExists = false;
+
+            foreach ($existingJoins as $joins) {
+                foreach ($joins as $join) {
+                    if ($join->getJoin() === $joinPath && $join->getAlias() === $joinAlias) {
+                        $joinExists = true;
+                        break 2;
+                    }
+                }
+            }
+
+            if (!$joinExists) {
+                $queryBuilder->leftJoin($joinPath, $joinAlias);
+            }
+
+            $currentAlias = $joinAlias;
+        }
+
+        return [$currentAlias, $finalProperty];
+    }
 }

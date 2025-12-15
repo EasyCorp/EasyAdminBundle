@@ -59,8 +59,16 @@ final class NullFilter implements FilterInterface
 
     public function apply(QueryBuilder $queryBuilder, FilterDataDto $filterDataDto, ?FieldDto $fieldDto, EntityDto $entityDto): void
     {
+        $alias = $filterDataDto->getEntityAlias();
+        $property = $filterDataDto->getProperty();
+        $parameterName = $filterDataDto->getParameterName();
         $comparison = self::CHOICE_VALUE_NULL === $filterDataDto->getValue() ? 'IS' : 'IS NOT';
-        $queryBuilder
-            ->andWhere(sprintf('%s.%s %s NULL', $filterDataDto->getEntityAlias(), $filterDataDto->getProperty(), $comparison));
+
+        if (str_contains($property, '.')) {
+            [$joinAlias, $propertyPath] = $this->createJoinForAssociationFilter($queryBuilder, $alias, $property, $parameterName);
+            $queryBuilder->andWhere(sprintf('%s.%s %s NULL', $joinAlias, $propertyPath, $comparison));
+        } else {
+            $queryBuilder->andWhere(sprintf('%s.%s %s NULL', $alias, $property, $comparison));
+        }
     }
 }

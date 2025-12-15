@@ -73,18 +73,27 @@ final class ArrayFilter implements FilterInterface
 
         $useQuotes = Types::SIMPLE_ARRAY === $fieldDto->getDoctrineMetadata()->get('type');
 
+        $aliasToUse = $alias;
+        $propertyToUse = $property;
+
+        if (str_contains($property, '.')) {
+            [$joinAlias, $propertyPath] = $this->createJoinForAssociationFilter($queryBuilder, $alias, $property, $parameterName);
+            $aliasToUse = $joinAlias;
+            $propertyToUse = $propertyPath;
+        }
+
         if (null === $value || [] === $value) {
-            $queryBuilder->andWhere(sprintf('%s.%s %s', $alias, $property, $comparison));
+            $queryBuilder->andWhere(sprintf('%s.%s %s', $aliasToUse, $propertyToUse, $comparison));
         } else {
             $clause = ComparisonType::CONTAINS_ALL === $comparison ? new Andx() : new Orx();
             $comparison = ComparisonType::CONTAINS_ALL === $comparison ? 'LIKE' : $comparison;
             foreach ($value as $key => $item) {
                 $itemParameterName = sprintf('%s_%s', $parameterName, $key);
-                $clause->add(sprintf('%s.%s %s :%s', $alias, $property, $comparison, $itemParameterName));
+                $clause->add(sprintf('%s.%s %s :%s', $aliasToUse, $propertyToUse, $comparison, $itemParameterName));
                 $queryBuilder->setParameter($itemParameterName, $useQuotes ? '%"'.$item.'"%' : '%'.$item.'%');
             }
             if (ComparisonType::NOT_CONTAINS === $comparison) {
-                $clause->add(sprintf('%s.%s IS NULL', $alias, $property));
+                $clause->add(sprintf('%s.%s IS NULL', $aliasToUse, $propertyToUse));
             }
             $queryBuilder->andWhere($clause);
         }

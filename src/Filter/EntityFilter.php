@@ -61,11 +61,37 @@ final class EntityFilter implements FilterInterface
         $value = $filterDataDto->getValue();
         $isMultiple = (bool) $filterDataDto->getFormTypeOption('value_type_options.multiple');
 
-        if ($entityDto->getClassMetadata()->isCollectionValuedAssociation($property)) {
+        $aliasToUse = $alias;
+        $propertyToUse = $property;
+
+        if (str_contains($property, '.')) {
+            [$joinAlias, $propertyPath] = $this->createJoinForAssociationFilter($queryBuilder, $alias, $property, $parameterName);
+            $aliasToUse = $joinAlias;
+            $propertyToUse = $propertyPath;
+        }
+
+        $classMetadata = $entityDto->getClassMetadata();
+        if (str_contains($property, '.')) {
+            $em = $queryBuilder->getEntityManager();
+            $metadata = $classMetadata;
+            $parts = explode('.', $property);
+            $lastProperty = array_pop($parts);
+            foreach ($parts as $association) {
+                if (!$metadata->hasAssociation($association)) {
+                    break;
+                }
+                $targetClass = $metadata->getAssociationTargetClass($association);
+                $metadata = $em->getClassMetadata($targetClass);
+            }
+            $classMetadata = $metadata;
+            $propertyToUse = $lastProperty;
+        }
+
+        if ($classMetadata->hasAssociation($propertyToUse) && $classMetadata->isCollectionValuedAssociation($propertyToUse)) {
             // the 'ea_' prefix is needed to avoid errors when using reserved words as assocAlias ('order', 'group', etc.)
             // see https://github.com/EasyCorp/EasyAdminBundle/pull/4344
             $assocAlias = 'ea_'.$filterDataDto->getParameterName();
-            $queryBuilder->leftJoin(sprintf('%s.%s', $alias, $property), $assocAlias);
+            $queryBuilder->leftJoin(sprintf('%s.%s', $aliasToUse, $propertyToUse), $assocAlias);
 
             if (0 === \count($value)) {
                 $queryBuilder->andWhere(sprintf('%s %s', $assocAlias, $comparison));
@@ -79,12 +105,12 @@ final class EntityFilter implements FilterInterface
                     ->setParameter($parameterName, $this->processParameterValue($queryBuilder, $value));
             }
         } elseif (null === $value || ($isMultiple && 0 === \count($value))) {
-            $queryBuilder->andWhere(sprintf('%s.%s %s', $alias, $property, $comparison));
+            $queryBuilder->andWhere(sprintf('%s.%s %s', $aliasToUse, $propertyToUse, $comparison));
         } else {
             $orX = new Orx();
-            $orX->add(sprintf('%s.%s %s (:%s)', $alias, $property, $comparison, $parameterName));
+            $orX->add(sprintf('%s.%s %s (:%s)', $aliasToUse, $propertyToUse, $comparison, $parameterName));
             if (ComparisonType::NEQ === $comparison) {
-                $orX->add(sprintf('%s.%s IS NULL', $alias, $property));
+                $orX->add(sprintf('%s.%s IS NULL', $aliasToUse, $propertyToUse));
             }
             $queryBuilder->andWhere($orX)
                 ->setParameter($parameterName, $this->processParameterValue($queryBuilder, $value));

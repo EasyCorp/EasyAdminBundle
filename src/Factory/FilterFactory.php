@@ -3,7 +3,6 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
 use Doctrine\DBAL\Types\Types;
-use Doctrine\ORM\Mapping\FieldMapping;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterConfiguratorInterface;
@@ -67,12 +66,18 @@ final class FilterFactory
     public function create(FilterConfigDto $filterConfig, FieldCollection $fields, EntityDto $entityDto): FilterCollection
     {
         $builtFilters = [];
+        $flattenedFilters = $this->flattenFilterArray($filterConfig->all());
+
         /** @var FilterInterface|string $filter */
-        foreach ($filterConfig->all() as $property => $filter) {
+        foreach ($flattenedFilters as $property => $filter) {
             if (\is_string($filter)) {
                 $guessedFilterClass = $this->guessFilterClass($entityDto, $property);
                 /** @var FilterInterface $filter */
                 $filter = $guessedFilterClass::new($property);
+            }
+
+            if (!$filter instanceof FilterInterface) {
+                continue;
             }
 
             $filterDto = $filter->getAsDto();
@@ -94,8 +99,37 @@ final class FilterFactory
         return FilterCollection::new($builtFilters);
     }
 
+    /**
+     * Flattens nested arrays created by KeyValueStore's dot notation handling.
+     * For example, ['author' => ['country' => FilterObject]] becomes ['author.country' => FilterObject].
+     *
+     * @param array<string, mixed> $filters
+     *
+     * @return array<string, FilterInterface|string>
+     */
+    private function flattenFilterArray(array $filters, string $prefix = ''): array
+    {
+        $flattened = [];
+
+        foreach ($filters as $key => $value) {
+            $fullKey = '' === $prefix ? $key : $prefix.'.'.$key;
+
+            if (\is_array($value)) {
+                $flattened = array_merge($flattened, $this->flattenFilterArray($value, $fullKey));
+            } else {
+                $flattened[$fullKey] = $value;
+            }
+        }
+
+        return $flattened;
+    }
+
     private function guessFilterClass(EntityDto $entityDto, string $propertyName): string
     {
+        if (str_contains($propertyName, '.')) {
+            return TextFilter::class;
+        }
+
         if ($entityDto->getClassMetadata()->hasAssociation($propertyName)) {
             return EntityFilter::class;
         }

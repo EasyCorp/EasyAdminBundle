@@ -207,13 +207,16 @@ final class EntityRepository implements EntityRepositoryInterface
         }
 
         $appliedFilters = $searchDto->getAppliedFilters();
+        $nameMapping = $filtersForm->getConfig()->getAttribute('ea_filter_name_mapping', []);
+
         $i = 0;
         foreach ($filtersForm as $filterForm) {
-            $propertyName = $filterForm->getName();
+            $normalizedName = $filterForm->getName();
+            $originalFilterName = $nameMapping[$normalizedName] ?? $normalizedName;
 
-            $filter = $configuredFilters->get($propertyName);
+            $filter = $configuredFilters->get($originalFilterName);
             // this filter is not defined or not applied
-            if (null === $filter || !isset($appliedFilters[$propertyName])) {
+            if (null === $filter || (!isset($appliedFilters[$normalizedName]) && !isset($appliedFilters[$originalFilterName]))) {
                 continue;
             }
 
@@ -234,7 +237,16 @@ final class EntityRepository implements EntityRepositoryInterface
             $rootAlias = current($queryBuilder->getRootAliases());
 
             $filterDataDto = FilterDataDto::new($i, $filter, $rootAlias, $submittedData);
-            $filter->apply($queryBuilder, $filterDataDto, $fields->getByProperty($propertyName), $entityDto);
+            $filterProperty = $filter->getProperty();
+            $fieldDto = null;
+            if (str_contains($filterProperty, '.')) {
+                $baseProperty = explode('.', $filterProperty)[0];
+                $fieldDto = $fields->getByProperty($baseProperty);
+            } else {
+                $fieldDto = $fields->getByProperty($filterProperty);
+            }
+
+            $filter->apply($queryBuilder, $filterDataDto, $fieldDto, $entityDto);
 
             ++$i;
         }

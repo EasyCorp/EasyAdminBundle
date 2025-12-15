@@ -5,6 +5,11 @@
 
 <div class="list-pagination">
     <div class="list-pagination-counter">
+        <select data-ea-paginator-list-size-per-page class="form-select flex d-inline w-auto me-1">
+            {% for size in ea.crud.paginator.listSizePerPage %}
+                <option value="{{ size }}" {{ ea.crud.paginator.pageSize == size ? 'selected' : '' }}>{{ size }}</option>
+            {% endfor %}
+        </select>
         {% if render_detailed_pagination is defined ? render_detailed_pagination : true %}
             {{ 'paginator.results'|trans({'%count%': paginator.numResults|format})|raw }}
         {% endif %}

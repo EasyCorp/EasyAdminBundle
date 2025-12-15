@@ -9,10 +9,14 @@ final class PaginatorDto
 {
     private ?int $pageNumber = null;
 
+    /**
+     * @param int[] $listSizePerPage
+     */
     public function __construct(
         private readonly int $pageSize,
         private readonly int $rangeSize,
         private readonly int $rangeEdgeSize,
+        private readonly array $listSizePerPage,
         private readonly bool $fetchJoinCollection,
         private readonly ?bool $useOutputWalkers,
     ) {
@@ -51,5 +55,13 @@ final class PaginatorDto
     public function useOutputWalkers(): ?bool
     {
         return $this->useOutputWalkers;
+    }
+
+    /**
+     * @return int[]
+     */
+    public function getListSizePerPage(): array
+    {
+        return $this->listSizePerPage;
     }
 }

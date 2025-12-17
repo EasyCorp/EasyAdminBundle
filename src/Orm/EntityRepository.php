@@ -265,6 +265,7 @@ final class EntityRepository implements EntityRepositoryInterface
         foreach ($searchableProperties as $propertyName) {
             if ($this->isAssociation($entityDto, $propertyName)) {
                 // support arbitrarily nested associations (e.g. foo.bar.baz.qux)
+                // and embeddables on associated entities (e.g. foo.bar.embeddable)
                 $associatedProperties = explode('.', $propertyName);
                 $numAssociatedProperties = \count($associatedProperties);
 
@@ -274,7 +275,10 @@ final class EntityRepository implements EntityRepositoryInterface
 
                 $associatedEntityDto = $this->entityFactory->create($entityDto->getClassMetadata()->getAssociationTargetClass($associatedProperties[0]));
 
-                $associatedEntityAlias = $associatedPropertyName = '';
+                $associatedEntityAlias = '';
+                $embeddableStartIndex = null;
+
+                // Join through associations until we hit an embeddable or the end
                 for ($i = 0; $i < $numAssociatedProperties - 1; ++$i) {
                     $associatedEntityName = $associatedProperties[$i];
                     $associatedEntityAlias = $entitiesAlreadyJoined[$associatedEntityName] ?? Escaper::escapeDqlAlias($associatedEntityName).(0 === $i ? '' : $i);
@@ -286,6 +290,13 @@ final class EntityRepository implements EntityRepositoryInterface
                         $entitiesAlreadyJoined[$associatedEntityName] = $associatedEntityAlias;
                     }
 
+                    // Check if the next property is an embeddable
+                    if ($i < $numAssociatedProperties - 2 && isset($associatedEntityDto->getClassMetadata()->embeddedClasses[$associatedPropertyName])) {
+                        // We've hit an embeddable, stop joining and handle embeddable path
+                        $embeddableStartIndex = $i + 1;
+                        break;
+                    }
+
                     if ($i < $numAssociatedProperties - 2) {
                         $targetEntity = $associatedEntityDto->getClassMetadata()->getAssociationTargetClass($associatedPropertyName);
                         $associatedEntityDto = $this->entityFactory->create($targetEntity);
@@ -293,13 +304,90 @@ final class EntityRepository implements EntityRepositoryInterface
                 }
 
                 $entityName = $associatedEntityAlias;
-                $propertyName = $associatedPropertyName;
-                if (!isset($associatedEntityDto->getClassMetadata()->fieldMappings[$propertyName])) {
-                    throw new \InvalidArgumentException(sprintf('The "%s" property included in the setSearchFields() method is not a valid search field. When using associated properties in search, you must also define the exact field used in the search (e.g. \'%s.id\', \'%s.name\', etc.)', $propertyName, $propertyName, $propertyName));
+
+                // If we encountered an embeddable in the path, handle it
+                if (null !== $embeddableStartIndex) {
+                    $embeddablePath = \array_slice($associatedProperties, $embeddableStartIndex);
+                    $numEmbeddableParts = \count($embeddablePath);
+
+                    /** @var EntityManagerInterface $entityManager */
+                    $entityManager = $this->doctrine->getManagerForClass($associatedEntityDto->getFqcn());
+                    $currentMetadata = $associatedEntityDto->getClassMetadata();
+
+                    // Navigate through embeddable hierarchy
+                    for ($j = 0; $j < $numEmbeddableParts - 1; ++$j) {
+                        $embeddableName = $embeddablePath[$j];
+
+                        if (!isset($currentMetadata->embeddedClasses[$embeddableName])) {
+                            throw new \InvalidArgumentException(sprintf('The "%s" property included in the setSearchFields() method is not a valid embeddable property.', $propertyName));
+                        }
+
+                        $embeddableClass = $currentMetadata->embeddedClasses[$embeddableName]['class'];
+                        $currentMetadata = $entityManager->getClassMetadata($embeddableClass);
+                    }
+
+                    // Get the final field from the embeddable
+                    $finalFieldName = $embeddablePath[$numEmbeddableParts - 1];
+
+                    if (!isset($currentMetadata->fieldMappings[$finalFieldName])) {
+                        throw new \InvalidArgumentException(sprintf('The "%s" property included in the setSearchFields() method is not a valid search field.', $propertyName));
+                    }
+
+                    $propertyName = implode('.', $embeddablePath);
+                    $fieldMapping = $currentMetadata->getFieldMapping($finalFieldName);
+                } else {
+                    // No embeddable in path, handle as regular association field
+                    $associatedPropertyName = $associatedProperties[$numAssociatedProperties - 1];
+                    $propertyName = $associatedPropertyName;
+
+                    if (!isset($associatedEntityDto->getClassMetadata()->fieldMappings[$propertyName])) {
+                        throw new \InvalidArgumentException(sprintf('The "%s" property included in the setSearchFields() method is not a valid search field. When using associated properties in search, you must also define the exact field used in the search (e.g. \'%s.id\', \'%s.name\', etc.)', $propertyName, $propertyName, $propertyName));
+                    }
+
+                    $fieldMapping = $associatedEntityDto->getClassMetadata()->getFieldMapping($propertyName);
                 }
 
+                // In Doctrine ORM 2.x, getFieldMapping() returns an array
+                /** @phpstan-ignore-next-line function.impossibleType */
+                if (\is_array($fieldMapping)) {
+                    /** @phpstan-ignore-next-line cast.useless */
+                    $fieldMapping = (object) $fieldMapping;
+                }
+                /** @phpstan-ignore-next-line function.alreadyNarrowedType */
+                $propertyDataType = property_exists($fieldMapping, 'type') ? $fieldMapping->type : $fieldMapping['type'];
+            } elseif (str_contains($propertyName, '.')) {
+                // support arbitrarily nested embeddables on main entity (e.g. address.location.street)
+                $embeddablePath = explode('.', $propertyName);
+                $numEmbeddableParts = \count($embeddablePath);
+
+                $currentMetadata = $entityDto->getClassMetadata();
+                /** @var EntityManagerInterface $entityManager */
+                $entityManager = $this->doctrine->getManagerForClass($entityDto->getFqcn());
+
+                // Navigate through embeddable hierarchy
+                for ($i = 0; $i < $numEmbeddableParts - 1; ++$i) {
+                    $embeddableName = $embeddablePath[$i];
+
+                    if (!isset($currentMetadata->embeddedClasses[$embeddableName])) {
+                        throw new \InvalidArgumentException(sprintf('The "%s" property included in the setSearchFields() method is not a valid embeddable property.', $propertyName));
+                    }
+
+                    $embeddableClass = $currentMetadata->embeddedClasses[$embeddableName]['class'];
+                    $currentMetadata = $entityManager->getClassMetadata($embeddableClass);
+                }
+
+                // Get the final field from the embeddable
+                $finalFieldName = $embeddablePath[$numEmbeddableParts - 1];
+
+                if (!isset($currentMetadata->fieldMappings[$finalFieldName])) {
+                    throw new \InvalidArgumentException(sprintf('The "%s" property included in the setSearchFields() method is not a valid search field.', $propertyName));
+                }
+
+                $entityName = 'entity';
+                $propertyName = implode('.', $embeddablePath);
+
                 // In Doctrine ORM 3.x, FieldMapping implements \ArrayAccess; in 4.x it's an object with properties
-                $fieldMapping = $associatedEntityDto->getClassMetadata()->getFieldMapping($propertyName);
+                $fieldMapping = $currentMetadata->getFieldMapping($finalFieldName);
                 // In Doctrine ORM 2.x, getFieldMapping() returns an array
                 /** @phpstan-ignore-next-line function.impossibleType */
                 if (\is_array($fieldMapping)) {

@@ -39,6 +39,11 @@ class Crud
     private bool $paginatorFetchJoinCollection = true;
     private ?bool $paginatorUseOutputWalkers = null;
 
+    /** @var int[] */
+    private array $listSizePerPage = [
+        10, 20, 30, 40, 50, 100, 150,
+    ];
+
     private function __construct(private readonly CrudDto $dto)
     {
     }
@@ -326,6 +331,14 @@ class Crud
         return $this;
     }
 
+    /**
+     * @param int[] $listSizePerPage
+     */
+    public function setListSizePerPage(array $listSizePerPage): void
+    {
+        $this->listSizePerPage = $listSizePerPage;
+    }
+
     public function setPaginatorRangeSize(int $maxPagesOnEachSide): self
     {
         if ($maxPagesOnEachSide < 0) {
@@ -439,7 +452,13 @@ class Crud
 
     public function getAsDto(): CrudDto
     {
-        $this->dto->setPaginator(new PaginatorDto($this->paginatorPageSize, $this->paginatorRangeSize, 1, $this->paginatorFetchJoinCollection, $this->paginatorUseOutputWalkers));
+        $this->dto->setPaginator(new PaginatorDto(
+            $this->paginatorPageSize,
+            $this->paginatorRangeSize, 1,
+            $this->listSizePerPage,
+            $this->paginatorFetchJoinCollection,
+            $this->paginatorUseOutputWalkers
+        ));
 
         return $this->dto;
     }

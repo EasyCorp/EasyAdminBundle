@@ -32,6 +32,7 @@ class App {
         this.#createModalWindowsForDeleteActions();
         this.#createPopovers();
         this.#createTooltips();
+        this.#createPaginator();
 
         document.addEventListener('ea.collection.item-added', () => this.#createAutoCompleteFields());
     }
@@ -455,5 +456,19 @@ class App {
                 toggleVisibilityClasses(secondValue, comparisonWidget.value !== 'between');
             });
         });
+    }
+
+    #createPaginator() {
+        document
+            .querySelectorAll('.list-pagination-counter select[data-ea-paginator-list-size-per-page]')
+            .forEach((element) => {
+                element.addEventListener('change', (event) => {
+                    const url = new URL(window.location.href);
+                    url.searchParams.set('size', event.currentTarget.value);
+                    url.searchParams.set('page', '1');
+
+                    window.location.replace(url.toString());
+                });
+            });
     }
 }

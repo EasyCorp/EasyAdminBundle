@@ -17,6 +17,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Provider\FieldProviderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetsDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\BatchActionDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -48,7 +49,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Model\FileUploadState;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityUpdater;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
-use EasyCorp\Bundle\EasyAdminBundle\Provider\FieldProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -97,7 +97,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
     public function configureFields(string $pageName): iterable
     {
-        return $this->container->get(FieldProvider::class)->getDefaultFields($pageName);
+        return $this->container->get(FieldProviderInterface::class)->getDefaultFields($pageName);
     }
 
     public static function getSubscribedServices(): array
@@ -112,7 +112,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             EntityFactory::class => '?'.EntityFactory::class,
             EntityRepository::class => '?'.EntityRepository::class,
             EntityUpdater::class => '?'.EntityUpdater::class,
-            FieldProvider::class => '?'.FieldProvider::class,
+            FieldProviderInterface::class => '?'.FieldProviderInterface::class,
             FilterFactory::class => '?'.FilterFactory::class,
             FormFactory::class => '?'.FormFactory::class,
             PaginatorFactory::class => '?'.PaginatorFactory::class,

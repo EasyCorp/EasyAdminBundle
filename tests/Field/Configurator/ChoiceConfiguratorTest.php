@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Field\Configurator;
 
-use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
@@ -10,107 +10,118 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\ChoiceConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Field\AbstractFieldTest;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Field\Fixtures\ChoiceField\PriorityUnitEnum;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Field\Fixtures\ChoiceField\StatusBackedEnum;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Entity\ProjectDomain\Project;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Model\Priority;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Model\Status;
 
 class ChoiceConfiguratorTest extends AbstractFieldTest
 {
-    private const ENTITY_CLASS = 'AppTestBundle\Entity\UnitTests\Category';
-    private const PROPERTY_NAME = 'foo';
-
-    private ?EntityDto $entity = null;
+    private EntityDto $projectDto;
 
     protected function setUp(): void
     {
-        parent::setUp();
+        /** @var EntityManagerInterface $entityManager */
+        $entityManager = static::getContainer()->get(EntityManagerInterface::class);
+        $this->projectDto = new EntityDto(Project::class, $entityManager->getClassMetadata(Project::class));
 
         $this->configurator = new ChoiceConfigurator();
+    }
 
-        $metadata = new ClassMetadata(self::ENTITY_CLASS);
-        $metadata->setIdentifier(['id']);
-        $this->entity = new EntityDto(self::ENTITY_CLASS, $metadata);
+    protected function getEntityDto(): EntityDto
+    {
+        return $this->projectDto;
     }
 
     /**
-     * @dataProvider fieldTypes
+     * @dataProvider fieldFqcns
      */
-    public function testSupportsField(string $fieldType, bool $expectedResult): void
+    public function testSupports(string $fieldFqcn, bool $expectedIsSupported): void
     {
         $field = new FieldDto();
-        $field->setFieldFqcn($fieldType);
+        $field->setFieldFqcn($fieldFqcn);
 
-        $this->assertSame($this->configurator->supports($field, $this->entity), $expectedResult);
+        $this->assertSame($expectedIsSupported, $this->configurator->supports($field, $this->projectDto));
     }
 
-    public function testBackedEnumTypeChoices(): void
-    {
-        $field = ChoiceField::new(self::PROPERTY_NAME);
-        $field->getAsDto()->setDoctrineMetadata(['enumType' => StatusBackedEnum::class]);
-
-        $formChoices = array_combine(
-            array_column(StatusBackedEnum::cases(), 'name'),
-            StatusBackedEnum::cases(),
-        );
-
-        $this->assertSame($this->configure($field)->getFormTypeOption('choices'), $formChoices);
-    }
-
-    public function testBackedEnumChoices(): void
-    {
-        $field = ChoiceField::new(self::PROPERTY_NAME);
-        $field->setCustomOptions(['choices' => StatusBackedEnum::cases()]);
-
-        $expected = [];
-        foreach (StatusBackedEnum::cases() as $case) {
-            $expected[$case->name] = $case;
-        }
-
-        $this->assertSame($this->configure($field)->getFormTypeOption('choices'), $expected);
-    }
-
-    public function testUnitEnumTypeChoices(): void
-    {
-        $field = ChoiceField::new(self::PROPERTY_NAME);
-        $field->getAsDto()->setDoctrineMetadata(['enumType' => PriorityUnitEnum::class]);
-
-        $formChoices = array_combine(
-            array_column(PriorityUnitEnum::cases(), 'name'),
-            PriorityUnitEnum::cases(),
-        );
-
-        $this->assertSame($this->configure($field)->getFormTypeOption('choices'), $formChoices);
-    }
-
-    public function testUnitEnumChoices(): void
-    {
-        $field = ChoiceField::new(self::PROPERTY_NAME);
-        $field->setCustomOptions(['choices' => PriorityUnitEnum::cases()]);
-
-        $expected = [];
-        foreach (PriorityUnitEnum::cases() as $case) {
-            $expected[$case->name] = $case;
-        }
-
-        $this->assertSame($this->configure($field)->getFormTypeOption('choices'), $expected);
-    }
-
-    public static function fieldTypes(): iterable
+    public static function fieldFqcns(): iterable
     {
         yield [ChoiceField::class, true];
         yield [TextField::class, false];
         yield [IdField::class, false];
     }
 
-    public function testBackedEnumChoicesLabeled(): void
+    public function testBackedEnum(): void
     {
-        $choices = [];
-        foreach (StatusBackedEnum::cases() as $case) {
-            $choices[$case->label()] = $case;
-        }
+        $field = ChoiceField::new('status');
 
-        $field = ChoiceField::new(self::PROPERTY_NAME);
-        $field->setCustomOptions(['choices' => $choices]);
+        $this->assertSame(
+            [
+                'Draft' => Status::Draft,
+                'Published' => Status::Published,
+                'Deleted' => Status::Deleted,
+            ],
+            $this->configure($field)->getFormTypeOption('choices'),
+        );
+    }
 
-        $this->assertSame($choices, $this->configure($field)->getFormTypeOption('choices'));
+    public function testBackedEnumWithCustomOptions(): void
+    {
+        $field = ChoiceField::new('status')->setCustomOptions(['choices' => Status::cases()]);
+
+        $this->assertSame(
+            [
+                'Draft' => Status::Draft,
+                'Published' => Status::Published,
+                'Deleted' => Status::Deleted,
+            ],
+            $this->configure($field)->getFormTypeOption('choices'),
+        );
+    }
+
+    public function testBackedEnumLabels(): void
+    {
+        $field = ChoiceField::new('status')->setCustomOptions(['choices' => [
+            'Draft label' => Status::Draft,
+            'Published label' => Status::Published,
+            'Deleted label' => Status::Deleted,
+        ]]);
+
+        $this->assertSame(
+            [
+                'Draft label' => Status::Draft,
+                'Published label' => Status::Published,
+                'Deleted label' => Status::Deleted,
+            ],
+            $this->configure($field)->getFormTypeOption('choices'),
+        );
+    }
+
+    public function testUnitEnum(): void
+    {
+        $field = ChoiceField::new('priority');
+
+        $this->assertSame(
+            [
+                'High' => Priority::High,
+                'Normal' => Priority::Normal,
+                'Low' => Priority::Low,
+            ],
+            $this->configure($field)->getFormTypeOption('choices'),
+        );
+    }
+
+    public function testUnitEnumChoicesWithCustomOptions(): void
+    {
+        $field = ChoiceField::new('priority');
+        $field->setCustomOptions(['choices' => Priority::cases()]);
+
+        $this->assertSame(
+            [
+                'High' => Priority::High,
+                'Normal' => Priority::Normal,
+                'Low' => Priority::Low,
+            ],
+            $this->configure($field)->getFormTypeOption('choices'),
+        );
     }
 }

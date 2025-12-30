@@ -85,15 +85,19 @@ final class CollectionConfigurator implements FieldConfiguratorInterface
             $field->setCustomOption(CollectionField::OPTION_ENTRY_IS_COMPLEX, $isComplexEntry);
         }
 
-        $field->setFormattedValue($this->formatCollection($field, $context));
+        $field->setFormattedValue($this->formatCollection($field, $entityDto, $context));
 
         $this->configureEntryType($field, $entityDto, $context);
     }
 
-    private function formatCollection(FieldDto $field, AdminContext $context): int|string
+    private function formatCollection(FieldDto $field, EntityDto $entityDto, AdminContext $context): int|string
     {
-        $doctrineMetadata = $field->getDoctrineMetadata();
-        if ('array' !== $doctrineMetadata->get('type') && !$field->getValue() instanceof PersistentCollection) {
+        $doctrineType = null;
+        if (isset($entityDto->getClassMetadata()->fieldMappings[$field->getProperty()])) {
+            $doctrineType = $entityDto->getClassMetadata()->getFieldMapping($field->getProperty())['type'];
+        }
+
+        if ('array' !== $doctrineType && !$field->getValue() instanceof PersistentCollection) {
             return $this->countNumElements($field->getValue());
         }
 

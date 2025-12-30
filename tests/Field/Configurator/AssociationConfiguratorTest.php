@@ -137,7 +137,7 @@ class AssociationConfiguratorTest extends AbstractFieldTest
      */
     public function testFailsOnOptionRenderAsEmbeddedCrudFormIfNoCrudControllerCanBeFound(FieldInterface $field): void
     {
-        $field->getAsDto()->setDoctrineMetadata((array) $this->projectDto->getClassMetadata()->getAssociationMapping($field->getAsDto()->getProperty()));
+        $field->getAsDto()->setDoctrineMetadata($associationMapping = (array) $this->projectDto->getClassMetadata()->getAssociationMapping($field->getAsDto()->getProperty()));
         $field->setCustomOption(AssociationField::OPTION_RENDER_AS_EMBEDDED_FORM, true);
 
         $this->expectException(\RuntimeException::class);
@@ -145,7 +145,7 @@ class AssociationConfiguratorTest extends AbstractFieldTest
             'The "%s" association field of "%s" wants to render its contents using an EasyAdmin CRUD form. However, no CRUD form was found related to this field. You can either create a CRUD controller for the entity "%s" or pass the CRUD controller to use as the first argument of the "renderAsEmbeddedForm()" method.',
             $field->getAsDto()->getProperty(),
             ProjectCrudController::class,
-            $field->getAsDto()->getDoctrineMetadata()->get('targetEntity'),
+            $associationMapping['targetEntity'],
         ));
 
         $this->configure($field, controllerFqcn: ProjectCrudController::class);

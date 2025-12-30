@@ -505,6 +505,9 @@ final class FieldDto
         $this->customOptions->set($optionName, $optionValue);
     }
 
+    /**
+     * @deprecated since 4.27 and to be removed in 5.0, use $entityDto->getClassMetadata() instead
+     */
     public function getDoctrineMetadata(): KeyValueStore
     {
         return $this->doctrineMetadata;
@@ -512,6 +515,8 @@ final class FieldDto
 
     /**
      * @param array<string, mixed> $metadata
+     *
+     * @deprecated since 4.27 and to be removed in 5.0 without replacement
      */
     public function setDoctrineMetadata(array $metadata): void
     {

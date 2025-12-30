@@ -6,6 +6,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Model\Priority;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Model\Status;
 
 #[ORM\Entity]
 class Project implements \Stringable
@@ -30,13 +32,13 @@ class Project implements \Stringable
     /**
      * @var Collection<int, ProjectIssue>
      */
-    #[ORM\OneToMany(targetEntity: ProjectIssue::class, mappedBy: 'project', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'project', targetEntity: ProjectIssue::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $projectIssues;
 
     /**
      * @var Collection<int, Developer>
      */
-    #[ORM\OneToMany(targetEntity: Developer::class, mappedBy: 'favouriteProject')]
+    #[ORM\OneToMany(mappedBy: 'favouriteProject', targetEntity: Developer::class)]
     private Collection $favouriteProjectOf;
 
     /**
@@ -95,6 +97,12 @@ class Project implements \Stringable
 
     #[ORM\Column(type: Types::TIME_IMMUTABLE)]
     private ?\DateTimeImmutable $startTimeImmutable = null;
+
+    #[ORM\Column(type: Types::STRING, enumType: Status::class)]
+    private Status $status;
+
+    #[ORM\Column(type: Types::STRING, enumType: Priority::class)]
+    private Status $priority;
 
     public function __construct()
     {

@@ -48,7 +48,10 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
 
         // if no choices are passed to the field, check if it's related to an Enum;
         // in that case, get all the possible values of the Enum (Doctrine supports only BackedEnum as enumType)
-        $enumTypeClass = $field->getDoctrineMetadata()->get('enumType');
+        $enumTypeClass = null;
+        if (isset($entityDto->getClassMetadata()->fieldMappings[$field->getProperty()])) {
+            $enumTypeClass = $entityDto->getClassMetadata()->getFieldMapping($field->getProperty())['enumType'] ?? null;
+        }
         if (0 === \count($choices) && null !== $enumTypeClass && enum_exists($enumTypeClass)) {
             $choices = $enumTypeClass::cases();
             $allChoicesAreEnums = true;

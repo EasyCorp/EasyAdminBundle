@@ -296,6 +296,7 @@ return static function (ContainerConfigurator $container) {
 
         ->set(FileUploadType::class)
             ->arg(0, param('kernel.project_dir'))
+            ->arg(1, service('filesystem'))
             ->tag('form.type')
 
         ->set(ChoiceFilterConfigurator::class)

@@ -24,9 +24,16 @@ final class ComparisonConfigurator implements FilterConfiguratorInterface
 
     public function configure(FilterDto $filterDto, ?FieldDto $fieldDto, EntityDto $entityDto, AdminContext $context): void
     {
-        $propertyType = $entityDto->getPropertyMetadata($filterDto->getProperty())->get('type');
+        if (!isset($entityDto->getClassMetadata()->fieldMappings[$filterDto->getProperty()])) {
+            return;
+        }
 
-        if (Types::DATEINTERVAL === $propertyType) {
+        $fieldMapping = $entityDto->getClassMetadata()->getFieldMapping($filterDto->getProperty());
+
+        // @phpstan-ignore-next-line (backward compatibility with Doctrine ORM 2.x)
+        $fieldType = \is_array($fieldMapping) ? ($fieldMapping['type'] ?? null) : $fieldMapping->type;
+
+        if (Types::DATEINTERVAL === $fieldType) {
             $filterDto->setFormTypeOption('value_type', DateIntervalType::class);
             $filterDto->setFormTypeOption('comparison_type_options.type', 'datetime');
         }

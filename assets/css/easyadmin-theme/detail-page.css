@@ -1,78 +1,78 @@
 /* Detail Page styles
 /* ------------------------------------------------------------------------- */
 .ea-detail .form-column .form-fieldset-body {
-  padding-block-end: 7px;
-  padding-block-start: 5px;
+    padding-block-end: 7px;
+    padding-block-start: 5px;
 }
 .ea-detail .form-column .form-fieldset-body.without-header {
-  padding-block-end: 10px;
-  padding-block-start: var(--bs-gutter-x);
+    padding-block-end: 10px;
+    padding-block-start: var(--bs-gutter-x);
 }
 
 .ea-detail .field-group {
-  display: flex;
-  margin-block-end: 12px;
+    display: flex;
+    margin-block-end: 12px;
 }
 
 .ea-detail .field-group .field-label {
-  color: var(--form-label-color);
-  font-size: var(--font-size-base);
-  font-weight: 500;
-  margin: 0 15px 0 0;
-  padding: 0 0 1px 0;
-  text-align: right;
-  inline-size: 130px;
+    color: var(--form-label-color);
+    font-size: var(--font-size-base);
+    font-weight: 500;
+    margin: 0 15px 0 0;
+    padding: 0 0 1px 0;
+    text-align: right;
+    inline-size: 130px;
 }
 .ea-detail .field-group .field-label:empty {
-  display: none;
+    display: none;
 }
 
 .ea-detail .field-group .field-label div[data-bs-toggle="tooltip"] {
-  cursor: pointer;
-  text-decoration: underline;
-  text-decoration-color: var(--detail-label-tooltip-underline-color);
-  text-decoration-style: dotted;
-  text-underline-offset: 2px;
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-color: var(--detail-label-tooltip-underline-color);
+    text-decoration-style: dotted;
+    text-underline-offset: 2px;
 }
 
 .tooltip.ea-detail-label-tooltip {
-  --bs-tooltip-max-width: 350px;
-  --bs-tooltip-border-radius: var(--border-radius);
-  --bs-tooltip-padding-x: 20px;
-  --bs-tooltip-padding-y: 10px;
-  --bs-tooltip-opacity: 1;
+    --bs-tooltip-max-width: 350px;
+    --bs-tooltip-border-radius: var(--border-radius);
+    --bs-tooltip-padding-x: 20px;
+    --bs-tooltip-padding-y: 10px;
+    --bs-tooltip-opacity: 1;
 }
 .tooltip.ea-detail-label-tooltip .tooltip-inner {
-  font-size: 13px;
-  text-align: start;
+    font-size: 13px;
+    text-align: start;
 }
 
 .ea-detail .field-group .field-value {
-  flex: 1;
-  min-inline-size: 66%;
+    flex: 1;
+    min-inline-size: 66%;
 }
 
 .ea-detail .field-group.field-textarea .field-value,
 .ea-detail .field-group.field-text_editor .field-value {
-  max-block-size: 350px;
-  max-inline-size: 80ch;
-  overflow-y: auto;
+    max-block-size: 350px;
+    max-inline-size: 80ch;
+    overflow-block: auto;
 }
 
 /* for boolean fields, flip the label <-> value order because the label is
    usually a medium-long string of text and the value is always tiny (YES/NO) */
 .ea-detail .field-group.field-boolean {
-  flex-direction: row-reverse;
+    flex-direction: row-reverse;
 }
 .ea-detail .field-group.field-boolean .field-label {
-  flex: 1;
-  min-inline-size: 66%;
-  margin: 0 0 0 15px;
-  text-align: left;
+    flex: 1;
+    min-inline-size: 66%;
+    margin: 0 0 0 15px;
+    text-align: left;
 }
 .ea-detail .field-group.field-boolean .field-value {
-  flex: unset;
-  min-inline-size: 0;
-  text-align: right;
-  inline-size: 130px;
+    flex: unset;
+    min-inline-size: 0;
+    text-align: right;
+    inline-size: 130px;
 }

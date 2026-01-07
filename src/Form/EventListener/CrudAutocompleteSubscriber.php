@@ -2,10 +2,14 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\EventListener;
 
+use Doctrine\ORM\Mapping\FieldMapping;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Uid\Ulid;
+use Symfony\Component\Uid\Uuid;
 
 /**
  * @author Yonel Ceruto <yonelceruto@gmail.com>
@@ -20,6 +24,9 @@ class CrudAutocompleteSubscriber implements EventSubscriberInterface
         ];
     }
 
+    /**
+     * @return void
+     */
     public function preSetData(FormEvent $event)
     {
         $form = $event->getForm();
@@ -32,6 +39,9 @@ class CrudAutocompleteSubscriber implements EventSubscriberInterface
         $form->add('autocomplete', EntityType::class, $options);
     }
 
+    /**
+     * @return void
+     */
     public function preSubmit(FormEvent $event)
     {
         $data = $event->getData();
@@ -41,6 +51,31 @@ class CrudAutocompleteSubscriber implements EventSubscriberInterface
         if (!isset($data['autocomplete']) || '' === $data['autocomplete']) {
             $options['choices'] = [];
         } else {
+            if (false === $options['id_reader']->isIntId()) {
+                if (!\is_array($data['autocomplete'])) {
+                    $data['autocomplete'] = [$data['autocomplete']];
+                }
+
+                $data['autocomplete'] = array_map(
+                    function ($v) use ($options) {
+                        if (class_exists(Ulid::class) && Ulid::isValid($v)) {
+                            return Ulid::fromBase32($v)->toRfc4122();
+                        } elseif (class_exists(Uuid::class) && Uuid::isValid($v)) {
+                            // checking the mapping, as uuid can also be used as simple string
+                            /** @var FieldMapping $idFieldMapping */
+                            $idFieldMapping = $options['em']->getClassMetadata($options['class'])->getFieldMapping($options['id_reader']->getIdField());
+
+                            if (UuidType::NAME === $idFieldMapping->type) {
+                                return Uuid::fromString($v)->toBinary();
+                            }
+                        }
+
+                        return $v;
+                    },
+                    $data['autocomplete']
+                );
+            }
+
             $options['choices'] = $options['em']->getRepository($options['class'])->findBy([
                 $options['id_reader']->getIdField() => $data['autocomplete'],
             ]);

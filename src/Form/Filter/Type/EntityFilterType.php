@@ -16,6 +16,7 @@ class EntityFilterType extends AbstractType
         $resolver->setDefaults([
             'comparison_type_options' => ['type' => 'entity'],
             'value_type' => EntityType::class,
+            'autocomplete' => false,
         ]);
     }
 

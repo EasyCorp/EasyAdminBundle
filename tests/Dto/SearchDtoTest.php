@@ -9,13 +9,13 @@ use Symfony\Component\HttpFoundation\Request;
 
 class SearchDtoTest extends TestCase
 {
-    public function testQueryStringIsTrimmedAutomatically()
+    public function testQueryStringIsTrimmedAutomatically(): void
     {
         $dto = new SearchDto(new Request(), null, '  foo  ', [], [], null);
         $this->assertSame('foo', $dto->getQuery());
     }
 
-    public function testDefaultSort()
+    public function testDefaultSort(): void
     {
         $dto = new SearchDto(new Request(), null, null, ['foo' => 'ASC'], [], null);
         $this->assertSame(['foo' => 'ASC'], $dto->getSort());
@@ -24,7 +24,7 @@ class SearchDtoTest extends TestCase
     /**
      * @dataProvider provideSortConfigMergeTests
      */
-    public function testSortConfigMerging(array $defaultSort, array $customSort, array $expectedSortConfig)
+    public function testSortConfigMerging(array $defaultSort, array $customSort, array $expectedSortConfig): void
     {
         $dto = new SearchDto(new Request(), null, null, $defaultSort, $customSort, null);
         $this->assertSame($expectedSortConfig, $dto->getSort());
@@ -33,7 +33,7 @@ class SearchDtoTest extends TestCase
     /**
      * @dataProvider provideIsSortingFieldTests
      */
-    public function testIsSortingField(array $defaultSort, array $customSort, string $fieldName, bool $expectedResult)
+    public function testIsSortingField(array $defaultSort, array $customSort, string $fieldName, bool $expectedResult): void
     {
         $dto = new SearchDto(new Request(), null, null, $defaultSort, $customSort, null);
         $this->assertSame($expectedResult, $dto->isSortingField($fieldName));
@@ -42,7 +42,7 @@ class SearchDtoTest extends TestCase
     /**
      * @dataProvider provideSortDirectionTests
      */
-    public function testGetSortDirection(array $defaultSort, array $customSort, string $fieldName, string $expectedDirection)
+    public function testGetSortDirection(array $defaultSort, array $customSort, string $fieldName, string $expectedDirection): void
     {
         $dto = new SearchDto(new Request(), null, null, $defaultSort, $customSort, null);
         $this->assertSame($expectedDirection, $dto->getSortDirection($fieldName));
@@ -51,19 +51,19 @@ class SearchDtoTest extends TestCase
     /**
      * @dataProvider provideGetQueryTermsTests
      */
-    public function testGetQueryTerms(string $query, array $expectedQueryTerms)
+    public function testGetQueryTerms(string $query, array $expectedQueryTerms): void
     {
         $dto = new SearchDto(new Request(), null, $query, [], [], null);
         $this->assertSame($expectedQueryTerms, $dto->getQueryTerms());
     }
 
-    public function testDefaultSearchMode()
+    public function testDefaultSearchMode(): void
     {
         $dto = new SearchDto(new Request(), null, null, ['foo' => 'ASC'], [], null);
         $this->assertSame(SearchMode::ALL_TERMS, $dto->getSearchMode());
     }
 
-    public function testSearchMode()
+    public function testSearchMode(): void
     {
         foreach ([SearchMode::ANY_TERMS, SearchMode::ALL_TERMS] as $searchMode) {
             $dto = new SearchDto(new Request(), null, null, ['foo' => 'ASC'], [], null, $searchMode);
@@ -71,7 +71,7 @@ class SearchDtoTest extends TestCase
         }
     }
 
-    public function provideSortDirectionTests(): iterable
+    public static function provideSortDirectionTests(): iterable
     {
         yield 'no default sort, no custom sort' => [
             [],
@@ -102,7 +102,7 @@ class SearchDtoTest extends TestCase
         ];
     }
 
-    public function provideIsSortingFieldTests(): iterable
+    public static function provideIsSortingFieldTests(): iterable
     {
         yield 'no default sort, no custom sort' => [
             [],
@@ -154,7 +154,7 @@ class SearchDtoTest extends TestCase
         ];
     }
 
-    public function provideSortConfigMergeTests(): iterable
+    public static function provideSortConfigMergeTests(): iterable
     {
         yield 'no default sort, no custom sort' => [
             [],
@@ -205,7 +205,7 @@ class SearchDtoTest extends TestCase
         ];
     }
 
-    public function provideGetQueryTermsTests(): iterable
+    public static function provideGetQueryTermsTests(): iterable
     {
         yield 'empty query' => [
             '',

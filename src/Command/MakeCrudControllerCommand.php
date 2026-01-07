@@ -6,6 +6,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Maker\ClassMaker;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -23,22 +24,16 @@ use function Symfony\Component\String\u;
 )]
 class MakeCrudControllerCommand extends Command
 {
-    private string $projectDir;
-    private ClassMaker $classMaker;
-    private ManagerRegistry $doctrine;
-
-    public function __construct(string $projectDir, ClassMaker $classMaker, ManagerRegistry $doctrine, ?string $name = null)
+    public function __construct(private readonly string $projectDir, private readonly ClassMaker $classMaker, private readonly ManagerRegistry $doctrine, ?string $name = null)
     {
         parent::__construct($name);
-        $this->projectDir = $projectDir;
-        $this->classMaker = $classMaker;
-        $this->doctrine = $doctrine;
     }
 
     protected function configure(): void
     {
         $this
             ->setHelp($this->getCommandHelp())
+            ->addArgument('entity_fqcn', InputArgument::OPTIONAL, 'The FQCN of the Doctrine entity managed with this CRUD controller')
         ;
     }
 
@@ -53,18 +48,35 @@ class MakeCrudControllerCommand extends Command
 
             return Command::FAILURE;
         }
-        $entityFqcn = $io->choice(
-            'Which Doctrine entity are you going to manage with this CRUD controller?',
-            $doctrineEntitiesFqcn
-        );
+
+        if (null !== $input->getArgument('entity_fqcn')) {
+            $entityFqcn = $input->getArgument('entity_fqcn');
+            if (!\in_array($entityFqcn, $doctrineEntitiesFqcn, true)) {
+                $io->error(sprintf('The "%s" entity does not exist. Pick one of the existing entities: %s', $entityFqcn, implode(', ', $doctrineEntitiesFqcn)));
+
+                return Command::FAILURE;
+            }
+        } else {
+            $entityFqcn = $io->choice(
+                'Which Doctrine entity are you going to manage with this CRUD controller?',
+                $doctrineEntitiesFqcn
+            );
+        }
+
         $entityClassName = u($entityFqcn)->afterLast('\\')->toString();
         $controllerFileNamePattern = sprintf('%s{number}CrudController.php', $entityClassName);
 
         $projectDir = $this->projectDir;
         $controllerDir = $io->ask('Which directory do you want to generate the CRUD controller in?', 'src/Controller/Admin/', static function (string $selectedDir) use ($fs, $projectDir) {
             $absoluteDir = u($selectedDir)->ensureStart($projectDir.\DIRECTORY_SEPARATOR);
+            if (null !== $absoluteDir->indexOf('..')) {
+                throw new \RuntimeException(sprintf('The given directory path can\'t contain ".." and must be relative to the project directory (which is "%s")', $projectDir));
+            }
+
+            $fs->mkdir($absoluteDir);
+
             if (!$fs->exists($absoluteDir)) {
-                throw new \RuntimeException('The given directory does not exist. Type in the path of an existing directory relative to your project root (e.g. src/Controller/Admin/)');
+                throw new \RuntimeException('The given directory does not exist and couldn\'t be created. Type in the path of an existing directory relative to your project root (e.g. src/Controller/Admin/)');
             }
 
             return $absoluteDir->after($projectDir.\DIRECTORY_SEPARATOR)->trimEnd(\DIRECTORY_SEPARATOR)->toString();
@@ -95,6 +107,9 @@ class MakeCrudControllerCommand extends Command
         return Command::SUCCESS;
     }
 
+    /**
+     * @return array<class-string>
+     */
     private function getAllDoctrineEntitiesFqcn(): array
     {
         $entitiesFqcn = [];

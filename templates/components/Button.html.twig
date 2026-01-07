@@ -1,0 +1,89 @@
+{% props
+    variant = 'default', # primary|default|danger|success|warning (default: 'default')
+    isInvisible = false, # true|false (default: false) if true, button has transparent background and no border
+    isBlock = false, # true|false (default: false) if true, button takes full width of container
+    size = 'md', # sm|md|lg (default: 'md')
+    icon = null, # icon name string (e.g., 'tabler:user' or 'fa fas fa-user')
+    withTrailingIcon = false, # boolean to show icon after label (default: false)
+    inactive = false, # boolean to disable the button (default: false)
+    htmlElement = 'button', # button|a|form (default: 'button')
+    htmlAttributes = {}, # additional HTML attributes as key-value pairs
+    href = '#', # URL for link buttons (default: '#')
+    action = null, # form action URL (for htmlElement='form')
+    method = 'POST', # HTTP method for forms (default: 'POST')
+    type = null, # button|submit (default: 'submit') button type attribute
+    name = null, # form button name attribute
+    value = null, # form button value attribute
+%}
+
+{# handle both string and enum values #}
+{% set html_element_value = htmlElement.value is defined ? htmlElement.value : htmlElement %}
+{% set variant_value = variant.value is defined ? variant.value : variant %}
+
+{% set variant_class = variant_value == 'default' ? 'btn-secondary' : 'btn-' ~ variant_value %}
+{% set size_class = size == 'md' ? '' : 'btn-' ~ size %}
+{% set css_class = html_classes('btn', variant_class, size_class, {
+    'btn-invisible': isInvisible,
+    'btn-block': isBlock,
+    disabled: inactive,
+}) %}
+
+{% if html_element_value == 'a' %}
+    <a {{ attributes.only('class').defaults({class: css_class}) }}
+       href="{{ inactive ? '#' : href }}"
+       role="button"
+       {% if inactive %}aria-disabled="true" tabindex="-1"{% endif %}
+       {% for attrName, attrValue in htmlAttributes %}{{ attrName }}="{{ (attrValue.trans is defined ? attrValue|trans : attrValue)|e('html') }}" {% endfor %}
+       {{ attributes.without('class', 'href', 'role', 'aria-disabled', 'tabindex')|raw }}>
+        {% if icon and not withTrailingIcon %}
+            <twig:ea:Icon name="{{ icon }}" class="btn-icon" />
+        {% endif %}
+        {% if block('content') is defined and block('content') is not empty %}
+            <span {{ attributes.nested('label').defaults({class: 'btn-label'}) }}>{{ block('content') }}</span>
+        {% endif %}
+        {% if icon and withTrailingIcon %}
+            <twig:ea:Icon name="{{ icon }}" class="btn-icon btn-icon-trailing" />
+        {% endif %}
+    </a>
+{% elseif html_element_value == 'form' %}
+    <form action="{{ action }}" method="{{ method }}" {{ attributes.only('id', 'class', 'data-*') }}>
+        {% if method|upper not in ['GET', 'POST'] %}
+            <input type="hidden" name="_method" value="{{ method|upper }}">
+        {% endif %}
+
+        <button {{ attributes.only('class').defaults({class: css_class}) }}
+            type="{{ type ?? 'submit' }}"
+            {% if name %}name="{{ name }}"{% endif %}
+            {% if value %}value="{{ value }}"{% endif %}
+            {% if inactive %}disabled="disabled"{% endif %}
+            {% for attrName, attrValue in htmlAttributes %}{{ attrName }}="{{ (attrValue.trans is defined ? attrValue|trans : attrValue)|e('html') }}" {% endfor %}
+            {{ attributes.without('class', 'form', 'type', 'name', 'value', 'disabled')|raw }}
+        >
+            {% if icon and not withTrailingIcon %}
+                <twig:ea:Icon name="{{ icon }}" class="btn-icon" />
+            {% endif %}
+            {% if block('content') is defined and block('content') is not empty %}
+                <span {{ attributes.nested('label').defaults({class: 'btn-label'}) }}>{{ block('content') }}</span>
+            {% endif %}
+            {% if icon and withTrailingIcon %}
+                <twig:ea:Icon name="{{ icon }}" class="btn-icon btn-icon-trailing" />
+            {% endif %}
+        </button>
+    </form>
+{% else %}
+    <button {{ attributes.only('class').defaults({class: css_class}) }}
+        type="{{ type ?? 'submit' }}"
+        {% if inactive %}disabled="disabled"{% endif %}
+        {% for attrName, attrValue in htmlAttributes %}{{ attrName }}="{{ (attrValue.trans is defined ? attrValue|trans : attrValue)|e('html') }}" {% endfor %}
+        {{ attributes.without('class', 'type', 'disabled')|raw }}>
+        {% if icon and not withTrailingIcon %}
+            <twig:ea:Icon name="{{ icon }}" class="btn-icon" />
+        {% endif %}
+        {% if block('content') is defined and block('content') is not empty %}
+            <span {{ attributes.nested('label').defaults({class: 'btn-label'}) }}>{{ block('content') }}</span>
+        {% endif %}
+        {% if icon and withTrailingIcon %}
+            <twig:ea:Icon name="{{ icon }}" class="btn-icon btn-icon-trailing" />
+        {% endif %}
+    </button>
+{% endif %}

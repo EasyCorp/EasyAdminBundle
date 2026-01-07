@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Create and continue editing',
         'save' => 'Save changes',
         'save_and_continue' => 'Save and continue editing',
+        'toggle_dropdown' => 'Toggle dropdown',
     ],
 
     'batch_action_modal' => [
@@ -84,6 +85,7 @@ return [
         'label.is_less_than_or_equal_to' => 'is less than or equal to',
         'label.is_between' => 'is between',
         'label.contains' => 'contains',
+        'label.contains_all' => 'contains all',
         'label.not_contains' => 'doesn\'t contain',
         'label.starts_with' => 'starts with',
         'label.ends_with' => 'ends with',

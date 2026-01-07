@@ -22,7 +22,7 @@ class EasyAdminAutocompleteTypeTest extends TypeTestCase
     private $repository;
     private $configManager;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->repository = $this->getMockBuilder('Doctrine\ORM\EntityRepository')
             ->disableOriginalConstructor()
@@ -68,7 +68,7 @@ class EasyAdminAutocompleteTypeTest extends TypeTestCase
         parent::setUp();
     }
 
-    protected function getExtensions()
+    protected function getExtensions(): array
     {
         $types = [
             'entity' => new EntityType($this->doctrine),
@@ -80,7 +80,7 @@ class EasyAdminAutocompleteTypeTest extends TypeTestCase
         ];
     }
 
-    public function testSubmitValidSingleData()
+    public function testSubmitValidSingleData(): void
     {
         $category = new Category();
         $category->id = 1;
@@ -126,7 +126,7 @@ class EasyAdminAutocompleteTypeTest extends TypeTestCase
         $this->assertEquals(['1' => $choiceView], $children['autocomplete']->vars['choices']);
     }
 
-    public function testSubmitValidMultipleData()
+    public function testSubmitValidMultipleData(): void
     {
         $category1 = new Category();
         $category1->id = 1;
@@ -159,7 +159,7 @@ class EasyAdminAutocompleteTypeTest extends TypeTestCase
         $this->assertEquals(new ArrayCollection([$category1]), $form->getData());
     }
 
-    public function testSubmitEmptySingleData()
+    public function testSubmitEmptySingleData(): void
     {
         $form = $this->factory->create(EasyAdminAutocompleteType::class, null, [
             'class' => self::ENTITY_CLASS,
@@ -170,7 +170,7 @@ class EasyAdminAutocompleteTypeTest extends TypeTestCase
         $this->assertNull($form->getData());
     }
 
-    public function testSubmitEmptyMultipleData()
+    public function testSubmitEmptyMultipleData(): void
     {
         $form = $this->factory->create(EasyAdminAutocompleteType::class, null, [
             'class' => self::ENTITY_CLASS,

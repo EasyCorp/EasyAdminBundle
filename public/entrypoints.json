@@ -2,20 +2,20 @@
   "entrypoints": {
     "app": {
       "css": [
-        "/app.4bcf2837.css"
+        "/app.f9f0ca7b.css"
       ],
       "js": [
-        "/app.1ecd6d7a.js"
+        "/app.dc113b51.js"
       ]
     },
     "form": {
       "js": [
-        "/form.bcec6c2a.js"
+        "/form.875c88d4.js"
       ]
     },
     "page-layout": {
       "js": [
-        "/page-layout.3347892e.js"
+        "/page-layout.6e9fe55d.js"
       ]
     },
     "page-color-scheme": {
@@ -25,7 +25,7 @@
     },
     "field-boolean": {
       "js": [
-        "/field-boolean.ae2abe46.js"
+        "/field-boolean.adeeab81.js"
       ]
     },
     "field-code-editor": {
@@ -38,12 +38,12 @@
     },
     "field-collection": {
       "js": [
-        "/field-collection.f685c209.js"
+        "/field-collection.2f5a0337.js"
       ]
     },
     "field-file-upload": {
       "js": [
-        "/field-file-upload.7f9cb952.js"
+        "/field-file-upload.5c32db38.js"
       ]
     },
     "field-image": {
@@ -53,20 +53,20 @@
     },
     "field-slug": {
       "js": [
-        "/field-slug.df11f109.js"
+        "/field-slug.ba7fb8e5.js"
       ]
     },
     "field-textarea": {
       "js": [
-        "/field-textarea.74319bb1.js"
+        "/field-textarea.327ea11a.js"
       ]
     },
     "field-text-editor": {
       "css": [
-        "/field-text-editor.1b44e0f4.css"
+        "/field-text-editor.d426785c.css"
       ],
       "js": [
-        "/field-text-editor.cd20e325.js"
+        "/field-text-editor.3e768b9b.js"
       ]
     },
     "login": {

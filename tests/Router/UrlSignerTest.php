@@ -14,7 +14,7 @@ class UrlSignerTest extends TestCase
      *
      * @group legacy
      */
-    public function testSign(string $url, string $expectedResult)
+    public function testSign(string $url, string $expectedResult): void
     {
         $urlSigner = new UrlSigner(self::KERNEL_SECRET);
 
@@ -26,14 +26,14 @@ class UrlSignerTest extends TestCase
      *
      * @group legacy
      */
-    public function testCheck(string $url, bool $expectedResult)
+    public function testCheck(string $url, bool $expectedResult): void
     {
         $urlSigner = new UrlSigner(self::KERNEL_SECRET);
 
         $this->assertSame($expectedResult, $urlSigner->check($url));
     }
 
-    public static function provideSignData()
+    public static function provideSignData(): \Generator
     {
         // the host/user/pass/port URL parts don't affect the signature
         yield ['https://example.com/', 'https://example.com/?signature=bS2fxhAzf4E6G4WGnsIUEplAhgVDrQQwjYc1f2wBM_Y'];
@@ -52,7 +52,7 @@ class UrlSignerTest extends TestCase
         yield ['https://example.com/foo/bar?crudAction=a&page=2', 'https://example.com/foo/bar?crudAction=a&page=2&signature=-2POpHMuFDWuaQAjqZEsVsQL062p5D9Pg7k6fSOitHA'];
     }
 
-    public function provideCheckData()
+    public static function provideCheckData(): \Generator
     {
         // if URL doesn't contain any query param, it's OK to not have a signature either
         yield ['https://example.com/', true];

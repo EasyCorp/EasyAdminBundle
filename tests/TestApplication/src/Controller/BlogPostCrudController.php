@@ -4,11 +4,13 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Controller;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Entity\BlogPost;
 
+/**
+ * @extends AbstractCrudController<BlogPost>
+ */
 class BlogPostCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
@@ -22,8 +24,8 @@ class BlogPostCrudController extends AbstractCrudController
             IdField::new('id')->hideOnForm(),
             TextField::new('title'),
             TextField::new('slug'),
-            BooleanField::new('content'),
-            BooleanField::new('author'),
+            TextField::new('content'),
+            TextField::new('author'),
         ];
     }
 

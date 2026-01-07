@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Napravi i nastavi sa izmenama',
         'save' => 'Sačuvaj izmene',
         'save_and_continue' => 'Sačuvaj i nastavi sa izmenama',
+        'toggle_dropdown' => 'Пребаци падајући мени',
     ],
 
     'batch_action_modal' => [
@@ -84,6 +85,7 @@ return [
         'label.is_less_than_or_equal_to' => 'je manje ili jednako',
         'label.is_between' => 'je između',
         'label.contains' => 'sadrži',
+        'label.contains_all' => 'sadrži sve',
         'label.not_contains' => 'ne sadrži',
         'label.starts_with' => 'počinje sa',
         'label.ends_with' => 'završava se se',

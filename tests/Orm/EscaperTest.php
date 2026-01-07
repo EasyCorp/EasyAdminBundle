@@ -10,7 +10,7 @@ class EscaperTest extends TestCase
     /**
      * @dataProvider sqlAliasDataProvider
      */
-    public function testEscapeDqlAlias(string $expectedAlias, string $entityName)
+    public function testEscapeDqlAlias(string $expectedAlias, string $entityName): void
     {
         $createdAlias = Escaper::escapeDqlAlias($entityName);
 

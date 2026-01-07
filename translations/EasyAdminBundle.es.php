@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Crear y seguir editando',
         'save' => 'Guardar cambios',
         'save_and_continue' => 'Guardar y seguir editando',
+        'toggle_dropdown' => 'Alternar menú desplegable',
     ],
 
     'batch_action_modal' => [
@@ -84,6 +85,7 @@ return [
         'label.is_less_than_or_equal_to' => 'es menor o igual que',
         'label.is_between' => 'está entre',
         'label.contains' => 'contiene',
+        'label.contains_all' => 'contiene todo',
         'label.not_contains' => 'no contiene',
         'label.starts_with' => 'empieza por',
         'label.ends_with' => 'acaba en',

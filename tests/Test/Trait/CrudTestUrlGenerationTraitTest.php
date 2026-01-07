@@ -25,7 +25,7 @@ final class CrudTestUrlGenerationTraitTest extends KernelTestCase
         $this->adminUrlGenerator = self::getContainer()->get(AdminUrlGenerator::class);
     }
 
-    public function testGenericUrlIndexGeneration()
+    public function testGenericUrlIndexGeneration(): void
     {
         $testClass = new class($this->adminUrlGenerator) extends CrudTestUrlGenerationTraitTestClass {
             public function test(): string
@@ -50,7 +50,7 @@ final class CrudTestUrlGenerationTraitTest extends KernelTestCase
     public function testGenericUrlIndexGenerationWithSpecificDashboardAndController(
         ?string $dashboardFqcn,
         ?string $controllerFqcn,
-    ) {
+    ): void {
         $testClass = new class($this->adminUrlGenerator) extends CrudTestUrlGenerationTraitTestClass {
             public function test(?string $dashboardFqcn, ?string $controllerFqcn): string
             {
@@ -68,7 +68,7 @@ final class CrudTestUrlGenerationTraitTest extends KernelTestCase
         self::assertEquals($expectedUrl, $testClass->test($dashboardFqcn, $controllerFqcn));
     }
 
-    public function testUrlDetailGeneration()
+    public function testUrlDetailGeneration(): void
     {
         $testClass = new class($this->adminUrlGenerator) extends CrudTestUrlGenerationTraitTestClass {
             public function test(string|int $id, ?string $dashboardFqcn = null, ?string $controllerFqcn = null): string
@@ -95,7 +95,7 @@ final class CrudTestUrlGenerationTraitTest extends KernelTestCase
     public function testUrlDetailGenerationWithSpecificDashboardAndControllerFqcn(
         ?string $dashboardFqcn,
         ?string $controllerFqcn,
-    ) {
+    ): void {
         $testClass = new class($this->adminUrlGenerator) extends CrudTestUrlGenerationTraitTestClass {
             public function test(string|int $id, ?string $dashboardFqcn, ?string $controllerFqcn): string
             {
@@ -115,7 +115,7 @@ final class CrudTestUrlGenerationTraitTest extends KernelTestCase
         self::assertEquals($expectedUrl, $testClass->test($entityId, $dashboardFqcn, $controllerFqcn));
     }
 
-    public function testUrlNewFormGeneration()
+    public function testUrlNewFormGeneration(): void
     {
         $testClass = new class($this->adminUrlGenerator) extends CrudTestUrlGenerationTraitTestClass {
             public function test(): string
@@ -140,7 +140,7 @@ final class CrudTestUrlGenerationTraitTest extends KernelTestCase
     public function testUrlNewFormGenerationWithSpecificDashboardAndControllerFqcn(
         ?string $dashboardFqcn,
         ?string $controllerFqcn,
-    ) {
+    ): void {
         $testClass = new class($this->adminUrlGenerator) extends CrudTestUrlGenerationTraitTestClass {
             public function test(?string $dashboardFqcn, ?string $controllerFqcn): string
             {
@@ -159,7 +159,7 @@ final class CrudTestUrlGenerationTraitTest extends KernelTestCase
         self::assertEquals($expectedUrl, $testClass->test($dashboardFqcn, $controllerFqcn));
     }
 
-    public function testUrlEditFormGeneration()
+    public function testUrlEditFormGeneration(): void
     {
         $testClass = new class($this->adminUrlGenerator) extends CrudTestUrlGenerationTraitTestClass {
             public function test(string|int $id): string
@@ -186,7 +186,7 @@ final class CrudTestUrlGenerationTraitTest extends KernelTestCase
     public function testUrlEditGenerationWithSpecificDashboardAndControllerFqcn(
         ?string $dashboardFqcn,
         ?string $controllerFqcn,
-    ) {
+    ): void {
         $testClass = new class($this->adminUrlGenerator) extends CrudTestUrlGenerationTraitTestClass {
             public function test(string|int $id, ?string $dashboardFqcn, ?string $controllerFqcn): string
             {
@@ -206,7 +206,7 @@ final class CrudTestUrlGenerationTraitTest extends KernelTestCase
         self::assertEquals($expectedUrl, $testClass->test($entityId, $dashboardFqcn, $controllerFqcn));
     }
 
-    public function testUrlRenderFiltersGeneration()
+    public function testUrlRenderFiltersGeneration(): void
     {
         $testClass = new class($this->adminUrlGenerator) extends CrudTestUrlGenerationTraitTestClass {
             public function test(): string
@@ -232,7 +232,7 @@ final class CrudTestUrlGenerationTraitTest extends KernelTestCase
     public function testUrlRenderFiltersGenerationWithSpecificDashboardAndControllerFqcn(
         ?string $dashboardFqcn,
         ?string $controllerFqcn,
-    ) {
+    ): void {
         $testClass = new class($this->adminUrlGenerator) extends CrudTestUrlGenerationTraitTestClass {
             public function test(?string $dashboardFqcn, ?string $controllerFqcn): string
             {
@@ -256,7 +256,7 @@ final class CrudTestUrlGenerationTraitTest extends KernelTestCase
      *
      * @dataProvider genericDataProvider
      */
-    public function testGenericUrlGeneration(string $action, string|int|null $entityId = null, array $options = [])
+    public function testGenericUrlGeneration(string $action, string|int|null $entityId = null, array $options = []): void
     {
         $testClass = new class($this->adminUrlGenerator) extends CrudTestUrlGenerationTraitTestClass {
             public function test(string $action, string|int|null $entityId = null, array $options = []): string
@@ -282,7 +282,7 @@ final class CrudTestUrlGenerationTraitTest extends KernelTestCase
         self::assertEquals($expectedUrl->generateUrl(), $testClass->test($action, $entityId, $options));
     }
 
-    public function genericDataProvider(): \Generator
+    public static function genericDataProvider(): \Generator
     {
         yield 'only Action' => [
             'customAction',
@@ -301,7 +301,7 @@ final class CrudTestUrlGenerationTraitTest extends KernelTestCase
         ];
     }
 
-    public function specificDashboardAndControllerFqcn(): \Generator
+    public static function specificDashboardAndControllerFqcn(): \Generator
     {
         yield 'only controller' => [
             null,

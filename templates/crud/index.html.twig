@@ -1,6 +1,7 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
 {# @var entities \EasyCorp\Bundle\EasyAdminBundle\Collection\EntityCollection #}
 {# @var paginator \EasyCorp\Bundle\EasyAdminBundle\Orm\EntityPaginator #}
+{% set ea = ea() %}
 {% extends ea.templatePath('layout') %}
 {% trans_default_domain ea.i18n.translationDomain %}
 
@@ -25,14 +26,14 @@
 
 {% block configured_stylesheets %}
     {{ parent() }}
-    {{ include('@EasyAdmin/includes/_css_assets.html.twig', { assets: ea_field_assets.cssAssets }, with_context = false) }}
-    {{ include('@EasyAdmin/includes/_encore_link_tags.html.twig', { assets: ea_field_assets.webpackEncoreAssets }, with_context = false) }}
+    {{ include('@EasyAdmin/includes/_css_assets.html.twig', {assets: ea_field_assets.cssAssets}, with_context: false) }}
+    {{ include('@EasyAdmin/includes/_encore_link_tags.html.twig', {assets: ea_field_assets.webpackEncoreAssets}, with_context: false) }}
 {% endblock %}
 
 {% block configured_javascripts %}
     {{ parent() }}
-    {{ include('@EasyAdmin/includes/_js_assets.html.twig', { assets: ea_field_assets.jsAssets }, with_context = false) }}
-    {{ include('@EasyAdmin/includes/_encore_script_tags.html.twig', { assets: ea_field_assets.webpackEncoreAssets }, with_context = false) }}
+    {{ include('@EasyAdmin/includes/_js_assets.html.twig', {assets: ea_field_assets.jsAssets}, with_context: false) }}
+    {{ include('@EasyAdmin/includes/_encore_script_tags.html.twig', {assets: ea_field_assets.webpackEncoreAssets}, with_context: false) }}
 {% endblock %}
 
 {% block content_title %}
@@ -64,8 +65,12 @@
 
     {% block global_actions %}
         <div class="global-actions">
-            {% for action in global_actions %}
-                {{ include(action.templatePath, { action: action }, with_context = false) }}
+            {% for item in global_actions|reverse %}
+                {% if item.isActionGroup %}
+                    {{ include(item.templatePath, {group: item, entity: null}, with_context: false) }}
+                {% else %}
+                    {{ include(item.templatePath, {action: item}, with_context: false) }}
+                {% endif %}
             {% endfor %}
         </div>
     {% endblock global_actions %}
@@ -73,7 +78,7 @@
         {% if has_batch_actions %}
             <div class="batch-actions d-none">
                 {% for action in batch_actions %}
-                    {{ include(action.templatePath, { action: action }, with_context = false) }}
+                    {{ include(action.templatePath, {action: action}, with_context: false) }}
                 {% endfor %}
             </div>
         {% endif %}
@@ -82,8 +87,9 @@
 
 {% block main %}
     {# sort can be multiple; let's consider the sorting field the first one #}
-    {% set sort_field_name = app.request.get('sort')|keys|first %}
-    {% set sort_order = app.request.get('sort')|first %}
+    {% set sort_params = app.request.query.all['sort']|default({}) %}
+    {% set sort_field_name = sort_params|keys|first %}
+    {% set sort_order = sort_params|first %}
     {% set some_results_are_hidden = entities|reduce((some_results_are_hidden, entity) => some_results_are_hidden or not entity.isAccessible, false) %}
     {% set has_footer = entities|length != 0 %}
     {% set has_search = ea.crud.isSearchEnabled %}
@@ -113,7 +119,7 @@
 
                         <th data-column="{{ field.property }}" class="{{ is_searchable ? 'searchable' }} {{ is_sorting_field ? 'sorted' }} {{ field.isVirtual ? 'field-virtual' }} header-for-{{ field.cssClass|split(' ')|filter(class => class starts with 'field-')|join('') }} text-{{ field.textAlign }}" dir="{{ ea.i18n.textDirection }}">
                             {% if field.isSortable %}
-                                {% set sortable_url = ea_url().set('page', 1).set('sort', { (field.property): next_sort_direction }) %}
+                                {% set sortable_url = ea_url().set('page', 1).set('sort', {(field.property): next_sort_direction}) %}
                                 {% if ea.usePrettyUrls %}
                                     {% set sortable_url = sortable_url.setController(ea.request.attributes.get('crudControllerFqcn')).setAction('index') %}
                                 {% endif %}
@@ -152,7 +158,7 @@
                             {% set is_searchable = null == ea.crud.searchFields or field.property in ea.crud.searchFields %}
 
                             <td data-column="{{ field.property }}" data-label="{{ field.label|trans|e('html') }}" class="{{ is_searchable ? 'searchable' }} {{ field.property == sort_field_name ? 'sorted' }} text-{{ field.textAlign }} {{ field.cssClass }}" dir="{{ ea.i18n.textDirection }}" {% for name, value in field.htmlAttributes %}{{ name }}="{{ value|e('html_attr') }}" {% endfor %}>
-                                {{ include(field.templatePath, { field: field, entity: entity }, with_context = false) }}
+                                {{ include(field.templatePath, {field: field, entity: entity}, with_context: false) }}
                             </td>
                         {% endfor %}
 
@@ -160,26 +166,40 @@
                             <td class="actions {{ ea.crud.showEntityActionsAsDropdown ? 'actions-as-dropdown' }}">
                                 {% if entity.actions.count > 0 %}
                                     {% if ea.crud.showEntityActionsAsDropdown %}
+                                        {% set hasAnyActionWithIcon = entity.actions|filter(item => item.isActionGroup ? false : item.icon is not null)|length > 0 %}
                                         <twig:ea:ActionMenu class="dropdown-actions">
                                             <twig:ea:ActionMenu:Button withoutDropdownToggleMarker>
                                                 <twig:ea:Icon name="internal:dots-horizontal" />
                                             </twig:ea:ActionMenu:Button>
 
                                             <twig:ea:ActionMenu:Overlay>
-                                                <twig:ea:ActionMenu:ActionList>
-                                                    {% for action in entity.actions %}
-                                                        <twig:ea:ActionMenu:ActionList:Item
-                                                            class="{{ action.cssClass }}" url="{{ action.linkUrl }}"
-                                                            icon="{{ action.icon }}" icon:class="action-icon"
-                                                            htmlAttributes="{{ action.htmlAttributes }}"
-                                                            label="{{ action.label|trans }}" label:class="action-label" renderLabelRaw />
+                                                <twig:ea:ActionMenu:ActionList hasSubmenus="{{ entity.actions|filter(item => item.isActionGroup)|length > 0 }}">
+                                                    {% for item in entity.actions %}
+                                                        {% if item.isActionGroup %}
+                                                            <twig:ea:ActionMenu:ActionList:ItemGroup
+                                                                group="{{ item }}"
+                                                                showBlankIcons="{{ hasAnyActionWithIcon }}"
+                                                                entity="{{ entity }}" />
+                                                        {% else %}
+                                                            <twig:ea:ActionMenu:ActionList:Item
+                                                                class="{{ item.cssClass }} dropdown-item-variant-{{ item.variant.value }}" url="{{ item.linkUrl }}"
+                                                                icon="{{ item.icon }}" icon:class="action-icon"
+                                                                htmlAttributes="{{ item.htmlAttributes }}"
+                                                                renderAsForm="{{ item.isRenderedAsForm }}"
+                                                                label="{{ item.label|trans }}" label:class="action-label" renderLabelRaw
+                                                                showBlankIcons="{{ hasAnyActionWithIcon }}" />
+                                                        {% endif %}
                                                     {% endfor %}
                                                 </twig:ea:ActionMenu:ActionList>
                                             </twig:ea:ActionMenu:Overlay>
                                         </twig:ea:ActionMenu>
                                     {% else %}
                                         {% for action in entity.actions %}
-                                            {{ include(action.templatePath, { action: action, entity: entity, isIncludedInDropdown: ea.crud.showEntityActionsAsDropdown }, with_context = false) }}
+                                            {% if action.isActionGroup %}
+                                                {{ include(action.templatePath, {group: action, entity: entity}, with_context: false) }}
+                                            {% else %}
+                                                {{ include(action.templatePath, {action: action, entity: entity, isIncludedInDropdown: ea.crud.showEntityActionsAsDropdown}, with_context: false) }}
+                                            {% endif %}
                                         {% endfor %}
                                     {% endif %}
                                 {% endif %}
@@ -230,13 +250,13 @@
     {% if entities|length > 0 %}
         <div class="content-panel-footer without-padding without-border">
             {% block paginator %}
-                {{ include(ea.templatePath('crud/paginator'), { render_detailed_pagination: not some_results_are_hidden }) }}
+                {{ include(ea.templatePath('crud/paginator'), {render_detailed_pagination: not some_results_are_hidden}) }}
             {% endblock paginator %}
         </div>
     {% endif %}
 
     {% block delete_form %}
-        {{ include('@EasyAdmin/crud/includes/_delete_form.html.twig', with_context = false) }}
+        {{ include('@EasyAdmin/crud/includes/_delete_form.html.twig', with_context: false) }}
     {% endblock delete_form %}
 
     {% if has_filters %}
@@ -244,6 +264,6 @@
     {% endif %}
 
     {% if has_batch_actions %}
-        {{ include('@EasyAdmin/crud/includes/_batch_action_modal.html.twig', {}, with_context = false) }}
+        {{ include('@EasyAdmin/crud/includes/_batch_action_modal.html.twig', {}, with_context: false) }}
     {% endif %}
 {% endblock main %}

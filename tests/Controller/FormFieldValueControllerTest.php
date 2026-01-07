@@ -30,7 +30,7 @@ class FormFieldValueControllerTest extends AbstractCrudTestCase
         return DashboardController::class;
     }
 
-    public function testFieldsFormatValue()
+    public function testFieldsFormatValue(): void
     {
         $this->client->request('GET', $this->generateIndexUrl());
 

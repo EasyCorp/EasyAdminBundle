@@ -30,7 +30,7 @@ class FormFieldLabelControllerTest extends AbstractCrudTestCase
         return DashboardController::class;
     }
 
-    public function testFieldsLabelsInForms()
+    public function testFieldsLabelsInForms(): void
     {
         $crawler = $this->client->request('GET', $this->generateNewFormUrl());
 
@@ -107,7 +107,7 @@ class FormFieldLabelControllerTest extends AbstractCrudTestCase
         static::assertSame($crawler->filter('label[for="BlogPost_publisher"]')->html(), '<a href="https://example.com">Publisher</a> <b>Lorem</b> Ipsum', 'The "publisher" field defines its label as translatable string with HTML contents, which must be rendered instead of escaped (HTML is allowed in field labels).');
     }
 
-    public function testFieldsLabelsOnDetailPage()
+    public function testFieldsLabelsOnDetailPage(): void
     {
         $blogPost = $this->blogPosts->findOneBy([]);
         $crawler = $this->client->request('GET', $this->generateDetailUrl($blogPost->getId()));

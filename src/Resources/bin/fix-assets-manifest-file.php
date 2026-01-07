@@ -21,16 +21,21 @@ fixFontPathsInCssFiles($manifestJsonPath);
 //   'app.css' => '/app.1e1ba55d.css'
 //
 // This function removes that leading slash from all asset paths.
-function fixManifestJsonEntriesPaths(string $manifestJsonPath)
+function fixManifestJsonEntriesPaths(string $manifestJsonPath): void
 {
-    $manifestJsonContents = json_decode(file_get_contents($manifestJsonPath), associative: true, flags: \JSON_THROW_ON_ERROR);
+    $content = @file_get_contents($manifestJsonPath);
+    if (false === $content) {
+        return;
+    }
+
+    $manifestJsonContents = json_decode($content, associative: true, flags: \JSON_THROW_ON_ERROR);
     $fixedManifestJsonContents = [];
     foreach ($manifestJsonContents as $assetName => $assetPath) {
         $assetPath = ltrim($assetPath, '/');
         $fixedManifestJsonContents[$assetName] = $assetPath;
     }
 
-    $newJsonManifestContents = json_encode($fixedManifestJsonContents, flags: \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES);
+    $newJsonManifestContents = json_encode($fixedManifestJsonContents, flags: \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES | \JSON_THROW_ON_ERROR);
     // the original manifest.json file uses a 2 white space indentation, so keep that
     $newJsonManifestContents = str_replace('    ', '  ', $newJsonManifestContents);
     file_put_contents($manifestJsonPath, $newJsonManifestContents);
@@ -42,16 +47,24 @@ function fixManifestJsonEntriesPaths(string $manifestJsonPath)
 // We need something like this instead:
 // @font-face{font-family:FontAwesome;src:url(fonts/fa-v4compatibility.afac8956.woff2) format("woff2")
 // There might be some way of doing this in Webpack Encore, but I can't find it, so let's be pragmatic.
-function fixFontPathsInCssFiles(string $manifestJsonPath)
+function fixFontPathsInCssFiles(string $manifestJsonPath): void
 {
-    $manifestJsonContents = json_decode(file_get_contents($manifestJsonPath), associative: true, flags: \JSON_THROW_ON_ERROR);
+    $content = @file_get_contents($manifestJsonPath);
+    if (false === $content) {
+        return;
+    }
+
+    $manifestJsonContents = json_decode($content, associative: true, flags: \JSON_THROW_ON_ERROR);
     foreach ($manifestJsonContents as $assetName => $assetPath) {
         if (!str_ends_with($assetPath, '.css')) {
             continue;
         }
 
         $assetFilePath = __DIR__.'/../../../public/'.str_replace('bundles/easyadmin/', '', $assetPath);
-        $originalFileContents = file_get_contents($assetFilePath);
+        $originalFileContents = @file_get_contents($assetFilePath);
+        if (false === $originalFileContents) {
+            continue;
+        }
         $fixedFileContents = str_replace('url(/fonts/', 'url(fonts/', $originalFileContents);
 
         file_put_contents($assetFilePath, $fixedFileContents);

@@ -76,7 +76,7 @@ Admin route name                Admin route path
 
     By default, EasyAdmin generates routes for all CRUD controllers on all
     dashboards. You can :ref:`restrict which controllers are accessible <security-controllers>`
-    on each dahboard to not generate all these routes.
+    on each dashboard to not generate all these routes.
 
 You can customize the route names and/or paths of the actions of all the CRUD controllers
 served by some dashboard using the ``routes`` option of the ``#[AdminDashboard]`` attribute::
@@ -111,20 +111,26 @@ Admin route name                Admin route path
 ==============================  =====================================
 
 You can also customize the path and/or route name of CRUD controllers using the
-``#[AdminCrud]`` attribute with the following options:
+``#[AdminRoute]`` attribute with the following options:
 
-* ``routePath``: the value that represents the controller in the entire route path
-  (e.g. a ``/foo`` path will result in ``/admin`` + ``/foo`` + ``/<action>``);
-* ``routeName``: the value that represents the controller in the full route name
-  (e.g. a ``foo_bar`` route name will result in ``admin_`` + ``foo_bar`` + ``_<action>``).
+* ``path``: the value that represents the controller in the entire route path
+  (e.g. a ``/foo`` path here will result in a route with the path ``/admin`` + ``/foo`` + ``/<action>``);
+* ``name``: the value that represents the controller in the full route name
+  (e.g. a ``foo_bar`` name here will result in a route named``admin_`` + ``foo_bar`` + ``_<action>``).
+
+.. deprecated:: 4.25.0
+
+    In EasyAdmin versions prior to 4.25.0, instead of ``#[AdminRoute]`` you
+    had to use the ``#[AdminCrud]`` attribute, which is now deprecated and will
+    be removed in EasyAdmin 5.0.0.
 
 Using the same example as above, you can configure the route names and paths of
 the controller as follows::
 
-    use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminCrud;
+    use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminRoute;
     // ...
 
-    #[AdminCrud(routePath: '/stock/current', routeName: 'stock')]
+    #[AdminRoute(path: '/stock/current', name: 'stock')]
     class ProductCrudController extends AbstractCrudController
     {
         // ...
@@ -146,16 +152,16 @@ Admin route name                Admin route path
 ==============================  =====================================
 
 Finally, you can also customize the route name and/or path of each CRUD controller
-action using the ``#[AdminAction]`` attribute::
+action using the ``#[AdminRoute]`` attribute::
 
-    use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminAction;
+    use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminRoute;
     // ...
 
     class ProductCrudController extends AbstractCrudController
     {
         // ...
 
-        #[AdminAction(routePath: '/latest-products', routeName: 'latest')]
+        #[AdminRoute(path: '/latest-products', name: 'latest')]
         public function index(AdminContext $context)
         {
             // ...
@@ -168,8 +174,14 @@ will be ``admin_product_latest`` and the path will be ``/admin/product/latest-pr
 
 .. tip::
 
-    You can combine the ``#[AdminDashboard]``, ``#[AdminCrud]``, and ``#[AdminAction]``
+    You can combine the ``#[AdminDashboard]``, and ``#[AdminRoute]``
     attributes to customize some or all route names and paths.
+
+.. deprecated:: 4.25.0
+
+    In EasyAdmin versions prior to 4.25.0, instead of ``#[AdminRoute]`` you
+    had to use the ``#[AdminAction]`` attribute, which is now deprecated and
+    will be removed in EasyAdmin 5.0.0.
 
 Page Names and Constants
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -451,7 +463,7 @@ Search, Order, and Pagination Options
 
     When using `Doctrine filters`_, listings may not include some items because
     they were removed by those global Doctrine filters. Use the dashboard route
-    name to not apply the filters when the request URL belongs to the dashboard
+    name to avoid applying those filters when the request URL belongs to the dashboard.
     You can also get the dashboard route name via the :ref:`application context variable <admin-context>`.
 
 The default Doctrine query executed to get the list of entities displayed in the
@@ -517,7 +529,7 @@ Other Options
 Custom Redirect After Creating or Editing Entities
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-By default, when clicking on "Save" button when creating or editing entities
+By default, when you click the "Save" button when creating or editing entities
 you are redirected to the previous page. If you want to change this behavior,
 override the ``getRedirectResponseAfterSave()`` method.
 
@@ -608,7 +620,7 @@ that listing, it's better to override the ``createIndexQueryBuilder()`` method
 instead of the entire ``index()`` method. There are many of these methods, so
 you should check the ``EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController`` class.
 
-The other alternative to customize CRUD actions is to use the
+Another way to customize CRUD actions is to use the
 :doc:`events triggered by EasyAdmin </events>`, such as ``BeforeCrudActionEvent``
 and ``AfterCrudActionEvent``.
 
@@ -769,10 +781,10 @@ If you don't use :ref:`pretty admin URLs <pretty-admin-urls>` or if you need to
 build routes dynamically, you can use the ``AdminUrlGenerator`` provided by
 EasyAdmin to build the admin URLs.
 
-When generating a URL this way, you don't start from scratch. EasyAdmin reuses all
-the query parameters existing in the current request. This is done on purpose because
-generating new URLs based on the current URL is the most common scenario. Use
-the ``unsetAll()`` method to remove all existing query parameters::
+When you generate a URL this way, you don't start from scratch. EasyAdmin reuses
+all the query parameters existing in the current request. This is done on purpose
+because generating new URLs based on the current URL is the most common scenario.
+Use the ``unsetAll()`` method to remove all existing query parameters::
 
     namespace App\Controller\Admin;
 

@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Létrehozás és szerkesztés',
         'save' => 'Mentés',
         'save_and_continue' => 'Mentés és szerkesztés',
+        'toggle_dropdown' => 'Legördülő menü váltása',
     ],
 
     'batch_action_modal' => [
@@ -84,12 +85,13 @@ return [
         'label.is_less_than_or_equal_to' => 'kisebb vagy egyenlő',
         'label.is_between' => 'kettő között',
         'label.contains' => 'tartalmazza',
+        'label.contains_all' => 'tartalmaz mindent',
         'label.not_contains' => 'nem tartalmazza',
         'label.starts_with' => 'így kezdődik',
         'label.ends_with' => 'így végződik',
         'label.exactly' => 'pontosan',
         'label.not_exactly' => 'nem pontosan',
-        'label.is_same' => 'megyegyezik',
+        'label.is_same' => 'megegyezik',
         'label.is_not_same' => 'nem egyezik meg',
         'label.is_after' => 'korábbi',
         'label.is_after_or_same' => 'korábbi vagy egyezik',

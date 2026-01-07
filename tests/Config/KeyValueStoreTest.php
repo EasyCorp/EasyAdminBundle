@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 class KeyValueStoreTest extends TestCase
 {
-    public function testHas()
+    public function testHas(): void
     {
         $store = KeyValueStore::new([
             'k1' => 'v1',
@@ -29,7 +29,7 @@ class KeyValueStoreTest extends TestCase
         $this->assertFalse($store->has('k2.k2.v1'));
     }
 
-    public function testIsEmpty()
+    public function testIsEmpty(): void
     {
         $this->assertTrue(KeyValueStore::new()->isEmpty());
         $this->assertTrue(KeyValueStore::new([])->isEmpty());
@@ -39,7 +39,7 @@ class KeyValueStoreTest extends TestCase
         $this->assertFalse(KeyValueStore::new([null])->isEmpty());
     }
 
-    public function testAll()
+    public function testAll(): void
     {
         $this->assertSame([], KeyValueStore::new()->all());
         $this->assertSame(['foo'], KeyValueStore::new(['foo'])->all());
@@ -48,7 +48,7 @@ class KeyValueStoreTest extends TestCase
         $this->assertSame([null, false, 0, ''], KeyValueStore::new([null, false, 0, ''])->all());
     }
 
-    public function testGet()
+    public function testGet(): void
     {
         $store = KeyValueStore::new([
             'k1' => 'v1',
@@ -76,7 +76,7 @@ class KeyValueStoreTest extends TestCase
         $this->assertSame('default1', $store->get('k2.k2.k3', 'default1'));
     }
 
-    public function testSet()
+    public function testSet(): void
     {
         $store = KeyValueStore::new([
             'k1' => 'v1',
@@ -104,7 +104,7 @@ class KeyValueStoreTest extends TestCase
         $this->assertNull($store->get('k1'));
     }
 
-    public function testSetIfNotSet()
+    public function testSetIfNotSet(): void
     {
         $store = KeyValueStore::new([
             'k1' => 'v1',
@@ -132,7 +132,7 @@ class KeyValueStoreTest extends TestCase
         $this->assertSame('v1', $store->get('k1'));
     }
 
-    public function testSetAll()
+    public function testSetAll(): void
     {
         $store = KeyValueStore::new([
             'k1' => 'v1',
@@ -167,7 +167,7 @@ class KeyValueStoreTest extends TestCase
         $this->assertSame('v1', $store->get('k4.k1'));
     }
 
-    public function testDelete()
+    public function testDelete(): void
     {
         $store = KeyValueStore::new([
             'k1' => 'v1',

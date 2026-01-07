@@ -30,7 +30,7 @@ class FormFieldHelpControllerTest extends AbstractCrudTestCase
         return DashboardController::class;
     }
 
-    public function testFieldsHelpMessagesInForms()
+    public function testFieldsHelpMessagesInForms(): void
     {
         $crawler = $this->client->request('GET', $this->generateNewFormUrl());
 
@@ -66,7 +66,7 @@ class FormFieldHelpControllerTest extends AbstractCrudTestCase
         static::assertSame('<a href="https://example.com">PublishedAt</a> <b>Lorem</b> Ipsum', $crawler->filter('.form-group:contains("Published At") .form-help')->html(), 'The publishedAt field defines a translatable help message with HTML contents, which must be rendered instead of escaped.');
     }
 
-    public function testFieldsHelpMessagesOnDetailPage()
+    public function testFieldsHelpMessagesOnDetailPage(): void
     {
         $crawler = $this->client->request('GET', $this->generateNewFormUrl());
 

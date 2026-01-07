@@ -10,10 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Entity\Bill;
 
 class BillSortTest extends AbstractCrudTestCase
 {
-    /**
-     * @var EntityRepository
-     */
-    private $repository;
+    private EntityRepository $repository;
 
     protected function getControllerFqcn(): string
     {
@@ -35,7 +32,7 @@ class BillSortTest extends AbstractCrudTestCase
     /**
      * @dataProvider sorting
      */
-    public function testSorting(array $query, ?\Closure $sortFunction, string $expectedSortIcon)
+    public function testSorting(array $query, ?\Closure $sortFunction, string $expectedSortIcon): void
     {
         // Arrange
         $expectedAmountMapping = [];
@@ -70,7 +67,7 @@ class BillSortTest extends AbstractCrudTestCase
         }
     }
 
-    public function sorting(): \Generator
+    public static function sorting(): \Generator
     {
         yield [
             [],

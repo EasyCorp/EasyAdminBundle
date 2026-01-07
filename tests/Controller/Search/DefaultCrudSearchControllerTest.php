@@ -26,7 +26,7 @@ class DefaultCrudSearchControllerTest extends AbstractCrudTestCase
         $this->client->followRedirects();
     }
 
-    public function testDefaultEmptySearchForm()
+    public function testDefaultEmptySearchForm(): void
     {
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
@@ -44,7 +44,7 @@ class DefaultCrudSearchControllerTest extends AbstractCrudTestCase
         $this->assertSame('off', $formSearchInput->attr('autocorrect'));
     }
 
-    public function testSearchFormAfterMakingAQuery()
+    public function testSearchFormAfterMakingAQuery(): void
     {
         $crawler = $this->client->request('GET', $this->generateIndexUrl('blog post'));
 
@@ -63,7 +63,7 @@ class DefaultCrudSearchControllerTest extends AbstractCrudTestCase
         $this->assertSame($this->generateIndexUrl(), $crawler->filter('form.form-action-search .content-search-reset')->attr('href'));
     }
 
-    public function testPaginationNotDisplayedWhenNotNeeded()
+    public function testPaginationNotDisplayedWhenNotNeeded(): void
     {
         // Browse the index page and make some query
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
@@ -77,7 +77,7 @@ class DefaultCrudSearchControllerTest extends AbstractCrudTestCase
         $this->assertSelectorNotExists('.list-pagination nav.pager');
     }
 
-    public function testPaginationAndSortingIsResetAfterAQuery()
+    public function testPaginationAndSortingIsResetAfterAQuery(): void
     {
         // Browse the index page, click on 'next page' and click on a table column to sort the results
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
@@ -96,7 +96,7 @@ class DefaultCrudSearchControllerTest extends AbstractCrudTestCase
         $this->assertCount(0, $crawler->filter('th[data-column="title"] a.sorted'));
     }
 
-    public function testSearchIsPersistedAfterPaginationAndSorting()
+    public function testSearchIsPersistedAfterPaginationAndSorting(): void
     {
         // Make some query
         $crawler = $this->client->request('GET', $this->generateIndexUrl('blog post'));
@@ -115,7 +115,7 @@ class DefaultCrudSearchControllerTest extends AbstractCrudTestCase
     /**
      * @dataProvider provideSearchTests
      */
-    public function testSearch(array $newBlogPostsToCreate, string $query, int $expectedResultCount)
+    public function testSearch(array $newBlogPostsToCreate, string $query, int $expectedResultCount): void
     {
         foreach ($newBlogPostsToCreate as $blogPostData) {
             $blogPost = $this->createBlogPost($blogPostData['title'], $blogPostData['slug']);

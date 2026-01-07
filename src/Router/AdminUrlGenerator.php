@@ -10,16 +10,18 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Provider\AdminContextProviderInter
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Router\AdminRouteGeneratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\DashboardControllerRegistryInterface;
+use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class AdminUrlGenerator implements AdminUrlGeneratorInterface
+final class AdminUrlGenerator implements \Stringable, AdminUrlGeneratorInterface
 {
     private bool $isInitialized = false;
     private ?string $dashboardRoute = null;
     private ?bool $includeReferrer = null;
+    /** @var array<string, mixed> */
     private array $routeParameters = [];
     private ?string $currentPageReferrer = null;
     private ?string $customPageReferrer = null;
@@ -29,6 +31,7 @@ final class AdminUrlGenerator implements AdminUrlGeneratorInterface
         private readonly UrlGeneratorInterface $urlGenerator,
         private readonly DashboardControllerRegistryInterface $dashboardControllerRegistry,
         private readonly AdminRouteGeneratorInterface $adminRouteGenerator,
+        private readonly CacheItemPoolInterface $cache,
     ) {
     }
 
@@ -66,7 +69,7 @@ final class AdminUrlGenerator implements AdminUrlGeneratorInterface
         return $this;
     }
 
-    public function setEntityId($entityId): AdminUrlGeneratorInterface
+    public function setEntityId(mixed $entityId): AdminUrlGeneratorInterface
     {
         $this->setRouteParameter(EA::ENTITY_ID, $entityId);
 
@@ -82,7 +85,7 @@ final class AdminUrlGenerator implements AdminUrlGeneratorInterface
         return $this->routeParameters[$paramName] ?? null;
     }
 
-    public function set(string $paramName, $paramValue): AdminUrlGeneratorInterface
+    public function set(string $paramName, mixed $paramValue): AdminUrlGeneratorInterface
     {
         if (\in_array($paramName, [EA::MENU_INDEX, EA::SUBMENU_INDEX], true)) {
             trigger_deprecation(
@@ -288,7 +291,12 @@ final class AdminUrlGenerator implements AdminUrlGeneratorInterface
             return $this->urlGenerator->generate($this->dashboardRoute, [], $urlType);
         }
 
-        if (null !== $this->get(EA::ROUTE_NAME)) {
+        if (null !== $routeName = $this->get(EA::ROUTE_NAME)) {
+            $adminRoutes = $this->cache->getItem(AdminRouteGenerator::CACHE_KEY_ROUTE_TO_FQCN)->get();
+            if (null !== $adminRoutes && \array_key_exists($routeName, $adminRoutes)) {
+                return $this->urlGenerator->generate($routeName, $routeParameters[EA::ROUTE_PARAMS] ?? [], $urlType);
+            }
+
             return $this->urlGenerator->generate($this->dashboardRoute, $routeParameters, $urlType);
         }
 
@@ -331,7 +339,7 @@ final class AdminUrlGenerator implements AdminUrlGeneratorInterface
         return $url;
     }
 
-    private function setRouteParameter(string $paramName, $paramValue): void
+    private function setRouteParameter(string $paramName, mixed $paramValue): void
     {
         if (false === $this->isInitialized) {
             $this->initialize();
@@ -342,7 +350,7 @@ final class AdminUrlGenerator implements AdminUrlGeneratorInterface
         }
 
         if (\is_object($paramValue)) {
-            if (method_exists($paramValue, '__toString')) {
+            if ($paramValue instanceof \Stringable) {
                 $paramValue = (string) $paramValue;
             } else {
                 throw new \InvalidArgumentException(sprintf('The object passed as the value of the "%s" parameter must implement the "__toString()" method to allow using its value as a route parameter.', $paramName));

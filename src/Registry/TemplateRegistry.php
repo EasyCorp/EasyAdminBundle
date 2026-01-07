@@ -7,6 +7,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Registry;
  */
 final class TemplateRegistry
 {
+    /** @var array<string, string> */
     private array $templates = [
         'layout' => '@EasyAdmin/layout.html.twig',
         'main_menu' => '@EasyAdmin/menu.html.twig',
@@ -18,6 +19,7 @@ final class TemplateRegistry
         'crud/new' => '@EasyAdmin/crud/new.html.twig',
         'crud/edit' => '@EasyAdmin/crud/edit.html.twig',
         'crud/action' => '@EasyAdmin/crud/action.html.twig',
+        'crud/action_group' => '@EasyAdmin/crud/action_group.html.twig',
         'crud/filters' => '@EasyAdmin/crud/filters.html.twig',
         'crud/field/array' => '@EasyAdmin/crud/field/array.html.twig',
         'crud/field/association' => '@EasyAdmin/crud/field/association.html.twig',
@@ -94,6 +96,9 @@ final class TemplateRegistry
         $this->templates[$templateName] = $templatePath;
     }
 
+    /**
+     * @param array<string, string> $templateNamesAndPaths
+     */
     public function setTemplates(array $templateNamesAndPaths): void
     {
         foreach ($templateNamesAndPaths as $templateName => $templatePath) {

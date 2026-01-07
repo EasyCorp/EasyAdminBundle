@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class MenuItemMatcherTest extends KernelTestCase
 {
-    public function testIsSelectedWhenContextIsNull()
+    public function testIsSelectedWhenContextIsNull(): void
     {
         $request = $this->createRequest();
 
@@ -28,7 +28,7 @@ class MenuItemMatcherTest extends KernelTestCase
         $this->assertFalse($menuItemDto->isSelected());
     }
 
-    public function testIsSelectedWhenMenuItemIsSection()
+    public function testIsSelectedWhenMenuItemIsSection(): void
     {
         $request = $this->createRequest();
 
@@ -44,7 +44,7 @@ class MenuItemMatcherTest extends KernelTestCase
         $this->assertFalse($menuItemDto->isSelected());
     }
 
-    public function testIsSelectedWithCrudControllers()
+    public function testIsSelectedWithCrudControllers(): void
     {
         $request = $this->createRequest(
             crudControllerFqcn: 'App\Controller\Admin\SomeController',
@@ -96,7 +96,7 @@ class MenuItemMatcherTest extends KernelTestCase
         $this->assertFalse($menuItemDto->isSelected(), 'The CRUD controller and entity ID match but the action does not match');
     }
 
-    public function testIsSelectedWithRoutes()
+    public function testIsSelectedWithRoutes(): void
     {
         $request = $this->createRequest(
             routeName: 'some_route',
@@ -138,7 +138,7 @@ class MenuItemMatcherTest extends KernelTestCase
         $this->assertTrue($menuItemDto->isSelected(), 'A menu item with the same query parameters but in different order matches too.');
     }
 
-    public function testIsSelectedWithUrls()
+    public function testIsSelectedWithUrls(): void
     {
         $request = $this->createRequest(
             requestPath: '/foo',
@@ -171,7 +171,7 @@ class MenuItemMatcherTest extends KernelTestCase
         $this->assertTrue($menuItemDto->isSelected(), 'The URL matches');
     }
 
-    public function testMenuWithDashboardItem()
+    public function testMenuWithDashboardItem(): void
     {
         $dashboardMenuItem = new MenuItemDto();
         $dashboardMenuItem->setLabel('item1');
@@ -195,7 +195,7 @@ class MenuItemMatcherTest extends KernelTestCase
         $this->assertSame('item2', $this->getSelectedMenuItemLabel($menuItems), 'Perfect match: Dashboard item');
     }
 
-    public function testComplexMenu()
+    public function testComplexMenu(): void
     {
         $menuItems = $this->getComplexMenuItems();
         $request = $this->createRequest(

@@ -18,18 +18,19 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabPaneCloseType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabPaneGroupCloseType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabPaneGroupOpenType;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Translation\IdentityTranslator;
 
 class FormLayoutFactoryTest extends TestCase
 {
     /**
      * @dataProvider provideFormLayouts
      */
-    public function testFixFormColumns(array $fieldConfig, string $expectedLayout)
+    public function testFixFormColumns(array $fieldConfig, string $expectedLayout): void
     {
         $originalFields = $this->createFormFieldsFromConfig($fieldConfig);
         $expectedFields = $this->createFormFieldsFromLayout($expectedLayout);
 
-        $formLayoutFactory = new FormLayoutFactory();
+        $formLayoutFactory = new FormLayoutFactory(new IdentityTranslator());
         $formLayoutFactory->createLayout($originalFields, Crud::PAGE_EDIT);
 
         $this->assertTrue($this->isFormLayoutTheSame($expectedFields, $originalFields));
@@ -38,18 +39,18 @@ class FormLayoutFactoryTest extends TestCase
     /**
      * @dataProvider provideFormLayoutErrors
      */
-    public function testFixFormColumnsErrors(array $originalFields, string $expectedExceptionFqcn, string $expectedExceptionMessage)
+    public function testFixFormColumnsErrors(array $originalFields, string $expectedExceptionFqcn, string $expectedExceptionMessage): void
     {
         $this->expectException($expectedExceptionFqcn);
         $this->expectExceptionMessage($expectedExceptionMessage);
 
         $originalFields = $this->createFormFieldsFromConfig($originalFields);
 
-        $fieldFactory = new FormLayoutFactory();
+        $fieldFactory = new FormLayoutFactory(new IdentityTranslator());
         $fieldFactory->createLayout($originalFields, Crud::PAGE_EDIT);
     }
 
-    public function provideFormLayouts()
+    public function provideFormLayouts(): \Generator
     {
         yield 'Only fields (a fieldset is added automatically to wrap all fields)' => [
             ['field', 'field', 'field'],
@@ -292,7 +293,7 @@ class FormLayoutFactoryTest extends TestCase
         ];
     }
 
-    public function provideFormLayoutErrors()
+    public function provideFormLayoutErrors(): \Generator
     {
         yield 'One or more fields outside of all columns' => [
             ['field', 'column', 'field', 'field'],

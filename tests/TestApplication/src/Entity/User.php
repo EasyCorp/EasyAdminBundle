@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
 #[ORM\Table(name: '`user`')]
-class User
+class User implements \Stringable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]

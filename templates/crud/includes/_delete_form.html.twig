@@ -13,13 +13,13 @@
                 <p>{{ 'delete_modal.content'|trans([], 'EasyAdminBundle') }}</p>
             </div>
             <div class="modal-footer">
-                <button type="button" data-bs-dismiss="modal" class="btn btn-secondary">
-                    <span class="btn-label">{{ 'action.cancel'|trans([], 'EasyAdminBundle') }}</span>
-                </button>
+                <twig:ea:Button type="button" data-bs-dismiss="modal">
+                    {{ 'action.cancel'|trans([], 'EasyAdminBundle') }}
+                </twig:ea:Button>
 
-                <button type="button" data-bs-dismiss="modal" class="btn btn-danger" id="modal-delete-button" form="delete-form">
-                    <span class="btn-label">{{ 'action.delete'|trans([], 'EasyAdminBundle') }}</span>
-                </button>
+                <twig:ea:Button type="button" variant="danger" data-bs-dismiss="modal" id="modal-delete-button" form="delete-form">
+                    {{ 'action.delete'|trans([], 'EasyAdminBundle') }}
+                </twig:ea:Button>
             </div>
         </div>
     </div>

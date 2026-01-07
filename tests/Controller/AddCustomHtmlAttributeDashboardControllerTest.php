@@ -31,14 +31,14 @@ class AddCustomHtmlAttributeDashboardControllerTest extends AbstractCrudTestCase
         $this->categories = $this->entityManager->getRepository(Category::class);
     }
 
-    public function testSingleCustomAttribute()
+    public function testSingleCustomAttribute(): void
     {
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
         static::assertCount(1, $crawler->filter('a[test-attribute="test"]'));
     }
 
-    public function testMultipleCustomAttribute()
+    public function testMultipleCustomAttribute(): void
     {
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 

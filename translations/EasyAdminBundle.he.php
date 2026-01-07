@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'צור והמשך לערוך',
         'save' => 'שמור שינויים',
         'save_and_continue' => 'שמור והמשך עריכה',
+        'toggle_dropdown' => 'החלף תפריט נפתח',
     ],
 
     'batch_action_modal' => [
@@ -84,6 +85,7 @@ return [
         'label.is_less_than_or_equal_to' => 'קטן/שווה לערך',
         'label.is_between' => 'בין',
         'label.contains' => 'מכיל',
+        'label.contains_all' => 'מכיל הכל',
         'label.not_contains' => 'לא מכיל',
         'label.starts_with' => 'מתחיל עם',
         'label.ends_with' => 'מסתיים עם',

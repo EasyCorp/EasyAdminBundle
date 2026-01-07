@@ -16,7 +16,7 @@ class TimeFieldTest extends AbstractFieldTest
         $this->configurator = new DateTimeConfigurator(new IntlFormatter());
     }
 
-    public function testFieldWithWrongTimezone()
+    public function testFieldWithWrongTimezone(): void
     {
         $this->expectException(\InvalidArgumentException::class);
 
@@ -24,7 +24,7 @@ class TimeFieldTest extends AbstractFieldTest
         $field->setTimezone('this-timezone-does-not-exist');
     }
 
-    public function testFieldWithoutTimezone()
+    public function testFieldWithoutTimezone(): void
     {
         $field = TimeField::new('foo');
         $field->setFieldFqcn(TimeField::class);
@@ -33,7 +33,7 @@ class TimeFieldTest extends AbstractFieldTest
         $this->assertNull($fieldDto->getCustomOption(DateTimeField::OPTION_TIMEZONE));
     }
 
-    public function testFieldWithTimezone()
+    public function testFieldWithTimezone(): void
     {
         $field = TimeField::new('foo');
         $field->setFieldFqcn(TimeField::class);
@@ -43,7 +43,7 @@ class TimeFieldTest extends AbstractFieldTest
         $this->assertSame('Europe/Madrid', $fieldDto->getCustomOption(DateTimeField::OPTION_TIMEZONE));
     }
 
-    public function testFieldWithWrongFormat()
+    public function testFieldWithWrongFormat(): void
     {
         $this->expectException(\InvalidArgumentException::class);
 
@@ -52,7 +52,7 @@ class TimeFieldTest extends AbstractFieldTest
         $field->setFormat(DateTimeField::FORMAT_NONE);
     }
 
-    public function testFieldWithEmptyFormat()
+    public function testFieldWithEmptyFormat(): void
     {
         $this->expectException(\InvalidArgumentException::class);
 
@@ -61,7 +61,7 @@ class TimeFieldTest extends AbstractFieldTest
         $field->setFormat('');
     }
 
-    public function testFieldWithPredefinedFormat()
+    public function testFieldWithPredefinedFormat(): void
     {
         $field = TimeField::new('foo')->setValue(new \DateTime('2006-01-02 15:04:05'));
         $field->setFieldFqcn(TimeField::class);
@@ -72,7 +72,7 @@ class TimeFieldTest extends AbstractFieldTest
         $this->assertSame('3:04:05 PM UTC', $fieldDto->getFormattedValue());
     }
 
-    public function testFieldWithCustomPattern()
+    public function testFieldWithCustomPattern(): void
     {
         $field = TimeField::new('foo')->setValue(new \DateTime('2006-01-02 15:04:05'));
         $field->setFieldFqcn(TimeField::class);
@@ -80,10 +80,11 @@ class TimeFieldTest extends AbstractFieldTest
         $fieldDto = $this->configure($field);
 
         $this->assertSame('HH:mm:ss ZZZZ a', $fieldDto->getCustomOption(TimeField::OPTION_TIME_PATTERN));
-        $this->assertSame('15:04:05 GMT PM', $fieldDto->getFormattedValue());
+        // some ICU versions return "GMT" while others return "GMT+00:00"
+        $this->assertMatchesRegularExpression('/^15:04:05 GMT(\+00:00)? PM$/', $fieldDto->getFormattedValue());
     }
 
-    public function testFieldDefaultWidget()
+    public function testFieldDefaultWidget(): void
     {
         $field = TimeField::new('foo');
         $field->setFieldFqcn(TimeField::class);
@@ -92,7 +93,7 @@ class TimeFieldTest extends AbstractFieldTest
         $this->assertSame(DateTimeField::WIDGET_NATIVE, $fieldDto->getCustomOption(TimeField::OPTION_WIDGET));
     }
 
-    public function testFieldRenderAsNativeWidget()
+    public function testFieldRenderAsNativeWidget(): void
     {
         $field = TimeField::new('foo');
         $field->setFieldFqcn(TimeField::class);
@@ -104,7 +105,7 @@ class TimeFieldTest extends AbstractFieldTest
         $this->assertTrue($fieldDto->getFormTypeOption('html5'));
     }
 
-    public function testFieldRenderAsNotNativeWidget()
+    public function testFieldRenderAsNotNativeWidget(): void
     {
         $field = TimeField::new('foo');
         $field->setFieldFqcn(TimeField::class);
@@ -114,7 +115,7 @@ class TimeFieldTest extends AbstractFieldTest
         $this->assertSame(DateTimeField::WIDGET_CHOICE, $fieldDto->getCustomOption(TimeField::OPTION_WIDGET));
     }
 
-    public function testFieldRenderAsChoice()
+    public function testFieldRenderAsChoice(): void
     {
         $field = TimeField::new('foo');
         $field->setFieldFqcn(TimeField::class);
@@ -126,7 +127,7 @@ class TimeFieldTest extends AbstractFieldTest
         $this->assertTrue($fieldDto->getFormTypeOption('html5'));
     }
 
-    public function testFieldRenderAsNotChoice()
+    public function testFieldRenderAsNotChoice(): void
     {
         $field = TimeField::new('foo');
         $field->setFieldFqcn(TimeField::class);
@@ -136,7 +137,7 @@ class TimeFieldTest extends AbstractFieldTest
         $this->assertSame(DateTimeField::WIDGET_NATIVE, $fieldDto->getCustomOption(TimeField::OPTION_WIDGET));
     }
 
-    public function testFieldRenderAsText()
+    public function testFieldRenderAsText(): void
     {
         $field = TimeField::new('foo');
         $field->setFieldFqcn(TimeField::class);
@@ -148,7 +149,7 @@ class TimeFieldTest extends AbstractFieldTest
         $this->assertFalse($fieldDto->getFormTypeOption('html5'));
     }
 
-    public function testFieldRenderAsNotText()
+    public function testFieldRenderAsNotText(): void
     {
         $field = TimeField::new('foo');
         $field->setFieldFqcn(TimeField::class);

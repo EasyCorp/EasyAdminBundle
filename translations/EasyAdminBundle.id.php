@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Buat dan teruskan penyuntingan',
         'save' => 'Simpan perubahan',
         'save_and_continue' => 'Simpan dan teruskan penyuntingan',
+        'toggle_dropdown' => 'Alihkan menu dropdown',
     ],
 
     'batch_action_modal' => [
@@ -84,6 +85,7 @@ return [
         'label.is_less_than_or_equal_to' => 'kurang dari atau sama dengan',
         'label.is_between' => 'antara',
         'label.contains' => 'mengandung',
+        'label.contains_all' => 'mengandung semua',
         'label.not_contains' => 'tidak mengandung',
         'label.starts_with' => 'dimulai dari',
         'label.ends_with' => 'berakhiran dengan',

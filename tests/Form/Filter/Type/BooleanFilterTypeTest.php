@@ -12,7 +12,7 @@ class BooleanFilterTypeTest extends FilterTypeTest
     /**
      * @dataProvider getDataProvider
      */
-    public function testSubmitAndFilter($submittedData, $data, string $dql, array $params)
+    public function testSubmitAndFilter($submittedData, $data, string $dql, array $params): void
     {
         $form = $this->factory->create(static::FILTER_TYPE);
         $form->submit($submittedData);

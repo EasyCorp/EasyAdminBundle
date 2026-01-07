@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Sortu eta jarraitu',
         'save' => 'Gorde',
         'save_and_continue' => 'Gorde eta jarraitu',
+        'toggle_dropdown' => 'Txandakatu goitibeherako menua',
     ],
 
     'batch_action_modal' => [
@@ -84,6 +85,7 @@ return [
         'label.is_less_than_or_equal_to' => 'txikiagoa edo berdina da',
         'label.is_between' => 'tartean dago',
         'label.contains' => 'dauka',
+        'label.contains_all' => 'dauka guztiak',
         'label.not_contains' => 'ez dauka',
         'label.starts_with' => 'honela hasten da',
         'label.ends_with' => 'honela amaitzen da',

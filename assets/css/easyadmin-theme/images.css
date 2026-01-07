@@ -35,7 +35,63 @@
 }
 
 /* below, the contents of basiclightbox/dist/basicLightbox.min.css */
-.basicLightbox{position:fixed;display:flex;justify-content:center;align-items:center;inset-block-start:0;inset-inline-start:0;inline-size:100%;block-size:100vh;background:rgba(0,0,0,.8);opacity:.01;transition:opacity .4s ease;z-index:1000;will-change:opacity}.basicLightbox--visible{opacity:1}.basicLightbox__placeholder{max-inline-size:100%;transform:scale(.9);transition:transform .4s ease;z-index:1;will-change:transform}.basicLightbox__placeholder>iframe:first-child:last-child,.basicLightbox__placeholder>img:first-child:last-child,.basicLightbox__placeholder>video:first-child:last-child{display:block;position:absolute;inset-block-start:0;inset-inline-end:0;inset-block-end:0;inset-inline-start:0;margin:auto;max-inline-size:95%;max-block-size:95%}.basicLightbox__placeholder>iframe:first-child:last-child,.basicLightbox__placeholder>video:first-child:last-child{pointer-events:auto}.basicLightbox__placeholder>img:first-child:last-child,.basicLightbox__placeholder>video:first-child:last-child{inline-size:auto;block-size:auto}.basicLightbox--iframe .basicLightbox__placeholder,.basicLightbox--img .basicLightbox__placeholder,.basicLightbox--video .basicLightbox__placeholder{inline-size:100%;block-size:100%;pointer-events:none}.basicLightbox--visible .basicLightbox__placeholder{transform:scale(1)}
+.basicLightbox {
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    inline-size: 100%;
+    block-size: 100vh;
+    background: rgba(0, 0, 0, 0.8);
+    opacity: 0.01;
+    transition: opacity .4s ease;
+    z-index: 1000;
+    will-change: opacity;
+}
+.basicLightbox--visible {
+    opacity: 1;
+}
+.basicLightbox__placeholder {
+    max-inline-size: 100%;
+    transform: scale(0.9);
+    transition: transform .4s ease;
+    z-index: 1;
+    will-change: transform;
+}
+.basicLightbox__placeholder > iframe:first-child:last-child,
+.basicLightbox__placeholder > img:first-child:last-child,
+.basicLightbox__placeholder > video:first-child:last-child {
+    display: block;
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-end: 0;
+    inset-block-end: 0;
+    inset-inline-start: 0;
+    margin: auto;
+    max-inline-size: 95%;
+    max-block-size: 95%;
+}
+.basicLightbox__placeholder > iframe:first-child:last-child,
+.basicLightbox__placeholder > video:first-child:last-child {
+    pointer-events: auto;
+}
+.basicLightbox__placeholder > img:first-child:last-child,
+.basicLightbox__placeholder > video:first-child:last-child {
+    inline-size: auto;
+    block-size: auto;
+}
+.basicLightbox--iframe .basicLightbox__placeholder,
+.basicLightbox--img .basicLightbox__placeholder,
+.basicLightbox--video .basicLightbox__placeholder {
+    inline-size: 100%;
+    block-size: 100%;
+    pointer-events: none;
+}
+.basicLightbox--visible .basicLightbox__placeholder {
+    transform: scale(1);
+}
 
 .basicLightbox {
     background: rgba(0, 0, 0, 0.8);

@@ -13,7 +13,7 @@ class UrlFieldTest extends AbstractFieldTest
         parent::setUp();
     }
 
-    public function testDefaultFieldOptions()
+    public function testDefaultFieldOptions(): void
     {
         $this->initializeConfigurator();
 
@@ -30,7 +30,7 @@ class UrlFieldTest extends AbstractFieldTest
      *           ["https"]
      *           ["ftp"]
      */
-    public function testDefaultProtocolOption(string $defaultProtocol)
+    public function testDefaultProtocolOption(string $defaultProtocol): void
     {
         $this->initializeConfigurator();
 
@@ -49,7 +49,7 @@ class UrlFieldTest extends AbstractFieldTest
      *           ["https://www.example.com", "example.com"]
      *           ["https://01234567890123456789012345678901234567890123456789.com", "0123456789012345678901234567890…"]
      */
-    public function testFormattedValuesOnIndexAction(string $url, string $expectedRenderedUrl)
+    public function testFormattedValuesOnIndexAction(string $url, string $expectedRenderedUrl): void
     {
         $this->initializeConfigurator();
 

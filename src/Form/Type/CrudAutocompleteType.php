@@ -52,12 +52,16 @@ class CrudAutocompleteType extends AbstractType implements DataMapperInterface
     public function mapDataToForms($data, $forms): void
     {
         $form = current(iterator_to_array($forms, false));
-        $form->setData($data);
+        if (false !== $form) {
+            $form->setData($data);
+        }
     }
 
     public function mapFormsToData($forms, &$data): void
     {
         $form = current(iterator_to_array($forms, false));
-        $data = $form->getData();
+        if (false !== $form) {
+            $data = $form->getData();
+        }
     }
 }

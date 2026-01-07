@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Створити і продовжити',
         'save' => 'Зберегти',
         'save_and_continue' => 'Зберегти і продовжити',
+        'toggle_dropdown' => 'Перемкнути випадаюче меню',
     ],
 
     'batch_action_modal' => [
@@ -84,6 +85,7 @@ return [
         'label.is_less_than_or_equal_to' => 'менше ніж або рівно',
         'label.is_between' => 'між',
         'label.contains' => 'містить',
+        'label.contains_all' => 'містить все',
         'label.not_contains' => 'не містить',
         'label.starts_with' => 'починається з',
         'label.ends_with' => 'закінчується на',

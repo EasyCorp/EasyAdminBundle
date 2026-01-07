@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Sukurti ir tęsti redagavimą',
         'save' => 'Išsaugoti',
         'save_and_continue' => 'Išsaugoti ir tęsti redagavimą',
+        'toggle_dropdown' => 'Perjungti išskleidžiamąjį meniu',
     ],
 
     'batch_action_modal' => [
@@ -84,6 +85,7 @@ return [
         'label.is_less_than_or_equal_to' => 'mažesnis arba lygus',
         'label.is_between' => 'tarp',
         'label.contains' => 'turi',
+        'label.contains_all' => 'turi visus',
         'label.not_contains' => 'neturi',
         'label.starts_with' => 'prasideda',
         'label.ends_with' => 'pasibaigia',

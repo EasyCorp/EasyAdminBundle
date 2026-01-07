@@ -102,7 +102,7 @@ final class CrudTestIndexAssertsTraitTest extends WebTestCase
         $this->assertIndexPageEntityCount($incorrectCount);
     }
 
-    public function pageEntityIncorrectCount(): \Generator
+    public static function pageEntityIncorrectCount(): \Generator
     {
         // 20 items per page is the default for EasyAdmin
         yield [0, AssertionFailedError::class];
@@ -130,7 +130,7 @@ final class CrudTestIndexAssertsTraitTest extends WebTestCase
         self::assertIndexPagesCount($incorrectCount);
     }
 
-    public function pageIncorrectCount(): \Generator
+    public static function pageIncorrectCount(): \Generator
     {
         // 20 items per page is the default for EasyAdmin
         yield [0, \InvalidArgumentException::class];
@@ -341,7 +341,7 @@ final class CrudTestIndexAssertsTraitTest extends WebTestCase
         self::assertIndexColumnNotExists($columnName);
     }
 
-    public function existingColumns(): \Generator
+    public static function existingColumns(): \Generator
     {
         yield ['id'];
         yield ['name'];
@@ -368,7 +368,7 @@ final class CrudTestIndexAssertsTraitTest extends WebTestCase
         self::assertIndexColumnHeaderContains('id', 'another value');
     }
 
-    public function existingColumnsDisplayValues(): \Generator
+    public static function existingColumnsDisplayValues(): \Generator
     {
         yield ['id', 'ID'];
         yield ['name', 'Name'];

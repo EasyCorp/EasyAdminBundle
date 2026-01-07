@@ -13,6 +13,8 @@ use function Symfony\Component\Translation\t;
 
 /**
  * Used to test the different types of labels that fields can configure.
+ *
+ * @extends AbstractCrudController<BlogPost>
  */
 class FormFieldLabelController extends AbstractCrudController
 {

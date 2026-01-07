@@ -1,4 +1,5 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
+{% set ea = ea() %}
 {% trans_default_domain ea.i18n.translationDomain %}
 
 <!DOCTYPE html>
@@ -20,8 +21,8 @@
     {% endblock %}
 
     {% block configured_stylesheets %}
-        {{ include('@EasyAdmin/includes/_css_assets.html.twig', { assets: ea.assets.cssAssets ?? [] }, with_context = false) }}
-        {{ include('@EasyAdmin/includes/_encore_link_tags.html.twig', { assets: ea.assets.webpackEncoreAssets ?? [] }, with_context = false) }}
+        {{ include('@EasyAdmin/includes/_css_assets.html.twig', {assets: ea.assets.cssAssets ?? []}, with_context: false) }}
+        {{ include('@EasyAdmin/includes/_encore_link_tags.html.twig', {assets: ea.assets.webpackEncoreAssets ?? []}, with_context: false) }}
     {% endblock %}
 
     {% block head_favicon %}
@@ -32,13 +33,13 @@
         <script src="{{ asset('app.js', ea.assets.defaultAssetPackageName) }}"></script>
 
         {% block importmap %}
-            {{ include('@EasyAdmin/includes/_importmap.html.twig', { assets: ea.assets.assetMapperAssets ?? [] }, with_context = false) }}
+            {{ include('@EasyAdmin/includes/_importmap.html.twig', {assets: ea.assets.assetMapperAssets ?? []}, with_context: false) }}
         {% endblock %}
     {% endblock head_javascript %}
 
     {% block configured_javascripts %}
-        {{ include('@EasyAdmin/includes/_js_assets.html.twig', { assets: ea.assets.jsAssets ?? [] }, with_context = false) }}
-        {{ include('@EasyAdmin/includes/_encore_script_tags.html.twig', { assets: ea.assets.webpackEncoreAssets ?? [] }, with_context = false) }}
+        {{ include('@EasyAdmin/includes/_js_assets.html.twig', {assets: ea.assets.jsAssets ?? []}, with_context: false) }}
+        {{ include('@EasyAdmin/includes/_encore_script_tags.html.twig', {assets: ea.assets.webpackEncoreAssets ?? []}, with_context: false) }}
     {% endblock %}
 
     {% block configured_head_contents %}
@@ -116,8 +117,8 @@
                 <twig:ea:ActionMenu:ActionList:Content class="dropdown-user-details">
                     <div>{{ user_menu_avatar }}</div>
                     <div>
-                        <span class="user-label">{{ 'user.logged_in_as'|trans(domain = 'EasyAdminBundle') }}</span>
-                        <span class="user-name">{{ ea.user is null ? 'user.anonymous'|trans(domain = 'EasyAdminBundle') : ea.userMenu.name }}</span>
+                        <span class="user-label">{{ 'user.logged_in_as'|trans(domain: 'EasyAdminBundle') }}</span>
+                        <span class="user-name">{{ ea.user is null ? 'user.anonymous'|trans(domain: 'EasyAdminBundle') : ea.userMenu.name }}</span>
                     </div>
                 </twig:ea:ActionMenu:ActionList:Content>
 
@@ -137,12 +138,14 @@
                             {% if ea.dashboardLocales %}
                                 <twig:ea:ActionMenu:ActionList:Header
                                     class="dropdown-locales-label"
-                                    label="{{ 'settings.locale'|trans(domain = 'EasyAdminBundle') }}" />
+                                    label="{{ 'settings.locale'|trans(domain: 'EasyAdminBundle') }}" />
                             {% endif %}
 
                             {% for localeDto in ea.dashboardLocales %}
                                 {% if ea.usePrettyUrls %}
-                                    {% set url = ea_url().set('_locale', localeDto.locale).set('entityId', app.request.attributes.get('entityId')) %}
+                                    {# TODO symfony>=6.4 app.current_route_parameters #}
+                                    {% set current_route_params = app.request.attributes.get('_route_params') %}
+                                    {% set url = ea_url(current_route_params).set('_locale', localeDto.locale).set('entityId', app.request.attributes.get('entityId')) %}
                                 {% else %}
                                     {% set url = ea_url().set('_locale', localeDto.locale) %}
                                 {% endif %}
@@ -159,20 +162,20 @@
 
                                 <twig:ea:ActionMenu:ActionList:Header
                                     class="dropdown-appearance-label"
-                                    label="{{ 'settings.appearance.label'|trans(domain = 'EasyAdminBundle') }}" />
+                                    label="{{ 'settings.appearance.label'|trans(domain: 'EasyAdminBundle') }}" />
 
                                 <twig:ea:ActionMenu:ActionList:Item
                                     class="dropdown-appearance-item"
                                     url="#" icon="internal:sun" data-ea-color-scheme="light"
-                                    label="{{ 'settings.appearance.light'|trans(domain = 'EasyAdminBundle') }}" />
+                                    label="{{ 'settings.appearance.light'|trans(domain: 'EasyAdminBundle') }}" />
                                 <twig:ea:ActionMenu:ActionList:Item
                                     class="dropdown-appearance-item"
                                     url="#" icon="internal:moon" data-ea-color-scheme="dark"
-                                    label="{{ 'settings.appearance.dark'|trans(domain = 'EasyAdminBundle') }}" />
+                                    label="{{ 'settings.appearance.dark'|trans(domain: 'EasyAdminBundle') }}" />
                                 <twig:ea:ActionMenu:ActionList:Item
                                     class="dropdown-appearance-item active"
                                     url="#" icon="internal:desktop" data-ea-color-scheme="auto"
-                                    label="{{ 'settings.appearance.auto'|trans(domain = 'EasyAdminBundle') }}" />
+                                    label="{{ 'settings.appearance.auto'|trans(domain: 'EasyAdminBundle') }}" />
                             {% endif %}
                         </twig:ea:ActionMenu:ActionList>
                     </twig:ea:ActionMenu:Overlay>
@@ -184,9 +187,7 @@
             {% block wrapper %}
                 <div class="responsive-header">
                     {% block responsive_header %}
-                        <button id="navigation-toggler" type="button" aria-label="Toggle navigation">
-                            <twig:ea:Icon name="internal:menu-bars" />
-                        </button>
+                        <twig:ea:Button type="button" isInvisible icon="internal:menu-bars" id="navigation-toggler" aria-label="Toggle navigation"></twig:ea:Button>
 
                         <div id="responsive-header-logo" class="text-truncate ms-auto">
                             {% block responsive_header_logo %}
@@ -389,7 +390,6 @@
                 </section>
                 {% endblock main_content_wrapper %}
             {% endblock wrapper %}
-        </div>
         </div>
     {% endblock wrapper_wrapper %}
 

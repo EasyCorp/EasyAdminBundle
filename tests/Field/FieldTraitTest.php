@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 class FieldTraitTest extends TestCase
 {
-    public function testSetFormTypeOption()
+    public function testSetFormTypeOption(): void
     {
         $field = TextField::new('test');
         $field->setFormTypeOption('entry_options.attr.class', 'foo');
@@ -16,7 +16,7 @@ class FieldTraitTest extends TestCase
         $this->assertSame('foo', $formTypeOptions['entry_options']['attr']['class']);
     }
 
-    public function testSetFormTypeOptionIfNotSet()
+    public function testSetFormTypeOptionIfNotSet(): void
     {
         $field = TextField::new('test');
         $field->setFormTypeOption('entry_options.attr.class', 'foo');

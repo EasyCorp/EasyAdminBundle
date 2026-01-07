@@ -14,7 +14,7 @@ class ActionTest extends TestCase
     /**
      * @group legacy
      */
-    public function testDeprecatedActionLabels()
+    public function testDeprecatedActionLabels(): void
     {
         $this->expectDeprecation('Since easycorp/easyadmin-bundle 4.0.5: Argument "$label" for "EasyCorp\Bundle\EasyAdminBundle\Config\Action::new" must be one of these types: "Symfony\Contracts\Translation\TranslatableInterface", "string", "callable", "false" or "null". Passing type "integer" will cause an error in 5.0.0.');
 
@@ -24,7 +24,7 @@ class ActionTest extends TestCase
     /**
      * @dataProvider provideAutomaticActionLabels
      */
-    public function testActionWithAutomaticLabel(string $actionName, string $automaticLabel)
+    public function testActionWithAutomaticLabel(string $actionName, string $automaticLabel): void
     {
         $actionConfig = Action::new($actionName)->linkToCrudAction('');
 
@@ -34,14 +34,14 @@ class ActionTest extends TestCase
     /**
      * @dataProvider provideActionLabels
      */
-    public function testAllPossibleValuesForActionLabels($label)
+    public function testAllPossibleValuesForActionLabels($label): void
     {
         $actionConfig = Action::new(Action::EDIT, $label)->linkToCrudAction('');
 
         $this->assertSame($label, $actionConfig->getAsDto()->getLabel());
     }
 
-    public function testCallableLabelForDynamicLabelGeneration()
+    public function testCallableLabelForDynamicLabelGeneration(): void
     {
         $callable = static function (object $entity) {
             return sprintf('Delete %s', $entity);
@@ -56,7 +56,7 @@ class ActionTest extends TestCase
         $this->assertSame($callable, $dto->getLabel());
     }
 
-    public function testDefaultCssClass()
+    public function testDefaultCssClass(): void
     {
         $actionConfig = Action::new(Action::DELETE)->linkToCrudAction('');
 
@@ -64,7 +64,7 @@ class ActionTest extends TestCase
         $this->assertSame('', $actionConfig->getAsDto()->getAddedCssClass());
     }
 
-    public function testSetCssClass()
+    public function testSetCssClass(): void
     {
         $actionConfig = Action::new(Action::DELETE)->linkToCrudAction('')
             ->setCssClass('foo');
@@ -73,7 +73,7 @@ class ActionTest extends TestCase
         $this->assertSame('', $actionConfig->getAsDto()->getAddedCssClass());
     }
 
-    public function testAddCssClass()
+    public function testAddCssClass(): void
     {
         $actionConfig = Action::new(Action::DELETE)->linkToCrudAction('')
             ->addCssClass('foo');
@@ -82,7 +82,7 @@ class ActionTest extends TestCase
         $this->assertSame('foo', $actionConfig->getAsDto()->getAddedCssClass());
     }
 
-    public function testSetAndAddCssClass()
+    public function testSetAndAddCssClass(): void
     {
         $actionConfig = Action::new(Action::DELETE)->linkToCrudAction('')
             ->setCssClass('foo')->addCssClass('bar');
@@ -91,7 +91,7 @@ class ActionTest extends TestCase
         $this->assertSame('bar', $actionConfig->getAsDto()->getAddedCssClass());
     }
 
-    public function testSetAndAddCssClassWithSpaces()
+    public function testSetAndAddCssClassWithSpaces(): void
     {
         $actionConfig = Action::new(Action::DELETE)->linkToCrudAction('')
             ->setCssClass('      foo1   foo2  ')->addCssClass('     bar1    bar2   ');
@@ -100,7 +100,7 @@ class ActionTest extends TestCase
         $this->assertSame('bar1    bar2', $actionConfig->getAsDto()->getAddedCssClass());
     }
 
-    public function provideAutomaticActionLabels(): iterable
+    public static function provideAutomaticActionLabels(): iterable
     {
         // format: (action name, automatic label generated for the action)
         yield ['Edit', 'Edit'];
@@ -109,7 +109,7 @@ class ActionTest extends TestCase
         yield ['foo_Bar', 'Foo Bar'];
     }
 
-    public function provideActionLabels(): iterable
+    public static function provideActionLabels(): iterable
     {
         yield [false];
         yield [''];
@@ -119,5 +119,55 @@ class ActionTest extends TestCase
             return sprintf('Edit %s', $entity);
         }];
         yield [t('Edit')];
+    }
+
+    public function testGetAsConfigObjectPreservesLinkToUrl(): void
+    {
+        $action = Action::new('my_action')
+            ->linkToUrl('https://example.com');
+
+        $dto = $action->getAsDto();
+        $restoredAction = $dto->getAsConfigObject();
+        $restoredDto = $restoredAction->getAsDto();
+
+        $this->assertSame('https://example.com', $restoredDto->getUrl());
+    }
+
+    public function testGetAsConfigObjectPreservesCallableUrl(): void
+    {
+        $callable = fn () => 'https://dynamic.example.com';
+        $action = Action::new('my_action')
+            ->linkToUrl($callable);
+
+        $dto = $action->getAsDto();
+        $restoredAction = $dto->getAsConfigObject();
+        $restoredDto = $restoredAction->getAsDto();
+
+        $this->assertSame($callable, $restoredDto->getUrl());
+    }
+
+    public function testGetAsConfigObjectPreservesLinkToRoute(): void
+    {
+        $action = Action::new('my_action')
+            ->linkToRoute('my_route', ['param1' => 'value1']);
+
+        $dto = $action->getAsDto();
+        $restoredAction = $dto->getAsConfigObject();
+        $restoredDto = $restoredAction->getAsDto();
+
+        $this->assertSame('my_route', $restoredDto->getRouteName());
+        $this->assertSame(['param1' => 'value1'], $restoredDto->getRouteParameters());
+    }
+
+    public function testGetAsConfigObjectPreservesLinkToCrudAction(): void
+    {
+        $action = Action::new('my_action')
+            ->linkToCrudAction('edit');
+
+        $dto = $action->getAsDto();
+        $restoredAction = $dto->getAsConfigObject();
+        $restoredDto = $restoredAction->getAsDto();
+
+        $this->assertSame('edit', $restoredDto->getCrudActionName());
     }
 }

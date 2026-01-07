@@ -24,7 +24,7 @@ class PrettyUrlsControllerTest extends WebTestCase
         return Kernel::class;
     }
 
-    public function testGeneratedRoutes()
+    public function testGeneratedRoutes(): void
     {
         // the generated routes are:
         //   * `admin_pretty_*`: the default routes of DashboardController (which doesn't customize anything about them)
@@ -98,7 +98,7 @@ class PrettyUrlsControllerTest extends WebTestCase
         $this->assertSame($expectedRoutes, $generatedRoutes);
     }
 
-    public function testDefaultWelcomePage()
+    public function testDefaultWelcomePage(): void
     {
         $client = static::createClient();
         $client->followRedirects();
@@ -109,7 +109,7 @@ class PrettyUrlsControllerTest extends WebTestCase
         $this->assertSelectorTextContains('h1', 'Welcome to EasyAdmin 4');
     }
 
-    public function testCusomizedWelcomePage()
+    public function testCustomizedWelcomePage(): void
     {
         $client = static::createClient();
         $client->followRedirects();
@@ -122,7 +122,7 @@ class PrettyUrlsControllerTest extends WebTestCase
 
     // this test visits the two dashboards of the application to test that all
     // the generated URLs are correct for the menu items and Dashboard links
-    public function testLinkToDashboard()
+    public function testLinkToDashboard(): void
     {
         $client = static::createClient();
         $client->followRedirects();
@@ -151,7 +151,7 @@ class PrettyUrlsControllerTest extends WebTestCase
         $this->assertSame('http://localhost/second/dashboard/user-editor/custom/path-for-index', $crawler->filter('.menu-item a:contains("Users")')->attr('href'));
     }
 
-    public function testDefaultCrudController()
+    public function testDefaultCrudController(): void
     {
         $client = static::createClient();
         $client->followRedirects();
@@ -162,7 +162,7 @@ class PrettyUrlsControllerTest extends WebTestCase
         $this->assertSelectorTextContains('h1.title', 'BlogPost');
     }
 
-    public function testCustomizedCrudController()
+    public function testCustomizedCrudController(): void
     {
         $client = static::createClient();
         $client->followRedirects();
@@ -173,7 +173,7 @@ class PrettyUrlsControllerTest extends WebTestCase
         $this->assertSelectorTextContains('h1.title', 'User');
     }
 
-    public function testDefaultMainMenuUsesPrettyUrls()
+    public function testDefaultMainMenuUsesPrettyUrls(): void
     {
         $client = static::createClient();
         $client->followRedirects();
@@ -186,7 +186,7 @@ class PrettyUrlsControllerTest extends WebTestCase
         $this->assertSame('http://localhost/admin/pretty/urls/category', $crawler->filter('li.menu-item a:contains("Categories")')->attr('href'));
     }
 
-    public function testCustomMainMenuUsesPrettyUrls()
+    public function testCustomMainMenuUsesPrettyUrls(): void
     {
         $client = static::createClient();
         $client->followRedirects();
@@ -201,7 +201,7 @@ class PrettyUrlsControllerTest extends WebTestCase
     /**
      * @dataProvider provideActiveMenuUrls
      */
-    public function testMainMenuActiveItemWithPrettyUrls(string $url)
+    public function testMainMenuActiveItemWithPrettyUrls(string $url): void
     {
         $client = static::createClient();
         $client->followRedirects();
@@ -211,7 +211,7 @@ class PrettyUrlsControllerTest extends WebTestCase
         $this->assertSame('Categories', trim($crawler->filter('.menu-item.active')->text()));
     }
 
-    public function testDefaultActionsUsePrettyUrls()
+    public function testDefaultActionsUsePrettyUrls(): void
     {
         $client = static::createClient();
         $client->followRedirects();
@@ -228,7 +228,7 @@ class PrettyUrlsControllerTest extends WebTestCase
     /**
      * @dataProvider provideDefaultPageUrls
      */
-    public function testDefaultPagesWithPrettyUrls(string $uri)
+    public function testDefaultPagesWithPrettyUrls(string $uri): void
     {
         $client = static::createClient();
         $client->followRedirects();
@@ -238,7 +238,7 @@ class PrettyUrlsControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
-    public function testCustomActionsUsePrettyUrls()
+    public function testCustomActionsUsePrettyUrls(): void
     {
         $client = static::createClient();
         $client->followRedirects();
@@ -251,7 +251,7 @@ class PrettyUrlsControllerTest extends WebTestCase
         $this->assertSame('http://localhost/second/dashboard/user-editor/1/delete', $crawler->filter('td a.action-delete')->attr('href'));
     }
 
-    public function testDefaultSortLinksUsePrettyUrls()
+    public function testDefaultSortLinksUsePrettyUrls(): void
     {
         $client = static::createClient();
         $client->followRedirects();
@@ -265,7 +265,7 @@ class PrettyUrlsControllerTest extends WebTestCase
         $this->assertSame('http://localhost/admin/pretty/urls/blog-post?page=1&sort%5Bauthor%5D=DESC', $crawler->filter('th.searchable a')->eq(4)->attr('href'));
     }
 
-    public function testCustomSortLinksUsePrettyUrls()
+    public function testCustomSortLinksUsePrettyUrls(): void
     {
         $client = static::createClient();
         $client->followRedirects();
@@ -277,7 +277,7 @@ class PrettyUrlsControllerTest extends WebTestCase
         $this->assertSame('http://localhost/second/dashboard/user-editor/custom/path-for-index?page=1&sort%5Bemail%5D=DESC', $crawler->filter('th.searchable a')->eq(2)->attr('href'));
     }
 
-    public function testAdminUrlGeneratorUsePrettyUrls()
+    public function testAdminUrlGeneratorUsePrettyUrls(): void
     {
         self::bootKernel();
         $container = static::getContainer();
@@ -350,7 +350,7 @@ class PrettyUrlsControllerTest extends WebTestCase
     /**
      * @dataProvider provideUglyUrlRedirects
      */
-    public function testUglyUrlsAreRedirectedToPrettyUrls(string $crudControllerFqcn, string $crudAction, ?int $entityId, array $extraQueryParameters, string $expectedPrettyUrlRedirect)
+    public function testUglyUrlsAreRedirectedToPrettyUrls(string $crudControllerFqcn, string $crudAction, ?int $entityId, array $extraQueryParameters, string $expectedPrettyUrlRedirect): void
     {
         $client = static::createClient();
         $client->followRedirects(false);

@@ -18,7 +18,7 @@ class ComparisonFilterTypeTest extends FilterTypeTest
     /**
      * @dataProvider getDataProvider
      */
-    public function testSubmitAndFilter($submittedData, $data, $options, string $dql, array $params)
+    public function testSubmitAndFilter($submittedData, $data, $options, string $dql, array $params): void
     {
         $form = $this->factory->create(static::FILTER_TYPE, null, $options);
         $form->submit($submittedData);

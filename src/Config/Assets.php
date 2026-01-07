@@ -11,11 +11,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetsDto;
  */
 final class Assets
 {
-    private AssetsDto $dto;
-
-    private function __construct(AssetsDto $assetsDto)
+    private function __construct(private readonly AssetsDto $dto)
     {
-        $this->dto = $assetsDto;
     }
 
     public static function new(): self

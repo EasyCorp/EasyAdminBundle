@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 class CrudTest extends TestCase
 {
-    public function testAddFormTheme()
+    public function testAddFormTheme(): void
     {
         $crudConfig = Crud::new();
         $crudConfig->addFormTheme('admin/form/my_theme.html.twig');
@@ -15,7 +15,7 @@ class CrudTest extends TestCase
         $this->assertSame(['@EasyAdmin/crud/form_theme.html.twig', 'admin/form/my_theme.html.twig'], $crudConfig->getAsDto()->getFormThemes());
     }
 
-    public function testSetFormThemes()
+    public function testSetFormThemes(): void
     {
         $crudConfig = Crud::new();
         $crudConfig->setFormThemes(['common/base_form_theme.html.twig', 'admin/form/my_theme.html.twig']);
@@ -23,7 +23,7 @@ class CrudTest extends TestCase
         $this->assertSame(['common/base_form_theme.html.twig', 'admin/form/my_theme.html.twig'], $crudConfig->getAsDto()->getFormThemes());
     }
 
-    public function testDefaultThousandsSeparator()
+    public function testDefaultThousandsSeparator(): void
     {
         $crudConfig = Crud::new();
 
@@ -33,7 +33,7 @@ class CrudTest extends TestCase
     /**
      * @testWith [",", ".", " ", "-", ""]
      */
-    public function testSetThousandsSeparator(string $separator)
+    public function testSetThousandsSeparator(string $separator): void
     {
         $crudConfig = Crud::new();
         $crudConfig->setThousandsSeparator($separator);
@@ -41,7 +41,7 @@ class CrudTest extends TestCase
         $this->assertSame($separator, $crudConfig->getAsDto()->getThousandsSeparator());
     }
 
-    public function testDefaultDecimalSeparator()
+    public function testDefaultDecimalSeparator(): void
     {
         $crudConfig = Crud::new();
 
@@ -51,7 +51,7 @@ class CrudTest extends TestCase
     /**
      * @testWith [",", ".", " ", "-", ""]
      */
-    public function testSetDecimalSeparator(string $separator)
+    public function testSetDecimalSeparator(string $separator): void
     {
         $crudConfig = Crud::new();
         $crudConfig->setDecimalSeparator($separator);
@@ -71,7 +71,7 @@ class CrudTest extends TestCase
      *           // invalid value used on purpose to test that the method accepts any custom pattern/format
      *           ["this is wrong"]
      */
-    public function testSetDateFormat(string $dateFormat)
+    public function testSetDateFormat(string $dateFormat): void
     {
         $crudConfig = Crud::new();
         $crudConfig->setDateFormat($dateFormat);
@@ -82,7 +82,7 @@ class CrudTest extends TestCase
     /**
      * @testWith ["none", ""]
      */
-    public function testSetDateFormatWithInvalidFormat(string $dateFormat)
+    public function testSetDateFormatWithInvalidFormat(string $dateFormat): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('The first argument of the "EasyCorp\\Bundle\\EasyAdminBundle\\Config\\Crud::setDateFormat()" method cannot be "none" or an empty string. Use either the special date formats (short, medium, long, full) or a datetime Intl pattern.');
@@ -103,7 +103,7 @@ class CrudTest extends TestCase
      *           // invalid value used on purpose to test that the method accepts any custom pattern/format
      *           ["this is wrong"]
      */
-    public function testSetTimeFormat(string $timeFormat)
+    public function testSetTimeFormat(string $timeFormat): void
     {
         $crudConfig = Crud::new();
         $crudConfig->setTimeFormat($timeFormat);
@@ -114,7 +114,7 @@ class CrudTest extends TestCase
     /**
      * @testWith ["none", ""]
      */
-    public function testSetTimeFormatWithInvalidFormat(string $timeFormat)
+    public function testSetTimeFormatWithInvalidFormat(string $timeFormat): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('The first argument of the "EasyCorp\\Bundle\\EasyAdminBundle\\Config\\Crud::setTimeFormat()" method cannot be "none" or an empty string. Use either the special time formats (short, medium, long, full) or a datetime Intl pattern.');
@@ -152,7 +152,7 @@ class CrudTest extends TestCase
      *           // the following invalid value are used on purpose to test that the method accepts any custom formats/patterns
      *           ["this is wrong", "this is wrong"]
      */
-    public function testSetDateTimeFormat(string $dateFormat, string $timeFormat)
+    public function testSetDateTimeFormat(string $dateFormat, string $timeFormat): void
     {
         $crudConfig = Crud::new();
         $crudConfig->setDateTimeFormat($dateFormat, $timeFormat);
@@ -167,7 +167,7 @@ class CrudTest extends TestCase
      *           ["EEEE", "zzzz", "When the first argument of \"EasyCorp\\Bundle\\EasyAdminBundle\\Config\\Crud::setDateTimeFormat()\" is a datetime pattern, you cannot set the time format in the second argument (define the time format inside the datetime pattern)."]
      *           ["long", "zzz", "When using a predefined format for the date, the time format must also be a predefined format (one of the following: none, short, medium, long, full) but \"zzz\" was given."]
      */
-    public function testSetDateTimeExceptions(string $dateFormat, string $timeFormat, string $exceptionMessage)
+    public function testSetDateTimeExceptions(string $dateFormat, string $timeFormat, string $exceptionMessage): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage($exceptionMessage);

@@ -22,14 +22,14 @@ class CommonPreConfiguratorTest extends AbstractFieldTest
         $this->configurator = new CommonPreConfigurator($propertyAccessor, $entityFactory);
     }
 
-    public function testShouldKeepExistingValue()
+    public function testShouldKeepExistingValue(): void
     {
         $field = Field::new('foo')->setValue('bar');
 
         $this->assertSame('bar', $this->configure($field)->getValue());
     }
 
-    public function testShouldKeepExistingFormattedValue()
+    public function testShouldKeepExistingFormattedValue(): void
     {
         $field = Field::new('foo')->setFormattedValue('bar');
 

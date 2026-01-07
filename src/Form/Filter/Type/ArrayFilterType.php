@@ -27,7 +27,7 @@ class ArrayFilterType extends AbstractType
             static fn ($data) => $data,
             static function ($data) {
                 if (null === $data['value'] || [] === $data['value']) {
-                    $data['comparison'] = ComparisonType::CONTAINS === $data['comparison'] ? 'IS NULL' : 'IS NOT NULL';
+                    $data['comparison'] = \in_array($data['comparison'], [ComparisonType::CONTAINS, ComparisonType::CONTAINS_ALL], true) ? 'IS NULL' : 'IS NOT NULL';
                 } else {
                     $data['value'] = (array) $data['value'];
                 }

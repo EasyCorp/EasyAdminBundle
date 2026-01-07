@@ -2,11 +2,7 @@ EasyAdmin
 =========
 
 `EasyAdmin`_ creates beautiful administration backends for your Symfony
-applications. It's free, fast and fully documented.
-
-If you already used previous EasyAdmin versions, beware that EasyAdmin 3 uses a
-brand new architecture and it's incompatible with previous versions. However,
-there's a command to :doc:`upgrade from EasyAdmin 2 to EasyAdmin 3 automatically </upgrade>`.
+applications. It's free, fast, and fully documented.
 
 .. admonition:: Screencast
     :class: screencast
@@ -16,19 +12,20 @@ there's a command to :doc:`upgrade from EasyAdmin 2 to EasyAdmin 3 automatically
 Table of Contents
 -----------------
 
-.. toctree::
-    :maxdepth: 1
-
-    dashboards
-    crud
-    design
-    fields
-    filters
-    actions
-    security
-    events
-    tests
-    upgrade
+* :doc:`Dashboards </dashboards>` (main menu, user menu, admin context, translations)
+* :doc:`CRUD controllers </crud>` (entities, pagination, search, sorting, forms)
+* :doc:`Design </design>` (customization, templates, custom CSS/JS assets, Bootstrap
+  theming, CSS variables)
+* :doc:`Fields </fields>` (field configurators, custom fields, form columns, tabs
+  and fieldsets)
+* :doc:`Filters </filters>` (custom filters, filtering unmapped properties)
+* :doc:`Actions </actions>` (CRUD actions, custom actions, batch actions,
+  permissions, conditional display)
+* :doc:`Security </security>` (access control, menu/action/field/entity permissions,
+  custom voters)
+* :doc:`Events </events>` (entity events, CRUD events, JavaScript events)
+* :doc:`Tests </tests>` (functional testing, utilities, assertions)
+* :doc:`Upgrade </upgrade>` (from legacy versions)
 
 Technical Requirements
 ----------------------
@@ -55,7 +52,7 @@ Manual Configuration for Applications Not Using Symfony Flex
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 In most Symfony applications **you don't need to make any of the following changes**.
-These steps are only required for applications that have opted not to use Symfony Flex.
+These steps are only required for applications that do not use Symfony Flex.
 
 First, register two bundles in your application. Edit the ``config/bundles.php``
 file and add the following::

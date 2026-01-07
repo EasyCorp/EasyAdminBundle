@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Orm;
 
+use Doctrine\ORM\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Controller\Sort\PageCrudController;
@@ -9,7 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Entity\Page;
 
 class PageSortTest extends AbstractCrudTestCase
 {
-    private $repository;
+    private EntityRepository $repository;
 
     protected function getControllerFqcn(): string
     {
@@ -31,7 +32,7 @@ class PageSortTest extends AbstractCrudTestCase
     /**
      * @dataProvider sorting
      */
-    public function testSorting(array $query, ?string $sortFunction, string $expectedSortIcon)
+    public function testSorting(array $query, ?string $sortFunction, string $expectedSortIcon): void
     {
         // Arrange
         $expectedAmountMapping = [];
@@ -65,7 +66,7 @@ class PageSortTest extends AbstractCrudTestCase
         }
     }
 
-    public function sorting(): \Generator
+    public static function sorting(): \Generator
     {
         yield [
             [],

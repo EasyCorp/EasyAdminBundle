@@ -15,6 +15,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\EntityFilterType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
 use Symfony\Component\Uid\Ulid;
 use Symfony\Component\Uid\Uuid;
+use Symfony\Contracts\Translation\TranslatableInterface;
 
 /**
  * @author Yonel Ceruto <yonelceruto@gmail.com>
@@ -24,6 +25,9 @@ final class EntityFilter implements FilterInterface
 {
     use FilterTrait;
 
+    /**
+     * @param TranslatableInterface|string|false|null $label
+     */
     public static function new(string $propertyName, $label = null): self
     {
         return (new self())
@@ -41,6 +45,13 @@ final class EntityFilter implements FilterInterface
         return $this;
     }
 
+    public function autocomplete(bool $autocomplete = true): self
+    {
+        $this->dto->setFormTypeOption('autocomplete', $autocomplete);
+
+        return $this;
+    }
+
     public function apply(QueryBuilder $queryBuilder, FilterDataDto $filterDataDto, ?FieldDto $fieldDto, EntityDto $entityDto): void
     {
         $alias = $filterDataDto->getEntityAlias();
@@ -48,9 +59,9 @@ final class EntityFilter implements FilterInterface
         $comparison = $filterDataDto->getComparison();
         $parameterName = $filterDataDto->getParameterName();
         $value = $filterDataDto->getValue();
-        $isMultiple = $filterDataDto->getFormTypeOption('value_type_options.multiple');
+        $isMultiple = (bool) $filterDataDto->getFormTypeOption('value_type_options.multiple');
 
-        if ($entityDto->isToManyAssociation($property)) {
+        if ($entityDto->getClassMetadata()->isCollectionValuedAssociation($property)) {
             // the 'ea_' prefix is needed to avoid errors when using reserved words as assocAlias ('order', 'group', etc.)
             // see https://github.com/EasyCorp/EasyAdminBundle/pull/4344
             $assocAlias = 'ea_'.$filterDataDto->getParameterName();

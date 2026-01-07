@@ -7,6 +7,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterConfiguratorInterface
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDto;
+use Symfony\Component\Translation\TranslatableMessage;
 use function Symfony\Component\String\u;
 
 /**
@@ -22,7 +23,10 @@ final class CommonConfigurator implements FilterConfiguratorInterface
     public function configure(FilterDto $filterDto, ?FieldDto $fieldDto, EntityDto $entityDto, AdminContext $context): void
     {
         if (null === $filterDto->getLabel()) {
-            $fieldLabel = null !== $fieldDto ? $fieldDto->getLabel() : null;
+            $fieldLabel = $fieldDto?->getLabel();
+            if ($fieldLabel instanceof TranslatableMessage) {
+                $fieldLabel = $fieldLabel->getMessage();
+            }
             $label = $fieldLabel ?? u($filterDto->getProperty())->title()->toString();
             $filterDto->setLabel($label);
         }

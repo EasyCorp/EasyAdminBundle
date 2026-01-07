@@ -29,11 +29,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class CrudFormType extends AbstractType
 {
-    private DoctrineOrmTypeGuesser $doctrineOrmTypeGuesser;
-
-    public function __construct(DoctrineOrmTypeGuesser $doctrineOrmTypeGuesser)
+    public function __construct(private readonly DoctrineOrmTypeGuesser $doctrineOrmTypeGuesser)
     {
-        $this->doctrineOrmTypeGuesser = $doctrineOrmTypeGuesser;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void

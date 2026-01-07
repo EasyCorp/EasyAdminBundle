@@ -3,13 +3,19 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
 use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping\FieldMapping;
+use EasyCorp\Bundle\EasyAdminBundle\Collection\EntityCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Provider\AdminContextProviderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
@@ -28,8 +34,11 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  */
 final class FieldFactory
 {
+    /**
+     * @var array<string, class-string<FieldInterface>>
+     */
     private static array $doctrineTypeToFieldFqcn = [
-        'array' => ArrayField::class, // don't use Types::ARRAY because it was removed in Doctrine ORM 3.0
+        'array' => ArrayField::class, // don't use Types::ARRAY because it was removed in Doctrine DBAL 4
         Types::BIGINT => TextField::class,
         Types::BINARY => TextareaField::class,
         Types::BLOB => TextareaField::class,
@@ -45,8 +54,8 @@ final class FieldFactory
         Types::FLOAT => NumberField::class,
         Types::GUID => TextField::class,
         Types::INTEGER => IntegerField::class,
-        Types::JSON => TextField::class,
-        'object' => TextField::class, // don't use Types::OBJECT because it was removed in Doctrine ORM 3.0
+        Types::JSON => ArrayField::class,
+        'object' => TextField::class, // don't use Types::OBJECT because it was removed in Doctrine DBAL 4
         Types::SIMPLE_ARRAY => ArrayField::class,
         Types::SMALLINT => IntegerField::class,
         Types::STRING => TextField::class,
@@ -55,6 +64,9 @@ final class FieldFactory
         Types::TIME_IMMUTABLE => TimeField::class,
     ];
 
+    /**
+     * @param iterable<FieldConfiguratorInterface> $fieldConfigurators
+     */
     public function __construct(
         private readonly AdminContextProviderInterface $adminContextProvider,
         private readonly AuthorizationCheckerInterface $authorizationChecker,
@@ -63,12 +75,20 @@ final class FieldFactory
     {
     }
 
-    public function processFields(EntityDto $entityDto, FieldCollection $fields): void
+    public function processFields(EntityDto $entityDto, FieldCollection $fields, ?string $currentPage = null): void
     {
-        $this->preProcessFields($fields, $entityDto);
+        $this->replaceGenericFieldsWithSpecificFields($fields, $entityDto);
 
         $context = $this->adminContextProvider->getContext();
-        $currentPage = $context->getCrud()->getCurrentPage();
+
+        if (null === $currentPage) {
+            trigger_deprecation(
+                'easycorp/easyadmin-bundle',
+                '4.27.0',
+                'Argument "$currentPage" is missing. Omitting it will cause an error in 5.0.0.',
+            );
+            $currentPage = $context->getCrud()->getCurrentPage();
+        }
 
         $isDetailOrIndex = \in_array($currentPage, [Crud::PAGE_INDEX, Crud::PAGE_DETAIL], true);
         foreach ($fields as $fieldDto) {
@@ -86,19 +106,12 @@ final class FieldFactory
                 continue;
             }
 
-            // when creating new entities with "useEntryCrudForm" on an edit page we must
-            // explicitly check for the "new" page because $currentPage will be "edit"
-            if ((null === $entityDto->getInstance()) && !$fieldDto->isDisplayedOn(Crud::PAGE_NEW)) {
-                $fields->unset($fieldDto);
-
-                continue;
-            }
-
             foreach ($this->fieldConfigurators as $configurator) {
                 if (!$configurator->supports($fieldDto, $entityDto)) {
                     continue;
                 }
 
+                // @phpstan-ignore-next-line argument.type
                 $configurator->configure($fieldDto, $entityDto, $context);
             }
 
@@ -109,7 +122,7 @@ final class FieldFactory
             }
 
             foreach ($fieldDto->getFormThemes() as $formThemePath) {
-                $context?->getCrud()?->addFormTheme($formThemePath);
+                $context->getCrud()->addFormTheme($formThemePath);
             }
 
             $fields->set($fieldDto);
@@ -122,39 +135,72 @@ final class FieldFactory
         $entityDto->setFields($fields);
     }
 
-    private function preProcessFields(FieldCollection $fields, EntityDto $entityDto): void
+    public function processFieldsForAll(EntityCollection $entityDtos, FieldCollection $fields, ?string $currentPage = null): void
     {
-        if ($fields->isEmpty()) {
-            return;
+        if (null === $currentPage) {
+            trigger_deprecation(
+                'easycorp/easyadmin-bundle',
+                '4.27.0',
+                'Argument "$currentPage" is missing. Omitting it will cause an error in 5.0.0.',
+            );
         }
 
+        foreach ($entityDtos as $entityDto) {
+            $this->processFields($entityDto, clone $fields, $currentPage);
+            $entityDtos->set($entityDto);
+        }
+    }
+
+    private function replaceGenericFieldsWithSpecificFields(FieldCollection $fields, EntityDto $entityDto): void
+    {
         foreach ($fields as $fieldDto) {
             if (Field::class !== $fieldDto->getFieldFqcn()) {
                 continue;
             }
 
             // this is a virtual field, so we can't autoconfigure it
-            if (!$entityDto->hasProperty($fieldDto->getProperty())) {
+            if (!isset($entityDto->getClassMetadata()->fieldMappings[$fieldDto->getProperty()])
+                && !$entityDto->getClassMetadata()->hasAssociation($fieldDto->getProperty())) {
                 continue;
             }
 
-            if ($fieldDto->getProperty() === $entityDto->getPrimaryKeyName()) {
+            if ($fieldDto->getProperty() === $entityDto->getClassMetadata()->getSingleIdentifierFieldName()) {
                 $guessedFieldFqcn = IdField::class;
+            } elseif ($entityDto->getClassMetadata()->hasAssociation($fieldDto->getProperty())) {
+                /** @var bool $orphanRemoval */
+                $orphanRemoval = $entityDto->getClassMetadata()->getAssociationMapping($fieldDto->getProperty())['orphanRemoval'];
+                if ($orphanRemoval && $entityDto->getClassMetadata()->isCollectionValuedAssociation($fieldDto->getProperty())) {
+                    $guessedFieldFqcn = CollectionField::class;
+                } else {
+                    $guessedFieldFqcn = AssociationField::class;
+                }
+            } elseif (!isset($entityDto->getClassMetadata()->fieldMappings[$fieldDto->getProperty()])) {
+                throw new \RuntimeException(sprintf('Could not guess a field class for "%s" field. It possibly is an association field or an embedded class field.', $fieldDto->getProperty()));
             } else {
-                $doctrinePropertyType = $entityDto->getPropertyMetadata($fieldDto->getProperty())->get('type');
-                $guessedFieldFqcn = self::$doctrineTypeToFieldFqcn[$doctrinePropertyType] ?? null;
-
+                // In Doctrine ORM 3.x, FieldMapping implements \ArrayAccess; in 4.x it's an object with properties
+                $fieldMapping = $entityDto->getClassMetadata()->getFieldMapping($fieldDto->getProperty());
+                // In Doctrine ORM 2.x, getFieldMapping() returns an array
+                /** @phpstan-ignore-next-line function.impossibleType */
+                if (\is_array($fieldMapping)) {
+                    /** @phpstan-ignore-next-line cast.useless */
+                    $fieldMapping = (object) $fieldMapping;
+                }
+                /** @phpstan-ignore-next-line function.alreadyNarrowedType */
+                $fieldType = property_exists($fieldMapping, 'type') ? $fieldMapping->type : $fieldMapping['type'];
+                $guessedFieldFqcn = self::$doctrineTypeToFieldFqcn[$fieldType] ?? null;
                 if (null === $guessedFieldFqcn) {
-                    throw new \RuntimeException(sprintf('The Doctrine type of the "%s" field is "%s", which is not supported by EasyAdmin. For Doctrine\'s Custom Mapping Types have a look at EasyAdmin\'s field docs.', $fieldDto->getProperty(), $doctrinePropertyType));
+                    throw new \RuntimeException(sprintf('The Doctrine type of the "%s" field is "%s", which is not supported by EasyAdmin. For Doctrine\'s Custom Mapping Types have a look at EasyAdmin\'s field docs.', $fieldDto->getProperty(), $fieldType));
                 }
             }
 
-            $fields->set($this->transformField($fieldDto, $guessedFieldFqcn));
+            $fields->set($this->createSpecificFieldFromGenericField($fieldDto, $guessedFieldFqcn));
         }
     }
 
-    // transforms a generic Field class into a specific <type>Field class (e.g. DateTimeField)
-    private function transformField(FieldDto $fieldDto, string $newFieldFqcn): FieldDto
+    /**
+     * Creates a DTO of a specific field (e.g. DateTimeField) from a DTO of the generic Field.
+     */
+    private function createSpecificFieldFromGenericField(FieldDto $fieldDto, string $newFieldFqcn): FieldDto
     {
         /** @var FieldDto $newField */
         $newField = $newFieldFqcn::new($fieldDto->getProperty())->getAsDto();
@@ -210,7 +256,7 @@ final class FieldFactory
         }
 
         // don't copy the template name and path from the original Field class
-        // (because they are just 'crud/field/text' and ' @EasyAdmin/crud/field/text.html.twig')
+        // (because they are 'crud/field/text' and '@EasyAdmin/crud/field/text.html.twig')
         // and use the template name/path from the new specific field (e.g. 'crud/field/datetime')
 
         return $newField;

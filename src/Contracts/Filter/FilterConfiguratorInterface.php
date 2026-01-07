@@ -12,7 +12,13 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDto;
  */
 interface FilterConfiguratorInterface
 {
+    /**
+     * @param AdminContext $context This will change to AdminContextInterface in the next major version
+     */
     public function supports(FilterDto $filterDto, ?FieldDto $fieldDto, EntityDto $entityDto, AdminContext $context): bool;
 
+    /**
+     * @param AdminContext $context This will change to AdminContextInterface in the next major version
+     */
     public function configure(FilterDto $filterDto, ?FieldDto $fieldDto, EntityDto $entityDto, AdminContext $context): void;
 }

@@ -8,7 +8,15 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\PrettyUrlsTestApplication\Entity\BlogPost;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\PrettyUrlsTestApplication\Entity\Category;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+
+// needed for Symfony 5.4 - 8.0 compatibility (Attribute doesn't exist in 5.4 and
+// Annotation doesn't exist in 8.0; both exist in the other versions)
+if (class_exists('Symfony\Component\Routing\Annotation\Route') && !class_exists('Symfony\Component\Routing\Attribute\Route')) {
+    // @phpstan-ignore-next-line class.notFound
+    class_alias(\Symfony\Component\Routing\Annotation\Route::class, 'Symfony\Component\Routing\Attribute\Route');
+}
+
+use Symfony\Component\Routing\Attribute\Route;
 
 class DashboardController extends AbstractDashboardController
 {

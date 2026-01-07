@@ -24,13 +24,20 @@ final class NumericConfigurator implements FilterConfiguratorInterface
 
     public function configure(FilterDto $filterDto, ?FieldDto $fieldDto, EntityDto $entityDto, AdminContext $context): void
     {
-        $propertyType = $entityDto->getPropertyMetadata($filterDto->getProperty())->get('type');
+        if (!isset($entityDto->getClassMetadata()->fieldMappings[$filterDto->getProperty()])) {
+            return;
+        }
 
-        if (Types::DECIMAL === $propertyType) {
+        $fieldMapping = $entityDto->getClassMetadata()->getFieldMapping($filterDto->getProperty());
+
+        // @phpstan-ignore-next-line (backward compatibility with Doctrine ORM 2.x)
+        $fieldType = \is_array($fieldMapping) ? ($fieldMapping['type'] ?? null) : $fieldMapping->type;
+
+        if (Types::DECIMAL === $fieldType) {
             $filterDto->setFormTypeOptionIfNotSet('value_type_options.input', 'string');
         }
 
-        if (\in_array($propertyType, [Types::BIGINT, Types::INTEGER, Types::SMALLINT], true)) {
+        if (\in_array($fieldType, [Types::BIGINT, Types::INTEGER, Types::SMALLINT], true)) {
             $filterDto->setFormTypeOptionIfNotSet('value_type', IntegerType::class);
         }
     }

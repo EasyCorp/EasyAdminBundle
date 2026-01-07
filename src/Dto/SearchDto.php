@@ -10,27 +10,30 @@ use Symfony\Component\HttpFoundation\Request;
  */
 final class SearchDto
 {
-    private Request $request;
-    private array $defaultSort;
-    private array $customSort;
-    /** @internal */
+    /**
+     * @internal
+     *
+     * @var array<string, 'ASC'|'DESC'>
+     */
     private ?array $cachedSortConfig = null;
-    private string $query;
-    /** @var string[]|null */
-    private ?array $searchableProperties;
-    /** @var string[]|null */
-    private ?array $appliedFilters;
-    private string $searchMode;
+    private readonly string $query;
 
-    public function __construct(Request $request, ?array $searchableProperties, ?string $query, array $defaultSort, array $customSort, ?array $appliedFilters, string $searchMode = SearchMode::ALL_TERMS)
-    {
-        $this->request = $request;
-        $this->searchableProperties = $searchableProperties;
+    /**
+     * @param array<string>|null          $searchableProperties
+     * @param array<string, 'ASC'|'DESC'> $defaultSort
+     * @param array<string, 'ASC'|'DESC'> $customSort
+     * @param array<string, mixed>|null   $appliedFilters
+     */
+    public function __construct(
+        private readonly Request $request,
+        private readonly ?array $searchableProperties,
+        ?string $query,
+        private readonly array $defaultSort,
+        private readonly array $customSort,
+        private readonly ?array $appliedFilters,
+        private readonly string $searchMode = SearchMode::ALL_TERMS,
+    ) {
         $this->query = trim((string) $query);
-        $this->defaultSort = $defaultSort;
-        $this->customSort = $customSort;
-        $this->appliedFilters = $appliedFilters;
-        $this->searchMode = $searchMode;
     }
 
     public function getRequest(): Request
@@ -38,6 +41,9 @@ final class SearchDto
         return $this->request;
     }
 
+    /**
+     * @return array<string, 'ASC'|'DESC'>
+     */
     public function getSort(): array
     {
         if (null !== $this->cachedSortConfig) {
@@ -84,6 +90,8 @@ final class SearchDto
      * For example:
      *  'foo bar' => ['foo', 'bar']
      *  'foo "bar baz" qux' => ['foo', 'bar baz', 'qux'].
+     *
+     * @return array<string>
      */
     public function getQueryTerms(): array
     {
@@ -101,6 +109,9 @@ final class SearchDto
         return $this->searchableProperties;
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function getAppliedFilters(): ?array
     {
         return $this->appliedFilters;

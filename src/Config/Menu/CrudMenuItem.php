@@ -60,6 +60,9 @@ final class CrudMenuItem implements MenuItemInterface
         return $this;
     }
 
+    /**
+     * @param AbstractUid|int|string $entityId
+     */
     public function setEntityId(/* AbstractUid|int|string */ $entityId): self
     {
         if (!\is_int($entityId) && !\is_string($entityId) && !$entityId instanceof AbstractUid) {
@@ -83,7 +86,7 @@ final class CrudMenuItem implements MenuItemInterface
     }
 
     /**
-     * @param array $sortFieldsAndOrder ['fieldName' => 'ASC|DESC', ...]
+     * @param array<string, 'ASC'|'DESC'> $sortFieldsAndOrder ['fieldName' => 'ASC|DESC', ...]
      */
     public function setDefaultSort(array $sortFieldsAndOrder): self
     {

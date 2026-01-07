@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Δημιουργία και συνέχιση επεξεργασίας',
         'save' => 'Αποθήκευση αλλαγών',
         'save_and_continue' => 'Αποθήκευση και συνέχιση επεξεργασία',
+        'toggle_dropdown' => 'Εναλλαγή αναπτυσσόμενου μενού',
     ],
 
     'batch_action_modal' => [
@@ -84,6 +85,7 @@ return [
         'label.is_less_than_or_equal_to' => 'είναι μικρότερο ή ίσο με',
         'label.is_between' => 'είναι μεταξύ',
         'label.contains' => 'περιέχει',
+        'label.contains_all' => 'περιέχει όλα',
         'label.not_contains' => 'δεν περιέχει',
         'label.starts_with' => 'ξεκινάει με',
         'label.ends_with' => 'τελειώνει με',

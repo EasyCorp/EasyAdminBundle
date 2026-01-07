@@ -21,6 +21,9 @@ final class NullFilter implements FilterInterface
     public const CHOICE_VALUE_NULL = 'null';
     public const CHOICE_VALUE_NOT_NULL = 'not_null';
 
+    /**
+     * @param TranslatableInterface|string|false|null $label
+     */
     public static function new(string $propertyName, $label = null): self
     {
         return (new self())

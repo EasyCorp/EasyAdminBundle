@@ -25,6 +25,7 @@ final class CollectionField implements FieldInterface
     public const OPTION_ENTRY_CRUD_CONTROLLER_FQCN = 'entryCrudControllerFqcn';
     public const OPTION_ENTRY_CRUD_NEW_PAGE_NAME = 'entryCrudNewPageName';
     public const OPTION_ENTRY_CRUD_EDIT_PAGE_NAME = 'entryCrudEditPageName';
+    public const OPTION_MAX_LENGTH = 'maxLength';
 
     /**
      * @param TranslatableInterface|string|false|null $label
@@ -49,7 +50,8 @@ final class CollectionField implements FieldInterface
             ->setCustomOption(self::OPTION_ENTRY_USES_CRUD_FORM, false)
             ->setCustomOption(self::OPTION_ENTRY_CRUD_CONTROLLER_FQCN, null)
             ->setCustomOption(self::OPTION_ENTRY_CRUD_NEW_PAGE_NAME, null)
-            ->setCustomOption(self::OPTION_ENTRY_CRUD_EDIT_PAGE_NAME, null);
+            ->setCustomOption(self::OPTION_ENTRY_CRUD_EDIT_PAGE_NAME, null)
+            ->setCustomOption(self::OPTION_MAX_LENGTH, null);
     }
 
     public function allowAdd(bool $allow = true): self

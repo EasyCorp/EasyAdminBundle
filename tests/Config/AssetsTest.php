@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 class AssetsTest extends TestCase
 {
-    public function testDefaultIconSet()
+    public function testDefaultIconSet(): void
     {
         $assetsConfig = Assets::new();
 
@@ -16,7 +16,7 @@ class AssetsTest extends TestCase
         $this->assertSame('', $assetsConfig->getAsDto()->getDefaultIconPrefix());
     }
 
-    public function testCustomIconSet()
+    public function testCustomIconSet(): void
     {
         $assetsConfig = Assets::new();
         $assetsConfig->useCustomIconSet();
@@ -25,7 +25,7 @@ class AssetsTest extends TestCase
         $this->assertSame('', $assetsConfig->getAsDto()->getDefaultIconPrefix());
     }
 
-    public function testCustomIconSetWithDefaultPrefix()
+    public function testCustomIconSetWithDefaultPrefix(): void
     {
         $assetsConfig = Assets::new();
         $assetsConfig->useCustomIconSet('some-prefix');

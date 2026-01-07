@@ -19,9 +19,8 @@
         <testsuite name="EasyAdmin Test Suite">
             <directory>tests/</directory>
             <exclude>tests/Controller/PrettyUrls/</exclude>
-            <exclude>tests/DataCollector/</exclude>
-            <exclude>tests/EventListener/</exclude>
-            <exclude>tests/Form/</exclude>
+            <exclude>tests/Form/Filter/</exclude>
+            <exclude>tests/Form/Type/EasyAdminAutocompleteTypeTest.php</exclude>
         </testsuite>
     </testsuites>
 

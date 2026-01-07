@@ -59,6 +59,7 @@ return [
         'create_and_continue' => '建立並繼續編輯',
         'save' => '儲存更改',
         'save_and_continue' => '儲存並繼續編輯',
+        'toggle_dropdown' => '切換下拉選單',
     ],
 
     'batch_action_modal' => [
@@ -84,6 +85,7 @@ return [
         'label.is_less_than_or_equal_to' => '小於或等於',
         'label.is_between' => '處於範圍',
         'label.contains' => '包含',
+        'label.contains_all' => '包含所有',
         'label.not_contains' => '不包含',
         'label.starts_with' => '開始於',
         'label.ends_with' => '結尾於',

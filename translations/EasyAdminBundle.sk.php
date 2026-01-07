@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Vytvoriť a pokračovat',
         'save' => 'Uložit',
         'save_and_continue' => 'Uložit a pokračovat',
+        'toggle_dropdown' => 'Prepnúť rozbaľovaciu ponuku',
     ],
 
     'batch_action_modal' => [
@@ -84,6 +85,7 @@ return [
         'label.is_less_than_or_equal_to' => 'je menšie ako alebo rovné',
         'label.is_between' => 'je medzi',
         'label.contains' => 'obsahuje',
+        'label.contains_all' => 'obsahuje všetky',
         'label.not_contains' => 'neobsahuje',
         'label.starts_with' => 'začína na',
         'label.ends_with' => 'končí na',

@@ -13,6 +13,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\PrettyUrlsTestApplication\Entity\User;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * @extends AbstractCrudController<User>
+ */
 #[AdminCrud('/user-editor', 'external_user_editor')]
 class UserCrudController extends AbstractCrudController
 {

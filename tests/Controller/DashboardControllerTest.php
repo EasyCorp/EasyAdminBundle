@@ -6,7 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class DashboardControllerTest extends WebTestCase
 {
-    public function testWelcomePage()
+    public function testWelcomePage(): void
     {
         $client = static::createClient();
         $client->followRedirects();
@@ -16,7 +16,7 @@ class DashboardControllerTest extends WebTestCase
         $this->assertSelectorTextContains('h1', 'Welcome to EasyAdmin 4');
     }
 
-    public function testWelcomePageAsLoggedUser()
+    public function testWelcomePageAsLoggedUser(): void
     {
         $client = static::createClient();
         $client->followRedirects();

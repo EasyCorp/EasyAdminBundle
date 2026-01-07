@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Ustvari in nadaljuj urejanje',
         'save' => 'Shrani spremembe',
         'save_and_continue' => 'Shrani in nadaljuj urejanje',
+        'toggle_dropdown' => 'Preklopi spustni meni',
     ],
 
     'batch_action_modal' => [
@@ -84,6 +85,7 @@ return [
         'label.is_less_than_or_equal_to' => 'je manjše od ali enako',
         'label.is_between' => 'je med',
         'label.contains' => 'vsebuje',
+        'label.contains_all' => 'vsebuje vse',
         'label.not_contains' => 'ne vsebuje',
         'label.starts_with' => 'se začne',
         'label.ends_with' => 'se konča',

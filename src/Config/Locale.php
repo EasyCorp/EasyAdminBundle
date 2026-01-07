@@ -8,13 +8,10 @@ use Symfony\Component\Intl\Locales;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class Locale
+final class Locale implements \Stringable
 {
-    private LocaleDto $dto;
-
-    private function __construct(LocaleDto $localeDto)
+    private function __construct(private readonly LocaleDto $dto)
     {
-        $this->dto = $localeDto;
     }
 
     public function __toString()

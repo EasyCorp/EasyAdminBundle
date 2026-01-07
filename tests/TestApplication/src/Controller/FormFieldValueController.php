@@ -7,6 +7,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Entity\BlogPost;
 
+/**
+ * @extends AbstractCrudController<BlogPost>
+ */
 class FormFieldValueController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string

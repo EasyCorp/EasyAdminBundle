@@ -11,7 +11,7 @@ return [
     ],
 
     'datagrid' => [
-        'hidden_results' => 'Некоторые результаты не могут быть отображены, потому что вы не имеете достаточных привелегий',
+        'hidden_results' => 'Некоторые результаты не могут быть отображены, потому что вы не имеете достаточных привилегий',
         'no_results' => 'Ничего не найдено.',
     ],
 
@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Создать и продолжить',
         'save' => 'Сохранить',
         'save_and_continue' => 'Сохранить и продолжить',
+        'toggle_dropdown' => 'Переключить выпадающее меню',
     ],
 
     'batch_action_modal' => [
@@ -84,6 +85,7 @@ return [
         'label.is_less_than_or_equal_to' => 'меньше или равно',
         'label.is_between' => 'между',
         'label.contains' => 'содержит',
+        'label.contains_all' => 'содержит всё',
         'label.not_contains' => 'не содержит',
         'label.starts_with' => 'начинается с',
         'label.ends_with' => 'заканчивается на',
@@ -138,7 +140,7 @@ return [
 
     'autocomplete' => [
         'no-results-found' => 'Совпадений не найдено',
-        // 'no-more-results' => 'No more results',
+        'no-more-results' => 'Нет больше результатов',
         'loading-more-results' => 'Загрузка данных…',
     ],
 ];

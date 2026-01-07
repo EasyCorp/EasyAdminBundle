@@ -64,8 +64,20 @@ final class PercentField implements FieldInterface
     /**
      * @param string|false $symbolOrFalse
      */
-    public function setSymbol($symbolOrFalse): self
+    public function setSymbol(/* string|false */ $symbolOrFalse): self
     {
+        if (!\is_string($symbolOrFalse) && false !== $symbolOrFalse) {
+            trigger_deprecation(
+                'easycorp/easyadmin-bundle',
+                '4.27.0',
+                'Argument "%s" for "%s" must be one of these types: %s. Passing type "%s" will cause an error in 5.0.0.',
+                '$symbolOrFalse',
+                __METHOD__,
+                '"string" or "false"',
+                \gettype($symbolOrFalse)
+            );
+        }
+
         $this->setCustomOption(self::OPTION_SYMBOL, $symbolOrFalse);
 
         return $this;

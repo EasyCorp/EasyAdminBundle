@@ -10,24 +10,20 @@ use function Symfony\Component\Translation\t;
 
 class ChoiceFieldTest extends AbstractFieldTest
 {
-    private array $choices;
-
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->choices = ['a' => 1, 'b' => 2, 'c' => 3];
-
         $this->configurator = new ChoiceConfigurator();
     }
 
-    public function testFieldWithoutChoices()
+    public function testFieldWithoutChoices(): void
     {
         $field = ChoiceField::new('foo');
         self::assertSame([], $this->configure($field)->getFormTypeOption(ChoiceField::OPTION_CHOICES));
     }
 
-    public function testFieldWithEmptyChoices()
+    public function testFieldWithEmptyChoices(): void
     {
         $field = ChoiceField::new('foo')->setChoices([]);
         self::assertSame([], $this->configure($field)->getFormTypeOption(ChoiceField::OPTION_CHOICES));
@@ -50,10 +46,6 @@ class ChoiceFieldTest extends AbstractFieldTest
 
     public function testFieldWithUnitEnumChoices(): void
     {
-        if (\PHP_VERSION_ID < 80100) {
-            $this->markTestSkipped('PHP 8.1 or higher is required to run this test.');
-        }
-
         $field = ChoiceField::new('foo')->setChoices(PriorityUnitEnum::cases());
 
         $field->setValue(PriorityUnitEnum::High);
@@ -66,10 +58,6 @@ class ChoiceFieldTest extends AbstractFieldTest
 
     public function testFieldWithBackedEnumChoices(): void
     {
-        if (\PHP_VERSION_ID < 80100) {
-            $this->markTestSkipped('PHP 8.1 or higher is required to run this test.');
-        }
-
         $field = ChoiceField::new('foo')->setChoices(StatusBackedEnum::cases());
 
         $field->setValue(StatusBackedEnum::Draft);
@@ -80,17 +68,18 @@ class ChoiceFieldTest extends AbstractFieldTest
         self::assertSame(StatusBackedEnum::Deleted->name, (string) $this->configure($field)->getFormattedValue());
     }
 
-    public function testFieldWithChoiceGeneratorCallback()
+    public function testFieldWithChoiceGeneratorCallback(): void
     {
-        $field = ChoiceField::new('foo')->setChoices(static function () { return ['foo' => 1, 'bar' => 2]; });
+        $choices = ['foo' => 1, 'bar' => 2];
+        $field = ChoiceField::new('foo')->setChoices(static fn (): array => $choices);
 
-        self::assertSame(['foo' => 1, 'bar' => 2], $this->configure($field)->getFormTypeOption(ChoiceField::OPTION_CHOICES));
+        self::assertSame($choices, $this->configure($field)->getFormTypeOption(ChoiceField::OPTION_CHOICES));
 
         $field->setValue(1);
         self::assertSame('foo', (string) $this->configure($field)->getFormattedValue());
     }
 
-    public function testFieldWithTranslatableChoices()
+    public function testFieldWithTranslatableChoices(): void
     {
         $field = ChoiceField::new('foo')->setTranslatableChoices([1 => t('foo'), 2 => 'bar']);
 
@@ -101,19 +90,19 @@ class ChoiceFieldTest extends AbstractFieldTest
         self::assertSame('bar', (string) $this->configure($field)->getFormattedValue());
     }
 
-    public function testFieldWithWrongVisualOptions()
+    public function testFieldWithWrongVisualOptions(): void
     {
         $this->expectException(\InvalidArgumentException::class);
 
-        $field = ChoiceField::new('foo')->setChoices($this->choices);
+        $field = ChoiceField::new('foo')->setChoices(['a' => 1, 'b' => 2, 'c' => 3]);
         $field->renderExpanded();
         $field->renderAsNativeWidget(false);
         $this->configure($field);
     }
 
-    public function testDefaultWidget()
+    public function testDefaultWidget(): void
     {
-        $field = ChoiceField::new('foo')->setChoices($this->choices);
+        $field = ChoiceField::new('foo')->setChoices(['a' => 1, 'b' => 2, 'c' => 3]);
 
         $field->renderExpanded(false);
         $field->setCustomOption(ChoiceField::OPTION_WIDGET, null);
@@ -126,15 +115,16 @@ class ChoiceFieldTest extends AbstractFieldTest
         self::assertSame('ea-autocomplete', $fieldDto->getFormTypeOption('attr.data-ea-widget'));
     }
 
-    public function testFieldFormOptions()
+    public function testFieldFormOptions(): void
     {
-        $field = ChoiceField::new('foo')->setChoices($this->choices);
+        $choices = ['a' => 1, 'b' => 2, 'c' => 3];
+        $field = ChoiceField::new('foo')->setChoices($choices);
         $field->renderExpanded();
         $field->allowMultipleChoices();
 
         self::assertSame(
             [
-                'choices' => $this->choices,
+                'choices' => $choices,
                 'multiple' => true,
                 'expanded' => true,
                 'placeholder' => '',
@@ -144,9 +134,9 @@ class ChoiceFieldTest extends AbstractFieldTest
         );
     }
 
-    public function testBadges()
+    public function testBadges(): void
     {
-        $field = ChoiceField::new('foo')->setChoices($this->choices);
+        $field = ChoiceField::new('foo')->setChoices(['a' => 1, 'b' => 2, 'c' => 3]);
 
         $field->setValue(1);
         self::assertSame('a', (string) $this->configure($field)->getFormattedValue());
@@ -166,10 +156,10 @@ class ChoiceFieldTest extends AbstractFieldTest
         $field->setValue([1, 3])->renderAsBadges([1 => 'warning', '3' => 'danger']);
         self::assertSame('<span class="badge badge-warning">a</span><span class="badge badge-danger">c</span>', (string) $this->configure($field)->getFormattedValue());
 
-        $field->setValue(1)->renderAsBadges(function ($value) { return $value > 1 ? 'success' : 'primary'; });
+        $field->setValue(1)->renderAsBadges(static fn (mixed $value): string => $value > 1 ? 'success' : 'primary');
         self::assertSame('<span class="badge badge-primary">a</span>', (string) $this->configure($field)->getFormattedValue());
 
-        $field->setValue([1, 3])->renderAsBadges(function ($value) { return $value > 1 ? 'success' : 'primary'; });
+        $field->setValue([1, 3])->renderAsBadges(static fn (mixed $value): string => $value > 1 ? 'success' : 'primary');
         self::assertSame('<span class="badge badge-primary">a</span><span class="badge badge-success">c</span>', (string) $this->configure($field)->getFormattedValue());
     }
 }

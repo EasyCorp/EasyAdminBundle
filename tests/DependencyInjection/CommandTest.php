@@ -10,7 +10,7 @@ class CommandTest extends KernelTestCase
     /**
      * @dataProvider provideCommands
      */
-    public function testMakerCommandServices(string $commandName)
+    public function testMakerCommandServices(string $commandName): void
     {
         $application = new Application(self::bootKernel());
 
@@ -23,7 +23,7 @@ class CommandTest extends KernelTestCase
         $this->assertNotEmpty($command->getHelp());
     }
 
-    public static function provideCommands()
+    public static function provideCommands(): \Generator
     {
         yield ['make:admin:crud'];
         yield ['make:admin:dashboard'];

@@ -10,12 +10,12 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  *
  * @internal
  */
-final class TranslatableChoiceMessageCollection implements TranslatableInterface
+final class TranslatableChoiceMessageCollection implements \Stringable, TranslatableInterface
 {
     public function __construct(
         /** @var TranslatableChoiceMessage[] */
-        private array $choices,
-        private bool $isRenderedAsBadge,
+        private readonly array $choices,
+        private readonly bool $isRenderedAsBadge,
     ) {
     }
 

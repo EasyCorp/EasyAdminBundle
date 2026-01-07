@@ -11,14 +11,12 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  *
  * @internal
  */
-final class TranslatableChoiceMessage implements TranslatableInterface
+final class TranslatableChoiceMessage implements \Stringable, TranslatableInterface
 {
-    /**
-     * @param TranslatableMessage $message
-     */
     public function __construct(
-        private TranslatableInterface $message,
-        private ?string $cssClass,
+        /** @var TranslatableMessage $message */
+        private readonly TranslatableInterface $message,
+        private readonly ?string $cssClass,
     ) {
     }
 
@@ -36,9 +34,9 @@ final class TranslatableChoiceMessage implements TranslatableInterface
     public function __toString(): string
     {
         if (null !== $this->cssClass) {
-            return sprintf('<span class="%s">%s</span>', $this->cssClass, $this->message);
+            return sprintf('<span class="%s">%s</span>', $this->cssClass, $this->message->getMessage());
         }
 
-        return (string) $this->message;
+        return $this->message->getMessage();
     }
 }

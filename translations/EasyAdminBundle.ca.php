@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Crear i continuar editant',
         'save' => 'Desar els canvis',
         'save_and_continue' => 'Desar i continuar editant',
+        'toggle_dropdown' => 'Commuta el menú desplegable',
     ],
 
     'batch_action_modal' => [
@@ -84,6 +85,7 @@ return [
         'label.is_less_than_or_equal_to' => 'és menor o igual a',
         'label.is_between' => 'està entre',
         'label.contains' => 'conté',
+        'label.contains_all' => 'conté tot',
         'label.not_contains' => 'no conté',
         'label.starts_with' => 'comença amb',
         'label.ends_with' => 'acaba amb',

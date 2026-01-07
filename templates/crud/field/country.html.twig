@@ -12,7 +12,7 @@
             <twig:ea:Flag countryCode="{{ flag_code }}" height="17" />
         {% endif %}
     {% endfor %}
-{% elseif show_name and not show_flag  %}
+{% elseif show_name and not show_flag %}
     {{ field.formattedValue|join(', ') }}
 {% else %}
     {% for flag_code, country_name in field.formattedValue %}

@@ -30,7 +30,7 @@ class FormFieldsetsCrudControllerTest extends AbstractCrudTestCase
         return DashboardController::class;
     }
 
-    public function testFieldsWithoutFieldsetAreAssignedAnAutomaticFieldsetInForms()
+    public function testFieldsWithoutFieldsetAreAssignedAnAutomaticFieldsetInForms(): void
     {
         $crawler = $this->client->request('GET', $this->generateNewFormUrl());
         // the 'id' field does not belong to any explicit fieldset, so EasyAdmin creates a new fieldset for it
@@ -42,7 +42,7 @@ class FormFieldsetsCrudControllerTest extends AbstractCrudTestCase
         static::assertSame('BlogPost[id]', $crawler->filter('form.ea-edit-form .form-fieldset')->first()->filter('input')->attr('name'));
     }
 
-    public function testFieldsWithoutFieldsetAreAssignedAnAutomaticFieldsetInDetailPage()
+    public function testFieldsWithoutFieldsetAreAssignedAnAutomaticFieldsetInDetailPage(): void
     {
         $blogPost = $this->blogPosts->findOneBy([]);
         $crawler = $this->client->request('GET', $this->generateDetailUrl($blogPost->getId()));
@@ -51,7 +51,7 @@ class FormFieldsetsCrudControllerTest extends AbstractCrudTestCase
         // static::assertSame('ID', trim($crawler->filter('.form-fieldset')->first()->filter('dt')->text()));
     }
 
-    public function testFieldsInsideFieldsetsInForms()
+    public function testFieldsInsideFieldsetsInForms(): void
     {
         $crawler = $this->client->request('GET', $this->generateNewFormUrl());
 
@@ -68,7 +68,7 @@ class FormFieldsetsCrudControllerTest extends AbstractCrudTestCase
         static::assertStringContainsString('fa fa-user', $crawler->filter('.form-fieldset:contains("Fieldset 2") .form-fieldset-title i')->attr('class'));
     }
 
-    public function testFieldsInsideFieldsetsInDetailPage()
+    public function testFieldsInsideFieldsetsInDetailPage(): void
     {
         $blogPost = $this->blogPosts->findOneBy([]);
         $crawler = $this->client->request('GET', $this->generateDetailUrl($blogPost->getId()));
@@ -86,7 +86,7 @@ class FormFieldsetsCrudControllerTest extends AbstractCrudTestCase
         static::assertStringContainsString('fa fa-user', $crawler->filter('.form-fieldset:contains("Fieldset 2") .form-fieldset-title i')->attr('class'));
     }
 
-    public function testFieldsetWithoutFieldsInForms()
+    public function testFieldsetWithoutFieldsInForms(): void
     {
         $crawler = $this->client->request('GET', $this->generateNewFormUrl());
 
@@ -96,7 +96,7 @@ class FormFieldsetsCrudControllerTest extends AbstractCrudTestCase
         static::assertStringContainsString('fa fa-file-alt', $crawler->filter('.form-fieldset:contains("Fieldset 3") .form-fieldset-title i')->attr('class'));
     }
 
-    public function testFieldsetWithoutFieldsInDetailPage()
+    public function testFieldsetWithoutFieldsInDetailPage(): void
     {
         $crawler = $this->client->request('GET', $this->generateNewFormUrl());
 

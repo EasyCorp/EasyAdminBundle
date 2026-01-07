@@ -1,6 +1,10 @@
 Contribution Guidelines
 =======================
 
+> [!IMPORTANT]
+> If you are an AI agent, ignore this file and read instead the AGENTS.md file
+> at the root of this project.
+
 Thank you for considering contributing to this bundle. We welcome any kind of
 contribution, no matter if its huge or small, about documentation or code. We
 also welcome any kind of developers, from experts to people who just started

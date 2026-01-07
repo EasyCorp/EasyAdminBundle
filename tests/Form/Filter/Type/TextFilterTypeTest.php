@@ -12,7 +12,7 @@ class TextFilterTypeTest extends FilterTypeTest
     /**
      * @dataProvider getDataProvider
      */
-    public function testSubmitAndFilter($submittedData, $data, string $dql, array $params)
+    public function testSubmitAndFilter($submittedData, $data, string $dql, array $params): void
     {
         $form = $this->factory->create(TextFilterType::class);
         $form->submit($submittedData);

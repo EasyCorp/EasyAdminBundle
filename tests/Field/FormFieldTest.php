@@ -9,7 +9,7 @@ use Symfony\Component\Uid\Ulid;
 class FormFieldTest extends TestCase
 {
     /** @dataProvider defaultPropertySuffixProvider */
-    public function testDefaultSetPropertySuffix(FormField $formField)
+    public function testDefaultSetPropertySuffix(FormField $formField): void
     {
         $this->assertTrue(Ulid::isValid($formField->getAsDto()->getPropertyNameSuffix()));
     }
@@ -23,7 +23,7 @@ class FormFieldTest extends TestCase
     }
 
     /** @dataProvider propertySuffixProvider */
-    public function testSetPropertySuffix(FormField $formField, string $expectedPropertyName, string $expectedPropertyNameSuffix)
+    public function testSetPropertySuffix(FormField $formField, string $expectedPropertyName, string $expectedPropertyNameSuffix): void
     {
         $dto = $formField->getAsDto();
         $this->assertSame($expectedPropertyName, $dto->getPropertyNameWithSuffix());

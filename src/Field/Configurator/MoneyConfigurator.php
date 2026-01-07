@@ -16,15 +16,10 @@ use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
  */
 final class MoneyConfigurator implements FieldConfiguratorInterface
 {
-    private IntlFormatterInterface $intlFormatter;
-    private PropertyAccessorInterface $propertyAccessor;
-
     public const DEFAULT_DIVISOR = 100;
 
-    public function __construct(IntlFormatterInterface $intlFormatter, PropertyAccessorInterface $propertyAccessor)
+    public function __construct(private readonly IntlFormatterInterface $intlFormatter, private readonly PropertyAccessorInterface $propertyAccessor)
     {
-        $this->intlFormatter = $intlFormatter;
-        $this->propertyAccessor = $propertyAccessor;
     }
 
     public function supports(FieldDto $field, EntityDto $entityDto): bool
@@ -66,20 +61,21 @@ final class MoneyConfigurator implements FieldConfiguratorInterface
             throw new \InvalidArgumentException(sprintf('You must define the currency for the "%s" money field.', $field->getProperty()));
         }
 
+        $entityInstance = $entityDto->getInstance();
+        $isPropertyReadable = (null !== $entityInstance) && $this->propertyAccessor->isReadable($entityInstance, $currencyPropertyPath);
+
+        if ($isPropertyReadable && (null !== $currencyCode = $this->propertyAccessor->getValue($entityInstance, $currencyPropertyPath))) {
+            return $currencyCode;
+        }
+
         if (null === $field->getValue()) {
             return null;
         }
 
-        $entityInstance = $entityDto->getInstance();
-        $isPropertyReadable = (null !== $entityInstance) && $this->propertyAccessor->isReadable($entityInstance, $currencyPropertyPath);
         if (!$isPropertyReadable) {
             throw new \InvalidArgumentException(sprintf('The "%s" field path used by the "%s" field to get the currency value from the "%s" entity is not readable.', $currencyPropertyPath, $field->getProperty(), $entityDto->getName()));
         }
 
-        if (null === $currencyCode = $this->propertyAccessor->getValue($entityInstance, $currencyPropertyPath)) {
-            throw new \InvalidArgumentException(sprintf('The currency value for the "%s" field cannot be null, but that\'s the value returned by the "%s" field path applied on the "%s" entity.', $field->getProperty(), $currencyPropertyPath, $entityDto->getName()));
-        }
-
-        return $currencyCode;
+        throw new \InvalidArgumentException(sprintf('The currency value for the "%s" field cannot be null, but that\'s the value returned by the "%s" field path applied on the "%s" entity.', $field->getProperty(), $currencyPropertyPath, $entityDto->getName()));
     }
 }

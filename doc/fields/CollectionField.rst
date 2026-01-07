@@ -195,6 +195,12 @@ class name of the controller as the first argument::
 
     The ``useEntryCrudForm()`` method requires Symfony 6.1 or newer version.
 
+.. note::
+
+    For Doctrine associations, you can omit the ``useEntryCrudForm()`` method.
+    When no Symfony form option ``entry_type`` is set, ``CollectionField`` for
+    association properties will use ``CrudFormType`` as the default ``entry_type``.
+
 JavaScript Events
 -----------------
 

@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Criar e continuar editando',
         'save' => 'Salvar alterações',
         'save_and_continue' => 'Salvar e continuar editando',
+        'toggle_dropdown' => 'Alternar menu suspenso',
     ],
 
     'batch_action_modal' => [
@@ -84,6 +85,7 @@ return [
         'label.is_less_than_or_equal_to' => 'é menor ou igual a',
         'label.is_between' => 'entre',
         'label.contains' => 'contém',
+        'label.contains_all' => 'contém tudo',
         'label.not_contains' => 'não contém',
         'label.starts_with' => 'começa com',
         'label.ends_with' => 'termina com',

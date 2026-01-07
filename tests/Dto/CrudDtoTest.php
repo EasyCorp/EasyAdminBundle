@@ -12,7 +12,7 @@ class CrudDtoTest extends TestCase
      *
      * @param string|closure|null $setLabel
      */
-    public function testGetEntityLabelInSingular($setLabel, ?string $expectedGetLabel)
+    public function testGetEntityLabelInSingular($setLabel, ?string $expectedGetLabel): void
     {
         $crudDto = new CrudDto();
 
@@ -22,7 +22,7 @@ class CrudDtoTest extends TestCase
         }
 
         $entityInstance = new class {
-            public function getPrimaryKeyValue()
+            public function getPrimaryKeyValue(): string
             {
                 return '42';
             }
@@ -31,7 +31,7 @@ class CrudDtoTest extends TestCase
         $this->assertSame($expectedGetLabel, $crudDto->getEntityLabelInPlural($entityInstance));
     }
 
-    public static function provideLabels()
+    public static function provideLabels(): \Generator
     {
         yield [null, null];
         yield ['', ''];

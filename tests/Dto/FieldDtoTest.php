@@ -17,7 +17,7 @@ class FieldDtoTest extends TestCase
         $this->assertSame($expected, $dto->getPropertyNameWithSuffix());
     }
 
-    public function propertyNameWithSuffixProvider(): \Generator
+    public static function propertyNameWithSuffixProvider(): \Generator
     {
         yield ['foo', null, 'foo'];
         yield ['foo', 'bar', 'foo_bar'];

@@ -3,32 +3,32 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Form\ChoiceList\Loader;
 
 use EasyCorp\Bundle\EasyAdminBundle\Form\ChoiceList\Loader\DynamicChoiceLoader;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Form\ChoiceList\ArrayChoiceList;
 use Symfony\Component\Form\ChoiceList\Loader\ChoiceLoaderInterface;
 
 class DynamicChoiceLoaderTest extends TestCase
 {
-    /** @var ChoiceLoaderInterface */
-    private $loader;
+    private ChoiceLoaderInterface $loader;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->loader = new DynamicChoiceLoader();
     }
 
-    public function testLoadChoicesFromValues()
+    public function testLoadChoicesFromValues(): void
     {
         $this->assertSame(['foo'], $this->loader->loadChoicesForValues(['foo']));
         $this->assertSame(['bar'], $this->loader->loadChoicesForValues(['bar']));
     }
 
-    public function testLoadValuesFromChoices()
+    public function testLoadValuesFromChoices(): void
     {
         $this->assertSame(['foo'], $this->loader->loadValuesForChoices(['foo']));
         $this->assertSame(['bar'], $this->loader->loadValuesForChoices(['bar']));
     }
 
-    public function testChoiceListIsBuiltFromValues()
+    public function testChoiceListIsBuiltFromValues(): void
     {
         $this->assertSame(['foo'], $this->loader->loadChoicesForValues(['foo']));
         $this->assertSame(['foo' => 'foo'], $this->loader->loadChoiceList()->getChoices());
@@ -37,7 +37,7 @@ class DynamicChoiceLoaderTest extends TestCase
         $this->assertSame(['bar' => 'bar'], $this->loader->loadChoiceList()->getChoices());
     }
 
-    public function testCachedChoiceList()
+    public function testCachedChoiceList(): void
     {
         $choiceList = $this->loader->loadChoiceList();
 

@@ -27,7 +27,7 @@ class CustomCrudSearchControllerTest extends AbstractCrudTestCase
     /**
      * @dataProvider provideSearchTests
      */
-    public function testSearch(string $query, int $expectedResultCount)
+    public function testSearch(string $query, int $expectedResultCount): void
     {
         $this->client->request('GET', $this->generateIndexUrl($query));
         static::assertIndexFullEntityCount($expectedResultCount);

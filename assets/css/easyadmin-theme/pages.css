@@ -4,7 +4,7 @@
 body.page-login {
     background: var(--page-login-bg);
 }
-@media(min-width: 992px) {
+@media (min-width: 992px) {
     body.page-login {
         align-items: center;
         display: flex;
@@ -30,7 +30,7 @@ body.page-login #flash-messages {
     max-inline-size: 28rem;
     inline-size: 94%;
 }
-@media(min-width: 992px) {
+@media (min-width: 992px) {
     .login-wrapper {
         margin-block-start: -225px;
         inline-size: 100%;
@@ -44,7 +44,7 @@ body.page-login #flash-messages {
     font-size: var(--font-size-lg);
     text-align: center;
 }
-@media(min-width: 992px) {
+@media (min-width: 992px) {
     .login-wrapper .main-header #header-logo a {
         font-size: var(--font-size-xl);
     }
@@ -56,7 +56,7 @@ body.page-login #flash-messages {
     padding: 15px 30px;
     inline-size: 100%;
 }
-@media(min-width: 992px) {
+@media (min-width: 992px) {
     .login-wrapper .content {
         padding: 2rem 2.5rem;
     }

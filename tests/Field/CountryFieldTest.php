@@ -16,7 +16,7 @@ class CountryFieldTest extends AbstractFieldTest
         parent::setUp();
     }
 
-    public function testDefaultFieldOptions()
+    public function testDefaultFieldOptions(): void
     {
         $this->initializeConfigurator();
 
@@ -33,7 +33,7 @@ class CountryFieldTest extends AbstractFieldTest
         self::assertFalse($fieldDto->getCustomOption(CountryField::OPTION_ALLOW_MULTIPLE_CHOICES));
     }
 
-    public function testDefaultOptionsForFormPages()
+    public function testDefaultOptionsForFormPages(): void
     {
         $this->initializeConfigurator();
 
@@ -50,7 +50,7 @@ class CountryFieldTest extends AbstractFieldTest
         self::assertSame('true', $fieldDto->getFormTypeOption('attr.data-ea-autocomplete-render-items-as-html'));
     }
 
-    public function testUnknownCountryCode()
+    public function testUnknownCountryCode(): void
     {
         $this->initializeConfigurator();
 
@@ -70,7 +70,7 @@ class CountryFieldTest extends AbstractFieldTest
         self::assertSame(['UNKNOWN' => 'Unknown "es" country code', 'KR' => 'South Korea'], $fieldDto->getFormattedValue());
     }
 
-    public function testSingleCountryCode()
+    public function testSingleCountryCode(): void
     {
         $this->initializeConfigurator();
 
@@ -86,7 +86,7 @@ class CountryFieldTest extends AbstractFieldTest
         self::assertSame(['ES' => 'España'], $fieldDto->getFormattedValue());
     }
 
-    public function testMultipleCountryCodes()
+    public function testMultipleCountryCodes(): void
     {
         $this->initializeConfigurator();
 
@@ -102,7 +102,7 @@ class CountryFieldTest extends AbstractFieldTest
         self::assertSame(['BD' => 'Бангладеш', 'PG' => 'Папуа-Нова Гвінея', 'SV' => 'Сальвадор'], $fieldDto->getFormattedValue());
     }
 
-    public function testRemovingSomeCountries()
+    public function testRemovingSomeCountries(): void
     {
         $this->initializeConfigurator();
 
@@ -117,7 +117,7 @@ class CountryFieldTest extends AbstractFieldTest
         self::assertArrayNotHasKey('KP', $formSelectChoicesWithCountryCodesAsKeys);
     }
 
-    public function testShowingOnlySomeCountries()
+    public function testShowingOnlySomeCountries(): void
     {
         $this->initializeConfigurator();
 
@@ -131,7 +131,7 @@ class CountryFieldTest extends AbstractFieldTest
         self::assertSame($countryCodesSortedAlphabeticallyByCounryEnglishName, array_values($formSelectChoices));
     }
 
-    public function testShowingWrongCountryCodeInForms()
+    public function testShowingWrongCountryCodeInForms(): void
     {
         $this->initializeConfigurator();
 
@@ -145,7 +145,7 @@ class CountryFieldTest extends AbstractFieldTest
         self::assertSame(['CL', 'EG'], array_values($formSelectChoices));
     }
 
-    public function testSelectingMultipleChoices()
+    public function testSelectingMultipleChoices(): void
     {
         $this->initializeConfigurator();
 
@@ -157,7 +157,7 @@ class CountryFieldTest extends AbstractFieldTest
         self::assertTrue($fieldDto->getFormTypeOption('multiple'));
     }
 
-    public function testUsingAlpha3Format()
+    public function testUsingAlpha3Format(): void
     {
         $this->initializeConfigurator();
 

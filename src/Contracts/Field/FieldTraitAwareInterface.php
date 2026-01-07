@@ -13,9 +13,9 @@ interface FieldTraitAwareInterface extends FieldInterface
 
     public function setLabel(TranslatableInterface|string|false|null $label): self;
 
-    public function setValue($value): self;
+    public function setValue(mixed $value): self;
 
-    public function setFormattedValue($value): self;
+    public function setFormattedValue(mixed $value): self;
 
     public function formatValue(?callable $callable): self;
 
@@ -25,21 +25,24 @@ interface FieldTraitAwareInterface extends FieldInterface
 
     public function setRequired(bool $isRequired): self;
 
-    public function setEmptyData($emptyData = null): self;
+    public function setEmptyData(mixed $emptyData = null): self;
 
     public function setFormType(string $formTypeFqcn): self;
 
+    /**
+     * @param array<string, mixed> $options
+     */
     public function setFormTypeOptions(array $options): self;
 
     /**
      * @param string $optionName You can use "dot" notation to set nested options (e.g. 'attr.class')
      */
-    public function setFormTypeOption(string $optionName, $optionValue): self;
+    public function setFormTypeOption(string $optionName, mixed $optionValue): self;
 
     /**
      * @param string $optionName You can use "dot" notation to set nested options (e.g. 'attr.class')
      */
-    public function setFormTypeOptionIfNotSet(string $optionName, $optionValue): self;
+    public function setFormTypeOptionIfNotSet(string $optionName, mixed $optionValue): self;
 
     public function setSortable(bool $isSortable): self;
 
@@ -56,6 +59,9 @@ interface FieldTraitAwareInterface extends FieldInterface
 
     public function setCssClass(string $cssClass): self;
 
+    /**
+     * @param array<string, mixed> $parameters
+     */
     public function setTranslationParameters(array $parameters): self;
 
     public function setTemplateName(string $name): self;
@@ -74,8 +80,11 @@ interface FieldTraitAwareInterface extends FieldInterface
 
     public function addHtmlContentsToBody(string ...$contents): self;
 
-    public function setCustomOption(string $optionName, $optionValue): self;
+    public function setCustomOption(string $optionName, mixed $optionValue): self;
 
+    /**
+     * @param array<string, mixed> $options
+     */
     public function setCustomOptions(array $options): self;
 
     public function hideOnDetail(): self;

@@ -16,7 +16,7 @@ class MoneyFieldTest extends AbstractFieldTest
         $this->configurator = new MoneyConfigurator(new IntlFormatter(), static::getContainer()->get('property_accessor'));
     }
 
-    public function testFieldWithoutCurrency()
+    public function testFieldWithoutCurrency(): void
     {
         $this->expectException(\InvalidArgumentException::class);
 
@@ -24,7 +24,7 @@ class MoneyFieldTest extends AbstractFieldTest
         $this->configure($field);
     }
 
-    public function testNullFieldWithoutCurrency()
+    public function testNullFieldWithoutCurrency(): void
     {
         $this->expectException(\InvalidArgumentException::class);
 
@@ -32,7 +32,7 @@ class MoneyFieldTest extends AbstractFieldTest
         $this->configure($field);
     }
 
-    public function testFieldWithNullValues()
+    public function testFieldWithNullValues(): void
     {
         $field = MoneyField::new('foo')->setValue(null)->setCurrency('EUR');
         $fieldDto = $this->configure($field);
@@ -40,7 +40,7 @@ class MoneyFieldTest extends AbstractFieldTest
         self::assertSame('EUR', $fieldDto->getCustomOption(MoneyField::OPTION_CURRENCY));
     }
 
-    public function testFieldWithWrongCurrency()
+    public function testFieldWithWrongCurrency(): void
     {
         $this->expectException(\InvalidArgumentException::class);
 
@@ -48,7 +48,7 @@ class MoneyFieldTest extends AbstractFieldTest
         $this->configure($field);
     }
 
-    public function testFieldWithHardcodedCurrency()
+    public function testFieldWithHardcodedCurrency(): void
     {
         $field = MoneyField::new('foo')->setValue(100)->setCurrency('EUR');
         $fieldDto = $this->configure($field);
@@ -61,8 +61,6 @@ class MoneyFieldTest extends AbstractFieldTest
     {
         $reflectedClass = new \ReflectionClass(EntityDto::class);
         $entityDto = $reflectedClass->newInstanceWithoutConstructor();
-        $primaryKeyNameProperty = $reflectedClass->getProperty('primaryKeyName');
-        $primaryKeyNameProperty->setValue($entityDto, 'id');
         $primaryKeyValueProperty = $reflectedClass->getProperty('primaryKeyValue');
         $primaryKeyValueProperty->setValue($entityDto, 1);
         $fqcnProperty = $reflectedClass->getProperty('fqcn');
@@ -76,7 +74,7 @@ class MoneyFieldTest extends AbstractFieldTest
         return $this->entityDto = $entityDto;
     }
 
-    public function testFieldWithPropertyPathCurrency()
+    public function testFieldWithPropertyPathCurrency(): void
     {
         $field = MoneyField::new('foo')->setValue(100)->setCurrencyPropertyPath('bar');
         $fieldDto = $this->configure($field);
@@ -84,7 +82,7 @@ class MoneyFieldTest extends AbstractFieldTest
         self::assertSame('USD', $fieldDto->getFormTypeOption('currency'));
     }
 
-    public function testFieldDecimals()
+    public function testFieldDecimals(): void
     {
         $field = MoneyField::new('foo')->setValue(100)->setCurrency('EUR');
         $fieldDto = $this->configure($field);
@@ -97,28 +95,31 @@ class MoneyFieldTest extends AbstractFieldTest
         self::assertSame(3, $fieldDto->getFormTypeOption('scale'));
     }
 
-    public function testFieldsDefaultsToCents()
+    public function testFieldsDefaultsToCents(): void
     {
         $field = MoneyField::new('foo')->setValue(100)->setCurrency('EUR');
         $fieldDto = $this->configure($field);
+
         self::assertSame('€1.00', $fieldDto->getFormattedValue());
         self::assertSame(100, $fieldDto->getFormTypeOption('divisor'));
     }
 
-    public function testFieldCents()
+    public function testFieldCents(): void
     {
         $field = MoneyField::new('foo')->setValue(100)->setCurrency('EUR');
         $field->setStoredAsCents(false);
         $fieldDto = $this->configure($field);
+
         self::assertSame('€100.00', $fieldDto->getFormattedValue());
         self::assertSame(1, $fieldDto->getFormTypeOption('divisor'));
     }
 
-    public function testFieldWithCustomDivisor()
+    public function testFieldWithCustomDivisor(): void
     {
         $field = MoneyField::new('foo')->setValue(725)->setCurrency('EUR');
         $field->setFormTypeOption('divisor', 10000);
         $fieldDto = $this->configure($field);
+
         self::assertSame('€0.07', $fieldDto->getFormattedValue());
         self::assertSame(10000, $fieldDto->getFormTypeOption('divisor'));
     }

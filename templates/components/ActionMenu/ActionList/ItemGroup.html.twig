@@ -1,0 +1,70 @@
+{% props
+    group = null,
+    showBlankIcons = true,
+    entity = null,
+%}
+
+<li class="dropstart dropdown-submenu">
+    {% if group.hasMainAction and group.mainAction %}
+        {# split dropdown: main action + submenu toggle #}
+        <div class="d-flex flex-row-reverse position-relative">
+            {% set formId = group.mainAction.isRenderedAsForm ? 'ea-form-' ~ random() ~ random() : null %}
+            {% if group.mainAction.isRenderedAsForm %}
+                <form action="{{ group.mainAction.linkUrl }}" method="POST" {% if formId %}id="{{ formId }}"{% endif %}></form>
+            {% endif %}
+
+            <a class="dropdown-item flex-grow-1 border-end-0 {{ group.mainAction.cssClass }}"
+                {% if group.mainAction.isRenderedAsForm %}
+                    href="#"
+                    onclick="event.preventDefault(); document.getElementById('{{ formId }}').submit();"
+                {% else %}
+                    href="{{ group.mainAction.linkUrl }}"
+                {% endif %}
+                {% for attr, value in group.mainAction.htmlAttributes %}{{ attr }}="{{ value }}" {% endfor %}>
+                {% if group.icon %}
+                    <twig:ea:Icon name="{{ group.icon }}" />
+                {% elseif showBlankIcons or group.hasAnyActionWithIcon %}
+                    <twig:ea:Icon name="internal:blank" />
+                {% endif %}
+                {% if group.mainAction.label is not empty and group.mainAction.label is not same as(false) %}
+                    <span>{{ group.mainAction.label|trans }}</span>
+                {% endif %}
+            </a>
+            <a class="dropdown-toggle dropdown-toggle-split dropdown-item border-start-0" href="#" role="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                <span class="dropdown-toggle-marker"></span>
+            </a>
+        </div>
+    {% else %}
+        {# regular submenu toggle #}
+        <a class="dropdown-item dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+            {% if group.icon %}
+                <twig:ea:Icon name="{{ group.icon }}" />
+            {% elseif showBlankIcons or group.hasAnyActionWithIcon %}
+                <twig:ea:Icon name="internal:blank" />
+            {% endif %}
+            {% if group.label is not empty %}<span>{{ group.label|trans }}</span>{% endif %}
+        </a>
+    {% endif %}
+
+    {# nested ActionList for submenu items #}
+    <ul class="dropdown-menu">
+        {% for subItem in group.items %}
+            {% if subItem is iterable and subItem.type is defined %}
+                {% if subItem.type == 'divider' %}
+                    <twig:ea:ActionMenu:ActionList:Divider />
+                {% elseif subItem.type == 'header' %}
+                    <twig:ea:ActionMenu:ActionList:Header label="{{ subItem.content }}" renderLabelRaw="true" />
+                {% endif %}
+            {% else %}
+                {# subItem is an ActionDto #}
+                <twig:ea:ActionMenu:ActionList:Item
+                    class="{{ subItem.cssClass }} dropdown-item-variant-{{ subItem.variant.value }}"
+                    label="{{ subItem.label|trans }}" icon="{{ subItem.icon }}"
+                    htmlAttributes="{{ subItem.htmlAttributes }}"
+                    url="{{ subItem.linkUrl }}" renderLabelRaw="true"
+                    renderAsForm="{{ subItem.isRenderedAsForm }}"
+                    showBlankIcons="{{ group.hasAnyActionWithIcon }}" />
+            {% endif %}
+        {% endfor %}
+    </ul>
+</li>

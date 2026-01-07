@@ -102,10 +102,12 @@ final class IntlFormatter implements IntlFormatterInterface
         'monetary_grouping_separator' => \NumberFormatter::MONETARY_GROUPING_SEPARATOR_SYMBOL,
     ];
 
+    /** @var array<\IntlDateFormatter> */
     private array $dateFormatters = [];
+    /** @var array<\NumberFormatter> */
     private array $numberFormatters = [];
 
-    public function formatCurrency($amount, string $currency, array $attrs = [], ?string $locale = null): string
+    public function formatCurrency(int|float $amount, string $currency, array $attrs = [], ?string $locale = null): string
     {
         $formatter = $this->createNumberFormatter($locale, 'currency', $attrs);
         $formattedCurrency = $formatter->formatCurrency($amount, $currency);
@@ -138,7 +140,8 @@ final class IntlFormatter implements IntlFormatterInterface
 
         $formatter = $this->createNumberFormatter($locale, $style, $attrs);
 
-        if (false === $ret = $formatter->format($number, self::NUMBER_TYPES[$type])) {
+        $ret = $formatter->format($number, self::NUMBER_TYPES[$type]);
+        if (!\is_string($formatter->format($number, self::NUMBER_TYPES[$type]))) {
             throw new RuntimeError('Unable to format the given number.');
         }
 
@@ -204,6 +207,9 @@ final class IntlFormatter implements IntlFormatterInterface
         return $this->dateFormatters[$hash];
     }
 
+    /**
+     * @param array<string, string|int|float> $attrs
+     */
     private function createNumberFormatter(?string $locale, string $style, array $attrs = []): \NumberFormatter
     {
         if (!isset(self::NUMBER_STYLES[$style])) {
@@ -270,6 +276,9 @@ final class IntlFormatter implements IntlFormatterInterface
         return $this->numberFormatters[$hash];
     }
 
+    /**
+     * @param \DateTimeZone|string|bool|null $timezone
+     */
     private function convertDate(?\DateTimeInterface $date, $timezone = null): ?\DateTimeInterface
     {
         if (null === $date) {
@@ -278,8 +287,10 @@ final class IntlFormatter implements IntlFormatterInterface
 
         if (null === $timezone) {
             $timezone = new \DateTimeZone(date_default_timezone_get());
-        } elseif (!$timezone instanceof \DateTimeZone) {
+        } elseif (\is_string($timezone)) {
             $timezone = new \DateTimeZone($timezone);
+        } elseif (!$timezone instanceof \DateTimeZone) {
+            return $date;
         }
 
         if ($date instanceof \DateTimeImmutable) {

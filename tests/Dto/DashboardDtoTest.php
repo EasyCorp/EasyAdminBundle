@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 class DashboardDtoTest extends TestCase
 {
-    public function testGetLocalesFromList()
+    public function testGetLocalesFromList(): void
     {
         $dashboard = Dashboard::new();
         $dashboard->setLocales(['en', 'pl']);

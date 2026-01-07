@@ -15,7 +15,7 @@ class DateTimeFieldTest extends AbstractFieldTest
         $this->configurator = new DateTimeConfigurator(new IntlFormatter());
     }
 
-    public function testFieldWithWrongTimezone()
+    public function testFieldWithWrongTimezone(): void
     {
         $this->expectException(\InvalidArgumentException::class);
 
@@ -23,7 +23,7 @@ class DateTimeFieldTest extends AbstractFieldTest
         $field->setTimezone('this-timezone-does-not-exist');
     }
 
-    public function testFieldWithoutTimezone()
+    public function testFieldWithoutTimezone(): void
     {
         $field = DateTimeField::new('foo')->setValue(new \DateTime('2015-01-16'));
         $field->setFieldFqcn(DateTimeField::class);
@@ -32,7 +32,7 @@ class DateTimeFieldTest extends AbstractFieldTest
         $this->assertNull($fieldDto->getCustomOption(DateTimeField::OPTION_TIMEZONE));
     }
 
-    public function testFieldWithTimezone()
+    public function testFieldWithTimezone(): void
     {
         $field = DateTimeField::new('foo')->setValue(new \DateTime('2015-01-16'));
         $field->setFieldFqcn(DateTimeField::class);
@@ -42,7 +42,7 @@ class DateTimeFieldTest extends AbstractFieldTest
         $this->assertSame('Europe/Madrid', $fieldDto->getCustomOption(DateTimeField::OPTION_TIMEZONE));
     }
 
-    public function testFieldWithWrongFormat()
+    public function testFieldWithWrongFormat(): void
     {
         $this->expectException(\InvalidArgumentException::class);
 
@@ -51,7 +51,7 @@ class DateTimeFieldTest extends AbstractFieldTest
         $field->setFormat(DateTimeField::FORMAT_NONE);
     }
 
-    public function testFieldWithEmptyDateFormat()
+    public function testFieldWithEmptyDateFormat(): void
     {
         $this->expectException(\InvalidArgumentException::class);
 
@@ -60,7 +60,7 @@ class DateTimeFieldTest extends AbstractFieldTest
         $field->setFormat('');
     }
 
-    public function testFieldWithEmptyDateAndTimeFormats()
+    public function testFieldWithEmptyDateAndTimeFormats(): void
     {
         $this->expectException(\InvalidArgumentException::class);
 
@@ -69,7 +69,7 @@ class DateTimeFieldTest extends AbstractFieldTest
         $field->setFormat('', '');
     }
 
-    public function testFieldWithNoneDateAndTimeFormats()
+    public function testFieldWithNoneDateAndTimeFormats(): void
     {
         $this->expectException(\InvalidArgumentException::class);
 
@@ -78,7 +78,7 @@ class DateTimeFieldTest extends AbstractFieldTest
         $field->setFormat(DateTimeField::FORMAT_NONE, DateTimeField::FORMAT_NONE);
     }
 
-    public function testFieldWithPredefinedFormat()
+    public function testFieldWithPredefinedFormat(): void
     {
         $field = DateTimeField::new('foo')->setValue(new \DateTime('2015-01-16'));
         $field->setFieldFqcn(DateTimeField::class);
@@ -89,7 +89,7 @@ class DateTimeFieldTest extends AbstractFieldTest
         $this->assertSame('January 16, 2015', $fieldDto->getFormattedValue());
     }
 
-    public function testFieldWithCustomPattern()
+    public function testFieldWithCustomPattern(): void
     {
         $field = DateTimeField::new('foo')->setValue(new \DateTime('2015-01-16'));
         $field->setFieldFqcn(DateTimeField::class);
@@ -97,10 +97,11 @@ class DateTimeFieldTest extends AbstractFieldTest
         $fieldDto = $this->configure($field);
 
         $this->assertSame('HH:mm:ss ZZZZ a', $fieldDto->getCustomOption(DateTimeField::OPTION_DATE_PATTERN));
-        $this->assertSame('00:00:00 GMT AM', $fieldDto->getFormattedValue());
+        // some ICU versions return "GMT" while others return "GMT+00:00"
+        $this->assertMatchesRegularExpression('/^00:00:00 GMT(\+00:00)? AM$/', $fieldDto->getFormattedValue());
     }
 
-    public function testFieldDefaultWidget()
+    public function testFieldDefaultWidget(): void
     {
         $field = DateTimeField::new('foo')->setValue(new \DateTime('2015-01-16'));
         $field->setFieldFqcn(DateTimeField::class);
@@ -109,7 +110,7 @@ class DateTimeFieldTest extends AbstractFieldTest
         $this->assertSame(DateTimeField::WIDGET_NATIVE, $fieldDto->getCustomOption(DateTimeField::OPTION_WIDGET));
     }
 
-    public function testFieldRenderAsNativeWidget()
+    public function testFieldRenderAsNativeWidget(): void
     {
         $field = DateTimeField::new('foo')->setValue(new \DateTime('2015-01-16'));
         $field->setFieldFqcn(DateTimeField::class);
@@ -121,7 +122,7 @@ class DateTimeFieldTest extends AbstractFieldTest
         $this->assertTrue($fieldDto->getFormTypeOption('html5'));
     }
 
-    public function testFieldRenderAsNotNativeWidget()
+    public function testFieldRenderAsNotNativeWidget(): void
     {
         $field = DateTimeField::new('foo')->setValue(new \DateTime('2015-01-16'));
         $field->setFieldFqcn(DateTimeField::class);
@@ -131,7 +132,7 @@ class DateTimeFieldTest extends AbstractFieldTest
         $this->assertSame(DateTimeField::WIDGET_CHOICE, $fieldDto->getCustomOption(DateTimeField::OPTION_WIDGET));
     }
 
-    public function testFieldRenderAsChoice()
+    public function testFieldRenderAsChoice(): void
     {
         $field = DateTimeField::new('foo')->setValue(new \DateTime('2015-01-16'));
         $field->setFieldFqcn(DateTimeField::class);
@@ -143,7 +144,7 @@ class DateTimeFieldTest extends AbstractFieldTest
         $this->assertTrue($fieldDto->getFormTypeOption('html5'));
     }
 
-    public function testFieldRenderAsNotChoice()
+    public function testFieldRenderAsNotChoice(): void
     {
         $field = DateTimeField::new('foo')->setValue(new \DateTime('2015-01-16'));
         $field->setFieldFqcn(DateTimeField::class);
@@ -153,7 +154,7 @@ class DateTimeFieldTest extends AbstractFieldTest
         $this->assertSame(DateTimeField::WIDGET_NATIVE, $fieldDto->getCustomOption(DateTimeField::OPTION_WIDGET));
     }
 
-    public function testFieldRenderAsText()
+    public function testFieldRenderAsText(): void
     {
         $field = DateTimeField::new('foo')->setValue(new \DateTime('2015-01-16'));
         $field->setFieldFqcn(DateTimeField::class);
@@ -165,7 +166,7 @@ class DateTimeFieldTest extends AbstractFieldTest
         $this->assertFalse($fieldDto->getFormTypeOption('html5'));
     }
 
-    public function testFieldRenderAsNotText()
+    public function testFieldRenderAsNotText(): void
     {
         $field = DateTimeField::new('foo')->setValue(new \DateTime('2015-01-16'));
         $field->setFieldFqcn(DateTimeField::class);

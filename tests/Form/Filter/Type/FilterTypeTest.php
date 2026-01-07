@@ -43,7 +43,7 @@ abstract class FilterTypeTest extends TypeTestCase
     // this is needed because some Doctrine versions changed some internals
     // and we can't use this code: $this->assertEquals($params, $this->qb->getParameters()->toArray());
     // (see https://github.com/doctrine/orm/pull/7528)
-    protected function assertSameDoctrineParams(array $expectedParams, array $actualParams)
+    protected function assertSameDoctrineParams(array $expectedParams, array $actualParams): void
     {
         for ($i = 0; $i < \count($expectedParams); ++$i) {
             $expectedParam = $expectedParams[$i];

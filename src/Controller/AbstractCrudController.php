@@ -36,6 +36,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Exception\InsufficientEntityPermissionExcept
 use EasyCorp\Bundle\EasyAdminBundle\Factory\ActionFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\ControllerFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\FieldFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FilterFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\PaginatorFactory;
@@ -65,6 +66,10 @@ use function Symfony\Component\String\u;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
+ *
+ * @template TEntity of object
+ *
+ * @implements  CrudControllerInterface<TEntity>
  */
 abstract class AbstractCrudController extends AbstractController implements CrudControllerInterface
 {
@@ -111,6 +116,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             FilterFactory::class => '?'.FilterFactory::class,
             FormFactory::class => '?'.FormFactory::class,
             PaginatorFactory::class => '?'.PaginatorFactory::class,
+            FieldFactory::class => '?'.FieldFactory::class,
         ]);
     }
 
@@ -140,10 +146,10 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         }
 
         $entities = $this->container->get(EntityFactory::class)->createCollection($context->getEntity(), $paginator->getResults());
-        $this->container->get(EntityFactory::class)->processFieldsForAll($entities, $fields);
-        $procesedFields = $entities->first()?->getFields() ?? FieldCollection::new([]);
-        $context->getCrud()->setFieldAssets($this->getFieldAssets($procesedFields));
-        $actions = $this->container->get(EntityFactory::class)->processActionsForAll($entities, $context->getCrud()->getActionsConfig());
+        $this->container->get(FieldFactory::class)->processFieldsForAll($entities, $fields, Crud::PAGE_INDEX);
+        $processedFields = $entities->first()?->getFields() ?? FieldCollection::new([]);
+        $context->getCrud()->setFieldAssets($this->getFieldAssets($processedFields));
+        $actions = $this->container->get(ActionFactory::class)->processGlobalActionsAndEntityActionsForAll($entities, $context->getCrud()->getActionsConfig());
 
         $responseParameters = $this->configureResponseParameters(KeyValueStore::new([
             'pageName' => Crud::PAGE_INDEX,
@@ -180,9 +186,9 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             throw new InsufficientEntityPermissionException($context);
         }
 
-        $this->container->get(EntityFactory::class)->processFields($context->getEntity(), FieldCollection::new($this->configureFields(Crud::PAGE_DETAIL)));
+        $this->container->get(FieldFactory::class)->processFields($context->getEntity(), FieldCollection::new($this->configureFields(Crud::PAGE_DETAIL)), Crud::PAGE_DETAIL);
         $context->getCrud()->setFieldAssets($this->getFieldAssets($context->getEntity()->getFields()));
-        $this->container->get(EntityFactory::class)->processActions($context->getEntity(), $context->getCrud()->getActionsConfig());
+        $this->container->get(ActionFactory::class)->processEntityActions($context->getEntity(), $context->getCrud()->getActionsConfig());
 
         $responseParameters = $this->configureResponseParameters(KeyValueStore::new([
             'pageName' => Crud::PAGE_DETAIL,
@@ -215,9 +221,10 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             throw new InsufficientEntityPermissionException($context);
         }
 
-        $this->container->get(EntityFactory::class)->processFields($context->getEntity(), FieldCollection::new($this->configureFields(Crud::PAGE_EDIT)));
+        $this->container->get(FieldFactory::class)->processFields($context->getEntity(), FieldCollection::new($this->configureFields(Crud::PAGE_EDIT)), Crud::PAGE_EDIT);
         $context->getCrud()->setFieldAssets($this->getFieldAssets($context->getEntity()->getFields()));
-        $this->container->get(EntityFactory::class)->processActions($context->getEntity(), $context->getCrud()->getActionsConfig());
+        $this->container->get(ActionFactory::class)->processEntityActions($context->getEntity(), $context->getCrud()->getActionsConfig());
+        /** @var TEntity $entityInstance */
         $entityInstance = $context->getEntity()->getInstance();
 
         if ($context->getRequest()->isXmlHttpRequest()) {
@@ -297,14 +304,17 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             throw new InsufficientEntityPermissionException($context);
         }
 
-        $context->getEntity()->setInstance($this->createEntity($context->getEntity()->getFqcn()));
-        $this->container->get(EntityFactory::class)->processFields($context->getEntity(), FieldCollection::new($this->configureFields(Crud::PAGE_NEW)));
+        /** @var class-string<TEntity> $entityFqcn */
+        $entityFqcn = $context->getEntity()->getFqcn();
+        $context->getEntity()->setInstance($this->createEntity($entityFqcn));
+        $this->container->get(FieldFactory::class)->processFields($context->getEntity(), FieldCollection::new($this->configureFields(Crud::PAGE_NEW)), Crud::PAGE_NEW);
         $context->getCrud()->setFieldAssets($this->getFieldAssets($context->getEntity()->getFields()));
-        $this->container->get(EntityFactory::class)->processActions($context->getEntity(), $context->getCrud()->getActionsConfig());
+        $this->container->get(ActionFactory::class)->processEntityActions($context->getEntity(), $context->getCrud()->getActionsConfig());
 
         $newForm = $this->createNewForm($context->getEntity(), $context->getCrud()->getNewFormOptions(), $context);
         $newForm->handleRequest($context->getRequest());
 
+        /** @var TEntity $entityInstance */
         $entityInstance = $newForm->getData();
         $context->getEntity()->setInstance($entityInstance);
 
@@ -355,11 +365,14 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             throw new InsufficientEntityPermissionException($context);
         }
 
-        $csrfToken = $context->getRequest()->request->get('token');
+        $csrfToken = $context->getRequest()->request->has('token')
+            ? (string) $context->getRequest()->request->get('token')
+            : null;
         if ($this->container->has('security.csrf.token_manager') && !$this->isCsrfTokenValid('ea-delete', $csrfToken)) {
             return $this->redirectToRoute($context->getDashboardRouteName());
         }
 
+        /** @var TEntity $entityInstance */
         $entityInstance = $context->getEntity()->getInstance();
 
         $event = new BeforeEntityDeletedEvent($entityInstance);
@@ -390,6 +403,9 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         return $this->redirect($this->container->get(AdminUrlGenerator::class)->setController($context->getCrud()->getControllerFqcn())->setAction(Action::INDEX)->unset(EA::ENTITY_ID)->generateUrl());
     }
 
+    /**
+     * @param BatchActionDto<TEntity> $batchActionDto
+     */
     public function batchDelete(AdminContext $context, BatchActionDto $batchActionDto): Response
     {
         $event = new BeforeCrudActionEvent($context);
@@ -402,11 +418,12 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             return $this->redirectToRoute($context->getDashboardRouteName());
         }
 
+        /** @var EntityManagerInterface $entityManager */
         $entityManager = $this->container->get('doctrine')->getManagerForClass($batchActionDto->getEntityFqcn());
         $repository = $entityManager->getRepository($batchActionDto->getEntityFqcn());
         foreach ($batchActionDto->getEntityIds() as $entityId) {
             $entityInstance = $repository->find($entityId);
-            if (!$entityInstance) {
+            if (null === $entityInstance) {
                 continue;
             }
 
@@ -429,7 +446,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             try {
                 $this->deleteEntity($entityManager, $entityInstance);
             } catch (ForeignKeyConstraintViolationException $e) {
-                throw new EntityRemoveException(['entity_name' => $entityDto->toString(), 'message' => $e->getMessage()], $e);
+                throw new EntityRemoveException(['entity_name' => (string) $entityDto, 'message' => $e->getMessage()], $e);
             }
 
             $this->container->get('event_dispatcher')->dispatch(new AfterEntityDeletedEvent($entityInstance));
@@ -454,10 +471,11 @@ abstract class AbstractCrudController extends AbstractController implements Crud
     {
         $queryBuilder = $this->createIndexQueryBuilder($context->getSearch(), $context->getEntity(), FieldCollection::new([]), FilterCollection::new());
 
-        $autocompleteContext = $context->getRequest()->get(AssociationField::PARAM_AUTOCOMPLETE_CONTEXT);
+        $autocompleteContext = $context->getRequest()->query->all(AssociationField::PARAM_AUTOCOMPLETE_CONTEXT);
 
+        $crudControllerFqcn = $autocompleteContext[EA::CRUD_CONTROLLER_FQCN] ?? $context->getRequest()->attributes->get(EA::CRUD_CONTROLLER_FQCN) ?? $context->getRequest()->query->get(EA::CRUD_CONTROLLER_FQCN);
         /** @var CrudControllerInterface $controller */
-        $controller = $this->container->get(ControllerFactory::class)->getCrudControllerInstance($autocompleteContext[EA::CRUD_CONTROLLER_FQCN] ?? $context->getRequest()->get(EA::CRUD_CONTROLLER_FQCN), Action::INDEX, $context->getRequest());
+        $controller = $this->container->get(ControllerFactory::class)->getCrudControllerInstance($crudControllerFqcn, Action::INDEX, $context->getRequest());
         /** @var FieldDto|null $field */
         $field = FieldCollection::new($controller->configureFields($autocompleteContext['originatingPage']))->getByProperty($autocompleteContext['propertyName']);
         /** @var \Closure|null $queryBuilderCallable */
@@ -480,7 +498,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
     public function renderFilters(AdminContext $context): KeyValueStore
     {
         $fields = FieldCollection::new($this->configureFields(Crud::PAGE_INDEX));
-        $this->container->get(EntityFactory::class)->processFields($context->getEntity(), $fields);
+        $this->container->get(FieldFactory::class)->processFields($context->getEntity(), $fields, Crud::PAGE_INDEX);
         $filters = $this->container->get(FilterFactory::class)->create($context->getCrud()->getFiltersConfig(), $context->getEntity()->getFields(), $context->getEntity());
 
         /** @var FormInterface&FiltersFormType $filtersForm */
@@ -555,6 +573,9 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         return $this->container->get(AdminContextProvider::class)->getContext();
     }
 
+    /**
+     * @param EntityDto<TEntity> $entityDto
+     */
     protected function ajaxEdit(EntityDto $entityDto, ?string $propertyName, bool $newValue): AfterCrudActionEvent
     {
         $field = $entityDto->getFields()->getByProperty($propertyName);
@@ -564,7 +585,9 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
         $this->container->get(EntityUpdater::class)->updateProperty($entityDto, $propertyName, $newValue);
 
-        $event = new BeforeEntityUpdatedEvent($entityDto->getInstance());
+        /** @var TEntity $entityInstance */
+        $entityInstance = $entityDto->getInstance();
+        $event = new BeforeEntityUpdatedEvent($entityInstance);
         $this->container->get('event_dispatcher')->dispatch($event);
         $entityInstance = $event->getEntityInstance();
 

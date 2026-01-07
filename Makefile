@@ -17,10 +17,14 @@ tests-coverage-view-in-browser: ## Open the generated HTML coverage in your defa
 	sensible-browser "file://$(shell php -r "echo sys_get_temp_dir();")/com.github.easycorp.easyadmin/tests/var/test/coverage/index.html"
 
 ## —— Linters —————————————————————————————————
-linter-code-syntax: ## Lint PHP code (in dry-run mode, does not edit files)
-	docker run --rm -it --pull always -w=/app -v $(shell pwd):/app oskarstark/php-cs-fixer-ga:latest --diff -vvv --dry-run --using-cache=no
+linter-cs-fixer: ## Lint PHP code (in dry-run mode, does not edit files)
+	docker run --rm -it --pull always -w=/app -v "$(shell pwd)":/app oskarstark/php-cs-fixer-ga:latest --diff -vvv --dry-run --using-cache=no
+linter-phpstan: ## Lint PHP code (does not edit files)
+	php vendor/bin/phpstan analyse
 linter-docs: ## Lint docs
-	docker run --rm -it --pull always -e DOCS_DIR='/docs' -v $(shell pwd)/doc:/docs oskarstark/doctor-rst:latest --short
+	docker run --rm -it --pull always -e DOCS_DIR='/docs' -v "$(shell pwd)"/doc:/docs oskarstark/doctor-rst:latest --short
+linter-twig: ## Lint Twig templates (does not edit files)
+	./vendor/bin/twig-cs-fixer lint templates/
 
 ## —— Development —————————————————————————————
 build: ## Initially build the package before development
@@ -31,4 +35,4 @@ build-assets: ## Rebuild assets after changes in JS or SCSS
 	yarn encore production
 	php ./src/Resources/bin/fix-assets-manifest-file.php
 
-checks-before-pr: linter-code-syntax linter-docs tests ## Runs tests and linters which are also run on PRs
+checks-before-pr: linter-cs-fixer linter-phpstan linter-docs linter-twig tests ## Runs tests and linters which are also run on PRs

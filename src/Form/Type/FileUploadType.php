@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type;
 
 use EasyCorp\Bundle\EasyAdminBundle\Form\DataTransformer\StringToFileTransformer;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Model\FileUploadState;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\DataMapperInterface;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -27,11 +28,10 @@ use Symfony\Component\Validator\Constraints\All;
  */
 class FileUploadType extends AbstractType implements DataMapperInterface
 {
-    private string $projectDir;
-
-    public function __construct(string $projectDir)
-    {
-        $this->projectDir = $projectDir;
+    public function __construct(
+        private readonly string $projectDir,
+        private readonly Filesystem $filesystem,
+    ) {
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -144,13 +144,18 @@ class FileUploadType extends AbstractType implements DataMapperInterface
                 $value .= \DIRECTORY_SEPARATOR;
             }
 
-            $isStreamWrapper = filter_var($value, \FILTER_VALIDATE_URL);
-            if (!$isStreamWrapper && !str_starts_with($value, $this->projectDir)) {
+            $isLocalFilesystem = false === filter_var($value, \FILTER_VALIDATE_URL);
+
+            if ($isLocalFilesystem && !str_starts_with($value, $this->projectDir)) {
                 $value = $this->projectDir.'/'.$value;
             }
 
-            if (!$isStreamWrapper && (!is_dir($value) || !is_writable($value))) {
-                throw new InvalidArgumentException(sprintf('Invalid upload directory "%s" it does not exist or is not writable.', $value));
+            if ($isLocalFilesystem && !is_dir($value)) {
+                $this->filesystem->mkdir($value);
+            }
+
+            if ($isLocalFilesystem && !is_writable($value)) {
+                throw new InvalidArgumentException(sprintf('The upload directory "%s" is not writable.', $value));
             }
 
             return $value;
@@ -196,8 +201,20 @@ class FileUploadType extends AbstractType implements DataMapperInterface
         return 'ea_fileupload';
     }
 
-    public function mapDataToForms($currentFiles, $forms): void
+    public function mapDataToForms(mixed $currentFiles, /* \Traversable */ $forms): void
     {
+        if (!$forms instanceof \Traversable) {
+            trigger_deprecation(
+                'easycorp/easyadmin-bundle',
+                '4.27.0',
+                'Argument "%s" for "%s" must be one of these types: %s. Passing type "%s" will cause an error in 5.0.0.',
+                '$forms',
+                __METHOD__,
+                '"Traversable"',
+                \gettype($forms)
+            );
+        }
+
         /** @var FormInterface $fileForm */
         $fileForm = current(iterator_to_array($forms));
         $fileForm->setData($currentFiles);

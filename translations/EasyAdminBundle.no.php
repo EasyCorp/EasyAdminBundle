@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Lagre og fortsett redigering',
         // 'save' => 'Lagre endringer',
         'save_and_continue' => 'Lagre og fortsett redigering',
+        'toggle_dropdown' => 'Bytt rullegardinmeny',
     ],
 
     'batch_action_modal' => [
@@ -84,6 +85,7 @@ return [
         'label.is_less_than_or_equal_to' => 'er mindre enn eller lik som',
         'label.is_between' => 'er mellom',
         'label.contains' => 'inneholder',
+        'label.contains_all' => 'inneholder alle',
         'label.not_contains' => 'inneholder ikke',
         'label.starts_with' => 'starter med',
         'label.ends_with' => 'ender med',

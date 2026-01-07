@@ -90,14 +90,14 @@ final class CrudTestFormAssertsTraitTest extends WebTestCase
         self::assertFormFieldNotExists($fieldName);
     }
 
-    public function formFields(): \Generator
+    public static function formFields(): \Generator
     {
         yield ['name'];
         yield ['slug'];
         yield ['active'];
     }
 
-    public function formUnknownFields(): \Generator
+    public static function formUnknownFields(): \Generator
     {
         yield ['id'];
         yield ['Technician'];
@@ -157,21 +157,21 @@ final class CrudTestFormAssertsTraitTest extends WebTestCase
         self::assertFormFieldNotHasLabel($fieldName, $fieldLabel);
     }
 
-    public function formFieldsLabels(): \Generator
+    public static function formFieldsLabels(): \Generator
     {
         yield ['name', 'Name'];
         yield ['slug', 'Slug'];
         yield ['active', 'Active'];
     }
 
-    public function formFieldsIncorrectLabels(): \Generator
+    public static function formFieldsIncorrectLabels(): \Generator
     {
         yield ['name', 'name'];
         yield ['slug', 'slug'];
         yield ['active', 'active'];
     }
 
-    public function formIncorrectFieldsWithLabels(): \Generator
+    public static function formIncorrectFieldsWithLabels(): \Generator
     {
         yield ['incorrect_field', 'Name'];
         yield ['incorrect_field', 'incorrect_value'];

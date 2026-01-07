@@ -4,14 +4,17 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Collection;
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Collection\CollectionInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionGroupDto;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
+ *
+ * @implements CollectionInterface<string, ActionDto|ActionGroupDto>
  */
 final class ActionCollection implements CollectionInterface
 {
     /**
-     * @param ActionDto[] $actions
+     * @param array<string, ActionDto|ActionGroupDto> $actions
      */
     private function __construct(private array $actions)
     {
@@ -25,7 +28,7 @@ final class ActionCollection implements CollectionInterface
     }
 
     /**
-     * @param ActionDto[] $actions
+     * @param array<string, ActionDto|ActionGroupDto> $actions
      */
     public static function new(array $actions): self
     {
@@ -33,14 +36,14 @@ final class ActionCollection implements CollectionInterface
     }
 
     /**
-     * @return ActionDto[]
+     * @return array<string, ActionDto|ActionGroupDto>
      */
     public function all(): array
     {
         return $this->actions;
     }
 
-    public function get(string $actionName): ?ActionDto
+    public function get(string $actionName): ActionDto|ActionGroupDto|null
     {
         return $this->actions[$actionName] ?? null;
     }
@@ -50,7 +53,7 @@ final class ActionCollection implements CollectionInterface
         return \array_key_exists($offset, $this->actions);
     }
 
-    public function offsetGet(mixed $offset): ActionDto
+    public function offsetGet(mixed $offset): ActionDto|ActionGroupDto
     {
         return $this->actions[$offset];
     }
@@ -71,7 +74,7 @@ final class ActionCollection implements CollectionInterface
     }
 
     /**
-     * @return \ArrayIterator<ActionDto>
+     * @return \ArrayIterator<string, ActionDto|ActionGroupDto>
      */
     public function getIterator(): \ArrayIterator
     {
@@ -82,7 +85,7 @@ final class ActionCollection implements CollectionInterface
     {
         return self::new(array_filter(
             $this->actions,
-            static fn (ActionDto $action): bool => $action->isEntityAction()
+            static fn (ActionDto|ActionGroupDto $action): bool => $action instanceof ActionDto && $action->isEntityAction()
         ));
     }
 
@@ -90,7 +93,7 @@ final class ActionCollection implements CollectionInterface
     {
         return self::new(array_filter(
             $this->actions,
-            static fn (ActionDto $action): bool => $action->isGlobalAction()
+            static fn (ActionDto|ActionGroupDto $action): bool => $action->isGlobalAction()
         ));
     }
 
@@ -98,7 +101,7 @@ final class ActionCollection implements CollectionInterface
     {
         return self::new(array_filter(
             $this->actions,
-            static fn (ActionDto $action): bool => $action->isBatchAction()
+            static fn (ActionDto|ActionGroupDto $action): bool => $action instanceof ActionDto && $action->isBatchAction()
         ));
     }
 }

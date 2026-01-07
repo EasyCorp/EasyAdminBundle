@@ -31,19 +31,19 @@ class ActionsCrudControllerTest extends AbstractCrudTestCase
         $this->categories = $this->entityManager->getRepository(Category::class);
     }
 
-    public function testCssClasses()
+    public function testCssClasses(): void
     {
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
-        static::assertSame('dropdown-item action-action1', $crawler->filter('a.dropdown-item:contains("Action1")')->attr('class'));
-        static::assertSame('dropdown-item foo', $crawler->filter('a.dropdown-item:contains("Action2")')->attr('class'));
-        static::assertSame('dropdown-item action-action3 bar', $crawler->filter('a.dropdown-item:contains("Action3")')->attr('class'));
-        static::assertSame('dropdown-item foo bar', $crawler->filter('a.dropdown-item:contains("Action4")')->attr('class'));
+        static::assertSame('dropdown-item action-action1 dropdown-item-variant-default', $crawler->filter('a.dropdown-item:contains("Action1")')->attr('class'));
+        static::assertSame('dropdown-item foo dropdown-item-variant-default', $crawler->filter('a.dropdown-item:contains("Action2")')->attr('class'));
+        static::assertSame('dropdown-item action-action3 bar dropdown-item-variant-default', $crawler->filter('a.dropdown-item:contains("Action3")')->attr('class'));
+        static::assertSame('dropdown-item foo bar dropdown-item-variant-default', $crawler->filter('a.dropdown-item:contains("Action4")')->attr('class'));
 
-        static::assertSame('action-new btn btn-primary', trim($crawler->filter('.global-actions > a')->first()->attr('class')));
+        static::assertSame('btn btn-primary  action-new', trim($crawler->filter('.global-actions > a')->first()->attr('class')));
     }
 
-    public function testDynamicLabels()
+    public function testDynamicLabels(): void
     {
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
@@ -53,12 +53,12 @@ class ActionsCrudControllerTest extends AbstractCrudTestCase
         static::assertSame('Reset', $crawler->filter('a.dropdown-item[data-action-name="action8"]')->text());
     }
 
-    public function testFormAction()
+    public function testFormAction(): void
     {
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
-        static::assertCount(1, $crawler->filter('form[id^="form-action9-"]'));
-        static::assertCount(1, $crawler->filter('form[id^="form-action9-"] > .btn'));
-        static::assertSame('POST', $crawler->filter('form[id^="form-action9-"]')->attr('method'));
+        static::assertCount(1, $crawler->filter('.global-actions form.action-action9'));
+        static::assertCount(1, $crawler->filter('.global-actions form.action-action9 button'));
+        static::assertSame('POST', $crawler->filter('.global-actions form.action-action9')->attr('method'));
     }
 }

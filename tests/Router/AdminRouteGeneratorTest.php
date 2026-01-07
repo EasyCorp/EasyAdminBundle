@@ -18,7 +18,7 @@ class AdminRouteGeneratorTest extends WebTestCase
     /**
      * @dataProvider provideFindRouteData
      */
-    public function testFindRoute(?string $dashboardControllerFqcn, ?string $crudControllerFqcn, ?string $action, ?string $expectedRouteName)
+    public function testFindRoute(?string $dashboardControllerFqcn, ?string $crudControllerFqcn, ?string $action, ?string $expectedRouteName): void
     {
         $client = static::createClient();
         $cacheMock = $this->getMockBuilder(CacheItemPoolInterface::class)->getMock();
@@ -70,7 +70,7 @@ class AdminRouteGeneratorTest extends WebTestCase
         $this->assertSame($expectedRouteName, $routeName);
     }
 
-    public function provideFindRouteData(): iterable
+    public static function provideFindRouteData(): iterable
     {
         yield [null, null, null, 'admin'];
         yield [DashboardController::class, null, null, 'admin'];

@@ -7,25 +7,20 @@ use function Symfony\Component\String\u;
 
 final class DashboardControllerRegistry implements DashboardControllerRegistryInterface
 {
-    private array $controllerFqcnToRouteMap = [];
-    private array $routeToControllerFqcnMap;
+    /** @var array<string, string>|null */
+    private ?array $controllerFqcnToRouteMap = null;
+    /** @var array<string, string>|null */
+    private ?array $routeToControllerFqcnMap = null;
 
     /**
      * @param string[] $controllerFqcnToContextIdMap
      * @param string[] $contextIdToControllerFqcnMap
      */
     public function __construct(
-        string $buildDir,
+        private readonly string $buildDir,
         private readonly array $controllerFqcnToContextIdMap,
         private readonly array $contextIdToControllerFqcnMap,
     ) {
-        $dashboardRoutesCachePath = $buildDir.'/'.CacheWarmer::DASHBOARD_ROUTES_CACHE;
-        $dashboardControllerRoutes = !file_exists($dashboardRoutesCachePath) ? [] : require $dashboardRoutesCachePath;
-        foreach ($dashboardControllerRoutes as $routeName => $controller) {
-            $this->controllerFqcnToRouteMap[u($controller)->before('::')->toString()] = $routeName;
-        }
-
-        $this->routeToControllerFqcnMap = array_flip($this->controllerFqcnToRouteMap);
     }
 
     public function getControllerFqcnByContextId(string $contextId): ?string
@@ -40,12 +35,12 @@ final class DashboardControllerRegistry implements DashboardControllerRegistryIn
 
     public function getControllerFqcnByRoute(string $routeName): ?string
     {
-        return $this->routeToControllerFqcnMap[$routeName] ?? null;
+        return $this->getRouteToControllerFqcnMap()[$routeName] ?? null;
     }
 
     public function getRouteByControllerFqcn(string $controllerFqcn): ?string
     {
-        return $this->controllerFqcnToRouteMap[$controllerFqcn] ?? null;
+        return $this->getControllerFqcnToRouteMap()[$controllerFqcn] ?? null;
     }
 
     public function getNumberOfDashboards(): int
@@ -55,12 +50,16 @@ final class DashboardControllerRegistry implements DashboardControllerRegistryIn
 
     public function getFirstDashboardRoute(): ?string
     {
-        return \count($this->controllerFqcnToRouteMap) < 1 ? null : $this->controllerFqcnToRouteMap[array_key_first($this->controllerFqcnToRouteMap)];
+        $map = $this->getControllerFqcnToRouteMap();
+
+        return \count($map) < 1 ? null : $map[array_key_first($map)];
     }
 
     public function getFirstDashboardFqcn(): ?string
     {
-        return \count($this->controllerFqcnToRouteMap) < 1 ? null : array_key_first($this->controllerFqcnToRouteMap);
+        $map = $this->getControllerFqcnToRouteMap();
+
+        return \count($map) < 1 ? null : array_key_first($map);
     }
 
     public function getAll(): array
@@ -75,5 +74,43 @@ final class DashboardControllerRegistry implements DashboardControllerRegistryIn
         }
 
         return $dashboards;
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private function getControllerFqcnToRouteMap(): array
+    {
+        if (null === $this->controllerFqcnToRouteMap) {
+            $this->loadDashboardRoutesCache();
+        }
+
+        return $this->controllerFqcnToRouteMap;
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private function getRouteToControllerFqcnMap(): array
+    {
+        if (null === $this->routeToControllerFqcnMap) {
+            $this->loadDashboardRoutesCache();
+        }
+
+        return $this->routeToControllerFqcnMap;
+    }
+
+    private function loadDashboardRoutesCache(): void
+    {
+        $this->controllerFqcnToRouteMap = [];
+
+        $dashboardRoutesCachePath = $this->buildDir.'/'.CacheWarmer::DASHBOARD_ROUTES_CACHE;
+        $dashboardControllerRoutes = file_exists($dashboardRoutesCachePath) ? require $dashboardRoutesCachePath : [];
+
+        foreach ($dashboardControllerRoutes as $routeName => $controller) {
+            $this->controllerFqcnToRouteMap[u($controller)->before('::')->toString()] = $routeName;
+        }
+
+        $this->routeToControllerFqcnMap = array_flip($this->controllerFqcnToRouteMap);
     }
 }

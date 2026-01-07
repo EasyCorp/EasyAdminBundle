@@ -27,14 +27,17 @@ final class MenuItemDto
     private string $cssClass = '';
     private string|Expression|null $permission = null;
     private ?string $routeName = null;
+    /** @var array<string, mixed>|null */
     private ?array $routeParameters = null;
     private ?string $linkUrl = null;
     private string $linkRel = '';
     private string $linkTarget = '_self';
+    /** @var array<string, mixed> */
     private array $translationParameters = [];
     private ?MenuItemBadgeDto $badge = null;
     /** @var MenuItemDto[] */
     private array $subItems = [];
+    /** @var array<string, mixed> */
     private array $htmlAttributes = [];
 
     public function getType(): string
@@ -145,6 +148,9 @@ final class MenuItemDto
         $this->routeName = $routeName;
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function getRouteParameters(): ?array
     {
         return $this->routeParameters;
@@ -155,6 +161,9 @@ final class MenuItemDto
         $this->routeParameters[$parameterName] = $parameterValue;
     }
 
+    /**
+     * @param array<string, mixed>|null $routeParameters
+     */
     public function setRouteParameters(?array $routeParameters): void
     {
         $this->routeParameters = $routeParameters;
@@ -200,11 +209,17 @@ final class MenuItemDto
         $this->linkTarget = $linkTarget;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getTranslationParameters(): array
     {
         return $this->translationParameters;
     }
 
+    /**
+     * @param array<string, mixed> $translationParameters
+     */
     public function setTranslationParameters(array $translationParameters): void
     {
         $this->translationParameters = $translationParameters;
@@ -215,6 +230,9 @@ final class MenuItemDto
         return $this->badge;
     }
 
+    /**
+     * @param array<string, mixed> $htmlAttributes
+     */
     public function setBadge(mixed $content, string $style, array $htmlAttributes = []): void
     {
         $this->badge = new MenuItemBadgeDto($content, trim($style), $htmlAttributes);
@@ -258,6 +276,9 @@ final class MenuItemDto
         return self::TYPE_SECTION === $this->type;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getHtmlAttributes(): array
     {
         return $this->htmlAttributes;

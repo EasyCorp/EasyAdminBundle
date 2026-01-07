@@ -1,0 +1,67 @@
+{# @var group \EasyCorp\Bundle\EasyAdminBundle\Dto\ActionGroupDto #}
+{# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
+{% set has_main_action = group.hasMainAction %}
+{% set main_action = group.mainAction %}
+
+<div class="btn-group action-group" {% for name, value in group.htmlAttributes %}{{ name }}="{{ (value.trans is defined ? value|trans : value)|e('html') }}" {% endfor %}>
+    {% if has_main_action %} {# render as a split button (main button with action + dropdown toggle) #}
+        <twig:ea:Button
+            variant="{{ group.variant }}"
+            htmlElement="{{ main_action.htmlElement }}"
+            class="{{ main_action.cssClass }} {{ main_action.addedCssClass }}"
+            href="{{ main_action.htmlElement.isLink ? main_action.linkUrl : null }}"
+            action="{{ main_action.htmlElement.isForm ? main_action.linkUrl : null }}"
+            method="{{ main_action.htmlElement.isForm ? 'POST' : null }}"
+            icon="{{ main_action.icon ?: group.icon }}"
+            htmlAttributes="{{ main_action.htmlAttributes|merge({'data-action-group-name-main-action': true, onclick: main_action.htmlElement.isButton ? 'window.location=\'' ~ main_action.linkUrl ~ '\'' : null})|filter((v) => v is not null) }}"
+        >
+            {% set main_action_label = main_action.label|trans %}
+            {%- if main_action_label is not same as(false) -%}{{ main_action_label|raw }}{%- endif -%}
+        </twig:ea:Button>
+
+        <twig:ea:Button
+                variant="{{ group.variant }}"
+                htmlElement="button"
+                type="button"
+                class="{{ main_action.cssClass }} {{ main_action.addedCssClass }} dropdown-toggle dropdown-toggle-split"
+                htmlAttributes="{{ {'data-bs-toggle': 'dropdown', 'aria-expanded': 'false'} }}"
+                label:class="visually-hidden"
+        >
+            {{ 'action.toggle_dropdown'|trans(domain: 'EasyAdminBundle') }}
+        </twig:ea:Button>
+    {% else %} {# render as a single button that toggles the dropdown (no main action) #}
+        <twig:ea:Button
+            variant="{{ group.variant }}"
+            class="{{ group.cssClass }} {{ group.addedCssClass }} dropdown-toggle"
+            htmlElement="button"
+            type="button"
+            icon="{{ group.icon }}"
+            htmlAttributes="{{ {'data-bs-toggle': 'dropdown', 'aria-expanded': 'false'} }}"
+        >
+            {% set group_label = group.label|trans %}
+            {%- if group_label is not same as(false) -%}{{ group_label|raw }}{%- endif -%}
+        </twig:ea:Button>
+    {% endif %}
+
+    <twig:ea:ActionMenu:ActionList class="dropdown-menu">
+        {% for item in group.items %}
+            {% if item is iterable and item.type is defined %}
+                {% if item.type == 'divider' %}
+                    <twig:ea:ActionMenu:ActionList:Divider />
+                {% elseif item.type == 'header' %}
+                    {% set item_label = item.content|trans %}
+                    <twig:ea:ActionMenu:ActionList:Header label="{{ item_label }}" renderLabelRaw="true" />
+                {% endif %}
+            {% else %}
+                {# item is an ActionDto #}
+                <twig:ea:ActionMenu:ActionList:Item
+                    label="{{ item.label|trans }}" icon="{{ item.icon }}" class="{{ item.cssClass }} dropdown-item-variant-{{ item.variant.value }}"
+                    htmlAttributes="{{ item.htmlAttributes }}"
+                    renderAsForm="{{ item.isRenderedAsForm }}"
+                    url="{{ item.linkUrl }}" renderLabelRaw="true"
+                    showBlankIcons="{{ group.hasAnyActionWithIcon }}"
+                />
+            {% endif %}
+        {% endfor %}
+    </twig:ea:ActionMenu:ActionList>
+</div>

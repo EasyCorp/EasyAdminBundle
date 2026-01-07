@@ -45,7 +45,7 @@ $configuration = [
     ],
 ];
 
-if (Kernel::MAJOR_VERSION >= 7) {
+if (Kernel::MAJOR_VERSION >= 6) {
     unset($configuration['enable_authenticator_manager']);
 }
 

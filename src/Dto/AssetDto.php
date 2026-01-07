@@ -8,9 +8,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class AssetDto
+final class AssetDto implements \Stringable
 {
-    private string $value;
     // the Symfony Asset package name which this asset belongs to
     private ?string $packageName = null;
     private bool $async = false;
@@ -19,12 +18,12 @@ final class AssetDto
     private bool $nopush = false;
     private ?string $webpackPackageName = null;
     private string $webpackEntrypointName = '_default';
+    /** @var array<string, string> */
     private array $htmlAttributes = [];
     private KeyValueStore $loadedOn;
 
-    public function __construct(string $value)
+    public function __construct(private readonly string $value)
     {
-        $this->value = $value;
         $this->loadedOn = KeyValueStore::new([
             Crud::PAGE_INDEX => Crud::PAGE_INDEX,
             Crud::PAGE_DETAIL => Crud::PAGE_DETAIL,
@@ -118,6 +117,9 @@ final class AssetDto
         $this->htmlAttributes[$attrName] = $attrValue;
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function getHtmlAttributes(): array
     {
         return $this->htmlAttributes;

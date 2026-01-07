@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Креирај и продолжи со уредување',
         'save' => 'Зачувај ги промените',
         'save_and_continue' => 'Зачувај и продолжи со уредување',
+        'toggle_dropdown' => 'Префрли паѓачко мени',
     ],
 
     'batch_action_modal' => [
@@ -84,6 +85,7 @@ return [
         'label.is_less_than_or_equal_to' => 'е помало или еднакво со',
         'label.is_between' => 'е помеѓу',
         'label.contains' => 'содржи',
+        'label.contains_all' => 'содржи сè',
         'label.not_contains' => 'не содржи',
         'label.starts_with' => 'започнува со',
         'label.ends_with' => 'завршува со',

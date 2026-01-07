@@ -14,7 +14,7 @@ class NumericFilterTypeTest extends FilterTypeTest
     /**
      * @dataProvider getDataProvider
      */
-    public function testSubmitAndFilter($submittedData, $data, $options, string $dql, array $params, string $expectedError = '')
+    public function testSubmitAndFilter($submittedData, $data, $options, string $dql, array $params, string $expectedError = ''): void
     {
         $form = $this->factory->create(static::FILTER_TYPE, null, $options);
         $form->submit($submittedData);

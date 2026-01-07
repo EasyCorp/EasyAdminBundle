@@ -5,55 +5,55 @@
 /* ------------------------------------------------------------------------- */
 
 .ea-detail .field-form_panel {
-  padding-block-end: 35px;
+    padding-block-end: 35px;
 }
 .ea-detail .form-panel-header {
-  box-shadow: none;
+    box-shadow: none;
 }
 
 dl.datalist {
-  margin-block-end: 0;
+    margin-block-end: 0;
 }
 dl.datalist .data-row {
-  box-shadow: inset 0 -1px var(--datalist-border-color);
-  display: grid;
-  grid-template-columns: 180px 1fr;
-  padding: 8px;
+    box-shadow: inset 0 -1px var(--datalist-border-color);
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    padding: 8px;
 }
 dl.datalist .data-row:first-child {
-  box-shadow: inset 0 -1px var(--datalist-border-color), inset 0 1px var(--datalist-border-color);
+    box-shadow: inset 0 -1px var(--datalist-border-color), inset 0 1px var(--datalist-border-color);
 }
 
 dl.datalist dt {
-  color: var(--datalist-label-color);
-  font-weight: 400;
-  margin-block-end: 0;
-  padding-inline-end: 10px;
+    color: var(--datalist-label-color);
+    font-weight: 400;
+    margin-block-end: 0;
+    padding-inline-end: 10px;
 }
 
 dl.datalist dd {
-  color: var(--datalist-value-color);
-  margin-block-end: 0;
-  overflow: auto;
+    color: var(--datalist-value-color);
+    margin-block-end: 0;
+    overflow: auto;
 }
 
 dl.datalist .data-help {
-  color: var(--gray-600);
-  font-size: var(--font-size-sm);
-  margin: 15px 0 0;
+    color: var(--gray-600);
+    font-size: var(--font-size-sm);
+    margin: 15px 0 0;
 }
 dl.datalist .data-help i {
-  color: var(--datalist-label-color);
+    color: var(--datalist-label-color);
 }
 
 .field-code_editor pre {
-  color: inherit;
-  font-family: var(--font-family-monospace);
-  font-size: var(--font-size-sm);
-  line-height: 1.6;
-  white-space: pre-wrap;
+    color: inherit;
+    font-family: var(--font-family-monospace);
+    font-size: var(--font-size-sm);
+    line-height: 1.6;
+    white-space: pre-wrap;
 }
 .field-textarea dd,
 .field-text_editor dd {
-  max-inline-size: 80ch;
+    max-inline-size: 80ch;
 }

@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Erstellen a weider beaarbechten',
         'save' => 'Späicheren',
         'save_and_continue' => 'Späicheren a weider beaarbechten',
+        'toggle_dropdown' => 'Dropdown-Menü ëmschalten',
     ],
 
     'batch_action_modal' => [
@@ -84,6 +85,7 @@ return [
         'label.is_less_than_or_equal_to' => 'ass méi kleng wéi oder gläich',
         'label.is_between' => 'ass tëscht',
         'label.contains' => 'enthält',
+        'label.contains_all' => 'enthält alles',
         'label.not_contains' => 'enthält net',
         'label.starts_with' => 'fänkt u mat',
         'label.ends_with' => 'hält op mat',

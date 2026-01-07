@@ -15,6 +15,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 
+/**
+ * @extends AbstractCrudController<BlogArticle>
+ */
 #[AdminCrud(routePath: '/blog-article')]
 class BlogArticleCrudController extends AbstractCrudController
 {

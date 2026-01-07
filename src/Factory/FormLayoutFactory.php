@@ -17,7 +17,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabPaneCloseType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabPaneGroupCloseType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabPaneGroupOpenType;
 use Symfony\Component\String\Slugger\AsciiSlugger;
+use Symfony\Component\Translation\TranslatableMessage;
 use Symfony\Component\Uid\Ulid;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -26,7 +28,7 @@ use Symfony\Component\Uid\Ulid;
  */
 final class FormLayoutFactory
 {
-    public function __construct()
+    public function __construct(private readonly TranslatorInterface $translator)
     {
     }
 
@@ -181,7 +183,9 @@ final class FormLayoutFactory
 
             if ($fieldDto->isFormTab()) {
                 $isTabActive = 0 === \count($tabs);
-                $tabId = sprintf('tab-%s', $fieldDto->getLabel() ? $slugger->slug(strip_tags($fieldDto->getLabel()))->lower()->toString() : ++$tabsWithoutLabelCounter);
+                $label = $fieldDto->getLabel() instanceof TranslatableMessage ? $this->translator->trans($fieldDto->getLabel()->getMessage()) : $fieldDto->getLabel();
+                $label = null !== $label ? strip_tags($label) : $label;
+                $tabId = sprintf('tab-%s', $fieldDto->getLabel() ? $slugger->slug($label)->lower()->toString() : ++$tabsWithoutLabelCounter);
                 $fieldDto->setCustomOption(FormField::OPTION_TAB_ID, $tabId);
                 $fieldDto->setCustomOption(FormField::OPTION_TAB_IS_ACTIVE, $isTabActive);
 
@@ -343,6 +347,9 @@ final class FormLayoutFactory
             ->getAsDto();
     }
 
+    /**
+     * @param array<string, FieldDto> $tabs
+     */
     private function createTabListField(array $tabs): FieldDto
     {
         return Field::new('ea_form_tablist')

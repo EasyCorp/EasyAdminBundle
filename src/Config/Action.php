@@ -3,13 +3,17 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Config;
 
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
-use function Symfony\Component\String\u;
+use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\ButtonElement;
+use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\ButtonStyle;
+use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\ButtonType;
+use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\ButtonVariant;
 use Symfony\Contracts\Translation\TranslatableInterface;
+use function Symfony\Component\String\u;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class Action
+final class Action implements \Stringable
 {
     public const BATCH_DELETE = 'batchDelete';
     public const DELETE = 'delete';
@@ -29,11 +33,8 @@ final class Action
     // these are actions that can be applied to one or more entities at the same time
     public const TYPE_BATCH = 'batch';
 
-    private ActionDto $dto;
-
-    private function __construct(ActionDto $actionDto)
+    private function __construct(private readonly ActionDto $dto)
     {
-        $this->dto = $actionDto;
     }
 
     public function __toString()
@@ -42,8 +43,8 @@ final class Action
     }
 
     /**
-     * @param TranslatableInterface|string|(callable(object $entity): string)|false|null $label Use FALSE to hide the label; use NULL to autogenerate it
-     * @param string|null                                                                $icon  The full CSS classes of the FontAwesome icon to render (see https://fontawesome.com/v6/search?m=free)
+     * @param TranslatableInterface|string|callable|false|null $label Use FALSE to hide the label; use NULL to autogenerate it
+     * @param string|null                                      $icon  The full CSS classes of the FontAwesome icon to render (see https://fontawesome.com/v6/search?m=free)
      */
     public static function new(string $name, $label = null, ?string $icon = null): self
     {
@@ -68,7 +69,7 @@ final class Action
         $dto->setName($name);
         $dto->setLabel($label ?? self::humanizeString($name));
         $dto->setIcon($icon);
-        $dto->setHtmlElement('a');
+        $dto->setHtmlElement(ButtonElement::A);
         $dto->setHtmlAttributes([]);
         $dto->setTranslationParameters([]);
 
@@ -90,7 +91,7 @@ final class Action
     }
 
     /**
-     * @param TranslatableInterface|string|(callable(object $entity): string)|false|null $label Use FALSE to hide the label; use NULL to autogenerate it
+     * @param TranslatableInterface|string|callable|false|null $label Use FALSE to hide the label; use NULL to autogenerate it
      */
     public function setLabel($label): self
     {
@@ -146,25 +147,89 @@ final class Action
 
     public function displayAsLink(): self
     {
-        $this->dto->setHtmlElement('a');
+        @trigger_deprecation(
+            'easycorp/easyadmin-bundle',
+            '4.26.0',
+            'The "%s()" method is deprecated and will be removed in 5.0.0. Use "%s()" instead.',
+            __METHOD__,
+            'renderAsLink()'
+        );
+
+        return $this->renderAsLink();
+    }
+
+    /**
+     * This makes the button element to be `<a ...>` instead of `<button ...>` when rendering the action.
+     * Visually, the action will look exactly the same as a button.
+     */
+    public function renderAsLink(bool $renderAsLink = true): self
+    {
+        if ($renderAsLink) {
+            $this->dto->setHtmlElement(ButtonElement::A);
+        }
 
         return $this;
     }
 
     public function displayAsButton(): self
     {
+        @trigger_deprecation(
+            'easycorp/easyadmin-bundle',
+            '4.26.0',
+            'The "%s()" method is deprecated and will be removed in 5.0.0. Use "%s()" instead.',
+            __METHOD__,
+            'renderAsButton()'
+        );
+
+        return $this->renderAsButton();
+    }
+
+    /**
+     * By default, actions are rendered as `<button type="submit" ...>` elements. This
+     * method allows to change it and use a `<button type="button" ...>` element.
+     */
+    public function renderAsButton(ButtonType|string $buttonType = ButtonType::Submit): self
+    {
         $this->dto->setHtmlElement('button');
+
+        if (\is_string($buttonType)) {
+            $buttonType = ButtonType::tryFrom($buttonType) ?? throw new \InvalidArgumentException(sprintf('Invalid button type "%s". Valid values are: %s', $buttonType, implode(', ', array_column(ButtonType::cases(), 'value'))));
+        }
+        $this->dto->setButtonType($buttonType);
 
         return $this;
     }
 
     public function displayAsForm(): self
     {
-        $this->dto->setHtmlElement('form');
+        @trigger_deprecation(
+            'easycorp/easyadmin-bundle',
+            '4.26.0',
+            'The "%s()" method is deprecated and will be removed in 5.0.0. Use "%s()" instead.',
+            __METHOD__,
+            'renderAsForm()'
+        );
+
+        return $this->renderAsForm();
+    }
+
+    /**
+     * This makes the action to be rendered as a `<form method="post" ...>` element to
+     * use the POST HTTP method when the action is triggered. Visually, the action will
+     * look exactly the same as a regular button.
+     */
+    public function renderAsForm(bool $renderAsForm = true): self
+    {
+        if ($renderAsForm) {
+            $this->dto->setHtmlElement('form');
+        }
 
         return $this;
     }
 
+    /**
+     * @param array<string, string> $attributes
+     */
     public function setHtmlAttributes(array $attributes): self
     {
         $this->dto->setHtmlAttributes($attributes);
@@ -187,7 +252,7 @@ final class Action
     }
 
     /**
-     * @param array|callable $routeParameters The callable has the signature: function ($entity): array
+     * @param array<string, mixed>|callable $routeParameters The callable has the signature: function ($entity): array
      *
      * Route parameters can be defined as a callable with the signature: function ($entityInstance): array
      * Example: ->linkToRoute('invoice_send', fn (Invoice $entity) => ['uuid' => $entity->getId()]);
@@ -222,6 +287,9 @@ final class Action
         return $this;
     }
 
+    /**
+     * @param array<string, mixed> $parameters
+     */
     public function setTranslationParameters(array $parameters): self
     {
         $this->dto->setTranslationParameters($parameters);
@@ -232,6 +300,87 @@ final class Action
     public function displayIf(callable $callable): self
     {
         $this->dto->setDisplayCallable($callable);
+
+        return $this;
+    }
+
+    /**
+     * By default, actions are rendered as `btn-secondary` buttons. This method applies
+     * the same behavior, so you don't need to call it when creating custom actions.
+     * It's mainly used internally when cloning existing action properties.
+     */
+    public function asDefaultAction(bool $asDefaultAction = true): self
+    {
+        if ($asDefaultAction) {
+            $this->dto->setVariant(ButtonVariant::Default);
+        }
+
+        return $this;
+    }
+
+    /**
+     * By default, actions are rendered as `btn-secondary` buttons. This method makes
+     * the action to be rendered as a `btn-primary` button to stand out more in the UI.
+     */
+    public function asPrimaryAction(bool $asPrimaryAction = true): self
+    {
+        if ($asPrimaryAction) {
+            $this->dto->setVariant(ButtonVariant::Primary);
+        }
+
+        return $this;
+    }
+
+    /**
+     * By default, actions are rendered as `btn-secondary` buttons. This method makes
+     * the action to be rendered as a `btn-success` button with green text.
+     */
+    public function asSuccessAction(bool $asSuccessAction = true): self
+    {
+        if ($asSuccessAction) {
+            $this->dto->setVariant(ButtonVariant::Success);
+        }
+
+        return $this;
+    }
+
+    /**
+     * By default, actions are rendered as `btn-secondary` buttons. This method makes
+     * the action to be rendered as a `btn-warning` button with yellow text.
+     */
+    public function asWarningAction(bool $asWarningAction = true): self
+    {
+        if ($asWarningAction) {
+            $this->dto->setVariant(ButtonVariant::Warning);
+        }
+
+        return $this;
+    }
+
+    /**
+     * By default, actions are rendered as `btn-secondary` buttons. This method makes
+     * the action to be rendered as a `btn-danger` button with red text. Use it for
+     * destructive actions like 'delete'.
+     */
+    public function asDangerAction(bool $asDangerAction = true): self
+    {
+        if ($asDangerAction) {
+            $this->dto->setVariant(ButtonVariant::Danger);
+        }
+
+        return $this;
+    }
+
+    /**
+     * By default, actions are rendered as solid buttons. This method makes
+     * the action to be rendered as a simple text link without button background
+     * (the background is shown when hovering the action link).
+     */
+    public function asTextLink(bool $asTextLink = true): self
+    {
+        if ($asTextLink) {
+            $this->dto->setStyle(ButtonStyle::Text);
+        }
 
         return $this;
     }

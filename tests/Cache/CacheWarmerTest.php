@@ -13,8 +13,8 @@ use Symfony\Component\Routing\RouterInterface;
 
 class CacheWarmerTest extends TestCase
 {
-    private $cacheDirectory;
-    private $dashboardRoutesCacheFile;
+    private string $cacheDirectory;
+    private string $dashboardRoutesCacheFile;
 
     protected function setUp(): void
     {
@@ -31,7 +31,7 @@ class CacheWarmerTest extends TestCase
         (new Filesystem())->remove($this->cacheDirectory);
     }
 
-    public function testWarmUpWithNoRoutes()
+    public function testWarmUpWithNoRoutes(): void
     {
         $router = $this->getMockBuilder(RouterInterface::class)->getMock();
         $router->method('getRouteCollection')->willReturn(Kernel::MAJOR_VERSION >= 7 ? new RouteCollection() : []);
@@ -42,7 +42,7 @@ class CacheWarmerTest extends TestCase
         $this->assertCachedRoutesEqual([]);
     }
 
-    public function testWarmUp()
+    public function testWarmUp(): void
     {
         $routesDefinition = [
             'admin1' => new Route('/admin1', ['_controller' => TestingDashboardController::class.'::index']),
@@ -75,7 +75,7 @@ class CacheWarmerTest extends TestCase
         ]);
     }
 
-    private function assertCachedRoutesEqual(array $expectedCachedRoutes)
+    private function assertCachedRoutesEqual(array $expectedCachedRoutes): void
     {
         $this->assertStringEqualsFile($this->dashboardRoutesCacheFile, '<?php return '.var_export($expectedCachedRoutes, true).';');
     }

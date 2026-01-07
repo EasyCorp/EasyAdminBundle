@@ -50,7 +50,7 @@ class EasyAdminExtension extends Extension implements PrependExtensionInterface
 
         $container->registerForAutoconfiguration(ActionsExtensionInterface::class)
             ->addTag(self::TAG_ACTIONS_EXTENSION);
-        
+
         $container->registerForAutoconfiguration(FilterInterface::class)
             ->setAbstract(true)
             ->addTag('container.excluded');

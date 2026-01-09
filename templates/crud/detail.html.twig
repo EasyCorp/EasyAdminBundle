@@ -75,7 +75,7 @@
         {% else %}
             <div class="field-label">
                 {%- set label_html_attributes -%}
-                    {%- if field.help is not empty -%}
+                    {%- if field.help -%}
                         data-bs-toggle="tooltip" data-bs-placement="auto" data-bs-animation="false"
                         data-bs-html="true" data-bs-custom-class="ea-detail-label-tooltip"
                         data-bs-title="{{ field.help|trans|e('html') }}"
@@ -224,7 +224,7 @@
     <div class="form-fieldset {{ not fieldset_has_header ? 'form-fieldset-no-header' }} {{ field.cssClass }}">
         <fieldset>
             {% if fieldset_has_header %}
-                <div class="form-fieldset-header {{ is_collapsible ? 'collapsible' }} {{ field.help is not empty ? 'with-help' }}">
+                <div class="form-fieldset-header {{ is_collapsible ? 'collapsible' }} {{ field.help ? 'with-help' }}">
                     <div class="form-fieldset-title">
                         {% set fieldset_title_contents %}
                             {% if is_collapsible %}
@@ -394,7 +394,7 @@
         <dt>
             {{ field.label|trans|raw }}
 
-            {% if field.help is not empty %}
+            {% if field.help %}
                 <a tabindex="0" class="data-help" data-bs-toggle="popover" data-bs-custom-class="ea-content-help-popover" data-bs-animation="true" data-bs-html="true" data-bs-placement="right" data-bs-trigger="focus" data-bs-content="{{ field.help|trans|e('html') }}">
                     <twig:ea:Icon name="internal:circle-info" />
                 </a>

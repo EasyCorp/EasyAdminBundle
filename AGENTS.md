@@ -154,6 +154,8 @@ make checks-before-pr
 3. Method order: public, protected, private
 
 ### Code Practices
+- Don't add `declare(strict_types=1);` to PHP files
+- Use enums (use `UpperCamelCase` for case names) instead of constants for fixed sets of values
 - Avoid `else`/`elseif` after return/throw
 - Use `sprintf()` for exception messages with `get_debug_type()` for class names
 - Exception messages: capital letter start, period end, no backticks

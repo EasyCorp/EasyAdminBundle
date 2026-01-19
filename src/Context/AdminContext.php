@@ -29,6 +29,10 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * IMPORTANT: any new methods added here MUST be duplicated in the AdminContextProvider class.
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
+ *
+ * @template TEntity of object
+ *
+ * @implements AdminContextInterface<TEntity>
  */
 final class AdminContext implements AdminContextInterface
 {

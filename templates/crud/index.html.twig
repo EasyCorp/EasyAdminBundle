@@ -117,7 +117,7 @@
                         {% set next_sort_direction = is_sorting_field ? (ea.search.sortDirection(field.property) == ea_sort_desc ? ea_sort_asc : ea_sort_desc) : ea_sort_desc %}
                         {% set column_icon = is_sorting_field ? (next_sort_direction == ea_sort_desc ? 'internal:sort-arrow-up' : 'internal:sort-arrow-down') : 'internal:sort-arrows' %}
 
-                        <th data-column="{{ field.property }}" class="{{ is_searchable ? 'searchable' }} {{ is_sorting_field ? 'sorted' }} {{ field.isVirtual ? 'field-virtual' }} header-for-{{ field.cssClass|split(' ')|filter(class => class starts with 'field-')|join('') }} text-{{ field.textAlign }}" dir="{{ ea.i18n.textDirection }}">
+                        <th data-column="{{ field.property }}" class="{{ field.cssClass }} {{ is_searchable ? 'searchable' }} {{ is_sorting_field ? 'sorted' }} {{ field.isVirtual ? 'field-virtual' }} header-for-{{ field.cssClass|split(' ')|filter(class => class starts with 'field-')|join('') }} text-{{ field.textAlign }}" dir="{{ ea.i18n.textDirection }}">
                             {% if field.isSortable %}
                                 {% set sortable_url = ea_url().set('page', 1).set('sort', {(field.property): next_sort_direction}) %}
                                 {% if ea.usePrettyUrls %}
@@ -144,6 +144,7 @@
         <tbody>
         {% block table_body %}
             {% for entity in entities %}
+                {% block table_body_row %}
                 {% if entity.isAccessible %}
                     <tr data-id="{{ entity.primaryKeyValueAsString }}" {% block entity_row_attributes %}{% endblock %}>
                         {% if has_batch_actions %}
@@ -208,6 +209,7 @@
                     </tr>
 
                 {% endif %}
+                {% endblock table_body_row %}
             {% else %}
                 {% block table_body_empty %}
                     {% for i in 1..14 %}

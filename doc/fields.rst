@@ -853,8 +853,9 @@ Design Options
         // you can add more than one form theme using the same method
         ->addFormTheme('theme1.html.twig', 'theme2.html.twig', 'theme3.html.twig')
 
-        // CSS class/classes are applied to the field contents (in the 'index' page)
-        // or to the row that wraps the contents (in the 'detail', 'edit' and 'new' pages)
+        // on the 'index' page, CSS class/classes are applied both to the `<th>` and the `<td>`
+        // of the field in all rows; on the 'detail', 'edit', and 'new' pages, they are applied
+        // to the row that wraps the contents of the field
 
         // use this method to add new classes to the ones applied by EasyAdmin
         ->addCssClass('text-large text-bold')

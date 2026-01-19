@@ -11,10 +11,14 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
  */
 interface FieldConfiguratorInterface
 {
+    /**
+     * @param EntityDto<object> $entityDto
+     */
     public function supports(FieldDto $field, EntityDto $entityDto): bool;
 
     /**
-     * @param AdminContext $context This will change to AdminContextInterface in the next major version
+     * @param EntityDto<object>    $entityDto
+     * @param AdminContext<object> $context   This will change to AdminContextInterface in the next major version
      */
     public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void;
 }

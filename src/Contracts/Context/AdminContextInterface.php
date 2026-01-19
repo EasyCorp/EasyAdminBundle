@@ -14,6 +14,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Registry\CrudControllerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\User\UserInterface;
 
+/**
+ * @template TEntity of object
+ */
 interface AdminContextInterface
 {
     public function getRequest(): Request;
@@ -27,6 +30,9 @@ interface AdminContextInterface
 
     public function getCrudControllers(): CrudControllerRegistry;
 
+    /**
+     * @return EntityDto<TEntity>
+     */
     public function getEntity(): EntityDto;
 
     public function getUser(): ?UserInterface;

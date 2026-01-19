@@ -40,7 +40,7 @@ class CategoryCrudController extends AbstractCrudController
     {
         return [
             IdField::new('id')->hideOnForm(),
-            TextField::new('name'),
+            TextField::new('name')->setCssClass('field-custom-css-class'),
             TextField::new('slug'),
             BooleanField::new('active'),
             BooleanField::new('activeWithNoPermission')->setPermission('ROLE_FOO'),

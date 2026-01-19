@@ -15,7 +15,7 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  *
- * @template TEntity of object = object
+ * @template TEntity of object
  */
 final class EntityDto implements \Stringable
 {

@@ -45,6 +45,16 @@ class CategoryCrudControllerTest extends AbstractCrudTestCase
         static::assertCount(1, $crawler->filter('body > span[data-added-from-controller]'));
     }
 
+    public function testCssClassAppliedToTableHeaderAndCell(): void
+    {
+        $crawler = $this->client->request('GET', $this->generateIndexUrl());
+
+        // the CSS class should be applied to the table header (<th>)
+        static::assertCount(1, $crawler->filter('th.field-custom-css-class'));
+        // the CSS class should also be applied to the table cells (<td>) of all rows
+        static::assertCount(20, $crawler->filter('td.field-custom-css-class'));
+    }
+
     /**
      * @dataProvider new
      */

@@ -42,10 +42,13 @@ class Autogrow {
         this.mirror.style.left = '-9999px';
         this.mirror.style.visibility = 'hidden';
         this.mirror.style.pointerEvents = 'none';
-        this.mirror.style.height = '0';
-        this.mirror.style.minHeight = '0';
         this.mirror.tabIndex = -1;
         this.mirror.setAttribute('aria-hidden', 'true');
+
+        // copy the rows attribute to ensure minimum height is respected
+        if (this.field.hasAttribute('rows')) {
+            this.mirror.setAttribute('rows', this.field.getAttribute('rows'));
+        }
 
         // copy computed styles that affect text layout
         const styles = window.getComputedStyle(this.field);

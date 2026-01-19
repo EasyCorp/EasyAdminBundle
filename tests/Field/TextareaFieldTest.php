@@ -142,4 +142,84 @@ class TextareaFieldTest extends AbstractFieldTest
 
         self::assertSame($longText, $fieldDto->getFormattedValue());
     }
+
+    public function testHtmlEntitiesAreEscapedOnlyOnce(): void
+    {
+        $textWithSpecialChars = '<tag> & "quotes"';
+        $field = TextareaField::new('foo');
+        $field->setValue($textWithSpecialChars);
+        $fieldDto = $this->configure($field);
+
+        // when renderAsHtml is false (default), special chars should be escaped once;
+        // the formatted value should contain HTML entities like &lt; and &gt;
+        self::assertStringContainsString('&lt;', $fieldDto->getFormattedValue());
+        self::assertStringContainsString('&gt;', $fieldDto->getFormattedValue());
+        self::assertStringContainsString('&amp;', $fieldDto->getFormattedValue());
+
+        // but it should not be double-escaped (no &amp;lt;)
+        self::assertStringNotContainsString('&amp;lt;', $fieldDto->getFormattedValue());
+        self::assertStringNotContainsString('&amp;gt;', $fieldDto->getFormattedValue());
+    }
+
+    /**
+     * @dataProvider providePageConfigurations
+     */
+    public function testTemplateDoesNotDoubleEscape(string $pageName, string $actionName): void
+    {
+        $textWithSpecialChars = '<tag> & "quotes"';
+        $field = TextareaField::new('foo');
+        $field->setValue($textWithSpecialChars);
+        $fieldDto = $this->configure($field, $pageName, 'en', $actionName);
+
+        $html = $this->renderFieldTemplate($fieldDto, $this->entityDto, $this->adminContext);
+
+        // the rendered HTML should contain escaped entities once
+        self::assertStringContainsString('&lt;', $html, 'Template should contain &lt; (escaped <)');
+        self::assertStringContainsString('&gt;', $html, 'Template should contain &gt; (escaped >)');
+        self::assertStringContainsString('&amp;', $html, 'Template should contain &amp; (escaped &)');
+
+        // but should NOT contain double-escaped entities
+        self::assertStringNotContainsString('&amp;lt;', $html, 'Template should NOT contain &amp;lt; (double-escaped <)');
+        self::assertStringNotContainsString('&amp;gt;', $html, 'Template should NOT contain &amp;gt; (double-escaped >)');
+        self::assertStringNotContainsString('&amp;amp;', $html, 'Template should NOT contain &amp;amp; (double-escaped &)');
+    }
+
+    public static function providePageConfigurations(): \Generator
+    {
+        yield 'index page' => [Crud::PAGE_INDEX, Action::INDEX];
+        yield 'detail page' => [Crud::PAGE_DETAIL, Action::DETAIL];
+    }
+
+    public function testTemplatePreservesLineBreaksOnDetailPage(): void
+    {
+        $textWithLineBreaks = "Line 1\nLine 2\nLine 3";
+        $field = TextareaField::new('foo');
+        $field->setValue($textWithLineBreaks);
+        $fieldDto = $this->configure($field, Crud::PAGE_DETAIL, 'en', Action::DETAIL);
+
+        $html = $this->renderFieldTemplate($fieldDto, $this->entityDto, $this->adminContext);
+
+        // line breaks should be converted to <br> tags on detail page
+        self::assertSame(2, substr_count($html, '<br'), 'Template should convert 2 line breaks to 2 <br> tags on detail page');
+    }
+
+    public function testTemplateRendersHtmlWhenRenderAsHtmlIsEnabled(): void
+    {
+        $htmlContent = '<p>Paragraph 1</p><p>Paragraph 2</p>';
+        $field = TextareaField::new('foo');
+        $field->setValue($htmlContent);
+        $field->renderAsHtml();
+        $fieldDto = $this->configure($field);
+
+        $html = $this->renderFieldTemplate($fieldDto, $this->entityDto, $this->adminContext);
+
+        // when renderAsHtml is true, HTML tags should be preserved in the span content
+        self::assertStringContainsString('<p>Paragraph 1</p>', $html, 'Template should preserve HTML tags when renderAsHtml is enabled');
+        self::assertStringContainsString('<p>Paragraph 2</p>', $html, 'Template should preserve HTML tags when renderAsHtml is enabled');
+
+        // the title attribute will always be escaped (which is correct for security),
+        // but the span content should have the raw HTML
+        // to verify this, we check that the closing span comes after the paragraphs
+        self::assertMatchesRegularExpression('/<p>Paragraph 1<\/p><p>Paragraph 2<\/p>.*<\/span>/s', $html, 'HTML content should be rendered inside the span');
+    }
 }

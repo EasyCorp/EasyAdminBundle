@@ -255,9 +255,10 @@ final class FieldFactory
             $newField->setFormType($fieldDto->getFormType());
         }
 
-        // don't copy the template name and path from the original Field class
-        // (because they are 'crud/field/text' and '@EasyAdmin/crud/field/text.html.twig')
-        // and use the template name/path from the new specific field (e.g. 'crud/field/datetime')
+        // copy the template path of the original Field class if it was customized
+        if (null !== $fieldDto->getTemplatePath()) {
+            $newField->setTemplatePath($fieldDto->getTemplatePath());
+        }
 
         return $newField;
     }

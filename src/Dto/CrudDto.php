@@ -298,7 +298,7 @@ final class CrudDto
 
     public function getHelpMessage(?string $pageName = null): TranslatableInterface|string
     {
-        return $this->helpMessages[$pageName ?? $this->pageName] ?? '';
+        return $this->helpMessages[$pageName ?? $this->pageName ?? ''] ?? '';
     }
 
     /**

@@ -62,10 +62,18 @@ class CrudAutocompleteSubscriber implements EventSubscriberInterface
                             return Ulid::fromBase32($v)->toRfc4122();
                         } elseif (class_exists(Uuid::class) && Uuid::isValid($v)) {
                             // checking the mapping, as uuid can also be used as simple string
-                            /** @var FieldMapping $idFieldMapping */
+                            // In Doctrine ORM 3.x, FieldMapping implements \ArrayAccess; in 4.x it's an object with properties
                             $idFieldMapping = $options['em']->getClassMetadata($options['class'])->getFieldMapping($options['id_reader']->getIdField());
+                            // In Doctrine ORM 2.x, getFieldMapping() returns an array
+                            /** @phpstan-ignore-next-line function.impossibleType */
+                            if (\is_array($idFieldMapping)) {
+                                /** @phpstan-ignore-next-line cast.useless */
+                                $idFieldMapping = (object) $idFieldMapping;
+                            }
+                            /** @phpstan-ignore-next-line function.alreadyNarrowedType */
+                            $idFieldType = property_exists($idFieldMapping, 'type') ? $idFieldMapping->type : $idFieldMapping['type'];
 
-                            if (UuidType::NAME === $idFieldMapping->type) {
+                            if (UuidType::NAME === $idFieldType) {
                                 return Uuid::fromString($v)->toBinary();
                             }
                         }

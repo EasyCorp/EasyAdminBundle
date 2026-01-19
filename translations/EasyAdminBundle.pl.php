@@ -140,7 +140,7 @@ return [
 
     'autocomplete' => [
         'no-results-found' => 'Brak wyników',
-        // 'no-more-results' => 'No more results',
+        'no-more-results' => 'Brak kolejnych wyników',
         'loading-more-results' => 'Trwa ładowanie…',
     ],
 ];

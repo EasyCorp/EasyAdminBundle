@@ -23,6 +23,7 @@ Table of Contents
   permissions, conditional display)
 * :doc:`Security </security>` (access control, menu/action/field/entity permissions,
   custom voters)
+* :doc:`Translations </translations>`
 * :doc:`Events </events>` (entity events, CRUD events, JavaScript events)
 * :doc:`Tests </tests>` (functional testing, utilities, assertions)
 * :doc:`Upgrade </upgrade>` (from legacy versions)

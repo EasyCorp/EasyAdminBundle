@@ -2,15 +2,17 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Config\Menu;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\SortOrder;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu\MenuItemInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
+use EasyCorp\Bundle\EasyAdminBundle\Translation\TranslatableEntity;
 use Symfony\Component\Uid\AbstractUid;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
 /**
- * @see EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem::linkToCrud()
+ * @see \EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem::linkToCrud()
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
@@ -18,15 +20,22 @@ final class CrudMenuItem implements MenuItemInterface
 {
     use MenuItemTrait;
 
-    public function __construct(TranslatableInterface|string $label, ?string $icon, string $entityFqcn)
+    private bool $autoTranslateEntity = false;
+
+    public function __construct(TranslatableInterface|string|null $label, ?string $icon, string $entityFqcn)
     {
+        if (null === $label) {
+            $this->autoTranslateEntity = true;
+            $label = new TranslatableEntity($entityFqcn, false);
+        }
+
         $this->dto = new MenuItemDto();
 
         $this->dto->setType(MenuItemDto::TYPE_CRUD);
         $this->dto->setLabel($label);
         $this->dto->setIcon($icon);
         $this->dto->setRouteParameters([
-            EA::CRUD_ACTION => 'index',
+            EA::CRUD_ACTION => Action::INDEX,
             EA::CRUD_CONTROLLER_FQCN => null,
             EA::ENTITY_FQCN => $entityFqcn,
             EA::ENTITY_ID => null,
@@ -52,6 +61,13 @@ final class CrudMenuItem implements MenuItemInterface
 
     public function setAction(string $actionName): self
     {
+        if ($this->autoTranslateEntity) {
+            $this->dto->setLabel(new TranslatableEntity(
+                $this->dto->getRouteParameters()[EA::ENTITY_FQCN],
+                Action::INDEX !== $actionName,
+            ));
+        }
+
         $this->dto->setRouteParameters(array_merge(
             $this->dto->getRouteParameters(),
             [EA::CRUD_ACTION => $actionName]

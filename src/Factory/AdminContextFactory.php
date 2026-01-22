@@ -26,6 +26,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\I18nDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\CrudControllerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\TemplateRegistry;
+use EasyCorp\Bundle\EasyAdminBundle\Translation\TranslatableEntity;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -199,7 +200,7 @@ final class AdminContextFactory
 
         $translationParameters = [];
         if (null !== $crudDto) {
-            $translationParameters['%entity_name%'] = $entityName = basename(str_replace('\\', '/', $crudDto->getEntityFqcn()));
+            $translationParameters['%entity_name%'] = basename(str_replace('\\', '/', $crudDto->getEntityFqcn()));
             $translationParameters['%entity_as_string%'] = null === $entityDto ? '' : (string) $entityDto;
             // when using pretty URLs, the entity ID is passed as a request attribute (it's part of the route path);
             // in legacy URLs, the entity ID is passed as a regular query parameter
@@ -211,12 +212,20 @@ final class AdminContextFactory
 
             $singularLabel = $crudDto->getEntityLabelInSingular($entityInstance, $pageName);
             if (!$singularLabel instanceof TranslatableInterface) {
-                $singularLabel = t($singularLabel ?? $entityName, $translationParameters, $translationDomain);
+                if (null !== $singularLabel) {
+                    $singularLabel = t($singularLabel, $translationParameters, $translationDomain);
+                } else {
+                    $singularLabel = new TranslatableEntity($crudDto->getEntityFqcn(), true);
+                }
             }
 
             $pluralLabel = $crudDto->getEntityLabelInPlural($entityInstance, $pageName);
             if (!$pluralLabel instanceof TranslatableInterface) {
-                $pluralLabel = t($pluralLabel ?? $entityName, $translationParameters, $translationDomain);
+                if (null !== $pluralLabel) {
+                    $pluralLabel = t($pluralLabel, $translationParameters, $translationDomain);
+                } else {
+                    $pluralLabel = new TranslatableEntity($crudDto->getEntityFqcn(), false);
+                }
             }
 
             $crudDto->setEntityLabelInSingular($singularLabel);

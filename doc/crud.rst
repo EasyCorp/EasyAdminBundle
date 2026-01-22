@@ -820,6 +820,7 @@ Use the ``unsetAll()`` method to remove all existing query parameters::
             $url = $this->adminUrlGenerator
                 ->setController(SomeCrudController::class)
                 ->setAction('theActionName')
+                ->setFragment('tab-main')
                 ->generateUrl();
 
             // ...
@@ -848,7 +849,8 @@ method (it will be called automatically for you):
 
     {% set url = ea_url()
         .setController('App\\Controller\\Admin\\SomeCrudController')
-        .setAction('theActionName') %}
+        .setAction('theActionName')
+        .setFragment('tab-main') %}
 
 Generating CRUD URLs from outside EasyAdmin
 ...........................................

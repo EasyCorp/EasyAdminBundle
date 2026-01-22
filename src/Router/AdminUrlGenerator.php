@@ -76,6 +76,13 @@ final class AdminUrlGenerator implements \Stringable, AdminUrlGeneratorInterface
         return $this;
     }
 
+    public function setFragment(string $fragment): AdminUrlGeneratorInterface
+    {
+        $this->setRouteParameter(EA::ROUTE_FRAGMENT, $fragment);
+
+        return $this;
+    }
+
     public function get(string $paramName): mixed
     {
         if (false === $this->isInitialized) {

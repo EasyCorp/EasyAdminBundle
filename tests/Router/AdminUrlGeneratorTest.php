@@ -284,6 +284,14 @@ class AdminUrlGeneratorTest extends WebTestCase
         $this->assertSame('http://localhost/admin?crudAction=index&crudControllerFqcn=App%5CController%5CAdmin%5CSomeCrudController&foo=bar&foo1=bar1', $adminUrlGenerator->generateUrl());
     }
 
+    public function testSetFragment()
+    {
+        $adminUrlGenerator = $this->getAdminUrlGenerator();
+
+        $adminUrlGenerator->setFragment('tab-1');
+        $this->assertSame('http://localhost/admin?foo=bar#tab-1', $adminUrlGenerator->generateUrl());
+    }
+
     private function getAdminUrlGenerator(bool $signedUrls = false, bool $absoluteUrls = true): AdminUrlGeneratorInterface
     {
         self::bootKernel();

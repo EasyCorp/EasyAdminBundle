@@ -450,6 +450,18 @@ class Crud
         return $this;
     }
 
+    /**
+     * Customize the confirmation content shown under the title for batch actions.
+     * Set to false to clear the content text.
+     * The message can use placeholders: %action_name% and %num_items%.
+     */
+    public function setBatchActionConfirmationContent(bool|string|TranslatableInterface|null $content): self
+    {
+        $this->dto->setBatchActionConfirmationContent($content);
+
+        return $this;
+    }
+
     public function getAsDto(): CrudDto
     {
         $this->dto->setPaginator(new PaginatorDto($this->paginatorPageSize, $this->paginatorRangeSize, 1, $this->paginatorFetchJoinCollection, $this->paginatorUseOutputWalkers));

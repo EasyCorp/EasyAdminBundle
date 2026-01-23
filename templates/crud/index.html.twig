@@ -265,7 +265,5 @@
         {{ include('@EasyAdmin/crud/includes/_filters_modal.html.twig') }}
     {% endif %}
 
-    {% if has_batch_actions %}
-        {{ include('@EasyAdmin/crud/includes/_batch_action_modal.html.twig', {}, with_context: false) }}
-    {% endif %}
+    {# batch action modal is included in the base layout #}
 {% endblock main %}

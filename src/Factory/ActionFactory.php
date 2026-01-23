@@ -211,6 +211,9 @@ final class ActionFactory
             ]);
         }
 
+        $actionConfirmationConfig = $actionDto->getConfirmationMessage();
+        $actionConfirmationContent = $actionDto->getConfirmationContent();
+
         if ($actionDto->isBatchAction()) {
             $batchActionAttributes = [
                 'data-action-csrf-token' => $this->csrfTokenManager?->getToken('ea-batch-action-'.$actionDto->getName()),
@@ -219,7 +222,7 @@ final class ActionFactory
                 'data-action-url' => $actionDto->getLinkUrl(),
             ];
 
-            $confirmationConfig = $adminContext->getCrud()->askConfirmationOnBatchActions();
+            $confirmationConfig = $actionConfirmationConfig ?? $adminContext->getCrud()->askConfirmationOnBatchActions();
 
             if (false === $confirmationConfig) {
                 $batchActionAttributes['data-action-batch-no-confirm'] = 'true';
@@ -229,13 +232,44 @@ final class ActionFactory
 
                 // if the confirmation config is not a boolean, it's a string or TranslatableInterface with the custom confirmation message
                 if (true !== $confirmationConfig) {
+                    $translationParameters = null !== $actionConfirmationConfig
+                        ? array_merge($defaultTranslationParameters, $actionDto->getTranslationParameters())
+                        : $defaultTranslationParameters;
                     $batchActionAttributes['data-batch-action-confirm-message'] = $confirmationConfig instanceof TranslatableInterface
-                        ? $confirmationConfig
-                        : t($confirmationConfig, $defaultTranslationParameters, $translationDomain);
+                        ? TranslatableMessageBuilder::withParameters($confirmationConfig, $translationParameters)
+                        : t($confirmationConfig, $translationParameters, $translationDomain);
+                }
+            }
+
+            $confirmationContentConfig = $actionConfirmationContent ?? $adminContext->getCrud()->getBatchActionConfirmationContent();
+            if (null !== $confirmationContentConfig) {
+                if (false === $confirmationContentConfig) {
+                    $batchActionAttributes['data-batch-action-confirm-content'] = '';
+                } else {
+                    $translationParameters = array_merge($defaultTranslationParameters, $actionDto->getTranslationParameters());
+                    $batchActionAttributes['data-batch-action-confirm-content'] = $confirmationContentConfig instanceof TranslatableInterface
+                        ? TranslatableMessageBuilder::withParameters($confirmationContentConfig, $translationParameters)
+                        : t($confirmationContentConfig, $translationParameters, $translationDomain);
                 }
             }
 
             $actionDto->addHtmlAttributes($batchActionAttributes);
+        } elseif (null !== $actionConfirmationConfig && false !== $actionConfirmationConfig && Action::DELETE !== $actionDto->getName()) {
+            $translationParameters = array_merge($defaultTranslationParameters, $actionDto->getTranslationParameters());
+            $confirmationMessage = $actionConfirmationConfig instanceof TranslatableInterface
+                ? TranslatableMessageBuilder::withParameters($actionConfirmationConfig, $translationParameters)
+                : t($actionConfirmationConfig, $translationParameters, $translationDomain);
+            $actionDto->setHtmlAttribute('data-action-confirm', $confirmationMessage);
+            if (null !== $actionConfirmationContent) {
+                if (false === $actionConfirmationContent) {
+                    $actionDto->setHtmlAttribute('data-action-confirm-content', '');
+                } else {
+                    $confirmationContent = $actionConfirmationContent instanceof TranslatableInterface
+                        ? TranslatableMessageBuilder::withParameters($actionConfirmationContent, $translationParameters)
+                        : t($actionConfirmationContent, $translationParameters, $translationDomain);
+                    $actionDto->setHtmlAttribute('data-action-confirm-content', $confirmationContent);
+                }
+            }
         }
 
         return $actionDto;

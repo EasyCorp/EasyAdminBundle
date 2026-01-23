@@ -30,6 +30,7 @@ class App {
         this.#createAutoCompleteFields();
         this.#createBatchActions();
         this.#createModalWindowsForDeleteActions();
+        this.#createActionConfirmations();
         this.#createPopovers();
         this.#createTooltips();
 
@@ -328,7 +329,9 @@ class App {
         });
 
         const modalTitle = document.querySelector('#batch-action-confirmation-title');
+        const modalContent = document.querySelector('#batch-action-confirmation-content');
         const titleContentWithPlaceholders = modalTitle?.textContent;
+        const contentTextWithPlaceholders = modalContent?.textContent;
 
         document.querySelectorAll('[data-action-batch]').forEach((dataActionBatch) => {
             dataActionBatch.addEventListener('click', (event) => {
@@ -381,6 +384,16 @@ class App {
                         .replace('%action_name%', actionName)
                         .replace('%num_items%', selectedItems.length.toString());
 
+                    if (modalContent) {
+                        const customContent = actionElement.getAttribute('data-batch-action-confirm-content');
+                        const contentTemplate = null !== customContent ? customContent : contentTextWithPlaceholders;
+                        if (null !== contentTemplate) {
+                            modalContent.textContent = contentTemplate
+                                .replace('%action_name%', actionName)
+                                .replace('%num_items%', selectedItems.length.toString());
+                        }
+                    }
+
                     document.querySelector('#modal-batch-action-button').addEventListener('click', submitBatchAction);
                 }
             });
@@ -405,6 +418,96 @@ class App {
                     deleteForm.setAttribute('action', deleteFormAction);
                     deleteForm.submit();
                 });
+            });
+        });
+    }
+
+    #createActionConfirmations() {
+        const modalElement = document.querySelector('#modal-batch-action');
+        const modalTitle = document.querySelector('#batch-action-confirmation-title');
+        const modalContent = document.querySelector('#batch-action-confirmation-content');
+        const modalButton = document.querySelector('#modal-batch-action-button');
+
+        if (null === modalElement || null === modalTitle || null === modalButton) {
+            return;
+        }
+
+        const modalInstance = new bootstrap.Modal(modalElement);
+        let confirmHandler = null;
+
+        const submitAction = (actionElement) => {
+            const formId = actionElement.getAttribute('form');
+            if (formId) {
+                const form = document.getElementById(formId);
+                if (form) {
+                    form.submit();
+                    return;
+                }
+            }
+
+            const closestForm = actionElement.closest('form');
+            if (closestForm) {
+                closestForm.submit();
+                return;
+            }
+
+            if ('A' === actionElement.tagName) {
+                const url = actionElement.getAttribute('href');
+                if (url) {
+                    window.location.href = url;
+                }
+
+                return;
+            }
+
+            const formAction = actionElement.getAttribute('formaction');
+            if (formAction) {
+                const formMethod = actionElement.getAttribute('formmethod') || 'post';
+                const tempForm = document.createElement('form');
+                tempForm.setAttribute('method', formMethod);
+                tempForm.setAttribute('action', formAction);
+                document.body.appendChild(tempForm);
+                tempForm.submit();
+            }
+        };
+
+        document.querySelectorAll('[data-action-confirm]:not([data-action-batch])').forEach((actionElement) => {
+            actionElement.addEventListener('click', (event) => {
+                if (actionElement.hasAttribute('data-action-confirm-skip')) {
+                    actionElement.removeAttribute('data-action-confirm-skip');
+                    return;
+                }
+
+                const rawMessage = actionElement.getAttribute('data-action-confirm');
+                if (!rawMessage) {
+                    return;
+                }
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                const actionName = actionElement.textContent.trim() || actionElement.getAttribute('title') || '';
+                const message = rawMessage.replace('%action_name%', actionName);
+
+                modalTitle.textContent = message;
+                if (modalContent) {
+                    const rawContent = actionElement.getAttribute('data-action-confirm-content');
+                    if (null !== rawContent) {
+                        modalContent.textContent = rawContent.replace('%action_name%', actionName);
+                    } else {
+                        modalContent.textContent = '';
+                    }
+                }
+
+                if (confirmHandler) {
+                    modalButton.removeEventListener('click', confirmHandler);
+                }
+
+                confirmHandler = () => {
+                    submitAction(actionElement);
+                };
+                modalButton.addEventListener('click', confirmHandler);
+                modalInstance.show();
             });
         });
     }

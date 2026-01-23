@@ -237,6 +237,28 @@ final class Action implements \Stringable
         return $this;
     }
 
+    /**
+     * Add a confirmation dialog before executing the action.
+     * Pass false to disable confirmation for batch actions even if enabled globally.
+     */
+    public function setConfirmationMessage(TranslatableInterface|string|false $message): self
+    {
+        $this->dto->setConfirmationMessage($message);
+
+        return $this;
+    }
+
+    /**
+     * Customize the content shown under the confirmation title for batch actions.
+     * Pass false to clear the content text.
+     */
+    public function setConfirmationContent(TranslatableInterface|string|false $content): self
+    {
+        $this->dto->setConfirmationContent($content);
+
+        return $this;
+    }
+
     public function setTemplatePath(string $templatePath): self
     {
         $this->dto->setTemplatePath($templatePath);

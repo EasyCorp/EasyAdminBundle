@@ -393,6 +393,8 @@
         </div>
     {% endblock wrapper_wrapper %}
 
+    {{ include('@EasyAdmin/crud/includes/_batch_action_modal.html.twig', {}, with_context: false) }}
+
     {% block body_javascript %}{% endblock body_javascript %}
 
     {% block configured_body_contents %}

@@ -825,6 +825,111 @@ For translatable messages, you can pass a ``TranslatableInterface`` object::
         ;
     }
 
+If you need to change the default confirmation content shown under the title,
+use ``Crud::setBatchActionConfirmationContent()``. Set it to ``false`` to clear
+the content. The content supports the ``%action_name%`` and ``%num_items%``
+placeholders::
+
+    public function configureCrud(Crud $crud): Crud
+    {
+        return $crud
+            ->setBatchActionConfirmationContent(
+                'You can undo "%action_name%" later.'
+            )
+        ;
+    }
+
+You can override the confirmation behavior for a single batch action with
+``Action::setConfirmationMessage()`` and ``Action::setConfirmationContent()``.
+Use ``false`` as parameter of ``setConfirmationMessage``` to disable the confirmation. The message and content
+support the ``%action_name%`` and ``%num_items%`` placeholders::
+
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+
+    public function configureActions(Actions $actions): Actions
+    {
+        $publish = Action::new('publish')
+            ->linkToCrudAction('publish')
+            ->createAsBatchAction()
+            ->setConfirmationMessage(
+                'Are you sure you want to publish %num_items% items?'
+            )
+            ->setConfirmationContent(
+                'You can undo "%action_name%" later.'
+            )
+        ;
+
+        $archive = Action::new('archive')
+            ->linkToCrudAction('archive')
+            ->createAsBatchAction()
+            // skip confirmation just for this action
+            ->setConfirmationMessage(false)
+        ;
+
+        $restore = Action::new('restore')
+            ->linkToCrudAction('restore')
+            ->createAsBatchAction()
+            ->setConfirmationMessage(
+                'Are you sure you want to restore %num_items% items?'
+            )
+            // clear the content while keeping the title
+            ->setConfirmationContent(false)
+        ;
+
+        return $actions
+            ->addBatchAction($publish)
+            ->addBatchAction($archive)
+            ->addBatchAction($restore)
+        ;
+    }
+
+Confirmation for Custom Actions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+By default, custom actions don't display a confirmation dialog. If you want one,
+set a confirmation message on the action. The message can use the
+``%action_name%`` placeholder::
+
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+
+    public function configureActions(Actions $actions): Actions
+    {
+        $action = Action::new('publish')
+            ->linkToCrudAction('publish')
+            ->setConfirmationMessage(
+                'Are you sure you want to run "%action_name%"?'
+            )
+        ;
+
+        return $actions->add(Crud::PAGE_INDEX, $action);
+    }
+
+For custom actions, you can combine ``Action::setConfirmationMessage()`` and
+``Action::setConfirmationContent()`` in the same way. Use ``false`` to clear
+the content while keeping the title. The content supports the
+``%action_name%`` placeholder::
+
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+
+    public function configureActions(Actions $actions): Actions
+    {
+        $action = Action::new('publish')
+            ->linkToCrudAction('publish')
+            ->setConfirmationMessage('Confirm publish')
+            ->setConfirmationContent('You can undo "%action_name%".')
+        ;
+
+        return $actions->add(Crud::PAGE_INDEX, $action);
+    }
+
+The delete action keeps its own confirmation modal and is not affected by
+``setConfirmationMessage()``.
+
 .. _actions-integrating-symfony:
 
 Integrating Symfony Actions

@@ -79,6 +79,7 @@ final class CrudDto
     private ?string $sidebarWidth = null;
     private bool $hideNullValues = false;
     private bool|string|TranslatableInterface $askConfirmationOnBatchActions = true;
+    private bool|string|TranslatableInterface|null $batchActionConfirmationContent = null;
 
     public function __construct()
     {
@@ -607,5 +608,15 @@ final class CrudDto
     public function setAskConfirmationOnBatchActions(bool|string|TranslatableInterface $askConfirmation): void
     {
         $this->askConfirmationOnBatchActions = $askConfirmation;
+    }
+
+    public function getBatchActionConfirmationContent(): bool|string|TranslatableInterface|null
+    {
+        return $this->batchActionConfirmationContent;
+    }
+
+    public function setBatchActionConfirmationContent(bool|string|TranslatableInterface|null $content): void
+    {
+        $this->batchActionConfirmationContent = $content;
     }
 }

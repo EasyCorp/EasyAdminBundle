@@ -23,6 +23,10 @@ final class ActionDto
     private string $addedCssClass = '';
     /** @var array<string, string|TranslatableInterface> */
     private array $htmlAttributes = [];
+    /** @var TranslatableInterface|string|false|null */
+    private mixed $confirmationMessage = null;
+    /** @var TranslatableInterface|string|false|null */
+    private mixed $confirmationContent = null;
     private ?string $linkUrl = null;
     private ?string $templatePath = null;
     private ?string $crudActionName = null;
@@ -195,6 +199,26 @@ final class ActionDto
         $this->htmlAttributes[$attributeName] = $attributeValue;
     }
 
+    public function getConfirmationMessage(): TranslatableInterface|string|false|null
+    {
+        return $this->confirmationMessage;
+    }
+
+    public function setConfirmationMessage(TranslatableInterface|string|false $confirmationMessage): void
+    {
+        $this->confirmationMessage = $confirmationMessage;
+    }
+
+    public function getConfirmationContent(): TranslatableInterface|string|false|null
+    {
+        return $this->confirmationContent;
+    }
+
+    public function setConfirmationContent(TranslatableInterface|string|false $confirmationContent): void
+    {
+        $this->confirmationContent = $confirmationContent;
+    }
+
     public function getTemplatePath(): ?string
     {
         return $this->templatePath;
@@ -364,6 +388,12 @@ final class ActionDto
         $action->addCssClass($this->addedCssClass);
         $action->setHtmlAttributes($this->htmlAttributes);
         $action->setTranslationParameters($this->translationParameters);
+        if (null !== $this->confirmationMessage) {
+            $action->setConfirmationMessage($this->confirmationMessage);
+        }
+        if (null !== $this->confirmationContent) {
+            $action->setConfirmationContent($this->confirmationContent);
+        }
 
         if (null !== $this->templatePath) {
             $action->setTemplatePath($this->templatePath);

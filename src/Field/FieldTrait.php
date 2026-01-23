@@ -505,4 +505,22 @@ trait FieldTrait
     {
         return $this->dto;
     }
+
+    /**
+     * Hides this field based on a condition.
+     *
+     * The $condition can be:
+     * - a callable that returns a boolean (receives the entity as argument)
+     * - a boolean value
+     *
+     * Example usage:
+     *     ->hideIf(fn($entity) => !$entity->isActive())
+     *     ->hideIf(true) // always hide
+     */
+    public function hideIf(bool|callable $condition): static
+    {
+        $this->setCustomOption('hideIf', $condition);
+
+        return $this;
+    }
 }

@@ -32,6 +32,6 @@ class EntityTranslationsDashboardController extends AbstractDashboardController
     {
         yield MenuItem::linktoDashboard('Dashboard', 'fa fa-home');
         // use null label to test that entity translations are used for menu items
-        yield MenuItem::linkToCrud(null, 'fas fa-tags', Category::class);
+        yield MenuItem::linkToEntity(Category::class, null, 'fas fa-tags');
     }
 }

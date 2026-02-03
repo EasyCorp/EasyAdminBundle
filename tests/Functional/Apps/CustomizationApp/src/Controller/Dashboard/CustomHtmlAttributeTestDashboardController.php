@@ -30,10 +30,10 @@ class CustomHtmlAttributeTestDashboardController extends AbstractDashboardContro
     public function configureMenuItems(): iterable
     {
         yield MenuItem::linktoDashboard('Dashboard', 'fa fa-home');
-        yield MenuItem::linkToCrud('Categories', 'fas fa-tags', Category::class)->setHtmlAttribute(
+        yield MenuItem::linkToEntity(Category::class, 'Categories', 'fas fa-tags')->setHtmlAttribute(
             'test-attribute', 'test'
         );
-        yield MenuItem::linkToCrud('Blog Posts', 'fas fa-tags', BlogPost::class)
+        yield MenuItem::linkToEntity(BlogPost::class, 'Blog Posts', 'fas fa-tags')
             ->setHtmlAttribute('multi-test-one', 'test1')
             ->setHtmlAttribute('multi-test-two', 'test2')
             ->setBadge('0', 'secondary', [

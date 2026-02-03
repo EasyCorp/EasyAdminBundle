@@ -30,19 +30,19 @@ class DashboardController extends AbstractDashboardController
     public function configureMenuItems(): iterable
     {
         yield MenuItem::linktoDashboard('Dashboard', 'fa fa-home');
-        yield MenuItem::linkToCrud('Categories', 'fas fa-tags', Category::class);
-        yield MenuItem::linkToCrud('Blog Posts', 'fas fa-tags', BlogPost::class);
+        yield MenuItem::linkToEntity(Category::class, 'Categories', 'fas fa-tags');
+        yield MenuItem::linkToEntity(BlogPost::class, 'Blog Posts', 'fas fa-tags');
 
         // synthetic test entities
         yield MenuItem::section('Synthetic Tests');
-        yield MenuItem::linkToCrud('Field Tests', 'fas fa-flask', FieldTestEntity::class);
-        yield MenuItem::linkToCrud('Field Related Entities', 'fas fa-link', FieldRelatedEntity::class);
-        yield MenuItem::linkToCrud('Filter Tests', 'fas fa-filter', FilterTestEntity::class);
-        yield MenuItem::linkToCrud('Filter Related Entities', 'fas fa-link', FilterRelatedEntity::class);
-        yield MenuItem::linkToCrud('Form Layout Tests', 'fas fa-th-large', FormTestEntity::class);
-        yield MenuItem::linkToCrud('Batch Action Tests', 'fas fa-tasks', BatchActionTestEntity::class);
-        yield MenuItem::linkToCrud('Default CRUD Tests', 'fas fa-cog', DefaultCrudTestEntity::class);
-        yield MenuItem::linkToCrud('Search Tests', 'fas fa-search', SearchTestEntity::class);
-        yield MenuItem::linkToCrud('Action Tests', 'fas fa-mouse-pointer', ActionTestEntity::class);
+        yield MenuItem::linkToEntity(FieldTestEntity::class, 'Field Tests', 'fas fa-flask');
+        yield MenuItem::linkToEntity(FieldRelatedEntity::class, 'Field Related Entities', 'fas fa-link');
+        yield MenuItem::linkToEntity(FilterTestEntity::class, 'Filter Tests', 'fas fa-filter');
+        yield MenuItem::linkToEntity(FilterRelatedEntity::class, 'Filter Related Entities', 'fas fa-link');
+        yield MenuItem::linkToEntity(FormTestEntity::class, 'Form Layout Tests', 'fas fa-th-large');
+        yield MenuItem::linkToEntity(BatchActionTestEntity::class, 'Batch Action Tests', 'fas fa-tasks');
+        yield MenuItem::linkToEntity(DefaultCrudTestEntity::class, 'Default CRUD Tests', 'fas fa-cog');
+        yield MenuItem::linkToEntity(SearchTestEntity::class, 'Search Tests', 'fas fa-search');
+        yield MenuItem::linkToEntity(ActionTestEntity::class, 'Action Tests', 'fas fa-mouse-pointer');
     }
 }

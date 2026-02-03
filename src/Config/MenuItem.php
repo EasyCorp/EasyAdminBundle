@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Config;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\CrudMenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\DashboardMenuItem;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\EntityMenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\ExitImpersonationMenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\LogoutMenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\RouteMenuItem;
@@ -22,11 +23,21 @@ final class MenuItem
     }
 
     /**
+     * @deprecated Since 4.28.1 and will be removed in 5.0.0. Use MenuItem::linkToEntity() instead.
+     *
      * @param string|null $icon The full CSS classes of the FontAwesome icon to render (see https://fontawesome.com/v6/search?m=free)
      */
     public static function linkToCrud(TranslatableInterface|string|null $label, ?string $icon, string $entityFqcn): CrudMenuItem
     {
         return new CrudMenuItem($label, $icon, $entityFqcn);
+    }
+
+    /**
+     * @param string|null $icon The full CSS classes of the FontAwesome icon to render (see https://fontawesome.com/v6/search?m=free)
+     */
+    public static function linkToEntity(string $entityFqcn, TranslatableInterface|string|null $label = null, ?string $icon = null): EntityMenuItem
+    {
+        return new EntityMenuItem($entityFqcn, $label, $icon);
     }
 
     /**

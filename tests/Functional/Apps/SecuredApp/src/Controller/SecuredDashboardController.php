@@ -26,7 +26,7 @@ class SecuredDashboardController extends AbstractDashboardController
     public function configureMenuItems(): iterable
     {
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
-        yield MenuItem::linkToCrud('Categories', 'fas fa-tags', Category::class)
+        yield MenuItem::linkToEntity(Category::class, 'Categories', 'fas fa-tags')
             ->setController(CategoryCrudController::class);
     }
 }

@@ -37,7 +37,7 @@ class SecondDashboardController extends AbstractDashboardController
         yield MenuItem::section('Second Dashboard Content');
 
         // only Categories, not Blog Posts
-        yield MenuItem::linkToCrud('Manage Categories', 'fas fa-folder', Category::class);
+        yield MenuItem::linkToEntity(Category::class, 'Manage Categories', 'fas fa-folder');
 
         // different external links
         yield MenuItem::section('Links');

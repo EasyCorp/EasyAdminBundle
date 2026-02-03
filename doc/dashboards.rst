@@ -583,12 +583,12 @@ the look and behavior of each menu item::
                 MenuItem::linkToDashboard('Dashboard', 'fa fa-home'),
 
                 MenuItem::section('Blog'),
-                MenuItem::linkToCrud('Categories', 'fa fa-tags', Category::class),
-                MenuItem::linkToCrud('Blog Posts', 'fa fa-file-text', BlogPost::class),
+                MenuItem::linkToEntity(Category::class, 'Categories', 'fa fa-tags'),
+                MenuItem::linkToEntity(BlogPost::class, 'Blog Posts', 'fa fa-file-text'),
 
                 MenuItem::section('Users'),
-                MenuItem::linkToCrud('Comments', 'fa fa-comment', Comment::class),
-                MenuItem::linkToCrud('Users', 'fa fa-user', User::class),
+                MenuItem::linkToEntity(Comment::class, 'Comments', 'fa fa-comment'),
+                MenuItem::linkToEntity(User::class, 'Users', 'fa fa-user'),
             ];
         }
     }
@@ -653,23 +653,23 @@ entity associated to the CRUD controller::
             // ...
 
             // links to the 'index' action of the Category CRUD controller
-            MenuItem::linkToCrud('Categories', 'fa fa-tags', Category::class),
+            MenuItem::linkToEntity(Category::class, 'Categories', 'fa fa-tags'),
 
             // links to a different CRUD action
-            MenuItem::linkToCrud('Add Category', 'fa fa-tags', Category::class)
+            MenuItem::linkToEntity(Category::class, 'Add Category', 'fa fa-tags')
                 ->setAction(Action::NEW),
 
-            MenuItem::linkToCrud('Show Main Category', 'fa fa-tags', Category::class)
+            MenuItem::linkToEntity(Category::class, 'Show Main Category', 'fa fa-tags')
                 ->setAction(Action::DETAIL)
                 ->setEntityId(1),
 
             // if the same Doctrine entity is associated to more than one CRUD controller,
             // use the 'setController()' method to specify which controller to use
-            MenuItem::linkToCrud('Categories', 'fa fa-tags', Category::class)
+            MenuItem::linkToEntity(Category::class, 'Categories', 'fa fa-tags')
                 ->setController(LegacyCategoryCrudController::class),
 
             // uses custom sorting options for the listing
-            MenuItem::linkToCrud('Categories', 'fa fa-tags', Category::class)
+            MenuItem::linkToEntity(Category::class, 'Categories', 'fa fa-tags')
                 ->setDefaultSort(['createdAt' => 'DESC']),
         ];
     }
@@ -809,9 +809,9 @@ using the ``subMenu()`` item type::
     {
         return [
             MenuItem::subMenu('Blog', 'fa fa-article')->setSubItems([
-                MenuItem::linkToCrud('Categories', 'fa fa-tags', Category::class),
-                MenuItem::linkToCrud('Posts', 'fa fa-file-text', BlogPost::class),
-                MenuItem::linkToCrud('Comments', 'fa fa-comment', Comment::class),
+                MenuItem::linkToEntity(Category::class, 'Categories', 'fa fa-tags'),
+                MenuItem::linkToEntity(BlogPost::class, 'Posts', 'fa fa-file-text'),
+                MenuItem::linkToEntity(Comment::class, 'Comments', 'fa fa-comment'),
             ]),
             // ...
         ];
@@ -836,8 +836,8 @@ generator to return the menu items::
 
         if ('... some complex expression ...') {
             yield MenuItem::section('Blog');
-            yield MenuItem::linkToCrud('Categories', 'fa fa-tags', Category::class);
-            yield MenuItem::linkToCrud('Blog Posts', 'fa fa-file-text', BlogPost::class);
+            yield MenuItem::linkToEntity(Category::class, 'Categories', 'fa fa-tags');
+            yield MenuItem::linkToEntity(BlogPost::class, 'Blog Posts', 'fa fa-file-text');
         }
 
         // ...
@@ -1098,8 +1098,8 @@ When using this feature, you can omit the label when creating CRUD menu items:
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
 
         // no label needed: will use the translated plural label
-        yield MenuItem::linkToCrud(null, 'fa fa-file-text', BlogPost::class);
-        yield MenuItem::linkToCrud(null, 'fa fa-users', User::class);
+        yield MenuItem::linkToEntity(BlogPost::class, null, 'fa fa-file-text');
+        yield MenuItem::linkToEntity(User::class, null, 'fa fa-users');
     }
 
 .. note::

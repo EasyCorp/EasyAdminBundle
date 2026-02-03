@@ -86,11 +86,11 @@ jobs:
                   expect eof
                   EOD
                   
-                  # Add MenuItem::linkToCrud() entry if missing
+                  # Add MenuItem::linkToEntity() entry if missing
                   file="src/Controller/Admin/DashboardController.php"
-                  if ! grep -q "linkToCrud" "$file"; then
+                  if ! grep -q "linkToEntity" "$file"; then
                     sed -i '/yield MenuItem::linkToDashboard/a\
-                        yield MenuItem::linkToCrud("Products", "fa fa-box", App\\Entity\\Product::class);' "$file"
+                        yield MenuItem::linkToEntity(App\\Entity\\Product::class, "Products", "fa fa-box");' "$file"
                   fi
 
             - name: Create factory and fixtures

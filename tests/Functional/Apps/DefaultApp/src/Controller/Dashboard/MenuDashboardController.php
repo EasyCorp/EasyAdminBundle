@@ -41,8 +41,8 @@ class MenuDashboardController extends AbstractDashboardController
         yield MenuItem::section('Content Management');
 
         // regular CRUD links
-        yield MenuItem::linkToCrud('Categories', 'fas fa-tags', Category::class);
-        yield MenuItem::linkToCrud('Blog Posts', 'fas fa-newspaper', BlogPost::class)
+        yield MenuItem::linkToEntity(Category::class, 'Categories', 'fas fa-tags');
+        yield MenuItem::linkToEntity(BlogPost::class, 'Blog Posts', 'fas fa-newspaper')
             ->setBadge('New', 'success');
 
         // section with submenu

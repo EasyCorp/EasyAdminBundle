@@ -111,7 +111,7 @@ user must have to see the menu item::
         return [
             // ...
 
-            MenuItem::linkToCrud('Blog Posts', null, BlogPost::class)
+            MenuItem::linkToEntity(BlogPost::class, 'Blog Posts', null)
                 ->setPermission('ROLE_EDITOR'),
         ];
     }
@@ -133,7 +133,7 @@ menu item definition to not have to deal with array merges::
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
 
         if ($this->isGranted('ROLE_EDITOR') && '...') {
-            yield MenuItem::linkToCrud('Blog Posts', null, BlogPost::class);
+            yield MenuItem::linkToEntity(BlogPost::class, 'Blog Posts', null);
         }
 
         // ...
@@ -250,7 +250,7 @@ like this::
 
     use Symfony\Component\ExpressionLanguage\Expression;
 
-    MenuItem::linkToCrud('Restricted menu-item', null, Example::class)
+    MenuItem::linkToEntity(Example::class, 'Restricted menu-item', null)
         ->setPermission(new Expression('"ROLE_DEVELOPER" in role_names and "ROLE_EXTERNAL" not in role_names'));
 
 Expressions enable the definition of much more detailed permissions, based on

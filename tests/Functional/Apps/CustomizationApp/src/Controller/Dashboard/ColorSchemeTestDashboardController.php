@@ -37,6 +37,6 @@ class ColorSchemeTestDashboardController extends AbstractDashboardController
     public function configureMenuItems(): iterable
     {
         yield MenuItem::linktoDashboard('Dashboard', 'fa fa-home');
-        yield MenuItem::linkToCrud('Demo', 'fas fa-list', DemoEntity::class);
+        yield MenuItem::linkToEntity(DemoEntity::class, 'Demo', 'fas fa-list');
     }
 }

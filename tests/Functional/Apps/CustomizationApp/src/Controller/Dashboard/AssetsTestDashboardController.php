@@ -29,6 +29,6 @@ class AssetsTestDashboardController extends AbstractDashboardController
     public function configureMenuItems(): iterable
     {
         yield MenuItem::linktoDashboard('Dashboard', 'fa fa-home');
-        yield MenuItem::linkToCrud('Blog Posts', 'fas fa-list', BlogPost::class);
+        yield MenuItem::linkToEntity(BlogPost::class, 'Blog Posts', 'fas fa-list');
     }
 }

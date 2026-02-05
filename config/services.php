@@ -10,6 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Command\MakeAdminDashboardCommand;
 use EasyCorp\Bundle\EasyAdminBundle\Command\MakeCrudControllerCommand;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterConfiguratorInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Icon\EntityIconGeneratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu\MenuItemMatcherInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Orm\EntityPaginatorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Translation\EntityTranslationIdGeneratorInterface;
@@ -73,6 +74,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudAutocompleteType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FileUploadType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType;
+use EasyCorp\Bundle\EasyAdminBundle\Icon\EntityIconGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Intl\IntlFormatter;
 use EasyCorp\Bundle\EasyAdminBundle\Maker\ClassMaker;
 use EasyCorp\Bundle\EasyAdminBundle\Menu\MenuItemMatcher;
@@ -252,6 +254,7 @@ return static function (ContainerConfigurator $container) {
             ->arg(3, service(AdminUrlGenerator::class))
             ->arg(4, service(MenuItemMatcherInterface::class))
             ->arg(5, service(EntityTranslationIdGeneratorInterface::class))
+            ->arg(6, service(EntityIconGeneratorInterface::class))
 
         ->set(MenuItemMatcher::class)
             ->arg(0, service(AdminUrlGenerator::class))
@@ -445,6 +448,10 @@ return static function (ContainerConfigurator $container) {
         ->set(EntityTranslationIdGenerator::class)
 
         ->alias(EntityTranslationIdGeneratorInterface::class, EntityTranslationIdGenerator::class)
+
+        ->set(EntityIconGenerator::class)
+
+        ->alias(EntityIconGeneratorInterface::class, EntityIconGenerator::class)
 
         ->set(AssetPackage::class)
             ->arg(0, service('request_stack'))

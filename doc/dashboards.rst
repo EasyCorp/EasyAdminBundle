@@ -843,6 +843,32 @@ generator to return the menu items::
         // ...
     }
 
+Icons
+~~~~~
+
+If you prefer to configure all icons for links to entities in one place you can implement
+``EntityIconGeneratorInterface``:
+
+    namespace App\EasyAdmin\Icon;
+
+    use App\Entity\Developer;
+    use App\Entity\Invoice;
+    use EasyCorp\Bundle\EasyAdminBundle\Contracts\Icon\EntityIconGeneratorInterface;
+    use Symfony\Component\DependencyInjection\Attribute\AsAlias;
+
+    #[AsAlias(EntityIconGeneratorInterface::class)]
+    class EntityIconGenerator implements EntityIconGeneratorInterface
+    {
+        public function generate(string $entity): ?string
+        {
+            return match ($entity) {
+                Developer::class => 'fa-solid fa-user',
+                Invoice::class => 'fa fa-file-invoice',
+                default => null,
+            };
+        }
+    }
+
 .. _dashboards-user-menu:
 
 User Menu

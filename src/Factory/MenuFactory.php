@@ -7,6 +7,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenu;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Factory\MenuFactoryInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Icon\EntityIconGeneratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu\MenuItemInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu\MenuItemMatcherInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Provider\AdminContextProviderInterface;
@@ -34,6 +35,7 @@ final class MenuFactory implements MenuFactoryInterface
         private readonly AdminUrlGeneratorInterface $adminUrlGenerator,
         private readonly MenuItemMatcherInterface $menuItemMatcher,
         private readonly ?EntityTranslationIdGeneratorInterface $entityTranslationIdGenerator = null,
+        private readonly ?EntityIconGeneratorInterface $entityIconGenerator = null,
     ) {
         if (null === $this->entityTranslationIdGenerator) {
             trigger_deprecation(
@@ -41,6 +43,14 @@ final class MenuFactory implements MenuFactoryInterface
                 '4.28',
                 'Not passing argument "$entityTranslationIdGenerator" will cause an error in 5.0.0.',
                 '$entityTranslationIdGenerator',
+            );
+        }
+        if (null === $this->entityIconGenerator) {
+            trigger_deprecation(
+                'easycorp/easyadmin-bundle',
+                '4.28',
+                'Not passing argument "$entityIconGenerator" will cause an error in 5.0.0.',
+                '$entityIconGenerator',
             );
         }
     }
@@ -117,6 +127,10 @@ final class MenuFactory implements MenuFactoryInterface
                 $label = '' === $label ? $label : t($label, $menuItemDto->getTranslationParameters(), $translationDomain);
             }
             $menuItemDto->setLabel($label);
+        }
+
+        if (MenuItemDto::TYPE_CRUD === $menuItemDto->getType() && null === $menuItemDto->getIcon() && null !== $this->entityIconGenerator) {
+            $menuItemDto->setIcon($this->entityIconGenerator->generate($menuItemDto->getRouteParameters()[EA::ENTITY_FQCN]));
         }
 
         $url = $this->generateMenuItemUrl($menuItemDto);

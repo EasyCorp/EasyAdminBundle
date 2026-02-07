@@ -243,7 +243,7 @@ If you already define custom queries in repository methods, you can reuse them
 inside the callable::
 
     yield AssociationField::new('...')->setQueryBuilder(
-        fn (QueryBuilder $queryBuilder): QueryBuilder => $queryBuilder->getEntityManager()->getRepository(Foo::class)->getSomeQueryBuilder();
+        fn (QueryBuilder $queryBuilder, ?EntityDto $dto): QueryBuilder => $queryBuilder->getEntityManager()->getRepository(Foo::class)->getSomeQueryBuilder();
     );
 
 Alternatively, you can use the `query_builder option`_ of Symfony's

@@ -29,7 +29,7 @@ class IconTest extends TestCase
 
         $this->assertSame('internal:user', $iconDto->getName());
         $this->assertStringEndsWith('assets/icons/internal/user.svg', $iconDto->getPath());
-        $this->assertStringContainsString('(Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.', $iconDto->getSvgContents());
+        $this->assertStringContainsString('(Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.', $iconDto->getSvgContents());
     }
 
     public static function provideGetInternalIconData(): iterable

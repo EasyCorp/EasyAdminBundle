@@ -1,0 +1,121 @@
+---------------------------------------------------------------------------
+
+by Seb33300 at 2026-02-06T05:48:01Z
+
+@michaelKaefer if you want to double check
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2026-02-10T22:20:40Z
+
+Thanks Sébastien. Your code is better than existing code, but AI reported two possible errors. Can you please review them?
+
+### Issue 1: DQL alias collision
+
+Execution trace with `['author.company.name', 'editor.company.name']`:
+
+Processing `author.company.name`:
+
+- `i=0`:
+  * `$fullPropertyName = 'author'`, association
+  * alias = `escapeDqlAlias('author')` (no suffix, `i=0`)
+  * stored as `$entitiesAlreadyJoined['author']`
+- `i=1`:
+  * `$fullPropertyName = 'author.company'`, association
+  * alias = `escapeDqlAlias('company').'1'` --> `company1`
+  * stored as `$entitiesAlreadyJoined['author.company']`
+- `i=2`: `name` --> normal field, no join
+
+Processing `editor.company.name`:
+
+- `i=0`:
+  * `$fullPropertyName = 'editor'`, association
+  * alias = `escapeDqlAlias('editor')`
+  * stored as `$entitiesAlreadyJoined['editor']`
+- `i=1`:
+  * `$fullPropertyName = 'editor.company'`, association
+  * `!isset($entitiesAlreadyJoined['editor.company'])` is `true` (different key from `author.company`)
+  * alias = `escapeDqlAlias('company').'1'` --> `company1` again
+
+So yes, Doctrine gets two `LEFT JOIN ... company1` statements and blows up.
+
+The old code had a related bug here too. The old `$entitiesAlreadyJoined` was keyed by bare segment name (`company`), so on the second path it would find `$entitiesAlreadyJoined['company']` already set and silently reuse author's join for editor's company. That's a silent wrong-results bug: it would search `editor.company.name` against author's companies.
+
+So the new code actually improved the keying (full path = correct semantic distinction), but the alias generation didn't follow. The fix is straightforward: base the alias on `$fullPropertyName` instead of `$associatedPropertyName`:
+
+```php
+$entitiesAlreadyJoined[$fullPropertyName] ??= Escaper::escapeDqlAlias($fullPropertyName);
+```
+
+Or use a monotonic counter. The current approach of segment name + depth index is fundamentally broken for sibling paths.
+
+### Issue 2: Error handling regression
+
+Old code: two explicit guards before calling `getFieldMapping()`:
+
+```php
+// Association branch (line 299 old):
+if (!isset($associatedEntityDto->getClassMetadata()->fieldMappings[$propertyName])) {
+    throw new \InvalidArgumentException(sprintf('The "%s" property included in the setSearchFields()...'));
+}
+$fieldMapping = $associatedEntityDto->getClassMetadata()->getFieldMapping($propertyName);
+
+// Non-association branch (line 315 old):
+if (!isset($entityDto->getClassMetadata()->fieldMappings[$propertyName])) {
+    throw new \InvalidArgumentException(sprintf('The "%s" property included in the setSearchFields()...'));
+}
+$fieldMapping = $entityDto->getClassMetadata()->getFieldMapping($propertyName);
+```
+
+New code: no guard:
+
+```php
+// After the loop, directly:
+$fieldMapping = $parentEntityDto->getClassMetadata()->getFieldMapping($associatedPropertyName);
+```
+
+With a typo like `setSearchFields(['author.naem'])`:
+
+- Old code: throws `InvalidArgumentException` with "The "naem" property included in the setSearchFields() method is not a valid search field..."
+- New code: Doctrine's `getFieldMapping('naem')` throws a `MappingException` with something like "The field 'naem' is not mapped in class 'App\Entity\Author'". This is less helpful, no mention of setSearchFields(), and a different exception class that existing catch blocks wouldn't match.
+
+Same regression for simple fields: `setSearchFields(['naem'])` on the root entity would also lose the nice error.
+
+The one case that is still guarded is when the terminal segment is an association (e.g. `setSearchFields(['author']`) without specifying a field): that check survived in the new code.
+
+The fix is trivial: add the isset guard back before `getFieldMapping()`:
+
+```php
+if (!isset($parentEntityDto->getClassMetadata()->fieldMappings[$associatedPropertyName])) {
+    throw new \InvalidArgumentException(sprintf(
+        'The "%s" property included in the setSearchFields() method is not a valid search field...',
+        $searchableProperty, $searchableProperty, $searchableProperty
+    ));
+}
+```
+
+---------------------------------------------------------------------------
+
+by Seb33300 at 2026-02-11T02:25:10Z
+
+Hi @javiereguiluz,
+
+I just checked and your AI report are valid.
+May I know which AI do you use? It looks awesome.
+Are you able to integrate it easily with GitHub PRs?
+
+Using full name was an attempt on my side to fix the collision issue I noticed when i worked on it.
+But I totally miss that case with alias.
+
+I just pushed a commit to fix both issues.
+
+Note: instead of reusing the previous error message, I have improved a bit to make it more specific:
+> The "author.address.ciyt" property included in the setSearchFields() method is not a valid search field. The field "address.ciyt" does not exist in "App\Entity\User".
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2026-02-11T07:13:17Z
+
+Thanks a lot for your quick reply 🙌
+
+About AI: usually I only use Claude Code, but in complex cases like this, I combine two: I ask Codex first (model: 5.3 extra-high) for a thorough review of the code and then I ask Claude (model: Opus 4.6 max effort) to thorough review that review.

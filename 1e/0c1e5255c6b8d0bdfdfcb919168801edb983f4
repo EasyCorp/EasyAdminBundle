@@ -1,0 +1,17 @@
+---------------------------------------------------------------------------
+
+by Seb33300 at 2026-02-10T04:56:51Z
+
+I think the UPGRADE.md should also be updated
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2026-02-10T18:50:19Z
+
+What should we add to the UPGRADE? We've only removed the deprecated features (which are already listed in the UPGRADE file) and also deleted tests that don't make sense anymore. Maybe I'm missing something 😐  Thanks.
+
+---------------------------------------------------------------------------
+
+by Seb33300 at 2026-02-11T01:18:08Z
+
+Hi @javiereguiluz, I mentioned this because I didn’t see any entry for version 5.0 in that file, so I thought you might have forgotten about it.

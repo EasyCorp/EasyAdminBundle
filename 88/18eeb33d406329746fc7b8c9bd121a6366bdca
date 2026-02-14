@@ -1,0 +1,23 @@
+---------------------------------------------------------------------------
+
+by Guite at 2026-02-04T19:39:32Z
+
+In case you might want to remove `linkToCrud()` in 5.x, it would be helpful to deprecate it now. :thinking:
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2026-02-04T19:42:06Z
+
+Yes, but I don't know if this deprecation would annoy folks a lot or not 🫣
+
+---------------------------------------------------------------------------
+
+by michaelKaefer at 2026-02-04T20:26:59Z
+
+I vote for deprecation because for maintainers it is dead code to care about. Maybe a compromise could be to merge it in `4.x` but not deprecate it and only deprecate it in `5.x` and remove it in `6.x` so there is a lot of time to fix the deprecation or noticing the new docs..
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2026-02-11T22:00:14Z
+
+I asked on Symfony Slack and folks unanimously replied to deprecate `linkToCrud()` in 4.x so we can remove it in 5.x. So, I've just done that. Thanks.

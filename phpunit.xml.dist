@@ -12,16 +12,18 @@
         <server name="APP_ENV" value="test" force="true" />
         <server name="APP_DEBUG" value="true" force="true" />
         <server name="SHELL_VERBOSITY" value="-1" />
-        <server name="KERNEL_CLASS" value="EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Kernel" />
+        <server name="KERNEL_CLASS" value="EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Kernel" />
     </php>
 
     <testsuites>
-        <testsuite name="EasyAdmin Test Suite">
-            <directory>tests/</directory>
-            <exclude>tests/Controller/PrettyUrls/</exclude>
-            <exclude>tests/DataCollector/</exclude>
-            <exclude>tests/EventListener/</exclude>
-            <exclude>tests/Form/</exclude>
+        <testsuite name="Unit">
+            <directory>tests/Unit/</directory>
+        </testsuite>
+        <testsuite name="Functional">
+            <directory>tests/Functional/</directory>
+            <directory>tests/TestUtils/</directory>
+            <!-- exclude directories that contain Symfony application code (not tests) -->
+            <exclude>tests/Functional/Apps/</exclude>
         </testsuite>
     </testsuites>
 
@@ -31,4 +33,3 @@
         </include>
     </coverage>
 </phpunit>
-

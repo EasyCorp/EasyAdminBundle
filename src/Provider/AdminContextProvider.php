@@ -12,6 +12,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\I18nDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MainMenuDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\UserMenuDto;
+use EasyCorp\Bundle\EasyAdminBundle\Registry\AdminControllerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\CrudControllerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -48,7 +49,7 @@ final class AdminContextProvider implements AdminContextProviderInterface
             throw new \LogicException('Cannot use the EasyAdmin context: no request is available.');
         }
 
-        return $currentRequest?->get(EA::CONTEXT_REQUEST_ATTRIBUTE);
+        return $currentRequest?->attributes->get(EA::CONTEXT_REQUEST_ATTRIBUTE);
     }
 
     public function getRequest(): Request
@@ -94,12 +95,27 @@ final class AdminContextProvider implements AdminContextProviderInterface
         return $this->getContext(true)->getI18n();
     }
 
-    public function getCrudControllers(): CrudControllerRegistry
+    public function getAdminControllers(): AdminControllerRegistry
     {
         trigger_deprecation(
             'easycorp/easyadmin-bundle',
             '4.25.0',
             'The "%s" method is deprecated and will be removed in EasyAdmin 5.0.0. Use the method with the same name from the "EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext" class instead. This deprecation may have been triggered by the usage of the global "ea" variable in a Twig template, which is also deprecated. Use the equivalent "ea()" Twig function instead.',
+            __METHOD__
+        );
+
+        return $this->getContext(true)->getAdminControllers(); // @phpstan-ignore method.notFound (method will be added to the interface in 5.0)
+    }
+
+    /**
+     * @deprecated since 4.28.1, use getAdminControllers() instead
+     */
+    public function getCrudControllers(): CrudControllerRegistry
+    {
+        trigger_deprecation(
+            'easycorp/easyadmin-bundle',
+            '4.28.1',
+            'The "%s" method is deprecated and will be removed in EasyAdmin 5.0.0. Use "AdminContext::getAdminControllers()" instead.',
             __METHOD__
         );
 

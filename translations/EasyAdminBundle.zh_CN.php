@@ -59,6 +59,7 @@ return [
         'create_and_continue' => '添加并继续',
         'save' => '保存',
         'save_and_continue' => '保存并继续',
+        'toggle_dropdown' => '切换下拉菜单',
     ],
 
     'batch_action_modal' => [
@@ -70,6 +71,11 @@ return [
     'delete_modal' => [
         'title' => '是否删除',
         'content' => '是否删除，该操作不可恢复',
+    ],
+
+    'action_confirmation_modal' => [
+        'title' => '您确定要 %action_name% 吗？',
+        'action' => '确认',
     ],
 
     'filter' => [

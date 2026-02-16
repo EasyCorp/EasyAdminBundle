@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Sukurti ir tęsti redagavimą',
         'save' => 'Išsaugoti',
         'save_and_continue' => 'Išsaugoti ir tęsti redagavimą',
+        'toggle_dropdown' => 'Perjungti išskleidžiamąjį meniu',
     ],
 
     'batch_action_modal' => [
@@ -70,6 +71,11 @@ return [
     'delete_modal' => [
         'title' => 'Ar tikrai norite ištrinti šį elementą?',
         'content' => 'Šios operacijos atkurti nebegalėsite.',
+    ],
+
+    'action_confirmation_modal' => [
+        'title' => 'Ar tikrai norite %action_name%?',
+        'action' => 'Patvirtinti',
     ],
 
     'filter' => [

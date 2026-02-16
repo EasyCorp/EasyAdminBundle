@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Создать и продолжить',
         'save' => 'Сохранить',
         'save_and_continue' => 'Сохранить и продолжить',
+        'toggle_dropdown' => 'Переключить выпадающее меню',
     ],
 
     'batch_action_modal' => [
@@ -70,6 +71,11 @@ return [
     'delete_modal' => [
         'title' => 'Вы действительно хотите удалить этот объект?',
         'content' => 'Эту операцию нельзя отменить.',
+    ],
+
+    'action_confirmation_modal' => [
+        'title' => 'Вы уверены, что хотите %action_name%?',
+        'action' => 'Подтвердить',
     ],
 
     'filter' => [
@@ -139,7 +145,7 @@ return [
 
     'autocomplete' => [
         'no-results-found' => 'Совпадений не найдено',
-        // 'no-more-results' => 'No more results',
+        'no-more-results' => 'Нет больше результатов',
         'loading-more-results' => 'Загрузка данных…',
     ],
 ];

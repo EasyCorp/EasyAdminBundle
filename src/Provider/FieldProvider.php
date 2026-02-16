@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Provider;
 
 use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping\FieldMapping;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Provider\AdminContextProviderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
@@ -42,8 +43,25 @@ final class FieldProvider
         ];
 
         foreach ($entityDto->getClassMetadata()->getFieldNames() as $propertyName) {
-            $metadata = $entityDto->getPropertyMetadata($propertyName);
-            if (!\in_array($propertyName, $excludedPropertyNames[$pageName], true) && !\in_array($metadata->get('type'), $excludedPropertyTypes[$pageName], true)) {
+            $isFieldMapping = isset($entityDto->getClassMetadata()->fieldMappings[$propertyName]);
+
+            $fieldMappingType = null;
+            if ($isFieldMapping) {
+                // In Doctrine ORM 2.x, getFieldMapping() returns an array; in Doctrine ORM 3.x,
+                // FieldMapping implements \ArrayAccess; in 4.x it's an object with properties
+                $fieldMapping = $entityDto->getClassMetadata()->getFieldMapping($propertyName);
+                /** @phpstan-ignore-next-line function.impossibleType */
+                if (\is_array($fieldMapping)) {
+                    /** @phpstan-ignore-next-line cast.useless */
+                    $fieldMapping = (object) $fieldMapping;
+                }
+
+                /** @phpstan-ignore-next-line function.alreadyNarrowedType */
+                $fieldMappingType = property_exists($fieldMapping, 'type') ? $fieldMapping->type : $fieldMapping['type'];
+            }
+
+            if (!\in_array($propertyName, $excludedPropertyNames[$pageName] ?? [], true)
+                && (!$isFieldMapping || !\in_array($fieldMappingType, $excludedPropertyTypes[$pageName] ?? [], true))) {
                 $defaultPropertyNames[] = $propertyName;
             }
         }

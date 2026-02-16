@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Create and continue editing',
         'save' => 'Save changes',
         'save_and_continue' => 'Save and continue editing',
+        'toggle_dropdown' => 'Toggle dropdown',
     ],
 
     'batch_action_modal' => [
@@ -70,6 +71,11 @@ return [
     'delete_modal' => [
         'title' => 'Do you really want to delete this item?',
         'content' => 'There is no undo for this operation.',
+    ],
+
+    'action_confirmation_modal' => [
+        'title' => 'Are you sure you want to %action_name%?',
+        'action' => 'Confirm',
     ],
 
     'filter' => [

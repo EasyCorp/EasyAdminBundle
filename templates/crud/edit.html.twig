@@ -13,7 +13,11 @@
 
 {% block head_javascript %}
     {{ parent() }}
-    <script src="{{ asset('form.js', ea.assets.defaultAssetPackageName) }}"></script>
+    {% guard function csp_nonce %}
+        <script src="{{ asset('form.js', ea.assets.defaultAssetPackageName) }}" nonce="{{ csp_nonce('script') }}"></script>
+    {% else %}
+        <script src="{{ asset('form.js', ea.assets.defaultAssetPackageName) }}"></script>
+    {% endguard %}
 {% endblock head_javascript %}
 
 {% block configured_head_contents %}
@@ -54,7 +58,7 @@
         {% if item.isActionGroup %}
             {{ include(item.templatePath, {group: item, entity: entity}, with_context: false) }}
         {% else %}
-            {{ include(item.templatePath, {action: item}, with_context: false) }}
+            {{ include(item.templatePath, {action: item, entity: entity}, with_context: false) }}
         {% endif %}
     {% endfor %}
 {% endblock %}
@@ -65,6 +69,6 @@
     {% endblock edit_form %}
 
     {% block delete_form %}
-        {{ include('@EasyAdmin/crud/includes/_delete_form.html.twig', {entity_id: entity.primaryKeyValue}, with_context: false) }}
+        {{ include('@EasyAdmin/crud/includes/_action_confirmation_modal.html.twig', with_context: false) }}
     {% endblock delete_form %}
 {% endblock %}

@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'צור והמשך לערוך',
         'save' => 'שמור שינויים',
         'save_and_continue' => 'שמור והמשך עריכה',
+        'toggle_dropdown' => 'החלף תפריט נפתח',
     ],
 
     'batch_action_modal' => [
@@ -70,6 +71,11 @@ return [
     'delete_modal' => [
         'title' => 'האם הנך בטוח שברצונך למחוק פריט זה?',
         'content' => 'לא ניתן לבטל פעולה זו לאחר ביצועה.',
+    ],
+
+    'action_confirmation_modal' => [
+        'title' => 'האם אתה בטוח שברצונך %action_name%?',
+        'action' => 'אישור',
     ],
 
     'filter' => [

@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Crear y seguir editando',
         'save' => 'Guardar cambios',
         'save_and_continue' => 'Guardar y seguir editando',
+        'toggle_dropdown' => 'Alternar menú desplegable',
     ],
 
     'batch_action_modal' => [
@@ -70,6 +71,11 @@ return [
     'delete_modal' => [
         'title' => '¿Realmente quieres borrar este elemento?',
         'content' => 'Esta acción no se puede deshacer.',
+    ],
+
+    'action_confirmation_modal' => [
+        'title' => '¿Estás seguro de que quieres %action_name%?',
+        'action' => 'Confirmar',
     ],
 
     'filter' => [

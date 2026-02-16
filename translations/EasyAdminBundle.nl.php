@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Aanmaken en verdergaan',
         'save' => 'Opslaan',
         'save_and_continue' => 'Opslaan en verdergaan',
+        'toggle_dropdown' => 'Schakel vervolgkeuzemenu',
     ],
 
     'batch_action_modal' => [
@@ -70,6 +71,11 @@ return [
     'delete_modal' => [
         'title' => 'Weet je zeker dat je dit item wilt verwijderen?',
         'content' => 'Deze actie kan niet ongedaan worden gemaakt.',
+    ],
+
+    'action_confirmation_modal' => [
+        'title' => 'Weet je zeker dat je wilt %action_name%?',
+        'action' => 'Bevestigen',
     ],
 
     'filter' => [

@@ -21,6 +21,7 @@ final class ChoiceField implements FieldInterface
     public const OPTION_RENDER_EXPANDED = 'renderExpanded';
     public const OPTION_WIDGET = 'widget';
     public const OPTION_ESCAPE_HTML_CONTENTS = 'escapeHtml';
+    public const OPTION_PREFERRED_CHOICES = 'preferredChoices';
 
     public const VALID_BADGE_TYPES = ['success', 'warning', 'danger', 'info', 'primary', 'secondary', 'light', 'dark'];
 
@@ -45,7 +46,8 @@ final class ChoiceField implements FieldInterface
             ->setCustomOption(self::OPTION_RENDER_AS_BADGES, null)
             ->setCustomOption(self::OPTION_RENDER_EXPANDED, false)
             ->setCustomOption(self::OPTION_WIDGET, null)
-            ->setCustomOption(self::OPTION_ESCAPE_HTML_CONTENTS, true);
+            ->setCustomOption(self::OPTION_ESCAPE_HTML_CONTENTS, true)
+            ->setCustomOption(self::OPTION_PREFERRED_CHOICES, null);
     }
 
     public function allowMultipleChoices(bool $allow = true): self
@@ -185,6 +187,25 @@ final class ChoiceField implements FieldInterface
     public function escapeHtml(bool $escape = true): self
     {
         $this->setCustomOption(self::OPTION_ESCAPE_HTML_CONTENTS, $escape);
+
+        return $this;
+    }
+
+    /**
+     * Sets the preferred choices that will be displayed at the top of the dropdown,
+     * visually separated from the rest of choices.
+     *
+     * You can pass an array of choice values:
+     *   ->setPreferredChoices(['draft', 'published'])
+     *
+     * Or a callable that receives the choice value and returns true for preferred choices:
+     *   ->setPreferredChoices(fn ($value) => in_array($value, ['draft', 'published']))
+     *
+     * @param array<mixed>|callable $preferredChoices
+     */
+    public function setPreferredChoices(array|callable $preferredChoices): self
+    {
+        $this->setCustomOption(self::OPTION_PREFERRED_CHOICES, $preferredChoices);
 
         return $this;
     }

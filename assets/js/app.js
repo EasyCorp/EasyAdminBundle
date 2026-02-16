@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
 class App {
     #sidebarWidthLocalStorageKey;
     #contentWidthLocalStorageKey;
+    #isNavigatingHistory = false;
 
     constructor() {
         this.#sidebarWidthLocalStorageKey = 'ea/sidebar/width';
@@ -29,10 +30,12 @@ class App {
         this.#createFilters();
         this.#createAutoCompleteFields();
         this.#createBatchActions();
-        this.#createModalWindowsForDeleteActions();
+        this.#createActionConfirmationModals();
+        this.#createDefaultRowAction();
         this.#createPopovers();
         this.#createTooltips();
         this.#persistSelectedTab();
+        this.#createActionHandlers();
 
         document.addEventListener('ea.collection.item-added', () => this.#createAutoCompleteFields());
     }
@@ -329,21 +332,16 @@ class App {
         });
 
         const modalTitle = document.querySelector('#batch-action-confirmation-title');
-        const titleContentWithPlaceholders = modalTitle.textContent;
+        const titleContentWithPlaceholders = modalTitle?.textContent;
 
         document.querySelectorAll('[data-action-batch]').forEach((dataActionBatch) => {
             dataActionBatch.addEventListener('click', (event) => {
                 event.preventDefault();
 
                 const actionElement = event.currentTarget;
-                // There is still a possibility that actionName will remain undefined. The title attribute is not always present on elements with the [data-action-batch] attribute.
-                const actionName = actionElement.textContent.trim() || actionElement.getAttribute('title');
                 const selectedItems = document.querySelectorAll('input[type="checkbox"].form-batch-checkbox:checked');
-                modalTitle.textContent = titleContentWithPlaceholders
-                    .replace('%action_name%', actionName)
-                    .replace('%num_items%', selectedItems.length.toString());
 
-                document.querySelector('#modal-batch-action-button').addEventListener('click', () => {
+                const submitBatchAction = () => {
                     // prevent double submission of the batch action form
                     actionElement.setAttribute('disabled', 'disabled');
 
@@ -370,7 +368,25 @@ class App {
 
                     document.body.appendChild(batchForm);
                     batchForm.submit();
-                });
+                };
+
+                // check if this batch action should skip confirmation
+                if (actionElement.hasAttribute('data-action-batch-no-confirm')) {
+                    submitBatchAction();
+                } else {
+                    // show confirmation modal
+                    const actionName = actionElement.textContent.trim() || actionElement.getAttribute('title');
+
+                    // use custom message if provided, otherwise use default modal title
+                    const customMessage = actionElement.getAttribute('data-batch-action-confirm-message');
+                    const messageTemplate = customMessage ?? titleContentWithPlaceholders;
+
+                    modalTitle.textContent = messageTemplate
+                        .replace('%action_name%', actionName)
+                        .replace('%num_items%', selectedItems.length.toString());
+
+                    document.querySelector('#modal-batch-action-button').addEventListener('click', submitBatchAction);
+                }
             });
         });
     }
@@ -382,17 +398,147 @@ class App {
         });
     }
 
-    #createModalWindowsForDeleteActions() {
-        document.querySelectorAll('[data-action-name="delete"]').forEach((actionElement) => {
+    #createActionConfirmationModals() {
+        const modalTitle = document.querySelector('#action-confirmation-title');
+        const modalButton = document.querySelector('#modal-action-confirmation-button');
+        const defaultTitleTemplate = modalTitle?.textContent;
+        const defaultButtonLabel = modalButton?.textContent;
+        const variantToClass = {
+            default: 'btn-secondary',
+            primary: 'btn-primary',
+            success: 'btn-success',
+            warning: 'btn-warning',
+            danger: 'btn-danger',
+        };
+        const allVariantClasses = Object.values(variantToClass);
+
+        document.querySelectorAll('[data-action-confirmation="true"]').forEach((actionElement) => {
             actionElement.addEventListener('click', (event) => {
                 event.preventDefault();
 
-                document.querySelector('#modal-delete-button').addEventListener('click', () => {
-                    const deleteFormAction = actionElement.getAttribute('formaction');
-                    const deleteForm = document.querySelector('#delete-form');
-                    deleteForm.setAttribute('action', deleteFormAction);
-                    deleteForm.submit();
-                });
+                const actionName = actionElement.textContent.trim() || actionElement.getAttribute('title');
+                const entityName = actionElement.getAttribute('data-action-entity-name') || '';
+                const entityId = actionElement.getAttribute('data-action-entity-id') || '';
+
+                // use custom message if provided, otherwise use default modal title
+                const customMessage = actionElement.getAttribute('data-action-confirmation-message');
+                const messageTemplate = customMessage ?? defaultTitleTemplate;
+
+                modalTitle.textContent = messageTemplate
+                    .replace('%action_name%', actionName)
+                    .replace('%entity_name%', entityName)
+                    .replace('%entity_id%', entityId);
+
+                // use custom button label if provided, otherwise use default
+                const customButtonLabel = actionElement.getAttribute('data-action-confirmation-button');
+                modalButton.textContent = customButtonLabel ?? defaultButtonLabel;
+
+                // apply to the modal button the same variant as the action that opened the modal
+                const variant = actionElement.getAttribute('data-action-variant') || 'danger';
+                const variantClass = variantToClass[variant] || 'btn-danger';
+                modalButton.classList.remove(...allVariantClasses);
+                modalButton.classList.add(variantClass);
+
+                modalButton.addEventListener(
+                    'click',
+                    () => {
+                        // check if this is a POST action (like DELETE with formaction) or GET (link href)
+                        const formAction = actionElement.getAttribute('formaction');
+
+                        if (formAction) {
+                            // POST action: use the hidden form with CSRF token (like DELETE)
+                            const form = document.querySelector('#action-confirmation-form');
+                            form.setAttribute('action', formAction);
+                            form.submit();
+                        } else {
+                            // GET action: navigate to the href URL
+                            const href = actionElement.getAttribute('href');
+                            if (href) {
+                                window.location.href = href;
+                            }
+                        }
+                    },
+                    { once: true }
+                );
+            });
+        });
+    }
+
+    #createDefaultRowAction() {
+        const clickableRows = document.querySelectorAll('tr.ea-clickable-row[data-default-action-url]');
+
+        const interactiveSelectors = [
+            'a',
+            'button',
+            'input',
+            'select',
+            'textarea',
+            '.form-check',
+            '.dropdown',
+            '.actions',
+            '[data-bs-toggle]',
+            '.btn',
+        ];
+
+        const isInteractiveElement = (element) => {
+            // walk up the DOM tree to check if any ancestor is interactive
+            // this also handles elements with pointer-events: none whose clicks bubble to parents
+            let current = element;
+            while (current && current !== document.body) {
+                if (interactiveSelectors.some((selector) => current.matches(selector))) {
+                    return true;
+                }
+                current = current.parentElement;
+            }
+
+            return false;
+        };
+
+        const navigateToUrl = (url) => {
+            // create a temporary link and click it to let Turbo (or other libraries) intercept the navigation
+            const link = document.createElement('a');
+            link.href = url;
+            link.style.display = 'none';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        };
+
+        const handleRowActivation = (row, event) => {
+            // don't navigate if rows are selected (batch mode)
+            if (row.classList.contains('selected-row')) {
+                return;
+            }
+
+            const url = row.dataset.defaultActionUrl;
+            if (url) {
+                navigateToUrl(url);
+            }
+        };
+
+        clickableRows.forEach((row) => {
+            // handle mouse clicks
+            row.addEventListener('click', (event) => {
+                if (isInteractiveElement(event.target)) {
+                    return;
+                }
+
+                handleRowActivation(row, event);
+            });
+
+            // handle keyboard navigation (Enter and Space)
+            row.addEventListener('keydown', (event) => {
+                if ('Enter' !== event.key && ' ' !== event.key) {
+                    return;
+                }
+
+                // don't activate if focus is on an interactive child element
+                if (isInteractiveElement(event.target) && event.target !== row) {
+                    return;
+                }
+
+                event.preventDefault();
+                handleRowActivation(row, event);
             });
         });
     }
@@ -471,9 +617,31 @@ class App {
         // update the page anchor when the selected tab changes
         document.querySelectorAll('a[data-bs-toggle="tab"]').forEach((tabElement) => {
             tabElement.addEventListener('shown.bs.tab', (event) => {
+                // don't push state when navigating through browser history (back/forward)
+                if (this.#isNavigatingHistory) {
+                    return;
+                }
                 const urlHash = `#${event.target.getAttribute('href').substring(1)}`;
                 history.pushState({}, '', urlHash);
             });
+        });
+
+        // handle browser back/forward navigation to restore the correct tab
+        window.addEventListener('popstate', () => {
+            this.#isNavigatingHistory = true;
+            const urlHash = window.location.hash;
+            if (urlHash) {
+                const selectedTabPaneId = urlHash.substring(1);
+                const selectedTabId = `tablist-${selectedTabPaneId}`;
+                this.#setTabAsActive(selectedTabId);
+            } else {
+                // no hash means show the first tab
+                const firstTab = document.querySelector('a[data-bs-toggle="tab"]');
+                if (firstTab) {
+                    this.#setTabAsActive(firstTab.id);
+                }
+            }
+            this.#isNavigatingHistory = false;
         });
     }
 
@@ -487,5 +655,24 @@ class App {
         const bootstrapTab = new Tab(tabElement);
         // when showing a tab, Bootstrap hides all the other tabs automatically
         bootstrapTab.show();
+    }
+
+    #createActionHandlers() {
+        // handle form submissions via data attribute (replaces inline onclick handlers)
+        document.querySelectorAll('[data-ea-action-form-id]').forEach((element) => {
+            element.addEventListener('click', (event) => {
+                event.preventDefault();
+                const formId = element.getAttribute('data-ea-action-form-id');
+                document.getElementById(formId).submit();
+            });
+        });
+
+        // handle navigation via data attribute (replaces inline onclick handlers)
+        document.querySelectorAll('[data-ea-action-url]').forEach((element) => {
+            element.addEventListener('click', (event) => {
+                event.preventDefault();
+                window.location = element.getAttribute('data-ea-action-url');
+            });
+        });
     }
 }

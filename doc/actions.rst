@@ -31,6 +31,8 @@ strings with the action names (``'index'``, ``'detail'``, ``'edit'``, etc.) you
 can also use constants for these values: ``Action::INDEX``, ``Action::DETAIL``,
 ``Action::EDIT``, etc. (they are defined in the ``EasyCorp\Bundle\EasyAdminBundle\Config\Action`` class).
 
+.. _actions-built-in:
+
 Built-in Actions
 ----------------
 
@@ -57,6 +59,12 @@ These are the built-in actions included by default in each page:
   * Added by default: ``Action::SAVE_AND_RETURN``, ``Action::SAVE_AND_ADD_ANOTHER``
   * Other available actions: ``Action::SAVE_AND_CONTINUE``, ``Action::INDEX``
 
+.. note::
+
+    By default, clicking a row in the ``index`` page navigates to ``edit`` action
+    (or ``detail`` if edit is unavailable). See :ref:`default row action <default-row-action>`
+    to customize this.
+
 Adding Actions
 --------------
 
@@ -80,7 +88,7 @@ Removing Actions
 ----------------
 
 Removing actions makes them unavailable in the interface, so the user can't
-click on buttons/links to run those actions. However, users can *hack* the URL
+click on buttons/links to run those actions. However, users can modify the URL
 to run the action. To fully disable an action, use the ``disable()``
 method explained later::
 
@@ -174,7 +182,7 @@ of payments for the administered invoice::
 Displaying Actions Conditionally
 --------------------------------
 
-Some actions must displayed only when some conditions met. For example, a
+Some actions must be displayed only when some conditions met. For example, a
 "View Invoice" action may be displayed only when the order status is "paid".
 Use the ``displayIf()`` method to configure when the action should be visible
 to users::
@@ -185,7 +193,7 @@ to users::
 
     public function configureActions(Actions $actions): Actions
     {
-        $viewInvoice = Action::new('View Invoice', 'fas fa-file-invoice')
+        $viewInvoice = Action::new('invoice', 'View Invoice', 'fas fa-file-invoice')
             ->displayIf(static fn (Invoice $invoice): bool => $invoice->isPaid())
 
         return $actions
@@ -199,11 +207,81 @@ to users::
     However, your closure won't receive the object that represents the current
     entity because global actions are not associated to any specific entity.
 
+Action Confirmation
+-------------------
+
+By default, actions are executed immediately when clicked. The only exception
+is the built-in ``delete`` action, which shows a confirmation message. For potentially
+destructive or important actions, you can require user confirmation before execution.
+
+To enable confirmation for any action, use the ``askConfirmation()`` method::
+
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+
+    public function configureActions(Actions $actions): Actions
+    {
+        $archiveAction = Action::new('archive', 'Archive')
+            ->linkToCrudAction('archive')
+            ->askConfirmation();
+
+        return $actions
+            ->add(Crud::PAGE_INDEX, $archiveAction);
+    }
+
+This will display a confirmation modal with a generic message before executing
+the action. You can customize the confirmation message by passing a string::
+
+    $archiveAction = Action::new('archive', 'Archive')
+        ->linkToCrudAction('archive')
+        ->askConfirmation('Are you sure you want to archive this item?');
+
+The confirmation message supports placeholders that are replaced with actual
+values: ``%action_name%`` (the action label), ``%entity_name%`` (the entity
+label in singular), and ``%entity_id%`` (the entity ID)::
+
+    $archiveAction = Action::new('archive', 'Archive')
+        ->linkToCrudAction('archive')
+        ->askConfirmation('Are you sure you want to %action_name% "%entity_name%" #%entity_id%?');
+
+For translatable messages, pass a ``TranslatableInterface`` object::
+
+    use function Symfony\Component\Translation\t;
+
+    $archiveAction = Action::new('archive', 'Archive')
+        ->linkToCrudAction('archive')
+        ->askConfirmation(t('action.archive.confirm'));
+
+You can also customize the confirmation button label by passing a second parameter::
+
+    $publishAction = Action::new('publish', 'Publish')
+        ->linkToCrudAction('publish')
+        ->askConfirmation('Do you accept publishing this article?', 'Accept');
+
+This is useful when the default "Confirm" label doesn't match the action context.
+Both parameters support translatable messages::
+
+    $publishAction = Action::new('publish', 'Publish')
+        ->linkToCrudAction('publish')
+        ->askConfirmation(t('action.publish.confirm'), t('action.publish.button'));
+
+The ``delete`` action shows a confirmation message by default. Although it's
+strongly recommended to keep this behavior, you can disable the confirmation dialog::
+
+    public function configureActions(Actions $actions): Actions
+    {
+        return $actions
+            ->update(Crud::PAGE_INDEX, Action::DELETE, function (Action $action) {
+                return $action->askConfirmation(false);
+            });
+    }
+
 Disabling Actions
 -----------------
 
 Disabling an action means that it's not displayed in the interface and the user
-can't run the action even if they *hack* the URL. If they try to do that, they
+can't run the action even if they modify the URL. If they try to do that, they
 will see a "Forbidden Action" exception.
 
 Actions are disabled globally, you cannot disable them per page::
@@ -515,7 +593,7 @@ that will represent the action::
         ->renderAsLink()
 
         // by default, actions are rendered as `<button type="submit" ...>` elements.
-        // this method allows to change it and use a `<button type="button" ...>` element.
+        // this method allows you to change it and use a `<button type="button" ...>` element.
         ->renderAsButton('submit')
         // also available as EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\ButtonType
         ->renderAsButton(ButtonType::Submit)
@@ -640,17 +718,39 @@ The following example shows all kinds of actions in practice::
     of the shortcuts and utilities available in regular `Symfony controllers`_,
     such as ``$this->render()``, ``$this->redirect()``, and others.
 
-Custom actions can define the ``#[AdminRoute]`` attribute to
-:ref:`customize their route name, path and methods <crud_routes>`::
+It's recommended to apply the ``#[AdminRoute]`` attribute to your custom actions
+to :ref:`customize their route name, path and methods <crud_routes>`. This is
+recommended even for custom actions defined as methods in the CRUD controllers::
+
+    namespace App\Controller\Admin;
 
     use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminRoute;
-    // ...
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+    use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 
-
-    #[AdminRoute(path: '/invoice', name: 'view_invoice')]
-    public function renderInvoice(AdminContext $context)
+    class OrderCrudController extends AbstractCrudController
     {
+        public function configureActions(Actions $actions): Actions
+        {
+            $viewInvoice = Action::new('viewInvoice', 'Invoice', 'fa fa-file-invoice')
+                ->linkToCrudAction('renderInvoice');
+
+            // ...
+        }
+
         // ...
+
+        #[AdminRoute(path: '/invoice', name: 'view_invoice')]
+        public function renderInvoice(AdminContext $context)
+        {
+            // if the dashboard uses 'admin' as the main route name, the resulting
+            // route of this action will be:
+            //   path: /admin/order/invoice
+            //   name: admin_order_view_invoice
+
+            // ...
+        }
     }
 
 .. _global-actions:
@@ -749,6 +849,58 @@ If you do that, EasyAdmin will inject a DTO with all the batch action data::
     also inject Symfony's ``Request`` object to get all the raw submitted batch data
     (e.g. ``$request->request->all('batchActionEntityIds')``).
 
+Batch Action Confirmation
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+By default, batch actions display a confirmation modal before execution to prevent
+accidental operations on multiple items. You can configure this behavior at the
+dashboard level (for all CRUD controllers) or at the individual CRUD controller
+level (to override the dashboard default).
+
+To disable the confirmation modal entirely::
+
+    namespace App\Controller\Admin;
+
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+    use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+
+    class ProductCrudController extends AbstractCrudController
+    {
+        // ...
+
+        public function configureCrud(Crud $crud): Crud
+        {
+            return $crud
+                // batch actions will be executed immediately without confirmation
+                ->askConfirmationOnBatchActions(false)
+            ;
+        }
+    }
+
+You can also customize the confirmation message by passing a string instead of
+a boolean. The message supports two placeholders: ``%action_name%`` (the name of
+the batch action being executed) and ``%num_items%`` (the number of selected items)::
+
+    public function configureCrud(Crud $crud): Crud
+    {
+        return $crud
+            ->askConfirmationOnBatchActions(
+                'Are you sure you want to apply "%action_name%" to %num_items% products?'
+            )
+        ;
+    }
+
+For translatable messages, you can pass a ``TranslatableInterface`` object::
+
+    use function Symfony\Component\Translation\t;
+
+    public function configureCrud(Crud $crud): Crud
+    {
+        return $crud
+            ->askConfirmationOnBatchActions(t('batch.confirm.message'))
+        ;
+    }
+
 .. _actions-integrating-symfony:
 
 Integrating Symfony Actions
@@ -757,7 +909,7 @@ Integrating Symfony Actions
 If the action logic is small and directly related to the backend, it's OK to add
 it to the :doc:`CRUD controller </crud>` as a quick and simple way of integrating
 it into your EasyAdmin backend. However, sometimes the logic is too complex or
-also used in other parts of the Symfony application, so you can't move it into
+also used in other parts of the Symfony application, so you can't move that logic into
 the CRUD controller. This section explains how to integrate an existing Symfony
 controller action in EasyAdmin so you can reuse the backend layout, menu, and other features.
 
@@ -823,7 +975,6 @@ for the actions using the ``#[AdminRoute]`` attribute::
             $this->businessStatsCalculator = $businessStatsCalculator;
         }
 
-        #[Route("/admin/business-stats", name: "business_stats_index")]
         #[AdminRoute("/", name: "index")]
         public function index()
         {
@@ -832,7 +983,6 @@ for the actions using the ``#[AdminRoute]`` attribute::
             ]);
         }
 
-        #[Route("/admin/business-stats/{id}", name: "business_stats_customer")]
         #[AdminRoute("/{id}", name: "customer")]
         public function customer(Customer $customer)
         {
@@ -996,6 +1146,63 @@ This is no longer needed in modern EasyAdmin versions and is now a discouraged
 practice that you should avoid in your applications. Instead, see the previous
 section about :ref:`how to integrate custom Symfony controllers into EasyAdmin dashboards <actions-integrating-symfony>`.
 
+Actions Extensions
+------------------
+
+Applications using EasyAdmin define their actions in the ``configureActions()``
+method of the :doc:`CRUD controllers </crud>`. You can enable, disable, or modify
+:ref:`built-in actions <actions-built-in>`, and also create your own
+:ref:`custom actions <actions-custom>`.
+
+EasyAdmin provides an additional feature to add, remove, or change actions
+(built-in or custom) dynamically at runtime: **action extensions**. They allow
+your application (or third-party bundles installed in it) to modify the actions
+defined for your controllers.
+
+Action extensions are PHP classes that receive the full configuration of
+actions in your backend so they can add, remove, or update any of them.
+
+For example, imagine you need a **Duplicate** action across most of your
+backends. Instead of defining it repeatedly, you can create a reusable package
+(such as a `Symfony bundle`_) and add the following class::
+
+    // <your-package>/src/DuplicateActionExtension.php
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+    use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
+    use EasyCorp\Bundle\EasyAdminBundle\Contracts\Action\ActionsExtensionInterface;
+
+    final class DuplicateActionExtension implements ActionsExtensionInterface
+    {
+        // return true in this method to enable the extension for
+        // the current backend request
+        public function supports(AdminContext $context): bool
+        {
+            // enable the extension only on some pages
+            return $context->getCrud()->getCurrentPage() === Crud::PAGE_DETAIL;
+
+            // enable it on all except some entities
+            $entityFqcn = $context->getCrud()->getEntityFqcn();
+            return null !== $entityFqcn && !\in_array($entityFqcn, ['...'], true);
+
+            // or use any other admin context data to make the decision
+        }
+
+        public function extend(Actions $actions, AdminContext $context): void
+        {
+            $duplicate = Action::new('duplicate', 'Duplicate', 'fa fa-clone')
+                ->linkToCrudAction('duplicate')
+                ->asSuccessAction();
+
+            $actions->add(Crud::PAGE_DETAIL, $duplicate);
+
+            // you can add single actions, groups of actions, etc.
+            // you can also remove or update existing actions
+        }
+    }
+
 .. _`FontAwesome`: https://fontawesome.com/
 .. _`Symfony base controller class`: https://symfony.com/doc/current/controller.html#the-base-controller-class-services
 .. _`Symfony controllers`: https://symfony.com/doc/current/controller.html
+.. _`Symfony bundle`: https://symfony.com/doc/current/bundles.html

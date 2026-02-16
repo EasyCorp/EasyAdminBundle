@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Crear i continuar editant',
         'save' => 'Desar els canvis',
         'save_and_continue' => 'Desar i continuar editant',
+        'toggle_dropdown' => 'Commuta el menú desplegable',
     ],
 
     'batch_action_modal' => [
@@ -70,6 +71,11 @@ return [
     'delete_modal' => [
         'title' => 'Realment vols esborrar aquest element?',
         'content' => 'Aquesta acció no es pot desfer.',
+    ],
+
+    'action_confirmation_modal' => [
+        'title' => 'Estàs segur que vols %action_name%?',
+        'action' => 'Confirmar',
     ],
 
     'filter' => [

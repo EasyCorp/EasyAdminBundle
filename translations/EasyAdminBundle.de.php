@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Erstellen und weiter bearbeiten',
         'save' => 'Speichern',
         'save_and_continue' => 'Speichern und weiter bearbeiten',
+        'toggle_dropdown' => 'Dropdown umschalten',
     ],
 
     'batch_action_modal' => [
@@ -70,6 +71,11 @@ return [
     'delete_modal' => [
         'title' => 'Soll das Element wirklich gelöscht werden?',
         'content' => 'Diese Aktion kann nicht rückgängig gemacht werden.',
+    ],
+
+    'action_confirmation_modal' => [
+        'title' => 'Sind Sie sicher, dass Sie %action_name% möchten?',
+        'action' => 'Bestätigen',
     ],
 
     'filter' => [

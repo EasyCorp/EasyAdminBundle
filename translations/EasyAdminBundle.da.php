@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Opret og fortsæt redigering',
         'save' => 'Gem ændringer',
         'save_and_continue' => 'Gem og fortsæt redigering',
+        'toggle_dropdown' => 'Skift rullemenu',
     ],
 
     'batch_action_modal' => [
@@ -70,6 +71,11 @@ return [
     'delete_modal' => [
         'title' => 'Er du sikker på du vil slette dette element?',
         'content' => 'Denne operation kan ikke fortrydes.',
+    ],
+
+    'action_confirmation_modal' => [
+        'title' => 'Er du sikker på, at du vil %action_name%?',
+        'action' => 'Bekræft',
     ],
 
     'filter' => [

@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Креирај и продолжи со уредување',
         'save' => 'Зачувај ги промените',
         'save_and_continue' => 'Зачувај и продолжи со уредување',
+        'toggle_dropdown' => 'Префрли паѓачко мени',
     ],
 
     'batch_action_modal' => [
@@ -70,6 +71,11 @@ return [
     'delete_modal' => [
         'title' => 'Дали навистина сакате да го избришете овој запис?',
         'content' => 'За оваа операција нема поништување.',
+    ],
+
+    'action_confirmation_modal' => [
+        'title' => 'Дали сте сигурни дека сакате да %action_name%?',
+        'action' => 'Потврди',
     ],
 
     'filter' => [

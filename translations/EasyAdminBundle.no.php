@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Lagre og fortsett redigering',
         // 'save' => 'Lagre endringer',
         'save_and_continue' => 'Lagre og fortsett redigering',
+        'toggle_dropdown' => 'Bytt rullegardinmeny',
     ],
 
     'batch_action_modal' => [
@@ -70,6 +71,11 @@ return [
     'delete_modal' => [
         'title' => 'Vil du virkelig slette dette elementet?',
         'content' => 'Du kan ikke angre dette valget.',
+    ],
+
+    'action_confirmation_modal' => [
+        'title' => 'Er du sikker på at du vil %action_name%?',
+        'action' => 'Bekreft',
     ],
 
     'filter' => [

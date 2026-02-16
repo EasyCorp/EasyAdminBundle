@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Criar e continuar editando',
         'save' => 'Salvar alterações',
         'save_and_continue' => 'Salvar e continuar editando',
+        'toggle_dropdown' => 'Alternar menu suspenso',
     ],
 
     'batch_action_modal' => [
@@ -70,6 +71,11 @@ return [
     'delete_modal' => [
         'title' => 'Você realmente deseja excluir esse item?',
         'content' => 'Não há como desfazer essa operação.',
+    ],
+
+    'action_confirmation_modal' => [
+        'title' => 'Tem certeza que deseja %action_name%?',
+        'action' => 'Confirmar',
     ],
 
     'filter' => [

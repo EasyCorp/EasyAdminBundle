@@ -10,10 +10,14 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\LocaleDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MainMenuDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\UserMenuDto;
+use EasyCorp\Bundle\EasyAdminBundle\Registry\AdminControllerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\CrudControllerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\User\UserInterface;
 
+/**
+ * @template TEntity of object
+ */
 interface AdminContextInterface
 {
     public function getRequest(): Request;
@@ -25,8 +29,18 @@ interface AdminContextInterface
 
     public function getI18n(): I18nDto;
 
+    // this method will be introduced in 5.0.0, but the class that implements
+    // this interface already implements it, so you can use it to smooth upgrade
+    // public function getAdminControllers(): AdminControllerRegistry;
+
+    /**
+     * @deprecated since 4.28.1, use getAdminControllers() instead
+     */
     public function getCrudControllers(): CrudControllerRegistry;
 
+    /**
+     * @return EntityDto<TEntity>
+     */
     public function getEntity(): EntityDto;
 
     public function getUser(): ?UserInterface;

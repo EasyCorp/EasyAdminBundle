@@ -59,6 +59,7 @@ return [
         // 'create_and_continue' => '',
         // 'save' => '',
         // 'save_and_continue' => '',
+        'toggle_dropdown' => 'Växla rullgardinsmeny',
     ],
 
     'batch_action_modal' => [
@@ -70,6 +71,11 @@ return [
     'delete_modal' => [
         'title' => 'Vill du verkligen ta bort detta?',
         'content' => 'Du kan inte ångra det här.',
+    ],
+
+    'action_confirmation_modal' => [
+        'title' => 'Är du säker på att du vill %action_name%?',
+        'action' => 'Bekräfta',
     ],
 
     'filter' => [

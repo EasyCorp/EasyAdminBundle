@@ -1,26 +1,2 @@
-{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
-<form class="d-none" method="post" id="delete-form">
-    {% guard function csrf_token %}
-        <input type="hidden" name="token" value="{{ csrf_token('ea-delete') }}" />
-    {% endguard %}
-</form>
-
-<div id="modal-delete" class="modal fade" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-body">
-                <h4>{{ 'delete_modal.title'|trans([], 'EasyAdminBundle') }}</h4>
-                <p>{{ 'delete_modal.content'|trans([], 'EasyAdminBundle') }}</p>
-            </div>
-            <div class="modal-footer">
-                <twig:ea:Button type="button" data-bs-dismiss="modal">
-                    {{ 'action.cancel'|trans([], 'EasyAdminBundle') }}
-                </twig:ea:Button>
-
-                <twig:ea:Button type="button" variant="danger" data-bs-dismiss="modal" id="modal-delete-button" form="delete-form">
-                    {{ 'action.delete'|trans([], 'EasyAdminBundle') }}
-                </twig:ea:Button>
-            </div>
-        </div>
-    </div>
-</div>
+{% deprecated 'Deprecated since EasyAdmin 4.x, use _action_confirmation_modal.html.twig instead.' %}
+{{ include('@EasyAdmin/crud/includes/_action_confirmation_modal.html.twig', with_context: false) }}

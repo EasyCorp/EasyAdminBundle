@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Sortu eta jarraitu',
         'save' => 'Gorde',
         'save_and_continue' => 'Gorde eta jarraitu',
+        'toggle_dropdown' => 'Txandakatu goitibeherako menua',
     ],
 
     'batch_action_modal' => [
@@ -70,6 +71,11 @@ return [
     'delete_modal' => [
         'title' => 'Ziur zaude elementu hau ezabatu nahi duzula?',
         'content' => 'Ekintza hau ezin da desegin.',
+    ],
+
+    'action_confirmation_modal' => [
+        'title' => 'Ziur zaude %action_name% nahi duzula?',
+        'action' => 'Berretsi',
     ],
 
     'filter' => [

@@ -197,6 +197,7 @@ body:not(.ea-content-width-full) .content-wrapper {
     transition: left 0.3s;
     z-index: calc(var(--zindex-modal-backdrop) + 1);
     inline-size: calc(2 * 20px + var(--sidebar-max-width));
+    overscroll-behavior: contain; /* needed to not scroll the entire page when reaching the end of this element scroll */
 }
 @media (min-width: 992px) {
     .sidebar {
@@ -206,6 +207,7 @@ body:not(.ea-content-width-full) .content-wrapper {
         position: static;
         z-index: calc(var(--zindex-modal-backdrop) - 1);
         inline-size: initial;
+        overscroll-behavior: auto;
     }
 }
 body.ea-mobile-sidebar-visible .sidebar {
@@ -508,9 +510,12 @@ a.user-menu-wrapper .user-details:hover {
     line-height: var(--font-size-lg);
 }
 
+.content-header-help {
+    cursor: pointer;
+}
+
 .content-header-help i {
     color: var(--text-muted);
-    cursor: pointer;
     font-size: 21px;
 }
 
@@ -572,9 +577,6 @@ a.user-menu-wrapper .user-details:hover {
     opacity: 1;
 }
 
-.content-header .datagrid-filters {
-    margin-inline-end: 10px;
-}
 .content-header .global-actions,
 .content-header .page-actions {
     justify-content: right;

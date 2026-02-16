@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Створити і продовжити',
         'save' => 'Зберегти',
         'save_and_continue' => 'Зберегти і продовжити',
+        'toggle_dropdown' => 'Перемкнути випадаюче меню',
     ],
 
     'batch_action_modal' => [
@@ -70,6 +71,11 @@ return [
     'delete_modal' => [
         'title' => 'Ви дійсно бажаєте видалити цей об\'єкт?',
         'content' => 'Цю дію не можна буде відмінити.',
+    ],
+
+    'action_confirmation_modal' => [
+        'title' => 'Ви впевнені, що хочете %action_name%?',
+        'action' => 'Підтвердити',
     ],
 
     'filter' => [

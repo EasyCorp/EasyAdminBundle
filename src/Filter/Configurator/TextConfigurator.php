@@ -29,22 +29,23 @@ final class TextConfigurator implements FilterConfiguratorInterface
             return;
         }
 
-        // Doctrine ORM 2.x returns an array and Doctrine ORM 3.x returns a FieldMapping object
-        /** @var FieldMapping|array $fieldMapping */
-        /** @phpstan-ignore-next-line */
+        // In Doctrine ORM 3.x, FieldMapping implements \ArrayAccess; in 4.x it's an object with properties
         $fieldMapping = $entityDto->getClassMetadata()->getFieldMapping($filterDto->getProperty());
+        // In Doctrine ORM 2.x, getFieldMapping() returns an array
+        /** @phpstan-ignore-next-line function.impossibleType */
         if (\is_array($fieldMapping)) {
-            $doctrineFieldMappingType = $fieldMapping['type'];
-        } else {
-            $doctrineFieldMappingType = $fieldMapping->type;
+            /** @phpstan-ignore-next-line cast.useless */
+            $fieldMapping = (object) $fieldMapping;
         }
+        /** @phpstan-ignore-next-line function.alreadyNarrowedType */
+        $fieldType = property_exists($fieldMapping, 'type') ? $fieldMapping->type : $fieldMapping['type'];
 
-        if (Types::JSON === $doctrineFieldMappingType) {
+        if (Types::JSON === $fieldType) {
             $filterDto->setFormTypeOption('value_type', TextareaType::class);
         }
 
         // don't use Types::OBJECT because it was removed in Doctrine ORM 3.0
-        if (\in_array($doctrineFieldMappingType, [Types::BLOB, 'object', Types::TEXT], true)) {
+        if (\in_array($fieldType, [Types::BLOB, 'object', Types::TEXT], true)) {
             $filterDto->setFormTypeOptionIfNotSet('value_type', TextareaType::class);
         }
     }

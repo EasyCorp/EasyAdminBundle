@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'أنشاء و متابعة',
         'save' => 'حفظ',
         'save_and_continue' => 'حفظ و متابعة',
+        'toggle_dropdown' => 'تبديل القائمة المنسدلة',
     ],
 
     'batch_action_modal' => [
@@ -70,6 +71,11 @@ return [
     'delete_modal' => [
         'title' => 'هل تريد حذف هذا العنصر؟',
         'content' => 'هذا الإجراء غير قابل للإلغاء.',
+    ],
+
+    'action_confirmation_modal' => [
+        'title' => 'هل أنت متأكد أنك تريد %action_name%؟',
+        'action' => 'تأكيد',
     ],
 
     'filter' => [

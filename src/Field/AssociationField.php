@@ -14,6 +14,8 @@ final class AssociationField implements FieldInterface
     use FieldTrait;
 
     public const OPTION_AUTOCOMPLETE = 'autocomplete';
+    public const OPTION_AUTOCOMPLETE_CALLBACK = 'autocompleteCallback';
+    public const OPTION_AUTOCOMPLETE_TEMPLATE = 'autocompleteTemplate';
     public const OPTION_EMBEDDED_CRUD_FORM_CONTROLLER = 'crudControllerFqcn';
     /** @deprecated since easycorp/easyadmin-bundle 4.4.3 use AssociationField::OPTION_EMBEDDED_CRUD_FORM_CONTROLLER */
     public const OPTION_CRUD_CONTROLLER = self::OPTION_EMBEDDED_CRUD_FORM_CONTROLLER;
@@ -38,6 +40,7 @@ final class AssociationField implements FieldInterface
     // the name of the property in the associated entity used to sort the results (only for *-To-One associations)
     public const OPTION_SORT_PROPERTY = 'sortProperty';
     public const OPTION_ESCAPE_HTML_CONTENTS = 'escapeHtml';
+    public const OPTION_PREFERRED_CHOICES = 'preferredChoices';
 
     /**
      * @param TranslatableInterface|string|false|null $label
@@ -52,6 +55,8 @@ final class AssociationField implements FieldInterface
             ->addCssClass('field-association')
             ->setDefaultColumns('col-md-7 col-xxl-6')
             ->setCustomOption(self::OPTION_AUTOCOMPLETE, false)
+            ->setCustomOption(self::OPTION_AUTOCOMPLETE_CALLBACK, null)
+            ->setCustomOption(self::OPTION_AUTOCOMPLETE_TEMPLATE, null)
             ->setCustomOption(self::OPTION_EMBEDDED_CRUD_FORM_CONTROLLER, null)
             ->setCustomOption(self::OPTION_WIDGET, self::WIDGET_AUTOCOMPLETE)
             ->setCustomOption(self::OPTION_QUERY_BUILDER_CALLABLE, null)
@@ -60,12 +65,28 @@ final class AssociationField implements FieldInterface
             ->setCustomOption(self::OPTION_RENDER_AS_EMBEDDED_FORM, false)
             ->setCustomOption(self::OPTION_EMBEDDED_CRUD_FORM_NEW_PAGE_NAME, null)
             ->setCustomOption(self::OPTION_EMBEDDED_CRUD_FORM_EDIT_PAGE_NAME, null)
-            ->setCustomOption(self::OPTION_ESCAPE_HTML_CONTENTS, true);
+            ->setCustomOption(self::OPTION_ESCAPE_HTML_CONTENTS, true)
+            ->setCustomOption(self::OPTION_PREFERRED_CHOICES, null);
     }
 
-    public function autocomplete(): self
+    public function autocomplete(bool $enable = true, ?callable $callback = null, ?string $template = null, bool $renderAsHtml = false): self
     {
+        if (!$enable) {
+            return $this;
+        }
+
         $this->setCustomOption(self::OPTION_AUTOCOMPLETE, true);
+
+        if (null !== $callback) {
+            $this->setCustomOption(self::OPTION_AUTOCOMPLETE_CALLBACK, $callback);
+        }
+
+        if (null !== $template) {
+            $this->setCustomOption(self::OPTION_AUTOCOMPLETE_TEMPLATE, $template);
+        }
+
+        // the renderAsHtml parameter controls the same option as renderAsHtml() method
+        $this->setCustomOption(self::OPTION_ESCAPE_HTML_CONTENTS, !$renderAsHtml);
 
         return $this;
     }
@@ -111,6 +132,28 @@ final class AssociationField implements FieldInterface
     public function renderAsHtml(bool $asHtml = true): self
     {
         $this->setCustomOption(self::OPTION_ESCAPE_HTML_CONTENTS, !$asHtml);
+
+        return $this;
+    }
+
+    /**
+     * Sets the preferred entities that will be displayed at the top of the dropdown,
+     * visually separated from the rest of entities.
+     *
+     * You can pass an array of entity objects or their primary key values:
+     *   ->setPreferredChoices([1, 2, 3])
+     *   ->setPreferredChoices([$featuredCategory1, $featuredCategory2])
+     *
+     * Or a callable that receives an entity and returns true for preferred choices:
+     *   ->setPreferredChoices(fn (Category $category) => $category->isFeatured())
+     *
+     * Note: This option is not compatible with remote autocomplete (->autocomplete()).
+     *
+     * @param array<mixed>|callable $preferredChoices
+     */
+    public function setPreferredChoices(array|callable $preferredChoices): self
+    {
+        $this->setCustomOption(self::OPTION_PREFERRED_CHOICES, $preferredChoices);
 
         return $this;
     }

@@ -59,6 +59,7 @@ return [
         // 'create_and_continue' => '',
         // 'save' => '',
         // 'save_and_continue' => '',
+        'toggle_dropdown' => 'Prebaci padajući izbornik',
     ],
 
     'batch_action_modal' => [
@@ -70,6 +71,11 @@ return [
     'delete_modal' => [
         'title' => 'Jeste li sigurni da želite izbrisati ovu stavku?',
         'content' => 'Izbrisana stavka se ne može povratiti',
+    ],
+
+    'action_confirmation_modal' => [
+        'title' => 'Jeste li sigurni da želite %action_name%?',
+        'action' => 'Potvrdi',
     ],
 
     'filter' => [

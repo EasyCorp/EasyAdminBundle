@@ -87,8 +87,9 @@
 
 {% block main %}
     {# sort can be multiple; let's consider the sorting field the first one #}
-    {% set sort_field_name = app.request.get('sort')|keys|first %}
-    {% set sort_order = app.request.get('sort')|first %}
+    {% set sort_params = app.request.query.all['sort']|default({}) %}
+    {% set sort_field_name = sort_params|keys|first %}
+    {% set sort_order = sort_params|first %}
     {% set some_results_are_hidden = entities|reduce((some_results_are_hidden, entity) => some_results_are_hidden or not entity.isAccessible, false) %}
     {% set has_footer = entities|length != 0 %}
     {% set has_search = ea.crud.isSearchEnabled %}
@@ -116,7 +117,7 @@
                         {% set next_sort_direction = is_sorting_field ? (ea.search.sortDirection(field.property) == ea_sort_desc ? ea_sort_asc : ea_sort_desc) : ea_sort_desc %}
                         {% set column_icon = is_sorting_field ? (next_sort_direction == ea_sort_desc ? 'internal:sort-arrow-up' : 'internal:sort-arrow-down') : 'internal:sort-arrows' %}
 
-                        <th data-column="{{ field.property }}" class="{{ is_searchable ? 'searchable' }} {{ is_sorting_field ? 'sorted' }} {{ field.isVirtual ? 'field-virtual' }} header-for-{{ field.cssClass|split(' ')|filter(class => class starts with 'field-')|join('') }} text-{{ field.textAlign }}" dir="{{ ea.i18n.textDirection }}">
+                        <th data-column="{{ field.property }}" class="{{ field.cssClass }} {{ is_searchable ? 'searchable' }} {{ is_sorting_field ? 'sorted' }} {{ field.isVirtual ? 'field-virtual' }} header-for-{{ field.cssClass|split(' ')|filter(class => class starts with 'field-')|join('') }} text-{{ field.textAlign }}" dir="{{ ea.i18n.textDirection }}">
                             {% if field.isSortable %}
                                 {% set sortable_url = ea_url().set('page', 1).set('sort', {(field.property): next_sort_direction}) %}
                                 {% if ea.usePrettyUrls %}
@@ -143,8 +144,9 @@
         <tbody>
         {% block table_body %}
             {% for entity in entities %}
+                {% block table_body_row %}
                 {% if entity.isAccessible %}
-                    <tr data-id="{{ entity.primaryKeyValueAsString }}" {% block entity_row_attributes %}{% endblock %}>
+                    <tr data-id="{{ entity.primaryKeyValueAsString }}" {% if entity.defaultActionUrl %}data-default-action-url="{{ entity.defaultActionUrl }}" class="ea-clickable-row" role="link" tabindex="0"{% endif %} {% block entity_row_attributes %}{% endblock %}>
                         {% if has_batch_actions %}
                             <td class="batch-actions-selector">
                                 <div class="form-check">
@@ -183,7 +185,7 @@
                                                             <twig:ea:ActionMenu:ActionList:Item
                                                                 class="{{ item.cssClass }} dropdown-item-variant-{{ item.variant.value }}" url="{{ item.linkUrl }}"
                                                                 icon="{{ item.icon }}" icon:class="action-icon"
-                                                                htmlAttributes="{{ item.htmlAttributes }}"
+                                                                htmlAttributes="{{ item.htmlAttributes|ea_html_attrs }}"
                                                                 renderAsForm="{{ item.isRenderedAsForm }}"
                                                                 label="{{ item.label|trans }}" label:class="action-label" renderLabelRaw
                                                                 showBlankIcons="{{ hasAnyActionWithIcon }}" />
@@ -207,6 +209,7 @@
                     </tr>
 
                 {% endif %}
+                {% endblock table_body_row %}
             {% else %}
                 {% block table_body_empty %}
                     {% for i in 1..14 %}
@@ -255,7 +258,7 @@
     {% endif %}
 
     {% block delete_form %}
-        {{ include('@EasyAdmin/crud/includes/_delete_form.html.twig', with_context: false) }}
+        {{ include('@EasyAdmin/crud/includes/_action_confirmation_modal.html.twig', with_context: false) }}
     {% endblock delete_form %}
 
     {% if has_filters %}

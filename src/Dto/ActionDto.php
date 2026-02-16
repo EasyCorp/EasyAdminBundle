@@ -16,12 +16,12 @@ final class ActionDto
 {
     private ?string $type = null;
     private ?string $name = null;
-    /** @var TranslatableInterface|string|(callable(object): string)|false|null */
+    /** @var TranslatableInterface|string|callable|false|null */
     private mixed $label = null;
     private ?string $icon = null;
     private string $cssClass = '';
     private string $addedCssClass = '';
-    /** @var array<string, string> */
+    /** @var array<string, string|TranslatableInterface> */
     private array $htmlAttributes = [];
     private ?string $linkUrl = null;
     private ?string $templatePath = null;
@@ -39,6 +39,9 @@ final class ActionDto
     private ButtonType $buttonType = ButtonType::Submit;
     private ButtonVariant $variant = ButtonVariant::Default;
     private ButtonStyle $style = ButtonStyle::Solid;
+    private bool|string|TranslatableInterface $confirmationMessage = false;
+    private string|TranslatableInterface|null $displayableConfirmationMessage = null;
+    private string|TranslatableInterface|null $confirmationButtonLabel = null;
 
     public function getType(): string
     {
@@ -91,9 +94,6 @@ final class ActionDto
         return $this->label;
     }
 
-    /**
-     * @param TranslatableInterface|string|(callable(object $entity): string)|false|null $label
-     */
     public function setLabel(TranslatableInterface|string|callable|false|null $label): void
     {
         $this->label = $label;
@@ -170,7 +170,7 @@ final class ActionDto
     }
 
     /**
-     * @return array<string, string>
+     * @return array<string, string|TranslatableInterface>
      */
     public function getHtmlAttributes(): array
     {
@@ -178,7 +178,7 @@ final class ActionDto
     }
 
     /**
-     * @param array<string, string> $htmlAttributes
+     * @param array<string, string|TranslatableInterface> $htmlAttributes
      */
     public function addHtmlAttributes(array $htmlAttributes): void
     {
@@ -186,14 +186,14 @@ final class ActionDto
     }
 
     /**
-     * @param array<string, string> $htmlAttributes
+     * @param array<string, string|TranslatableInterface> $htmlAttributes
      */
     public function setHtmlAttributes(array $htmlAttributes): void
     {
         $this->htmlAttributes = $htmlAttributes;
     }
 
-    public function setHtmlAttribute(string $attributeName, string $attributeValue): void
+    public function setHtmlAttribute(string $attributeName, string|TranslatableInterface $attributeValue): void
     {
         $this->htmlAttributes[$attributeName] = $attributeValue;
     }
@@ -357,6 +357,41 @@ final class ActionDto
         return ButtonStyle::Text === $this->style;
     }
 
+    public function getConfirmationMessage(): bool|string|TranslatableInterface
+    {
+        return $this->confirmationMessage;
+    }
+
+    public function setConfirmationMessage(bool|string|TranslatableInterface $message): void
+    {
+        $this->confirmationMessage = $message;
+    }
+
+    public function hasConfirmation(): bool
+    {
+        return false !== $this->confirmationMessage;
+    }
+
+    public function getDisplayableConfirmationMessage(): string|TranslatableInterface|null
+    {
+        return $this->displayableConfirmationMessage;
+    }
+
+    public function setDisplayableConfirmationMessage(string|TranslatableInterface|null $message): void
+    {
+        $this->displayableConfirmationMessage = $message;
+    }
+
+    public function getConfirmationButtonLabel(): string|TranslatableInterface|null
+    {
+        return $this->confirmationButtonLabel;
+    }
+
+    public function setConfirmationButtonLabel(string|TranslatableInterface|null $label): void
+    {
+        $this->confirmationButtonLabel = $label;
+    }
+
     /**
      * @internal
      */
@@ -402,8 +437,16 @@ final class ActionDto
             $action->linkToRoute($this->routeName, $this->routeParameters);
         }
 
+        if (null !== $this->url) {
+            $action->linkToUrl($this->url);
+        }
+
         if (null !== $this->displayCallable) {
             $action->displayIf($this->displayCallable);
+        }
+
+        if (false !== $this->confirmationMessage) {
+            $action->askConfirmation($this->confirmationMessage, $this->confirmationButtonLabel);
         }
 
         return $action;

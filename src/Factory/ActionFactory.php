@@ -5,9 +5,13 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\ActionCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\EntityCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Action\ActionsExtensionInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Provider\AdminContextProviderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionConfigDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
@@ -21,19 +25,23 @@ use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\ButtonVariant;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
-use function Symfony\Component\Translation\t;
 use Symfony\Contracts\Translation\TranslatableInterface;
+use function Symfony\Component\Translation\t;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
 final class ActionFactory
 {
+    /**
+     * @param iterable<ActionsExtensionInterface> $actionsExtensions
+     */
     public function __construct(
         private readonly AdminContextProviderInterface $adminContextProvider,
         private readonly AuthorizationCheckerInterface $authChecker,
         private readonly AdminUrlGeneratorInterface $adminUrlGenerator,
         private readonly ?CsrfTokenManagerInterface $csrfTokenManager = null,
+        private readonly iterable $actionsExtensions = [],
     ) {
     }
 
@@ -91,7 +99,63 @@ final class ActionFactory
             $processedItems = $this->sortActionsByPriority($processedItems);
         }
 
-        $entityDto->setActions(ActionCollection::new($processedItems));
+        $entityDto->setActions(new ActionCollection($processedItems));
+        $entityDto->setDefaultActionUrl($this->resolveDefaultActionUrl($processedItems));
+    }
+
+    /**
+     * Finds the URL for the default row action based on the CRUD configuration.
+     * It searches the processed actions (including nested ActionGroups) and returns
+     * the URL of the first matching action from the configured fallback chain.
+     *
+     * @param array<string, ActionDto|ActionGroupDto> $processedItems
+     */
+    private function resolveDefaultActionUrl(array $processedItems): ?string
+    {
+        $context = $this->adminContextProvider->getContext();
+        $defaultRowAction = $context->getCrud()->getDefaultRowAction();
+
+        if (null === $defaultRowAction) {
+            return null;
+        }
+
+        // normalize to array for uniform handling
+        $actionsToTry = \is_array($defaultRowAction) ? $defaultRowAction : [$defaultRowAction];
+
+        foreach ($actionsToTry as $actionName) {
+            $url = $this->findActionUrl($processedItems, $actionName);
+            if (null !== $url) {
+                return $url;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Searches for an action by name in the processed items, including nested ActionGroups.
+     *
+     * @param array<string, ActionDto|ActionGroupDto> $processedItems
+     */
+    private function findActionUrl(array $processedItems, string $actionName): ?string
+    {
+        // first, check direct actions
+        if (isset($processedItems[$actionName]) && $processedItems[$actionName] instanceof ActionDto) {
+            return $processedItems[$actionName]->getLinkUrl();
+        }
+
+        // then, search inside ActionGroups
+        foreach ($processedItems as $item) {
+            if ($item instanceof ActionGroupDto) {
+                foreach ($item->getActions() as $nestedAction) {
+                    if ($nestedAction->getName() === $actionName) {
+                        return $nestedAction->getLinkUrl();
+                    }
+                }
+            }
+        }
+
+        return null;
     }
 
     public function processGlobalActions(?ActionConfigDto $actionsDto = null): ActionCollection
@@ -159,7 +223,7 @@ final class ActionFactory
             $processedItems = $this->sortActionsByPriority($processedItems);
         }
 
-        return ActionCollection::new($processedItems);
+        return new ActionCollection($processedItems);
     }
 
     public function processGlobalActionsAndEntityActionsForAll(EntityCollection $entityDtos, ActionConfigDto $actionConfigDto): ActionCollection
@@ -198,20 +262,77 @@ final class ActionFactory
         if (Action::DELETE === $actionDto->getName()) {
             $actionDto->addHtmlAttributes([
                 'formaction' => $this->adminUrlGenerator->setController($adminContext->getCrud()->getControllerFqcn())->setAction(Action::DELETE)->setEntityId($entityDto->getPrimaryKeyValue())->generateUrl(),
-                'data-bs-toggle' => 'modal',
-                'data-bs-target' => '#modal-delete',
             ]);
         }
 
-        if ($actionDto->isBatchAction()) {
+        // handle action confirmation modals (including DELETE action when askConfirmation is enabled)
+        if ($actionDto->hasConfirmation()) {
+            $confirmationMessage = $actionDto->getConfirmationMessage();
+
             $actionDto->addHtmlAttributes([
                 'data-bs-toggle' => 'modal',
-                'data-bs-target' => '#modal-batch-action',
+                'data-bs-target' => '#modal-action-confirmation',
+                'data-action-confirmation' => 'true',
+                'data-action-variant' => $actionDto->getVariant()->value,
+            ]);
+
+            // add confirmation message attribute
+            if (true !== $confirmationMessage) {
+                $actionDto->setHtmlAttribute(
+                    'data-action-confirmation-message',
+                    $confirmationMessage instanceof TranslatableInterface
+                        ? $confirmationMessage
+                        : t($confirmationMessage, $defaultTranslationParameters, $translationDomain)
+                );
+            }
+
+            // add confirmation button label attribute
+            $buttonLabel = $actionDto->getConfirmationButtonLabel();
+            if (null !== $buttonLabel) {
+                $actionDto->setHtmlAttribute(
+                    'data-action-confirmation-button',
+                    $buttonLabel instanceof TranslatableInterface
+                        ? $buttonLabel
+                        : t($buttonLabel, $defaultTranslationParameters, $translationDomain)
+                );
+            }
+
+            // add entity context attributes (only for entity actions)
+            if (null !== $entityDto) {
+                $entityLabel = $adminContext->getCrud()->getEntityLabelInSingular();
+                $actionDto->setHtmlAttribute(
+                    'data-action-entity-name',
+                    \is_string($entityLabel) ? t($entityLabel, $defaultTranslationParameters, $translationDomain) : $entityLabel
+                );
+                $actionDto->setHtmlAttribute('data-action-entity-id', $entityDto->getPrimaryKeyValueAsString());
+            }
+        }
+
+        if ($actionDto->isBatchAction()) {
+            $batchActionAttributes = [
                 'data-action-csrf-token' => $this->csrfTokenManager?->getToken('ea-batch-action-'.$actionDto->getName()),
                 'data-action-batch' => 'true',
                 'data-entity-fqcn' => $adminContext->getCrud()->getEntityFqcn(),
                 'data-action-url' => $actionDto->getLinkUrl(),
-            ]);
+            ];
+
+            $confirmationConfig = $adminContext->getCrud()->askConfirmationOnBatchActions();
+
+            if (false === $confirmationConfig) {
+                $batchActionAttributes['data-action-batch-no-confirm'] = 'true';
+            } else {
+                $batchActionAttributes['data-bs-toggle'] = 'modal';
+                $batchActionAttributes['data-bs-target'] = '#modal-batch-action';
+
+                // if the confirmation config is not a boolean, it's a string or TranslatableInterface with the custom confirmation message
+                if (true !== $confirmationConfig) {
+                    $batchActionAttributes['data-batch-action-confirm-message'] = $confirmationConfig instanceof TranslatableInterface
+                        ? $confirmationConfig
+                        : t($confirmationConfig, $defaultTranslationParameters, $translationDomain);
+                }
+            }
+
+            $actionDto->addHtmlAttributes($batchActionAttributes);
         }
 
         return $actionDto;
@@ -408,5 +529,38 @@ final class ActionFactory
         $newGroupDto->setHtmlAttribute('data-action-group-name', $newGroupDto->getName());
 
         return $newGroupDto;
+    }
+
+    /**
+     * Builds the complete actions configuration in this order:
+     * Dashboard action config / Default action config > CRUD controller action config > Action Extensions.
+     */
+    public function buildActionsConfig(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController, AdminContext $context, ?string $pageName): ActionConfigDto
+    {
+        if (null === $crudController) {
+            return new ActionConfigDto();
+        }
+
+        $defaultActionConfig = $dashboardController->configureActions();
+        $actions = $crudController->configureActions($defaultActionConfig);
+
+        $this->applyExtensions($actions, $context);
+
+        return $actions->getAsDto($pageName);
+    }
+
+    /**
+     * Applies all registered action extensions to the original Actions configuration
+     * so they can modify it adding/updating/removing actions.
+     */
+    private function applyExtensions(Actions $actions, AdminContext $context): void
+    {
+        foreach ($this->actionsExtensions as $extension) {
+            if (!$extension->supports($context)) {
+                continue;
+            }
+
+            $extension->extend($actions, $context);
+        }
     }
 }

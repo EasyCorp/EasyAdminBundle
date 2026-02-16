@@ -2,14 +2,8 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Filter;
 
-use Doctrine\ORM\Query\Expr\Orx;
-use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDataDto;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\ChoiceFilterType;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
 /**
@@ -18,6 +12,7 @@ use Symfony\Contracts\Translation\TranslatableInterface;
  */
 final class ChoiceFilter implements FilterInterface
 {
+    use ChoiceFilterApplyTrait;
     use FilterTrait;
 
     /**
@@ -49,7 +44,7 @@ final class ChoiceFilter implements FilterInterface
     public function setTranslatableChoices(array $choiceGenerator): self
     {
         $this->dto->setFormTypeOption('value_type_options.choices', array_keys($choiceGenerator));
-        $this->dto->setFormTypeOption('value_type_options.choice_label', fn ($value) => $choiceGenerator[$value]);
+        $this->dto->setFormTypeOption('value_type_options.choice_label', static fn ($value) => $choiceGenerator[$value]);
 
         return $this;
     }
@@ -66,27 +61,5 @@ final class ChoiceFilter implements FilterInterface
         $this->dto->setFormTypeOption('value_type_options.multiple', $selectMultiple);
 
         return $this;
-    }
-
-    public function apply(QueryBuilder $queryBuilder, FilterDataDto $filterDataDto, ?FieldDto $fieldDto, EntityDto $entityDto): void
-    {
-        $alias = $filterDataDto->getEntityAlias();
-        $property = $filterDataDto->getProperty();
-        $comparison = $filterDataDto->getComparison();
-        $parameterName = $filterDataDto->getParameterName();
-        $value = $filterDataDto->getValue();
-        $isMultiple = (bool) $filterDataDto->getFormTypeOption('value_type_options.multiple');
-
-        if (null === $value || ($isMultiple && 0 === \count($value))) {
-            $queryBuilder->andWhere(sprintf('%s.%s %s', $alias, $property, $comparison));
-        } else {
-            $orX = new Orx();
-            $orX->add(sprintf('%s.%s %s (:%s)', $alias, $property, $comparison, $parameterName));
-            if (ComparisonType::NEQ === $comparison || 'NOT IN' === $comparison) {
-                $orX->add(sprintf('%s.%s IS NULL', $alias, $property));
-            }
-            $queryBuilder->andWhere($orX)
-                ->setParameter($parameterName, $value);
-        }
     }
 }

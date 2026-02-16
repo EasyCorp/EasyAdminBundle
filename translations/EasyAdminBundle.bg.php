@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Създай и продължи редакцията',
         'save' => 'Запиши',
         'save_and_continue' => 'Запиши и продължи редакцията',
+        'toggle_dropdown' => 'Превключване на падащото меню',
     ],
 
     'batch_action_modal' => [
@@ -70,6 +71,11 @@ return [
     'delete_modal' => [
         'title' => 'Наистина ли желаете да изтриете записа?',
         'content' => 'Това действие е необратимо.',
+    ],
+
+    'action_confirmation_modal' => [
+        'title' => 'Сигурни ли сте, че искате да %action_name%?',
+        'action' => 'Потвърди',
     ],
 
     'filter' => [

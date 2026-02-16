@@ -3,7 +3,6 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
 use Doctrine\DBAL\Types\Types;
-use Doctrine\ORM\Mapping\AssociationMapping;
 use Doctrine\ORM\Mapping\FieldMapping;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\EntityCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
@@ -40,7 +39,7 @@ final class FieldFactory
      */
     private static array $doctrineTypeToFieldFqcn = [
         'array' => ArrayField::class, // don't use Types::ARRAY because it was removed in Doctrine DBAL 4
-        Types::BIGINT => TextField::class,
+        Types::BIGINT => IntegerField::class,
         Types::BINARY => TextareaField::class,
         Types::BLOB => TextareaField::class,
         Types::BOOLEAN => BooleanField::class,
@@ -160,19 +159,16 @@ final class FieldFactory
             }
 
             // this is a virtual field, so we can't autoconfigure it
-            if (!$entityDto->hasProperty($fieldDto->getProperty())) {
+            if (!isset($entityDto->getClassMetadata()->fieldMappings[$fieldDto->getProperty()])
+                && !$entityDto->getClassMetadata()->hasAssociation($fieldDto->getProperty())) {
                 continue;
             }
 
             if ($fieldDto->getProperty() === $entityDto->getClassMetadata()->getSingleIdentifierFieldName()) {
                 $guessedFieldFqcn = IdField::class;
             } elseif ($entityDto->getClassMetadata()->hasAssociation($fieldDto->getProperty())) {
-                /** @var AssociationMapping|array $associationMapping */
-                /** @phpstan-ignore-next-line */
-                $associationMapping = $entityDto->getClassMetadata()->getAssociationMapping($fieldDto->getProperty());
-                $orphanRemoval = $associationMapping instanceof AssociationMapping
-                    ? $associationMapping->orphanRemoval
-                    : (isset($associationMapping['orphanRemoval']) && $associationMapping['orphanRemoval']);
+                /** @var bool $orphanRemoval */
+                $orphanRemoval = $entityDto->getClassMetadata()->getAssociationMapping($fieldDto->getProperty())['orphanRemoval'];
                 if ($orphanRemoval && $entityDto->getClassMetadata()->isCollectionValuedAssociation($fieldDto->getProperty())) {
                     $guessedFieldFqcn = CollectionField::class;
                 } else {
@@ -181,20 +177,19 @@ final class FieldFactory
             } elseif (!isset($entityDto->getClassMetadata()->fieldMappings[$fieldDto->getProperty()])) {
                 throw new \RuntimeException(sprintf('Could not guess a field class for "%s" field. It possibly is an association field or an embedded class field.', $fieldDto->getProperty()));
             } else {
-                // Doctrine ORM 2.x returns an array and Doctrine ORM 3.x returns a FieldMapping object
-                /** @var FieldMapping|array $fieldMapping */
-                /** @phpstan-ignore-next-line */
+                // In Doctrine ORM 3.x, FieldMapping implements \ArrayAccess; in 4.x it's an object with properties
                 $fieldMapping = $entityDto->getClassMetadata()->getFieldMapping($fieldDto->getProperty());
+                // In Doctrine ORM 2.x, getFieldMapping() returns an array
+                /** @phpstan-ignore-next-line function.impossibleType */
                 if (\is_array($fieldMapping)) {
-                    $doctrineFieldMappingType = $fieldMapping['type'];
-                } else {
-                    $doctrineFieldMappingType = $fieldMapping->type;
+                    /** @phpstan-ignore-next-line cast.useless */
+                    $fieldMapping = (object) $fieldMapping;
                 }
-
-                $guessedFieldFqcn = self::$doctrineTypeToFieldFqcn[$doctrineFieldMappingType] ?? null;
-
+                /** @phpstan-ignore-next-line function.alreadyNarrowedType */
+                $fieldType = property_exists($fieldMapping, 'type') ? $fieldMapping->type : $fieldMapping['type'];
+                $guessedFieldFqcn = self::$doctrineTypeToFieldFqcn[$fieldType] ?? null;
                 if (null === $guessedFieldFqcn) {
-                    throw new \RuntimeException(sprintf('The Doctrine type of the "%s" field is "%s", which is not supported by EasyAdmin. For Doctrine\'s Custom Mapping Types have a look at EasyAdmin\'s field docs.', $fieldDto->getProperty(), $doctrineFieldMappingType));
+                    throw new \RuntimeException(sprintf('The Doctrine type of the "%s" field is "%s", which is not supported by EasyAdmin. For Doctrine\'s Custom Mapping Types have a look at EasyAdmin\'s field docs.', $fieldDto->getProperty(), $fieldType));
                 }
             }
 
@@ -260,9 +255,10 @@ final class FieldFactory
             $newField->setFormType($fieldDto->getFormType());
         }
 
-        // don't copy the template name and path from the original Field class
-        // (because they are 'crud/field/text' and '@EasyAdmin/crud/field/text.html.twig')
-        // and use the template name/path from the new specific field (e.g. 'crud/field/datetime')
+        // copy the template path of the original Field class if it was customized
+        if (null !== $fieldDto->getTemplatePath()) {
+            $newField->setTemplatePath($fieldDto->getTemplatePath());
+        }
 
         return $newField;
     }

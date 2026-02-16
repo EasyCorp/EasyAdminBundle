@@ -15,9 +15,9 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  *
- * @template TEntity of object = object
+ * @template TEntity of object
  */
-final class EntityDto
+final class EntityDto implements \Stringable
 {
     private bool $isAccessible = true;
     /** @var TEntity|null */
@@ -25,6 +25,7 @@ final class EntityDto
     private mixed $primaryKeyValue = null;
     private ?FieldCollection $fields = null;
     private ?ActionCollection $actions = null;
+    private ?string $defaultActionUrl = null;
 
     /**
      * @param class-string<TEntity>  $fqcn
@@ -51,7 +52,15 @@ final class EntityDto
 
     public function __toString(): string
     {
-        return $this->toString();
+        if (null === $this->instance) {
+            return '';
+        }
+
+        if ($this->instance instanceof \Stringable) {
+            return (string) $this->instance;
+        }
+
+        return sprintf('%s #%s', $this->getName(), substr($this->getPrimaryKeyValueAsString(), 0, 16));
     }
 
     /**
@@ -67,17 +76,12 @@ final class EntityDto
         return basename(str_replace('\\', '/', $this->fqcn));
     }
 
+    /**
+     * @deprecated since 4.27 and to be removed in 5.0, use $entityDto->__toString() instead
+     */
     public function toString(): string
     {
-        if (null === $this->instance) {
-            return '';
-        }
-
-        if (method_exists($this->instance, '__toString')) {
-            return (string) $this->instance;
-        }
-
-        return sprintf('%s #%s', $this->getName(), substr($this->getPrimaryKeyValueAsString(), 0, 16));
+        return $this->__toString();
     }
 
     /**
@@ -163,6 +167,16 @@ final class EntityDto
         return $this->actions;
     }
 
+    public function getDefaultActionUrl(): ?string
+    {
+        return $this->defaultActionUrl;
+    }
+
+    public function setDefaultActionUrl(?string $url): void
+    {
+        $this->defaultActionUrl = $url;
+    }
+
     public function getClassMetadata(): ClassMetadata
     {
         return $this->metadata;
@@ -181,6 +195,9 @@ final class EntityDto
         return $this->metadata->getFieldNames();
     }
 
+    /**
+     * @deprecated since 4.27 and to be removed in 5.0, use $entityDto->getClassMetadata()->fieldMappings[$propertyName] and $entityDto->getClassMetadata()->associationMappings[$propertyName] instead
+     */
     public function getPropertyMetadata(string $propertyName): KeyValueStore
     {
         if (isset($this->metadata->fieldMappings[$propertyName])) {
@@ -222,15 +239,27 @@ final class EntityDto
      */
     public function getPropertyDataType(string $propertyName): string|int
     {
-        return $this->getPropertyMetadata($propertyName)->get('type');
+        if (isset($this->getClassMetadata()->fieldMappings[$propertyName])) {
+            return $this->getClassMetadata()->fieldMappings[$propertyName]['type'];
+        }
+        if (isset($this->getClassMetadata()->associationMappings[$propertyName])) {
+            return $this->getClassMetadata()->associationMappings[$propertyName]['type'];
+        }
+        throw new \InvalidArgumentException(sprintf('The "%s" field does not exist in the "%s" entity.', $propertyName, $this->getFqcn()));
     }
 
+    /**
+     * @deprecated since 4.27 and to be removed in 5.0, use isset($entityDto->getClassMetadata()->fieldMappings[$propertyName]) || $entityDto->getClassMetadata()->hasAssociation($propertyName) instead
+     */
     public function hasProperty(string $propertyName): bool
     {
         return isset($this->metadata->fieldMappings[$propertyName])
             || $this->metadata->hasAssociation($propertyName);
     }
 
+    /**
+     * @deprecated since 4.27 and to be removed in 5.0 without replacement
+     */
     public function isAssociation(string $propertyName): bool
     {
         if ($this->metadata->hasAssociation($propertyName)) {

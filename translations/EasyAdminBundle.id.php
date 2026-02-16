@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Buat dan teruskan penyuntingan',
         'save' => 'Simpan perubahan',
         'save_and_continue' => 'Simpan dan teruskan penyuntingan',
+        'toggle_dropdown' => 'Alihkan menu dropdown',
     ],
 
     'batch_action_modal' => [
@@ -70,6 +71,11 @@ return [
     'delete_modal' => [
         'title' => 'Apakah Anda benar-benar ingin menghapus item ini?',
         'content' => 'Tidak ada pembatalan untuk operasi ini.',
+    ],
+
+    'action_confirmation_modal' => [
+        'title' => 'Apakah Anda yakin ingin %action_name%?',
+        'action' => 'Konfirmasi',
     ],
 
     'filter' => [

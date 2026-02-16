@@ -6,6 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminAction;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminCrud;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminRoute;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
@@ -21,20 +22,20 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
     public const CACHE_KEY_FQCN_TO_ROUTE = 'easyadmin.routes.fqcn_to_route';
 
     private const DEFAULT_ROUTES_CONFIG = [
-        'index' => [
-            'actionName' => 'index',
+        Action::INDEX => [
+            'actionName' => Action::INDEX,
             'routePath' => '/',
             'routeName' => 'index',
             'methods' => ['GET'],
         ],
-        'new' => [
-            'actionName' => 'new',
+        Action::NEW => [
+            'actionName' => Action::NEW,
             'routePath' => '/new',
             'routeName' => 'new',
             'methods' => ['GET', 'POST'],
         ],
-        'batchDelete' => [
-            'actionName' => 'batchDelete',
+        Action::BATCH_DELETE => [
+            'actionName' => Action::BATCH_DELETE,
             'routePath' => '/batch-delete',
             'routeName' => 'batch_delete',
             'methods' => ['POST'],
@@ -51,20 +52,20 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
             'routeName' => 'render_filters',
             'methods' => ['GET'],
         ],
-        'edit' => [
-            'actionName' => 'edit',
+        Action::EDIT => [
+            'actionName' => Action::EDIT,
             'routePath' => '/{entityId}/edit',
             'routeName' => 'edit',
             'methods' => ['GET', 'POST', 'PATCH'],
         ],
-        'delete' => [
-            'actionName' => 'delete',
+        Action::DELETE => [
+            'actionName' => Action::DELETE,
             'routePath' => '/{entityId}/delete',
             'routeName' => 'delete',
             'methods' => ['POST'],
         ],
-        'detail' => [
-            'actionName' => 'detail',
+        Action::DETAIL => [
+            'actionName' => Action::DETAIL,
             'routePath' => '/{entityId}',
             'routeName' => 'detail',
             'methods' => ['GET'],
@@ -493,7 +494,7 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
                 throw new \RuntimeException(sprintf('In the #[AdminDashboard] attribute of the "%s" dashboard controller, the route name "%s" for the "%s" action is not valid. It can only contain letter, numbers, dashes, and underscores.', $dashboardFqcn, $customRouteConfig['routeName'], $action));
             }
 
-            if (isset($customRouteConfig['routePath']) && \in_array($action, ['edit', 'detail', 'delete'], true) && !str_contains($customRouteConfig['routePath'], '{entityId}')) {
+            if (isset($customRouteConfig['routePath']) && \in_array($action, [Action::EDIT, Action::DETAIL, Action::DELETE], true) && !str_contains($customRouteConfig['routePath'], '{entityId}')) {
                 throw new \RuntimeException(sprintf('In the #[AdminDashboard] attribute of the "%s" dashboard controller, the path for the "%s" action must contain the "{entityId}" placeholder.', $action, $dashboardFqcn));
             }
         }
@@ -530,14 +531,13 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
                     ];
 
                     continue;
-                } else {
-                    @trigger_deprecation(
-                        'easycorp/easyadmin-bundle',
-                        '4.24.0',
-                        'The "%s" dashboard controller applies the #[AdminDashboard] attribute, but it doesn\'t use it to define the route path and route name of the dashboard. Using the default #[Route] attribute from Symfony on the "index()" method of the dashboard instead of the #[AdminDashboard] attribute (e.g. #[AdminDashboard(routePath: \'/admin\', routeName: \'admin\')]) is deprecated and it will no longer work in EasyAdmin 5.0.0.',
-                        $reflectionClass->getName()
-                    );
                 }
+                @trigger_deprecation(
+                    'easycorp/easyadmin-bundle',
+                    '4.24.0',
+                    'The "%s" dashboard controller applies the #[AdminDashboard] attribute, but it doesn\'t use it to define the route path and route name of the dashboard. Using the default #[Route] attribute from Symfony on the "index()" method of the dashboard instead of the #[AdminDashboard] attribute (e.g. #[AdminDashboard(routePath: \'/admin\', routeName: \'admin\')]) is deprecated and it will no longer work in EasyAdmin 5.0.0.',
+                    $reflectionClass->getName()
+                );
             } else {
                 @trigger_deprecation(
                     'easycorp/easyadmin-bundle',
@@ -567,8 +567,11 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
 
             $routeAttribute = $attributes[0]->newInstance();
             $config[$reflectionClass->getName()] = [
-                'routeName' => $routeAttribute->getName(),
-                'routePath' => rtrim($routeAttribute->getPath(), '/'),
+                // Symfony 8 removed the getName() and getPath() methods in favor of public properties
+                /** @phpstan-ignore-next-line */
+                'routeName' => method_exists($routeAttribute, 'getName') ? $routeAttribute->getName() : $routeAttribute->name,
+                /** @phpstan-ignore-next-line */
+                'routePath' => rtrim(method_exists($routeAttribute, 'getPath') ? $routeAttribute->getPath() : $routeAttribute->path, '/'),
             ];
         }
 
@@ -675,7 +678,7 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
                     $routeId = $action.'_route_'.++$index;
 
                     if (null !== $adminRouteInstance->path) {
-                        if (\in_array($action, ['edit', 'detail', 'delete'], true) && !str_contains($adminRouteInstance->path, '{entityId}')) {
+                        if (\in_array($action, [Action::EDIT, Action::DETAIL, Action::DELETE], true) && !str_contains($adminRouteInstance->path, '{entityId}')) {
                             throw new \RuntimeException(sprintf('In the "%s" CRUD controller, the #[AdminRoute] attribute applied to the "%s()" action is missing the "{entityId}" placeholder in its route path.', $crudControllerFqcn, $action));
                         }
 
@@ -698,9 +701,9 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
                     $methods = $adminRouteInstance->options['methods'] ?? null;
                     if (null === $methods) {
                         // smart defaults: built-in actions have fixed methods, custom actions default to GET and POST
-                        if (\in_array($action, ['index', 'detail'], true)) {
+                        if (\in_array($action, [Action::INDEX, Action::DETAIL], true)) {
                             $methods = ['GET'];
-                        } elseif (\in_array($action, ['new', 'edit', 'delete', 'batchDelete'], true)) {
+                        } elseif (\in_array($action, [Action::NEW, Action::EDIT, Action::DELETE, Action::BATCH_DELETE], true)) {
                             $methods = ['GET', 'POST'];
                         } else {
                             // custom actions default to GET and POST
@@ -753,7 +756,7 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
             $customActionsConfig[$action]['actionName'] = $action;
 
             if (null !== $attributeInstance->routePath) {
-                if (\in_array($action, ['edit', 'detail', 'delete'], true) && !str_contains($attributeInstance->routePath, '{entityId}')) {
+                if (\in_array($action, [Action::EDIT, Action::DETAIL, Action::DELETE], true) && !str_contains($attributeInstance->routePath, '{entityId}')) {
                     throw new \RuntimeException(sprintf('In the "%s" CRUD controller, the #[AdminAction] attribute applied to the "%s()" action is missing the "{entityId}" placeholder in its route path.', $crudControllerFqcn, $action));
                 }
 
@@ -768,7 +771,7 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
                 $customActionsConfig[$action]['routeName'] = trim($attributeInstance->routeName, '_');
             }
 
-            if (\array_key_exists('methods', $attribute->getArguments()) && null !== $attribute->getArguments()['methods'] && \in_array($action, ['index', 'new', 'edit', 'detail', 'delete'], true)) {
+            if (\array_key_exists('methods', $attribute->getArguments()) && null !== $attribute->getArguments()['methods'] && \in_array($action, [Action::INDEX, Action::NEW, Action::EDIT, Action::DETAIL, Action::DELETE], true)) {
                 throw new \RuntimeException(sprintf('In the "%s" CRUD controller, the #[AdminAction] attribute applied to the "%s()" action cannot define the "methods" argument because these are built-in EasyAdmin actions and have fixed HTTP methods.', $crudControllerFqcn, $action));
             }
 
@@ -932,7 +935,7 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
                 EA::CRUD_ACTION => $route->getDefault(EA::CRUD_ACTION),
             ];
 
-            $fqcnToRouteName[$route->getDefault(EA::DASHBOARD_CONTROLLER_FQCN)][$route->getDefault(EA::CRUD_CONTROLLER_FQCN)][$route->getDefault(EA::CRUD_ACTION)] = $routeName;
+            $fqcnToRouteName[$route->getDefault(EA::DASHBOARD_CONTROLLER_FQCN)][$route->getDefault(EA::CRUD_CONTROLLER_FQCN) ?? ''][$route->getDefault(EA::CRUD_ACTION) ?? ''] = $routeName;
         }
 
         $routeNameToFqcnItem = $this->cache->getItem(self::CACHE_KEY_ROUTE_TO_FQCN);

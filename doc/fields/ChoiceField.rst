@@ -121,6 +121,28 @@ If ``allowMultipleChoices`` is true, the expanded field will display checkboxes:
 .. image:: ../images/fields/field-choice-checkbox.png
    :alt: Default style of EasyAdmin choice field with checkboxes
 
+setPreferredChoices
+~~~~~~~~~~~~~~~~~~~
+
+Use this option to display certain choices at the top of the dropdown, visually
+separated from the rest. This is useful when some choices are more commonly used
+than others::
+
+    yield ChoiceField::new('...')->setChoices([
+        'Draft' => 'draft',
+        'Published' => 'published',
+        'Archived' => 'archived',
+        'Pending Review' => 'pending',
+        'Scheduled' => 'scheduled',
+    ])->setPreferredChoices(['draft', 'published']);
+
+You can also use a callable that receives the choice value and returns ``true``
+for preferred choices::
+
+    yield ChoiceField::new('...')->setPreferredChoices(
+        static fn ($value): bool => in_array($value, ['draft', 'published'], true)
+    );
+
 setChoices
 ~~~~~~~~~~
 
@@ -145,7 +167,7 @@ for the field. These options are defined in the same way as Symfony Forms:
     );
 
 PHP Enums Support
-·················
+.................
 
 The ``setChoices`` option supports PHP enums too, both UnitEnum and BackedEnum.
 Suppose you have this backed enum defined somewhere in your project::

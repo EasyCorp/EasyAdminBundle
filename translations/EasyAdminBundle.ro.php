@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Crează și continuă editarea',
         'save' => 'Salvează modificarile',
         'save_and_continue' => 'Salvează și continuă editarea',
+        'toggle_dropdown' => 'Comutați meniul drop-down',
     ],
 
     'batch_action_modal' => [
@@ -70,6 +71,11 @@ return [
     'delete_modal' => [
         'title' => 'Ești sigur că vrei să ștergi acest item?',
         'content' => 'Nu există posibilitatea de a reveni asupra acestei decizii.',
+    ],
+
+    'action_confirmation_modal' => [
+        'title' => 'Ești sigur că vrei să %action_name%?',
+        'action' => 'Confirmă',
     ],
 
     'filter' => [

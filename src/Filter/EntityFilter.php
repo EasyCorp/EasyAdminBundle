@@ -45,6 +45,13 @@ final class EntityFilter implements FilterInterface
         return $this;
     }
 
+    public function autocomplete(bool $autocomplete = true): self
+    {
+        $this->dto->setFormTypeOption('autocomplete', $autocomplete);
+
+        return $this;
+    }
+
     public function apply(QueryBuilder $queryBuilder, FilterDataDto $filterDataDto, ?FieldDto $fieldDto, EntityDto $entityDto): void
     {
         $alias = $filterDataDto->getEntityAlias();

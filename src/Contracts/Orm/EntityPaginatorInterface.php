@@ -44,5 +44,8 @@ interface EntityPaginatorInterface
      */
     public function getResults(): ?iterable;
 
-    public function getResultsAsJson(): string;
+    /**
+     * The signature of this method will add the commented parameters in EasyAdmin 5.0.0.
+     */
+    public function getResultsAsJson(/* ?callable $callback = null, ?string $twigTemplate = null, bool $renderAsHtml = false */): string;
 }

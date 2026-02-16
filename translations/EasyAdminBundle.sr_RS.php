@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Napravi i nastavi sa izmenama',
         'save' => 'Sačuvaj izmene',
         'save_and_continue' => 'Sačuvaj i nastavi sa izmenama',
+        'toggle_dropdown' => 'Пребаци падајући мени',
     ],
 
     'batch_action_modal' => [
@@ -70,6 +71,11 @@ return [
     'delete_modal' => [
         'title' => 'Da li sigurno želite da obrišete ovaj zapis?',
         'content' => 'Ova operacija je nepovratna.',
+    ],
+
+    'action_confirmation_modal' => [
+        'title' => 'Da li ste sigurni da želite da %action_name%?',
+        'action' => 'Potvrdi',
     ],
 
     'filter' => [

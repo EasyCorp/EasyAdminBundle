@@ -9,16 +9,22 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Twig\Environment;
 
 /**
  * @author Yonel Ceruto <yonelceruto@gmail.com>
  */
 class CrudAutocompleteType extends AbstractType implements DataMapperInterface
 {
+    public function __construct(
+        private readonly Environment $twig,
+    ) {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->addEventSubscriber(new CrudAutocompleteSubscriber())
+            ->addEventSubscriber(new CrudAutocompleteSubscriber($this->twig))
             ->setDataMapper($this);
     }
 
@@ -39,9 +45,14 @@ class CrudAutocompleteType extends AbstractType implements DataMapperInterface
             'multiple' => false,
             // force display errors on this form field
             'error_bubbling' => false,
+            // options for custom rendering of selected items (to match the rendering of the other entries in the dropdown)
+            'autocomplete_callback' => null,
+            'autocomplete_template' => null,
         ]);
 
         $resolver->setRequired(['class']);
+        $resolver->setAllowedTypes('autocomplete_callback', ['null', 'callable']);
+        $resolver->setAllowedTypes('autocomplete_template', ['null', 'string']);
     }
 
     public function getBlockPrefix(): string

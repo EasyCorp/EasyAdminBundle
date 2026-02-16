@@ -59,6 +59,7 @@ return [
         // 'create_and_continue' => '',
         // 'save' => '',
         // 'save_and_continue' => '',
+        'toggle_dropdown' => 'Alternar menú despregable',
     ],
 
     'batch_action_modal' => [
@@ -70,6 +71,11 @@ return [
     'delete_modal' => [
         'title' => '¿Queres realmente borrar este elemento?',
         'content' => 'Esta acción non se pode desfacer.',
+    ],
+
+    'action_confirmation_modal' => [
+        'title' => 'Estás seguro de que queres %action_name%?',
+        'action' => 'Confirmar',
     ],
 
     'filter' => [

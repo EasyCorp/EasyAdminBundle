@@ -59,6 +59,7 @@ return [
         // 'create_and_continue' => '',
         // 'save' => '',
         // 'save_and_continue' => '',
+        'toggle_dropdown' => 'Vaihda pudotusvalikko',
     ],
 
     'batch_action_modal' => [
@@ -70,6 +71,11 @@ return [
     'delete_modal' => [
         'title' => 'Oletko varma että haluat poistaa tämän?',
         'content' => 'Toimintoa ei voi peruuttaa.',
+    ],
+
+    'action_confirmation_modal' => [
+        'title' => 'Haluatko varmasti %action_name%?',
+        'action' => 'Vahvista',
     ],
 
     'filter' => [

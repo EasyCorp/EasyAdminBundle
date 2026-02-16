@@ -165,7 +165,7 @@
 /* Color field */
 .field-color .color-sample {
     border-radius: var(--border-radius);
-    box-shadow: 0 0 0 2px var(--white), 0 0 0 4px var(--gray-300);
+    box-shadow: 0 0 0 2px var(--border-tertiary-color), 0 0 0 3px var(--border-secondary-color);
     display: inline-block;
     block-size: 19px;
     inline-size: 45px;

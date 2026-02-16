@@ -59,6 +59,7 @@ return [
         'create_and_continue' => '建立並繼續編輯',
         'save' => '儲存更改',
         'save_and_continue' => '儲存並繼續編輯',
+        'toggle_dropdown' => '切換下拉選單',
     ],
 
     'batch_action_modal' => [
@@ -70,6 +71,11 @@ return [
     'delete_modal' => [
         'title' => '您確定要刪除此項目嗎？',
         'content' => '此動作無法復原。',
+    ],
+
+    'action_confirmation_modal' => [
+        'title' => '您確定要 %action_name% 嗎？',
+        'action' => '確認',
     ],
 
     'filter' => [

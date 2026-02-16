@@ -2,9 +2,9 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Translation;
 
-use function Symfony\Component\Translation\t;
 use Symfony\Component\Translation\TranslatableMessage;
 use Symfony\Contracts\Translation\TranslatableInterface;
+use function Symfony\Component\Translation\t;
 
 /**
  * @author Jakub Caban <kuba.iluvatar@gmail.com>
@@ -22,7 +22,7 @@ class TranslatableMessageBuilder
      */
     public static function withParameters(TranslatableInterface $translatable, array $parameters): TranslatableInterface
     {
-        if (!($translatable instanceof TranslatableMessage)) {
+        if (!$translatable instanceof TranslatableMessage) {
             return $translatable;
         }
 

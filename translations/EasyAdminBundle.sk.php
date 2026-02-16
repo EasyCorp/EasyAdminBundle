@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Vytvoriť a pokračovat',
         'save' => 'Uložit',
         'save_and_continue' => 'Uložit a pokračovat',
+        'toggle_dropdown' => 'Prepnúť rozbaľovaciu ponuku',
     ],
 
     'batch_action_modal' => [
@@ -70,6 +71,11 @@ return [
     'delete_modal' => [
         'title' => 'Naozaj chcete vymazať túto položku?',
         'content' => 'Táto akcia sa nedá zvrátiť.',
+    ],
+
+    'action_confirmation_modal' => [
+        'title' => 'Naozaj chcete %action_name%?',
+        'action' => 'Potvrdiť',
     ],
 
     'filter' => [

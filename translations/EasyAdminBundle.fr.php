@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Créer et modifier',
         'save' => 'Sauvegarder les modifications',
         'save_and_continue' => 'Sauvegarder et modifier',
+        'toggle_dropdown' => 'Basculer le menu déroulant',
     ],
 
     'batch_action_modal' => [
@@ -70,6 +71,11 @@ return [
     'delete_modal' => [
         'title' => 'Voulez-vous supprimer cet élément ?',
         'content' => 'Cette action est irréversible.',
+    ],
+
+    'action_confirmation_modal' => [
+        'title' => 'Êtes-vous sûr de vouloir %action_name% ?',
+        'action' => 'Confirmer',
     ],
 
     'filter' => [

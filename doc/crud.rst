@@ -29,8 +29,8 @@ The four main pages of the CRUD controllers are:
 * ``index``, displays a list of entities which can be paginated, sorted by
   column and refined with search queries and filters;
 * ``detail``, displays the contents of a given entity;
-* ``new``, allows to create new entity instances;
-* ``edit``, allows to update any property of a given entity.
+* ``new``, allows you to create new entity instances;
+* ``edit``, allows you to update any property of a given entity.
 
 These pages are generated with four actions with the same name in the
 ``AbstractCrudController`` controller. This controller defines other secondary
@@ -272,11 +272,11 @@ Entity Options
             // can be a closure that defines two nullable arguments: entityInstance (which will
             // be null in 'index' and 'new' pages) and the current page name
             ->setEntityLabelInSingular(
-                fn (?Product $product, ?string $pageName) => $product ? $product->toString() : 'Product'
+                fn (?Product $product, ?string $pageName) => $product ? (string) $product : 'Product'
             )
-            ->setEntityLabelInPlural(function (?Category $category, ?string $pageName) {
-                return 'edit' === $pageName ? $category->getLabel() : 'Categories';
-            })
+            ->setEntityLabelInPlural(
+                fn (?Product $product, ?string $pageName) => $product ? $product->getName() : 'Products'
+            )
 
             // the Symfony Security permission needed to manage the entity
             // (none by default, so you can manage all instances of the entity)
@@ -472,6 +472,70 @@ query, the optional :doc:`filters </filters>` and the pagination. If you need to
 fully customize this query, override the ``createIndexQueryBuilder()`` method in
 your CRUD controller.
 
+.. _crud-autocomplete:
+
+Autocomplete Options
+~~~~~~~~~~~~~~~~~~~~
+
+:doc:`Association fields </fields/AssociationField>` allow you to
+:ref:`customize the autocomplete display <field-association-autocomplete>` per field.
+You can also set a default autocomplete display for all association fields in a
+CRUD controller. This default display is applied to all fields that don't
+configure their own autocomplete, giving them a consistent formatting.
+
+There are two ways of configuring the autocomplete: using a **callback** (useful for
+simple formatting) and using a **Twig template** (allowing you to use HTML tags for
+more advanced formatting).
+
+**1) Using a Callback**
+
+Define a callback that applies to all autocomplete fields::
+
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+
+    public function configureCrud(Crud $crud): Crud
+    {
+        return $crud
+            ->autocomplete(
+                callback: static fn ($entity): string => method_exists($entity, 'getFullName') ? $entity->getFullName() : (string) $entity
+            )
+        ;
+    }
+
+The ``autocomplete()`` method also accepts an ``enable`` parameter to
+conditionally configure autocomplete::
+
+    public function configureCrud(Crud $crud): Crud
+    {
+        $entityCount = $this->entityManager->getRepository($this->getEntityFqcn())->count([]);
+
+        return $crud
+            ->autocomplete(
+                enable: $entityCount > 1_000,
+                callback: static fn ($entity): string => (string) $entity
+            )
+        ;
+    }
+
+**2) Using a Twig Template**
+
+Define a default template for all autocomplete fields::
+
+    public function configureCrud(Crud $crud): Crud
+    {
+        return $crud
+            ->autocomplete(
+                template: 'admin/autocomplete/default.html.twig',
+                renderAsHtml: false
+            )
+        ;
+    }
+
+The template receives the entity as the ``entity`` variable. When
+``renderAsHtml`` is ``false`` (the default), the output is escaped to
+prevent XSS attacks. Set it to ``true`` only when you trust the content
+and need to display HTML.
+
 Templates and Form Options
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -480,7 +544,7 @@ Templates and Form Options
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
-            // this method allows to use your own template to render a certain part
+            // this method allows you to use your own template to render a certain part
             // of the backend instead of using EasyAdmin default template
             // the first argument is the "template name", which is the same as the
             // Twig path but without the `@EasyAdmin/` prefix and the `.html.twig` suffix
@@ -509,6 +573,74 @@ Templates and Form Options
         ;
     }
 
+.. _default-row-action:
+
+Default Row Action
+~~~~~~~~~~~~~~~~~~
+
+By default, when you click on any row of the ``index`` page, you navigate to
+the ``edit`` page of that entity. If the ``edit`` action is not available, it
+falls back to the ``detail`` action. This behavior is called the "default row action"
+and you can configure it with the ``setDefaultRowAction()`` method::
+
+    public function configureCrud(Crud $crud): Crud
+    {
+        return $crud
+            // this is the default behavior: first try 'edit', then fallback to 'detail'
+            ->setDefaultRowAction([Action::EDIT, Action::DETAIL])
+
+            // use a single action (no fallback)
+            ->setDefaultRowAction(Action::EDIT)
+
+            // navigate to 'detail' only
+            ->setDefaultRowAction(Action::DETAIL)
+
+            // use any action name, including custom actions
+            ->setDefaultRowAction('review')
+
+            // define a custom fallback chain (first available action wins)
+            ->setDefaultRowAction([Action::DETAIL, 'preview', Action::EDIT])
+
+            // pass null to disable the row click behavior entirely
+            ->setDefaultRowAction(null)
+        ;
+    }
+
+.. note::
+
+    If none of the configured actions (in the fallback chain) are available for
+    some entity (disabled action, no permission, or condition not met), the row
+    won't be clickable for that entity. This also applies to actions defined
+    inside action groups.
+
+.. tip::
+
+    The default row action can be configured globally in your dashboard (so it
+    applies to all CRUD controllers) and overridden in specific CRUD controllers::
+
+        // in your Dashboard
+        public function configureCrud(): Crud
+        {
+            return Crud::new()
+                // all CRUD controllers will navigate to 'detail' by default
+                ->setDefaultRowAction(Action::DETAIL)
+            ;
+        }
+
+        // in a specific CRUD controller
+        public function configureCrud(Crud $crud): Crud
+        {
+            return $crud
+                // only this CRUD controller will navigate to 'edit'
+                ->setDefaultRowAction(Action::EDIT)
+            ;
+        }
+
+The row click behavior is fully accessible via keyboard (using Enter or Space keys).
+Clicks on checkboxes, buttons, links, or any action elements within the row won't
+trigger the navigation to preserve the expected behavior of those elements.
+Also, rows selected in batch mode won't navigate when clicked.
+
 Other Options
 ~~~~~~~~~~~~~
 
@@ -520,7 +652,7 @@ Other Options
             // by default, when the value of some field is `null`, EasyAdmin displays
             // a label with the `null` text. You can change that by overriding
             // the `label/null` template. However, if you have lots of `null` values
-            // and want to reduce the "visual noise" in your backend, you can use
+            // and want to simplify your backend display, you can use
             // the following option to not display anything when some value is `null`
             // (this option is applied both in the `index` and `detail` pages)
             ->hideNullValues()
@@ -589,7 +721,7 @@ in your dashboard and all controllers will inherit that configuration::
 Fields
 ------
 
-Fields allow to display the contents of your Doctrine entities on each
+Fields allow you to display the contents of your Doctrine entities on each
 :ref:`CRUD page <crud-pages>`. EasyAdmin provides built-in fields to display
 all the common data types, but you can also :ref:`create your own fields <custom-fields>`.
 
@@ -610,7 +742,7 @@ used in applications.
 
 The first way to customize their behavior is to override those methods in your
 own controllers. However, the original actions are so generic that they contain
-quite a lot of code, so overriding them is not that convenient.
+quite a lot of code, so overriding them can be cumbersome.
 
 Instead, you can override other smaller methods that implement certain features
 needed by the CRUD actions. For example, the ``index()`` action calls to a

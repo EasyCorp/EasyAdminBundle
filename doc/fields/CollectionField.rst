@@ -138,7 +138,7 @@ EasyAdmin will try to do its best to display those fields correctly::
 setEntryType
 ~~~~~~~~~~~~
 
-The entries of the collection can be rendered either using a Symfony Form or an
+The entries of the collection can be rendered either using a Symfony form or an
 EasyAdmin CRUD Form. The ``setEntryType()`` method defines the Symfony form type
 used to render the form of each collection entry::
 
@@ -173,7 +173,7 @@ Use this option if you prefer to display that label::
 useEntryCrudForm
 ~~~~~~~~~~~~~~~~
 
-The entries of the collection can be rendered either using a Symfony Form or an
+The entries of the collection can be rendered either using a Symfony form or an
 EasyAdmin CRUD Form. The ``useEntryCrudForm()`` method defines the EasyAdmin CRUD
 form used to render the form of each collection entry::
 
@@ -194,6 +194,12 @@ class name of the controller as the first argument::
 .. note::
 
     The ``useEntryCrudForm()`` method requires Symfony 6.1 or newer version.
+
+.. note::
+
+    For Doctrine associations, you can omit the ``useEntryCrudForm()`` method.
+    When no Symfony form option ``entry_type`` is set, ``CollectionField`` for
+    association properties will use ``CrudFormType`` as the default ``entry_type``.
 
 JavaScript Events
 -----------------

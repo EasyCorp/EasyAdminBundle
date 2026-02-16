@@ -21,9 +21,10 @@ Read the :ref:`user menu reference <dashboards-user-menu>` for more details.
 Restrict Access to the Entire Backend
 -------------------------------------
 
-Using the `access_control option`_, you can tell Symfony to require certain
-permissions to browse the URL associated with the backend. This is simple to do
-because :ref:`dashboard routes share a common prefix <dashboard-route>`:
+All the routes belonging to a given dashboard :ref:`share a common prefix <dashboard-route>`
+(e.g. ``/admin``). This makes it straightforward to secure the backend because
+you can use the `access_control option`_ to tell Symfony to require certain
+permissions when browsing that URL path:
 
 .. code-block:: yaml
 
@@ -103,14 +104,14 @@ Restrict Access to Menu Items
 -----------------------------
 
 Use the ``setPermission()`` method to define the security permission that the
-user must have in order to see the menu item::
+user must have to see the menu item::
 
     public function configureMenuItems(): iterable
     {
         return [
             // ...
 
-            MenuItem::linkToCrud('Blog Posts', null, BlogPost::class)
+            MenuItem::linkTo(BlogPostCrudController::class, 'Blog Posts')
                 ->setPermission('ROLE_EDITOR'),
         ];
     }
@@ -132,7 +133,7 @@ menu item definition to not have to deal with array merges::
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
 
         if ($this->isGranted('ROLE_EDITOR') && '...') {
-            yield MenuItem::linkToCrud('Blog Posts', null, BlogPost::class);
+            yield MenuItem::linkTo(BlogPostCrudController::class, 'Blog Posts');
         }
 
         // ...
@@ -192,7 +193,7 @@ the ``setPermission()`` method::
 You can also restrict which items users can see in the ``index`` and ``detail``
 pages thanks to the ``setEntityPermission()`` method. This value is passed as
 the first argument of the call to ``is_granted($permissions, $item)`` function
-to decide if the current user can see the given item::
+to decide whether the current user can see the given item::
 
     namespace App\Controller\Admin;
 
@@ -233,9 +234,9 @@ Restricting Access with Expressions
 
     The Expressions support was introduced in EasyAdmin 4.9.0.
 
-The `Symfony ExpressionLanguage component`_ allows to define complex configuration
+The `Symfony ExpressionLanguage component`_ allows you to define complex configuration
 logic using simple expressions. In EasyAdmin, all ``setPermission()`` methods
-allow to pass not only a string with some security role name (e.g. ``ROLE_ADMIN``)
+allow you to pass not only a string with some security role name (e.g. ``ROLE_ADMIN``)
 but also a full ``Expression`` object.
 
 First, install the component in your project using Composer:

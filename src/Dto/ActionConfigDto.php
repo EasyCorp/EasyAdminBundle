@@ -113,7 +113,7 @@ final class ActionConfigDto
      */
     public function getActions(): ActionCollection|array
     {
-        return null === $this->pageName ? $this->actions : ActionCollection::new($this->actions[$this->pageName]);
+        return null === $this->pageName ? $this->actions : new ActionCollection($this->actions[$this->pageName]);
     }
 
     /**

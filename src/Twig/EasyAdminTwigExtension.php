@@ -64,6 +64,7 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
             new TwigFilter('ea_flatten_array', [$this, 'flattenArray']),
             new TwigFilter('ea_filesize', [$this, 'fileSize']),
             new TwigFilter('ea_as_string', [$this, 'representAsString']),
+            new TwigFilter('ea_html_attrs', [$this, 'processHtmlAttributes']),
             // deprecated filters
             new TwigFilter('ea_apply_filter_if_exists', [$this, 'applyFilterIfExists'], ['needs_environment' => true, 'deprecation_info' => new DeprecatedCallableInfo('easycorp/easyadmin-bundle', '4.21.0', 'No alternative is provided because it\'s no longer needed thanks to the Twig guard tag.')]),
         ];
@@ -128,6 +129,26 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
         return $flattenedArray;
     }
 
+    /**
+     * Processes an array of HTML attributes, translating any TranslatableInterface values.
+     * This is needed because Twig Components don't accept non-scalar attribute values.
+     *
+     * @param array<string, mixed> $attributes
+     *
+     * @return array<string, mixed>
+     */
+    public function processHtmlAttributes(array $attributes): array
+    {
+        $processed = [];
+        foreach ($attributes as $name => $value) {
+            $processed[$name] = $value instanceof TranslatableInterface
+                ? $value->trans($this->translator)
+                : $value;
+        }
+
+        return $processed;
+    }
+
     public function fileSize(int $bytes): string
     {
         $size = ['B', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'];
@@ -167,7 +188,9 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
         }
 
         if (\is_array($callback) && 2 === \count($callback)) {
-            $callback = [$environment->getRuntime(array_shift($callback)), array_pop($callback)];
+            /** @var class-string $runtimeClass */
+            $runtimeClass = array_shift($callback);
+            $callback = [$environment->getRuntime($runtimeClass), array_pop($callback)];
             if (!\is_callable($callback)) {
                 throw new RuntimeError(sprintf('Unable to load runtime for filter: "%s"', $filterName));
             }
@@ -218,7 +241,7 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
                 return $value->trans($this->translator);
             }
 
-            if (method_exists($value, '__toString')) {
+            if ($value instanceof \Stringable) {
                 return (string) $value;
             }
 
@@ -257,7 +280,9 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
         }
 
         if (\is_array($callback) && 2 === \count($callback)) {
-            $callback = [$environment->getRuntime(array_shift($callback)), array_pop($callback)];
+            /** @var class-string $runtimeClass */
+            $runtimeClass = array_shift($callback);
+            $callback = [$environment->getRuntime($runtimeClass), array_pop($callback)];
             if (!\is_callable($callback)) {
                 throw new RuntimeError(sprintf('Unable to load runtime for function: "%s"', $functionName));
             }

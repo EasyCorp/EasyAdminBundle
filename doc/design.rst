@@ -7,9 +7,8 @@ managed by `Webpack`_ via Symfony's `Webpack Encore`_.
 
 Like any other Symfony bundle, assets are copied to (or symlinked from) the
 ``public/bundles/`` directory of your application when installing or updating
-the bundle. If this doesn't work for any reason, your backend won't display the
-proper CSS/JS styles. In those cases, run this command to install those assets
-manually:
+the bundle. If this doesn't work for any reason, your backend won't display
+properly. In those cases, run this command to install those assets manually:
 
 .. code-block:: terminal
 
@@ -435,7 +434,7 @@ If you are editing for example the element with ``id = 200`` of the ``User`` ent
 the ``<body>`` of that page will be ``<body id="easyadmin-edit-User-200" ...>``.
 
 The pattern of the ``class`` attribute is different because it applies several
-CSS classes at the same time:
+CSS classes:
 
 ==========  ============================================
 Page        ``<body>`` CSS class
@@ -459,9 +458,40 @@ this bundle.
 
 However, if you want total control over the backend styles, you can use Webpack
 to integrate the SCSS and JavaScript source files provided in the ``assets/``
-directory. The only caveat is that EasyAdmin doesn't use Webpack Encore yet when
+directory. The only limitation is that EasyAdmin doesn't use Webpack Encore yet when
 loading the assets, so you can't use features like versioning. This will be
 fixed in future versions.
+
+Content Security Policy (CSP) Support
+-------------------------------------
+
+`Content Security Policy`_ (CSP) is a security feature that helps prevent cross-site
+scripting (XSS) and other code injection attacks. When your application uses strict
+CSP headers, all inline scripts and dynamically loaded scripts must include a
+cryptographic nonce to be executed by the browser.
+
+EasyAdmin fully supports CSP nonces. First, install and configure `NelmioSecurityBundle`_
+in your application. Then, EasyAdmin will automatically detect the ``csp_nonce()`` Twig
+function and add the nonce attribute to all its script tags.
+
+Using CSP Nonces in Custom Templates
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If you :ref:`override EasyAdmin templates <template-customization>` and add your own
+``<script>`` tags, use the ``{% guard %}`` Twig tag to conditionally include the nonce.
+This ensures your templates work both with and without NelmioSecurityBundle:
+
+.. code-block:: twig
+
+    {% guard function csp_nonce %}
+        <script src="{{ asset('js/custom.js') }}" nonce="{{ csp_nonce('script') }}"></script>
+    {% else %}
+        <script src="{{ asset('js/custom.js') }}"></script>
+    {% endguard %}
+
+The ``{% guard function csp_nonce %}`` syntax checks if the ``csp_nonce()`` function
+is available before using it, allowing graceful fallback when NelmioSecurityBundle
+is not installed.
 
 .. _`Bootstrap 5`: https://github.com/twbs/bootstrap
 .. _`Sass`: https://sass-lang.com/
@@ -474,3 +504,5 @@ fixed in future versions.
 .. _`FontAwesome icons`: https://fontawesome.com/v6/search?m=free
 .. _`Symfony UX Icons`: https://symfony.com/bundles/ux-icons/current/index.html
 .. _`Tabler`: https://tabler.io/icons
+.. _`Content Security Policy`: https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP
+.. _`NelmioSecurityBundle`: https://github.com/nelmio/NelmioSecurityBundle

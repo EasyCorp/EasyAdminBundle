@@ -25,7 +25,7 @@ return [
     ],
 
     'label' => [
-        'true' => 'Si',
+        'true' => 'Sì',
         'false' => 'No',
         'empty' => 'Vuoto',
         'null' => 'Null',
@@ -59,17 +59,23 @@ return [
         'create_and_continue' => 'Crea e continua',
         'save' => 'Salva',
         'save_and_continue' => 'Salva e continua a modificare',
+        'toggle_dropdown' => 'Attiva/disattiva menu a discesa',
     ],
 
     'batch_action_modal' => [
         'title' => 'Stai per applicare l\'azione "%action_name%" su %num_items% elemento(i).',
-        'content' => 'Non è possibile annulare questa operazione.',
+        'content' => 'Non è possibile annullare questa operazione.',
         'action' => 'Procedi',
     ],
 
     'delete_modal' => [
         'title' => 'Vuoi eliminare questo elemento?',
         'content' => 'Questa azione è irreversibile.',
+    ],
+
+    'action_confirmation_modal' => [
+        'title' => 'Sei sicuro di voler %action_name%?',
+        'action' => 'Conferma',
     ],
 
     'filter' => [
@@ -79,9 +85,9 @@ return [
         'label.is_equal_to' => 'è uguale a',
         'label.is_not_equal_to' => 'non è uguale a',
         'label.is_greater_than' => 'è maggiore di',
-        'label.is_greater_than_or_equal_to' => 'è maggiore o uguale di',
+        'label.is_greater_than_or_equal_to' => 'è maggiore o uguale a',
         'label.is_less_than' => 'è minore di',
-        'label.is_less_than_or_equal_to' => 'è minore o uguale di',
+        'label.is_less_than_or_equal_to' => 'è minore o uguale a',
         'label.is_between' => 'è tra',
         'label.contains' => 'contiene',
         'label.contains_all' => 'contiene tutto',

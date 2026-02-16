@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Ustvari in nadaljuj urejanje',
         'save' => 'Shrani spremembe',
         'save_and_continue' => 'Shrani in nadaljuj urejanje',
+        'toggle_dropdown' => 'Preklopi spustni meni',
     ],
 
     'batch_action_modal' => [
@@ -70,6 +71,11 @@ return [
     'delete_modal' => [
         'title' => 'Ali res želite izbrisati ta element?',
         'content' => 'Razveljavitev za to operacijo ne obstaja.',
+    ],
+
+    'action_confirmation_modal' => [
+        'title' => 'Ali ste prepričani, da želite %action_name%?',
+        'action' => 'Potrdi',
     ],
 
     'filter' => [

@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Δημιουργία και συνέχιση επεξεργασίας',
         'save' => 'Αποθήκευση αλλαγών',
         'save_and_continue' => 'Αποθήκευση και συνέχιση επεξεργασία',
+        'toggle_dropdown' => 'Εναλλαγή αναπτυσσόμενου μενού',
     ],
 
     'batch_action_modal' => [
@@ -70,6 +71,11 @@ return [
     'delete_modal' => [
         'title' => 'Θέλετε σίγουρα να διαγράψετε αυτό το αντικείμενο;',
         'content' => 'Αυτή η ενέργεια δεν αναιρείται.',
+    ],
+
+    'action_confirmation_modal' => [
+        'title' => 'Είστε σίγουροι ότι θέλετε να %action_name%;',
+        'action' => 'Επιβεβαίωση',
     ],
 
     'filter' => [

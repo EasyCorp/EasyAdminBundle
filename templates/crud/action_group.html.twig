@@ -12,10 +12,11 @@
             href="{{ main_action.htmlElement.isLink ? main_action.linkUrl : null }}"
             action="{{ main_action.htmlElement.isForm ? main_action.linkUrl : null }}"
             method="{{ main_action.htmlElement.isForm ? 'POST' : null }}"
-            icon="{{ group.icon }}"
-            htmlAttributes="{{ main_action.htmlAttributes|merge({'data-action-group-name-main-action': true, onclick: main_action.htmlElement.isButton ? 'window.location=\'' ~ main_action.linkUrl ~ '\'' : null})|filter((v) => v is not null) }}"
+            icon="{{ main_action.icon ?: group.icon }}"
+            htmlAttributes="{{ main_action.htmlAttributes|ea_html_attrs|merge({'data-action-group-name-main-action': true, 'data-ea-action-url': main_action.htmlElement.isButton ? main_action.linkUrl : null})|filter((v) => v is not null) }}"
         >
-            {%- if main_action.label is not same as(false) -%}{{ main_action.label|trans|raw }}{%- endif -%}
+            {% set main_action_label = main_action.label|trans %}
+            {%- if main_action_label is not same as(false) -%}{{ main_action_label|raw }}{%- endif -%}
         </twig:ea:Button>
 
         <twig:ea:Button
@@ -26,7 +27,7 @@
                 htmlAttributes="{{ {'data-bs-toggle': 'dropdown', 'aria-expanded': 'false'} }}"
                 label:class="visually-hidden"
         >
-            {{ 'action.toggle_dropdown'|trans }}
+            {{ 'action.toggle_dropdown'|trans(domain: 'EasyAdminBundle') }}
         </twig:ea:Button>
     {% else %} {# render as a single button that toggles the dropdown (no main action) #}
         <twig:ea:Button
@@ -37,7 +38,8 @@
             icon="{{ group.icon }}"
             htmlAttributes="{{ {'data-bs-toggle': 'dropdown', 'aria-expanded': 'false'} }}"
         >
-            {%- if group.label is not same as(false) -%}{{ group.label|trans|raw }}{%- endif -%}
+            {% set group_label = group.label|trans %}
+            {%- if group_label is not same as(false) -%}{{ group_label|raw }}{%- endif -%}
         </twig:ea:Button>
     {% endif %}
 
@@ -47,13 +49,14 @@
                 {% if item.type == 'divider' %}
                     <twig:ea:ActionMenu:ActionList:Divider />
                 {% elseif item.type == 'header' %}
-                    <twig:ea:ActionMenu:ActionList:Header label="{{ item.content }}" renderLabelRaw="true" />
+                    {% set item_label = item.content|trans %}
+                    <twig:ea:ActionMenu:ActionList:Header label="{{ item_label }}" renderLabelRaw="true" />
                 {% endif %}
             {% else %}
                 {# item is an ActionDto #}
                 <twig:ea:ActionMenu:ActionList:Item
                     label="{{ item.label|trans }}" icon="{{ item.icon }}" class="{{ item.cssClass }} dropdown-item-variant-{{ item.variant.value }}"
-                    htmlAttributes="{{ item.htmlAttributes }}"
+                    htmlAttributes="{{ item.htmlAttributes|ea_html_attrs }}"
                     renderAsForm="{{ item.isRenderedAsForm }}"
                     url="{{ item.linkUrl }}" renderLabelRaw="true"
                     showBlankIcons="{{ group.hasAnyActionWithIcon }}"

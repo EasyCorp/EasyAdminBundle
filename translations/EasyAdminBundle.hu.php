@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Létrehozás és szerkesztés',
         'save' => 'Mentés',
         'save_and_continue' => 'Mentés és szerkesztés',
+        'toggle_dropdown' => 'Legördülő menü váltása',
     ],
 
     'batch_action_modal' => [
@@ -70,6 +71,11 @@ return [
     'delete_modal' => [
         'title' => 'Biztos benne, hogy törli ezt az elemet?',
         'content' => 'Ez a művelet visszavonhatatlan.',
+    ],
+
+    'action_confirmation_modal' => [
+        'title' => 'Biztosan szeretné %action_name%?',
+        'action' => 'Megerősítés',
     ],
 
     'filter' => [

@@ -23,7 +23,11 @@
         {% endblock %}
 
         {% block head_javascript %}
-            <script src="{{ asset('app.js', constant('EasyCorp\\Bundle\\EasyAdminBundle\\Asset\\AssetPackage::PACKAGE_NAME')) }}"></script>
+            {% guard function csp_nonce %}
+                <script src="{{ asset('app.js', constant('EasyCorp\\Bundle\\EasyAdminBundle\\Asset\\AssetPackage::PACKAGE_NAME')) }}" nonce="{{ csp_nonce('script') }}"></script>
+            {% else %}
+                <script src="{{ asset('app.js', constant('EasyCorp\\Bundle\\EasyAdminBundle\\Asset\\AssetPackage::PACKAGE_NAME')) }}"></script>
+            {% endguard %}
         {% endblock head_javascript %}
     </head>
 

@@ -1,7 +1,5 @@
 <?php
 
-use EasyCorp\Bundle\EasyAdminBundle\Tests\PrettyUrlsTestApplication\Kernel as PrettyUrlsKernel;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Kernel;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
@@ -19,28 +17,41 @@ if (!file_exists($file)) {
 }
 $autoload = require $file;
 
-if ('1' === getenv('USE_PRETTY_URLS')) {
-    $kernel = new PrettyUrlsKernel();
-} else {
-    $kernel = new Kernel();
+/**
+ * Helper function to initialize a test application database with fixtures.
+ */
+function initializeTestAppDatabase(object $kernel, Filesystem $filesystem): void
+{
+    // delete the existing cache directory to avoid issues
+    $filesystem->remove($kernel->getCacheDir());
+
+    $application = new Application($kernel);
+    $application->setAutoExit(false);
+
+    $input = new ArrayInput(['command' => 'doctrine:database:drop', '--no-interaction' => true, '--force' => true]);
+    $application->run($input, new ConsoleOutput());
+
+    $input = new ArrayInput(['command' => 'doctrine:database:create', '--no-interaction' => true]);
+    $application->run($input, new ConsoleOutput());
+
+    $input = new ArrayInput(['command' => 'doctrine:schema:create']);
+    $application->run($input, new ConsoleOutput());
+
+    $input = new ArrayInput(['command' => 'doctrine:fixtures:load', '--no-interaction' => true, '--append' => false]);
+    $application->run($input, new ConsoleOutput());
+
+    $kernel->shutdown();
 }
 
-// delete the existing cache directory to avoid issues
-(new Filesystem())->remove($kernel->getCacheDir());
+$filesystem = new Filesystem();
 
-$application = new Application($kernel);
-$application->setAutoExit(false);
+$testAppKernels = [
+    EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Kernel::class,
+    EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Kernel::class,
+    EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\UglyUrlsApp\Kernel::class,
+    EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Kernel::class,
+];
 
-$input = new ArrayInput(['command' => 'doctrine:database:drop', '--no-interaction' => true, '--force' => true]);
-$application->run($input, new ConsoleOutput());
-
-$input = new ArrayInput(['command' => 'doctrine:database:create', '--no-interaction' => true]);
-$application->run($input, new ConsoleOutput());
-
-$input = new ArrayInput(['command' => 'doctrine:schema:create']);
-$application->run($input, new ConsoleOutput());
-
-$input = new ArrayInput(['command' => 'doctrine:fixtures:load', '--no-interaction' => true, '--append' => false]);
-$application->run($input, new ConsoleOutput());
-
-unset($input, $application);
+foreach ($testAppKernels as $kernelClass) {
+    initializeTestAppDatabase(new $kernelClass(), $filesystem);
+}

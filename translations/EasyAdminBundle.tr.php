@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Oluştur ve düzenlemeye devam et',
         'save' => 'Kaydet',
         'save_and_continue' => 'Kaydet ve düzenlemeye devam et',
+        'toggle_dropdown' => 'Açılır menüyü değiştir',
     ],
 
     'batch_action_modal' => [
@@ -70,6 +71,11 @@ return [
     'delete_modal' => [
         'title' => 'Bu öğeyi silmek istediğinize emin misiniz?',
         'content' => 'Bu işlem geri alınamaz.',
+    ],
+
+    'action_confirmation_modal' => [
+        'title' => '%action_name% istediğinize emin misiniz?',
+        'action' => 'Onayla',
     ],
 
     'filter' => [

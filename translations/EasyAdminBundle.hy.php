@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Ստեղծել և շարունակել',
         'save' => 'Պահպանել',
         'save_and_continue' => 'Պահպանել և շարունակել',
+        'toggle_dropdown' => 'Փոխարկել իջնող ընտրացանկը',
     ],
 
     'batch_action_modal' => [
@@ -70,6 +71,11 @@ return [
     'delete_modal' => [
         'title' => 'Խնդրում ենք հաստատել, Դուք իրոք ցանկանում եք հեռացնել',
         'content' => 'Այս գործողությունը չի կարող չեղարկվել։',
+    ],
+
+    'action_confirmation_modal' => [
+        'title' => 'Վստա՞հ եք, որ ուզում եք %action_name%:',
+        'action' => 'Հաստատել',
     ],
 
     'filter' => [

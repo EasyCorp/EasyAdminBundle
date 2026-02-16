@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Erstellen a weider beaarbechten',
         'save' => 'Späicheren',
         'save_and_continue' => 'Späicheren a weider beaarbechten',
+        'toggle_dropdown' => 'Dropdown-Menü ëmschalten',
     ],
 
     'batch_action_modal' => [
@@ -70,6 +71,11 @@ return [
     'delete_modal' => [
         'title' => 'Soll dat Element wierklich geläscht ginn?',
         'content' => 'Dës Aktioun kann net réckgängeg gemaach ginn.',
+    ],
+
+    'action_confirmation_modal' => [
+        'title' => 'Sidd Dir sécher, datt Dir %action_name% wëllt?',
+        'action' => 'Confirméieren',
     ],
 
     'filter' => [

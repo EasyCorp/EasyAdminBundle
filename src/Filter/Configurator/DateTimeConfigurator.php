@@ -3,7 +3,6 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Filter\Configurator;
 
 use Doctrine\DBAL\Types\Types;
-use Doctrine\ORM\Mapping\FieldMapping;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -30,35 +29,30 @@ final class DateTimeConfigurator implements FilterConfiguratorInterface
             return;
         }
 
-        // Doctrine ORM 2.x returns an array and Doctrine ORM 3.x returns a FieldMapping object
-        /** @var FieldMapping|array $fieldMapping */
-        /** @phpstan-ignore-next-line */
         $fieldMapping = $entityDto->getClassMetadata()->getFieldMapping($filterDto->getProperty());
-        if (\is_array($fieldMapping)) {
-            $doctrineFieldMappingType = $fieldMapping['type'];
-        } else {
-            $doctrineFieldMappingType = $fieldMapping->type;
-        }
 
-        if (Types::DATE_MUTABLE === $doctrineFieldMappingType) {
+        // @phpstan-ignore-next-line (backward compatibility with Doctrine ORM 2.x)
+        $fieldType = \is_array($fieldMapping) ? ($fieldMapping['type'] ?? null) : $fieldMapping->type;
+
+        if (Types::DATE_MUTABLE === $fieldType) {
             $filterDto->setFormTypeOptionIfNotSet('value_type', DateType::class);
         }
 
-        if (Types::DATE_IMMUTABLE === $doctrineFieldMappingType) {
+        if (Types::DATE_IMMUTABLE === $fieldType) {
             $filterDto->setFormTypeOptionIfNotSet('value_type', DateType::class);
             $filterDto->setFormTypeOptionIfNotSet('value_type_options.input', 'datetime_immutable');
         }
 
-        if (Types::TIME_MUTABLE === $doctrineFieldMappingType) {
+        if (Types::TIME_MUTABLE === $fieldType) {
             $filterDto->setFormTypeOptionIfNotSet('value_type', TimeType::class);
         }
 
-        if (Types::TIME_IMMUTABLE === $doctrineFieldMappingType) {
+        if (Types::TIME_IMMUTABLE === $fieldType) {
             $filterDto->setFormTypeOptionIfNotSet('value_type', TimeType::class);
             $filterDto->setFormTypeOptionIfNotSet('value_type_options.input', 'datetime_immutable');
         }
 
-        if (\in_array($doctrineFieldMappingType, [Types::DATETIME_IMMUTABLE, Types::DATETIMETZ_IMMUTABLE], true)) {
+        if (\in_array($fieldType, [Types::DATETIME_IMMUTABLE, Types::DATETIMETZ_IMMUTABLE], true)) {
             $filterDto->setFormTypeOptionIfNotSet('value_type_options.input', 'datetime_immutable');
         }
     }

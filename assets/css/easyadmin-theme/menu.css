@@ -49,10 +49,15 @@
 #main-menu .menu .menu-item.active .menu-item-label {
     font-weight: 500;
 }
-
-#main-menu .menu .menu-item.active .menu-item-badge.badge-secondary {
-    background: var(--sidebar-menu-badge-active-bg);
-    color: var(--sidebar-menu-badge-active-color);
+.ea-light-scheme #main-menu .menu .menu-item .menu-item-badge {
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
+}
+.ea-light-scheme #main-menu .menu .menu-item.active .menu-item-badge {
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.2);
+}
+.ea-dark-scheme #main-menu .menu .menu-item.active .menu-item-badge {
+    background: var(--sidebar-bg);
+    box-shadow: inset 0 0 0 1px transparent;
 }
 
 #main-menu .menu .menu-item.active:not(.expanded) a,

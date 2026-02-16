@@ -45,7 +45,7 @@ final class NullFilter implements FilterInterface
             ]);
             $this->dto->setFormTypeOption(
                 'choice_label',
-                fn ($value) => self::CHOICE_VALUE_NULL === $value ? $nullChoiceLabel : $notNullChoiceLabel,
+                static fn ($value) => self::CHOICE_VALUE_NULL === $value ? $nullChoiceLabel : $notNullChoiceLabel,
             );
         } else {
             $this->dto->setFormTypeOption('choices', [

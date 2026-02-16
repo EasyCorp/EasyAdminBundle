@@ -69,8 +69,8 @@ is stored as the integer ``500`` (5 x 100 cents) and "349.99 yens" is stored as
 the integer ``34,999``.
 
 Although it may seem over-complicated at first, this is the most recommended
-way to store money amounts in the database. Doing this solves all the rounding
-problems that you'll find when storing money amounts using float or decimal numbers.
+way to store money amounts in the database. Doing this prevents rounding errors
+that commonly occur when storing money amounts using float or decimal numbers.
 
 .. tip::
 

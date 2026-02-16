@@ -5,6 +5,8 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 class Form {
+    #isNavigatingHistory = false;
+
     constructor() {
         this.#createUnsavedFormChangesWarning();
         this.#createFieldsWithErrors();

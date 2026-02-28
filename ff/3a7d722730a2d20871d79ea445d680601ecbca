@@ -1,0 +1,19 @@
+---------------------------------------------------------------------------
+
+by jgwiazdowski at 2026-02-27T09:11:44Z
+
+Hi,
+
+not sure if it's related but, when you do
+`$this->adminUrlGenerator->setController(SomeCrudController::class)->setAction('someAction')->setEntityId(123)->generateUrl();`
+
+result it `/admin?entityId=123`
+
+I tried with, or without setEntityId, makes no difference, controller and actions are skipped in generated url,
+above worked just fine in 4.x
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2026-02-28T09:22:46Z
+
+@jgwiazdowski please open an issue with some details, like how do you define that action in your controller (its full `#[AdminRoute]` definition, etc.), whether it generates a pretty or ugly URL in 4.x, etc. Thanks!

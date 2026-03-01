@@ -2,7 +2,7 @@ name: TODO Registrar
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "5.x" ]
 
 permissions:
   contents: write

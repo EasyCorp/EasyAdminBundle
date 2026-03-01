@@ -33,6 +33,7 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
         $choicesSupportTranslatableInterface = false;
         $isExpanded = true === $field->getCustomOption(ChoiceField::OPTION_RENDER_EXPANDED);
         $isMultipleChoice = true === $field->getCustomOption(ChoiceField::OPTION_ALLOW_MULTIPLE_CHOICES);
+        $isIndexOrDetail = \in_array($context->getCrud()->getCurrentPage(), [Crud::PAGE_INDEX, Crud::PAGE_DETAIL], true);
 
         $choices = $this->getChoices($field->getCustomOption(ChoiceField::OPTION_CHOICES), $entityDto, $field);
 
@@ -67,9 +68,9 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
             }
 
             // When dealing with enums that implement TranslatableInterface, they are now translated by Symfony only if
-            // the keys of the choices are integers.
+            // the keys of the choices are integers in forms.
             // So, keep choices with integer keys if using EnumType with translatable enum, otherwise set name as key.
-            if (!$choicesSupportTranslatableInterface || EnumType::class !== $field->getFormType()) {
+            if ($isIndexOrDetail || !$choicesSupportTranslatableInterface || EnumType::class !== $field->getFormType()) {
                 $processedEnumChoices = [];
                 foreach ($choices as $choice) {
                     $processedEnumChoices[$choice->name] = $choice;
@@ -116,7 +117,6 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
         $field->setFormTypeOption('attr.data-ea-autocomplete-render-items-as-html', true === $field->getCustomOption(ChoiceField::OPTION_ESCAPE_HTML_CONTENTS) ? 'false' : 'true');
 
         $fieldValue = $field->getValue();
-        $isIndexOrDetail = \in_array($context->getCrud()->getCurrentPage(), [Crud::PAGE_INDEX, Crud::PAGE_DETAIL], true);
         if (null === $fieldValue || !$isIndexOrDetail) {
             return;
         }

@@ -4,10 +4,10 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Controller;
 
 use Doctrine\ORM\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Controller\DashboardController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Controller\FormEnumTranslationController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Entity\BlogPost;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Enum\BlogPostStateEnum;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\FormEnumTranslationController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\BlogPost;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Enum\BlogPostStateEnum;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class FormEnumTranslationControllerTest extends AbstractCrudTestCase

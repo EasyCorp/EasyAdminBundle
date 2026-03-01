@@ -356,8 +356,8 @@ which divides each row into 12 same-width columns, and the `Bootstrap breakpoint
 which are ``xs`` (device width < 576px), ``sm`` (>= 576px), ``md`` (>= 768px),
 ``lg`` (>= 992px), ``xl`` (>= 1,200px) and ``xxl`` (>= 1,400px).
 
-Form columns allows to break down a complex form into two or more columns of
-fields. In addition to increasing the density of information, columns allow to
+Form columns allow you to break down a complex form into two or more columns of
+fields. In addition to increasing the density of information, columns allow you to
 better separate fields according to their function. This is how a three column
 form looks like:
 
@@ -539,7 +539,7 @@ The arguments of the ``addFieldset()`` method are:
   that is displayed at the top of the fieldset. If you pass ``false``, ``null``
   or an empty string, no title is displayed. You can also pass ``string`` and
   ``TranslatableInterface`` variables. In both cases, if they contain HTML tags
-  they will be rendered in stead of escaped;
+  they will be rendered instead of escaped;
 * ``$icon``: (type: ``?string``) the full CSS class of a `FontAwesome icon`_
   (e.g. ``far fa-folder-open``) that is displayed next to the fieldset label.
 
@@ -593,7 +593,7 @@ which divides each row into 12 same-width columns, and the `Bootstrap breakpoint
 which are ``xs`` (device width < 576px), ``sm`` (>= 576px), ``md`` (>= 768px),
 ``lg`` (>= 992px), ``xl`` (>= 1,200px) and ``xxl`` (>= 1,400px).
 
-Form rows allow to display two or more fields on the same row. This is how it
+Form rows allow you to display two or more fields on the same row. This is how it
 looks like:
 
 .. image:: images/easyadmin-form-rows.png
@@ -853,8 +853,9 @@ Design Options
         // you can add more than one form theme using the same method
         ->addFormTheme('theme1.html.twig', 'theme2.html.twig', 'theme3.html.twig')
 
-        // CSS class/classes are applied to the field contents (in the 'index' page)
-        // or to the row that wraps the contents (in the 'detail', 'edit' and 'new' pages)
+        // on the 'index' page, CSS class/classes are applied both to the `<th>` and the `<td>`
+        // of the field in all rows; on the 'detail', 'edit', and 'new' pages, they are applied
+        // to the row that wraps the contents of the field
 
         // use this method to add new classes to the ones applied by EasyAdmin
         ->addCssClass('text-large text-bold')
@@ -898,7 +899,7 @@ precise control, use the ``Asset`` class to define the assets::
 Formatting Options
 ~~~~~~~~~~~~~~~~~~
 
-The ``formatValue()`` method allows to apply a PHP callable to the value before
+The ``formatValue()`` method allows you to apply a PHP callable to the value before
 rendering it in the ``index`` and ``detail`` pages::
 
     IntegerField::new('stock', 'Stock')
@@ -994,7 +995,7 @@ for a given postal address. This is the class you could create for the field::
                 // encore_entry_link_tags('...') and encore_entry_script_tags('...')
                 ->addWebpackEncoreEntries('admin-field-map')
 
-                // these methods allow to define the web assets loaded when the
+                // these methods allow you to define the web assets loaded when the
                 // field is displayed in any CRUD page (index/detail/edit/new)
                 ->addCssFiles('js/admin/field-map.css')
                 ->addJsFiles('js/admin/field-map.js')
@@ -1040,7 +1041,7 @@ The recommended way of adding options is defining their names as public constant
 in the field object and use the ``setCustomOption()`` method defined in the
 ``FieldTrait`` to set their values.
 
-Imagine that the ``MapField`` defined in the previous section allows to use
+Imagine that the ``MapField`` defined in the previous section allows you to use
 either Google Maps or OpenStreetMap to render the maps. You can add that
 option as follows::
 

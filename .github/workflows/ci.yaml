@@ -9,7 +9,7 @@ jobs:
     phpstan:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v5
+            - uses: actions/checkout@v6
 
             - name: Setup PHP, with composer and extensions
               uses: shivammathur/setup-php@v2
@@ -70,6 +70,11 @@ jobs:
                       php_version: "8.4"
                       symfony_version: "7.2"
                       stability: "stable"
+                    # New PHP version
+                    - os: ubuntu-latest
+                      php_version: "8.5"
+                      symfony_version: "7.3"
+                      stability: "stable"
                     # Upcoming Symfony versions
                     - os: ubuntu-latest
                       php_version: "8.4"
@@ -82,7 +87,7 @@ jobs:
         runs-on: ${{ matrix.os }}
         continue-on-error: ${{ matrix.stability == 'dev' }}
         steps:
-            - uses: actions/checkout@v5
+            - uses: actions/checkout@v6
 
             - name: Setup PHP, with composer and extensions
               uses: shivammathur/setup-php@v2
@@ -120,21 +125,12 @@ jobs:
               env:
                   SYMFONY_DEPRECATIONS_HELPER: "max[total]=999999&ignoreFile=./tests/baseline-ignore.txt"
               run: |
-                  ./vendor/bin/simple-phpunit --exclude-group pretty_urls
-
-            - name: Run Pretty URLs tests
-                # Symfony 5.4 version doesn't include the #[Route] attribute needed to run these tests (it only includes the @Route annotation)
-              if: ${{ matrix.symfony_version != '5.4' && matrix.composer_args != '--prefer-lowest' }}
-              env:
-                  USE_PRETTY_URLS: "1"
-                  SYMFONY_DEPRECATIONS_HELPER: "max[total]=999999&ignoreFile=./tests/baseline-ignore.txt"
-              run: |
-                  ./vendor/bin/simple-phpunit tests/Controller/PrettyUrls/PrettyUrlsControllerTest.php
+                  ./vendor/bin/simple-phpunit
 
     php-linter:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v5
+            - uses: actions/checkout@v6
 
             # see https://github.com/OskarStark/php-cs-fixer-ga
             - name: PHP-CS-Fixer
@@ -145,7 +141,7 @@ jobs:
     doc-linter:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v5
+            - uses: actions/checkout@v6
 
             - name: DOCtor-RST
               uses: docker://oskarstark/doctor-rst
@@ -157,7 +153,7 @@ jobs:
     css-linter:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v5
+            - uses: actions/checkout@v6
 
             - name: Setup PHP, with composer and extensions
               uses: shivammathur/setup-php@v2
@@ -176,7 +172,7 @@ jobs:
     twig-linter:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v5
+            - uses: actions/checkout@v6
 
             - name: Setup PHP, with composer and extensions
               uses: shivammathur/setup-php@v2
@@ -195,7 +191,7 @@ jobs:
     js-linter:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v5
+            - uses: actions/checkout@v6
             - run: npm i -g corepack && corepack enable
             - uses: actions/setup-node@v6
               with:

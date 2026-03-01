@@ -308,6 +308,25 @@ class Crud
         return $this;
     }
 
+    public function autocomplete(bool $enable = true, ?callable $callback = null, ?string $template = null, bool $renderAsHtml = false): self
+    {
+        if (!$enable) {
+            return $this;
+        }
+
+        if (null !== $callback) {
+            $this->dto->setAutocompleteCallback($callback);
+        }
+
+        if (null !== $template) {
+            $this->dto->setAutocompleteTemplate($template);
+        }
+
+        $this->dto->setAutocompleteRenderAsHtml($renderAsHtml);
+
+        return $this;
+    }
+
     public function setFilters(?FilterConfigDto $filters): self
     {
         $this->dto->setFiltersConfig($filters);
@@ -433,6 +452,47 @@ class Crud
     public function hideNullValues(bool $hide = true): self
     {
         $this->dto->hideNullValues($hide);
+
+        return $this;
+    }
+
+    /**
+     * By default, batch actions show a confirmation modal before execution.
+     * Set to false to execute batch actions immediately without confirmation.
+     * Set to a string (or TranslatableInterface) to show a custom confirmation message.
+     * The message can use placeholders: %action_name% and %num_items%.
+     */
+    public function askConfirmationOnBatchActions(bool|string|TranslatableInterface $askConfirmation = true): self
+    {
+        $this->dto->setAskConfirmationOnBatchActions($askConfirmation);
+
+        return $this;
+    }
+
+    /**
+     * Sets the action to execute when clicking on a row in the index page.
+     * Pass a string for a single action, an array for a fallback chain (first available wins),
+     * or null to disable. By default, it tries [Action::EDIT, Action::DETAIL].
+     * The action will only work if it's enabled for the CRUD and the user has permission.
+     *
+     * @param string|string[]|null $actionName
+     */
+    public function setDefaultRowAction(string|array|null $actionName): self
+    {
+        if (\is_string($actionName) && '' === trim($actionName)) {
+            throw new \InvalidArgumentException('The default row action cannot be an empty string. Use null to disable it.');
+        }
+
+        if (\is_array($actionName)) {
+            foreach ($actionName as $action) {
+                /** @phpstan-ignore function.alreadyNarrowedType */
+                if (!\is_string($action) || '' === trim($action)) {
+                    throw new \InvalidArgumentException('All actions in the fallback chain must be non-empty strings.');
+                }
+            }
+        }
+
+        $this->dto->setDefaultRowAction($actionName);
 
         return $this;
     }

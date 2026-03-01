@@ -165,8 +165,28 @@ table.datagrid:not(.datagrid-empty) tr:not(.empty-row) td.actions.actions-as-dro
 .datagrid tbody tr.selected-row td ::-moz-selection {
     background: transparent;
 }
+
+/* clickable rows for default row action */
+.datagrid tr.ea-clickable-row {
+    cursor: pointer;
+}
+.datagrid tr.ea-clickable-row td.actions,
+.datagrid tr.ea-clickable-row td.batch-actions-selector {
+    cursor: default;
+}
+.datagrid tr.ea-clickable-row td.actions a,
+.datagrid tr.ea-clickable-row td.actions button,
+.datagrid tr.ea-clickable-row td.batch-actions-selector .form-check {
+    cursor: pointer;
+}
+
 .datagrid td.actions {
     text-align: right;
+}
+.datagrid td.actions:not(.actions-as-dropdown) form {
+    display: inline;
+    margin-inline-start: 10px;
+    margin-inline-end: 10px;
 }
 .datagrid td.actions a:not(.dropdown-item) {
     font-size: var(--font-size-sm);
@@ -178,6 +198,21 @@ table.datagrid:not(.datagrid-empty) tr:not(.empty-row) td.actions.actions-as-dro
 .datagrid td.actions a:not(.dropdown-item) .action-icon {
     font-size: var(--font-size-base);
     margin-inline-end: 2px;
+}
+
+.datagrid td.actions .dropdown-item-variant-success:hover,
+.page-actions .dropdown-item-variant-success:hover {
+    --dropdown-icon-color: var(--dropdown-item-success-color);
+
+    background: var(--dropdown-item-success-bg);
+    color: var(--dropdown-item-success-color);
+}
+.datagrid td.actions .dropdown-item-variant-warning:hover,
+.page-actions .dropdown-item-variant-warning:hover {
+    --dropdown-icon-color: var(--dropdown-item-warning-color);
+
+    background: var(--dropdown-item-warning-bg);
+    color: var(--dropdown-item-warning-color);
 }
 .datagrid td.actions .dropdown-item-variant-danger:hover,
 .page-actions .dropdown-item-variant-danger:hover {

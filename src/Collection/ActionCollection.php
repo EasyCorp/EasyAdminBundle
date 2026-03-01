@@ -2,21 +2,18 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Collection;
 
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\Collection\CollectionInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionGroupDto;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
- *
- * @implements CollectionInterface<string, ActionDto|ActionGroupDto>
  */
-final class ActionCollection implements CollectionInterface
+final class ActionCollection implements \ArrayAccess, \Countable, \IteratorAggregate
 {
     /**
      * @param array<string, ActionDto|ActionGroupDto> $actions
      */
-    private function __construct(private array $actions)
+    public function __construct(private array $actions = [])
     {
     }
 
@@ -28,6 +25,8 @@ final class ActionCollection implements CollectionInterface
     }
 
     /**
+     * @deprecated since 4.28.2 and removed in 5.0.0, use FilterCollection::__construct() instead.
+     *
      * @param array<string, ActionDto|ActionGroupDto> $actions
      */
     public static function new(array $actions): self
@@ -81,6 +80,9 @@ final class ActionCollection implements CollectionInterface
         return new \ArrayIterator($this->actions);
     }
 
+    /**
+     * @deprecated since 4.28.1 and will be removed in 5.0.0 without replacement
+     */
     public function getEntityActions(): self
     {
         return self::new(array_filter(
@@ -91,7 +93,7 @@ final class ActionCollection implements CollectionInterface
 
     public function getGlobalActions(): self
     {
-        return self::new(array_filter(
+        return new self(array_filter(
             $this->actions,
             static fn (ActionDto|ActionGroupDto $action): bool => $action->isGlobalAction()
         ));
@@ -99,7 +101,7 @@ final class ActionCollection implements CollectionInterface
 
     public function getBatchActions(): self
     {
-        return self::new(array_filter(
+        return new self(array_filter(
             $this->actions,
             static fn (ActionDto|ActionGroupDto $action): bool => $action instanceof ActionDto && $action->isBatchAction()
         ));

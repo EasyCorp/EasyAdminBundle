@@ -13,6 +13,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDto;
  */
 interface FilterInterface extends \Stringable
 {
+    /**
+     * @param EntityDto<object> $entityDto
+     */
     public function apply(QueryBuilder $queryBuilder, FilterDataDto $filterDataDto, ?FieldDto $fieldDto, EntityDto $entityDto): void;
 
     public function getAsDto(): FilterDto;

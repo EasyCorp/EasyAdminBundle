@@ -22,7 +22,7 @@ final class SearchDto
      * @param array<string>|null          $searchableProperties
      * @param array<string, 'ASC'|'DESC'> $defaultSort
      * @param array<string, 'ASC'|'DESC'> $customSort
-     * @param array<string>|null          $appliedFilters
+     * @param array<string, mixed>|null   $appliedFilters
      */
     public function __construct(
         private readonly Request $request,
@@ -110,7 +110,7 @@ final class SearchDto
     }
 
     /**
-     * @return string[]|null
+     * @return array<string, mixed>|null
      */
     public function getAppliedFilters(): ?array
     {

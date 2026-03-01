@@ -132,7 +132,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             throw new ForbiddenActionException($context);
         }
 
-        $fields = FieldCollection::new($this->configureFields(Crud::PAGE_INDEX));
+        $fields = new FieldCollection($this->configureFields(Crud::PAGE_INDEX));
         $filters = $this->container->get(FilterFactory::class)->create($context->getCrud()->getFiltersConfig(), $fields, $context->getEntity());
         $queryBuilder = $this->createIndexQueryBuilder($context->getSearch(), $context->getEntity(), $fields, $filters);
         $paginator = $this->container->get(PaginatorFactory::class)->create($queryBuilder);
@@ -147,7 +147,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
         $entities = $this->container->get(EntityFactory::class)->createCollection($context->getEntity(), $paginator->getResults());
         $this->container->get(FieldFactory::class)->processFieldsForAll($entities, $fields, Crud::PAGE_INDEX);
-        $processedFields = $entities->first()?->getFields() ?? FieldCollection::new([]);
+        $processedFields = $entities->first()?->getFields() ?? new FieldCollection([]);
         $context->getCrud()->setFieldAssets($this->getFieldAssets($processedFields));
         $actions = $this->container->get(ActionFactory::class)->processGlobalActionsAndEntityActionsForAll($entities, $context->getCrud()->getActionsConfig());
 
@@ -186,7 +186,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             throw new InsufficientEntityPermissionException($context);
         }
 
-        $this->container->get(FieldFactory::class)->processFields($context->getEntity(), FieldCollection::new($this->configureFields(Crud::PAGE_DETAIL)), Crud::PAGE_DETAIL);
+        $this->container->get(FieldFactory::class)->processFields($context->getEntity(), new FieldCollection($this->configureFields(Crud::PAGE_DETAIL)), Crud::PAGE_DETAIL);
         $context->getCrud()->setFieldAssets($this->getFieldAssets($context->getEntity()->getFields()));
         $this->container->get(ActionFactory::class)->processEntityActions($context->getEntity(), $context->getCrud()->getActionsConfig());
 
@@ -221,7 +221,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             throw new InsufficientEntityPermissionException($context);
         }
 
-        $this->container->get(FieldFactory::class)->processFields($context->getEntity(), FieldCollection::new($this->configureFields(Crud::PAGE_EDIT)), Crud::PAGE_EDIT);
+        $this->container->get(FieldFactory::class)->processFields($context->getEntity(), new FieldCollection($this->configureFields(Crud::PAGE_EDIT)), Crud::PAGE_EDIT);
         $context->getCrud()->setFieldAssets($this->getFieldAssets($context->getEntity()->getFields()));
         $this->container->get(ActionFactory::class)->processEntityActions($context->getEntity(), $context->getCrud()->getActionsConfig());
         /** @var TEntity $entityInstance */
@@ -235,9 +235,9 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             if (!$this->isCsrfTokenValid(BooleanField::CSRF_TOKEN_NAME, $context->getRequest()->query->get('csrfToken'))) {
                 if (class_exists(InvalidCsrfTokenException::class)) {
                     throw new InvalidCsrfTokenException();
-                } else {
-                    return new Response('Invalid CSRF token.', 400);
                 }
+
+                return new Response('Invalid CSRF token.', 400);
             }
 
             $fieldName = $context->getRequest()->query->get('fieldName');
@@ -307,7 +307,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         /** @var class-string<TEntity> $entityFqcn */
         $entityFqcn = $context->getEntity()->getFqcn();
         $context->getEntity()->setInstance($this->createEntity($entityFqcn));
-        $this->container->get(FieldFactory::class)->processFields($context->getEntity(), FieldCollection::new($this->configureFields(Crud::PAGE_NEW)), Crud::PAGE_NEW);
+        $this->container->get(FieldFactory::class)->processFields($context->getEntity(), new FieldCollection($this->configureFields(Crud::PAGE_NEW)), Crud::PAGE_NEW);
         $context->getCrud()->setFieldAssets($this->getFieldAssets($context->getEntity()->getFields()));
         $this->container->get(ActionFactory::class)->processEntityActions($context->getEntity(), $context->getCrud()->getActionsConfig());
 
@@ -446,7 +446,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             try {
                 $this->deleteEntity($entityManager, $entityInstance);
             } catch (ForeignKeyConstraintViolationException $e) {
-                throw new EntityRemoveException(['entity_name' => $entityDto->toString(), 'message' => $e->getMessage()], $e);
+                throw new EntityRemoveException(['entity_name' => (string) $entityDto, 'message' => $e->getMessage()], $e);
             }
 
             $this->container->get('event_dispatcher')->dispatch(new AfterEntityDeletedEvent($entityInstance));
@@ -469,25 +469,54 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
     public function autocomplete(AdminContext $context): JsonResponse
     {
-        $queryBuilder = $this->createIndexQueryBuilder($context->getSearch(), $context->getEntity(), FieldCollection::new([]), FilterCollection::new());
+        $queryBuilder = $this->createIndexQueryBuilder($context->getSearch(), $context->getEntity(), new FieldCollection([]), new FilterCollection());
 
         $autocompleteContext = $context->getRequest()->query->all(AssociationField::PARAM_AUTOCOMPLETE_CONTEXT);
+
+        if (!isset($autocompleteContext['originatingPage'], $autocompleteContext['propertyName'])) {
+            throw new \RuntimeException('Invalid autocomplete context: missing required parameters "originatingPage" or "propertyName".');
+        }
 
         $crudControllerFqcn = $autocompleteContext[EA::CRUD_CONTROLLER_FQCN] ?? $context->getRequest()->attributes->get(EA::CRUD_CONTROLLER_FQCN) ?? $context->getRequest()->query->get(EA::CRUD_CONTROLLER_FQCN);
         /** @var CrudControllerInterface $controller */
         $controller = $this->container->get(ControllerFactory::class)->getCrudControllerInstance($crudControllerFqcn, Action::INDEX, $context->getRequest());
+        $originatingPage = $autocompleteContext['originatingPage'];
+        $propertyName = $autocompleteContext['propertyName'];
+        $fields = new FieldCollection($controller->configureFields($originatingPage));
+
+        // find the first field with matching property that is displayed on the originating page;
+        // this ensures we get the correct field when a controller defines more than one field for the
+        // same property, each of them displayed only on certain pages (via hideOnIndex(), onlyOnForms(), etc.)
         /** @var FieldDto|null $field */
-        $field = FieldCollection::new($controller->configureFields($autocompleteContext['originatingPage']))->getByProperty($autocompleteContext['propertyName']);
+        $field = null;
+        foreach ($fields as $fieldDto) {
+            if ($propertyName === $fieldDto->getProperty() && $fieldDto->isDisplayedOn($originatingPage)) {
+                $field = $fieldDto;
+                break;
+            }
+        }
+
         /** @var \Closure|null $queryBuilderCallable */
         $queryBuilderCallable = $field?->getCustomOption(AssociationField::OPTION_QUERY_BUILDER_CALLABLE);
 
         if (null !== $queryBuilderCallable) {
-            $queryBuilderCallable($queryBuilder);
+            $queryBuilder = $queryBuilderCallable($queryBuilder) ?? $queryBuilder;
         }
+
+        $callback = $field?->getCustomOption(AssociationField::OPTION_AUTOCOMPLETE_CALLBACK)
+            ?? $context->getCrud()?->getAutocompleteCallback();
+
+        $template = $field?->getCustomOption(AssociationField::OPTION_AUTOCOMPLETE_TEMPLATE)
+            ?? $context->getCrud()?->getAutocompleteTemplate();
+
+        // at field-level, the option is OPTION_ESCAPE_HTML_CONTENTS, which is "render as HTML" inverted
+        $fieldEscapeHtml = $field?->getCustomOption(AssociationField::OPTION_ESCAPE_HTML_CONTENTS);
+        $renderAsHtml = (null !== $fieldEscapeHtml && false === $fieldEscapeHtml)
+            || (null === $fieldEscapeHtml && $context->getCrud()?->getAutocompleteRenderAsHtml());
 
         $paginator = $this->container->get(PaginatorFactory::class)->create($queryBuilder);
 
-        return JsonResponse::fromJsonString($paginator->getResultsAsJson());
+        return JsonResponse::fromJsonString($paginator->getResultsAsJson($callback, $template, $renderAsHtml));
     }
 
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
@@ -497,7 +526,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
     public function renderFilters(AdminContext $context): KeyValueStore
     {
-        $fields = FieldCollection::new($this->configureFields(Crud::PAGE_INDEX));
+        $fields = new FieldCollection($this->configureFields(Crud::PAGE_INDEX));
         $this->container->get(FieldFactory::class)->processFields($context->getEntity(), $fields, Crud::PAGE_INDEX);
         $filters = $this->container->get(FilterFactory::class)->create($context->getCrud()->getFiltersConfig(), $context->getEntity()->getFields(), $context->getEntity());
 

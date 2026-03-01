@@ -394,9 +394,6 @@ label.form-check-label {
     box-shadow: none;
     padding: calc(var(--bs-gutter-x) - 5px) var(--bs-gutter-x) calc(var(--bs-gutter-x) / 2);
 }
-.form-column .form-fieldset-header :has(.form-fieldset-title-content.collapsed) {
-    padding-block-start: calc(var(--bs-gutter-x) / 2);
-}
 
 .form-column .form-fieldset-header .form-fieldset-title .form-fieldset-title-content {
     box-shadow: none;
@@ -435,7 +432,7 @@ label.form-check-label {
     font-size: 90%;
     margin: 0 10px 0 2px;
     transform: rotate(90deg);
-    transition: transform .2s ease-in-out;
+    transition: transform 0.2s ease-out;
 }
 
 .form-fieldset-header .form-fieldset-title {
@@ -473,6 +470,44 @@ label.form-check-label {
 .form-fieldset-header .form-fieldset-title .form-fieldset-help {
     color: var(--form-fieldset-help-color);
     margin-block-start: 6px;
+}
+
+/* using CSS Grid is needed for a smooth collapse animation */
+.form-fieldset-body {
+    display: grid;
+    grid-template-rows: 1fr;
+    transition: grid-template-rows 0.2s ease-out;
+    overflow: clip;
+}
+
+.form-fieldset-body.collapse:not(.show) {
+    display: grid;
+    grid-template-rows: 0fr;
+}
+
+.form-fieldset-body.collapsing {
+    display: grid;
+    block-size: auto !important;
+    overflow: clip;
+}
+
+.form-fieldset-body > .row {
+    min-block-size: 0;
+    overflow: clip;
+}
+
+/* allow contents (e.g. dropdowns) to overflow when fieldset is expanded */
+.form-fieldset-body.show:not(.collapsing),
+.form-fieldset-body.show:not(.collapsing) > .row {
+    overflow: visible;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .form-fieldset-body,
+    .form-column .form-fieldset-header,
+    .form-fieldset-header .form-fieldset-collapse-marker {
+        transition-duration: 0.01ms !important;
+    }
 }
 
 /* Form actions ("Save changes", "Delete", etc.) */

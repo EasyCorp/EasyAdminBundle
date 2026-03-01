@@ -2,7 +2,7 @@ EasyAdmin Array Field
 =====================
 
 This field displays the contents of a property which is mapped to a `Doctrine Array type`_ and it
-allows to add new elements dynamically using JavaScript.
+allows you to add new elements dynamically using JavaScript.
 
 In :ref:`form pages (edit and new) <crud-pages>` it looks like this:
 

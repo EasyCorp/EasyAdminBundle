@@ -46,7 +46,7 @@
         {% if item.isActionGroup %}
             {{ include(item.templatePath, {group: item, entity: entity}, with_context: false) }}
         {% else %}
-            {{ include(item.templatePath, {action: item}, with_context: false) }}
+            {{ include(item.templatePath, {action: item, entity: entity}, with_context: false) }}
         {% endif %}
     {% endfor %}
 {% endblock %}
@@ -63,11 +63,14 @@
     {% endblock detail_fields %}
 
     {% block delete_form %}
-        {{ include('@EasyAdmin/crud/includes/_delete_form.html.twig', {entity_id: entity.primaryKeyValue}, with_context: false) }}
+        {{ include('@EasyAdmin/crud/includes/_action_confirmation_modal.html.twig', with_context: false) }}
     {% endblock delete_form %}
 {% endblock %}
 
 {% macro render_field_contents(entity, field) %}
+    {# don't use 'field.help is not empty' here; it'll trigger deprecation messages: Method TranslatableMessage::__toString() is deprecated #}
+    {% set has_help = field.help is not same as(false) and field.help is not null and field.help is not same as('') %}
+
     <div class="field-group {{ field.cssClass }}" {% for name, value in field.htmlAttributes %}{{ name }}="{{ value|e('html') }}" {% endfor %}>
         {% if field.label is same as (false) %}
             {# a FALSE label value means that the field doesn't even display the <label> element;
@@ -75,7 +78,7 @@
         {% else %}
             <div class="field-label">
                 {%- set label_html_attributes -%}
-                    {%- if field.help is not empty -%}
+                    {%- if has_help -%}
                         data-bs-toggle="tooltip" data-bs-placement="auto" data-bs-animation="false"
                         data-bs-html="true" data-bs-custom-class="ea-detail-label-tooltip"
                         data-bs-title="{{ field.help|trans|e('html') }}"
@@ -193,17 +196,19 @@
 
 {% macro render_column_open(field) %}
     {% set field_icon = field.getCustomOption('icon') %}
-    {% set column_has_title = field_icon != null or field.label != false or field.label != null or field.label != '' or field.help != null %}
+    {# don't use 'field.label is not empty' or 'field.label != ...' here; it'll trigger deprecation messages: Method TranslatableMessage::__toString() is deprecated #}
+    {% set has_label = field.label is not same as(false) and field.label is not null and field.label is not same as('') %}
+    {% set column_has_title = field_icon is not null or has_label or field.help is not null %}
 
     <div class="form-column {{ not column_has_title ? 'form-column-no-header' }} {{ field.cssClass }}">
         {% if column_has_title %}
             <div class="form-column-title">
                 <div class="form-column-title-content">
                     {% if field_icon %}<twig:ea:Icon name="{{ field_icon }}" class="form-column-icon" />{% endif %}
-                    {% if field.label %}{{ field.label|trans(domain: ea().i18n.translationDomain)|raw }}{% endif %}
+                    {% if has_label %}{{ field.label|trans(domain: ea().i18n.translationDomain)|raw }}{% endif %}
                 </div>
 
-                {% if field.help %}
+                {% if field.help is not null %}
                     <div class="form-column-help">{{ field.help|trans(domain: ea().i18n.translationDomain)|raw }}</div>
                 {% endif %}
             </div>
@@ -215,7 +220,11 @@
 {% endmacro %}
 
 {% macro render_fieldset_open(field) %}
-    {% set fieldset_has_header = field.label or field.getCustomOption('icon') or field.help %}
+    {# don't use 'field.help is not empty' here; it'll trigger deprecation messages: Method TranslatableMessage::__toString() is deprecated #}
+    {% set has_help = field.help is not same as(false) and field.help is not null and field.help is not same as('') %}
+    {# don't use 'field.label is not empty' here; it'll trigger deprecation messages: Method TranslatableMessage::__toString() is deprecated #}
+    {% set has_label = field.label is not same as(false) and field.label is not null and field.label is not same as('') %}
+    {% set fieldset_has_header = has_label or field.getCustomOption('icon') or has_help %}
     {% set is_collapsible_option_name = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Field\\FormField::OPTION_COLLAPSIBLE') %}
     {% set is_collapsed_option_name = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Field\\FormField::OPTION_COLLAPSED') %}
     {% set is_collapsible = field.getCustomOption(is_collapsible_option_name) %}
@@ -224,7 +233,7 @@
     <div class="form-fieldset {{ not fieldset_has_header ? 'form-fieldset-no-header' }} {{ field.cssClass }}">
         <fieldset>
             {% if fieldset_has_header %}
-                <div class="form-fieldset-header {{ is_collapsible ? 'collapsible' }} {{ field.help is not empty ? 'with-help' }}">
+                <div class="form-fieldset-header {{ is_collapsible ? 'collapsible' }} {{ has_help ? 'with-help' }}">
                     <div class="form-fieldset-title">
                         {% set fieldset_title_contents %}
                             {% if is_collapsible %}
@@ -250,7 +259,7 @@
                             </span>
                         {% endif %}
 
-                        {% if field.help %}
+                        {% if has_help %}
                             <div class="form-fieldset-help">{{ field.help|trans|raw }}</div>
                         {% endif %}
                     </div>

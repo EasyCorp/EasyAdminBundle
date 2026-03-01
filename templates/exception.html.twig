@@ -7,7 +7,7 @@
 {% block content_footer_wrapper '' %}
 {% block main %}
     <div class="error-message">
-        <h1><twig:ea:Icon name="internal:circle-exclamation" /> {{ block('page_title') }}</h1>
+        <h1><twig:ea:Icon name="internal:circle-exclamation" /> <span>{{ block('page_title') }}</span></h1>
         {{ exception.publicMessage|trans(exception.translationParameters, 'EasyAdminBundle') }}
     </div>
 {% endblock %}

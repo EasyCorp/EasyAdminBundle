@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Létrehozás és szerkesztés',
         'save' => 'Mentés',
         'save_and_continue' => 'Mentés és szerkesztés',
+        'toggle_dropdown' => 'Legördülő menü váltása',
     ],
 
     'batch_action_modal' => [
@@ -70,6 +71,11 @@ return [
     'delete_modal' => [
         'title' => 'Biztos benne, hogy törli ezt az elemet?',
         'content' => 'Ez a művelet visszavonhatatlan.',
+    ],
+
+    'action_confirmation_modal' => [
+        'title' => 'Biztosan szeretné %action_name%?',
+        'action' => 'Megerősítés',
     ],
 
     'filter' => [
@@ -135,6 +141,10 @@ return [
         'entity_remove' => 'Ez az elem nem törölhető más kapcsolódó adatok miatt.',
         'forbidden_action' => 'A kért művelet nem hajtható végre ezen az elemen.',
         'insufficient_entity_permission' => 'Nincs megfelelő jogosultsága az elemhez.',
+        'general' => 'Hiba történt a kérés feldolgozása közben.',
+        'general_403' => 'Nincs jogosultsága a művelet végrehajtásához.',
+        'general_404' => 'A kért oldal nem található.',
+        'general_500' => 'Belső hiba történt a kérés feldolgozása közben.',
     ],
 
     'autocomplete' => [

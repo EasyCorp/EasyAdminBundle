@@ -255,6 +255,10 @@ fieldset:disabled a.btn {
     margin-inline-start: 0;
 }
 
+.btn > .btn-icon + .btn-label:empty {
+    display: none;
+}
+
 .btn-sm:not(:has(.btn-label)) {
     padding: var(--button-padding-y-sm);
 }

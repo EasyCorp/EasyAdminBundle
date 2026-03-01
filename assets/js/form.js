@@ -5,6 +5,8 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 class Form {
+    #isNavigatingHistory = false;
+
     constructor() {
         this.#persistSelectedTab();
         this.#createUnsavedFormChangesWarning();
@@ -25,9 +27,31 @@ class Form {
         // update the page anchor when the selected tab changes
         document.querySelectorAll('a[data-bs-toggle="tab"]').forEach((tabElement) => {
             tabElement.addEventListener('shown.bs.tab', (event) => {
+                // don't push state when navigating through browser history (back/forward)
+                if (this.#isNavigatingHistory) {
+                    return;
+                }
                 const urlHash = `#${event.target.getAttribute('href').substring(1)}`;
                 history.pushState({}, '', urlHash);
             });
+        });
+
+        // handle browser back/forward navigation to restore the correct tab
+        window.addEventListener('popstate', () => {
+            this.#isNavigatingHistory = true;
+            const urlHash = window.location.hash;
+            if (urlHash) {
+                const selectedTabPaneId = urlHash.substring(1);
+                const selectedTabId = `tablist-${selectedTabPaneId}`;
+                this.#setTabAsActive(selectedTabId);
+            } else {
+                // no hash means show the first tab
+                const firstTab = document.querySelector('a[data-bs-toggle="tab"]');
+                if (firstTab) {
+                    this.#setTabAsActive(firstTab.id);
+                }
+            }
+            this.#isNavigatingHistory = false;
         });
     }
 

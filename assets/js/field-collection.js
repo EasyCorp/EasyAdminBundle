@@ -16,7 +16,9 @@ const eaCollectionHandler = (event) => {
             const item = deleteButton.closest('.field-collection-item');
 
             item.remove();
-            document.dispatchEvent(new Event('ea.collection.item-removed'));
+            document.dispatchEvent(
+                new CustomEvent('ea.collection.item-removed', { detail: { deletedElement: item, collection } })
+            );
 
             EaCollectionProperty.updateCollectionItemCssClasses(collection);
         });
@@ -72,7 +74,7 @@ const EaCollectionProperty = {
             }
 
             document.dispatchEvent(
-                new CustomEvent('ea.collection.item-added', { detail: { newElement: lastElement } })
+                new CustomEvent('ea.collection.item-added', { detail: { newElement: lastElement, collection } })
             );
         });
 

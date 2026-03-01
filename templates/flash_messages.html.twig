@@ -8,8 +8,11 @@
     <div id="flash-messages">
         {% for label, messages in flash_messages %}
             {% for message in messages %}
+                {# the message must be translated outside of the Twig component because
+                   the trans_default_domain value is ignored inside the component #}
+                {% set translated_message = message|trans %}
                 <twig:ea:Alert variant="{{ label }}" withDismissButton>
-                    {{ message|trans|raw }}
+                    {{ translated_message|raw }}
                 </twig:ea:Alert>
             {% endfor %}
         {% endfor %}

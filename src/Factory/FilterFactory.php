@@ -91,7 +91,7 @@ final class FilterFactory
             $builtFilters[$property] = $filterDto;
         }
 
-        return FilterCollection::new($builtFilters);
+        return new FilterCollection($builtFilters);
     }
 
     private function guessFilterClass(EntityDto $entityDto, string $propertyName): string

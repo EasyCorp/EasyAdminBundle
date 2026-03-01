@@ -69,8 +69,14 @@ class MakeCrudControllerCommand extends Command
         $projectDir = $this->projectDir;
         $controllerDir = $io->ask('Which directory do you want to generate the CRUD controller in?', 'src/Controller/Admin/', static function (string $selectedDir) use ($fs, $projectDir) {
             $absoluteDir = u($selectedDir)->ensureStart($projectDir.\DIRECTORY_SEPARATOR);
+            if (null !== $absoluteDir->indexOf('..')) {
+                throw new \RuntimeException(sprintf('The given directory path can\'t contain ".." and must be relative to the project directory (which is "%s")', $projectDir));
+            }
+
+            $fs->mkdir($absoluteDir);
+
             if (!$fs->exists($absoluteDir)) {
-                throw new \RuntimeException('The given directory does not exist. Type in the path of an existing directory relative to your project root (e.g. src/Controller/Admin/)');
+                throw new \RuntimeException('The given directory does not exist and couldn\'t be created. Type in the path of an existing directory relative to your project root (e.g. src/Controller/Admin/)');
             }
 
             return $absoluteDir->after($projectDir.\DIRECTORY_SEPARATOR)->trimEnd(\DIRECTORY_SEPARATOR)->toString();

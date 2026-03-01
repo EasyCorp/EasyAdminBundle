@@ -8,8 +8,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Provider\AdminContextProviderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
-use function Symfony\Component\String\u;
 use Twig\Markup;
+use function Symfony\Component\String\u;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>

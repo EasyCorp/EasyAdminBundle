@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Aanmaken en verdergaan',
         'save' => 'Opslaan',
         'save_and_continue' => 'Opslaan en verdergaan',
+        'toggle_dropdown' => 'Schakel vervolgkeuzemenu',
     ],
 
     'batch_action_modal' => [
@@ -70,6 +71,11 @@ return [
     'delete_modal' => [
         'title' => 'Weet je zeker dat je dit item wilt verwijderen?',
         'content' => 'Deze actie kan niet ongedaan worden gemaakt.',
+    ],
+
+    'action_confirmation_modal' => [
+        'title' => 'Weet je zeker dat je wilt %action_name%?',
+        'action' => 'Bevestigen',
     ],
 
     'filter' => [
@@ -134,6 +140,10 @@ return [
         'entity_remove' => 'Dit item kan niet verwijderd worden omdat andere items ervan afhankelijk zijn.',
         'forbidden_action' => 'De gevraagde actie kan niet worden uitgevoerd op dit item.',
         'insufficient_entity_permission' => 'Je hebt geen toegang tot dit item.',
+        'general' => 'Er is een fout opgetreden bij het verwerken van je verzoek.',
+        'general_403' => 'Je hebt geen toestemming om deze actie uit te voeren.',
+        'general_404' => 'De opgevraagde pagina kon niet worden gevonden.',
+        'general_500' => 'Er is een interne fout opgetreden bij het verwerken van je verzoek.',
     ],
 
     'autocomplete' => [

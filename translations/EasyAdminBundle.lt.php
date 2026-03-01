@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Sukurti ir tęsti redagavimą',
         'save' => 'Išsaugoti',
         'save_and_continue' => 'Išsaugoti ir tęsti redagavimą',
+        'toggle_dropdown' => 'Perjungti išskleidžiamąjį meniu',
     ],
 
     'batch_action_modal' => [
@@ -70,6 +71,11 @@ return [
     'delete_modal' => [
         'title' => 'Ar tikrai norite ištrinti šį elementą?',
         'content' => 'Šios operacijos atkurti nebegalėsite.',
+    ],
+
+    'action_confirmation_modal' => [
+        'title' => 'Ar tikrai norite %action_name%?',
+        'action' => 'Patvirtinti',
     ],
 
     'filter' => [
@@ -124,6 +130,10 @@ return [
         'entity_remove' => 'Šis elementas negali būti ištrintas, nes nuo jo priklauso kiti elementai.',
         'forbidden_action' => 'Norimas atlikti veiksmas šiam elementui negalimas.',
         'insufficient_entity_permission' => 'Jums trūkstą teisių pasiekti šį elementą.',
+        'general' => 'An error occurred while processing your request.',
+        'general_403' => 'You don\'t have permission to perform this action.',
+        'general_404' => 'The requested page could not be found.',
+        'general_500' => 'An internal error occurred while processing your request.',
     ],
 
     'autocomplete' => [

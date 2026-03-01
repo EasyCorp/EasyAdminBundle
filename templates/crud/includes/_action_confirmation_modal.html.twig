@@ -1,0 +1,26 @@
+{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
+{# Hidden form for POST-based actions (like DELETE) with CSRF protection #}
+<form class="d-none" method="post" id="action-confirmation-form">
+    {% guard function csrf_token %}
+        <input type="hidden" name="token" value="{{ csrf_token('ea-delete') }}" />
+    {% endguard %}
+</form>
+
+<div id="modal-action-confirmation" class="modal fade" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <h4 id="action-confirmation-title">{{ 'action_confirmation_modal.title'|trans([], 'EasyAdminBundle') }}</h4>
+            </div>
+            <div class="modal-footer">
+                <twig:ea:Button type="button" data-bs-dismiss="modal">
+                    {{ 'action.cancel'|trans([], 'EasyAdminBundle') }}
+                </twig:ea:Button>
+
+                <twig:ea:Button type="button" variant="danger" data-bs-dismiss="modal" id="modal-action-confirmation-button">
+                    {{ 'action_confirmation_modal.action'|trans([], 'EasyAdminBundle') }}
+                </twig:ea:Button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -6,6 +6,7 @@ use Doctrine\ORM\PersistentCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -15,6 +16,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FieldFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudFormType;
+use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use Symfony\Component\Form\Extension\Core\Type\CountryType;
 use Symfony\Component\Form\Extension\Core\Type\CurrencyType;
 use Symfony\Component\Form\Extension\Core\Type\LanguageType;
@@ -33,6 +35,7 @@ final class CollectionConfigurator implements FieldConfiguratorInterface
         private readonly RequestStack $requestStack,
         private readonly EntityFactory $entityFactory,
         private readonly ControllerFactory $controllerFactory,
+        private readonly AdminContextProvider $adminContextProvider,
         private readonly ?FieldFactory $fieldFactory = null,
     ) {
         if (null === $this->fieldFactory) {
@@ -99,7 +102,7 @@ final class CollectionConfigurator implements FieldConfiguratorInterface
 
         $collectionItemsAsText = [];
         foreach ($field->getValue() ?? [] as $item) {
-            if (!\is_string($item) && !(\is_object($item) && method_exists($item, '__toString'))) {
+            if (!\is_string($item) && !$item instanceof \Stringable) {
                 return $this->countNumElements($field->getValue());
             }
 
@@ -107,8 +110,9 @@ final class CollectionConfigurator implements FieldConfiguratorInterface
         }
 
         $isDetailAction = Action::DETAIL === $context->getCrud()->getCurrentAction();
+        $maxLength = $field->getCustomOption(CollectionField::OPTION_MAX_LENGTH) ?? ($isDetailAction ? 512 : 32);
 
-        return u(', ')->join($collectionItemsAsText)->truncate($isDetailAction ? 512 : 32, '…')->toString();
+        return u(', ')->join($collectionItemsAsText)->truncate($maxLength, '…')->toString();
     }
 
     private function countNumElements(mixed $collection): int
@@ -140,14 +144,14 @@ final class CollectionConfigurator implements FieldConfiguratorInterface
             }
 
             $targetCrudControllerFqcn = $fieldDto->getCustomOption(CollectionField::OPTION_ENTRY_CRUD_CONTROLLER_FQCN)
-                ?? $context->getCrudControllers()->findCrudFqcnByEntityFqcn($entityDto->getClassMetadata()->getAssociationTargetClass($fieldDto->getProperty()));
+                ?? $context->getAdminControllers()->findCrudControllerByEntity($entityDto->getClassMetadata()->getAssociationTargetClass($fieldDto->getProperty()));
 
             if (null === $targetCrudControllerFqcn) {
                 throw new \RuntimeException(sprintf('The "%s" collection field of "%s" wants to render its entries using an EasyAdmin CRUD form. However, no CRUD form was found related to this field. You can either create a CRUD controller for the entity "%s" or pass the CRUD controller to use as the first argument of the "useEntryCrudForm()" method.', $fieldDto->getProperty(), $context->getCrud()?->getControllerFqcn(), $entityDto->getClassMetadata()->getAssociationTargetClass($fieldDto->getProperty())));
             }
         } elseif (null === $fieldDto->getFormTypeOption('entry_type')
             && $entityDto->getClassMetadata()->hasAssociation($fieldDto->getProperty())) {
-            $targetCrudControllerFqcn = $context->getCrudControllers()->findCrudFqcnByEntityFqcn($entityDto->getClassMetadata()->getAssociationTargetClass($fieldDto->getProperty()));
+            $targetCrudControllerFqcn = $context->getAdminControllers()->findCrudControllerByEntity($entityDto->getClassMetadata()->getAssociationTargetClass($fieldDto->getProperty()));
 
             if (null === $targetCrudControllerFqcn) {
                 return;
@@ -187,19 +191,36 @@ final class CollectionConfigurator implements FieldConfiguratorInterface
     private function createEntityDto(string $targetEntityFqcn, string $targetCrudControllerFqcn, string $crudAction, string $crudControllerPageName, string $crudPageName): EntityDto
     {
         $entityDto = $this->entityFactory->create($targetEntityFqcn);
+        $request = $this->requestStack->getMainRequest();
 
         $crudController = $this->controllerFactory->getCrudControllerInstance(
             $targetCrudControllerFqcn,
             $crudAction,
-            $this->requestStack->getMainRequest()
+            $request
         );
 
-        $fields = $crudController->configureFields($crudControllerPageName);
+        $originalContext = $this->adminContextProvider->getContext();
 
-        if (null === $this->fieldFactory) {
-            $this->entityFactory->processFields($entityDto, FieldCollection::new($fields), $crudPageName);
-        } else {
-            $this->fieldFactory->processFields($entityDto, FieldCollection::new($fields), $crudPageName);
+        // temporarily swap AdminContext with the collection's EntityDto
+        // (this allows e.g. the CRUD controller of the collection entry to get the correct entity instance)
+        if ($originalContext instanceof AdminContext && null !== $request) {
+            $collectionContext = $originalContext->withEntity($entityDto);
+            $request->attributes->set(EA::CONTEXT_REQUEST_ATTRIBUTE, $collectionContext);
+        }
+
+        try {
+            $fields = $crudController->configureFields($crudControllerPageName);
+
+            if (null === $this->fieldFactory) {
+                $this->entityFactory->processFields($entityDto, new FieldCollection($fields), $crudPageName);
+            } else {
+                $this->fieldFactory->processFields($entityDto, new FieldCollection($fields), $crudPageName);
+            }
+        } finally {
+            // restore the original context
+            if ($originalContext instanceof AdminContext && null !== $request) {
+                $request->attributes->set(EA::CONTEXT_REQUEST_ATTRIBUTE, $originalContext);
+            }
         }
 
         return $entityDto;

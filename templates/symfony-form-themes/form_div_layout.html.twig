@@ -61,7 +61,9 @@
     {%- endif -%}
     <select {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %}>
         {%- if placeholder is not none -%}
-            <option value=""{% if required and value is empty %} selected="selected"{% endif %}>{{ placeholder != '' ? (translation_domain is same as(false) ? placeholder : placeholder|trans({}, translation_domain)) }}</option>
+            {# don't use "placeholder != ''" here; it'll trigger deprecation messages: Method TranslatableMessage::__toString() is deprecated #}
+            {% set has_placeholder_label = placeholder is not same as('') and placeholder is not same as(false) %}
+            <option value=""{% if required and value is empty %} selected="selected"{% endif %}>{{ has_placeholder_label ? (translation_domain is same as(false) ? placeholder : placeholder|trans({}, translation_domain)) }}</option>
         {%- endif -%}
         {%- if preferred_choices|length > 0 -%}
             {% set options = preferred_choices %}
@@ -222,7 +224,9 @@
 {%- endblock range_widget %}
 
 {%- block button_widget -%}
-    {%- if label is empty -%}
+    {# don't use 'label is not empty' here; it'll trigger deprecation messages: Method TranslatableMessage::__toString() is deprecated #}
+    {% set has_label = label is not same as(false) and label is not null and label is not same as('') %}
+    {%- if not has_label -%}
         {%- if label_format is not empty -%}
             {% set label = label_format|replace({
                 '%name%': name,
@@ -290,7 +294,9 @@
         {% if required -%}
             {% set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' required')|trim}) %}
         {%- endif -%}
-        {% if label is empty -%}
+        {# don't use 'label is not empty' here; it'll trigger deprecation messages: Method TranslatableMessage::__toString() is deprecated #}
+        {% set has_label = label is not same as(false) and label is not null and label is not same as('') %}
+        {% if not has_label -%}
             {%- if label_format is not empty -%}
                 {% set label = label_format|replace({
                     '%name%': name,
@@ -323,7 +329,9 @@
 {# Help #}
 
 {% block form_help -%}
-    {%- if help is not empty -%}
+    {# don't use 'help is not empty' here; it'll trigger deprecation messages: Method TranslatableMessage::__toString() is deprecated #}
+    {% set has_help = help is not same as(false) and help is not null and help is not same as('') %}
+    {%- if has_help -%}
         {%- set help_attr = help_attr|merge({class: (help_attr.class|default('') ~ ' help-text')|trim}) -%}
         <p id="{{ id }}_help"{% with {attr: help_attr} %}{{ block('attributes') }}{% endwith %}>
             {%- if translation_domain is same as(false) -%}
@@ -355,7 +363,9 @@
 
 {%- block form_row -%}
     {%- set widget_attr = {} -%}
-    {%- if help is not empty -%}
+    {# don't use 'help is not empty' here; it'll trigger deprecation messages: Method TranslatableMessage::__toString() is deprecated #}
+    {% set has_help = help is not same as(false) and help is not null and help is not same as('') %}
+    {%- if has_help -%}
         {%- set widget_attr = {attr: {'aria-describedby': id ~ '_help'}} -%}
     {%- endif -%}
     <div{% with {attr: row_attr} %}{{ block('attributes') }}{% endwith %}>
@@ -466,7 +476,8 @@
     {%- for attrname, attrvalue in attr -%}
         {{- ' ' -}}
         {%- if attrname in ['placeholder', 'title'] -%}
-            {{- attrname }}="{{ translation_domain is same as(false) or attrvalue is null ? attrvalue : attrvalue|trans(attr_translation_parameters, translation_domain) }}"
+            {# don't render placeholder/title values raw; this can cast TranslatableMessage to string #}
+            {{- attrname }}="{{ attrvalue is null ? attrvalue : attrvalue|trans(attr_translation_parameters, translation_domain) }}"
         {%- elseif attrvalue is same as(true) -%}
             {{- attrname }}="{{ attrname }}"
         {%- elseif attrvalue is not same as(false) -%}

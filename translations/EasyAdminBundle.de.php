@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Erstellen und weiter bearbeiten',
         'save' => 'Speichern',
         'save_and_continue' => 'Speichern und weiter bearbeiten',
+        'toggle_dropdown' => 'Dropdown umschalten',
     ],
 
     'batch_action_modal' => [
@@ -70,6 +71,11 @@ return [
     'delete_modal' => [
         'title' => 'Soll das Element wirklich gelöscht werden?',
         'content' => 'Diese Aktion kann nicht rückgängig gemacht werden.',
+    ],
+
+    'action_confirmation_modal' => [
+        'title' => 'Sind Sie sicher, dass Sie %action_name% möchten?',
+        'action' => 'Bestätigen',
     ],
 
     'filter' => [
@@ -135,6 +141,10 @@ return [
         'entity_remove' => 'Dieses Element kann nicht gelöscht werden, weil andere Elemente davon abhängen.',
         'forbidden_action' => 'Die gewünschte Aktion kann mit diesem Element nicht ausgeführt werden.',
         'insufficient_entity_permission' => 'Sie haben keine Berechtigung, auf dieses Element zuzugreifen.',
+        'general' => 'Bei der Verarbeitung Ihrer Anfrage ist ein Fehler aufgetreten.',
+        'general_403' => 'Sie haben keine Berechtigung, diese Aktion auszuführen.',
+        'general_404' => 'Die angeforderte Seite wurde nicht gefunden.',
+        'general_500' => 'Bei der Verarbeitung Ihrer Anfrage ist ein interner Fehler aufgetreten.',
     ],
 
     'autocomplete' => [

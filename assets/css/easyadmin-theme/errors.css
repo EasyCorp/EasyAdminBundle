@@ -3,13 +3,23 @@
 body.error .error-message {
     max-inline-size: 500px;
     min-block-size: 400px;
-    padding: 45px;
+    padding: 45px 15px;
+}
+@media (min-width: 992px) {
+    body.error .error-message {
+        padding: 45px;
+    }
 }
 body.error .error-message h1 {
     color: var(--color-danger);
+    display: flex;
+    align-items: center;
     font-size: var(--font-size-lg);
     font-weight: 600;
+    margin-block-end: 1em;
 }
-body.error .error-message h1 i {
-    margin-inline-end: 4px;
+body.error .error-message h1 .icon {
+    margin-inline-end: 6px;
+    line-height: 1;
+    font-size: 110%;
 }

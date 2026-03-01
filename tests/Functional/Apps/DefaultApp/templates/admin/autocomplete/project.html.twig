@@ -1,0 +1,8 @@
+{# Example autocomplete template for Project entity #}
+<div class="autocomplete-project">
+    <strong>{{ entity.name }}</strong>
+    {% if entity.internal %}
+        <span class="badge badge-info">Internal</span>
+    {% endif %}
+    <span class="text-muted">(ID: {{ entity.id }})</span>
+</div>

@@ -19,12 +19,6 @@ class ChoiceFilterType extends AbstractType
     {
         $multiple = (bool) $builder->get('value')->getOption('multiple');
 
-        // if the filter shows the values as checkboxes or radio buttons, remove the
-        // attribute that turns the <select> into an autocomplete widget
-        if (true === ($options['value_type_options']['expanded'] ?? false)) {
-            unset($options['value_type_options']['attr']['data-ea-widget']);
-        }
-
         $builder->addModelTransformer(new CallbackTransformer(
             static fn ($data) => $data,
             static function ($data) use ($multiple) {
@@ -66,6 +60,14 @@ class ChoiceFilterType extends AbstractType
             ],
         ]);
         $resolver->setNormalizer('value_type_options', static function (Options $options, $value) {
+            // if the filter shows the values as checkboxes or radio buttons, remove the
+            // attribute that turns the <select> into an autocomplete widget
+            if (true === ($value['expanded'] ?? false)) {
+                unset($value['attr']['data-ea-widget']);
+
+                return $value;
+            }
+
             if (!isset($value['attr'])) {
                 $value['attr']['data-ea-widget'] = 'ea-autocomplete';
             }

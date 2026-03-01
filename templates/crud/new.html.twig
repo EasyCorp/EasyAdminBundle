@@ -13,7 +13,11 @@
 
 {% block head_javascript %}
     {{ parent() }}
-    <script src="{{ asset('form.js', ea.assets.defaultAssetPackageName) }}"></script>
+    {% guard function csp_nonce %}
+        <script src="{{ asset('form.js', ea.assets.defaultAssetPackageName) }}" nonce="{{ csp_nonce('script') }}"></script>
+    {% else %}
+        <script src="{{ asset('form.js', ea.assets.defaultAssetPackageName) }}"></script>
+    {% endguard %}
 {% endblock head_javascript %}
 
 {% block configured_head_contents %}
@@ -54,7 +58,7 @@
         {% if item.isActionGroup %}
             {{ include(item.templatePath, {group: item, entity: entity}, with_context: false) }}
         {% else %}
-            {{ include(item.templatePath, {action: item}, with_context: false) }}
+            {{ include(item.templatePath, {action: item, entity: entity}, with_context: false) }}
         {% endif %}
     {% endfor %}
 {% endblock %}

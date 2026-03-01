@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Créer et modifier',
         'save' => 'Sauvegarder les modifications',
         'save_and_continue' => 'Sauvegarder et modifier',
+        'toggle_dropdown' => 'Basculer le menu déroulant',
     ],
 
     'batch_action_modal' => [
@@ -70,6 +71,11 @@ return [
     'delete_modal' => [
         'title' => 'Voulez-vous supprimer cet élément ?',
         'content' => 'Cette action est irréversible.',
+    ],
+
+    'action_confirmation_modal' => [
+        'title' => 'Êtes-vous sûr de vouloir %action_name% ?',
+        'action' => 'Confirmer',
     ],
 
     'filter' => [
@@ -135,6 +141,10 @@ return [
         'entity_remove' => 'Cet élément ne peut être supprimé car d\'autres éléments en dépendent.',
         'forbidden_action' => 'L\'action demandée ne peut être exécutée sur cet élément.',
         'insufficient_entity_permission' => 'Vous n\'êtes pas autorisé à accéder à cet élément.',
+        'general' => 'Une erreur est survenue lors du traitement de votre requête.',
+        'general_403' => 'Vous n\'avez pas la permission d\'effectuer cette action.',
+        'general_404' => 'La page demandée n\'a pas été trouvée.',
+        'general_500' => 'Une erreur interne est survenue lors du traitement de votre requête.',
     ],
 
     'autocomplete' => [

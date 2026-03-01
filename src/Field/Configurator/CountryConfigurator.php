@@ -38,12 +38,17 @@ final class CountryConfigurator implements FieldConfiguratorInterface
         }
 
         if (\in_array($context->getCrud()->getCurrentPage(), [Crud::PAGE_EDIT, Crud::PAGE_NEW], true)) {
+            $showFlag = $field->getCustomOption(CountryField::OPTION_SHOW_FLAG);
+            $showName = $field->getCustomOption(CountryField::OPTION_SHOW_NAME);
+
             // country names passed to the form are already translated, so don't translate them again in the template
             $field->setFormTypeOptionIfNotSet('choice_translation_domain', false);
-            $field->setFormTypeOption('choices', $this->generateFormTypeChoices($countryCodeFormat, $field->getCustomOption(CountryField::OPTION_COUNTRY_CODES_TO_KEEP), $field->getCustomOption(CountryField::OPTION_COUNTRY_CODES_TO_REMOVE)));
+            $field->setFormTypeOption('choices', $this->generateFormTypeChoices($countryCodeFormat, $field->getCustomOption(CountryField::OPTION_COUNTRY_CODES_TO_KEEP), $field->getCustomOption(CountryField::OPTION_COUNTRY_CODES_TO_REMOVE), $showFlag, $showName));
 
             // the value of this form option must be a string to properly propagate it as an HTML attribute value
-            $field->setFormTypeOption('attr.data-ea-autocomplete-render-items-as-html', 'true');
+            if (true === $showFlag) {
+                $field->setFormTypeOption('attr.data-ea-autocomplete-render-items-as-html', 'true');
+            }
 
             if (true === $field->getCustomOption(CountryField::OPTION_ALLOW_MULTIPLE_CHOICES)) {
                 $field->setFormTypeOption('multiple', true);
@@ -86,7 +91,7 @@ final class CountryConfigurator implements FieldConfiguratorInterface
      *
      * @return array<string, string>
      */
-    private function generateFormTypeChoices(string $countryCodeFormat, ?array $countryCodesToKeep, ?array $countryCodesToRemove): array
+    private function generateFormTypeChoices(string $countryCodeFormat, ?array $countryCodesToKeep, ?array $countryCodesToRemove, bool $showFlag, bool $showName): array
     {
         $usesAlpha3Codes = CountryField::FORMAT_ISO_3166_ALPHA3 === $countryCodeFormat;
         $choices = [];
@@ -102,11 +107,20 @@ final class CountryConfigurator implements FieldConfiguratorInterface
             }
 
             $countryCodeAlpha2 = $usesAlpha3Codes ? Countries::getAlpha2Code($countryCode) : $countryCode;
-            $choiceKey = $this->twig->createTemplate(sprintf('<div class="country-name-flag"><twig:ea:Flag countryCode="%s" /> <span>%s</span></div>', $countryCodeAlpha2, $countryName))->render();
+            $choiceKey = $this->generateChoiceLabel($countryCodeAlpha2, $countryName, $showFlag, $showName);
 
             $choices[$choiceKey] = $countryCode;
         }
 
         return $choices;
+    }
+
+    private function generateChoiceLabel(string $countryCodeAlpha2, string $countryName, bool $showFlag, bool $showName): string
+    {
+        return match ([$showFlag, $showName]) {
+            [true, true] => $this->twig->createTemplate(sprintf('<div class="country-name-flag"><twig:ea:Flag countryCode="%s" /> <span>%s</span></div>', $countryCodeAlpha2, $countryName))->render(),
+            [true, false] => $this->twig->createTemplate(sprintf('<div class="country-name-flag"><twig:ea:Flag countryCode="%s" /></div>', $countryCodeAlpha2))->render(),
+            default => $countryName,
+        };
     }
 }

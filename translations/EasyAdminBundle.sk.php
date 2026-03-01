@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Vytvoriť a pokračovat',
         'save' => 'Uložit',
         'save_and_continue' => 'Uložit a pokračovat',
+        'toggle_dropdown' => 'Prepnúť rozbaľovaciu ponuku',
     ],
 
     'batch_action_modal' => [
@@ -70,6 +71,11 @@ return [
     'delete_modal' => [
         'title' => 'Naozaj chcete vymazať túto položku?',
         'content' => 'Táto akcia sa nedá zvrátiť.',
+    ],
+
+    'action_confirmation_modal' => [
+        'title' => 'Naozaj chcete %action_name%?',
+        'action' => 'Potvrdiť',
     ],
 
     'filter' => [
@@ -133,6 +139,10 @@ return [
         'entity_remove' => 'Táto položka nemôže byť zmazaná, lebo na nanej závisia ostatné položky.',
         'forbidden_action' => 'Požadovaná akcia nemôže byť vykonaná na tejto položke.',
         'insufficient_entity_permission' => 'Nemáte dostatočná oprávnenia pre prístup k tejto položke.',
+        'general' => 'An error occurred while processing your request.',
+        'general_403' => 'You don\'t have permission to perform this action.',
+        'general_404' => 'The requested page could not be found.',
+        'general_500' => 'An internal error occurred while processing your request.',
     ],
 
     'autocomplete' => [

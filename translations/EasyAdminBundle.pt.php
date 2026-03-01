@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Criar e continuar a editar',
         'save' => 'Guardar alterações',
         'save_and_continue' => 'Guardar e continuar a editar',
+        'toggle_dropdown' => 'Alternar menu suspenso',
     ],
 
     'batch_action_modal' => [
@@ -70,6 +71,11 @@ return [
     'delete_modal' => [
         'title' => 'Tem a certeza que deseja excluir este item?',
         'content' => 'Esta operação é irreversível.',
+    ],
+
+    'action_confirmation_modal' => [
+        'title' => 'Tem a certeza que deseja %action_name%?',
+        'action' => 'Confirmar',
     ],
 
     'filter' => [
@@ -135,6 +141,10 @@ return [
         'entity_remove' => 'Este item não pode ser excluído porque outros itens dependem dele.',
         'forbidden_action' => 'A ação solicitada não pode ser realizada neste item.',
         'insufficient_entity_permission' => 'Não tem permissão para aceder a este item.',
+        'general' => 'Ocorreu um erro ao processar o seu pedido.',
+        'general_403' => 'Não tem permissão para realizar esta ação.',
+        'general_404' => 'A página solicitada não foi encontrada.',
+        'general_500' => 'Ocorreu um erro interno ao processar o seu pedido.',
     ],
 
     'autocomplete' => [

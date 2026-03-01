@@ -6,9 +6,11 @@ use EasyCorp\Bundle\EasyAdminBundle\Cache\CacheWarmer;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Router\AdminRouteGeneratorInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Exception\BaseException;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\AdminContextFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\ControllerFactory;
-use EasyCorp\Bundle\EasyAdminBundle\Registry\CrudControllerRegistry;
+use EasyCorp\Bundle\EasyAdminBundle\Registry\AdminControllerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminRouteGenerator;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -44,9 +46,9 @@ class AdminRouterSubscriber implements EventSubscriberInterface
         private readonly UrlGeneratorInterface $urlGenerator,
         private readonly RequestMatcherInterface $requestMatcher,
         private readonly CacheItemPoolInterface $cache,
-        private readonly AdminRouteGenerator $adminRouteGenerator,
+        private readonly AdminRouteGeneratorInterface $adminRouteGenerator,
         private readonly string $buildDir,
-        private readonly CrudControllerRegistry $crudControllerRegistry,
+        private readonly AdminControllerRegistry $adminControllers,
     ) {
     }
 
@@ -92,7 +94,7 @@ class AdminRouterSubscriber implements EventSubscriberInterface
             }
 
             // this is not a cached dashboard route, so this is case (3) a regular Symfony request
-            if (!\array_key_exists($request->attributes->get('_route'), $dashboardControllerRoutes)) {
+            if (!\array_key_exists($request->attributes->get('_route', ''), $dashboardControllerRoutes)) {
                 return;
             }
         }
@@ -128,7 +130,26 @@ class AdminRouterSubscriber implements EventSubscriberInterface
             $actionName = $request->attributes->get(EA::CRUD_ACTION);
 
             $crudControllerInstance = $this->controllerFactory->getCrudControllerInstance($crudControllerFqcn, $actionName, $request);
-            $adminContext = $this->adminContextFactory->create($request, $dashboardControllerInstance, $crudControllerInstance, $actionName);
+
+            try {
+                $adminContext = $this->adminContextFactory->create($request, $dashboardControllerInstance, $crudControllerInstance, $actionName);
+            } catch (BaseException $e) {
+                // if context creation fails (e.g. entity not found), create a context
+                // without the entity so the ExceptionListener can still render the
+                // EasyAdmin error page with the proper layout
+                $entityId = $request->attributes->get(EA::ENTITY_ID) ?? $request->query->get(EA::ENTITY_ID);
+                $request->attributes->remove(EA::ENTITY_ID);
+                $request->query->remove(EA::ENTITY_ID);
+
+                $adminContext = $this->adminContextFactory->create($request, $dashboardControllerInstance, $crudControllerInstance, $actionName);
+                $request->attributes->set(EA::CONTEXT_REQUEST_ATTRIBUTE, $adminContext);
+                $this->requestAlreadyProcessedAsPrettyUrl = true;
+
+                // restore the entity ID so the exception message is accurate
+                $request->attributes->set(EA::ENTITY_ID, $entityId);
+
+                throw $e;
+            }
         }
 
         $request->attributes->set(EA::CONTEXT_REQUEST_ATTRIBUTE, $adminContext);
@@ -157,7 +178,7 @@ class AdminRouterSubscriber implements EventSubscriberInterface
             if (is_subclass_of($entityFqcnOrCrudControllerFqcn, CrudControllerInterface::class)) {
                 $crudControllerFqcn = $entityFqcnOrCrudControllerFqcn;
             } else {
-                $crudControllerFqcn = $this->crudControllerRegistry->findCrudFqcnByEntityFqcn($entityFqcnOrCrudControllerFqcn);
+                $crudControllerFqcn = $this->adminControllers->findCrudControllerByEntity($entityFqcnOrCrudControllerFqcn);
             }
 
             $prettyUrlRoute = $this->adminRouteGenerator->findRouteName($dashboardControllerFqcn, $crudControllerFqcn, $request->query->get(EA::CRUD_ACTION, ''));

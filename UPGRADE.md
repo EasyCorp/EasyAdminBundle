@@ -1,6 +1,22 @@
 Upgrade between EasyAdmin 4.x versions
 ======================================
 
+EasyAdmin 4.29.0
+----------------
+
+The `linkToCrud()` method used to link to CRUD controllers from the main menu of the
+dashboard is deprecated in favor of the new `linkTo()` method:
+
+    // Before
+    yield MenuItem::linkToCrud('Categories', 'fa fa-tags', Category::class);
+    yield MenuItem::linkToCrud('Blog Posts', 'fa fa-file-text', BlogPost::class);
+    yield MenuItem::linkToCrud(null, null, Comment::class);
+
+    // After
+    yield MenuItem::linkTo(CategoryCrudController::class, 'Categories', 'fa fa-tags');
+    yield MenuItem::linkTo(BlogPostCrudController::class, 'Blog Posts', 'fa fa-file-text');
+    yield MenuItem::linkTo(CommentCrudController::class);
+
 EasyAdmin 4.26.0
 ----------------
 

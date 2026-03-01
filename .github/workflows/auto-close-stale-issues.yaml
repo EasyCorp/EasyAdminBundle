@@ -1,0 +1,46 @@
+name: Close stale issues
+
+on:
+    workflow_dispatch:
+    schedule:
+        # use a non-top-of-hour minute to reduce schedule delays
+        - cron: "17 2 * * *"
+
+jobs:
+    stale:
+        runs-on: ubuntu-latest
+        permissions:
+            issues: write
+        steps:
+            - uses: actions/stale@v10
+              with:
+                  # find issues inactive for ~3 months
+                  days-before-issue-stale: 90
+                  # the interval (in days) from applying the "stale" label until actually closing the issue
+                  days-before-issue-close: 5
+
+                  exempt-issue-labels: "priority: important,status: confirmed"
+
+                  # do not touch PRs
+                  days-before-pr-stale: -1
+                  days-before-pr-close: -1
+
+                  stale-issue-label: "stale"
+                  close-issue-reason: not_planned
+
+                  stale-issue-message: |
+                      This issue has been inactive for 3 months. It will be closed in 5 days
+                      unless there is new activity.
+
+                      Check if this is still relevant (maybe it was already fixed by some PR)
+                      and leave a comment or update the issue with any new information.
+
+                  close-issue-message: |
+                      Thanks for reporting this.
+                      
+                      We are closing this issue because it has had no activity for the last
+                      3 months. This helps us keep the tracker manageable and focus on
+                      actively discussed work.
+                      
+                      If this is still relevant, please reopen the issue (or open a new one)
+                      with updated information, and any logs or stack traces you can share.

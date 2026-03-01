@@ -45,11 +45,11 @@ final class FieldProvider
         foreach ($entityDto->getClassMetadata()->getFieldNames() as $propertyName) {
             $isFieldMapping = isset($entityDto->getClassMetadata()->fieldMappings[$propertyName]);
 
-            // In Doctrine ORM 3.x, FieldMapping implements \ArrayAccess; in 4.x it's an object with properties
-            $fieldMapping = $isFieldMapping ? $entityDto->getClassMetadata()->getFieldMapping($propertyName) : null;
             $fieldMappingType = null;
             if ($isFieldMapping) {
-                // In Doctrine ORM 2.x, getFieldMapping() returns an array
+                // In Doctrine ORM 2.x, getFieldMapping() returns an array; in Doctrine ORM 3.x,
+                // FieldMapping implements \ArrayAccess; in 4.x it's an object with properties
+                $fieldMapping = $entityDto->getClassMetadata()->getFieldMapping($propertyName);
                 /** @phpstan-ignore-next-line function.impossibleType */
                 if (\is_array($fieldMapping)) {
                     /** @phpstan-ignore-next-line cast.useless */
@@ -60,8 +60,8 @@ final class FieldProvider
                 $fieldMappingType = property_exists($fieldMapping, 'type') ? $fieldMapping->type : $fieldMapping['type'];
             }
 
-            if (!\in_array($propertyName, $excludedPropertyNames[$pageName], true)
-                && (!$isFieldMapping || !\in_array($fieldMappingType, $excludedPropertyTypes[$pageName], true))) {
+            if (!\in_array($propertyName, $excludedPropertyNames[$pageName] ?? [], true)
+                && (!$isFieldMapping || !\in_array($fieldMappingType, $excludedPropertyTypes[$pageName] ?? [], true))) {
                 $defaultPropertyNames[] = $propertyName;
             }
         }

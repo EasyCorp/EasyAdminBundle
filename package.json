@@ -17,8 +17,8 @@
     "regenerator-runtime": "^0.14.0",
     "slugify": "^1.4.0",
     "tom-select": "^2.0.1",
-    "trix": "^2.1.15",
-    "webpack": "^5.0.0",
+    "trix": "^2.1.16",
+    "webpack": "^5.104.1",
     "webpack-cli": "^5.1.4"
   },
   "license": "UNLICENSED",

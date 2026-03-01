@@ -540,17 +540,20 @@
 {% block ea_form_column_open_row %}
     {% set field = form.vars.ea_vars.field %}
     {% set field_icon = field.getCustomOption('icon') %}
-    {% set column_has_title = field_icon != null or field.label != false or field.label != null or field.label != '' or field.help != null %}
+    {# don't use "field.label|default()" here; it'll trigger deprecation messages: Method TranslatableMessage::__toString() is deprecated #}
+    {% set has_label = field.label is not same as(false) and field.label is not null and field.label is not same as('') %}
+    {% set has_help = field.help is not same as(false) and field.help is not null and field.help is not same as('') %}
+    {% set column_has_title = field_icon != null or has_label or has_help %}
 
     <div class="form-column {{ not column_has_title ? 'form-column-no-header' }} {{ field.cssClass }}">
         {% if column_has_title %}
             <div class="form-column-title">
                 <div class="form-column-title-content">
                     {% if field_icon %}<twig:ea:Icon name="{{ field_icon }}" class="form-column-icon" />{% endif %}
-                    {% if field.label %}{{ field.label|default('')|trans(domain: ea().i18n.translationDomain)|raw }}{% endif %}
+                    {% if has_label %}{{ field.label|trans(domain: ea().i18n.translationDomain)|raw }}{% endif %}
                 </div>
 
-                {% if field.help %}
+                {% if has_help %}
                     <div class="form-column-help">{{ field.help|trans(domain: ea().i18n.translationDomain)|raw }}</div>
                 {% endif %}
             </div>
@@ -574,7 +577,10 @@
 {% endblock ea_form_fieldset_open_ealabel %}
 
 {% block ea_form_fieldset_open_label %}
-    <div class="form-fieldset-header {{ ea_is_collapsible ? 'collapsible' }} {{ ea_help is not empty ? 'with-help' }}">
+    {# don't use 'ea_help is not empty' here; it'll trigger deprecation messages: Method TranslatableMessage::__toString() is deprecated #}
+    {% set has_help = ea_help is not same as(false) and ea_help is not null and ea_help is not same as('') %}
+
+    <div class="form-fieldset-header {{ ea_is_collapsible ? 'collapsible' }} {{ has_help ? 'with-help' }}">
         <div class="form-fieldset-title">
             {% if ea_is_collapsible %}
                 <a href="#content-{{ form.vars.name }}" data-bs-toggle="collapse"
@@ -588,7 +594,7 @@
                 </span>
             {% endif %}
 
-            {% if ea_help %}
+            {% if has_help %}
                 <div class="form-fieldset-help">{{ ea_help|trans|raw }}</div>
             {% endif %}
         </div>
@@ -596,7 +602,11 @@
 {% endblock ea_form_fieldset_open_label %}
 
 {% block ea_form_fieldset_open_row %}
-    {% set fieldset_has_header = form.vars.label or ea_icon or ea_help %}
+    {# don't use 'ea_help is not empty' here; it'll trigger deprecation messages: Method TranslatableMessage::__toString() is deprecated #}
+    {% set has_help = ea_help is not same as(false) and ea_help is not null and ea_help is not same as('') %}
+    {# don't use 'form.vars.label is not empty' here; it'll trigger deprecation messages: Method TranslatableMessage::__toString() is deprecated #}
+    {% set has_label = form.vars.label is not same as(false) and form.vars.label is not null and form.vars.label is not same as('') %}
+    {% set fieldset_has_header = has_label or ea_icon or has_help %}
 
     <div class="form-fieldset {{ not fieldset_has_header ? 'form-fieldset-no-header' }} {{ ea_css_class }}">
         <fieldset>
@@ -684,7 +694,10 @@
                     <input type="checkbox" class="filter-checkbox" {% if field.vars.name in applied_filters %}checked{% endif %}>
                     <a data-bs-toggle="collapse" href="#filter-content-{{ loop.index }}" aria-expanded="{{ field.vars.name in applied_filters ? 'true' : 'false' }}" aria-controls="filter-content-{{ loop.index }}"
                         {% for name, value in field.vars.label_attr|default([]) %}{{ name }}="{{ value|e('html') }}" {% endfor %}>
-                        {{ field.vars.label|default(field.vars.name|humanize)|trans(domain: ea().i18n.translationDomain) }}
+                        {# don't use 'field.vars.label is not empty' here; it'll trigger deprecation messages: Method TranslatableMessage::__toString() is deprecated #}
+                        {% set has_filter_label = field.vars.label is not same as(false) and field.vars.label is not null and field.vars.label is not same as('') %}
+                        {% set filter_label = has_filter_label ? field.vars.label : field.vars.name|humanize %}
+                        {{ filter_label|trans(domain: ea().i18n.translationDomain) }}
                     </a>
                 </div>
                 <div id="filter-content-{{ loop.index }}" class="filter-content collapse {% if field.vars.name in applied_filters %}show{% endif %}" aria-labelledby="filter-heading-{{ loop.index }}">
@@ -732,7 +745,8 @@
             {% endif %}
             <div class="custom-file">
                 {{ form_widget(form.file, {attr: form.file.vars.attr|merge({placeholder: placeholder, title: title, 'data-files-label': filesLabel, class: 'd-none'})}) }}
-                {{ form_label(form.file, placeholder, {label_attr: {class: 'custom-file-label'}}) }}
+                {# don't pass 'placeholder' as the 2nd argument of form_label(); Twig calls testEmpty() on it internally, which triggers the TranslatableMessage::__toString() deprecation #}
+                {{ form_label(form.file, null, {label: placeholder, label_attr: {class: 'custom-file-label'}}) }}
             </div>
             <div class="input-group-text">
                 {%- if currentFiles -%}

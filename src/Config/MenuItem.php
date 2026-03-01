@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Config;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\ControllerMenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\CrudMenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\DashboardMenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\ExitImpersonationMenuItem;
@@ -22,10 +23,30 @@ final class MenuItem
     }
 
     /**
+     * Creates a menu item that links to any admin controller: CRUD controllers,
+     * Dashboard controllers, or custom controllers with the #[AdminRoute] attribute.
+     *
+     * @param string      $controllerFqcn The FQCN of the admin controller to link to
+     * @param string|null $icon           The full CSS classes of the FontAwesome icon to render (see https://fontawesome.com/v6/search?m=free)
+     */
+    public static function linkTo(string $controllerFqcn, TranslatableInterface|string|null $label = null, ?string $icon = null): ControllerMenuItem
+    {
+        return new ControllerMenuItem($controllerFqcn, $label, $icon);
+    }
+
+    /**
+     * @deprecated since 4.29.0, use MenuItem::linkTo() instead.
+     *
      * @param string|null $icon The full CSS classes of the FontAwesome icon to render (see https://fontawesome.com/v6/search?m=free)
      */
-    public static function linkToCrud(TranslatableInterface|string $label, ?string $icon, string $entityFqcn): CrudMenuItem
+    public static function linkToCrud(TranslatableInterface|string|null $label, ?string $icon, string $entityFqcn): CrudMenuItem
     {
+        trigger_deprecation(
+            'easycorp/easyadmin-bundle',
+            '4.29.0',
+            'The "MenuItem::linkToCrud()" method is deprecated, use "MenuItem::linkTo()" instead.',
+        );
+
         return new CrudMenuItem($label, $icon, $entityFqcn);
     }
 

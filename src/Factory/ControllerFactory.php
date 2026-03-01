@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -33,7 +34,7 @@ final class ControllerFactory
 
     private function getDashboardController(?string $dashboardControllerFqcn, Request $request): ?DashboardControllerInterface
     {
-        return $this->getController(DashboardControllerInterface::class, $dashboardControllerFqcn, 'index', $request);
+        return $this->getController(DashboardControllerInterface::class, $dashboardControllerFqcn, Action::INDEX, $request);
     }
 
     private function getCrudController(?string $crudControllerFqcn, ?string $crudAction, Request $request): ?CrudControllerInterface

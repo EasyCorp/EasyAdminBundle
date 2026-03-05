@@ -256,6 +256,11 @@ label.form-check-label {
 }
 
 /* Form columns */
+.form-column {
+    display: flex;
+    flex-direction: column;
+    gap: var(--bs-gutter-x);
+}
 .form-column .form-column-title {
     display: flex;
     flex-direction: column;
@@ -279,9 +284,6 @@ label.form-check-label {
     color: var(--form-column-help-color);
     flex: 1;
     margin: 0;
-}
-.form-column .field-form_fieldset {
-    margin-block-end: var(--bs-gutter-x);
 }
 
 .form-column .form-fieldset {
@@ -311,10 +313,6 @@ label.form-check-label {
 }
 
 /* Form fieldsets */
-.field-form_fieldset {
-    margin-block-end: calc(1.5 * var(--bs-gutter-x)); /* not a typo; don't use --bs-gutter-y here */
-}
-
 .form-section-empty {
     padding: var(--ea-sp-6) var(--ea-sp-2-5) var(--ea-sp-6);
 }

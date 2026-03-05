@@ -3,5 +3,5 @@
    the 'detail' page; the closing tags are rendered by 'crud/detail/column_group_close' #}
 {# if columns are inside tabs, don't add a '.row' element because the tab pane already opens it #}
 {% if not field.getFormTypeOption('ea_is_inside_tab')|default(false) %}
-    <div class="row">
+    <div class="row g-4">
 {% endif %}

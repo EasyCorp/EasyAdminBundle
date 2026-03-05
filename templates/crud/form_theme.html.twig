@@ -464,7 +464,7 @@
 {% block ea_form_column_group_open_row %}
     {# if columns are inside tabs, don't add a '.row' element because the tab pane already opens it #}
     {% if not form.vars.ea_is_inside_tab|default(false) %}
-        <div class="row">
+        <div class="row g-4">
     {% endif %}
 {% endblock ea_form_column_group_open_row %}
 
@@ -599,7 +599,7 @@
             </div>
         {% endif %}
 
-        <div class="row">
+        <div class="row g-4">
 {% endblock ea_form_tabpane_open_row %}
 
 {% block ea_form_tabpane_close_row %}

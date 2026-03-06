@@ -16,6 +16,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\EntityFilterType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
 use Symfony\Bridge\Doctrine\Form\DoctrineOrmExtension;
+use Symfony\Component\Form\Extension\Validator\ViolationMapper\ViolationMapperInterface;
 use Symfony\Component\Form\Test\TypeTestCase;
 
 class EntityFilterTypeTest extends TypeTestCase
@@ -83,7 +84,7 @@ class EntityFilterTypeTest extends TypeTestCase
         $this->managerRegistry = null;
     }
 
-    protected function getExtensions(): array
+    protected function getExtensions(?ViolationMapperInterface $violationMapper = null): array
     {
         return array_merge(parent::getExtensions(), [
             new DoctrineOrmExtension($this->managerRegistry),

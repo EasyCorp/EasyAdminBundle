@@ -41,8 +41,7 @@ actions (e.g. ``delete`` and ``autocomplete``) which don't match any page.
 CRUD Routes
 ~~~~~~~~~~~
 
-When using :ref:`pretty admin URLs <pretty-admin-urls>`, each of the CRUD actions
-define an admin route following this name and path by default:
+Each of the CRUD actions define an admin route following this name and path by default:
 
 ==================  ======================
 CRUD route name     CRUD route path
@@ -118,12 +117,6 @@ You can also customize the path and/or route name of CRUD controllers using the
 * ``name``: the value that represents the controller in the full route name
   (e.g. a ``foo_bar`` name here will result in a route named``admin_`` + ``foo_bar`` + ``_<action>``).
 
-.. deprecated:: 4.25.0
-
-    In EasyAdmin versions prior to 4.25.0, instead of ``#[AdminRoute]`` you
-    had to use the ``#[AdminCrud]`` attribute, which is now deprecated and will
-    be removed in EasyAdmin 5.0.0.
-
 Using the same example as above, you can configure the route names and paths of
 the controller as follows::
 
@@ -176,12 +169,6 @@ will be ``admin_product_latest`` and the path will be ``/admin/product/latest-pr
 
     You can combine the ``#[AdminDashboard]``, and ``#[AdminRoute]``
     attributes to customize some or all route names and paths.
-
-.. deprecated:: 4.25.0
-
-    In EasyAdmin versions prior to 4.25.0, instead of ``#[AdminRoute]`` you
-    had to use the ``#[AdminAction]`` attribute, which is now deprecated and
-    will be removed in EasyAdmin 5.0.0.
 
 Page Names and Constants
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -688,18 +675,9 @@ saving the changes::
         $submitButtonName = $context->getRequest()->request->all()['ea']['newForm']['btn'];
 
         if ('saveAndViewDetail' === $submitButtonName) {
-            // when using pretty admin URLs
             return $this->redirectToRoute('admin_product_detail', [
                 'entityId' => $context->getEntity()->getPrimaryKeyValue(),
             ]);
-
-            // when using legacy admin URLs
-            $url = $this->container->get(AdminUrlGenerator::class)
-                ->setAction(Action::DETAIL)
-                ->setEntityId($context->getEntity()->getPrimaryKeyValue())
-                ->generateUrl();
-
-            return $this->redirect($url);
         }
 
         return parent::getRedirectResponseAfterSave($context, $action);
@@ -891,9 +869,8 @@ associated to the given template name:
 Generating Admin URLs
 ---------------------
 
-When using :ref:`pretty admin URLs <pretty-admin-urls>`, EasyAdmin generates
-one route per each CRUD action of each :doc:`dashboard </dashboards>`. You can
-list them all with the following command:
+EasyAdmin generates one route per each CRUD action of each :doc:`dashboard </dashboards>`.
+You can list them all with the following command:
 
 .. code-block:: terminal
 
@@ -923,9 +900,9 @@ You can use any of these routes to generate the admin URLs thanks to the
 Building Admin URLs
 ~~~~~~~~~~~~~~~~~~~
 
-If you don't use :ref:`pretty admin URLs <pretty-admin-urls>` or if you need to
-build routes dynamically, you can use the ``AdminUrlGenerator`` provided by
-EasyAdmin to build the admin URLs.
+The ``AdminUrlGenerator`` helps you build backend URLs dynamically. This is needed
+e.g. when the controller/action parts of the URL are stored in variables and you
+can't know the route name beforehand.
 
 When you generate a URL this way, you don't start from scratch. EasyAdmin reuses
 all the query parameters existing in the current request. This is done on purpose
@@ -959,7 +936,7 @@ Use the ``unsetAll()`` method to remove all existing query parameters::
             $url = $this->adminUrlGenerator->set('page', 2)->generateUrl();
 
             // you can remove existing parameters
-            $url = $this->adminUrlGenerator->unset('menuIndex')->generateUrl();
+            $url = $this->adminUrlGenerator->unset('page')->generateUrl();
             $url = $this->adminUrlGenerator->unsetAll()->set('foo', 'someValue')->generateUrl();
 
             // the URL builder provides shortcuts for the most common parameters

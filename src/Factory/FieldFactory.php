@@ -75,24 +75,15 @@ final class FieldFactory
     {
     }
 
-    public function processFields(EntityDto $entityDto, FieldCollection $fields, ?string $currentPage = null): void
+    public function processFields(EntityDto $entityDto, FieldCollection $fields, string $currentPage): void
     {
         $this->replaceGenericFieldsWithSpecificFields($fields, $entityDto);
 
         $context = $this->adminContextProvider->getContext();
 
-        if (null === $currentPage) {
-            trigger_deprecation(
-                'easycorp/easyadmin-bundle',
-                '4.27.0',
-                'Argument "$currentPage" is missing. Omitting it will cause an error in 5.0.0.',
-            );
-            $currentPage = $context->getCrud()->getCurrentPage();
-        }
-
         $isDetailOrIndex = \in_array($currentPage, [Crud::PAGE_INDEX, Crud::PAGE_DETAIL], true);
         foreach ($fields as $fieldDto) {
-            if ((null !== $currentPage && false === $fieldDto->isDisplayedOn($currentPage))
+            if (false === $fieldDto->isDisplayedOn($currentPage)
                 || false === $this->authorizationChecker->isGranted(Permission::EA_VIEW_FIELD, $fieldDto)) {
                 $fields->unset($fieldDto);
 
@@ -116,7 +107,7 @@ final class FieldFactory
             }
 
             // check again if the field is displayed because this can change in the configurators
-            if (null !== $currentPage && false === $fieldDto->isDisplayedOn($currentPage)) {
+            if (false === $fieldDto->isDisplayedOn($currentPage)) {
                 $fields->unset($fieldDto);
                 continue;
             }
@@ -135,16 +126,8 @@ final class FieldFactory
         $entityDto->setFields($fields);
     }
 
-    public function processFieldsForAll(EntityCollection $entityDtos, FieldCollection $fields, ?string $currentPage = null): void
+    public function processFieldsForAll(EntityCollection $entityDtos, FieldCollection $fields, string $currentPage): void
     {
-        if (null === $currentPage) {
-            trigger_deprecation(
-                'easycorp/easyadmin-bundle',
-                '4.27.0',
-                'Argument "$currentPage" is missing. Omitting it will cause an error in 5.0.0.',
-            );
-        }
-
         foreach ($entityDtos as $entityDto) {
             $this->processFields($entityDto, clone $fields, $currentPage);
             $entityDtos->set($entityDto);

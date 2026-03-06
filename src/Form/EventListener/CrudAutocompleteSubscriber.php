@@ -4,6 +4,8 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Form\EventListener;
 
 use Doctrine\ORM\Mapping\FieldMapping;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Bridge\Doctrine\Types\UlidType;
+use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -98,13 +100,11 @@ class CrudAutocompleteSubscriber implements EventSubscriberInterface
 
                 $data['autocomplete'] = array_map(
                     static function ($v) use ($options, $idFieldType) {
-                        // TODO: replace 'ulid' by Symfony\Bridge\Doctrine\Types\UlidType::NAME when Symfony 5.4 is no longer supported
-                        if ('ulid' === $idFieldType && class_exists(Ulid::class) && Ulid::isValid($v)) {
+                        if (UlidType::NAME === $idFieldType && class_exists(Ulid::class) && Ulid::isValid($v)) {
                             return Ulid::fromBase32($v)->toRfc4122();
                         }
 
-                        // TODO: replace 'uuid' by Symfony\Bridge\Doctrine\Types\UuidType::NAME when Symfony 5.4 is no longer supported
-                        if ('uuid' === $idFieldType && class_exists(Uuid::class) && Uuid::isValid($v)) {
+                        if (UuidType::NAME === $idFieldType && class_exists(Uuid::class) && Uuid::isValid($v)) {
                             // Use RFC4122 format for platforms with native GUID type (e.g., PostgreSQL),
                             // and binary format for platforms without native GUID type (e.g., MySQL, SQLite)
                             $platform = $options['em']->getConnection()->getDatabasePlatform();

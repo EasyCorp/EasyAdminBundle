@@ -33,20 +33,8 @@ class FileUploadState
     /**
      * @param File|array<File>|null $currentFiles
      */
-    public function setCurrentFiles(/* File|array|null */ $currentFiles): void
+    public function setCurrentFiles(File|array|null $currentFiles): void
     {
-        if (null !== $currentFiles && !\is_array($currentFiles) && !$currentFiles instanceof File) {
-            trigger_deprecation(
-                'easycorp/easyadmin-bundle',
-                '4.27.0',
-                'Argument "%s" for "%s" must be one of these types: %s. Passing type "%s" will cause an error in 5.0.0.',
-                '$currentFiles',
-                __METHOD__,
-                '"array" or "File" or "null"',
-                \gettype($currentFiles)
-            );
-        }
-
         if (null === $currentFiles) {
             $currentFiles = [];
         }
@@ -80,22 +68,10 @@ class FileUploadState
     }
 
     /**
-     * @param UploadedFile[]|UploadedFile|null $uploadedFiles
+     * @param UploadedFile|UploadedFile[]|null $uploadedFiles
      */
-    public function setUploadedFiles(/* UploadedFile|array|null */ $uploadedFiles): void
+    public function setUploadedFiles(UploadedFile|array|null $uploadedFiles): void
     {
-        if (null !== $uploadedFiles && !\is_array($uploadedFiles) && !$uploadedFiles instanceof UploadedFile) {
-            trigger_deprecation(
-                'easycorp/easyadmin-bundle',
-                '4.27.0',
-                'Argument "%s" for "%s" must be one of these types: %s. Passing type "%s" will cause an error in 5.0.0.',
-                '$uploadedFiles',
-                __METHOD__,
-                '"array" or "UploadedFile" or "null"',
-                \gettype($uploadedFiles)
-            );
-        }
-
         if (null === $uploadedFiles) {
             $uploadedFiles = [];
         }

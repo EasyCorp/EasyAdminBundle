@@ -340,16 +340,8 @@ design of this tab:
     {# ... #}
 {% endblock _MyEntity_ea_form_tab_close_contact_row %}
 
-.. versionadded:: 4.20
-
-    The ``propertySuffix`` argument was introduced in EasyAdmin 4.20.0.
-
 Form Columns
 ~~~~~~~~~~~~
-
-.. versionadded:: 4.8.0
-
-    Form columns were introduced in EasyAdmin 4.8.0.
 
 Before using this option, you must be familiar with the `Bootstrap grid system`_,
 which divides each row into 12 same-width columns, and the `Bootstrap breakpoints`_,
@@ -483,17 +475,8 @@ design of this column:
     {# ... #}
 {% endblock _MyEntity_ea_form_column_close_main_row %}
 
-.. versionadded:: 4.20
-
-    The ``propertySuffix`` argument was introduced in EasyAdmin 4.20.0.
-
 Form Fieldsets
 ~~~~~~~~~~~~~~
-
-.. versionadded:: 4.8.0
-
-    Form fieldsets were introduced in EasyAdmin 4.8.0. In previous versions,
-    this feature was called "Form Panels".
 
 In pages where you display lots of fields, you can divide them in groups using
 fieldsets. This is how they look like:
@@ -580,10 +563,6 @@ design of this fieldset:
     {{ block('ea_form_fieldset_close_row') }}
     {# ... #}
 {% endblock _MyEntity_ea_form_fieldset_close_contact_row %}
-
-.. versionadded:: 4.20
-
-    The ``propertySuffix`` argument was introduced in EasyAdmin 4.20.0.
 
 Form Rows
 ~~~~~~~~~
@@ -703,10 +682,6 @@ design of this row:
     {{ block('ea_form_row_close_row') }}
     {# ... #}
 {% endblock _MyEntity_ea_form_row_close_main_row %}
-
-.. versionadded:: 4.20
-
-    The ``propertySuffix`` argument was introduced in EasyAdmin 4.20.0.
 
 .. _fields_reference:
 

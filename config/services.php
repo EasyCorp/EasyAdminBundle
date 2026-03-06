@@ -5,7 +5,6 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 use EasyCorp\Bundle\EasyAdminBundle\ArgumentResolver\AdminContextResolver;
 use EasyCorp\Bundle\EasyAdminBundle\ArgumentResolver\BatchActionDtoResolver;
 use EasyCorp\Bundle\EasyAdminBundle\Asset\AssetPackage;
-use EasyCorp\Bundle\EasyAdminBundle\Cache\CacheWarmer;
 use EasyCorp\Bundle\EasyAdminBundle\Command\MakeAdminDashboardCommand;
 use EasyCorp\Bundle\EasyAdminBundle\Command\MakeCrudControllerCommand;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
@@ -86,12 +85,10 @@ use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityUpdater;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\FieldProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\AdminControllerRegistry;
-use EasyCorp\Bundle\EasyAdminBundle\Registry\CrudControllerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminRouteGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminRouteLoader;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Router\UrlSigner;
 use EasyCorp\Bundle\EasyAdminBundle\Security\AuthorizationChecker;
 use EasyCorp\Bundle\EasyAdminBundle\Security\SecurityVoter;
 use EasyCorp\Bundle\EasyAdminBundle\Translation\EntityTranslationIdGenerator;
@@ -127,10 +124,6 @@ return static function (ContainerConfigurator $container) {
             ->arg(0, service(KernelInterface::class))
             ->arg(1, param('kernel.project_dir'))
 
-        ->set(CacheWarmer::class)
-            ->arg(0, service('router'))
-            ->tag('kernel.cache_warmer')
-
         ->set(EasyAdminDataCollector::class)
             ->arg(0, service(AdminContextProvider::class))
             ->tag('data_collector', ['id' => 'easyadmin', 'template' => '@EasyAdmin/inspector/data_collector.html.twig'])
@@ -148,10 +141,7 @@ return static function (ContainerConfigurator $container) {
             // initialization done after generating each URL
             ->arg(0, service('service_locator_'.AdminUrlGenerator::class))
             ->arg(1, service(AdminContextProvider::class))
-            ->arg(2, new Reference('security.csrf.token_manager', ContainerInterface::NULL_ON_INVALID_REFERENCE))
-            ->arg(3, new Reference('asset_mapper.importmap.renderer', ContainerInterface::NULL_ON_INVALID_REFERENCE))
-            ->arg(4, service('translator'))
-            ->arg(5, new Reference('.ux_icons.twig_icon_runtime', ContainerInterface::NULL_ON_INVALID_REFERENCE))
+            ->arg(2, service('translator'))
             ->tag('twig.extension')
 
         ->set(EaCrudFormTypeExtension::class)
@@ -188,8 +178,6 @@ return static function (ContainerConfigurator $container) {
             ->arg(4, service('router'))
             ->arg(5, service('cache.easyadmin'))
             ->arg(6, service(AdminRouteGenerator::class))
-            ->arg(7, '%kernel.build_dir%')
-            ->arg(8, service(AdminControllerRegistry::class))
             ->tag('kernel.event_subscriber')
 
         ->set(ControllerFactory::class)
@@ -201,15 +189,14 @@ return static function (ContainerConfigurator $container) {
             ->tag('kernel.event_listener', ['event' => ViewEvent::class])
 
         ->set(AdminContextFactory::class)
-            ->arg(0, '%kernel.build_dir%')
-            ->arg(1, new Reference('security.token_storage', ContainerInterface::NULL_ON_INVALID_REFERENCE))
-            ->arg(2, new Reference(MenuFactory::class))
-            ->arg(3, new Reference(AdminControllerRegistry::class))
-            ->arg(4, new Reference(EntityFactory::class))
-            ->arg(5, service(AdminRouteGenerator::class))
-            ->arg(6, service(ActionFactory::class))
-            ->arg(7, service(EntityTranslationIdGeneratorInterface::class))
-            ->arg(8, new Reference(CrudControllerRegistry::class))
+            ->arg(0, new Reference('security.token_storage', ContainerInterface::NULL_ON_INVALID_REFERENCE))
+            ->arg(1, new Reference(MenuFactory::class))
+            ->arg(2, new Reference(AdminControllerRegistry::class))
+            ->arg(3, new Reference(EntityFactory::class))
+            ->arg(4, service(AdminRouteGenerator::class))
+            ->arg(5, service(ActionFactory::class))
+            ->arg(6, service(EntityTranslationIdGeneratorInterface::class))
+            ->arg(7, service('translator'))
 
         ->set(AdminUrlGenerator::class)
             // I don't know if we truly need the share() method to get a new instance of the
@@ -236,27 +223,18 @@ return static function (ContainerConfigurator $container) {
             ->tag('cache.pool')
 
         ->set(AdminControllerRegistry::class)
-            ->arg(0, '%kernel.build_dir%')
-            ->arg(1, abstract_arg('CRUD controller FQCN to Entity FQCN map'))
-            ->arg(2, abstract_arg('Dashboard controller FQCNs'))
+            ->arg(0, service('cache.easyadmin'))
 
         ->set(AdminRouteGenerator::class)
             ->arg(0, tagged_iterator(EasyAdminExtension::TAG_DASHBOARD_CONTROLLER))
             ->arg(1, tagged_iterator(EasyAdminExtension::TAG_CRUD_CONTROLLER))
             ->arg(2, service('cache.easyadmin'))
-            ->arg(3, service('filesystem'))
-            ->arg(4, '%kernel.build_dir%')
-            ->arg(5, '%kernel.default_locale%')
-            ->arg(6, tagged_iterator(EasyAdminExtension::TAG_ADMIN_ROUTE_CONTROLLER))
+            ->arg(3, '%kernel.default_locale%')
+            ->arg(4, tagged_iterator(EasyAdminExtension::TAG_ADMIN_ROUTE_CONTROLLER))
 
         ->set(AdminRouteLoader::class)
             ->arg(0, service(AdminRouteGenerator::class))
-            ->arg(1, service('filesystem'))
-            ->arg(2, '%kernel.build_dir%')
             ->tag('routing.loader', ['type' => AdminRouteLoader::ROUTE_LOADER_TYPE])
-
-        ->set(UrlSigner::class)
-            ->arg(0, '%kernel.secret%')
 
         ->set(MenuFactory::class)
             ->arg(0, service(AdminContextProvider::class))
@@ -448,8 +426,8 @@ return static function (ContainerConfigurator $container) {
             ->arg(0, service('request_stack'))
             ->arg(1, service(EntityFactory::class))
             ->arg(2, service(ControllerFactory::class))
-            ->arg(3, service(AdminContextProvider::class))
-            ->arg(4, new Reference(FieldFactory::class))
+            ->arg(3, new Reference(FieldFactory::class))
+            ->arg(4, service(AdminContextProvider::class))
 
         ->set(SlugConfigurator::class)
 

@@ -12,9 +12,9 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 /**
  * @author Lukas Lücke <lukas@luecke.me>
  */
-final class ControllerFactory
+final readonly class ControllerFactory
 {
-    public function __construct(private readonly ControllerResolverInterface $controllerResolver)
+    public function __construct(private ControllerResolverInterface $controllerResolver)
     {
     }
 

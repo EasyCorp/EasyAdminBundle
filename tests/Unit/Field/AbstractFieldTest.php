@@ -34,7 +34,7 @@ abstract class AbstractFieldTest extends KernelTestCase
 
         $reflectedClass = new \ReflectionClass(EntityDto::class);
         $entityDto = $reflectedClass->newInstanceWithoutConstructor();
-        $instanceProperty = $reflectedClass->getProperty('instance');
+        $instanceProperty = $reflectedClass->getProperty('entityInstance');
         $instanceProperty->setValue($entityDto, new class {});
         $metadataProperty = $reflectedClass->getProperty('metadata');
         $metadataProperty->setValue($entityDto, $classMetadata);

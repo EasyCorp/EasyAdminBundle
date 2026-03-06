@@ -45,7 +45,7 @@
             {% elseif showBlankIcons or group.hasAnyActionWithIcon %}
                 <twig:ea:Icon name="internal:blank" />
             {% endif %}
-            {% if has_group_label is not empty %}<span>{{ group.label|trans }}</span>{% endif %}
+            {% if has_group_label %}<span>{{ group.label|trans }}</span>{% endif %}
         </a>
     {% endif %}
 

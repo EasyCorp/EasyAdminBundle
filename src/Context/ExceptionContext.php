@@ -7,16 +7,16 @@ use function Symfony\Component\String\u;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class ExceptionContext
+final readonly class ExceptionContext
 {
     /**
      * @param array<string> $parameters
      */
     public function __construct(
-        private readonly string $publicMessage,
-        private readonly string $debugMessage = '',
-        private readonly array $parameters = [],
-        private readonly int $statusCode = 500,
+        private string $publicMessage,
+        private string $debugMessage = '',
+        private array $parameters = [],
+        private int $statusCode = 500,
     ) {
     }
 

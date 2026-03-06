@@ -1101,50 +1101,8 @@ of the stats of all customers and includes a link to the detailed stats of each 
 
 The Twig template extends the :ref:`content page template <content_page_template>`
 provided by EasyAdmin to reuse the backend design. The rest of the template
-is standard Twig code, including the use of the Symfony's ``path()`` function t
- generate the URL for the ``admin_business_stats_customer`` admin route.
-
-.. _generating-urls-to-symfony-actions-integrated-in-easyadmin:
-
-Legacy URL Generation for Symfony Actions
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-In EasyAdmin versions prior to 4.25.0, you couldn't define custom admin routes
-for your actions. This meant that you couldn't use Symfony features related to
-routing, such as the ``UrlGenerator`` service or the ``path()`` Twig function
-to generate URLs.
-
-In those cases, you had to use the EasyAdmin ``AdminUrlGenerator`` to generate
-admin URLs pointing to your custom actions, as follows::
-
-    // src/Controller/SomeController.php
-    namespace App\Controller;
-
-    use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
-    use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-
-    class SomeController extends AbstractController
-    {
-        private $adminUrlGenerator;
-
-        public function __construct(AdminUrlGenerator $adminUrlGenerator)
-        {
-            $this->adminUrlGenerator = $adminUrlGenerator;
-        }
-
-        public function someMethod()
-        {
-            $url = $this->adminUrlGenerator->setRoute('admin_business_stats_customer', [
-                'id' => $this->getUser()->getId(),
-            ])->generateUrl();
-
-            // ...
-        }
-    }
-
-This is no longer needed in modern EasyAdmin versions and is now a discouraged
-practice that you should avoid in your applications. Instead, see the previous
-section about :ref:`how to integrate custom Symfony controllers into EasyAdmin dashboards <actions-integrating-symfony>`.
+is standard Twig code, including the use of the Symfony's ``path()`` function to
+generate the URL for the ``admin_business_stats_customer`` admin route.
 
 Actions Extensions
 ------------------

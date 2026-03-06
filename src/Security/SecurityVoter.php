@@ -95,14 +95,6 @@ final class SecurityVoter extends Voter
 
     private function voteOnExitImpersonationPermission(): bool
     {
-        // users can exit impersonation if they are currently impersonating another user.
-        // In Symfony, that means that current user has the special impersonator permission
-        if (\defined('Symfony\Component\Security\Core\Authorization\Voter\AuthenticatedVoter::IS_IMPERSONATOR')) {
-            $impersonatorPermission = 'IS_IMPERSONATOR';
-        } else {
-            $impersonatorPermission = 'ROLE_PREVIOUS_ADMIN';
-        }
-
-        return $this->authorizationChecker->isGranted($impersonatorPermission);
+        return $this->authorizationChecker->isGranted('IS_IMPERSONATOR');
     }
 }

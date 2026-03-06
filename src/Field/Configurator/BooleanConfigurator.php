@@ -16,12 +16,12 @@ use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class BooleanConfigurator implements FieldConfiguratorInterface
+final readonly class BooleanConfigurator implements FieldConfiguratorInterface
 {
     public function __construct(
-        private readonly AdminUrlGeneratorInterface $adminUrlGenerator,
-        private readonly AuthorizationCheckerInterface $authChecker,
-        private readonly ?CsrfTokenManagerInterface $csrfTokenManager = null,
+        private AdminUrlGeneratorInterface $adminUrlGenerator,
+        private AuthorizationCheckerInterface $authChecker,
+        private ?CsrfTokenManagerInterface $csrfTokenManager = null,
     ) {
     }
 

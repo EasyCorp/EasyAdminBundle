@@ -40,6 +40,10 @@ function initializeTestAppDatabase(object $kernel, Filesystem $filesystem): void
     $input = new ArrayInput(['command' => 'doctrine:fixtures:load', '--no-interaction' => true, '--append' => false]);
     $application->run($input, new ConsoleOutput());
 
+    // trigger route compilation so that AdminRouteGenerator::generateAll()
+    // populates the EasyAdmin route cache (used by AdminControllerRegistry)
+    $kernel->getContainer()->get('router')->getRouteCollection();
+
     $kernel->shutdown();
 }
 
@@ -48,7 +52,6 @@ $filesystem = new Filesystem();
 $testAppKernels = [
     EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Kernel::class,
     EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Kernel::class,
-    EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\UglyUrlsApp\Kernel::class,
     EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Kernel::class,
 ];
 

@@ -12,9 +12,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\PercentField;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class PercentConfigurator implements FieldConfiguratorInterface
+final readonly class PercentConfigurator implements FieldConfiguratorInterface
 {
-    public function __construct(private readonly IntlFormatterInterface $intlFormatter)
+    public function __construct(private IntlFormatterInterface $intlFormatter)
     {
     }
 

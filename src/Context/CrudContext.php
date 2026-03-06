@@ -7,7 +7,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\AdminControllerRegistry;
-use EasyCorp\Bundle\EasyAdminBundle\Registry\CrudControllerRegistry;
+use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
 /**
  * Encapsulates CRUD operation-related data for the admin context.
@@ -22,7 +22,6 @@ final class CrudContext
         private readonly ?EntityDto $entityDto,
         private readonly ?SearchDto $searchDto,
         private readonly AdminControllerRegistryInterface $adminControllers,
-        private readonly ?CrudControllerRegistry $crudControllers = null,
     ) {
     }
 
@@ -41,15 +40,6 @@ final class CrudContext
         return $this->searchDto;
     }
 
-    public function getCrudControllers(): CrudControllerRegistry
-    {
-        if (null === $this->crudControllers) {
-            throw new \LogicException('The CrudControllerRegistry is not available. This method requires the registry to be injected in the constructor.');
-        }
-
-        return $this->crudControllers;
-    }
-
     public function getAdminControllers(): AdminControllerRegistryInterface
     {
         return $this->adminControllers;
@@ -63,16 +53,14 @@ final class CrudContext
         ?EntityDto $entityDto = null,
         ?SearchDto $searchDto = null,
         ?AdminControllerRegistryInterface $adminControllers = null,
-        ?CrudControllerRegistry $crudControllers = null,
     ): self {
-        $adminControllers ??= new AdminControllerRegistry('', [], []);
+        $adminControllers ??= new AdminControllerRegistry(new ArrayAdapter());
 
         return new self(
             $crudDto ?? new CrudDto(),
             $entityDto,
             $searchDto,
             $adminControllers,
-            $crudControllers ?? new CrudControllerRegistry([], [], [], []),
         );
     }
 }

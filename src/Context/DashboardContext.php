@@ -31,7 +31,6 @@ final class DashboardContext
         private readonly DashboardDto $dashboardDto,
         private readonly string $dashboardControllerFqcn,
         private readonly AssetsDto $assets,
-        private readonly bool $usePrettyUrls,
     ) {
     }
 
@@ -100,9 +99,10 @@ final class DashboardContext
         return $this->assets;
     }
 
+    /** @deprecated since easycorp/easyadmin-bundle 5.0.0 and will be removed in EasyAdmin 5.1.0. This method always returns true. */
     public function usePrettyUrls(): bool
     {
-        return $this->usePrettyUrls;
+        return true;
     }
 
     /**
@@ -116,7 +116,6 @@ final class DashboardContext
         ?MainMenuDto $mainMenu = null,
         ?UserMenuDto $userMenu = null,
         ?AssetsDto $assets = null,
-        bool $usePrettyUrls = false,
     ): self {
         if (null === $dashboardDto) {
             // create a new DashboardDto with required defaults for tests
@@ -130,7 +129,6 @@ final class DashboardContext
             $dto,
             $dashboardControllerFqcn,
             $assets ?? new AssetsDto(),
-            $usePrettyUrls
         );
 
         // set menus directly for testing (no lazy loading needed)

@@ -3,11 +3,9 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Menu;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu\MenuItemMatcherInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\Router\AdminRouteGeneratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,11 +13,10 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-class MenuItemMatcher implements MenuItemMatcherInterface
+readonly class MenuItemMatcher implements MenuItemMatcherInterface
 {
     public function __construct(
-        private readonly AdminUrlGeneratorInterface $adminUrlGenerator,
-        private readonly AdminRouteGeneratorInterface $adminRouteGenerator,
+        private AdminUrlGeneratorInterface $adminUrlGenerator,
     ) {
     }
 
@@ -38,132 +35,18 @@ class MenuItemMatcher implements MenuItemMatcherInterface
      */
     public function markSelectedMenuItem(array $menuItems, Request $request): array
     {
-        if ($this->adminRouteGenerator->usesPrettyUrls()) {
-            $menuItems = $this->doMarkSelectedPrettyUrlsMenuItem($menuItems, $request);
-        } else {
-            $menuItems = $this->doMarkSelectedLegacyMenuItem($menuItems, $request);
-        }
-
+        $menuItems = $this->doMarkSelectedMenuItem($menuItems, $request);
         $menuItems = $this->doMarkExpandedMenuItem($menuItems);
 
         return $menuItems;
     }
 
     /**
-     * @deprecated because you can't decide which menu item to select by only looking at the menu item itself. You need to check all menu items at the same time to solve edge-cases like multiple menu items linking to the same action of the same entity
-     * @see markSelectedMenuItem()
-     */
-    public function isSelected(MenuItemDto $menuItemDto): bool
-    {
-        @trigger_deprecation('easycorp/easyadmin-bundle', '4.11', 'The "%s()" method is deprecated. Use the "%s()" method instead.', __METHOD__, 'markSelectedMenuItem()');
-
-        return false;
-    }
-
-    /**
-     * @deprecated because you can't decide which menu item to render expanded by only looking at the menu item itself. You need to check all menu items at the same time.
-     * @see markExpandedMenuItem()
-     */
-    public function isExpanded(MenuItemDto $menuItemDto): bool
-    {
-        @trigger_deprecation('easycorp/easyadmin-bundle', '4.11', 'The "%s()" method is deprecated. Use the "%s()" method instead.', __METHOD__, 'markExpandedMenuItem()');
-
-        return false;
-    }
-
-    /**
      * @param MenuItemDto[] $menuItems
      *
      * @return MenuItemDto[]
      */
-    private function doMarkSelectedLegacyMenuItem(array $menuItems, Request $request): array
-    {
-        // the menu-item matching is a 2-phase process:
-        // 1) scan all menu items to list which controllers and actions are linked from the menu;
-        //    this is needed because e.g. sometimes we match a menu item that doesn't have the exact
-        //    action but links to the INDEX action of the same controller of the current request
-        // 2) decide which is the most appropriate menu item (if any) to mark as selected based on the current request
-        $controllersAndActionsLinkedInTheMenu = $this->getControllersAndActionsLinkedInTheMenu($menuItems);
-        $currentPageQueryParameters = $request->query->all();
-        $currentRequestUri = $request->getUri();
-
-        foreach ($menuItems as $menuItemDto) {
-            if ($menuItemDto->isMenuSection()) {
-                continue;
-            }
-
-            if ([] !== $subItems = $menuItemDto->getSubItems()) {
-                $menuItemDto->setSubItems($this->doMarkSelectedLegacyMenuItem($subItems, $request));
-            }
-
-            $menuItemQueryString = null === $menuItemDto->getLinkUrl() ? null : parse_url($menuItemDto->getLinkUrl(), \PHP_URL_QUERY);
-
-            $menuItemQueryParameters = [];
-            if (\is_string($menuItemQueryString)) {
-                parse_str($menuItemQueryString, $menuItemQueryParameters);
-            }
-
-            if ([] === $menuItemQueryParameters || [] === $currentPageQueryParameters) {
-                if ($menuItemDto->getLinkUrl() === $currentRequestUri) {
-                    $menuItemDto->setSelected(true);
-                }
-
-                continue;
-            }
-
-            // if the menu only contains links to the INDEX action of the CRUD controller,
-            // match that menu item for all actions (EDIT, NEW, etc.) of the same controller;
-            // this is not strictly correct, but backend users expect this behavior because it
-            // makes the sidebar menu more predictable and easier to use
-            $menuItemController = $menuItemQueryParameters[EA::CRUD_CONTROLLER_FQCN] ?? null;
-            $currentPageController = $currentPageQueryParameters[EA::CRUD_CONTROLLER_FQCN] ?? null;
-            $actionsLinkedInTheMenuForThisEntity = $controllersAndActionsLinkedInTheMenu[$currentPageController] ?? [];
-            $menuOnlyLinksToIndexActionOfThisEntity = $actionsLinkedInTheMenuForThisEntity === [Crud::PAGE_INDEX];
-            if ($menuItemController === $currentPageController && $menuOnlyLinksToIndexActionOfThisEntity) {
-                $menuItemDto->setSelected(true);
-
-                break;
-            }
-
-            // if the menu contains links to more than one action of the CRUD controller
-            // (e.g. INDEX and NEW), and the action of the current page is not included
-            // in that list, match the menu item with the INDEX action; this is again not
-            // strictly correct, but it's the expected behavior by backend users
-            $menuItemAction = $menuItemQueryParameters[EA::CRUD_ACTION] ?? null;
-            $currentPageAction = $currentPageQueryParameters[EA::CRUD_ACTION] ?? null;
-            $isCurrentPageActionLinkedInTheMenu = \in_array($currentPageAction, $actionsLinkedInTheMenuForThisEntity, true);
-            if ($menuItemController === $currentPageController && Crud::PAGE_INDEX === $menuItemAction && !$isCurrentPageActionLinkedInTheMenu) {
-                $menuItemDto->setSelected(true);
-
-                break;
-            }
-
-            // otherwise, match the query parameters of each menu item with the query
-            // parameters of the current request; before making the match, we remove
-            // some irrelevant query parameters such as filters, sorting, pagination, etc.
-            $menuItemQueryParametersToCompare = $this->filterIrrelevantQueryParameters($menuItemQueryParameters);
-            $currentPageQueryParametersToCompare = $this->filterIrrelevantQueryParameters($currentPageQueryParameters);
-
-            // needed so you can pass route parameters in any order
-            $this->recursiveKsort($menuItemQueryParametersToCompare);
-            $this->recursiveKsort($currentPageQueryParametersToCompare);
-
-            if ($menuItemQueryParametersToCompare === $currentPageQueryParametersToCompare) {
-                $menuItemDto->setSelected(true);
-
-                break;
-            }
-        }
-
-        return $menuItems;
-    }
-
-    /**
-     * @param MenuItemDto[] $menuItems
-     *
-     * @return MenuItemDto[]
-     */
-    private function doMarkSelectedPrettyUrlsMenuItem(array $menuItems, Request $request): array
+    private function doMarkSelectedMenuItem(array $menuItems, Request $request): array
     {
         // the menu-item matching is a multi-phase process:
         // 1) check all menu items for an exact match with the current URL
@@ -171,7 +54,7 @@ class MenuItemMatcher implements MenuItemMatcherInterface
         // 3) if still no match, check again with the current URL action changed to 'index' and no query parameters
         $currentUrlWithoutHost = $request->getBasePath().$request->getPathInfo();
         $currentUrlQueryParams = $request->query->all();
-        unset($currentUrlQueryParams['sort'], $currentUrlQueryParams['page'], $currentUrlQueryParams['query']);
+        unset($currentUrlQueryParams[EA::SORT], $currentUrlQueryParams[EA::PAGE], $currentUrlQueryParams[EA::QUERY], $currentUrlQueryParams[EA::FILTERS]);
         // sort them because menu items always have their query parameters sorted
         ksort($currentUrlQueryParams);
 
@@ -186,7 +69,7 @@ class MenuItemMatcher implements MenuItemMatcherInterface
             }
 
             if ([] !== $subItems = $menuItemDto->getSubItems()) {
-                $menuItemDto->setSubItems($this->doMarkSelectedPrettyUrlsMenuItem($subItems, $request));
+                $menuItemDto->setSubItems($this->doMarkSelectedMenuItem($subItems, $request));
             }
 
             $linkUrl = $menuItemDto->getLinkUrl();
@@ -254,7 +137,7 @@ class MenuItemMatcher implements MenuItemMatcherInterface
             }
 
             if ([] !== $subItems = $menuItemDto->getSubItems()) {
-                $menuItemDto->setSubItems($this->doMarkSelectedPrettyUrlsMenuItem($subItems, $request));
+                $menuItemDto->setSubItems($this->doMarkSelectedMenuItem($subItems, $request));
             }
 
             // compare the ending of the URL instead of a strict equality because link URLs can be absolute URLs
@@ -294,93 +177,5 @@ class MenuItemMatcher implements MenuItemMatcherInterface
         }
 
         return $menuItems;
-    }
-
-    /**
-     * It scans the full list of menu items to find which controllers and actions
-     * are linked from the menu. The output is something like:
-     * [
-     *     'App\Controller\Admin\BlogPostCrudController' => ['index', 'new'],
-     *     'App\Controller\Admin\BlogCategoryCrudController' => ['index'],
-     *     // ...
-     *     'App\Controller\Admin\UserCrudController' => ['index', 'new'],
-     * ].
-     *
-     * @param array<MenuItemDto> $menuItems
-     *
-     * @return array<string, array<string>>
-     */
-    private function getControllersAndActionsLinkedInTheMenu(array $menuItems): array
-    {
-        $controllersAndActionsLinkedInTheMenu = [];
-        foreach ($menuItems as $menuItemDto) {
-            if ($menuItemDto->isMenuSection()) {
-                continue;
-            }
-
-            if ([] !== $subItems = $menuItemDto->getSubItems()) {
-                $controllersAndActionsLinkedInTheMenu = array_merge_recursive($controllersAndActionsLinkedInTheMenu, $this->getControllersAndActionsLinkedInTheMenu($subItems));
-
-                continue;
-            }
-
-            $menuItemQueryString = null === $menuItemDto->getLinkUrl() ? null : parse_url($menuItemDto->getLinkUrl(), \PHP_URL_QUERY);
-            if (null === $menuItemQueryString) {
-                continue;
-            }
-
-            $menuItemQueryParameters = [];
-            if (\is_string($menuItemQueryString)) {
-                parse_str($menuItemQueryString, $menuItemQueryParameters);
-            }
-
-            $controllerFqcn = $menuItemQueryParameters[EA::CRUD_CONTROLLER_FQCN] ?? null;
-            $crudAction = $menuItemQueryParameters[EA::CRUD_ACTION] ?? null;
-            if (!\is_string($controllerFqcn) || !\is_string($crudAction)) {
-                continue;
-            }
-
-            if (isset($controllersAndActionsLinkedInTheMenu[$controllerFqcn])) {
-                $controllersAndActionsLinkedInTheMenu[$controllerFqcn][] = $crudAction;
-            } else {
-                $controllersAndActionsLinkedInTheMenu[$controllerFqcn] = [$crudAction];
-            }
-        }
-
-        return $controllersAndActionsLinkedInTheMenu;
-    }
-
-    /**
-     * Sorts an array recursively by its keys. This is needed because some values
-     * of the array with the query string parameters can be arrays too, and we must
-     * sort those before the comparison.
-     *
-     * @param mixed[] &$array
-     */
-    private function recursiveKsort(array &$array): void
-    {
-        ksort($array);
-
-        foreach ($array as &$value) {
-            if (\is_array($value)) {
-                $this->recursiveKsort($value);
-            }
-        }
-    }
-
-    /**
-     * Removes from the given list of query parameters all the parameters that
-     * should be ignored when deciding if some menu item matches the current page
-     * (such as the applied filters or sorting, the listing page number, etc.).
-     *
-     * @param array<string, mixed> $queryStringParameters
-     *
-     * @return array<string, mixed>
-     */
-    private function filterIrrelevantQueryParameters(array $queryStringParameters): array
-    {
-        $paramsToRemove = [EA::REFERRER, EA::PAGE, EA::FILTERS, EA::SORT];
-
-        return array_filter($queryStringParameters, static fn ($k) => !\in_array($k, $paramsToRemove, true), \ARRAY_FILTER_USE_KEY);
     }
 }

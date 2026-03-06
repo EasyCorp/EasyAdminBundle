@@ -11,7 +11,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\LocaleDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MainMenuDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\UserMenuDto;
-use EasyCorp\Bundle\EasyAdminBundle\Registry\CrudControllerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -22,21 +21,9 @@ interface AdminContextInterface
 {
     public function getRequest(): Request;
 
-    /**
-     * @deprecated since 4.8.11, will be removed in 5.0. Use $context->getRequest()->headers->get('referer') or redirect to some specific URL
-     */
-    public function getReferrer(): ?string;
-
     public function getI18n(): I18nDto;
 
-    // this method will be introduced in 5.0.0, but the class that implements
-    // this interface already implements it, so you can use it to smooth upgrade
-    // public function getAdminControllers(): AdminControllerRegistryInterface;
-
-    /**
-     * @deprecated since 4.28.1, use getAdminControllers() instead
-     */
-    public function getCrudControllers(): CrudControllerRegistry;
+    public function getAdminControllers(): AdminControllerRegistryInterface;
 
     /**
      * @return EntityDto<TEntity>
@@ -46,11 +33,6 @@ interface AdminContextInterface
     public function getUser(): ?UserInterface;
 
     public function getAssets(): AssetsDto;
-
-    /**
-     * @deprecated since 4.1.0, will be removed in 5.0.0. Signed URLs don't provide additional security in backends and have been removed without a replacement.
-     */
-    public function getSignedUrls(): bool;
 
     public function getAbsoluteUrls(): bool;
 
@@ -85,5 +67,6 @@ interface AdminContextInterface
 
     public function getTemplatePath(string $templateName): string;
 
+    /** @deprecated since easycorp/easyadmin-bundle 5.0.0 and will be removed in EasyAdmin 5.1.0. This method always returns true. */
     public function usePrettyUrls(): bool;
 }

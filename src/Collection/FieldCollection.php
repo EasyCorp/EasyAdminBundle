@@ -33,16 +33,6 @@ final class FieldCollection implements \ArrayAccess, \Countable, \IteratorAggreg
         $this->fields = $clonedFields;
     }
 
-    /**
-     * @deprecated since 4.28.2 and removed in 5.0.0, use FilterCollection::__construct() instead.
-     *
-     * @param array<FieldInterface|string> $fields
-     */
-    public static function new(iterable $fields): self
-    {
-        return new self($fields);
-    }
-
     public function get(string $fieldUniqueId): ?FieldDto
     {
         return $this->fields[$fieldUniqueId] ?? null;

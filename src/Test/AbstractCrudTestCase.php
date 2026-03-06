@@ -52,11 +52,6 @@ abstract class AbstractCrudTestCase extends WebTestCase
         unset($this->client, $this->entityManager, $this->adminUrlGenerator);
 
         parent::tearDown();
-
-        // Reset the cached kernel class to ensure tests that override getKernelClass()
-        // properly boot their designated kernel. This is needed because Symfony 5.4.x
-        // caches static::$class and doesn't reset it in ensureKernelShutdown().
-        static::$class = null;
     }
 
     /**

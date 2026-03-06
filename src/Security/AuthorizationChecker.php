@@ -12,9 +12,9 @@ use Symfony\Component\Security\Core\Exception\AuthenticationCredentialsNotFoundE
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-class AuthorizationChecker implements AuthorizationCheckerInterface
+readonly class AuthorizationChecker implements AuthorizationCheckerInterface
 {
-    public function __construct(private readonly AuthorizationCheckerInterface $authorizationChecker)
+    public function __construct(private AuthorizationCheckerInterface $authorizationChecker)
     {
     }
 

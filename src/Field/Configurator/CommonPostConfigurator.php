@@ -14,11 +14,11 @@ use function Symfony\Component\String\u;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class CommonPostConfigurator implements FieldConfiguratorInterface
+final readonly class CommonPostConfigurator implements FieldConfiguratorInterface
 {
     public function __construct(
-        private readonly AdminContextProviderInterface $adminContextProvider,
-        private readonly string $charset,
+        private AdminContextProviderInterface $adminContextProvider,
+        private string $charset,
     ) {
     }
 

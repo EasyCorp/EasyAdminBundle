@@ -32,10 +32,6 @@ Basic Information
 
         <twig:ea:Flag countryCode="CR" height="18"/>
 
-    .. versionadded:: 4.20.0
-
-        The `<twig:ea:Flag/>` component was introduced in EasyAdmin 4.20.0.
-
 Options
 -------
 

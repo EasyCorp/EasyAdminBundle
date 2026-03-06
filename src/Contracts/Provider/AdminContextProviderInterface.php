@@ -9,13 +9,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Context\AdminContextInterface;
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-interface AdminContextProviderInterface extends AdminContextInterface
+interface AdminContextProviderInterface
 {
-    /**
-     * @deprecated since 4.27 and it will be removed in EasyAdmin 5.0 without a replacement
-     */
-    public function hasContext(): bool;
-
-    // the $throw parameter is deprecated and will be removed in 5.0
-    public function getContext(bool $throw = false): ?AdminContextInterface;
+    public function getContext(): ?AdminContextInterface;
 }

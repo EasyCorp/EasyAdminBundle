@@ -6,10 +6,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Persistence\Proxy;
-use EasyCorp\Bundle\EasyAdminBundle\Collection\ActionCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\EntityCollection;
-use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionConfigDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityBuiltEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\EntityNotFoundException;
@@ -21,61 +18,13 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class EntityFactory
+final readonly class EntityFactory
 {
     public function __construct(
-        private FieldFactory|AuthorizationCheckerInterface|null $fieldFactory,
-        private ActionFactory|ManagerRegistry|null $actionFactory,
-        private AuthorizationCheckerInterface|EventDispatcherInterface $authorizationChecker,
-        private ?ManagerRegistry $doctrine = null,
-        private ?EventDispatcherInterface $eventDispatcher = null,
+        private AuthorizationCheckerInterface $authorizationChecker,
+        private ManagerRegistry $doctrine,
+        private EventDispatcherInterface $eventDispatcher,
     ) {
-        if ($this->fieldFactory instanceof FieldFactory) {
-            trigger_deprecation(
-                'easycorp/easyadmin-bundle',
-                '4.27.0',
-                'Passing the arguments "$fieldFactory" and "$actionFactory" to the "%s" constructor is deprecated.',
-                self::class
-            );
-        } else {
-            $this->fieldFactory = null;
-            $this->actionFactory = null;
-            $this->authorizationChecker = $fieldFactory;
-            $this->doctrine = $actionFactory;
-            $this->eventDispatcher = $authorizationChecker;
-        }
-    }
-
-    /**
-     * @deprecated since 4.27.0 and it will be removed in EasyAdmin 5.0.0. Use FieldFactory::processFields() instead
-     */
-    public function processFields(EntityDto $entityDto, FieldCollection $fields, ?string $pageName = null): void
-    {
-        $this->fieldFactory->processFields($entityDto, $fields, $pageName);
-    }
-
-    /**
-     * @deprecated since 4.27.0 and it will be removed in EasyAdmin 5.0.0. Use FieldFactory::processFieldsForAll() instead
-     */
-    public function processFieldsForAll(EntityCollection $entities, FieldCollection $fields, ?string $pageName = null): void
-    {
-        $this->fieldFactory->processFieldsForAll($entities, $fields);
-    }
-
-    /**
-     * @deprecated since 4.27.0 and it will be removed in EasyAdmin 5.0.0. Use ActionFactory::processEntityActions() instead
-     */
-    public function processActions(EntityDto $entityDto, ActionConfigDto $actionConfigDto): void
-    {
-        $this->actionFactory->processEntityActions($entityDto, $actionConfigDto);
-    }
-
-    /**
-     * @deprecated since 4.27.0 and it will be removed in EasyAdmin 5.0.0. Use ActionFactory::processGlobalActionsAndEntityActionsForAll() instead
-     */
-    public function processActionsForAll(EntityCollection $entities, ActionConfigDto $actionConfigDto): ActionCollection
-    {
-        return $this->actionFactory->processGlobalActionsAndEntityActionsForAll($entities, $actionConfigDto);
     }
 
     /**
@@ -86,20 +35,8 @@ final class EntityFactory
         return $this->doCreate($entityFqcn, $entityId, $entityPermission);
     }
 
-    /**
-     * @param object $entityInstance
-     */
-    public function createForEntityInstance(/* object */ $entityInstance): EntityDto
+    public function createForEntityInstance(object $entityInstance): EntityDto
     {
-        if (!\is_object($entityInstance)) {
-            trigger_deprecation(
-                'easycorp/easyadmin-bundle',
-                '4.27.0',
-                'Not passing argument "$entityInstance" for method "%s" of type "object" is deprecated.',
-                __METHOD__,
-            );
-        }
-
         return $this->doCreate(null, null, null, $entityInstance);
     }
 

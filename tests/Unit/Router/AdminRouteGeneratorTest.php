@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Router;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\CacheKey;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminRouteGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\AdminRouteApp\Controller\BuiltInActionCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\AdminRouteApp\Controller\DashboardController;
@@ -11,7 +12,6 @@ use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Cache\CacheItem;
 use Symfony\Component\DependencyInjection\Argument\RewindableGenerator;
-use Symfony\Component\Filesystem\Filesystem;
 
 class AdminRouteGeneratorTest extends KernelTestCase
 {
@@ -27,7 +27,7 @@ class AdminRouteGeneratorTest extends KernelTestCase
             $item = new CacheItem();
             $item->expiresAfter(3600);
 
-            if (AdminRouteGenerator::CACHE_KEY_FQCN_TO_ROUTE !== $key) {
+            if (CacheKey::ROUTE_ATTRIBUTES_TO_NAME !== $key) {
                 return $item;
             }
 
@@ -62,8 +62,6 @@ class AdminRouteGeneratorTest extends KernelTestCase
             $dashboardControllers,
             [],
             $cacheMock,
-            new Filesystem(),
-            self::$kernel->getBuildDir(),
             'en',
         );
 

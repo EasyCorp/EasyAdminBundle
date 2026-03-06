@@ -24,10 +24,6 @@ creating new Twig templates.
 Changing the Backend Icons
 --------------------------
 
-.. versionadded:: 4.16
-
-    The option to configure the icon set was introduced in EasyAdmin 4.16.0.
-
 By default, EasyAdmin uses `FontAwesome icons`_ both for the built-in interface
 icons and any custom icons that you add to menu items, fields, form tabs, etc.
 The full FontAwesome icon set (~2,000 icons) is already included in EasyAdmin,

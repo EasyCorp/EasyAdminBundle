@@ -31,16 +31,16 @@ use function Symfony\Component\Translation\t;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class ActionFactory
+final readonly class ActionFactory
 {
     /**
      * @param iterable<ActionsExtensionInterface> $actionsExtensions
      */
     public function __construct(
-        private readonly AdminContextProviderInterface $adminContextProvider,
-        private readonly AuthorizationCheckerInterface $authChecker,
-        private readonly AdminUrlGeneratorInterface $adminUrlGenerator,
-        private readonly ?CsrfTokenManagerInterface $csrfTokenManager = null,
+        private AdminContextProviderInterface $adminContextProvider,
+        private AuthorizationCheckerInterface $authChecker,
+        private AdminUrlGeneratorInterface $adminUrlGenerator,
+        private ?CsrfTokenManagerInterface $csrfTokenManager = null,
         private readonly iterable $actionsExtensions = [],
     ) {
     }
@@ -344,12 +344,15 @@ final class ActionFactory
     private function processActionLabel(ActionDto $actionDto, ?EntityDto $entityDto, string $translationDomain, array $defaultTranslationParameters): void
     {
         $label = $actionDto->getLabel();
-        $htmlTitle = trim($actionDto->getHtmlAttributes()['title'] ?? '');
+        $htmlTitle = $actionDto->getHtmlAttributes()['title'] ?? null;
+        $hasHtmlTitle = \is_string($htmlTitle)
+            ? '' !== trim($htmlTitle)
+            : null !== $htmlTitle;
 
         // FALSE means that action doesn't show a visible label in the interface;
         // add an HTML 'title' attribute (unless the user defined one explicitly) to
         // improve accessibility and show the action name on mouse hover
-        if (false === $label && '' === $htmlTitle) {
+        if (false === $label && !$hasHtmlTitle) {
             $actionDto->setHtmlAttribute('title', $actionDto->getName());
 
             return;
@@ -397,8 +400,7 @@ final class ActionFactory
         }
 
         $requestParameters = [
-            // when using pretty URLs, the data is in the request attributes instead of the query string
-            EA::CRUD_CONTROLLER_FQCN => $request->attributes->get(EA::CRUD_CONTROLLER_FQCN) ?? $request->query->get(EA::CRUD_CONTROLLER_FQCN),
+            EA::CRUD_CONTROLLER_FQCN => $request->attributes->get(EA::CRUD_CONTROLLER_FQCN),
             EA::CRUD_ACTION => $actionDto->getCrudActionName(),
         ];
 

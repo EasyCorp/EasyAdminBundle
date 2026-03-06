@@ -7,9 +7,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class AfterEntityBuiltEvent
+final readonly class AfterEntityBuiltEvent
 {
-    public function __construct(private readonly EntityDto $entityDto)
+    public function __construct(private EntityDto $entityDto)
     {
     }
 

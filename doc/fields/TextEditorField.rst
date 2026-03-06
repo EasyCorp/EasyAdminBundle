@@ -66,6 +66,6 @@ Check out the `src/trix/config/ folder`_ at Trix editor repository to learn
 about all the available configuration options.
 
 .. _`Trix editor`: https://github.com/basecamp/trix
-.. _`TextEditorType`: https://github.com/EasyCorp/EasyAdminBundle/blob/4.x/src/Form/Type/TextEditorType.php
+.. _`TextEditorType`: https://github.com/EasyCorp/EasyAdminBundle/blob/5.x/src/Form/Type/TextEditorType.php
 .. _`TextareaType`: https://symfony.com/doc/current/reference/forms/types/textarea.html
 .. _`src/trix/config/ folder`: https://github.com/basecamp/trix/tree/main/src/trix/config

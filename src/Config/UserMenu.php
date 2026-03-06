@@ -9,9 +9,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\UserMenuDto;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class UserMenu
+final readonly class UserMenu
 {
-    private function __construct(private readonly UserMenuDto $dto)
+    private function __construct(private UserMenuDto $dto)
     {
     }
 

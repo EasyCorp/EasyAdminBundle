@@ -2,39 +2,18 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Registry;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\CacheKey;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\AdminControllerRegistry;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
 class AdminControllerRegistryTest extends TestCase
 {
-    private string $tempDir;
-
-    protected function setUp(): void
-    {
-        $this->tempDir = sys_get_temp_dir().'/easyadmin_test_'.uniqid(more_entropy: true);
-        mkdir($this->tempDir.'/easyadmin', 0777, true);
-    }
-
-    protected function tearDown(): void
-    {
-        if (file_exists($this->tempDir.'/easyadmin/routes-dashboard.php')) {
-            unlink($this->tempDir.'/easyadmin/routes-dashboard.php');
-        }
-        if (is_dir($this->tempDir.'/easyadmin')) {
-            rmdir($this->tempDir.'/easyadmin');
-        }
-        if (is_dir($this->tempDir)) {
-            rmdir($this->tempDir);
-        }
-    }
-
     public function testGetDashboardRouteReturnsRouteWhenExists(): void
     {
-        $this->createCacheFile([
-            'admin_dashboard' => 'App\Controller\Admin\DashboardController::index',
+        $registry = $this->createRegistry([
+            'App\Controller\Admin\DashboardController' => 'admin_dashboard',
         ]);
-
-        $registry = $this->createRegistry();
 
         $result = $registry->getDashboardRoute('App\Controller\Admin\DashboardController');
 
@@ -43,11 +22,9 @@ class AdminControllerRegistryTest extends TestCase
 
     public function testGetDashboardRouteReturnsNullWhenNotExists(): void
     {
-        $this->createCacheFile([
-            'admin_dashboard' => 'App\Controller\Admin\DashboardController::index',
+        $registry = $this->createRegistry([
+            'App\Controller\Admin\DashboardController' => 'admin_dashboard',
         ]);
-
-        $registry = $this->createRegistry();
 
         $result = $registry->getDashboardRoute('App\Controller\NonExistentController');
 
@@ -56,12 +33,10 @@ class AdminControllerRegistryTest extends TestCase
 
     public function testGetDashboardByRouteReturnsControllerWhenExists(): void
     {
-        $this->createCacheFile([
-            'admin_dashboard' => 'App\Controller\Admin\DashboardController::index',
-            'reports_dashboard' => 'App\Controller\Reports\DashboardController::index',
+        $registry = $this->createRegistry([
+            'App\Controller\Admin\DashboardController' => 'admin_dashboard',
+            'App\Controller\Reports\DashboardController' => 'reports_dashboard',
         ]);
-
-        $registry = $this->createRegistry();
 
         $result = $registry->getDashboardByRoute('admin_dashboard');
 
@@ -70,11 +45,9 @@ class AdminControllerRegistryTest extends TestCase
 
     public function testGetDashboardByRouteReturnsNullWhenNotExists(): void
     {
-        $this->createCacheFile([
-            'admin_dashboard' => 'App\Controller\Admin\DashboardController::index',
+        $registry = $this->createRegistry([
+            'App\Controller\Admin\DashboardController' => 'admin_dashboard',
         ]);
-
-        $registry = $this->createRegistry();
 
         $result = $registry->getDashboardByRoute('nonexistent_route');
 
@@ -92,7 +65,7 @@ class AdminControllerRegistryTest extends TestCase
 
     public function testGetDashboardCountReturnsZeroWhenEmpty(): void
     {
-        $registry = new AdminControllerRegistry($this->tempDir, [], []);
+        $registry = $this->createRegistry([]);
 
         $result = $registry->getDashboardCount();
 
@@ -101,12 +74,10 @@ class AdminControllerRegistryTest extends TestCase
 
     public function testGetFirstDashboardReturnsFirstControllerWhenExists(): void
     {
-        $this->createCacheFile([
-            'admin_dashboard' => 'App\Controller\Admin\DashboardController::index',
-            'reports_dashboard' => 'App\Controller\Reports\DashboardController::index',
+        $registry = $this->createRegistry([
+            'App\Controller\Admin\DashboardController' => 'admin_dashboard',
+            'App\Controller\Reports\DashboardController' => 'reports_dashboard',
         ]);
-
-        $registry = $this->createRegistry();
 
         $result = $registry->getFirstDashboard();
 
@@ -115,9 +86,7 @@ class AdminControllerRegistryTest extends TestCase
 
     public function testGetFirstDashboardReturnsNullWhenNoDashboards(): void
     {
-        $this->createCacheFile([]);
-
-        $registry = new AdminControllerRegistry($this->tempDir, [], []);
+        $registry = $this->createRegistry([]);
 
         $result = $registry->getFirstDashboard();
 
@@ -126,12 +95,10 @@ class AdminControllerRegistryTest extends TestCase
 
     public function testGetFirstDashboardRouteReturnsFirstRouteWhenExists(): void
     {
-        $this->createCacheFile([
-            'admin_dashboard' => 'App\Controller\Admin\DashboardController::index',
-            'reports_dashboard' => 'App\Controller\Reports\DashboardController::index',
+        $registry = $this->createRegistry([
+            'App\Controller\Admin\DashboardController' => 'admin_dashboard',
+            'App\Controller\Reports\DashboardController' => 'reports_dashboard',
         ]);
-
-        $registry = $this->createRegistry();
 
         $result = $registry->getFirstDashboardRoute();
 
@@ -140,9 +107,7 @@ class AdminControllerRegistryTest extends TestCase
 
     public function testGetFirstDashboardRouteReturnsNullWhenNoDashboards(): void
     {
-        $this->createCacheFile([]);
-
-        $registry = new AdminControllerRegistry($this->tempDir, [], []);
+        $registry = $this->createRegistry([]);
 
         $result = $registry->getFirstDashboardRoute();
 
@@ -162,7 +127,7 @@ class AdminControllerRegistryTest extends TestCase
 
     public function testGetAllDashboardsReturnsEmptyArrayWhenNoDashboards(): void
     {
-        $registry = new AdminControllerRegistry($this->tempDir, [], []);
+        $registry = $this->createRegistry([]);
 
         $result = $registry->getAllDashboards();
 
@@ -219,7 +184,7 @@ class AdminControllerRegistryTest extends TestCase
 
     public function testGetAllCrudControllersReturnsEmptyArrayWhenNoControllers(): void
     {
-        $registry = new AdminControllerRegistry($this->tempDir, [], []);
+        $registry = $this->createRegistry([], []);
 
         $result = $registry->getAllCrudControllers();
 
@@ -241,13 +206,16 @@ class AdminControllerRegistryTest extends TestCase
 
     public function testRouteMapsAreLazilyLoaded(): void
     {
-        // create registry before cache file exists
-        $registry = $this->createRegistry();
+        // create cache and populate it after creating the registry
+        $cache = new ArrayAdapter();
+        $registry = new AdminControllerRegistry($cache);
 
-        // now create the cache file
-        $this->createCacheFile([
-            'admin_dashboard' => 'App\Controller\Admin\DashboardController::index',
+        // now populate the cache
+        $item = $cache->getItem(CacheKey::DASHBOARD_FQCN_TO_ROUTE);
+        $item->set([
+            'App\Controller\Admin\DashboardController' => 'admin_dashboard',
         ]);
+        $cache->save($item);
 
         // the route should be found because maps are loaded lazily
         $result = $registry->getDashboardRoute('App\Controller\Admin\DashboardController');
@@ -255,10 +223,10 @@ class AdminControllerRegistryTest extends TestCase
         $this->assertSame('admin_dashboard', $result);
     }
 
-    public function testRouteMapsHandleMissingCacheFile(): void
+    public function testRouteMapsHandleEmptyCache(): void
     {
-        // don't create cache file
-        $registry = $this->createRegistry();
+        // don't populate cache
+        $registry = $this->createRegistry([]);
 
         $result = $registry->getDashboardRoute('App\Controller\Admin\DashboardController');
 
@@ -267,7 +235,7 @@ class AdminControllerRegistryTest extends TestCase
 
     public function testEmptyRegistry(): void
     {
-        $emptyRegistry = new AdminControllerRegistry($this->tempDir, [], []);
+        $emptyRegistry = $this->createRegistry([], []);
 
         $this->assertSame(0, $emptyRegistry->getDashboardCount());
         $this->assertNull($emptyRegistry->getFirstDashboard());
@@ -278,29 +246,35 @@ class AdminControllerRegistryTest extends TestCase
         $this->assertNull($emptyRegistry->findEntityByCrudController('App\Controller\ProductCrudController'));
     }
 
-    private function createRegistry(): AdminControllerRegistry
-    {
-        $crudFqcnToEntityFqcnMap = [
-            'App\Controller\ProductCrudController' => 'App\Entity\Product',
-            'App\Controller\CategoryCrudController' => 'App\Entity\Category',
-            'App\Controller\UserCrudController' => 'App\Entity\User',
-        ];
+    private function createRegistry(
+        ?array $dashboardRoutes = null,
+        ?array $crudToEntityMap = null,
+    ): AdminControllerRegistry {
+        $cache = new ArrayAdapter();
 
-        $dashboardControllers = [
-            'App\Controller\Admin\DashboardController',
-            'App\Controller\Reports\DashboardController',
-        ];
+        if (null === $dashboardRoutes) {
+            $dashboardRoutes = [
+                'App\Controller\Admin\DashboardController' => 'admin_dashboard',
+                'App\Controller\Reports\DashboardController' => 'reports_dashboard',
+            ];
+        }
 
-        return new AdminControllerRegistry(
-            $this->tempDir,
-            $crudFqcnToEntityFqcnMap,
-            $dashboardControllers
-        );
-    }
+        $item = $cache->getItem(CacheKey::DASHBOARD_FQCN_TO_ROUTE);
+        $item->set($dashboardRoutes);
+        $cache->save($item);
 
-    private function createCacheFile(array $routes): void
-    {
-        $content = '<?php return '.var_export($routes, true).';';
-        file_put_contents($this->tempDir.'/easyadmin/routes-dashboard.php', $content);
+        if (null === $crudToEntityMap) {
+            $crudToEntityMap = [
+                'App\Controller\ProductCrudController' => 'App\Entity\Product',
+                'App\Controller\CategoryCrudController' => 'App\Entity\Category',
+                'App\Controller\UserCrudController' => 'App\Entity\User',
+            ];
+        }
+
+        $item = $cache->getItem(CacheKey::CRUD_FQCN_TO_ENTITY_FQCN);
+        $item->set($crudToEntityMap);
+        $cache->save($item);
+
+        return new AdminControllerRegistry($cache);
     }
 }

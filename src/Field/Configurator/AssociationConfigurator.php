@@ -30,23 +30,15 @@ use function Symfony\Component\Translation\t;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class AssociationConfigurator implements FieldConfiguratorInterface
+final readonly class AssociationConfigurator implements FieldConfiguratorInterface
 {
     public function __construct(
-        private readonly EntityFactory $entityFactory,
-        private readonly AdminUrlGeneratorInterface $adminUrlGenerator,
-        private readonly RequestStack $requestStack,
-        private readonly ControllerFactory $controllerFactory,
-        private readonly ?FieldFactory $fieldFactory = null,
+        private EntityFactory $entityFactory,
+        private AdminUrlGeneratorInterface $adminUrlGenerator,
+        private RequestStack $requestStack,
+        private ControllerFactory $controllerFactory,
+        private FieldFactory $fieldFactory,
     ) {
-        if (null === $this->fieldFactory) {
-            trigger_deprecation(
-                'easycorp/easyadmin-bundle',
-                '4.27.0',
-                'Not passing argument "$fieldFactory" to the "%s" constructor is deprecated.',
-                self::class
-            );
-        }
     }
 
     public function supports(FieldDto $field, EntityDto $entityDto): bool
@@ -175,8 +167,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
                     ->setController($targetCrudControllerFqcn)
                     ->setAction('autocomplete')
                     ->set(AssociationField::PARAM_AUTOCOMPLETE_CONTEXT, [
-                        // when using pretty URLs, the data is in the request attributes instead of the autocomplete context
-                        EA::CRUD_CONTROLLER_FQCN => $context->getRequest()->attributes->get(EA::CRUD_CONTROLLER_FQCN) ?? $context->getRequest()->query->get(EA::CRUD_CONTROLLER_FQCN),
+                        EA::CRUD_CONTROLLER_FQCN => $context->getRequest()->attributes->get(EA::CRUD_CONTROLLER_FQCN),
                         'propertyName' => $propertyName,
                         'originatingPage' => $context->getCrud()->getCurrentPage(),
                     ])
@@ -385,11 +376,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
 
         $fields = $crudController->configureFields($crudControllerPageName);
 
-        if (null === $this->fieldFactory) {
-            $this->entityFactory->processFields($entityDto, new FieldCollection($fields), $crudPageName);
-        } else {
-            $this->fieldFactory->processFields($entityDto, new FieldCollection($fields), $crudPageName);
-        }
+        $this->fieldFactory->processFields($entityDto, new FieldCollection($fields), $crudPageName);
 
         return $entityDto;
     }

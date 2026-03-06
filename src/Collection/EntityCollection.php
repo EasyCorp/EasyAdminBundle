@@ -16,16 +16,6 @@ final class EntityCollection implements \ArrayAccess, \Countable, \IteratorAggre
     {
     }
 
-    /**
-     * @deprecated since 4.28.2 and removed in 5.0.0, use FilterCollection::__construct() instead.
-     *
-     * @param array<string, EntityDto> $entities
-     */
-    public static function new(array $entities): self
-    {
-        return new self($entities);
-    }
-
     public function get(string $entityId): ?EntityDto
     {
         return $this->entities[$entityId] ?? null;

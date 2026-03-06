@@ -2,6 +2,8 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu\MenuItemInterface;
+
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
@@ -68,17 +70,8 @@ final class UserMenuDto
     public function setItems(array $items): void
     {
         foreach ($items as $item) {
-            if (!$item instanceof MenuItemDto) {
-                trigger_deprecation(
-                    'easycorp/easyadmin-bundle',
-                    '4.25.0',
-                    'Argument "%s" for "%s" must be one of type: %s. Passing type %s will cause an error in 5.0.0.',
-                    '$items',
-                    __METHOD__,
-                    '"array<MenuItemDto>"',
-                    '"array<MenuItemInterface>"'
-                );
-                break;
+            if (!$item instanceof MenuItemDto && !$item instanceof MenuItemInterface) {
+                throw new \InvalidArgumentException(sprintf('Expected an instance of "%s" or "%s".', MenuItemDto::class, MenuItemInterface::class));
             }
         }
 

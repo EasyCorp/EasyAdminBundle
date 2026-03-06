@@ -10,7 +10,7 @@ use Symfony\Component\Routing\RouteCollection;
  *
  * The generated ROUTES are based on a set of default route names and paths, but
  * that can be overwritten at the dashboard, controller and method/action level
- * using the #[AdminDashboard], #[AdminCrud] and #[AdminCrud] attributes.
+ * using the #[AdminDashboard], and #[AdminRoute] attributes.
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  *
@@ -24,13 +24,10 @@ interface AdminRouteGeneratorInterface
      */
     public function generateAll(): RouteCollection;
 
-    /**
-     * In EasyAdmin 5.0, all the arguments of this method will be nullable strings.
-     */
-    public function findRouteName(string /* |null */ $dashboardFqcn /* = null */, string /* |null */ $crudControllerFqcn /* = null */, string /* |null */ $actionName /* = null */): ?string;
+    public function findRouteName(?string $dashboardFqcn = null, ?string $crudControllerFqcn = null, ?string $actionName = null): ?string;
 
     /**
-     * This will removed in EasyAdmin 5.0, which will only use pretty URLs.
+     * @return array<class-string, string>
      */
-    // public function usesPrettyUrls(): bool;
+    public function getDashboardRoutes(): array;
 }

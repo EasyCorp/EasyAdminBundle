@@ -3,7 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Router;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\CacheKey;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Provider\AdminContextProviderInterface;
@@ -20,11 +20,8 @@ final class AdminUrlGenerator implements \Stringable, AdminUrlGeneratorInterface
 {
     private bool $isInitialized = false;
     private ?string $dashboardRoute = null;
-    private ?bool $includeReferrer = null;
     /** @var array<string, mixed> */
     private array $routeParameters = [];
-    private ?string $currentPageReferrer = null;
-    private ?string $customPageReferrer = null;
 
     public function __construct(
         private readonly AdminContextProviderInterface $adminContextProvider,
@@ -87,13 +84,8 @@ final class AdminUrlGenerator implements \Stringable, AdminUrlGeneratorInterface
 
     public function set(string $paramName, mixed $paramValue): AdminUrlGeneratorInterface
     {
-        if (\in_array($paramName, [EA::MENU_INDEX, EA::SUBMENU_INDEX], true)) {
-            trigger_deprecation(
-                'easycorp/easyadmin-bundle',
-                '4.5.0',
-                'Using the "%s" query parameter is deprecated. Menu items are now highlighted automatically based on the Request data, so you don\'t have to deal with menu items manually anymore.',
-                $paramName,
-            );
+        if (false === $this->isInitialized) {
+            $this->initialize();
         }
 
         $this->setRouteParameter($paramName, $paramValue);
@@ -101,9 +93,9 @@ final class AdminUrlGenerator implements \Stringable, AdminUrlGeneratorInterface
         return $this;
     }
 
-    public function setAll(array $routeParameters): AdminUrlGeneratorInterface
+    public function setAll(array $parameters): AdminUrlGeneratorInterface
     {
-        foreach ($routeParameters as $paramName => $paramValue) {
+        foreach ($parameters as $paramName => $paramValue) {
             $this->setRouteParameter($paramName, $paramValue);
         }
 
@@ -112,11 +104,7 @@ final class AdminUrlGenerator implements \Stringable, AdminUrlGeneratorInterface
 
     public function unset(string $paramName): AdminUrlGeneratorInterface
     {
-        if (false === $this->isInitialized) {
-            $this->initialize();
-        }
-
-        unset($this->routeParameters[$paramName]);
+        $this->unsetRouteParameter($paramName);
 
         return $this;
     }
@@ -143,82 +131,6 @@ final class AdminUrlGenerator implements \Stringable, AdminUrlGeneratorInterface
         return $this;
     }
 
-    public function includeReferrer(): AdminUrlGeneratorInterface
-    {
-        trigger_deprecation(
-            'easycorp/easyadmin-bundle',
-            '4.9.0',
-            'Adding the referrer argument in the admin URLs via the AdminUrlGenerator::includeReferrer() method is deprecated and it will be removed in 5.0.0. The referrer will now be determined automatically based on the current request.',
-        );
-
-        if (false === $this->isInitialized) {
-            $this->initialize();
-        }
-
-        $this->includeReferrer = true;
-
-        return $this;
-    }
-
-    public function removeReferrer(): AdminUrlGeneratorInterface
-    {
-        trigger_deprecation(
-            'easycorp/easyadmin-bundle',
-            '4.9.0',
-            'Removing the referrer argument in the admin URLs via the AdminUrlGenerator::removeReferrer() method is deprecated and it will be removed in 5.0.0. The referrer will now be determined automatically based on the current request.',
-        );
-
-        if (false === $this->isInitialized) {
-            $this->initialize();
-        }
-
-        $this->includeReferrer = false;
-
-        return $this;
-    }
-
-    public function setReferrer(string $referrer): AdminUrlGeneratorInterface
-    {
-        trigger_deprecation(
-            'easycorp/easyadmin-bundle',
-            '4.9.0',
-            'Adding the referrer argument in the admin URLs via the AdminUrlGenerator::setReferrer() method is deprecated and it will be removed in 5.0.0. The referrer will now be determined automatically based on the current request.',
-        );
-
-        if (false === $this->isInitialized) {
-            $this->initialize();
-        }
-
-        $this->includeReferrer = true;
-        $this->customPageReferrer = $referrer;
-
-        return $this;
-    }
-
-    public function addSignature(bool $addSignature = true): AdminUrlGeneratorInterface
-    {
-        trigger_deprecation(
-            'easycorp/easyadmin-bundle',
-            '4.1.0',
-            'EasyAdmin URLs no longer include signatures because they don\'t provide any additional security. Calling the "%s" method has no effect, so you can stop calling it. This method will be removed in future EasyAdmin versions.',
-            __METHOD__,
-        );
-
-        return $this;
-    }
-
-    public function getSignature(): string
-    {
-        trigger_deprecation(
-            'easycorp/easyadmin-bundle',
-            '4.1.0',
-            'EasyAdmin URLs no longer include signatures because they don\'t provide any additional security. Calling the "%s" method will always return an empty string, so you can stop calling it. This method will be removed in future EasyAdmin versions.',
-            __METHOD__,
-        );
-
-        return '';
-    }
-
     // this method allows to omit the 'generateUrl()' call in templates, making code more concise
     public function __toString(): string
     {
@@ -229,12 +141,6 @@ final class AdminUrlGenerator implements \Stringable, AdminUrlGeneratorInterface
     {
         if (false === $this->isInitialized) {
             $this->initialize();
-        }
-
-        $usePrettyUrls = $this->adminRouteGenerator->usesPrettyUrls();
-
-        if (true === $this->includeReferrer) {
-            $this->setRouteParameter(EA::REFERRER, $this->customPageReferrer ?? $this->currentPageReferrer);
         }
 
         // this avoids forcing users to always be explicit about the action to execute
@@ -250,9 +156,6 @@ final class AdminUrlGenerator implements \Stringable, AdminUrlGeneratorInterface
             }
 
             $this->dashboardRoute = $dashboardRoute;
-            if (!$usePrettyUrls) {
-                $this->unset(EA::DASHBOARD_CONTROLLER_FQCN);
-            }
         }
 
         // if the current action is 'index' and an entity ID is defined, remove the entity ID to prevent exceptions automatically
@@ -260,6 +163,7 @@ final class AdminUrlGenerator implements \Stringable, AdminUrlGeneratorInterface
             $this->unset(EA::ENTITY_ID);
         }
 
+        $dashboardRoutes = $this->adminRouteGenerator->getDashboardRoutes();
         // this happens when generating URLs from outside EasyAdmin (AdminContext is null) and
         // no Dashboard FQCN has been defined explicitly
         if (null === $this->dashboardRoute) {
@@ -275,61 +179,40 @@ final class AdminUrlGenerator implements \Stringable, AdminUrlGeneratorInterface
         // in the route name; e.g. 'dashboard.en' -> remove '.en', 'admin.index.en_US' -> remove '.en_US')
         $this->dashboardRoute = preg_replace('~\.[a-z]{2}(_[A-Z]{2})?$~', '', $this->dashboardRoute);
 
-        // this removes any parameter with a NULL value
-        $routeParameters = array_filter(
+        // remove null values and sort the route parameters before generating the URL
+        $canonicalRouteParameters = array_filter(
             $this->routeParameters,
             static fn ($parameterValue): bool => null !== $parameterValue
         );
-        ksort($routeParameters, \SORT_STRING);
+        ksort($canonicalRouteParameters, \SORT_STRING);
 
         $context = $this->adminContextProvider->getContext();
         $urlType = null !== $context && false === $context->getAbsoluteUrls() ? UrlGeneratorInterface::ABSOLUTE_PATH : UrlGeneratorInterface::ABSOLUTE_URL;
 
-        // if no route parameters are passed, the route doesn't point to any CRUD controller
+        // if no route attributes are passed, the route doesn't point to any CRUD controller
         // action or to any custom action/route; consider it a link to the current dashboard
-        if ([] === $routeParameters) {
+        if ([] === $this->routeParameters) {
             return $this->urlGenerator->generate($this->dashboardRoute, [], $urlType);
         }
 
         if (null !== $routeName = $this->get(EA::ROUTE_NAME)) {
-            $adminRoutes = $this->cache->getItem(AdminRouteGenerator::CACHE_KEY_ROUTE_TO_FQCN)->get();
+            $adminRoutes = $this->cache->getItem(CacheKey::ROUTE_NAME_TO_ATTRIBUTES)->get();
             if (null !== $adminRoutes && \array_key_exists($routeName, $adminRoutes)) {
-                return $this->urlGenerator->generate($routeName, $routeParameters[EA::ROUTE_PARAMS] ?? [], $urlType);
+                return $this->urlGenerator->generate($routeName, $canonicalRouteParameters[EA::ROUTE_PARAMS] ?? [], $urlType);
             }
 
-            return $this->urlGenerator->generate($this->dashboardRoute, $routeParameters, $urlType);
+            return $this->urlGenerator->generate($this->dashboardRoute, $canonicalRouteParameters, $urlType);
         }
 
-        if ($usePrettyUrls) {
-            $dashboardControllerFqcn = $this->get(EA::DASHBOARD_CONTROLLER_FQCN) ?? $context?->getRequest()->attributes->get(EA::DASHBOARD_CONTROLLER_FQCN) ?? $context?->getDashboardControllerFqcn() ?? $this->adminControllers->getFirstDashboard();
-            $crudControllerFqcn = $this->get(EA::CRUD_CONTROLLER_FQCN) ?? $context?->getRequest()->attributes->get(EA::CRUD_CONTROLLER_FQCN);
-            $actionName = $this->get(EA::CRUD_ACTION) ?? $context?->getRequest()->attributes->get(EA::CRUD_ACTION);
+        $dashboardControllerFqcn = $this->get(EA::DASHBOARD_CONTROLLER_FQCN) ?? $context?->getRequest()->attributes->get(EA::DASHBOARD_CONTROLLER_FQCN) ?? $context?->getDashboardControllerFqcn() ?? $this->adminControllers->getFirstDashboard();
+        $crudControllerFqcn = $this->get(EA::CRUD_CONTROLLER_FQCN) ?? $context?->getRequest()->attributes->get(EA::CRUD_CONTROLLER_FQCN);
+        $actionName = $this->get(EA::CRUD_ACTION) ?? $context?->getRequest()->attributes->get(EA::CRUD_ACTION);
 
-            if (null === $crudControllerFqcn || null === $routeName = $this->adminRouteGenerator->findRouteName($dashboardControllerFqcn, $crudControllerFqcn, $actionName)) {
-                $routeName = $this->dashboardRoute;
-                if (null === $crudControllerFqcn) {
-                    unset($routeParameters[EA::DASHBOARD_CONTROLLER_FQCN]);
-                }
-            } else {
-                // remove these parameters so they don't appear in the query string when using pretty URLs
-                unset($routeParameters[EA::DASHBOARD_CONTROLLER_FQCN]);
-                unset($routeParameters[EA::CRUD_CONTROLLER_FQCN]);
-                unset($routeParameters[EA::CRUD_ACTION]);
-                unset($routeParameters[EA::ENTITY_FQCN]);
-            }
-        } else {
-            $routeName = $this->dashboardRoute;
-        }
+        $routeName = $this->adminRouteGenerator->findRouteName($dashboardControllerFqcn, $crudControllerFqcn, $actionName) ?? $this->dashboardRoute;
 
-        if (!$usePrettyUrls && \in_array($routeParameters[EA::CRUD_ACTION] ?? Action::INDEX, Crud::ACTION_NAMES, true)) {
-            trigger_deprecation(
-                'easycorp/easyadmin-bundle',
-                '4.14.0',
-                'Not using pretty admin URLs is deprecated because they will become the only available URLs starting from EasyAdmin 5.0.0. Read the docs to learn how to enable pretty URLs in your application.',
-            );
-        }
+        unset($canonicalRouteParameters[EA::DASHBOARD_CONTROLLER_FQCN], $canonicalRouteParameters[EA::CRUD_CONTROLLER_FQCN], $canonicalRouteParameters[EA::CRUD_ACTION]);
 
-        $url = $this->urlGenerator->generate($routeName, $routeParameters, $urlType);
+        $url = $this->urlGenerator->generate($routeName, $canonicalRouteParameters, $urlType);
         $url = '' === $url ? '?' : $url;
 
         // this is important to start the generation of each URL from the same initial state
@@ -339,53 +222,54 @@ final class AdminUrlGenerator implements \Stringable, AdminUrlGeneratorInterface
         return $url;
     }
 
-    private function setRouteParameter(string $paramName, mixed $paramValue): void
+    private function setRouteParameter(string $parameterName, mixed $parameterValue): void
     {
         if (false === $this->isInitialized) {
             $this->initialize();
         }
 
-        if (\is_resource($paramValue)) {
-            throw new \InvalidArgumentException(sprintf('The value of the "%s" parameter is a PHP resource, which is not supported as a route parameter.', $paramName));
+        if (\is_resource($parameterValue)) {
+            throw new \InvalidArgumentException(sprintf('The value of the "%s" parameter is a PHP resource, which is not supported as a route parameter.', $parameterName));
         }
 
-        if (\is_object($paramValue)) {
-            if ($paramValue instanceof \Stringable) {
-                $paramValue = (string) $paramValue;
+        if (\is_object($parameterValue)) {
+            if ($parameterValue instanceof \Stringable) {
+                $parameterValue = (string) $parameterValue;
             } else {
-                throw new \InvalidArgumentException(sprintf('The object passed as the value of the "%s" parameter must implement the "__toString()" method to allow using its value as a route parameter.', $paramName));
+                throw new \InvalidArgumentException(sprintf('The object passed as the value of the "%s" parameter must implement the "__toString()" method to allow using its value as a route parameter.', $parameterName));
             }
         }
 
-        $this->routeParameters[$paramName] = $paramValue;
+        $this->routeParameters[$parameterName] = $parameterValue;
+    }
+
+    private function unsetRouteParameter(string $parameterName): void
+    {
+        if (false === $this->isInitialized) {
+            $this->initialize();
+        }
+
+        unset($this->routeParameters[$parameterName]);
     }
 
     private function initialize(): void
     {
-        $this->isInitialized = true;
-
         $adminContext = $this->adminContextProvider->getContext();
 
-        if (null === $adminContext) {
-            $this->dashboardRoute = null;
-            $currentRouteParameters = $routeParametersForReferrer = [];
-            $this->currentPageReferrer = null;
-        } else {
-            $this->dashboardRoute = $adminContext->getDashboardRouteName();
-            $routeParameters = array_filter([
-                EA::DASHBOARD_CONTROLLER_FQCN => $adminContext->getRequest()->attributes->get(EA::DASHBOARD_CONTROLLER_FQCN),
-                EA::CRUD_CONTROLLER_FQCN => $adminContext->getRequest()->attributes->get(EA::CRUD_CONTROLLER_FQCN),
-                EA::CRUD_ACTION => $adminContext->getRequest()->attributes->get(EA::CRUD_ACTION),
-                EA::ENTITY_ID => $adminContext->getRequest()->attributes->get(EA::ENTITY_ID),
-            ], static fn ($value): bool => null !== $value);
-            $currentRouteParameters = $routeParametersForReferrer = array_merge($routeParameters, $adminContext->getRequest()->query->all());
-            unset($routeParametersForReferrer[EA::REFERRER]);
-            $this->currentPageReferrer = sprintf('%s%s?%s', $adminContext->getRequest()->getBaseUrl(), $adminContext->getRequest()->getPathInfo(), http_build_query($routeParametersForReferrer));
-        }
+        $this->dashboardRoute = $adminContext?->getDashboardRouteName();
 
-        $this->includeReferrer = null;
-        $this->customPageReferrer = null;
+        $defaultParameters = array_filter(
+            [
+                EA::DASHBOARD_CONTROLLER_FQCN => $adminContext?->getRequest()->attributes->get(EA::DASHBOARD_CONTROLLER_FQCN),
+                EA::CRUD_CONTROLLER_FQCN => $adminContext?->getRequest()->attributes->get(EA::CRUD_CONTROLLER_FQCN),
+                EA::CRUD_ACTION => $adminContext?->getRequest()->attributes->get(EA::CRUD_ACTION),
+                EA::ENTITY_ID => $adminContext?->getRequest()->attributes->get(EA::ENTITY_ID),
+            ],
+            static fn (mixed $value): bool => null !== $value
+        );
 
-        $this->routeParameters = $currentRouteParameters;
+        $this->routeParameters = array_merge($defaultParameters, $adminContext?->getRequest()->query->all() ?? []);
+
+        $this->isInitialized = true;
     }
 }

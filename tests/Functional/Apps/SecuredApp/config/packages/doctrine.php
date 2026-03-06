@@ -21,14 +21,19 @@ $config = [
     ],
 ];
 
-if (class_exists(Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\ControllerResolverPass::class)) {
-    $config['orm']['controller_resolver'] = [
-        'auto_mapping' => false,
-    ];
-}
+if (class_exists(Composer\InstalledVersions::class)) {
+    $doctrineBundleVersion = Composer\InstalledVersions::getVersion('doctrine/doctrine-bundle');
 
-if (class_exists(Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\CacheCompatibilityPass::class)) {
-    $config['orm']['auto_generate_proxy_classes'] = true;
+    if (null !== $doctrineBundleVersion && version_compare($doctrineBundleVersion, '3.1.0', '<')) {
+        $config['orm']['controller_resolver'] = [
+            'auto_mapping' => false,
+        ];
+
+        $doctrineOrmVersion = Composer\InstalledVersions::getVersion('doctrine/orm');
+        if (null !== $doctrineOrmVersion && version_compare($doctrineOrmVersion, '3.4.0', '>=')) {
+            $config['orm']['enable_native_lazy_objects'] = true;
+        }
+    }
 }
 
 $container->loadFromExtension('doctrine', $config);

@@ -9,11 +9,11 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Provider\AdminContextProviderInter
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class PaginatorFactory
+final readonly class PaginatorFactory
 {
     public function __construct(
-        private readonly AdminContextProviderInterface $adminContextProvider,
-        private readonly EntityPaginatorInterface $entityPaginator,
+        private AdminContextProviderInterface $adminContextProvider,
+        private EntityPaginatorInterface $entityPaginator,
     ) {
     }
 

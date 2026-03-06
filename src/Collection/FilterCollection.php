@@ -17,16 +17,6 @@ final class FilterCollection implements \ArrayAccess, \Countable, \IteratorAggre
     }
 
     /**
-     * @deprecated since 4.28.2 and removed in 5.0.0, use FilterCollection::__construct() instead.
-     *
-     * @param array<string, FilterDto> $filters
-     */
-    public static function new(array $filters = []): self
-    {
-        return new self($filters);
-    }
-
-    /**
      * @return array<string, FilterDto>
      */
     public function all(): array

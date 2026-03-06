@@ -6,12 +6,12 @@ use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 
-final class AfterEntitySearchEvent
+final readonly class AfterEntitySearchEvent
 {
     public function __construct(
-        private readonly QueryBuilder $queryBuilder,
-        private readonly SearchDto $searchDto,
-        private readonly EntityDto $entityDto,
+        private QueryBuilder $queryBuilder,
+        private SearchDto $searchDto,
+        private EntityDto $entityDto,
     ) {
     }
 

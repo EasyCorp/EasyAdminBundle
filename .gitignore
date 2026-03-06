@@ -2,8 +2,12 @@
 composer.lock
 .phpunit.result.cache
 /phpunit.xml
+var
 vendor/*
 
 /node_modules/
 npm-debug.log
 yarn-error.log
+
+/.claude/*
+!/.claude/skills/

@@ -30,14 +30,14 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class EntityRepository implements EntityRepositoryInterface
+final readonly class EntityRepository implements EntityRepositoryInterface
 {
     public function __construct(
-        private readonly AdminContextProviderInterface $adminContextProvider,
-        private readonly ManagerRegistry $doctrine,
-        private readonly EntityFactory $entityFactory,
-        private readonly FormFactory $formFactory,
-        private readonly EventDispatcherInterface $eventDispatcher,
+        private AdminContextProviderInterface $adminContextProvider,
+        private ManagerRegistry $doctrine,
+        private EntityFactory $entityFactory,
+        private FormFactory $formFactory,
+        private EventDispatcherInterface $eventDispatcher,
     ) {
     }
 

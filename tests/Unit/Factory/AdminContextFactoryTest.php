@@ -20,6 +20,8 @@ class AdminContextFactoryTest extends KernelTestCase
 
     protected function setUp(): void
     {
+        self::bootKernel();
+
         /** @var AdminContextFactory $factory */
         $factory = static::getContainer()->get(AdminContextFactory::class);
         $this->adminContextFactory = $factory;

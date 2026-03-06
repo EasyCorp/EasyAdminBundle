@@ -4,7 +4,6 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Contracts\Registry;
 
 /**
  * Unified registry for Dashboard and CRUD controllers.
- * Replaces the deprecated DashboardControllerRegistry and CrudControllerRegistry.
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */

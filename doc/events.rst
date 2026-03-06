@@ -10,9 +10,8 @@ everything is defined in PHP. It is usually easier to customize the backend by
 overriding PHP classes and methods and by calling your own services. Events are
 still available if you want to use them.
 
-All events are dispatched as objects rather than string event names (as
-recommended since Symfony 4.3). They live under the
-``EasyCorp\Bundle\EasyAdminBundle\Event\`` namespace:
+All events are dispatched as objects rather than string event names. They live
+under the ``EasyCorp\Bundle\EasyAdminBundle\Event\`` namespace:
 
 * Events related to Doctrine entities:
 

@@ -18,8 +18,6 @@
      • <a href="https://symfonycasts.com/screencast/easyadminbundle">Video Tutorial</a>
 </p>
 
----
-
 EasyAdmin creates beautiful backends for Symfony applications. It's free, fast, fully documented, and trusted by tens of thousands of projects.
 
 <p align="center">
@@ -61,7 +59,7 @@ Visit `/admin` in your browser. That's it!
 | 🌍 **Fully Translatable** | RTL support included. Translations available in 40+ languages |
 | 🛠️ **100% Customizable** | Override any template, extend any class, customize everything |
 | 🧩 **Symfony Native** | Seamlessly integrated with Symfony forms, security, routing, and more |
-| ✅ **Unmatched Compatibility** | Works with Symfony 5.4, 6.x, 7.x, and 8.x and Doctrine 2.x, 3.x, and 4.x |
+| ✅ **Unmatched Compatibility** | Works with Symfony 6.x, 7.x, and 8.x and Doctrine 2.x, 3.x, and 4.x |
 
 ## Why EasyAdmin?
 
@@ -73,16 +71,16 @@ Visit `/admin` in your browser. That's it!
 
 ## Requirements
 
-- PHP 8.1 or higher
-- Symfony 5.4 or higher
+- PHP 8.2 or higher
+- Symfony 6.4 or higher
 - Doctrine ORM entities
 
 ### Versions
 
 | Version / Repository Branch | Symfony Compatibility         | PHP Compatibility | Status               | Docs
 | --------------------------- | ----------------------------- | ----------------- | -------------------- | ---
-| `5.x`                       | `6.4`, `7.x` and `8.x`        | `8.1` or higher   | In development | [Read Docs](https://symfony.com/bundles/EasyAdminBundle/5.x/index.html)
-| `4.x`                       | `5.4`, `6.x`, `7.x` and `8.x` | `8.1` or higher   | New features and bug fixes | [Read Docs](https://symfony.com/bundles/EasyAdminBundle/4.x/index.html)
+| `5.x`                       | `6.4`, `7.x` and `8.x`        | `8.2` or higher   | Stable version | [Read Docs](https://symfony.com/bundles/EasyAdminBundle/5.x/index.html)
+| `4.x`                       | `5.4`, `6.x`, `7.x` and `8.x` | `8.1` or higher   | Bug fixes only | [Read Docs](https://symfony.com/bundles/EasyAdminBundle/4.x/index.html)
 | `3.x`                       | `4.4`, and `5.x`              | `7.2.5` or higher | No longer maintained | [Read Docs](https://symfony.com/bundles/EasyAdminBundle/3.x/index.html)
 | `2.x`                       | `4.x`, and `5.x`              | `7.1.3` or higher | No longer maintained | [Read Docs](https://symfony.com/bundles/EasyAdminBundle/2.x/index.html)
 | `1.x`                       | `2.x`, `3.x` and `4.x`        | `5.3.0` or higher | No longer maintained | -

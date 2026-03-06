@@ -2,90 +2,115 @@ name: Build
 on:
     push:
         branches:
-            - "4.x"
+            - "5.x"
     pull_request:
+    schedule:
+        - cron: '15 3 * * *'
+    workflow_dispatch:
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
+permissions:
+    contents: read
 
 jobs:
     phpstan:
         runs-on: ubuntu-latest
+        timeout-minutes: 15
         steps:
             - uses: actions/checkout@v6
 
             - name: Setup PHP, with composer and extensions
               uses: shivammathur/setup-php@v2
               with:
-                  php-version: 8.2
+                  php-version: 8.4
                   coverage: none
+                  tools: composer:2.8
+
+            - name: Get Composer cache directory
+              id: composer-cache
+              run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+            - name: Cache Composer dependencies
+              uses: actions/cache@v5
+              with:
+                  path: ${{ steps.composer-cache.outputs.dir }}
+                  key: phpstan-${{ runner.os }}-php84-${{ hashFiles('composer.json') }}
+                  restore-keys: phpstan-${{ runner.os }}-php84-
 
             - name: Install dependencies
               run: |
-                  composer install
+                  composer install --no-interaction --no-progress --prefer-dist
                   vendor/bin/simple-phpunit install
 
             - name: "Run PHPStan analysis"
               run: vendor/bin/phpstan analyse
 
     phpunit:
+        timeout-minutes: 45
         strategy:
             fail-fast: false
             matrix:
                 include:
-                    # Latest Symfony version support
+                    # LTS Symfony version on macOS and Windows (platform-specific issues)
                     - os: macos-latest
                       php_version: "8.4"
-                      symfony_version: "7.3"
+                      symfony_version: "7.4.*"
                       stability: "stable"
+                      allow_failure: false
                     - os: windows-latest
                       php_version: "8.4"
-                      symfony_version: "7.3"
+                      symfony_version: "7.4.*"
                       stability: "stable"
-                    # LTS Symfony version support
-                    - os: macos-latest
-                      php_version: "8.4"
-                      symfony_version: "6.4"
-                      stability: "stable"
-                    - os: windows-latest
-                      php_version: "8.4"
-                      symfony_version: "6.4"
-                      stability: "stable"
+                      allow_failure: false
                     # Lowest deps support
                     - os: ubuntu-latest
-                      php_version: "8.1"
+                      php_version: "8.2"
                       composer_args: "--prefer-lowest"
                       stability: "stable"
-                    # Lowest PHP version support. Remove when it is dropped
-                    - os: ubuntu-latest
-                      php_version: "8.1"
-                      symfony_version: "5.4"
-                      stability: "stable"
-                    - os: ubuntu-latest
-                      php_version: "8.2"
-                      symfony_version: "6.4"
-                      stability: "stable"
-                    - os: ubuntu-latest
-                      php_version: "8.3"
-                      symfony_version: "7.1"
-                      stability: "stable"
+                      symfony_deprecations_helper: "disabled"
+                      allow_failure: false
+                    # All supported Symfony versions
                     - os: ubuntu-latest
                       php_version: "8.4"
-                      symfony_version: "7.2"
+                      symfony_version: "6.4.*"
                       stability: "stable"
-                    # New PHP version
+                      allow_failure: false
+                    - os: ubuntu-latest
+                      php_version: "8.4"
+                      symfony_version: "7.1.*"
+                      stability: "stable"
+                      symfony_deprecations_helper: "disabled"
+                      allow_failure: false
+                    - os: ubuntu-latest
+                      php_version: "8.4"
+                      symfony_version: "7.2.*"
+                      stability: "stable"
+                      allow_failure: false
+                    - os: ubuntu-latest
+                      php_version: "8.4"
+                      symfony_version: "7.3.*"
+                      stability: "stable"
+                      allow_failure: false
+                    - os: ubuntu-latest
+                      php_version: "8.4"
+                      symfony_version: "7.4.*"
+                      stability: "stable"
+                      allow_failure: false
+                    - os: ubuntu-latest
+                      php_version: "8.4"
+                      symfony_version: "8.0.*"
+                      stability: "stable"
+                      allow_failure: false
+                    # Upcoming Symfony version
                     - os: ubuntu-latest
                       php_version: "8.5"
-                      symfony_version: "7.3"
-                      stability: "stable"
-                    # Upcoming Symfony versions
-                    - os: ubuntu-latest
-                      php_version: "8.4"
-                      symfony_version: "7.4.x"
+                      symfony_version: "8.1.*@dev"
                       stability: "dev"
-                    - os: ubuntu-latest
-                      php_version: "8.4"
-                      symfony_version: "8.0.x"
-                      stability: "dev"
+                      allow_failure: true
         runs-on: ${{ matrix.os }}
-        continue-on-error: ${{ matrix.stability == 'dev' }}
         steps:
             - uses: actions/checkout@v6
 
@@ -97,6 +122,18 @@ jobs:
                   extensions: mbstring, intl, pdo, pdo_sqlite, sqlite3
                   ini-values: date.timezone=UTC
                   tools: composer:2.8
+
+            - name: Get Composer cache directory
+              id: composer-cache
+              shell: bash
+              run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+            - name: Cache Composer dependencies
+              uses: actions/cache@v5
+              with:
+                  path: ${{ steps.composer-cache.outputs.dir }}
+                  key: phpunit-${{ runner.os }}-php${{ matrix.php_version }}-${{ matrix.symfony_version || 'default' }}-${{ matrix.composer_args || 'normal' }}-${{ matrix.stability }}-${{ hashFiles('composer.json') }}
+                  restore-keys: phpunit-${{ runner.os }}-php${{ matrix.php_version }}-
 
             - name: symfony/flex is required to install the correct symfony version
               if: ${{ matrix.symfony_version }}
@@ -110,11 +147,11 @@ jobs:
 
             - name: Configure Symfony version for symfony/flex
               if: ${{ matrix.symfony_version }}
-              run: composer config extra.symfony.require "${{ matrix.symfony_version }}.*"
+              run: composer config extra.symfony.require "${{ matrix.symfony_version }}"
 
             - name: Install dependencies
               run: |
-                  composer update ${{ matrix.composer_args }};
+                  composer update --no-interaction --no-progress --prefer-dist ${{ matrix.composer_args }}
                   vendor/bin/simple-phpunit install
 
             - name: Show installed dependencies
@@ -122,13 +159,45 @@ jobs:
                   composer show
 
             - name: Run tests
-              env:
-                  SYMFONY_DEPRECATIONS_HELPER: "max[total]=999999&ignoreFile=./tests/baseline-ignore.txt"
+              if: ${{ runner.os != 'Windows' }}
+              shell: bash
               run: |
-                  ./vendor/bin/simple-phpunit
+                  set +e
+                  make tests
+                  exit_code=$?
+
+                  if [ "${{ matrix.allow_failure }}" = "true" ] && [ $exit_code -ne 0 ]; then
+                      echo "::warning::Experimental job failed (php ${{ matrix.php_version }}, symfony ${{ matrix.symfony_version }}), but it's allowed to fail."
+                      exit 0
+                  fi
+
+                  exit $exit_code
+              env:
+                  SYMFONY_DEPRECATIONS_HELPER: ${{ matrix.symfony_deprecations_helper || '' }}
+
+            - name: Run tests (Windows)
+              if: ${{ runner.os == 'Windows' }}
+              shell: pwsh
+              run: |
+                  $cacheDir = php -r "echo sys_get_temp_dir();"
+                  $cacheDir = Join-Path $cacheDir "com.github.easycorp.easyadmin/tests/var/test/cache"
+                  if (Test-Path $cacheDir) { Remove-Item -Recurse -Force $cacheDir }
+                  if (-not $env:SYMFONY_DEPRECATIONS_HELPER) { $env:SYMFONY_DEPRECATIONS_HELPER = "ignoreFile=./tests/baseline-ignore.txt" }
+                  php vendor/bin/simple-phpunit -v
+                  $exitCode = $LASTEXITCODE
+
+                  if ("${{ matrix.allow_failure }}" -eq "true" -and $exitCode -ne 0) {
+                      Write-Output "::warning::Experimental job failed (php ${{ matrix.php_version }}, symfony ${{ matrix.symfony_version }}), but it's allowed to fail."
+                      exit 0
+                  }
+
+                  exit $exitCode
+              env:
+                  SYMFONY_DEPRECATIONS_HELPER: ${{ matrix.symfony_deprecations_helper || '' }}
 
     php-linter:
         runs-on: ubuntu-latest
+        timeout-minutes: 10
         steps:
             - uses: actions/checkout@v6
 
@@ -140,6 +209,7 @@ jobs:
 
     doc-linter:
         runs-on: ubuntu-latest
+        timeout-minutes: 10
         steps:
             - uses: actions/checkout@v6
 
@@ -152,6 +222,7 @@ jobs:
 
     css-linter:
         runs-on: ubuntu-latest
+        timeout-minutes: 10
         steps:
             - uses: actions/checkout@v6
 
@@ -160,10 +231,22 @@ jobs:
               with:
                   php-version: 8.2
                   coverage: none
+                  tools: composer:2.8
+
+            - name: Get Composer cache directory
+              id: composer-cache
+              run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+            - name: Cache Composer dependencies
+              uses: actions/cache@v5
+              with:
+                  path: ${{ steps.composer-cache.outputs.dir }}
+                  key: css-${{ runner.os }}-${{ hashFiles('composer.json') }}
+                  restore-keys: css-${{ runner.os }}-
 
             - name: Install dependencies
               run: |
-                  composer install
+                  composer install --no-interaction --no-progress --prefer-dist
 
             -   name: Lint logical CSS properties
                 run: |
@@ -171,6 +254,7 @@ jobs:
 
     twig-linter:
         runs-on: ubuntu-latest
+        timeout-minutes: 10
         steps:
             - uses: actions/checkout@v6
 
@@ -179,10 +263,22 @@ jobs:
               with:
                   php-version: 8.2
                   coverage: none
+                  tools: composer:2.8
+
+            - name: Get Composer cache directory
+              id: composer-cache
+              run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+            - name: Cache Composer dependencies
+              uses: actions/cache@v5
+              with:
+                  path: ${{ steps.composer-cache.outputs.dir }}
+                  key: twig-${{ runner.os }}-${{ hashFiles('composer.json') }}
+                  restore-keys: twig-${{ runner.os }}-
 
             - name: Install dependencies
               run: |
-                  composer install
+                  composer install --no-interaction --no-progress --prefer-dist
 
             -   name: Lint Twig template syntax
                 run: |
@@ -190,11 +286,13 @@ jobs:
 
     js-linter:
         runs-on: ubuntu-latest
+        timeout-minutes: 10
         steps:
             - uses: actions/checkout@v6
-            - run: npm i -g corepack && corepack enable
+            - run: corepack enable
             - uses: actions/setup-node@v6
               with:
                   cache: 'yarn'
+                  cache-dependency-path: 'yarn.lock'
             - run: yarn --immutable
             - run: yarn ci

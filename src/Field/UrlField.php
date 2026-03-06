@@ -15,10 +15,7 @@ final class UrlField implements FieldInterface
 
     public const OPTION_DEFAULT_PROTOCOL = 'defaultProtocol';
 
-    /**
-     * @param TranslatableInterface|string|false|null $label
-     */
-    public static function new(string $propertyName, $label = null): self
+    public static function new(string $propertyName, TranslatableInterface|string|bool|null $label = null): self
     {
         return (new self())
             ->setProperty($propertyName)

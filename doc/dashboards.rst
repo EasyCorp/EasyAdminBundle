@@ -35,33 +35,26 @@ class. Run the following command to quickly generate a dashboard controller:
 If you now visit the ``/admin`` URL of your application, you'll see the default
 EasyAdmin Welcome Page:
 
-.. image:: images/easyadmin-welcome-page.jpg
-   :alt: EasyAdmin 4 Welcome Page
+.. image:: images/easyadmin-welcome-page.webp
+   :alt: EasyAdmin 5 Welcome Page
 
 Later in this article you'll learn how to customize that page. If you don't see
 the Welcome Page, you might need to configure the URL of your backend as
 explained in the next section.
 
 .. _dashboard-route:
+.. _pretty-admin-urls:
 
 Dashboard Route
 ---------------
-
-.. _pretty-admin-urls:
-
-Pretty Admin URLs
------------------
-
-.. versionadded:: 4.14.0
-
-    The support for pretty admin URLs was introduced in EasyAdmin 4.14.0.
 
 EasyAdmin backends define concise and predictable route names (e.g. ``admin_product_index``
 or ``admin_category_detail``) that generate short and pretty URLs (e.g. ``/admin/product``
 or ``/admin/category/324``).
 
-This is possible thanks to a `custom Symfony route loader`_ that you must enable
-first in your application. To do so, create this file:
+This is possible thanks to a `custom Symfony route loader`_ that generates all
+the needed routes for you. If your Symfony application uses `Symfony Flex`_, this
+route loader is already enabled. Otherwise, you need to create this file manually:
 
 .. code-block:: yaml
 
@@ -103,11 +96,6 @@ Now, define the main route of your dashboard class using the following PHP attri
     The dashboard route must be defined using the ``#[AdminDashboard]`` attribute.
     None of the other ways supported by Symfony to configure a route will work.
 
-.. versionadded:: 4.24.0
-
-    The feature to define the dashboard route using the ``#[AdminDashboard]``
-    attribute was introduced in EasyAdmin 4.24.0.
-
 EasyAdmin uses the configuration of the ``#[AdminDashboard]`` attribute to create
 the main route of your dashboard. You can verify this by running the following command:
 
@@ -138,227 +126,6 @@ of this route will also be used by all the dashboard routes (e.g. if the path is
 
 That's it. Later, when you start adding :doc:`CRUD controllers </crud>`, the route
 loader will create all the needed routes for each of them.
-
-Defining the Route in the ``index()`` Method
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Using the ``#[AdminDashboard]`` attribute is the recommended way to define the
-dashboard route. However, you can also define the dashboard route by applying the
-``#[Route]`` attribute on the ``index()`` method::
-
-    // ...
-    use Symfony\Component\Routing\Attribute\Route;
-
-    class DashboardController extends AbstractDashboardController
-    {
-        #[Route('/admin', name: 'admin')]
-        public function index(): Response
-        {
-            return parent::index();
-        }
-
-        // ...
-    }
-
-.. caution::
-
-    This alternative still works in EasyAdmin 4.x versions, but **it's deprecated
-    and it won't work in EasyAdmin 5.x**. It's recommended to update the dashboard
-    classes as soon as possible to use the ``#[AdminDashboard]`` attribute.
-
-Legacy Admin URLs
------------------
-
-.. note::
-
-    If you are using :ref:`pretty admin URLs <pretty-admin-urls>` in your application,
-    you can skip this section entirely.
-
-.. caution::
-
-    Legacy admin URLs are deprecated and will no longer work in EasyAdmin 5.0.
-    Upgrade your application to use :ref:`pretty URLs <pretty-admin-urls>`.
-
-Before the introduction of :ref:`pretty admin URLs <pretty-admin-urls>`, EasyAdmin
-used a single Symfony route to serve all dashboard URLs. The needed information
-is passed using the query string parameters. If you generated the dashboard with the
-``make:admin:dashboard`` command, the route is defined using `Symfony route annotations`_
-or PHP attributes (if the project requires PHP 8 or newer).
-
-**The only requirement** is to define the route in a controller method named
-``index()``, which is the one called by EasyAdmin to render the dashboard:
-
-.. configuration-block::
-
-    .. code-block:: php-annotations
-
-        // src/Controller/Admin/DashboardController.php
-        namespace App\Controller\Admin;
-
-        use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
-        use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
-        use Symfony\Component\HttpFoundation\Response;
-        use Symfony\Component\Routing\Annotation\Route;
-
-        class DashboardController extends AbstractDashboardController
-        {
-            /**
-             * @Route("/admin")
-             */
-            public function index(): Response
-            {
-                return parent::index();
-            }
-
-            // ...
-        }
-
-    .. code-block:: php-attributes
-
-        // src/Controller/Admin/DashboardController.php
-        namespace App\Controller\Admin;
-
-        use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
-        use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
-        use Symfony\Component\HttpFoundation\Response;
-        use Symfony\Component\Routing\Attribute\Route;
-
-        class DashboardController extends AbstractDashboardController
-        {
-            #[Route('/admin')]
-            public function index(): Response
-            {
-                return parent::index();
-            }
-
-            // ...
-        }
-
-.. caution::
-
-    In backends that don't use :ref:`pretty URLs <pretty-admin-urls>`, the ``Route``
-    annotation/attribute is the only recommended way to configure the dashboard route.
-    The ``#[AdminDashboard]`` attribute doesn't work with traditional (ugly) URLs.
-
-.. note::
-
-    Since ``index()`` is part of the Dashboard interface, you cannot add arguments
-    to it to inject dependencies. Instead, inject those dependencies in the
-    constructor method of the controller.
-
-.. note::
-
-    If you are implementing a multilingual dashboard, add the ``_locale`` parameter
-    to the route (e.g. ``/admin/{_locale}``).
-
-The ``/admin`` URL is only a default value, so you can change it. If you do that,
-don't forget to also update this value in your Symfony security config to
-:ref:`restrict access to the entire backend <security-entire-backend>`.
-
-There's no need to define an explicit name for this route. Symfony autogenerates
-a route name and EasyAdmin gets that value at runtime to generate all URLs.
-However, if you generate URLs pointing to the dashboard in other parts of your
-application, you can define an explicit route name to simplify your code:
-
-.. configuration-block::
-
-    .. code-block:: php-annotations
-
-        // src/Controller/Admin/DashboardController.php
-        namespace App\Controller\Admin;
-
-        use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
-        use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
-        use Symfony\Component\HttpFoundation\Response;
-        use Symfony\Component\Routing\Annotation\Route;
-
-        class DashboardController extends AbstractDashboardController
-        {
-            /**
-             * @Route("/admin", name="some_route_name")
-             */
-            public function index(): Response
-            {
-                return parent::index();
-            }
-
-            // ...
-        }
-
-    .. code-block:: php-attributes
-
-        // src/Controller/Admin/DashboardController.php
-        namespace App\Controller\Admin;
-
-        use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
-        use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
-        use Symfony\Component\HttpFoundation\Response;
-        use Symfony\Component\Routing\Attribute\Route;
-
-        class DashboardController extends AbstractDashboardController
-        {
-            #[Route('/admin', name: 'some_route_name')]
-            public function index(): Response
-            {
-                return parent::index();
-            }
-
-            // ...
-        }
-
-If you don't use annotations, you must configure the dashboard route using YAML,
-XML or PHP config in a separate file:
-
-.. configuration-block::
-
-    .. code-block:: yaml
-
-        # config/routes.yaml
-        dashboard:
-            path: /admin
-            controller: App\Controller\Admin\DashboardController::index
-
-        # ...
-
-    .. code-block:: xml
-
-        <!-- config/routes.xml -->
-        <?xml version="1.0" encoding="UTF-8" ?>
-        <routes xmlns="http://symfony.com/schema/routing"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://symfony.com/schema/routing
-                https://symfony.com/schema/routing/routing-1.0.xsd">
-
-            <route id="dashboard" path="/admin"
-                   controller="App\Controller\Admin\DashboardController::index"/>
-
-            <!-- ... -->
-        </routes>
-
-    .. code-block:: php
-
-        // config/routes.php
-        use App\Controller\Admin\DashboardController;
-        use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
-
-        return function (RoutingConfigurator $routes) {
-            $routes->add('dashboard', '/admin')
-                ->controller([DashboardController::class, 'index'])
-            ;
-
-            // ...
-        };
-
-
-In practice you won't have to deal with this route or the query string
-parameters in your application because EasyAdmin provides a service to
-:ref:`generate admin URLs <generate-admin-urls>`.
-
-.. note::
-
-    Using a single route to handle all backend URLs means that generated URLs
-    are a bit long and ugly. This is fine in many scenarios but if you prefer,
-    you can use instead :ref:`pretty admin URLs <pretty-admin-urls>`.
 
 Dashboard Configuration
 -----------------------
@@ -449,11 +216,6 @@ explained later)::
         }
     }
 
-.. deprecated:: 4.1.0
-
-    The ``disableUrlSignatures()`` dashboard method was deprecated in
-    EasyAdmin 4.1.0 because backend URLs no longer include signatures.
-
 Customizing the Dashboard Contents
 ----------------------------------
 
@@ -525,7 +287,6 @@ and :doc:`CRUD controllers </crud>`, which is explained in detail later::
     use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
     use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
     use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
-    use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 
     #[AdminDashboard(routePath: '/admin', routeName: 'admin')]
     class DashboardController extends AbstractDashboardController
@@ -534,18 +295,12 @@ and :doc:`CRUD controllers </crud>`, which is explained in detail later::
 
         public function index(): Response
         {
-            // when using pretty admin URLs, you can redirect directly to some route
+            // you can redirect directly to some backend route
             return $this->redirectToRoute('admin_post_index');
 
-            // when using legacy admin URLs, use the URL generator to build the needed URL
-            $adminUrlGenerator = $this->container->get(AdminUrlGenerator::class);
-
-            // Option 1. Make your dashboard redirect to the same page for all users
-            return $this->redirect($adminUrlGenerator->setController(OneOfYourCrudController::class)->generateUrl());
-
-            // Option 2. Make your dashboard redirect to different pages depending on the user
+            // You can also make your dashboard redirect to different pages depending on the user
             if ('jane' === $this->getUser()->getUsername()) {
-                return $this->redirect('...');
+                return $this->redirectToRoute('...');
             }
         }
     }
@@ -687,52 +442,6 @@ You can also link to your own Symfony controllers if they use the
 If the controller is invokable (has a ``__invoke()`` method), the action is
 detected automatically. Otherwise, call ``->setAction('theActionName')`` to
 specify which action to link to.
-
-CRUD Menu Item
-..............
-
-.. note::
-
-    ``MenuItem::linkToCrud()`` is still fully supported, but ``MenuItem::linkTo()``
-    (explained above) is now the recommended way to create menu items that link to
-    CRUD controllers. ``linkTo()`` provides a unified API that works with any type
-    of admin controller and puts the controller class first, making the code
-    easier to navigate and refactor.
-
-``MenuItem::linkToCrud()`` links to some action of some :doc:`CRUD controller </crud>`.
-Instead of passing the FQCN of the CRUD controller, you pass the FQCN of the
-Doctrine entity associated to the CRUD controller::
-
-    use App\Entity\Category;
-    use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
-    use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
-
-    public function configureMenuItems(): iterable
-    {
-        return [
-            // ...
-
-            // links to the 'index' action of the Category CRUD controller
-            MenuItem::linkToCrud('Categories', 'fa fa-tags', Category::class),
-
-            // links to a different CRUD action
-            MenuItem::linkToCrud('Add Category', 'fa fa-tags', Category::class)
-                ->setAction(Action::NEW),
-
-            MenuItem::linkToCrud('Show Main Category', 'fa fa-tags', Category::class)
-                ->setAction(Action::DETAIL)
-                ->setEntityId(1),
-
-            // if the same Doctrine entity is associated to more than one CRUD controller,
-            // use the 'setController()' method to specify which controller to use
-            MenuItem::linkToCrud('Categories', 'fa fa-tags', Category::class)
-                ->setController(LegacyCategoryCrudController::class),
-
-            // uses custom sorting options for the listing
-            MenuItem::linkToCrud('Categories', 'fa fa-tags', Category::class)
-                ->setDefaultSort(['createdAt' => 'DESC']),
-        ];
-    }
 
 Dashboard Menu Item
 ...................
@@ -1171,8 +880,8 @@ When using this feature, you can omit the label when creating CRUD menu items:
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
 
         // no label needed: will use the translated plural label
-        yield MenuItem::linkToCrud(null, 'fa fa-file-text', BlogPost::class);
-        yield MenuItem::linkToCrud(null, 'fa fa-users', User::class);
+        yield MenuItem::linkTo(BlogPostCrudController:::class, icon: 'fa fa-file-text');
+        yield MenuItem::linkTo(UserCrudController::class, icon: 'fa fa-users');
     }
 
 .. note::
@@ -1420,7 +1129,6 @@ etc. Example:
     {% endblock %}
 
 .. _`Symfony controllers`: https://symfony.com/doc/current/controller.html
-.. _`Symfony route annotations`: https://symfony.com/doc/current/routing.html#creating-routes-as-annotations
 .. _`context object`: https://wiki.c2.com/?ContextObject
 .. _`FontAwesome`: https://fontawesome.com/
 .. _`allowed values for the "rel" attribute`: https://developer.mozilla.org/en-US/docs/Web/HTML/Link_types
@@ -1431,3 +1139,4 @@ etc. Example:
 .. _`Symfony UX Chart.js`: https://symfony.com/bundles/ux-chartjs/current/index.html
 .. _`custom Symfony route loader`: https://symfony.com/doc/current/routing/custom_route_loader.html
 .. _`Symfony UX Icons`: https://symfony.com/bundles/ux-icons/current/index.html
+.. _`Symfony Flex`: https://symfony.com/doc/current/setup/flex.html

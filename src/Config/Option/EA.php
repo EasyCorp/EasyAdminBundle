@@ -28,6 +28,7 @@ final class EA
     public const ROUTE_NAME = 'routeName';
     public const ROUTE_PARAMS = 'routeParams';
     public const ROUTE_CREATED_BY_EASYADMIN = 'routeCreatedByEasyAdmin';
+    public const REQUEST_PROCESSED_AS_PRETTY_URL = 'eaRequestProcessedAsPrettyUrl';
     public const SORT = 'sort';
     /** @deprecated this parameter is no longer used because menu items are now highlighted automatically */
     public const SUBMENU_INDEX = 'submenuIndex';

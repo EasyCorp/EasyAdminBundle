@@ -37,8 +37,6 @@ use Symfony\Component\Routing\Matcher\RequestMatcherInterface;
  */
 class AdminRouterSubscriber implements EventSubscriberInterface
 {
-    private bool $requestAlreadyProcessedAsPrettyUrl = false;
-
     public function __construct(
         private readonly AdminContextFactory $adminContextFactory,
         private readonly ControllerFactory $controllerFactory,
@@ -143,7 +141,7 @@ class AdminRouterSubscriber implements EventSubscriberInterface
 
                 $adminContext = $this->adminContextFactory->create($request, $dashboardControllerInstance, $crudControllerInstance, $actionName);
                 $request->attributes->set(EA::CONTEXT_REQUEST_ATTRIBUTE, $adminContext);
-                $this->requestAlreadyProcessedAsPrettyUrl = true;
+                $request->attributes->set(EA::REQUEST_PROCESSED_AS_PRETTY_URL, true);
 
                 // restore the entity ID so the exception message is accurate
                 $request->attributes->set(EA::ENTITY_ID, $entityId);
@@ -153,7 +151,7 @@ class AdminRouterSubscriber implements EventSubscriberInterface
         }
 
         $request->attributes->set(EA::CONTEXT_REQUEST_ATTRIBUTE, $adminContext);
-        $this->requestAlreadyProcessedAsPrettyUrl = true;
+        $request->attributes->set(EA::REQUEST_PROCESSED_AS_PRETTY_URL, true);
     }
 
     /**
@@ -162,12 +160,11 @@ class AdminRouterSubscriber implements EventSubscriberInterface
      */
     public function onKernelRequest(RequestEvent $event): void
     {
-        if ($this->requestAlreadyProcessedAsPrettyUrl) {
-            return;
-        }
-
         // return early if this is not a URL associated with EasyAdmin
         $request = $event->getRequest();
+        if ($request->attributes->getBoolean(EA::REQUEST_PROCESSED_AS_PRETTY_URL)) {
+            return;
+        }
         if (null === $dashboardControllerFqcn = $this->getDashboardControllerFqcn($request)) {
             return;
         }

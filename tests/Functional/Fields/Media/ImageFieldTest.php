@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Fields\Media;
 
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTest;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\ImageFieldNoPreviewCrudController;
 
 class ImageFieldTest extends AbstractFieldFunctionalTest
 {
@@ -111,6 +112,37 @@ class ImageFieldTest extends AbstractFieldFunctionalTest
 
         $previewImages = $previewContainer->filter('.ea-lightbox-thumbnail');
         static::assertCount(0, $previewImages, 'No image thumbnails should exist in new form preview');
+    }
+
+    public function testImageFieldShowPreviewFalseHidesPreview(): void
+    {
+        $noPreviewController = ImageFieldNoPreviewCrudController::class;
+
+        $crawler = $this->client->request('GET', $this->generateNewFormUrl(controllerFqcn: $noPreviewController));
+
+        $imageUploadContainer = $crawler->filter('.ea-imageupload');
+        static::assertGreaterThan(0, $imageUploadContainer->count(), 'Image upload container should still exist');
+
+        $previewContainer = $crawler->filter('[data-ea-imageupload-preview]');
+        static::assertCount(0, $previewContainer, 'Preview container should not exist when showPreview(false)');
+    }
+
+    public function testImageFieldShowPreviewFalseHidesPreviewOnEdit(): void
+    {
+        $noPreviewController = ImageFieldNoPreviewCrudController::class;
+
+        $entity = $this->createFieldTestEntity([
+            'imageField' => 'hidden-preview.jpg',
+        ]);
+
+        $crawler = $this->client->request('GET', $this->generateEditFormUrl($entity->getId(), controllerFqcn: $noPreviewController));
+
+        $previewContainer = $crawler->filter('[data-ea-imageupload-preview]');
+        static::assertCount(0, $previewContainer, 'Preview container should not exist on edit when showPreview(false)');
+
+        // the file input should still work
+        $fileInput = $crawler->filter('.ea-imageupload input[type="file"]');
+        static::assertGreaterThan(0, $fileInput->count(), 'File input should still exist when preview is disabled');
     }
 
     public function testImageFieldWithDifferentExtensions(): void

@@ -56,12 +56,12 @@ function updateImagePreview(fileInput, container) {
         }
 
         const objectUrl = URL.createObjectURL(file);
-        const lightboxId = 'ea-lightbox-preview-' + Math.random().toString(36).substring(2, 10);
+        const lightboxId = `ea-lightbox-preview-${Math.random().toString(36).substring(2, 10)}`;
 
         const link = document.createElement('a');
         link.href = '#';
         link.className = 'ea-lightbox-thumbnail';
-        link.setAttribute('data-ea-lightbox-content-selector', '#' + lightboxId);
+        link.setAttribute('data-ea-lightbox-content-selector', `#${lightboxId}`);
 
         const img = document.createElement('img');
         img.src = objectUrl;

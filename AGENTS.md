@@ -214,6 +214,7 @@ make checks-before-pr
 - Add `void` return type to all test methods
 - Name tests descriptively without `test` prefix duplication
 - Use `@testWith` and data providers when possible to avoid duplicated tests
+- Don't add comments to describe tests; use the message argument of `assert*()` methods
 
 ### Test Fixtures
 - Data fixtures in each functional app in `tests/Functional/Apps/`

@@ -47,15 +47,17 @@ class ImageFieldTest extends AbstractFieldFunctionalTest
         $form = $crawler->filter('form[name="FieldTestEntity"]');
         static::assertCount(1, $form, 'Form should exist');
 
-        // image field may be rendered as a file input or as a container with file input
-        // check that the image field container or input exists
-        $imageFieldContainer = $crawler->filter('.field-image');
-        $imageFieldInput = $crawler->filter('input[type="file"][name*="imageField"]');
+        // image field should be wrapped in the ea-imageupload container
+        $imageUploadContainer = $crawler->filter('.ea-imageupload');
+        static::assertGreaterThan(0, $imageUploadContainer->count(), 'Image upload container (.ea-imageupload) should exist');
 
-        static::assertTrue(
-            $imageFieldContainer->count() > 0 || $imageFieldInput->count() > 0,
-            'Image field should exist in form'
-        );
+        // the preview container should be present (for JS to populate on file selection)
+        $previewContainer = $crawler->filter('[data-ea-imageupload-preview]');
+        static::assertGreaterThan(0, $previewContainer->count(), 'Preview container should exist in new form');
+
+        // a file input should exist inside the container
+        $imageFieldInput = $crawler->filter('.ea-imageupload input[type="file"]');
+        static::assertGreaterThan(0, $imageFieldInput->count(), 'File input should exist inside image upload container');
     }
 
     public function testImageFieldWithNullValue(): void
@@ -83,18 +85,32 @@ class ImageFieldTest extends AbstractFieldFunctionalTest
 
         $crawler = $this->client->request('GET', $this->generateEditFormUrl($entity->getId()));
 
-        // the edit form should load successfully and contain an image field
         $form = $crawler->filter('form[name="FieldTestEntity"]');
         static::assertCount(1, $form, 'Edit form should exist');
 
-        // check that image field exists in form
-        $imageFieldContainer = $crawler->filter('.field-image');
-        $imageFieldInput = $crawler->filter('input[type="file"][name*="imageField"]');
+        $imageUploadContainer = $crawler->filter('.ea-imageupload');
+        static::assertGreaterThan(0, $imageUploadContainer->count(), 'Image upload container should exist in edit form');
 
-        static::assertTrue(
-            $imageFieldContainer->count() > 0 || $imageFieldInput->count() > 0,
-            'Image field should exist in edit form'
-        );
+        $previewContainer = $crawler->filter('[data-ea-imageupload-preview]');
+        static::assertGreaterThan(0, $previewContainer->count(), 'Preview container should exist in edit form');
+
+        $previewImage = $previewContainer->filter('.ea-lightbox-thumbnail img');
+        static::assertGreaterThan(0, $previewImage->count(), 'Preview should show existing image thumbnail');
+        static::assertStringContainsString('original-image.jpg', $previewImage->attr('src'));
+
+        $lightboxDiv = $previewContainer->filter('.ea-lightbox');
+        static::assertGreaterThan(0, $lightboxDiv->count(), 'Lightbox div should exist for the preview image');
+    }
+
+    public function testImageFieldNewFormHasEmptyPreviewContainer(): void
+    {
+        $crawler = $this->client->request('GET', $this->generateNewFormUrl());
+
+        $previewContainer = $crawler->filter('[data-ea-imageupload-preview]');
+        static::assertGreaterThan(0, $previewContainer->count(), 'Preview container should exist in new form');
+
+        $previewImages = $previewContainer->filter('.ea-lightbox-thumbnail');
+        static::assertCount(0, $previewImages, 'No image thumbnails should exist in new form preview');
     }
 
     public function testImageFieldWithDifferentExtensions(): void

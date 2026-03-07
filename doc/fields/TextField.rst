@@ -67,6 +67,20 @@ pages (``new`` and ``edit``) contents are never truncated in length.
     This option is ignored when also using the ``renderAsHtml()`` option, to
     avoid truncating contents in the middle of an opened HTML tag.
 
+``renderAsLinkToEntity``
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+By default, text contents are displayed as plain text. If you want the field
+value to be rendered as a link to the entity's detail page on the ``index``
+page, use this option::
+
+    yield TextField::new('...')->renderAsLinkToEntity();
+
+This is useful when you want to let users click on a text value (e.g. a name
+or a title) to navigate directly to the entity's detail page.
+
+This option only has effect on the ``index`` page.
+
 ``stripTags``
 ~~~~~~~~~~~~~
 

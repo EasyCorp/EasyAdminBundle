@@ -11,6 +11,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\MoneyConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\NumericFilterType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
+use Symfony\Contracts\Translation\TranslatableInterface;
 
 /**
  * @author Yonel Ceruto <yonelceruto@gmail.com>
@@ -20,6 +21,9 @@ final class NumericFilter implements FilterInterface
 {
     use FilterTrait;
 
+    /**
+     * @param TranslatableInterface|string|false|null $label
+     */
     public static function new(string $propertyName, $label = null): self
     {
         return (new self())

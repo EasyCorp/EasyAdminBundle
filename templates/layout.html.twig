@@ -1,4 +1,5 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
+{% set ea = ea() %}
 {% trans_default_domain ea.i18n.translationDomain %}
 
 <!DOCTYPE html>
@@ -141,9 +142,16 @@
                             {% endif %}
 
                             {% for localeDto in ea.dashboardLocales %}
+                                {% if ea.usePrettyUrls %}
+                                    {# TODO symfony>=6.4 app.current_route_parameters #}
+                                    {% set current_route_params = app.request.attributes.get('_route_params') %}
+                                    {% set url = ea_url(current_route_params).set('_locale', localeDto.locale).set('entityId', app.request.attributes.get('entityId')) %}
+                                {% else %}
+                                    {% set url = ea_url().set('_locale', localeDto.locale) %}
+                                {% endif %}
                                 <twig:ea:ActionMenu:ActionList:Item
                                     class="{{ app.request.locale == localeDto.locale ? 'active' }}"
-                                    url="{{ ea_url().set('_locale', localeDto.locale).set('entityId', app.request.attributes.get('entityId')).generateUrl() }}"
+                                    url="{{ url.generateUrl() }}"
                                     icon="{{ localeDto.icon }}" label="{{ localeDto.name }}" />
                             {% endfor %}
 
@@ -179,9 +187,7 @@
             {% block wrapper %}
                 <div class="responsive-header">
                     {% block responsive_header %}
-                        <button id="navigation-toggler" type="button" aria-label="Toggle navigation">
-                            <twig:ea:Icon name="internal:menu-bars" />
-                        </button>
+                        <twig:ea:Button type="button" isInvisible icon="internal:menu-bars" id="navigation-toggler" aria-label="Toggle navigation"></twig:ea:Button>
 
                         <div id="responsive-header-logo" class="text-truncate ms-auto">
                             {% block responsive_header_logo %}
@@ -291,14 +297,14 @@
                                                     <div class="form-widget">
                                                         <twig:ea:Icon name="internal:search" class="content-search-icon" />
 
-                                                        <label class="content-search-label" data-value="{{ app.request.get('query') }}">
-                                                            <input class="form-control {{ app.request.get('query') is null ? 'is-blank' }}" type="search" name="query" value="{{ app.request.get('query') ?? '' }}" placeholder="{{ t('action.search', ea.i18n.translationParameters, 'EasyAdminBundle')|trans }}" spellcheck="false" autocorrect="off" onInput="this.parentNode.dataset.value=this.value"{% if ea.crud.currentAction == 'index' and ea.crud.autofocusSearch == true %} autofocus="autofocus"{% endif %}>
+                                                        <label class="content-search-label" data-value="{{ app.request.query.get('query') }}">
+                                                            <input class="form-control {{ app.request.query.get('query') is null ? 'is-blank' }}" type="search" name="query" value="{{ app.request.query.get('query') ?? '' }}" placeholder="{{ t('action.search', ea.i18n.translationParameters, 'EasyAdminBundle')|trans }}" spellcheck="false" autocorrect="off" onInput="this.parentNode.dataset.value=this.value"{% if ea.crud.currentAction == 'index' and ea.crud.autofocusSearch == true %} autofocus="autofocus"{% endif %}>
                                                         </label>
 
-                                                        {% if app.request.get('query') %}
+                                                        {% if app.request.query.get('query') %}
                                                             {% set search_reset_url = ea_url().unset('query') %}
                                                             {% if ea.usePrettyUrls %}
-                                                                {% set search_reset_url = ea_url().unset('query').setController(ea.request.attributes.get('crudControllerFqcn')).setAction('index').set('page', 1) %}
+                                                                {% set search_reset_url = ea_url().unset('query').setController(crudController).setAction('index').set('page', 1) %}
                                                             {% endif %}
                                                             <a href="{{ search_reset_url }}" class="content-search-reset">
                                                                 <twig:ea:Icon name="internal:xmark" />
@@ -350,7 +356,7 @@
 
                                                     {% block content_help %}
                                                         {% if has_help_message %}
-                                                            <a tabindex="0" class="content-header-help" data-bs-toggle="popover" data-bs-custom-class="ea-content-help-popover" data-bs-animation="true" data-bs-html="true" data-bs-placement="bottom" data-bs-trigger="focus" data-bs-content="{{ ea.crud.helpMessage|trans|e('html_attr') }}">
+                                                            <a tabindex="0" class="content-header-help" data-bs-toggle="popover" data-bs-custom-class="ea-content-help-popover" data-bs-animation="true" data-bs-html="true" data-bs-placement="bottom" data-bs-trigger="focus" data-bs-content="{{ ea.crud.helpMessage|trans|e('html') }}">
                                                                 <twig:ea:Icon name="internal:circle-info" />
                                                             </a>
                                                         {% endif %}
@@ -370,10 +376,9 @@
                                 </section>
 
                                 {% block content_footer_wrapper %}
-                                    {% set content_footer = block('content_footer') is defined ? block('content_footer') : '' %}
-                                    {% if content_footer is not empty %}
+                                    {% if block('content_footer') is not empty %}
                                         <section class="content-footer">
-                                            {{ content_footer }}
+                                            {% block content_footer %}{% endblock %}
                                         </section>
                                     {% endif %}
                                 {% endblock %}
@@ -385,7 +390,6 @@
                 </section>
                 {% endblock main_content_wrapper %}
             {% endblock wrapper %}
-        </div>
         </div>
     {% endblock wrapper_wrapper %}
 

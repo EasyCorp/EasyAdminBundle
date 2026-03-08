@@ -9,5 +9,5 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
  */
 interface EntityUpdaterInterface
 {
-    public function updateProperty(EntityDto $entityDto, string $propertyName, $value): void;
+    public function updateProperty(EntityDto $entityDto, string $propertyName, mixed $value): void;
 }

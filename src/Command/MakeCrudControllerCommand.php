@@ -23,16 +23,9 @@ use function Symfony\Component\String\u;
 )]
 class MakeCrudControllerCommand extends Command
 {
-    private string $projectDir;
-    private ClassMaker $classMaker;
-    private ManagerRegistry $doctrine;
-
-    public function __construct(string $projectDir, ClassMaker $classMaker, ManagerRegistry $doctrine, ?string $name = null)
+    public function __construct(private readonly string $projectDir, private readonly ClassMaker $classMaker, private readonly ManagerRegistry $doctrine, ?string $name = null)
     {
         parent::__construct($name);
-        $this->projectDir = $projectDir;
-        $this->classMaker = $classMaker;
-        $this->doctrine = $doctrine;
     }
 
     protected function configure(): void
@@ -95,6 +88,9 @@ class MakeCrudControllerCommand extends Command
         return Command::SUCCESS;
     }
 
+    /**
+     * @return array<class-string>
+     */
     private function getAllDoctrineEntitiesFqcn(): array
     {
         $entitiesFqcn = [];

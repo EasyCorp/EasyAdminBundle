@@ -17,23 +17,21 @@ use Symfony\Component\HttpFoundation\RequestStack;
  */
 final class EntityPaginator implements EntityPaginatorInterface
 {
-    private AdminUrlGeneratorInterface $adminUrlGenerator;
-    private EntityFactory $entityFactory;
-    private RequestStack $requestStack;
     private ?int $currentPage = null;
     private ?int $pageSize = null;
     private ?int $rangeSize = null;
     private ?int $rangeEdgeSize = null;
-    private $results;
-    private $numResults;
+    /** @var iterable<mixed>|null */
+    private ?iterable $results = null;
+    private ?int $numResults = null;
     private ?int $rangeFirstResultNumber = null;
     private ?int $rangeLastResultNumber = null;
 
-    public function __construct(AdminUrlGeneratorInterface $adminUrlGenerator, EntityFactory $entityFactory, RequestStack $requestStack)
-    {
-        $this->adminUrlGenerator = $adminUrlGenerator;
-        $this->entityFactory = $entityFactory;
-        $this->requestStack = $requestStack;
+    public function __construct(
+        private readonly AdminUrlGeneratorInterface $adminUrlGenerator,
+        private readonly EntityFactory $entityFactory,
+        private readonly RequestStack $requestStack,
+    ) {
     }
 
     public function paginate(PaginatorDto $paginatorDto, QueryBuilder $queryBuilder): EntityPaginatorInterface

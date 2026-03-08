@@ -30,17 +30,12 @@ use function Symfony\Component\Translation\t;
  */
 final class AssociationConfigurator implements FieldConfiguratorInterface
 {
-    private EntityFactory $entityFactory;
-    private AdminUrlGeneratorInterface $adminUrlGenerator;
-    private RequestStack $requestStack;
-    private ControllerFactory $controllerFactory;
-
-    public function __construct(EntityFactory $entityFactory, AdminUrlGeneratorInterface $adminUrlGenerator, RequestStack $requestStack, ControllerFactory $controllerFactory)
-    {
-        $this->entityFactory = $entityFactory;
-        $this->adminUrlGenerator = $adminUrlGenerator;
-        $this->requestStack = $requestStack;
-        $this->controllerFactory = $controllerFactory;
+    public function __construct(
+        private readonly EntityFactory $entityFactory,
+        private readonly AdminUrlGeneratorInterface $adminUrlGenerator,
+        private readonly RequestStack $requestStack,
+        private readonly ControllerFactory $controllerFactory,
+    ) {
     }
 
     public function supports(FieldDto $field, EntityDto $entityDto): bool
@@ -99,6 +94,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         $propertyNameParts = explode('.', $propertyName);
         if (\count($propertyNameParts) > 1) {
             // prepare starting class for association
+            /** @var class-string $targetEntityFqcn */
             $targetEntityFqcn = $entityDto->getPropertyMetadata($propertyNameParts[0])->get('targetEntity');
             array_shift($propertyNameParts);
             $metadata = $this->entityFactory->getEntityMetadata($targetEntityFqcn);
@@ -226,7 +222,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         $field->setFormattedValue($this->countNumElements($field->getValue()));
     }
 
-    private function formatAsString($entityInstance, EntityDto $entityDto): ?string
+    private function formatAsString(mixed $entityInstance, EntityDto $entityDto): ?string
     {
         if (null === $entityInstance) {
             return null;
@@ -266,7 +262,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
             ->generateUrl();
     }
 
-    private function countNumElements($collection): int
+    private function countNumElements(mixed $collection): int
     {
         if (null === $collection) {
             return 0;
@@ -283,6 +279,10 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         return 0;
     }
 
+    /**
+     * @param class-string $targetEntityFqcn
+     * @param class-string $targetCrudControllerFqcn
+     */
     private function configureCrudForm(FieldDto $field, EntityDto $entityDto, string $propertyName, string $targetEntityFqcn, string $targetCrudControllerFqcn): void
     {
         $field->setFormType(CrudFormType::class);
@@ -299,18 +299,24 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         if (null === $associatedEntity) {
             $targetCrudControllerAction = Action::NEW;
             $targetCrudControllerPageName = $field->getCustomOption(AssociationField::OPTION_EMBEDDED_CRUD_FORM_NEW_PAGE_NAME) ?? Crud::PAGE_NEW;
+            $crudPageName = Crud::PAGE_NEW;
         } else {
             $targetCrudControllerAction = Action::EDIT;
             $targetCrudControllerPageName = $field->getCustomOption(AssociationField::OPTION_EMBEDDED_CRUD_FORM_EDIT_PAGE_NAME) ?? Crud::PAGE_EDIT;
+            $crudPageName = Crud::PAGE_EDIT;
         }
 
         $field->setFormTypeOption(
             'entityDto',
-            $this->createEntityDto($targetEntityFqcn, $targetCrudControllerFqcn, $targetCrudControllerAction, $targetCrudControllerPageName),
+            $this->createEntityDto($targetEntityFqcn, $targetCrudControllerFqcn, $targetCrudControllerAction, $targetCrudControllerPageName, $crudPageName),
         );
     }
 
-    private function createEntityDto(string $entityFqcn, string $crudControllerFqcn, string $crudControllerAction, string $crudControllerPageName): EntityDto
+    /**
+     * @param class-string $entityFqcn
+     * @param class-string $crudControllerFqcn
+     */
+    private function createEntityDto(string $entityFqcn, string $crudControllerFqcn, string $crudControllerAction, string $crudControllerPageName, string $crudPageName): EntityDto
     {
         $entityDto = $this->entityFactory->create($entityFqcn);
 
@@ -322,7 +328,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
 
         $fields = $crudController->configureFields($crudControllerPageName);
 
-        $this->entityFactory->processFields($entityDto, FieldCollection::new($fields));
+        $this->entityFactory->processFields($entityDto, FieldCollection::new($fields), $crudPageName);
 
         return $entityDto;
     }

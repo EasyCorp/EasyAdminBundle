@@ -18,8 +18,7 @@ class EntityFilterTypeTest extends FilterTypeTest
 {
     protected const FILTER_TYPE = EntityFilterType::class;
 
-    /** @var EntityManager */
-    private $em;
+    private EntityManager $em;
     /** @var ManagerRegistry */
     private $emRegistry;
 

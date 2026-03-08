@@ -24,7 +24,10 @@ interface AdminRouteGeneratorInterface
      */
     public function generateAll(): RouteCollection;
 
-    public function findRouteName(string $dashboardFqcn, string $crudControllerFqcn, string $actionName): ?string;
+    /**
+     * In EasyAdmin 5.0, all the arguments of this method will be nullable strings.
+     */
+    public function findRouteName(string /* |null */ $dashboardFqcn /* = null */, string /* |null */ $crudControllerFqcn /* = null */, string /* |null */ $actionName /* = null */): ?string;
 
     /**
      * This will removed in EasyAdmin 5.0, which will only use pretty URLs.

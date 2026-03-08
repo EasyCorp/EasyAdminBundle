@@ -24,7 +24,7 @@ final class ComparisonConfigurator implements FilterConfiguratorInterface
 
     public function configure(FilterDto $filterDto, ?FieldDto $fieldDto, EntityDto $entityDto, AdminContext $context): void
     {
-        $propertyType = $entityDto->getPropertyMetadata($filterDto->getProperty())->get('type');
+        $propertyType = $entityDto->getPropertyDataType($filterDto->getProperty());
 
         if (Types::DATEINTERVAL === $propertyType) {
             $filterDto->setFormTypeOption('value_type', DateIntervalType::class);

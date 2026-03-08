@@ -20,6 +20,7 @@ class ComparisonType extends AbstractType
     public const LTE = '<=';
     public const BETWEEN = 'between';
     public const CONTAINS = 'like';
+    public const CONTAINS_ALL = 'like_all';
     public const NOT_CONTAINS = 'not like';
     public const STARTS_WITH = 'like*';
     public const ENDS_WITH = '*like';
@@ -59,6 +60,7 @@ class ComparisonType extends AbstractType
                     ],
                     'array' => [
                         'filter.label.contains' => self::CONTAINS,
+                        'filter.label.contains_all' => self::CONTAINS_ALL,
                         'filter.label.not_contains' => self::NOT_CONTAINS,
                     ],
                     'choice', 'entity' => [

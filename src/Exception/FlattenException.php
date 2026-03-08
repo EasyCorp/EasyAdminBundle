@@ -12,6 +12,9 @@ final class FlattenException extends BaseFlattenException
 {
     private ?ExceptionContext $context = null;
 
+    /**
+     * @param array<mixed> $headers
+     */
     public static function create(\Exception $exception, ?int $statusCode = null, array $headers = []): static
     {
         if (!$exception instanceof BaseException) {
@@ -34,11 +37,17 @@ final class FlattenException extends BaseFlattenException
         return $this->context->getDebugMessage();
     }
 
+    /**
+     * @return array<string>
+     */
     public function getParameters(): array
     {
         return $this->context->getParameters();
     }
 
+    /**
+     * @return array<string>
+     */
     public function getTranslationParameters(): array
     {
         return $this->context->getTranslationParameters();

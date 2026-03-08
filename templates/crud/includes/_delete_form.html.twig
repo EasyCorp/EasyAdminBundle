@@ -1,6 +1,8 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
 <form class="d-none" method="post" id="delete-form">
-    <input type="hidden" name="token" value="{{ ea_csrf_token('ea-delete') }}" />
+    {% guard function csrf_token %}
+        <input type="hidden" name="token" value="{{ csrf_token('ea-delete') }}" />
+    {% endguard %}
 </form>
 
 <div id="modal-delete" class="modal fade" tabindex="-1">
@@ -11,13 +13,13 @@
                 <p>{{ 'delete_modal.content'|trans([], 'EasyAdminBundle') }}</p>
             </div>
             <div class="modal-footer">
-                <button type="button" data-bs-dismiss="modal" class="btn btn-secondary">
-                    <span class="btn-label">{{ 'action.cancel'|trans([], 'EasyAdminBundle') }}</span>
-                </button>
+                <twig:ea:Button type="button" data-bs-dismiss="modal">
+                    {{ 'action.cancel'|trans([], 'EasyAdminBundle') }}
+                </twig:ea:Button>
 
-                <button type="button" data-bs-dismiss="modal" class="btn btn-danger" id="modal-delete-button" form="delete-form">
-                    <span class="btn-label">{{ 'action.delete'|trans([], 'EasyAdminBundle') }}</span>
-                </button>
+                <twig:ea:Button type="button" variant="danger" data-bs-dismiss="modal" id="modal-delete-button" form="delete-form">
+                    {{ 'action.delete'|trans([], 'EasyAdminBundle') }}
+                </twig:ea:Button>
             </div>
         </div>
     </div>

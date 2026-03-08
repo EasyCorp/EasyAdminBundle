@@ -6,6 +6,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Entity\BlogPost;
 
+/**
+ * @extends AbstractCrudController<BlogPost>
+ */
 class IdTermCrudSearchController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string

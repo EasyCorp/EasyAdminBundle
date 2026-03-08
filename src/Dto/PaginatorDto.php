@@ -8,19 +8,14 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 final class PaginatorDto
 {
     private ?int $pageNumber = null;
-    private int $pageSize;
-    private int $rangeSize;
-    private int $rangeEdgeSize;
-    private bool $fetchJoinCollection;
-    private ?bool $useOutputWalkers;
 
-    public function __construct(int $pageSize, int $rangeSize, int $rangeEdgeSize, bool $fetchJoinCollection, ?bool $useOutputWalkers)
-    {
-        $this->pageSize = $pageSize;
-        $this->rangeSize = $rangeSize;
-        $this->rangeEdgeSize = $rangeEdgeSize;
-        $this->fetchJoinCollection = $fetchJoinCollection;
-        $this->useOutputWalkers = $useOutputWalkers;
+    public function __construct(
+        private readonly int $pageSize,
+        private readonly int $rangeSize,
+        private readonly int $rangeEdgeSize,
+        private readonly bool $fetchJoinCollection,
+        private readonly ?bool $useOutputWalkers,
+    ) {
     }
 
     public function getPageNumber(): ?int

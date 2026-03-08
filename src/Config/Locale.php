@@ -10,11 +10,8 @@ use Symfony\Component\Intl\Locales;
  */
 final class Locale
 {
-    private LocaleDto $dto;
-
-    private function __construct(LocaleDto $localeDto)
+    private function __construct(private readonly LocaleDto $dto)
     {
-        $this->dto = $localeDto;
     }
 
     public function __toString()

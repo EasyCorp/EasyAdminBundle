@@ -13,6 +13,8 @@ use function Symfony\Component\Translation\t;
 /**
  * Used to test the ->setHelp() method of fields and how that
  * help message is rendered in the form.
+ *
+ * @extends AbstractCrudController<BlogPost>
  */
 class FormFieldHelpController extends AbstractCrudController
 {

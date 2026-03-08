@@ -56,9 +56,9 @@ class AssetsControllerTest extends AbstractCrudTestCase
         static::assertStringContainsString('<script src="/js7.js"></script>', $headHtmlContents);
         static::assertStringContainsString('</js7.js>; rel="preload"; as="script"; nopush,', $linkResponseHeaderContents);
         static::assertStringContainsString('<script src="/js8.js" defer></script>', $headHtmlContents);
-        static::assertStringContainsString('<script src="/js9.js" async></script>', $headHtmlContents);
-        static::assertStringContainsString('<script src="/js10.js" async defer></script>', $headHtmlContents);
-        static::assertStringContainsString('<script src="/js11.js" async defer></script>', $headHtmlContents);
+        static::assertMatchesRegularExpression('/<script src="\/js9\.js" async(="")?>/', $headHtmlContents);
+        static::assertMatchesRegularExpression('/<script src="\/js10\.js" async(="")? defer>/', $headHtmlContents);
+        static::assertMatchesRegularExpression('/<script src="\/js11\.js" async(="")? defer>/', $headHtmlContents);
         static::assertStringContainsString('</js11.js>; rel="preload"; as="script"; nopush', $linkResponseHeaderContents);
         static::assertStringContainsString('<script src="/js12.js" foo="bar"></script>', $headHtmlContents);
         static::assertStringContainsString('<script src="/js13.js" foo="bar" baz="qux"></script>', $headHtmlContents);

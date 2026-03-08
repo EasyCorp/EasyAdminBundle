@@ -7,6 +7,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Entity\Category;
 
+/**
+ * @extends AbstractCrudController<Category>
+ */
 class ErrorFieldDoesNotBelongToAnyTabCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string

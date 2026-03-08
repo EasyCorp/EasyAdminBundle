@@ -7,14 +7,11 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
  */
 final class MainMenuDto
 {
-    private array $items;
-
     /**
      * @param MenuItemDto[] $items
      */
-    public function __construct(array $items)
+    public function __construct(private readonly array $items)
     {
-        $this->items = $items;
     }
 
     /**

@@ -4,11 +4,29 @@
     icon = null,
     url = null,
     htmlAttributes = {},
+    renderAsForm = false, # if true, the item will be rendered as a <form> element (and POST method) instead of an <a> (and GET method)
+    showBlankIcons = true, # (this is mostly an internal option) if false, the blank icon will not be rendered when action icon is null
 %}
 
 <li>
-    <a {{ attributes.defaults({class: 'dropdown-item', href: url}|merge(htmlAttributes)) }}>
-        {%- if icon %}<twig:ea:Icon {{ ...attributes.nested('icon').defaults({name: icon}) }} /> {% endif -%}
-        {%- if label is not empty -%}<span {{ attributes.nested('label') }}>{{ renderLabelRaw ? label|raw : label }}</span>{%- endif -%}
+    {% set formId = renderAsForm ? 'ea-form-' ~ random() ~ random() %}
+    {% if renderAsForm %}
+        <form action="{{ url }}" method="POST" {% if formId %}id="{{ formId }}"{% endif %}></form>
+    {% endif %}
+
+    <a {{ attributes.defaults({class: 'dropdown-item'}|merge(htmlAttributes)) }}
+        {% if renderAsForm %}
+            href="#"
+            onclick="event.preventDefault(); document.getElementById('{{ formId }}').submit();"
+        {% else %}
+            href="{{ url }}"
+        {% endif %}
+    >
+        {% if icon %}
+            <twig:ea:Icon {{ ...attributes.nested('icon').defaults({name: icon}) }} />
+        {% elseif showBlankIcons %}
+            <twig:ea:Icon name="internal:blank" />
+        {% endif %}
+        {% if label is not empty %}<span {{ attributes.nested('label') }}>{{ renderLabelRaw ? label|raw : label }}</span>{% endif %}
     </a>
 </li>

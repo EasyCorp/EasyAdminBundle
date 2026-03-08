@@ -49,7 +49,7 @@ label.form-check-label {
 .form-group .col-form-label.required:after {
     background: var(--color-danger);
     border-radius: 50%;
-    content: '';
+    content: "";
     display: inline-block;
     filter: opacity(75%);
     position: relative;
@@ -61,9 +61,6 @@ label.form-check-label {
 }
 
 /* Form widgets (inputs, selects, etc.) */
-.form-widget {
-}
-
 .form-widget .form-help {
     color: var(--form-help-color);
     display: block;
@@ -154,10 +151,10 @@ body.ea-dark-scheme .form-widget .form-select {
     color: var(--gray-600);
 }
 
-.form-widget input.form-control[data-ea-align=right] {
+.form-widget input.form-control[data-ea-align="right"] {
     text-align: right;
 }
-.form-widget input.form-control.is-invalid[data-ea-align=right] {
+.form-widget input.form-control.is-invalid[data-ea-align="right"] {
     padding-inline-end: 30px;
 }
 
@@ -194,7 +191,8 @@ label.form-check-label {
 }
 
 /* in Bootstrap custom file widgets, the label is used to simulate the file input */
-.field-file .custom-file, .field-file .custom-file-input {
+.field-file .custom-file,
+.field-file .custom-file-input {
     block-size: 30px;
 }
 .field-file .custom-file label.custom-file-label {
@@ -209,7 +207,7 @@ label.form-check-label {
     color: var(--text-color);
     content: "\f07c";
     display: inline-block;
-    font-family: "Font Awesome 6 Free";
+    font-family: "Font Awesome 6 Free", sans-serif;
     font-size: 17px;
     block-size: 28px;
     line-height: 28px;
@@ -252,7 +250,8 @@ label.form-check-label {
     flex: 0 0 20% !important;
 }
 
-.long .form-control, .large .form-control {
+.long .form-control,
+.large .form-control {
     max-inline-size: unset !important;
 }
 
@@ -265,11 +264,13 @@ label.form-check-label {
     max-inline-size: unset !important;
 }
 
-.code input.form-control, .code textarea.form-control {
+.code input.form-control,
+.code textarea.form-control {
     font-family: monospace !important;
 }
 
-.field-group .long .form-control, .field-group .large .form-control {
+.field-group .long .form-control,
+.field-group .large .form-control {
     flex: 0 0 100% !important;
     max-inline-size: unset !important;
 }
@@ -289,7 +290,8 @@ label.form-check-label {
     padding-inline-start: 0px;
 }
 
-.form-tabs-tablist .nav-tabs a, .form-tabs-tablist .nav-tabs a:hover {
+.form-tabs-tablist .nav-tabs a,
+.form-tabs-tablist .nav-tabs a:hover {
     border: 0;
     color: var(--text-color);
     font-size: var(--font-size-base);
@@ -297,9 +299,10 @@ label.form-check-label {
     margin: 0;
     padding: 4px 14px 8px;
 }
-.form-tabs-tablist .nav-tabs .nav-item:first-child a, .form-tabs-tablist .nav-tabs .nav-item:first-child a:hover {
-     padding-inline-start: 0;
- }
+.form-tabs-tablist .nav-tabs .nav-item:first-child a,
+.form-tabs-tablist .nav-tabs .nav-item:first-child a:hover {
+    padding-inline-start: 0;
+}
 
 .form-tabs-tablist .nav-tabs .tab-nav-item-icon {
     color: var(--text-muted);
@@ -319,7 +322,7 @@ label.form-check-label {
     color: var(--link-color);
 }
 .form-tabs-tablist .nav-tabs .nav-link.active:before {
-    content: '';
+    content: "";
     inline-size: 100%;
     block-size: 2px;
     background: var(--body-bg);
@@ -328,7 +331,7 @@ label.form-check-label {
     inset-inline-start: 0;
 }
 .form-tabs-tablist .nav-tabs .nav-link.active:after {
-    content: '';
+    content: "";
     inline-size: calc(100% - 2 * var(--form-tabs-gutter-x));
     block-size: 2px;
     background: var(--link-color);
@@ -447,12 +450,14 @@ label.form-check-label {
     font-weight: bold;
     padding: 0 0 5px;
 }
-.form-fieldset-header .form-fieldset-title .form-fieldset-title-content.not-collapsible { cursor: default; }
+.form-fieldset-header .form-fieldset-title .form-fieldset-title-content.not-collapsible {
+    cursor: default;
+}
 .form-fieldset-header .form-fieldset-title .form-fieldset-title-content.collapsed .form-fieldset-collapse-marker {
     transform: rotate(0deg);
 }
 .form-fieldset-header .form-fieldset-title .form-fieldset-title-content .collapsible::after {
-    content: '';
+    content: "";
     position: absolute;
     inline-size: 100%;
     block-size: 100%;
@@ -481,9 +486,15 @@ label.form-check-label {
 }
 
 /* Form errors */
-.has-error .form-help, .has-error .control-label, .has-error .radio,
-.has-error .checkbox, .has-error .radio-inline, .has-error .checkbox-inline,
-.has-error.radio label, .has-error.checkbox label, .has-error.radio-inline label,
+.has-error .form-help,
+.has-error .control-label,
+.has-error .radio,
+.has-error .checkbox,
+.has-error .radio-inline,
+.has-error .checkbox-inline,
+.has-error.radio label,
+.has-error.checkbox label,
+.has-error.radio-inline label,
 .has-error.checkbox-inline label {
     color: var(--form-help-error-color);
 }
@@ -495,7 +506,8 @@ label.form-check-label {
 .has-error .ea-fileupload .input-group,
 .has-error .btn.input-file-container,
 .has-error .CodeMirror,
-.has-error.ea-text-editor-wrapper, .has-error.form-group .ea-text-editor-wrapper {
+.has-error.ea-text-editor-wrapper,
+.has-error.form-group .ea-text-editor-wrapper {
     border-color: var(--form-input-error-border-color);
     box-shadow: var(--form-input-error-shadow);
 }
@@ -513,8 +525,8 @@ label.form-check-label {
     border: var(--form-global-error-border);
     border-radius: var(--border-radius);
     color: var(--form-global-error-color);
-    font-size:  14px;
-    margin:  5px 0;
+    font-size: 14px;
+    margin: 5px 0;
     padding: 6px 12px;
 }
 form .invalid-feedback {
@@ -711,7 +723,7 @@ form .invalid-feedback > .d-block + .d-block {
     position: relative;
 }
 
-.input-file-container [type=file] {
+.input-file-container [type="file"] {
     cursor: inherit;
     display: block;
     font-size: 999px;
@@ -726,7 +738,8 @@ form .invalid-feedback > .d-block + .d-block {
 }
 
 /* Fix "Browse" button for regular file inputs */
-.form-control::file-selector-button, .form-control::-webkit-file-upload-button {
+.form-control::file-selector-button,
+.form-control::-webkit-file-upload-button {
     color: var(--button-secondary-color);
     background-color: var(--button-secondary-bg);
     box-shadow: var(--button-shadow);

@@ -24,13 +24,8 @@ use Symfony\Contracts\Translation\TranslatableInterface;
  */
 final class CommonPreConfigurator implements FieldConfiguratorInterface
 {
-    private PropertyAccessorInterface $propertyAccessor;
-    private EntityFactory $entityFactory;
-
-    public function __construct(PropertyAccessorInterface $propertyAccessor, EntityFactory $entityFactory)
+    public function __construct(private readonly PropertyAccessorInterface $propertyAccessor, private readonly EntityFactory $entityFactory)
     {
-        $this->propertyAccessor = $propertyAccessor;
-        $this->entityFactory = $entityFactory;
     }
 
     public function supports(FieldDto $field, EntityDto $entityDto): bool
@@ -64,6 +59,7 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
 
         $isRequired = $this->buildRequiredOption($field, $entityDto);
         $field->setFormTypeOption('required', $isRequired);
+        $field->setHtmlAttribute('required', $isRequired);
 
         $isSortable = $this->buildSortableOption($field, $entityDto);
         $field->setSortable($isSortable);
@@ -196,7 +192,9 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
 
         // If at least one join column of an association field isn't nullable then the field is "required" by default, otherwise the field is optional
         if ($entityDto->isAssociation($field->getProperty())) {
-            $associatedEntityMetadata = $this->entityFactory->getEntityMetadata($doctrinePropertyMetadata->get('targetEntity'));
+            /** @var class-string $targetEntityFqcn */
+            $targetEntityFqcn = $doctrinePropertyMetadata->get('targetEntity');
+            $associatedEntityMetadata = $this->entityFactory->getEntityMetadata($targetEntityFqcn);
             foreach ($doctrinePropertyMetadata->get('joinColumns', []) as $joinColumn) {
                 if (true === $doctrinePropertyMetadata->get('isOwningSide', true)) {
                     if ($joinColumn instanceof JoinColumnMapping) {

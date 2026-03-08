@@ -11,6 +11,8 @@ use function Symfony\Component\String\u;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
+ *
+ * @deprecated since 4.25.0 and it will be removed in EasyAdmin 5.0.0. The file generated in this cache warmer is no longer needed because an equivalent file will be stored in the Symfony Cache pool managed by EasyAdmin (inject the 'cache.easyadmin' service if you need to access it).
  */
 final class CacheWarmer implements CacheWarmerInterface
 {

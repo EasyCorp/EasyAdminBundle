@@ -10,12 +10,9 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
  */
 class BaseException extends HttpException
 {
-    private ExceptionContext $context;
-
-    public function __construct(ExceptionContext $context)
+    public function __construct(private readonly ExceptionContext $context, ?\Throwable $previous = null)
     {
-        $this->context = $context;
-        parent::__construct($this->context->getStatusCode(), $this->context->getDebugMessage());
+        parent::__construct($this->context->getStatusCode(), $this->context->getDebugMessage(), $previous);
     }
 
     public function getContext(): ExceptionContext
@@ -39,6 +36,9 @@ class BaseException extends HttpException
         return $this->context->getDebugMessage();
     }
 
+    /**
+     * @return array<string>
+     */
     public function getParameters(): array
     {
         return $this->context->getParameters();

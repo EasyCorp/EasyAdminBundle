@@ -13,12 +13,10 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 final class TranslatableChoiceMessage implements TranslatableInterface
 {
-    /**
-     * @param TranslatableMessage $message
-     */
     public function __construct(
-        private TranslatableInterface $message,
-        private ?string $cssClass,
+        /** @var TranslatableMessage $message */
+        private readonly TranslatableInterface $message,
+        private readonly ?string $cssClass,
     ) {
     }
 

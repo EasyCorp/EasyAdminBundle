@@ -10,10 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Entity\Bill;
 
 class BillSortTest extends AbstractCrudTestCase
 {
-    /**
-     * @var EntityRepository
-     */
-    private $repository;
+    private EntityRepository $repository;
 
     protected function getControllerFqcn(): string
     {

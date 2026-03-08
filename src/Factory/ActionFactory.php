@@ -6,13 +6,17 @@ use EasyCorp\Bundle\EasyAdminBundle\Collection\ActionCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Provider\AdminContextProviderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionConfigDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionGroupDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use EasyCorp\Bundle\EasyAdminBundle\Translation\TranslatableMessageBuilder;
+use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\ButtonStyle;
+use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\ButtonVariant;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
@@ -35,48 +39,67 @@ final class ActionFactory
     public function processEntityActions(EntityDto $entityDto, ActionConfigDto $actionsDto): void
     {
         $currentPage = $this->adminContextProvider->getContext()->getCrud()->getCurrentPage();
-        $entityActions = [];
+        $processedItems = [];
+
         $propertyActions = [];
-        foreach ($actionsDto->getActions()->all() as $actionDto) {
-            if (!$actionDto->isEntityAction()) {
-                continue;
-            }
-
-            if (false === $this->authChecker->isGranted(Permission::EA_EXECUTE_ACTION, ['action' => $actionDto, 'entity' => $entityDto])) {
-                continue;
-            }
-
-            if (false === $actionDto->isDisplayed($entityDto)) {
-                continue;
-            }
-
-            // if CSS class hasn't been overridden, apply the default ones
-            if ('' === $actionDto->getCssClass()) {
-                $defaultCssClass = 'action-'.$actionDto->getName();
-                if (Crud::PAGE_INDEX !== $currentPage) {
-                    $defaultCssClass .= ' btn';
+        foreach ($actionsDto->getActions()->all() as $item) {
+            if ($item instanceof ActionDto) {
+                if (!$item->isEntityAction()) {
+                    continue;
                 }
 
-                $actionDto->setCssClass($defaultCssClass);
-            }
-
-            // these are the additional custom CSS classes defined via addCssClass()
-            // which are always appended to the CSS classes (default ones or custom ones)
-            if ('' !== $addedCssClass = $actionDto->getAddedCssClass()) {
-                $actionDto->setCssClass($actionDto->getCssClass().' '.$addedCssClass);
-            }
-
-            if (null === $actionDto->getProperty()) {
-                $entityActions[$actionDto->getName()] = $this->processAction($currentPage, $actionDto, $entityDto);
-            } else {
-                if (!isset($propertyActions[$actionDto->getProperty()])) {
-                    $propertyActions[$actionDto->getProperty()] = [];
+                if (false === $this->authChecker->isGranted(Permission::EA_EXECUTE_ACTION, ['action' => $item, 'entity' => $entityDto])) {
+                    continue;
                 }
-                $propertyActions[$actionDto->getProperty()][$actionDto->getName()] = $this->processAction($currentPage, $actionDto, $entityDto);
+
+                if (false === $item->isDisplayed($entityDto)) {
+                    continue;
+                }
+
+                // if CSS class hasn't been overridden, apply the default ones
+                if ('' === $item->getCssClass()) {
+                    $defaultCssClass = 'action-'.$item->getName();
+                    $item->setCssClass($defaultCssClass);
+                }
+
+                // these are the additional custom CSS classes defined via addCssClass()
+                // which are always appended to the CSS classes (default ones or custom ones)
+                if ('' !== $addedCssClass = $item->getAddedCssClass()) {
+                    $item->setCssClass($item->getCssClass().' '.$addedCssClass);
+                }
+
+
+                if (null === $item->getProperty()) {
+                    $processedItems[$item->getName()] = $this->processAction($currentPage, $item, $entityDto);
+                } else {
+                    if (!isset($propertyActions[$item->getProperty()])) {
+                        $propertyActions[$item->getProperty()] = [];
+                    }
+                    $propertyActions[$item->getProperty()][$item->getName()] = $this->processAction($currentPage, $item, $entityDto);
+                }
+            } elseif ($item instanceof ActionGroupDto) {
+                if (!$item->isEntityAction()) {
+                    continue;
+                }
+
+                if (false === $item->isDisplayed($entityDto)) {
+                    continue;
+                }
+
+                $processedGroup = $this->processActionGroup($currentPage, $item, $entityDto);
+                // only add the group if it has at least one action (ignoring dividers and headers)
+                // (actions are removed when processing the group if the user doesn't have permission to execute them)
+                if ([] !== $processedGroup->getActions()) {
+                    $processedItems[$item->getName()] = $processedGroup;
+                }
             }
         }
 
-        $entityDto->setActions(ActionCollection::new($entityActions));
+        if ($actionsDto->getUseAutomaticOrdering()) {
+            $processedItems = $this->sortActionsByPriority($processedItems);
+        }
+
+        $entityDto->setActions(ActionCollection::new($processedItems));
         foreach ($propertyActions as $property => $actions) {
             $entityDto->getFields()->getByProperty($property)?->setActions(ActionCollection::new($actions));
         }
@@ -89,39 +112,65 @@ final class ActionFactory
         }
 
         $currentPage = $this->adminContextProvider->getContext()->getCrud()->getCurrentPage();
-        $globalActions = [];
-        foreach ($actionsDto->getActions()->all() as $actionDto) {
-            if (!$actionDto->isGlobalAction() && !$actionDto->isBatchAction()) {
-                continue;
-            }
+        $processedItems = [];
 
-            if (false === $this->authChecker->isGranted(Permission::EA_EXECUTE_ACTION, ['action' => $actionDto, 'entity' => null])) {
-                continue;
-            }
+        foreach ($actionsDto->getActions()->all() as $item) {
+            if ($item instanceof ActionDto) {
+                if (!$item->isGlobalAction() && !$item->isBatchAction()) {
+                    continue;
+                }
 
-            if (false === $actionDto->isDisplayed()) {
-                continue;
-            }
+                if (false === $this->authChecker->isGranted(Permission::EA_EXECUTE_ACTION, ['action' => $item, 'entity' => null])) {
+                    continue;
+                }
 
-            if (Crud::PAGE_INDEX !== $currentPage && $actionDto->isBatchAction()) {
-                throw new \RuntimeException(sprintf('Batch actions can be added only to the "index" page, but the "%s" batch action is defined in the "%s" page.', $actionDto->getName(), $currentPage));
-            }
+                if (false === $item->isDisplayed()) {
+                    continue;
+                }
 
-            // if CSS class hasn't been overridden, apply the default ones
-            if ('' === $actionDto->getCssClass()) {
-                $actionDto->setCssClass('btn action-'.$actionDto->getName());
-            }
+                if (Crud::PAGE_INDEX !== $currentPage && $item->isBatchAction()) {
+                    throw new \RuntimeException(sprintf('Batch actions can be added only to the "index" page, but the "%s" batch action is defined in the "%s" page.', $item->getName(), $currentPage));
+                }
 
-            // these are the additional custom CSS classes defined via addCssClass()
-            // which are always appended to the CSS classes (default ones or custom ones)
-            if ('' !== $addedCssClass = $actionDto->getAddedCssClass()) {
-                $actionDto->setCssClass($actionDto->getCssClass().' '.$addedCssClass);
-            }
+                // if CSS class hasn't been overridden, apply the default ones
+                if ('' === $item->getCssClass()) {
+                    $item->setCssClass('action-'.$item->getName());
+                }
 
-            $globalActions[$actionDto->getName()] = $this->processAction($currentPage, $actionDto);
+                // these are the additional custom CSS classes defined via addCssClass()
+                // which are always appended to the CSS classes (default ones or custom ones)
+                if ('' !== $addedCssClass = $item->getAddedCssClass()) {
+                    $item->setCssClass($item->getCssClass().' '.$addedCssClass);
+                }
+
+                $processedItems[$item->getName()] = $this->processAction($currentPage, $item);
+            } elseif ($item instanceof ActionGroupDto) {
+                if (!$item->isGlobalAction() && !$item->isBatchAction()) {
+                    continue;
+                }
+
+                if (false === $item->isDisplayed()) {
+                    continue;
+                }
+
+                if (Crud::PAGE_INDEX !== $currentPage && $item->isBatchAction()) {
+                    throw new \RuntimeException(sprintf('Batch action groups can be added only to the "index" page, but the "%s" batch action group is defined in the "%s" page.', $item->getName(), $currentPage));
+                }
+
+                $processedGroup = $this->processActionGroup($currentPage, $item);
+                // only add the group if it has at least one action (ignoring dividers and headers)
+                // (actions are removed when processing the group if the user doesn't have permission to execute them)
+                if ([] !== $processedGroup->getActions()) {
+                    $processedItems[$item->getName()] = $processedGroup;
+                }
+            }
         }
 
-        return ActionCollection::new($globalActions);
+        if ($actionsDto->getUseAutomaticOrdering()) {
+            $processedItems = $this->sortActionsByPriority($processedItems);
+        }
+
+        return ActionCollection::new($processedItems);
     }
 
     private function processAction(string $pageName, ActionDto $actionDto, ?EntityDto $entityDto = null): ActionDto
@@ -140,7 +189,12 @@ final class ActionFactory
         $actionDto->setLinkUrl($this->generateActionUrl($adminContext->getRequest(), $actionDto, $entityDto));
 
         if (!$actionDto->isGlobalAction() && \in_array($pageName, [Crud::PAGE_EDIT, Crud::PAGE_NEW], true)) {
-            $actionDto->setHtmlAttribute('form', sprintf('%s-%s-form', $pageName, $entityDto->getName()));
+            // these actions are given the 'form' HTML attribute so when they are clicked, they submit
+            // the form that edits/creates the entity; but, for custom actions rendered as forms (this is rare)
+            // they use their own form (where the 'action' is the action URL) instead of the entity edit/new form
+            if (!$actionDto->isRenderedAsForm()) {
+                $actionDto->setHtmlAttribute('form', sprintf('%s-%s-form', $pageName, $entityDto->getName()));
+            }
         }
 
         if (Action::DELETE === $actionDto->getName()) {
@@ -165,19 +219,25 @@ final class ActionFactory
         return $actionDto;
     }
 
+    /**
+     * @param array<string, mixed> $defaultTranslationParameters
+     */
     private function processActionLabel(ActionDto $actionDto, ?EntityDto $entityDto, string $translationDomain, array $defaultTranslationParameters): void
     {
         $label = $actionDto->getLabel();
+        $htmlTitle = trim($actionDto->getHtmlAttributes()['title'] ?? '');
 
-        // FALSE means that action doesn't show a visible label in the interface
-        if (false === $label) {
+        // FALSE means that action doesn't show a visible label in the interface;
+        // add an HTML 'title' attribute (unless the user defined one explicitly) to
+        // improve accessibility and show the action name on mouse hover
+        if (false === $label && '' === $htmlTitle) {
             $actionDto->setHtmlAttribute('title', $actionDto->getName());
 
             return;
         }
 
         if (\is_callable($label) && $label instanceof \Closure) {
-            $label = \call_user_func_array($label, array_filter([$entityDto?->getInstance()]));
+            $label = \call_user_func_array($label, array_filter([$entityDto?->getInstance()], static fn ($item): bool => null !== $item));
 
             if (!\is_string($label) && !$label instanceof TranslatableInterface) {
                 throw new \RuntimeException(sprintf('The callable used to define the label of the "%s" action label %s must return a string or a %s instance but it returned a(n) "%s" value instead.', $actionDto->getName(), null !== $entityDto ? 'in the "'.$entityDto->getName().'" entity' : '', TranslatableInterface::class, \gettype($label)));
@@ -189,7 +249,9 @@ final class ActionFactory
         if ($label instanceof TranslatableInterface) {
             $actionDto->setLabel(TranslatableMessageBuilder::withParameters($label, $translationParameters));
         } else {
-            $translatableActionLabel = (null === $label || '' === $label) ? $label : t($label, $translationParameters, $translationDomain);
+            $translatableActionLabel = (null === $label || '' === $label || false === $label)
+                ? $label
+                : t($label, $translationParameters, $translationDomain);
             $actionDto->setLabel($translatableActionLabel);
         }
     }
@@ -238,5 +300,115 @@ final class ActionFactory
         }
 
         return $this->adminUrlGenerator->unsetAllExcept(...$urlParametersToKeep)->setAll($requestParameters)->generateUrl();
+    }
+
+    /**
+     * @param array<string, ActionDto|ActionGroupDto> $actions
+     *
+     * @return array<string, ActionDto|ActionGroupDto>
+     */
+    private function sortActionsByPriority(array $actions): array
+    {
+        $indexed = [];
+        $index = 0;
+        foreach ($actions as $name => $action) {
+            $indexed[] = [
+                'name' => $name,
+                'action' => $action,
+                'index' => $index++,
+            ];
+        }
+
+        /**
+         * @param array{name: string, action: ActionDto|ActionGroupDto, index: int} $a
+         * @param array{name: string, action: ActionDto|ActionGroupDto, index: int} $b
+         */
+        usort($indexed, function (array $a, array $b): int {
+            $priorityA = $this->getActionPriority($a['action']);
+            $priorityB = $this->getActionPriority($b['action']);
+
+            $primaryComparison = $priorityB <=> $priorityA;
+            if (0 !== $primaryComparison) {
+                return $primaryComparison;
+            }
+
+            // if actions have the same priority, keep the original order
+            return $a['index'] <=> $b['index'];
+        });
+
+        $sorted = [];
+        foreach ($indexed as $item) {
+            $sorted[$item['name']] = $item['action'];
+        }
+
+        return $sorted;
+    }
+
+    private function getActionPriority(ActionDto|ActionGroupDto $item): int
+    {
+        $baseWeight = ButtonStyle::Solid === $item->getStyle() ? 1000 : 0;
+
+        $variant = $item->getVariant();
+        $variantWeight = match ($variant) {
+            ButtonVariant::Primary => 100,
+            ButtonVariant::Default => 90,
+            ButtonVariant::Success => 80,
+            ButtonVariant::Warning => 70,
+            ButtonVariant::Danger => 60,
+        };
+
+        return $baseWeight + $variantWeight;
+    }
+
+    private function processActionGroup(string $pageName, ActionGroupDto $groupDto, ?EntityDto $entityDto = null): ActionGroupDto
+    {
+        if (null !== $mainAction = $groupDto->getMainAction()) {
+            $processedMainAction = $this->processAction($pageName, $mainAction, $entityDto);
+            $groupDto->setMainAction($processedMainAction);
+        }
+
+        $processedActions = [];
+        foreach ($groupDto->getItems() as $item) {
+            if ($item instanceof ActionDto) {
+                if (false === $this->authChecker->isGranted(Permission::EA_EXECUTE_ACTION, ['action' => $item, 'entity' => $entityDto])) {
+                    continue;
+                }
+
+                if (false === $item->isDisplayed($entityDto)) {
+                    continue;
+                }
+
+                $processedAction = $this->processAction($pageName, $item, $entityDto);
+                $processedActions[] = $processedAction;
+            } else {
+                // keep dividers and headers as-is
+                $processedActions[] = $item;
+            }
+        }
+
+        // create a new group DTO with the processed actions
+        $newGroupDto = clone $groupDto;
+        $newGroupDto->setActions([]);
+        foreach ($processedActions as $item) {
+            if ($item instanceof ActionDto) {
+                $newGroupDto->addAction($item);
+            } elseif (\is_array($item) && isset($item['type'])) {
+                if ('divider' === $item['type']) {
+                    $newGroupDto->addDivider();
+                } elseif ('header' === $item['type'] && isset($item['content'])) {
+                    $newGroupDto->addHeader($item['content']);
+                }
+            }
+        }
+
+        /** @var AdminContext $adminContext */
+        $adminContext = $this->adminContextProvider->getContext();
+        $defaultTemplatePath = $adminContext->getTemplatePath('crud/action_group');
+        $newGroupDto->setTemplatePath($groupDto->getTemplatePath() ?? $defaultTemplatePath);
+
+        $newGroupDto->setCssClass('btn');
+        $newGroupDto->setHtmlAttribute('data-action-group-name', $newGroupDto->getName());
+
+        return $newGroupDto;
     }
 }

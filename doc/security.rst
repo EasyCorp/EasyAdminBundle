@@ -3,17 +3,17 @@ Security
 
 EasyAdmin relies on `Symfony Security`_ for everything related to security.
 That's why before restricting access to some parts of the backend, you need
-to properly setup security in your Symfony application:
+to properly set up security in your Symfony application:
 
 #. `Create users`_ in your application and assign them proper permissions
    (e.g. ``ROLE_ADMIN``);
 #. `Define a firewall`_ that covers the URL of the backend.
 
-Logged in User Information
+Logged-in User Information
 --------------------------
 
 When accessing a protected backend, EasyAdmin displays the details of the user
-who is logged in the application and a menu with some options like "logout".
+who is logged in to the application and a menu with some options like "logout".
 Read the :ref:`user menu reference <dashboards-user-menu>` for more details.
 
 .. _security-entire-backend:
@@ -22,7 +22,7 @@ Restrict Access to the Entire Backend
 -------------------------------------
 
 Using the `access_control option`_, you can tell Symfony to require certain
-permissions to browse the URL associated to the backend. This is simple to do
+permissions to browse the URL associated with the backend. This is simple to do
 because :ref:`dashboard routes share a common prefix <dashboard-route>`:
 
 .. code-block:: yaml
@@ -32,7 +32,7 @@ because :ref:`dashboard routes share a common prefix <dashboard-route>`:
         # ...
 
         access_control:
-            # change '/admin' by the prefix used by your Dashboard URLs
+            # change '/admin' to the prefix used by your Dashboard URLs
             - { path: ^/admin, roles: ROLE_ADMIN }
             # ...
 
@@ -41,10 +41,12 @@ cumbersome because you must apply it to all dashboard controllers and to all the
 :doc:`CRUD controllers </crud>`::
 
     // app/Controller/Admin/DashboardController.php
+    use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
     use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
     use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
     use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+    #[AdminDashboard(routePath: '/admin', routeName: 'admin')]
     #[IsGranted('ROLE_ADMIN')]
     class DashboardController extends AbstractDashboardController
     {
@@ -75,7 +77,10 @@ is to use the ``#[AdminDashboard]`` attribute::
     use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
     use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 
-    #[AdminDashboard(allowedControllers: [BlogPostCrudController::class, BlogCategoryCrudController::class])]
+    #[AdminDashboard(routePath: '/admin', routeName: 'admin', allowedControllers: [
+        BlogPostCrudController::class,
+        BlogCategoryCrudController::class,
+    ])]
     class DashboardController extends AbstractDashboardController
     {
         // ...
@@ -240,9 +245,7 @@ First, install the component in your project using Composer:
     $ composer require symfony/expression-language
 
 Now, you can pass a Symfony Expression object to any ``setPermission()`` method
-like this:
-
-.. code-block:: php
+like this::
 
     use Symfony\Component\ExpressionLanguage\Expression;
 

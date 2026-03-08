@@ -6,7 +6,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Cache\CacheWarmer;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\Router\AdminRouteGeneratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\AdminContextFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\ControllerFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\CrudControllerRegistry;
@@ -36,28 +35,19 @@ use Symfony\Component\Routing\Matcher\RequestMatcherInterface;
  */
 class AdminRouterSubscriber implements EventSubscriberInterface
 {
-    private AdminContextFactory $adminContextFactory;
-    private ControllerFactory $controllerFactory;
-    private ControllerResolverInterface $controllerResolver;
-    private UrlGeneratorInterface $urlGenerator;
-    private RequestMatcherInterface $requestMatcher;
-    private CacheItemPoolInterface $cache;
-    private AdminRouteGeneratorInterface $adminRouteGenerator;
-    private CrudControllerRegistry $crudControllerRegistry;
-    private string $buildDir;
     private bool $requestAlreadyProcessedAsPrettyUrl = false;
 
-    public function __construct(AdminContextFactory $adminContextFactory, ControllerFactory $controllerFactory, ControllerResolverInterface $controllerResolver, UrlGeneratorInterface $urlGenerator, RequestMatcherInterface $requestMatcher, CacheItemPoolInterface $cache, AdminRouteGenerator $adminRouteGenerator, string $buildDir, CrudControllerRegistry $crudControllerRegistry)
-    {
-        $this->adminContextFactory = $adminContextFactory;
-        $this->controllerFactory = $controllerFactory;
-        $this->controllerResolver = $controllerResolver;
-        $this->urlGenerator = $urlGenerator;
-        $this->requestMatcher = $requestMatcher;
-        $this->cache = $cache;
-        $this->adminRouteGenerator = $adminRouteGenerator;
-        $this->buildDir = $buildDir;
-        $this->crudControllerRegistry = $crudControllerRegistry;
+    public function __construct(
+        private readonly AdminContextFactory $adminContextFactory,
+        private readonly ControllerFactory $controllerFactory,
+        private readonly ControllerResolverInterface $controllerResolver,
+        private readonly UrlGeneratorInterface $urlGenerator,
+        private readonly RequestMatcherInterface $requestMatcher,
+        private readonly CacheItemPoolInterface $cache,
+        private readonly AdminRouteGenerator $adminRouteGenerator,
+        private readonly string $buildDir,
+        private readonly CrudControllerRegistry $crudControllerRegistry,
+    ) {
     }
 
     public static function getSubscribedEvents(): array
@@ -225,7 +215,7 @@ class AdminRouterSubscriber implements EventSubscriberInterface
         // if the request is related to a custom action, change the controller to be executed
         if (null !== $request->query->get(EA::ROUTE_NAME)) {
             $symfonyControllerAsString = $this->getSymfonyControllerFqcn($request);
-            $symfonyControllerCallable = $this->getSymfonyControllerInstance($symfonyControllerAsString, $request->query->all()[EA::ROUTE_PARAMS] ?? []);
+            $symfonyControllerCallable = $this->getSymfonyControllerInstance($symfonyControllerAsString, $request->query->all(EA::ROUTE_PARAMS));
             if (false !== $symfonyControllerCallable) {
                 // this makes Symfony believe that another controller is being executed
                 // (e.g. this is needed for the autowiring of controller action arguments)
@@ -234,7 +224,7 @@ class AdminRouterSubscriber implements EventSubscriberInterface
                 $event->getRequest()->attributes->set('_controller', $symfonyControllerAsString);
                 // route params must be added as route attribute; otherwise, param converters don't work
                 $event->getRequest()->attributes->replace(array_merge(
-                    $request->query->all()[EA::ROUTE_PARAMS] ?? [],
+                    $request->query->all(EA::ROUTE_PARAMS),
                     $event->getRequest()->attributes->all()
                 ));
 
@@ -250,17 +240,19 @@ class AdminRouterSubscriber implements EventSubscriberInterface
      * Because of how EasyAdmin works, all backend requests are handled via the
      * Dashboard controller, so its enough to check if the request controller implements
      * the DashboardControllerInterface.
+     *
+     * @return class-string<DashboardControllerInterface>|null
      */
     private function getDashboardControllerFqcn(Request $request): ?string
     {
-        $controller = $request->attributes->get('_controller');
+        $controller = $request->attributes->get(EA::DASHBOARD_CONTROLLER_FQCN) ?? $request->attributes->get('_controller');
         $controllerFqcn = null;
 
         if (\is_string($controller)) {
             [$controllerFqcn, ] = explode('::', $controller);
         }
 
-        if (\is_array($controller)) {
+        if (\is_array($controller) && isset($controller[0]) && \is_string($controller[0])) {
             $controllerFqcn = $controller[0];
         }
 
@@ -288,13 +280,23 @@ class AdminRouterSubscriber implements EventSubscriberInterface
     private function getSymfonyControllerFqcn(Request $request): ?string
     {
         $routeName = $request->query->get(EA::ROUTE_NAME);
-        $routeParams = $request->query->all()[EA::ROUTE_PARAMS] ?? [];
-        $url = $this->urlGenerator->generate($routeName, $routeParams);
+        $routeParams = $request->query->all(EA::ROUTE_PARAMS);
+        $url = $this->urlGenerator->generate($routeName, $routeParams, UrlGeneratorInterface::ABSOLUTE_PATH);
 
         $newRequest = $request->duplicate();
         $newRequest->attributes->remove('_controller');
         $newRequest->attributes->set('_route', $routeName);
         $newRequest->attributes->add($routeParams);
+
+        // If the application is running behind a proxy under a permanent
+        // subpath prefix (AKA sub-folder, sub-url or sub-path) using the HTTP
+        // header x-forwarded-prefix, the URL is generated with
+        // that prefix. We need to remove it before we can match it.
+        $basePath = $request->getBasePath();
+        if ('' !== $request->getBasePath() && str_starts_with($url, $basePath)) {
+            $url = mb_substr($url, mb_strlen($basePath));
+        }
+
         $newRequest->server->set('REQUEST_URI', $url);
 
         $parameters = $this->requestMatcher->matchRequest($newRequest);
@@ -302,6 +304,9 @@ class AdminRouterSubscriber implements EventSubscriberInterface
         return $parameters['_controller'] ?? null;
     }
 
+    /**
+     * @param array<string, mixed> $routeParams
+     */
     private function getSymfonyControllerInstance(string $controllerFqcn, array $routeParams): callable|false
     {
         $newRequest = new Request([], [], ['_controller' => $controllerFqcn, '_route_params' => $routeParams], [], [], []);

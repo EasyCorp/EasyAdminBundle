@@ -84,6 +84,7 @@ return [
         'label.is_less_than_or_equal_to' => 'أصغر من أو يساوي',
         'label.is_between' => 'بين',
         'label.contains' => 'يحتوي',
+        'label.contains_all' => 'يحتوي على الكل',
         'label.not_contains' => 'لا يحتوي',
         'label.starts_with' => 'يبدء بـ',
         'label.ends_with' => 'ينتهي بـ',

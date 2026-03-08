@@ -17,6 +17,9 @@ final class FieldProvider
     ) {
     }
 
+    /**
+     * @return array<Field>
+     */
     public function getDefaultFields(string $pageName): array
     {
         $defaultPropertyNames = [];

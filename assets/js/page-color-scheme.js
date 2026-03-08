@@ -23,10 +23,16 @@ class ColorSchemeHandler {
         const currentScheme = localStorage.getItem(this.#colorSchemeLocalStorageKey) || 'auto';
 
         colorSchemeSelectors.forEach((colorSchemeSelector) => {
-            const selectorOptions = colorSchemeSelector.querySelectorAll('a.dropdown-appearance-item[data-ea-color-scheme]');
-            const selectorActiveOption = colorSchemeSelector.querySelector(`a.dropdown-appearance-item[data-ea-color-scheme="${ currentScheme }"]`);
+            const selectorOptions = colorSchemeSelector.querySelectorAll(
+                'a.dropdown-appearance-item[data-ea-color-scheme]'
+            );
+            const selectorActiveOption = colorSchemeSelector.querySelector(
+                `a.dropdown-appearance-item[data-ea-color-scheme="${currentScheme}"]`
+            );
 
-            selectorOptions.forEach((selector) => { selector.classList.remove('active') });
+            selectorOptions.forEach((selector) => {
+                selector.classList.remove('active');
+            });
             selectorActiveOption.classList.add('active');
 
             selectorOptions.forEach((selector) => {
@@ -34,10 +40,18 @@ class ColorSchemeHandler {
                     const selectedColorScheme = selector.getAttribute('data-ea-color-scheme');
                     this.#setColorScheme(selectedColorScheme, true);
 
-                    const allSelectorOptions = document.querySelectorAll('a.dropdown-appearance-item[data-ea-color-scheme]');
-                    const allSelectorActiveOptions = document.querySelectorAll(`a.dropdown-appearance-item[data-ea-color-scheme="${ selectedColorScheme }"]`);
-                    allSelectorOptions.forEach((selectorOption) => { selectorOption.classList.remove('active') });
-                    allSelectorActiveOptions.forEach((selectorOption) => { selectorOption.classList.add('active') });
+                    const allSelectorOptions = document.querySelectorAll(
+                        'a.dropdown-appearance-item[data-ea-color-scheme]'
+                    );
+                    const allSelectorActiveOptions = document.querySelectorAll(
+                        `a.dropdown-appearance-item[data-ea-color-scheme="${selectedColorScheme}"]`
+                    );
+                    allSelectorOptions.forEach((selectorOption) => {
+                        selectorOption.classList.remove('active');
+                    });
+                    allSelectorActiveOptions.forEach((selectorOption) => {
+                        selectorOption.classList.add('active');
+                    });
                 });
             });
         });
@@ -48,14 +62,17 @@ class ColorSchemeHandler {
             return;
         }
 
-        const resolvedColorScheme = 'auto' === colorScheme
-            ? matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
-            : colorScheme;
+        const resolvedColorScheme =
+            'auto' === colorScheme
+                ? matchMedia('(prefers-color-scheme: dark)').matches
+                    ? 'dark'
+                    : 'light'
+                : colorScheme;
 
         document.body.classList.remove('ea-light-scheme', 'ea-dark-scheme');
         document.body.classList.add('light' === resolvedColorScheme ? 'ea-light-scheme' : 'ea-dark-scheme');
 
-        if (true === persistInLocalStorage)  {
+        if (true === persistInLocalStorage) {
             localStorage.setItem(this.#colorSchemeLocalStorageKey, colorScheme);
         }
 
@@ -69,7 +86,7 @@ const colorSchemeHandler = new ColorSchemeHandler();
 // this method needs to be called even before 'DOMContentLoaded' because
 // otherwise the page shows an annoying flicker when loading it
 colorSchemeHandler.updateColorScheme();
-window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (e) {
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
     colorSchemeHandler.updateColorScheme();
 });
 

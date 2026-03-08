@@ -23,30 +23,40 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
  */
 final class EntityFactory
 {
-    private FieldFactory $fieldFactory;
-    private ActionFactory $actionFactory;
-    private AuthorizationCheckerInterface $authorizationChecker;
-    private ManagerRegistry $doctrine;
-    private EventDispatcherInterface $eventDispatcher;
-
-    public function __construct(FieldFactory $fieldFactory, ActionFactory $actionFactory, AuthorizationCheckerInterface $authorizationChecker, ManagerRegistry $doctrine, EventDispatcherInterface $eventDispatcher)
-    {
-        $this->fieldFactory = $fieldFactory;
-        $this->actionFactory = $actionFactory;
-        $this->authorizationChecker = $authorizationChecker;
-        $this->doctrine = $doctrine;
-        $this->eventDispatcher = $eventDispatcher;
+    public function __construct(
+        private readonly FieldFactory $fieldFactory,
+        private readonly ActionFactory $actionFactory,
+        private readonly AuthorizationCheckerInterface $authorizationChecker,
+        private readonly ManagerRegistry $doctrine,
+        private readonly EventDispatcherInterface $eventDispatcher,
+    ) {
     }
 
-    public function processFields(EntityDto $entityDto, FieldCollection $fields): void
+    public function processFields(EntityDto $entityDto, FieldCollection $fields, ?string $pageName = null): void
     {
-        $this->fieldFactory->processFields($entityDto, $fields);
+        if (null === $pageName) {
+            trigger_deprecation(
+                'easycorp/easyadmin-bundle',
+                '4.27.0',
+                'Argument "$pageName" is missing. Omitting it will cause an error in 5.0.0.',
+            );
+        }
+
+        $this->fieldFactory->processFields($entityDto, $fields, $pageName);
     }
 
-    public function processFieldsForAll(EntityCollection $entities, FieldCollection $fields): void
+    public function processFieldsForAll(EntityCollection $entities, FieldCollection $fields, ?string $pageName = null): void
     {
+        if (null === $pageName) {
+            trigger_deprecation(
+                'easycorp/easyadmin-bundle',
+                '4.27.0',
+                'Argument "$pageName" is missing. Omitting it will cause an error in 5.0.0.',
+            );
+        }
+
         foreach ($entities as $entity) {
-            $this->processFields($entity, clone $fields);
+            $this->processFields($entity, clone $fields, $pageName);
             $entities->set($entity);
         }
     }
@@ -65,16 +75,34 @@ final class EntityFactory
         return $this->actionFactory->processGlobalActions($actionConfigDto);
     }
 
-    public function create(string $entityFqcn, $entityId = null, string|Expression|null $entityPermission = null): EntityDto
+    /**
+     * @param class-string $entityFqcn
+     */
+    public function create(string $entityFqcn, mixed $entityId = null, string|Expression|null $entityPermission = null): EntityDto
     {
         return $this->doCreate($entityFqcn, $entityId, $entityPermission);
     }
 
-    public function createForEntityInstance($entityInstance): EntityDto
+    /**
+     * @param object $entityInstance
+     */
+    public function createForEntityInstance(/* object */ $entityInstance): EntityDto
     {
+        if (!\is_object($entityInstance)) {
+            trigger_deprecation(
+                'easycorp/easyadmin-bundle',
+                '4.27.0',
+                'Not passing argument "$entityInstance" for method "%s" of type "object" is deprecated.',
+                __METHOD__,
+            );
+        }
+
         return $this->doCreate(null, null, null, $entityInstance);
     }
 
+    /**
+     * @param iterable<object>|null $entityInstances
+     */
     public function createCollection(EntityDto $entityDto, ?iterable $entityInstances): EntityCollection
     {
         $entityDtos = [];
@@ -92,10 +120,17 @@ final class EntityFactory
         return EntityCollection::new($entityDtos);
     }
 
+    /**
+     * @template TEntity of object
+     *
+     * @param class-string<TEntity> $entityFqcn
+     *
+     * @return ClassMetadata<TEntity>
+     */
     public function getEntityMetadata(string $entityFqcn): ClassMetadata
     {
         $entityManager = $this->getEntityManager($entityFqcn);
-        /** @var ClassMetadata $entityMetadata */
+        /** @var ClassMetadata<TEntity> $entityMetadata */
         $entityMetadata = $entityManager->getClassMetadata($entityFqcn);
 
         if (1 !== \count($entityMetadata->getIdentifierFieldNames())) {
@@ -105,7 +140,10 @@ final class EntityFactory
         return $entityMetadata;
     }
 
-    private function doCreate(?string $entityFqcn = null, $entityId = null, string|Expression|null $entityPermission = null, $entityInstance = null): EntityDto
+    /**
+     * @param class-string|null $entityFqcn
+     */
+    private function doCreate(?string $entityFqcn = null, mixed $entityId = null, string|Expression|null $entityPermission = null, ?object $entityInstance = null): EntityDto
     {
         if (null === $entityInstance && null !== $entityFqcn) {
             $entityInstance = null === $entityId ? null : $this->getEntityInstance($entityFqcn, $entityId);
@@ -131,6 +169,9 @@ final class EntityFactory
         return $entityDto;
     }
 
+    /**
+     * @param class-string $entityFqcn
+     */
     private function getEntityManager(string $entityFqcn): ObjectManager
     {
         if (null === $entityManager = $this->doctrine->getManagerForClass($entityFqcn)) {
@@ -140,7 +181,10 @@ final class EntityFactory
         return $entityManager;
     }
 
-    private function getEntityInstance(string $entityFqcn, $entityIdValue): object
+    /**
+     * @param class-string $entityFqcn
+     */
+    private function getEntityInstance(string $entityFqcn, mixed $entityIdValue): object
     {
         $entityManager = $this->getEntityManager($entityFqcn);
         if (null === $entityInstance = $entityManager->getRepository($entityFqcn)->find($entityIdValue)) {
@@ -156,6 +200,10 @@ final class EntityFactory
      * Code copied from Symfony\Bridge\Doctrine\Form\DoctrineOrmTypeGuesser
      * because Doctrine ORM 3.x removed the ClassUtil class where this method was defined
      * (c) Fabien Potencier <fabien@symfony.com> - MIT License.
+     *
+     * @param class-string $class
+     *
+     * @return class-string
      */
     private function getRealClass(string $class): string
     {
@@ -163,6 +211,9 @@ final class EntityFactory
             return $class;
         }
 
-        return substr($class, $pos + Proxy::MARKER_LENGTH + 2);
+        /** @var class-string $realClass */
+        $realClass = substr($class, $pos + Proxy::MARKER_LENGTH + 2);
+
+        return $realClass;
     }
 }

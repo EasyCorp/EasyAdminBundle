@@ -7,7 +7,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Provider\AdminContextProviderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\BatchActionDto;
-use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ArgumentValueResolverInterface;
@@ -48,8 +47,8 @@ if (interface_exists(ValueResolverInterface::class)) {
 
         private function getReferrerUrl(AdminContext $adminContext, Request $request): string
         {
-            $crudControllerFqcn = null;
-            if ($adminContext->usePrettyUrls()) {
+            $urlUsesPrettyUrls = $request->attributes->has(EA::CRUD_CONTROLLER_FQCN);
+            if ($urlUsesPrettyUrls) {
                 $crudControllerFqcn = $request->attributes->get(EA::CRUD_CONTROLLER_FQCN);
             } else {
                 $batchActionUrl = $adminContext->getRequest()->request->get(EA::BATCH_ACTION_URL);
@@ -71,13 +70,8 @@ if (interface_exists(ValueResolverInterface::class)) {
 } else {
     final class BatchActionDtoResolver implements ArgumentValueResolverInterface
     {
-        private AdminContextProvider $adminContextProvider;
-        private AdminUrlGeneratorInterface $adminUrlGenerator;
-
-        public function __construct(AdminContextProviderInterface $adminContextProvider, AdminUrlGeneratorInterface $adminUrlGenerator)
+        public function __construct(private readonly AdminContextProviderInterface $adminContextProvider, private readonly AdminUrlGeneratorInterface $adminUrlGenerator)
         {
-            $this->adminContextProvider = $adminContextProvider;
-            $this->adminUrlGenerator = $adminUrlGenerator;
         }
 
         public function supports(Request $request, ArgumentMetadata $argument): bool
@@ -103,8 +97,8 @@ if (interface_exists(ValueResolverInterface::class)) {
 
         private function getReferrerUrl(AdminContext $adminContext, Request $request): string
         {
-            $crudControllerFqcn = null;
-            if ($adminContext->usePrettyUrls()) {
+            $urlUsesPrettyUrls = $request->attributes->has(EA::CRUD_CONTROLLER_FQCN);
+            if ($urlUsesPrettyUrls) {
                 $crudControllerFqcn = $request->attributes->get(EA::CRUD_CONTROLLER_FQCN);
             } else {
                 $batchActionUrl = $adminContext->getRequest()->request->get(EA::BATCH_ACTION_URL);

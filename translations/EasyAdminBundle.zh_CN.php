@@ -62,9 +62,9 @@ return [
     ],
 
     'batch_action_modal' => [
-        'title' => '标题',
-        'content' => '内容',
-        'action' => '操作',
+        'title' => '你即将 %action_name% 选中的 %num_items% 条项目',
+        'content' => '此操作无法撤销。',
+        'action' => '继续',
     ],
 
     'delete_modal' => [
@@ -84,6 +84,7 @@ return [
         'label.is_less_than_or_equal_to' => '小于或等于',
         'label.is_between' => '之间',
         'label.contains' => '包含',
+        'label.contains_all' => '包含所有',
         'label.not_contains' => '不包含',
         'label.starts_with' => '起始于',
         'label.ends_with' => '结束于',

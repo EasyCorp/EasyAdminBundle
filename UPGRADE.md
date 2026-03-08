@@ -1,6 +1,55 @@
 Upgrade between EasyAdmin 4.x versions
 ======================================
 
+EasyAdmin 4.26.0
+----------------
+
+Some methods related to actions have been deprecated in favor of equivalent
+methods with better names:
+
+    // Before
+    $action->displayAsLink()->...
+    $action->displayAsButton()->...
+    $action->displayAsForm()->...
+
+    // After
+    $action->renderAsLink()->...
+    $action->renderAsButton()->...
+    $action->renderAsForm()->...
+
+EasyAdmin 4.25.0
+----------------
+
+The global `ea` variable injected in all templates is deprecated.
+Use the equivalent `ea()` Twig function, which returns the current context
+of the EasyAdmin application.
+
+    // Before
+    {{ ea.i18n.translationDomain }}
+
+    // After
+    {{ ea().i18n.translationDomain }}
+
+EasyAdmin 4.24.8
+----------------
+
+Starting with this version, PHPStan will report an error if a class extends
+`AbstractCrudController` without specifying the entity type:
+
+> Class App\Controller\Admin\UserCrudController extends generic class
+> EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController
+> but does not specify its types: TEntity
+
+To fix this, update your controller like this:
+
+```diff
++ /**
++  * @extends AbstractCrudController<User>
++  */
+  class UserCrudController extends AbstractCrudController
+  {
+```
+
 EasyAdmin 4.22.0
 ----------------
 

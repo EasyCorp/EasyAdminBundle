@@ -1,7 +1,7 @@
 <div {{ attributes.defaults({class: this.defaultCssClass(), role: 'alert'}) }}>
     <twig:block name="content"></twig:block>
 
-    {% if withDismissButton %}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    {% if this.withDismissButton %}
+        <twig:ea:Button type="button" isInvisible icon="internal:xmark" class="btn-close" data-bs-dismiss="alert" aria-label="Close" />
     {% endif %}
 </div>

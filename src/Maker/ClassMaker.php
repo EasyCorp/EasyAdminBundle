@@ -8,18 +8,16 @@ use function Symfony\Component\String\u;
 
 final class ClassMaker
 {
-    private KernelInterface $kernel;
-    private string $projectDir;
-    private Filesystem $fs;
+    private readonly Filesystem $fs;
 
-    public function __construct(KernelInterface $kernel, string $projectDir)
+    public function __construct(private readonly KernelInterface $kernel, private readonly string $projectDir)
     {
-        $this->kernel = $kernel;
-        $this->projectDir = $projectDir;
         $this->fs = new Filesystem();
     }
 
     /**
+     * @param array<string, mixed> $skeletonParameters
+     *
      * @return string The path of the created file (relative to the project dir)
      */
     public function make(string $generatedFilePathPattern, string $skeletonName, array $skeletonParameters): string
@@ -51,6 +49,9 @@ final class ClassMaker
         return u($generatedFilePath)->after($this->projectDir)->trim('/')->toString();
     }
 
+    /**
+     * @param array<string, mixed> $parameters
+     */
     private function renderSkeleton(string $filePath, array $parameters): string
     {
         ob_start();

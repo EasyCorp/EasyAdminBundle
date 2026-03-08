@@ -1,5 +1,6 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
 {# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
+{% set ea = ea() %}
 {% extends ea.templatePath('layout') %}
 {% form_theme new_form with ea.crud.formThemes only %}
 
@@ -49,8 +50,12 @@
 {% endblock %}
 
 {% block page_actions %}
-    {% for action in entity.actions %}
-        {{ include(action.templatePath, { action: action }, with_context = false) }}
+    {% for item in entity.actions|reverse %}
+        {% if item.isActionGroup %}
+            {{ include(item.templatePath, { group: item, entity: entity }, with_context = false) }}
+        {% else %}
+            {{ include(item.templatePath, { action: item }, with_context = false) }}
+        {% endif %}
     {% endfor %}
 {% endblock %}
 

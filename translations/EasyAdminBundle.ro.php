@@ -84,6 +84,7 @@ return [
         'label.is_less_than_or_equal_to' => 'este mai mic sau egal cu',
         'label.is_between' => 'e între',
         'label.contains' => 'conține',
+        'label.contains_all' => 'conține tot',
         'label.not_contains' => 'nu conține',
         'label.starts_with' => 'începe cu',
         'label.ends_with' => 'termină cu',

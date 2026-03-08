@@ -75,10 +75,21 @@ final class ChoiceField implements FieldInterface
      * ->setChoices(fn () => ['foo' => 1, 'bar' => 2])
      * ->setChoices(fn (?MyEntity $foo) => $foo->someField()->getChoices())
      * ->setChoices(fn (?MyEntity $foo, FieldDto $field) => ...)
+     *
+     * @param array<mixed>|callable $choiceGenerator
      */
     public function setChoices($choiceGenerator): self
     {
         if (!\is_array($choiceGenerator) && !\is_callable($choiceGenerator)) {
+            trigger_deprecation(
+                'easycorp/easyadmin-bundle',
+                '4.27.0',
+                'Argument "%s" for "%s" must be one of these types: %s. Passing type "%s" will cause an error in 5.0.0.',
+                '$choiceGenerator',
+                __METHOD__,
+                '"array" or "callable"',
+                \gettype($choiceGenerator)
+            );
             throw new \InvalidArgumentException(sprintf('The argument of the "%s" method must be an array or a closure ("%s" given).', __METHOD__, \gettype($choiceGenerator)));
         }
 
@@ -93,9 +104,24 @@ final class ChoiceField implements FieldInterface
      *
      * Given choices must follow the opposite of the format used in Symfony Forms:
      * ['submitted_value' => t('Label visible to users'), ...].
+     *
+     * @param array<string|TranslatableInterface>|callable $choiceGenerator
      */
     public function setTranslatableChoices($choiceGenerator): self
     {
+        if (!\is_array($choiceGenerator) && !\is_callable($choiceGenerator)) {
+            trigger_deprecation(
+                'easycorp/easyadmin-bundle',
+                '4.27.0',
+                'Argument "%s" for "%s" must be one of these types: %s. Passing type "%s" will cause an error in 5.0.0.',
+                '$choiceGenerator',
+                __METHOD__,
+                '"array" or "callable"',
+                \gettype($choiceGenerator)
+            );
+            throw new \InvalidArgumentException(sprintf('The argument of the "%s" method must be an array or a closure ("%s" given).', __METHOD__, \gettype($choiceGenerator)));
+        }
+
         $this->setChoices($choiceGenerator);
         $this->setCustomOption(self::OPTION_USE_TRANSLATABLE_CHOICES, true);
 
@@ -111,10 +137,21 @@ final class ChoiceField implements FieldInterface
      *     (e.g. function(FieldDto $field) { return $field->getValue() < 10 ? 'warning' : 'primary'; }).
      *
      * Possible badge types: 'success', 'warning', 'danger', 'info', 'primary', 'secondary', 'light', 'dark'
+     *
+     * @param array<string>|bool|callable $badgeSelector
      */
     public function renderAsBadges($badgeSelector = true): self
     {
         if (!\is_bool($badgeSelector) && !\is_array($badgeSelector) && !\is_callable($badgeSelector)) {
+            trigger_deprecation(
+                'easycorp/easyadmin-bundle',
+                '4.27.0',
+                'Argument "%s" for "%s" must be one of these types: %s. Passing type "%s" will cause an error in 5.0.0.',
+                '$badgeSelector',
+                __METHOD__,
+                '"bool" or "array" or "callable"',
+                \gettype($badgeSelector)
+            );
             throw new \InvalidArgumentException(sprintf('The argument of the "%s" method must be a boolean, an array or a closure ("%s" given).', __METHOD__, \gettype($badgeSelector)));
         }
 

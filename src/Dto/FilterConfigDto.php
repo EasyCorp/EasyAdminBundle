@@ -10,7 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterInterface;
  */
 final class FilterConfigDto
 {
-    private KeyValueStore $filters;
+    private readonly KeyValueStore $filters;
 
     public function __construct()
     {
@@ -45,6 +45,9 @@ final class FilterConfigDto
         return $this->filters->get($propertyName);
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function all(): array
     {
         return $this->filters->all();

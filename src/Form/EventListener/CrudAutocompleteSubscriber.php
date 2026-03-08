@@ -6,6 +6,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Uid\Ulid;
 
 /**
  * @author Yonel Ceruto <yonelceruto@gmail.com>
@@ -20,6 +21,9 @@ class CrudAutocompleteSubscriber implements EventSubscriberInterface
         ];
     }
 
+    /**
+     * @return void
+     */
     public function preSetData(FormEvent $event)
     {
         $form = $event->getForm();
@@ -32,6 +36,9 @@ class CrudAutocompleteSubscriber implements EventSubscriberInterface
         $form->add('autocomplete', EntityType::class, $options);
     }
 
+    /**
+     * @return void
+     */
     public function preSubmit(FormEvent $event)
     {
         $data = $event->getData();
@@ -41,6 +48,17 @@ class CrudAutocompleteSubscriber implements EventSubscriberInterface
         if (!isset($data['autocomplete']) || '' === $data['autocomplete']) {
             $options['choices'] = [];
         } else {
+            if (false === $options['id_reader']->isIntId()) {
+                if (!\is_array($data['autocomplete'])) {
+                    $data['autocomplete'] = [$data['autocomplete']];
+                }
+
+                $data['autocomplete'] = array_map(
+                    fn ($v) => Ulid::isValid($v) ? Ulid::fromBase32($v)->toRfc4122() : $v,
+                    $data['autocomplete']
+                );
+            }
+
             $options['choices'] = $options['em']->getRepository($options['class'])->findBy([
                 $options['id_reader']->getIdField() => $data['autocomplete'],
             ]);

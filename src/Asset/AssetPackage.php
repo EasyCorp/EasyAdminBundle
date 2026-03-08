@@ -21,7 +21,7 @@ final class AssetPackage implements PackageInterface
 {
     public const PACKAGE_NAME = 'easyadmin.assets.package';
 
-    private PackageInterface $package;
+    private readonly PackageInterface $package;
 
     public function __construct(RequestStack $requestStack)
     {

@@ -13,11 +13,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 final class ControllerFactory
 {
-    private ControllerResolverInterface $controllerResolver;
-
-    public function __construct(ControllerResolverInterface $controllerResolver)
+    public function __construct(private readonly ControllerResolverInterface $controllerResolver)
     {
-        $this->controllerResolver = $controllerResolver;
     }
 
     public function getDashboardControllerInstance(string $controllerFqcn, Request $request): ?DashboardControllerInterface
@@ -44,12 +41,21 @@ final class ControllerFactory
         return $this->getController(CrudControllerInterface::class, $crudControllerFqcn, $crudAction, $request);
     }
 
-    private function getController(string $controllerInterface, ?string $controllerFqcn, ?string $controllerAction, Request $request)
+    /**
+     * @template T of object
+     *
+     * @param class-string<T> $controllerInterface
+     *
+     * @return T|null
+     */
+    private function getController(string $controllerInterface, ?string $controllerFqcn, ?string $controllerAction, Request $request): ?object
     {
         if (null === $controllerFqcn || null === $controllerAction) {
             return null;
         }
 
+        // needed to fix the double encoding of URLs that might happen (https://github.com/EasyCorp/EasyAdminBundle/pull/6902)
+        $controllerFqcn = str_replace('%5C', '\\', $controllerFqcn);
         $newRequest = $request->duplicate(null, null, ['_controller' => [$controllerFqcn, $controllerAction]]);
         try {
             $controllerCallable = $this->controllerResolver->getController($newRequest);
@@ -66,6 +72,9 @@ final class ControllerFactory
         }
 
         $controllerInstance = $controllerCallable[0];
+        if (!\is_object($controllerInstance)) {
+            return null;
+        }
 
         return is_subclass_of($controllerInstance, $controllerInterface) ? $controllerInstance : null;
     }

@@ -84,6 +84,7 @@ return [
         'label.is_less_than_or_equal_to' => 'είναι μικρότερο ή ίσο με',
         'label.is_between' => 'είναι μεταξύ',
         'label.contains' => 'περιέχει',
+        'label.contains_all' => 'περιέχει όλα',
         'label.not_contains' => 'δεν περιέχει',
         'label.starts_with' => 'ξεκινάει με',
         'label.ends_with' => 'τελειώνει με',

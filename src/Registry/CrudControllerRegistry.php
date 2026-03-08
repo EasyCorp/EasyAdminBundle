@@ -7,47 +7,58 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Registry;
  */
 final class CrudControllerRegistry
 {
-    private array $crudFqcnToEntityFqcnMap;
-    private array $entityFqcnToCrudFqcnMap;
-    private array $crudFqcnToCrudIdMap;
-    private array $crudIdToCrudFqcnMap;
-
     /**
-     * @param array<string, string> $crudFqcnToEntityFqcnMap
-     * @param array<string, string> $crudFqcnToCrudIdMap
-     * @param array<string, string> $crudIdToCrudFqcnMap
-     * @param array<string, string> $entityFqcnToCrudFqcnMap
+     * @param array<class-string, class-string> $crudFqcnToEntityFqcnMap
+     * @param array<class-string, string>       $crudFqcnToCrudIdMap
+     * @param array<string, class-string>       $crudIdToCrudFqcnMap
+     * @param array<class-string, class-string> $entityFqcnToCrudFqcnMap
      */
-    public function __construct(array $crudFqcnToEntityFqcnMap, array $crudFqcnToCrudIdMap, array $entityFqcnToCrudFqcnMap, array $crudIdToCrudFqcnMap)
-    {
-        $this->crudFqcnToEntityFqcnMap = $crudFqcnToEntityFqcnMap;
-        $this->crudFqcnToCrudIdMap = $crudFqcnToCrudIdMap;
-        $this->entityFqcnToCrudFqcnMap = $entityFqcnToCrudFqcnMap;
-        $this->crudIdToCrudFqcnMap = $crudIdToCrudFqcnMap;
+    public function __construct(
+        private readonly array $crudFqcnToEntityFqcnMap,
+        private readonly array $crudFqcnToCrudIdMap,
+        private readonly array $entityFqcnToCrudFqcnMap,
+        private readonly array $crudIdToCrudFqcnMap,
+    ) {
     }
 
+    /**
+     * @param class-string $entityFqcn
+     *
+     * @return class-string|null
+     */
     public function findCrudFqcnByEntityFqcn(string $entityFqcn): ?string
     {
         return $this->entityFqcnToCrudFqcnMap[$entityFqcn] ?? null;
     }
 
+    /**
+     * @param class-string $controllerFqcn
+     *
+     * @return class-string|null
+     */
     public function findEntityFqcnByCrudFqcn(string $controllerFqcn): ?string
     {
         return $this->crudFqcnToEntityFqcnMap[$controllerFqcn] ?? null;
     }
 
+    /**
+     * @return class-string|null
+     */
     public function findCrudFqcnByCrudId(string $crudId): ?string
     {
         return $this->crudIdToCrudFqcnMap[$crudId] ?? null;
     }
 
+    /**
+     * @param class-string $controllerFqcn
+     */
     public function findCrudIdByCrudFqcn(string $controllerFqcn): ?string
     {
         return $this->crudFqcnToCrudIdMap[$controllerFqcn] ?? null;
     }
 
     /**
-     * @return array<int, string>
+     * @return array<int, class-string>
      */
     public function getAll(): array
     {

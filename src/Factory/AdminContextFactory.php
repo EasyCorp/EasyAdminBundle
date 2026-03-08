@@ -10,6 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Factory\MenuFactoryInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Router\AdminRouteGeneratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionConfigDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetsDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
@@ -20,7 +21,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\I18nDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\CrudControllerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\TemplateRegistry;
-use EasyCorp\Bundle\EasyAdminBundle\Router\AdminRouteGenerator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -33,21 +33,14 @@ use Symfony\Contracts\Translation\TranslatableInterface;
  */
 final class AdminContextFactory
 {
-    private string $buildDir;
-    private ?TokenStorageInterface $tokenStorage;
-    private MenuFactoryInterface $menuFactory;
-    private CrudControllerRegistry $crudControllers;
-    private EntityFactory $entityFactory;
-    private AdminRouteGenerator $adminRouteGenerator;
-
-    public function __construct(string $buildDir, ?TokenStorageInterface $tokenStorage, MenuFactoryInterface $menuFactory, CrudControllerRegistry $crudControllers, EntityFactory $entityFactory, AdminRouteGenerator $adminRouteGenerator)
-    {
-        $this->buildDir = $buildDir;
-        $this->tokenStorage = $tokenStorage;
-        $this->menuFactory = $menuFactory;
-        $this->crudControllers = $crudControllers;
-        $this->entityFactory = $entityFactory;
-        $this->adminRouteGenerator = $adminRouteGenerator;
+    public function __construct(
+        private readonly string $buildDir,
+        private readonly ?TokenStorageInterface $tokenStorage,
+        private readonly MenuFactoryInterface $menuFactory,
+        private readonly CrudControllerRegistry $crudControllers,
+        private readonly EntityFactory $entityFactory,
+        private readonly AdminRouteGeneratorInterface $adminRouteGenerator,
+    ) {
     }
 
     public function create(Request $request, DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController, ?string $actionName = null): AdminContext
@@ -217,12 +210,11 @@ final class AdminContextFactory
             return null;
         }
 
-        $queryParams = $request->query->all();
         $searchableProperties = $crudDto->getSearchFields();
-        $query = $queryParams[EA::QUERY] ?? null;
+        $query = $request->query->has(EA::QUERY) ? (string) $request->query->get(EA::QUERY) : null;
         $defaultSort = $crudDto->getDefaultSort();
-        $customSort = $queryParams[EA::SORT] ?? [];
-        $appliedFilters = $queryParams[EA::FILTERS] ?? [];
+        $customSort = $request->query->all(EA::SORT);
+        $appliedFilters = $request->query->all(EA::FILTERS);
         $searchMode = $crudDto->getSearchMode();
 
         return new SearchDto($request, $searchableProperties, $query, $defaultSort, $customSort, $appliedFilters, $searchMode);

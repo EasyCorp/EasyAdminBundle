@@ -84,6 +84,7 @@ return [
         'label.is_less_than_or_equal_to' => 'کوچکتر یا مساوی با',
         'label.is_between' => 'در بین',
         'label.contains' => 'شامل',
+        'label.contains_all' => 'شامل همه',
         'label.not_contains' => 'شامل نمی‌شود',
         'label.starts_with' => 'شروع می‌شود با',
         'label.ends_with' => 'پایان می‌یابد با',

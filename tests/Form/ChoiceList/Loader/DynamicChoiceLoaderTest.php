@@ -8,8 +8,7 @@ use Symfony\Component\Form\ChoiceList\Loader\ChoiceLoaderInterface;
 
 class DynamicChoiceLoaderTest extends TestCase
 {
-    /** @var ChoiceLoaderInterface */
-    private $loader;
+    private ChoiceLoaderInterface $loader;
 
     protected function setUp()
     {

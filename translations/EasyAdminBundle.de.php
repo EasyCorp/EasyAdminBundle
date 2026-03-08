@@ -84,6 +84,7 @@ return [
         'label.is_less_than_or_equal_to' => 'ist kleiner oder gleich',
         'label.is_between' => 'ist zwischen',
         'label.contains' => 'enthält',
+        'label.contains_all' => 'enthält alle',
         'label.not_contains' => 'enthält nicht',
         'label.starts_with' => 'beginnt mit',
         'label.ends_with' => 'endet mit',

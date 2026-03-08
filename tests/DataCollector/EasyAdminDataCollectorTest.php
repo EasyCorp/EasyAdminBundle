@@ -6,7 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class EasyAdminDataCollectorTest extends WebTestCase
 {
-    protected static $options = ['environment' => 'default_backend'];
+    protected static array $options = ['environment' => 'default_backend'];
 
     public function testCollectorIsEnabled()
     {

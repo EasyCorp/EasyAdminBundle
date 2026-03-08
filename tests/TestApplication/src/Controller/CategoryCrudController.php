@@ -18,6 +18,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Config\Action as AppAc
 use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Entity\Category;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * @extends AbstractCrudController<Category>
+ */
 class CategoryCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string

@@ -12,7 +12,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\I18nDto;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\CrudControllerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\TemplateRegistry;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\HttpFoundation\InputBag;
 use Symfony\Component\HttpFoundation\Request;
 
 class AdminContextTest extends TestCase
@@ -22,12 +21,8 @@ class AdminContextTest extends TestCase
      */
     public function testGetReferrerEmptyString()
     {
-        $request = $this->createMock(Request::class);
-        $request->query = new InputBag();
-        $request->query->set(EA::REFERRER, '');
-
         $target = new AdminContext(
-            $request,
+            new Request(query: [EA::REFERRER => '']),
             null,
             new I18nDto('en', 'ltr', 'en', []),
             new CrudControllerRegistry([], [], [], []),

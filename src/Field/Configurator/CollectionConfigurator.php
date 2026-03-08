@@ -28,15 +28,11 @@ use function Symfony\Component\String\u;
  */
 final class CollectionConfigurator implements FieldConfiguratorInterface
 {
-    private RequestStack $requestStack;
-    private EntityFactory $entityFactory;
-    private ControllerFactory $controllerFactory;
-
-    public function __construct(RequestStack $requestStack, EntityFactory $entityFactory, ControllerFactory $controllerFactory)
-    {
-        $this->requestStack = $requestStack;
-        $this->entityFactory = $entityFactory;
-        $this->controllerFactory = $controllerFactory;
+    public function __construct(
+        private readonly RequestStack $requestStack,
+        private readonly EntityFactory $entityFactory,
+        private readonly ControllerFactory $controllerFactory,
+    ) {
     }
 
     public function supports(FieldDto $field, EntityDto $entityDto): bool
@@ -101,11 +97,11 @@ final class CollectionConfigurator implements FieldConfiguratorInterface
             }
 
             $crudEditPageName = $field->getCustomOption(CollectionField::OPTION_ENTRY_CRUD_EDIT_PAGE_NAME) ?? Crud::PAGE_EDIT;
-            $editEntityDto = $this->createEntityDto($targetEntityFqcn, $targetCrudControllerFqcn, Action::EDIT, $crudEditPageName);
+            $editEntityDto = $this->createEntityDto($targetEntityFqcn, $targetCrudControllerFqcn, Action::EDIT, $crudEditPageName, Crud::PAGE_EDIT);
             $field->setFormTypeOption('entry_options.entityDto', $editEntityDto);
 
             $crudNewPageName = $field->getCustomOption(CollectionField::OPTION_ENTRY_CRUD_NEW_PAGE_NAME) ?? Crud::PAGE_NEW;
-            $newEntityDto = $this->createEntityDto($targetEntityFqcn, $targetCrudControllerFqcn, Action::NEW, $crudNewPageName);
+            $newEntityDto = $this->createEntityDto($targetEntityFqcn, $targetCrudControllerFqcn, Action::NEW, $crudNewPageName, Crud::PAGE_NEW);
 
             try {
                 $field->setFormTypeOption('prototype_options.entityDto', $newEntityDto);
@@ -115,7 +111,7 @@ final class CollectionConfigurator implements FieldConfiguratorInterface
         }
     }
 
-    private function formatCollection(FieldDto $field, AdminContext $context)
+    private function formatCollection(FieldDto $field, AdminContext $context): int|string
     {
         $doctrineMetadata = $field->getDoctrineMetadata();
         if ('array' !== $doctrineMetadata->get('type') && !$field->getValue() instanceof PersistentCollection) {
@@ -136,7 +132,7 @@ final class CollectionConfigurator implements FieldConfiguratorInterface
         return u(', ')->join($collectionItemsAsText)->truncate($isDetailAction ? 512 : 32, '…')->toString();
     }
 
-    private function countNumElements($collection): int
+    private function countNumElements(mixed $collection): int
     {
         if (null === $collection) {
             return 0;
@@ -153,7 +149,11 @@ final class CollectionConfigurator implements FieldConfiguratorInterface
         return 0;
     }
 
-    private function createEntityDto(string $targetEntityFqcn, string $targetCrudControllerFqcn, string $crudAction, string $pageName): EntityDto
+    /**
+     * @param class-string $targetEntityFqcn
+     * @param class-string $targetCrudControllerFqcn
+     */
+    private function createEntityDto(string $targetEntityFqcn, string $targetCrudControllerFqcn, string $crudAction, string $crudControllerPageName, string $crudPageName): EntityDto
     {
         $entityDto = $this->entityFactory->create($targetEntityFqcn);
 
@@ -163,9 +163,9 @@ final class CollectionConfigurator implements FieldConfiguratorInterface
             $this->requestStack->getMainRequest()
         );
 
-        $fields = $crudController->configureFields($pageName);
+        $fields = $crudController->configureFields($crudControllerPageName);
 
-        $this->entityFactory->processFields($entityDto, FieldCollection::new($fields));
+        $this->entityFactory->processFields($entityDto, FieldCollection::new($fields), $crudPageName);
 
         return $entityDto;
     }

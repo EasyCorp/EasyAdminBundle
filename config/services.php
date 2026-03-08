@@ -201,6 +201,7 @@ return static function (ContainerConfigurator $container) {
             ->arg(1, service('router'))
             ->arg(2, service(DashboardControllerRegistry::class))
             ->arg(3, service(AdminRouteGenerator::class))
+            ->arg(4, service('cache.easyadmin'))
 
         ->set('service_locator_'.AdminUrlGenerator::class, ServiceLocator::class)
             ->args([[AdminUrlGenerator::class => service(AdminUrlGenerator::class)]])
@@ -216,6 +217,8 @@ return static function (ContainerConfigurator $container) {
             ->arg(2, service('cache.easyadmin'))
             ->arg(3, service('filesystem'))
             ->arg(4, '%kernel.build_dir%')
+            ->arg(5, '%kernel.default_locale%')
+            ->arg(6, tagged_iterator(EasyAdminExtension::TAG_ADMIN_ROUTE_CONTROLLER))
 
         ->set(AdminRouteLoader::class)
             ->arg(0, service(AdminRouteGenerator::class))
@@ -232,9 +235,11 @@ return static function (ContainerConfigurator $container) {
             ->arg(2, service('security.logout_url_generator'))
             ->arg(3, service(AdminUrlGenerator::class))
             ->arg(4, service(MenuItemMatcherInterface::class))
+            ->arg(5, service('router'))
 
         ->set(MenuItemMatcher::class)
             ->arg(0, service(AdminUrlGenerator::class))
+            ->arg(1, service(AdminRouteGenerator::class))
 
         ->alias(MenuItemMatcherInterface::class, MenuItemMatcher::class)
 
@@ -337,7 +342,8 @@ return static function (ContainerConfigurator $container) {
 
         ->set(BooleanConfigurator::class)
             ->arg(0, service(AdminUrlGenerator::class))
-            ->arg(1, new Reference('security.csrf.token_manager', ContainerInterface::NULL_ON_INVALID_REFERENCE))
+            ->arg(1, new Reference(AuthorizationChecker::class))
+            ->arg(2, new Reference('security.csrf.token_manager', ContainerInterface::NULL_ON_INVALID_REFERENCE))
 
         ->set(CollectionConfigurator::class)
 

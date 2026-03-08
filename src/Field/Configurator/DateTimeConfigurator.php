@@ -5,23 +5,20 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Field\Configurator;
 use Doctrine\DBAL\Types\Types;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Intl\IntlFormatterInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TimeField;
-use EasyCorp\Bundle\EasyAdminBundle\Intl\IntlFormatter;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
 final class DateTimeConfigurator implements FieldConfiguratorInterface
 {
-    private IntlFormatter $intlFormatter;
-
-    public function __construct(IntlFormatter $intlFormatter)
+    public function __construct(private readonly IntlFormatterInterface $intlFormatter)
     {
-        $this->intlFormatter = $intlFormatter;
     }
 
     public function supports(FieldDto $field, EntityDto $entityDto): bool
@@ -97,7 +94,7 @@ final class DateTimeConfigurator implements FieldConfiguratorInterface
         if (!$entityDto->hasProperty($field->getProperty())) {
             return;
         }
-        $doctrineDataType = $entityDto->getPropertyMetadata($field->getProperty())->get('type');
+        $doctrineDataType = $entityDto->getPropertyDataType($field->getProperty());
         $isImmutableDateTime = \in_array($doctrineDataType, [Types::DATETIMETZ_IMMUTABLE, Types::DATETIME_IMMUTABLE, Types::DATE_IMMUTABLE, Types::TIME_IMMUTABLE], true);
         if ($isImmutableDateTime) {
             $field->setFormTypeOptionIfNotSet('input', 'datetime_immutable');

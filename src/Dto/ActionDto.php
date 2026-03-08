@@ -35,6 +35,7 @@ final class ActionDto
     private array $translationParameters = [];
     /** @var callable|null */
     private $displayCallable;
+    private ?string $property = null;
     private ButtonElement $htmlElement = ButtonElement::Button;
     private ButtonType $butonType = ButtonType::Submit;
     private ButtonVariant $variant = ButtonVariant::Default;

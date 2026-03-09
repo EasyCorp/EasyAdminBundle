@@ -40,6 +40,8 @@ final readonly class ImageConfigurator implements FieldConfiguratorInterface
             $field->setTemplateName('label/empty');
         }
 
+        $field->setFormTypeOption('show_image_preview', $field->getCustomOption(ImageField::OPTION_SHOW_PREVIEW));
+
         if (!\in_array($context->getCrud()->getCurrentPage(), [Crud::PAGE_EDIT, Crud::PAGE_NEW], true)) {
             return;
         }

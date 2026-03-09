@@ -735,6 +735,34 @@
     {{ form_errors(form.file) }}
 {% endblock %}
 
+{% block ea_imageupload_widget %}
+    {% set field = form.vars.ea_vars.field|default(null) %}
+    {% set show_preview = show_image_preview|default(false) %}
+
+    <div class="ea-imageupload">
+        {% if show_preview %}
+            <div class="ea-imageupload-preview" data-ea-imageupload-preview>
+                {% set images = field ? field.formattedValue : null %}
+                {% if images is not null %}
+                    {% if images is not iterable %}{% set images = [images] %}{% endif %}
+                    {% for image in images %}
+                        {% if image is not empty %}
+                            {% set _lightbox_id = 'ea-lightbox-' ~ form.vars.id ~ '-' ~ loop.index %}
+                            <a href="#" class="ea-lightbox-thumbnail" data-ea-lightbox-content-selector="#{{ _lightbox_id }}">
+                                <img src="{{ asset(image) }}" class="img-fluid">
+                            </a>
+                            <div id="{{ _lightbox_id }}" class="ea-lightbox">
+                                <img src="{{ asset(image) }}">
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </div>
+        {% endif %}
+        {{ block('ea_fileupload_widget') }}
+    </div>
+{% endblock ea_imageupload_widget %}
+
 {% block TODO_ea_fileupload_widget %}
     {% set placeholder = '' %}
     {% set title = '' %}

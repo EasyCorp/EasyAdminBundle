@@ -5,7 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Asset;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\TextAlign;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FileUploadType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ImageUploadType;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints\Image;
 use Symfony\Contracts\Translation\TranslatableInterface;
@@ -21,6 +21,7 @@ final class ImageField implements FieldInterface
     public const OPTION_UPLOAD_DIR = 'uploadDir';
     public const OPTION_UPLOADED_FILE_NAME_PATTERN = 'uploadedFileNamePattern';
     public const OPTION_FILE_CONSTRAINTS = 'fileConstraints';
+    public const OPTION_SHOW_PREVIEW = 'showPreview';
 
     public static function new(string $propertyName, TranslatableInterface|string|bool|null $label = null): self
     {
@@ -28,7 +29,7 @@ final class ImageField implements FieldInterface
             ->setProperty($propertyName)
             ->setLabel($label)
             ->setTemplateName('crud/field/image')
-            ->setFormType(FileUploadType::class)
+            ->setFormType(ImageUploadType::class)
             ->addCssClass('field-image')
             ->addJsFiles(Asset::fromEasyAdminAssetPackage('field-image.js'), Asset::fromEasyAdminAssetPackage('field-file-upload.js'))
             ->setDefaultColumns('col-md-7 col-xxl-5')
@@ -36,7 +37,8 @@ final class ImageField implements FieldInterface
             ->setCustomOption(self::OPTION_BASE_PATH, null)
             ->setCustomOption(self::OPTION_UPLOAD_DIR, null)
             ->setCustomOption(self::OPTION_UPLOADED_FILE_NAME_PATTERN, '[name].[extension]')
-            ->setCustomOption(self::OPTION_FILE_CONSTRAINTS, [new Image()]);
+            ->setCustomOption(self::OPTION_FILE_CONSTRAINTS, [new Image()])
+            ->setCustomOption(self::OPTION_SHOW_PREVIEW, true);
     }
 
     public function setBasePath(string $path): self
@@ -87,6 +89,13 @@ final class ImageField implements FieldInterface
     public function setFileConstraints($constraints): self
     {
         $this->setCustomOption(self::OPTION_FILE_CONSTRAINTS, $constraints);
+
+        return $this;
+    }
+
+    public function showPreview(bool $isShown = true): self
+    {
+        $this->setCustomOption(self::OPTION_SHOW_PREVIEW, $isShown);
 
         return $this;
     }

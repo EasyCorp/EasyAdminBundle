@@ -15,7 +15,7 @@ Basic Information
 
 * **PHP Class**: ``EasyCorp\Bundle\EasyAdminBundle\Field\ImageField``
 * **Doctrine DBAL Type** used to store this value: ``string``
-* **Symfony Form Type** used to render the field: ``FileUploadType``, a custom
+* **Symfony Form Type** used to render the field: ``ImageUploadType``, a custom
   form type created by EasyAdmin
 * **Rendered as**:
 
@@ -53,6 +53,18 @@ By default, the uploaded file is validated using an empty `Image constraint`_
 option to define the constraints applied to the uploaded file::
 
     yield ImageField::new('...')->setFileConstraints(new Image(maxSize: '100k'));
+
+showPreview
+~~~~~~~~~~~
+
+By default, a thumbnail preview of the image is displayed in form pages (``edit``
+and ``new``). When editing an existing entity, it shows the current image; when
+selecting a new file, it shows a client-side preview of the selected image.
+Clicking on the preview opens a lightbox to see the image at full size.
+
+Use this option to disable the image preview::
+
+    yield ImageField::new('...')->showPreview(false);
 
 setUploadedFileNamePattern
 ~~~~~~~~~~~~~~~~~~~~~~~~~~

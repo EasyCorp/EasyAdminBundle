@@ -7,7 +7,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FileUploadType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ImageUploadType;
 use Symfony\Component\Validator\Constraints\Image;
 use Symfony\Component\Validator\Constraints\NotNull;
 
@@ -40,8 +40,25 @@ class ImageFieldTest extends AbstractFieldTest
         self::assertNull($fieldDto->getCustomOption(ImageField::OPTION_BASE_PATH));
         self::assertNull($fieldDto->getCustomOption(ImageField::OPTION_UPLOAD_DIR));
         self::assertSame('[name].[extension]', $fieldDto->getCustomOption(ImageField::OPTION_UPLOADED_FILE_NAME_PATTERN));
-        self::assertSame(FileUploadType::class, $fieldDto->getFormType());
+        self::assertSame(ImageUploadType::class, $fieldDto->getFormType());
         self::assertStringContainsString('field-image', $fieldDto->getCssClass());
+    }
+
+    public function testDefaultShowPreview(): void
+    {
+        $field = ImageField::new('image');
+        $fieldDto = $this->configure($field);
+
+        self::assertTrue($fieldDto->getCustomOption(ImageField::OPTION_SHOW_PREVIEW));
+    }
+
+    public function testShowPreviewFalse(): void
+    {
+        $field = ImageField::new('image');
+        $field->showPreview(false);
+        $fieldDto = $this->configure($field);
+
+        self::assertFalse($fieldDto->getCustomOption(ImageField::OPTION_SHOW_PREVIEW));
     }
 
     public function testDefaultFileConstraints(): void

@@ -2,7 +2,7 @@
   "entrypoints": {
     "app": {
       "css": [
-        "/app.912702e5.css"
+        "/app.42998e24.css"
       ],
       "js": [
         "/app.e8e4fe24.js"
@@ -48,7 +48,7 @@
     },
     "field-image": {
       "js": [
-        "/field-image.c338d2ad.js"
+        "/field-image.a47abfe6.js"
       ]
     },
     "field-slug": {

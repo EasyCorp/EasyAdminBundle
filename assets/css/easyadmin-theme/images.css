@@ -1,3 +1,24 @@
+/* Image preview in forms
+/* ------------------------------------------------------------------------- */
+.ea-imageupload-preview {
+    margin-block-end: 10px;
+}
+.ea-imageupload-preview .ea-lightbox-thumbnail {
+    display: inline-block;
+    max-inline-size: 200px;
+    margin-inline-end: 8px;
+    margin-block-end: 8px;
+}
+.ea-imageupload-preview img {
+    border: 1px solid var(--datalist-border-color);
+    border-radius: var(--border-radius);
+    max-block-size: 150px;
+    padding: 4px;
+}
+.ea-imageupload-preview img:hover {
+    border-color: var(--form-input-border-color);
+}
+
 /* Images and lightbox
 /* ------------------------------------------------------------------------- */
 .detail .field-image .form-control {

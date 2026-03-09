@@ -77,6 +77,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaMoneyType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FileUploadType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ImageUploadType;
 use EasyCorp\Bundle\EasyAdminBundle\Intl\IntlFormatter;
 use EasyCorp\Bundle\EasyAdminBundle\Maker\ClassMaker;
 use EasyCorp\Bundle\EasyAdminBundle\Menu\MenuItemMatcher;
@@ -308,6 +309,11 @@ return static function (ContainerConfigurator $container) {
             ->tag('form.type', ['alias' => 'ea_filters'])
 
         ->set(FileUploadType::class)
+            ->arg(0, param('kernel.project_dir'))
+            ->arg(1, service('filesystem'))
+            ->tag('form.type')
+
+        ->set(ImageUploadType::class)
             ->arg(0, param('kernel.project_dir'))
             ->arg(1, service('filesystem'))
             ->tag('form.type')

@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -39,6 +40,10 @@ final readonly class ControllerFactory
 
     private function getCrudController(?string $crudControllerFqcn, ?string $crudAction, Request $request): ?CrudControllerInterface
     {
+        if (isset($request->attributes->get('_route_params')[EA::ENTITY_ID]) && !$request->attributes->has(EA::ENTITY_ID)) {
+            $request->attributes->set(EA::ENTITY_ID, $request->attributes->get('_route_params')[EA::ENTITY_ID]);
+        }
+
         return $this->getController(CrudControllerInterface::class, $crudControllerFqcn, $crudAction, $request);
     }
 

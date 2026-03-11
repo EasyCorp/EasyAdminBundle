@@ -72,6 +72,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Filter\Configurator\TextConfigurator as Text
 use EasyCorp\Bundle\EasyAdminBundle\Filter\Configurator\TimezoneConfigurator as TimezoneFilterConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Extension\CollectionTypeExtension;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Extension\EaCrudFormTypeExtension;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Factory\AdminSingleFieldFormFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudAutocompleteType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaMoneyType;
@@ -143,6 +144,7 @@ return static function (ContainerConfigurator $container) {
             ->arg(0, service('service_locator_'.AdminUrlGenerator::class))
             ->arg(1, service(AdminContextProvider::class))
             ->arg(2, service('translator'))
+            ->arg(3, new Reference(AdminSingleFieldFormFactory::class))
             ->tag('twig.extension')
 
         ->set(EaCrudFormTypeExtension::class)
@@ -296,6 +298,9 @@ return static function (ContainerConfigurator $container) {
             ->arg(1, service(AuthorizationChecker::class))
             ->arg(2, tagged_iterator(EasyAdminExtension::TAG_FIELD_CONFIGURATOR))
             ->arg(3, service(FormLayoutFactory::class))
+
+        ->set(AdminSingleFieldFormFactory::class)
+            ->arg(0, service('form.factory'))
 
         ->set(FieldProvider::class)
             ->arg(0, service(AdminContextProvider::class))

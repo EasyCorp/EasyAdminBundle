@@ -34,6 +34,9 @@
     {{ parent() }}
     {{ include('@EasyAdmin/includes/_js_assets.html.twig', {assets: ea_field_assets.jsAssets}, with_context: false) }}
     {{ include('@EasyAdmin/includes/_encore_script_tags.html.twig', {assets: ea_field_assets.webpackEncoreAssets}, with_context: false) }}
+    {% if contains_edit_in_place_forms %}
+        <script src="{{ asset('form.js', ea.assets.defaultAssetPackageName) }}"></script>
+    {% endif %}
 {% endblock %}
 
 {% block content_title %}
@@ -155,8 +158,18 @@
                         {% for field in entity.fields %}
                             {% set is_searchable = null == ea.crud.searchFields or field.property in ea.crud.searchFields %}
 
-                            <td data-column="{{ field.property }}" data-label="{{ field.label|trans|e('html') }}" class="{{ is_searchable ? 'searchable' }} {{ field.property == sort_field_name ? 'sorted' }} text-{{ field.textAlign }} {{ field.cssClass }}" dir="{{ ea.i18n.textDirection }}" {% for name, value in field.htmlAttributes %}{{ name }}="{{ value|e('html_attr') }}" {% endfor %}>
-                                {{ include(field.templatePath, {field: field, entity: entity}, with_context: false) }}
+                            {% set edit_in_place = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Config\\Action::INDEX') in field.editInPlaceActions %}
+                            <td data-column="{{ field.property }}" data-label="{{ field.label|trans|e('html') }}" class="{{ is_searchable ? 'searchable' }} {{ field.property == sort_field_name ? 'sorted' }} text-{{ field.textAlign }} {{ field.cssClass }} {{ edit_in_place ? 'edit-in-place' }}" dir="{{ ea.i18n.textDirection }}" {% for name, value in field.htmlAttributes %}{{ name }}="{{ value|e('html_attr') }}" {% endfor %}>
+                                {% if edit_in_place %}
+                                    {# In-place edit support #}
+                                    {{ include('@EasyAdmin/crud/includes/_edit_in_place.html.twig', {
+                                        field: field,
+                                        entity: entity,
+                                    }, with_context: false) }}
+                                {% else %}
+                                    {# Normal display #}
+                                    {{ include(field.templatePath, {field: field, entity: entity}, with_context: false) }}
+                                {% endif %}
                             </td>
                         {% endfor %}
 

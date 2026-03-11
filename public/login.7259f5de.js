@@ -1,1 +1,0 @@
-(()=>{var e=document.querySelector("form");e.addEventListener("submit",(function(){e.querySelector('button[type="submit"]').setAttribute("disabled","disabled")}),!1)})();

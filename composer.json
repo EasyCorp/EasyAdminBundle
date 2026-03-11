@@ -30,6 +30,7 @@
         "symfony/http-foundation": "^6.4.33|^7.0|^8.0",
         "symfony/http-kernel": "^6.4.33|^7.0|^8.0",
         "symfony/intl": "^6.4.32|^7.0|^8.0",
+        "symfony/polyfill-php84": "^1.29",
         "symfony/property-access": "^6.4.32|^7.0|^8.0",
         "symfony/security-bundle": "^6.4.32|^7.0|^8.0",
         "symfony/string": "^6.4.30|^7.0|^8.0",

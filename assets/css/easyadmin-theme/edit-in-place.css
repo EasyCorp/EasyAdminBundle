@@ -1,0 +1,7 @@
+td.edit-in-place [data-edit-in-place-toggle] {
+    filter: invert();
+}
+
+td.edit-in-place:hover [data-edit-in-place-toggle] {
+    filter: none;
+}

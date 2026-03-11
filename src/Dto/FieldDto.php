@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormColumnCloseType;
@@ -65,6 +66,9 @@ final class FieldDto
     private KeyValueStore $displayedOn;
     /** @var array<string, bool|int|float|string> */
     private array $htmlAttributes = [];
+
+    /** @var Action[]|string[] */
+    private array $editInPlaceActions = [];
 
     public function __construct()
     {
@@ -190,6 +194,27 @@ final class FieldDto
     public function setValue(mixed $value): void
     {
         $this->value = $value;
+    }
+
+    /**
+     * @return Action[]|string[]
+     */
+    public function getEditInPlaceActions(): array
+    {
+        return $this->editInPlaceActions;
+    }
+
+    /**
+     * @param Action[]|Action|string $action
+     */
+    public function setEditInPlace(array|Action|string $action): self
+    {
+        if (!\is_array($action)) {
+            $action = [$action];
+        }
+        $this->editInPlaceActions = $action;
+
+        return $this;
     }
 
     /**

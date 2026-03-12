@@ -21,6 +21,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntitySearchEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType;
 use Symfony\Component\Uid\Ulid;
@@ -30,14 +31,17 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final readonly class EntityRepository implements EntityRepositoryInterface
+final class EntityRepository implements EntityRepositoryInterface
 {
+    /** @var array<string, string> */
+    private array $associationAlreadyJoined = [];
+
     public function __construct(
-        private AdminContextProviderInterface $adminContextProvider,
-        private ManagerRegistry $doctrine,
-        private EntityFactory $entityFactory,
-        private FormFactory $formFactory,
-        private EventDispatcherInterface $eventDispatcher,
+        private readonly AdminContextProviderInterface $adminContextProvider,
+        private readonly ManagerRegistry $doctrine,
+        private readonly EntityFactory $entityFactory,
+        private readonly FormFactory $formFactory,
+        private readonly EventDispatcherInterface $eventDispatcher,
     ) {
     }
 
@@ -232,10 +236,18 @@ final readonly class EntityRepository implements EntityRepositoryInterface
                 ];
             }
 
-            /** @var string $rootAlias */
-            $rootAlias = current($queryBuilder->getRootAliases());
+            try {
+                $resolvedProperty = $this->resolveNestedAssociations($queryBuilder, $entityDto, $originalPropertyName, EntityFilter::class === $filter->getFqcn());
+            } catch (\InvalidArgumentException) {
+                // Fallback to support custom filters with unmapped property names
+                $resolvedProperty = [
+                    'entity_dto' => $entityDto,
+                    'entity_alias' => current($queryBuilder->getRootAliases()),
+                    'property_name' => $originalPropertyName,
+                ];
+            }
 
-            $filterDataDto = FilterDataDto::new($i, $filter, $rootAlias, $submittedData);
+            $filterDataDto = FilterDataDto::new($i, $filter, $resolvedProperty, $submittedData);
             $filter->apply($queryBuilder, $filterDataDto, $fields->getByProperty($originalPropertyName), $entityDto);
 
             ++$i;
@@ -263,47 +275,11 @@ final readonly class EntityRepository implements EntityRepositoryInterface
         $configuredSearchableProperties = $searchDto->getSearchableProperties();
         $searchableProperties = (null === $configuredSearchableProperties || 0 === \count($configuredSearchableProperties)) ? $entityDto->getClassMetadata()->getFieldNames() : $configuredSearchableProperties;
 
-        $entitiesAlreadyJoined = [];
         foreach ($searchableProperties as $searchableProperty) {
-            // support arbitrarily nested associations (e.g. foo.bar.baz.qux)
-            $associatedProperties = explode('.', $searchableProperty);
-            $numAssociatedProperties = \count($associatedProperties);
-            $parentEntityDto = $entityDto;
-            $parentEntityAlias = 'entity';
-            $fullPropertyName = $parentPropertyName = $associatedPropertyName = '';
-
-            for ($i = 0; $i < $numAssociatedProperties; ++$i) {
-                $associatedPropertyName = $associatedProperties[$i];
-                $fullPropertyName = trim($fullPropertyName.'.'.$associatedPropertyName, '.');
-
-                if ($this->isAssociation($parentEntityDto, $associatedPropertyName)) {
-                    if ($i === $numAssociatedProperties - 1) {
-                        throw new \InvalidArgumentException(sprintf('The "%s" property included in the setSearchFields() method is not a valid search field. When using associated properties in search, you must also define the exact field used in the search (e.g. \'%s.id\', \'%s.name\', etc.)', $searchableProperty, $searchableProperty, $searchableProperty));
-                    }
-
-                    $associatedEntityDto = $this->entityFactory->create($parentEntityDto->getClassMetadata()->getAssociationTargetClass($associatedPropertyName));
-
-                    if (!isset($entitiesAlreadyJoined[$fullPropertyName])) {
-                        $aliasIndex = \count($entitiesAlreadyJoined);
-                        $entitiesAlreadyJoined[$fullPropertyName] ??= Escaper::escapeDqlAlias($associatedPropertyName.(0 === $aliasIndex ? '' : $aliasIndex));
-                        $queryBuilder->leftJoin(Escaper::escapeDqlAlias($parentEntityAlias).'.'.$associatedPropertyName, $entitiesAlreadyJoined[$fullPropertyName]);
-                    }
-
-                    $parentEntityDto = $associatedEntityDto;
-                    $parentEntityAlias = $entitiesAlreadyJoined[$fullPropertyName];
-                    $parentPropertyName = '';
-                } else {
-                    // Normal & Embedded class properties
-                    $associatedPropertyName = $parentPropertyName = trim($parentPropertyName.'.'.$associatedPropertyName, '.');
-                }
-            }
-
-            if (!isset($parentEntityDto->getClassMetadata()->fieldMappings[$associatedPropertyName])) {
-                throw new \InvalidArgumentException(sprintf('The "%s" property included in the setSearchFields() method is not a valid search field. The field "%s" does not exist in "%s".', $searchableProperty, $associatedPropertyName, $searchableProperty));
-            }
+            $resolvedProperty = $this->resolveNestedAssociations($queryBuilder, $entityDto, $searchableProperty);
 
             // In Doctrine ORM 3.x, FieldMapping implements \ArrayAccess; in 4.x it's an object with properties
-            $fieldMapping = $parentEntityDto->getClassMetadata()->getFieldMapping($associatedPropertyName);
+            $fieldMapping = $resolvedProperty['entity_dto']->getClassMetadata()->getFieldMapping($resolvedProperty['property_name']);
             // In Doctrine ORM 2.x, getFieldMapping() returns an array
             /** @phpstan-ignore-next-line function.impossibleType */
             if (\is_array($fieldMapping)) {
@@ -332,7 +308,7 @@ final readonly class EntityRepository implements EntityRepositoryInterface
                 && !$isUlidProperty
                 && !$isJsonProperty
             ) {
-                $entityFqcn = $parentEntityDto->getFqcn();
+                $entityFqcn = $resolvedProperty['entity_dto']->getFqcn();
 
                 /** @var \ReflectionNamedType|\ReflectionUnionType|null $idClassType */
                 $idClassType = null;
@@ -340,8 +316,8 @@ final readonly class EntityRepository implements EntityRepositoryInterface
 
                 // this is needed to handle inherited properties
                 while (false !== $reflectionClass) {
-                    if ($reflectionClass->hasProperty($associatedPropertyName)) {
-                        $reflection = $reflectionClass->getProperty($associatedPropertyName);
+                    if ($reflectionClass->hasProperty($resolvedProperty['property_name'])) {
+                        $reflection = $reflectionClass->getProperty($resolvedProperty['property_name']);
                         $idClassType = $reflection->getType();
                         break;
                     }
@@ -360,9 +336,9 @@ final readonly class EntityRepository implements EntityRepositoryInterface
             }
 
             $searchablePropertiesConfig[] = [
-                'entity_name' => $parentEntityAlias,
+                'entity_name' => $resolvedProperty['entity_alias'],
                 'property_data_type' => $propertyDataType,
-                'property_name' => $associatedPropertyName,
+                'property_name' => $resolvedProperty['property_name'],
                 'is_boolean' => $isBoolean,
                 'is_small_integer' => $isSmallIntegerProperty,
                 'is_integer' => $isIntegerProperty,
@@ -375,6 +351,63 @@ final readonly class EntityRepository implements EntityRepositoryInterface
         }
 
         return $searchablePropertiesConfig;
+    }
+
+    /**
+     * Support arbitrarily nested associations (e.g. foo.bar.baz.qux).
+     *
+     * @return array{
+     *      entity_dto: EntityDto,
+     *      entity_alias: string,
+     *      property_name: string,
+     *  }
+     */
+    public function resolveNestedAssociations(?QueryBuilder $queryBuilder, EntityDto $rootEntityDto, string $propertyName, bool $mustEndWithAssociation = false): array
+    {
+        $associatedProperties = explode('.', $propertyName);
+        $numAssociatedProperties = \count($associatedProperties);
+        $resolvedEntityDto = $rootEntityDto;
+        $parentEntityAlias = 'entity';
+        $fullPropertyName = $compoundPropertyName = $resolvedPropertyName = '';
+
+        for ($i = 0; $i < $numAssociatedProperties; ++$i) {
+            $resolvedPropertyName = trim($compoundPropertyName.'.'.$associatedProperties[$i], '.');
+            $fullPropertyName = trim($fullPropertyName.'.'.$resolvedPropertyName, '.');
+
+            if ($this->isAssociation($resolvedEntityDto, $resolvedPropertyName)) {
+                if ($i === $numAssociatedProperties - 1) {
+                    if (!$mustEndWithAssociation) {
+                        throw new \InvalidArgumentException(sprintf('The "%s" property is not valid. When using associated properties, you must also define the exact field to target (e.g. "%s.id", "%s.name", etc.)', $propertyName, $propertyName, $propertyName));
+                    }
+
+                    // Skip join when the last property is an association
+                    continue;
+                }
+
+                if (isset($queryBuilder) && !isset($this->associationAlreadyJoined[$fullPropertyName])) {
+                    $aliasIndex = \count($this->associationAlreadyJoined);
+                    $this->associationAlreadyJoined[$fullPropertyName] ??= Escaper::escapeDqlAlias($resolvedPropertyName.(0 === $aliasIndex ? '' : $aliasIndex));
+                    $queryBuilder->leftJoin(Escaper::escapeDqlAlias($parentEntityAlias).'.'.$resolvedPropertyName, $this->associationAlreadyJoined[$fullPropertyName]);
+                }
+
+                $parentEntityAlias = $this->associationAlreadyJoined[$fullPropertyName] ?? null;
+                $resolvedEntityDto = $this->entityFactory->create($resolvedEntityDto->getClassMetadata()->getAssociationTargetClass($resolvedPropertyName));
+                $compoundPropertyName = '';
+            } else {
+                // Normal & Embedded class properties
+                $compoundPropertyName = $resolvedPropertyName;
+            }
+        }
+
+        if (!$mustEndWithAssociation && !isset($resolvedEntityDto->getClassMetadata()->fieldMappings[$resolvedPropertyName])) {
+            throw new \InvalidArgumentException(sprintf('The "%s" property is not valid. The field "%s" does not exist in "%s".', $propertyName, $resolvedPropertyName, $propertyName));
+        }
+
+        return [
+            'entity_dto' => $resolvedEntityDto,
+            'entity_alias' => $parentEntityAlias,
+            'property_name' => $resolvedPropertyName,
+        ];
     }
 
     private function isAssociation(EntityDto $entityDto, string $propertyName): bool

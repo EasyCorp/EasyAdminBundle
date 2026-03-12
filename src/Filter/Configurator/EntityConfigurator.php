@@ -10,6 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDto;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudAutocompleteType;
+use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 
 /**
@@ -20,6 +21,7 @@ final class EntityConfigurator implements FilterConfiguratorInterface
 {
     public function __construct(
         private AdminUrlGeneratorInterface $adminUrlGenerator,
+        private EntityRepository $entityRepository,
     ) {
     }
 
@@ -30,10 +32,9 @@ final class EntityConfigurator implements FilterConfiguratorInterface
 
     public function configure(FilterDto $filterDto, ?FieldDto $fieldDto, EntityDto $entityDto, AdminContext $context): void
     {
-        $propertyName = $filterDto->getProperty();
-        if (!$entityDto->getClassMetadata()->hasAssociation($propertyName)) {
-            return;
-        }
+        $resolvedProperty = $this->entityRepository->resolveNestedAssociations(null, $entityDto, $filterDto->getProperty(), true);
+        $entityDto = $resolvedProperty['entity_dto'];
+        $propertyName = $resolvedProperty['property_name'];
 
         // TODO: add the 'em' form type option too?
         $filterDto->setFormTypeOptionIfNotSet('value_type_options.class', $entityDto->getClassMetadata()->getAssociationTargetClass($propertyName));

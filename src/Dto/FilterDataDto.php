@@ -8,7 +8,8 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 final class FilterDataDto
 {
     private int $index;
-    private string $entityAlias;
+    /** @var array{entity_dto: EntityDto, entity_alias: string, property_name: string} */
+    private array $resolvedProperty;
     private FilterDto $filterDto;
     /** @var string */
     private $comparison;
@@ -20,14 +21,15 @@ final class FilterDataDto
     }
 
     /**
-     * @param array{comparison: string, value: mixed, value2?: mixed} $formData
+     * @param array{comparison: string, value: mixed, value2?: mixed}                   $formData
+     * @param array{entity_dto: EntityDto, entity_alias: string, property_name: string} $resolvedProperty
      */
-    public static function new(int $index, FilterDto $filterDto, string $entityAlias, array $formData): self
+    public static function new(int $index, FilterDto $filterDto, array $resolvedProperty, array $formData): self
     {
         $filterData = new self();
         $filterData->index = $index;
         $filterData->filterDto = $filterDto;
-        $filterData->entityAlias = $entityAlias;
+        $filterData->resolvedProperty = $resolvedProperty;
         $filterData->comparison = $formData['comparison'];
         $filterData->value = $formData['value'];
         $filterData->value2 = $formData['value2'] ?? null;
@@ -37,12 +39,12 @@ final class FilterDataDto
 
     public function getEntityAlias(): string
     {
-        return $this->entityAlias;
+        return $this->resolvedProperty['entity_alias'];
     }
 
     public function getProperty(): string
     {
-        return $this->filterDto->getProperty();
+        return $this->resolvedProperty['property_name'];
     }
 
     public function getFormTypeOption(string $optionName): mixed
@@ -67,11 +69,11 @@ final class FilterDataDto
 
     public function getParameterName(): string
     {
-        return sprintf('%s_%d', str_replace('.', '_', $this->getProperty()), $this->index);
+        return sprintf('%s_%d', str_replace('.', '_', $this->filterDto->getProperty()), $this->index);
     }
 
     public function getParameter2Name(): string
     {
-        return sprintf('%s_%d', str_replace('.', '_', $this->getProperty()), $this->index + 1);
+        return sprintf('%s_%d', str_replace('.', '_', $this->filterDto->getProperty()), $this->index + 1);
     }
 }

@@ -330,6 +330,7 @@ return static function (ContainerConfigurator $container) {
 
         ->set(EntityFilterConfigurator::class)
             ->arg(0, new Reference(AdminUrlGenerator::class))
+            ->arg(1, service(EntityRepository::class))
 
         ->set(LanguageFilterConfigurator::class)
 

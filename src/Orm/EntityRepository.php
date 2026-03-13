@@ -236,10 +236,13 @@ final class EntityRepository implements EntityRepositoryInterface
                 ];
             }
 
-            try {
-                $resolvedProperty = $this->resolveNestedAssociations($queryBuilder, $entityDto, $originalPropertyName, EntityFilter::class === $filter->getFqcn());
-            } catch (\InvalidArgumentException) {
-                // Fallback to support custom filters with unmapped property names
+            if (false !== $filterForm->getConfig()->getOption('mapped')) {
+                try {
+                    $resolvedProperty = $this->resolveNestedAssociations($queryBuilder, $entityDto, $originalPropertyName, EntityFilter::class === $filter->getFqcn());
+                } catch (\InvalidArgumentException $exception) {
+                    throw new \InvalidArgumentException(sprintf('%s If your filter is unmapped, you must set the "mapped" option to false.', $exception->getMessage()));
+                }
+            } else {
                 $resolvedProperty = [
                     'entity_dto' => $entityDto,
                     'entity_alias' => current($queryBuilder->getRootAliases()),

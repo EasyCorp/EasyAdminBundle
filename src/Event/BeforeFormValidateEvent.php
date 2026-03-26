@@ -23,9 +23,10 @@ final class BeforeFormValidateEvent extends AbstractLifecycleEvent
      * @param TEntity $entityInstance
      */
     public function __construct(
-        protected object $entityInstance,
+        object $entityInstance,
         private readonly FormInterface $form,
     ) {
+        parent::__construct($entityInstance);
     }
 
     public function getForm(): FormInterface

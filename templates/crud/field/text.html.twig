@@ -1,7 +1,7 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
 {# @var field \EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto #}
 {# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
-{% if field.customOptions.get('renderAsLinkToEntity') and ea().crud.currentAction == 'index' %}
+{% if field.customOptions.get('renderAsLinkToDetailAction') and ea().crud.currentAction == 'index' %}
     {% set url = ea_url()
         .setAction('detail')
         .setEntityId(entity.primaryKeyValue)

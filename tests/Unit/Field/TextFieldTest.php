@@ -136,21 +136,21 @@ class TextFieldTest extends AbstractFieldTest
         self::assertStringContainsString('&lt;script&gt;', $fieldDto->getFormattedValue());
     }
 
-    public function testRenderAsLinkToEntity(): void
+    public function testRenderAsLinkToDetailAction(): void
     {
         $field = TextField::new('foo');
-        $field->renderAsLinkToEntity();
+        $field->renderAsLinkToDetailAction();
         $fieldDto = $this->configure($field);
 
-        self::assertTrue($fieldDto->getCustomOption(TextField::OPTION_RENDER_AS_LINK_TO_ENTITY));
+        self::assertTrue($fieldDto->getCustomOption(TextField::OPTION_RENDER_AS_LINK_TO_DETAIL_ACTION));
     }
 
-    public function testRenderAsLinkToEntityDefaultIsFalse(): void
+    public function testRenderAsLinkToDetailActionDefaultIsFalse(): void
     {
         $field = TextField::new('foo');
         $fieldDto = $this->configure($field);
 
-        self::assertFalse($fieldDto->getCustomOption(TextField::OPTION_RENDER_AS_LINK_TO_ENTITY));
+        self::assertFalse($fieldDto->getCustomOption(TextField::OPTION_RENDER_AS_LINK_TO_DETAIL_ACTION));
     }
 
     public function testBackedEnumValue(): void

@@ -145,6 +145,7 @@ return [
         'sign_in' => 'ورود',
         'forgot_password' => 'کلمه عبور خود را فراموش کرده‌اید؟',
         'remember_me' => 'مرا به خاطر بسپار',
+        'show_password' => 'نمایش رمزعبور',
     ],
 
     'exception' => [

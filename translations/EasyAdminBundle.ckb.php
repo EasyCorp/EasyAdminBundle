@@ -145,6 +145,7 @@ return [
         'sign_in' => 'چوونەژوورەوە',
         'forgot_password' => 'وشەی نهێنیت لەبیرکردووە؟',
         'remember_me' => 'لەبیرم بگرە',
+        'show_password' => 'پیشاندانی وشەی نهێنی',
     ],
 
     'exception' => [

@@ -145,6 +145,7 @@ return [
         'sign_in' => 'Giriş yap',
         'forgot_password' => 'Parolanızı mı unuttunuz?',
         'remember_me' => 'Beni hatırla',
+        'show_password' => 'Şifreyi göster',
     ],
 
     'exception' => [

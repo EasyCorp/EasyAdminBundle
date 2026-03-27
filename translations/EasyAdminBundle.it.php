@@ -145,6 +145,7 @@ return [
         'sign_in' => 'Accedi',
         'forgot_password' => 'Password dimenticata?',
         'remember_me' => 'Ricordami',
+        'show_password' => 'Mostra password',
     ],
 
     'exception' => [

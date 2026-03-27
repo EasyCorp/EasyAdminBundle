@@ -145,6 +145,7 @@ return [
         'sign_in' => 'Inloggen',
         'forgot_password' => 'Wachtwoord vergeten?',
         'remember_me' => 'Onthoud mij',
+        'show_password' => 'Wachtwoord tonen',
     ],
 
     'exception' => [

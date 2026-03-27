@@ -145,6 +145,7 @@ return [
         'sign_in' => 'Autentifică-te',
         'forgot_password' => 'V-ați uitat parola?',
         'remember_me' => 'Tine-ma minte',
+        'show_password' => 'Afișați parola',
     ],
 
     'exception' => [

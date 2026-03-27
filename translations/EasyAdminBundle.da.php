@@ -145,6 +145,7 @@ return [
         'sign_in' => 'Sign in',
         'forgot_password' => 'Glemt din adgangskode?',
         'remember_me' => 'Husk mig',
+        'show_password' => 'Vis password',
     ],
 
     'exception' => [

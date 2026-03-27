@@ -145,6 +145,7 @@ return [
         'sign_in' => 'Masuk',
         'forgot_password' => 'Lupa kata sandi?',
         'remember_me' => 'Ingat saya',
+        'show_password' => 'Tampilkan kata sandi',
     ],
 
     'exception' => [

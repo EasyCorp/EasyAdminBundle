@@ -36,7 +36,7 @@
         "symfony/twig-bundle": "^6.4.32|^7.0|^8.0",
         "symfony/twig-bridge": "^6.4.32|^7.1.9|^7.2|^8.0",
         "symfony/uid": "^6.4.32|^7.0|^8.0",
-        "symfony/ux-twig-component": "^2.32",
+        "symfony/ux-twig-component": "^2.32|^3.0",
         "symfony/validator": "^6.4.33|^7.0|^8.0",
         "twig/extra-bundle": "^3.23",
         "twig/html-extra": "^3.23",

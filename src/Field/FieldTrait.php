@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Asset;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
@@ -494,5 +495,15 @@ trait FieldTrait
     public function getAsDto(): FieldDto
     {
         return $this->dto;
+    }
+
+    /**
+     * @param Action[]|Action|string $action
+     */
+    public function setEditInPlace(array|Action|string $action): self
+    {
+        $this->dto->setEditInPlace($action);
+
+        return $this;
     }
 }

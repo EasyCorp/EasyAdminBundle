@@ -36,6 +36,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityUpdatedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\EntityRemoveException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\ForbiddenActionException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\InsufficientEntityPermissionException;
+use EasyCorp\Bundle\EasyAdminBundle\Exception\InvalidEntityException;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\ActionFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\ControllerFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
@@ -45,6 +46,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\PaginatorFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Factory\AdminSingleFieldFormFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FileUploadType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Model\FileUploadState;
@@ -59,11 +61,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
 use function Symfony\Component\String\u;
@@ -126,6 +130,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             AdminUrlGenerator::class => '?'.AdminUrlGeneratorInterface::class,
             EntityRepository::class => '?'.EntityRepositoryInterface::class,
             EntityUpdater::class => '?'.EntityUpdaterInterface::class,
+            AdminSingleFieldFormFactory::class => '?'.AdminSingleFieldFormFactory::class,
         ]);
     }
 
@@ -168,6 +173,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             'global_actions' => $actions->getGlobalActions(),
             'batch_actions' => $actions->getBatchActions(),
             'filters' => $filters,
+            'contains_edit_in_place_forms' => array_any(iterator_to_array($processedFields), static fn (FieldDto $field) => \in_array(Action::INDEX, $field->getEditInPlaceActions(), true)),
         ]));
 
         $event = new AfterCrudActionEvent($context, $responseParameters);
@@ -236,29 +242,14 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         /** @var TEntity $entityInstance */
         $entityInstance = $context->getEntity()->getInstance();
 
+        // Old ajax-edit for boolean switches
         if ($context->getRequest()->isXmlHttpRequest()) {
-            if ('PATCH' !== $context->getRequest()->getMethod()) {
-                throw new MethodNotAllowedHttpException(['PATCH']);
-            }
+            return $this->handleBooleanSwitchAjaxEdit($context);
+        }
 
-            if (!$this->isCsrfTokenValid(BooleanField::CSRF_TOKEN_NAME, $context->getRequest()->query->get('csrfToken'))) {
-                throw new InvalidCsrfTokenException();
-            }
-
-            $fieldName = $context->getRequest()->query->get('fieldName');
-            $newValue = 'true' === mb_strtolower($context->getRequest()->query->get('newValue'));
-
-            try {
-                $event = $this->ajaxEdit($context->getEntity(), $fieldName, $newValue);
-            } catch (\Exception $e) {
-                throw new BadRequestHttpException($e->getMessage());
-            }
-
-            if ($event->isPropagationStopped()) {
-                return $event->getResponse();
-            }
-
-            return new Response($newValue ? '1' : '0');
+        // New system to edit a single field, like the "edit in place" system.
+        if (\in_array('application/json', $context->getRequest()->getAcceptableContentTypes(), true)) {
+            return $this->handleSingleFieldEdit($context);
         }
 
         $editForm = $this->createEditForm($context->getEntity(), $context->getCrud()->getEditFormOptions(), $context);
@@ -630,10 +621,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         return $this->container->get(AdminContextProviderInterface::class)->getContext();
     }
 
-    /**
-     * @param EntityDto<TEntity> $entityDto
-     */
-    protected function ajaxEdit(EntityDto $entityDto, ?string $propertyName, bool $newValue): AfterCrudActionEvent
+    protected function ajaxEdit(EntityDto $entityDto, ?string $propertyName, mixed $newValue): AfterCrudActionEvent
     {
         $field = $entityDto->getFields()->getByProperty($propertyName);
         if (null === $field || true === $field->getFormTypeOption('disabled')) {
@@ -727,10 +715,111 @@ abstract class AbstractCrudController extends AbstractController implements Crud
     {
         $fieldAssetsDto = new AssetsDto();
         $currentPageName = $this->getContext()?->getCrud()?->getCurrentPage();
+        $isDisplayAction = Action::INDEX === $currentPageName || Action::DETAIL === $currentPageName;
         foreach ($fieldDtos as $fieldDto) {
+            /** @var FieldDto $fieldDto */
             $fieldAssetsDto = $fieldAssetsDto->mergeWith($fieldDto->getAssets()->loadedOn($currentPageName));
+            if ($isDisplayAction && \in_array($currentPageName, $fieldDto->getEditInPlaceActions(), true)) {
+                $fieldAssetsDto = $fieldAssetsDto->mergeWith($fieldDto->getAssets()->loadedOn(Action::EDIT));
+            }
         }
 
         return $fieldAssetsDto;
+    }
+
+    private function handleBooleanSwitchAjaxEdit(AdminContext $context): Response
+    {
+        if ('PATCH' !== $context->getRequest()->getMethod()) {
+            throw new MethodNotAllowedHttpException(['PATCH']);
+        }
+
+        if (!$this->isCsrfTokenValid(BooleanField::CSRF_TOKEN_NAME, $context->getRequest()->query->get('csrfToken'))) {
+            throw new InvalidCsrfTokenException();
+        }
+
+        $fieldName = $context->getRequest()->query->get('fieldName');
+        $newValue = 'true' === mb_strtolower($context->getRequest()->query->get('newValue'));
+
+        try {
+            $event = $this->ajaxEdit($context->getEntity(), $fieldName, $newValue);
+        } catch (\Exception $e) {
+            throw new BadRequestHttpException($e->getMessage());
+        }
+
+        if ($event->isPropagationStopped()) {
+            return $event->getResponse();
+        }
+
+        return new Response($newValue ? '1' : '0');
+    }
+
+    public function handleSingleFieldEdit(AdminContext $context): Response
+    {
+        $formData = $context->getRequest()->request->all()[AdminSingleFieldFormFactory::FORM_NAME] ?? null;
+
+        if (
+            !$formData
+            || !isset($formData['newValue'], $formData['fieldName'])
+            || !$formData['fieldName']
+        ) {
+            throw new BadRequestHttpException(
+                'Invalid input: the fields "fieldName" and "newValue" need to be set in the request body.'
+            );
+        }
+
+        $fieldName = $formData['fieldName'];
+
+        $entityDto = $context->getEntity();
+
+        $fieldDto = $this->getFieldDto($entityDto, $fieldName, $context->getCrud()->getCurrentPage());
+
+        $form = $this->container->get(AdminSingleFieldFormFactory::class)->createBuilder($fieldDto)->getForm();
+        $form->handleRequest($context->getRequest());
+        if (!$form->isSubmitted()) {
+            throw new BadRequestHttpException('Invalid input: form could not be submitted.');
+        }
+
+        /** @var array{newValue: mixed, fieldName: string} $data */
+        $data = $form->getData();
+
+        try {
+            $event = $this->ajaxEdit($entityDto, $data['fieldName'], $data['newValue']);
+        } catch (InvalidEntityException $e) {
+            $messages = [];
+            foreach ($e->violations as $violation) {
+                $messages[] = $violation->getPropertyPath().': '.$violation->getMessage();
+            }
+            throw new BadRequestException(implode('<br>', $messages), 400, $e);
+        } catch (\Exception $e) {
+            throw new BadRequestHttpException($e->getMessage());
+        }
+
+        if ($event->isPropagationStopped()) {
+            return $event->getResponse();
+        }
+
+        // Field must be reset: now there is a new value in the instance.
+        $fieldDto = $this->getFieldDto($entityDto, $fieldName, $context->getCrud()->getCurrentPage());
+
+        return new JsonResponse([
+            'field_content' => $this->renderView($fieldDto->getTemplatePath(), ['field' => $fieldDto, 'entity' => $entityDto]),
+        ]);
+    }
+
+    public function getFieldDto(EntityDto $entityDto, string $fieldName, string $currentPage): FieldDto
+    {
+        $fields = new FieldCollection($this->configureFields($currentPage));
+        $this->container->get(FieldFactory::class)->processFields($entityDto, $fields, $currentPage);
+
+        if (0 === $fields->count()) {
+            throw new NotFoundHttpException('No fields found in this entity.');
+        }
+
+        $fieldDto = $fields->getByProperty($fieldName);
+        if (null === $fieldDto) {
+            throw new NotFoundHttpException(sprintf('No property "%s" in entity "%s".', $fieldName, $entityDto->getName()));
+        }
+
+        return $fieldDto;
     }
 }

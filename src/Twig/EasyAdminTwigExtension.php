@@ -2,10 +2,15 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Twig;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Context\AdminContextInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Provider\AdminContextProviderInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Factory\AdminSingleFieldFormFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 use Symfony\Component\DependencyInjection\ServiceLocator;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Contracts\Translation\TranslatableInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Extension\AbstractExtension;
@@ -27,6 +32,7 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
         private readonly ServiceLocator $serviceLocator,
         private readonly AdminContextProviderInterface $adminContextProvider,
         private readonly TranslatorInterface $translator,
+        private readonly AdminSingleFieldFormFactory $adminSingleFieldFormFactory,
     ) {
     }
 
@@ -35,6 +41,7 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
         return [
             new TwigFunction('ea', [$this, 'ea']),
             new TwigFunction('ea_url', [$this, 'getAdminUrlGenerator']),
+            new TwigFunction('ea_create_field_form', [$this, 'createFieldForm']),
             new TwigFunction('ea_form_ealabel', null, ['node_class' => 'Symfony\Bridge\Twig\Node\SearchAndRenderBlockNode', 'is_safe' => ['html']]),
         ];
     }
@@ -190,5 +197,25 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
     public function getAdminUrlGenerator(array $queryParameters = []): AdminUrlGeneratorInterface
     {
         return $this->serviceLocator->get(AdminUrlGeneratorInterface::class)->setAll($queryParameters);
+    }
+
+    public function createFieldForm(AdminContextProviderInterface $context, EntityDto $entity, FieldDto $fieldDto): FormInterface
+    {
+        $currentContext = $context->getContext();
+
+        $urlGenerator = $this->getAdminUrlGenerator();
+        $urlGenerator
+            ->setDashboard($currentContext->getDashboardControllerFqcn())
+            ->setController($currentContext->getCrud()?->getControllerFqcn())
+            ->setEntityId($entity->getPrimaryKeyValue())
+            ->setAction(Action::EDIT)
+            ->set('fieldName', $fieldDto->getProperty())
+        ;
+        $url = $urlGenerator->generateUrl();
+
+        $builder = $this->adminSingleFieldFormFactory->createBuilder($fieldDto);
+        $builder->setAction($url);
+
+        return $builder->getForm();
     }
 }

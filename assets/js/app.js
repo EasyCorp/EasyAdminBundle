@@ -34,6 +34,7 @@ class App {
         this.#createPopovers();
         this.#createTooltips();
         this.#createActionHandlers();
+        this.#createEditInPlaceElements();
 
         document.addEventListener('ea.collection.item-added', () => this.#createAutoCompleteFields());
     }
@@ -526,6 +527,23 @@ class App {
                 return;
             }
 
+            const editInPlaceCell = [...row.querySelectorAll('.edit-in-place')].filter((cell) =>
+                cell.contains(event.target)
+            );
+            if (editInPlaceCell.length > 1) {
+                console.warn('Multiple editable cells exist in row. Using only the first one.');
+            }
+            if (editInPlaceCell.length >= 1) {
+                console.info('editInPlaceCell', editInPlaceCell);
+                const button = editInPlaceCell[0]?.querySelector('[data-edit-in-place-toggle]');
+                if (!button) {
+                    console.error('Editable celle does not contain edition-toggle button. Aborting click handling.');
+                    return;
+                }
+                button.click();
+                return;
+            }
+
             const url = row.dataset.defaultActionUrl;
             if (url) {
                 navigateToUrl(url);
@@ -644,6 +662,161 @@ class App {
                 event.preventDefault();
                 window.location = element.getAttribute('data-ea-action-url');
             });
+        });
+    }
+
+    #createEditInPlaceElements() {
+        const toggle_attr = 'data-edit-in-place-toggle';
+        const toggles = document.querySelectorAll(`[${toggle_attr}]`);
+
+        if (!toggles.length) {
+            return;
+        }
+
+        toggles.forEach((toggle) => {
+            const unique_id = toggle.getAttribute(toggle_attr);
+            if (!unique_id) {
+                console.error(`There is an element with attribute "${toggle_attr}", but the attribute has no value.`);
+                return;
+            }
+            const field_container = document.querySelector(`[data-edit-field="${unique_id}"]`);
+            if (!field_container) {
+                console.error(
+                    `There is an element with attribute "${toggle_attr}", but there is no field value associated with it.`
+                );
+                return;
+            }
+            const form_container = document.querySelector(`[data-edit-form="${unique_id}"]`);
+            if (!form_container) {
+                console.error(
+                    `There is an element with attribute "${toggle_attr}", but there is no edit form container associated with it.`
+                );
+                return;
+            }
+            const message_container = document.querySelector(`[data-edit-message="${unique_id}"]`);
+            if (!message_container) {
+                console.error(
+                    `There is an element with attribute "${toggle_attr}", but there is no message container associated with it.`
+                );
+                return;
+            }
+            const form = form_container.querySelector('form');
+            if (!form) {
+                console.error(
+                    `There is an element with attribute "${toggle_attr}", but there is no edit form associated with it.`
+                );
+                return;
+            }
+
+            field_container.style.display = 'block';
+            form_container.style.display = 'none';
+            let show_form = false;
+            toggle.addEventListener('click', () => {
+                show_form = !show_form;
+                form_container.style.display = show_form ? 'block' : 'none';
+                field_container.style.display = show_form ? 'none' : 'block';
+            });
+
+            let is_submitting = false;
+
+            form_container.addEventListener('submit', (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+
+                if (is_submitting) {
+                    // Don't submit twice.
+                    return;
+                }
+                is_submitting = true;
+
+                const url = form.action;
+
+                message_container.className = '';
+                message_container.innerHTML = '';
+
+                const formData = new FormData(form);
+
+                [...form_container.querySelectorAll('input,select,button')]
+                    .filter((el) => !el.hasAttribute('disabled'))
+                    .forEach((el) => {
+                        el.setAttribute('disabled', 'disabled');
+                        el.dataset.enableAfterCall = '1';
+                    });
+
+                fetch(url, {
+                    method: 'post',
+                    body: formData,
+                    headers: {
+                        Accept: 'application/json',
+                    },
+                })
+                    .catch((e) => {
+                        message('error', e, 'HTTP error.');
+                    })
+                    .then((res) => {
+                        if (!res) {
+                            message('error', res, 'Internal error: Empty response.');
+                            return;
+                        }
+
+                        return res.json();
+                    })
+                    .then((json) => {
+                        if (!json) {
+                            console.error('No data.');
+                            return;
+                        }
+                        if (!json.field_content) {
+                            if (!json.detail) {
+                                console.error('The property "field_content" was not present in the response.');
+                                message(
+                                    'error',
+                                    json,
+                                    'Internal error: The field content was not present in the response.'
+                                );
+                                return;
+                            }
+                            message('error', json, `${json.detail}`);
+                            return;
+                        }
+
+                        field_container.style.display = 'block';
+                        form_container.style.display = 'none';
+                        show_form = false;
+                        field_container.innerHTML = json.field_content;
+                    })
+                    .finally(() => {
+                        [...form_container.querySelectorAll('input,select,button')]
+                            .filter((el) => el.dataset.enableAfterCall !== undefined)
+                            .forEach((el) => el.removeAttribute('disabled', 'disabled'));
+                        is_submitting = false;
+                    });
+            });
+
+            function message(type, object, message) {
+                let className = 'my-1 alert ';
+                if (type === 'success') {
+                    className += 'alert-success';
+                } else if (type === 'error') {
+                    className += 'alert-danger';
+                } else {
+                    className += 'alert-info';
+                }
+
+                message = message || '';
+
+                if (message) {
+                    message_container.className = className;
+                    message_container.innerHTML = message;
+                }
+
+                if (type === 'error') {
+                    console.error(message);
+                    console.error(object);
+                } else {
+                    console.info(message, object);
+                }
+            }
         });
     }
 }

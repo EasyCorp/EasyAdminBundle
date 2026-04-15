@@ -1,0 +1,33 @@
+{% set unique_id =
+    (entity.fqcn|replace({'\\': '-'}))
+    ~ '-' ~ (field.property)
+    ~ '-' ~ entity.primaryKeyValue
+%}
+<div class="d-flex flex-row align-items-center">
+    <div class="px-2">
+        <button class="btn btn-link p-0" data-edit-in-place-toggle="{{ unique_id }}">
+            <twig:ea:Icon name="internal:edit" />
+        </button>
+    </div>
+    <div>
+        <div data-edit-field="{{ unique_id }}">
+            {{ include(field.templatePath, {field: field, entity: entity}, with_context: false) }}
+        </div>
+        <div style="display: none" data-edit-form="{{ unique_id }}">
+            {% set field_form = ea_create_field_form(ea, entity, field) %}
+            {% set field_form_view = field_form.createView %}
+            {% form_theme field_form_view with ea().crud.formThemes only %}
+
+            {{ form_start(field_form_view) }}
+            {{ form_errors(field_form_view) }}
+            {{ form_widget(field_form_view) }}
+            {{ form_rest(field_form_view) }}
+            <button class="btn btn-primary mt-1" data-edit-in-place-toggle-submit>
+                {{ 'action.save'|trans({}, 'EasyAdminBundle') }}
+            </button>
+            {{ form_end(field_form_view) }}
+
+            <div data-edit-message="{{ unique_id }}"></div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,5 @@
+---------------------------------------------------------------------------
+
+by Ishadijcks at 2026-04-16T15:03:35Z
+
+I've fixed it in the caller, but perhaps it makes more sense to fix it in the `Header.html.twig`?

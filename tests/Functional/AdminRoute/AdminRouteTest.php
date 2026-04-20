@@ -184,6 +184,43 @@ class AdminRouteTest extends WebTestCase
         $this->assertNull($router->getRouteCollection()->get('admin_standalone_methods'));
     }
 
+    public function testAdminRouteAdvancedOptionsOnCrudAction(): void
+    {
+        $client = static::createClient();
+        $router = $client->getContainer()->get('router');
+        $route = $router->getRouteCollection()->get('admin_standalone_methods_crud_action3');
+
+        $this->assertNotNull($route, 'Route "admin_standalone_methods_crud_action3" should exist');
+        $this->assertSame('/admin/standalone-methods/crud/action3/{entityId}', $route->getPath());
+        $this->assertSame(['entityId' => '\d+'], $route->getRequirements());
+        $this->assertSame('admin.example.com', $route->getHost());
+        $this->assertSame(['https'], $route->getSchemes());
+        $this->assertSame('context.getMethod() in ["GET", "HEAD"]', $route->getCondition());
+        $this->assertSame('Symfony\Component\Routing\RouteCompiler', $route->getOption('compiler_class'));
+        $this->assertTrue($route->getOption('utf8'));
+        // custom CRUD actions that don't declare `methods` in their options default to GET and POST
+        $this->assertSame(['GET', 'POST'], $route->getMethods());
+
+        $defaults = $route->getDefaults();
+        $this->assertSame('bar', $defaults['foo']);
+        $this->assertSame('en', $defaults['_locale']);
+        $this->assertSame('html', $defaults['_format']);
+        $this->assertTrue($defaults['_stateless']);
+        $this->assertTrue($defaults[EA::ROUTE_CREATED_BY_EASYADMIN]);
+    }
+
+    public function testAdminRouteRequirementsReturn404OnCrudAction(): void
+    {
+        $client = static::createClient();
+
+        // non-matching path (violates the requirement entityId=\d+) must return 404
+        $client->request('GET', '/admin/standalone-methods/crud/action3/foo', [], [], [
+            'HTTPS' => 'on',
+            'HTTP_HOST' => 'admin.example.com',
+        ]);
+        $this->assertResponseStatusCodeSame(404);
+    }
+
     public function testRouteAccessibility(): void
     {
         $client = static::createClient();

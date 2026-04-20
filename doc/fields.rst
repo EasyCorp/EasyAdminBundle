@@ -141,7 +141,8 @@ Beware that unmapped fields are **not sortable** because they don't exist as a
 database table column, so they cannot be included in the Doctrine query. In some
 cases, you can overcome this limitation yourself by computing the unmapped field
 contents using SQL. To do so, override the ``createIndexQueryBuilder()`` method
-used in your :doc:`CRUD controller </crud>`::
+used in your :doc:`CRUD controller </crud>` (unmapped fields are also called
+*virtual fields* internally, see `Virtual Fields`_ below for more details)::
 
     namespace App\Controller\Admin;
 
@@ -174,6 +175,34 @@ used in your :doc:`CRUD controller </crud>`::
             return $queryBuilder;
         }
     }
+
+Virtual Fields
+~~~~~~~~~~~~~~
+
+Internally, EasyAdmin flags every unmapped field as a *virtual field*. A
+field is considered virtual when its property is neither a Doctrine-mapped
+column nor an association. This flag is set automatically by inspecting
+the entity's Doctrine metadata, so you don't need to call ``setVirtual()``
+on an unmapped field yourself: "virtual" and "unmapped" refer to the same
+concept.
+
+Virtual fields receive a ``field-virtual`` CSS class on their column header
+on the index page, which you can use to style them differently:
+
+.. code-block:: css
+
+    .field-virtual {
+        /* your custom styles */
+    }
+
+Since virtual fields have no Doctrine metadata to infer requirements from,
+they are also treated as optional (``required = false``) in forms by default.
+
+The ``setVirtual()`` method is available on every field as part of the
+``FieldTrait`` API. It is only useful from a custom field configurator
+that runs after the built-in ``CommonPreConfigurator``. Calls to
+``setVirtual()`` made directly in ``configureFields()`` are overwritten
+by the auto-detection before the field is rendered.
 
 Displaying Different Fields per Page
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

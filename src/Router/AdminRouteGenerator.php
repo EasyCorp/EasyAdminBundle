@@ -236,6 +236,9 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
                     ];
 
                     $adminRoute = new Route($adminRoutePath);
+                    // the framework-computed methods are applied first; if the user defined
+                    // an explicit "methods" key in the #[AdminRoute] options, it takes
+                    // precedence and overwrites them inside applyAdminRouteOptions()
                     $adminRoute->setMethods($actionRouteConfig['methods']);
                     $this->applyAdminRouteOptions($adminRoute, $actionRouteConfig['adminRouteOptions'] ?? [], $defaults);
                     $adminRoutes[$adminRouteName] = $adminRoute;

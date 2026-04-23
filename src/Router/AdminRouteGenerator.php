@@ -240,7 +240,7 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
                     // an explicit "methods" key in the #[AdminRoute] options, it takes
                     // precedence and overwrites them inside applyAdminRouteOptions()
                     $adminRoute->setMethods($actionRouteConfig['methods']);
-                    $this->applyAdminRouteOptions($adminRoute, $actionRouteConfig['adminRouteOptions'] ?? [], $defaults);
+                    self::applyAdminRouteOptions($adminRoute, $actionRouteConfig['adminRouteOptions'] ?? [], $defaults);
                     $adminRoutes[$adminRouteName] = $adminRoute;
                     $addedRouteNames[] = $adminRouteName;
                 }
@@ -442,7 +442,7 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
             EA::CRUD_ACTION => $methodName,
         ];
 
-        $this->applyAdminRouteOptions($route, $routeOptions, $defaults);
+        self::applyAdminRouteOptions($route, $routeOptions, $defaults);
 
         return $route;
     }
@@ -456,7 +456,7 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
      * @param array<string, mixed> $options
      * @param array<string, mixed> $defaults
      */
-    private function applyAdminRouteOptions(Route $route, array $options, array $defaults): void
+    private static function applyAdminRouteOptions(Route $route, array $options, array $defaults): void
     {
         if (isset($options['requirements'])) {
             $route->setRequirements($options['requirements']);
@@ -870,7 +870,7 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
             EA::CRUD_ACTION => null,
         ];
 
-        $this->applyAdminRouteOptions($route, $routeOptions, $defaults);
+        self::applyAdminRouteOptions($route, $routeOptions, $defaults);
 
         return ['routeName' => $routeName, 'route' => $route];
     }

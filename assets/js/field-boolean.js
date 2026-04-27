@@ -2,9 +2,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // toggle switches are only created in index page (i.e. in datagrid tables) because
     // in other pages they act like simple checkboxes or labels. Only in index page
     // the toggle switch can change the value of an entity propert via Ajax requests
-    document.querySelectorAll('.entity-list-item-data.field-boolean .form-switch input[type="checkbox"]').forEach((toggleField) => {
-        new ToggleSwitch(toggleField);
-    });
+    document
+        .querySelectorAll('.entity-list-item-data.field-boolean .form-switch input[type="checkbox"]')
+        .forEach((toggleField) => {
+            new ToggleSwitch(toggleField);
+        });
 });
 
 class ToggleSwitch {

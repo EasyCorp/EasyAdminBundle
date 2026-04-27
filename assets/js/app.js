@@ -481,7 +481,8 @@ class App {
             return;
         }
 
-        const clickTrigger = clickableRows[0].closest('.entity-list')?.getAttribute('data-default-action-trigger') || 'single';
+        const clickTrigger =
+            clickableRows[0].closest('.entity-list')?.getAttribute('data-default-action-trigger') || 'single';
 
         const interactiveSelectors = [
             'a',

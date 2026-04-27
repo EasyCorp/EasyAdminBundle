@@ -96,7 +96,8 @@
     {% set has_filters = filters|length > 0 %}
     {% set num_results = entities|length %}
 
-    <table class="table datagrid {{ entities is empty ? 'datagrid-empty' }}" data-default-action-trigger="{{ ea.crud.defaultRowActionTrigger }}">
+    {% block entity_list %}
+    <table class="entity-list table datagrid {{ entities is empty ? 'datagrid-empty' }}" data-default-action-trigger="{{ ea.crud.defaultRowActionTrigger }}">
         {% if num_results > 0 %}
             <thead>
             {% block table_head %}
@@ -143,7 +144,7 @@
             {% for entity in entities %}
                 {% block table_body_row %}
                 {% if entity.isAccessible %}
-                    <tr data-id="{{ entity.primaryKeyValueAsString }}" {% if entity.defaultActionUrl %}data-default-action-url="{{ entity.defaultActionUrl }}" class="ea-clickable-row" role="link" tabindex="0"{% endif %} {% block entity_row_attributes %}{% endblock %}>
+                    <tr data-id="{{ entity.primaryKeyValueAsString }}" {% if entity.defaultActionUrl %}data-default-action-url="{{ entity.defaultActionUrl }}" class="entity-list-item ea-clickable-row" role="link" tabindex="0"{% endif %} {% block entity_row_attributes %}{% endblock %}>
                         {% if has_batch_actions %}
                             <td class="batch-actions-selector">
                                 <div class="form-check">
@@ -155,7 +156,7 @@
                         {% for field in entity.fields %}
                             {% set is_searchable = null == ea.crud.searchFields or field.property in ea.crud.searchFields %}
 
-                            <td data-column="{{ field.property }}" data-label="{{ field.label|trans|e('html') }}" class="{{ is_searchable ? 'searchable' }} {{ field.property == sort_field_name ? 'sorted' }} text-{{ field.textAlign }} {{ field.cssClass }}" dir="{{ ea.i18n.textDirection }}" {% for name, value in field.htmlAttributes %}{{ name }}="{{ value|e('html_attr') }}" {% endfor %}>
+                            <td data-column="{{ field.property }}" data-label="{{ field.label|trans|e('html') }}" class="entity-list-item-value{{ is_searchable ? 'searchable' }} {{ field.property == sort_field_name ? 'sorted' }} text-{{ field.textAlign }} {{ field.cssClass }}" dir="{{ ea.i18n.textDirection }}" {% for name, value in field.htmlAttributes %}{{ name }}="{{ value|e('html_attr') }}" {% endfor %}>
                                 {{ include(field.templatePath, {field: field, entity: entity}, with_context: false) }}
                             </td>
                         {% endfor %}
@@ -245,6 +246,7 @@
         {% endblock table_footer %}
         </tfoot>
     </table>
+    {% endblock entity_list %}
 
     {% if entities|length > 0 %}
         <div class="content-panel-footer without-padding without-border">

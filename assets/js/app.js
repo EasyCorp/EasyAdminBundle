@@ -185,7 +185,7 @@ class App {
 
         const searchQueryTerms = tokenizeString(searchElement.value);
 
-        const elementsToHighlight = document.querySelectorAll('table tbody td.searchable');
+        const elementsToHighlight = document.querySelectorAll('.entity-list-item-value.searchable');
         const highlighter = new Mark(elementsToHighlight);
         highlighter.mark(searchQueryTerms, { separateWordSearch: false });
     }
@@ -298,7 +298,7 @@ class App {
                 const selectedRowCheckboxes = document.querySelectorAll(
                     'input[type="checkbox"].form-batch-checkbox:checked'
                 );
-                const row = rowCheckbox.closest('tr');
+                const row = rowCheckbox.closest('.entity-list-item');
                 const content = rowCheckbox.closest('.content');
 
                 if (rowCheckbox.checked) {
@@ -476,12 +476,12 @@ class App {
     }
 
     #createDefaultRowAction() {
-        const clickableRows = document.querySelectorAll('tr.ea-clickable-row[data-default-action-url]');
+        const clickableRows = document.querySelectorAll('.entity-list-item.ea-clickable-row[data-default-action-url]');
         if (0 === clickableRows.length) {
             return;
         }
 
-        const clickTrigger = clickableRows[0].closest('table')?.getAttribute('data-default-action-trigger') || 'single';
+        const clickTrigger = clickableRows[0].closest('.entity-list')?.getAttribute('data-default-action-trigger') || 'single';
 
         const interactiveSelectors = [
             'a',

@@ -17,6 +17,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FieldFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudFormType;
+use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use Symfony\Component\Form\Extension\Core\Type\CountryType;
 use Symfony\Component\Form\Extension\Core\Type\CurrencyType;
 use Symfony\Component\Form\Extension\Core\Type\LanguageType;
@@ -36,6 +37,7 @@ final readonly class CollectionConfigurator implements FieldConfiguratorInterfac
         private ControllerFactory $controllerFactory,
         private FieldFactory $fieldFactory,
         private AdminContextProviderInterface $adminContextProvider,
+        private EntityRepository $entityRepository,
     ) {
     }
 
@@ -125,24 +127,24 @@ final readonly class CollectionConfigurator implements FieldConfiguratorInterfac
 
     private function configureEntryType(FieldDto $fieldDto, EntityDto $entityDto, AdminContext $context): void
     {
+        $resolvedProperty = $this->entityRepository->resolveNestedAssociations(null, $entityDto, $fieldDto->getProperty(), true);
+        /** @var EntityDto $entityDtoResolved */
+        $entityDtoResolved = $resolvedProperty['entity_dto'];
+        /** @var string $resolvedProperty */
+        $resolvedProperty = $resolvedProperty['property_name'];
         if (true === $fieldDto->getCustomOption(CollectionField::OPTION_ENTRY_USES_CRUD_FORM)) {
-            if (!$entityDto->getClassMetadata()->hasAssociation($fieldDto->getProperty())) {
-                throw new \RuntimeException(sprintf('The "%s" collection field of "%s" cannot use the "useEntryCrudForm()" method because it is not a Doctrine association.', $fieldDto->getProperty(), $context->getCrud()?->getControllerFqcn()));
-            }
-
             if (null !== $fieldDto->getCustomOptions()->get(CollectionField::OPTION_ENTRY_TYPE)) {
                 throw new \RuntimeException(sprintf('The "%s" collection field of "%s" can render its entries using a Symfony Form (via the "setEntryType()" method) or using an EasyAdmin CRUD Form (via the "useEntryCrudForm()" method) but you cannot use both methods at the same time. Remove one of those two methods.', $fieldDto->getProperty(), $context->getCrud()?->getControllerFqcn()));
             }
 
             $targetCrudControllerFqcn = $fieldDto->getCustomOption(CollectionField::OPTION_ENTRY_CRUD_CONTROLLER_FQCN)
-                ?? $context->getAdminControllers()->findCrudControllerByEntity($entityDto->getClassMetadata()->getAssociationTargetClass($fieldDto->getProperty()));
+                ?? $context->getAdminControllers()->findCrudControllerByEntity($entityDtoResolved->getClassMetadata()->getAssociationTargetClass($resolvedProperty));
 
             if (null === $targetCrudControllerFqcn) {
                 throw new \RuntimeException(sprintf('The "%s" collection field of "%s" wants to render its entries using an EasyAdmin CRUD form. However, no CRUD form was found related to this field. You can either create a CRUD controller for the entity "%s" or pass the CRUD controller to use as the first argument of the "useEntryCrudForm()" method.', $fieldDto->getProperty(), $context->getCrud()?->getControllerFqcn(), $entityDto->getClassMetadata()->getAssociationTargetClass($fieldDto->getProperty())));
             }
-        } elseif (null === $fieldDto->getFormTypeOption('entry_type')
-            && $entityDto->getClassMetadata()->hasAssociation($fieldDto->getProperty())) {
-            $targetCrudControllerFqcn = $context->getAdminControllers()->findCrudControllerByEntity($entityDto->getClassMetadata()->getAssociationTargetClass($fieldDto->getProperty()));
+        } elseif (null === $fieldDto->getFormTypeOption('entry_type')) {
+            $targetCrudControllerFqcn = $context->getAdminControllers()->findCrudControllerByEntity($entityDtoResolved->getClassMetadata()->getAssociationTargetClass($resolvedProperty));
 
             if (null === $targetCrudControllerFqcn) {
                 return;
@@ -152,14 +154,14 @@ final readonly class CollectionConfigurator implements FieldConfiguratorInterfac
         }
 
         $editEntityDto = $this->createEntityDto(
-            $entityDto->getClassMetadata()->getAssociationTargetClass($fieldDto->getProperty()),
+            $entityDtoResolved->getClassMetadata()->getAssociationTargetClass($resolvedProperty),
             $targetCrudControllerFqcn,
             Action::EDIT,
             $fieldDto->getCustomOption(CollectionField::OPTION_ENTRY_CRUD_EDIT_PAGE_NAME) ?? Crud::PAGE_EDIT,
             Crud::PAGE_EDIT,
         );
         $newEntityDto = $this->createEntityDto(
-            $entityDto->getClassMetadata()->getAssociationTargetClass($fieldDto->getProperty()),
+            $entityDtoResolved->getClassMetadata()->getAssociationTargetClass($resolvedProperty),
             $targetCrudControllerFqcn,
             Action::NEW,
             $fieldDto->getCustomOption(CollectionField::OPTION_ENTRY_CRUD_NEW_PAGE_NAME) ?? Crud::PAGE_NEW,

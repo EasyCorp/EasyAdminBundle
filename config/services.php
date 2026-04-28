@@ -440,6 +440,7 @@ return static function (ContainerConfigurator $container) {
             ->arg(2, service(ControllerFactory::class))
             ->arg(3, new Reference(FieldFactory::class))
             ->arg(4, service(AdminContextProvider::class))
+            ->arg(5, service(EntityRepository::class))
 
         ->set(SlugConfigurator::class)
 

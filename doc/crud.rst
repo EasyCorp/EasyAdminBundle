@@ -642,6 +642,25 @@ Clicks on checkboxes, buttons, links, or any action elements within the row won'
 trigger the navigation to preserve the expected behavior of those elements.
 Also, rows selected in batch mode won't navigate when clicked.
 
+When the default row action is enabled, each row receives the ``ea-clickable-row``
+CSS class. To add custom classes alongside it (for example, to colorize rows by
+status), override the ``entity_row_class`` block of the
+``@EasyAdmin/crud/index.html.twig`` template:
+
+.. code-block:: twig
+
+    {# templates/admin/crud/index.html.twig #}
+    {% extends '@EasyAdmin/crud/index.html.twig' %}
+
+    {% block entity_row_class %}status-row status-row-{{ entity.instance.status.name|lower }}{% endblock %}
+
+This block contributes to the same ``class="..."`` attribute as
+``ea-clickable-row``, so they coexist without producing duplicate ``class``
+attributes. The neighbour ``entity_row_attributes`` block is meant for any
+other ``<tr>`` attribute (``data-*``, ``aria-*``, etc.); putting a ``class=``
+in it would render two ``class`` attributes, and per HTML only the first is
+kept, so the user-supplied class would be silently dropped.
+
 Other Options
 ~~~~~~~~~~~~~
 

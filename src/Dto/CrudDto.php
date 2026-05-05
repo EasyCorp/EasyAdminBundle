@@ -57,7 +57,7 @@ final class CrudDto
     private ?string $timePattern = 'medium';
     /** @var array{string, string} */
     private array $dateTimePattern = ['medium', 'medium'];
-    private string $dateIntervalFormat = '%%y Year(s) %%m Month(s) %%d Day(s)';
+    private ?string $dateIntervalFormat = null;
     private ?string $timezone = null;
     private ?string $numberFormat = null;
     private ?string $thousandsSeparator = null;
@@ -288,12 +288,12 @@ final class CrudDto
         $this->dateTimePattern = [$dateFormatOrPattern, $timeFormat];
     }
 
-    public function getDateIntervalFormat(): string
+    public function getDateIntervalFormat(): ?string
     {
         return $this->dateIntervalFormat;
     }
 
-    public function setDateIntervalFormat(string $format): void
+    public function setDateIntervalFormat(?string $format): void
     {
         $this->dateIntervalFormat = $format;
     }

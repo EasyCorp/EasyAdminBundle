@@ -1,13 +1,23 @@
 import { toggleVisibilityClasses } from './helpers';
 
-const eaFileUploadHandler = (event) => {
-    document.querySelectorAll('.ea-fileupload input[type="file"]').forEach((fileUploadElement) => {
+const initFileUploadFields = (root) => {
+    root.querySelectorAll('.ea-fileupload input[type="file"]').forEach((fileUploadElement) => {
+        if (fileUploadElement.dataset.eaFileuploadInitialized === '1') {
+            return;
+        }
+        fileUploadElement.dataset.eaFileuploadInitialized = '1';
         new FileUploadField(fileUploadElement);
     });
 };
 
-window.addEventListener('DOMContentLoaded', eaFileUploadHandler);
-document.addEventListener('ea.collection.item-added', eaFileUploadHandler);
+window.addEventListener('DOMContentLoaded', () => initFileUploadFields(document));
+document.addEventListener('ea.collection.item-added', (event) => {
+    // only initialise the file upload fields contained in the newly added collection item:
+    // re-running the query on the whole document would re-attach listeners to already
+    // processed fields and double-fire their handlers (see #6637). The dataset flag
+    // already protects against double-init if `event.detail.newElement` is missing.
+    initFileUploadFields(event?.detail?.newElement ?? document);
+});
 
 class FileUploadField {
     #fieldContainerElement;

@@ -1,0 +1,104 @@
+---------------------------------------------------------------------------
+
+by KDederichs at 2026-05-08T08:11:14Z
+
+Honestly, the german one got worse
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2026-05-08T17:58:51Z
+
+I asked another AI and suggested to change the following on this PR:
+
+```diff
+diff --git a/translations/EasyAdminBundle.cs.php b/translations/EasyAdminBundle.cs.php
+@@
+-        'title' => 'Chystáte se použít akci "%action_name%" na %num_items% položek.',
++        'title' => 'Opravdu chcete použít akci "%action_name%"? Vybrané položky: %num_items%.',
+
+diff --git a/translations/EasyAdminBundle.de.php b/translations/EasyAdminBundle.de.php
+@@
+-        'title' => 'Sie werden die Aktion "%action_name%" auf %num_items% Element(e) anwenden.',
++        'title' => 'Möchten Sie die Aktion "%action_name%" wirklich anwenden? Ausgewählte Elemente: %num_items%.',
+
+diff --git a/translations/EasyAdminBundle.hu.php b/translations/EasyAdminBundle.hu.php
+@@
+-        'title' => 'A(z) "%action_name%" műveletet fogja alkalmazni %num_items% elemre.',
++        'title' => 'Biztosan alkalmazza ezt a műveletet: "%action_name%"? Kiválasztott elemek: %num_items%.',
+
+diff --git a/translations/EasyAdminBundle.lb.php b/translations/EasyAdminBundle.lb.php
+@@
+-        'title' => 'Dir gitt d\'Aktioun "%action_name%" op %num_items% Element(er) uwenden.',
++        'title' => 'Wëllt Dir d\'Aktioun "%action_name%" wierklech ausféieren? Unzuel vun ausgewielten Elementer: %num_items%.',
+
+diff --git a/translations/EasyAdminBundle.lt.php b/translations/EasyAdminBundle.lt.php
+@@
+-        'hidden_results' => 'Kai kurie elementai negali būti parodyti nes jums trūksta teisių.',
++        'hidden_results' => 'Kai kurie elementai negali būti parodyti, nes jums trūksta teisių.',
+@@
+-        'title' => 'Ketinate pritaikyti veiksmą "%action_name%" %num_items% elementui (-ams).',
++        'title' => 'Ar tikrai norite pritaikyti veiksmą "%action_name%"? Pasirinkta elementų: %num_items%.',
+
+diff --git a/translations/EasyAdminBundle.nl.php b/translations/EasyAdminBundle.nl.php
+@@
+-        'title' => 'Je gaat de actie "%action_name%" toepassen op %num_items% item(s).',
++        'title' => 'Weet je zeker dat je de actie "%action_name%" wilt toepassen? Geselecteerde items: %num_items%.',
+
+diff --git a/translations/EasyAdminBundle.pl.php b/translations/EasyAdminBundle.pl.php
+@@
+-        'title' => 'Zastosujesz akcję "%action_name%" do %num_items% elementu(ów).',
++        'title' => 'Czy na pewno chcesz zastosować akcję "%action_name%"? Wybrane elementy: %num_items%.',
+
+diff --git a/translations/EasyAdminBundle.pt_BR.php b/translations/EasyAdminBundle.pt_BR.php
+@@
+-        'title' => 'Você aplicará a ação "%action_name%" a %num_items% item(ns).',
++        'title' => 'Você deseja aplicar a ação "%action_name%"? Itens selecionados: %num_items%.',
+
+diff --git a/translations/EasyAdminBundle.sk.php b/translations/EasyAdminBundle.sk.php
+@@
+-        'title' => 'Chystáte sa použiť akciu "%action_name%" na %num_items% položiek.',
++        'title' => 'Naozaj chcete použiť akciu "%action_name%"? Vybrané položky: %num_items%.',
+
+diff --git a/translations/EasyAdminBundle.tr.php b/translations/EasyAdminBundle.tr.php
+@@
+-        'title' => '"%action_name%" eylemini %num_items% öğeye uygulayacaksınız.',
++        'title' => '"%action_name%" eylemini uygulamak istediğinize emin misiniz? Seçili öğe sayısı: %num_items%.',
+
+diff --git a/translations/EasyAdminBundle.uk.php b/translations/EasyAdminBundle.uk.php
+@@
+-        'title' => 'Ви збираєтеся застосувати дію "%action_name%" до %num_items% елемент(ів).',
++        'title' => 'Ви справді хочете застосувати дію "%action_name%"? Вибрано елементів: %num_items%.',
+```
+
+---------------------------------------------------------------------------
+
+by Seb33300 at 2026-05-09T08:33:06Z
+
+@javiereguiluz did you provide the original english translation?
+I requested codex to translate from english.
+
+Because in the english translation, there is no question asked to the user:
+> You are going to apply the "%action_name%" action to %num_items% item(s).
+
+@KDederichs How would you translate this in german?
+
+---------------------------------------------------------------------------
+
+by KDederichs at 2026-05-09T16:10:46Z
+
+Either like like @javiereguiluz AI or more natural would be:
+`Möchten Sie die Aktion "%action_name%" wirklich auf %num_items% Element(e) anwenden? `
+
+It'd be good if if you could switch between singular and plural cause then you could just do:
+
+Singular:
+`Möchten Sie die Aktion "%action_name%" wirklich auf %num_items% Element anwenden? `
+
+Plural:
+`Möchten Sie die Aktion "%action_name%" wirklich auf %num_items% Elemente anwenden? `
+
+---------------------------------------------------------------------------
+
+by Seb33300 at 2026-05-11T02:06:31Z
+
+I have reverted changes in `batch_action_modal.title` to focus only on other typos

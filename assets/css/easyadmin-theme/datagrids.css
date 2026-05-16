@@ -222,6 +222,13 @@ table.datagrid:not(.datagrid-empty) tr:not(.empty-row) td.actions.actions-as-dro
     background: var(--dropdown-item-danger-bg);
     color: var(--dropdown-item-danger-color);
 }
+.datagrid td.actions .dropdown-item-variant-info:hover,
+.page-actions .dropdown-item-variant-info:hover {
+    --dropdown-icon-color: var(--dropdown-item-info-color);
+
+    background: var(--dropdown-item-info-bg);
+    color: var(--dropdown-item-info-color);
+}
 
 @media (min-width: 992px) {
     .datagrid td.actions-as-dropdown {

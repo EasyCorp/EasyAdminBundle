@@ -112,9 +112,11 @@
     --dropdown-item-success-bg: #dafbe1;
     --dropdown-item-warning-bg: #fff8c5;
     --dropdown-item-danger-bg: #ffebe9;
+    --dropdown-item-info-bg: #e0f8ff;
     --dropdown-item-success-color: #1a7f37;
     --dropdown-item-warning-color: #9a6700;
     --dropdown-item-danger-color: #d1242f;
+    --dropdown-item-info-color: #0da1f0;
     --datagrid-noresults-placeholder-bg: var(--gray-100);
     --datagrid-hidden-results-gradient-bg: var(--gray-50);
     --table-thead-color: var(--gray-800);

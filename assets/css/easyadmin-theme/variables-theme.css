@@ -342,6 +342,19 @@
     --button-danger-active-color: var(--white);
     --button-danger-active-border-color: #1f23280a;
 
+    --button-info-box-shadow: 0 1px 0 0 #1f23280a;
+    --button-info-bg: linear-gradient(to bottom, white, #f6f8fa);
+    --button-info-color: #0da1f0;
+    --button-info-icon-color: inherit;
+    --button-info-border-color: #1f232826;
+    --button-info-hover-bg: #0db3f0;
+    --button-info-hover-color: var(--white);
+    --button-info-hover-border-color: #1f23280a;
+    --button-info-active-box-shadow: inset 0 1px 0 0 #4c001433;
+    --button-info-active-bg: #0db3f0;
+    --button-info-active-color: var(--white);
+    --button-info-active-border-color: #1f23280a;
+
     --button-invisible-box-shadow: none;
     --button-invisible-bg: transparent;
     --button-invisible-color: inherit;

@@ -106,7 +106,12 @@ final class CollectionConfigurator implements FieldConfiguratorInterface
                 return $this->countNumElements($field->getValue());
             }
 
-            $collectionItemsAsText[] = (string) $item;
+            $itemString = (string) $item;
+            if (!mb_check_encoding($itemString, 'UTF-8')) {
+                $itemString = mb_convert_encoding($itemString, 'UTF-8', 'UTF-8');
+            }
+
+            $collectionItemsAsText[] = $itemString;
         }
 
         $isDetailAction = Action::DETAIL === $context->getCrud()->getCurrentAction();

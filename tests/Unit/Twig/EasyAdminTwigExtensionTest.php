@@ -68,21 +68,21 @@ class EasyAdminTwigExtensionTest extends KernelTestCase
 
     public static function provideValuesForFileSize(): iterable
     {
-        yield [0, '0B'];
-        yield [1, '1B'];
-        yield [1023, '1023B'];
-        yield [1024, '1K'];
-        yield [999_900, '976K'];
-        yield [1024 ** 2 - 100, '1023K'];
-        yield [1024 ** 2, '1M'];
-        yield [1024 ** 2 + 100, '1M'];
-        yield [1024 ** 3 - 1, '1023M'];
-        yield [1024 ** 3, '1G'];
-        yield [1024 ** 3 + 1, '1G'];
-        yield [1024 ** 4, '1T'];
-        yield [1024 ** 5, '1P'];
-        yield [1024 ** 6, '1E'];
-        yield [\PHP_INT_MAX, '8E'];
+        yield [0, '0 B'];
+        yield [1, '1 B'];
+        yield [1023, '1023 B'];
+        yield [1024, '1 KB'];
+        yield [999_900, '976.5 KB'];
+        yield [1024 ** 2 - 100, '1023.9 KB'];
+        yield [1024 ** 2, '1 MB'];
+        yield [1024 ** 2 + 100, '1 MB'];
+        yield [1024 ** 3 - 1, '1024 MB'];
+        yield [1024 ** 3, '1 GB'];
+        yield [1024 ** 3 + 1, '1 GB'];
+        yield [1024 ** 4, '1 TB'];
+        yield [1024 ** 5, '1 PB'];
+        yield [1024 ** 6, '1 EB'];
+        yield [\PHP_INT_MAX, '8 EB'];
     }
 
     public static function provideValuesForRepresentAsString(): iterable

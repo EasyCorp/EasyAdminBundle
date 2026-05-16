@@ -54,6 +54,7 @@ return [
         'remove_item' => 'Slet emnet',
         'choose_file' => 'Vælg fil',
         'close' => 'Luk',
+        'download' => 'Download',
         'create' => 'Opret',
         'create_and_add_another' => 'Opret og tilføj ny',
         'create_and_continue' => 'Opret og fortsæt redigering',
@@ -107,6 +108,7 @@ return [
     'form' => [
         'are_you_sure' => 'Du har ikke gemt ændringerne til denne form.',
         'tab.error_badge_title' => 'En ugyldig indtastning|%count% ugyldige indtastninger',
+        'slug.confirm_text' => 'Hvis du ændrer sluggen, kan du ødelægge links på andre sider.',
     ],
 
     'user' => [
@@ -146,9 +148,15 @@ return [
         'general_500' => 'Der opstod en intern fejl under behandlingen af din forespørgsel.',
     ],
 
+    'file_upload' => [
+        'add_file' => 'Tilføj fil',
+        'add_files' => 'Tilføj filer',
+        'clear_all' => 'Ryd alle',
+    ],
+
     'autocomplete' => [
         'no-results-found' => 'Ingen resultater fundet',
-        // 'no-more-results' => 'No more results',
+        'no-more-results' => 'Ikke flere resultater',
         'loading-more-results' => 'Indlæser flere resultater…',
     ],
 ];

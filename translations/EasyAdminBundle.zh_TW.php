@@ -54,6 +54,7 @@ return [
         'remove_item' => '移除項目',
         'choose_file' => '選擇檔案',
         'close' => '關閉',
+        'download' => '下載',
         'create' => '建立',
         'create_and_add_another' => '建立並繼續新增',
         'create_and_continue' => '建立並繼續編輯',
@@ -145,6 +146,12 @@ return [
         'general_403' => '您沒有權限執行此操作。',
         'general_404' => '找不到請求的頁面。',
         'general_500' => '處理請求時發生內部錯誤。',
+    ],
+
+    'file_upload' => [
+        'add_file' => '新增檔案',
+        'add_files' => '新增檔案',
+        'clear_all' => '全部清除',
     ],
 
     'autocomplete' => [

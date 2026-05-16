@@ -54,6 +54,7 @@ return [
         'remove_item' => 'Odstrani element',
         'choose_file' => 'Izberite datoteko',
         'close' => 'Zapri',
+        'download' => 'Prenesi',
         'create' => 'Ustvari',
         'create_and_add_another' => 'Ustvari in dodaj drugega',
         'create_and_continue' => 'Ustvari in nadaljuj urejanje',
@@ -145,6 +146,12 @@ return [
         'general_403' => 'You don\'t have permission to perform this action.',
         'general_404' => 'The requested page could not be found.',
         'general_500' => 'An internal error occurred while processing your request.',
+    ],
+
+    'file_upload' => [
+        'add_file' => 'Dodaj datoteko',
+        'add_files' => 'Dodaj datoteke',
+        'clear_all' => 'Počisti vse',
     ],
 
     'autocomplete' => [

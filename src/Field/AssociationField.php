@@ -17,8 +17,6 @@ final class AssociationField implements FieldInterface
     public const OPTION_AUTOCOMPLETE_CALLBACK = 'autocompleteCallback';
     public const OPTION_AUTOCOMPLETE_TEMPLATE = 'autocompleteTemplate';
     public const OPTION_EMBEDDED_CRUD_FORM_CONTROLLER = 'crudControllerFqcn';
-    /** @deprecated since easycorp/easyadmin-bundle 4.4.3 use AssociationField::OPTION_EMBEDDED_CRUD_FORM_CONTROLLER */
-    public const OPTION_CRUD_CONTROLLER = self::OPTION_EMBEDDED_CRUD_FORM_CONTROLLER;
     public const OPTION_WIDGET = 'widget';
     public const OPTION_QUERY_BUILDER_CALLABLE = 'queryBuilderCallable';
     /** @internal this option is intended for internal use only */
@@ -42,10 +40,7 @@ final class AssociationField implements FieldInterface
     public const OPTION_ESCAPE_HTML_CONTENTS = 'escapeHtml';
     public const OPTION_PREFERRED_CHOICES = 'preferredChoices';
 
-    /**
-     * @param TranslatableInterface|string|false|null $label
-     */
-    public static function new(string $propertyName, $label = null): self
+    public static function new(string $propertyName, TranslatableInterface|string|bool|null $label = null): self
     {
         return (new self())
             ->setProperty($propertyName)

@@ -17,10 +17,7 @@ final class UrlField implements FieldInterface
     public const OPTION_IS_UNSAFE = 'isUnsafe';
     public const OPTION_ALLOWED_PROTOCOLS = 'allowedProtocols';
 
-    /**
-     * @param TranslatableInterface|string|false|null $label
-     */
-    public static function new(string $propertyName, $label = null): self
+    public static function new(string $propertyName, TranslatableInterface|string|bool|null $label = null): self
     {
         return (new self())
             ->setProperty($propertyName)

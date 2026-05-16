@@ -1,5 +1,8 @@
 #!/bin/bash
 
+echo 'Deprecation notice: The "ddev run-tests" command is deprecated'
+echo 'Please use "ddev make tests" instead'
+echo ''
+
 cd ../easyadminbundle
-composer update
-vendor/bin/simple-phpunit -v
+make tests

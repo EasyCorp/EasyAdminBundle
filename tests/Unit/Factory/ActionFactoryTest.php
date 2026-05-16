@@ -5,6 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Factory;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\ActionFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\ButtonVariant;
 use PHPUnit\Framework\TestCase;
 
 class ActionFactoryTest extends TestCase
@@ -18,6 +19,7 @@ class ActionFactoryTest extends TestCase
         $actions->add('index', Action::new('action_primary')->linkToCrudAction('index')->asPrimaryAction());
         $actions->add('index', Action::new('action_danger_text')->linkToCrudAction('index')->asDangerAction()->asTextLink());
         $actions->add('index', Action::new('action_success')->linkToCrudAction('index')->asSuccessAction());
+        $actions->add('index', Action::new('action_info')->linkToCrudAction('index')->asInfoAction());
         $actions->add('index', Action::new('action_text')->linkToCrudAction('index')->asTextLink());
         $actions->add('index', Action::new('action_danger')->linkToCrudAction('index')->asDangerAction());
         $actions->add('index', Action::new('action_default')->linkToCrudAction('index'));
@@ -31,6 +33,7 @@ class ActionFactoryTest extends TestCase
             'action_primary',
             'action_danger_text',
             'action_success',
+            'action_info',
             'action_text',
             'action_danger',
             'action_default',
@@ -38,6 +41,15 @@ class ActionFactoryTest extends TestCase
 
         // since automatic ordering is enabled by default, this should be the order before ActionFactory processes them
         $this->assertSame($expectedOrderBeforeSorting, $actionNames);
+    }
+
+    public function testInfoVariantSurvivesConfigObjectRoundTrip(): void
+    {
+        $action = Action::new('info_action')->linkToCrudAction('index')->asInfoAction();
+
+        $roundTripped = $action->getAsDto()->getAsConfigObject();
+
+        $this->assertSame(ButtonVariant::Info, $roundTripped->getAsDto()->getVariant());
     }
 
     public function testDisableAutomaticOrdering(): void

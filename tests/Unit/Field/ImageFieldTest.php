@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Field;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\ReplacedFileBehavior;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -134,7 +135,7 @@ class ImageFieldTest extends AbstractFieldTest
         $field->setFileConstraints($constraint);
         $fieldDto = $this->configure($field);
 
-        self::assertSame($constraint, $fieldDto->getCustomOption(ImageField::OPTION_FILE_CONSTRAINTS));
+        self::assertSame([$constraint], $fieldDto->getCustomOption(ImageField::OPTION_FILE_CONSTRAINTS));
     }
 
     public function testSetFileConstraintsWithMultipleConstraints(): void
@@ -168,10 +169,27 @@ class ImageFieldTest extends AbstractFieldTest
         self::assertSame($constraints, $fieldDto->getCustomOption(ImageField::OPTION_FILE_CONSTRAINTS));
     }
 
+    public function testSetFileConstraintsRejectsNonConstraintArrayItems(): void
+    {
+        $field = ImageField::new('image');
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('expects a "Symfony\Component\Validator\Constraint" instance or an array of them');
+
+        $field->setFileConstraints([new Image(), 'not-a-constraint']);
+    }
+
     public function testUploadPatternPlaceholders(): void
     {
         // test various placeholders that can be used
         $patterns = [
+            '[DD]',
+            '[MM]',
+            '[YYYY]',
+            '[YY]',
+            '[hh]',
+            '[mm]',
+            '[ss]',
             '[day]',
             '[month]',
             '[year]',
@@ -182,6 +200,8 @@ class ImageFieldTest extends AbstractFieldTest
             '[contenthash]',
             '[randomhash]',
             '[uuid]',
+            '[uuid32]',
+            '[uuid58]',
             '[ulid]',
         ];
 
@@ -196,11 +216,171 @@ class ImageFieldTest extends AbstractFieldTest
 
     public function testComplexUploadPattern(): void
     {
-        $pattern = '[year]/[month]/[day]/[slug]-[contenthash].[extension]';
+        $pattern = '[YYYY]/[MM]/[DD]/[slug]-[contenthash].[extension]';
         $field = ImageField::new('image');
         $field->setUploadedFileNamePattern($pattern);
         $fieldDto = $this->configure($field);
 
         self::assertSame($pattern, $fieldDto->getCustomOption(ImageField::OPTION_UPLOADED_FILE_NAME_PATTERN));
+    }
+
+    public function testDefaultMimeTypes(): void
+    {
+        $field = ImageField::new('image');
+        $fieldDto = $this->configure($field);
+
+        self::assertSame('image/*', $fieldDto->getCustomOption(ImageField::OPTION_MIME_TYPES));
+    }
+
+    public function testMimeTypesWithErrorMessage(): void
+    {
+        $field = ImageField::new('image');
+        $field->mimeTypes('image/png,image/jpeg', 'Only PNG and JPEG images are allowed (got {{ type }})');
+        $fieldDto = $this->configure($field);
+
+        self::assertSame('image/png,image/jpeg', $fieldDto->getCustomOption(ImageField::OPTION_MIME_TYPES));
+        self::assertSame('Only PNG and JPEG images are allowed (got {{ type }})', $fieldDto->getCustomOption(ImageField::OPTION_MIME_TYPES_MESSAGE));
+    }
+
+    public function testDefaultMimeTypesMessageIsNull(): void
+    {
+        $field = ImageField::new('image');
+        $fieldDto = $this->configure($field);
+
+        self::assertNull($fieldDto->getCustomOption(ImageField::OPTION_MIME_TYPES_MESSAGE));
+    }
+
+    public function testSetMaxSize(): void
+    {
+        $field = ImageField::new('image');
+        $field->maxSize('5M');
+        $fieldDto = $this->configure($field);
+
+        self::assertSame('5M', $fieldDto->getCustomOption(ImageField::OPTION_MAX_SIZE));
+        self::assertNull($fieldDto->getCustomOption(ImageField::OPTION_MAX_SIZE_MESSAGE));
+    }
+
+    public function testSetMaxSizeWithInteger(): void
+    {
+        $field = ImageField::new('image');
+        $field->maxSize(2097152);
+        $fieldDto = $this->configure($field);
+
+        self::assertSame(2097152, $fieldDto->getCustomOption(ImageField::OPTION_MAX_SIZE));
+    }
+
+    public function testSetMaxSizeWithErrorMessage(): void
+    {
+        $field = ImageField::new('image');
+        $field->maxSize('2M', 'Image {{ name }} is too large ({{ size }} {{ suffix }})');
+        $fieldDto = $this->configure($field);
+
+        self::assertSame('2M', $fieldDto->getCustomOption(ImageField::OPTION_MAX_SIZE));
+        self::assertSame('Image {{ name }} is too large ({{ size }} {{ suffix }})', $fieldDto->getCustomOption(ImageField::OPTION_MAX_SIZE_MESSAGE));
+    }
+
+    public function testDefaultMaxSizeIsNull(): void
+    {
+        $field = ImageField::new('image');
+        $fieldDto = $this->configure($field);
+
+        self::assertNull($fieldDto->getCustomOption(ImageField::OPTION_MAX_SIZE));
+        self::assertNull($fieldDto->getCustomOption(ImageField::OPTION_MAX_SIZE_MESSAGE));
+    }
+
+    public function testDefaultViewable(): void
+    {
+        $field = ImageField::new('image');
+        $fieldDto = $this->configure($field);
+
+        self::assertTrue($fieldDto->getCustomOption(ImageField::OPTION_VIEWABLE));
+    }
+
+    public function testIsViewableFalse(): void
+    {
+        $field = ImageField::new('image');
+        $field->isViewable(false);
+        $fieldDto = $this->configure($field);
+
+        self::assertFalse($fieldDto->getCustomOption(ImageField::OPTION_VIEWABLE));
+    }
+
+    public function testDefaultDownloadable(): void
+    {
+        $field = ImageField::new('image');
+        $fieldDto = $this->configure($field);
+
+        self::assertTrue($fieldDto->getCustomOption(ImageField::OPTION_DOWNLOADABLE));
+    }
+
+    public function testIsDownloadableFalse(): void
+    {
+        $field = ImageField::new('image');
+        $field->isDownloadable(false);
+        $fieldDto = $this->configure($field);
+
+        self::assertFalse($fieldDto->getCustomOption(ImageField::OPTION_DOWNLOADABLE));
+    }
+
+    public function testDefaultReplacedFileBehavior(): void
+    {
+        $field = ImageField::new('image');
+        $fieldDto = $this->configure($field);
+
+        self::assertSame(ReplacedFileBehavior::DELETE, $fieldDto->getCustomOption(ImageField::OPTION_REPLACED_FILE_BEHAVIOR));
+    }
+
+    public function testDeleteReplacedFile(): void
+    {
+        $field = ImageField::new('image');
+        $field->deleteReplacedFile();
+        $fieldDto = $this->configure($field);
+
+        self::assertSame(ReplacedFileBehavior::DELETE, $fieldDto->getCustomOption(ImageField::OPTION_REPLACED_FILE_BEHAVIOR));
+    }
+
+    public function testKeepReplacedFile(): void
+    {
+        $field = ImageField::new('image');
+        $field->keepReplacedFile();
+        $fieldDto = $this->configure($field);
+
+        self::assertSame(ReplacedFileBehavior::KEEP, $fieldDto->getCustomOption(ImageField::OPTION_REPLACED_FILE_BEHAVIOR));
+    }
+
+    public function testKeepReplacedFileOrFail(): void
+    {
+        $field = ImageField::new('image');
+        $field->keepReplacedFileOrFail();
+        $fieldDto = $this->configure($field);
+
+        self::assertSame(ReplacedFileBehavior::KEEP_OR_FAIL, $fieldDto->getCustomOption(ImageField::OPTION_REPLACED_FILE_BEHAVIOR));
+    }
+
+    public function testDefaultDeletable(): void
+    {
+        $field = ImageField::new('image');
+        $fieldDto = $this->configure($field);
+
+        self::assertTrue($fieldDto->getCustomOption(ImageField::OPTION_DELETABLE));
+    }
+
+    public function testIsDeletableFalse(): void
+    {
+        $field = ImageField::new('image');
+        $field->isDeletable(false);
+        $fieldDto = $this->configure($field);
+
+        self::assertFalse($fieldDto->getCustomOption(ImageField::OPTION_DELETABLE));
+    }
+
+    public function testIsDeletableTrue(): void
+    {
+        $field = ImageField::new('image');
+        $field->isDeletable(false);
+        $field->isDeletable(true);
+        $fieldDto = $this->configure($field);
+
+        self::assertTrue($fieldDto->getCustomOption(ImageField::OPTION_DELETABLE));
     }
 }

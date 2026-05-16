@@ -13,6 +13,6 @@ class DashboardControllerTest extends WebTestCase
         $client->request('GET', '/admin');
 
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorTextContains('h1', 'Welcome to EasyAdmin 4');
+        $this->assertSelectorTextContains('h1', 'Welcome to EasyAdmin 5');
     }
 }

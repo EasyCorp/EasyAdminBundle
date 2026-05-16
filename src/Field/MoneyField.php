@@ -19,11 +19,9 @@ final class MoneyField implements FieldInterface
     public const OPTION_CURRENCY_PROPERTY_PATH = 'currencyPropertyPath';
     public const OPTION_NUM_DECIMALS = 'numDecimals';
     public const OPTION_STORED_AS_CENTS = 'storedAsCents';
+    public const OPTION_USE_MONEY_OBJECT = 'useMoneyObject';
 
-    /**
-     * @param TranslatableInterface|string|false|null $label
-     */
-    public static function new(string $propertyName, $label = null): self
+    public static function new(string $propertyName, TranslatableInterface|string|bool|null $label = null): self
     {
         return (new self())
             ->setProperty($propertyName)
@@ -36,7 +34,8 @@ final class MoneyField implements FieldInterface
             ->setCustomOption(self::OPTION_CURRENCY, null)
             ->setCustomOption(self::OPTION_CURRENCY_PROPERTY_PATH, null)
             ->setCustomOption(self::OPTION_NUM_DECIMALS, 2)
-            ->setCustomOption(self::OPTION_STORED_AS_CENTS, true);
+            ->setCustomOption(self::OPTION_STORED_AS_CENTS, true)
+            ->setCustomOption(self::OPTION_USE_MONEY_OBJECT, null);
     }
 
     public function setCurrency(string $currencyCode): self
@@ -71,6 +70,21 @@ final class MoneyField implements FieldInterface
     public function setStoredAsCents(bool $asCents = true): self
     {
         $this->setCustomOption(self::OPTION_STORED_AS_CENTS, $asCents);
+
+        return $this;
+    }
+
+    /**
+     * Enables support for Money\Money objects from the moneyphp/money library.
+     * This is needed for "new" pages where the value is null and auto-detection can't work.
+     */
+    public function useMoneyObject(bool $use = true): self
+    {
+        if ($use && !class_exists(\Money\Money::class)) {
+            throw new \LogicException('You must install the "moneyphp/money" package to use MoneyField with Money objects.');
+        }
+
+        $this->setCustomOption(self::OPTION_USE_MONEY_OBJECT, $use);
 
         return $this;
     }

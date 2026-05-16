@@ -54,6 +54,7 @@ return [
         'remove_item' => 'Hapus item',
         'choose_file' => 'Pilih file',
         'close' => 'Tutup',
+        'download' => 'Unduh',
         'create' => 'Buat',
         'create_and_add_another' => 'Buat dan tambahkan lainnya',
         'create_and_continue' => 'Buat dan teruskan penyuntingan',
@@ -145,6 +146,12 @@ return [
         'general_403' => 'You don\'t have permission to perform this action.',
         'general_404' => 'The requested page could not be found.',
         'general_500' => 'An internal error occurred while processing your request.',
+    ],
+
+    'file_upload' => [
+        'add_file' => 'Tambah berkas',
+        'add_files' => 'Tambah beberapa berkas',
+        'clear_all' => 'Hapus semua',
     ],
 
     'autocomplete' => [

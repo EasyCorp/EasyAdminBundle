@@ -1,0 +1,26 @@
+Icons from https://onedrive.live.com/
+
+Author:
+Microsoft Corporation
+
+Taken from:
+https://commons.wikimedia.org/wiki/File:.xlsx_icon.svg
+https://commons.wikimedia.org/wiki/File:.docx_icon.svg
+https://commons.wikimedia.org/wiki/File:.pptx_icon_(2019).svg
+https://commons.wikimedia.org/wiki/File:.pdf_OneDrive_icon.svg
+https://commons.wikimedia.org/wiki/File:Vector_OneDrive_icon.svg
+https://commons.wikimedia.org/wiki/File:Photo_OneDrive_icon.svg
+https://commons.wikimedia.org/wiki/File:Video_OneDrive_icon.svg
+https://commons.wikimedia.org/wiki/File:.txt_OneDrive_icon.svg
+https://commons.wikimedia.org/wiki/File:.rtf_OneDrive_icon.svg
+https://commons.wikimedia.org/wiki/File:Audio_OneDrive_icon.svg
+https://commons.wikimedia.org/wiki/File:Code_OneDrive_icon.svg
+https://commons.wikimedia.org/wiki/File:Html_OneDrive_icon.svg
+https://commons.wikimedia.org/wiki/File:Generic_File_OneDrive_icon.svg
+https://commons.wikimedia.org/wiki/File:.zip_OneDrive_icon.svg
+https://commons.wikimedia.org/wiki/File:OneDrive_Folder_Icon.svg
+
+Licensing:
+These logo images consist only of simple geometric shapes or text.
+They do not meet the threshold of originality needed for copyright protection,
+and are therefore in the public domain.

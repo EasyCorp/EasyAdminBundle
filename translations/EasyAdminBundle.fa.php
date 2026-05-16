@@ -54,6 +54,7 @@ return [
         'remove_item' => 'حذف آیتم',
         'choose_file' => 'انتخاب فایل',
         'close' => 'بستن',
+        'download' => 'دانلود',
         'create' => 'ایجاد کردن',
         'create_and_add_another' => 'ایجاد و افزودن یکی دیگر',
         'create_and_continue' => 'ایجاد و ادامه ویرایش',
@@ -118,6 +119,16 @@ return [
         'exit_impersonation' => 'خروج از جعل هویت',
     ],
 
+    'settings' => [
+        'appearance' => [
+            'label' => 'ظاهر',
+            'light' => 'روشن',
+            'dark' => 'تاریک',
+            'auto' => 'خودکار',
+        ],
+        'locale' => 'زبان',
+    ],
+
     'login_page' => [
         'username' => 'نام کاربری',
         'password' => 'رمزعبور',
@@ -135,6 +146,12 @@ return [
         'general_403' => 'You don\'t have permission to perform this action.',
         'general_404' => 'The requested page could not be found.',
         'general_500' => 'An internal error occurred while processing your request.',
+    ],
+
+    'file_upload' => [
+        'add_file' => 'افزودن فایل',
+        'add_files' => 'افزودن فایل‌ها',
+        'clear_all' => 'پاک کردن همه',
     ],
 
     'autocomplete' => [

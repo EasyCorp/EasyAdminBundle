@@ -10,10 +10,7 @@ use Symfony\Contracts\Translation\TranslatableInterface;
  */
 interface FieldInterface
 {
-    /**
-     * @return self
-     */
-    public static function new(string $propertyName, ?string /* TranslatableInterface|string|false|null */ $label = null);
+    public static function new(string $propertyName, TranslatableInterface|string|bool|null $label = null): self;
 
     public function getAsDto(): FieldDto;
 

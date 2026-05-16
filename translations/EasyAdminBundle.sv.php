@@ -2,7 +2,7 @@
 
 return [
     'page_title' => [
-        // 'dashboard' => '',
+        'dashboard' => 'Instrumentpanel',
         'detail' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
         'edit' => '%entity_label_singular%',
         'index' => '%entity_label_plural%',
@@ -11,7 +11,7 @@ return [
     ],
 
     'datagrid' => [
-        // 'hidden_results' => '',
+        'hidden_results' => 'Vissa resultat kan inte visas eftersom du inte har tillräckliga behörigheter',
         'no_results' => 'Inga resultat.',
     ],
 
@@ -21,7 +21,7 @@ return [
         'next' => 'Nästa',
         'last' => 'Sista',
         'counter' => '<strong>%start%</strong> - <strong>%end%</strong> av <strong>%results%</strong>',
-        // 'results' => '',
+        'results' => '{0} Inga resultat|{1} <strong>1</strong> resultat|]1,Inf] <strong>%count%</strong> resultat',
     ],
 
     'label' => [
@@ -32,12 +32,12 @@ return [
         'object' => 'PHP objekt',
         'inaccessible' => 'Otillgänglig',
         'inaccessible.explanation' => 'Det finns ingen Getter-funktion för detta fält eller så är inte egenskapen publik',
-        // 'form.empty_value' => '',
+        'form.empty_value' => 'Ingen',
     ],
 
     'field' => [
-        // 'code_editor.view_code' => '',
-        // 'text_editor.view_content' => '',
+        'code_editor.view_code' => 'Visa kod',
+        'text_editor.view_content' => 'Visa innehåll',
     ],
 
     'action' => [
@@ -49,23 +49,24 @@ return [
         'delete' => 'Ta bort',
         'cancel' => 'Avbryt',
         'index' => 'Åter till lista',
-        // 'deselect' => '',
+        'deselect' => 'Avmarkera',
         'add_new_item' => 'Lägg till nytt objekt',
         'remove_item' => 'Ta bort objekt',
         'choose_file' => 'Välj fil',
-        // 'close' => '',
-        // 'create' => '',
-        // 'create_and_add_another' => '',
-        // 'create_and_continue' => '',
-        // 'save' => '',
-        // 'save_and_continue' => '',
+        'close' => 'Stäng',
+        'download' => 'Ladda ner',
+        'create' => 'Skapa',
+        'create_and_add_another' => 'Skapa och lägg till en till',
+        'create_and_continue' => 'Skapa och fortsätt redigera',
+        'save' => 'Spara ändringar',
+        'save_and_continue' => 'Spara och fortsätt redigera',
         'toggle_dropdown' => 'Växla rullgardinsmeny',
     ],
 
     'batch_action_modal' => [
-        // 'title' => '',
-        // 'content' => '',
-        // 'action' => '',
+        'title' => 'Du kommer att tillämpa åtgärden "%action_name%" på %num_items% objekt.',
+        'content' => 'Det går inte att ångra den här åtgärden.',
+        'action' => 'Fortsätt',
     ],
 
     'delete_modal' => [
@@ -79,34 +80,35 @@ return [
     ],
 
     'filter' => [
-        // 'title' => '',
-        // 'button.clear' => '',
-        // 'button.apply' => '',
-        // 'label.is_equal_to' => '',
-        // 'label.is_not_equal_to' => '',
-        // 'label.is_greater_than' => '',
-        // 'label.is_greater_than_or_equal_to' => '',
-        // 'label.is_less_than' => '',
-        // 'label.is_less_than_or_equal_to' => '',
-        // 'label.is_between' => '',
-        // 'label.contains' => '',
-        // 'label.contains_all' => '',
-        // 'label.not_contains' => '',
-        // 'label.starts_with' => '',
-        // 'label.ends_with' => '',
-        // 'label.exactly' => '',
-        // 'label.not_exactly' => '',
-        // 'label.is_same' => '',
-        // 'label.is_not_same' => '',
-        // 'label.is_after' => '',
-        // 'label.is_after_or_same' => '',
-        // 'label.is_before' => '',
-        // 'label.is_before_or_same' => '',
+        'title' => 'Filter',
+        'button.clear' => 'Rensa',
+        'button.apply' => 'Tillämpa',
+        'label.is_equal_to' => 'är lika med',
+        'label.is_not_equal_to' => 'är inte lika med',
+        'label.is_greater_than' => 'är större än',
+        'label.is_greater_than_or_equal_to' => 'är större än eller lika med',
+        'label.is_less_than' => 'är mindre än',
+        'label.is_less_than_or_equal_to' => 'är mindre än eller lika med',
+        'label.is_between' => 'är mellan',
+        'label.contains' => 'innehåller',
+        'label.contains_all' => 'innehåller alla',
+        'label.not_contains' => 'innehåller inte',
+        'label.starts_with' => 'börjar med',
+        'label.ends_with' => 'slutar med',
+        'label.exactly' => 'exakt',
+        'label.not_exactly' => 'inte exakt',
+        'label.is_same' => 'är samma',
+        'label.is_not_same' => 'är inte samma',
+        'label.is_after' => 'är efter',
+        'label.is_after_or_same' => 'är efter eller samma',
+        'label.is_before' => 'är före',
+        'label.is_before_or_same' => 'är före eller samma',
     ],
 
     'form' => [
         'are_you_sure' => 'Du har inte sparat ändringarna i formuläret.',
         'tab.error_badge_title' => 'Ett fält är fel|%count% fält är fel',
+        'slug.confirm_text' => 'Om du ändrar sluggen kan du bryta länkar på andra sidor.',
     ],
 
     'user' => [
@@ -115,6 +117,16 @@ return [
         'anonymous' => 'Anonym användare',
         'sign_out' => 'Logga ut',
         'exit_impersonation' => 'Avsluta imitation',
+    ],
+
+    'settings' => [
+        'appearance' => [
+            'label' => 'Utseende',
+            'light' => 'Ljust',
+            'dark' => 'Mörkt',
+            'auto' => 'Automatiskt',
+        ],
+        'locale' => 'Språk',
     ],
 
     'login_page' => [
@@ -129,16 +141,22 @@ return [
         'entity_not_found' => 'Detta objekt är inte tillgängligt längre.',
         'entity_remove' => 'Detta object kan inte tas bort för att andra objekt har ett beroende på det.',
         'forbidden_action' => 'Den åtgärd du försökte göra kan inte utföras på detta objekt.',
-        // 'insufficient_entity_permission' => 'You don't have permission to access this item.',
+        'insufficient_entity_permission' => 'Du har inte behörighet att komma åt detta objekt.',
         'general' => 'Ett fel uppstod vid behandlingen av din begäran.',
         'general_403' => 'Du har inte behörighet att utföra denna åtgärd.',
         'general_404' => 'Den begärda sidan kunde inte hittas.',
         'general_500' => 'Ett internt fel uppstod vid behandlingen av din begäran.',
     ],
 
+    'file_upload' => [
+        'add_file' => 'Lägg till fil',
+        'add_files' => 'Lägg till filer',
+        'clear_all' => 'Rensa alla',
+    ],
+
     'autocomplete' => [
         'no-results-found' => 'Inga träffar',
-        // 'no-more-results' => 'No more results',
+        'no-more-results' => 'Inga fler resultat',
         'loading-more-results' => 'Laddar fler resultat…',
     ],
 ];

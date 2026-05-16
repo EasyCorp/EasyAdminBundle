@@ -16,9 +16,9 @@ use Twig\Environment;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class CountryConfigurator implements FieldConfiguratorInterface
+final readonly class CountryConfigurator implements FieldConfiguratorInterface
 {
-    public function __construct(private readonly Environment $twig)
+    public function __construct(private Environment $twig)
     {
     }
 

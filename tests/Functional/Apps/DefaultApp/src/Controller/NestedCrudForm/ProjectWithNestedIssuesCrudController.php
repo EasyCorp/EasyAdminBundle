@@ -36,6 +36,7 @@ class ProjectWithNestedIssuesCrudController extends AbstractCrudController
         // ProjectIssueNestedCrudController. This controller accesses $context->getEntity()
         // in its configureFields(), which tests the bug fix
         yield CollectionField::new('projectIssues', 'Issues')
+            ->renderExpanded(true)
             ->useEntryCrudForm(ProjectIssueNestedCrudController::class);
     }
 }

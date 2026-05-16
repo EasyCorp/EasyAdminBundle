@@ -130,7 +130,6 @@ body.ea-dark-scheme .form-widget .form-select {
 .form-widget input.form-control:focus,
 .form-widget textarea.form-control:focus,
 .form-widget .form-select:focus,
-.form-widget .custom-file-input:focus ~ .custom-file-label,
 .form-widget input.form-check-input:focus {
     border-color: var(--form-input-hover-border-color);
     box-shadow: var(--form-input-hover-shadow);
@@ -188,31 +187,6 @@ label.form-check-label {
 }
 .form-check-inline + .form-check-inline {
     margin-inline-start: 15px;
-}
-
-/* in Bootstrap custom file widgets, the label is used to simulate the file input */
-.field-file .custom-file,
-.field-file .custom-file-input {
-    block-size: 30px;
-}
-.field-file .custom-file label.custom-file-label {
-    block-size: 30px;
-    margin: 0;
-    max-inline-size: 350px;
-    overflow: hidden;
-    padding: 3px 7px 5px;
-    text-align: left;
-}
-.field-file .custom-file label.custom-file-label:after {
-    color: var(--text-color);
-    content: "\f07c";
-    display: inline-block;
-    font-family: "Font Awesome 6 Free", sans-serif;
-    font-size: 17px;
-    block-size: 28px;
-    line-height: 28px;
-    padding: 0 8px;
-    vertical-align: middle;
 }
 
 /* Date-time widgets */
@@ -624,104 +598,145 @@ form .invalid-feedback > .d-block + .d-block {
 }
 
 /* fileupload widgets */
-.ea-fileupload .custom-file {
-    block-size: 30px;
+.ea-fileupload {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
 }
-.ea-fileupload .input-group {
-    flex-wrap: nowrap;
+
+/* File Upload - Toolbar (Add button + Clear All) */
+.ea-fileupload-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
 }
-.ea-fileupload .input-group .btn,
-.ea-fileupload .input-group .btn:hover {
-    background: var(--form-input-group-text-bg);
-    box-shadow: none !important;
-    border-radius: 0;
+.ea-fileupload-add-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding: 0.375rem 0.875rem;
+}
+.ea-fileupload-add-btn .btn-icon {
+    inline-size: 0.875rem;
+    block-size: 0.875rem;
+}
+.ea-fileupload-clear-all-btn {
+    margin-inline-start: auto;
+    background: none;
+    border: none;
     color: var(--text-color);
-    font-size: 17px;
-    block-size: 28px;
-    line-height: 28px;
-    margin: 0;
-    padding: 0 8px;
-    vertical-align: middle;
-}
-.ea-fileupload .input-group .btn:first-child,
-.ea-fileupload .input-group .btn:hover:first-child {
-    margin-inline-start: 5px;
-}
-.ea-fileupload .input-group .btn:last-child,
-.ea-fileupload .input-group .btn:hover:last-child {
-    border-start-end-radius: var(--border-radius);
-    border-end-end-radius: var(--border-radius);
-}
-
-.ea-fileupload .custom-file-input {
+    font-size: 0.875rem;
+    font-weight: 500;
     cursor: pointer;
-    block-size: calc(1.5em + .75rem + 2px);
-    margin: 0;
-    overflow: hidden;
-    opacity: 0;
-    position: relative;
-    inline-size: 100%;
-    z-index: 2;
+    padding: 0.375rem 0;
+}
+.ea-fileupload-clear-all-btn:hover {
+    text-decoration: underline;
 }
 
-.ea-fileupload .custom-file-label {
-    background: var(--form-control-bg);
-    border-radius: var(--border-radius);
-    border: 1px solid var(--form-input-border-color);
-    box-shadow: var(--form-input-shadow);
-    color: var(--form-input-text-color);
-    block-size: 30px;
-    inset-inline-start: 0;
-    margin: 0 !important;
-    overflow: hidden;
-    padding: 3px 40px 3px 7px !important;
-    position: absolute;
-    text-align: left !important;
-    text-overflow: ellipsis;
-    inset-block-start: 0;
-    white-space: nowrap;
-    inline-size: 100% !important;
+/* File Upload - Cards container */
+.ea-fileupload-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
 }
-.ea-fileupload .custom-file-label::after {
+.ea-fileupload-cards:empty {
     display: none;
 }
 
-.ea-fileupload .input-group-text {
-    background: var(--form-input-group-text-bg);
-    border: 1px solid var(--form-input-border-color);
-    box-shadow: none;
-    color: var(--text-muted);
-    block-size: 30px;
-    padding: 7px 0 7px 7px;
-    position: absolute;
-    inset-inline-end: 0;
-    z-index: 3;
+/* File Upload - Individual card */
+.ea-fileupload-card {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    border: 1px solid var(--border-tertiary-color);
+    border-radius: var(--border-radius);
+    padding: 0.5rem 0.75rem;
 }
 
-.ea-fileupload .fileupload-list {
-    block-size: auto;
-    margin-block-start: 7px;
-    padding: 0;
-    border-color: var(--form-input-border-color);
+/* File Upload - Card preview (left side: icon or thumbnail) */
+.ea-fileupload-card-preview {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: 2.25rem;
+    block-size: 2.25rem;
 }
-.ea-fileupload .fileupload-list .fileupload-table {
+.ea-fileupload-card-thumbnail {
+    inline-size: 2.25rem;
+    block-size: 2.25rem;
+    object-fit: cover;
+    border-radius: calc(var(--border-radius) * 0.5);
+}
+.ea-fileupload-card .ea-fileupload-card-icon {
+    inline-size: 2rem;
+    block-size: 2rem;
+}
+.ea-fileupload-card .ea-fileupload-card-icon svg {
     inline-size: 100%;
+    block-size: 100%;
+    max-inline-size: unset;
+    max-block-size: unset;
 }
-.ea-fileupload .fileupload-list .fileupload-table td {
-    padding: 3px 7px;
-    border-radius: 3px;
+
+/* File Upload - Card info (center: name + size) */
+.ea-fileupload-card-info {
+    flex: 1;
+    inline-size: 0;
+    display: flex;
+    flex-direction: column;
 }
-.ea-fileupload .fileupload-list .fileupload-table td:first-child {
+.ea-fileupload-card-name {
+    font-weight: 600;
+    font-size: 0.875rem;
+    line-height: 1.3;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    max-inline-size: 300px;
+    color: var(--text-color);
 }
-.ea-fileupload .fileupload-list .fileupload-table tr:nth-child(odd) td {
-    background-color: var(--form-control-bg);
+.ea-fileupload-card-size {
+    font-size: 0.75rem;
+    line-height: 1.3;
+    color: var(--text-secondary-color);
 }
-.ea-fileupload .fileupload-list .fileupload-table td.file-size {
-    color: var(--text-muted);
+
+/* File Upload - Card actions (right side) */
+.ea-fileupload-card-actions {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+}
+.ea-fileupload-card-actions .ea-fileupload-action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    color: var(--text-secondary-color);
+    cursor: pointer;
+    padding: 0.5em;
+    border-radius: var(--border-radius);
+    text-decoration: none;
+    line-height: 1;
+}
+.ea-fileupload-card-actions .ea-fileupload-action-btn:hover {
+    color: var(--text-color);
+    background-color: var(--secondary-bg);
+}
+.ea-fileupload-card-actions .ea-fileupload-action-btn .icon {
+    inline-size: 1.125em;
+    block-size: 1.125em;
+}
+.ea-fileupload-card-actions .ea-fileupload-action-btn svg {
+    inline-size: 100%;
+    block-size: 100%;
+    max-inline-size: unset;
+    max-block-size: unset;
 }
 
 /* Image/file vich uploads */
@@ -785,18 +800,4 @@ form .invalid-feedback > .d-block + .d-block {
     inset-inline-end: 0;
     text-align: right;
     inset-block-start: 0;
-}
-
-/* Fix "Browse" button for regular file inputs */
-.form-control::file-selector-button,
-.form-control::-webkit-file-upload-button {
-    color: var(--button-secondary-color);
-    background-color: var(--button-secondary-bg);
-    box-shadow: var(--button-shadow);
-}
-
-.form-control:hover:not(:disabled):not([readonly])::file-selector-button,
-.form-control:hover:not(:disabled):not([readonly])::-webkit-file-upload-button {
-    background-color: var(--button-secondary-bg);
-    box-shadow: var(--button-hover-shadow);
 }

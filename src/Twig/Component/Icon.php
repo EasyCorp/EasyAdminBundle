@@ -44,7 +44,7 @@ class Icon
 
     private function getIconDto(string $iconName, string $iconSet): IconDto
     {
-        if (str_starts_with($iconName, IconSet::Internal.':')) {
+        if (str_starts_with($iconName, IconSet::Internal.':') || str_starts_with($iconName, 'filetypes:')) {
             return $this->getInternalIcon($iconName);
         }
 

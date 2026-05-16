@@ -18,9 +18,9 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class FormFactory
+final readonly class FormFactory
 {
-    public function __construct(private readonly FormFactoryInterface $symfonyFormFactory, private readonly AdminUrlGeneratorInterface $adminUrlGenerator)
+    public function __construct(private FormFactoryInterface $symfonyFormFactory, private AdminUrlGeneratorInterface $adminUrlGenerator)
     {
     }
 

@@ -16,18 +16,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Http\Logout\LogoutUrlGenerator;
-use function Symfony\Component\Translation\t;
-
-// needed for Symfony 5.4 - 8.0 compatibility (Attribute doesn't exist in 5.4 and
-// Annotation doesn't exist in 8.0; both exist in the other versions)
-if (class_exists('Symfony\Component\Routing\Annotation\Route') && !class_exists('Symfony\Component\Routing\Attribute\Route')) {
-    // @phpstan-ignore-next-line class.notFound
-    class_alias(\Symfony\Component\Routing\Annotation\Route::class, 'Symfony\Component\Routing\Attribute\Route');
-}
-
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Core\User\UserInterface;
+use function Symfony\Component\Translation\t;
 
 /**
  * This class is useful to extend your dashboard from it instead of implementing
@@ -73,10 +64,8 @@ abstract class AbstractDashboardController extends AbstractController implements
     {
         $userMenuItems = [];
 
-        if (class_exists(LogoutUrlGenerator::class)) {
-            $userMenuItems[] = MenuItem::section();
-            $userMenuItems[] = MenuItem::linkToLogout(t('user.sign_out', domain: 'EasyAdminBundle'), 'internal:sign-out');
-        }
+        $userMenuItems[] = MenuItem::section();
+        $userMenuItems[] = MenuItem::linkToLogout(t('user.sign_out', domain: 'EasyAdminBundle'), 'internal:sign-out');
         if ($this->isGranted(Permission::EA_EXIT_IMPERSONATION)) {
             $userMenuItems[] = MenuItem::linkToExitImpersonation(t('user.exit_impersonation', domain: 'EasyAdminBundle'), 'internal:user-lock');
         }

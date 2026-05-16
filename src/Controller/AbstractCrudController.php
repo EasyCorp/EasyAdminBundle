@@ -15,6 +15,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\ReplacedFileBehavior;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Orm\EntityRepositoryInterface;
@@ -129,7 +130,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         ]);
     }
 
-    public function index(AdminContext $context)
+    public function index(AdminContext $context): KeyValueStore|Response
     {
         $event = new BeforeCrudActionEvent($context);
         $this->container->get('event_dispatcher')->dispatch($event);
@@ -179,7 +180,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         return $responseParameters;
     }
 
-    public function detail(AdminContext $context)
+    public function detail(AdminContext $context): KeyValueStore|Response
     {
         $event = new BeforeCrudActionEvent($context);
         $this->container->get('event_dispatcher')->dispatch($event);
@@ -214,7 +215,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         return $responseParameters;
     }
 
-    public function edit(AdminContext $context)
+    public function edit(AdminContext $context): KeyValueStore|Response
     {
         $event = new BeforeCrudActionEvent($context);
         $this->container->get('event_dispatcher')->dispatch($event);
@@ -242,11 +243,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             }
 
             if (!$this->isCsrfTokenValid(BooleanField::CSRF_TOKEN_NAME, $context->getRequest()->query->get('csrfToken'))) {
-                if (class_exists(InvalidCsrfTokenException::class)) {
-                    throw new InvalidCsrfTokenException();
-                }
-
-                return new Response('Invalid CSRF token.', 400);
+                throw new InvalidCsrfTokenException();
             }
 
             $fieldName = $context->getRequest()->query->get('fieldName');
@@ -301,7 +298,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         return $responseParameters;
     }
 
-    public function new(AdminContext $context)
+    public function new(AdminContext $context): KeyValueStore|Response
     {
         $event = new BeforeCrudActionEvent($context);
         $this->container->get('event_dispatcher')->dispatch($event);
@@ -366,7 +363,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         return $responseParameters;
     }
 
-    public function delete(AdminContext $context)
+    public function delete(AdminContext $context): KeyValueStore|Response
     {
         $event = new BeforeCrudActionEvent($context);
         $this->container->get('event_dispatcher')->dispatch($event);
@@ -496,8 +493,15 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             return $event->getResponse();
         }
 
-        // resetting the page number is needed because after deleting some entities, the pagination will change
-        return $this->redirect($this->container->get(AdminUrlGeneratorInterface::class)->setAction(Action::INDEX)->set(EA::PAGE, 1)->generateUrl());
+        $redirectUrl = $this->container->get(AdminUrlGeneratorInterface::class)
+            // reset the page number to avoid confusing elements after the page reload
+            // (we're deleting items, so the original listing pages will change)
+            ->unset(EA::PAGE)
+            ->setController($context->getCrud()->getControllerFqcn())
+            ->setAction(Action::INDEX)
+            ->generateUrl();
+
+        return $this->redirect($redirectUrl);
     }
 
     public function autocomplete(AdminContext $context): JsonResponse
@@ -590,24 +594,24 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         return $this->configureResponseParameters($responseParameters);
     }
 
-    public function createEntity(string $entityFqcn)
+    public function createEntity(string $entityFqcn): object
     {
         return new $entityFqcn();
     }
 
-    public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
+    public function updateEntity(EntityManagerInterface $entityManager, object $entityInstance): void
     {
         $entityManager->persist($entityInstance);
         $entityManager->flush();
     }
 
-    public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
+    public function persistEntity(EntityManagerInterface $entityManager, object $entityInstance): void
     {
         $entityManager->persist($entityInstance);
         $entityManager->flush();
     }
 
-    public function deleteEntity(EntityManagerInterface $entityManager, $entityInstance): void
+    public function deleteEntity(EntityManagerInterface $entityManager, object $entityInstance): void
     {
         $entityManager->remove($entityInstance);
         $entityManager->flush();
@@ -703,10 +707,13 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             }
 
             $uploadDelete = $config->getOption('upload_delete');
+            $replacedFileBehavior = $config->getOption('replaced_file_behavior');
 
             if ($state->hasCurrentFiles() && ($state->isDelete() || (!$state->isAddAllowed() && $state->hasUploadedFiles()))) {
-                foreach ($state->getCurrentFiles() as $file) {
-                    $uploadDelete($file);
+                if ($state->isDelete() || ReplacedFileBehavior::DELETE === $replacedFileBehavior) {
+                    foreach ($state->getCurrentFiles() as $file) {
+                        $uploadDelete($file);
+                    }
                 }
                 $state->setCurrentFiles([]);
             }

@@ -2,10 +2,10 @@
   "entrypoints": {
     "app": {
       "css": [
-        "/app.9c5ece20.css"
+        "/app.2c6e2b1b.css"
       ],
       "js": [
-        "/app.70d109e6.js"
+        "/app.2f11a183.js"
       ]
     },
     "form": {
@@ -43,7 +43,7 @@
     },
     "field-file-upload": {
       "js": [
-        "/field-file-upload.35a9e188.js"
+        "/field-file-upload.4dbdd033.js"
       ]
     },
     "field-image": {
@@ -66,7 +66,7 @@
         "/field-text-editor.54df6d1e.css"
       ],
       "js": [
-        "/field-text-editor.5cb0eb12.js"
+        "/field-text-editor.b6c9eb40.js"
       ]
     },
     "login": {

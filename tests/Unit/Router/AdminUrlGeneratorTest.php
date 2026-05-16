@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Router;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\CacheKey;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\DashboardContext;
@@ -14,8 +15,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Registry\AdminControllerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 use Psr\Cache\CacheItemPoolInterface;
-use Symfony\Bridge\PhpUnit\ExpectDeprecationTrait;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\Cache\Adapter\ArrayAdapter;
 use Symfony\Component\Cache\CacheItem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -23,8 +24,6 @@ use Symfony\Component\Routing\RouteCollection;
 
 class AdminUrlGeneratorTest extends KernelTestCase
 {
-    use ExpectDeprecationTrait;
-
     public function testGenerateEmptyUrl(): void
     {
         $adminUrlGenerator = $this->getAdminUrlGenerator();
@@ -137,11 +136,11 @@ class AdminUrlGeneratorTest extends KernelTestCase
         $adminUrlGenerator = $this->getAdminUrlGenerator();
 
         $adminUrlGenerator->setController('FooController');
-        $this->assertSame('http://localhost/admin?crudAction=index&crudControllerFqcn=FooController&foo=bar', $adminUrlGenerator->generateUrl());
+        $this->assertSame('http://localhost/admin?foo=bar', $adminUrlGenerator->generateUrl());
 
         $adminUrlGenerator->setController('FooController');
         $adminUrlGenerator->setAction(Action::NEW);
-        $this->assertSame('http://localhost/admin?crudAction=new&crudControllerFqcn=FooController&foo=bar', $adminUrlGenerator->generateUrl());
+        $this->assertSame('http://localhost/admin?foo=bar', $adminUrlGenerator->generateUrl());
     }
 
     public function testControllerParameterRemovesRouteParameters(): void
@@ -187,81 +186,11 @@ class AdminUrlGeneratorTest extends KernelTestCase
         $this->assertNull($adminUrlGenerator->get('foo'));
     }
 
-    public function testLegacyParameters(): void
-    {
-        $adminUrlGenerator = $this->getAdminUrlGenerator();
-        $adminUrlGenerator->set(EA::MENU_INDEX, 3);
-
-        $this->assertSame(3, $adminUrlGenerator->get(EA::MENU_INDEX));
-    }
-
-    /**
-     * @group legacy
-     */
-    public function testDeprecatedParameterMessage(): void
-    {
-        $this->expectDeprecation('Since easycorp/easyadmin-bundle 4.5.0: Using the "menuIndex" query parameter is deprecated. Menu items are now highlighted automatically based on the Request data, so you don\'t have to deal with menu items manually anymore.');
-
-        $adminUrlGenerator = $this->getAdminUrlGenerator();
-        $adminUrlGenerator->set('menuIndex', 1);
-    }
-
-    /**
-     * @group legacy
-     */
-    public function testIncludeReferrer(): void
-    {
-        $adminUrlGenerator = $this->getAdminUrlGenerator();
-
-        $adminUrlGenerator->includeReferrer();
-        $this->assertSame('http://localhost/admin?foo=bar&referrer=/?foo%3Dbar', $adminUrlGenerator->generateUrl());
-    }
-
-    /**
-     * @group legacy
-     */
-    public function testRemoveReferrer(): void
-    {
-        $adminUrlGenerator = $this->getAdminUrlGenerator();
-
-        $adminUrlGenerator->removeReferrer();
-        $this->assertSame('http://localhost/admin?foo=bar', $adminUrlGenerator->generateUrl());
-
-        $adminUrlGenerator->setReferrer('https://example.com/foo');
-        $adminUrlGenerator->removeReferrer();
-        $this->assertSame('http://localhost/admin?foo=bar', $adminUrlGenerator->generateUrl());
-    }
-
     public function testNoReferrerByDefault(): void
     {
         $adminUrlGenerator = $this->getAdminUrlGenerator();
 
         $this->assertStringNotContainsString('referrer', $adminUrlGenerator->generateUrl());
-    }
-
-    /**
-     * @group legacy
-     */
-    public function testCustomReferrer(): void
-    {
-        $adminUrlGenerator = $this->getAdminUrlGenerator();
-
-        $adminUrlGenerator->setReferrer('any_custom_value');
-        $this->assertSame('http://localhost/admin?foo=bar&referrer=any_custom_value', $adminUrlGenerator->generateUrl());
-    }
-
-    /**
-     * @group legacy
-     */
-    public function testPersistentCustomReferrer(): void
-    {
-        $adminUrlGenerator = $this->getAdminUrlGenerator();
-        $adminUrlGenerator->setReferrer('any_custom_value');
-        $this->assertSame('http://localhost/admin?foo=bar&referrer=any_custom_value', $adminUrlGenerator->generateUrl());
-
-        // test that the custom referrer value does not persist after generating the URL
-        $adminUrlGenerator->includeReferrer();
-        $this->assertSame('http://localhost/admin?foo=bar&referrer=/?foo%3Dbar', $adminUrlGenerator->generateUrl());
     }
 
     public function testRelativeUrls(): void
@@ -270,7 +199,7 @@ class AdminUrlGeneratorTest extends KernelTestCase
 
         $adminUrlGenerator->set('foo1', 'bar1');
         $adminUrlGenerator->setController('App\Controller\Admin\SomeCrudController');
-        $this->assertSame('http://localhost/admin?crudAction=index&crudControllerFqcn=App%5CController%5CAdmin%5CSomeCrudController&foo=bar&foo1=bar1', $adminUrlGenerator->generateUrl());
+        $this->assertSame('http://localhost/admin?foo=bar&foo1=bar1', $adminUrlGenerator->generateUrl());
     }
 
     private function getAdminUrlGenerator(bool $absoluteUrls = true): AdminUrlGeneratorInterface
@@ -293,17 +222,16 @@ class AdminUrlGeneratorTest extends KernelTestCase
 
         $adminContextProvider = new AdminContextProvider($requestStack);
 
-        // create a minimal temp directory and cache file for testing
-        $tempDir = sys_get_temp_dir().'/easyadmin_test_url_gen_'.uniqid();
-        @mkdir($tempDir.'/easyadmin', 0777, true);
-        $cacheContent = '<?php return '.var_export([
-            'admin' => 'App\Controller\Admin\DashboardController::index',
-            'custom_html_attribute_admin' => 'App\Controller\Admin\CustomHtmlAttributeDashboardController::index',
-        ], true).';';
-        file_put_contents($tempDir.'/easyadmin/routes-dashboard.php', $cacheContent);
+        $registryCache = new ArrayAdapter();
+        $item = $registryCache->getItem(CacheKey::DASHBOARD_FQCN_TO_ROUTE);
+        $item->set([
+            'App\Controller\Admin\DashboardController' => 'admin',
+            'App\Controller\Admin\CustomHtmlAttributeDashboardController' => 'custom_html_attribute_admin',
+        ]);
+        $registryCache->save($item);
 
         $adminControllers = new AdminControllerRegistry(
-            $tempDir,
+            $registryCache,
             [], // crudFqcnToEntityFqcnMap
             ['App\Controller\Admin\DashboardController', 'App\Controller\Admin\CustomHtmlAttributeDashboardController']
         );

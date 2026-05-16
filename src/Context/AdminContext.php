@@ -2,7 +2,6 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Context;
 
-use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Context\AdminContextInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Registry\AdminControllerRegistryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetsDto;
@@ -13,7 +12,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\LocaleDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MainMenuDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\UserMenuDto;
-use EasyCorp\Bundle\EasyAdminBundle\Registry\CrudControllerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -55,18 +53,9 @@ final class AdminContext implements AdminContextInterface
         return $this->requestContext->getUser();
     }
 
-    public function getReferrer(): ?string
+    public function getI18n(): I18nDto
     {
-        trigger_deprecation(
-            'easycorp/easyadmin-bundle',
-            '4.8.11',
-            'EasyAdmin URLs no longer include the referrer URL. If you still need it, you can get the referrer provided by browsers via $context->getRequest()->headers->get(\'referer\').',
-            __METHOD__,
-        );
-
-        $referrer = $this->requestContext->getRequest()->query->get(EA::REFERRER);
-
-        return '' !== $referrer ? $referrer : null;
+        return $this->i18nContext->getI18n();
     }
 
     public function getCrud(): ?CrudDto
@@ -91,21 +80,6 @@ final class AdminContext implements AdminContextInterface
         return $this->crudContext->getAdminControllers();
     }
 
-    /**
-     * @deprecated since 4.28.1, use getAdminControllers() instead
-     */
-    public function getCrudControllers(): CrudControllerRegistry
-    {
-        trigger_deprecation(
-            'easycorp/easyadmin-bundle',
-            '4.28.1',
-            'The "%s()" method is deprecated. Use "getAdminControllers()" instead.',
-            __METHOD__
-        );
-
-        return $this->crudContext->getCrudControllers();
-    }
-
     public function getMainMenu(): MainMenuDto
     {
         return $this->dashboardContext->getMainMenu();
@@ -121,9 +95,16 @@ final class AdminContext implements AdminContextInterface
         return $this->dashboardContext->getAssets();
     }
 
+    public function getAbsoluteUrls(): bool
+    {
+        return $this->dashboardContext->getDashboardDto()->getAbsoluteUrls();
+    }
+
     public function usePrettyUrls(): bool
     {
-        return $this->dashboardContext->usePrettyUrls();
+        @trigger_deprecation('easycorp/easyadmin-bundle', '5.0.0', 'The "%s()" method is deprecated and will be removed in EasyAdmin 5.1.0. This method always returns true.', __METHOD__);
+
+        return true;
     }
 
     public function getDashboardTitle(): string
@@ -172,28 +153,6 @@ final class AdminContext implements AdminContextInterface
     public function getDashboardLocales(): array
     {
         return $this->dashboardContext->getDashboardDto()->getLocales();
-    }
-
-    public function getSignedUrls(): bool
-    {
-        trigger_deprecation(
-            'easycorp/easyadmin-bundle',
-            '4.1.0',
-            'EasyAdmin URLs no longer include signatures because they don\'t provide any additional security. The "%s" method will be removed in EasyAdmin 5.0.0, so you should stop using it.',
-            __METHOD__
-        );
-
-        return $this->dashboardContext->getDashboardDto()->getSignedUrls();
-    }
-
-    public function getAbsoluteUrls(): bool
-    {
-        return $this->dashboardContext->getDashboardDto()->getAbsoluteUrls();
-    }
-
-    public function getI18n(): I18nDto
-    {
-        return $this->i18nContext->getI18n();
     }
 
     public function getTemplatePath(string $templateName): string

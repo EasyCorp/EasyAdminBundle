@@ -9,9 +9,9 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class FormVarsDto
+final readonly class FormVarsDto
 {
-    public function __construct(private readonly ?FieldDto $fieldDto = null, private readonly ?EntityDto $entityDto = null)
+    public function __construct(private ?FieldDto $fieldDto = null, private ?EntityDto $entityDto = null)
     {
     }
 

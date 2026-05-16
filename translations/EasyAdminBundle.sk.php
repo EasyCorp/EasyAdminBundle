@@ -54,6 +54,7 @@ return [
         'remove_item' => 'Odstrániť položku',
         'choose_file' => 'Vybrať súbor',
         'close' => 'Zavrieť',
+        'download' => 'Stiahnuť',
         'create' => 'Vytvoriť',
         'create_and_add_another' => 'Vytvoriť a pridať ďalšiu',
         'create_and_continue' => 'Vytvoriť a pokračovat',
@@ -107,6 +108,7 @@ return [
     'form' => [
         'are_you_sure' => 'Neuložili ste zmeny vykonané v tomto formulári.',
         'tab.error_badge_title' => '{1} Jeden neplatný vstup|{2,3,4} %count% neplatné vstupy|[5,Inf] %count% neplatných vstupov',
+        'slug.confirm_text' => 'Ak zmeníte slug, môžete poškodiť odkazy na iných stránkach.',
     ],
 
     'user' => [
@@ -124,6 +126,7 @@ return [
             'dark' => 'Tmavý',
             'auto' => 'Automatický',
         ],
+        'locale' => 'Jazyk',
     ],
 
     'login_page' => [
@@ -145,9 +148,15 @@ return [
         'general_500' => 'An internal error occurred while processing your request.',
     ],
 
+    'file_upload' => [
+        'add_file' => 'Pridať súbor',
+        'add_files' => 'Pridať súbory',
+        'clear_all' => 'Vymazať všetko',
+    ],
+
     'autocomplete' => [
         'no-results-found' => 'Neboli nájdené žiadne položky',
-        // 'no-more-results' => 'No more results',
+        'no-more-results' => 'Žiadne ďalšie výsledky',
         'loading-more-results' => 'Načítajú sa ďalšie výsledky…',
     ],
 ];

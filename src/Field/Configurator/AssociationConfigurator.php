@@ -12,8 +12,10 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\TextAlign;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\AdminContextFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\ControllerFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FieldFactory;
@@ -21,10 +23,13 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudAutocompleteType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\PropertyAccess\Exception\UnexpectedTypeException;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use function Symfony\Component\Translation\t;
 
 /**
@@ -32,21 +37,23 @@ use function Symfony\Component\Translation\t;
  */
 final class AssociationConfigurator implements FieldConfiguratorInterface
 {
+    /** @var array<string, ?CrudDto> */
+    private array $targetCrudDtoCache = [];
+
     public function __construct(
         private readonly EntityFactory $entityFactory,
         private readonly AdminUrlGeneratorInterface $adminUrlGenerator,
         private readonly RequestStack $requestStack,
         private readonly ControllerFactory $controllerFactory,
-        private readonly ?FieldFactory $fieldFactory = null,
+        private readonly FieldFactory $fieldFactory,
+        private readonly AuthorizationCheckerInterface $authorizationChecker,
+        private readonly AdminContextFactory $adminContextFactory,
     ) {
-        if (null === $this->fieldFactory) {
-            trigger_deprecation(
-                'easycorp/easyadmin-bundle',
-                '4.27.0',
-                'Not passing argument "$fieldFactory" to the "%s" constructor is deprecated.',
-                self::class
-            );
-        }
+    }
+
+    public function reset(): void
+    {
+        $this->targetCrudDtoCache = [];
     }
 
     public function supports(FieldDto $field, EntityDto $entityDto): bool
@@ -142,7 +149,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
                     $relatedEntityId = $accessor->getValue($entityDto->getInstance(), $propertyName.'.'.$metadata->getSingleIdentifierFieldName());
                     $relatedEntityDto = $this->entityFactory->create($targetEntityFqcn, $relatedEntityId);
 
-                    $field->setCustomOption(AssociationField::OPTION_RELATED_URL, $this->generateLinkToAssociatedEntity($targetCrudControllerFqcn, $relatedEntityDto));
+                    $field->setCustomOption(AssociationField::OPTION_RELATED_URL, $this->generateLinkToAssociatedEntity($targetCrudControllerFqcn, $relatedEntityDto, $context));
                     $field->setFormattedValue($this->formatAsString($relatedEntityDto->getInstance(), $relatedEntityDto));
                 }
             } catch (UnexpectedTypeException|RouteNotFoundException) {
@@ -152,7 +159,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
             }
         } else {
             if ($entityDto->getClassMetadata()->isSingleValuedAssociation($propertyName)) {
-                $this->configureToOneAssociation($field, $entityDto);
+                $this->configureToOneAssociation($field, $entityDto, $context);
             }
 
             if ($entityDto->getClassMetadata()->isCollectionValuedAssociation($propertyName)) {
@@ -175,8 +182,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
                     ->setController($targetCrudControllerFqcn)
                     ->setAction('autocomplete')
                     ->set(AssociationField::PARAM_AUTOCOMPLETE_CONTEXT, [
-                        // when using pretty URLs, the data is in the request attributes instead of the autocomplete context
-                        EA::CRUD_CONTROLLER_FQCN => $context->getRequest()->attributes->get(EA::CRUD_CONTROLLER_FQCN) ?? $context->getRequest()->query->get(EA::CRUD_CONTROLLER_FQCN),
+                        EA::CRUD_CONTROLLER_FQCN => $context->getRequest()->attributes->get(EA::CRUD_CONTROLLER_FQCN),
                         'propertyName' => $propertyName,
                         'originatingPage' => $context->getCrud()->getCurrentPage(),
                     ])
@@ -233,7 +239,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         );
     }
 
-    private function configureToOneAssociation(FieldDto $field, EntityDto $entityDto): void
+    private function configureToOneAssociation(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
     {
         $field->setCustomOption(AssociationField::OPTION_DOCTRINE_ASSOCIATION_TYPE, 'toOne');
 
@@ -252,7 +258,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         $this->configurePreferredChoices($field);
 
         try {
-            $field->setCustomOption(AssociationField::OPTION_RELATED_URL, $this->generateLinkToAssociatedEntity($targetCrudControllerFqcn, $targetEntityDto));
+            $field->setCustomOption(AssociationField::OPTION_RELATED_URL, $this->generateLinkToAssociatedEntity($targetCrudControllerFqcn, $targetEntityDto, $context));
         } catch (RouteNotFoundException $e) {
             // this may throw a "route not found" exception if the associated entity is not
             // accessible from this dashboard; do nothing in that case.
@@ -296,7 +302,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         return $entityDto->getName();
     }
 
-    private function generateLinkToAssociatedEntity(?string $crudController, EntityDto $entityDto): ?string
+    private function generateLinkToAssociatedEntity(?string $crudController, EntityDto $entityDto, AdminContext $context): ?string
     {
         if (null === $crudController) {
             return null;
@@ -307,7 +313,24 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         // associated entity is null (e.g. admin_post_index and Post <-> User)
         $crudAction = null === $primaryKeyValue ? Action::INDEX : Action::DETAIL;
 
-        // TODO: check if user has permission to see the related entity
+        $targetCrud = $this->getTargetCrudDto($context, $crudController, $crudAction);
+        if (null !== $targetCrud) {
+            // check entity-level permission (Crud::setEntityPermission() on the target controller)
+            $entityPermission = $targetCrud->getEntityPermission();
+            if (null !== $entityPermission
+                && !$this->authorizationChecker->isGranted($entityPermission, $entityDto->getInstance())) {
+                return null;
+            }
+
+            // check action-level permission (Actions::setPermission() on the target controller)
+            if (!$this->authorizationChecker->isGranted(
+                Permission::EA_EXECUTE_ACTION,
+                ['crud' => $targetCrud, 'action' => $crudAction, 'entity' => $entityDto],
+            )) {
+                return null;
+            }
+        }
+
         return $this->adminUrlGenerator
             ->setController($crudController)
             ->setAction($crudAction)
@@ -317,6 +340,50 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
             ->unset(EA::QUERY)
             ->unset(EA::SORT)
             ->generateUrl();
+    }
+
+    /**
+     * Resolves and caches the target CRUD controller's CrudDto so callers can run permission
+     * checks against it without rebuilding the full AdminContext once per row (e.g. AssociationField
+     * links on an index page).
+     */
+    private function getTargetCrudDto(AdminContext $sourceContext, string $crudControllerFqcn, string $crudAction): ?CrudDto
+    {
+        $key = $crudControllerFqcn.'::'.$crudAction;
+        if (\array_key_exists($key, $this->targetCrudDtoCache)) {
+            return $this->targetCrudDtoCache[$key];
+        }
+
+        // a fresh Request is used on purpose: EA-specific attributes from the main request
+        // (entity id, filters, sort, etc.) would otherwise leak into the target controller's context.
+        // the voter only consumes action permissions and disabled actions from the resulting CrudDto.
+        // the locale is copied so the target context's translated entity labels match the source page.
+        $request = new Request();
+        $request->setLocale($sourceContext->getRequest()->getLocale());
+
+        $dashboardController = $this->controllerFactory->getDashboardControllerInstance(
+            $sourceContext->getDashboardControllerFqcn(),
+            $request,
+        );
+
+        $crudController = $this->controllerFactory->getCrudControllerInstance(
+            $crudControllerFqcn,
+            $crudAction,
+            $request,
+        );
+
+        if (null === $crudController || null === $dashboardController) {
+            return $this->targetCrudDtoCache[$key] = null;
+        }
+
+        $targetContext = $this->adminContextFactory->create(
+            $request,
+            $dashboardController,
+            $crudController,
+            $crudAction,
+        );
+
+        return $this->targetCrudDtoCache[$key] = $targetContext->getCrud();
     }
 
     private function countNumElements(mixed $collection): int
@@ -385,11 +452,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
 
         $fields = $crudController->configureFields($crudControllerPageName);
 
-        if (null === $this->fieldFactory) {
-            $this->entityFactory->processFields($entityDto, new FieldCollection($fields), $crudPageName);
-        } else {
-            $this->fieldFactory->processFields($entityDto, new FieldCollection($fields), $crudPageName);
-        }
+        $this->fieldFactory->processFields($entityDto, new FieldCollection($fields), $crudPageName);
 
         return $entityDto;
     }

@@ -27,24 +27,16 @@ use function Symfony\Component\Translation\t;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class MenuFactory implements MenuFactoryInterface
+final readonly class MenuFactory implements MenuFactoryInterface
 {
     public function __construct(
-        private readonly AdminContextProviderInterface $adminContextProvider,
-        private readonly AuthorizationCheckerInterface $authChecker,
-        private readonly LogoutUrlGenerator $logoutUrlGenerator,
-        private readonly AdminUrlGeneratorInterface $adminUrlGenerator,
-        private readonly MenuItemMatcherInterface $menuItemMatcher,
-        private readonly ?EntityTranslationIdGeneratorInterface $entityTranslationIdGenerator = null,
+        private AdminContextProviderInterface $adminContextProvider,
+        private AuthorizationCheckerInterface $authChecker,
+        private LogoutUrlGenerator $logoutUrlGenerator,
+        private AdminUrlGeneratorInterface $adminUrlGenerator,
+        private MenuItemMatcherInterface $menuItemMatcher,
+        private ?EntityTranslationIdGeneratorInterface $entityTranslationIdGenerator = null,
     ) {
-        if (null === $this->entityTranslationIdGenerator) {
-            trigger_deprecation(
-                'easycorp/easyadmin-bundle',
-                '4.28',
-                'Not passing argument "$entityTranslationIdGenerator" will cause an error in 5.0.0.',
-                '$entityTranslationIdGenerator',
-            );
-        }
     }
 
     /**
@@ -59,6 +51,14 @@ final class MenuFactory implements MenuFactoryInterface
     {
         $userMenuDto = $userMenu->getAsDto();
         $builtUserMenuItems = $this->buildMenuItems($userMenuDto->getItems());
+
+        if ($userMenuDto->isLogoutLinkDisabled()) {
+            $builtUserMenuItems = array_values(array_filter(
+                $builtUserMenuItems,
+                static fn (MenuItemDto $item): bool => MenuItemDto::TYPE_LOGOUT !== $item->getType()
+            ));
+        }
+
         $userMenuDto->setItems($builtUserMenuItems);
 
         return $userMenuDto;
@@ -176,7 +176,7 @@ final class MenuFactory implements MenuFactoryInterface
                 $this->adminUrlGenerator->setController($crudControllerFqcn);
             // 2. ...otherwise, find the CRUD controller from the entityFqcn
             } else {
-                $adminControllers = $this->adminContextProvider->getContext()?->getAdminControllers(); // @phpstan-ignore method.notFound (method will be added to the interface in 5.0)
+                $adminControllers = $this->adminContextProvider->getContext()?->getAdminControllers();
                 if (null === $controllerFqcn = $adminControllers->findCrudControllerByEntity($entityFqcn)) {
                     throw new \RuntimeException(sprintf('Unable to find the controller related to the "%s" Entity; did you forget to extend "%s"?', $entityFqcn, AbstractCrudController::class));
                 }

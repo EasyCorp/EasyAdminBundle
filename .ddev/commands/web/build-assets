@@ -1,7 +1,9 @@
 #!/bin/bash
 
+echo 'Deprecation notice: The "ddev build-assets" command is deprecated'
+echo 'Please use "ddev make build" and "ddev make build-assets" instead'
+echo ""
+
 cd ../easyadminbundle
-yarn install
-yarn encore production
-php ./src/Resources/bin/fix-assets-manifest-file.php
-../html/bin/console assets:install --symlink
+make build
+make build-assets

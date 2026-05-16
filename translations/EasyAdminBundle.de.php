@@ -54,6 +54,7 @@ return [
         'remove_item' => 'Element entfernen',
         'choose_file' => 'Datei auswählen',
         'close' => 'Schließen',
+        'download' => 'Herunterladen',
         'create' => 'Erstellen',
         'create_and_add_another' => 'Erstellen und weiteres Element hinzufügen',
         'create_and_continue' => 'Erstellen und weiter bearbeiten',
@@ -145,6 +146,12 @@ return [
         'general_403' => 'Sie haben keine Berechtigung, diese Aktion auszuführen.',
         'general_404' => 'Die angeforderte Seite wurde nicht gefunden.',
         'general_500' => 'Bei der Verarbeitung Ihrer Anfrage ist ein interner Fehler aufgetreten.',
+    ],
+
+    'file_upload' => [
+        'add_file' => 'Datei hinzufügen',
+        'add_files' => 'Dateien hinzufügen',
+        'clear_all' => 'Alle löschen',
     ],
 
     'autocomplete' => [

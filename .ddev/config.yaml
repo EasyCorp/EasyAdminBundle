@@ -1,19 +1,20 @@
-name: easy-admin-bundle
-type: php
-docroot: public
+name: "easy-admin-bundle"
+type: "php"
+docroot: "public"
 no_project_mount: true
-php_version: "8.3"
-webserver_type: apache-fpm
+php_version: "8.5"
+webserver_type: "apache-fpm"
 router_http_port: "80"
 router_https_port: "443"
 xdebug_enabled: false
 additional_hostnames: []
 additional_fqdns: []
 database:
-  type: mariadb
+  type: "mariadb"
   version: "10.11"
 use_dns_when_possible: true
 composer_version: "2"
 web_environment: []
+webimage_extra_packages: ["build-essential"]
 nodejs_version: "22"
 timezone: "Europe/Berlin"

@@ -54,6 +54,7 @@ return [
         'remove_item' => 'Odstranit položku',
         'choose_file' => 'Vybrat soubor',
         'close' => 'Zavřít',
+        'download' => 'Stáhnout',
         'create' => 'Vytvořit',
         'create_and_add_another' => 'Vytvořit a přidat další',
         'create_and_continue' => 'Vytvořit a pokračovat',
@@ -107,6 +108,7 @@ return [
     'form' => [
         'are_you_sure' => 'Neuložili jste změny provedené v tomto formuláři.',
         'tab.error_badge_title' => '{1} Jeden neplatný vstup|{2,3,4} %count% neplatné vstupy|[5,Inf] %count% neplatných vstupů',
+        'slug.confirm_text' => 'Pokud změníte slug, můžete rozbít odkazy na jiných stránkách.',
     ],
 
     'user' => [
@@ -144,6 +146,12 @@ return [
         'general_403' => 'Nemáte oprávnění k provedení této akce.',
         'general_404' => 'Požadovaná stránka nebyla nalezena.',
         'general_500' => 'Při zpracování požadavku došlo k interní chybě.',
+    ],
+
+    'file_upload' => [
+        'add_file' => 'Přidat soubor',
+        'add_files' => 'Přidat soubory',
+        'clear_all' => 'Vymazat vše',
     ],
 
     'autocomplete' => [

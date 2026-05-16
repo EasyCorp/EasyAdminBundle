@@ -82,5 +82,5 @@ decrease the indent size::
     yield CodeEditorField::new('...')->setTabSize(8);
 
 .. _`CodeMirror editor`: https://github.com/codemirror/CodeMirror
-.. _`CodeEditorType`: https://github.com/EasyCorp/EasyAdminBundle/blob/4.x/src/Form/Type/CodeEditorType.php
+.. _`CodeEditorType`: https://github.com/EasyCorp/EasyAdminBundle/blob/5.x/src/Form/Type/CodeEditorType.php
 .. _`TextareaType`: https://symfony.com/doc/current/reference/forms/types/textarea.html

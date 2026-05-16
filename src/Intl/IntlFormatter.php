@@ -118,22 +118,8 @@ final class IntlFormatter implements IntlFormatterInterface
         return $formattedCurrency;
     }
 
-    /**
-     * @param int|float $number
-     */
-    public function formatNumber($number, array $attrs = [], string $style = 'decimal', string $type = 'default', ?string $locale = null): string
+    public function formatNumber(int|float $number, array $attrs = [], string $style = 'decimal', string $type = 'default', ?string $locale = null): string
     {
-        if (null === $number) {
-            trigger_deprecation(
-                'easycorp/easyadmin-bundle',
-                '4.8.5',
-                'Passing null values to "%s()" method is deprecated and will throw an exception in EasyAdmin 5.0.0.',
-                __METHOD__,
-            );
-
-            return '0';
-        }
-
         if (!isset(self::NUMBER_TYPES[$type])) {
             throw new RuntimeError(sprintf('The type "%s" does not exist, known types are: "%s".', $type, implode('", "', array_keys(self::NUMBER_TYPES))));
         }
@@ -151,7 +137,7 @@ final class IntlFormatter implements IntlFormatterInterface
     /**
      * @param \DateTimeZone|string|bool|null $timezone The target timezone, null to use the default, false to leave unchanged
      */
-    public function formatDateTime(?\DateTimeInterface $date, ?string $dateFormat = 'medium', ?string $timeFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', ?string $locale = null): ?string
+    public function formatDateTime(?\DateTimeInterface $date, ?string $dateFormat = 'medium', ?string $timeFormat = 'medium', string $pattern = '', \DateTimeZone|string|bool|null $timezone = null, string $calendar = 'gregorian', ?string $locale = null): ?string
     {
         if (null === $date = $this->convertDate($date, $timezone)) {
             return null;
@@ -166,7 +152,7 @@ final class IntlFormatter implements IntlFormatterInterface
     /**
      * @param \DateTimeZone|string|bool|null $timezone The target timezone, null to use the default, false to leave unchanged
      */
-    public function formatDate(?\DateTimeInterface $date, ?string $dateFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', ?string $locale = null): ?string
+    public function formatDate(?\DateTimeInterface $date, ?string $dateFormat = 'medium', string $pattern = '', \DateTimeZone|string|bool|null $timezone = null, string $calendar = 'gregorian', ?string $locale = null): ?string
     {
         return $this->formatDateTime($date, $dateFormat, 'none', $pattern, $timezone, $calendar, $locale);
     }
@@ -174,7 +160,7 @@ final class IntlFormatter implements IntlFormatterInterface
     /**
      * @param \DateTimeZone|string|bool|null $timezone The target timezone, null to use the default, false to leave unchanged
      */
-    public function formatTime(?\DateTimeInterface $date, ?string $timeFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', ?string $locale = null): ?string
+    public function formatTime(?\DateTimeInterface $date, ?string $timeFormat = 'medium', string $pattern = '', \DateTimeZone|string|bool|null $timezone = null, string $calendar = 'gregorian', ?string $locale = null): ?string
     {
         return $this->formatDateTime($date, 'none', $timeFormat, $pattern, $timezone, $calendar, $locale);
     }

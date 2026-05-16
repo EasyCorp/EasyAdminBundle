@@ -6,11 +6,11 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\KernelInterface;
 use function Symfony\Component\String\u;
 
-final class ClassMaker
+final readonly class ClassMaker
 {
-    private readonly Filesystem $fs;
+    private Filesystem $fs;
 
-    public function __construct(private readonly KernelInterface $kernel, private readonly string $projectDir)
+    public function __construct(private KernelInterface $kernel, private string $projectDir)
     {
         $this->fs = new Filesystem();
     }

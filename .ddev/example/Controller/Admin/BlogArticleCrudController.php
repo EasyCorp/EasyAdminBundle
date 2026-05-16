@@ -5,7 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\BlogArticle;
 use App\Entity\ContentBlock;
 use App\Form\ContentBlockType;
-use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminCrud;
+use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminRoute;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
@@ -18,7 +18,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 /**
  * @extends AbstractCrudController<BlogArticle>
  */
-#[AdminCrud(routePath: '/blog-article')]
+#[AdminRoute(path: '/blog-article')]
 class BlogArticleCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string

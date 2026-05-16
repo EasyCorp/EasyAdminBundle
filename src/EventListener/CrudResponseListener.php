@@ -12,11 +12,11 @@ use Twig\Environment;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class CrudResponseListener
+final readonly class CrudResponseListener
 {
     public function __construct(
-        private readonly AdminContextProviderInterface $adminContextProvider,
-        private readonly Environment $twig,
+        private AdminContextProviderInterface $adminContextProvider,
+        private Environment $twig,
     ) {
     }
 

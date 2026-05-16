@@ -55,7 +55,9 @@ class CrudAutocompleteSubscriberTest extends TestCase
 
         $subscriber = new CrudAutocompleteSubscriber($this->createMock(Environment::class));
         $subscriber->preSubmit(
-            $this->createFormEvent($platform, $repo, new FieldMapping($fieldType, 'id', 'id'), $fieldValue)
+            $this->createFormEvent($platform, $repo, class_exists(FieldMapping::class)
+                ? new FieldMapping($fieldType, 'id', 'id')
+                : ['fieldName' => 'id', 'type' => $fieldType, 'columnName' => 'id'], $fieldValue)
         );
 
         $this->assertSame($expectedValue, $capturedData, sprintf('%s fails to convert the id', $platform::class));
@@ -118,7 +120,7 @@ class CrudAutocompleteSubscriberTest extends TestCase
     private function createFormEvent(
         object $platform,
         EntityRepository $repository,
-        FieldMapping $fieldMapping,
+        FieldMapping|array $fieldMapping,
         string $idValue,
     ): FormEvent {
         $className = 'App\Entity\Dummy';

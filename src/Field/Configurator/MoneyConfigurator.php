@@ -8,6 +8,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Intl\IntlFormatterInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaMoneyType;
+use Money\Money;
 use Symfony\Component\Intl\Currencies;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
@@ -28,6 +30,64 @@ final class MoneyConfigurator implements FieldConfiguratorInterface
     }
 
     public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
+    {
+        if ($this->shouldUseMoneyObject($field)) {
+            $this->configureForMoneyObject($field, $entityDto);
+        } else {
+            $this->configureForScalarValue($field, $entityDto);
+        }
+    }
+
+    private function shouldUseMoneyObject(FieldDto $field): bool
+    {
+        if (null !== $configOption = $field->getCustomOption(MoneyField::OPTION_USE_MONEY_OBJECT)) {
+            return $configOption;
+        }
+
+        return $field->getValue() instanceof Money;
+    }
+
+    private function configureForMoneyObject(FieldDto $field, EntityDto $entityDto): void
+    {
+        $value = $field->getValue();
+
+        // determine currency: explicit setCurrency() takes priority, then Money object's currency
+        $currencyCode = $field->getCustomOption(MoneyField::OPTION_CURRENCY);
+        if (null === $currencyCode && null !== $currencyPropertyPath = $field->getCustomOption(MoneyField::OPTION_CURRENCY_PROPERTY_PATH)) {
+            $entityInstance = $entityDto->getInstance();
+            if (null !== $entityInstance && $this->propertyAccessor->isReadable($entityInstance, $currencyPropertyPath)) {
+                $currencyCode = $this->propertyAccessor->getValue($entityInstance, $currencyPropertyPath);
+            }
+        }
+        if (null === $currencyCode && $value instanceof Money) {
+            $currencyCode = $value->getCurrency()->getCode();
+        }
+
+        if (null !== $currencyCode && !Currencies::exists($currencyCode)) {
+            throw new \InvalidArgumentException(sprintf('The "%s" value used as the currency of the "%s" money field is not a valid ICU currency code.', $currencyCode, $field->getProperty()));
+        }
+
+        $field->setFormType(EaMoneyType::class);
+        $field->setFormTypeOption('currency', $currencyCode);
+        $field->setFormTypeOption('ea_money_object', true);
+
+        $numDecimals = $field->getCustomOption(MoneyField::OPTION_NUM_DECIMALS);
+        $field->setFormTypeOption('scale', $numDecimals);
+
+        // Money objects always store amounts in smallest units, so divisor is always 100
+        $field->setFormTypeOptionIfNotSet('divisor', self::DEFAULT_DIVISOR);
+
+        if (null === $value) {
+            return;
+        }
+
+        $divisor = $field->getFormTypeOption('divisor');
+        $amount = (int) $value->getAmount() / $divisor;
+        $formattedValue = $this->intlFormatter->formatCurrency($amount, $currencyCode, ['fraction_digit' => $numDecimals]);
+        $field->setFormattedValue($formattedValue);
+    }
+
+    private function configureForScalarValue(FieldDto $field, EntityDto $entityDto): void
     {
         $currencyCode = $this->getCurrency($field, $entityDto);
         if (null !== $currencyCode && !Currencies::exists($currencyCode)) {

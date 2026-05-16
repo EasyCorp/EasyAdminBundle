@@ -54,6 +54,7 @@ return [
         'remove_item' => 'Șterge un item',
         'choose_file' => 'Alege fișierul',
         'close' => 'Închide',
+        'download' => 'Descarcă',
         'create' => 'Crează',
         'create_and_add_another' => 'Crează și adaugă un item nou',
         'create_and_continue' => 'Crează și continuă editarea',
@@ -145,6 +146,12 @@ return [
         'general_403' => 'Nu aveți permisiunea de a efectua această acțiune.',
         'general_404' => 'Pagina solicitată nu a fost găsită.',
         'general_500' => 'A apărut o eroare internă la procesarea solicitării dumneavoastră.',
+    ],
+
+    'file_upload' => [
+        'add_file' => 'Adaugă fișier',
+        'add_files' => 'Adaugă fișiere',
+        'clear_all' => 'Șterge tot',
     ],
 
     'autocomplete' => [

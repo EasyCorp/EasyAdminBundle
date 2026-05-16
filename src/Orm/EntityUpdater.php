@@ -12,9 +12,9 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class EntityUpdater implements EntityUpdaterInterface
+final readonly class EntityUpdater implements EntityUpdaterInterface
 {
-    public function __construct(private readonly PropertyAccessorInterface $propertyAccessor, private readonly ValidatorInterface $validator)
+    public function __construct(private PropertyAccessorInterface $propertyAccessor, private ValidatorInterface $validator)
     {
     }
 

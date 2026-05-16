@@ -25,16 +25,6 @@ final class ActionCollection implements \ArrayAccess, \Countable, \IteratorAggre
     }
 
     /**
-     * @deprecated since 4.28.2 and removed in 5.0.0, use FilterCollection::__construct() instead.
-     *
-     * @param array<string, ActionDto|ActionGroupDto> $actions
-     */
-    public static function new(array $actions): self
-    {
-        return new self($actions);
-    }
-
-    /**
      * @return array<string, ActionDto|ActionGroupDto>
      */
     public function all(): array
@@ -78,17 +68,6 @@ final class ActionCollection implements \ArrayAccess, \Countable, \IteratorAggre
     public function getIterator(): \ArrayIterator
     {
         return new \ArrayIterator($this->actions);
-    }
-
-    /**
-     * @deprecated since 4.28.1 and will be removed in 5.0.0 without replacement
-     */
-    public function getEntityActions(): self
-    {
-        return self::new(array_filter(
-            $this->actions,
-            static fn (ActionDto|ActionGroupDto $action): bool => $action instanceof ActionDto && $action->isEntityAction()
-        ));
     }
 
     public function getGlobalActions(): self

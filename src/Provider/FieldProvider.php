@@ -11,10 +11,10 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class FieldProvider
+final readonly class FieldProvider
 {
     public function __construct(
-        private readonly AdminContextProviderInterface $adminContextProvider,
+        private AdminContextProviderInterface $adminContextProvider,
     ) {
     }
 

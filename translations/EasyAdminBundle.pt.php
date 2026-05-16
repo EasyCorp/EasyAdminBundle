@@ -54,6 +54,7 @@ return [
         'remove_item' => 'Remover item',
         'choose_file' => 'Escolher arquivo',
         'close' => 'Fechar',
+        'download' => 'Transferir',
         'create' => 'Criar',
         'create_and_add_another' => 'Criar e adicionar outro',
         'create_and_continue' => 'Criar e continuar a editar',
@@ -145,6 +146,12 @@ return [
         'general_403' => 'Não tem permissão para realizar esta ação.',
         'general_404' => 'A página solicitada não foi encontrada.',
         'general_500' => 'Ocorreu um erro interno ao processar o seu pedido.',
+    ],
+
+    'file_upload' => [
+        'add_file' => 'Adicionar ficheiro',
+        'add_files' => 'Adicionar ficheiros',
+        'clear_all' => 'Limpar tudo',
     ],
 
     'autocomplete' => [

@@ -16,9 +16,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TimeField;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class DateTimeConfigurator implements FieldConfiguratorInterface
+final readonly class DateTimeConfigurator implements FieldConfiguratorInterface
 {
-    public function __construct(private readonly IntlFormatterInterface $intlFormatter)
+    public function __construct(private IntlFormatterInterface $intlFormatter)
     {
     }
 

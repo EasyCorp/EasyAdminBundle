@@ -54,6 +54,7 @@ return [
         'remove_item' => 'Pašalinti elementą',
         'choose_file' => 'Pasirinkti failą',
         'close' => 'Užverti',
+        'download' => 'Atsisiųsti',
         'create' => 'Sukurti',
         'create_and_add_another' => 'Sukurti ir pridėti kitą',
         'create_and_continue' => 'Sukurti ir tęsti redagavimą',
@@ -107,6 +108,7 @@ return [
     'form' => [
         'are_you_sure' => 'Jūs neįrašėte šios formos pakeitimų.',
         'tab.error_badge_title' => 'Viena neteisingą įvesti|%count% neteisingų įvesčių',
+        'slug.confirm_text' => 'Jei pakeisite slug, galite sugadinti nuorodas kituose puslapiuose.',
     ],
 
     'user' => [
@@ -115,6 +117,16 @@ return [
         'anonymous' => 'Anonimiškas vartotojas',
         'sign_out' => 'Atsijungti',
         'exit_impersonation' => 'Baigti apsimetimą',
+    ],
+
+    'settings' => [
+        'appearance' => [
+            'label' => 'Išvaizda',
+            'light' => 'Šviesi',
+            'dark' => 'Tamsi',
+            'auto' => 'Automatinė',
+        ],
+        'locale' => 'Kalba',
     ],
 
     'login_page' => [
@@ -136,9 +148,15 @@ return [
         'general_500' => 'An internal error occurred while processing your request.',
     ],
 
+    'file_upload' => [
+        'add_file' => 'Pridėti failą',
+        'add_files' => 'Pridėti failus',
+        'clear_all' => 'Išvalyti viską',
+    ],
+
     'autocomplete' => [
         'no-results-found' => 'Atitikmenų nerasta',
-        // 'no-more-results' => 'No more results',
+        'no-more-results' => 'Daugiau rezultatų nėra',
         'loading-more-results' => 'Kraunama daugiau rezultatų…',
     ],
 ];

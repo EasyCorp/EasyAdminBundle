@@ -8,32 +8,23 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\RequestContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Provider\AdminContextProviderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\BatchActionDto;
-use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Controller\ValueResolverInterface;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 
 class BatchActionDtoResolverTest extends TestCase
 {
     private AdminContextProviderInterface $adminContextProvider;
-    private AdminUrlGeneratorInterface $adminUrlGenerator;
     private BatchActionDtoResolver $resolver;
 
     protected function setUp(): void
     {
         $this->adminContextProvider = $this->createMock(AdminContextProviderInterface::class);
-        $this->adminUrlGenerator = $this->createMock(AdminUrlGeneratorInterface::class);
-        $this->resolver = new BatchActionDtoResolver($this->adminContextProvider, $this->adminUrlGenerator);
+        $this->resolver = new BatchActionDtoResolver($this->adminContextProvider);
     }
 
-    /**
-     * @requires function Symfony\Component\HttpKernel\Controller\ValueResolverInterface::resolve
-     */
     public function testResolveReturnsEmptyArrayWhenArgumentTypeIsNotBatchActionDto(): void
     {
-        // this test only applies to Symfony 6+ where ValueResolverInterface is used
-        // in Symfony 5.4, the supports() method handles type checking
         $request = new Request();
         $argument = new ArgumentMetadata('dto', \stdClass::class, false, false, null);
 
@@ -42,12 +33,8 @@ class BatchActionDtoResolverTest extends TestCase
         $this->assertSame([], $result);
     }
 
-    /**
-     * @requires function Symfony\Component\HttpKernel\Controller\ValueResolverInterface::resolve
-     */
     public function testResolveReturnsEmptyArrayWhenArgumentTypeIsNull(): void
     {
-        // this test only applies to Symfony 6+ where ValueResolverInterface is used
         $request = new Request();
         $argument = new ArgumentMetadata('dto', null, false, false, null);
 
@@ -169,35 +156,5 @@ class BatchActionDtoResolverTest extends TestCase
 
         $this->assertCount(1, $result);
         $this->assertSame([], $result[0]->getEntityIds());
-    }
-
-    /**
-     * Tests the supports() method for Symfony 5.4 compatibility.
-     */
-    public function testSupportsReturnsTrueWhenArgumentTypeIsBatchActionDto(): void
-    {
-        if (!method_exists($this->resolver, 'supports')) {
-            $this->markTestSkipped('This test only applies to Symfony 5.4 (ArgumentValueResolverInterface)');
-        }
-
-        $request = new Request();
-        $argument = new ArgumentMetadata('dto', BatchActionDto::class, false, false, null);
-
-        $this->assertTrue($this->resolver->supports($request, $argument));
-    }
-
-    /**
-     * Tests the supports() method for Symfony 5.4 compatibility.
-     */
-    public function testSupportsReturnsFalseWhenArgumentTypeIsNotBatchActionDto(): void
-    {
-        if (!method_exists($this->resolver, 'supports')) {
-            $this->markTestSkipped('This test only applies to Symfony 5.4 (ArgumentValueResolverInterface)');
-        }
-
-        $request = new Request();
-        $argument = new ArgumentMetadata('dto', \stdClass::class, false, false, null);
-
-        $this->assertFalse($this->resolver->supports($request, $argument));
     }
 }

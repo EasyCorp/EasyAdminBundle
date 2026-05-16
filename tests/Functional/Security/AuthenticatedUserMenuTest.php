@@ -104,4 +104,14 @@ class AuthenticatedUserMenuTest extends AbstractCrudTestCase
         static::assertGreaterThan(0, $crawler->filter('.user-details')->count());
         static::assertGreaterThan(0, $crawler->filter('.user-avatar')->count());
     }
+
+    public function testUserMenuShowsLogoutByDefault(): void
+    {
+        $crawler = $this->client->request('GET', $this->generateIndexUrl());
+
+        static::assertResponseIsSuccessful();
+
+        $html = $crawler->html();
+        static::assertStringContainsString('Sign out', $html);
+    }
 }

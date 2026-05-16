@@ -5,7 +5,10 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\MoneyConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaMoneyType;
 use EasyCorp\Bundle\EasyAdminBundle\Intl\IntlFormatter;
+use Money\Currency;
+use Money\Money;
 
 class MoneyFieldTest extends AbstractFieldTest
 {
@@ -65,7 +68,7 @@ class MoneyFieldTest extends AbstractFieldTest
         $primaryKeyValueProperty->setValue($entityDto, 1);
         $fqcnProperty = $reflectedClass->getProperty('fqcn');
         $fqcnProperty->setValue($entityDto, 'App\Entity\MyEntity');
-        $instanceProperty = $reflectedClass->getProperty('instance');
+        $instanceProperty = $reflectedClass->getProperty('entityInstance');
         $instanceProperty->setValue($entityDto, new class {
             public int $id = 1;
             public string $bar = 'USD';
@@ -122,5 +125,50 @@ class MoneyFieldTest extends AbstractFieldTest
 
         self::assertSame('€0.07', $fieldDto->getFormattedValue());
         self::assertSame(10000, $fieldDto->getFormTypeOption('divisor'));
+    }
+
+    public function testFieldWithMoneyObject(): void
+    {
+        $money = new Money('500', new Currency('EUR'));
+        $field = MoneyField::new('foo')->setValue($money);
+        $fieldDto = $this->configure($field);
+
+        self::assertSame('€5.00', $fieldDto->getFormattedValue());
+        self::assertSame(EaMoneyType::class, $fieldDto->getFormType());
+        self::assertSame('EUR', $fieldDto->getFormTypeOption('currency'));
+        self::assertTrue($fieldDto->getFormTypeOption('ea_money_object'));
+        self::assertSame(100, $fieldDto->getFormTypeOption('divisor'));
+    }
+
+    public function testFieldWithMoneyObjectAndExplicitCurrency(): void
+    {
+        $money = new Money('500', new Currency('EUR'));
+        $field = MoneyField::new('foo')->setValue($money)->setCurrency('USD');
+        $fieldDto = $this->configure($field);
+
+        self::assertSame('USD', $fieldDto->getFormTypeOption('currency'));
+        self::assertSame(EaMoneyType::class, $fieldDto->getFormType());
+    }
+
+    public function testFieldWithMoneyObjectNull(): void
+    {
+        $field = MoneyField::new('foo')->setValue(null)->useMoneyObject()->setCurrency('EUR');
+        $fieldDto = $this->configure($field);
+
+        self::assertSame(EaMoneyType::class, $fieldDto->getFormType());
+        self::assertSame('EUR', $fieldDto->getFormTypeOption('currency'));
+        self::assertTrue($fieldDto->getFormTypeOption('ea_money_object'));
+    }
+
+    public function testFieldWithMoneyObjectAndCustomDivisor(): void
+    {
+        $money = new Money('7500', new Currency('EUR'));
+        $field = MoneyField::new('foo')->setValue($money);
+        $field->setFormTypeOption('divisor', 1000);
+        $fieldDto = $this->configure($field);
+
+        self::assertSame('€7.50', $fieldDto->getFormattedValue());
+        self::assertSame(1000, $fieldDto->getFormTypeOption('divisor'));
+        self::assertSame(EaMoneyType::class, $fieldDto->getFormType());
     }
 }

@@ -101,23 +101,6 @@ class IntlFormatterTest extends TestCase
         $this->assertSame($expectedResult, $formattedNumber);
     }
 
-    /**
-     * @dataProvider provideLegacyFormatNumber
-     *
-     * @group legacy
-     */
-    public function testLegacyFormatNumber(?string $expectedResult, int|float|null $number, array $attrs): void
-    {
-        if (\PHP_VERSION_ID < 80200) {
-            $this->markTestSkipped('PHP 8.2 or higher is required to run this test.');
-        }
-
-        $intlFormatter = new IntlFormatter();
-        $formattedNumber = $intlFormatter->formatNumber($number, $attrs);
-
-        $this->assertSame($expectedResult, $formattedNumber);
-    }
-
     public static function provideFormatDate(): \Generator
     {
         yield [null, null, 'medium', '', null, 'gregorian', null];
@@ -214,11 +197,6 @@ class IntlFormatterTest extends TestCase
         yield ['1,234,560', 1234.56, ['fraction_digit' => 3, 'decimal_separator' => ',']];
         yield ['1 234.560', 1234.56, ['fraction_digit' => 3, 'grouping_separator' => ' ']];
         yield ['1 234,560', 1234.56, ['fraction_digit' => 3, 'decimal_separator' => ',', 'grouping_separator' => ' ']];
-    }
-
-    public static function provideLegacyFormatNumber(): \Generator
-    {
-        yield ['0', null, []];
     }
 
     private function normalizeWhiteSpaces(string $string): string

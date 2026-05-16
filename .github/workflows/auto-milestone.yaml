@@ -5,7 +5,7 @@ on:
         types: [opened]
 
 env:
-    MILESTONE_NAME: '4.x'
+    MILESTONE_NAME: '5.x'
 
 jobs:
     assign-milestone:
@@ -14,7 +14,7 @@ jobs:
             issues: write
         steps:
             - name: Assign milestone
-              uses: actions/github-script@v8
+              uses: actions/github-script@v9
               with:
                   script: |
                       const owner = context.repo.owner;

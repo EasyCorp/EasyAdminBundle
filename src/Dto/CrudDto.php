@@ -169,22 +169,8 @@ final class CrudDto
         return ($this->entityLabelInSingular)($entityInstance, $pageName);
     }
 
-    /**
-     * @param TranslatableInterface|string|callable $label
-     */
-    public function setEntityLabelInSingular($label): void
+    public function setEntityLabelInSingular(TranslatableInterface|string|callable|null $label): void
     {
-        if (null !== $label && !\is_string($label) && !$label instanceof TranslatableInterface && !\is_callable($label)) {
-            trigger_deprecation(
-                'easycorp/easyadmin-bundle',
-                '4.27.0',
-                'Argument "%s" for "%s" must be one of these types: %s. Passing type "%s" will cause an error in 5.0.0.',
-                '$label',
-                __METHOD__,
-                '"string" or "TranslatableInterface" or "callable" or "null"',
-                \gettype($label)
-            );
-        }
         $this->entityLabelInSingular = $label;
     }
 
@@ -208,22 +194,8 @@ final class CrudDto
         return ($this->entityLabelInPlural)($entityInstance, $pageName);
     }
 
-    /**
-     * @param TranslatableInterface|string|callable $label
-     */
-    public function setEntityLabelInPlural($label): void
+    public function setEntityLabelInPlural(TranslatableInterface|string|callable|null $label): void
     {
-        if (null !== $label && !\is_string($label) && !$label instanceof TranslatableInterface && !\is_callable($label)) {
-            trigger_deprecation(
-                'easycorp/easyadmin-bundle',
-                '4.27.0',
-                'Argument "%s" for "%s" must be one of these types: %s. Passing type "%s" will cause an error in 5.0.0.',
-                '$label',
-                __METHOD__,
-                '"string" or "TranslatableInterface" or "callable" or "null"',
-                \gettype($label)
-            );
-        }
         $this->entityLabelInPlural = $label;
     }
 
@@ -249,45 +221,16 @@ final class CrudDto
         return t($title, $translationParameters, $domain);
     }
 
-    /**
-     * @param TranslatableInterface|string|callable $pageTitle
-     */
-    public function setCustomPageTitle(string $pageName, $pageTitle): void
+    public function setCustomPageTitle(string $pageName, TranslatableInterface|string|callable $pageTitle): void
     {
-        if (!\is_string($pageTitle) && !$pageTitle instanceof TranslatableInterface && !\is_callable($pageTitle)) {
-            trigger_deprecation(
-                'easycorp/easyadmin-bundle',
-                '4.0.5',
-                'Argument "%s" for "%s" must be one of these types: %s. Passing type "%s" will cause an error in 5.0.0.',
-                '$pageTitle',
-                __METHOD__,
-                '"string" or "callable"',
-                \gettype($pageTitle)
-            );
-        }
-
         $this->customPageTitles[$pageName] = $pageTitle;
     }
 
     /**
-     * @param object|null          $entityInstance
      * @param array<string, mixed> $translationParameters
      */
-    public function getDefaultPageTitle(?string $pageName = null, /* ?object */ $entityInstance = null, array $translationParameters = []): ?TranslatableInterface
+    public function getDefaultPageTitle(?string $pageName = null, ?object $entityInstance = null, array $translationParameters = []): ?TranslatableInterface
     {
-        if (!\is_object($entityInstance)
-            && null !== $entityInstance) {
-            trigger_deprecation(
-                'easycorp/easyadmin-bundle',
-                '4.0.5',
-                'Argument "%s" for "%s" must be one of these types: %s. Passing type "%s" will cause an error in 5.0.0.',
-                '$entityInstance',
-                __METHOD__,
-                '"object" or "null"',
-                \gettype($entityInstance)
-            );
-        }
-
         if (null !== $entityInstance) {
             if ($entityInstance instanceof \Stringable) {
                 $entityAsString = (string) $entityInstance;

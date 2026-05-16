@@ -5,18 +5,18 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class I18nDto
+final readonly class I18nDto
 {
-    private readonly string $language;
+    private string $language;
 
     /**
      * @param array<string, mixed> $translationParameters
      */
     public function __construct(
-        private readonly string $locale,
-        private readonly string $textDirection,
-        private readonly string $translationDomain,
-        private readonly array $translationParameters,
+        private string $locale,
+        private string $textDirection,
+        private string $translationDomain,
+        private array $translationParameters,
     ) {
         // returns 'en' for 'en', 'en-US', 'en_US', 'en-US.UTF-8', 'en_US.UTF-8', etc.
         $this->language = explode('-', str_replace('_', '-', $this->locale))[0];

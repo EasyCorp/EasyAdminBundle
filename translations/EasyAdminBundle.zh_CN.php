@@ -54,6 +54,7 @@ return [
         'remove_item' => '删除一项',
         'choose_file' => '选择文件',
         'close' => '关闭',
+        'download' => '下载',
         'create' => '添加',
         'create_and_add_another' => '添加并创建另一个',
         'create_and_continue' => '添加并继续',
@@ -147,9 +148,15 @@ return [
         'general_500' => '处理请求时发生内部错误。',
     ],
 
+    'file_upload' => [
+        'add_file' => '添加文件',
+        'add_files' => '添加文件',
+        'clear_all' => '全部清除',
+    ],
+
     'autocomplete' => [
         'no-results-found' => '未找到结果',
-        // 'no-more-results' => 'No more results',
+        'no-more-results' => '没有更多结果',
         'loading-more-results' => '载入更多结果…',
     ],
 ];

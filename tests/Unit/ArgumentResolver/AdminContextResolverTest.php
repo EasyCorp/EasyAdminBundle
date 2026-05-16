@@ -8,7 +8,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Context\AdminContextInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Provider\AdminContextProviderInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Controller\ValueResolverInterface;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 
 class AdminContextResolverTest extends TestCase
@@ -22,13 +21,8 @@ class AdminContextResolverTest extends TestCase
         $this->resolver = new AdminContextResolver($this->adminContextProvider);
     }
 
-    /**
-     * @requires function Symfony\Component\HttpKernel\Controller\ValueResolverInterface::resolve
-     */
     public function testResolveReturnsEmptyArrayWhenArgumentTypeIsNotAdminContext(): void
     {
-        // this test only applies to Symfony 6+ where ValueResolverInterface is used
-        // in Symfony 5.4, the supports() method handles type checking
         $request = new Request();
         $argument = new ArgumentMetadata('context', \stdClass::class, false, false, null);
 
@@ -37,12 +31,8 @@ class AdminContextResolverTest extends TestCase
         $this->assertSame([], $result);
     }
 
-    /**
-     * @requires function Symfony\Component\HttpKernel\Controller\ValueResolverInterface::resolve
-     */
     public function testResolveReturnsEmptyArrayWhenArgumentTypeIsNull(): void
     {
-        // this test only applies to Symfony 6+ where ValueResolverInterface is used
         $request = new Request();
         $argument = new ArgumentMetadata('context', null, false, false, null);
 
@@ -82,35 +72,5 @@ class AdminContextResolverTest extends TestCase
 
         $this->assertCount(1, $result);
         $this->assertNull($result[0]);
-    }
-
-    /**
-     * Tests the supports() method for Symfony 5.4 compatibility.
-     */
-    public function testSupportsReturnsTrueWhenArgumentTypeIsAdminContext(): void
-    {
-        if (!method_exists($this->resolver, 'supports')) {
-            $this->markTestSkipped('This test only applies to Symfony 5.4 (ArgumentValueResolverInterface)');
-        }
-
-        $request = new Request();
-        $argument = new ArgumentMetadata('context', AdminContext::class, false, false, null);
-
-        $this->assertTrue($this->resolver->supports($request, $argument));
-    }
-
-    /**
-     * Tests the supports() method for Symfony 5.4 compatibility.
-     */
-    public function testSupportsReturnsFalseWhenArgumentTypeIsNotAdminContext(): void
-    {
-        if (!method_exists($this->resolver, 'supports')) {
-            $this->markTestSkipped('This test only applies to Symfony 5.4 (ArgumentValueResolverInterface)');
-        }
-
-        $request = new Request();
-        $argument = new ArgumentMetadata('context', \stdClass::class, false, false, null);
-
-        $this->assertFalse($this->resolver->supports($request, $argument));
     }
 }

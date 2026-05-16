@@ -92,6 +92,8 @@
                 <twig:ea:Button type="submit" variant="primary" size="lg" isBlock htmlAttributes="{class: 'btn-block'}">{{ _sign_in_label }}</twig:ea:Button>
             </form>
 
+            {% block login_form_footer %}{% endblock login_form_footer %}
+
             {% guard function csp_nonce %}
                 <script src="{{ asset('login.js', constant('EasyCorp\\Bundle\\EasyAdminBundle\\Asset\\AssetPackage::PACKAGE_NAME')) }}" nonce="{{ csp_nonce('script') }}"></script>
             {% else %}

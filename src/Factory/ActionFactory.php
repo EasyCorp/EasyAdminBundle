@@ -33,16 +33,16 @@ use function Symfony\Component\Translation\t;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class ActionFactory
+final readonly class ActionFactory
 {
     /**
      * @param iterable<ActionsExtensionInterface> $actionsExtensions
      */
     public function __construct(
-        private readonly AdminContextProviderInterface $adminContextProvider,
-        private readonly AuthorizationCheckerInterface $authChecker,
-        private readonly AdminUrlGeneratorInterface $adminUrlGenerator,
-        private readonly ?CsrfTokenManagerInterface $csrfTokenManager = null,
+        private AdminContextProviderInterface $adminContextProvider,
+        private AuthorizationCheckerInterface $authChecker,
+        private AdminUrlGeneratorInterface $adminUrlGenerator,
+        private ?CsrfTokenManagerInterface $csrfTokenManager = null,
         private readonly iterable $actionsExtensions = [],
     ) {
     }
@@ -348,12 +348,15 @@ final class ActionFactory
     private function processActionLabel(ActionDto $actionDto, ?EntityDto $entityDto, string $translationDomain, array $defaultTranslationParameters): void
     {
         $label = $actionDto->getLabel();
-        $htmlTitle = trim($actionDto->getHtmlAttributes()['title'] ?? '');
+        $htmlTitle = $actionDto->getHtmlAttributes()['title'] ?? null;
+        $hasHtmlTitle = \is_string($htmlTitle)
+            ? '' !== trim($htmlTitle)
+            : null !== $htmlTitle;
 
         // FALSE means that action doesn't show a visible label in the interface;
         // add an HTML 'title' attribute (unless the user defined one explicitly) to
         // improve accessibility and show the action name on mouse hover
-        if (false === $label && '' === $htmlTitle) {
+        if (false === $label && !$hasHtmlTitle) {
             $actionDto->setHtmlAttribute('title', $actionDto->getName());
 
             return;
@@ -400,22 +403,14 @@ final class ActionFactory
             return $this->adminUrlGenerator->unsetAllExcept(EA::FILTERS, EA::PAGE, EA::QUERY, EA::SORT)->setRoute($routeName, $routeParameters)->generateUrl();
         }
 
-        // when using pretty URLs, the data is in the request attributes instead of the query string
-        $crudControllerFqcn = $request->attributes->get(EA::CRUD_CONTROLLER_FQCN) ?? $request->query->get(EA::CRUD_CONTROLLER_FQCN);
+        $crudControllerFqcn = $request->attributes->get(EA::CRUD_CONTROLLER_FQCN);
         $crudActionName = $actionDto->getCrudActionName();
 
         if (null !== $crudControllerFqcn && null !== $crudActionName && !\in_array($crudActionName, AdminRouteGenerator::BUILT_IN_ACTION_NAMES, true)) {
             try {
                 $reflMethod = new \ReflectionMethod($crudControllerFqcn, $crudActionName);
                 if ([] === $reflMethod->getAttributes(AdminRoute::class)) {
-                    trigger_deprecation(
-                        'easycorp/easyadmin-bundle',
-                        '4.29.5',
-                        'The "%s()" method in "%s" is used as a custom CRUD action (via "linkToCrudAction()") but it is missing the #[AdminRoute] attribute. In EasyAdmin 5.x, you must add the #[AdminRoute] attribute to the "%s()" method to enable it as a CRUD action. See the UPGRADE.md file.',
-                        $crudActionName,
-                        $crudControllerFqcn,
-                        $crudActionName
-                    );
+                    throw new \RuntimeException(sprintf('The "%s()" method in "%s" is used as a custom CRUD action (via "linkToCrudAction()") but it is missing the #[AdminRoute] attribute. Add #[AdminRoute] to the "%s()" method to enable it as a CRUD action. See the "Custom CRUD Actions" section in the UPGRADE.md file.', $crudActionName, $crudControllerFqcn, $crudActionName));
                 }
             } catch (\ReflectionException) {
                 // the method doesn't exist; this will be caught elsewhere
@@ -497,6 +492,7 @@ final class ActionFactory
             ButtonVariant::Primary => 100,
             ButtonVariant::Default => 90,
             ButtonVariant::Success => 80,
+            ButtonVariant::Info => 75,
             ButtonVariant::Warning => 70,
             ButtonVariant::Danger => 60,
         };

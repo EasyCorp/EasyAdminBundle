@@ -9,9 +9,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\UserMenuDto;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class UserMenu
+final readonly class UserMenu
 {
-    private function __construct(private readonly UserMenuDto $dto)
+    private function __construct(private UserMenuDto $dto)
     {
     }
 
@@ -32,6 +32,13 @@ final class UserMenu
     public function displayUserAvatar(bool $isDisplayed = true): self
     {
         $this->dto->setDisplayAvatar($isDisplayed);
+
+        return $this;
+    }
+
+    public function disableLogoutLink(bool $disable = true): self
+    {
+        $this->dto->setLogoutLinkDisabled($disable);
 
         return $this;
     }

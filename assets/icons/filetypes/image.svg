@@ -1,0 +1,10 @@
+<svg fill="#fff" stroke-miterlimit="10" stroke-width="3" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg">
+    <style type="text/css">
+        .ea-icon-filetype-base-fill { fill: oklch(55.4% 0.046 257.417); }
+        .ea-icon-filetype-base-stroke { stroke: oklch(55.4% 0.046 257.417); }
+        @media (prefers-color-scheme: dark) {
+            .ea-icon-filetype-base-fill { fill: oklch(20.5% 0 0); }
+            .ea-icon-filetype-base-stroke { stroke: oklch(20.5% 0 0); }
+        }
+    </style>
+    <path d="m85 87h-74c-1.1046 0-2-.8954-2-2v-74c0-1.1046.8954-2 2-2h74c1.1046 0 2 .8954 2 2v74c0 1.1046-.8954 2-2 2z" class="ea-icon-filetype-base-stroke"/><g fill="none"><path d="m57.7923 48.1301-5.2771 7.156c-.3925.5323-1.1844.5437-1.5922.023l-8.8463-11.298c-.8008-1.0227-2.3487-1.0227-3.1494 0l-15.4689 19.7559c-1.0279 1.3128-.0926 3.233 1.5747 3.233h18.8439 16.2 10.89c1.6406 0 2.5834-1.8666 1.6096-3.187l-11.565-15.6829c-.7994-1.0839-2.42-1.0839-3.2193 0z" stroke="#107c41" stroke-width="4"/><circle cx="67" cy="35" r="6" stroke="oklch(68.1% 0.162 75.834)" stroke-width="4"/></g></svg>

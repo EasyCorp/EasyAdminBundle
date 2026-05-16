@@ -12,9 +12,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class NumberConfigurator implements FieldConfiguratorInterface
+final readonly class NumberConfigurator implements FieldConfiguratorInterface
 {
-    public function __construct(private readonly IntlFormatterInterface $intlFormatter)
+    public function __construct(private IntlFormatterInterface $intlFormatter)
     {
     }
 

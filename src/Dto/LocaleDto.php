@@ -5,12 +5,12 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 /**
  * @author Jakub Caban <kuba.iluvatar@gmail.com>
  */
-final class LocaleDto
+final readonly class LocaleDto
 {
     public function __construct(
-        private readonly string $locale,
-        private readonly string $name,
-        private readonly ?string $icon = null,
+        private string $locale,
+        private string $name,
+        private ?string $icon = null,
     ) {
     }
 

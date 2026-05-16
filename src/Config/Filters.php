@@ -8,9 +8,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterConfigDto;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class Filters
+final readonly class Filters
 {
-    private function __construct(private readonly FilterConfigDto $dto)
+    private function __construct(private FilterConfigDto $dto)
     {
     }
 

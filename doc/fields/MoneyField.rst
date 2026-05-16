@@ -87,6 +87,34 @@ If you do not store money amounts in cents, set this option to ``false``:
     However, if you've defined your own custom divisor with the
     ``setFormTypeOption('divisor', ...)`` method, the custom divisor will be used.
 
+useMoneyObject
+~~~~~~~~~~~~~~
+
+If your entity stores money amounts as ``Money\Money`` objects from the
+`Money PHP`_ library, EasyAdmin can handle them directly. First, install the
+library:
+
+.. code-block:: terminal
+
+    $ composer require moneyphp/money
+
+When the property value is already a ``Money`` object (e.g. on ``edit`` and
+``detail`` pages), EasyAdmin detects it automatically and no extra configuration
+is needed. On ``new`` pages, where the value is ``null``, you must enable this
+option explicitly::
+
+    yield MoneyField::new('price')->useMoneyObject();
+
+The currency is read from the ``Money`` object by default, but you can override
+it with ``setCurrency()`` or ``setCurrencyPropertyPath()``::
+
+    yield MoneyField::new('price')->useMoneyObject()->setCurrency('EUR');
+
+.. note::
+
+    ``Money`` objects always store amounts in the smallest currency unit (e.g.
+    cents), so ``setStoredAsCents()`` has no effect when using this option.
+
 .. _`MoneyType`: https://symfony.com/doc/current/reference/forms/types/money.html
 .. _`ISO 4217 standard`: https://en.wikipedia.org/wiki/ISO_4217
 .. _`Symfony PropertyAccess`: https://symfony.com/doc/current/components/property_access.html

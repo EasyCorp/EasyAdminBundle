@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Installing Symfony Framework
-composer create-project symfony/skeleton:"7.2.*" -n
+composer create-project symfony/skeleton:"8.0.*" -n
 mv -f ./skeleton/* ./
 mv -f ./skeleton/.env ./
 mv -f ./skeleton/.env.dev ./
@@ -29,6 +29,8 @@ ln -s ../../../easyadminbundle/.ddev/example/config/routes/easyadmin.yaml config
 # Initialize DB
 echo 'DATABASE_URL="mysql://db:db@db:3306/db?serverVersion=10.11.0-MariaDB&charset=utf8mb4"' >> .env.local
 ./bin/console doc:sch:up --force
+
+bin/console assets:install --symlink
 
 # Clear Cache
 sleep 2

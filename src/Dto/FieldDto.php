@@ -4,7 +4,6 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormFieldsetType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormColumnCloseType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormColumnGroupCloseType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormColumnGroupOpenType;
@@ -102,17 +101,6 @@ final class FieldDto
         $this->uniqueId = $uniqueId;
     }
 
-    public function isFormDecorationField(): bool
-    {
-        trigger_deprecation(
-            'easycorp/easyadmin-bundle',
-            '4.8.0',
-            '"FieldDto::isFormDecorationField()" has been deprecated in favor of "FieldDto::isFormLayoutField()" and it will be removed in 5.0.0.',
-        );
-
-        return $this->isFormLayoutField();
-    }
-
     public function isFormLayoutField(): bool
     {
         $formLayoutFieldClasses = [
@@ -134,7 +122,7 @@ final class FieldDto
 
     public function isFormFieldset(): bool
     {
-        return \in_array($this->formType, [EaFormFieldsetType::class, EaFormFieldsetOpenType::class], true);
+        return EaFormFieldsetOpenType::class === $this->formType;
     }
 
     public function isFormTab(): bool
@@ -228,29 +216,15 @@ final class FieldDto
         $this->formatValueCallable = $callable;
     }
 
-    /**
-     * @return TranslatableInterface|string|false|null
-     */
-    public function getLabel()
+    public function getLabel(): TranslatableInterface|string|bool|null
     {
         return $this->label;
     }
 
-    /**
-     * @param TranslatableInterface|string|false|null $label
-     */
-    public function setLabel($label): void
+    public function setLabel(TranslatableInterface|string|bool|null $label): void
     {
-        if (!\is_string($label) && !$label instanceof TranslatableInterface && false !== $label && null !== $label) {
-            trigger_deprecation(
-                'easycorp/easyadmin-bundle',
-                '4.0.5',
-                'Argument "%s" for "%s" must be one of these types: %s. Passing type "%s" will cause an error in 5.0.0.',
-                '$label',
-                __METHOD__,
-                '"TranslatableInterface", "string", "false" or "null"',
-                \gettype($label)
-            );
+        if (true === $label) {
+            throw new \InvalidArgumentException(sprintf('The value passed to the label of the "%s" field is not valid. When passing boolean values, you can only pass a false value (to hide the label) but you passed a true value.', $this->propertyName));
         }
 
         $this->label = $label;

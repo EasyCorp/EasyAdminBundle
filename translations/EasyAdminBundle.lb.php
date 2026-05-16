@@ -54,6 +54,7 @@ return [
         'remove_item' => 'Element läschen',
         'choose_file' => 'Fichier auswielen',
         'close' => 'Zoumaachen',
+        'download' => 'Eroflueden',
         'create' => 'Erstellen',
         'create_and_add_another' => 'Erstellen an e weidert Element dobäisetzen',
         'create_and_continue' => 'Erstellen a weider beaarbechten',
@@ -118,6 +119,16 @@ return [
         'exit_impersonation' => 'Benotzerimitatioun verloossen',
     ],
 
+    'settings' => [
+        'appearance' => [
+            'label' => 'Ausgesinn',
+            'light' => 'Hell',
+            'dark' => 'Däischter',
+            'auto' => 'Automatesch',
+        ],
+        'locale' => 'Sprooch',
+    ],
+
     'login_page' => [
         'username' => 'Benotzernumm',
         'password' => 'Passwuert',
@@ -135,6 +146,12 @@ return [
         'general_403' => 'You don\'t have permission to perform this action.',
         'general_404' => 'The requested page could not be found.',
         'general_500' => 'An internal error occurred while processing your request.',
+    ],
+
+    'file_upload' => [
+        'add_file' => 'Fichier dobäisetzen',
+        'add_files' => 'Fichieren dobäisetzen',
+        'clear_all' => 'Alles läschen',
     ],
 
     'autocomplete' => [

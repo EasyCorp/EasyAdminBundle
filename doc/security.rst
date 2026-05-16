@@ -68,8 +68,7 @@ Consider that in your application you have two dashboards (``DashboardController
 used by your employees and ``GuestDashboardController`` used by external collaborators).
 In the guest dashboard you only want to allow certain actions related to your blog.
 
-However, when using :ref:`pretty admin URLs <pretty-admin-urls>`, EasyAdmin will
-generate the routes for all CRUD controllers in all dashboards. This means that
+By default, EasyAdmin generates routes for all CRUD controllers in all dashboards. This means that
 there will be undesired routes like ``admin_guest_invoice``, ``admin_guest_user_detail``, etc.
 The best way to restrict which CRUD controllers are accessible via each dashboard
 is to use the ``#[AdminDashboard]`` attribute::
@@ -230,10 +229,6 @@ permissions to see some items:
 Restricting Access with Expressions
 -----------------------------------
 
-.. versionadded:: 4.9.0
-
-    The Expressions support was introduced in EasyAdmin 4.9.0.
-
 The `Symfony ExpressionLanguage component`_ allows you to define complex configuration
 logic using simple expressions. In EasyAdmin, all ``setPermission()`` methods
 allow you to pass not only a string with some security role name (e.g. ``ROLE_ADMIN``)
@@ -250,7 +245,7 @@ like this::
 
     use Symfony\Component\ExpressionLanguage\Expression;
 
-    MenuItem::linkToCrud('Restricted menu-item', null, Example::class)
+    MenuItem::linkTo(ExampleCrudController::class, 'Restricted menu-item')
         ->setPermission(new Expression('"ROLE_DEVELOPER" in role_names and "ROLE_EXTERNAL" not in role_names'));
 
 Expressions enable the definition of much more detailed permissions, based on

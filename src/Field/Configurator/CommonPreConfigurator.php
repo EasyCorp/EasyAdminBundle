@@ -25,21 +25,13 @@ use function Symfony\Component\Translation\t;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class CommonPreConfigurator implements FieldConfiguratorInterface
+final readonly class CommonPreConfigurator implements FieldConfiguratorInterface
 {
     public function __construct(
-        private readonly PropertyAccessorInterface $propertyAccessor,
-        private readonly EntityFactory $entityFactory,
-        private readonly ?EntityTranslationIdGeneratorInterface $entityTranslationIdGenerator = null,
+        private PropertyAccessorInterface $propertyAccessor,
+        private EntityFactory $entityFactory,
+        private EntityTranslationIdGeneratorInterface $entityTranslationIdGenerator,
     ) {
-        if (null === $this->entityTranslationIdGenerator) {
-            trigger_deprecation(
-                'easycorp/easyadmin-bundle',
-                '4.27',
-                'Not passing argument "$entityTranslationIdGenerator" will cause an error in 5.0.0.',
-                '$entityTranslationIdGenerator',
-            );
-        }
     }
 
     public function supports(FieldDto $field, EntityDto $entityDto): bool

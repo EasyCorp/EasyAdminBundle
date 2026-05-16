@@ -27,48 +27,19 @@ final class FormField implements FieldInterface
     public const OPTION_FIELDSET_ERROR_COUNT = 'fieldsetErrorCount';
 
     /**
-     * @internal Use the other named constructors instead (addPanel(), etc.)
-     *
-     * @param TranslatableInterface|string|false|null $label
+     * @internal Use the other named constructors instead (addFieldset(), etc.)
      */
-    public static function new(string $propertyName, $label = null): never
+    public static function new(string $propertyName, TranslatableInterface|string|bool|null $label = null): self
     {
-        throw new \RuntimeException('Instead of this method, use the "addPanel()" method.');
+        throw new \RuntimeException('Instead of this method, use any of the methods to add elements: "addFieldset()", "addTab()", etc.');
     }
 
     /**
      * @param TranslatableInterface|string|false|null $label
      * @param string|null                             $icon  The full CSS classes of the FontAwesome icon to render (see https://fontawesome.com/v6/search?m=free)
      */
-    public static function addPanel($label = false, ?string $icon = null): self
+    public static function addFieldset(TranslatableInterface|string|bool|null $label = false, ?string $icon = null, ?string $propertySuffix = null): self
     {
-        trigger_deprecation(
-            'easycorp/easyadmin-bundle',
-            '4.7.7',
-            '"FormField::addPanel()" has been deprecated in favor of "FormField::addFieldset()" and it will be removed in 5.0.0.',
-        );
-
-        return self::addFieldset($label, $icon);
-    }
-
-    /**
-     * @param TranslatableInterface|string|false|null $label
-     * @param string|null                             $icon  The full CSS classes of the FontAwesome icon to render (see https://fontawesome.com/v6/search?m=free)
-     */
-    public static function addFieldset(/* TranslatableInterface|string|false|null */ $label = false, ?string $icon = null, ?string $propertySuffix = null): self
-    {
-        if (!\is_string($label) && !$label instanceof TranslatableInterface && false !== $label && null !== $label) {
-            trigger_deprecation(
-                'easycorp/easyadmin-bundle',
-                '4.27.0',
-                'Argument "%s" for "%s" must be one of these types: %s. Passing type "%s" will cause an error in 5.0.0.',
-                '$label',
-                __METHOD__,
-                '"string" or "TranslatableInterface" or "false" or "null"',
-                \gettype($label)
-            );
-        }
-
         $field = new self();
 
         return $field

@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
 class App {
     #sidebarWidthLocalStorageKey;
     #contentWidthLocalStorageKey;
+    #isNavigatingHistory = false;
 
     constructor() {
         this.#sidebarWidthLocalStorageKey = 'ea/sidebar/width';
@@ -33,15 +34,16 @@ class App {
         this.#createDefaultRowAction();
         this.#createPopovers();
         this.#createTooltips();
+        this.#persistSelectedTab();
         this.#createActionHandlers();
 
         document.addEventListener('ea.collection.item-added', () => this.#createAutoCompleteFields());
     }
 
-    // When using tabs in forms, the selected tab is persisted (in the URL hash) so you
+    // When using tabs, the selected tab is persisted (in the URL hash) so you
     // can see the same tab when reloading the page (e.g. '#tab-contact-information').
-    // This method removes the hash from URL in the index page to not show form-related
-    // information in the index page
+    // This method removes the hash from URL in the index page to not show tab-related
+    // information on the index page
     #removeHashFormUrl() {
         if (!window.location.href.includes('#')) {
             return;
@@ -641,6 +643,59 @@ class App {
                 toggleVisibilityClasses(secondValue, comparisonWidget.value !== 'between');
             });
         });
+    }
+
+    #persistSelectedTab() {
+        // the ID of the selected tab is appended as a hash in the URL to persist it;
+        // if the URL has a hash, try to look for a tab with that ID and show it
+        const urlHash = window.location.hash;
+        if (urlHash) {
+            const selectedTabPaneId = urlHash.substring(1); // remove the leading '#' from the hash
+            const selectedTabId = `tablist-${selectedTabPaneId}`;
+            this.#setTabAsActive(selectedTabId);
+        }
+
+        // update the page anchor when the selected tab changes
+        document.querySelectorAll('a[data-bs-toggle="tab"]').forEach((tabElement) => {
+            tabElement.addEventListener('shown.bs.tab', (event) => {
+                // don't push state when navigating through browser history (back/forward)
+                if (this.#isNavigatingHistory) {
+                    return;
+                }
+                const urlHash = `#${event.target.getAttribute('href').substring(1)}`;
+                history.pushState({}, '', urlHash);
+            });
+        });
+
+        // handle browser back/forward navigation to restore the correct tab
+        window.addEventListener('popstate', () => {
+            this.#isNavigatingHistory = true;
+            const urlHash = window.location.hash;
+            if (urlHash) {
+                const selectedTabPaneId = urlHash.substring(1);
+                const selectedTabId = `tablist-${selectedTabPaneId}`;
+                this.#setTabAsActive(selectedTabId);
+            } else {
+                // no hash means show the first tab
+                const firstTab = document.querySelector('a[data-bs-toggle="tab"]');
+                if (firstTab) {
+                    this.#setTabAsActive(firstTab.id);
+                }
+            }
+            this.#isNavigatingHistory = false;
+        });
+    }
+
+    #setTabAsActive(tabItemId) {
+        const tabElement = document.getElementById(tabItemId);
+        if (!tabElement) {
+            return;
+        }
+
+        const Tab = bootstrap.Tab;
+        const bootstrapTab = new Tab(tabElement);
+        // when showing a tab, Bootstrap hides all the other tabs automatically
+        bootstrapTab.show();
     }
 
     #createActionHandlers() {

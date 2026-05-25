@@ -8,51 +8,9 @@ class Form {
     #isNavigatingHistory = false;
 
     constructor() {
-        this.#persistSelectedTab();
         this.#createUnsavedFormChangesWarning();
         this.#createFieldsWithErrors();
         this.#preventMultipleFormSubmission();
-    }
-
-    #persistSelectedTab() {
-        // the ID of the selected tab is appended as a hash in the URL to persist it;
-        // if the URL has a hash, try to look for a tab with that ID and show it
-        const urlHash = window.location.hash;
-        if (urlHash) {
-            const selectedTabPaneId = urlHash.substring(1); // remove the leading '#' from the hash
-            const selectedTabId = `tablist-${selectedTabPaneId}`;
-            this.#setTabAsActive(selectedTabId);
-        }
-
-        // update the page anchor when the selected tab changes
-        document.querySelectorAll('a[data-bs-toggle="tab"]').forEach((tabElement) => {
-            tabElement.addEventListener('shown.bs.tab', (event) => {
-                // don't push state when navigating through browser history (back/forward)
-                if (this.#isNavigatingHistory) {
-                    return;
-                }
-                const urlHash = `#${event.target.getAttribute('href').substring(1)}`;
-                history.pushState({}, '', urlHash);
-            });
-        });
-
-        // handle browser back/forward navigation to restore the correct tab
-        window.addEventListener('popstate', () => {
-            this.#isNavigatingHistory = true;
-            const urlHash = window.location.hash;
-            if (urlHash) {
-                const selectedTabPaneId = urlHash.substring(1);
-                const selectedTabId = `tablist-${selectedTabPaneId}`;
-                this.#setTabAsActive(selectedTabId);
-            } else {
-                // no hash means show the first tab
-                const firstTab = document.querySelector('a[data-bs-toggle="tab"]');
-                if (firstTab) {
-                    this.#setTabAsActive(firstTab.id);
-                }
-            }
-            this.#isNavigatingHistory = false;
-        });
     }
 
     #createUnsavedFormChangesWarning() {
@@ -77,7 +35,6 @@ class Form {
             // itself to support custom/complex fields.
             //
             // Adding visual error counter feedback for invalid fields inside form tabs (visible or not)
-            const that = this;
             document
                 .querySelector('.ea-edit, .ea-new')
                 .querySelectorAll('[type="submit"]')
@@ -171,7 +128,10 @@ class Form {
                                 '.form-tabs-tablist .nav-tabs .nav-item .nav-link.has-error'
                             );
                             if (null !== firstTabWithErrors) {
-                                that.#setTabAsActive(firstTabWithErrors.id);
+                                // Activate (show) the first tab with errors
+                                const Tab = bootstrap.Tab;
+                                const bootstrapTab = new Tab(firstTabWithErrors);
+                                bootstrapTab.show();
                             }
 
                             // auto-expand all collapsed fieldsets with errors
@@ -222,18 +182,6 @@ class Form {
                 handleFieldsWithErrors(form, formSelector.includes('-new-') ? 'new' : 'edit');
             }
         });
-    }
-
-    #setTabAsActive(tabItemId) {
-        const tabElement = document.getElementById(tabItemId);
-        if (!tabElement) {
-            return;
-        }
-
-        const Tab = bootstrap.Tab;
-        const bootstrapTab = new Tab(tabElement);
-        // when showing a tab, Bootstrap hides all the other tabs automatically
-        bootstrapTab.show();
     }
 
     #preventMultipleFormSubmission() {

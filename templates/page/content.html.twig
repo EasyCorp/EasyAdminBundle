@@ -1,7 +1,9 @@
-{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
-{% set ea = ea() %}
-{% extends null != ea ? ea.templatePath('layout') : '@EasyAdmin/layout.html.twig' %}
-{% trans_default_domain null != ea ? ea.i18n.translationDomain : (translation_domain is defined ? translation_domain ?? 'messages') %}
+{# don't do this: {% set ea = ea() %} and then use the 'ea' variable in the code;
+   instead, use ea() in extends and trans_default_domain. This is needed because
+   {% extends %} is evaluated by doGetParent(), which runs before any {% set %} in doDisplay(),
+   so a local `ea` variable would not be set yet when a user template extends this file. #}
+{% extends ea() is not null ? ea().templatePath('layout') : '@EasyAdmin/layout.html.twig' %}
+{% trans_default_domain ea() is not null ? ea().i18n.translationDomain : (translation_domain is defined ? translation_domain ?? 'messages') %}
 
 {% block body_class 'page-content' %}
 

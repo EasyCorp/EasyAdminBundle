@@ -54,6 +54,7 @@ return [
         'remove_item' => 'Elem eltávolítása',
         'choose_file' => 'Fájl kiválasztása',
         'close' => 'Bezárás',
+        'download' => 'Letöltés',
         'create' => 'Létrehozás',
         'create_and_add_another' => 'Létrehozás és új hozzáadása',
         'create_and_continue' => 'Létrehozás és szerkesztés',
@@ -145,6 +146,12 @@ return [
         'general_403' => 'Nincs jogosultsága a művelet végrehajtásához.',
         'general_404' => 'A kért oldal nem található.',
         'general_500' => 'Belső hiba történt a kérés feldolgozása közben.',
+    ],
+
+    'file_upload' => [
+        'add_file' => 'Fájl hozzáadása',
+        'add_files' => 'Fájlok hozzáadása',
+        'clear_all' => 'Összes törlése',
     ],
 
     'autocomplete' => [

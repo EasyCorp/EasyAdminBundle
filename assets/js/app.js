@@ -476,10 +476,12 @@ class App {
     }
 
     #createDefaultRowAction() {
-        const clickableRows = document.querySelectorAll('tr.ea-clickable-row[data-default-action-url]');
+        const clickableRows = document.querySelectorAll('tr[data-default-action-url]');
         if (0 === clickableRows.length) {
             return;
         }
+
+        clickableRows.forEach((row) => row.classList.add('ea-clickable-row'));
 
         const clickTrigger = clickableRows[0].closest('table')?.getAttribute('data-default-action-trigger') || 'single';
 
@@ -494,6 +496,7 @@ class App {
             '.actions',
             '[data-bs-toggle]',
             '.btn',
+            '.modal',
         ];
 
         const isInteractiveElement = (element) => {

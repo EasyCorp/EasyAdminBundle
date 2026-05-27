@@ -15,6 +15,10 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Proj
  */
 class ProjectIssueNestedCrudController extends AbstractCrudController
 {
+    public const DEFAULT_ENTRY_NAME = 'New issue (from createEntity)';
+
+    public static int $createEntityCallCount = 0;
+
     public static function getEntityFqcn(): string
     {
         return ProjectIssue::class;
@@ -46,5 +50,19 @@ class ProjectIssueNestedCrudController extends AbstractCrudController
         }
 
         yield TextField::new('name', 'Issue Name');
+    }
+
+    public function createEntity(string $entityFqcn): object
+    {
+        // overriding createEntity() must be honored when this controller is embedded
+        // via CollectionField::useEntryCrudForm() (see #6991). The static counter lets
+        // tests verify that both `prototype_data` (build) and `entry_options.empty_data`
+        // (submit) reach this method.
+        ++self::$createEntityCallCount;
+
+        $issue = new $entityFqcn();
+        $issue->setName(self::DEFAULT_ENTRY_NAME);
+
+        return $issue;
     }
 }

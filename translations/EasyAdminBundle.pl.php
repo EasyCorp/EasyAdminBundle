@@ -2,7 +2,7 @@
 
 return [
     'page_title' => [
-        // 'dashboard' => '',
+        'dashboard' => 'Panel administracyjny',
         'detail' => '%entity_label_singular% <small>(#%entity_short_id%)</small>',
         'edit' => '%entity_label_singular%',
         'index' => '%entity_label_plural%',
@@ -54,6 +54,7 @@ return [
         'remove_item' => 'Usuń pozycję',
         'choose_file' => 'Wybierz plik',
         'close' => 'Zamknij',
+        'download' => 'Pobierz',
         'create' => 'Dodaj',
         'create_and_add_another' => 'Zapisz i dodaj kolejny',
         'create_and_continue' => 'Zapisz i kontynuuj',
@@ -145,6 +146,12 @@ return [
         'general_403' => 'Nie masz uprawnień do wykonania tej akcji.',
         'general_404' => 'Nie znaleziono żądanej strony.',
         'general_500' => 'Wystąpił wewnętrzny błąd podczas przetwarzania żądania.',
+    ],
+
+    'file_upload' => [
+        'add_file' => 'Dodaj plik',
+        'add_files' => 'Dodaj pliki',
+        'clear_all' => 'Wyczyść wszystko',
     ],
 
     'autocomplete' => [

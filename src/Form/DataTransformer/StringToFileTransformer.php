@@ -141,8 +141,14 @@ class StringToFileTransformer implements DataTransformerInterface
             }
 
             $filename = ($this->uploadFilename)($value);
+            // Pass the full path (upload dir + filename) to the validator so
+            // it can detect existing files and avoid overwriting them. Strip
+            // the upload dir afterwards so only the relative name is stored.
+            $validatedPath = ($this->uploadValidate)($this->uploadDir.$filename);
 
-            return ($this->uploadValidate)($filename);
+            return str_starts_with($validatedPath, $this->uploadDir)
+                ? mb_substr($validatedPath, mb_strlen($this->uploadDir))
+                : $validatedPath;
         }
 
         if ($value instanceof FlysystemFile) {

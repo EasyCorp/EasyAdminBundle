@@ -492,6 +492,7 @@ final readonly class ActionFactory
             ButtonVariant::Primary => 100,
             ButtonVariant::Default => 90,
             ButtonVariant::Success => 80,
+            ButtonVariant::Info => 75,
             ButtonVariant::Warning => 70,
             ButtonVariant::Danger => 60,
         };

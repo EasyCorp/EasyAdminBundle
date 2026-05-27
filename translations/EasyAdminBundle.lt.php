@@ -11,7 +11,7 @@ return [
     ],
 
     'datagrid' => [
-        'hidden_results' => 'Kai kurie elementai negali būti parodyti nes jums trūkstą teisių.',
+        'hidden_results' => 'Kai kurie elementai negali būti parodyti nes jums trūksta teisių.',
         'no_results' => 'Rezultatų nerasta.',
     ],
 
@@ -54,6 +54,7 @@ return [
         'remove_item' => 'Pašalinti elementą',
         'choose_file' => 'Pasirinkti failą',
         'close' => 'Užverti',
+        'download' => 'Atsisiųsti',
         'create' => 'Sukurti',
         'create_and_add_another' => 'Sukurti ir pridėti kitą',
         'create_and_continue' => 'Sukurti ir tęsti redagavimą',
@@ -94,7 +95,7 @@ return [
         'label.not_contains' => 'neturi',
         'label.starts_with' => 'prasideda',
         'label.ends_with' => 'pasibaigia',
-        'label.exactly' => 'tikslai toks',
+        'label.exactly' => 'tiksliai toks',
         'label.not_exactly' => 'ne tiksliai',
         'label.is_same' => 'toks pat',
         'label.is_not_same' => 'ne toks pat',
@@ -107,6 +108,7 @@ return [
     'form' => [
         'are_you_sure' => 'Jūs neįrašėte šios formos pakeitimų.',
         'tab.error_badge_title' => 'Viena neteisingą įvesti|%count% neteisingų įvesčių',
+        'slug.confirm_text' => 'Jei pakeisite slug, galite sugadinti nuorodas kituose puslapiuose.',
     ],
 
     'user' => [
@@ -115,6 +117,16 @@ return [
         'anonymous' => 'Anonimiškas vartotojas',
         'sign_out' => 'Atsijungti',
         'exit_impersonation' => 'Baigti apsimetimą',
+    ],
+
+    'settings' => [
+        'appearance' => [
+            'label' => 'Išvaizda',
+            'light' => 'Šviesi',
+            'dark' => 'Tamsi',
+            'auto' => 'Automatinė',
+        ],
+        'locale' => 'Kalba',
     ],
 
     'login_page' => [
@@ -129,16 +141,22 @@ return [
         'entity_not_found' => 'Šis elementas nebepasiekiamas.',
         'entity_remove' => 'Šis elementas negali būti ištrintas, nes nuo jo priklauso kiti elementai.',
         'forbidden_action' => 'Norimas atlikti veiksmas šiam elementui negalimas.',
-        'insufficient_entity_permission' => 'Jums trūkstą teisių pasiekti šį elementą.',
+        'insufficient_entity_permission' => 'Jums trūksta teisių pasiekti šį elementą.',
         'general' => 'An error occurred while processing your request.',
         'general_403' => 'You don\'t have permission to perform this action.',
         'general_404' => 'The requested page could not be found.',
         'general_500' => 'An internal error occurred while processing your request.',
     ],
 
+    'file_upload' => [
+        'add_file' => 'Pridėti failą',
+        'add_files' => 'Pridėti failus',
+        'clear_all' => 'Išvalyti viską',
+    ],
+
     'autocomplete' => [
         'no-results-found' => 'Atitikmenų nerasta',
-        // 'no-more-results' => 'No more results',
+        'no-more-results' => 'Daugiau rezultatų nėra',
         'loading-more-results' => 'Kraunama daugiau rezultatų…',
     ],
 ];

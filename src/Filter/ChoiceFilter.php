@@ -39,14 +39,42 @@ final class ChoiceFilter implements FilterInterface
     }
 
     /**
-     * @param array<string|TranslatableInterface> $choiceGenerator
+     * @param array<string|TranslatableInterface|\UnitEnum> $choiceGenerator
      */
     public function setTranslatableChoices(array $choiceGenerator): self
     {
+        // support passing a list of enum cases (e.g. MyEnum::cases()) when the
+        // enum implements TranslatableInterface. In that case, the submitted
+        // value must be the enum backing value (or its name for UnitEnum),
+        // otherwise the keys (0, 1, 2, ...) of the list would be submitted
+        // and the query would never match any row.
+        if (array_is_list($choiceGenerator) && [] !== $choiceGenerator && $this->areAllEnums($choiceGenerator)) {
+            $choices = [];
+            foreach ($choiceGenerator as $case) {
+                $key = $case instanceof \BackedEnum ? $case->value : $case->name;
+                $choices[$key] = $case;
+            }
+            $choiceGenerator = $choices;
+        }
+
         $this->dto->setFormTypeOption('value_type_options.choices', array_keys($choiceGenerator));
         $this->dto->setFormTypeOption('value_type_options.choice_label', static fn ($value) => $choiceGenerator[$value]);
 
         return $this;
+    }
+
+    /**
+     * @param array<mixed> $values
+     */
+    private function areAllEnums(array $values): bool
+    {
+        foreach ($values as $value) {
+            if (!$value instanceof \UnitEnum) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public function renderExpanded(bool $isExpanded = true): self

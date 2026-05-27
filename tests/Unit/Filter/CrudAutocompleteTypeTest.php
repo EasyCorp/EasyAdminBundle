@@ -151,4 +151,79 @@ class CrudAutocompleteTypeTest extends TypeTestCase
         $this->assertTrue($form->isSynchronized());
         $this->assertEquals(new ArrayCollection(), $form->getData());
     }
+
+    public function testCustomChoiceLabelIsPreserved(): void
+    {
+        $project = (new Project())->setId(123)->setName('Foo');
+
+        $this->entityManager
+            ->method('contains')
+            ->with($project)
+            ->willReturn(true);
+        $this->repository
+            ->method('findBy')
+            ->willReturn([$project]);
+        $this->classMetadata
+            ->method('getIdentifierValues')
+            ->with($project)
+            ->willReturn(['id' => $project->getId()]);
+
+        $form = $this->factory->create(CrudAutocompleteType::class, null, [
+            'class' => Project::class,
+            'choice_label' => static fn (Project $p): string => sprintf('[%d] %s', $p->getId(),
+                $p->getName()),
+        ]);
+        $form->submit(['autocomplete' => '123']);
+
+        $this->assertTrue($form->isSynchronized());
+
+        $view = $form->createView();
+
+        // the user-supplied callable is used to build the option label,
+        // overriding the default Project::__toString() output
+        $this->assertEquals(
+            ['123' => new ChoiceView($project, 123, '[123] Foo')],
+            $view->children['autocomplete']->vars['choices'],
+        );
+    }
+
+    public function testAutocompleteCallbackStillWinsWhenChoiceLabelIsNotSet(): void
+    {
+        $project = (new Project())->setId(123)->setName('Foo');
+
+        $this->entityManager
+            ->method('contains')
+            ->with($project)
+            ->willReturn(true);
+        $this->repository
+            ->method('findBy')
+            ->willReturn([$project]);
+        $this->classMetadata
+            ->method('getIdentifierValues')
+            ->with($project)
+            ->willReturn(['id' => $project->getId()]);
+
+        $form = $this->factory->create(CrudAutocompleteType::class, null, [
+            'class' => Project::class,
+            'autocomplete_callback' => static fn (Project $p): string => 'cb:'.$p->getName(),
+        ]);
+        $form->submit(['autocomplete' => '123']);
+
+        $view = $form->createView();
+
+        $this->assertEquals(
+            ['123' => new ChoiceView($project, 123, 'cb:Foo')],
+            $view->children['autocomplete']->vars['choices'],
+        );
+    }
+
+    public function testChoiceLabelOptionRejectsInvalidType(): void
+    {
+        $this->expectException(\Symfony\Component\OptionsResolver\Exception\InvalidOptionsException::class);
+
+        $this->factory->create(CrudAutocompleteType::class, null, [
+            'class' => Project::class,
+            'choice_label' => 42, // int is not in the allowed types
+        ]);
+    }
 }

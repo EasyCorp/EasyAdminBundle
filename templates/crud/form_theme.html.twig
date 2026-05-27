@@ -451,7 +451,7 @@
     })}) }}
 
     <div class="ea-text-editor-wrapper {{ row_attr.class|default('') ~ (not valid ? ' has-error') }}">
-        <trix-editor input="{{ id }}" class="trix-content"></trix-editor>
+        <trix-editor input="{{ id }}" class="trix-content" {% if disabled %}disabled{% endif %}></trix-editor>
     </div>
 {% endblock ea_text_editor_widget %}
 
@@ -564,7 +564,7 @@
     {% set fieldset_has_errors = form.vars.ea_vars.field.getCustomOption(fieldset_error_count_option_name)|default(0) > 0 %}
     {% set is_collapsed = form.vars.ea_vars.field.getCustomOption(collapsed_option_name)|default(false) %}
 
-    <div class="form-fieldset {{ not fieldset_has_header ? 'form-fieldset-no-header' }} {{ fieldset_has_errors ? 'has-fieldset-error' }} {{ ea_css_class }}">
+    <div class="form-fieldset {{ not fieldset_has_header ? 'form-fieldset-no-header' }} {{ fieldset_has_errors ? 'has-fieldset-error' }} {{ ea_css_class }} {{ form.vars.attr.class|default('') }}" {% for key, value in form.vars.attr %}{% if key != 'class' %}{{ key }}="{{ value|e('html') }}" {% endif %}{% endfor %}>
         <fieldset>
             {% if fieldset_has_header %}
                 {{ form_label(form) }}
@@ -723,7 +723,9 @@
                 {% set fileName = file.filename %}
                 {% set fileSize = file.size ? file.size|ea_filesize : '' %}
                 {% set filetypeIcon = fileName|ea_filetype_icon %}
-                {% set isImage = filetypeIcon == 'image' %}
+                {% set isImage = (filetypeIcon == 'image')
+                    or (filetypeIcon == 'vector' and (fileName|lower ends with '.svg' or fileName|lower ends with '.svgz')) %}
+                {% set isVectorImage = filetypeIcon == 'vector' and (fileName|lower ends with '.svg' or fileName|lower ends with '.svgz') %}
                 {% set fileUrl = currentFileUrls[i]|default(null) %}
                 {% if fileUrl is null and download_path %}
                     {% set fileUrl = asset(download_path ~ currentFileNames[i]) %}

@@ -320,6 +320,7 @@ return static function (ContainerConfigurator $container) {
         ->set(ChoiceFilterConfigurator::class)
 
         ->set(CommonFilterConfigurator::class)
+            ->arg(0, service(EntityTranslationIdGeneratorInterface::class))
             ->tag(EasyAdminExtension::TAG_FILTER_CONFIGURATOR, ['priority' => 9999])
 
         ->set(ComparisonFilterConfigurator::class)
@@ -373,6 +374,9 @@ return static function (ContainerConfigurator $container) {
             ->arg(2, service('request_stack'))
             ->arg(3, service(ControllerFactory::class))
             ->arg(4, new Reference(FieldFactory::class))
+            ->arg(5, new Reference(AuthorizationChecker::class))
+            ->arg(6, service(AdminContextFactory::class))
+            ->tag('kernel.reset', ['method' => 'reset'])
 
         ->set(AvatarConfigurator::class)
 

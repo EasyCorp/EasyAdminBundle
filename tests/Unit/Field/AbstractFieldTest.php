@@ -8,6 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\CrudContext;
+use EasyCorp\Bundle\EasyAdminBundle\Context\DashboardContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\I18nContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\RequestContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Context\AdminContextInterface;
@@ -16,6 +17,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -62,6 +64,7 @@ abstract class AbstractFieldTest extends KernelTestCase
         return $this->adminContext = AdminContext::forTesting(
             requestContext: RequestContext::forTesting($request),
             crudContext: CrudContext::forTesting($crudDto),
+            dashboardContext: DashboardContext::forTesting(dashboardControllerFqcn: DashboardController::class),
             i18nContext: I18nContext::forTesting($requestLocale),
         );
     }

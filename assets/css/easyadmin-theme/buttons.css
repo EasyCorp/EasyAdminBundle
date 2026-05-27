@@ -20,10 +20,9 @@
     font-size: var(--button-font-size, .875rem);
     font-weight: var(--button-font-weight, 500);
     gap: var(--button-icon-gap, .5rem);
-    block-size: var(--button-height, 2rem);
+    min-block-size: var(--button-height, 2rem);
     justify-content: space-between;
     line-height: var(--button-line-height);
-    min-inline-size: max-content;
     padding: var(--button-padding-y, var(--button-padding-y-md)) var(--button-padding-x, var(--button-padding-x-md));
     position: relative;
     text-align: center;
@@ -198,7 +197,7 @@
     --button-padding-y: var(--button-padding-y-lg);
     --button-padding-x: var(--button-padding-x-lg);
 
-    block-size: 2.5rem;
+    min-block-size: 2.5rem;
 }
 
 .btn-block {

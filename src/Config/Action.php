@@ -294,6 +294,19 @@ final class Action implements \Stringable
     }
 
     /**
+     * By default, actions are rendered as `btn-secondary` buttons. This method makes
+     * the action to be rendered as a `btn-info` button with light blue text.
+     */
+    public function asInfoAction(bool $asInfoAction = true): self
+    {
+        if ($asInfoAction) {
+            $this->dto->setVariant(ButtonVariant::Info);
+        }
+
+        return $this;
+    }
+
+    /**
      * By default, actions are rendered as solid buttons. This method makes
      * the action to be rendered as a simple text link without button background
      * (the background is shown when hovering the action link).

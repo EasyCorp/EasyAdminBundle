@@ -54,6 +54,7 @@ return [
         'remove_item' => 'Հեռացնել տարրը',
         'choose_file' => 'Ընտրել ֆայլը',
         'close' => 'Փակել',
+        'download' => 'Ներբեռնել',
         'create' => 'Ստեղծել',
         'create_and_add_another' => 'Ստեղծել և նորը ավելացնել',
         'create_and_continue' => 'Ստեղծել և շարունակել',
@@ -147,9 +148,15 @@ return [
         'general_500' => 'An internal error occurred while processing your request.',
     ],
 
+    'file_upload' => [
+        'add_file' => 'Ավելացնել ֆայլ',
+        'add_files' => 'Ավելացնել ֆայլեր',
+        'clear_all' => 'Մաքրել բոլորը',
+    ],
+
     'autocomplete' => [
         'no-results-found' => 'Համընկնումներ չեն գտնվել',
-        // 'no-more-results' => 'No more results',
+        'no-more-results' => 'Այլ արդյունքներ չկան',
         'loading-more-results' => 'Տվյալների բեռնում…',
     ],
 ];

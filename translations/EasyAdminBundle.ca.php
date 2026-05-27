@@ -54,6 +54,7 @@ return [
         'remove_item' => 'Eliminar aquest element',
         'choose_file' => 'Tria un fitxer',
         'close' => 'Tancar',
+        'download' => 'Baixa',
         'create' => 'Crear',
         'create_and_add_another' => 'Crear i afegir-ne un altre',
         'create_and_continue' => 'Crear i continuar editant',
@@ -145,6 +146,12 @@ return [
         'general_403' => 'No tens permís per realitzar aquesta acció.',
         'general_404' => 'No s\'ha trobat la pàgina sol·licitada.',
         'general_500' => 'S\'ha produït un error intern en processar la sol·licitud.',
+    ],
+
+    'file_upload' => [
+        'add_file' => 'Afegeix un fitxer',
+        'add_files' => 'Afegeix fitxers',
+        'clear_all' => 'Esborra-ho tot',
     ],
 
     'autocomplete' => [

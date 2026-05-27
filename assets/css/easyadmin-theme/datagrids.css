@@ -167,7 +167,8 @@ table.datagrid:not(.datagrid-empty) tr:not(.empty-row) td.actions.actions-as-dro
 }
 
 /* clickable rows for default row action */
-.datagrid tr.ea-clickable-row {
+.datagrid tr.ea-clickable-row,
+.datagrid tr[data-default-action-url] {
     cursor: pointer;
 }
 .datagrid tr.ea-clickable-row td.actions,

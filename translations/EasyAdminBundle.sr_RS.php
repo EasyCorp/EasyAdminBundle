@@ -54,6 +54,7 @@ return [
         'remove_item' => 'Ukloni zapis',
         'choose_file' => 'Odaberi datoteku',
         'close' => 'Zatvori',
+        'download' => 'Preuzmi',
         'create' => 'Napravi',
         'create_and_add_another' => 'Napravi i dodaj još jedan',
         'create_and_continue' => 'Napravi i nastavi sa izmenama',
@@ -107,6 +108,7 @@ return [
     'form' => [
         'are_you_sure' => 'Niste sačuvali izmene na ovoj formi.',
         'tab.error_badge_title' => 'Jedan pogrešan unos|%count% pogrešnih unosa',
+        'slug.confirm_text' => 'Ako promenite slug, možete pokvariti linkove na drugim stranicama.',
     ],
 
     'user' => [
@@ -115,6 +117,16 @@ return [
         'anonymous' => 'Anonimni korisnik',
         'sign_out' => 'Izloguj se',
         'exit_impersonation' => 'Izađi iz oponašanja',
+    ],
+
+    'settings' => [
+        'appearance' => [
+            'label' => 'Izgled',
+            'light' => 'Svetla',
+            'dark' => 'Tamna',
+            'auto' => 'Automatski',
+        ],
+        'locale' => 'Jezik',
     ],
 
     'login_page' => [
@@ -134,6 +146,12 @@ return [
         'general_403' => 'You don\'t have permission to perform this action.',
         'general_404' => 'The requested page could not be found.',
         'general_500' => 'An internal error occurred while processing your request.',
+    ],
+
+    'file_upload' => [
+        'add_file' => 'Dodaj datoteku',
+        'add_files' => 'Dodaj datoteke',
+        'clear_all' => 'Obriši sve',
     ],
 
     'autocomplete' => [

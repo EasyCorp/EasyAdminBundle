@@ -236,6 +236,35 @@ class SecurityVoterTest extends TestCase
         $this->assertTrue($result);
     }
 
+    public function testVoteOnExecuteActionPermissionUsesCrudFromSubjectWhenProvided(): void
+    {
+        // the CRUD passed via the subject array must take precedence over the one from AdminContextProvider.
+        // this is the path used by AssociationConfigurator to check permissions against a different CRUD
+        // than the one being currently rendered.
+        $subjectCrud = $this->createCrudDtoWithActionsConfig(
+            actionPermissions: ['detail' => 'ROLE_FROM_SUBJECT'],
+            disabledActions: []
+        );
+
+        $contextCrud = $this->createCrudDtoWithActionsConfig(
+            actionPermissions: ['detail' => 'ROLE_FROM_CONTEXT'],
+            disabledActions: []
+        );
+        $this->setupAdminContextWithCrud($contextCrud);
+
+        $this->authorizationChecker
+            ->expects($this->once())
+            ->method('isGranted')
+            ->with('ROLE_FROM_SUBJECT', $this->anything())
+            ->willReturn(true);
+
+        $token = $this->createMock(TokenInterface::class);
+        $subject = ['crud' => $subjectCrud, 'action' => 'detail', 'entity' => null, 'entityFqcn' => 'App\Entity\Post'];
+        $result = $this->callVoteOnAttribute(Permission::EA_EXECUTE_ACTION, $subject, $token);
+
+        $this->assertTrue($result);
+    }
+
     public function testVoteOnExecuteActionPermissionWithNoSpecificPermission(): void
     {
         $crudDto = $this->createCrudDtoWithActionsConfig(

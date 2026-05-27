@@ -94,9 +94,10 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
 
         if (ChoiceField::WIDGET_AUTOCOMPLETE === $field->getCustomOption(ChoiceField::OPTION_WIDGET)) {
             $field->setFormTypeOption('attr.data-ea-widget', 'ea-autocomplete');
-            if ('' === $field->getDefaultColumns()) {
-                $field->setDefaultColumns($isMultipleChoice ? 'col-md-8 col-xxl-6' : 'col-md-6 col-xxl-5');
-            }
+        }
+
+        if ('' === $field->getDefaultColumns()) {
+            $field->setDefaultColumns($isMultipleChoice ? 'col-md-8 col-xxl-6' : 'col-md-6 col-xxl-5');
         }
 
         $field->setFormTypeOptionIfNotSet('placeholder', '');

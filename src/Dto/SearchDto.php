@@ -44,6 +44,22 @@ final class SearchDto
     /**
      * @return array<string, 'ASC'|'DESC'>
      */
+    public function getCustomSort(): array
+    {
+        return $this->customSort;
+    }
+
+    /**
+     * @return array<string, 'ASC'|'DESC'>
+     */
+    public function getDefaultSort(): array
+    {
+        return $this->defaultSort;
+    }
+
+    /**
+     * @return array<string, 'ASC'|'DESC'>
+     */
     public function getSort(): array
     {
         if (null !== $this->cachedSortConfig) {

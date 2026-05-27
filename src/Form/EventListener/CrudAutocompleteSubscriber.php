@@ -2,7 +2,6 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\EventListener;
 
-use Doctrine\ORM\Mapping\FieldMapping;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bridge\Doctrine\Types\UlidType;
 use Symfony\Bridge\Doctrine\Types\UuidType;
@@ -40,28 +39,30 @@ class CrudAutocompleteSubscriber implements EventSubscriberInterface
         $options['compound'] = false;
         $options['choices'] = is_iterable($data) ? $data : [$data];
 
-        // apply custom choice_label if autocomplete is customized so the selected item looks the same as the other entries.
-        // note: we don't escape here because Twig already escapes the <option> content automatically;
-        // the renderAsHtml flag controls how TomSelect renders the item (via data-ea-autocomplete-render-items-as-html).
+        // strip EA-specific options before forwarding to EntityType
         $callback = $options['autocomplete_callback'] ?? null;
         $template = $options['autocomplete_template'] ?? null;
+        unset($options['autocomplete_callback'], $options['autocomplete_template']);
 
-        if (null !== $template) {
-            $twig = $this->twig;
-            $options['choice_label'] = static function ($entity) use ($twig, $template): string {
-                return $twig->render($template, ['entity' => $entity]);
-            };
-        } elseif (null !== $callback) {
-            $options['choice_label'] = static function ($entity) use ($callback): string {
-                return (string) $callback($entity);
-            };
+        // Resolve choice_label:
+        // - if the user supplied one (via value_type_options.choice_label), keep it;
+        // - otherwise derive one from autocomplete_template / autocomplete_callback so the
+        //   selected item matches the rendering of other entries in the dropdown;
+        // - otherwise drop the option entirely so EntityType falls back to __toString().
+        //
+        // Note: we don't escape here because Twig already escapes the <option> content
+        // automatically; the renderAsHtml flag controls how TomSelect renders the item
+        // (via data-ea-autocomplete-render-items-as-html).
+        if (null === ($options['choice_label'] ?? null)) {
+            if (null !== $template) {
+                $twig = $this->twig;
+                $options['choice_label'] = static fn ($entity): string => $twig->render($template, ['entity' => $entity]);
+            } elseif (null !== $callback) {
+                $options['choice_label'] = static fn ($entity): string => (string) $callback($entity);
+            } else {
+                unset($options['choice_label']);
+            }
         }
-
-        // remove custom options before passing to EntityType
-        unset(
-            $options['autocomplete_callback'],
-            $options['autocomplete_template']
-        );
 
         $form->add('autocomplete', EntityType::class, $options);
     }

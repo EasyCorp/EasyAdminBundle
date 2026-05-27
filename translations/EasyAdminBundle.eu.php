@@ -54,6 +54,7 @@ return [
         'remove_item' => 'Elementu hau ezabatu',
         'choose_file' => 'Hautatu fitxategi bat',
         'close' => 'Itxi',
+        'download' => 'Deskargatu',
         'create' => 'Sortu',
         'create_and_add_another' => 'Sortu eta beste bat gehitu',
         'create_and_continue' => 'Sortu eta jarraitu',
@@ -147,9 +148,15 @@ return [
         'general_500' => 'An internal error occurred while processing your request.',
     ],
 
+    'file_upload' => [
+        'add_file' => 'Gehitu fitxategia',
+        'add_files' => 'Gehitu fitxategiak',
+        'clear_all' => 'Garbitu dena',
+    ],
+
     'autocomplete' => [
         'no-results-found' => 'Ez da bat datorrenik aurkitu',
-        // 'no-more-results' => 'No more results',
+        'no-more-results' => 'Ez dago emaitza gehiagorik',
         'loading-more-results' => 'Emaitza gehiago kargatzen…',
     ],
 ];

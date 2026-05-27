@@ -389,6 +389,7 @@ final class ActionDto
         $action->asSuccessAction(ButtonVariant::Success === $this->variant);
         $action->asDangerAction(ButtonVariant::Danger === $this->variant);
         $action->asWarningAction(ButtonVariant::Warning === $this->variant);
+        $action->asInfoAction(ButtonVariant::Info === $this->variant);
 
         if (null !== $this->crudActionName) {
             $action->linkToCrudAction($this->crudActionName);

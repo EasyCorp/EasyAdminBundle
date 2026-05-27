@@ -54,6 +54,7 @@ return [
         'remove_item' => 'حذف العنصر',
         'choose_file' => 'اختيار ملفّ',
         'close' => 'أغلاق',
+        'download' => 'تنزيل',
         'create' => 'أنشاء',
         'create_and_add_another' => 'أنشاء و أضافة اخرى',
         'create_and_continue' => 'أنشاء و متابعة',
@@ -145,6 +146,12 @@ return [
         'general_403' => 'ليس لديك صلاحية لتنفيذ هذا الإجراء.',
         'general_404' => 'الصفحة المطلوبة غير موجودة.',
         'general_500' => 'حدث خطأ داخلي أثناء معالجة طلبك.',
+    ],
+
+    'file_upload' => [
+        'add_file' => 'إضافة ملف',
+        'add_files' => 'إضافة ملفات',
+        'clear_all' => 'مسح الكل',
     ],
 
     'autocomplete' => [

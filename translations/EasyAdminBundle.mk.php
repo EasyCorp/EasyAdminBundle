@@ -54,6 +54,7 @@ return [
         'remove_item' => 'Избриши запис',
         'choose_file' => 'Одбери датотека',
         'close' => 'Затвори',
+        'download' => 'Преземи',
         'create' => 'Креирај',
         'create_and_add_another' => 'Креирај и додади ново',
         'create_and_continue' => 'Креирај и продолжи со уредување',
@@ -145,6 +146,12 @@ return [
         'general_403' => 'You don\'t have permission to perform this action.',
         'general_404' => 'The requested page could not be found.',
         'general_500' => 'An internal error occurred while processing your request.',
+    ],
+
+    'file_upload' => [
+        'add_file' => 'Додај датотека',
+        'add_files' => 'Додај датотеки',
+        'clear_all' => 'Исчисти сè',
     ],
 
     'autocomplete' => [

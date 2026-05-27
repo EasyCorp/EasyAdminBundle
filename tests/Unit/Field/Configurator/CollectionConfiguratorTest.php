@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Field\Configurator;
 
 use Doctrine\ORM\EntityManagerInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
@@ -63,7 +64,7 @@ class CollectionConfiguratorTest extends AbstractFieldTest
             ProjectCrudController::class,
         ));
 
-        $this->configure($field, controllerFqcn: ProjectCrudController::class);
+        $this->configure($field, pageName: Crud::PAGE_EDIT, controllerFqcn: ProjectCrudController::class);
     }
 
     public static function failsOnOptionEntryUsesCrudFormIfPropertyIsNotAssociation(): \Generator
@@ -89,7 +90,7 @@ class CollectionConfiguratorTest extends AbstractFieldTest
             ProjectCrudController::class,
         ));
 
-        $this->configure($field, controllerFqcn: ProjectCrudController::class);
+        $this->configure($field, pageName: Crud::PAGE_EDIT, controllerFqcn: ProjectCrudController::class);
     }
 
     public static function failsOnOptionEntryUsesCrudFormIfOptionEntryTypeIsUsed(): \Generator
@@ -114,7 +115,7 @@ class CollectionConfiguratorTest extends AbstractFieldTest
             $field->getAsDto()->getDoctrineMetadata()->get('targetEntity'),
         ));
 
-        $this->configure($field, controllerFqcn: ProjectCrudController::class);
+        $this->configure($field, pageName: Crud::PAGE_EDIT, controllerFqcn: ProjectCrudController::class);
     }
 
     public static function failsOnOptionRenderAsEmbeddedCrudFormIfNoCrudControllerCanBeFound(): \Generator
@@ -122,5 +123,36 @@ class CollectionConfiguratorTest extends AbstractFieldTest
         yield [CollectionField::new('projectIssues')];
         yield [CollectionField::new('favouriteProjectOf')];
         yield [CollectionField::new('projectTags')];
+    }
+
+    /**
+     * Regression test for #7613: when a user supplies a formatValue() callable, the
+     * (string)-casting loop inside formatCollection() must be skipped; otherwise an
+     * item whose __toString() returns invalid UTF-8 makes Symfony String's truncate()
+     * throw and the whole page returns a 500, even though the user's callable would
+     * have overwritten the formatted value anyway.
+     */
+    public function testFormatCollectionShortCircuitsWhenFormatValueCallableIsSet(): void
+    {
+        $field = CollectionField::new('projectIssues');
+
+        // force the (string)-casting code path by simulating an 'array' doctrine type
+        // (otherwise formatCollection() short-circuits earlier on association fields).
+        $field->getAsDto()->setDoctrineMetadata(['type' => 'array']);
+
+        $invalidUtf8Item = new class implements \Stringable {
+            public function __toString(): string
+            {
+                return "valid\xC3\x28more";
+            }
+        };
+        $field->setValue([$invalidUtf8Item]);
+        $field->formatValue(static fn ($coll): int => is_countable($coll) ? \count($coll) : 0);
+
+        // the user-provided callable is applied later by CommonPostConfigurator (not
+        // exercised here), so this assertion checks the configurator's own early return.
+        $fieldDto = $this->configure($field);
+
+        $this->assertSame(1, $fieldDto->getFormattedValue());
     }
 }

@@ -54,6 +54,7 @@ return [
         'remove_item' => 'Remover o item',
         'choose_file' => 'Escolher arquivo',
         'close' => 'Fechar',
+        'download' => 'Baixar',
         'create' => 'Criar',
         'create_and_add_another' => 'Criar e adicionar outro',
         'create_and_continue' => 'Criar e continuar editando',
@@ -147,9 +148,15 @@ return [
         'general_500' => 'Ocorreu um erro interno ao processar sua solicitação.',
     ],
 
+    'file_upload' => [
+        'add_file' => 'Adicionar arquivo',
+        'add_files' => 'Adicionar arquivos',
+        'clear_all' => 'Limpar tudo',
+    ],
+
     'autocomplete' => [
         'no-results-found' => 'Nenhum resultado encontrado',
-        // 'no-more-results' => 'No more results',
+        'no-more-results' => 'Não há mais resultados',
         'loading-more-results' => 'Carregando mais resultados…',
     ],
 ];

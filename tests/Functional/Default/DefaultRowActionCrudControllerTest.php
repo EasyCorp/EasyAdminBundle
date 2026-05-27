@@ -47,7 +47,6 @@ class DefaultRowActionCrudControllerTest extends AbstractCrudTestCase
 
         $firstRow = $rows->first();
         static::assertNotNull($firstRow->attr('data-default-action-url'), 'Row should have data-default-action-url attribute');
-        static::assertStringContainsString('ea-clickable-row', $firstRow->attr('class'), 'Row should have ea-clickable-row class');
         static::assertStringContainsString('/edit', $firstRow->attr('data-default-action-url'), 'URL should contain edit action');
 
         $table = $crawler->filter('table.datagrid');
@@ -64,7 +63,6 @@ class DefaultRowActionCrudControllerTest extends AbstractCrudTestCase
 
         $firstRow = $rows->first();
         static::assertNotNull($firstRow->attr('data-default-action-url'), 'Row should have data-default-action-url attribute');
-        static::assertStringContainsString('ea-clickable-row', $firstRow->attr('class'), 'Row should have ea-clickable-row class');
         static::assertStringContainsString('/'.$firstRow->attr('data-id'), $firstRow->attr('data-default-action-url'), 'URL should contain the entity ID for detail action');
     }
 
@@ -106,7 +104,6 @@ class DefaultRowActionCrudControllerTest extends AbstractCrudTestCase
 
         $firstRow = $rows->first();
         static::assertNotNull($firstRow->attr('data-default-action-url'), 'Row should have data-default-action-url with fallback to DETAIL');
-        static::assertStringContainsString('ea-clickable-row', $firstRow->attr('class'), 'Row should have ea-clickable-row class');
         static::assertStringContainsString('/'.$firstRow->attr('data-id'), $firstRow->attr('data-default-action-url'), 'URL should contain the entity ID for detail action (fallback)');
     }
 
@@ -143,7 +140,6 @@ class DefaultRowActionCrudControllerTest extends AbstractCrudTestCase
 
         $firstRow = $rows->first();
         static::assertNotNull($firstRow->attr('data-default-action-url'), 'Row should have data-default-action-url attribute');
-        static::assertStringContainsString('ea-clickable-row', $firstRow->attr('class'), 'Row should have ea-clickable-row class');
         static::assertStringContainsString('/edit', $firstRow->attr('data-default-action-url'), 'URL should contain edit action');
 
         $table = $crawler->filter('table.datagrid');

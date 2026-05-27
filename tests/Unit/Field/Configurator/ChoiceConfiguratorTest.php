@@ -113,4 +113,39 @@ class ChoiceConfiguratorTest extends AbstractFieldTest
 
         $this->assertSame($choices, $this->configure($field)->getFormTypeOption('choices'));
     }
+
+    public function testDefaultColumnsAreAppliedOnAutocompleteWidget(): void
+    {
+        $field = ChoiceField::new(self::PROPERTY_NAME);
+
+        $this->assertSame('col-md-6 col-xxl-5', $this->configure($field)->getDefaultColumns());
+    }
+
+    public function testDefaultColumnsAreAppliedOnNativeWidget(): void
+    {
+        $field = ChoiceField::new(self::PROPERTY_NAME)->renderAsNativeWidget();
+
+        $this->assertSame('col-md-6 col-xxl-5', $this->configure($field)->getDefaultColumns());
+    }
+
+    public function testDefaultColumnsAreAppliedOnExpandedWidget(): void
+    {
+        $field = ChoiceField::new(self::PROPERTY_NAME)->renderExpanded();
+
+        $this->assertSame('col-md-6 col-xxl-5', $this->configure($field)->getDefaultColumns());
+    }
+
+    public function testDefaultColumnsAreWiderOnMultipleNativeWidget(): void
+    {
+        $field = ChoiceField::new(self::PROPERTY_NAME)->renderAsNativeWidget()->allowMultipleChoices();
+
+        $this->assertSame('col-md-8 col-xxl-6', $this->configure($field)->getDefaultColumns());
+    }
+
+    public function testUserDefinedColumnsAreNotOverridden(): void
+    {
+        $field = ChoiceField::new(self::PROPERTY_NAME)->renderAsNativeWidget()->setColumns('col-md-4');
+
+        $this->assertSame('col-md-4', $this->configure($field)->getColumns());
+    }
 }

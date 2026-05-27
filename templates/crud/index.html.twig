@@ -143,7 +143,7 @@
             {% for entity in entities %}
                 {% block table_body_row %}
                 {% if entity.isAccessible %}
-                    <tr data-id="{{ entity.primaryKeyValueAsString }}" {% if entity.defaultActionUrl %}data-default-action-url="{{ entity.defaultActionUrl }}" class="ea-clickable-row" role="link" tabindex="0"{% endif %} {% block entity_row_attributes %}{% endblock %}>
+                    <tr data-id="{{ entity.primaryKeyValueAsString }}" {% if entity.defaultActionUrl %}data-default-action-url="{{ entity.defaultActionUrl }}" role="link" tabindex="0"{% endif %} {% block entity_row_attributes %}{% endblock %}>
                         {% if has_batch_actions %}
                             <td class="batch-actions-selector">
                                 <div class="form-check">

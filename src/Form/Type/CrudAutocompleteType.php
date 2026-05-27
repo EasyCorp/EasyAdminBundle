@@ -9,6 +9,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\PropertyAccess\PropertyPath;
 use Twig\Environment;
 
 /**
@@ -48,11 +49,17 @@ class CrudAutocompleteType extends AbstractType implements DataMapperInterface
             // options for custom rendering of selected items (to match the rendering of the other entries in the dropdown)
             'autocomplete_callback' => null,
             'autocomplete_template' => null,
+            // forwarded to the underlying EntityType so users can customize the
+            // label of the selected items via setFormTypeOption('value_type_options', ...)
+            'choice_label' => null,
         ]);
 
         $resolver->setRequired(['class']);
         $resolver->setAllowedTypes('autocomplete_callback', ['null', 'callable']);
         $resolver->setAllowedTypes('autocomplete_template', ['null', 'string']);
+        // mirror Symfony's ChoiceType allowed types for choice_label so anything accepted by
+        // EntityType is also accepted here (we only skip ChoiceLabel::class, which is marked as internal)
+        $resolver->setAllowedTypes('choice_label', ['null', 'bool', 'callable', 'string', PropertyPath::class]);
     }
 
     public function getBlockPrefix(): string

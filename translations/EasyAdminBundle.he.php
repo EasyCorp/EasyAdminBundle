@@ -54,6 +54,7 @@ return [
         'remove_item' => 'מחק פריט',
         'choose_file' => 'בחר קובץ',
         'close' => 'סגור',
+        'download' => 'הורדה',
         'create' => 'צור',
         'create_and_add_another' => 'צור והוסף חדש',
         'create_and_continue' => 'צור והמשך לערוך',
@@ -145,6 +146,12 @@ return [
         'general_403' => 'You don\'t have permission to perform this action.',
         'general_404' => 'The requested page could not be found.',
         'general_500' => 'An internal error occurred while processing your request.',
+    ],
+
+    'file_upload' => [
+        'add_file' => 'הוסף קובץ',
+        'add_files' => 'הוסף קבצים',
+        'clear_all' => 'נקה הכל',
     ],
 
     'autocomplete' => [

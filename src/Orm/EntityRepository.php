@@ -12,6 +12,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\SearchMode;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\SortOrder;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Orm\EntityRepositoryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Provider\AdminContextProviderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -146,57 +147,73 @@ final readonly class EntityRepository implements EntityRepositoryInterface
 
     private function addOrderClause(QueryBuilder $queryBuilder, SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields): void
     {
-        foreach ($searchDto->getSort() as $sortProperty => $sortOrder) {
-            $aliases = $queryBuilder->getAllAliases();
-            $sortFieldIsDoctrineAssociation = $this->isAssociation($entityDto, $sortProperty);
+        // customSort comes from the URL and is validated; defaultSort comes from
+        // Crud::setDefaultSort() and is trusted. A rejected customSort entry must
+        // still leave the developer-supplied default for the same property in place
+        $validatedCustomSort = array_filter(
+            $searchDto->getCustomSort(),
+            fn (string $sortOrder, string $sortProperty): bool => $this->isValidCustomSort($sortProperty, $sortOrder, $entityDto, $fields),
+            \ARRAY_FILTER_USE_BOTH,
+        );
 
-            if ($sortFieldIsDoctrineAssociation) {
-                $sortFieldParts = explode('.', $sortProperty, 2);
-                // check if join has been added once before.
-                if (!\in_array($sortFieldParts[0], $aliases, true)) {
-                    $queryBuilder->leftJoin('entity.'.$sortFieldParts[0], $sortFieldParts[0]);
-                }
+        // array union preserves keys from the left operand, so customSort wins
+        // over defaultSort for the same property — same precedence as SearchDto::getSort()
+        foreach ($validatedCustomSort + $searchDto->getDefaultSort() as $sortProperty => $sortOrder) {
+            $this->applyOrderClause($queryBuilder, $entityDto, $fields, $sortProperty, $sortOrder);
+        }
+    }
 
-                if (1 === \count($sortFieldParts)) {
-                    if ($entityDto->getClassMetadata()->isCollectionValuedAssociation($sortProperty)) {
-                        /** @var EntityManagerInterface $entityManager */
-                        $entityManager = $this->doctrine->getManagerForClass($entityDto->getFqcn());
-                        $countQueryBuilder = $entityManager->createQueryBuilder();
+    private function applyOrderClause(QueryBuilder $queryBuilder, EntityDto $entityDto, FieldCollection $fields, string $sortProperty, string $sortOrder): void
+    {
+        $aliases = $queryBuilder->getAllAliases();
+        $sortFieldIsDoctrineAssociation = $this->isAssociation($entityDto, $sortProperty);
 
-                        if (ClassMetadata::MANY_TO_MANY === $entityDto->getClassMetadata()->getAssociationMapping($sortProperty)['type']) {
-                            // many-to-many relation
-                            $countQueryBuilder
-                                ->select($queryBuilder->expr()->count('subQueryEntity'))
-                                ->from($entityDto->getFqcn(), 'subQueryEntity')
-                                ->join(sprintf('subQueryEntity.%s', $sortProperty), 'relatedEntity')
-                                ->where('subQueryEntity = entity');
-                        } else {
-                            // one-to-many relation
-                            $countQueryBuilder
-                                ->select($queryBuilder->expr()->count('subQueryEntity'))
-                                ->from($entityDto->getClassMetadata()->getAssociationTargetClass($sortProperty), 'subQueryEntity')
-                                ->where(sprintf('subQueryEntity.%s = entity', $entityDto->getClassMetadata()->getAssociationMapping($sortProperty)['mappedBy']));
-                        }
+        if ($sortFieldIsDoctrineAssociation) {
+            $sortFieldParts = explode('.', $sortProperty, 2);
+            // check if join has been added once before.
+            if (!\in_array($sortFieldParts[0], $aliases, true)) {
+                $queryBuilder->leftJoin('entity.'.$sortFieldParts[0], $sortFieldParts[0]);
+            }
 
-                        $queryBuilder->addSelect(sprintf('(%s) as HIDDEN sub_query_sort', $countQueryBuilder->getDQL()));
-                        $queryBuilder->addOrderBy('sub_query_sort', $sortOrder);
-                        $queryBuilder->addOrderBy('entity.'.$entityDto->getClassMetadata()->getSingleIdentifierFieldName(), $sortOrder);
+            if (1 === \count($sortFieldParts)) {
+                if ($entityDto->getClassMetadata()->isCollectionValuedAssociation($sortProperty)) {
+                    /** @var EntityManagerInterface $entityManager */
+                    $entityManager = $this->doctrine->getManagerForClass($entityDto->getFqcn());
+                    $countQueryBuilder = $entityManager->createQueryBuilder();
+
+                    if (ClassMetadata::MANY_TO_MANY === $entityDto->getClassMetadata()->getAssociationMapping($sortProperty)['type']) {
+                        // many-to-many relation
+                        $countQueryBuilder
+                            ->select($queryBuilder->expr()->count('subQueryEntity'))
+                            ->from($entityDto->getFqcn(), 'subQueryEntity')
+                            ->join(sprintf('subQueryEntity.%s', $sortProperty), 'relatedEntity')
+                            ->where('subQueryEntity = entity');
                     } else {
-                        $field = $fields->getByProperty($sortProperty);
-                        $associationSortProperty = $field?->getCustomOption(AssociationField::OPTION_SORT_PROPERTY);
-
-                        if (null === $associationSortProperty) {
-                            $queryBuilder->addOrderBy('entity.'.$sortProperty, $sortOrder);
-                        } else {
-                            $queryBuilder->addOrderBy($sortProperty.'.'.$associationSortProperty, $sortOrder);
-                        }
+                        // one-to-many relation
+                        $countQueryBuilder
+                            ->select($queryBuilder->expr()->count('subQueryEntity'))
+                            ->from($entityDto->getClassMetadata()->getAssociationTargetClass($sortProperty), 'subQueryEntity')
+                            ->where(sprintf('subQueryEntity.%s = entity', $entityDto->getClassMetadata()->getAssociationMapping($sortProperty)['mappedBy']));
                     }
+
+                    $queryBuilder->addSelect(sprintf('(%s) as HIDDEN sub_query_sort', $countQueryBuilder->getDQL()));
+                    $queryBuilder->addOrderBy('sub_query_sort', $sortOrder);
+                    $queryBuilder->addOrderBy('entity.'.$entityDto->getClassMetadata()->getSingleIdentifierFieldName(), $sortOrder);
                 } else {
-                    $queryBuilder->addOrderBy($sortProperty, $sortOrder);
+                    $field = $fields->getByProperty($sortProperty);
+                    $associationSortProperty = $field?->getCustomOption(AssociationField::OPTION_SORT_PROPERTY);
+
+                    if (null === $associationSortProperty) {
+                        $queryBuilder->addOrderBy('entity.'.$sortProperty, $sortOrder);
+                    } else {
+                        $queryBuilder->addOrderBy($sortProperty.'.'.$associationSortProperty, $sortOrder);
+                    }
                 }
             } else {
-                $queryBuilder->addOrderBy('entity.'.$sortProperty, $sortOrder);
+                $queryBuilder->addOrderBy($sortProperty, $sortOrder);
             }
+        } else {
+            $queryBuilder->addOrderBy('entity.'.$sortProperty, $sortOrder);
         }
     }
 
@@ -382,5 +399,38 @@ final readonly class EntityRepository implements EntityRepositoryInterface
         $propertyNameParts = explode('.', $propertyName, 2);
 
         return $entityDto->getClassMetadata()->hasAssociation($propertyNameParts[0]);
+    }
+
+    private function isValidCustomSort(string $sortProperty, string $sortOrder, EntityDto $entityDto, FieldCollection $fields): bool
+    {
+        // the order direction reaches DQL via Expr\OrderBy as "$property $direction",
+        // so an unvalidated value can smuggle a second ORDER BY column (e.g. "ASC, x DESC")
+        $direction = strtoupper($sortOrder);
+        if (SortOrder::ASC !== $direction && SortOrder::DESC !== $direction) {
+            return false;
+        }
+
+        // multi-segment customSort (e.g. "customer.secretField") would otherwise
+        // reach the unfiltered multi-segment branch in applyOrderClause; URL-based
+        // association sort is supported via AssociationField::setSortProperty()
+        // with a single-segment key
+        if (str_contains($sortProperty, '.')) {
+            return false;
+        }
+
+        // structural gate: the property must be a real Doctrine field or association
+        // on the entity. This also rejects any key with characters (commas, spaces,
+        // quotes…) that could otherwise smuggle DQL fragments through identifier interpolation
+        $classMetadata = $entityDto->getClassMetadata();
+        if (!$classMetadata->hasField($sortProperty) && !$classMetadata->hasAssociation($sortProperty)) {
+            return false;
+        }
+
+        $fieldDto = $fields->getByProperty($sortProperty);
+        if (null === $fieldDto || false === $fieldDto->isSortable()) {
+            return false;
+        }
+
+        return true;
     }
 }

@@ -88,6 +88,13 @@ final readonly class CollectionConfigurator implements FieldConfiguratorInterfac
 
     private function formatCollection(FieldDto $field, AdminContext $context): int|string
     {
+        // when the field defines its own formatValue() callable, that callable runs later
+        // in CommonPostConfigurator and overwrites whatever we return here, so skip the
+        // text-joining work and avoid (string)-casting items that may not be valid UTF-8
+        if (null !== $field->getFormatValueCallable()) {
+            return $this->countNumElements($field->getValue());
+        }
+
         $doctrineMetadata = $field->getDoctrineMetadata();
         if ('array' !== $doctrineMetadata->get('type') && !$field->getValue() instanceof PersistentCollection) {
             return $this->countNumElements($field->getValue());
@@ -127,6 +134,16 @@ final readonly class CollectionConfigurator implements FieldConfiguratorInterfac
 
     private function configureEntryType(FieldDto $fieldDto, EntityDto $entityDto, AdminContext $context): void
     {
+        // entry_type and prototype options are only consumed when the field is
+        // rendered as a form (NEW/EDIT). On INDEX/DETAIL the field is rendered
+        // through formatCollection(), so the entry-type setup is wasted work
+        // and, more importantly, calling configureFields(PAGE_EDIT) on the
+        // target CRUD controller can run user code that expects a real entity
+        // instance (it has none here): see #7460.
+        if (!\in_array($context->getCrud()->getCurrentPage(), [Crud::PAGE_EDIT, Crud::PAGE_NEW], true)) {
+            return;
+        }
+
         $resolvedProperty = $this->entityRepository->resolveNestedAssociations(null, $entityDto, $fieldDto->getProperty(), true);
         /** @var EntityDto $entityDtoResolved */
         $entityDtoResolved = $resolvedProperty['entity_dto'];
@@ -153,24 +170,52 @@ final readonly class CollectionConfigurator implements FieldConfiguratorInterfac
             return;
         }
 
+        $targetEntityFqcn = $entityDtoResolved->getClassMetadata()->getAssociationTargetClass($resolvedProperty);
+
         $editEntityDto = $this->createEntityDto(
-            $entityDtoResolved->getClassMetadata()->getAssociationTargetClass($resolvedProperty),
+            $targetEntityFqcn,
             $targetCrudControllerFqcn,
             Action::EDIT,
             $fieldDto->getCustomOption(CollectionField::OPTION_ENTRY_CRUD_EDIT_PAGE_NAME) ?? Crud::PAGE_EDIT,
             Crud::PAGE_EDIT,
         );
         $newEntityDto = $this->createEntityDto(
-            $entityDtoResolved->getClassMetadata()->getAssociationTargetClass($resolvedProperty),
+            $targetEntityFqcn,
             $targetCrudControllerFqcn,
             Action::NEW,
             $fieldDto->getCustomOption(CollectionField::OPTION_ENTRY_CRUD_NEW_PAGE_NAME) ?? Crud::PAGE_NEW,
             Crud::PAGE_NEW,
         );
 
+        // Build new collection entries through the embedded controller's createEntity()
+        // so its overrides (default values, factory pattern, etc.) are honored, instead of
+        // falling back to instantiating `$targetEntityFqcn` directly via Symfony Form.
+        // - `prototype_data` shapes the rendered prototype HTML (read at build time).
+        // - `entry_options.empty_data` is called by Symfony when binding a new (empty)
+        //   entry on form submit, once per added entry.
+        // The context is intentionally NOT swapped to the embedded entity around the
+        // createEntity() call: callers commonly read `$this->getContext()->getEntity()`
+        // to populate the parent foreign key on the new entry, which only works when the
+        // parent context is left in place.
+        // See #6991.
+        $controllerFactory = $this->controllerFactory;
+        $requestStack = $this->requestStack;
+        $createEntryEntity = static function () use ($controllerFactory, $requestStack, $targetCrudControllerFqcn, $targetEntityFqcn): object {
+            $request = $requestStack->getMainRequest();
+            $controller = null !== $request
+                ? $controllerFactory->getCrudControllerInstance($targetCrudControllerFqcn, Action::NEW, $request)
+                : null;
+
+            return null !== $controller
+                ? $controller->createEntity($targetEntityFqcn)
+                : new $targetEntityFqcn();
+        };
+
         $fieldDto->setFormTypeOption('entry_type', CrudFormType::class);
         $fieldDto->setFormTypeOption('entry_options.entityDto', $editEntityDto);
         $fieldDto->setFormTypeOption('prototype_options.entityDto', $newEntityDto);
+        $fieldDto->setFormTypeOptionIfNotSet('prototype_data', $createEntryEntity());
+        $fieldDto->setFormTypeOptionIfNotSet('entry_options.empty_data', $createEntryEntity);
     }
 
     /**

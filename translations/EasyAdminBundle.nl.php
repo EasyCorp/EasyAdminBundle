@@ -54,6 +54,7 @@ return [
         'remove_item' => 'Verwijder dit item',
         'choose_file' => 'Bestand kiezen',
         'close' => 'Sluiten',
+        'download' => 'Downloaden',
         'create' => 'Aanmaken',
         'create_and_add_another' => 'Aanmaken en nieuwe toevoegen',
         'create_and_continue' => 'Aanmaken en verdergaan',
@@ -107,6 +108,7 @@ return [
     'form' => [
         'are_you_sure' => 'Je hebt de wijzigingen op dit formulier nog niet opgeslagen.',
         'tab.error_badge_title' => 'Een ongeldige input|%count% ongeldige inputs',
+        'slug.confirm_text' => 'Als je de slug wijzigt, kun je links op andere pagina\'s breken.',
     ],
 
     'user' => [
@@ -144,6 +146,12 @@ return [
         'general_403' => 'Je hebt geen toestemming om deze actie uit te voeren.',
         'general_404' => 'De opgevraagde pagina kon niet worden gevonden.',
         'general_500' => 'Er is een interne fout opgetreden bij het verwerken van je verzoek.',
+    ],
+
+    'file_upload' => [
+        'add_file' => 'Bestand toevoegen',
+        'add_files' => 'Bestanden toevoegen',
+        'clear_all' => 'Alles wissen',
     ],
 
     'autocomplete' => [

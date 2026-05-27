@@ -54,6 +54,7 @@ return [
         'remove_item' => 'Öğeyi sil',
         'choose_file' => 'Dosya seç',
         'close' => 'Kapat',
+        'download' => 'İndir',
         'create' => 'Oluştur',
         'create_and_add_another' => 'Oluşturup, başka ekle',
         'create_and_continue' => 'Oluştur ve düzenlemeye devam et',
@@ -107,6 +108,7 @@ return [
     'form' => [
         'are_you_sure' => 'Formdaki değişiklikleri kaydetmediniz.',
         'tab.error_badge_title' => 'Bir geçersiz girdi|%count% geçersiz girdi',
+        'slug.confirm_text' => 'Slug değerini değiştirirseniz, diğer sayfalardaki bağlantıları bozabilirsiniz.',
     ],
 
     'user' => [
@@ -146,9 +148,15 @@ return [
         'general_500' => 'İsteğiniz işlenirken dahili bir hata oluştu.',
     ],
 
+    'file_upload' => [
+        'add_file' => 'Dosya ekle',
+        'add_files' => 'Dosyalar ekle',
+        'clear_all' => 'Tümünü temizle',
+    ],
+
     'autocomplete' => [
         'no-results-found' => 'Sonuç bulunamadı',
-        // 'no-more-results' => 'No more results',
+        'no-more-results' => 'Daha fazla sonuç yok',
         'loading-more-results' => 'Daha fazla…',
     ],
 ];

@@ -212,6 +212,15 @@ final class ActionGroup implements \Stringable
         return $this;
     }
 
+    public function asInfoActionGroup(bool $asInfoActionGroup = true): self
+    {
+        if ($asInfoActionGroup) {
+            $this->dto->setVariant(ButtonVariant::Info);
+        }
+
+        return $this;
+    }
+
     public function getAsDto(): ActionGroupDto
     {
         if (null === $this->dto->getIcon() && (null === $this->dto->getLabel() || false === $this->dto->getLabel())) {

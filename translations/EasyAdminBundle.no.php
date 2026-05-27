@@ -54,10 +54,11 @@ return [
         'remove_item' => 'Fjern elementet',
         'choose_file' => 'Velg fil',
         'close' => 'Lukk',
+        'download' => 'Last ned',
         'create' => 'Lag',
         'create_and_add_another' => 'Lagre og lag en til',
         'create_and_continue' => 'Lagre og fortsett redigering',
-        // 'save' => 'Lagre endringer',
+        'save' => 'Lagre endringer',
         'save_and_continue' => 'Lagre og fortsett redigering',
         'toggle_dropdown' => 'Bytt rullegardinmeny',
     ],
@@ -107,6 +108,7 @@ return [
     'form' => [
         'are_you_sure' => 'Du har ikke lagret endringene du har gjort i dette skjemaet.',
         'tab.error_badge_title' => 'En ugyldig verdi|%count% ugyldige verdier',
+        'slug.confirm_text' => 'Hvis du endrer sluggen, kan du ødelegge lenker på andre sider.',
     ],
 
     'user' => [
@@ -131,8 +133,8 @@ return [
         'username' => 'Brukernavn',
         'password' => 'Passord',
         'sign_in' => 'Logg inn',
-        // 'forgot_password' => '',
-        // 'remember_me' => '',
+        'forgot_password' => 'Glemt passordet ditt?',
+        'remember_me' => 'Husk meg',
     ],
 
     'exception' => [
@@ -146,9 +148,15 @@ return [
         'general_500' => 'Det oppsto en intern feil under behandlingen av forespørselen din.',
     ],
 
+    'file_upload' => [
+        'add_file' => 'Legg til fil',
+        'add_files' => 'Legg til filer',
+        'clear_all' => 'Tøm alle',
+    ],
+
     'autocomplete' => [
-        // 'no-results-found' => 'No results found',
-        // 'no-more-results' => 'No more results',
-        // 'loading-more-results' => 'Loading more results…',
+        'no-results-found' => 'Ingen resultater funnet',
+        'no-more-results' => 'Ingen flere resultater',
+        'loading-more-results' => 'Laster flere resultater…',
     ],
 ];

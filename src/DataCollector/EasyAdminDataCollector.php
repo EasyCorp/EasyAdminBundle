@@ -33,17 +33,12 @@ class EasyAdminDataCollector extends BaseDataCollector
             return;
         }
 
-        $collectedData = [];
-        foreach ($this->collectData($context) as $key => $value) {
-            $collectedData[$key] = $this->cloneVar($value);
-        }
-
-        $this->data = $collectedData;
+        $this->data = $this->cloneVar($this->collectData($context));
     }
 
     public function isEasyAdminRequest(): bool
     {
-        return 0 !== \count($this->data);
+        return $this->data instanceof Data;
     }
 
     /**

@@ -27,7 +27,7 @@ jobs:
               with:
                   php-version: 8.4
                   coverage: none
-                  tools: composer:2.8
+                  tools: composer:2.9.8
 
             - name: Get Composer cache directory
               id: composer-cache
@@ -121,7 +121,7 @@ jobs:
                   coverage: none
                   extensions: mbstring, intl, pdo, pdo_sqlite, sqlite3, fileinfo
                   ini-values: date.timezone=UTC
-                  tools: composer:2.8
+                  tools: composer:2.9.8
 
             - name: Get Composer cache directory
               id: composer-cache
@@ -148,6 +148,13 @@ jobs:
             - name: Configure Symfony version for symfony/flex
               if: ${{ matrix.symfony_version }}
               run: composer config extra.symfony.require "${{ matrix.symfony_version }}"
+
+            - name: Disable Composer audit feature
+              # this is needed because Composer installation fails when every matched
+              # version of a dependency has an open security advisory, which is the case
+              # for packages that are no longer updated so no non-vulnerable patch exists
+              run: |
+                  composer config audit.block-insecure false
 
             - name: Install dependencies
               run: |
@@ -231,7 +238,7 @@ jobs:
               with:
                   php-version: 8.2
                   coverage: none
-                  tools: composer:2.8
+                  tools: composer:2.9.8
 
             - name: Get Composer cache directory
               id: composer-cache
@@ -263,7 +270,7 @@ jobs:
               with:
                   php-version: 8.2
                   coverage: none
-                  tools: composer:2.8
+                  tools: composer:2.9.8
 
             - name: Get Composer cache directory
               id: composer-cache

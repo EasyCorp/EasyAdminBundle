@@ -10,7 +10,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\CategoryCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Category;
-use Symfony\Component\VarDumper\Cloner\Data;
 
 class EasyAdminDataCollectorTest extends AbstractCrudTestCase
 {
@@ -52,7 +51,7 @@ class EasyAdminDataCollectorTest extends AbstractCrudTestCase
                 'Entity ID' => null,
                 'Sort' => $sort,
             ],
-            array_map(static fn (Data $d) => $d->getValue(true), $collector->getData()),
+            $collector->getData()->getValue(true),
         );
     }
 
@@ -75,7 +74,7 @@ class EasyAdminDataCollectorTest extends AbstractCrudTestCase
                 'Entity ID' => (string) $category->getId(),
                 'Sort' => null,
             ],
-            array_map(static fn (Data $d) => $d->getValue(true), $collector->getData()),
+            $collector->getData()->getValue(true),
         );
     }
 
@@ -93,14 +92,11 @@ class EasyAdminDataCollectorTest extends AbstractCrudTestCase
                 'Entity ID' => null,
                 'Sort' => null,
             ],
-            array_map(static fn (Data $d) => $d->getValue(true), $collector->getData()),
+            $collector->getData()->getValue(true),
         );
 
         $collector->reset();
 
-        $this->assertSame(
-            [],
-            array_map(static fn (Data $d) => $d->getValue(true), $collector->getData()),
-        );
+        $this->assertSame([], $collector->getData());
     }
 }

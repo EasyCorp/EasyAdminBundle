@@ -410,6 +410,13 @@ final class EntityRepository implements EntityRepositoryInterface
             return false;
         }
 
+        // If there is a field for the sorting property, and sorting is enabled, consider it valid.
+        // This way we allow sorting on embeddable properties.
+        $fieldDto = $fields->getByProperty($sortProperty);
+        if (null !== $fieldDto && true === $fieldDto->isSortable()) {
+            return true;
+        }
+
         // multi-segment customSort (e.g. "customer.secretField") would otherwise
         // reach the unfiltered multi-segment branch in applyOrderClause; URL-based
         // association sort is supported via AssociationField::setSortProperty()
@@ -426,7 +433,6 @@ final class EntityRepository implements EntityRepositoryInterface
             return false;
         }
 
-        $fieldDto = $fields->getByProperty($sortProperty);
         if (null === $fieldDto || false === $fieldDto->isSortable()) {
             return false;
         }

@@ -69,6 +69,21 @@ class SearchAllTermsTest extends AbstractCrudTestCase
         $this->assertStringStartsWith($this->generateIndexUrl(), $resetUrl);
     }
 
+    public function testSearchPreservesCustomQueryParameters(): void
+    {
+        $crawler = $this->client->request('GET', $this->getCrudUrl('index', null, ['customContext' => 'test']));
+
+        $form = $crawler->filter('form.form-action-search');
+        $hiddenInput = $form->filter('input[type="hidden"][name="customContext"]');
+        $this->assertCount(1, $hiddenInput);
+        $this->assertSame('test', $hiddenInput->attr('value'));
+
+        $this->client->submit($form->form(['query' => 'PHP']));
+
+        $this->assertStringContainsString('customContext=test', $this->client->getRequest()->getUri());
+        $this->assertStringContainsString('query=PHP', $this->client->getRequest()->getUri());
+    }
+
     public function testSearchIsPersistedAfterPaginationAndSorting(): void
     {
         // make some query

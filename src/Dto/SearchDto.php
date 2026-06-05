@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\SearchMode;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -136,5 +137,38 @@ final class SearchDto
     public function getSearchMode(): string
     {
         return $this->searchMode;
+    }
+
+    /**
+     * Returns the query string parameters that must be preserved when submitting
+     * the index search form. Browsers discard the query string of GET forms, so
+     * these parameters are rendered as hidden fields in the search form template.
+     *
+     * @return array<string, mixed>
+     */
+    public function getPreservedQueryParameters(): array
+    {
+        $parameters = $this->request->query->all();
+
+        foreach ([
+            EA::QUERY,
+            EA::PAGE,
+            EA::FILTERS,
+            EA::CRUD_ACTION,
+            EA::CRUD_CONTROLLER_FQCN,
+            EA::DASHBOARD_CONTROLLER_FQCN,
+            EA::ENTITY_FQCN,
+            EA::ENTITY_ID,
+            EA::ROUTE_NAME,
+            EA::ROUTE_PARAMS,
+            EA::BATCH_ACTION_NAME,
+            EA::BATCH_ACTION_URL,
+            EA::BATCH_ACTION_CSRF_TOKEN,
+            EA::BATCH_ACTION_ENTITY_IDS,
+        ] as $reservedParameter) {
+            unset($parameters[$reservedParameter]);
+        }
+
+        return $parameters;
     }
 }

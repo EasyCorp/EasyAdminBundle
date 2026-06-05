@@ -300,6 +300,12 @@
                                                             <input type="hidden" name="filters[{{ field }}]" value="{{ fieldValue }}">
                                                         {% endif %}
                                                     {% endfor %}
+
+                                                    {# Browsers remove the query string when submitting forms using GET;
+                                                       that's why the remaining query string parameters are added as hidden form fields #}
+                                                    {% for paramName, paramValue in ea.search.preservedQueryParameters|ea_flatten_array %}
+                                                        <input type="hidden" name="{{ paramName }}" value="{{ paramValue }}">
+                                                    {% endfor %}
                                                 {% endblock %}
 
                                                 <div class="form-group">

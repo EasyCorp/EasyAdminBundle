@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Dto;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\SearchMode;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use PHPUnit\Framework\TestCase;
@@ -76,6 +77,41 @@ class SearchDtoTest extends TestCase
     {
         yield 'any terms search mode' => [SearchMode::ANY_TERMS];
         yield 'all terms search mode' => [SearchMode::ALL_TERMS];
+    }
+
+    /**
+     * @dataProvider providePreservedQueryParametersTests
+     */
+    public function testGetPreservedQueryParameters(array $queryParameters, array $expectedPreservedParameters): void
+    {
+        $request = new Request($queryParameters);
+        $dto = new SearchDto($request, null, $queryParameters[EA::QUERY] ?? null, [], [], null);
+
+        $this->assertSame($expectedPreservedParameters, $dto->getPreservedQueryParameters());
+    }
+
+    public static function providePreservedQueryParametersTests(): iterable
+    {
+        yield 'custom query parameters are preserved' => [
+            ['query' => 'foo', 'page' => '2', 'customContext' => 'test'],
+            ['customContext' => 'test'],
+        ];
+
+        yield 'sort parameters are preserved' => [
+            ['query' => 'foo', 'sort' => ['title' => 'ASC']],
+            ['sort' => ['title' => 'ASC']],
+        ];
+
+        yield 'filters and reserved parameters are excluded' => [
+            [
+                'query' => 'foo',
+                'page' => '2',
+                'filters' => ['title' => ['comparison' => '=', 'value' => 'bar']],
+                EA::CRUD_ACTION => 'index',
+                'customContext' => 'test',
+            ],
+            ['customContext' => 'test'],
+        ];
     }
 
     public static function provideSortDirectionTests(): iterable

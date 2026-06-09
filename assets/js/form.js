@@ -78,8 +78,7 @@ class Form {
             //
             // Adding visual error counter feedback for invalid fields inside form tabs (visible or not)
             const that = this;
-            document
-                .querySelector('.ea-edit, .ea-new')
+            form
                 .querySelectorAll('[type="submit"]')
                 .forEach((button) => {
                     button.addEventListener('click', function onSubmitButtonsClick(clickEvent) {

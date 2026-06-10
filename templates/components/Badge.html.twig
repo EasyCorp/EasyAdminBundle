@@ -1,5 +1,5 @@
-<span {{- attributes.defaults({class: this.defaultCssClass()}) }}>
+{% if attributes.has('href') %}<a {{- attributes.defaults({class: this.defaultCssClass()}) }}>{% else %}<span {{- attributes.defaults({class: this.defaultCssClass()}) }}>{% endif %}
     {%- if this.icon %}<twig:ea:Icon name="{{ this.icon }}" />{% endif -%}
     <twig:block name="content"></twig:block>
     {%- if this.endIcon %}<twig:ea:Icon name="{{ this.endIcon }}" />{% endif -%}
-</span>{#--#}
+{% if attributes.has('href') %}</a>{% else %}</span>{% endif %}{#--#}

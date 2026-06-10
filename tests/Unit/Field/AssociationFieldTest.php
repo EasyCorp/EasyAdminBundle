@@ -40,6 +40,7 @@ class AssociationFieldTest extends AbstractFieldTest
         self::assertNull($fieldDto->getCustomOption(AssociationField::OPTION_EMBEDDED_CRUD_FORM_CONTROLLER));
         self::assertSame(AssociationField::WIDGET_AUTOCOMPLETE, $fieldDto->getCustomOption(AssociationField::OPTION_WIDGET));
         self::assertNull($fieldDto->getCustomOption(AssociationField::OPTION_QUERY_BUILDER_CALLABLE));
+        self::assertNull($fieldDto->getCustomOption(AssociationField::OPTION_URL));
         self::assertFalse($fieldDto->getCustomOption(AssociationField::OPTION_RENDER_AS_EMBEDDED_FORM));
         self::assertTrue($fieldDto->getCustomOption(AssociationField::OPTION_ESCAPE_HTML_CONTENTS));
         self::assertSame(EntityType::class, $fieldDto->getFormType());
@@ -100,6 +101,25 @@ class AssociationFieldTest extends AbstractFieldTest
         $fieldDto = $this->configure($field);
 
         self::assertSame($queryBuilder, $fieldDto->getCustomOption(AssociationField::OPTION_QUERY_BUILDER_CALLABLE));
+    }
+
+    public function testLinktToUrl(): void
+    {
+        $field = AssociationField::new('category');
+        $field->linkToUrl('https://example.com');
+        $fieldDto = $this->configure($field);
+
+        self::assertSame('https://example.com', $fieldDto->getCustomOption(AssociationField::OPTION_URL));
+    }
+
+    public function testLinkToUrlCallable(): void
+    {
+        $callable = static fn (EntityDto $entityDto): string => 'https://example.com/category/'.$entityDto->getPrimaryKeyValueAsString();
+        $field = AssociationField::new('category');
+        $field->linkToUrl($callable);
+        $fieldDto = $this->configure($field);
+
+        self::assertSame($callable, $fieldDto->getCustomOption(AssociationField::OPTION_URL));
     }
 
     public function testRenderAsEmbeddedForm(): void

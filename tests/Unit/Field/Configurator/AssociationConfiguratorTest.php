@@ -269,7 +269,7 @@ class AssociationConfiguratorTest extends AbstractFieldTest
     public function testLinkToUrlCallable(): void
     {
         $field = $this->buildLeadDeveloperField()
-            ->linkToUrl(function(EntityDto $entityDto, AdminContextInterface $context) {
+            ->linkToUrl(static function (EntityDto $entityDto, AdminContextInterface $context) {
                 return sprintf('https://example.com/%s/%s', $context->getRequest()->getLocale(), $entityDto->getName());
             })
         ;

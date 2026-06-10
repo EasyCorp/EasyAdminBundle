@@ -186,7 +186,7 @@ autocomplete options (``callback``, ``template``, ``choice_label``, etc.).
 
 By default, to-one associations link to the ``detail`` page of the related entity
 and to-many associations are rendered as a plain badge with a count. Use this
-option to replace that behaviour with a custom URL.
+option to replace that behavior with a custom URL.
 
 Pass a static string when the URL is known at configuration time::
 
@@ -224,8 +224,6 @@ For **to-many** associations, the count badge becomes clickable (rendered as an
 
     // to-many: renders a clickable badge with the count
     yield AssociationField::new('tags')->linkToUrl('https://example.com/tags');
-
-
 
 ``renderAsNativeWidget``
 ~~~~~~~~~~~~~~~~~~~~~~~~

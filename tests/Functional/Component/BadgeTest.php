@@ -107,4 +107,12 @@ class BadgeTest extends AbstractFieldFunctionalTest
         self::assertStringContainsString('class="icon"', $html);
         self::assertGreaterThan(strpos($html, 'Label'), strpos($html, 'class="icon"'));
     }
+
+    public function testLink(): void
+    {
+        self::assertSame(
+            '<a class="badge badge-secondary" href="https://example.com">x</a>',
+            $this->renderBadge('<twig:ea:Badge href="https://example.com">x</twig:ea:Badge>')
+        );
+    }
 }

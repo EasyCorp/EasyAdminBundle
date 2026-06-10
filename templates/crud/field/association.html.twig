@@ -2,9 +2,15 @@
 {# @var field \EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto #}
 {# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
 {% if 'toMany' == field.customOptions.get('associationType') %}
-    <twig:ea:Badge variant="secondary">{{ field.formattedValue }}</twig:ea:Badge>
+    {% if field.customOptions.get('url') is not null %}
+        <twig:ea:Badge variant="info" href="{{ field.customOptions.get('url') }}">{{ field.formattedValue }}</twig:ea:Badge>
+    {% else %}
+        <twig:ea:Badge variant="secondary">{{ field.formattedValue }}</twig:ea:Badge>
+    {% endif %}
 {% else %}
-    {% if field.customOptions.get('relatedUrl') is not null %}
+    {% if field.customOptions.get('url') is not null %}
+        <a href="{{ field.customOptions.get('url') }}">{{ field.formattedValue }}</a>
+    {% elseif field.customOptions.get('relatedUrl') is not null %}
         <a href="{{ field.customOptions.get('relatedUrl') }}">{{ field.formattedValue }}</a>
     {% else %}
         {{ field.formattedValue }}

@@ -86,15 +86,8 @@ class Slugger {
         this.lockButton.addEventListener('click', () => {
             if (this.locked) {
                 const confirmMessage = this.field.dataset.confirmText || null;
-                if (null === confirmMessage) {
+                if (null === confirmMessage || true === confirm(confirmMessage)) {
                     this.unlock();
-                } else {
-                    const formattedConfirmMessage = decodeURIComponent(
-                        JSON.parse(`"${confirmMessage.replace(/\"/g, '\\"')}"`)
-                    );
-                    if (true === confirm(formattedConfirmMessage)) {
-                        this.unlock();
-                    }
                 }
             } else {
                 this.lock();

@@ -49,7 +49,7 @@
                 {{ item.label|trans|raw }}
             </span>
             {% if item.badge %}
-                <span class="menu-item-badge rounded-pill badge {{ item.badge.cssClass }}" {{ _self.render_html_attributes(item.badge) }} style="{{ item.badge.htmlStyle }}">{{ item.badge.content }}</span>
+                <span class="menu-item-badge rounded-pill badge {{ item.badge.cssClass }}" {{ _self.render_html_attributes(item.badge) }} {{ item.badge.htmlStyle ? 'style="' ~ item.badge.htmlStyle ~ '"' : '' }}">{{ item.badge.content }}</span>
             {% endif %}
         </span>
     {% else %}
@@ -60,7 +60,7 @@
             </span>
             {% if item.hasSubItems %}<twig:ea:Icon name="internal:chevron-right" class="submenu-toggle-icon" />{% endif %}
             {% if item.hasVisibleBadge %}
-                <span class="menu-item-badge rounded-pill badge {{ item.badge.cssClass }}" {{ _self.render_html_attributes(item.badge) }} style="{{ item.badge.htmlStyle }}">{{ item.badge.content }}</span>
+                <span class="menu-item-badge rounded-pill badge {{ item.badge.cssClass }}" {{ _self.render_html_attributes(item.badge) }} {{ item.badge.htmlStyle ? 'style="' ~ item.badge.htmlStyle ~ '"' : '' }}">{{ item.badge.content }}</span>
             {% endif %}
         </a>
     {% endif %}

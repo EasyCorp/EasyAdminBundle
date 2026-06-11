@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
+use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminRoute;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\ActionCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\EntityCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
@@ -17,6 +18,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionConfigDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionGroupDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminRouteGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use EasyCorp\Bundle\EasyAdminBundle\Translation\TranslatableMessageBuilder;
@@ -25,8 +27,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\ButtonVariant;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
-use function Symfony\Component\Translation\t;
 use Symfony\Contracts\Translation\TranslatableInterface;
+use function Symfony\Component\Translation\t;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -99,7 +101,63 @@ final class ActionFactory
             $processedItems = $this->sortActionsByPriority($processedItems);
         }
 
-        $entityDto->setActions(ActionCollection::new($processedItems));
+        $entityDto->setActions(new ActionCollection($processedItems));
+        $entityDto->setDefaultActionUrl($this->resolveDefaultActionUrl($processedItems));
+    }
+
+    /**
+     * Finds the URL for the default row action based on the CRUD configuration.
+     * It searches the processed actions (including nested ActionGroups) and returns
+     * the URL of the first matching action from the configured fallback chain.
+     *
+     * @param array<string, ActionDto|ActionGroupDto> $processedItems
+     */
+    private function resolveDefaultActionUrl(array $processedItems): ?string
+    {
+        $context = $this->adminContextProvider->getContext();
+        $defaultRowAction = $context->getCrud()->getDefaultRowAction();
+
+        if (null === $defaultRowAction) {
+            return null;
+        }
+
+        // normalize to array for uniform handling
+        $actionsToTry = \is_array($defaultRowAction) ? $defaultRowAction : [$defaultRowAction];
+
+        foreach ($actionsToTry as $actionName) {
+            $url = $this->findActionUrl($processedItems, $actionName);
+            if (null !== $url) {
+                return $url;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Searches for an action by name in the processed items, including nested ActionGroups.
+     *
+     * @param array<string, ActionDto|ActionGroupDto> $processedItems
+     */
+    private function findActionUrl(array $processedItems, string $actionName): ?string
+    {
+        // first, check direct actions
+        if (isset($processedItems[$actionName]) && $processedItems[$actionName] instanceof ActionDto) {
+            return $processedItems[$actionName]->getLinkUrl();
+        }
+
+        // then, search inside ActionGroups
+        foreach ($processedItems as $item) {
+            if ($item instanceof ActionGroupDto) {
+                foreach ($item->getActions() as $nestedAction) {
+                    if ($nestedAction->getName() === $actionName) {
+                        return $nestedAction->getLinkUrl();
+                    }
+                }
+            }
+        }
+
+        return null;
     }
 
     public function processGlobalActions(?ActionConfigDto $actionsDto = null): ActionCollection
@@ -167,7 +225,7 @@ final class ActionFactory
             $processedItems = $this->sortActionsByPriority($processedItems);
         }
 
-        return ActionCollection::new($processedItems);
+        return new ActionCollection($processedItems);
     }
 
     public function processGlobalActionsAndEntityActionsForAll(EntityCollection $entityDtos, ActionConfigDto $actionConfigDto): ActionCollection
@@ -206,20 +264,79 @@ final class ActionFactory
         if (Action::DELETE === $actionDto->getName()) {
             $actionDto->addHtmlAttributes([
                 'formaction' => $this->adminUrlGenerator->setController($adminContext->getCrud()->getControllerFqcn())->setAction(Action::DELETE)->setEntityId($entityDto->getPrimaryKeyValue())->generateUrl(),
-                'data-bs-toggle' => 'modal',
-                'data-bs-target' => '#modal-delete',
             ]);
         }
 
-        if ($actionDto->isBatchAction()) {
+        // handle action confirmation modals (including DELETE action when askConfirmation is enabled)
+        if ($actionDto->hasConfirmation()) {
+            $confirmationMessage = $actionDto->getConfirmationMessage();
+
             $actionDto->addHtmlAttributes([
                 'data-bs-toggle' => 'modal',
-                'data-bs-target' => '#modal-batch-action',
-                'data-action-csrf-token' => $this->csrfTokenManager?->getToken('ea-batch-action-'.$actionDto->getName()),
+                'data-bs-target' => '#modal-action-confirmation',
+                'data-action-confirmation' => 'true',
+                'data-action-variant' => $actionDto->getVariant()->value,
+            ]);
+
+            // add confirmation message attribute
+            if (true !== $confirmationMessage) {
+                $actionDto->setHtmlAttribute(
+                    'data-action-confirmation-message',
+                    $confirmationMessage instanceof TranslatableInterface
+                        ? $confirmationMessage
+                        : t($confirmationMessage, $defaultTranslationParameters, $translationDomain)
+                );
+            }
+
+            // add confirmation button label attribute
+            $buttonLabel = $actionDto->getConfirmationButtonLabel();
+            if (null !== $buttonLabel) {
+                $actionDto->setHtmlAttribute(
+                    'data-action-confirmation-button',
+                    $buttonLabel instanceof TranslatableInterface
+                        ? $buttonLabel
+                        : t($buttonLabel, $defaultTranslationParameters, $translationDomain)
+                );
+            }
+
+            // add entity context attributes (only for entity actions)
+            if (null !== $entityDto) {
+                $entityLabel = $adminContext->getCrud()->getEntityLabelInSingular();
+                $actionDto->setHtmlAttribute(
+                    'data-action-entity-name',
+                    \is_string($entityLabel) ? t($entityLabel, $defaultTranslationParameters, $translationDomain) : $entityLabel
+                );
+                $actionDto->setHtmlAttribute('data-action-entity-id', $entityDto->getPrimaryKeyValueAsString());
+            }
+        }
+
+        if ($actionDto->isBatchAction()) {
+            $batchActionAttributes = [
+                // the token id is bound to the entity FQCN so a token minted for
+                // one CRUD cannot be replayed against another CRUD's batch action.
+                'data-action-csrf-token' => $this->csrfTokenManager?->getToken('ea-batch-action-'.$actionDto->getName().'-'.$adminContext->getCrud()->getEntityFqcn()),
                 'data-action-batch' => 'true',
                 'data-entity-fqcn' => $adminContext->getCrud()->getEntityFqcn(),
                 'data-action-url' => $actionDto->getLinkUrl(),
-            ]);
+            ];
+
+            $confirmationConfig = $adminContext->getCrud()->askConfirmationOnBatchActions();
+
+            if (false === $confirmationConfig) {
+                $batchActionAttributes['data-action-batch-no-confirm'] = 'true';
+            } else {
+                $batchActionAttributes['data-bs-toggle'] = 'modal';
+                $batchActionAttributes['data-bs-target'] = '#modal-batch-action';
+
+                // if the confirmation config is not a boolean, it's a string or TranslatableInterface with the custom confirmation message
+                if (true !== $confirmationConfig) {
+                    $batchActionAttributes['data-batch-action-confirm-message'] = $confirmationConfig instanceof TranslatableInterface
+                        ? $confirmationConfig
+                        : t($confirmationConfig, $defaultTranslationParameters, $translationDomain);
+                }
+            }
+
+            $actionDto->addHtmlAttributes($batchActionAttributes);
         }
 
         return $actionDto;
@@ -283,10 +400,31 @@ final class ActionFactory
             return $this->adminUrlGenerator->unsetAllExcept(EA::FILTERS, EA::PAGE, EA::QUERY, EA::SORT)->setRoute($routeName, $routeParameters)->generateUrl();
         }
 
+        // when using pretty URLs, the data is in the request attributes instead of the query string
+        $crudControllerFqcn = $request->attributes->get(EA::CRUD_CONTROLLER_FQCN) ?? $request->query->get(EA::CRUD_CONTROLLER_FQCN);
+        $crudActionName = $actionDto->getCrudActionName();
+
+        if (null !== $crudControllerFqcn && null !== $crudActionName && !\in_array($crudActionName, AdminRouteGenerator::BUILT_IN_ACTION_NAMES, true)) {
+            try {
+                $reflMethod = new \ReflectionMethod($crudControllerFqcn, $crudActionName);
+                if ([] === $reflMethod->getAttributes(AdminRoute::class)) {
+                    trigger_deprecation(
+                        'easycorp/easyadmin-bundle',
+                        '4.29.5',
+                        'The "%s()" method in "%s" is used as a custom CRUD action (via "linkToCrudAction()") but it is missing the #[AdminRoute] attribute. In EasyAdmin 5.x, you must add the #[AdminRoute] attribute to the "%s()" method to enable it as a CRUD action. See the UPGRADE.md file.',
+                        $crudActionName,
+                        $crudControllerFqcn,
+                        $crudActionName
+                    );
+                }
+            } catch (\ReflectionException) {
+                // the method doesn't exist; this will be caught elsewhere
+            }
+        }
+
         $requestParameters = [
-            // when using pretty URLs, the data is in the request attributes instead of the query string
-            EA::CRUD_CONTROLLER_FQCN => $request->attributes->get(EA::CRUD_CONTROLLER_FQCN) ?? $request->query->get(EA::CRUD_CONTROLLER_FQCN),
-            EA::CRUD_ACTION => $actionDto->getCrudActionName(),
+            EA::CRUD_CONTROLLER_FQCN => $crudControllerFqcn,
+            EA::CRUD_ACTION => $crudActionName,
         ];
 
         if (\in_array($actionDto->getName(), [Action::INDEX, Action::NEW, Action::SAVE_AND_ADD_ANOTHER], true)) {

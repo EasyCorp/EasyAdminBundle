@@ -12,19 +12,27 @@ class Alert
 {
     public AlertVariant $variant = AlertVariant::Info;
     public bool $withDismissButton = false;
+    private ?string $customVariant = null;
 
     public function mount(string|AlertVariant $variant): void
     {
-        try {
-            $this->variant = \is_string($variant) ? AlertVariant::from($variant) : $variant;
-        } catch (\ValueError) {
-            throw new \InvalidArgumentException(sprintf('The alert variant "%s" is not valid. Valid values are: %s', $variant, implode(', ', array_map(static fn (AlertVariant $variant): string => $variant->value, AlertVariant::cases()))));
+        if (\is_string($variant)) {
+            $resolved = AlertVariant::tryFrom($variant);
+            $this->variant = $resolved ?? AlertVariant::Info;
+            if (null === $resolved) {
+                $this->customVariant = $variant;
+            }
+        } else {
+            $this->variant = $variant;
         }
     }
 
     public function getDefaultCssClass(): string
     {
         $cssClass = sprintf('alert %s', $this->variant->asBootstrapCssClass());
+        if (null !== $this->customVariant) {
+            $cssClass .= sprintf(' alert-%s', $this->customVariant);
+        }
         if ($this->withDismissButton) {
             $cssClass .= ' alert-dismissible';
         }

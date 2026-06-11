@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ 'page_title.exception'|trans({'%count%': 1}, 'EasyAdminBundle') }}</title>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; background: #fff; color: #1e293b; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .error-container { text-align: center; max-width: 600px; padding: 2rem; }
+        h1 { font-size: 3rem; color: #64748b; margin: 0 0 1rem; }
+        p { font-size: 1.1rem; color: #1e293b; }
+        @media (prefers-color-scheme: dark) {
+            body { background: #0a0a0a; color: #d4d4d4; }
+            h1 { color: #737373; }
+            p { color: #d4d4d4; }
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <h1>{{ exception.statusCode }}</h1>
+        <p>{{ exception.publicMessage|trans(exception.translationParameters, 'EasyAdminBundle') }}</p>
+    </div>
+</body>
+</html>

@@ -37,6 +37,12 @@ class DateTimeFilterType extends AbstractType
                 $data['value'] ??= null;
                 $data['value2'] ??= null;
 
+                if (null === $data['value'] && ComparisonType::BETWEEN !== $data['comparison']) {
+                    $data['comparison'] = ComparisonType::EQ === $data['comparison'] ? 'IS NULL' : 'IS NOT NULL';
+
+                    return $data;
+                }
+
                 if (ComparisonType::BETWEEN === $data['comparison']) {
                     if (null === $data['value'] || '' === $data['value'] || null === $data['value2'] || '' === $data['value2']) {
                         throw new TransformationFailedException('Two values must be provided when "BETWEEN" comparison is selected.');

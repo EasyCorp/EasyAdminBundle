@@ -12,6 +12,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenu;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -39,7 +40,9 @@ abstract class AbstractDashboardController extends AbstractController implements
     public static function getSubscribedServices(): array
     {
         return array_merge(parent::getSubscribedServices(), [
-            AdminUrlGenerator::class => '?'.AdminUrlGenerator::class,
+            AdminUrlGeneratorInterface::class => '?'.AdminUrlGeneratorInterface::class,
+            // the following key is kept for BC reasons
+            AdminUrlGenerator::class => '?'.AdminUrlGeneratorInterface::class,
         ]);
     }
 
@@ -78,7 +81,7 @@ abstract class AbstractDashboardController extends AbstractController implements
             $userMenuItems[] = MenuItem::linkToExitImpersonation(t('user.exit_impersonation', domain: 'EasyAdminBundle'), 'internal:user-lock');
         }
 
-        $userName = method_exists($user, '__toString') ? (string) $user : $user->getUserIdentifier();
+        $userName = $user instanceof \Stringable ? (string) $user : $user->getUserIdentifier();
 
         return UserMenu::new()
             ->displayUserName()

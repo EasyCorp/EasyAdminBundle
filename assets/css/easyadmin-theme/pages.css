@@ -1,18 +1,19 @@
 /* Page templates available or custom backends
 /* ------------------------------------------------------------------------- */
-
-body.page-login {
-    background: var(--page-login-bg);
+html,
+body {
+    block-size: 100%;
+    margin: 0;
 }
-@media (min-width: 992px) {
+body.page-login {
+    background: var(--body-bg);
+}
+@media (min-width: 576px) {
     body.page-login {
-        align-items: center;
-        display: flex;
-        block-size: 100vh;
-        justify-content: center;
-        overflow: hidden;
-        position: absolute;
-        inline-size: 100vw;
+        background: var(--page-login-bg);
+        min-block-size: 100vh;
+        display: grid;
+        place-items: center;
     }
 }
 body.page-login #flash-messages {
@@ -22,43 +23,48 @@ body.page-login #flash-messages {
     inline-size: 100%;
 }
 
-.login-wrapper {
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-    margin: 0 auto;
-    max-inline-size: 28rem;
-    inline-size: 94%;
-}
-@media (min-width: 992px) {
+@media (min-width: 576px) {
     .login-wrapper {
-        margin-block-start: -225px;
-        inline-size: 100%;
+        margin: 0 auto;
+        inline-size: 25rem;
     }
 }
 .login-wrapper .main-header {
     display: block;
     padding-inline-end: 0;
 }
+.login-wrapper .main-header #header-logo {
+    border-block-end: var(--border-width) var(--border-style) var(--border-secondary-color);
+    margin: 1.5rem 0 1rem;
+    padding-block-end: 1rem;
+}
+@media (min-width: 576px) {
+    .login-wrapper .main-header #header-logo {
+        border-block-end: none;
+    }
+}
 .login-wrapper .main-header #header-logo a {
     font-size: var(--font-size-lg);
     text-align: center;
+    margin: 0;
+    padding: 0;
 }
-@media (min-width: 992px) {
+@media (min-width: 576px) {
     .login-wrapper .main-header #header-logo a {
         font-size: var(--font-size-xl);
     }
 }
 .login-wrapper .content {
-    background-color: var(--page-login-form-bg);
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow-lg);
+    background-color: var(--body-bg);
     padding: 15px 30px;
     inline-size: 100%;
 }
-@media (min-width: 992px) {
+@media (min-width: 576px) {
     .login-wrapper .content {
-        padding: 2rem 2.5rem;
+        background: var(--page-login-form-bg);
+        border-radius: var(--border-radius-lg);
+        box-shadow: var(--shadow-lg);
+        padding: 2.5rem 3rem;
     }
 }
 .login-wrapper .form-widget input {
@@ -68,8 +74,13 @@ body.page-login #flash-messages {
     block-size: 38px;
     line-height: 38px;
 }
-.login-wrapper .form-widget .btn-primary {
+.login-wrapper .form-group label.required:after {
+    display: none;
+}
+.login-wrapper .btn-primary {
     background-color: var(--page-login-form-control-button-bg);
+    font-size: var(--font-size-base);
+    margin-block-start: 1rem;
 }
 .login-wrapper .form-text {
     font-size: inherit;

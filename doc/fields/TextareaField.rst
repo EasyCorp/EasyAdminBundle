@@ -2,7 +2,7 @@ EasyAdmin Textarea Field
 ========================
 
 This field is used to represent any kind of long text content. For short text
-contents, use :doc:`/fields/TextField <TextField>`.
+contents, use :doc:`TextField </fields/TextField>`.
 
 In :ref:`form pages (edit and new) <crud-pages>` it looks like this:
 

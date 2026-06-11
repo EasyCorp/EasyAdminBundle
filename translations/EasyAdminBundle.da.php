@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Opret og fortsæt redigering',
         'save' => 'Gem ændringer',
         'save_and_continue' => 'Gem og fortsæt redigering',
+        'toggle_dropdown' => 'Skift rullemenu',
     ],
 
     'batch_action_modal' => [
@@ -70,6 +71,11 @@ return [
     'delete_modal' => [
         'title' => 'Er du sikker på du vil slette dette element?',
         'content' => 'Denne operation kan ikke fortrydes.',
+    ],
+
+    'action_confirmation_modal' => [
+        'title' => 'Er du sikker på, at du vil %action_name%?',
+        'action' => 'Bekræft',
     ],
 
     'filter' => [
@@ -134,6 +140,10 @@ return [
         'entity_remove' => 'Dette element kan ikke slettes, da der er andre elementer der er afhængige af det.',
         'forbidden_action' => 'Denne handling kan ikke udføres på dette element.',
         'insufficient_entity_permission' => 'Du har ikke tilladelse til at tilgå dette element.',
+        'general' => 'Der opstod en fejl under behandlingen af din forespørgsel.',
+        'general_403' => 'Du har ikke tilladelse til at udføre denne handling.',
+        'general_404' => 'Den ønskede side blev ikke fundet.',
+        'general_500' => 'Der opstod en intern fejl under behandlingen af din forespørgsel.',
     ],
 
     'autocomplete' => [

@@ -14,7 +14,7 @@ final class FilterConfigDto
 
     public function __construct()
     {
-        $this->filters = KeyValueStore::new();
+        $this->filters = KeyValueStore::new(delimiter: null);
     }
 
     /**

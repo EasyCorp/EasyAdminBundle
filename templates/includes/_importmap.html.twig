@@ -1,4 +1,8 @@
 {# @var assets \EasyCorp\Bundle\EasyAdminBundle\Dto\AssetDto[] #}
 {% guard function importmap %}
-    {{ importmap(assets|map(asset => asset.value)) }}
+    {% guard function csp_nonce %}
+        {{ importmap(assets|map(asset => asset.value), {nonce: csp_nonce('script')}) }}
+    {% else %}
+        {{ importmap(assets|map(asset => asset.value)) }}
+    {% endguard %}
 {% endguard %}

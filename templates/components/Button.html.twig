@@ -38,7 +38,7 @@
         {% if icon and not withTrailingIcon %}
             <twig:ea:Icon name="{{ icon }}" class="btn-icon" />
         {% endif %}
-        {% if block('content') is defined %}
+        {% if block('content') is defined and block('content') is not empty %}
             <span {{ attributes.nested('label').defaults({class: 'btn-label'}) }}>{{ block('content') }}</span>
         {% endif %}
         {% if icon and withTrailingIcon %}
@@ -62,7 +62,7 @@
             {% if icon and not withTrailingIcon %}
                 <twig:ea:Icon name="{{ icon }}" class="btn-icon" />
             {% endif %}
-            {% if block('content') is defined %}
+            {% if block('content') is defined and block('content') is not empty %}
                 <span {{ attributes.nested('label').defaults({class: 'btn-label'}) }}>{{ block('content') }}</span>
             {% endif %}
             {% if icon and withTrailingIcon %}
@@ -79,7 +79,7 @@
         {% if icon and not withTrailingIcon %}
             <twig:ea:Icon name="{{ icon }}" class="btn-icon" />
         {% endif %}
-        {% if block('content') is defined %}
+        {% if block('content') is defined and block('content') is not empty %}
             <span {{ attributes.nested('label').defaults({class: 'btn-label'}) }}>{{ block('content') }}</span>
         {% endif %}
         {% if icon and withTrailingIcon %}

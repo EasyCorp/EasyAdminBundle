@@ -2,17 +2,14 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Collection;
 
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\Collection\CollectionInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
- *
- * @implements CollectionInterface<string, FieldDto>
  */
-final class FieldCollection implements CollectionInterface
+final class FieldCollection implements \ArrayAccess, \Countable, \IteratorAggregate
 {
     /** @var array<string, FieldDto> */
     private array $fields;
@@ -20,7 +17,7 @@ final class FieldCollection implements CollectionInterface
     /**
      * @param array<FieldInterface|string> $fields
      */
-    private function __construct(iterable $fields)
+    public function __construct(iterable $fields)
     {
         $this->fields = $this->processFields($fields);
     }
@@ -37,6 +34,8 @@ final class FieldCollection implements CollectionInterface
     }
 
     /**
+     * @deprecated since 4.28.2 and removed in 5.0.0, use FilterCollection::__construct() instead.
+     *
      * @param array<FieldInterface|string> $fields
      */
     public static function new(iterable $fields): self

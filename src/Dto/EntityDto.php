@@ -15,9 +15,9 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  *
- * @template TEntity of object = object
+ * @template TEntity of object
  */
-final class EntityDto
+final class EntityDto implements \Stringable
 {
     private bool $isAccessible = true;
     /** @var TEntity|null */
@@ -25,6 +25,7 @@ final class EntityDto
     private mixed $primaryKeyValue = null;
     private ?FieldCollection $fields = null;
     private ?ActionCollection $actions = null;
+    private ?string $defaultActionUrl = null;
 
     /**
      * @param class-string<TEntity>  $fqcn
@@ -51,7 +52,15 @@ final class EntityDto
 
     public function __toString(): string
     {
-        return $this->toString();
+        if (null === $this->instance) {
+            return '';
+        }
+
+        if ($this->instance instanceof \Stringable) {
+            return (string) $this->instance;
+        }
+
+        return sprintf('%s #%s', $this->getName(), substr($this->getPrimaryKeyValueAsString(), 0, 16));
     }
 
     /**
@@ -67,17 +76,12 @@ final class EntityDto
         return basename(str_replace('\\', '/', $this->fqcn));
     }
 
+    /**
+     * @deprecated since 4.27 and to be removed in 5.0, use $entityDto->__toString() instead
+     */
     public function toString(): string
     {
-        if (null === $this->instance) {
-            return '';
-        }
-
-        if (method_exists($this->instance, '__toString')) {
-            return (string) $this->instance;
-        }
-
-        return sprintf('%s #%s', $this->getName(), substr($this->getPrimaryKeyValueAsString(), 0, 16));
+        return $this->__toString();
     }
 
     /**
@@ -161,6 +165,16 @@ final class EntityDto
     public function getActions(): ActionCollection
     {
         return $this->actions;
+    }
+
+    public function getDefaultActionUrl(): ?string
+    {
+        return $this->defaultActionUrl;
+    }
+
+    public function setDefaultActionUrl(?string $url): void
+    {
+        $this->defaultActionUrl = $url;
     }
 
     public function getClassMetadata(): ClassMetadata
@@ -292,7 +306,11 @@ final class EntityDto
      */
     public function setInstance(?object $newEntityInstance): void
     {
-        if (null !== $this->instance && null !== $newEntityInstance && !$newEntityInstance instanceof $this->fqcn) {
+        // the instanceof guard must run even when $this->instance is null. Otherwise
+        // a caller can store an instance whose class does not match $this->fqcn, and
+        // downstream code (authorization, DB operations) that trusts either side of
+        // that pair may be redirected to the wrong entity (this is a CWE-441 (Confused Deputy) attack vector)
+        if (null !== $newEntityInstance && !$newEntityInstance instanceof $this->fqcn) {
             throw new \InvalidArgumentException(sprintf('The new entity instance must be of the same type as the previous instance (original instance: "%s", new instance: "%s").', $this->fqcn, $newEntityInstance::class));
         }
 
@@ -317,7 +335,12 @@ final class EntityDto
             );
         }
 
-        if (null !== $this->instance && !$newEntityInstance instanceof $this->fqcn) {
+        // the instanceof guard must run even when $this->instance is null. Otherwise
+        // a caller that wraps an entity into a DTO whose $fqcn was set from a different
+        // source (e.g. batch actions, where the FQCN comes from the admin context but
+        // the instance comes from a repository lookup) can silently produce a DTO
+        // whose $fqcn does not match its $instance (this is a CWE-441 (Confused Deputy) attack vector).
+        if (!$newEntityInstance instanceof $this->fqcn) {
             throw new \InvalidArgumentException(sprintf('The new entity instance must be of the same type as the previous instance (original instance: "%s", new instance: "%s").', $this->fqcn, $newEntityInstance::class));
         }
 

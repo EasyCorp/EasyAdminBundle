@@ -10,7 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDto;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudAutocompleteType;
-use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 
 /**
  * @author Yonel Ceruto <yonelceruto@gmail.com>
@@ -19,7 +19,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 final class EntityConfigurator implements FilterConfiguratorInterface
 {
     public function __construct(
-        private AdminUrlGenerator $adminUrlGenerator,
+        private AdminUrlGeneratorInterface $adminUrlGenerator,
     ) {
     }
 
@@ -69,7 +69,7 @@ final class EntityConfigurator implements FilterConfiguratorInterface
         if ($supportsAutocomplete) {
             $associationMapping = $entityDto->getClassMetadata()->associationMappings[$propertyName];
             $targetEntityFqcn = $associationMapping['targetEntity'];
-            if (null === $targetCrudControllerFqcn = $context->getCrudControllers()->findCrudFqcnByEntityFqcn($targetEntityFqcn)) {
+            if (null === $targetCrudControllerFqcn = $context->getAdminControllers()->findCrudControllerByEntity($targetEntityFqcn)) {
                 throw new \LogicException('The target CRUD controller for the entity '.$targetEntityFqcn.' is not defined.');
             }
             $autocompleteEndpointUrl = $this->adminUrlGenerator

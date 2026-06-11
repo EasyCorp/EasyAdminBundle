@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Креирај и продолжи со уредување',
         'save' => 'Зачувај ги промените',
         'save_and_continue' => 'Зачувај и продолжи со уредување',
+        'toggle_dropdown' => 'Префрли паѓачко мени',
     ],
 
     'batch_action_modal' => [
@@ -70,6 +71,11 @@ return [
     'delete_modal' => [
         'title' => 'Дали навистина сакате да го избришете овој запис?',
         'content' => 'За оваа операција нема поништување.',
+    ],
+
+    'action_confirmation_modal' => [
+        'title' => 'Дали сте сигурни дека сакате да %action_name%?',
+        'action' => 'Потврди',
     ],
 
     'filter' => [
@@ -135,6 +141,10 @@ return [
         'entity_remove' => 'Овој запис не може да биде избришан затоа што други записи зависат од него.',
         'forbidden_action' => 'Баранато дејствие не може да се изврши на овој запис.',
         'insufficient_entity_permission' => 'Ги немате неопходните привилегии за да пристапите до овој запис.',
+        'general' => 'An error occurred while processing your request.',
+        'general_403' => 'You don\'t have permission to perform this action.',
+        'general_404' => 'The requested page could not be found.',
+        'general_500' => 'An internal error occurred while processing your request.',
     ],
 
     'autocomplete' => [

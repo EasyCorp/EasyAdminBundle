@@ -32,7 +32,7 @@ Options
 ~~~~~~~~~~~~~~~~~~~~~~
 
 Use this option to not display anything when the field value is ``false``. This
-is useful to reduce the "visual noise" in listings where most rows have the same
+is useful to simplify the backend display in listings where most rows have the same
 ``false`` value and you want to ignore those and better highlight the rows with
 the ``true`` value::
 
@@ -49,7 +49,7 @@ Keep in mind that:
 ~~~~~~~~~~~~~~~~~~~~~
 
 Use this option to not display anything when the field value is ``true``. This
-is useful to reduce the "visual noise" in listings where most rows have the same
+is useful to simplify the backend display in listings where most rows have the same
 ``true`` value and you want to ignore those and better highlight the rows with
 the ``false`` value::
 

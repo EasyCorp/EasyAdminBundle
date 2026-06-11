@@ -2,15 +2,17 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\ClickTrigger;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\SearchMode;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Translation\TranslatableMessageBuilder;
 use Symfony\Component\ExpressionLanguage\Expression;
-use function Symfony\Component\Translation\t;
 use Symfony\Contracts\Translation\TranslatableInterface;
+use function Symfony\Component\Translation\t;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -78,6 +80,14 @@ final class CrudDto
     private ?string $contentWidth = null;
     private ?string $sidebarWidth = null;
     private bool $hideNullValues = false;
+    private bool|string|TranslatableInterface $askConfirmationOnBatchActions = true;
+    /** @var string|string[]|null Action name(s) to try when clicking a row. Array = fallback chain, null = disabled */
+    private string|array|null $defaultRowAction = [Action::EDIT, Action::DETAIL];
+    private string $defaultRowActionTrigger = ClickTrigger::SINGLE;
+    /** @var callable|null */
+    private $autocompleteCallback;
+    private ?string $autocompleteTemplate = null;
+    private bool $autocompleteRenderAsHtml = false;
 
     public function __construct()
     {
@@ -279,7 +289,7 @@ final class CrudDto
         }
 
         if (null !== $entityInstance) {
-            if (method_exists($entityInstance, '__toString')) {
+            if ($entityInstance instanceof \Stringable) {
                 $entityAsString = (string) $entityInstance;
 
                 if ('' !== $entityAsString) {
@@ -297,7 +307,7 @@ final class CrudDto
 
     public function getHelpMessage(?string $pageName = null): TranslatableInterface|string
     {
-        return $this->helpMessages[$pageName ?? $this->pageName] ?? '';
+        return $this->helpMessages[$pageName ?? $this->pageName ?? ''] ?? '';
     }
 
     /**
@@ -596,5 +606,71 @@ final class CrudDto
     public function hideNullValues(bool $hide): void
     {
         $this->hideNullValues = $hide;
+    }
+
+    public function askConfirmationOnBatchActions(): bool|string|TranslatableInterface
+    {
+        return $this->askConfirmationOnBatchActions;
+    }
+
+    public function setAskConfirmationOnBatchActions(bool|string|TranslatableInterface $askConfirmation): void
+    {
+        $this->askConfirmationOnBatchActions = $askConfirmation;
+    }
+
+    /**
+     * @return string|string[]|null
+     */
+    public function getDefaultRowAction(): string|array|null
+    {
+        return $this->defaultRowAction;
+    }
+
+    /**
+     * @param string|string[]|null $actionName
+     */
+    public function setDefaultRowAction(string|array|null $actionName): void
+    {
+        $this->defaultRowAction = $actionName;
+    }
+
+    public function getDefaultRowActionTrigger(): string
+    {
+        return $this->defaultRowActionTrigger;
+    }
+
+    public function setDefaultRowActionTrigger(string $clickTrigger): void
+    {
+        $this->defaultRowActionTrigger = $clickTrigger;
+    }
+
+    public function getAutocompleteCallback(): ?callable
+    {
+        return $this->autocompleteCallback;
+    }
+
+    public function setAutocompleteCallback(?callable $callback): void
+    {
+        $this->autocompleteCallback = $callback;
+    }
+
+    public function getAutocompleteTemplate(): ?string
+    {
+        return $this->autocompleteTemplate;
+    }
+
+    public function setAutocompleteTemplate(?string $template): void
+    {
+        $this->autocompleteTemplate = $template;
+    }
+
+    public function getAutocompleteRenderAsHtml(): bool
+    {
+        return $this->autocompleteRenderAsHtml;
+    }
+
+    public function setAutocompleteRenderAsHtml(bool $renderAsHtml): void
+    {
+        $this->autocompleteRenderAsHtml = $renderAsHtml;
     }
 }

@@ -38,7 +38,7 @@ class FileUploadField {
             totalSizeInBytes += file.size;
         }
 
-        this.#getFieldCustomInput().innerHTML = filename;
+        this.#getFieldCustomInput().textContent = filename;
         this.#getFieldDeleteButton().style.display = 'block';
         this.#getFieldSizeLabel().childNodes.forEach((fileUploadFileSizeLabelChild) => {
             if (fileUploadFileSizeLabelChild.nodeType === Node.TEXT_NODE) {
@@ -57,7 +57,7 @@ class FileUploadField {
             fieldDeleteCheckbox.click();
         }
         this.field.value = '';
-        this.#getFieldCustomInput().innerHTML = '';
+        this.#getFieldCustomInput().textContent = '';
         toggleVisibilityClasses(this.#getFieldDeleteButton(), true);
 
         this.#getFieldSizeLabel().childNodes.forEach((fileSizeLabelChild) => {

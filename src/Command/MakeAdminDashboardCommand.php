@@ -43,7 +43,7 @@ class MakeAdminDashboardCommand extends Command
         $controllerClassName = $io->ask(
             'Which class name do you prefer for your Dashboard controller?',
             'DashboardController',
-            fn (string $className): string => u($className)->ensureEnd('Controller')->toString()
+            static fn (string $className): string => u($className)->ensureEnd('Controller')->toString()
         );
 
         $projectDir = $this->projectDir;

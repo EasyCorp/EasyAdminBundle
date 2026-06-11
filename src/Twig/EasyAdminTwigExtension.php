@@ -7,7 +7,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Context\AdminContextInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Provider\AdminContextProviderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldLayoutDto;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FormLayoutFactory;
-use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 use Symfony\Component\AssetMapper\ImportMap\ImportMapRenderer;
 use Symfony\Component\DependencyInjection\ServiceLocator;
@@ -64,6 +63,7 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
             new TwigFilter('ea_flatten_array', [$this, 'flattenArray']),
             new TwigFilter('ea_filesize', [$this, 'fileSize']),
             new TwigFilter('ea_as_string', [$this, 'representAsString']),
+            new TwigFilter('ea_html_attrs', [$this, 'processHtmlAttributes']),
             // deprecated filters
             new TwigFilter('ea_apply_filter_if_exists', [$this, 'applyFilterIfExists'], ['needs_environment' => true, 'deprecation_info' => new DeprecatedCallableInfo('easycorp/easyadmin-bundle', '4.21.0', 'No alternative is provided because it\'s no longer needed thanks to the Twig guard tag.')]),
         ];
@@ -126,6 +126,26 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
         }
 
         return $flattenedArray;
+    }
+
+    /**
+     * Processes an array of HTML attributes, translating any TranslatableInterface values.
+     * This is needed because Twig Components don't accept non-scalar attribute values.
+     *
+     * @param array<string, mixed> $attributes
+     *
+     * @return array<string, mixed>
+     */
+    public function processHtmlAttributes(array $attributes): array
+    {
+        $processed = [];
+        foreach ($attributes as $name => $value) {
+            $processed[$name] = $value instanceof TranslatableInterface
+                ? $value->trans($this->translator)
+                : $value;
+        }
+
+        return $processed;
     }
 
     public function fileSize(int $bytes): string
@@ -220,7 +240,7 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
                 return $value->trans($this->translator);
             }
 
-            if (method_exists($value, '__toString')) {
+            if ($value instanceof \Stringable) {
                 return (string) $value;
             }
 
@@ -277,7 +297,7 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
      */
     public function getAdminUrlGenerator(array $queryParameters = []): AdminUrlGeneratorInterface
     {
-        return $this->serviceLocator->get(AdminUrlGenerator::class)->setAll($queryParameters);
+        return $this->serviceLocator->get(AdminUrlGeneratorInterface::class)->setAll($queryParameters);
     }
 
     /**

@@ -5,6 +5,8 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 class Form {
+    #isNavigatingHistory = false;
+
     constructor() {
         this.#persistSelectedTab();
         this.#createUnsavedFormChangesWarning();
@@ -25,9 +27,31 @@ class Form {
         // update the page anchor when the selected tab changes
         document.querySelectorAll('a[data-bs-toggle="tab"]').forEach((tabElement) => {
             tabElement.addEventListener('shown.bs.tab', (event) => {
+                // don't push state when navigating through browser history (back/forward)
+                if (this.#isNavigatingHistory) {
+                    return;
+                }
                 const urlHash = `#${event.target.getAttribute('href').substring(1)}`;
                 history.pushState({}, '', urlHash);
             });
+        });
+
+        // handle browser back/forward navigation to restore the correct tab
+        window.addEventListener('popstate', () => {
+            this.#isNavigatingHistory = true;
+            const urlHash = window.location.hash;
+            if (urlHash) {
+                const selectedTabPaneId = urlHash.substring(1);
+                const selectedTabId = `tablist-${selectedTabPaneId}`;
+                this.#setTabAsActive(selectedTabId);
+            } else {
+                // no hash means show the first tab
+                const firstTab = document.querySelector('a[data-bs-toggle="tab"]');
+                if (firstTab) {
+                    this.#setTabAsActive(firstTab.id);
+                }
+            }
+            this.#isNavigatingHistory = false;
         });
     }
 
@@ -54,19 +78,26 @@ class Form {
             //
             // Adding visual error counter feedback for invalid fields inside form tabs (visible or not)
             const that = this;
-            document
-                .querySelector('.ea-edit, .ea-new')
-                .querySelectorAll('[type="submit"]')
+            // the default submit buttons live outside the <form> element and are associated to it
+            // via the HTML 'form' attribute; that's why this uses form.elements (which includes
+            // those buttons) instead of form.querySelectorAll() (which only finds descendants)
+            Array.from(form.elements)
+                .filter((element) => 'submit' === element.type)
                 .forEach((button) => {
                     button.addEventListener('click', function onSubmitButtonsClick(clickEvent) {
                         let formHasErrors = false;
 
-                        // Remove all error counter badges
+                        // remove all error counter badges (tabs and fieldsets)
                         document
-                            .querySelectorAll('.form-tabs-tablist .nav-item .badge-danger.badge')
+                            .querySelectorAll(
+                                '.form-tabs-tablist .nav-item .badge-danger.badge, .form-fieldset-title-content .badge-danger.badge'
+                            )
                             .forEach((badge) => {
                                 badge.parentElement.removeChild(badge);
                             });
+                        document.querySelectorAll('.form-fieldset.has-fieldset-error').forEach((fieldset) => {
+                            fieldset.classList.remove('has-fieldset-error');
+                        });
 
                         if (null !== form.getAttribute('novalidate')) {
                             return;
@@ -76,11 +107,10 @@ class Form {
                             if (!input.disabled && !input.validity.valid) {
                                 formHasErrors = true;
 
-                                // Visual feedback for tabs
-                                // Adding a badge with a error count next to the tab label
+                                // visual feedback for tabs: adding a badge with a error count next to the tab label
                                 const formTab = input.closest('div.tab-pane');
                                 if (formTab) {
-                                    // Match tab link either by "data-bs-target" attribute or by href linking to the id anchor
+                                    // match tab link either by "data-bs-target" attribute or by href linking to the id anchor
                                     const navLinkTab = document.querySelector(
                                         `[data-bs-target="#${formTab.id}"], a[href="#${formTab.id}"]`
                                     );
@@ -90,10 +120,10 @@ class Form {
 
                                         const badge = navLinkTab.querySelector('.badge');
                                         if (badge) {
-                                            // Increment number of error
+                                            // increment number of error
                                             badge.textContent = (Number.parseInt(badge.textContent) + 1).toString();
                                         } else {
-                                            // Create a new badge
+                                            // create a new badge
                                             const newErrorBadge = document.createElement('span');
                                             newErrorBadge.classList.add('badge', 'badge-danger');
                                             newErrorBadge.textContent = '1';
@@ -102,7 +132,28 @@ class Form {
                                     }
                                 }
 
-                                // Visual feedback for group
+                                // visual feedback for fieldsets
+                                const formFieldset = input.closest('div.form-fieldset');
+                                if (formFieldset) {
+                                    const fieldsetTitleContent =
+                                        formFieldset.querySelector('.form-fieldset-title-content');
+
+                                    formFieldset.classList.add('has-fieldset-error');
+
+                                    if (fieldsetTitleContent) {
+                                        const badge = fieldsetTitleContent.querySelector('.badge');
+                                        if (badge) {
+                                            badge.textContent = (Number.parseInt(badge.textContent) + 1).toString();
+                                        } else {
+                                            const newErrorBadge = document.createElement('span');
+                                            newErrorBadge.classList.add('badge', 'badge-danger');
+                                            newErrorBadge.textContent = '1';
+                                            fieldsetTitleContent.appendChild(newErrorBadge);
+                                        }
+                                    }
+                                }
+
+                                // visual feedback for group
                                 const formGroup = input.closest('div.form-group');
                                 formGroup.classList.add('has-error');
 
@@ -124,6 +175,25 @@ class Form {
                             if (null !== firstTabWithErrors) {
                                 that.#setTabAsActive(firstTabWithErrors.id);
                             }
+
+                            // auto-expand all collapsed fieldsets with errors
+                            document
+                                .querySelectorAll('.form-fieldset.has-fieldset-error')
+                                .forEach((fieldsetWithErrors) => {
+                                    const collapsedBody = fieldsetWithErrors.querySelector(
+                                        '.form-fieldset-body.collapse:not(.show)'
+                                    );
+                                    if (collapsedBody) {
+                                        const Collapse = bootstrap.Collapse;
+                                        new Collapse(collapsedBody, { toggle: true });
+                                        const collapseToggle =
+                                            fieldsetWithErrors.querySelector('.form-fieldset-collapse');
+                                        if (collapseToggle) {
+                                            collapseToggle.classList.remove('collapsed');
+                                            collapseToggle.setAttribute('aria-expanded', 'true');
+                                        }
+                                    }
+                                });
 
                             document.dispatchEvent(
                                 new CustomEvent('ea.form.error', {
@@ -180,12 +250,11 @@ class Form {
                 () => {
                     // this timeout is needed to include the disabled button into the submitted form
                     setTimeout(() => {
-                        const submitButtons = document
-                            .querySelector('.ea-edit, .ea-new')
-                            .querySelectorAll('[type="submit"]');
-                        submitButtons.forEach((button) => {
-                            button.setAttribute('disabled', 'disabled');
-                        });
+                        Array.from(form.elements)
+                            .filter((element) => 'submit' === element.type)
+                            .forEach((button) => {
+                                button.setAttribute('disabled', 'disabled');
+                            });
                     }, 1);
                 },
                 false

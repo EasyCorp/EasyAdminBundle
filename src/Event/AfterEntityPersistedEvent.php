@@ -11,4 +11,5 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Event;
  */
 final class AfterEntityPersistedEvent extends AbstractLifecycleEvent
 {
+    use StoppableEventTrait;
 }

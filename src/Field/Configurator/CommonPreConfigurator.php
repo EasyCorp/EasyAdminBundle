@@ -9,25 +9,37 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Translation\EntityTranslationIdGeneratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AvatarField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
+use EasyCorp\Bundle\EasyAdminBundle\Generator\LabelGenerator;
 use Symfony\Component\PropertyAccess\Exception\AccessException;
 use Symfony\Component\PropertyAccess\Exception\UnexpectedTypeException;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
-use function Symfony\Component\String\u;
-use function Symfony\Component\Translation\t;
 use Symfony\Contracts\Translation\TranslatableInterface;
+use function Symfony\Component\Translation\t;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
 final class CommonPreConfigurator implements FieldConfiguratorInterface
 {
-    public function __construct(private readonly PropertyAccessorInterface $propertyAccessor, private readonly EntityFactory $entityFactory)
-    {
+    public function __construct(
+        private readonly PropertyAccessorInterface $propertyAccessor,
+        private readonly EntityFactory $entityFactory,
+        private readonly ?EntityTranslationIdGeneratorInterface $entityTranslationIdGenerator = null,
+    ) {
+        if (null === $this->entityTranslationIdGenerator) {
+            trigger_deprecation(
+                'easycorp/easyadmin-bundle',
+                '4.27',
+                'Not passing argument "$entityTranslationIdGenerator" will cause an error in 5.0.0.',
+                '$entityTranslationIdGenerator',
+            );
+        }
     }
 
     public function supports(FieldDto $field, EntityDto $entityDto): bool
@@ -56,7 +68,7 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
             }
         }
 
-        $label = $this->buildLabelOption($field, $translationDomain, $context->getCrud()->getCurrentPage());
+        $label = $this->buildLabelOption($entityDto, $field, $translationDomain, $context->getCrud()->getCurrentPage(), $context->isUseEntityTranslations());
         $field->setLabel($label);
 
         $isRequired = $this->buildRequiredOption($field, $entityDto);
@@ -109,10 +121,7 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
         return '' === $help ? null : t($help, $field->getTranslationParameters(), $translationDomain);
     }
 
-    /**
-     * @return TranslatableInterface|string|false|null
-     */
-    private function buildLabelOption(FieldDto $field, string $translationDomain, ?string $currentPage)
+    private function buildLabelOption(EntityDto $entityDto, FieldDto $field, string $translationDomain, ?string $currentPage, bool $useEntityTranslations): TranslatableInterface|string|false|null
     {
         // don't autogenerate a label for these special fields (there's a dedicated configurator for them)
         if (FormField::class === $field->getFieldFqcn()) {
@@ -134,7 +143,9 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
         // it field doesn't define its label explicitly, generate an automatic
         // label based on the field's field name
         if (null === $label = $field->getLabel()) {
-            $label = $this->humanizeString($field->getProperty());
+            $label = $useEntityTranslations
+                ? $this->entityTranslationIdGenerator->generateForProperty($entityDto->getFqcn(), $field->getProperty())
+                : LabelGenerator::humanize($field->getProperty());
         }
 
         if ('' === $label || false === $label) {
@@ -240,25 +251,5 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
         $nullable = \is_array($fieldMapping) ? ($fieldMapping['nullable'] ?? null) : $fieldMapping->nullable;
 
         return false === $nullable || null === $nullable;
-    }
-
-    private function humanizeString(string $string): string
-    {
-        $uString = u($string);
-        $upperString = $uString->upper()->toString();
-
-        // this prevents humanizing all-uppercase labels (e.g. 'UUID' -> 'U u i d')
-        // and other special labels which look better in uppercase
-        if ($uString->toString() === $upperString || \in_array($upperString, ['ID', 'URL'], true)) {
-            return $upperString;
-        }
-
-        return $uString
-            ->replaceMatches('/([A-Z])/', '_$1')
-            ->replaceMatches('/[_\s]+/', ' ')
-            ->trim()
-            ->lower()
-            ->title(true)
-            ->toString();
     }
 }

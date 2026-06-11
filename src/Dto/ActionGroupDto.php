@@ -187,7 +187,7 @@ final class ActionGroupDto
     {
         return array_values(array_filter(
             $this->items,
-            fn ($item) => $item instanceof ActionDto
+            static fn ($item) => $item instanceof ActionDto
         ));
     }
 
@@ -223,7 +223,7 @@ final class ActionGroupDto
     {
         $this->items = array_filter(
             $this->items,
-            fn ($item) => !($item instanceof ActionDto && $item->getName() === $actionName)
+            static fn ($item) => !($item instanceof ActionDto && $item->getName() === $actionName)
         );
         $this->items = array_values($this->items);
     }

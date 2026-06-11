@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\ArgumentResolver;
 
-use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Context\AdminContextInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Provider\AdminContextProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ArgumentValueResolverInterface;
@@ -21,7 +21,7 @@ if (interface_exists(ValueResolverInterface::class)) {
 
         public function resolve(Request $request, ArgumentMetadata $argument): iterable
         {
-            if (AdminContext::class !== $argument->getType()) {
+            if (!is_a($argument->getType(), AdminContextInterface::class, true)) {
                 return [];
             }
 
@@ -37,7 +37,7 @@ if (interface_exists(ValueResolverInterface::class)) {
 
         public function supports(Request $request, ArgumentMetadata $argument): bool
         {
-            return AdminContext::class === $argument->getType();
+            return is_a($argument->getType(), AdminContextInterface::class, true);
         }
 
         public function resolve(Request $request, ArgumentMetadata $argument): iterable

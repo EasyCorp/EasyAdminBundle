@@ -3,8 +3,8 @@
 {# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
 {# NOTE: the rel="noopener" attr is needed to avoid performance and security issues
   (see https://web.dev/external-anchors-use-rel-noopener/) #}
-{% if ea().crud.currentAction == 'detail' %}
-    <a target="_blank" rel="noopener" href="{{ field.value }}">{{ field.value }}</a>
+{% if field.customOptions.get('isUnsafe') %}
+    <span class="text-muted">{{ field.value }}</span>
 {% else %}
     <a target="_blank" rel="noopener" href="{{ field.value }}">{{ field.formattedValue }}</a>
 {% endif %}

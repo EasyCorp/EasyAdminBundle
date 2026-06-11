@@ -8,7 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class AssetDto
+final class AssetDto implements \Stringable
 {
     // the Symfony Asset package name which this asset belongs to
     private ?string $packageName = null;

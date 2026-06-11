@@ -17,6 +17,7 @@ final class MenuItemDto
     public const TYPE_DASHBOARD = 'dashboard';
     public const TYPE_LOGOUT = 'logout';
     public const TYPE_SUBMENU = 'submenu';
+    public const TYPE_CONTROLLER = 'controller';
     public const TYPE_ROUTE = 'route';
 
     private ?string $type = null;
@@ -108,12 +109,12 @@ final class MenuItemDto
         $this->expanded = $isExpanded;
     }
 
-    public function getLabel(): TranslatableInterface|string
+    public function getLabel(): TranslatableInterface|string|null
     {
         return $this->label;
     }
 
-    public function setLabel(TranslatableInterface|string $label): void
+    public function setLabel(TranslatableInterface|string|null $label): void
     {
         $this->label = $label;
     }

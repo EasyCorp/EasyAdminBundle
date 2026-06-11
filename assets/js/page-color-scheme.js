@@ -59,7 +59,7 @@ class ColorSchemeHandler {
 
     #setColorScheme(colorScheme, persistInLocalStorage = false) {
         if ('false' === document.body.getAttribute('data-ea-dark-scheme-is-enabled')) {
-            return;
+            colorScheme = 'light';
         }
 
         const resolvedColorScheme =

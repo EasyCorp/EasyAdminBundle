@@ -33,20 +33,11 @@ jobs:
                     # Latest Symfony version support
                     - os: macos-latest
                       php_version: "8.4"
-                      symfony_version: "7.3"
+                      symfony_version: "8.0"
                       stability: "stable"
                     - os: windows-latest
                       php_version: "8.4"
-                      symfony_version: "7.3"
-                      stability: "stable"
-                    # LTS Symfony version support
-                    - os: macos-latest
-                      php_version: "8.4"
-                      symfony_version: "6.4"
-                      stability: "stable"
-                    - os: windows-latest
-                      php_version: "8.4"
-                      symfony_version: "6.4"
+                      symfony_version: "8.0"
                       stability: "stable"
                     # Lowest deps support
                     - os: ubuntu-latest
@@ -75,17 +66,20 @@ jobs:
                       php_version: "8.5"
                       symfony_version: "7.3"
                       stability: "stable"
-                    # Upcoming Symfony versions
                     - os: ubuntu-latest
                       php_version: "8.4"
-                      symfony_version: "7.4.x"
-                      stability: "dev"
+                      symfony_version: "7.4"
+                      stability: "stable"
                     - os: ubuntu-latest
                       php_version: "8.4"
-                      symfony_version: "8.0.x"
+                      symfony_version: "8.0"
+                      stability: "stable"
+                    # Upcoming (unreleased) Symfony version
+                    - os: ubuntu-latest
+                      php_version: "8.4"
+                      symfony_version: "8.1.x"
                       stability: "dev"
         runs-on: ${{ matrix.os }}
-        continue-on-error: ${{ matrix.stability == 'dev' }}
         steps:
             - uses: actions/checkout@v6
 
@@ -96,7 +90,7 @@ jobs:
                   coverage: none
                   extensions: mbstring, intl, pdo, pdo_sqlite, sqlite3
                   ini-values: date.timezone=UTC
-                  tools: composer:2.8
+                  tools: composer:2.9.8
 
             - name: symfony/flex is required to install the correct symfony version
               if: ${{ matrix.symfony_version }}
@@ -112,6 +106,13 @@ jobs:
               if: ${{ matrix.symfony_version }}
               run: composer config extra.symfony.require "${{ matrix.symfony_version }}.*"
 
+            - name: Disable Composer audit feature
+              # this is needed because Composer installation fails when every matched
+              # version of a dependency has an open security advisory, which is the case
+              # for packages that are no longer updated so no non-vulnerable patch exists
+              run: |
+                  composer config audit.block-insecure false
+
             - name: Install dependencies
               run: |
                   composer update ${{ matrix.composer_args }};
@@ -122,19 +123,13 @@ jobs:
                   composer show
 
             - name: Run tests
+              # failures in unreleased Symfony versions (dev stability) are reported but do not
+              # fail the check (step-level continue-on-error keeps the job green in the PR UI)
+              continue-on-error: ${{ matrix.stability == 'dev' }}
               env:
                   SYMFONY_DEPRECATIONS_HELPER: "max[total]=999999&ignoreFile=./tests/baseline-ignore.txt"
               run: |
-                  ./vendor/bin/simple-phpunit --exclude-group pretty_urls
-
-            - name: Run Pretty URLs tests
-                # Symfony 5.4 version doesn't include the #[Route] attribute needed to run these tests (it only includes the @Route annotation)
-              if: ${{ matrix.symfony_version != '5.4' && matrix.composer_args != '--prefer-lowest' }}
-              env:
-                  USE_PRETTY_URLS: "1"
-                  SYMFONY_DEPRECATIONS_HELPER: "max[total]=999999&ignoreFile=./tests/baseline-ignore.txt"
-              run: |
-                  ./vendor/bin/simple-phpunit tests/Controller/PrettyUrls/PrettyUrlsControllerTest.php
+                  ./vendor/bin/simple-phpunit
 
     php-linter:
         runs-on: ubuntu-latest

@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Criar e continuar editando',
         'save' => 'Salvar alterações',
         'save_and_continue' => 'Salvar e continuar editando',
+        'toggle_dropdown' => 'Alternar menu suspenso',
     ],
 
     'batch_action_modal' => [
@@ -70,6 +71,11 @@ return [
     'delete_modal' => [
         'title' => 'Você realmente deseja excluir esse item?',
         'content' => 'Não há como desfazer essa operação.',
+    ],
+
+    'action_confirmation_modal' => [
+        'title' => 'Tem certeza que deseja %action_name%?',
+        'action' => 'Confirmar',
     ],
 
     'filter' => [
@@ -135,6 +141,10 @@ return [
         'entity_remove' => 'Esse item não pode ser excluído porque outros itens dependem dele.',
         'forbidden_action' => 'A ação requisitada não pode ser executada nesse item.',
         'insufficient_entity_permission' => 'Você não possui permissão para acessar este item.',
+        'general' => 'Ocorreu um erro ao processar sua solicitação.',
+        'general_403' => 'Você não tem permissão para realizar esta ação.',
+        'general_404' => 'A página solicitada não foi encontrada.',
+        'general_500' => 'Ocorreu um erro interno ao processar sua solicitação.',
     ],
 
     'autocomplete' => [

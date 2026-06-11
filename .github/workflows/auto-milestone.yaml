@@ -1,0 +1,44 @@
+name: Auto-assign milestone
+
+on:
+    issues:
+        types: [opened]
+
+env:
+    MILESTONE_NAME: '4.x'
+
+jobs:
+    assign-milestone:
+        runs-on: ubuntu-latest
+        permissions:
+            issues: write
+        steps:
+            - name: Assign milestone
+              uses: actions/github-script@v8
+              with:
+                  script: |
+                      const owner = context.repo.owner;
+                      const repo = context.repo.repo;
+                      
+                      // Pagination-safe fetch of open milestones
+                      const milestones = await github.paginate(
+                        github.rest.issues.listMilestones,
+                        { owner, repo, state: 'open', per_page: 100 }
+                      );
+                      
+                      const name = process.env.MILESTONE_NAME;
+                      const target = milestones.find(m => m.title === name);
+                      
+                      if (!target) {
+                        core.warning(`Milestone '${name}' not found among open milestones.`);
+                        return;
+                      }
+                      
+                      await github.rest.issues.update({
+                        owner,
+                        repo,
+                        issue_number: context.issue.number,
+                        milestone: target.number,
+                      });
+                      
+                      core.info(`Assigned milestone '${name}' (#${target.number}) to issue #${context.issue.number}.`);

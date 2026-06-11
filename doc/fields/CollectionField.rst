@@ -138,7 +138,7 @@ EasyAdmin will try to do its best to display those fields correctly::
 setEntryType
 ~~~~~~~~~~~~
 
-The entries of the collection can be rendered either using a Symfony Form or an
+The entries of the collection can be rendered either using a Symfony form or an
 EasyAdmin CRUD Form. The ``setEntryType()`` method defines the Symfony form type
 used to render the form of each collection entry::
 
@@ -173,7 +173,7 @@ Use this option if you prefer to display that label::
 useEntryCrudForm
 ~~~~~~~~~~~~~~~~
 
-The entries of the collection can be rendered either using a Symfony Form or an
+The entries of the collection can be rendered either using a Symfony form or an
 EasyAdmin CRUD Form. The ``useEntryCrudForm()`` method defines the EasyAdmin CRUD
 form used to render the form of each collection entry::
 

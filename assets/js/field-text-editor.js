@@ -34,13 +34,28 @@ class TextEditorField {
             trixContentElement.setAttribute('data-ea-trix-is-required', isTrixFieldRequired);
             trixContentElement.removeAttribute('required');
 
-            // Change number of rows
+            // change number of rows
             if (trixContentElement.dataset.numberOfRows !== '') {
-                const editor = document.querySelector(`trix-editor[input=${trixContentElement.id}].trix-content`);
+                const escapedId = CSS.escape(trixContentElement.id);
+                const editor = document.querySelector(`trix-editor[input="${escapedId}"].trix-content`);
 
                 if (editor !== null) {
-                    // Here we consider 21px as the average line height
-                    editor.style.setProperty('min-block-size', `${21 * trixContentElement.dataset.numberOfRows}px`);
+                    // Apply the min-height via a dedicated <style> element instead of an
+                    // inline style attribute so strict CSPs (that disallow
+                    // `style-src-attr 'unsafe-inline'`) don't strip it.
+                    // Here we consider 21px as the average line height.
+                    const styleElementId = `ea-trix-editor-size-${trixContentElement.id}`;
+                    const styleElement = document.getElementById(styleElementId) ?? document.createElement('style');
+                    styleElement.id = styleElementId;
+                    const nonce = document.querySelector('meta[name="csp-nonce"]')?.getAttribute('content');
+                    if (nonce) {
+                        styleElement.setAttribute('nonce', nonce);
+                    }
+
+                    styleElement.textContent = `trix-editor[input="${escapedId}"] { min-block-size: ${21 * trixContentElement.dataset.numberOfRows}px; }`;
+                    if (!styleElement.isConnected) {
+                        document.head.appendChild(styleElement);
+                    }
                 }
             }
         });
@@ -72,7 +87,8 @@ class TextEditorField {
             const entityForm = formEvent.detail.form;
             entityForm.querySelectorAll('textarea.ea-text-editor-content').forEach((trixContentElement) => {
                 const isTrixFieldRequired = 'true' === trixContentElement.getAttribute('data-ea-trix-is-required');
-                const trixEditorElement = entityForm.querySelector(`trix-editor[input=${trixContentElement.id}]`);
+                const escapedId = CSS.escape(trixContentElement.id);
+                const trixEditorElement = entityForm.querySelector(`trix-editor[input="${escapedId}"]`);
                 // an empty Trix editor field is not really empty; it contains a "\n" character (%0A = HTML encoded)
                 const isTrixEditorEmpty = '%0A' === escape(trixEditorElement.editor.getDocument().toString());
 

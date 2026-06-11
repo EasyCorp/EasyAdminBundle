@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type;
 
 use EasyCorp\Bundle\EasyAdminBundle\Form\DataTransformer\StringToFileTransformer;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Model\FileUploadState;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\DataMapperInterface;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -27,8 +28,10 @@ use Symfony\Component\Validator\Constraints\All;
  */
 class FileUploadType extends AbstractType implements DataMapperInterface
 {
-    public function __construct(private readonly string $projectDir)
-    {
+    public function __construct(
+        private readonly string $projectDir,
+        private readonly Filesystem $filesystem,
+    ) {
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -84,7 +87,16 @@ class FileUploadType extends AbstractType implements DataMapperInterface
             unlink($file->getPathname());
         };
 
-        $uploadFilename = static fn (UploadedFile $file): string => $file->getClientOriginalName();
+        // the return value MUST be a safe relative path:
+        //   * no ".." segments
+        //   * no leading "/" or "\"
+        //   * no Windows drive letters
+        //   * no null bytes
+        //
+        // values that violate this contract are rejected on read (see
+        // StringToFileTransformer::doTransform) and the form behaves as if
+        // no file were stored. Overrides must preserve this contract.
+        $uploadFilename = static fn (UploadedFile $file): string => basename(str_replace('\\', '/', $file->getClientOriginalName()));
 
         $uploadValidate = static function (string $filename): string {
             if (!file_exists($filename)) {
@@ -141,13 +153,18 @@ class FileUploadType extends AbstractType implements DataMapperInterface
                 $value .= \DIRECTORY_SEPARATOR;
             }
 
-            $isStreamWrapper = filter_var($value, \FILTER_VALIDATE_URL);
-            if (false === $isStreamWrapper && !str_starts_with($value, $this->projectDir)) {
+            $isLocalFilesystem = false === filter_var($value, \FILTER_VALIDATE_URL);
+
+            if ($isLocalFilesystem && !str_starts_with($value, $this->projectDir)) {
                 $value = $this->projectDir.'/'.$value;
             }
 
-            if (false === $isStreamWrapper && (!is_dir($value) || !is_writable($value))) {
-                throw new InvalidArgumentException(sprintf('Invalid upload directory "%s" it does not exist or is not writable.', $value));
+            if ($isLocalFilesystem && !is_dir($value)) {
+                $this->filesystem->mkdir($value);
+            }
+
+            if ($isLocalFilesystem && !is_writable($value)) {
+                throw new InvalidArgumentException(sprintf('The upload directory "%s" is not writable.', $value));
             }
 
             return $value;

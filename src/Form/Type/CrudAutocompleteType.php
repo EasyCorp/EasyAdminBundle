@@ -9,16 +9,23 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\PropertyAccess\PropertyPath;
+use Twig\Environment;
 
 /**
  * @author Yonel Ceruto <yonelceruto@gmail.com>
  */
 class CrudAutocompleteType extends AbstractType implements DataMapperInterface
 {
+    public function __construct(
+        private readonly Environment $twig,
+    ) {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->addEventSubscriber(new CrudAutocompleteSubscriber())
+            ->addEventSubscriber(new CrudAutocompleteSubscriber($this->twig))
             ->setDataMapper($this);
     }
 
@@ -39,9 +46,20 @@ class CrudAutocompleteType extends AbstractType implements DataMapperInterface
             'multiple' => false,
             // force display errors on this form field
             'error_bubbling' => false,
+            // options for custom rendering of selected items (to match the rendering of the other entries in the dropdown)
+            'autocomplete_callback' => null,
+            'autocomplete_template' => null,
+            // forwarded to the underlying EntityType so users can customize the
+            // label of the selected items via setFormTypeOption('value_type_options', ...)
+            'choice_label' => null,
         ]);
 
         $resolver->setRequired(['class']);
+        $resolver->setAllowedTypes('autocomplete_callback', ['null', 'callable']);
+        $resolver->setAllowedTypes('autocomplete_template', ['null', 'string']);
+        // mirror Symfony's ChoiceType allowed types for choice_label so anything accepted by
+        // EntityType is also accepted here (we only skip ChoiceLabel::class, which is marked as internal)
+        $resolver->setAllowedTypes('choice_label', ['null', 'bool', 'callable', 'string', PropertyPath::class]);
     }
 
     public function getBlockPrefix(): string

@@ -4,25 +4,22 @@ $finder = PhpCsFixer\Finder::create()
     ->in(__DIR__)
     ->ignoreDotFiles(true)
     ->ignoreVCS(true)
-    ->exclude(array('build', 'vendor'))
+    ->exclude('vendor')
     ->files()
     ->name('*.php')
 ;
 
-$config = new PhpCsFixer\Config();
-
-return $config
+return (new PhpCsFixer\Config())
+    ->setParallelConfig(PhpCsFixer\Runner\Parallel\ParallelConfigFactory::detect())
     ->setUsingCache(true)
     ->setRiskyAllowed(true)
     ->setFinder($finder)
-    ->setRules(array(
+    ->setRules([
         '@Symfony' => true,
         '@Symfony:risky' => true,
         '@PHPUnit48Migration:risky' => true,
-        'array_syntax' => ['syntax' => 'short'],
         'fopen_flags' => false,
-        'ordered_imports' => true,
-        'protected_to_private' => false,
+        'protected_to_private' => true,
         'native_function_invocation' => ['exclude' => ['sprintf']],
         // Part of future @Symfony ruleset in PHP-CS-Fixer To be removed from the config file once upgrading
         'phpdoc_types_order' => ['null_adjustment' => 'always_last', 'sort_algorithm' => 'none'],
@@ -35,5 +32,5 @@ return $config
         'phpdoc_to_comment' => false,
         // Override @Symfony ruleset to keep mixed return type for PHPStan
         'no_superfluous_phpdoc_tags' => ['allow_hidden_params' => true, 'allow_mixed' => true, 'remove_inheritdoc' => true],
-    ))
+    ])
 ;

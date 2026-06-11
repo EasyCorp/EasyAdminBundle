@@ -7,16 +7,16 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Provider\AdminContextProviderInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Registry\AdminControllerRegistryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Router\AdminRouteGeneratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
-use EasyCorp\Bundle\EasyAdminBundle\Registry\DashboardControllerRegistryInterface;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class AdminUrlGenerator implements AdminUrlGeneratorInterface
+final class AdminUrlGenerator implements \Stringable, AdminUrlGeneratorInterface
 {
     private bool $isInitialized = false;
     private ?string $dashboardRoute = null;
@@ -29,7 +29,7 @@ final class AdminUrlGenerator implements AdminUrlGeneratorInterface
     public function __construct(
         private readonly AdminContextProviderInterface $adminContextProvider,
         private readonly UrlGeneratorInterface $urlGenerator,
-        private readonly DashboardControllerRegistryInterface $dashboardControllerRegistry,
+        private readonly AdminControllerRegistryInterface $adminControllers,
         private readonly AdminRouteGeneratorInterface $adminRouteGenerator,
         private readonly CacheItemPoolInterface $cache,
     ) {
@@ -245,7 +245,7 @@ final class AdminUrlGenerator implements AdminUrlGeneratorInterface
         // if the Dashboard FQCN is defined, find its route and use it to override
         // the current route (this is needed to allow generating links to different dashboards)
         if (null !== $dashboardControllerFqcn = $this->get(EA::DASHBOARD_CONTROLLER_FQCN)) {
-            if (null === $dashboardRoute = $this->dashboardControllerRegistry->getRouteByControllerFqcn($dashboardControllerFqcn)) {
+            if (null === $dashboardRoute = $this->adminControllers->getDashboardRoute($dashboardControllerFqcn)) {
                 throw new \InvalidArgumentException(sprintf('The given "%s" class is not a valid Dashboard controller. Make sure it extends from "%s" or implements "%s".', $dashboardControllerFqcn, AbstractDashboardController::class, DashboardControllerInterface::class));
             }
 
@@ -263,12 +263,12 @@ final class AdminUrlGenerator implements AdminUrlGeneratorInterface
         // this happens when generating URLs from outside EasyAdmin (AdminContext is null) and
         // no Dashboard FQCN has been defined explicitly
         if (null === $this->dashboardRoute) {
-            if ($this->dashboardControllerRegistry->getNumberOfDashboards() > 1) {
+            if ($this->adminControllers->getDashboardCount() > 1) {
                 throw new \RuntimeException('When generating admin URLs from outside EasyAdmin or without a related HTTP request (e.g. in tests, console commands, etc.), if your application has more than one Dashboard, you must associate the URL to a specific Dashboard using the "setDashboard()" method.');
             }
 
-            $this->setDashboard($this->dashboardControllerRegistry->getFirstDashboardFqcn());
-            $this->dashboardRoute = $this->dashboardControllerRegistry->getFirstDashboardRoute();
+            $this->setDashboard($this->adminControllers->getFirstDashboard());
+            $this->dashboardRoute = $this->adminControllers->getFirstDashboardRoute();
         }
 
         // if present, remove the suffix of i18n route names (it's the content after the last dot
@@ -301,7 +301,7 @@ final class AdminUrlGenerator implements AdminUrlGeneratorInterface
         }
 
         if ($usePrettyUrls) {
-            $dashboardControllerFqcn = $this->get(EA::DASHBOARD_CONTROLLER_FQCN) ?? $context?->getRequest()->attributes->get(EA::DASHBOARD_CONTROLLER_FQCN) ?? $context?->getDashboardControllerFqcn() ?? $this->dashboardControllerRegistry->getFirstDashboardFqcn();
+            $dashboardControllerFqcn = $this->get(EA::DASHBOARD_CONTROLLER_FQCN) ?? $context?->getRequest()->attributes->get(EA::DASHBOARD_CONTROLLER_FQCN) ?? $context?->getDashboardControllerFqcn() ?? $this->adminControllers->getFirstDashboard();
             $crudControllerFqcn = $this->get(EA::CRUD_CONTROLLER_FQCN) ?? $context?->getRequest()->attributes->get(EA::CRUD_CONTROLLER_FQCN);
             $actionName = $this->get(EA::CRUD_ACTION) ?? $context?->getRequest()->attributes->get(EA::CRUD_ACTION);
 
@@ -350,7 +350,7 @@ final class AdminUrlGenerator implements AdminUrlGeneratorInterface
         }
 
         if (\is_object($paramValue)) {
-            if (method_exists($paramValue, '__toString')) {
+            if ($paramValue instanceof \Stringable) {
                 $paramValue = (string) $paramValue;
             } else {
                 throw new \InvalidArgumentException(sprintf('The object passed as the value of the "%s" parameter must implement the "__toString()" method to allow using its value as a route parameter.', $paramName));

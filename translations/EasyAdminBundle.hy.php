@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Ստեղծել և շարունակել',
         'save' => 'Պահպանել',
         'save_and_continue' => 'Պահպանել և շարունակել',
+        'toggle_dropdown' => 'Փոխարկել իջնող ընտրացանկը',
     ],
 
     'batch_action_modal' => [
@@ -70,6 +71,11 @@ return [
     'delete_modal' => [
         'title' => 'Խնդրում ենք հաստատել, Դուք իրոք ցանկանում եք հեռացնել',
         'content' => 'Այս գործողությունը չի կարող չեղարկվել։',
+    ],
+
+    'action_confirmation_modal' => [
+        'title' => 'Վստա՞հ եք, որ ուզում եք %action_name%:',
+        'action' => 'Հաստատել',
     ],
 
     'filter' => [
@@ -135,6 +141,10 @@ return [
         'entity_remove' => 'Տարրը չի կարող հեռացվել, քանի որ մեկ այլ տարր կախված է դրանից։',
         'forbidden_action' => 'Պահանջվող գործողությունը չի թույլատրվում։',
         'insufficient_entity_permission' => 'Դուք չունեք բավարար թույլտվություններ։',
+        'general' => 'An error occurred while processing your request.',
+        'general_403' => 'You don\'t have permission to perform this action.',
+        'general_404' => 'The requested page could not be found.',
+        'general_500' => 'An internal error occurred while processing your request.',
     ],
 
     'autocomplete' => [

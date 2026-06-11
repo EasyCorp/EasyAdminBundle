@@ -5,6 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\EventListener;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Provider\AdminContextProviderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\BaseException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\FlattenException;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Twig\Environment;
@@ -25,6 +26,7 @@ final class ExceptionListener
         private readonly bool $kernelDebug,
         private readonly AdminContextProviderInterface $adminContextProvider,
         private readonly Environment $twig,
+        private readonly ?LoggerInterface $logger = null,
     ) {
     }
 
@@ -38,27 +40,37 @@ final class ExceptionListener
             return;
         }
 
-        if ($this->kernelDebug || !$exception instanceof BaseException) {
+        if ($this->kernelDebug) {
             return;
         }
 
-        if (null === $this->adminContextProvider->getContext()) {
+        if (!$exception instanceof BaseException && null === $this->adminContextProvider->getContext()) {
             return;
         }
 
-        // TODO: check why these custom error pages don't work
-        $event->setResponse($this->createExceptionResponse(FlattenException::create($exception)));
+        try {
+            $event->setResponse($this->createExceptionResponse(FlattenException::createFromThrowable($exception)));
+        } catch (\Throwable $renderingError) {
+            $this->logger?->warning('EasyAdmin error page rendering failed, falling back to default error handling.', [
+                'rendering_error' => $renderingError->getMessage(),
+                'original_exception' => $exception::class,
+            ]);
+        }
     }
 
     public function createExceptionResponse(FlattenException $exception): Response
     {
         $context = $this->adminContextProvider->getContext();
-        $exceptionTemplatePath = null === $context ? '@EasyAdmin/exception.html.twig' : $context->getTemplatePath('exception');
-        $layoutTemplatePath = null === $context ? '@EasyAdmin/layout.html.twig' : $context->getTemplatePath('layout');
 
-        return new Response($this->twig->render($exceptionTemplatePath, [
+        if (null === $context) {
+            return new Response($this->twig->render('@EasyAdmin/exception_standalone.html.twig', [
+                'exception' => $exception,
+            ]), $exception->getStatusCode());
+        }
+
+        return new Response($this->twig->render($context->getTemplatePath('exception'), [
             'exception' => $exception,
-            'layout_template_path' => $layoutTemplatePath,
+            'layout_template_path' => $context->getTemplatePath('layout'),
         ]), $exception->getStatusCode());
     }
 

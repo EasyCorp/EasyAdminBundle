@@ -47,21 +47,44 @@ interface CrudControllerInterface
      */
     public function configureFields(string $pageName): iterable;
 
-    /** @return KeyValueStore|Response */
+    /**
+     * @param AdminContext<TEntity> $context
+     *
+     * @return KeyValueStore|Response
+     */
     public function index(AdminContext $context);
 
-    /** @return KeyValueStore|Response */
+    /**
+     * @param AdminContext<TEntity> $context
+     *
+     * @return KeyValueStore|Response
+     */
     public function detail(AdminContext $context);
 
-    /** @return KeyValueStore|Response */
+    /**
+     * @param AdminContext<TEntity> $context
+     *
+     * @return KeyValueStore|Response
+     */
     public function edit(AdminContext $context);
 
-    /** @return KeyValueStore|Response */
+    /**
+     * @param AdminContext<TEntity> $context
+     *
+     * @return KeyValueStore|Response
+     */
     public function new(AdminContext $context);
 
-    /** @return KeyValueStore|Response */
+    /**
+     * @param AdminContext<TEntity> $context
+     *
+     * @return KeyValueStore|Response
+     */
     public function delete(AdminContext $context);
 
+    /**
+     * @param AdminContext<TEntity> $context
+     */
     public function autocomplete(AdminContext $context): JsonResponse;
 
     public function configureResponseParameters(KeyValueStore $responseParameters): KeyValueStore;
@@ -96,22 +119,26 @@ interface CrudControllerInterface
     public function deleteEntity(EntityManagerInterface $entityManager, $entityInstance): void;
 
     /**
-     * @param EntityDto<TEntity> $entityDto
+     * @param EntityDto<TEntity>    $entityDto
+     * @param AdminContext<TEntity> $context
      */
     public function createEditFormBuilder(EntityDto $entityDto, KeyValueStore $formOptions, AdminContext $context): FormBuilderInterface;
 
     /**
-     * @param EntityDto<TEntity> $entityDto
+     * @param EntityDto<TEntity>    $entityDto
+     * @param AdminContext<TEntity> $context
      */
     public function createEditForm(EntityDto $entityDto, KeyValueStore $formOptions, AdminContext $context): FormInterface;
 
     /**
-     * @param EntityDto<TEntity> $entityDto
+     * @param EntityDto<TEntity>    $entityDto
+     * @param AdminContext<TEntity> $context
      */
     public function createNewFormBuilder(EntityDto $entityDto, KeyValueStore $formOptions, AdminContext $context): FormBuilderInterface;
 
     /**
-     * @param EntityDto<TEntity> $entityDto
+     * @param EntityDto<TEntity>    $entityDto
+     * @param AdminContext<TEntity> $context
      */
     public function createNewForm(EntityDto $entityDto, KeyValueStore $formOptions, AdminContext $context): FormInterface;
 }

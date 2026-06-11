@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'أنشاء و متابعة',
         'save' => 'حفظ',
         'save_and_continue' => 'حفظ و متابعة',
+        'toggle_dropdown' => 'تبديل القائمة المنسدلة',
     ],
 
     'batch_action_modal' => [
@@ -70,6 +71,11 @@ return [
     'delete_modal' => [
         'title' => 'هل تريد حذف هذا العنصر؟',
         'content' => 'هذا الإجراء غير قابل للإلغاء.',
+    ],
+
+    'action_confirmation_modal' => [
+        'title' => 'هل أنت متأكد أنك تريد %action_name%؟',
+        'action' => 'تأكيد',
     ],
 
     'filter' => [
@@ -135,6 +141,10 @@ return [
         'entity_remove' => 'لا يمكنك حذف هذا العنصر لأن العناصر الأخرى تعتمد عليه.',
         'forbidden_action' => 'لا يمكنك تنفيذ الإجراء المطلوب على هذا العنصر.',
         'insufficient_entity_permission' => 'أنت لا تملك صلاحيات كافية للوصول الى هذا العنصر',
+        'general' => 'حدث خطأ أثناء معالجة طلبك.',
+        'general_403' => 'ليس لديك صلاحية لتنفيذ هذا الإجراء.',
+        'general_404' => 'الصفحة المطلوبة غير موجودة.',
+        'general_500' => 'حدث خطأ داخلي أثناء معالجة طلبك.',
     ],
 
     'autocomplete' => [

@@ -195,8 +195,8 @@ final class IntlFormatter implements IntlFormatterInterface
 
         $calendar = 'gregorian' === $calendarName ? \IntlDateFormatter::GREGORIAN : \IntlDateFormatter::TRADITIONAL;
 
-        $dateFormatValue = self::DATE_FORMATS[$dateFormat] ?? self::DATE_FORMATS['full'];
-        $timeFormatValue = self::DATE_FORMATS[$timeFormat] ?? self::DATE_FORMATS['full'];
+        $dateFormatValue = self::DATE_FORMATS[$dateFormat ?? ''] ?? self::DATE_FORMATS['full'];
+        $timeFormatValue = self::DATE_FORMATS[$timeFormat ?? ''] ?? self::DATE_FORMATS['full'];
 
         $hash = $locale.'|'.$dateFormatValue.'|'.$timeFormatValue.'|'.$timezone->getName().'|'.$calendar.'|'.$pattern;
 

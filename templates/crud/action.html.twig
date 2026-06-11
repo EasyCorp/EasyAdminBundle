@@ -6,7 +6,7 @@
     variant="{{ action.variant }}"
     isInvisible="{{ action.usesTextStyle }}"
     class="{{ action.htmlElement.isLink and isIncludedInDropdown|default(false) ? 'dropdown-item' }} {{ action.cssClass }}"
-    htmlAttributes="{{ action.htmlAttributes }}"
+    htmlAttributes="{{ action.htmlAttributes|ea_html_attrs }}"
     htmlElement="{{ action.htmlElement }}"
     type="{{ action.buttonType.value }}"
     icon="{{ action.icon }}"

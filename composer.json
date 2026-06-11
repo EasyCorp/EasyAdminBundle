@@ -13,7 +13,6 @@
     ],
     "require": {
         "php": ">=8.1",
-        "ext-json": "*",
         "doctrine/doctrine-bundle": "^2.5|^3.0",
         "doctrine/orm": "^2.12|^3.0",
         "symfony/asset": "^5.4|^6.0|^7.0|^8.0",
@@ -60,6 +59,9 @@
         "symfony/web-link": "^5.4|^6.0|^7.0|^8.0",
         "vincentlanglet/twig-cs-fixer": "^3.10"
     },
+    "conflict": {
+        "symfony/error-handler": "<5.4.35"
+    },
     "config": {
         "sort-packages": true,
         "allow-plugins": {
@@ -74,9 +76,14 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "EasyCorp\\Bundle\\EasyAdminBundle\\Tests\\TestApplication\\": "tests/TestApplication/src/",
-            "EasyCorp\\Bundle\\EasyAdminBundle\\Tests\\PrettyUrlsTestApplication\\": "tests/PrettyUrlsTestApplication/src/",
-            "EasyCorp\\Bundle\\EasyAdminBundle\\Tests\\AdminRouteTestApplication\\": "tests/AdminRouteTestApplication/src/",
+            "EasyCorp\\Bundle\\EasyAdminBundle\\Tests\\Unit\\": "tests/Unit/",
+            "EasyCorp\\Bundle\\EasyAdminBundle\\Tests\\Functional\\": "tests/Functional/",
+            "EasyCorp\\Bundle\\EasyAdminBundle\\Tests\\Functional\\Apps\\DefaultApp\\": "tests/Functional/Apps/DefaultApp/src/",
+            "EasyCorp\\Bundle\\EasyAdminBundle\\Tests\\Functional\\Apps\\UglyUrlsApp\\": "tests/Functional/Apps/UglyUrlsApp/src/",
+            "EasyCorp\\Bundle\\EasyAdminBundle\\Tests\\Functional\\Apps\\SecuredApp\\": "tests/Functional/Apps/SecuredApp/src/",
+            "EasyCorp\\Bundle\\EasyAdminBundle\\Tests\\Functional\\Apps\\AdminRouteApp\\": "tests/Functional/Apps/AdminRouteApp/src/",
+            "EasyCorp\\Bundle\\EasyAdminBundle\\Tests\\Functional\\Apps\\CustomizationApp\\": "tests/Functional/Apps/CustomizationApp/src/",
+            "EasyCorp\\Bundle\\EasyAdminBundle\\Tests\\TestUtils\\": "tests/TestUtils/",
             "EasyCorp\\Bundle\\EasyAdminBundle\\Tests\\": "tests/"
         }
     },

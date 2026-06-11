@@ -2,20 +2,24 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\EventListener;
 
-use Doctrine\ORM\Mapping\FieldMapping;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Uid\Ulid;
 use Symfony\Component\Uid\Uuid;
+use Twig\Environment;
 
 /**
  * @author Yonel Ceruto <yonelceruto@gmail.com>
  */
 class CrudAutocompleteSubscriber implements EventSubscriberInterface
 {
+    public function __construct(
+        private readonly Environment $twig,
+    ) {
+    }
+
     public static function getSubscribedEvents(): array
     {
         return [
@@ -24,10 +28,7 @@ class CrudAutocompleteSubscriber implements EventSubscriberInterface
         ];
     }
 
-    /**
-     * @return void
-     */
-    public function preSetData(FormEvent $event)
+    public function preSetData(FormEvent $event): void
     {
         $form = $event->getForm();
         $data = $event->getData() ?? [];
@@ -36,13 +37,35 @@ class CrudAutocompleteSubscriber implements EventSubscriberInterface
         $options['compound'] = false;
         $options['choices'] = is_iterable($data) ? $data : [$data];
 
+        // strip EA-specific options before forwarding to EntityType
+        $callback = $options['autocomplete_callback'] ?? null;
+        $template = $options['autocomplete_template'] ?? null;
+        unset($options['autocomplete_callback'], $options['autocomplete_template']);
+
+        // Resolve choice_label:
+        // - if the user supplied one (via value_type_options.choice_label), keep it;
+        // - otherwise derive one from autocomplete_template / autocomplete_callback so the
+        //   selected item matches the rendering of other entries in the dropdown;
+        // - otherwise drop the option entirely so EntityType falls back to __toString().
+        //
+        // Note: we don't escape here because Twig already escapes the <option> content
+        // automatically; the renderAsHtml flag controls how TomSelect renders the item
+        // (via data-ea-autocomplete-render-items-as-html).
+        if (null === ($options['choice_label'] ?? null)) {
+            if (null !== $template) {
+                $twig = $this->twig;
+                $options['choice_label'] = static fn ($entity): string => $twig->render($template, ['entity' => $entity]);
+            } elseif (null !== $callback) {
+                $options['choice_label'] = static fn ($entity): string => (string) $callback($entity);
+            } else {
+                unset($options['choice_label']);
+            }
+        }
+
         $form->add('autocomplete', EntityType::class, $options);
     }
 
-    /**
-     * @return void
-     */
-    public function preSubmit(FormEvent $event)
+    public function preSubmit(FormEvent $event): void
     {
         $data = $event->getData();
         $form = $event->getForm();
@@ -56,18 +79,35 @@ class CrudAutocompleteSubscriber implements EventSubscriberInterface
                     $data['autocomplete'] = [$data['autocomplete']];
                 }
 
-                $data['autocomplete'] = array_map(
-                    function ($v) use ($options) {
-                        if (class_exists(Ulid::class) && Ulid::isValid($v)) {
-                            return Ulid::fromBase32($v)->toRfc4122();
-                        } elseif (class_exists(Uuid::class) && Uuid::isValid($v)) {
-                            // checking the mapping, as uuid can also be used as simple string
-                            /** @var FieldMapping $idFieldMapping */
-                            $idFieldMapping = $options['em']->getClassMetadata($options['class'])->getFieldMapping($options['id_reader']->getIdField());
+                // for performance reasons: resolve the Doctrine field type once before mapping values
+                // In Doctrine ORM 3.x, FieldMapping implements \ArrayAccess; in 4.x it's an object with properties
+                $idFieldMapping = $options['em']->getClassMetadata($options['class'])->getFieldMapping($options['id_reader']->getIdField());
+                // In Doctrine ORM 2.x, getFieldMapping() returns an array
+                /** @phpstan-ignore-next-line function.impossibleType */
+                if (\is_array($idFieldMapping)) {
+                    /** @phpstan-ignore-next-line cast.useless */
+                    $idFieldMapping = (object) $idFieldMapping;
+                }
+                /** @phpstan-ignore-next-line function.alreadyNarrowedType */
+                $idFieldType = property_exists($idFieldMapping, 'type') ? $idFieldMapping->type : $idFieldMapping['type'];
 
-                            if (UuidType::NAME === $idFieldMapping->type) {
-                                return Uuid::fromString($v)->toBinary();
-                            }
+                $data['autocomplete'] = array_map(
+                    static function ($v) use ($options, $idFieldType) {
+                        // TODO: replace 'ulid' by Symfony\Bridge\Doctrine\Types\UlidType::NAME when Symfony 5.4 is no longer supported
+                        if ('ulid' === $idFieldType && class_exists(Ulid::class) && Ulid::isValid($v)) {
+                            return Ulid::fromBase32($v)->toRfc4122();
+                        }
+
+                        // TODO: replace 'uuid' by Symfony\Bridge\Doctrine\Types\UuidType::NAME when Symfony 5.4 is no longer supported
+                        if ('uuid' === $idFieldType && class_exists(Uuid::class) && Uuid::isValid($v)) {
+                            // Use RFC4122 format for platforms with native GUID type (e.g., PostgreSQL),
+                            // and binary format for platforms without native GUID type (e.g., MySQL, SQLite)
+                            $platform = $options['em']->getConnection()->getDatabasePlatform();
+                            $hasNativeGuidType = $platform->getGuidTypeDeclarationSQL([]) !== $platform->getStringTypeDeclarationSQL(['fixed' => true, 'length' => 36]);
+
+                            return $hasNativeGuidType
+                                ? Uuid::fromString($v)->toRfc4122()
+                                : Uuid::fromString($v)->toBinary();
                         }
 
                         return $v;

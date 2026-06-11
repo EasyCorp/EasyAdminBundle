@@ -298,7 +298,7 @@ The arguments of the ``addTab()`` method are:
   icon for the tab or users won't be able to click on it); You can also pass
   ``string`` and ``TranslatableInterface`` variables. In both cases, if they
   contain HTML tags they will be rendered instead of escaped;
-* ``$icon``: (type: ``?string``) the full CSS class of a `FontAwesome icon`_
+* ``$icon``: (type: ``?string``) the full CSS class of a `FontAwesome`_ icon
   (e.g. ``far fa-folder-open``); if you don't display a text label for the tab,
   make sure to display an icon or users won't be able to click on the tab.
 
@@ -356,8 +356,8 @@ which divides each row into 12 same-width columns, and the `Bootstrap breakpoint
 which are ``xs`` (device width < 576px), ``sm`` (>= 576px), ``md`` (>= 768px),
 ``lg`` (>= 992px), ``xl`` (>= 1,200px) and ``xxl`` (>= 1,400px).
 
-Form columns allows to break down a complex form into two or more columns of
-fields. In addition to increasing the density of information, columns allow to
+Form columns allow you to break down a complex form into two or more columns of
+fields. In addition to increasing the density of information, columns allow you to
 better separate fields according to their function. This is how a three column
 form looks like:
 
@@ -394,7 +394,7 @@ The arguments of the ``addColumn()`` method are:
   or an empty string, no title is displayed. You can also pass ``string`` and
   ``TranslatableInterface`` variables. In both cases, if they contain HTML tags
   they will be rendered instead of escaped;
-* ``$icon``: (type: ``?string``) the full CSS class of a `FontAwesome icon`_
+* ``$icon``: (type: ``?string``) the full CSS class of a `FontAwesome`_ icon
   (e.g. ``far fa-folder-open``) that is displayed next to the column label;
 * ``$help``: (type: ``?string``) an optional content that is displayed below the
   column label; it's mostly used to describe the column contents or provide further
@@ -539,8 +539,8 @@ The arguments of the ``addFieldset()`` method are:
   that is displayed at the top of the fieldset. If you pass ``false``, ``null``
   or an empty string, no title is displayed. You can also pass ``string`` and
   ``TranslatableInterface`` variables. In both cases, if they contain HTML tags
-  they will be rendered in stead of escaped;
-* ``$icon``: (type: ``?string``) the full CSS class of a `FontAwesome icon`_
+  they will be rendered instead of escaped;
+* ``$icon``: (type: ``?string``) the full CSS class of a `FontAwesome`_ icon
   (e.g. ``far fa-folder-open``) that is displayed next to the fieldset label.
 
 .. note::
@@ -593,7 +593,7 @@ which divides each row into 12 same-width columns, and the `Bootstrap breakpoint
 which are ``xs`` (device width < 576px), ``sm`` (>= 576px), ``md`` (>= 768px),
 ``lg`` (>= 992px), ``xl`` (>= 1,200px) and ``xxl`` (>= 1,400px).
 
-Form rows allow to display two or more fields on the same row. This is how it
+Form rows allow you to display two or more fields on the same row. This is how it
 looks like:
 
 .. image:: images/easyadmin-form-rows.png
@@ -853,8 +853,9 @@ Design Options
         // you can add more than one form theme using the same method
         ->addFormTheme('theme1.html.twig', 'theme2.html.twig', 'theme3.html.twig')
 
-        // CSS class/classes are applied to the field contents (in the 'index' page)
-        // or to the row that wraps the contents (in the 'detail', 'edit' and 'new' pages)
+        // on the 'index' page, CSS class/classes are applied both to the `<th>` and the `<td>`
+        // of the field in all rows; on the 'detail', 'edit', and 'new' pages, they are applied
+        // to the row that wraps the contents of the field
 
         // use this method to add new classes to the ones applied by EasyAdmin
         ->addCssClass('text-large text-bold')
@@ -898,7 +899,7 @@ precise control, use the ``Asset`` class to define the assets::
 Formatting Options
 ~~~~~~~~~~~~~~~~~~
 
-The ``formatValue()`` method allows to apply a PHP callable to the value before
+The ``formatValue()`` method allows you to apply a PHP callable to the value before
 rendering it in the ``index`` and ``detail`` pages::
 
     IntegerField::new('stock', 'Stock')
@@ -994,7 +995,7 @@ for a given postal address. This is the class you could create for the field::
                 // encore_entry_link_tags('...') and encore_entry_script_tags('...')
                 ->addWebpackEncoreEntries('admin-field-map')
 
-                // these methods allow to define the web assets loaded when the
+                // these methods allow you to define the web assets loaded when the
                 // field is displayed in any CRUD page (index/detail/edit/new)
                 ->addCssFiles('js/admin/field-map.css')
                 ->addJsFiles('js/admin/field-map.js')
@@ -1040,7 +1041,7 @@ The recommended way of adding options is defining their names as public constant
 in the field object and use the ``setCustomOption()`` method defined in the
 ``FieldTrait`` to set their values.
 
-Imagine that the ``MapField`` defined in the previous section allows to use
+Imagine that the ``MapField`` defined in the previous section allows you to use
 either Google Maps or OpenStreetMap to render the maps. You can add that
 option as follows::
 
@@ -1098,19 +1099,87 @@ field DTO. For example, in a Twig template:
 Field Configurators
 -------------------
 
-Some default options of some fields depend on the value of the entity
-property, which is only available during runtime. That's why you can optionally
-define a **field configurator**, which is a class that updates the config of the
-field before rendering them.
+Sometimes, field options depend on the value of the entity property, which is
+only available at runtime. To handle this, you can define a **field configurator**,
+a class that updates the field configuration before it is rendered.
 
-EasyAdmin defines lots of configurators for its built-in fields. You can create
-your own configurators too (either to configure your own fields and/or the
-built-in fields). Field configurators are classes that implement
-``EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface``.
+EasyAdmin defines many configurators for its built-in fields. You can create
+your own configurators too, either to configure your own fields or to tweak
+the built-in ones. A field configurator is a class that implements
+``EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface``::
 
-Once implemented, define a Symfony service for your configurator and tag it with
-the ``ea.field_configurator`` tag. Optionally you can define the ``priority``
-attribute of the tag to run your configurator before or after the built-in ones.
+    interface FieldConfiguratorInterface
+    {
+        // return TRUE to apply this configurator; return FALSE otherwise
+        // e.g. you can match the field FQCN, its property name, or a custom option
+        public function supports(FieldDto $field, EntityDto $entityDto): bool;
+
+        // use it to update the value of any option of the given $field object
+        public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void;
+    }
+
+The following example masks the local part of every ``EmailField`` value on the
+index page (``jane.doe@example.com`` is rendered as ``j***@example.com``), so
+the full address is only visible on the detail and edit pages::
+
+    namespace App\Admin\Configurator;
+
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+    use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
+    use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
+    use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+    use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
+    use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
+
+    final class MaskedEmailConfigurator implements FieldConfiguratorInterface
+    {
+        public function supports(FieldDto $field, EntityDto $entityDto): bool
+        {
+            return EmailField::class === $field->getFieldFqcn();
+        }
+
+        public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
+        {
+            if (Crud::PAGE_INDEX !== $context->getCrud()->getCurrentPage()) {
+                return;
+            }
+
+            $email = (string) $field->getValue();
+            if (!str_contains($email, '@')) {
+                return;
+            }
+
+            [$local, $domain] = explode('@', $email, 2);
+            $field->setFormattedValue(substr($local, 0, 1).'***@'.$domain);
+        }
+    }
+
+.. tip::
+
+    In addition to matching the field FQCN, in ``supports()`` you can use other
+    criteria: matching a property name (``'propertyName' === $field->getProperty()``),
+    matching the value of a built-in or custom option
+    (``true === $field->getCustomOption('option-name')``), etc.
+
+With the default Symfony services configuration (autowiring and autoconfiguration
+enabled), the configurator is picked up automatically: EasyAdmin applies the
+``ea.field_configurator`` tag to any service implementing ``FieldConfiguratorInterface``.
+Otherwise, tag it manually:
+
+.. code-block:: yaml
+
+    # config/services.yaml
+    services:
+        App\Admin\Configurator\PremiumFieldConfigurator:
+            tags:
+                - { name: ea.field_configurator }
+
+Use the tag's ``priority`` attribute to run before or after other configurators.
+The built-in ``CommonPreConfigurator`` runs first (priority ``9999``) and
+``CommonPostConfigurator`` runs last (``-9999``); yours runs between them by default::
+
+    tags:
+        - { name: ea.field_configurator, priority: -100 }
 
 .. _`PropertyAccess component`: https://symfony.com/doc/current/components/property_access.html
 .. _`PHP generators`: https://www.php.net/manual/en/language.generators.overview.php

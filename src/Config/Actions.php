@@ -197,6 +197,7 @@ final class Actions
                 ->linkToCrudAction(Action::DELETE)
                 ->asDangerAction()
                 ->asTextLink()
+                ->askConfirmation()
             ;
         }
 

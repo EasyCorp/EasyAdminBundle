@@ -11,7 +11,7 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 
 /**
- * Handles some logic related to the form layout, like error counters in tabs.
+ * Handles some logic related to the form layout, like error counters in tabs and fieldsets.
  *
  * @author naitsirch <naitsirch@e.mail.de>
  */
@@ -20,17 +20,21 @@ class FormLayoutSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            FormEvents::POST_SUBMIT => ['handleTabErrors', -1],
+            FormEvents::POST_SUBMIT => ['handleLayoutErrors', -1],
         ];
     }
 
     /**
-     * Deal with the errors of fields inside form tabs. This method has to be executed with
-     * a negative priority to make sure that the validation process is done.
-     *
-     * @return void
+     * Deal with the errors of fields inside form tabs and fieldsets. This method has to
+     * be executed with a negative priority to make sure that the validation process is done.
      */
-    public function handleTabErrors(FormEvent $event)
+    public function handleLayoutErrors(FormEvent $event): void
+    {
+        $this->handleTabErrors($event);
+        $this->handleFieldsetErrors($event);
+    }
+
+    private function handleTabErrors(FormEvent $event): void
     {
         $formTabs = [];
         /** @var FormInterface $child */
@@ -96,6 +100,49 @@ class FormLayoutSubscriber implements EventSubscriberInterface
         }
         foreach ($formTabs as $tabId => $formTab) {
             $formTab->setCustomOption(FormField::OPTION_TAB_IS_ACTIVE, $tabId === $firstTabIdWithErrors);
+        }
+    }
+
+    private function handleFieldsetErrors(FormEvent $event): void
+    {
+        // find the number of errors per fieldset and auto-expand the first collapsed one with errors
+        $currentFieldsetDto = null;
+        $errorCountPerFieldset = [];
+        $fieldsetDtos = [];
+
+        foreach ($event->getForm() as $child) {
+            /** @var FieldDto $fieldDto */
+            if (null === $fieldDto = $child->getConfig()->getAttribute('ea_field')) {
+                continue;
+            }
+
+            if ($fieldDto->isFormFieldset()) {
+                $currentFieldsetDto = $fieldDto;
+                $fieldsetDtos[] = $fieldDto;
+
+                continue;
+            }
+
+            if (null === $currentFieldsetDto) {
+                continue;
+            }
+
+            $numErrors = \count($child->getErrors(true));
+            if ($numErrors > 0) {
+                $fieldsetIndex = \count($fieldsetDtos) - 1;
+                $errorCountPerFieldset[$fieldsetIndex] = ($errorCountPerFieldset[$fieldsetIndex] ?? 0) + $numErrors;
+            }
+        }
+
+        // store the error count in each fieldset and auto-expand collapsed ones with errors
+        foreach ($errorCountPerFieldset as $index => $errorCount) {
+            $fieldsetDtos[$index]->setCustomOption(FormField::OPTION_FIELDSET_ERROR_COUNT, $errorCount);
+
+            /** @var bool $isCollapsed */
+            $isCollapsed = $fieldsetDtos[$index]->getCustomOption(FormField::OPTION_COLLAPSED);
+            if ($isCollapsed) {
+                $fieldsetDtos[$index]->setCustomOption(FormField::OPTION_COLLAPSED, false);
+            }
         }
     }
 }

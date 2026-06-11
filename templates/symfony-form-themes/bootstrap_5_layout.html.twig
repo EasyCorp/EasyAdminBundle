@@ -283,10 +283,9 @@
         {%- if required -%}
             {%- set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' required')|trim}) -%}
         {%- endif -%}
-        {%- if parent_label_class is defined -%}
-            {%- set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' ' ~ parent_label_class)|replace({'checkbox-inline': '', 'radio-inline': ''})|trim}) -%}
-        {%- endif -%}
-        {%- if label is not same as(false) and label is empty -%}
+        {# don't use 'label is not empty' here; it'll trigger deprecation messages: Method TranslatableMessage::__toString() is deprecated #}
+        {% set has_label = label is not same as(false) and label is not null and label is not same as('') %}
+        {%- if label is not same as(false) and not has_label -%}
             {%- if label_format is not empty -%}
                 {%- set label = label_format|replace({
                     '%name%': name,
@@ -325,7 +324,9 @@
         {%- set element = 'fieldset' -%}
     {%- endif -%}
     {%- set widget_attr = {} -%}
-    {%- if help is not empty -%}
+    {# don't use 'help is not empty' here; it'll trigger deprecation messages: Method TranslatableMessage::__toString() is deprecated #}
+    {% set has_help = help is not same as(false) and help is not null and help is not same as('') %}
+    {%- if has_help -%}
         {%- set widget_attr = {attr: {'aria-describedby': id ~ '_help'}} -%}
     {%- endif -%}
     {%- set row_class = row_class|default(row_attr.class|default('mb-3')|trim) -%}
@@ -367,7 +368,9 @@
         {#- Hack to properly display help with input group -#}
         {% set help_class = ' input-group-text' %}
     {% endif %}
-    {%- if help is not empty -%}
+    {# don't use 'help is not empty' here; it'll trigger deprecation messages: Method TranslatableMessage::__toString() is deprecated #}
+    {% set has_help = help is not same as(false) and help is not null and help is not same as('') %}
+    {%- if has_help -%}
         {%- set help_attr = help_attr|merge({class: (help_attr.class|default('') ~ help_class ~ ' mb-0')|trim}) -%}
     {%- endif -%}
     {{- parent() -}}

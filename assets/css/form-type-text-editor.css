@@ -64,6 +64,18 @@ trix-editor {
     padding: 3px;
 }
 
+/* Trix natively disables typing when [disabled] is set on <trix-editor>
+   (it sets contenteditable="false"), but the toolbar buttons stay clickable
+   and the field still looks editable. Grey out the whole wrapper and block
+   pointer events so a disabled TextEditorField looks and behaves disabled. */
+textarea.ea-text-editor-content[disabled] + .ea-text-editor-wrapper {
+    background-color: var(--form-control-disabled-bg);
+    cursor: not-allowed;
+    opacity: 0.65;
+    pointer-events: none;
+    user-select: none;
+}
+
 trix-toolbar .trix-dialog {
     background: var(--form-type-text-editor-dialog-bg);
     box-shadow: var(--form-type-text-editor-dialog-box-shadow);

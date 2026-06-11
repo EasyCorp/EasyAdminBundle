@@ -57,7 +57,11 @@ class Icon
 
     private function getInternalIcon(string $internalIconName): IconDto
     {
-        [$iconPrefix, $iconName] = explode(':', $internalIconName);
+        [$iconPrefix, $iconName] = explode(':', $internalIconName, 2);
+        if (1 !== preg_match('/^[a-zA-Z0-9_-]+$/D', $iconName)) {
+            throw new \RuntimeException(sprintf('The icon "%s" does not exist. Check the icon name spelling and make sure that the "%s.svg" file exists in the "assets/icons/internal/ directory of EasyAdmin".', $internalIconName, $iconName));
+        }
+
         $iconFilePath = sprintf('%s/%s/%s.svg', $this->iconsDir, $iconPrefix, $iconName);
         $content = @file_get_contents($iconFilePath);
         if (!\is_string($content)) {

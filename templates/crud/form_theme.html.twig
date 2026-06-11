@@ -118,6 +118,20 @@
     {% endif %}
 {% endblock form_row %}
 
+{% block repeated_row %}
+    {% set field = form.vars.ea_vars.field %}
+
+    <div class="{{ field.columns ?? field.defaultColumns ?? '' }}">
+        {{- block('form_rows') -}}
+    </div>
+
+    {# if a field doesn't define its columns explicitly, insert a fill element to make the field take the entire row space #}
+    {% if field.columns|default(null) is null %}
+        <div class="flex-fill"></div>
+    {% endif %}
+
+{% endblock repeated_row %}
+
 {% block choice_widget_collapsed %}
     {% if 'ea-autocomplete' == attr['data-ea-widget']|default(false) %}
         {% set attr = attr|merge({
@@ -321,9 +335,9 @@
             <a class="ea-vich-file-name" href="{{ asset_helper is same as(true) ? asset(download_uri) : download_uri }}">
                 <twig:ea:Icon name="internal:file-lines" />
                 {%- if download_label|default(false) -%}
-                    {{ download_label|trans({}, 'VichUploaderBundle') }}
+                    {{ translation_domain is same as(false) ? download_label : download_label|trans({}, translation_domain) }}
                 {%- else -%}
-                    {{ download_uri|split('/')|last ?: 'download'|trans({}, 'VichUploaderBundle') }}
+                    {{ download_uri|split('/')|last ?: 'download'|trans({}, translation_domain) }}
                 {%- endif -%}
             </a>
         {% endif %}
@@ -513,7 +527,7 @@
     })}) }}
 
     <div class="ea-text-editor-wrapper {{ row_attr.class|default('') ~ (not valid ? ' has-error') }}">
-        <trix-editor input="{{ id }}" class="trix-content"></trix-editor>
+        <trix-editor input="{{ id }}" class="trix-content" {% if disabled %}disabled{% endif %}></trix-editor>
     </div>
 {% endblock ea_text_editor_widget %}
 
@@ -540,17 +554,20 @@
 {% block ea_form_column_open_row %}
     {% set field = form.vars.ea_vars.field %}
     {% set field_icon = field.getCustomOption('icon') %}
-    {% set column_has_title = field_icon != null or field.label != false or field.label != null or field.label != '' or field.help != null %}
+    {# don't use "field.label|default()" here; it'll trigger deprecation messages: Method TranslatableMessage::__toString() is deprecated #}
+    {% set has_label = field.label is not same as(false) and field.label is not null and field.label is not same as('') %}
+    {% set has_help = field.help is not same as(false) and field.help is not null and field.help is not same as('') %}
+    {% set column_has_title = field_icon != null or has_label or has_help %}
 
     <div class="form-column {{ not column_has_title ? 'form-column-no-header' }} {{ field.cssClass }}">
         {% if column_has_title %}
             <div class="form-column-title">
                 <div class="form-column-title-content">
                     {% if field_icon %}<twig:ea:Icon name="{{ field_icon }}" class="form-column-icon" />{% endif %}
-                    {% if field.label %}{{ field.label|default('')|trans(domain: ea().i18n.translationDomain)|raw }}{% endif %}
+                    {% if has_label %}{{ field.label|trans(domain: ea().i18n.translationDomain)|raw }}{% endif %}
                 </div>
 
-                {% if field.help %}
+                {% if has_help %}
                     <div class="form-column-help">{{ field.help|trans(domain: ea().i18n.translationDomain)|raw }}</div>
                 {% endif %}
             </div>
@@ -574,21 +591,38 @@
 {% endblock ea_form_fieldset_open_ealabel %}
 
 {% block ea_form_fieldset_open_label %}
-    <div class="form-fieldset-header {{ ea_is_collapsible ? 'collapsible' }} {{ ea_help is not empty ? 'with-help' }}">
+    {# don't use 'ea_help is not empty' here; it'll trigger deprecation messages: Method TranslatableMessage::__toString() is deprecated #}
+    {% set has_help = ea_help is not same as(false) and ea_help is not null and ea_help is not same as('') %}
+    {% set collapsed_option_name = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Field\\FormField::OPTION_COLLAPSED') %}
+    {% set fieldset_error_count_option_name = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Field\\FormField::OPTION_FIELDSET_ERROR_COUNT') %}
+    {% set fieldset_error_count = form.vars.ea_vars.field.getCustomOption(fieldset_error_count_option_name)|default(0) %}
+    {% set is_collapsed = form.vars.ea_vars.field.getCustomOption(collapsed_option_name)|default(false) %}
+
+    <div class="form-fieldset-header {{ ea_is_collapsible ? 'collapsible' }} {{ has_help ? 'with-help' }}">
         <div class="form-fieldset-title">
             {% if ea_is_collapsible %}
                 <a href="#content-{{ form.vars.name }}" data-bs-toggle="collapse"
-                   class="form-fieldset-title-content form-fieldset-collapse {{ ea_is_collapsed ? 'collapsed' }}"
-                   aria-expanded="{{ ea_is_collapsed ? 'false' : 'true' }}" aria-controls="content-{{ form.vars.name }}">
+                   class="form-fieldset-title-content form-fieldset-collapse {{ is_collapsed ? 'collapsed' }}"
+                   aria-expanded="{{ is_collapsed ? 'false' : 'true' }}" aria-controls="content-{{ form.vars.name }}">
                     {{ ea_form_ealabel(form) }}
+                    {%- if fieldset_error_count > 0 -%}
+                        <span class="badge badge-danger" title="{{ 'form.tab.error_badge_title'|trans({'%count%': fieldset_error_count}, 'EasyAdminBundle') }}">
+                            {{- fieldset_error_count -}}
+                        </span>
+                    {%- endif -%}
                 </a>
             {% else %}
                 <span class="not-collapsible form-fieldset-title-content">
                     {{ ea_form_ealabel(form) }}
+                    {%- if fieldset_error_count > 0 -%}
+                        <span class="badge badge-danger" title="{{ 'form.tab.error_badge_title'|trans({'%count%': fieldset_error_count}, 'EasyAdminBundle') }}">
+                            {{- fieldset_error_count -}}
+                        </span>
+                    {%- endif -%}
                 </span>
             {% endif %}
 
-            {% if ea_help %}
+            {% if has_help %}
                 <div class="form-fieldset-help">{{ ea_help|trans|raw }}</div>
             {% endif %}
         </div>
@@ -596,15 +630,23 @@
 {% endblock ea_form_fieldset_open_label %}
 
 {% block ea_form_fieldset_open_row %}
-    {% set fieldset_has_header = form.vars.label or ea_icon or ea_help %}
+    {# don't use 'ea_help is not empty' here; it'll trigger deprecation messages: Method TranslatableMessage::__toString() is deprecated #}
+    {% set has_help = ea_help is not same as(false) and ea_help is not null and ea_help is not same as('') %}
+    {# don't use 'form.vars.label is not empty' here; it'll trigger deprecation messages: Method TranslatableMessage::__toString() is deprecated #}
+    {% set has_label = form.vars.label is not same as(false) and form.vars.label is not null and form.vars.label is not same as('') %}
+    {% set fieldset_has_header = has_label or ea_icon or has_help %}
+    {% set collapsed_option_name = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Field\\FormField::OPTION_COLLAPSED') %}
+    {% set fieldset_error_count_option_name = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Field\\FormField::OPTION_FIELDSET_ERROR_COUNT') %}
+    {% set fieldset_has_errors = form.vars.ea_vars.field.getCustomOption(fieldset_error_count_option_name)|default(0) > 0 %}
+    {% set is_collapsed = form.vars.ea_vars.field.getCustomOption(collapsed_option_name)|default(false) %}
 
-    <div class="form-fieldset {{ not fieldset_has_header ? 'form-fieldset-no-header' }} {{ ea_css_class }}">
+    <div class="form-fieldset {{ not fieldset_has_header ? 'form-fieldset-no-header' }} {{ fieldset_has_errors ? 'has-fieldset-error' }} {{ ea_css_class }} {{ form.vars.attr.class|default('') }}" {% for key, value in form.vars.attr %}{% if key != 'class' %}{{ key }}="{{ value|e('html') }}" {% endif %}{% endfor %}>
         <fieldset>
             {% if fieldset_has_header %}
                 {{ form_label(form) }}
             {% endif %}
 
-            <div id="content-{{ form.vars.name }}" class="form-fieldset-body {{ not fieldset_has_header ? 'without-header' }} {{ ea_is_collapsible ? 'collapse' }} {{ not ea_is_collapsed ? 'show' }}">
+            <div id="content-{{ form.vars.name }}" class="form-fieldset-body {{ not fieldset_has_header ? 'without-header' }} {{ ea_is_collapsible ? 'collapse' }} {{ not is_collapsed ? 'show' }}">
                 <div class="row">
 {% endblock ea_form_fieldset_open_row %}
 
@@ -684,7 +726,10 @@
                     <input type="checkbox" class="filter-checkbox" {% if field.vars.name in applied_filters %}checked{% endif %}>
                     <a data-bs-toggle="collapse" href="#filter-content-{{ loop.index }}" aria-expanded="{{ field.vars.name in applied_filters ? 'true' : 'false' }}" aria-controls="filter-content-{{ loop.index }}"
                         {% for name, value in field.vars.label_attr|default([]) %}{{ name }}="{{ value|e('html') }}" {% endfor %}>
-                        {{ field.vars.label|default(field.vars.name|humanize)|trans(domain: ea().i18n.translationDomain) }}
+                        {# don't use 'field.vars.label is not empty' here; it'll trigger deprecation messages: Method TranslatableMessage::__toString() is deprecated #}
+                        {% set has_filter_label = field.vars.label is not same as(false) and field.vars.label is not null and field.vars.label is not same as('') %}
+                        {% set filter_label = has_filter_label ? field.vars.label : field.vars.name|humanize %}
+                        {{ filter_label|trans(domain: ea().i18n.translationDomain) }}
                     </a>
                 </div>
                 <div id="filter-content-{{ loop.index }}" class="filter-content collapse {% if field.vars.name in applied_filters %}show{% endif %}" aria-labelledby="filter-heading-{{ loop.index }}">
@@ -732,7 +777,8 @@
             {% endif %}
             <div class="custom-file">
                 {{ form_widget(form.file, {attr: form.file.vars.attr|merge({placeholder: placeholder, title: title, 'data-files-label': filesLabel, class: 'd-none'})}) }}
-                {{ form_label(form.file, placeholder, {label_attr: {class: 'custom-file-label'}}) }}
+                {# don't pass 'placeholder' as the 2nd argument of form_label(); Twig calls testEmpty() on it internally, which triggers the TranslatableMessage::__toString() deprecation #}
+                {{ form_label(form.file, null, {label: placeholder, label_attr: {class: 'custom-file-label'}}) }}
             </div>
             <div class="input-group-text">
                 {%- if currentFiles -%}

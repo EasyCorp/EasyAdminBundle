@@ -594,8 +594,8 @@
     min-block-size: unset;
 }
 .ts-wrapper .ts-control {
-    block-size: 30px;
-    min-block-size: unset;
+    block-size: unset;
+    min-block-size: 30px;
     padding: 3px 28px 4px 7px;
 }
 .ts-wrapper.input-active {
@@ -731,4 +731,9 @@
 
 .ts-wrapper.disabled .ts-control {
     background-color: var(--form-control-disabled-bg);
+}
+
+/* when using preferred choices, an empty group header is added; hide it to not add extra vertical space */
+.ts-dropdown .optgroup-header:empty {
+    display: none;
 }

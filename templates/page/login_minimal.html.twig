@@ -10,6 +10,11 @@
             <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noodp, noimageindex, notranslate, nocache" />
             <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
             <meta name="generator" content="EasyAdmin" />
+            {% guard function csp_nonce %}
+                {# this is used by Trix + TextEditorField to inject styles dynamically;
+                   'style' returns the nonce bound to the 'style-src' directive #}
+                <meta name="csp-nonce" content="{{ csp_nonce('style') }}">
+            {% endguard %}
         {% endblock head_metas %}
 
         {% block head_favicon %}
@@ -23,7 +28,11 @@
         {% endblock %}
 
         {% block head_javascript %}
-            <script src="{{ asset('app.js', constant('EasyCorp\\Bundle\\EasyAdminBundle\\Asset\\AssetPackage::PACKAGE_NAME')) }}"></script>
+            {% guard function csp_nonce %}
+                <script src="{{ asset('app.js', constant('EasyCorp\\Bundle\\EasyAdminBundle\\Asset\\AssetPackage::PACKAGE_NAME')) }}" nonce="{{ csp_nonce('script') }}"></script>
+            {% else %}
+                <script src="{{ asset('app.js', constant('EasyCorp\\Bundle\\EasyAdminBundle\\Asset\\AssetPackage::PACKAGE_NAME')) }}"></script>
+            {% endguard %}
         {% endblock head_javascript %}
     </head>
 

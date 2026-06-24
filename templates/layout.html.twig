@@ -18,7 +18,7 @@
         {% endguard %}
     {% endblock head_metas %}
 
-    {% set page_title_block_output %}{% block page_title %}{{ block('content_title') }}{% endblock %}{% endset %}
+    {% set page_title_block_output %}{% block page_title %}{{ ea.dashboardTitle|raw }}{% endblock %}{% endset %}
     <title>{{ page_title_block_output|striptags|raw }}</title>
 
     {% block head_stylesheets %}

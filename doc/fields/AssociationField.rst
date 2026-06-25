@@ -270,6 +270,40 @@ associated entity::
 
     yield AssociationField::new('user')->setSortProperty('name');
 
+Setting a sort property also marks the field as sortable, so you don't need to
+call ``setSortable()`` too. This matters for
+:ref:`nested associations <field-association-nested>`, which are not sortable
+by default (unlike single-level associations).
+
+.. _field-association-nested:
+
+Nested Associations
+-------------------
+
+This field can display a property of a *related* entity, following a chain of
+associations written as a dotted property path. For example, if an ``Order``
+entity is associated to a ``Customer`` and that ``Customer`` is associated to a
+``Country``, you can show the order's country on the ``index`` and ``detail``
+pages like this::
+
+    yield AssociationField::new('customer.country');
+
+The value is rendered as a clickable link pointing to the ``detail`` page of the
+entity at the end of the path (the ``Country`` in the example). EasyAdmin finds
+the CRUD controller of that entity automatically; if you define more than one
+CRUD controller for it, use the ``setCrudController()`` option to choose which
+one to link to.
+
+Unlike single-level associations, nested associations are **not** sortable by
+default. Enable sorting in one of these two ways::
+
+    // sort by a property of the related entity; this also marks the field as
+    // sortable, so you don't need a separate setSortable() call
+    yield AssociationField::new('customer.country')->setSortProperty('name');
+
+    // sort by the id of the related entity
+    yield AssociationField::new('customer.country')->setSortable(true);
+
 .. _`TomSelect`: https://tom-select.js.org/
 .. _`EntityType`: https://symfony.com/doc/current/reference/forms/types/entity.html
 .. _`query_builder option`: https://symfony.com/doc/current/reference/forms/types/entity.html#query-builder

@@ -125,8 +125,14 @@ final class AssociationField implements FieldInterface
     public function setSortProperty(string $orderProperty): self
     {
         $this->setCustomOption(self::OPTION_SORT_PROPERTY, $orderProperty);
-        // defining how to sort the association implies the field is sortable; this is needed for
-        // nested associations (e.g. "foo.bar"), which are not sortable by default
+        // setting a sort property implies the field should be sortable; this is required for nested
+        // associations (e.g. "foo.bar"), which are not sortable by default unlike single-level ones.
+        // TODO: document this behavior. To sort a nested association by the related entity's identifier
+        // (no sort property), setSortable(true) must still be called explicitly. Making nested
+        // associations sortable by default is non-trivial: it must live in
+        // CommonPreConfigurator::buildSortableOption() (the only place that tells an explicit
+        // sortable value from the computed default), needs entity-metadata traversal there, and would
+        // change the default sortability of every field type that uses a nested property
         $this->setSortable(true);
 
         return $this;

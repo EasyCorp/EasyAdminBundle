@@ -22,6 +22,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synt
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\FieldTestEntity;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\FilterRelatedEntity;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\FilterTestEntity;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\NestedAssociationSortTestCategory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\NestedAssociationSortTestEntity;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\SearchTestAuthor;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\SearchTestEntity;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\SortTestEntity;
@@ -82,6 +84,8 @@ class AppFixtures extends Fixture
         $this->addDefaultCrudTestFixtures($manager);
 
         $this->addSortTestFixtures($manager);
+
+        $this->addNestedAssociationSortFixtures($manager);
 
         $this->addUrlSortSecurityTestFixtures($manager);
 
@@ -607,6 +611,54 @@ class AppFixtures extends Fixture
                 $oneToManyRelated->setSortTestEntity($entity);
                 $manager->persist($oneToManyRelated);
             }
+        }
+    }
+
+    private function addNestedAssociationSortFixtures(ObjectManager $manager): void
+    {
+        // top-level (parentless) categories with distinct names; sorting roots by
+        // category.parent.name will order by these names
+        $parentNames = ['Alpha', 'Bravo', 'Charlie'];
+        $parents = [];
+        foreach ($parentNames as $index => $name) {
+            $parent = new NestedAssociationSortTestCategory();
+            $parent->setName($name);
+            $manager->persist($parent);
+            $parents[$index] = $parent;
+        }
+
+        // child categories, each pointing parent to one of the parents above
+        $childParentIndex = ['Child-A' => 0, 'Child-B' => 1, 'Child-C' => 2];
+        $children = [];
+        foreach ($childParentIndex as $name => $parentIndex) {
+            $child = new NestedAssociationSortTestCategory();
+            $child->setName($name);
+            $child->setParent($parents[$parentIndex]);
+            $manager->persist($child);
+            $children[$name] = $child;
+        }
+
+        // a parentless category: a root pointing here has category.parent === null
+        $orphan = new NestedAssociationSortTestCategory();
+        $orphan->setName('Orphan');
+        $manager->persist($orphan);
+
+        // root entities (persisted in id order). Mapping each to a category yields a
+        // deterministic ordering when sorting by category.parent.name:
+        //   ASC  (SQLite nulls first): Root Null, Root Alpha, Root Bravo, Root Charlie
+        //   DESC (SQLite nulls last):  Root Charlie, Root Bravo, Root Alpha, Root Null
+        $rootData = [
+            ['name' => 'Root Charlie', 'category' => $children['Child-C']], // parent: Charlie
+            ['name' => 'Root Alpha', 'category' => $children['Child-A']],   // parent: Alpha
+            ['name' => 'Root Null', 'category' => $orphan],                 // parent: null
+            ['name' => 'Root Bravo', 'category' => $children['Child-B']],   // parent: Bravo
+        ];
+
+        foreach ($rootData as $data) {
+            $root = new NestedAssociationSortTestEntity();
+            $root->setName($data['name']);
+            $root->setCategory($data['category']);
+            $manager->persist($root);
         }
     }
 

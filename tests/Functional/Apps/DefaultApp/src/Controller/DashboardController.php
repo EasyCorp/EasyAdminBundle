@@ -35,5 +35,6 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkTo(Synthetic\ActionTestEntityCrudController::class, 'Action Tests', 'fas fa-mouse-pointer');
         yield MenuItem::linkTo(Synthetic\UrlSortSecurityTestEntityCrudController::class, 'URL Sort Security Tests', 'fas fa-shield-alt');
         yield MenuItem::linkTo(Synthetic\NestedAssociationSortTestCrudController::class, 'Nested Association Sort Tests', 'fas fa-sitemap');
+        yield MenuItem::linkTo(Synthetic\NestedAssociationSortTestCategoryCrudController::class, 'Nested Association Sort Categories', 'fas fa-tags');
     }
 }

@@ -6,21 +6,21 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\ProjectDomain\Project;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\NestedAssociationSortTestEntity;
 
 /**
- * Exposes a nested AssociationField (latestRelease.category) sortable by the leaf
- * category's `name`, so the index can be ordered via ?sort[latestRelease.category].
- * No setCrudController() is set: the configurator must auto-resolve the leaf entity's
- * CRUD controller to render the cell as a link.
+ * Exposes a nested AssociationField (category.parent) sortable by the leaf category's
+ * `name`, so the index can be ordered via ?sort[category.parent]. No setCrudController()
+ * is set: the configurator must auto-resolve the leaf entity's CRUD controller to render
+ * the cell as a link.
  *
- * @extends AbstractCrudController<Project>
+ * @extends AbstractCrudController<NestedAssociationSortTestEntity>
  */
 class NestedAssociationSortTestCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {
-        return Project::class;
+        return NestedAssociationSortTestEntity::class;
     }
 
     public function configureCrud(Crud $crud): Crud
@@ -34,7 +34,7 @@ class NestedAssociationSortTestCrudController extends AbstractCrudController
     {
         yield TextField::new('name');
 
-        yield AssociationField::new('latestRelease.category')
+        yield AssociationField::new('category.parent')
             ->setSortProperty('name');
     }
 }

@@ -5,15 +5,15 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Default\Sort;
 use Doctrine\ORM\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\ProjectDomain\ProjectReleaseCategoryCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\NestedAssociationSortTestCategoryCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\NestedAssociationSortTestCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\ProjectDomain\Project;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\NestedAssociationSortTestEntity;
 
 /**
- * End-to-end checks that ?sort[latestRelease.category] orders the Project index by
- * the leaf association's `name` (latestRelease.category.name), through a nested
- * AssociationField configured with setSortProperty('name'). Also verifies the nested
- * association cell auto-links to the leaf entity's CRUD controller without setCrudController().
+ * End-to-end checks that ?sort[category.parent] orders the index by the leaf
+ * association's `name` (category.parent.name), through a nested AssociationField
+ * configured with setSortProperty('name'). Also verifies the nested association cell
+ * auto-links to the leaf entity's CRUD controller without setCrudController().
  */
 class SortByNestedAssociationTest extends AbstractCrudTestCase
 {
@@ -33,7 +33,7 @@ class SortByNestedAssociationTest extends AbstractCrudTestCase
     {
         parent::setUp();
         $this->client->followRedirects();
-        $this->repository = $this->entityManager->getRepository(Project::class);
+        $this->repository = $this->entityManager->getRepository(NestedAssociationSortTestEntity::class);
     }
 
     /**
@@ -42,14 +42,14 @@ class SortByNestedAssociationTest extends AbstractCrudTestCase
     public function testSortByNestedAssociationProperty(string $sortOrder, \Closure $sortFunction): void
     {
         // arrange
-        /** @var list<Project> $projects */
-        $projects = $this->repository->findAll();
-        $sortFunction($projects);
-        $expectedNames = array_map(static fn (Project $project): string => $project->getName(), $projects);
+        /** @var list<NestedAssociationSortTestEntity> $entities */
+        $entities = $this->repository->findAll();
+        $sortFunction($entities);
+        $expectedNames = array_map(static fn (NestedAssociationSortTestEntity $entity): string => $entity->getName(), $entities);
 
         // act
         $url = $this->generateIndexUrl().'?'.http_build_query([
-            'sort' => ['latestRelease.category' => $sortOrder],
+            'sort' => ['category.parent' => $sortOrder],
         ]);
         $crawler = $this->client->request('GET', $url);
 
@@ -66,15 +66,15 @@ class SortByNestedAssociationTest extends AbstractCrudTestCase
 
     public static function sorting(): \Generator
     {
-        yield 'ascending by latestRelease.category.name (SQLite nulls first)' => [
+        yield 'ascending by category.parent.name (SQLite nulls first)' => [
             'ASC',
             /**
-             * @param list<Project> $projects
+             * @param list<NestedAssociationSortTestEntity> $entities
              */
-            static function (array &$projects): void {
-                usort($projects, static function (Project $a, Project $b): int {
-                    $aName = $a->getLatestRelease()?->getCategory()?->getName();
-                    $bName = $b->getLatestRelease()?->getCategory()?->getName();
+            static function (array &$entities): void {
+                usort($entities, static function (NestedAssociationSortTestEntity $a, NestedAssociationSortTestEntity $b): int {
+                    $aName = $a->getCategory()?->getParent()?->getName();
+                    $bName = $b->getCategory()?->getParent()?->getName();
 
                     // SQLite sorts NULL values FIRST in ASC order
                     if (null === $aName && null === $bName) {
@@ -94,15 +94,15 @@ class SortByNestedAssociationTest extends AbstractCrudTestCase
             },
         ];
 
-        yield 'descending by latestRelease.category.name (SQLite nulls last)' => [
+        yield 'descending by category.parent.name (SQLite nulls last)' => [
             'DESC',
             /**
-             * @param list<Project> $projects
+             * @param list<NestedAssociationSortTestEntity> $entities
              */
-            static function (array &$projects): void {
-                usort($projects, static function (Project $a, Project $b): int {
-                    $aName = $a->getLatestRelease()?->getCategory()?->getName();
-                    $bName = $b->getLatestRelease()?->getCategory()?->getName();
+            static function (array &$entities): void {
+                usort($entities, static function (NestedAssociationSortTestEntity $a, NestedAssociationSortTestEntity $b): int {
+                    $aName = $a->getCategory()?->getParent()?->getName();
+                    $bName = $b->getCategory()?->getParent()?->getName();
 
                     // SQLite sorts NULL values LAST in DESC order; ties on the primary key are
                     // broken by the controller's setDefaultSort(['id' => 'ASC']), always ascending
@@ -127,14 +127,14 @@ class SortByNestedAssociationTest extends AbstractCrudTestCase
     public function testNestedAssociationCellAutoLinksToLeafCrudController(): void
     {
         // the nested AssociationField has no setCrudController(); the configurator must
-        // auto-resolve the leaf entity (ProjectReleaseCategory) CRUD controller and render
-        // its cell as a link targeting that controller's detail action
+        // auto-resolve the leaf entity (NestedAssociationSortTestCategory) CRUD controller
+        // and render its cell as a link targeting that controller's detail action
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
         $this->assertResponseIsSuccessful();
 
         $hrefs = $crawler
-            ->filter('tbody td[data-column="latestRelease.category"] a')
+            ->filter('tbody td[data-column="category.parent"] a')
             ->each(static fn ($node): string => $node->attr('href'));
 
         self::assertNotEmpty($hrefs, 'Expected at least one linked nested association cell');
@@ -142,15 +142,15 @@ class SortByNestedAssociationTest extends AbstractCrudTestCase
         // depending on the URL format, the leaf controller is referenced either via its
         // auto-derived pretty-URL slug or via the crudControllerFqcn query parameter; the
         // detail action is identified by the entity id segment (pretty) or crudAction=detail
-        $controllerSlug = 'project-release-category';
-        $controllerParam = rawurlencode(ProjectReleaseCategoryCrudController::class);
+        $controllerSlug = 'nested-association-sort-test-category';
+        $controllerParam = rawurlencode(NestedAssociationSortTestCategoryCrudController::class);
         foreach ($hrefs as $href) {
             self::assertTrue(
                 str_contains($href, $controllerSlug) || str_contains($href, $controllerParam),
-                sprintf('Expected href "%s" to target the ProjectReleaseCategory CRUD controller', $href),
+                sprintf('Expected href "%s" to target the NestedAssociationSortTestCategory CRUD controller', $href),
             );
             self::assertTrue(
-                (bool) preg_match('#/project-release-category/\d+#', $href) || str_contains($href, 'crudAction=detail'),
+                (bool) preg_match('#/'.$controllerSlug.'/\d+#', $href) || str_contains($href, 'crudAction=detail'),
                 sprintf('Expected href "%s" to point at the leaf entity detail action', $href),
             );
         }
@@ -163,6 +163,6 @@ class SortByNestedAssociationTest extends AbstractCrudTestCase
         $this->client->request('GET', $this->generateIndexUrl());
 
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorExists('th[data-column="latestRelease.category"] a');
+        $this->assertSelectorExists('th[data-column="category.parent"] a');
     }
 }

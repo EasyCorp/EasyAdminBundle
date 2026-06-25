@@ -40,12 +40,12 @@ class NestedAssociationSortTestCategory
         return $this;
     }
 
-    public function getParent(): ?NestedAssociationSortTestCategory
+    public function getParent(): ?self
     {
         return $this->parent;
     }
 
-    public function setParent(?NestedAssociationSortTestCategory $parent): self
+    public function setParent(?self $parent): self
     {
         $this->parent = $parent;
 

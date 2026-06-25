@@ -210,11 +210,41 @@ final class EntityRepository implements EntityRepositoryInterface
                     }
                 }
             } else {
-                $queryBuilder->addOrderBy($sortProperty, $sortOrder);
+                $this->applyNestedAssociationOrderClause($queryBuilder, $fields, $sortProperty, $sortOrder);
             }
         } else {
             $queryBuilder->addOrderBy('entity.'.$sortProperty, $sortOrder);
         }
+    }
+
+    /**
+     * Orders by a nested association path such as "foo.bar" or "foo.bar.baz", mirroring the
+     * single-segment behavior: with no AssociationField::setSortProperty() it orders by the
+     * leaf association's foreign key (i.e. its identifier) on the already-joined parent;
+     * with a sort property it left-joins the leaf and orders by that property of the related entity.
+     */
+    private function applyNestedAssociationOrderClause(QueryBuilder $queryBuilder, FieldCollection $fields, string $sortProperty, string $sortOrder): void
+    {
+        $sortFieldParts = explode('.', $sortProperty);
+        $lastIndex = \count($sortFieldParts) - 1;
+        $associationSortProperty = $fields->getByProperty($sortProperty)?->getCustomOption(AssociationField::OPTION_SORT_PROPERTY);
+
+        // join every association along the path; the first segment is already joined by the caller.
+        // the leaf is joined only when ordering by one of its properties, otherwise its foreign key on
+        // the parent is used (so "foo.bar" with no sort property orders by the identifier of "bar")
+        $aliases = $queryBuilder->getAllAliases();
+        $alias = $sortFieldParts[0];
+        $joinUntil = null === $associationSortProperty ? $lastIndex : $lastIndex + 1;
+        for ($i = 1; $i < $joinUntil; ++$i) {
+            $joinedAlias = $alias.'_'.$sortFieldParts[$i];
+            if (!\in_array($joinedAlias, $aliases, true)) {
+                $queryBuilder->leftJoin($alias.'.'.$sortFieldParts[$i], $joinedAlias);
+                $aliases[] = $joinedAlias;
+            }
+            $alias = $joinedAlias;
+        }
+
+        $queryBuilder->addOrderBy($alias.'.'.($associationSortProperty ?? $sortFieldParts[$lastIndex]), $sortOrder);
     }
 
     private function addFilterClause(QueryBuilder $queryBuilder, SearchDto $searchDto, EntityDto $entityDto, FilterCollection $configuredFilters, FieldCollection $fields): void
@@ -410,28 +440,37 @@ final class EntityRepository implements EntityRepositoryInterface
             return false;
         }
 
-        $classMetadata = $entityDto->getClassMetadata();
-
-        // multi-segment customSort (e.g. "customer.secretField") would otherwise
-        // reach the unfiltered multi-segment branch in applyOrderClause; URL-based
-        // association sort is supported via AssociationField::setSortProperty()
-        // with a single-segment key. Embeddable properties (e.g. "address.city")
-        // are real Doctrine fields with a dotted name (hasField() === true), so
-        // they are still allowed
-        if (str_contains($sortProperty, '.') && !$classMetadata->hasField($sortProperty)) {
-            return false;
-        }
-
-        // structural gate: the property must be a real Doctrine field or association
-        // on the entity. This also rejects any key with characters (commas, spaces,
-        // quotes…) that could otherwise smuggle DQL fragments through identifier interpolation
-        if (!$classMetadata->hasField($sortProperty) && !$classMetadata->hasAssociation($sortProperty)) {
-            return false;
-        }
-
+        // the property must be exposed as a sortable field by the controller; this gate makes
+        // URL-driven sort opt-in and is checked first so an unexposed key is rejected before
+        // any Doctrine metadata is walked for the structural gate below
         $fieldDto = $fields->getByProperty($sortProperty);
         if (null === $fieldDto || false === $fieldDto->isSortable()) {
             return false;
+        }
+
+        $classMetadata = $entityDto->getClassMetadata();
+
+        // structural gate: the key must resolve to real Doctrine identifiers, which also rejects any
+        // characters (commas, spaces, quotes...) that could otherwise smuggle DQL fragments through
+        // identifier interpolation. A dotted key is valid only as an embeddable field (e.g.
+        // "address.city", a real field whose name contains a dot) or as a nested association path
+        // validated segment by segment (e.g. "category.parent", "category.parent.name")
+        if (str_contains($sortProperty, '.')) {
+            return $classMetadata->hasField($sortProperty) || $this->isAssociationPath($classMetadata, $sortProperty);
+        }
+
+        return $classMetadata->hasField($sortProperty) || $classMetadata->hasAssociation($sortProperty);
+    }
+
+    private function isAssociationPath(ClassMetadata $classMetadata, string $sortProperty): bool
+    {
+        $metadata = $classMetadata;
+        foreach (explode('.', $sortProperty) as $sortFieldPart) {
+            if (!$metadata->hasAssociation($sortFieldPart)) {
+                return false;
+            }
+
+            $metadata = $this->entityFactory->getEntityMetadata($metadata->getAssociationTargetClass($sortFieldPart));
         }
 
         return true;

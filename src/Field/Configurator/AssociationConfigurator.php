@@ -63,8 +63,9 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         }
 
         // the target CRUD controller can be NULL; in that case, field value doesn't link to the related entity
+        // for nested associations (e.g. "foo.bar") the target is the entity at the end of the path (e.g. "bar")
         $targetCrudControllerFqcn = $field->getCustomOption(AssociationField::OPTION_EMBEDDED_CRUD_FORM_CONTROLLER)
-            ?? $context->getAdminControllers()->findCrudControllerByEntity($entityDto->getClassMetadata()->getAssociationTargetClass($propertyName));
+            ?? $context->getAdminControllers()->findCrudControllerByEntity($this->getPropertyTargetEntityFqcn($entityDto->getClassMetadata(), $propertyName));
 
         if (true === $field->getCustomOption(AssociationField::OPTION_RENDER_AS_EMBEDDED_FORM)) {
             if (false === $entityDto->getClassMetadata()->isSingleValuedAssociation($propertyName)) {
@@ -231,6 +232,26 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
             $this->entityFactory->getEntityMetadata($entityClassMetadata->getAssociationTargetClass($nextProperty)),
             implode('.', $nestedProperties),
         );
+    }
+
+    /**
+     * Resolves the FQCN of the entity targeted by a (possibly nested) association property.
+     * For "foo" it returns the target of "foo"; for "foo.bar" it walks the path and returns
+     * the target of the last segment (e.g. "bar"). Unlike ClassMetadata::getAssociationTargetClass(),
+     * which only accepts a single association name, this supports dotted property paths.
+     *
+     * @return class-string
+     */
+    private function getPropertyTargetEntityFqcn(ClassMetadata $entityClassMetadata, string $propertyName): string
+    {
+        $propertyNameParts = explode('.', $propertyName);
+        $targetEntityFqcn = $entityClassMetadata->getAssociationTargetClass(array_shift($propertyNameParts));
+
+        foreach ($propertyNameParts as $association) {
+            $targetEntityFqcn = $this->entityFactory->getEntityMetadata($targetEntityFqcn)->getAssociationTargetClass($association);
+        }
+
+        return $targetEntityFqcn;
     }
 
     private function configureToOneAssociation(FieldDto $field, EntityDto $entityDto): void

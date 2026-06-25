@@ -125,6 +125,9 @@ final class AssociationField implements FieldInterface
     public function setSortProperty(string $orderProperty): self
     {
         $this->setCustomOption(self::OPTION_SORT_PROPERTY, $orderProperty);
+        // defining how to sort the association implies the field is sortable; this is needed for
+        // nested associations (e.g. "foo.bar"), which are not sortable by default
+        $this->setSortable(true);
 
         return $this;
     }

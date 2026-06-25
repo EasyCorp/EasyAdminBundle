@@ -140,6 +140,8 @@ class AssociationFieldTest extends AbstractFieldTest
         $fieldDto = $this->configure($field);
 
         self::assertSame('name', $fieldDto->getCustomOption(AssociationField::OPTION_SORT_PROPERTY));
+        // setSortProperty() also marks the field as sortable
+        self::assertTrue($fieldDto->isSortable());
     }
 
     public function testRenderAsHtml(): void

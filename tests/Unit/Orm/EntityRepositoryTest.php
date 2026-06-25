@@ -14,6 +14,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use PHPUnit\Framework\TestCase;
@@ -374,6 +375,53 @@ class EntityRepositoryTest extends TestCase
         $queryBuilder->expects($this->once())
             ->method('addOrderBy')
             ->with('entity.displayedField', 'ASC');
+
+        $this->stubEntityManager($queryBuilder);
+
+        $this->entityRepository->createQueryBuilder($searchDto, $entityDto, $fields, new FilterCollection());
+    }
+
+    public function testNestedAssociationDefaultSortWithoutSortPropertyOrdersByLeafForeignKey(): void
+    {
+        // defaultSort is trusted and bypasses the metadata-walking validation, so it
+        // reaches applyNestedAssociationOrderClause directly. With no AssociationField
+        // sort property the leaf is not joined: ordering uses the leaf segment's foreign
+        // key on the parent alias that applyOrderClause already left-joined
+        $entityDto = $this->createEntityDto([], ['category']);
+        $fields = new FieldCollection([]);
+        $searchDto = $this->createSearchDtoForSort(defaultSort: ['category.parent' => 'ASC']);
+
+        $queryBuilder = $this->createSortingQueryBuilder();
+        $queryBuilder->expects($this->once())
+            ->method('leftJoin')
+            ->with('entity.category', 'category')
+            ->willReturnSelf();
+        $queryBuilder->expects($this->once())
+            ->method('addOrderBy')
+            ->with('category.parent', 'ASC');
+
+        $this->stubEntityManager($queryBuilder);
+
+        $this->entityRepository->createQueryBuilder($searchDto, $entityDto, $fields, new FilterCollection());
+    }
+
+    public function testNestedAssociationDefaultSortWithSortPropertyJoinsLeafAndOrdersByItsProperty(): void
+    {
+        // with AssociationField::setSortProperty('name') the leaf is left-joined under the
+        // underscore-joined cumulative alias (category_parent) and ordered by that property
+        $entityDto = $this->createEntityDto([], ['category']);
+        $field = $this->createField('category.parent', true);
+        $field->setCustomOption(AssociationField::OPTION_SORT_PROPERTY, 'name');
+        $fields = new FieldCollection([$field]);
+        $searchDto = $this->createSearchDtoForSort(defaultSort: ['category.parent' => 'ASC']);
+
+        $queryBuilder = $this->createSortingQueryBuilder();
+        $queryBuilder->expects($this->exactly(2))
+            ->method('leftJoin')
+            ->willReturnSelf();
+        $queryBuilder->expects($this->once())
+            ->method('addOrderBy')
+            ->with('category_parent.name', 'ASC');
 
         $this->stubEntityManager($queryBuilder);
 

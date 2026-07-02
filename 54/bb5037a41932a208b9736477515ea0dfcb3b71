@@ -1,0 +1,40 @@
+---------------------------------------------------------------------------
+
+by MatTheCat at 2026-06-24T15:29:22Z
+
+~Not sure if that integrates correctly with `templates/layout.html.twig` :thinking:~
+
+@4d4ch4u32 could you confirm this work as expected with `page_title` or `content_title` overridden or not?
+
+EDIT: checked it and it works
+
+---------------------------------------------------------------------------
+
+by 4d4ch4u32 at 2026-06-25T12:38:53Z
+
+@MatTheCat
+
+my suggestion:
+
+```twig
+{# deprecated 'The "page_title" block is deprecated, use "content_title" instead.' #}
+{% block page_title %}{% endblock %}
+
+{% block content_title %}
+    {{ block('page_title') }}
+{% endblock %}
+```
+
+---------------------------------------------------------------------------
+
+by MatTheCat at 2026-06-25T12:46:04Z
+
+Doesn’t this just revert #7619?
+
+---------------------------------------------------------------------------
+
+by 4d4ch4u32 at 2026-06-25T13:08:40Z
+
+oh, yes :laughing: sorry, I didn't checked that.
+
+Your suggestion is also working for me in all cases.

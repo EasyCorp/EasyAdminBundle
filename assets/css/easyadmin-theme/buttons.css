@@ -183,6 +183,23 @@
     --button-active-border-color: var(--button-danger-active-border-color);
 }
 
+.btn-info,
+.btn-info.btn.disabled,
+.btn-info.btn:disabled {
+    --button-box-shadow: var(--button-info-box-shadow);
+    --button-bg: var(--button-info-bg);
+    --button-color: var(--button-info-color);
+    --button-icon-color: var(--button-info-icon-color);
+    --button-border-color: var(--button-info-border-color);
+    --button-hover-bg: var(--button-info-hover-bg);
+    --button-hover-color: var(--button-info-hover-color);
+    --button-hover-border-color: var(--button-info-hover-border-color);
+    --button-active-box-shadow: var(--button-info-active-box-shadow);
+    --button-active-color: var(--button-info-active-color);
+    --button-active-bg: var(--button-info-active-bg);
+    --button-active-border-color: var(--button-info-active-border-color);
+}
+
 .btn-invisible,
 .btn-invisible.btn.disabled,
 .btn-invisible.btn:disabled {

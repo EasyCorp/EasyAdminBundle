@@ -299,11 +299,13 @@ fieldset:disabled a.btn {
 }
 
 .btn-sm:not(:has(.btn-label)) {
-    padding: var(--button-padding-y-sm);
+    padding-block-start: var(--button-padding-y-sm);
+    padding-block-end: var(--button-padding-y-sm);
 }
 
 .btn-lg:not(:has(.btn-label)) {
-    padding: var(--button-padding-y-lg);
+    padding-block-start: var(--button-padding-y-lg);
+    padding-block-end: var(--button-padding-y-lg);
 }
 
 /* Button groups */

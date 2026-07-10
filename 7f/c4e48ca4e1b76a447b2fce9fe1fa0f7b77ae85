@@ -1,0 +1,7 @@
+---------------------------------------------------------------------------
+
+by Seb33300 at 2026-07-10T07:10:57Z
+
+This PR may fix those 2 points in [my issue](https://github.com/EasyCorp/EasyAdminBundle/issues/7684)?
+- Some styles are not really rendering well. Eg: asInfoAction() in dark mode or asTextLink() in light mode
+- In dark mode, the hover effect of secondary buttons (default when no asXxxAction() style is specified) looks strange. The button briefly flashes white before returning to its normal color.

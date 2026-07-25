@@ -1,0 +1,110 @@
+---------------------------------------------------------------------------
+
+by Seb33300 at 2026-03-12T08:24:19Z
+
+Just found an issue with the EntityFilter + nested associations, I am investigating.
+
+---------------------------------------------------------------------------
+
+by Seb33300 at 2026-03-12T09:34:15Z
+
+Issue on `EntityFilter` is now fixed
+
+---------------------------------------------------------------------------
+
+by KDederichs at 2026-04-28T10:40:05Z
+
+@javiereguiluz what's the status on this? It'd be nice if this could be merged in so it could be used to fix all the other places this is broken (see #7514 for example)
+
+---------------------------------------------------------------------------
+
+by dmitryuk at 2026-05-12T07:59:19Z
+
+@javiereguiluz please review
+
+---------------------------------------------------------------------------
+
+by ckaotik at 2026-05-19T12:44:41Z
+
+This is awesome! Should we add the new `resolveNestedAssociations` method to `EasyCorp\Bundle\EasyAdminBundle\Contracts\Orm\EntityRepositoryInterface`?
+
+---------------------------------------------------------------------------
+
+by Seb33300 at 2026-06-26T03:38:06Z
+
+This PR is missing some tests, and I believe this one of the reasons why it's not reviewed/merged yet.
+If someone has time to work on implementing tests, I can merge your commit in my branch.
+
+---------------------------------------------------------------------------
+
+by KDederichs at 2026-07-04T11:42:02Z
+
+@Seb33300 Done, take a look. It looks a bit messy cause I included #7584 and #7585 and merged 5.x to resolve some conflicts.
+
+---------------------------------------------------------------------------
+
+by KDederichs at 2026-07-05T13:15:25Z
+
+Do we need to notify Javier that this changed btw? Don't see him in the list of participants so not sure
+
+---------------------------------------------------------------------------
+
+by Seb33300 at 2026-07-06T09:42:06Z
+
+Hi @javiereguiluz, if you have any concern about this PR, please let us know so we can improve it.
+
+---------------------------------------------------------------------------
+
+by finnef at 2026-07-06T10:30:59Z
+
+Hi, great work!
+
+I tested the latest patch on EA 5.1.0 and one thing that did not work was adding a field like this to my crudcontroller:
+
+`AssociationField::new('coachProfile.labels')`
+
+Where the CrudController is for users, and the property is users.coachProfile.labels (ManyToMany). This throws an error 'Can't get a way to read the property "id" in class "Doctrine\ORM\PersistentCollection"'. In this case the AssociationConfigurator does not distinguish to-one vs to-many via isSingleValuedAssociation()/isCollectionValuedAssociation(). It always assumes the final segment is to-one.
+
+Maybe this is out of scope for this issue?
+
+---------------------------------------------------------------------------
+
+by Seb33300 at 2026-07-06T11:44:21Z
+
+Hi @finnef, can you please try again and confirm if this is working now? I just pushed a fix for this.
+
+---------------------------------------------------------------------------
+
+by finnef at 2026-07-06T12:24:04Z
+
+Great! that works fine now. Good addition.
+
+---------------------------------------------------------------------------
+
+by finnef at 2026-07-07T08:13:39Z
+
+Ah, sorry to say there is still an issue.
+
+When accessing the NEW page of my CoachCrudcontroller (of entity user), which has an             CollectionField::new('coachProfile.attachments'), so it should access user.coachProfile.attachments, I get an error
+
+"Uncaught PHP Exception Symfony\Component\PropertyAccess\Exception\NoSuchPropertyException: "Can't get a way to read the property "attachments" in class "App\Entity\User"." at PropertyAccessor.php line 456"
+
+---------------------------------------------------------------------------
+
+by Seb33300 at 2026-07-07T09:53:39Z
+
+Hi @finnef just pushed another fix, if you can test it
+
+---------------------------------------------------------------------------
+
+by finnef at 2026-07-07T13:04:53Z
+
+Latest patch works everywhere for me!
+
+---------------------------------------------------------------------------
+
+by KDederichs at 2026-07-17T12:25:11Z
+
+If it helps make a decision if this is gonna be merged anytime soon...
+I've been running this in production for a long while now (the original PR and now the extended version) and it's been running just fine without any issues.
+I'd really love to see this finally added to the code base officially without having to patch it in every time

@@ -3,7 +3,7 @@
 {% extends null != ea ? ea.templatePath('layout') : '@EasyAdmin/page/login_minimal.html.twig' %}
 {% trans_default_domain null != ea ? ea.i18n.translationDomain : (translation_domain is defined ? translation_domain ?? 'messages') %}
 
-{% block body_class 'page-login' %}
+{% block body_class 'd-flex align-items-center justify-content-center min-vh-100' %}
 {% block page_title %}{{ page_title is defined ? page_title|raw : (null != ea ? ea.dashboardTitle|raw : '') }}{% endblock %}
 
 {% block head_favicon %}
@@ -22,84 +22,106 @@
     {% set _remember_me_label = remember_me_label is defined ? remember_me_label|trans : 'login_page.remember_me'|trans({}, 'EasyAdminBundle') %}
     {% set _sign_in_label = sign_in_label is defined ? sign_in_label|trans : 'login_page.sign_in'|trans({}, 'EasyAdminBundle') %}
 
-    {{ include('@EasyAdmin/flash_messages.html.twig') }}
+    <div class="container" style="max-width: 576px;">
+        {{ include('@EasyAdmin/flash_messages.html.twig') }}
 
-    <div class="login-wrapper">
-        <header class="main-header">
-            <div id="header-logo">
-                {% block header_logo %}
-                    {% if page_title %}
-                        {% if null != ea %}
-                            <a class="logo {{ page_title|length > 14 ? 'logo-long' }}" title="{{ page_title|striptags }}" href="{{ path(ea.dashboardRouteName) }}">
-                                {{ page_title|raw }}
-                            </a>
-                        {% else %}
-                            <div class="logo {{ page_title|length > 14 ? 'logo-long' }}">
-                                {{ page_title|raw }}
-                            </div>
+        <div class="card shadow-sm rounded-4 overflow-hidden my-3" style="background: var(--content-panel-bg);">
+            <div class="card-body p-3 p-sm-5 d-flex flex-column gap-4">
+                <header class="text-center">
+                    {% block header_logo %}
+                        {% if page_title %}
+                            <h1 class="h3 fw-bold mb-0 text-truncate">
+                                {% if null != ea %}
+                                    <a class="text-decoration-none text-body" title="{{ page_title|striptags }}" href="{{ path(ea.dashboardRouteName) }}">
+                                        {{ page_title|raw }}
+                                    </a>
+                                {% else %}
+                                    {{ page_title|raw }}
+                                {% endif %}
+                            </h1>
                         {% endif %}
+                    {% endblock header_logo %}
+                </header>
+
+                <section class="content">
+                    {% if error|default(false) %}
+                        <div class="alert alert-danger d-flex align-items-center mb-4 rounded-3 border-0 bg-danger bg-opacity-10 text-danger" role="alert">
+                            <i class="fa-solid fa-triangle-exclamation me-3"></i>
+                            <div class="small fw-medium">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                        </div>
                     {% endif %}
-                {% endblock header_logo %}
-            </div>
-        </header>
 
-        <section class="content">
-            {% if error|default(false) %}
-                <div class="w-100 alert alert-danger rounded mb-3">
-                    {{ error.messageKey|trans(error.messageData, 'security') }}
-                </div>
-            {% endif %}
+                    {% block login_form_wrapper %}
+                    <form method="post" action="{{ action|default('') }}" class="d-flex flex-column gap-4">
+                        <div class="d-flex flex-column gap-4">
+                            {% if csrf_token_intention|default(false) %}
+                                <input type="hidden" name="_csrf_token" value="{{ csrf_token(csrf_token_intention) }}">
+                            {% endif %}
 
-            {% block login_form_wrapper %}
-            <form method="post" action="{{ action|default('') }}">
-                {% if csrf_token_intention|default(false) %}
-                    <input type="hidden" name="_csrf_token" value="{{ csrf_token(csrf_token_intention) }}">
-                {% endif %}
+                            <input type="hidden" name="{{ target_path_parameter|default('_target_path') }}" value="{{ target_path|default(null != ea ? path(ea.dashboardRouteName) : '/') }}" />
 
-                <input type="hidden" name="{{ target_path_parameter|default('_target_path') }}" value="{{ target_path|default(null != ea ? path(ea.dashboardRouteName) : '/') }}" />
+                            {% block login_form_credentials_wrapper %}
+                                <div>
+                                    <label class="form-label fw-bold" for="username">
+                                        {{ _username_label }}<span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" id="username" name="{{ username_parameter|default('_username') }}" class="form-control rounded-3" value="{{ last_username|default('') }}" required autofocus autocomplete="username">
+                                </div>
 
-                {% block login_form_credentials_wrapper %}
-                    <div class="form-group">
-                        <label class="form-control-label required" for="username">{{ _username_label }}</label>
-                        <div class="form-widget">
-                            <input type="text" id="username" name="{{ username_parameter|default('_username') }}" class="form-control" value="{{ last_username|default('') }}" required autofocus autocomplete="username">
-                        </div>
-                    </div>
+                                <div>
+                                    <label class="form-label fw-bold" for="password">
+                                        {{ _password_label }}<span class="text-danger">*</span>
+                                    </label>
+                                    <div class="input-group rounded-3">
+                                        <input type="password" id="password" name="{{ password_parameter|default('_password') }}" class="form-control rounded-start-3" required autocomplete="current-password" aria-describedby="password-toggle-btn">
+                                        <button class="btn btn-outline-secondary border border-start-0 rounded-start-0 rounded-end-3 m-0 h-100 shadow-none px-3 py-2 d-flex align-items-center justify-content-center bg-transparent"
+                                                type="button" id="password-toggle-btn" aria-label="Show password" aria-pressed="false">
+                                            <i class="fa-solid fa-eye text-muted" style="width: 17px"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            {% endblock login_form_credentials_wrapper %}
 
-                    <div class="form-group">
-                        <label class="form-control-label required" for="password">{{ _password_label }}</label>
-                        <div class="form-widget">
-                            <input type="password" id="password" name="{{ password_parameter|default('_password') }}" class="form-control" required autocomplete="current-password">
-                        </div>
-
-                        {% if forgot_password_enabled|default(false) %}
-                            <div class="form-text">
-                                <a href="{{ forgot_password_path|default('#') }}">{{ _forgot_password_label }}</a>
+                            <div class="d-flex justify-content-between align-items-center">
+                                {% if remember_me_enabled|default(false) %}
+                                    <div class="d-flex align-items-center form-check p-0 m-0">
+                                        <input class="form-check-input shadow-none border m-0" type="checkbox" id="remember_me" name="{{ remember_me_parameter|default('_remember_me') }}" {{ remember_me_checked|default(false) ? 'checked' }}>
+                                        <label class="form-check-label small text-muted fw-bold" for="remember_me">
+                                            {{ _remember_me_label }}
+                                        </label>
+                                    </div>
+                                {% endif %}
+                                {% if forgot_password_enabled|default(false) %}
+                                    <a href="{{ forgot_password_path|default('#') }}" class="small text-decoration-none fw-medium">{{ _forgot_password_label }}</a>
+                                {% endif %}
                             </div>
-                        {% endif %}
-                    </div>
-                {% endblock login_form_credentials_wrapper %}
+                        </div>
 
-                {% if remember_me_enabled|default(false) %}
-                    <div class="form-group">
-                        <input class="form-check-input" type="checkbox" id="remember_me" name="{{ remember_me_parameter|default('_remember_me') }}" {{ remember_me_checked|default(false) ? 'checked' }}>
-                        <label class="form-check-label" for="remember_me">
-                            {{ _remember_me_label }}
-                        </label>
-                    </div>
-                {% endif %}
+                        <div class="d-grid gap-2">
+                            <twig:ea:Button type="submit" variant="primary" size="lg" isBlock class="rounded-3">{{ _sign_in_label }}</twig:ea:Button>
 
-                <twig:ea:Button type="submit" variant="primary" size="lg" isBlock>{{ _sign_in_label }}</twig:ea:Button>
-            </form>
+                            {% block login_form_after_sign_in_button %}{% endblock %}
+                        </div>
+                    </form>
 
-            {% block login_form_footer %}{% endblock login_form_footer %}
+                    {% block login_form_footer %}{% endblock login_form_footer %}
+                    {% endblock login_form_wrapper %}
+                </section>
+            </div>
+        </div>
 
-            {% guard function csp_nonce %}
-                <script src="{{ asset('login.js', constant('EasyCorp\\Bundle\\EasyAdminBundle\\Asset\\AssetPackage::PACKAGE_NAME')) }}" nonce="{{ csp_nonce('script') }}"></script>
-            {% else %}
-                <script src="{{ asset('login.js', constant('EasyCorp\\Bundle\\EasyAdminBundle\\Asset\\AssetPackage::PACKAGE_NAME')) }}"></script>
-            {% endguard %}
-            {% endblock login_form_wrapper %}
-        </section>
+        <footer class="mt-5 text-center text-muted">
+            {% block footer_custom_content %}
+                {# Custom footer content here #}
+            {% endblock %}
+        </footer>
     </div>
+{% endblock %}
+
+{% block body_javascript %}
+    {% guard function csp_nonce %}
+        <script src="{{ asset('login.js', constant('EasyCorp\\Bundle\\EasyAdminBundle\\Asset\\AssetPackage::PACKAGE_NAME')) }}" nonce="{{ csp_nonce('script') }}"></script>
+    {% else %}
+        <script src="{{ asset('login.js', constant('EasyCorp\\Bundle\\EasyAdminBundle\\Asset\\AssetPackage::PACKAGE_NAME')) }}"></script>
+    {% endguard %}
 {% endblock %}

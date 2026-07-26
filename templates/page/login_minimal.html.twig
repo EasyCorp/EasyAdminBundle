@@ -2,7 +2,7 @@
    directly in your applications. Instead, use the 'login.html.twig' template #}
 {% trans_default_domain translation_domain ?? 'messages' %}
 <!DOCTYPE html>
-<html>
+<html lang="{{ app.request.locale }}" dir="ltr">
     <head>
         {% block head_metas %}
             <meta charset="utf-8">
@@ -36,7 +36,21 @@
         {% endblock head_javascript %}
     </head>
 
-    <body id="{% block body_id %}{% endblock %}" class="ea {% block body_class %}{% endblock %}">
+    <body id="{% block body_id %}{% endblock %}"
+          class="ea {% block body_class %}{% endblock %}"
+          data-ea-dark-scheme-is-enabled="true"
+          data-ea-default-color-scheme="auto">
+
+        {% block javascript_page_color_scheme %}
+            {% guard function csp_nonce %}
+                <script src="{{ asset('page-color-scheme.js', constant('EasyCorp\\Bundle\\EasyAdminBundle\\Asset\\AssetPackage::PACKAGE_NAME')) }}" nonce="{{ csp_nonce('script') }}"></script>
+            {% else %}
+                <script src="{{ asset('page-color-scheme.js', constant('EasyCorp\\Bundle\\EasyAdminBundle\\Asset\\AssetPackage::PACKAGE_NAME')) }}"></script>
+            {% endguard %}
+        {% endblock javascript_page_color_scheme %}
+
         {% block wrapper_wrapper %}{% endblock wrapper_wrapper %}
+
+        {% block body_javascript %}{% endblock %}
     </body>
 </html>

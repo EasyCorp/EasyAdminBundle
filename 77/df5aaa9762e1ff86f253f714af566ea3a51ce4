@@ -1,0 +1,12 @@
+---------------------------------------------------------------------------
+
+by Seb33300 at 2026-07-25T16:16:36Z
+
+I have a strange feeling like spacing below is wrong. Like the text below the bar is too close from the bar.
+I just checked and it seems like the spacing between the bar and the text below is a bit smaller than the spacing between the text above (without considering icons / badge).
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2026-07-25T17:32:36Z
+
+@Seb33300 if you refer to the text that reads _"Some help message displayed below the tabs"_ that's the help message that tabs can optionally define. Most tabs don't define this, so you'll rarely see it. In any case, when a tab defines it, we should probably render it close to the tabs list so users can associate it to the tab, not to the contents below.

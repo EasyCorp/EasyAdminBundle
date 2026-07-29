@@ -1,0 +1,7 @@
+---------------------------------------------------------------------------
+
+by nlemoine at 2026-07-23T11:04:07Z
+
+Nice work and approach! Have you considered about [DTCG tokens](https://www.designtokens.org/)? It's the emerging standard to define design tokens. Awesome tooling with [Terrazzo](https://terrazzo.app/), WP uses it for its [admin theme redesign](https://github.com/WordPress/gutenberg/tree/b74670e5953cb52449376e0177d0ef74edc8e36c/packages/theme/tokens).
+
+I built a PHP library to consume them: https://github.com/nlemoine/dtcg-tokens

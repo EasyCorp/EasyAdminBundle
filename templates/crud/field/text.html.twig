@@ -1,7 +1,13 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
 {# @var field \EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto #}
 {# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
-{% if ea().crud.currentAction == 'detail' %}
+{% if field.customOptions.get('renderAsLinkToDetailAction') and ea().crud.currentAction == 'index' %}
+    {% set url = ea_url()
+        .setAction('detail')
+        .setEntityId(entity.primaryKeyValue)
+    %}
+    <a href="{{ url }}" title="{{ field.value }}">{{ field.formattedValue|raw }}</a>
+{% elseif ea().crud.currentAction == 'detail' %}
     <span title="{{ field.value }}">{{ field.formattedValue|raw|nl2br }}</span>
 {% else %}
     <span title="{{ field.value }}">{{ field.formattedValue|raw }}</span>

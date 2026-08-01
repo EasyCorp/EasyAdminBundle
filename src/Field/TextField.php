@@ -15,6 +15,7 @@ final class TextField implements FieldInterface
 
     public const OPTION_MAX_LENGTH = 'maxLength';
     public const OPTION_RENDER_AS_HTML = 'renderAsHtml';
+    public const OPTION_RENDER_AS_LINK_TO_DETAIL_ACTION = 'renderAsLinkToDetailAction';
     public const OPTION_STRIP_TAGS = 'stripTags';
 
     public static function new(string $propertyName, TranslatableInterface|string|bool|null $label = null): self
@@ -28,6 +29,7 @@ final class TextField implements FieldInterface
             ->setDefaultColumns('col-md-6 col-xxl-5')
             ->setCustomOption(self::OPTION_MAX_LENGTH, null)
             ->setCustomOption(self::OPTION_RENDER_AS_HTML, false)
+            ->setCustomOption(self::OPTION_RENDER_AS_LINK_TO_DETAIL_ACTION, false)
             ->setCustomOption(self::OPTION_STRIP_TAGS, false);
     }
 
@@ -49,6 +51,13 @@ final class TextField implements FieldInterface
     public function renderAsHtml(bool $asHtml = true): self
     {
         $this->setCustomOption(self::OPTION_RENDER_AS_HTML, $asHtml);
+
+        return $this;
+    }
+
+    public function renderAsLinkToDetailAction(bool $asLink = true): self
+    {
+        $this->setCustomOption(self::OPTION_RENDER_AS_LINK_TO_DETAIL_ACTION, $asLink);
 
         return $this;
     }

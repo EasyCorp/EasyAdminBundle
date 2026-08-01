@@ -95,7 +95,9 @@
                     {{ form_widget(form) }}
 
                     {% if has_append_html %}
-                        <span class="input-group-text">{{ field.append_html|raw }}</span>
+                        <div class="input-group-append">
+                            <span class="input-group-text">{{ field.append_html|raw }}</span>
+                        </div>
                     {% endif %}
                 {% if has_input_groups %}</div>{% endif %}
 

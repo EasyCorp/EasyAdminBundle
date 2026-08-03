@@ -19,6 +19,7 @@ final class BooleanField implements FieldInterface
     public const OPTION_SWITCH_VARIANT = 'switchVariant';
     public const OPTION_HIDE_VALUE_WHEN_TRUE = 'hideValueWhenTrue';
     public const OPTION_HIDE_VALUE_WHEN_FALSE = 'hideValueWhenFalse';
+    public const OPTION_SWAP_LABEL_AND_VALUE = 'swapLabelAndValue';
     /** @internal */
     public const OPTION_TOGGLE_URL = 'toggleUrl';
     /** @internal */
@@ -36,7 +37,8 @@ final class BooleanField implements FieldInterface
             ->addJsFiles(Asset::fromEasyAdminAssetPackage('field-boolean.js')->onlyOnIndex())
             ->setCustomOption(self::OPTION_RENDER_AS_SWITCH, true)
             ->setCustomOption(self::OPTION_HIDE_VALUE_WHEN_TRUE, false)
-            ->setCustomOption(self::OPTION_HIDE_VALUE_WHEN_FALSE, false);
+            ->setCustomOption(self::OPTION_HIDE_VALUE_WHEN_FALSE, false)
+            ->setCustomOption(self::OPTION_SWAP_LABEL_AND_VALUE, true);
     }
 
     public function renderAsSwitch(bool $isASwitch = true): self
@@ -89,6 +91,19 @@ final class BooleanField implements FieldInterface
     public function hideValueWhenFalse(bool $hide = true): self
     {
         $this->setCustomOption(self::OPTION_HIDE_VALUE_WHEN_FALSE, $hide);
+
+        return $this;
+    }
+
+    /**
+     * On the detail page, boolean fields swap the usual label <-> value order
+     * to display the value (which is always tiny) before the label.
+     * Pass FALSE to this method to display the label and the value of boolean
+     * fields in the same order as the rest of the fields.
+     */
+    public function swapLabelAndValue(bool $swap = true): self
+    {
+        $this->setCustomOption(self::OPTION_SWAP_LABEL_AND_VALUE, $swap);
 
         return $this;
     }

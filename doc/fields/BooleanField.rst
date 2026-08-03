@@ -87,4 +87,14 @@ These methods also enable the switch rendering, so you don't need to call
 The color is applied everywhere the field is rendered as a switch (the ``index``
 toggle and the ``edit``/``new`` forms). The "off" state always uses the neutral color.
 
+``swapLabelAndValue``
+~~~~~~~~~~~~~~~~~~~~~
+
+In the ``detail`` page, boolean fields swap the usual label <-> value order to
+display the value (which is always a tiny ``Yes``/``No`` badge or a switch)
+before the label. If you prefer to display the label and the value of boolean
+fields in the same order as the rest of the fields, use this option::
+
+    yield BooleanField::new('...')->swapLabelAndValue(false);
+
 .. _`CheckboxType`: https://symfony.com/doc/current/reference/forms/types/checkbox.html

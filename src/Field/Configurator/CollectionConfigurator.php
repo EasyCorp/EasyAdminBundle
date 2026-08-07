@@ -177,46 +177,20 @@ final class CollectionConfigurator implements FieldConfiguratorInterface
             return;
         }
 
-        $targetEntityFqcn = $entityDto->getClassMetadata()->getAssociationTargetClass($fieldDto->getProperty());
-
         $editEntityDto = $this->createEntityDto(
-            $targetEntityFqcn,
+            $entityDto->getClassMetadata()->getAssociationTargetClass($fieldDto->getProperty()),
             $targetCrudControllerFqcn,
             Action::EDIT,
             $fieldDto->getCustomOption(CollectionField::OPTION_ENTRY_CRUD_EDIT_PAGE_NAME) ?? Crud::PAGE_EDIT,
             Crud::PAGE_EDIT,
         );
         $newEntityDto = $this->createEntityDto(
-            $targetEntityFqcn,
+            $entityDto->getClassMetadata()->getAssociationTargetClass($fieldDto->getProperty()),
             $targetCrudControllerFqcn,
             Action::NEW,
             $fieldDto->getCustomOption(CollectionField::OPTION_ENTRY_CRUD_NEW_PAGE_NAME) ?? Crud::PAGE_NEW,
             Crud::PAGE_NEW,
         );
-
-        // Build new collection entries through the embedded controller's createEntity()
-        // so its overrides (default values, factory pattern, etc.) are honored, instead of
-        // falling back to instantiating `$targetEntityFqcn` directly via Symfony Form.
-        // - `prototype_data` shapes the rendered prototype HTML (read at build time).
-        // - `entry_options.empty_data` is called by Symfony when binding a new (empty)
-        //   entry on form submit, once per added entry.
-        // The context is intentionally NOT swapped to the embedded entity around the
-        // createEntity() call: callers commonly read `$this->getContext()->getEntity()`
-        // to populate the parent foreign key on the new entry, which only works when the
-        // parent context is left in place.
-        // See #6991.
-        $controllerFactory = $this->controllerFactory;
-        $requestStack = $this->requestStack;
-        $createEntryEntity = static function () use ($controllerFactory, $requestStack, $targetCrudControllerFqcn, $targetEntityFqcn): object {
-            $request = $requestStack->getMainRequest();
-            $controller = null !== $request
-                ? $controllerFactory->getCrudControllerInstance($targetCrudControllerFqcn, Action::NEW, $request)
-                : null;
-
-            return null !== $controller
-                ? $controller->createEntity($targetEntityFqcn)
-                : new $targetEntityFqcn();
-        };
 
         $fieldDto->setFormTypeOption('entry_type', CrudFormType::class);
         $fieldDto->setFormTypeOption('entry_options.entityDto', $editEntityDto);
@@ -225,8 +199,6 @@ final class CollectionConfigurator implements FieldConfiguratorInterface
         } catch (UndefinedOptionsException $exception) {
             throw new \RuntimeException(sprintf('The "%s" collection field of "%s" uses the "useEntryCrudForm()" method, which requires Symfony 6.1 or newer to work. Upgrade your Symfony version or use instead the "setEntryType()" method to render the collection entries using a Symfony form.', $fieldDto->getProperty(), $context->getCrud()?->getControllerFqcn()), 0, $exception);
         }
-        $fieldDto->setFormTypeOptionIfNotSet('prototype_data', $createEntryEntity());
-        $fieldDto->setFormTypeOptionIfNotSet('entry_options.empty_data', $createEntryEntity);
     }
 
     /**

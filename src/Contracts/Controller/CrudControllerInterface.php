@@ -87,9 +87,9 @@ interface CrudControllerInterface
     /**
      * @param class-string<TEntity> $entityFqcn
      *
-     * @phpstan-return TEntity
+     * @phpstan-return ?TEntity
      */
-    public function createEntity(string $entityFqcn): object;
+    public function createEntity(string $entityFqcn): ?object;
 
     /**
      * @param TEntity $entityInstance

@@ -29,7 +29,7 @@ class ToggleSwitch {
 
                 document.dispatchEvent(new CustomEvent('ea.form.ajax.switch', {
                     cancelable: true,
-                    detail: { response: response, field: this.field, error: null}
+                    detail: { response: response, field: this.field, error: null }
                 }));
 
                 return response.text();
@@ -39,7 +39,7 @@ class ToggleSwitch {
                 this.#disableField();
                 document.dispatchEvent(new CustomEvent('ea.form.ajax.switch', {
                     cancelable: true,
-                    detail: { response: null, field: this.field, error: reason}
+                    detail: { response: null, field: this.field, error: reason }
                 }));
             });
     }

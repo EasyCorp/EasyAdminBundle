@@ -9,6 +9,11 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\AdminRouteApp\Entity\P
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\AdminRouteApp\Kernel;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Routing\Exception\ResourceNotFoundException;
+use Symfony\Component\Routing\Generator\UrlGenerator;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\Matcher\UrlMatcher;
+use Symfony\Component\Routing\RequestContext;
 
 /**
  * @group legacy
@@ -158,6 +163,190 @@ class AdminRouteTest extends WebTestCase
 
         // #[AdminRoute] applied only to the method should not create a route for the class
         $this->assertNull($router->getRouteCollection()->get('admin_standalone'));
+    }
+
+    public function testDashboardRouteHostIsInheritedByCrudRoutes(): void
+    {
+        $client = static::createClient();
+        $router = $client->getContainer()->get('router');
+
+        $dashboardRoute = $router->getRouteCollection()->get('host_admin');
+        $this->assertNotNull($dashboardRoute);
+        $this->assertSame('backend.example.com', $dashboardRoute->getHost());
+
+        $indexRoute = $router->getRouteCollection()->get('host_admin_built_in_action_list');
+        $this->assertNotNull($indexRoute);
+        $this->assertSame('backend.example.com', $indexRoute->getHost());
+
+        $deleteRoute = $router->getRouteCollection()->get('host_admin_built_in_action_delete');
+        $this->assertNotNull($deleteRoute);
+        $this->assertSame('backend.example.com', $deleteRoute->getHost());
+    }
+
+    public function testDashboardRouteHostIsInheritedByInvokableControllerRoutes(): void
+    {
+        $client = static::createClient();
+        $router = $client->getContainer()->get('router');
+
+        $route = $router->getRouteCollection()->get('host_admin_custom_invokable');
+        $this->assertNotNull($route);
+        $this->assertSame('backend.example.com', $route->getHost());
+    }
+
+    public function testDashboardRouteHostIsInheritedByMethodRoutes(): void
+    {
+        $client = static::createClient();
+        $router = $client->getContainer()->get('router');
+
+        $action1Route = $router->getRouteCollection()->get('host_admin_standalone_action1');
+        $this->assertNotNull($action1Route);
+        $this->assertSame('backend.example.com', $action1Route->getHost());
+
+        $action2Route = $router->getRouteCollection()->get('host_admin_standalone_action2');
+        $this->assertNotNull($action2Route);
+        $this->assertSame('backend.example.com', $action2Route->getHost());
+    }
+
+    public function testAdminRouteHostTakesPrecedenceOverDashboardHost(): void
+    {
+        $client = static::createClient();
+        $router = $client->getContainer()->get('router');
+
+        // the host defined by the #[AdminRoute] attribute wins over the dashboard host
+        $route = $router->getRouteCollection()->get('host_admin_custom_host');
+        $this->assertNotNull($route);
+        $this->assertSame('files.example.com', $route->getHost());
+
+        // and it is also applied to dashboards that do not define any host
+        $route2 = $router->getRouteCollection()->get('admin_custom_host');
+        $this->assertNotNull($route2);
+        $this->assertSame('files.example.com', $route2->getHost());
+
+        // the same applies to invokable controllers
+        $invokableRoute = $router->getRouteCollection()->get('host_admin_custom_host_invokable');
+        $this->assertNotNull($invokableRoute);
+        $this->assertSame('files.example.com', $invokableRoute->getHost());
+
+        $invokableRoute2 = $router->getRouteCollection()->get('admin_custom_host_invokable');
+        $this->assertNotNull($invokableRoute2);
+        $this->assertSame('files.example.com', $invokableRoute2->getHost());
+    }
+
+    /**
+     * @see https://github.com/EasyCorp/EasyAdminBundle/issues/7119
+     */
+    public function testDashboardsWithDifferentHostsAreIsolated(): void
+    {
+        $client = static::createClient();
+        $collection = $client->getContainer()->get('router')->getRouteCollection();
+
+        // the CRUD routes of a dashboard restricted to a host are only matched on that host
+        $matcher = new UrlMatcher($collection, new RequestContext('', 'GET', 'backend.example.com'));
+        $this->assertSame('host_admin_built_in_action_list', $matcher->match('/host-admin/built-in-action/index')['_route']);
+
+        // and they must not leak to any other host
+        $matcher = new UrlMatcher($collection, new RequestContext('', 'GET', 'intranet.example.com'));
+        $this->expectException(ResourceNotFoundException::class);
+        $matcher->match('/host-admin/built-in-action/index');
+    }
+
+    /**
+     * @see https://github.com/EasyCorp/EasyAdminBundle/issues/7119
+     * @see https://github.com/EasyCorp/EasyAdminBundle/issues/6756
+     */
+    public function testAbsoluteUrlsUseTheHostOfTheirDashboard(): void
+    {
+        $client = static::createClient();
+        $collection = $client->getContainer()->get('router')->getRouteCollection();
+
+        // the generator is built from the route collection instead of using the 'router'
+        // service, so that a compiled generator in the cache cannot skew the result
+        $generator = new UrlGenerator($collection, new RequestContext('', 'GET', 'www.example.com'));
+
+        $urls = [
+            'host_admin' => 'http://backend.example.com/host-admin',
+            'host_admin_built_in_action_list' => 'http://backend.example.com/host-admin/built-in-action/index',
+            'host_admin_standalone_action1' => 'http://backend.example.com/host-admin/standalone/action1',
+        ];
+
+        foreach ($urls as $routeName => $expectedUrl) {
+            $this->assertSame($expectedUrl, $generator->generate($routeName, [], UrlGeneratorInterface::ABSOLUTE_URL));
+        }
+    }
+
+    /**
+     * @see https://github.com/EasyCorp/EasyAdminBundle/issues/6756
+     */
+    public function testParameterizedDashboardHostIsInheritedWithItsDefaultsAndRequirements(): void
+    {
+        $client = static::createClient();
+        $collection = $client->getContainer()->get('router')->getRouteCollection();
+
+        $routeNames = ['param_admin', 'param_admin_built_in_action_list', 'param_admin_standalone_action1'];
+
+        foreach ($routeNames as $routeName) {
+            $route = $collection->get($routeName);
+            $this->assertNotNull($route, sprintf('Expected route "%s" not found', $routeName));
+
+            // the host placeholder is useless without the default and requirement that define it
+            $this->assertSame('{subdomain}', $route->getHost());
+            $this->assertSame('admin.example.com', $route->getDefault('subdomain'));
+            $this->assertSame('admin.*', $route->getRequirement('subdomain'));
+        }
+
+        // without the inherited default, generating these URLs throws a MissingMandatoryParametersException
+        $generator = new UrlGenerator($collection, new RequestContext('', 'GET', 'www.example.com'));
+
+        $this->assertSame(
+            'http://admin.example.com/param-admin/built-in-action/index',
+            $generator->generate('param_admin_built_in_action_list', [], UrlGeneratorInterface::ABSOLUTE_URL)
+        );
+        $this->assertSame(
+            'http://admin.example.com/param-admin/standalone/action1',
+            $generator->generate('param_admin_standalone_action1', [], UrlGeneratorInterface::ABSOLUTE_URL)
+        );
+    }
+
+    /**
+     * CRUD controllers are mounted on every dashboard, so a dashboard restricted to a host
+     * also restricts the CRUD routes generated for it. Use the 'allowedControllers' and
+     * 'deniedControllers' arguments of #[AdminDashboard] to control which ones are mounted.
+     *
+     * @see https://github.com/EasyCorp/EasyAdminBundle/issues/7411
+     */
+    public function testCrudRoutesMountedOnAHostRestrictedDashboardInheritItsHost(): void
+    {
+        $client = static::createClient();
+        $collection = $client->getContainer()->get('router')->getRouteCollection();
+
+        $crudRouteNames = [];
+        foreach ($collection as $name => $route) {
+            if (str_starts_with($name, 'host_admin_built_in_action_')) {
+                $crudRouteNames[] = $name;
+                $this->assertSame('backend.example.com', $route->getHost(), sprintf('Route "%s" should be restricted to the dashboard host', $name));
+            }
+        }
+
+        $this->assertNotEmpty($crudRouteNames);
+    }
+
+    public function testRoutesOfDashboardsWithoutHostAreNotRestricted(): void
+    {
+        $client = static::createClient();
+        $router = $client->getContainer()->get('router');
+
+        $routeNames = [
+            'admin',
+            'admin_built_in_action_list',
+            'admin_custom_invokable',
+            'admin_standalone_action1',
+        ];
+
+        foreach ($routeNames as $routeName) {
+            $route = $router->getRouteCollection()->get($routeName);
+            $this->assertNotNull($route, sprintf('Expected route "%s" not found', $routeName));
+            $this->assertSame('', $route->getHost(), sprintf('Route "%s" should not be restricted to a host', $routeName));
+        }
     }
 
     public function testStandaloneMethodCrudRoutes(): void

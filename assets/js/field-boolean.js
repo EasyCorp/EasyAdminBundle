@@ -27,12 +27,21 @@ class ToggleSwitch {
                     this.#disableField();
                 }
 
+                document.dispatchEvent(new CustomEvent('ea.form.ajax.switch', {
+                    cancelable: true,
+                    detail: { response: response, field: this.field, error: null}
+                }));
+
                 return response.text();
             })
-            .then(() => {
-                /* do nothing else when the toggle request is successful */
-            })
-            .catch(() => this.#disableField());
+            .then(() => { /* do nothing else when the toggle request is successful */ })
+            .catch((reason) => {
+                this.#disableField();
+                document.dispatchEvent(new CustomEvent('ea.form.ajax.switch', {
+                    cancelable: true,
+                    detail: { response: null, field: this.field, error: reason}
+                }));
+            });
     }
 
     // used in case of error, to restore the original toggle field value and disable it

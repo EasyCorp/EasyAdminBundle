@@ -64,6 +64,8 @@ final class FieldDto
      */
     private $uniqueId;
     private KeyValueStore $displayedOn;
+    /** @var callable|null */
+    private $displayCallable;
     /** @var array<string, bool|int|float|string> */
     private array $htmlAttributes = [];
 
@@ -531,6 +533,16 @@ final class FieldDto
     public function isDisplayedOn(string $pageName): bool
     {
         return $this->displayedOn->has($pageName);
+    }
+
+    public function isDisplayed(?EntityDto $entityDto = null): bool
+    {
+        return null === $this->displayCallable || (bool) \call_user_func($this->displayCallable, $entityDto?->getInstance());
+    }
+
+    public function setDisplayCallable(callable $displayCallable): void
+    {
+        $this->displayCallable = $displayCallable;
     }
 
     /**

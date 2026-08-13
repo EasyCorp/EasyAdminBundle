@@ -13,6 +13,8 @@ return [
     'datagrid' => [
         'hidden_results' => 'Některé položky nemohly být zobrazeny neboť nemáte patřičná oprávnění',
         'no_results' => 'Žádné položky.',
+        'sort' => 'Seřadit',
+        'sort_by' => 'Seřadit podle',
     ],
 
     'paginator' => [

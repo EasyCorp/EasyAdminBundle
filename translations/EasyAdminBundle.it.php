@@ -13,6 +13,8 @@ return [
     'datagrid' => [
         'hidden_results' => 'Alcuni risultati non possono essere visualizzati perché non hai permessi sufficienti',
         'no_results' => 'Nessun risultato trovato.',
+        'sort' => 'Ordina',
+        'sort_by' => 'Ordina per',
     ],
 
     'paginator' => [

@@ -46,6 +46,7 @@
 {% endblock %}
 
 {% set has_batch_actions = batch_actions|length > 0 %}
+{% set sortable_fields = (entities|filter(entity => entity.isAccessible)|first.fields ?? [])|filter(field => field.isSortable) %}
 {% block page_actions %}
     {% if filters|length > 0 %}
         <div class="datagrid-filters">
@@ -65,6 +66,16 @@
             {% endblock filters %}
         </div>
     {% endif %}
+
+    {% block sort_actions %}
+        {% if sortable_fields|length > 0 %}
+            <div class="datagrid-sort d-md-none">
+                <twig:ea:Modal:Trigger target="#modal-sort" variant="secondary" icon="internal:sort-arrows">
+                    {{ t('datagrid.sort', ea.i18n.translationParameters, 'EasyAdminBundle')|trans }}
+                </twig:ea:Modal:Trigger>
+            </div>
+        {% endif %}
+    {% endblock sort_actions %}
 
     {% block global_actions %}
         <div class="global-actions">
@@ -269,5 +280,9 @@
 
     {% if has_batch_actions %}
         {{ include('@EasyAdmin/crud/includes/_batch_action_modal.html.twig', {}, with_context: false) }}
+    {% endif %}
+
+    {% if sortable_fields|length > 0 %}
+        {{ include('@EasyAdmin/crud/includes/_sort_modal.html.twig') }}
     {% endif %}
 {% endblock main %}

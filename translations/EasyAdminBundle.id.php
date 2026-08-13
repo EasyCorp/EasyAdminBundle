@@ -13,6 +13,8 @@ return [
     'datagrid' => [
         'hidden_results' => 'Beberapa hasil tidak dapat ditampilkan karena Anda tidak memiliki hak akses yang cukup',
         'no_results' => 'Tidak ada hasil yang ditemukan.',
+        'sort' => 'Urutkan',
+        'sort_by' => 'Urutkan berdasarkan',
     ],
 
     'paginator' => [

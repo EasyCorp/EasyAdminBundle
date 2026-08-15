@@ -49,6 +49,13 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
         // if no choices are passed to the field, check if it's related to an Enum;
         // in that case, get all the possible values of the Enum (Doctrine supports only BackedEnum as enumType)
         $enumTypeClass = $field->getDoctrineMetadata()->get('enumType');
+        // only infer the enum class when choices are a plain list of cases; if the user
+        // passed explicit labels (e.g. ['Foo' => Bar::Foo]), those labels must be kept
+        // instead of enabling the enum-based labeling below
+        if (null === $enumTypeClass && $allChoicesAreEnums && \count($choices) >= 1 && array_is_list($choices)) {
+            $enumTypeClass = \get_class($choices[array_key_first($choices)]);
+        }
+
         if (0 === \count($choices) && null !== $enumTypeClass && enum_exists($enumTypeClass)) {
             $choices = $enumTypeClass::cases();
             $allChoicesAreEnums = true;

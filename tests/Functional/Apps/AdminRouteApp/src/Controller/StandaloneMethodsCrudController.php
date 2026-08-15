@@ -35,4 +35,31 @@ class StandaloneMethodsCrudController extends AbstractCrudController
     {
         return new Response('Standalone CRUD Action 2');
     }
+
+    #[AdminRoute(
+        path: '/crud/action3/{entityId}',
+        name: 'crud_action3',
+        options: [
+            'requirements' => [
+                'entityId' => '\d+',
+            ],
+            'options' => [
+                'compiler_class' => 'Symfony\Component\Routing\RouteCompiler',
+            ],
+            'defaults' => [
+                'foo' => 'bar',
+            ],
+            'host' => 'admin.example.com',
+            'schemes' => 'https',
+            'condition' => 'context.getMethod() in ["GET", "HEAD"]',
+            'locale' => 'en',
+            'format' => 'html',
+            'utf8' => true,
+            'stateless' => true,
+        ]
+    )]
+    public function action3(): Response
+    {
+        return new Response('Standalone CRUD Action 3');
+    }
 }

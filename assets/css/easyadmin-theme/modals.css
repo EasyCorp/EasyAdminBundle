@@ -37,6 +37,43 @@
 .modal-dialog-xl {
     --bs-modal-width: 800px;
 }
+/* Bootstrap's .modal-fullscreen (and its responsive -*-down variants) remove the max-width,
+   but the `ea` layer wins over Bootstrap's layer, so the max-width cap defined above would
+   keep fullscreen modals narrow. Undo the cap for them (breakpoints must match Bootstrap's). */
+.modal-dialog.modal-fullscreen {
+    max-inline-size: none;
+    --bs-modal-width: 100%;
+}
+@media (max-width: 575.98px) {
+    .modal-dialog.modal-fullscreen-sm-down {
+        max-inline-size: none;
+        --bs-modal-width: 100%;
+    }
+}
+@media (max-width: 767.98px) {
+    .modal-dialog.modal-fullscreen-md-down {
+        max-inline-size: none;
+        --bs-modal-width: 100%;
+    }
+}
+@media (max-width: 991.98px) {
+    .modal-dialog.modal-fullscreen-lg-down {
+        max-inline-size: none;
+        --bs-modal-width: 100%;
+    }
+}
+@media (max-width: 1199.98px) {
+    .modal-dialog.modal-fullscreen-xl-down {
+        max-inline-size: none;
+        --bs-modal-width: 100%;
+    }
+}
+@media (max-width: 1399.98px) {
+    .modal-dialog.modal-fullscreen-xxl-down {
+        max-inline-size: none;
+        --bs-modal-width: 100%;
+    }
+}
 
 /* Appear/disappear in place with a quick fade + zoom (shadcn) instead of sliding from the top.
    Bootstrap only fades the backdrop, so we add opacity to the dialog here. Closing reuses the

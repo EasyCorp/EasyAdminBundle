@@ -330,6 +330,10 @@ class AdminRouterSubscriber implements EventSubscriberInterface
 
         $parameters = $this->requestMatcher->matchRequest($newRequest);
 
+        if (\is_array($parameters['_controller'])) {
+            return $parameters['_controller'][0];
+        }
+
         return $parameters['_controller'] ?? null;
     }
 

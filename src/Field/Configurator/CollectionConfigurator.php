@@ -233,6 +233,19 @@ final readonly class CollectionConfigurator implements FieldConfiguratorInterfac
         $fieldDto->setFormTypeOption('prototype_options.entityDto', $newEntityDto);
         $fieldDto->setFormTypeOptionIfNotSet('prototype_data', $createEntryEntity());
         $fieldDto->setFormTypeOptionIfNotSet('entry_options.empty_data', $createEntryEntity);
+
+        // The assets declared by entry fields (e.g. TextEditorField, FileField, a nested
+        // CollectionField...) live on the entry EntityDto, not on the parent CollectionField.
+        // Propagate them up so that AbstractCrudController::getFieldAssets(), which only
+        // walks top-level fields, picks them up and outputs the required CSS/JS on the
+        // form page that hosts the embedded CRUD form. See #6127.
+        $assets = $fieldDto->getAssets();
+        foreach ([$editEntityDto, $newEntityDto] as $entryEntityDto) {
+            foreach ($entryEntityDto->getFields() ?? [] as $entryField) {
+                $assets = $assets->mergeWith($entryField->getAssets());
+            }
+        }
+        $fieldDto->setAssets($assets);
     }
 
     /**

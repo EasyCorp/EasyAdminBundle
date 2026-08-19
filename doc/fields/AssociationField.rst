@@ -181,6 +181,50 @@ autocomplete options (``callback``, ``template``, ``choice_label``, etc.).
     the grouping property (e.g. using the ``setQueryBuilder()`` method) to make
     the group headers appear in a natural order.
 
+``linkToUrl``
+~~~~~~~~~~~~~
+
+By default, to-one associations link to the ``detail`` page of the related entity
+and to-many associations are rendered as a plain badge with a count. Use this
+option to replace that behavior with a custom URL.
+
+Pass a static string when the URL is known at configuration time::
+
+    yield AssociationField::new('category')->linkToUrl('https://example.com/categories');
+
+Pass a callable when the URL depends on the current entity or the admin context.
+The callable receives the ``EntityDto`` and the ``AdminContext`` as arguments::
+
+    use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
+    use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+
+    yield AssociationField::new('products')
+        ->linkToUrl(fn(EntityDto $entityDto): string => $this->generateUrl('admin_product_index', [
+                'filters' => [
+                    'category' => [
+                        'comparison' => '=',
+                        'value' => [
+                            'autocomplete' => $entityDto->getPrimaryKeyValue(),
+                        ],
+                    ]
+                ]
+            ]))
+        ;
+
+**Rendering depending on association type**
+
+For **to-one** associations, the value is rendered as a plain ``<a>`` tag pointing
+to the given URL. This URL takes priority over the auto-generated CRUD link::
+
+    // to-one: renders <a href="https://example.com">CategoryName</a>
+    yield AssociationField::new('category')->linkToUrl('https://example.com');
+
+For **to-many** associations, the count badge becomes clickable (rendered as an
+``<a>`` tag instead of a ``<span>``)::
+
+    // to-many: renders a clickable badge with the count
+    yield AssociationField::new('tags')->linkToUrl('https://example.com/tags');
+
 ``renderAsNativeWidget``
 ~~~~~~~~~~~~~~~~~~~~~~~~
 

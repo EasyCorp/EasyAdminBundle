@@ -19,6 +19,7 @@ final class AssociationField implements FieldInterface
     public const OPTION_EMBEDDED_CRUD_FORM_CONTROLLER = 'crudControllerFqcn';
     public const OPTION_WIDGET = 'widget';
     public const OPTION_QUERY_BUILDER_CALLABLE = 'queryBuilderCallable';
+    public const OPTION_URL = 'url';
     /** @internal this option is intended for internal use only */
     public const OPTION_RELATED_URL = 'relatedUrl';
     /** @internal this option is intended for internal use only */
@@ -55,6 +56,7 @@ final class AssociationField implements FieldInterface
             ->setCustomOption(self::OPTION_EMBEDDED_CRUD_FORM_CONTROLLER, null)
             ->setCustomOption(self::OPTION_WIDGET, self::WIDGET_AUTOCOMPLETE)
             ->setCustomOption(self::OPTION_QUERY_BUILDER_CALLABLE, null)
+            ->setCustomOption(self::OPTION_URL, null)
             ->setCustomOption(self::OPTION_RELATED_URL, null)
             ->setCustomOption(self::OPTION_DOCTRINE_ASSOCIATION_TYPE, null)
             ->setCustomOption(self::OPTION_RENDER_AS_EMBEDDED_FORM, false)
@@ -103,6 +105,13 @@ final class AssociationField implements FieldInterface
     public function setQueryBuilder(\Closure $queryBuilderCallable): self
     {
         $this->setCustomOption(self::OPTION_QUERY_BUILDER_CALLABLE, $queryBuilderCallable);
+
+        return $this;
+    }
+
+    public function linkToUrl(string|callable $url): self
+    {
+        $this->setCustomOption(self::OPTION_URL, $url);
 
         return $this;
     }

@@ -5,6 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entit
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Enum\BlogPostStateEnum;
 
 #[ORM\Entity]
 class BlogPost
@@ -38,6 +39,9 @@ class BlogPost
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     private $publisher;
+
+    #[ORM\Column(enumType: BlogPostStateEnum::class)]
+    private ?BlogPostStateEnum $state = BlogPostStateEnum::Draft;
 
     public function __construct()
     {
@@ -150,8 +154,25 @@ class BlogPost
         return $this->publisher;
     }
 
-    public function setPublisher(?User $publisher): void
+    public function setPublisher(?User $publisher): self
     {
         $this->publisher = $publisher;
+
+        return $this;
+    }
+
+    public function getState(): ?BlogPostStateEnum
+    {
+        return $this->state;
+    }
+
+    public function setState(string|BlogPostStateEnum|null $state): self
+    {
+        if (!$state instanceof BlogPostStateEnum) {
+            $state = BlogPostStateEnum::tryFrom($state);
+        }
+        $this->state = $state;
+
+        return $this;
     }
 }

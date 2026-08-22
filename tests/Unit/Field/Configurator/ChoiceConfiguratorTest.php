@@ -83,6 +83,35 @@ class ChoiceConfiguratorTest extends AbstractFieldTest
         $this->assertTrue(array_is_list($formChoices));
     }
 
+    public function testTranslatableBackedEnumChoices(): void
+    {
+        $field = ChoiceField::new(self::PROPERTY_NAME);
+        $field->setCustomOptions(['choices' => TranslatableStatusBackedEnum::cases()]);
+
+        // enums implementing TranslatableInterface must be passed to the form as a plain
+        // list of cases (not an array keyed by case name) so Symfony's EnumType uses its
+        // own translatable labeling instead of the case names as labels (see issue #7242).
+        $formChoices = $this->configure($field)->getFormTypeOption('choices');
+
+        $this->assertSame(TranslatableStatusBackedEnum::cases(), $formChoices);
+        $this->assertTrue(array_is_list($formChoices));
+    }
+
+    public function testTranslatableBackedEnumChoicesLabeled(): void
+    {
+        // when the user passes explicit labels for translatable enum cases, those labels
+        // must be kept as-is instead of applying the enum's own translatable labeling
+        $choices = [
+            'Draft label' => TranslatableStatusBackedEnum::Draft,
+            'Published label' => TranslatableStatusBackedEnum::Published,
+        ];
+
+        $field = ChoiceField::new(self::PROPERTY_NAME);
+        $field->setCustomOptions(['choices' => $choices]);
+
+        $this->assertSame($choices, $this->configure($field)->getFormTypeOption('choices'));
+    }
+
     public function testUnitEnumTypeChoices(): void
     {
         $field = ChoiceField::new(self::PROPERTY_NAME);

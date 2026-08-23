@@ -399,6 +399,18 @@ label.form-check-label {
     box-shadow: var(--form-input-error-shadow);
 }
 
+/*
+ * top-level fieldsets don't have the grid gutter provided by the row inside tabs
+ * don't wrap the entire form in a row because FormField::addColumn() creates its
+ * own row, which would result in .row > .row and doubled negative grid margins
+ * matching outer margin and inner padding reproduce the gutter without changing
+ * the form structure and stop applying when tabs or columns wrap the fieldset
+ */
+:is(.ea-new-form, .ea-edit-form) > .form-fieldset.has-fieldset-error {
+    margin-inline: calc(-1 * var(--ea-sp-6));
+    padding-inline: var(--ea-sp-6);
+}
+
 /* using CSS Grid is needed for a smooth collapse animation */
 .form-fieldset-body {
     display: grid;

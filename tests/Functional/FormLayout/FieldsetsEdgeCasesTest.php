@@ -75,6 +75,18 @@ class FieldsetsEdgeCasesTest extends AbstractCrudTestCase
         static::assertStringContainsString('fa fa-user', $crawler->filter('.form-fieldset:contains("Fieldset 2") .form-fieldset-title i')->attr('class'));
     }
 
+    public function testTopLevelFieldsetWithErrorsRemainsDirectFormChild(): void
+    {
+        $crawler = $this->client->request('GET', $this->generateNewFormUrl());
+        $this->client->followRedirects(false);
+
+        $crawler = $this->client->submit($crawler->filter('form.ea-new-form')->form());
+
+        static::assertSame(422, $this->client->getResponse()->getStatusCode());
+        static::assertCount(1, $crawler->filter('form.ea-new-form > .form-fieldset.has-fieldset-error:contains("Fieldset 1")'));
+        static::assertCount(0, $crawler->filter('form.ea-new-form > .row > .form-fieldset.has-fieldset-error'));
+    }
+
     public function testFieldsInsideFieldsetsInDetailPage(): void
     {
         $entity = new FormTestEntity();

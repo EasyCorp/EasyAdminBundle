@@ -14,7 +14,7 @@
     "require": {
         "php": ">=8.2",
         "doctrine/doctrine-bundle": "^2.18|^3.2",
-        "doctrine/dbal": "^3.10|^4.4",
+        "doctrine/dbal": "^3.10|^4.5",
         "doctrine/orm": "^2.20|^3.6",
         "symfony/asset": "^6.4|^7.0|^8.0",
         "symfony/cache": "^6.4.33|^7.0|^8.0",

@@ -16,6 +16,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Orm\EntityUpdaterInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Orm\NestedAssociationResolverInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Provider\AdminContextProviderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Registry\AdminControllerRegistryInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Security\CrudPermissionCheckerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Translation\EntityTranslationIdGeneratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\DataCollector\EasyAdminDataCollector;
 use EasyCorp\Bundle\EasyAdminBundle\DependencyInjection\EasyAdminExtension;
@@ -94,6 +95,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Router\AdminRouteLoader;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Security\AuthorizationChecker;
+use EasyCorp\Bundle\EasyAdminBundle\Security\CrudPermissionChecker;
 use EasyCorp\Bundle\EasyAdminBundle\Security\SecurityVoter;
 use EasyCorp\Bundle\EasyAdminBundle\Translation\EntityTranslationIdGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Alert;
@@ -366,6 +368,13 @@ return static function (ContainerConfigurator $container) {
             ->arg(1, service(AdminContextProvider::class))
             ->tag('security.voter')
 
+        ->set(CrudPermissionChecker::class)
+            ->arg(0, service(ControllerFactory::class))
+            ->arg(1, service(AdminContextFactory::class))
+            ->arg(2, service(AuthorizationChecker::class))
+            ->tag('kernel.reset', ['method' => 'reset'])
+        ->alias(CrudPermissionCheckerInterface::class, CrudPermissionChecker::class)
+
         ->set(CrudFormType::class)
             ->arg(0, service('form.type_guesser.doctrine'))
             ->tag('form.type', ['alias' => 'ea_crud'])
@@ -382,10 +391,8 @@ return static function (ContainerConfigurator $container) {
             ->arg(2, service('request_stack'))
             ->arg(3, service(ControllerFactory::class))
             ->arg(4, new Reference(FieldFactory::class))
-            ->arg(5, new Reference(AuthorizationChecker::class))
-            ->arg(6, service(AdminContextFactory::class))
-            ->arg(7, service(EntityRepository::class))
-            ->tag('kernel.reset', ['method' => 'reset'])
+            ->arg(5, service(CrudPermissionCheckerInterface::class))
+            ->arg(6, service(EntityRepository::class))
 
         ->set(AvatarConfigurator::class)
 

@@ -6,17 +6,15 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 
 /**
- * Checks whether the current user can execute an action of a CRUD controller
- * other than the current one (e.g. before linking to, or embedding, an entity
- * managed by another controller). It applies the same rules as EasyAdmin does
- * for AssociationField links: the target controller's Crud::setEntityPermission()
- * and Actions::setPermission() configuration.
+ * Checks the permissions configured by a CRUD controller other than the current one
+ * (Crud::setEntityPermission() and Actions::setPermission()), e.g. before rendering a
+ * link to an entity managed by that controller.
  */
 interface CrudPermissionCheckerInterface
 {
     /**
-     * @param AdminContext<object>   $context   the context of the page being rendered
-     * @param EntityDto<object>|null $entityDto the target entity; when null, only the action-level permission is checked
+     * @param AdminContext<object>   $context
+     * @param EntityDto<object>|null $entityDto when null, only the action-level permission is checked
      */
     public function isGranted(AdminContext $context, string $crudControllerFqcn, string $action, ?EntityDto $entityDto = null): bool;
 }

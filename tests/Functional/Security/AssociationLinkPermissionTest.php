@@ -49,7 +49,7 @@ class AssociationLinkPermissionTest extends AbstractCrudTestCase
     /**
      * @dataProvider provideUsers
      */
-    public function testAssociationLinkFollowsTargetControllerPermission(string $username, bool $canSeeLinks): void
+    public function testAssociationLinkFollowsTargetControllerPermission(string $username, int $expectedLinkCount): void
     {
         $crawler = $this->client->request(
             'GET',
@@ -60,21 +60,14 @@ class AssociationLinkPermissionTest extends AbstractCrudTestCase
         );
 
         static::assertResponseIsSuccessful();
-        // the author is always displayed; only the link to its detail page depends on the permission
         $authorCell = $crawler->filter('td[data-column="author"]')->first();
         static::assertSame('User 1', trim($authorCell->text()));
-
-        $links = $authorCell->filter('a');
-        if ($canSeeLinks) {
-            static::assertGreaterThan(0, $links->count());
-        } else {
-            static::assertCount(0, $links);
-        }
+        static::assertCount($expectedLinkCount, $authorCell->filter('a'));
     }
 
     public static function provideUsers(): \Generator
     {
-        yield 'user without ROLE_ADMIN sees the author as plain text' => ['user', false];
-        yield 'admin with ROLE_ADMIN sees the author as a link' => ['admin', true];
+        yield 'user without ROLE_ADMIN sees the author as plain text' => ['user', 0];
+        yield 'admin with ROLE_ADMIN sees the author as a link' => ['admin', 1];
     }
 }

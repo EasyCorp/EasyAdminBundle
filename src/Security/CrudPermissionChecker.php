@@ -31,7 +31,6 @@ final class CrudPermissionChecker implements CrudPermissionCheckerInterface, Res
             return true;
         }
 
-        // entity-level permission (Crud::setEntityPermission() on the target controller)
         $entityPermission = $targetCrud->getEntityPermission();
         $entityInstance = $entityDto?->getInstance();
         if (null !== $entityPermission && null !== $entityInstance
@@ -39,7 +38,6 @@ final class CrudPermissionChecker implements CrudPermissionCheckerInterface, Res
             return false;
         }
 
-        // action-level permission (Actions::setPermission() on the target controller)
         return $this->authorizationChecker->isGranted(
             Permission::EA_EXECUTE_ACTION,
             ['crud' => $targetCrud, 'action' => $action, 'entity' => $entityDto],
@@ -52,26 +50,23 @@ final class CrudPermissionChecker implements CrudPermissionCheckerInterface, Res
     }
 
     /**
-     * Resolves and caches the target CRUD controller's CrudDto so callers can run permission
-     * checks against it without rebuilding the full AdminContext once per row (e.g. AssociationField
-     * links on an index page).
+     * The CrudDto is cached because building the target AdminContext once per row
+     * (e.g. AssociationField links on an index page) is too expensive.
      */
-    private function getTargetCrudDto(AdminContext $sourceContext, string $crudControllerFqcn, string $crudAction): ?CrudDto
+    private function getTargetCrudDto(AdminContext $context, string $crudControllerFqcn, string $crudAction): ?CrudDto
     {
         $key = $crudControllerFqcn.'::'.$crudAction;
         if (\array_key_exists($key, $this->targetCrudDtoCache)) {
             return $this->targetCrudDtoCache[$key];
         }
 
-        // a fresh Request is used on purpose: EA-specific attributes from the main request
-        // (entity id, filters, sort, etc.) would otherwise leak into the target controller's context.
-        // the voter only consumes action permissions and disabled actions from the resulting CrudDto.
-        // the locale is copied so the target context's translated entity labels match the source page.
+        // a fresh Request on purpose: the EA attributes of the current one (entity id, filters, sort)
+        // would otherwise leak into the target controller's context
         $request = new Request();
-        $request->setLocale($sourceContext->getRequest()->getLocale());
+        $request->setLocale($context->getRequest()->getLocale());
 
         $dashboardController = $this->controllerFactory->getDashboardControllerInstance(
-            $sourceContext->getDashboardControllerFqcn(),
+            $context->getDashboardControllerFqcn(),
             $request,
         );
 

@@ -17,6 +17,7 @@ final class CollectionField implements FieldInterface
     public const OPTION_ALLOW_ADD = 'allowAdd';
     public const OPTION_ALLOW_DELETE = 'allowDelete';
     public const OPTION_ENTRY_IS_COMPLEX = 'entryIsComplex';
+    public const OPTION_ENTRY_OPTIONS = 'entryOptions';
     public const OPTION_ENTRY_TYPE = 'entryType';
     public const OPTION_ENTRY_TO_STRING_METHOD = 'entryToStringMethod';
     public const OPTION_SHOW_ENTRY_LABEL = 'showEntryLabel';
@@ -43,6 +44,7 @@ final class CollectionField implements FieldInterface
             ->setCustomOption(self::OPTION_ALLOW_ADD, true)
             ->setCustomOption(self::OPTION_ALLOW_DELETE, true)
             ->setCustomOption(self::OPTION_ENTRY_IS_COMPLEX, null)
+            ->setCustomOption(self::OPTION_ENTRY_OPTIONS, null)
             ->setCustomOption(self::OPTION_ENTRY_TYPE, null)
             ->setCustomOption(self::OPTION_ENTRY_TO_STRING_METHOD, null)
             ->setCustomOption(self::OPTION_SHOW_ENTRY_LABEL, false)
@@ -82,6 +84,16 @@ final class CollectionField implements FieldInterface
     public function setEntryType(string $formTypeFqcn): self
     {
         $this->setCustomOption(self::OPTION_ENTRY_TYPE, $formTypeFqcn);
+
+        return $this;
+    }
+
+    /**
+     * @param array<string, mixed> $entryOptions
+     */
+    public function setEntryOptions(array $entryOptions): self
+    {
+        $this->setCustomOption(self::OPTION_ENTRY_OPTIONS, $entryOptions);
 
         return $this;
     }

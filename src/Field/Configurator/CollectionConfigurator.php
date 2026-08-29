@@ -59,6 +59,15 @@ final class CollectionConfigurator implements FieldConfiguratorInterface
             $field->setFormTypeOption('entry_type', $entryTypeFqcn);
         }
 
+        if (null !== $entryOptions = $field->getCustomOptions()->get(CollectionField::OPTION_ENTRY_OPTIONS)) {
+            $existingEntryOptions = $field->getFormTypeOption('entry_options');
+            if (!\is_array($existingEntryOptions)) {
+                $existingEntryOptions = [];
+            }
+
+            $field->setFormTypeOption('entry_options', array_replace_recursive($existingEntryOptions, $entryOptions));
+        }
+
         $autocompletableFormTypes = [CountryType::class, CurrencyType::class, LanguageType::class, LocaleType::class, TimezoneType::class];
         if (\in_array($entryTypeFqcn, $autocompletableFormTypes, true)) {
             $field->setFormTypeOption('entry_options.attr.data-ea-widget', 'ea-autocomplete');

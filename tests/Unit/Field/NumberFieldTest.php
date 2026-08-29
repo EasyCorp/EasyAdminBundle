@@ -4,8 +4,8 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Field;
 
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\NumberConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaNumberType;
 use EasyCorp\Bundle\EasyAdminBundle\Intl\IntlFormatter;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
 
 class NumberFieldTest extends AbstractFieldTest
 {
@@ -24,10 +24,11 @@ class NumberFieldTest extends AbstractFieldTest
         self::assertNull($fieldDto->getCustomOption(NumberField::OPTION_NUM_DECIMALS));
         self::assertSame(\NumberFormatter::ROUND_HALFUP, $fieldDto->getCustomOption(NumberField::OPTION_ROUNDING_MODE));
         self::assertFalse($fieldDto->getCustomOption(NumberField::OPTION_STORED_AS_STRING));
+        self::assertFalse($fieldDto->getCustomOption(NumberField::OPTION_STORED_AS_BCMATH_NUMBER));
         self::assertNull($fieldDto->getCustomOption(NumberField::OPTION_NUMBER_FORMAT));
         self::assertNull($fieldDto->getCustomOption(NumberField::OPTION_THOUSANDS_SEPARATOR));
         self::assertNull($fieldDto->getCustomOption(NumberField::OPTION_DECIMAL_SEPARATOR));
-        self::assertSame(NumberType::class, $fieldDto->getFormType());
+        self::assertSame(EaNumberType::class, $fieldDto->getFormType());
         self::assertStringContainsString('field-number', $fieldDto->getCssClass());
     }
 
@@ -253,5 +254,121 @@ class NumberFieldTest extends AbstractFieldTest
         $fieldDto = $this->configure($field);
 
         self::assertMatchesRegularExpression('/0[.,]00123/', $fieldDto->getFormattedValue());
+    }
+
+    public function testSetStoredAsBcMathNumber(): void
+    {
+        if (\PHP_VERSION_ID < 80400) {
+            $this->markTestSkipped('BcMath\Number requires PHP 8.4 or higher.');
+        }
+
+        $field = NumberField::new('foo');
+        $field->setStoredAsBcMathNumber();
+        $fieldDto = $this->configure($field);
+
+        self::assertTrue($fieldDto->getCustomOption(NumberField::OPTION_STORED_AS_BCMATH_NUMBER));
+        self::assertSame('string', $fieldDto->getFormTypeOption('input'));
+        self::assertTrue($fieldDto->getFormTypeOption('ea_bcmath_number'));
+    }
+
+    public function testSetStoredAsBcMathNumberFalse(): void
+    {
+        if (\PHP_VERSION_ID < 80400) {
+            $this->markTestSkipped('BcMath\Number requires PHP 8.4 or higher.');
+        }
+
+        $field = NumberField::new('foo');
+        $field->setStoredAsBcMathNumber(false);
+        $fieldDto = $this->configure($field);
+
+        self::assertFalse($fieldDto->getCustomOption(NumberField::OPTION_STORED_AS_BCMATH_NUMBER));
+        self::assertSame('number', $fieldDto->getFormTypeOption('input'));
+    }
+
+    public function testStoredAsBcMathNumberAndStoredAsStringThrowsException(): void
+    {
+        if (\PHP_VERSION_ID < 80400) {
+            $this->markTestSkipped('BcMath\Number requires PHP 8.4 or higher.');
+        }
+
+        $this->expectException(\InvalidArgumentException::class);
+
+        $field = NumberField::new('foo');
+        $field->setStoredAsString();
+        $field->setStoredAsBcMathNumber();
+        $this->configure($field);
+    }
+
+    public function testFieldWithBcMathNumberValue(): void
+    {
+        if (\PHP_VERSION_ID < 80400) {
+            $this->markTestSkipped('BcMath\Number requires PHP 8.4 or higher.');
+        }
+
+        $field = NumberField::new('foo');
+        $field->setValue(new \BcMath\Number('123.45'));
+        $field->setStoredAsBcMathNumber();
+        $field->setNumDecimals(2);
+        $fieldDto = $this->configure($field);
+
+        self::assertMatchesRegularExpression('/123[.,]45/', $fieldDto->getFormattedValue());
+    }
+
+    public function testFieldWithBcMathNumberNullValue(): void
+    {
+        if (\PHP_VERSION_ID < 80400) {
+            $this->markTestSkipped('BcMath\Number requires PHP 8.4 or higher.');
+        }
+
+        $field = NumberField::new('foo');
+        $field->setValue(null);
+        $field->setStoredAsBcMathNumber();
+        $fieldDto = $this->configure($field);
+
+        self::assertNull($fieldDto->getValue());
+    }
+
+    public function testBcMathNumberWithThousandsSeparator(): void
+    {
+        if (\PHP_VERSION_ID < 80400) {
+            $this->markTestSkipped('BcMath\Number requires PHP 8.4 or higher.');
+        }
+
+        $field = NumberField::new('foo');
+        $field->setValue(new \BcMath\Number('1234567.89'));
+        $field->setStoredAsBcMathNumber();
+        $field->setThousandsSeparator(' ');
+        $field->setNumDecimals(2);
+        $fieldDto = $this->configure($field);
+
+        self::assertStringContainsString('1 234 567', $fieldDto->getFormattedValue());
+    }
+
+    public function testBcMathNumberWithNumberFormat(): void
+    {
+        if (\PHP_VERSION_ID < 80400) {
+            $this->markTestSkipped('BcMath\Number requires PHP 8.4 or higher.');
+        }
+
+        $field = NumberField::new('foo');
+        $field->setValue(new \BcMath\Number('42.5'));
+        $field->setStoredAsBcMathNumber();
+        $field->setNumberFormat('%.3f');
+        $fieldDto = $this->configure($field);
+
+        self::assertSame('42.500', $fieldDto->getFormattedValue());
+    }
+
+    public function testStoredAsBcMathNumberRequiresPhp84(): void
+    {
+        if (\PHP_VERSION_ID >= 80400) {
+            $this->markTestSkipped('This test verifies that setStoredAsBcMathNumber() throws LogicException on PHP < 8.4 where BcMath\Number is not available.');
+        }
+
+        $this->expectException(\LogicException::class);
+
+        $field = NumberField::new('foo');
+        $field->setStoredAsBcMathNumber();
+        $this->configure($field);
     }
 }

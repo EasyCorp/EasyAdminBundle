@@ -20,6 +20,9 @@ parameters:
         - '#Property EasyCorp\\Bundle\\EasyAdminBundle\\Twig\\EasyAdminTwigExtension::\$uxIconRuntime has unknown class Symfony\\UX\\Icons\\Twig\\UXIconRuntime as its type#'
         - '#Parameter \$uxIconRuntime of method EasyCorp\\Bundle\\EasyAdminBundle\\Twig\\EasyAdminTwigExtension::__construct\(\) has invalid type Symfony\\UX\\Icons\\Twig\\UXIconRuntime#'
         - '#Call to method renderIcon\(\) on an unknown class Symfony\\UX\\Icons\\Twig\\UXIconRuntime#'
+        - '#Class BcMath\\Number not found\.#'
+        - '#has invalid return type BcMath\\Number\.#'
+        - '#Instantiated class BcMath\\Number not found\.#'
         -
             identifier: missingType.generics
     treatPhpDocTypesAsCertain: false

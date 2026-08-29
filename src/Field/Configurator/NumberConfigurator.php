@@ -28,13 +28,34 @@ final readonly class NumberConfigurator implements FieldConfiguratorInterface
         $scale = $field->getCustomOption(NumberField::OPTION_NUM_DECIMALS);
         $roundingMode = $field->getCustomOption(NumberField::OPTION_ROUNDING_MODE);
         $isStoredAsString = true === $field->getCustomOption(NumberField::OPTION_STORED_AS_STRING);
+        $isStoredAsBcMathNumber = true === $field->getCustomOption(NumberField::OPTION_STORED_AS_BCMATH_NUMBER);
 
-        $field->setFormTypeOptionIfNotSet('input', $isStoredAsString ? 'string' : 'number');
+        if ($isStoredAsString && $isStoredAsBcMathNumber) {
+            throw new \InvalidArgumentException(sprintf('The "%s" field cannot use both "setStoredAsString()" and "setStoredAsBcMathNumber()" options at the same time.', $field->getProperty()));
+        }
+
+        if ($isStoredAsBcMathNumber && \PHP_VERSION_ID < 80400) {
+            throw new \LogicException('The "setStoredAsBcMathNumber()" option requires PHP 8.4 or higher.');
+        }
+
+        $input = match (true) {
+            $isStoredAsString, $isStoredAsBcMathNumber => 'string',
+            default => 'number',
+        };
+        $field->setFormTypeOptionIfNotSet('input', $input);
         $field->setFormTypeOptionIfNotSet('rounding_mode', $roundingMode);
         $field->setFormTypeOptionIfNotSet('scale', $scale);
 
+        if ($isStoredAsBcMathNumber) {
+            $field->setFormTypeOption('ea_bcmath_number', true);
+        }
+
         if (null === $value = $field->getValue()) {
             return;
+        }
+
+        if ($isStoredAsBcMathNumber) {
+            $value = (float) (string) $value;
         }
 
         $formatterAttributes = ['rounding_mode' => $this->getRoundingModeAsString($roundingMode)];

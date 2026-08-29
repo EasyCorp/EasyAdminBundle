@@ -13,8 +13,8 @@ Basic Information
 -----------------
 
 * **PHP Class**: ``EasyCorp\Bundle\EasyAdminBundle\Field\NumberField``
-* **Doctrine DBAL Type** used to store this value: ``decimal``, ``float`` or
-  ``string``
+* **Doctrine DBAL Type** used to store this value: ``decimal``, ``float``,
+  ``string`` or ``number`` (``\BcMath\Number``, PHP 8.4+)
 * **Symfony Form Type** used to render the field: `NumberType`_
 * **Rendered as**:
 
@@ -70,6 +70,25 @@ to change the rounding strategy and pass as its arguments any of the ``ROUND_*``
 constants of `PHP NumberFormatter class`_::
 
     yield NumberField::new('...')->setRoundingMode(\NumberFormatter::ROUND_CEILING);
+
+setStoredAsBcMathNumber
+~~~~~~~~~~~~~~~~~~~~~~~
+
+If your entity property uses ``\BcMath\Number`` (available in PHP 8.4+), use this
+option to handle the conversion between the form input and the ``\BcMath\Number``
+object automatically::
+
+    yield NumberField::new('...')->setStoredAsBcMathNumber();
+
+This is useful when your Doctrine entity uses the ``number`` column type::
+
+    #[ORM\Column(type: Types::NUMBER, precision: 8, scale: 2, nullable: true)]
+    public ?\BcMath\Number $price = null;
+
+.. caution::
+
+    This option requires PHP 8.4 or higher and cannot be combined with
+    ``setStoredAsString()``.
 
 setStoredAsString
 ~~~~~~~~~~~~~~~~~

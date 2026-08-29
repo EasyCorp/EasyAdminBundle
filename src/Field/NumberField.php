@@ -3,7 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaNumberType;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
 /**
@@ -16,6 +16,7 @@ final class NumberField implements FieldInterface
     public const OPTION_NUM_DECIMALS = 'numDecimals';
     public const OPTION_ROUNDING_MODE = 'roundingMode';
     public const OPTION_STORED_AS_STRING = 'storedAsString';
+    public const OPTION_STORED_AS_BCMATH_NUMBER = 'storedAsBcMathNumber';
     public const OPTION_NUMBER_FORMAT = 'numberFormat';
     public const OPTION_THOUSANDS_SEPARATOR = 'thousandsSeparator';
     public const OPTION_DECIMAL_SEPARATOR = 'decimalSeparator';
@@ -26,12 +27,13 @@ final class NumberField implements FieldInterface
             ->setProperty($propertyName)
             ->setLabel($label)
             ->setTemplateName('crud/field/number')
-            ->setFormType(NumberType::class)
+            ->setFormType(EaNumberType::class)
             ->addCssClass('field-number')
             ->setDefaultColumns('col-md-4 col-xxl-3')
             ->setCustomOption(self::OPTION_NUM_DECIMALS, null)
             ->setCustomOption(self::OPTION_ROUNDING_MODE, \NumberFormatter::ROUND_HALFUP)
             ->setCustomOption(self::OPTION_STORED_AS_STRING, false)
+            ->setCustomOption(self::OPTION_STORED_AS_BCMATH_NUMBER, false)
             ->setCustomOption(self::OPTION_NUMBER_FORMAT, null)
             ->setCustomOption(self::OPTION_THOUSANDS_SEPARATOR, null)
             ->setCustomOption(self::OPTION_DECIMAL_SEPARATOR, null);
@@ -72,6 +74,17 @@ final class NumberField implements FieldInterface
     public function setStoredAsString(bool $asString = true): self
     {
         $this->setCustomOption(self::OPTION_STORED_AS_STRING, $asString);
+
+        return $this;
+    }
+
+    /**
+     * If true, the field value is stored as a \BcMath\Number instance (requires PHP 8.4+).
+     * This cannot be combined with setStoredAsString().
+     */
+    public function setStoredAsBcMathNumber(bool $asBcMathNumber = true): self
+    {
+        $this->setCustomOption(self::OPTION_STORED_AS_BCMATH_NUMBER, $asBcMathNumber);
 
         return $this;
     }

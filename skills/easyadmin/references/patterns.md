@@ -166,11 +166,12 @@ Field visibility methods are usually enough.
 
 ## 4. Custom POST action with permission and CSRF token
 
-EasyAdmin renders a `renderAsForm()` action as a bare `<form method="post">`
-without any CSRF token, so the token travels in the action URL. The
-`linkToRoute()` closure receives the entity of each row, and the route name is
-the one EasyAdmin generates for the `#[AdminRoute]` of the method
-(`admin_product_publish` here).
+EasyAdmin renders a `renderAsForm()` action as a `<form method="post">` that
+carries a hidden `token` field holding `csrf_token('ea-action')`. Validating
+that token is opt-in: read it from the request payload and check it before the
+action does any work. The `linkToRoute()` closure receives the entity of each
+row, and the route name is the one EasyAdmin generates for the `#[AdminRoute]`
+of the method (`admin_product_publish` here).
 
 ```php
 namespace App\Controller\Admin;
@@ -184,26 +185,18 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
 /**
  * @extends AbstractCrudController<Product>
  */
 class ProductCrudController extends AbstractCrudController
 {
-    public function __construct(private readonly CsrfTokenManagerInterface $csrfTokenManager)
-    {
-    }
-
     // getEntityFqcn(), configureFields(), ...
 
     public function configureActions(Actions $actions): Actions
     {
         $publish = Action::new('publish', 'Publish', 'fa fa-check')
-            ->linkToRoute('admin_product_publish', fn (Product $product): array => [
-                'id' => $product->getId(),
-                'token' => $this->csrfTokenManager->getToken('publish'.$product->getId())->getValue(),
-            ])
+            ->linkToRoute('admin_product_publish', fn (Product $product): array => ['id' => $product->getId()])
             ->renderAsForm()
             ->displayIf(static fn (Product $product): bool => 'published' !== $product->getStatus());
 
@@ -217,7 +210,7 @@ class ProductCrudController extends AbstractCrudController
     public function publish(Product $product, Request $request, EntityManagerInterface $entityManager): Response
     {
         $this->denyAccessUnlessGranted('ROLE_EDITOR');
-        if (!$this->isCsrfTokenValid('publish'.$product->getId(), $request->query->get('token'))) {
+        if (!$this->isCsrfTokenValid('ea-action', $request->getPayload()->getString('token'))) {
             throw $this->createAccessDeniedException('Invalid CSRF token.');
         }
 

@@ -34,6 +34,12 @@
                 <input type="hidden" name="_method" value="{{ this.method }}">
             {% endif %}
 
+            {% guard function csrf_token %}
+                {% if app.request and app.request.hasSession %}
+                    <input type="hidden" name="token" value="{{ csrf_token('ea-action') }}">
+                {% endif %}
+            {% endguard %}
+
             <button {{- attributes.defaults(button_defaults) }}>{{ button_content }}</button>
         </form>
     {% else %}

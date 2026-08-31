@@ -14,6 +14,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Category;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
  * Tests action features including displayIf(), custom actions, render modes,
@@ -103,6 +104,11 @@ class EntityActionsCrudController extends AbstractCrudController
             ->linkToCrudAction('noop')
             ->renderAsForm();
 
+        // entity action rendered as form that validates the submitted CSRF token
+        $csrfProtectedActivateAction = Action::new('csrfProtectedActivate', 'Secure Activate')
+            ->linkToCrudAction('csrfProtectedActivate')
+            ->renderAsForm();
+
         return $actions
             // add custom entity actions with displayIf()
             ->add(Crud::PAGE_INDEX, $activateAction)
@@ -120,6 +126,7 @@ class EntityActionsCrudController extends AbstractCrudController
             ->add(Crud::PAGE_INDEX, $attrAction)
             ->add(Crud::PAGE_INDEX, $iconOnlyAction)
             ->add(Crud::PAGE_INDEX, $entityFormAction)
+            ->add(Crud::PAGE_INDEX, $csrfProtectedActivateAction)
 
             // categories that have blog posts can't be deleted
             ->update(Crud::PAGE_INDEX, Action::DELETE, static function (Action $action) {
@@ -156,6 +163,24 @@ class EntityActionsCrudController extends AbstractCrudController
             'title' => 'Activation',
             'icon' => 'internal:check',
         ]);
+
+        return $this->redirect($this->container->get(AdminUrlGenerator::class)->setAction(Action::INDEX)->generateUrl());
+    }
+
+    #[AdminRoute('/{entityId}/csrf-protected-activate', 'csrf_protected_activate')]
+    public function csrfProtectedActivate(AdminContext $context): Response
+    {
+        $submittedToken = $context->getRequest()->getPayload()->getString('token');
+        if (!$this->isCsrfTokenValid('ea-action', $submittedToken)) {
+            throw new AccessDeniedHttpException('Invalid CSRF token.');
+        }
+
+        /** @var Category $entity */
+        $entity = $context->getEntity()->getInstance();
+        $entity->setActive(true);
+
+        $entityManager = $this->container->get('doctrine')->getManagerForClass(Category::class);
+        $entityManager->flush();
 
         return $this->redirect($this->container->get(AdminUrlGenerator::class)->setAction(Action::INDEX)->generateUrl());
     }

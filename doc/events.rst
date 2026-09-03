@@ -4,11 +4,10 @@ Events
 EasyAdmin triggers several `Symfony events`_ during the execution of its
 requests, so you can listen to those events and run your own logic.
 
-Events were useful in EasyAdmin versions prior to 3.0, because backends were
-defined with YAML config files instead of PHP code. Since EasyAdmin 3.0,
-everything is defined in PHP. It is usually easier to customize the backend by
-overriding PHP classes and methods and by calling your own services. Events are
-still available if you want to use them.
+Events are rarely needed today. In EasyAdmin 2 and earlier, backends were
+defined with YAML files, so events were the only way to add custom logic. Since
+EasyAdmin 3, everything is defined in PHP, so it's usually simpler to override
+the PHP classes and methods of your backend. Events are still fully supported.
 
 All events are dispatched as objects rather than string event names. They live
 under the ``EasyCorp\Bundle\EasyAdminBundle\Event\`` namespace:
@@ -23,9 +22,11 @@ under the ``EasyCorp\Bundle\EasyAdminBundle\Event\`` namespace:
   * ``BeforeEntityPersistedEvent``
   * ``BeforeEntityUpdatedEvent``
 
-* Events related to resource admins:
+* Events related to CRUD controllers:
 
   * ``AfterCrudActionEvent``
+  * ``AfterEntitySearchEvent`` (it receives the search ``QueryBuilder``, so you
+    can modify the search results)
   * ``BeforeCrudActionEvent``
 
 Event Subscriber Example
@@ -34,20 +35,19 @@ Event Subscriber Example
 The following example shows how to use an event subscriber to set the ``slug``
 property of the ``BlogPost`` entity before persisting it::
 
-    # src/EventSubscriber/EasyAdminSubscriber.php
+    // src/EventSubscriber/EasyAdminSubscriber.php
     namespace App\EventSubscriber;
 
     use App\Entity\BlogPost;
     use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityPersistedEvent;
     use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+    use Symfony\Component\String\Slugger\SluggerInterface;
 
     class EasyAdminSubscriber implements EventSubscriberInterface
     {
-        private $slugger;
-
-        public function __construct($slugger)
-        {
-            $this->slugger = $slugger;
+        public function __construct(
+            private SluggerInterface $slugger,
+        ) {
         }
 
         public static function getSubscribedEvents()
@@ -65,7 +65,7 @@ property of the ``BlogPost`` entity before persisting it::
                 return;
             }
 
-            $slug = $this->slugger->slugify($entity->getTitle());
+            $slug = $this->slugger->slug($entity->getTitle())->lower();
             $entity->setSlug($slug);
         }
     }
@@ -79,10 +79,15 @@ entity). To do so, call the ``setResponse()`` method of the event. When a
 listener sets a response, EasyAdmin stops the event propagation and returns
 that response right away.
 
+This method is only available on the ``BeforeCrudActionEvent``,
+``AfterCrudActionEvent``, ``BeforeEntityDeletedEvent``,
+``AfterEntityDeletedEvent``, ``AfterEntityPersistedEvent`` and
+``AfterEntityUpdatedEvent`` events.
+
 The following example prevents the deletion of blog posts that are published
 and redirects to the index page instead::
 
-    # src/EventSubscriber/EasyAdminSubscriber.php
+    // src/EventSubscriber/EasyAdminSubscriber.php
     namespace App\EventSubscriber;
 
     use App\Entity\BlogPost;
@@ -127,7 +132,8 @@ the ``AdminUrlGenerator`` service to :ref:`build the admin URL dynamically <gene
 JavaScript Events
 -----------------
 
-EasyAdmin triggers several `JavaScript events`_ during user interactions with entity forms:
+EasyAdmin triggers several `JavaScript events`_ during user interactions with the
+entity forms displayed in the :ref:`form pages <crud-pages>`:
 
 =================================  ==============================================  ================================  ==========
 Event type                         Occurs when                                     Event detail                      Cancelable
@@ -164,7 +170,7 @@ Here's how you can listen for these events in JavaScript:
     });
 
 For more details and examples of the ``ea.collection.*`` events, see the
-:doc:`Collection Field JavaScript Events </fields/CollectionField#javascript-events>` section.
+:ref:`Collection Field JavaScript Events <collection-field-javascript-events>` section.
 
 TypeScript Support
 ~~~~~~~~~~~~~~~~~~

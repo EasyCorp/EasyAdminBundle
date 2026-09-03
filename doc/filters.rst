@@ -1,8 +1,9 @@
 Filters
 =======
 
-The listings of the ``index`` page can be refined with **filters**, a series of
-form controls that add conditions to the query (e.g. ``price > 10``, ``enabled = true``).
+The listings of the :ref:`index page <crud-pages>` can be refined with
+**filters**, a series of form controls that add conditions to the query
+(e.g. ``price > 10``, ``enabled = true``).
 Define your filters with the ``configureFilters()`` method of your
 :doc:`dashboard </dashboards>` or :doc:`CRUD controller </crud>`::
 
@@ -56,9 +57,10 @@ Filters on Associated Properties
 --------------------------------
 
 Filters can also be applied to the properties of associated entities and
-Doctrine embeddables. Use the dot syntax (``association.property``) to traverse
-any number of nested associations; EasyAdmin creates the needed Doctrine JOIN
-clauses automatically::
+Doctrine embeddables. Use the :ref:`dot syntax <field-association-nested>` used
+by association fields (``association.property``) to traverse any number of
+nested associations; EasyAdmin creates the needed Doctrine JOIN clauses
+automatically::
 
     namespace App\Controller\Admin;
 
@@ -92,7 +94,7 @@ Common Filter Options
 
 All built-in filters share these common configuration methods:
 
-* ``setLabel(string|false $label)``: customizes or hides the filter label
+* ``setLabel(TranslatableInterface|string|false|null $label)``: customizes or hides the filter label
 * ``setFormType(string $formTypeFqcn)``: changes the form type used to render the filter
 * ``setFormTypeOption(string $name, mixed $value)``: sets a single form type option
 * ``setFormTypeOptions(array $options)``: sets multiple form type options at once
@@ -116,7 +118,7 @@ Options:
 
 * ``setChoices(array $choices)``: defines the available choices to filter by
 * ``setTranslatableChoices(array $choices)``: same as above but with translatable labels
-* ``canSelectMultiple()`` (``false``): allows selecting multiple values
+* ``canSelectMultiple()`` (``true``): allows selecting multiple values
 
 BooleanFilter
 ~~~~~~~~~~~~~
@@ -155,8 +157,10 @@ ComparisonFilter
 ~~~~~~~~~~~~~~~~
 
 A generic filter that combines a comparison operator selector with a value input.
-Used as the base for other filters. You can use it directly when you need a
-simple comparison filter with custom form types::
+Its form type is the base of the array, choice, text, date/time and numeric
+filter form types. It's also applied by default to Doctrine ``dateinterval``
+properties. You can use it directly when you need a simple comparison filter
+with custom form types::
 
     use EasyCorp\Bundle\EasyAdminBundle\Filter\ComparisonFilter;
 
@@ -183,7 +187,7 @@ Options:
 * ``includeOnly(array $countryCodes)`` (``null``): restricts choices to these country codes only
 * ``remove(array $countryCodes)`` (``null``): removes these country codes from the choices
 * ``preferredChoices(array $countryCodes)`` (``null``): displays these countries at the top of the list
-* ``useAlpha3Codes()`` (``false``): uses `ISO 3166-1 alpha-3`_ codes (e.g. ``USA``) instead of `alpha-2`_ (e.g. ``US``)
+* ``useAlpha3Codes()`` (``false``): uses `ISO 3166-1 alpha-3`_ codes (e.g. ``USA``) instead of alpha-2 codes (e.g. ``US``)
 * ``canSelectMultiple()`` (``false``): allows selecting multiple countries
 * ``renderExpanded()`` (``false``): renders as checkboxes instead of dropdown
 
@@ -205,7 +209,7 @@ Options:
 * ``includeOnly(array $currencyCodes)`` (``null``): restricts choices to these currency codes only
 * ``remove(array $currencyCodes)`` (``null``): removes these currency codes from the choices
 * ``preferredChoices(array $currencyCodes)`` (``null``): displays these currencies at the top of the list
-* ``canSelectMultiple()`` (``false``) allows selecting multiple currencies
+* ``canSelectMultiple()`` (``false``): allows selecting multiple currencies
 * ``renderExpanded()`` (``false``): renders as checkboxes instead of dropdown
 
 DateTimeFilter
@@ -239,7 +243,8 @@ related entities::
 Options:
 
 * ``autocomplete()`` (``false``): loads choices dynamically via AJAX requests
-  (recommended for large datasets)
+  (recommended for large datasets) using the same
+  :ref:`autocomplete mechanism <crud-autocomplete>` as association fields
 * ``canSelectMultiple()`` (``false``): allows selecting multiple entities
 
 LanguageFilter
@@ -355,13 +360,14 @@ Options:
 Custom Filters
 --------------
 
-If your needs are more specific, you can create your own filters. A filter is
-defined using two classes:
+If your needs are more specific, you can create your own filters, in a similar
+way to how you create :ref:`custom fields <custom-fields>`. A filter is defined
+using two classes:
 
 * A config class implementing ``EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterInterface``
   is used to configure the filter options and to apply the search conditions
   when the filter is active;
-* A form class implementing ``Symfony\Component\Form\FormType`` is used to render
+* A form class extending ``Symfony\Component\Form\AbstractType`` is used to render
   the HTML widgets used to input the filter data in the application.
 
 You can use the ``FilterTrait`` in your filter config class to avoid implementing
@@ -381,12 +387,13 @@ Consider this example which creates a custom date filter with some special value
     use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
     use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDataDto;
     use EasyCorp\Bundle\EasyAdminBundle\Filter\FilterTrait;
+    use Symfony\Contracts\Translation\TranslatableInterface;
 
     class DateCalendarFilter implements FilterInterface
     {
         use FilterTrait;
 
-        public static function new(string $propertyName, $label = null): self
+        public static function new(string $propertyName, TranslatableInterface|string|false|null $label = null): self
         {
             return (new self())
                 ->setFilterFqcn(__CLASS__)
@@ -397,7 +404,7 @@ Consider this example which creates a custom date filter with some special value
 
         public function apply(QueryBuilder $queryBuilder, FilterDataDto $filterDataDto, ?FieldDto $fieldDto, EntityDto $entityDto): void
         {
-             if ('today' === $filterDataDto->getValue()) {
+            if ('today' === $filterDataDto->getValue()) {
                 $queryBuilder->andWhere(sprintf('%s.%s = :today', $filterDataDto->getEntityAlias(), $filterDataDto->getProperty()))
                     ->setParameter('today', (new \DateTime('today'))->format('Y-m-d'));
             }
@@ -439,10 +446,9 @@ You can now use this custom filter in any of your dashboards and CRUD controller
 
     namespace App\Controller\Admin;
 
-    use App\Admin\Filter\DateCalendarFilter;
+    use App\Controller\Admin\Filter\DateCalendarFilter;
     use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
     use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
-    use EasyCorp\Bundle\EasyAdminBundle\Filter\BooleanFilter;
 
     class UserCrudController extends AbstractCrudController
     {
@@ -461,36 +467,38 @@ Unmapped Filters
 ----------------
 
 By default, each filter must be associated with a property of the entity.
-However, sometimes you need to filter by the property of a related entity (e.g.
-an ``order`` is associated with a ``customer`` and you want to filter orders by
-the ``country`` property of the ``customer``). In those cases, set the
-``mapped`` option to ``false`` in the filter or you'll see an exception::
+However, sometimes you need a filter that doesn't match any property, similar to
+the :ref:`unmapped fields <unmapped-fields>` of forms (e.g. a "full name" filter
+that searches both the ``firstName`` and ``lastName`` properties of a
+``Customer`` entity). In those cases, set the ``mapped`` option to ``false`` in
+the filter; otherwise EasyAdmin throws an exception::
 
     namespace App\Controller\Admin;
 
-    use App\Admin\Filter\CustomerCountryFilter;
+    use App\Controller\Admin\Filter\FullNameFilter;
     use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
     use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
-    use EasyCorp\Bundle\EasyAdminBundle\Filter\BooleanFilter;
 
-    class OrderCrudController extends AbstractCrudController
+    class CustomerCrudController extends AbstractCrudController
     {
         // ...
 
         public function configureFilters(Filters $filters): Filters
         {
             return $filters
-                // 'country' doesn't exist as a property of 'Order' so it's
+                // 'fullName' doesn't exist as a property of 'Customer' so it's
                 // defined as 'not mapped' to avoid errors
-                ->add(CustomerCountryFilter::new('country')->setFormTypeOption('mapped', false))
+                ->add(FullNameFilter::new('fullName')->setFormTypeOption('mapped', false))
             ;
         }
     }
 
+You don't need unmapped filters to filter by the properties of a related entity.
+Use the dot syntax explained in `Filters on Associated Properties`_ instead.
+
 .. _`Symfony Intl component`: https://symfony.com/doc/current/components/intl.html
 .. _`ISO 3166-1`: https://en.wikipedia.org/wiki/ISO_3166-1
 .. _`ISO 3166-1 alpha-3`: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3
-.. _`alpha-2`: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
 .. _`ISO 4217`: https://en.wikipedia.org/wiki/ISO_4217
 .. _`ISO 639-1`: https://en.wikipedia.org/wiki/ISO_639-1
 .. _`ISO 639-2`: https://en.wikipedia.org/wiki/ISO_639-2

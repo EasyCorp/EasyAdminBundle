@@ -2,19 +2,20 @@ EasyAdmin Association Field
 ===========================
 
 This field displays the contents of a property used to associate Doctrine entities
-with each other (of any type: one-to-one, one-to-many, etc.) In form pages this
-field is rendered using an advanced autocomplete widget based on `TomSelect`_ library.
+with each other (of any type: one-to-one, one-to-many, etc.). In form pages this
+field is rendered using an advanced autocomplete widget based on the `TomSelect`_
+library.
 
 In :ref:`form pages (edit and new) <crud-pages>` it looks like this:
 
 .. image:: ../images/fields/field-association.png
    :alt: Default style of EasyAdmin association field
 
-In read-only pages (``index``and ``detail``) is displayed as a clickable link
+In read-only pages (``index`` and ``detail``) it is displayed as a clickable link
 pointing to the ``detail`` action of the related entity.
 
-The field also supports nested associations using the dot syntax
-(e.g. ``AssociationField::new('author.publisher')``).
+The field also supports :ref:`nested associations <field-association-nested>`
+using the dot syntax (e.g. ``AssociationField::new('author.publisher')``).
 
 Basic Information
 -----------------
@@ -98,7 +99,9 @@ template receives the entity as the ``entity`` variable::
         renderAsHtml: true
     );
 
-Create the template file with your custom HTML::
+Create the template file with your custom HTML:
+
+.. code-block:: twig
 
     {# templates/admin/autocomplete/product.html.twig #}
     <div class="product-option">
@@ -126,7 +129,7 @@ to allow HTML rendering::
         renderAsHtml: true
     );
 
-    // callbacks can also generate HTML when combined with ``renderAsHtml``
+    // callbacks can also generate HTML when combined with renderAsHtml
     yield AssociationField::new('category')->autocomplete(
         callback: static fn ($e): string => '<strong>' . htmlspecialchars($e->getTitle()) . '</strong>',
         renderAsHtml: true
@@ -181,15 +184,6 @@ autocomplete options (``callback``, ``template``, ``choice_label``, etc.).
     the grouping property (e.g. using the ``setQueryBuilder()`` method) to make
     the group headers appear in a natural order.
 
-``renderAsNativeWidget``
-~~~~~~~~~~~~~~~~~~~~~~~~
-
-By default, this field is rendered using an advanced JavaScript widget created
-with the `TomSelect`_ library. If you prefer to display a standard ``<select>``
-element, use this option::
-
-    yield AssociationField::new('...')->renderAsNativeWidget();
-
 ``renderAsEmbeddedForm``
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -199,7 +193,7 @@ author will show a dropdown list to select one of the available authors.
 
 However, sometimes the associated property refers to a `value object`_. For example,
 a ``Customer`` entity related to an ``Address`` entity or a ``Server`` entity
-related to an ``IpAddres`` entity.
+related to an ``IpAddress`` entity.
 
 In these cases it doesn't make sense to display a dropdown with all the
 (potentially millions!) addresses. Instead, it's better to embed the form fields
@@ -211,18 +205,27 @@ the associated property instead of showing all its possible values in a dropdown
 
     yield AssociationField::new('...')->renderAsEmbeddedForm();
 
-EasyAdmin looks for the :doc:`CRUD controller </crud>` associated to the property
-automatically. If you need better control about which CRUD controller to use,
-pass the fully-qualified class name of the controller as the first argument::
+EasyAdmin looks for the :doc:`CRUD controller </crud>` associated with the
+property automatically. If you need more control over which CRUD controller to
+use, pass the fully-qualified class name of the controller as the first argument::
 
     yield AssociationField::new('...')->renderAsEmbeddedForm(CategoryCrudController::class);
 
     // the other optional arguments are the page names passed to the configureFields()
-    // method of the CRUD controller (this allows you to have a better control of
-    // the fields displayed on different scenarios)
+    // method of the CRUD controller (this allows you to have better control of
+    // the fields displayed in different scenarios)
     yield AssociationField::new('...')->renderAsEmbeddedForm(
         CategoryCrudController::class, 'create_category_inside_an_article', 'edit_category_inside_an_article'
     );
+
+``renderAsNativeWidget``
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+By default, this field is rendered using an advanced JavaScript widget created
+with the `TomSelect`_ library. If you prefer to display a standard ``<select>``
+element, use this option::
+
+    yield AssociationField::new('...')->renderAsNativeWidget();
 
 ``renderAsHtml``
 ~~~~~~~~~~~~~~~~
@@ -290,7 +293,7 @@ If you already define custom queries in repository methods, you can reuse them
 inside the callable::
 
     yield AssociationField::new('...')->setQueryBuilder(
-        fn (QueryBuilder $queryBuilder): QueryBuilder => $queryBuilder->getEntityManager()->getRepository(Foo::class)->getSomeQueryBuilder();
+        fn (QueryBuilder $queryBuilder): QueryBuilder => $queryBuilder->getEntityManager()->getRepository(Foo::class)->getSomeQueryBuilder()
     );
 
 Alternatively, you can use the `query_builder option`_ of Symfony's
@@ -307,8 +310,8 @@ elsewhere in the application::
 
     yield AssociationField::new('...')->setFormTypeOption('query_builder', $queryBuilder);
 
-setSortProperty
-~~~~~~~~~~~~~~~
+``setSortProperty``
+~~~~~~~~~~~~~~~~~~~
 
 If you sort the ``index`` page results using an association field, by default
 those results are sorted using the ``id`` property of the associated entity.
@@ -316,6 +319,8 @@ Set this option to sort results using any of the other properties of the
 associated entity::
 
     yield AssociationField::new('user')->setSortProperty('name');
+
+.. _field-association-nested:
 
 Nested Associations
 -------------------

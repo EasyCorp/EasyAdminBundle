@@ -1,8 +1,8 @@
 CRUD Controllers
 ================
 
-**CRUD controllers** provide the CRUD operations (create, show, update, delete)
-for Doctrine ORM entities. Each CRUD controller can be associated to one or more
+**CRUD controllers** provide the CRUD operations (create, read, update, delete)
+for Doctrine ORM entities. Each CRUD controller can be associated with one or more
 dashboards.
 
 Technically, these CRUD controllers are regular `Symfony controllers`_ so you can
@@ -34,21 +34,23 @@ The four main pages of the CRUD controllers are:
 
 These pages are generated with four actions with the same name in the
 ``AbstractCrudController`` controller. This controller defines other secondary
-actions (e.g. ``delete`` and ``autocomplete``) which don't match any page.
+:ref:`built-in actions <actions-built-in>` (e.g. ``delete`` and ``autocomplete``)
+which don't match any page.
 
 .. _crud_routes:
+.. _crud-routes:
 
 CRUD Routes
 ~~~~~~~~~~~
 
-Each of the CRUD actions define an admin route following this name and path by default:
+Each of the CRUD actions defines an admin route following this name and path by default:
 
 ==================  ======================
 CRUD route name     CRUD route path
 ==================  ======================
 ``*_index``         ``/``
 ``*_new``           ``/new``
-``*_batch_delete``   ``/batch-delete``
+``*_batch_delete``  ``/batch-delete``
 ``*_autocomplete``  ``/autocomplete``
 ``*_edit``          ``/{entityId}/edit``
 ``*_delete``        ``/{entityId}/delete``
@@ -64,7 +66,7 @@ Admin route name                Admin route path
 ==============================  ===============================
 ``admin_product_index``         ``/admin/product``
 ``admin_product_new``           ``/admin/product/new``
-``admin_product_batch_delete``   ``/admin/product/batch-delete``
+``admin_product_batch_delete``  ``/admin/product/batch-delete``
 ``admin_product_autocomplete``  ``/admin/product/autocomplete``
 ``admin_product_edit``          ``/admin/product/324/edit``
 ``admin_product_delete``        ``/admin/product/324/delete``
@@ -112,9 +114,9 @@ Admin route name                Admin route path
 ==============================  =====================================
 ``admin_product_index``         ``/admin/product/all``
 ``admin_product_create``        ``/admin/product/create``
-``admin_product_batch_delete``   ``/admin/product/current/batch-delete``
-``admin_product_autocomplete``  ``/admin/product/current/autocomplete``
-``admin_product_editing``       ``/admin/product/current/editing-324``
+``admin_product_batch_delete``  ``/admin/product/batch-delete``
+``admin_product_autocomplete``  ``/admin/product/autocomplete``
+``admin_product_editing``       ``/admin/product/editing-324``
 ``admin_product_delete``        ``/admin/product/remove/324``
 ``admin_product_view``          ``/admin/product/324``
 ==============================  =====================================
@@ -134,7 +136,21 @@ You can also customize the path and/or route name of CRUD controllers using the
 * ``path``: the value that represents the controller in the entire route path
   (e.g. a ``/foo`` path here will result in a route with the path ``/admin`` + ``/foo`` + ``/<action>``);
 * ``name``: the value that represents the controller in the full route name
-  (e.g. a ``foo_bar`` name here will result in a route named``admin_`` + ``foo_bar`` + ``_<action>``).
+  (e.g. a ``foo_bar`` name here will result in a route named ``admin_`` + ``foo_bar`` + ``_<action>``);
+* ``options``: an array of additional options passed as is to the generated
+  Symfony route (``requirements``, ``options``, ``defaults``, ``host``,
+  ``methods``, ``schemes``, ``condition``, ``locale``, ``format``, ``utf8``
+  and ``stateless``);
+* ``allowedDashboards``: if set, this route is only available for the given
+  dashboards (use ``null`` to explicitly allow all of them and ``[]`` to allow
+  none);
+* ``deniedDashboards``: if set, this route is not available for the given
+  dashboards (use ``null`` or ``[]`` to exclude no dashboard).
+
+The ``#[AdminRoute]`` attribute is repeatable, so you can apply it several
+times to the same class or method. See :ref:`actions-integrating-symfony` for
+more details about the ``options``, ``allowedDashboards`` and
+``deniedDashboards`` options.
 
 Using the same example as above, you can configure the route names and paths of
 the controller as follows::
@@ -156,7 +172,7 @@ Admin route name                Admin route path
 ==============================  =====================================
 ``admin_stock_index``           ``/admin/stock/current``
 ``admin_stock_new``             ``/admin/stock/current/new``
-``admin_stock_batch_delete``     ``/admin/stock/current/batch-delete``
+``admin_stock_batch_delete``    ``/admin/stock/current/batch-delete``
 ``admin_stock_autocomplete``    ``/admin/stock/current/autocomplete``
 ``admin_stock_edit``            ``/admin/stock/current/324/edit``
 ``admin_stock_delete``          ``/admin/stock/current/324/delete``
@@ -167,6 +183,9 @@ Finally, you can also customize the route name and/or path of each CRUD controll
 action using the ``#[AdminRoute]`` attribute::
 
     use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminRoute;
+    use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
+    use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
+    use Symfony\Component\HttpFoundation\Response;
     // ...
 
     class ProductCrudController extends AbstractCrudController
@@ -174,7 +193,7 @@ action using the ``#[AdminRoute]`` attribute::
         // ...
 
         #[AdminRoute(path: '/latest-products', name: 'latest')]
-        public function index(AdminContext $context)
+        public function index(AdminContext $context): KeyValueStore|Response
         {
             // ...
         }
@@ -186,7 +205,7 @@ will be ``admin_product_latest`` and the path will be ``/admin/product/latest-pr
 
 .. tip::
 
-    You can combine the ``#[AdminDashboard]``, and ``#[AdminRoute]``
+    You can combine the ``#[AdminDashboard]`` and ``#[AdminRoute]``
     attributes to customize some or all route names and paths.
 
 Page Names and Constants
@@ -221,7 +240,7 @@ static method::
         // ...
     }
 
-The rest of CRUD options are configured using the ``configureCrud()`` method::
+The rest of the CRUD options are configured using the ``configureCrud()`` method::
 
     namespace App\Controller\Admin;
 
@@ -242,6 +261,8 @@ The rest of CRUD options are configured using the ``configureCrud()`` method::
         }
     }
 
+.. _crud-design-options:
+
 Design Options
 ~~~~~~~~~~~~~~
 
@@ -261,6 +282,7 @@ Design Options
     }
 
 .. _crud_entity_options:
+.. _crud-entity-options:
 
 Entity Options
 ~~~~~~~~~~~~~~
@@ -290,11 +312,15 @@ Entity Options
         ;
     }
 
+Read the section about how to
+:ref:`restrict access to entities <security-fields>` for more details about the
+``setEntityPermission()`` method.
+
 Title and Help Options
 ~~~~~~~~~~~~~~~~~~~~~~
 
 By default, the page titles of the ``index`` and ``new`` pages are based on the
-:ref:`entity option <crud_entity_options>` values defined with the
+:ref:`entity option <crud-entity-options>` values defined with the
 ``setEntityLabelInSingular()`` and ``setEntityLabelInPlural()`` methods. In the
 ``detail`` and ``edit`` pages, EasyAdmin tries first to convert the entity into
 a string representation and falls back to a generic title otherwise.
@@ -317,7 +343,7 @@ You can override the default page titles with the following methods::
             // in DETAIL and EDIT pages, the closure receives the current entity
             // as the first argument
             ->setPageTitle('detail', fn (Product $product) => (string) $product)
-            ->setPageTitle('edit', fn (Category $category) => sprintf('Editing <b>%s</b>', $category->getName()))
+            ->setPageTitle('edit', fn (Product $product) => sprintf('Editing <b>%s</b>', $product->getName()))
 
             // the help message displayed to end users (it can contain HTML tags)
             ->setHelp('edit', '...')
@@ -347,41 +373,43 @@ Date, Time and Number Formatting Options
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
-            // the argument must be either one of these strings: 'short', 'medium', 'long', 'full', 'none'
+            // the argument must be either one of these strings: 'short', 'medium', 'long', 'full'
             // (the strings are also available as \EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField::FORMAT_* constants)
             // or a valid ICU Datetime Pattern (see https://unicode-org.github.io/icu/userguide/format_parse/datetime/)
             ->setDateFormat('...')
             ->setTimeFormat('...')
 
             // first argument = datetime pattern or date format; second optional argument = time format
+            // unlike the two methods above, both arguments also accept the 'none' format
             ->setDateTimeFormat('...', '...')
 
-            ->setDateIntervalFormat('%%y Year(s) %%m Month(s) %%d Day(s)')
             ->setTimezone('...')
 
-            // this option makes numeric values to be rendered with a sprintf()
+            // this option renders numeric values with a sprintf()
             // call using this value as the first argument.
             // this option overrides any formatting option for all numeric values
             // (e.g. setNumDecimals(), setRoundingMode(), etc. are ignored)
             // NumberField and IntegerField can override this value with their
-            // own setNumberFormat() methods, which works in the same way
-            ->setNumberFormat('%.2d')
+            // own setNumberFormat() methods, which work in the same way
+            ->setNumberFormat('%.2f')
 
             // Sets the character used to separate each thousand group in a number
             // e.g. if separator is ',' then 12345 is formatted as 12,345
             // By default, EasyAdmin doesn't add any thousands separator to numbers;
             // NumberField and IntegerField can override this value with their
-            // own setThousandsSeparator() methods, which works in the same way
+            // own setThousandsSeparator() methods, which work in the same way
             ->setThousandsSeparator(',')
 
             // Sets the character used to separate the decimal part of a non-integer number
             // e.g. if separator is '.' then 1/10 is formatted as 0.1
             // by default, EasyAdmin displays the default decimal separator used by PHP;
             // NumberField and IntegerField can override this value with their
-            // own setDecimalSeparator() methods, which works in the same way
+            // own setDecimalSeparator() methods, which work in the same way
             ->setDecimalSeparator('.')
         ;
     }
+
+.. _crud-search-sort-pagination:
 
 Search, Order, and Pagination Options
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -393,8 +421,8 @@ Search, Order, and Pagination Options
         return $crud
             // ...
 
-            // the names of the Doctrine entity properties where the search is made on
-            // (by default it looks for in all properties)
+            // the Doctrine entity properties to search in
+            // (by default, all properties are searched)
             ->setSearchFields(['name', 'description'])
             // use dots (e.g. 'seller.email') to search in Doctrine associations
             ->setSearchFields(['name', 'description', 'seller.email', 'seller.address.zipCode'])
@@ -435,7 +463,7 @@ Search, Order, and Pagination Options
             // ...
 
             // defines the initial sorting applied to the list of entities
-            // (user can later change this sorting by clicking on the table columns)
+            // (users can later change this sorting by clicking on the table columns)
             ->setDefaultSort(['id' => 'DESC'])
             ->setDefaultSort(['id' => 'DESC', 'title' => 'ASC', 'startsAt' => 'DESC'])
             // you can sort by nested Doctrine associations of any depth
@@ -460,7 +488,7 @@ Search, Order, and Pagination Options
             ->setPaginatorRangeSize(4)
 
             // these are advanced options related to Doctrine Pagination
-            // (see https://www.doctrine-project.org/projects/doctrine-orm/en/2.7/tutorials/pagination.html)
+            // (see https://www.doctrine-project.org/projects/doctrine-orm/en/current/tutorials/pagination.html)
             ->setPaginatorUseOutputWalkers(true)
             ->setPaginatorFetchJoinCollection(true)
         ;
@@ -525,16 +553,17 @@ Define a callback that applies to all autocomplete fields::
         ;
     }
 
-The ``autocomplete()`` method also accepts an ``enable`` parameter to
-conditionally configure autocomplete::
+The ``autocomplete()`` method also accepts an ``enable`` parameter to apply
+this default configuration conditionally. When ``enable`` is ``false``,
+EasyAdmin ignores the ``callback``, ``template`` and ``renderAsHtml``
+arguments. It does not turn the autocomplete widget on or off, which is
+configured per field::
 
     public function configureCrud(Crud $crud): Crud
     {
-        $entityCount = $this->entityManager->getRepository($this->getEntityFqcn())->count([]);
-
         return $crud
             ->autocomplete(
-                enable: $entityCount > 1_000,
+                enable: $this->isGranted('ROLE_ADMIN'),
                 callback: static fn ($entity): string => (string) $entity
             )
         ;
@@ -585,16 +614,20 @@ Templates and Form Options
             // pass a single array argument to apply the same options for the new and edit forms
             ->setFormOptions([
                 'validation_groups' => ['Default', 'my_validation_group']
-            ]);
+            ])
 
             // pass two array arguments to apply different options for the new and edit forms
             // (pass an empty array argument if you want to apply no options to some form)
             ->setFormOptions(
                 ['validation_groups' => ['my_validation_group']],
                 ['validation_groups' => ['Default'], '...' => '...'],
-            );
+            )
         ;
     }
+
+Read the section about how to
+:ref:`override EasyAdmin templates <template-customization>` for more details
+about the ``overrideTemplate()`` method.
 
 .. _default-row-action:
 
@@ -629,17 +662,21 @@ and you can configure it with the ``setDefaultRowAction()`` method::
         ;
     }
 
+The values of the ``Action`` constants used above are listed in the section
+about :ref:`action names and constants <action-names>`.
+
 .. note::
 
     If none of the configured actions (in the fallback chain) are available for
     some entity (disabled action, no permission, or condition not met), the row
     won't be clickable for that entity. This also applies to actions defined
-    inside action groups.
+    inside :ref:`action groups <actions-grouping>`.
 
 .. tip::
 
-    The default row action can be configured globally in your dashboard (so it
-    applies to all CRUD controllers) and overridden in specific CRUD controllers::
+    The default row action can be configured
+    :ref:`globally in your dashboard <crud-shared-config>` (so it applies to all
+    CRUD controllers) and overridden in specific CRUD controllers::
 
         // in your Dashboard
         public function configureCrud(): Crud
@@ -661,9 +698,13 @@ and you can configure it with the ``setDefaultRowAction()`` method::
 
 .. tip::
 
-    By default, clicking on a row executes the default row action.
-    If you prefer to require a double click instead, configure this
-    behavior with the ``setDefaultRowActionTrigger()`` method::
+    By default, clicking on a row executes the default row action
+    (this is the ``ClickTrigger::SINGLE`` trigger). If you prefer to require a
+    double click instead, configure this behavior with the
+    ``setDefaultRowActionTrigger()`` method::
+
+        use EasyCorp\Bundle\EasyAdminBundle\Config\Option\ClickTrigger;
+        // ...
 
         public function configureCrud(Crud $crud): Crud
         {
@@ -676,7 +717,8 @@ and you can configure it with the ``setDefaultRowAction()`` method::
 The row click behavior is fully accessible via keyboard (using Enter or Space keys).
 Clicks on checkboxes, buttons, links, or any action elements within the row won't
 trigger the navigation to preserve the expected behavior of those elements.
-Also, rows selected in batch mode won't navigate when clicked.
+Also, rows selected in :ref:`batch mode <batch-actions>` won't navigate when
+clicked.
 
 Other Options
 ~~~~~~~~~~~~~
@@ -693,6 +735,7 @@ Other Options
             // the following option to not display anything when some value is `null`
             // (this option is applied both in the `index` and `detail` pages)
             ->hideNullValues()
+        ;
     }
 
 Custom Redirect After Creating or Editing Entities
@@ -718,6 +761,11 @@ saving the changes::
 
         return parent::getRedirectResponseAfterSave($context, $action);
     }
+
+Read the section about :ref:`generating admin URLs <generate-admin-urls>` to
+learn about the other ways of building the URL passed to ``redirectToRoute()``.
+
+.. _crud-shared-config:
 
 Same Configuration in Different CRUD Controllers
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -755,7 +803,7 @@ all the common data types, but you can also :ref:`create your own fields <custom
 
 If your CRUD controller extends from the ``AbstractCrudController``, the fields
 are configured automatically. In the ``index`` page you'll see a few fields and
-in the rest of pages you'll see as many fields as needed to display all the
+in the rest of the pages you'll see as many fields as needed to display all the
 properties of your Doctrine entity.
 
 Read the :doc:`chapter about Fields </fields>` to learn how to configure which
@@ -764,16 +812,16 @@ fields to display on each page, how to configure the way each field is rendered,
 Customizing CRUD Actions
 ------------------------
 
-The default CRUD actions (``index()``, ``detail()``, ``edit()``, ``new()`` and
-``delete()`` methods in the controller) implement the most common behaviors
-used in applications.
+The default :ref:`built-in actions <actions-built-in>` (``index()``, ``detail()``,
+``edit()``, ``new()`` and ``delete()`` methods in the controller) implement the
+most common behaviors used in applications.
 
 The first way to customize their behavior is to override those methods in your
 own controllers. However, the original actions are so generic that they contain
-quite a lot of code, so overriding them can be cumbersome.
+quite a lot of code, so overriding them can be tedious.
 
 Instead, you can override other smaller methods that implement certain features
-needed by the CRUD actions. For example, the ``index()`` action calls to a
+needed by the CRUD actions. For example, the ``index()`` action calls a
 method named ``createIndexQueryBuilder()`` to create the Doctrine query builder
 used to get the results displayed on the index listing. If you want to customize
 that listing, it's better to override the ``createIndexQueryBuilder()`` method
@@ -789,7 +837,7 @@ Creating, Persisting and Deleting Entities
 
 Most of the actions of a CRUD controller end up creating, persisting or deleting
 entities. If your CRUD controller extends from the ``AbstractCrudController``,
-these methods are already implemented, but you can customize them overriding
+these methods are already implemented, but you can customize them by overriding
 methods and listening to events.
 
 First, you can override the ``createEntity()``, ``updateEntity()``, ``persistEntity()``
@@ -809,7 +857,7 @@ needs to pass constructor arguments or set some of its properties::
             return Product::class;
         }
 
-        public function createEntity(string $entityFqcn)
+        public function createEntity(string $entityFqcn): object
         {
             $product = new Product();
             $product->createdBy($this->getUser());
@@ -831,13 +879,13 @@ The default CRUD actions implemented in ``AbstractCrudController`` don't end
 with the usual ``$this->render('...')`` instruction to render a Twig template
 and return its contents in a Symfony ``Response`` object.
 
-Instead, CRUD actions return a ``EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore``
+Instead, CRUD actions return an ``EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore``
 object with the variables passed to the template that renders the CRUD action
 contents. This ``KeyValueStore`` object is similar to Symfony's ``ParameterBag``
 object. It's like an object-oriented array with useful methods such as ``get()``,
 ``set()``, ``has()``, etc.
 
-Before ending each CRUD action, their ``KeyValueStore`` object is passed to a
+Before each CRUD action ends, its ``KeyValueStore`` object is passed to a
 method called ``configureResponseParameters()`` which you can override in your
 own controller to add/remove/change those template variables::
 
@@ -872,22 +920,24 @@ need. The only mandatory parameter is either ``templateName`` or
 ``templatePath`` to set respectively the name or path of the template to render
 as the result of the CRUD action.
 
+.. _template-names:
+
 Template Names and Template Paths
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-All the templates used by EasyAdmin to render its contents are configurable.
-That's why EasyAdmin deals with "template names" instead of normal Twig
-template paths.
+All the templates used by EasyAdmin to render its contents are
+:ref:`configurable <template-customization>`. That's why EasyAdmin deals with
+"template names" instead of normal Twig template paths.
 
 A template name is the same as the template path but without the ``@EasyAdmin``
 prefix and the ``.html.twig`` suffix. For example, ``@EasyAdmin/layout.html.twig``
 refers to the built-in layout template provided by EasyAdmin. However, ``layout``
 refers to "whichever template is configured as the layout in the application".
 
-Working with template names instead of paths gives you full flexibility to
-customize the application behavior while keeping all the customized templates.
+Working with template names instead of paths means you can replace a template
+once, and every part of EasyAdmin that renders it uses your version.
 In Twig templates, use the ``ea().templatePath()`` method to get the Twig path
-associated to the given template name:
+associated with the given template name:
 
 .. code-block:: twig
 
@@ -905,7 +955,7 @@ associated to the given template name:
 Generating Admin URLs
 ---------------------
 
-EasyAdmin generates one route per each CRUD action of each :doc:`dashboard </dashboards>`.
+EasyAdmin generates one route for each CRUD action of each :doc:`dashboard </dashboards>`.
 You can list them all with the following command:
 
 .. code-block:: terminal
@@ -930,7 +980,11 @@ You can use any of these routes to generate the admin URLs thanks to the
         'entityId' => $user->getId(),
     ]);
 
-    // generating an admin URL in a Twig template
+And in Twig templates:
+
+.. code-block:: twig
+
+    {# generating an admin URL in a Twig template #}
     <a href="{{ path('admin_blog_post_edit', {entityId: post.id}) }}">Edit Blog Post</a>
 
 Building Admin URLs
@@ -940,7 +994,7 @@ The ``AdminUrlGenerator`` helps you build backend URLs dynamically. This is need
 e.g. when the controller/action parts of the URL are stored in variables and you
 can't know the route name beforehand.
 
-When you generate a URL this way, you don't start from scratch. EasyAdmin reuses
+When you generate a URL this way, you don't start from an empty URL. EasyAdmin reuses
 all the query parameters existing in the current request. This is done on purpose
 because generating new URLs based on the current URL is the most common scenario.
 Use the ``unsetAll()`` method to remove all existing query parameters::
@@ -952,11 +1006,9 @@ Use the ``unsetAll()`` method to remove all existing query parameters::
 
     class SomeCrudController extends AbstractCrudController
     {
-        private $adminUrlGenerator;
-
-        public function __construct(AdminUrlGenerator $adminUrlGenerator)
-        {
-            $this->adminUrlGenerator = $adminUrlGenerator;
+        public function __construct(
+            private AdminUrlGenerator $adminUrlGenerator,
+        ) {
         }
 
         // ...
@@ -970,15 +1022,28 @@ Use the ``unsetAll()`` method to remove all existing query parameters::
             // the existing query parameters are maintained, so you only
             // have to pass the values you want to change.
             $url = $this->adminUrlGenerator->set('page', 2)->generateUrl();
+            // use setAll() to set several parameters at once
+            $url = $this->adminUrlGenerator->setAll(['page' => 2, 'foo' => 'bar'])->generateUrl();
+
+            // read the current value of any parameter (returns null if it's not set)
+            $currentPage = $this->adminUrlGenerator->get('page');
 
             // you can remove existing parameters
             $url = $this->adminUrlGenerator->unset('page')->generateUrl();
             $url = $this->adminUrlGenerator->unsetAll()->set('foo', 'someValue')->generateUrl();
+            // unsetAllExcept() removes all parameters except the given ones
+            $url = $this->adminUrlGenerator->unsetAllExcept('page', 'filters')->generateUrl();
 
             // the URL builder provides shortcuts for the most common parameters
             $url = $this->adminUrlGenerator
                 ->setController(SomeCrudController::class)
                 ->setAction('theActionName')
+                ->generateUrl();
+
+            // use setRoute() to generate the URL of any Symfony route; it removes
+            // all existing parameters except the dashboard the URL belongs to
+            $url = $this->adminUrlGenerator
+                ->setRoute('some_route_name', ['someParameter' => 'someValue'])
                 ->generateUrl();
 
             // ...
@@ -989,7 +1054,7 @@ Use the ``unsetAll()`` method to remove all existing query parameters::
 
     If you need to deal with the admin URLs manually for any reason, the names
     of the query string parameters are defined as constants in the
-    :class:`EasyCorp\\Bundle\\EasyAdminBundle\\Config\\Option\\EA` class.
+    ``EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA`` class.
 
 .. _ea-url-function:
 
@@ -1028,13 +1093,13 @@ its ``{id}`` alias):
     be added in the next major version of EasyAdmin). If you generate URLs in PHP code
     and type-hint the ``AdminUrlGeneratorInterface``, use ``setEntityId()`` instead.
 
-Generating CRUD URLs from outside EasyAdmin
+Generating CRUD URLs From Outside EasyAdmin
 ...........................................
 
 When generating URLs of EasyAdmin pages from outside EasyAdmin (e.g. from a
 regular Symfony controller) the :ref:`admin context variable <admin-context>`
 is not available. That's why you must always set the CRUD controller associated
-to the URL. If you have more than one dashboard, you must also set the Dashboard::
+with the URL. If you have more than one dashboard, you must also set the Dashboard::
 
     use App\Controller\Admin\DashboardController;
     use App\Controller\Admin\ProductCrudController;
@@ -1044,11 +1109,9 @@ to the URL. If you have more than one dashboard, you must also set the Dashboard
 
     class SomeSymfonyController extends AbstractController
     {
-        private $adminUrlGenerator;
-
-        public function __construct(AdminUrlGenerator $adminUrlGenerator)
-        {
-            $this->adminUrlGenerator = $adminUrlGenerator;
+        public function __construct(
+            private AdminUrlGenerator $adminUrlGenerator,
+        ) {
         }
 
         public function someMethod()
@@ -1061,14 +1124,14 @@ to the URL. If you have more than one dashboard, you must also set the Dashboard
                 ->generateUrl();
 
             // in applications containing more than one Dashboard, you must also
-            // define the Dashboard associated to the URL
+            // define the Dashboard associated with the URL
             $url = $this->adminUrlGenerator
                 ->setDashboard(DashboardController::class)
                 ->setController(ProductCrudController::class)
                 ->setAction(Action::INDEX)
                 ->generateUrl();
 
-            // some actions may require to pass additional parameters
+            // some actions require additional parameters
             $url = $this->adminUrlGenerator
                 ->setController(ProductCrudController::class)
                 ->setAction(Action::EDIT)
@@ -1096,7 +1159,7 @@ The same applies to URLs generated in Twig templates:
         .setController('App\\Controller\\Admin\\ProductCrudController')
         .setAction('index') %}
 
-    {# some actions may require to pass additional parameters #}
+    {# some actions require additional parameters #}
     {% set url = ea_url()
         .setController('App\\Controller\\Admin\\ProductCrudController')
         .setAction('edit')

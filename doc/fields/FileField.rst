@@ -6,13 +6,6 @@ backend. The entity property only stores the path to the file (relative to the
 upload directory). The actual file contents are stored on the server filesystem
 or on any remote system configured via the `league/flysystem-bundle`_.
 
-In :ref:`form pages (edit and new) <crud-pages>` it looks like this:
-
-.. code-block:: html
-
-    <!-- when loading the page this is transformed into a dynamic widget via JavaScript -->
-    <input type="file">
-
 Basic Information
 -----------------
 
@@ -30,8 +23,8 @@ Basic Information
 Options
 -------
 
-setBasePath
-~~~~~~~~~~~
+``setBasePath``
+~~~~~~~~~~~~~~~
 
 By default, files are linked in read-only pages (``index`` and ``detail``) "as is",
 without changing their path. If you serve your files under some path (e.g.
@@ -39,8 +32,8 @@ without changing their path. If you serve your files under some path (e.g.
 
     yield FileField::new('...')->setBasePath('uploads/files/');
 
-setUploadDir
-~~~~~~~~~~~~
+``setUploadDir``
+~~~~~~~~~~~~~~~~
 
 **This option is required.** Use it to set the directory where uploaded files are
 stored. Relative paths are resolved from your project root directory and absolute
@@ -61,11 +54,12 @@ method, an exception will be thrown.
     Files stored outside your project's ``public/`` directory are not accessible
     by web browsers, so the upload form doesn't display the view/download links
     for them. If you serve those files by other means (e.g. a custom controller),
-    define the public path of those links with
+    define the public path of those links with the
+    :ref:`setFormTypeOption() method <field-configuration>`:
     ``->setFormTypeOption('download_path', '...')``.
 
-setFileConstraints
-~~~~~~~~~~~~~~~~~~
+``setFileConstraints``
+~~~~~~~~~~~~~~~~~~~~~~
 
 By default, no validation constraints are applied to the uploaded file. Use this
 option to define the constraints applied to the uploaded file::
@@ -74,8 +68,8 @@ option to define the constraints applied to the uploaded file::
 
     yield FileField::new('...')->setFileConstraints(new File(filenameCharset: 'ASCII'));
 
-setUploadedFileNamePattern
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+``setUploadedFileNamePattern``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 By default, uploaded files are stored with the same file name and extension as
 the original files. Use this option to rename the files after uploading.
@@ -107,53 +101,64 @@ The string pattern passed as argument can include the following special values:
 * ``[ulid]``, a random ULID value (26-char string, e.g. ``01AN4Z07BY79KA1307SR9X4MV3``)
   (generated with Symfony's Uid component)
 
+.. deprecated:: 5.1
+
+    The ``[day]``, ``[month]`` and ``[year]`` placeholders are deprecated. Use
+    ``[DD]``, ``[MM]`` and ``[YYYY]`` instead. The old placeholders will be
+    removed in EasyAdmin 6.0.
+
 You can combine them in any way::
 
     yield FileField::new('...')
         ->setUploadedFileNamePattern('[YYYY]/[MM]/[DD]/[slug]-[contenthash].[extension]');
 
-The argument of this method also accepts a closure that receives the Symfony's
-``UploadedFile`` instance and the **current entity instance** as arguments::
+The argument of this method also accepts a closure that receives Symfony's
+``UploadedFile`` instance as its first argument::
 
     yield FileField::new('...')->setUploadedFileNamePattern(
-        fn (UploadedFile $file): string => sprintf('upload_%d_%s.%s', random_int(1, 999), $file->getFilename(), $file->guessExtension()))
+        fn (UploadedFile $file): string => sprintf('upload_%d_%s.%s', random_int(1, 999), $file->getFilename(), $file->guessExtension())
     );
 
-The ``FileField`` closure also receives the entity as a second argument. This
+Unlike the :doc:`ImageField </fields/ImageField>` closure, the ``FileField``
+closure also receives the **current entity instance** as a second argument. This
 allows naming files based on entity data. On the ``new`` page, the entity is a
 fresh instance (possibly without an ID); on the ``edit`` page, it has its
 current database values::
 
     yield FileField::new('...')->setUploadedFileNamePattern(
-        static fn (UploadedFile $file, MyEntity $entity): string => sprintf('%s/[name].[extension]', $entity->getSlug()))
+        static fn (UploadedFile $file, MyEntity $entity): string => sprintf('%s/[name].[extension]', $entity->getSlug())
     );
 
-isDeletable
-~~~~~~~~~~~
+The string returned by the closure still goes through the placeholder
+substitution described above, so you can combine both mechanisms (as in the
+``'[name].[extension]'`` part of the previous example).
+
+``isDeletable``
+~~~~~~~~~~~~~~~
 
 By default, the file upload widget shows a "delete" checkbox that allows users
 to remove the uploaded file. Use this option to hide that checkbox::
 
     yield FileField::new('...')->isDeletable(false);
 
-isDownloadable
-~~~~~~~~~~~~~~
+``isDownloadable``
+~~~~~~~~~~~~~~~~~~
 
 By default, a link to download the uploaded file is displayed next to the form
 field. Use this option to hide that link::
 
     yield FileField::new('...')->isDownloadable(false);
 
-isViewable
-~~~~~~~~~~
+``isViewable``
+~~~~~~~~~~~~~~
 
 By default, a link to view the uploaded file is displayed next to the form field.
 Use this option to hide that link::
 
     yield FileField::new('...')->isViewable(false);
 
-maxSize
-~~~~~~~
+``maxSize``
+~~~~~~~~~~~
 
 Use this option to set the maximum allowed file size. The value can be an integer
 (number of bytes) or a suffixed string (e.g. ``'200k'``, ``'2M'``, ``'1G'`` for
@@ -171,8 +176,8 @@ file path), ``{{ name }}`` (the base file name), ``{{ size }}`` (the file size),
 ``{{ limit }}`` (the maximum allowed size) and ``{{ suffix }}`` (the size unit,
 e.g. ``kB``, ``MB``).
 
-mimeTypes
-~~~~~~~~~
+``mimeTypes``
+~~~~~~~~~~~~~
 
 By default, all file types are accepted. Use this option to restrict the allowed
 MIME types. The value is a string with a comma-separated list of file extensions
@@ -200,23 +205,29 @@ When a user uploads a new file to replace an existing one, ``FileField``
 controls what happens to the old file on disk. There are three behaviors:
 
 ``deleteReplacedFile``
-    This is the **default** behavior. The old file is deleted from disk. If the
-    new file has the same name as an existing file, a numeric suffix (``_1``,
-    ``_2``, etc.) is appended to avoid conflicts::
+......................
 
-        yield FileField::new('...')->deleteReplacedFile();
+This is the **default** behavior. The old file is deleted from disk. If the new
+file has the same name as an existing file, a numeric suffix (``_1``, ``_2``,
+etc.) is appended to avoid conflicts::
+
+    yield FileField::new('...')->deleteReplacedFile();
 
 ``keepReplacedFile``
-    The old file is kept on disk. If you upload a new file with the same name,
-    the contents are silently overwritten::
+....................
 
-        yield FileField::new('...')->keepReplacedFile();
+The old file is kept on disk. If you upload a new file with the same name, the
+contents are silently overwritten::
+
+    yield FileField::new('...')->keepReplacedFile();
 
 ``keepReplacedFileOrFail``
-    The old file is kept on disk. If the new file's name conflicts with an
-    existing file, an error is thrown::
+..........................
 
-        yield FileField::new('...')->keepReplacedFileOrFail();
+The old file is kept on disk. If the new file's name conflicts with an existing
+file, an error is thrown::
+
+    yield FileField::new('...')->keepReplacedFileOrFail();
 
 Serving Uploaded Files Safely
 -----------------------------
@@ -234,8 +245,8 @@ execute scripts from, such as ``.html``, ``.svg``, ``.xhtml`` and ``.xml``.
 Safe types (images, PDFs, office documents, etc.) keep opening inline as usual.
 You can change this default behavior with the following option.
 
-allowRiskyInlineRender
-~~~~~~~~~~~~~~~~~~~~~~
+``allowRiskyInlineRender``
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 If you fully trust the uploaded contents, use this option to disable the
 protection above and render those files inline again::
@@ -252,7 +263,7 @@ protection above and render those files inline again::
 
     Forcing a download in the backend only protects EasyAdmin's own links. The
     files are still served as static assets, so a user who opens the file URL
-    directly is not affected by this setting. For full protection, serve the
+    directly is not protected by this setting. For full protection, serve the
     upload directory with the ``Content-Disposition: attachment`` header (via your
     web server configuration) or store uploads outside the public web root.
 
@@ -294,20 +305,18 @@ Configure Flysystem in your application:
 Usage
 ~~~~~
 
-Use the ``setFlysystemStorage()`` method to tell EasyAdmin which Flysystem storage
-to use. The argument is the service ID of the storage as defined in your Flysystem
-configuration (e.g. ``default.storage``)::
+Point the field at the storage you configured::
 
     yield FileField::new('attachment')
         ->setFlysystemStorage('default.storage')
         ->setUploadDir('files/')
         ->setUploadedFileNamePattern('[uuid].[extension]');
 
-setFlysystemStorage
-~~~~~~~~~~~~~~~~~~~
+``setFlysystemStorage``
+~~~~~~~~~~~~~~~~~~~~~~~
 
-Sets the Flysystem storage service ID to use for uploading and deleting files.
-This is the key you defined under ``flysystem.storages`` in your Flysystem
+Sets the Flysystem storage service ID used to upload and delete files. This is
+the key you defined under ``flysystem.storages`` in your Flysystem
 configuration::
 
     yield FileField::new('...')->setFlysystemStorage('default.storage');
@@ -317,8 +326,8 @@ delete, and validation callables with Flysystem equivalents. The upload director
 configured with ``setUploadDir()`` is used as a path prefix inside the Flysystem
 storage (not as a local directory).
 
-setFlysystemUrlPrefix
-~~~~~~~~~~~~~~~~~~~~~
+``setFlysystemUrlPrefix``
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 **This method is optional.** By default, EasyAdmin generates the public URL of
 each file from the Flysystem storage itself (via the ``public_url`` or

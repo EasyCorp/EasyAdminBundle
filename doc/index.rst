@@ -7,7 +7,7 @@ applications. It's free, fast, and fully documented.
 .. admonition:: Screencast
     :class: screencast
 
-    Like video tutorials? Check out the `EasyAdmin Screencast on SymfonyCasts`_.
+    Like video tutorials? See the `EasyAdmin Screencast on SymfonyCasts`_.
 
 Table of Contents
 -----------------
@@ -66,8 +66,10 @@ file and add the following::
     ];
 
 The ``TwigComponentBundle`` is also required because EasyAdmin uses `Twig Components`_
-to build its interface. Next, create a configuration file for Twig Components
-by adding the following file::
+to build its interface (see :doc:`the Twig components reference </components>`).
+Next, create the following configuration file for Twig Components:
+
+.. code-block:: yaml
 
     # config/packages/twig_component.yaml
     twig_component:
@@ -76,8 +78,8 @@ by adding the following file::
             # Namespace & directory for components
             App\Twig\Components\: 'components/'
 
-The initial contents of this file should match those defined in the latest
-`configuration recipe of Symfony UX Twig Component`_.
+If this file already exists in your application, leave it as it is. Otherwise,
+copy its contents from the `configuration recipe of Symfony UX Twig Component`_.
 
 That's all! You are now ready to use EasyAdmin in your application. Start by
 :doc:`creating your first Dashboard </dashboards>`.

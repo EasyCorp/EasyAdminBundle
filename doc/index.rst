@@ -25,6 +25,8 @@ Table of Contents
   custom voters)
 * :doc:`Events </events>` (entity events, CRUD events, JavaScript events)
 * :doc:`Tests </tests>` (functional testing, utilities, assertions)
+* :doc:`AI Coding Agents </ai-coding-agents>` (agent skills for Claude Code,
+  Codex, Cursor, GitHub Copilot, and other agents)
 * :doc:`Upgrade </upgrade>` (from EasyAdmin 4)
 * :doc:`Appendix: Twig Components </components>` (reusable UI components: badges, buttons,
   icons, modals, dropdown menus)

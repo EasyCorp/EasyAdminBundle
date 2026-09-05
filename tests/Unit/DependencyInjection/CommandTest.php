@@ -27,5 +27,7 @@ class CommandTest extends KernelTestCase
     {
         yield ['make:admin:crud'];
         yield ['make:admin:dashboard'];
+        yield ['easyadmin:ai:install'];
+        yield ['easyadmin:ai:update'];
     }
 }

@@ -1,7 +1,7 @@
 EasyAdmin Email Field
 =====================
 
-This field is used to represent a text content that stores a single email address.
+This field is used to represent text content that stores a single email address.
 
 In :ref:`form pages (edit and new) <crud-pages>` it looks like this:
 

@@ -12,7 +12,7 @@ In :ref:`form pages (edit and new) <crud-pages>` it looks like this:
 .. tip::
 
     EasyAdmin provides other fields for long text contents:
-    :doc:`TextAreaField </fields/TextareaField>` is ideal for long contents that
+    :doc:`TextareaField </fields/TextareaField>` is ideal for long contents that
     don't need any formatting; :doc:`TextEditorField </fields/TextEditorField>`
     is ideal to edit long text contents with rich formatting.
 
@@ -36,9 +36,10 @@ Options
 ``hideLineNumbers``
 ~~~~~~~~~~~~~~~~~~~
 
-By default, contents shows the line numbers of the code. Use this option to hide them::
+By default, the editor shows the line numbers of the code. Use this option to
+hide them::
 
-    yield CodeEditorField('...')->hideLineNumbers();
+    yield CodeEditorField::new('...')->hideLineNumbers();
 
 ``setIndentWithTabs``
 ~~~~~~~~~~~~~~~~~~~~~
@@ -46,15 +47,15 @@ By default, contents shows the line numbers of the code. Use this option to hide
 By default, code is indented with 4 white spaces. Use this option to indent code
 with tabs::
 
-    yield CodeEditorField('...')->setIndentWithTabs();
+    yield CodeEditorField::new('...')->setIndentWithTabs(true);
 
 ``setLanguage``
 ~~~~~~~~~~~~~~~
 
 By default, code is highlighted for Markdown contents. If you are editing contents
-written in a different programming language, use this option:
+written in a different programming language, use this option::
 
-    yield CodeEditorField('...')->setLanguage('php');
+    yield CodeEditorField::new('...')->setLanguage('php');
 
 The argument passed to this method must be one of the following values:
 ``css``, ``dockerfile``, ``js``, ``markdown``, ``nginx``, ``php``, ``shell``,

@@ -5,7 +5,7 @@ The design of the backend is ready for any kind of application. It's been
 created with `Bootstrap 5`_, and some custom CSS and JavaScript code; all
 managed by `Webpack`_ via Symfony's `Webpack Encore`_.
 
-Like any other Symfony bundle, assets are copied to (or symlinked from) the
+As with any other Symfony bundle, its assets are copied to (or symlinked from) the
 ``public/bundles/`` directory of your application when installing or updating
 the bundle. If this doesn't work for any reason, your backend won't display
 properly. In those cases, run this command to install those assets manually:
@@ -29,7 +29,8 @@ icons and any custom icons that you add to menu items, fields, form tabs, etc.
 The full FontAwesome icon set (~2,000 icons) is already included in EasyAdmin,
 so you don't need to download any of these icons.
 
-If you prefer to use other icons, call the ``useCustomIconSet()`` in your dashboard::
+If you prefer to use other icons, call the ``useCustomIconSet()`` method in
+your dashboard::
 
     namespace App\Controller\Admin;
 
@@ -81,14 +82,16 @@ Overriding Templates
 
 .. tip::
 
-    Instead of using Symfony mechanism to override templates, you may consider
+    Instead of using Symfony's mechanism to override templates, you may consider
     using a similar but more powerful feature provided by EasyAdmin to replace
-    templates, as explained in :ref:`the next section <replacing_templates>`.
+    templates, as explained in :ref:`the next section <replacing-templates>`.
 
 Following Symfony's mechanism to `override templates from bundles`_, you must
 create the ``templates/bundles/EasyAdminBundle/`` directory in your application
 and then create new templates with the same path as the original templates.
-For example::
+For example:
+
+.. code-block:: text
 
     your-project/
     ├─ ...
@@ -131,6 +134,8 @@ must use a special syntax inside ``extends`` to avoid an infinite loop:
 
 .. _replacing_templates:
 
+.. _replacing-templates:
+
 Replacing Templates
 ~~~~~~~~~~~~~~~~~~~
 
@@ -163,6 +168,9 @@ templates. First, you can replace some templates globally in the
             ;
         }
     }
+
+The first argument of these methods is the "template name". The full list of
+:ref:`template names <template-names>` is detailed in the CRUD reference.
 
 You can also replace templates per :doc:`CRUD controller </crud>` (this overrides
 any change done in the dashboard)::
@@ -230,6 +238,8 @@ or with the EasyAdmin feature to replace templates::
     template of a pair, make sure that the opened/closed HTML tags remain
     consistent with the other template of the pair.
 
+.. _index-page-listing:
+
 Index Page Listing
 ~~~~~~~~~~~~~~~~~~
 
@@ -268,13 +278,15 @@ features keep working:
 
 * ``datagrid`` CSS class on the element that wraps the entire listing;
 * ``data-default-action-trigger`` attribute on that same wrapper element; it
-  defines whether a ``single`` or ``double`` click runs the default action;
-* ``data-id`` attribute on the element of each entity; when using batch actions,
+  defines whether a ``single`` or ``double`` click runs the
+  :ref:`default action <default-row-action>`;
+* ``data-id`` attribute on the element of each entity; when using
+  :ref:`batch actions <batch-actions>`,
   this element must also contain the ``input.form-batch-checkbox`` checkbox of
   the entity and it gets the ``selected-row`` CSS class when checked;
 * ``data-default-action-url`` attribute on the element of each entity (add also
   ``role="link"`` and ``tabindex="0"`` for accessibility); clicking on the
-  element runs the default action;
+  element runs the :ref:`default action <default-row-action>`;
 * ``searchable`` CSS class on the elements that render field values; the terms
   of search queries are highlighted inside these elements;
 * the CSS classes of each field (e.g. ``field-boolean``), which are needed for
@@ -286,7 +298,9 @@ features keep working:
     custom markup receives almost no default styling. Add your own CSS as
     explained in :ref:`the section about custom assets <crud-design-custom-web-assets>`.
 
-Fields And Actions Templates
+.. _field-and-action-templates:
+
+Fields and Actions Templates
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Each :doc:`field </fields>` (and each :doc:`action </actions>`) defines a
@@ -307,6 +321,8 @@ The ``setTemplatePath()`` method only applies to fields displayed on the
 ``index`` and ``detail`` pages. Read the next section to learn how to customize
 fields in the ``new`` and ``edit`` pages, which use Symfony forms.
 
+.. _form-field-templates:
+
 Form Field Templates
 ~~~~~~~~~~~~~~~~~~~~
 
@@ -322,7 +338,7 @@ and CRUD controllers define ``addFormTheme(string $themePath)`` and
     backend pages look exactly like the rest of the backend forms. See
     :ref:`how to render Symfony forms in custom pages <custom-pages-symfony-forms>`.
 
-Imagine a form field where you want to include a ``<a>`` element that links to
+Imagine a form field where you want to include an ``<a>`` element that links to
 additional information. If the field is called ``title`` and belongs to a
 ``Product`` entity, the configuration would look like this::
 
@@ -333,7 +349,7 @@ additional information. If the field is called ``title`` and belongs to a
         ]);
 
 The next step is to define the template fragment used by that field, which
-requires to know the `form fragment naming rules`_ defined by Symfony:
+requires you to know the `form fragment naming rules`_ defined by Symfony:
 
 .. code-block:: twig
 
@@ -394,12 +410,15 @@ Read the :doc:`Twig Components reference </components>` to learn about all the
 available components (buttons, badges, icons, modals, dropdown menus, etc.)
 with practical examples of how to use them.
 
+.. _customizing-flash-messages:
+
 Customizing Flash Messages
 --------------------------
 
 EasyAdmin displays the `flash messages`_ added by your application using the
-``ea:Alert`` component. Flash messages are usually plain strings, which are
-translated using the translation domain configured in the dashboard::
+``ea:Alert`` :doc:`Twig component </components>`. Flash messages are usually
+plain strings, which are translated using the translation domain configured in
+the dashboard::
 
     $this->addFlash('success', 'post.published');
 
@@ -414,7 +433,8 @@ If you want to customize the rendered alert, pass an array with a mandatory
 
 The ``message`` and ``title`` values are translated like plain string flash
 messages; the ``icon`` value accepts the same values as the ``ea:Icon``
-component (icon names from the icon set configured in the backend).
+:doc:`Twig component </components>` (icon names from the icon set configured
+in the backend).
 
 .. _crud-design-custom-web-assets:
 
@@ -445,12 +465,12 @@ the :doc:`CRUD controllers </crud>` to add your own CSS and JavaScript files::
                 // it's equivalent to calling {{ importmap(['app', 'admin']) }}
                 ->addAssetMapperEntry('app', 'admin')
 
-                // adds the CSS and JS assets associated to the given Webpack Encore entry
+                // adds the CSS and JS assets associated with the given Webpack Encore entry
                 // it's equivalent to adding these inside the <head> element:
                 // {{ encore_entry_link_tags('...') }} and {{ encore_entry_script_tags('...') }}
                 ->addWebpackEncoreEntry('admin-app')
 
-                // adds the CSS and JS assets associated to the given Symfony Reprise entry
+                // adds the CSS and JS assets associated with the given Symfony Reprise entry
                 // it's equivalent to adding these inside the <head> element:
                 // {{ reprise_entry_link_tags('...') }} and {{ reprise_entry_script_tags('...') }}
                 ->addRepriseEntry('admin-app')
@@ -496,7 +516,7 @@ and ``<script>`` tags, pass an ``Asset`` object to the ``addCssFile()``,
         // tags are configured globally in the Symfony Reprise bundle configuration
         ->addRepriseEntry(Asset::new('admin-app')->reprisePackageName('...'))
 
-        // adding full Asset objects for AssetMapper entries work too, but it's
+        // adding full Asset objects for AssetMapper entries works too, but it's
         // useless because entries can't define any property, only their name
         ->addAssetMapperEntry(Asset::new('admin'))
 
@@ -507,6 +527,31 @@ and ``<script>`` tags, pass an ``Asset`` object to the ``addCssFile()``,
         // you can also define the Symfony Asset package which the asset belongs to
         ->addCssFile(Asset::new('some-path/foo.css')->package('legacy_assets'))
     ;
+
+Use ``async()`` to add the ``async`` attribute to the ``<script>`` tag and
+``htmlAttrs()`` to set several HTML attributes at once (instead of calling
+``htmlAttr()`` repeatedly). Webpack Encore entries also accept
+``webpackPackageName()`` to define the Symfony Asset package used to load
+them::
+
+    return $assets
+        ->addJsFile(Asset::new('build/admin.js')->async())
+        ->addCssFile(Asset::new('build/admin.css')->htmlAttrs([
+            'media' => 'print',
+            'data-turbo-track' => 'reload',
+        ]))
+        ->addWebpackEncoreEntry(Asset::new('admin-app')->webpackPackageName('...'))
+    ;
+
+Assets are added to all pages by default. Restrict them to some pages with the
+following methods:
+
+* ``onlyOnDetail()``, ``onlyOnIndex()``, ``onlyOnForms()``,
+  ``onlyWhenCreating()`` and ``onlyWhenUpdating()`` add the asset only to those
+  pages;
+* ``ignoreOnDetail()``, ``ignoreOnIndex()``, ``ignoreOnForm()``,
+  ``ignoreWhenCreating()`` and ``ignoreWhenUpdating()`` add the asset to all
+  pages except those.
 
 .. tip::
 
@@ -522,11 +567,11 @@ and ``<script>`` tags, pass an ``Asset`` object to the ``addCssFile()``,
 Customizing the Backend Design
 ------------------------------
 
-The design of the backend is created with lots of CSS variables. This makes it
+The design of the backend is created with many CSS variables. This makes it
 easier to customize it to your own needs. They are defined in two layers:
 
-* **Design tokens** are the few global knobs the rest of the design derives from.
-  They live in
+* **Design tokens** are the few global settings that the rest of the design
+  derives from. They live in
   ``vendor/easycorp/easyadmin-bundle/assets/css/easyadmin-theme/design-tokens.css``.
   Changing one of them re-themes the whole backend at once.
 * **Theme variables** are the hundreds of specific values built on top of those
@@ -538,14 +583,14 @@ easier to customize it to your own needs. They are defined in two layers:
     The most common design changes (primary color, border radius, spacing
     density and gray scale) don't require writing any CSS: use the
     ``Dashboard::setTheme()`` method explained in the
-    :doc:`dashboard configuration reference </dashboards>`. The CSS overrides
-    explained in this section are the way to customize everything else (fonts,
-    backgrounds, layout dimensions, etc.) and they always win over the
-    ``setTheme()`` values.
+    :ref:`dashboard configuration reference <dashboard-configuration>`. The CSS
+    overrides explained in this section are the way to customize everything
+    else (fonts, backgrounds, layout dimensions, etc.) and they always win over
+    the ``setTheme()`` values.
 
 Start with the design tokens, because each one changes many things consistently:
 
-.. code-block:: text
+.. code-block:: css
 
     /* public/css/admin.css */
     :root,
@@ -553,8 +598,8 @@ Start with the design tokens, because each one changes many things consistently:
         /* the accent color of buttons, links, switches, etc. Pick one with
            enough contrast on white, because it is also used for link text */
         --ea-primary: #15803d;
-        /* the base of the spacing scale; increase it for a roomier backend,
-           decrease it for a denser one. All paddings, margins, gaps and the
+        /* the base of the spacing scale; increase it for a more spacious backend,
+           decrease it for a more compact one. All paddings, margins, gaps and the
            height of buttons and switches are multiples of this value */
         --ea-spacing: 0.125rem;
         /* the base of the border radius scale; set it to 0 for square corners */
@@ -565,7 +610,9 @@ Start with the design tokens, because each one changes many things consistently:
 
     If your primary color is light (e.g. a yellow), the white text drawn on top
     of it (button labels, etc.) becomes unreadable. Set ``--ea-primary-foreground``
-    to a dark color in that case::
+    to a dark color in that case:
+
+    .. code-block:: css
 
         :root, .ea-dark-scheme {
             --ea-primary: #facc15;
@@ -575,14 +622,15 @@ Start with the design tokens, because each one changes many things consistently:
 .. caution::
 
     Override the design tokens on ``:root, .ea-dark-scheme``, not just on
-    ``:root``. The backend applies its dark scheme with a class on the
-    ``<body>`` element, and it defines its own value of these tokens there, so a
+    ``:root``. The backend applies its
+    :ref:`dark scheme <dashboard-configuration>` with a class on the ``<body>``
+    element, and it defines its own value of these tokens there, so a
     ``:root``-only override applies to the light scheme but is ignored in dark
     mode. Use separate rules if you want a different value per scheme.
 
 Then override any of the more specific theme variables the same way:
 
-.. code-block:: text
+.. code-block:: css
 
     /* public/css/admin.css */
     :root {
@@ -594,7 +642,7 @@ Then override any of the more specific theme variables the same way:
         --font-size-base: 13px;
     }
 
-Then, load this CSS file in your dashboard and/or resource admin::
+Then, load this CSS file in your dashboard and/or CRUD controller::
 
     use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
     use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
@@ -623,9 +671,12 @@ CSS Cascade Layers
 
 In addition to redefining CSS variables, you can override any style with your
 own CSS rules. All backend styles are assigned to `CSS cascade layers`_:
-``vendor`` for third-party styles (Bootstrap, Font Awesome, etc.) and ``ea``
-for the EasyAdmin styles (with ``ea.tokens``, ``ea.base``, ``ea.components``
-and ``ea.utilities`` sublayers).
+``ea-overrides`` for the rules that must beat third-party styles, ``vendor``
+for third-party styles (Bootstrap, FontAwesome, etc.) and ``ea`` for the
+EasyAdmin styles (with ``ea.tokens``, ``ea.base``, ``ea.components`` and
+``ea.utilities`` sublayers). They are declared in that order in
+``assets/css/layers.css``: ``ea-overrides`` comes first, and not last, because
+the layer order is inverted for ``!important`` declarations.
 
 Unlayered CSS always wins over layered CSS, so any rule in your own CSS files
 overrides the backend styles, no matter its specificity or loading order.
@@ -653,8 +704,8 @@ Page        ``<body>`` ID attribute
 ``new``     ``ea-new-<entity_name>``
 ==========  ==============================================
 
-If you are editing for example the element with ``id = 200`` of the ``User`` entity,
-the ``<body>`` of that page will be ``<body id="easyadmin-edit-User-200" ...>``.
+For example, if you are editing the ``User`` entity whose ``id`` is ``200``,
+the ``<body>`` of that page will be ``<body id="ea-edit-User-200" ...>``.
 
 The pattern of the ``class`` attribute is different because it applies several
 CSS classes:
@@ -668,8 +719,8 @@ Page        ``<body>`` CSS class
 ``new``     ``ea-new ea-new-<entity_name>``
 ==========  ============================================
 
-If you are displaying for example the listing of ``User`` entity elements, the
-``<body>`` of that page will be ``<body class="ea index index-User" ...>``.
+For example, if you are displaying the listing of ``User`` entity elements, the
+``<body>`` of that page will be ``<body class="ea ea-index ea-index-User" ...>``.
 
 Managing the Backend Assets with Webpack
 ----------------------------------------
@@ -680,10 +731,10 @@ compiled versions of all assets, so you don't have to install Webpack to use
 this bundle.
 
 However, if you want total control over the backend styles, you can use Webpack
-to integrate the SCSS and JavaScript source files provided in the ``assets/``
-directory. The only limitation is that EasyAdmin doesn't use Webpack Encore yet when
-loading the assets, so you can't use features like versioning. This will be
-fixed in future versions.
+to integrate the CSS and JavaScript source files provided in the ``assets/``
+directory. Note that EasyAdmin builds its assets with Webpack Encore, but it
+loads them with the standard ``asset()`` function, so features like asset
+versioning are not applied to EasyAdmin's own assets.
 
 Content Security Policy (CSP) Support
 -------------------------------------

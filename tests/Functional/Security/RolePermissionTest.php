@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Security;
 
 use EasyCorp\Bundle\EasyAdminBundle\Exception\ForbiddenActionException;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Category;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Controller\CategoryCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Controller\ProtectedCategoryCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Controller\SecuredDashboardController;
@@ -55,6 +56,25 @@ class RolePermissionTest extends AbstractCrudTestCase
         );
 
         static::assertResponseStatusCodeSame($expectedStatusCode);
+    }
+
+    /**
+     * Anchors the "Security" rules of skills/easyadmin/SKILL.md: action permissions
+     * are checked per action, so restricting the index action does not restrict the
+     * other actions of the same CRUD controller.
+     */
+    public function testIndexPermissionDoesNotProtectTheOtherActions(): void
+    {
+        $category = $this->entityManager->getRepository(Category::class)->findOneBy([]);
+        static::assertInstanceOf(Category::class, $category);
+        $credentials = ['PHP_AUTH_USER' => 'user', 'PHP_AUTH_PW' => '1234'];
+
+        $this->client->request('GET', $this->generateDetailUrl($category->getId(), null, ProtectedCategoryCrudController::class), [], [], $credentials);
+        static::assertResponseIsSuccessful();
+
+        $this->expectException(ForbiddenActionException::class);
+        $this->client->catchExceptions(false);
+        $this->client->request('GET', $this->generateIndexUrl(null, null, ProtectedCategoryCrudController::class), [], [], $credentials);
     }
 
     public static function provideRolesForAdminOnlyAction(): \Generator

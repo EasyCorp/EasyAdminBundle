@@ -157,6 +157,49 @@ works both for :ref:`built-in actions <actions-built-in>` and for
         ;
     }
 
+.. _security-permissions-other-crud:
+
+Check the Permissions of Another CRUD Controller
+------------------------------------------------
+
+EasyAdmin applies the ``setPermission()`` and ``setEntityPermission()``
+configuration of a CRUD controller before rendering a link to it (for example,
+the link of an ``AssociationField`` to the related entity). If your own code
+renders links or embedded blocks that belong to another CRUD controller (e.g. in
+a custom field configurator), use the ``CrudPermissionCheckerInterface`` service
+to apply the same rules instead of duplicating the permission names::
+
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+    use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
+    use EasyCorp\Bundle\EasyAdminBundle\Contracts\Security\CrudPermissionCheckerInterface;
+    use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+    use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
+
+    final class InvoicePreviewConfigurator implements FieldConfiguratorInterface
+    {
+        public function __construct(
+            private CrudPermissionCheckerInterface $permissionChecker,
+        ) {
+        }
+
+        public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
+        {
+            $invoiceDto = // ... the EntityDto of the related invoice
+
+            // TRUE only if the user can run the 'detail' action of InvoiceCrudController
+            // for this invoice, according to that controller's own permissions
+            if (!$this->permissionChecker->isGranted($context, InvoiceCrudController::class, Action::DETAIL, $invoiceDto)) {
+                // ... hide the field or render a notice instead of the preview
+            }
+        }
+
+        // ...
+    }
+
+Pass the ``EntityDto`` of the target entity whenever you have it: the
+``setEntityPermission()`` check needs the entity instance. When you pass
+``null``, only the action-level permission is checked.
+
 .. _security-fields:
 
 Restrict Access to Fields

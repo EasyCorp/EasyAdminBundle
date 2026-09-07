@@ -18,7 +18,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Provider\AdminContextProviderInter
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Registry\AdminControllerRegistryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Translation\EntityTranslationIdGeneratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\DataCollector\EasyAdminDataCollector;
-use EasyCorp\Bundle\EasyAdminBundle\DependencyInjection\EasyAdminExtension;
+use EasyCorp\Bundle\EasyAdminBundle\EasyAdminBundle;
 use EasyCorp\Bundle\EasyAdminBundle\EventListener\AdminRouterSubscriber;
 use EasyCorp\Bundle\EasyAdminBundle\EventListener\CrudResponseListener;
 use EasyCorp\Bundle\EasyAdminBundle\EventListener\ExceptionListener;
@@ -112,8 +112,8 @@ use Symfony\Component\HttpKernel\KernelInterface;
 return static function (ContainerConfigurator $container) {
     $services = $container->services()
         ->defaults()->private()
-        ->instanceof(FieldConfiguratorInterface::class)->tag(EasyAdminExtension::TAG_FIELD_CONFIGURATOR)
-        ->instanceof(FilterConfiguratorInterface::class)->tag(EasyAdminExtension::TAG_FILTER_CONFIGURATOR);
+        ->instanceof(FieldConfiguratorInterface::class)->tag(EasyAdminBundle::TAG_FIELD_CONFIGURATOR)
+        ->instanceof(FilterConfiguratorInterface::class)->tag(EasyAdminBundle::TAG_FILTER_CONFIGURATOR);
 
     $services
         ->set(MakeAdminDashboardCommand::class)->public()
@@ -235,10 +235,10 @@ return static function (ContainerConfigurator $container) {
             ->arg(0, service('cache.easyadmin'))
 
         ->set(AdminRouteGenerator::class)
-            ->arg(0, tagged_iterator(EasyAdminExtension::TAG_DASHBOARD_CONTROLLER))
-            ->arg(1, tagged_iterator(EasyAdminExtension::TAG_CRUD_CONTROLLER))
+            ->arg(0, tagged_iterator(EasyAdminBundle::TAG_DASHBOARD_CONTROLLER))
+            ->arg(1, tagged_iterator(EasyAdminBundle::TAG_CRUD_CONTROLLER))
             ->arg(2, service('cache.easyadmin'))
-            ->arg(3, tagged_iterator(EasyAdminExtension::TAG_ADMIN_ROUTE_CONTROLLER))
+            ->arg(3, tagged_iterator(EasyAdminBundle::TAG_ADMIN_ROUTE_CONTROLLER))
 
         ->set(AdminRouteLoader::class)
             ->arg(0, service(AdminRouteGenerator::class))
@@ -303,7 +303,7 @@ return static function (ContainerConfigurator $container) {
         ->set(FieldFactory::class)
             ->arg(0, service(AdminContextProvider::class))
             ->arg(1, service(AuthorizationChecker::class))
-            ->arg(2, tagged_iterator(EasyAdminExtension::TAG_FIELD_CONFIGURATOR))
+            ->arg(2, tagged_iterator(EasyAdminBundle::TAG_FIELD_CONFIGURATOR))
             ->arg(3, service(FormLayoutFactory::class))
 
         ->set(FieldProvider::class)
@@ -311,7 +311,7 @@ return static function (ContainerConfigurator $container) {
 
         ->set(FilterFactory::class)
             ->arg(0, service(AdminContextProvider::class))
-            ->arg(1, tagged_iterator(EasyAdminExtension::TAG_FILTER_CONFIGURATOR))
+            ->arg(1, tagged_iterator(EasyAdminBundle::TAG_FILTER_CONFIGURATOR))
 
         ->set(FiltersFormType::class)
             ->tag('form.type', ['alias' => 'ea_filters'])
@@ -328,7 +328,7 @@ return static function (ContainerConfigurator $container) {
 
         ->set(CommonFilterConfigurator::class)
             ->arg(0, service(EntityTranslationIdGeneratorInterface::class))
-            ->tag(EasyAdminExtension::TAG_FILTER_CONFIGURATOR, ['priority' => 9999])
+            ->tag(EasyAdminBundle::TAG_FILTER_CONFIGURATOR, ['priority' => 9999])
 
         ->set(ComparisonFilterConfigurator::class)
 
@@ -359,7 +359,7 @@ return static function (ContainerConfigurator $container) {
             ->arg(1, new Reference(AuthorizationChecker::class))
             ->arg(2, new Reference(AdminUrlGenerator::class))
             ->arg(3, new Reference('security.csrf.token_manager', ContainerInterface::NULL_ON_INVALID_REFERENCE))
-            ->arg(4, tagged_iterator(EasyAdminExtension::TAG_ACTIONS_EXTENSION))
+            ->arg(4, tagged_iterator(EasyAdminBundle::TAG_ACTIONS_EXTENSION))
 
         ->set(SecurityVoter::class)
             ->arg(0, service(AuthorizationChecker::class))
@@ -397,14 +397,14 @@ return static function (ContainerConfigurator $container) {
         ->set(CommonPostConfigurator::class)
             ->arg(0, service(AdminContextProvider::class))
             ->arg(1, '%kernel.charset%')
-            ->tag(EasyAdminExtension::TAG_FIELD_CONFIGURATOR, ['priority' => -9999])
+            ->tag(EasyAdminBundle::TAG_FIELD_CONFIGURATOR, ['priority' => -9999])
 
         ->set(CommonPreConfigurator::class)
             ->arg(0, new Reference('property_accessor'))
             ->arg(1, service(EntityFactory::class))
             ->arg(2, service(EntityTranslationIdGeneratorInterface::class))
             ->arg(3, service(EntityRepository::class))
-            ->tag(EasyAdminExtension::TAG_FIELD_CONFIGURATOR, ['priority' => 9999])
+            ->tag(EasyAdminBundle::TAG_FIELD_CONFIGURATOR, ['priority' => 9999])
 
         ->set(CountryConfigurator::class)
             ->arg(0, service('twig'))

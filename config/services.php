@@ -54,6 +54,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\LanguageConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\LocaleConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\MoneyConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\NumberConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\PasswordConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\PercentConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\SlugConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\TelephoneConfigurator;
@@ -439,6 +440,7 @@ return static function (ContainerConfigurator $container) {
             ->arg(1, service('property_accessor'))
 
         ->set(NumberConfigurator::class)
+        ->set(PasswordConfigurator::class)
             ->arg(0, service(IntlFormatter::class))
 
         ->set(PercentConfigurator::class)

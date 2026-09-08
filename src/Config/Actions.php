@@ -55,7 +55,7 @@ final class Actions
 
         $action = $actionDto->getAsConfigObject();
 
-        /** @var Action $action */
+        /** @var Action|ActionGroup $action */
         $action = $callable($action);
         $this->dto->setAction($pageName, $action->getAsDto());
 

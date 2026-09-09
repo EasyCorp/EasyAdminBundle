@@ -393,7 +393,7 @@ label.form-check-label {
     margin-inline-start: var(--ea-sp-4);
 }
 
-.form-fieldset.has-fieldset-error {
+.form-column .form-fieldset.has-fieldset-error {
     border: var(--border-width) solid var(--form-input-error-border-color);
     border-radius: var(--border-radius-xl);
     box-shadow: var(--form-input-error-shadow);

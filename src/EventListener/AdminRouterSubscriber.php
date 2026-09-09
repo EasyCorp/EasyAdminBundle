@@ -21,6 +21,10 @@ use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\Matcher\RequestMatcherInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Security\Core\Authorization\Voter\AuthenticatedVoter;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\Security\Http\AccessMapInterface;
 
 /**
  * This subscriber acts as a "proxy" of all backend requests. First, if the
@@ -49,6 +53,8 @@ class AdminRouterSubscriber implements EventSubscriberInterface
         private readonly AdminRouteGeneratorInterface $adminRouteGenerator,
         private readonly string $buildDir,
         private readonly AdminControllerRegistryInterface $adminControllers,
+        private readonly ?AccessMapInterface $accessMap = null,
+        private readonly ?AuthorizationCheckerInterface $authorizationChecker = null,
     ) {
     }
 
@@ -320,9 +326,46 @@ class AdminRouterSubscriber implements EventSubscriberInterface
 
         $newRequest->server->set('REQUEST_URI', $url);
 
+        $this->assertTargetRouteAccessIsGranted($newRequest);
+
         $parameters = $this->requestMatcher->matchRequest($newRequest);
 
         return $parameters['_controller'] ?? null;
+    }
+
+    /**
+     * The controller of a custom action (?routeName=...) is swapped in on the
+     * 'kernel.controller' event, which runs *after* Symfony's security firewall has
+     * already evaluated 'access_control' against the original admin URL. Without this
+     * check, any path-based access_control rule protecting the *target* route would be
+     * silently skipped, allowing it to be reached through EasyAdmin. So we re-evaluate
+     * that rule here against the target request.
+     *
+     * This mirrors Symfony's own AccessListener, but evaluates the matched attributes one
+     * by one through the authorization checker instead of calling the access decision
+     * manager directly: the signature of AccessDecisionManagerInterface::decide() (needed
+     * to pass several attributes at once) is not portable across the Symfony versions this
+     * bundle supports.
+     */
+    private function assertTargetRouteAccessIsGranted(Request $request): void
+    {
+        if (null === $this->accessMap || null === $this->authorizationChecker) {
+            return;
+        }
+
+        [$attributes] = $this->accessMap->getPatterns($request);
+
+        if (null === $attributes || [] === $attributes || [AuthenticatedVoter::PUBLIC_ACCESS] === $attributes) {
+            return;
+        }
+
+        foreach ($attributes as $attribute) {
+            if ($this->authorizationChecker->isGranted($attribute)) {
+                return;
+            }
+        }
+
+        throw new AccessDeniedException(sprintf('Access to the "%s" route is denied by an access control rule; it cannot be reached through an EasyAdmin custom action.', $request->attributes->get('_route')));
     }
 
     /**

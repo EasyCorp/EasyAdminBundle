@@ -2,7 +2,10 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\EventListener;
 
+use Doctrine\DBAL\Types\Type;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Bridge\Doctrine\Types\UlidType;
+use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -91,15 +94,24 @@ class CrudAutocompleteSubscriber implements EventSubscriberInterface
                 /** @phpstan-ignore-next-line function.alreadyNarrowedType */
                 $idFieldType = property_exists($idFieldMapping, 'type') ? $idFieldMapping->type : $idFieldMapping['type'];
 
+                // the 'uuid' and 'ulid' Doctrine type names can be claimed by third-party types which use
+                // a different storage format (e.g. ramsey/uuid-doctrine stores UUIDs as CHAR(36) strings),
+                // so convert the submitted values only when the registered type is the Symfony one, whose
+                // storage format is the one assumed by the conversion made below; otherwise, pass the values
+                // through unchanged and let the registered type convert them when running the query
+                $idFieldDoctrineType = Type::hasType($idFieldType) ? Type::getType($idFieldType) : null;
+                $isSymfonyUlidType = null === $idFieldDoctrineType || $idFieldDoctrineType instanceof UlidType;
+                $isSymfonyUuidType = null === $idFieldDoctrineType || $idFieldDoctrineType instanceof UuidType;
+
                 $data['autocomplete'] = array_map(
-                    static function ($v) use ($options, $idFieldType) {
+                    static function ($v) use ($options, $idFieldType, $isSymfonyUlidType, $isSymfonyUuidType) {
                         // TODO: replace 'ulid' by Symfony\Bridge\Doctrine\Types\UlidType::NAME when Symfony 5.4 is no longer supported
-                        if ('ulid' === $idFieldType && class_exists(Ulid::class) && Ulid::isValid($v)) {
+                        if ('ulid' === $idFieldType && $isSymfonyUlidType && class_exists(Ulid::class) && Ulid::isValid($v)) {
                             return Ulid::fromBase32($v)->toRfc4122();
                         }
 
                         // TODO: replace 'uuid' by Symfony\Bridge\Doctrine\Types\UuidType::NAME when Symfony 5.4 is no longer supported
-                        if ('uuid' === $idFieldType && class_exists(Uuid::class) && Uuid::isValid($v)) {
+                        if ('uuid' === $idFieldType && $isSymfonyUuidType && class_exists(Uuid::class) && Uuid::isValid($v)) {
                             // Use RFC4122 format for platforms with native GUID type (e.g., PostgreSQL),
                             // and binary format for platforms without native GUID type (e.g., MySQL, SQLite)
                             $platform = $options['em']->getConnection()->getDatabasePlatform();

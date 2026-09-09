@@ -5,6 +5,8 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Form;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Platforms\MySQLPlatform;
 use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
+use Doctrine\DBAL\Types\GuidType;
+use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -13,6 +15,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\EventListener\CrudAutocompleteSubscribe
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bridge\Doctrine\Form\ChoiceList\IdReader;
+use Symfony\Bridge\Doctrine\Types\UlidType;
+use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Form\FormConfigInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormInterface;
@@ -30,6 +34,20 @@ class CrudAutocompleteSubscriberTest extends TestCase
         if (!class_exists(PostgreSQLPlatform::class) || !class_exists(MySQLPlatform::class)) {
             $this->markTestSkipped('Doctrine DBAL 3.x+ is required (PostgreSQLPlatform/MySQLPlatform classes).');
         }
+
+        // the subscriber inspects the globally registered Doctrine types, so reset
+        // 'uuid' and 'ulid' to the Symfony UID types to not depend on the test execution order
+        self::registerDoctrineType('uuid', UuidType::class);
+        self::registerDoctrineType('ulid', UlidType::class);
+    }
+
+    protected function tearDown(): void
+    {
+        // some tests override the 'uuid' and 'ulid' types in the global Doctrine type
+        // registry, so restore the Symfony UID types to not leak the overridden types
+        // into other test classes running in the same PHPUnit process
+        self::registerDoctrineType('uuid', UuidType::class);
+        self::registerDoctrineType('ulid', UlidType::class);
     }
 
     /** @dataProvider idFieldInDifferentPlatformsData */
@@ -113,6 +131,69 @@ class CrudAutocompleteSubscriberTest extends TestCase
                 'Doctrine\DBAL\Platforms\MySQLPlatform',
             ],
         ];
+    }
+
+    /** @dataProvider idFieldWithNonSymfonyUidTypeData */
+    public function testIdFieldWithNonSymfonyUidType(
+        string $fieldType,
+        string $fieldValue,
+        string $platformClass,
+    ): void {
+        // third-party types registered for the 'uuid'/'ulid' type names may use a different
+        // storage format than the Symfony UID types (e.g. ramsey/uuid-doctrine stores UUIDs
+        // as strings), so the subscriber must pass the submitted values through unchanged
+        Type::overrideType($fieldType, GuidType::class);
+
+        $platform = new $platformClass();
+        $capturedData = null;
+
+        $repo = $this->createMock(EntityRepository::class);
+        $repo
+            ->expects($this->once())
+            ->method('findBy')
+            ->willReturnCallback(static function (array $criteria) use (&$capturedData) {
+                $capturedData = $criteria['id'][0];
+
+                return [];
+            });
+
+        $subscriber = new CrudAutocompleteSubscriber($this->createMock(Environment::class));
+        $subscriber->preSubmit(
+            $this->createFormEvent($platform, $repo, new FieldMapping($fieldType, 'id', 'id'), $fieldValue)
+        );
+
+        $this->assertSame($fieldValue, $capturedData, sprintf('%s must not convert the id of a non-Symfony "%s" type', $platform::class, $fieldType));
+    }
+
+    public static function idFieldWithNonSymfonyUidTypeData(): array
+    {
+        return [
+            'MySQL with UUID' => [
+                'uuid',
+                self::UUID_STRING,
+                'Doctrine\DBAL\Platforms\MySQLPlatform',
+            ],
+            'PostgreSQL with UUID' => [
+                'uuid',
+                self::UUID_STRING,
+                'Doctrine\DBAL\Platforms\PostgreSQLPlatform',
+            ],
+            'MySQL with ULID' => [
+                'ulid',
+                self::ULID_STRING,
+                'Doctrine\DBAL\Platforms\MySQLPlatform',
+            ],
+            'PostgreSQL with ULID' => [
+                'ulid',
+                self::ULID_STRING,
+                'Doctrine\DBAL\Platforms\PostgreSQLPlatform',
+            ],
+        ];
+    }
+
+    private static function registerDoctrineType(string $name, string $className): void
+    {
+        Type::hasType($name) ? Type::overrideType($name, $className) : Type::addType($name, $className);
     }
 
     private function createFormEvent(

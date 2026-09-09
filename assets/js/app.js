@@ -26,6 +26,7 @@ class App {
         this.#createLayoutResizeControls();
         this.#createNavigationToggler();
         this.#createSearchHighlight();
+        this.#createSearchInputAutoSizing();
         this.#createFilters();
         this.#createAutoCompleteFields();
         this.#createBatchActions();
@@ -188,6 +189,19 @@ class App {
         const elementsToHighlight = document.querySelectorAll('table tbody td.searchable');
         const highlighter = new Mark(elementsToHighlight);
         highlighter.mark(searchQueryTerms, { separateWordSearch: false });
+    }
+
+    #createSearchInputAutoSizing() {
+        const searchElement = document.querySelector('.content-search-label input[type="search"]');
+        if (null === searchElement) {
+            return;
+        }
+
+        // keep the parent label's data-value in sync with the typed text, so the
+        // ::after pseudo-element used to auto-size the search input grows while typing
+        searchElement.addEventListener('input', () => {
+            searchElement.parentNode.dataset.value = searchElement.value;
+        });
     }
 
     #createFilters() {

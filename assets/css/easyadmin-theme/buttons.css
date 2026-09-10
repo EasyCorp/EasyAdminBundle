@@ -108,17 +108,30 @@
     opacity: 1;
 }
 
-/* the close button (Bootstrap .btn-close, used by Alert) is excluded from the state
-   layer; its translucent solid hover background transitions fine directly. */
-.btn-close {
+/* the close button rendered by Alert (Button + .btn-close, so 'btn btn-invisible btn-close')
+   is excluded from the state layer; its translucent solid hover background transitions fine
+   directly.
+
+   Every rule here must be scoped to '.btn.btn-close', never to '.btn-close' alone. The
+   values below come from the --button-* custom properties, which only the '.btn' rule above
+   declares, so on a standalone Bootstrap close button (modal header, toast, offcanvas) they
+   resolve to nothing. Worse than a no-op: an unresolved var() makes the whole declaration
+   invalid at computed-value time, so it falls back to the property's initial value instead
+   of leaving Bootstrap's in place.
+
+   Set the background COLOR rather than the 'background' shorthand for the same reason the
+   scoping matters: Bootstrap paints the button's glyph as a data-URI 'background-image', and
+   the shorthand resets it to 'none'. Only the color was ever intended here, as the
+   transition-property below already says. */
+.btn.btn-close {
     transition-property: background-color, border-color, color, box-shadow, opacity, fill;
 }
-.btn-close:not(:disabled):not(.disabled):hover,
-.btn-close:not(:disabled):not(.disabled):focus-visible {
-    background: var(--button-hover-bg, var(--button-bg));
+.btn.btn-close:not(:disabled):not(.disabled):hover,
+.btn.btn-close:not(:disabled):not(.disabled):focus-visible {
+    background-color: var(--button-hover-bg, var(--button-bg));
 }
-.btn-close:not(:disabled):not(.disabled):active {
-    background: var(--button-active-bg, var(--button-hover-bg, var(--button-bg)));
+.btn.btn-close:not(:disabled):not(.disabled):active {
+    background-color: var(--button-active-bg, var(--button-hover-bg, var(--button-bg)));
 }
 
 .btn-primary,

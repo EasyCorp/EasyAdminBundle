@@ -43,6 +43,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\CommonPostConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\CommonPreConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\CountryConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\CurrencyConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\DateIntervalConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\DateTimeConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\EmailConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\FileConfigurator;
@@ -410,6 +411,8 @@ return static function (ContainerConfigurator $container) {
             ->arg(0, service('twig'))
 
         ->set(CurrencyConfigurator::class)
+
+        ->set(DateIntervalConfigurator::class)
 
         ->set(DateTimeConfigurator::class)
             ->arg(0, service(IntlFormatter::class))

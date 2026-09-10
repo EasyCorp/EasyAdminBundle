@@ -62,17 +62,19 @@
 }
 
 /* for boolean fields, flip the label <-> value order because the label is
-   usually a medium-long string of text and the value is always tiny (YES/NO) */
-.ea-detail .field-group.field-boolean {
+   usually a medium-long string of text and the value is always tiny (YES/NO);
+   the .field-boolean-no-swap class (added by the swapLabelAndValue() option)
+   opts out of this and keeps the same order as the rest of the fields */
+.ea-detail .field-group.field-boolean:not(.field-boolean-no-swap) {
     flex-direction: row-reverse;
 }
-.ea-detail .field-group.field-boolean .field-label {
+.ea-detail .field-group.field-boolean:not(.field-boolean-no-swap) .field-label {
     flex: 1;
     min-inline-size: 66%;
     margin: 0 0 0 var(--ea-sp-8);
     text-align: left;
 }
-.ea-detail .field-group.field-boolean .field-value {
+.ea-detail .field-group.field-boolean:not(.field-boolean-no-swap) .field-value {
     flex: unset;
     min-inline-size: 0;
     text-align: right;

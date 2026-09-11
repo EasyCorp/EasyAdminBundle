@@ -220,6 +220,11 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
             } elseif (null !== $autocompleteTemplate) {
                 $field->setFormTypeOption('autocomplete_template', $autocompleteTemplate);
             }
+
+            $autocompleteDependsOn = $field->getCustomOption(AssociationField::OPTION_AUTOCOMPLETE_DEPENDS_ON);
+            if (null !== $autocompleteDependsOn) {
+                $field->setFormTypeOption('attr.data-ea-autocomplete-depends-on', json_encode($autocompleteDependsOn));
+            }
         } else {
             $field->setFormTypeOptionIfNotSet('query_builder', static function (EntityRepository $repository) use ($field) {
                 // TODO: should this use `createIndexQueryBuilder` instead, so we get the default ordering etc.?

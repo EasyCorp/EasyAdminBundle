@@ -796,7 +796,7 @@ const OPTION_TAB_SIZE = 'tabSize'
 static new(string $propertyName, TranslatableInterface|bool|string|null $label = null): self
 
 hideLineNumbers(bool $hideNumbers = true): self
-setIndentWithTabs(bool $useTabs): self
+setIndentWithTabs(bool $useTabs = true): self
 setLanguage(string $language): self
 setNumOfRows(int $rows): self
 setTabSize(int $tabSize): self

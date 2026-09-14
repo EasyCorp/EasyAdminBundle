@@ -491,7 +491,7 @@ source_contains: src/Controller/AbstractCrudController.php | isCsrfTokenValid(Bo
 source_contains: src/Orm/EntityRepository.php | ->from($entityDto->getFqcn(), 'entity')
 source_contains: src/Config/Actions.php | $this->dto->removeAction($pageName, Action::BATCH_DELETE);
 source_contains: templates/crud/includes/_action_confirmation_modal.html.twig | csrf_token('ea-delete')
-source_contains: doc/security.rst | is_granted($permissions, $item)
+source_contains: doc/security.rst | is_granted($permission, $item)
 source_contains: doc/actions.rst | controller_resolver.auto_mapping
 source_not_contains: templates/components/Button.html.twig | csrf_token
 source_not_contains: templates/components/Button.html.twig | _token

@@ -111,7 +111,7 @@ class EntityRepositoryTest extends TestCase
         $queryBuilder
             ->expects($this->once())
             ->method('addOrderBy')
-            ->with('entity.name', 'ASC');
+            ->with('entity.name', self::expectedSortOrder('ASC'));
 
         $entityManager = $this->createMock(EntityManagerInterface::class);
         $entityManager->method('createQueryBuilder')->willReturn($queryBuilder);
@@ -235,11 +235,39 @@ class EntityRepositoryTest extends TestCase
         $queryBuilder = $this->createSortingQueryBuilder();
         $queryBuilder->expects($this->once())
             ->method('addOrderBy')
-            ->with('entity.displayedField', 'ASC');
+            ->with('entity.displayedField', self::expectedSortOrder('ASC'));
 
         $this->stubEntityManager($queryBuilder);
 
         $this->entityRepository->createQueryBuilder($searchDto, $entityDto, $fields, new FilterCollection());
+    }
+
+    /**
+     * @dataProvider provideCaseInsensitiveSortDirections
+     */
+    public function testCustomSortDirectionIsNormalizedRegardlessOfCase(string $requestedDirection, string $normalizedDirection): void
+    {
+        // the sort direction comes verbatim from the URL (?sort[displayedField]=desc)
+        $entityDto = $this->createEntityDto(['displayedField' => ['type' => 'string']]);
+        $fields = new FieldCollection([$this->createField('displayedField', true)]);
+        $searchDto = $this->createSearchDtoForSort(customSort: ['displayedField' => $requestedDirection]);
+
+        $queryBuilder = $this->createSortingQueryBuilder();
+        $queryBuilder->expects($this->once())
+            ->method('addOrderBy')
+            ->with('entity.displayedField', self::expectedSortOrder($normalizedDirection));
+
+        $this->stubEntityManager($queryBuilder);
+
+        $this->entityRepository->createQueryBuilder($searchDto, $entityDto, $fields, new FilterCollection());
+    }
+
+    public static function provideCaseInsensitiveSortDirections(): iterable
+    {
+        yield 'lowercase desc' => ['desc', 'DESC'];
+        yield 'lowercase asc' => ['asc', 'ASC'];
+        yield 'mixed case desc' => ['dEsC', 'DESC'];
+        yield 'mixed case asc' => ['Asc', 'ASC'];
     }
 
     public function testCustomSortByFieldAbsentFromFieldCollectionIsIgnored(): void
@@ -344,7 +372,7 @@ class EntityRepositoryTest extends TestCase
             ->with('entity.customer', 'customer');
         $queryBuilder->expects($this->once())
             ->method('addOrderBy')
-            ->with('customer.name', 'ASC');
+            ->with('customer.name', self::expectedSortOrder('ASC'));
 
         $this->stubEntityManager($queryBuilder);
 
@@ -373,7 +401,7 @@ class EntityRepositoryTest extends TestCase
         });
         $queryBuilder->expects($this->once())
             ->method('addOrderBy')
-            ->with('category1.name', 'DESC');
+            ->with('category1.name', self::expectedSortOrder('DESC'));
 
         $this->stubEntityManager($queryBuilder);
 
@@ -401,7 +429,7 @@ class EntityRepositoryTest extends TestCase
             ->method('leftJoin')
             ->with('entity.customer', 'customer')
             ->willReturnSelf();
-        $queryBuilder->method('addOrderBy')->willReturnCallback(static function (string $sort, string $order) use (&$orderClauses, $queryBuilder) {
+        $queryBuilder->method('addOrderBy')->willReturnCallback(static function (string $sort, $order) use (&$orderClauses, $queryBuilder) {
             $orderClauses[] = [$sort, $order];
 
             return $queryBuilder;
@@ -411,7 +439,7 @@ class EntityRepositoryTest extends TestCase
 
         $this->entityRepository->createQueryBuilder($searchDto, $entityDto, $fields, new FilterCollection());
 
-        self::assertSame([['entity.customer', 'ASC'], ['customer.name', 'DESC']], $orderClauses);
+        self::assertSame([['entity.customer', self::expectedSortOrder('ASC')], ['customer.name', self::expectedSortOrder('DESC')]], $orderClauses);
     }
 
     public function testDefaultSortByNestedAssociationLeafOrdersByItsForeignKey(): void
@@ -434,7 +462,7 @@ class EntityRepositoryTest extends TestCase
             ->willReturnSelf();
         $queryBuilder->expects($this->once())
             ->method('addOrderBy')
-            ->with('customer.country', 'ASC');
+            ->with('customer.country', self::expectedSortOrder('ASC'));
 
         $this->stubEntityManager($queryBuilder);
 
@@ -467,7 +495,7 @@ class EntityRepositoryTest extends TestCase
         });
         $queryBuilder->expects($this->once())
             ->method('addOrderBy')
-            ->with('country1.name', 'ASC');
+            ->with('country1.name', self::expectedSortOrder('ASC'));
 
         $this->stubEntityManager($queryBuilder);
 
@@ -495,7 +523,7 @@ class EntityRepositoryTest extends TestCase
             ->willReturnSelf();
         $queryBuilder->expects($this->once())
             ->method('addOrderBy')
-            ->with('customer.country', 'DESC');
+            ->with('customer.country', self::expectedSortOrder('DESC'));
 
         $this->stubEntityManager($queryBuilder);
 
@@ -573,7 +601,7 @@ class EntityRepositoryTest extends TestCase
         $queryBuilder = $this->createSortingQueryBuilder();
         $queryBuilder->expects($this->once())
             ->method('addOrderBy')
-            ->with('entity.hiddenField', 'DESC');
+            ->with('entity.hiddenField', self::expectedSortOrder('DESC'));
 
         $this->stubEntityManager($queryBuilder);
 
@@ -590,7 +618,7 @@ class EntityRepositoryTest extends TestCase
         $queryBuilder = $this->createSortingQueryBuilder();
         $queryBuilder->expects($this->once())
             ->method('addOrderBy')
-            ->with('entity.createdAt', 'DESC');
+            ->with('entity.createdAt', self::expectedSortOrder('DESC'));
 
         $this->stubEntityManager($queryBuilder);
 
@@ -609,7 +637,7 @@ class EntityRepositoryTest extends TestCase
         $queryBuilder = $this->createSortingQueryBuilder();
         $queryBuilder->expects($this->once())
             ->method('addOrderBy')
-            ->with('entity.displayedField', 'ASC');
+            ->with('entity.displayedField', self::expectedSortOrder('ASC'));
 
         $this->stubEntityManager($queryBuilder);
 
@@ -869,5 +897,16 @@ class EntityRepositoryTest extends TestCase
     {
         return (new \ReflectionClass(FormFactory::class))
             ->newInstanceWithoutConstructor();
+    }
+
+    // ORM 3.7+ receives the PHP 8.6 \SortDirection enum, older versions a string
+    private static function expectedSortOrder(string $direction): \SortDirection|string
+    {
+        $orderParameterType = (string) (new \ReflectionMethod(QueryBuilder::class, 'addOrderBy'))->getParameters()[1]->getType();
+        if (!str_contains($orderParameterType, 'SortDirection')) {
+            return $direction;
+        }
+
+        return 'DESC' === $direction ? \SortDirection::Descending : \SortDirection::Ascending;
     }
 }

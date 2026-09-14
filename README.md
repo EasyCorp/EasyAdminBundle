@@ -42,6 +42,8 @@ php bin/console make:admin:crud
 
 Visit `/admin` in your browser. That's it!
 
+If you use an AI coding agent, run `php bin/console easyadmin:ai:install` too. It installs an [agent skill](https://symfony.com/bundles/EasyAdminBundle/current/ai-coding-agents.html) that teaches Claude Code, Codex, Cursor, GitHub Copilot and other agents the EasyAdmin API.
+
 📖 **[Read the full documentation →](https://symfony.com/bundles/EasyAdminBundle/current/index.html)**
 
 ## Features

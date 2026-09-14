@@ -34,3 +34,7 @@ build-assets: ## Rebuild assets after changes in JS or SCSS
 	php ./src/Resources/bin/fix-assets-manifest-file.php
 
 checks-before-pr: linter-cs-fixer linter-phpstan linter-docs linter-twig tests ## Runs tests and linters which are also run on PRs
+
+## —— Skill ———————————————————————————————————
+skill-api-reference: ## Regenerate skills/easyadmin/references/api.md from src/
+	php tests/Unit/Skill/Support/generate-api-reference.php

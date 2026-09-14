@@ -17,6 +17,7 @@ under the ``EasyCorp\Bundle\EasyAdminBundle\Event\`` namespace:
   * ``AfterEntityBuiltEvent``
   * ``AfterEntityDeletedEvent``
   * ``AfterEntityPersistedEvent``
+  * ``AfterEntitySearchEvent``
   * ``AfterEntityUpdatedEvent``
   * ``BeforeEntityDeletedEvent``
   * ``BeforeEntityPersistedEvent``

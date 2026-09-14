@@ -536,7 +536,7 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
             }
 
             if (isset($customRouteConfig['routePath']) && \in_array($action, [Action::EDIT, Action::DETAIL, Action::DELETE], true) && null === $this->getEntityIdPlaceholderName($customRouteConfig['routePath'])) {
-                throw new \RuntimeException(sprintf('In the #[AdminDashboard] attribute of the "%s" dashboard controller, the path for the "%s" action must contain the "{id}" or "{entityId}" placeholder.', $action, $dashboardFqcn));
+                throw new \RuntimeException(sprintf('In the #[AdminDashboard] attribute of the "%s" dashboard controller, the path for the "%s" action must contain the "{id}" or "{entityId}" placeholder.', $dashboardFqcn, $action));
             }
         }
 

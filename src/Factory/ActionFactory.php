@@ -231,6 +231,12 @@ final readonly class ActionFactory
     public function processGlobalActionsAndEntityActionsForAll(EntityCollection $entityDtos, ActionConfigDto $actionConfigDto): ActionCollection
     {
         foreach ($entityDtos as $entityDto) {
+            // the rows hidden by Crud::setEntityPermission() have no entity instance, so their
+            // action URLs can't be generated (and the index page never displays those actions)
+            if (!$entityDto->isAccessible()) {
+                continue;
+            }
+
             $this->processEntityActions($entityDto, clone $actionConfigDto);
         }
 

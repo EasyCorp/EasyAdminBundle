@@ -86,6 +86,7 @@ class MakeAdminDashboardCommand extends Command
         $io->listing([
             sprintf('Configure your Dashboard at "%s"', $generatedFilePath),
             'Run "make:admin:crud" to generate CRUD controllers and link them from the Dashboard.',
+            'Run "easyadmin:ai:install" to teach your AI coding agent how to use EasyAdmin.',
         ]);
 
         return Command::SUCCESS;

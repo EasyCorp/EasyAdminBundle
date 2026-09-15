@@ -42,6 +42,16 @@ return [
         'text_editor.view_content' => 'Voir le contenu',
     ],
 
+    'date_interval' => [
+        'years' => '{1} %count% an|]1,Inf] %count% ans',
+        'months' => '{1} %count% mois|]1,Inf] %count% mois',
+        'days' => '{1} %count% jour|]1,Inf] %count% jours',
+        'hours' => '{1} %count% heure|]1,Inf] %count% heures',
+        'minutes' => '{1} %count% minute|]1,Inf] %count% minutes',
+        'seconds' => '{1} %count% seconde|]1,Inf] %count% secondes',
+        'empty' => '0 seconde',
+    ],
+
     'action' => [
         'entity_actions' => 'Actions',
         'new' => 'Créer %entity_label_singular%',

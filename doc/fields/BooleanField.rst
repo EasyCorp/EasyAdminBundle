@@ -101,4 +101,14 @@ the ``danger`` (red) buttons::
 
     yield BooleanField::new('...')->renderAsDangerSwitch();
 
+``swapLabelAndValue``
+~~~~~~~~~~~~~~~~~~~~~
+
+In the ``detail`` page, boolean fields swap the usual label <-> value order to
+display the value (which is always a tiny ``Yes``/``No`` badge or a switch)
+before the label. If you prefer to display the label and the value of boolean
+fields in the same order as the rest of the fields, use this option::
+
+    yield BooleanField::new('...')->swapLabelAndValue(false);
+
 .. _`CheckboxType`: https://symfony.com/doc/current/reference/forms/types/checkbox.html

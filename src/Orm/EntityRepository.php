@@ -179,6 +179,7 @@ final readonly class EntityRepository implements EntityRepositoryInterface, Nest
 
     private function applyOrderClause(QueryBuilder $queryBuilder, EntityDto $entityDto, FieldCollection $fields, string $sortProperty, string $sortOrder): void
     {
+        $sortOrder = $this->normalizeSortOrder($sortOrder);
         $sortFieldIsDoctrineAssociation = $this->isAssociation($entityDto, $sortProperty);
 
         if ($sortFieldIsDoctrineAssociation) {
@@ -252,6 +253,32 @@ final readonly class EntityRepository implements EntityRepositoryInterface, Nest
         } else {
             $queryBuilder->addOrderBy('entity.'.$sortProperty, $sortOrder);
         }
+    }
+
+    private function normalizeSortOrder(string $sortOrder): \SortDirection|string
+    {
+        $sortOrder = strtoupper($sortOrder);
+
+        if (!self::queryBuilderAcceptsSortDirection()) {
+            return $sortOrder;
+        }
+
+        return SortOrder::DESC === $sortOrder ? \SortDirection::Descending : \SortDirection::Ascending;
+    }
+
+    // Doctrine ORM 3.7 deprecated string directions in favor of the PHP 8.6 \SortDirection enum.
+    // Checking that the enum exists is not enough: on PHP 8.6 (or with symfony/polyfill-php86
+    // installed) it also exists next to ORM 2.20/3.6, whose addOrderBy() only accepts strings
+    private static function queryBuilderAcceptsSortDirection(): bool
+    {
+        static $acceptsSortDirection = null;
+
+        if (null === $acceptsSortDirection) {
+            $orderParameterType = (new \ReflectionMethod(QueryBuilder::class, 'addOrderBy'))->getParameters()[1]->getType();
+            $acceptsSortDirection = null !== $orderParameterType && str_contains((string) $orderParameterType, 'SortDirection');
+        }
+
+        return $acceptsSortDirection;
     }
 
     private function addFilterClause(QueryBuilder $queryBuilder, SearchDto $searchDto, EntityDto $entityDto, FilterCollection $configuredFilters, FieldCollection $fields): void

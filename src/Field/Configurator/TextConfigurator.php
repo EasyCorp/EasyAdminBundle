@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Field\Configurator;
 
+use Doctrine\DBAL\Types\Types;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
@@ -23,6 +24,14 @@ final class TextConfigurator implements FieldConfiguratorInterface
 
     public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
     {
+        $doctrineMetadata = $field->getDoctrineMetadata();
+        if (
+            false === $doctrineMetadata->get('nullable')
+            && \in_array($doctrineMetadata->get('type'), [Types::STRING, Types::TEXT], true)
+        ) {
+            $field->setFormTypeOptionIfNotSet('empty_data', '');
+        }
+
         if (TextareaField::class === $field->getFieldFqcn()) {
             $field->setFormTypeOptionIfNotSet('attr.rows', $field->getCustomOption(TextareaField::OPTION_NUM_OF_ROWS));
             $field->setFormTypeOptionIfNotSet('attr.data-ea-textarea-field', true);

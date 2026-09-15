@@ -99,15 +99,25 @@ jobs:
                       symfony_version: "7.4.*"
                       stability: "stable"
                       allow_failure: false
+                    # Symfony 8.0 is no longer maintained and its last doctrine-bridge release (8.0.15)
+                    # calls GenerateSchemaEventArgs::setSchema(), which doctrine/orm >= 3.6.8 rejects
+                    # unless doctrine/dbal >= 4.5 is installed (see symfony/symfony#65235). The fix only
+                    # landed in Symfony 7.4 and 8.1, so this job pins the ORM to the last working version.
                     - os: ubuntu-latest
                       php_version: "8.4"
                       symfony_version: "8.0.*"
+                      composer_args: "--with 'doctrine/orm:<3.6.8'"
+                      stability: "stable"
+                      allow_failure: false
+                    - os: ubuntu-latest
+                      php_version: "8.4"
+                      symfony_version: "8.1.*"
                       stability: "stable"
                       allow_failure: false
                     # Upcoming Symfony version
                     - os: ubuntu-latest
                       php_version: "8.5"
-                      symfony_version: "8.1.*@dev"
+                      symfony_version: "8.2.*@dev"
                       stability: "dev"
                       allow_failure: true
         runs-on: ${{ matrix.os }}

@@ -132,7 +132,7 @@ final readonly class SkillInstaller
         }
 
         $frontmatter = $this->readFrontmatter($this->readFile($skillFilePath));
-        if (null === $frontmatter || 1 !== preg_match('/^[ \t]*easyadmin-version:[ \t]*[\'"]?([^\'"\r\n]+?)[\'"]?[ \t]*$/m', $frontmatter, $matches)) {
+        if (null === $frontmatter || 1 !== preg_match('/^[ \t]*easyadmin-version:[ \t]*[\'"]?([^\'"\r\n]+?)[\'"]?[ \t]*\r?$/m', $frontmatter, $matches)) {
             return null;
         }
 
@@ -206,7 +206,7 @@ final readonly class SkillInstaller
             return false;
         }
 
-        return 1 === preg_match('/^[ \t]*installed-by:[ \t]*[\'"]?'.preg_quote(self::INSTALLED_BY, '/').'[\'"]?[ \t]*$/m', $frontmatter);
+        return 1 === preg_match('/^[ \t]*installed-by:[ \t]*[\'"]?'.preg_quote(self::INSTALLED_BY, '/').'[\'"]?[ \t]*\r?$/m', $frontmatter);
     }
 
     private function addInstallationMetadata(string $skillFileContents): string

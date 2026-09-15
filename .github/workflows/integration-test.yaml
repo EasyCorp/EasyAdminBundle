@@ -35,9 +35,9 @@ jobs:
 
             - name: Create fresh Symfony app
               run: |
-                  composer create-project symfony/skeleton:"^7.3" e2e-app
+                  composer create-project symfony/skeleton:"^7.4" e2e-app
                   cd e2e-app
-                  composer config extra.symfony.require "7.3.*"
+                  composer config extra.symfony.require "7.4.*"
                   composer require symfony/orm-pack symfony/twig-pack symfony/runtime
                   composer require easycorp/easyadmin-bundle
                   composer require --dev symfony/maker-bundle doctrine/doctrine-fixtures-bundle zenstruck/foundry symfony/test-pack fakerphp/faker
@@ -182,9 +182,9 @@ jobs:
                       }
                       const runUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
                       body += `\nRun: ${runUrl}`;
-                      #await github.rest.issues.create({
-                      #  owner: context.repo.owner,
-                      #  repo: context.repo.repo,
-                      #  title: `Integration test failed: ${new Date().toISOString().slice(0,10)}`,
-                      #  body
-                      #});
+                      // await github.rest.issues.create({
+                      //   owner: context.repo.owner,
+                      //   repo: context.repo.repo,
+                      //   title: `Integration test failed: ${new Date().toISOString().slice(0,10)}`,
+                      //   body
+                      // });

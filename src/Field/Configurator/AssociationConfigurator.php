@@ -447,10 +447,20 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
             $crudPageName = Crud::PAGE_EDIT;
         }
 
-        $field->setFormTypeOption(
-            'entityDto',
-            $this->createEntityDto($targetEntityFqcn, $targetCrudControllerFqcn, $targetCrudControllerAction, $targetCrudControllerPageName, $crudPageName),
-        );
+        $embeddedEntityDto = $this->createEntityDto($targetEntityFqcn, $targetCrudControllerFqcn, $targetCrudControllerAction, $targetCrudControllerPageName, $crudPageName);
+        $field->setFormTypeOption('entityDto', $embeddedEntityDto);
+
+        // The assets declared by the embedded controller's fields (e.g. TextEditorField,
+        // FileField, a nested CollectionField...) live on the embedded EntityDto, not on
+        // the parent AssociationField. Propagate them up so that
+        // AbstractCrudController::getFieldAssets(), which only walks top-level fields,
+        // picks them up and outputs the required CSS/JS on the form page that hosts the
+        // embedded CRUD form. See #6127.
+        $assets = $field->getAssets();
+        foreach ($embeddedEntityDto->getFields() ?? [] as $embeddedField) {
+            $assets = $assets->mergeWith($embeddedField->getAssets());
+        }
+        $field->setAssets($assets);
     }
 
     /**

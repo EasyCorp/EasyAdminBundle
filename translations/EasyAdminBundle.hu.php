@@ -13,6 +13,8 @@ return [
     'datagrid' => [
         'hidden_results' => 'Néhány találat nem megjeleníthető, mert nincs megfelelő jogosultsága',
         'no_results' => 'Nincs találat.',
+        'sort' => 'Rendezés',
+        'sort_by' => 'Rendezés alapja',
     ],
 
     'paginator' => [

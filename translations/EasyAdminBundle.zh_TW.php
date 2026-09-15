@@ -13,6 +13,8 @@ return [
     'datagrid' => [
         'hidden_results' => '由於權限不足，部分結果無法顯示',
         'no_results' => '未找到結果。',
+        'sort' => '排序',
+        'sort_by' => '排序方式',
     ],
 
     'paginator' => [

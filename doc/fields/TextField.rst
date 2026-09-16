@@ -46,12 +46,19 @@ want to render HTML tags instead of escaping them, add this option::
 
     yield TextField::new('...')->renderAsHtml();
 
+This option takes precedence over ``stripTags()``: when both are enabled, the
+contents are rendered as HTML and no tag is stripped. EasyAdmin does not
+sanitize these contents in any way, so only enable this option for contents
+that you trust.
+
 ``setMaxLength``
 ~~~~~~~~~~~~~~~~
 
 By default, text contents are displayed in full in the ``detail`` page and are
 truncated to a maximum of ``64`` characters in ``index`` page. Use this option
 to set the maximum in both ``detail`` and ``index`` pages::
+
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 
     yield TextField::new('...')->setMaxLength(15);
 
@@ -60,7 +67,8 @@ to set the maximum in both ``detail`` and ``index`` pages::
     yield TextField::new('...')->setMaxLength($pageName === Crud::PAGE_DETAIL ? 1024 : 32);
 
 This option only has effect in read-only pages (``index`` and ``detail``). In form
-pages (``new`` and ``edit``) contents are never truncated in length.
+pages (``new`` and ``edit``) contents are never truncated in length. See
+:ref:`fields-per-page` for other ways of configuring fields per page.
 
 .. note::
 
@@ -71,10 +79,10 @@ pages (``new`` and ``edit``) contents are never truncated in length.
 ~~~~~~~~~~~~~
 
 By default, contents are escaped before displaying them. If you prefer, you can
-strip HTML tags using this option (which internally calls to ``strip_tags()``
-PHP function):
+strip HTML tags using this option (which internally calls PHP's
+``strip_tags()`` function)::
 
-    // if original contents are `<strong>foo</strong>`, it only displays `foo`
+    // if original contents are <strong>foo</strong>, it only displays foo
     yield TextField::new('...')->stripTags();
 
 .. _`TextType`: https://symfony.com/doc/current/reference/forms/types/text.html

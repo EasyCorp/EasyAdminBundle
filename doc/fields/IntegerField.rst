@@ -23,8 +23,8 @@ Basic Information
 Options
 -------
 
-setNumberFormat
-~~~~~~~~~~~~~~~
+``setNumberFormat``
+~~~~~~~~~~~~~~~~~~~
 
 By default, the integer value is displayed "as is". If you prefer to format the
 value in any way, use this option and pass any formatting string valid as an
@@ -37,12 +37,12 @@ argument of the ``sprintf()`` function::
     // the following example would format 123 as '+00123'
     yield IntegerField::new('...')->setNumberFormat('%+06d');
 
-setThousandsSeparator
-~~~~~~~~~~~~~~~~~~~~~
+``setThousandsSeparator``
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
-By default, the integer value doesn't separate each thousands group in any way
-(e.g. ``12345`` is displayed like that, instead of ``12,345``). Use this option
-to set the character to use to separate each thousands group::
+By default, the integer value does not separate thousands groups (e.g. ``12345``
+is displayed like that, instead of ``12,345``). Use this option to set the
+character used to separate thousands groups::
 
     // this would display '12345' as '12 345'
     yield IntegerField::new('...')->setThousandsSeparator(' ');

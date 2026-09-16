@@ -1,7 +1,7 @@
 EasyAdmin URL Field
 ===================
 
-This field is used to represent a text content that stores a single URL.
+This field is used to represent text content that stores a single URL.
 
 In :ref:`form pages (edit and new) <crud-pages>` it looks like this:
 
@@ -23,32 +23,37 @@ Basic Information
 Options
 -------
 
-allowedProtocols
-~~~~~~~~~~~~~~~~
+In read-only pages (``index`` and ``detail``) the displayed value is shortened:
+the ``http://``, ``https://`` and ``www.`` prefixes and the trailing slash are
+stripped, and in the ``index`` page the result is truncated to 32 characters.
+The link still points to the original, complete URL.
 
-Restricts the protocols accepted as valid input by attaching a Symfony
-``Url`` constraint to the form field. Pass the protocols without the
-trailing colon::
+``allowedProtocols``
+~~~~~~~~~~~~~~~~~~~~
+
+Restricts the protocols accepted as valid input by attaching a Symfony ``Url``
+constraint to the form field. Pass the protocols without the trailing colon::
 
     UrlField::new('homepage')
         ->allowedProtocols(['http', 'https']);
 
-By default no protocol restriction is applied, so any scheme-looking
-value (like ``ftp://``, ``ssh://`` or ``mailto:``) is accepted. Use this
-option when you know the field should only store web URLs.
+Regardless of this option, the field is rendered as an ``<input type="url">``
+element, so the browser applies its own format validation too.
 
-Regardless of this option, EasyAdmin always renders known-dangerous
-schemes (``javascript:``, ``data:``, ``vbscript:`` and ``file:``) as
-plain text instead of clickable links, to prevent stored XSS attacks in
-the backend.
+By default no protocol restriction is applied, so any scheme-looking value
+(like ``ftp://``, ``ssh://`` or ``mailto:``) is accepted. Use this option when
+you know the field should only store web URLs.
 
-setDefaultProtocol
-~~~~~~~~~~~~~~~~~~
+Regardless of this option, EasyAdmin always renders known-dangerous schemes
+(``javascript:``, ``data:``, ``vbscript:`` and ``file:``) as plain text instead
+of clickable links, to prevent stored XSS attacks in the backend.
 
-Defines the protocol prepended to the submitted value when it doesn't
-include one. If you don't set it, no protocol is prepended and the field
-is rendered using an ``<input type="url">`` element so the browser
-validates the value::
+``setDefaultProtocol``
+~~~~~~~~~~~~~~~~~~~~~~
+
+Defines the protocol prepended to the submitted value when it doesn't include
+one. If you don't set it, no protocol is prepended and the field is rendered
+using an ``<input type="url">`` element so the browser validates the value::
 
     UrlField::new('homepage')
         ->setDefaultProtocol('https');

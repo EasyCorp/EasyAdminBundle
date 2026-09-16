@@ -12,7 +12,7 @@ In :ref:`form pages (edit and new) <crud-pages>` it looks like this:
 .. tip::
 
     EasyAdmin provides other fields for long text contents:
-    :doc:`TextAreaField </fields/TextareaField>` is ideal for long contents that
+    :doc:`TextareaField </fields/TextareaField>` is ideal for long contents that
     don't need any formatting; :doc:`CodeEditorField </fields/CodeEditorField>`
     is ideal to edit and store any kind of source code.
 
@@ -37,12 +37,13 @@ Options
 ~~~~~~~~~~~~~~~~
 
 The height of the editor used in form pages (``new`` and ``edit``) is as large
-as needed to display its contents. This height also grows dynamically (via JavaScript)
-to always match the number of rows of its contents.
+as needed to display its contents. This height also grows dynamically (via
+JavaScript) to always match the number of rows of its contents.
 
 This option sets the number of rows displayed when the field contents are empty.
-By default, the initial height is small, so it's a good idea to increase this
-value when the expected content is much longer (e.g. a blog post)::
+By default this option is not set, so the initial height is the small default
+height of the Trix editor. That's why it's a good idea to increase this value
+when the expected content is much longer (e.g. a blog post)::
 
     yield TextEditorField::new('...')->setNumOfRows(30);
 
@@ -62,8 +63,8 @@ or update in the JavaScript Trix editor used by this field::
         ],
     ]);
 
-Check out the `src/trix/config/ folder`_ at Trix editor repository to learn
-about all the available configuration options.
+See the `src/trix/config/ folder`_ in the Trix editor repository to learn about
+all the available configuration options.
 
 .. _`Trix editor`: https://github.com/basecamp/trix
 .. _`TextEditorType`: https://github.com/EasyCorp/EasyAdminBundle/blob/5.x/src/Form/Type/TextEditorType.php

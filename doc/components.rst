@@ -33,9 +33,10 @@ ActionMenu
 ----------
 
 Renders a dropdown menu of related actions, like the one that displays the
-entity actions on the index page. Build the menu by combining its
-sub-components: a ``Button`` that toggles the dropdown, an ``Overlay`` that
-wraps the menu contents, and an ``ActionList`` with the menu items:
+entity actions and the :ref:`groups of actions <actions-grouping>` on the
+index page. Build the menu by combining its subcomponents: a ``Button`` that
+toggles the dropdown, an ``Overlay`` that wraps the menu contents, and an
+``ActionList`` with the menu items:
 
 .. code-block:: twig
 
@@ -54,12 +55,12 @@ wraps the menu contents, and an ``ActionList`` with the menu items:
         </twig:ea:ActionMenu:Overlay>
     </twig:ea:ActionMenu>
 
-Items render a link and a ``GET`` request by default. For actions that modify
-data (like the "Delete" item above), add the ``renderAsForm`` prop to submit
-the item URL with a ``POST`` request instead.
+Items render a link that performs a ``GET`` request by default. For actions
+that modify data (like the "Delete" item above), add the ``renderAsForm`` prop
+to submit the item URL with a ``POST`` request instead.
 
-Use the ``Header`` sub-component to add titles to groups of items, and the
-``Content`` sub-component to insert any custom markup in the menu:
+Use the ``Header`` subcomponent to add titles to groups of items, and the
+``Content`` subcomponent to insert any custom markup in the menu:
 
 .. code-block:: twig
 
@@ -69,8 +70,26 @@ Use the ``Header`` sub-component to add titles to groups of items, and the
         <twig:ea:ActionMenu:ActionList:Item label="As PDF" url="/reports/download?type=pdf"/>
         <twig:ea:ActionMenu:ActionList:Divider/>
         <twig:ea:ActionMenu:ActionList:Content>
-            <small class="px-3">Reports are rebuilt every early morning.</small>
+            <small class="px-3">Reports are rebuilt early every morning.</small>
         </twig:ea:ActionMenu:ActionList:Content>
+    </twig:ea:ActionMenu:ActionList>
+
+Menu items can also open a nested submenu. This is what EasyAdmin renders for
+each :ref:`group of actions <actions-grouping>` of the index page, using the
+``ItemGroup`` subcomponent. It expects the action group object in its ``group``
+prop (it doesn't compose the submenu from individual items), so it's only
+useful in templates rendered by EasyAdmin. When the group defines a main
+action, the item is rendered as a split button: clicking on the label runs the
+main action and clicking on the arrow opens the submenu.
+
+.. code-block:: twig
+
+    <twig:ea:ActionMenu:ActionList hasSubmenus>
+        {% for item in entity.actions %}
+            {% if item.isActionGroup %}
+                <twig:ea:ActionMenu:ActionList:ItemGroup group="{{ item }}" entity="{{ entity }}"/>
+            {% endif %}
+        {% endfor %}
     </twig:ea:ActionMenu:ActionList>
 
 Selectable Items
@@ -99,7 +118,8 @@ Alert
 -----
 
 Highlights important messages that require the user's attention. EasyAdmin
-uses it, for example, to render flash messages:
+uses it, for example, to render the
+:ref:`flash messages <customizing-flash-messages>` of your application:
 
 .. code-block:: twig
 
@@ -117,8 +137,9 @@ The ``variant`` prop accepts the usual Bootstrap values (``primary``,
         The server is running out of disk space.
     </twig:ea:Alert>
 
-If the alert requires the user to do something, add buttons or links in the
-``actions`` block:
+Use the ``title`` block instead of the ``title`` prop when the title needs
+custom markup. If the alert requires the user to do something, add buttons or
+links in the ``actions`` block:
 
 .. code-block:: twig
 
@@ -133,7 +154,9 @@ If the alert requires the user to do something, add buttons or links in the
 Badge
 -----
 
-Renders a small colored label, commonly used for statuses, counts and tags:
+Renders a small colored label, commonly used for statuses, counts and tags
+(it's also what :doc:`ChoiceField </fields/ChoiceField>` uses to render its
+values as badges):
 
 .. code-block:: twig
 
@@ -158,8 +181,10 @@ create pill-shaped badges with ``radius="full"``:
 Button
 ------
 
-Renders a button with an optional icon, in the sizes and variants that you'd
-expect from Bootstrap-like buttons:
+Renders a button with an optional icon. The ``variant`` prop accepts
+``default`` (the default value), ``primary``, ``success``, ``warning``,
+``danger`` and ``info``; note that there's no ``secondary`` variant. The
+``size`` prop accepts ``sm``, ``md`` (the default value) and ``lg``:
 
 .. code-block:: twig
 
@@ -190,10 +215,14 @@ self-contained form that submits to some URL when clicking on the button:
     ``POST`` with the real method in a ``_method`` hidden field, which is the
     convention supported by Symfony's `http_method_override`_ option.
 
-Other useful props: ``withTrailingIcon`` displays the icon after the label
-instead of before; ``isInvisible`` removes the button background and borders
-(useful for icon-only buttons); ``inactive`` renders the button in a disabled
-state:
+Other useful props:
+
+* ``withTrailingIcon`` displays the icon after the label instead of before;
+* ``isInvisible`` removes the button background and borders (useful for
+  icon-only buttons);
+* ``inactive`` renders the button in a disabled state;
+* ``name`` and ``value`` set those attributes on the ``<button>`` element,
+  which is useful to tell apart several submit buttons of the same form.
 
 .. code-block:: twig
 
@@ -204,7 +233,8 @@ state:
 Flag
 ----
 
-Renders the flag of a country as an inline SVG image. Pass the two-letter
+Renders the flag of a country as an inline SVG image (it's the same flag
+displayed by :doc:`CountryField </fields/CountryField>`). Pass the two-letter
 `ISO 3166-1 alpha-2`_ code of the country and, optionally, display the country
 name next to the flag:
 
@@ -228,7 +258,7 @@ Flags are ``17px`` tall by default; change that with the ``height`` prop
 Icon
 ----
 
-Renders the icon associated to the given name, using the icon set configured
+Renders the icon associated with the given name, using the icon set configured
 in the backend (`FontAwesome icons`_ by default, or
 :ref:`your own icon set <icon-customization>`):
 
@@ -250,7 +280,8 @@ Modal
 -----
 
 Renders a modal window. Give it an ``id`` and open it from anywhere with a
-``Modal:Trigger`` button that points to that ``id``. Inside the modal, use the
+``Modal:Trigger`` button whose ``target`` prop is a CSS selector pointing to
+that modal (e.g. ``target="#delete-modal"``). Inside the modal, use the
 ``Modal:Close`` button to dismiss it:
 
 .. code-block:: twig
@@ -268,8 +299,11 @@ Renders a modal window. Give it an ``id`` and open it from anywhere with a
 they accept all its props (``variant``, ``icon``, ``size``, etc.).
 
 Instead of (or in addition to) the ``title`` and ``description`` props, you
-can pass any custom markup in the ``body`` block. Use the ``size`` prop
-(``sm``, ``lg`` or ``xl``) to change the default ``380px`` window width:
+can pass any custom markup in the ``body`` block, and add an optional header
+above it with the ``header`` block. Use the ``size`` prop to change the default
+``380px`` window width: ``sm`` is ``320px``, ``lg`` is ``512px`` and ``xl`` is
+``800px``. The ``headerClass``, ``bodyClass`` and ``footerClass`` props add
+custom CSS classes to each of those elements:
 
 .. code-block:: twig
 
@@ -298,10 +332,11 @@ Pagination
 ----------
 
 Renders a pagination control with links to browse the pages of some results,
-and an optional counter of the total number of results. Pass the current page,
-the URL pattern used to generate the page links (it must contain the
-``{page}`` placeholder) and either the last page number or the total number of
-items and the page size:
+and an optional counter of the total number of results. Pass the current page
+in the ``currentPage`` prop. Pass the URL pattern used to generate the page
+links in ``urlPattern``, which must contain the ``{page}`` placeholder.
+Finally, pass either the last page number in ``lastPage`` or the total number
+of items and the page size in ``totalItems`` and ``pageSize``:
 
 .. code-block:: twig
 
@@ -309,6 +344,14 @@ items and the page size:
 
     {# the last page is calculated automatically: ceil(1234 / 25) = 50 pages #}
     <twig:ea:Pagination currentPage="{{ page }}" totalItems="{{ 1234 }}" pageSize="{{ 25 }}" urlPattern="/products?page={page}"/>
+
+Use ``size="sm"`` to render a smaller control and the ``radius`` prop
+(``none``, ``sm``, ``md``, ``lg`` or ``full``) to change the border radius of
+the page links; when ``radius`` is not set, they inherit the border radius of
+your project. ``rangeSize`` sets how many page links are displayed around the
+current page (default: ``3``) and ``rangeEdgeSize`` how many are displayed at
+the first and last pages (default: ``1``). Labels are translated with the
+``translationDomain`` prop (default: ``EasyAdminBundle``).
 
 Several props toggle the elements displayed by the component:
 
@@ -323,8 +366,9 @@ Several props toggle the elements displayed by the component:
 
 .. note::
 
-    In templates rendered by EasyAdmin (e.g. when overriding the index page)
-    you can pass the ``paginator`` object instead of all the above props:
+    In templates rendered by EasyAdmin (e.g. when
+    :ref:`overriding the index page <index-page-listing>`) you can pass the
+    ``paginator`` object instead of all the above props:
     ``<twig:ea:Pagination paginator="{{ paginator }}"/>``. Both ways of configuring
     the component are mutually exclusive.
 
@@ -333,9 +377,9 @@ Sidebar
 
 Renders the navigation sidebar of the backend. It's a small set of composable
 subcomponents inspired by the `shadcn/ui Sidebar`_ component, but simplified:
-a header, a scrollable content area, groups of items and optional submenus
-(EasyAdmin renders the main menu with these components automatically; use them
-only when building a fully custom sidebar):
+a header, a scrollable content area, groups of items and optional submenus.
+EasyAdmin renders the :ref:`main menu <dashboard-menu>` with these components
+automatically, so use them only when building a fully custom sidebar:
 
 .. code-block:: twig
 
@@ -345,23 +389,28 @@ only when building a fully custom sidebar):
         </twig:ea:Sidebar:Header>
 
         <twig:ea:Sidebar:Content>
-            {# a group without label renders only its items #}
+            {# pass 'label' to add a heading; a group without it renders only its items #}
             <twig:ea:Sidebar:Group label="Content">
-                <twig:ea:Sidebar:Item label="Dashboard" href="/admin" icon="fa-home" active="{{ true }}"/>
+                <twig:ea:Sidebar:Item label="Dashboard" href="/admin" icon="fa-home" active/>
                 <twig:ea:Sidebar:Item label="Blog Posts" href="/admin/posts" icon="fa-newspaper"/>
             </twig:ea:Sidebar:Group>
         </twig:ea:Sidebar:Content>
     </twig:ea:Sidebar>
 
+Groups also accept an ``icon`` prop, displayed before the group label. Items
+accept the ``target`` and ``rel`` props to set those attributes on the
+generated link, plus ``cssClass`` and ``htmlAttributes`` to add CSS classes and
+arbitrary HTML attributes to the ``<a>``/``<button>`` element.
+
 Items with a submenu are not clickable: they only expand/collapse their
 submenu (rendered inline in the normal sidebar and as a flyout panel in the
 compact icon-only sidebar). Add the ``keepOpen`` prop to render the submenu
-always expanded and not collapsible. Pass the item contents via the
+always expanded and not collapsible. Pass the submenu contents via the
 ``submenu`` slot:
 
 .. code-block:: twig
 
-    <twig:ea:Sidebar:Item label="Settings" icon="fa-gear" hasSubmenu="{{ true }}" expanded="{{ true }}">
+    <twig:ea:Sidebar:Item label="Settings" icon="fa-gear" hasSubmenu expanded>
         <twig:block name="submenu">
             <twig:ea:Sidebar:Submenu label="Settings">
                 <twig:ea:Sidebar:Item label="General" href="/admin/settings"/>
@@ -382,9 +431,10 @@ Items can display a badge (e.g. a counter) using the ``badge`` slot:
 
 The optional footer is always anchored to the bottom of the screen: when the
 menu is taller than the viewport, the menu items scroll underneath it. Use it
-for important messages, notices, etc. (unlike the ``main_menu_after`` template
-block, which renders in the normal flow right after the menu items). The footer
-grows with its contents, so keep them short or make them scrollable yourself:
+for important messages, notices, etc. (unlike the ``main_menu_after``
+:ref:`template block <template-customization>`, which renders in the normal
+flow right after the menu items). The footer grows with its contents, so keep
+them short or make them scrollable yourself:
 
 .. code-block:: twig
 
@@ -395,19 +445,21 @@ grows with its contents, so keep them short or make them scrollable yourself:
 In the default sidebar, add footer contents by overriding the ``sidebar_footer``
 block in your dashboard templates.
 
-The sidebar supports two widths: the default one and a compact mode that only
-displays the item icons. Users switch between them by clicking on the sidebar
-edge, and the selected mode is persisted in the browser local storage. In
-compact mode, hovering an item shows a tooltip with its label, hovering an
-item with a submenu shows the submenu as a flyout panel, and the footer is
-hidden (arbitrary contents can't fit in the icon rail).
+The sidebar supports two widths: the default one and a
+:ref:`compact mode <dashboard-configuration>` that only displays the item
+icons. Users switch between them by clicking on the sidebar edge, and the
+selected mode is persisted in the browser local storage. In compact mode,
+hovering an item shows a tooltip with its label, hovering an item with a
+submenu shows the submenu as a flyout panel, and the footer is hidden
+(arbitrary contents can't fit in the icon rail).
 
 Switch
 ------
 
-Renders an accessible toggle switch, used to represent boolean values (it's an
-``<input type="checkbox">`` field under the hood, so you can use it in your
-own forms):
+Renders an accessible toggle switch, used to represent boolean values
+(internally it's an ``<input type="checkbox">`` field, so you can use it in
+your own forms). It's also what :doc:`BooleanField </fields/BooleanField>`
+renders when displaying boolean values as switches:
 
 .. code-block:: twig
 
@@ -417,6 +469,9 @@ own forms):
 
     {# when submitting the form, this sends settings[newsletter]=yes #}
     <twig:ea:Switch name="settings[newsletter]" value="yes" checked/>
+
+Use the ``id`` prop to wire an external ``<label for="...">`` element to the
+switch, and the ``required`` prop to make it mandatory in your form.
 
 By default, the checked state uses the primary color of the backend. Use the
 ``variant`` prop (``success``, ``warning`` or ``danger``) to change it, and
@@ -430,8 +485,50 @@ By default, the checked state uses the primary color of the backend. Use the
 
 .. tip::
 
-    When the switch doesn't have a visible ``<label>`` element associated to
+    When the switch doesn't have a visible ``<label>`` element associated with
     it, pass the ``ariaLabel`` prop to keep it accessible to screen readers.
+
+Tabs
+----
+
+Renders a bar of clickable tabs, like the one displayed on the ``new``,
+``edit`` and ``detail`` pages of entities that define form tabs. The tab
+contents are not part of the component: each item links to the ``id`` of one
+of your own ``.tab-pane`` elements, which are shown and hidden as the user
+selects the tabs:
+
+.. code-block:: twig
+
+    <twig:ea:Tabs>
+        <twig:ea:Tabs:Item paneId="tab-general" label="General" active/>
+        <twig:ea:Tabs:Item paneId="tab-contact" label="Contact" icon="fa-envelope"/>
+    </twig:ea:Tabs>
+
+    <div class="tab-content">
+        <div class="tab-pane active" id="tab-general">...</div>
+        <div class="tab-pane" id="tab-contact">...</div>
+    </div>
+
+Item labels are rendered as HTML and are not translated, so pass them already
+translated. Use the ``errorCount`` prop to display a badge with the number of
+form validation errors of the fields in that tab:
+
+.. code-block:: twig
+
+    <twig:ea:Tabs:Item paneId="tab-billing" label="{{ 'Billing'|trans }}" errorCount="{{ 3 }}"/>
+
+.. note::
+
+    In templates rendered by EasyAdmin (e.g. when overriding the form or the
+    detail pages) you can pass the collection of :ref:`form tabs <form-tabs>`
+    created with ``FormField::addTab()`` in the ``tabs`` prop, and the component
+    renders one item per tab. Their labels are translated with the domain given
+    in the ``translationDomain`` prop (default: ``messages``). This is what the
+    ``crud/detail/tab_list`` template does:
+
+    .. code-block:: twig
+
+        <twig:ea:Tabs tabs="{{ field.getCustomOption('tabs') }}" translationDomain="{{ ea().i18n.translationDomain }}"/>
 
 .. _`Twig Components`: https://symfony.com/bundles/ux-twig-component/current/index.html
 .. _`shadcn/ui Sidebar`: https://ui.shadcn.com/docs/components/base/sidebar

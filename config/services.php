@@ -2,11 +2,15 @@
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
+use EasyCorp\Bundle\EasyAdminBundle\Ai\GuidelinesFileWriter;
+use EasyCorp\Bundle\EasyAdminBundle\Ai\SkillInstaller;
 use EasyCorp\Bundle\EasyAdminBundle\ArgumentResolver\AdminContextResolver;
 use EasyCorp\Bundle\EasyAdminBundle\ArgumentResolver\BatchActionDtoResolver;
 use EasyCorp\Bundle\EasyAdminBundle\Asset\AssetPackage;
+use EasyCorp\Bundle\EasyAdminBundle\Command\InstallAiSkillCommand;
 use EasyCorp\Bundle\EasyAdminBundle\Command\MakeAdminDashboardCommand;
 use EasyCorp\Bundle\EasyAdminBundle\Command\MakeCrudControllerCommand;
+use EasyCorp\Bundle\EasyAdminBundle\Command\UpdateAiSkillCommand;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu\MenuItemMatcherInterface;
@@ -126,6 +130,24 @@ return static function (ContainerConfigurator $container) {
             ->arg(1, service(ClassMaker::class))
             ->arg(2, service('doctrine'))
             ->tag('console.command')
+
+        ->set(InstallAiSkillCommand::class)->public()
+            ->arg(0, service(SkillInstaller::class))
+            ->arg(1, service(GuidelinesFileWriter::class))
+            ->tag('console.command')
+
+        ->set(UpdateAiSkillCommand::class)->public()
+            ->arg(0, service(SkillInstaller::class))
+            ->arg(1, service(GuidelinesFileWriter::class))
+            ->tag('console.command')
+
+        ->set(SkillInstaller::class)
+            ->arg(0, param('kernel.project_dir'))
+            ->arg(1, \dirname(__DIR__).'/skills')
+            ->arg(2, \dirname(__DIR__).'/src/Resources/ai/guidelines.md')
+            ->arg(3, EasyAdminBundle::VERSION)
+
+        ->set(GuidelinesFileWriter::class)
 
         ->set(ClassMaker::class)
             ->arg(0, service(KernelInterface::class))

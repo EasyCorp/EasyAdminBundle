@@ -28,8 +28,8 @@ Basic Information
 Options
 -------
 
-setBasePath
-~~~~~~~~~~~
+``setBasePath``
+~~~~~~~~~~~~~~~
 
 By default, images are loaded in read-only pages (``index`` and ``detail``) "as is",
 without changing their path. If you serve your images under some path (e.g.
@@ -37,20 +37,22 @@ without changing their path. If you serve your images under some path (e.g.
 
     yield ImageField::new('...')->setBasePath('uploads/images/');
 
-setUploadDir
-~~~~~~~~~~~~
+``setUploadDir``
+~~~~~~~~~~~~~~~~
 
-By default, the contents of uploaded images are stored into files inside the
-``<your-project-dir>/public/uploads/images/`` directory. Use this option to
-change that location. Relative paths are resolved from your project root
-directory and absolute filesystem paths are used as-is::
+**This option is required.** Use it to set the directory where uploaded images
+are stored. Relative paths are resolved from your project root directory and
+absolute filesystem paths are used as-is::
 
     // relative to your project root directory
-    yield ImageField::new('...')->setUploadDir('assets/images/');
+    yield ImageField::new('...')->setUploadDir('public/uploads/images/');
     // absolute filesystem paths are also supported
     yield ImageField::new('...')->setUploadDir('/mnt/data/images/');
     // the property will only store the file path relative to this dir
     // (e.g. 'logo.png', 'venue/layout.jpg')
+
+``ImageField`` does not define a default upload directory. If you don't call this
+method, an exception will be thrown.
 
 .. note::
 
@@ -61,8 +63,8 @@ directory and absolute filesystem paths are used as-is::
     ``index``/``detail`` pages and ``->setFormTypeOption('download_path', '...')``
     for the links of the upload form.
 
-setFileConstraints
-~~~~~~~~~~~~~~~~~~
+``setFileConstraints``
+~~~~~~~~~~~~~~~~~~~~~~
 
 By default, the uploaded file is validated using an empty `Image constraint`_
 (which means it only validates that the uploaded file is of type image). Use this
@@ -70,8 +72,8 @@ option to define the constraints applied to the uploaded file::
 
     yield ImageField::new('...')->setFileConstraints(new Image(filenameCharset: 'ASCII'));
 
-setUploadedFileNamePattern
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+``setUploadedFileNamePattern``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 By default, uploaded images are stored with the same file name and extension as
 the original files. Use this option to rename the image files after uploading.
@@ -89,6 +91,7 @@ The string pattern passed as argument can include the following special values:
 * ``[slug]``, the slug of the original name of the uploaded file generated with Symfony's
   String component (all lowercase and using ``-`` as the separator)
 * ``[extension]``, the original extension of the uploaded file (without the leading dot, e.g. ``png``)
+  (if the file has multiple extensions, only the last one is returned)
 * ``[contenthash]``, a SHA1 hash of the original file contents (40-char hexadecimal
   string, e.g. ``3dfd6a9fbb83413b7f47c913ce2a95416dc6da88``)
 * ``[randomhash]``, a random hash not related in any way to the original file contents
@@ -113,39 +116,44 @@ You can combine them in any way::
     yield ImageField::new('...')
         ->setUploadedFileNamePattern('[YYYY]/[MM]/[DD]/[slug]-[contenthash].[extension]');
 
-The argument of this method also accepts a closure that receives as its first
-argument the Symfony's UploadedFile instance::
+The argument of this method also accepts a closure that receives Symfony's
+``UploadedFile`` instance as its only argument. Unlike the
+:doc:`FileField </fields/FileField>` closure, it is not given the current entity
+instance::
 
     yield ImageField::new('...')->setUploadedFileNamePattern(
-        fn (UploadedFile $file): string => sprintf('upload_%d_%s.%s', random_int(1, 999), $file->getFilename(), $file->guessExtension()))
+        fn (UploadedFile $file): string => sprintf('upload_%d_%s.%s', random_int(1, 999), $file->getFilename(), $file->guessExtension())
     );
 
-isDeletable
-~~~~~~~~~~~
+The string returned by the closure still goes through the placeholder
+substitution described above, so you can combine both mechanisms.
+
+``isDeletable``
+~~~~~~~~~~~~~~~
 
 By default, the image upload widget shows a "delete" checkbox that allows users
 to remove the uploaded image. Use this option to hide that checkbox::
 
     yield ImageField::new('...')->isDeletable(false);
 
-isDownloadable
-~~~~~~~~~~~~~~
+``isDownloadable``
+~~~~~~~~~~~~~~~~~~
 
 By default, a link to download the uploaded image is displayed next to the form
 field. Use this option to hide that link::
 
     yield ImageField::new('...')->isDownloadable(false);
 
-isViewable
-~~~~~~~~~~
+``isViewable``
+~~~~~~~~~~~~~~
 
 By default, a link to view the uploaded image is displayed next to the form field.
 Use this option to hide that link::
 
     yield ImageField::new('...')->isViewable(false);
 
-maxSize
-~~~~~~~
+``maxSize``
+~~~~~~~~~~~
 
 Use this option to set the maximum allowed image size. The value can be an integer
 (number of bytes) or a suffixed string (e.g. ``'200k'``, ``'2M'``, ``'1G'`` for
@@ -163,8 +171,8 @@ file path), ``{{ name }}`` (the base file name), ``{{ size }}`` (the file size),
 ``{{ limit }}`` (the maximum allowed size) and ``{{ suffix }}`` (the size unit,
 e.g. ``kB``, ``MB``).
 
-mimeTypes
-~~~~~~~~~
+``mimeTypes``
+~~~~~~~~~~~~~
 
 By default, the accepted MIME types are set to ``image/*``, which restricts the
 browser's file dialog to image files. Use this option to customize the accepted
@@ -191,23 +199,29 @@ When a user uploads a new image to replace an existing one, ``ImageField``
 controls what happens to the old file on disk. There are three behaviors:
 
 ``deleteReplacedFile``
-    This is the **default** behavior. The old file is deleted from disk. If the
-    new file has the same name as an existing file, a numeric suffix (``_1``,
-    ``_2``, etc.) is appended to avoid conflicts::
+......................
 
-        yield ImageField::new('...')->deleteReplacedFile();
+This is the **default** behavior. The old file is deleted from disk. If the new
+file has the same name as an existing file, a numeric suffix (``_1``, ``_2``,
+etc.) is appended to avoid conflicts::
+
+    yield ImageField::new('...')->deleteReplacedFile();
 
 ``keepReplacedFile``
-    The old file is kept on disk. If you upload a new file with the same name,
-    the contents are silently overwritten::
+....................
 
-        yield ImageField::new('...')->keepReplacedFile();
+The old file is kept on disk. If you upload a new file with the same name, the
+contents are silently overwritten::
+
+    yield ImageField::new('...')->keepReplacedFile();
 
 ``keepReplacedFileOrFail``
-    The old file is kept on disk. If the new file's name conflicts with an
-    existing file, an error is thrown::
+..........................
 
-        yield ImageField::new('...')->keepReplacedFileOrFail();
+The old file is kept on disk. If the new file's name conflicts with an existing
+file, an error is thrown::
+
+    yield ImageField::new('...')->keepReplacedFileOrFail();
 
 Serving Uploaded Images Safely
 ------------------------------
@@ -225,8 +239,8 @@ scripts from, such as ``.svg``. Raster images (``.png``, ``.jpg``, ``.gif``,
 ``.webp``, etc.) are unaffected. You can change this default behavior with the
 following option.
 
-allowRiskyInlineRender
-~~~~~~~~~~~~~~~~~~~~~~
+``allowRiskyInlineRender``
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 If you fully trust the uploaded contents, use this option to disable the
 protection above and allow those images to be opened inline again::
@@ -243,7 +257,7 @@ protection above and allow those images to be opened inline again::
 
     Forcing a download in the backend only protects EasyAdmin's own links. The
     files are still served as static assets, so a user who opens the file URL
-    directly is not affected by this setting. For full protection, serve the
+    directly is not protected by this setting. For full protection, serve the
     upload directory with the ``Content-Disposition: attachment`` header (via your
     web server configuration) or store uploads outside the public web root.
 
@@ -270,8 +284,8 @@ configuration (e.g. ``default.storage``)::
         ->setUploadDir('images/')
         ->setUploadedFileNamePattern('[uuid].[extension]');
 
-setFlysystemStorage
-~~~~~~~~~~~~~~~~~~~
+``setFlysystemStorage``
+~~~~~~~~~~~~~~~~~~~~~~~
 
 Sets the Flysystem storage service ID to use for uploading and deleting images.
 This is the key you defined under ``flysystem.storages`` in your Flysystem
@@ -284,8 +298,8 @@ delete, and validation callables with Flysystem equivalents. The upload director
 configured with ``setUploadDir()`` is used as a path prefix inside the Flysystem
 storage (not as a local directory).
 
-setFlysystemUrlPrefix
-~~~~~~~~~~~~~~~~~~~~~
+``setFlysystemUrlPrefix``
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 **This method is optional.** By default, EasyAdmin generates the public URL of
 each image from the Flysystem storage itself (via the ``public_url`` or

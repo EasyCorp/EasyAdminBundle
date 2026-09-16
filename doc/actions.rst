@@ -2,7 +2,7 @@ Actions
 =======
 
 **Actions** are each of the tasks that you can perform on CRUD pages. In the
-``index``  page for example, you have tasks to "edit" and "delete" each entity
+``index`` page for example, you have tasks to "edit" and "delete" each entity
 displayed in the listing and you have another task to "create" a new entity.
 
 Actions are configured in the ``configureActions()`` method of your
@@ -23,10 +23,12 @@ Actions are configured in the ``configureActions()`` method of your
         }
     }
 
+.. _action-names:
+
 Action Names and Constants
 --------------------------
 
-Some methods require as argument the name of some action. In addition to plain
+Some methods expect an action name as an argument. In addition to plain
 strings with the action names (``'index'``, ``'detail'``, ``'edit'``, etc.) you
 can also use constants for these values: ``Action::INDEX``, ``Action::DETAIL``,
 ``Action::EDIT``, etc. (they are defined in the ``EasyCorp\Bundle\EasyAdminBundle\Config\Action`` class).
@@ -42,6 +44,7 @@ These are the built-in actions included by default in each page:
 
   * Added by default globally: ``Action::NEW``
   * Added by default per entry: ``Action::EDIT``, ``Action::DELETE``
+  * Added by default as a :ref:`batch action <batch-actions>`: ``Action::BATCH_DELETE``
   * Other available actions per entry: ``Action::DETAIL``
 
 * Page ``Crud::PAGE_DETAIL`` (``'detail'``):
@@ -81,6 +84,19 @@ Use the ``add()`` method to add any built-in actions and your own custom actions
             // ...
             ->add(Crud::PAGE_INDEX, Action::DETAIL)
             ->add(Crud::PAGE_EDIT, Action::SAVE_AND_ADD_ANOTHER)
+        ;
+    }
+
+The ``add()`` method throws an exception if the page already includes an action
+with the same name. Use the ``set()`` method instead when you want to add the
+action or replace the existing one, whichever applies::
+
+    public function configureActions(Actions $actions): Actions
+    {
+        return $actions
+            // ...
+            // this replaces the built-in 'detail' action if it's already added
+            ->set(Crud::PAGE_INDEX, $myCustomDetailAction)
         ;
     }
 
@@ -137,40 +153,38 @@ for that invoice. In order to provide a better user experience, the action link
 (or button) label must display the current number of received payments
 (e.g.: ``3 payments``)::
 
-        use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
-        use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
-        use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 
-        public function configureActions(Actions $actions): Actions
-        {
-            $viewPayments = Action::new('payments')
-                ->setLabel(static fn (Invoice $invoice): string => \count($invoice->getPayments()) . ' payments')
+    public function configureActions(Actions $actions): Actions
+    {
+        $viewPayments = Action::new('payments')
+            ->setLabel(static fn (Invoice $invoice): string => \count($invoice->getPayments()) . ' payments');
 
-            return $actions
-                // ...
-                ->add(Crud::PAGE_DETAIL, $viewPayments);
-        }
+        return $actions
+            // ...
+            ->add(Crud::PAGE_DETAIL, $viewPayments);
+    }
 
 If the related entity object is not enough for computing the action label,
-then any more specific service object can be used as a delegator. For example,
-a Doctrine repository service object can be used for counting the related number
-of payments for the administered invoice::
+then you can compute the label with any other service, such as a Doctrine
+repository. For example, a Doctrine repository service object can be used for
+counting the related number of payments for the administered invoice::
 
     use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
     use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
     use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 
-    private InvoicePaymentRepository $invoicePaymentRepository;
-
-    public function __construct(InvoicePaymentRepository $invoicePaymentRepository)
-    {
-        $this->invoicePaymentRepository = $invoicePaymentRepository;
+    public function __construct(
+        private InvoicePaymentRepository $invoicePaymentRepository,
+    ) {
     }
 
     public function configureActions(Actions $actions): Actions
     {
         $viewPayments = Action::new('payments')
-            ->setLabel(function (Invoice $invoice)) {
+            ->setLabel(function (Invoice $invoice) {
                 return $this->invoicePaymentRepository->countByInvoice($invoice) . ' payments';
             });
 
@@ -182,10 +196,10 @@ of payments for the administered invoice::
 Displaying Actions Conditionally
 --------------------------------
 
-Some actions must be displayed only when some conditions met. For example, a
-"View Invoice" action may be displayed only when the order status is "paid".
-Use the ``displayIf()`` method to configure when the action should be visible
-to users::
+Some actions should be displayed only when certain conditions are met. For
+example, a "View Invoice" action may be displayed only when the order status is
+"paid". Use the ``displayIf()`` method to configure when the action should be
+visible to users::
 
     use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
     use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
@@ -194,7 +208,7 @@ to users::
     public function configureActions(Actions $actions): Actions
     {
         $viewInvoice = Action::new('invoice', 'View Invoice', 'fas fa-file-invoice')
-            ->displayIf(static fn (Invoice $invoice): bool => $invoice->isPaid())
+            ->displayIf(static fn (Invoice $invoice): bool => $invoice->isPaid());
 
         return $actions
             // ...
@@ -205,14 +219,15 @@ to users::
 
     The ``displayIf()`` method also works for :ref:`global actions <global-actions>`.
     However, your closure won't receive the object that represents the current
-    entity because global actions are not associated to any specific entity.
+    entity because global actions are not associated with any specific entity.
 
 Action Confirmation
 -------------------
 
-By default, actions are executed immediately when clicked. The only exception
-is the built-in ``delete`` action, which shows a confirmation message. For potentially
-destructive or important actions, you can require user confirmation before execution.
+By default, actions are executed immediately when clicked. The exceptions are the
+built-in ``delete`` action and all :ref:`batch actions <batch-action-confirmation>`,
+which show a confirmation message. For potentially destructive or important
+actions, you can require user confirmation before execution.
 
 To enable confirmation for any action, use the ``askConfirmation()`` method::
 
@@ -284,7 +299,7 @@ Disabling an action means that it's not displayed in the interface and the user
 can't run the action even if they modify the URL. If they try to do that, they
 will see a "Forbidden Action" exception.
 
-Actions are disabled globally, you cannot disable them per page::
+Actions are disabled globally, so you cannot disable them per page::
 
     use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
     use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
@@ -293,17 +308,24 @@ Actions are disabled globally, you cannot disable them per page::
     {
         return $actions
             // ...
-            // this will forbid to create or delete entities in the backend
+            // this prevents creating or deleting entities in the backend
             ->disable(Action::NEW, Action::DELETE)
         ;
     }
+
+.. note::
+
+    Disabling ``Action::DELETE`` also disables the ``Action::BATCH_DELETE``
+    batch action automatically. The opposite doesn't happen: disabling
+    ``Action::BATCH_DELETE`` keeps the regular ``delete`` action enabled.
 
 Restricting Actions
 -------------------
 
 Instead of disabling actions, you can restrict their execution to certain users.
-Use the ``setPermission()`` to define the Symfony Security permission needed to
-view and run some action.
+Use the ``setPermission()`` method to define the Symfony Security permission
+needed to view and run some action. This is explained in more detail in the
+article about :ref:`action permissions <security-permissions-actions>`.
 
 Permissions are defined globally; you cannot define different permissions per page::
 
@@ -318,6 +340,10 @@ Permissions are defined globally; you cannot define different permissions per pa
             ->setPermission(Action::DELETE, 'ROLE_SUPER_ADMIN')
         ;
     }
+
+Instead of a role name, you can pass a
+``Symfony\Component\ExpressionLanguage\Expression`` object to define more
+complex rules, as explained in :ref:`security expressions <security-expressions>`.
 
 When restricting several actions, you can also use the ``setPermissions()``
 method and pass all the permissions at once::
@@ -337,8 +363,10 @@ Reordering Actions
 ------------------
 
 By default, actions are ordered by type: "primary" actions are displayed first,
-followed by "default", "success", "warning", and, lastly, "danger" actions. This
-ordering also applies to your :ref:`custom actions <actions-custom>`, as explained below.
+followed by "default", "success", "info", "warning", and, lastly, "danger"
+actions. Actions rendered as solid buttons are always displayed before actions
+rendered as text links. This ordering also applies to your
+:ref:`custom actions <actions-custom>`, as explained below.
 
 This ordering usually produces the best visual result. However, you can disable
 this behavior in your application by calling the following method::
@@ -351,7 +379,6 @@ this behavior in your application by calling the following method::
             // ...
             ->disableAutomaticOrdering();
     }
-}
 
 You can also use the ``reorder()`` method to define an explicit order in which
 actions are displayed on a page::
@@ -381,8 +408,7 @@ actions are displayed on a page::
 
 .. note::
 
-    When using the ``reorder()`` method, the smart sorting feature is
-    automatically disabled.
+    When using the ``reorder()`` method, the automatic ordering is disabled.
 
 Dropdown and Inline Entity Actions
 ----------------------------------
@@ -390,7 +416,8 @@ Dropdown and Inline Entity Actions
 In the ``index`` page, the entity actions (``edit``, ``delete``, etc.) are
 displayed by default in a dropdown. This is done to better display the field
 contents on each row. If you prefer to display all the actions *inline*
-(that is, without a dropdown) use the ``showEntityActionsInlined()`` method::
+(that is, without a dropdown) use the ``showEntityActionsInlined()``
+:ref:`design option <crud-design-options>`::
 
     namespace App\Controller\Admin;
 
@@ -409,6 +436,8 @@ contents on each row. If you prefer to display all the actions *inline*
             ;
         }
     }
+
+.. _actions-grouping:
 
 Grouping Actions
 ----------------
@@ -465,15 +494,17 @@ groups: those associated with each entity and those associated with the entire p
     }
 
 The ``createAsGlobalActionGroup()`` method creates an action group associated
-with the entire page rather than any specific entity. It appears like the image
-shown above for action groups.
+with the entire page rather than any specific entity. It is rendered above the
+listing, as shown in the image above.
 
 When not using the ``createAsGlobalActionGroup()`` method on the index page, the
 action group is displayed as a nested dropdown on each entity row (see the image
 in the next section below).
 
-Split Button Dropdowns
-~~~~~~~~~~~~~~~~~~~~~~
+.. _split-button-dropdowns:
+
+Split Button Action Groups
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 If one of the grouped actions is more common than the others, you can render the
 group as a "split button". This displays the **main action** as a clickable button,
@@ -501,8 +532,8 @@ remaining actions appear when hovering over the submenu marker:
 Headers and Dividers
 ~~~~~~~~~~~~~~~~~~~~
 
-For better organization, especially with many actions in a dropdown, you can add
-headers and dividers to create logical groups::
+For better organization, especially with many actions in an action group, you can
+add headers and dividers to create logical groups::
 
     $actionsGroup = ActionGroup::new('actions', 'Actions', 'fa fa-cog')
         ->addHeader('Quick Actions')
@@ -517,28 +548,32 @@ headers and dividers to create logical groups::
 Headers help users understand the purpose of each group, while dividers provide
 visual separation between different sections.
 
-Conditional Dropdown Display
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. _conditional-dropdown-display:
 
-Like regular actions, dropdowns can be displayed conditionally based on the
+Conditional Action Group Display
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Like regular actions, action groups can be displayed conditionally based on the
 entity state or user permissions::
 
     $moderationGroup = ActionGroup::new('moderation', 'Moderation')
-        // the callable receives the current entity instance or null (in the index page)
+        // the callable receives the current entity instance or null for global action groups
         ->displayIf(static function ($entity) {
             return null !== $entity && 'pending' === $entity->getStatus();
         })
         ->addAction(Action::new('approve', 'Approve')->linkToCrudAction('approve'))
         ->addAction(Action::new('reject', 'Reject')->linkToCrudAction('reject'));
 
-The dropdown will only appear when the condition is met. Individual actions
-within the dropdown can also have their own display conditions.
+The action group will only appear when the condition is met. Individual actions
+within the group can also have their own display conditions.
 
-Customizing Dropdown Appearance
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. _customizing-dropdown-appearance:
 
-Dropdowns support the same customization options as regular actions for styling
-and HTML attributes::
+Customizing Action Group Appearance
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Action groups support the same customization options as regular actions for
+styling and HTML attributes::
 
     $customGroup = ActionGroup::new('custom', 'Options')
         // use only an icon, no label
@@ -549,6 +584,7 @@ and HTML attributes::
         ->asPrimaryActionGroup()
         ->asDefaultActionGroup()
         ->asSuccessActionGroup()
+        ->asInfoActionGroup()
         ->asWarningActionGroup()
         ->asDangerActionGroup()
 
@@ -556,10 +592,18 @@ and HTML attributes::
         ->addCssClass('my-custom-dropdown')
 
         // add HTML attributes
-        ->setHtmlAttributes(['data-foo' => 'bar']);
+        ->setHtmlAttributes(['data-foo' => 'bar'])
 
-You can also customize individual actions within the dropdown using the standard
-action configuration methods.
+        // render the action group with your own Twig template instead of the
+        // built-in one (the template receives 'group' and 'entity' variables)
+        ->setTemplatePath('admin/action_group/my_group.html.twig');
+
+You can also customize individual actions within the action group using the
+standard action configuration methods. Use the ``removeAction()`` method to
+remove an action from a group, which is useful when you reuse a group created
+somewhere else in your application::
+
+    $publishActions->removeAction('publishDraft');
 
 .. _actions-custom:
 
@@ -574,7 +618,7 @@ Adding Custom Actions
 
 In addition to the built-in actions provided by EasyAdmin, you can create your
 own actions. First, define the basics of your action (name, label, icon) with
-the ``Action`` class constructor::
+the ``Action::new()`` method::
 
     // the only mandatory argument is the internal name of the action (which is
     // used to add the action to some pages, to reorder the action position, etc.)
@@ -601,20 +645,21 @@ Then you can configure the basic HTML/CSS attributes of the button/element
 that will represent the action::
 
     $viewInvoice = Action::new('viewInvoice', 'Invoice', 'fa fa-file-invoice')
-        // by default, actions are rendered with `<button>` HTML elements;
-        // use this method to use an `<a>` element instead. Visually, this will
-        // look the same as a button
+        // actions created with Action::new() are rendered as `<a>` elements that
+        // trigger GET requests; use this method to restore that rendering when
+        // some other method changed it
         ->renderAsLink()
 
-        // by default, actions are rendered as `<button type="submit" ...>` elements.
-        // this method allows you to change it and use a `<button type="button" ...>` element.
-        ->renderAsButton('submit')
+        // this method renders the action as a `<button>` element. By default it
+        // uses `<button type="submit" ...>`; pass 'button' to render a
+        // `<button type="button" ...>` element instead
+        ->renderAsButton('button')
         // also available as EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\ButtonType
-        ->renderAsButton(ButtonType::Submit)
+        ->renderAsButton(ButtonType::Button)
 
-        // by default, custom actions are rendered as <a> elements that trigger GET requests.
-        // use this method to render them as <button> elements with an associated hidden <form>,
-        // so that custom actions send a POST request to the action URL.
+        // this method renders the action as a `<form method="post" ...>` element,
+        // so the action sends a POST request to the action URL. Visually, it looks
+        // exactly the same as a regular button
         ->renderAsForm()
 
         // a key-value array of attributes to add to the HTML element
@@ -625,6 +670,7 @@ that will represent the action::
         ->asDefaultAction()
         ->asPrimaryAction()
         ->asSuccessAction()
+        ->asInfoAction()
         ->asWarningAction()
         ->asDangerAction()
 
@@ -643,6 +689,14 @@ that will represent the action::
         // useful when customizing a built-in action, which already has CSS classes)
         ->addCssClass('some-custom-css-class text-danger')
 
+        // the parameters used when translating the action label
+        ->setTranslationParameters(['%num_payments%' => 7])
+
+        // render the action with your own Twig template instead of the built-in
+        // one (the template receives 'action' and 'entity' variables)
+        ->setTemplatePath('admin/action/my_action.html.twig')
+    ;
+
 This is how the different button style variants look in light and dark mode:
 
 .. image:: images/easyadmin-buttons-light-mode.gif
@@ -658,6 +712,11 @@ This is how the different button style variants look in light and dark mode:
     ``.action-<the-action-name>``). You might want to add those CSS classes
     manually to make your actions look as expected.
 
+The style and render methods accept an optional boolean argument so you can apply
+them conditionally (e.g. ``asPrimaryAction(Crud::PAGE_DETAIL === $pageName)``,
+which is how the built-in ``edit`` action is configured). Passing ``false``
+leaves the current setting unchanged; it doesn't revert a style applied earlier.
+
 Once you've configured the basics, use one of the following methods to define
 which method runs when you click the action:
 
@@ -670,12 +729,13 @@ The following example shows all kinds of actions in practice::
 
     namespace App\Controller\Admin;
 
-    use App\Entity\Invoice;
     use App\Entity\Order;
     use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminRoute;
     use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
     use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
     use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+    use Symfony\Component\HttpFoundation\Response;
 
     class OrderCrudController extends AbstractCrudController
     {
@@ -704,8 +764,8 @@ The following example shows all kinds of actions in practice::
                     ];
                 });
 
-            // this action points to the invoice on Stripe application
-            $viewStripeInvoice = Action::new('viewInvoice', 'Invoice', 'fa fa-file-invoice')
+            // this action points to the invoice in the Stripe application
+            $viewStripeInvoice = Action::new('viewStripeInvoice', 'Stripe Invoice', 'fab fa-stripe')
                 ->linkToUrl(function (Order $entity) {
                     return 'https://www.stripe.com/invoice/'.$entity->getStripeReference();
                 });
@@ -729,14 +789,14 @@ Apply the ``#[AdminRoute]`` attribute to turn CRUD controller methods into custo
 CRUD actions with their own admin routes. In the above example, if the dashboard
 uses ``admin`` as the main route name, EasyAdmin generates a route named
 ``admin_order_render_invoice`` with the path ``/admin/order/{id}/invoice``.
-You can :ref:`customize the name, path, and methods <crud_routes>` of this route.
+You can :ref:`customize the name, path, and methods <crud-routes>` of this route.
 
 The placeholder that identifies the current entity in EasyAdmin routes is called
 ``{entityId}``, but you can also use ``{id}`` as an alias of it. Both work the
-same but ``{id}`` provides a nicer integration with Symfony: since the placeholder
-name matches the identifier property of most entities, Symfony's ``EntityValueResolver``
-can inject the entity as a typed controller argument (the ``Order $order`` argument
-in the above example) without any extra configuration.
+same way. Prefer ``{id}``: because the placeholder name matches the identifier
+property of most entities, Symfony's ``EntityValueResolver`` can inject the
+entity as a typed controller argument (the ``Order $order`` argument in the above
+example) without extra configuration.
 
 .. note::
 
@@ -771,6 +831,8 @@ page::
     ;
 
     $actions->add(Crud::PAGE_INDEX, $goToStripe);
+
+.. _batch-actions:
 
 Batch Actions
 -------------
@@ -807,10 +869,14 @@ First, add it to your action configuration using the ``addBatchAction()`` method
         }
     }
 
+The ``addBatchAction()`` method is a shortcut that adds the action to the
+``index`` page and marks it as a batch action. If you prefer to add the action
+with the regular ``add()`` method, call ``createAsBatchAction()`` on it first.
+
 Batch actions support the same configuration options as the other actions and
 they can link to a CRUD controller method, to a Symfony route or to some URL.
-If there's at least one batch action, the backend interface is updated to add some
-"checkboxes" that allow selecting more than one row of the index listing.
+If there's at least one batch action, EasyAdmin adds a checkbox to each row of
+the listing so users can select several entries.
 
 When the user clicks on the batch action link/button, a form is submitted using
 the ``POST`` method to the action or route configured in the action. The easiest
@@ -820,15 +886,17 @@ If you do that, EasyAdmin will inject a DTO with all the batch action data::
 
     namespace App\Controller\Admin;
 
-    use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
+    use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminRoute;
     use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
     use EasyCorp\Bundle\EasyAdminBundle\Dto\BatchActionDto;
+    use Symfony\Component\HttpFoundation\Response;
 
     class UserCrudController extends AbstractCrudController
     {
         // ...
 
-        public function approveUsers(BatchActionDto $batchActionDto)
+        #[AdminRoute('/batch-approve', 'batch_approve', options: ['methods' => ['POST']])]
+        public function approveUsers(BatchActionDto $batchActionDto): Response
         {
             $className = $batchActionDto->getEntityFqcn();
             $entityManager = $this->container->get('doctrine')->getManagerForClass($className);
@@ -843,19 +911,40 @@ If you do that, EasyAdmin will inject a DTO with all the batch action data::
         }
     }
 
+Instead of hardcoding the route name in ``redirectToRoute()``, you can build the
+redirect URL with the :ref:`admin URL generator <generate-admin-urls>`, which
+keeps the current dashboard, filters, and sorting.
+
+The DTO also exposes ``getName()`` (the name of the batch action being executed,
+useful when several batch actions share the same controller method) and
+``getCsrfToken()`` (the CSRF token submitted with the form). Validate that token
+before applying any change, using ``ea-batch-action-<action-name>-<entity-fqcn>``
+as the token ID::
+
+    if (!$this->isCsrfTokenValid('ea-batch-action-'.$batchActionDto->getName().'-'.$batchActionDto->getEntityFqcn(), $batchActionDto->getCsrfToken())) {
+        throw $this->createAccessDeniedException();
+    }
+
+The entity FQCN of the DTO comes from the submitted form, so it's controlled by
+the user. Compare it with your controller's ``static::getEntityFqcn()`` and
+reject the request when they differ.
+
 .. note::
 
     As an alternative, instead of injecting the ``BatchActionDto`` variable, you can
     also inject Symfony's ``Request`` object to get all the raw submitted batch data
     (e.g. ``$request->request->all('batchActionEntityIds')``).
 
+.. _batch-action-confirmation:
+
 Batch Action Confirmation
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 By default, batch actions display a confirmation modal before execution to prevent
-accidental operations on multiple items. You can configure this behavior at the
-dashboard level (for all CRUD controllers) or at the individual CRUD controller
-level (to override the dashboard default).
+accidental operations on multiple items. Configure this behavior with the
+``askConfirmationOnBatchActions()`` :ref:`design option <crud-design-options>`, at
+the dashboard level (for all CRUD controllers) or at the individual CRUD
+controller level (to override the dashboard default).
 
 To disable the confirmation modal entirely::
 
@@ -906,12 +995,13 @@ For translatable messages, you can pass a ``TranslatableInterface`` object::
 Integrating Symfony Actions
 ---------------------------
 
-If the action logic is small and directly related to the backend, it's OK to add
-it to the :doc:`CRUD controller </crud>` as a quick and simple way of integrating
-it into your EasyAdmin backend. However, sometimes the logic is too complex or
-also used in other parts of the Symfony application, so you can't move that logic into
-the CRUD controller. This section explains how to integrate an existing Symfony
-controller action in EasyAdmin so you can reuse the backend layout, menu, and other features.
+If the action logic is small and directly related to the backend, it is acceptable
+to add it to the :doc:`CRUD controller </crud>` as a quick and simple way of
+integrating it into your EasyAdmin backend. Sometimes the logic is too complex, or
+it is also used elsewhere in your Symfony application. In those cases, you cannot
+move it into the CRUD controller. This section explains how to integrate an
+existing Symfony controller action in EasyAdmin so you can reuse the backend
+layout, menu, and other features.
 
 Imagine that your Symfony application has an action that calculates business
 statistics about your clients (average order amount, yearly number of purchases, etc.).
@@ -922,29 +1012,31 @@ Symfony controller called ``BusinessStatsController``::
     // src/Controller/BusinessStatsController.php
     namespace App\Controller;
 
+    use App\Entity\Customer;
     use App\Stats\BusinessStatsCalculator;
     use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+    use Symfony\Component\HttpFoundation\Response;
     use Symfony\Component\Routing\Attribute\Route;
     use Symfony\Component\Security\Http\Attribute\IsGranted;
 
     #[IsGranted('ROLE_ADMIN')]
     class BusinessStatsController extends AbstractController
     {
-        public function __construct(BusinessStatsCalculator $businessStatsCalculator)
-        {
-            $this->businessStatsCalculator = $businessStatsCalculator;
+        public function __construct(
+            private BusinessStatsCalculator $businessStatsCalculator,
+        ) {
         }
 
-        #[Route("/admin/business-stats", name: "business_stats_index")]
-        public function index()
+        #[Route('/admin/business-stats', name: 'business_stats_index')]
+        public function index(): Response
         {
             return $this->render('admin/business_stats/index.html.twig', [
                 'data' => $this->businessStatsCalculator->getStatsSummary(),
             ]);
         }
 
-        #[Route("/admin/business-stats/{id}", name: "business_stats_customer")]
-        public function customer(Customer $customer)
+        #[Route('/admin/business-stats/{id}', name: 'business_stats_customer')]
+        public function customer(Customer $customer): Response
         {
             return $this->render('admin/business_stats/customer.html.twig', [
                 'data' => $this->businessStatsCalculator->getCustomerStats($customer),
@@ -960,30 +1052,32 @@ for the actions using the ``#[AdminRoute]`` attribute::
     // src/Controller/BusinessStatsController.php
     namespace App\Controller;
 
+    use App\Entity\Customer;
     use App\Stats\BusinessStatsCalculator;
     use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminRoute;
     use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+    use Symfony\Component\HttpFoundation\Response;
     use Symfony\Component\Security\Http\Attribute\IsGranted;
 
     #[IsGranted('ROLE_ADMIN')]
     #[AdminRoute('/business-stats', name: 'business_stats')]
     class BusinessStatsController extends AbstractController
     {
-        public function __construct(BusinessStatsCalculator $businessStatsCalculator)
-        {
-            $this->businessStatsCalculator = $businessStatsCalculator;
+        public function __construct(
+            private BusinessStatsCalculator $businessStatsCalculator,
+        ) {
         }
 
-        #[AdminRoute("/", name: "index")]
-        public function index()
+        #[AdminRoute('/', name: 'index')]
+        public function index(): Response
         {
             return $this->render('admin/business_stats/index.html.twig', [
                 'data' => $this->businessStatsCalculator->getStatsSummary(),
             ]);
         }
 
-        #[AdminRoute("/{id}", name: "customer")]
-        public function customer(Customer $customer)
+        #[AdminRoute('/{id}', name: 'customer')]
+        public function customer(Customer $customer): Response
         {
             return $this->render('admin/business_stats/customer.html.twig', [
                 'data' => $this->businessStatsCalculator->getCustomerStats($customer),
@@ -1025,34 +1119,37 @@ the following options::
     // except those listed explicitly:
 
     #[AdminRoute('...', name: '...', allowedDashboards: [DashboardController::class, '...'])]
-    class BusinessStatsController extends AbstractController
+    class BusinessStatsController extends AbstractController { /* ... */ }
 
     // Use the 'deniedDashboards' option to generate a route for ALL dashboards
     // except those listed explicitly:
 
     #[AdminRoute('...', name: '...', deniedDashboards: [GuestDashboardController::class, '...'])]
-    class BusinessStatsController extends AbstractController
+    class BusinessStatsController extends AbstractController { /* ... */ }
 
-The options to allow or exclude dashboards can be applied at both the class and
-action levels, and you can override them at the action level as follows:
+You can apply these options at the class level, at the action level, or both. An
+action-level value overrides the class-level one:
 
 * ``false`` (it's the default value): means "option not set" and tells EasyAdmin
   to inherit the value from the ``#[AdminRoute]`` attribute defined at the class
   level (if any);
-* ``null``: explicitly allow/deny all dashboards; it's used to override the same
-  option in the ``#[AdminRoute]`` attribute at class level;
-* ``[]``: explicitly allow/deny no dashboards;
+* ``null`` in ``allowedDashboards``: explicitly allow all dashboards; it's used
+  to override the same option in the ``#[AdminRoute]`` attribute at class level;
+* ``[]`` in ``allowedDashboards``: explicitly allow no dashboards, so the route
+  is not generated at all;
+* ``null`` or ``[]`` in ``deniedDashboards``: no dashboard is excluded;
 * ``[FooDashboard::class, BarDashboard::class, ...]``: allow/deny only these
   specific dashboards.
 
-Now you can link to those admin routes from your main menu to render the actions
-fully integrated into each dashboard::
+Now you can link to those admin routes from your :ref:`main menu <dashboard-menu>`
+to render the actions fully integrated into each dashboard::
 
     // src/Controller/Admin/DashboardController.php
     namespace App\Controller\Admin;
 
     use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
     use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
+    use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
     use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 
     #[AdminDashboard(routePath: '/admin', routeName: 'admin')]
@@ -1064,7 +1161,7 @@ fully integrated into each dashboard::
         {
             // ...
 
-            yield MenuItem::linktoRoute('Stats', 'fa fa-chart-bar', 'admin_business_stats_index');
+            yield MenuItem::linkToRoute('Stats', 'fa fa-chart-bar', 'admin_business_stats_index');
         }
     }
 
@@ -1098,10 +1195,12 @@ of the stats of all customers and includes a link to the detailed stats of each 
         </table>
     {% endblock %}
 
-The Twig template extends the :ref:`content page template <content_page_template>`
+The Twig template extends the :ref:`content page template <content-page-template>`
 provided by EasyAdmin to reuse the backend design. The rest of the template
 is standard Twig code, including the use of the Symfony's ``path()`` function to
 generate the URL for the ``admin_business_stats_customer`` admin route.
+
+.. _actions-extensions:
 
 Actions Extensions
 ------------------
@@ -1118,6 +1217,12 @@ defined for your controllers.
 
 Action extensions are PHP classes that receive the full configuration of
 actions in your backend so they can add, remove, or update any of them.
+
+.. tip::
+
+    Action extensions change how actions are *configured*. If instead you need to
+    run some logic while an action is *executed*, listen to the
+    :doc:`EasyAdmin events </events>`.
 
 For example, imagine you need a **Duplicate** action across most of your
 backends. Instead of defining it repeatedly, you can create a reusable package
@@ -1158,6 +1263,25 @@ backends. Instead of defining it repeatedly, you can create a reusable package
             // you can also remove or update existing actions
         }
     }
+
+Both methods receive the :ref:`admin context <admin-context>` of the current
+request, so you can decide what to do based on the dashboard, the CRUD
+controller, the current page, or the logged in user.
+
+Extensions are registered automatically thanks to Symfony's autoconfiguration.
+If autoconfiguration is disabled (which is common inside bundles), add the
+``ea.actions_extension`` tag to the service:
+
+.. code-block:: yaml
+
+    # config/services.yaml
+    services:
+        App\Admin\DuplicateActionExtension:
+            tags: ['ea.actions_extension']
+
+Extensions run after the ``configureActions()`` method of the CRUD controller,
+so they always have the last word and can override the configuration defined
+there.
 
 .. _`FontAwesome`: https://fontawesome.com/
 .. _`mapped route parameters`: https://symfony.com/doc/current/doctrine.html#fetch-automatically

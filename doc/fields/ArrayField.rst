@@ -2,7 +2,9 @@ EasyAdmin Array Field
 =====================
 
 This field displays the contents of a property which is mapped to a `Doctrine Array type`_ and it
-allows you to add new elements dynamically using JavaScript.
+allows you to add new elements dynamically using JavaScript. To manage a
+collection of related entities instead of scalar values, use the
+:doc:`CollectionField </fields/CollectionField>`.
 
 In :ref:`form pages (edit and new) <crud-pages>` it looks like this:
 
@@ -14,9 +16,11 @@ Basic Information
 
 * **PHP Class**: ``EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField``
 * **Doctrine DBAL Type** used to store this value: it depends on the installed DBAL version
+
   * DBAL **v4**: ``simple_array`` or ``json``
   * DBAL **v3**: ``array``, ``simple_array`` or ``json``
-  * DNAL **v2**: ``array``, ``simple_array``, ``json_array`` or ``json``
+  * DBAL **v2**: ``array``, ``simple_array``, ``json_array`` or ``json``
+
 * **Symfony Form Type** used to render the field: `CollectionType`_
 * **Rendered as**:
 

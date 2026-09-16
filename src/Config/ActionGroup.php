@@ -153,11 +153,11 @@ final class ActionGroup implements \Stringable
     }
 
     /**
-     * Controls when the dropdown should be displayed. The callable receives the current
-     * entity DTO or null in the index page:
+     * Controls when the action group should be displayed. The callable receives the
+     * current entity instance, or null for global action groups:
      *
      *     ->displayIf(
-     *         static fn (?EntityDto $entityDto): bool => $entityDto?->getInstance()->isPublished()
+     *         static fn (?Post $post): bool => $post?->isPublished() ?? false
      *     )
      */
     public function displayIf(callable $callable): self

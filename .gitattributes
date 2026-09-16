@@ -18,3 +18,5 @@
 /tests export-ignore
 /webpack.config.js export-ignore
 /yarn.lock export-ignore
+
+skills/**/*.md text eol=lf

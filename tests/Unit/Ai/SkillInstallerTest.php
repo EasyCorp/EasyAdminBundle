@@ -70,7 +70,14 @@ class SkillInstallerTest extends AiTestCase
 
     public function testInstallAddsTheMetadataKeyWhenTheFrontmatterDoesNotHaveIt(): void
     {
-        $this->filesystem->dumpFile($this->skillsSourceDir().'/easyadmin/SKILL.md', "---\nname: easyadmin\n---\n\n# EasyAdmin\n");
+        $this->filesystem->dumpFile($this->skillsSourceDir().'/easyadmin/SKILL.md', <<<'MD'
+            ---
+            name: easyadmin
+            ---
+
+            # EasyAdmin
+
+            MD);
 
         $this->skillInstaller->install(AgentTarget::ClaudeCode);
 
@@ -89,7 +96,16 @@ class SkillInstallerTest extends AiTestCase
 
     public function testInstallIgnoresTheKeysThatFollowTheMetadataKey(): void
     {
-        $this->filesystem->dumpFile($this->skillsSourceDir().'/easyadmin/SKILL.md', "---\nmetadata:\n  author: EasyCorp\nname: easyadmin\n---\n\n# EasyAdmin\n");
+        $this->filesystem->dumpFile($this->skillsSourceDir().'/easyadmin/SKILL.md', <<<'MD'
+            ---
+            metadata:
+              author: EasyCorp
+            name: easyadmin
+            ---
+
+            # EasyAdmin
+
+            MD);
 
         $this->skillInstaller->install(AgentTarget::ClaudeCode);
 
@@ -105,6 +121,18 @@ class SkillInstallerTest extends AiTestCase
             # EasyAdmin
 
             MD);
+    }
+
+    public function testInstallKeepsWorkingWhenTheSkillFileUsesWindowsLineEndings(): void
+    {
+        $this->filesystem->dumpFile($this->skillsSourceDir().'/easyadmin/SKILL.md', "---\r\nname: easyadmin\r\nmetadata:\r\n  author: EasyCorp\r\n---\r\n\r\n# EasyAdmin\r\n");
+
+        $this->skillInstaller->install(AgentTarget::ClaudeCode);
+
+        $this->assertStringEqualsFile($this->projectDir.'/.claude/skills/easyadmin/SKILL.md', "---\r\nname: easyadmin\r\nmetadata:\r\n  author: EasyCorp\r\n  easyadmin-version: '5.5.2-DEV'\r\n  installed-by: 'easyadmin:ai:install'\r\n---\r\n\r\n# EasyAdmin\r\n");
+        $this->assertSame(self::VERSION, $this->skillInstaller->installedVersion(AgentTarget::ClaudeCode));
+        $this->assertSame([AgentTarget::ClaudeCode], $this->skillInstaller->installedTargets());
+        $this->assertSame(SkillStatus::UpToDate, $this->skillInstaller->status(AgentTarget::ClaudeCode));
     }
 
     public function testInstallIsIdempotent(): void

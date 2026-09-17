@@ -1,0 +1,44 @@
+---------------------------------------------------------------------------
+
+by BenjaminBeck at 2026-08-23T20:57:19Z
+
+CI note: the Symfony 8.0 job fails while loading fixtures because the test database is missing unrelated SQLite tables (`sort_test_entity_many_to_many`, `blog_post`, `action_test_entity`, and others). The same Symfony 8.0 job also fails on the exact `5.x` base commit (`88254355771dcb6829a9e5fea2812561b0046839`): https://github.com/EasyCorp/EasyAdminBundle/actions/runs/32615613403/job/97135722391
+
+All other required jobs for this PR pass, including PHPStan, all linters, PHP 8.2 with lowest dependencies, Symfony 6.4, Symfony 7.1 through 7.4, macOS, and Windows.
+
+---------------------------------------------------------------------------
+
+by BenjaminBeck at 2026-09-02T10:39:20Z
+
+After having a second look, i am not so sure this is the correct fix.
+Will have a closer look at the grid and row/col nesting and update this then.
+
+---------------------------------------------------------------------------
+
+by BenjaminBeck at 2026-09-09T12:22:53Z
+
+After reconsidering, I think the issue is not that the fieldset’s error border is too close to the fields, but that it appears at all. An error border should only be shown if the fieldset already has a border in its normal state.
+
+### 1. Top-level fieldsets
+
+| Normal | Error Style | This PR |
+| --- | --- | --- |
+| ![Normal](https://github.com/user-attachments/assets/5f776b1b-49e2-4d32-b18e-547e74f841f9) | ![Error Style](https://github.com/user-attachments/assets/251096f4-3712-491b-bc82-f150b5793eb2) | ![This PR](https://github.com/user-attachments/assets/374c020d-3eaf-4038-8cf1-8c475217a222) |
+
+### 2. Fieldsets in a tab
+
+| Normal | Error Style | This PR |
+| --- | --- | --- |
+| ![Normal](https://github.com/user-attachments/assets/ba333099-fd4f-485b-83d2-f434a9100d6e) | ![Error Style](https://github.com/user-attachments/assets/0276c29e-b0e9-4ce6-bf48-229e0dfc2af0) | ![This PR](https://github.com/user-attachments/assets/d2d5ff69-bd1d-48cb-bda8-91a8a9a41036) |
+
+### 3. Fieldsets in a column
+
+| Normal | Error Style | This PR |
+| --- | --- | --- |
+| ![Normal](https://github.com/user-attachments/assets/18890c66-889f-4e3a-9324-1d34ea0b96cd) | ![Error Style](https://github.com/user-attachments/assets/b7a00e30-8f62-4b09-993e-6c71840b8b7f) | ![This PR](https://github.com/user-attachments/assets/25873ddf-0309-46f2-998c-e7cc06132da5) |
+
+### 4. Implicit fieldset
+
+| Normal | Error Style | This PR |
+| --- | --- | --- |
+| ![Normal](https://github.com/user-attachments/assets/b4b2c065-549a-49ba-828f-8e9871706ead) | ![Error Style](https://github.com/user-attachments/assets/c50aff21-3970-40a2-8575-9044b322e4b7) | ![This PR](https://github.com/user-attachments/assets/20ad4f57-6d06-4140-8ac9-d3ccd0109909) |

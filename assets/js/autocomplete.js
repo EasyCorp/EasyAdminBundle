@@ -184,7 +184,7 @@ export default class Autocomplete {
     }
 
     #hasPreferredChoices(element) {
-        for (let i = 0; i < element.options.length; i++) {
+        for (let i = 0; i < element.options?.length; i++) {
             if (this.#isPreferredChoicesSeparator(element.options[i])) {
                 return true;
             }

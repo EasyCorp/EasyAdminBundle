@@ -5,13 +5,11 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Field\Configurator;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Context\AdminContextInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Security\CrudPermissionCheckerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
-use EasyCorp\Bundle\EasyAdminBundle\Factory\AdminContextFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\ControllerFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FieldFactory;
@@ -31,7 +29,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Proj
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Field\AbstractFieldTest;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class AssociationConfiguratorTest extends AbstractFieldTest
 {
@@ -54,8 +51,7 @@ class AssociationConfiguratorTest extends AbstractFieldTest
             $this->requestStack,
             static::getContainer()->get(ControllerFactory::class),
             static::getContainer()->get(FieldFactory::class),
-            static::getContainer()->get(AuthorizationCheckerInterface::class),
-            static::getContainer()->get(AdminContextFactory::class),
+            static::getContainer()->get(CrudPermissionCheckerInterface::class),
             static::getContainer()->get(EntityRepository::class),
         );
     }
@@ -194,61 +190,24 @@ class AssociationConfiguratorTest extends AbstractFieldTest
         yield [AssociationField::new('latestRelease')];
     }
 
-    public function testAssociationLinkIsRenderedWhenUserIsPermitted(): void
+    public function testAssociationLinkIsRenderedWhenPermissionCheckerGrants(): void
     {
-        $targetCrud = new CrudDto();
-        // no entity permission, no action permissions → both gates pass
-
-        $authChecker = $this->createMock(AuthorizationCheckerInterface::class);
-        $authChecker->method('isGranted')->willReturn(true);
-
         $this->configurator = $this->buildConfigurator(
-            $authChecker,
+            $this->buildPermissionChecker(true),
             $this->buildUrlGeneratorReturning('http://expected-url'),
         );
-        $this->primeTargetCrudDtoCache($this->configurator, DeveloperCrudController::class, Action::INDEX, $targetCrud);
 
         $fieldDto = $this->configure($this->buildLeadDeveloperField(), controllerFqcn: ProjectCrudController::class);
 
         $this->assertSame('http://expected-url', $fieldDto->getCustomOption(AssociationField::OPTION_RELATED_URL));
     }
 
-    public function testAssociationLinkIsHiddenWhenTargetEntityPermissionDenies(): void
+    public function testAssociationLinkIsHiddenWhenPermissionCheckerDenies(): void
     {
-        $targetCrud = new CrudDto();
-        $targetCrud->setEntityPermission('ROLE_DENIED');
-
-        $authChecker = $this->createMock(AuthorizationCheckerInterface::class);
-        $authChecker->method('isGranted')->willReturnCallback(
-            static fn ($attribute) => 'ROLE_DENIED' !== $attribute,
-        );
-
         $this->configurator = $this->buildConfigurator(
-            $authChecker,
+            $this->buildPermissionChecker(false),
             $this->buildUrlGeneratorReturning('http://should-not-appear'),
         );
-        $this->primeTargetCrudDtoCache($this->configurator, DeveloperCrudController::class, Action::INDEX, $targetCrud);
-
-        $fieldDto = $this->configure($this->buildLeadDeveloperField(), controllerFqcn: ProjectCrudController::class);
-
-        $this->assertNull($fieldDto->getCustomOption(AssociationField::OPTION_RELATED_URL));
-    }
-
-    public function testAssociationLinkIsHiddenWhenTargetActionPermissionDenies(): void
-    {
-        $targetCrud = new CrudDto();
-        // no entity permission, so the gate that matters is EA_EXECUTE_ACTION
-
-        $authChecker = $this->createMock(AuthorizationCheckerInterface::class);
-        $authChecker->method('isGranted')->willReturnCallback(
-            static fn ($attribute) => Permission::EA_EXECUTE_ACTION !== $attribute,
-        );
-
-        $this->configurator = $this->buildConfigurator(
-            $authChecker,
-            $this->buildUrlGeneratorReturning('http://should-not-appear'),
-        );
-        $this->primeTargetCrudDtoCache($this->configurator, DeveloperCrudController::class, Action::INDEX, $targetCrud);
 
         $fieldDto = $this->configure($this->buildLeadDeveloperField(), controllerFqcn: ProjectCrudController::class);
 
@@ -267,7 +226,7 @@ class AssociationConfiguratorTest extends AbstractFieldTest
     }
 
     private function buildConfigurator(
-        AuthorizationCheckerInterface $authChecker,
+        CrudPermissionCheckerInterface $permissionChecker,
         AdminUrlGeneratorInterface $urlGenerator,
     ): AssociationConfigurator {
         return new AssociationConfigurator(
@@ -276,22 +235,21 @@ class AssociationConfiguratorTest extends AbstractFieldTest
             $this->requestStack,
             static::getContainer()->get(ControllerFactory::class),
             static::getContainer()->get(FieldFactory::class),
-            $authChecker,
-            static::getContainer()->get(AdminContextFactory::class),
+            $permissionChecker,
             static::getContainer()->get(EntityRepository::class),
         );
     }
 
     /**
-     * Seeds the internal target-CrudDto cache so permission tests can run their gates against a
-     * controlled CrudDto without exercising the full AdminContext-resolution chain.
+     * The permission rules themselves are covered by CrudPermissionCheckerTest; here only the
+     * configurator's reaction to the verdict matters.
      */
-    private function primeTargetCrudDtoCache(AssociationConfigurator $configurator, string $crudControllerFqcn, string $crudAction, ?CrudDto $crudDto): void
+    private function buildPermissionChecker(bool $isGranted): CrudPermissionCheckerInterface
     {
-        $property = new \ReflectionProperty($configurator, 'targetCrudDtoCache');
-        $cache = $property->getValue($configurator);
-        $cache[$crudControllerFqcn.'::'.$crudAction] = $crudDto;
-        $property->setValue($configurator, $cache);
+        $checker = $this->createStub(CrudPermissionCheckerInterface::class);
+        $checker->method('isGranted')->willReturn($isGranted);
+
+        return $checker;
     }
 
     private function buildUrlGeneratorReturning(string $url): AdminUrlGeneratorInterface

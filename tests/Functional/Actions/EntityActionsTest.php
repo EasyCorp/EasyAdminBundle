@@ -301,6 +301,11 @@ class EntityActionsTest extends AbstractCrudTestCase
 
         // Verify the form uses POST method
         static::assertSame('POST', $formAction->first()->attr('method'), 'Form action should use POST method');
+
+        // Verify the form includes a CSRF token to validate in the action
+        $tokenInput = $formAction->filter('input[type="hidden"][name="token"]');
+        static::assertCount(1, $tokenInput, 'Form action should include a hidden CSRF token field');
+        static::assertNotEmpty($tokenInput->attr('value'), 'The CSRF token of the form action should not be empty');
     }
 
     public function testRenderAsFormInDropdownCreatesHiddenForm(): void
@@ -326,6 +331,50 @@ class EntityActionsTest extends AbstractCrudTestCase
         $hiddenForm = $parentLi->filter('form');
         static::assertCount(1, $hiddenForm, 'Hidden form should exist for dropdown action with renderAsForm()');
         static::assertSame('POST', $hiddenForm->attr('method'), 'Hidden form should use POST method');
+
+        // Verify the hidden form includes a CSRF token to validate in the action
+        $tokenInput = $hiddenForm->filter('input[type="hidden"][name="token"]');
+        static::assertCount(1, $tokenInput, 'Hidden form should include a hidden CSRF token field');
+        static::assertNotEmpty($tokenInput->attr('value'), 'The CSRF token of the hidden form should not be empty');
+    }
+
+    /**
+     * @dataProvider provideRenderAsFormCsrfTokens
+     */
+    public function testRenderAsFormCsrfTokenIsValidatedByTheAction(?string $invalidCsrfToken, bool $actionIsExpectedToSucceed): void
+    {
+        $inactiveEntity = $this->actionTestEntities->findOneBy(['isActive' => false]);
+        static::assertNotNull($inactiveEntity, 'Test requires an inactive entity');
+        $entityId = $inactiveEntity->getId();
+
+        $crawler = $this->client->request('GET', $this->generateIndexUrl());
+        $row = $crawler->filter(sprintf('tr[data-id="%s"]', $entityId));
+        $actionItem = $row->filter('[data-action-name="csrfProtectedActivate"]');
+        static::assertCount(1, $actionItem, 'CSRF-protected action should exist in the dropdown');
+
+        $form = $actionItem->closest('li')->filter('form')->form();
+        if (null !== $invalidCsrfToken) {
+            $form['token'] = $invalidCsrfToken;
+        }
+        $this->client->submit($form);
+
+        $this->entityManager->clear();
+        $updatedEntity = $this->actionTestEntities->find($entityId);
+
+        if ($actionIsExpectedToSucceed) {
+            static::assertResponseIsSuccessful();
+            static::assertTrue($updatedEntity->isActive(), 'The action should be executed when the CSRF token is valid');
+        } else {
+            static::assertResponseStatusCodeSame(400);
+            static::assertFalse($updatedEntity->isActive(), 'The action should not be executed when the CSRF token is invalid');
+        }
+    }
+
+    public static function provideRenderAsFormCsrfTokens(): \Generator
+    {
+        yield 'empty CSRF token' => ['', false];
+        yield 'invalid CSRF token' => ['123abc', false];
+        yield 'valid CSRF token' => [null, true];
     }
 
     // ============================================

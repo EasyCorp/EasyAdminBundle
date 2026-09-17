@@ -18,7 +18,13 @@
 {% if wrapInListItem %}<li>{% endif %}
     {% set formId = renderAsForm ? ea_uid('ea-form-') : null %}
     {% if renderAsForm %}
-        <form action="{{ url }}" method="POST" {% if formId %}id="{{ formId }}"{% endif %}></form>
+        <form action="{{ url }}" method="POST" {% if formId %}id="{{ formId }}"{% endif %}>
+            {%- guard function csrf_token -%}
+                {%- if app.request and app.request.hasSession -%}
+                    <input type="hidden" name="token" value="{{ csrf_token('ea-action') }}">
+                {%- endif -%}
+            {%- endguard -%}
+        </form>
     {% endif %}
 
     <a {{ attributes.defaults({class: item_class}|merge(htmlAttributes)) }}

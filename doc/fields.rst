@@ -1012,6 +1012,9 @@ Other Options
 
         // sets the value of the `empty_data` option in the Symfony form
         // see https://symfony.com/doc/current/reference/forms/types/form.html#empty-data
+        // (text-based fields associated with non-nullable Doctrine properties use an
+        // empty string as their default `empty_data` value, so submitting them empty
+        // doesn't pass NULL to properties typed as `string`)
         ->setEmptyData('Jane Doe')
 
         // the Symfony Form type used to render this field in 'edit'/'new' pages

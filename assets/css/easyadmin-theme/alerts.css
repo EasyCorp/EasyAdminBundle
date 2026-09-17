@@ -35,7 +35,10 @@
     margin-block-start: var(--ea-sp-4);
 }
 
-.alert-dismissible .btn-close {
+/* scoped to '.btn.btn-close' because it only corrects what the 'btn' class did: Alert renders
+   its dismiss button through Button, so it is 'btn btn-invisible btn-close'. A standalone
+   Bootstrap close button needs none of this and must keep Bootstrap's own layout. */
+.alert-dismissible .btn.btn-close {
     --bs-btn-close-opacity: 1;
     --bs-btn-close-hover-opacity: 1;
 
@@ -46,7 +49,13 @@
     inset-inline-end: 5px;
     padding: var(--button-padding-y-md) var(--button-padding-x-md);
 }
-[data-bs-theme="dark"] .btn-close {
+
+/* the dark scheme inverts Bootstrap's close button because its glyph is a black data-URI
+   background-image. Our own close button carries that glyph as a child <svg> painted with
+   currentColor, so inverting it would be wrong, hence the reset. It must stay scoped to
+   '.btn.btn-close': a standalone Bootstrap close button still needs the inversion, without
+   which it paints a black glyph on a dark surface. */
+[data-bs-theme="dark"] .btn.btn-close {
     filter: none;
 }
 

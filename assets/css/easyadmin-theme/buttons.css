@@ -115,10 +115,11 @@
 }
 .btn-close:not(:disabled):not(.disabled):hover,
 .btn-close:not(:disabled):not(.disabled):focus-visible {
-    background: var(--button-hover-bg, var(--button-bg));
+    background-color: var(--button-hover-bg, var(--button-bg, transparent));
 }
+
 .btn-close:not(:disabled):not(.disabled):active {
-    background: var(--button-active-bg, var(--button-hover-bg, var(--button-bg)));
+    background-color: var(--button-active-bg, var(--button-hover-bg, var(--button-bg, transparent)));
 }
 
 .btn-primary,

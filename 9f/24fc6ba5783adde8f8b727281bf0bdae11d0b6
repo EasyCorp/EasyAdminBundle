@@ -1,0 +1,7 @@
+---------------------------------------------------------------------------
+
+by BenjaminBeck at 2026-08-23T20:07:03Z
+
+CI note: the Symfony 8.0 job fails because the functional test databases are missing many unrelated SQLite tables (`action_test_entity`, `demo_entity`, `category`, `blog_post`, and others). The same Symfony 8.0 job also fails on the current `5.x` base branch: https://github.com/EasyCorp/EasyAdminBundle/actions/runs/32615613403/job/97135722391
+
+All other required jobs for this PR pass, including PHPStan, all linters, PHP 8.2 with lowest dependencies, Symfony 6.4, Symfony 7.1 through 7.4, macOS, and Windows.

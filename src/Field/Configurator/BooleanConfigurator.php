@@ -32,6 +32,10 @@ final readonly class BooleanConfigurator implements FieldConfiguratorInterface
 
     public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
     {
+        if (false === $field->getCustomOption(BooleanField::OPTION_SWAP_LABEL_AND_VALUE)) {
+            $field->setCssClass($field->getCssClass().' field-boolean-no-swap');
+        }
+
         $isRenderedAsSwitch = true === $field->getCustomOption(BooleanField::OPTION_RENDER_AS_SWITCH);
 
         if ($isRenderedAsSwitch) {

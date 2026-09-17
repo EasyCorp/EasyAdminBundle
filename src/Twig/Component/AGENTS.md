@@ -23,7 +23,7 @@ Complex components can be split into **sub-components in a subdirectory** of `te
 
 ## Conventions
 
-**Naming & usage.** All components use the `ea` prefix: a class/template named `Alert` is used as `<twig:ea:Alert>`. This is configured once in `EasyAdminExtension::prepend()` (`name_prefix: ea`, `template_directory: @EasyAdmin/components/`) — you don't annotate classes with `#[AsTwigComponent]`.
+**Naming & usage.** All components use the `ea` prefix: a class/template named `Alert` is used as `<twig:ea:Alert>`. This is configured once in `EasyAdminBundle::prependExtension()` (`name_prefix: ea`, `template_directory: @EasyAdmin/components/`) — you don't annotate classes with `#[AsTwigComponent]`.
 
 **Registration (class-backed).** Register the component explicitly in `config/services.php` with the `twig.component` tag. No autowiring — pass dependencies as explicit args, like every service in this bundle:
 ```php

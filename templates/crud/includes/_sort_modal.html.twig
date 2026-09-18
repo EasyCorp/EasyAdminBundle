@@ -1,0 +1,19 @@
+{% set ea_sort_asc = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Config\\Option\\SortOrder::ASC') %}
+{% set ea_sort_desc = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Config\\Option\\SortOrder::DESC') %}
+
+<twig:ea:Modal id="modal-sort" title="{{ t('datagrid.sort_by', ea.i18n.translationParameters, 'EasyAdminBundle')|trans }}">
+    <twig:block name="body">
+        <div class="datagrid-sort-fields list-group list-group-flush">
+            {% for field in sortable_fields %}
+                {% set is_sorting_field = ea.search.isSortingField(field.property) %}
+                {% set next_sort_direction = is_sorting_field ? (ea.search.sortDirection(field.property) == ea_sort_desc ? ea_sort_asc : ea_sort_desc) : ea_sort_desc %}
+                {% set field_icon = is_sorting_field ? (next_sort_direction == ea_sort_desc ? 'internal:sort-arrow-up' : 'internal:sort-arrow-down') : 'internal:sort-arrows' %}
+                {% set sortable_url = ea_url().setController(ea.request.attributes.get('crudControllerFqcn')).setAction('index').set('page', 1).set('sort', {(field.property): next_sort_direction}) %}
+
+                <a href="{{ sortable_url }}" data-column="{{ field.property }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" {% if is_sorting_field %}aria-current="true"{% endif %}>
+                    {{ field.label|trans(domain: ea.i18n.translationDomain)|raw }} <twig:ea:Icon name="{{ field_icon }}" />
+                </a>
+            {% endfor %}
+        </div>
+    </twig:block>
+</twig:ea:Modal>

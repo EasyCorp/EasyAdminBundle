@@ -21,6 +21,9 @@ parameters:
         - '#Parameter \$uxIconRuntime of method EasyCorp\\Bundle\\EasyAdminBundle\\Twig\\EasyAdminTwigExtension::__construct\(\) has invalid type Symfony\\UX\\Icons\\Twig\\UXIconRuntime#'
         - '#Call to method renderIcon\(\) on an unknown class Symfony\\UX\\Icons\\Twig\\UXIconRuntime#'
         -
+            identifier: trait.unused
+            path: src/Orm/VersionableTrait.php
+        -
             identifier: missingType.generics
     treatPhpDocTypesAsCertain: false
     reportUnmatchedIgnoredErrors: false

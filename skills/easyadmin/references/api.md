@@ -63,6 +63,7 @@ each class declares itself. A `self` return type means the call is chainable.
 - [Field\CountryField](#fieldcountryfield)
 - [Field\CurrencyField](#fieldcurrencyfield)
 - [Field\DateField](#fielddatefield)
+- [Field\DateIntervalField](#fielddateintervalfield)
 - [Field\DateTimeField](#fielddatetimefield)
 - [Field\EmailField](#fieldemailfield)
 - [Field\Field](#fieldfield)
@@ -902,6 +903,18 @@ renderAsNativeWidget(bool $asNative = true): self
 renderAsText(bool $asText = true): self
 setFormat(string $dateFormatOrPattern): self
 setTimezone(string $timezoneId): self
+```
+
+Also accepts every FieldTrait method (see [Field\FieldTrait](#fieldfieldtrait)).
+
+## Field\DateIntervalField
+
+```
+const OPTION_FORMAT = 'format'
+
+static new(string $propertyName, TranslatableInterface|bool|string|null $label = null): self
+
+setFormat(?string $format): self
 ```
 
 Also accepts every FieldTrait method (see [Field\FieldTrait](#fieldfieldtrait)).

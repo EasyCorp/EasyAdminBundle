@@ -13,6 +13,8 @@ return [
     'datagrid' => [
         'hidden_results' => 'Kai kurie elementai negali būti parodyti nes jums trūksta teisių.',
         'no_results' => 'Rezultatų nerasta.',
+        'sort' => 'Rikiuoti',
+        'sort_by' => 'Rikiuoti pagal',
     ],
 
     'paginator' => [

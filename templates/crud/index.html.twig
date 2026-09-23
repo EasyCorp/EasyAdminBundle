@@ -46,6 +46,7 @@
 {% endblock %}
 
 {% set has_batch_actions = batch_actions|length > 0 %}
+{% set has_entity_actions = entities|filter(entity => entity.isAccessible and entity.actions.count > 0)|length > 0 %}
 {% set sortable_fields = (entities|filter(entity => entity.isAccessible)|first.fields ?? [])|filter(field => field.isSortable) %}
 {% block page_actions %}
     {% if filters|length > 0 %}
@@ -145,9 +146,11 @@
                         </th>
                     {% endfor %}
 
-                    <th class="{{ ea.crud.showEntityActionsAsDropdown ? 'actions-as-dropdown-table-head' }}" dir="{{ ea.i18n.textDirection }}">
-                        <span class="visually-hidden">{{ t('action.entity_actions', ea.i18n.translationParameters, 'EasyAdminBundle')|trans }}</span>
-                    </th>
+                    {% if has_entity_actions %}
+                        <th class="{{ ea.crud.showEntityActionsAsDropdown ? 'actions-as-dropdown-table-head' }}" dir="{{ ea.i18n.textDirection }}">
+                            <span class="visually-hidden">{{ t('action.entity_actions', ea.i18n.translationParameters, 'EasyAdminBundle')|trans }}</span>
+                        </th>
+                    {% endif %}
                 </tr>
             {% endblock table_head %}
             </thead>
@@ -176,47 +179,49 @@
                         {% endfor %}
 
                         {% block entity_actions %}
-                            <td class="actions {{ ea.crud.showEntityActionsAsDropdown ? 'actions-as-dropdown' }}">
-                                {% if entity.actions.count > 0 %}
-                                    {% if ea.crud.showEntityActionsAsDropdown %}
-                                        {% set hasAnyActionWithIcon = entity.actions|filter(item => item.isActionGroup ? false : item.icon is not null)|length > 0 %}
-                                        <twig:ea:ActionMenu class="dropdown-actions">
-                                            <twig:ea:ActionMenu:Button withoutDropdownToggleMarker>
-                                                <twig:ea:Icon name="internal:dots-horizontal" />
-                                            </twig:ea:ActionMenu:Button>
+                            {% if has_entity_actions %}
+                                <td class="actions {{ ea.crud.showEntityActionsAsDropdown ? 'actions-as-dropdown' }}">
+                                    {% if entity.actions.count > 0 %}
+                                        {% if ea.crud.showEntityActionsAsDropdown %}
+                                            {% set hasAnyActionWithIcon = entity.actions|filter(item => item.isActionGroup ? false : item.icon is not null)|length > 0 %}
+                                            <twig:ea:ActionMenu class="dropdown-actions">
+                                                <twig:ea:ActionMenu:Button withoutDropdownToggleMarker>
+                                                    <twig:ea:Icon name="internal:dots-horizontal" />
+                                                </twig:ea:ActionMenu:Button>
 
-                                            <twig:ea:ActionMenu:Overlay>
-                                                <twig:ea:ActionMenu:ActionList hasSubmenus="{{ entity.actions|filter(item => item.isActionGroup)|length > 0 }}">
-                                                    {% for item in entity.actions %}
-                                                        {% if item.isActionGroup %}
-                                                            <twig:ea:ActionMenu:ActionList:ItemGroup
-                                                                group="{{ item }}"
-                                                                showBlankIcons="{{ hasAnyActionWithIcon }}"
-                                                                entity="{{ entity }}" />
-                                                        {% else %}
-                                                            <twig:ea:ActionMenu:ActionList:Item
-                                                                class="{{ item.cssClass }} dropdown-item-variant-{{ item.variant.value }}" url="{{ item.linkUrl }}"
-                                                                icon="{{ item.icon }}" icon:class="action-icon"
-                                                                htmlAttributes="{{ item.htmlAttributes|ea_html_attrs }}"
-                                                                renderAsForm="{{ item.isRenderedAsForm }}"
-                                                                label="{{ item.label|trans }}" label:class="action-label" renderLabelRaw
-                                                                showBlankIcons="{{ hasAnyActionWithIcon }}" />
-                                                        {% endif %}
-                                                    {% endfor %}
-                                                </twig:ea:ActionMenu:ActionList>
-                                            </twig:ea:ActionMenu:Overlay>
-                                        </twig:ea:ActionMenu>
-                                    {% else %}
-                                        {% for action in entity.actions %}
-                                            {% if action.isActionGroup %}
-                                                {{ include(action.templatePath, {group: action, entity: entity}, with_context: false) }}
-                                            {% else %}
-                                                {{ include(action.templatePath, {action: action, entity: entity, isIncludedInDropdown: ea.crud.showEntityActionsAsDropdown}, with_context: false) }}
-                                            {% endif %}
-                                        {% endfor %}
+                                                <twig:ea:ActionMenu:Overlay>
+                                                    <twig:ea:ActionMenu:ActionList hasSubmenus="{{ entity.actions|filter(item => item.isActionGroup)|length > 0 }}">
+                                                        {% for item in entity.actions %}
+                                                            {% if item.isActionGroup %}
+                                                                <twig:ea:ActionMenu:ActionList:ItemGroup
+                                                                    group="{{ item }}"
+                                                                    showBlankIcons="{{ hasAnyActionWithIcon }}"
+                                                                    entity="{{ entity }}" />
+                                                            {% else %}
+                                                                <twig:ea:ActionMenu:ActionList:Item
+                                                                    class="{{ item.cssClass }} dropdown-item-variant-{{ item.variant.value }}" url="{{ item.linkUrl }}"
+                                                                    icon="{{ item.icon }}" icon:class="action-icon"
+                                                                    htmlAttributes="{{ item.htmlAttributes|ea_html_attrs }}"
+                                                                    renderAsForm="{{ item.isRenderedAsForm }}"
+                                                                    label="{{ item.label|trans }}" label:class="action-label" renderLabelRaw
+                                                                    showBlankIcons="{{ hasAnyActionWithIcon }}" />
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </twig:ea:ActionMenu:ActionList>
+                                                </twig:ea:ActionMenu:Overlay>
+                                            </twig:ea:ActionMenu>
+                                        {% else %}
+                                            {% for action in entity.actions %}
+                                                {% if action.isActionGroup %}
+                                                    {{ include(action.templatePath, {group: action, entity: entity}, with_context: false) }}
+                                                {% else %}
+                                                    {{ include(action.templatePath, {action: action, entity: entity, isIncludedInDropdown: ea.crud.showEntityActionsAsDropdown}, with_context: false) }}
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endif %}
                                     {% endif %}
-                                {% endif %}
-                            </td>
+                                </td>
+                            {% endif %}
                         {% endblock entity_actions %}
                     </tr>
 

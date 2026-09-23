@@ -109,8 +109,11 @@
 }
 
 /* the close button rendered by Alert ('btn btn-invisible btn-close') is excluded from the state
-   layer; scoped to '.btn.btn-close' because a plain Bootstrap close button lacks the --button-*
-   vars, and 'background-color' (not the shorthand) keeps Bootstrap's background-image glyph */
+   layer; its translucent hover background transitions fine directly.
+   Always scope these rules to '.btn.btn-close': only '.btn' declares the --button-* vars, so a
+   plain Bootstrap close button (modal, toast, offcanvas) would get Bootstrap's styles overridden.
+   Use 'background-color', not the 'background' shorthand, which resets the data-URI
+   background-image that Bootstrap uses to draw the glyph. */
 .btn.btn-close {
     transition-property: background-color, border-color, color, box-shadow, opacity, fill;
 }

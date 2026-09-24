@@ -16,6 +16,7 @@ final class AssociationField implements FieldInterface
     public const OPTION_AUTOCOMPLETE = 'autocomplete';
     public const OPTION_AUTOCOMPLETE_CALLBACK = 'autocompleteCallback';
     public const OPTION_AUTOCOMPLETE_TEMPLATE = 'autocompleteTemplate';
+    public const OPTION_AUTOCOMPLETE_DEPENDS_ON = 'autocompleteDependsOn';
     public const OPTION_EMBEDDED_CRUD_FORM_CONTROLLER = 'crudControllerFqcn';
     public const OPTION_WIDGET = 'widget';
     public const OPTION_QUERY_BUILDER_CALLABLE = 'queryBuilderCallable';
@@ -52,6 +53,7 @@ final class AssociationField implements FieldInterface
             ->setCustomOption(self::OPTION_AUTOCOMPLETE, false)
             ->setCustomOption(self::OPTION_AUTOCOMPLETE_CALLBACK, null)
             ->setCustomOption(self::OPTION_AUTOCOMPLETE_TEMPLATE, null)
+            ->setCustomOption(self::OPTION_AUTOCOMPLETE_DEPENDS_ON, null)
             ->setCustomOption(self::OPTION_EMBEDDED_CRUD_FORM_CONTROLLER, null)
             ->setCustomOption(self::OPTION_WIDGET, self::WIDGET_AUTOCOMPLETE)
             ->setCustomOption(self::OPTION_QUERY_BUILDER_CALLABLE, null)
@@ -64,7 +66,10 @@ final class AssociationField implements FieldInterface
             ->setCustomOption(self::OPTION_PREFERRED_CHOICES, null);
     }
 
-    public function autocomplete(bool $enable = true, ?callable $callback = null, ?string $template = null, bool $renderAsHtml = false): self
+    /**
+     * @param list<string>|string|null $dependsOn
+     */
+    public function autocomplete(bool $enable = true, ?callable $callback = null, ?string $template = null, bool $renderAsHtml = false, array|string|null $dependsOn = null): self
     {
         if (!$enable) {
             return $this;
@@ -82,6 +87,10 @@ final class AssociationField implements FieldInterface
 
         // the renderAsHtml parameter controls the same option as renderAsHtml() method
         $this->setCustomOption(self::OPTION_ESCAPE_HTML_CONTENTS, !$renderAsHtml);
+
+        if (null !== $dependsOn) {
+            $this->setCustomOption(self::OPTION_AUTOCOMPLETE_DEPENDS_ON, \is_string($dependsOn) ? [$dependsOn] : $dependsOn);
+        }
 
         return $this;
     }

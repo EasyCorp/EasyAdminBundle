@@ -4,6 +4,9 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Component;
 
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTest;
 use Symfony\Bridge\PhpUnit\ExpectDeprecationTrait;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 
 /**
  * Rendering tests for the <twig:ea:Button> component.
@@ -78,6 +81,29 @@ class ButtonTest extends AbstractFieldFunctionalTest
         self::assertSame(1, substr_count($html, 'data-foo="bar"'));
         self::assertStringContainsString('<button class="btn btn-secondary action-delete"', $html);
         self::assertStringNotContainsString('_method', $html);
+    }
+
+    public function testFormButtonWithoutRequestDoesNotIncludeCsrfToken(): void
+    {
+        $html = $this->renderButton('<twig:ea:Button htmlElement="form" action="/delete">Delete</twig:ea:Button>');
+
+        self::assertStringNotContainsString('name="token"', $html);
+    }
+
+    public function testFormButtonIncludesCsrfTokenWhenSessionIsAvailable(): void
+    {
+        $request = new Request();
+        $request->setSession(new Session(new MockArraySessionStorage()));
+        $requestStack = static::getContainer()->get('request_stack');
+        $requestStack->push($request);
+
+        try {
+            $html = $this->renderButton('<twig:ea:Button htmlElement="form" action="/delete">Delete</twig:ea:Button>');
+        } finally {
+            $requestStack->pop();
+        }
+
+        self::assertMatchesRegularExpression('/<input type="hidden" name="token" value="[^"]+">/', $html);
     }
 
     public function testFormButtonWithMethodOverride(): void

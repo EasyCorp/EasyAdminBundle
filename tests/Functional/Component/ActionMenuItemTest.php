@@ -3,6 +3,9 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Component;
 
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTest;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 
 /**
  * Rendering tests for the <twig:ea:ActionMenu:ActionList:Item> component.
@@ -32,6 +35,22 @@ class ActionMenuItemTest extends AbstractFieldFunctionalTest
         self::assertSame(1, preg_match('/id="(ea-form-[^"]+)"/', $html, $matches));
         self::assertStringContainsString(sprintf('data-ea-action-form-id="%s"', $matches[1]), $html);
         self::assertStringContainsString('href="#"', $html);
+    }
+
+    public function testFormItemIncludesCsrfTokenWhenSessionIsAvailable(): void
+    {
+        $request = new Request();
+        $request->setSession(new Session(new MockArraySessionStorage()));
+        $requestStack = static::getContainer()->get('request_stack');
+        $requestStack->push($request);
+
+        try {
+            $html = $this->renderItem('<twig:ea:ActionMenu:ActionList:Item label="Delete" url="/delete" renderAsForm="true" />');
+        } finally {
+            $requestStack->pop();
+        }
+
+        self::assertMatchesRegularExpression('/<form action="\/delete" method="POST" id="ea-form-[0-9A-HJKMNP-TV-Z]{26}"><input type="hidden" name="token" value="[^"]+"><\/form>/', $html);
     }
 
     /**

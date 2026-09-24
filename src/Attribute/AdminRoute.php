@@ -53,6 +53,20 @@ class AdminRoute
          *                                - [FooDashboard::class, BarDashboard::class, ...]: Deny specific dashboards
          */
         public array|false|null $deniedDashboards = false,
+
+        /**
+         * @var string[]|null $allowedActions If defined at the class level, admin routes will be available only for the specified actions. Possible values:
+         *                    - null (default): Not set - allow all actions
+         *                    - [Action::INDEX, Action::DELETE, 'customAction', ...]: Allow only specific actions
+         */
+        public ?array $allowedActions = null,
+
+        /**
+         * @var string[]|null $deniedActions If defined at the class level, admin routes won't be available for the specified actions. Possible values:
+         *                    - null (default): Not set - deny no actions
+         *                    - [Action::INDEX, Action::DELETE, 'customAction', ...]: Deny specific actions
+         */
+        public ?array $deniedActions = null,
     ) {
     }
 }

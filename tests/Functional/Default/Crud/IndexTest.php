@@ -7,6 +7,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\DefaultCrudTestEntityCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\NoEntityActionsCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\SomeRowsWithEntityActionsCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\DefaultCrudTestEntity;
 
 /**
@@ -152,6 +154,36 @@ class IndexTest extends AbstractCrudTestCase
         // check for actions column (contains edit/delete links)
         $actionsColumn = $crawler->filter('td.actions');
         $this->assertGreaterThan(0, $actionsColumn->count(), 'Actions column should be present for each row');
+    }
+
+    public function testActionsColumnIsHiddenWhenNoRowHasActions(): void
+    {
+        $crawler = $this->client->request('GET', $this->generateIndexUrl(null, null, NoEntityActionsCrudController::class));
+
+        $this->assertResponseIsSuccessful();
+
+        $rows = $crawler->filter('tbody tr[data-id]');
+        $this->assertGreaterThan(0, $rows->count(), 'Table should have entity rows');
+        $this->assertSame(0, $crawler->filter('td.actions')->count(), 'Actions cells should not be rendered when no row has actions');
+        $this->assertSame(1, $crawler->filter('thead th')->count(), 'Only the configured field should have a header cell');
+        $this->assertSame(1, $rows->first()->filter('td')->count(), 'Rows should only contain the configured field cell');
+        $this->assertSelectorExists('td[data-column="name"]');
+    }
+
+    public function testActionsColumnIsShownWhenSomeRowsHaveActions(): void
+    {
+        $crawler = $this->client->request('GET', $this->generateIndexUrl(null, null, SomeRowsWithEntityActionsCrudController::class));
+
+        $this->assertResponseIsSuccessful();
+
+        $rows = $crawler->filter('tbody tr[data-id]');
+        $this->assertGreaterThan(0, $rows->count(), 'Table should have entity rows');
+        $this->assertSame(2, $crawler->filter('thead th')->count(), 'The actions header cell should be rendered next to the field header');
+        $this->assertSame($rows->count(), $crawler->filter('td.actions')->count(), 'Every row should have an actions cell, even the rows without actions');
+
+        $editActions = $crawler->filter('td.actions .action-edit');
+        $this->assertGreaterThan(0, $editActions->count(), 'Some rows should display the edit action');
+        $this->assertLessThan($rows->count(), $editActions->count(), 'Some rows should not display any action');
     }
 
     public function testSearchFormExists(): void

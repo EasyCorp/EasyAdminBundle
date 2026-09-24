@@ -73,6 +73,9 @@ jobs:
                       symfony_deprecations_helper: "disabled"
                       allow_failure: false
                     # All supported Symfony versions
+                    # Symfony 7.1, 7.2, 7.3 and 8.0 are no longer maintained and their last twig-bridge
+                    # releases call TemplateWrapper::unwrap() without the Environment argument that
+                    # twig/twig 3.29 requires, so those jobs pin Twig to the last working version.
                     - os: ubuntu-latest
                       php_version: "8.4"
                       symfony_version: "6.4.*"
@@ -81,17 +84,20 @@ jobs:
                     - os: ubuntu-latest
                       php_version: "8.4"
                       symfony_version: "7.1.*"
+                      composer_args: "--with 'twig/twig:<3.29'"
                       stability: "stable"
                       symfony_deprecations_helper: "disabled"
                       allow_failure: false
                     - os: ubuntu-latest
                       php_version: "8.4"
                       symfony_version: "7.2.*"
+                      composer_args: "--with 'twig/twig:<3.29'"
                       stability: "stable"
                       allow_failure: false
                     - os: ubuntu-latest
                       php_version: "8.4"
                       symfony_version: "7.3.*"
+                      composer_args: "--with 'twig/twig:<3.29'"
                       stability: "stable"
                       allow_failure: false
                     - os: ubuntu-latest
@@ -106,7 +112,7 @@ jobs:
                     - os: ubuntu-latest
                       php_version: "8.4"
                       symfony_version: "8.0.*"
-                      composer_args: "--with 'doctrine/orm:<3.6.8'"
+                      composer_args: "--with 'doctrine/orm:<3.6.8' --with 'twig/twig:<3.29'"
                       stability: "stable"
                       allow_failure: false
                     - os: ubuntu-latest

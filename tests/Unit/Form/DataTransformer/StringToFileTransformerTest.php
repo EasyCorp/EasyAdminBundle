@@ -75,6 +75,29 @@ class StringToFileTransformerTest extends TestCase
         yield 'leading backslash' => ['\\etc\\passwd'];
     }
 
+    /**
+     * @dataProvider emptyValueProvider
+     */
+    public function testReverseTransformEmptyValue(?array $value, bool $multiple, ?array $expected): void
+    {
+        $transformer = new StringToFileTransformer(
+            $this->uploadDir,
+            static fn (UploadedFile $file): string => $file->getClientOriginalName(),
+            static fn (string $filename): string => $filename,
+            $multiple,
+        );
+
+        self::assertSame($expected, $transformer->reverseTransform($value));
+    }
+
+    public static function emptyValueProvider(): iterable
+    {
+        yield 'null for a single file' => [null, false, null];
+        yield 'empty array for a single file' => [[], false, null];
+        yield 'null for multiple files' => [null, true, []];
+        yield 'empty array for multiple files' => [[], true, []];
+    }
+
     public function testReverseTransformPassesFullPathToUploadValidate(): void
     {
         $tmpFile = tempnam(sys_get_temp_dir(), 'ea_stf_');

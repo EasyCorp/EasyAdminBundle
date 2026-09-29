@@ -13,6 +13,8 @@ return [
     'datagrid' => [
         'hidden_results' => 'Joitakin tuloksia ei voida näyttää, koska sinulla ei ole riittäviä käyttöoikeuksia',
         'no_results' => 'Tuloksia ei löytynyt.',
+        'sort' => 'Lajittele',
+        'sort_by' => 'Lajitteluperuste',
     ],
 
     'paginator' => [

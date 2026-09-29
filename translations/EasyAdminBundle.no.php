@@ -13,6 +13,8 @@ return [
     'datagrid' => [
         'hidden_results' => 'Noen resultater kan ikke vises fordi du ikke har nok rettigheter',
         'no_results' => 'Ingen resultater.',
+        'sort' => 'Sorter',
+        'sort_by' => 'Sorter etter',
     ],
 
     'paginator' => [

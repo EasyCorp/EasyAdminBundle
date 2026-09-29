@@ -13,6 +13,8 @@ return [
     'datagrid' => [
         'hidden_results' => 'Neki rezultati ne mogu biti prikazani jer nemate dovoljne privilegije',
         'no_results' => 'Nema pronađenin rezultata.',
+        'sort' => 'Sortiraj',
+        'sort_by' => 'Sortiraj po',
     ],
 
     'paginator' => [

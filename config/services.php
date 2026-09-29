@@ -49,6 +49,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\CountryConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\CurrencyConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\DateTimeConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\EmailConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\EmptyDataConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\FileConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\FormConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\IdConfigurator;
@@ -437,6 +438,8 @@ return static function (ContainerConfigurator $container) {
             ->arg(0, service(IntlFormatter::class))
 
         ->set(EmailConfigurator::class)
+
+        ->set(EmptyDataConfigurator::class)
 
         ->set(FormConfigurator::class)
 

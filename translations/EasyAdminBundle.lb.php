@@ -13,6 +13,8 @@ return [
     'datagrid' => [
         'hidden_results' => 'E puer Resultater kënnen opgrond vu feelende Berechtegungen net ugewise ginn.',
         'no_results' => 'Keng Resultater fonnt.',
+        'sort' => 'Sortéieren',
+        'sort_by' => 'Sortéieren no',
     ],
 
     'paginator' => [

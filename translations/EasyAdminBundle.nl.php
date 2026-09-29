@@ -13,6 +13,8 @@ return [
     'datagrid' => [
         'hidden_results' => 'Sommige resultaten konden niet worden weergegeven, toegang geweigerd.',
         'no_results' => 'Geen resultaten gevonden.',
+        'sort' => 'Sorteren',
+        'sort_by' => 'Sorteren op',
     ],
 
     'paginator' => [

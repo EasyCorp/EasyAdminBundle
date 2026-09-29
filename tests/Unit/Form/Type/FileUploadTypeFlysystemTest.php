@@ -9,6 +9,7 @@ use League\Flysystem\FilesystemOperator;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\Form\Extension\Validator\ValidatorExtension;
+use Symfony\Component\Form\Extension\Validator\ViolationMapper\ViolationMapperInterface;
 use Symfony\Component\Form\PreloadedExtension;
 use Symfony\Component\Form\Test\TypeTestCase;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -34,7 +35,7 @@ class FileUploadTypeFlysystemTest extends TypeTestCase
         }
     }
 
-    protected function getExtensions(): array
+    protected function getExtensions(?ViolationMapperInterface $violationMapper = null): array
     {
         $type = new FileUploadType($this->projectDir, new Filesystem());
         $validator = Validation::createValidator();

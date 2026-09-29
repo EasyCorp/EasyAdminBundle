@@ -13,6 +13,8 @@ return [
     'datagrid' => [
         'hidden_results' => 'Yeterli izniniz olmadığı için bazı sonuçlar görüntülenemiyor',
         'no_results' => 'Sonuç bulunamadı.',
+        'sort' => 'Sırala',
+        'sort_by' => 'Şuna göre sırala',
     ],
 
     'paginator' => [

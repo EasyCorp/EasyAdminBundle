@@ -144,6 +144,9 @@ table.datagrid:not(.datagrid-empty) tr:not(.empty-row) td.actions.actions-as-dro
     color: var(--table-thead-sorted-marker-color);
     display: inline-block;
 }
+.datagrid-sort-fields [aria-current] .icon {
+    color: var(--table-thead-sorted-marker-color);
+}
 .datagrid th,
 .datagrid td {
     border: none;

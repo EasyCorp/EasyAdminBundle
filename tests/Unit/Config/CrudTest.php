@@ -53,6 +53,30 @@ class CrudTest extends TestCase
         $this->assertSame($translatableMessage, $crudConfig->getAsDto()->askConfirmationOnBatchActions());
     }
 
+    public function testSaveShortcutEnabledDefaultValue(): void
+    {
+        $crudConfig = Crud::new();
+
+        $this->assertTrue($crudConfig->getAsDto()->saveShortcutEnabled());
+    }
+
+    public function testSaveShortcutDisabled(): void
+    {
+        $crudConfig = Crud::new();
+        $crudConfig->setSaveShortcutEnabled(false);
+
+        $this->assertFalse($crudConfig->getAsDto()->saveShortcutEnabled());
+    }
+
+    public function testSaveShortcutEnabledWithoutArgument(): void
+    {
+        $crudConfig = Crud::new();
+        $crudConfig->setSaveShortcutEnabled(false);
+        $crudConfig->setSaveShortcutEnabled();
+
+        $this->assertTrue($crudConfig->getAsDto()->saveShortcutEnabled());
+    }
+
     public function testAddFormTheme(): void
     {
         $crudConfig = Crud::new();

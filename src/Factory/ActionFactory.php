@@ -265,6 +265,10 @@ final readonly class ActionFactory
             if (!$actionDto->isRenderedAsForm()) {
                 $actionDto->setHtmlAttribute('form', sprintf('%s-%s-form', $pageName, $entityDto->getName()));
             }
+
+            if (Action::SAVE_AND_RETURN === $actionDto->getName() && true === $adminContext->getCrud()?->saveShortcutEnabled()) {
+                $actionDto->setHtmlAttribute('aria-keyshortcuts', 'Control+S Meta+S');
+            }
         }
 
         if (Action::DELETE === $actionDto->getName()) {

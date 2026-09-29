@@ -305,6 +305,7 @@ setPaginatorFetchJoinCollection(bool $fetchJoinCollection): self
 setPaginatorPageSize(int $maxResultsPerPage): self
 setPaginatorRangeSize(int $maxPagesOnEachSide): self
 setPaginatorUseOutputWalkers(bool $useOutputWalkers): self
+setSaveShortcutEnabled(bool $enabled = true): self
 setSearchFields(?array $fieldNames): self
 setSearchMode(string $searchMode): self
 setThousandsSeparator(string $separator): self

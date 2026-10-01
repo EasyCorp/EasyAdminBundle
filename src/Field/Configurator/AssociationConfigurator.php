@@ -4,7 +4,6 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Field\Configurator;
 
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\ORM\PersistentCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
@@ -22,6 +21,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Factory\FieldFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudAutocompleteType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudFormType;
+use EasyCorp\Bundle\EasyAdminBundle\Orm\ToManyAssociationCounter;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Security\CrudPermissionChecker;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -50,6 +50,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         private readonly FieldFactory $fieldFactory,
         private readonly CrudPermissionCheckerInterface $crudPermissionChecker,
         private readonly NestedAssociationResolverInterface $associationResolver,
+        private readonly ToManyAssociationCounter $toManyAssociationCounter,
         private readonly ?CrudPermissionChecker $entityPermissionChecker = null,
     ) {
     }
@@ -287,7 +288,6 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
 
         $field->setFormTypeOptionIfNotSet('multiple', true);
 
-        /* @var PersistentCollection $collection */
         $field->setFormTypeOptionIfNotSet('class', $entityDto->getClassMetadata()->getAssociationTargetClass($field->getProperty()));
 
         $this->configurePreferredChoices($field);
@@ -296,7 +296,9 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
             $field->setTextAlign(TextAlign::RIGHT);
         }
 
-        $field->setFormattedValue($this->countNumElements($field->getValue()));
+        $collection = $field->getValue();
+        $numElements = $this->toManyAssociationCounter->getCount($entityDto, $field->getProperty(), $collection) ?? $this->countNumElements($collection);
+        $field->setFormattedValue($numElements);
     }
 
     private function formatAsString(mixed $entityInstance, EntityDto $entityDto): ?string

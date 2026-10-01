@@ -14,6 +14,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FieldFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FormLayoutFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Field;
+use EasyCorp\Bundle\EasyAdminBundle\Orm\ToManyAssociationCounter;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\BlogPost;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Category;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\DoctrineTypesTestEntity;
@@ -40,6 +41,7 @@ class FieldFactoryTest extends KernelTestCase
             $authorizationCheckerInterface,
             [],
             new FormLayoutFactory(new IdentityTranslator()),
+            static::getContainer()->get(ToManyAssociationCounter::class),
         );
     }
 

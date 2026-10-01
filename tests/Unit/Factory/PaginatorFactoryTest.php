@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Factory;
 
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\CrudContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\RequestContext;
@@ -11,6 +12,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Provider\AdminContextProviderInter
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\PaginatorDto;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\PaginatorFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Orm\ToOneAssociationLoader;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -24,7 +26,7 @@ class PaginatorFactoryTest extends TestCase
     {
         $this->adminContextProvider = $this->createMock(AdminContextProviderInterface::class);
         $this->entityPaginator = $this->createMock(EntityPaginatorInterface::class);
-        $this->paginatorFactory = new PaginatorFactory($this->adminContextProvider, $this->entityPaginator);
+        $this->paginatorFactory = new PaginatorFactory($this->adminContextProvider, $this->entityPaginator, new ToOneAssociationLoader($this->createMock(ManagerRegistry::class)));
     }
 
     public function testCreateReturnsPaginatedResults(): void

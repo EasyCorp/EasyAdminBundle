@@ -21,6 +21,7 @@ is the running example, with `name`, `slug`, `description`, `priceInCents`,
 11. [Form layout with tabs, fieldsets and columns](#11-form-layout-with-tabs-fieldsets-and-columns)
 12. [Functional test](#12-functional-test)
 13. [Event subscriber](#13-event-subscriber)
+14. [Fewer queries on index pages](#14-fewer-queries-on-index-pages)
 
 ## 1. Dashboard with a sectioned menu
 
@@ -509,3 +510,50 @@ final class ProductSlugSubscriber implements EventSubscriberInterface
 
 Overriding `persistEntity()` in the controller is the alternative when the
 logic belongs to a single CRUD.
+
+## 14. Fewer queries on index pages
+
+EasyAdmin already avoids one query per row for the associations displayed on
+the index page:
+
+- to-one associations shown by any field (`category`, or the first part of
+  `category.name`) are loaded with one query per associated entity class;
+- to-many `AssociationField` values show a number that comes from one `COUNT`
+  query per association; the related entities are never loaded;
+- associations fetch joined in the index query run no extra query.
+
+Don't add `fetch: 'EAGER'` to the Doctrine mapping for this: it applies to
+every query of the app and Doctrine often loads those associations one row at
+a time. These cases still run one query per row and need a fetch join in the
+index query:
+
+- the inverse side of a one-to-one association of the listed entity
+  (`#[ORM\OneToOne(mappedBy: ...)]`): Doctrine can't load it lazily;
+- the second and later parts of a nested property (`category.parent.name`);
+- to-one associations whose target entity has subclasses (Doctrine inheritance);
+- getters, `formatValue()` callbacks, custom templates or `displayIf()`
+  callbacks that read a collection (`count($product->getTags())`).
+
+```php
+use Doctrine\ORM\QueryBuilder;
+use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
+
+public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
+{
+    // the aliases must differ from the property names: EasyAdmin uses property
+    // names as aliases when it joins associations to sort or search the results
+    return parent::createIndexQueryBuilder($searchDto, $entityDto, $fields, $filters)
+        ->leftJoin('entity.stock', 'productStock')->addSelect('productStock')
+        ->leftJoin('entity.tags', 'productTags')->addSelect('productTags');
+}
+```
+
+Here `stock` is an inverse one-to-one and `tags` is read by a getter shown on
+the page. Fetch joining a to-one association never changes the number of rows;
+fetch joining a to-many association works with pagination but makes the
+query heavier, so if the page only needs the number of elements, prefer
+`fetch: 'EXTRA_LAZY'` on the collection or a dedicated SQL `COUNT`. Check the
+result in the Doctrine panel of the Symfony profiler.

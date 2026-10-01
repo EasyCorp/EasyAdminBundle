@@ -190,6 +190,10 @@ used in your :doc:`CRUD controller </crud>`::
         }
     }
 
+Overriding this method is also the way to control how the associations
+displayed on the index page are loaded (e.g. to fetch join them), as explained
+in :ref:`Loading Associations on Index Pages <field-association-index-loading>`.
+
 .. _fields-per-page:
 
 Displaying Different Fields per Page

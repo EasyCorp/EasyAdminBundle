@@ -22,6 +22,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synt
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\FieldTestEntity;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\FilterRelatedEntity;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\FilterTestEntity;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\InverseOneToOneTestDetails;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\InverseOneToOneTestEntity;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\SearchTestAuthor;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\SearchTestEntity;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\SortTestEntity;
@@ -73,6 +75,8 @@ class AppFixtures extends Fixture
 
         $this->addAssociationFixtures($manager);
 
+        $this->addInverseOneToOneFixtures($manager);
+
         $this->addFieldTestFixtures($manager);
 
         $this->addFilterTestFixtures($manager);
@@ -92,6 +96,18 @@ class AppFixtures extends Fixture
         $this->addProjectDomainSearchFixtures($manager);
 
         $manager->flush();
+    }
+
+    private function addInverseOneToOneFixtures(ObjectManager $manager): void
+    {
+        foreach (range(0, 19) as $i) {
+            $entity = (new InverseOneToOneTestEntity())
+                ->setName('Entity '.$i)
+                ->setAuthor($this->getReference('user'.($i % 5), User::class))
+                ->setDetails(new InverseOneToOneTestDetails());
+
+            $manager->persist($entity);
+        }
     }
 
     private function addAssociationFixtures(ObjectManager $manager): void

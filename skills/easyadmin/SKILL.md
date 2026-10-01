@@ -147,6 +147,8 @@ the same pages are installed locally under `vendor/easycorp/easyadmin-bundle/doc
 - In `createIndexQueryBuilder()`, call `parent::createIndexQueryBuilder(...)`
   and use the literal root alias `entity` (`->andWhere('entity.owner = :user')`).
   Global Doctrine filters hide rows silently. <!-- src/Orm/EntityRepository.php::createQueryBuilder; doc/fields.rst:170-182; doc/crud.rst:485-490 -->
+- Index pages load displayed to-one associations in one query per target class and count to-many `AssociationField` values with one `COUNT`; never add `fetch: 'EAGER'` for that.
+  Fetch join the rest (inverse one-to-one, nested hops, getters reading collections) in `createIndexQueryBuilder()`: see `references/patterns.md` section 14. <!-- src/Orm/ToOneAssociationLoader.php::load; src/Orm/ToManyAssociationCounter.php::preload; doc/fields/AssociationField.rst:323-374 -->
 - Link to admin pages like to any other Symfony route, with the names listed
   by `php bin/console debug:router`: `$this->redirectToRoute('admin_product_detail', ['entityId' => $id])`
   in PHP, `path('admin_product_edit', {entityId: post.id})` in Twig. Reserve

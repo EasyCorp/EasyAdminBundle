@@ -92,6 +92,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Menu\MenuItemMatcher;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityPaginator;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityUpdater;
+use EasyCorp\Bundle\EasyAdminBundle\Orm\ToManyAssociationCounter;
+use EasyCorp\Bundle\EasyAdminBundle\Orm\ToOneAssociationLoader;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\FieldProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\AdminControllerRegistry;
@@ -303,6 +305,14 @@ return static function (ContainerConfigurator $container) {
 
         ->alias(EntityPaginatorInterface::class, EntityPaginator::class)
 
+        ->set(ToManyAssociationCounter::class)
+            ->arg(0, service('doctrine'))
+            ->arg(1, service('property_accessor'))
+            ->tag('kernel.reset', ['method' => 'reset'])
+
+        ->set(ToOneAssociationLoader::class)
+            ->arg(0, service('doctrine'))
+
         ->alias(EntityRepositoryInterface::class, EntityRepository::class)
 
         ->alias(NestedAssociationResolverInterface::class, EntityRepository::class)
@@ -316,6 +326,7 @@ return static function (ContainerConfigurator $container) {
         ->set(PaginatorFactory::class)
             ->arg(0, service(AdminContextProvider::class))
             ->arg(1, service(EntityPaginatorInterface::class))
+            ->arg(2, service(ToOneAssociationLoader::class))
 
         ->set(FormFactory::class)
             ->arg(0, service('form.factory'))
@@ -329,6 +340,7 @@ return static function (ContainerConfigurator $container) {
             ->arg(1, service(AuthorizationChecker::class))
             ->arg(2, tagged_iterator(EasyAdminExtension::TAG_FIELD_CONFIGURATOR))
             ->arg(3, service(FormLayoutFactory::class))
+            ->arg(4, service(ToManyAssociationCounter::class))
 
         ->set(FieldProvider::class)
             ->arg(0, service(AdminContextProvider::class))
@@ -409,6 +421,7 @@ return static function (ContainerConfigurator $container) {
             ->arg(5, new Reference(AuthorizationChecker::class))
             ->arg(6, service(AdminContextFactory::class))
             ->arg(7, service(EntityRepository::class))
+            ->arg(8, service(ToManyAssociationCounter::class))
             ->tag('kernel.reset', ['method' => 'reset'])
 
         ->set(AvatarConfigurator::class)

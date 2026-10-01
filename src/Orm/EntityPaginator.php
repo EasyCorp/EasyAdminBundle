@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Orm;
 
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\CountWalker;
 use Doctrine\ORM\Tools\Pagination\Paginator;
@@ -56,6 +57,12 @@ final class EntityPaginator implements EntityPaginatorInterface
             ->setFirstResult($firstResult)
             ->setMaxResults($this->pageSize)
             ->getQuery();
+
+        foreach ($paginatorDto->getEagerFetchedAssociations() as $entityFqcn => $propertyNames) {
+            foreach ($propertyNames as $propertyName) {
+                $query->setFetchMode($entityFqcn, $propertyName, ClassMetadata::FETCH_EAGER);
+            }
+        }
 
         if (0 === \count($queryBuilder->getDQLPart('join'))) {
             $query->setHint(CountWalker::HINT_DISTINCT, false);

@@ -320,6 +320,55 @@ associated entity::
 
     yield AssociationField::new('user')->setSortProperty('name');
 
+.. _field-association-index-loading:
+
+Loading Associations on Index Pages
+-----------------------------------
+
+Index pages display many entities at once, so the number of database queries
+needed to render them matters. EasyAdmin loads the associations displayed on
+index pages as follows:
+
+* To-one associations (e.g. the author of a blog post) are loaded with a
+  single query for all the entities of the page (Doctrine loads them in
+  batches of 100 entities). This applies to any field that displays a to-one
+  association, not only to ``AssociationField``;
+* To-many associations (e.g. the categories of a blog post) display the
+  number of related entities. EasyAdmin gets these numbers with a single query
+  per association for all the entities of the page, so the related entities
+  are never loaded. This also applies to collections configured with
+  ``fetch: 'EXTRA_LAZY'``, which otherwise run one ``COUNT`` query per row.
+
+This means that you don't need to configure ``fetch: 'EAGER'`` in your
+Doctrine associations to avoid the "N+1 queries" problem on index pages. In
+practice, it's better to keep associations lazy because that option applies
+to every query of your application.
+
+Some associations are still loaded with one query per row because Doctrine
+can't load them in batches: the inverse side of one-to-one associations,
+to-one associations whose target entity has subclasses (Doctrine inheritance)
+and the second and later hops of :ref:`nested associations <field-association-nested>`
+(e.g. in ``author.company``, only ``author`` is loaded in batches).
+
+If you need the related entities themselves on the index page (e.g. because
+a ``formatValue()`` callback iterates a collection) or if this automatic
+loading doesn't fit your needs, fetch join the associations in the index
+query. EasyAdmin detects fetch joined associations and doesn't run any
+additional query to load or count them::
+
+    use Doctrine\ORM\QueryBuilder;
+    use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
+    use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
+    use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+    use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
+
+    public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
+    {
+        return parent::createIndexQueryBuilder($searchDto, $entityDto, $fields, $filters)
+            ->leftJoin('entity.categories', 'categories')
+            ->addSelect('categories');
+    }
+
 .. _field-association-nested:
 
 Nested Associations

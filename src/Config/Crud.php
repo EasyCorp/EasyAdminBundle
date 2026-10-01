@@ -260,6 +260,13 @@ final class Crud
         return $this;
     }
 
+    public function setSaveShortcutEnabled(bool $enabled = true): self
+    {
+        $this->dto->setSaveShortcutEnabled($enabled);
+
+        return $this;
+    }
+
     public function showEntityActionsInlined(bool $showInlined = true): self
     {
         $this->dto->setShowEntityActionsAsDropdown(!$showInlined);

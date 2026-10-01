@@ -629,6 +629,24 @@ Read the section about how to
 :ref:`override EasyAdmin templates <template-customization>` for more details
 about the ``overrideTemplate()`` method.
 
+On the ``new`` and ``edit`` pages, pressing ``Ctrl+S`` (Windows and Linux)
+or ``Cmd+S`` (macOS) submits the form in the same way as clicking the main
+save button (``Create`` or ``Save changes``). This works wherever the focus
+is, including inside code editor and text editor fields. If you don't want
+this keyboard shortcut, turn it off with the ``setSaveShortcutEnabled()``
+method::
+
+    public function configureCrud(Crud $crud): Crud
+    {
+        return $crud
+            // the browser keeps its default behavior for Ctrl+S / Cmd+S
+            ->setSaveShortcutEnabled(false)
+        ;
+    }
+
+Call this method in the ``configureCrud()`` method of your dashboard to turn
+off the shortcut :ref:`for all CRUD controllers <crud-shared-config>`.
+
 .. _default-row-action:
 
 Default Row Action

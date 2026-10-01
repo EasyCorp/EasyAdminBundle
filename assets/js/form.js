@@ -10,6 +10,7 @@ class Form {
         this.#createUnsavedFormChangesWarning();
         this.#createFieldsWithErrors();
         this.#preventMultipleFormSubmission();
+        this.#createSaveShortcut();
     }
 
     #createUnsavedFormChangesWarning() {
@@ -204,5 +205,63 @@ class Form {
                 false
             );
         });
+    }
+
+    // Ctrl+S / Cmd+S clicks the main save button, so the error handling of
+    // the click listeners and the double-submit protection still apply
+    #createSaveShortcut() {
+        ['.ea-new-form', '.ea-edit-form'].forEach((formSelector) => {
+            const form = document.querySelector(formSelector);
+            if (null === form || 'true' !== form.dataset.eaSaveShortcut) {
+                return;
+            }
+
+            document.addEventListener('keydown', (event) => {
+                if (!this.#isSaveShortcut(event)) {
+                    return;
+                }
+
+                // skip it while a modal (e.g. the delete confirmation) is open; the
+                // modal markup is always in the page, so check for the open one only
+                if (null !== document.querySelector('.modal.show')) {
+                    return;
+                }
+
+                const targetForm = event.target instanceof Element ? event.target.closest('form') : null;
+                if (null !== targetForm && targetForm !== form) {
+                    return;
+                }
+
+                const saveButton = document.querySelector(
+                    `button[data-action-name="saveAndReturn"][form="${CSS.escape(form.id)}"]`
+                );
+                if (null === saveButton) {
+                    return;
+                }
+
+                event.preventDefault();
+
+                if (event.repeat || saveButton.disabled) {
+                    return;
+                }
+
+                saveButton.click();
+            });
+        });
+    }
+
+    #isSaveShortcut(event) {
+        if (event.isComposing || event.shiftKey || event.altKey || event.ctrlKey === event.metaKey) {
+            return false;
+        }
+
+        const key = event.key ?? '';
+        // non-Latin layouts (Cyrillic, Greek, etc.) don't report 's' as the key,
+        // so fall back to the physical key only when the key isn't a Latin letter
+        if (/^[a-z]$/i.test(key)) {
+            return 's' === key.toLowerCase();
+        }
+
+        return 'KeyS' === event.code;
     }
 }

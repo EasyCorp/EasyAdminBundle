@@ -29,6 +29,7 @@ final readonly class FormFactory
         $cssClass = sprintf('ea-%s-form', $context->getCrud()->getCurrentAction());
         $formOptions->set('attr.class', trim(($formOptions->get('attr.class') ?? '').' '.$cssClass));
         $formOptions->set('attr.id', sprintf('edit-%s-form', $entityDto->getName()));
+        $formOptions->setIfNotSet('attr.data-ea-save-shortcut', $context->getCrud()->saveShortcutEnabled() ? 'true' : 'false');
         $formOptions->set('entityDto', $entityDto);
         $formOptions->setIfNotSet('translation_domain', $context->getI18n()->getTranslationDomain());
 
@@ -45,6 +46,7 @@ final readonly class FormFactory
         $cssClass = sprintf('ea-%s-form', $context->getCrud()->getCurrentAction());
         $formOptions->set('attr.class', trim(($formOptions->get('attr.class') ?? '').' '.$cssClass));
         $formOptions->set('attr.id', sprintf('new-%s-form', $entityDto->getName()));
+        $formOptions->setIfNotSet('attr.data-ea-save-shortcut', $context->getCrud()->saveShortcutEnabled() ? 'true' : 'false');
         $formOptions->set('entityDto', $entityDto);
         $formOptions->setIfNotSet('translation_domain', $context->getI18n()->getTranslationDomain());
 

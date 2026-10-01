@@ -68,6 +68,7 @@ final class CrudDto
     private ?array $searchFields = [];
     private string $searchMode = SearchMode::ALL_TERMS;
     private bool $autofocusSearch = false;
+    private bool $saveShortcutEnabled = true;
     private bool $showEntityActionsAsDropdown = true;
     private ?PaginatorDto $paginatorDto = null;
     /** @var array<string, string> */
@@ -388,6 +389,16 @@ final class CrudDto
     public function setAutofocusSearch(bool $autofocusSearch): void
     {
         $this->autofocusSearch = $autofocusSearch;
+    }
+
+    public function saveShortcutEnabled(): bool
+    {
+        return $this->saveShortcutEnabled;
+    }
+
+    public function setSaveShortcutEnabled(bool $enabled): void
+    {
+        $this->saveShortcutEnabled = $enabled;
     }
 
     public function isSearchEnabled(): bool

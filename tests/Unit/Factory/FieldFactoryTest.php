@@ -12,6 +12,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FieldFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FormLayoutFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Field;
+use EasyCorp\Bundle\EasyAdminBundle\Orm\ToManyAssociationCounter;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\ProjectDomain\Project;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -36,6 +37,7 @@ class FieldFactoryTest extends KernelTestCase
             $authorizationCheckerInterface,
             [],
             new FormLayoutFactory(new IdentityTranslator()),
+            static::getContainer()->get(ToManyAssociationCounter::class),
         );
     }
 

@@ -138,23 +138,48 @@ class App {
             return;
         }
 
-        toggler.addEventListener('click', () => {
-            document.querySelector('body').classList.toggle(cssClassName);
+        // listen on window in the capture phase so this runs before Bootstrap closes
+        // open dropdowns and modals: its delegated dropdown handlers also listen in
+        // the capture phase, but on document, so they would run first otherwise
+        const onKeyDown = (event) => {
+            if ('Escape' !== event.key) {
+                return;
+            }
 
-            if (document.querySelector('body').classList.contains(cssClassName)) {
-                modalBackdrop = document.createElement('div');
-                modalBackdrop.classList.add('modal-backdrop', 'fade', 'show');
-                modalBackdrop.onclick = () => {
-                    document.querySelector('body').classList.remove(cssClassName);
-                    document.body.removeChild(modalBackdrop);
-                    modalBackdrop = null;
-                };
+            if (null !== document.querySelector('.dropdown-menu.show, .modal.show')) {
+                return;
+            }
 
-                document.body.appendChild(modalBackdrop);
-            } else if (modalBackdrop) {
-                document.body.removeChild(modalBackdrop);
+            closeSidebar();
+            toggler.focus();
+        };
+
+        const openSidebar = () => {
+            document.body.classList.add(cssClassName);
+            toggler.setAttribute('aria-expanded', 'true');
+
+            modalBackdrop = document.createElement('div');
+            modalBackdrop.classList.add('modal-backdrop', 'fade', 'show');
+            modalBackdrop.onclick = closeSidebar;
+            document.body.appendChild(modalBackdrop);
+
+            window.addEventListener('keydown', onKeyDown, true);
+        };
+
+        const closeSidebar = () => {
+            document.body.classList.remove(cssClassName);
+            toggler.setAttribute('aria-expanded', 'false');
+
+            if (modalBackdrop) {
+                modalBackdrop.remove();
                 modalBackdrop = null;
             }
+
+            window.removeEventListener('keydown', onKeyDown, true);
+        };
+
+        toggler.addEventListener('click', () => {
+            document.body.classList.contains(cssClassName) ? closeSidebar() : openSidebar();
         });
     }
 

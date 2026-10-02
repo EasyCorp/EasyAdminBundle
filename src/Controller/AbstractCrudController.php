@@ -34,6 +34,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeCrudActionEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityDeletedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityPersistedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityUpdatedEvent;
+use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeFormValidateEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\EntityRemoveException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\ForbiddenActionException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\InsufficientEntityPermissionException;
@@ -272,6 +273,15 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
         $editForm = $this->createEditForm($context->getEntity(), $context->getCrud()->getEditFormOptions(), $context);
         $editForm->handleRequest($context->getRequest());
+
+        if ($editForm->isSubmitted()) {
+            $event = new BeforeFormValidateEvent($entityInstance, $editForm);
+            $this->container->get('event_dispatcher')->dispatch($event);
+            if ($event->isPropagationStopped()) {
+                return $event->getResponse();
+            }
+        }
+
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $this->processUploadedFiles($editForm);
 
@@ -338,6 +348,14 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         /** @var TEntity $entityInstance */
         $entityInstance = $newForm->getData();
         $context->getEntity()->setInstance($entityInstance);
+
+        if ($newForm->isSubmitted()) {
+            $event = new BeforeFormValidateEvent($entityInstance, $newForm);
+            $this->container->get('event_dispatcher')->dispatch($event);
+            if ($event->isPropagationStopped()) {
+                return $event->getResponse();
+            }
+        }
 
         if ($newForm->isSubmitted() && $newForm->isValid()) {
             $this->processUploadedFiles($newForm);

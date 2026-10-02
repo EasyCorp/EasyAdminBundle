@@ -232,6 +232,12 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
                 return $queryBuilder;
             });
         }
+
+        $url = $field->getCustomOption(AssociationField::OPTION_URL);
+        if (\is_callable($url)) {
+            $url = $url($entityDto, $context);
+            $field->setCustomOption(AssociationField::OPTION_URL, $url);
+        }
     }
 
     /**

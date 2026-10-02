@@ -257,15 +257,16 @@ the same pages are installed locally under `vendor/easycorp/easyadmin-bundle/doc
   `Action::new('approve')->linkToCrudAction('approve')->createAsBatchAction()`
   and are added with `$actions->addBatchAction($approve)`; they exist only on
   the index page. <!-- src/Factory/ActionFactory.php::processGlobalActions; src/Dto/BatchActionDto.php::getEntityIds; src/Config/Actions.php::addBatchAction; doc/actions.rst:815-835 -->
-- EasyAdmin adds no CSRF token to a custom action rendered with
-  `->renderAsForm()`: the `<form method="POST">` holds only the button. Only
-  the built-in delete action (`ea-delete`, through a shared confirmation form),
-  batch actions and the boolean toggle (`ea-toggle`) carry tokens. Never validate a
-  token you did not put there. To protect a custom action, add the token to
-  the URL with `->linkToUrl(fn (Product $product) => ...)` (the closure
-  receives the entity) or `->linkToRoute('app_publish', fn (Product $product) => ['id' => $product->getId(), 'token' => ...])`,
-  and check it with `$this->isCsrfTokenValid('publish'.$product->getId(), $request->query->get('token'))`.
-  Full recipe in `references/patterns.md`. <!-- templates/components/Button.html.twig:29-38; templates/crud/includes/_action_confirmation_modal.html.twig:5; src/Controller/AbstractCrudController.php::delete; src/Controller/AbstractCrudController.php::batchDelete; src/Factory/ActionFactory.php::generateActionUrl; tests/Functional/Actions/CustomActionCsrfTest.php -->
+- A custom action rendered with `->renderAsForm()` submits a
+  `<form method="POST">` that carries a hidden `token` field holding
+  `csrf_token('ea-action')`. Validating it is opt-in: read it with
+  `$request->getPayload()->getString('token')` and check it with
+  `$this->isCsrfTokenValid('ea-action', $submittedToken)`, returning a 400
+  response when it fails. The field is absent when the application disables
+  CSRF protection or the request has no session. The built-in delete action
+  (`ea-delete`, through a shared confirmation form), batch actions and the
+  boolean toggle (`ea-toggle`) carry their own tokens with their own token IDs.
+  Full recipe in `references/patterns.md`. <!-- templates/components/Button.html.twig:29-44; templates/crud/includes/_action_confirmation_modal.html.twig:5; src/Controller/AbstractCrudController.php::delete; src/Controller/AbstractCrudController.php::batchDelete; src/Factory/ActionFactory.php::generateActionUrl; tests/Functional/Actions/CustomActionCsrfTest.php -->
 - Permissions belong to the `Actions` collection, not to `Action`:
   `$actions->setPermission('publish', 'ROLE_EDITOR')` and
   `$actions->setPermission(Action::DELETE, 'ROLE_ADMIN')`.
@@ -493,6 +494,6 @@ source_contains: src/Config/Actions.php | $this->dto->removeAction($pageName, Ac
 source_contains: templates/crud/includes/_action_confirmation_modal.html.twig | csrf_token('ea-delete')
 source_contains: doc/security.rst | is_granted($permission, $item)
 source_contains: doc/actions.rst | controller_resolver.auto_mapping
-source_not_contains: templates/components/Button.html.twig | csrf_token
-source_not_contains: templates/components/Button.html.twig | _token
+source_contains: templates/components/Button.html.twig | csrf_token('ea-action')
+source_contains: templates/components/ActionMenu/ActionList/Item.html.twig | csrf_token('ea-action')
 -->

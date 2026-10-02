@@ -110,6 +110,11 @@ class ActionTestEntityCrudController extends AbstractCrudController
             ->linkToCrudAction('noop')
             ->renderAsForm();
 
+        // entity action rendered as form that validates the submitted CSRF token
+        $csrfProtectedActivateAction = Action::new('csrfProtectedActivate', 'Secure Activate')
+            ->linkToCrudAction('csrfProtectedActivate')
+            ->renderAsForm();
+
         return $actions
             // add custom entity actions with displayIf()
             ->add(Crud::PAGE_INDEX, $activateAction)
@@ -127,6 +132,7 @@ class ActionTestEntityCrudController extends AbstractCrudController
             ->add(Crud::PAGE_INDEX, $attrAction)
             ->add(Crud::PAGE_INDEX, $iconOnlyAction)
             ->add(Crud::PAGE_INDEX, $entityFormAction)
+            ->add(Crud::PAGE_INDEX, $csrfProtectedActivateAction)
 
             // disable delete action for non-deletable entities
             ->update(Crud::PAGE_INDEX, Action::DELETE, static function (Action $action) {
@@ -163,6 +169,24 @@ class ActionTestEntityCrudController extends AbstractCrudController
             'title' => 'Activation',
             'icon' => 'internal:check',
         ]);
+
+        return $this->redirect($this->container->get(AdminUrlGenerator::class)->setAction(Action::INDEX)->generateUrl());
+    }
+
+    #[AdminRoute('/{entityId}/csrf-protected-activate', 'csrf_protected_activate')]
+    public function csrfProtectedActivate(AdminContext $context): Response
+    {
+        $submittedToken = $context->getRequest()->getPayload()->getString('token');
+        if (!$this->isCsrfTokenValid('ea-action', $submittedToken)) {
+            return new Response('Invalid CSRF token.', Response::HTTP_BAD_REQUEST);
+        }
+
+        /** @var ActionTestEntity $entity */
+        $entity = $context->getEntity()->getInstance();
+        $entity->setIsActive(true);
+
+        $entityManager = $this->container->get('doctrine')->getManagerForClass(ActionTestEntity::class);
+        $entityManager->flush();
 
         return $this->redirect($this->container->get(AdminUrlGenerator::class)->setAction(Action::INDEX)->generateUrl());
     }

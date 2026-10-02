@@ -115,7 +115,13 @@ export default class Autocomplete {
             optgroupField: 'entityGroup',
             lockOptgroupOrder: true,
             firstUrl: (query) => {
-                return `${autocompleteEndpointUrl}&query=${encodeURIComponent(query)}`;
+                const url = new URL(autocompleteEndpointUrl);
+                url.searchParams.append(`query`, query);
+                this.#resolveAutocompleteDependencyFields(element).forEach((dependency) => {
+                    url.searchParams.append(`autocompleteDependsOn[${dependency.path}]`, dependency.element.value);
+                });
+
+                return url.toString();
             },
             // VERY IMPORTANT: use 'function (query, callback) { ... }' instead of the
             // '(query, callback) => { ... }' syntax because, otherwise,
@@ -158,7 +164,11 @@ export default class Autocomplete {
             config = this.#mergeObjects(config, { options: options, optgroups: optgroups });
         }
 
-        return this.#initializeTomSelect(element, config);
+        const tomSelect = this.#initializeTomSelect(element, config);
+
+        this.#bindAutocompleteDependencyFieldListeners(tomSelect);
+
+        return tomSelect;
     }
 
     #initializeTomSelect(element, config) {
@@ -328,5 +338,42 @@ export default class Autocomplete {
         }
 
         return { options, optgroups };
+    }
+
+    #bindAutocompleteDependencyFieldListeners(tomSelect) {
+        this.#resolveAutocompleteDependencyFields(tomSelect.input).forEach((dependency) => {
+            dependency.element.addEventListener('change', () => {
+                tomSelect.clear();
+                tomSelect.clearOptions();
+                tomSelect.clearOptionGroups();
+                tomSelect.clearPagination();
+                tomSelect.wrapper.classList.remove('preloaded');
+            });
+        });
+    }
+
+    #resolveAutocompleteDependencyFields(element) {
+        const dependsOn = JSON.parse(element.getAttribute('data-ea-autocomplete-depends-on') || '[]');
+        const form = element.closest('form');
+
+        if (null === form) {
+            return [];
+        }
+
+        return dependsOn.map((field) => {
+            const fieldId = `${form.name}_${field.replaceAll('.', '_')}`;
+            const fieldElement = document.getElementById(fieldId) ?? document.getElementById(`${fieldId}_autocomplete`);
+
+            if (null === fieldElement) {
+                console.error(`No field found for autocomplete dependency "${field}".`);
+                return null;
+            }
+
+            return {
+                path: field,
+                element: fieldElement,
+            };
+        })
+        .filter((dependencyField) => null !== dependencyField);
     }
 }

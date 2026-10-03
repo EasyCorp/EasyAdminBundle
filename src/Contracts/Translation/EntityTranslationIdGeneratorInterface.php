@@ -2,6 +2,9 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Contracts\Translation;
 
+/**
+ * Generates the translation ids of entity and property names.
+ */
 interface EntityTranslationIdGeneratorInterface
 {
     /**

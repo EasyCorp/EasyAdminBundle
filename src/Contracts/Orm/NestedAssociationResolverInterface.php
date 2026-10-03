@@ -7,9 +7,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ResolvedPropertyDto;
 
 /**
- * Resolves property paths that traverse Doctrine associations and/or
- * embeddables (e.g. 'author.address.country'), adding the needed JOIN clauses
- * to the given query builder.
+ * Resolves property paths that traverse Doctrine associations and/or embeddables (e.g. 'author.address.country').
+ *
+ * It adds the needed JOIN clauses to the given query builder.
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */

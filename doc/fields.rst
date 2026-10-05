@@ -794,6 +794,7 @@ These are all the built-in fields provided by EasyAdmin:
 * :doc:`IntegerField </fields/IntegerField>`
 * :doc:`LanguageField </fields/LanguageField>`
 * :doc:`LocaleField </fields/LocaleField>`
+* :doc:`MarkdownEditorField </fields/MarkdownEditorField>` (EasyAdmin Pro)
 * :doc:`MoneyField </fields/MoneyField>`
 * :doc:`NumberField </fields/NumberField>`
 * :doc:`PercentField </fields/PercentField>`

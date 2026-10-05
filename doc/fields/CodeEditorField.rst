@@ -61,6 +61,13 @@ The argument passed to this method must be one of the following values:
 ``css``, ``dockerfile``, ``js``, ``markdown``, ``nginx``, ``php``, ``shell``,
 ``sql``, ``twig``, ``xml``, ``yaml-frontmatter``, ``yaml``.
 
+.. tip::
+
+    ``CodeEditorField`` works well for developers. If the people who edit
+    Markdown contents aren't developers, use
+    :doc:`MarkdownEditorField </fields/MarkdownEditorField>`
+    (EasyAdmin Pro), which adds a formatting toolbar and a live preview.
+
 ``setNumOfRows``
 ~~~~~~~~~~~~~~~~
 

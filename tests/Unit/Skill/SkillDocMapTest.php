@@ -8,10 +8,12 @@ use PHPUnit\Framework\TestCase;
 class SkillDocMapTest extends TestCase
 {
     private const CLASSES_WITHOUT_DOC_PAGE = ['Field', 'FormField'];
+    // these fields are defined in EasyAdmin Pro but documented here, in doc/fields/
+    private const PRO_FIELDS = ['MarkdownEditorField'];
 
     public function testEveryFieldClassHasItsOwnDocumentationPage(): void
     {
-        $documentedFields = self::basenames(\dirname(__DIR__, 3).'/doc/fields/*.rst', '.rst');
+        $documentedFields = array_values(array_diff(self::basenames(\dirname(__DIR__, 3).'/doc/fields/*.rst', '.rst'), self::PRO_FIELDS));
         $fieldClasses = array_values(array_diff(self::basenames(\dirname(__DIR__, 3).'/src/Field/*Field.php', '.php'), self::CLASSES_WITHOUT_DOC_PAGE));
 
         sort($documentedFields);

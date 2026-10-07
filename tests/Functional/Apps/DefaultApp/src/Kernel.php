@@ -11,7 +11,9 @@ use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Bundle\SecurityBundle\SecurityBundle;
 use Symfony\Bundle\TwigBundle\TwigBundle;
 use Symfony\Component\Config\Loader\LoaderInterface;
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpKernel\Kernel as SymfonyKernel;
 use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
 use Symfony\UX\TwigComponent\TwigComponentBundle;
@@ -54,6 +56,19 @@ final class Kernel extends SymfonyKernel
     public function getProjectDir(): string
     {
         return \dirname(__DIR__);
+    }
+
+    protected function build(ContainerBuilder $container): void
+    {
+        parent::build($container);
+
+        // ensure CRUD controllers only need the event dispatcher contract
+        $container->addCompilerPass(new class implements CompilerPassInterface {
+            public function process(ContainerBuilder $container): void
+            {
+                $container->removeAlias(EventDispatcherInterface::class);
+            }
+        });
     }
 
     protected function configureRoutes(RoutingConfigurator $routes): void

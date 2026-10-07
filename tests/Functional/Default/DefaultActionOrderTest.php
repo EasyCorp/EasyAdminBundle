@@ -30,6 +30,13 @@ class DefaultActionOrderTest extends AbstractCrudTestCase
         $this->blogPosts = $this->entityManager->getRepository(BlogPost::class);
     }
 
+    public function testIndexPageUsesContractsEventDispatcher(): void
+    {
+        $this->client->request('GET', $this->generateIndexUrl());
+
+        static::assertResponseIsSuccessful();
+    }
+
     public function testIndexPageGlobalActionsOrder(): void
     {
         $crawler = $this->client->request('GET', $this->generateIndexUrl());

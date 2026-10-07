@@ -338,6 +338,7 @@ return static function (ContainerConfigurator $container) {
         ->set(FilterFactory::class)
             ->arg(0, service(AdminContextProvider::class))
             ->arg(1, tagged_iterator(EasyAdminBundle::TAG_FILTER_CONFIGURATOR))
+            ->arg(2, service(EntityRepository::class))
 
         ->set(FiltersFormType::class)
             ->tag('form.type', ['alias' => 'ea_filters'])
@@ -357,12 +358,14 @@ return static function (ContainerConfigurator $container) {
             ->tag(EasyAdminBundle::TAG_FILTER_CONFIGURATOR, ['priority' => 9999])
 
         ->set(ComparisonFilterConfigurator::class)
+            ->arg(0, service(EntityRepository::class))
 
         ->set(CountryFilterConfigurator::class)
 
         ->set(CurrencyFilterConfigurator::class)
 
         ->set(DateTimeFilterConfigurator::class)
+            ->arg(0, service(EntityRepository::class))
 
         ->set(EntityFilterConfigurator::class)
             ->arg(0, new Reference(AdminUrlGenerator::class))
@@ -375,8 +378,10 @@ return static function (ContainerConfigurator $container) {
         ->set(NullFilterConfigurator::class)
 
         ->set(NumericFilterConfigurator::class)
+            ->arg(0, service(EntityRepository::class))
 
         ->set(TextFilterConfigurator::class)
+            ->arg(0, service(EntityRepository::class))
 
         ->set(TimezoneFilterConfigurator::class)
 

@@ -739,6 +739,7 @@ Also accepts every FieldTrait method (see [Field\FieldTrait](#fieldfieldtrait)).
 const OPTION_HIDE_VALUE_WHEN_FALSE = 'hideValueWhenFalse'
 const OPTION_HIDE_VALUE_WHEN_TRUE = 'hideValueWhenTrue'
 const OPTION_RENDER_AS_SWITCH = 'renderAsSwitch'
+const OPTION_SWAP_LABEL_AND_VALUE = 'swapLabelAndValue'
 const OPTION_SWITCH_VARIANT = 'switchVariant'
 
 static new(string $propertyName, TranslatableInterface|bool|string|null $label = null): self
@@ -749,6 +750,7 @@ renderAsDangerSwitch(): self
 renderAsSuccessSwitch(): self
 renderAsSwitch(bool $isASwitch = true): self
 renderAsWarningSwitch(): self
+swapLabelAndValue(bool $swap = true): self
 ```
 
 Also accepts every FieldTrait method (see [Field\FieldTrait](#fieldfieldtrait)).

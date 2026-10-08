@@ -357,9 +357,18 @@ a.user-menu-wrapper .user-details:hover {
 @media (min-width: 992px) {
     body.ea-new .content-header,
     body.ea-edit .content-header {
+        padding-block-end: calc(var(--ea-sp-8) - var(--ea-focus-ring-width));
         position: sticky;
         inset-block-start: calc(-1 * var(--ea-sp-10));
         z-index: 999;
+    }
+
+    /* the opaque sticky header paints over anything drawn right above the
+       content (e.g. the error ring of the first fieldsets); moving part of the
+       header spacing here keeps those rings visible without changing the layout */
+    body.ea-new .content-body,
+    body.ea-edit .content-body {
+        padding-block-start: var(--ea-focus-ring-width);
     }
 }
 

@@ -73,6 +73,7 @@ class SlugFieldTest extends AbstractFieldTest
     public function testWithoutTargetFieldNameThrowsException(): void
     {
         $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('The "slug" SlugField doesn\'t know which field to generate the slug from. Call its "setTargetFieldName()" method with the name of one or more fields of the same form (e.g. SlugField::new(\'slug\')->setTargetFieldName(\'title\')).');
 
         $field = SlugField::new('slug');
         $this->configure($field);

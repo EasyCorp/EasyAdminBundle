@@ -1,6 +1,28 @@
 Upgrade Guide
 =============
 
+## EasyAdmin 5.7.0
+
+### The `ea` Global Twig Variable Is Removed
+
+The 5.0 upgrade notes already said that the global `ea` Twig variable was removed,
+but it was still registered by mistake (and it holds the `AdminContextProvider` service
+nstead of the actual admin context). It's now removed for real. Use the `ea()` Twig
+function instead.
+
+If a form theme extends an EasyAdmin template, call `ea()` directly inside the
+`{% extends %}` tag, because Symfony resolves the parent templates of form themes
+before running any `{% set %}` tag of the template:
+
+```twig
+{# before #}
+{% set ea = ea() %}
+{% extends ea.templatePath('crud/edit') %}
+
+{# after #}
+{% extends ea().templatePath('crud/edit') %}
+```
+
 ## EasyAdmin 5.4.0
 
 ### Detail Page Templates Are Now Overridable Individually
@@ -25,7 +47,7 @@ Applications that copied the whole `detail.html.twig` template or that extend it
 with `@!EasyAdmin/crud/detail.html.twig` are not affected. In the unlikely case
 that your application imported those macros directly with
 `{% from '@EasyAdmin/crud/detail.html.twig' import ... %}`, use the new
-templates instead: `{{ include(ea.templatePath('crud/detail/...'), {field: field}, with_context: false) }}`.
+templates instead: `{{ include(ea().templatePath('crud/detail/...'), {field: field}, with_context: false) }}`.
 
 ## EasyAdmin 5.3.1
 

@@ -10,20 +10,17 @@ use Symfony\Component\Uid\Ulid;
 use Symfony\Contracts\Translation\TranslatableInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Extension\AbstractExtension;
-use Twig\Extension\GlobalsInterface;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
 use Twig\TwigTest;
 
 /**
  * Defines the filters and functions used to render the bundle's templates.
- * Also injects the admin context into Twig global variables as `ea` in order
- * to be used by admin templates.
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  * @author Benjamin Georgeault <git@wedgesama.fr>
  */
-class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterface
+class EasyAdminTwigExtension extends AbstractExtension
 {
     public function __construct(
         private readonly ServiceLocator $serviceLocator,
@@ -62,11 +59,6 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
             new TwigFilter('ea_filetype_icon', [$this, 'getFiletypeIcon']),
             new TwigFilter('ea_force_download', [$this, 'forceFileDownload']),
         ];
-    }
-
-    public function getGlobals(): array
-    {
-        return ['ea' => $this->adminContextProvider];
     }
 
     public function ea(): ?AdminContextInterface

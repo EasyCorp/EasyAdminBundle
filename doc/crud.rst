@@ -637,6 +637,14 @@ Read the section about how to
 :ref:`override EasyAdmin templates <template-customization>` for more details
 about the ``overrideTemplate()`` method.
 
+.. caution::
+
+    If your form theme extends an EasyAdmin template, call the ``ea()`` function
+    directly inside the ``{% extends %}`` tag (e.g.
+    ``{% extends ea().templatePath('crud/edit') %}``). Don't store it first in a
+    variable with ``{% set ea = ea() %}``, because Symfony resolves the parent
+    templates of form themes before running the ``{% set %}`` tags of the template.
+
 .. _default-row-action:
 
 Default Row Action

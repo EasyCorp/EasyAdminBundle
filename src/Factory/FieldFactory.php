@@ -25,6 +25,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormRowType;
+use EasyCorp\Bundle\EasyAdminBundle\Orm\ToManyAssociationCounter;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
@@ -70,8 +71,9 @@ final class FieldFactory
         private readonly AdminContextProviderInterface $adminContextProvider,
         private readonly AuthorizationCheckerInterface $authorizationChecker,
         private readonly iterable $fieldConfigurators,
-        private readonly FormLayoutFactory $fieldLayoutFactory)
-    {
+        private readonly FormLayoutFactory $fieldLayoutFactory,
+        private readonly ToManyAssociationCounter $toManyAssociationCounter,
+    ) {
     }
 
     public function processFields(EntityDto $entityDto, FieldCollection $fields, string $currentPage): void
@@ -127,6 +129,8 @@ final class FieldFactory
 
     public function processFieldsForAll(EntityCollection $entityDtos, FieldCollection $fields, string $currentPage): void
     {
+        $this->toManyAssociationCounter->preload($entityDtos, $fields, $currentPage);
+
         foreach ($entityDtos as $entityDto) {
             $this->processFields($entityDto, clone $fields, $currentPage);
             $entityDtos->set($entityDto);

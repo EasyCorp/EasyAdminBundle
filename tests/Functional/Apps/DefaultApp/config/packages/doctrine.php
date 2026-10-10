@@ -4,6 +4,8 @@ $config = [
     'dbal' => [
         'driver' => 'pdo_sqlite',
         'path' => '%kernel.cache_dir%/test_database.sqlite',
+        // the test kernel doesn't run in debug mode, so this is needed to log the executed queries
+        'profiling' => true,
     ],
 
     'orm' => [

@@ -43,7 +43,7 @@
 .ea-switch-track {
     position: absolute;
     inset: 0;
-    border-radius: var(--border-radius-full);
+    border-radius: var(--border-radius-pill);
     background-color: var(--switch-bg);
     transition: background-color var(--ea-duration-default) var(--ea-ease-in-out);
     pointer-events: none;
@@ -55,7 +55,7 @@
     inset-inline-start: var(--ea-switch-thumb-inset);
     inline-size: var(--ea-switch-thumb-size);
     block-size: var(--ea-switch-thumb-size);
-    border-radius: 50%;
+    border-radius: var(--border-radius-pill);
     background-color: var(--switch-thumb-bg);
     box-shadow: 0 1px 2px color-mix(in srgb, var(--black) 15%, transparent);
     transition: transform var(--ea-duration-default) var(--ea-ease-in-out);

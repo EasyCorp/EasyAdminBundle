@@ -9,16 +9,17 @@
 <p align="center">
     <a href="https://packagist.org/packages/easycorp/easyadmin-bundle"><img src="https://img.shields.io/packagist/v/easycorp/easyadmin-bundle.svg?style=flat-square&label=stable" alt="Latest Stable Version"></a>
     <a href="https://packagist.org/packages/easycorp/easyadmin-bundle"><img src="https://img.shields.io/packagist/dt/easycorp/easyadmin-bundle.svg?style=flat-square" alt="Total Downloads"></a>
-    <a href="https://github.com/EasyCorp/EasyAdminBundle/blob/4.x/LICENSE"><img src="https://img.shields.io/packagist/l/easycorp/easyadmin-bundle.svg?style=flat-square" alt="License"></a>
+    <a href="https://github.com/EasyCorp/EasyAdminBundle/blob/5.x/LICENSE.md"><img src="https://img.shields.io/packagist/l/easycorp/easyadmin-bundle.svg?style=flat-square" alt="License"></a>
     <a href="https://github.com/EasyCorp/EasyAdminBundle/actions"><img src="https://img.shields.io/github/actions/workflow/status/EasyCorp/EasyAdminBundle/ci.yaml?style=flat-square" alt="Build Status"></a>
 </p>
 
 <p align="center">
     <a href="https://symfony.com/bundles/EasyAdminBundle/current/index.html">Documentation</a>
      • <a href="https://symfonycasts.com/screencast/easyadminbundle">Video Tutorial</a>
+     • <a href="https://easycorp.io/pro">EasyAdmin Pro</a>
 </p>
 
-EasyAdmin creates beautiful backends for Symfony applications. It's free, fast, fully documented, and trusted by tens of thousands of projects.
+EasyAdmin creates beautiful backends for Symfony applications. It's free, fast, and trusted by tens of thousands of projects.
 
 <p align="center">
     <a href="./doc/images/easyadmin-screenshot-index-light.webp" target="_blank">
@@ -62,6 +63,23 @@ If you use an AI coding agent, run `php bin/console easyadmin:ai:install` too. I
 | 🛠️ **100% Customizable** | Override any template, extend any class, customize everything |
 | 🧩 **Symfony Native** | Seamlessly integrated with Symfony forms, security, routing, and more |
 | ✅ **Unmatched Compatibility** | Works with Symfony 6.x, 7.x, and 8.x and Doctrine 2.x, 3.x, and 4.x |
+
+## EasyAdmin Pro
+
+EasyAdmin Pro, from the creator of EasyAdmin, adds more features to your backends:
+
+| Feature | What you can do |
+| ------- | --------------- |
+| 🕵️ **[Audit Log](https://symfony.com/bundles/EasyAdminBundle/current/audit-log.html)** | See who changed your data, when, and what the previous values were |
+| 🔒 **[Content Lock](https://symfony.com/bundles/EasyAdminBundle/current/content-lock.html)** | Show who's editing a record and keep others from overwriting their work |
+| 📬 **[Messenger Inspector](https://symfony.com/bundles/EasyAdminBundle/current/messenger-inspector.html)** | Track background jobs and investigate failures from your backend |
+| 📝 **[Markdown Editor Field](https://symfony.com/bundles/EasyAdminBundle/current/fields/MarkdownEditorField.html)** | Write Markdown with a formatting toolbar and live preview |
+
+These are the first features of EasyAdmin Pro, with many more to come.
+
+📖 [Read EasyAdmin Pro docs](https://symfony.com/bundles/EasyAdminBundle/current/pro.html) &nbsp;/&nbsp; **[See features and pricing →](https://easycorp.io/pro)**
+
+EasyAdmin stays free and MIT-licensed. EasyAdmin Pro helps fund its development.
 
 ## Why EasyAdmin?
 
@@ -113,6 +131,7 @@ Symfony Framework project providing example entities and CRUD Controllers.
 - 🎬 [SymfonyCasts Video Tutorial](https://symfonycasts.com/screencast/easyadminbundle)
 - 🎮 [EasyAdmin Demo](https://github.com/EasyCorp/easyadmin-demo)
 - 🐛 [Issue Tracker](https://github.com/EasyCorp/EasyAdminBundle/issues)
+- 💎 [EasyAdmin Pro](https://easycorp.io/pro)
 
 ## Contributing
 
@@ -127,7 +146,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ## License
 
-EasyAdmin is released under the [MIT License](LICENSE).
+EasyAdmin is released under the [MIT License](LICENSE.md).
 
 ---
 

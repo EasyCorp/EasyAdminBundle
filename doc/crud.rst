@@ -37,6 +37,14 @@ These pages are generated with four actions with the same name in the
 :ref:`built-in actions <actions-built-in>` (e.g. ``delete`` and ``autocomplete``)
 which don't match any page.
 
+.. tip::
+
+    The ``edit`` page saves all the values of the form. If two people
+    edit the same entity at the same time, the last one to save
+    overwrites the changes of the other person without any warning.
+    Enable :doc:`Content Lock </content-lock>` (EasyAdmin Pro) to let
+    only one person edit an entity at a time.
+
 .. _crud_routes:
 .. _crud-routes:
 
@@ -629,6 +637,14 @@ Read the section about how to
 :ref:`override EasyAdmin templates <template-customization>` for more details
 about the ``overrideTemplate()`` method.
 
+.. caution::
+
+    If your form theme extends an EasyAdmin template, call the ``ea()`` function
+    directly inside the ``{% extends %}`` tag (e.g.
+    ``{% extends ea().templatePath('crud/edit') %}``). Don't store it first in a
+    variable with ``{% set ea = ea() %}``, because Symfony resolves the parent
+    templates of form themes before running the ``{% set %}`` tags of the template.
+
 .. _default-row-action:
 
 Default Row Action
@@ -871,6 +887,14 @@ needs to pass constructor arguments or set some of its properties::
 The other way of overriding this behavior is listening to the
 :doc:`events triggered by EasyAdmin </events>` when an entity is created, updated,
 persisted, deleted, etc.
+
+.. tip::
+
+    Storing who created an entity only tells you part of the story. To
+    know who changed each value later, when they did it and what the
+    previous value was, enable :doc:`Audit Log </audit-log>`
+    (EasyAdmin Pro). It records all Doctrine changes, including the
+    ones made outside your backend.
 
 Passing Additional Variables to CRUD Templates
 ----------------------------------------------

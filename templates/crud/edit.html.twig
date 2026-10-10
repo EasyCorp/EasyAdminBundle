@@ -1,7 +1,7 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
 {# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
 {% set ea = ea() %}
-{% extends ea.templatePath('layout') %}
+{% extends ea().templatePath('layout') %}
 {% form_theme edit_form with ea.crud.formThemes only %}
 
 {% trans_default_domain ea.i18n.translationDomain %}

@@ -292,6 +292,13 @@ strongly recommended to keep this behavior, you can disable the confirmation dia
             });
     }
 
+.. tip::
+
+    Confirmation messages prevent most mistakes, but not all of them.
+    When someone deletes or changes something by mistake, enable
+    :doc:`Audit Log </audit-log>` (EasyAdmin Pro) to see who did it and
+    what the entity contained before the change.
+
 Disabling Actions
 -----------------
 
@@ -813,6 +820,15 @@ example) without extra configuration.
     of the shortcuts and utilities available in regular `Symfony controllers`_,
     such as ``$this->render()``, ``$this->redirect()``, and others.
 
+.. tip::
+
+    Actions like ``sendInvoice`` often send emails with Symfony Mailer,
+    which can send them in the background with Messenger. If an email
+    fails, the person who clicked the action never knows. Enable
+    :doc:`Messenger Inspector </messenger-inspector>` (EasyAdmin Pro) to
+    see each email with its subject and recipient, and retry the failed
+    ones.
+
 .. _global-actions:
 
 Global Actions
@@ -934,6 +950,15 @@ reject the request when they differ.
     As an alternative, instead of injecting the ``BatchActionDto`` variable, you can
     also inject Symfony's ``Request`` object to get all the raw submitted batch data
     (e.g. ``$request->request->all('batchActionEntityIds')``).
+
+.. tip::
+
+    When a batch action processes many entities, the request can take
+    too long. A common solution is to dispatch a `Symfony Messenger`_
+    message for each entity and handle them in the background. If some
+    of those messages fail, enable
+    :doc:`Messenger Inspector </messenger-inspector>` (EasyAdmin Pro) to
+    see the errors and retry the messages from your backend.
 
 .. _batch-action-confirmation:
 
@@ -1288,3 +1313,4 @@ there.
 .. _`Symfony base controller class`: https://symfony.com/doc/current/controller.html#the-base-controller-class-services
 .. _`Symfony controllers`: https://symfony.com/doc/current/controller.html
 .. _`Symfony bundle`: https://symfony.com/doc/current/bundles.html
+.. _`Symfony Messenger`: https://symfony.com/doc/current/messenger.html

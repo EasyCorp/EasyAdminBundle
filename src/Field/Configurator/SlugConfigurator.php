@@ -24,7 +24,7 @@ final class SlugConfigurator implements FieldConfiguratorInterface
     {
         $targetFieldNames = (array) $field->getCustomOption(SlugField::OPTION_TARGET_FIELD_NAME);
         if ([] === $targetFieldNames) {
-            throw new \RuntimeException(sprintf('The "%s" field must define the name(s) of the field(s) whose contents are used for the slug using the "setTargetFieldName()" method.', $field->getProperty()));
+            throw new \RuntimeException(sprintf('The "%1$s" SlugField doesn\'t know which field to generate the slug from. Call its "setTargetFieldName()" method with the name of one or more fields of the same form (e.g. SlugField::new(\'%1$s\')->setTargetFieldName(\'title\')).', $field->getProperty()));
         }
 
         $field->setFormTypeOption('target', implode('|', $targetFieldNames));

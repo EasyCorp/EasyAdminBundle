@@ -14,7 +14,9 @@ In :ref:`form pages (edit and new) <crud-pages>` it looks like this:
     EasyAdmin provides other fields for long text contents:
     :doc:`TextEditorField </fields/TextEditorField>` is ideal for contents such
     as blog posts or doc pages; :doc:`CodeEditorField </fields/CodeEditorField>`
-    is ideal to edit and store any kind of source code.
+    is ideal to edit and store any kind of source code. If you store contents
+    as Markdown, :doc:`MarkdownEditorField </fields/MarkdownEditorField>`
+    (EasyAdmin Pro) adds a formatting toolbar and a live preview.
 
 Basic Information
 -----------------

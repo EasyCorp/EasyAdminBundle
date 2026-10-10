@@ -393,10 +393,10 @@ label.form-check-label {
     margin-inline-start: var(--ea-sp-4);
 }
 
+/* the border is an inset shadow, like in regular fieldsets, so errored
+   fieldsets keep the same size and corner radius as their neighbors */
 .form-column .form-fieldset.has-fieldset-error {
-    border: var(--border-width) solid var(--form-input-error-border-color);
-    border-radius: var(--border-radius-xl);
-    box-shadow: var(--form-input-error-shadow);
+    box-shadow: inset 0 0 0 1px var(--form-input-error-border-color), var(--form-input-error-shadow);
 }
 
 /* using CSS Grid is needed for a smooth collapse animation */

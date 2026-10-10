@@ -4,7 +4,6 @@
 /.github export-ignore
 /.gitignore export-ignore
 /.php-cs-fixer.dist.php export-ignore
-/.phpstorm.meta.php export-ignore
 /.symfony.bundle.yaml export-ignore
 /AGENTS.md export-ignore
 /biome.json export-ignore

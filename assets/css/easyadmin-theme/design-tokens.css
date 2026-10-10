@@ -67,6 +67,8 @@
     --border-radius-lg: calc(var(--ea-radius) * 2); /* 8px */
     --border-radius-xl: calc(var(--ea-radius) * 3); /* 12px */
     --border-radius-full: 50rem; /* fixed on purpose: pills and circles must not scale */
+    /* this formula creates a pill (or circle) for any non-zero --ea-radius value and a square when --ea-radius is 0 */
+    --border-radius-pill: min(calc(var(--ea-radius) * 1000), var(--border-radius-full));
 
     /* named spacing steps: the only spacing values allowed in this theme.
        Every padding/margin/gap must use one of these, so that changing

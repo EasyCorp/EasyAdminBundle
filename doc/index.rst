@@ -25,9 +25,15 @@ Table of Contents
   custom voters)
 * :doc:`Events </events>` (entity events, CRUD events, JavaScript events)
 * :doc:`Tests </tests>` (functional testing, utilities, assertions)
+* :doc:`Audit Log </audit-log>` (entity history, integrity checks)
+* :doc:`Content Lock </content-lock>` (editing locks, conflict prevention)
+* :doc:`Messenger Inspector </messenger-inspector>` (message history,
+  errors, retries)
 * :doc:`AI Coding Agents </ai-coding-agents>` (agent skills for Claude Code,
   Codex, Cursor, GitHub Copilot, and other agents)
 * :doc:`Upgrade </upgrade>` (from EasyAdmin 4)
+* :doc:`Appendix: EasyAdmin Pro </pro>` (installation and setup of the Pro
+  features)
 * :doc:`Appendix: Twig Components </components>` (reusable UI components: badges, buttons,
   icons, modals, dropdown menus)
 

@@ -1,0 +1,16 @@
+{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
+{# @var field \EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto #}
+{# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
+{% if field.formattedValue is not empty %}
+    <time datetime="{{ field.value.format('P%yY%mM%dDT%hH%iM%sS') }}">{{ field.formattedValue }}</time>
+{% else %}
+    {% set parts = [] %}
+    {% if field.value.y > 0 %}{% set parts = parts|merge([('date_interval.years'|trans({'%count%': field.value.y}, 'EasyAdminBundle'))]) %}{% endif %}
+    {% if field.value.m > 0 %}{% set parts = parts|merge([('date_interval.months'|trans({'%count%': field.value.m}, 'EasyAdminBundle'))]) %}{% endif %}
+    {% if field.value.d > 0 %}{% set parts = parts|merge([('date_interval.days'|trans({'%count%': field.value.d}, 'EasyAdminBundle'))]) %}{% endif %}
+    {% if field.value.h > 0 %}{% set parts = parts|merge([('date_interval.hours'|trans({'%count%': field.value.h}, 'EasyAdminBundle'))]) %}{% endif %}
+    {% if field.value.i > 0 %}{% set parts = parts|merge([('date_interval.minutes'|trans({'%count%': field.value.i}, 'EasyAdminBundle'))]) %}{% endif %}
+    {% if field.value.s > 0 %}{% set parts = parts|merge([('date_interval.seconds'|trans({'%count%': field.value.s}, 'EasyAdminBundle'))]) %}{% endif %}
+    {% if parts is empty %}{% set parts = [('date_interval.empty'|trans({}, 'EasyAdminBundle'))] %}{% endif %}
+    <time datetime="{{ field.value.format('P%yY%mM%dDT%hH%iM%sS') }}">{{ parts|join(' ') }}</time>
+{% endif %}

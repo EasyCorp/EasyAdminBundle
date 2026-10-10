@@ -56,7 +56,7 @@ class StringToFileTransformer implements DataTransformerInterface
     public function reverseTransform(mixed $value): array|string|null
     {
         if (null === $value || [] === $value) {
-            return $this->multiple ? [] : '';
+            return $this->multiple ? [] : null;
         }
 
         if (!$this->multiple) {

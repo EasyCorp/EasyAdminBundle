@@ -68,6 +68,18 @@ class RouteNameAccessControlBypassTest extends AbstractCrudTestCase
     }
 
     /**
+     * An unknown '?routeName=' value comes straight from the query string
+     * (legacy URL from a bookmark, a typo, or a bot probing the admin), so it
+     * is a client error: it must be a 404, not an uncaught 500 (#7827).
+     */
+    public function testUnknownRouteNameReturns404InsteadOf500(): void
+    {
+        $this->client->request('GET', '/admin?routeName=this_route_does_not_exist', [], [], ['PHP_AUTH_USER' => 'admin', 'PHP_AUTH_PW' => '1234']);
+
+        static::assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
+    }
+
+    /**
      * The fix must not over-restrict: a user with the required role can still reach the
      * route through a custom action.
      */

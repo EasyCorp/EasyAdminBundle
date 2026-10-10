@@ -15,9 +15,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ControllerResolverInterface;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Exception\InvalidParameterException;
+use Symfony\Component\Routing\Exception\MethodNotAllowedException;
 use Symfony\Component\Routing\Exception\MissingMandatoryParametersException;
+use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\Matcher\RequestMatcherInterface;
@@ -226,7 +229,13 @@ readonly class AdminRouterSubscriber implements EventSubscriberInterface
 
         $this->assertTargetRouteAccessIsGranted($newRequest);
 
-        $parameters = $this->requestMatcher->matchRequest($newRequest);
+        try {
+            $parameters = $this->requestMatcher->matchRequest($newRequest);
+        } catch (MethodNotAllowedException $e) {
+            throw new MethodNotAllowedHttpException($e->getAllowedMethods(), sprintf('The route "%s" does not allow the "%s" method (allowed methods: %s).', $routeName, $newRequest->getMethod(), implode(', ', $e->getAllowedMethods())), $e);
+        } catch (ResourceNotFoundException $e) {
+            throw new NotFoundHttpException(sprintf('The route "%s" does not match the current request (check its host, scheme and condition).', $routeName), $e);
+        }
 
         return $parameters['_controller'] ?? null;
     }

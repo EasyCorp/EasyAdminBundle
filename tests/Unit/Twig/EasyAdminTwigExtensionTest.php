@@ -6,6 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Twig\EasyAdminTwigExtension;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Contracts\Translation\TranslatableInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Twig\Extension\GlobalsInterface;
 
 class EasyAdminTwigExtensionTest extends KernelTestCase
 {
@@ -95,6 +96,13 @@ class EasyAdminTwigExtensionTest extends KernelTestCase
         $this->assertMatchesRegularExpression('/^ea-[0-9A-HJKMNP-TV-Z]{26}$/', $uid());
         $this->assertMatchesRegularExpression('/^ea-form-[0-9A-HJKMNP-TV-Z]{26}$/', $uid('ea-form-'));
         $this->assertNotSame($uid(), $uid());
+    }
+
+    public function testDoesNotDefineTwigGlobals(): void
+    {
+        // an 'ea' global would replace the local 'ea' variable when Symfony resolves
+        // the parent templates of form themes, because that only uses the Twig globals
+        $this->assertFalse(is_subclass_of(EasyAdminTwigExtension::class, GlobalsInterface::class));
     }
 
     public static function provideValuesForIsNotEmpty(): iterable

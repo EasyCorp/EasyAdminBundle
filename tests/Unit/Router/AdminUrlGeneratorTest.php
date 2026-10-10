@@ -112,6 +112,20 @@ class AdminUrlGeneratorTest extends KernelTestCase
         $this->assertNull($adminUrlGenerator->get('sort'));
     }
 
+    public function testRouteParametersDontLeakToNextUrl(): void
+    {
+        $adminUrlGenerator = $this->getAdminUrlGenerator();
+
+        // generating a URL for a custom route (the linkToRoute() code path) must reset the
+        // internal state so its parameters don't leak into the next URL generated in the
+        // same request; otherwise the following CRUD URLs lose their filters/page/sort
+        $adminUrlGenerator->setRoute('some_route', ['key' => 'value']);
+        $adminUrlGenerator->generateUrl();
+
+        $this->assertSame('http://localhost/admin?foo=bar', $adminUrlGenerator->generateUrl());
+        $this->assertNull($adminUrlGenerator->get(EA::ROUTE_NAME));
+    }
+
     public function testExplicitDashboardController(): void
     {
         $adminUrlGenerator = $this->getAdminUrlGenerator();

@@ -156,6 +156,17 @@ final class AdminUrlGenerator implements \Stringable, AdminUrlGeneratorInterface
 
     public function generateUrl(): string
     {
+        try {
+            return $this->doGenerateUrl();
+        } finally {
+            // this is important to start the generation of each URL from the same initial state
+            // otherwise, some parameters used when generating some URL could leak to other URLs
+            $this->isInitialized = false;
+        }
+    }
+
+    private function doGenerateUrl(): string
+    {
         if (false === $this->isInitialized) {
             $this->initialize();
         }
@@ -239,13 +250,8 @@ final class AdminUrlGenerator implements \Stringable, AdminUrlGeneratorInterface
         }
 
         $url = $this->urlGenerator->generate($routeName, $canonicalRouteParameters, $urlType);
-        $url = '' === $url ? '?' : $url;
 
-        // this is important to start the generation of each URL from the same initial state
-        // otherwise, some parameters used when generating some URL could leak to other URLs
-        $this->isInitialized = false;
-
-        return $url;
+        return '' === $url ? '?' : $url;
     }
 
     private function setRouteParameter(string $parameterName, mixed $parameterValue): void

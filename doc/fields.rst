@@ -797,6 +797,7 @@ These are all the built-in fields provided by EasyAdmin:
 * :doc:`MarkdownEditorField </fields/MarkdownEditorField>` (EasyAdmin Pro)
 * :doc:`MoneyField </fields/MoneyField>`
 * :doc:`NumberField </fields/NumberField>`
+* :doc:`PasswordField </fields/PasswordField>`
 * :doc:`PercentField </fields/PercentField>`
 * :doc:`SlugField </fields/SlugField>`
 * :doc:`TelephoneField </fields/TelephoneField>`

@@ -560,7 +560,8 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $queryBuilderCallable = $field?->getCustomOption(AssociationField::OPTION_QUERY_BUILDER_CALLABLE);
 
         if (null !== $queryBuilderCallable) {
-            $queryBuilder = $queryBuilderCallable($queryBuilder) ?? $queryBuilder;
+            $autocompleteDependsOn = $context->getRequest()->query->all('autocompleteDependsOn');
+            $queryBuilder = $queryBuilderCallable($queryBuilder, $autocompleteDependsOn) ?? $queryBuilder;
         }
 
         $callback = $field?->getCustomOption(AssociationField::OPTION_AUTOCOMPLETE_CALLBACK)

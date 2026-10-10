@@ -294,7 +294,8 @@ the same pages are installed locally under `vendor/easycorp/easyadmin-bundle/doc
   By property name, EasyAdmin picks `EntityFilter` for associations,
   `BooleanFilter` for booleans, `DateTimeFilter` for date and time types,
   `NumericFilter` for numeric types, `ArrayFilter` for array types and
-  `TextFilter` for everything else. <!-- src/Config/Filters.php::add; src/Factory/FilterFactory.php::guessFilterClass -->
+  `TextFilter` for everything else. Guessing also works for nested paths
+  (`->add('author.name')`, `->add('author.publisher')`). <!-- src/Config/Filters.php::add; src/Factory/FilterFactory.php::guessFilterClass -->
 - Filter options have no `set` prefix: `canSelectMultiple()`,
   `renderExpanded()`, `includeOnly()`, `remove()`, `preferredChoices()` and
   `EntityFilter::autocomplete()`; `ChoiceFilter` needs `setChoices()`. <!-- src/Filter/EntityFilter.php::autocomplete; src/Filter/ChoiceFilter.php::setChoices; src/Filter/CountryFilter.php::preferredChoices -->

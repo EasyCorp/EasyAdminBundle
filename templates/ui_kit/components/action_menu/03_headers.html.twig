@@ -1,0 +1,17 @@
+{# Headers and dividers
+   Group related items with headers and separate the groups with dividers. #}
+<twig:ea:ActionMenu>
+    <twig:ea:ActionMenu:Button>Export</twig:ea:ActionMenu:Button>
+
+    <twig:ea:ActionMenu:Overlay>
+        <twig:ea:ActionMenu:ActionList>
+            <twig:ea:ActionMenu:ActionList:Header label="Current page" />
+            <twig:ea:ActionMenu:ActionList:Item label="Export as CSV" icon="filetypes:spreadsheet" icon:style="font-size: var(--icon-size-sm)" url="#" />
+            <twig:ea:ActionMenu:ActionList:Item label="Export as PDF" icon="filetypes:pdf" icon:style="font-size: var(--icon-size-sm)" url="#" />
+            <twig:ea:ActionMenu:ActionList:Divider />
+            <twig:ea:ActionMenu:ActionList:Header label="All results" />
+            <twig:ea:ActionMenu:ActionList:Item label="Export as CSV" icon="filetypes:spreadsheet" icon:style="font-size: var(--icon-size-sm)" url="#" />
+            <twig:ea:ActionMenu:ActionList:Item label="Export as PDF" icon="filetypes:pdf" icon:style="font-size: var(--icon-size-sm)" url="#" />
+        </twig:ea:ActionMenu:ActionList>
+    </twig:ea:ActionMenu:Overlay>
+</twig:ea:ActionMenu>

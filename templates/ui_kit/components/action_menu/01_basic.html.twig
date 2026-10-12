@@ -1,0 +1,16 @@
+{# Basic menu
+   A dropdown of related actions. The Button opens the menu, the Overlay
+   positions it and the ActionList contains its items. #}
+<twig:ea:ActionMenu>
+    <twig:ea:ActionMenu:Button>Actions</twig:ea:ActionMenu:Button>
+
+    <twig:ea:ActionMenu:Overlay>
+        <twig:ea:ActionMenu:ActionList>
+            <twig:ea:ActionMenu:ActionList:Item label="View" icon="internal:detail" url="#" />
+            <twig:ea:ActionMenu:ActionList:Item label="Edit" icon="internal:edit" url="#" />
+            <twig:ea:ActionMenu:ActionList:Item label="Download PDF" icon="internal:download" url="#" />
+            <twig:ea:ActionMenu:ActionList:Divider />
+            <twig:ea:ActionMenu:ActionList:Item label="Delete" icon="internal:delete" url="#" />
+        </twig:ea:ActionMenu:ActionList>
+    </twig:ea:ActionMenu:Overlay>
+</twig:ea:ActionMenu>

@@ -1,0 +1,14 @@
+{# Tabs
+   The component renders the tab bar. The contents of each tab go in elements
+   whose id is the paneId of the tab. #}
+<twig:ea:Tabs>
+    <twig:ea:Tabs:Item paneId="ui-kit-tab-general" label="General" active />
+    <twig:ea:Tabs:Item paneId="ui-kit-tab-pricing" label="Pricing" />
+    <twig:ea:Tabs:Item paneId="ui-kit-tab-inventory" label="Inventory" />
+</twig:ea:Tabs>
+
+<div class="tab-content">
+    <div class="tab-pane active" id="ui-kit-tab-general">Name, description and images of the product.</div>
+    <div class="tab-pane" id="ui-kit-tab-pricing">Price, taxes and discounts.</div>
+    <div class="tab-pane" id="ui-kit-tab-inventory">Stock and warehouses.</div>
+</div>

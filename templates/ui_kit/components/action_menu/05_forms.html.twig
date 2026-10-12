@@ -1,0 +1,13 @@
+{# Items that send a form
+   Use renderAsForm for actions that change data. The item sends a POST request
+   to its URL instead of following a link. #}
+<twig:ea:ActionMenu>
+    <twig:ea:ActionMenu:Button>Actions</twig:ea:ActionMenu:Button>
+
+    <twig:ea:ActionMenu:Overlay>
+        <twig:ea:ActionMenu:ActionList>
+            <twig:ea:ActionMenu:ActionList:Item label="Duplicate" icon="internal:plus" url="#" renderAsForm />
+            <twig:ea:ActionMenu:ActionList:Item label="Archive" icon="internal:folder-open" url="#" renderAsForm />
+        </twig:ea:ActionMenu:ActionList>
+    </twig:ea:ActionMenu:Overlay>
+</twig:ea:ActionMenu>

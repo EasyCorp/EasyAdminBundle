@@ -1,5 +1,20 @@
 {% extends '@WebProfiler/Profiler/layout.html.twig' %}
 
+{% block head %}
+    {{ parent() }}
+    <style>
+        .easyadmin-resources { display: grid; gap: 15px; grid-template-columns: repeat(2, 1fr); margin-block: 1em; }
+        .easyadmin-resources .card, .easyadmin-pro.card { margin: 0; padding: 15px; }
+        .easyadmin-resources .card a, .easyadmin-resources .card strong, .easyadmin-pro h4 { display: block; font-weight: bold; margin-block-end: 4px; }
+        .easyadmin-resources .card p { margin: 0; }
+        .easyadmin-resources .card a { font-size: 16px; font-weight: 500; }
+        .easyadmin-pro h4 { font-size: 18px; font-weight: 500; }
+        .easyadmin-pro ul { margin-block: 8px; }
+        .easyadmin-pro p:last-child { margin-block-end: 0; }
+        .easyadmin-pro p .text-muted { display: block; font-size: 14px; margin-top: 8px; }
+    </style>
+{% endblock %}
+
 {% block menu %}
     <span class="label {{ not collector.isEasyAdminRequest ? 'disabled' }}">
         <span class="icon">{{ include(profiler_markup_version >= 3 ? '@EasyAdmin/inspector/icon-v3.svg.twig' : '@EasyAdmin/inspector/icon.svg.twig') }}</span>
@@ -15,29 +30,170 @@
             <p>No information available because this route is not related to EasyAdmin.</p>
         </div>
     {% else %}
+        {% set data = collector.data %}
+
+        <h3>Route</h3>
         <table>
-            <thead>
-                <tr>
-                    <th scope="col" class="key">Key</th>
-                    <th scope="col">Value</th>
-                </tr>
-            </thead>
             <tbody>
-                {% for key, value in collector.data %}
+                <tr>
+                    <th scope="row" class="key">Route name</th>
+                    <td>{{ data.route.name ?? 'n/a' }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Path</th>
+                    <td>{{ data.route.path }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Controller</th>
+                    <td>{{ profiler_dump(data.route.controller) }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Type</th>
+                    <td>{{ data.crud ? 'CRUD action' : data.admin_route ? 'Custom admin route' : 'Dashboard' }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        {% if data.crud %}
+            <h3>CRUD</h3>
+            <table>
+                <tbody>
                     <tr>
-                        <th scope="row">{{ key }}</th>
-                        <td>{{ profiler_dump(value) }}</td>
+                        <th scope="row" class="key">Controller</th>
+                        <td>{{ data.crud.controller_fqcn }}</td>
                     </tr>
-                {% endfor %}
+                    <tr>
+                        <th scope="row">Entity</th>
+                        <td>{{ data.crud.entity_fqcn }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Action</th>
+                        <td>{{ data.crud.action }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Page</th>
+                        <td>{{ data.crud.page ?? 'n/a (custom action)' }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Entity ID</th>
+                        <td>{{ data.crud.entity_id ?? 'n/a' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        {% elseif data.admin_route %}
+            <h3>Custom admin route</h3>
+            <table>
+                <tbody>
+                    <tr>
+                        <th scope="row" class="key">Controller</th>
+                        <td>{{ data.admin_route.controller_fqcn }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Method</th>
+                        <td>{{ data.admin_route.method }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        {% endif %}
+
+        {% if data.list_state %}
+            <h3>List state</h3>
+            <p class="help">These values come from the query string of the URL.</p>
+            <table>
+                <tbody>
+                    <tr>
+                        <th scope="row" class="key">Sort</th>
+                        <td>{{ profiler_dump(data.list_state.sort) }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Filters</th>
+                        <td>{{ profiler_dump(data.list_state.filters) }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Search query</th>
+                        <td>{{ profiler_dump(data.list_state.query) }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Page number</th>
+                        <td>{{ profiler_dump(data.list_state.page) }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        {% endif %}
+
+        <h3>Dashboard</h3>
+        <table>
+            <tbody>
+                <tr>
+                    <th scope="row" class="key">Controller</th>
+                    <td>{{ data.dashboard.controller_fqcn }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Route name</th>
+                    <td>{{ data.dashboard.route_name }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Title</th>
+                    <td>{{ data.dashboard.title|striptags|trim ?: 'n/a' }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Locale</th>
+                    <td>{{ data.dashboard.locale }} ({{ data.dashboard.text_direction }})</td>
+                </tr>
+                <tr>
+                    <th scope="row">Translation domain</th>
+                    <td>{{ data.dashboard.translation_domain }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Icon set</th>
+                    <td>{{ data.dashboard.icon_set }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Theme</th>
+                    <td>{{ data.dashboard.theme ? profiler_dump(data.dashboard.theme) : 'default' }}</td>
+                </tr>
             </tbody>
         </table>
     {% endif %}
 
-    <h3>Additional Resources</h3>
+    <h3>Resources</h3>
 
-    <ul>
-        <li><a href="https://github.com/EasyCorp/EasyAdminBundle/issues">Report an issue</a></li>
-        <li><a href="https://symfony.com/doc/current/bundles/EasyAdminBundle/index.html">Read documentation</a></li>
-        <li><a href="https://github.com/EasyCorp/EasyAdminBundle">Project homepage</a></li>
-    </ul>
+    <div class="easyadmin-resources">
+        <div class="card">
+            <a href="https://symfony.com/doc/current/bundles/EasyAdminBundle/index.html">Documentation</a>
+            <p class="text-muted">Guides and reference for every feature.</p>
+        </div>
+        <div class="card">
+            {% if collector.isEasyAdminRequest and collector.data.ui_kit_url %}
+                <a href="{{ collector.data.ui_kit_url }}">UI Kit</a>
+                <p class="text-muted">All the Twig components of EasyAdmin and their options, rendered in this dashboard.</p>
+            {% else %}
+                <strong>UI Kit</strong>
+                <p class="text-muted">The Twig components of EasyAdmin. Only available on admin pages in debug mode.</p>
+            {% endif %}
+        </div>
+        <div class="card">
+            <a href="https://github.com/EasyCorp/EasyAdminBundle/issues">Report an issue</a>
+            <p class="text-muted">Found a bug? Tell us on GitHub.</p>
+        </div>
+        <div class="card">
+            <a href="https://github.com/EasyCorp/EasyAdminBundle">Source code</a>
+            <p class="text-muted">The EasyAdmin repository on GitHub.</p>
+        </div>
+    </div>
+
+    <div class="card easyadmin-pro">
+        <h4>💎 EasyAdmin Pro</h4>
+        <p>From the creator of EasyAdmin, it adds more features to your backends:</p>
+        <ul>
+            <li><strong>Audit Log</strong>: see who changed your data, when, and what the previous values were</li>
+            <li><strong>Content Lock</strong>: show who's editing a record and keep others from overwriting their work</li>
+            <li><strong>Messenger Inspector</strong>: track background jobs and investigate failures from your backend</li>
+            <li><strong>Markdown Editor Field</strong>: write Markdown with a formatting toolbar and live preview</li>
+        </ul>
+        <p>
+            <a href="https://easycorp.io/pro" target="blank">See features and pricing</a>
+            <span class="text-muted">EasyAdmin stays free and MIT-licensed. EasyAdmin Pro helps fund its development.</span>
+        </p>
+    </div>
 {% endblock %}

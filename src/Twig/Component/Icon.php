@@ -5,7 +5,15 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Twig\Component;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\IconSet;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Provider\AdminContextProviderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\IconDto;
+use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\Size;
 
+/**
+ * Renders an icon of any icon set (FontAwesome, internal SVG icons, Symfony UX Icons).
+ *
+ * Unlike other components, the base size of icons is not 'md' but the size of the
+ * surrounding text, so no size means no CSS class and every 'size' value (including
+ * 'md') emits its own class mapped to the '--icon-size-*' design tokens.
+ */
 class Icon
 {
     private const FILETYPES_ICON_PREFIX = 'filetypes';
@@ -15,6 +23,10 @@ class Icon
      * The name of the icon (e.g. 'fa-user' for FontAwesome icons or 'internal:delete' for EasyAdmin icons).
      */
     public ?string $name = null;
+    /**
+     * The size of the icon: 'sm', 'md' or 'lg'; when null, the icon follows the size of the surrounding text.
+     */
+    public ?Size $size = null;
     private ?string $iconSet = null;
 
     /** @var array<string, array{path: string, contents: string}> */
@@ -23,6 +35,21 @@ class Icon
     public function __construct(
         private readonly AdminContextProviderInterface $adminContextProvider,
     ) {
+    }
+
+    public function mount(string|Size|null $size = null): void
+    {
+        // unknown sizes fall back to no size, so the icon follows the size of the text
+        $this->size = \is_string($size) ? Size::tryFrom($size) : $size;
+    }
+
+    public function getDefaultCssClass(): string
+    {
+        if (null === $this->size) {
+            return 'icon';
+        }
+
+        return 'icon ea-icon-'.$this->size->value;
     }
 
     public function isBuiltInIconSet(): bool

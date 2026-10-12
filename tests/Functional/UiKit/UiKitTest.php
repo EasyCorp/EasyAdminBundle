@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\UiKit;
 
+use EasyCorp\Bundle\EasyAdminBundle\UiKit\ComponentDocumentationReader;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class UiKitTest extends WebTestCase
@@ -56,6 +57,71 @@ class UiKitTest extends WebTestCase
         $this->assertStringStartsWith('<twig:ea:Badge variant="success">Paid</twig:ea:Badge>', $source->text());
         $this->assertStringNotContainsString('{#', $source->text());
         $this->assertSame('twig:ea:Badge', $source->filter('.hl-tag .hl-name')->first()->text());
+    }
+
+    public function testAnonymousComponentPageShowsItsPropsAndBlocks(): void
+    {
+        if (!ComponentDocumentationReader::isSupported()) {
+            $this->markTestSkipped('Documentation comments require Twig 3.29 and TwigComponent 3.5 or higher.');
+        }
+
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/admin/_ea_ui_kit/components/modal');
+
+        $this->assertResponseIsSuccessful();
+        $sizeCells = $crawler->filter('#props tbody tr')->reduce(static fn ($row) => 'size' === $row->filter('td')->first()->text())->filter('td');
+        $this->assertSame("'sm'|'lg'|'xl'|null", $sizeCells->eq(1)->text());
+        $this->assertSame('null', $sizeCells->eq(2)->text());
+        $this->assertStringStartsWith('The window width', $sizeCells->eq(3)->text());
+        $propNames = $crawler->filter('#props tbody tr td:first-child')->each(static fn ($cell) => $cell->text());
+        $this->assertSame(['bodyClass', 'description', 'footerClass', 'headerClass', 'icon', 'size', 'title', 'topIcon'], $propNames);
+
+        $this->assertSame('API Reference', $crawler->filter('section#api-reference h2')->text());
+        $this->assertSame('Prop Name', $crawler->filter('#props thead th')->first()->text());
+        $this->assertSame('Block Name', $crawler->filter('#blocks thead th')->first()->text());
+
+        $blockNames = $crawler->filter('#blocks tbody tr td:first-child')->each(static fn ($cell) => $cell->text());
+        $this->assertSame(['header', 'body', 'footer'], $blockNames);
+    }
+
+    public function testComponentPageShowsThePropsAndBlocksOfItsSubComponents(): void
+    {
+        if (!ComponentDocumentationReader::isSupported()) {
+            $this->markTestSkipped('Documentation comments require Twig 3.29 and TwigComponent 3.5 or higher.');
+        }
+
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/admin/_ea_ui_kit/components/modal');
+
+        $this->assertResponseIsSuccessful();
+        $trigger = $crawler->filter('section#sub-component-modal-trigger');
+        $this->assertSame('<twig:ea:Modal:Trigger>', $trigger->filter('h3')->text());
+        $this->assertSame(['target', 'type'], $trigger->filter('tbody tr td:first-child')->each(static fn ($cell) => $cell->text()));
+        $this->assertSame('required', $trigger->filter('tbody tr')->first()->filter('td')->eq(2)->text());
+
+        // nested sub-components are included too, sorted by their path
+        $crawler = $client->request('GET', '/admin/_ea_ui_kit/components/action_menu');
+        $sectionIds = $crawler->filter('section[id^="sub-component-"]')->each(static fn ($section) => $section->attr('id'));
+        $this->assertContains('sub-component-actionmenu-actionlist-item', $sectionIds);
+        $this->assertLessThan(array_search('sub-component-actionmenu-button', $sectionIds, true), array_search('sub-component-actionmenu-actionlist', $sectionIds, true));
+        // sub-components without props or blocks (e.g. the divider) are not listed
+        $this->assertNotContains('sub-component-actionmenu-actionlist-divider', $sectionIds);
+    }
+
+    public function testClassBackedComponentPageShowsThePropsOfItsClass(): void
+    {
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/admin/_ea_ui_kit/components/badge');
+
+        $this->assertResponseIsSuccessful();
+        $sizeCells = $crawler->filter('#props tbody tr')->reduce(static fn ($row) => 'size' === $row->filter('td')->first()->text())->filter('td');
+        $this->assertSame('Size|string', $sizeCells->eq(1)->text());
+        $this->assertSame("'md'", $sizeCells->eq(2)->text());
+        $this->assertStringStartsWith('The size of the badge', $sizeCells->eq(3)->text());
+        // default values use the colors of the Symfony Docs syntax highlighting
+        $this->assertSame('hl-string', $sizeCells->eq(2)->filter('code')->attr('class'));
+        $iconDefault = $crawler->filter('#props tbody tr')->reduce(static fn ($row) => 'icon' === $row->filter('td')->first()->text())->filter('td')->eq(2);
+        $this->assertSame('hl-literal', $iconDefault->filter('code')->attr('class'));
     }
 
     public function testExamplesAreSortedByTheirFileName(): void

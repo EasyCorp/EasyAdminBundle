@@ -16,19 +16,61 @@ use Symfony\UX\TwigComponent\Attribute\PreMount;
  */
 class Button
 {
+    /**
+     * The color of the button: 'default', 'primary', 'success', 'warning', 'danger' or 'info' (any other value is added as a 'btn-{variant}' CSS class).
+     */
     public ?ButtonVariant $variant = ButtonVariant::Default;
+    /**
+     * Whether to remove the background and borders of the button (useful for icon-only buttons).
+     */
     public bool $isInvisible = false;
+    /**
+     * Whether the button takes the full width of its container.
+     */
     public bool $isBlock = false;
+    /**
+     * The size of the button: 'sm', 'md' or 'lg'.
+     */
     public Size $size = Size::Medium;
+    /**
+     * The name of the optional icon displayed next to the label.
+     */
     public ?string $icon = null;
+    /**
+     * Whether to display the icon after the label instead of before it.
+     */
     public bool $withTrailingIcon = false;
+    /**
+     * Whether to render the button in a disabled state.
+     */
     public bool $inactive = false;
+    /**
+     * The HTML element used to render the button: 'button', 'a' (a link that looks like a button) or 'form' (a form that submits to the action URL).
+     */
     public ButtonElement $htmlElement = ButtonElement::Button;
+    /**
+     * The URL of the link (only when htmlElement is 'a').
+     */
     public ?string $href = null;
+    /**
+     * The URL the form is submitted to (only when htmlElement is 'form').
+     */
     public ?string $action = null;
+    /**
+     * The HTTP method of the form (only when htmlElement is 'form'); methods other than GET and POST are sent as POST with a '_method' field.
+     */
     public string $method = 'POST';
+    /**
+     * The type attribute of the <button> element: 'submit' or 'button'.
+     */
     public ButtonType $type = ButtonType::Submit;
+    /**
+     * The name attribute of the <button> element (useful to tell apart several submit buttons of the same form).
+     */
     public ?string $name = null;
+    /**
+     * The value attribute of the <button> element.
+     */
     public ?string $value = null;
     private ?string $customVariant = null;
 

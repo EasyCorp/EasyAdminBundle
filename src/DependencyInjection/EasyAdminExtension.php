@@ -8,6 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterConfiguratorInterface;
+use EasyCorp\Bundle\EasyAdminBundle\UiKit\ComponentDocumentationReader;
 use EasyCorp\Bundle\EasyAdminBundle\UiKit\TwigSourceHighlighter;
 use EasyCorp\Bundle\EasyAdminBundle\UiKit\UiKitController;
 use Symfony\Component\Config\FileLocator;
@@ -60,11 +61,15 @@ class EasyAdminExtension extends Extension implements PrependExtensionInterface
 
         if ($this->isUiKitEnabled($container)) {
             $container->register(TwigSourceHighlighter::class, TwigSourceHighlighter::class);
+            $container->register(ComponentDocumentationReader::class, ComponentDocumentationReader::class)
+                ->setArguments([new Reference('twig')]);
             $container->register(UiKitController::class, UiKitController::class)
                 ->setArguments([
                     new Reference('twig'),
                     new Reference(TwigSourceHighlighter::class),
+                    new Reference(ComponentDocumentationReader::class),
                     \dirname(__DIR__, 2).'/templates/ui_kit/components',
+                    \dirname(__DIR__, 2).'/templates/components',
                 ])
                 ->addTag('controller.service_arguments')
                 ->addTag(self::TAG_ADMIN_ROUTE_CONTROLLER);

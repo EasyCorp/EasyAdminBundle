@@ -18,11 +18,15 @@ use Twig\Environment;
 final class UiKitController
 {
     private const COMPONENTS_TEMPLATE_PREFIX = '@EasyAdmin/ui_kit/components';
+    // the namespace mapped to the 'ea:' prefix in EasyAdminExtension::prepend()
+    private const COMPONENTS_NAMESPACE = 'EasyCorp\\Bundle\\EasyAdminBundle\\Twig\\Component\\';
 
     public function __construct(
         private readonly Environment $twig,
         private readonly TwigSourceHighlighter $highlighter,
+        private readonly ComponentDocumentationReader $documentationReader,
         private readonly string $componentsDir,
+        private readonly string $componentTemplatesDir,
     ) {
     }
 
@@ -46,6 +50,8 @@ final class UiKitController
             'component_dir_name' => $name,
             'component_name' => $components[$name],
             'examples' => $this->findExamples($name),
+            'documentation' => $this->findDocumentation($components[$name]),
+            'sub_components_documentation' => $this->findSubComponentsDocumentation($components[$name]),
         ]));
     }
 
@@ -63,6 +69,59 @@ final class UiKitController
         ksort($components);
 
         return $components;
+    }
+
+    /**
+     * @return array{props: list<array<string, mixed>>, blocks: list<array<string, mixed>>}|null
+     */
+    private function findDocumentation(string $componentPath): ?array
+    {
+        $templateName = sprintf('@EasyAdmin/components/%s.html.twig', $componentPath);
+        $documentation = $this->twig->getLoader()->exists($templateName) ? $this->documentationReader->read($templateName) : null;
+
+        // the props of class-backed components are read from their PHP class, so they
+        // are available even when Twig doesn't support documentation comments
+        $componentClass = self::COMPONENTS_NAMESPACE.str_replace('/', '\\', $componentPath);
+        if (class_exists($componentClass)) {
+            $documentation = [
+                'props' => $this->documentationReader->readClassProps($componentClass),
+                'blocks' => $documentation['blocks'] ?? [],
+            ];
+        }
+
+        return $documentation;
+    }
+
+    /**
+     * Sub-components are the templates stored in the directory of the component (e.g. 'Modal:Trigger').
+     *
+     * @return array<string, array{props: list<array<string, mixed>>, blocks: list<array<string, mixed>>}>
+     */
+    private function findSubComponentsDocumentation(string $componentName): array
+    {
+        $subComponentsDir = $this->componentTemplatesDir.'/'.$componentName;
+        if (!is_dir($subComponentsDir)) {
+            return [];
+        }
+
+        $subComponentPaths = [];
+        foreach (new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($subComponentsDir, \FilesystemIterator::SKIP_DOTS)) as $file) {
+            if (str_ends_with($file->getFilename(), '.html.twig')) {
+                $relativePath = substr($file->getPathname(), \strlen($this->componentTemplatesDir) + 1, -\strlen('.html.twig'));
+                $subComponentPaths[] = str_replace('\\', '/', $relativePath);
+            }
+        }
+        sort($subComponentPaths);
+
+        $documentation = [];
+        foreach ($subComponentPaths as $subComponentPath) {
+            $subComponentDocumentation = $this->findDocumentation($subComponentPath);
+            if ([] !== ($subComponentDocumentation['props'] ?? []) || [] !== ($subComponentDocumentation['blocks'] ?? [])) {
+                $documentation[str_replace('/', ':', $subComponentPath)] = $subComponentDocumentation;
+            }
+        }
+
+        return $documentation;
     }
 
     /**

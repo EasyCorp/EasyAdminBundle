@@ -1,4 +1,5 @@
 {% props
+    ## bool Whether some items of the list open a submenu (`ItemGroup` sub-components).
     hasSubmenus = false,
 %}
 
@@ -8,5 +9,6 @@
 ) %}
 
 <ul {{ attributes.defaults({class: css_class}) }}>
+    {## The items of the list (`Item`, `ItemGroup`, `Header`, `Divider`, etc. sub-components). -#}
     <twig:block name="content"></twig:block>
 </ul>

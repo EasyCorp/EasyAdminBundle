@@ -615,6 +615,10 @@ a.user-menu-wrapper .user-details:hover {
     border-radius: var(--dropdown-item-radius);
     color: var(--dropdown-link-color);
 }
+.dropdown-menu .dropdown-item.disabled,
+.dropdown-menu .dropdown-item:disabled {
+    color: var(--bs-dropdown-link-disabled-color);
+}
 .dropdown-menu a:hover {
     background: var(--dropdown-link-hover-bg);
 }

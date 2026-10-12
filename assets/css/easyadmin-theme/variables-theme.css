@@ -138,6 +138,7 @@
     --dropdown-color: var(--gray-600);
     --dropdown-border-color: var(--gray-200);
     --dropdown-link-color: var(--gray-700);
+    --dropdown-link-disabled-color: var(--text-tertiary-color);
     --dropdown-link-hover-bg: var(--gray-100);
     --dropdown-icon-color: var(--gray-600);
     --dropdown-settings-icon-color: var(--gray-400);
@@ -587,6 +588,7 @@
     --dropdown-color: var(--gray-300);
     --dropdown-border-color: var(--gray-700);
     --dropdown-link-color: var(--gray-300);
+    --dropdown-link-disabled-color: var(--text-tertiary-color);
     --dropdown-link-hover-bg: var(--gray-800);
     --dropdown-icon-color: var(--gray-400);
     --dropdown-settings-icon-color: var(--gray-500);

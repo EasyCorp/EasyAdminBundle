@@ -36,7 +36,7 @@ class App {
 
         this.#removeHashFormUrl();
         initTabs();
-        this.#createMainMenu();
+        this.#createSidebarSubmenus();
         this.#createLayoutResizeControls();
         this.#createNavigationToggler();
         this.#createSearchHighlight();
@@ -73,33 +73,41 @@ class App {
         window.history.replaceState({}, '', urlWithoutHash);
     }
 
-    #createMainMenu() {
+    #createSidebarSubmenus() {
         // the expand/collapse animation is fully CSS-based (see sidebar.css); this only
         // toggles the 'is-expanded' class, keeping a single submenu open at a time
         // '.is-kept-open' submenus are always expanded: they don't toggle and the
         // accordion never closes them
-        const menuItemsWithSubmenus = document.querySelectorAll(
-            '#main-menu .ea-sidebar-item.has-submenu:not(.is-kept-open)'
-        );
-        menuItemsWithSubmenus.forEach((menuItem) => {
-            const submenuToggle = menuItem.querySelector(':scope > .ea-sidebar-item-link');
-            if (null === submenuToggle) {
+        // the listener is delegated so it also works for sidebar items rendered outside
+        // the main menu (e.g. in custom pages) or added to the page after it loads
+        const submenuItemSelector = '.ea-sidebar-item.has-submenu:not(.is-kept-open)';
+        const submenuToggleSelector = ':scope > .ea-sidebar-item-link';
+
+        document.addEventListener('click', (event) => {
+            const submenuToggle = event.target.closest('.ea-sidebar-item-link');
+            const menuItem = submenuToggle?.parentElement;
+            if (!menuItem?.matches(submenuItemSelector)) {
                 return;
             }
 
-            submenuToggle.addEventListener('click', () => {
-                const willExpand = !menuItem.classList.contains('is-expanded');
+            const willExpand = !menuItem.classList.contains('is-expanded');
 
-                menuItemsWithSubmenus.forEach((otherMenuItem) => {
-                    otherMenuItem.classList.remove('is-expanded');
-                    otherMenuItem
-                        .querySelector(':scope > .ea-sidebar-item-link')
-                        ?.setAttribute('aria-expanded', 'false');
-                });
+            // the accordion applies to the whole menu that contains the item (all its
+            // groups); items rendered outside a menu only close their siblings
+            const accordionScope = menuItem.closest('.ea-sidebar-content') ?? menuItem.parentElement;
+            accordionScope.querySelectorAll(`${submenuItemSelector}.is-expanded`).forEach((otherMenuItem) => {
+                // nested submenus must keep their open ancestors (the components allow
+                // more than one level, even though the main menu only uses one)
+                if (otherMenuItem.contains(menuItem)) {
+                    return;
+                }
 
-                menuItem.classList.toggle('is-expanded', willExpand);
-                submenuToggle.setAttribute('aria-expanded', String(willExpand));
+                otherMenuItem.classList.remove('is-expanded');
+                otherMenuItem.querySelector(submenuToggleSelector)?.setAttribute('aria-expanded', 'false');
             });
+
+            menuItem.classList.toggle('is-expanded', willExpand);
+            submenuToggle.setAttribute('aria-expanded', String(willExpand));
         });
     }
 

@@ -43,10 +43,12 @@ final readonly class ExceptionContext
      */
     public function getTranslationParameters(): array
     {
-        return array_map(
-            static fn ($parameter): string => u($parameter)->ensureStart('%')->ensureEnd('%')->toString(),
-            $this->parameters
+        $placeholders = array_map(
+            static fn (string $name): string => u($name)->ensureStart('%')->ensureEnd('%')->toString(),
+            array_keys($this->parameters)
         );
+
+        return array_combine($placeholders, $this->parameters);
     }
 
     public function getStatusCode(): int

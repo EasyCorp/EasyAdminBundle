@@ -35,32 +35,41 @@ Usage examples:
 #}
 
 {% props
-    title = null, # the main text shown in the modal window
-    description = null, # the smaller optional text shown below the title
-    size = null, # window width; values: `sm` 320px, default 380px, `lg` 512px, `xl` 800px
-    icon = null, # name of the optional icon shown at the top left of the window
-    topIcon = null, # name of the optional icon shown on top of the modal contents
-    headerClass = '', # custom CSS class(es) added to the modal header HTML element
-    bodyClass = '', # custom CSS class(es) added to the modal body HTML element
-    footerClass = '' # custom CSS class(es) added to the modal footer HTML element
+    ## string|null The main text shown in the modal window (it may contain HTML).
+    title = null,
+    ## string|null The smaller optional text shown below the title (it may contain HTML).
+    description = null,
+    ## 'sm'|'lg'|'xl'|null The window width: `sm` 320px, default 380px, `lg` 512px, `xl` 800px.
+    size = null,
+    ## string|null The name of the optional icon shown at the top left of the window.
+    icon = null,
+    ## string|null The name of the optional icon shown on top of the modal contents.
+    topIcon = null,
+    ## string Custom CSS class(es) added to the modal header HTML element.
+    headerClass = '',
+    ## string Custom CSS class(es) added to the modal body HTML element.
+    bodyClass = '',
+    ## string Custom CSS class(es) added to the modal footer HTML element.
+    footerClass = '',
 %}
 {% set modalIcon = topIcon ?? icon %}
 <div {{ attributes.defaults({class: 'modal fade', tabindex: '-1'}) }}>
     <div class="modal-dialog {{ size ? 'modal-dialog-' ~ size }}">
         <div class="modal-content">
             {% if block('header') is not empty %}
-                <div class="modal-header {{ headerClass }}">{% block header %}{% endblock %}</div>
+                <div class="modal-header {{ headerClass }}">{## The contents of the modal header; the header is not rendered when this block is empty. ##}{% block header %}{% endblock %}</div>
             {% endif %}
             <div class="modal-body {{ bodyClass }} {{ modalIcon ? (topIcon ? 'modal-body--top-icon' : 'modal-body--icon') }}">
                 {% if modalIcon %}<span class="modal-icon {{ topIcon ? 'modal-icon--top' }}"><twig:ea:Icon name="{{ modalIcon }}" /></span>{% endif %}
                 <div class="modal-body-content">
                     {% if title %}<h4>{{ title|raw }}</h4>{% endif %}
                     {% if description %}<p>{{ description|raw }}</p>{% endif %}
+                    {## Custom contents displayed below the title and the description. -#}
                     {% block body %}{% endblock %}
                 </div>
             </div>
             {% if block('footer') is not empty %}
-                <div class="modal-footer {{ footerClass }}">{% block footer %}{% endblock %}</div>
+                <div class="modal-footer {{ footerClass }}">{## The contents of the modal footer (usually its buttons); the footer is not rendered when this block is empty. ##}{% block footer %}{% endblock %}</div>
             {% endif %}
         </div>
     </div>

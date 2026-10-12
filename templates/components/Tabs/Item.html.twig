@@ -1,11 +1,17 @@
 {# A single tab of the <twig:ea:Tabs> component. #}
 {% props
-    paneId, # id of the '.tab-pane' element displayed when this tab is selected
-    label = '', # tab label (pass it already translated; it may contain HTML)
-    active = false, # true when this is the selected tab
-    icon = null, # optional icon displayed before the label
-    errorCount = 0, # number of form validation errors in the fields of this tab
-    badge = null, # optional FormTabBadgeDto displayed after the label
+    ## string The id of the `.tab-pane` element displayed when this tab is selected.
+    paneId,
+    ## string The tab label (pass it already translated; it may contain HTML).
+    label = '',
+    ## bool Whether this is the selected tab.
+    active = false,
+    ## string|null The name of the optional icon displayed before the label.
+    icon = null,
+    ## int The number of form validation errors in the fields of this tab.
+    errorCount = 0,
+    ## FormTabBadgeDto|null The optional badge displayed after the label.
+    badge = null,
 %}
 
 <li {{ attributes.defaults({class: 'nav-item'}) }}>

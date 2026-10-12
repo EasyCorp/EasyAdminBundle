@@ -1,5 +1,61 @@
 {% extends '@EasyAdmin/ui_kit/layout.html.twig' %}
 
+{# renders the `...` parts of a documentation comment as code #}
+{% macro render_documentation(text) %}
+    {%- for part in text|split('`') -%}
+        {%- if loop.index is even %}<code>{{ part }}</code>{% else %}{{ part }}{% endif -%}
+    {%- endfor -%}
+{% endmacro %}
+
+{% macro sub_component_section_id(sub_component_name) -%}
+    sub-component-{{ sub_component_name|replace({':': '-'})|lower }}
+{%- endmacro %}
+
+{# uses the same colors as the syntax highlighting of the Symfony Docs #}
+{% macro default_value_css_class(value) -%}
+    {%- if value starts with "'" -%}hl-string
+    {%- elseif value in ['true', 'false', 'null'] or value matches '/^-?\\d+(\\.\\d+)?$/' -%}hl-literal
+    {%- endif -%}
+{%- endmacro %}
+
+{% macro render_props_table(props) %}
+    <div class="table-responsive">
+        <table class="table datagrid">
+            <thead>
+                <tr><th scope="col">Prop Name</th><th scope="col">Type</th><th scope="col">Default</th><th scope="col">Description</th></tr>
+            </thead>
+            <tbody>
+                {% for prop in props|sort((a, b) => a.name|lower <=> b.name|lower) %}
+                    <tr>
+                        <td><code>{{ prop.name }}</code></td>
+                        <td><code>{{ prop.type }}</code></td>
+                        <td>{% if prop.required %}<em>required</em>{% else %}<code class="{{ _self.default_value_css_class(prop.default) }}">{{ prop.default }}</code>{% endif %}</td>
+                        <td>{{ _self.render_documentation(prop.description) }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endmacro %}
+
+{% macro render_blocks_table(blocks) %}
+    <div class="table-responsive">
+        <table class="table datagrid">
+            <thead>
+                <tr><th scope="col">Block Name</th><th scope="col">Description</th></tr>
+            </thead>
+            <tbody>
+                {% for block in blocks %}
+                    <tr>
+                        <td><code>{{ block.name }}</code></td>
+                        <td>{{ _self.render_documentation(block.description) }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endmacro %}
+
 {% block content_title %}{{ component_name }}{% endblock %}
 
 {% block breadcrumb_items %}
@@ -23,4 +79,36 @@
             <pre class="ea-ui-kit-source"><code>{{ example.highlighted_code|raw }}</code></pre>
         </section>
     {% endfor %}
+
+    {% if documentation.props|default([]) is not empty or documentation.blocks|default([]) is not empty %}
+        <hr class="ea-ui-kit-divider">
+        <section class="ea-ui-kit-reference" id="api-reference" aria-labelledby="api-reference-title">
+            <h2 id="api-reference-title">API Reference</h2>
+            {% if documentation.props is not empty %}
+                <div id="props">{{ _self.render_props_table(documentation.props) }}</div>
+            {% endif %}
+            {% if documentation.blocks is not empty %}
+                <div id="blocks">{{ _self.render_blocks_table(documentation.blocks) }}</div>
+            {% endif %}
+        </section>
+    {% endif %}
+
+    {% if sub_components_documentation is not empty %}
+        <hr class="ea-ui-kit-divider">
+        <section class="ea-ui-kit-reference" id="sub-components" aria-labelledby="sub-components-title">
+            <h2 id="sub-components-title">Sub-components</h2>
+            {% for sub_component_name, sub_component_documentation in sub_components_documentation %}
+                {% set section_id = _self.sub_component_section_id(sub_component_name) %}
+                <section class="ea-ui-kit-sub-component" id="{{ section_id }}" aria-labelledby="{{ section_id }}-title">
+                    <h3 id="{{ section_id }}-title"><code>&lt;twig:ea:{{ sub_component_name }}&gt;</code></h3>
+                    {% if sub_component_documentation.props is not empty %}
+                        <div>{{ _self.render_props_table(sub_component_documentation.props) }}</div>
+                    {% endif %}
+                    {% if sub_component_documentation.blocks is not empty %}
+                        <div>{{ _self.render_blocks_table(sub_component_documentation.blocks) }}</div>
+                    {% endif %}
+                </section>
+            {% endfor %}
+        </section>
+    {% endif %}
 {% endblock %}

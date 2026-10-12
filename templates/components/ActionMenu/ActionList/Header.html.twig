@@ -1,7 +1,11 @@
 {% props
+    ## string|null The text of the header; the header is not rendered when both the label and the icon are empty.
     label = null,
+    ## bool If true, the label is rendered without escaping its HTML contents.
     renderLabelRaw = false,
+    ## string|null The name of the optional icon displayed before the label.
     icon = null,
+    ## array Extra HTML attributes for the `<li>` element.
     htmlAttributes = {},
 %}
 

@@ -3,13 +3,16 @@
    prop; each renders a trailing checkmark when selected. The exclusivity is owned
    by the caller (server-side or JS), this component only adds the group semantics and styling #}
 {% props
+    ## string|null The optional text displayed as the header of the group.
     label = null,
+    ## string|null Custom CSS class(es) added to the header of the group.
     labelClass = null,
 %}
 
 {% if label %}<twig:ea:ActionMenu:ActionList:Header label="{{ label }}" class="{{ labelClass }}" />{% endif %}
 <li>
     <ul role="group" {{ attributes.defaults({class: 'dropdown-selectable-group dropdown-radio-group'}) }}>
+        {## The options of the group (`<twig:ea:ActionMenu:ActionList:Item>` elements that pass a `selected` prop). -#}
         <twig:block name="content"></twig:block>
     </ul>
 </li>

@@ -12,10 +12,25 @@ use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\Size;
  */
 class Badge
 {
+    /**
+     * The color of the badge: the usual Bootstrap values ('primary', 'success', 'danger', etc.) plus 'outline' (any other value is added as a 'badge-{variant}' CSS class; null renders no variant class).
+     */
     public ?BadgeVariant $variant = BadgeVariant::Secondary;
+    /**
+     * The name of the optional icon displayed before the label.
+     */
     public ?string $icon = null;
+    /**
+     * The name of the optional icon displayed after the label.
+     */
     public ?string $endIcon = null;
+    /**
+     * The size of the badge: 'sm' or 'md' ('lg' renders the same as 'md').
+     */
     public Size $size = Size::Medium;
+    /**
+     * The border radius of the badge: 'none', 'sm', 'md', 'lg' or 'full' (pill-shaped); when null, it inherits the border radius of the project.
+     */
     public ?Radius $radius = null;
     private ?string $customVariant = null;
 

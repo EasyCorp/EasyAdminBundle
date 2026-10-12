@@ -1,11 +1,13 @@
 {% props
-    label = null, # parent item label (pass it already translated); shown as the flyout title in compact mode
+    ## string|null The label of the parent item (pass it already translated); shown as the flyout title in compact mode.
+    label = null,
 %}
 
 <div {{ attributes.defaults({class: 'ea-sidebar-submenu'}) }}>
     <div class="ea-sidebar-submenu-inner">
         {% if label is not null %}<div class="ea-sidebar-submenu-title" aria-hidden="true">{{ label|raw }}</div>{% endif %}
         <ul class="ea-sidebar-submenu-items">
+            {## The items of the submenu (`<twig:ea:Sidebar:Item>` elements). -#}
             <twig:block name="content"></twig:block>
         </ul>
     </div>

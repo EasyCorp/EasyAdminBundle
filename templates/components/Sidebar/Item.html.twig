@@ -1,15 +1,26 @@
 {% props
-    label, # item text (pass it already translated; it may contain HTML)
-    href = null, # link URL; ignored when hasSubmenu is true (parent items only toggle their submenu)
-    icon = null, # optional icon name
-    active = false, # true when this item matches the current page
-    expanded = false, # true when the item submenu is open (only meaningful with hasSubmenu)
-    hasSubmenu = false, # true renders a non-clickable <button> that toggles/reveals the submenu
-    keepOpen = false, # true renders the submenu always expanded and not collapsible (pass expanded=true too)
-    target = null, # link target attribute
-    rel = null, # link rel attribute
-    cssClass = null, # extra CSS class(es) for the <a>/<button> element
-    htmlAttributes = {}, # extra HTML attributes for the <a>/<button> element
+    ## string The item text (pass it already translated; it may contain HTML).
+    label,
+    ## string|null The link URL; ignored when `hasSubmenu` is true (parent items only toggle their submenu).
+    href = null,
+    ## string|null The name of the optional icon.
+    icon = null,
+    ## bool Whether this item matches the current page.
+    active = false,
+    ## bool Whether the item submenu is open (only meaningful with `hasSubmenu`).
+    expanded = false,
+    ## bool If true, renders a non-clickable `<button>` that toggles/reveals the submenu.
+    hasSubmenu = false,
+    ## bool If true, renders the submenu always expanded and not collapsible (pass `expanded` as true too).
+    keepOpen = false,
+    ## string|null The `target` attribute of the link.
+    target = null,
+    ## string|null The `rel` attribute of the link.
+    rel = null,
+    ## string|null Extra CSS class(es) for the `<a>`/`<button>` element.
+    cssClass = null,
+    ## array Extra HTML attributes for the `<a>`/`<button>` element.
+    htmlAttributes = {},
 %}
 
 {% set item_class = html_classes('ea-sidebar-item', {
@@ -32,6 +43,7 @@
         {%- for attribute_name, attribute_value in htmlAttributes %} {{ attribute_name }}="{{ attribute_value|e('html') }}"{% endfor %}>
         {% if icon %}<span class="ea-sidebar-item-icon"><twig:ea:Icon name="{{ icon }}" /></span>{% endif %}
         <span class="ea-sidebar-item-label">{{ label|raw }}</span>
+        {## Optional contents displayed after the label (e.g. a badge). -#}
         <twig:block name="badge"></twig:block>
         {% if hasSubmenu %}<twig:ea:Icon name="internal:chevron-right" class="ea-sidebar-item-chevron" />{% endif %}
     </{{ link_tag }}>
@@ -42,5 +54,6 @@
         <span class="ea-sidebar-item-tooltip" aria-hidden="true">{{ label|raw }}</span>
     {% endif %}
 
+    {## The submenu of the item (usually a `<twig:ea:Sidebar:Submenu>` element). -#}
     <twig:block name="submenu"></twig:block>
 </li>

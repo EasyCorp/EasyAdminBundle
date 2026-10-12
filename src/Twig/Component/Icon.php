@@ -11,6 +11,9 @@ class Icon
     private const FILETYPES_ICON_PREFIX = 'filetypes';
     private const ICONS_DIR = __DIR__.'/../../../assets/icons';
 
+    /**
+     * The name of the icon (e.g. 'fa-user' for FontAwesome icons or 'internal:delete' for EasyAdmin icons).
+     */
     public ?string $name = null;
     private ?string $iconSet = null;
 

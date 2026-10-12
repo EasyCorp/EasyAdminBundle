@@ -6,5 +6,8 @@
 
     Usage (inside a footer block): <twig:ea:Modal:Close>Cancel</twig:ea:Modal:Close>
 #}
-{% props type = 'button' %}
+{% props
+    ## string The `type` attribute of the button.
+    type = 'button',
+%}
 <twig:ea:Button type="{{ type }}" data-bs-dismiss="modal" {{ ...attributes }}>{{ block(outerBlocks.content) }}</twig:ea:Button>

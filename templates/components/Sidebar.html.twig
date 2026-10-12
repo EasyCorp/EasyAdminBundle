@@ -1,6 +1,7 @@
 {% props %}
 
 <aside {{ attributes.defaults({class: 'ea-sidebar'}) }}>
+    {## The contents of the sidebar (usually `Header`, `Content` and `Footer` sub-components). -#}
     <twig:block name="content"></twig:block>
 
     <div id="sidebar-resizer-handler" class="resizer-handler resizer-handler-left"></div>

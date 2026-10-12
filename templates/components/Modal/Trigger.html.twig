@@ -6,5 +6,10 @@
 
     Usage: <twig:ea:Modal:Trigger target="#my-modal" variant="primary">Open</twig:ea:Modal:Trigger>
 #}
-{% props target, type = 'button' %}
+{% props
+    ## string The CSS selector of the modal to open (e.g. `#delete-modal`).
+    target,
+    ## string The `type` attribute of the button.
+    type = 'button',
+%}
 <twig:ea:Button type="{{ type }}" data-bs-toggle="modal" data-bs-target="{{ target }}" {{ ...attributes }}>{{ block(outerBlocks.content) }}</twig:ea:Button>

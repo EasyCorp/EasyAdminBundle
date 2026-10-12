@@ -1,4 +1,5 @@
 {% props
+    ## bool If true, the caret displayed by Bootstrap next to the dropdown toggle is hidden.
     withoutDropdownToggleMarker = false,
 %}
 
@@ -8,5 +9,6 @@
 ) %}
 
 <a {{ attributes.defaults({class: css_class, href: '#', role: 'button', 'data-bs-toggle': 'dropdown', 'aria-haspopup': 'true', 'aria-expanded': 'false'}) }}>
+    {## The contents of the button that opens the menu (e.g. a label or an icon). -#}
     <twig:block name="content"></twig:block>
 </a>

@@ -1,13 +1,22 @@
 {% props
-    checked = false, # true|false (default: false) whether the switch is on
-    disabled = false, # true|false (default: false)
-    name = null, # input name attribute (for form submission)
-    value = '1', # value submitted when the switch is checked (default: '1')
-    id = null, # input id attribute (to wire an external <label for="...">)
-    required = false, # true|false (default: false)
-    size = 'md', # sm|md (string or Option\Size enum) (default: 'md')
-    variant = null, # null|success|warning|danger - colors the checked state (matches the button colors)
-    ariaLabel = null, # accessible name when there is no visible label
+    ## bool Whether the switch is on.
+    checked = false,
+    ## bool Whether the switch is disabled.
+    disabled = false,
+    ## string|null The `name` attribute of the input (for form submission).
+    name = null,
+    ## string The value submitted when the switch is checked.
+    value = '1',
+    ## string|null The `id` attribute of the input (to wire an external `<label for="...">`).
+    id = null,
+    ## bool Whether the switch is required.
+    required = false,
+    ## 'sm'|'md'|Size The size of the switch (a string or a `Size` enum case).
+    size = 'md',
+    ## 'success'|'warning'|'danger'|null The color of the checked state (it matches the button colors).
+    variant = null,
+    ## string|null The accessible name of the switch, needed when there is no visible label.
+    ariaLabel = null,
 %}
 
 {% set size_value = size.value is defined ? size.value : size %}

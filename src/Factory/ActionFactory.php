@@ -277,14 +277,6 @@ final readonly class ActionFactory
         if ($actionDto->hasConfirmation()) {
             $confirmationMessage = $actionDto->getConfirmationMessage();
 
-            // the DELETE action shows a richer, dedicated confirmation by default: a
-            // specific title and a description ("there is no undo…"). A custom delete
-            // confirmation message (or any other action) keeps the generic behavior.
-            $useDefaultDeleteConfirmation = Action::DELETE === $actionDto->getName() && true === $confirmationMessage;
-            if ($useDefaultDeleteConfirmation) {
-                $confirmationMessage = t('delete_modal.title', [], 'EasyAdminBundle');
-            }
-
             $actionDto->addHtmlAttributes([
                 'data-bs-toggle' => 'modal',
                 'data-bs-target' => '#modal-action-confirmation',
@@ -292,7 +284,14 @@ final readonly class ActionFactory
                 'data-action-variant' => $actionDto->getVariant()->value,
             ]);
 
-            // add confirmation message attribute
+            // the DELETE action shows a dedicated title and description by default; a
+            // custom message (for any action) replaces both and is shown as regular text,
+            // because it's often a long explanation that doesn't fit in a heading
+            if (Action::DELETE === $actionDto->getName() && true === $confirmationMessage) {
+                $actionDto->setHtmlAttribute('data-action-confirmation-title', t('delete_modal.title', [], 'EasyAdminBundle'));
+                $actionDto->setHtmlAttribute('data-action-confirmation-content', t('delete_modal.content', [], 'EasyAdminBundle'));
+            }
+
             if (true !== $confirmationMessage) {
                 $actionDto->setHtmlAttribute(
                     'data-action-confirmation-message',
@@ -300,11 +299,6 @@ final readonly class ActionFactory
                         ? $confirmationMessage
                         : t($confirmationMessage, $defaultTranslationParameters, $translationDomain)
                 );
-            }
-
-            // add confirmation description attribute (shown below the title)
-            if ($useDefaultDeleteConfirmation) {
-                $actionDto->setHtmlAttribute('data-action-confirmation-content', t('delete_modal.content', [], 'EasyAdminBundle'));
             }
 
             // add confirmation button label attribute

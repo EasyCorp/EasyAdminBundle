@@ -9,7 +9,9 @@
 <twig:ea:Modal id="modal-action-confirmation">
     <twig:block name="body">
         <h4 id="action-confirmation-title">{{ 'action_confirmation_modal.title'|trans([], 'EasyAdminBundle') }}</h4>
-        {# optional description, populated by JS from the action's data-action-confirmation-content (e.g. the DELETE action) #}
+        {# populated by JS from the data-action-confirmation-message attribute of the action; when present, the title is hidden #}
+        <p id="action-confirmation-message" class="modal-message d-none"></p>
+        {# optional description, populated by JS from the data-action-confirmation-content attribute of the action (e.g. the DELETE action) #}
         <p id="action-confirmation-content" class="d-none"></p>
     </twig:block>
     <twig:block name="footer">

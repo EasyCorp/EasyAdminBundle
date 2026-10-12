@@ -157,6 +157,7 @@ return static function (ContainerConfigurator $container) {
 
         ->set(EasyAdminDataCollector::class)
             ->arg(0, service(AdminContextProvider::class))
+            ->arg(1, service('router'))
             ->tag('data_collector', ['id' => 'easyadmin', 'template' => '@EasyAdmin/inspector/data_collector.html.twig'])
 
         ->set(ExceptionListener::class)

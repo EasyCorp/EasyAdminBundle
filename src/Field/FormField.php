@@ -162,6 +162,31 @@ final class FormField implements FieldInterface
         return $this;
     }
 
+    /**
+     * Sets the HTML id of the tab, which is also used in the URL hash to remember the
+     * selected tab. By default, it's generated from the translated tab label, so it
+     * changes with the locale; set a fixed value to keep it the same in all locales.
+     * This method can only be used on form tabs created with FormField::addTab().
+     *
+     * @param string $id Only ASCII letters, digits, dashes and underscores are allowed
+     */
+    public function setTabId(string $id): self
+    {
+        if ('ea_form_tab' !== $this->dto->getProperty()) {
+            throw new \InvalidArgumentException(sprintf('The %s() method can only be used on form tabs created with the "FormField::addTab()" method.', __METHOD__));
+        }
+
+        // browsers percent-encode other characters in the URL hash, so the tab
+        // selected via the URL hash couldn't be found again when reloading the page
+        if (1 !== preg_match('/^[a-zA-Z0-9_-]+$/', $id)) {
+            throw new \InvalidArgumentException(sprintf('The tab ID "%s" passed to %s() is not valid. It can only contain ASCII letters, digits, dashes and underscores (e.g. "contact-info").', $id, __METHOD__));
+        }
+
+        $this->setCustomOption(self::OPTION_TAB_ID, $id);
+
+        return $this;
+    }
+
     public function collapsible(bool $collapsible = true): self
     {
         if (!$this->hasLabelOrIcon()) {

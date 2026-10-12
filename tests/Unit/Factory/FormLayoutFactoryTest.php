@@ -321,6 +321,26 @@ class FormLayoutFactoryTest extends TestCase
         $this->assertSame($expectedTabId, $tabField->getCustomOption(FormField::OPTION_TAB_ID));
     }
 
+    public function testCustomTabIdIsNotOverridden(): void
+    {
+        $fields = new FieldCollection([
+            FormField::addTab(new TranslatableMessage('Contact information'))->setTabId('contact'),
+            TextField::new('some_field'),
+            FormField::addTab('Other details'),
+            TextField::new('other_field'),
+        ]);
+
+        $formLayoutFactory = new FormLayoutFactory(new IdentityTranslator());
+        $formLayoutFactory->createLayout($fields, Crud::PAGE_EDIT);
+
+        $tabFields = array_values(array_filter(iterator_to_array($fields), static fn (FieldDto $fieldDto): bool => $fieldDto->isFormTab()));
+
+        $this->assertCount(2, $tabFields);
+        $this->assertSame('contact', $tabFields[0]->getCustomOption(FormField::OPTION_TAB_ID));
+        $this->assertSame('contact', $tabFields[0]->getFormTypeOption('ea_tab_id'));
+        $this->assertSame('tab-other-details', $tabFields[1]->getCustomOption(FormField::OPTION_TAB_ID));
+    }
+
     public function testTabBadgeSurvivesLayoutAndReachesTabList(): void
     {
         $fields = new FieldCollection([

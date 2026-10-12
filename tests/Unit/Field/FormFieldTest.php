@@ -80,4 +80,38 @@ class FormFieldTest extends TestCase
 
         FormField::addFieldset('Foo')->setBadge(7);
     }
+
+    public function testSetTabId(): void
+    {
+        $dto = FormField::addTab('Bars')->setTabId('bars')->getAsDto();
+
+        $this->assertSame('bars', $dto->getCustomOption(FormField::OPTION_TAB_ID));
+    }
+
+    public function testSetTabIdThrowsOnNonTabFields(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        FormField::addFieldset('Foo')->setTabId('foo');
+    }
+
+    /**
+     * @dataProvider provideInvalidTabIds
+     */
+    public function testSetTabIdThrowsOnIdsThatAreNotUrlSafe(string $id): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage(sprintf('The tab ID "%s"', $id));
+
+        FormField::addTab('Bars')->setTabId($id);
+    }
+
+    public static function provideInvalidTabIds(): \Generator
+    {
+        yield 'empty' => [''];
+        yield 'non-ASCII letters' => ['información'];
+        yield 'whitespace' => ['contact info'];
+        yield 'hash' => ['contact#info'];
+        yield 'percent' => ['contact%20info'];
+    }
 }

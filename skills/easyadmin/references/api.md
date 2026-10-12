@@ -1067,6 +1067,7 @@ collapsible(bool $collapsible = true): self
 renderCollapsed(bool $collapsed = true): self
 setBadge(Stringable|bool|callable|float|int|string|null $content, string $style = 'secondary', array $htmlAttributes = []): self
 setIcon(string $iconCssClass): self
+setTabId(string $id): self
 ```
 
 Also accepts every FieldTrait method (see [Field\FieldTrait](#fieldfieldtrait)).

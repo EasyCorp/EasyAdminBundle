@@ -337,6 +337,13 @@ The arguments of the ``addTab()`` method are:
     is also kept when going from the ``detail`` page to the ``edit`` page of the
     same entity (and vice versa).
 
+The ID of each tab is created from its translated label, so it changes when the
+backend locale changes. If your backend uses more than one locale, set a fixed
+ID with the ``setTabId()`` method to keep the same tab selected after switching
+locales::
+
+    FormField::addTab('Contact information')->setTabId('contact'),
+
 Tabs can display a small badge next to their label (e.g. to show the number of
 related items in a tab) with the ``setBadge()`` method::
 

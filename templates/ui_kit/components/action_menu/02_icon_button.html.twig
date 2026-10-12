@@ -1,0 +1,16 @@
+{# Icon button
+   Use withoutDropdownToggleMarker to hide the arrow of the button. This is how
+   EasyAdmin displays the actions of each row on index pages. #}
+<twig:ea:ActionMenu>
+    <twig:ea:ActionMenu:Button withoutDropdownToggleMarker aria-label="Order actions">
+        <twig:ea:Icon name="internal:dots-horizontal" />
+    </twig:ea:ActionMenu:Button>
+
+    <twig:ea:ActionMenu:Overlay>
+        <twig:ea:ActionMenu:ActionList>
+            <twig:ea:ActionMenu:ActionList:Item label="Mark as shipped" url="#" />
+            <twig:ea:ActionMenu:ActionList:Item label="Send invoice" url="#" />
+            <twig:ea:ActionMenu:ActionList:Item label="Refund" url="#" />
+        </twig:ea:ActionMenu:ActionList>
+    </twig:ea:ActionMenu:Overlay>
+</twig:ea:ActionMenu>

@@ -1,0 +1,16 @@
+{# Submenus
+   Items with hasSubmenu toggle the submenu defined in their submenu block.
+   (In this page the submenus don't toggle: the JavaScript of EasyAdmin only
+   handles the items of the main menu). #}
+<twig:ea:Sidebar:Group label="Catalog">
+    <twig:ea:Sidebar:Item label="Products" icon="fa-solid fa-box" hasSubmenu expanded>
+        <twig:block name="submenu">
+            <twig:ea:Sidebar:Submenu label="Products">
+                <twig:ea:Sidebar:Item label="All products" href="#" active />
+                <twig:ea:Sidebar:Item label="Categories" href="#" />
+                <twig:ea:Sidebar:Item label="Brands" href="#" />
+            </twig:ea:Sidebar:Submenu>
+        </twig:block>
+    </twig:ea:Sidebar:Item>
+    <twig:ea:Sidebar:Item label="Reviews" href="#" icon="fa-solid fa-star" />
+</twig:ea:Sidebar:Group>

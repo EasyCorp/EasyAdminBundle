@@ -5,7 +5,9 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\DataFixtures\AppFixtures;
 
 return static function (ContainerConfigurator $container) {
-    $container->parameters()->set('locale', 'en');
+    $container->parameters()
+        ->set('locale', 'en')
+        ->set('easyadmin.ui_kit.enabled', true);
 
     $services = $container->services()
         ->defaults()

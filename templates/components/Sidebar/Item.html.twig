@@ -21,7 +21,7 @@
 {% set link_tag = hasSubmenu ? 'button' : 'a' %}
 
 <li {{ attributes.defaults({class: item_class}) }}>
-    <{{ link_tag }} class="{{ html_classes('ea-sidebar-item-link', cssClass) }}"
+    <{{ link_tag }} class="{{ html_classes('ea-sidebar-item-link', cssClass ?? '') }}"
         {# keep-open items are not a disclosure widget, so they don't announce aria-expanded #}
         {%- if hasSubmenu %} type="button"{% if not keepOpen %} aria-expanded="{{ expanded ? 'true' : 'false' }}"{% endif %}
         {%- else %} href="{{ href }}" referrerpolicy="origin-when-cross-origin"

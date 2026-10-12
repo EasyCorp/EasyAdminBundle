@@ -1,0 +1,18 @@
+{% extends '@EasyAdmin/ui_kit/layout.html.twig' %}
+
+{% block content_title %}EasyAdmin UI Kit{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item"><a href="{{ path(ea().dashboardRouteName) }}">{{ ea().dashboardTitle|striptags }}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">UI Kit</li>
+{% endblock %}
+
+{% block main %}
+    <p>Here you can find all the Twig components included in EasyAdmin. Each one comes with live examples and their full code. All examples use the assets and the configuration of your dashboard.</p>
+
+    <ul>
+        {% for dir_name, component_name in components %}
+            <li><a href="{{ path(ea().dashboardRouteName ~ '_ea_ui_kit_component', {name: dir_name}) }}">{{ component_name }}</a></li>
+        {% endfor %}
+    </ul>
+{% endblock %}

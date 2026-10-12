@@ -1,0 +1,10 @@
+{# Actions
+   Use the actions block to add buttons related to the message. #}
+<twig:ea:Alert variant="danger" title="3 orders could not be shipped" icon="internal:circle-exclamation">
+    The shipping addresses of these orders are incomplete.
+
+    <twig:block name="actions">
+        <twig:ea:Button variant="danger" size="sm" htmlElement="a" href="#">Review orders</twig:ea:Button>
+        <twig:ea:Button size="sm" type="button">Remind me later</twig:ea:Button>
+    </twig:block>
+</twig:ea:Alert>

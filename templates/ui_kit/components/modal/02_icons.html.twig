@@ -1,0 +1,18 @@
+{# Icons
+   Use icon to display an icon next to the contents, or topIcon to display it
+   above them. #}
+<twig:ea:Modal:Trigger target="#ui-kit-icon-modal">Icon</twig:ea:Modal:Trigger>
+<twig:ea:Modal:Trigger target="#ui-kit-top-icon-modal">Top icon</twig:ea:Modal:Trigger>
+
+<twig:ea:Modal id="ui-kit-icon-modal" icon="internal:circle-info" title="Your export is ready" description="We also sent the file to your email address.">
+    <twig:block name="footer">
+        <twig:ea:Modal:Close variant="primary">OK</twig:ea:Modal:Close>
+    </twig:block>
+</twig:ea:Modal>
+
+<twig:ea:Modal id="ui-kit-top-icon-modal" topIcon="internal:circle-exclamation" title="Publish this product?" description="It will be visible to all the customers of your store.">
+    <twig:block name="footer">
+        <twig:ea:Modal:Close>Not now</twig:ea:Modal:Close>
+        <twig:ea:Button variant="primary" type="button" data-bs-dismiss="modal">Publish</twig:ea:Button>
+    </twig:block>
+</twig:ea:Modal>

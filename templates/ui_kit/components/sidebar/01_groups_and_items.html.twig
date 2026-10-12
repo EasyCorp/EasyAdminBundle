@@ -1,0 +1,11 @@
+{# Groups and items
+   These are the parts of the main menu of the dashboard (the Sidebar component
+   is the left column of the page that contains it). The badge block of the
+   items displays extra information. #}
+<twig:ea:Sidebar:Group label="Sales" icon="fa-solid fa-cart-shopping">
+    <twig:ea:Sidebar:Item label="Orders" href="#" icon="fa-solid fa-receipt" active>
+        <twig:block name="badge"><twig:ea:Badge variant="primary" size="sm">12</twig:ea:Badge></twig:block>
+    </twig:ea:Sidebar:Item>
+    <twig:ea:Sidebar:Item label="Invoices" href="#" icon="fa-solid fa-file-invoice" />
+    <twig:ea:Sidebar:Item label="Customers" href="#" icon="fa-solid fa-users" />
+</twig:ea:Sidebar:Group>

@@ -1,0 +1,23 @@
+{# Selectable items
+   Use RadioList when only one option can be selected and CheckboxList when
+   many can. Selected items show a checkmark. You decide which items are selected
+   (the component doesn't change them when clicking). #}
+<twig:ea:ActionMenu>
+    <twig:ea:ActionMenu:Button>View options</twig:ea:ActionMenu:Button>
+
+    <twig:ea:ActionMenu:Overlay>
+        <twig:ea:ActionMenu:ActionList>
+            <twig:ea:ActionMenu:ActionList:RadioList label="Sort by">
+                <twig:ea:ActionMenu:ActionList:Item label="Newest first" url="#" :selected="true" />
+                <twig:ea:ActionMenu:ActionList:Item label="Oldest first" url="#" :selected="false" />
+                <twig:ea:ActionMenu:ActionList:Item label="Highest total" url="#" :selected="false" />
+            </twig:ea:ActionMenu:ActionList:RadioList>
+            <twig:ea:ActionMenu:ActionList:Divider />
+            <twig:ea:ActionMenu:ActionList:CheckboxList label="Show">
+                <twig:ea:ActionMenu:ActionList:Item label="Paid orders" url="#" :selected="true" />
+                <twig:ea:ActionMenu:ActionList:Item label="Pending orders" url="#" :selected="true" />
+                <twig:ea:ActionMenu:ActionList:Item label="Cancelled orders" url="#" :selected="false" />
+            </twig:ea:ActionMenu:ActionList:CheckboxList>
+        </twig:ea:ActionMenu:ActionList>
+    </twig:ea:ActionMenu:Overlay>
+</twig:ea:ActionMenu>

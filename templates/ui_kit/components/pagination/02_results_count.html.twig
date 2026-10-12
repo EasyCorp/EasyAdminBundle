@@ -1,0 +1,4 @@
+{# Number of results
+   Pass totalItems and pageSize instead of lastPage to also show the number of results. #}
+<twig:ea:Pagination :currentPage="1" :totalItems="248" :pageSize="20" urlPattern="?page={page}" />
+<twig:ea:Pagination :currentPage="1" :totalItems="248" :pageSize="20" :showResultsCount="false" urlPattern="?page={page}" />

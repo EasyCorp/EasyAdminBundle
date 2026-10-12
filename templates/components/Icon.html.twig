@@ -1,5 +1,5 @@
 {# @var icon \EasyCorp\Bundle\EasyAdminBundle\Dto\IconDto #}
-<span {{ attributes.defaults({class: 'icon'}) }}>
+<span {{ attributes.defaults({class: this.defaultCssClass()}) }}>
     {% set icon = this.getIcon() %}
     {% if icon.isFontAwesomeIconSet %}
         <i class="{{ icon.name }}"></i>

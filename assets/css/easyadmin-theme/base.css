@@ -60,6 +60,23 @@ body[data-ea-icon-prefix="tabler"] span.icon svg {
     max-block-size: 1.15em;
     max-inline-size: 1.15em;
 }
+/* !important because an explicit size must win over the theme rules that size
+   icons through deep selectors (e.g. '.datagrid .dropdown-actions > .dropdown-toggle .icon') */
+.icon.ea-icon-sm {
+    font-size: var(--icon-size-sm) !important;
+}
+.icon.ea-icon-md {
+    font-size: var(--icon-size-md) !important;
+}
+.icon.ea-icon-lg {
+    font-size: var(--icon-size-lg) !important;
+}
+/* some contexts (e.g. '.dropdown-menu i') also size the FontAwesome glyph itself */
+.icon.ea-icon-sm > i,
+.icon.ea-icon-md > i,
+.icon.ea-icon-lg > i {
+    font-size: inherit !important;
+}
 
 a {
     color: var(--link-color);
@@ -648,6 +665,12 @@ a.user-menu-wrapper .user-details:hover {
     flex-shrink: 0;
     /* reset the item's 20px line-height so glyphs aren't inflated vertically */
     line-height: var(--line-height-none);
+}
+/* the fixed block size above would clip icons with an explicit size */
+.dropdown-menu .icon.ea-icon-sm,
+.dropdown-menu .icon.ea-icon-md,
+.dropdown-menu .icon.ea-icon-lg {
+    block-size: 1em;
 }
 
 .dropdown-menu .dropdown-item,

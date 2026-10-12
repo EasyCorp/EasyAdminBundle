@@ -276,6 +276,26 @@ overriding backend templates, to match the look of the default interface:
 
     <twig:ea:Icon name="internal:search"/>
 
+By default, icons follow the size of the surrounding text, so you can also
+resize them with the ``font-size`` of their parent element. Use the ``size``
+prop to apply one of the icon sizes defined by the theme: ``sm`` (``16px``,
+for icons inline with text), ``md`` (``20px``, for standalone controls) and
+``lg`` (``24px``, for feature icons). These sizes are defined with the
+``--icon-size-sm``, ``--icon-size-md`` and ``--icon-size-lg`` CSS variables
+and they work with every icon set:
+
+.. code-block:: twig
+
+    <twig:ea:Icon name="internal:user" size="lg"/>
+
+    <twig:ea:Icon name="filetypes:document" size="lg"/>
+
+.. tip::
+
+    FontAwesome size classes such as ``fa-2x`` only work with FontAwesome
+    icons. Use the ``size`` prop instead to make your templates work with any
+    icon set.
+
 Modal
 -----
 

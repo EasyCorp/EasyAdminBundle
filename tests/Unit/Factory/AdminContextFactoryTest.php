@@ -7,8 +7,10 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\IconSet;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\AdminContextFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\CategoryCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Dashboard\ComponentDefaultsDashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Category;
+use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\BadgeVariant;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\HttpFoundation\Request;
@@ -351,5 +353,15 @@ class AdminContextFactoryTest extends KernelTestCase
             '<link data-added-from-controller rel="me" href="https://example.com">',
             $assets->getHeadContents()
         );
+    }
+
+    public function testCreateStoresTheComponentDefaultsOfTheDashboard(): void
+    {
+        /** @var ComponentDefaultsDashboardController $dashboardController */
+        $dashboardController = static::getContainer()->get(ComponentDefaultsDashboardController::class);
+
+        $result = $this->adminContextFactory->create(new Request(), $dashboardController, null);
+
+        $this->assertSame(BadgeVariant::Dot, $result->getDashboardComponentDefaults()->getBadgeVariant());
     }
 }

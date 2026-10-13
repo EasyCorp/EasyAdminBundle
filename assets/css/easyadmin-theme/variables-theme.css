@@ -35,6 +35,8 @@
        That makes icon size its own axis: it is not type, so it does not take a
        --font-size-* step. Like the font scale, these are literal steps you
        override individually rather than derive from a knob. */
+    --icon-size-xxs: 10px; /* inside small controls: badge dismiss buttons */
+    --icon-size-xs: 12px; /* inline with small text: badges */
     --icon-size-sm: 16px; /* inline with text: menu and dropdown items */
     --icon-size-md: 20px; /* standalone controls: toolbars, headers, toggles */
     --icon-size-lg: 24px; /* feature icons: modal headers, avatars */
@@ -169,7 +171,6 @@
     --pagination-disabled-color: var(--gray-400);
     --pagination-active-bg: var(--color-primary);
     --pagination-active-color: var(--text-on-primary);
-    --field-language-badge-border-color: var(--gray-300);
     --field-country-flag-border-color: var(--gray-200);
     --modal-bg: var(--white);
     --modal-border-color: var(--border-secondary-color);
@@ -249,39 +250,69 @@
     --form-fieldset-icon-color: var(--gray-500);
     --form-fieldset-collapse-marker-color: var(--gray-400);
     --form-collection-item-collapse-marker-color: var(--gray-400);
-    --badge-border: 0;
-    --badge-boolean-false-bg: var(--gray-200);
-    --badge-boolean-false-box-shadow: inset 0 0 0 1px var(--gray-300);
-    --badge-boolean-false-color: var(--text-color);
-    --badge-boolean-true-bg: var(--color-primary);
-    --badge-boolean-true-box-shadow: none;
-    --badge-boolean-true-color: var(--text-on-primary);
-    --badge-success-bg: var(--green-100);
-    --badge-success-box-shadow: none;
+    /* each badge color defines a tone (the solid background and the base of
+       the light background and border), a text color for the light, outline
+       and dot variants and a text color for the solid variant */
+    /* between the sm and md steps of the radius scale */
+    --badge-border-radius: calc(var(--border-radius) * 1.5);
+    --badge-tint-bg-amount: 10%;
+    --badge-tint-border-amount: 15%;
+    --badge-solid-amount: 100%;
+    --badge-solid-mix-base: var(--black);
+    /* primary is a stronger tint than the other colors, so it doesn't look like the gray secondary color */
+    --badge-primary-tint-bg-amount: 13%;
+    --badge-primary-tint-border-amount: 25%;
+    /* yellow is very light, so its border needs more color to be visible on light surfaces */
+    --badge-warning-tint-border-amount: 35%;
+    /* the light color is almost white, so its border is invisible on white surfaces with the default amount */
+    --badge-light-tint-border-amount: 60%;
+    --badge-outline-border-color: var(--gray-200);
+    --badge-secondary-tone: var(--gray-500);
+    --badge-secondary-color: var(--gray-700);
+    --badge-secondary-solid-color: var(--white);
+    --badge-primary-tone: var(--ea-primary);
+    --badge-primary-color: var(--ea-primary-strong);
+    --badge-primary-solid-color: var(--ea-primary-foreground);
+    --badge-success-tone: var(--green-600);
     --badge-success-color: var(--text-green-600);
-    --badge-warning-bg: var(--yellow-100);
-    --badge-warning-box-shadow: none;
+    --badge-success-solid-color: var(--white);
+    --badge-warning-tone: var(--yellow-500);
     --badge-warning-color: var(--text-yellow-600);
-    --badge-danger-bg: var(--red-100);
-    --badge-danger-box-shadow: none;
+    --badge-warning-solid-color: var(--gray-900);
+    /* yellow-500 looks too dark/orange as a solid background on light surfaces */
+    --badge-warning-solid-tone: var(--yellow-400);
+    /* green-600 is lighter than the other solid colors, so white text has less contrast on it */
+    --badge-success-solid-tone: var(--green-700);
+    --badge-dark-solid-tone: var(--badge-dark-tone);
+    --badge-danger-tone: var(--red-600);
     --badge-danger-color: var(--text-red-600);
-    --badge-info-bg: var(--blue-100);
-    --badge-info-box-shadow: none;
-    --badge-info-color: var(--text-blue-600);
-    --badge-primary-bg: var(--ea-primary-soft);
-    --badge-primary-box-shadow: none;
-    --badge-primary-color: var(--ea-primary-text);
-    --badge-secondary-bg: var(--gray-200);
-    --badge-secondary-box-shadow: none;
-    --badge-secondary-color: var(--gray-600);
-    --badge-light-bg: var(--gray-50);
-    --badge-light-box-shadow: none;
-    --badge-light-color: var(--text-color);
-    --badge-dark-bg: var(--gray-900);
-    --badge-dark-box-shadow: none;
-    --badge-dark-color: var(--gray-50);
-    --badge-outline-box-shadow: inset 0 0 0 1px var(--gray-300);
-    --badge-outline-color: var(--datalist-value-color);
+    --badge-danger-solid-color: var(--white);
+    /* sky instead of blue, like alerts, so info doesn't compete with blue/indigo primary colors */
+    --badge-info-tone: var(--sky-600);
+    --badge-info-color: var(--sky-800);
+    --badge-info-solid-color: var(--white);
+    --badge-light-tone: var(--gray-300);
+    --badge-light-color: var(--gray-600);
+    --badge-light-solid-color: var(--gray-800);
+    --badge-dark-tone: var(--gray-900);
+    --badge-dark-color: var(--gray-900);
+    --badge-dark-solid-color: var(--white);
+    --badge-boolean-false-color: var(--gray-500);
+    /* without the tinted background of the light variant, the outline and dot variants
+       need brighter text colors so each color is still recognizable */
+    --badge-primary-outline-color: var(--ea-primary);
+    --badge-success-outline-color: var(--green-700);
+    --badge-warning-outline-color: var(--yellow-700);
+    --badge-danger-outline-color: var(--red-700);
+    --badge-info-outline-color: var(--sky-700);
+    --badge-secondary-bg: color-mix(in srgb, var(--badge-secondary-tone) var(--badge-tint-bg-amount), transparent);
+    --badge-primary-bg: color-mix(in srgb, var(--badge-primary-tone) var(--badge-primary-tint-bg-amount), transparent);
+    --badge-success-bg: color-mix(in srgb, var(--badge-success-tone) var(--badge-tint-bg-amount), transparent);
+    --badge-warning-bg: color-mix(in srgb, var(--badge-warning-tone) var(--badge-tint-bg-amount), transparent);
+    --badge-danger-bg: color-mix(in srgb, var(--badge-danger-tone) var(--badge-tint-bg-amount), transparent);
+    --badge-info-bg: color-mix(in srgb, var(--badge-info-tone) var(--badge-tint-bg-amount), transparent);
+    --badge-light-bg: color-mix(in srgb, var(--badge-light-tone) var(--badge-tint-bg-amount), transparent);
+    --badge-dark-bg: color-mix(in srgb, var(--badge-dark-tone) var(--badge-tint-bg-amount), transparent);
     --alert-primary-bg: var(--ea-primary-soft);
     --alert-primary-color: var(--ea-primary-text);
     --alert-primary-border-color: var(--ea-primary-muted);
@@ -618,7 +649,6 @@
     --pagination-hover-border-color: var(--gray-600);
     --pagination-active-bg: var(--ea-primary);
     --pagination-active-color: var(--text-on-primary);
-    --field-language-badge-border-color: var(--gray-600);
     --field-country-flag-border-color: var(--gray-600);
     --modal-bg: var(--gray-800);
     --modal-border-color: var(--border-secondary-color);
@@ -695,39 +725,46 @@
     --form-fieldset-icon-color: var(--gray-400);
     --form-fieldset-collapse-marker-color: var(--gray-500);
     --form-collection-item-collapse-marker-color: var(--gray-500);
-    --badge-box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--gray-100) 30%, transparent);
-    --badge-boolean-false-bg: color-mix(in srgb, var(--gray-100) 10%, transparent);
-    --badge-boolean-false-box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--gray-100) 30%, transparent);
-    --badge-boolean-false-color: var(--gray-200);
-    --badge-boolean-true-bg: var(--ea-primary-soft);
-    --badge-boolean-true-box-shadow: inset 0 0 0 1px var(--ea-primary-ring);
-    --badge-boolean-true-color: var(--ea-primary-text);
-    --badge-success-bg: color-mix(in srgb, var(--green-700) 18%, transparent);
-    --badge-success-box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--green-500) 30%, transparent);
-    --badge-success-color: var(--green-300);
-    --badge-warning-bg: color-mix(in srgb, var(--yellow-400) 18%, transparent);
-    --badge-warning-box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--yellow-400) 30%, transparent);
-    --badge-warning-color: var(--yellow-400);
-    --badge-danger-bg: color-mix(in srgb, var(--red-700) 18%, transparent);
-    --badge-danger-box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--red-300) 30%, transparent);
-    --badge-danger-color: var(--red-300);
-    --badge-info-bg: color-mix(in srgb, var(--blue-700) 18%, transparent);
-    --badge-info-box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--blue-400) 30%, transparent);
-    --badge-info-color: var(--blue-400);
-    --badge-primary-bg: var(--ea-primary-soft);
-    --badge-primary-box-shadow: inset 0 0 0 1px var(--ea-primary-ring);
-    --badge-primary-color: var(--ea-primary-text);
-    --badge-secondary-bg: color-mix(in srgb, var(--gray-100) 10%, transparent);
-    --badge-secondary-box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--gray-100) 30%, transparent);
+    --badge-tint-bg-amount: 15%;
+    --badge-tint-border-amount: 25%;
+    /* solid colors are toned down on dark surfaces, where full-intensity colors look too bright */
+    --badge-solid-amount: 80%;
+    --badge-primary-tint-bg-amount: 15%;
+    /* the primary color is usually dark, so on dark surfaces its border needs more color */
+    --badge-primary-tint-border-amount: 50%;
+    --badge-warning-tint-border-amount: 25%;
+    --badge-warning-solid-tone: var(--badge-warning-tone);
+    --badge-success-solid-tone: var(--badge-success-tone);
+    --badge-dark-solid-tone: var(--gray-700);
+    --badge-light-tint-border-amount: 25%;
+    --badge-primary-color: color-mix(in oklab, var(--ea-primary) 40%, var(--ea-primary-contrast-base));
+    --badge-outline-border-color: var(--gray-700);
+    --badge-secondary-tone: var(--gray-500);
     --badge-secondary-color: var(--gray-200);
-    --badge-light-bg: color-mix(in srgb, var(--white) 18%, transparent);
-    --badge-light-box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--white) 30%, transparent);
-    --badge-light-color: var(--white);
-    --badge-dark-bg: color-mix(in srgb, var(--black) 18%, transparent);
-    --badge-dark-box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--gray-400) 30%, transparent);
-    --badge-dark-color: var(--gray-400);
-    --badge-outline-box-shadow: inset 0 0 0 1px var(--gray-500);
-    --badge-outline-color: var(--datalist-value-color);
+    /* pure white text on solid badges is too bright on dark surfaces */
+    --badge-secondary-solid-color: var(--gray-100);
+    --badge-primary-solid-color: color-mix(in oklab, var(--ea-primary-foreground) 90%, var(--ea-primary));
+    --badge-success-solid-color: var(--gray-100);
+    --badge-danger-solid-color: var(--gray-100);
+    --badge-info-solid-color: var(--gray-100);
+    /* green-300 looks neon next to the other text colors, so it's slightly desaturated */
+    --badge-success-color: color-mix(in oklab, var(--green-300) 75%, var(--gray-300));
+    --badge-warning-color: var(--yellow-400);
+    /* between red-300 (too little contrast) and red-200 (looks pink instead of red) */
+    --badge-danger-color: color-mix(in oklab, var(--red-300) 50%, var(--red-200));
+    --badge-info-color: var(--sky-300);
+    --badge-light-tone: var(--gray-300);
+    --badge-light-color: var(--gray-200);
+    /* black is invisible as a tint or border on dark surfaces */
+    --badge-dark-tone: var(--gray-600);
+    --badge-dark-color: var(--gray-300);
+    --badge-dark-solid-color: var(--gray-200);
+    --badge-boolean-false-color: color-mix(in oklab, var(--gray-400) 50%, var(--gray-300));
+    --badge-primary-outline-color: var(--badge-primary-color);
+    --badge-success-outline-color: var(--badge-success-color);
+    --badge-warning-outline-color: var(--badge-warning-color);
+    --badge-danger-outline-color: var(--badge-danger-color);
+    --badge-info-outline-color: var(--badge-info-color);
     --alert-primary-bg: var(--ea-primary-soft);
     --alert-primary-color: var(--ea-primary-text);
     --alert-primary-border-color: var(--ea-primary-muted);

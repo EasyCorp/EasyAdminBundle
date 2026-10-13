@@ -26,6 +26,31 @@ entity (e.g. in `ChoiceField::setChoices()` or `Action::linkToUrl()`) must accep
 
 ## EasyAdmin 5.7.0
 
+### The Color of Badges Is Now Defined With the `color` Prop
+
+The `variant` prop of the `<twig:ea:Badge>` component now defines the visual
+style of the badge (`light`, `solid`, `outline` or `dot`) and the new `color`
+prop defines its color. Passing a color in `variant` still works, but it's
+deprecated:
+
+```twig
+{# before #}
+<twig:ea:Badge variant="success">Paid</twig:ea:Badge>
+
+{# after #}
+<twig:ea:Badge color="success">Paid</twig:ea:Badge>
+```
+
+The `variant="light"` and `variant="outline"` values now mean the `light` and
+`outline` styles. Use `color="light"` for the old light gray color. The color
+cases of the `BadgeVariant` enum are deprecated too; use the `BadgeColor` enum.
+
+The CSS of badges changed too: each color now defines `--badge-{color}-tone`,
+`--badge-{color}-color` and `--badge-{color}-solid-color` variables, and the
+`--badge-border`, `--badge-box-shadow`, `--badge-{color}-box-shadow`,
+`--badge-boolean-*`, `--badge-outline-box-shadow`, `--badge-outline-color` and
+`--field-language-badge-border-color` variables were removed.
+
 ### The `ea` Global Twig Variable Is Removed
 
 The 5.0 upgrade notes already said that the global `ea` Twig variable was removed,

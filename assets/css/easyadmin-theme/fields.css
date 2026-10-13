@@ -19,22 +19,9 @@
 
 /* Boolean field */
 .field-boolean .badge {
+    justify-content: center;
     min-inline-size: 33px;
     text-transform: uppercase;
-}
-/* Boolean values don't use "true = green, false = red" on purpose because being FALSE
-   or TRUE can be good or bad depending on the context, so red/green doesn't always work */
-.field-boolean .badge-boolean-false {
-    background: var(--badge-boolean-false-bg);
-    border: 0;
-    box-shadow: var(--badge-boolean-false-box-shadow);
-    color: var(--badge-boolean-false-color);
-}
-.field-boolean .badge-boolean-true {
-    background: var(--badge-boolean-true-bg);
-    border: 0;
-    box-shadow: var(--badge-boolean-true-box-shadow);
-    color: var(--badge-boolean-true-color);
 }
 
 /* CodeEditor field */
@@ -205,10 +192,6 @@
 
 /* Currency field */
 .field-currency .badge-currency {
-    border: 2px solid var(--gray-300);
-    display: inline-block;
-    font-size: var(--font-size-xs);
-    padding: var(--ea-sp-1) var(--ea-sp-2);
     text-transform: uppercase;
 }
 
@@ -222,11 +205,6 @@
 
 /* Language field */
 .field-language .badge-language {
-    border: 2px solid var(--field-language-badge-border-color);
-    box-shadow: none;
-    display: inline-block;
-    font-size: var(--font-size-xs);
-    padding: var(--ea-sp-1) var(--ea-sp-2);
     text-transform: uppercase;
 }
 

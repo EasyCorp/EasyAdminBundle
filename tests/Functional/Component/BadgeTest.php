@@ -15,7 +15,7 @@ class BadgeTest extends AbstractFieldFunctionalTest
         return static::getContainer()->get('twig')->createTemplate($template)->render($context);
     }
 
-    public function testDefaultVariantIsSecondary(): void
+    public function testDefaultColorAndVariant(): void
     {
         self::assertSame(
             '<span class="badge badge-secondary">Hello</span>',
@@ -23,27 +23,27 @@ class BadgeTest extends AbstractFieldFunctionalTest
         );
     }
 
-    public function testNamedVariant(): void
+    public function testNamedColor(): void
     {
         self::assertSame(
             '<span class="badge badge-success">OK</span>',
-            $this->renderBadge('<twig:ea:Badge variant="success">OK</twig:ea:Badge>')
+            $this->renderBadge('<twig:ea:Badge color="success">OK</twig:ea:Badge>')
         );
     }
 
-    public function testUnknownVariantIsRenderedAsCustomVariant(): void
+    public function testUnknownColorIsRenderedAsCustomColor(): void
     {
         self::assertSame(
             '<span class="badge badge-currency">EUR</span>',
-            $this->renderBadge('<twig:ea:Badge variant="currency">EUR</twig:ea:Badge>')
+            $this->renderBadge('<twig:ea:Badge color="currency">EUR</twig:ea:Badge>')
         );
     }
 
-    public function testEmptyVariantRendersNoVariantClass(): void
+    public function testEmptyColorRendersNoColorClass(): void
     {
         self::assertSame(
             '<span class="badge">x</span>',
-            $this->renderBadge('<twig:ea:Badge variant="">x</twig:ea:Badge>')
+            $this->renderBadge('<twig:ea:Badge color="">x</twig:ea:Badge>')
         );
     }
 
@@ -80,7 +80,7 @@ class BadgeTest extends AbstractFieldFunctionalTest
     {
         self::assertSame(
             '<span class="badge badge-info" title="hello">x</span>',
-            $this->renderBadge('<twig:ea:Badge variant="info" title="hello">x</twig:ea:Badge>')
+            $this->renderBadge('<twig:ea:Badge color="info" title="hello">x</twig:ea:Badge>')
         );
     }
 
@@ -88,13 +88,13 @@ class BadgeTest extends AbstractFieldFunctionalTest
     {
         self::assertSame(
             '<span class="badge badge-info my-badge">x</span>',
-            $this->renderBadge('<twig:ea:Badge variant="info" class="my-badge">x</twig:ea:Badge>')
+            $this->renderBadge('<twig:ea:Badge color="info" class="my-badge">x</twig:ea:Badge>')
         );
     }
 
     public function testLeadingIconIsRenderedBeforeLabel(): void
     {
-        $html = $this->renderBadge('<twig:ea:Badge variant="info" icon="fa-star">Label</twig:ea:Badge>');
+        $html = $this->renderBadge('<twig:ea:Badge color="info" icon="fa-star">Label</twig:ea:Badge>');
 
         self::assertStringContainsString('class="icon"', $html);
         self::assertLessThan(strpos($html, 'Label'), strpos($html, 'class="icon"'));
@@ -102,9 +102,65 @@ class BadgeTest extends AbstractFieldFunctionalTest
 
     public function testTrailingIconIsRenderedAfterLabel(): void
     {
-        $html = $this->renderBadge('<twig:ea:Badge variant="info" endIcon="fa-star">Label</twig:ea:Badge>');
+        $html = $this->renderBadge('<twig:ea:Badge color="info" endIcon="fa-star">Label</twig:ea:Badge>');
 
         self::assertStringContainsString('class="icon"', $html);
         self::assertGreaterThan(strpos($html, 'Label'), strpos($html, 'class="icon"'));
+    }
+
+    public function testVariant(): void
+    {
+        self::assertSame(
+            '<span class="badge badge-danger badge-variant-solid">x</span>',
+            $this->renderBadge('<twig:ea:Badge color="danger" variant="solid">x</twig:ea:Badge>')
+        );
+    }
+
+    public function testDotVariantRendersTheDotBeforeTheLabel(): void
+    {
+        self::assertSame(
+            '<span class="badge badge-success badge-variant-dot"><span class="badge-dot" aria-hidden="true"></span>Online</span>',
+            $this->renderBadge('<twig:ea:Badge color="success" variant="dot">Online</twig:ea:Badge>')
+        );
+    }
+
+    public function testDismissButtonIsRenderedAfterTheLabel(): void
+    {
+        $html = $this->renderBadge('<twig:ea:Badge dismissible endIcon="fa-star">Label</twig:ea:Badge>');
+
+        self::assertStringContainsString('<button type="button" class="badge-dismiss" aria-label="Remove the item">', $html);
+        self::assertGreaterThan(strpos($html, 'class="icon"'), strpos($html, 'class="badge-dismiss"'));
+    }
+
+    public function testNoDismissButtonByDefault(): void
+    {
+        self::assertStringNotContainsString('badge-dismiss', $this->renderBadge('<twig:ea:Badge>x</twig:ea:Badge>'));
+    }
+
+    public function testLargeSize(): void
+    {
+        self::assertSame(
+            '<span class="badge badge-secondary badge-lg">x</span>',
+            $this->renderBadge('<twig:ea:Badge size="lg">x</twig:ea:Badge>')
+        );
+    }
+
+    public function testStyleAttributeIsRenderedAsHtmlAttribute(): void
+    {
+        self::assertSame(
+            '<span class="badge" style="background: red">x</span>',
+            $this->renderBadge('<twig:ea:Badge color="" style="background: red">x</twig:ea:Badge>')
+        );
+    }
+
+    /**
+     * @group legacy
+     */
+    public function testColorInVariantStillWorks(): void
+    {
+        self::assertSame(
+            '<span class="badge badge-success">OK</span>',
+            $this->renderBadge('<twig:ea:Badge variant="success">OK</twig:ea:Badge>')
+        );
     }
 }

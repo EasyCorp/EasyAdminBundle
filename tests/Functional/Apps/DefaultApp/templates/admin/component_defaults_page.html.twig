@@ -1,0 +1,8 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title 'Component Defaults' %}
+
+{% block main %}
+    <twig:ea:Badge color="success" id="badge-with-default-variant">Paid</twig:ea:Badge>
+    <twig:ea:Badge color="success" variant="solid" id="badge-with-explicit-variant">Paid</twig:ea:Badge>
+{% endblock %}

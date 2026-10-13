@@ -404,7 +404,7 @@ custom pages):
 
 .. code-block:: twig
 
-    <twig:ea:Badge variant="success">Published</twig:ea:Badge>
+    <twig:ea:Badge color="success">Published</twig:ea:Badge>
 
 Read the :doc:`Twig Components reference </components>` to learn about all the
 available components (buttons, badges, icons, modals, dropdown menus, etc.)

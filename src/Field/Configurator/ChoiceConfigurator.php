@@ -10,7 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Translation\TranslatableChoiceMessage;
 use EasyCorp\Bundle\EasyAdminBundle\Translation\TranslatableChoiceMessageCollection;
-use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\BadgeVariant;
+use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\BadgeColor;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Translation\TranslatableMessage;
@@ -189,12 +189,12 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
     private function getBadgeVariant(array|bool|callable|null $badgeSelector, mixed $value, FieldDto $field): string
     {
         if (true === $badgeSelector) {
-            return BadgeVariant::Secondary->value;
+            return BadgeColor::Secondary->value;
         }
 
         if (\is_array($badgeSelector)) {
             // for backwards compatibility, accept both 'warning' and 'badge-warning'
-            return u($badgeSelector[$value] ?? BadgeVariant::Secondary->value)->trimPrefix('badge-')->toString();
+            return u($badgeSelector[$value] ?? BadgeColor::Secondary->value)->trimPrefix('badge-')->toString();
         }
 
         if (\is_callable($badgeSelector)) {
@@ -206,7 +206,7 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
             return $badgeType;
         }
 
-        return BadgeVariant::Secondary->value;
+        return BadgeColor::Secondary->value;
     }
 
     /**

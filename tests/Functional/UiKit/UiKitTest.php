@@ -48,13 +48,13 @@ class UiKitTest extends WebTestCase
         $this->assertSelectorExists('body.ea.ea-ui-kit #main-menu');
         $this->assertSelectorTextContains('h1', 'Badge');
 
-        $variants = $crawler->filter('section#variants');
-        $this->assertSame('Variants', $variants->filter('h2')->text());
-        $this->assertStringContainsString('Use the variant to tell what the label means', $variants->filter('p')->text());
-        $this->assertSame('Paid', $variants->filter('.ea-ui-kit-preview .badge.badge-success')->text());
+        $colors = $crawler->filter('section#colors');
+        $this->assertSame('Colors', $colors->filter('h2')->text());
+        $this->assertStringContainsString('Use the color to tell what the label means', $colors->filter('p')->text());
+        $this->assertSame('Paid', $colors->filter('.ea-ui-kit-preview .badge.badge-success')->text());
 
-        $source = $variants->filter('.ea-ui-kit-source code');
-        $this->assertStringStartsWith('<twig:ea:Badge variant="success">Paid</twig:ea:Badge>', $source->text());
+        $source = $colors->filter('.ea-ui-kit-source code');
+        $this->assertStringStartsWith('<twig:ea:Badge color="success">Paid</twig:ea:Badge>', $source->text());
         $this->assertStringNotContainsString('{#', $source->text());
         $this->assertSame('twig:ea:Badge', $source->filter('.hl-tag .hl-name')->first()->text());
     }
@@ -130,7 +130,23 @@ class UiKitTest extends WebTestCase
         $crawler = $client->request('GET', '/admin/_ea_ui_kit/components/badge');
 
         $sectionIds = $crawler->filter('section.ea-ui-kit-example')->each(static fn ($section) => $section->attr('id'));
-        $this->assertSame(['variants', 'default', 'sizes', 'icons', 'radius', 'custom_variants'], $sectionIds);
+        $this->assertSame(['colors', 'light', 'solid', 'outline', 'dot', 'default', 'sizes', 'icons', 'dismissible', 'images_and_flags', 'radius', 'custom_colors'], $sectionIds);
+    }
+
+    public function testExamplesInASubdirectoryAreRenderedAsAGroup(): void
+    {
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/admin/_ea_ui_kit/components/badge');
+
+        $group = $crawler->filter('section.ea-ui-kit-example-group#variants');
+        $this->assertSame('Variants', $group->filter('h2')->text());
+        $this->assertStringContainsString('The variant defines the visual style of the badge', $group->filter('p')->first()->text());
+
+        $groupExamples = $group->filter('section.ea-ui-kit-example');
+        $this->assertSame(['light', 'solid', 'outline', 'dot'], $groupExamples->each(static fn ($section) => $section->attr('id')));
+        $this->assertSame(['Light', 'Solid', 'Outline', 'Dot'], $groupExamples->filter('h3')->each(static fn ($heading) => $heading->text()));
+        $this->assertCount(0, $groupExamples->filter('h2'));
+        $this->assertStringStartsWith('<twig:ea:Badge color="success" variant="solid">Paid</twig:ea:Badge>', $groupExamples->eq(1)->filter('.ea-ui-kit-source code')->text());
     }
 
     /**
@@ -142,7 +158,11 @@ class UiKitTest extends WebTestCase
         $crawler = $client->request('GET', '/admin/_ea_ui_kit/components/'.$componentDirName);
 
         $this->assertResponseIsSuccessful();
-        $exampleFiles = glob(sprintf('%s/%s/*.html.twig', self::COMPONENTS_DIR, $componentDirName));
+        // the examples of a group are stored in a subdirectory, which also contains the _group.html.twig file
+        $exampleFiles = array_merge(
+            glob(sprintf('%s/%s/*.html.twig', self::COMPONENTS_DIR, $componentDirName)),
+            glob(sprintf('%s/%s/*/[!_]*.html.twig', self::COMPONENTS_DIR, $componentDirName)),
+        );
         $this->assertCount(\count($exampleFiles), $crawler->filter('section.ea-ui-kit-example'));
         $this->assertCount(0, $crawler->filter('.ea-ui-kit-preview:empty'));
     }

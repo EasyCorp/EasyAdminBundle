@@ -125,34 +125,52 @@ final class UiKitController
     }
 
     /**
-     * @return list<array{id: string, template: string, title: string, description: string, highlighted_code: string}>
+     * Each template of the component directory is an example. Each subdirectory is a
+     * group of related examples; its title and description are defined in the leading
+     * comment of its _group.html.twig file.
+     *
+     * @return list<array<string, mixed>>
      */
-    private function findExamples(string $componentDirName): array
+    private function findExamples(string $componentDirName, bool $isGroup = false): array
     {
-        $examples = [];
-        if (false === $exampleFiles = glob(sprintf('%s/%s/*.html.twig', $this->componentsDir, $componentDirName))) {
+        if (false === $paths = glob(sprintf('%s/%s/*', $this->componentsDir, $componentDirName))) {
             return [];
         }
-        natsort($exampleFiles);
+        natsort($paths);
 
-        foreach ($exampleFiles as $exampleFile) {
-            $fileName = basename($exampleFile, '.html.twig');
+        $examples = [];
+        foreach ($paths as $path) {
+            $name = basename($path);
+            if (is_dir($path) && !$isGroup) {
+                $groupDirName = $componentDirName.'/'.$name;
+                $groupTemplate = sprintf('%s/%s/_group.html.twig', self::COMPONENTS_TEMPLATE_PREFIX, $groupDirName);
+                $groupSource = $this->twig->getLoader()->exists($groupTemplate) ? $this->twig->getLoader()->getSourceContext($groupTemplate)->getCode() : '';
+                [$title, $description] = $this->parseLeadingComment($groupSource, $name);
+
+                $examples[] = [
+                    'is_group' => true,
+                    'id' => preg_replace('/^\d+_/', '', $name),
+                    'title' => $title,
+                    'description' => $description,
+                    'examples' => $this->findExamples($groupDirName, true),
+                ];
+
+                continue;
+            }
+
+            if (!str_ends_with($name, '.html.twig') || str_starts_with($name, '_')) {
+                continue;
+            }
+
+            $fileName = basename($name, '.html.twig');
             $template = sprintf('%s/%s/%s.html.twig', self::COMPONENTS_TEMPLATE_PREFIX, $componentDirName, $fileName);
             // read the source through the Twig loader (instead of the file) so it's
             // exactly the code that renders the example, even if the app overrides it
             $source = $this->twig->getLoader()->getSourceContext($template)->getCode();
-
-            // the leading comment of each example defines its title (first line) and description (rest)
-            $title = $fileName;
-            $description = '';
-            if (1 === preg_match('/^\s*\{#(.*?)#\}\s*/s', $source, $matches)) {
-                $commentLines = explode("\n", trim($matches[1]), 2);
-                $title = trim($commentLines[0]);
-                $description = trim(preg_replace('/\s+/', ' ', $commentLines[1] ?? ''));
-                $source = substr($source, \strlen($matches[0]));
-            }
+            [$title, $description, $source] = $this->parseLeadingComment($source, $fileName);
 
             $examples[] = [
+                'is_group' => false,
                 'id' => preg_replace('/^\d+_/', '', $fileName),
                 'template' => $template,
                 'title' => $title,
@@ -162,5 +180,25 @@ final class UiKitController
         }
 
         return $examples;
+    }
+
+    /**
+     * The leading comment of an example defines its title (first line) and description (rest).
+     *
+     * @return array{string, string, string} The title, the description and the source without the comment
+     */
+    private function parseLeadingComment(string $source, string $defaultTitle): array
+    {
+        if (1 !== preg_match('/^\s*\{#(.*?)#\}\s*/s', $source, $matches)) {
+            return [$defaultTitle, '', $source];
+        }
+
+        $commentLines = explode("\n", trim($matches[1]), 2);
+
+        return [
+            trim($commentLines[0]),
+            trim(preg_replace('/\s+/', ' ', $commentLines[1] ?? '')),
+            substr($source, \strlen($matches[0])),
+        ];
     }
 }

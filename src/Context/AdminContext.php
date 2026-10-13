@@ -5,6 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Context;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Context\AdminContextInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Registry\AdminControllerRegistryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetsDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\ComponentDefaultsDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\I18nDto;
@@ -148,6 +149,11 @@ final class AdminContext implements AdminContextInterface
     public function getDashboardTheme(): ?ThemeDto
     {
         return $this->dashboardContext->getDashboardDto()->getTheme();
+    }
+
+    public function getDashboardComponentDefaults(): ComponentDefaultsDto
+    {
+        return $this->dashboardContext->getDashboardDto()->getComponentDefaults();
     }
 
     /**

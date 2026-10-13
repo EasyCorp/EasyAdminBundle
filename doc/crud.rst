@@ -286,8 +286,17 @@ Design Options
             // set this option if you prefer the sidebar (which contains the main menu)
             // to be displayed as a narrow column instead of the default expanded design
             ->renderSidebarMinimized()
+
+            // the visual style of all the badges ('light' by default; other values
+            // are 'solid', 'outline' and 'dot'). Badges that set their own
+            // variant (e.g. <twig:ea:Badge variant="solid">) don't change
+            ->setBadgeVariant('outline')
         ;
     }
+
+Call these methods in the ``configureCrud()`` method of your dashboard to apply
+them to all CRUD controllers, and in a CRUD controller to apply them only to
+that controller.
 
 .. _crud_entity_options:
 .. _crud-entity-options:

@@ -24,6 +24,7 @@ final class DashboardDto
     private array $locales = [];
     private bool $useEntityTranslations = false;
     private ?ThemeDto $theme = null;
+    private ?ComponentDefaultsDto $componentDefaults = null;
 
     public function getRouteName(): string
     {
@@ -160,6 +161,19 @@ final class DashboardDto
     public function setTheme(?ThemeDto $theme): void
     {
         $this->theme = $theme;
+    }
+
+    /**
+     * The component defaults configured in the configureCrud() method of the dashboard.
+     */
+    public function getComponentDefaults(): ComponentDefaultsDto
+    {
+        return $this->componentDefaults ?? new ComponentDefaultsDto();
+    }
+
+    public function setComponentDefaults(ComponentDefaultsDto $componentDefaults): void
+    {
+        $this->componentDefaults = $componentDefaults;
     }
 
     public function setUseEntityTranslations(bool $useEntityTranslations): self

@@ -539,14 +539,14 @@
                    aria-expanded="{{ is_collapsed ? 'false' : 'true' }}" aria-controls="content-{{ form.vars.name }}">
                     {{ ea_form_ealabel(form) }}
                     {%- if fieldset_error_count > 0 -%}
-                        <twig:ea:Badge variant="danger" title="{{ 'form.tab.error_badge_title'|trans({'%count%': fieldset_error_count}, 'EasyAdminBundle') }}">{{ fieldset_error_count }}</twig:ea:Badge>
+                        <twig:ea:Badge color="danger" title="{{ 'form.tab.error_badge_title'|trans({'%count%': fieldset_error_count}, 'EasyAdminBundle') }}">{{ fieldset_error_count }}</twig:ea:Badge>
                     {%- endif -%}
                 </a>
             {% else %}
                 <span class="not-collapsible form-fieldset-title-content">
                     {{ ea_form_ealabel(form) }}
                     {%- if fieldset_error_count > 0 -%}
-                        <twig:ea:Badge variant="danger" title="{{ 'form.tab.error_badge_title'|trans({'%count%': fieldset_error_count}, 'EasyAdminBundle') }}">{{ fieldset_error_count }}</twig:ea:Badge>
+                        <twig:ea:Badge color="danger" title="{{ 'form.tab.error_badge_title'|trans({'%count%': fieldset_error_count}, 'EasyAdminBundle') }}">{{ fieldset_error_count }}</twig:ea:Badge>
                     {%- endif -%}
                 </span>
             {% endif %}

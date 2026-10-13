@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Contracts\Context;
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Registry\AdminControllerRegistryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetsDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\ComponentDefaultsDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\I18nDto;
@@ -17,6 +18,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @template TEntity of object
+ *
+ * @method ComponentDefaultsDto getDashboardComponentDefaults()
  */
 interface AdminContextInterface
 {

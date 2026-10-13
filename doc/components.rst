@@ -25,7 +25,7 @@ In addition, any other attribute added to a component (``class``, ``id``,
 
 .. code-block:: twig
 
-    <twig:ea:Badge variant="success" class="product-status" data-status="published">
+    <twig:ea:Badge color="success" class="product-status" data-status="published">
         Published
     </twig:ea:Badge>
 
@@ -162,73 +162,65 @@ values as badges):
 
     <twig:ea:Badge>Draft</twig:ea:Badge>
 
-    <twig:ea:Badge variant="success">Published</twig:ea:Badge>
+    <twig:ea:Badge color="success">Published</twig:ea:Badge>
 
-The ``variant`` prop accepts the usual Bootstrap values (``primary``,
-``success``, ``danger``, etc.; default: ``secondary``) plus an ``outline``
-value that renders a badge with a border and no background. Add optional
-leading and/or trailing icons with the ``icon`` and ``endIcon`` props, and
-create pill-shaped badges with ``radius="full"``:
+The ``color`` prop accepts the usual Bootstrap values (``primary``,
+``secondary``, ``success``, ``danger``, ``warning``, ``info``, ``light`` and
+``dark``) plus ``default`` (the neutral gray color used when you don't set
+any color). Any other value is added as a ``badge-{color}`` CSS class, so you
+can define your own colors.
+
+The ``variant`` prop defines the visual style of the badge:
+
+* ``light`` (default): a light background with a thin border of the same color;
+* ``solid``: a dark background with white or dark text;
+* ``outline``: a gray border with no background;
+* ``dot``: like ``outline``, plus a small circle (called "status dot")
+  before the text.
 
 .. code-block:: twig
 
-    <twig:ea:Badge variant="danger" icon="fa-circle-exclamation">Out of stock</twig:ea:Badge>
+    <twig:ea:Badge color="success" variant="dot">Online</twig:ea:Badge>
+
+    <twig:ea:Badge color="danger" variant="solid">Overdue</twig:ea:Badge>
+
+When a badge doesn't set its variant, it uses the one configured with the
+``setBadgeVariant()`` method of the :ref:`CRUD design options <crud-design-options>`.
+Call that method in your dashboard to change the style of all the badges of
+the backend, or in a CRUD controller to change only the badges of that
+controller.
+
+Add optional leading and/or trailing icons with the ``icon`` and ``endIcon``
+props, choose the size with ``size`` (``sm``, ``md`` or ``lg``) and create
+pill-shaped badges with ``radius="full"``:
+
+.. code-block:: twig
+
+    <twig:ea:Badge color="danger" icon="fa-circle-exclamation">Out of stock</twig:ea:Badge>
 
     <twig:ea:Badge variant="outline" endIcon="fa-arrow-right">See all</twig:ea:Badge>
 
-    <twig:ea:Badge variant="primary" radius="full" size="sm">12</twig:ea:Badge>
+    <twig:ea:Badge color="primary" radius="full" size="sm">12</twig:ea:Badge>
 
-Button
-------
-
-Renders a button with an optional icon. The ``variant`` prop accepts
-``default`` (the default value), ``primary``, ``success``, ``warning``,
-``danger`` and ``info``; note that there's no ``secondary`` variant. The
-``size`` prop accepts ``sm``, ``md`` (the default value) and ``lg``:
+Add the ``dismissible`` prop to display a button to remove the badge (e.g.
+in a list of tags). The button doesn't do anything on its own, so add your
+own JavaScript code to handle its ``click`` events:
 
 .. code-block:: twig
 
-    <twig:ea:Button>Save draft</twig:ea:Button>
+    <twig:ea:Badge variant="outline" dismissible data-tag-id="{{ tag.id }}">{{ tag.name }}</twig:ea:Badge>
 
-    <twig:ea:Button variant="primary" size="lg" isBlock>Sign in</twig:ea:Button>
-
-    <twig:ea:Button variant="danger" icon="internal:delete">Delete</twig:ea:Button>
-
-Buttons render a ``<button type="submit">`` element by default. Use the
-``htmlElement`` prop to render a link that looks like a button, or a
-self-contained form that submits to some URL when clicking on the button:
+The contents of the badge can include other elements, like images (e.g.
+avatars) or the ``Flag`` component. They are resized to the height of the
+badge:
 
 .. code-block:: twig
 
-    {# renders an <a> element #}
-    <twig:ea:Button htmlElement="a" href="/products/new" icon="internal:plus">Add product</twig:ea:Button>
+    <twig:ea:Badge variant="outline">
+        <img src="{{ user.avatarUrl }}" alt=""> {{ user.name }}
+    </twig:ea:Badge>
 
-    {# renders a <form> that submits a DELETE request to the given URL #}
-    <twig:ea:Button htmlElement="form" action="/products/24" method="DELETE" variant="danger">
-        Delete product
-    </twig:ea:Button>
-
-.. note::
-
-    HTML forms only support the ``GET`` and ``POST`` methods. When passing any
-    other ``method`` (``PUT``, ``DELETE``, etc.) the form is submitted as
-    ``POST`` with the real method in a ``_method`` hidden field, which is the
-    convention supported by Symfony's `http_method_override`_ option.
-
-Other useful props:
-
-* ``withTrailingIcon`` displays the icon after the label instead of before;
-* ``isInvisible`` removes the button background and borders (useful for
-  icon-only buttons);
-* ``inactive`` renders the button in a disabled state;
-* ``name`` and ``value`` set those attributes on the ``<button>`` element,
-  which is useful to tell apart several submit buttons of the same form.
-
-.. code-block:: twig
-
-    <twig:ea:Button icon="fa-arrow-right" withTrailingIcon>Next step</twig:ea:Button>
-
-    <twig:ea:Button type="button" isInvisible icon="internal:gear" aria-label="Settings"/>
+    <twig:ea:Badge variant="outline"><twig:ea:Flag countryCode="JP"/> Japan</twig:ea:Badge>
 
 Flag
 ----
@@ -554,4 +546,3 @@ form validation errors of the fields in that tab:
 .. _`shadcn/ui Sidebar`: https://ui.shadcn.com/docs/components/base/sidebar
 .. _`FontAwesome icons`: https://fontawesome.com/v6/search?m=free
 .. _`ISO 3166-1 alpha-2`: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
-.. _`http_method_override`: https://symfony.com/doc/current/reference/configuration/framework.html#http-method-override

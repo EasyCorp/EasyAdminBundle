@@ -6,6 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\ClickTrigger;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterConfigDto;
+use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\BadgeVariant;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Translation\TranslatableMessage;
 
@@ -316,5 +317,45 @@ class CrudTest extends TestCase
         $crudConfig->setFilters(null);
 
         $this->assertInstanceOf(FilterConfigDto::class, $crudConfig->getAsDto()->getFiltersConfig());
+    }
+
+    public function testDefaultBadgeVariant(): void
+    {
+        $this->assertNull(Crud::new()->getAsDto()->getComponentDefaults()->getBadgeVariant());
+    }
+
+    /**
+     * @testWith ["light"]
+     *           ["solid"]
+     *           ["outline"]
+     *           ["dot"]
+     */
+    public function testSetBadgeVariant(string $variant): void
+    {
+        $crudConfig = Crud::new();
+        $crudConfig->setBadgeVariant($variant);
+
+        $this->assertSame(BadgeVariant::from($variant), $crudConfig->getAsDto()->getComponentDefaults()->getBadgeVariant());
+    }
+
+    public function testSetBadgeVariantAsEnum(): void
+    {
+        $crudConfig = Crud::new();
+        $crudConfig->setBadgeVariant(BadgeVariant::Solid);
+
+        $this->assertSame(BadgeVariant::Solid, $crudConfig->getAsDto()->getComponentDefaults()->getBadgeVariant());
+    }
+
+    /**
+     * @testWith [""]
+     *           ["invalid"]
+     *           ["success"]
+     */
+    public function testSetBadgeVariantWithInvalidValue(string $variant): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage(sprintf('The "%s" badge variant is not valid. Use one of these values: "light", "solid", "outline", "dot".', $variant));
+
+        Crud::new()->setBadgeVariant($variant);
     }
 }

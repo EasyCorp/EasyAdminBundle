@@ -285,6 +285,7 @@ overrideTemplates(array $templateNamesAndPaths): self
 renderContentMaximized(bool $maximized = true): self
 renderSidebarMinimized(bool $minimized = true): self
 setAutofocusSearch(bool $autofocusSearch = true): self
+setBadgeVariant(BadgeVariant|string $variant): self
 setDateFormat(string $formatOrPattern): self
 setDateIntervalFormat(string $format): self
 setDateTimeFormat(string $dateFormatOrPattern, string $timeFormat = DateTimeField::FORMAT_NONE): self

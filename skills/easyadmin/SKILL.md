@@ -360,7 +360,8 @@ the same pages are installed locally under `vendor/easycorp/easyadmin-bundle/doc
   `<twig:ea:Badge>`, `<twig:ea:Alert>`, `<twig:ea:Icon>`, `<twig:ea:Modal>`,
   `<twig:ea:Pagination>`, `<twig:ea:Switch>`, `<twig:ea:Tabs>`,
   `<twig:ea:ActionMenu>`, `<twig:ea:Flag>`, `<twig:ea:Sidebar>`. Icon names
-  are FontAwesome 6 (`fa fa-box`). <!-- templates/components/Button.html.twig; templates/components/Badge.html.twig; doc/components.rst -->
+  are FontAwesome 6 (`fa fa-box`). Badges take `color="success"` and
+  `variant="light|solid|outline|dot"` (default: `Crud::setBadgeVariant()`). <!-- templates/components/Button.html.twig; templates/components/Badge.html.twig; doc/components.rst; src/Twig/Component/Badge.php::mount; src/Config/Crud.php::setBadgeVariant -->
 - Lifecycle hooks: override `persistEntity()`, `updateEntity()`,
   `deleteEntity()` or `createEntity()` in the controller, or subscribe to
   `BeforeEntityPersistedEvent`, `AfterEntityPersistedEvent`,
@@ -475,6 +476,7 @@ doc_file: doc/tests.rst
 doc_file: doc/events.rst
 doc_file: UPGRADE.md
 source_contains: src/Factory/ActionFactory.php | is missing the #[AdminRoute] attribute
+source_contains: src/Twig/Component/Badge.php | Passing a color ("%s") in the "variant" prop of the <twig:ea:Badge> component is deprecated
 source_contains: src/Factory/ActionFactory.php | Batch actions can be added only to the "index" page
 source_contains: src/Router/AdminRouteGenerator.php | must apply the #[AdminDashboard] attribute
 source_contains: src/Router/AdminRouteGenerator.php | missing either the "routePath" or "routeName" arguments

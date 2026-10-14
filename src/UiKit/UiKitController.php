@@ -3,6 +3,8 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\UiKit;
 
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminRoute;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\IconSet;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Provider\AdminContextProviderInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Twig\Environment;
@@ -20,11 +22,36 @@ final class UiKitController
     private const COMPONENTS_TEMPLATE_PREFIX = '@EasyAdmin/ui_kit/components';
     // the namespace mapped to the 'ea:' prefix in EasyAdminExtension::prepend()
     private const COMPONENTS_NAMESPACE = 'EasyCorp\\Bundle\\EasyAdminBundle\\Twig\\Component\\';
+    // these examples use FontAwesome icon names, which only work when the dashboard uses that icon set
+    private const FONTAWESOME_EXAMPLES = ['icon/01_fontawesome'];
+    // examples render internal icons so they work with any icon set, but their source shows
+    // the names people write with their icon set: [FontAwesome name, Lucide name of UX Icons]
+    private const DISPLAYED_ICON_NAMES = [
+        'check' => ['fa-solid fa-check', 'check'],
+        'chevron-right' => ['fa-solid fa-chevron-right', 'chevron-right'],
+        'circle-exclamation' => ['fa-solid fa-circle-exclamation', 'circle-alert'],
+        'circle-info' => ['fa-solid fa-circle-info', 'info'],
+        'delete' => ['fa-regular fa-trash-can', 'trash'],
+        'detail' => ['fa-regular fa-eye', 'eye'],
+        'dots-horizontal' => ['fa-solid fa-ellipsis', 'ellipsis'],
+        'download' => ['fa-solid fa-download', 'download'],
+        'edit' => ['fa-solid fa-pen', 'pencil'],
+        'file-lines' => ['fa-regular fa-file-lines', 'file-text'],
+        'folder-open' => ['fa-regular fa-folder-open', 'folder-open'],
+        'gear' => ['fa-solid fa-gear', 'settings'],
+        'home' => ['fa-solid fa-house', 'house'],
+        'lock' => ['fa-solid fa-lock', 'lock'],
+        'plus' => ['fa-solid fa-plus', 'plus'],
+        'search' => ['fa-solid fa-magnifying-glass', 'search'],
+        'user' => ['fa-solid fa-user', 'user'],
+        'xmark' => ['fa-solid fa-xmark', 'x'],
+    ];
 
     public function __construct(
         private readonly Environment $twig,
         private readonly TwigSourceHighlighter $highlighter,
         private readonly ComponentDocumentationReader $documentationReader,
+        private readonly AdminContextProviderInterface $adminContextProvider,
         private readonly string $componentsDir,
         private readonly string $componentTemplatesDir,
     ) {
@@ -125,7 +152,7 @@ final class UiKitController
     }
 
     /**
-     * @return list<array{id: string, template: string, title: string, description: string, highlighted_code: string}>
+     * @return list<array{id: string, template: string, title: string, description: string, highlighted_code: string, uses_approximate_icon_names: bool}>
      */
     private function findExamples(string $componentDirName): array
     {
@@ -134,12 +161,19 @@ final class UiKitController
             return [];
         }
         natsort($exampleFiles);
+        $assets = $this->adminContextProvider->getContext()?->getAssets();
+        $usesFontAwesome = IconSet::FontAwesome === ($assets?->getIconSet() ?? IconSet::FontAwesome);
+        $defaultIconPrefix = $assets?->getDefaultIconPrefix() ?? '';
 
         foreach ($exampleFiles as $exampleFile) {
             $fileName = basename($exampleFile, '.html.twig');
+            if (!$usesFontAwesome && \in_array($componentDirName.'/'.$fileName, self::FONTAWESOME_EXAMPLES, true)) {
+                continue;
+            }
+
             $template = sprintf('%s/%s/%s.html.twig', self::COMPONENTS_TEMPLATE_PREFIX, $componentDirName, $fileName);
-            // read the source through the Twig loader (instead of the file) so it's
-            // exactly the code that renders the example, even if the app overrides it
+            // read the source through the Twig loader (instead of the file) so it's the code
+            // that renders the example (except for its icon names), even if the app overrides it
             $source = $this->twig->getLoader()->getSourceContext($template)->getCode();
 
             // the leading comment of each example defines its title (first line) and description (rest)
@@ -152,12 +186,33 @@ final class UiKitController
                 $source = substr($source, \strlen($matches[0]));
             }
 
+            $usesApproximateIconNames = false;
+            $source = preg_replace_callback(
+                '/(?<=["\'])internal:([a-z0-9-]+)(?=["\'])/',
+                static function (array $matches) use ($usesFontAwesome, $defaultIconPrefix, &$usesApproximateIconNames): string {
+                    if (null === $iconNames = self::DISPLAYED_ICON_NAMES[$matches[1]] ?? null) {
+                        return $matches[0];
+                    }
+
+                    if ($usesFontAwesome) {
+                        return $iconNames[0];
+                    }
+
+                    $usesApproximateIconNames = true;
+
+                    // the default prefix is added automatically to icon names without a prefix
+                    return '' === $defaultIconPrefix ? 'lucide:'.$iconNames[1] : $iconNames[1];
+                },
+                $source
+            );
+
             $examples[] = [
                 'id' => preg_replace('/^\d+_/', '', $fileName),
                 'template' => $template,
                 'title' => $title,
                 'description' => $description,
                 'highlighted_code' => $this->highlighter->highlight(rtrim($source)),
+                'uses_approximate_icon_names' => $usesApproximateIconNames,
             ];
         }
 

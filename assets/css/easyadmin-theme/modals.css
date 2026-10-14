@@ -102,6 +102,10 @@
 .modal-body p {
     color: var(--text-muted);
 }
+/* the main text of a modal without a title (e.g. a custom confirmation message) */
+.modal-body p.modal-message {
+    color: var(--text-color);
+}
 .modal-body-content {
     display: grid;
     gap: var(--ea-sp-3);

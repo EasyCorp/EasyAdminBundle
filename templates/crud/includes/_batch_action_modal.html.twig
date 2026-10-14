@@ -1,8 +1,10 @@
-<twig:ea:Modal
-    id="modal-batch-action"
-    title="{{ 'batch_action_modal.title'|trans(domain: 'EasyAdminBundle') }}"
-    description="{{ 'batch_action_modal.content'|trans(domain: 'EasyAdminBundle') }}"
->
+<twig:ea:Modal id="modal-batch-action">
+    <twig:block name="body">
+        <h4 id="batch-action-confirmation-title">{{ 'batch_action_modal.title'|trans(domain: 'EasyAdminBundle') }}</h4>
+        {# populated by JS from the custom confirmation message of the batch action; when present, the title is hidden #}
+        <p id="batch-action-confirmation-message" class="modal-message d-none"></p>
+        <p>{{ 'batch_action_modal.content'|trans(domain: 'EasyAdminBundle') }}</p>
+    </twig:block>
     <twig:block name="footer">
         <twig:ea:Modal:Close>{{ 'action.cancel'|trans([], 'EasyAdminBundle') }}</twig:ea:Modal:Close>
         <twig:ea:Button type="button" variant="danger" icon="internal:check" data-bs-dismiss="modal" id="modal-batch-action-button">

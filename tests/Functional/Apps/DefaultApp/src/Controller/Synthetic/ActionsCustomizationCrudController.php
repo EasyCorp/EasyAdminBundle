@@ -47,6 +47,9 @@ class ActionsCustomizationCrudController extends AbstractCrudController
 
         $action9 = Action::new('action9')->linkToCrudAction(Action::INDEX)->createAsGlobalAction()->renderAsForm();
 
+        $action10 = Action::new('action10')->linkToCrudAction(Action::DETAIL)->askConfirmation();
+        $action11 = Action::new('action11')->linkToCrudAction(Action::DETAIL)->askConfirmation('Visitors will not see this item anymore.');
+
         return $actions
             ->add(Crud::PAGE_INDEX, $action1)
             ->add(Crud::PAGE_INDEX, $action2)
@@ -57,6 +60,11 @@ class ActionsCustomizationCrudController extends AbstractCrudController
             ->add(Crud::PAGE_INDEX, $action7)
             ->add(Crud::PAGE_INDEX, $action8)
             ->add(Crud::PAGE_INDEX, $action9)
+            ->add(Crud::PAGE_INDEX, $action10)
+            ->add(Crud::PAGE_INDEX, $action11)
+            ->update(Crud::PAGE_DETAIL, Action::DELETE, static function (Action $action) {
+                return $action->askConfirmation('All the comments of this item will be deleted too.');
+            })
             ->update(Crud::PAGE_INDEX, Action::NEW, static function (Action $action) {
                 return $action->setIcon('fa fa-fw fa-plus')->setLabel(false);
             })

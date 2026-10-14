@@ -383,7 +383,8 @@ class App {
             });
         });
 
-        const modalTitle = document.querySelector('#modal-batch-action .modal-body-content h4');
+        const modalTitle = document.querySelector('#batch-action-confirmation-title');
+        const modalMessage = document.querySelector('#batch-action-confirmation-message');
         const titleContentWithPlaceholders = modalTitle?.textContent;
 
         document.querySelectorAll('[data-action-batch]').forEach((dataActionBatch) => {
@@ -429,13 +430,19 @@ class App {
                     // show confirmation modal
                     const actionName = actionElement.textContent.trim() || actionElement.getAttribute('title');
 
-                    // use custom message if provided, otherwise use default modal title
-                    const customMessage = actionElement.getAttribute('data-batch-action-confirm-message');
-                    const messageTemplate = customMessage ?? titleContentWithPlaceholders;
+                    const replacePlaceholders = (template) =>
+                        template
+                            .replace('%action_name%', actionName)
+                            .replace('%num_items%', selectedItems.length.toString());
 
-                    modalTitle.textContent = messageTemplate
-                        .replace('%action_name%', actionName)
-                        .replace('%num_items%', selectedItems.length.toString());
+                    // a custom confirmation message replaces the title and is shown as regular text
+                    const customMessage = actionElement.getAttribute('data-batch-action-confirm-message');
+                    modalTitle.textContent = replacePlaceholders(titleContentWithPlaceholders);
+                    modalTitle.classList.toggle('d-none', null !== customMessage);
+                    if (modalMessage) {
+                        modalMessage.textContent = customMessage ? replacePlaceholders(customMessage) : '';
+                        modalMessage.classList.toggle('d-none', null === customMessage);
+                    }
 
                     // apply to the modal button the same variant as the action that opened the modal
                     const modalButton = document.querySelector('#modal-batch-action-button');
@@ -459,6 +466,7 @@ class App {
 
     #createActionConfirmationModals() {
         const modalTitle = document.querySelector('#action-confirmation-title');
+        const modalMessage = document.querySelector('#action-confirmation-message');
         const modalContent = document.querySelector('#action-confirmation-content');
         const modalButton = document.querySelector('#modal-action-confirmation-button');
         const defaultTitleTemplate = modalTitle?.textContent;
@@ -471,29 +479,25 @@ class App {
                 const actionName = actionElement.textContent.trim() || actionElement.getAttribute('title');
                 const entityName = actionElement.getAttribute('data-action-entity-name') || '';
                 const entityId = actionElement.getAttribute('data-action-entity-id') || '';
+                const replacePlaceholders = (template) =>
+                    template
+                        .replace('%action_name%', actionName)
+                        .replace('%entity_name%', entityName)
+                        .replace('%entity_id%', entityId);
+                const showText = (element, template) => {
+                    element.textContent = template ? replacePlaceholders(template) : '';
+                    element.classList.toggle('d-none', !template);
+                };
 
-                // use custom message if provided, otherwise use default modal title
+                // a custom confirmation message replaces the title and is shown as regular text
                 const customMessage = actionElement.getAttribute('data-action-confirmation-message');
-                const messageTemplate = customMessage ?? defaultTitleTemplate;
-
-                modalTitle.textContent = messageTemplate
-                    .replace('%action_name%', actionName)
-                    .replace('%entity_name%', entityName)
-                    .replace('%entity_id%', entityId);
-
-                // optional description below the title (e.g. the DELETE action); hidden when absent
-                const contentMessage = actionElement.getAttribute('data-action-confirmation-content');
+                const title = actionElement.getAttribute('data-action-confirmation-title') ?? defaultTitleTemplate;
+                showText(modalTitle, customMessage ? null : title);
+                if (modalMessage) {
+                    showText(modalMessage, customMessage);
+                }
                 if (modalContent) {
-                    if (contentMessage) {
-                        modalContent.textContent = contentMessage
-                            .replace('%action_name%', actionName)
-                            .replace('%entity_name%', entityName)
-                            .replace('%entity_id%', entityId);
-                        modalContent.classList.remove('d-none');
-                    } else {
-                        modalContent.textContent = '';
-                        modalContent.classList.add('d-none');
-                    }
+                    showText(modalContent, actionElement.getAttribute('data-action-confirmation-content'));
                 }
 
                 // use custom button label if provided, otherwise use default

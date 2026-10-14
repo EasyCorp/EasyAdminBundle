@@ -48,4 +48,14 @@ class ConfirmationTest extends AbstractCrudTestCase
         // verify batch action form/controls exist
         static::assertSelectorExists('.content');
     }
+
+    public function testCustomConfirmationMessageIsShownInsteadOfTheModalTitle(): void
+    {
+        $crawler = $this->client->request('GET', $this->generateIndexUrl());
+
+        static::assertSame('Are you sure you want to proceed?', $crawler->filter('[data-action-batch]')->first()->attr('data-batch-action-confirm-message'));
+        static::assertCount(1, $crawler->filter('#modal-batch-action h4#batch-action-confirmation-title'));
+        static::assertCount(1, $crawler->filter('#modal-batch-action p#batch-action-confirmation-message.modal-message.d-none'));
+        static::assertSame('There is no undo for this operation.', $crawler->filter('#modal-batch-action #batch-action-confirmation-message + p')->text());
+    }
 }

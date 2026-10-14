@@ -245,12 +245,13 @@ To enable confirmation for any action, use the ``askConfirmation()`` method::
             ->add(Crud::PAGE_INDEX, $archiveAction);
     }
 
-This will display a confirmation modal with a generic message before executing
-the action. You can customize the confirmation message by passing a string::
+This will display a confirmation modal with a generic question (e.g. "Are you
+sure you want to Archive?") before executing the action. Pass a string to show
+your own message instead::
 
     $archiveAction = Action::new('archive', 'Archive')
         ->linkToCrudAction('archive')
-        ->askConfirmation('Are you sure you want to archive this item?');
+        ->askConfirmation('Archived items are hidden from the public website.');
 
 The confirmation message supports placeholders that are replaced with actual
 values: ``%action_name%`` (the action label), ``%entity_name%`` (the entity
@@ -258,7 +259,7 @@ label in singular), and ``%entity_id%`` (the entity ID)::
 
     $archiveAction = Action::new('archive', 'Archive')
         ->linkToCrudAction('archive')
-        ->askConfirmation('Are you sure you want to %action_name% "%entity_name%" #%entity_id%?');
+        ->askConfirmation('Visitors will not see %entity_name% #%entity_id%.');
 
 For translatable messages, pass a ``TranslatableInterface`` object::
 
@@ -272,7 +273,7 @@ You can also customize the confirmation button label by passing a second paramet
 
     $publishAction = Action::new('publish', 'Publish')
         ->linkToCrudAction('publish')
-        ->askConfirmation('Do you accept publishing this article?', 'Accept');
+        ->askConfirmation('Subscribers will get an email.', 'Publish now');
 
 This is useful when the default "Confirm" label doesn't match the action context.
 Both parameters support translatable messages::
@@ -992,8 +993,10 @@ To disable the confirmation modal entirely::
     }
 
 You can also customize the confirmation message by passing a string instead of
-a boolean. The message supports two placeholders: ``%action_name%`` (the name of
-the batch action being executed) and ``%num_items%`` (the number of selected items)::
+a boolean. It replaces the default question of the modal and it's displayed as
+regular text. The message supports two placeholders: ``%action_name%`` (the
+name of the batch action being executed) and ``%num_items%`` (the number of
+selected items)::
 
     public function configureCrud(Crud $crud): Crud
     {

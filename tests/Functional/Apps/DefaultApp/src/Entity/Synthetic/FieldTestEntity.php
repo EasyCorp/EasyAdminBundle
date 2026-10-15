@@ -97,7 +97,16 @@ class FieldTestEntity
 
     // media fields
     #[ORM\Column(length: 255, nullable: true)]
+    private ?string $fileField = null;
+
+    #[ORM\Column(type: 'json', nullable: true)]
+    private array $multipleFileField = [];
+
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $imageField = null;
+
+    #[ORM\Column(type: 'json', nullable: true)]
+    private array $multipleImageField = [];
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $avatarField = null;
@@ -431,6 +440,30 @@ class FieldTestEntity
         return $this;
     }
 
+    public function getFileField(): ?string
+    {
+        return $this->fileField;
+    }
+
+    public function setFileField(?string $fileField): self
+    {
+        $this->fileField = $fileField;
+
+        return $this;
+    }
+
+    public function getMultipleFileField(): array
+    {
+        return $this->multipleFileField;
+    }
+
+    public function setMultipleFileField(?array $multipleFileField): self
+    {
+        $this->multipleFileField = $multipleFileField ?? [];
+
+        return $this;
+    }
+
     public function getImageField(): ?string
     {
         return $this->imageField;
@@ -439,6 +472,18 @@ class FieldTestEntity
     public function setImageField(?string $imageField): self
     {
         $this->imageField = $imageField;
+
+        return $this;
+    }
+
+    public function getMultipleImageField(): array
+    {
+        return $this->multipleImageField;
+    }
+
+    public function setMultipleImageField(?array $multipleImageField): self
+    {
+        $this->multipleImageField = $multipleImageField ?? [];
 
         return $this;
     }

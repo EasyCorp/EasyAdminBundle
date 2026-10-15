@@ -16,6 +16,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\CurrencyField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\FileField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\HiddenField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
@@ -97,11 +98,22 @@ class FieldTestEntityCrudController extends AbstractCrudController
         yield CurrencyField::new('currencyField');
 
         // media fields
-        yield ImageField::new('imageField')
-            ->setBasePath('uploads/')
-            ->setUploadDir('public/uploads/')
-            ->setUploadedFileNamePattern('[randomhash].[extension]')
-            ->setRequired(false);
+        foreach ([
+            FileField::new('fileField'),
+            FileField::new('multipleFileField')->setFormTypeOption('multiple', true),
+            ImageField::new('imageField'),
+            ImageField::new('multipleImageField')->setFormTypeOption('multiple', true),
+        ] as $field) {
+            if ($this->getContext()->getRequest()->query->getBoolean('keepReplacedFiles')) {
+                $field->keepReplacedFile();
+            }
+
+            yield $field
+                ->setBasePath('uploads/')
+                ->setUploadDir('public/uploads/')
+                ->setUploadedFileNamePattern('[randomhash].[extension]')
+                ->setRequired(false);
+        }
         yield AvatarField::new('avatarField');
 
         // special fields

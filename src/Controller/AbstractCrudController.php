@@ -46,6 +46,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\PaginatorFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Form\DataTransformer\StringToFileTransformer;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FileUploadType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Model\FileUploadState;
@@ -770,6 +771,20 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
             $uploadDelete = $config->getOption('upload_delete');
             $replacedFileBehavior = $config->getOption('replaced_file_behavior');
+
+            if ([] !== $state->getDeletedFiles()) {
+                $transformer = new StringToFileTransformer($config->getOption('upload_dir'), $config->getOption('upload_filename'), $config->getOption('upload_validate'), false);
+                $remainingFiles = [];
+                foreach ($state->getCurrentFiles() as $file) {
+                    $fileName = $transformer->reverseTransform($file);
+                    if (\in_array($fileName, $state->getDeletedFiles(), true)) {
+                        $uploadDelete($file);
+                    } else {
+                        $remainingFiles[] = $file;
+                    }
+                }
+                $state->setCurrentFiles($remainingFiles);
+            }
 
             if ($state->hasCurrentFiles() && ($state->isDelete() || (!$state->isAddAllowed() && $state->hasUploadedFiles()))) {
                 if ($state->isDelete() || ReplacedFileBehavior::DELETE === $replacedFileBehavior) {

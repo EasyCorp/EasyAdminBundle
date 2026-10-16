@@ -7,6 +7,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\SortTestEntityCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\SortTestEntity;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Tests sorting by OneToMany relationship count.
@@ -32,9 +33,7 @@ class SortByOneToManyCountTest extends AbstractCrudTestCase
         $this->repository = $this->entityManager->getRepository(SortTestEntity::class);
     }
 
-    /**
-     * @dataProvider sorting
-     */
+    #[DataProvider('sorting')]
     public function testSorting(array $query, ?\Closure $sortFunction, string $expectedSortIcon): void
     {
         // arrange

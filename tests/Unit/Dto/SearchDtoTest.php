@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Dto;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\SearchMode;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -21,36 +22,28 @@ class SearchDtoTest extends TestCase
         $this->assertSame(['foo' => 'ASC'], $dto->getSort());
     }
 
-    /**
-     * @dataProvider provideSortConfigMergeTests
-     */
+    #[DataProvider('provideSortConfigMergeTests')]
     public function testSortConfigMerging(array $defaultSort, array $customSort, array $expectedSortConfig): void
     {
         $dto = new SearchDto(new Request(), null, null, $defaultSort, $customSort, null);
         $this->assertSame($expectedSortConfig, $dto->getSort());
     }
 
-    /**
-     * @dataProvider provideIsSortingFieldTests
-     */
+    #[DataProvider('provideIsSortingFieldTests')]
     public function testIsSortingField(array $defaultSort, array $customSort, string $fieldName, bool $expectedResult): void
     {
         $dto = new SearchDto(new Request(), null, null, $defaultSort, $customSort, null);
         $this->assertSame($expectedResult, $dto->isSortingField($fieldName));
     }
 
-    /**
-     * @dataProvider provideSortDirectionTests
-     */
+    #[DataProvider('provideSortDirectionTests')]
     public function testGetSortDirection(array $defaultSort, array $customSort, string $fieldName, string $expectedDirection): void
     {
         $dto = new SearchDto(new Request(), null, null, $defaultSort, $customSort, null);
         $this->assertSame($expectedDirection, $dto->getSortDirection($fieldName));
     }
 
-    /**
-     * @dataProvider provideGetQueryTermsTests
-     */
+    #[DataProvider('provideGetQueryTermsTests')]
     public function testGetQueryTerms(string $query, array $expectedQueryTerms): void
     {
         $dto = new SearchDto(new Request(), null, $query, [], [], null);
@@ -63,9 +56,7 @@ class SearchDtoTest extends TestCase
         $this->assertSame(SearchMode::ALL_TERMS, $dto->getSearchMode());
     }
 
-    /**
-     * @dataProvider provideSearchModeTests
-     */
+    #[DataProvider('provideSearchModeTests')]
     public function testSearchMode(string $searchMode): void
     {
         $dto = new SearchDto(new Request(), null, null, ['foo' => 'ASC'], [], null, $searchMode);

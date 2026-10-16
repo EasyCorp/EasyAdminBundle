@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Filters;
 
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\FilterRelatedEntity;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Fixture data (relatedEntity field):
@@ -16,9 +17,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synt
  */
 class EntityFilterTest extends FilterFunctionalTestCase
 {
-    /**
-     * @dataProvider filterByRelatedEntityProvider
-     */
+    #[DataProvider('filterByRelatedEntityProvider')]
     public function testFilterByRelatedEntity(string $entityName, array $expectedIds): void
     {
         $relatedEntity = $this->entityManager->getRepository(FilterRelatedEntity::class)

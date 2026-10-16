@@ -6,6 +6,7 @@ use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\SearchMultiLevelAssocCrudController;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Tests for search on multi-level association traversal.
@@ -33,9 +34,7 @@ class SearchMultiLevelAssociationTest extends AbstractCrudTestCase
         $this->client->followRedirects();
     }
 
-    /**
-     * @dataProvider provideSearchTests
-     */
+    #[DataProvider('provideSearchTests')]
     public function testSearch(string $query, int $expectedResultCount): void
     {
         $this->client->request('GET', $this->generateIndexUrl($query));

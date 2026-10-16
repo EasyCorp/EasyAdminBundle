@@ -8,7 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\TextConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
-class TextFieldTest extends AbstractFieldTest
+class TextFieldTest extends AbstractFieldTestCase
 {
     protected function setUp(): void
     {

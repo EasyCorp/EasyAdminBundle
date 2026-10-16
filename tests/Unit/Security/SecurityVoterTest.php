@@ -15,6 +15,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use EasyCorp\Bundle\EasyAdminBundle\Security\SecurityVoter;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -35,9 +36,7 @@ class SecurityVoterTest extends TestCase
         $this->voter = new SecurityVoter($this->authorizationChecker, $adminContextProvider);
     }
 
-    /**
-     * @dataProvider provideValidPermissions
-     */
+    #[DataProvider('provideValidPermissions')]
     public function testSupportsAttributeReturnsTrueForValidPermissions(string $permission): void
     {
         $this->assertTrue($this->voter->supportsAttribute($permission));
@@ -52,9 +51,7 @@ class SecurityVoterTest extends TestCase
         yield [Permission::EA_EXIT_IMPERSONATION];
     }
 
-    /**
-     * @dataProvider provideInvalidPermissions
-     */
+    #[DataProvider('provideInvalidPermissions')]
     public function testSupportsAttributeReturnsFalseForInvalidPermissions(string $permission): void
     {
         $this->assertFalse($this->voter->supportsAttribute($permission));

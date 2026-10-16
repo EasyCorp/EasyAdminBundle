@@ -9,7 +9,7 @@ use Symfony\Component\Translation\TranslatableMessage;
 use Symfony\Contracts\Translation\TranslatableInterface;
 use function Symfony\Component\Translation\t;
 
-class SlugFieldTest extends AbstractFieldTest
+class SlugFieldTest extends AbstractFieldTestCase
 {
     protected function setUp(): void
     {

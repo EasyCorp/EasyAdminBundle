@@ -3,13 +3,12 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\UiKit;
 
 use EasyCorp\Bundle\EasyAdminBundle\UiKit\TwigSourceHighlighter;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class TwigSourceHighlighterTest extends TestCase
 {
-    /**
-     * @dataProvider provideCode
-     */
+    #[DataProvider('provideCode')]
     public function testHighlight(string $code, string $expectedHtml): void
     {
         $this->assertSame($expectedHtml, (new TwigSourceHighlighter())->highlight($code));

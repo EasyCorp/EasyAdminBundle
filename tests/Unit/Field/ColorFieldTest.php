@@ -8,9 +8,10 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ColorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\ColorConfigurator;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\Form\Extension\Core\Type\ColorType;
 
-class ColorFieldTest extends AbstractFieldTest
+class ColorFieldTest extends AbstractFieldTestCase
 {
     protected function setUp(): void
     {
@@ -180,9 +181,7 @@ class ColorFieldTest extends AbstractFieldTest
         self::assertMatchesRegularExpression('/<\/span>\s*#0000ff\s*$/', $html);
     }
 
-    /**
-     * @dataProvider provideInvalidColorValues
-     */
+    #[DataProvider('provideInvalidColorValues')]
     public function testMaliciousValueIsNulled(string $malicious): void
     {
         $field = ColorField::new('color');
@@ -208,9 +207,7 @@ class ColorFieldTest extends AbstractFieldTest
         yield 'hex with whitespace' => ['#ff5733 '];
     }
 
-    /**
-     * @dataProvider provideValidColorValues
-     */
+    #[DataProvider('provideValidColorValues')]
     public function testValidHexValueIsPreserved(string $valid): void
     {
         $field = ColorField::new('color');

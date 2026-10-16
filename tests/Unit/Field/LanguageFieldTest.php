@@ -7,7 +7,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\LanguageConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\LanguageField;
 use Symfony\Component\Form\Extension\Core\Type\LanguageType;
 
-class LanguageFieldTest extends AbstractFieldTest
+class LanguageFieldTest extends AbstractFieldTestCase
 {
     protected function setUp(): void
     {

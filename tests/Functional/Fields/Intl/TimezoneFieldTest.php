@@ -2,10 +2,10 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Fields\Intl;
 
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTest;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTestCase;
 use Symfony\Component\DomCrawler\Crawler;
 
-class TimezoneFieldTest extends AbstractFieldFunctionalTest
+class TimezoneFieldTest extends AbstractFieldFunctionalTestCase
 {
     public function testTimezoneFieldDisplaysOnIndex(): void
     {

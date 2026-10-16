@@ -5,6 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Component;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Button;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Flag;
 use EasyCorp\Bundle\EasyAdminBundle\UiKit\ComponentDocumentationReader;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Finder\Finder;
 
@@ -17,9 +18,7 @@ class ComponentDocumentationTest extends KernelTestCase
     private const COMPONENTS_DIR = __DIR__.'/../../../templates/components';
     private const COMPONENT_CLASSES_DIR = __DIR__.'/../../../src/Twig/Component';
 
-    /**
-     * @dataProvider provideComponentTemplates
-     */
+    #[DataProvider('provideComponentTemplates')]
     public function testEveryPropAndBlockIsDocumented(string $templateName): void
     {
         $this->skipIfDocumentationCommentsAreNotSupported();
@@ -39,10 +38,9 @@ class ComponentDocumentationTest extends KernelTestCase
     }
 
     /**
-     * @dataProvider provideComponentClasses
-     *
      * @param class-string $componentClass
      */
+    #[DataProvider('provideComponentClasses')]
     public function testEveryPropOfClassBackedComponentsIsDocumented(string $componentClass): void
     {
         $reader = new ComponentDocumentationReader(static::getContainer()->get('twig'));

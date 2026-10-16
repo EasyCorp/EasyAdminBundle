@@ -2,10 +2,10 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Fields\DateTime;
 
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTest;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTestCase;
 use Symfony\Component\DomCrawler\Crawler;
 
-class TimeFieldTest extends AbstractFieldFunctionalTest
+class TimeFieldTest extends AbstractFieldFunctionalTestCase
 {
     public function testTimeFieldDisplaysOnIndex(): void
     {

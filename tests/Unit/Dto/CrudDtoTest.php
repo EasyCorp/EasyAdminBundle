@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Dto;
 
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Translation\TranslatableMessage;
 
@@ -50,9 +51,7 @@ class CrudDtoTest extends TestCase
         $this->assertSame($translatableMessage, $crudDto->askConfirmationOnBatchActions());
     }
 
-    /**
-     * @dataProvider provideLabels
-     */
+    #[DataProvider('provideLabels')]
     public function testGetEntityLabelInSingular(string|\Closure|null $setLabel, ?string $expectedGetLabel): void
     {
         $crudDto = new CrudDto();

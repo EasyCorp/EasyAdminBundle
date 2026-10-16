@@ -4,15 +4,14 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Filter;
 
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\DateTimeFilterType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\Test\TypeTestCase;
 
 class DateTimeFilterTypeTest extends TypeTestCase
 {
-    /**
-     * @dataProvider submit
-     */
+    #[DataProvider('submit')]
     public function test(array $options, array $dataToSubmit, array $expectedData, string $expectedError = ''): void
     {
         $form = $this->factory->create(DateTimeFilterType::class, null, $options);

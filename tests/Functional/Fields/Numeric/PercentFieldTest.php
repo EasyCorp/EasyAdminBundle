@@ -2,10 +2,10 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Fields\Numeric;
 
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTest;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTestCase;
 use Symfony\Component\DomCrawler\Crawler;
 
-class PercentFieldTest extends AbstractFieldFunctionalTest
+class PercentFieldTest extends AbstractFieldFunctionalTestCase
 {
     public function testPercentFieldDisplaysOnIndex(): void
     {

@@ -5,9 +5,9 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Field\Configurator;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\FileConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FileField;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Field\AbstractFieldTest;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Field\AbstractFieldTestCase;
 
-class FileConfiguratorTest extends AbstractFieldTest
+class FileConfiguratorTest extends AbstractFieldTestCase
 {
     protected function setUp(): void
     {

@@ -50,7 +50,7 @@ class CrudAutocompleteSubscriberTest extends TestCase
         self::registerDoctrineType('ulid', UlidType::class);
     }
 
-    /** @dataProvider idFieldInDifferentPlatformsData */
+    #[DataProvider('idFieldInDifferentPlatformsData')]
     public function testIdFieldInDifferentPlatforms(
         string $expectedValue,
         string $fieldType,
@@ -135,7 +135,7 @@ class CrudAutocompleteSubscriberTest extends TestCase
         ];
     }
 
-    /** @dataProvider idFieldWithNonSymfonyUidTypeData */
+    #[DataProvider('idFieldWithNonSymfonyUidTypeData')]
     public function testIdFieldWithNonSymfonyUidType(
         string $fieldType,
         string $fieldValue,

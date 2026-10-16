@@ -4,15 +4,14 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\DependencyInjection;
 
 use EasyCorp\Bundle\EasyAdminBundle\DependencyInjection\EasyAdminExtension;
 use EasyCorp\Bundle\EasyAdminBundle\UiKit\UiKitController;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 
 class EasyAdminExtensionTest extends TestCase
 {
-    /**
-     * @dataProvider provideUiKitParameterValues
-     */
+    #[DataProvider('provideUiKitParameterValues')]
     public function testUiKitIsEnabledAccordingToTheParameter(bool $debug, mixed $parameterValue, bool $isEnabled): void
     {
         $container = $this->createContainer($debug);

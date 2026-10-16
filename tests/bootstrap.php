@@ -55,6 +55,42 @@ $testAppKernels = [
     EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Kernel::class,
 ];
 
+// symfony/phpunit-bridge used to enable these; keep reporting Doctrine deprecations
+// every time they happen instead of only the first time
+Doctrine\Deprecations\Deprecation::withoutDeduplication();
+Doctrine\Deprecations\Deprecation::enableWithTriggerError();
+
+// PHPUnit only reports the deprecations triggered inside tests, but the containers of the
+// test apps are compiled here (and reused by the tests), so collect them while doing that
+$bootstrapDeprecations = [];
+$collectBootstrapDeprecations = static function (int $type, string $message, string $file, int $line) use (&$bootstrapDeprecations): bool {
+    if (\E_DEPRECATED !== $type && \E_USER_DEPRECATED !== $type) {
+        return false;
+    }
+
+    $bootstrapDeprecations[$message] = sprintf('%s (%s:%d)', $message, $file, $line);
+
+    return true;
+};
+set_error_handler($collectBootstrapDeprecations);
+
 foreach ($testAppKernels as $kernelClass) {
     initializeTestAppDatabase(new $kernelClass(), $filesystem);
+}
+
+// running the console commands above can register Symfony's ErrorHandler globally; PHPUnit
+// doesn't install its own error handler when another one exists, so it would never see
+// (and report) the deprecations, notices and warnings triggered by the tests
+do {
+    $currentErrorHandler = set_error_handler(null);
+    restore_error_handler();
+    restore_error_handler();
+} while ($currentErrorHandler !== $collectBootstrapDeprecations && null !== $currentErrorHandler);
+
+if ([] !== $bootstrapDeprecations) {
+    fwrite(\STDERR, sprintf("%d deprecations were triggered while initializing the test apps:\n\n* %s\n\n", \count($bootstrapDeprecations), implode("\n* ", $bootstrapDeprecations)));
+
+    if (!\in_array('--do-not-fail-on-deprecation', $_SERVER['argv'] ?? [], true)) {
+        exit(1);
+    }
 }

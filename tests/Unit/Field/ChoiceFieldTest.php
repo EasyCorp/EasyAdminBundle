@@ -11,7 +11,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Translation\TranslatableChoiceMessageCollect
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use function Symfony\Component\Translation\t;
 
-class ChoiceFieldTest extends AbstractFieldTest
+class ChoiceFieldTest extends AbstractFieldTestCase
 {
     protected function setUp(): void
     {

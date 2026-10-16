@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Skill;
 
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Skill\Support\SkillFile;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class SkillPackagingTest extends TestCase
@@ -47,9 +48,7 @@ class SkillPackagingTest extends TestCase
         self::assertNotSame([], $paths, sprintf('No contributor skill was found at "%s". Update this test if they moved.', ltrim(self::CONTRIBUTOR_SKILLS_PATTERN, '/')));
     }
 
-    /**
-     * @dataProvider provideContributorSkills
-     */
+    #[DataProvider('provideContributorSkills')]
     public function testContributorSkillsAreMarkedAsInternal(string $path): void
     {
         $metadata = SkillFile::fromPath($path)->metadata();

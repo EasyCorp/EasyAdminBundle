@@ -3,18 +3,14 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Config;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use Symfony\Bridge\PhpUnit\ExpectDeprecationTrait;
 use Symfony\Component\Translation\TranslatableMessage;
 use function Symfony\Component\Translation\t;
 
 class ActionTest extends TestCase
 {
-    use ExpectDeprecationTrait;
-
-    /**
-     * @dataProvider provideAutomaticActionLabels
-     */
+    #[DataProvider('provideAutomaticActionLabels')]
     public function testActionWithAutomaticLabel(string $actionName, string $automaticLabel): void
     {
         $actionConfig = Action::new($actionName)->linkToCrudAction('');
@@ -22,9 +18,7 @@ class ActionTest extends TestCase
         $this->assertSame($automaticLabel, $actionConfig->getAsDto()->getLabel());
     }
 
-    /**
-     * @dataProvider provideActionLabels
-     */
+    #[DataProvider('provideActionLabels')]
     public function testAllPossibleValuesForActionLabels($label): void
     {
         $actionConfig = Action::new(Action::EDIT, $label)->linkToCrudAction('');

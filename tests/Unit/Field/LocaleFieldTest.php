@@ -7,7 +7,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\LocaleConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\LocaleField;
 use Symfony\Component\Form\Extension\Core\Type\LocaleType;
 
-class LocaleFieldTest extends AbstractFieldTest
+class LocaleFieldTest extends AbstractFieldTestCase
 {
     protected function setUp(): void
     {

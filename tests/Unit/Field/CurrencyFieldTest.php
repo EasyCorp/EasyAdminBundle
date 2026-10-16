@@ -6,7 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\CurrencyConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CurrencyField;
 use Symfony\Component\Form\Extension\Core\Type\CurrencyType;
 
-class CurrencyFieldTest extends AbstractFieldTest
+class CurrencyFieldTest extends AbstractFieldTestCase
 {
     protected function setUp(): void
     {

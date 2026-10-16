@@ -2,12 +2,13 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Component;
 
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTest;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Rendering tests for the <twig:ea:ActionMenu:ActionList:Item> component.
  */
-class ActionMenuItemTest extends AbstractFieldFunctionalTest
+class ActionMenuItemTest extends AbstractFieldFunctionalTestCase
 {
     private function renderItem(string $template, array $context = []): string
     {
@@ -34,9 +35,7 @@ class ActionMenuItemTest extends AbstractFieldFunctionalTest
         self::assertStringContainsString('href="#"', $html);
     }
 
-    /**
-     * @dataProvider provideEmptyLabels
-     */
+    #[DataProvider('provideEmptyLabels')]
     public function testEmptyLabelRendersNoSpan(string $labelAttribute): void
     {
         $html = $this->renderItem(sprintf('<twig:ea:ActionMenu:ActionList:Item %s url="/edit" :showBlankIcons="false" />', $labelAttribute));

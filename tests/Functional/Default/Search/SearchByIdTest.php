@@ -6,6 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\SearchByIdCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\SearchTestEntity;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Tests for searching by ID only.
@@ -29,9 +30,7 @@ class SearchByIdTest extends AbstractCrudTestCase
         $this->client->followRedirects();
     }
 
-    /**
-     * @dataProvider provideSearchTests
-     */
+    #[DataProvider('provideSearchTests')]
     public function testSearch(string $query, int $expectedResultCount): void
     {
         $this->client->request('GET', $this->generateIndexUrl($query));

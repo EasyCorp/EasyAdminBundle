@@ -2,10 +2,10 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Fields\Numeric;
 
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTest;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTestCase;
 use Symfony\Component\DomCrawler\Crawler;
 
-class NumberFieldTest extends AbstractFieldFunctionalTest
+class NumberFieldTest extends AbstractFieldFunctionalTestCase
 {
     public function testNumberFieldDisplaysOnIndex(): void
     {

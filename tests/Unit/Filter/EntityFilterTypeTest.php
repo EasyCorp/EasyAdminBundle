@@ -15,6 +15,7 @@ use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\Persistence\ManagerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\EntityFilterType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Bridge\Doctrine\Form\DoctrineOrmExtension;
 use Symfony\Component\Form\Extension\Validator\ViolationMapper\ViolationMapperInterface;
 use Symfony\Component\Form\Test\TypeTestCase;
@@ -91,9 +92,7 @@ class EntityFilterTypeTest extends TypeTestCase
         ]);
     }
 
-    /**
-     * @dataProvider toOne
-     */
+    #[DataProvider('toOne')]
     public function testToOne(array $options, array $dataToSubmit, array $expectedData): void
     {
         $this->entityManager->persist(new SingleIntIdEntity(1, 'Foo'));
@@ -157,9 +156,7 @@ class EntityFilterTypeTest extends TypeTestCase
         ];
     }
 
-    /**
-     * @dataProvider toMany
-     */
+    #[DataProvider('toMany')]
     public function testToMany(array $options, array $dataToSubmit, array $data): void
     {
         $this->entityManager->persist(new SingleIntIdEntity(1, 'Foo'));

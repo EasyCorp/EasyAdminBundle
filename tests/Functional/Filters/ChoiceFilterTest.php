@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Filters;
 
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Fixture data (choiceFilter field):
@@ -15,9 +16,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
  */
 class ChoiceFilterTest extends FilterFunctionalTestCase
 {
-    /**
-     * @dataProvider equalsProvider
-     */
+    #[DataProvider('equalsProvider')]
     public function testFilterEquals(string $option, array $expectedIds): void
     {
         $url = $this->generateFilteredIndexUrl([

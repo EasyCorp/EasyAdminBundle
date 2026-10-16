@@ -4,13 +4,12 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Twig\Component;
 
 use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Alert;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\AlertVariant;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class AlertTest extends TestCase
 {
-    /**
-     * @dataProvider provideKnownStringVariants
-     */
+    #[DataProvider('provideKnownStringVariants')]
     public function testMountWithKnownStringVariant(string $variantString, AlertVariant $expectedVariant): void
     {
         $alert = new Alert();
@@ -61,9 +60,7 @@ class AlertTest extends TestCase
         $this->assertNull($alert->title);
     }
 
-    /**
-     * @dataProvider provideAllVariants
-     */
+    #[DataProvider('provideAllVariants')]
     public function testMountDoesNotSetDefaultIconForVariants(AlertVariant $variant): void
     {
         $alert = new Alert();
@@ -89,9 +86,7 @@ class AlertTest extends TestCase
         $this->assertSame('alert alert-success', $alert->getDefaultCssClass());
     }
 
-    /**
-     * @dataProvider provideGetDefaultCssClassData
-     */
+    #[DataProvider('provideGetDefaultCssClassData')]
     public function testGetDefaultCssClass(string|AlertVariant $variant, bool $withDismissButton, string $expectedCssClass): void
     {
         $alert = new Alert();

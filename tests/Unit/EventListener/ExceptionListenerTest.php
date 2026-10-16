@@ -7,6 +7,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Context\AdminContextInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Provider\AdminContextProviderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\EventListener\ExceptionListener;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\BaseException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,9 +19,7 @@ use Twig\Loader\ArrayLoader;
 
 class ExceptionListenerTest extends TestCase
 {
-    /**
-     * @dataProvider unhandledException
-     */
+    #[DataProvider('unhandledException')]
     public function testUnhandledException(bool $kernelDebug, bool $contextIsNull, \Exception $exception): void
     {
         $contextProvider = $this->createMock(AdminContextProviderInterface::class);

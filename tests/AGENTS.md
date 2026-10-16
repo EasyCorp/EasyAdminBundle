@@ -28,7 +28,7 @@ Each is a real, self-contained Symfony app with its own Kernel, config, controll
 These are **public, stable API** — bundle users rely on them too, so don't break them.
 
 - Extend **`AbstractCrudTestCase`** for CRUD controller tests. It extends `WebTestCase`, composes the `CrudTest*` traits, and exposes `$this->client`, `$this->entityManager`, and `$this->adminUrlGenerator`. Subclasses implement `getControllerFqcn()` and `getDashboardFqcn()`.
-- Extend **`tests/Functional/AbstractFieldFunctionalTest.php`** for tests of individual fields (it builds on `AbstractCrudTestCase`).
+- Extend **`tests/Functional/AbstractFieldFunctionalTestCase.php`** for tests of individual fields (it builds on `AbstractCrudTestCase`).
 - Extend **`WebTestCase`** directly for simpler functional tests (e.g. dashboards).
 - Extend **`PHPUnit\Framework\TestCase`** for unit tests.
 
@@ -56,12 +56,12 @@ Never invoke a controller method directly in PHP. Browse the controller's URL wi
 
 - Add a `void` return type to every test method.
 - Name tests descriptively; don't duplicate the `test` prefix inside the name.
-- Use `@dataProvider` / `@testWith` to avoid duplicated tests.
+- Use the `#[DataProvider]` / `#[TestWith]` attributes to avoid duplicated tests.
 - Properties before methods; `setUp()`/`tearDown()` right after any constructor.
 
 ## Running tests
 
-`make tests` accepts an optional `ARGS` to scope the run, while keeping the deprecation baseline and cache reset:
+`make tests` accepts an optional `ARGS` to scope the run, while keeping the test cache reset:
 
 ```bash
 make tests                              # full suite
@@ -70,4 +70,4 @@ make tests ARGS="--filter=testFoo"      # one test
 make tests ARGS="tests/Unit --filter=testFoo"  # combined
 ```
 
-Prefer this over a raw `./vendor/bin/simple-phpunit` run, which skips the deprecation baseline (`tests/baseline-ignore.txt`) and the cache reset.
+Prefer this over a raw `vendor/bin/phpunit` run, which skips the cache reset.

@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Filters;
 
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Fixture data (arrayFilter field):
@@ -15,9 +16,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
  */
 class ArrayFilterTest extends FilterFunctionalTestCase
 {
-    /**
-     * @dataProvider containsSingleValueProvider
-     */
+    #[DataProvider('containsSingleValueProvider')]
     public function testFilterContainsSingleValue(string $tag, array $expectedIds): void
     {
         $url = $this->generateFilteredIndexUrl([
@@ -57,9 +56,7 @@ class ArrayFilterTest extends FilterFunctionalTestCase
         $this->assertVisibleEntityIds([2, 4, 6]);
     }
 
-    /**
-     * @dataProvider containsAllProvider
-     */
+    #[DataProvider('containsAllProvider')]
     public function testFilterContainsAll(array $tags, array $expectedIds): void
     {
         $url = $this->generateFilteredIndexUrl([

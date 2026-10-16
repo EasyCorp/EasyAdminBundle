@@ -2,13 +2,13 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Component;
 
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTest;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\Size;
 
 /**
  * Rendering tests for the <twig:ea:Badge> component.
  */
-class BadgeTest extends AbstractFieldFunctionalTest
+class BadgeTest extends AbstractFieldFunctionalTestCase
 {
     private function renderBadge(string $template, array $context = []): string
     {

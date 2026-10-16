@@ -7,11 +7,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\BooleanConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use PHPUnit\Framework\Attributes\TestWith;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
-class BooleanFieldTest extends AbstractFieldTest
+class BooleanFieldTest extends AbstractFieldTestCase
 {
     protected function setUp(): void
     {
@@ -42,11 +43,9 @@ class BooleanFieldTest extends AbstractFieldTest
         self::assertStringContainsString('field-boolean', $fieldDto->getCssClass());
     }
 
-    /**
-     * @testWith [true]
-     *           [false]
-     *           [null]
-     */
+    #[TestWith([true])]
+    #[TestWith([false])]
+    #[TestWith([null])]
     public function testFieldValue(?bool $value): void
     {
         $field = BooleanField::new('active');

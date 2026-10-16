@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Filter;
 
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\ComparisonFilterType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\ColorType;
 use Symfony\Component\Form\Extension\Core\Type\DateIntervalType;
@@ -13,9 +14,7 @@ use Symfony\Component\Form\Test\TypeTestCase;
 
 class ComparisonFilterTypeTest extends TypeTestCase
 {
-    /**
-     * @dataProvider submit
-     */
+    #[DataProvider('submit')]
     public function test(array $options, array $dataToSubmit, array $expectedData): void
     {
         $form = $this->factory->create(ComparisonFilterType::class, null, $options);

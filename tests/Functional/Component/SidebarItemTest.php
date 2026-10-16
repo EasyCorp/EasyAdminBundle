@@ -2,13 +2,13 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Component;
 
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTest;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTestCase;
 use Symfony\Component\DomCrawler\Crawler;
 
 /**
  * Rendering tests for the <twig:ea:Sidebar:Item> component.
  */
-class SidebarItemTest extends AbstractFieldFunctionalTest
+class SidebarItemTest extends AbstractFieldFunctionalTestCase
 {
     private function renderItem(string $template): Crawler
     {

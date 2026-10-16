@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Skill;
 
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Skill\Support\SkillFile;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class SkillTrailerTest extends TestCase
@@ -87,9 +88,7 @@ class SkillTrailerTest extends TestCase
         }
     }
 
-    /**
-     * @dataProvider provideTrailerEntries
-     */
+    #[DataProvider('provideTrailerEntries')]
     public function testTrailerEntryStillHoldsForThisVersionOfTheBundle(string $key, string $value): void
     {
         if ('' === $key) {

@@ -4,11 +4,12 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Config;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\GrayScale;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Theme;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class ThemeTest extends TestCase
 {
-    /** @dataProvider provideValidColors */
+    #[DataProvider('provideValidColors')]
     public function testPrimaryColorAcceptsValidFormats(string $color): void
     {
         $themeDto = Theme::new()->primaryColor($color)->getAsDto();
@@ -29,7 +30,7 @@ class ThemeTest extends TestCase
         yield ['oklch(60% 0.2 150deg)'];
     }
 
-    /** @dataProvider provideInvalidColors */
+    #[DataProvider('provideInvalidColors')]
     public function testPrimaryColorRejectsInvalidValues(string $color): void
     {
         $this->expectException(\InvalidArgumentException::class);
@@ -77,7 +78,7 @@ class ThemeTest extends TestCase
         Theme::new()->primaryColor('#15803d', dark: 'red;}');
     }
 
-    /** @dataProvider provideRadiusPresets */
+    #[DataProvider('provideRadiusPresets')]
     public function testRadiusPresets(string $preset, string $resolvedValue): void
     {
         $this->assertSame($resolvedValue, Theme::new()->radius($preset)->getAsDto()->getRadius());
@@ -93,7 +94,7 @@ class ThemeTest extends TestCase
         yield ['xl', '0.5rem'];
     }
 
-    /** @dataProvider provideSpacingPresets */
+    #[DataProvider('provideSpacingPresets')]
     public function testSpacingPresets(string $preset, string $resolvedValue): void
     {
         $this->assertSame($resolvedValue, Theme::new()->spacing($preset)->getAsDto()->getSpacing());
@@ -108,7 +109,7 @@ class ThemeTest extends TestCase
         yield ['xl', '0.15625rem'];
     }
 
-    /** @dataProvider provideValidLengths */
+    #[DataProvider('provideValidLengths')]
     public function testCustomLengths(string $length): void
     {
         $this->assertSame($length, Theme::new()->radius($length)->getAsDto()->getRadius());
@@ -123,7 +124,7 @@ class ThemeTest extends TestCase
         yield ['.5rem'];
     }
 
-    /** @dataProvider provideInvalidLengths */
+    #[DataProvider('provideInvalidLengths')]
     public function testInvalidLengthsAreRejected(string $length): void
     {
         $this->expectException(\InvalidArgumentException::class);
@@ -147,7 +148,7 @@ class ThemeTest extends TestCase
         Theme::new()->spacing('none');
     }
 
-    /** @dataProvider provideGrayScales */
+    #[DataProvider('provideGrayScales')]
     public function testGrays(string $grayScale, string $rampPrefix): void
     {
         $cssVariables = Theme::new()->grays($grayScale)->getAsDto()->getCssVariables();

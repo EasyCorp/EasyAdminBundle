@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Intl;
 
 use EasyCorp\Bundle\EasyAdminBundle\Intl\IntlFormatter;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use function Symfony\Component\String\u;
 
@@ -32,9 +33,7 @@ class IntlFormatterTest extends TestCase
         parent::tearDown();
     }
 
-    /**
-     * @dataProvider provideFormatDate
-     */
+    #[DataProvider('provideFormatDate')]
     public function testFormatDate(?string $expectedResult, ?\DateTimeInterface $date, ?string $dateFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', ?string $locale = null): void
     {
         if (\PHP_VERSION_ID < 80200) {
@@ -50,9 +49,7 @@ class IntlFormatterTest extends TestCase
         $this->assertSame($expectedResult, $formattedDate);
     }
 
-    /**
-     * @dataProvider provideFormatTime
-     */
+    #[DataProvider('provideFormatTime')]
     public function testFormatTime(?string $expectedResult, ?\DateTimeInterface $date, ?string $timeFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', ?string $locale = null, string $assertMethod = 'assertSame'): void
     {
         if (\PHP_VERSION_ID < 80200) {
@@ -68,9 +65,7 @@ class IntlFormatterTest extends TestCase
         $this->{$assertMethod}($expectedResult, $formattedTime);
     }
 
-    /**
-     * @dataProvider provideFormatDateTime
-     */
+    #[DataProvider('provideFormatDateTime')]
     public function testFormatDateTime(?string $expectedResult, ?\DateTimeInterface $date, ?string $dateFormat = 'medium', ?string $timeFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', ?string $locale = null, string $assertMethod = 'assertSame'): void
     {
         if (\PHP_VERSION_ID < 80200) {
@@ -86,9 +81,7 @@ class IntlFormatterTest extends TestCase
         $this->{$assertMethod}($expectedResult, $formattedDateTime);
     }
 
-    /**
-     * @dataProvider provideFormatNumber
-     */
+    #[DataProvider('provideFormatNumber')]
     public function testFormatNumber(?string $expectedResult, int|float $number, array $attrs): void
     {
         if (\PHP_VERSION_ID < 80200) {

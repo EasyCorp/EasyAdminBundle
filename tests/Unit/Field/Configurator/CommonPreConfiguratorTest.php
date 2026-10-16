@@ -11,12 +11,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\ResolvedPropertyDto;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\CommonPreConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Field\AbstractFieldTest;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Field\AbstractFieldTestCase;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Component\Translation\TranslatableMessage;
 use function Symfony\Component\Translation\t;
 
-class CommonPreConfiguratorTest extends AbstractFieldTest
+class CommonPreConfiguratorTest extends AbstractFieldTestCase
 {
     protected function setUp(): void
     {

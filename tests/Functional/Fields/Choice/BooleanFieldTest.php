@@ -2,10 +2,10 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Fields\Choice;
 
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTest;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTestCase;
 use Symfony\Component\DomCrawler\Crawler;
 
-class BooleanFieldTest extends AbstractFieldFunctionalTest
+class BooleanFieldTest extends AbstractFieldFunctionalTestCase
 {
     public function testBooleanFieldTrueDisplaysOnIndex(): void
     {

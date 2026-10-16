@@ -7,6 +7,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\SearchEmbeddedCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\ProjectDomain\Project;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Tests for search on root-level embedded properties.
@@ -41,9 +42,7 @@ class SearchEmbeddedPropertyTest extends AbstractCrudTestCase
         ->execute();
     }
 
-    /**
-     * @dataProvider provideSearchTests
-     */
+    #[DataProvider('provideSearchTests')]
     public function testSearch(string $query, int $expectedResultCount): void
     {
         $this->client->request('GET', $this->generateIndexUrl($query));

@@ -13,6 +13,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Router\Fixtures\FooBatchResolvedC
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Router\Fixtures\FooCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Router\Fixtures\InvalidDetailPathCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Router\Fixtures\InvalidDetailPathDashboardController;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
@@ -21,9 +22,7 @@ use Symfony\Component\DependencyInjection\Argument\RewindableGenerator;
 
 class AdminRouteGeneratorTest extends KernelTestCase
 {
-    /**
-     * @dataProvider provideFindRouteData
-     */
+    #[DataProvider('provideFindRouteData')]
     public function testFindRoute(?string $dashboardControllerFqcn, ?string $crudControllerFqcn, ?string $action, ?string $expectedRouteName): void
     {
         self::bootKernel();
@@ -74,9 +73,7 @@ class AdminRouteGeneratorTest extends KernelTestCase
         $this->assertSame($expectedRouteName, $routeName);
     }
 
-    /**
-     * @dataProvider provideEntityIdPlaceholderData
-     */
+    #[DataProvider('provideEntityIdPlaceholderData')]
     public function testGetEntityIdPlaceholderName(string $routePath, ?string $expectedPlaceholderName): void
     {
         $adminRouteGenerator = new AdminRouteGenerator(

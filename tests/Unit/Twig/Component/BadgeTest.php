@@ -6,13 +6,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Badge;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\BadgeVariant;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\Radius;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\Size;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class BadgeTest extends TestCase
 {
-    /**
-     * @dataProvider provideKnownStringVariants
-     */
+    #[DataProvider('provideKnownStringVariants')]
     public function testMountWithKnownStringVariant(string $variantString, BadgeVariant $expectedVariant): void
     {
         $badge = new Badge();
@@ -50,9 +49,7 @@ class BadgeTest extends TestCase
         $this->assertSame(BadgeVariant::Secondary, $badge->variant);
     }
 
-    /**
-     * @dataProvider provideEmptyVariants
-     */
+    #[DataProvider('provideEmptyVariants')]
     public function testMountWithEmptyVariantRendersNoVariantClass(?string $variant): void
     {
         $badge = new Badge();
@@ -80,9 +77,7 @@ class BadgeTest extends TestCase
         $this->assertSame('badge badge-currency', $badge->getDefaultCssClass());
     }
 
-    /**
-     * @dataProvider provideRadiusValues
-     */
+    #[DataProvider('provideRadiusValues')]
     public function testMountResolvesRadius(string|Radius|null $radius, ?Radius $expectedRadius): void
     {
         $badge = new Badge();
@@ -99,9 +94,7 @@ class BadgeTest extends TestCase
         yield 'unknown string falls back to null' => ['nope', null];
     }
 
-    /**
-     * @dataProvider provideSizeValues
-     */
+    #[DataProvider('provideSizeValues')]
     public function testMountResolvesSize(string|Size $size, Size $expectedSize): void
     {
         $badge = new Badge();
@@ -117,9 +110,7 @@ class BadgeTest extends TestCase
         yield 'unknown string falls back to md' => ['nope', Size::Medium];
     }
 
-    /**
-     * @dataProvider provideGetDefaultCssClassData
-     */
+    #[DataProvider('provideGetDefaultCssClassData')]
     public function testGetDefaultCssClass(string|BadgeVariant|null $variant, string|Size $size, string|Radius|null $radius, string $expectedCssClass): void
     {
         $badge = new Badge();

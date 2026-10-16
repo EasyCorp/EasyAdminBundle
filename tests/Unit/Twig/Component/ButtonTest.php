@@ -7,15 +7,14 @@ use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\ButtonElement;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\ButtonType;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\ButtonVariant;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\Size;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\IgnoreDeprecations;
 use PHPUnit\Framework\TestCase;
-use Symfony\Bridge\PhpUnit\ExpectDeprecationTrait;
 use Symfony\Component\Translation\TranslatableMessage;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ButtonTest extends TestCase
 {
-    use ExpectDeprecationTrait;
-
     private function createButton(): Button
     {
         $translator = $this->createMock(TranslatorInterface::class);
@@ -24,9 +23,7 @@ class ButtonTest extends TestCase
         return new Button($translator);
     }
 
-    /**
-     * @dataProvider provideKnownStringVariants
-     */
+    #[DataProvider('provideKnownStringVariants')]
     public function testMountWithKnownStringVariant(string $variantString, ButtonVariant $expectedVariant): void
     {
         $button = $this->createButton();
@@ -53,9 +50,7 @@ class ButtonTest extends TestCase
         $this->assertSame(ButtonVariant::Danger, $button->variant);
     }
 
-    /**
-     * @dataProvider provideEmptyVariants
-     */
+    #[DataProvider('provideEmptyVariants')]
     public function testMountWithEmptyVariantUsesDefault(?string $variant): void
     {
         $button = $this->createButton();
@@ -80,9 +75,7 @@ class ButtonTest extends TestCase
         $this->assertSame('btn btn-custom', $button->getDefaultCssClass());
     }
 
-    /**
-     * @dataProvider provideHtmlElements
-     */
+    #[DataProvider('provideHtmlElements')]
     public function testMountHtmlElement(string|ButtonElement|null $htmlElement, ButtonElement $expected): void
     {
         $button = $this->createButton();
@@ -102,9 +95,7 @@ class ButtonTest extends TestCase
         yield ['unknown', ButtonElement::Button];
     }
 
-    /**
-     * @dataProvider provideTypes
-     */
+    #[DataProvider('provideTypes')]
     public function testMountType(string|ButtonType|null $type, ButtonType $expected): void
     {
         $button = $this->createButton();
@@ -123,9 +114,7 @@ class ButtonTest extends TestCase
         yield ['unknown', ButtonType::Submit];
     }
 
-    /**
-     * @dataProvider provideMethods
-     */
+    #[DataProvider('provideMethods')]
     public function testMountMethod(?string $method, string $expectedMethod, bool $expectedOverride, string $expectedFormMethod): void
     {
         $button = $this->createButton();
@@ -146,9 +135,7 @@ class ButtonTest extends TestCase
         yield ['PATCH', 'PATCH', true, 'POST'];
     }
 
-    /**
-     * @dataProvider provideSizeValues
-     */
+    #[DataProvider('provideSizeValues')]
     public function testMountResolvesSize(string|Size $size, Size $expectedSize): void
     {
         $button = $this->createButton();
@@ -164,9 +151,7 @@ class ButtonTest extends TestCase
         yield 'unknown string falls back to md' => ['nope', Size::Medium];
     }
 
-    /**
-     * @dataProvider provideCssClassCombinations
-     */
+    #[DataProvider('provideCssClassCombinations')]
     public function testGetDefaultCssClass(string|ButtonVariant|null $variant, string|Size $size, bool $isInvisible, bool $isBlock, bool $inactive, string $expected): void
     {
         $button = $this->createButton();
@@ -191,14 +176,12 @@ class ButtonTest extends TestCase
         yield 'all combined' => ['warning', 'sm', true, true, true, 'btn btn-warning btn-sm btn-invisible btn-block disabled'];
     }
 
-    /**
-     * @group legacy
-     */
+    #[IgnoreDeprecations]
     public function testDeprecatedHtmlAttributesPropIsMigratedToRegularAttributes(): void
     {
         $button = $this->createButton();
 
-        $this->expectDeprecation('Since easycorp/easyadmin-bundle 5.2.0: The "htmlAttributes" prop of the <twig:ea:Button> component is deprecated, pass the attributes directly on the component (or use the "{{ ... }}" spread syntax for dynamic maps) instead.');
+        $this->expectUserDeprecationMessage('Since easycorp/easyadmin-bundle 5.2.0: The "htmlAttributes" prop of the <twig:ea:Button> component is deprecated, pass the attributes directly on the component (or use the "{{ ... }}" spread syntax for dynamic maps) instead.');
 
         $data = $button->migrateHtmlAttributes([
             'variant' => 'primary',
@@ -222,14 +205,12 @@ class ButtonTest extends TestCase
         $this->assertSame('primary', $data['variant']);
     }
 
-    /**
-     * @group legacy
-     */
+    #[IgnoreDeprecations]
     public function testDeprecatedHtmlAttributesPropIgnoresNonIterableValues(): void
     {
         $button = $this->createButton();
 
-        $this->expectDeprecation('Since easycorp/easyadmin-bundle 5.2.0: The "htmlAttributes" prop of the <twig:ea:Button> component is deprecated, pass the attributes directly on the component (or use the "{{ ... }}" spread syntax for dynamic maps) instead.');
+        $this->expectUserDeprecationMessage('Since easycorp/easyadmin-bundle 5.2.0: The "htmlAttributes" prop of the <twig:ea:Button> component is deprecated, pass the attributes directly on the component (or use the "{{ ... }}" spread syntax for dynamic maps) instead.');
 
         // the old template silently ignored non-iterable values (e.g. a string
         // literal passed without the '{{ }}' delimiters)

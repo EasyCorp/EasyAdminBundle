@@ -4,14 +4,13 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Filter;
 
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\NumericFilterType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Test\TypeTestCase;
 
 class NumericFilterTypeTest extends TypeTestCase
 {
-    /**
-     * @dataProvider submit
-     */
+    #[DataProvider('submit')]
     public function test(array $options, array $dataToSubmit, array $expectedData, string $expectedError = ''): void
     {
         $form = $this->factory->create(NumericFilterType::class, null, $options);

@@ -13,6 +13,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Factory\FieldFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FormLayoutFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\ProjectDomain\Project;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Translation\IdentityTranslator;
@@ -48,9 +49,7 @@ class FieldFactoryTest extends KernelTestCase
         $this->assertEmpty($fieldCollection);
     }
 
-    /**
-     * @dataProvider removesFieldsOnPage
-     */
+    #[DataProvider('removesFieldsOnPage')]
     public function testRemovesFieldsOnPage(string $pageName, FieldInterface $field): void
     {
         $fieldCollection = new FieldCollection([$field]);
@@ -84,9 +83,7 @@ class FieldFactoryTest extends KernelTestCase
         yield [Crud::PAGE_NEW, Field\TextField::new('name')->onlyWhenUpdating()];
     }
 
-    /**
-     * @dataProvider keepsFieldsOnPage
-     */
+    #[DataProvider('keepsFieldsOnPage')]
     public function testKeepsFieldsOnPage(string $pageName, FieldInterface $field): void
     {
         $fieldCollection = new FieldCollection([$field]);
@@ -131,9 +128,7 @@ class FieldFactoryTest extends KernelTestCase
         yield [Crud::PAGE_NEW, Field\TextField::new('name')->hideWhenUpdating()];
     }
 
-    /**
-     * @dataProvider stringNames
-     */
+    #[DataProvider('stringNames')]
     public function testStringNamesAreTurnedIntoFields(string $property, string $expectedField): void
     {
         $fieldCollection = new FieldCollection([$property]);

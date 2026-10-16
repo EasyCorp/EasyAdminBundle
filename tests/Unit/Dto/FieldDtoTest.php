@@ -3,11 +3,12 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Dto;
 
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class FieldDtoTest extends TestCase
 {
-    /** @dataProvider propertyNameWithSuffixProvider */
+    #[DataProvider('propertyNameWithSuffixProvider')]
     public function testGetPropertyNameWithSuffix(string $property, ?string $propertySuffix, string $expected): void
     {
         $dto = new FieldDto();

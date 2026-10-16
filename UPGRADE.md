@@ -1,6 +1,29 @@
 Upgrade Guide
 =============
 
+## EasyAdmin 5.7.1
+
+### `createEntity()` Can Return `null`
+
+The return type of `CrudControllerInterface::createEntity()` and
+`AbstractCrudController::createEntity()` changed from `object` to `?object`
+(`?TEntity` in PHPDoc). Return `null` to let the `new` form create the entity
+with its `empty_data` option:
+
+```php
+// Before (5.0 - 5.7.0)
+public function createEntity(string $entityFqcn): object;
+
+// After (5.7.1)
+public function createEntity(string $entityFqcn): ?object;
+```
+
+Overrides that declare `object` as their return type keep working. If your custom
+actions call `$this->createEntity(...)`, static analysis tools now require you to
+check for `null`. When `createEntity()` returns `null`, the entity instance is `null`
+in the `new` page until the form is submitted, so all your callables that receive the
+entity (e.g. in `ChoiceField::setChoices()` or `Action::linkToUrl()`) must accept `null`.
+
 ## EasyAdmin 5.7.0
 
 ### The `ea` Global Twig Variable Is Removed
@@ -308,6 +331,8 @@ public function createEntity(string $entityFqcn);
 // After (5.x)
 public function createEntity(string $entityFqcn): object;
 ```
+
+In EasyAdmin 5.7.1 the return type changed again to `?object` (see above).
 
 #### `Contracts\Orm\EntityPaginatorInterface`
 

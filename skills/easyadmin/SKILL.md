@@ -140,7 +140,8 @@ the same pages are installed locally under `vendor/easycorp/easyadmin-bundle/doc
 - Declare `public static function getEntityFqcn(): string` (the base class
   does not) and add `/** @extends AbstractCrudController<Product> */` above
   the class, otherwise PHPStan reports a missing generic type. <!-- src/Contracts/Controller/CrudControllerInterface.php::getEntityFqcn; UPGRADE.md:329-345 -->
-- Overrides must keep the interface signatures: `createEntity(string $entityFqcn): object`,
+- Overrides must keep the interface signatures: `createEntity(string $entityFqcn): ?object`
+  (overrides may keep `: object`),
   `persistEntity(EntityManagerInterface $entityManager, object $entityInstance): void`,
   `updateEntity(...)`, `deleteEntity(...)`, and
   `createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder`. <!-- src/Contracts/Controller/CrudControllerInterface.php::createEntity; src/Contracts/Controller/CrudControllerInterface.php::createIndexQueryBuilder -->

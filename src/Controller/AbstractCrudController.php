@@ -335,11 +335,15 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $newForm = $this->createNewForm($context->getEntity(), $context->getCrud()->getNewFormOptions(), $context);
         $newForm->handleRequest($context->getRequest());
 
-        /** @var TEntity $entityInstance */
+        /** @var TEntity|null $entityInstance */
         $entityInstance = $newForm->getData();
         $context->getEntity()->setInstance($entityInstance);
 
         if ($newForm->isSubmitted() && $newForm->isValid()) {
+            if (null === $entityInstance) {
+                throw new \LogicException(sprintf('The "new" form of the "%s" entity has no data after submitting it. When "%s::createEntity()" returns null, define the "empty_data" option of the form (e.g. with "Crud::setFormOptions()") to create the entity using the submitted values.', $entityFqcn, static::class));
+            }
+
             $this->processUploadedFiles($newForm);
 
             $event = new BeforeEntityPersistedEvent($entityInstance);

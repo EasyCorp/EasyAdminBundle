@@ -7,6 +7,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\NestedCrudForm\ProjectIssueNestedCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\NestedCrudForm\ProjectWithNestedIssuesCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\NestedCrudForm\ProjectWithNullCreateEntityIssuesCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\ProjectDomain\Project;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\ProjectDomain\ProjectIssue;
 use Symfony\Component\HttpKernel\Kernel;
@@ -141,6 +142,31 @@ class NestedCrudFormTest extends AbstractCrudTestCase
             ProjectIssueNestedCrudController::$createEntityCallCount,
             'createEntity() should be invoked through entry_options.empty_data when a new entry is bound',
         );
+    }
+
+    /**
+     * Tests that an embedded CRUD controller whose createEntity() returns null doesn't
+     * break the form and that new entries are created by the default "empty_data".
+     */
+    public function testNestedCreateEntityReturningNull(): void
+    {
+        $this->client->request('GET', $this->generateNewFormUrl(controllerFqcn: ProjectWithNullCreateEntityIssuesCrudController::class));
+        static::assertResponseIsSuccessful();
+
+        $project = $this->createProjectWithIssues();
+        $crawler = $this->client->request('GET', $this->generateEditFormUrl($project->getId(), controllerFqcn: ProjectWithNullCreateEntityIssuesCrudController::class));
+        static::assertResponseIsSuccessful();
+
+        $form = $crawler->filter('form[name="Project"]')->form();
+        $values = $form->getPhpValues();
+        $values['Project']['projectIssues'][] = ['name' => 'Issue created with empty_data'];
+        $this->client->request($form->getMethod(), $form->getUri(), $values);
+        static::assertResponseIsSuccessful();
+
+        $this->entityManager->clear();
+        $issue = $this->entityManager->getRepository(ProjectIssue::class)->findOneBy(['name' => 'Issue created with empty_data']);
+        static::assertNotNull($issue);
+        static::assertSame($project->getId(), $issue->getProject()?->getId());
     }
 
     /**

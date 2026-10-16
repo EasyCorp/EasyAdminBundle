@@ -214,10 +214,12 @@ final readonly class CollectionConfigurator implements FieldConfiguratorInterfac
         // createEntity() call: callers commonly read `$this->getContext()->getEntity()`
         // to populate the parent foreign key on the new entry, which only works when the
         // parent context is left in place.
+        // When createEntity() returns null, neither option is set so Symfony builds the
+        // entry with its own `empty_data` (the default one or the one set by the user).
         // See #6991.
         $controllerFactory = $this->controllerFactory;
         $requestStack = $this->requestStack;
-        $createEntryEntity = static function () use ($controllerFactory, $requestStack, $targetCrudControllerFqcn, $targetEntityFqcn): object {
+        $createEntryEntity = static function () use ($controllerFactory, $requestStack, $targetCrudControllerFqcn, $targetEntityFqcn): ?object {
             $request = $requestStack->getMainRequest();
             $controller = null !== $request
                 ? $controllerFactory->getCrudControllerInstance($targetCrudControllerFqcn, Action::NEW, $request)
@@ -231,8 +233,12 @@ final readonly class CollectionConfigurator implements FieldConfiguratorInterfac
         $fieldDto->setFormTypeOption('entry_type', CrudFormType::class);
         $fieldDto->setFormTypeOption('entry_options.entityDto', $editEntityDto);
         $fieldDto->setFormTypeOption('prototype_options.entityDto', $newEntityDto);
-        $fieldDto->setFormTypeOptionIfNotSet('prototype_data', $createEntryEntity());
-        $fieldDto->setFormTypeOptionIfNotSet('entry_options.empty_data', $createEntryEntity);
+
+        $prototypeEntity = $createEntryEntity();
+        if (null !== $prototypeEntity) {
+            $fieldDto->setFormTypeOptionIfNotSet('prototype_data', $prototypeEntity);
+            $fieldDto->setFormTypeOptionIfNotSet('entry_options.empty_data', $createEntryEntity);
+        }
     }
 
     /**

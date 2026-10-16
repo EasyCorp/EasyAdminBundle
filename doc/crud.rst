@@ -884,6 +884,52 @@ needs to pass constructor arguments or set some of its properties::
         // ...
     }
 
+If you prefer to create the entity with the values submitted in the form
+(e.g. because its constructor has required arguments), return ``null`` from
+``createEntity()`` and define the `empty_data option`_ of the ``new`` form::
+
+    namespace App\Controller\Admin;
+
+    use App\Entity\Product;
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+    use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+    use Symfony\Component\Form\FormInterface;
+
+    class ProductCrudController extends AbstractCrudController
+    {
+        // ...
+
+        public function configureCrud(Crud $crud): Crud
+        {
+            return $crud
+                ->setFormOptions([
+                    'empty_data' => fn (FormInterface $form): Product => new Product(
+                        $form->get('name')->getData(),
+                        $form->get('price')->getData(),
+                    ),
+                ]);
+        }
+
+        public function createEntity(string $entityFqcn): ?object
+        {
+            return null;
+        }
+    }
+
+If you don't define the ``empty_data`` option, Symfony creates the entity with
+``new Product()``, which fails when the constructor has required arguments.
+This also works for the CRUD controllers used in the ``useEntryCrudForm()``
+option of ``CollectionField``. In that case, set the empty data of the entries
+with ``->setFormTypeOption('entry_options.empty_data', ...)``.
+
+.. caution::
+
+    When ``createEntity()`` returns ``null``, the ``new`` page doesn't have an
+    entity instance until the form is submitted. All the callables that
+    receive the entity (e.g. the callback of ``ChoiceField::setChoices()``
+    or the one of ``Action::linkToUrl()``) get ``null`` on that page, so
+    their argument must be nullable (``?Product $product``).
+
 The other way of overriding this behavior is listening to the
 :doc:`events triggered by EasyAdmin </events>` when an entity is created, updated,
 persisted, deleted, etc.
@@ -1190,6 +1236,7 @@ The same applies to URLs generated in Twig templates:
         .setEntityId(product.id) %}
 
 .. _`Symfony controllers`: https://symfony.com/doc/current/controller.html
+.. _`empty_data option`: https://symfony.com/doc/current/form/use_empty_data.html
 .. _`Doctrine filters`: https://www.doctrine-project.org/projects/doctrine-orm/en/current/reference/filters.html
 .. _`XSS attacks`: https://en.wikipedia.org/wiki/Cross-site_scripting
 .. _`HtmlSanitizer component`: https://symfony.com/components/HTML%20Sanitizer

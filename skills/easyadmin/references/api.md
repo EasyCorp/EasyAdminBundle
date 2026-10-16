@@ -601,7 +601,7 @@ configureFilters(Filters $filters): Filters
 configureResponseParameters(KeyValueStore $responseParameters): KeyValueStore
 createEditForm(EntityDto $entityDto, KeyValueStore $formOptions, AdminContext $context): FormInterface
 createEditFormBuilder(EntityDto $entityDto, KeyValueStore $formOptions, AdminContext $context): FormBuilderInterface
-createEntity(string $entityFqcn): object
+createEntity(string $entityFqcn): ?object
 createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
 createNewForm(EntityDto $entityDto, KeyValueStore $formOptions, AdminContext $context): FormInterface
 createNewFormBuilder(EntityDto $entityDto, KeyValueStore $formOptions, AdminContext $context): FormBuilderInterface
@@ -644,7 +644,7 @@ configureFilters(Filters $filters): Filters
 configureResponseParameters(KeyValueStore $responseParameters): KeyValueStore
 createEditForm(EntityDto $entityDto, KeyValueStore $formOptions, AdminContext $context): FormInterface
 createEditFormBuilder(EntityDto $entityDto, KeyValueStore $formOptions, AdminContext $context): FormBuilderInterface
-createEntity(string $entityFqcn): object
+createEntity(string $entityFqcn): ?object
 createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
 createNewForm(EntityDto $entityDto, KeyValueStore $formOptions, AdminContext $context): FormInterface
 createNewFormBuilder(EntityDto $entityDto, KeyValueStore $formOptions, AdminContext $context): FormBuilderInterface

@@ -33,6 +33,7 @@ class BlogPostCrudController extends AbstractCrudController
     {
         return $filters
             ->add('title')
-            ->add('author');
+            ->add('author')
+            ->add('author.name');
     }
 }

@@ -214,6 +214,14 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
 
                 foreach (array_keys($actionsRouteConfig) as $actionName) {
                     $actionRouteConfig = $actionsRouteConfig[$actionName];
+
+                    if (null !== $crudControllerRouteConfig['allowedActions'] && !\in_array($actionRouteConfig['actionName'], $crudControllerRouteConfig['allowedActions'], true)) {
+                        continue;
+                    }
+                    if (null !== $crudControllerRouteConfig['deniedActions'] && \in_array($actionRouteConfig['actionName'], $crudControllerRouteConfig['deniedActions'], true)) {
+                        continue;
+                    }
+
                     $actionNameSnakeCase = strtolower(preg_replace('/[A-Z]/', '_$0', $actionRouteConfig['actionName']));
                     $actionNameSlug = strtolower(preg_replace('/[A-Z]/', '-$0', $actionRouteConfig['actionName']));
 
@@ -583,11 +591,11 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
     /**
      * @param class-string<CrudControllerInterface> $crudControllerFqcn
      *
-     * @return array{routeName: string, routePath: string}
+     * @return array{routeName: string, routePath: string, allowedActions: string[]|null, deniedActions: string[]|null}
      */
     private function getCrudControllerRouteConfig(string $crudControllerFqcn): array
     {
-        $crudControllerConfig = [];
+        $crudControllerConfig = ['allowedActions' => null, 'deniedActions' => null]; // Default to not set
 
         $reflectionClass = new \ReflectionClass($crudControllerFqcn);
 
@@ -608,6 +616,12 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
 
                 $crudControllerConfig['routeName'] = trim($adminRouteInstance->name, '_');
             }
+
+            if (null !== $adminRouteInstance->allowedActions && null !== $adminRouteInstance->deniedActions) {
+                throw new \RuntimeException(sprintf('In the #[AdminRoute] attribute of the "%s" CRUD controller, you cannot define both "allowedActions" and "deniedActions" at the same time because they are the exact opposite. Use only one of them.', $crudControllerFqcn));
+            }
+            $crudControllerConfig['allowedActions'] = $adminRouteInstance->allowedActions;
+            $crudControllerConfig['deniedActions'] = $adminRouteInstance->deniedActions;
         }
 
         // if the CRUD controller doesn't define any or all of the route configuration,

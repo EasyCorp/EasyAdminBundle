@@ -77,6 +77,9 @@
             </div>
             {# the highlighter escapes all the code, so its output is safe #}
             <pre class="ea-ui-kit-source"><code>{{ example.highlighted_code|raw }}</code></pre>
+            {% if example.uses_approximate_icon_names %}
+                <p class="ea-ui-kit-source-note">These icons are a generic example, not the exact icons of the icon set configured in this dashboard.</p>
+            {% endif %}
         </section>
     {% endfor %}
 

@@ -1,7 +1,7 @@
 {# Submenus
    Items with hasSubmenu toggle the submenu defined in their submenu block. #}
 <twig:ea:Sidebar:Group label="Catalog">
-    <twig:ea:Sidebar:Item label="Products" icon="fa-solid fa-box" hasSubmenu expanded>
+    <twig:ea:Sidebar:Item label="Products" icon="internal:folder-open" hasSubmenu expanded>
         <twig:block name="submenu">
             <twig:ea:Sidebar:Submenu label="Products">
                 <twig:ea:Sidebar:Item label="All products" href="#" active />
@@ -10,5 +10,5 @@
             </twig:ea:Sidebar:Submenu>
         </twig:block>
     </twig:ea:Sidebar:Item>
-    <twig:ea:Sidebar:Item label="Reviews" href="#" icon="fa-solid fa-star" />
+    <twig:ea:Sidebar:Item label="Settings" href="#" icon="internal:gear" />
 </twig:ea:Sidebar:Group>

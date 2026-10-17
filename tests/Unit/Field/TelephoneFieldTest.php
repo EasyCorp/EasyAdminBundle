@@ -6,7 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\TelephoneConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TelephoneField;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
 
-class TelephoneFieldTest extends AbstractFieldTest
+class TelephoneFieldTest extends AbstractFieldTestCase
 {
     protected function setUp(): void
     {

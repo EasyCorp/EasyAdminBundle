@@ -2,10 +2,10 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Fields\Intl;
 
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTest;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTestCase;
 use Symfony\Component\DomCrawler\Crawler;
 
-class CurrencyFieldTest extends AbstractFieldFunctionalTest
+class CurrencyFieldTest extends AbstractFieldFunctionalTestCase
 {
     public function testCurrencyFieldDisplaysOnIndex(): void
     {

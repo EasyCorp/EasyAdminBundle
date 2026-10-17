@@ -12,9 +12,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\AdminRouteApp\Entity\P
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\AdminRouteApp\Kernel;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-/**
- * @group legacy
- */
 class AdminRouteTest extends WebTestCase
 {
     protected static function getKernelClass(): string

@@ -2,10 +2,10 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Fields\Special;
 
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTest;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTestCase;
 use Symfony\Component\DomCrawler\Crawler;
 
-class ColorFieldTest extends AbstractFieldFunctionalTest
+class ColorFieldTest extends AbstractFieldFunctionalTestCase
 {
     public function testColorFieldDisplaysOnIndex(): void
     {

@@ -12,7 +12,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FileUploadType;
 use Symfony\Component\Validator\Constraints\Image;
 use Symfony\Component\Validator\Constraints\NotNull;
 
-class ImageFieldTest extends AbstractFieldTest
+class ImageFieldTest extends AbstractFieldTestCase
 {
     protected function setUp(): void
     {

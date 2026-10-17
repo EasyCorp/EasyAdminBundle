@@ -17,6 +17,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
@@ -242,9 +243,7 @@ class EntityRepositoryTest extends TestCase
         $this->entityRepository->createQueryBuilder($searchDto, $entityDto, $fields, new FilterCollection());
     }
 
-    /**
-     * @dataProvider provideCaseInsensitiveSortDirections
-     */
+    #[DataProvider('provideCaseInsensitiveSortDirections')]
     public function testCustomSortDirectionIsNormalizedRegardlessOfCase(string $requestedDirection, string $normalizedDirection): void
     {
         // the sort direction comes verbatim from the URL (?sort[displayedField]=desc)

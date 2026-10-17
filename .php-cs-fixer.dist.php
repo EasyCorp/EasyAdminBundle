@@ -17,7 +17,8 @@ return (new PhpCsFixer\Config())
     ->setRules([
         '@Symfony' => true,
         '@Symfony:risky' => true,
-        '@PHPUnit48Migration:risky' => true,
+        '@PHPUnit100Migration:risky' => true,
+        'php_unit_attributes' => true,
         'fopen_flags' => false,
         'protected_to_private' => true,
         'native_function_invocation' => ['exclude' => ['sprintf']],

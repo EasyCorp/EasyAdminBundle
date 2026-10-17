@@ -10,6 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\FieldProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\ProjectDomain\Project;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class FieldProviderTest extends KernelTestCase
@@ -31,9 +32,7 @@ class FieldProviderTest extends KernelTestCase
         $this->fieldProvider = new FieldProvider($adminContextProvider);
     }
 
-    /**
-     * @dataProvider getDefaultFields
-     */
+    #[DataProvider('getDefaultFields')]
     public function testGetDefaultFields(string $pageName, array $expectedDefaultFields): void
     {
         $this->assertEquals(

@@ -7,10 +7,10 @@ help: ## Show help
 ## —— Tests ———————————————————————————————————
 tests: ## Run tests (optional ARGS, e.g. make tests ARGS="tests/Unit/Field/" or ARGS="--filter=testFoo")
 	rm -rf $(shell php -r "echo sys_get_temp_dir();")/com.github.easycorp.easyadmin/tests/var/test/cache/*
-	SYMFONY_DEPRECATIONS_HELPER="$${SYMFONY_DEPRECATIONS_HELPER:-ignoreFile=./tests/baseline-ignore.txt}" php vendor/bin/simple-phpunit -v $(ARGS)
+	php vendor/bin/phpunit $(ARGS)
 tests-coverage: ## Generate test coverage
 	rm -rf $(shell php -r "echo sys_get_temp_dir();")/com.github.easycorp.easyadmin/tests/var/test/cache/*
-	XDEBUG_MODE=coverage php vendor/bin/simple-phpunit --coverage-html $(shell php -r "echo sys_get_temp_dir();")/com.github.easycorp.easyadmin/tests/var/test/coverage/
+	XDEBUG_MODE=coverage php vendor/bin/phpunit --coverage-html $(shell php -r "echo sys_get_temp_dir();")/com.github.easycorp.easyadmin/tests/var/test/coverage/
 tests-coverage-view-in-browser: ## Open the generated HTML coverage in your default browser
 	sensible-browser "file://$(shell php -r "echo sys_get_temp_dir();")/com.github.easycorp.easyadmin/tests/var/test/coverage/index.html"
 

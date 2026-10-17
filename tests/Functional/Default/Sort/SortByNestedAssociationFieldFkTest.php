@@ -5,6 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Default\Sort;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\SortNestedAssociationByFkCrudController;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Tests an AssociationField whose property is a nested association path ending at an
@@ -35,10 +36,9 @@ class SortByNestedAssociationFieldFkTest extends AbstractCrudTestCase
     }
 
     /**
-     * @dataProvider provideSortTests
-     *
      * @param list<string> $expectedProjectNames
      */
+    #[DataProvider('provideSortTests')]
     public function testSorting(array $query, array $expectedProjectNames): void
     {
         $this->client->request('GET', $this->generateIndexUrl().'?'.http_build_query($query));

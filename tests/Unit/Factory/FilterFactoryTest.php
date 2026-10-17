@@ -16,6 +16,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterConfigDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDto;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FilterFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\TextFilter;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -48,9 +49,7 @@ class FilterFactoryTest extends TestCase
         $this->assertSame('name', $result->get('name')->getProperty());
     }
 
-    /**
-     * @dataProvider doctrineTypeToFilterProvider
-     */
+    #[DataProvider('doctrineTypeToFilterProvider')]
     public function testCreateGuessesFilterForDoctrineType(string $propertyName, string $doctrineType): void
     {
         $this->filterFactory = new FilterFactory($this->adminContextProvider, []);

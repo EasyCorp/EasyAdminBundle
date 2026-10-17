@@ -3,11 +3,12 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Util;
 
 use EasyCorp\Bundle\EasyAdminBundle\Util\ThemeColorCalculator;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class ThemeColorCalculatorTest extends TestCase
 {
-    /** @dataProvider provideDarkBackgrounds */
+    #[DataProvider('provideDarkBackgrounds')]
     public function testDarkBackgroundsGetWhiteForeground(string $color): void
     {
         $this->assertSame('#fff', ThemeColorCalculator::foregroundFor($color));
@@ -23,7 +24,7 @@ class ThemeColorCalculatorTest extends TestCase
         yield ['oklch(0.45 0.15 260)'];
     }
 
-    /** @dataProvider provideLightBackgrounds */
+    #[DataProvider('provideLightBackgrounds')]
     public function testLightBackgroundsGetBlackForeground(string $color): void
     {
         $this->assertSame('#000', ThemeColorCalculator::foregroundFor($color));

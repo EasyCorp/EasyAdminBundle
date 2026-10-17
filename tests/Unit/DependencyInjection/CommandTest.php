@@ -2,14 +2,13 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\DependencyInjection;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class CommandTest extends KernelTestCase
 {
-    /**
-     * @dataProvider provideCommands
-     */
+    #[DataProvider('provideCommands')]
     public function testMakerCommandServices(string $commandName): void
     {
         $application = new Application(self::bootKernel());

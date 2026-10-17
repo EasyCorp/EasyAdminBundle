@@ -7,6 +7,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Controller\
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Controller\SecuredDashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Controller\SecureRouteController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Kernel;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -71,9 +72,8 @@ class RouteNameAccessControlBypassTest extends AbstractCrudTestCase
      * The '?routeName=' and '?routeParams=' values come straight from the query string
      * (legacy URL from a bookmark, a typo, or a bot probing the admin), so when they
      * don't lead to a valid route, the response must be a client error, not a 500 error.
-     *
-     * @dataProvider provideInvalidRouteNameQueries
      */
+    #[DataProvider('provideInvalidRouteNameQueries')]
     public function testInvalidRouteNameReturnsClientError(string $query, int $expectedStatusCode): void
     {
         $this->client->request('GET', '/admin?'.$query, [], [], ['PHP_AUTH_USER' => 'admin', 'PHP_AUTH_PW' => '1234']);

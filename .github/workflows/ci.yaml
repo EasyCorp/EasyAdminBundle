@@ -43,7 +43,6 @@ jobs:
             - name: Install dependencies
               run: |
                   composer install --no-interaction --no-progress --prefer-dist
-                  vendor/bin/simple-phpunit install
 
             - name: "Run PHPStan analysis"
               run: vendor/bin/phpstan analyse
@@ -70,7 +69,7 @@ jobs:
                       php_version: "8.2"
                       composer_args: "--prefer-lowest"
                       stability: "stable"
-                      symfony_deprecations_helper: "disabled"
+                      phpunit_args: "--do-not-fail-on-deprecation --do-not-fail-on-phpunit-deprecation"
                       allow_failure: false
                     # All supported Symfony versions
                     # Symfony 7.1, 7.2, 7.3 and 8.0 are no longer maintained and their last twig-bridge
@@ -86,7 +85,7 @@ jobs:
                       symfony_version: "7.1.*"
                       composer_args: "--with 'twig/twig:<3.29'"
                       stability: "stable"
-                      symfony_deprecations_helper: "disabled"
+                      phpunit_args: "--do-not-fail-on-deprecation --do-not-fail-on-phpunit-deprecation"
                       allow_failure: false
                     - os: ubuntu-latest
                       php_version: "8.4"
@@ -175,7 +174,6 @@ jobs:
             - name: Install dependencies
               run: |
                   composer update --no-interaction --no-progress --prefer-dist ${{ matrix.composer_args }}
-                  vendor/bin/simple-phpunit install
 
             - name: Show installed dependencies
               run: |
@@ -186,7 +184,7 @@ jobs:
               shell: bash
               run: |
                   set +e
-                  make tests
+                  make tests ARGS="${{ matrix.phpunit_args }}"
                   exit_code=$?
 
                   if [ "${{ matrix.allow_failure }}" = "true" ] && [ $exit_code -ne 0 ]; then
@@ -195,8 +193,6 @@ jobs:
                   fi
 
                   exit $exit_code
-              env:
-                  SYMFONY_DEPRECATIONS_HELPER: ${{ matrix.symfony_deprecations_helper || '' }}
 
             - name: Run tests (Windows)
               if: ${{ runner.os == 'Windows' }}
@@ -205,8 +201,7 @@ jobs:
                   $cacheDir = php -r "echo sys_get_temp_dir();"
                   $cacheDir = Join-Path $cacheDir "com.github.easycorp.easyadmin/tests/var/test/cache"
                   if (Test-Path $cacheDir) { Remove-Item -Recurse -Force $cacheDir }
-                  if (-not $env:SYMFONY_DEPRECATIONS_HELPER) { $env:SYMFONY_DEPRECATIONS_HELPER = "ignoreFile=./tests/baseline-ignore.txt" }
-                  php vendor/bin/simple-phpunit -v
+                  php vendor/bin/phpunit
                   $exitCode = $LASTEXITCODE
 
                   if ("${{ matrix.allow_failure }}" -eq "true" -and $exitCode -ne 0) {
@@ -215,8 +210,6 @@ jobs:
                   }
 
                   exit $exitCode
-              env:
-                  SYMFONY_DEPRECATIONS_HELPER: ${{ matrix.symfony_deprecations_helper || '' }}
 
     php-linter:
         runs-on: ubuntu-latest

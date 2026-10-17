@@ -78,13 +78,12 @@ Run the relevant target(s) for what you changed:
 | Documentation    | `make linter-docs`                                                |
 | Translations     | keep all locales consistent; use English as placeholder if unsure |
 
-Run targeted tests with `make tests ARGS=...` (keeps the deprecation baseline and cache reset; full guide in `tests/AGENTS.md`):
+Run targeted tests with `make tests ARGS=...` (it also resets the test cache; full guide in `tests/AGENTS.md`):
 ```bash
 make tests                            # whole suite
 make tests ARGS="tests/Unit/Field/"   # one directory
 make tests ARGS="--filter=testFoo"    # one test
 ```
-A bare `./vendor/bin/simple-phpunit` run skips the deprecation baseline (`tests/baseline-ignore.txt`) and the cache reset.
 
 ## Git and Pull Requests
 

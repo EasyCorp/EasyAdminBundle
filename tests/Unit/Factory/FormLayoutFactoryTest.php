@@ -18,6 +18,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabListType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabPaneCloseType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabPaneGroupCloseType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabPaneGroupOpenType;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Translation\IdentityTranslator;
 use Symfony\Component\Translation\TranslatableMessage;
@@ -25,9 +26,7 @@ use Symfony\Contracts\Translation\TranslatableInterface;
 
 class FormLayoutFactoryTest extends TestCase
 {
-    /**
-     * @dataProvider provideFormLayouts
-     */
+    #[DataProvider('provideFormLayouts')]
     public function testFixFormColumns(array $fieldConfig, string $expectedLayout): void
     {
         $originalFields = $this->createFormFieldsFromConfig($fieldConfig);
@@ -39,9 +38,7 @@ class FormLayoutFactoryTest extends TestCase
         $this->assertTrue($this->isFormLayoutTheSame($expectedFields, $originalFields));
     }
 
-    /**
-     * @dataProvider provideFormLayoutErrors
-     */
+    #[DataProvider('provideFormLayoutErrors')]
     public function testFixFormColumnsErrors(array $originalFields, string $expectedExceptionFqcn, string $expectedExceptionMessage): void
     {
         $this->expectException($expectedExceptionFqcn);
@@ -53,7 +50,7 @@ class FormLayoutFactoryTest extends TestCase
         $fieldFactory->createLayout($originalFields, Crud::PAGE_EDIT);
     }
 
-    public function provideFormLayouts(): \Generator
+    public static function provideFormLayouts(): \Generator
     {
         yield 'Only fields (a fieldset is added automatically to wrap all fields)' => [
             ['field', 'field', 'field'],
@@ -296,9 +293,7 @@ class FormLayoutFactoryTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provideTabLabels
-     */
+    #[DataProvider('provideTabLabels')]
     public function testTabLabelTranslation(TranslatableInterface|string $label, string $expectedTabId): void
     {
         $fields = new FieldCollection([
@@ -373,7 +368,7 @@ class FormLayoutFactoryTest extends TestCase
         $this->assertSame(7, $collectedTab->getCustomOption(FormField::OPTION_TAB_BADGE)->getContent());
     }
 
-    public function provideTabLabels(): \Generator
+    public static function provideTabLabels(): \Generator
     {
         yield 'string label' => [
             'My Tab',
@@ -386,7 +381,7 @@ class FormLayoutFactoryTest extends TestCase
         ];
     }
 
-    public function provideFormLayoutErrors(): \Generator
+    public static function provideFormLayoutErrors(): \Generator
     {
         yield 'One or more fields outside of all columns' => [
             ['field', 'column', 'field', 'field'],

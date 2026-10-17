@@ -9,6 +9,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Factory\AdminContextFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\CategoryCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Category;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -45,9 +46,7 @@ class AdminContextFactoryTest extends KernelTestCase
         $this->assertSame('fr', $result->getI18n()->getLocale());
     }
 
-    /**
-     * @dataProvider textDirectionByLocaleProvider
-     */
+    #[DataProvider('textDirectionByLocaleProvider')]
     public function testCreateSetsTextDirectionBasedOnLocale(string $locale, string $expectedDirection): void
     {
         $request = new Request();
@@ -163,9 +162,7 @@ class AdminContextFactoryTest extends KernelTestCase
         $this->assertSame(Category::class, $result->getCrud()->getEntityFqcn());
     }
 
-    /**
-     * @dataProvider validPageNamesProvider
-     */
+    #[DataProvider('validPageNamesProvider')]
     public function testCreateWithCrudControllerSetsPageName(string $pageName): void
     {
         $request = new Request();

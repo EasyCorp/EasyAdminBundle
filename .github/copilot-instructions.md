@@ -42,7 +42,7 @@ Welcome, 🤖 AI assistant! Please follow these guidelines when contributing to 
 - Run `php-cs-fixer fix` to fix PHP code style issues
 - Run `yarn install` to install JavaScript dependencies
 - Run `make build-assets` to recompile assets whenever you make any change in assets/ directory
-- Run `./vendor/bin/simple-phpunit` to run PHPUnit tests via Symfony's PHPUnitBridge wrapper
+- Run `make tests` (or `./vendor/bin/phpunit`) to run PHPUnit tests
 - Run `./vendor/bin/phpstan analyse` to run PHPStan checks
 - Run `yarn ci` to run JavaScript/CSS linters
 - Run `yarn biome check --write` to apply the safe formatting fixes in JSS/CSS files

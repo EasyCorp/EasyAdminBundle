@@ -7,6 +7,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\SearchAllTermsCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\SearchTestAuthor;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\SearchTestEntity;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Tests for the default all-terms search mode (AND logic).
@@ -84,9 +85,7 @@ class SearchAllTermsTest extends AbstractCrudTestCase
         $this->assertSelectorExists('form.form-action-search .content-search-reset');
     }
 
-    /**
-     * @dataProvider provideSearchTests
-     */
+    #[DataProvider('provideSearchTests')]
     public function testSearch(array $newEntitiesToCreate, string $query, int $expectedResultCount): void
     {
         foreach ($newEntitiesToCreate as $entityData) {

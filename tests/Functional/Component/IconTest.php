@@ -2,13 +2,13 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Component;
 
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTest;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\Size;
 
 /**
  * Rendering tests for the <twig:ea:Icon> component.
  */
-class IconTest extends AbstractFieldFunctionalTest
+class IconTest extends AbstractFieldFunctionalTestCase
 {
     public function testWithoutSize(): void
     {

@@ -9,7 +9,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\HiddenField;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 
-class HiddenFieldTest extends AbstractFieldTest
+class HiddenFieldTest extends AbstractFieldTestCase
 {
     protected function setUp(): void
     {

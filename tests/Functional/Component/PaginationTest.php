@@ -2,14 +2,14 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Component;
 
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTest;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTestCase;
 use Symfony\Component\DomCrawler\Crawler;
 
 /**
  * Rendering tests for the <twig:ea:Pagination> component (using its raw mode,
  * which doesn't require an admin context or an EntityPaginator).
  */
-class PaginationTest extends AbstractFieldFunctionalTest
+class PaginationTest extends AbstractFieldFunctionalTestCase
 {
     private function renderPagination(string $template): Crawler
     {

@@ -5,6 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Default\Search;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\SearchAnyTermsCrudController;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Tests for the any-terms search mode (OR logic).
@@ -29,9 +30,7 @@ class SearchAnyTermsTest extends AbstractCrudTestCase
         $this->client->followRedirects();
     }
 
-    /**
-     * @dataProvider provideSearchTests
-     */
+    #[DataProvider('provideSearchTests')]
     public function testSearch(string $query, int $expectedResultCount): void
     {
         $this->client->request('GET', $this->generateIndexUrl($query));

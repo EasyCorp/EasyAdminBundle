@@ -2,16 +2,14 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Component;
 
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTest;
-use Symfony\Bridge\PhpUnit\ExpectDeprecationTrait;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTestCase;
+use PHPUnit\Framework\Attributes\IgnoreDeprecations;
 
 /**
  * Rendering tests for the <twig:ea:Button> component.
  */
-class ButtonTest extends AbstractFieldFunctionalTest
+class ButtonTest extends AbstractFieldFunctionalTestCase
 {
-    use ExpectDeprecationTrait;
-
     private function renderButton(string $template): string
     {
         return trim(static::getContainer()->get('twig')->createTemplate($template)->render());
@@ -103,12 +101,10 @@ class ButtonTest extends AbstractFieldFunctionalTest
         self::assertStringContainsString('data-foo="bar"', $html);
     }
 
-    /**
-     * @group legacy
-     */
+    #[IgnoreDeprecations]
     public function testDeprecatedHtmlAttributesPropStillRenders(): void
     {
-        $this->expectDeprecation('Since easycorp/easyadmin-bundle 5.2.0: The "htmlAttributes" prop of the <twig:ea:Button> component is deprecated, pass the attributes directly on the component (or use the "{{ ... }}" spread syntax for dynamic maps) instead.');
+        $this->expectUserDeprecationMessage('Since easycorp/easyadmin-bundle 5.2.0: The "htmlAttributes" prop of the <twig:ea:Button> component is deprecated, pass the attributes directly on the component (or use the "{{ ... }}" spread syntax for dynamic maps) instead.');
 
         $html = $this->renderButton('<twig:ea:Button htmlAttributes="{{ {\'data-foo\': \'bar\'} }}">x</twig:ea:Button>');
 

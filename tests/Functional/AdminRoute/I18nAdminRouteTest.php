@@ -6,9 +6,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\AdminRouteApp\I18nKern
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
-/**
- * @group legacy
- */
 class I18nAdminRouteTest extends WebTestCase
 {
     private const LOCALES = ['en', 'ja', 'es'];

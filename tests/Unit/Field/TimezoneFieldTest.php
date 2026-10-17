@@ -6,7 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\TimezoneConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TimezoneField;
 use Symfony\Component\Form\Extension\Core\Type\TimezoneType;
 
-class TimezoneFieldTest extends AbstractFieldTest
+class TimezoneFieldTest extends AbstractFieldTestCase
 {
     protected function setUp(): void
     {

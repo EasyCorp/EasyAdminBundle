@@ -7,6 +7,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\SortTestEntityCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\SortTestEntity;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Tests sorting by basic fields (text, integer, datetime).
@@ -32,9 +33,7 @@ class SortByBasicFieldsTest extends AbstractCrudTestCase
         $this->repository = $this->entityManager->getRepository(SortTestEntity::class);
     }
 
-    /**
-     * @dataProvider textFieldSorting
-     */
+    #[DataProvider('textFieldSorting')]
     public function testSortingByTextField(array $query, ?string $sortFunction): void
     {
         // arrange
@@ -88,9 +87,7 @@ class SortByBasicFieldsTest extends AbstractCrudTestCase
         ];
     }
 
-    /**
-     * @dataProvider integerFieldSorting
-     */
+    #[DataProvider('integerFieldSorting')]
     public function testSortingByIntegerField(array $query, ?\Closure $sortFunction): void
     {
         // arrange
@@ -179,9 +176,7 @@ class SortByBasicFieldsTest extends AbstractCrudTestCase
         ];
     }
 
-    /**
-     * @dataProvider dateTimeFieldSorting
-     */
+    #[DataProvider('dateTimeFieldSorting')]
     public function testSortingByDateTimeField(array $query, ?\Closure $sortFunction): void
     {
         // arrange

@@ -10,7 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
-class AssociationFieldTest extends AbstractFieldTest
+class AssociationFieldTest extends AbstractFieldTestCase
 {
     protected function setUp(): void
     {

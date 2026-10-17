@@ -10,6 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\CategoryCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\CustomHtmlAttributeDashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 final class CrudTestUrlGenerationTraitTest extends KernelTestCase
@@ -44,9 +45,7 @@ final class CrudTestUrlGenerationTraitTest extends KernelTestCase
         self::assertEquals($expectedUrl, $testClass->test());
     }
 
-    /**
-     * @dataProvider specificDashboardAndControllerFqcn
-     */
+    #[DataProvider('specificDashboardAndControllerFqcn')]
     public function testGenericUrlIndexGenerationWithSpecificDashboardAndController(
         ?string $dashboardFqcn,
         ?string $controllerFqcn,
@@ -89,9 +88,7 @@ final class CrudTestUrlGenerationTraitTest extends KernelTestCase
         self::assertEquals($expectedUrl, $testClass->test($entityId));
     }
 
-    /**
-     * @dataProvider specificDashboardAndControllerFqcn
-     */
+    #[DataProvider('specificDashboardAndControllerFqcn')]
     public function testUrlDetailGenerationWithSpecificDashboardAndControllerFqcn(
         ?string $dashboardFqcn,
         ?string $controllerFqcn,
@@ -134,9 +131,7 @@ final class CrudTestUrlGenerationTraitTest extends KernelTestCase
         self::assertEquals($expectedUrl, $testClass->test());
     }
 
-    /**
-     * @dataProvider specificDashboardAndControllerFqcn
-     */
+    #[DataProvider('specificDashboardAndControllerFqcn')]
     public function testUrlNewFormGenerationWithSpecificDashboardAndControllerFqcn(
         ?string $dashboardFqcn,
         ?string $controllerFqcn,
@@ -180,9 +175,7 @@ final class CrudTestUrlGenerationTraitTest extends KernelTestCase
         self::assertEquals($expectedUrl, $testClass->test($entityId));
     }
 
-    /**
-     * @dataProvider specificDashboardAndControllerFqcn
-     */
+    #[DataProvider('specificDashboardAndControllerFqcn')]
     public function testUrlEditGenerationWithSpecificDashboardAndControllerFqcn(
         ?string $dashboardFqcn,
         ?string $controllerFqcn,
@@ -226,9 +219,7 @@ final class CrudTestUrlGenerationTraitTest extends KernelTestCase
         self::assertEquals($expectedUrl, $testClass->test());
     }
 
-    /**
-     * @dataProvider specificDashboardAndControllerFqcn
-     */
+    #[DataProvider('specificDashboardAndControllerFqcn')]
     public function testUrlRenderFiltersGenerationWithSpecificDashboardAndControllerFqcn(
         ?string $dashboardFqcn,
         ?string $controllerFqcn,
@@ -253,9 +244,8 @@ final class CrudTestUrlGenerationTraitTest extends KernelTestCase
 
     /**
      * @param array<string, string> $options
-     *
-     * @dataProvider genericDataProvider
      */
+    #[DataProvider('genericDataProvider')]
     public function testGenericUrlGeneration(string $action, string|int|null $entityId = null, array $options = []): void
     {
         $testClass = new class($this->adminUrlGenerator) extends CrudTestUrlGenerationTraitTestClass {

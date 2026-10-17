@@ -4,18 +4,19 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Field;
 
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FormTabBadgeDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Uid\Ulid;
 
 class FormFieldTest extends TestCase
 {
-    /** @dataProvider defaultPropertySuffixProvider */
+    #[DataProvider('defaultPropertySuffixProvider')]
     public function testDefaultSetPropertySuffix(FormField $formField): void
     {
         $this->assertTrue(Ulid::isValid($formField->getAsDto()->getPropertyNameSuffix()));
     }
 
-    public function defaultPropertySuffixProvider(): \Generator
+    public static function defaultPropertySuffixProvider(): \Generator
     {
         yield [FormField::addFieldset()];
         yield [FormField::addColumn()];
@@ -23,7 +24,7 @@ class FormFieldTest extends TestCase
         yield [FormField::addTab()];
     }
 
-    /** @dataProvider propertySuffixProvider */
+    #[DataProvider('propertySuffixProvider')]
     public function testSetPropertySuffix(FormField $formField, string $expectedPropertyName, string $expectedPropertyNameSuffix): void
     {
         $dto = $formField->getAsDto();
@@ -31,7 +32,7 @@ class FormFieldTest extends TestCase
         $this->assertSame($expectedPropertyNameSuffix, $dto->getPropertyNameSuffix());
     }
 
-    public function propertySuffixProvider(): \Generator
+    public static function propertySuffixProvider(): \Generator
     {
         yield [FormField::addFieldset()->setPropertySuffix('foo'), 'ea_form_fieldset_foo', 'foo'];
         yield [FormField::addColumn()->setPropertySuffix('foo'), 'ea_form_column_foo', 'foo'];
@@ -95,9 +96,7 @@ class FormFieldTest extends TestCase
         FormField::addFieldset('Foo')->setTabId('foo');
     }
 
-    /**
-     * @dataProvider provideInvalidTabIds
-     */
+    #[DataProvider('provideInvalidTabIds')]
     public function testSetTabIdThrowsOnIdsThatAreNotUrlSafe(string $id): void
     {
         $this->expectException(\InvalidArgumentException::class);

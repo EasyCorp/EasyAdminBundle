@@ -11,10 +11,11 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\CollectionConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\ProjectDomain\ProjectCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\ProjectDomain\Project;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Field\AbstractFieldTest;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Field\AbstractFieldTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 
-class CollectionConfiguratorTest extends AbstractFieldTest
+class CollectionConfiguratorTest extends AbstractFieldTestCase
 {
     private EntityDto $projectDto;
 
@@ -34,9 +35,7 @@ class CollectionConfiguratorTest extends AbstractFieldTest
         return $this->projectDto;
     }
 
-    /**
-     * @dataProvider fields
-     */
+    #[DataProvider('fields')]
     public function test(FieldInterface $field): void
     {
         $field = $this->configure($field);
@@ -64,9 +63,7 @@ class CollectionConfiguratorTest extends AbstractFieldTest
         $this->configure($field, pageName: Crud::PAGE_EDIT, controllerFqcn: ProjectCrudController::class);
     }
 
-    /**
-     * @dataProvider failsOnOptionEntryUsesCrudFormIfPropertyIsNotAssociation
-     */
+    #[DataProvider('failsOnOptionEntryUsesCrudFormIfPropertyIsNotAssociation')]
     public function testFailsOnOptionEntryUsesCrudFormIfPropertyIsNotAssociation(FieldInterface $field): void
     {
         $field->setCustomOption(CollectionField::OPTION_ENTRY_USES_CRUD_FORM, true);
@@ -88,9 +85,7 @@ class CollectionConfiguratorTest extends AbstractFieldTest
         yield [TextField::new('price.currency')];
     }
 
-    /**
-     * @dataProvider failsOnOptionEntryUsesCrudFormIfOptionEntryTypeIsUsed
-     */
+    #[DataProvider('failsOnOptionEntryUsesCrudFormIfOptionEntryTypeIsUsed')]
     public function testFailsOnOptionEntryUsesCrudFormIfOptionEntryTypeIsUsed(FieldInterface $field): void
     {
         $field->setCustomOption(CollectionField::OPTION_ENTRY_USES_CRUD_FORM, true)
@@ -114,9 +109,7 @@ class CollectionConfiguratorTest extends AbstractFieldTest
         yield [CollectionField::new('projectTags')];
     }
 
-    /**
-     * @dataProvider failsOnOptionRenderAsEmbeddedCrudFormIfNoCrudControllerCanBeFound
-     */
+    #[DataProvider('failsOnOptionRenderAsEmbeddedCrudFormIfNoCrudControllerCanBeFound')]
     public function testFailsOnOptionRenderAsEmbeddedCrudFormIfNoCrudControllerCanBeFound(FieldInterface $field): void
     {
         $field->getAsDto()->setDoctrineMetadata((array) $this->projectDto->getClassMetadata()->getAssociationMapping($field->getAsDto()->getProperty()));

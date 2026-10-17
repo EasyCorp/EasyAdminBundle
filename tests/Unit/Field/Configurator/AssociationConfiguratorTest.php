@@ -28,12 +28,13 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Proj
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\ProjectDomain\Project;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\ProjectDomain\ProjectReleaseCategory;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\ProjectDomain\ProjectTag;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Field\AbstractFieldTest;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Field\AbstractFieldTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
-class AssociationConfiguratorTest extends AbstractFieldTest
+class AssociationConfiguratorTest extends AbstractFieldTestCase
 {
     private EntityDto $projectDto;
     private RequestStack $requestStack;
@@ -123,9 +124,7 @@ class AssociationConfiguratorTest extends AbstractFieldTest
         $this->assertSame(ProjectReleaseCategory::class, $fieldDto->getFormTypeOption('class'));
     }
 
-    /**
-     * @dataProvider failsIfPropertyIsNotAssociation
-     */
+    #[DataProvider('failsIfPropertyIsNotAssociation')]
     public function testFailsIfPropertyIsNotAssociation(FieldInterface $field): void
     {
         $this->expectException(\RuntimeException::class);
@@ -144,9 +143,7 @@ class AssociationConfiguratorTest extends AbstractFieldTest
         yield [TextField::new('price.currency')]; // Doctrine embeddable
     }
 
-    /**
-     * @dataProvider failsOnOptionRenderAsEmbeddedCrudFormIfPropertyIsCollection
-     */
+    #[DataProvider('failsOnOptionRenderAsEmbeddedCrudFormIfPropertyIsCollection')]
     public function testFailsOnOptionRenderAsEmbeddedCrudFormIfPropertyIsCollection(FieldInterface $field): void
     {
         $field->setCustomOption(AssociationField::OPTION_RENDER_AS_EMBEDDED_FORM, true)
@@ -170,9 +167,7 @@ class AssociationConfiguratorTest extends AbstractFieldTest
         yield [AssociationField::new('projectTags')];
     }
 
-    /**
-     * @dataProvider failsOnOptionRenderAsEmbeddedCrudFormIfNoCrudControllerCanBeFound
-     */
+    #[DataProvider('failsOnOptionRenderAsEmbeddedCrudFormIfNoCrudControllerCanBeFound')]
     public function testFailsOnOptionRenderAsEmbeddedCrudFormIfNoCrudControllerCanBeFound(FieldInterface $field): void
     {
         $field->getAsDto()->setDoctrineMetadata((array) $this->projectDto->getClassMetadata()->getAssociationMapping($field->getAsDto()->getProperty()));

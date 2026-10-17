@@ -2,13 +2,13 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Component;
 
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTest;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\Size;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 
-class SwitchTest extends AbstractFieldFunctionalTest
+class SwitchTest extends AbstractFieldFunctionalTestCase
 {
     public function testDefaultSizeEmitsNoSizeClass(): void
     {

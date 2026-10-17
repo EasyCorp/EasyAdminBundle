@@ -6,7 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\EmailConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 
-class EmailFieldTest extends AbstractFieldTest
+class EmailFieldTest extends AbstractFieldTestCase
 {
     protected function setUp(): void
     {

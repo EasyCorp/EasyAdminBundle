@@ -10,6 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\MoneyConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
 use Money\Money;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
@@ -19,9 +20,8 @@ class MoneyConfiguratorTest extends TestCase
      * The divisor between a Money object's amount (expressed in the smallest currency
      * unit) and the "main unit" value depends on the fraction digits of the currency;
      * it's not always 100 (e.g. JPY has 0 fraction digits and BHD has 3).
-     *
-     * @dataProvider provideMoneyValues
      */
+    #[DataProvider('provideMoneyValues')]
     public function testDivisorDependsOnCurrencyFractionDigits(Money $value, int $expectedDivisor, string $expectedAmount): void
     {
         $fieldDto = $this->configureField($value);

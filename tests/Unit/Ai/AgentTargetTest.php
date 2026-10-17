@@ -3,12 +3,11 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Ai;
 
 use EasyCorp\Bundle\EasyAdminBundle\Ai\AgentTarget;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class AgentTargetTest extends AiTestCase
 {
-    /**
-     * @dataProvider provideAgentTargets
-     */
+    #[DataProvider('provideAgentTargets')]
     public function testTargetConfiguration(string $slug, string $skillsDir, string $instructionsFile, string $label): void
     {
         $target = AgentTarget::from($slug);
@@ -32,9 +31,7 @@ class AgentTargetTest extends AiTestCase
         $this->assertNull(AgentTarget::tryFrom('copilot'));
     }
 
-    /**
-     * @dataProvider provideDetectionPaths
-     */
+    #[DataProvider('provideDetectionPaths')]
     public function testDetection(string $slug, string $detectionPath): void
     {
         $this->createDetectionPath($detectionPath);

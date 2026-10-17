@@ -24,7 +24,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Twig\Environment;
 
-abstract class AbstractFieldTest extends KernelTestCase
+abstract class AbstractFieldTestCase extends KernelTestCase
 {
     protected EntityDto $entityDto;
     protected AdminContextInterface $adminContext;

@@ -5,6 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Default\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\CategoryCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Dashboard\LocaleDashboardController;
+use PHPUnit\Framework\Attributes\TestWith;
 
 /**
  * Tests for locale switching functionality in the dashboard.
@@ -75,11 +76,9 @@ class LocaleTest extends AbstractCrudTestCase
         static::assertGreaterThan(0, $activeLocale->count());
     }
 
-    /**
-     * @testWith ["es"]
-     *           ["fr"]
-     *           ["de"]
-     */
+    #[TestWith(['es'])]
+    #[TestWith(['fr'])]
+    #[TestWith(['de'])]
     public function testLocaleLinksContainCorrectLocaleParameter(string $locale): void
     {
         $crawler = $this->client->request('GET', $this->generateIndexUrl());

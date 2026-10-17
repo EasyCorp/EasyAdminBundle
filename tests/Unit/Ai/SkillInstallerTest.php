@@ -5,6 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Ai;
 use EasyCorp\Bundle\EasyAdminBundle\Ai\AgentTarget;
 use EasyCorp\Bundle\EasyAdminBundle\Ai\SkillInstaller;
 use EasyCorp\Bundle\EasyAdminBundle\Ai\SkillStatus;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class SkillInstallerTest extends AiTestCase
 {
@@ -17,9 +18,7 @@ class SkillInstallerTest extends AiTestCase
         $this->skillInstaller = $this->createSkillInstaller();
     }
 
-    /**
-     * @dataProvider provideAgentTargets
-     */
+    #[DataProvider('provideAgentTargets')]
     public function testInstall(AgentTarget $target, string $expectedSkillDir): void
     {
         $writtenFiles = $this->skillInstaller->install($target);

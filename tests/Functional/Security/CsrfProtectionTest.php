@@ -8,6 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Cate
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Controller\CategoryCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Controller\SecuredDashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Kernel;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
@@ -43,9 +44,7 @@ class CsrfProtectionTest extends AbstractCrudTestCase
         $this->categories = $this->entityManager->getRepository(Category::class);
     }
 
-    /**
-     * @dataProvider provideNewFormCsrfTokens
-     */
+    #[DataProvider('provideNewFormCsrfTokens')]
     public function testNewFormCsrfProtection(?string $invalidCsrfToken, ?string $expectedErrorMessage): void
     {
         $this->client->request('GET', $this->generateNewFormUrl());
@@ -85,11 +84,7 @@ class CsrfProtectionTest extends AbstractCrudTestCase
         ];
     }
 
-    /**
-     * @dataProvider provideEditFormCsrfTokens
-     *
-     * @group legacy
-     */
+    #[DataProvider('provideEditFormCsrfTokens')]
     public function testEditFormCsrfProtection(?string $invalidCsrfToken, ?string $expectedErrorMessage): void
     {
         $this->client->request('GET', $this->generateEditFormUrl($this->categories->findOneBy([])->getId()));
@@ -129,11 +124,7 @@ class CsrfProtectionTest extends AbstractCrudTestCase
         ];
     }
 
-    /**
-     * @dataProvider provideDeleteCsrfTokens
-     *
-     * @group legacy
-     */
+    #[DataProvider('provideDeleteCsrfTokens')]
     public function testDeleteCsrfProtection(?string $invalidCsrfToken, callable $expectedCategoriesCount): void
     {
         $initialCategoriesCount = \count($this->categories->findAll());
@@ -188,9 +179,7 @@ class CsrfProtectionTest extends AbstractCrudTestCase
         ];
     }
 
-    /**
-     * @dataProvider provideToggleCsrfTokens
-     */
+    #[DataProvider('provideToggleCsrfTokens')]
     public function testToggleCsrfProtection(string $method, ?string $invalidCsrfToken, int $expectedStatusCode, bool $toggleIsExpectedToSucceed): void
     {
         $expectedExceptionClass = match ($expectedStatusCode) {

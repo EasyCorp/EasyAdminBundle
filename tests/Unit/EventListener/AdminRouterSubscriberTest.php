@@ -3,6 +3,8 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\EventListener;
 
 use EasyCorp\Bundle\EasyAdminBundle\EventListener\AdminRouterSubscriber;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
@@ -19,11 +21,8 @@ class AdminRouterSubscriberTest extends TestCase
         $this->subscriber = (new \ReflectionClass(AdminRouterSubscriber::class))->newInstanceWithoutConstructor();
     }
 
-    /**
-     * @doesNotPerformAssertions
-     *
-     * @dataProvider controllerDataProvider
-     */
+    #[DoesNotPerformAssertions]
+    #[DataProvider('controllerDataProvider')]
     public function testFetchingControllerFromRequestAttributes($controller): void
     {
         $request = Request::create('/');
@@ -31,7 +30,7 @@ class AdminRouterSubscriberTest extends TestCase
 
         $this->subscriber->onKernelRequest(
             new RequestEvent(
-                $this->getMockForAbstractClass(HttpKernelInterface::class),
+                $this->createMock(HttpKernelInterface::class),
                 $request,
                 HttpKernelInterface::MAIN_REQUEST
             )

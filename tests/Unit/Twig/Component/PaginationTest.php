@@ -6,6 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Orm\EntityPaginatorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Provider\AdminContextProviderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\Radius;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Pagination;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class PaginationTest extends TestCase
@@ -178,9 +179,7 @@ class PaginationTest extends TestCase
         $this->assertSame([1, 2, 3], $pagination->getPageRange());
     }
 
-    /**
-     * @dataProvider provideRadiusValues
-     */
+    #[DataProvider('provideRadiusValues')]
     public function testMountResolvesRadius(string|Radius|null $radius, ?Radius $expectedRadius): void
     {
         $pagination = $this->createPagination();

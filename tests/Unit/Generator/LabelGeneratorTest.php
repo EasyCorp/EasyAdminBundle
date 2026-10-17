@@ -3,13 +3,12 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Generator;
 
 use EasyCorp\Bundle\EasyAdminBundle\Generator\LabelGenerator;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class LabelGeneratorTest extends TestCase
 {
-    /**
-     * @dataProvider humanizeDataProvider
-     */
+    #[DataProvider('humanizeDataProvider')]
     public function testHumanize(string $expectedLabel, string $input): void
     {
         $this->assertSame($expectedLabel, LabelGenerator::humanize($input));

@@ -3,14 +3,14 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Fields\Choice;
 
 use Doctrine\ORM\EntityRepository;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTest;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\FieldRelatedEntityCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\FieldTestEntityCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\FieldRelatedEntity;
 use Symfony\Component\DomCrawler\Crawler;
 
-class AssociationFieldTest extends AbstractFieldFunctionalTest
+class AssociationFieldTest extends AbstractFieldFunctionalTestCase
 {
     protected EntityRepository $fieldRelatedEntities;
 

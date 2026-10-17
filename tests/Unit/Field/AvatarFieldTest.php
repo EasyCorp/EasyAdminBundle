@@ -9,7 +9,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\AvatarField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\AvatarConfigurator;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
-class AvatarFieldTest extends AbstractFieldTest
+class AvatarFieldTest extends AbstractFieldTestCase
 {
     protected function setUp(): void
     {

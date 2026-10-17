@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Ai;
 
 use EasyCorp\Bundle\EasyAdminBundle\Ai\GuidelinesFileWriter;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class GuidelinesFileWriterTest extends AiTestCase
 {
@@ -125,9 +126,7 @@ class GuidelinesFileWriterTest extends AiTestCase
         $this->assertStringEqualsFile($this->filePath, $contentsAfterFirstWrite);
     }
 
-    /**
-     * @dataProvider provideFilesWithUnbalancedMarkers
-     */
+    #[DataProvider('provideFilesWithUnbalancedMarkers')]
     public function testUnbalancedMarkers(string $contents): void
     {
         $this->filesystem->dumpFile($this->filePath, $contents);

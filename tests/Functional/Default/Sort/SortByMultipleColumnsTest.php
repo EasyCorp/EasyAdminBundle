@@ -7,6 +7,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\MultiColumnSortCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\SortTestEntity;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Tests sorting by multiple columns simultaneously.
@@ -32,9 +33,7 @@ class SortByMultipleColumnsTest extends AbstractCrudTestCase
         $this->repository = $this->entityManager->getRepository(SortTestEntity::class);
     }
 
-    /**
-     * @dataProvider multiColumnSorting
-     */
+    #[DataProvider('multiColumnSorting')]
     public function testSortingByMultipleColumns(array $query, \Closure $sortFunction): void
     {
         // arrange

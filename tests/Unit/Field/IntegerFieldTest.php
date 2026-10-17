@@ -6,7 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\IntegerConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 
-class IntegerFieldTest extends AbstractFieldTest
+class IntegerFieldTest extends AbstractFieldTestCase
 {
     protected function setUp(): void
     {

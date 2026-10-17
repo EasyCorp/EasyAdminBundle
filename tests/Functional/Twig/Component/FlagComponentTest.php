@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Twig\Component;
 
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Kernel;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\UX\TwigComponent\Test\InteractsWithTwigComponents;
 
@@ -54,9 +55,7 @@ class FlagComponentTest extends KernelTestCase
         $this->assertStringContainsString('</svg>Spain</span>', $html);
     }
 
-    /**
-     * @dataProvider provideLocalizedCountryNames
-     */
+    #[DataProvider('provideLocalizedCountryNames')]
     public function testLocalizedCountryNamesAreRendered(string $countryCode, string $localizedName): void
     {
         $html = (string) $this->renderTwigComponent('ea:Flag', [

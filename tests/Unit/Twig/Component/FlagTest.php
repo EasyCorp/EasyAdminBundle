@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Twig\Component;
 
 use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Flag;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class FlagTest extends TestCase
@@ -57,9 +58,7 @@ class FlagTest extends TestCase
         $this->assertStringContainsString('You are not seeing a country flag here', $svg);
     }
 
-    /**
-     * @dataProvider provideXssPayloads
-     */
+    #[DataProvider('provideXssPayloads')]
     public function testXssPayloadIsEscapedInFallback(string $payload, string $mustNotAppear): void
     {
         $flag = new Flag();
@@ -117,9 +116,7 @@ class FlagTest extends TestCase
         }
     }
 
-    /**
-     * @dataProvider provideXssPayloads
-     */
+    #[DataProvider('provideXssPayloads')]
     public function testXssPayloadInCountryNameIsEscapedInSvg(string $payload, string $mustNotAppear): void
     {
         $flag = new Flag();

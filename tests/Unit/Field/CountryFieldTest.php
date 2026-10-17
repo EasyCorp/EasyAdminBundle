@@ -7,7 +7,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\CountryConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CountryField;
 
-class CountryFieldTest extends AbstractFieldTest
+class CountryFieldTest extends AbstractFieldTestCase
 {
     private const NUM_COUNTRIES_AND_REGIONS = 249;
 

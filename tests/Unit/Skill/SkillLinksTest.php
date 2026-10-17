@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Skill;
 
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Skill\Support\SkillFile;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class SkillLinksTest extends TestCase
@@ -27,9 +28,7 @@ class SkillLinksTest extends TestCase
         }
     }
 
-    /**
-     * @dataProvider provideSkillFiles
-     */
+    #[DataProvider('provideSkillFiles')]
     public function testRelativeLinksPointToExistingFiles(string $path): void
     {
         $relativePath = self::relativePath($path);
@@ -54,9 +53,7 @@ class SkillLinksTest extends TestCase
         self::assertSame([], $brokenLinks, sprintf('%s links to files that do not exist: %s. Link targets are resolved from the directory of the file that contains them, so fix the targets or add the missing files.', $relativePath, implode(', ', $brokenLinks)));
     }
 
-    /**
-     * @dataProvider provideSkillFiles
-     */
+    #[DataProvider('provideSkillFiles')]
     public function testMentionedPackagePathsExistInTheRepository(string $path): void
     {
         $relativePath = self::relativePath($path);

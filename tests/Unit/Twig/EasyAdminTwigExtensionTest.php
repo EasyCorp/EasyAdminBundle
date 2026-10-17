@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Twig;
 
 use EasyCorp\Bundle\EasyAdminBundle\Twig\EasyAdminTwigExtension;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Contracts\Translation\TranslatableInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -10,9 +11,7 @@ use Twig\Extension\GlobalsInterface;
 
 class EasyAdminTwigExtensionTest extends KernelTestCase
 {
-    /**
-     * @dataProvider provideValuesForRepresentAsString
-     */
+    #[DataProvider('provideValuesForRepresentAsString')]
     public function testRepresentAsString($value, $expectedValue, bool $assertRegex = false, string|callable|null $toStringMethod = null): void
     {
         $customTranslator = new class implements TranslatorInterface {
@@ -54,9 +53,7 @@ class EasyAdminTwigExtensionTest extends KernelTestCase
         $twigExtensionInstance->representAsString(new class {}, 'someMethod');
     }
 
-    /**
-     * @dataProvider provideValuesForFileSize
-     */
+    #[DataProvider('provideValuesForFileSize')]
     public function testFileSize(int $bytes, string $expected): void
     {
         $reflectedClass = new \ReflectionClass(EasyAdminTwigExtension::class);
@@ -67,9 +64,7 @@ class EasyAdminTwigExtensionTest extends KernelTestCase
         $this->assertSame($expected, $result);
     }
 
-    /**
-     * @dataProvider provideValuesForForceFileDownload
-     */
+    #[DataProvider('provideValuesForForceFileDownload')]
     public function testForceFileDownload(string $filename, bool $expected): void
     {
         $reflectedClass = new \ReflectionClass(EasyAdminTwigExtension::class);
@@ -78,9 +73,7 @@ class EasyAdminTwigExtensionTest extends KernelTestCase
         $this->assertSame($expected, $twigExtensionInstance->forceFileDownload($filename));
     }
 
-    /**
-     * @dataProvider provideValuesForIsNotEmpty
-     */
+    #[DataProvider('provideValuesForIsNotEmpty')]
     public function testIsNotEmpty(mixed $value, bool $expected): void
     {
         $isNotEmpty = $this->getTwigTestCallable('ea_is_not_empty');

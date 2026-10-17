@@ -15,9 +15,10 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\UrlField;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Field\AbstractFieldTest;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Field\AbstractFieldTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
-class EmptyDataConfiguratorTest extends AbstractFieldTest
+class EmptyDataConfiguratorTest extends AbstractFieldTestCase
 {
     protected function setUp(): void
     {
@@ -26,9 +27,7 @@ class EmptyDataConfiguratorTest extends AbstractFieldTest
         $this->configurator = new EmptyDataConfigurator();
     }
 
-    /**
-     * @dataProvider provideTextBasedFields
-     */
+    #[DataProvider('provideTextBasedFields')]
     public function testNonNullableTextBasedFieldsUseAnEmptyStringAsEmptyData(FieldInterface $field, string $doctrineType): void
     {
         $fieldDto = $field->getAsDto();

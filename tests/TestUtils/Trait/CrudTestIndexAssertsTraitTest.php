@@ -12,6 +12,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Category;
 use PHPUnit\Framework\AssertionFailedError;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
@@ -92,9 +93,7 @@ final class CrudTestIndexAssertsTraitTest extends WebTestCase
         $this->assertIndexPageEntityCount(20); // 20 items per page is the default for EasyAdmin
     }
 
-    /**
-     * @dataProvider pageEntityIncorrectCount
-     */
+    #[DataProvider('pageEntityIncorrectCount')]
     public function testAssertIndexPageEntityIncorrectCountRaisesError(int $incorrectCount, string $expectedException): void
     {
         $this->client->request('GET', $this->generateIndexUrl());
@@ -120,9 +119,7 @@ final class CrudTestIndexAssertsTraitTest extends WebTestCase
         self::assertIndexPagesCount((int) ceil(\count($allCategories) / 20)); // 20 items per page is the default for EasyAdmin
     }
 
-    /**
-     * @dataProvider pageIncorrectCount
-     */
+    #[DataProvider('pageIncorrectCount')]
     public function testAssertIndexPagesIncorrectCountRaisesError(int $incorrectCount, string $expectedException): void
     {
         $this->client->request('GET', $this->generateIndexUrl());
@@ -302,9 +299,7 @@ final class CrudTestIndexAssertsTraitTest extends WebTestCase
         self::assertGlobalActionNotDisplays(TestAppAction::CUSTOM_ACTION, 'Custom Action');
     }
 
-    /**
-     * @dataProvider existingColumns
-     */
+    #[DataProvider('existingColumns')]
     public function testAssertIndexColumnExists(string $columnName): void
     {
         $this->client->request('GET', $this->generateIndexUrl());
@@ -331,9 +326,7 @@ final class CrudTestIndexAssertsTraitTest extends WebTestCase
         self::assertIndexColumnNotExists('IncorrectColumnID');
     }
 
-    /**
-     * @dataProvider existingColumns
-     */
+    #[DataProvider('existingColumns')]
     public function testAssertIndexCorrectColumnNotExistsRaisesError(string $columnName): void
     {
         $this->client->request('GET', $this->generateIndexUrl());
@@ -350,9 +343,7 @@ final class CrudTestIndexAssertsTraitTest extends WebTestCase
         yield ['active'];
     }
 
-    /**
-     * @dataProvider existingColumnsDisplayValues
-     */
+    #[DataProvider('existingColumnsDisplayValues')]
     public function testAssertColumnHeaderContains(string $columnName, string $displayValue): void
     {
         $this->client->request('GET', $this->generateIndexUrl());
@@ -385,9 +376,7 @@ final class CrudTestIndexAssertsTraitTest extends WebTestCase
         self::assertIndexColumnHeaderNotContains('id', 'incorrect Value');
     }
 
-    /**
-     * @dataProvider existingColumnsDisplayValues
-     */
+    #[DataProvider('existingColumnsDisplayValues')]
     public function testAssertColumnHeaderNotContainsCorrectValueRaisesError(string $columnName, string $displayValue): void
     {
         $this->client->request('GET', $this->generateIndexUrl());

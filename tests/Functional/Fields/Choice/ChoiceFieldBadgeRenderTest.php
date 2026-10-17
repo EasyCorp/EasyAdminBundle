@@ -3,7 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Fields\Choice;
 
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTest;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Translation\TranslatableChoiceMessage;
 use EasyCorp\Bundle\EasyAdminBundle\Translation\TranslatableChoiceMessageCollection;
 use function Symfony\Component\Translation\t;
@@ -13,7 +13,7 @@ use function Symfony\Component\Translation\t;
  * as badges, i.e. the integration between the formatted value built by
  * ChoiceConfigurator and the <twig:ea:Badge> component used in the template.
  */
-class ChoiceFieldBadgeRenderTest extends AbstractFieldFunctionalTest
+class ChoiceFieldBadgeRenderTest extends AbstractFieldFunctionalTestCase
 {
     /**
      * @param TranslatableChoiceMessage[] $choices

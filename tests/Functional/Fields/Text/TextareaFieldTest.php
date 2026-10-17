@@ -2,10 +2,10 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Fields\Text;
 
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTest;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTestCase;
 use Symfony\Component\DomCrawler\Crawler;
 
-class TextareaFieldTest extends AbstractFieldFunctionalTest
+class TextareaFieldTest extends AbstractFieldFunctionalTestCase
 {
     public function testTextareaFieldDisplaysOnIndex(): void
     {

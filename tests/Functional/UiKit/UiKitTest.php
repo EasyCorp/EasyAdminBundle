@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\UiKit;
 
 use EasyCorp\Bundle\EasyAdminBundle\UiKit\ComponentDocumentationReader;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class UiKitTest extends WebTestCase
@@ -133,9 +134,7 @@ class UiKitTest extends WebTestCase
         $this->assertSame(['variants', 'default', 'sizes', 'icons', 'radius', 'custom_variants'], $sectionIds);
     }
 
-    /**
-     * @dataProvider provideComponentDirNames
-     */
+    #[DataProvider('provideComponentDirNames')]
     public function testEveryComponentPageRendersAllItsExamples(string $componentDirName): void
     {
         $client = static::createClient();

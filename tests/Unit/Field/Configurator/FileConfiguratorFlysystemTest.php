@@ -6,14 +6,15 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\FileConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FileField;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Model\FlysystemFile;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Field\AbstractFieldTest;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Field\AbstractFieldTestCase;
+use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemOperator;
 use League\Flysystem\UnableToGeneratePublicUrl;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-class FileConfiguratorFlysystemTest extends AbstractFieldTest
+class FileConfiguratorFlysystemTest extends AbstractFieldTestCase
 {
     private FilesystemOperator&MockObject $filesystem;
 
@@ -21,9 +22,7 @@ class FileConfiguratorFlysystemTest extends AbstractFieldTest
     {
         parent::setUp();
 
-        $this->filesystem = $this->getMockBuilder(FilesystemOperator::class)
-            ->addMethods(['publicUrl'])
-            ->getMockForAbstractClass();
+        $this->filesystem = $this->createMock(Filesystem::class);
 
         $locator = $this->createMock(ContainerInterface::class);
         $locator->method('has')->willReturnCallback(static fn (string $id) => 'default.storage' === $id);

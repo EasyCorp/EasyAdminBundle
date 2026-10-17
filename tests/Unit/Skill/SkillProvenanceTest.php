@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Skill;
 
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Skill\Support\SkillFile;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class SkillProvenanceTest extends TestCase
@@ -60,9 +61,7 @@ class SkillProvenanceTest extends TestCase
         }
     }
 
-    /**
-     * @dataProvider provideRules
-     */
+    #[DataProvider('provideRules')]
     public function testEveryRuleCitesAnExistingSource(int $line, string $text): void
     {
         if (0 === $line) {

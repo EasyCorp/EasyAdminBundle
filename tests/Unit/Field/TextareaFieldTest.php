@@ -6,9 +6,10 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\TextConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
-class TextareaFieldTest extends AbstractFieldTest
+class TextareaFieldTest extends AbstractFieldTestCase
 {
     protected function setUp(): void
     {
@@ -161,9 +162,7 @@ class TextareaFieldTest extends AbstractFieldTest
         self::assertStringNotContainsString('&amp;gt;', $fieldDto->getFormattedValue());
     }
 
-    /**
-     * @dataProvider providePageConfigurations
-     */
+    #[DataProvider('providePageConfigurations')]
     public function testTemplateDoesNotDoubleEscape(string $pageName, string $actionName): void
     {
         $textWithSpecialChars = '<tag> & "quotes"';

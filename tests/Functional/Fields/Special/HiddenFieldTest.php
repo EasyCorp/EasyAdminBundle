@@ -2,9 +2,9 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Fields\Special;
 
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTest;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTestCase;
 
-class HiddenFieldTest extends AbstractFieldFunctionalTest
+class HiddenFieldTest extends AbstractFieldFunctionalTestCase
 {
     public function testHiddenFieldNotDisplayedOnIndex(): void
     {

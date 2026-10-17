@@ -2,9 +2,9 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Fields\Media;
 
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTest;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTestCase;
 
-class ImageFieldTest extends AbstractFieldFunctionalTest
+class ImageFieldTest extends AbstractFieldFunctionalTestCase
 {
     public function testImageFieldDisplaysOnIndex(): void
     {

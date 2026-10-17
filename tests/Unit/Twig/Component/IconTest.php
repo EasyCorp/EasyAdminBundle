@@ -10,18 +10,14 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetsDto;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Icon;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\Size;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use Symfony\Bridge\PhpUnit\ExpectDeprecationTrait;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class IconTest extends TestCase
 {
-    use ExpectDeprecationTrait;
-
-    /**
-     * @dataProvider provideGetInternalIconData
-     */
+    #[DataProvider('provideGetInternalIconData')]
     public function testGetInternalIcon(string $iconName, string $appIconSet): void
     {
         $iconComponent = new Icon($this->getAdminContextProvider($appIconSet));
@@ -42,11 +38,7 @@ class IconTest extends TestCase
         yield ['internal:user', IconSet::FontAwesome];
     }
 
-    /**
-     * @dataProvider provideGetFontAwesomeIconData
-     *
-     * @group legacy (needed for tests that use legacy FontAwesome icon names)
-     */
+    #[DataProvider('provideGetFontAwesomeIconData')]
     public function testGetFontAwesomeIcon(string $iconName): void
     {
         $iconComponent = new Icon($this->getAdminContextProvider(IconSet::FontAwesome));
@@ -93,9 +85,7 @@ class IconTest extends TestCase
         yield ['fa-fw fa-file-text-o far'];
     }
 
-    /**
-     * @dataProvider provideGetCustomIconData
-     */
+    #[DataProvider('provideGetCustomIconData')]
     public function testGetCustomIcon(string $iconName): void
     {
         $iconComponent = new Icon($this->getAdminContextProvider(IconSet::Custom));
@@ -113,9 +103,7 @@ class IconTest extends TestCase
         yield ['another-custom-prefix:some-other-icon'];
     }
 
-    /**
-     * @dataProvider provideIconSetCheckersData
-     */
+    #[DataProvider('provideIconSetCheckersData')]
     public function testIconSetCheckers(string $appIconSet, bool $isBuiltIn, bool $isFontAwesome): void
     {
         $iconComponent = new Icon($this->getAdminContextProvider($appIconSet));
@@ -151,9 +139,7 @@ class IconTest extends TestCase
         $iconComponent->getIcon();
     }
 
-    /**
-     * @dataProvider providePathTraversalInternalIconNames
-     */
+    #[DataProvider('providePathTraversalInternalIconNames')]
     public function testInternalIconNameRejectsPathTraversalCharacters(string $iconName): void
     {
         $this->expectException(\RuntimeException::class);
@@ -188,9 +174,7 @@ class IconTest extends TestCase
         $this->assertSame('icon', $iconComponent->getDefaultCssClass());
     }
 
-    /**
-     * @dataProvider provideSizeData
-     */
+    #[DataProvider('provideSizeData')]
     public function testDefaultCssClassWithSize(string|Size|null $size, ?Size $expectedSize, string $expectedCssClass): void
     {
         $iconComponent = new Icon($this->getAdminContextProvider(IconSet::FontAwesome));

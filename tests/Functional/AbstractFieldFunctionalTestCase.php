@@ -13,7 +13,7 @@ use Symfony\Component\DomCrawler\Crawler;
  * Base class for functional tests of EasyAdmin field types.
  * Provides utilities to test field rendering and form submission.
  */
-abstract class AbstractFieldFunctionalTest extends AbstractCrudTestCase
+abstract class AbstractFieldFunctionalTestCase extends AbstractCrudTestCase
 {
     protected EntityRepository $fieldTestEntities;
 

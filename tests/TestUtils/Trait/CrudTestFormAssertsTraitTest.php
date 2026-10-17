@@ -10,6 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Test\Trait\CrudTestUrlGeneration;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\CategoryCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
 use PHPUnit\Framework\AssertionFailedError;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
@@ -47,9 +48,7 @@ final class CrudTestFormAssertsTraitTest extends WebTestCase
         return DashboardController::class;
     }
 
-    /**
-     * @dataProvider formFields
-     */
+    #[DataProvider('formFields')]
     public function testAssertFormFieldExists(string $fieldName): void
     {
         $this->client->request('GET', self::generateNewFormUrl());
@@ -57,9 +56,7 @@ final class CrudTestFormAssertsTraitTest extends WebTestCase
         self::assertFormFieldExists($fieldName);
     }
 
-    /**
-     * @dataProvider formUnknownFields
-     */
+    #[DataProvider('formUnknownFields')]
     public function testAssertFormFieldExistsWithNonExistingFieldRaisesError(string $fieldName): void
     {
         $this->client->request('GET', self::generateNewFormUrl());
@@ -68,9 +65,7 @@ final class CrudTestFormAssertsTraitTest extends WebTestCase
         self::assertFormFieldExists($fieldName);
     }
 
-    /**
-     * @dataProvider formUnknownFields
-     */
+    #[DataProvider('formUnknownFields')]
     public function testAssertFormFieldNotExists(string $fieldName): void
     {
         $this->client->request('GET', self::generateNewFormUrl());
@@ -78,9 +73,7 @@ final class CrudTestFormAssertsTraitTest extends WebTestCase
         self::assertFormFieldNotExists($fieldName);
     }
 
-    /**
-     * @dataProvider formFields
-     */
+    #[DataProvider('formFields')]
     public function testAssertFormFieldNotExistsWithExistingFieldsRaisesError(string $fieldName): void
     {
         $this->client->request('GET', self::generateNewFormUrl());
@@ -103,9 +96,7 @@ final class CrudTestFormAssertsTraitTest extends WebTestCase
         yield ['unknown_field'];
     }
 
-    /**
-     * @dataProvider formFieldsLabels
-     */
+    #[DataProvider('formFieldsLabels')]
     public function testAssertFormFieldHasLabel(string $fieldName, string $fieldLabel): void
     {
         $this->client->request('GET', self::generateNewFormUrl());
@@ -113,9 +104,7 @@ final class CrudTestFormAssertsTraitTest extends WebTestCase
         self::assertFormFieldHasLabel($fieldName, $fieldLabel);
     }
 
-    /**
-     * @dataProvider formFieldsIncorrectLabels
-     */
+    #[DataProvider('formFieldsIncorrectLabels')]
     public function testAssertFormFieldHasLabelWithIncorrectLabelsRaisesError(string $fieldName, string $fieldLabel): void
     {
         $this->client->request('GET', self::generateNewFormUrl());
@@ -124,9 +113,7 @@ final class CrudTestFormAssertsTraitTest extends WebTestCase
         self::assertFormFieldHasLabel($fieldName, $fieldLabel);
     }
 
-    /**
-     * @dataProvider formIncorrectFieldsWithLabels
-     */
+    #[DataProvider('formIncorrectFieldsWithLabels')]
     public function testAssertFormFieldHasLabelWithIncorrectFieldsRaisesError(string $fieldName, string $fieldLabel): void
     {
         $this->client->request('GET', self::generateNewFormUrl());
@@ -135,9 +122,7 @@ final class CrudTestFormAssertsTraitTest extends WebTestCase
         self::assertFormFieldHasLabel($fieldName, $fieldLabel);
     }
 
-    /**
-     * @dataProvider formFieldsIncorrectLabels
-     */
+    #[DataProvider('formFieldsIncorrectLabels')]
     public function testAssertFormFieldNotHasLabel(string $fieldName, string $fieldLabel): void
     {
         $this->client->request('GET', self::generateNewFormUrl());
@@ -145,9 +130,7 @@ final class CrudTestFormAssertsTraitTest extends WebTestCase
         self::assertFormFieldNotHasLabel($fieldName, $fieldLabel);
     }
 
-    /**
-     * @dataProvider formFieldsLabels
-     */
+    #[DataProvider('formFieldsLabels')]
     public function testAssertFormFieldNotHasLabelCorrectLabelsRaisesError(string $fieldName, string $fieldLabel): void
     {
         $this->client->request('GET', self::generateNewFormUrl());

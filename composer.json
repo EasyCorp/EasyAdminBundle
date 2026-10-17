@@ -43,8 +43,8 @@
         "twig/twig": "^3.23"
     },
     "require-dev": {
+        "brianium/paratest": "^7.8",
         "dama/doctrine-test-bundle": "^8.2",
-        "doctrine/doctrine-fixtures-bundle": "^3.4|3.5.x-dev|^4.0",
         "league/flysystem": "^3.10",
         "moneyphp/money": "^4.8",
         "phpstan/extension-installer": "^1.4",
@@ -62,7 +62,7 @@
         "symfony/process": "^6.4.33|^7.0|^8.0",
         "symfony/web-link": "^6.4.32|^7.0|^8.0",
         "vincentlanglet/twig-cs-fixer": "^4.1",
-        "zenstruck/foundry": "^2.3"
+        "zenstruck/foundry": "^2.11"
     },
     "config": {
         "sort-packages": true,

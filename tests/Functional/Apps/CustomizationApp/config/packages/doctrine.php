@@ -3,7 +3,8 @@
 $config = [
     'dbal' => [
         'driver' => 'pdo_sqlite',
-        'path' => '%kernel.cache_dir%/test_database.sqlite',
+        // ParaTest workers share the compiled container but each one needs its own database
+        'path' => '%kernel.cache_dir%/test_database%env(TEST_TOKEN)%.sqlite',
     ],
 
     'orm' => [
@@ -36,4 +37,5 @@ if (class_exists(Composer\InstalledVersions::class)) {
     }
 }
 
+$container->setParameter('env(TEST_TOKEN)', '');
 $container->loadFromExtension('doctrine', $config);

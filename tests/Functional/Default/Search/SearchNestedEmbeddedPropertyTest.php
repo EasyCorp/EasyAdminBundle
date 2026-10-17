@@ -5,6 +5,9 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Default\Search;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\SearchNestedEmbeddedCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\EntityFactory\Address;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\SearchTestAuthorFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\SearchTestEntityFactory;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
@@ -27,6 +30,14 @@ class SearchNestedEmbeddedPropertyTest extends AbstractCrudTestCase
     {
         parent::setUp();
         $this->client->followRedirects();
+
+        SearchTestEntityFactory::createSequence([
+            ['author' => SearchTestAuthorFactory::new(['address' => (new Address())->setStreet(10)->setCity('New York')])],
+            ['author' => SearchTestAuthorFactory::new(['address' => (new Address())->setStreet(20)->setCity('London')])],
+            ['author' => SearchTestAuthorFactory::new(['address' => (new Address())->setStreet(30)->setCity('New York')])],
+            ['author' => SearchTestAuthorFactory::new(['address' => (new Address())->setStreet(40)->setCity('Paris')])],
+            ['author' => null],
+        ]);
     }
 
     #[DataProvider('provideSearchTests')]
@@ -36,28 +47,24 @@ class SearchNestedEmbeddedPropertyTest extends AbstractCrudTestCase
         static::assertIndexFullEntityCount($expectedResultCount);
     }
 
+    /**
+     * @return iterable<string, array{string, int}>
+     */
     public static function provideSearchTests(): iterable
     {
-        // From fixtures, the SearchTestEntity entities and their author addresses:
-        // Author John Smith (address: New York) → entities 0 and 3 (2 entities)
-        // Author Jane Doe (address: London)     → entities 1 and 5 (2 entities)
-        // Author Alice Johnson (address: New York) → entities 2 and 7 (2 entities)
-        // Author Bob Williams (address: Paris)    → entity 4 (1 entity)
-        // Entity 6 has no author
-
         yield 'search author.address.city New York' => [
             'New York',
-            4, // John Smith (2) + Alice Johnson (2)
+            2, // two entities whose authors are different but live in the same city
         ];
 
         yield 'search author.address.city London' => [
             'London',
-            2, // Jane Doe's entities
+            1,
         ];
 
         yield 'search author.address.city Paris' => [
             'Paris',
-            1, // Bob Williams' entity
+            1,
         ];
     }
 }

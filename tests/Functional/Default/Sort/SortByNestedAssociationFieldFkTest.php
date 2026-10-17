@@ -12,13 +12,11 @@ use PHPUnit\Framework\Attributes\DataProvider;
  * association ('latestRelease.category') WITHOUT setSortProperty(): sorting via
  * ?sort[latestRelease.category] orders by the foreign key of the leaf association
  * (the category id), mirroring how single-level associations are sorted.
- *
- * From fixtures, categories are inserted in this order (so their ids are increasing):
- * "Major" (used by Alpha Project), "Minor" (Beta Project), "Major" (Gamma Project);
- * "Delta Project" has no release, so its category is NULL.
  */
 class SortByNestedAssociationFieldFkTest extends AbstractCrudTestCase
 {
+    use ProjectsWithReleaseCategoriesTrait;
+
     protected function getControllerFqcn(): string
     {
         return SortNestedAssociationByFkCrudController::class;
@@ -33,10 +31,12 @@ class SortByNestedAssociationFieldFkTest extends AbstractCrudTestCase
     {
         parent::setUp();
         $this->client->followRedirects();
+        $this->createProjectsWithReleaseCategories();
     }
 
     /**
-     * @param list<string> $expectedProjectNames
+     * @param array<string, mixed> $query
+     * @param list<string>         $expectedProjectNames
      */
     #[DataProvider('provideSortTests')]
     public function testSorting(array $query, array $expectedProjectNames): void
@@ -44,6 +44,7 @@ class SortByNestedAssociationFieldFkTest extends AbstractCrudTestCase
         $this->client->request('GET', $this->generateIndexUrl().'?'.http_build_query($query));
 
         $this->assertResponseIsSuccessful();
+        $this->assertSelectorCount(\count($expectedProjectNames), 'tbody tr');
         foreach ($expectedProjectNames as $index => $expectedProjectName) {
             $row = $index + 1;
             $this->assertSelectorTextSame(
@@ -54,6 +55,9 @@ class SortByNestedAssociationFieldFkTest extends AbstractCrudTestCase
         }
     }
 
+    /**
+     * @return iterable<string, array{array<string, mixed>, list<string>}>
+     */
     public static function provideSortTests(): iterable
     {
         // SQLite sorts NULL values first in ASC order and last in DESC order

@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Customization\Crud\Se
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Controller\Crud\Search\SearchModeTestCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Factory\DemoEntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Kernel;
 
 /**
@@ -34,21 +35,23 @@ class SearchModeTest extends AbstractCrudTestCase
 
     public function testSearchModeConfiguration(): void
     {
+        $matchingAllTerms = DemoEntityFactory::createOne(['name' => 'Demo Item']);
+        DemoEntityFactory::createOne(['name' => 'Demo Product']);
+        DemoEntityFactory::createOne(['name' => 'Other Item']);
+
         $this->client->request('GET', $this->generateIndexUrl());
 
         static::assertResponseIsSuccessful();
 
         // verify data is displayed before search
-        $this->assertIndexPageEntityCount(20);
-        static::assertIndexFullEntityCount(100);
+        $this->assertIndexPageEntityCount(3);
+        static::assertIndexFullEntityCount(3);
 
-        // test search with multiple terms (ALL_TERMS mode requires all terms to match)
+        // ALL_TERMS mode only returns the rows that match every search term
         $this->client->request('GET', $this->generateIndexUrl('Demo Item'));
 
         static::assertResponseIsSuccessful();
-
-        // verify results are returned (all items match "Demo Item")
-        static::assertSelectorExists('tbody tr', 'Search should return results');
-        static::assertSelectorNotExists('tr.no-results');
+        $this->assertIndexPageEntityCount(1);
+        static::assertSelectorExists($this->getIndexEntityRowSelector($matchingAllTerms->getId()));
     }
 }

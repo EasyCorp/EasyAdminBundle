@@ -48,8 +48,11 @@ Never invoke a controller method directly in PHP. Browse the controller's URL wi
 
 ## Fixtures
 
-- Load data programmatically: instantiate entities, then `$entityManager->persist()` / `flush()`. No YAML fixtures.
-- Apps that need seed data ship Doctrine fixtures in `tests/Functional/Apps/<App>/src/DataFixtures/AppFixtures.php`, loaded via DoctrineFixturesBundle (currently `DefaultApp` and `CustomizationApp`; the other apps have none).
+- Every test starts with empty tables and creates only the data it needs with the Foundry factories in `tests/Functional/Apps/<App>/src/Factory/` (`DefaultApp`, also used by `SecuredApp`, and `CustomizationApp`). There are no shared fixtures.
+- DAMA DoctrineTestBundle rolls back each test's transaction, so don't clean up rows in `tearDown()`.
+- Factories only fill the required columns. Set explicitly every value a test asserts, and never assert on a factory default.
+- Never hard-code ids or counts: use the ids of the objects you created and count the rows you created. Create rows in the order the test asserts them.
+- Auto-refresh is disabled because it needs PHP 8.4, so objects aren't refreshed after a request. To check what a request changed, clear the entity manager and find the row again by id.
 - Use simple, unrealistic data (`'Action 1'`, `'Field 1'`, …), not lifelike values.
 
 ## Conventions
@@ -71,3 +74,5 @@ make tests ARGS="tests/Unit --filter=testFoo"  # combined
 ```
 
 Prefer this over a raw `vendor/bin/phpunit` run, which skips the cache reset.
+
+`make tests-parallel` runs the suite with ParaTest. The main process compiles the test app containers once and the workers share them, but each worker gets its own SQLite database (its path includes ParaTest's `TEST_TOKEN`). Tests must not share other files: use random names for temporary directories, not `uniqid()`.

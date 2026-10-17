@@ -6,7 +6,8 @@ use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\SearchEmbeddedCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\ProjectDomain\Project;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\ProjectDomain\Money;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\ProjectFactory;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
@@ -34,12 +35,11 @@ class SearchEmbeddedPropertyTest extends AbstractCrudTestCase
         parent::setUp();
         $this->client->followRedirects();
 
-        // Remove any Project entities created by other test classes to ensure consistent fixture state
-        $this->entityManager->createQuery(
-            'DELETE FROM '.Project::class.' p WHERE p.name NOT IN (:names)'
-        )
-        ->setParameter('names', ['Alpha Project', 'Beta Project', 'Gamma Project', 'Delta Project'])
-        ->execute();
+        ProjectFactory::createSequence([
+            ['name' => 'Alpha Project', 'price' => (new Money())->setAmount(1000)->setCurrency('USD')],
+            ['name' => 'Beta Project', 'price' => (new Money())->setAmount(2000)->setCurrency('EUR')],
+            ['name' => 'Gamma Project', 'price' => (new Money())->setAmount(3000)->setCurrency('USD')],
+        ]);
     }
 
     #[DataProvider('provideSearchTests')]
@@ -49,14 +49,11 @@ class SearchEmbeddedPropertyTest extends AbstractCrudTestCase
         static::assertIndexFullEntityCount($expectedResultCount);
     }
 
+    /**
+     * @return iterable<string, array{string, int}>
+     */
     public static function provideSearchTests(): iterable
     {
-        // From fixtures, the Project entities are:
-        // 1. "Alpha Project", price=(1000, "USD")
-        // 2. "Beta Project",  price=(2000, "EUR")
-        // 3. "Gamma Project", price=(3000, "USD")
-        // 4. "Delta Project", price=(500,  "GBP")
-
         yield 'search by embedded currency USD' => [
             'USD',
             2, // Alpha Project and Gamma Project

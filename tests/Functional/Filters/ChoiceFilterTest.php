@@ -3,21 +3,28 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Filters;
 
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\FilterTestEntityFactory;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-/**
- * Fixture data (choiceFilter field):
- * - ID 1: 'option_a'
- * - ID 2: 'option_b'
- * - ID 3: 'option_c'
- * - ID 4: 'option_a'
- * - ID 5: 'option_b'
- * - ID 6: 'option_c'
- */
 class ChoiceFilterTest extends FilterFunctionalTestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        foreach (['option_a', 'option_b', 'option_c'] as $option) {
+            $this->entities['first '.$option] = FilterTestEntityFactory::createOne(['choiceFilter' => $option]);
+        }
+        foreach (['option_a', 'option_b', 'option_c'] as $option) {
+            $this->entities['second '.$option] = FilterTestEntityFactory::createOne(['choiceFilter' => $option]);
+        }
+    }
+
+    /**
+     * @param list<string> $expectedEntities
+     */
     #[DataProvider('equalsProvider')]
-    public function testFilterEquals(string $option, array $expectedIds): void
+    public function testFilterEquals(string $option, array $expectedEntities): void
     {
         $url = $this->generateFilteredIndexUrl([
             'choiceFilter' => [
@@ -28,21 +35,22 @@ class ChoiceFilterTest extends FilterFunctionalTestCase
 
         $this->client->request('GET', $url);
 
-        $this->assertFilteredCount(\count($expectedIds));
-        $this->assertVisibleEntityIds($expectedIds);
+        $this->assertFilteredCount(\count($expectedEntities));
+        $this->assertVisibleEntities($expectedEntities);
     }
 
+    /**
+     * @return iterable<string, array{string, list<string>}>
+     */
     public static function equalsProvider(): iterable
     {
-        yield 'matches option_a' => ['option_a', [1, 4]];
-        yield 'matches option_b' => ['option_b', [2, 5]];
-        yield 'matches option_c' => ['option_c', [3, 6]];
+        yield 'matches option_a' => ['option_a', ['first option_a', 'second option_a']];
+        yield 'matches option_b' => ['option_b', ['first option_b', 'second option_b']];
+        yield 'matches option_c' => ['option_c', ['first option_c', 'second option_c']];
     }
 
     public function testFilterNotEquals(): void
     {
-        // filter for choiceFilter != 'option_a'
-        // should match: ID 2, ID 3, ID 5, ID 6
         $url = $this->generateFilteredIndexUrl([
             'choiceFilter' => [
                 'comparison' => ComparisonType::NEQ,
@@ -53,15 +61,14 @@ class ChoiceFilterTest extends FilterFunctionalTestCase
         $this->client->request('GET', $url);
 
         $this->assertFilteredCount(4);
-        $this->assertVisibleEntityIds([2, 3, 5, 6]);
+        $this->assertVisibleEntities(['first option_b', 'first option_c', 'second option_b', 'second option_c']);
     }
 
     public function testFilterIsNull(): void
     {
-        // filter for NULL choices
-        // when value is null/empty, the filter uses IS NULL comparison
-        // since our fixture data has no null choiceFilter values, we test
-        // that the filter is properly applied (returns 0 results)
+        $this->entities['no option'] = FilterTestEntityFactory::createOne(['choiceFilter' => null]);
+
+        // when value is empty, the filter uses IS NULL comparison
         $url = $this->generateFilteredIndexUrl([
             'choiceFilter' => [
                 'comparison' => ComparisonType::EQ,
@@ -71,7 +78,7 @@ class ChoiceFilterTest extends FilterFunctionalTestCase
 
         $this->client->request('GET', $url);
 
-        // all our fixture data has non-null choice values, so IS NULL returns 0
-        $this->assertFilteredCount(0);
+        $this->assertFilteredCount(1);
+        $this->assertVisibleEntities(['no option']);
     }
 }

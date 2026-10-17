@@ -72,7 +72,7 @@ class NumberFieldTest extends AbstractFieldFunctionalTestCase
 
         $this->client->submit($form);
 
-        $entity = $this->fieldTestEntities->findOneBy([], ['id' => 'DESC']);
+        $entity = $this->fieldTestEntities->findOneBy(['slugField' => 'number-test']);
         static::assertNotNull($entity, 'Entity should be created');
         static::assertEqualsWithDelta(9.876, $entity->getNumberField(), 0.001);
     }

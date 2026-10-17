@@ -2,16 +2,13 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Actions;
 
-use Doctrine\ORM\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\ActionsOrderingCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\ActionTestEntity;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\ActionTestEntityFactory;
 
 class ActionsOrderingTest extends AbstractCrudTestCase
 {
-    protected EntityRepository $actionTestEntities;
-
     protected function getControllerFqcn(): string
     {
         return ActionsOrderingCrudController::class;
@@ -26,8 +23,6 @@ class ActionsOrderingTest extends AbstractCrudTestCase
     {
         parent::setUp();
         $this->client->followRedirects();
-
-        $this->actionTestEntities = $this->entityManager->getRepository(ActionTestEntity::class);
     }
 
     public function testIndexPageGlobalActionsOrder(): void
@@ -58,10 +53,14 @@ class ActionsOrderingTest extends AbstractCrudTestCase
 
     public function testIndexPageEntityActionsOrder(): void
     {
+        $entity = ActionTestEntityFactory::createOne();
+
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
-        // get entity actions for the first row
-        $entityActionNames = $crawler->filter('.datagrid tbody tr')->first()->filter('[data-action-name]')->each(static function ($node) {
+        $row = $crawler->filter(sprintf('.datagrid tbody tr[data-id="%d"]', $entity->getId()));
+        static::assertCount(1, $row);
+
+        $entityActionNames = $row->filter('[data-action-name]')->each(static function ($node) {
             return $node->attr('data-action-name');
         });
 
@@ -86,7 +85,9 @@ class ActionsOrderingTest extends AbstractCrudTestCase
 
     public function testDetailPageActionsOrder(): void
     {
-        $crawler = $this->client->request('GET', $this->generateDetailUrl($this->actionTestEntities->findOneBy([])->getId()));
+        $entity = ActionTestEntityFactory::createOne();
+
+        $crawler = $this->client->request('GET', $this->generateDetailUrl($entity->getId()));
 
         $actionNames = $crawler->filter('.page-actions [data-action-name]')->each(static function ($node) {
             return $node->attr('data-action-name');
@@ -113,7 +114,9 @@ class ActionsOrderingTest extends AbstractCrudTestCase
 
     public function testEditPageActionsOrder(): void
     {
-        $crawler = $this->client->request('GET', $this->generateEditFormUrl($this->actionTestEntities->findOneBy([])->getId()));
+        $entity = ActionTestEntityFactory::createOne();
+
+        $crawler = $this->client->request('GET', $this->generateEditFormUrl($entity->getId()));
 
         $actionNames = $crawler->filter('.page-actions [data-action-name]')->each(static function ($node) {
             return $node->attr('data-action-name');

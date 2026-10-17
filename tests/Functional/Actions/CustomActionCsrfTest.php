@@ -2,11 +2,10 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Actions;
 
-use Doctrine\ORM\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\ActionTestEntityCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\ActionTestEntity;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\ActionTestEntityFactory;
 
 /**
  * Anchors rule A7 of skills/easyadmin/SKILL.md: a custom action configured with
@@ -17,8 +16,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synt
  */
 class CustomActionCsrfTest extends AbstractCrudTestCase
 {
-    protected EntityRepository $actionTestEntities;
-
     protected function getControllerFqcn(): string
     {
         return ActionTestEntityCrudController::class;
@@ -27,13 +24,6 @@ class CustomActionCsrfTest extends AbstractCrudTestCase
     protected function getDashboardFqcn(): string
     {
         return DashboardController::class;
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->actionTestEntities = $this->entityManager->getRepository(ActionTestEntity::class);
     }
 
     public function testGlobalActionRenderedAsFormHasNoCsrfToken(): void
@@ -52,10 +42,9 @@ class CustomActionCsrfTest extends AbstractCrudTestCase
 
     public function testEntityActionRenderedAsFormHasNoCsrfToken(): void
     {
-        $crawler = $this->client->request('GET', $this->generateIndexUrl());
+        $entity = ActionTestEntityFactory::createOne();
 
-        $entity = $this->actionTestEntities->findOneBy([]);
-        static::assertInstanceOf(ActionTestEntity::class, $entity);
+        $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
         $actionLink = $crawler->filter(sprintf('tr[data-id="%s"] [data-action-name="entityFormAction"]', $entity->getId()));
         static::assertCount(1, $actionLink);
@@ -71,10 +60,9 @@ class CustomActionCsrfTest extends AbstractCrudTestCase
 
     public function testDeleteActionIsSubmittedThroughAFormThatCarriesACsrfToken(): void
     {
-        $crawler = $this->client->request('GET', $this->generateIndexUrl());
+        $deletableEntity = ActionTestEntityFactory::createOne(['isDeletable' => true]);
 
-        $deletableEntity = $this->actionTestEntities->findOneBy(['isDeletable' => true]);
-        static::assertInstanceOf(ActionTestEntity::class, $deletableEntity);
+        $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
         $deleteAction = $crawler->filter(sprintf('tr[data-id="%s"] [data-action-name="delete"]', $deletableEntity->getId()));
         static::assertCount(1, $deleteAction);

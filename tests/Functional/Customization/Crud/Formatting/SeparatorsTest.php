@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Customization\Crud\Fo
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Controller\Crud\Formatting\SeparatorsTestCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Factory\DemoEntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Kernel;
 
 /**
@@ -34,29 +35,15 @@ class SeparatorsTest extends AbstractCrudTestCase
 
     public function testSeparatorsConfiguration(): void
     {
-        $crawler = $this->client->request('GET', $this->generateIndexUrl());
+        $entity = DemoEntityFactory::createOne(['price' => '1234.56', 'quantity' => 5000]);
+
+        $this->client->request('GET', $this->generateIndexUrl());
 
         static::assertResponseIsSuccessful();
+        $this->assertIndexPageEntityCount(1);
 
-        // verify data is displayed
-        $this->assertIndexPageEntityCount(20);
-
-        // get first row with price data (has decimal)
-        $firstRow = $crawler->filter('tbody tr')->first();
-        $priceCell = $firstRow->filter('td[data-column="price"]');
-
-        if ($priceCell->count() > 0) {
-            $priceText = trim($priceCell->text());
-
-            // with decimal separator ',' price like 99.99 should show as 99,99
-            static::assertMatchesRegularExpression(
-                '/\d+,\d+/',
-                $priceText,
-                'Price should use comma as decimal separator'
-            );
-        }
-
-        // verify table structure
-        static::assertSelectorExists('tbody tr');
+        $rowSelector = $this->getIndexEntityRowSelector($entity->getId());
+        static::assertSelectorTextSame($rowSelector.' td[data-column="price"]', '1.234,56');
+        static::assertSelectorTextSame($rowSelector.' td[data-column="quantity"]', '5.000');
     }
 }

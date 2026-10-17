@@ -2,8 +2,8 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp;
 
+use DAMA\DoctrineTestBundle\DAMADoctrineTestBundle;
 use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
-use Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle;
 use EasyCorp\Bundle\EasyAdminBundle\EasyAdminBundle;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
@@ -15,6 +15,7 @@ use Symfony\Component\HttpKernel\Kernel as SymfonyKernel;
 use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
 use Symfony\UX\TwigComponent\TwigComponentBundle;
 use Twig\Extra\TwigExtraBundle\TwigExtraBundle;
+use Zenstruck\Foundry\ZenstruckFoundryBundle;
 
 final class Kernel extends SymfonyKernel
 {
@@ -31,13 +32,14 @@ final class Kernel extends SymfonyKernel
     {
         return [
             new DoctrineBundle(),
-            new DoctrineFixturesBundle(),
+            new DAMADoctrineTestBundle(),
             new EasyAdminBundle(),
             new FrameworkBundle(),
             new SecurityBundle(),
             new TwigBundle(),
             new TwigComponentBundle(),
             new TwigExtraBundle(),
+            new ZenstruckFoundryBundle(),
         ];
     }
 

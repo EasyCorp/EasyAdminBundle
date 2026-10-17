@@ -6,6 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\FormFieldValueSyntheticCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\FormTestEntity;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\FormTestEntityFactory;
 
 /**
  * Tests for field value formatting using formatValue() method.
@@ -37,16 +38,15 @@ class FormFieldValueFormattingTest extends AbstractCrudTestCase
 
     public function testFieldsFormatValue(): void
     {
-        $entity = new FormTestEntity();
-        $entity->setName('Test Entity Name');
-        $entity->setCreatedAt(new \DateTime('2020-11-01 09:00:00'));
-        $entity->setPriority(42);
-        $entity->setPriceInCents(1299); // represents $12.99
-        $entity->setScore(1234.5678901234); // high precision float
-        $entity->setStatus('active');
-        $entity->setDescription(null); // explicitly test null handling
-        $this->entityManager->persist($entity);
-        $this->entityManager->flush();
+        $entity = FormTestEntityFactory::createOne([
+            'name' => 'Test Entity Name',
+            'createdAt' => new \DateTime('2020-11-01 09:00:00'),
+            'priority' => 42,
+            'priceInCents' => 1299, // represents $12.99
+            'score' => 1234.5678901234, // high precision float
+            'status' => 'active',
+            'description' => null, // explicitly test null handling
+        ]);
 
         $this->client->request('GET', $this->generateIndexUrl());
 

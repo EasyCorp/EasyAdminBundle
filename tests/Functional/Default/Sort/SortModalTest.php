@@ -5,6 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Default\Sort;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\SortTestEntityCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\SortTestEntityFactory;
 
 /**
  * Tests the sort modal displayed on small screens, where the datagrid header is hidden.
@@ -25,6 +26,9 @@ class SortModalTest extends AbstractCrudTestCase
     {
         parent::setUp();
         $this->client->followRedirects();
+
+        // the sort modal is only rendered when the index page has results
+        SortTestEntityFactory::createOne(['textField' => 'Apple Entity']);
     }
 
     public function testSortModalTriggerIsRendered(): void

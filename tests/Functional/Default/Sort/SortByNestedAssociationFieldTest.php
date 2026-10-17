@@ -12,15 +12,11 @@ use PHPUnit\Framework\Attributes\DataProvider;
  * Tests an AssociationField whose property is a nested association path ending at an
  * association ('latestRelease.category') with setSortProperty('name'), so sorting via
  * ?sort[latestRelease.category] orders by the related category's name.
- *
- * From fixtures, the Project entities and their release categories:
- * 1. "Alpha Project" → latestRelease=v1.0 → category.name="Major"
- * 2. "Beta Project"  → latestRelease=v1.1 → category.name="Minor"
- * 3. "Gamma Project" → latestRelease=v2.0 → category.name="Major"
- * 4. "Delta Project" → latestRelease=null  (no release)
  */
 class SortByNestedAssociationFieldTest extends AbstractCrudTestCase
 {
+    use ProjectsWithReleaseCategoriesTrait;
+
     protected function getControllerFqcn(): string
     {
         return SortNestedAssociationCrudController::class;
@@ -35,6 +31,7 @@ class SortByNestedAssociationFieldTest extends AbstractCrudTestCase
     {
         parent::setUp();
         $this->client->followRedirects();
+        $this->createProjectsWithReleaseCategories();
     }
 
     public function testNestedAssociationColumnIsSortableByDefault(): void
@@ -59,7 +56,9 @@ class SortByNestedAssociationFieldTest extends AbstractCrudTestCase
             ->filter('tbody td[data-column="latestRelease.category"] a')
             ->each(static fn ($node): string => $node->attr('href'));
 
-        self::assertCount(3, $hrefs, 'The three projects with a release must link their category');
+        $projectsWithRelease = \count(array_filter(self::RELEASE_CATEGORY_BY_PROJECT_NAME));
+        self::assertGreaterThan(0, $projectsWithRelease);
+        self::assertCount($projectsWithRelease, $hrefs, 'The projects with a release must link their category');
 
         // depending on the URL format, the target controller appears as a query parameter
         // (crudControllerFqcn=...) or as the URL path of its pretty route
@@ -72,7 +71,8 @@ class SortByNestedAssociationFieldTest extends AbstractCrudTestCase
     }
 
     /**
-     * @param list<string> $expectedProjectNames
+     * @param array<string, mixed> $query
+     * @param list<string>         $expectedProjectNames
      */
     #[DataProvider('provideSortTests')]
     public function testSorting(array $query, array $expectedProjectNames): void
@@ -80,6 +80,7 @@ class SortByNestedAssociationFieldTest extends AbstractCrudTestCase
         $this->client->request('GET', $this->generateIndexUrl().'?'.http_build_query($query));
 
         $this->assertResponseIsSuccessful();
+        $this->assertSelectorCount(\count($expectedProjectNames), 'tbody tr');
         foreach ($expectedProjectNames as $index => $expectedProjectName) {
             $row = $index + 1;
             $this->assertSelectorTextSame(
@@ -90,6 +91,9 @@ class SortByNestedAssociationFieldTest extends AbstractCrudTestCase
         }
     }
 
+    /**
+     * @return iterable<string, array{array<string, mixed>, list<string>}>
+     */
     public static function provideSortTests(): iterable
     {
         // SQLite sorts NULL values first in ASC order and last in DESC order;

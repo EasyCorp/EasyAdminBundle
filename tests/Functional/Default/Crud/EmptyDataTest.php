@@ -7,6 +7,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\DefaultCrudTestEntityCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\DefaultCrudTestEntity;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\DefaultCrudTestEntityFactory;
 
 /**
  * Tests that submitting an empty value for a text-based field doesn't pass NULL to the entity.
@@ -16,6 +17,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synt
  */
 class EmptyDataTest extends AbstractCrudTestCase
 {
+    /** @var EntityRepository<DefaultCrudTestEntity> */
     protected EntityRepository $repository;
 
     protected function setUp(): void
@@ -37,7 +39,7 @@ class EmptyDataTest extends AbstractCrudTestCase
 
     public function testEmptyNonNullableTextFieldDisplaysTheValidationError(): void
     {
-        $entity = $this->repository->findOneBy([]);
+        $entity = DefaultCrudTestEntityFactory::createOne(['name' => 'Entity with a name']);
         $crawler = $this->client->request('GET', $this->generateEditFormUrl($entity->getId()));
         $form = $crawler->filter($this->getEntityFormSelector())->form();
         $formName = $this->getFormEntity();

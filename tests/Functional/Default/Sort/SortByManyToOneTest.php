@@ -2,11 +2,11 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Default\Sort;
 
-use Doctrine\ORM\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\SortTestEntityCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\SortTestEntity;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\SortTestEntityFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\SortTestRelatedEntityFactory;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
@@ -14,7 +14,10 @@ use PHPUnit\Framework\Attributes\DataProvider;
  */
 class SortByManyToOneTest extends AbstractCrudTestCase
 {
-    private EntityRepository $repository;
+    /**
+     * @var array<string, string>
+     */
+    private array $relatedNameByTextField = [];
 
     protected function getControllerFqcn(): string
     {
@@ -30,47 +33,49 @@ class SortByManyToOneTest extends AbstractCrudTestCase
     {
         parent::setUp();
         $this->client->followRedirects();
-        $this->repository = $this->entityManager->getRepository(SortTestEntity::class);
+
+        // related entities are created in non-alphabetical order so sorting by
+        // their name gives a different result than sorting by their id
+        $gamma = SortTestRelatedEntityFactory::createOne(['name' => 'Gamma']);
+        $alpha = SortTestRelatedEntityFactory::createOne(['name' => 'Alpha']);
+        $beta = SortTestRelatedEntityFactory::createOne(['name' => 'Beta']);
+
+        $rows = [
+            'Zebra Entity' => $alpha,
+            'Apple Entity' => $gamma,
+            'Mango Entity' => null,
+            'Banana Entity' => $beta,
+        ];
+        foreach ($rows as $textField => $related) {
+            SortTestEntityFactory::createOne(['textField' => $textField, 'manyToOneRelation' => $related]);
+            // easyAdmin shows "Null" label for null associations
+            $this->relatedNameByTextField[$textField] = $related?->getName() ?? 'Null';
+        }
     }
 
+    /**
+     * @param array<string, mixed> $query
+     * @param list<string>         $expectedTextFields
+     */
     #[DataProvider('sorting')]
-    public function testSorting(array $query, ?\Closure $sortFunction, string $expectedSortIcon): void
+    public function testSorting(array $query, array $expectedTextFields): void
     {
-        // arrange
-        $expectedAmountMapping = [];
-
-        /** @var list<SortTestEntity> $entities */
-        $entities = $this->repository->findAll();
-
-        if (null !== $sortFunction) {
-            $sortFunction($entities);
-        }
-
-        foreach ($entities as $entity) {
-            // easyAdmin shows "Null" label for null associations
-            $relatedName = $entity->getManyToOneRelation()?->getName() ?? 'Null';
-            $expectedAmountMapping[$entity->getTextField()] = $relatedName;
-        }
-
-        // act
         $url = $this->generateIndexUrl();
-        if (!empty($query)) {
+        if ([] !== $query) {
             $url .= '?'.http_build_query($query);
         }
-        $crawler = $this->client->request('GET', $url);
+        $this->client->request('GET', $url);
 
-        // assert
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextSame('th.header-for-field-association[data-column="manyToOneRelation"] > a', 'Many To One Relation');
         $this->assertSelectorExists('th.header-for-field-association[data-column="manyToOneRelation"] span.icon svg');
+        $this->assertSelectorCount(\count($this->relatedNameByTextField), 'tbody tr');
 
-        $index = 1;
-
-        foreach ($expectedAmountMapping as $expectedEntityName => $expectedRelatedName) {
-            $expectedRow = $index++;
-
-            $this->assertSelectorTextSame('tbody tr:nth-child('.$expectedRow.') td[data-column="textField"]', $expectedEntityName, sprintf('Expected "%s" in row %d', $expectedEntityName, $expectedRow));
-            $this->assertSelectorTextSame('tbody tr:nth-child('.$expectedRow.') td[data-column="manyToOneRelation"]', $expectedRelatedName, sprintf('Expected "%s" in row %d', $expectedRelatedName, $expectedRow));
+        foreach ($expectedTextFields as $index => $textField) {
+            $row = $index + 1;
+            $relatedName = $this->relatedNameByTextField[$textField];
+            $this->assertSelectorTextSame('tbody tr:nth-child('.$row.') td[data-column="textField"]', $textField, sprintf('Expected "%s" in row %d', $textField, $row));
+            $this->assertSelectorTextSame('tbody tr:nth-child('.$row.') td[data-column="manyToOneRelation"]', $relatedName, sprintf('Expected "%s" in row %d', $relatedName, $row));
         }
     }
 
@@ -79,71 +84,18 @@ class SortByManyToOneTest extends AbstractCrudTestCase
         // default sort is by ID ASC (configured in the CRUD controller)
         yield 'default sorting (by id ASC)' => [
             [],
-            /**
-             * @param list<SortTestEntity> $array
-             */
-            static function (array &$array) {
-                usort($array, static fn (SortTestEntity $a, SortTestEntity $b) => $a->getId() <=> $b->getId());
-            },
-            'internal:sort-arrows',
+            ['Zebra Entity', 'Apple Entity', 'Mango Entity', 'Banana Entity'],
         ];
 
+        // SQLite sorts NULL values first in ASC order and last in DESC order
         yield 'ascending by manyToOneRelation name' => [
             ['sort' => ['manyToOneRelation' => 'ASC']],
-            /**
-             * @param list<SortTestEntity> $array
-             */
-            static function (array &$array) {
-                usort($array, static function (SortTestEntity $a, SortTestEntity $b) {
-                    $aName = $a->getManyToOneRelation()?->getName();
-                    $bName = $b->getManyToOneRelation()?->getName();
-
-                    // sQLite: NULL values are sorted FIRST in ASC order
-                    if (null === $aName && null === $bName) {
-                        return $a->getId() <=> $b->getId();
-                    }
-                    if (null === $aName) {
-                        return -1;
-                    }
-                    if (null === $bName) {
-                        return 1;
-                    }
-
-                    $cmp = $aName <=> $bName;
-
-                    return 0 !== $cmp ? $cmp : $a->getId() <=> $b->getId();
-                });
-            },
-            'internal:sort-arrow-up',
+            ['Mango Entity', 'Zebra Entity', 'Banana Entity', 'Apple Entity'],
         ];
 
         yield 'descending by manyToOneRelation name' => [
             ['sort' => ['manyToOneRelation' => 'DESC']],
-            /**
-             * @param list<SortTestEntity> $array
-             */
-            static function (array &$array) {
-                usort($array, static function (SortTestEntity $a, SortTestEntity $b) {
-                    $aName = $a->getManyToOneRelation()?->getName();
-                    $bName = $b->getManyToOneRelation()?->getName();
-
-                    // sQLite: NULL values are sorted LAST in DESC order
-                    if (null === $aName && null === $bName) {
-                        return $b->getId() <=> $a->getId();
-                    }
-                    if (null === $aName) {
-                        return 1;
-                    }
-                    if (null === $bName) {
-                        return -1;
-                    }
-
-                    $cmp = $bName <=> $aName;
-
-                    return 0 !== $cmp ? $cmp : $b->getId() <=> $a->getId();
-                });
-            },
-            'internal:sort-arrow-down',
+            ['Apple Entity', 'Banana Entity', 'Zebra Entity', 'Mango Entity'],
         ];
     }
 }

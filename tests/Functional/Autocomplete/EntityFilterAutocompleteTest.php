@@ -7,9 +7,17 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\FilterRelatedEntityCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\FilterTestEntityCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\FilterRelatedEntity;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\FilterRelatedEntityFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\FilterTestEntityFactory;
+use Symfony\Component\DomCrawler\Crawler;
 
 class EntityFilterAutocompleteTest extends AbstractCrudTestCase
 {
+    /**
+     * @var list<FilterRelatedEntity>
+     */
+    private array $relatedEntities = [];
+
     protected function getControllerFqcn(): string
     {
         return FilterTestEntityCrudController::class;
@@ -24,6 +32,12 @@ class EntityFilterAutocompleteTest extends AbstractCrudTestCase
     {
         parent::setUp();
         $this->client->followRedirects();
+
+        $this->relatedEntities = FilterRelatedEntityFactory::createSequence([
+            ['name' => 'Related Entity 1'],
+            ['name' => 'Related Entity 2'],
+            ['name' => 'Related Entity 3'],
+        ]);
     }
 
     public function testFilterAutocompleteReturnsJsonWithCorrectStructure(): void
@@ -46,19 +60,15 @@ class EntityFilterAutocompleteTest extends AbstractCrudTestCase
         // the response should always have a next_page key
         static::assertArrayHasKey('next_page', $data, 'Response should contain next_page key');
 
-        // if there are results, verify their structure
-        if (isset($data['results']) && \count($data['results']) > 0) {
-            foreach ($data['results'] as $result) {
-                static::assertArrayHasKey('entityId', $result, 'Result should have entityId');
-                static::assertArrayHasKey('entityAsString', $result, 'Result should have entityAsString');
-            }
+        static::assertCount(3, $data['results']);
+        foreach ($data['results'] as $result) {
+            static::assertArrayHasKey('entityId', $result, 'Result should have entityId');
+            static::assertArrayHasKey('entityAsString', $result, 'Result should have entityAsString');
         }
     }
 
     public function testFilterAutocompleteReturnsAllEntities(): void
     {
-        $this->ensureFixturesLoaded();
-
         $autocompleteUrl = $this->generateFilterAutocompleteUrl();
 
         $this->client->request('GET', $autocompleteUrl);
@@ -72,8 +82,6 @@ class EntityFilterAutocompleteTest extends AbstractCrudTestCase
 
     public function testFilterAutocompleteFiltersResultsByQuery(): void
     {
-        $this->ensureFixturesLoaded();
-
         // search for "Entity 1"
         $autocompleteUrl = $this->generateFilterAutocompleteUrl('Entity 1');
 
@@ -84,13 +92,12 @@ class EntityFilterAutocompleteTest extends AbstractCrudTestCase
         static::assertTrue($response->isSuccessful());
         static::assertArrayHasKey('results', $data);
         static::assertCount(1, $data['results'], 'Should return only entities matching "Entity 1"');
-        static::assertStringContainsString('Entity 1', $data['results'][0]['entityAsString']);
+        static::assertSame((string) $this->relatedEntities[0]->getId(), $data['results'][0]['entityId']);
+        static::assertSame('Related Entity 1', $data['results'][0]['entityAsString']);
     }
 
     public function testFilterAutocompleteReturnsEmptyForNonMatchingQuery(): void
     {
-        $this->ensureFixturesLoaded();
-
         $autocompleteUrl = $this->generateFilterAutocompleteUrl('DoesNotExist');
 
         $this->client->request('GET', $autocompleteUrl);
@@ -104,8 +111,6 @@ class EntityFilterAutocompleteTest extends AbstractCrudTestCase
 
     public function testFilterAutocompleteResultsHaveCorrectStructure(): void
     {
-        $this->ensureFixturesLoaded();
-
         $autocompleteUrl = $this->generateFilterAutocompleteUrl();
 
         $this->client->request('GET', $autocompleteUrl);
@@ -114,7 +119,7 @@ class EntityFilterAutocompleteTest extends AbstractCrudTestCase
 
         static::assertTrue($response->isSuccessful());
         static::assertArrayHasKey('results', $data);
-        static::assertNotEmpty($data['results']);
+        static::assertCount(3, $data['results']);
 
         foreach ($data['results'] as $result) {
             static::assertArrayHasKey('entityId', $result, 'Result should have entityId');
@@ -128,33 +133,27 @@ class EntityFilterAutocompleteTest extends AbstractCrudTestCase
 
     public function testFilterAutocompleteReturnsCorrectEntityValues(): void
     {
-        $this->ensureFixturesLoaded();
-
         $autocompleteUrl = $this->generateFilterAutocompleteUrl();
 
         $this->client->request('GET', $autocompleteUrl);
         $response = $this->client->getResponse();
         $data = json_decode($response->getContent(), true);
 
-        // get actual entity IDs from database
-        $repository = $this->entityManager->getRepository(FilterRelatedEntity::class);
-        $entities = $repository->findAll();
-
         static::assertArrayHasKey('results', $data);
-        static::assertCount(\count($entities), $data['results']);
 
-        $responseIds = array_map(static fn ($r): string => $r['entityId'], $data['results']);
-        $entityIds = array_map(static fn ($e): string => (string) $e->getId(), $entities);
-
-        foreach ($entityIds as $entityId) {
-            static::assertContains($entityId, $responseIds, 'All entity IDs should be present in autocomplete results');
-        }
+        $expectedResults = array_map(
+            static fn (FilterRelatedEntity $entity): array => ['entityId' => (string) $entity->getId(), 'entityAsString' => $entity->getName()],
+            $this->relatedEntities
+        );
+        $actualResults = array_map(
+            static fn (array $result): array => ['entityId' => $result['entityId'], 'entityAsString' => $result['entityAsString']],
+            $data['results']
+        );
+        static::assertSame($expectedResults, $actualResults);
     }
 
     public function testFilterAutocompletePartialSearch(): void
     {
-        $this->ensureFixturesLoaded();
-
         // search with partial name "Entity" - should match all 3 entities
         $autocompleteUrl = $this->generateFilterAutocompleteUrl('Entity');
 
@@ -169,8 +168,6 @@ class EntityFilterAutocompleteTest extends AbstractCrudTestCase
 
     public function testFilterAutocompleteCaseInsensitiveSearch(): void
     {
-        $this->ensureFixturesLoaded();
-
         // search with lowercase
         $autocompleteUrl = $this->generateFilterAutocompleteUrl('entity 1');
 
@@ -179,14 +176,12 @@ class EntityFilterAutocompleteTest extends AbstractCrudTestCase
         $data = json_decode($response->getContent(), true);
 
         static::assertTrue($response->isSuccessful());
-        // case sensitivity depends on database collation, but the endpoint should work
-        static::assertIsArray($data['results']);
+        static::assertCount(1, $data['results'], 'Lowercase search "entity 1" should match "Related Entity 1"');
+        static::assertSame((string) $this->relatedEntities[0]->getId(), $data['results'][0]['entityId']);
     }
 
     public function testFilterAutocompleteIntegrationWithFilter(): void
     {
-        $this->ensureFixturesLoaded();
-
         // first, get an entity via autocomplete
         $autocompleteUrl = $this->generateFilterAutocompleteUrl('Entity 2');
 
@@ -197,6 +192,10 @@ class EntityFilterAutocompleteTest extends AbstractCrudTestCase
         static::assertArrayHasKey('results', $autocompleteData);
         static::assertCount(1, $autocompleteData['results']);
         $selectedEntityId = $autocompleteData['results'][0]['entityId'];
+        static::assertSame((string) $this->relatedEntities[1]->getId(), $selectedEntityId);
+
+        $matchingEntity = FilterTestEntityFactory::createOne(['relatedEntity' => $this->relatedEntities[1]]);
+        FilterTestEntityFactory::createOne(['relatedEntity' => $this->relatedEntities[0]]);
 
         // now verify we can use this ID in a filter
         $filterUrl = $this->generateFilteredIndexUrl([
@@ -206,10 +205,12 @@ class EntityFilterAutocompleteTest extends AbstractCrudTestCase
             ],
         ]);
 
-        $this->client->request('GET', $filterUrl);
+        $crawler = $this->client->request('GET', $filterUrl);
         $response = $this->client->getResponse();
 
         static::assertTrue($response->isSuccessful(), 'Filter with autocomplete-selected entity should work');
+        $rowIds = $crawler->filter('table.datagrid tbody tr[data-id]')->each(static fn (Crawler $row) => $row->attr('data-id'));
+        static::assertSame([(string) $matchingEntity->getId()], $rowIds);
     }
 
     private function generateFilterAutocompleteUrl(?string $query = null, int $page = 1): string
@@ -248,15 +249,5 @@ class EntityFilterAutocompleteTest extends AbstractCrudTestCase
         }
 
         return $this->getCrudUrl('index', null, $options);
-    }
-
-    private function ensureFixturesLoaded(): void
-    {
-        $repository = $this->entityManager->getRepository(FilterRelatedEntity::class);
-        $count = $repository->count([]);
-
-        if (0 === $count) {
-            static::markTestSkipped('FilterRelatedEntity fixtures not loaded. Run doctrine:fixtures:load first.');
-        }
     }
 }

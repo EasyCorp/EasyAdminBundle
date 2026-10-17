@@ -8,6 +8,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Pagination\DefaultPaginationCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Pagination\NoPaginationRangeCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Pagination\SmallPageSizeCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\CategoryFactory;
+use Symfony\Component\DomCrawler\Crawler;
 
 class PaginationTest extends AbstractCrudTestCase
 {
@@ -29,20 +31,21 @@ class PaginationTest extends AbstractCrudTestCase
 
     public function testDefaultPaginationOnFirstPage(): void
     {
+        $this->createCategories(21);
+
         $this->client->request('GET', $this->generateIndexUrl());
 
         $this->assertResponseIsSuccessful();
 
-        // with 30 categories and default pageSize of 20, first page should show 20 items
+        // with 21 categories and default pageSize of 20, first page should show 20 items
         $this->assertIndexPageEntityCount(20);
 
-        // total count should show 30
-        static::assertIndexFullEntityCount(30);
+        static::assertIndexFullEntityCount(21);
 
         // page 1 should be marked as active
         $this->assertSelectorTextSame('.page-item.active .page-link', '1');
 
-        // with 30 items and pageSize 20, we should have 2 pages
+        // with 21 items and pageSize 20, we should have 2 pages
         $this->assertIndexPagesCount(2);
 
         // on first page, "Previous" button should be disabled
@@ -54,13 +57,15 @@ class PaginationTest extends AbstractCrudTestCase
 
     public function testDefaultPaginationOnSecondPage(): void
     {
+        $this->createCategories(21);
+
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
         $this->client->click($crawler->selectLink('Next')->link());
 
         $this->assertResponseIsSuccessful();
 
-        // second page should show remaining 10 items (30 total - 20 on first page)
-        $this->assertIndexPageEntityCount(10);
+        // second page should show the remaining item (21 total - 20 on first page)
+        $this->assertIndexPageEntityCount(1);
 
         // page 2 should now be active
         $this->assertSelectorTextSame('.page-item.active .page-link', '2');
@@ -74,32 +79,36 @@ class PaginationTest extends AbstractCrudTestCase
 
     public function testPaginatorWithCustomPageSize(): void
     {
+        $this->createCategories(11);
+
         $crawler = $this->client->request('GET', $this->generateIndexUrl(
             controllerFqcn: SmallPageSizeCrudController::class
         ));
 
         // navigate through all pages using "Next" button
-        for ($page = 1; $page < 6; ++$page) {
+        foreach ([1 => 5, 2 => 5, 3 => 1] as $page => $expectedEntityCount) {
             $this->assertResponseIsSuccessful();
 
-            // the current page should be highlighted
             $this->assertSelectorTextSame('.page-item.active .page-link', (string) $page);
+            static::assertIndexFullEntityCount(11);
 
-            // total count should still show 30
-            static::assertIndexFullEntityCount(30);
+            // with 11 items and pageSize=5, we should have 3 pages
+            $this->assertIndexPagesCount(3);
+            $this->assertIndexPageEntityCount($expectedEntityCount);
 
-            // with 30 items and pageSize=5, we should have 6 pages
-            $this->assertIndexPagesCount(6);
-
-            // each page should show 5 items
-            $this->assertIndexPageEntityCount(5);
-
-            $crawler = $this->client->click($crawler->selectLink('Next')->link());
+            if (3 > $page) {
+                $crawler = $this->client->click($crawler->selectLink('Next')->link());
+            }
         }
+
+        $this->assertSelectorExists('.page-item-next.disabled');
     }
 
     public function testCustomRangeSizeShowsPageNumbers(): void
     {
+        // 6 pages of 5 items are needed to reproduce the range edge case described below
+        $this->createCategories(26);
+
         // navigate to page 3 to test range display
         $url = $this->getCrudUrl(
             'index',
@@ -118,52 +127,50 @@ class PaginationTest extends AbstractCrudTestCase
         // because the condition for ellipsis requires more pages
         // (lastPage > (rangeSize + rangeEdgeSize) * 2 = (1 + 1) * 2 = 4, and 6 > 4 is true,
         // but currentPage=3 does not exceed rangeSize + rangeEdgeSize + 1 = 3, so no ellipsis before)
-        $pageTexts = [];
-        $pageNumbers->each(static function ($node) use (&$pageTexts) {
-            $pageTexts[] = trim($node->text());
-        });
+        $pageTexts = $pageNumbers->each(static fn (Crawler $node) => trim($node->text()));
 
-        // with 6 pages and rangeSize=1, on page 3, all pages are shown
-        $this->assertCount(6, $pageTexts, 'All 6 page numbers should be shown');
-
-        // page 3 should be active
+        $this->assertSame(['1', '2', '3', '4', '5', '6'], $pageTexts, 'All 6 page numbers should be shown');
         $this->assertSelectorTextSame('.page-item.active .page-link', '3');
-
-        // first page (1) should be visible
-        $this->assertNotEmpty($crawler->filter('.page-link:contains("1")'));
-
-        // last page (6) should be visible
-        $this->assertNotEmpty($crawler->filter('.page-link:contains("6")'));
     }
 
     public function testCustomRangeSizeShowsAllPagesWhenOnFirstPage(): void
     {
-        $this->client->request('GET', $this->generateIndexUrl(
+        $this->createCategories(26);
+
+        $crawler = $this->client->request('GET', $this->generateIndexUrl(
             controllerFqcn: CustomRangeSizeCrudController::class
         ));
 
         $this->assertResponseIsSuccessful();
 
-        // on page 1 with rangeSize=1, we should see: [1] [2] [...] [6]
-        // first page should be active
+        $pageTexts = $crawler
+            ->filter('.pagination .page-item:not(.page-item-previous):not(.page-item-next) .page-link')
+            ->each(static fn (Crawler $node) => trim($node->text()));
+
+        // the ellipsis item includes a visually hidden 'More pages' label
+        $this->assertSame(['1', '2', '…More pages', '6'], $pageTexts);
         $this->assertSelectorTextSame('.page-item.active .page-link', '1');
     }
 
     public function testNoPaginationRangeShowsOnlyPrevNext(): void
     {
-        $this->client->request('GET', $this->generateIndexUrl(
+        $this->createCategories(6);
+
+        $crawler = $this->client->request('GET', $this->generateIndexUrl(
             controllerFqcn: NoPaginationRangeCrudController::class
         ));
 
         $this->assertResponseIsSuccessful();
 
-        // should have Previous and Next buttons
         $this->assertSelectorExists('.page-item-previous');
         $this->assertSelectorExists('.page-item-next');
+        $this->assertCount(0, $crawler->filter('.pagination .page-item:not(.page-item-previous):not(.page-item-next)'));
     }
 
     public function testNoPaginationRangeCanStillNavigate(): void
     {
+        $this->createCategories(6);
+
         $crawler = $this->client->request('GET', $this->generateIndexUrl(
             controllerFqcn: NoPaginationRangeCrudController::class
         ));
@@ -173,17 +180,20 @@ class PaginationTest extends AbstractCrudTestCase
         // navigate to next page
         $this->client->click($crawler->selectLink('Next')->link());
 
-        // should still show correct items
-        $this->assertIndexPageEntityCount(5);
+        // the second page shows the only item that doesn't fit in the first page
+        $this->assertIndexPageEntityCount(1);
     }
 
     public function testNoPaginationWhenNotNeeded(): void
     {
-        // create a search that returns few results (less than page size)
-        // we use a search that will return only 1 result
-        $this->client->request('GET', $this->generateIndexUrl('Category 0'));
+        // without the search query, these results wouldn't fit in one page
+        $this->createCategories(20);
+        CategoryFactory::createOne(['name' => 'Searchable', 'slug' => 'searchable']);
+
+        $this->client->request('GET', $this->generateIndexUrl('Searchable'));
 
         $this->assertResponseIsSuccessful();
+        $this->assertIndexPageEntityCount(1);
 
         // when results fit in one page, pagination nav should not be displayed
         $this->assertSelectorNotExists('.list-pagination nav.pager');
@@ -191,6 +201,8 @@ class PaginationTest extends AbstractCrudTestCase
 
     public function testPaginationViaUrlParameter(): void
     {
+        $this->createCategories(21);
+
         $url = $this->getCrudUrl(
             'index',
             options: ['page' => 2]
@@ -202,12 +214,13 @@ class PaginationTest extends AbstractCrudTestCase
         // page 2 should be active
         $this->assertSelectorTextSame('.page-item.active .page-link', '2');
 
-        // should show remaining 10 items
-        $this->assertIndexPageEntityCount(10);
+        $this->assertIndexPageEntityCount(1);
     }
 
     public function testInvalidPageParameterShowsFirstPage(): void
     {
+        $this->createCategories(21);
+
         // page 0 is invalid
         $url = $this->getCrudUrl(
             'index',
@@ -217,12 +230,14 @@ class PaginationTest extends AbstractCrudTestCase
 
         $this->assertResponseIsSuccessful();
 
-        // should default to page 1
         $this->assertSelectorTextSame('.page-item.active .page-link', '1');
+        $this->assertIndexPageEntityCount(20);
     }
 
     public function testOutOfRangePageParameter(): void
     {
+        $this->createCategories(21);
+
         // page 100 is out of range
         $url = $this->getCrudUrl(
             'index',
@@ -234,5 +249,13 @@ class PaginationTest extends AbstractCrudTestCase
 
         // when an out of range page is requested, EasyAdmin uses the last valid page number
         $this->assertSelectorTextSame('.page-item.active .page-link', '2');
+    }
+
+    private function createCategories(int $count): void
+    {
+        CategoryFactory::createMany($count, static fn (int $i) => [
+            'name' => sprintf('Category %d', $i),
+            'slug' => sprintf('category-%d', $i),
+        ]);
     }
 }

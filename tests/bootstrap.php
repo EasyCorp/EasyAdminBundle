@@ -4,6 +4,7 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 // needed to avoid encoding issues when running tests on different platforms
 setlocale(\LC_ALL, 'en_US.UTF-8');
@@ -17,34 +18,32 @@ if (!file_exists($file)) {
 }
 $autoload = require $file;
 
-/**
- * Helper function to initialize a test application database with fixtures.
- */
-function initializeTestAppDatabase(object $kernel, Filesystem $filesystem): void
+function compileTestAppContainer(KernelInterface $kernel, Filesystem $filesystem): void
 {
-    // delete the existing cache directory to avoid issues
+    // the test apps don't use the debug mode, so their cache is never refreshed when the code changes
     $filesystem->remove($kernel->getCacheDir());
 
-    $application = new Application($kernel);
-    $application->setAutoExit(false);
-
-    $input = new ArrayInput(['command' => 'doctrine:database:drop', '--no-interaction' => true, '--force' => true]);
-    $application->run($input, new ConsoleOutput());
-
-    $input = new ArrayInput(['command' => 'doctrine:database:create', '--no-interaction' => true]);
-    $application->run($input, new ConsoleOutput());
-
-    $input = new ArrayInput(['command' => 'doctrine:schema:create']);
-    $application->run($input, new ConsoleOutput());
-
-    $input = new ArrayInput(['command' => 'doctrine:fixtures:load', '--no-interaction' => true, '--append' => false]);
-    $application->run($input, new ConsoleOutput());
-
+    $kernel->boot();
     // trigger route compilation so that AdminRouteGenerator::generateAll()
     // populates the EasyAdmin route cache (used by AdminControllerRegistry)
     $kernel->getContainer()->get('router')->getRouteCollection();
+}
 
-    $kernel->shutdown();
+function createTestAppDatabase(KernelInterface $kernel): void
+{
+    $application = new Application($kernel);
+    $application->setAutoExit(false);
+
+    // there's no doctrine:database:create because DBAL doesn't support it for SQLite (the
+    // database file is created when connecting to it)
+    foreach ([
+        ['command' => 'doctrine:database:drop', '--no-interaction' => true, '--force' => true],
+        ['command' => 'doctrine:schema:create'],
+    ] as $command) {
+        if (0 !== $exitCode = $application->run(new ArrayInput($command), new ConsoleOutput())) {
+            throw new RuntimeException(sprintf('The "%s" command failed with exit code %d while creating the database of "%s".', $command['command'], $exitCode, get_debug_type($kernel)));
+        }
+    }
 }
 
 $filesystem = new Filesystem();
@@ -74,8 +73,22 @@ $collectBootstrapDeprecations = static function (int $type, string $message, str
 };
 set_error_handler($collectBootstrapDeprecations);
 
+// ParaTest runs this file in its main process before starting the workers (which have a
+// TEST_TOKEN), so the containers are compiled once and the workers only create their databases
+$isParaTestWorker = false !== getenv('TEST_TOKEN');
+$isParaTestMainProcess = !$isParaTestWorker && str_ends_with($_SERVER['argv'][0] ?? '', 'paratest');
 foreach ($testAppKernels as $kernelClass) {
-    initializeTestAppDatabase(new $kernelClass(), $filesystem);
+    $kernel = new $kernelClass();
+
+    if (!$isParaTestWorker) {
+        compileTestAppContainer($kernel, $filesystem);
+    }
+
+    if (!$isParaTestMainProcess) {
+        createTestAppDatabase($kernel);
+    }
+
+    $kernel->shutdown();
 }
 
 // running the console commands above can register Symfony's ErrorHandler globally; PHPUnit

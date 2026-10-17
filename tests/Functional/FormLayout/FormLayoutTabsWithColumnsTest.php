@@ -6,6 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\FormLayoutTabsWithColumnsCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\FormTestEntity;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\FormTestEntityFactory;
 
 /**
  * Tests for tabs with multi-column layouts.
@@ -179,14 +180,13 @@ class FormLayoutTabsWithColumnsTest extends AbstractCrudTestCase
 
     public function testEditFormPreservesTabsAndColumns(): void
     {
-        $entity = new FormTestEntity();
-        $entity->setName('Edit Tabs Columns');
-        $entity->setEmail('edit@tabcolumn.com');
-        $entity->setStreet('789 Edit Blvd');
-        $entity->setCity('Edit Town');
-        $entity->setPriority(4);
-        $this->entityManager->persist($entity);
-        $this->entityManager->flush();
+        $entity = FormTestEntityFactory::createOne([
+            'name' => 'Edit Tabs Columns',
+            'email' => 'edit@tabcolumn.com',
+            'street' => '789 Edit Blvd',
+            'city' => 'Edit Town',
+            'priority' => 4,
+        ]);
 
         $crawler = $this->client->request('GET', $this->generateEditFormUrl($entity->getId()));
 

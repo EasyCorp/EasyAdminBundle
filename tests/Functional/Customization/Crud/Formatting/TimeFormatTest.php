@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Customization\Crud\Fo
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Controller\Crud\Formatting\TimeFormatTestCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Factory\DemoEntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Kernel;
 
 /**
@@ -34,29 +35,15 @@ class TimeFormatTest extends AbstractCrudTestCase
 
     public function testTimeFormatConfiguration(): void
     {
+        $entity = DemoEntityFactory::createOne(['timeField' => new \DateTime('1970-01-01 14:30:00')]);
+
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
         static::assertResponseIsSuccessful();
+        $this->assertIndexPageEntityCount(1);
 
-        // verify data is displayed
-        $this->assertIndexPageEntityCount(20);
-
-        // get first row with time data (skip null values - every 3rd item has nulls)
-        $firstRow = $crawler->filter('tbody tr')->first();
-        $timeCell = $firstRow->filter('td[data-column="timeField"]');
-
-        if ($timeCell->count() > 0) {
-            $timeText = trim($timeCell->text());
-
-            // short time format should show HH:MM pattern
-            static::assertMatchesRegularExpression(
-                '/\d{1,2}:\d{2}/',
-                $timeText,
-                'Time should be formatted with hours and minutes (short format)'
-            );
-        }
-
-        // verify table structure
-        static::assertSelectorExists('tbody tr');
+        // the 'short' time format shows hours and minutes only (ICU may use a narrow no-break space before AM/PM)
+        $timeText = trim($crawler->filter($this->getIndexEntityRowSelector($entity->getId()).' td[data-column="timeField"]')->text());
+        static::assertMatchesRegularExpression('/^2:30\h?PM$/u', $timeText);
     }
 }

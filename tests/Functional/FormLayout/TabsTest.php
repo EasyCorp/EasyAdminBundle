@@ -6,6 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\FormLayoutTabsCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\FormTestEntity;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\FormTestEntityFactory;
 
 /**
  * Tests for form tab layout functionality.
@@ -135,11 +136,10 @@ class TabsTest extends AbstractCrudTestCase
 
     public function testDynamicBadgeReflectsEntityInEditForm(): void
     {
-        $entity = new FormTestEntity();
-        $entity->setName('Edit Test'); // 9 characters
-        $entity->setEmail('edit@test.com');
-        $this->entityManager->persist($entity);
-        $this->entityManager->flush();
+        $entity = FormTestEntityFactory::createOne([
+            'name' => 'Edit Test', // 9 characters
+            'email' => 'edit@test.com',
+        ]);
 
         $crawler = $this->client->request('GET', $this->generateEditFormUrl($entity->getId()));
 
@@ -150,11 +150,10 @@ class TabsTest extends AbstractCrudTestCase
 
     public function testTabsRenderBadgesInDetailPage(): void
     {
-        $entity = new FormTestEntity();
-        $entity->setName('Detail Test'); // 11 characters
-        $entity->setEmail('detail@test.com');
-        $this->entityManager->persist($entity);
-        $this->entityManager->flush();
+        $entity = FormTestEntityFactory::createOne([
+            'name' => 'Detail Test', // 11 characters
+            'email' => 'detail@test.com',
+        ]);
 
         $crawler = $this->client->request('GET', $this->generateDetailUrl($entity->getId()));
 
@@ -224,11 +223,10 @@ class TabsTest extends AbstractCrudTestCase
 
     public function testTabsAreRenderedInEditForm(): void
     {
-        $entity = new FormTestEntity();
-        $entity->setName('Edit Test');
-        $entity->setEmail('edit@test.com');
-        $this->entityManager->persist($entity);
-        $this->entityManager->flush();
+        $entity = FormTestEntityFactory::createOne([
+            'name' => 'Edit Test',
+            'email' => 'edit@test.com',
+        ]);
 
         $crawler = $this->client->request('GET', $this->generateEditFormUrl($entity->getId()));
 

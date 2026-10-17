@@ -3,21 +3,33 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Filters;
 
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\FilterTestEntityFactory;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-/**
- * Fixture data (arrayFilter field):
- * - ID 1: ['tag1', 'tag2']
- * - ID 2: ['tag2', 'tag3']
- * - ID 3: ['tag1']
- * - ID 4: ['tag3']
- * - ID 5: ['tag1', 'tag2', 'tag3']
- * - ID 6: []
- */
 class ArrayFilterTest extends FilterFunctionalTestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $tagSets = [
+            'tag1+tag2' => ['tag1', 'tag2'],
+            'tag2+tag3' => ['tag2', 'tag3'],
+            'tag1' => ['tag1'],
+            'tag3' => ['tag3'],
+            'tag1+tag2+tag3' => ['tag1', 'tag2', 'tag3'],
+            'no tags' => [],
+        ];
+        foreach ($tagSets as $key => $tags) {
+            $this->entities[$key] = FilterTestEntityFactory::createOne(['arrayFilter' => $tags]);
+        }
+    }
+
+    /**
+     * @param list<string> $expectedEntities
+     */
     #[DataProvider('containsSingleValueProvider')]
-    public function testFilterContainsSingleValue(string $tag, array $expectedIds): void
+    public function testFilterContainsSingleValue(string $tag, array $expectedEntities): void
     {
         $url = $this->generateFilteredIndexUrl([
             'arrayFilter' => [
@@ -28,21 +40,23 @@ class ArrayFilterTest extends FilterFunctionalTestCase
 
         $this->client->request('GET', $url);
 
-        $this->assertFilteredCount(\count($expectedIds));
-        $this->assertVisibleEntityIds($expectedIds);
+        $this->assertFilteredCount(\count($expectedEntities));
+        $this->assertVisibleEntities($expectedEntities);
     }
 
+    /**
+     * @return iterable<string, array{string, list<string>}>
+     */
     public static function containsSingleValueProvider(): iterable
     {
-        yield 'matches tag1' => ['tag1', [1, 3, 5]];
-        yield 'matches tag2' => ['tag2', [1, 2, 5]];
-        yield 'matches tag3' => ['tag3', [2, 4, 5]];
+        yield 'matches tag1' => ['tag1', ['tag1+tag2', 'tag1', 'tag1+tag2+tag3']];
+        yield 'matches tag2' => ['tag2', ['tag1+tag2', 'tag2+tag3', 'tag1+tag2+tag3']];
+        yield 'matches tag3' => ['tag3', ['tag2+tag3', 'tag3', 'tag1+tag2+tag3']];
     }
 
     public function testFilterNotContains(): void
     {
         // filter for arrayFilter NOT containing 'tag1'
-        // should match: ID 2, ID 4, ID 6
         $url = $this->generateFilteredIndexUrl([
             'arrayFilter' => [
                 'comparison' => ComparisonType::NOT_CONTAINS,
@@ -53,11 +67,15 @@ class ArrayFilterTest extends FilterFunctionalTestCase
         $this->client->request('GET', $url);
 
         $this->assertFilteredCount(3);
-        $this->assertVisibleEntityIds([2, 4, 6]);
+        $this->assertVisibleEntities(['tag2+tag3', 'tag3', 'no tags']);
     }
 
+    /**
+     * @param list<string> $tags
+     * @param list<string> $expectedEntities
+     */
     #[DataProvider('containsAllProvider')]
-    public function testFilterContainsAll(array $tags, array $expectedIds): void
+    public function testFilterContainsAll(array $tags, array $expectedEntities): void
     {
         $url = $this->generateFilteredIndexUrl([
             'arrayFilter' => [
@@ -68,13 +86,16 @@ class ArrayFilterTest extends FilterFunctionalTestCase
 
         $this->client->request('GET', $url);
 
-        $this->assertFilteredCount(\count($expectedIds));
-        $this->assertVisibleEntityIds($expectedIds);
+        $this->assertFilteredCount(\count($expectedEntities));
+        $this->assertVisibleEntities($expectedEntities);
     }
 
+    /**
+     * @return iterable<string, array{list<string>, list<string>}>
+     */
     public static function containsAllProvider(): iterable
     {
-        yield 'matches tag1 and tag2' => [['tag1', 'tag2'], [1, 5]];
-        yield 'matches all three tags' => [['tag1', 'tag2', 'tag3'], [5]];
+        yield 'matches tag1 and tag2' => [['tag1', 'tag2'], ['tag1+tag2', 'tag1+tag2+tag3']];
+        yield 'matches all three tags' => [['tag1', 'tag2', 'tag3'], ['tag1+tag2+tag3']];
     }
 }

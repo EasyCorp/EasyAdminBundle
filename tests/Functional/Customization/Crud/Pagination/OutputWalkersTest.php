@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Customization\Crud\Pa
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Controller\Crud\Pagination\OutputWalkersTestCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Factory\DemoEntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Kernel;
 
 /**
@@ -34,19 +35,18 @@ class OutputWalkersTest extends AbstractCrudTestCase
 
     public function testOutputWalkersConfiguration(): void
     {
+        // one row more than the default page size (20) to get a second page
+        DemoEntityFactory::createMany(21);
+
         $this->client->request('GET', $this->generateIndexUrl());
 
         static::assertResponseIsSuccessful();
 
         // config affects query performance, not visible output
-        // verify page loads correctly with data
         $this->assertIndexPageEntityCount(20);
+        static::assertIndexFullEntityCount(21);
 
-        // verify total count
-        static::assertIndexFullEntityCount(100);
-
-        // verify pagination still works
         static::assertSelectorExists('.list-pagination');
-        $this->assertIndexPagesCount(5);
+        $this->assertIndexPagesCount(2);
     }
 }

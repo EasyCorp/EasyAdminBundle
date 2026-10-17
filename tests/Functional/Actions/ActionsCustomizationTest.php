@@ -2,16 +2,13 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Actions;
 
-use Doctrine\ORM\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\ActionsCustomizationCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\ActionTestEntity;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\ActionTestEntityFactory;
 
 class ActionsCustomizationTest extends AbstractCrudTestCase
 {
-    protected EntityRepository $actionTestEntities;
-
     protected function getControllerFqcn(): string
     {
         return ActionsCustomizationCrudController::class;
@@ -26,12 +23,12 @@ class ActionsCustomizationTest extends AbstractCrudTestCase
     {
         parent::setUp();
         $this->client->followRedirects();
-
-        $this->actionTestEntities = $this->entityManager->getRepository(ActionTestEntity::class);
     }
 
     public function testCssClasses(): void
     {
+        ActionTestEntityFactory::createOne();
+
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
         static::assertSame('dropdown-item action-action1 dropdown-item-variant-default', $crawler->filter('a.dropdown-item:contains("Action1")')->attr('class'));
@@ -44,11 +41,10 @@ class ActionsCustomizationTest extends AbstractCrudTestCase
 
     public function testDynamicLabels(): void
     {
-        $crawler = $this->client->request('GET', $this->generateIndexUrl());
+        $entityName = 'Summer sale banner';
+        ActionTestEntityFactory::createOne(['name' => $entityName]);
 
-        // get the first entity's name from the fixture
-        $firstEntity = $this->actionTestEntities->findOneBy([]);
-        $entityName = $firstEntity->getName();
+        $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
         static::assertSame('Action 5: '.$entityName, $crawler->filter('a.dropdown-item[data-action-name="action5"]')->text());
         static::assertSame('Action 6: '.$entityName, $crawler->filter('a.dropdown-item[data-action-name="action6"]')->text());
@@ -67,6 +63,8 @@ class ActionsCustomizationTest extends AbstractCrudTestCase
 
     public function testConfirmationWithoutCustomMessage(): void
     {
+        ActionTestEntityFactory::createOne();
+
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
         $action = $crawler->filter('a.dropdown-item[data-action-name="action10"]');
 
@@ -78,6 +76,8 @@ class ActionsCustomizationTest extends AbstractCrudTestCase
 
     public function testCustomConfirmationMessageReplacesTitle(): void
     {
+        ActionTestEntityFactory::createOne();
+
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
         $action = $crawler->filter('a.dropdown-item[data-action-name="action11"]');
 
@@ -88,6 +88,8 @@ class ActionsCustomizationTest extends AbstractCrudTestCase
 
     public function testDefaultDeleteConfirmation(): void
     {
+        ActionTestEntityFactory::createOne();
+
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
         $action = $crawler->filter('[data-action-name="delete"]')->first();
 
@@ -98,7 +100,7 @@ class ActionsCustomizationTest extends AbstractCrudTestCase
 
     public function testCustomDeleteConfirmationMessageReplacesTitleAndDescription(): void
     {
-        $entity = $this->actionTestEntities->findOneBy([]);
+        $entity = ActionTestEntityFactory::createOne();
         $crawler = $this->client->request('GET', $this->generateDetailUrl($entity->getId()));
         $action = $crawler->filter('[data-action-name="delete"]')->first();
 

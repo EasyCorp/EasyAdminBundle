@@ -170,13 +170,12 @@ class CollectionFieldTest extends AbstractFieldFunctionalTestCase
 
         $form = $crawler->filter('form[name="FieldTestEntity"]')->form();
 
-        // set a unique identifier so we can find this entity later
-        $form['FieldTestEntity[slugField]'] = 'collection-test-'.uniqid();
+        $form['FieldTestEntity[slugField]'] = 'collection-test';
 
         $this->client->submit($form);
 
         // verify the entity was created (collection may be empty by default)
-        $entity = $this->fieldTestEntities->findOneBy([], ['id' => 'DESC']);
+        $entity = $this->fieldTestEntities->findOneBy(['slugField' => 'collection-test']);
         static::assertNotNull($entity, 'Entity should be created');
         static::assertIsArray($entity->getCollectionField(), 'Collection field should return an array');
     }

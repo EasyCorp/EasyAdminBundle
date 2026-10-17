@@ -68,7 +68,7 @@ class TextareaFieldTest extends AbstractFieldFunctionalTestCase
 
         $this->client->submit($form);
 
-        $entity = $this->fieldTestEntities->findOneBy([], ['id' => 'DESC']);
+        $entity = $this->fieldTestEntities->findOneBy(['slugField' => 'textarea-test']);
         static::assertNotNull($entity, 'Entity should be created');
         static::assertStringContainsString('Submitted multi-line', $entity->getTextareaField());
     }

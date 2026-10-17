@@ -2,16 +2,13 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Default;
 
-use Doctrine\ORM\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\BlogPostCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\BlogPost;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\BlogPostFactory;
 
 class DefaultActionOrderTest extends AbstractCrudTestCase
 {
-    protected EntityRepository $blogPosts;
-
     protected function getControllerFqcn(): string
     {
         return BlogPostCrudController::class;
@@ -26,8 +23,6 @@ class DefaultActionOrderTest extends AbstractCrudTestCase
     {
         parent::setUp();
         $this->client->followRedirects();
-
-        $this->blogPosts = $this->entityManager->getRepository(BlogPost::class);
     }
 
     public function testIndexPageGlobalActionsOrder(): void
@@ -45,11 +40,15 @@ class DefaultActionOrderTest extends AbstractCrudTestCase
 
     public function testIndexPageEntityActionsOrder(): void
     {
+        $blogPost = BlogPostFactory::createOne();
+
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
-        // get entity actions for the first row
+        $row = $crawler->filter(sprintf('.datagrid tbody tr[data-id="%d"]', $blogPost->getId()));
+        static::assertCount(1, $row);
+
         $entityActionNames = [];
-        $crawler->filter('.datagrid tbody tr')->first()->filter('[data-action-name]')->each(static function ($node) use (&$entityActionNames) {
+        $row->filter('[data-action-name]')->each(static function ($node) use (&$entityActionNames) {
             $actionName = $node->attr('data-action-name');
             if (!\in_array($actionName, $entityActionNames, true)) {
                 $entityActionNames[] = $actionName;
@@ -66,15 +65,9 @@ class DefaultActionOrderTest extends AbstractCrudTestCase
 
     public function testDetailPageActionsOrder(): void
     {
-        $entities = $this->blogPosts->findAll();
+        $blogPost = BlogPostFactory::createOne();
 
-        if (empty($entities)) {
-            $this->markTestSkipped('No blog posts found in the database');
-        }
-
-        $entity = $entities[0];
-
-        $crawler = $this->client->request('GET', $this->generateDetailUrl($entity->getId()));
+        $crawler = $this->client->request('GET', $this->generateDetailUrl($blogPost->getId()));
         $actionNames = $crawler->filter('.page-actions [data-action-name]')->each(static function ($node) {
             return $node->attr('data-action-name');
         });
@@ -92,7 +85,9 @@ class DefaultActionOrderTest extends AbstractCrudTestCase
 
     public function testEditPageActionsOrder(): void
     {
-        $crawler = $this->client->request('GET', $this->generateEditFormUrl($this->blogPosts->findOneBy([])->getId()));
+        $blogPost = BlogPostFactory::createOne();
+
+        $crawler = $this->client->request('GET', $this->generateEditFormUrl($blogPost->getId()));
 
         // get form actions
         $actionNames = $crawler->filter('.page-actions [data-action-name]')->each(static function ($node) {

@@ -2,11 +2,11 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Default\Sort;
 
-use Doctrine\ORM\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\SortTestEntityCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\SortTestEntity;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\SortTestEntityFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\SortTestRelatedEntityFactory;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
@@ -14,7 +14,17 @@ use PHPUnit\Framework\Attributes\DataProvider;
  */
 class SortByOneToManyCountTest extends AbstractCrudTestCase
 {
-    private EntityRepository $repository;
+    /**
+     * @var array<string, int>
+     */
+    private const RELATION_COUNT_BY_TEXT_FIELD = [
+        'Zebra Entity' => 2,
+        'Apple Entity' => 0,
+        'Mango Entity' => 3,
+        'Banana Entity' => 1,
+        // same count as 'Zebra Entity' to check that ties are sorted by id in the same direction
+        'Cherry Entity' => 2,
+    ];
 
     protected function getControllerFqcn(): string
     {
@@ -30,46 +40,38 @@ class SortByOneToManyCountTest extends AbstractCrudTestCase
     {
         parent::setUp();
         $this->client->followRedirects();
-        $this->repository = $this->entityManager->getRepository(SortTestEntity::class);
+
+        foreach (self::RELATION_COUNT_BY_TEXT_FIELD as $textField => $relationCount) {
+            SortTestEntityFactory::createOne([
+                'textField' => $textField,
+                'oneToManyRelations' => SortTestRelatedEntityFactory::new()->many($relationCount),
+            ]);
+        }
     }
 
+    /**
+     * @param array<string, mixed> $query
+     * @param list<string>         $expectedTextFields
+     */
     #[DataProvider('sorting')]
-    public function testSorting(array $query, ?\Closure $sortFunction, string $expectedSortIcon): void
+    public function testSorting(array $query, array $expectedTextFields): void
     {
-        // arrange
-        $expectedAmountMapping = [];
-        $entities = $this->repository->findAll();
-
-        if (null !== $sortFunction) {
-            $sortFunction($entities);
-        }
-
-        /**
-         * @var SortTestEntity $entity
-         */
-        foreach ($entities as $entity) {
-            $expectedAmountMapping[$entity->getTextField()] = $entity->getOneToManyRelations()->count();
-        }
-
-        // act
         $url = $this->generateIndexUrl();
-        if (!empty($query)) {
+        if ([] !== $query) {
             $url .= '?'.http_build_query($query);
         }
-        $crawler = $this->client->request('GET', $url);
+        $this->client->request('GET', $url);
 
-        // assert
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextSame('th.header-for-field-association[data-column="oneToManyRelations"] > a', 'One To Many Relations');
         $this->assertSelectorExists('th.header-for-field-association[data-column="oneToManyRelations"] span.icon svg');
+        $this->assertSelectorCount(\count(self::RELATION_COUNT_BY_TEXT_FIELD), 'tbody tr');
 
-        $index = 1;
-
-        foreach ($expectedAmountMapping as $expectedName => $expectedValue) {
-            $expectedRow = $index++;
-
-            $this->assertSelectorTextSame('tbody tr:nth-child('.$expectedRow.') td[data-column="textField"]', $expectedName, sprintf('Expected "%s" in row %d', $expectedName, $expectedRow));
-            $this->assertSelectorTextSame('tbody tr:nth-child('.$expectedRow.') td[data-column="oneToManyRelations"]', $expectedValue, sprintf('Expected "%s" in row %d', $expectedValue, $expectedRow));
+        foreach ($expectedTextFields as $index => $textField) {
+            $row = $index + 1;
+            $relationCount = (string) self::RELATION_COUNT_BY_TEXT_FIELD[$textField];
+            $this->assertSelectorTextSame('tbody tr:nth-child('.$row.') td[data-column="textField"]', $textField, sprintf('Expected "%s" in row %d', $textField, $row));
+            $this->assertSelectorTextSame('tbody tr:nth-child('.$row.') td[data-column="oneToManyRelations"]', $relationCount, sprintf('Expected "%s" in row %d', $relationCount, $row));
         }
     }
 
@@ -77,48 +79,17 @@ class SortByOneToManyCountTest extends AbstractCrudTestCase
     {
         yield 'default sorting (no sort applied)' => [
             [],
-            null,
-            'internal:sort-arrows',
+            ['Zebra Entity', 'Apple Entity', 'Mango Entity', 'Banana Entity', 'Cherry Entity'],
         ];
 
         yield 'ascending by oneToManyRelations count' => [
             ['sort' => ['oneToManyRelations' => 'ASC']],
-            /**
-             * @param list<SortTestEntity> $array
-             */
-            static function (array &$array) {
-                usort($array, static function (SortTestEntity $a, SortTestEntity $b) {
-                    $aCount = $a->getOneToManyRelations()->count();
-                    $bCount = $b->getOneToManyRelations()->count();
-
-                    if ($aCount === $bCount) {
-                        return $a->getId() <=> $b->getId();
-                    }
-
-                    return $aCount <=> $bCount;
-                });
-            },
-            'internal:sort-arrow-up',
+            ['Apple Entity', 'Banana Entity', 'Zebra Entity', 'Cherry Entity', 'Mango Entity'],
         ];
 
         yield 'descending by oneToManyRelations count' => [
             ['sort' => ['oneToManyRelations' => 'DESC']],
-            /**
-             * @param list<SortTestEntity> $array
-             */
-            static function (array &$array) {
-                usort($array, static function (SortTestEntity $a, SortTestEntity $b) {
-                    $aCount = $a->getOneToManyRelations()->count();
-                    $bCount = $b->getOneToManyRelations()->count();
-
-                    if ($aCount === $bCount) {
-                        return $b->getId() <=> $a->getId();
-                    }
-
-                    return $bCount <=> $aCount;
-                });
-            },
-            'internal:sort-arrow-down',
+            ['Mango Entity', 'Cherry Entity', 'Zebra Entity', 'Banana Entity', 'Apple Entity'],
         ];
     }
 }

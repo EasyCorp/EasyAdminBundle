@@ -8,9 +8,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\ProjectDomain\ProjectCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\ProjectDomain\ProjectIssueWithAutocompleteCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\ProjectDomain\ProjectIssueWithGroupByCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\ProjectDomain\Developer;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\ProjectDomain\Project;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\ProjectDomain\ProjectIssue;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\DeveloperFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\ProjectFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\ProjectIssueFactory;
 
 class AutocompleteGroupByTest extends AbstractCrudTestCase
 {
@@ -30,29 +30,9 @@ class AutocompleteGroupByTest extends AbstractCrudTestCase
         $this->client->followRedirects();
     }
 
-    private function createProject(string $name, bool $internal): Project
-    {
-        $project = new Project();
-        $project->setName($name);
-        $project->setDescription('Test Description');
-        $project->setInternal($internal);
-        $project->setStatesSimpleArray(['active']);
-        $project->setStartDateMutable(new \DateTime());
-        $project->setStartDateImmutable(new \DateTimeImmutable());
-        $project->setStartDateTimeMutable(new \DateTime());
-        $project->setStartDateTimeImmutable(new \DateTimeImmutable());
-        $project->setStartDateTimeTzMutable(new \DateTime());
-        $project->setStartDateTimeTzImmutable(new \DateTimeImmutable());
-        $project->setCountInteger(0);
-        $project->setCountSmallint(0);
-        $project->setPriceDecimal('0.00');
-        $project->setPriceFloat(0.0);
-        $project->setStartTimeMutable(new \DateTime());
-        $project->setStartTimeImmutable(new \DateTimeImmutable());
-
-        return $project;
-    }
-
+    /**
+     * @return list<array<string, mixed>>
+     */
     private function requestAutocompleteResults(string $targetControllerFqcn, string $originatingControllerFqcn, string $propertyName, string $query): array
     {
         $autocompleteUrl = $this->adminUrlGenerator
@@ -79,12 +59,8 @@ class AutocompleteGroupByTest extends AbstractCrudTestCase
 
     public function testGroupByCallableAddsTheGroupToEachResult(): void
     {
-        $internalProject = $this->createProject('Groupby Internal Tooling', true);
-        $publicProject = $this->createProject('Groupby Public Website', false);
-
-        $this->entityManager->persist($internalProject);
-        $this->entityManager->persist($publicProject);
-        $this->entityManager->flush();
+        ProjectFactory::createOne(['name' => 'Groupby Internal Tooling', 'internal' => true]);
+        ProjectFactory::createOne(['name' => 'Groupby Public Website', 'internal' => false]);
 
         $results = $this->requestAutocompleteResults(
             ProjectCrudController::class,
@@ -103,11 +79,7 @@ class AutocompleteGroupByTest extends AbstractCrudTestCase
 
     public function testGroupByPropertyPathAddsTheGroupToEachResult(): void
     {
-        $developer = new Developer();
-        $developer->setName('Groupby Grace Hopper');
-
-        $this->entityManager->persist($developer);
-        $this->entityManager->flush();
+        DeveloperFactory::createOne(['name' => 'Groupby Grace Hopper']);
 
         $results = $this->requestAutocompleteResults(
             DeveloperCrudController::class,
@@ -122,10 +94,7 @@ class AutocompleteGroupByTest extends AbstractCrudTestCase
 
     public function testResultsHaveNoGroupWhenGroupByIsNotDefined(): void
     {
-        $project = $this->createProject('Groupby Control Project', false);
-
-        $this->entityManager->persist($project);
-        $this->entityManager->flush();
+        ProjectFactory::createOne(['name' => 'Groupby Control Project', 'internal' => true]);
 
         $results = $this->requestAutocompleteResults(
             ProjectCrudController::class,
@@ -134,23 +103,14 @@ class AutocompleteGroupByTest extends AbstractCrudTestCase
             'Groupby Control'
         );
 
-        $this->assertNotEmpty($results);
-        foreach ($results as $result) {
-            $this->assertArrayNotHasKey('entityGroup', $result);
-        }
+        $this->assertCount(1, $results);
+        $this->assertArrayNotHasKey('entityGroup', $results[0]);
     }
 
     public function testSelectedChoicesAreRenderedInsideOptgroupsInTheForm(): void
     {
-        $internalProject = $this->createProject('Groupby Form Project', true);
-
-        $issue = new ProjectIssue();
-        $issue->setName('Groupby Form Issue');
-        $issue->setProject($internalProject);
-
-        $this->entityManager->persist($internalProject);
-        $this->entityManager->persist($issue);
-        $this->entityManager->flush();
+        $internalProject = ProjectFactory::createOne(['name' => 'Groupby Form Project', 'internal' => true]);
+        $issue = ProjectIssueFactory::createOne(['name' => 'Groupby Form Issue', 'project' => $internalProject]);
 
         $editUrl = $this->adminUrlGenerator
             ->setDashboard(DashboardController::class)

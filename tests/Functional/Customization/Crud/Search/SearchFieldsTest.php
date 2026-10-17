@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Customization\Crud\Se
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Controller\Crud\Search\SearchFieldsTestCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Factory\DemoEntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Kernel;
 
 /**
@@ -34,25 +35,33 @@ class SearchFieldsTest extends AbstractCrudTestCase
 
     public function testSearchFieldsConfiguration(): void
     {
+        $alpha = DemoEntityFactory::createOne(['name' => 'Alpha item']);
+        $beta = DemoEntityFactory::createOne(['name' => 'Beta item']);
+
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
         static::assertResponseIsSuccessful();
 
         // verify data is displayed before search
-        $this->assertIndexPageEntityCount(20);
-        static::assertIndexFullEntityCount(100);
+        $this->assertIndexPageEntityCount(2);
+        static::assertIndexFullEntityCount(2);
 
         // verify search input is present
         $searchInput = $crawler->filter('input[type="search"], input.search, [data-ea-search-input]');
         static::assertGreaterThan(0, $searchInput->count(), 'Search input should be present');
 
-        // perform a search
-        $this->client->request('GET', $this->generateIndexUrl('Demo Item 001'));
+        // search by the 'name' field
+        $this->client->request('GET', $this->generateIndexUrl('Alpha'));
 
         static::assertResponseIsSuccessful();
+        $this->assertIndexPageEntityCount(1);
+        static::assertSelectorExists($this->getIndexEntityRowSelector($alpha->getId()));
 
-        // search should filter results
-        $rowCount = $this->client->getCrawler()->filter('tbody tr')->count();
-        static::assertLessThan(100, $rowCount, 'Search should filter results');
+        // search by the 'id' field (entity names contain no digits, so only the id can match)
+        $this->client->request('GET', $this->generateIndexUrl((string) $beta->getId()));
+
+        static::assertResponseIsSuccessful();
+        $this->assertIndexPageEntityCount(1);
+        static::assertSelectorExists($this->getIndexEntityRowSelector($beta->getId()));
     }
 }

@@ -8,6 +8,8 @@ help: ## Show help
 tests: ## Run tests (optional ARGS, e.g. make tests ARGS="tests/Unit/Field/" or ARGS="--filter=testFoo")
 	rm -rf $(shell php -r "echo sys_get_temp_dir();")/com.github.easycorp.easyadmin/tests/var/test/cache/*
 	php vendor/bin/phpunit $(ARGS)
+tests-parallel: ## Run tests in parallel processes (optional ARGS, e.g. make tests-parallel ARGS="--processes=4")
+	php vendor/bin/paratest $(ARGS)
 tests-coverage: ## Generate test coverage
 	rm -rf $(shell php -r "echo sys_get_temp_dir();")/com.github.easycorp.easyadmin/tests/var/test/cache/*
 	XDEBUG_MODE=coverage php vendor/bin/phpunit --coverage-html $(shell php -r "echo sys_get_temp_dir();")/com.github.easycorp.easyadmin/tests/var/test/coverage/

@@ -4,7 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Customization\Crud\Te
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Controller\Crud\Templates\OverrideDetailPartialsTestCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Entity\DemoEntity;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Factory\DemoEntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Kernel;
 
 /**
@@ -31,7 +31,7 @@ class OverrideDetailPartialsTest extends AbstractCrudTestCase
 
     public function testDetailPartialOverriddenViaOverrideTemplate(): void
     {
-        $entity = $this->entityManager->getRepository(DemoEntity::class)->findOneBy([]);
+        $entity = DemoEntityFactory::createOne(['name' => 'Detail page entity']);
 
         $crawler = $this->client->request('GET', $this->generateDetailUrl($entity->getId()));
 
@@ -43,12 +43,12 @@ class OverrideDetailPartialsTest extends AbstractCrudTestCase
 
         // the entity contents are still rendered inside the custom template
         $fieldValues = $crawler->filter('.custom-field-group .field-value')->each(static fn ($node) => trim($node->text()));
-        static::assertContains($entity->getName(), $fieldValues);
+        static::assertContains('Detail page entity', $fieldValues);
     }
 
     public function testDetailPartialOverriddenViaBundleTemplatesDir(): void
     {
-        $entity = $this->entityManager->getRepository(DemoEntity::class)->findOneBy([]);
+        $entity = DemoEntityFactory::createOne();
 
         $this->client->request('GET', $this->generateDetailUrl($entity->getId()));
 

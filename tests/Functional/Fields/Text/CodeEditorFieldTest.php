@@ -80,7 +80,7 @@ class CodeEditorFieldTest extends AbstractFieldFunctionalTestCase
 
         $this->client->submit($form);
 
-        $entity = $this->fieldTestEntities->findOneBy([], ['id' => 'DESC']);
+        $entity = $this->fieldTestEntities->findOneBy(['slugField' => 'code-test']);
         static::assertNotNull($entity, 'Entity should be created');
         static::assertSame($code, $entity->getCodeEditorField());
     }

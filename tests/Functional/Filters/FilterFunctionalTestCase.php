@@ -5,6 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\FilterTestEntityCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\FilterTestEntity;
 
 /**
  * Base class for filter functional tests.
@@ -13,6 +14,13 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\
  */
 abstract class FilterFunctionalTestCase extends AbstractCrudTestCase
 {
+    /**
+     * The entities created by each test, indexed by a key that describes their filtered value.
+     *
+     * @var array<int|string, FilterTestEntity>
+     */
+    protected array $entities = [];
+
     protected function getControllerFqcn(): string
     {
         return FilterTestEntityCrudController::class;
@@ -27,11 +35,6 @@ abstract class FilterFunctionalTestCase extends AbstractCrudTestCase
     {
         parent::setUp();
         $this->client->followRedirects();
-    }
-
-    protected function tearDown(): void
-    {
-        parent::tearDown();
     }
 
     /**
@@ -98,5 +101,15 @@ abstract class FilterFunctionalTestCase extends AbstractCrudTestCase
                 implode(', ', $actualIds)
             )
         );
+    }
+
+    /**
+     * Assert that only the entities stored with the given keys in $this->entities are visible.
+     *
+     * @param list<int|string> $keys
+     */
+    protected function assertVisibleEntities(array $keys): void
+    {
+        $this->assertVisibleEntityIds(array_map(fn (int|string $key): int => $this->entities[$key]->getId(), $keys));
     }
 }

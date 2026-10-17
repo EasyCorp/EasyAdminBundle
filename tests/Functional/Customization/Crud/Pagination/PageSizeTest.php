@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Customization\Crud\Pa
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Controller\Crud\Pagination\PageSizeTestCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Factory\DemoEntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Kernel;
 
 /**
@@ -34,20 +35,17 @@ class PageSizeTest extends AbstractCrudTestCase
 
     public function testPageSizeConfiguration(): void
     {
+        // one row more than the configured page size (50) to get a second page
+        DemoEntityFactory::createMany(51);
+
         $this->client->request('GET', $this->generateIndexUrl());
 
         static::assertResponseIsSuccessful();
 
-        // with pageSize=50 and 100 entities, first page should show 50 items
         $this->assertIndexPageEntityCount(50);
-
-        // total count should show 100
-        static::assertIndexFullEntityCount(100);
-
-        // with 100 items and pageSize=50, we should have 2 pages
+        static::assertIndexFullEntityCount(51);
         $this->assertIndexPagesCount(2);
 
-        // page 1 should be active
         static::assertSelectorTextSame('.page-item.active .page-link', '1');
     }
 }

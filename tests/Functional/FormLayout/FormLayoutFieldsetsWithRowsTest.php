@@ -6,6 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\FormLayoutFieldsetsWithRowsCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\FormTestEntity;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\FormTestEntityFactory;
 
 /**
  * Tests for fieldsets with row breaks inside.
@@ -141,13 +142,12 @@ class FormLayoutFieldsetsWithRowsTest extends AbstractCrudTestCase
 
     public function testEditFormPreservesFieldsetsAndRows(): void
     {
-        $entity = new FormTestEntity();
-        $entity->setName('Edit Fieldsets Rows');
-        $entity->setEmail('edit@fieldsetsrows.com');
-        $entity->setStreet('222 Edit Row Ln');
-        $entity->setPriority(6);
-        $this->entityManager->persist($entity);
-        $this->entityManager->flush();
+        $entity = FormTestEntityFactory::createOne([
+            'name' => 'Edit Fieldsets Rows',
+            'email' => 'edit@fieldsetsrows.com',
+            'street' => '222 Edit Row Ln',
+            'priority' => 6,
+        ]);
 
         $crawler = $this->client->request('GET', $this->generateEditFormUrl($entity->getId()));
 

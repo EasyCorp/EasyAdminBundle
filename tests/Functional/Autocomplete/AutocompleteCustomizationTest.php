@@ -3,20 +3,16 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Autocomplete;
 
 use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
-use Doctrine\ORM\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\ProjectDomain\ProjectCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\ProjectDomain\ProjectIssueWithAutocompleteCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\ProjectDomain\ProjectIssueWithRenderAsHtmlCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\ProjectDomain\Project;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\ProjectDomain\ProjectIssue;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\ProjectFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\ProjectIssueFactory;
 
 class AutocompleteCustomizationTest extends AbstractCrudTestCase
 {
-    protected EntityRepository $projects;
-    protected EntityRepository $projectIssues;
-
     protected function getControllerFqcn(): string
     {
         return ProjectIssueWithAutocompleteCrudController::class;
@@ -31,43 +27,13 @@ class AutocompleteCustomizationTest extends AbstractCrudTestCase
     {
         parent::setUp();
         $this->client->followRedirects();
-
-        $this->projects = $this->entityManager->getRepository(Project::class);
-        $this->projectIssues = $this->entityManager->getRepository(ProjectIssue::class);
-    }
-
-    private function createProject(string $name): Project
-    {
-        $project = new Project();
-        $project->setName($name);
-        $project->setDescription('Test Description');
-        $project->setInternal(false);
-        $project->setStatesSimpleArray(['active']);
-        $project->setStartDateMutable(new \DateTime());
-        $project->setStartDateImmutable(new \DateTimeImmutable());
-        $project->setStartDateTimeMutable(new \DateTime());
-        $project->setStartDateTimeImmutable(new \DateTimeImmutable());
-        $project->setStartDateTimeTzMutable(new \DateTime());
-        $project->setStartDateTimeTzImmutable(new \DateTimeImmutable());
-        $project->setCountInteger(0);
-        $project->setCountSmallint(0);
-        $project->setPriceDecimal('0.00');
-        $project->setPriceFloat(0.0);
-        $project->setStartTimeMutable(new \DateTime());
-        $project->setStartTimeImmutable(new \DateTimeImmutable());
-
-        return $project;
     }
 
     public function testAutocompleteWithFieldLevelCallback(): void
     {
-        // Create a test project
-        $project = $this->createProject('Unicorn Sparkle');
+        $project = ProjectFactory::createOne(['name' => 'Unicorn Sparkle']);
+        ProjectFactory::createOne(['name' => 'Rainbow Dash']);
 
-        $this->entityManager->persist($project);
-        $this->entityManager->flush();
-
-        // Build autocomplete URL for the project field
         $autocompleteUrl = $this->adminUrlGenerator
             ->setDashboard(DashboardController::class)
             ->setController(ProjectCrudController::class)
@@ -81,7 +47,6 @@ class AutocompleteCustomizationTest extends AbstractCrudTestCase
             ])
             ->generateUrl();
 
-        // Make request to autocomplete endpoint
         $this->client->request('GET', $autocompleteUrl);
         $this->assertResponseIsSuccessful();
 
@@ -89,30 +54,16 @@ class AutocompleteCustomizationTest extends AbstractCrudTestCase
         $data = json_decode($response->getContent(), true);
 
         $this->assertArrayHasKey('results', $data);
-        $this->assertNotEmpty($data['results']);
-
-        // The field-level callback should format as "Project: {name} (ID: {id})"
-        $firstResult = $data['results'][0]['entityAsString'];
-        $this->assertStringContainsString('Project:', $firstResult);
-        $this->assertStringContainsString('Unicorn Sparkle', $firstResult);
-        $this->assertStringContainsString('(ID:', $firstResult);
+        $this->assertCount(1, $data['results']);
+        $this->assertSame(sprintf('Project: Unicorn Sparkle (ID: %d)', $project->getId()), $data['results'][0]['entityAsString']);
     }
 
     public function testAutocompleteWithCrudLevelCallback(): void
     {
-        // Create a test project issue
-        $project = $this->createProject('Parent Project');
+        $issue = ProjectIssueFactory::createOne(['name' => 'Bug #1']);
 
-        $issue = new ProjectIssue();
-        $issue->setName('Bug #1');
-        $issue->setProject($project);
-
-        $this->entityManager->persist($project);
-        $this->entityManager->persist($issue);
-        $this->entityManager->flush();
-
-        // Build autocomplete URL (simulating autocomplete for a different field without field-level config)
-        // This would use the CRUD-level callback defined in configureCrud()
+        // the 'name' field has no field-level autocomplete callback, so the
+        // CRUD-level callback defined in configureCrud() is used
         $autocompleteUrl = $this->adminUrlGenerator
             ->setDashboard(DashboardController::class)
             ->setController(ProjectIssueWithAutocompleteCrudController::class)
@@ -126,28 +77,17 @@ class AutocompleteCustomizationTest extends AbstractCrudTestCase
             ->generateUrl();
 
         $this->client->request('GET', $autocompleteUrl);
+        $this->assertResponseIsSuccessful();
 
-        // Note: This might fail if the field doesn't support autocomplete
-        // This test demonstrates the CRUD-level callback concept
-        if ($this->client->getResponse()->isSuccessful()) {
-            $response = $this->client->getResponse();
-            $data = json_decode($response->getContent(), true);
+        $data = json_decode($this->client->getResponse()->getContent(), true);
 
-            if (isset($data['results']) && !empty($data['results'])) {
-                $firstResult = $data['results'][0]['entityAsString'];
-                // The CRUD-level callback should format as "[{id}] {entity}"
-                $this->assertMatchesRegularExpression('/\[\d+\]/', $firstResult);
-            }
-        }
+        $this->assertCount(1, $data['results']);
+        $this->assertSame(sprintf('[%d] Bug #1', $issue->getId()), $data['results'][0]['entityAsString']);
     }
 
     public function testAutocompleteEscapesHtmlByDefault(): void
     {
-        // Create a project with HTML in the name (XSS test)
-        $project = $this->createProject('<script>alert("XSS")</script>Malicious Project');
-
-        $this->entityManager->persist($project);
-        $this->entityManager->flush();
+        ProjectFactory::createOne(['name' => '<script>alert("XSS")</script>Malicious Project']);
 
         $autocompleteUrl = $this->adminUrlGenerator
             ->setDashboard(DashboardController::class)
@@ -168,9 +108,9 @@ class AutocompleteCustomizationTest extends AbstractCrudTestCase
         $response = $this->client->getResponse();
         $data = json_decode($response->getContent(), true);
 
+        $this->assertCount(1, $data['results']);
         $firstResult = $data['results'][0]['entityAsString'];
 
-        // HTML should be escaped
         $this->assertStringContainsString('&lt;script&gt;', $firstResult);
         $this->assertStringNotContainsString('<script>', $firstResult);
     }
@@ -181,10 +121,7 @@ class AutocompleteCustomizationTest extends AbstractCrudTestCase
             $this->markTestSkipped('Doctrine DBAL 3.x+ is required.');
         }
 
-        $project = $this->createProject('JSON Test Project');
-
-        $this->entityManager->persist($project);
-        $this->entityManager->flush();
+        $project = ProjectFactory::createOne(['name' => 'JSON Test Project']);
 
         $autocompleteUrl = $this->adminUrlGenerator
             ->setDashboard(DashboardController::class)
@@ -207,22 +144,15 @@ class AutocompleteCustomizationTest extends AbstractCrudTestCase
         $data = json_decode($response->getContent(), true);
 
         $this->assertArrayHasKey('results', $data);
-        $this->assertIsArray($data['results']);
-
-        if (!empty($data['results'])) {
-            $firstResult = $data['results'][0];
-            $this->assertArrayHasKey('entityId', $firstResult);
-            $this->assertArrayHasKey('entityAsString', $firstResult);
-        }
+        $this->assertArrayHasKey('next_page', $data);
+        $this->assertCount(1, $data['results']);
+        $this->assertSame((string) $project->getId(), $data['results'][0]['entityId']);
+        $this->assertArrayHasKey('entityAsString', $data['results'][0]);
     }
 
     public function testAutocompleteWithCallbackAndRenderAsHtml(): void
     {
-        // create a project with HTML-safe content
-        $project = $this->createProject('Important Project');
-
-        $this->entityManager->persist($project);
-        $this->entityManager->flush();
+        ProjectFactory::createOne(['name' => 'Important Project']);
 
         // build autocomplete URL using the controller with renderAsHtml: true
         $autocompleteUrl = $this->adminUrlGenerator
@@ -245,7 +175,7 @@ class AutocompleteCustomizationTest extends AbstractCrudTestCase
         $data = json_decode($response->getContent(), true);
 
         $this->assertArrayHasKey('results', $data);
-        $this->assertNotEmpty($data['results']);
+        $this->assertCount(1, $data['results']);
 
         $firstResult = $data['results'][0]['entityAsString'];
 
@@ -258,16 +188,8 @@ class AutocompleteCustomizationTest extends AbstractCrudTestCase
 
     public function testSelectedItemRenderedSameAsDropdownEntries(): void
     {
-        // create a project and an issue with that project pre-selected
-        $project = $this->createProject('Selected Project');
-
-        $issue = new ProjectIssue();
-        $issue->setName('Test Issue');
-        $issue->setProject($project);
-
-        $this->entityManager->persist($project);
-        $this->entityManager->persist($issue);
-        $this->entityManager->flush();
+        $project = ProjectFactory::createOne(['name' => 'Selected Project']);
+        $issue = ProjectIssueFactory::createOne(['name' => 'Test Issue', 'project' => $project]);
 
         // open the edit form for the issue
         $editUrl = $this->adminUrlGenerator
@@ -288,16 +210,8 @@ class AutocompleteCustomizationTest extends AbstractCrudTestCase
 
     public function testSelectedItemRenderedWithHtmlCallback(): void
     {
-        // create a project and an issue with that project pre-selected
-        $project = $this->createProject('HTML Project');
-
-        $issue = new ProjectIssue();
-        $issue->setName('HTML Test Issue');
-        $issue->setProject($project);
-
-        $this->entityManager->persist($project);
-        $this->entityManager->persist($issue);
-        $this->entityManager->flush();
+        $project = ProjectFactory::createOne(['name' => 'HTML Project']);
+        $issue = ProjectIssueFactory::createOne(['name' => 'HTML Test Issue', 'project' => $project]);
 
         // open the edit form using the controller with renderAsHtml: true
         $editUrl = $this->adminUrlGenerator
@@ -318,8 +232,7 @@ class AutocompleteCustomizationTest extends AbstractCrudTestCase
         $this->assertCount(1, $selectedOption);
         $optionText = $selectedOption->text();
 
-        // the option text should contain the project name and ID
         $this->assertStringContainsString('HTML Project', $optionText);
-        $this->assertStringContainsString('(ID:', $optionText);
+        $this->assertStringContainsString(sprintf('(ID: %d)', $project->getId()), $optionText);
     }
 }

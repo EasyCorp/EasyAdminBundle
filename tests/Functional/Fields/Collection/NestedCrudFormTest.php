@@ -2,7 +2,6 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Fields\Collection;
 
-use Doctrine\ORM\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\NestedCrudForm\ProjectIssueNestedCrudController;
@@ -10,6 +9,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\NestedCrudForm\ProjectWithNullCreateEntityIssuesCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\ProjectDomain\Project;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\ProjectDomain\ProjectIssue;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\ProjectFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\ProjectIssueFactory;
 use Symfony\Component\HttpKernel\Kernel;
 
 /**
@@ -18,9 +19,6 @@ use Symfony\Component\HttpKernel\Kernel;
  */
 class NestedCrudFormTest extends AbstractCrudTestCase
 {
-    /** @var EntityRepository<Project> */
-    private EntityRepository $projectRepository;
-
     protected function setUp(): void
     {
         // useEntryCrudForm() requires the 'prototype_options' option, added in Symfony 6.1
@@ -30,13 +28,6 @@ class NestedCrudFormTest extends AbstractCrudTestCase
 
         parent::setUp();
         $this->client->followRedirects();
-        $this->projectRepository = $this->entityManager->getRepository(Project::class);
-    }
-
-    protected function tearDown(): void
-    {
-        unset($this->projectRepository);
-        parent::tearDown();
     }
 
     protected function getControllerFqcn(): string
@@ -202,41 +193,13 @@ class NestedCrudFormTest extends AbstractCrudTestCase
         }
     }
 
-    /**
-     * Creates a Project with ProjectIssue entities for testing.
-     */
     private function createProjectWithIssues(): Project
     {
-        $project = new Project();
-        $project->setName('Test Project');
-        $project->setDescription('Test project for nested CRUD form testing');
-        $project->setInternal(false);
-        $project->setCountInteger(1);
-        $project->setCountSmallint(1);
-        $project->setPriceDecimal('100');
-        $project->setPriceFloat(100.0);
-        $project->setStartDateMutable(new \DateTime());
-        $project->setStartDateImmutable(new \DateTimeImmutable());
-        $project->setStartDateTimeMutable(new \DateTime());
-        $project->setStartDateTimeImmutable(new \DateTimeImmutable());
-        $project->setStartDateTimeTzMutable(new \DateTime());
-        $project->setStartDateTimeTzImmutable(new \DateTimeImmutable());
-        $project->setStartTimeMutable(new \DateTime());
-        $project->setStartTimeImmutable(new \DateTimeImmutable());
-        $project->setStatesSimpleArray(['active']);
-        $project->setRolesJson(['ROLE_USER']);
-
-        $issue1 = new ProjectIssue();
-        $issue1->setName('Test Issue 1');
-        $project->addProjectIssue($issue1);
-
-        $issue2 = new ProjectIssue();
-        $issue2->setName('Test Issue 2');
-        $project->addProjectIssue($issue2);
-
-        $this->entityManager->persist($project);
-        $this->entityManager->flush();
-
-        return $project;
+        return ProjectFactory::createOne([
+            'projectIssues' => [
+                ProjectIssueFactory::new(['name' => 'Test Issue 1']),
+                ProjectIssueFactory::new(['name' => 'Test Issue 2']),
+            ],
+        ]);
     }
 }

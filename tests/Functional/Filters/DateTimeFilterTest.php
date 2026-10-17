@@ -3,22 +3,33 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Filters;
 
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\FilterTestEntityFactory;
 
-/**
- * Fixture data (dateFilter field):
- * - ID 1: 2024-01-15
- * - ID 2: 2024-02-20
- * - ID 3: 2024-03-10
- * - ID 4: 2024-01-25
- * - ID 5: 2024-02-01
- * - ID 6: 2024-04-01
- */
 class DateTimeFilterTest extends FilterFunctionalTestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $dateTimes = [
+            '2024-01-15' => '2024-01-15 10:30:00',
+            '2024-02-20' => '2024-02-20 14:00:00',
+            '2024-03-10' => '2024-03-10 08:15:00',
+            '2024-01-25' => '2024-01-25 16:45:00',
+            '2024-02-01' => '2024-02-01 12:00:00',
+            '2024-04-01' => '2024-04-01 09:00:00',
+        ];
+        foreach ($dateTimes as $date => $dateTime) {
+            $this->entities[$date] = FilterTestEntityFactory::createOne([
+                'dateFilter' => new \DateTime($date),
+                'dateTimeFilter' => new \DateTime($dateTime),
+            ]);
+        }
+    }
+
     public function testFilterEquals(): void
     {
         // filter for dateFilter = 2024-01-15
-        // should match: ID 1
         $url = $this->generateFilteredIndexUrl([
             'dateFilter' => [
                 'comparison' => ComparisonType::EQ,
@@ -29,13 +40,12 @@ class DateTimeFilterTest extends FilterFunctionalTestCase
         $this->client->request('GET', $url);
 
         $this->assertFilteredCount(1);
-        $this->assertVisibleEntityIds([1]);
+        $this->assertVisibleEntities(['2024-01-15']);
     }
 
     public function testFilterNotEquals(): void
     {
         // filter for dateFilter != 2024-01-15
-        // should match all except ID 1
         $url = $this->generateFilteredIndexUrl([
             'dateFilter' => [
                 'comparison' => ComparisonType::NEQ,
@@ -46,13 +56,12 @@ class DateTimeFilterTest extends FilterFunctionalTestCase
         $this->client->request('GET', $url);
 
         $this->assertFilteredCount(5);
-        $this->assertVisibleEntityIds([2, 3, 4, 5, 6]);
+        $this->assertVisibleEntities(['2024-02-20', '2024-03-10', '2024-01-25', '2024-02-01', '2024-04-01']);
     }
 
     public function testFilterAfter(): void
     {
         // filter for dateFilter > 2024-02-01
-        // should match: ID 2 (2024-02-20), ID 3 (2024-03-10), ID 6 (2024-04-01)
         $url = $this->generateFilteredIndexUrl([
             'dateFilter' => [
                 'comparison' => ComparisonType::GT,
@@ -63,13 +72,12 @@ class DateTimeFilterTest extends FilterFunctionalTestCase
         $this->client->request('GET', $url);
 
         $this->assertFilteredCount(3);
-        $this->assertVisibleEntityIds([2, 3, 6]);
+        $this->assertVisibleEntities(['2024-02-20', '2024-03-10', '2024-04-01']);
     }
 
     public function testFilterAfterOrSame(): void
     {
         // filter for dateFilter >= 2024-02-01
-        // should match: ID 2 (2024-02-20), ID 3 (2024-03-10), ID 5 (2024-02-01), ID 6 (2024-04-01)
         $url = $this->generateFilteredIndexUrl([
             'dateFilter' => [
                 'comparison' => ComparisonType::GTE,
@@ -80,13 +88,12 @@ class DateTimeFilterTest extends FilterFunctionalTestCase
         $this->client->request('GET', $url);
 
         $this->assertFilteredCount(4);
-        $this->assertVisibleEntityIds([2, 3, 5, 6]);
+        $this->assertVisibleEntities(['2024-02-20', '2024-03-10', '2024-02-01', '2024-04-01']);
     }
 
     public function testFilterBefore(): void
     {
         // filter for dateFilter < 2024-02-01
-        // should match: ID 1 (2024-01-15), ID 4 (2024-01-25)
         $url = $this->generateFilteredIndexUrl([
             'dateFilter' => [
                 'comparison' => ComparisonType::LT,
@@ -97,13 +104,12 @@ class DateTimeFilterTest extends FilterFunctionalTestCase
         $this->client->request('GET', $url);
 
         $this->assertFilteredCount(2);
-        $this->assertVisibleEntityIds([1, 4]);
+        $this->assertVisibleEntities(['2024-01-15', '2024-01-25']);
     }
 
     public function testFilterBeforeOrSame(): void
     {
         // filter for dateFilter <= 2024-02-01
-        // should match: ID 1 (2024-01-15), ID 4 (2024-01-25), ID 5 (2024-02-01)
         $url = $this->generateFilteredIndexUrl([
             'dateFilter' => [
                 'comparison' => ComparisonType::LTE,
@@ -114,13 +120,12 @@ class DateTimeFilterTest extends FilterFunctionalTestCase
         $this->client->request('GET', $url);
 
         $this->assertFilteredCount(3);
-        $this->assertVisibleEntityIds([1, 4, 5]);
+        $this->assertVisibleEntities(['2024-01-15', '2024-01-25', '2024-02-01']);
     }
 
     public function testFilterBetween(): void
     {
         // filter for dateFilter BETWEEN 2024-01-20 AND 2024-03-01
-        // should match: ID 2 (2024-02-20), ID 4 (2024-01-25), ID 5 (2024-02-01)
         $url = $this->generateFilteredIndexUrl([
             'dateFilter' => [
                 'comparison' => ComparisonType::BETWEEN,
@@ -132,13 +137,12 @@ class DateTimeFilterTest extends FilterFunctionalTestCase
         $this->client->request('GET', $url);
 
         $this->assertFilteredCount(3);
-        $this->assertVisibleEntityIds([2, 4, 5]);
+        $this->assertVisibleEntities(['2024-02-20', '2024-01-25', '2024-02-01']);
     }
 
     public function testFilterBetweenJanuaryOnly(): void
     {
         // filter for dates in January 2024
-        // should match: ID 1 (2024-01-15), ID 4 (2024-01-25)
         $url = $this->generateFilteredIndexUrl([
             'dateFilter' => [
                 'comparison' => ComparisonType::BETWEEN,
@@ -150,7 +154,7 @@ class DateTimeFilterTest extends FilterFunctionalTestCase
         $this->client->request('GET', $url);
 
         $this->assertFilteredCount(2);
-        $this->assertVisibleEntityIds([1, 4]);
+        $this->assertVisibleEntities(['2024-01-15', '2024-01-25']);
     }
 
     public function testFilterNoResults(): void
@@ -172,7 +176,6 @@ class DateTimeFilterTest extends FilterFunctionalTestCase
     {
         // test dateTimeFilter field (includes time)
         // filter for dateTimeFilter > 2024-02-01 12:00:00
-        // should match: ID 2 (2024-02-20 14:00), ID 3 (2024-03-10 08:15), ID 6 (2024-04-01 09:00)
         $url = $this->generateFilteredIndexUrl([
             'dateTimeFilter' => [
                 'comparison' => ComparisonType::GT,
@@ -183,6 +186,6 @@ class DateTimeFilterTest extends FilterFunctionalTestCase
         $this->client->request('GET', $url);
 
         $this->assertFilteredCount(3);
-        $this->assertVisibleEntityIds([2, 3, 6]);
+        $this->assertVisibleEntities(['2024-02-20', '2024-03-10', '2024-04-01']);
     }
 }

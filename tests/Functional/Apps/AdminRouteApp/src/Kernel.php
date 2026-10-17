@@ -14,6 +14,7 @@ use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
 use Symfony\UX\TwigComponent\TwigComponentBundle;
+use Zenstruck\Foundry\ZenstruckFoundryBundle;
 
 class Kernel extends BaseKernel
 {
@@ -48,6 +49,7 @@ class Kernel extends BaseKernel
             new TwigBundle(),
             new TwigComponentBundle(),
             new EasyAdminBundle(),
+            new ZenstruckFoundryBundle(),
         ];
     }
 

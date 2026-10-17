@@ -5,6 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Default\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\CategoryCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Dashboard\EntityTranslationsDashboardController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\CategoryFactory;
 
 /**
  * Tests for entity translations functionality in the dashboard.
@@ -29,6 +30,9 @@ class EntityTranslationsTest extends AbstractCrudTestCase
 
     public function testFieldLabelsUseEntityTranslationKeys(): void
     {
+        // the datagrid (and its column headers) is only rendered when there are rows
+        CategoryFactory::createOne();
+
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
         static::assertResponseIsSuccessful();
@@ -44,6 +48,9 @@ class EntityTranslationsTest extends AbstractCrudTestCase
 
     public function testTranslatedLabelsAppearedInTableHeaders(): void
     {
+        // the datagrid (and its column headers) is only rendered when there are rows
+        CategoryFactory::createOne();
+
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
         static::assertResponseIsSuccessful();

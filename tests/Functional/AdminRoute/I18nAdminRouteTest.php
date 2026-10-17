@@ -4,7 +4,6 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AdminRoute;
 
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\AdminRouteApp\I18nKernel;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Component\Filesystem\Filesystem;
 
 class I18nAdminRouteTest extends WebTestCase
 {
@@ -22,23 +21,6 @@ class I18nAdminRouteTest extends WebTestCase
         }
 
         parent::setUp();
-
-        $client = static::createClient();
-
-        $buildDir = $client->getKernel()->getContainer()->getParameter('kernel.build_dir');
-        $filesystem = new Filesystem();
-        $filesystem->touch($buildDir.'/easyadmin_pretty_urls_enabled');
-
-        self::ensureKernelShutdown();
-    }
-
-    protected function tearDown(): void
-    {
-        $filesystem = new Filesystem();
-        $cacheDir = sys_get_temp_dir().'/com.github.easycorp.easyadmin/tests/admin_route_i18n/var/test/cache';
-        $filesystem->remove($cacheDir.'/easyadmin_pretty_urls_enabled');
-
-        parent::tearDown();
     }
 
     public function testDashboardRoutesHaveLocaleVariants(): void

@@ -28,11 +28,6 @@ class AdminRouteTest extends WebTestCase
         self::ensureKernelShutdown();
     }
 
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-    }
-
     public function testInvokableControllerRoute(): void
     {
         $client = static::createClient();

@@ -2,21 +2,22 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Filters;
 
-/**
- * Fixture data (booleanFilter field):
- * - ID 1: true
- * - ID 2: false
- * - ID 3: true
- * - ID 4: false
- * - ID 5: true
- * - ID 6: null
- */
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\FilterTestEntityFactory;
+
 class BooleanFilterTest extends FilterFunctionalTestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $values = ['first true' => true, 'first false' => false, 'second true' => true, 'second false' => false, 'null' => null];
+        foreach ($values as $key => $value) {
+            $this->entities[$key] = FilterTestEntityFactory::createOne(['booleanFilter' => $value]);
+        }
+    }
+
     public function testFilterTrue(): void
     {
-        // filter for booleanFilter = true
-        // should match: ID 1, ID 3, ID 5
         $url = $this->generateFilteredIndexUrl([
             'booleanFilter' => [
                 'value' => '1',
@@ -25,14 +26,12 @@ class BooleanFilterTest extends FilterFunctionalTestCase
 
         $this->client->request('GET', $url);
 
-        $this->assertFilteredCount(3);
-        $this->assertVisibleEntityIds([1, 3, 5]);
+        $this->assertFilteredCount(2);
+        $this->assertVisibleEntities(['first true', 'second true']);
     }
 
     public function testFilterFalse(): void
     {
-        // filter for booleanFilter = false
-        // should match: ID 2, ID 4
         $url = $this->generateFilteredIndexUrl([
             'booleanFilter' => [
                 'value' => '0',
@@ -42,6 +41,6 @@ class BooleanFilterTest extends FilterFunctionalTestCase
         $this->client->request('GET', $url);
 
         $this->assertFilteredCount(2);
-        $this->assertVisibleEntityIds([2, 4]);
+        $this->assertVisibleEntities(['first false', 'second false']);
     }
 }

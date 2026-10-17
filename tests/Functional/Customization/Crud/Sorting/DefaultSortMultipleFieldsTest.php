@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Customization\Crud\So
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Controller\Crud\Sorting\DefaultSortMultipleFieldsTestCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Factory\DemoEntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Kernel;
 
 /**
@@ -34,33 +35,30 @@ class DefaultSortMultipleFieldsTest extends AbstractCrudTestCase
 
     public function testDefaultSortWithMultipleFields(): void
     {
+        [$banana1, $apple1, $banana2, $apple2] = DemoEntityFactory::createSequence([
+            ['name' => 'Banana'],
+            ['name' => 'Apple'],
+            ['name' => 'Banana'],
+            ['name' => 'Apple'],
+        ]);
+
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
         static::assertResponseIsSuccessful();
+        $this->assertIndexPageEntityCount(4);
 
-        // verify data is displayed
-        $this->assertIndexPageEntityCount(20);
+        // rows are sorted by name ASC and rows with the same name by id DESC
+        $displayedRows = $crawler->filter('tbody tr')->each(static fn ($row) => [
+            (int) trim($row->filter('td[data-column="id"]')->text()),
+            trim($row->filter('td[data-column="name"]')->text()),
+        ]);
+        static::assertSame([
+            [$apple2->getId(), 'Apple'],
+            [$apple1->getId(), 'Apple'],
+            [$banana2->getId(), 'Banana'],
+            [$banana1->getId(), 'Banana'],
+        ], $displayedRows);
 
-        // with name ASC, id DESC sort, verify rows are sorted by name alphabetically
-        $rows = $crawler->filter('tbody tr')->slice(0, 5);
-        $names = [];
-
-        $rows->each(static function ($row) use (&$names) {
-            $nameCell = $row->filter('td[data-column="name"]');
-            if ($nameCell->count() > 0) {
-                $names[] = trim($nameCell->text());
-            }
-        });
-
-        // verify we have names to compare
-        static::assertNotEmpty($names, 'Should have name values to verify sort');
-
-        // with ASC sort on name, names should be in alphabetical order
-        $sortedNames = $names;
-        sort($sortedNames);
-        static::assertSame($sortedNames, $names, 'Names should be sorted alphabetically (ASC)');
-
-        // verify pagination exists
         static::assertSelectorExists('.list-pagination');
     }
 }

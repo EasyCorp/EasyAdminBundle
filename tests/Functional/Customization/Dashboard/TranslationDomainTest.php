@@ -5,6 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Customization\Dashboa
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Controller\Dashboard\TranslationDomainTestDashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Controller\DemoEntityCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Factory\DemoEntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Kernel;
 
 /**
@@ -35,6 +36,8 @@ class TranslationDomainTest extends AbstractCrudTestCase
 
     public function testTranslationDomainIsConfigured(): void
     {
+        DemoEntityFactory::createSequence([['name' => 'Demo Item 1'], ['name' => 'Demo Item 2']]);
+
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
         static::assertResponseIsSuccessful();
@@ -48,6 +51,8 @@ class TranslationDomainTest extends AbstractCrudTestCase
         static::assertSelectorExists('.content');
 
         // verify data is displayed
-        $this->assertIndexPageEntityCount(20);
+        $this->assertIndexPageEntityCount(2);
+        static::assertStringContainsString('Demo Item 1', $pageText);
+        static::assertStringContainsString('Demo Item 2', $pageText);
     }
 }

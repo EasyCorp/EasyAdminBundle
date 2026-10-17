@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Customization\Crud\Ba
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Controller\Crud\BatchActions\ConfirmationTestCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Factory\DemoEntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Kernel;
 
 /**
@@ -34,16 +35,18 @@ class ConfirmationTest extends AbstractCrudTestCase
 
     public function testBatchActionConfirmationConfiguration(): void
     {
+        DemoEntityFactory::createMany(2);
+
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
         static::assertResponseIsSuccessful();
 
         // verify data is displayed
-        $this->assertIndexPageEntityCount(20);
+        $this->assertIndexPageEntityCount(2);
 
         // verify batch action checkboxes exist
-        $batchCheckboxes = $crawler->filter('input[type="checkbox"].form-batch-checkbox');
-        static::assertGreaterThan(0, $batchCheckboxes->count(), 'Batch action checkboxes should exist');
+        $batchCheckboxes = $crawler->filter('tbody input[type="checkbox"].form-batch-checkbox');
+        static::assertCount(2, $batchCheckboxes, 'Each row should have a batch action checkbox');
 
         // verify batch action form/controls exist
         static::assertSelectorExists('.content');
@@ -51,6 +54,8 @@ class ConfirmationTest extends AbstractCrudTestCase
 
     public function testCustomConfirmationMessageIsShownInsteadOfTheModalTitle(): void
     {
+        DemoEntityFactory::createMany(2);
+
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
         static::assertSame('Are you sure you want to proceed?', $crawler->filter('[data-action-batch]')->first()->attr('data-batch-action-confirm-message'));

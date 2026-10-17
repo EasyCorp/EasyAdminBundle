@@ -5,6 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Security;
 use Doctrine\ORM\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Category;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\CategoryFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Controller\CategoryCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Controller\SecuredDashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Kernel;
@@ -87,7 +88,9 @@ class CsrfProtectionTest extends AbstractCrudTestCase
     #[DataProvider('provideEditFormCsrfTokens')]
     public function testEditFormCsrfProtection(?string $invalidCsrfToken, ?string $expectedErrorMessage): void
     {
-        $this->client->request('GET', $this->generateEditFormUrl($this->categories->findOneBy([])->getId()));
+        $category = CategoryFactory::createOne(['name' => 'Original Name', 'slug' => 'original-slug']);
+
+        $this->client->request('GET', $this->generateEditFormUrl($category->getId()));
 
         $form = [
             'Category[name]' => 'CsrfEditTest',
@@ -98,13 +101,15 @@ class CsrfProtectionTest extends AbstractCrudTestCase
         }
 
         $this->client->submitForm('Save changes', $form);
+        $this->entityManager->clear();
+        $category = $this->categories->find($category->getId());
         if (null === $expectedErrorMessage) {
             static::assertSelectorNotExists('.global-invalid-feedback');
-            static::assertInstanceOf(Category::class, $this->categories->findOneBy(['slug' => 'csrf-edit-test']));
+            static::assertSame('csrf-edit-test', $category->getSlug());
         } else {
             $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
             static::assertSelectorTextContains('.global-invalid-feedback', $expectedErrorMessage);
-            static::assertNull($this->categories->findOneBy(['slug' => 'csrf-edit-test']));
+            static::assertSame('original-slug', $category->getSlug());
         }
     }
 
@@ -127,7 +132,8 @@ class CsrfProtectionTest extends AbstractCrudTestCase
     #[DataProvider('provideDeleteCsrfTokens')]
     public function testDeleteCsrfProtection(?string $invalidCsrfToken, callable $expectedCategoriesCount): void
     {
-        $initialCategoriesCount = \count($this->categories->findAll());
+        $initialCategoriesCount = 2;
+        CategoryFactory::createMany($initialCategoriesCount);
 
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
         static::assertIndexFullEntityCount($initialCategoriesCount);
@@ -193,6 +199,8 @@ class CsrfProtectionTest extends AbstractCrudTestCase
             $this->client->catchExceptions(false);
         }
 
+        $createdCategory = CategoryFactory::createOne(['active' => false]);
+
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
         $firstFoundToggleUrl = $crawler->filter('td.field-boolean .ea-switch input[type="checkbox"]')->first()->attr('data-toggle-url');
 
@@ -207,12 +215,11 @@ class CsrfProtectionTest extends AbstractCrudTestCase
             preg_match('#/(\d+)/edit$#', $urlPath, $matches);
             $categoryId = $matches[1] ?? throw new \RuntimeException('Could not extract entityId from toggle URL: '.$firstFoundToggleUrl);
         }
-        $active = $this->categories->find($categoryId)->isActive();
-        static::assertIsBool($active);
+        static::assertSame((string) $createdCategory->getId(), (string) $categoryId);
 
         // append newValue parameter (use ? if no existing query string, & otherwise)
         $separator = str_contains($firstFoundToggleUrl, '?') ? '&' : '?';
-        $firstFoundToggleUrl .= sprintf('%snewValue=%s', $separator, false === $active ? 'true' : 'false');
+        $firstFoundToggleUrl .= sprintf('%snewValue=true', $separator);
 
         if (null !== $invalidCsrfToken) {
             $firstFoundToggleUrl = preg_replace('/csrfToken=.+?&/', sprintf('csrfToken=%s&', $invalidCsrfToken), $firstFoundToggleUrl);
@@ -225,13 +232,9 @@ class CsrfProtectionTest extends AbstractCrudTestCase
         ]);
         static::assertResponseStatusCodeSame($expectedStatusCode);
 
-        $this->entityManager->refresh($category = $this->categories->find($categoryId));
-        static::assertIsBool($category->isActive());
-        if (true === $toggleIsExpectedToSucceed) {
-            static::assertNotSame($active, $category->isActive());
-        } else {
-            static::assertSame($active, $category->isActive());
-        }
+        $this->entityManager->clear();
+        $category = $this->categories->find($categoryId);
+        static::assertSame($toggleIsExpectedToSucceed, $category->isActive());
     }
 
     public static function provideToggleCsrfTokens(): \Generator

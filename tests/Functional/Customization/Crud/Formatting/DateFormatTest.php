@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Customization\Crud\Fo
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Controller\Crud\Formatting\DateFormatTestCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Factory\DemoEntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Kernel;
 
 /**
@@ -34,27 +35,19 @@ class DateFormatTest extends AbstractCrudTestCase
 
     public function testDateFormatConfiguration(): void
     {
-        $crawler = $this->client->request('GET', $this->generateIndexUrl());
+        $entity = DemoEntityFactory::createOne([
+            'createdAt' => new \DateTime('2024-01-02 10:00:00'),
+            'dateField' => new \DateTime('2024-06-15'),
+        ]);
+
+        $this->client->request('GET', $this->generateIndexUrl());
 
         static::assertResponseIsSuccessful();
+        $this->assertIndexPageEntityCount(1);
 
-        // verify data is displayed
-        $this->assertIndexPageEntityCount(20);
-
-        // get first row with data (skip null values - every 3rd item has nulls)
-        $firstRow = $crawler->filter('tbody tr')->first();
-        $cells = $firstRow->filter('td[data-column="dateField"], td[data-column="createdAt"]');
-
-        // verify date column has content with 'long' format (full month name like "June 15, 2024")
-        $foundDateFormat = false;
-        $cells->each(static function ($cell) use (&$foundDateFormat) {
-            $text = trim($cell->text());
-            // long format shows full month name followed by day and year
-            if (preg_match('/[A-Z][a-z]+ \d{1,2}, \d{4}/', $text)) {
-                $foundDateFormat = true;
-            }
-        });
-
-        static::assertTrue($foundDateFormat, 'Date should be displayed in long format (e.g., "June 15, 2024")');
+        // the 'long' format shows the full month name followed by day and year
+        $rowSelector = $this->getIndexEntityRowSelector($entity->getId());
+        static::assertSelectorTextSame($rowSelector.' td[data-column="dateField"]', 'June 15, 2024');
+        static::assertSelectorTextSame($rowSelector.' td[data-column="createdAt"]', 'January 2, 2024');
     }
 }

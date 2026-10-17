@@ -6,6 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\FormLayoutValidationErrorsCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\FormTestEntity;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\FormTestEntityFactory;
 
 /**
  * Tests for complex form layouts with required fields.
@@ -315,15 +316,14 @@ class FormLayoutValidationErrorsTest extends AbstractCrudTestCase
 
     public function testEditFormWithComplexLayout(): void
     {
-        $entity = new FormTestEntity();
-        $entity->setName('Edit Complex Layout');
-        $entity->setEmail('edit@complex.com');
-        $entity->setStreet('321 Edit St');
-        $entity->setCity('Edit City');
-        $entity->setCountry('FR');
-        $entity->setPriority(7);
-        $this->entityManager->persist($entity);
-        $this->entityManager->flush();
+        $entity = FormTestEntityFactory::createOne([
+            'name' => 'Edit Complex Layout',
+            'email' => 'edit@complex.com',
+            'street' => '321 Edit St',
+            'city' => 'Edit City',
+            'country' => 'FR',
+            'priority' => 7,
+        ]);
 
         $crawler = $this->client->request('GET', $this->generateEditFormUrl($entity->getId()));
 

@@ -5,7 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\FormLayout;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\FormFieldHelpSyntheticCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\FormTestEntity;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\FormTestEntityFactory;
 
 /**
  * Tests for the ->setHelp() method of fields and how that
@@ -67,10 +67,7 @@ class FormFieldHelpMessagesTest extends AbstractCrudTestCase
 
     public function testFieldsHelpMessagesOnDetailPage(): void
     {
-        $entity = new FormTestEntity();
-        $entity->setName('Test Entity');
-        $this->entityManager->persist($entity);
-        $this->entityManager->flush();
+        $entity = FormTestEntityFactory::createOne(['name' => 'Test Entity']);
 
         $crawler = $this->client->request('GET', $this->generateDetailUrl($entity->getId()));
 

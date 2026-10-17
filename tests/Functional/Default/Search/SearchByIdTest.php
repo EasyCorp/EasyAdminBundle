@@ -5,8 +5,10 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Default\Search;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\SearchByIdCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\SearchTestEntity;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\SearchTestAuthorFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\SearchTestEntityFactory;
 use PHPUnit\Framework\Attributes\DataProvider;
+use function Zenstruck\Foundry\Persistence\delete;
 
 /**
  * Tests for searching by ID only.
@@ -33,11 +35,20 @@ class SearchByIdTest extends AbstractCrudTestCase
     #[DataProvider('provideSearchTests')]
     public function testSearch(string $query, int $expectedResultCount): void
     {
+        SearchTestEntityFactory::createOne([
+            'searchableTextField' => 'Introduction to PHP Programming',
+            'searchableContentField' => 'Symfony is a set of reusable PHP components.',
+            'author' => SearchTestAuthorFactory::new(['name' => 'John Smith']),
+        ]);
+
         $this->client->request('GET', $this->generateIndexUrl($query));
         static::assertResponseIsSuccessful();
         static::assertIndexFullEntityCount($expectedResultCount);
     }
 
+    /**
+     * @return iterable<string, array{string, int}>
+     */
     public static function provideSearchTests(): iterable
     {
         // the CRUD Controller is configured to only search in the 'id' field.
@@ -59,19 +70,21 @@ class SearchByIdTest extends AbstractCrudTestCase
 
     public function testSearchByValidId(): void
     {
-        // first, get a valid ID from an existing entity
-        $entity = $this->entityManager->getRepository(SearchTestEntity::class)->findOneBy([]);
-        $this->assertNotNull($entity, 'At least one SearchTestEntity should exist in fixtures');
+        $entities = SearchTestEntityFactory::createMany(2);
 
-        $this->client->request('GET', $this->generateIndexUrl((string) $entity->getId()));
+        $this->client->request('GET', $this->generateIndexUrl((string) $entities[1]->getId()));
         static::assertResponseIsSuccessful();
         static::assertIndexFullEntityCount(1);
+        $this->assertSelectorExists(sprintf('tbody tr[data-id="%d"]', $entities[1]->getId()));
     }
 
     public function testSearchByNonExistentId(): void
     {
-        // search for an ID that doesn't exist
-        $this->client->request('GET', $this->generateIndexUrl('99999'));
+        [$deletedEntity] = SearchTestEntityFactory::createMany(2);
+        $deletedEntityId = $deletedEntity->getId();
+        delete($deletedEntity);
+
+        $this->client->request('GET', $this->generateIndexUrl((string) $deletedEntityId));
         static::assertResponseIsSuccessful();
         static::assertIndexFullEntityCount(0);
     }

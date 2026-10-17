@@ -2,11 +2,11 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Default\Sort;
 
-use Doctrine\ORM\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\MultiColumnSortCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\SortTestEntity;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\SortTestEntityFactory;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
@@ -14,7 +14,10 @@ use PHPUnit\Framework\Attributes\DataProvider;
  */
 class SortByMultipleColumnsTest extends AbstractCrudTestCase
 {
-    private EntityRepository $repository;
+    /**
+     * @var array<string, SortTestEntity>
+     */
+    private array $entities = [];
 
     protected function getControllerFqcn(): string
     {
@@ -30,48 +33,40 @@ class SortByMultipleColumnsTest extends AbstractCrudTestCase
     {
         parent::setUp();
         $this->client->followRedirects();
-        $this->repository = $this->entityManager->getRepository(SortTestEntity::class);
+
+        // integerField and textField values repeat so that every secondary (and the
+        // tertiary dateTimeField) sort column decides the order of some rows
+        $rows = [
+            'banana10' => ['textField' => 'Banana', 'integerField' => 10, 'dateTimeField' => new \DateTime('2024-01-01 10:00:00')],
+            'apple20' => ['textField' => 'Apple', 'integerField' => 20, 'dateTimeField' => new \DateTime('2024-01-01 10:00:00')],
+            'apple10February' => ['textField' => 'Apple', 'integerField' => 10, 'dateTimeField' => new \DateTime('2024-02-01 10:00:00')],
+            'apple10Null' => ['textField' => 'Apple', 'integerField' => 10, 'dateTimeField' => null],
+            'apple10March' => ['textField' => 'Apple', 'integerField' => 10, 'dateTimeField' => new \DateTime('2024-03-01 10:00:00')],
+            'cherry20' => ['textField' => 'Cherry', 'integerField' => 20, 'dateTimeField' => new \DateTime('2024-01-01 10:00:00')],
+        ];
+        foreach ($rows as $key => $row) {
+            $this->entities[$key] = SortTestEntityFactory::createOne($row);
+        }
     }
 
+    /**
+     * @param array<string, mixed>     $query
+     * @param list<array{string, int}> $expectedRows pairs of textField and integerField values
+     */
     #[DataProvider('multiColumnSorting')]
-    public function testSortingByMultipleColumns(array $query, \Closure $sortFunction): void
+    public function testSortingByMultipleColumns(array $query, array $expectedRows): void
     {
-        // arrange
-        $entities = $this->repository->findAll();
-        $sortFunction($entities);
-
-        $expectedMapping = [];
-        /** @var SortTestEntity $entity */
-        foreach ($entities as $entity) {
-            $expectedMapping[] = [
-                'textField' => $entity->getTextField(),
-                'integerField' => $entity->getIntegerField(),
-            ];
-        }
-
-        // act
         $url = $this->generateIndexUrl();
-        if (!empty($query)) {
+        if ([] !== $query) {
             $url .= '?'.http_build_query($query);
         }
         $this->client->request('GET', $url);
 
-        // assert
         $this->assertResponseIsSuccessful();
+        $this->assertSelectorCount(\count($this->entities), 'tbody tr');
 
-        $index = 1;
-        foreach ($expectedMapping as $expected) {
-            $expectedRow = $index++;
-            $this->assertSelectorTextSame(
-                'tbody tr:nth-child('.$expectedRow.') td[data-column="textField"]',
-                $expected['textField'],
-                sprintf('Expected textField "%s" in row %d', $expected['textField'], $expectedRow)
-            );
-            $this->assertSelectorTextSame(
-                'tbody tr:nth-child('.$expectedRow.') td[data-column="integerField"]',
-                (string) $expected['integerField'],
-                sprintf('Expected integerField "%s" in row %d', $expected['integerField'], $expectedRow)
-            );
+        foreach ($expectedRows as $index => [$textField, $integerField]) {
+            $this->assertRowTextAndInteger($index + 1, $textField, $integerField);
         }
     }
 
@@ -79,156 +74,81 @@ class SortByMultipleColumnsTest extends AbstractCrudTestCase
     {
         yield 'default sorting (integerField ASC, textField ASC from CRUD config)' => [
             [],
-            /**
-             * @param list<SortTestEntity> $array
-             */
-            static function (array &$array) {
-                usort($array, static function (SortTestEntity $a, SortTestEntity $b) {
-                    $intCompare = $a->getIntegerField() <=> $b->getIntegerField();
-                    if (0 !== $intCompare) {
-                        return $intCompare;
-                    }
-
-                    return $a->getTextField() <=> $b->getTextField();
-                });
-            },
+            [['Apple', 10], ['Apple', 10], ['Apple', 10], ['Banana', 10], ['Apple', 20], ['Cherry', 20]],
         ];
 
         yield 'primary ASC, secondary ASC' => [
             ['sort' => ['integerField' => 'ASC', 'textField' => 'ASC']],
-            /**
-             * @param list<SortTestEntity> $array
-             */
-            static function (array &$array) {
-                usort($array, static function (SortTestEntity $a, SortTestEntity $b) {
-                    $intCompare = $a->getIntegerField() <=> $b->getIntegerField();
-                    if (0 !== $intCompare) {
-                        return $intCompare;
-                    }
-
-                    return $a->getTextField() <=> $b->getTextField();
-                });
-            },
+            [['Apple', 10], ['Apple', 10], ['Apple', 10], ['Banana', 10], ['Apple', 20], ['Cherry', 20]],
         ];
 
         yield 'primary ASC, secondary DESC' => [
             ['sort' => ['integerField' => 'ASC', 'textField' => 'DESC']],
-            /**
-             * @param list<SortTestEntity> $array
-             */
-            static function (array &$array) {
-                usort($array, static function (SortTestEntity $a, SortTestEntity $b) {
-                    $intCompare = $a->getIntegerField() <=> $b->getIntegerField();
-                    if (0 !== $intCompare) {
-                        return $intCompare;
-                    }
-
-                    return $b->getTextField() <=> $a->getTextField();
-                });
-            },
+            [['Banana', 10], ['Apple', 10], ['Apple', 10], ['Apple', 10], ['Cherry', 20], ['Apple', 20]],
         ];
 
         yield 'primary DESC, secondary ASC' => [
             ['sort' => ['integerField' => 'DESC', 'textField' => 'ASC']],
-            /**
-             * @param list<SortTestEntity> $array
-             */
-            static function (array &$array) {
-                usort($array, static function (SortTestEntity $a, SortTestEntity $b) {
-                    $intCompare = $b->getIntegerField() <=> $a->getIntegerField();
-                    if (0 !== $intCompare) {
-                        return $intCompare;
-                    }
-
-                    return $a->getTextField() <=> $b->getTextField();
-                });
-            },
+            [['Apple', 20], ['Cherry', 20], ['Apple', 10], ['Apple', 10], ['Apple', 10], ['Banana', 10]],
         ];
 
         yield 'primary DESC, secondary DESC' => [
             ['sort' => ['integerField' => 'DESC', 'textField' => 'DESC']],
-            /**
-             * @param list<SortTestEntity> $array
-             */
-            static function (array &$array) {
-                usort($array, static function (SortTestEntity $a, SortTestEntity $b) {
-                    $intCompare = $b->getIntegerField() <=> $a->getIntegerField();
-                    if (0 !== $intCompare) {
-                        return $intCompare;
-                    }
-
-                    return $b->getTextField() <=> $a->getTextField();
-                });
-            },
+            [['Cherry', 20], ['Apple', 20], ['Banana', 10], ['Apple', 10], ['Apple', 10], ['Apple', 10]],
         ];
 
         yield 'textField primary ASC, integerField secondary ASC' => [
             ['sort' => ['textField' => 'ASC', 'integerField' => 'ASC']],
-            /**
-             * @param list<SortTestEntity> $array
-             */
-            static function (array &$array) {
-                usort($array, static function (SortTestEntity $a, SortTestEntity $b) {
-                    $textCompare = $a->getTextField() <=> $b->getTextField();
-                    if (0 !== $textCompare) {
-                        return $textCompare;
-                    }
-
-                    return $a->getIntegerField() <=> $b->getIntegerField();
-                });
-            },
+            [['Apple', 10], ['Apple', 10], ['Apple', 10], ['Apple', 20], ['Banana', 10], ['Cherry', 20]],
         ];
 
         yield 'textField primary DESC, integerField secondary DESC' => [
             ['sort' => ['textField' => 'DESC', 'integerField' => 'DESC']],
-            /**
-             * @param list<SortTestEntity> $array
-             */
-            static function (array &$array) {
-                usort($array, static function (SortTestEntity $a, SortTestEntity $b) {
-                    $textCompare = $b->getTextField() <=> $a->getTextField();
-                    if (0 !== $textCompare) {
-                        return $textCompare;
-                    }
-
-                    return $b->getIntegerField() <=> $a->getIntegerField();
-                });
-            },
+            [['Cherry', 20], ['Banana', 10], ['Apple', 20], ['Apple', 10], ['Apple', 10], ['Apple', 10]],
         ];
+    }
 
-        yield 'three columns: integerField ASC, textField ASC, dateTimeField DESC' => [
-            ['sort' => ['integerField' => 'ASC', 'textField' => 'ASC', 'dateTimeField' => 'DESC']],
-            /**
-             * @param list<SortTestEntity> $array
-             */
-            static function (array &$array) {
-                usort($array, static function (SortTestEntity $a, SortTestEntity $b) {
-                    $intCompare = $a->getIntegerField() <=> $b->getIntegerField();
-                    if (0 !== $intCompare) {
-                        return $intCompare;
-                    }
+    public function testSortingByThreeColumns(): void
+    {
+        // use IntlDateFormatter to match EasyAdmin's default datetime format (MEDIUM/MEDIUM)
+        $dateFormatter = new \IntlDateFormatter('en', \IntlDateFormatter::MEDIUM, \IntlDateFormatter::MEDIUM);
 
-                    $textCompare = $a->getTextField() <=> $b->getTextField();
-                    if (0 !== $textCompare) {
-                        return $textCompare;
-                    }
+        $url = $this->generateIndexUrl().'?'.http_build_query([
+            'sort' => ['integerField' => 'ASC', 'textField' => 'ASC', 'dateTimeField' => 'DESC'],
+        ]);
+        $this->client->request('GET', $url);
 
-                    // handle nulls (nulls go last in DESC)
-                    $aDateTime = $a->getDateTimeField();
-                    $bDateTime = $b->getDateTimeField();
-                    if (null === $aDateTime && null === $bDateTime) {
-                        return 0;
-                    }
-                    if (null === $aDateTime) {
-                        return 1;
-                    }
-                    if (null === $bDateTime) {
-                        return -1;
-                    }
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorCount(\count($this->entities), 'tbody tr');
 
-                    return $bDateTime <=> $aDateTime;
-                });
-            },
-        ];
+        // SQLite sorts NULL values last in DESC order
+        $expectedOrder = ['apple10March', 'apple10February', 'apple10Null', 'banana10', 'apple20', 'cherry20'];
+        foreach ($expectedOrder as $index => $key) {
+            $row = $index + 1;
+            $entity = $this->entities[$key];
+            $this->assertRowTextAndInteger($row, $entity->getTextField(), $entity->getIntegerField());
+
+            // easyAdmin shows "Null" label for null values
+            $expectedDateTime = null !== $entity->getDateTimeField() ? (string) $dateFormatter->format($entity->getDateTimeField()) : 'Null';
+            $this->assertSelectorTextSame(
+                'tbody tr:nth-child('.$row.') td[data-column="dateTimeField"]',
+                $expectedDateTime,
+                sprintf('Expected dateTimeField "%s" in row %d', $expectedDateTime, $row)
+            );
+        }
+    }
+
+    private function assertRowTextAndInteger(int $row, ?string $textField, ?int $integerField): void
+    {
+        $this->assertSelectorTextSame(
+            'tbody tr:nth-child('.$row.') td[data-column="textField"]',
+            (string) $textField,
+            sprintf('Expected textField "%s" in row %d', $textField, $row)
+        );
+        $this->assertSelectorTextSame(
+            'tbody tr:nth-child('.$row.') td[data-column="integerField"]',
+            (string) $integerField,
+            sprintf('Expected integerField "%s" in row %d', $integerField, $row)
+        );
     }
 }

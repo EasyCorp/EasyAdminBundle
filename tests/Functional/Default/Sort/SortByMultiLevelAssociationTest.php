@@ -10,15 +10,11 @@ use PHPUnit\Framework\Attributes\DataProvider;
 /**
  * Tests sorting on multi-level association traversal.
  * The controller sorts by latestRelease.category.name (2-level association chain).
- *
- * From fixtures, the Project entities and their release categories:
- * 1. "Alpha Project" → latestRelease=v1.0 → category.name="Major"
- * 2. "Beta Project"  → latestRelease=v1.1 → category.name="Minor"
- * 3. "Gamma Project" → latestRelease=v2.0 → category.name="Major"
- * 4. "Delta Project" → latestRelease=null  (no release)
  */
 class SortByMultiLevelAssociationTest extends AbstractCrudTestCase
 {
+    use ProjectsWithReleaseCategoriesTrait;
+
     protected function getControllerFqcn(): string
     {
         return SortMultiLevelAssocCrudController::class;
@@ -33,6 +29,7 @@ class SortByMultiLevelAssociationTest extends AbstractCrudTestCase
     {
         parent::setUp();
         $this->client->followRedirects();
+        $this->createProjectsWithReleaseCategories();
     }
 
     public function testCustomSortOnAssociationCombinedWithNestedDefaultSort(): void
@@ -56,7 +53,8 @@ class SortByMultiLevelAssociationTest extends AbstractCrudTestCase
     }
 
     /**
-     * @param list<string> $expectedProjectNames
+     * @param array<string, mixed> $query
+     * @param list<string>         $expectedProjectNames
      */
     #[DataProvider('provideSortTests')]
     public function testSorting(array $query, array $expectedProjectNames): void
@@ -68,6 +66,7 @@ class SortByMultiLevelAssociationTest extends AbstractCrudTestCase
         $this->client->request('GET', $url);
 
         $this->assertResponseIsSuccessful();
+        $this->assertSelectorCount(\count($expectedProjectNames), 'tbody tr');
         foreach ($expectedProjectNames as $index => $expectedProjectName) {
             $row = $index + 1;
             $this->assertSelectorTextSame(
@@ -78,6 +77,9 @@ class SortByMultiLevelAssociationTest extends AbstractCrudTestCase
         }
     }
 
+    /**
+     * @return iterable<string, array{array<string, mixed>, list<string>}>
+     */
     public static function provideSortTests(): iterable
     {
         // SQLite sorts NULL values first in ASC order and last in DESC order;

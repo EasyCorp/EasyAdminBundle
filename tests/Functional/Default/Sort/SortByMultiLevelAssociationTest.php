@@ -5,6 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Default\Sort;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Sort\SortMultiLevelAssocCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\DatabasePlatformTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
@@ -14,6 +15,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 class SortByMultiLevelAssociationTest extends AbstractCrudTestCase
 {
     use BlogPostsWithPublisherCategoriesTrait;
+    use DatabasePlatformTrait;
 
     protected function getControllerFqcn(): string
     {
@@ -64,6 +66,7 @@ class SortByMultiLevelAssociationTest extends AbstractCrudTestCase
             $url .= '?'.http_build_query($query);
         }
         $this->client->request('GET', $url);
+        $expectedTitles = self::sortNullsLikeTheDatabase($expectedTitles, ['Post Delta']);
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorCount(\count($expectedTitles), 'tbody tr');
@@ -82,7 +85,7 @@ class SortByMultiLevelAssociationTest extends AbstractCrudTestCase
      */
     public static function provideSortTests(): iterable
     {
-        // SQLite sorts NULL values first in ASC order and last in DESC order;
+        // NULL values are first in ASC order and last in DESC order (except on PostgreSQL);
         // the secondary sort by title makes ties deterministic
 
         yield 'default sort (category name DESC, title ASC)' => [

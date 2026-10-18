@@ -73,7 +73,15 @@ final class ArrayFilter implements FilterInterface
 
         // the Doctrine type is read from the entity metadata instead of $fieldDto because the DTO
         // can be null (e.g. when the filtered property is not configured as a field of the current page)
-        $useQuotes = Types::SIMPLE_ARRAY === $entityDto->getClassMetadata()->getTypeOfField($property);
+        $propertyType = $entityDto->getClassMetadata()->getTypeOfField($property);
+        $propertyExpression = match ($propertyType) {
+            // simple_array values are stored as 'a,b,c'; wrapping them in commas makes the filter match whole items
+            Types::SIMPLE_ARRAY => sprintf('CONCAT(\',\', %s.%s, \',\')', $alias, $property),
+            // PostgreSQL doesn't support LIKE on JSON columns; concatenating an empty string turns them into text
+            Types::JSON => sprintf('CONCAT(%s.%s, \'\')', $alias, $property),
+            default => sprintf('%s.%s', $alias, $property),
+        };
+        $itemPattern = Types::SIMPLE_ARRAY === $propertyType ? '%%,%s,%%' : '%%%s%%';
 
         if (null === $value || [] === $value) {
             $queryBuilder->andWhere(sprintf('%s.%s %s', $alias, $property, $comparison));
@@ -82,8 +90,8 @@ final class ArrayFilter implements FilterInterface
             $comparison = ComparisonType::CONTAINS_ALL === $comparison ? 'LIKE' : $comparison;
             foreach ($value as $key => $item) {
                 $itemParameterName = sprintf('%s_%s', $parameterName, $key);
-                $clause->add(sprintf('%s.%s %s :%s', $alias, $property, $comparison, $itemParameterName));
-                $queryBuilder->setParameter($itemParameterName, $useQuotes ? '%"'.$item.'"%' : '%'.$item.'%');
+                $clause->add(sprintf('%s %s :%s', $propertyExpression, $comparison, $itemParameterName));
+                $queryBuilder->setParameter($itemParameterName, sprintf($itemPattern, $item));
             }
             if (ComparisonType::NOT_CONTAINS === $comparison) {
                 $clause->add(sprintf('%s.%s IS NULL', $alias, $property));

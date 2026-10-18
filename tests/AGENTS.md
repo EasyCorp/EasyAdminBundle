@@ -80,3 +80,19 @@ make tests ARGS="tests/Unit --filter=testFoo"  # combined
 Prefer this over a raw `vendor/bin/phpunit` run, which skips the cache reset.
 
 `make tests-parallel` runs the suite with ParaTest. The main process compiles the test app containers once and the workers share them, but each worker gets its own SQLite database (its path includes ParaTest's `TEST_TOKEN`). Tests must not share other files: use random names for temporary directories, not `uniqid()`.
+
+## Database servers
+
+The test apps use SQLite by default. Set `EASYADMIN_TEST_DATABASE_URL` to run them on a database server: each app gets its own database (the URL's database name plus `_default`, `_secured` or `_customization`, plus ParaTest's `TEST_TOKEN`), which the bootstrap drops and creates on every run. AdminRouteApp always uses an in-memory SQLite database (it has no tables). The URL must include `serverVersion`, because the database doesn't exist yet when the bootstrap reads the platform.
+
+`compose.yaml` defines PostgreSQL, MySQL and MariaDB servers with throwaway data, and `make tests-db` starts one of them (Docker required) and runs the functional tests on it:
+
+```bash
+make tests-db DB=postgres                                         # also: mysql, mariadb
+make tests-db DB=mysql ARGS="tests/Functional/Filters/"           # one directory
+make tests-db-down                                                # stop the servers
+```
+
+CI runs the same command for the three servers. To use ParaTest, pass the URL of the `TEST_DATABASE_URL_*` variables of the `Makefile` yourself: `EASYADMIN_TEST_DATABASE_URL='...' make tests-parallel ARGS="--testsuite Functional"`.
+
+Write tests that pass on every database: sort on columns whose values are unique (PostgreSQL returns rows without `ORDER BY` in any order), and don't rely on the database rules for `NULL` sorting or text case. When the result really depends on the database, use `tests/Functional/DatabasePlatformTrait.php` (`isPostgreSql()`, `sortNullsLikeTheDatabase()`).

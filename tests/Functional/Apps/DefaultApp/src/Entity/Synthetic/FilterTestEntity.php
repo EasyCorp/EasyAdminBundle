@@ -45,6 +45,9 @@ class FilterTestEntity
     #[ORM\Column(type: 'json', nullable: true)]
     private array $arrayFilter = [];
 
+    #[ORM\Column(type: 'simple_array', nullable: true)]
+    private array $simpleArrayFilter = [];
+
     // comparison filters (for testing different comparison operators)
     #[ORM\Column(nullable: true)]
     private ?int $comparisonFilter = null;
@@ -186,6 +189,18 @@ class FilterTestEntity
     public function setArrayFilter(?array $arrayFilter): self
     {
         $this->arrayFilter = $arrayFilter ?? [];
+
+        return $this;
+    }
+
+    public function getSimpleArrayFilter(): array
+    {
+        return $this->simpleArrayFilter;
+    }
+
+    public function setSimpleArrayFilter(?array $simpleArrayFilter): self
+    {
+        $this->simpleArrayFilter = $simpleArrayFilter ?? [];
 
         return $this;
     }

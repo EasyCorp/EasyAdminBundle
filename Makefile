@@ -1,5 +1,10 @@
 .PHONY: *
 
+# serverVersion avoids connecting to the server to detect the platform before the database exists
+TEST_DATABASE_URL_postgres := postgresql://easyadmin:easyadmin@127.0.0.1:15432/easyadmin?serverVersion=17&charset=utf8
+TEST_DATABASE_URL_mysql := mysql://root:easyadmin@127.0.0.1:13306/easyadmin?serverVersion=8.4.0&charset=utf8mb4
+TEST_DATABASE_URL_mariadb := mysql://root:easyadmin@127.0.0.1:13307/easyadmin?serverVersion=11.4.0-MariaDB&charset=utf8mb4
+
 ## —— Help ————————————————————————————————————
 help: ## Show help
 	@grep -E '(^[a-zA-Z0-9_-]+:.*?##.*$$)|(^##)' Makefile | awk 'BEGIN {FS = ":.*?## "}{printf "\033[32m%-30s\033[0m %s\n", $$1, $$2}' | sed -e 's/\[32m##/[33m/'
@@ -10,6 +15,12 @@ tests: ## Run tests (optional ARGS, e.g. make tests ARGS="tests/Unit/Field/" or 
 	php vendor/bin/phpunit $(ARGS)
 tests-parallel: ## Run tests in parallel processes (optional ARGS, e.g. make tests-parallel ARGS="--processes=4")
 	php vendor/bin/paratest $(ARGS)
+tests-db: ## Run the functional tests on a database server of compose.yaml (DB=postgres|mysql|mariadb, optional ARGS)
+	@test -n "$(TEST_DATABASE_URL_$(DB))" || { echo 'Set DB to one of: postgres, mysql, mariadb (e.g. make tests-db DB=postgres)'; exit 1; }
+	docker compose up -d --wait $(DB)
+	EASYADMIN_TEST_DATABASE_URL='$(TEST_DATABASE_URL_$(DB))' php vendor/bin/phpunit --testsuite Functional $(ARGS)
+tests-db-down: ## Stop and remove the database servers started by tests-db
+	docker compose down
 tests-coverage: ## Generate test coverage
 	rm -rf $(shell php -r "echo sys_get_temp_dir();")/com.github.easycorp.easyadmin/tests/var/test/cache/*
 	XDEBUG_MODE=coverage php vendor/bin/phpunit --coverage-html $(shell php -r "echo sys_get_temp_dir();")/com.github.easycorp.easyadmin/tests/var/test/coverage/

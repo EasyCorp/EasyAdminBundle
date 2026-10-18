@@ -1,0 +1,49 @@
+# database servers used to run the functional tests on other platforms than SQLite
+# (e.g. make tests-db DB=postgres); the data is not persisted between runs
+services:
+    postgres:
+        image: postgres:17
+        environment:
+            POSTGRES_USER: easyadmin
+            POSTGRES_PASSWORD: easyadmin
+            POSTGRES_DB: easyadmin
+        ports:
+            - '15432:5432'
+        tmpfs:
+            - /var/lib/postgresql/data
+        healthcheck:
+            test: ['CMD', 'pg_isready', '-U', 'easyadmin', '-d', 'easyadmin']
+            interval: 2s
+            timeout: 5s
+            retries: 30
+            start_period: 5s
+
+    mysql:
+        image: mysql:8.4
+        environment:
+            MYSQL_ROOT_PASSWORD: easyadmin
+        ports:
+            - '13306:3306'
+        tmpfs:
+            - /var/lib/mysql
+        healthcheck:
+            test: ['CMD', 'mysqladmin', 'ping', '-h', '127.0.0.1', '-uroot', '-peasyadmin']
+            interval: 2s
+            timeout: 5s
+            retries: 60
+            start_period: 10s
+
+    mariadb:
+        image: mariadb:11.4
+        environment:
+            MARIADB_ROOT_PASSWORD: easyadmin
+        ports:
+            - '13307:3306'
+        tmpfs:
+            - /var/lib/mysql
+        healthcheck:
+            test: ['CMD', 'healthcheck.sh', '--connect', '--innodb_initialized']
+            interval: 2s
+            timeout: 5s
+            retries: 60
+            start_period: 10s

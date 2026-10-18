@@ -5,6 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Filter;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\EventManager;
 use Doctrine\DBAL\DriverManager;
+use Doctrine\DBAL\Schema\DefaultSchemaManagerFactory;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Column;
@@ -17,6 +18,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\EntityFilterType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Bridge\Doctrine\Form\DoctrineOrmExtension;
+use Symfony\Component\Cache\Adapter\ArrayAdapter;
 use Symfony\Component\Form\Extension\Validator\ViolationMapper\ViolationMapperInterface;
 use Symfony\Component\Form\Test\TypeTestCase;
 
@@ -33,27 +35,30 @@ class EntityFilterTypeTest extends TypeTestCase
 
         $config = new Configuration();
         $config->setEntityNamespaces(['EasyAdminTestsDoctrine' => 'EasyCorp\Bundle\EasyAdminBundle\Tests\Form\Filter\Type']);
-        if (\PHP_VERSION_ID >= 80400) {
+        if (\PHP_VERSION_ID >= 80400 && method_exists($config, 'enableNativeLazyObjects')) {
             $config->enableNativeLazyObjects(true);
         } else {
             $config->setAutoGenerateProxyClasses(true);
             $config->setProxyDir(sys_get_temp_dir());
             $config->setProxyNamespace('EasyAdminBundle\Doctrine');
+            // ORM 3 always uses lazy ghost objects; ORM 2 deprecates not enabling them
+            if (!$config->isLazyGhostObjectEnabled()) {
+                $config->setLazyGhostObjectEnabled(true);
+            }
         }
+        // ORM 2 deprecates not configuring a metadata cache
+        $config->setMetadataCache(new ArrayAdapter());
         $config->setMetadataDriverImpl(new AttributeDriver([__DIR__ => 'EasyCorp\Bundle\EasyAdminBundle\Tests\Form\Filter\Type'], true));
 
-        if (method_exists(EntityManager::class, 'create')) {
-            // older versions of doctrine/orm
-            $this->entityManager = EntityManager::create(['driver' => 'pdo_sqlite', 'memory' => true], $config);
-        } else {
-            // newer versions of doctrine/orm
-            $eventManager = new EventManager();
-            $this->entityManager = new EntityManager(
-                DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true], $config, $eventManager),
-                $config,
-                $eventManager,
-            );
-        }
+        // DBAL 4 always uses this factory; DBAL 3 deprecates not configuring it
+        $config->setSchemaManagerFactory(new DefaultSchemaManagerFactory());
+
+        $eventManager = new EventManager();
+        $this->entityManager = new EntityManager(
+            DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true], $config, $eventManager),
+            $config,
+            $eventManager,
+        );
 
         $this->managerRegistry = $this->createStub(ManagerRegistry::class);
         $this->managerRegistry->method('getManager')

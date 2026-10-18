@@ -103,24 +103,25 @@ class CrudAutocompleteSubscriber implements EventSubscriberInterface
                 $isSymfonyUlidType = null === $idFieldDoctrineType || $idFieldDoctrineType instanceof UlidType;
                 $isSymfonyUuidType = null === $idFieldDoctrineType || $idFieldDoctrineType instanceof UuidType;
 
+                // older Doctrine ORM versions don't apply the column type to the values of findBy() arrays,
+                // so convert them to the storage format of the Symfony types: RFC 4122 for platforms with
+                // a native GUID type (e.g. PostgreSQL) and binary for the others (e.g. MySQL, SQLite)
+                $platform = $options['em']->getConnection()->getDatabasePlatform();
+                $hasNativeGuidType = $platform->getGuidTypeDeclarationSQL([]) !== $platform->getStringTypeDeclarationSQL(['fixed' => true, 'length' => 36]);
+
                 $data['autocomplete'] = array_map(
-                    static function ($v) use ($options, $idFieldType, $isSymfonyUlidType, $isSymfonyUuidType) {
-                        if (UlidType::NAME === $idFieldType && $isSymfonyUlidType && class_exists(Ulid::class) && Ulid::isValid($v)) {
-                            return Ulid::fromBase32($v)->toRfc4122();
+                    static function ($v) use ($idFieldType, $isSymfonyUlidType, $isSymfonyUuidType, $hasNativeGuidType) {
+                        $uid = match (true) {
+                            UlidType::NAME === $idFieldType && $isSymfonyUlidType && class_exists(Ulid::class) && Ulid::isValid($v) => Ulid::fromBase32($v),
+                            UuidType::NAME === $idFieldType && $isSymfonyUuidType && class_exists(Uuid::class) && Uuid::isValid($v) => Uuid::fromString($v),
+                            default => null,
+                        };
+
+                        if (null === $uid) {
+                            return $v;
                         }
 
-                        if (UuidType::NAME === $idFieldType && $isSymfonyUuidType && class_exists(Uuid::class) && Uuid::isValid($v)) {
-                            // Use RFC4122 format for platforms with native GUID type (e.g., PostgreSQL),
-                            // and binary format for platforms without native GUID type (e.g., MySQL, SQLite)
-                            $platform = $options['em']->getConnection()->getDatabasePlatform();
-                            $hasNativeGuidType = $platform->getGuidTypeDeclarationSQL([]) !== $platform->getStringTypeDeclarationSQL(['fixed' => true, 'length' => 36]);
-
-                            return $hasNativeGuidType
-                                ? Uuid::fromString($v)->toRfc4122()
-                                : Uuid::fromString($v)->toBinary();
-                        }
-
-                        return $v;
+                        return $hasNativeGuidType ? $uid->toRfc4122() : $uid->toBinary();
                     },
                     $data['autocomplete']
                 );

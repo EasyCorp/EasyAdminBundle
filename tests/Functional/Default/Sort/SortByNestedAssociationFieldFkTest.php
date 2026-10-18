@@ -5,6 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Default\Sort;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Sort\SortNestedAssociationByFkCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\DatabasePlatformTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
@@ -16,6 +17,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 class SortByNestedAssociationFieldFkTest extends AbstractCrudTestCase
 {
     use BlogPostsWithPublisherCategoriesTrait;
+    use DatabasePlatformTrait;
 
     protected function getControllerFqcn(): string
     {
@@ -42,6 +44,7 @@ class SortByNestedAssociationFieldFkTest extends AbstractCrudTestCase
     public function testSorting(array $query, array $expectedTitles): void
     {
         $this->client->request('GET', $this->generateIndexUrl().'?'.http_build_query($query));
+        $expectedTitles = self::sortNullsLikeTheDatabase($expectedTitles, ['Post Delta']);
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorCount(\count($expectedTitles), 'tbody tr');
@@ -60,7 +63,7 @@ class SortByNestedAssociationFieldFkTest extends AbstractCrudTestCase
      */
     public static function provideSortTests(): iterable
     {
-        // SQLite sorts NULL values first in ASC order and last in DESC order
+        // NULL values are first in ASC order and last in DESC order (except on PostgreSQL)
 
         yield 'sort by nested association ASC orders by category id' => [
             ['sort' => ['publisher.favoriteCategory' => 'ASC']],

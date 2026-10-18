@@ -2,7 +2,6 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Default\Search;
 
-use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Search\SearchMultiLevelAssocCrudController;
@@ -29,10 +28,6 @@ class SearchMultiLevelAssociationTest extends AbstractCrudTestCase
 
     protected function setUp(): void
     {
-        if (!class_exists(PostgreSQLPlatform::class)) {
-            $this->markTestSkipped('Doctrine DBAL 3.x+ is required.');
-        }
-
         parent::setUp();
         $this->client->followRedirects();
 

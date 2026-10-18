@@ -4,10 +4,11 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Security;
 
 use EasyCorp\Bundle\EasyAdminBundle\Exception\InsufficientEntityPermissionException;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Category;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\CategoryFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Controller\EntityPermissionCategoryCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Controller\SecuredDashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Kernel;
+use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -52,7 +53,7 @@ class EntityPermissionAccessTest extends AbstractCrudTestCase
 
         $this->client->request(
             'GET',
-            $this->generateDetailUrl($this->getFirstCategoryId()),
+            $this->generateDetailUrl(CategoryFactory::createOne()->getId()),
             [],
             [],
             ['PHP_AUTH_USER' => 'user', 'PHP_AUTH_PW' => '1234']
@@ -65,7 +66,7 @@ class EntityPermissionAccessTest extends AbstractCrudTestCase
 
         $this->client->request(
             'GET',
-            $this->generateDetailUrl($this->getFirstCategoryId()),
+            $this->generateDetailUrl(CategoryFactory::createOne()->getId()),
             [],
             [],
             ['PHP_AUTH_USER' => 'user', 'PHP_AUTH_PW' => '1234']
@@ -79,7 +80,7 @@ class EntityPermissionAccessTest extends AbstractCrudTestCase
     {
         $this->client->request(
             'GET',
-            $this->generateDetailUrl($this->getFirstCategoryId()),
+            $this->generateDetailUrl(CategoryFactory::createOne()->getId()),
             [],
             [],
             ['PHP_AUTH_USER' => 'admin', 'PHP_AUTH_PW' => '1234']
@@ -95,7 +96,7 @@ class EntityPermissionAccessTest extends AbstractCrudTestCase
 
         $this->client->request(
             'GET',
-            $this->generateEditFormUrl($this->getFirstCategoryId()),
+            $this->generateEditFormUrl(CategoryFactory::createOne()->getId()),
             [],
             [],
             ['PHP_AUTH_USER' => 'user', 'PHP_AUTH_PW' => '1234']
@@ -118,6 +119,8 @@ class EntityPermissionAccessTest extends AbstractCrudTestCase
 
     public function testIndexHidesInaccessibleRowsForUnauthorizedUser(): void
     {
+        CategoryFactory::createMany(2);
+
         $crawler = $this->client->request(
             'GET',
             $this->generateIndexUrl(),
@@ -137,6 +140,8 @@ class EntityPermissionAccessTest extends AbstractCrudTestCase
 
     public function testIndexShowsAllRowsForAuthorizedUser(): void
     {
+        [$firstCategory, $secondCategory] = CategoryFactory::createMany(2);
+
         $crawler = $this->client->request(
             'GET',
             $this->generateIndexUrl(),
@@ -146,16 +151,10 @@ class EntityPermissionAccessTest extends AbstractCrudTestCase
         );
 
         static::assertResponseIsSuccessful();
-        static::assertGreaterThan(0, $crawler->filter('tbody tr[data-id]')->count());
-        static::assertCount(1, $crawler->filter(sprintf('tbody tr[data-id="%s"]', $this->getFirstCategoryId())));
+        static::assertSame(
+            [(string) $firstCategory->getId(), (string) $secondCategory->getId()],
+            $crawler->filter('tbody tr[data-id]')->each(static fn (Crawler $row) => $row->attr('data-id'))
+        );
         static::assertCount(0, $crawler->filter('tbody tr.datagrid-row-empty'));
-    }
-
-    private function getFirstCategoryId(): int
-    {
-        $category = $this->entityManager->getRepository(Category::class)->findOneBy([]);
-        static::assertInstanceOf(Category::class, $category);
-
-        return $category->getId();
     }
 }

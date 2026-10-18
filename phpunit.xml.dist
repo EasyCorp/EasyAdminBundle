@@ -37,6 +37,12 @@
         </testsuite>
     </testsuites>
 
+    <extensions>
+        <bootstrap class="DAMA\DoctrineTestBundle\PHPUnit\PHPUnitExtension" />
+        <bootstrap class="Zenstruck\Foundry\PHPUnit\FoundryExtension" />
+        <bootstrap class="EasyCorp\Bundle\EasyAdminBundle\Tests\PHPUnit\RemoveForeignErrorHandlersExtension" />
+    </extensions>
+
     <!-- Symfony code triggers its deprecations with a silenced trigger_error(); report them anyway -->
     <source ignoreSuppressionOfDeprecations="true">
         <include>

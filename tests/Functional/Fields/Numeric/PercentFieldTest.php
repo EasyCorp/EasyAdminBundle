@@ -78,7 +78,7 @@ class PercentFieldTest extends AbstractFieldFunctionalTestCase
 
         $this->client->submit($form);
 
-        $entity = $this->fieldTestEntities->findOneBy([], ['id' => 'DESC']);
+        $entity = $this->fieldTestEntities->findOneBy(['slugField' => 'percent-test']);
         static::assertNotNull($entity, 'Entity should be created');
         // stored as decimal: 50% = 0.5
         static::assertEquals(0.5, $entity->getPercentField(), '', 0.01);

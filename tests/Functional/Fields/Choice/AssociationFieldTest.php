@@ -2,28 +2,18 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Fields\Choice;
 
-use Doctrine\ORM\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\FieldRelatedEntityCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\FieldTestEntityCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\FieldRelatedEntity;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\FieldRelatedEntityFactory;
 use Symfony\Component\DomCrawler\Crawler;
 
 class AssociationFieldTest extends AbstractFieldFunctionalTestCase
 {
-    protected EntityRepository $fieldRelatedEntities;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->fieldRelatedEntities = $this->entityManager->getRepository(FieldRelatedEntity::class);
-    }
-
     public function testManyToOneAssociationDisplaysOnIndex(): void
     {
-        $relatedEntity = $this->createRelatedEntity('Related Entity for Index');
+        $relatedEntity = FieldRelatedEntityFactory::createOne(['name' => 'Related Entity for Index']);
         $entity = $this->createFieldTestEntity([
             'manyToOneAssociation' => $relatedEntity,
         ]);
@@ -46,8 +36,8 @@ class AssociationFieldTest extends AbstractFieldFunctionalTestCase
 
     public function testManyToManyAssociationDisplaysOnIndex(): void
     {
-        $relatedEntity1 = $this->createRelatedEntity('Related M2M 1');
-        $relatedEntity2 = $this->createRelatedEntity('Related M2M 2');
+        $relatedEntity1 = FieldRelatedEntityFactory::createOne(['name' => 'Related M2M 1']);
+        $relatedEntity2 = FieldRelatedEntityFactory::createOne(['name' => 'Related M2M 2']);
         $entity = $this->createFieldTestEntity([]);
         $entity->addManyToManyAssociation($relatedEntity1);
         $entity->addManyToManyAssociation($relatedEntity2);
@@ -71,7 +61,7 @@ class AssociationFieldTest extends AbstractFieldFunctionalTestCase
 
     public function testManyToOneAssociationDisplaysOnDetail(): void
     {
-        $relatedEntity = $this->createRelatedEntity('Related Entity for Detail');
+        $relatedEntity = FieldRelatedEntityFactory::createOne(['name' => 'Related Entity for Detail']);
         $entity = $this->createFieldTestEntity([
             'manyToOneAssociation' => $relatedEntity,
         ]);
@@ -103,8 +93,8 @@ class AssociationFieldTest extends AbstractFieldFunctionalTestCase
 
     public function testManyToManyAssociationDisplaysOnDetail(): void
     {
-        $relatedEntity1 = $this->createRelatedEntity('M2M Detail Entity 1');
-        $relatedEntity2 = $this->createRelatedEntity('M2M Detail Entity 2');
+        $relatedEntity1 = FieldRelatedEntityFactory::createOne(['name' => 'M2M Detail Entity 1']);
+        $relatedEntity2 = FieldRelatedEntityFactory::createOne(['name' => 'M2M Detail Entity 2']);
         $entity = $this->createFieldTestEntity([]);
         $entity->addManyToManyAssociation($relatedEntity1);
         $entity->addManyToManyAssociation($relatedEntity2);
@@ -157,7 +147,7 @@ class AssociationFieldTest extends AbstractFieldFunctionalTestCase
 
     public function testManyToOneAssociationSubmission(): void
     {
-        $relatedEntity = $this->createRelatedEntity('Related for Submission');
+        $relatedEntity = FieldRelatedEntityFactory::createOne(['name' => 'Related for Submission']);
         $crawler = $this->client->request('GET', $this->generateNewFormUrl());
 
         $form = $crawler->filter('form[name="FieldTestEntity"]')->form();
@@ -174,8 +164,8 @@ class AssociationFieldTest extends AbstractFieldFunctionalTestCase
 
     public function testManyToOneAssociationEdit(): void
     {
-        $relatedEntity1 = $this->createRelatedEntity('Related Edit 1');
-        $relatedEntity2 = $this->createRelatedEntity('Related Edit 2');
+        $relatedEntity1 = FieldRelatedEntityFactory::createOne(['name' => 'Related Edit 1']);
+        $relatedEntity2 = FieldRelatedEntityFactory::createOne(['name' => 'Related Edit 2']);
         $entity = $this->createFieldTestEntity([
             'manyToOneAssociation' => $relatedEntity1,
             'slugField' => 'association-edit-test',
@@ -242,9 +232,8 @@ class AssociationFieldTest extends AbstractFieldFunctionalTestCase
 
     public function testAssociationFieldAutocompleteEndpoint(): void
     {
-        // ensure related entities exist
-        $this->createRelatedEntity('Autocomplete Test 1');
-        $this->createRelatedEntity('Autocomplete Test 2');
+        FieldRelatedEntityFactory::createOne(['name' => 'Autocomplete Test 1']);
+        FieldRelatedEntityFactory::createOne(['name' => 'Autocomplete Test 2']);
 
         $autocompleteUrl = $this->generateAutocompleteUrl();
 
@@ -261,13 +250,17 @@ class AssociationFieldTest extends AbstractFieldFunctionalTestCase
         $data = json_decode($response->getContent(), true);
         static::assertIsArray($data, 'Response should be valid JSON');
         static::assertArrayHasKey('next_page', $data, 'Response should contain next_page key');
+        static::assertSame(
+            ['Autocomplete Test 1', 'Autocomplete Test 2'],
+            array_column($data['results'], 'entityAsString'),
+        );
     }
 
     public function testAssociationFieldAutocompleteFiltersResults(): void
     {
         // create entities with distinct names
-        $this->createRelatedEntity('Unique Alpha Entity');
-        $this->createRelatedEntity('Common Beta Entity');
+        FieldRelatedEntityFactory::createOne(['name' => 'Unique Alpha Entity']);
+        FieldRelatedEntityFactory::createOne(['name' => 'Common Beta Entity']);
 
         $autocompleteUrl = $this->generateAutocompleteUrl('Unique Alpha');
 
@@ -278,17 +271,7 @@ class AssociationFieldTest extends AbstractFieldFunctionalTestCase
         static::assertTrue($response->isSuccessful());
         static::assertArrayHasKey('results', $data);
 
-        // should find at least the entity matching the query
-        if (\count($data['results']) > 0) {
-            $found = false;
-            foreach ($data['results'] as $result) {
-                if (str_contains($result['entityAsString'], 'Unique Alpha')) {
-                    $found = true;
-                    break;
-                }
-            }
-            static::assertTrue($found, 'Autocomplete should return matching entity');
-        }
+        static::assertSame(['Unique Alpha Entity'], array_column($data['results'], 'entityAsString'));
     }
 
     public function testAssociationFieldHasCorrectFormWidget(): void
@@ -298,20 +281,6 @@ class AssociationFieldTest extends AbstractFieldFunctionalTestCase
         // check for the field-association CSS class on the form row
         $associationField = $crawler->filter('.field-association');
         static::assertGreaterThan(0, $associationField->count(), 'Form should contain field-association elements');
-    }
-
-    /**
-     * Creates a new FieldRelatedEntity for testing.
-     */
-    protected function createRelatedEntity(string $name): FieldRelatedEntity
-    {
-        $entity = new FieldRelatedEntity();
-        $entity->setName($name);
-
-        $this->entityManager->persist($entity);
-        $this->entityManager->flush();
-
-        return $entity;
     }
 
     /**

@@ -13,6 +13,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synt
  */
 class NewTest extends AbstractCrudTestCase
 {
+    /** @var EntityRepository<DefaultCrudTestEntity> */
     protected EntityRepository $repository;
 
     protected function getControllerFqcn(): string
@@ -74,8 +75,6 @@ class NewTest extends AbstractCrudTestCase
 
     public function testFormCanBeSubmittedWithValidData(): void
     {
-        $initialCount = \count($this->repository->findAll());
-
         $crawler = $this->client->request('GET', $this->generateNewFormUrl());
         $this->assertResponseIsSuccessful();
 
@@ -92,9 +91,8 @@ class NewTest extends AbstractCrudTestCase
 
         $this->assertResponseIsSuccessful();
 
-        // verify entity was created
-        $finalCount = \count($this->repository->findAll());
-        $this->assertEquals($initialCount + 1, $finalCount, 'A new entity should have been created');
+        $this->entityManager->clear();
+        $this->assertSame(1, $this->repository->count([]), 'A new entity should have been created');
     }
 
     public function testEntityIsCreatedInDatabase(): void
@@ -102,7 +100,7 @@ class NewTest extends AbstractCrudTestCase
         $crawler = $this->client->request('GET', $this->generateNewFormUrl());
         $this->assertResponseIsSuccessful();
 
-        $uniqueName = 'Unique Test Entity '.uniqid();
+        $uniqueName = 'Unique Test Entity';
 
         // get the form and fill it with valid data
         $form = $crawler->filter($this->getEntityFormSelector())->form();
@@ -134,7 +132,7 @@ class NewTest extends AbstractCrudTestCase
         $crawler = $this->client->request('GET', $this->generateNewFormUrl());
         $this->assertResponseIsSuccessful();
 
-        $uniqueName = 'Redirect Test Entity '.uniqid();
+        $uniqueName = 'Redirect Test Entity';
 
         // get the form and fill it with valid data
         $form = $crawler->filter($this->getEntityFormSelector())->form();
@@ -162,8 +160,6 @@ class NewTest extends AbstractCrudTestCase
         $crawler = $this->client->request('GET', $this->generateNewFormUrl());
         $this->assertResponseIsSuccessful();
 
-        $initialCount = \count($this->repository->findAll());
-
         // get the form but don't fill the required 'name' field
         $form = $crawler->filter($this->getEntityFormSelector())->form();
 
@@ -184,8 +180,8 @@ class NewTest extends AbstractCrudTestCase
         );
 
         // verify no entity was created
-        $finalCount = \count($this->repository->findAll());
-        $this->assertEquals($initialCount, $finalCount, 'No entity should be created with invalid data');
+        $this->entityManager->clear();
+        $this->assertSame(0, $this->repository->count([]), 'No entity should be created with invalid data');
     }
 
     public function testFormFieldLabelsExist(): void
@@ -245,8 +241,7 @@ class NewTest extends AbstractCrudTestCase
         $crawler = $this->client->request('GET', $this->generateNewFormUrl());
         $this->assertResponseIsSuccessful();
 
-        $initialCount = \count($this->repository->findAll());
-        $uniqueName = 'Nullable Test '.uniqid();
+        $uniqueName = 'Nullable Test';
 
         // get the form and fill only required fields
         $form = $crawler->filter($this->getEntityFormSelector())->form();
@@ -261,12 +256,10 @@ class NewTest extends AbstractCrudTestCase
 
         $this->assertResponseIsSuccessful();
 
-        // verify entity was created
-        $finalCount = \count($this->repository->findAll());
-        $this->assertEquals($initialCount + 1, $finalCount, 'Entity should be created with nullable fields empty');
+        $this->entityManager->clear();
+        $this->assertSame(1, $this->repository->count([]), 'Entity should be created with nullable fields empty');
 
         // verify nullable fields are null/empty
-        $this->entityManager->clear();
         $createdEntity = $this->repository->findOneBy(['name' => $uniqueName]);
         $this->assertNotNull($createdEntity);
     }

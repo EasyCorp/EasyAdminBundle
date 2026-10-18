@@ -2,8 +2,6 @@
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\DataFixtures\AppFixtures;
-
 return static function (ContainerConfigurator $container) {
     $container->parameters()
         ->set('locale', 'en')
@@ -20,6 +18,4 @@ return static function (ContainerConfigurator $container) {
 
     $services->load('EasyCorp\\Bundle\\EasyAdminBundle\\Tests\\Functional\\Apps\\DefaultApp\\Controller\\', '../src/Controller/')
         ->tag('controller.service_arguments');
-
-    $services->set(AppFixtures::class)->tag('doctrine.fixture.orm');
 };

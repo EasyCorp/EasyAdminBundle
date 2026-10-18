@@ -6,6 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\FormLayoutEdgeCasesCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\FormTestEntity;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\FormTestEntityFactory;
 
 /**
  * Tests for edge cases and unusual but valid configurations.
@@ -128,12 +129,11 @@ class FormLayoutEdgeCasesTest extends AbstractCrudTestCase
 
     public function testEditFormWithEdgeCases(): void
     {
-        $entity = new FormTestEntity();
-        $entity->setName('Edge Case Edit');
-        $entity->setEmail('edgecase@edit.com');
-        $entity->setPriority(1);
-        $this->entityManager->persist($entity);
-        $this->entityManager->flush();
+        $entity = FormTestEntityFactory::createOne([
+            'name' => 'Edge Case Edit',
+            'email' => 'edgecase@edit.com',
+            'priority' => 1,
+        ]);
 
         $crawler = $this->client->request('GET', $this->generateEditFormUrl($entity->getId()));
 

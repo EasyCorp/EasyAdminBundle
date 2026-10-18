@@ -9,6 +9,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\BatchActionTestEntityCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Category;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\BatchActionTestEntity;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\BatchActionTestEntityFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\CategoryFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Kernel;
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -43,15 +45,13 @@ class BatchDeleteTest extends AbstractCrudTestCase
 
     public function testIndexPageShowsBatchActionCheckboxes(): void
     {
+        BatchActionTestEntityFactory::createMany(2);
+
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
         self::assertResponseIsSuccessful();
 
-        // verify the "select all" checkbox exists
         self::assertSelectorExists('.form-batch-checkbox-all', 'Select all checkbox should be present');
-
-        // verify individual row checkboxes exist
-        $checkboxes = $crawler->filter('.form-batch-checkbox');
-        self::assertGreaterThan(0, $checkboxes->count(), 'Individual row checkboxes should be present');
+        self::assertCount(2, $crawler->filter('.form-batch-checkbox'), 'Each row should have its own checkbox');
     }
 
     public function testBatchDeleteActionButtonExists(): void
@@ -66,89 +66,62 @@ class BatchDeleteTest extends AbstractCrudTestCase
 
     public function testBatchDeleteWithValidCsrfToken(): void
     {
-        $initialCount = \count($this->repository->findAll());
-        self::assertGreaterThanOrEqual(3, $initialCount, 'Need at least 3 entities to test batch delete');
-
-        // get IDs of entities to delete (first 2 entities)
-        $entities = $this->repository->findAll();
-        $entityIdsToDelete = [
-            $entities[0]->getId(),
-            $entities[1]->getId(),
-        ];
+        [$firstEntity, $secondEntity, $keptEntity] = BatchActionTestEntityFactory::createMany(3);
+        $entityIdsToDelete = [$firstEntity->getId(), $secondEntity->getId()];
 
         $this->submitBatchDelete($entityIdsToDelete);
         self::assertResponseIsSuccessful();
 
-        // clear entity manager to get fresh data
         $this->entityManager->clear();
 
-        // verify entities were deleted
-        $finalCount = \count($this->repository->findAll());
-        self::assertSame($initialCount - 2, $finalCount, 'Two entities should have been deleted');
-
-        // verify specific entities are gone
+        self::assertSame(1, $this->repository->count([]), 'Two of the three entities should have been deleted');
         foreach ($entityIdsToDelete as $id) {
             self::assertNull($this->repository->find($id), sprintf('Entity with ID %s should have been deleted', $id));
         }
+        self::assertNotNull($this->repository->find($keptEntity->getId()));
     }
 
     public function testBatchDeleteWithInvalidCsrfTokenDoesNotDelete(): void
     {
-        $initialCount = \count($this->repository->findAll());
-        self::assertGreaterThanOrEqual(1, $initialCount, 'Need at least 1 entity to test');
-
-        // get first entity ID
-        $entities = $this->repository->findAll();
-        $entityIdToDelete = $entities[0]->getId();
+        $entityIdToDelete = BatchActionTestEntityFactory::createOne()->getId();
 
         $this->submitBatchDelete([$entityIdToDelete], useValidCsrfToken: false);
 
-        // clear entity manager to get fresh data
         $this->entityManager->clear();
 
-        // verify entity was NOT deleted (CSRF validation should fail)
-        $finalCount = \count($this->repository->findAll());
-        self::assertSame($initialCount, $finalCount, 'No entities should have been deleted with invalid CSRF token');
+        self::assertSame(1, $this->repository->count([]), 'No entities should have been deleted with invalid CSRF token');
         self::assertNotNull($this->repository->find($entityIdToDelete), 'Entity should still exist');
     }
 
     public function testBatchDeleteWithEmptySelectionDoesNothing(): void
     {
-        $initialCount = \count($this->repository->findAll());
+        BatchActionTestEntityFactory::createMany(2);
 
         $this->submitBatchDelete([]);
 
-        // clear entity manager to get fresh data
         $this->entityManager->clear();
 
-        // verify no entities were deleted
-        $finalCount = \count($this->repository->findAll());
-        self::assertSame($initialCount, $finalCount, 'No entities should have been deleted with empty selection');
+        self::assertSame(2, $this->repository->count([]), 'No entities should have been deleted with empty selection');
     }
 
     public function testBatchDeleteWithNonExistentEntityId(): void
     {
-        $initialCount = \count($this->repository->findAll());
+        $entity = BatchActionTestEntityFactory::createOne();
 
-        $this->submitBatchDelete([999999]); // non-existent ID
+        $this->submitBatchDelete([$entity->getId() + 1]);
         self::assertResponseIsSuccessful();
 
-        // clear entity manager to get fresh data
         $this->entityManager->clear();
 
-        // verify no entities were deleted
-        $finalCount = \count($this->repository->findAll());
-        self::assertSame($initialCount, $finalCount, 'No entities should have been deleted with non-existent ID');
+        self::assertSame(1, $this->repository->count([]), 'No entities should have been deleted with non-existent ID');
+        self::assertNotNull($this->repository->find($entity->getId()));
     }
 
     public function testBatchDeleteRejectsMismatchedEntityFqcn(): void
     {
         $categoryRepository = $this->entityManager->getRepository(Category::class);
-        $initialCategoryCount = \count($categoryRepository->findAll());
-        self::assertGreaterThan(0, $initialCategoryCount, 'Need at least 1 Category fixture for this test');
-
-        $targetCategoryId = $categoryRepository->findAll()[0]->getId();
-        $initialBatchEntityCount = \count($this->repository->findAll());
+        $targetCategoryId = CategoryFactory::createOne()->getId();
+        BatchActionTestEntityFactory::createOne();
 
         // simulate an attacker that can batchDelete on BatchActionTestEntityCrudController
         // but targets a different Doctrine entity (Category) by overriding entityFqcn in
@@ -162,21 +135,20 @@ class BatchDeleteTest extends AbstractCrudTestCase
             $categoryRepository->find($targetCategoryId),
             'Category row must not be deleted by a cross-entity batchDelete attempt'
         );
-        self::assertCount($initialCategoryCount, $categoryRepository->findAll());
-        self::assertCount($initialBatchEntityCount, $this->repository->findAll());
+        self::assertSame(1, $categoryRepository->count([]));
+        self::assertSame(1, $this->repository->count([]));
     }
 
     public function testBatchDeleteRedirectsToIndexPage(): void
     {
-        // get first entity ID
-        $entities = $this->repository->findAll();
-        $entityIdToDelete = $entities[0]->getId();
+        $entityIdToDelete = BatchActionTestEntityFactory::createOne()->getId();
 
         $this->submitBatchDelete([$entityIdToDelete]);
         self::assertResponseIsSuccessful();
 
-        // should be redirected back to index page - verify by checking for index elements
         self::assertSelectorExists('.datagrid', 'Should be redirected to index page showing the datagrid');
+        $this->entityManager->clear();
+        self::assertNull($this->repository->find($entityIdToDelete));
     }
 
     /**
@@ -189,10 +161,10 @@ class BatchDeleteTest extends AbstractCrudTestCase
      * 2. Extracting the data attributes needed for submission
      * 3. Submitting a POST request with the same parameters the JavaScript would send
      *
-     * @param array       $entityIds          The entity IDs to delete
-     * @param bool        $useValidCsrfToken  Whether to use a valid CSRF token (false to test CSRF protection)
-     * @param string|null $entityFqcnOverride When set, replaces the body's entityFqcn with this class (used to
-     *                                        simulate a cross-entity authorization-bypass attempt)
+     * @param array<int|null> $entityIds          The entity IDs to delete
+     * @param bool            $useValidCsrfToken  Whether to use a valid CSRF token (false to test CSRF protection)
+     * @param string|null     $entityFqcnOverride When set, replaces the body's entityFqcn with this class (used to
+     *                                            simulate a cross-entity authorization-bypass attempt)
      *
      * @return Crawler The crawler after submitting the batch action
      */

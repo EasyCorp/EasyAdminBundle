@@ -5,7 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\FormLayout;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\FormFieldsetsSyntheticCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\FormTestEntity;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\FormTestEntityFactory;
 
 /**
  * Tests for fieldsets with fields both inside and outside fieldsets.
@@ -36,10 +36,7 @@ class FieldsetsEdgeCasesTest extends AbstractCrudTestCase
         static::assertSame('FormTestEntity[id]', $crawler->filter('form.ea-new-form .form-fieldset')->first()->filter('input')->attr('name'));
 
         // create an entity for edit form test
-        $entity = new FormTestEntity();
-        $entity->setName('Test Entity');
-        $this->entityManager->persist($entity);
-        $this->entityManager->flush();
+        $entity = FormTestEntityFactory::createOne(['name' => 'Test Entity']);
 
         $crawler = $this->client->request('GET', $this->generateEditFormUrl($entity->getId()));
         // the 'id' field does not belong to any explicit fieldset, so EasyAdmin creates a new fieldset for it
@@ -48,10 +45,7 @@ class FieldsetsEdgeCasesTest extends AbstractCrudTestCase
 
     public function testFieldsWithoutFieldsetAreAssignedAnAutomaticFieldsetInDetailPage(): void
     {
-        $entity = new FormTestEntity();
-        $entity->setName('Test Entity');
-        $this->entityManager->persist($entity);
-        $this->entityManager->flush();
+        $entity = FormTestEntityFactory::createOne(['name' => 'Test Entity']);
 
         $crawler = $this->client->request('GET', $this->generateDetailUrl($entity->getId()));
 
@@ -77,11 +71,10 @@ class FieldsetsEdgeCasesTest extends AbstractCrudTestCase
 
     public function testFieldsInsideFieldsetsInDetailPage(): void
     {
-        $entity = new FormTestEntity();
-        $entity->setName('Test Entity');
-        $entity->setDescription('Test Description');
-        $this->entityManager->persist($entity);
-        $this->entityManager->flush();
+        $entity = FormTestEntityFactory::createOne([
+            'name' => 'Test Entity',
+            'description' => 'Test Description',
+        ]);
 
         $crawler = $this->client->request('GET', $this->generateDetailUrl($entity->getId()));
 

@@ -42,12 +42,11 @@ class RelativeUrlsTest extends AbstractCrudTestCase
         // check that menu links are relative (not absolute with http://)
         $menuLinks = $crawler->filter('.ea-sidebar-item a, nav a');
 
-        if ($menuLinks->count() > 0) {
-            $firstHref = $menuLinks->first()->attr('href');
+        static::assertGreaterThan(0, $menuLinks->count());
+        $firstHref = $menuLinks->first()->attr('href');
 
-            // relative URLs should not start with http:// or https://
-            static::assertStringNotContainsString('http://', $firstHref ?? '');
-            static::assertStringNotContainsString('https://', $firstHref ?? '');
-        }
+        // relative URLs should not start with http:// or https://
+        static::assertStringNotContainsString('http://', $firstHref ?? '');
+        static::assertStringNotContainsString('https://', $firstHref ?? '');
     }
 }

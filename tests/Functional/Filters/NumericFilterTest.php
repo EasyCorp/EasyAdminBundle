@@ -3,22 +3,26 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Filters;
 
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\FilterTestEntityFactory;
 
-/**
- * Fixture data (numericFilter field):
- * - ID 1: 100
- * - ID 2: 200
- * - ID 3: 50
- * - ID 4: 150
- * - ID 5: 175
- * - ID 6: 300
- */
 class NumericFilterTest extends FilterFunctionalTestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $decimals = [100 => 10.5, 200 => 25.75, 50 => 5.25, 150 => 15.0, 175 => 17.5, 300 => 30.0];
+        foreach ($decimals as $number => $decimal) {
+            $this->entities[$number] = FilterTestEntityFactory::createOne([
+                'numericFilter' => $number,
+                'decimalFilter' => $decimal,
+            ]);
+        }
+    }
+
     public function testFilterEquals(): void
     {
         // filter for numericFilter = 100
-        // should match: ID 1
         $url = $this->generateFilteredIndexUrl([
             'numericFilter' => [
                 'comparison' => ComparisonType::EQ,
@@ -29,13 +33,12 @@ class NumericFilterTest extends FilterFunctionalTestCase
         $this->client->request('GET', $url);
 
         $this->assertFilteredCount(1);
-        $this->assertVisibleEntityIds([1]);
+        $this->assertVisibleEntities([100]);
     }
 
     public function testFilterNotEquals(): void
     {
         // filter for numericFilter != 100
-        // should match all except ID 1
         $url = $this->generateFilteredIndexUrl([
             'numericFilter' => [
                 'comparison' => ComparisonType::NEQ,
@@ -46,13 +49,12 @@ class NumericFilterTest extends FilterFunctionalTestCase
         $this->client->request('GET', $url);
 
         $this->assertFilteredCount(5);
-        $this->assertVisibleEntityIds([2, 3, 4, 5, 6]);
+        $this->assertVisibleEntities([200, 50, 150, 175, 300]);
     }
 
     public function testFilterGreaterThan(): void
     {
         // filter for numericFilter > 150
-        // should match: ID 2 (200), ID 5 (175), ID 6 (300)
         $url = $this->generateFilteredIndexUrl([
             'numericFilter' => [
                 'comparison' => ComparisonType::GT,
@@ -63,13 +65,12 @@ class NumericFilterTest extends FilterFunctionalTestCase
         $this->client->request('GET', $url);
 
         $this->assertFilteredCount(3);
-        $this->assertVisibleEntityIds([2, 5, 6]);
+        $this->assertVisibleEntities([200, 175, 300]);
     }
 
     public function testFilterGreaterThanOrEqual(): void
     {
         // filter for numericFilter >= 150
-        // should match: ID 2 (200), ID 4 (150), ID 5 (175), ID 6 (300)
         $url = $this->generateFilteredIndexUrl([
             'numericFilter' => [
                 'comparison' => ComparisonType::GTE,
@@ -80,13 +81,12 @@ class NumericFilterTest extends FilterFunctionalTestCase
         $this->client->request('GET', $url);
 
         $this->assertFilteredCount(4);
-        $this->assertVisibleEntityIds([2, 4, 5, 6]);
+        $this->assertVisibleEntities([200, 150, 175, 300]);
     }
 
     public function testFilterLessThan(): void
     {
         // filter for numericFilter < 150
-        // should match: ID 1 (100), ID 3 (50)
         $url = $this->generateFilteredIndexUrl([
             'numericFilter' => [
                 'comparison' => ComparisonType::LT,
@@ -97,13 +97,12 @@ class NumericFilterTest extends FilterFunctionalTestCase
         $this->client->request('GET', $url);
 
         $this->assertFilteredCount(2);
-        $this->assertVisibleEntityIds([1, 3]);
+        $this->assertVisibleEntities([100, 50]);
     }
 
     public function testFilterLessThanOrEqual(): void
     {
         // filter for numericFilter <= 150
-        // should match: ID 1 (100), ID 3 (50), ID 4 (150)
         $url = $this->generateFilteredIndexUrl([
             'numericFilter' => [
                 'comparison' => ComparisonType::LTE,
@@ -114,13 +113,12 @@ class NumericFilterTest extends FilterFunctionalTestCase
         $this->client->request('GET', $url);
 
         $this->assertFilteredCount(3);
-        $this->assertVisibleEntityIds([1, 3, 4]);
+        $this->assertVisibleEntities([100, 50, 150]);
     }
 
     public function testFilterBetween(): void
     {
         // filter for numericFilter BETWEEN 100 AND 200
-        // should match: ID 1 (100), ID 2 (200), ID 4 (150), ID 5 (175)
         $url = $this->generateFilteredIndexUrl([
             'numericFilter' => [
                 'comparison' => ComparisonType::BETWEEN,
@@ -132,13 +130,12 @@ class NumericFilterTest extends FilterFunctionalTestCase
         $this->client->request('GET', $url);
 
         $this->assertFilteredCount(4);
-        $this->assertVisibleEntityIds([1, 2, 4, 5]);
+        $this->assertVisibleEntities([100, 200, 150, 175]);
     }
 
     public function testFilterBetweenNarrowRange(): void
     {
         // filter for numericFilter BETWEEN 150 AND 180
-        // should match: ID 4 (150), ID 5 (175)
         $url = $this->generateFilteredIndexUrl([
             'numericFilter' => [
                 'comparison' => ComparisonType::BETWEEN,
@@ -150,7 +147,7 @@ class NumericFilterTest extends FilterFunctionalTestCase
         $this->client->request('GET', $url);
 
         $this->assertFilteredCount(2);
-        $this->assertVisibleEntityIds([4, 5]);
+        $this->assertVisibleEntities([150, 175]);
     }
 
     public function testFilterNoResults(): void
@@ -172,7 +169,6 @@ class NumericFilterTest extends FilterFunctionalTestCase
     {
         // test decimal filter field
         // filter for decimalFilter = 10.5
-        // should match: ID 1
         $url = $this->generateFilteredIndexUrl([
             'decimalFilter' => [
                 'comparison' => ComparisonType::EQ,
@@ -183,13 +179,12 @@ class NumericFilterTest extends FilterFunctionalTestCase
         $this->client->request('GET', $url);
 
         $this->assertFilteredCount(1);
-        $this->assertVisibleEntityIds([1]);
+        $this->assertVisibleEntities([100]);
     }
 
     public function testFilterDecimalGreaterThan(): void
     {
         // filter for decimalFilter > 20
-        // should match: ID 2 (25.75), ID 6 (30.0)
         $url = $this->generateFilteredIndexUrl([
             'decimalFilter' => [
                 'comparison' => ComparisonType::GT,
@@ -200,6 +195,6 @@ class NumericFilterTest extends FilterFunctionalTestCase
         $this->client->request('GET', $url);
 
         $this->assertFilteredCount(2);
-        $this->assertVisibleEntityIds([2, 6]);
+        $this->assertVisibleEntities([200, 300]);
     }
 }

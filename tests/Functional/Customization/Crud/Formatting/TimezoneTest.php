@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Customization\Crud\Fo
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Controller\Crud\Formatting\TimezoneTestCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Factory\DemoEntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Kernel;
 
 /**
@@ -34,30 +35,15 @@ class TimezoneTest extends AbstractCrudTestCase
 
     public function testTimezoneConfiguration(): void
     {
+        $entity = DemoEntityFactory::createOne(['createdAt' => new \DateTime('2024-01-02 10:00:00', new \DateTimeZone('UTC'))]);
+
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
         static::assertResponseIsSuccessful();
+        $this->assertIndexPageEntityCount(1);
 
-        // verify data is displayed
-        $this->assertIndexPageEntityCount(20);
-
-        // get first row with datetime data (skip null values)
-        $firstRow = $crawler->filter('tbody tr')->first();
-        $dateTimeCell = $firstRow->filter('td[data-column="createdAt"]');
-
-        if ($dateTimeCell->count() > 0) {
-            $dateTimeText = trim($dateTimeCell->text());
-
-            // timezone config affects how datetime is displayed
-            // verify datetime has time component
-            static::assertMatchesRegularExpression(
-                '/\d{1,2}:\d{2}/',
-                $dateTimeText,
-                'DateTime should include time component'
-            );
-        }
-
-        // verify table structure
-        static::assertSelectorExists('tbody tr');
+        // 10:00 UTC is displayed as 5:00 in America/New_York (UTC-5 in January)
+        $dateTimeText = trim($crawler->filter($this->getIndexEntityRowSelector($entity->getId()).' td[data-column="createdAt"]')->text());
+        static::assertMatchesRegularExpression('/^Jan 2, 2024, 5:00:00\h?AM$/u', $dateTimeText);
     }
 }

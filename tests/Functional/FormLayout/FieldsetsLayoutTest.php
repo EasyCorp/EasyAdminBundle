@@ -6,6 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\FormLayoutFieldsetsCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\FormTestEntity;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\FormTestEntityFactory;
 
 class FieldsetsLayoutTest extends AbstractCrudTestCase
 {
@@ -164,11 +165,10 @@ class FieldsetsLayoutTest extends AbstractCrudTestCase
 
     public function testFieldsetsAreRenderedInEditForm(): void
     {
-        $entity = new FormTestEntity();
-        $entity->setName('Edit Fieldset Test');
-        $entity->setEmail('edit.fieldset@test.com');
-        $this->entityManager->persist($entity);
-        $this->entityManager->flush();
+        $entity = FormTestEntityFactory::createOne([
+            'name' => 'Edit Fieldset Test',
+            'email' => 'edit.fieldset@test.com',
+        ]);
 
         $crawler = $this->client->request('GET', $this->generateEditFormUrl($entity->getId()));
 
@@ -186,12 +186,11 @@ class FieldsetsLayoutTest extends AbstractCrudTestCase
 
     public function testFieldsetsAreRenderedInDetailPage(): void
     {
-        $entity = new FormTestEntity();
-        $entity->setName('Detail Fieldset Test');
-        $entity->setEmail('detail.fieldset@test.com');
-        $entity->setStreet('Detail Street');
-        $this->entityManager->persist($entity);
-        $this->entityManager->flush();
+        $entity = FormTestEntityFactory::createOne([
+            'name' => 'Detail Fieldset Test',
+            'email' => 'detail.fieldset@test.com',
+            'street' => 'Detail Street',
+        ]);
 
         $crawler = $this->client->request('GET', $this->generateDetailUrl($entity->getId()));
 

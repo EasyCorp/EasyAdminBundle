@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Customization\Crud\En
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Controller\Crud\EntityLabels\PluralLabelTestCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Factory\DemoEntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Kernel;
 
 /**
@@ -34,6 +35,8 @@ class PluralLabelTest extends AbstractCrudTestCase
 
     public function testPluralLabelAppearsOnIndexPage(): void
     {
+        DemoEntityFactory::createMany(2);
+
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
         static::assertResponseIsSuccessful();
@@ -43,9 +46,9 @@ class PluralLabelTest extends AbstractCrudTestCase
         static::assertStringContainsString('Custom Items', $pageContent);
 
         // verify data is displayed
-        $this->assertIndexPageEntityCount(20);
+        $this->assertIndexPageEntityCount(2);
 
         // verify total count
-        static::assertIndexFullEntityCount(100);
+        static::assertIndexFullEntityCount(2);
     }
 }

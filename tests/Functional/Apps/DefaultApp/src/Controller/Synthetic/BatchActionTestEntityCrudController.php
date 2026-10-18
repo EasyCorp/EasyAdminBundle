@@ -58,6 +58,10 @@ class BatchActionTestEntityCrudController extends AbstractCrudController
     #[AdminRoute('/batch-activate', 'batch_activate', options: ['methods' => ['POST']])]
     public function batchActivate(BatchActionDto $batchActionDto): Response
     {
+        if (!$this->isValidBatchActionCsrfToken($batchActionDto)) {
+            return $this->redirectToIndex();
+        }
+
         $entityManager = $this->container->get('doctrine')->getManagerForClass($batchActionDto->getEntityFqcn());
         $repository = $entityManager->getRepository($batchActionDto->getEntityFqcn());
 
@@ -73,12 +77,16 @@ class BatchActionTestEntityCrudController extends AbstractCrudController
 
         $this->addFlash('success', sprintf('%d item(s) activated successfully.', \count($batchActionDto->getEntityIds())));
 
-        return $this->redirect($this->container->get(AdminUrlGenerator::class)->setAction(Action::INDEX)->generateUrl());
+        return $this->redirectToIndex();
     }
 
     #[AdminRoute('/batch-deactivate', 'batch_deactivate', options: ['methods' => ['POST']])]
     public function batchDeactivate(BatchActionDto $batchActionDto): Response
     {
+        if (!$this->isValidBatchActionCsrfToken($batchActionDto)) {
+            return $this->redirectToIndex();
+        }
+
         $entityManager = $this->container->get('doctrine')->getManagerForClass($batchActionDto->getEntityFqcn());
         $repository = $entityManager->getRepository($batchActionDto->getEntityFqcn());
 
@@ -94,6 +102,16 @@ class BatchActionTestEntityCrudController extends AbstractCrudController
 
         $this->addFlash('success', sprintf('%d item(s) deactivated successfully.', \count($batchActionDto->getEntityIds())));
 
+        return $this->redirectToIndex();
+    }
+
+    private function isValidBatchActionCsrfToken(BatchActionDto $batchActionDto): bool
+    {
+        return $this->isCsrfTokenValid('ea-batch-action-'.$batchActionDto->getName().'-'.$batchActionDto->getEntityFqcn(), $batchActionDto->getCsrfToken());
+    }
+
+    private function redirectToIndex(): Response
+    {
         return $this->redirect($this->container->get(AdminUrlGenerator::class)->setAction(Action::INDEX)->generateUrl());
     }
 }

@@ -6,6 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\FormLayoutColumnsWithFieldsetsCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\FormTestEntity;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\FormTestEntityFactory;
 
 /**
  * Tests for columns containing fieldsets.
@@ -151,13 +152,12 @@ class FormLayoutColumnsWithFieldsetsTest extends AbstractCrudTestCase
 
     public function testEditFormPreservesColumnsAndFieldsets(): void
     {
-        $entity = new FormTestEntity();
-        $entity->setName('Edit Columns Fieldsets');
-        $entity->setEmail('edit@columnfieldset.com');
-        $entity->setStreet('321 Edit Way');
-        $entity->setPriority(2);
-        $this->entityManager->persist($entity);
-        $this->entityManager->flush();
+        $entity = FormTestEntityFactory::createOne([
+            'name' => 'Edit Columns Fieldsets',
+            'email' => 'edit@columnfieldset.com',
+            'street' => '321 Edit Way',
+            'priority' => 2,
+        ]);
 
         $crawler = $this->client->request('GET', $this->generateEditFormUrl($entity->getId()));
 

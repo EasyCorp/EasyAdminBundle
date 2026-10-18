@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Customization\Crud\Pa
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Controller\Crud\Pagination\RangeSizeTestCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Factory\DemoEntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Kernel;
 
 /**
@@ -34,25 +35,20 @@ class RangeSizeTest extends AbstractCrudTestCase
 
     public function testRangeSizeConfiguration(): void
     {
-        // navigate to page 3 to see range size effect
-        $url = $this->getCrudUrl('index', options: ['page' => 3]);
-        $crawler = $this->client->request('GET', $url);
+        // 5 pages with the default page size (20)
+        DemoEntityFactory::createMany(81);
+
+        $crawler = $this->client->request('GET', $this->getCrudUrl('index', options: ['page' => 3]));
 
         static::assertResponseIsSuccessful();
 
-        // with default pageSize=20 and 100 entities, we should have 5 pages
         $this->assertIndexPagesCount(5);
-
-        // page 3 should be active
         static::assertSelectorTextSame('.page-item.active .page-link', '3');
 
-        // count visible page number links (excluding prev/next)
-        $pageNumbers = $crawler->filter('.pagination .page-item:not(.page-item-previous):not(.page-item-next) .page-link');
+        // with rangeSize=3 on page 3 of 5 pages, all pages are visible and no ellipsis is shown
+        $pageNumbers = $crawler->filter('.pagination .page-item:not(.page-item-previous):not(.page-item-next) .page-link')->each(static fn ($link) => trim($link->text()));
+        static::assertSame(['1', '2', '3', '4', '5'], $pageNumbers);
 
-        // with rangeSize=3 on page 3 of 5 pages, all pages should be visible
-        static::assertGreaterThan(0, $pageNumbers->count(), 'Page numbers should be visible');
-
-        // verify pagination exists
         static::assertSelectorExists('.list-pagination');
     }
 }

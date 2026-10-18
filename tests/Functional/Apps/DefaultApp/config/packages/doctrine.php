@@ -3,7 +3,8 @@
 $config = [
     'dbal' => [
         'driver' => 'pdo_sqlite',
-        'path' => '%kernel.cache_dir%/test_database.sqlite',
+        // ParaTest workers share the compiled container but each one needs its own database
+        'path' => '%kernel.cache_dir%/test_database%env(TEST_TOKEN)%.sqlite',
     ],
 
     'orm' => [
@@ -22,6 +23,12 @@ $config = [
 ];
 
 if (class_exists(Composer\InstalledVersions::class)) {
+    // DAMADoctrineTestBundle needs savepoints, which DBAL 4 always enables
+    $doctrineDbalVersion = Composer\InstalledVersions::getVersion('doctrine/dbal');
+    if (null !== $doctrineDbalVersion && version_compare($doctrineDbalVersion, '4.0.0', '<')) {
+        $config['dbal']['use_savepoints'] = true;
+    }
+
     $doctrineBundleVersion = Composer\InstalledVersions::getVersion('doctrine/doctrine-bundle');
 
     if (null !== $doctrineBundleVersion && version_compare($doctrineBundleVersion, '3.1.0', '<')) {
@@ -36,4 +43,5 @@ if (class_exists(Composer\InstalledVersions::class)) {
     }
 }
 
+$container->setParameter('env(TEST_TOKEN)', '');
 $container->loadFromExtension('doctrine', $config);

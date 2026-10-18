@@ -4,7 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Security;
 
 use EasyCorp\Bundle\EasyAdminBundle\Exception\ForbiddenActionException;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Category;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\CategoryFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Controller\CategoryCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Controller\ProtectedCategoryCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Controller\SecuredDashboardController;
@@ -64,8 +64,7 @@ class RolePermissionTest extends AbstractCrudTestCase
      */
     public function testIndexPermissionDoesNotProtectTheOtherActions(): void
     {
-        $category = $this->entityManager->getRepository(Category::class)->findOneBy([]);
-        static::assertInstanceOf(Category::class, $category);
+        $category = CategoryFactory::createOne();
         $credentials = ['PHP_AUTH_USER' => 'user', 'PHP_AUTH_PW' => '1234'];
 
         $this->client->request('GET', $this->generateDetailUrl($category->getId(), null, ProtectedCategoryCrudController::class), [], [], $credentials);
@@ -108,6 +107,9 @@ class RolePermissionTest extends AbstractCrudTestCase
     #[DataProvider('provideRolesForFieldPermission')]
     public function testFieldPermissionHidesFieldForUnauthorizedUsers(string $username, bool $shouldSeeField): void
     {
+        // the datagrid (and its column headers) is only rendered when there are rows
+        CategoryFactory::createOne();
+
         $crawler = $this->client->request(
             'GET',
             $this->generateIndexUrl(),
@@ -116,6 +118,7 @@ class RolePermissionTest extends AbstractCrudTestCase
             ['PHP_AUTH_USER' => $username, 'PHP_AUTH_PW' => '1234']
         );
 
+        static::assertCount(1, $crawler->filter('th[data-column="name"]'), 'The unprotected fields should be rendered for every user');
         $fieldHeader = $crawler->filter('th[data-column="activeWithNoPermission"]');
 
         if ($shouldSeeField) {

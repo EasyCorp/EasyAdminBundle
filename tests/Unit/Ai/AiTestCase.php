@@ -27,7 +27,7 @@ abstract class AiTestCase extends TestCase
         putenv('COLUMNS=240');
 
         $this->filesystem = new Filesystem();
-        $this->tempDir = sys_get_temp_dir().'/com.github.easycorp.easyadmin/tests/ai/'.uniqid();
+        $this->tempDir = sys_get_temp_dir().'/com.github.easycorp.easyadmin/tests/ai/'.bin2hex(random_bytes(8));
         $this->projectDir = $this->tempDir.'/project';
         $this->packageDir = $this->tempDir.'/package';
 

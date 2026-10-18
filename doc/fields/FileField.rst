@@ -229,6 +229,10 @@ file, an error is thrown::
 
     yield FileField::new('...')->keepReplacedFileOrFail();
 
+These behaviors only apply to replaced files. When a user explicitly deletes a
+file (with the delete checkbox or the delete button of each file), the file is
+always deleted from disk.
+
 Serving Uploaded Files Safely
 -----------------------------
 

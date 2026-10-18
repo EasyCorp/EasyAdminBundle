@@ -104,7 +104,7 @@ class FieldTestEntityCrudController extends AbstractCrudController
             ImageField::new('imageField'),
             ImageField::new('multipleImageField')->setFormTypeOption('multiple', true),
         ] as $field) {
-            if ($this->getContext()->getRequest()->query->getBoolean('keepReplacedFiles')) {
+            if ($this->getContext()?->getRequest()->query->getBoolean('keepReplacedFiles')) {
                 $field->keepReplacedFile();
             }
 

@@ -108,12 +108,12 @@ class FileUploadType extends AbstractType implements DataMapperInterface
         $currentFileNames = [];
         $currentFileUrls = [];
         foreach ($currentFiles as $file) {
-            $fileName = $this->resolveFilename($file, $options);
             if ($file instanceof FlysystemFile) {
+                $fileName = self::getStoredFileName($file, $options['upload_dir']);
                 $currentFileNames[] = $fileName;
                 $currentFileUrls[] = $this->resolveFlysystemFileUrl($flysystemStorage, $flysystemUrlPrefix, $fileName);
             } elseif ($file instanceof File) {
-                $currentFileNames[] = $fileName;
+                $currentFileNames[] = self::getStoredFileName($file, $options['upload_dir']);
                 $currentFileUrls[] = null;
             }
         }
@@ -130,14 +130,15 @@ class FileUploadType extends AbstractType implements DataMapperInterface
         $view->vars['risky_inline_render'] = $options['risky_inline_render'];
     }
 
-    /**
-     * @param array<string, mixed> $options
-     */
-    private function resolveFilename(File|FlysystemFile|null $file, array $options): ?string
+    private static function getStoredFileName(File|FlysystemFile $file, string $uploadDir): string
     {
-        $transformer = new StringToFileTransformer($options['upload_dir'], $options['upload_filename'], $options['upload_validate'], false);
+        if ($file instanceof FlysystemFile) {
+            return $file->getPathname();
+        }
 
-        return $transformer->reverseTransform($file);
+        return str_starts_with($file->getPathname(), $uploadDir)
+            ? mb_substr($file->getPathname(), mb_strlen($uploadDir))
+            : $file->getFilename();
     }
 
     private function resolveFlysystemFileUrl(?FilesystemOperator $filesystem, ?string $urlPrefix, string $fileName): ?string
@@ -371,8 +372,9 @@ class FileUploadType extends AbstractType implements DataMapperInterface
         $children = iterator_to_array($forms);
         $uploadedFiles = $children['file']->getData();
 
+        $config = $children['file']->getParent()->getConfig();
         /** @var FileUploadState $state */
-        $state = $children['file']->getParent()->getConfig()->getAttribute('state');
+        $state = $config->getAttribute('state');
         $state->setCurrentFiles($currentFiles);
         $state->setUploadedFiles($uploadedFiles);
         $state->setDelete($children['delete']->getData());
@@ -380,6 +382,7 @@ class FileUploadType extends AbstractType implements DataMapperInterface
         $deletedFilesJson = $children['deleted_files']->getData();
         $deletedFileNames = \is_string($deletedFilesJson) ? json_decode($deletedFilesJson, true) : [];
         $state->setDeletedFiles(\is_array($deletedFileNames) ? $deletedFileNames : []);
+        $state->setRemovedFiles([]);
 
         if (!$state->isModified()) {
             return;
@@ -388,19 +391,12 @@ class FileUploadType extends AbstractType implements DataMapperInterface
         if ($state->isDelete()) {
             $currentFiles = $uploadedFiles;
         } elseif ([] !== $state->getDeletedFiles()) {
-            if (\is_array($currentFiles)) {
-                $currentFilesArray = $currentFiles;
-            } elseif (null !== $currentFiles && false !== $currentFiles) {
-                $currentFilesArray = [$currentFiles];
-            } else {
-                $currentFilesArray = [];
-            }
-            $options = $children['file']->getParent()->getConfig()->getOptions();
-            $remainingFiles = array_values(array_filter($currentFilesArray, function ($file) use ($state, $options) {
-                $fileName = $this->resolveFilename($file, $options);
-
-                return !\in_array($fileName, $state->getDeletedFiles(), true);
-            }));
+            $uploadDir = $config->getOption('upload_dir');
+            $state->setRemovedFiles(array_values(array_filter(
+                $state->getCurrentFiles(),
+                static fn (File|FlysystemFile|null $file): bool => null !== $file && \in_array(self::getStoredFileName($file, $uploadDir), $state->getDeletedFiles(), true),
+            )));
+            $remainingFiles = $state->getRemainingFiles();
             if ($state->isAddAllowed()) {
                 $currentFiles = array_merge($remainingFiles, $uploadedFiles);
             } elseif ([] !== $uploadedFiles) {

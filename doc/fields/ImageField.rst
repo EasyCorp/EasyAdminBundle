@@ -223,6 +223,10 @@ file, an error is thrown::
 
     yield ImageField::new('...')->keepReplacedFileOrFail();
 
+These behaviors only apply to replaced files. When a user explicitly deletes an
+image (with the delete checkbox or the delete button of each image), the file is
+always deleted from disk.
+
 Serving Uploaded Images Safely
 ------------------------------
 
